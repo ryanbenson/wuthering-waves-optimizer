@@ -1,0 +1,27 @@
+{
+  "name": "wuthering-waves-optimizer",
+  "private": false,
+  "version": "0.0.1",
+  "author": "Ryan Benson <benson.ryan@gmail.com> (http://ryanbenson.dev/)",
+  "homepage": "https://github.com/ryanbenson/wuthering-waves-optimizer",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/ryanbenson/wuthering-waves-optimizer/issues",
+    "email": "benson.ryan@gmail.com"
+  },
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.4.21"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "vue-tsc": "^2.0.6"
+  }
+}
