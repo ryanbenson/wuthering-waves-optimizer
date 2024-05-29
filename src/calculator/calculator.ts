@@ -1,3 +1,5 @@
+import { def } from "@vue/shared";
+
 /**
  * Functionally working:
  * let dmg2 = calcDamage(
@@ -32,16 +34,23 @@ export function calcDamage(
   attack: number,
   defIgnore: number,
   flatDamage: number,
-  flatBonus: number
+  flatBonus: number,
+  resistPen: number,
+  damageReductionBase: number,
+  damageReductionAdditional: number
 ): number {
   const baseDamage = getBaseDamage(talent, attack, flatDamage, flatBonus);
   const damageBonusValue = 1 + damageBonus;
   const critValue = 1 + critRate * critDamage;
   const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
-  const enemyResistValue = 1 - enemyResist;
-  return (
-    baseDamage * damageBonusValue * critValue * defModifier * enemyResistValue
+  const enemyResistValue = getEnemyResistValue(
+    enemyResist,
+    resistPen,
+    defModifier,
+    damageReductionBase,
+    damageReductionAdditional
   );
+  return baseDamage * damageBonusValue * critValue * enemyResistValue;
 }
 
 export function getBaseDamage(
@@ -74,4 +83,37 @@ export function getDefenseModifier(
 
 export function getEnemyDefense(enemyLevel: number): number {
   return 8 * enemyLevel + 792;
+}
+
+export function getEnemyResistValue(
+  baseEnemyResist: number,
+  resistPen: number,
+  defModifier: number,
+  damageReductionBase: number,
+  damageReductionAdditional: number
+): number {
+  const resistTotal = baseEnemyResist - resistPen;
+  const elementalResist = getElementalResist(resistTotal);
+  const damageReduction = getDamageReduction(
+    damageReductionBase,
+    damageReductionAdditional
+  );
+  return resistTotal * elementalResist * defModifier * damageReduction;
+}
+
+export function getElementalResist(resistTotal: number): number {
+  if (resistTotal < 0) {
+    return 1 - resistTotal / 2;
+  }
+  if (resistTotal > 0.8) {
+    return 1 / (1 + 5 * resistTotal);
+  }
+  return resistTotal / 2;
+}
+
+export function getDamageReduction(
+  damageReductionBase: number,
+  damageReductionAdditional: number
+): number {
+  return 1 - (damageReductionBase + damageReductionAdditional);
 }
