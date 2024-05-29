@@ -29,23 +29,30 @@ export function calcDamage(
   critRate: number,
   critDamage: number,
   damageBonus: number,
-  attack: number
+  attack: number,
+  defIgnore: number,
+  flatDamage: number,
+  flatBonus: number
 ): number {
-  // =((D17*B21))*(1+B25)*(100%+B22*B23)*B29*(1-B30)
-  // =((talent*attack)) * (1+damage bonus) * (100%+Crit Rate * Crit Damage) * Def modifier * (1-enemy resist)
-  const talentMv = getTalentValue(talent);
-  const talentDamageValue = talentMv * attack;
+  const baseDamage = getBaseDamage(talent, attack, flatDamage, flatBonus);
   const damageBonusValue = 1 + damageBonus;
   const critValue = 1 + critRate * critDamage;
-  const defModifier = getDefenseModifier(charLevel, enemyLevel);
+  const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
   const enemyResistValue = 1 - enemyResist;
   return (
-    talentDamageValue *
-    damageBonusValue *
-    critValue *
-    defModifier *
-    enemyResistValue
+    baseDamage * damageBonusValue * critValue * defModifier * enemyResistValue
   );
+}
+
+export function getBaseDamage(
+  talent: string,
+  attack: number,
+  flatDamage: number,
+  flatBonus: number
+): number {
+  const talentMv = getTalentValue(talent);
+  const talentDamageValue = talentMv * attack;
+  return talentDamageValue + flatDamage + flatBonus;
 }
 
 export function getTalentValue(talentStringWithPercent: string): number {
@@ -56,7 +63,15 @@ export function getTalentValue(talentStringWithPercent: string): number {
 
 export function getDefenseModifier(
   charLevl: number,
-  enemyLevel: number
+  enemyLevel: number,
+  defIgnore: number
 ): number {
-  return (charLevl + 100) / (charLevl + 100 + (enemyLevel + 100));
+  const enemyDef = getEnemyDefense(enemyLevel);
+  return (
+    (800 + 8 * charLevl) / (800 + 8 * charLevl + enemyDef * (1 - defIgnore))
+  );
+}
+
+export function getEnemyDefense(enemyLevel: number): number {
+  return 8 * enemyLevel + 792;
 }
