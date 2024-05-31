@@ -27,11 +27,13 @@ interface FormData {
   talent: string;
   critRate: number;
   critDamage: number;
-  damageBonus: number;
   attack: number;
   defIgnore: number;
-  flatDamage: number;
-  flatBonus: number;
+  bonusTotalSkillDmg: number;
+  bonusSpecificSkillDmg: number;
+  bonusElementDmg: number;
+  totalDeepenEffect: number;
+  resistenceReduction: number;
 }
 
 export default defineComponent({
@@ -44,11 +46,13 @@ export default defineComponent({
       talent: "",
       critRate: 0,
       critDamage: 0,
-      damageBonus: 0,
       attack: 0,
       defIgnore: 0,
-      flatDamage: 0,
-      flatBonus: 0,
+      bonusTotalSkillDmg: 0,
+      bonusSpecificSkillDmg: 0,
+      bonusElementDmg: 0,
+      totalDeepenEffect: 0,
+      resistenceReduction: 0,
     });
     const damage = ref(0);
 
@@ -74,12 +78,6 @@ export default defineComponent({
         type: "number",
         step: "0.01",
       },
-      {
-        name: "damageBonus",
-        label: "Damage Bonus",
-        type: "number",
-        step: "0.01",
-      },
       { name: "attack", label: "Attack", type: "number", step: "1" },
       {
         name: "defIgnore",
@@ -87,8 +85,36 @@ export default defineComponent({
         type: "number",
         step: "0.01",
       },
-      { name: "flatDamage", label: "Flat Damage", type: "number", step: "1" },
-      { name: "flatBonus", label: "Flat Bonus", type: "number", step: "1" },
+      {
+        name: "bonusTotalSkillDmg",
+        label: "Bonus Total Skill Dmg",
+        type: "number",
+        step: ".1",
+      },
+      {
+        name: "bonusSpecificSkillDmg",
+        label: "Bonus Specific Skill Dmg",
+        type: "number",
+        step: "1",
+      },
+      {
+        name: "bonusElementDmg",
+        label: "Bonus Element Dmg",
+        type: "number",
+        step: "0.1",
+      },
+      {
+        name: "totalDeepenEffect",
+        label: "Total Deepen Effect",
+        type: "number",
+        step: "1",
+      },
+      {
+        name: "resistenceReduction",
+        label: "Resist Reduction",
+        type: "number",
+        step: "1",
+      },
     ];
 
     const handleSubmit = () => {
@@ -97,13 +123,13 @@ export default defineComponent({
         formData.enemyLevel,
         formData.enemyResist,
         formData.talent,
-        formData.critRate,
-        formData.critDamage,
-        formData.damageBonus,
         formData.attack,
         formData.defIgnore,
-        formData.flatDamage,
-        formData.flatBonus
+        formData.bonusTotalSkillDmg,
+        formData.bonusSpecificSkillDmg,
+        formData.bonusElementDmg,
+        formData.totalDeepenEffect,
+        formData.resistenceReduction
       );
       damage.value = dmg;
     };
