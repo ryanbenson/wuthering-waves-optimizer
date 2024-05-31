@@ -1,50 +1,42 @@
-/**
- * Functionally working:
- * let dmg2 = calcDamage(
-40,
-26,
-.1,
-"23.00%",
-.05,
-1.5,
-0,
-345.648
-);
-console.log(dmg2); => 40.48 -> matches Excel
- * @param charLevel 
- * @param enemyLevel 
- * @param enemyResist 
- * @param talent 
- * @param critRate 
- * @param critDamage 
- * @param damageBonus 
- * @param attack 
- * @returns 
- */
 export function calcDamage(
   charLevel: number,
   enemyLevel: number,
   enemyResist: number,
   talent: string,
-  critRate: number,
-  critDamage: number,
-  damageBonus: number,
-  attack: number
+  // critRate: number,
+  // critDamage: number,
+  // damageBonus: number,
+  attack: number,
+  defIgnore: number = 0,
+  bonusTotalSkillDmg: number = 0,
+  bonusSpecificSkillDmg: number = 0,
+  bonusElementDmg: number = 0,
+  totalDeepenEffect: number = 0,
+  resistenceReduction: number = 0
 ): number {
-  // =((D17*B21))*(1+B25)*(100%+B22*B23)*B29*(1-B30)
-  // =((talent*attack)) * (1+damage bonus) * (100%+Crit Rate * Crit Damage) * Def modifier * (1-enemy resist)
-  const talentMv = getTalentValue(talent);
-  const talentDamageValue = talentMv * attack;
-  const damageBonusValue = 1 + damageBonus;
-  const critValue = 1 + critRate * critDamage;
-  const defModifier = getDefenseModifier(charLevel, enemyLevel);
-  const enemyResistValue = 1 - enemyResist;
+  // 707 * (.2678 * (1+0+0)) * (1+.1) * (1+0) * 0.5136986301369864 * (1-.1 + 0) => 97 => same as in-game
+  // attack * (talent * (1 + bonusTotalSkillDmg + bonusSpecificSkillDmg)) * (1 + bonusElementDmg) * (1 + totalDeepenEffect) * DEFModifier * (1- EnemyResistence + ResistenceReduction)
+  const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
+  const talentValue = getTalentValue(talent);
+  console.log(defModifier, talentValue);
+  console.log(
+    `(
+      ${attack} *
+      (${talentValue} * (1 + ${bonusTotalSkillDmg} * ${bonusSpecificSkillDmg})) *
+      (1 + ${bonusElementDmg}) *
+      (1 + ${totalDeepenEffect}) *
+        ${defModifier} *
+      (1 - ${enemyResist} + ${resistenceReduction})
+    )
+    `
+  );
   return (
-    talentDamageValue *
-    damageBonusValue *
-    critValue *
+    attack *
+    (talentValue * (1 + bonusTotalSkillDmg * bonusSpecificSkillDmg)) *
+    (1 + bonusElementDmg) *
+    (1 + totalDeepenEffect) *
     defModifier *
-    enemyResistValue
+    (1 - enemyResist + resistenceReduction)
   );
 }
 
@@ -56,7 +48,15 @@ export function getTalentValue(talentStringWithPercent: string): number {
 
 export function getDefenseModifier(
   charLevl: number,
-  enemyLevel: number
+  enemyLevel: number,
+  defIgnore: number
 ): number {
-  return (charLevl + 100) / (charLevl + 100 + (enemyLevel + 100));
+  const enemyDef = getEnemyDefense(enemyLevel);
+  return (
+    (800 + 8 * charLevl) / (800 + 8 * charLevl + enemyDef * (1 - defIgnore))
+  );
+}
+
+export function getEnemyDefense(enemyLevel: number): number {
+  return 8 * enemyLevel + 792;
 }
