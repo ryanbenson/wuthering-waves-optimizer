@@ -37,12 +37,25 @@ export function calcDamage(
   flatBonus: number,
   resistPen: number,
   damageReductionBase: number,
-  damageReductionAdditional: number
+  damageReductionAdditional: number,
+  damageAmplifyTarget: number,
+  damageAmplifyAttaker: number,
+  specialDamageBase: number,
+  specialDamageBonus: number
 ): number {
-  const baseDamage = getBaseDamage(talent, attack, flatDamage, flatBonus);
-  const damageBonusValue = 1 + damageBonus;
-  const critValue = 1 + critRate * critDamage;
+  const baseDamageValue = getBaseDamage(talent, attack, flatDamage, flatBonus);
+  console.log("base damage", baseDamageValue);
+  // const critValue = 1 + critRate * critDamage;
   const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
+  console.log("def modifier", defModifier);
+  const damageBonusValue = getDamageBonusModifer(
+    damageBonus,
+    damageAmplifyTarget,
+    damageAmplifyAttaker,
+    specialDamageBase,
+    specialDamageBonus
+  );
+  console.log("damage bonus value", damageBonusValue);
   const enemyResistValue = getEnemyResistValue(
     enemyResist,
     resistPen,
@@ -50,7 +63,10 @@ export function calcDamage(
     damageReductionBase,
     damageReductionAdditional
   );
-  return baseDamage * damageBonusValue * critValue * enemyResistValue;
+  console.log("enemy resist value", enemyResistValue);
+  // doesn't use crit damage and crit rate yet
+  // return baseDamage * damageBonus * critValue * enemyResistValue;
+  return baseDamageValue * enemyResistValue * damageBonusValue;
 }
 
 export function getBaseDamage(
@@ -86,18 +102,26 @@ export function getEnemyDefense(enemyLevel: number): number {
 }
 
 export function getEnemyResistValue(
-  baseEnemyResist: number,
-  resistPen: number,
-  defModifier: number,
-  damageReductionBase: number,
-  damageReductionAdditional: number
+  baseEnemyResist: number = 0,
+  resistPen: number = 0,
+  defModifier: number = 0,
+  damageReductionBase: number = 0,
+  damageReductionAdditional: number = 0
 ): number {
+  console.log(
+    baseEnemyResist,
+    resistPen,
+    defModifier,
+    damageReductionBase,
+    damageReductionAdditional
+  );
   const resistTotal = baseEnemyResist - resistPen;
   const elementalResist = getElementalResist(resistTotal);
   const damageReduction = getDamageReduction(
     damageReductionBase,
     damageReductionAdditional
   );
+  console.log(resistTotal, elementalResist, defModifier, damageReduction);
   return resistTotal * elementalResist * defModifier * damageReduction;
 }
 
@@ -116,4 +140,17 @@ export function getDamageReduction(
   damageReductionAdditional: number
 ): number {
   return 1 - (damageReductionBase + damageReductionAdditional);
+}
+
+export function getDamageBonusModifer(
+  damageBonus: number = 0,
+  damageAmplifyTarget: number = 0,
+  damageAmplifyAttaker: number = 0,
+  specialDamageBase: number = 0,
+  specialDamageBonus: number = 0
+): number {
+  const damageBonusValue = 1 + damageBonus;
+  const damageAmplifyValue = 1 + (damageAmplifyTarget + damageAmplifyAttaker);
+  const specialDamageValue = 1 + (specialDamageBase + specialDamageBonus);
+  return damageBonusValue * damageAmplifyValue * specialDamageValue;
 }
