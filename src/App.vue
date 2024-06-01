@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import HelloWorld from "./components/HelloWorld.vue";
+import AppLayout from "./layouts/AppLayout.vue";
 </script>
 
 <template>
-  <HelloWorld msg="Vite + Vue" />
+  <AppLayout> <HelloWorld msg="Vite + Vue" /></AppLayout>
 </template>
 
 <style scoped>
