@@ -10,7 +10,6 @@
         :placeholder="fields.name" />
       <label :for="field.name" class="form__label">{{ field.label }}</label>
     </div>
-    <button type="submit">Submit</button>
     <h1>{{ damage }}</h1>
   </div>
 </template>
