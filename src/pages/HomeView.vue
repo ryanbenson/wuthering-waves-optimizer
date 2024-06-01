@@ -1,6 +1,8 @@
 <template>
   <div class="calculator__content">
-    <Calculator class="calculator"></Calculator>
+    <div class="calculator__el">
+      <Calculator class="calculator"></Calculator>
+    </div>
     <div class="help">
       <p>
         This is heavily a work in progress, but it works for now. Here are some

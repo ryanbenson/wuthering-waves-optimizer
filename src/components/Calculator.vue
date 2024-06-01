@@ -1,16 +1,21 @@
 <template>
-  <div>
-    <div v-for="field in fields" :key="field.name" class="form__group field">
-      <input
-        :id="field.name"
-        :type="field.type"
-        v-model="formData[field.name]"
-        :step="field.step"
-        class="form__field"
-        :placeholder="field.name" />
-      <label :for="field.name" class="form__label">{{ field.label }}</label>
+  <div class="calculations">
+    <div class="data-input">
+      <div v-for="field in fields" :key="field.name" class="form__group field">
+        <input
+          :id="field.name"
+          :type="field.type"
+          v-model="formData[field.name]"
+          :step="field.step"
+          class="form__field"
+          :placeholder="field.name" />
+        <label :for="field.name" class="form__label">{{ field.label }}</label>
+      </div>
     </div>
-    <h1>{{ damage }}</h1>
+    <div class="results">
+      <h2>Damage:</h2>
+      <h1>{{ damage }}</h1>
+    </div>
   </div>
 </template>
 
@@ -148,6 +153,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.calculations {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 $primary: #fff;
 $secondary: #ffd700;
 $white: #fff;
