@@ -1,23 +1,22 @@
 <template>
   <div>
-    <form @submit.prevent="handleSubmit">
-      <div v-for="field in fields" :key="field.name" class="input-group">
-        <label :for="field.name">{{ field.label }}</label>
-        <input
-          :id="field.name"
-          :type="field.type"
-          v-model="formData[field.name]"
-          :step="field.step" />
-      </div>
-      <button type="submit">Submit</button>
-    </form>
+    <div v-for="field in fields" :key="field.name" class="form__group field">
+      <input
+        :id="field.name"
+        :type="field.type"
+        v-model="formData[field.name]"
+        :step="field.step"
+        class="form__field"
+        :placeholder="fields.name" />
+      <label :for="field.name" class="form__label">{{ field.label }}</label>
+    </div>
+    <button type="submit">Submit</button>
     <h1>{{ damage }}</h1>
-    <pre>{{ formData }}</pre>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, reactive, ref, watch } from "vue";
 import { calcDamage } from "../calculator/calculator";
 
 interface FormData {
@@ -43,7 +42,7 @@ export default defineComponent({
       charLevel: 0,
       enemyLevel: 0,
       enemyResist: 0,
-      talent: "",
+      talent: "0%",
       critRate: 0,
       critDamage: 0,
       attack: 0,
@@ -53,6 +52,9 @@ export default defineComponent({
       bonusElementDmg: 0,
       totalDeepenEffect: 0,
       resistenceReduction: 0,
+    });
+    watch(formData, async (updatedFormData: FormData) => {
+      handleCalculation(updatedFormData);
     });
     const damage = ref(0);
 
@@ -117,7 +119,7 @@ export default defineComponent({
       },
     ];
 
-    const handleSubmit = () => {
+    const handleCalculation = (formData: FormData) => {
       const dmg = calcDamage(
         formData.charLevel,
         formData.enemyLevel,
@@ -137,19 +139,89 @@ export default defineComponent({
     return {
       formData,
       fields,
-      handleSubmit,
       damage,
     };
   },
 });
 </script>
 
-<style scoped>
-.input-group {
-  margin-bottom: 1rem;
+<style lang="scss" scoped>
+$primary: #fff;
+$secondary: #ffd700;
+$white: #fff;
+$gray: #9b9b9b;
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #242424 inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+.form__group {
+  position: relative;
+  padding: 15px 0 0;
+  margin-top: 10px;
+  width: 50%;
 }
 
-input {
-  margin-left: 0.5rem;
+.form__field {
+  font-family: inherit;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid $gray;
+  outline: 0;
+  font-size: 1.3rem;
+  color: $white;
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+
+  &::placeholder {
+    color: transparent;
+  }
+
+  &:placeholder-shown ~ .form__label {
+    font-size: 1.3rem;
+    cursor: text;
+    top: 20px;
+  }
+}
+
+.form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 1rem;
+  color: $gray;
+}
+
+.form__field:focus {
+  ~ .form__label {
+    position: absolute;
+    top: 0;
+    display: block;
+    transition: 0.2s;
+    font-size: 1rem;
+    color: $primary;
+    font-weight: 700;
+  }
+  padding-bottom: 6px;
+  font-weight: 700;
+  border-width: 1px;
+  border-image: linear-gradient(to right, $primary, $secondary);
+  border-image-slice: 1;
+}
+/* reset input */
+.form__field {
+  &:required,
+  &:invalid {
+    box-shadow: none;
+  }
 }
 </style>
