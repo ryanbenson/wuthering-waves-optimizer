@@ -1,11 +1,24 @@
+/**
+  // 707 * (.2678 * (1+0+0)) * (1+.1) * (1+0) * 0.5136986301369864 * (1-.1 + 0) => 97 => same as in-game
+  // attack * (talent * (1 + bonusTotalSkillDmg + bonusSpecificSkillDmg)) * (1 + bonusElementDmg) * (1 + totalDeepenEffect) * DEFModifier * (1- EnemyResistence + ResistenceReduction)
+ * @param charLevel 
+ * @param enemyLevel 
+ * @param enemyResist 
+ * @param talent 
+ * @param attack 
+ * @param defIgnore 
+ * @param bonusTotalSkillDmg 
+ * @param bonusSpecificSkillDmg 
+ * @param bonusElementDmg 
+ * @param totalDeepenEffect 
+ * @param resistenceReduction 
+ * @returns 
+ */
 export function calcDamage(
   charLevel: number,
   enemyLevel: number,
   enemyResist: number,
   talent: string,
-  // critRate: number,
-  // critDamage: number,
-  // damageBonus: number,
   attack: number,
   defIgnore: number = 0,
   bonusTotalSkillDmg: number = 0,
@@ -13,30 +26,40 @@ export function calcDamage(
   bonusElementDmg: number = 0,
   totalDeepenEffect: number = 0,
   resistenceReduction: number = 0
+  // critRate: number,
+  // critDamage: number,
 ): number {
-  // 707 * (.2678 * (1+0+0)) * (1+.1) * (1+0) * 0.5136986301369864 * (1-.1 + 0) => 97 => same as in-game
-  // attack * (talent * (1 + bonusTotalSkillDmg + bonusSpecificSkillDmg)) * (1 + bonusElementDmg) * (1 + totalDeepenEffect) * DEFModifier * (1- EnemyResistence + ResistenceReduction)
-  const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
   const talentValue = getTalentValue(talent);
-  console.log(defModifier, talentValue);
-  console.log(
-    `(
-      ${attack} *
-      (${talentValue} * (1 + ${bonusTotalSkillDmg} * ${bonusSpecificSkillDmg})) *
-      (1 + ${bonusElementDmg}) *
-      (1 + ${totalDeepenEffect}) *
-        ${defModifier} *
-      (1 - ${enemyResist} + ${resistenceReduction})
-    )
-    `
+  const baseDamageValue = getBaseDamageValue(
+    talentValue,
+    bonusTotalSkillDmg,
+    bonusSpecificSkillDmg
   );
+  const bonusDamageValue = getBonusDamageValue(
+    bonusElementDmg,
+    totalDeepenEffect
+  );
+  const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
+  const resistValue = getEnemyResistValue(enemyResist, resistenceReduction);
+  const baseDamage = getBaseDamage(
+    attack,
+    baseDamageValue,
+    bonusDamageValue,
+    defModifier,
+    resistValue
+  );
+  return baseDamage;
+}
+
+export function getBaseDamage(
+  attack: number,
+  baseDamageValue: number,
+  bonusDamageValue: number,
+  defModifier: number,
+  resistValue: number
+): number {
   return (
-    attack *
-    (talentValue * (1 + bonusTotalSkillDmg * bonusSpecificSkillDmg)) *
-    (1 + bonusElementDmg) *
-    (1 + totalDeepenEffect) *
-    defModifier *
-    (1 - enemyResist + resistenceReduction)
+    attack * baseDamageValue * bonusDamageValue * defModifier * resistValue
   );
 }
 
@@ -59,4 +82,26 @@ export function getDefenseModifier(
 
 export function getEnemyDefense(enemyLevel: number): number {
   return 8 * enemyLevel + 792;
+}
+
+export function getBaseDamageValue(
+  talentValue: number,
+  bonusTotalSkillDmg: number,
+  bonusSpecificSkillDmg: number
+): number {
+  return talentValue * (1 + bonusTotalSkillDmg * bonusSpecificSkillDmg);
+}
+
+export function getBonusDamageValue(
+  bonusElementDmg: number,
+  totalDeepenEffect: number
+): number {
+  return (1 + bonusElementDmg) * (1 + totalDeepenEffect);
+}
+
+export function getEnemyResistValue(
+  enemyResist: number,
+  resistenceReduction: number
+): number {
+  return 1 - enemyResist + resistenceReduction;
 }
