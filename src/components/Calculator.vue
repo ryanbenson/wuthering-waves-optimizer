@@ -7,7 +7,7 @@
         v-model="formData[field.name]"
         :step="field.step"
         class="form__field"
-        :placeholder="fields.name" />
+        :placeholder="field.name" />
       <label :for="field.name" class="form__label">{{ field.label }}</label>
     </div>
     <h1>{{ damage }}</h1>
@@ -19,6 +19,7 @@ import { defineComponent, reactive, ref, watch } from "vue";
 import { calcDamage } from "../calculator/calculator";
 
 interface FormData {
+  [key: string]: number | string; // index signature
   charLevel: number;
   enemyLevel: number;
   enemyResist: number;
@@ -35,7 +36,7 @@ interface FormData {
 }
 
 export default defineComponent({
-  name: "CharacterStatsForm",
+  name: "Calculator",
   setup() {
     const formData = reactive<FormData>({
       charLevel: 0,
@@ -52,9 +53,11 @@ export default defineComponent({
       totalDeepenEffect: 0,
       resistenceReduction: 0,
     });
+
     watch(formData, async (updatedFormData: FormData) => {
       handleCalculation(updatedFormData);
     });
+
     const damage = ref(0);
 
     const fields = [
