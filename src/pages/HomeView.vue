@@ -41,7 +41,7 @@
         <a
           href="https://github.com/ryanbenson/wuthering-waves-optimizer/issues"
           target="_blank"
-          >a Github issue!</a
+          >submit a Github issue!</a
         >
       </p>
     </div>
