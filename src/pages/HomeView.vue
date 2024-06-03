@@ -38,14 +38,6 @@
         </li>
         <li>More...</li>
       </ul>
-      <p>
-        If you have any suggestions or see issues,
-        <a
-          href="https://github.com/ryanbenson/wuthering-waves-optimizer/issues"
-          target="_blank"
-          >submit a Github issue!</a
-        >
-      </p>
     </div>
   </div>
 </template>
