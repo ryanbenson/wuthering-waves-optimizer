@@ -36,7 +36,7 @@ const weaponData: WeaponData = {
   "20": {
     attack: 57,
     modifier: "ATK",
-    modifierValue: 0.057999999999999996,
+    modifierValue: 0.058,
   },
   "40": {
     attack: 108,
@@ -46,7 +46,7 @@ const weaponData: WeaponData = {
   "50": {
     attack: 142,
     modifier: "ATK",
-    modifierValue: 0.09699999999999999,
+    modifierValue: 0.097,
   },
   "60": {
     attack: 175,
@@ -61,7 +61,7 @@ const weaponData: WeaponData = {
   "20+": {
     attack: 71,
     modifier: "ATK",
-    modifierValue: 0.057999999999999996,
+    modifierValue: 0.058,
   },
   "40+": {
     attack: 123,
@@ -71,7 +71,7 @@ const weaponData: WeaponData = {
   "50+": {
     attack: 156,
     modifier: "ATK",
-    modifierValue: 0.09699999999999999,
+    modifierValue: 0.097,
   },
   "60+": {
     attack: 190,

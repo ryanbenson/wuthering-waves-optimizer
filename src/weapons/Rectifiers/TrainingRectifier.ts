@@ -18,65 +18,66 @@ interface WeaponData {
 }
 
 const weaponInfo: WeaponInfo = {
-  "name": "Training Rectifier",
-  "description": "This rectifier is designed specifically for training and teaching, offering only the basic features.",
-  "type": "Rectifier",
-  "rarity": 1,
-  "passiveName": "Persevere",
-  "passiveValue": "Increases ATK by 4%/5%/6%/7%/8%."
+  name: "Training Rectifier",
+  description:
+    "This rectifier is designed specifically for training and teaching, offering only the basic features.",
+  type: "Rectifier",
+  rarity: 1,
+  passiveName: "Persevere",
+  passiveValue: "Increases ATK by 4%/5%/6%/7%/8%.",
 };
 
 const weaponData: WeaponData = {
   "1": {
-    "attack": 20,
-    "modifier": "ATK",
-    "modifierValue": 0.025
+    attack: 20,
+    modifier: "ATK",
+    modifierValue: 0.025,
   },
   "20": {
-    "attack": 52,
-    "modifier": "ATK",
-    "modifierValue": 0.045
+    attack: 52,
+    modifier: "ATK",
+    modifierValue: 0.045,
   },
   "40": {
-    "attack": 99,
-    "modifier": "ATK",
-    "modifierValue": 0.065
+    attack: 99,
+    modifier: "ATK",
+    modifierValue: 0.065,
   },
   "50": {
-    "attack": 129,
-    "modifier": "ATK",
-    "modifierValue": 0.075
+    attack: 129,
+    modifier: "ATK",
+    modifierValue: 0.075,
   },
   "60": {
-    "attack": 159,
-    "modifier": "ATK",
-    "modifierValue": 0.084
+    attack: 159,
+    modifier: "ATK",
+    modifierValue: 0.084,
   },
   "70": {
-    "attack": 189,
-    "modifier": "ATK",
-    "modifierValue": 0.094
+    attack: 189,
+    modifier: "ATK",
+    modifierValue: 0.094,
   },
   "20+": {
-    "attack": 65,
-    "modifier": "ATK",
-    "modifierValue": 0.045
+    attack: 65,
+    modifier: "ATK",
+    modifierValue: 0.045,
   },
   "40+": {
-    "attack": 112,
-    "modifier": "ATK",
-    "modifierValue": 0.065
+    attack: 112,
+    modifier: "ATK",
+    modifierValue: 0.065,
   },
   "50+": {
-    "attack": 142,
-    "modifier": "ATK",
-    "modifierValue": 0.075
+    attack: 142,
+    modifier: "ATK",
+    modifierValue: 0.075,
   },
   "60+": {
-    "attack": 172,
-    "modifier": "ATK",
-    "modifierValue": 0.084
-  }
+    attack: 172,
+    modifier: "ATK",
+    modifierValue: 0.084,
+  },
 };
 
 export function getWeaponInfo(): WeaponInfo {
