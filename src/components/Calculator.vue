@@ -1,6 +1,14 @@
 <template>
   <div class="calculations">
     <div class="data-input">
+      <div class="form__group field">
+        <select name="character" v-model="character" class="form__field">
+          <option v-for="char in charactersList" :key="char" :value="char">
+            {{ char }}
+          </option>
+        </select>
+        <label for="character" class="form__label">Character</label>
+      </div>
       <div v-for="field in fields" :key="field.name" class="form__group field">
         <input
           :id="field.name"
@@ -22,6 +30,7 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, watch } from "vue";
 import { calcDamage } from "../calculator/calculator";
+import { getCharactersAvailable } from "../characters/characters";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -32,6 +41,8 @@ interface FormData {
   critRate: number;
   critDamage: number;
   attack: number;
+  hp: number;
+  defense: number;
   defIgnore: number;
   bonusTotalSkillDmg: number;
   bonusSpecificSkillDmg: number;
@@ -51,6 +62,8 @@ export default defineComponent({
       critRate: 0,
       critDamage: 0,
       attack: 0,
+      hp: 0,
+      defense: 0,
       defIgnore: 0,
       bonusTotalSkillDmg: 0,
       bonusSpecificSkillDmg: 0,
@@ -64,6 +77,9 @@ export default defineComponent({
     });
 
     const damage = ref(0);
+    const charactersList = ref([]);
+    const character = ref("");
+    charactersList.value = getCharactersAvailable();
 
     const fields = [
       {
@@ -88,6 +104,8 @@ export default defineComponent({
         step: "0.01",
       },
       { name: "attack", label: "Attack", type: "number", step: "1" },
+      { name: "hp", label: "HP", type: "number", step: "1" },
+      { name: "defense", label: "Defense", type: "number", step: "1" },
       {
         name: "defIgnore",
         label: "Defense Ignore",
@@ -127,6 +145,7 @@ export default defineComponent({
     ];
 
     const handleCalculation = (formData: FormData) => {
+      // to do: use HP and DEF
       const dmg = calcDamage(
         formData.charLevel,
         formData.enemyLevel,
@@ -147,6 +166,8 @@ export default defineComponent({
       formData,
       fields,
       damage,
+      character,
+      charactersList,
     };
   },
 });
