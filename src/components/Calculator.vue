@@ -1,23 +1,46 @@
 <template>
   <div class="calculations">
-    <div class="data-input">
-      <div class="form__group field">
-        <select name="character" v-model="character" class="form__field">
-          <option v-for="char in charactersList" :key="char" :value="char">
-            {{ char }}
-          </option>
-        </select>
-        <label for="character" class="form__label">Character</label>
+    <div class="calcations__nav">
+      <ul>
+        <li @click="changeScreen('character')">
+          <img src="/images/T_IconAchv_002.png" class="icon" />
+        </li>
+        <li @click="changeScreen('weapon')">
+          <img src="/images/T_IconAchv_014.png" class="icon" />
+        </li>
+      </ul>
+    </div>
+    <div class="calculations__screens">
+      <div class="screen--character" v-show="curScreen === 'character'">
+        <div class="data-input">
+          <div class="form__group field">
+            <select name="character" v-model="character" class="form__field">
+              <option v-for="char in charactersList" :key="char" :value="char">
+                {{ char }}
+              </option>
+            </select>
+            <label for="character" class="form__label">Character</label>
+          </div>
+          <div
+            v-for="field in fields"
+            :key="field.name"
+            class="form__group field">
+            <input
+              :id="field.name"
+              :type="field.type"
+              v-model="formData[field.name]"
+              :step="field.step"
+              class="form__field"
+              :placeholder="field.name" />
+            <label :for="field.name" class="form__label">{{
+              field.label
+            }}</label>
+          </div>
+        </div>
       </div>
-      <div v-for="field in fields" :key="field.name" class="form__group field">
-        <input
-          :id="field.name"
-          :type="field.type"
-          v-model="formData[field.name]"
-          :step="field.step"
-          class="form__field"
-          :placeholder="field.name" />
-        <label :for="field.name" class="form__label">{{ field.label }}</label>
+
+      <div class="screen--character" v-show="curScreen === 'weapon'">
+        <div class="data-input">choose your weapon</div>
       </div>
     </div>
     <div class="results">
@@ -76,6 +99,7 @@ export default defineComponent({
       handleCalculation(updatedFormData);
     });
 
+    const curScreen = ref("character");
     const damage = ref(0);
     const charactersList = ref([]);
     const character = ref("");
@@ -162,12 +186,18 @@ export default defineComponent({
       damage.value = dmg;
     };
 
+    const changeScreen = (screen: string) => {
+      curScreen.value = screen;
+    };
+
     return {
       formData,
       fields,
       damage,
       character,
       charactersList,
+      curScreen,
+      changeScreen,
     };
   },
 });
@@ -176,7 +206,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 .calculations {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 80px 1fr 1fr;
+}
+
+.calculations__screens {
+  padding: 2rem;
 }
 
 $primary: #fff;
@@ -255,6 +289,53 @@ select:-webkit-autofill:focus {
   &:required,
   &:invalid {
     box-shadow: none;
+  }
+}
+
+$sidebar-background-color: #121212;
+$active-sidebar-link-color: #22252e;
+$hover-sidebar-link-color: $active-sidebar-link-color;
+$active-link-color: #98d7ec;
+$tooltip-background-color: $sidebar-background-color;
+.calcations__nav {
+  display: inline-block;
+  min-height: 100vh;
+  background-color: #000;
+  float: left;
+  flex-basis: 80px;
+  width: 80px;
+
+  ul {
+    text-align: center;
+    color: white;
+    padding: 0;
+    margin: 0;
+
+    li {
+      height: 64px;
+      max-height: 64px;
+      cursor: pointer;
+      transition: all ease-out 120ms;
+      list-style-type: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem 0;
+
+      .icon {
+        width: 48px;
+        height: 48px;
+      }
+
+      &:hover,
+      &.active {
+        background-color: $active-sidebar-link-color;
+
+        i {
+          color: $active-link-color;
+        }
+      }
+    }
   }
 }
 </style>

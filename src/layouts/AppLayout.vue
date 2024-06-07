@@ -42,9 +42,6 @@ $tooltip-background-color: $sidebar-background-color;
   display: grid;
   grid-template-columns: 64px 1fr;
 }
-.content {
-  padding: 1rem;
-}
 .sidebar-navigation {
   display: inline-block;
   min-height: 100vh;
