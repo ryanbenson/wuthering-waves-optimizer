@@ -106,11 +106,14 @@ export function getEnemyResistValue(
   return 1 - enemyResist + resistenceReduction;
 }
 
+interface InstanceDamage {
+  [instanceDamage: string]: number;
+}
 export function calcDamage(
   charLevel: number,
   enemyLevel: number,
   enemyResist: number,
-  talent: number,
+  talent: string,
   attack: number,
   defIgnore: number = 0,
   bonusTotalSkillDmg: number = 0,
@@ -126,7 +129,7 @@ export function calcDamage(
   let totalTalentValue = 0;
 
   // Calculate individual instance damages
-  let instanceDamage = {};
+  let instanceDamage: InstanceDamage = {};
   talents.forEach((t) => {
     totalTalentValue += t;
     let percentageString = (t * 100).toFixed(2).toString() + "%";
@@ -161,8 +164,6 @@ export function calcDamage(
     totalDeepenEffect,
     resistenceReduction
   );
-  console.log(finalDamage);
-
   // Build the detailed damage calculation string
   let detailedCalculation = buildDetailedCalculationString(
     talent,
@@ -177,23 +178,20 @@ export function calcDamage(
   };
 }
 
-// function calcDamage(base, attack, defShred) {
-//   return base * attack * defShred * 0.5;
-// }
-
 // Helper function to parse the talent string
-function parseTalentString(talent) {
-  let talents = [];
+function parseTalentString(talent: string) {
+  let talents: any[] = [];
   let talentParts = talent.split("+").map((part) => part.trim());
 
-  talentParts.forEach((part) => {
+  talentParts.forEach((part: string) => {
     if (part.includes("*")) {
+      //@ts-ignore: this is fine, it's just not understanding what's going on
       let [percentage, times] = part.split("*").map((str) => str.trim());
-      percentage = parseFloat(percentage.replace("%", "")) / 100;
-      times = parseInt(times);
+      let percentVal: number = parseFloat(percentage.replace("%", "")) / 100;
+      let timesNum: number = parseInt(times);
 
-      for (let i = 0; i < times; i++) {
-        talents.push(percentage);
+      for (let i = 0; i < timesNum; i++) {
+        talents.push(percentVal);
       }
     } else {
       let percentage = parseFloat(part.replace("%", "")) / 100;
