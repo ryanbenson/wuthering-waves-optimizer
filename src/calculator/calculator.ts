@@ -14,11 +14,11 @@
  * @param resistenceReduction 
  * @returns 
  */
-export function calcDamage(
+export function calcHitDamage(
   charLevel: number,
   enemyLevel: number,
   enemyResist: number,
-  talent: string,
+  talent: number,
   attack: number,
   defIgnore: number = 0,
   bonusTotalSkillDmg: number = 0,
@@ -29,7 +29,7 @@ export function calcDamage(
   // critRate: number,
   // critDamage: number,
 ): number {
-  const talentValue = getTalentValue(talent);
+  const talentValue = talent;
   const baseDamageValue = getBaseDamageValue(
     talentValue,
     bonusTotalSkillDmg,
@@ -104,4 +104,126 @@ export function getEnemyResistValue(
   resistenceReduction: number
 ): number {
   return 1 - enemyResist + resistenceReduction;
+}
+
+export function calcDamage(
+  charLevel: number,
+  enemyLevel: number,
+  enemyResist: number,
+  talent: number,
+  attack: number,
+  defIgnore: number = 0,
+  bonusTotalSkillDmg: number = 0,
+  bonusSpecificSkillDmg: number = 0,
+  bonusElementDmg: number = 0,
+  totalDeepenEffect: number = 0,
+  resistenceReduction: number = 0
+) {
+  // Parse the talent string to get individual percentage values
+  let talents = parseTalentString(talent);
+
+  // Calculate the base damage for each talent value
+  let totalTalentValue = 0;
+
+  // Calculate individual instance damages
+  let instanceDamage = {};
+  talents.forEach((t) => {
+    totalTalentValue += t;
+    let percentageString = (t * 100).toFixed(2).toString() + "%";
+    if (!instanceDamage[percentageString]) {
+      instanceDamage[percentageString] = calcHitDamage(
+        charLevel,
+        enemyLevel,
+        enemyResist,
+        t,
+        attack,
+        defIgnore,
+        bonusTotalSkillDmg,
+        bonusSpecificSkillDmg,
+        bonusElementDmg,
+        totalDeepenEffect,
+        resistenceReduction
+      );
+    }
+  });
+
+  // Apply defense shred and any other multipliers
+  let finalDamage = calcHitDamage(
+    charLevel,
+    enemyLevel,
+    enemyResist,
+    totalTalentValue,
+    attack,
+    defIgnore,
+    bonusTotalSkillDmg,
+    bonusSpecificSkillDmg,
+    bonusElementDmg,
+    totalDeepenEffect,
+    resistenceReduction
+  );
+  console.log(finalDamage);
+
+  // Build the detailed damage calculation string
+  let detailedCalculation = buildDetailedCalculationString(
+    talent,
+    instanceDamage
+  );
+
+  // Return detailed damage information
+  return {
+    instanceDamage,
+    totalDamage: finalDamage,
+    detailedCalculation,
+  };
+}
+
+// function calcDamage(base, attack, defShred) {
+//   return base * attack * defShred * 0.5;
+// }
+
+// Helper function to parse the talent string
+function parseTalentString(talent) {
+  let talents = [];
+  let talentParts = talent.split("+").map((part) => part.trim());
+
+  talentParts.forEach((part) => {
+    if (part.includes("*")) {
+      let [percentage, times] = part.split("*").map((str) => str.trim());
+      percentage = parseFloat(percentage.replace("%", "")) / 100;
+      times = parseInt(times);
+
+      for (let i = 0; i < times; i++) {
+        talents.push(percentage);
+      }
+    } else {
+      let percentage = parseFloat(part.replace("%", "")) / 100;
+      talents.push(percentage);
+    }
+  });
+  return talents;
+}
+
+// Helper function to build the detailed calculation string
+function buildDetailedCalculationString(
+  talent: string,
+  instanceDamage: any
+): string {
+  let talentParts = talent.split("+").map((part) => part.trim());
+
+  let detailedParts = talentParts.map((part) => {
+    if (part.includes("*")) {
+      let [percentage, times] = part.split("*").map((str) => str.trim());
+      let percentageValue = parseFloat(percentage.replace("%", ""));
+      let percentageString = percentageValue.toFixed(2) + "%";
+      let damage = instanceDamage[percentageString].toFixed(2);
+      return `<strong>${damage}</strong>*${times}`;
+    } else {
+      let percentageValue = parseFloat(part.replace("%", ""));
+      let percentageString = percentageValue.toFixed(2) + "%";
+      let damage = instanceDamage[percentageString].toFixed(2);
+      return `<strong>${damage}</strong>`;
+    }
+  });
+
+  return detailedParts.join(" + ");
 }
