@@ -144,7 +144,7 @@
 import { defineComponent, reactive, ref, watch } from "vue";
 import { calcDamage } from "../calculator/calculator";
 import { getCharactersAvailable } from "../characters/characters";
-import { getWeaponsByType } from "../weapons/weapons";
+import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -207,20 +207,27 @@ export default defineComponent({
       handleCalculation(updatedFormData);
     });
 
-    const weaponType = ref("sword");
+    const chosenWeapon = reactive({});
+
+    const weaponType = ref("Swords");
     const curScreen = ref("character");
     const damage = ref(0);
     const charactersList = ref([]);
     const character = ref("");
     const weaponsList = ref([]);
     const weapon = ref([]);
-    const weaponLevel = ref("");
+    const weaponLevel = ref("1");
     const weaponLevelOptions = ref(["1", "40", "50", "60", "70", "80", "90"]);
     charactersList.value = getCharactersAvailable();
     weaponsList.value = getWeaponsByType(weaponType.value);
 
-    watch(weapon, (weaponName: string) => {
-      console.log("chose weapon", weaponName);
+    watch(weapon, async (weaponName: string) => {
+      const weaponChosen = await getWeaponByName(weaponType.value, weaponName);
+      chosenWeapon.value = weaponChosen;
+      console.log(chosenWeapon.value.getWeaponDataByLevel(weaponLevel.value));
+    });
+    watch(weaponLevel, async () => {
+      console.log(chosenWeapon.value.getWeaponDataByLevel(weaponLevel.value));
     });
 
     const fields = [

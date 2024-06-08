@@ -117,5 +117,8 @@ export function getWeapon() {
   return {
     info: weaponInfo,
     data: weaponData,
+    getWeaponInfo,
+    getWeaponData,
+    getWeaponDataByLevel,
   };
 }
