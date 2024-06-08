@@ -8,6 +8,8 @@
         <li @click="changeScreen('weapon')">
           <img src="/images/T_IconAchv_014.png" class="icon" />
         </li>
+        <li @click="changeScreen('talents')">T</li>
+        <li @click="changeScreen('constellations')">CO</li>
       </ul>
     </div>
     <div class="calculations__screens">
@@ -40,7 +42,95 @@
       </div>
 
       <div class="screen--character" v-show="curScreen === 'weapon'">
-        <div class="data-input">choose your weapon</div>
+        <div class="data-input">
+          <div class="form__group field">
+            <select name="character" v-model="weapon" class="form__field">
+              <option v-for="weap in weaponsList" :key="weap" :value="weap">
+                {{ weap }}
+              </option>
+            </select>
+            <label for="character" class="form__label">Weapon</label>
+          </div>
+          <div class="form__group field">
+            <select name="character" v-model="weaponLevel" class="form__field">
+              <option v-for="lvl in weaponLevelOptions" :key="lvl" :value="lvl">
+                {{ lvl }}
+              </option>
+            </select>
+            <label for="character" class="form__label">Weapon Level</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen--character" v-show="curScreen === 'talents'">
+        <div class="data-input">
+          <div class="form__group field">
+            <input
+              v-model="talentData.basic"
+              name="talentBasic"
+              type="number"
+              min="1"
+              max="10"
+              steps="1"
+              class="form__field" />
+            <label for="talentBasic" class="form__label">Basic</label>
+          </div>
+          <div class="form__group field">
+            <input
+              v-model="talentData.skill"
+              name="talentSkill"
+              type="number"
+              min="1"
+              max="10"
+              steps="1"
+              class="form__field" />
+            <label for="talentSkill" class="form__label">Skill</label>
+          </div>
+          <div class="form__group field">
+            <input
+              v-model="talentData.forte"
+              name="talentForte"
+              type="number"
+              min="1"
+              max="10"
+              steps="1"
+              class="form__field" />
+            <label for="talentForte" class="form__label">Forte</label>
+          </div>
+          <div class="form__group field">
+            <input
+              v-model="talentData.liberation"
+              name="talentLiberation"
+              type="number"
+              min="1"
+              max="10"
+              steps="1"
+              class="form__field" />
+            <label for="talentLiberation" class="form__label">Liberation</label>
+          </div>
+          <div class="form__group field">
+            <input
+              v-model="talentData.intro"
+              name="talentIntro"
+              type="number"
+              min="1"
+              max="10"
+              steps="1"
+              class="form__field" />
+            <label for="talentIntro" class="form__label">Intro</label>
+          </div>
+          <div class="form__group field">
+            <input
+              v-model="talentData.outro"
+              name="talentOutro"
+              type="number"
+              min="1"
+              max="10"
+              steps="1"
+              class="form__field" />
+            <label for="talentOutro" class="form__label">Outro</label>
+          </div>
+        </div>
       </div>
     </div>
     <div class="results">
@@ -54,6 +144,7 @@
 import { defineComponent, reactive, ref, watch } from "vue";
 import { calcDamage } from "../calculator/calculator";
 import { getCharactersAvailable } from "../characters/characters";
+import { getWeaponsByType } from "../weapons/weapons";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -72,6 +163,15 @@ interface FormData {
   bonusElementDmg: number;
   totalDeepenEffect: number;
   resistenceReduction: number;
+}
+
+interface TalentData {
+  basic: number;
+  skill: number;
+  forte: number;
+  liberation: number;
+  intro: number;
+  outro: number;
 }
 
 export default defineComponent({
@@ -94,16 +194,34 @@ export default defineComponent({
       totalDeepenEffect: 0,
       resistenceReduction: 0,
     });
+    const talentData = reactive<TalentData>({
+      basic: 1,
+      skill: 1,
+      forte: 1,
+      liberation: 1,
+      intro: 1,
+      outro: 1,
+    });
 
     watch(formData, async (updatedFormData: FormData) => {
       handleCalculation(updatedFormData);
     });
 
+    const weaponType = ref("sword");
     const curScreen = ref("character");
     const damage = ref(0);
     const charactersList = ref([]);
     const character = ref("");
+    const weaponsList = ref([]);
+    const weapon = ref([]);
+    const weaponLevel = ref("");
+    const weaponLevelOptions = ref(["1", "40", "50", "60", "70", "80", "90"]);
     charactersList.value = getCharactersAvailable();
+    weaponsList.value = getWeaponsByType(weaponType.value);
+
+    watch(weapon, (weaponName: string) => {
+      console.log("chose weapon", weaponName);
+    });
 
     const fields = [
       {
@@ -192,12 +310,17 @@ export default defineComponent({
 
     return {
       formData,
+      talentData,
       fields,
       damage,
       character,
       charactersList,
       curScreen,
       changeScreen,
+      weapon,
+      weaponsList,
+      weaponLevel,
+      weaponLevelOptions,
     };
   },
 });
