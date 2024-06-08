@@ -9,6 +9,7 @@
           <img src="/images/T_IconAchv_014.png" class="icon" />
         </li>
         <li @click="changeScreen('talents')">T</li>
+        <li @click="changeScreen('echoes')">E</li>
         <li @click="changeScreen('constellations')">CO</li>
       </ul>
     </div>
@@ -148,6 +149,10 @@
           </div>
         </div>
       </div>
+
+      <div class="screen--character" v-show="curScreen === 'echoes'">
+        <CalculatorEchoes @update-stats="updateStatsEchoes"></CalculatorEchoes>
+      </div>
     </div>
     <div class="results">
       <h2>Damage:</h2>
@@ -168,6 +173,7 @@ import {
   getCharByName,
 } from "../characters/characters";
 import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
+import CalculatorEchoes from "./CalculatorEchoes.vue";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -195,6 +201,9 @@ interface TalentData {
 
 export default defineComponent({
   name: "Calculator",
+  components: {
+    CalculatorEchoes,
+  },
   setup() {
     const formData = reactive<FormData>({
       enemyLevel: 0,
@@ -367,6 +376,10 @@ export default defineComponent({
       damage.value = dmg;
     };
 
+    const updateStatsEchoes = (echoStats) => {
+      console.log(echoStats);
+    };
+
     const changeScreen = (screen: string) => {
       curScreen.value = screen;
     };
@@ -389,6 +402,7 @@ export default defineComponent({
       totalAtk,
       totalHp,
       totalDef,
+      updateStatsEchoes,
     };
   },
 });
