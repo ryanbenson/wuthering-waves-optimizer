@@ -23,6 +23,22 @@
             </select>
             <label for="character" class="form__label">Character</label>
           </div>
+          <div class="form__group field">
+            <select
+              name="characterLevel"
+              v-model="characterLevel"
+              class="form__field">
+              <option
+                v-for="lvl in characterLevelOptions"
+                :key="lvl"
+                :value="lvl">
+                {{ lvl }}
+              </option>
+            </select>
+            <label for="characterLevel" class="form__label"
+              >Character Level</label
+            >
+          </div>
           <div
             v-for="field in fields"
             :key="field.name"
@@ -136,6 +152,10 @@
     <div class="results">
       <h2>Damage:</h2>
       <h1>{{ damage }}</h1>
+      <h2>Stats:</h2>
+      <div>Attack: {{ totalAtk }}</div>
+      <div>HP: {{ totalHp }}</div>
+      <div>Defense: {{ totalDef }}</div>
     </div>
   </div>
 </template>
@@ -143,20 +163,19 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, watch } from "vue";
 import { calcDamage } from "../calculator/calculator";
-import { getCharactersAvailable } from "../characters/characters";
+import {
+  getCharactersAvailable,
+  getCharByName,
+} from "../characters/characters";
 import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
 
 interface FormData {
   [key: string]: number | string; // index signature
-  charLevel: number;
   enemyLevel: number;
   enemyResist: number;
   talent: string;
   critRate: number;
   critDamage: number;
-  attack: number;
-  hp: number;
-  defense: number;
   defIgnore: number;
   bonusTotalSkillDmg: number;
   bonusSpecificSkillDmg: number;
@@ -178,15 +197,11 @@ export default defineComponent({
   name: "Calculator",
   setup() {
     const formData = reactive<FormData>({
-      charLevel: 0,
       enemyLevel: 0,
       enemyResist: 0,
       talent: "0%",
       critRate: 0,
       critDamage: 0,
-      attack: 0,
-      hp: 0,
-      defense: 0,
       defIgnore: 0,
       bonusTotalSkillDmg: 0,
       bonusSpecificSkillDmg: 0,
@@ -208,16 +223,30 @@ export default defineComponent({
     });
 
     const chosenWeapon = reactive({});
-
+    const chosenChar = reactive({});
+    const characterLevel = ref("1");
     const weaponType = ref("Swords");
     const curScreen = ref("character");
     const damage = ref(0);
     const charactersList = ref([]);
     const character = ref("");
+    const characterLevelOptions = ref([
+      "1",
+      "40",
+      "50",
+      "60",
+      "70",
+      "80",
+      "90",
+    ]);
     const weaponsList = ref([]);
     const weapon = ref([]);
     const weaponLevel = ref("1");
     const weaponLevelOptions = ref(["1", "40", "50", "60", "70", "80", "90"]);
+    const totalAtk = ref(0);
+    const totalHp = ref(0);
+    const totalDef = ref(0);
+
     charactersList.value = getCharactersAvailable();
     weaponsList.value = getWeaponsByType(weaponType.value);
 
@@ -225,18 +254,48 @@ export default defineComponent({
       const weaponChosen = await getWeaponByName(weaponType.value, weaponName);
       chosenWeapon.value = weaponChosen;
       console.log(chosenWeapon.value.getWeaponDataByLevel(weaponLevel.value));
+      calcCharStats();
     });
     watch(weaponLevel, async () => {
       console.log(chosenWeapon.value.getWeaponDataByLevel(weaponLevel.value));
+      calcCharStats();
+    });
+    watch(character, async (charName) => {
+      const chosen = await getCharByName(charName);
+      chosenChar.value = chosen;
+      calcCharStats();
+    });
+    watch(characterLevel, () => {
+      calcCharStats();
     });
 
+    const calcCharStats = () => {
+      let charHp = 0;
+      let charAtk = 0;
+      let charDef = 0;
+      let weaponAtk = 0;
+      let weaponModifer = null;
+      let weaponModifierValue = 0;
+      if (chosenChar.value) {
+        const { hp, attack, defense } =
+          chosenChar.value.getCharacterStatsByLevel(characterLevel.value);
+        charHp = hp;
+        charAtk = attack;
+        charDef = defense;
+      }
+      if (chosenWeapon.value) {
+        const { attack, modifier, modiferValue } =
+          chosenWeapon.value.getWeaponDataByLevel(weaponLevel.value);
+        weaponAtk = attack;
+        weaponModifer = modifier;
+        weaponModifierValue = modiferValue;
+      }
+      totalAtk.value = charAtk + weaponAtk;
+      totalHp.value = charHp;
+      totalDef.value = charDef;
+    };
+
     const fields = [
-      {
-        name: "charLevel",
-        label: "Character Level",
-        type: "number",
-        step: "1",
-      },
       { name: "enemyLevel", label: "Enemy Level", type: "number", step: "1" },
       {
         name: "enemyResist",
@@ -252,9 +311,6 @@ export default defineComponent({
         type: "number",
         step: "0.01",
       },
-      { name: "attack", label: "Attack", type: "number", step: "1" },
-      { name: "hp", label: "HP", type: "number", step: "1" },
-      { name: "defense", label: "Defense", type: "number", step: "1" },
       {
         name: "defIgnore",
         label: "Defense Ignore",
@@ -296,11 +352,11 @@ export default defineComponent({
     const handleCalculation = (formData: FormData) => {
       // to do: use HP and DEF
       const dmg = calcDamage(
-        formData.charLevel,
+        characterLevel.value,
         formData.enemyLevel,
         formData.enemyResist,
         formData.talent,
-        formData.attack,
+        totalAtk.value,
         formData.defIgnore,
         formData.bonusTotalSkillDmg,
         formData.bonusSpecificSkillDmg,
@@ -321,6 +377,8 @@ export default defineComponent({
       fields,
       damage,
       character,
+      characterLevel,
+      characterLevelOptions,
       charactersList,
       curScreen,
       changeScreen,
@@ -328,6 +386,9 @@ export default defineComponent({
       weaponsList,
       weaponLevel,
       weaponLevelOptions,
+      totalAtk,
+      totalHp,
+      totalDef,
     };
   },
 });
