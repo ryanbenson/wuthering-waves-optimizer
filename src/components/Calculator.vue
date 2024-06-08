@@ -136,17 +136,6 @@
               class="form__field" />
             <label for="talentIntro" class="form__label">Intro</label>
           </div>
-          <div class="form__group field">
-            <input
-              v-model="talentData.outro"
-              name="talentOutro"
-              type="number"
-              min="1"
-              max="10"
-              steps="1"
-              class="form__field" />
-            <label for="talentOutro" class="form__label">Outro</label>
-          </div>
         </div>
       </div>
 
@@ -155,12 +144,17 @@
       </div>
     </div>
     <div class="results">
-      <h2>Damage:</h2>
-      <h1>{{ damage }}</h1>
       <h2>Stats:</h2>
       <div>Attack: {{ totalAtk }}</div>
       <div>HP: {{ totalHp }}</div>
       <div>Defense: {{ totalDef }}</div>
+      <hr />
+      <div>Damage:</div>
+      <div v-for="damageInstance in allDamages" :key="damageInstance.key">
+        <span>{{ damageInstance.label }}: </span>
+        <span v-html="damageInstance.damage.detailedCalculation"></span> =
+        <span>{{ damageInstance.damage.totalDamage }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -196,7 +190,6 @@ interface TalentData {
   forte: number;
   liberation: number;
   intro: number;
-  outro: number;
 }
 
 export default defineComponent({
@@ -224,13 +217,13 @@ export default defineComponent({
       forte: 1,
       liberation: 1,
       intro: 1,
-      outro: 1,
     });
 
     watch(formData, async (updatedFormData: FormData) => {
       handleCalculation(updatedFormData);
     });
 
+    const allDamages = ref([]);
     const chosenWeapon = reactive({});
     const chosenChar = reactive({});
     const echoStats = reactive({});
@@ -242,11 +235,18 @@ export default defineComponent({
     const character = ref("");
     const characterLevelOptions = ref([
       "1",
+      "20",
+      "20+",
       "40",
+      "40+",
       "50",
+      "50+",
       "60",
+      "60+",
       "70",
+      "70+",
       "80",
+      "80+",
       "90",
     ]);
     const weaponsList = ref([]);
@@ -276,6 +276,9 @@ export default defineComponent({
       calcCharStats();
     });
     watch(characterLevel, () => {
+      calcCharStats();
+    });
+    watch(talentData, () => {
       calcCharStats();
     });
 
@@ -320,6 +323,40 @@ export default defineComponent({
         charAtk + weaponAtk * (1 + attackPercent / 100) + attackFlat;
       totalHp.value = charHp * (1 + hpPercent / 100) + hpFlat;
       totalDef.value = charDef * (1 + defPercent / 100) + defFlat;
+
+      calcAllDamages();
+    };
+
+    const calcAllDamages = () => {
+      const basicAttacks = chosenChar.value.basicAttacks?.attacks ?? [];
+      const basicAttacksTalent = talentData.basic;
+      const basicAttacksByTalent = [];
+      basicAttacks.forEach((attack) => {
+        const talent = attack.talents[basicAttacksTalent];
+        const damage = calcDamage(
+          characterLevel.value,
+          formData.enemyLevel,
+          formData.enemyResist,
+          talent,
+          totalAtk.value,
+          formData.defIgnore,
+          formData.bonusTotalSkillDmg,
+          formData.bonusSpecificSkillDmg,
+          formData.bonusElementDmg,
+          formData.totalDeepenEffect,
+          formData.resistenceReduction
+        );
+        const attackToUse = {
+          key: attack.key,
+          label: attack.label,
+          talent,
+          damage,
+        };
+        basicAttacksByTalent.push(attackToUse);
+      });
+      allDamages.value = basicAttacksByTalent;
+      console.log(basicAttacksByTalent);
+      // to do: add the rest
     };
 
     const fields = [
@@ -422,6 +459,7 @@ export default defineComponent({
       totalHp,
       totalDef,
       updateStatsEchoes,
+      allDamages,
     };
   },
 });
