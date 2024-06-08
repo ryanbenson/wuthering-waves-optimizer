@@ -43,7 +43,7 @@
       </div>
     </div>
     <div class="total-cost">Total Cost: {{ totalCost }} / 12</div>
-    <div class="total-stats">
+    <div v-if="false" class="total-stats">
       <h3>Total Stats:</h3>
       <div v-for="(value, key) in totalStats" :key="key">
         {{ key }}: {{ value }}

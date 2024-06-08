@@ -233,6 +233,7 @@ export default defineComponent({
 
     const chosenWeapon = reactive({});
     const chosenChar = reactive({});
+    const echoStats = reactive({});
     const characterLevel = ref("1");
     const weaponType = ref("Swords");
     const curScreen = ref("character");
@@ -283,6 +284,14 @@ export default defineComponent({
       let charAtk = 0;
       let charDef = 0;
       let weaponAtk = 0;
+
+      let attackPercent = 0;
+      let hpPercent = 0;
+      let defPercent = 0;
+      let hpFlat = 0;
+      let defFlat = 0;
+      let attackFlat = 0;
+
       let weaponModifer = null;
       let weaponModifierValue = 0;
       if (chosenChar.value) {
@@ -299,9 +308,18 @@ export default defineComponent({
         weaponModifer = modifier;
         weaponModifierValue = modiferValue;
       }
-      totalAtk.value = charAtk + weaponAtk;
-      totalHp.value = charHp;
-      totalDef.value = charDef;
+      if (echoStats) {
+        attackPercent += echoStats?.value?.ATK ?? 0;
+        hpPercent += echoStats?.value?.HP ?? 0;
+        defPercent += echoStats?.value?.DEF ?? 0;
+        attackFlat += echoStats?.value?.ATK_FLAT ?? 0;
+        hpFlat += echoStats?.value?.HP_FLAT ?? 0;
+        defFlat += echoStats?.value?.DEF_FLAT ?? 0;
+      }
+      totalAtk.value =
+        charAtk + weaponAtk * (1 + attackPercent / 100) + attackFlat;
+      totalHp.value = charHp * (1 + hpPercent / 100) + hpFlat;
+      totalDef.value = charDef * (1 + defPercent / 100) + defFlat;
     };
 
     const fields = [
@@ -376,8 +394,9 @@ export default defineComponent({
       damage.value = dmg;
     };
 
-    const updateStatsEchoes = (echoStats) => {
-      console.log(echoStats);
+    const updateStatsEchoes = (echoStatsGiven) => {
+      echoStats.value = echoStatsGiven;
+      calcCharStats();
     };
 
     const changeScreen = (screen: string) => {
