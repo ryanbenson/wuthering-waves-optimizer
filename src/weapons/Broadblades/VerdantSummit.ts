@@ -31,72 +31,72 @@ const weaponInfo: WeaponInfo = {
 const weaponData: WeaponData = {
   "1": {
     attack: 47,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.108,
   },
   "20": {
     attack: 122,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.191,
   },
   "40": {
     attack: 232,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.275,
   },
   "50": {
     attack: 303,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.317,
   },
   "60": {
     attack: 374,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.359,
   },
   "70": {
     attack: 445,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.401,
   },
   "80": {
     attack: 516,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.443,
   },
   "90": {
     attack: 587,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.486,
   },
   "20+": {
     attack: 153,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.191,
   },
   "40+": {
     attack: 264,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.275,
   },
   "50+": {
     attack: 335,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.317,
   },
   "60+": {
     attack: 406,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.359,
   },
   "70+": {
     attack: 476,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.401,
   },
   "80+": {
     attack: 547,
-    modifier: "Crit. DMG",
+    modifier: "CritDMG",
     modifierValue: 0.443,
   },
 };

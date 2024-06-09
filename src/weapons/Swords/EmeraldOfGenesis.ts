@@ -31,72 +31,72 @@ const weaponInfo: WeaponInfo = {
 const weaponData: WeaponData = {
   "1": {
     attack: 47,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.054,
   },
   "20": {
     attack: 122,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.095,
   },
   "40": {
     attack: 232,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.137,
   },
   "50": {
     attack: 303,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.158,
   },
   "60": {
     attack: 374,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.179,
   },
   "70": {
     attack: 445,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.2,
   },
   "80": {
     attack: 516,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.221,
   },
   "90": {
     attack: 587,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.243,
   },
   "20+": {
     attack: 153,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.095,
   },
   "40+": {
     attack: 264,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.137,
   },
   "50+": {
     attack: 335,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.158,
   },
   "60+": {
     attack: 406,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.179,
   },
   "70+": {
     attack: 476,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.2,
   },
   "80+": {
     attack: 547,
-    modifier: "Crit. Rate",
+    modifier: "CritRate",
     modifierValue: 0.221,
   },
 };
