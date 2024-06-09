@@ -112,3 +112,13 @@ export function getWeaponData(): WeaponData {
 export function getWeaponDataByLevel(level: string): WeaponLevelData {
   return weaponData[level];
 }
+
+export function getWeapon() {
+  return {
+    info: weaponInfo,
+    data: weaponData,
+    getWeaponInfo,
+    getWeaponData,
+    getWeaponDataByLevel,
+  };
+}

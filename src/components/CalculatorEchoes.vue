@@ -60,7 +60,7 @@ export default {
         .fill()
         .map(() => ({
           type: "",
-          rank: "",
+          rank: "5",
           stat: "",
           subStats: Array(5)
             .fill()

@@ -8,9 +8,15 @@
         <li @click="changeScreen('weapon')">
           <img src="/images/T_IconAchv_014.png" class="icon" />
         </li>
-        <li @click="changeScreen('talents')">T</li>
-        <li @click="changeScreen('echoes')">E</li>
-        <li @click="changeScreen('constellations')">CO</li>
+        <li @click="changeScreen('talents')">
+          <img src="/images/talents.png" class="icon" />
+        </li>
+        <li @click="changeScreen('echoes')">
+          <img src="/images/echoes.png" class="icon" />
+        </li>
+        <li @click="changeScreen('constellations')">
+          <img src="/images/constellations.png" class="icon" />
+        </li>
       </ul>
     </div>
     <div class="calculations__screens">
@@ -199,8 +205,8 @@ export default defineComponent({
   },
   setup() {
     const formData = reactive<FormData>({
-      enemyLevel: 0,
-      enemyResist: 0,
+      enemyLevel: 1,
+      enemyResist: 0.1,
       talent: "0%",
       critRate: 0,
       critDamage: 0,
@@ -212,11 +218,11 @@ export default defineComponent({
       resistenceReduction: 0,
     });
     const talentData = reactive<TalentData>({
-      basic: 1,
-      skill: 1,
-      forte: 1,
-      liberation: 1,
-      intro: 1,
+      basic: 10,
+      skill: 10,
+      forte: 10,
+      liberation: 10,
+      intro: 10,
     });
 
     watch(formData, async (updatedFormData: FormData) => {
@@ -227,7 +233,7 @@ export default defineComponent({
     const chosenWeapon = reactive({});
     const chosenChar = reactive({});
     const echoStats = reactive({});
-    const characterLevel = ref("1");
+    const characterLevel = ref("90");
     const weaponType = ref("Swords");
     const curScreen = ref("character");
     const damage = ref(0);
@@ -251,8 +257,23 @@ export default defineComponent({
     ]);
     const weaponsList = ref([]);
     const weapon = ref([]);
-    const weaponLevel = ref("1");
-    const weaponLevelOptions = ref(["1", "40", "50", "60", "70", "80", "90"]);
+    const weaponLevel = ref("90");
+    const weaponLevelOptions = ref([
+      "1",
+      "20",
+      "20+",
+      "40",
+      "40+",
+      "50",
+      "50+",
+      "60",
+      "60+",
+      "70",
+      "70+",
+      "80",
+      "80+",
+      "90",
+    ]);
     const totalAtk = ref(0);
     const totalHp = ref(0);
     const totalDef = ref(0);
@@ -281,6 +302,8 @@ export default defineComponent({
     watch(talentData, () => {
       calcCharStats();
     });
+
+    character.value = charactersList.value[0];
 
     const calcCharStats = () => {
       let charHp = 0;
