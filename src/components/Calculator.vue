@@ -148,12 +148,18 @@
       <div class="screen--character" v-show="curScreen === 'echoes'">
         <CalculatorEchoes @update-stats="updateStatsEchoes"></CalculatorEchoes>
       </div>
+
+      <div class="screen--character" v-show="curScreen === 'constellations'">
+        Constellations coming soon.
+      </div>
     </div>
     <div class="results">
       <h2>Stats:</h2>
       <div>Attack: {{ totalAtk }}</div>
       <div>HP: {{ totalHp }}</div>
       <div>Defense: {{ totalDef }}</div>
+      <div>Crit Rate: {{ totalCritRate * 100 }}%</div>
+      <div>Crit DMG: {{ totalCritDMG * 100 }}%</div>
       <hr />
       <div>Damage:</div>
       <div v-for="damageInstance in allDamages" :key="damageInstance.key">
@@ -179,9 +185,6 @@ interface FormData {
   [key: string]: number | string; // index signature
   enemyLevel: number;
   enemyResist: number;
-  talent: string;
-  critRate: number;
-  critDamage: number;
   defIgnore: number;
   bonusTotalSkillDmg: number;
   bonusSpecificSkillDmg: number;
@@ -207,9 +210,6 @@ export default defineComponent({
     const formData = reactive<FormData>({
       enemyLevel: 1,
       enemyResist: 0.1,
-      talent: "0%",
-      critRate: 0,
-      critDamage: 0,
       defIgnore: 0,
       bonusTotalSkillDmg: 0,
       bonusSpecificSkillDmg: 0,
@@ -277,6 +277,8 @@ export default defineComponent({
     const totalAtk = ref(0);
     const totalHp = ref(0);
     const totalDef = ref(0);
+    const totalCritRate = ref(0.05);
+    const totalCritDMG = ref(0.5);
 
     charactersList.value = getCharactersAvailable();
     weaponsList.value = getWeaponsByType(weaponType.value);
@@ -317,6 +319,8 @@ export default defineComponent({
       let hpFlat = 0;
       let defFlat = 0;
       let attackFlat = 0;
+      let critRate = 5;
+      let critDMG = 50;
 
       let weaponModifer = null;
       let weaponModifierValue = 0;
@@ -328,11 +332,29 @@ export default defineComponent({
         charDef = defense;
       }
       if (chosenWeapon.value) {
-        const { attack, modifier, modiferValue } =
+        const { attack, modifier, modifierValue } =
           chosenWeapon.value.getWeaponDataByLevel(weaponLevel.value);
         weaponAtk = attack;
         weaponModifer = modifier;
-        weaponModifierValue = modiferValue;
+        weaponModifierValue = modifierValue;
+        // weapon data is in decimal, but we're calcing in percentages for now
+        switch (weaponModifer) {
+          case "ATK":
+            attackPercent += weaponModifierValue * 100;
+            break;
+          case "HP":
+            hpPercent += weaponModifierValue * 100;
+            break;
+          case "DEF":
+            defPercent += weaponModifierValue * 100;
+            break;
+          case "CritRate":
+            critRate += weaponModifierValue * 100;
+            break;
+          case "CritDMG":
+            critDMG += weaponModifierValue * 100;
+            break;
+        }
       }
       if (echoStats) {
         attackPercent += echoStats?.value?.ATK ?? 0;
@@ -341,11 +363,16 @@ export default defineComponent({
         attackFlat += echoStats?.value?.ATK_FLAT ?? 0;
         hpFlat += echoStats?.value?.HP_FLAT ?? 0;
         defFlat += echoStats?.value?.DEF_FLAT ?? 0;
+        critRate += echoStats?.value?.CritRate ?? 0;
+        critDMG += echoStats?.value?.CritDMG ?? 0;
       }
       totalAtk.value =
         charAtk + weaponAtk * (1 + attackPercent / 100) + attackFlat;
       totalHp.value = charHp * (1 + hpPercent / 100) + hpFlat;
       totalDef.value = charDef * (1 + defPercent / 100) + defFlat;
+      console.log(critRate, critDMG);
+      totalCritRate.value = critRate / 100;
+      totalCritDMG.value = critDMG / 100;
 
       calcAllDamages();
     };
@@ -390,14 +417,6 @@ export default defineComponent({
         type: "number",
         step: "0.1",
       },
-      { name: "talent", label: "Talent", type: "text", step: "" },
-      { name: "critRate", label: "Crit Rate", type: "number", step: "0.01" },
-      {
-        name: "critDamage",
-        label: "Crit Damage",
-        type: "number",
-        step: "0.01",
-      },
       {
         name: "defIgnore",
         label: "Defense Ignore",
@@ -436,23 +455,26 @@ export default defineComponent({
       },
     ];
 
-    const handleCalculation = (formData: FormData) => {
-      // to do: use HP and DEF
-      const dmg = calcDamage(
-        characterLevel.value,
-        formData.enemyLevel,
-        formData.enemyResist,
-        formData.talent,
-        totalAtk.value,
-        formData.defIgnore,
-        formData.bonusTotalSkillDmg,
-        formData.bonusSpecificSkillDmg,
-        formData.bonusElementDmg,
-        formData.totalDeepenEffect,
-        formData.resistenceReduction
-      );
-      damage.value = dmg;
+    const handleCalculation = () => {
+      calcAllDamages();
     };
+    // const handleCalculation = (formData: FormData) => {
+    //   // to do: use HP and DEF
+    //   const dmg = calcDamage(
+    //     characterLevel.value,
+    //     formData.enemyLevel,
+    //     formData.enemyResist,
+    //     formData.talent,
+    //     totalAtk.value,
+    //     formData.defIgnore,
+    //     formData.bonusTotalSkillDmg,
+    //     formData.bonusSpecificSkillDmg,
+    //     formData.bonusElementDmg,
+    //     formData.totalDeepenEffect,
+    //     formData.resistenceReduction
+    //   );
+    //   damage.value = dmg;
+    // };
 
     const updateStatsEchoes = (echoStatsGiven) => {
       echoStats.value = echoStatsGiven;
@@ -481,6 +503,8 @@ export default defineComponent({
       totalAtk,
       totalHp,
       totalDef,
+      totalCritRate,
+      totalCritDMG,
       updateStatsEchoes,
       allDamages,
     };

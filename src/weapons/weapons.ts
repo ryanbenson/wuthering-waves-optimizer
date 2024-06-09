@@ -1,4 +1,5 @@
 export const swordsList = [
+  "BlazingBrilliance",
   "CommandoOfConviction",
   "EmeraldOfGenesis",
   "GuardianSword",
