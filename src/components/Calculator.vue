@@ -82,6 +82,7 @@
             </select>
             <label for="character" class="form__label">Weapon Level</label>
           </div>
+          <div>{{ chosenWeapon }}</div>
         </div>
       </div>
 
@@ -296,6 +297,14 @@ export default defineComponent({
     watch(character, async (charName) => {
       const chosen = await getCharByName(charName);
       chosenChar.value = chosen;
+      // update the weapons if needed
+      if (weaponType.value !== chosenChar.value?.basic?.weapon) {
+        weaponType.value = chosenChar.value?.basic?.weapon ?? "Swords";
+        // update the list
+        weaponsList.value = getWeaponsByType(weaponType.value);
+        // reset the weapon chosen to be the first possible in the list of swords
+        weapon.value = weaponsList.value[0];
+      }
       calcCharStats();
     });
     watch(characterLevel, () => {
@@ -486,27 +495,28 @@ export default defineComponent({
     };
 
     return {
-      formData,
-      talentData,
-      fields,
-      damage,
+      allDamages,
       character,
       characterLevel,
       characterLevelOptions,
       charactersList,
+      chosenWeapon,
       curScreen,
       changeScreen,
-      weapon,
-      weaponsList,
-      weaponLevel,
-      weaponLevelOptions,
+      damage,
+      fields,
+      formData,
+      updateStatsEchoes,
+      talentData,
       totalAtk,
       totalHp,
       totalDef,
       totalCritRate,
       totalCritDMG,
-      updateStatsEchoes,
-      allDamages,
+      weapon,
+      weaponsList,
+      weaponLevel,
+      weaponLevelOptions,
     };
   },
 });

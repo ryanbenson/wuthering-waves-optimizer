@@ -14,9 +14,29 @@ export const swordsList = [
   "TyroSword",
 ];
 
+const broadbladesList = [
+  "AgesOfHarvest",
+  "Autumntrace",
+  "Broadblade41",
+  "BroadbladeOfNight",
+  "BroadbladeOfVoyager",
+  "DauntlessEvernight",
+  "Discord",
+  "GuardianBroadblade",
+  "HeliosCleaver",
+  "LustrousRazor",
+  "OriginiteTypeI",
+  "TrainingBroadblade",
+  "TyroBroadblade",
+  "VerdantSummit",
+];
+
 export function getWeaponsByType(type: string) {
   if (type === "Swords") {
     return swordsList;
+  }
+  if (type === "Broadblades") {
+    return broadbladesList;
   }
   return [];
 }

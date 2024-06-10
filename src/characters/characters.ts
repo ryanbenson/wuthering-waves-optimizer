@@ -1,5 +1,5 @@
 export function getCharactersAvailable(): string[] {
-  return ["Changli"];
+  return ["Changli", "Calcharo"];
 }
 
 async function loadModule(charName: string) {
