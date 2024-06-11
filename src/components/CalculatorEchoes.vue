@@ -198,7 +198,6 @@ export default {
         if (echo.type && echo.rank) {
           let stat = echo.type === "1" ? "HP_FLAT" : "ATK_FLAT";
           let statValue = this.flatBonusesByRankByType[echo.type][echo.rank];
-          console.log("flat bonus of echo", statValue);
           stats[stat] = (stats[stat] || 0) + statValue;
         }
         if (echo.type && echo.rank && echo.stat) {
