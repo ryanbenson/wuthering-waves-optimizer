@@ -65,25 +65,9 @@
       </div>
 
       <div class="screen--character" v-show="curScreen === 'weapon'">
-        <div class="data-input">
-          <div class="form__group field">
-            <select name="character" v-model="weapon" class="form__field">
-              <option v-for="weap in weaponsList" :key="weap" :value="weap">
-                {{ weap }}
-              </option>
-            </select>
-            <label for="character" class="form__label">Weapon</label>
-          </div>
-          <div class="form__group field">
-            <select name="character" v-model="weaponLevel" class="form__field">
-              <option v-for="lvl in weaponLevelOptions" :key="lvl" :value="lvl">
-                {{ lvl }}
-              </option>
-            </select>
-            <label for="character" class="form__label">Weapon Level</label>
-          </div>
-          <div>{{ chosenWeapon }}</div>
-        </div>
+        <CalculatorWeapons
+          @update-weapon="handleWeaponUpdated"
+          :weapon-type="weaponType"></CalculatorWeapons>
       </div>
 
       <div class="screen--character" v-show="curScreen === 'talents'">
@@ -179,8 +163,8 @@ import {
   getCharactersAvailable,
   getCharByName,
 } from "../characters/characters";
-import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
 import CalculatorEchoes from "./CalculatorEchoes.vue";
+import CalculatorWeapons from "./CalculatorWeapons.vue";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -206,6 +190,7 @@ export default defineComponent({
   name: "Calculator",
   components: {
     CalculatorEchoes,
+    CalculatorWeapons,
   },
   setup() {
     const formData = reactive<FormData>({
@@ -225,6 +210,7 @@ export default defineComponent({
       liberation: 10,
       intro: 10,
     });
+    const weaponData = reactive({});
 
     watch(formData, async (updatedFormData: FormData) => {
       handleCalculation(updatedFormData);
@@ -256,25 +242,6 @@ export default defineComponent({
       "80+",
       "90",
     ]);
-    const weaponsList = ref([]);
-    const weapon = ref([]);
-    const weaponLevel = ref("90");
-    const weaponLevelOptions = ref([
-      "1",
-      "20",
-      "20+",
-      "40",
-      "40+",
-      "50",
-      "50+",
-      "60",
-      "60+",
-      "70",
-      "70+",
-      "80",
-      "80+",
-      "90",
-    ]);
     const totalAtk = ref(0);
     const totalHp = ref(0);
     const totalDef = ref(0);
@@ -282,28 +249,13 @@ export default defineComponent({
     const totalCritDMG = ref(0.5);
 
     charactersList.value = getCharactersAvailable();
-    weaponsList.value = getWeaponsByType(weaponType.value);
 
-    watch(weapon, async (weaponName: string) => {
-      const weaponChosen = await getWeaponByName(weaponType.value, weaponName);
-      chosenWeapon.value = weaponChosen;
-      console.log(chosenWeapon.value.getWeaponDataByLevel(weaponLevel.value));
-      calcCharStats();
-    });
-    watch(weaponLevel, async () => {
-      console.log(chosenWeapon.value.getWeaponDataByLevel(weaponLevel.value));
-      calcCharStats();
-    });
     watch(character, async (charName) => {
       const chosen = await getCharByName(charName);
       chosenChar.value = chosen;
       // update the weapons if needed
       if (weaponType.value !== chosenChar.value?.basic?.weapon) {
         weaponType.value = chosenChar.value?.basic?.weapon ?? "Swords";
-        // update the list
-        weaponsList.value = getWeaponsByType(weaponType.value);
-        // reset the weapon chosen to be the first possible in the list of swords
-        weapon.value = weaponsList.value[0];
       }
       calcCharStats();
     });
@@ -340,12 +292,10 @@ export default defineComponent({
         charAtk = attack;
         charDef = defense;
       }
-      if (chosenWeapon.value) {
-        const { attack, modifier, modifierValue } =
-          chosenWeapon.value.getWeaponDataByLevel(weaponLevel.value);
-        weaponAtk = attack;
-        weaponModifer = modifier;
-        weaponModifierValue = modifierValue;
+      if (weaponData.value) {
+        weaponAtk = weaponData.value?.attack;
+        weaponModifer = weaponData.value?.modifier;
+        weaponModifierValue = weaponData.value?.modifierValue;
         // weapon data is in decimal, but we're calcing in percentages for now
         switch (weaponModifer) {
           case "ATK":
@@ -366,6 +316,7 @@ export default defineComponent({
         }
       }
       if (echoStats) {
+        console.log("echo stats", echoStats.value);
         attackPercent += echoStats?.value?.ATK ?? 0;
         hpPercent += echoStats?.value?.HP ?? 0;
         defPercent += echoStats?.value?.DEF ?? 0;
@@ -376,10 +327,9 @@ export default defineComponent({
         critDMG += echoStats?.value?.CritDMG ?? 0;
       }
       totalAtk.value =
-        charAtk + weaponAtk * (1 + attackPercent / 100) + attackFlat;
+        (charAtk + weaponAtk) * (1 + attackPercent / 100) + attackFlat;
       totalHp.value = charHp * (1 + hpPercent / 100) + hpFlat;
       totalDef.value = charDef * (1 + defPercent / 100) + defFlat;
-      console.log(critRate, critDMG);
       totalCritRate.value = critRate / 100;
       totalCritDMG.value = critDMG / 100;
 
@@ -387,6 +337,9 @@ export default defineComponent({
     };
 
     const calcAllDamages = () => {
+      if (!chosenChar.value) {
+        return;
+      }
       const basicAttacks = chosenChar.value.basicAttacks?.attacks ?? [];
       const basicAttacksTalent = talentData.basic;
       const basicAttacksByTalent = [];
@@ -414,7 +367,6 @@ export default defineComponent({
         basicAttacksByTalent.push(attackToUse);
       });
       allDamages.value = basicAttacksByTalent;
-      console.log(basicAttacksByTalent);
       // to do: add the rest
     };
 
@@ -467,23 +419,11 @@ export default defineComponent({
     const handleCalculation = () => {
       calcAllDamages();
     };
-    // const handleCalculation = (formData: FormData) => {
-    //   // to do: use HP and DEF
-    //   const dmg = calcDamage(
-    //     characterLevel.value,
-    //     formData.enemyLevel,
-    //     formData.enemyResist,
-    //     formData.talent,
-    //     totalAtk.value,
-    //     formData.defIgnore,
-    //     formData.bonusTotalSkillDmg,
-    //     formData.bonusSpecificSkillDmg,
-    //     formData.bonusElementDmg,
-    //     formData.totalDeepenEffect,
-    //     formData.resistenceReduction
-    //   );
-    //   damage.value = dmg;
-    // };
+
+    const handleWeaponUpdated = (givenWeaponData) => {
+      weaponData.value = givenWeaponData;
+      calcCharStats();
+    };
 
     const updateStatsEchoes = (echoStatsGiven) => {
       echoStats.value = echoStatsGiven;
@@ -513,10 +453,9 @@ export default defineComponent({
       totalDef,
       totalCritRate,
       totalCritDMG,
-      weapon,
-      weaponsList,
-      weaponLevel,
-      weaponLevelOptions,
+      weaponType,
+      handleWeaponUpdated,
+      // weaponLevelOptions,
     };
   },
 });
