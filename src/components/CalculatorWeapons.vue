@@ -16,12 +16,39 @@
       </select>
       <label for="weaponLevel" class="form__label">Weapon Level</label>
     </div>
-    <div>{{ chosenWeapon }}</div>
+    <div class="form__group field">
+      <select name="refinement" v-model="refinement" class="form__field">
+        <option v-for="lvl in weaponRefinementLevels" :key="lvl" :value="lvl">
+          {{ lvl }}
+        </option>
+      </select>
+      <label for="weaponLevel" class="form__label">Refinement Level</label>
+    </div>
+    <div v-if="weaponDescription" class="weapon__desc">
+      {{ weaponDescription }}
+    </div>
+    <div v-if="hasWeaponPassive" class="weapon__passives">
+      <CalculatorWeaponsPassive
+        v-for="(weaponPassive, i) in weaponPassives"
+        class="weapon__passive"
+        :key="i"
+        :has-stacks="weaponPassive.hasStacks"
+        :modifier="weaponPassive.modifier"
+        :modifier-by-refinement="weaponPassive.modifierByRefinement"
+        :max-stacks="weaponPassive.maxStacks"
+        :min-stacks="weaponPassive.minStacks"
+        :always-enabled="weaponPassive.alwaysEnabled"
+        :details="weaponPassive.details"
+        :refinement="refinement"
+        @updated-weapon-stats="handleUpdatedWeaponStats">
+      </CalculatorWeaponsPassive>
+    </div>
   </div>
 </template>
 
 <script>
 import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
+import CalculatorWeaponsPassive from "./CalculatorWeaponsPassive.vue";
 export default {
   props: {
     weaponType: {
@@ -29,12 +56,15 @@ export default {
       default: "Swords",
     },
   },
+  components: { CalculatorWeaponsPassive },
   data() {
     return {
       weapon: null,
       weaponsList: [],
       weaponLevel: "90",
       chosenWeapon: null,
+      refinement: 1,
+      weaponPassiveStats: {},
     };
   },
   watch: {
@@ -61,6 +91,7 @@ export default {
         attack,
         modifier,
         modifierValue,
+        weaponPassiveStats: this.weaponPassiveStats,
       };
       this.$emit("update-weapon", weaponData);
     },
@@ -72,6 +103,10 @@ export default {
       this.weaponsList = getWeaponsByType(this.weaponType);
       this.weapon = this.weaponsList[0];
       this.chosenWeapon = this.weaponsList[0];
+    },
+    async handleUpdatedWeaponStats(data) {
+      this.weaponPassiveStats[data.stat] = data.value;
+      await this.updateWeaponStats();
     },
   },
   computed: {
@@ -92,6 +127,21 @@ export default {
         "80+",
         "90",
       ];
+    },
+    weaponRefinementLevels() {
+      return ["1", "2", "3", "4", "5"];
+    },
+    hasWeaponPassive() {
+      if (!this.weaponPassives || this.weaponPassives.length < 1) {
+        return false;
+      }
+      return true;
+    },
+    weaponPassives() {
+      return this.chosenWeapon?.info?.passiveData ?? [];
+    },
+    weaponDescription() {
+      return this.chosenWeapon?.info?.description ?? null;
     },
   },
   mounted() {

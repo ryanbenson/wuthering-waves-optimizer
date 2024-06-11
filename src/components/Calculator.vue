@@ -285,6 +285,7 @@ export default defineComponent({
 
       let weaponModifer = null;
       let weaponModifierValue = 0;
+      let weaponPassiveData = {};
       if (chosenChar.value) {
         const { hp, attack, defense } =
           chosenChar.value.getCharacterStatsByLevel(characterLevel.value);
@@ -296,6 +297,27 @@ export default defineComponent({
         weaponAtk = weaponData.value?.attack;
         weaponModifer = weaponData.value?.modifier;
         weaponModifierValue = weaponData.value?.modifierValue;
+        weaponPassiveData = weaponData.value?.weaponPassiveStats ?? {};
+        // remove empties from the passive data
+        weaponPassiveData = Object.fromEntries(
+          Object.entries(weaponPassiveData).filter(([_, v]) => v != null)
+        );
+        // add in the weapon passives
+        attackPercent += weaponPassiveData?.ATK
+          ? weaponPassiveData?.ATK * 100
+          : 0;
+        hpPercent += weaponPassiveData?.HP ? weaponPassiveData?.HP * 100 : 0;
+        defPercent += weaponPassiveData?.DEF ? weaponPassiveData?.DEF * 100 : 0;
+        attackFlat += weaponPassiveData?.ATK_FLAT ?? 0;
+        hpFlat += weaponPassiveData?.HP_FLAT ?? 0;
+        defFlat += weaponPassiveData?.DEF_FLAT ?? 0;
+        critRate += weaponPassiveData?.CritRate
+          ? weaponPassiveData?.CritRate * 100
+          : 0;
+        critDMG += weaponPassiveData?.CritDMG
+          ? weaponPassiveData?.CritDMG * 100
+          : 0;
+        // TO DO: Skills / liberation / elemental / etc
         // weapon data is in decimal, but we're calcing in percentages for now
         switch (weaponModifer) {
           case "ATK":

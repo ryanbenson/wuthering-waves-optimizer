@@ -14,6 +14,8 @@ interface WeaponPassiveData {
   modifierByRefinement: WeaponPassiveModifierByRefinement;
   minStacks?: number;
   maxStacks?: number;
+  details: string;
+  alwaysEnabled: boolean;
 }
 
 interface WeaponPassiveModifierByRefinement {
@@ -50,6 +52,8 @@ const weaponInfo: WeaponInfo = {
         "4": 0.14,
         "5": 0.16,
       },
+      details: "Increases CRIT Rate by 8%/10%/12%/14%/16%",
+      alwaysEnabled: true,
     },
     {
       hasStacks: true,
@@ -63,6 +67,9 @@ const weaponInfo: WeaponInfo = {
       },
       minStacks: 0,
       maxStacks: 14,
+      details:
+        "Upon dealing damage, increases [Searing Feather] by 1 stack, gaining 1 stack every 0.5s. When Resonance Skill is released, increases [Searing Feather] by an extra 5 stacks. Each stack of [Searing Feather] increases Resonance Skill DMG Bonus by 4%/5%/6%/7%/8%, stacking up to 14 times. After reaching 14 stacks of [Searing Feather], all stacks will reset within 10s.",
+      alwaysEnabled: false,
     },
   ],
 };
