@@ -96,6 +96,26 @@ export default {
           ATK_FLAT: { 2: 46, 3: 68, 4: 92, 5: 150 },
         },
       },
+      flatBonusesByRankByType: {
+        1: {
+          2: 296,
+          3: 516,
+          4: 957,
+          5: 1696,
+        },
+        3: {
+          2: 31,
+          3: 44,
+          4: 63,
+          5: 100,
+        },
+        4: {
+          2: 46,
+          3: 68,
+          4: 92,
+          5: 150,
+        },
+      },
       subStats: [
         "HP_FLAT",
         "ATK_FLAT",
@@ -174,6 +194,13 @@ export default {
 
       const stats = {};
       for (const echo of this.echoes) {
+        // add in the base stats (flat HP and flat ATK) that's guaranteed
+        if (echo.type && echo.rank) {
+          let stat = echo.type === "1" ? "HP_FLAT" : "ATK_FLAT";
+          let statValue = this.flatBonusesByRankByType[echo.type][echo.rank];
+          console.log("flat bonus of echo", statValue);
+          stats[stat] = (stats[stat] || 0) + statValue;
+        }
         if (echo.type && echo.rank && echo.stat) {
           const max = this.statsTable[echo.type][echo.stat][echo.rank];
           stats[echo.stat] = (stats[echo.stat] || 0) + max;
