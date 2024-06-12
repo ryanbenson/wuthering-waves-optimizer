@@ -145,6 +145,18 @@
       <div>Defense: {{ totalDef }}</div>
       <div>Crit Rate: {{ totalCritRate * 100 }}%</div>
       <div>Crit DMG: {{ totalCritDMG * 100 }}%</div>
+      <div>Basic Attack DMG Bonus: {{ BasicAttackDMGBonus }}%</div>
+      <div>Heavy Attack DMG Bonus: {{ HeavyAttackDMGBonus }}%</div>
+      <div>Resonance Skill DMG Bonus: {{ ResonanceSkillDMGBonus }}%</div>
+      <div>
+        Resonance Liberation DMG Bonus: {{ ResonanceLiberationDMGBonus }}%
+      </div>
+      <div>Glaccio DMG Bonus: {{ Glacio }}%</div>
+      <div>Fusion DMG Bonus: {{ Fusion }}%</div>
+      <div>Electro DMG Bonus: {{ Electro }}%</div>
+      <div>Aero DMG Bonus: {{ Aero }}%</div>
+      <div>Spectro DMG Bonus: {{ Spectro }}%</div>
+      <div>Havoc DMG Bonus: {{ Havoc }}%</div>
       <hr />
       <div>Damage:</div>
       <h4>Basic Attacks</h4>
@@ -258,6 +270,16 @@ export default defineComponent({
     const totalDef = ref(0);
     const totalCritRate = ref(0.05);
     const totalCritDMG = ref(0.5);
+    const BasicAttackDMGBonus = ref(0);
+    const HeavyAttackDMGBonus = ref(0);
+    const ResonanceSkillDMGBonus = ref(0);
+    const ResonanceLiberationDMGBonus = ref(0);
+    const Glacio = ref(0);
+    const Fusion = ref(0);
+    const Electro = ref(0);
+    const Aero = ref(0);
+    const Spectro = ref(0);
+    const Havoc = ref(0);
 
     charactersList.value = getCharactersAvailable();
 
@@ -293,6 +315,16 @@ export default defineComponent({
       let attackFlat = 0;
       let critRate = 5;
       let critDMG = 50;
+      let basicAttackDMGBonus = 0;
+      let heavyAttackDMGBonus = 0;
+      let resonanceSkillDMGBonus = 0;
+      let resonanceLiberationDMGBonus = 0;
+      let glacio = 0;
+      let fusion = 0;
+      let electro = 0;
+      let aero = 0;
+      let spectro = 0;
+      let havoc = 0;
 
       let weaponModifer = null;
       let weaponModifierValue = 0;
@@ -328,6 +360,33 @@ export default defineComponent({
         critDMG += weaponPassiveData?.CritDMG
           ? weaponPassiveData?.CritDMG * 100
           : 0;
+        basicAttackDMGBonus += weaponPassiveData?.BasicAttackDMGBonus
+          ? weaponPassiveData?.BasicAttackDMGBonus * 100
+          : 0;
+        heavyAttackDMGBonus += weaponPassiveData?.HeavyAttackDMGBonus
+          ? weaponPassiveData?.HeavyAttackDMGBonus * 100
+          : 0;
+        resonanceSkillDMGBonus += weaponPassiveData?.ResonanceSkillDMGBonus
+          ? weaponPassiveData?.ResonanceSkillDMGBonus * 100
+          : 0;
+        resonanceLiberationDMGBonus +=
+          weaponPassiveData?.ResonanceLiberationDMGBonus
+            ? weaponPassiveData?.ResonanceLiberationDMGBonus * 100
+            : 0;
+        glacio += weaponPassiveData?.Glacio
+          ? weaponPassiveData?.Glacio * 100
+          : 0;
+        fusion += weaponPassiveData?.Fusion
+          ? weaponPassiveData?.Fusion * 100
+          : 0;
+        electro += weaponPassiveData?.Electro
+          ? weaponPassiveData?.Electro * 100
+          : 0;
+        aero += weaponPassiveData?.Aero ? weaponPassiveData?.Aero * 100 : 0;
+        spectro += weaponPassiveData?.Spectro
+          ? weaponPassiveData?.Spectro * 100
+          : 0;
+        havoc += weaponPassiveData?.Havoc ? weaponPassiveData?.Havoc * 100 : 0;
         // TO DO: Skills / liberation / elemental / etc
         // weapon data is in decimal, but we're calcing in percentages for now
         switch (weaponModifer) {
@@ -349,7 +408,6 @@ export default defineComponent({
         }
       }
       if (echoStats) {
-        console.log("echo stats", echoStats.value);
         attackPercent += echoStats?.value?.ATK ?? 0;
         hpPercent += echoStats?.value?.HP ?? 0;
         defPercent += echoStats?.value?.DEF ?? 0;
@@ -358,6 +416,17 @@ export default defineComponent({
         defFlat += echoStats?.value?.DEF_FLAT ?? 0;
         critRate += echoStats?.value?.CritRate ?? 0;
         critDMG += echoStats?.value?.CritDMG ?? 0;
+        basicAttackDMGBonus += echoStats?.value?.BasicAttackDMGBonus ?? 0;
+        heavyAttackDMGBonus += echoStats?.value?.HeavyAttackDMGBonus ?? 0;
+        resonanceSkillDMGBonus += echoStats?.value?.ResonanceSkillDMGBonus ?? 0;
+        resonanceLiberationDMGBonus +=
+          echoStats?.value?.ResonanceLiberationDMGBonus ?? 0;
+        glacio += echoStats?.value?.Glacio ?? 0;
+        fusion += echoStats?.value?.Fusion ?? 0;
+        electro += echoStats?.value?.Electro ?? 0;
+        aero += echoStats?.value?.Aero ?? 0;
+        spectro += echoStats?.value?.Spectro ?? 0;
+        havoc += echoStats?.value?.Havoc ?? 0;
       }
       totalAtk.value =
         (charAtk + weaponAtk) * (1 + attackPercent / 100) + attackFlat;
@@ -365,6 +434,16 @@ export default defineComponent({
       totalDef.value = charDef * (1 + defPercent / 100) + defFlat;
       totalCritRate.value = critRate / 100;
       totalCritDMG.value = critDMG / 100;
+      BasicAttackDMGBonus.value = basicAttackDMGBonus;
+      HeavyAttackDMGBonus.value = heavyAttackDMGBonus;
+      ResonanceSkillDMGBonus.value = resonanceSkillDMGBonus;
+      ResonanceLiberationDMGBonus.value = resonanceLiberationDMGBonus;
+      Glacio.value = glacio;
+      Fusion.value = fusion;
+      Electro.value = electro;
+      Aero.value = aero;
+      Spectro.value = spectro;
+      Havoc.value = havoc;
 
       calcAllDamages();
     };
@@ -519,6 +598,16 @@ export default defineComponent({
       totalCritDMG,
       weaponType,
       handleWeaponUpdated,
+      BasicAttackDMGBonus,
+      HeavyAttackDMGBonus,
+      ResonanceSkillDMGBonus,
+      ResonanceLiberationDMGBonus,
+      Glacio,
+      Fusion,
+      Electro,
+      Aero,
+      Spectro,
+      Havoc,
       // weaponLevelOptions,
     };
   },
