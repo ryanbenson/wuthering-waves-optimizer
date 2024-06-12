@@ -1,5 +1,5 @@
 export const introAttacks = {
-  name: "Intro Skill: Obedience of Rules,
+  name: "Intro Skill: Obedience of Rules",
   description:
     '<div class="skilldescription">Changli appears in mid-air, attacks the target, and enters <span class="Highlight">True Sight</span>, lasting for 12s.</div>',
   attacks: [

@@ -175,6 +175,30 @@
         <span v-html="damageInstance.damage.detailedCalculation"></span>
         <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
       </div>
+      <h4>Liberation Attacks</h4>
+      <div
+        v-for="damageInstance in allDamages?.value?.liberationAttacks"
+        :key="damageInstance.key">
+        <span>{{ damageInstance.label }}: </span>
+        <span v-html="damageInstance.damage.detailedCalculation"></span>
+        <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
+      </div>
+      <h4>Forte Circuit Attacks</h4>
+      <div
+        v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
+        :key="damageInstance.key">
+        <span>{{ damageInstance.label }}: </span>
+        <span v-html="damageInstance.damage.detailedCalculation"></span>
+        <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
+      </div>
+      <h4>Intro Attacks</h4>
+      <div
+        v-for="damageInstance in allDamages?.value?.introAttacks"
+        :key="damageInstance.key">
+        <span>{{ damageInstance.label }}: </span>
+        <span v-html="damageInstance.damage.detailedCalculation"></span>
+        <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -490,16 +514,16 @@ export default defineComponent({
       return val / 100;
     };
 
-    const getDamageValByAttr = (attribute = 'attack') => {
+    const getDamageValByAttr = (attribute = "attack") => {
       switch (attribute) {
-        case 'defense':
+        case "defense":
           return totalDef.value;
           break;
-        case 'hp':
+        case "hp":
           return totalHp.value;
           return;
-        case 'attack':
-        case default:
+        case "attack":
+        default:
           return totalAtk.value;
           break;
       }
@@ -573,9 +597,104 @@ export default defineComponent({
         };
         skillAttacksByTalent.push(attackToUse);
       });
+
+      const liberationAttacksByTalent = [];
+      const liberationAttacks =
+        chosenChar.value.liberationAttacks?.attacks ?? [];
+      const liberationAttacksTalent = talentData.liberation;
+      liberationAttacks.forEach((attack) => {
+        const attackType = attack.type;
+        const atkDefHpVal = getDamageValByAttr(attack?.attribute);
+        const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
+        const talent = attack.talents[liberationAttacksTalent];
+        const damage = calcDamage(
+          characterLevel.value,
+          formData.enemyLevel,
+          formData.enemyResist,
+          talent,
+          atkDefHpVal,
+          formData.defIgnore,
+          totalSkillDmgBonus,
+          formData.bonusSpecificSkillDmg,
+          elementalDmgBonusDecimal,
+          formData.totalDeepenEffect,
+          formData.resistenceReduction
+        );
+        const attackToUse = {
+          key: attack.key,
+          label: attack.label,
+          talent,
+          damage,
+        };
+        liberationAttacksByTalent.push(attackToUse);
+      });
+
+      const forteCircuitAttacksByTalent = [];
+      const forteCircuitAttacks =
+        chosenChar.value.forteCircuitAttacks?.attacks ?? [];
+      const forteCircuitAttacksTalent = talentData.forte;
+      forteCircuitAttacks.forEach((attack) => {
+        const attackType = attack.type;
+        const atkDefHpVal = getDamageValByAttr(attack?.attribute);
+        const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
+        const talent = attack.talents[forteCircuitAttacksTalent];
+        const damage = calcDamage(
+          characterLevel.value,
+          formData.enemyLevel,
+          formData.enemyResist,
+          talent,
+          atkDefHpVal,
+          formData.defIgnore,
+          totalSkillDmgBonus,
+          formData.bonusSpecificSkillDmg,
+          elementalDmgBonusDecimal,
+          formData.totalDeepenEffect,
+          formData.resistenceReduction
+        );
+        const attackToUse = {
+          key: attack.key,
+          label: attack.label,
+          talent,
+          damage,
+        };
+        forteCircuitAttacksByTalent.push(attackToUse);
+      });
+
+      const introAttacksByTalent = [];
+      const introAttacks = chosenChar.value.introAttacks?.attacks ?? [];
+      const introAttacksTalent = talentData.intro;
+      introAttacks.forEach((attack) => {
+        const attackType = attack.type;
+        const atkDefHpVal = getDamageValByAttr(attack?.attribute);
+        const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
+        const talent = attack.talents[introAttacksTalent];
+        const damage = calcDamage(
+          characterLevel.value,
+          formData.enemyLevel,
+          formData.enemyResist,
+          talent,
+          atkDefHpVal,
+          formData.defIgnore,
+          totalSkillDmgBonus,
+          formData.bonusSpecificSkillDmg,
+          elementalDmgBonusDecimal,
+          formData.totalDeepenEffect,
+          formData.resistenceReduction
+        );
+        const attackToUse = {
+          key: attack.key,
+          label: attack.label,
+          talent,
+          damage,
+        };
+        introAttacksByTalent.push(attackToUse);
+      });
       allDamages.value = {
         basicAttacks: basicAttacksByTalent,
         skillAttacks: skillAttacksByTalent,
+        liberationAttacks: liberationAttacksByTalent,
+        forteCircuitAttacks: forteCircuitAttacksByTalent,
+        introAttacks: introAttacksByTalent,
       };
       console.log(allDamages.value);
       // to do: add the rest
