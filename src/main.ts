@@ -13,7 +13,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory("/wuthering-waves-optimizer"),
+  history: createWebHistory("/"),
   routes,
 });
 

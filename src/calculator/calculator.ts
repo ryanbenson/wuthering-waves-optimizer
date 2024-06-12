@@ -214,7 +214,7 @@ function buildDetailedCalculationString(
       let percentageValue = parseFloat(percentage.replace("%", ""));
       let percentageString = percentageValue.toFixed(2) + "%";
       let damage = instanceDamage[percentageString].toFixed(2);
-      return `<strong>${damage}</strong>*${times}`;
+      return `<strong>${damage}</strong> * ${times}`;
     } else {
       let percentageValue = parseFloat(part.replace("%", ""));
       let percentageString = percentageValue.toFixed(2) + "%";

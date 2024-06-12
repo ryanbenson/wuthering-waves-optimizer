@@ -147,10 +147,21 @@
       <div>Crit DMG: {{ totalCritDMG * 100 }}%</div>
       <hr />
       <div>Damage:</div>
-      <div v-for="damageInstance in allDamages" :key="damageInstance.key">
+      <h4>Basic Attacks</h4>
+      <div
+        v-for="damageInstance in allDamages?.value?.basicAttacks"
+        :key="damageInstance.key">
         <span>{{ damageInstance.label }}: </span>
-        <span v-html="damageInstance.damage.detailedCalculation"></span> =
-        <span>{{ damageInstance.damage.totalDamage }}</span>
+        <span v-html="damageInstance.damage.detailedCalculation"></span>
+        <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
+      </div>
+      <h4>Skill Attacks</h4>
+      <div
+        v-for="damageInstance in allDamages?.value?.skillAttacks"
+        :key="damageInstance.key">
+        <span>{{ damageInstance.label }}: </span>
+        <span v-html="damageInstance.damage.detailedCalculation"></span>
+        <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
       </div>
     </div>
   </div>
@@ -216,7 +227,7 @@ export default defineComponent({
       handleCalculation(updatedFormData);
     });
 
-    const allDamages = ref([]);
+    const allDamages = reactive({});
     const chosenWeapon = reactive({});
     const chosenChar = reactive({});
     const echoStats = reactive({});
@@ -388,7 +399,38 @@ export default defineComponent({
         };
         basicAttacksByTalent.push(attackToUse);
       });
-      allDamages.value = basicAttacksByTalent;
+
+      const skillAttacksByTalent = [];
+      const skillAttacks = chosenChar.value.skillAttacks?.attacks ?? [];
+      const skillAttacksTalent = talentData.skill;
+      skillAttacks.forEach((attack) => {
+        const talent = attack.talents[skillAttacksTalent];
+        const damage = calcDamage(
+          characterLevel.value,
+          formData.enemyLevel,
+          formData.enemyResist,
+          talent,
+          totalAtk.value,
+          formData.defIgnore,
+          formData.bonusTotalSkillDmg,
+          formData.bonusSpecificSkillDmg,
+          formData.bonusElementDmg,
+          formData.totalDeepenEffect,
+          formData.resistenceReduction
+        );
+        const attackToUse = {
+          key: attack.key,
+          label: attack.label,
+          talent,
+          damage,
+        };
+        skillAttacksByTalent.push(attackToUse);
+      });
+      allDamages.value = {
+        basicAttacks: basicAttacksByTalent,
+        skillAttacks: skillAttacksByTalent,
+      };
+      console.log(allDamages.value);
       // to do: add the rest
     };
 
