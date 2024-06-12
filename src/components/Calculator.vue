@@ -490,6 +490,21 @@ export default defineComponent({
       return val / 100;
     };
 
+    const getDamageValByAttr = (attribute = 'attack') => {
+      switch (attribute) {
+        case 'defense':
+          return totalDef.value;
+          break;
+        case 'hp':
+          return totalHp.value;
+          return;
+        case 'attack':
+        case default:
+          return totalAtk.value;
+          break;
+      }
+    };
+
     const calcAllDamages = () => {
       if (!chosenChar.value) {
         return;
@@ -502,6 +517,7 @@ export default defineComponent({
       const basicAttacksByTalent = [];
       basicAttacks.forEach((attack) => {
         const attackType = attack.type;
+        const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         const talent = attack.talents[basicAttacksTalent];
         const damage = calcDamage(
@@ -509,7 +525,7 @@ export default defineComponent({
           formData.enemyLevel,
           formData.enemyResist,
           talent,
-          totalAtk.value,
+          atkDefHpVal,
           formData.defIgnore,
           totalSkillDmgBonus,
           // this is if you specifically buff one instance of a damage like True Sight - Capture DMG,
@@ -533,15 +549,15 @@ export default defineComponent({
       const skillAttacksTalent = talentData.skill;
       skillAttacks.forEach((attack) => {
         const attackType = attack.type;
+        const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
-        console.log("skill bonus", totalSkillDmgBonus);
         const talent = attack.talents[skillAttacksTalent];
         const damage = calcDamage(
           characterLevel.value,
           formData.enemyLevel,
           formData.enemyResist,
           talent,
-          totalAtk.value,
+          atkDefHpVal,
           formData.defIgnore,
           totalSkillDmgBonus,
           formData.bonusSpecificSkillDmg,
