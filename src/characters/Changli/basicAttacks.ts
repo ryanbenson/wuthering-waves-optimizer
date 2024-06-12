@@ -18,6 +18,7 @@ export const basicAttacks = {
         "9": "27.43%*2",
         "10": "29.49%*2",
       },
+      type: "Basic",
     },
     {
       key: "BasicAttack2DMG",
@@ -34,6 +35,7 @@ export const basicAttacks = {
         "9": "33.00%*2",
         "10": "35.49%*2",
       },
+      type: "Basic",
     },
   ],
 };

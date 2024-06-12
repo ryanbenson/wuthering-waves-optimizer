@@ -86,9 +86,18 @@ export function getEnemyDefense(enemyLevel: number): number {
 
 export function getBaseDamageValue(
   talentValue: number,
-  bonusTotalSkillDmg: number,
-  bonusSpecificSkillDmg: number
+  bonusTotalSkillDmg: number = 0,
+  bonusSpecificSkillDmg: number = 0
 ): number {
+  if (bonusTotalSkillDmg === 0 && bonusSpecificSkillDmg === 0) {
+    return talentValue;
+  }
+  if (bonusTotalSkillDmg > 0 && bonusSpecificSkillDmg === 0) {
+    return talentValue * (1 + bonusTotalSkillDmg);
+  }
+  if (bonusTotalSkillDmg === 0 && bonusSpecificSkillDmg > 0) {
+    return talentValue * (1 + bonusSpecificSkillDmg);
+  }
   return talentValue * (1 + bonusTotalSkillDmg * bonusSpecificSkillDmg);
 }
 

@@ -18,7 +18,7 @@ export const skillAttacks = {
         "9": "62.30%*3 + 124.59%",
         "10": "67.00%*3 + 133.99%",
       },
-      damageType: "skill",
+      type: "Skill",
     },
     {
       key: "TrueSightConquestDMG",
@@ -35,7 +35,7 @@ export const skillAttacks = {
         "9": "54.81%*2 + 76.74% + 87.70%",
         "10": "58.95%*2 + 82.52% + 94.31%",
       },
-      damageType: "skill",
+      type: "Skill",
     },
     {
       key: "TrueSightChargeDMG",
@@ -52,7 +52,7 @@ export const skillAttacks = {
         "9": "67.59% + 101.38%",
         "10": "72.68% + 109.02%",
       },
-      damageType: "skill",
+      type: "Skill",
     },
   ],
 };

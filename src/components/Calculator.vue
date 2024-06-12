@@ -194,9 +194,7 @@ interface FormData {
   enemyLevel: number;
   enemyResist: number;
   defIgnore: number;
-  bonusTotalSkillDmg: number;
   bonusSpecificSkillDmg: number;
-  bonusElementDmg: number;
   totalDeepenEffect: number;
   resistenceReduction: number;
 }
@@ -220,9 +218,7 @@ export default defineComponent({
       enemyLevel: 1,
       enemyResist: 0.1,
       defIgnore: 0,
-      bonusTotalSkillDmg: 0,
       bonusSpecificSkillDmg: 0,
-      bonusElementDmg: 0,
       totalDeepenEffect: 0,
       resistenceReduction: 0,
     });
@@ -448,14 +444,65 @@ export default defineComponent({
       calcAllDamages();
     };
 
+    const getElementDmgBonusByType = (element) => {
+      let val = 0;
+      switch (element) {
+        case "Glacio":
+          val = Glacio.value;
+          break;
+        case "Fusion":
+          val = Fusion.value;
+          break;
+        case "Electro":
+          val = Electro.value;
+          break;
+        case "Aero":
+          val = Aero.value;
+          break;
+        case "Spectro":
+          val = Spectro.value;
+          break;
+        case "Havoc":
+          val = Havoc.value;
+          break;
+      }
+
+      return val / 100;
+    };
+
+    const getDamageTypeBonusByType = (type) => {
+      let val = 0;
+      switch (type) {
+        case "Basic":
+          val = BasicAttackDMGBonus.value;
+          break;
+        case "Heavy":
+          val = HeavyAttackDMGBonus.value;
+          break;
+        case "Skill":
+          val = ResonanceSkillDMGBonus.value;
+          break;
+        case "Liberation":
+          val = ResonanceLiberationDMGBonus.value;
+          break;
+      }
+
+      return val / 100;
+    };
+
     const calcAllDamages = () => {
       if (!chosenChar.value) {
         return;
       }
+      const elementalDmgBonusDecimal = getElementDmgBonusByType(
+        chosenChar.value?.basic?.element
+      );
       const basicAttacks = chosenChar.value.basicAttacks?.attacks ?? [];
       const basicAttacksTalent = talentData.basic;
       const basicAttacksByTalent = [];
       basicAttacks.forEach((attack) => {
+        const attackType = attack.type;
+        const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         const talent = attack.talents[basicAttacksTalent];
         const damage = calcDamage(
           characterLevel.value,
@@ -464,9 +511,11 @@ export default defineComponent({
           talent,
           totalAtk.value,
           formData.defIgnore,
-          formData.bonusTotalSkillDmg,
+          totalSkillDmgBonus,
+          // this is if you specifically buff one instance of a damage like True Sight - Capture DMG,
+          // but not the other instances of the same skill
           formData.bonusSpecificSkillDmg,
-          formData.bonusElementDmg,
+          elementalDmgBonusDecimal,
           formData.totalDeepenEffect,
           formData.resistenceReduction
         );
@@ -483,6 +532,9 @@ export default defineComponent({
       const skillAttacks = chosenChar.value.skillAttacks?.attacks ?? [];
       const skillAttacksTalent = talentData.skill;
       skillAttacks.forEach((attack) => {
+        const attackType = attack.type;
+        const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
+        console.log("skill bonus", totalSkillDmgBonus);
         const talent = attack.talents[skillAttacksTalent];
         const damage = calcDamage(
           characterLevel.value,
@@ -491,9 +543,9 @@ export default defineComponent({
           talent,
           totalAtk.value,
           formData.defIgnore,
-          formData.bonusTotalSkillDmg,
+          totalSkillDmgBonus,
           formData.bonusSpecificSkillDmg,
-          formData.bonusElementDmg,
+          elementalDmgBonusDecimal,
           formData.totalDeepenEffect,
           formData.resistenceReduction
         );
@@ -528,22 +580,10 @@ export default defineComponent({
         step: "0.01",
       },
       {
-        name: "bonusTotalSkillDmg",
-        label: "Bonus Total Skill Dmg",
-        type: "number",
-        step: ".1",
-      },
-      {
         name: "bonusSpecificSkillDmg",
         label: "Bonus Specific Skill Dmg",
         type: "number",
         step: "1",
-      },
-      {
-        name: "bonusElementDmg",
-        label: "Bonus Element Dmg",
-        type: "number",
-        step: "0.1",
       },
       {
         name: "totalDeepenEffect",
