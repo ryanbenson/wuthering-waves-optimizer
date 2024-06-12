@@ -158,11 +158,12 @@
       <div>Spectro DMG Bonus: {{ Spectro }}%</div>
       <div>Havoc DMG Bonus: {{ Havoc }}%</div>
       <hr />
-      <div>Damage:</div>
+      <h2>Damage</h2>
       <h4>Basic Attacks</h4>
       <div
         v-for="damageInstance in allDamages?.value?.basicAttacks"
-        :key="damageInstance.key">
+        :key="damageInstance.key"
+        class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
         <span v-html="damageInstance.damage.detailedCalculation"></span>
         <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
@@ -170,7 +171,8 @@
       <h4>Skill Attacks</h4>
       <div
         v-for="damageInstance in allDamages?.value?.skillAttacks"
-        :key="damageInstance.key">
+        :key="damageInstance.key"
+        class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
         <span v-html="damageInstance.damage.detailedCalculation"></span>
         <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
@@ -178,7 +180,8 @@
       <h4>Liberation Attacks</h4>
       <div
         v-for="damageInstance in allDamages?.value?.liberationAttacks"
-        :key="damageInstance.key">
+        :key="damageInstance.key"
+        class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
         <span v-html="damageInstance.damage.detailedCalculation"></span>
         <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
@@ -186,7 +189,8 @@
       <h4>Forte Circuit Attacks</h4>
       <div
         v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
-        :key="damageInstance.key">
+        :key="damageInstance.key"
+        class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
         <span v-html="damageInstance.damage.detailedCalculation"></span>
         <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
@@ -194,7 +198,8 @@
       <h4>Intro Attacks</h4>
       <div
         v-for="damageInstance in allDamages?.value?.introAttacks"
-        :key="damageInstance.key">
+        :key="damageInstance.key"
+        class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
         <span v-html="damageInstance.damage.detailedCalculation"></span>
         <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
@@ -923,5 +928,11 @@ $tooltip-background-color: $sidebar-background-color;
       }
     }
   }
+}
+.calculation__damage__item {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 </style>
