@@ -1,22 +1,3 @@
-interface WeaponInfo {
-  name: string;
-  description: string;
-  type: string;
-  rarity: number;
-  passiveName: string;
-  passiveValue: string;
-}
-
-interface WeaponLevelData {
-  attack: number;
-  modifier: string;
-  modifierValue: number;
-}
-
-interface WeaponData {
-  [level: string]: WeaponLevelData;
-}
-
 const weaponInfo: WeaponInfo = {
   name: "Guardian Sword",
   description:
@@ -25,6 +6,21 @@ const weaponInfo: WeaponInfo = {
   rarity: 3,
   passiveName: "Unified",
   passiveValue: "Increases Resonance Skill DMG by 12%/15%/18%/21%/24%.",
+  passiveData: [
+    {
+      hasStacks: false,
+      modifier: "ResonanceSkillDMGBonus",
+      modifierByRefinement: {
+        "1": 0.12,
+        "2": 0.15,
+        "3": 0.18,
+        "4": 0.21,
+        "5": 0.24,
+      },
+      details: "Increases Resonance Skill DMG by 12%/15%/18%/21%/24%.",
+      alwaysEnabled: true,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

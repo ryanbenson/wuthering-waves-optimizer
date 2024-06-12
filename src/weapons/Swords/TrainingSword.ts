@@ -1,22 +1,3 @@
-interface WeaponInfo {
-  name: string;
-  description: string;
-  type: string;
-  rarity: number;
-  passiveName: string;
-  passiveValue: string;
-}
-
-interface WeaponLevelData {
-  attack: number;
-  modifier: string;
-  modifierValue: number;
-}
-
-interface WeaponData {
-  [level: string]: WeaponLevelData;
-}
-
 const weaponInfo: WeaponInfo = {
   name: "Training Sword",
   description:
@@ -25,6 +6,21 @@ const weaponInfo: WeaponInfo = {
   rarity: 1,
   passiveName: "Persevere",
   passiveValue: "Increases ATK by 4%/5%/6%/7%/8%.",
+  passiveData: [
+    {
+      hasStacks: false,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.04,
+        "2": 0.05,
+        "3": 0.06,
+        "4": 0.07,
+        "5": 0.08,
+      },
+      details: "Increases ATK by 4%/5%/6%/7%/8%.",
+      alwaysEnabled: true,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

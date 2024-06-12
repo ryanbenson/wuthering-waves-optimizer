@@ -1,22 +1,3 @@
-interface WeaponInfo {
-  name: string;
-  description: string;
-  type: string;
-  rarity: number;
-  passiveName: string;
-  passiveValue: string;
-}
-
-interface WeaponLevelData {
-  attack: number;
-  modifier: string;
-  modifierValue: number;
-}
-
-interface WeaponData {
-  [level: string]: WeaponLevelData;
-}
-
 const weaponInfo: WeaponInfo = {
   name: "Lumingloss",
   description:
@@ -26,6 +7,40 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Pale Gale",
   passiveValue:
     "When Resonance Skill is released, increases Basic Attack DMG and Heavy Attack DMG by 20%/31%/42%/53%/64%, stacking up to 1 time(s). This effect lasts for 10s and can be triggered 1 time(s) every 1s.",
+  passiveData: [
+    {
+      hasStacks: true,
+      modifier: "BasicAttackDMGBonus",
+      modifierByRefinement: {
+        "1": 0.2,
+        "2": 0.31,
+        "3": 0.42,
+        "4": 0.53,
+        "5": 0.64,
+      },
+      minStacks: 0,
+      maxStacks: 1,
+      details:
+        "When Resonance Skill is released, increases Basic Attack DMG and Heavy Attack DMG by 20%/31%/42%/53%/64%, stacking up to 1 time(s). This effect lasts for 10s and can be triggered 1 time(s) every 1s.",
+      alwaysEnabled: false,
+    },
+    {
+      hasStacks: true,
+      modifier: "HeavyAttackDMGBonus",
+      modifierByRefinement: {
+        "1": 0.2,
+        "2": 0.31,
+        "3": 0.42,
+        "4": 0.53,
+        "5": 0.64,
+      },
+      minStacks: 0,
+      maxStacks: 1,
+      details:
+        "When Resonance Skill is released, increases Basic Attack DMG and Heavy Attack DMG by 20%/31%/42%/53%/64%, stacking up to 1 time(s). This effect lasts for 10s and can be triggered 1 time(s) every 1s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

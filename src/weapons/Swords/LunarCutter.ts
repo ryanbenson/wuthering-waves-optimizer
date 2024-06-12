@@ -1,22 +1,3 @@
-interface WeaponInfo {
-  name: string;
-  description: string;
-  type: string;
-  rarity: number;
-  passiveName: string;
-  passiveValue: string;
-}
-
-interface WeaponLevelData {
-  attack: number;
-  modifier: string;
-  modifierValue: number;
-}
-
-interface WeaponData {
-  [level: string]: WeaponLevelData;
-}
-
 const weaponInfo: WeaponInfo = {
   name: "Lunar Cutter",
   description:
@@ -26,6 +7,24 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Preordained",
   passiveValue:
     "Equipped Resonator gains 6 stack(s) of Oath upon entering the battlefield. Each stack increases ATK by 2%/2.5%/3%/3.5%/4%, up to 6 stacks. This effect can be triggered 1 time(s) every 12s.  Oath reduces by 1 stack(s) every 2s. Equipped Resonator gains an additional 6 stack(s) of Oath upon defeating an enemy.",
+  passiveData: [
+    {
+      hasStacks: true,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.02,
+        "2": 0.025,
+        "3": 0.03,
+        "4": 0.035,
+        "5": 0.04,
+      },
+      minStacks: 0,
+      maxStacks: 6,
+      details:
+        "Equipped Resonator gains 6 stack(s) of Oath upon entering the battlefield. Each stack increases ATK by 2%/2.5%/3%/3.5%/4%, up to 6 stacks. This effect can be triggered 1 time(s) every 12s.  Oath reduces by 1 stack(s) every 2s. Equipped Resonator gains an additional 6 stack(s) of Oath upon defeating an enemy.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

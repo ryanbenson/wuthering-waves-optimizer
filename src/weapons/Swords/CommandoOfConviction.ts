@@ -1,22 +1,3 @@
-interface WeaponInfo {
-  name: string;
-  description: string;
-  type: string;
-  rarity: number;
-  passiveName: string;
-  passiveValue: string;
-}
-
-interface WeaponLevelData {
-  attack: number;
-  modifier: string;
-  modifierValue: number;
-}
-
-interface WeaponData {
-  [level: string]: WeaponLevelData;
-}
-
 const weaponInfo: WeaponInfo = {
   name: "Commando of Conviction",
   description:
@@ -26,6 +7,22 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Unyielding",
   passiveValue:
     "When Intro Skill is released, increases ATK by 15%/18.75%/22.5%/26.25%/30%, lasting for 15s.",
+  passiveData: [
+    {
+      hasStacks: false,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.15,
+        "2": 0.1875,
+        "3": 0.225,
+        "4": 0.265,
+        "5": 0.3,
+      },
+      details:
+        "When Intro Skill is released, increases ATK by 15%/18.75%/22.5%/26.25%/30%, lasting for 15s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

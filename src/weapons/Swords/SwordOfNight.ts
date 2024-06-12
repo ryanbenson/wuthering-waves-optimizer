@@ -1,22 +1,3 @@
-interface WeaponInfo {
-  name: string;
-  description: string;
-  type: string;
-  rarity: number;
-  passiveName: string;
-  passiveValue: string;
-}
-
-interface WeaponLevelData {
-  attack: number;
-  modifier: string;
-  modifierValue: number;
-}
-
-interface WeaponData {
-  [level: string]: WeaponLevelData;
-}
-
 const weaponInfo: WeaponInfo = {
   name: "Sword of Night",
   description:
@@ -26,6 +7,22 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Tenacity",
   passiveValue:
     "When Intro Skill is released, increases ATK by 8%/10%/12%/14%/16%, lasting for 10s.",
+  passiveData: [
+    {
+      hasStacks: false,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.08,
+        "2": 0.1,
+        "3": 0.12,
+        "4": 0.14,
+        "5": 0.16,
+      },
+      details:
+        "When Intro Skill is released, increases ATK by 8%/10%/12%/14%/16%, lasting for 10s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {
