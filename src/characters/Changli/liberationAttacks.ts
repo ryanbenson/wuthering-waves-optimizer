@@ -1,4 +1,4 @@
-export const skillAttacks = {
+export const liberationAttacks = {
   name: "Resonance Liberation: Radiance of Fealty",
   description:
     '<div class="skilldescription">Deal <span class="Fire">Fusion DMG</span> to nearby targets, obtaining 4 stacks of [Enflamement], and entering <span class="Highlight">Fiery Feather</span>.<br><span class="Title">Fiery Feather</span><br>When Changli releases Heavy Attack <span class="Highlight">Flaming Sacrifice</span> within 10s, her ATK is increased by 25%, after which <span class="Highlight">Fiery Feather</span> ends.</div>',
