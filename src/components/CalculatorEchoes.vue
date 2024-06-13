@@ -42,8 +42,37 @@
           @input="updateTotalStats" />
       </div>
     </div>
+    <div class="set-bonus-selector">
+      <label>Set Bonuses:</label>
+      <div>
+        <select v-model="setBonuses[0].type" @change="updateTotalStats">
+          <option value="" disabled>Select 2 Set Bonus</option>
+          <option v-for="setBonus in twoSetBonuses" :key="setBonus" :value="setBonus">
+            {{ setBonus }}
+          </option>
+        </select>
+        <select v-model="setBonuses[1].type" @change="updateTotalStats" :disabled="!setBonuses[0].type">
+          <option value="" disabled>Select 2 Set Bonus</option>
+          <option v-for="setBonus in twoSetBonuses" :key="setBonus" :value="setBonus" :disabled="setBonuses[0].type === setBonus">
+            {{ setBonus }}
+          </option>
+        </select>
+      </div>
+      <div>
+        <select v-model="setBonuses[2].type" @change="updateTotalStats" :disabled="!setBonuses[0].type && !setBonuses[1].type">
+          <option value="" disabled>Select 5 Set Bonus</option>
+          <option v-for="setBonus in fiveSetBonuses" :key="setBonus" :value="setBonus">
+            {{ setBonus }}
+          </option>
+        </select>
+      </div>
+      <div v-if="needsStacks(setBonuses[2].type)">
+        <label>Stacks:</label>
+        <input v-model.number="setBonuses[2].stacks" type="number" min="0" :max="getMaxStacks(setBonuses[2].type)" @input="updateTotalStats" />
+      </div>
+    </div>
     <div class="total-cost">Total Cost: {{ totalCost }} / 12</div>
-    <div v-if="false" class="total-stats">
+    <div class="total-stats">
       <h3>Total Stats:</h3>
       <div v-for="(value, key) in totalStats" :key="key">
         {{ key }}: {{ value }}
@@ -148,6 +177,53 @@ export default {
       },
       totalCost: 0,
       totalStats: {},
+      setBonuses: [
+        { type: "", stacks: 0 },
+        { type: "", stacks: 0 },
+        { type: "", stacks: 0 },
+      ],
+      twoSetBonuses: [
+        "Freezing Frost 2 Set",
+        "Molten Rift 2 Set",
+        "Void Thunder 2 Set",
+        "Sierra Gale 2 Set",
+        "Celestial Light 2 Set",
+        "Sun-sinking Eclipse 2 Set",
+        "Rejuvenating Glow 2 Set",
+        "Moonlit Clouds 2 Set",
+        "Lingering Tunes 2 Set",
+      ],
+      fiveSetBonuses: [
+        "Freezing Frost 5 Set",
+        "Molten Rift 5 Set",
+        "Void Thunder 5 Set",
+        "Sierra Gale 5 Set",
+        "Celestial Light 5 Set",
+        "Sun-sinking Eclipse 5 Set",
+        "Rejuvenating Glow 5 Set",
+        "Moonlit Clouds 5 Set",
+        "Lingering Tunes 5 Set",
+      ],
+      setBonusEffects: {
+        "Freezing Frost 2 Set": { Glacio: 10 },
+        "Molten Rift 2 Set": { Fusion: 10 },
+        "Void Thunder 2 Set": { Electro: 10 },
+        "Sierra Gale 2 Set": { Aero: 10 },
+        "Celestial Light 2 Set": { Spectro: 10 },
+        "Sun-sinking Eclipse 2 Set": { Havoc: 10 },
+        "Rejuvenating Glow 2 Set": { HealingBonus: 10 },
+        "Moonlit Clouds 2 Set": { EnergyRegen: 10 },
+        "Lingering Tunes 2 Set": { ATK: 10 },
+        "Freezing Frost 5 Set": { Glacio: 10, maxStacks: 3 },
+        "Molten Rift 5 Set": { Fusion: 30 },
+        "Void Thunder 5 Set": { Electro: 15, maxStacks: 2 },
+        "Sierra Gale 5 Set": { Aero: 30 },
+        "Celestial Light 5 Set": { Spectro: 30 },
+        "Sun-sinking Eclipse 5 Set": { Havoc: 7.5, maxStacks: 4 },
+        "Rejuvenating Glow 5 Set": { ATK: 15 },
+        "Moonlit Clouds 5 Set": { ATK: 22.5 },
+        "Lingering Tunes 5 Set": { ATK: 5, maxStacks: 4, Outro: 60 },
+      },
     };
   },
   methods: {
@@ -182,6 +258,12 @@ export default {
     getSubStatRange(type) {
       return this.subStatRanges[type] || { min: 0, max: 0 };
     },
+    getMaxStacks(type) {
+      return this.setBonusEffects[type]?.maxStacks || 0;
+    },
+    needsStacks(type) {
+      return !!this.setBonusEffects[type]?.maxStacks;
+    },
     updateTotalStats() {
       this.totalCost = this.echoes.reduce(
         (sum, echo) => sum + (parseInt(echo.type) || 0),
@@ -210,6 +292,25 @@ export default {
           }
         }
       }
+
+      for (const setBonus of this.setBonuses) {
+        if (setBonus.type) {
+          const setBonusEffect = this.setBonusEffects[setBonus.type];
+          for (const [key, value] of Object.entries(setBonusEffect)) {
+            if (key !== 'maxStacks') {
+              if (setBonus.type === "Lingering Tunes 5 Set" && key === "Outro") {
+                // Apply Outro stat directly
+                stats[key] = (stats[key] || 0) + value;
+              } else {
+                // Apply other stats with stacks if applicable
+                const bonus = value * (this.needsStacks(setBonus.type) ? setBonus.stacks : 1);
+                stats[key] = (stats[key] || 0) + bonus;
+              }
+            }
+          }
+        }
+      }
+
       this.totalStats = stats;
       this.$emit("update-stats", this.totalStats);
     },
@@ -229,6 +330,14 @@ export default {
 
 .sub-stat-selector select,
 .sub-stat-selector input {
+  margin-right: 10px;
+}
+
+.set-bonus-selector {
+  margin-bottom: 20px;
+}
+
+.set-bonus-selector select {
   margin-right: 10px;
 }
 </style>
