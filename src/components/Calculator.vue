@@ -660,7 +660,9 @@ export default defineComponent({
           BonusSpecificSkillDMGBonus.value,
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
-          ResistReduction.value
+          ResistReduction.value,
+          totalCritRate.value,
+          totalCritDMG.value
         );
         const attackToUse = {
           key: attack.key,
@@ -690,7 +692,9 @@ export default defineComponent({
           BonusSpecificSkillDMGBonus.value,
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
-          ResistReduction.value
+          ResistReduction.value,
+          totalCritRate.value,
+          totalCritDMG.value
         );
         const attackToUse = {
           key: attack.key,
@@ -721,7 +725,9 @@ export default defineComponent({
           BonusSpecificSkillDMGBonus.value,
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
-          ResistReduction.value
+          ResistReduction.value,
+          totalCritRate.value,
+          totalCritDMG.value
         );
         const attackToUse = {
           key: attack.key,
@@ -752,7 +758,9 @@ export default defineComponent({
           BonusSpecificSkillDMGBonus.value,
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
-          ResistReduction.value
+          ResistReduction.value,
+          totalCritRate.value,
+          totalCritDMG.value
         );
         const attackToUse = {
           key: attack.key,
@@ -782,7 +790,9 @@ export default defineComponent({
           BonusSpecificSkillDMGBonus.value,
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
-          ResistReduction.value
+          ResistReduction.value,
+          totalCritRate.value,
+          totalCritDMG.value
         );
         const attackToUse = {
           key: attack.key,
