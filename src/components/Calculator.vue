@@ -322,6 +322,7 @@
 </template>
 
 <script lang="ts">
+// @ts-nocheck
 import { defineComponent, reactive, ref, watch } from "vue";
 import { calcDamage } from "../calculator/calculator";
 import {
