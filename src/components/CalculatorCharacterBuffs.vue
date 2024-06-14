@@ -68,6 +68,9 @@ export default {
       return finalBuffData;
     },
   },
+  mounted() {
+    this.updatedStats();
+  },
 };
 </script>
 

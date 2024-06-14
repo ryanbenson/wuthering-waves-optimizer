@@ -24,20 +24,17 @@
     </div>
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
-        <div class="data-input">
-          <div class="form__group field">
-            <select name="character" v-model="character" class="form__field">
+        <div>
+          <div>
+            <select name="character" v-model="character">
               <option v-for="char in charactersList" :key="char" :value="char">
                 {{ char }}
               </option>
             </select>
-            <label for="character" class="form__label">Character</label>
+            <label for="character">Character</label>
           </div>
-          <div class="form__group field">
-            <select
-              name="characterLevel"
-              v-model="characterLevel"
-              class="form__field">
+          <div>
+            <select name="characterLevel" v-model="characterLevel">
               <option
                 v-for="lvl in characterLevelOptions"
                 :key="lvl"
@@ -45,12 +42,11 @@
                 {{ lvl }}
               </option>
             </select>
-            <label for="characterLevel" class="form__label"
-              >Character Level</label
-            >
+            <label for="characterLevel">Character Level</label>
           </div>
           <template v-if="chosenChar?.value?.buffs">
             <CalculatorCharacterBuffs
+              :key="character"
               :buffs="chosenChar?.value?.buffs"
               @updated-character-buffs="
                 handleUpdatedCharacterBuffs
@@ -887,8 +883,6 @@ export default defineComponent({
         forteCircuitAttacks: forteCircuitAttacksByTalent,
         introAttacks: introAttacksByTalent,
       };
-      console.log(allDamages.value);
-      // to do: add the rest
     };
 
     const fields = [

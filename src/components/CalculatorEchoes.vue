@@ -47,37 +47,52 @@
       <div>
         <select v-model="setBonuses[0].type" @change="updateTotalStats">
           <option value="" disabled>Select 2 Set Bonus</option>
-          <option v-for="setBonus in twoSetBonuses" :key="setBonus" :value="setBonus">
+          <option
+            v-for="setBonus in twoSetBonuses"
+            :key="setBonus"
+            :value="setBonus">
             {{ setBonus }}
           </option>
         </select>
-        <select v-model="setBonuses[1].type" @change="updateTotalStats" :disabled="!setBonuses[0].type">
+        <select
+          v-model="setBonuses[1].type"
+          @change="updateTotalStats"
+          :disabled="!setBonuses[0].type">
           <option value="" disabled>Select 2 Set Bonus</option>
-          <option v-for="setBonus in twoSetBonuses" :key="setBonus" :value="setBonus" :disabled="setBonuses[0].type === setBonus">
+          <option
+            v-for="setBonus in twoSetBonuses"
+            :key="setBonus"
+            :value="setBonus"
+            :disabled="setBonuses[0].type === setBonus">
             {{ setBonus }}
           </option>
         </select>
       </div>
       <div>
-        <select v-model="setBonuses[2].type" @change="updateTotalStats" :disabled="!setBonuses[0].type && !setBonuses[1].type">
+        <select
+          v-model="setBonuses[2].type"
+          @change="updateTotalStats"
+          :disabled="!setBonuses[0].type && !setBonuses[1].type">
           <option value="" disabled>Select 5 Set Bonus</option>
-          <option v-for="setBonus in fiveSetBonuses" :key="setBonus" :value="setBonus">
+          <option
+            v-for="setBonus in fiveSetBonuses"
+            :key="setBonus"
+            :value="setBonus">
             {{ setBonus }}
           </option>
         </select>
       </div>
       <div v-if="needsStacks(setBonuses[2].type)">
         <label>Stacks:</label>
-        <input v-model.number="setBonuses[2].stacks" type="number" min="0" :max="getMaxStacks(setBonuses[2].type)" @input="updateTotalStats" />
+        <input
+          v-model.number="setBonuses[2].stacks"
+          type="number"
+          min="0"
+          :max="getMaxStacks(setBonuses[2].type)"
+          @input="updateTotalStats" />
       </div>
     </div>
     <div class="total-cost">Total Cost: {{ totalCost }} / 12</div>
-    <div class="total-stats">
-      <h3>Total Stats:</h3>
-      <div v-for="(value, key) in totalStats" :key="key">
-        {{ key }}: {{ value }}
-      </div>
-    </div>
   </div>
 </template>
 
@@ -297,13 +312,18 @@ export default {
         if (setBonus.type) {
           const setBonusEffect = this.setBonusEffects[setBonus.type];
           for (const [key, value] of Object.entries(setBonusEffect)) {
-            if (key !== 'maxStacks') {
-              if (setBonus.type === "Lingering Tunes 5 Set" && key === "Outro") {
+            if (key !== "maxStacks") {
+              if (
+                setBonus.type === "Lingering Tunes 5 Set" &&
+                key === "Outro"
+              ) {
                 // Apply Outro stat directly
                 stats[key] = (stats[key] || 0) + value;
               } else {
                 // Apply other stats with stacks if applicable
-                const bonus = value * (this.needsStacks(setBonus.type) ? setBonus.stacks : 1);
+                const bonus =
+                  value *
+                  (this.needsStacks(setBonus.type) ? setBonus.stacks : 1);
                 stats[key] = (stats[key] || 0) + bonus;
               }
             }
