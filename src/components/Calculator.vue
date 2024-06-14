@@ -997,4 +997,10 @@ $tooltip-background-color: $sidebar-background-color;
   justify-content: space-between;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
+.character__stat__item {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
 </style>
