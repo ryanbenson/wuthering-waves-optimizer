@@ -188,8 +188,8 @@ export function calcDamage(
   return {
     instanceDamage,
     totalDamage: finalDamage,
-    critDmg: critDamage,
-    avgDmg: critAvgDamage,
+    critDamage: critDamage,
+    avgDamage: critAvgDamage,
     detailedCalculation,
   };
 }
