@@ -17,6 +17,9 @@
         <li @click="changeScreen('constellations')">
           <img src="/images/constellations.png" class="icon" />
         </li>
+        <li @click="changeScreen('enemy')">
+          <img src="/images/enemy.png" class="icon" />
+        </li>
       </ul>
     </div>
     <div class="calculations__screens">
@@ -46,21 +49,13 @@
               >Character Level</label
             >
           </div>
-          <div
-            v-for="field in fields"
-            :key="field.name"
-            class="form__group field">
-            <input
-              :id="field.name"
-              :type="field.type"
-              v-model="formData[field.name]"
-              :step="field.step"
-              class="form__field"
-              :placeholder="field.name" />
-            <label :for="field.name" class="form__label">{{
-              field.label
-            }}</label>
-          </div>
+          <template v-if="chosenChar?.value?.buffs">
+            <CalculatorCharacterBuffs
+              :buffs="chosenChar?.value?.buffs"
+              @updated-character-buffs="
+                handleUpdatedCharacterBuffs
+              "></CalculatorCharacterBuffs>
+          </template>
         </div>
       </div>
 
@@ -137,6 +132,21 @@
       <div class="screen--character" v-show="curScreen === 'constellations'">
         Constellations coming soon.
       </div>
+      <div class="screen--enemy" v-show="curScreen === 'enemy'">
+        <div
+          v-for="field in fields"
+          :key="field.name"
+          class="form__group field">
+          <input
+            :id="field.name"
+            :type="field.type"
+            v-model="formData[field.name]"
+            :step="field.step"
+            class="form__field"
+            :placeholder="field.name" />
+          <label :for="field.name" class="form__label">{{ field.label }}</label>
+        </div>
+      </div>
     </div>
     <div class="results">
       <h2>Stats:</h2>
@@ -157,6 +167,12 @@
       <div>Aero DMG Bonus: {{ Aero }}%</div>
       <div>Spectro DMG Bonus: {{ Spectro }}%</div>
       <div>Havoc DMG Bonus: {{ Havoc }}%</div>
+      <div>Defense Ignore: {{ DefIgnore }}%</div>
+      <div>
+        Bonus Specific Skill DMG Bonus: {{ BonusSpecificSkillDMGBonus }}%
+      </div>
+      <div>Total Deepen Effect: {{ TotalDeepenEffect }}%</div>
+      <div>Resist Reduction: {{ ResistReduction }}%</div>
       <hr />
       <h2>Damage</h2>
       <h4>Basic Attacks</h4>
@@ -217,15 +233,12 @@ import {
 } from "../characters/characters";
 import CalculatorEchoes from "./CalculatorEchoes.vue";
 import CalculatorWeapons from "./CalculatorWeapons.vue";
+import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 
 interface FormData {
   [key: string]: number | string; // index signature
   enemyLevel: number;
   enemyResist: number;
-  defIgnore: number;
-  bonusSpecificSkillDmg: number;
-  totalDeepenEffect: number;
-  resistenceReduction: number;
 }
 
 interface TalentData {
@@ -241,15 +254,12 @@ export default defineComponent({
   components: {
     CalculatorEchoes,
     CalculatorWeapons,
+    CalculatorCharacterBuffs,
   },
   setup() {
     const formData = reactive<FormData>({
-      enemyLevel: 1,
+      enemyLevel: 90,
       enemyResist: 0.1,
-      defIgnore: 0,
-      bonusSpecificSkillDmg: 0,
-      totalDeepenEffect: 0,
-      resistenceReduction: 0,
     });
     const talentData = reactive<TalentData>({
       basic: 10,
@@ -259,6 +269,7 @@ export default defineComponent({
       intro: 10,
     });
     const weaponData = reactive({});
+    const charBuffsData = reactive({});
 
     watch(formData, async (updatedFormData: FormData) => {
       handleCalculation(updatedFormData);
@@ -305,6 +316,10 @@ export default defineComponent({
     const Aero = ref(0);
     const Spectro = ref(0);
     const Havoc = ref(0);
+    const DefIgnore = ref(0);
+    const BonusSpecificSkillDMGBonus = ref(0);
+    const TotalDeepenEffect = ref(0);
+    const ResistReduction = ref(0);
 
     charactersList.value = getCharactersAvailable();
 
@@ -350,6 +365,10 @@ export default defineComponent({
       let aero = 0;
       let spectro = 0;
       let havoc = 0;
+      let defIgnore = 0;
+      let bonusSpecificSkillDMGBonus = 0;
+      let totalDeepenEffect = 0;
+      let resistReduction = 0;
 
       let weaponModifer = null;
       let weaponModifierValue = 0;
@@ -360,6 +379,47 @@ export default defineComponent({
         charHp = hp;
         charAtk = attack;
         charDef = defense;
+      }
+      if (charBuffsData.value) {
+        const charBuffInfo = charBuffsData.value;
+        attackPercent += charBuffInfo?.ATK ? charBuffInfo?.ATK * 100 : 0;
+        hpPercent += charBuffInfo?.HP ? charBuffInfo?.HP * 100 : 0;
+        defPercent += charBuffInfo?.DEF ? charBuffInfo?.DEF * 100 : 0;
+        attackFlat += charBuffInfo?.ATK_FLAT ?? 0;
+        hpFlat += charBuffInfo?.HP_FLAT ?? 0;
+        defFlat += charBuffInfo?.DEF_FLAT ?? 0;
+        critRate += charBuffInfo?.CritRate ? charBuffInfo?.CritRate * 100 : 0;
+        critDMG += charBuffInfo?.CritDMG ? charBuffInfo?.CritDMG * 100 : 0;
+        basicAttackDMGBonus += charBuffInfo?.BasicAttackDMGBonus
+          ? charBuffInfo?.BasicAttackDMGBonus * 100
+          : 0;
+        heavyAttackDMGBonus += charBuffInfo?.HeavyAttackDMGBonus
+          ? charBuffInfo?.HeavyAttackDMGBonus * 100
+          : 0;
+        resonanceSkillDMGBonus += charBuffInfo?.ResonanceSkillDMGBonus
+          ? charBuffInfo?.ResonanceSkillDMGBonus * 100
+          : 0;
+        resonanceLiberationDMGBonus += charBuffInfo?.ResonanceLiberationDMGBonus
+          ? charBuffInfo?.ResonanceLiberationDMGBonus * 100
+          : 0;
+        glacio += charBuffInfo?.Glacio ? charBuffInfo?.Glacio * 100 : 0;
+        fusion += charBuffInfo?.Fusion ? charBuffInfo?.Fusion * 100 : 0;
+        electro += charBuffInfo?.Electro ? charBuffInfo?.Electro * 100 : 0;
+        aero += charBuffInfo?.Aero ? charBuffInfo?.Aero * 100 : 0;
+        spectro += charBuffInfo?.Spectro ? charBuffInfo?.Spectro * 100 : 0;
+        havoc += charBuffInfo?.Havoc ? charBuffInfo?.Havoc * 100 : 0;
+        defIgnore += charBuffInfo?.DEFIgnore
+          ? charBuffInfo?.DEFIgnore * 100
+          : 0;
+        bonusSpecificSkillDMGBonus = charBuffInfo?.BonusSpecificSkillDMGBonus
+          ? charBuffInfo?.BonusSpecificSkillDMGBonus * 100
+          : 0;
+        totalDeepenEffect = charBuffInfo?.TotalDeepenEffect
+          ? charBuffInfo?.TotalDeepenEffect * 100
+          : 0;
+        resistReduction = charBuffInfo?.ResistReduction
+          ? charBuffInfo?.ResistReduction * 100
+          : 0;
       }
       if (weaponData.value) {
         weaponAtk = weaponData.value?.attack;
@@ -412,6 +472,19 @@ export default defineComponent({
           ? weaponPassiveData?.Spectro * 100
           : 0;
         havoc += weaponPassiveData?.Havoc ? weaponPassiveData?.Havoc * 100 : 0;
+        defIgnore += weaponPassiveData?.DefIgnore
+          ? weaponPassiveData?.DefIgnore * 100
+          : 0;
+        bonusSpecificSkillDMGBonus =
+          weaponPassiveData?.BonusSpecificSkillDMGBonus
+            ? weaponPassiveData?.BonusSpecificSkillDMGBonus * 100
+            : 0;
+        totalDeepenEffect = weaponPassiveData?.TotalDeepenEffect
+          ? weaponPassiveData?.TotalDeepenEffect * 100
+          : 0;
+        resistReduction = weaponPassiveData?.ResistReduction
+          ? weaponPassiveData?.ResistReduction * 100
+          : 0;
         // TO DO: Skills / liberation / elemental / etc
         // weapon data is in decimal, but we're calcing in percentages for now
         switch (weaponModifer) {
@@ -469,6 +542,10 @@ export default defineComponent({
       Aero.value = aero;
       Spectro.value = spectro;
       Havoc.value = havoc;
+      DefIgnore.value = defIgnore / 100;
+      BonusSpecificSkillDMGBonus.value = bonusSpecificSkillDMGBonus;
+      TotalDeepenEffect.value = totalDeepenEffect;
+      ResistReduction.value = resistReduction;
 
       calcAllDamages();
     };
@@ -555,14 +632,12 @@ export default defineComponent({
           formData.enemyResist,
           talent,
           atkDefHpVal,
-          formData.defIgnore,
+          DefIgnore.value,
           totalSkillDmgBonus,
-          // this is if you specifically buff one instance of a damage like True Sight - Capture DMG,
-          // but not the other instances of the same skill
-          formData.bonusSpecificSkillDmg,
+          BonusSpecificSkillDMGBonus.value,
           elementalDmgBonusDecimal,
-          formData.totalDeepenEffect,
-          formData.resistenceReduction
+          TotalDeepenEffect.value,
+          ResistReduction.value
         );
         const attackToUse = {
           key: attack.key,
@@ -587,12 +662,12 @@ export default defineComponent({
           formData.enemyResist,
           talent,
           atkDefHpVal,
-          formData.defIgnore,
+          DefIgnore.value,
           totalSkillDmgBonus,
-          formData.bonusSpecificSkillDmg,
+          BonusSpecificSkillDMGBonus.value,
           elementalDmgBonusDecimal,
-          formData.totalDeepenEffect,
-          formData.resistenceReduction
+          TotalDeepenEffect.value,
+          ResistReduction.value
         );
         const attackToUse = {
           key: attack.key,
@@ -618,12 +693,12 @@ export default defineComponent({
           formData.enemyResist,
           talent,
           atkDefHpVal,
-          formData.defIgnore,
+          DefIgnore.value,
           totalSkillDmgBonus,
-          formData.bonusSpecificSkillDmg,
+          BonusSpecificSkillDMGBonus.value,
           elementalDmgBonusDecimal,
-          formData.totalDeepenEffect,
-          formData.resistenceReduction
+          TotalDeepenEffect.value,
+          ResistReduction.value
         );
         const attackToUse = {
           key: attack.key,
@@ -649,12 +724,12 @@ export default defineComponent({
           formData.enemyResist,
           talent,
           atkDefHpVal,
-          formData.defIgnore,
+          DefIgnore.value,
           totalSkillDmgBonus,
-          formData.bonusSpecificSkillDmg,
+          BonusSpecificSkillDMGBonus.value,
           elementalDmgBonusDecimal,
-          formData.totalDeepenEffect,
-          formData.resistenceReduction
+          TotalDeepenEffect.value,
+          ResistReduction.value
         );
         const attackToUse = {
           key: attack.key,
@@ -679,12 +754,12 @@ export default defineComponent({
           formData.enemyResist,
           talent,
           atkDefHpVal,
-          formData.defIgnore,
+          DefIgnore.value,
           totalSkillDmgBonus,
-          formData.bonusSpecificSkillDmg,
+          BonusSpecificSkillDMGBonus.value,
           elementalDmgBonusDecimal,
-          formData.totalDeepenEffect,
-          formData.resistenceReduction
+          TotalDeepenEffect.value,
+          ResistReduction.value
         );
         const attackToUse = {
           key: attack.key,
@@ -713,30 +788,6 @@ export default defineComponent({
         type: "number",
         step: "0.1",
       },
-      {
-        name: "defIgnore",
-        label: "Defense Ignore",
-        type: "number",
-        step: "0.01",
-      },
-      {
-        name: "bonusSpecificSkillDmg",
-        label: "Bonus Specific Skill Dmg",
-        type: "number",
-        step: "1",
-      },
-      {
-        name: "totalDeepenEffect",
-        label: "Total Deepen Effect",
-        type: "number",
-        step: "1",
-      },
-      {
-        name: "resistenceReduction",
-        label: "Resist Reduction",
-        type: "number",
-        step: "1",
-      },
     ];
 
     const handleCalculation = () => {
@@ -745,6 +796,11 @@ export default defineComponent({
 
     const handleWeaponUpdated = (givenWeaponData) => {
       weaponData.value = givenWeaponData;
+      calcCharStats();
+    };
+
+    const handleUpdatedCharacterBuffs = (givenCharBuffsData) => {
+      charBuffsData.value = givenCharBuffsData;
       calcCharStats();
     };
 
@@ -763,6 +819,7 @@ export default defineComponent({
       characterLevel,
       characterLevelOptions,
       charactersList,
+      chosenChar,
       chosenWeapon,
       curScreen,
       changeScreen,
@@ -778,6 +835,7 @@ export default defineComponent({
       totalCritDMG,
       weaponType,
       handleWeaponUpdated,
+      handleUpdatedCharacterBuffs,
       BasicAttackDMGBonus,
       HeavyAttackDMGBonus,
       ResonanceSkillDMGBonus,
@@ -788,6 +846,10 @@ export default defineComponent({
       Aero,
       Spectro,
       Havoc,
+      DefIgnore,
+      BonusSpecificSkillDMGBonus,
+      TotalDeepenEffect,
+      ResistReduction,
       // weaponLevelOptions,
     };
   },

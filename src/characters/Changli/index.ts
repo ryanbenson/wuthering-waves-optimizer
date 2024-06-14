@@ -5,6 +5,7 @@ import { skillAttacks } from "./skillAttacks.ts";
 import { liberationAttacks } from "./liberationAttacks.ts";
 import { forteCircuitAttacks } from "./forteCircuitAttacks.ts";
 import { introAttacks } from "./introAttacks.ts";
+import { buffs } from "./buffs.ts";
 
 export function getData() {
   return {
@@ -16,5 +17,6 @@ export function getData() {
     liberationAttacks,
     forteCircuitAttacks,
     introAttacks,
+    buffs,
   };
 }
