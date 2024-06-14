@@ -175,14 +175,25 @@
       <div>Resist Reduction: {{ ResistReduction }}%</div>
       <hr />
       <h2>Damage</h2>
+      <div class="calculation__damage__item">
+        <span>Name</span>
+        <span>
+          <span>Normal</span>
+          <span>Average</span>
+          <span>Crit</span>
+        </span>
       <h4>Basic Attacks</h4>
       <div
         v-for="damageInstance in allDamages?.value?.basicAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
-        <span v-html="damageInstance.damage.detailedCalculation"></span>
-        <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
+        <span v-if="false" v-html="damageInstance.damage.detailedCalculation"></span>
+        <span>
+          <span>{{ damageInstance.damage.totalDamage }}</span>
+          <span>{{ damageInstance.damage.avgDamage }}</span>
+          <span>{{ damageInstance.damage.critDamage }}</span>
+        </div>
       </div>
       <h4>Skill Attacks</h4>
       <div
@@ -199,8 +210,12 @@
         :key="damageInstance.key"
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
-        <span v-html="damageInstance.damage.detailedCalculation"></span>
-        <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
+        <span v-if="false" v-html="damageInstance.damage.detailedCalculation"></span>
+        <span>
+          <span>{{ damageInstance.damage.totalDamage }}</span>
+          <span>{{ damageInstance.damage.avgDamage }}</span>
+          <span>{{ damageInstance.damage.critDamage }}</span>
+        </div>
       </div>
       <h4>Forte Circuit Attacks</h4>
       <div
@@ -208,8 +223,12 @@
         :key="damageInstance.key"
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
-        <span v-html="damageInstance.damage.detailedCalculation"></span>
-        <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
+        <span v-if="false" v-html="damageInstance.damage.detailedCalculation"></span>
+        <span>
+          <span>{{ damageInstance.damage.totalDamage }}</span>
+          <span>{{ damageInstance.damage.avgDamage }}</span>
+          <span>{{ damageInstance.damage.critDamage }}</span>
+        </div>
       </div>
       <h4>Intro Attacks</h4>
       <div
@@ -217,8 +236,12 @@
         :key="damageInstance.key"
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
-        <span v-html="damageInstance.damage.detailedCalculation"></span>
-        <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
+        <span v-if="false" v-html="damageInstance.damage.detailedCalculation"></span>
+        <span>
+          <span>{{ damageInstance.damage.totalDamage }}</span>
+          <span>{{ damageInstance.damage.avgDamage }}</span>
+          <span>{{ damageInstance.damage.critDamage }}</span>
+        </div>
       </div>
     </div>
   </div>
