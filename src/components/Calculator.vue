@@ -177,23 +177,22 @@
       <h2>Damage</h2>
       <div class="calculation__damage__item">
         <span>Name</span>
-        <span>
-          <span>Normal</span>
-          <span>Average</span>
-          <span>Crit</span>
-        </span>
+        <span>Normal</span>
+        <span>Average</span>
+        <span>Crit</span>
+      </div>
       <h4>Basic Attacks</h4>
       <div
         v-for="damageInstance in allDamages?.value?.basicAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item">
-        <span>{{ damageInstance.label }}: </span>
-        <span v-if="false" v-html="damageInstance.damage.detailedCalculation"></span>
-        <span>
-          <span>{{ damageInstance.damage.totalDamage }}</span>
-          <span>{{ damageInstance.damage.avgDamage }}</span>
-          <span>{{ damageInstance.damage.critDamage }}</span>
-        </div>
+        <span>{{ damageInstance.label }}:</span>
+        <span
+          v-if="false"
+          v-html="damageInstance.damage.detailedCalculation"></span>
+        <span>{{ displayDamage(damageInstance.damage.totalDamage) }}</span>
+        <span>{{ displayDamage(damageInstance.damage.avgDamage) }}</span>
+        <span>{{ displayDamage(damageInstance.damage.critDamage) }}</span>
       </div>
       <h4>Skill Attacks</h4>
       <div
@@ -201,8 +200,12 @@
         :key="damageInstance.key"
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
-        <span v-html="damageInstance.damage.detailedCalculation"></span>
-        <span v-if="false"> = {{ damageInstance.damage.totalDamage }}</span>
+        <span
+          v-if="false"
+          v-html="damageInstance.damage.detailedCalculation"></span>
+        <span>{{ displayDamage(damageInstance.damage.totalDamage) }}</span>
+        <span>{{ displayDamage(damageInstance.damage.avgDamage) }}</span>
+        <span>{{ displayDamage(damageInstance.damage.critDamage) }}</span>
       </div>
       <h4>Liberation Attacks</h4>
       <div
@@ -210,12 +213,12 @@
         :key="damageInstance.key"
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
-        <span v-if="false" v-html="damageInstance.damage.detailedCalculation"></span>
-        <span>
-          <span>{{ damageInstance.damage.totalDamage }}</span>
-          <span>{{ damageInstance.damage.avgDamage }}</span>
-          <span>{{ damageInstance.damage.critDamage }}</span>
-        </div>
+        <span
+          v-if="false"
+          v-html="damageInstance.damage.detailedCalculation"></span>
+        <span>{{ displayDamage(damageInstance.damage.totalDamage) }}</span>
+        <span>{{ displayDamage(damageInstance.damage.avgDamage) }}</span>
+        <span>{{ displayDamage(damageInstance.damage.critDamage) }}</span>
       </div>
       <h4>Forte Circuit Attacks</h4>
       <div
@@ -223,12 +226,12 @@
         :key="damageInstance.key"
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
-        <span v-if="false" v-html="damageInstance.damage.detailedCalculation"></span>
-        <span>
-          <span>{{ damageInstance.damage.totalDamage }}</span>
-          <span>{{ damageInstance.damage.avgDamage }}</span>
-          <span>{{ damageInstance.damage.critDamage }}</span>
-        </div>
+        <span
+          v-if="false"
+          v-html="damageInstance.damage.detailedCalculation"></span>
+        <span>{{ displayDamage(damageInstance.damage.totalDamage) }}</span>
+        <span>{{ displayDamage(damageInstance.damage.avgDamage) }}</span>
+        <span>{{ displayDamage(damageInstance.damage.critDamage) }}</span>
       </div>
       <h4>Intro Attacks</h4>
       <div
@@ -236,12 +239,12 @@
         :key="damageInstance.key"
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
-        <span v-if="false" v-html="damageInstance.damage.detailedCalculation"></span>
-        <span>
-          <span>{{ damageInstance.damage.totalDamage }}</span>
-          <span>{{ damageInstance.damage.avgDamage }}</span>
-          <span>{{ damageInstance.damage.critDamage }}</span>
-        </div>
+        <span
+          v-if="false"
+          v-html="damageInstance.damage.detailedCalculation"></span>
+        <span>{{ displayDamage(damageInstance.damage.totalDamage) }}</span>
+        <span>{{ displayDamage(damageInstance.damage.avgDamage) }}</span>
+        <span>{{ displayDamage(damageInstance.damage.critDamage) }}</span>
       </div>
     </div>
   </div>
@@ -846,6 +849,10 @@ export default defineComponent({
       curScreen.value = screen;
     };
 
+    const displayDamage = (damage: number) => {
+      return Math.ceil(damage);
+    };
+
     return {
       allDamages,
       character,
@@ -857,6 +864,7 @@ export default defineComponent({
       curScreen,
       changeScreen,
       damage,
+      displayDamage,
       fields,
       formData,
       updateStatsEchoes,
@@ -1025,9 +1033,8 @@ $tooltip-background-color: $sidebar-background-color;
   }
 }
 .calculation__damage__item {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr 100px 100px 100px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 .character__stat__item {
