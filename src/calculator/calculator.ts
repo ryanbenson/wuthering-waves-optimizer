@@ -129,7 +129,9 @@ export function calcDamage(
   bonusSpecificSkillDmg: number = 0,
   bonusElementDmg: number = 0,
   totalDeepenEffect: number = 0,
-  resistenceReduction: number = 0
+  resistenceReduction: number = 0,
+  critRate: number = 0,
+  critDamage: number = 0,
 ) {
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
@@ -179,12 +181,30 @@ export function calcDamage(
     instanceDamage
   );
 
+  let critDamage = calcCritDamage(finalDamage, critDamage);
+  let critAvgDamage = calcAvgDamage(finalDamage, critRate, critDamage);
+
   // Return detailed damage information
   return {
     instanceDamage,
     totalDamage: finalDamage,
+    critDmg: critDamage,
+    avgDmg: critAvgDamage,
     detailedCalculation,
   };
+}
+
+function calcCritDamage(damage: number, critDamage:number): number {
+  const maxCritRate = 1;
+  return damage * (1 + maxCritRate * critDmg);
+}
+
+function calcAvgDamage(damage: number, critRate: number, critDamage:number): number {
+  // don't allow over-crit rate to affect the damage
+  if (critRate > 1) {
+    critRate = 1;
+  }
+  return damage * (1 + criRate * critDmg);
 }
 
 // Helper function to parse the talent string
