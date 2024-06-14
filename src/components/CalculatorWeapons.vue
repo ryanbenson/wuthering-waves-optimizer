@@ -27,7 +27,7 @@
     <div v-if="weaponDescription" class="weapon__desc">
       {{ weaponDescription }}
     </div>
-    <div v-if="hasWeaponPassive" class="weapon__passives">
+    <div v-if="hasWeaponPassive" class="weapon__passives" :key="weapon">
       <CalculatorWeaponsPassive
         v-for="(weaponPassive, i) in weaponPassives"
         class="weapon__passive"
@@ -71,6 +71,8 @@ export default {
     weapon: async function (newWeapon) {
       if (newWeapon) {
         await this.setWeapon();
+        // reset the passive stats
+        this.weaponPassiveStats = {};
         await this.updateWeaponStats();
       }
     },

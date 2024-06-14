@@ -188,11 +188,26 @@
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}:</span>
         <span
-          v-if="false"
-          v-html="damageInstance.damage.detailedCalculation"></span>
-        <span>{{ displayDamage(damageInstance.damage.totalDamage) }}</span>
-        <span>{{ displayDamage(damageInstance.damage.avgDamage) }}</span>
-        <span>{{ displayDamage(damageInstance.damage.critDamage) }}</span>
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculation,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+        >
+        <span
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculationAvg,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+        >
+        <span
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculationCrit,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+        >
       </div>
       <h4>Skill Attacks</h4>
       <div
@@ -201,11 +216,26 @@
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
         <span
-          v-if="false"
-          v-html="damageInstance.damage.detailedCalculation"></span>
-        <span>{{ displayDamage(damageInstance.damage.totalDamage) }}</span>
-        <span>{{ displayDamage(damageInstance.damage.avgDamage) }}</span>
-        <span>{{ displayDamage(damageInstance.damage.critDamage) }}</span>
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculation,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+        >
+        <span
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculationAvg,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+        >
+        <span
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculationCrit,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+        >
       </div>
       <h4>Liberation Attacks</h4>
       <div
@@ -214,11 +244,26 @@
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
         <span
-          v-if="false"
-          v-html="damageInstance.damage.detailedCalculation"></span>
-        <span>{{ displayDamage(damageInstance.damage.totalDamage) }}</span>
-        <span>{{ displayDamage(damageInstance.damage.avgDamage) }}</span>
-        <span>{{ displayDamage(damageInstance.damage.critDamage) }}</span>
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculation,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+        >
+        <span
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculationAvg,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+        >
+        <span
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculationCrit,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+        >
       </div>
       <h4>Forte Circuit Attacks</h4>
       <div
@@ -227,11 +272,26 @@
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
         <span
-          v-if="false"
-          v-html="damageInstance.damage.detailedCalculation"></span>
-        <span>{{ displayDamage(damageInstance.damage.totalDamage) }}</span>
-        <span>{{ displayDamage(damageInstance.damage.avgDamage) }}</span>
-        <span>{{ displayDamage(damageInstance.damage.critDamage) }}</span>
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculation,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+        >
+        <span
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculationAvg,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+        >
+        <span
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculationCrit,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+        >
       </div>
       <h4>Intro Attacks</h4>
       <div
@@ -240,11 +300,26 @@
         class="calculation__damage__item">
         <span>{{ damageInstance.label }}: </span>
         <span
-          v-if="false"
-          v-html="damageInstance.damage.detailedCalculation"></span>
-        <span>{{ displayDamage(damageInstance.damage.totalDamage) }}</span>
-        <span>{{ displayDamage(damageInstance.damage.avgDamage) }}</span>
-        <span>{{ displayDamage(damageInstance.damage.critDamage) }}</span>
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculation,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+        >
+        <span
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculationAvg,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+        >
+        <span
+          v-tooltip="{
+            content: damageInstance.damage.detailedCalculationCrit,
+            html: true,
+          }"
+          >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+        >
       </div>
     </div>
   </div>
@@ -380,7 +455,7 @@ export default defineComponent({
       let defFlat = 0;
       let attackFlat = 0;
       let critRate = 5;
-      let critDMG = 50;
+      let critDMG = 150;
       let basicAttackDMGBonus = 0;
       let heavyAttackDMGBonus = 0;
       let resonanceSkillDMGBonus = 0;

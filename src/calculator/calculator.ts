@@ -178,7 +178,23 @@ export function calcDamage(
   // Build the detailed damage calculation string
   let detailedCalculation = buildDetailedCalculationString(
     talent,
-    instanceDamage
+    instanceDamage,
+    critRate,
+    critDamage
+  );
+  let detailedCalculationCrit = buildDetailedCalculationString(
+    talent,
+    instanceDamage,
+    critRate,
+    critDamage,
+    "crit"
+  );
+  let detailedCalculationAvg = buildDetailedCalculationString(
+    talent,
+    instanceDamage,
+    critRate,
+    critDamage,
+    "average"
   );
 
   let totalCritDmg = calcCritDamage(finalDamage, critDamage);
@@ -191,6 +207,8 @@ export function calcDamage(
     critDamage: totalCritDmg,
     avgDamage: totalAvgDmg,
     detailedCalculation,
+    detailedCalculationCrit,
+    detailedCalculationAvg,
   };
 }
 
@@ -237,7 +255,10 @@ function parseTalentString(talent: string) {
 // Helper function to build the detailed calculation string
 function buildDetailedCalculationString(
   talent: string,
-  instanceDamage: any
+  instanceDamage: any,
+  critRate: number,
+  critDamage: number,
+  adjustDamage: string | null = null
 ): string {
   let talentParts = talent.split("+").map((part) => part.trim());
 
@@ -247,12 +268,24 @@ function buildDetailedCalculationString(
       let percentageValue = parseFloat(percentage.replace("%", ""));
       let percentageString = percentageValue.toFixed(2) + "%";
       let damage = instanceDamage[percentageString].toFixed(2);
-      return `<strong>${damage}</strong> * ${times}`;
+      if (adjustDamage === "average") {
+        damage = calcAvgDamage(damage, critRate, critDamage);
+      }
+      if (adjustDamage === "crit") {
+        damage = calcCritDamage(damage, critDamage);
+      }
+      return `<strong>${Math.ceil(damage)}</strong> * ${times}`;
     } else {
       let percentageValue = parseFloat(part.replace("%", ""));
       let percentageString = percentageValue.toFixed(2) + "%";
       let damage = instanceDamage[percentageString].toFixed(2);
-      return `<strong>${damage}</strong>`;
+      if (adjustDamage === "average") {
+        damage = calcAvgDamage(damage, critRate, critDamage);
+      }
+      if (adjustDamage === "crit") {
+        damage = calcCritDamage(damage, critDamage);
+      }
+      return `<strong>${Math.ceil(damage)}</strong>`;
     }
   });
 
