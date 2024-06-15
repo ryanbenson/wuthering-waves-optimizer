@@ -2,21 +2,34 @@
   <div>
     <div v-for="(echo, index) in echoes" :key="index" class="echo-selector">
       <label>Echo {{ index + 1 }}:</label>
-      <select v-model="echo.type" @change="updateTotalStats">
-        <option value="" disabled>Select Echo</option>
-        <option value="1">1-Cost Echo</option>
-        <option value="3">3-Cost Echo</option>
-        <option value="4">4-Cost Echo</option>
-      </select>
-      <select
-        v-model="echo.rank"
-        @change="updateTotalStats"
-        :disabled="!echo.type">
-        <option value="" disabled>Select Rank</option>
-        <option v-for="rank in [2, 3, 4, 5]" :key="rank" :value="rank">
-          Rank {{ rank }}
-        </option>
-      </select>
+      <div class="echo-setup">
+        <!-- Cost Selection -->
+        <div class="cost-selector">
+          <label>Cost:</label>
+          <div class="cost-options">
+            <button
+              v-for="cost in [1, 3, 4]"
+              :key="cost"
+              :class="{ selected: echo.type == cost }"
+              @click="selectCost(index, cost)">
+              0{{ cost }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Rank Selection -->
+        <div class="rank-selector">
+          <label>Rank:</label>
+          <div class="rank-options">
+            <div
+              v-for="rank in [2, 3, 4, 5]"
+              :key="rank"
+              :class="['rank-circle', { selected: echo.rank == rank }]"
+              :style="{ backgroundColor: rankColors[rank] }"
+              @click="selectRank(index, rank)"></div>
+          </div>
+        </div>
+      </div>
       <select
         v-model="echo.stat"
         @change="updateTotalStats"
@@ -110,6 +123,12 @@ export default {
             .fill()
             .map(() => ({ type: "", value: 0 })),
         })),
+      rankColors: {
+        2: "#11cb11",
+        3: "#0580ff",
+        4: "#a314a3",
+        5: "#e1e115",
+      },
       statsTable: {
         1: {
           HP: { 2: 5.7, 3: 8.1, 4: 11.3, 5: 18.0 },
@@ -242,6 +261,14 @@ export default {
     };
   },
   methods: {
+    selectCost(index, cost) {
+      this.echoes[index].type = cost;
+      this.updateTotalStats();
+    },
+    selectRank(index, rank) {
+      this.echoes[index].rank = rank;
+      this.updateTotalStats();
+    },
     getReadableLabel(key) {
       const map = {
         HP_FLAT: "HP",
@@ -359,5 +386,68 @@ export default {
 
 .set-bonus-selector select {
   margin-right: 10px;
+}
+.echo-selector {
+  margin-bottom: 20px;
+}
+
+.cost-selector,
+.rank-selector {
+  margin: 0 1rem 1rem 0;
+}
+.echo-setup {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.rank-options {
+  display: flex;
+}
+.cost-options button,
+.rank-options .rank-circle {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.rank-options .rank-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 100%;
+  display: inline-block;
+  padding: 0;
+  border: none;
+}
+
+.cost-options button {
+  background-color: transparent;
+  border-radius: 6px;
+}
+.cost-options button.selected {
+  font-weight: bold;
+  border-color: yellow !important;
+}
+
+.sub-stat-selector {
+  display: flex;
+  margin-top: 5px;
+}
+
+.sub-stat-selector select,
+.sub-stat-selector input {
+  margin-right: 10px;
+}
+
+.set-bonus-selector {
+  margin-bottom: 20px;
+}
+
+.set-bonus-selector select {
+  margin-right: 10px;
+}
+.rank-circle.selected {
+  transform: scale(1.3);
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 </style>

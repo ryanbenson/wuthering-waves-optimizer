@@ -126,7 +126,7 @@
       </div>
 
       <div class="screen--character" v-show="curScreen === 'constellations'">
-        Constellations coming soon.
+        Resonance chains coming soon.
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <div
