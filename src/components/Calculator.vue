@@ -624,6 +624,7 @@ export default defineComponent({
         spectro += echoStats?.value?.Spectro ?? 0;
         havoc += echoStats?.value?.Havoc ?? 0;
       }
+      console.log(charAtk, weaponAtk, attackPercent, attackFlat);
       totalAtk.value =
         (charAtk + weaponAtk) * (1 + attackPercent / 100) + attackFlat;
       totalHp.value = charHp * (1 + hpPercent / 100) + hpFlat;

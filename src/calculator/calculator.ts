@@ -33,9 +33,7 @@ export function calcHitDamage(
   const baseDamageValue = getBaseDamageValue(
     talentValue,
     bonusTotalSkillDmg,
-    bonusSpecificSkillDmg
-  );
-  const bonusDamageValue = getBonusDamageValue(
+    bonusSpecificSkillDmg,
     bonusElementDmg,
     totalDeepenEffect
   );
@@ -44,7 +42,6 @@ export function calcHitDamage(
   const baseDamage = getBaseDamage(
     attack,
     baseDamageValue,
-    bonusDamageValue,
     defModifier,
     resistValue
   );
@@ -54,13 +51,10 @@ export function calcHitDamage(
 export function getBaseDamage(
   attack: number,
   baseDamageValue: number,
-  bonusDamageValue: number,
   defModifier: number,
   resistValue: number
 ): number {
-  return (
-    attack * baseDamageValue * bonusDamageValue * defModifier * resistValue
-  );
+  return attack * baseDamageValue * defModifier * resistValue;
 }
 
 export function getTalentValue(talentStringWithPercent: string): number {
@@ -87,25 +81,32 @@ export function getEnemyDefense(enemyLevel: number): number {
 export function getBaseDamageValue(
   talentValue: number,
   bonusTotalSkillDmg: number = 0,
-  bonusSpecificSkillDmg: number = 0
-): number {
-  if (bonusTotalSkillDmg === 0 && bonusSpecificSkillDmg === 0) {
-    return talentValue;
-  }
-  if (bonusTotalSkillDmg > 0 && bonusSpecificSkillDmg === 0) {
-    return talentValue * (1 + bonusTotalSkillDmg);
-  }
-  if (bonusTotalSkillDmg === 0 && bonusSpecificSkillDmg > 0) {
-    return talentValue * (1 + bonusSpecificSkillDmg);
-  }
-  return talentValue * (1 + bonusTotalSkillDmg * bonusSpecificSkillDmg);
-}
-
-export function getBonusDamageValue(
+  bonusSpecificSkillDmg: number = 0,
   bonusElementDmg: number,
   totalDeepenEffect: number
 ): number {
-  return (1 + bonusElementDmg) * (1 + totalDeepenEffect);
+  const bonusValue = getBonusDamageValue(
+    bonusTotalSkillDmg,
+    bonusSpecificSkillDmg,
+    bonusElementDmg,
+    totalDeepenEffect
+  );
+  if (bonusValue === 0) {
+    return talentValue;
+  }
+  return talentValue * bonusValue;
+}
+
+export function getBonusDamageValue(
+  bonusTotalSkillDmg: number = 0,
+  bonusSpecificSkillDmg: number = 0,
+  bonusElementDmg: number = 0,
+  totalDeepenEffect: number = 0
+): number {
+  return (
+    (1 + bonusTotalSkillDmg + bonusSpecificSkillDmg + bonusElementDmg) *
+    (1 + totalDeepenEffect)
+  );
 }
 
 export function getEnemyResistValue(

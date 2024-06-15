@@ -320,7 +320,7 @@ export default {
       for (const echo of this.echoes) {
         // add in the base stats (flat HP and flat ATK) that's guaranteed
         if (echo.type && echo.rank) {
-          let stat = echo.type === "1" ? "HP_FLAT" : "ATK_FLAT";
+          let stat = echo.type == "1" ? "HP_FLAT" : "ATK_FLAT";
           let statValue = this.flatBonusesByRankByType[echo.type][echo.rank];
           stats[stat] = (stats[stat] || 0) + statValue;
         }
