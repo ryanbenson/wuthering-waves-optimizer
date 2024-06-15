@@ -29,7 +29,6 @@ export function calcHitDamage(
   // critRate: number,
   // critDamage: number,
 ): number {
-  const talentValue = talent;
   const baseDamageValue = getBonusDamageValue(
     bonusTotalSkillDmg,
     bonusSpecificSkillDmg,
