@@ -9,6 +9,7 @@ interface WeaponInfo {
 }
 
 interface WeaponPassiveData {
+  key: string;
   hasStacks: boolean;
   modifier: string;
   modifierByRefinement: WeaponPassiveModifierByRefinement;

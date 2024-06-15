@@ -9,6 +9,7 @@ const weaponInfo: WeaponInfo = {
     "Equipped Resonator gains 6 stack(s) of Oath upon entering the battlefield. Each stack increases ATK by 2%/2.5%/3%/3.5%/4%, up to 6 stacks. This effect can be triggered 1 time(s) every 12s.  Oath reduces by 1 stack(s) every 2s. Equipped Resonator gains an additional 6 stack(s) of Oath upon defeating an enemy.",
   passiveData: [
     {
+      key: "ATK",
       hasStacks: true,
       modifier: "ATK",
       modifierByRefinement: {

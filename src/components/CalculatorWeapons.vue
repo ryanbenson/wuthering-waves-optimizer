@@ -36,7 +36,7 @@
       <CalculatorWeaponsPassive
         v-for="(weaponPassive, i) in weaponPassives"
         class="weapon__passive"
-        :key="i"
+        :key="weaponPassive.key"
         :has-stacks="weaponPassive.hasStacks"
         :modifier="weaponPassive.modifier"
         :modifier-by-refinement="weaponPassive.modifierByRefinement"
@@ -45,6 +45,7 @@
         :always-enabled="weaponPassive.alwaysEnabled"
         :details="weaponPassive.details"
         :refinement="refinement"
+        :duplicate-modifier="weaponPassive.duplicateModifier"
         @updated-weapon-stats="handleUpdatedWeaponStats">
       </CalculatorWeaponsPassive>
     </div>
@@ -80,8 +81,8 @@ export default {
       }
     },
     weaponType: async function () {
-      this.updateWeapons();
-      await this.updateWeaponStats();
+      await this.updateWeapons();
+      await this.setFirstWeapon();
     },
   },
   methods: {
@@ -94,16 +95,15 @@ export default {
         modifierValue,
         weaponPassiveStats: this.weaponPassiveStats,
       };
+      console.log(weaponData.weaponPassiveStats);
       this.$emit("update-weapon", weaponData);
     },
     async setWeapon() {
       const weaponChosen = await getWeaponByName(this.weaponType, this.weapon);
       this.chosenWeapon = weaponChosen;
     },
-    updateWeapons() {
+    async updateWeapons() {
       this.weaponsList = getWeaponsByType(this.weaponType);
-      this.weapon = this.weaponsList[0];
-      this.chosenWeapon = this.weaponsList[0];
     },
     async handleUpdatedWeaponStats(data) {
       this.weaponPassiveStats[data.stat] = data.value;
@@ -124,6 +124,7 @@ export default {
     },
     async setFirstWeapon() {
       const weapon = this.weaponsList[0];
+      this.weapon = weapon;
       const weaponChosen = await getWeaponByName(this.weaponType, weapon);
       this.chosenWeapon = weaponChosen;
       this.weaponPassiveStats = {};

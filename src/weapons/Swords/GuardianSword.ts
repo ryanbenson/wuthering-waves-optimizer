@@ -8,6 +8,7 @@ const weaponInfo: WeaponInfo = {
   passiveValue: "Increases Resonance Skill DMG by 12%/15%/18%/21%/24%.",
   passiveData: [
     {
+      key: "ResonanceSkillDMGBonus",
       hasStacks: false,
       modifier: "ResonanceSkillDMGBonus",
       modifierByRefinement: {

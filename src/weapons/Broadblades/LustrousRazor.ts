@@ -7,6 +7,25 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Incision",
   passiveValue:
     "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. When Resonance Skill is released, Resonance Liberation DMG is increased by 7%/8.75%/10.5%/12.25%/14%, stacking up to 3 times. This effect lasts for 12s.",
+  passiveData: [
+    {
+      key: "ResonanceLiberationDMGBonus",
+      hasStacks: true,
+      modifier: "ResonanceLiberationDMGBonus",
+      modifierByRefinement: {
+        "1": 0.07,
+        "2": 0.0875,
+        "3": 0.105,
+        "4": 0.1225,
+        "5": 0.14,
+      },
+      minStacks: 0,
+      maxStacks: 3,
+      details:
+        "When Resonance Skill is released, Resonance Liberation DMG is increased by 7%/8.75%/10.5%/12.25%/14%, stacking up to 3 times. This effect lasts for 12s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

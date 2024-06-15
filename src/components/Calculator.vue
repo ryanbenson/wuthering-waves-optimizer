@@ -57,6 +57,7 @@
 
       <div class="screen--character" v-show="curScreen === 'weapon'">
         <CalculatorWeapons
+          :key="character"
           @update-weapon="handleWeaponUpdated"
           :weapon-type="weaponType"></CalculatorWeapons>
       </div>
@@ -583,6 +584,28 @@ export default defineComponent({
         resistReduction = weaponPassiveData?.ResistReduction
           ? weaponPassiveData?.ResistReduction * 100
           : 0;
+        if (weaponPassiveData?.AllAttributeBonus) {
+          basicAttackDMGBonus += weaponPassiveData?.AllAttributeBonus
+            ? weaponPassiveData?.AllAttributeBonus * 100
+            : 0;
+          heavyAttackDMGBonus += weaponPassiveData?.AllAttributeBonus
+            ? weaponPassiveData?.AllAttributeBonus * 100
+            : 0;
+          resonanceSkillDMGBonus += weaponPassiveData?.AllAttributeBonus
+            ? weaponPassiveData?.AllAttributeBonus * 100
+            : 0;
+          resonanceLiberationDMGBonus += weaponPassiveData?.AllAttributeBonus
+            ? weaponPassiveData?.AllAttributeBonus * 100
+            : 0;
+        }
+        if (weaponPassiveData?.AllResonanceDMG) {
+          resonanceSkillDMGBonus += weaponPassiveData?.AllResonanceDMG
+            ? weaponPassiveData?.AllResonanceDMG * 100
+            : 0;
+          resonanceLiberationDMGBonus += weaponPassiveData?.AllResonanceDMG
+            ? weaponPassiveData?.AllResonanceDMG * 100
+            : 0;
+        }
         // TO DO: Skills / liberation / elemental / etc
         // weapon data is in decimal, but we're calcing in percentages for now
         switch (weaponModifer) {

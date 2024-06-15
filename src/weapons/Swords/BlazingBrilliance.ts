@@ -9,6 +9,7 @@ const weaponInfo: WeaponInfo = {
     "Increases CRIT Rate by 8%/10%/12%/14%/16%. Upon dealing damage, increases [Searing Feather] by 1 stack, gaining 1 stack every 0.5s. When Resonance Skill is released, increases [Searing Feather] by an extra 5 stacks. Each stack of [Searing Feather] increases Resonance Skill DMG Bonus by 4%/5%/6%/7%/8%, stacking up to 14 times. After reaching 14 stacks of [Searing Feather], all stacks will reset within 10s.",
   passiveData: [
     {
+      key: "CritRate",
       hasStacks: false,
       modifier: "CritRate",
       modifierByRefinement: {
@@ -22,6 +23,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: true,
     },
     {
+      key: "ResonanceSkillDMGBonus",
       hasStacks: true,
       modifier: "ResonanceSkillDMGBonus",
       modifierByRefinement: {

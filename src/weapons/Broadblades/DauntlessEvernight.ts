@@ -7,6 +7,42 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Battlebound",
   passiveValue:
     "When Intro Skill is released, increases ATK by 8%/10%/12%/14%/16% and DEF by 15%/18.75%/22.5%/26.25%/30%, lasting for 15s.",
+  passiveData: [
+    {
+      key: "ATK",
+      hasStacks: false,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.08,
+        "2": 0.1,
+        "3": 0.12,
+        "4": 0.14,
+        "5": 0.16,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When Intro Skill is released, increases ATK by 8%/10%/12%/14%/16% and DEF by 15%/18.75%/22.5%/26.25%/30%, lasting for 15s. (ATK)",
+      alwaysEnabled: false,
+    },
+    {
+      key: "DEF",
+      hasStacks: false,
+      modifier: "DEF",
+      modifierByRefinement: {
+        "1": 0.08,
+        "2": 0.1,
+        "3": 0.12,
+        "4": 0.14,
+        "5": 0.16,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When Intro Skill is released, increases ATK by 8%/10%/12%/14%/16% and DEF by 15%/18.75%/22.5%/26.25%/30%, lasting for 15s. (ATK)",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

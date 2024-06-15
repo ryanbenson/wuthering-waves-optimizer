@@ -7,6 +7,40 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Heaven Blessed",
   passiveValue:
     "Gain 12%/15%/18%/21%/24% additional DMG Bonus for all Attributes. The wielder is bestowed with divine blessings and gains 1 stack of Blessing of Ages for each Basic Attack strike, for up to 4 stacks, which is removed when the wielder leaves the field. At 4 stacks of Blessing of Ages or more, the wielder consumes all stacks of Blessing of Ages when casting the next Resonance Skill, with its DMG increased by 48%/60%/72%/84%/96% for 2.5s. This can be triggered 1 time every 6s.",
+  passiveData: [
+    {
+      key: "AllAttributeBonus",
+      hasStacks: false,
+      modifier: "AllAttributeBonus",
+      modifierByRefinement: {
+        "1": 0.12,
+        "2": 0.15,
+        "3": 0.18,
+        "4": 0.21,
+        "5": 0.24,
+      },
+      details:
+        "Gain 12%/15%/18%/21%/24% additional DMG Bonus for all Attributes.",
+      alwaysEnabled: true,
+    },
+    {
+      key: "ResonanceSkillDMGBonus",
+      hasStacks: false,
+      modifier: "ResonanceSkillDMGBonus",
+      modifierByRefinement: {
+        "1": 0.48,
+        "2": 0.6,
+        "3": 0.72,
+        "4": 0.84,
+        "5": 0.96,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "The wielder is bestowed with divine blessings and gains 1 stack of Blessing of Ages for each Basic Attack strike, for up to 4 stacks, which is removed when the wielder leaves the field. At 4 stacks of Blessing of Ages or more, the wielder consumes all stacks of Blessing of Ages when casting the next Resonance Skill, with its DMG increased by 48%/60%/72%/84%/96% for 2.5s. This can be triggered 1 time every 6s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

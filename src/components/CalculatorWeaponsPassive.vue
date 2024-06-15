@@ -43,6 +43,10 @@ export default {
     refinement: {
       type: Number,
     },
+    duplicateModifier: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -62,7 +66,11 @@ export default {
   },
   computed: {
     weaponPassiveStats() {
-      const data = { stat: null, value: null };
+      const data = {
+        stat: this.modifier,
+        value: 0,
+        duplicateModifier: this.duplicateModifier,
+      };
       if (!this.isEnabled) {
         return data;
       }
@@ -87,6 +95,7 @@ export default {
   mounted() {
     if (this.alwaysEnabled === true) {
       this.isEnabled = true;
+      this.updatedStats();
     }
   },
   beforeUnmount() {

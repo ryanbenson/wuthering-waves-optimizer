@@ -7,6 +7,25 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Edge Direction",
   passiveValue:
     "Increases ATK by 4%/6.2%/8.4%/10.6%/12.8% upon dealing Basic Attack DMG or Heavy Attack DMG, stacking up to 5 time(s). This effect lasts for 7s and can be triggered 1 time(s) every 1s.",
+  passiveData: [
+    {
+      key: "ATK",
+      hasStacks: true,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.04,
+        "2": 0.062,
+        "3": 0.084,
+        "4": 0.106,
+        "5": 0.128,
+      },
+      minStacks: 0,
+      maxStacks: 5,
+      details:
+        "Increases ATK by 4%/6.2%/8.4%/10.6%/12.8% upon dealing Basic Attack DMG or Heavy Attack DMG, stacking up to 5 time(s)",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

@@ -6,6 +6,24 @@ const weaponInfo: WeaponInfo = {
   rarity: 2,
   passiveName: "Prologue",
   passiveValue: "Increases ATK by 5%/6.25%/7.5%/8.75%/10%.",
+  passiveData: [
+    {
+      key: "ATK",
+      hasStacks: false,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.05,
+        "2": 0.0625,
+        "3": 0.075,
+        "4": 0.0875,
+        "5": 0.1,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details: "Increases ATK by 4%/5%/6%/7%/8%.",
+      alwaysEnabled: true,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

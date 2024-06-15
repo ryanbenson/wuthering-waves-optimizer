@@ -7,6 +7,42 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Consensus",
   passiveValue:
     "Increases Basic Attack DMG and Heavy Attack DMG by 12%/15%/18%/21%/24%.",
+  passiveData: [
+    {
+      key: "BasicAttackDMGBonus",
+      hasStacks: false,
+      modifier: "BasicAttackDMGBonus",
+      modifierByRefinement: {
+        "1": 0.12,
+        "2": 0.15,
+        "3": 0.18,
+        "4": 0.21,
+        "5": 0.24,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "Increases Basic Attack DMG and Heavy Attack DMG by 12%/15%/18%/21%/24%. (Basic)",
+      alwaysEnabled: true,
+    },
+    {
+      key: "HeavyAttackDMGBonus",
+      hasStacks: false,
+      modifier: "HeavyAttackDMGBonus",
+      modifierByRefinement: {
+        "1": 0.12,
+        "2": 0.15,
+        "3": 0.18,
+        "4": 0.21,
+        "5": 0.24,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "Increases Basic Attack DMG and Heavy Attack DMG by 12%/15%/18%/21%/24%. (Heavy)",
+      alwaysEnabled: true,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {
