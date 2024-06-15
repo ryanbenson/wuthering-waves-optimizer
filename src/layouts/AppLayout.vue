@@ -29,7 +29,37 @@
       <RouterView />
     </div>
   </div>
+  <div class="info" @click="toggleInfo">
+    Wuthing Waves Calculator & Optimizer. Learn more about what's coming
+    <div class="info-content" v-show="isInfoShown">
+      <ul>
+        <li>Better UI</li>
+        <li>More character - including Jinhsi</li>
+        <li>More weapons</li>
+        <li>More character</li>
+        <li>Resonance Chains</li>
+        <li>Team Buffs</li>
+        <li>Food</li>
+        <li>More!</li>
+      </ul>
+    </div>
+  </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      isInfoShown: false,
+    };
+  },
+  methods: {
+    toggleInfo() {
+      this.isInfoShown = !this.isInfoShown;
+    },
+  },
+};
+</script>
 
 <style lang="scss" scoped>
 //Color Variables
@@ -41,6 +71,10 @@ $tooltip-background-color: $sidebar-background-color;
 .container {
   display: grid;
   grid-template-columns: 64px 1fr;
+}
+.info {
+  background: #154152;
+  padding: 0.25rem 0.5rem;
 }
 .sidebar-navigation {
   display: inline-block;
