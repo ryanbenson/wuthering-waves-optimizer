@@ -15,6 +15,11 @@
     <h1>Updates</h1>
     <h3>June 15, 2024</h3>
     <ul>
+      <li>Finished Calcharo</li>
+      <li>
+        Finished almost all Broadblades. There's only one that is missing
+        passives and that is one with HP thresholds (coming soon)
+      </li>
       <li>Fixed bonus damage modifers, it as over-buffing</li>
       <li>
         Fixed weapon passive, and display for Def Ingore (it was calculating
