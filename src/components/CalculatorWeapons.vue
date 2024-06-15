@@ -1,7 +1,11 @@
 <template>
   <div class="data-input">
     <div class="form__group field">
-      <select name="weapon" v-model="weapon" class="form__field">
+      <select
+        name="weapon"
+        v-model="weapon"
+        class="form__field"
+        @input="weaponChanged">
         <option v-for="weap in weaponsList" :key="weap" :value="weap">
           {{ weap }}
         </option>
@@ -27,6 +31,7 @@
     <div v-if="weaponDescription" class="weapon__desc">
       {{ weaponDescription }}
     </div>
+    {{ weapon }}
     <div v-if="hasWeaponPassive" class="weapon__passives" :key="weapon">
       <CalculatorWeaponsPassive
         v-for="(weaponPassive, i) in weaponPassives"
@@ -65,24 +70,18 @@ export default {
       chosenWeapon: null,
       refinement: 1,
       weaponPassiveStats: {},
+      weaponPassives: [],
     };
   },
   watch: {
-    weapon: async function (newWeapon) {
-      if (newWeapon) {
-        // reset the passive stats
-        this.weaponPassiveStats = {};
-        await this.setWeapon();
-        await this.updateWeaponStats();
-      }
-    },
     weaponLevel: async function (weaponLevel) {
       if (weaponLevel) {
         this.updateWeaponStats();
       }
     },
-    weaponType: function () {
+    weaponType: async function () {
       this.updateWeapons();
+      await this.updateWeaponStats();
     },
   },
   methods: {
@@ -109,6 +108,19 @@ export default {
     async handleUpdatedWeaponStats(data) {
       this.weaponPassiveStats[data.stat] = data.value;
       await this.updateWeaponStats();
+    },
+    async weaponChanged(e) {
+      const weapon = e.target.value;
+      const weaponChosen = await getWeaponByName(this.weaponType, weapon);
+      this.chosenWeapon = weaponChosen;
+      this.weaponPassiveStats = {};
+      this.setWeaponPassives();
+    },
+    setWeaponPassives() {
+      this.weaponPassives = [];
+      const passives = this.chosenWeapon?.info?.passiveData ?? [];
+      this.weaponPassives = JSON.parse(JSON.stringify(passives));
+      this.updateWeaponStats();
     },
   },
   computed: {
@@ -139,9 +151,10 @@ export default {
       }
       return true;
     },
-    weaponPassives() {
-      return this.chosenWeapon?.info?.passiveData ?? [];
-    },
+    // weaponPassives() {
+    //   const passives = this.chosenWeapon?.info?.passiveData ?? [];
+    //   return JSON.parse(JSON.stringify(passives));
+    // },
     weaponDescription() {
       return this.chosenWeapon?.info?.description ?? null;
     },

@@ -961,6 +961,7 @@ export default defineComponent({
       BonusSpecificSkillDMGBonus,
       TotalDeepenEffect,
       ResistReduction,
+      weaponData,
       // weaponLevelOptions,
     };
   },

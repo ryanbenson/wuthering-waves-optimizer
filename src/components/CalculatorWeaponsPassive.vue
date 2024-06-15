@@ -89,5 +89,8 @@ export default {
       this.isEnabled = true;
     }
   },
+  beforeUnmount() {
+    this.$emit("updated-weapon-stats", {});
+  },
 };
 </script>
