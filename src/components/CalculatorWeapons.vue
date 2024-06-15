@@ -122,6 +122,13 @@ export default {
       this.weaponPassives = JSON.parse(JSON.stringify(passives));
       this.updateWeaponStats();
     },
+    async setFirstWeapon() {
+      const weapon = this.weaponsList[0];
+      const weaponChosen = await getWeaponByName(this.weaponType, weapon);
+      this.chosenWeapon = weaponChosen;
+      this.weaponPassiveStats = {};
+      this.setWeaponPassives();
+    },
   },
   computed: {
     weaponLevelOptions() {
@@ -159,8 +166,9 @@ export default {
       return this.chosenWeapon?.info?.description ?? null;
     },
   },
-  mounted() {
+  async mounted() {
     this.updateWeapons();
+    await this.setFirstWeapon();
   },
 };
 </script>
