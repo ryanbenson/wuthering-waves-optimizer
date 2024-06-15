@@ -195,8 +195,7 @@ export function calcDamage(
 }
 
 function calcCritDamage(damage: number, critDamage: number): number {
-  const maxCritRate = 1;
-  return damage * (1 + maxCritRate * critDamage);
+  return damage * critDamage;
 }
 
 function calcAvgDamage(
@@ -208,7 +207,7 @@ function calcAvgDamage(
   if (critRate > 1) {
     critRate = 1;
   }
-  return damage * (1 + critRate * critDamage);
+  return damage * (1 + critRate * (critDamage - 1));
 }
 
 // Helper function to parse the talent string
@@ -251,7 +250,7 @@ function buildDetailedCalculationString(
       let percentageString = percentageValue.toFixed(2) + "%";
       let damage = instanceDamage[percentageString].toFixed(2);
       if (adjustDamage === "average") {
-        damage = calcAvgDamage(damage, critRate, critDamage);
+        damage = calcAvgDamage(Number(damage), critRate, critDamage);
       }
       if (adjustDamage === "crit") {
         damage = calcCritDamage(damage, critDamage);
@@ -262,7 +261,7 @@ function buildDetailedCalculationString(
       let percentageString = percentageValue.toFixed(2) + "%";
       let damage = instanceDamage[percentageString].toFixed(2);
       if (adjustDamage === "average") {
-        damage = calcAvgDamage(damage, critRate, critDamage);
+        damage = calcAvgDamage(Number(damage), critRate, critDamage);
       }
       if (adjustDamage === "crit") {
         damage = calcCritDamage(damage, critDamage);

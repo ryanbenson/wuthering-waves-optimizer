@@ -95,7 +95,6 @@ export default {
         modifierValue,
         weaponPassiveStats: this.weaponPassiveStats,
       };
-      console.log(weaponData.weaponPassiveStats);
       this.$emit("update-weapon", weaponData);
     },
     async setWeapon() {
