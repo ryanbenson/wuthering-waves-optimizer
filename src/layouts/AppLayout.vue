@@ -81,6 +81,7 @@ $tooltip-background-color: $sidebar-background-color;
   background: #154152;
   padding: 0.25rem 0.5rem;
   cursor: pointer;
+  color: white;
 
   &.info--active {
     position: fixed;
