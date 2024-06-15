@@ -1,0 +1,58 @@
+export const skillAttacks = {
+  name: "Resonance Skill: Extermination Order",
+  description:
+    '<div class="skilldescription"><span class="Title">Extermination Order</span><br>Calcharo performs up to 3 consecutive attacks, dealing <span class="Electro">Electro DMG</span>.<br>If Calcharo is switched off field, or if Resonance Skill Extermination Order is not performed again in a while, this skill will enter Cooldown.<br>Resonance Skill Extermination Order does not interrupt Calcharo\'s Basic Attack combo.</div>',
+  attacks: [
+    {
+      key: "ExterminationOrderPart1DMG",
+      label: "Extermination Order Part 1 DMG",
+      talents: {
+        "1": "25.94%*2 + 34.59%",
+        "2": "28.07%*2 + 37.42%",
+        "3": "30.20%*2 + 40.26%",
+        "4": "33.17%*2 + 44.23%",
+        "5": "35.30%*2 + 47.07%",
+        "6": "37.75%*2 + 50.33%",
+        "7": "41.15%*2 + 54.87%",
+        "8": "44.55%*2 + 59.40%",
+        "9": "47.96%*2 + 63.94%",
+        "10": "51.57%*2 + 68.76%",
+      },
+      type: "Skill",
+    },
+    {
+      key: "ExterminationOrderPart2DMG",
+      label: "Extermination Order Part 2 DMG",
+      talents: {
+        "1": "38.91%*2 + 51.88%",
+        "2": "42.10%*2 + 56.13%",
+        "3": "45.29%*2 + 60.39%",
+        "4": "49.76%*2 + 66.34%",
+        "5": "52.95%*2 + 70.60%",
+        "6": "56.62%*2 + 75.49%",
+        "7": "61.72%*2 + 82.30%",
+        "8": "66.83%*2 + 89.10%",
+        "9": "71.93%*2 + 95.91%",
+        "10": "77.36%*2 + 103.14%",
+      },
+      type: "Skill",
+    },
+    {
+      key: "ExterminationOrderPart3DMG",
+      label: "Extermination Order Part 3 DMG",
+      talents: {
+        "1": "108.08%*2",
+        "2": "116.94%*2",
+        "3": "125.80%*2",
+        "4": "138.21%*2",
+        "5": "147.07%*2",
+        "6": "157.26%*2",
+        "7": "171.44%*2",
+        "8": "185.62%*2",
+        "9": "199.80%*2",
+        "10": "214.87%*2",
+      },
+      type: "Skill",
+    },
+  ],
+};

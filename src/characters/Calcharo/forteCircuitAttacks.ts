@@ -1,0 +1,40 @@
+export const forteCircuitAttacks = {
+  name: "Forte Circuit: Hunting Mission",
+  description: `<div class="skilldescription"><span class="Title">Heavy Attack: "Mercy"</span><br>When Calcharo has 3 "Cruelty", his <span class="Highlight">Heavy Attack</span> is replaced with Heavy Attack <span class="Highlight">"Mercy"</span>.<br>When casting Heavy Attack <span class="Highlight">"Mercy"</span>, Calcharo consumes 3 "Cruelty" to deal <span class="Thunder">Electro DMG</span>, considered as Heavy Attack damage, and recovers Resonance Energy and Concerto Energy.<br> <br><span class="Title">"Cruelty"</span><br>Calcharo can hold up to 3 "Cruelty".<br>Under Resonance Liberation <span class="Highlight">Deathblade Gear</span> state, "Cruelty" cannot be acquired.<br>When Resonance Skill <span class="Highlight">Extermination Order</span> hits the target, gain 1 "Cruelty".<br> <br><span class="Title">Heavy Attack: "Death Messenger"</span><br>When Calcharo has 5 "Killing Intent", his <span class="Highlight">Basic Attack</span> is replaced with Heavy Attack <span class="Highlight">"Death Messenger"</span>.<br>When casting Heavy Attack <span class="Highlight">"Death Messenger"</span>, Calcharo consumes 5 "Killing Intent" to deal <span class="Thunder">Electro DMG</span>, considered as Resonance Liberation damage, and recovers Resonance Energy and Concerto Energy.<br> <br><span class="Title">"Killing Intent"</span><br>Under Resonance Liberation <span class="Highlight">Deathblade Gear</span> state, Calcharo's Forte Gauge is replaced with "Killing Intent", stacking up to 5.<br>When Basic Attack <span class="Highlight">Hounds Roar</span> hits the target, Calcharo gains 1 "Killing Intent".</div>`,
+  attacks: [
+    {
+      key: "MercyDamage",
+      label: `"Mercy" Damage`,
+      talents: {
+        "1": "19.67%*8 + 39.34%",
+        "2": "21.29%*8 + 42.57%",
+        "3": "22.90%*8 + 45.80%",
+        "4": "25.16%*8 + 50.31%",
+        "5": "26.77%*8 + 53.54%",
+        "6": "28.63%*8 + 57.25%",
+        "7": "31.21%*8 + 62.41%",
+        "8": "33.79%*8 + 67.57%",
+        "9": "36.37%*8 + 72.73%",
+        "10": "39.11%*8 + 78.22%",
+      },
+      type: "Heavy",
+    },
+    {
+      key: "DeathMessengerDamage",
+      label: `"Death Messenger" Damage`,
+      talents: {
+        "1": "49.18%*8 + 98.35%",
+        "2": "53.21%*8 + 106.42%",
+        "3": "57.24%*8 + 114.48%",
+        "4": "62.89%*8 + 125.77%",
+        "5": "66.92%*8 + 133.84%",
+        "6": "71.56%*8 + 143.11%",
+        "7": "78.01%*8 + 156.02%",
+        "8": "84.46%*8 + 168.92%",
+        "9": "90.91%*8 + 181.82%",
+        "10": "97.77%*8 + 195.53%",
+      },
+      type: "Liberation",
+    },
+  ],
+};
