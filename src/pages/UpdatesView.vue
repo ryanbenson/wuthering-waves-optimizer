@@ -16,6 +16,10 @@
     <h3>June 15, 2024</h3>
     <ul>
       <li>Fixed bonus damage modifers, it as over-buffing</li>
+      <li>
+        Fixed weapon passive, and display for Def Ingore (it was calculating
+        correctly, it was just a visual issue)
+      </li>
       <li>Update to the echo selection UI</li>
       <li>Makes update page to make updates more visible</li>
     </ul>

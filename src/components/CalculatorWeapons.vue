@@ -70,9 +70,9 @@ export default {
   watch: {
     weapon: async function (newWeapon) {
       if (newWeapon) {
-        await this.setWeapon();
         // reset the passive stats
         this.weaponPassiveStats = {};
+        await this.setWeapon();
         await this.updateWeaponStats();
       }
     },

@@ -163,7 +163,7 @@
       <div>Aero DMG Bonus: {{ Aero }}%</div>
       <div>Spectro DMG Bonus: {{ Spectro }}%</div>
       <div>Havoc DMG Bonus: {{ Havoc }}%</div>
-      <div>Defense Ignore: {{ DefIgnore }}%</div>
+      <div>Defense Ignore: {{ DefIgnore * 100 }}%</div>
       <div>
         Bonus Specific Skill DMG Bonus: {{ BonusSpecificSkillDMGBonus }}%
       </div>
