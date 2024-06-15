@@ -30,8 +30,7 @@ export function calcHitDamage(
   // critDamage: number,
 ): number {
   const talentValue = talent;
-  const baseDamageValue = getBaseDamageValue(
-    talentValue,
+  const baseDamageValue = getBonusDamageValue(
     bonusTotalSkillDmg,
     bonusSpecificSkillDmg,
     bonusElementDmg,
@@ -40,6 +39,7 @@ export function calcHitDamage(
   const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
   const resistValue = getEnemyResistValue(enemyResist, resistenceReduction);
   const baseDamage = getBaseDamage(
+    talent,
     attack,
     baseDamageValue,
     defModifier,
@@ -49,12 +49,13 @@ export function calcHitDamage(
 }
 
 export function getBaseDamage(
+  talent: number,
   attack: number,
   baseDamageValue: number,
   defModifier: number,
   resistValue: number
 ): number {
-  return attack * baseDamageValue * defModifier * resistValue;
+  return attack * talent * baseDamageValue * defModifier * resistValue;
 }
 
 export function getTalentValue(talentStringWithPercent: string): number {
@@ -76,25 +77,6 @@ export function getDefenseModifier(
 
 export function getEnemyDefense(enemyLevel: number): number {
   return 8 * enemyLevel + 792;
-}
-
-export function getBaseDamageValue(
-  talentValue: number,
-  bonusTotalSkillDmg: number = 0,
-  bonusSpecificSkillDmg: number = 0,
-  bonusElementDmg: number,
-  totalDeepenEffect: number
-): number {
-  const bonusValue = getBonusDamageValue(
-    bonusTotalSkillDmg,
-    bonusSpecificSkillDmg,
-    bonusElementDmg,
-    totalDeepenEffect
-  );
-  if (bonusValue === 0) {
-    return talentValue;
-  }
-  return talentValue * bonusValue;
 }
 
 export function getBonusDamageValue(

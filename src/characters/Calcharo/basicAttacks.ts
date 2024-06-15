@@ -18,6 +18,7 @@ export const basicAttacks = {
         "9": "42.53%*2",
         "10": "45.73%*2",
       },
+      type: "Basic",
     },
     {
       key: "Part2Damage",
@@ -34,6 +35,24 @@ export const basicAttacks = {
         "9": "92.44%",
         "10": "99.41%",
       },
+      type: "Basic",
+    },
+    {
+      key: "Heavy Attack Damage",
+      label: "HeavyAttackDamage",
+      talents: {
+        "1": "20.80%*5",
+        "2": "22.51%*5",
+        "3": "24.22%*5",
+        "4": "26.60%*5",
+        "5": "28.31%*5",
+        "6": "30.27%*5",
+        "7": "33.00%*5",
+        "8": "35.73%*5",
+        "9": "38.46%*5",
+        "10": "41.36%*5",
+      },
+      type: "Heavy",
     },
   ],
 };

@@ -15,6 +15,7 @@
     <h1>Updates</h1>
     <h3>June 15, 2024</h3>
     <ul>
+      <li>Fixed bonus damage modifers, it as over-buffing</li>
       <li>Update to the echo selection UI</li>
       <li>Makes update page to make updates more visible</li>
     </ul>
