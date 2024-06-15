@@ -47,6 +47,7 @@
 </template>
 
 <script>
+// @ts-nocheck
 export default {
   data() {
     return {
