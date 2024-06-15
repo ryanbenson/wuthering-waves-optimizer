@@ -9,11 +9,15 @@ import { inject } from "@vercel/analytics";
 
 import HomeView from "./pages/HomeView.vue";
 import OptimizerView from "./pages/OptimizerView.vue";
+import UpdatesView from "./pages/UpdatesView.vue";
+import InfoView from "./pages/InfoView.vue";
 
 const routes = [
   { path: "/", component: HomeView },
   { path: "/calculator", component: HomeView },
   { path: "/optimizer", component: OptimizerView },
+  { path: "/updates", component: UpdatesView },
+  { path: "/info", component: InfoView },
 ];
 
 const router = createRouter({
