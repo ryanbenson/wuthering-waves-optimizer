@@ -29,7 +29,10 @@
       <RouterView />
     </div>
   </div>
-  <div class="info" @click="toggleInfo">
+  <div
+    class="info"
+    :class="{ 'info--active': isInfoShown }"
+    @click="toggleInfo">
     Wuthing Waves Calculator & Optimizer. Learn more about what's coming
     <div class="info-content" v-show="isInfoShown">
       <ul>
@@ -42,6 +45,7 @@
         <li>Food</li>
         <li>More!</li>
       </ul>
+      <p>[ x ] Click the box to close</p>
     </div>
   </div>
 </template>
@@ -76,6 +80,13 @@ $tooltip-background-color: $sidebar-background-color;
 .info {
   background: #154152;
   padding: 0.25rem 0.5rem;
+  cursor: pointer;
+
+  &.info--active {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
 }
 .sidebar-navigation {
   display: inline-block;
