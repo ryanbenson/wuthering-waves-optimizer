@@ -439,35 +439,118 @@ export default defineComponent({
     });
 
     character.value = charactersList.value[0];
+    const addBuffs = (source, target) => {
+      if (source) {
+        target.attackPercent += source?.ATK ? source.ATK * 100 : 0;
+        target.hpPercent += source?.HP ? source.HP * 100 : 0;
+        target.defPercent += source?.DEF ? source.DEF * 100 : 0;
+        target.attackFlat += source?.ATK_FLAT ?? 0;
+        target.hpFlat += source?.HP_FLAT ?? 0;
+        target.defFlat += source?.DEF_FLAT ?? 0;
+        target.critRate += source?.CritRate ? source.CritRate * 100 : 0;
+        target.critDMG += source?.CritDMG ? source.CritDMG * 100 : 0;
+        target.basicAttackDMGBonus += source?.BasicAttackDMGBonus
+          ? source.BasicAttackDMGBonus * 100
+          : 0;
+        target.heavyAttackDMGBonus += source?.HeavyAttackDMGBonus
+          ? source.HeavyAttackDMGBonus * 100
+          : 0;
+        target.resonanceSkillDMGBonus += source?.ResonanceSkillDMGBonus
+          ? source.ResonanceSkillDMGBonus * 100
+          : 0;
+        target.resonanceLiberationDMGBonus +=
+          source?.ResonanceLiberationDMGBonus
+            ? source.ResonanceLiberationDMGBonus * 100
+            : 0;
+        target.glacio += source?.Glacio ? source.Glacio * 100 : 0;
+        target.fusion += source?.Fusion ? source.Fusion * 100 : 0;
+        target.electro += source?.Electro ? source.Electro * 100 : 0;
+        target.aero += source?.Aero ? source.Aero * 100 : 0;
+        target.spectro += source?.Spectro ? source.Spectro * 100 : 0;
+        target.havoc += source?.Havoc ? source.Havoc * 100 : 0;
+        target.defIgnore += source?.DEFIgnore ? source.DEFIgnore * 100 : 0;
+        target.bonusSpecificSkillDMGBonus += source?.BonusSpecificSkillDMGBonus
+          ? source.BonusSpecificSkillDMGBonus * 100
+          : 0;
+        target.totalDeepenEffect += source?.TotalDeepenEffect
+          ? source.TotalDeepenEffect * 100
+          : 0;
+        target.resistReduction += source?.ResistReduction
+          ? source.ResistReduction * 100
+          : 0;
+      }
+    };
+    const addEchoBuffs = (source, target) => {
+      if (source) {
+        target.attackPercent += source?.ATK ? source.ATK : 0;
+        target.hpPercent += source?.HP ? source.HP : 0;
+        target.defPercent += source?.DEF ? source.DEF : 0;
+        target.attackFlat += source?.ATK_FLAT ?? 0;
+        target.hpFlat += source?.HP_FLAT ?? 0;
+        target.defFlat += source?.DEF_FLAT ?? 0;
+        target.critRate += source?.CritRate ? source.CritRate : 0;
+        target.critDMG += source?.CritDMG ? source.CritDMG : 0;
+        target.basicAttackDMGBonus += source?.BasicAttackDMGBonus
+          ? source.BasicAttackDMGBonus
+          : 0;
+        target.heavyAttackDMGBonus += source?.HeavyAttackDMGBonus
+          ? source.HeavyAttackDMGBonus
+          : 0;
+        target.resonanceSkillDMGBonus += source?.ResonanceSkillDMGBonus
+          ? source.ResonanceSkillDMGBonus
+          : 0;
+        target.resonanceLiberationDMGBonus +=
+          source?.ResonanceLiberationDMGBonus
+            ? source.ResonanceLiberationDMGBonus
+            : 0;
+        target.glacio += source?.Glacio ? source.Glacio : 0;
+        target.fusion += source?.Fusion ? source.Fusion : 0;
+        target.electro += source?.Electro ? source.Electro : 0;
+        target.aero += source?.Aero ? source.Aero : 0;
+        target.spectro += source?.Spectro ? source.Spectro : 0;
+        target.havoc += source?.Havoc ? source.Havo : 0;
+        target.defIgnore += source?.DEFIgnore ? source.DEFIgnor : 0;
+        target.bonusSpecificSkillDMGBonus += source?.BonusSpecificSkillDMGBonus
+          ? source.BonusSpecificSkillDMGBonus
+          : 0;
+        target.totalDeepenEffect += source?.TotalDeepenEffect
+          ? source.TotalDeepenEffect
+          : 0;
+        target.resistReduction += source?.ResistReduction
+          ? source.ResistReduction
+          : 0;
+      }
+    };
 
     const calcCharStats = () => {
+      let stats = {
+        attackPercent: 0,
+        hpPercent: 0,
+        defPercent: 0,
+        attackFlat: 0,
+        hpFlat: 0,
+        defFlat: 0,
+        critRate: 5,
+        critDMG: 150,
+        basicAttackDMGBonus: 0,
+        heavyAttackDMGBonus: 0,
+        resonanceSkillDMGBonus: 0,
+        resonanceLiberationDMGBonus: 0,
+        glacio: 0,
+        fusion: 0,
+        electro: 0,
+        aero: 0,
+        spectro: 0,
+        havoc: 0,
+        defIgnore: 0,
+        bonusSpecificSkillDMGBonus: 0,
+        totalDeepenEffect: 0,
+        resistReduction: 0,
+      };
       let charHp = 0;
       let charAtk = 0;
       let charDef = 0;
       let weaponAtk = 0;
-
-      let attackPercent = 0;
-      let hpPercent = 0;
-      let defPercent = 0;
-      let hpFlat = 0;
-      let defFlat = 0;
-      let attackFlat = 0;
-      let critRate = 5;
-      let critDMG = 150;
-      let basicAttackDMGBonus = 0;
-      let heavyAttackDMGBonus = 0;
-      let resonanceSkillDMGBonus = 0;
-      let resonanceLiberationDMGBonus = 0;
-      let glacio = 0;
-      let fusion = 0;
-      let electro = 0;
-      let aero = 0;
-      let spectro = 0;
-      let havoc = 0;
-      let defIgnore = 0;
-      let bonusSpecificSkillDMGBonus = 0;
-      let totalDeepenEffect = 0;
-      let resistReduction = 0;
 
       let weaponModifer = null;
       let weaponModifierValue = 0;
@@ -479,194 +562,81 @@ export default defineComponent({
         charAtk = attack;
         charDef = defense;
       }
+
       if (charBuffsData.value) {
-        const charBuffInfo = charBuffsData.value;
-        attackPercent += charBuffInfo?.ATK ? charBuffInfo?.ATK * 100 : 0;
-        hpPercent += charBuffInfo?.HP ? charBuffInfo?.HP * 100 : 0;
-        defPercent += charBuffInfo?.DEF ? charBuffInfo?.DEF * 100 : 0;
-        attackFlat += charBuffInfo?.ATK_FLAT ?? 0;
-        hpFlat += charBuffInfo?.HP_FLAT ?? 0;
-        defFlat += charBuffInfo?.DEF_FLAT ?? 0;
-        critRate += charBuffInfo?.CritRate ? charBuffInfo?.CritRate * 100 : 0;
-        critDMG += charBuffInfo?.CritDMG ? charBuffInfo?.CritDMG * 100 : 0;
-        basicAttackDMGBonus += charBuffInfo?.BasicAttackDMGBonus
-          ? charBuffInfo?.BasicAttackDMGBonus * 100
-          : 0;
-        heavyAttackDMGBonus += charBuffInfo?.HeavyAttackDMGBonus
-          ? charBuffInfo?.HeavyAttackDMGBonus * 100
-          : 0;
-        resonanceSkillDMGBonus += charBuffInfo?.ResonanceSkillDMGBonus
-          ? charBuffInfo?.ResonanceSkillDMGBonus * 100
-          : 0;
-        resonanceLiberationDMGBonus += charBuffInfo?.ResonanceLiberationDMGBonus
-          ? charBuffInfo?.ResonanceLiberationDMGBonus * 100
-          : 0;
-        glacio += charBuffInfo?.Glacio ? charBuffInfo?.Glacio * 100 : 0;
-        fusion += charBuffInfo?.Fusion ? charBuffInfo?.Fusion * 100 : 0;
-        electro += charBuffInfo?.Electro ? charBuffInfo?.Electro * 100 : 0;
-        aero += charBuffInfo?.Aero ? charBuffInfo?.Aero * 100 : 0;
-        spectro += charBuffInfo?.Spectro ? charBuffInfo?.Spectro * 100 : 0;
-        havoc += charBuffInfo?.Havoc ? charBuffInfo?.Havoc * 100 : 0;
-        defIgnore += charBuffInfo?.DEFIgnore
-          ? charBuffInfo?.DEFIgnore * 100
-          : 0;
-        bonusSpecificSkillDMGBonus = charBuffInfo?.BonusSpecificSkillDMGBonus
-          ? charBuffInfo?.BonusSpecificSkillDMGBonus * 100
-          : 0;
-        totalDeepenEffect = charBuffInfo?.TotalDeepenEffect
-          ? charBuffInfo?.TotalDeepenEffect * 100
-          : 0;
-        resistReduction = charBuffInfo?.ResistReduction
-          ? charBuffInfo?.ResistReduction * 100
-          : 0;
+        addBuffs(charBuffsData.value, stats);
       }
+
       if (weaponData.value) {
         weaponAtk = weaponData.value?.attack;
         weaponModifer = weaponData.value?.modifier;
         weaponModifierValue = weaponData.value?.modifierValue;
         weaponPassiveData = weaponData.value?.weaponPassiveStats ?? {};
-        // remove empties from the passive data
+
         weaponPassiveData = Object.fromEntries(
           Object.entries(weaponPassiveData).filter(([_, v]) => v != null)
         );
-        // add in the weapon passives
-        attackPercent += weaponPassiveData?.ATK
-          ? weaponPassiveData?.ATK * 100
-          : 0;
-        hpPercent += weaponPassiveData?.HP ? weaponPassiveData?.HP * 100 : 0;
-        defPercent += weaponPassiveData?.DEF ? weaponPassiveData?.DEF * 100 : 0;
-        attackFlat += weaponPassiveData?.ATK_FLAT ?? 0;
-        hpFlat += weaponPassiveData?.HP_FLAT ?? 0;
-        defFlat += weaponPassiveData?.DEF_FLAT ?? 0;
-        critRate += weaponPassiveData?.CritRate
-          ? weaponPassiveData?.CritRate * 100
-          : 0;
-        critDMG += weaponPassiveData?.CritDMG
-          ? weaponPassiveData?.CritDMG * 100
-          : 0;
-        basicAttackDMGBonus += weaponPassiveData?.BasicAttackDMGBonus
-          ? weaponPassiveData?.BasicAttackDMGBonus * 100
-          : 0;
-        heavyAttackDMGBonus += weaponPassiveData?.HeavyAttackDMGBonus
-          ? weaponPassiveData?.HeavyAttackDMGBonus * 100
-          : 0;
-        resonanceSkillDMGBonus += weaponPassiveData?.ResonanceSkillDMGBonus
-          ? weaponPassiveData?.ResonanceSkillDMGBonus * 100
-          : 0;
-        resonanceLiberationDMGBonus +=
-          weaponPassiveData?.ResonanceLiberationDMGBonus
-            ? weaponPassiveData?.ResonanceLiberationDMGBonus * 100
-            : 0;
-        glacio += weaponPassiveData?.Glacio
-          ? weaponPassiveData?.Glacio * 100
-          : 0;
-        fusion += weaponPassiveData?.Fusion
-          ? weaponPassiveData?.Fusion * 100
-          : 0;
-        electro += weaponPassiveData?.Electro
-          ? weaponPassiveData?.Electro * 100
-          : 0;
-        aero += weaponPassiveData?.Aero ? weaponPassiveData?.Aero * 100 : 0;
-        spectro += weaponPassiveData?.Spectro
-          ? weaponPassiveData?.Spectro * 100
-          : 0;
-        havoc += weaponPassiveData?.Havoc ? weaponPassiveData?.Havoc * 100 : 0;
-        defIgnore += weaponPassiveData?.DefIgnore
-          ? weaponPassiveData?.DefIgnore * 100
-          : 0;
-        bonusSpecificSkillDMGBonus =
-          weaponPassiveData?.BonusSpecificSkillDMGBonus
-            ? weaponPassiveData?.BonusSpecificSkillDMGBonus * 100
-            : 0;
-        totalDeepenEffect = weaponPassiveData?.TotalDeepenEffect
-          ? weaponPassiveData?.TotalDeepenEffect * 100
-          : 0;
-        resistReduction = weaponPassiveData?.ResistReduction
-          ? weaponPassiveData?.ResistReduction * 100
-          : 0;
+
+        addBuffs(weaponPassiveData, stats);
+
         if (weaponPassiveData?.AllAttributeBonus) {
-          basicAttackDMGBonus += weaponPassiveData?.AllAttributeBonus
-            ? weaponPassiveData?.AllAttributeBonus * 100
-            : 0;
-          heavyAttackDMGBonus += weaponPassiveData?.AllAttributeBonus
-            ? weaponPassiveData?.AllAttributeBonus * 100
-            : 0;
-          resonanceSkillDMGBonus += weaponPassiveData?.AllAttributeBonus
-            ? weaponPassiveData?.AllAttributeBonus * 100
-            : 0;
-          resonanceLiberationDMGBonus += weaponPassiveData?.AllAttributeBonus
-            ? weaponPassiveData?.AllAttributeBonus * 100
-            : 0;
+          const allAttributeBonus = weaponPassiveData.AllAttributeBonus * 100;
+          stats.basicAttackDMGBonus += allAttributeBonus;
+          stats.heavyAttackDMGBonus += allAttributeBonus;
+          stats.resonanceSkillDMGBonus += allAttributeBonus;
+          stats.resonanceLiberationDMGBonus += allAttributeBonus;
         }
+
         if (weaponPassiveData?.AllResonanceDMG) {
-          resonanceSkillDMGBonus += weaponPassiveData?.AllResonanceDMG
-            ? weaponPassiveData?.AllResonanceDMG * 100
-            : 0;
-          resonanceLiberationDMGBonus += weaponPassiveData?.AllResonanceDMG
-            ? weaponPassiveData?.AllResonanceDMG * 100
-            : 0;
+          const allResonanceDMG = weaponPassiveData.AllResonanceDMG * 100;
+          stats.resonanceSkillDMGBonus += allResonanceDMG;
+          stats.resonanceLiberationDMGBonus += allResonanceDMG;
         }
-        // TO DO: Skills / liberation / elemental / etc
-        // weapon data is in decimal, but we're calcing in percentages for now
+
         switch (weaponModifer) {
           case "ATK":
-            attackPercent += weaponModifierValue * 100;
+            stats.attackPercent += weaponModifierValue * 100;
             break;
           case "HP":
-            hpPercent += weaponModifierValue * 100;
+            stats.hpPercent += weaponModifierValue * 100;
             break;
           case "DEF":
-            defPercent += weaponModifierValue * 100;
+            stats.defPercent += weaponModifierValue * 100;
             break;
           case "CritRate":
-            critRate += weaponModifierValue * 100;
+            stats.critRate += weaponModifierValue * 100;
             break;
           case "CritDMG":
-            critDMG += weaponModifierValue * 100;
+            stats.critDMG += weaponModifierValue * 100;
             break;
         }
       }
+
       if (echoStats) {
-        attackPercent += echoStats?.value?.ATK ?? 0;
-        hpPercent += echoStats?.value?.HP ?? 0;
-        defPercent += echoStats?.value?.DEF ?? 0;
-        attackFlat += echoStats?.value?.ATK_FLAT ?? 0;
-        hpFlat += echoStats?.value?.HP_FLAT ?? 0;
-        defFlat += echoStats?.value?.DEF_FLAT ?? 0;
-        critRate += echoStats?.value?.CritRate ?? 0;
-        critDMG += echoStats?.value?.CritDMG ?? 0;
-        basicAttackDMGBonus += echoStats?.value?.BasicAttackDMGBonus ?? 0;
-        heavyAttackDMGBonus += echoStats?.value?.HeavyAttackDMGBonus ?? 0;
-        resonanceSkillDMGBonus += echoStats?.value?.ResonanceSkillDMGBonus ?? 0;
-        resonanceLiberationDMGBonus +=
-          echoStats?.value?.ResonanceLiberationDMGBonus ?? 0;
-        glacio += echoStats?.value?.Glacio ?? 0;
-        fusion += echoStats?.value?.Fusion ?? 0;
-        electro += echoStats?.value?.Electro ?? 0;
-        aero += echoStats?.value?.Aero ?? 0;
-        spectro += echoStats?.value?.Spectro ?? 0;
-        havoc += echoStats?.value?.Havoc ?? 0;
+        addEchoBuffs(echoStats?.value, stats);
       }
+
       totalAtk.value =
-        (charAtk + weaponAtk) * (1 + attackPercent / 100) + attackFlat;
-      totalHp.value = charHp * (1 + hpPercent / 100) + hpFlat;
-      totalDef.value = charDef * (1 + defPercent / 100) + defFlat;
-      totalCritRate.value = critRate / 100;
-      totalCritDMG.value = critDMG / 100;
-      BasicAttackDMGBonus.value = basicAttackDMGBonus;
-      HeavyAttackDMGBonus.value = heavyAttackDMGBonus;
-      ResonanceSkillDMGBonus.value = resonanceSkillDMGBonus;
-      ResonanceLiberationDMGBonus.value = resonanceLiberationDMGBonus;
-      Glacio.value = glacio;
-      Fusion.value = fusion;
-      Electro.value = electro;
-      Aero.value = aero;
-      Spectro.value = spectro;
-      Havoc.value = havoc;
-      DefIgnore.value = defIgnore / 100;
-      BonusSpecificSkillDMGBonus.value = bonusSpecificSkillDMGBonus;
-      TotalDeepenEffect.value = totalDeepenEffect;
-      ResistReduction.value = resistReduction;
+        (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
+        stats.attackFlat;
+      totalHp.value = charHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
+      totalDef.value = charDef * (1 + stats.defPercent / 100) + stats.defFlat;
+      totalCritRate.value = stats.critRate / 100;
+      totalCritDMG.value = stats.critDMG / 100;
+      BasicAttackDMGBonus.value = stats.basicAttackDMGBonus;
+      HeavyAttackDMGBonus.value = stats.heavyAttackDMGBonus;
+      ResonanceSkillDMGBonus.value = stats.resonanceSkillDMGBonus;
+      ResonanceLiberationDMGBonus.value = stats.resonanceLiberationDMGBonus;
+      Glacio.value = stats.glacio;
+      Fusion.value = stats.fusion;
+      Electro.value = stats.electro;
+      Aero.value = stats.aero;
+      Spectro.value = stats.spectro;
+      Havoc.value = stats.havoc;
+      DefIgnore.value = stats.defIgnore / 100;
+      BonusSpecificSkillDMGBonus.value = stats.bonusSpecificSkillDMGBonus;
+      TotalDeepenEffect.value = stats.totalDeepenEffect;
+      ResistReduction.value = stats.resistReduction;
 
       calcAllDamages();
     };
