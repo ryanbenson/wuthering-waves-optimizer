@@ -9,11 +9,11 @@ interface CharacterBasicInfo {
 
 export function getCharacterBasicInfo(): CharacterBasicInfo {
   return {
-    name: "Changli",
+    name: "Jinhsi",
     rarity: 5,
-    weapon: "Swords",
+    weapon: "Broadblades",
     avatarUrl: "test.jpg",
     gender: "female",
-    element: "Fusion",
+    element: "Spectro",
   };
 }
