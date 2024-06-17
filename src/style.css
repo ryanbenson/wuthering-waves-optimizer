@@ -404,3 +404,8 @@ body {
     background-color: #f9f9f9;
   }
 }
+
+/* generics */
+.mt-0 {
+  margin-top: 0;
+}

@@ -150,7 +150,7 @@
       </div>
     </div>
     <div class="results">
-      <h2>Stats:</h2>
+      <h2 class="mt-0">Stats</h2>
       <div>Attack: {{ totalAtk }}</div>
       <div>HP: {{ totalHp }}</div>
       <div>Defense: {{ totalDef }}</div>
@@ -968,9 +968,16 @@ export default defineComponent({
 .calculations {
   display: grid;
   grid-template-columns: 80px 1fr 1fr;
+  overflow: hidden;
+  height: 100vh;
 }
 
 .calculations__screens {
+  padding: 2rem;
+  overflow-y: auto;
+}
+.results {
+  overflow-y: auto;
   padding: 2rem;
 }
 

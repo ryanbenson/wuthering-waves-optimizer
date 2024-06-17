@@ -1,4 +1,4 @@
-export const advancedAttacks = {
+export const basicAttacks = {
   name: "Basic Attack: Slash of Breaking Dawn",
   description:
     '<div class="skilldescription"><span class="Title">Basic Attack</span><br>Perform up to 4 consecutive strikes, dealing <span class="Light">Spectro DMG</span>.<br>Heavy Attack<br>Perform a charged attack by consuming Stamina, dealing <span class="Light">Spectro DMG</span>.<br><br><span class="Title">Mid-Air Attack</span><br>Perform a Plunging Attack while in mid-air by consuming Stamina, dealing <span class="Light">Spectro DMG</span>.<br><br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to counterattack, dealing <span class="Light">Spectro DMG</span>.</div>',

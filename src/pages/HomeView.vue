@@ -14,10 +14,3 @@ export default defineComponent({
   components: { Calculator },
 });
 </script>
-
-<style lang="scss" scoped>
-.calculator__content {
-  display: grid;
-  grid-template-columns: 1fr 300px;
-}
-</style>
