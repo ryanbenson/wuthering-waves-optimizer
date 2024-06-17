@@ -8,9 +8,6 @@
         <li @click="changeScreen('weapon')">
           <img src="/images/T_IconAchv_014.png" class="icon" />
         </li>
-        <li @click="changeScreen('talents')">
-          <img src="/images/talents.png" class="icon" />
-        </li>
         <li @click="changeScreen('echoes')">
           <img src="/images/echoes.png" class="icon" />
         </li>
@@ -44,6 +41,73 @@
             </select>
             <label for="characterLevel">Character Level</label>
           </div>
+          <div class="data-input--talents">
+            <div class="form__group field">
+              <label for="talentBasic" class="form__label"
+                >Basic: {{ talentData.basic }}</label
+              >
+              <input
+                v-model="talentData.basic"
+                name="talentBasic"
+                type="range"
+                min="1"
+                max="10"
+                steps="1"
+                class="form__field" />
+            </div>
+            <div class="form__group field">
+              <label for="talentSkill" class="form__label"
+                >Skill: {{ talentData.skill }}</label
+              >
+              <input
+                v-model="talentData.skill"
+                name="talentSkill"
+                type="range"
+                min="1"
+                max="10"
+                steps="1"
+                class="form__field" />
+            </div>
+            <div class="form__group field">
+              <label for="talentForte" class="form__label"
+                >Forte: {{ talentData.forte }}</label
+              >
+              <input
+                v-model="talentData.forte"
+                name="talentForte"
+                type="range"
+                min="1"
+                max="10"
+                steps="1"
+                class="form__field" />
+            </div>
+            <div class="form__group field">
+              <label for="talentLiberation" class="form__label"
+                >Liberation: {{ talentData.liberation }}</label
+              >
+              <input
+                v-model="talentData.liberation"
+                name="talentLiberation"
+                type="range"
+                min="1"
+                max="10"
+                steps="1"
+                class="form__field" />
+            </div>
+            <div class="form__group field">
+              <label for="talentIntro" class="form__label"
+                >Intro: {{ talentData.intro }}</label
+              >
+              <input
+                v-model="talentData.intro"
+                name="talentIntro"
+                type="range"
+                min="1"
+                max="10"
+                steps="1"
+                class="form__field" />
+            </div>
+          </div>
           <template v-if="chosenChar?.value?.buffs">
             <CalculatorCharacterBuffs
               :key="character"
@@ -60,66 +124,6 @@
           :key="character"
           @update-weapon="handleWeaponUpdated"
           :weapon-type="weaponType"></CalculatorWeapons>
-      </div>
-
-      <div class="screen--character" v-show="curScreen === 'talents'">
-        <div class="data-input">
-          <div class="form__group field">
-            <input
-              v-model="talentData.basic"
-              name="talentBasic"
-              type="number"
-              min="1"
-              max="10"
-              steps="1"
-              class="form__field" />
-            <label for="talentBasic" class="form__label">Basic</label>
-          </div>
-          <div class="form__group field">
-            <input
-              v-model="talentData.skill"
-              name="talentSkill"
-              type="number"
-              min="1"
-              max="10"
-              steps="1"
-              class="form__field" />
-            <label for="talentSkill" class="form__label">Skill</label>
-          </div>
-          <div class="form__group field">
-            <input
-              v-model="talentData.forte"
-              name="talentForte"
-              type="number"
-              min="1"
-              max="10"
-              steps="1"
-              class="form__field" />
-            <label for="talentForte" class="form__label">Forte</label>
-          </div>
-          <div class="form__group field">
-            <input
-              v-model="talentData.liberation"
-              name="talentLiberation"
-              type="number"
-              min="1"
-              max="10"
-              steps="1"
-              class="form__field" />
-            <label for="talentLiberation" class="form__label">Liberation</label>
-          </div>
-          <div class="form__group field">
-            <input
-              v-model="talentData.intro"
-              name="talentIntro"
-              type="number"
-              min="1"
-              max="10"
-              steps="1"
-              class="form__field" />
-            <label for="talentIntro" class="form__label">Intro</label>
-          </div>
-        </div>
       </div>
 
       <div class="screen--character" v-show="curScreen === 'echoes'">
@@ -1026,5 +1030,12 @@ $tooltip-background-color: $sidebar-background-color;
   width: 100%;
   justify-content: space-between;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.data-input--talents {
+  padding: 1rem 0;
+  label {
+    min-width: 120px;
+    display: inline-block;
+  }
 }
 </style>

@@ -21,6 +21,7 @@
         skills, etc. a lot faster to implement.
       </li>
       <li>Makes main nav a little easier to use</li>
+      <li>Moves talents to main screen, makes talent level UI easier to use</li>
     </ul>
     <h3>June 15, 2024</h3>
     <ul>
