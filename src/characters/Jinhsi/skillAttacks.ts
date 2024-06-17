@@ -1,0 +1,58 @@
+export const skillAttacks = {
+  name: "Resonance Skill: Tripartite Flames",
+  description:
+    '<div class="skilldescription"><span class="Title">True Sight: Capture</span><br>After releasing <span class="Highlight">Resonance Skill</span>, Changli rapidly attacks the enemy and enters <span class="Highlight">True Sight</span>, lasting for 12s. In the end, Changli releases a Plunging Attack, dealing <span class="Fire">Fusion DMG</span>.<br><span class="Highlight">True Sight: Capture</span> has 2 initial attempts and can be used up to 2 times. The number of attempts is increased by 1 every 12s.<br><span class="Title">Basic Attack: True Sight - Conquest</span><br>When in <span class="Highlight">True Sight</span>, if Changli uses <span class="Highlight">Ground Basic Attack</span>, she releases <span class="Highlight">True Sight: Conquest</span>, rapidly approaching the enemy and dealing <span class="Fire">Fusion DMG</span>, considered as Resonance Skill DMG. After releasing <span class="Highlight">True Sight: Conquest</span>, <span class="Highlight">True Sight</span> ends.<br><span class="Title">Basic Attack: True Sight - Charge</span><br>When in <span class="Highlight">True Sight</span>, if Changli <span class="Highlight">jumps</span> or uses <span class="Highlight">Basic Attack</span> in mid-air, she releases <span class="Highlight">True Sight: Charge</span>, dashing towards the enemy and dealing <span class="Fire">Fusion DMG</span>, considered as Resonance Skill DMG. After releasing <span class="Highlight">True Sight: Charge</span>, <span class="Highlight">True Sight</span> ends.</div>',
+  attacks: [
+    {
+      key: "TrueSightCaptureDMG",
+      label: "True Sight - Capture DMG",
+      talents: {
+        "1": "33.70%*3 + 67.40%",
+        "2": "36.46%*3 + 72.92%",
+        "3": "39.23%*3 + 78.45%",
+        "4": "43.10%*3 + 86.19%",
+        "5": "45.86%*3 + 91.71%",
+        "6": "49.04%*3 + 98.07%",
+        "7": "53.46%*3 + 106.91%",
+        "8": "57.88%*3 + 115.75%",
+        "9": "62.30%*3 + 124.59%",
+        "10": "67.00%*3 + 133.99%",
+      },
+      type: "Skill",
+    },
+    {
+      key: "TrueSightConquestDMG",
+      label: "True Sight - Conquest DMG",
+      talents: {
+        "1": "29.65%*2 + 41.51% + 47.44%",
+        "2": "32.08%*2 + 44.91% + 51.33%",
+        "3": "34.51%*2 + 48.32% + 55.22%",
+        "4": "37.92%*2 + 53.08% + 60.67%",
+        "5": "40.35%*2 + 56.49% + 64.56%",
+        "6": "43.14%*2 + 60.40% + 69.03%",
+        "7": "47.03%*2 + 65.85% + 75.25%",
+        "8": "50.92%*2 + 71.29% + 81.48%",
+        "9": "54.81%*2 + 76.74% + 87.70%",
+        "10": "58.95%*2 + 82.52% + 94.31%",
+      },
+      type: "Skill",
+    },
+    {
+      key: "TrueSightChargeDMG",
+      label: "True Sight - Charge DMG",
+      talents: {
+        "1": "36.56% + 54.84%",
+        "2": "39.56% + 59.34%",
+        "3": "42.56% + 63.83%",
+        "4": "46.75% + 70.13%",
+        "5": "49.75% + 74.62%",
+        "6": "53.20% + 79.80%",
+        "7": "58.00% + 86.99%",
+        "8": "62.79% + 94.18%",
+        "9": "67.59% + 101.38%",
+        "10": "72.68% + 109.02%",
+      },
+      type: "Skill",
+    },
+  ],
+};
