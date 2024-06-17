@@ -15,6 +15,10 @@
     <h1>Updates</h1>
     <h3>June 16, 2024</h3>
     <ul>
+      <li>Added stat bonuses from talent tree</li>
+    </ul>
+    <h3>June 16, 2024</h3>
+    <ul>
       <li>
         Behind the scenes update: I refactored how the stats are added which
         will make adding constellations / resonance chains, team buffs, inherit

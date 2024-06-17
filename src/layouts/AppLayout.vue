@@ -1,5 +1,4 @@
 <template>
-  <div class="alert">Calcharo is finished along with Broadblades. 🎉</div>
   <div class="container">
     <nav class="sidebar-navigation">
       <ul>
