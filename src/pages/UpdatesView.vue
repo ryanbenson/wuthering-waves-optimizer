@@ -17,7 +17,6 @@
     <ul>
       <li>Added stat bonuses from talent tree</li>
       <li>UI update to make managing stats while looking at damages easier</li>
-      <li>Adds Discord link for bugs and suggestions</li>
     </ul>
     <h3>June 16, 2024</h3>
     <ul>
