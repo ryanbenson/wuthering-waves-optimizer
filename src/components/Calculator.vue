@@ -615,7 +615,6 @@ export default defineComponent({
       if (echoStats) {
         addEchoBuffs(echoStats?.value, stats);
       }
-
       totalAtk.value =
         (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
         stats.attackFlat;

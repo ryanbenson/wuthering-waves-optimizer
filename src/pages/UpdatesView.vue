@@ -20,6 +20,7 @@
         will make adding constellations / resonance chains, team buffs, inherit
         skills, etc. a lot faster to implement.
       </li>
+      <li>Makes main nav a little easier to use</li>
     </ul>
     <h3>June 15, 2024</h3>
     <ul>

@@ -4,7 +4,7 @@
     <nav class="sidebar-navigation">
       <ul>
         <div class="sidebar-navigation__leading-items">
-          <RouterLink to="/" class="poiret-one-regular">WO</RouterLink>
+          <RouterLink to="/" class="poiret-one-regular">WT</RouterLink>
           <RouterLink to="/">
             <div class="icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
@@ -65,10 +65,13 @@ $tooltip-background-color: $sidebar-background-color;
   grid-template-columns: 64px 1fr;
 }
 .sidebar-navigation {
+  position: sticky;
+  top: 0;
+  left: 0;
   display: inline-block;
   min-height: 100vh;
+  height: 100vh;
   background-color: $sidebar-background-color;
-  float: left;
 
   a {
     color: white;
