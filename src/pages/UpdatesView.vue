@@ -13,12 +13,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>June 17, 2024</h3>
+    <h3>June 18, 2024</h3>
     <ul>
       <li>Jinhsi is now available</li>
       <li>Adds support for talent modifiers through buffs</li>
     </ul>
-    <h3>June 16, 2024</h3>
+    <h3>June 17, 2024</h3>
     <ul>
       <li>Added stat bonuses from talent tree</li>
       <li>UI update to make managing stats while looking at damages easier</li>
