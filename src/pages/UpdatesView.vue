@@ -21,6 +21,10 @@
         Updates for 1.1.6 (Hotfix: 1.1.6) for Changli's weapon, Jinhsi, and
         Jinhsi's weapon.
       </li>
+      <li>
+        Minor UI updates: Adds character avatar, cleans up character selection.
+        Makes clicking "Enabled" easier.
+      </li>
     </ul>
     <h3>June 17, 2024</h3>
     <ul>

@@ -1,8 +1,8 @@
 <template>
   <div>
     <p v-html="details"></p>
-    <span v-if="!alwaysEnabled"
-      ><input type="checkbox" v-model="isEnabled" /> Enabled?</span
+    <label v-if="!alwaysEnabled"
+      ><input type="checkbox" v-model="isEnabled" /> Enabled?</label
     >
     <span v-if="hasStacks">
       <input v-model="stacks" type="number" :min="minStacks" :max="maxStacks" />

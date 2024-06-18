@@ -2,8 +2,8 @@
   <div class="character__buff">
     <span>{{ name }}</span>
     <div v-html="details"></div>
-    <span v-if="!alwaysEnabled"
-      ><input type="checkbox" v-model="isEnabled" /> Enabled?</span
+    <label v-if="!alwaysEnabled"
+      ><input type="checkbox" v-model="isEnabled" /> Enabled?</label
     >
     <span v-if="hasStacks">
       <input v-model="stacks" type="number" :min="minStacks" :max="maxStacks" />

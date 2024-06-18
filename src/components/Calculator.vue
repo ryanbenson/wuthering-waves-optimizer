@@ -32,24 +32,36 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div class="alert">Jinhsi is now available! ✨</div>
         <div>
-          <div>
-            <select name="character" v-model="character">
-              <option v-for="char in charactersList" :key="char" :value="char">
-                {{ char }}
-              </option>
-            </select>
-            <label for="character">Character</label>
-          </div>
-          <div>
-            <select name="characterLevel" v-model="characterLevel">
-              <option
-                v-for="lvl in characterLevelOptions"
-                :key="lvl"
-                :value="lvl">
-                {{ lvl }}
-              </option>
-            </select>
-            <label for="characterLevel">Character Level</label>
+          <div class="character__selection">
+            <div
+              class="character__selection__avatar"
+              :style="{
+                backgroundImage: `url(/images/${character}.png)`,
+              }"></div>
+            <div class="character__selection__form">
+              <div class="character__selection__form--character">
+                <select name="character" v-model="character">
+                  <option
+                    v-for="char in charactersList"
+                    :key="char"
+                    :value="char">
+                    {{ char }}
+                  </option>
+                </select>
+                <label for="character">Character</label>
+              </div>
+              <div>
+                <select name="characterLevel" v-model="characterLevel">
+                  <option
+                    v-for="lvl in characterLevelOptions"
+                    :key="lvl"
+                    :value="lvl">
+                    {{ lvl }}
+                  </option>
+                </select>
+                <label for="characterLevel">Character Level</label>
+              </div>
+            </div>
           </div>
           <div class="data-input--talents">
             <div class="form__group field">
@@ -1090,5 +1102,29 @@ $tooltip-background-color: $sidebar-background-color;
 .screen--character {
   padding-top: 1rem;
   overflow: hidden;
+}
+.character__selection {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: center;
+  grid-gap: 2rem;
+}
+.character__selection__form--character {
+  margin-bottom: 1rem;
+}
+.character__selection__form {
+  label {
+    margin-left: 0.5rem;
+  }
+}
+.character__selection__avatar {
+  background: url(https://wuthering.wiki/img/role_1304.png);
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  display: block;
+  background-size: contain;
+  border-radius: 100%;
+  border: 1px solid white;
 }
 </style>
