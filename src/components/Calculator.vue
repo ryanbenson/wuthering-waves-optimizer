@@ -3,19 +3,28 @@
     <div class="calcations__nav">
       <ul>
         <li @click="changeScreen('character')">
-          <img src="/images/T_IconAchv_002.png" class="icon" />
+          <img
+            src="/images/T_IconAchv_002.png"
+            class="icon"
+            alt="Your Character" />
         </li>
         <li @click="changeScreen('weapon')">
-          <img src="/images/T_IconAchv_014.png" class="icon" />
+          <img
+            src="/images/T_IconAchv_014.png"
+            class="icon"
+            alt="Your Weapon" />
         </li>
         <li @click="changeScreen('echoes')">
-          <img src="/images/echoes.png" class="icon" />
+          <img src="/images/echoes.png" class="icon" alt="Your Echoes" />
         </li>
         <li @click="changeScreen('constellations')">
-          <img src="/images/constellations.png" class="icon" />
+          <img
+            src="/images/constellations.png"
+            class="icon"
+            alt="Your Resonance Chains" />
         </li>
         <li @click="changeScreen('enemy')">
-          <img src="/images/enemy.png" class="icon" />
+          <img src="/images/enemy.png" class="icon" alt="Your Enemy" />
         </li>
       </ul>
     </div>
