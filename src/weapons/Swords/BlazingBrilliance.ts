@@ -6,7 +6,7 @@ const weaponInfo: WeaponInfo = {
   rarity: 5,
   passiveName: "Crimson Phoenix",
   passiveValue:
-    "Increases CRIT Rate by 12%/14%/16%/18%/20%. Upon dealing damage, increases [Searing Feather] by 1 stack, gaining 1 stack every 0.5s. When Resonance Skill is released, increases [Searing Feather] by an extra 5 stacks. Each stack of [Searing Feather] increases Resonance Skill DMG Bonus by 4%/5%/6%/7%/8%, stacking up to 14 times. After reaching 14 stacks of [Searing Feather], all stacks will reset within 10s.",
+    "Increases CRIT Rate by 12%/15%/18%/21%/24%. Upon dealing damage, increases [Searing Feather] by 1 stack, gaining 1 stack every 0.5s. When Resonance Skill is released, increases [Searing Feather] by an extra 5 stacks. Each stack of [Searing Feather] increases Resonance Skill DMG Bonus by 4%/5%/6%/7%/8%, stacking up to 14 times. After reaching 14 stacks of [Searing Feather], all stacks will reset within 10s.",
   passiveData: [
     {
       key: "CritRate",
@@ -14,12 +14,12 @@ const weaponInfo: WeaponInfo = {
       modifier: "CritRate",
       modifierByRefinement: {
         "1": 0.12,
-        "2": 0.14,
-        "3": 0.16,
-        "4": 0.18,
-        "5": 0.20,
+        "2": 0.15,
+        "3": 0.18,
+        "4": 0.21,
+        "5": 0.24,
       },
-      details: "Increases CRIT Rate by 12%/14%/16%/18%/20%.",
+      details: "Increases CRIT Rate by 12%/15%/18%/21%/24%.",
       alwaysEnabled: true,
     },
     {
