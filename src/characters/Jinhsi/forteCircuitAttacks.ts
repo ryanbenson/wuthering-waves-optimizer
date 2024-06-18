@@ -18,7 +18,7 @@ export const forteCircuitAttacks = {
         "9": "82.41%",
         "10": "88.62%",
       },
-      type: "Basic",
+      type: "Skill",
     },
     {
       key: "BasicAttack2DMG",
@@ -35,7 +35,7 @@ export const forteCircuitAttacks = {
         "9": "72.51% + 24.17% + 24.17%",
         "10": "77.97% + 25.99% + 25.99%",
       },
-      type: "Basic",
+      type: "Skill",
     },
     {
       key: "BasicAttack3DMG",
@@ -52,7 +52,7 @@ export const forteCircuitAttacks = {
         "9": "92.47% + 61.65%",
         "10": "99.44% + 66.30%",
       },
-      type: "Basic",
+      type: "Skill",
     },
     {
       key: "BasicAttack4DMG",
@@ -69,7 +69,7 @@ export const forteCircuitAttacks = {
         "9": "17.36%*6 + 69.44%",
         "10": "18.67%*6 + 74.67%",
       },
-      type: "Basic",
+      type: "Skill",
     },
     {
       key: "HeavyAttackDMG",
