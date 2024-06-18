@@ -162,6 +162,7 @@
       <div>
         Resonance Liberation DMG Bonus: {{ ResonanceLiberationDMGBonus }}%
       </div>
+      <div>Intro Skill DMG Bonus: {{ IntroSkillDMGBonus }}%</div>
       <div>Glaccio DMG Bonus: {{ Glacio }}%</div>
       <div>Fusion DMG Bonus: {{ Fusion }}%</div>
       <div>Electro DMG Bonus: {{ Electro }}%</div>
@@ -413,6 +414,7 @@ export default defineComponent({
     const HeavyAttackDMGBonus = ref(0);
     const ResonanceSkillDMGBonus = ref(0);
     const ResonanceLiberationDMGBonus = ref(0);
+    const IntroSkillDMGBonus = ref(0);
     const Glacio = ref(0);
     const Fusion = ref(0);
     const Electro = ref(0);
@@ -461,6 +463,9 @@ export default defineComponent({
           : 0;
         target.resonanceSkillDMGBonus += source?.ResonanceSkillDMGBonus
           ? source.ResonanceSkillDMGBonus * 100
+          : 0;
+        target.introSkillDMGBonus += source?.IntroSkillDMGBonus
+          ? source.IntroSkillDMGBonus * 100
           : 0;
         target.resonanceLiberationDMGBonus +=
           source?.ResonanceLiberationDMGBonus
@@ -539,6 +544,7 @@ export default defineComponent({
         basicAttackDMGBonus: 0,
         heavyAttackDMGBonus: 0,
         resonanceSkillDMGBonus: 0,
+        introSkillDMGBonus: 0,
         resonanceLiberationDMGBonus: 0,
         glacio: 0,
         fusion: 0,
@@ -589,6 +595,7 @@ export default defineComponent({
           stats.heavyAttackDMGBonus += allAttributeBonus;
           stats.resonanceSkillDMGBonus += allAttributeBonus;
           stats.resonanceLiberationDMGBonus += allAttributeBonus;
+          stats.introSkillDMGBonus += allAttributeBonus;
         }
 
         if (weaponPassiveData?.AllResonanceDMG) {
@@ -629,6 +636,7 @@ export default defineComponent({
       BasicAttackDMGBonus.value = stats.basicAttackDMGBonus;
       HeavyAttackDMGBonus.value = stats.heavyAttackDMGBonus;
       ResonanceSkillDMGBonus.value = stats.resonanceSkillDMGBonus;
+      IntroSkillDMGBonus.value = stats.introSkillDMGBonus;
       ResonanceLiberationDMGBonus.value = stats.resonanceLiberationDMGBonus;
       Glacio.value = stats.glacio;
       Fusion.value = stats.fusion;
@@ -681,6 +689,9 @@ export default defineComponent({
           break;
         case "Skill":
           val = ResonanceSkillDMGBonus.value;
+          break;
+        case "Intro":
+          val = IntroSkillDMGBonus.value;
           break;
         case "Liberation":
           val = ResonanceLiberationDMGBonus.value;
@@ -946,6 +957,7 @@ export default defineComponent({
       BasicAttackDMGBonus,
       HeavyAttackDMGBonus,
       ResonanceSkillDMGBonus,
+      IntroSkillDMGBonus,
       ResonanceLiberationDMGBonus,
       Glacio,
       Fusion,

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>{{ details }}</p>
+    <p v-html="details"></p>
     <span v-if="!alwaysEnabled"
       ><input type="checkbox" v-model="isEnabled" /> Enabled?</span
     >

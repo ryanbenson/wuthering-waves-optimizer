@@ -409,3 +409,18 @@ body {
 .mt-0 {
   margin-top: 0;
 }
+
+/* Highlights */
+.Highlight {
+  font-style: italic;
+  color: #cbd053;
+}
+.Light {
+  color: #f8e56c;
+}
+.Thunder {
+  color: #b46bff;
+}
+.Fire {
+  color: #f0744e;
+}
