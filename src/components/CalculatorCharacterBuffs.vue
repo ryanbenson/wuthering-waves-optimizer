@@ -13,6 +13,7 @@
         :max-stacks="buff.maxStacks"
         :modifiers="buff.modifiers"
         @updated-character-buff="handleUpdatedCharacterBuff"
+        :talent-data="talentData"
         class="character__buff"></CalculatorCharacterBuff>
     </div>
   </div>
@@ -25,6 +26,10 @@ export default {
     buffs: {
       type: Array,
       default: () => [],
+    },
+    talentData: {
+      type: Object,
+      default: () => {},
     },
   },
   components: { CalculatorCharacterBuff },

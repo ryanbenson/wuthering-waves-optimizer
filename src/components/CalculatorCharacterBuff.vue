@@ -44,6 +44,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    talentData: {
+      type: Object,
+      default: () => {},
+    },
   },
   data() {
     return {
@@ -81,8 +85,16 @@ export default {
           return data;
         }
         this.modifiers.forEach((modifierItem) => {
-          const totalValue = modifierItem.modifierValue * this.stacks;
-          data[modifierItem.modifier] = totalValue;
+          if (modifierItem.modifier === "Talent") {
+            const talentVal =
+              modifierItem.modifierValue[
+                this.talentData[modifierItem.modifierValueTalentRef]
+              ];
+            data[modifierItem.modifierTalentKey] = talentVal * this.stacks;
+          } else {
+            const totalValue = modifierItem.modifierValue * this.stacks;
+            data[modifierItem.modifier] = totalValue;
+          }
         });
       }
       // shouldn't get here

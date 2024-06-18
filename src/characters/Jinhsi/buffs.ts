@@ -21,7 +21,7 @@ export const buffs = [
           "9": 0.2496,
           "10": 0.2684,
         },
-        modifierValueTalentRef: "ForteCircuit",
+        modifierValueTalentRef: "forte",
       },
     ],
     minStacks: 0,

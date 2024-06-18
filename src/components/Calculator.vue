@@ -112,6 +112,7 @@
             <CalculatorCharacterBuffs
               :key="character"
               :buffs="chosenChar?.value?.buffs"
+              :talent-data="talentData"
               @updated-character-buffs="
                 handleUpdatedCharacterBuffs
               "></CalculatorCharacterBuffs>
@@ -829,6 +830,7 @@ export default defineComponent({
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         const talent = attack.talents[forteCircuitAttacksTalent];
+        const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
         const damage = calcDamage(
           characterLevel.value,
           formData.enemyLevel,
@@ -842,7 +844,8 @@ export default defineComponent({
           TotalDeepenEffect.value,
           ResistReduction.value,
           totalCritRate.value,
-          totalCritDMG.value
+          totalCritDMG.value,
+          talentModifierAdd
         );
         const attackToUse = {
           key: attack.key,

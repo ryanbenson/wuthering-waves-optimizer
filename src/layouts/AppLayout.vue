@@ -1,4 +1,5 @@
 <template>
+  <div class="alert">Jinhsi is now available! ✨</div>
   <div class="container">
     <nav class="sidebar-navigation">
       <ul>
