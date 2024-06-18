@@ -17,6 +17,10 @@
     <ul>
       <li>Jinhsi is now available</li>
       <li>Adds support for talent modifiers through buffs</li>
+      <li>
+        Updates for 1.1.6 (Hotfix: 1.1.6) for Changli's weapon, Jinhsi, and
+        Jinhsi's weapon.
+      </li>
     </ul>
     <h3>June 17, 2024</h3>
     <ul>
