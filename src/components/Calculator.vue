@@ -21,6 +21,7 @@
     </div>
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
+        <div class="alert">Jinhsi is now available! ✨</div>
         <div>
           <div>
             <select name="character" v-model="character">
@@ -108,7 +109,7 @@
                 class="form__field" />
             </div>
           </div>
-          <template v-if="chosenChar?.value?.buffs">
+          <template v-if="chosenChar?.value?.buffs && isLoading === false">
             <CalculatorCharacterBuffs
               :key="character"
               :buffs="chosenChar?.value?.buffs"
@@ -426,12 +427,17 @@ export default defineComponent({
     const BonusSpecificSkillDMGBonus = ref(0);
     const TotalDeepenEffect = ref(0);
     const ResistReduction = ref(0);
+    const isLoading = ref(false);
 
     charactersList.value = getCharactersAvailable();
 
     watch(character, async (charName) => {
+      isLoading.value = true;
       const chosen = await getCharByName(charName);
       chosenChar.value = chosen;
+      setTimeout(() => {
+        isLoading.value = false;
+      }, 10);
       // update the weapons if needed
       if (weaponType.value !== chosenChar.value?.basic?.weapon) {
         weaponType.value = chosenChar.value?.basic?.weapon ?? "Swords";
@@ -973,6 +979,7 @@ export default defineComponent({
       TotalDeepenEffect,
       ResistReduction,
       weaponData,
+      isLoading,
       // weaponLevelOptions,
     };
   },
@@ -990,6 +997,8 @@ export default defineComponent({
 .calculations__screens {
   padding: 2rem;
   overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
 }
 .results {
   overflow-y: auto;
@@ -1059,5 +1068,18 @@ $tooltip-background-color: $sidebar-background-color;
     min-width: 120px;
     display: inline-block;
   }
+}
+.alert {
+  background: #126a5a;
+  padding: 0.25rem 0.5rem;
+  font-size: 14px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+.screen--character {
+  padding-top: 1rem;
+  overflow: hidden;
 }
 </style>

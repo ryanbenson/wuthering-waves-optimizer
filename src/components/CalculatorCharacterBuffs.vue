@@ -76,6 +76,9 @@ export default {
   mounted() {
     this.updatedStats();
   },
+  beforeUnmount() {
+    this.$emit("updated-character-buffs", {});
+  },
 };
 </script>
 

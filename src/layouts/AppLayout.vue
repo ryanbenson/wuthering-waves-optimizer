@@ -1,5 +1,4 @@
 <template>
-  <div class="alert">Jinhsi is now available! ✨</div>
   <div class="container">
     <nav class="sidebar-navigation">
       <ul>
@@ -55,11 +54,6 @@ $active-sidebar-link-color: #22252e;
 $hover-sidebar-link-color: $active-sidebar-link-color;
 $active-link-color: #98d7ec;
 $tooltip-background-color: $sidebar-background-color;
-.alert {
-  background: #126a5a;
-  padding: 0.25rem 0.5rem;
-  font-size: 14px;
-}
 .container {
   display: grid;
   grid-template-columns: 64px 1fr;
