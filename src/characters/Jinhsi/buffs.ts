@@ -3,7 +3,7 @@ export const buffs = [
     key: "Incandescence",
     name: "Incandescence",
     details:
-      '<div class="skilldescription">When Jinhsi has "Incandescence", consume up to 40 Incandescence, each point of Incandescence grants an additional DMG multiplier percentage to the <span class="Highlight">Star Glamour</span>.</div>',
+      '<div class="skilldescription">When Jinhsi has "Incandescence", consume up to 50 Incandescence, each point of Incandescence grants an additional DMG multiplier percentage to the <span class="Highlight">Star Glamour</span>.</div>',
     hasStacks: true,
     modifiers: [
       {
@@ -15,7 +15,7 @@ export const buffs = [
           "3": 0.2608,
           "4": 0.2865,
           "5": 0.3049,
-          "6": 0.3260,
+          "6": 0.326,
           "7": 0.3554,
           "8": 0.3848,
           "9": 0.4142,

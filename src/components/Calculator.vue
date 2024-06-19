@@ -642,6 +642,7 @@ export default defineComponent({
         );
 
         addBuffs(weaponPassiveData, stats);
+        console.log(weaponPassiveData);
 
         if (weaponPassiveData?.AllAttributeBonus) {
           const allAttributeBonus = weaponPassiveData.AllAttributeBonus * 100;

@@ -37,7 +37,6 @@
         v-for="(weaponPassive, i) in weaponPassives"
         class="weapon__passive"
         :key="weaponPassive.key"
-        :passive-key="weaponPassive.key"
         :has-stacks="weaponPassive.hasStacks"
         :modifier="weaponPassive.modifier"
         :modifier-by-refinement="weaponPassive.modifierByRefinement"
@@ -46,6 +45,7 @@
         :always-enabled="weaponPassive.alwaysEnabled"
         :details="weaponPassive.details"
         :refinement="refinement"
+        :duplicate-modifier="weaponPassive.duplicateModifier"
         @updated-weapon-stats="handleUpdatedWeaponStats">
       </CalculatorWeaponsPassive>
     </div>
@@ -72,7 +72,6 @@ export default {
       refinement: 1,
       weaponPassiveStats: {},
       weaponPassives: [],
-      weaponPassivesActive: [],
     };
   },
   watch: {
@@ -88,14 +87,8 @@ export default {
   },
   methods: {
     async updateWeaponStats() {
-      const updatedStats = {};
       const { attack, modifier, modifierValue } =
         this.chosenWeapon.getWeaponDataByLevel(this.weaponLevel);
-      this.weaponPassivesActive.forEach((passiveActive) => {
-        updatedStats[passiveActive.stat] =
-          (updatedStats[passiveActive.stat] || 0) + passiveActive.value;
-      });
-      this.weaponPassiveStats = updatedStats;
       const weaponData = {
         attack,
         modifier,
@@ -112,15 +105,7 @@ export default {
       this.weaponsList = getWeaponsByType(this.weaponType);
     },
     async handleUpdatedWeaponStats(data) {
-      const index = this.weaponPassivesActive.findIndex((passiveActive) => {
-        return data.key === passiveActive.key;
-      });
-      // if not found, add it
-      if (index === -1) {
-        this.weaponPassivesActive.push(data);
-      } else {
-        this.weaponPassivesActive[index] = data;
-      }
+      this.weaponPassiveStats[data.stat] = data.value;
       await this.updateWeaponStats();
     },
     async weaponChanged(e) {
