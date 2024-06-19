@@ -4,7 +4,7 @@ export const liberationAttacks = {
     '<div class="skilldescription">Deal <span class="Fire">Fusion DMG</span> to nearby targets, obtaining 4 stacks of [Enflamement], and entering <span class="Highlight">Fiery Feather</span>.<br><span class="Title">Fiery Feather</span><br>When Changli releases Heavy Attack <span class="Highlight">Flaming Sacrifice</span> within 10s, her ATK is increased by 25%, after which <span class="Highlight">Fiery Feather</span> ends.</div>',
   attacks: [
     {
-      key: "SkillDMG",
+      key: "RadianceofFealty",
       label: "Skill DMG",
       talents: {
         "1": "610.00%",

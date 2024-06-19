@@ -791,13 +791,19 @@ export default defineComponent({
         // get specifi skill dmg, right now only from resonance chains
         const specificSkillDmg =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
+        // add any extra def ignore
+        const extraDefIgnore =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DefIgnore`
+          ] ?? 0;
+        const totalDefIgnore = DefIgnore.value + extraDefIgnore;
         const damage = calcDamage(
           characterLevel.value,
           formData.enemyLevel,
           formData.enemyResist,
           talent,
           atkDefHpVal,
-          DefIgnore.value,
+          totalDefIgnore,
           totalSkillDmgBonus,
           specificSkillDmg,
           elementalDmgBonusDecimal,
@@ -832,13 +838,19 @@ export default defineComponent({
         // get specifi skill dmg, right now only from resonance chains
         const specificSkillDmg =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
+        // add any extra def ignore
+        const extraDefIgnore =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DefIgnore`
+          ] ?? 0;
+        const totalDefIgnore = DefIgnore.value + extraDefIgnore;
         const damage = calcDamage(
           characterLevel.value,
           formData.enemyLevel,
           formData.enemyResist,
           talent,
           atkDefHpVal,
-          DefIgnore.value,
+          totalDefIgnore,
           totalSkillDmgBonus,
           specificSkillDmg,
           elementalDmgBonusDecimal,
@@ -874,13 +886,19 @@ export default defineComponent({
         // get specifi skill dmg, right now only from resonance chains
         const specificSkillDmg =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
+        // add any extra def ignore
+        const extraDefIgnore =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DefIgnore`
+          ] ?? 0;
+        const totalDefIgnore = DefIgnore.value + extraDefIgnore;
         const damage = calcDamage(
           characterLevel.value,
           formData.enemyLevel,
           formData.enemyResist,
           talent,
           atkDefHpVal,
-          DefIgnore.value,
+          totalDefIgnore,
           totalSkillDmgBonus,
           specificSkillDmg,
           elementalDmgBonusDecimal,
@@ -916,13 +934,19 @@ export default defineComponent({
         // get specifi skill dmg, right now only from resonance chains
         const specificSkillDmg =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
+        // add any extra def ignore
+        const extraDefIgnore =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DefIgnore`
+          ] ?? 0;
+        const totalDefIgnore = DefIgnore.value + extraDefIgnore;
         const damage = calcDamage(
           characterLevel.value,
           formData.enemyLevel,
           formData.enemyResist,
           talent,
           atkDefHpVal,
-          DefIgnore.value,
+          totalDefIgnore,
           totalSkillDmgBonus,
           specificSkillDmg,
           elementalDmgBonusDecimal,
@@ -957,13 +981,19 @@ export default defineComponent({
         // get specifi skill dmg, right now only from resonance chains
         const specificSkillDmg =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
+        // add any extra def ignore
+        const extraDefIgnore =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DefIgnore`
+          ] ?? 0;
+        const totalDefIgnore = DefIgnore.value + extraDefIgnore;
         const damage = calcDamage(
           characterLevel.value,
           formData.enemyLevel,
           formData.enemyResist,
           talent,
           atkDefHpVal,
-          DefIgnore.value,
+          totalDefIgnore,
           totalSkillDmgBonus,
           specificSkillDmg,
           elementalDmgBonusDecimal,
