@@ -30,7 +30,9 @@
     </div>
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
-        <div class="alert">Jinhsi is now available! ✨</div>
+        <div class="alert alert--info">
+          Resonance chains are now available! ⚡
+        </div>
         <div>
           <div class="character__selection">
             <div
@@ -1203,6 +1205,10 @@ $tooltip-background-color: $sidebar-background-color;
   top: 0;
   left: 0;
   width: 100%;
+
+  &.alert--info {
+    background: #12526a;
+  }
 }
 .screen--character {
   padding-top: 1rem;

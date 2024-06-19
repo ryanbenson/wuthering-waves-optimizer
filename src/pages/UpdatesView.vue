@@ -15,6 +15,7 @@
     <h1>Updates</h1>
     <h3>June 19, 2024</h3>
     <ul>
+      <li>Resonance chains have been implemented! ⚡</li>
       <li>
         Ages of Harvest weapon passives split so you can control if you have one
         or both passives active
