@@ -154,7 +154,16 @@
       </div>
 
       <div class="screen--character" v-show="curScreen === 'constellations'">
-        Resonance chains coming soon.
+        <template
+          v-if="chosenChar?.value?.resonanceChains && isLoading === false">
+          <CalculatorResonanceChains
+            :key="character"
+            :buffs="chosenChar?.value?.resonanceChains"
+            :talent-data="talentData"
+            @updated-character-resonance-chains="
+              handleUpdatedCharacterResonanceChains
+            "></CalculatorResonanceChains>
+        </template>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <div
@@ -193,9 +202,6 @@
       <div>Spectro DMG Bonus: {{ Spectro }}%</div>
       <div>Havoc DMG Bonus: {{ Havoc }}%</div>
       <div>Defense Ignore: {{ DefIgnore * 100 }}%</div>
-      <div>
-        Bonus Specific Skill DMG Bonus: {{ BonusSpecificSkillDMGBonus }}%
-      </div>
       <div>Total Deepen Effect: {{ TotalDeepenEffect }}%</div>
       <div>Resist Reduction: {{ ResistReduction }}%</div>
       <hr />
@@ -361,6 +367,7 @@ import {
 import CalculatorEchoes from "./CalculatorEchoes.vue";
 import CalculatorWeapons from "./CalculatorWeapons.vue";
 import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
+import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -382,6 +389,7 @@ export default defineComponent({
     CalculatorEchoes,
     CalculatorWeapons,
     CalculatorCharacterBuffs,
+    CalculatorResonanceChains,
   },
   setup() {
     const formData = reactive<FormData>({
@@ -397,6 +405,7 @@ export default defineComponent({
     });
     const weaponData = reactive({});
     const charBuffsData = reactive({});
+    const charResonanceChainsData = reactive({});
 
     watch(formData, async (updatedFormData: FormData) => {
       handleCalculation(updatedFormData);
@@ -593,6 +602,7 @@ export default defineComponent({
       let weaponModifer = null;
       let weaponModifierValue = 0;
       let weaponPassiveData = {};
+      let resonanceChainsData = {};
       if (chosenChar.value) {
         const { hp, attack, defense } =
           chosenChar.value.getCharacterStatsByLevel(characterLevel.value);
@@ -603,6 +613,20 @@ export default defineComponent({
 
       if (charBuffsData.value) {
         addBuffs(charBuffsData.value, stats);
+      }
+
+      if (charResonanceChainsData.value) {
+        addBuffs(charResonanceChainsData.value, stats);
+
+        resonanceChainsData = charResonanceChainsData.value ?? {};
+        if (resonanceChainsData?.AllAttributeBonus) {
+          const allAttributeBonus = resonanceChainsData.AllAttributeBonus * 100;
+          stats.basicAttackDMGBonus += allAttributeBonus;
+          stats.heavyAttackDMGBonus += allAttributeBonus;
+          stats.resonanceSkillDMGBonus += allAttributeBonus;
+          stats.resonanceLiberationDMGBonus += allAttributeBonus;
+          stats.introSkillDMGBonus += allAttributeBonus;
+        }
       }
 
       if (weaponData.value) {
@@ -759,6 +783,14 @@ export default defineComponent({
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         const talent = attack.talents[basicAttacksTalent];
+        const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
+        const talentModifierAddFromResonanceChains =
+          charResonanceChainsData.value?.[attack.key] ?? 0;
+        const totalTalentModifierAdd =
+          talentModifierAdd + talentModifierAddFromResonanceChains;
+        // get specifi skill dmg, right now only from resonance chains
+        const specificSkillDmg =
+          charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const damage = calcDamage(
           characterLevel.value,
           formData.enemyLevel,
@@ -767,12 +799,13 @@ export default defineComponent({
           atkDefHpVal,
           DefIgnore.value,
           totalSkillDmgBonus,
-          BonusSpecificSkillDMGBonus.value,
+          specificSkillDmg,
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
           ResistReduction.value,
           totalCritRate.value,
-          totalCritDMG.value
+          totalCritDMG.value,
+          totalTalentModifierAdd
         );
         const attackToUse = {
           key: attack.key,
@@ -791,6 +824,14 @@ export default defineComponent({
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         const talent = attack.talents[skillAttacksTalent];
+        const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
+        const talentModifierAddFromResonanceChains =
+          charResonanceChainsData.value?.[attack.key] ?? 0;
+        const totalTalentModifierAdd =
+          talentModifierAdd + talentModifierAddFromResonanceChains;
+        // get specifi skill dmg, right now only from resonance chains
+        const specificSkillDmg =
+          charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const damage = calcDamage(
           characterLevel.value,
           formData.enemyLevel,
@@ -799,12 +840,13 @@ export default defineComponent({
           atkDefHpVal,
           DefIgnore.value,
           totalSkillDmgBonus,
-          BonusSpecificSkillDMGBonus.value,
+          specificSkillDmg,
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
           ResistReduction.value,
           totalCritRate.value,
-          totalCritDMG.value
+          totalCritDMG.value,
+          totalTalentModifierAdd
         );
         const attackToUse = {
           key: attack.key,
@@ -824,6 +866,14 @@ export default defineComponent({
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         const talent = attack.talents[liberationAttacksTalent];
+        const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
+        const talentModifierAddFromResonanceChains =
+          charResonanceChainsData.value?.[attack.key] ?? 0;
+        const totalTalentModifierAdd =
+          talentModifierAdd + talentModifierAddFromResonanceChains;
+        // get specifi skill dmg, right now only from resonance chains
+        const specificSkillDmg =
+          charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const damage = calcDamage(
           characterLevel.value,
           formData.enemyLevel,
@@ -832,12 +882,13 @@ export default defineComponent({
           atkDefHpVal,
           DefIgnore.value,
           totalSkillDmgBonus,
-          BonusSpecificSkillDMGBonus.value,
+          specificSkillDmg,
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
           ResistReduction.value,
           totalCritRate.value,
-          totalCritDMG.value
+          totalCritDMG.value,
+          totalTalentModifierAdd
         );
         const attackToUse = {
           key: attack.key,
@@ -858,6 +909,13 @@ export default defineComponent({
         const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         const talent = attack.talents[forteCircuitAttacksTalent];
         const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
+        const talentModifierAddFromResonanceChains =
+          charResonanceChainsData.value?.[attack.key] ?? 0;
+        const totalTalentModifierAdd =
+          talentModifierAdd + talentModifierAddFromResonanceChains;
+        // get specifi skill dmg, right now only from resonance chains
+        const specificSkillDmg =
+          charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const damage = calcDamage(
           characterLevel.value,
           formData.enemyLevel,
@@ -866,13 +924,13 @@ export default defineComponent({
           atkDefHpVal,
           DefIgnore.value,
           totalSkillDmgBonus,
-          BonusSpecificSkillDMGBonus.value,
+          specificSkillDmg,
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
           ResistReduction.value,
           totalCritRate.value,
           totalCritDMG.value,
-          talentModifierAdd
+          totalTalentModifierAdd
         );
         const attackToUse = {
           key: attack.key,
@@ -891,6 +949,14 @@ export default defineComponent({
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         const talent = attack.talents[introAttacksTalent];
+        const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
+        const talentModifierAddFromResonanceChains =
+          charResonanceChainsData.value?.[attack.key] ?? 0;
+        const totalTalentModifierAdd =
+          talentModifierAdd + talentModifierAddFromResonanceChains;
+        // get specifi skill dmg, right now only from resonance chains
+        const specificSkillDmg =
+          charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const damage = calcDamage(
           characterLevel.value,
           formData.enemyLevel,
@@ -899,12 +965,13 @@ export default defineComponent({
           atkDefHpVal,
           DefIgnore.value,
           totalSkillDmgBonus,
-          BonusSpecificSkillDMGBonus.value,
+          specificSkillDmg,
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
           ResistReduction.value,
           totalCritRate.value,
-          totalCritDMG.value
+          totalCritDMG.value,
+          totalTalentModifierAdd
         );
         const attackToUse = {
           key: attack.key,
@@ -947,6 +1014,13 @@ export default defineComponent({
       calcCharStats();
     };
 
+    const handleUpdatedCharacterResonanceChains = (
+      givenResonanceChainsData
+    ) => {
+      charResonanceChainsData.value = givenResonanceChainsData;
+      calcCharStats();
+    };
+
     const updateStatsEchoes = (echoStatsGiven) => {
       echoStats.value = echoStatsGiven;
       calcCharStats();
@@ -984,6 +1058,7 @@ export default defineComponent({
       weaponType,
       handleWeaponUpdated,
       handleUpdatedCharacterBuffs,
+      handleUpdatedCharacterResonanceChains,
       BasicAttackDMGBonus,
       HeavyAttackDMGBonus,
       ResonanceSkillDMGBonus,
