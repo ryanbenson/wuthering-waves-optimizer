@@ -184,29 +184,72 @@
       </div>
     </div>
     <div class="results">
-      <h2 class="mt-0">Stats</h2>
-      <div>Attack: {{ totalAtk }}</div>
-      <div>HP: {{ totalHp }}</div>
-      <div>Defense: {{ totalDef }}</div>
-      <div>Crit Rate: {{ totalCritRate * 100 }}%</div>
-      <div>Crit DMG: {{ totalCritDMG * 100 }}%</div>
-      <div>Basic Attack DMG Bonus: {{ BasicAttackDMGBonus }}%</div>
-      <div>Heavy Attack DMG Bonus: {{ HeavyAttackDMGBonus }}%</div>
-      <div>Resonance Skill DMG Bonus: {{ ResonanceSkillDMGBonus }}%</div>
-      <div>
-        Resonance Liberation DMG Bonus: {{ ResonanceLiberationDMGBonus }}%
+      <div class="results__stats">
+        <h2 class="mt-0">Stats</h2>
+        <div>
+          <span>Attack:</span> <span>{{ totalAtk }}</span>
+        </div>
+        <div>
+          <span>HP:</span> <span>{{ totalHp }}</span>
+        </div>
+        <div>
+          <span>Defense:</span> <span>{{ totalDef }}</span>
+        </div>
+        <div>
+          <span>Crit Rate:</span> <span>{{ totalCritRate * 100 }}%</span>
+        </div>
+        <div>
+          <span>Crit DMG:</span> <span>{{ totalCritDMG * 100 }}%</span>
+        </div>
+        <div>
+          <span>Basic Attack DMG Bonus:</span>
+          <span>{{ BasicAttackDMGBonus }}%</span>
+        </div>
+        <div>
+          <span>Heavy Attack DMG Bonus:</span>
+          <span>{{ HeavyAttackDMGBonus }}%</span>
+        </div>
+        <div>
+          <span>Resonance Skill DMG Bonus:</span>
+          <span>{{ ResonanceSkillDMGBonus }}%</span>
+        </div>
+        <div>
+          <span>Resonance Liberation DMG Bonus:</span>
+          <span>{{ ResonanceLiberationDMGBonus }}%</span>
+        </div>
+        <div>
+          <span>Intro Skill DMG Bonus:</span>
+          <span>{{ IntroSkillDMGBonus }}%</span>
+        </div>
+        <div>
+          <span>Glacio DMG Bonus:</span> <span>{{ Glacio }}%</span>
+        </div>
+        <div>
+          <span>Fusion DMG Bonus:</span> <span>{{ Fusion }}%</span>
+        </div>
+        <div>
+          <span>Electro DMG Bonus:</span> <span>{{ Electro }}%</span>
+        </div>
+        <div>
+          <span>Aero DMG Bonus:</span> <span>{{ Aero }}%</span>
+        </div>
+        <div>
+          <span>Spectro DMG Bonus:</span> <span>{{ Spectro }}%</span>
+        </div>
+        <div>
+          <span>Havoc DMG Bonus:</span> <span>{{ Havoc }}%</span>
+        </div>
+        <div>
+          <span>Defense Ignore:</span> <span>{{ DefIgnore * 100 }}%</span>
+        </div>
+        <div>
+          <span>Total Deepen Effect:</span>
+          <span>{{ TotalDeepenEffect }}%</span>
+        </div>
+        <div>
+          <span>Resist Reduction:</span> <span>{{ ResistReduction }}%</span>
+        </div>
       </div>
-      <div>Intro Skill DMG Bonus: {{ IntroSkillDMGBonus }}%</div>
-      <div>Glaccio DMG Bonus: {{ Glacio }}%</div>
-      <div>Fusion DMG Bonus: {{ Fusion }}%</div>
-      <div>Electro DMG Bonus: {{ Electro }}%</div>
-      <div>Aero DMG Bonus: {{ Aero }}%</div>
-      <div>Spectro DMG Bonus: {{ Spectro }}%</div>
-      <div>Havoc DMG Bonus: {{ Havoc }}%</div>
-      <div>Defense Ignore: {{ DefIgnore * 100 }}%</div>
-      <div>Total Deepen Effect: {{ TotalDeepenEffect }}%</div>
-      <div>Resist Reduction: {{ ResistReduction }}%</div>
-      <hr />
       <h2>Damage</h2>
       <div class="calculation__damage__item">
         <span>Name</span>
@@ -1237,5 +1280,13 @@ $tooltip-background-color: $sidebar-background-color;
   background-size: contain;
   border-radius: 100%;
   border: 1px solid white;
+}
+.results__stats {
+  div {
+    display: flex;
+    justify-content: space-between;
+    max-width: 400px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
 }
 </style>

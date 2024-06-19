@@ -21,7 +21,10 @@
         Ages of Harvest weapon passives split so you can control if you have one
         or both passives active
       </li>
-      <li>Optimized the weapon passive code</li>
+      <li>
+        Prevents users from entering stacks beyond the max amount of stacks
+      </li>
+      <li>UI enhancement to the final stats</li>
     </ul>
     <h3>June 18, 2024</h3>
     <ul>
