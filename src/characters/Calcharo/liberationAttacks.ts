@@ -156,5 +156,22 @@ export const liberationAttacks = {
       },
       type: "Liberation",
     },
+    {
+      key: "SequenceNode6TheUltimatum",
+      label: "Sequence Node 6: The Ultimatum",
+      talents: {
+        "1": "100.00%*2",
+        "2": "100.00%*2",
+        "3": "100.00%*2",
+        "4": "100.00%*2",
+        "5": "100.00%*2",
+        "6": "100.00%*2",
+        "7": "100.00%*2",
+        "8": "100.00%*2",
+        "9": "100.00%*2",
+        "10": "100.00%*2",
+      },
+      type: "Liberation",
+    },
   ],
 };
