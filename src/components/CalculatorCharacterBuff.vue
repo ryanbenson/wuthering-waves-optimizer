@@ -6,7 +6,12 @@
       ><input type="checkbox" v-model="isEnabled" /> Enabled?</label
     >
     <span v-if="hasStacks">
-      <input v-model="stacks" type="number" :min="minStacks" :max="maxStacks" />
+      <input
+        v-model="stacks"
+        type="number"
+        :min="minStacks"
+        :max="maxStacks"
+        @input="ensureMaxStacks" />
       Stacks</span
     >
   </div>
@@ -66,6 +71,11 @@ export default {
         key: this.uniqueKey,
         data: this.buffStats,
       });
+    },
+    ensureMaxStacks() {
+      if (this.stacks > this.maxStacks) {
+        this.stacks = this.maxStacks;
+      }
     },
   },
   computed: {
