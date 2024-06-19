@@ -4,11 +4,12 @@
     <ul>
       <li>Better UI</li>
       <li>Mobile support</li>
-      <li>More characters - including Jinhsi</li>
+      <li>More characters</li>
       <li>More weapons</li>
-      <li>Resonance Chains</li>
       <li>Main echo buffs</li>
       <li>Team Buffs</li>
+      <li>Custom rotations</li>
+      <li>Persisting your configurations in your browser</li>
       <li>Food</li>
       <li>More!</li>
     </ul>
