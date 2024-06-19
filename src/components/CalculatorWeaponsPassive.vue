@@ -43,9 +43,8 @@ export default {
     refinement: {
       type: Number,
     },
-    duplicateModifier: {
-      type: Boolean,
-      default: false,
+    passiveKey: {
+      type: String,
     },
   },
   data() {
@@ -69,7 +68,7 @@ export default {
       const data = {
         stat: this.modifier,
         value: 0,
-        duplicateModifier: this.duplicateModifier,
+        key: this.passiveKey,
       };
       if (!this.isEnabled) {
         return data;
