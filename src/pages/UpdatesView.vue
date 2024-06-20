@@ -16,6 +16,7 @@
     <h1>Updates</h1>
     <h3>June 20, 2024</h3>
     <ul>
+      <li>Calculator is now mobile-friendly!</li>
       <li>Fixes Jinhsi R1, it has the stacks now.</li>
       <li>
         Ages of Harvest weapon passives fixed. It adds the elemental damage
