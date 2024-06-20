@@ -42,6 +42,14 @@
         unused in the game.")
       </li>
     </ul>
+    <h3>Discord</h3>
+    <p>
+      If you want to keep up with the latest, or have any ideas, or see any
+      bugs?
+      <a href="https://discord.gg/pDKjxNjJWW" target="_blank"
+        >Join the Discord!</a
+      >
+    </p>
   </div>
 </template>
 

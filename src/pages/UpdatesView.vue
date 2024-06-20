@@ -14,6 +14,19 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 20, 2024</h3>
+    <ul>
+      <li>Fixes Jinhsi R1, it has the stacks now.</li>
+      <li>
+        Ages of Harvest weapon passives fixed. It adds the elemental damage
+        bonus now too.
+      </li>
+      <li>
+        Adds context note on Jinhsi R6 due to current limitation. Will fix later
+        so you won't need to re-enter the stacks.
+      </li>
+      <li>Adds Discord link</li>
+    </ul>
     <h3>June 19, 2024</h3>
     <ul>
       <li>Resonance chains have been implemented! ⚡</li>
