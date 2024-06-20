@@ -599,7 +599,7 @@ export default defineComponent({
         target.electro += source?.Electro ? source.Electro : 0;
         target.aero += source?.Aero ? source.Aero : 0;
         target.spectro += source?.Spectro ? source.Spectro : 0;
-        target.havoc += source?.Havoc ? source.Havo : 0;
+        target.havoc += source?.Havoc ? source.Havoc : 0;
         target.defIgnore += source?.DEFIgnore ? source.DEFIgnor : 0;
         target.bonusSpecificSkillDMGBonus += source?.BonusSpecificSkillDMGBonus
           ? source.BonusSpecificSkillDMGBonus
@@ -671,6 +671,7 @@ export default defineComponent({
           stats.resonanceSkillDMGBonus += allAttributeBonus;
           stats.resonanceLiberationDMGBonus += allAttributeBonus;
           stats.introSkillDMGBonus += allAttributeBonus;
+          stats.introSkillDMGBonus += allAttributeBonus;
         }
       }
 
@@ -692,7 +693,12 @@ export default defineComponent({
           stats.heavyAttackDMGBonus += allAttributeBonus;
           stats.resonanceSkillDMGBonus += allAttributeBonus;
           stats.resonanceLiberationDMGBonus += allAttributeBonus;
-          stats.introSkillDMGBonus += allAttributeBonus;
+          stats.glacio += allAttributeBonus;
+          stats.fusion += allAttributeBonus;
+          stats.electro += allAttributeBonus;
+          stats.aero += allAttributeBonus;
+          stats.spectro += allAttributeBonus;
+          stats.havoc += allAttributeBonus;
         }
 
         if (weaponPassiveData?.AllResonanceDMG) {

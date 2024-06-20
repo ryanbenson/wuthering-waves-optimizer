@@ -91,7 +91,7 @@ export default {
             }
             specificTalentBuffs[talentName] =
               (specificTalentBuffs[talentName] || 0) +
-              buffInstance.modifierValue;
+              buffInstance.modifierValueCalculated;
           });
         });
         finalBuffData.specificTalentBuffs = specificTalentBuffs;

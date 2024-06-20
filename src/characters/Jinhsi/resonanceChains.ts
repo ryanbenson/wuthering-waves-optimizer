@@ -3,7 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1AbyssalAscension",
     name: "Sequence Node 1: Abyssal Ascension",
     details: `<span class="skilldescription">When Jinhsi casts Basic Attack <span class="Highlight">"Incarnation: Basic Attack"</span> or Resonance Skill <span class="Highlight">"Crescent Divinity"</span>, gain one stack of <span class="Highlight">Herald of Revival</span>, which stacks up to 4 times and last for 6s. When casting Resonance Skill <span class="Highlight">"Illuminous Epiphany"</span>, Jinhsi consumes all stacks of <span class="Highlight">Herald of Revival</span>. Each stack increases the DMG of Resonance Skill <span class="Highlight">"Illuminous Epiphany"</span> by 20%.</span>`,
-    hasStacks: false,
+    hasStacks: true,
     modifiers: [
       {
         modifySpecificTalents: ["SolarFlareDMG", "StarGlamourDMG"],
@@ -11,7 +11,7 @@ export const resonanceChains = [
       },
     ],
     minStacks: 0,
-    maxStacks: 0,
+    maxStacks: 4,
     alwaysEnabled: false,
   },
   {
@@ -77,7 +77,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode6ComesSpringwhenChillExhausts2",
     name: "Sequence Node 6: Comes Spring when Chill Exhausts: Incandescence Buff",
-    details: `<span class="skilldescription">The multiplier increase brought by Incandescence is additionally increased by 71%.</span>`,
+    details: `<span class="skilldescription">The multiplier increase brought by Incandescence is additionally increased by 71%.<br><br>Note: Re-enter your Incandescence stacks. <em>This will be fixed later.</em></span>`,
     hasStacks: true,
     modifiers: [
       {

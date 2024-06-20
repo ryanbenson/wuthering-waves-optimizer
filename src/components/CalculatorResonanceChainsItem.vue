@@ -90,6 +90,8 @@ export default {
             if (!data.modifySpecificTalents) {
               data.modifySpecificTalents = [];
             }
+            // add our calculated value
+            modifierItem.modifierValueCalculated = modifierItem.modifierValue;
             data.modifySpecificTalents.push(modifierItem);
           } else if (modifierItem.modifier === "Talent") {
             const talentVal =
@@ -112,6 +114,9 @@ export default {
             if (!data.modifySpecificTalents) {
               data.modifySpecificTalents = [];
             }
+            // updadate modifer value with the value * stacks
+            modifierItem.modifierValueCalculated =
+              modifierItem.modifierValue * this.stacks;
             data.modifySpecificTalents.push(modifierItem);
           } else if (modifierItem.modifier === "Talent") {
             const talentVal =
