@@ -689,10 +689,11 @@ export default defineComponent({
 
         if (weaponPassiveData?.AllAttributeBonus) {
           const allAttributeBonus = weaponPassiveData.AllAttributeBonus * 100;
-          stats.basicAttackDMGBonus += allAttributeBonus;
-          stats.heavyAttackDMGBonus += allAttributeBonus;
-          stats.resonanceSkillDMGBonus += allAttributeBonus;
-          stats.resonanceLiberationDMGBonus += allAttributeBonus;
+          // All Attribute may just apply to elemental. TBD when it comes out
+          //stats.basicAttackDMGBonus += allAttributeBonus;
+          //stats.heavyAttackDMGBonus += allAttributeBonus;
+          //stats.resonanceSkillDMGBonus += allAttributeBonus;
+          //stats.resonanceLiberationDMGBonus += allAttributeBonus;
           stats.glacio += allAttributeBonus;
           stats.fusion += allAttributeBonus;
           stats.electro += allAttributeBonus;
