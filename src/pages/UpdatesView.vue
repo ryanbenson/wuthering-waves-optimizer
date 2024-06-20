@@ -26,6 +26,9 @@
         so you won't need to re-enter the stacks.
       </li>
       <li>Adds Discord link</li>
+      <li>
+        Changes Blazing Brilliance passive to ATK from CR due to correction
+      </li>
     </ul>
     <h3>June 19, 2024</h3>
     <ul>
