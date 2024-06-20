@@ -30,9 +30,6 @@
     </div>
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
-        <div class="alert alert--info">
-          Resonance chains are now available! ⚡
-        </div>
         <div>
           <div class="character__selection">
             <div
@@ -1168,8 +1165,12 @@ export default defineComponent({
 .calculations {
   display: grid;
   grid-template-columns: 80px 1fr 1fr;
-  overflow: hidden;
   height: 100vh;
+
+  @media (max-width: 768px) {
+    display: block;
+    height: auto;
+  }
 }
 
 .calculations__screens {
@@ -1195,6 +1196,7 @@ $tooltip-background-color: $sidebar-background-color;
   float: left;
   flex-basis: 80px;
   width: 80px;
+  z-index: 999;
 
   ul {
     text-align: center;
@@ -1224,6 +1226,41 @@ $tooltip-background-color: $sidebar-background-color;
 
         i {
           color: $active-link-color;
+        }
+      }
+    }
+  }
+  @media (max-width: 768px) {
+    display: block;
+    height: 48px;
+    background: #000;
+    height: 48px;
+    min-height: 48px;
+    width: 100%;
+    position: sticky;
+    top: 48px;
+    left: 0;
+
+    ul {
+      display: flex;
+      flex-direction: row;
+
+      li {
+        height: 48px;
+        max-height: 48px;
+        cursor: pointer;
+        transition: all ease-out 0.12s;
+        list-style-type: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.5rem 0;
+        flex-basis: 48px;
+        padding: 0 0.5rem;
+
+        .icon {
+          width: 32px;
+          height: 32px;
         }
       }
     }
