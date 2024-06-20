@@ -26,6 +26,9 @@
         <li @click="changeScreen('enemy')">
           <img src="/images/enemy.png" class="icon" alt="Your Enemy" />
         </li>
+        <li class="calculations__nav--results" @click="changeScreen('results')">
+          <img src="/images/damages.png" class="icon" alt="Results" />
+        </li>
       </ul>
     </div>
     <div class="calculations__screens">
@@ -177,6 +180,221 @@
             class="form__field"
             :placeholder="field.name" />
           <label :for="field.name" class="form__label">{{ field.label }}</label>
+        </div>
+      </div>
+      <div class="screen--results" v-show="curScreen === 'results'">
+        <div class="results__stats">
+          <h2 class="mt-0">Stats</h2>
+          <div>
+            <span>Attack:</span> <span>{{ totalAtk }}</span>
+          </div>
+          <div>
+            <span>HP:</span> <span>{{ totalHp }}</span>
+          </div>
+          <div>
+            <span>Defense:</span> <span>{{ totalDef }}</span>
+          </div>
+          <div>
+            <span>Crit Rate:</span> <span>{{ totalCritRate * 100 }}%</span>
+          </div>
+          <div>
+            <span>Crit DMG:</span> <span>{{ totalCritDMG * 100 }}%</span>
+          </div>
+          <div>
+            <span>Basic Attack DMG Bonus:</span>
+            <span>{{ BasicAttackDMGBonus }}%</span>
+          </div>
+          <div>
+            <span>Heavy Attack DMG Bonus:</span>
+            <span>{{ HeavyAttackDMGBonus }}%</span>
+          </div>
+          <div>
+            <span>Resonance Skill DMG Bonus:</span>
+            <span>{{ ResonanceSkillDMGBonus }}%</span>
+          </div>
+          <div>
+            <span>Resonance Liberation DMG Bonus:</span>
+            <span>{{ ResonanceLiberationDMGBonus }}%</span>
+          </div>
+          <div>
+            <span>Intro Skill DMG Bonus:</span>
+            <span>{{ IntroSkillDMGBonus }}%</span>
+          </div>
+          <div>
+            <span>Glacio DMG Bonus:</span> <span>{{ Glacio }}%</span>
+          </div>
+          <div>
+            <span>Fusion DMG Bonus:</span> <span>{{ Fusion }}%</span>
+          </div>
+          <div>
+            <span>Electro DMG Bonus:</span> <span>{{ Electro }}%</span>
+          </div>
+          <div>
+            <span>Aero DMG Bonus:</span> <span>{{ Aero }}%</span>
+          </div>
+          <div>
+            <span>Spectro DMG Bonus:</span> <span>{{ Spectro }}%</span>
+          </div>
+          <div>
+            <span>Havoc DMG Bonus:</span> <span>{{ Havoc }}%</span>
+          </div>
+          <div>
+            <span>Defense Ignore:</span> <span>{{ DefIgnore * 100 }}%</span>
+          </div>
+          <div>
+            <span>Total Deepen Effect:</span>
+            <span>{{ TotalDeepenEffect }}%</span>
+          </div>
+          <div>
+            <span>Resist Reduction:</span> <span>{{ ResistReduction }}%</span>
+          </div>
+        </div>
+        <h2>Damage</h2>
+        <div class="calculation__damage__item">
+          <span>Name</span>
+          <span>Normal</span>
+          <span>Average</span>
+          <span>Crit</span>
+        </div>
+        <h4>Basic Attacks</h4>
+        <div
+          v-for="damageInstance in allDamages?.value?.basicAttacks"
+          :key="damageInstance.key"
+          class="calculation__damage__item">
+          <span>{{ damageInstance.label }}:</span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationAvg,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationCrit,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+          >
+        </div>
+        <h4>Skill Attacks</h4>
+        <div
+          v-for="damageInstance in allDamages?.value?.skillAttacks"
+          :key="damageInstance.key"
+          class="calculation__damage__item">
+          <span>{{ damageInstance.label }}: </span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationAvg,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationCrit,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+          >
+        </div>
+        <h4>Liberation Attacks</h4>
+        <div
+          v-for="damageInstance in allDamages?.value?.liberationAttacks"
+          :key="damageInstance.key"
+          class="calculation__damage__item">
+          <span>{{ damageInstance.label }}: </span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationAvg,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationCrit,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+          >
+        </div>
+        <h4>Forte Circuit Attacks</h4>
+        <div
+          v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
+          :key="damageInstance.key"
+          class="calculation__damage__item">
+          <span>{{ damageInstance.label }}: </span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationAvg,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationCrit,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+          >
+        </div>
+        <h4>Intro Attacks</h4>
+        <div
+          v-for="damageInstance in allDamages?.value?.introAttacks"
+          :key="damageInstance.key"
+          class="calculation__damage__item">
+          <span>{{ damageInstance.label }}: </span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationAvg,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationCrit,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+          >
         </div>
       </div>
     </div>
@@ -1270,6 +1488,11 @@ $tooltip-background-color: $sidebar-background-color;
   display: grid;
   grid-template-columns: 1fr 100px 100px 100px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 80px 80px 80px;
+    gap: 0.15rem;
+  }
 }
 .character__stat__item {
   display: flex;
@@ -1331,6 +1554,20 @@ $tooltip-background-color: $sidebar-background-color;
     justify-content: space-between;
     max-width: 400px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}
+.results {
+  display: block !important;
+}
+.calculations__nav--results {
+  display: none !important;
+}
+@media (max-width: 768px) {
+  .calculations__nav--results {
+    display: flex !important;
+  }
+  .results {
+    display: none !important;
   }
 }
 </style>
