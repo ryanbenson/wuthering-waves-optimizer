@@ -17,12 +17,12 @@ export const resonanceChains = [
   {
     key: "SequenceNode2PursuitofDesires",
     name: "Sequence Node 2: Pursuit of Desires",
-    details: `<span class="skilldescription">[Enflamement] increases Changli's CRIT DMG by 30%, lasting for 8s.</span>`,
+    details: `<span class="skilldescription">[Enflamement] increases Changli's Crit Rate by 30%, lasting for 8s.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritDMG",
-        modifierValue: 0.3,
+        modifier: "CritRate",
+        modifierValue: 0.25,
       },
     ],
     minStacks: 0,
