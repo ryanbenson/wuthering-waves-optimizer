@@ -3,7 +3,7 @@ export const liberationAttacks = {
   description: `<div class="skilldescription">Unleash the power of a heart's wish to deal <span class="Highlight">Spectro DMG</span>.<br>Can be cast in mid-air.</div>`,
   attacks: [
     {
-      key: "SkillDMG",
+      key: "PurgeOfLight",
       label: "Skill DMG",
       talents: {
         "1": "251.40% + 586.60%",

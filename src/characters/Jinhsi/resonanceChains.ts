@@ -47,11 +47,12 @@ export const resonanceChains = [
   {
     key: "SequenceNode5FrostfireIllumination",
     name: "Sequence Node 5: Frostfire Illumination",
-    details: `<span class="skilldescription">The DMG Multiplier of Resonance Liberation <span class="Highlight">Purge of Evil</span> is increased by 120%.<br><br>Note: this is not calculating correctly. This will be fixed very soon.</span>`,
+    details: `<span class="skilldescription">The DMG Multiplier of Resonance Liberation <span class="Highlight">Purge of Evil</span> is increased by 120%.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ResonanceLiberationDMGBonus",
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["PurgeOfLight"],
         modifierValue: 1.2,
       },
     ],

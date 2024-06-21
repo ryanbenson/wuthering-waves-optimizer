@@ -17,6 +17,9 @@
     <h3>June 21, 2024</h3>
     <ul>
       <li>Updates to Changli and Jinhsi for latest beta changes</li>
+      <li>
+        Fixes R5 for both Changli and Jinshi, uses proper base talent multiplier
+      </li>
     </ul>
     <h3>June 20, 2024</h3>
     <ul>

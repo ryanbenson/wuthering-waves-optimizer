@@ -62,25 +62,13 @@ export const resonanceChains = [
   {
     key: "SequenceNode5SacrificedGains1",
     name: "Sequence Node 5: Sacrificed Gains: Flaming Vow Buff",
-    details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Flaming Vow</span>'s multiplier is increased by 50%.<br><br>Note: this is not calculating correctly. This will be fixed very soon.</span>`,
+    details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Flaming Vow</span>'s multiplier is increased by 50%.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Talent",
-        modifierTalentKey: "FlamingVowDMG",
-        modifierValue: {
-          "1": 0.5,
-          "2": 0.5,
-          "3": 0.5,
-          "4": 0.5,
-          "5": 0.5,
-          "6": 0.5,
-          "7": 0.5,
-          "8": 0.5,
-          "9": 0.5,
-          "10": 0.5,
-        },
-        modifierValueTalentRef: "forte",
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["FlamingVowDMG"],
+        modifierValue: 0.5,
       },
     ],
     minStacks: 0,
@@ -90,11 +78,11 @@ export const resonanceChains = [
   {
     key: "SequenceNode5SacrificedGains2",
     name: "Sequence Node 5: Sacrificed Gains: Flaming Vow Buff",
-    details: `<span class="skilldescription"> When Heavy Attack Flaming Vow is released, Changli's ATK is increased by an additional 50%.</span>`,
+    details: `<span class="skilldescription"> When Heavy Attack Flaming Vow is released, it receives a 50% DMG Bonus.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ATK",
+        modifySpecificTalents: ["FlamingVowDMG"],
         modifierValue: 0.5,
       },
     ],

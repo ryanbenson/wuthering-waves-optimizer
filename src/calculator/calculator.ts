@@ -114,7 +114,8 @@ export function calcDamage(
   resistenceReduction: number = 0,
   critRate: number = 0,
   critDamage: number = 0,
-  talentModifierAdd: number = 0
+  talentModifierAdd: number = 0,
+  talentModifierMultiply: number = 0
 ) {
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
@@ -125,23 +126,28 @@ export function calcDamage(
   // Calculate individual instance damages
   let instanceDamage: InstanceDamage = {};
   talents.forEach((t) => {
-    totalTalentValue += t;
-    // add the modifier to the total talent value which is used in the normal/avg/crit calcs
-    if (talentModifierAdd) {
-      totalTalentValue += talentModifierAdd;
+    // we may modify this, but we need the original values for instanceDamage struct
+    let originalTalent = t;
+    // if we have a talent multiplier, do it first before adding it to the total
+    // make sure to add 1 to it (e.g. 100% * (1 + 1.2)
+    if (talentModifierMultiply) {
+      let updatedTalentAfterMultiply = t * (1 + talentModifierMultiply);
+      t = updatedTalentAfterMultiply;
     }
-    let percentageString = (t * 100).toFixed(2).toString() + "%";
+    // add any flat talent modifiers (e.g. Jinshi Incandescence)
+    if (talentModifierAdd) {
+      t += talentModifierAdd;
+    }
+    // update total talent value after any talent modifier adjustments
+    totalTalentValue += t;
+    // use the original talent as that's what is in the struct
+    let percentageString = (originalTalent * 100).toFixed(2).toString() + "%";
     if (!instanceDamage[percentageString]) {
-      let hitTalentValue = t;
-      // add any talent modifiers to the instance damage which is used in the tooltips
-      if (talentModifierAdd) {
-        hitTalentValue += talentModifierAdd;
-      }
       instanceDamage[percentageString] = calcHitDamage(
         charLevel,
         enemyLevel,
         enemyResist,
-        hitTalentValue,
+        t, // the talent value that's been modified
         attack,
         defIgnore,
         bonusTotalSkillDmg,
