@@ -1063,6 +1063,10 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
           ] ?? 0;
+        const talentModifierMultiply =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentModifierMultiply`
+          ] ?? 0;
         const totalDefIgnore = DefIgnore.value + extraDefIgnore;
         const damage = calcDamage(
           characterLevel.value,
@@ -1078,7 +1082,8 @@ export default defineComponent({
           ResistReduction.value,
           totalCritRate.value,
           totalCritDMG.value,
-          totalTalentModifierAdd
+          totalTalentModifierAdd,
+          talentModifierMultiply
         );
         const attackToUse = {
           key: attack.key,
@@ -1110,6 +1115,10 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
           ] ?? 0;
+        const talentModifierMultiply =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentModifierMultiply`
+          ] ?? 0;
         const totalDefIgnore = DefIgnore.value + extraDefIgnore;
         const damage = calcDamage(
           characterLevel.value,
@@ -1125,7 +1134,8 @@ export default defineComponent({
           ResistReduction.value,
           totalCritRate.value,
           totalCritDMG.value,
-          totalTalentModifierAdd
+          totalTalentModifierAdd,
+          talentModifierMultiply
         );
         const attackToUse = {
           key: attack.key,
@@ -1158,6 +1168,10 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
           ] ?? 0;
+        const talentModifierMultiply =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentModifierMultiply`
+          ] ?? 0;
         const totalDefIgnore = DefIgnore.value + extraDefIgnore;
         const damage = calcDamage(
           characterLevel.value,
@@ -1173,7 +1187,8 @@ export default defineComponent({
           ResistReduction.value,
           totalCritRate.value,
           totalCritDMG.value,
-          totalTalentModifierAdd
+          totalTalentModifierAdd,
+          talentModifierMultiply
         );
         const attackToUse = {
           key: attack.key,
@@ -1206,6 +1221,10 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
           ] ?? 0;
+        const talentModifierMultiply =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentModifierMultiply`
+          ] ?? 0;
         const totalDefIgnore = DefIgnore.value + extraDefIgnore;
         const damage = calcDamage(
           characterLevel.value,
@@ -1221,7 +1240,8 @@ export default defineComponent({
           ResistReduction.value,
           totalCritRate.value,
           totalCritDMG.value,
-          totalTalentModifierAdd
+          totalTalentModifierAdd,
+          talentModifierMultiply
         );
         const attackToUse = {
           key: attack.key,
@@ -1253,6 +1273,10 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
           ] ?? 0;
+        const talentModifierMultiply =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentModifierMultiply`
+          ] ?? 0;
         const totalDefIgnore = DefIgnore.value + extraDefIgnore;
         const damage = calcDamage(
           characterLevel.value,
@@ -1268,7 +1292,8 @@ export default defineComponent({
           ResistReduction.value,
           totalCritRate.value,
           totalCritDMG.value,
-          totalTalentModifierAdd
+          totalTalentModifierAdd,
+          talentModifierMultiply
         );
         const attackToUse = {
           key: attack.key,
