@@ -62,7 +62,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode5SacrificedGains1",
     name: "Sequence Node 5: Sacrificed Gains: Flaming Vow Buff",
-    details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Flaming Vow</span>'s multiplier is increased by 50%.</span>`,
+    details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Flaming Vow</span>'s multiplier is increased by 50%.<br><br>Note: this is not calculating correctly. This will be fixed very soon.</span>`,
     hasStacks: false,
     modifiers: [
       {
