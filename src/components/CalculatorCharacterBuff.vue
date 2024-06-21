@@ -119,8 +119,16 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .character__buff {
   margin-top: 1rem;
+
+  span:first-of-type {
+    font-weight: bold;
+  }
+}
+label {
+  margin: 1rem 0 0;
+  display: inline-block;
 }
 </style>

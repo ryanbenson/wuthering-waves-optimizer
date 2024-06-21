@@ -172,3 +172,16 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.weapon__passive {
+  background-color: #161616;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+
+  span:first-of-type {
+    font-weight: bold;
+  }
+}
+</style>

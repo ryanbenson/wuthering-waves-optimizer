@@ -112,3 +112,13 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+p {
+  margin: 0;
+}
+label {
+  margin: 1rem 0 0;
+  display: inline-block;
+}
+</style>
