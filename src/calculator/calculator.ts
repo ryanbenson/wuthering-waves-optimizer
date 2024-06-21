@@ -115,7 +115,7 @@ export function calcDamage(
   critRate: number = 0,
   critDamage: number = 0,
   talentModifierAdd: number = 0,
-  talentModifierMultiply: number = 0,
+  talentModifierMultiply: number = 0
 ) {
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
