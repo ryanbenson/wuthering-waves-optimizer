@@ -14,6 +14,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 21, 2024</h3>
+    <ul>
+      <li>Updates to Changli and Jinhsi for latest beta changes</li>
+    </ul>
     <h3>June 20, 2024</h3>
     <ul>
       <li>Calculator is now mobile-friendly!</li>
