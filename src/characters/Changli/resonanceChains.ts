@@ -66,7 +66,6 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-      {
         modifier: "talentModifierMultiply",
         modifySpecificTalents: ["FlamingVowDMG"],
         modifierValue: 0.5,
