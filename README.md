@@ -32,7 +32,7 @@ When you need to add a multiplier to the base talent value (e.g. Changli R5)
 
 ### Base talent addition
 
-When you need to add to the base talent multiplier, but not multiply to it (e.g. Jinhsi Incandescence)
+When you need to add to the base talent multiplier, but not multiply to it (e.g. Jinhsi Incandescence), this also takes in the the talent level of something like "forte" to know which modifier to use. If you don't need that, just use the same value for all of them.
 
 ```
 
