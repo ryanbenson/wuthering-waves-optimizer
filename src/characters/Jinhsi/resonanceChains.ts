@@ -51,7 +51,8 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ResonanceLiberationDMGBonus",
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["PurgeOfLight"],
         modifierValue: 1.2,
       },
     ],
