@@ -19,6 +19,7 @@
       <li>Jiyan and Taoqi has been added!</li>
       <li>Fix new buff background on light mode</li>
       <li>Enable you to de-select items in echo screen</li>
+      <li>Removes errant flat values from main stat echo choices</li>
     </ul>
     <h3>June 21, 2024</h3>
     <ul>
