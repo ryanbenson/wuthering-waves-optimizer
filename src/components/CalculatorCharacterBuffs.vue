@@ -82,11 +82,15 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .character__buff {
   margin-top: 1rem;
   background-color: #161616;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
+
+  @media (prefers-color-scheme: light) {
+    background-color: #f8f8f8;
+  }
 }
 </style>

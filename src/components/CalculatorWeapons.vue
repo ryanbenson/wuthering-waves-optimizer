@@ -180,6 +180,10 @@ export default {
   border-radius: 6px;
   margin-top: 1rem;
 
+  @media (prefers-color-scheme: light) {
+    background-color: #f8f8f8;
+  }
+
   span:first-of-type {
     font-weight: bold;
   }
