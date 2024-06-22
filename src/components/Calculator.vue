@@ -1036,100 +1036,28 @@ export default defineComponent({
     };
 
     const calcAllDamages = () => {
-      if (!chosenChar.value) {
-        return;
-      }
+      if (!chosenChar.value) return;
+
       const elementalDmgBonusDecimal = getElementDmgBonusByType(
         chosenChar.value?.basic?.element
       );
-      const basicAttacks = chosenChar.value.basicAttacks?.attacks ?? [];
-      const basicAttacksTalent = talentData.basic;
-      const basicAttacksByTalent = [];
-      basicAttacks.forEach((attack) => {
-        const attackType = attack.type;
-        const atkDefHpVal = getDamageValByAttr(attack?.attribute);
-        const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
-        const talent = attack.talents[basicAttacksTalent];
-        const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
-        const talentModifierAddFromResonanceChains =
-          charResonanceChainsData.value?.[attack.key] ?? 0;
-        const totalTalentModifierAdd =
-          talentModifierAdd + talentModifierAddFromResonanceChains;
-        // get specifi skill dmg, right now only from resonance chains
-        const specificSkillDmg =
-          charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
-        // add any extra def ignore
-        const extraDefIgnore =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:DefIgnore`
-          ] ?? 0;
-        // add any extra def ignore
-        const specificSkillExtraCritRate =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:CritRate`
-          ] ?? 0;
-        // add any extra CV
-        const specificSkillExtraCritDMG =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:CritDMG`
-          ] ?? 0;
-        const instanceDmgCritRate =
-          totalCritRate.value + specificSkillExtraCritRate;
-        const instanceDmgCritDMG =
-          totalCritDMG.value + specificSkillExtraCritDMG;
-        const talentModifierMultiply =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:talentModifierMultiply`
-          ] ?? 0;
-        const totalDefIgnore = DefIgnore.value + extraDefIgnore;
-        const damage = calcDamage(
-          characterLevel.value,
-          formData.enemyLevel,
-          formData.enemyResist,
-          talent,
-          atkDefHpVal,
-          totalDefIgnore,
-          totalSkillDmgBonus,
-          specificSkillDmg,
-          elementalDmgBonusDecimal,
-          TotalDeepenEffect.value,
-          ResistReduction.value,
-          instanceDmgCritRate,
-          instanceDmgCritDMG,
-          totalTalentModifierAdd,
-          talentModifierMultiply
-        );
-        const attackToUse = {
-          key: attack.key,
-          label: attack.label,
-          talent,
-          damage,
-        };
-        basicAttacksByTalent.push(attackToUse);
-      });
 
-      const skillAttacksByTalent = [];
-      const skillAttacks = chosenChar.value.skillAttacks?.attacks ?? [];
-      const skillAttacksTalent = talentData.skill;
-      skillAttacks.forEach((attack) => {
+      const calculateAttackDamage = (attack, talentType) => {
         const attackType = attack.type;
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
-        const talent = attack.talents[skillAttacksTalent];
+        const talent = attack.talents[talentType];
         const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
         const talentModifierAddFromResonanceChains =
           charResonanceChainsData.value?.[attack.key] ?? 0;
         const totalTalentModifierAdd =
           talentModifierAdd + talentModifierAddFromResonanceChains;
-        // get specifi skill dmg, right now only from resonance chains
         const specificSkillDmg =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
-        // add any extra def ignore
         const extraDefIgnore =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
           ] ?? 0;
-        // add any extra CV
         const specificSkillExtraCritRate =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:CritRate`
@@ -1147,73 +1075,8 @@ export default defineComponent({
             `${attack.key}:talentModifierMultiply`
           ] ?? 0;
         const totalDefIgnore = DefIgnore.value + extraDefIgnore;
-        const damage = calcDamage(
-          characterLevel.value,
-          formData.enemyLevel,
-          formData.enemyResist,
-          talent,
-          atkDefHpVal,
-          totalDefIgnore,
-          totalSkillDmgBonus,
-          specificSkillDmg,
-          elementalDmgBonusDecimal,
-          TotalDeepenEffect.value,
-          ResistReduction.value,
-          instanceDmgCritRate,
-          instanceDmgCritDMG,
-          totalTalentModifierAdd,
-          talentModifierMultiply
-        );
-        const attackToUse = {
-          key: attack.key,
-          label: attack.label,
-          talent,
-          damage,
-        };
-        skillAttacksByTalent.push(attackToUse);
-      });
 
-      const liberationAttacksByTalent = [];
-      const liberationAttacks =
-        chosenChar.value.liberationAttacks?.attacks ?? [];
-      const liberationAttacksTalent = talentData.liberation;
-      liberationAttacks.forEach((attack) => {
-        const attackType = attack.type;
-        const atkDefHpVal = getDamageValByAttr(attack?.attribute);
-        const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
-        const talent = attack.talents[liberationAttacksTalent];
-        const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
-        const talentModifierAddFromResonanceChains =
-          charResonanceChainsData.value?.[attack.key] ?? 0;
-        const totalTalentModifierAdd =
-          talentModifierAdd + talentModifierAddFromResonanceChains;
-        // get specifi skill dmg, right now only from resonance chains
-        const specificSkillDmg =
-          charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
-        // add any extra def ignore
-        const extraDefIgnore =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:DefIgnore`
-          ] ?? 0;
-        // add any extra CV
-        const specificSkillExtraCritRate =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:CritRate`
-          ] ?? 0;
-        const specificSkillExtraCritDMG =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:CritDMG`
-          ] ?? 0;
-        const instanceDmgCritRate =
-          totalCritRate.value + specificSkillExtraCritRate;
-        const instanceDmgCritDMG =
-          totalCritDMG.value + specificSkillExtraCritDMG;
-        const talentModifierMultiply =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:talentModifierMultiply`
-          ] ?? 0;
-        const totalDefIgnore = DefIgnore.value + extraDefIgnore;
-        const damage = calcDamage(
+        return calcDamage(
           characterLevel.value,
           formData.enemyLevel,
           formData.enemyResist,
@@ -1230,151 +1093,38 @@ export default defineComponent({
           totalTalentModifierAdd,
           talentModifierMultiply
         );
-        const attackToUse = {
-          key: attack.key,
-          label: attack.label,
-          talent,
-          damage,
-        };
-        liberationAttacksByTalent.push(attackToUse);
-      });
+      };
 
-      const forteCircuitAttacksByTalent = [];
-      const forteCircuitAttacks =
-        chosenChar.value.forteCircuitAttacks?.attacks ?? [];
-      const forteCircuitAttacksTalent = talentData.forte;
-      forteCircuitAttacks.forEach((attack) => {
-        const attackType = attack.type;
-        const atkDefHpVal = getDamageValByAttr(attack?.attribute);
-        const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
-        const talent = attack.talents[forteCircuitAttacksTalent];
-        const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
-        const talentModifierAddFromResonanceChains =
-          charResonanceChainsData.value?.[attack.key] ?? 0;
-        const totalTalentModifierAdd =
-          talentModifierAdd + talentModifierAddFromResonanceChains;
-        // get specifi skill dmg, right now only from resonance chains
-        const specificSkillDmg =
-          charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
-        // add any extra def ignore
-        const extraDefIgnore =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:DefIgnore`
-          ] ?? 0;
-        // add any extra CV
-        const specificSkillExtraCritRate =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:CritRate`
-          ] ?? 0;
-        const specificSkillExtraCritDMG =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:CritDMG`
-          ] ?? 0;
-        const instanceDmgCritRate =
-          totalCritRate.value + specificSkillExtraCritRate;
-        const instanceDmgCritDMG =
-          totalCritDMG.value + specificSkillExtraCritDMG;
-        const talentModifierMultiply =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:talentModifierMultiply`
-          ] ?? 0;
-        const totalDefIgnore = DefIgnore.value + extraDefIgnore;
-        const damage = calcDamage(
-          characterLevel.value,
-          formData.enemyLevel,
-          formData.enemyResist,
-          talent,
-          atkDefHpVal,
-          totalDefIgnore,
-          totalSkillDmgBonus,
-          specificSkillDmg,
-          elementalDmgBonusDecimal,
-          TotalDeepenEffect.value,
-          ResistReduction.value,
-          instanceDmgCritRate,
-          instanceDmgCritDMG,
-          totalTalentModifierAdd,
-          talentModifierMultiply
-        );
-        const attackToUse = {
+      const processAttacks = (attacks, talentType) => {
+        return (attacks ?? []).map((attack) => ({
           key: attack.key,
           label: attack.label,
-          talent,
-          damage,
-        };
-        forteCircuitAttacksByTalent.push(attackToUse);
-      });
+          talent: attack.talents[talentType],
+          damage: calculateAttackDamage(attack, talentType),
+        }));
+      };
 
-      const introAttacksByTalent = [];
-      const introAttacks = chosenChar.value.introAttacks?.attacks ?? [];
-      const introAttacksTalent = talentData.intro;
-      introAttacks.forEach((attack) => {
-        const attackType = attack.type;
-        const atkDefHpVal = getDamageValByAttr(attack?.attribute);
-        const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
-        const talent = attack.talents[introAttacksTalent];
-        const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
-        const talentModifierAddFromResonanceChains =
-          charResonanceChainsData.value?.[attack.key] ?? 0;
-        const totalTalentModifierAdd =
-          talentModifierAdd + talentModifierAddFromResonanceChains;
-        // get specifi skill dmg, right now only from resonance chains
-        const specificSkillDmg =
-          charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
-        // add any extra def ignore
-        const extraDefIgnore =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:DefIgnore`
-          ] ?? 0;
-        // add any extra CV
-        const specificSkillExtraCritRate =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:CritRate`
-          ] ?? 0;
-        const specificSkillExtraCritDMG =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:CritDMG`
-          ] ?? 0;
-        const instanceDmgCritRate =
-          totalCritRate.value + specificSkillExtraCritRate;
-        const instanceDmgCritDMG =
-          totalCritDMG.value + specificSkillExtraCritDMG;
-        const talentModifierMultiply =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:talentModifierMultiply`
-          ] ?? 0;
-        const totalDefIgnore = DefIgnore.value + extraDefIgnore;
-        const damage = calcDamage(
-          characterLevel.value,
-          formData.enemyLevel,
-          formData.enemyResist,
-          talent,
-          atkDefHpVal,
-          totalDefIgnore,
-          totalSkillDmgBonus,
-          specificSkillDmg,
-          elementalDmgBonusDecimal,
-          TotalDeepenEffect.value,
-          ResistReduction.value,
-          instanceDmgCritRate,
-          instanceDmgCritDMG,
-          totalTalentModifierAdd,
-          talentModifierMultiply
-        );
-        const attackToUse = {
-          key: attack.key,
-          label: attack.label,
-          talent,
-          damage,
-        };
-        introAttacksByTalent.push(attackToUse);
-      });
       allDamages.value = {
-        basicAttacks: basicAttacksByTalent,
-        skillAttacks: skillAttacksByTalent,
-        liberationAttacks: liberationAttacksByTalent,
-        forteCircuitAttacks: forteCircuitAttacksByTalent,
-        introAttacks: introAttacksByTalent,
+        basicAttacks: processAttacks(
+          chosenChar.value.basicAttacks?.attacks,
+          talentData.basic
+        ),
+        skillAttacks: processAttacks(
+          chosenChar.value.skillAttacks?.attacks,
+          talentData.skill
+        ),
+        liberationAttacks: processAttacks(
+          chosenChar.value.liberationAttacks?.attacks,
+          talentData.liberation
+        ),
+        forteCircuitAttacks: processAttacks(
+          chosenChar.value.forteCircuitAttacks?.attacks,
+          talentData.forte
+        ),
+        introAttacks: processAttacks(
+          chosenChar.value.introAttacks?.attacks,
+          talentData.intro
+        ),
       };
     };
 
