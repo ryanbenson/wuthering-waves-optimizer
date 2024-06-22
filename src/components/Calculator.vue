@@ -1063,6 +1063,20 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
           ] ?? 0;
+        // add any extra def ignore
+        const specificSkillExtraCritRate =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:CritRate`
+          ] ?? 0;
+        // add any extra CV
+        const specificSkillExtraCritDMG =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:CritDMG`
+          ] ?? 0;
+        const instanceDmgCritRate =
+          totalCritRate.value + specificSkillExtraCritRate;
+        const instanceDmgCritDMG =
+          totalCritDMG.value + specificSkillExtraCritDMG;
         const talentModifierMultiply =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
@@ -1080,8 +1094,8 @@ export default defineComponent({
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
           ResistReduction.value,
-          totalCritRate.value,
-          totalCritDMG.value,
+          instanceDmgCritRate,
+          instanceDmgCritDMG,
           totalTalentModifierAdd,
           talentModifierMultiply
         );
@@ -1115,6 +1129,19 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
           ] ?? 0;
+        // add any extra CV
+        const specificSkillExtraCritRate =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:CritRate`
+          ] ?? 0;
+        const specificSkillExtraCritDMG =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:CritDMG`
+          ] ?? 0;
+        const instanceDmgCritRate =
+          totalCritRate.value + specificSkillExtraCritRate;
+        const instanceDmgCritDMG =
+          totalCritDMG.value + specificSkillExtraCritDMG;
         const talentModifierMultiply =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
@@ -1132,8 +1159,8 @@ export default defineComponent({
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
           ResistReduction.value,
-          totalCritRate.value,
-          totalCritDMG.value,
+          instanceDmgCritRate,
+          instanceDmgCritDMG,
           totalTalentModifierAdd,
           talentModifierMultiply
         );
@@ -1168,6 +1195,19 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
           ] ?? 0;
+        // add any extra CV
+        const specificSkillExtraCritRate =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:CritRate`
+          ] ?? 0;
+        const specificSkillExtraCritDMG =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:CritDMG`
+          ] ?? 0;
+        const instanceDmgCritRate =
+          totalCritRate.value + specificSkillExtraCritRate;
+        const instanceDmgCritDMG =
+          totalCritDMG.value + specificSkillExtraCritDMG;
         const talentModifierMultiply =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
@@ -1185,8 +1225,8 @@ export default defineComponent({
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
           ResistReduction.value,
-          totalCritRate.value,
-          totalCritDMG.value,
+          instanceDmgCritRate,
+          instanceDmgCritDMG,
           totalTalentModifierAdd,
           talentModifierMultiply
         );
@@ -1221,6 +1261,19 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
           ] ?? 0;
+        // add any extra CV
+        const specificSkillExtraCritRate =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:CritRate`
+          ] ?? 0;
+        const specificSkillExtraCritDMG =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:CritDMG`
+          ] ?? 0;
+        const instanceDmgCritRate =
+          totalCritRate.value + specificSkillExtraCritRate;
+        const instanceDmgCritDMG =
+          totalCritDMG.value + specificSkillExtraCritDMG;
         const talentModifierMultiply =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
@@ -1238,8 +1291,8 @@ export default defineComponent({
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
           ResistReduction.value,
-          totalCritRate.value,
-          totalCritDMG.value,
+          instanceDmgCritRate,
+          instanceDmgCritDMG,
           totalTalentModifierAdd,
           talentModifierMultiply
         );
@@ -1273,6 +1326,19 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
           ] ?? 0;
+        // add any extra CV
+        const specificSkillExtraCritRate =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:CritRate`
+          ] ?? 0;
+        const specificSkillExtraCritDMG =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:CritDMG`
+          ] ?? 0;
+        const instanceDmgCritRate =
+          totalCritRate.value + specificSkillExtraCritRate;
+        const instanceDmgCritDMG =
+          totalCritDMG.value + specificSkillExtraCritDMG;
         const talentModifierMultiply =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
@@ -1290,8 +1356,8 @@ export default defineComponent({
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
           ResistReduction.value,
-          totalCritRate.value,
-          totalCritDMG.value,
+          instanceDmgCritRate,
+          instanceDmgCritDMG,
           totalTalentModifierAdd,
           talentModifierMultiply
         );

@@ -7,10 +7,12 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "CritRate",
+        modifySpecificTalents: ["Unmovable"],
         modifierValue: 0.2,
       },
       {
         modifier: "CritDMG",
+        modifySpecificTalents: ["Unmovable"],
         modifierValue: 0.2,
       },
     ],
