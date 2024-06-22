@@ -34,6 +34,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
+          <div class="alert">Jiyan and Taoqi are available! ⚡</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
