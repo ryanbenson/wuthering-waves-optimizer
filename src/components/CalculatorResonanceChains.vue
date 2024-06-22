@@ -116,7 +116,7 @@ export default {
   border-radius: 6px;
   
   @media (prefers-color-scheme: light) {
-    background-color: #e1e1e1;
+    background-color: #f8f8f8;
   }
 }
 .character__buff:first-child {
