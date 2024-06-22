@@ -108,12 +108,16 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .character__buff {
   margin-top: 1rem;
   background-color: #161616;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
+  
+  @media (prefers-color-scheme: light) {
+    background-color: #e1e1e1;
+  }
 }
 .character__buff:first-child {
   margin-top: 0;
