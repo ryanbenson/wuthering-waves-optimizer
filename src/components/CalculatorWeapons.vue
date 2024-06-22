@@ -181,7 +181,7 @@ export default {
   margin-top: 1rem;
 
   @media (prefers-color-scheme: light) {
-    background-color: #e1e1e1;
+    background-color: #f8f8f8;
   }
 
   span:first-of-type {
