@@ -16,6 +16,7 @@
     <h1>Updates</h1>
     <h3>June 22, 2024</h3>
     <ul>
+      <li>Taoqi has been added!</li>
       <li>Fix new buff background on light mode</li>
       <li>Enable you to de-select items in echo screen</li>
     </ul>
