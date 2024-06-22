@@ -34,14 +34,14 @@
         v-model="echo.stat"
         @change="updateTotalStats"
         :disabled="!echo.type">
-        <option value="" disabled>Select Stat</option>
+        <option value="">Select Stat</option>
         <option v-for="stat in getStats(echo.type)" :key="stat" :value="stat">
           {{ getReadableLabel(stat) }}
         </option>
       </select>
       <div v-for="i in 5" :key="i" class="sub-stat-selector">
         <select v-model="echo.subStats[i - 1].type" @change="updateTotalStats">
-          <option value="" disabled>Select Sub Stat</option>
+          <option value="">Select Sub Stat</option>
           <option v-for="subStat in subStats" :key="subStat" :value="subStat">
             {{ getReadableLabel(subStat) }}
           </option>
@@ -52,14 +52,15 @@
           :max="getSubStatRange(echo.subStats[i - 1].type).max"
           type="number"
           :disabled="!echo.subStats[i - 1].type"
-          @input="updateTotalStats" />
+          @input="updateTotalStats"
+          class="sub-stat__input" />
       </div>
     </div>
     <div class="set-bonus-selector">
       <label>Set Bonuses:</label>
       <div>
         <select v-model="setBonuses[0].type" @change="updateTotalStats">
-          <option value="" disabled>Select 2 Set Bonus</option>
+          <option value="">Select 2 Set Bonus</option>
           <option
             v-for="setBonus in twoSetBonuses"
             :key="setBonus"
@@ -71,7 +72,7 @@
           v-model="setBonuses[1].type"
           @change="updateTotalStats"
           :disabled="!setBonuses[0].type">
-          <option value="" disabled>Select 2 Set Bonus</option>
+          <option value="">Select 2 Set Bonus</option>
           <option
             v-for="setBonus in twoSetBonuses"
             :key="setBonus"
@@ -86,7 +87,7 @@
           v-model="setBonuses[2].type"
           @change="updateTotalStats"
           :disabled="!setBonuses[0].type && !setBonuses[1].type">
-          <option value="" disabled>Select 5 Set Bonus</option>
+          <option value="">Select 5 Set Bonus</option>
           <option
             v-for="setBonus in fiveSetBonuses"
             :key="setBonus"
@@ -449,5 +450,9 @@ export default {
 .rank-circle.selected {
   transform: scale(1.3);
   box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+.sub-stat__input {
+  max-width: 3rem;
+  width: 3rem;
 }
 </style>
