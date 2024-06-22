@@ -1052,8 +1052,10 @@ export default defineComponent({
           charResonanceChainsData.value?.[attack.key] ?? 0;
         const totalTalentModifierAdd =
           talentModifierAdd + talentModifierAddFromResonanceChains;
-        const specificSkillDmg =
+        const specificSkillDmgFromResonanceChains =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
+        const specificSkillDmgFromCharBuffs =
+          charBuffsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const extraDefIgnore =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
@@ -1075,6 +1077,8 @@ export default defineComponent({
             `${attack.key}:talentModifierMultiply`
           ] ?? 0;
         const totalDefIgnore = DefIgnore.value + extraDefIgnore;
+        const specificSkillDmg =
+          specificSkillDmgFromResonanceChains + specificSkillDmgFromCharBuffs;
 
         return calcDamage(
           characterLevel.value,
