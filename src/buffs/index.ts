@@ -556,3 +556,26 @@ export const allEchoBuffs = [
     alwaysEnabled: false,
   },
 ];
+
+export const allCharacters: string[] = [
+  "Sanhua",
+  "Baizhi",
+  "Lingyang",
+  "Chixia",
+  "Encore",
+  "Mortefi",
+  "Changli",
+  "Calcharo",
+  "Yinlin",
+  "Yuanwu",
+  "Jinhsi",
+  "Yangyang",
+  "Aalto",
+  "Jiyan",
+  "Jianxin",
+  "Rover-Spectro",
+  "Rover-Havoc",
+  "Verina",
+  "Taoqi",
+  "Danjin",
+];

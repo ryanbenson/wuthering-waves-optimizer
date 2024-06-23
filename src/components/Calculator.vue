@@ -23,6 +23,7 @@
             class="icon"
             alt="Your Resonance Chains" />
         </li>
+        <li @click="changeScreen('party')">P</li>
         <li @click="changeScreen('enemy')">
           <img src="/images/enemy.png" class="icon" alt="Your Enemy" />
         </li>
@@ -167,6 +168,11 @@
               handleUpdatedCharacterResonanceChains
             "></CalculatorResonanceChains>
         </template>
+      </div>
+
+      <div class="screen-character" v-show="curScreen === 'party'">
+        <CalculatorPartyBuffs
+          :current-character="character"></CalculatorPartyBuffs>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <div
@@ -629,6 +635,7 @@ import CalculatorEchoes from "./CalculatorEchoes.vue";
 import CalculatorWeapons from "./CalculatorWeapons.vue";
 import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
+import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -650,6 +657,7 @@ export default defineComponent({
     CalculatorEchoes,
     CalculatorWeapons,
     CalculatorCharacterBuffs,
+    CalculatorPartyBuffs,
     CalculatorResonanceChains,
   },
   setup() {
