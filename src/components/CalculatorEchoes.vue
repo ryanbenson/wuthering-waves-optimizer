@@ -188,8 +188,8 @@ export default {
       ],
       subStatRanges: {
         HP_FLAT: { min: 320, max: 580 },
-        ATK_FLAT: { min: 50, max: 70 },
-        DEF_FLAT: { min: 50, max: 70 },
+        ATK_FLAT: { min: 30, max: 60 },
+        DEF_FLAT: { min: 40, max: 70 },
         ATK: { min: 6.4, max: 11.6 },
         HP: { min: 6.4, max: 11.6 },
         DEF: { min: 8.1, max: 14.7 },
