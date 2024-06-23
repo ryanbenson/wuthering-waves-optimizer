@@ -6,12 +6,12 @@ const weaponInfo: WeaponInfo = {
   rarity: 5,
   passiveName: "Swordsworn",
   passiveValue:
-    "Increases the DMG Bonus of all Resonance Attributes by 12%/15%/18%/21%/24%. Every time Intro Skill or Resonance Liberation is cast, increases Heavy Attack DMG Bonus by 24%/30%/36%/42%/48%, stacking up to 2 time(s). This effect lasts for 14s.",
+    "Increases Attribute DMG Bonus by 12%/15%/18%/21%/24%. Every time Intro Skill or Resonance Liberation is cast, increases Heavy Attack DMG Bonus by 24%/30%/36%/42%/48%, stacking up to 2 time(s). This effect lasts for 14s.",
   passiveData: [
     {
-      key: "AllResonanceDMG",
+      key: "AllAttributeBonus",
       hasStacks: false,
-      modifier: "AllResonanceDMG",
+      modifier: "AllAttributeBonus",
       modifierByRefinement: {
         "1": 0.12,
         "2": 0.15,
@@ -19,8 +19,7 @@ const weaponInfo: WeaponInfo = {
         "4": 0.21,
         "5": 0.24,
       },
-      details:
-        "Increases the DMG Bonus of all Resonance Attributes by 12%/15%/18%/21%/24%.",
+      details: "Increases Attribute DMG Bonus by 12%/15%/18%/21%/24%.",
       alwaysEnabled: true,
     },
     {
