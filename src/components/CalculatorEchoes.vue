@@ -68,41 +68,35 @@
             {{ setBonus }}
           </option>
         </select>
-        <select
-          v-model="setBonuses[1].type"
-          @change="updateTotalStats"
-          :disabled="!setBonuses[0].type">
-          <option value="">Select 2 Set Bonus</option>
-          <option
-            v-for="setBonus in twoSetBonuses"
-            :key="setBonus"
-            :value="setBonus"
-            :disabled="setBonuses[0].type === setBonus">
-            {{ setBonus }}
-          </option>
-        </select>
       </div>
       <div>
-        <select
-          v-model="setBonuses[2].type"
-          @change="updateTotalStats"
-          :disabled="!setBonuses[0].type && !setBonuses[1].type">
-          <option value="">Select 5 Set Bonus</option>
-          <option
-            v-for="setBonus in fiveSetBonuses"
-            :key="setBonus"
-            :value="setBonus">
-            {{ setBonus }}
-          </option>
+        <select v-model="setBonuses[1].type" @change="updateTotalStats">
+          <option value="">Select 5 Set Bonus or another 2 Set Bonus</option>
+          <optgroup label="5 Set Bonuses">
+            <option
+              v-for="setBonus in fiveSetBonuses"
+              :key="setBonus"
+              :value="setBonus">
+              {{ setBonus }}
+            </option>
+          </optgroup>
+          <optgroup label="2 Set Bonuses">
+            <option
+              v-for="setBonus in twoSetBonuses"
+              :key="setBonus"
+              :value="setBonus">
+              {{ setBonus }}
+            </option>
+          </optgroup>
         </select>
       </div>
-      <div v-if="needsStacks(setBonuses[2].type)">
+      <div v-if="needsStacks(setBonuses[1].type)">
         <label>Stacks:</label>
         <input
-          v-model.number="setBonuses[2].stacks"
+          v-model.number="setBonuses[1].stacks"
           type="number"
           min="0"
-          :max="getMaxStacks(setBonuses[2].type)"
+          :max="getMaxStacks(setBonuses[1].type)"
           @input="updateTotalStats" />
       </div>
     </div>
@@ -199,7 +193,7 @@ export default {
         ATK: { min: 6.4, max: 11.6 },
         HP: { min: 6.4, max: 11.6 },
         DEF: { min: 8.1, max: 14.7 },
-        EnergyRegen: { min: 5.6, max: 14.9 },
+        EnergyRegen: { min: 6.8, max: 12.4 },
         CritRate: { min: 6.3, max: 10.5 },
         CritDMG: { min: 12.6, max: 21.0 },
         BasicAttackDMGBonus: { min: 6.4, max: 11.6 },
@@ -210,7 +204,6 @@ export default {
       totalCost: 0,
       totalStats: {},
       setBonuses: [
-        { type: "", stacks: 0 },
         { type: "", stacks: 0 },
         { type: "", stacks: 0 },
       ],
