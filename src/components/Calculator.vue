@@ -1361,6 +1361,7 @@ $tooltip-background-color: $sidebar-background-color;
   top: 0;
   left: 0;
   width: 100%;
+  color: white;
 
   &.alert--info {
     background: #12526a;
