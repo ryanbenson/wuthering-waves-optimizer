@@ -53,7 +53,7 @@
     <h3>Shoutouts</h3>
     <ul>
       <li>
-        Jäger - for all of your help with the calculations and great ideas! 🎉
+        Jäger, Bachelor, Nekuro(NekroLight), AlecJohn, juste - for all of your help with the calculations and great ideas! 🎉
       </li>
     </ul>
   </div>
