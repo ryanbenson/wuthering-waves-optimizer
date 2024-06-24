@@ -1,35 +1,40 @@
 <template>
   <div>
-    <h2>Select Buffs</h2>
-    <label>Select Character 1:</label>
-    <select v-model="selectedCharacter1">
-      <option
-        v-for="character in availableCharacters"
-        :key="character"
-        :value="character">
-        {{ character }}
-      </option>
-    </select>
-    <img
-      v-if="selectedCharacter1"
-      :src="getCharacterImage(selectedCharacter1)"
-      :alt="selectedCharacter1"
-      width="50" />
-    <br />
-    <label>Select Character 2:</label>
-    <select v-model="selectedCharacter2">
-      <option
-        v-for="character in availableCharacters"
-        :key="character"
-        :value="character">
-        {{ character }}
-      </option>
-    </select>
-    <img
-      v-if="selectedCharacter2"
-      :src="getCharacterImage(selectedCharacter2)"
-      :alt="selectedCharacter2"
-      width="50" />
+    <h2>Team Buffs</h2>
+    <div class="teammate_selects">
+      <div class="teammate__select">
+        <div
+          class="character__selection__avatar"
+          :style="{
+            backgroundImage: `url(${getCharacterImage(selectedCharacter1)})`,
+          }"></div>
+        <label>Select Teammate 1</label>
+        <select v-model="selectedCharacter1">
+          <option
+            v-for="character in availableCharacters"
+            :key="character"
+            :value="character">
+            {{ character }}
+          </option>
+        </select>
+      </div>
+      <div class="teammate__select">
+        <div
+          class="character__selection__avatar"
+          :style="{
+            backgroundImage: `url(${getCharacterImage(selectedCharacter2)})`,
+          }"></div>
+        <label>Select Teammate 2</label>
+        <select v-model="selectedCharacter2">
+          <option
+            v-for="character in availableCharacters"
+            :key="character"
+            :value="character">
+            {{ character }}
+          </option>
+        </select>
+      </div>
+    </div>
 
     <div v-if="selectedCharacter1">
       <h3>Buffs for {{ selectedCharacter1 }}</h3>
@@ -44,10 +49,9 @@
         :min-stacks="buff.minStacks"
         :max-stacks="buff.maxStacks"
         :modifiers="buff.modifiers"
-        @updated-character-buff="handleUpdatedCharacterBuff"
+        @updated-party-buff="handleUpdatedPartyBuff1"
         :talent-data="talentData"
         class="character__buff"></CalculatorPartyBuff>
-      </div>
     </div>
 
     <div v-if="selectedCharacter2">
@@ -63,14 +67,13 @@
         :min-stacks="buff.minStacks"
         :max-stacks="buff.maxStacks"
         :modifiers="buff.modifiers"
-        @updated-character-buff="handleUpdatedCharacterBuff"
+        @updated-party-buff="handleUpdatedPartyBuff2"
         :talent-data="talentData"
         class="character__buff"></CalculatorPartyBuff>
-      </div>
     </div>
 
     <div>
-      <h3>All Echo Buffs</h3>
+      <h3>Team Echo Buffs</h3>
       <CalculatorPartyBuff
         v-for="buff in allEchoBuffs"
         :key="buff.key"
@@ -82,10 +85,9 @@
         :min-stacks="buff.minStacks"
         :max-stacks="buff.maxStacks"
         :modifiers="buff.modifiers"
-        @updated-character-buff="handleUpdatedCharacterBuff"
+        @updated-party-buff="handleUpdatedPartyBuffEcho"
         :talent-data="talentData"
         class="character__buff"></CalculatorPartyBuff>
-      </div>
     </div>
   </div>
 </template>
@@ -106,7 +108,16 @@ export default {
   components: { CalculatorPartyBuff },
   data() {
     return {
-      buffsData: [],
+      allEchoBuffs,
+      buffsByCharacter,
+      allCharacters,
+      buffsDataChar1: [],
+      buffsDataChar2: [],
+      buffsDataEcho: [],
+      // fake this for now, we don't seem to need it
+      talentData: {},
+      selectedCharacter1: null,
+      selectedCharacter2: null,
     };
   },
   computed: {
@@ -118,7 +129,12 @@ export default {
     buffsFormatted() {
       const finalBuffData = {};
       let modifySpecificTalents = [];
-      this.buffsData.forEach((buffInstance) => {
+      const allBuffs = [
+        ...this.buffsDataChar1,
+        ...this.buffsDataChar2,
+        ...this.buffsDataEcho,
+      ];
+      allBuffs.forEach((buffInstance) => {
         const stat = buffInstance.key;
         const buffDataArr = Object.entries(buffInstance.data);
         buffDataArr.forEach(([stat, value]) => {
@@ -155,29 +171,56 @@ export default {
   },
   watch: {
     selectedCharacter1(newVal) {
-      if (newVal) {
-        this.initializeSelectedBuffs(newVal);
-      }
+      this.buffsDataChar1 = [];
+      this.updatedStats();
     },
     selectedCharacter2(newVal) {
-      if (newVal) {
-        this.initializeSelectedBuffs(newVal);
-      }
+      this.buffsDataChar2 = [];
+      this.updatedStats();
     },
   },
   methods: {
+    getCharacterImage(character) {
+      if (!character) {
+        return `/images/T_IconAchv_002.png`;
+      }
+      return `/images/${character}.png`;
+    },
     updatedStats() {
       this.$emit("updated-team-buffs", this.buffsFormatted);
     },
-    handleUpdatedCharacterBuff(buffInfo) {
-      const buffIndex = this.buffsData.findIndex((buff) => {
+    handleUpdatedPartyBuff1(buffInfo) {
+      const buffIndex = this.buffsDataChar1.findIndex((buff) => {
         return buff.key === buffInfo.key;
       });
       if (buffIndex === -1) {
-        this.buffsData.push(buffInfo);
+        this.buffsDataChar1.push(buffInfo);
       } else {
-        this.buffsData[buffIndex] = buffInfo;
+        this.buffsDataChar1[buffIndex] = buffInfo;
       }
+      this.updatedStats();
+    },
+    handleUpdatedPartyBuff2(buffInfo) {
+      const buffIndex = this.buffsDataChar2.findIndex((buff) => {
+        return buff.key === buffInfo.key;
+      });
+      if (buffIndex === -1) {
+        this.buffsDataChar2.push(buffInfo);
+      } else {
+        this.buffsDataChar2[buffIndex] = buffInfo;
+      }
+      this.updatedStats();
+    },
+    handleUpdatedPartyBuffEcho(buffInfo) {
+      const buffIndex = this.buffsDataEcho.findIndex((buff) => {
+        return buff.key === buffInfo.key;
+      });
+      if (buffIndex === -1) {
+        this.buffsDataEcho.push(buffInfo);
+      } else {
+        this.buffsDataEcho[buffIndex] = buffInfo;
+      }
+      this.updatedStats();
     },
   },
   mounted() {
@@ -189,8 +232,42 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .skilldescription {
   display: inline-block;
+}
+.teammate_selects {
+  display: flex;
+  gap: 4rem;
+
+  @media (max-width: 480px) {
+    gap: 1rem;
+  }
+  @media (max-width: 900px) {
+    gap: 2rem;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+}
+.teammate__select {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  label {
+    display: none;
+  }
+}
+.character__selection__avatar {
+  background: url(https://wuthering.wiki/img/role_1304.png);
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  display: block;
+  background-size: contain;
+  border-radius: 100%;
+  border: 1px solid white;
 }
 </style>

@@ -23,7 +23,9 @@
             class="icon"
             alt="Your Resonance Chains" />
         </li>
-        <li @click="changeScreen('party')">P</li>
+        <li @click="changeScreen('party')">
+          <img src="/images/team.png" class="icon" alt="Team Buffs" />
+        </li>
         <li @click="changeScreen('enemy')">
           <img src="/images/enemy.png" class="icon" alt="Your Enemy" />
         </li>
@@ -172,7 +174,8 @@
 
       <div class="screen-character" v-show="curScreen === 'party'">
         <CalculatorPartyBuffs
-          :current-character="character"></CalculatorPartyBuffs>
+          :current-character="character"
+          @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <div
@@ -674,6 +677,7 @@ export default defineComponent({
     });
     const weaponData = reactive({});
     const charBuffsData = reactive({});
+    const teamBuffsData = reactive({});
     const charResonanceChainsData = reactive({});
 
     watch(formData, async (updatedFormData: FormData) => {
@@ -954,6 +958,11 @@ export default defineComponent({
       if (echoStats) {
         addEchoBuffs(echoStats?.value, stats);
       }
+
+      if (teamBuffsData.value) {
+        addBuffs(teamBuffsData.value, stats);
+      }
+
       totalAtk.value =
         (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
         stats.attackFlat;
@@ -1165,6 +1174,11 @@ export default defineComponent({
       calcCharStats();
     };
 
+    const handleUpdatedTeamBuffs = (givenTeamBuffs) => {
+      teamBuffsData.value = givenTeamBuffs;
+      calcCharStats();
+    };
+
     const handleUpdatedCharacterResonanceChains = (
       givenResonanceChainsData
     ) => {
@@ -1210,6 +1224,7 @@ export default defineComponent({
       handleWeaponUpdated,
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
+      handleUpdatedTeamBuffs,
       BasicAttackDMGBonus,
       HeavyAttackDMGBonus,
       ResonanceSkillDMGBonus,
