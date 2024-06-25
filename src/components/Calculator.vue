@@ -1057,8 +1057,12 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const specificSkillDmgFromCharBuffs =
           charBuffsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
-        const extraDefIgnore =
+        const extraDefIgnoreResonanceChain =
           charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DefIgnore`
+          ] ?? 0;
+        const extraDefIgnoreCharBuff =
+          charBuffsData.value?.specificTalentBuffs?.[
             `${attack.key}:DefIgnore`
           ] ?? 0;
         const specificSkillExtraCritRate =
@@ -1077,7 +1081,7 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
           ] ?? 0;
-        const totalDefIgnore = DefIgnore.value + extraDefIgnore;
+        const totalDefIgnore = DefIgnore.value + extraDefIgnoreResonanceChain + extraDefIgnoreCharBuff;
         const specificSkillDmg =
           specificSkillDmgFromResonanceChains + specificSkillDmgFromCharBuffs;
 
