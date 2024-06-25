@@ -898,6 +898,16 @@ export default defineComponent({
           stats.resonanceLiberationDMGBonus += allAttributeBonus;
           stats.introSkillDMGBonus += allAttributeBonus;
         }
+        if (resonanceChainsData?.AllElementAttributeBonus) {
+          const allElementAttributeBonus =
+            resonanceChainsData.AllElementAttributeBonus * 100;
+          stats.glacio += allElementAttributeBonus;
+          stats.fusion += allElementAttributeBonus;
+          stats.electro += allElementAttributeBonus;
+          stats.aero += allElementAttributeBonus;
+          stats.spectro += allElementAttributeBonus;
+          stats.havoc += allElementAttributeBonus;
+        }
       }
 
       if (weaponData.value) {
@@ -915,11 +925,6 @@ export default defineComponent({
         if (weaponPassiveData?.AllElementAttributeBonus) {
           const allElementAttributeBonus =
             weaponPassiveData.AllElementAttributeBonus * 100;
-          // All Attribute may just apply to elemental. TBD when it comes out
-          //stats.basicAttackDMGBonus += allAttributeBonus;
-          //stats.heavyAttackDMGBonus += allAttributeBonus;
-          //stats.resonanceSkillDMGBonus += allAttributeBonus;
-          //stats.resonanceLiberationDMGBonus += allAttributeBonus;
           stats.glacio += allElementAttributeBonus;
           stats.fusion += allElementAttributeBonus;
           stats.electro += allElementAttributeBonus;
@@ -968,6 +973,16 @@ export default defineComponent({
           stats.resonanceSkillDMGBonus += allAttributeBonus;
           stats.resonanceLiberationDMGBonus += allAttributeBonus;
           stats.introSkillDMGBonus += allAttributeBonus;
+        }
+        if (teamBuffsData?.value?.AllElementAttributeBonus) {
+          const allElementAttributeBonus =
+            teamBuffsData?.value.AllElementAttributeBonus * 100;
+          stats.glacio += allElementAttributeBonus;
+          stats.fusion += allElementAttributeBonus;
+          stats.electro += allElementAttributeBonus;
+          stats.aero += allElementAttributeBonus;
+          stats.spectro += allElementAttributeBonus;
+          stats.havoc += allElementAttributeBonus;
         }
       }
 

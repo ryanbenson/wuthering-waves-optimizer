@@ -275,7 +275,7 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "AllAttributeBonus",
+          modifier: "AllElementAttributeBonus",
           modifierValue: 0.2,
         },
       ],
