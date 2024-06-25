@@ -3,15 +3,20 @@ export const resonanceChains = [
     key: "SequenceNode1HiddenThoughts",
     name: "Sequence Node 1: Hidden Thoughts",
     details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Tripartite Flames</span> and Heavy Attack <span class="Highlight">Flaming Vow</span> increases Changli's DMG dealt by 10% and resistance to interruption.</span>`,
-    hasStacks: true,
+    hasStacks: false,
     modifiers: [
       {
-        modifySpecificTalents: ["FlamingVowDMG", "TrueSightCaptureDMG", "TrueSightConquestDMG", "TrueSightChargeDMG"],
+        modifySpecificTalents: [
+          "FlamingVowDMG",
+          "TrueSightCaptureDMG",
+          "TrueSightConquestDMG",
+          "TrueSightChargeDMG",
+        ],
         modifierValue: 0.1,
       },
     ],
     minStacks: 0,
-    maxStacks: 2,
+    maxStacks: 0,
     alwaysEnabled: false,
   },
   {
