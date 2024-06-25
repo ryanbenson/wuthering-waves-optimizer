@@ -1084,6 +1084,10 @@ export default defineComponent({
         const totalDefIgnore = DefIgnore.value + extraDefIgnoreResonanceChain + extraDefIgnoreCharBuff;
         const specificSkillDmg =
           specificSkillDmgFromResonanceChains + specificSkillDmgFromCharBuffs;
+        if (attack.key === 'FlamingVowDMG') {
+          console.log(totalDefIgnore, extraDefIgnoreResonanceChain, extraDefIgnoreCharBuff);
+          console.log(specificSkillDmgFromCharBuffs);
+        }
 
         return calcDamage(
           characterLevel.value,
