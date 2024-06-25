@@ -6,7 +6,7 @@ export const resonanceChains = [
     hasStacks: true,
     modifiers: [
       {
-        modifySpecificTalents: ["FlamingVowDMG", "RadianceofFealty"],
+        modifySpecificTalents: ["FlamingVowDMG", "TrueSightCaptureDMG", "TrueSightConquestDMG", "TrueSightChargeDMG"],
         modifierValue: 0.1,
       },
     ],
