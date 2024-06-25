@@ -23,6 +23,9 @@
             class="icon"
             alt="Your Resonance Chains" />
         </li>
+        <li @click="changeScreen('party')">
+          <img src="/images/team.png" class="icon" alt="Team Buffs" />
+        </li>
         <li @click="changeScreen('enemy')">
           <img src="/images/enemy.png" class="icon" alt="Your Enemy" />
         </li>
@@ -34,7 +37,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Jiyan and Taoqi are available! ⚡</div>
+          <div class="alert alert--info">Team buffs are now available! 👥</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -168,6 +171,12 @@
             "></CalculatorResonanceChains>
         </template>
       </div>
+
+      <div class="screen-character" v-show="curScreen === 'party'">
+        <CalculatorPartyBuffs
+          :current-character="character"
+          @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
+      </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <div
           v-for="field in fields"
@@ -244,7 +253,7 @@
           </div>
           <div>
             <span>Total Deepen Effect:</span>
-            <span>{{ TotalDeepenEffect }}%</span>
+            <span>{{ TotalDeepenEffect * 100 }}%</span>
           </div>
           <div>
             <span>Resist Reduction:</span> <span>{{ ResistReduction }}%</span>
@@ -460,7 +469,7 @@
         </div>
         <div>
           <span>Total Deepen Effect:</span>
-          <span>{{ TotalDeepenEffect }}%</span>
+          <span>{{ TotalDeepenEffect * 100 }}%</span>
         </div>
         <div>
           <span>Resist Reduction:</span> <span>{{ ResistReduction }}%</span>
@@ -629,6 +638,7 @@ import CalculatorEchoes from "./CalculatorEchoes.vue";
 import CalculatorWeapons from "./CalculatorWeapons.vue";
 import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
+import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -650,6 +660,7 @@ export default defineComponent({
     CalculatorEchoes,
     CalculatorWeapons,
     CalculatorCharacterBuffs,
+    CalculatorPartyBuffs,
     CalculatorResonanceChains,
   },
   setup() {
@@ -666,6 +677,7 @@ export default defineComponent({
     });
     const weaponData = reactive({});
     const charBuffsData = reactive({});
+    const teamBuffsData = reactive({});
     const charResonanceChainsData = reactive({});
 
     watch(formData, async (updatedFormData: FormData) => {
@@ -779,9 +791,7 @@ export default defineComponent({
         target.bonusSpecificSkillDMGBonus += source?.BonusSpecificSkillDMGBonus
           ? source.BonusSpecificSkillDMGBonus * 100
           : 0;
-        target.totalDeepenEffect += source?.TotalDeepenEffect
-          ? source.TotalDeepenEffect * 100
-          : 0;
+        target.totalDeepenEffect += source?.DMGDeepen ? source.DMGDeepen : 0;
         target.resistReduction += source?.ResistReduction
           ? source.ResistReduction * 100
           : 0;
@@ -946,6 +956,11 @@ export default defineComponent({
       if (echoStats) {
         addEchoBuffs(echoStats?.value, stats);
       }
+
+      if (teamBuffsData.value) {
+        addBuffs(teamBuffsData.value, stats);
+      }
+
       totalAtk.value =
         (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
         stats.attackFlat;
@@ -1045,6 +1060,7 @@ export default defineComponent({
 
       const calculateAttackDamage = (attack, talentType) => {
         const attackType = attack.type;
+        const attackElement = chosenChar.value?.basic?.element;
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         const talent = attack.talents[talentType];
@@ -1084,6 +1100,23 @@ export default defineComponent({
         const totalDefIgnore = DefIgnore.value + extraDefIgnoreResonanceChain + extraDefIgnoreCharBuff;
         const specificSkillDmg =
           specificSkillDmgFromResonanceChains + specificSkillDmgFromCharBuffs;
+        const teamBuffResistShredForCharElement =
+          teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
+        const baseResistReduction = ResistReduction.value ?? 0;
+        const totalResistReduction =
+          baseResistReduction + teamBuffResistShredForCharElement;
+        // damage deepen
+        const baseTotalDeepenEffect = TotalDeepenEffect.value;
+        // so far damage deepen is from team buffs, add more later if needed
+        // get element first, then any skill specific ones next, then add together
+        const teamBuffDmgDeepenForCharElement =
+          teamBuffsData.value?.[`DMGDeepen:${attackElement}`] ?? 0;
+        const teamBuffDmgDeepenForAttackType =
+          teamBuffsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
+        const totalDmgDeepen =
+          baseTotalDeepenEffect +
+          teamBuffDmgDeepenForCharElement +
+          teamBuffDmgDeepenForAttackType;
 
         return calcDamage(
           characterLevel.value,
@@ -1095,8 +1128,8 @@ export default defineComponent({
           totalSkillDmgBonus,
           specificSkillDmg,
           elementalDmgBonusDecimal,
-          TotalDeepenEffect.value,
-          ResistReduction.value,
+          totalDmgDeepen,
+          totalResistReduction,
           instanceDmgCritRate,
           instanceDmgCritDMG,
           totalTalentModifierAdd,
@@ -1161,6 +1194,11 @@ export default defineComponent({
       calcCharStats();
     };
 
+    const handleUpdatedTeamBuffs = (givenTeamBuffs) => {
+      teamBuffsData.value = givenTeamBuffs;
+      calcCharStats();
+    };
+
     const handleUpdatedCharacterResonanceChains = (
       givenResonanceChainsData
     ) => {
@@ -1206,6 +1244,7 @@ export default defineComponent({
       handleWeaponUpdated,
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
+      handleUpdatedTeamBuffs,
       BasicAttackDMGBonus,
       HeavyAttackDMGBonus,
       ResonanceSkillDMGBonus,

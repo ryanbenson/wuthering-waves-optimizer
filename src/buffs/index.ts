@@ -1,0 +1,571 @@
+export const buffsByCharacter = {
+  Sanhua: [
+    {
+      key: "Silversnow",
+      name: "Outro: Silversnow",
+      details: `<span class="skilldescription">The next character (or other characters on a nearby team that activates an Outro Skill) gains <span class="Highlight">38% Basic Attack DMG Deepen</span> for 14s, or until the character is switched off field.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Basic",
+          modifierValue: 0.38,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode6DaybreakRadiance",
+      name: "Sequence Node 6: Daybreak Radiance",
+      details: `<span class="skilldescription">After an Ice Prism or a Glacier is detonated, all team members' ATK is increased by 10% for 20s, stacking up to 2 times.</span>`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 2,
+      alwaysEnabled: false,
+    },
+  ],
+  Baizhi: [
+    {
+      key: "RejuvinatingFlow",
+      name: "Rejuvinating Flow",
+      details: `<span class="skilldescription">Baizhi restores HP equal to 1.54% of her max HP to The next character (or other characters on a nearby team that activates an Outro Skill) every 3s for 30s. Resonators gaining this healing also gain <span class="Highlight">15% all-Type DMG Deepen</span> for 6s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "Euphonia",
+      name: "Euphonia",
+      details: `<div class="skilldescription">When Baizhi casts Resonance Skill <span class="Highlight">Emergency Plan</span>, You'tan generates a field of <span class="Highlight">Euphonia</span> that lasts for 15s.<br> <br><span class="Title">Euphonia</span><br>ATK of the Resonators who picks up Euphonia is increased by 15% for 20s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode6SeekersDevotion",
+      name: "Sequence Node 6: Seeker's Devotion",
+      details: `<span class="skilldescription">When <span class="Highlight">Euphonia</span> is picked up, increase the Glacio DMG Bonus of all characters nearby by 12% for 20s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Glacio",
+          modifierValue: 0.12,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Lingyang: [
+    {
+      key: "SequenceNode4ImmortalsBowinReverenceFlawed",
+      name: "Sequence Node 4: Immortals Bow, in Reverence Flawed",
+      details: `<span class="skilldescription">Outro Skill <span class="Highlight">Frosty Marks</span> increases the Glacio DMG Bonus of all team members by 20% for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Glacio",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Chixia: [
+    {
+      key: "SequenceNode6EasterEggPerformance",
+      name: "Sequence Node 6: Easter Egg Performance",
+      details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Boom Boom</span> increases the Basic Attack DMG Bonus of all team members by 25% for 15s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "BasicAttackDMGBonus",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Encore: [
+    {
+      key: "SequenceNode4AdventureLetsgo",
+      name: "Sequence Node 4: Adventure? Let's go!",
+      details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Cosmos: Rupture</span> increases the Fusion DMG Bonus of all team members by 20% for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Mortefi: [
+    {
+      key: "RageTransposition",
+      name: "Outro: Rage Transposition",
+      details: `<span class="skilldescription">The next character (or other characters on a nearby team that activates an Outro Skill) gains <span class="Highlight">38% Heavy Attack DMG Deepen</span> for 14 seconds or until the Character is switched.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Heavy",
+          modifierValue: 0.38,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode6ApoplecticInstrumental",
+      name: "Sequence Node 6: Apoplectic Instrumental",
+      details: `<span class="skilldescription">When Resonance Liberation <span class="Highlight">Violent Finale</span> is cast, ATK of all team members is increased by 20% for 20s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Changli: [
+    {
+      key: "OutroSkillStrategyofDuality",
+      name: "Outro Skill: Strategy of Duality",
+      details: `<div class="skilldescription">Changli's Outro Skill increases the switched-in Resonator's Fusion DMG by 20% and their Resonance Liberation DMG by 25%, lasting for 10s. Switching to another Resonator ends this effect.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.25,
+        },
+        {
+          modifier: "ResonanceLiberationDMGBonus",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4PolishedWords",
+      name: "Sequence Node 4: Polished Words",
+      details: `<span class="skilldescription">Intro Skill increases the ATK of all team members by 20%, lasting for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Calcharo: [
+    {
+      key: "SequenceNode4DarkAlliance",
+      name: "Sequence Node 4: Dark Alliance",
+      details: `<span class="skilldescription">After casting Outro Skill <span class="Highlight">Shadowy Raid</span>, Electro DMG Bonus of all team members is increased by 20% for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Electro",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Yinlin: [
+    {
+      key: "Strategist",
+      name: "Outro: Strategist",
+      details: `<span class="skilldescription">The next character (or other characters on a nearby team that activates an Outro Skill) gains <span class="Highlight">20% Electro DMG Deepen</span>, and <span class="Highlight">25% Resonance Liberation DMG Deepen</span> for 14 seconds or until the Character is switched.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Electro",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "DMGDeepen:Liberation",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4SteadfastConviction",
+      name: "Sequence Node 4: Steadfast Conviction",
+      details: `<span class="skilldescription">When Forte Circuit <span class="Highlight">Judgment Strike</span> hits a target, the ATK of all team members is increased by 20% for 12s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Yuanwu: [
+    {
+      key: "SequenceNode6DefenderofAllRealms",
+      name: "Sequence Node 6: Defender of All Realms",
+      details: `<span class="skilldescription">All team members nearby within the range of Resonance Skill <span class="Highlight">Thunder Wedge</span> will gain a 32% DEF increase, lasting 3s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DEF",
+          modifierValue: 0.32,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Jinhsi: [
+    {
+      key: "SequenceNode4BenevolentGrace",
+      name: "Sequence Node 4: Benevolent Grace",
+      details: `<span class="skilldescription">When casting Resonance Liberation <span class="Highlight">Purge of Light</span> or Resonance Skill <span class="Highlight">Illuminous Epiphany</span>, all nearby Characters in the team gain DMG Bonus for all attributes by 20% for 20s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "AllAttributeBonus",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Yangyang: [
+    {
+      key: "SequenceNode6ATributetoLifesSweetHymn",
+      name: "Sequence Node 6: A Tribute to Life's Sweet Hymn",
+      details: `<span class="skilldescription">After casting Mid-Air Attack <span class="Highlight">Feather Release</span>, the ATK of all team members is increased by 20% for 20s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Aalto: [
+    {
+      key: "GateofQuandary",
+      name: "Gate of Quandary",
+      details: `<div class="skilldescription">Generate a "Gate of Quandary" in front, dealing <span class="Wind">Aero DMG</span>. When bullets pass through the "Gate of Quandary", ATK is increased. "Gate of Quandary" lasts for 10s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "DissolvingMist",
+      name: "Dissolving Mist",
+      details: `<div class="skilldescription">The next character (or other characters on a nearby team that activates an Outro Skill) gains <span class="Hightlight">23%</span> <span class="Wind">Aero DMG</span> Deepen for 14 seconds or until the Character is switched.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Aero",
+          modifierValue: 0.23,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Jiyan: [
+    {
+      key: "SequenceNode4Prudence",
+      name: "Sequence Node 4: Prudence",
+      details: `<span class="skilldescription">When casting Resonance Liberation <span class="Highlight">Emerald Storm: Prelude</span> or Resonance Liberation <span class="Highlight">Emerald Storm: Finale</span>, the Heavy Attack DMG Bonus of all team members is increased by 25% for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "HeavyAttackDMGBonus",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Jianxin: [
+    {
+      key: "Transcendence",
+      name: "Transcendence",
+      details: `<span class="skilldescription">The next character (or other characters on a nearby team that activates an Outro Skill) gains <span class="Highlight">38%</span> Resonance Liberation DMG Deepen for 14s or until the Character is switched.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Liberation",
+          modifierValue: 0.38,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  "Rover-Spectro": [
+    {
+      key: "SequenceNode6EchoesofWanderlust",
+      name: "Sequence Node 6: Echoes of Wanderlust",
+      details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Resonating Slashes</span> and Resonance Skill <span class="Highlight">Resonating Spin</span> reduces the target's Spectro DMG RES by 10% on hit for 20s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResistShred:Spectro",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  "Rover-Havoc": [
+    {
+      key: "SequenceNode4AnnihilatedSilence",
+      name: "Sequence Node 4: Annihilated Silence",
+      details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Devastation</span> and Resonance Liberation <span class="Highlight">Deadening Abyss</span> reduces enemy Havoc RES by 10% for 20s on hit.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResistShred:Havoc",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Verina: [
+    {
+      key: "InherentSkillGiftofNature",
+      name: "Inherent Skill: Gift of Nature",
+      details: `<div class="skilldescription">When Verina casts Heavy Attack <span class="Highlight">Starflower Blooms</span>, Mid-air Attack <span class="Highlight">Starflower Blooms</span>, Resonance Liberation <span class="Highlight">Arboreal Flourish</span> or Outro Skill <span class="Highlight">Blossom</span>, all team members' ATK are increased by 20% for 20s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "OutroSkillBlossom",
+      name: "Outro Skill: Blossom",
+      details: `<div class="skilldescription">Verina heals the next character by 19% of her ATK per second for 6s. All characters on nearby teams gain 15% All-Type DMG Deepen for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4BlossomingEmbrace",
+      name: "Sequence Node 4: Blossoming Embrace",
+      details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Starflower Blooms</span>, Mid-Air Attack <span class="Highlight">Starflower Blooms</span>, Resonance Liberation <span class="Highlight">Arboreal Flourish</span> and Outro Skill <span class="Highlight">Blossom</span> increases the Spectro DMG Bonus of all team members by 15% for 24s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Spectro",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Taoqi: [
+    {
+      key: "InherentSkillSteadfastProtection",
+      name: "Inherent Skill: Steadfast Protection",
+      details: `<div class="skilldescription">During the duration of the Resonance Skill <span class="Highlight">Rocksteady Shield</span>, the Character's DEF is increased by 15%.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DEF",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "IronWill",
+      name: "Iron Will",
+      details: `<span class="skilldescription">The next character (or other characters on a nearby team that activates an Outro Skill) gains <span class="Highlight">38%</span> Resonance Skill DMG Deepen for 14s or until the Character is switched.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Skill",
+          modifierValue: 0.38,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Danjin: [
+    {
+      key: "SequenceNode6BloodiedJade",
+      name: "Sequence Node 6: Bloodied Jade",
+      details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Chaoscleave</span> increases the ATK of all team members by 20% for 20s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "Duality",
+      name: "Duality",
+      details: `<div class="skilldescription">The next character (or other characters on a nearby team that activates an Outro Skill) gains <span class="Hightlight">23%</span> <span class="Dark">Havoc DMG</span> Deepen for 14 seconds or until the Character is switched.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Havoc",
+          modifierValue: 0.23,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+};
+
+export const allEchoBuffs = [
+  {
+    key: "RejuvenatingGlow",
+    name: "Rejuvenating Glow",
+    details: `<span class="skilldescription">Upon healing allies, increase ATK of the entire team by <span class="Highlight">15%</span> , lasting <span class="Highlight">30s</span>.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.15,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "MoonlitClouds",
+    name: "Moonlit Clouds",
+    details: `<span class="skilldescription">Upon using Outro Skill, ATK of the next Resonator increases by <span class="Highlight">22.5%</span> , for <span class="Highlight">15s</span>.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.225,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+];
+
+export const allCharacters: string[] = [
+  "Sanhua",
+  "Baizhi",
+  "Lingyang",
+  "Chixia",
+  "Encore",
+  "Mortefi",
+  "Changli",
+  "Calcharo",
+  "Yinlin",
+  "Yuanwu",
+  "Jinhsi",
+  "Yangyang",
+  "Aalto",
+  "Jiyan",
+  "Jianxin",
+  "Rover-Spectro",
+  "Rover-Havoc",
+  "Verina",
+  "Taoqi",
+  "Danjin",
+];

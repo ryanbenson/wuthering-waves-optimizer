@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     updatedStats() {
-      this.$emit("updated-character-buff", {
+      this.$emit("updated-party-buff", {
         key: this.uniqueKey,
         data: this.buffStats,
       });
