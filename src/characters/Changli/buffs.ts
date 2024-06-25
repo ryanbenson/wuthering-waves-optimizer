@@ -37,11 +37,14 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Fusion",
+        // it specifically says Fusion buff, but this adds to the specific dmg modifier,
+        // which is  the same thing because it gets added to the elemental dmg bonus
+        modifySpecificTalents: ["FlamingVowDMG", "RadianceofFealty"],
         modifierValue: 0.2,
       },
       {
         modifier: "DEFIgnore",
+        modifySpecificTalents: ["FlamingVowDMG", "RadianceofFealty"],
         modifierValue: 0.15,
       },
     ],
