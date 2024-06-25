@@ -16,12 +16,18 @@
     <h1>Updates</h1>
     <h3>June 25, 2024</h3>
     <ul>
-      <li>Fixes Changli inherit skill and S1 to only affect specific skills stated in the description</li>
+      <li>Released team buffs!</li>
+      <li>
+        Fixes Changli inherit skill and S1 to only affect specific skills stated
+        in the description
+      </li>
     </ul>
     <h3>June 23, 2024</h3>
     <ul>
       <li>Simplified the selection of echo set bonuses</li>
-      <li>Adjusts some min/max values in echo substats to match latest research</li>
+      <li>
+        Adjusts some min/max values in echo substats to match latest research
+      </li>
     </ul>
     <h3>June 22, 2024</h3>
     <ul>
