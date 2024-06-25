@@ -1086,6 +1086,7 @@ export default defineComponent({
           specificSkillDmgFromResonanceChains + specificSkillDmgFromCharBuffs;
         if (attack.key === 'FlamingVowDMG') {
           console.log(totalDefIgnore, extraDefIgnoreResonanceChain, extraDefIgnoreCharBuff);
+          console.log(JSON.parse(JSON.stringify(charBuffsData.value)));
           console.log(specificSkillDmgFromCharBuffs);
         }
 
