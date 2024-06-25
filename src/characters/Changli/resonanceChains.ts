@@ -97,7 +97,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "DefIgnore",
+        modifier: "DEFIgnore",
         modifySpecificTalents: [
           "TrueSightCaptureDMG",
           "TrueSightConquestDMG",
