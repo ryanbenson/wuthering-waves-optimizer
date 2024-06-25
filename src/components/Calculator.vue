@@ -37,7 +37,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Jiyan and Taoqi are available! ⚡</div>
+          <div class="alert alert--info">Team buffs are now available! 👥</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -253,7 +253,7 @@
           </div>
           <div>
             <span>Total Deepen Effect:</span>
-            <span>{{ TotalDeepenEffect }}%</span>
+            <span>{{ TotalDeepenEffect * 100 }}%</span>
           </div>
           <div>
             <span>Resist Reduction:</span> <span>{{ ResistReduction }}%</span>
@@ -469,7 +469,7 @@
         </div>
         <div>
           <span>Total Deepen Effect:</span>
-          <span>{{ TotalDeepenEffect }}%</span>
+          <span>{{ TotalDeepenEffect * 100 }}%</span>
         </div>
         <div>
           <span>Resist Reduction:</span> <span>{{ ResistReduction }}%</span>
@@ -791,9 +791,7 @@ export default defineComponent({
         target.bonusSpecificSkillDMGBonus += source?.BonusSpecificSkillDMGBonus
           ? source.BonusSpecificSkillDMGBonus * 100
           : 0;
-        target.totalDeepenEffect += source?.TotalDeepenEffect
-          ? source.TotalDeepenEffect * 100
-          : 0;
+        target.totalDeepenEffect += source?.DMGDeepen ? source.DMGDeepen : 0;
         target.resistReduction += source?.ResistReduction
           ? source.ResistReduction * 100
           : 0;
@@ -1103,6 +1101,18 @@ export default defineComponent({
         const baseResistReduction = ResistReduction.value ?? 0;
         const totalResistReduction =
           baseResistReduction + teamBuffResistShredForCharElement;
+        // damage deepen
+        const baseTotalDeepenEffect = TotalDeepenEffect.value;
+        // so far damage deepen is from team buffs, add more later if needed
+        // get element first, then any skill specific ones next, then add together
+        const teamBuffDmgDeepenForCharElement =
+          teamBuffsData.value?.[`DMGDeepen:${attackElement}`] ?? 0;
+        const teamBuffDmgDeepenForAttackType =
+          teamBuffsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
+        const totalDmgDeepen =
+          baseTotalDeepenEffect +
+          teamBuffDmgDeepenForCharElement +
+          teamBuffDmgDeepenForAttackType;
 
         return calcDamage(
           characterLevel.value,
@@ -1114,7 +1124,7 @@ export default defineComponent({
           totalSkillDmgBonus,
           specificSkillDmg,
           elementalDmgBonusDecimal,
-          TotalDeepenEffect.value,
+          totalDmgDeepen,
           totalResistReduction,
           instanceDmgCritRate,
           instanceDmgCritDMG,

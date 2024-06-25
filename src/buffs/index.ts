@@ -7,8 +7,7 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "DMGDeepen",
-          modifierTalentAll: "Basic",
+          modifier: "DMGDeepen:Basic",
           modifierValue: 0.38,
         },
       ],
@@ -138,8 +137,7 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "DMGDeepen",
-          modifierTalentAll: "Heavy",
+          modifier: "DMGDeepen:Heavy",
           modifierValue: 0.38,
         },
       ],
@@ -224,13 +222,11 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "DMGDeepen",
-          modifierElement: "Electro",
+          modifier: "DMGDeepen:Electro",
           modifierValue: 0.2,
         },
         {
-          modifier: "DMGDeepen",
-          modifierTalentAll: "Liberation",
+          modifier: "DMGDeepen:Liberation",
           modifierValue: 0.25,
         },
       ],
@@ -328,8 +324,7 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "DMGDeepen",
-          modifierElement: "Aero",
+          modifier: "DMGDeepen:Aero",
           modifierValue: 0.23,
         },
       ],
@@ -363,8 +358,7 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "DMGDeepen",
-          modifierTalentAll: "Liberation",
+          modifier: "DMGDeepen:Liberation",
           modifierValue: 0.38,
         },
       ],
@@ -477,8 +471,7 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "DMGDeepen",
-          modifierTalentAll: "Skill",
+          modifier: "DMGDeepen:Skill",
           modifierValue: 0.38,
         },
       ],
@@ -510,8 +503,7 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "DMGDeepen",
-          modifierElement: "Havoc",
+          modifier: "DMGDeepen:Havoc",
           modifierValue: 0.23,
         },
       ],
