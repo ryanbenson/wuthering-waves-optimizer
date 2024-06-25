@@ -381,8 +381,7 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "ResistShred",
-          resistShredElement: "Spectro",
+          modifier: "ResistShred:Spectro",
           modifierValue: 0.1,
         },
       ],
@@ -399,8 +398,7 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "ResistShred",
-          resistShredElement: "Havoc",
+          modifier: "ResistShred:Havoc",
           modifierValue: 0.1,
         },
       ],

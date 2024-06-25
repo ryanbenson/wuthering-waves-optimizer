@@ -1062,6 +1062,7 @@ export default defineComponent({
 
       const calculateAttackDamage = (attack, talentType) => {
         const attackType = attack.type;
+        const attackElement = chosenChar.value?.basic?.element;
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         const talent = attack.talents[talentType];
@@ -1097,6 +1098,11 @@ export default defineComponent({
         const totalDefIgnore = DefIgnore.value + extraDefIgnore;
         const specificSkillDmg =
           specificSkillDmgFromResonanceChains + specificSkillDmgFromCharBuffs;
+        const teamBuffResistShredForCharElement =
+          teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
+        const baseResistReduction = ResistReduction.value ?? 0;
+        const totalResistReduction =
+          baseResistReduction + teamBuffResistShredForCharElement;
 
         return calcDamage(
           characterLevel.value,
@@ -1109,7 +1115,7 @@ export default defineComponent({
           specificSkillDmg,
           elementalDmgBonusDecimal,
           TotalDeepenEffect.value,
-          ResistReduction.value,
+          totalResistReduction,
           instanceDmgCritRate,
           instanceDmgCritDMG,
           totalTalentModifierAdd,
