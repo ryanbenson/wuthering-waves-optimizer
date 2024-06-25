@@ -897,7 +897,6 @@ export default defineComponent({
           stats.resonanceSkillDMGBonus += allAttributeBonus;
           stats.resonanceLiberationDMGBonus += allAttributeBonus;
           stats.introSkillDMGBonus += allAttributeBonus;
-          stats.introSkillDMGBonus += allAttributeBonus;
         }
       }
 
@@ -913,19 +912,20 @@ export default defineComponent({
 
         addBuffs(weaponPassiveData, stats);
 
-        if (weaponPassiveData?.AllAttributeBonus) {
-          const allAttributeBonus = weaponPassiveData.AllAttributeBonus * 100;
+        if (weaponPassiveData?.AllElementAttributeBonus) {
+          const allElementAttributeBonus =
+            weaponPassiveData.AllElementAttributeBonus * 100;
           // All Attribute may just apply to elemental. TBD when it comes out
           //stats.basicAttackDMGBonus += allAttributeBonus;
           //stats.heavyAttackDMGBonus += allAttributeBonus;
           //stats.resonanceSkillDMGBonus += allAttributeBonus;
           //stats.resonanceLiberationDMGBonus += allAttributeBonus;
-          stats.glacio += allAttributeBonus;
-          stats.fusion += allAttributeBonus;
-          stats.electro += allAttributeBonus;
-          stats.aero += allAttributeBonus;
-          stats.spectro += allAttributeBonus;
-          stats.havoc += allAttributeBonus;
+          stats.glacio += allElementAttributeBonus;
+          stats.fusion += allElementAttributeBonus;
+          stats.electro += allElementAttributeBonus;
+          stats.aero += allElementAttributeBonus;
+          stats.spectro += allElementAttributeBonus;
+          stats.havoc += allElementAttributeBonus;
         }
 
         if (weaponPassiveData?.AllResonanceDMG) {
@@ -959,6 +959,16 @@ export default defineComponent({
 
       if (teamBuffsData.value) {
         addBuffs(teamBuffsData.value, stats);
+
+        if (teamBuffsData?.value?.AllAttributeBonus) {
+          const allAttributeBonus =
+            teamBuffsData?.value?.AllAttributeBonus * 100;
+          stats.basicAttackDMGBonus += allAttributeBonus;
+          stats.heavyAttackDMGBonus += allAttributeBonus;
+          stats.resonanceSkillDMGBonus += allAttributeBonus;
+          stats.resonanceLiberationDMGBonus += allAttributeBonus;
+          stats.introSkillDMGBonus += allAttributeBonus;
+        }
       }
 
       totalAtk.value =
@@ -1097,7 +1107,10 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
           ] ?? 0;
-        const totalDefIgnore = DefIgnore.value + extraDefIgnoreResonanceChain + extraDefIgnoreCharBuff;
+        const totalDefIgnore =
+          DefIgnore.value +
+          extraDefIgnoreResonanceChain +
+          extraDefIgnoreCharBuff;
         const specificSkillDmg =
           specificSkillDmgFromResonanceChains + specificSkillDmgFromCharBuffs;
         const teamBuffResistShredForCharElement =
