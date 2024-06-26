@@ -87,23 +87,6 @@ export const skillAttacks = {
       type: "Skill",
     },
     {
-      key: "DCCrimsonErosion2",
-      label: "Crimson Erosion Part 2 (after dodge counter)",
-      talents: {
-        "1":  "30.00%*2",
-        "2":  "32.46%*2",
-        "3":  "34.92%*2",
-        "4":  "38.37%*2",
-        "5":  "40.83%*2",
-        "6":  "43.66%*2",
-        "7":  "47.59%*2",
-        "8":  "51.53%*2",
-        "9":  "55.47%*2",
-        "10": "59.65%*2",
-      },
-      type: "Skill",
-    },
-    {
       key: "SanguinePulse1",
       label: "Sanguine Pulse Part 1",
       talents: {
