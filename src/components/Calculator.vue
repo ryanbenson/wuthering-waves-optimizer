@@ -639,6 +639,8 @@ import CalculatorWeapons from "./CalculatorWeapons.vue";
 import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
+import { useCharactersStore } from "../stores/characters";
+import { useWeaponsStore } from "../stores/weapons";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -664,6 +666,39 @@ export default defineComponent({
     CalculatorResonanceChains,
   },
   setup() {
+    const charactersStore = useCharactersStore();
+    const weaponsStore = useWeaponsStore();
+    charactersStore.changeCharacter("Changli");
+    charactersStore.updateActiveCharacterBuffs({
+      FieryFeather: {
+        isEnabled: true,
+      },
+      InherentSkillSecretStrategist: {
+        isEnabled: true,
+        stacks: 4,
+      },
+    });
+    charactersStore.updateActiveCharacterResonanceChains({
+      SequenceNode1HiddenThoughts: {
+        isEnabled: true,
+      },
+      SequenceNode2PursuitofDesires: {
+        isEnabled: false,
+      },
+    });
+    weaponsStore.changeWeapon("BlazingBrilliance");
+    weaponsStore.updateActiveWeaponLevel("40");
+    weaponsStore.updateActiveWeaponRefinement("3");
+    weaponsStore.updateActiveWeaponPassives({
+      ATK: {
+        isEnabled: true,
+      },
+      ResonanceSkillDMGBonus: {
+        isEnabled: true,
+        stacks: 10,
+      },
+    });
+
     const formData = reactive<FormData>({
       enemyLevel: 90,
       enemyResist: 0.1,
@@ -1098,7 +1133,8 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const specificSkillDmgFromCharBuffs =
           charBuffsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
-        const genericSkillDmgBonusResChain = charResonanceChainsData.value?.DMGBonus ?? 0;
+        const genericSkillDmgBonusResChain =
+          charResonanceChainsData.value?.DMGBonus ?? 0;
         const genericSkillDmgBonusSelfBuff = charBuffsData.value?.DMGBonus ?? 0;
         const extraDefIgnoreResonanceChain =
           charResonanceChainsData.value?.specificTalentBuffs?.[
@@ -1129,7 +1165,10 @@ export default defineComponent({
           extraDefIgnoreResonanceChain +
           extraDefIgnoreCharBuff;
         const specificSkillDmg =
-          specificSkillDmgFromResonanceChains + specificSkillDmgFromCharBuffs + genericSkillDmgBonusResChain + genericSkillDmgBonusSelfBuff;
+          specificSkillDmgFromResonanceChains +
+          specificSkillDmgFromCharBuffs +
+          genericSkillDmgBonusResChain +
+          genericSkillDmgBonusSelfBuff;
         const teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         const baseResistReduction = ResistReduction.value ?? 0;

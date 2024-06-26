@@ -6,6 +6,8 @@ import { createWebHistory, createRouter } from "vue-router";
 import FloatingVue from "floating-vue";
 import "floating-vue/dist/style.css";
 import { inject } from "@vercel/analytics";
+import { createPinia } from "pinia";
+import { createPersistedState } from "pinia-plugin-persistedstate";
 
 import HomeView from "./pages/HomeView.vue";
 import OptimizerView from "./pages/OptimizerView.vue";
@@ -27,4 +29,11 @@ const router = createRouter({
 
 inject();
 
-createApp(App).use(router).use(FloatingVue).mount("#app");
+const pinia = createPinia();
+pinia.use(
+  createPersistedState({
+    auto: true,
+  })
+);
+
+createApp(App).use(pinia).use(router).use(FloatingVue).mount("#app");
