@@ -98,7 +98,7 @@
             </div>
             <div class="form__group field">
               <label for="talentForte" class="form__label"
-                >Forte: {{ talentData.forte }}</label
+                >Forte Circuit: {{ talentData.forte }}</label
               >
               <input
                 v-model="talentData.forte"
