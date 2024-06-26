@@ -32,7 +32,6 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "DMGBonus",
         modifySpecificTalents: ["DCCrimsonErosion2"],
         modifierValue: 0.2,
       },
