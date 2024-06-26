@@ -76,7 +76,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Crit. Rate",
+        modifier: "CritRate",
         modifierValue: 0.15,
       },
     ],
