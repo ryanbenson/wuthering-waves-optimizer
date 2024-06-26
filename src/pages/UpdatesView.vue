@@ -14,6 +14,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 26, 2024</h3>
+    <ul>
+      <li>Danjin is implemented</li>
+      <li>Minor UI: Alphabetized the team character list</li>
+    </ul>
     <h3>June 25, 2024</h3>
     <ul>
       <li>Released team buffs!</li>
