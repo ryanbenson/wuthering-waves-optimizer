@@ -127,10 +127,7 @@ export const resonanceChains = [
     key: "SequenceNode6",
     name: "Sequence Node 6: Bloodied Jade",
     details: `
-      <span class="skilldescription">
-        Heavy attack <span class="Highlight">Chaoscleave>Increases the ATK of
-        all team members by 20% for 20s.
-      </span>
+      <span class="skilldescription">Heavy Attack <span class="Highlight">Chaoscleave</span> increases the ATK of all team members by 20% for 20s.</span>
     `,
     hasStacks: false,
     modifiers: [
