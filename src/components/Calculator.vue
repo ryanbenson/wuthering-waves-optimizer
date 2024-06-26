@@ -1098,6 +1098,7 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const specificSkillDmgFromCharBuffs =
           charBuffsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
+        const genericSkillDmgBonusResChain = charResonanceChainsData.value?.DMGBonus ?? 0;
         const extraDefIgnoreResonanceChain =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DEFIgnore`
@@ -1127,7 +1128,7 @@ export default defineComponent({
           extraDefIgnoreResonanceChain +
           extraDefIgnoreCharBuff;
         const specificSkillDmg =
-          specificSkillDmgFromResonanceChains + specificSkillDmgFromCharBuffs;
+          specificSkillDmgFromResonanceChains + specificSkillDmgFromCharBuffs + genericSkillDmgBonusResChain;
         const teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         const baseResistReduction = ResistReduction.value ?? 0;
