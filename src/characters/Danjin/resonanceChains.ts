@@ -59,7 +59,7 @@ export const resonanceChains = [
     ],
     minStacks: 0,
     maxStacks: 0,
-    alwaysEnabled: true,
+    alwaysEnabled: false,
   },
   {
     key: "SequenceNode4",
@@ -85,29 +85,42 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode5",
+    key: "SequenceNode51",
     name: "Sequence Node 5: Reigning Blade",
     details: `
       <span class="skilldescription">
-        Danjin's Havoc DMG Bonus is increased by 15%, and further increased by another 15% when
-        her HP is lower than 60%.
+        Danjin's Havoc DMG Bonus is increased by 15%
       </span>
     `,
-    hasStacks: true,
+    hasStacks: false,
     modifiers: [
-      {
-        modifier: "Havoc",
-        modifierValue: 0.15,
-      },
-      // TODO(flysand): For now I'm assuming danjin always runs low on her HP,
-      // but we'll need some logic for applying buffs conditionally.
       {
         modifier: "Havoc",
         modifierValue: 0.15,
       },
     ],
     minStacks: 0,
-    maxStacks: 15,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode52",
+    name: "Sequence Node 5: Reigning Blade",
+    details: `
+      <span class="skilldescription">
+        Danjin's Havoc DMG Bonus is further increased by another 15% when
+        her HP is lower than 60%.
+      </span>
+    `,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.15,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
     alwaysEnabled: false,
   },
   {
