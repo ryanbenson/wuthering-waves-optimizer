@@ -32,7 +32,7 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifySpecificTalents: ["DCCrimsonErosion2"],
+        modifySpecificTalents: ["CrimsonErosion1", "CrimsonErosion2"],
         modifierValue: 0.2,
       },
     ],
