@@ -1,5 +1,17 @@
 <template>
   <div>
+    <h3>Main Echo</h3>
+    <select name="mainEcho" :value="mainEcho">
+      <optgroup label="Overlord">
+        <option v-for="option in mainEchoOptions.Overlord" :key="option.key">{{ option.name }}</option>
+      </optgroup>
+      <optgroup label="Elite">
+        <option v-for="option in mainEchoOptions.Elite" :key="option.key">{{ option.name }}</option>
+      </optgroup>
+      <optgroup label="Common">
+        <option v-for="option in mainEchoOptions.Common" :key="option.key">{{ option.name }}</option>
+      </optgroup>
+    </select>
     <div v-for="(echo, index) in echoes" :key="index" class="echo-selector">
       <label>Echo {{ index + 1 }}:</label>
       <div class="echo-setup">
@@ -105,9 +117,12 @@
 </template>
 
 <script>
+import { mainEchoesData } from '../echoes/index.ts';
 export default {
   data() {
     return {
+      mainEchoesData,
+      mainEcho: null,
       echoes: Array(5)
         .fill()
         .map(() => ({
@@ -353,6 +368,22 @@ export default {
       this.$emit("update-stats", this.totalStats);
     },
   },
+  computed: {
+    mainEchoOptions() {
+      const echoes = {
+        Overlord: [],
+        Elite: [],
+        Common: []
+      };
+      
+      this.mainEchoesData.forEach((echo) => {
+        if (echo?.class && echoes?.[echo.class]) {
+          echoes[echo.class] = echo;
+        }
+      });
+      return echoes;
+    }
+  }
 };
 </script>
 
