@@ -108,7 +108,7 @@
           backgroundImage: `url(${chosenMainEchoImage})`,
         }"
         class="main-echo__image"></div>
-      <select name="mainEcho" v-model="mainEcho" @change="updateTotalStats">
+      <select name="mainEcho" v-model="mainEcho">
         <optgroup label="Overlord">
           <option
             v-for="option in mainEchoOptions.Overlord"
@@ -139,6 +139,16 @@
       v-if="chosenMainEchoData"
       class="main-echo__details"
       v-html="chosenMainEchoData.details"></div>
+    <div class="main-echo__enabled" v-if="chosenMainEchoHasBuffs">
+      <label>
+        <input
+          type="checkbox"
+          v-model="mainEchoBuffEnabled"
+          name="mainEchoBuffEnabled"
+          @change="updateTotalStats" />
+        Enabled?</label
+      >
+    </div>
   </div>
 </template>
 
@@ -148,6 +158,7 @@ export default {
   data() {
     return {
       mainEcho: null,
+      mainEchoBuffEnabled: false,
       echoes: Array(5)
         .fill()
         .map(() => ({
@@ -366,14 +377,16 @@ export default {
         }
       }
 
-      // process the main echo buffs
-      for (const mainEchoBuff of this.chosenMainEchoBuffs) {
-        // we're dealing with full numbers right now, not decimals,
-        // so multiply * 100
-        // TODO: Remove this when we refactor this whole thing to use decimals
-        const buffVal = mainEchoBuff.modifierValue * 100;
-        stats[mainEchoBuff.modifier] =
-          (stats[mainEchoBuff.modifier] || 0) + buffVal;
+      // process the main echo buffs, only if enabled
+      if (this.mainEchoBuffEnabled) {
+        for (const mainEchoBuff of this.chosenMainEchoBuffs) {
+          // we're dealing with full numbers right now, not decimals,
+          // so multiply * 100
+          // TODO: Remove this when we refactor this whole thing to use decimals
+          const buffVal = mainEchoBuff.modifierValue * 100;
+          stats[mainEchoBuff.modifier] =
+            (stats[mainEchoBuff.modifier] || 0) + buffVal;
+        }
       }
 
       for (const setBonus of this.setBonuses) {
@@ -418,6 +431,9 @@ export default {
         return [];
       }
       return this.chosenMainEchoData?.modifiers ?? [];
+    },
+    chosenMainEchoHasBuffs() {
+      return this.chosenMainEchoBuffs?.length > 0;
     },
     mainEchoOptions() {
       const echoes = {
@@ -540,5 +556,13 @@ export default {
 }
 .main-echo__selection {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  padding-bottom: 2rem;
+}
+.main-echo__enabled {
+  margin-top: 1rem;
 }
 </style>
