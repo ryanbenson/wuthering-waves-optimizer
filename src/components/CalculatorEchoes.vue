@@ -380,7 +380,7 @@ export default {
       const mainEchoValues = Object.values(this.mainEchoesData);
       mainEchoValues.forEach((echo) => {
         if (echo?.class && echoes?.[echo.class]) {
-          echoes[echo.class] = echo;
+          echoes[echo.class].push(echo);
         }
       });
       return echoes;
