@@ -121,7 +121,6 @@ import { mainEchoesData } from '../echoes/index.ts';
 export default {
   data() {
     return {
-      mainEchoesData,
       mainEcho: null,
       echoes: Array(5)
         .fill()
@@ -369,6 +368,9 @@ export default {
     },
   },
   computed: {
+    mainEchoesData() {
+      return {...mainEchoesData};
+    },
     mainEchoOptions() {
       const echoes = {
         Overlord: [],
