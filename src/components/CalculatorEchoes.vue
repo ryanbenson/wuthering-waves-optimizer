@@ -2,7 +2,7 @@
   <div>
     <h3>Main Echo</h3>
     <img v-if="chosenMainEchoData" :src="chosenMainEchoData.image" width="50">
-    <div v-if="chosenMainEchoData" class="main-echo__details" v-html=chosenMainEchoData.details"></div>
+    <div v-if="chosenMainEchoData" class="main-echo__details" v-html="chosenMainEchoData.details"></div>
     <select name="mainEcho" :value="mainEcho">
       <optgroup label="Overlord">
         <option v-for="option in mainEchoOptions.Overlord" :key="option.key" :value="option.key">{{ option.name }}</option>
