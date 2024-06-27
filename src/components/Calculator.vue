@@ -1463,7 +1463,6 @@ $tooltip-background-color: $sidebar-background-color;
   }
 }
 .character__selection__avatar {
-  background: url(https://wuthering.wiki/img/role_1304.png);
   width: 100px;
   height: 100px;
   background-repeat: no-repeat;

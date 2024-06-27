@@ -1,19 +1,5 @@
 <template>
   <div>
-    <h3>Main Echo</h3>
-    <img v-if="chosenMainEchoData" :src="chosenMainEchoData.image" width="50">
-    <div v-if="chosenMainEchoData" class="main-echo__details" v-html="chosenMainEchoData.details"></div>
-    <select name="mainEcho" :value="mainEcho">
-      <optgroup label="Overlord">
-        <option v-for="option in mainEchoOptions.Overlord" :key="option.key" :value="option.key">{{ option.name }}</option>
-      </optgroup>
-      <optgroup label="Elite">
-        <option v-for="option in mainEchoOptions.Elite" :key="option.key" :value="option.key">{{ option.name }}</option>
-      </optgroup>
-      <optgroup label="Common">
-        <option v-for="option in mainEchoOptions.Common" :key="option.key" :value="option.key">{{ option.name }}</option>
-      </optgroup>
-    </select>
     <div v-for="(echo, index) in echoes" :key="index" class="echo-selector">
       <label>Echo {{ index + 1 }}:</label>
       <div class="echo-setup">
@@ -115,11 +101,49 @@
       </div>
     </div>
     <div class="total-cost">Total Cost: {{ totalCost }} / 12</div>
+    <h3>Main Echo</h3>
+    <div class="main-echo__selection">
+      <div
+        :style="{
+          backgroundImage: `url(${chosenMainEchoImage})`,
+        }"
+        class="main-echo__image"></div>
+      <select name="mainEcho" v-model="mainEcho" @change="updateTotalStats">
+        <optgroup label="Overlord">
+          <option
+            v-for="option in mainEchoOptions.Overlord"
+            :key="option.key"
+            :value="option.key">
+            {{ option.name }}
+          </option>
+        </optgroup>
+        <optgroup label="Elite">
+          <option
+            v-for="option in mainEchoOptions.Elite"
+            :key="option.key"
+            :value="option.key">
+            {{ option.name }}
+          </option>
+        </optgroup>
+        <optgroup label="Common">
+          <option
+            v-for="option in mainEchoOptions.Common"
+            :key="option.key"
+            :value="option.key">
+            {{ option.name }}
+          </option>
+        </optgroup>
+      </select>
+    </div>
+    <div
+      v-if="chosenMainEchoData"
+      class="main-echo__details"
+      v-html="chosenMainEchoData.details"></div>
   </div>
 </template>
 
 <script>
-import { mainEchoesData } from '../echoes/index.ts';
+import { mainEchoesData } from "../echoes/index.ts";
 export default {
   data() {
     return {
@@ -342,6 +366,16 @@ export default {
         }
       }
 
+      // process the main echo buffs
+      for (const mainEchoBuff of this.chosenMainEchoBuffs) {
+        // we're dealing with full numbers right now, not decimals,
+        // so multiply * 100
+        // TODO: Remove this when we refactor this whole thing to use decimals
+        const buffVal = mainEchoBuff.modifierValue * 100;
+        stats[mainEchoBuff.modifier] =
+          (stats[mainEchoBuff.modifier] || 0) + buffVal;
+      }
+
       for (const setBonus of this.setBonuses) {
         if (setBonus.type) {
           const setBonusEffect = this.setBonusEffects[setBonus.type];
@@ -371,7 +405,7 @@ export default {
   },
   computed: {
     mainEchoesData() {
-      return {...mainEchoesData};
+      return { ...mainEchoesData };
     },
     chosenMainEchoData() {
       if (!this.mainEcho) {
@@ -379,11 +413,17 @@ export default {
       }
       return this.mainEchoesData?.[this.mainEcho];
     },
+    chosenMainEchoBuffs() {
+      if (!this.chosenMainEchoData) {
+        return [];
+      }
+      return this.chosenMainEchoData?.modifiers ?? [];
+    },
     mainEchoOptions() {
       const echoes = {
         Overlord: [],
         Elite: [],
-        Common: []
+        Common: [],
       };
       const mainEchoValues = Object.values(this.mainEchoesData);
       mainEchoValues.forEach((echo) => {
@@ -392,8 +432,11 @@ export default {
         }
       });
       return echoes;
-    }
-  }
+    },
+    chosenMainEchoImage() {
+      return this.chosenMainEchoData?.image ?? "/images/echoes/monsters.png";
+    },
+  },
 };
 </script>
 
@@ -485,5 +528,17 @@ export default {
 .sub-stat__input {
   max-width: 3rem;
   width: 3rem;
+}
+.main-echo__image {
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  display: block;
+  background-size: contain;
+  border-radius: 100%;
+  border: 1px solid white;
+}
+.main-echo__selection {
+  display: flex;
 }
 </style>
