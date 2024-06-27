@@ -50,7 +50,8 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "IntroSkillDMGBonus",
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["LoongsHalo"],
         modifierValue: 0.5,
       },
     ],
