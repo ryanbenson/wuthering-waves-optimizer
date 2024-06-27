@@ -1,6 +1,7 @@
 interface Echo {
   key: string;
   name: string;
+  class: string;
   image: string;
   details: string;
   modifiers: EchoModifier[];
@@ -17,6 +18,7 @@ export const mainEchoesData: MainEchoes = {
   AeroPredator: {
     key: 'AeroPredator',
     name: 'Aero Predator',
+    class: 'Common',
     image: '/images/echoes/AeroPredator.png',
     details: ``,
     modifiers: []
