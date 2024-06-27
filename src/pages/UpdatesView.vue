@@ -14,6 +14,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 27, 2024</h3>
+    <ul>
+      <li>Fixes Jinhsi intro buff</li>
+      <li>
+        Supports negative enemy resist shred handling now that resist shred
+        effects are in
+      </li>
+    </ul>
     <h3>June 26, 2024</h3>
     <ul>
       <li>Danjin is implemented</li>

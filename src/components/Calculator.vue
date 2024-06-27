@@ -37,7 +37,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert alert--info">Team buffs are now available! 👥</div>
+          <div class="alert">Danjin is now available!</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -1098,7 +1098,8 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const specificSkillDmgFromCharBuffs =
           charBuffsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
-        const genericSkillDmgBonusResChain = charResonanceChainsData.value?.DMGBonus ?? 0;
+        const genericSkillDmgBonusResChain =
+          charResonanceChainsData.value?.DMGBonus ?? 0;
         const genericSkillDmgBonusSelfBuff = charBuffsData.value?.DMGBonus ?? 0;
         const extraDefIgnoreResonanceChain =
           charResonanceChainsData.value?.specificTalentBuffs?.[
@@ -1129,7 +1130,10 @@ export default defineComponent({
           extraDefIgnoreResonanceChain +
           extraDefIgnoreCharBuff;
         const specificSkillDmg =
-          specificSkillDmgFromResonanceChains + specificSkillDmgFromCharBuffs + genericSkillDmgBonusResChain + genericSkillDmgBonusSelfBuff;
+          specificSkillDmgFromResonanceChains +
+          specificSkillDmgFromCharBuffs +
+          genericSkillDmgBonusResChain +
+          genericSkillDmgBonusSelfBuff;
         const teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         const baseResistReduction = ResistReduction.value ?? 0;
