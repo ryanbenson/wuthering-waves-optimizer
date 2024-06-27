@@ -26,6 +26,7 @@ export const mainEchoesData: MainEchoes = {
   AlteredClangBang: {
     key: 'AlteredClangBang',
     name: 'Altered Clang Bang',
+    class: '',
     image: '/images/echoes/AlteredClangBang.png',
     details: ``,
     modifiers: []
@@ -33,6 +34,7 @@ export const mainEchoesData: MainEchoes = {
   AlteredLightcrusher: {
     key: 'AlteredLightcrusher',
     name: 'Altered Lightcrusher',
+    class: '',
     image: '/images/echoes/AlteredLightcrusher.png',
     details: ``,
     modifiers: []
@@ -40,6 +42,7 @@ export const mainEchoesData: MainEchoes = {
   AutopuppetScout: {
     key: 'AutopuppetScout',
     name: 'Autopuppet Scout',
+    class: 'Elite',
     image: '/images/echoes/AutopuppetScout.png',
     details: ``,
     modifiers: []
@@ -47,6 +50,7 @@ export const mainEchoesData: MainEchoes = {
   BellBorneGeochelone: {
     key: 'BellBorneGeochelone',
     name: 'Bell-Borne Geochelone',
+    class: '',
     image: '/images/echoes/BellBorneGeochelone.png',
     details: ``,
     modifiers: []
@@ -54,6 +58,7 @@ export const mainEchoesData: MainEchoes = {
   Chaserazor: {
     key: 'Chaserazor',
     name: 'Chaserazor',
+    class: '',
     image: '/images/echoes/Chaserazor.png',
     details: ``,
     modifiers: []
@@ -61,6 +66,7 @@ export const mainEchoesData: MainEchoes = {
   ChasmGuardian: {
     key: 'ChasmGuardian',
     name: 'Chasm Guardian',
+    class: '',
     image: '/images/echoes/ChasmGuardian.png',
     details: ``,
     modifiers: []
@@ -68,6 +74,7 @@ export const mainEchoesData: MainEchoes = {
   Chirpuff: {
     key: 'Chirpuff',
     name: 'Chirpuff',
+    class: '',
     image: '/images/echoes/Chirpuff.png',
     details: ``,
     modifiers: []
@@ -75,6 +82,7 @@ export const mainEchoesData: MainEchoes = {
   ClangBang: {
     key: 'ClangBang',
     name: 'Clang Bang',
+    class: '',
     image: '/images/echoes/ClangBang.png',
     details: ``,
     modifiers: []
@@ -82,6 +90,7 @@ export const mainEchoesData: MainEchoes = {
   Crownless: {
     key: 'Crownless',
     name: 'Crownless',
+    class: '',
     image: '/images/echoes/Crownless.png',
     details: ``,
     modifiers: []
@@ -89,6 +98,7 @@ export const mainEchoesData: MainEchoes = {
   Cruisewing: {
     key: 'Cruisewing',
     name: 'Cruisewing',
+    class: '',
     image: '/images/echoes/Cruisewing.png',
     details: ``,
     modifiers: []
@@ -96,6 +106,7 @@ export const mainEchoesData: MainEchoes = {
   CyanFeatheredHeron: {
     key: 'CyanFeatheredHeron',
     name: 'Cyan-Feathered Heron',
+    class: '',
     image: '/images/echoes/CyanFeatheredHeron.png',
     details: ``,
     modifiers: []
@@ -103,6 +114,7 @@ export const mainEchoesData: MainEchoes = {
   Diamondclaw: {
     key: 'Diamondclaw',
     name: 'Diamondclaw',
+    class: '',
     image: '/images/echoes/Diamondclaw.png',
     details: ``,
     modifiers: []
@@ -110,6 +122,7 @@ export const mainEchoesData: MainEchoes = {
   Dreamless: {
     key: 'Dreamless',
     name: 'Dreamless',
+    class: '',
     image: '/images/echoes/Dreamless.png',
     details: ``,
     modifiers: []
@@ -117,6 +130,7 @@ export const mainEchoesData: MainEchoes = {
   DwarfCassowary: {
     key: 'DwarfCassowary',
     name: 'Dwarf Cassowary',
+    class: '',
     image: '/images/echoes/DwarfCassowary.png',
     details: ``,
     modifiers: []
@@ -124,6 +138,7 @@ export const mainEchoesData: MainEchoes = {
   ElectroPredator: {
     key: 'ElectroPredator',
     name: 'Electro Predator',
+    class: '',
     image: '/images/echoes/ElectroPredator.png',
     details: ``,
     modifiers: []
@@ -131,6 +146,7 @@ export const mainEchoesData: MainEchoes = {
   Excarat: {
     key: 'Excarat',
     name: 'Excarat',
+    class: '',
     image: '/images/echoes/Excarat.png',
     details: ``,
     modifiers: []
@@ -138,6 +154,7 @@ export const mainEchoesData: MainEchoes = {
   FissionJunrock: {
     key: 'FissionJunrock',
     name: 'Fission Junrock',
+    class: '',
     image: '/images/echoes/FissionJunrock.png',
     details: ``,
     modifiers: []
@@ -145,6 +162,7 @@ export const mainEchoesData: MainEchoes = {
   Flautist: {
     key: 'Flautist',
     name: 'Flautist',
+    class: '',
     image: '/images/echoes/Flautist.png',
     details: ``,
     modifiers: []
@@ -152,6 +170,7 @@ export const mainEchoesData: MainEchoes = {
   FusionDreadmane: {
     key: 'FusionDreadmane',
     name: 'Fusion Dreadmane',
+    class: '',
     image: '/images/echoes/FusionDreadmane.png',
     details: ``,
     modifiers: []
@@ -159,6 +178,7 @@ export const mainEchoesData: MainEchoes = {
   FusionPrism: {
     key: 'FusionPrism',
     name: 'Fusion Prism',
+    class: '',
     image: '/images/echoes/FusionPrism.png',
     details: ``,
     modifiers: []
@@ -166,6 +186,7 @@ export const mainEchoesData: MainEchoes = {
   FusionWarrior: {
     key: 'FusionWarrior',
     name: 'Fusion Warrior',
+    class: '',
     image: '/images/echoes/FusionWarrior.png',
     details: ``,
     modifiers: []
@@ -173,6 +194,7 @@ export const mainEchoesData: MainEchoes = {
   Gulpuff: {
     key: 'Gulpuff',
     name: 'Gulpuff',
+    class: '',
     image: '/images/echoes/Gulpuff.png',
     details: ``,
     modifiers: []
@@ -180,6 +202,7 @@ export const mainEchoesData: MainEchoes = {
   HavocDreadmane: {
     key: 'HavocDreadmane',
     name: 'Havoc Dreadmane',
+    class: '',
     image: '/images/echoes/HavocDreadmane.png',
     details: ``,
     modifiers: []
@@ -187,6 +210,7 @@ export const mainEchoesData: MainEchoes = {
   HavocPrism: {
     key: 'HavocPrism',
     name: 'Havoc Prism',
+    class: '',
     image: '/images/echoes/HavocPrism.png',
     details: ``,
     modifiers: []
@@ -194,6 +218,7 @@ export const mainEchoesData: MainEchoes = {
   HavocWarrior: {
     key: 'HavocWarrior',
     name: 'Havoc Warrior',
+    class: '',
     image: '/images/echoes/HavocWarrior.png',
     details: ``,
     modifiers: []
@@ -201,6 +226,7 @@ export const mainEchoesData: MainEchoes = {
   Hoartoise: {
     key: 'Hoartoise',
     name: 'Hoartoise',
+    class: '',
     image: '/images/echoes/Hoartoise.png',
     details: ``,
     modifiers: []
@@ -208,6 +234,7 @@ export const mainEchoesData: MainEchoes = {
   Hoochief: {
     key: 'Hoochief',
     name: 'Hoochief',
+    class: '',
     image: '/images/echoes/Hoochief.png',
     details: ``,
     modifiers: []
@@ -215,6 +242,7 @@ export const mainEchoesData: MainEchoes = {
   HoochiefCyclone: {
     key: 'HoochiefCyclone',
     name: 'Hoochief Cyclone',
+    class: '',
     image: '/images/echoes/HoochiefCyclone.png',
     details: ``,
     modifiers: []
@@ -222,6 +250,7 @@ export const mainEchoesData: MainEchoes = {
   HoochiefMenace: {
     key: 'HoochiefMenace',
     name: 'Hoochief Menace',
+    class: '',
     image: '/images/echoes/HoochiefMenace.png',
     details: ``,
     modifiers: []
@@ -229,6 +258,7 @@ export const mainEchoesData: MainEchoes = {
   Hooscamp: {
     key: 'Hooscamp',
     name: 'Hooscamp',
+    class: '',
     image: '/images/echoes/Hooscamp.png',
     details: ``,
     modifiers: []
@@ -236,6 +266,7 @@ export const mainEchoesData: MainEchoes = {
   HooscampClapperclaw: {
     key: 'HooscampClapperclaw',
     name: 'Hooscamp Clapperclaw',
+    class: '',
     image: '/images/echoes/HooscampClapperclaw.png',
     details: ``,
     modifiers: []
@@ -243,6 +274,7 @@ export const mainEchoesData: MainEchoes = {
   HooscampFlinger: {
     key: 'HooscampFlinger',
     name: 'Hooscamp Flinger',
+    class: '',
     image: '/images/echoes/HooscampFlinger.png',
     details: ``,
     modifiers: []
@@ -250,6 +282,7 @@ export const mainEchoesData: MainEchoes = {
   ImpermanenceHeron: {
     key: 'ImpermanenceHeron',
     name: 'Impermanence Heron',
+    class: '',
     image: '/images/echoes/ImpermanenceHeron.png',
     details: ``,
     modifiers: []
@@ -257,13 +290,24 @@ export const mainEchoesData: MainEchoes = {
   InfernoRider: {
     key: 'InfernoRider',
     name: 'Inferno Rider',
+    class: 'Overlord',
     image: '/images/echoes/InfernoRider.png',
     details: ``,
-    modifiers: []
+    modifiers: [
+      {
+        modifier: 'Fusion',
+        modifierValue: 0.12,
+      },
+      {
+        modifier: 'BasicAttackDMGBonus',
+        modifierValue: 0.12,
+      }
+    ]
   },
   Jué: {
     key: 'Jué',
     name: 'Jué',
+    class: 'Overlord',
     image: '/images/echoes/Jué.png',
     details: ``,
     modifiers: []
@@ -271,6 +315,7 @@ export const mainEchoesData: MainEchoes = {
   LampylumenMyriad: {
     key: 'LampylumenMyriad',
     name: 'Lampylumen Myriad',
+    class: '',
     image: '/images/echoes/LampylumenMyriad.png',
     details: ``,
     modifiers: []
@@ -278,6 +323,7 @@ export const mainEchoesData: MainEchoes = {
   Lightcrusher: {
     key: 'Lightcrusher',
     name: 'Lightcrusher',
+    class: '',
     image: '/images/echoes/Lightcrusher.png',
     details: ``,
     modifiers: []
@@ -285,6 +331,7 @@ export const mainEchoesData: MainEchoes = {
   LumiscaleConstruct: {
     key: 'LumiscaleConstruct',
     name: 'Lumiscale Construct',
+    class: '',
     image: '/images/echoes/LumiscaleConstruct.png',
     details: ``,
     modifiers: []
@@ -292,6 +339,7 @@ export const mainEchoesData: MainEchoes = {
   MechAbomination: {
     key: 'MechAbomination',
     name: 'Mech Abomination',
+    class: '',
     image: '/images/echoes/MechAbomination.png',
     details: ``,
     modifiers: []
@@ -299,6 +347,7 @@ export const mainEchoesData: MainEchoes = {
   MourningAix: {
     key: 'MourningAix',
     name: 'Mourning Aix',
+    class: '',
     image: '/images/echoes/MourningAix.png',
     details: ``,
     modifiers: []
@@ -306,6 +355,7 @@ export const mainEchoesData: MainEchoes = {
   PhantomFeilianBeringal: {
     key: 'PhantomFeilianBeringal',
     name: 'Phantom: Feilian Beringal',
+    class: '',
     image: '/images/echoes/PhantomFeilianBeringal.png',
     details: ``,
     modifiers: []
@@ -313,6 +363,7 @@ export const mainEchoesData: MainEchoes = {
   PhantomHoartoise: {
     key: 'PhantomHoartoise',
     name: 'Phantom: Hoartoise',
+    class: '',
     image: '/images/echoes/PhantomHoartoise.png',
     details: ``,
     modifiers: []
@@ -320,6 +371,7 @@ export const mainEchoesData: MainEchoes = {
   PhantomImpermanenceHeron: {
     key: 'PhantomImpermanenceHeron',
     name: 'Phantom: Impermanence Heron',
+    class: '',
     image: '/images/echoes/PhantomImpermanenceHeron.png',
     details: ``,
     modifiers: []
@@ -327,6 +379,7 @@ export const mainEchoesData: MainEchoes = {
   PhantomMourningAix: {
     key: 'PhantomMourningAix',
     name: 'Phantom: Mourning Aix',
+    class: '',
     image: '/images/echoes/PhantomMourningAix.png',
     details: ``,
     modifiers: []
@@ -334,6 +387,7 @@ export const mainEchoesData: MainEchoes = {
   PhantomRocksteadyGuardian: {
     key: 'PhantomRocksteadyGuardian',
     name: 'Phantom: Rocksteady Guardian',
+    class: '',
     image: '/images/echoes/PhantomRocksteadyGuardian.png',
     details: ``,
     modifiers: []
@@ -341,6 +395,7 @@ export const mainEchoesData: MainEchoes = {
   PhantomThunderingMephis: {
     key: 'PhantomThunderingMephis',
     name: 'Phantom: Thundering Mephis',
+    class: '',
     image: '/images/echoes/PhantomThunderingMephis.png',
     details: ``,
     modifiers: []
@@ -348,6 +403,7 @@ export const mainEchoesData: MainEchoes = {
   RocksteadyGuardian: {
     key: 'RocksteadyGuardian',
     name: 'Rocksteady Guardian',
+    class: '',
     image: '/images/echoes/RocksteadyGuardian.png',
     details: ``,
     modifiers: []
@@ -355,6 +411,7 @@ export const mainEchoesData: MainEchoes = {
   Roseshroom: {
     key: 'Roseshroom',
     name: 'Roseshroom',
+    class: '',
     image: '/images/echoes/Roseshroom.png',
     details: ``,
     modifiers: []
@@ -362,6 +419,7 @@ export const mainEchoesData: MainEchoes = {
   SabyrBoar: {
     key: 'SabyrBoar',
     name: 'Sabyr Boar',
+    class: '',
     image: '/images/echoes/SabyrBoar.png',
     details: ``,
     modifiers: []
@@ -369,6 +427,7 @@ export const mainEchoesData: MainEchoes = {
   Scar: {
     key: 'Scar',
     name: 'Scar',
+    class: '',
     image: '/images/echoes/Scar.png',
     details: ``,
     modifiers: []
@@ -376,6 +435,7 @@ export const mainEchoesData: MainEchoes = {
   SnipSnap: {
     key: 'SnipSnap',
     name: 'Snip Snap',
+    class: '',
     image: '/images/echoes/SnipSnap.png',
     details: ``,
     modifiers: []
@@ -383,6 +443,7 @@ export const mainEchoesData: MainEchoes = {
   Spearback: {
     key: 'Spearback',
     name: 'Spearback',
+    class: '',
     image: '/images/echoes/Spearback.png',
     details: ``,
     modifiers: []
@@ -390,6 +451,7 @@ export const mainEchoesData: MainEchoes = {
   SpectroPrism: {
     key: 'SpectroPrism',
     name: 'Spectro Prism',
+    class: '',
     image: '/images/echoes/SpectroPrism.png',
     details: ``,
     modifiers: []
@@ -397,6 +459,7 @@ export const mainEchoesData: MainEchoes = {
   StonewallBracer: {
     key: 'StonewallBracer',
     name: 'Stonewall Bracer',
+    class: '',
     image: '/images/echoes/StonewallBracer.png',
     details: ``,
     modifiers: []
@@ -404,6 +467,7 @@ export const mainEchoesData: MainEchoes = {
   TempestMephis: {
     key: 'TempestMephis',
     name: 'Tempest Mephis',
+    class: '',
     image: '/images/echoes/TempestMephis.png',
     details: ``,
     modifiers: []
@@ -411,6 +475,7 @@ export const mainEchoesData: MainEchoes = {
   ThunderingMephis: {
     key: 'ThunderingMephis',
     name: 'Thundering Mephis',
+    class: '',
     image: '/images/echoes/ThunderingMephis.png',
     details: ``,
     modifiers: []
@@ -418,6 +483,7 @@ export const mainEchoesData: MainEchoes = {
   TickTack: {
     key: 'TickTack',
     name: 'Tick Tack',
+    class: '',
     image: '/images/echoes/TickTack.png',
     details: ``,
     modifiers: []
@@ -425,6 +491,7 @@ export const mainEchoesData: MainEchoes = {
   TrafficIlluminator: {
     key: 'TrafficIlluminator',
     name: 'Traffic Illuminator',
+    class: '',
     image: '/images/echoes/TrafficIlluminator.png',
     details: ``,
     modifiers: []
@@ -432,6 +499,7 @@ export const mainEchoesData: MainEchoes = {
   VanguardJunrock: {
     key: 'VanguardJunrock',
     name: 'Vanguard Junrock',
+    class: '',
     image: '/images/echoes/VanguardJunrock.png',
     details: ``,
     modifiers: []
@@ -439,6 +507,7 @@ export const mainEchoesData: MainEchoes = {
   VioletFeatheredHeron: {
     key: 'VioletFeatheredHeron',
     name: 'Violet-Feathered Heron',
+    class: '',
     image: '/images/echoes/VioletFeatheredHeron.png',
     details: ``,
     modifiers: []
@@ -446,6 +515,7 @@ export const mainEchoesData: MainEchoes = {
   WhiffWhaff: {
     key: 'WhiffWhaff',
     name: 'Whiff Whaff',
+    class: '',
     image: '/images/echoes/WhiffWhaff.png',
     details: ``,
     modifiers: []
@@ -453,6 +523,7 @@ export const mainEchoesData: MainEchoes = {
   YoungGeohideSaurian: {
     key: 'YoungGeohideSaurian',
     name: 'Young Geohide Saurian',
+    class: '',
     image: '/images/echoes/YoungGeohideSaurian.png',
     details: ``,
     modifiers: []
@@ -460,6 +531,7 @@ export const mainEchoesData: MainEchoes = {
   YoungRoseshroom: {
     key: 'YoungRoseshroom',
     name: 'Young Roseshroom',
+    class: '',
     image: '/images/echoes/YoungRoseshroom.png',
     details: ``,
     modifiers: []
@@ -467,6 +539,7 @@ export const mainEchoesData: MainEchoes = {
   ZigZag: {
     key: 'ZigZag',
     name: 'Zig Zag',
+    class: '',
     image: '/images/echoes/ZigZag.png',
     details: ``,
     modifiers: []
