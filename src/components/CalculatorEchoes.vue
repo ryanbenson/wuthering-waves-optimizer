@@ -1,15 +1,17 @@
 <template>
   <div>
     <h3>Main Echo</h3>
+    <img v-if="chosenMainEchoData" :src="chosenMainEchoData.image" width="50">
+    <div v-if="chosenMainEchoData" class="main-echo__details" v-html=chosenMainEchoData.details"></div>
     <select name="mainEcho" :value="mainEcho">
       <optgroup label="Overlord">
-        <option v-for="option in mainEchoOptions.Overlord" :key="option.key">{{ option.name }}</option>
+        <option v-for="option in mainEchoOptions.Overlord" :key="option.key" :value="option.key">{{ option.name }}</option>
       </optgroup>
       <optgroup label="Elite">
-        <option v-for="option in mainEchoOptions.Elite" :key="option.key">{{ option.name }}</option>
+        <option v-for="option in mainEchoOptions.Elite" :key="option.key" :value="option.key">{{ option.name }}</option>
       </optgroup>
       <optgroup label="Common">
-        <option v-for="option in mainEchoOptions.Common" :key="option.key">{{ option.name }}</option>
+        <option v-for="option in mainEchoOptions.Common" :key="option.key" :value="option.key">{{ option.name }}</option>
       </optgroup>
     </select>
     <div v-for="(echo, index) in echoes" :key="index" class="echo-selector">
@@ -370,6 +372,12 @@ export default {
   computed: {
     mainEchoesData() {
       return {...mainEchoesData};
+    },
+    chosenMainEchoData() {
+      if (!this.mainEcho) {
+        return null;
+      }
+      return this.mainEchoesData?.[this.mainEcho];
     },
     mainEchoOptions() {
       const echoes = {
