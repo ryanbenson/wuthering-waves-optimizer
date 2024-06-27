@@ -50,12 +50,25 @@
         >Join the Discord!</a
       >
     </p>
+    <h3>Developers</h3>
+    <ul>
+      <li>Author: @LavaSnake</li>
+      <li>Contriburors: @flysand</li>
+    </ul>
     <h3>Shoutouts</h3>
     <ul>
       <li>
-        Jäger, Bachelor, Nekuro(NekroLight), AlecJohn, juste - for all of your help with the calculations and great ideas! 🎉
+        Jäger, Bachelor, Nekuro(NekroLight), AlecJohn, juste - for all of your
+        help with the calculations and great ideas! 🎉
       </li>
     </ul>
+    <h3>Copyright</h3>
+    <p>
+      We are not affiliated with Wuthering Waves, all assets, game content, and
+      materials are trademarks and copyrights of Kuro Games.
+    </p>
+    <h3>Privacy</h3>
+    <p>See our <RouterLink to="/privacy">privacy policy</RouterLink></p>
   </div>
 </template>
 
