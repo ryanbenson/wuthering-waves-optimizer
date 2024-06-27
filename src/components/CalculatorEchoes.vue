@@ -377,8 +377,8 @@ export default {
         Elite: [],
         Common: []
       };
-      
-      this.mainEchoesData.forEach((echo) => {
+      const mainEchoValues = Object.values(this.mainEchoesData);
+      mainEchoValues.forEach((echo) => {
         if (echo?.class && echoes?.[echo.class]) {
           echoes[echo.class] = echo;
         }
