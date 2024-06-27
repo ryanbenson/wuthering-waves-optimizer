@@ -67,6 +67,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
+        modifier: "talentModifierMultiply",
         modifySpecificTalents: ["SolarFlareDMG", "StarGlamourDMG"],
         modifierValue: 0.45,
       },
