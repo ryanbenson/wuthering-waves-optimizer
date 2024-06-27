@@ -90,11 +90,22 @@ export function getBonusDamageValue(
   );
 }
 
+// we need to half the reduction if the resist goes under 0
 export function getEnemyResistValue(
   enemyResist: number,
   resistenceReduction: number
 ): number {
-  return 1 - enemyResist + resistenceReduction;
+  if (enemyResist < 0) {
+    resistenceReduction /= 2;
+  }
+
+  let finalResist = 1 - enemyResist + resistenceReduction;
+
+  if (finalResist < 0) {
+    finalResist = finalResist / 2;
+  }
+
+  return finalResist;
 }
 
 interface InstanceDamage {
