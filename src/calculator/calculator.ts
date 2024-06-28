@@ -139,15 +139,17 @@ export function calcDamage(
   talents.forEach((t) => {
     // we may modify this, but we need the original values for instanceDamage struct
     let originalTalent = t;
+    // add any flat talent modifiers (e.g. Jinshi Incandescence)
+    // adding comes first (at least for Jinshi Incandescence)
+    // TODO: Verify this the next time a character has add + multiply to base talents
+    if (talentModifierAdd) {
+      t += talentModifierAdd;
+    }
     // if we have a talent multiplier, do it first before adding it to the total
     // make sure to add 1 to it (e.g. 100% * (1 + 1.2)
     if (talentModifierMultiply) {
       let updatedTalentAfterMultiply = t * (1 + talentModifierMultiply);
       t = updatedTalentAfterMultiply;
-    }
-    // add any flat talent modifiers (e.g. Jinshi Incandescence)
-    if (talentModifierAdd) {
-      t += talentModifierAdd;
     }
     // update total talent value after any talent modifier adjustments
     totalTalentValue += t;

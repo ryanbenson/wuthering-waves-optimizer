@@ -14,6 +14,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 28, 2024</h3>
+    <ul>
+      <li>
+        Fixes Jinhsi C6 45% multiplier with how it interacts with Incandescence
+      </li>
+    </ul>
     <h3>June 27, 2024</h3>
     <ul>
       <li>Fixes Jinhsi intro buff</li>
