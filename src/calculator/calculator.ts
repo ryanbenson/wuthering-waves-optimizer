@@ -140,8 +140,6 @@ export function calcDamage(
     // we may modify this, but we need the original values for instanceDamage struct
     let originalTalent = t;
     // add any flat talent modifiers (e.g. Jinshi Incandescence)
-    // adding comes first (at least for Jinshi Incandescence)
-    // TODO: Verify this the next time a character has add + multiply to base talents
     if (talentModifierAdd) {
       t += talentModifierAdd;
     }
