@@ -16,8 +16,16 @@
     <h1>Updates</h1>
     <h3>June 28, 2024</h3>
     <ul>
+      <li>Adjust Jinhsi R6 Incandescence 45%.</li>
       <li>
-        Fixes Jinhsi C6 45% multiplier with how it interacts with Incandescence
+        Fixes Changli Inherit skill Inherent Skill: Secret Strategist to only
+        apply to the noted skills.
+      </li>
+    </ul>
+    <h3>June 28, 2024</h3>
+    <ul>
+      <li>
+        Fixes Jinhsi R6 45% multiplier with how it interacts with Incandescence
       </li>
     </ul>
     <h3>June 27, 2024</h3>
