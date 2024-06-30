@@ -63,7 +63,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode6ComesSpringwhenChillExhausts1",
     name: "Sequence Node 6: Comes Spring when Chill Exhausts: Skill Multiplier",
-    details: `<span class="skilldescription">DMG Multiplier percentage for Resonance Skill <span class="Highlight">Illuminous Epiphany</span> is increased by 45%.</span>`,
+    details: `<span class="skilldescription">DMG Multiplier percentage for Resonance Skill <span class="Highlight">Illuminous Epiphany</span> is increased by 45%. The multiplier increase brought by Incandescence is additionally increased by 45%.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -74,34 +74,6 @@ export const resonanceChains = [
     ],
     minStacks: 0,
     maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode6ComesSpringwhenChillExhausts2",
-    name: "Sequence Node 6: Comes Spring when Chill Exhausts: Incandescence Buff",
-    details: `<span class="skilldescription">The multiplier increase brought by Incandescence is additionally increased by 45%.<br><br>Note: Re-enter your Incandescence stacks. <em>This will be fixed later.</em></span>`,
-    hasStacks: true,
-    modifiers: [
-      {
-        modifier: "Talent",
-        modifierTalentKey: "StarGlamourDMG",
-        modifierValue: {
-          "1": 0.0046,
-          "2": 0.0046,
-          "3": 0.0046,
-          "4": 0.0046,
-          "5": 0.0046,
-          "6": 0.0046,
-          "7": 0.0046,
-          "8": 0.0046,
-          "9": 0.0046,
-          "10": 0.0046,
-        },
-        modifierValueTalentRef: "forte",
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 50,
     alwaysEnabled: false,
   },
 ];
