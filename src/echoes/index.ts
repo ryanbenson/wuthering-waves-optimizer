@@ -422,300 +422,317 @@ export const mainEchoesData: MainEchoes = {
   Lightcrusher: {
     key: "Lightcrusher",
     name: "Lightcrusher",
-    class: "",
+    class: "Elite",
     image: "/images/echoes/Lightcrusher.png",
-    details: ``,
+    details: `<span class="description">Lunge forward as a Lightcrusher, dealing <span class="param">84.60%/97.29%/109.98%/122.67%/135.36%</span> Spectro DMG. Generate <span class="param">6</span> Ablucence on hit. Each Ablucence explosion deals <span class="param">9.40%/10.81%/12.22%/13.63%/15.04%</span> Spectro DMG.
+    Hold the Echo Skill to stay in the Lightcrusher form, which allows you to leap up and pounce forward in the air for a short distance.
+    
+    Cooldown: <span class="param">15</span>s</span>`,
     modifiers: [],
   },
   LumiscaleConstruct: {
     key: "LumiscaleConstruct",
     name: "Lumiscale Construct",
-    class: "",
+    class: "Elite",
     image: "/images/echoes/LumiscaleConstruct.png",
-    details: ``,
+    details: `<span class="description">Transform into a Lumiscale Construct and enter a Parry Stance. If you are not attacked during the Parry Stance, slash to deal <span class="param">346.00%/397.90%/449.80%/501.70%/553.60%</span> Glacio DMG when the stance finishes. If attacked, counterattack instantly, dealing <span class="param">346.00%+173.00%/397.90%+198.95%/449.80%+224.90%/501.70%+250.85%/553.60%+276.80%</span> Glacio DMG. When hit with a <color=highlight>Special Skill attack while in the Parry Stance, break the <color=highlight>Special Skill and counterattack, dealing <span class="param">346.00%+173.00%/397.90%+198.95%/449.80%+224.90%/501.70%+250.85%/553.60%+276.80%</span> Glacio DMG.
+
+    CD: <span class="param">15</span>s</color=highlight></color=highlight></span>`,
     modifiers: [],
   },
   MechAbomination: {
     key: "MechAbomination",
     name: "Mech Abomination",
-    class: "",
+    class: "Overlord",
     image: "/images/echoes/MechAbomination.png",
-    details: ``,
-    modifiers: [],
+    details: `<span class="description">Strike enemies in front, dealing <span class="param">30.40%/34.96%/39.52%/44.08%/48.64%</span> Electro DMG, and summon Mech Waste to attack. Mech Waste deals <span class="param">200.00%/230.00%/260.00%/290.00%/320.00%</span> Electro DMG on hit and explodes after a while, dealing <span class="param">100.00%/115.00%/130.00%/145.00%/160.00%</span> Electro DMG.
+
+    After casting this Echo Skill, increase the current character's ATK by <span class="param">12.00%</span> for <span class="param">15</span>s. 
+    Damage dealt by Mech Waste equals to the Resonator's Outro Skill DMG. 
+    
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.12,
+      },
+    ],
   },
   MourningAix: {
     key: "MourningAix",
     name: "Mourning Aix",
-    class: "",
+    class: "Overlord",
     image: "/images/echoes/MourningAix.png",
-    details: ``,
-    modifiers: [],
+    details: `<span class="description">Transform into Mourning Aix and perform 2 consecutive claw attacks, each attack dealing <span class="param">98.40%/113.16%/127.92%/142.68%/157.44%</span> and <span class="param">147.60%/169.74%/191.88%/214.02%/236.16%</span> Spectro DMG respectively.
+
+    After the transformation, increase current character's Spectro DMG by <span class="param">12.00%</span> and Resonance Liberation DMG by <span class="param">12.00%</span> for <span class="param">15</span>s
+    
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "Spectro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
   },
-  PhantomFeilianBeringal: {
-    key: "PhantomFeilianBeringal",
-    name: "Phantom: Feilian Beringal",
-    class: "",
-    image: "/images/echoes/PhantomFeilianBeringal.png",
-    details: ``,
-    modifiers: [],
-  },
-  PhantomHoartoise: {
-    key: "PhantomHoartoise",
-    name: "Phantom: Hoartoise",
-    class: "",
-    image: "/images/echoes/PhantomHoartoise.png",
-    details: ``,
-    modifiers: [],
-  },
-  PhantomImpermanenceHeron: {
-    key: "PhantomImpermanenceHeron",
-    name: "Phantom: Impermanence Heron",
-    class: "",
-    image: "/images/echoes/PhantomImpermanenceHeron.png",
-    details: ``,
-    modifiers: [],
-  },
-  PhantomMourningAix: {
-    key: "PhantomMourningAix",
-    name: "Phantom: Mourning Aix",
-    class: "",
-    image: "/images/echoes/PhantomMourningAix.png",
-    details: ``,
-    modifiers: [],
-  },
-  PhantomRocksteadyGuardian: {
-    key: "PhantomRocksteadyGuardian",
-    name: "Phantom: Rocksteady Guardian",
-    class: "",
-    image: "/images/echoes/PhantomRocksteadyGuardian.png",
-    details: ``,
-    modifiers: [],
-  },
-  PhantomThunderingMephis: {
-    key: "PhantomThunderingMephis",
-    name: "Phantom: Thundering Mephis",
-    class: "",
-    image: "/images/echoes/PhantomThunderingMephis.png",
-    details: ``,
-    modifiers: [],
-  },
+  // PhantomFeilianBeringal: {
+  //   key: "PhantomFeilianBeringal",
+  //   name: "Phantom: Feilian Beringal",
+  //   class: "",
+  //   image: "/images/echoes/PhantomFeilianBeringal.png",
+  //   details: ``,
+  //   modifiers: [],
+  // },
+  // PhantomHoartoise: {
+  //   key: "PhantomHoartoise",
+  //   name: "Phantom: Hoartoise",
+  //   class: "",
+  //   image: "/images/echoes/PhantomHoartoise.png",
+  //   details: ``,
+  //   modifiers: [],
+  // },
+  // PhantomImpermanenceHeron: {
+  //   key: "PhantomImpermanenceHeron",
+  //   name: "Phantom: Impermanence Heron",
+  //   class: "",
+  //   image: "/images/echoes/PhantomImpermanenceHeron.png",
+  //   details: ``,
+  //   modifiers: [],
+  // },
+  // PhantomMourningAix: {
+  //   key: "PhantomMourningAix",
+  //   name: "Phantom: Mourning Aix",
+  //   class: "",
+  //   image: "/images/echoes/PhantomMourningAix.png",
+  //   details: ``,
+  //   modifiers: [],
+  // },
+  // PhantomRocksteadyGuardian: {
+  //   key: "PhantomRocksteadyGuardian",
+  //   name: "Phantom: Rocksteady Guardian",
+  //   class: "",
+  //   image: "/images/echoes/PhantomRocksteadyGuardian.png",
+  //   details: ``,
+  //   modifiers: [],
+  // },
+  // PhantomThunderingMephis: {
+  //   key: "PhantomThunderingMephis",
+  //   name: "Phantom: Thundering Mephis",
+  //   class: "",
+  //   image: "/images/echoes/PhantomThunderingMephis.png",
+  //   details: ``,
+  //   modifiers: [],
+  // },
   RocksteadyGuardian: {
     key: "RocksteadyGuardian",
     name: "Rocksteady Guardian",
-    class: "",
+    class: "Elite",
     image: "/images/echoes/RocksteadyGuardian.png",
-    details: ``,
+    details: `<span class="description">Transform into Rocksteady Guardian and enter a Parry State. Upon being attacked, deal Spectro DMG equal to <span class="param">5.18%/5.96%/6.73%/7.51%/8.29%</span> of the Resonator's Max HP, and perform a follow-up attack that deals Spectro DMG equal to <span class="param">5.18%/5.96%/6.73%/7.51%/8.29%</span> of the Resonator's Max HP.
+ 
+    Use the Echo Skill again to exit the transformation.
+     
+    If the attack received is a <color=highlight>Special Skill attack, interrupt the enemy's <color=highlight>Special Skill, gain a Shield equal to 30% Max HP, and perform a two-stage follow-up attack, each dealing Spectro DMG equal to <span class="param">3.45%/3.97%/4.49%/5.00%/5.52%</span> of the Resonator's Max HP. These follow-up attacks simultaneously launch three ground-breaking waves, each dealing Spectro DMG equal to <span class="param">2.87%/3.30%/3.73%/4.16%/4.59%</span> of the Resonator's Max HP.
+     
+    CD: <span class="param">15</span>s</color=highlight></color=highlight></span>`,
     modifiers: [],
   },
   Roseshroom: {
     key: "Roseshroom",
     name: "Roseshroom",
-    class: "",
+    class: "Elite",
     image: "/images/echoes/Roseshroom.png",
-    details: ``,
+    details: `<span class="description">Summon a Roseshroom that fires a laser, dealing <span class="param">35.67%/41.02%/46.37%/51.72%/57.07%</span> Havoc DMG up to <span class="param">3</span> times.
+ 
+    CD: <span class="param">15</span>s</span>`,
     modifiers: [],
   },
   SabyrBoar: {
     key: "SabyrBoar",
     name: "Sabyr Boar",
-    class: "",
+    class: "Common",
     image: "/images/echoes/SabyrBoar.png",
-    details: ``,
+    details: `<span class="description">Summon a Sabyr Boar to headbutt the enemy into the air, dealing <span class="param">20.00%+40/23.00%+46/26.00%+52/29.00%+58/32.00%+64</span> Physical DMG.
+
+    CD: <span class="param">8</span>s</span>`,
     modifiers: [],
   },
-  Scar: {
-    key: "Scar",
-    name: "Scar",
-    class: "",
-    image: "/images/echoes/Scar.png",
-    details: ``,
-    modifiers: [],
-  },
+  // Scar: {
+  //   key: "Scar",
+  //   name: "Scar",
+  //   class: "",
+  //   image: "/images/echoes/Scar.png",
+  //   details: ``,
+  //   modifiers: [],
+  // },
   SnipSnap: {
     key: "SnipSnap",
     name: "Snip Snap",
-    class: "",
+    class: "Common",
     image: "/images/echoes/SnipSnap.png",
-    details: ``,
+    details: `<span class="description">Summon a Snip Snap that throws fireballs at the enemy, dealing <span class="param">20.00%+40/23.00%+46/26.00%+52/29.00%+58/32.00%+64</span> Fusion DMG on-hit.
+
+    CD: <span class="param">8</span>s</span>`,
     modifiers: [],
   },
   Spearback: {
     key: "Spearback",
     name: "Spearback",
-    class: "",
+    class: "Elite",
     image: "/images/echoes/Spearback.png",
-    details: ``,
+    details: `<span class="description">Summon a Spearback to perform 5 consecutive attacks. The first 4 attacks deal <span class="param">18.73%/21.53%/24.34%/27.15%/29.96%</span> Physical DMG, and the last deals <span class="param">32.10%/36.92%/41.73%/46.55%/51.36%</span> Physical DMG.
+
+    CD: <span class="param">15</span>s</span>`,
     modifiers: [],
   },
   SpectroPrism: {
     key: "SpectroPrism",
     name: "Spectro Prism",
-    class: "",
+    class: "Common",
     image: "/images/echoes/SpectroPrism.png",
-    details: ``,
+    details: `<span class="description">Summon a Spectro Prism to emit a laser that hits the enemy up to <span class="param">8</span> times, dealing <span class="param">9.00%/10.35%/11.70%/13.05%/14.40%</span> Spectro DMG each time.
+
+    CD: <span class="param">8</span>s</span>`,
     modifiers: [],
   },
   StonewallBracer: {
     key: "StonewallBracer",
     name: "Stonewall Bracer",
-    class: "",
+    class: "Elite",
     image: "/images/echoes/StonewallBracer.png",
-    details: ``,
+    details: `<span class="description">Transform into Stonewall Bracer and charge forward, dealing <span class="param">70.40%/80.96%/91.52%/102.08%/112.64%</span> Physical DMG on-hit, then smash to deal <span class="param">105.60%/121.44%/137.28%/153.12%/168.96%</span> Physical DMG, and gain a shield of <span class="param">10.00%</span> of current character's Max HP that lasts <span class="param">7</span>s. Use the Echo skill again to exit the transformation state.
+
+    CD: <span class="param">15</span>s</span>`,
     modifiers: [],
   },
   TempestMephis: {
     key: "TempestMephis",
     name: "Tempest Mephis",
-    class: "",
+    class: "Overlord",
     image: "/images/echoes/TempestMephis.png",
-    details: ``,
-    modifiers: [],
+    details: `<span class="description">Transform into Tempest Mephis to perform tail swing attacks followed by a claw attack. The lightning strike summoned by the tail swing deals <span class="param">64.05%/73.66%/83.27%/92.87%/102.48%</span> Electro DMG each time, while the claw attack deals <span class="param">109.80%/126.27%/142.74%/159.21%/175.68%</span> Electro DMG.
+
+
+
+    After the claw hit, increase the current character’s Electro DMG by <span class="param">12.00%</span> and Heavy Attack DMG by <span class="param">12.00%</span> for <span class="param">15</span>s.
+    
+    
+    
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
   },
   ThunderingMephis: {
     key: "ThunderingMephis",
     name: "Thundering Mephis",
-    class: "",
+    class: "Overlord",
     image: "/images/echoes/ThunderingMephis.png",
-    details: ``,
-    modifiers: [],
+    details: `<span class="description">Transform into Thundering Mephis, engaging in a rapid assault of up to 6 strikes. The first 5 strikes deal <span class="param">82.88%/95.31%/107.74%/120.18%/132.61%</span> Electro DMG each, while the final strike inflicts <span class="param">118.40%/136.16%/153.92%/171.68%/189.44%</span> Electro DMG, with an additional <span class="param">19.73%/22.69%/25.65%/28.61%/31.57%</span> Electro DMG from the thunder.
+
+    After the final hit, increase the current character’s Electro DMG by <span class="param">12.00%</span> and Resonance Liberation DMG by <span class="param">12.00%</span> for <span class="param">15</span>s.
+    
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
   },
   TickTack: {
     key: "TickTack",
     name: "Tick Tack",
-    class: "",
+    class: "Common",
     image: "/images/echoes/TickTack.png",
-    details: ``,
+    details: `<span class="description">Summon a Tick Tack that charges and bites the enemy. The charge from Tick Tack will deal <span class="param">42.80%/49.22%/55.64%/62.06%/68.48%</span> Havoc DMG to the enemy, and the bite will deal <span class="param">64.20%/73.83%/83.46%/93.09%/102.72%</span> Havoc DMG to the enemy. Reduces enemy Vibration Strength by up to <span class="param">5.00%</span> during <span class="param">5</span>s.
+
+    CD: <span class="param">15</span>s</span>`,
     modifiers: [],
   },
   TrafficIlluminator: {
     key: "TrafficIlluminator",
     name: "Traffic Illuminator",
-    class: "",
+    class: "Common",
     image: "/images/echoes/TrafficIlluminator.png",
-    details: ``,
+    details: `<span class="description">Summon a Traffic Illuminator, immobilizing enemies for up to <span class="param">1</span>s. The immobilization will be lifted once the enemy is hit.
+
+    CD: <span class="param">15</span>s</span>`,
     modifiers: [],
   },
   VanguardJunrock: {
     key: "VanguardJunrock",
     name: "Vanguard Junrock",
-    class: "",
+    class: "Common",
     image: "/images/echoes/VanguardJunrock.png",
-    details: ``,
+    details: `<span class="description">Summon a Vanguard Junrock that charges forward, dealing <span class="param">20.00%+40/23.00%+46/26.00%+52/29.00%+58/32.00%+64</span> Physical DMG to enemies in its path.
+
+    CD: <span class="param">8</span>s</span>`,
     modifiers: [],
   },
   VioletFeatheredHeron: {
     key: "VioletFeatheredHeron",
     name: "Violet-Feathered Heron",
-    class: "",
+    class: "Elite",
     image: "/images/echoes/VioletFeatheredHeron.png",
-    details: ``,
+    details: `<span class="description">Transform into Violet-Feathered Heron and enter a Parry Stance. Counterattack when the Parry stance is over, dealing <span class="param">180.00%/207.00%/234.00%/261.00%/288.00%</span> Electro DMG. If attacked during Parry Stance, you can counterattack in advance and additionally recover <span class="param">5</span> Concerto Energy.
+
+    CD: <span class="param">15</span>s</span>`,
     modifiers: [],
   },
   WhiffWhaff: {
     key: "WhiffWhaff",
     name: "Whiff Whaff",
-    class: "",
+    class: "Common",
     image: "/images/echoes/WhiffWhaff.png",
-    details: ``,
+    details: `<span class="description">Summon a Whiff Whaff that triggers an air explosion, dealing <span class="param">32.10%/36.92%/41.73%/46.55%/51.36%</span> Aero DMG and produce a Low-pressure Zone. The Low-pressure Zone continuously pulls enemies nearby towards the center for <span class="param">2</span>s, dealing <span class="param">12.48%/14.35%/16.22%/18.10%/19.97%</span> Aero DMG up to 6 times.
+
+    CD: <span class="param">15</span>s</span>`,
     modifiers: [],
   },
   YoungGeohideSaurian: {
     key: "YoungGeohideSaurian",
     name: "Young Geohide Saurian",
-    class: "",
+    class: "Common",
     image: "/images/echoes/YoungGeohideSaurian.png",
-    details: ``,
+    details: `Transform into Baby Viridblaze Saurian to rest in place, and slowly restore HP.`,
     modifiers: [],
   },
   YoungRoseshroom: {
     key: "YoungRoseshroom",
     name: "Young Roseshroom",
-    class: "",
+    class: "Common",
     image: "/images/echoes/YoungRoseshroom.png",
-    details: ``,
+    details: `<span class="description">Summon a Baby Roseshroom that fires a laser, dealing <span class="param">20.00%+40/23.00%+46/26.00%+52/29.00%+58/32.00%+64</span> Havoc DMG.
+
+    CD: <span class="param">8</span>s</span>`,
     modifiers: [],
   },
   ZigZag: {
     key: "ZigZag",
     name: "Zig Zag",
-    class: "",
+    class: "Common",
     image: "/images/echoes/ZigZag.png",
-    details: ``,
+    details: `<span class="description">Summon a Zig Zag that denotates Spectro energy, dealing <span class="param">30.00%+60/34.50%+69/39.00%+78/43.50%+87/48.00%+96</span> Spectro DMG and creating a Stagnation Zone that lasts 1.8s.
+
+
+
+    CD: <span class="param">15</span>s</span>`,
     modifiers: [],
   },
 };
-
-export const allEchoes: string[] = [
-  "Aero Predator",
-  "Altered Clang Bang",
-  "Altered Lightcrusher",
-  "Autopuppet Scout",
-  "Bell-Borne Geochelone",
-  "Chaserazor",
-  "Chasm Guardian",
-  "Chirpuff",
-  "Clang Bang",
-  "Crownless",
-  "Cruisewing",
-  "Cyan-Feathered Heron",
-  "Diamondclaw",
-  "Dreamless",
-  "Dwarf Cassowary",
-  "Electro Predator",
-  "Excarat",
-  "Feilian Beringal",
-  "Firebug",
-  "Fission Junrock",
-  "Flautist",
-  "Fusion Dreadmane",
-  "Fusion Prism",
-  "Fusion Warrior",
-  "Geohide Saurian",
-  "Glacio Dreadmane",
-  "Glacio Predator",
-  "Glacio Prism",
-  "Gulpuff",
-  "Havoc Dreadmane",
-  "Havoc Prism",
-  "Havoc Warrior",
-  "Hoartoise",
-  "Hoochief",
-  "Hoochief Cyclone",
-  "Hoochief Menace",
-  "Hooscamp",
-  "Hooscamp Clapperclaw",
-  "Hooscamp Flinger",
-  "Impermanence Heron",
-  "Inferno Rider",
-  "Jué",
-  "Lampylumen Myriad",
-  "Lightcrusher",
-  "Lumiscale Construct",
-  "Mech Abomination",
-  "Mourning Aix",
-  "Phantom: Feilian Beringal",
-  "Phantom: Hoartoise",
-  "Phantom: Impermanence Heron",
-  "Phantom: Mourning Aix",
-  "Phantom: Rocksteady Guardian",
-  "Phantom: Thundering Mephis",
-  "Rocksteady Guardian",
-  "Roseshroom",
-  "Sabyr Boar",
-  "Scar",
-  "Snip Snap",
-  "Spearback",
-  "Spectro Prism",
-  "Stonewall Bracer",
-  "Tambourinist",
-  "Tempest Mephis",
-  "Thundering Mephis",
-  "Tick Tack",
-  "Traffic Illuminator",
-  "Vanguard Junrock",
-  "Violet-Feathered Heron",
-  "Whiff Whaff",
-  "Young Geohide Saurian",
-  "Young Roseshroom",
-  "Zig Zag",
-];
