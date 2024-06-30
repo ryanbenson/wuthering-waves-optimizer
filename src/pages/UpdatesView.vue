@@ -17,6 +17,8 @@
     <h3>June 30, 2024</h3>
     <ul>
       <li>Releases main echo buffs</li>
+      <li>Simplify and merge Jinhsi S6 into one toggle</li>
+      <li>Fix Jue echo, and add a missing echo</li>
     </ul>
     <h3>June 29, 2024</h3>
     <ul>

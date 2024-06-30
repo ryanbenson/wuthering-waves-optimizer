@@ -406,13 +406,20 @@ export const mainEchoesData: MainEchoes = {
   Jué: {
     key: "Jué",
     name: "Jué",
-    class: "Overlord",
+    class: "Calamity",
     image: "/images/echoes/Jue.png",
-    details: `<span class="description">Summon Jué to leap into the air, dealing <span class="param">30.40%/34.96%/39.52%/44.08%/48.64%</span> Spectro DMG to the enemies and bringing forth Lightthunder. Lightthunder hits up to 5 times in total, each dealing <span class="param">12.16%/13.98%/15.81%/17.63%/19.46%</span> Spectro DMG to the surrounding enemies. Then Jué spirals downward to attack the surrounding enemies, dealing <span class="param">30.40%/34.96%/39.52%/44.08%/48.64%</span> Spectro DMG two times in a row. 
-    The Resonator equipped with this Echo Skill obtains 1 stack of "Blessing of Time" every 6s, stacking up to 3 times. When the Resonator performs Resonance Skill, 1 stack of "Blessing of Time" is consumed, dealing <span class="param">15</span> Spectro DMG to the surrounding enemies. The enemies hit receive <span class="param">16.00%</span> Spectro DMG per second over 6s, stacking up to 3 times and new stacks extending the effect period. The damage dealt through consuming the stacks of "Blessing of Time" is considered as Resonance Skill DMG.
-    
-    CD: <span class="param">10.00%/11.50%/13.00%/14.50%/16.00%</span>s</span>`,
-    modifiers: [],
+    details: `<span class="description">Summon Jué to the aid. Jué soars through the air, dealing <span class="param">34.96%/39.52%/44.08%/48.64%</span> Spectro DMG, and summons thunderbolts that strike nearby enemies up to 5 times, each hit dealing <span class="param">13.98%/15.81%/17.63%/19.46%</span> Spectro DMG. Jué then spirals downward, attacking surrounding enemies twice, each hit dealing <span class="param">34.96%/39.52%/44.08%/48.64%</span> Spectro DMG. Casting this Echo Skill grants the Resonator a Blessing of Time effect that lasts 15s, during when:
+    <ul>
+      <li>The Resonator gains <span class="param">16.00%</span> Resonance Skill DMG Bonus.</li>
+      <li>When the Resonator's Resonance Skill hits the target, inflict <span class="param">11.50%/13.00%/14.50%/16.00%</span> Spectro DMG 1 time per second for 15s, considered as the Resonator's Resonance Skill DMG.</li>
+    </ul>
+    CD: 20s</span>`,
+    modifiers: [
+      {
+        modifier: "ResonanceSkillDMGBonus",
+        modifierValue: 0.16,
+      },
+    ],
   },
   LampylumenMyriad: {
     key: "LampylumenMyriad",
@@ -628,6 +635,14 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Transform into Stonewall Bracer and charge forward, dealing <span class="param">70.40%/80.96%/91.52%/102.08%/112.64%</span> Physical DMG on-hit, then smash to deal <span class="param">105.60%/121.44%/137.28%/153.12%/168.96%</span> Physical DMG, and gain a shield of <span class="param">10.00%</span> of current character's Max HP that lasts <span class="param">7</span>s. Use the Echo skill again to exit the transformation state.
 
     CD: <span class="param">15</span>s</span>`,
+    modifiers: [],
+  },
+  Tambourinist: {
+    key: "Tambourinist",
+    name: "Tambourinist",
+    class: "Elite",
+    image: "/images/echoes/Tambourinist.png",
+    details: `<span class="description">Summon a Tambourinist that periodically emits Melodies of Annihilation. Friendly units hit with Melodies of Annihilation deal an extra Havoc DMG of <span class="param">10.35%/11.70%/13.05%/14.40%</span> with their attacks, up to 10 times.</span>`,
     modifiers: [],
   },
   TempestMephis: {
