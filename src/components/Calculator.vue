@@ -37,7 +37,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Main echo buff are now available! 💪</div>
+          <div class="alert">Main echo buffs are now available! 💪</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
