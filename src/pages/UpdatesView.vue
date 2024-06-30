@@ -14,7 +14,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>June 28, 2024</h3>
+    <h3>June 30, 2024</h3>
+    <ul>
+      <li>Releases main echo buffs</li>
+    </ul>
+    <h3>June 29, 2024</h3>
     <ul>
       <li>Adjust Jinhsi R6 Incandescence 45%.</li>
       <li>
