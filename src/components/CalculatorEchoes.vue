@@ -109,6 +109,14 @@
         }"
         class="main-echo__image"></div>
       <select name="mainEcho" v-model="mainEcho">
+        <optgroup label="Calamity">
+          <option
+            v-for="option in mainEchoOptions.Calamity"
+            :key="option.key"
+            :value="option.key">
+            {{ option.name }}
+          </option>
+        </optgroup>
         <optgroup label="Overlord">
           <option
             v-for="option in mainEchoOptions.Overlord"
@@ -148,6 +156,15 @@
           @change="updateTotalStats" />
         Enabled?</label
       >
+      <div v-if="mainEchoHasStacks">
+        <label>Stacks:</label>
+        <input
+          v-model.number="mainEchoStacks"
+          type="number"
+          min="0"
+          :max="mainEchoMaxStacks"
+          @input="updateTotalStats" />
+      </div>
     </div>
   </div>
 </template>
@@ -159,6 +176,7 @@ export default {
     return {
       mainEcho: null,
       mainEchoBuffEnabled: false,
+      mainEchoStacks: 0,
       echoes: Array(5)
         .fill()
         .map(() => ({
@@ -383,9 +401,16 @@ export default {
           // we're dealing with full numbers right now, not decimals,
           // so multiply * 100
           // TODO: Remove this when we refactor this whole thing to use decimals
-          const buffVal = mainEchoBuff.modifierValue * 100;
-          stats[mainEchoBuff.modifier] =
-            (stats[mainEchoBuff.modifier] || 0) + buffVal;
+          if (this.mainEchoHasStacks) {
+            const buffVal = mainEchoBuff.modifierValue * 100;
+            stats[mainEchoBuff.modifier] =
+              (stats[mainEchoBuff.modifier] || 0) +
+              buffVal * this.mainEchoStacks;
+          } else {
+            const buffVal = mainEchoBuff.modifierValue * 100;
+            stats[mainEchoBuff.modifier] =
+              (stats[mainEchoBuff.modifier] || 0) + buffVal;
+          }
         }
       }
 
@@ -437,6 +462,7 @@ export default {
     },
     mainEchoOptions() {
       const echoes = {
+        Calamity: [],
         Overlord: [],
         Elite: [],
         Common: [],
@@ -451,6 +477,15 @@ export default {
     },
     chosenMainEchoImage() {
       return this.chosenMainEchoData?.image ?? "/images/echoes/monsters.png";
+    },
+    mainEchoHasStacks() {
+      return this.chosenMainEchoData?.hasStacks ?? false;
+    },
+    mainEchoMinStacks() {
+      return this.chosenMainEchoData?.minStacks ?? 0;
+    },
+    mainEchoMaxStacks() {
+      return this.chosenMainEchoData?.maxStacks ?? 0;
     },
   },
 };
