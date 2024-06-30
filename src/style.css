@@ -415,6 +415,9 @@ body {
   font-style: italic;
   color: #cbd053;
 }
+.param {
+  color: #f8e56c;
+}
 .Light {
   color: #f8e56c;
 }

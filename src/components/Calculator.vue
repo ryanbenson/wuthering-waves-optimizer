@@ -639,6 +639,8 @@ import CalculatorWeapons from "./CalculatorWeapons.vue";
 import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
+import { mainEchoesData } from "../echoes";
+import { allEchoBuffs } from "../buffs";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -1101,6 +1103,7 @@ export default defineComponent({
         const genericSkillDmgBonusResChain =
           charResonanceChainsData.value?.DMGBonus ?? 0;
         const genericSkillDmgBonusSelfBuff = charBuffsData.value?.DMGBonus ?? 0;
+        const genericSkillDmgBonusEchoBuff = echoStats.value?.DMGBonus ?? 0;
         const extraDefIgnoreResonanceChain =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DEFIgnore`
@@ -1133,7 +1136,8 @@ export default defineComponent({
           specificSkillDmgFromResonanceChains +
           specificSkillDmgFromCharBuffs +
           genericSkillDmgBonusResChain +
-          genericSkillDmgBonusSelfBuff;
+          genericSkillDmgBonusSelfBuff +
+          genericSkillDmgBonusEchoBuff / 100;
         const teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         const baseResistReduction = ResistReduction.value ?? 0;
@@ -1463,7 +1467,6 @@ $tooltip-background-color: $sidebar-background-color;
   }
 }
 .character__selection__avatar {
-  background: url(https://wuthering.wiki/img/role_1304.png);
   width: 100px;
   height: 100px;
   background-repeat: no-repeat;
