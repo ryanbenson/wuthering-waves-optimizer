@@ -198,6 +198,27 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
   },
+  FeilianBeringal: {
+    key: "FeilianBeringal",
+    name: "Feilian Beringal",
+    class: "Overlord",
+    image: "/images/echoes/FeilianBeringal.png",
+    details: `<span class="description">Transform into Feilian Beringal to perform a powerful kick. If the kick lands on an enemy, immediately perform a follow-up strike. The kick deals <span class="param">144.90%/166.64%/188.37%/210.11%/231.84%</span> Aero DMG, and the follow-up strike deals <span class="param">177.10%/203.67%/230.23%/256.80%/283.36%</span> Aero DMG.
+
+    After the follow-up strike hits, the current character's Aero DMG increases by <span class="param">12.00%</span>, and the Heavy Attack DMG increases by <span class="param">12.00%</span> for <span class="param">15</span>s
+    
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+  },
   FissionJunrock: {
     key: "FissionJunrock",
     name: "Fission Junrock",
