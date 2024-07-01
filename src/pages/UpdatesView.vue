@@ -14,6 +14,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 1, 2024</h3>
+    <ul>
+      <li>Adds Impermanence Heron to team buffs</li>
+      <li>Text fix for Jinhsi S3, it was calculating properly though</li>
+    </ul>
     <h3>June 30, 2024</h3>
     <ul>
       <li>Releases main echo buffs</li>
