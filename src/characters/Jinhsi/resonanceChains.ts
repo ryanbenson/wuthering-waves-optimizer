@@ -17,7 +17,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode3CelestialIncarnate",
     name: "Sequence Node 3: Celestial Incarnate",
-    details: `<span class="skilldescription">Gain 25% Incandescence and a stack of <span class="Highlight">Immortal's Descendancy</span> after casting Intro Skill <span class="Highlight">Loong's Halo</span>. Every stack of <span class="Highlight">Immortal's Descendancy</span> increases ATK by 25%, for up to 2 stacks, lasting for 20s.</span>`,
+    details: `<span class="skilldescription">Jinhsi gains one stack of <span class="Highlight">Immortal's Descendancy</span> after casting Intro Skill <span class="Highlight">Loong's Halo</span>. Each stack of <span class="Highlight">Immortal's Descendancy</span> increases Jinhsi's ATK by 25%, stacking up to 2 time(s) and lasting for 20s</span>.`,
     hasStacks: true,
     modifiers: [
       {
