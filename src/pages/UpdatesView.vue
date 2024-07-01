@@ -3,7 +3,6 @@
     <h1>Upcoming Updates</h1>
     <ul>
       <li>Better UI</li>
-      <li>Mobile support</li>
       <li>More characters</li>
       <li>More weapons</li>
       <li>Custom rotations</li>
