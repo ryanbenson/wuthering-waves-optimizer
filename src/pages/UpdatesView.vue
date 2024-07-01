@@ -6,8 +6,6 @@
       <li>Mobile support</li>
       <li>More characters</li>
       <li>More weapons</li>
-      <li>Main echo buffs</li>
-      <li>Team Buffs</li>
       <li>Custom rotations</li>
       <li>Persisting your configurations in your browser</li>
       <li>Food</li>
