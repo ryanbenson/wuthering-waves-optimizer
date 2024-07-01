@@ -568,7 +568,7 @@ export const allEchoBuffs = [
     modifiers: [
       {
         modifier: "DMGBonus",
-        modifierValue: 0.12,
+        modifierValue: 0.10,
       },
     ],
     minStacks: 0,
