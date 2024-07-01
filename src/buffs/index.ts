@@ -545,6 +545,21 @@ export const allEchoBuffs = [
     maxStacks: 0,
     alwaysEnabled: false,
   },
+  {
+    key: "ImpermanenceHeron",
+    name: "Impermanence Heron",
+    details: `<span class="skilldescription"> If the current character uses their Outro Skill within the next <span class="Highlight">15s</span>, the next character’s damage dealt will be boosted by <span class="Highlight">12%</span> for 15s.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DMGBonus",
+        modifierValue: 0.225,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allCharacters: string[] = [
