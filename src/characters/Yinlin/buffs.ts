@@ -1,42 +1,13 @@
 export const buffs = [
   {
-    key: "Incandescence",
-    name: "Incandescence",
-    details:
-      '<div class="skilldescription">When Jinhsi has "Incandescence", consume up to 50 Incandescence, each point of Incandescence grants an additional DMG multiplier percentage to the <span class="Highlight">Star Glamour</span>.</div>',
-    hasStacks: true,
-    modifiers: [
-      {
-        modifier: "Talent",
-        modifierTalentKey: "StarGlamourDMG",
-        modifierValue: {
-          "1": 0.224,
-          "2": 0.2424,
-          "3": 0.2608,
-          "4": 0.2865,
-          "5": 0.3049,
-          "6": 0.326,
-          "7": 0.3554,
-          "8": 0.3848,
-          "9": 0.4142,
-          "10": 0.4454,
-        },
-        modifierValueTalentRef: "forte",
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 50,
-    alwaysEnabled: false,
-  },
-  {
-    key: "InherentSkillRadiantSurge",
-    name: "Inherent Skill: Radiant Surge",
-    details: `<div class="skilldescription">Jinhsi's Spectro DMG Bonus is increased by 20%.</div>`,
+    key: "InherentSkillPainImmersion",
+    name: "Inherent Skill: Pain Immersion",
+    details: `<div class="skilldescription">After using Resonance Skill <span class="Highlight">Magnetic Roar</span>, Yinlin's Crit. Rate is increased by 15% for 5s.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Spectro",
-        modifierValue: 0.2,
+        modifier: "CritRate",
+        modifierValue: 0.15,
       },
     ],
     minStacks: 0,
@@ -44,15 +15,18 @@ export const buffs = [
     alwaysEnabled: true,
   },
   {
-    key: "InherentSkillConvergedFlash",
-    name: "Inherent Skill: Converged Flash",
-    details: `<div class="skilldescription">Intro Skill <span class="Highlight">Loong's Halo</span> gains 50% additional DMG.</div>`,
+    key: "InherentSkillDeadlyFocus",
+    name: "Inherent Skill: Deadly Focus",
+    details: `<div class="skilldescription">The damage of Resonance Skill <span class="Highlight">Lightning Execution</span> is increased by 10% when hitting targets marked with <span class="Highlight">Sinner's Mark</span>, and Yinlin's ATK is increased by 10% for 4s when this is triggered.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["LoongsHalo"],
-        modifierValue: 0.5,
+        modifySpecificTalents: ["LightningExecutionDamage"],
+        modifierValue: 0.1,
+      },
+      {
+        modifier: "ATK",
+        modifierValue: 0.1,
       },
     ],
     minStacks: 0,
@@ -90,36 +64,6 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusATK1",
-    name: "Stat Bonus: ATK+",
-    details: `<div class="skilldescription">ATK increased by 1.80%.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "ATK",
-        modifierValue: 0.018,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "StatBonusATK2",
-    name: "Stat Bonus: ATK+",
-    details: `<div class="skilldescription">ATK increased by 1.80%.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "ATK",
-        modifierValue: 0.018,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
     key: "StatBonusCritRate3",
     name: "Stat Bonus: Crit. Rate+",
     details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
@@ -143,6 +87,36 @@ export const buffs = [
       {
         modifier: "CritRate",
         modifierValue: 0.028,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK1",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 1.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.018,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK2",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 1.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.018,
       },
     ],
     minStacks: 0,

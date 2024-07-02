@@ -19,5 +19,22 @@ export const liberationAttacks = {
       },
       type: "Liberation",
     },
+    {
+      key: "FuriousThunder",
+      label: "Pursuit of Justice: Furious Thunder",
+      talents: {
+        "1": "419.59%",
+        "2": "419.59%",
+        "3": "419.59%",
+        "4": "419.59%",
+        "5": "419.59%",
+        "6": "419.59%",
+        "7": "419.59%",
+        "8": "419.59%",
+        "9": "419.59%",
+        "10": "419.59%",
+      },
+      type: "Liberation",
+    },
   ],
 };
