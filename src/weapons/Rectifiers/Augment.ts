@@ -7,6 +7,25 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Forgiving Resilience",
   passiveValue:
     "When Resonance Liberation is released, increases the caster's ATK by 15%/23.25%/31.5%/39.75%/48%, lasting for 15s.",
+  passiveData: [
+    {
+      key: "ATK",
+      hasStacks: false,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.15,
+        "2": 0.2325,
+        "3": 0.315,
+        "4": 0.3975,
+        "5": 0.48,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When Resonance Liberation is released, increases the caster's ATK by 15%/23.25%/31.5%/39.75%/48%, lasting for 15s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

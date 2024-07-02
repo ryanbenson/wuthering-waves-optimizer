@@ -7,6 +7,25 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Dawnbringer",
   passiveValue:
     "When Resonance Skill is released, if the Resonator's HP is below 60%, restores their HP by 5%/6.25%/7.5%/8.75%/10%. This effect can be triggered 1 time(s) every 8s; if the Resonator's HP is above 60%, increases ATK by 12%/15%/18%/21%/24%, lasting for 10s.",
+  passiveData: [
+    {
+      key: "ATK",
+      hasStacks: false,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.12,
+        "2": 0.15,
+        "3": 0.18,
+        "4": 0.21,
+        "5": 0.24,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "If the Resonator's HP is above 60%, increases ATK by 12%/15%/18%/21%/24%, lasting for 10s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {
