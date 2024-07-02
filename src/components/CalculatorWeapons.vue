@@ -105,7 +105,8 @@ export default {
       this.weaponsList = getWeaponsByType(this.weaponType);
     },
     async handleUpdatedWeaponStats(data) {
-      this.weaponPassiveStats[data.stat] = data.value;
+      this.weaponPassiveStats[data.stat] =
+        (this.weaponPassiveStats[data.stat] || 0) + data.value;
       await this.updateWeaponStats();
     },
     async weaponChanged(e) {

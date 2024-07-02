@@ -31,12 +31,31 @@ const broadbladesList = [
   "VerdantSummit",
 ];
 
+const rectifiersList = [
+  "Augment",
+  "CometFlare",
+  "CosmicRipples",
+  "GuardianRectifier",
+  "JinzhouKeeper",
+  "OriginiteTypeV",
+  "Rectifier25",
+  "RectifierOfNights",
+  "RectifierOfVoyager",
+  "Stringmaster",
+  "TrainingRectifier",
+  "TyroRectifier",
+  "Variation",
+];
+
 export function getWeaponsByType(type: string) {
   if (type === "Swords") {
     return swordsList;
   }
   if (type === "Broadblades") {
     return broadbladesList;
+  }
+  if (type === "Rectifiers") {
+    return rectifiersList;
   }
   return [];
 }

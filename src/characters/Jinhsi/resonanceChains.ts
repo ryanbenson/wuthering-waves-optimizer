@@ -62,7 +62,7 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode6ComesSpringwhenChillExhausts1",
-    name: "Sequence Node 6: Comes Spring when Chill Exhausts: Skill Multiplier",
+    name: "Sequence Node 6: Comes Spring when Chill Exhausts",
     details: `<span class="skilldescription">DMG Multiplier percentage for Resonance Skill <span class="Highlight">Illuminous Epiphany</span> is increased by 45%. The multiplier increase brought by Incandescence is additionally increased by 45%.</span>`,
     hasStacks: false,
     modifiers: [
