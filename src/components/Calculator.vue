@@ -476,6 +476,7 @@
         </div>
       </div>
       <h2>Damage</h2>
+      <p>All damages are total damage. If an attack hits multiple times, it will show the total damage. Hover over the damage to see it broken down per hit.</p>
       <div class="calculation__damage__item">
         <span>Name</span>
         <span>Normal</span>
