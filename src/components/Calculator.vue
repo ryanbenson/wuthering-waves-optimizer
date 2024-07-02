@@ -205,10 +205,10 @@
             <span>Defense:</span> <span>{{ totalDef }}</span>
           </div>
           <div>
-            <span>Crit Rate:</span> <span>{{ totalCritRate * 100 }}%</span>
+            <span>Crit Rate:</span> <span>{{ f(totalCritRate * 100) }}%</span>
           </div>
           <div>
-            <span>Crit DMG:</span> <span>{{ totalCritDMG * 100 }}%</span>
+            <span>Crit DMG:</span> <span>{{ f(totalCritDMG * 100) }}%</span>
           </div>
           <div>
             <span>Basic Attack DMG Bonus:</span>
@@ -421,10 +421,10 @@
           <span>Defense:</span> <span>{{ totalDef }}</span>
         </div>
         <div>
-          <span>Crit Rate:</span> <span>{{ totalCritRate * 100 }}%</span>
+          <span>Crit Rate:</span> <span>{{ (totalCritRate * 100).toFixed(2) }}%</span>
         </div>
         <div>
-          <span>Crit DMG:</span> <span>{{ totalCritDMG * 100 }}%</span>
+          <span>Crit DMG:</span> <span>{{ (totalCritDMG * 100).toFixed(2) }}%</span>
         </div>
         <div>
           <span>Basic Attack DMG Bonus:</span>
@@ -656,6 +656,12 @@ interface TalentData {
   liberation: number;
   intro: number;
 }
+
+const formatter = new Intl.NumberFormat("en", {
+      style: "decimal",
+      maximumFractionDigits: 2,
+    });
+    const f = formatter.format;
 
 export default defineComponent({
   name: "Calculator",
@@ -1305,6 +1311,7 @@ export default defineComponent({
       weaponData,
       isLoading,
       // weaponLevelOptions,
+      f,
     };
   },
 });
