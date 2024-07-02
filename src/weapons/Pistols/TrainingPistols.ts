@@ -6,6 +6,24 @@ const weaponInfo: WeaponInfo = {
   rarity: 1,
   passiveName: "Persevere",
   passiveValue: "Increases ATK by 4%/5%/6%/7%/8%.",
+  passiveData: [
+    {
+      key: "ATK",
+      hasStacks: true,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.04,
+        "2": 0.05,
+        "3": 0.06,
+        "4": 0.07,
+        "5": 0.08,
+      },
+      minStacks: 0,
+      maxStacks: 3,
+      details: "Increases ATK by 4%/5%/6%/7%/8%.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {
