@@ -37,7 +37,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Main echo buffs are now available! 💪</div>
+          <div class="alert">Yinlin is now available!⚡</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -476,7 +476,11 @@
         </div>
       </div>
       <h2>Damage</h2>
-      <p>All damages are total damage. If an attack hits multiple times, it will show the total damage. Hover over the damage to see it broken down per hit.</p>
+      <p>
+        All damages are total damage. If an attack hits multiple times, it will
+        show the total damage. Hover over the damage to see it broken down per
+        hit.
+      </p>
       <div class="calculation__damage__item">
         <span>Name</span>
         <span>Normal</span>

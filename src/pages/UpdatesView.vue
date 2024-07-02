@@ -11,6 +11,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 2, 2024</h3>
+    <ul>
+      <li>Releases Yinlin</li>
+    </ul>
     <h3>July 1, 2024</h3>
     <ul>
       <li>Adds Impermanence Heron to team buffs</li>
