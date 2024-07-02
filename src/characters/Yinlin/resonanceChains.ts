@@ -63,20 +63,20 @@ export const resonanceChains = [
     maxStacks: 0,
     alwaysEnabled: false,
   },
-  {
-    key: "SequenceNode6PursuitofJustice",
-    name: "Sequence Node 6: Pursuit of Justice",
-    details: `<span class="skilldescription">In the first 30s after casting Resonance Liberation <span class="Highlight">Thundering Wrath</span>, when Yinlin's <span class="Highlight">Basic Attack</span> hits a target, <span class="Highlight">Furious Thunder</span> will be triggered, dealing <span class="Thunder">Electro DMG</span> equal to 419.59% of Yinlin's ATK. Every <span class="Highlight">Basic Attack</span> hit can trigger <span class="Highlight">Furious Thunder</span> 1 time, up to 4 times. This is considered Resonance Skill DMG.</span>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["SolarFlareDMG", "StarGlamourDMG"],
-        modifierValue: 0.45,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
+  // {
+  //   key: "SequenceNode6PursuitofJustice",
+  //   name: "Sequence Node 6: Pursuit of Justice",
+  //   details: `<span class="skilldescription">In the first 30s after casting Resonance Liberation <span class="Highlight">Thundering Wrath</span>, when Yinlin's <span class="Highlight">Basic Attack</span> hits a target, <span class="Highlight">Furious Thunder</span> will be triggered, dealing <span class="Thunder">Electro DMG</span> equal to 419.59% of Yinlin's ATK. Every <span class="Highlight">Basic Attack</span> hit can trigger <span class="Highlight">Furious Thunder</span> 1 time, up to 4 times. This is considered Resonance Skill DMG.</span>`,
+  //   hasStacks: false,
+  //   modifiers: [
+  //     {
+  //       modifier: "talentModifierMultiply",
+  //       modifySpecificTalents: ["SolarFlareDMG", "StarGlamourDMG"],
+  //       modifierValue: 0.45,
+  //     },
+  //   ],
+  //   minStacks: 0,
+  //   maxStacks: 0,
+  //   alwaysEnabled: false,
+  // },
 ];

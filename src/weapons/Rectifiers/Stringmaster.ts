@@ -37,7 +37,7 @@ const weaponInfo: WeaponInfo = {
       minStacks: 0,
       maxStacks: 2,
       details:
-        "When Resonance Skill hits a target, increases ATK by 12%/15%/18%/21%/24%",
+        "When Resonance Skill hits a target, increases ATK by 12%/15%/18%/21%/24%, stacking up to 2",
       alwaysEnabled: false,
     },
     {

@@ -12,7 +12,7 @@ export const buffs = [
     ],
     minStacks: 0,
     maxStacks: 0,
-    alwaysEnabled: true,
+    alwaysEnabled: false,
   },
   {
     key: "InherentSkillDeadlyFocus",
@@ -31,7 +31,7 @@ export const buffs = [
     ],
     minStacks: 0,
     maxStacks: 0,
-    alwaysEnabled: true,
+    alwaysEnabled: false,
   },
   {
     key: "StatBonusCritRate1",
