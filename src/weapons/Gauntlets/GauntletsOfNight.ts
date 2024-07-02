@@ -7,6 +7,25 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Assemble",
   passiveValue:
     "When Intro Skill is released, increases ATK by 8%/10%/12%/14%/16%, lasting for 10s.",
+  passiveData: [
+    {
+      key: "ATK",
+      hasStacks: false,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.08,
+        "2": 0.1,
+        "3": 0.12,
+        "4": 0.14,
+        "5": 0.16,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When Intro Skill is released, increases ATK by 8%/10%/12%/14%/16%, lasting for 10s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

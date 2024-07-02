@@ -7,6 +7,59 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Mastermind",
   passiveValue:
     "When the Resonator dashes or dodges, increases ATK by 8%/10%/12%/14%/16%. Increases Counter Attack DMG by 50%/62.5%/75%/87.5%/100%, lasting for 8s. When Counter Attack is performed, restores the Resonator's HP by 5%/6.25%/7.5%/8.75%/10%. This effect can be triggered 1 time(s) every 6s.",
+  passiveData: [
+    {
+      key: "ATK",
+      hasStacks: false,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.08,
+        "2": 0.1,
+        "3": 0.12,
+        "4": 0.14,
+        "5": 0.16,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When the Resonator dashes or dodges, increases ATK by 8%/10%/12%/14%/16%.",
+      alwaysEnabled: false,
+    },
+    {
+      key: "CounterAttackDmg",
+      hasStacks: false,
+      modifier: "CounterAttackDMGBonus",
+      modifierByRefinement: {
+        "1": 0.5,
+        "2": 0.625,
+        "3": 0.75,
+        "4": 0.875,
+        "5": 1,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "Increases Counter Attack DMG by 50%/62.5%/75%/87.5%/100%, lasting for 8s.",
+      alwaysEnabled: false,
+    },
+    {
+      key: "HP",
+      hasStacks: false,
+      modifier: "HP",
+      modifierByRefinement: {
+        "1": 0.05,
+        "2": 0.0625,
+        "3": 0.075,
+        "4": 0.0875,
+        "5": 0.1,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When Counter Attack is performed, restores the Resonator's HP by 5%/6.25%/7.5%/8.75%/10%.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

@@ -7,6 +7,25 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Wallbreaker",
   passiveValue:
     "When Resonance Skill is released, increases the caster's Resonance Liberation DMG Bonus by 18%/27%/36%/45%/54%, lasting for 15s.",
+  passiveData: [
+    {
+      key: "ResonanceLiberationDMGBonus",
+      hasStacks: false,
+      modifier: "ResonanceLiberationDMGBonus",
+      modifierByRefinement: {
+        "1": 0.18,
+        "2": 0.27,
+        "3": 0.36,
+        "4": 0.45,
+        "5": 0.54,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When Resonance Skill is released, increases the caster's Resonance Liberation DMG Bonus by 18%/27%/36%/45%/54%, lasting for 15s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

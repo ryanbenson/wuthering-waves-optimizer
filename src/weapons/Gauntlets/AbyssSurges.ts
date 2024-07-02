@@ -7,6 +7,42 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Stormy Resolution",
   passiveValue:
     "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. When hitting a target with Resonance Skill, increases Basic Attack DMG Bonus by 10%/12.5%/15%/17.5%/20%, lasting for 8s. When hitting a target with Basic Attacks, increases Resonance Skill DMG Bonus by 10%/12.5%/15%/17.5%/20%, lasting for 8s.",
+  passiveData: [
+    {
+      key: "BasicAttackDMGBonus",
+      hasStacks: false,
+      modifier: "BasicAttackDMGBonus",
+      modifierByRefinement: {
+        "1": 0.1,
+        "2": 0.125,
+        "3": 0.15,
+        "4": 0.175,
+        "5": 0.2,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When hitting a target with Resonance Skill, increases Basic Attack DMG Bonus by 10%/12.5%/15%/17.5%/20%, lasting for 8s.",
+      alwaysEnabled: false,
+    },
+    {
+      key: "ResonanceSkillDMGBonus",
+      hasStacks: false,
+      modifier: "ResonanceSkillDMGBonus",
+      modifierByRefinement: {
+        "1": 0.1,
+        "2": 0.125,
+        "3": 0.15,
+        "4": 0.175,
+        "5": 0.2,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When hitting a target with Basic Attacks, increases Resonance Skill DMG Bonus by 10%/12.5%/15%/17.5%/20%, lasting for 8s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {
