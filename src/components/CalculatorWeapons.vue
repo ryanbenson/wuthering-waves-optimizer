@@ -81,6 +81,11 @@ export default {
         this.updateWeaponStats();
       }
     },
+    refinement: async function (refinement) {
+      if (refinement) {
+        this.updateWeaponStats();
+      }
+    },
     weaponType: async function () {
       await this.updateWeapons();
       await this.setFirstWeapon();
@@ -93,15 +98,16 @@ export default {
   },
   methods: {
     async updateWeaponStats() {
-      const { attack, modifier, modifierValue } =
-        this.chosenWeapon.getWeaponDataByLevel(this.weaponLevel);
-      const weaponData = {
-        attack,
-        modifier,
-        modifierValue,
-        weaponPassiveStats: this.weaponPassiveStats,
-      };
-      this.$emit("update-weapon", weaponData);
+      if (this.chosenWeapon) {
+        const { attack, modifier, modifierValue } = this.chosenWeapon.getWeaponDataByLevel(this.weaponLevel);
+        const weaponData = {
+          attack,
+          modifier,
+          modifierValue,
+          weaponPassiveStats: { ...this.weaponPassiveStats },
+        };
+        this.$emit("update-weapon", weaponData);
+      }
     },
     async setWeapon() {
       const weaponChosen = await getWeaponByName(this.weaponType, this.weapon);
@@ -111,8 +117,7 @@ export default {
       this.weaponsList = getWeaponsByType(this.weaponType);
     },
     async handleUpdatedWeaponStats(data) {
-      this.weaponPassiveStats[data.stat] =
-        (this.weaponPassiveStats[data.stat] || 0) + data.value;
+      this.weaponPassiveStats[data.stat] = data.value;
       await this.updateWeaponStats();
     },
     async weaponChanged() {
