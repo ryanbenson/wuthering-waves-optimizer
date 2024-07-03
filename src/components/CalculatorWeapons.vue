@@ -55,6 +55,7 @@
 <script>
 import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
 import CalculatorWeaponsPassive from "./CalculatorWeaponsPassive.vue";
+
 export default {
   props: {
     weaponType: {
@@ -84,6 +85,11 @@ export default {
       await this.updateWeapons();
       await this.setFirstWeapon();
     },
+    weapon: async function (newWeapon) {
+      if (newWeapon) {
+        await this.weaponChanged();
+      }
+    }
   },
   methods: {
     async updateWeaponStats() {
@@ -109,9 +115,8 @@ export default {
         (this.weaponPassiveStats[data.stat] || 0) + data.value;
       await this.updateWeaponStats();
     },
-    async weaponChanged(e) {
-      const weapon = e.target.value;
-      const weaponChosen = await getWeaponByName(this.weaponType, weapon);
+    async weaponChanged() {
+      const weaponChosen = await getWeaponByName(this.weaponType, this.weapon);
       this.chosenWeapon = weaponChosen;
       this.weaponPassiveStats = {};
       this.setWeaponPassives();
@@ -154,21 +159,14 @@ export default {
       return ["1", "2", "3", "4", "5"];
     },
     hasWeaponPassive() {
-      if (!this.weaponPassives || this.weaponPassives.length < 1) {
-        return false;
-      }
-      return true;
+      return this.weaponPassives && this.weaponPassives.length > 0;
     },
-    // weaponPassives() {
-    //   const passives = this.chosenWeapon?.info?.passiveData ?? [];
-    //   return JSON.parse(JSON.stringify(passives));
-    // },
     weaponDescription() {
       return this.chosenWeapon?.info?.description ?? null;
     },
   },
   async mounted() {
-    this.updateWeapons();
+    await this.updateWeapons();
     await this.setFirstWeapon();
   },
 };
