@@ -1135,6 +1135,10 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
           ] ?? 0;
+        const talentModifierMultiplySelfBuff =
+          charBuffsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentModifierMultiply`
+          ] ?? 0;
         const totalDefIgnore =
           DefIgnore.value +
           extraDefIgnoreResonanceChain +
@@ -1163,6 +1167,8 @@ export default defineComponent({
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
           teamBuffDmgDeepenForAttackType;
+        const totalTalentModifierMultiply =
+          talentModifierMultiply + talentModifierMultiplySelfBuff;
 
         return calcDamage(
           characterLevel.value,
@@ -1179,7 +1185,7 @@ export default defineComponent({
           instanceDmgCritRate,
           instanceDmgCritDMG,
           totalTalentModifierAdd,
-          talentModifierMultiply
+          totalTalentModifierMultiply
         );
       };
 

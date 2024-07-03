@@ -1,18 +1,20 @@
 <template>
   <div>
     <p v-html="details"></p>
-    <label v-if="!alwaysEnabled"
-      ><input type="checkbox" v-model="isEnabled" /> Enabled?</label
-    >
+    <label v-if="!alwaysEnabled">
+      <input type="checkbox" v-model="isEnabled" @change="updatedStats" />
+      Enabled?
+    </label>
     <span v-if="hasStacks">
       <input
         v-model="stacks"
         type="number"
         :min="minStacks"
         :max="maxStacks"
-        @input="ensureMaxStacks" />
-      Stacks</span
-    >
+        @input="ensureMaxStacks"
+        @change="updatedStats" />
+      Stacks
+    </span>
   </div>
 </template>
 
@@ -28,7 +30,7 @@ export default {
     },
     modifierByRefinement: {
       type: Object,
-      default: () => {},
+      default: () => ({}),
     },
     minStacks: {
       type: Number,
@@ -59,9 +61,9 @@ export default {
     };
   },
   watch: {
-    weaponPassiveStats: function () {
-      this.updatedStats();
-    },
+    refinement: "updatedStats",
+    isEnabled: "updatedStats",
+    stacks: "updatedStats",
   },
   methods: {
     updatedStats() {
@@ -97,12 +99,11 @@ export default {
           this.modifierByRefinement[this.refinement] * this.stacks;
         data.value = totalValue;
       }
-      // shouldn't get here
       return data;
     },
   },
   mounted() {
-    if (this.alwaysEnabled === true) {
+    if (this.alwaysEnabled) {
       this.isEnabled = true;
       this.updatedStats();
     }

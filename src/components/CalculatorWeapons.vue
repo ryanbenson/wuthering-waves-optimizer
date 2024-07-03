@@ -6,6 +6,7 @@
         v-model="weapon"
         class="form__field"
         @input="weaponChanged">
+        <option :value="null">Choose a weapon</option>
         <option v-for="weap in weaponsList" :key="weap" :value="weap">
           {{ weap }}
         </option>
@@ -37,6 +38,7 @@
         v-for="(weaponPassive, i) in weaponPassives"
         class="weapon__passive"
         :key="weaponPassive.key"
+        :passive-key="weaponPassive.key"
         :has-stacks="weaponPassive.hasStacks"
         :modifier="weaponPassive.modifier"
         :modifier-by-refinement="weaponPassive.modifierByRefinement"
@@ -88,18 +90,19 @@ export default {
     },
     weaponType: async function () {
       await this.updateWeapons();
-      await this.setFirstWeapon();
+      // await this.setFirstWeapon();
     },
     weapon: async function (newWeapon) {
       if (newWeapon) {
         await this.weaponChanged();
       }
-    }
+    },
   },
   methods: {
     async updateWeaponStats() {
       if (this.chosenWeapon) {
-        const { attack, modifier, modifierValue } = this.chosenWeapon.getWeaponDataByLevel(this.weaponLevel);
+        const { attack, modifier, modifierValue } =
+          this.chosenWeapon.getWeaponDataByLevel(this.weaponLevel);
         const weaponData = {
           attack,
           modifier,
@@ -107,20 +110,38 @@ export default {
           weaponPassiveStats: { ...this.weaponPassiveStats },
         };
         this.$emit("update-weapon", weaponData);
+      } else {
+        const weaponData = {
+          attack: 0,
+          modifier: null,
+          modifierValue: null,
+          weaponPassiveStats: {},
+        };
+        this.$emit("update-weapon", weaponData);
       }
     },
     async setWeapon() {
+      if (!this.weapon) {
+        return null;
+      }
       const weaponChosen = await getWeaponByName(this.weaponType, this.weapon);
       this.chosenWeapon = weaponChosen;
     },
     async updateWeapons() {
       this.weaponsList = getWeaponsByType(this.weaponType);
+      this.weaponPassiveStats = {};
+      this.chosenWeapon = null;
+      this.weapon = null;
+      this.updateWeaponStats();
     },
     async handleUpdatedWeaponStats(data) {
       this.weaponPassiveStats[data.stat] = data.value;
       await this.updateWeaponStats();
     },
     async weaponChanged() {
+      if (!this.weapon) {
+        return null;
+      }
       const weaponChosen = await getWeaponByName(this.weaponType, this.weapon);
       this.chosenWeapon = weaponChosen;
       this.weaponPassiveStats = {};
@@ -132,14 +153,14 @@ export default {
       this.weaponPassives = JSON.parse(JSON.stringify(passives));
       this.updateWeaponStats();
     },
-    async setFirstWeapon() {
-      const weapon = this.weaponsList[0];
-      this.weapon = weapon;
-      const weaponChosen = await getWeaponByName(this.weaponType, weapon);
-      this.chosenWeapon = weaponChosen;
-      this.weaponPassiveStats = {};
-      this.setWeaponPassives();
-    },
+    // async setFirstWeapon() {
+    //   const weapon = this.weaponsList[0];
+    //   this.weapon = weapon;
+    //   const weaponChosen = await getWeaponByName(this.weaponType, weapon);
+    //   this.chosenWeapon = weaponChosen;
+    //   this.weaponPassiveStats = {};
+    //   this.setWeaponPassives();
+    // },
   },
   computed: {
     weaponLevelOptions() {
@@ -172,7 +193,7 @@ export default {
   },
   async mounted() {
     await this.updateWeapons();
-    await this.setFirstWeapon();
+    // await this.setFirstWeapon();
   },
 };
 </script>
