@@ -11,6 +11,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 3, 2024</h3>
+    <ul>
+      <li>
+        Fixes weapon issues where if you changed weapons or adjusts passives the
+        stats wouldn't be accurate
+      </li>
+      <li>Fixed Jinhsi's intro buff</li>
+    </ul>
     <h3>July 2, 2024</h3>
     <ul>
       <li>Releases Yinlin</li>
