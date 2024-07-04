@@ -476,11 +476,11 @@
         </div>
       </div>
       <h2>Damage</h2>
-      <p>
+      <div class="panel mb-1">
         All damages are total damage. If an attack hits multiple times, it will
         show the total damage. Hover over the damage to see it broken down per
         hit.
-      </p>
+      </div>
       <div class="calculation__damage__item">
         <span>Name</span>
         <span>Normal</span>
@@ -1510,5 +1510,18 @@ $tooltip-background-color: $sidebar-background-color;
   .results {
     display: none !important;
   }
+}
+.panel {
+  margin-top: 1rem;
+  background-color: #161616;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+
+  @media (prefers-color-scheme: light) {
+    background-color: #f8f8f8;
+  }
+}
+.mb-1 {
+  margin-bottom: 1rem;
 }
 </style>
