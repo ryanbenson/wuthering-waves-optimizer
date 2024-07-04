@@ -211,4 +211,10 @@ export default {
     font-weight: bold;
   }
 }
+.form__group.field {
+  margin: 0 0 1rem 0;
+}
+label.form__label {
+  margin-left: 1rem;
+}
 </style>
