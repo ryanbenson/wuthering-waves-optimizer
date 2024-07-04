@@ -1,11 +1,7 @@
 <template>
   <div class="data-input">
     <div class="form__group field">
-      <select
-        name="weapon"
-        v-model="weapon"
-        class="form__field"
-        @input="weaponChanged">
+      <select name="weapon" v-model="weapon" class="form__field">
         <option :value="null">Choose a weapon</option>
         <option v-for="weap in weaponsList" :key="weap" :value="weap">
           {{ weap }}
@@ -93,9 +89,7 @@ export default {
       // await this.setFirstWeapon();
     },
     weapon: async function (newWeapon) {
-      if (newWeapon) {
-        await this.weaponChanged();
-      }
+      await this.weaponChanged(newWeapon);
     },
   },
   methods: {
@@ -122,6 +116,7 @@ export default {
     },
     async setWeapon() {
       if (!this.weapon) {
+        this.chosenWeapon = null;
         return null;
       }
       const weaponChosen = await getWeaponByName(this.weaponType, this.weapon);
@@ -138,8 +133,11 @@ export default {
       this.weaponPassiveStats[data.stat] = data.value;
       await this.updateWeaponStats();
     },
-    async weaponChanged() {
-      if (!this.weapon) {
+    async weaponChanged(weapon) {
+      if (!weapon) {
+        this.chosenWeapon = null;
+        this.weaponPassives = [];
+        this.updateWeaponStats();
         return null;
       }
       const weaponChosen = await getWeaponByName(this.weaponType, this.weapon);
