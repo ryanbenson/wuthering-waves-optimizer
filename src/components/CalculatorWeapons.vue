@@ -1,7 +1,11 @@
 <template>
   <div class="data-input">
     <div class="form__group field">
-      <select name="weapon" v-model="weapon" class="form__field">
+      <select
+        name="weapon"
+        v-model="weapon"
+        class="form__field"
+        @change="flushPassives">
         <option :value="null">Choose a weapon</option>
         <option v-for="weap in weaponsList" :key="weap" :value="weap">
           {{ weap }}
@@ -166,7 +170,10 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useCharacterStore, ["setCharacterWeaponData"]),
+    ...mapActions(useCharacterStore, [
+      "setCharacterWeaponData",
+      "resetCharacterWeaponPassives",
+    ]),
     async updateWeaponStats() {
       if (this.chosenWeapon) {
         const { attack, modifier, modifierValue } =
@@ -217,6 +224,12 @@ export default {
       } catch (error) {
         // console.log("Failed to find weapon");
       }
+    },
+    // Doing this so we don't track passive data for every weapon, for every character
+    // can remove this later if we need to, but if we do:
+    // we're putting passive data on the character. we'll have to put it on the weapon level
+    async flushPassives() {
+      await this.resetCharacterWeaponPassives(this.character);
     },
   },
 };

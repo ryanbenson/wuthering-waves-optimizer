@@ -62,10 +62,7 @@ export default {
     },
   },
   data() {
-    return {
-      isEnabled: false,
-      stacks: 0,
-    };
+    return {};
   },
   watch: {
     refinement: "updatedStats",
@@ -95,6 +92,43 @@ export default {
     },
   },
   computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+    isEnabled: {
+      get() {
+        return (
+          this.currentCharacter?.weaponPassives?.[this.passiveKey]?.isEnabled ??
+          null
+        );
+      },
+      async set(value) {
+        const data = {
+          weaponPassives: {},
+        };
+        data.weaponPassives[this.passiveKey] = {
+          isEnabled: value,
+        };
+        await this.setCharacterWeaponData(this.character, data);
+      },
+    },
+    stacks: {
+      get() {
+        return (
+          this.currentCharacter?.weaponPassives?.[this.passiveKey]?.stacks ?? 0
+        );
+      },
+      async set(value) {
+        const data = {
+          weaponPassives: {},
+        };
+        data.weaponPassives[this.passiveKey] = {
+          stacks: value,
+        };
+        await this.setCharacterWeaponData(this.character, data);
+      },
+    },
     weaponPassiveStats() {
       const data = {
         stat: this.modifier,
