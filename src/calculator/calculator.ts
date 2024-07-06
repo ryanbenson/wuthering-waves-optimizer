@@ -29,7 +29,6 @@ export function calcHitDamage(
   // critRate: number,
   // critDamage: number,
 ): number {
-  console.log(charLevel);
   const baseDamageValue = getBonusDamageValue(
     bonusTotalSkillDmg,
     bonusSpecificSkillDmg,
@@ -69,7 +68,9 @@ export function getDefenseModifier(
   enemyLevel: number,
   defIgnore: number
 ): number {
-  const charLevel = Number.parseInt(charLevelSpec.slice(-1) == "+" ? charLevelSpec.slice(0, -1) : charLevelSpec);
+  const charLevel = Number.parseInt(
+    charLevelSpec.slice(-1) == "+" ? charLevelSpec.slice(0, -1) : charLevelSpec
+  );
   const enemyDef = getEnemyDefense(enemyLevel);
   return (
     (800 + 8 * charLevel) / (800 + 8 * charLevel + enemyDef * (1 - defIgnore))
