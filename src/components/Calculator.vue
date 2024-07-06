@@ -1186,7 +1186,7 @@ export default defineComponent({
           instanceDmgCritDMG,
           totalTalentModifierAdd,
           totalTalentModifierMultiply
-        );
+        );;
       };
 
       const processAttacks = (attacks, talentType) => {
