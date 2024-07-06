@@ -7,6 +7,25 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Stormy Resolution",
   passiveValue:
     "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. When hitting a target with Basic Attacks, increases Basic Attack DMG Bonus by 3.2%/4%/4.8%/5.6%/6.4%, stacking up to 5 time(s). This effect lasts for 8s and can be triggered 1 time(s) every 0.5s.",
+  passiveData: [
+    {
+      key: "BasicAttackDMGBonus",
+      hasStacks: true,
+      modifier: "BasicAttackDMGBonus",
+      modifierByRefinement: {
+        "1": 0.032,
+        "2": 0.04,
+        "3": 0.048,
+        "4": 0.056,
+        "5": 0.064,
+      },
+      minStacks: 0,
+      maxStacks: 5,
+      details:
+        "When hitting a target with Basic Attacks, increases Basic Attack DMG Bonus by 3.2%/4%/4.8%/5.6%/6.4%, stacking up to 5 time(s). This effect lasts for 8s and can be triggered 1 time(s) every 0.5s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

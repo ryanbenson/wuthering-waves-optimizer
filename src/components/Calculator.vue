@@ -37,7 +37,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert alert--info">Team buffs are now available! 👥</div>
+          <div class="alert" v-if="false">Yinlin is now available!⚡</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -478,6 +478,11 @@
         </div>
       </div>
       <h2>Damage</h2>
+      <div class="panel mb-1">
+        All damages are total damage. If an attack hits multiple times, it will
+        show the total damage. Hover over the damage to see it broken down per
+        hit.
+      </div>
       <div class="calculation__damage__item">
         <span>Name</span>
         <span>Normal</span>
@@ -641,6 +646,8 @@ import CalculatorWeapons from "./CalculatorWeapons.vue";
 import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
+import { mainEchoesData } from "../echoes";
+import { allEchoBuffs } from "../buffs";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -691,7 +698,7 @@ export default defineComponent({
     const chosenChar = reactive({});
     const echoStats = reactive({});
     const characterLevel = ref("90");
-    const weaponType = ref("Swords");
+    const weaponType = ref("");
     const curScreen = ref("character");
     const damage = ref(0);
     const charactersList = ref([]);
@@ -1103,6 +1110,9 @@ export default defineComponent({
         const genericSkillDmgBonusResChain =
           charResonanceChainsData.value?.DMGBonus ?? 0;
         const genericSkillDmgBonusSelfBuff = charBuffsData.value?.DMGBonus ?? 0;
+        const genericSkillDmgBonusEchoBuff = echoStats.value?.DMGBonus ?? 0;
+        const genericSkillDmgBonusTeamEchoBuff =
+          teamBuffsData.value?.DMGBonus ?? 0;
         const extraDefIgnoreResonanceChain =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DEFIgnore`
@@ -1127,6 +1137,10 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
           ] ?? 0;
+        const talentModifierMultiplySelfBuff =
+          charBuffsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentModifierMultiply`
+          ] ?? 0;
         const totalDefIgnore =
           DefIgnore.value +
           extraDefIgnoreResonanceChain +
@@ -1135,7 +1149,9 @@ export default defineComponent({
           specificSkillDmgFromResonanceChains +
           specificSkillDmgFromCharBuffs +
           genericSkillDmgBonusResChain +
-          genericSkillDmgBonusSelfBuff;
+          genericSkillDmgBonusSelfBuff +
+          genericSkillDmgBonusTeamEchoBuff +
+          genericSkillDmgBonusEchoBuff / 100;
         const teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         const baseResistReduction = ResistReduction.value ?? 0;
@@ -1153,6 +1169,8 @@ export default defineComponent({
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
           teamBuffDmgDeepenForAttackType;
+        const totalTalentModifierMultiply =
+          talentModifierMultiply + talentModifierMultiplySelfBuff;
 
         return calcDamage(
           characterLevel.value,
@@ -1169,7 +1187,7 @@ export default defineComponent({
           instanceDmgCritRate,
           instanceDmgCritDMG,
           totalTalentModifierAdd,
-          talentModifierMultiply
+          totalTalentModifierMultiply
         );
       };
 
@@ -1465,7 +1483,6 @@ $tooltip-background-color: $sidebar-background-color;
   }
 }
 .character__selection__avatar {
-  background: url(https://wuthering.wiki/img/role_1304.png);
   width: 100px;
   height: 100px;
   background-repeat: no-repeat;
@@ -1495,5 +1512,18 @@ $tooltip-background-color: $sidebar-background-color;
   .results {
     display: none !important;
   }
+}
+.panel {
+  margin-top: 1rem;
+  background-color: #161616;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+
+  @media (prefers-color-scheme: light) {
+    background-color: #f8f8f8;
+  }
+}
+.mb-1 {
+  margin-bottom: 1rem;
 }
 </style>

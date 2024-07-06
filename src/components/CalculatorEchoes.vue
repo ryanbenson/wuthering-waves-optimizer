@@ -101,13 +101,82 @@
       </div>
     </div>
     <div class="total-cost">Total Cost: {{ totalCost }} / 12</div>
+    <h3>Main Echo</h3>
+    <div class="main-echo__selection">
+      <div
+        :style="{
+          backgroundImage: `url(${chosenMainEchoImage})`,
+        }"
+        class="main-echo__image"></div>
+      <select name="mainEcho" v-model="mainEcho">
+        <optgroup label="Calamity">
+          <option
+            v-for="option in mainEchoOptions.Calamity"
+            :key="option.key"
+            :value="option.key">
+            {{ option.name }}
+          </option>
+        </optgroup>
+        <optgroup label="Overlord">
+          <option
+            v-for="option in mainEchoOptions.Overlord"
+            :key="option.key"
+            :value="option.key">
+            {{ option.name }}
+          </option>
+        </optgroup>
+        <optgroup label="Elite">
+          <option
+            v-for="option in mainEchoOptions.Elite"
+            :key="option.key"
+            :value="option.key">
+            {{ option.name }}
+          </option>
+        </optgroup>
+        <optgroup label="Common">
+          <option
+            v-for="option in mainEchoOptions.Common"
+            :key="option.key"
+            :value="option.key">
+            {{ option.name }}
+          </option>
+        </optgroup>
+      </select>
+    </div>
+    <div
+      v-if="chosenMainEchoData"
+      class="main-echo__details"
+      v-html="chosenMainEchoData.details"></div>
+    <div class="main-echo__enabled" v-if="chosenMainEchoHasBuffs">
+      <label>
+        <input
+          type="checkbox"
+          v-model="mainEchoBuffEnabled"
+          name="mainEchoBuffEnabled"
+          @change="updateTotalStats" />
+        Enabled?</label
+      >
+      <div v-if="mainEchoHasStacks">
+        <label>Stacks:</label>
+        <input
+          v-model.number="mainEchoStacks"
+          type="number"
+          min="0"
+          :max="mainEchoMaxStacks"
+          @input="updateTotalStats" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { mainEchoesData } from "../echoes/index.ts";
 export default {
   data() {
     return {
+      mainEcho: null,
+      mainEchoBuffEnabled: false,
+      mainEchoStacks: 0,
       echoes: Array(5)
         .fill()
         .map(() => ({
@@ -326,6 +395,25 @@ export default {
         }
       }
 
+      // process the main echo buffs, only if enabled
+      if (this.mainEchoBuffEnabled) {
+        for (const mainEchoBuff of this.chosenMainEchoBuffs) {
+          // we're dealing with full numbers right now, not decimals,
+          // so multiply * 100
+          // TODO: Remove this when we refactor this whole thing to use decimals
+          if (this.mainEchoHasStacks) {
+            const buffVal = mainEchoBuff.modifierValue * 100;
+            stats[mainEchoBuff.modifier] =
+              (stats[mainEchoBuff.modifier] || 0) +
+              buffVal * this.mainEchoStacks;
+          } else {
+            const buffVal = mainEchoBuff.modifierValue * 100;
+            stats[mainEchoBuff.modifier] =
+              (stats[mainEchoBuff.modifier] || 0) + buffVal;
+          }
+        }
+      }
+
       for (const setBonus of this.setBonuses) {
         if (setBonus.type) {
           const setBonusEffect = this.setBonusEffects[setBonus.type];
@@ -351,6 +439,53 @@ export default {
 
       this.totalStats = stats;
       this.$emit("update-stats", this.totalStats);
+    },
+  },
+  computed: {
+    mainEchoesData() {
+      return { ...mainEchoesData };
+    },
+    chosenMainEchoData() {
+      if (!this.mainEcho) {
+        return null;
+      }
+      return this.mainEchoesData?.[this.mainEcho];
+    },
+    chosenMainEchoBuffs() {
+      if (!this.chosenMainEchoData) {
+        return [];
+      }
+      return this.chosenMainEchoData?.modifiers ?? [];
+    },
+    chosenMainEchoHasBuffs() {
+      return this.chosenMainEchoBuffs?.length > 0;
+    },
+    mainEchoOptions() {
+      const echoes = {
+        Calamity: [],
+        Overlord: [],
+        Elite: [],
+        Common: [],
+      };
+      const mainEchoValues = Object.values(this.mainEchoesData);
+      mainEchoValues.forEach((echo) => {
+        if (echo?.class && echoes?.[echo.class]) {
+          echoes[echo.class].push(echo);
+        }
+      });
+      return echoes;
+    },
+    chosenMainEchoImage() {
+      return this.chosenMainEchoData?.image ?? "/images/echoes/monsters.png";
+    },
+    mainEchoHasStacks() {
+      return this.chosenMainEchoData?.hasStacks ?? false;
+    },
+    mainEchoMinStacks() {
+      return this.chosenMainEchoData?.minStacks ?? 0;
+    },
+    mainEchoMaxStacks() {
+      return this.chosenMainEchoData?.maxStacks ?? 0;
     },
   },
 };
@@ -444,5 +579,25 @@ export default {
 .sub-stat__input {
   max-width: 3rem;
   width: 3rem;
+}
+.main-echo__image {
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  display: block;
+  background-size: contain;
+  border-radius: 100%;
+  border: 1px solid white;
+}
+.main-echo__selection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  padding-bottom: 2rem;
+}
+.main-echo__enabled {
+  margin-top: 1rem;
 }
 </style>

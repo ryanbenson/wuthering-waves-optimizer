@@ -41,7 +41,7 @@ export const buffs = [
     ],
     minStacks: 0,
     maxStacks: 0,
-    alwaysEnabled: true,
+    alwaysEnabled: false,
   },
   {
     key: "InherentSkillConvergedFlash",
@@ -50,13 +50,14 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "IntroSkillDMGBonus",
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["LoongsHalo"],
         modifierValue: 0.5,
       },
     ],
     minStacks: 0,
     maxStacks: 0,
-    alwaysEnabled: true,
+    alwaysEnabled: false,
   },
   {
     key: "StatBonusCritRate1",

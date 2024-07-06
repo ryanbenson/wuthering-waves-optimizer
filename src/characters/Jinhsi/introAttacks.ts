@@ -4,7 +4,7 @@ export const introAttacks = {
     '<div class="skilldescription">Attack the target, dealing <span class="Highlight">Spectro DMG</span>.</div>',
   attacks: [
     {
-      key: "SkillDMG",
+      key: "LoongsHalo",
       label: "Skill DMG",
       talents: {
         "1": "80.00%",

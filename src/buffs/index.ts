@@ -545,6 +545,36 @@ export const allEchoBuffs = [
     maxStacks: 0,
     alwaysEnabled: false,
   },
+  {
+    key: "ImpermanenceHeron",
+    name: "Impermanence Heron",
+    details: `<span class="skilldescription">If the current character uses their Outro Skill within the next <span class="Highlight">15s</span>, the next character’s damage dealt will be boosted by <span class="Highlight">12%</span> for 15s.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "BellBorne eochelone",
+    name: "Bell-Borne Geochelone",
+    details: `<span class="skilldescription">The Bell-Borne Shield provides <span class="Highlight">50.00%</span> DMG Reduction and <span class="Highlight">10.0%</span> DMG Boost for the current team members, and disappears after the current character is hit for 3 times.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DMGBonus",
+        modifierValue: 0.10,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allCharacters: string[] = [

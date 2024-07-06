@@ -59,7 +59,7 @@ import { mapActions, mapState } from "pinia";
 export default {
   props: {
     character: { type: String, required: true },
-    weaponType: { type: String, default: "Swords" },
+    weaponType: { type: String, default: "" },
   },
   components: { CalculatorWeaponsPassive },
   data() {
@@ -67,7 +67,6 @@ export default {
       chosenWeapon: null,
       weaponPassiveStats: {},
       weaponsList: [],
-      weaponPassives: [],
     };
   },
   computed: {
@@ -103,9 +102,6 @@ export default {
         });
       },
     },
-    // weaponPassiveStats() {
-    //   return this.currentCharacter?.weaponPassiveStats ?? {};
-    // },
     weaponLevelOptions() {
       return [
         "1",
@@ -133,23 +129,40 @@ export default {
     weaponDescription() {
       return this.chosenWeapon?.info?.description ?? null;
     },
+    weaponPassives() {
+      const passives = this.chosenWeapon?.info?.passiveData ?? [];
+      return JSON.parse(JSON.stringify(passives));
+    },
   },
   watch: {
-    weaponLevel: async function (weaponLevel) {
-      if (weaponLevel) {
-        this.updateWeaponStats();
-      }
+    weaponLevel: {
+      handler: async function (weaponLevel) {
+        if (weaponLevel) {
+          this.updateWeaponStats();
+        }
+      },
+      immediate: true,
     },
-    refinement: async function (refinement) {
-      if (refinement) {
-        this.updateWeaponStats();
-      }
+    refinement: {
+      handler: async function (refinement) {
+        if (refinement) {
+          this.updateWeaponStats();
+        }
+      },
+      immediate: true,
     },
-    weaponType: async function () {
-      await this.updateWeapons();
+    weaponType: {
+      handler: async function () {
+        await this.updateWeapons();
+        await this.weaponChanged();
+      },
+      immediate: true,
     },
-    weapon: async function (newWeapon) {
-      await this.weaponChanged(newWeapon);
+    weapon: {
+      handler: async function () {
+        await this.weaponChanged();
+      },
+      immediate: true,
     },
   },
   methods: {
@@ -185,26 +198,26 @@ export default {
       this.weaponPassiveStats[data.stat] = data.value;
       await this.updateWeaponStats();
     },
-    async weaponChanged(weapon) {
-      if (!weapon) {
-        this.weaponPassives = [];
-        this.updateWeaponStats();
-        return null;
+    async weaponChanged() {
+      if (!this.weaponType) {
+        return;
       }
-      const weaponChosen = await getWeaponByName(this.weaponType, weapon);
-      this.chosenWeapon = weaponChosen;
-      this.weaponPassiveStats = {};
-      this.setWeaponPassives();
+      try {
+        if (!this.weapon) {
+          this.weaponPassives = [];
+          this.updateWeaponStats();
+          return null;
+        }
+        const weaponChosen = await getWeaponByName(
+          this.weaponType,
+          this.weapon
+        );
+        this.chosenWeapon = weaponChosen;
+        this.weaponPassiveStats = {};
+      } catch (error) {
+        console.log("Failed to find weapon");
+      }
     },
-    setWeaponPassives() {
-      this.weaponPassives = [];
-      const passives = this.chosenWeapon?.info?.passiveData ?? [];
-      this.weaponPassives = JSON.parse(JSON.stringify(passives));
-      this.updateWeaponStats();
-    },
-  },
-  async mounted() {
-    await this.updateWeapons();
   },
 };
 </script>

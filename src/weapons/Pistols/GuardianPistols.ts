@@ -6,6 +6,24 @@ const weaponInfo: WeaponInfo = {
   rarity: 3,
   passiveName: "Unity",
   passiveValue: "Increases Resonance Skill DMG Bonus by 12%/15%/18%/21%/24%.",
+  passiveData: [
+    {
+      key: "ResonanceSkillDMGBonus",
+      hasStacks: false,
+      modifier: "ResonanceSkillDMGBonus",
+      modifierByRefinement: {
+        "1": 0.12,
+        "2": 0.15,
+        "3": 0.18,
+        "4": 0.21,
+        "5": 0.24,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details: "Increases Resonance Skill DMG Bonus by 12%/15%/18%/21%/24%.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

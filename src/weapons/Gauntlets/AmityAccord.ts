@@ -7,6 +7,25 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Camaraderie",
   passiveValue:
     "When Intro Skill is released, increases Resonance Liberation DMG Bonus by 20%/25%/30%/35%/40%, lasting for 15s.",
+  passiveData: [
+    {
+      key: "ResonanceLiberationDMGBonus",
+      hasStacks: false,
+      modifier: "ResonanceSkillDMGBonus",
+      modifierByRefinement: {
+        "1": 0.2,
+        "2": 0.25,
+        "3": 0.3,
+        "4": 0.35,
+        "5": 0.4,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When Intro Skill is released, increases Resonance Liberation DMG Bonus by 20%/25%/30%/35%/40%, lasting for 15s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

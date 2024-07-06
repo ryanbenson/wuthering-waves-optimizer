@@ -7,6 +7,57 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Electric Amplification",
   passiveValue:
     "Increases the DMG Bonus of all Resonance Attributes by 12%/15%/18%/21%/24%. When Resonance Skill hits a target, increases ATK by 12%/15%/18%/21%/24%, stacking up to 2. When the equipped character is not on the field, increases their ATK by an additional 12%/15%/18%/21%/24%.",
+  passiveData: [
+    {
+      key: "AllElementAttributeBonus",
+      hasStacks: false,
+      modifier: "AllElementAttributeBonus",
+      modifierByRefinement: {
+        "1": 0.12,
+        "2": 0.15,
+        "3": 0.18,
+        "4": 0.21,
+        "5": 0.24,
+      },
+      details:
+        "Increases the DMG Bonus of all Resonance Attributes by 12%/15%/18%/21%/24%.",
+      alwaysEnabled: true,
+    },
+    {
+      key: "ATK1",
+      hasStacks: true,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.12,
+        "2": 0.15,
+        "3": 0.18,
+        "4": 0.21,
+        "5": 0.24,
+      },
+      minStacks: 0,
+      maxStacks: 2,
+      details:
+        "When Resonance Skill hits a target, increases ATK by 12%/15%/18%/21%/24%, stacking up to 2",
+      alwaysEnabled: false,
+    },
+    {
+      key: "ATK2",
+      hasStacks: false,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.12,
+        "2": 0.15,
+        "3": 0.18,
+        "4": 0.21,
+        "5": 0.24,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When the equipped character is not on the field, increases their ATK by an additional 12%/15%/18%/21%/24%.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

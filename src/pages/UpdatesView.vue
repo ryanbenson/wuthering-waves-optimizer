@@ -3,17 +3,63 @@
     <h1>Upcoming Updates</h1>
     <ul>
       <li>Better UI</li>
-      <li>Mobile support</li>
       <li>More characters</li>
       <li>More weapons</li>
-      <li>Main echo buffs</li>
-      <li>Team Buffs</li>
       <li>Custom rotations</li>
       <li>Persisting your configurations in your browser</li>
       <li>Food</li>
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 6, 2024</h3>
+    <ul>
+      <li>Fixes character level bug when using ascension level (with a +)</li>
+    </ul>
+    <h3>July 3, 2024</h3>
+    <ul>
+      <li>
+        Fixes weapon issues where if you changed weapons or adjusts passives the
+        stats wouldn't be accurate
+      </li>
+      <li>Fixed Jinhsi's intro buff</li>
+    </ul>
+    <h3>July 2, 2024</h3>
+    <ul>
+      <li>Releases Yinlin</li>
+    </ul>
+    <h3>July 1, 2024</h3>
+    <ul>
+      <li>Adds Impermanence Heron to team buffs</li>
+      <li>Text fix for Jinhsi S3, it was calculating properly though</li>
+    </ul>
+    <h3>June 30, 2024</h3>
+    <ul>
+      <li>Releases main echo buffs</li>
+      <li>Simplify and merge Jinhsi S6 into one toggle</li>
+      <li>Fix Jue echo, and add a missing echo</li>
+    </ul>
+    <h3>June 29, 2024</h3>
+    <ul>
+      <li>Adjust Jinhsi R6 Incandescence 45%.</li>
+      <li>
+        Fixes Changli Inherit skill Inherent Skill: Secret Strategist to only
+        apply to the noted skills.
+      </li>
+    </ul>
+    <h3>June 28, 2024</h3>
+    <ul>
+      <li>
+        Fixes Jinhsi R6 45% multiplier with how it interacts with Incandescence
+      </li>
+    </ul>
+    <h3>June 27, 2024</h3>
+    <ul>
+      <li>Fixes Jinhsi intro buff</li>
+      <li>
+        Supports negative enemy resist shred handling now that resist shred
+        effects are in
+      </li>
+    </ul>
     <h3>June 26, 2024</h3>
     <ul>
       <li>Danjin is implemented</li>

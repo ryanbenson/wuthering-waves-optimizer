@@ -1,5 +1,13 @@
 export function getCharactersAvailable(): string[] {
-  return ["Jinhsi", "Changli", "Jiyan", "Calcharo", "Taoqi", "Danjin"];
+  return [
+    "Jinhsi",
+    "Changli",
+    "Yinlin",
+    "Jiyan",
+    "Calcharo",
+    "Taoqi",
+    "Danjin",
+  ];
 }
 
 export const allCharacters: string[] = [

@@ -13,6 +13,7 @@ import HomeView from "./pages/HomeView.vue";
 import OptimizerView from "./pages/OptimizerView.vue";
 import UpdatesView from "./pages/UpdatesView.vue";
 import InfoView from "./pages/InfoView.vue";
+import PrivacyView from "./pages/PrivacyView.vue";
 
 const routes = [
   { path: "/", component: HomeView },
@@ -20,6 +21,7 @@ const routes = [
   { path: "/optimizer", component: OptimizerView },
   { path: "/updates", component: UpdatesView },
   { path: "/info", component: InfoView },
+  { path: "/privacy", component: PrivacyView },
 ];
 
 const router = createRouter({

@@ -17,7 +17,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode3CelestialIncarnate",
     name: "Sequence Node 3: Celestial Incarnate",
-    details: `<span class="skilldescription">Gain 25% Incandescence and a stack of <span class="Highlight">Immortal's Descendancy</span> after casting Intro Skill <span class="Highlight">Loong's Halo</span>. Every stack of <span class="Highlight">Immortal's Descendancy</span> increases ATK by 25%, for up to 2 stacks, lasting for 20s.</span>`,
+    details: `<span class="skilldescription">Jinhsi gains one stack of <span class="Highlight">Immortal's Descendancy</span> after casting Intro Skill <span class="Highlight">Loong's Halo</span>. Each stack of <span class="Highlight">Immortal's Descendancy</span> increases Jinhsi's ATK by 25%, stacking up to 2 time(s) and lasting for 20s</span>.`,
     hasStacks: true,
     modifiers: [
       {
@@ -62,8 +62,8 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode6ComesSpringwhenChillExhausts1",
-    name: "Sequence Node 6: Comes Spring when Chill Exhausts: Skill Multiplier",
-    details: `<span class="skilldescription">DMG Multiplier percentage for Resonance Skill <span class="Highlight">Illuminous Epiphany</span> is increased by 45%.</span>`,
+    name: "Sequence Node 6: Comes Spring when Chill Exhausts",
+    details: `<span class="skilldescription">DMG Multiplier percentage for Resonance Skill <span class="Highlight">Illuminous Epiphany</span> is increased by 45%. The multiplier increase brought by Incandescence is additionally increased by 45%.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -74,34 +74,6 @@ export const resonanceChains = [
     ],
     minStacks: 0,
     maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode6ComesSpringwhenChillExhausts2",
-    name: "Sequence Node 6: Comes Spring when Chill Exhausts: Incandescence Buff",
-    details: `<span class="skilldescription">The multiplier increase brought by Incandescence is additionally increased by 45%.<br><br>Note: Re-enter your Incandescence stacks. <em>This will be fixed later.</em></span>`,
-    hasStacks: true,
-    modifiers: [
-      {
-        modifier: "Talent",
-        modifierTalentKey: "StarGlamourDMG",
-        modifierValue: {
-          "1": 0.45,
-          "2": 0.45,
-          "3": 0.45,
-          "4": 0.45,
-          "5": 0.45,
-          "6": 0.45,
-          "7": 0.45,
-          "8": 0.45,
-          "9": 0.45,
-          "10": 0.45,
-        },
-        modifierValueTalentRef: "forte",
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 50,
     alwaysEnabled: false,
   },
 ];

@@ -7,6 +7,42 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Guardian",
   passiveValue:
     "When Intro Skill is released, increases the caster's ATK by 8%/10%/12%/14%/16% and HP by 10%/12.5%/15%/17.5%/20%, lasting for 15s.",
+  passiveData: [
+    {
+      key: "ATK",
+      hasStacks: false,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.08,
+        "2": 0.1,
+        "3": 0.12,
+        "4": 0.14,
+        "5": 0.16,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When Intro Skill is released, increases the caster's ATK by 8%/10%/12%/14%/16%.",
+      alwaysEnabled: false,
+    },
+    {
+      key: "HP",
+      hasStacks: false,
+      modifier: "HP",
+      modifierByRefinement: {
+        "1": 0.1,
+        "2": 0.125,
+        "3": 0.15,
+        "4": 0.175,
+        "5": 0.2,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When Intro Skill is released, increases the caster's HP by 10%/12.5%/15%/17.5%/20%, lasting for 15s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

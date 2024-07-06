@@ -22,7 +22,7 @@ export const buffs = [
     hasStacks: true,
     modifiers: [
       {
-        modifier: "Fusion",
+        modifySpecificTalents: ["TrueSightConquestDMG", "TrueSightChargeDMG"],
         modifierValue: 0.05,
       },
     ],

@@ -7,6 +7,25 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Ever-changing",
   passiveValue:
     "When the Resonator dashes or dodges, increases ATK by 4%/5%/6%/7%/8%, stacking up to 3 time(s). This effect lasts for 8s.",
+  passiveData: [
+    {
+      key: "ATK",
+      hasStacks: true,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.04,
+        "2": 0.05,
+        "3": 0.06,
+        "4": 0.07,
+        "5": 0.08,
+      },
+      minStacks: 0,
+      maxStacks: 3,
+      details:
+        "When the Resonator dashes or dodges, increases ATK by 4%/5%/6%/7%/8%, stacking up to 3 time(s). This effect lasts for 8s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

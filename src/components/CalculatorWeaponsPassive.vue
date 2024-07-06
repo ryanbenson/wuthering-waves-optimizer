@@ -2,7 +2,7 @@
   <div>
     <p v-html="details"></p>
     <label v-if="!alwaysEnabled">
-      <input type="checkbox" v-model="isEnabled" @change="updateStats" />
+      <input type="checkbox" v-model="isEnabled" @change="updatedStats" />
       Enabled?
     </label>
     <span v-if="hasStacks">
@@ -12,7 +12,7 @@
         :min="minStacks"
         :max="maxStacks"
         @input="ensureMaxStacks"
-        @change="updateStats" />
+        @change="updatedStats" />
       Stacks
     </span>
   </div>
@@ -55,46 +55,22 @@ export default {
       default: false,
     },
     refinement: {
-      type: Number,
+      type: String,
     },
     passiveKey: {
       type: String,
     },
   },
-  computed: {
-    ...mapState(useCharacterStore, {
-      isEnabled: (state) =>
-        state.characters[this.character]?.weaponPassiveStats?.[this.passiveKey]
-          ?.isEnabled || false,
-      stacks: (state) =>
-        state.characters[this.character]?.weaponPassiveStats?.[this.passiveKey]
-          ?.stacks || 0,
-    }),
-    weaponPassiveStats() {
-      const data = {
-        stat: this.modifier,
-        value: 0,
-        key: this.passiveKey,
-        isEnabled: this.isEnabled,
-        stacks: this.stacks,
-      };
-      if (!this.isEnabled) {
-        return data;
-      }
-      if (!this.hasStacks) {
-        data.value = this.modifierByRefinement[this.refinement];
-        return data;
-      }
-      if (this.hasStacks) {
-        if (this.stacks === 0) {
-          return data;
-        }
-        const totalValue =
-          this.modifierByRefinement[this.refinement] * this.stacks;
-        data.value = totalValue;
-      }
-      return data;
-    },
+  data() {
+    return {
+      isEnabled: false,
+      stacks: 0,
+    };
+  },
+  watch: {
+    refinement: "updatedStats",
+    isEnabled: "updatedStats",
+    stacks: "updatedStats",
   },
   watch: {
     refinement: "updateStats",
@@ -116,6 +92,33 @@ export default {
       if (this.stacks > this.maxStacks) {
         this.stacks = this.maxStacks;
       }
+    },
+  },
+  computed: {
+    weaponPassiveStats() {
+      const data = {
+        stat: this.modifier,
+        value: 0,
+        key: this.passiveKey,
+      };
+      if (!this.isEnabled) {
+        return data;
+      }
+      if (!this.hasStacks) {
+        data.stat = this.modifier;
+        data.value = this.modifierByRefinement[this.refinement];
+        return data;
+      }
+      if (this.hasStacks) {
+        if (this.stacks === 0) {
+          return data;
+        }
+        data.stat = this.modifier;
+        const totalValue =
+          this.modifierByRefinement[this.refinement] * this.stacks;
+        data.value = totalValue;
+      }
+      return data;
     },
   },
   mounted() {

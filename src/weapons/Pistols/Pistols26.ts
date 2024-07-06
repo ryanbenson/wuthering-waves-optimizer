@@ -7,6 +7,25 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Omniscient",
   passiveValue:
     "When the Resonator takes no damage, increases ATK by 6%/7.5%/9%/10.5%/12% every 5s, stacking up to 2 time(s). This effect lasts for 8s. When the Resonator takes damage, reduces the number of stacks by 1 and restores their HP by 5%/6.25%/7.5%/8.75%/10%.",
+  passiveData: [
+    {
+      key: "ATK",
+      hasStacks: true,
+      modifier: "ATK",
+      modifierByRefinement: {
+        "1": 0.06,
+        "2": 0.075,
+        "3": 0.09,
+        "4": 0.105,
+        "5": 0.12,
+      },
+      minStacks: 0,
+      maxStacks: 2,
+      details:
+        "When the Resonator takes no damage, increases ATK by 6%/7.5%/9%/10.5%/12% every 5s, stacking up to 2 time(s).",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {
