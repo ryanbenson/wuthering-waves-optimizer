@@ -165,15 +165,15 @@ export const buffsByCharacter = {
     {
       key: "OutroSkillStrategyofDuality",
       name: "Outro Skill: Strategy of Duality",
-      details: `<div class="skilldescription">Changli's Outro Skill increases the switched-in Resonator's Fusion DMG by 20% and their Resonance Liberation DMG by 25%, lasting for 10s. Switching to another Resonator ends this effect.</div>`,
+      details: `<div class="skilldescription">The incoming Resonator has their Fusion DMG Amplified by 20% and Resonance Liberation DMG Amplified by 25% for 10s or until the Resonator is switched out.</div>`,
       hasStacks: false,
       modifiers: [
         {
-          modifier: "Fusion",
-          modifierValue: 0.25,
+          modifier: "DMGDeepen:Fusion",
+          modifierValue: 0.2,
         },
         {
-          modifier: "ResonanceLiberationDMGBonus",
+          modifier: "DMGDeepen:Liberation",
           modifierValue: 0.25,
         },
       ],
