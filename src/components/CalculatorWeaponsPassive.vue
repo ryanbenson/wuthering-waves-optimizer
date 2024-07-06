@@ -65,14 +65,25 @@ export default {
     return {};
   },
   watch: {
-    refinement: "updatedStats",
-    isEnabled: "updatedStats",
-    stacks: "updatedStats",
-  },
-  watch: {
-    refinement: "updateStats",
-    isEnabled: "updateStats",
-    stacks: "updateStats",
+    // we're using immediate so it'll react when we get data from the store
+    refinement: {
+      handler: async function () {
+        this.updateStats();
+      },
+      immediate: true,
+    },
+    isEnabled: {
+      handler: async function () {
+        this.updateStats();
+      },
+      immediate: true,
+    },
+    stacks: {
+      handler: async function () {
+        this.updateStats();
+      },
+      immediate: true,
+    },
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterWeaponData"]),
