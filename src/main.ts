@@ -36,4 +36,9 @@ pinia.use(
   })
 );
 
-createApp(App).use(pinia).use(router).use(FloatingVue).mount("#app");
+const app = createApp(App).use(pinia).use(router).use(FloatingVue);
+
+import { useCharacterStore } from "./stores/character";
+const characterStore = useCharacterStore();
+
+app.mount("#app");

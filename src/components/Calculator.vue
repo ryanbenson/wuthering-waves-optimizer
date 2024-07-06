@@ -150,7 +150,9 @@
 
       <div class="screen--character" v-show="curScreen === 'weapon'">
         <CalculatorWeapons
+          v-if="character"
           :key="character"
+          :character="character"
           @update-weapon="handleWeaponUpdated"
           :weapon-type="weaponType"></CalculatorWeapons>
       </div>
@@ -639,8 +641,6 @@ import CalculatorWeapons from "./CalculatorWeapons.vue";
 import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
-import { useCharactersStore } from "../stores/characters";
-import { useWeaponsStore } from "../stores/weapons";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -666,39 +666,6 @@ export default defineComponent({
     CalculatorResonanceChains,
   },
   setup() {
-    const charactersStore = useCharactersStore();
-    const weaponsStore = useWeaponsStore();
-    charactersStore.changeCharacter("Changli");
-    charactersStore.updateActiveCharacterBuffs({
-      FieryFeather: {
-        isEnabled: true,
-      },
-      InherentSkillSecretStrategist: {
-        isEnabled: true,
-        stacks: 4,
-      },
-    });
-    charactersStore.updateActiveCharacterResonanceChains({
-      SequenceNode1HiddenThoughts: {
-        isEnabled: true,
-      },
-      SequenceNode2PursuitofDesires: {
-        isEnabled: false,
-      },
-    });
-    weaponsStore.changeWeapon("BlazingBrilliance");
-    weaponsStore.updateActiveWeaponLevel("40");
-    weaponsStore.updateActiveWeaponRefinement("3");
-    weaponsStore.updateActiveWeaponPassives({
-      ATK: {
-        isEnabled: true,
-      },
-      ResonanceSkillDMGBonus: {
-        isEnabled: true,
-        stacks: 10,
-      },
-    });
-
     const formData = reactive<FormData>({
       enemyLevel: 90,
       enemyResist: 0.1,

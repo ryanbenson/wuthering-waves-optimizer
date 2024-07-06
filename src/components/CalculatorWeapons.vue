@@ -1,11 +1,8 @@
 <template>
   <div class="data-input">
     <div class="form__group field">
-      <select
-        name="weapon"
-        v-model="weapon"
-        class="form__field"
-        @input="weaponChanged">
+      <select name="weapon" v-model="weapon" class="form__field">
+        <option :value="null">Choose a weapon</option>
         <option v-for="weap in weaponsList" :key="weap" :value="weap">
           {{ weap }}
         </option>
@@ -31,23 +28,24 @@
     <div v-if="weaponDescription" class="weapon__desc">
       {{ weaponDescription }}
     </div>
-    {{ weapon }}
     <div v-if="hasWeaponPassive" class="weapon__passives" :key="weapon">
       <CalculatorWeaponsPassive
         v-for="(weaponPassive, i) in weaponPassives"
         class="weapon__passive"
         :key="weaponPassive.key"
+        :character="character"
+        :passive-key="weaponPassive.key"
         :has-stacks="weaponPassive.hasStacks"
         :modifier="weaponPassive.modifier"
         :modifier-by-refinement="weaponPassive.modifierByRefinement"
-        :max-stacks="weaponPassive.maxStacks"
         :min-stacks="weaponPassive.minStacks"
+        :max-stacks="weaponPassive.maxStacks"
         :always-enabled="weaponPassive.alwaysEnabled"
         :details="weaponPassive.details"
         :refinement="refinement"
-        :duplicate-modifier="weaponPassive.duplicateModifier"
-        @updated-weapon-stats="handleUpdatedWeaponStats">
-      </CalculatorWeaponsPassive>
+        @updated-weapon-stats="
+          handleUpdatedWeaponStats
+        "></CalculatorWeaponsPassive>
     </div>
   </div>
 </template>
@@ -55,82 +53,59 @@
 <script>
 import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
 import CalculatorWeaponsPassive from "./CalculatorWeaponsPassive.vue";
+import { useCharacterStore } from "../stores/character";
+import { mapActions, mapState } from "pinia";
+
 export default {
   props: {
-    weaponType: {
-      type: String,
-      default: "Swords",
-    },
+    character: { type: String, required: true },
+    weaponType: { type: String, default: "Swords" },
   },
   components: { CalculatorWeaponsPassive },
   data() {
     return {
-      weapon: null,
-      weaponsList: [],
-      weaponLevel: "90",
       chosenWeapon: null,
-      refinement: 1,
       weaponPassiveStats: {},
+      weaponsList: [],
       weaponPassives: [],
     };
   },
-  watch: {
-    weaponLevel: async function (weaponLevel) {
-      if (weaponLevel) {
-        this.updateWeaponStats();
-      }
-    },
-    weaponType: async function () {
-      await this.updateWeapons();
-      await this.setFirstWeapon();
-    },
-  },
-  methods: {
-    async updateWeaponStats() {
-      const { attack, modifier, modifierValue } =
-        this.chosenWeapon.getWeaponDataByLevel(this.weaponLevel);
-      const weaponData = {
-        attack,
-        modifier,
-        modifierValue,
-        weaponPassiveStats: this.weaponPassiveStats,
-      };
-      this.$emit("update-weapon", weaponData);
-    },
-    async setWeapon() {
-      const weaponChosen = await getWeaponByName(this.weaponType, this.weapon);
-      this.chosenWeapon = weaponChosen;
-    },
-    async updateWeapons() {
-      this.weaponsList = getWeaponsByType(this.weaponType);
-    },
-    async handleUpdatedWeaponStats(data) {
-      this.weaponPassiveStats[data.stat] = data.value;
-      await this.updateWeaponStats();
-    },
-    async weaponChanged(e) {
-      const weapon = e.target.value;
-      const weaponChosen = await getWeaponByName(this.weaponType, weapon);
-      this.chosenWeapon = weaponChosen;
-      this.weaponPassiveStats = {};
-      this.setWeaponPassives();
-    },
-    setWeaponPassives() {
-      this.weaponPassives = [];
-      const passives = this.chosenWeapon?.info?.passiveData ?? [];
-      this.weaponPassives = JSON.parse(JSON.stringify(passives));
-      this.updateWeaponStats();
-    },
-    async setFirstWeapon() {
-      const weapon = this.weaponsList[0];
-      this.weapon = weapon;
-      const weaponChosen = await getWeaponByName(this.weaponType, weapon);
-      this.chosenWeapon = weaponChosen;
-      this.weaponPassiveStats = {};
-      this.setWeaponPassives();
-    },
-  },
   computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+    weapon: {
+      get() {
+        return this.currentCharacter?.weapon ?? null;
+      },
+      async set(value) {
+        await this.setCharacterWeaponData(this.character, { weapon: value });
+      },
+    },
+    weaponLevel: {
+      get() {
+        return this.currentCharacter?.weaponLevel ?? "90";
+      },
+      async set(value) {
+        await this.setCharacterWeaponData(this.character, {
+          weaponLevel: value,
+        });
+      },
+    },
+    refinement: {
+      get() {
+        return this.currentCharacter?.refinement ?? "1";
+      },
+      async set(value) {
+        await this.setCharacterWeaponData(this.character, {
+          refinement: value,
+        });
+      },
+    },
+    // weaponPassiveStats() {
+    //   return this.currentCharacter?.weaponPassiveStats ?? {};
+    // },
     weaponLevelOptions() {
       return [
         "1",
@@ -153,22 +128,83 @@ export default {
       return ["1", "2", "3", "4", "5"];
     },
     hasWeaponPassive() {
-      if (!this.weaponPassives || this.weaponPassives.length < 1) {
-        return false;
-      }
-      return true;
+      return this.weaponPassives && this.weaponPassives.length > 0;
     },
-    // weaponPassives() {
-    //   const passives = this.chosenWeapon?.info?.passiveData ?? [];
-    //   return JSON.parse(JSON.stringify(passives));
-    // },
     weaponDescription() {
       return this.chosenWeapon?.info?.description ?? null;
     },
   },
+  watch: {
+    weaponLevel: async function (weaponLevel) {
+      if (weaponLevel) {
+        this.updateWeaponStats();
+      }
+    },
+    refinement: async function (refinement) {
+      if (refinement) {
+        this.updateWeaponStats();
+      }
+    },
+    weaponType: async function () {
+      await this.updateWeapons();
+    },
+    weapon: async function (newWeapon) {
+      await this.weaponChanged(newWeapon);
+    },
+  },
+  methods: {
+    ...mapActions(useCharacterStore, ["setCharacterWeaponData"]),
+    async updateWeaponStats() {
+      if (this.chosenWeapon) {
+        const { attack, modifier, modifierValue } =
+          this.chosenWeapon.getWeaponDataByLevel(this.weaponLevel);
+        const weaponData = {
+          attack,
+          modifier,
+          modifierValue,
+          weaponPassiveStats: { ...this.weaponPassiveStats },
+        };
+        this.$emit("update-weapon", weaponData);
+      } else {
+        const weaponData = {
+          attack: 0,
+          modifier: null,
+          modifierValue: null,
+          weaponPassiveStats: {},
+        };
+        this.$emit("update-weapon", weaponData);
+      }
+    },
+    async updateWeapons() {
+      this.weaponsList = getWeaponsByType(this.weaponType);
+      this.weaponPassiveStats = {};
+      this.chosenWeapon = null;
+      this.updateWeaponStats();
+    },
+    async handleUpdatedWeaponStats(data) {
+      this.weaponPassiveStats[data.stat] = data.value;
+      await this.updateWeaponStats();
+    },
+    async weaponChanged(weapon) {
+      if (!weapon) {
+        this.weaponPassives = [];
+        this.updateWeaponStats();
+        return null;
+      }
+      const weaponChosen = await getWeaponByName(this.weaponType, weapon);
+      this.chosenWeapon = weaponChosen;
+      this.weaponPassiveStats = {};
+      this.setWeaponPassives();
+    },
+    setWeaponPassives() {
+      this.weaponPassives = [];
+      const passives = this.chosenWeapon?.info?.passiveData ?? [];
+      this.weaponPassives = JSON.parse(JSON.stringify(passives));
+      this.updateWeaponStats();
+    },
+  },
   async mounted() {
-    this.updateWeapons();
-    await this.setFirstWeapon();
+    await this.updateWeapons();
   },
 };
 </script>
@@ -187,5 +223,11 @@ export default {
   span:first-of-type {
     font-weight: bold;
   }
+}
+.form__group.field {
+  margin: 0 0 1rem 0;
+}
+label.form__label {
+  margin-left: 1rem;
 }
 </style>
