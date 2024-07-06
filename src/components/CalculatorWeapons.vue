@@ -68,6 +68,7 @@ export default {
   components: { CalculatorWeaponsPassive },
   data() {
     return {
+      // this data we do not want in the store
       chosenWeapon: null,
       weaponPassiveStats: {},
       weaponsList: [],
@@ -75,9 +76,18 @@ export default {
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data from the store
+     * @returns {Object}
+     */
     currentCharacter() {
       return this.characters[this.character] ?? {};
     },
+    /**
+     * Getter/setter used in the form for the weapon choice
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {String|null}
+     */
     weapon: {
       get() {
         return this.currentCharacter?.weapon ?? null;
@@ -86,6 +96,11 @@ export default {
         await this.setCharacterWeaponData(this.character, { weapon: value });
       },
     },
+    /**
+     * Getter/setter used in the form for the weapon level
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {String|null}
+     */
     weaponLevel: {
       get() {
         return this.currentCharacter?.weaponLevel ?? "90";
@@ -96,6 +111,11 @@ export default {
         });
       },
     },
+    /**
+     * Getter/setter used in the form for the refinement choice
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {String|null}
+     */
     refinement: {
       get() {
         return this.currentCharacter?.refinement ?? "1";
@@ -106,6 +126,10 @@ export default {
         });
       },
     },
+    /**
+     * List of options for the weapon level
+     * @returns {Array}
+     */
     weaponLevelOptions() {
       return [
         "1",
@@ -124,21 +148,38 @@ export default {
         "90",
       ];
     },
+    /**
+     * List of options for the refinements options
+     * @returns {Array}
+     */
     weaponRefinementLevels() {
       return ["1", "2", "3", "4", "5"];
     },
+    /**
+     * Determines if there are any weapon passives or not
+     * @returns {Boolean}
+     */
     hasWeaponPassive() {
       return this.weaponPassives && this.weaponPassives.length > 0;
     },
+    /**
+     * The weapon description, typically in HTML
+     * @returns {String|null}
+     */
     weaponDescription() {
       return this.chosenWeapon?.info?.description ?? null;
     },
+    /**
+     * The weapon passives data
+     * @returns {Array}
+     */
     weaponPassives() {
       const passives = this.chosenWeapon?.info?.passiveData ?? [];
       return JSON.parse(JSON.stringify(passives));
     },
   },
   watch: {
+    // we're using immediate so it'll react when we get data from the store
     weaponLevel: {
       handler: async function (weaponLevel) {
         if (weaponLevel) {
@@ -174,6 +215,11 @@ export default {
       "setCharacterWeaponData",
       "resetCharacterWeaponPassives",
     ]),
+    /**
+     * Updates the weapon stats and send that off to the parent
+     * so we can update the stats and calcs
+     * @emtis update-weapon
+     */
     async updateWeaponStats() {
       if (this.chosenWeapon) {
         const { attack, modifier, modifierValue } =
@@ -195,16 +241,27 @@ export default {
         this.$emit("update-weapon", weaponData);
       }
     },
+    /**
+     * Updates the list of weapons to choose from
+     * It resets any weapon local state since the list changes
+     */
     async updateWeapons() {
       this.weaponsList = getWeaponsByType(this.weaponType);
       this.weaponPassiveStats = {};
       this.chosenWeapon = null;
       this.updateWeaponStats();
     },
+    /**
+     * Update our passive data and trigger other function to emit out
+     */
     async handleUpdatedWeaponStats(data) {
       this.weaponPassiveStats[data.stat] = data.value;
       await this.updateWeaponStats();
     },
+    /**
+     * Handler for when you change the weapon choice
+     * fetches the new weapon data and resets
+     */
     async weaponChanged() {
       if (!this.weaponType) {
         return;
