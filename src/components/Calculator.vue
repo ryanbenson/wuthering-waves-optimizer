@@ -167,6 +167,7 @@
           v-if="chosenChar?.value?.resonanceChains && isLoading === false">
           <CalculatorResonanceChains
             :key="character"
+            :character="character"
             :buffs="chosenChar?.value?.resonanceChains"
             :talent-data="talentData"
             @updated-character-resonance-chains="
