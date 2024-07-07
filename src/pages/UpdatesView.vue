@@ -14,6 +14,7 @@
     <h3>July 6, 2024</h3>
     <ul>
       <li>Fixes character level bug when using ascension level (with a +)</li>
+      <li>Fixes Changli outro team buff with proper translation and resulting deepen buff</li>
     </ul>
     <h3>July 3, 2024</h3>
     <ul>
