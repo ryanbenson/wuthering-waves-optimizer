@@ -93,7 +93,7 @@ export default {
         return this.currentCharacter?.weapon ?? null;
       },
       async set(value) {
-        await this.setCharacterWeaponData(this.character, { weapon: value });
+        await this.setCharacterData(this.character, { weapon: value });
       },
     },
     /**
@@ -106,7 +106,7 @@ export default {
         return this.currentCharacter?.weaponLevel ?? "90";
       },
       async set(value) {
-        await this.setCharacterWeaponData(this.character, {
+        await this.setCharacterData(this.character, {
           weaponLevel: value,
         });
       },
@@ -121,7 +121,7 @@ export default {
         return this.currentCharacter?.refinement ?? "1";
       },
       async set(value) {
-        await this.setCharacterWeaponData(this.character, {
+        await this.setCharacterData(this.character, {
           refinement: value,
         });
       },
@@ -212,7 +212,7 @@ export default {
   },
   methods: {
     ...mapActions(useCharacterStore, [
-      "setCharacterWeaponData",
+      "setCharacterData",
       "resetCharacterWeaponPassives",
     ]),
     /**

@@ -139,6 +139,7 @@
           <template v-if="chosenChar?.value?.buffs && isLoading === false">
             <CalculatorCharacterBuffs
               :key="character"
+              :character="character"
               :buffs="chosenChar?.value?.buffs"
               :talent-data="talentData"
               @updated-character-buffs="

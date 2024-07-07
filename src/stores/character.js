@@ -6,7 +6,7 @@ export const useCharacterStore = defineStore("character", {
     characters: {},
   }),
   actions: {
-    setCharacterWeaponData(characterId, weaponData) {
+    setCharacterData(characterId, weaponData) {
       const existingData = this.characters[characterId] ?? {};
       const udpatedData = merge(existingData, weaponData);
       this.characters[characterId] = udpatedData;

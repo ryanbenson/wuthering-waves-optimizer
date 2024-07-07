@@ -86,13 +86,13 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useCharacterStore, ["setCharacterWeaponData"]),
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
     /**
      * Updates the stats for the passive and emits up to the parent
      * @emits updated-weapon-stats
      */
     updateStats() {
-      this.setCharacterWeaponData(this.character, {
+      this.setCharacterData(this.character, {
         weaponPassiveStats: {
           ...this.weaponPassiveStats,
           [this.passiveKey]: this.weaponPassiveStats,
@@ -137,7 +137,7 @@ export default {
         data.weaponPassives[this.passiveKey] = {
           isEnabled: value,
         };
-        await this.setCharacterWeaponData(this.character, data);
+        await this.setCharacterData(this.character, data);
       },
     },
     /**
@@ -158,7 +158,7 @@ export default {
         data.weaponPassives[this.passiveKey] = {
           stacks: value,
         };
-        await this.setCharacterWeaponData(this.character, data);
+        await this.setCharacterData(this.character, data);
       },
     },
     /**
