@@ -6,9 +6,9 @@ export const useCharacterStore = defineStore("character", {
     characters: {},
   }),
   actions: {
-    setCharacterData(characterId, weaponData) {
+    setCharacterData(characterId, data) {
       const existingData = this.characters[characterId] ?? {};
-      const udpatedData = merge(existingData, weaponData);
+      const udpatedData = merge(existingData, data);
       this.characters[characterId] = udpatedData;
     },
     getCharacterWeaponData(characterId) {

@@ -688,10 +688,17 @@ export default defineComponent({
       calcCharStats();
     });
     watch(characterLevel, () => {
+      // set the character level in the store
+      const data = { characterLevel };
+      characterStore.setCharacterData(character.value, data);
       calcCharStats();
     });
 
     character.value = charactersList.value[0];
+
+    // set the character value
+    characterLevel.value =
+      characters.value?.[character.value]?.characterLevel ?? "90";
 
     const talentData = reactive({
       basic: characters.value?.[character.value]?.talents?.basic ?? 10,
