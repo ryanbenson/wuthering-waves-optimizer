@@ -69,79 +69,17 @@
               </div>
             </div>
           </div>
-          <div class="data-input--talents">
-            <div class="form__group field">
-              <label for="talentBasic" class="form__label"
-                >Basic: {{ talentData.basic }}</label
-              >
-              <input
-                v-model="talentData.basic"
-                name="talentBasic"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-            <div class="form__group field">
-              <label for="talentSkill" class="form__label"
-                >Skill: {{ talentData.skill }}</label
-              >
-              <input
-                v-model="talentData.skill"
-                name="talentSkill"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-            <div class="form__group field">
-              <label for="talentForte" class="form__label"
-                >Forte Circuit: {{ talentData.forte }}</label
-              >
-              <input
-                v-model="talentData.forte"
-                name="talentForte"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-            <div class="form__group field">
-              <label for="talentLiberation" class="form__label"
-                >Liberation: {{ talentData.liberation }}</label
-              >
-              <input
-                v-model="talentData.liberation"
-                name="talentLiberation"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-            <div class="form__group field">
-              <label for="talentIntro" class="form__label"
-                >Intro: {{ talentData.intro }}</label
-              >
-              <input
-                v-model="talentData.intro"
-                name="talentIntro"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-          </div>
+          <CalculatorTalents
+            :character="character"
+            @character-talent-updated="
+              handleCharacterTalentUpdated
+            "></CalculatorTalents>
           <template v-if="chosenChar?.value?.buffs && isLoading === false">
             <CalculatorCharacterBuffs
               :key="character"
               :character="character"
               :buffs="chosenChar?.value?.buffs"
-              :talent-data="talentData"
+              :talent-data="characters?.[character]?.talents"
               @updated-character-buffs="
                 handleUpdatedCharacterBuffs
               "></CalculatorCharacterBuffs>
@@ -169,7 +107,7 @@
             :key="character"
             :character="character"
             :buffs="chosenChar?.value?.resonanceChains"
-            :talent-data="talentData"
+            :talent-data="characters?.[character]?.talents"
             @updated-character-resonance-chains="
               handleUpdatedCharacterResonanceChains
             "></CalculatorResonanceChains>
@@ -638,6 +576,7 @@
 <script lang="ts">
 // @ts-nocheck
 import { defineComponent, reactive, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { calcDamage } from "../calculator/calculator";
 import {
   getCharactersAvailable,
@@ -648,21 +587,15 @@ import CalculatorWeapons from "./CalculatorWeapons.vue";
 import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
+import CalculatorTalents from "./CalculatorTalents.vue";
 import { mainEchoesData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
+import { useCharacterStore } from "../stores/character";
 
 interface FormData {
   [key: string]: number | string; // index signature
   enemyLevel: number;
   enemyResist: number;
-}
-
-interface TalentData {
-  basic: number;
-  skill: number;
-  forte: number;
-  liberation: number;
-  intro: number;
 }
 
 export default defineComponent({
@@ -673,18 +606,14 @@ export default defineComponent({
     CalculatorCharacterBuffs,
     CalculatorPartyBuffs,
     CalculatorResonanceChains,
+    CalculatorTalents,
   },
   setup() {
+    const characterStore = useCharacterStore();
+    const { characters } = storeToRefs(characterStore);
     const formData = reactive<FormData>({
       enemyLevel: 90,
       enemyResist: 0.1,
-    });
-    const talentData = reactive<TalentData>({
-      basic: 10,
-      skill: 10,
-      forte: 10,
-      liberation: 10,
-      intro: 10,
     });
     const weaponData = reactive({});
     const charBuffsData = reactive({});
@@ -761,11 +690,18 @@ export default defineComponent({
     watch(characterLevel, () => {
       calcCharStats();
     });
-    watch(talentData, () => {
-      calcCharStats();
-    });
 
     character.value = charactersList.value[0];
+
+    const talentData = reactive({
+      basic: characters.value?.[character.value]?.talents?.basic ?? 10,
+      skill: characters.value?.[character.value]?.talents?.skill ?? 10,
+      forte: characters.value?.[character.value]?.talents?.forte ?? 10,
+      liberation:
+        characters.value?.[character.value]?.talents?.liberation ?? 10,
+      intro: characters.value?.[character.value]?.talents?.intro ?? 10,
+    });
+
     const addBuffs = (source, target) => {
       if (source) {
         target.attackPercent += source?.ATK ? source.ATK * 100 : 0;
@@ -1275,9 +1211,15 @@ export default defineComponent({
       return Math.ceil(damage);
     };
 
+    const handleCharacterTalentUpdated = (data) => {
+      talentData[data.type] = data.value;
+      calcAllDamages();
+    };
+
     return {
       allDamages,
       character,
+      characters,
       characterLevel,
       characterLevelOptions,
       charactersList,
@@ -1290,13 +1232,13 @@ export default defineComponent({
       fields,
       formData,
       updateStatsEchoes,
-      talentData,
       totalAtk,
       totalHp,
       totalDef,
       totalCritRate,
       totalCritDMG,
       weaponType,
+      handleCharacterTalentUpdated,
       handleWeaponUpdated,
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
@@ -1318,7 +1260,6 @@ export default defineComponent({
       ResistReduction,
       weaponData,
       isLoading,
-      // weaponLevelOptions,
     };
   },
 });
@@ -1444,13 +1385,6 @@ $tooltip-background-color: $sidebar-background-color;
   width: 100%;
   justify-content: space-between;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-.data-input--talents {
-  padding: 1rem 0;
-  label {
-    min-width: 120px;
-    display: inline-block;
-  }
 }
 .alert {
   background: #126a5a;

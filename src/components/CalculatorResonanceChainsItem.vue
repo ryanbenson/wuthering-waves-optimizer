@@ -163,10 +163,9 @@ export default {
           } else if (modifierItem.modifier === "Talent") {
             // this is the rare case where the modifier value needs a reference to another talent level
             // specifically Jinhsi incandescence buff scales off of her forte talent
-            const talentVal =
-              modifierItem.modifierValue[
-                this.talentData[modifierItem.modifierValueTalentRef]
-              ];
+            const talentRef =
+              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+            const talentVal = modifierItem.modifierValue[talentRef];
             data[modifierItem.modifierTalentKey] = talentVal;
           } else if (modifierItem.modifier === "talentModifierMultiply") {
             // for buffs that apply talentModifierMultiply to the calcs
@@ -194,10 +193,9 @@ export default {
               modifierItem.modifierValue * this.stacks;
             data.modifySpecificTalents.push(modifierItem);
           } else if (modifierItem.modifier === "Talent") {
-            const talentVal =
-              modifierItem.modifierValue[
-                this.talentData[modifierItem.modifierValueTalentRef]
-              ];
+            const talentRef =
+              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+            const talentVal = modifierItem.modifierValue[talentRef];
             data[modifierItem.modifierTalentKey] = talentVal * this.stacks;
           } else {
             const totalValue = modifierItem.modifierValue * this.stacks;
