@@ -611,18 +611,10 @@ export default defineComponent({
   setup() {
     const characterStore = useCharacterStore();
     const { characters, activeCharacter } = storeToRefs(characterStore);
-    const formData = reactive<FormData>({
-      enemyLevel: 90,
-      enemyResist: 0.1,
-    });
     const weaponData = reactive({});
     const charBuffsData = reactive({});
     const teamBuffsData = reactive({});
     const charResonanceChainsData = reactive({});
-
-    watch(formData, async (updatedFormData: FormData) => {
-      handleCalculation(updatedFormData);
-    });
 
     const allDamages = reactive({});
     const chosenWeapon = reactive({});
@@ -703,6 +695,18 @@ export default defineComponent({
         initialCharacter = charactersList.value[0];
     }
     character.value = initialCharacter;
+
+    // seed initial enemy data with store data or default
+    const formData = reactive<FormData>({
+      enemyLevel: characters.value?.[character.value]?.enemyLevel ?? 90,
+      enemyResist: characters.value?.[character.value]?.enemyResist ?? 0.1,
+    });
+    watch(formData, async (updatedFormData: FormData) => {
+      // set the enemy data in the store per character
+      const data = { ...updatedFormData };
+      characterStore.setCharacterData(character.value, data);
+      handleCalculation(updatedFormData);
+    });
 
     // set the character value
     characterLevel.value =
