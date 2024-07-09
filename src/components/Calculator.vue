@@ -703,7 +703,6 @@ export default defineComponent({
         initialCharacter = charactersList.value[0];
     }
     character.value = initialCharacter;
-    console.log('using store', initialCharacter, activeCharacter?.value, charactersList.value[0]);
 
     // set the character value
     characterLevel.value =
