@@ -610,7 +610,7 @@ export default defineComponent({
   },
   setup() {
     const characterStore = useCharacterStore();
-    const { characters } = storeToRefs(characterStore);
+    const { characters, activeCharacter } = storeToRefs(characterStore);
     const formData = reactive<FormData>({
       enemyLevel: 90,
       enemyResist: 0.1,
@@ -678,6 +678,8 @@ export default defineComponent({
       isLoading.value = true;
       const chosen = await getCharByName(charName);
       chosenChar.value = chosen;
+      // set the character in the store
+      characterStore.setActiveCharacter(charName);
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
@@ -694,7 +696,8 @@ export default defineComponent({
       calcCharStats();
     });
 
-    character.value = charactersList.value[0];
+    // set the character to display, default to the first
+    character.value = activeCharacter.value ?? charactersList.value[0];
 
     // set the character value
     characterLevel.value =

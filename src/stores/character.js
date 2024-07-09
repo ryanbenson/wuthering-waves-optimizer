@@ -4,8 +4,12 @@ import { merge } from "lodash";
 export const useCharacterStore = defineStore("character", {
   state: () => ({
     characters: {},
+    activeCharacter: "",
   }),
   actions: {
+    setActiveCharacter(characterId) {
+      this.activeCharacter = characterId;
+    },
     setCharacterData(characterId, data) {
       const existingData = this.characters[characterId] ?? {};
       const udpatedData = merge(existingData, data);
