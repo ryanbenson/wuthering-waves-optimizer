@@ -697,7 +697,11 @@ export default defineComponent({
     });
 
     // set the character to display, default to the first
-    const initialCharacter = activeCharacter?.value ?? charactersList.value[0];
+    let initialCharacter = activeCharacter?.value;
+    // it can be a blank string, if so, set it to the first item
+    if (!initialCharacter) {
+        initialCharacter = charactersList.value[0];
+    }
     character.value = initialCharacter;
     console.log('using store', initialCharacter, activeCharacter?.value, charactersList.value[0]);
 
