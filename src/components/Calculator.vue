@@ -663,16 +663,6 @@ const decimalFormatter = new Intl.NumberFormat("en", {
   minimumFractionDigits: 1,
   roundingMode: 'floor',
 });
-const formatPercentageStat = decimalFormatter.format;
-
-const intFormatter = new Intl.NumberFormat("en", {
-  style: "decimal",
-  maximumFractionDigits: 0,
-  minimumFractionDigits: 0,
-  roundingMode: 'floor',
-});
-const formatDmgNumber = intFormatter.format;
-
 
 export default defineComponent({
   name: "Calculator",
