@@ -5,6 +5,8 @@ export const useCharacterStore = defineStore("character", {
   state: () => ({
     characters: {},
     activeCharacter: "",
+    enemyLevel: 90,
+    enemyResistance: 0.1,
   }),
   actions: {
     setActiveCharacter(characterId) {
@@ -23,5 +25,11 @@ export const useCharacterStore = defineStore("character", {
         this.characters[characterId].weaponPassives = {};
       }
     },
+    setEnemyLevel(level) {
+      this.enemylevel = level;
+    }
+    setEnemyResistance(resist) {
+      this.enemyResistance = resist;
+    }
   },
 });
