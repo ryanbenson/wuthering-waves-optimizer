@@ -697,8 +697,9 @@ export default defineComponent({
     });
 
     // set the character to display, default to the first
-    character.value = activeCharacter.value ?? charactersList.value[0];
-    console.log('using store', activeCharacter.value);
+    const initialCharacter = activeCharacter?.value ?? charactersList.value[0];
+    character.value = initialCharacter;
+    console.log('using store', initialCharacter, activeCharacter?.value, charactersList.value[0]);
 
     // set the character value
     characterLevel.value =
