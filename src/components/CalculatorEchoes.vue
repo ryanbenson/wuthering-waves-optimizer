@@ -1,6 +1,11 @@
 <template>
   <div>
-    <div v-for="(echo, index) in echoes" :key="index" class="echo-selector">
+    <CalculatorEcho
+      v-for="(echo, index) in echoes"
+      :key="index"
+      :index="index"
+      :character="character"
+      class="echo-selector">
       <label>Echo {{ index + 1 }}:</label>
       <div class="echo-setup">
         <!-- Cost Selection -->
@@ -55,7 +60,7 @@
           @input="updateTotalStats"
           class="sub-stat__input" />
       </div>
-    </div>
+    </CalculatorEcho>
     <div class="set-bonus-selector">
       <label>Set Bonuses:</label>
       <div>
@@ -171,7 +176,15 @@
 
 <script>
 import { mainEchoesData } from "../echoes/index.ts";
+import CalculatorEcho from "./CalculatorEcho.vue";
 export default {
+  props: {
+    character: {
+      type: String,
+      required: true,
+    },
+  },
+  components: { CalculatorEcho },
   data() {
     return {
       mainEcho: null,

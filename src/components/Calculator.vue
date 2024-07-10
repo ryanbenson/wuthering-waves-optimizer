@@ -97,7 +97,9 @@
       </div>
 
       <div class="screen--character" v-show="curScreen === 'echoes'">
-        <CalculatorEchoes @update-stats="updateStatsEchoes"></CalculatorEchoes>
+        <CalculatorEchoes
+          :character="character"
+          @update-stats="updateStatsEchoes"></CalculatorEchoes>
       </div>
 
       <div class="screen--character" v-show="curScreen === 'constellations'">
