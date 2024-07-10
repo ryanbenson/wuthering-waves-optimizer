@@ -50,6 +50,7 @@
           v-model.number="echo.subStats[i - 1].value"
           :min="getSubStatRange(echo.subStats[i - 1].type).min"
           :max="getSubStatRange(echo.subStats[i - 1].type).max"
+          :step="(getSubStatRange(echo.subStats[i - 1].type).max - echo.subStats[i - 1].value) < 1 ? round((getSubStatRange(echo.subStats[i - 1].type).max - echo.subStats[i - 1].value)) : 1"
           type="number"
           :disabled="!echo.subStats[i - 1].type"
           @input="updateTotalStats"
@@ -170,6 +171,7 @@
 </template>
 
 <script>
+import { round } from "lodash";
 import { mainEchoesData } from "../echoes/index.ts";
 export default {
   data() {
