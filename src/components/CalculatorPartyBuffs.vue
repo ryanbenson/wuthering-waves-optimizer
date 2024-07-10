@@ -41,6 +41,7 @@
       <CalculatorPartyBuff
         v-for="buff in buffsByCharacter[selectedCharacter1]"
         :key="buff.key"
+        :character="character"
         :unique-key="buff.key"
         :name="buff.name"
         :details="buff.details"
@@ -59,6 +60,7 @@
       <CalculatorPartyBuff
         v-for="buff in buffsByCharacter[selectedCharacter2]"
         :key="buff.key"
+        :character="character"
         :unique-key="buff.key"
         :name="buff.name"
         :details="buff.details"
@@ -77,6 +79,7 @@
       <CalculatorPartyBuff
         v-for="buff in allEchoBuffs"
         :key="buff.key"
+        :character="character"
         :unique-key="buff.key"
         :name="buff.name"
         :details="buff.details"
@@ -96,11 +99,13 @@
 import { buffsByCharacter, allEchoBuffs } from "../buffs/index.ts";
 import { allCharacters } from "../characters/characters.ts";
 import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
+import { mapActions, mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
 
 export default {
   name: "BuffSelector",
   props: {
-    currentCharacter: {
+    character: {
       type: String,
       required: true,
     },
@@ -116,15 +121,55 @@ export default {
       buffsDataEcho: [],
       // fake this for now, we don't seem to need it
       talentData: {},
-      selectedCharacter1: null,
-      selectedCharacter2: null,
     };
   },
   computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+    /**
+     * Getter/setter used in the form for the first teammate state
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    selectedCharacter1: {
+      get() {
+        return this.currentCharacter?.teamBuffs?.selectedCharacter1 ?? null;
+      },
+      async set(value) {
+        const data = {
+          teamBuffs: {
+            selectedCharacter1: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the first teammate state
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    selectedCharacter2: {
+      get() {
+        return this.currentCharacter?.teamBuffs?.selectedCharacter2 ?? null;
+      },
+      async set(value) {
+        const data = {
+          teamBuffs: {
+            selectedCharacter2: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
     availableCharacters() {
-      return this.allCharacters.filter(
-        (char) => char !== this.currentCharacter
-      );
+      return this.allCharacters.filter((char) => char !== this.character);
     },
     buffsFormatted() {
       const finalBuffData = {};
@@ -170,16 +215,23 @@ export default {
     },
   },
   watch: {
-    selectedCharacter1(newVal) {
-      this.buffsDataChar1 = [];
-      this.updatedStats();
+    selectedCharacter1: {
+      handler: async function (newVal) {
+        this.buffsDataChar1 = [];
+        this.updatedStats();
+      },
+      immediate: true,
     },
-    selectedCharacter2(newVal) {
-      this.buffsDataChar2 = [];
-      this.updatedStats();
+    selectedCharacter2: {
+      handler: async function (newVal) {
+        this.buffsDataChar2 = [];
+        this.updatedStats();
+      },
+      immediate: true,
     },
   },
   methods: {
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
     getCharacterImage(character) {
       if (!character) {
         return `/images/T_IconAchv_002.png`;

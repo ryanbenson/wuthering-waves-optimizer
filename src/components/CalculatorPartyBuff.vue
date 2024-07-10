@@ -18,8 +18,14 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
 export default {
   props: {
+    character: {
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
     },
@@ -55,17 +61,27 @@ export default {
     },
   },
   data() {
-    return {
-      isEnabled: false,
-      stacks: 0,
-    };
+    return {};
   },
   watch: {
     buffStats: function () {
       this.updatedStats();
     },
+    isEnabled: {
+      handler: async function () {
+        this.updatedStats();
+      },
+      immediate: true,
+    },
+    stacks: {
+      handler: async function () {
+        this.updatedStats();
+      },
+      immediate: true,
+    },
   },
   methods: {
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
     updatedStats() {
       this.$emit("updated-party-buff", {
         key: this.uniqueKey,
@@ -79,6 +95,61 @@ export default {
     },
   },
   computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+    /**
+     * Getter/setter used in the form for the isEnabled state for this passive
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    isEnabled: {
+      get() {
+        return (
+          this.currentCharacter?.teamBuffs?.buffs?.[this.uniqueKey]
+            ?.isEnabled ?? false
+        );
+      },
+      async set(value) {
+        const data = {
+          teamBuffs: {
+            buffs: {},
+          },
+        };
+        data.teamBuffs.buffs[this.uniqueKey] = {
+          isEnabled: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the stacks count state for this passive
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    stacks: {
+      get() {
+        return (
+          this.currentCharacter?.teamBuffs?.buffs?.[this.uniqueKey]?.stacks ?? 0
+        );
+      },
+      async set(value) {
+        const data = {
+          teamBuffs: {
+            buffs: {},
+          },
+        };
+        data.teamBuffs.buffs[this.uniqueKey] = {
+          stacks: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
     buffStats() {
       const data = {};
       if (!this.isEnabled) {

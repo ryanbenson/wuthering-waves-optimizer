@@ -116,7 +116,7 @@
 
       <div class="screen-character" v-show="curScreen === 'party'">
         <CalculatorPartyBuffs
-          :current-character="character"
+          :character="character"
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
