@@ -679,6 +679,9 @@ export default defineComponent({
       if (weaponType.value !== chosenChar.value?.basic?.weapon) {
         weaponType.value = chosenChar.value?.basic?.weapon ?? "Swords";
       }
+      // update the enemy data
+      formData.enemyLevel = characters.value?.[charName]?.enemyLevel ?? 90;
+      formData.enemyResist = characters.value?.[charName]?.enemyResist ?? 0.1;
       calcCharStats();
     });
     watch(characterLevel, () => {
@@ -692,7 +695,7 @@ export default defineComponent({
     let initialCharacter = activeCharacter?.value;
     // it can be a blank string, if so, set it to the first item
     if (!initialCharacter) {
-        initialCharacter = charactersList.value[0];
+      initialCharacter = charactersList.value[0];
     }
     character.value = initialCharacter;
 
