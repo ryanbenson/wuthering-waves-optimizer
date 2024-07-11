@@ -6,60 +6,6 @@
       :index="index"
       :character="character"
       class="echo-selector">
-      <label>Echo {{ index + 1 }}:</label>
-      <div class="echo-setup">
-        <!-- Cost Selection -->
-        <div class="cost-selector">
-          <label>Cost:</label>
-          <div class="cost-options">
-            <button
-              v-for="cost in [1, 3, 4]"
-              :key="cost"
-              :class="{ selected: echo.type == cost }"
-              @click="selectCost(index, cost)">
-              0{{ cost }}
-            </button>
-          </div>
-        </div>
-
-        <!-- Rank Selection -->
-        <div class="rank-selector">
-          <label>Rank:</label>
-          <div class="rank-options">
-            <div
-              v-for="rank in [2, 3, 4, 5]"
-              :key="rank"
-              :class="['rank-circle', { selected: echo.rank == rank }]"
-              :style="{ backgroundColor: rankColors[rank] }"
-              @click="selectRank(index, rank)"></div>
-          </div>
-        </div>
-      </div>
-      <select
-        v-model="echo.stat"
-        @change="updateTotalStats"
-        :disabled="!echo.type">
-        <option value="">Select Stat</option>
-        <option v-for="stat in getStats(echo.type)" :key="stat" :value="stat">
-          {{ getReadableLabel(stat) }}
-        </option>
-      </select>
-      <div v-for="i in 5" :key="i" class="sub-stat-selector">
-        <select v-model="echo.subStats[i - 1].type" @change="updateTotalStats">
-          <option value="">Select Sub Stat</option>
-          <option v-for="subStat in subStats" :key="subStat" :value="subStat">
-            {{ getReadableLabel(subStat) }}
-          </option>
-        </select>
-        <input
-          v-model.number="echo.subStats[i - 1].value"
-          :min="getSubStatRange(echo.subStats[i - 1].type).min"
-          :max="getSubStatRange(echo.subStats[i - 1].type).max"
-          type="number"
-          :disabled="!echo.subStats[i - 1].type"
-          @input="updateTotalStats"
-          class="sub-stat__input" />
-      </div>
     </CalculatorEcho>
     <div class="set-bonus-selector">
       <label>Set Bonuses:</label>
