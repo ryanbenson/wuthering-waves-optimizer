@@ -332,7 +332,7 @@ export default {
      */
     rank: {
       get() {
-        return this.currentCharacter?.echoes?.[this.index]?.rank ?? null;
+        return this.currentCharacter?.echoes?.[this.index]?.rank ?? 5;
       },
       async set(value) {
         const data = {
