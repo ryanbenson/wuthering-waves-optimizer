@@ -157,8 +157,7 @@
         <input
           type="checkbox"
           v-model="mainEchoBuffEnabled"
-          name="mainEchoBuffEnabled"
-          @change="updateTotalStats" />
+          name="mainEchoBuffEnabled" />
         Enabled?</label
       >
       <div v-if="mainEchoHasStacks">
@@ -167,8 +166,7 @@
           v-model.number="mainEchoStacks"
           type="number"
           min="0"
-          :max="mainEchoMaxStacks"
-          @input="updateTotalStats" />
+          :max="mainEchoMaxStacks" />
       </div>
     </div>
   </div>
@@ -177,6 +175,8 @@
 <script>
 import { mainEchoesData } from "../echoes/index.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
+import { mapActions, mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
 export default {
   props: {
     character: {
@@ -187,9 +187,6 @@ export default {
   components: { CalculatorEcho },
   data() {
     return {
-      mainEcho: null,
-      mainEchoBuffEnabled: false,
-      mainEchoStacks: 0,
       echoes: Array(5)
         .fill()
         .map(() => ({
@@ -333,7 +330,28 @@ export default {
       },
     };
   },
+  watch: {
+    mainEcho: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    mainEchoBuffEnabled: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    mainEchoMaxStacks: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+  },
   methods: {
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
     selectCost(index, cost) {
       this.echoes[index].type = cost;
       this.updateTotalStats();
@@ -455,6 +473,72 @@ export default {
     },
   },
   computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+    /**
+     * Getter/setter used in the form for the the main echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    mainEcho: {
+      get() {
+        return (
+          this.currentCharacter?.mainEcho?.echo ?? null
+        );
+      },
+      async set(value) {
+        const data = {
+          mainEcho: {
+            echo: value
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the isEnabled state for this passive
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    mainEchoBuffEnabled: {
+      get() {
+        return (
+          this.currentCharacter?.mainEcho?.isEnabled ?? false
+        );
+      },
+      async set(value) {
+        const data = {
+          mainEcho: {
+            isEnabled: value
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the stacks count state for this passive
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    mainEchoBuffStacks: {
+      get() {
+        return this.currentCharacter?.mainEcho?.stacks ?? 0;
+      },
+      async set(value) {
+        const data = {
+          mainEcho: {
+            stacks: value
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
     mainEchoesData() {
       return { ...mainEchoesData };
     },
