@@ -5,51 +5,16 @@
       :key="index"
       :index="index"
       :character="character"
-      class="echo-selector">
+      class="echo-selector"
+      @update-stats="handleEchoStats">
     </CalculatorEcho>
     <div class="set-bonus-selector">
-      <label>Set Bonuses:</label>
-      <div>
-        <select v-model="setBonuses[0].type" @change="updateTotalStats">
-          <option value="">Select 2 Set Bonus</option>
-          <option
-            v-for="setBonus in twoSetBonuses"
-            :key="setBonus"
-            :value="setBonus">
-            {{ setBonus }}
-          </option>
-        </select>
-      </div>
-      <div>
-        <select v-model="setBonuses[1].type" @change="updateTotalStats">
-          <option value="">Select 5 Set Bonus or another 2 Set Bonus</option>
-          <optgroup label="5 Set Bonuses">
-            <option
-              v-for="setBonus in fiveSetBonuses"
-              :key="setBonus"
-              :value="setBonus">
-              {{ setBonus }}
-            </option>
-          </optgroup>
-          <optgroup label="2 Set Bonuses">
-            <option
-              v-for="setBonus in twoSetBonuses"
-              :key="setBonus"
-              :value="setBonus">
-              {{ setBonus }}
-            </option>
-          </optgroup>
-        </select>
-      </div>
-      <div v-if="needsStacks(setBonuses[1].type)">
-        <label>Stacks:</label>
-        <input
-          v-model.number="setBonuses[1].stacks"
-          type="number"
-          min="0"
-          :max="getMaxStacks(setBonuses[1].type)"
-          @input="updateTotalStats" />
-      </div>
+      <CalculatorEchoesSetBonusOne
+        :character="character"
+        @update-stats="handleSetBonusOneData"></CalculatorEchoesSetBonusOne>
+      <CalculatorEchoesSetBonusTwo
+        :character="character"
+        @update-stats="handleSetBonusTwoData"></CalculatorEchoesSetBonusTwo>
     </div>
     <div class="total-cost">Total Cost: {{ totalCost }} / 12</div>
     <h3>Main Echo</h3>
@@ -121,6 +86,8 @@
 <script>
 import { mainEchoesData } from "../echoes/index.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
+import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
+import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 export default {
@@ -130,7 +97,11 @@ export default {
       required: true,
     },
   },
-  components: { CalculatorEcho },
+  components: {
+    CalculatorEcho,
+    CalculatorEchoesSetBonusOne,
+    CalculatorEchoesSetBonusTwo,
+  },
   data() {
     return {
       echoes: Array(5)
@@ -232,48 +203,6 @@ export default {
         { type: "", stacks: 0 },
         { type: "", stacks: 0 },
       ],
-      twoSetBonuses: [
-        "Freezing Frost 2 Set",
-        "Molten Rift 2 Set",
-        "Void Thunder 2 Set",
-        "Sierra Gale 2 Set",
-        "Celestial Light 2 Set",
-        "Sun-sinking Eclipse 2 Set",
-        "Rejuvenating Glow 2 Set",
-        "Moonlit Clouds 2 Set",
-        "Lingering Tunes 2 Set",
-      ],
-      fiveSetBonuses: [
-        "Freezing Frost 5 Set",
-        "Molten Rift 5 Set",
-        "Void Thunder 5 Set",
-        "Sierra Gale 5 Set",
-        "Celestial Light 5 Set",
-        "Sun-sinking Eclipse 5 Set",
-        "Rejuvenating Glow 5 Set",
-        "Moonlit Clouds 5 Set",
-        "Lingering Tunes 5 Set",
-      ],
-      setBonusEffects: {
-        "Freezing Frost 2 Set": { Glacio: 10 },
-        "Molten Rift 2 Set": { Fusion: 10 },
-        "Void Thunder 2 Set": { Electro: 10 },
-        "Sierra Gale 2 Set": { Aero: 10 },
-        "Celestial Light 2 Set": { Spectro: 10 },
-        "Sun-sinking Eclipse 2 Set": { Havoc: 10 },
-        "Rejuvenating Glow 2 Set": { HealingBonus: 10 },
-        "Moonlit Clouds 2 Set": { EnergyRegen: 10 },
-        "Lingering Tunes 2 Set": { ATK: 10 },
-        "Freezing Frost 5 Set": { Glacio: 10, maxStacks: 3 },
-        "Molten Rift 5 Set": { Fusion: 30 },
-        "Void Thunder 5 Set": { Electro: 15, maxStacks: 2 },
-        "Sierra Gale 5 Set": { Aero: 30 },
-        "Celestial Light 5 Set": { Spectro: 30 },
-        "Sun-sinking Eclipse 5 Set": { Havoc: 7.5, maxStacks: 4 },
-        "Rejuvenating Glow 5 Set": { ATK: 15 },
-        "Moonlit Clouds 5 Set": { ATK: 22.5 },
-        "Lingering Tunes 5 Set": { ATK: 5, maxStacks: 4, Outro: 60 },
-      },
     };
   },
   watch: {
@@ -417,6 +346,18 @@ export default {
       this.totalStats = stats;
       this.$emit("update-stats", this.totalStats);
     },
+    handleSetBonusOneData(data) {
+      const stats = JSON.parse(JSON.stringify(data));
+      console.log("bonuses one", stats);
+    },
+    handleSetBonusTwoData(data) {
+      const stats = JSON.parse(JSON.stringify(data));
+      console.log("bonuses two", stats);
+    },
+    handleEchoStats({ index, stats }) {
+      const statData = JSON.parse(JSON.stringify(stats));
+      console.log("bonuses echo", index, statData);
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -434,14 +375,12 @@ export default {
      */
     mainEcho: {
       get() {
-        return (
-          this.currentCharacter?.mainEcho?.echo ?? null
-        );
+        return this.currentCharacter?.mainEcho?.echo ?? null;
       },
       async set(value) {
         const data = {
           mainEcho: {
-            echo: value
+            echo: value,
           },
         };
         await this.setCharacterData(this.character, data);
@@ -454,14 +393,12 @@ export default {
      */
     mainEchoBuffEnabled: {
       get() {
-        return (
-          this.currentCharacter?.mainEcho?.isEnabled ?? false
-        );
+        return this.currentCharacter?.mainEcho?.isEnabled ?? false;
       },
       async set(value) {
         const data = {
           mainEcho: {
-            isEnabled: value
+            isEnabled: value,
           },
         };
         await this.setCharacterData(this.character, data);
@@ -479,7 +416,7 @@ export default {
       async set(value) {
         const data = {
           mainEcho: {
-            stacks: value
+            stacks: value,
           },
         };
         await this.setCharacterData(this.character, data);

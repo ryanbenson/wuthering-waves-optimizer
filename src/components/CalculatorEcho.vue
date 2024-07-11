@@ -9,8 +9,8 @@
           <button
             v-for="cost in [1, 3, 4]"
             :key="cost"
-            :class="{ selected: echo.type == cost }"
-            @click="selectCost(index, cost)">
+            :class="{ selected: type == cost }"
+            @click="selectCost(cost)">
             0{{ cost }}
           </button>
         </div>
@@ -21,36 +21,102 @@
         <label>Rank:</label>
         <div class="rank-options">
           <div
-            v-for="rank in [2, 3, 4, 5]"
-            :key="rank"
-            :class="['rank-circle', { selected: echo.rank == rank }]"
-            :style="{ backgroundColor: rankColors[rank] }"
-            @click="selectRank(index, rank)"></div>
+            v-for="r in [2, 3, 4, 5]"
+            :key="r"
+            :class="['rank-circle', { selected: rank == r }]"
+            :style="{ backgroundColor: rankColors[r] }"
+            @click="selectRank(r)"></div>
         </div>
       </div>
     </div>
-    <select
-      v-model="echo.stat"
-      @change="updateTotalStats"
-      :disabled="!echo.type">
+    <select v-model="stat" @change="updateTotalStats" :disabled="!type">
       <option value="">Select Stat</option>
-      <option v-for="stat in getStats(echo.type)" :key="stat" :value="stat">
-        {{ getReadableSubStatLabel(stat) }}
+      <option v-for="s in getStats(type)" :key="s" :value="s">
+        {{ getReadableSubStatLabel(s) }}
       </option>
     </select>
-    <div v-for="i in 5" :key="i" class="sub-stat-selector">
-      <select v-model="echo.subStats[i - 1].type" @change="updateTotalStats">
+
+    <div>
+      <select v-model="echoSubStatsType1" @change="updateTotalStats">
         <option value="">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
           {{ getReadableSubStatLabel(subStat) }}
         </option>
       </select>
       <input
-        v-model.number="echo.subStats[i - 1].value"
-        :min="getSubStatRange(echo.subStats[i - 1].type).min"
-        :max="getSubStatRange(echo.subStats[i - 1].type).max"
+        v-model.number="echoSubStatsValue1"
+        :min="getSubStatRange(echoSubStatsType1).min"
+        :max="getSubStatRange(echoSubStatsType1).max"
         type="number"
-        :disabled="!echo.subStats[i - 1].type"
+        :disabled="!echoSubStatsType1"
+        @input="updateTotalStats"
+        class="sub-stat__input" />
+    </div>
+
+    <div>
+      <select v-model="echoSubStatsType2" @change="updateTotalStats">
+        <option value="">Select Sub Stat</option>
+        <option v-for="subStat in subStats" :key="subStat" :value="subStat">
+          {{ getReadableSubStatLabel(subStat) }}
+        </option>
+      </select>
+      <input
+        v-model.number="echoSubStatsValue2"
+        :min="getSubStatRange(echoSubStatsType1).min"
+        :max="getSubStatRange(echoSubStatsType1).max"
+        type="number"
+        :disabled="!echoSubStatsType1"
+        @input="updateTotalStats"
+        class="sub-stat__input" />
+    </div>
+
+    <div>
+      <select v-model="echoSubStatsType3" @change="updateTotalStats">
+        <option value="">Select Sub Stat</option>
+        <option v-for="subStat in subStats" :key="subStat" :value="subStat">
+          {{ getReadableSubStatLabel(subStat) }}
+        </option>
+      </select>
+      <input
+        v-model.number="echoSubStatsValue3"
+        :min="getSubStatRange(echoSubStatsType1).min"
+        :max="getSubStatRange(echoSubStatsType1).max"
+        type="number"
+        :disabled="!echoSubStatsType1"
+        @input="updateTotalStats"
+        class="sub-stat__input" />
+    </div>
+
+    <div>
+      <select v-model="echoSubStatsType4" @change="updateTotalStats">
+        <option value="">Select Sub Stat</option>
+        <option v-for="subStat in subStats" :key="subStat" :value="subStat">
+          {{ getReadableSubStatLabel(subStat) }}
+        </option>
+      </select>
+      <input
+        v-model.number="echoSubStatsValue4"
+        :min="getSubStatRange(echoSubStatsType1).min"
+        :max="getSubStatRange(echoSubStatsType1).max"
+        type="number"
+        :disabled="!echoSubStatsType1"
+        @input="updateTotalStats"
+        class="sub-stat__input" />
+    </div>
+
+    <div>
+      <select v-model="echoSubStatsType5" @change="updateTotalStats">
+        <option value="">Select Sub Stat</option>
+        <option v-for="subStat in subStats" :key="subStat" :value="subStat">
+          {{ getReadableSubStatLabel(subStat) }}
+        </option>
+      </select>
+      <input
+        v-model.number="echoSubStatsValue5"
+        :min="getSubStatRange(echoSubStatsType1).min"
+        :max="getSubStatRange(echoSubStatsType1).max"
+        type="number"
+        :disabled="!echoSubStatsType1"
         @input="updateTotalStats"
         class="sub-stat__input" />
     </div>
@@ -58,6 +124,8 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
 import {
   rankColors,
   statsTable,
@@ -80,16 +148,6 @@ export default {
   },
   data() {
     return {
-      echoes: Array(5)
-        .fill()
-        .map(() => ({
-          type: "",
-          rank: "5",
-          stat: "",
-          subStats: Array(5)
-            .fill()
-            .map(() => ({ type: "", value: 0 })),
-        })),
       rankColors,
       statsTable,
       flatBonusesByRankByType,
@@ -99,13 +157,94 @@ export default {
       totalStats: {},
     };
   },
+  watch: {
+    type: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    rank: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    stat: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsType1: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsValue1: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsType2: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsValue2: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsType3: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsValue3: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsType4: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsValue4: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsType5: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsValue5: {
+      handler: async function () {
+        this.updateTotalStats();
+      },
+      immediate: true,
+    },
+  },
   methods: {
-    selectCost(index, cost) {
-      this.echoes[index].type = cost;
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
+    selectCost(cost) {
+      this.type = cost;
       this.updateTotalStats();
     },
-    selectRank(index, rank) {
-      this.echoes[index].rank = rank;
+    selectRank(rank) {
+      this.rank = rank;
       this.updateTotalStats();
     },
     getReadableSubStatLabel,
@@ -122,81 +261,326 @@ export default {
       return !!this.setBonusEffects[type]?.maxStacks;
     },
     updateTotalStats() {
-      this.totalCost = this.echoes.reduce(
-        (sum, echo) => sum + (parseInt(echo.type) || 0),
-        0
-      );
-      if (this.totalCost > 12) {
-        alert("Total cost exceeds the limit of 12.");
-        return;
-      }
-
       const stats = {};
-      for (const echo of this.echoes) {
-        // add in the base stats (flat HP and flat ATK) that's guaranteed
-        if (echo.type && echo.rank) {
-          let stat = echo.type == "1" ? "HP_FLAT" : "ATK_FLAT";
-          let statValue = this.flatBonusesByRankByType[echo.type][echo.rank];
-          stats[stat] = (stats[stat] || 0) + statValue;
-        }
-        if (echo.type && echo.rank && echo.stat) {
-          const max = this.statsTable[echo.type][echo.stat][echo.rank];
-          stats[echo.stat] = (stats[echo.stat] || 0) + max;
-        }
-        for (const subStat of echo.subStats) {
-          if (subStat.type) {
-            stats[subStat.type] = (stats[subStat.type] || 0) + subStat.value;
-          }
-        }
+      // add in the base stats (flat HP and flat ATK) that's guaranteed
+      if (this.type && this.rank) {
+        let stat = this.type == "1" ? "HP_FLAT" : "ATK_FLAT";
+        let statValue = this.flatBonusesByRankByType[this.type][this.rank];
+        stats[stat] = (stats[stat] || 0) + statValue;
       }
-
-      // process the main echo buffs, only if enabled
-      if (this.mainEchoBuffEnabled) {
-        for (const mainEchoBuff of this.chosenMainEchoBuffs) {
-          // we're dealing with full numbers right now, not decimals,
-          // so multiply * 100
-          // TODO: Remove this when we refactor this whole thing to use decimals
-          if (this.mainEchoHasStacks) {
-            const buffVal = mainEchoBuff.modifierValue * 100;
-            stats[mainEchoBuff.modifier] =
-              (stats[mainEchoBuff.modifier] || 0) +
-              buffVal * this.mainEchoStacks;
-          } else {
-            const buffVal = mainEchoBuff.modifierValue * 100;
-            stats[mainEchoBuff.modifier] =
-              (stats[mainEchoBuff.modifier] || 0) + buffVal;
-          }
-        }
+      if (this.type && this.rank && this.stat) {
+        const max = this.statsTable[this.type][this.stat][this.rank];
+        stats[this.stat] = (stats[this.stat] || 0) + max;
       }
-
-      for (const setBonus of this.setBonuses) {
-        if (setBonus.type) {
-          const setBonusEffect = this.setBonusEffects[setBonus.type];
-          for (const [key, value] of Object.entries(setBonusEffect)) {
-            if (key !== "maxStacks") {
-              if (
-                setBonus.type === "Lingering Tunes 5 Set" &&
-                key === "Outro"
-              ) {
-                // Apply Outro stat directly
-                stats[key] = (stats[key] || 0) + value;
-              } else {
-                // Apply other stats with stacks if applicable
-                const bonus =
-                  value *
-                  (this.needsStacks(setBonus.type) ? setBonus.stacks : 1);
-                stats[key] = (stats[key] || 0) + bonus;
-              }
-            }
-          }
-        }
+      if (this.echoSubStatsType1 && this.echoSubStatsValue1) {
+        stats[this.echoSubStatsType1] =
+          (stats[this.echoSubStatsType1] || 0) + this.echoSubStatsValue1;
+      }
+      if (this.echoSubStatsType2 && this.echoSubStatsValue2) {
+        stats[this.echoSubStatsType2] =
+          (stats[this.echoSubStatsType2] || 0) + this.echoSubStatsValue2;
+      }
+      if (this.echoSubStatsType3 && this.echoSubStatsValue3) {
+        stats[this.echoSubStatsType3] =
+          (stats[this.echoSubStatsType3] || 0) + this.echoSubStatsValue3;
+      }
+      if (this.echoSubStatsType4 && this.echoSubStatsValue4) {
+        stats[this.echoSubStatsType4] =
+          (stats[this.echoSubStatsType4] || 0) + this.echoSubStatsValue4;
+      }
+      if (this.echoSubStatsType5 && this.echoSubStatsValue5) {
+        stats[this.echoSubStatsType5] =
+          (stats[this.echoSubStatsType5] || 0) + this.echoSubStatsValue5;
       }
 
       this.totalStats = stats;
-      this.$emit("update-stats", this.totalStats);
+      this.$emit("update-stats", { index: this.index, stats: this.totalStats });
     },
   },
   computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+    /**
+     * Getter/setter used in the form for the type for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    type: {
+      get() {
+        return this.currentCharacter?.echoes?.[this.index]?.type ?? null;
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          type: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the rank for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    rank: {
+      get() {
+        return this.currentCharacter?.echoes?.[this.index]?.rank ?? null;
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          rank: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the stat for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    stat: {
+      get() {
+        return this.currentCharacter?.echoes?.[this.index]?.stat ?? null;
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          stat: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the sub stat for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    echoSubStatsType1: {
+      get() {
+        return (
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType1 ?? null
+        );
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          echoSubStatsType1: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the sub stat value for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {String|null}
+     */
+    echoSubStatsValue1: {
+      get() {
+        return (
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue1 ??
+          null
+        );
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          echoSubStatsValue1: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+
+    /**
+     * Getter/setter used in the form for the sub stat for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    echoSubStatsType2: {
+      get() {
+        return (
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType2 ?? null
+        );
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          echoSubStatsType2: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the sub stat value for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {String|null}
+     */
+    echoSubStatsValue2: {
+      get() {
+        return (
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue2 ??
+          null
+        );
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          echoSubStatsValue2: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+
+    /**
+     * Getter/setter used in the form for the sub stat for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    echoSubStatsType3: {
+      get() {
+        return (
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType3 ?? null
+        );
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          echoSubStatsType3: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the sub stat value for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {String|null}
+     */
+    echoSubStatsValue3: {
+      get() {
+        return (
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue3 ??
+          null
+        );
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          echoSubStatsValue3: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+
+    /**
+     * Getter/setter used in the form for the sub stat for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    echoSubStatsType4: {
+      get() {
+        return (
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType4 ?? null
+        );
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          echoSubStatsType4: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the sub stat value for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {String|null}
+     */
+    echoSubStatsValue4: {
+      get() {
+        return (
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue4 ??
+          null
+        );
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          echoSubStatsValue4: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the sub stat for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    echoSubStatsType5: {
+      get() {
+        return (
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType5 ?? null
+        );
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          echoSubStatsType5: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the sub stat value for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {String|null}
+     */
+    echoSubStatsValue5: {
+      get() {
+        return (
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue5 ??
+          null
+        );
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          echoSubStatsValue5: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
     mainEchoesData() {
       return { ...mainEchoesData };
     },
@@ -245,3 +629,114 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.echo-selector {
+  margin-bottom: 20px;
+}
+
+.sub-stat-selector {
+  display: flex;
+  margin-top: 5px;
+}
+
+.sub-stat-selector select,
+.sub-stat-selector input {
+  margin-right: 10px;
+}
+
+.set-bonus-selector {
+  margin-bottom: 20px;
+}
+
+.set-bonus-selector select {
+  margin-right: 10px;
+}
+.echo-selector {
+  margin-bottom: 20px;
+}
+
+.cost-selector,
+.rank-selector {
+  margin: 0 1rem 1rem 0;
+}
+.echo-setup {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.rank-options {
+  display: flex;
+}
+.cost-options button,
+.rank-options .rank-circle {
+  margin-right: 10px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.rank-options .rank-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 100%;
+  display: inline-block;
+  padding: 0;
+  border: none;
+}
+
+.cost-options button {
+  background-color: transparent;
+  border-radius: 6px;
+}
+.cost-options button.selected {
+  font-weight: bold;
+  border-color: yellow !important;
+}
+
+.sub-stat-selector {
+  display: flex;
+  margin-top: 5px;
+}
+
+.sub-stat-selector select,
+.sub-stat-selector input {
+  margin-right: 10px;
+}
+
+.set-bonus-selector {
+  margin-bottom: 20px;
+}
+
+.set-bonus-selector select {
+  margin-right: 10px;
+}
+.rank-circle.selected {
+  transform: scale(1.3);
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+.sub-stat__input {
+  max-width: 3rem;
+  width: 3rem;
+}
+.main-echo__image {
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  display: block;
+  background-size: contain;
+  border-radius: 100%;
+  border: 1px solid white;
+}
+.main-echo__selection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  padding-bottom: 2rem;
+}
+.main-echo__enabled {
+  margin-top: 1rem;
+}
+</style>
