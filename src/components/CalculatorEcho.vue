@@ -371,7 +371,7 @@ export default {
     echoSubStatsType1: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType1 ?? null
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType1 ?? ""
         );
       },
       async set(value) {
@@ -415,7 +415,7 @@ export default {
     echoSubStatsType2: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType2 ?? null
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType2 ?? ""
         );
       },
       async set(value) {
@@ -459,7 +459,7 @@ export default {
     echoSubStatsType3: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType3 ?? null
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType3 ?? ""
         );
       },
       async set(value) {
@@ -503,7 +503,7 @@ export default {
     echoSubStatsType4: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType4 ?? null
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType4 ?? ""
         );
       },
       async set(value) {
@@ -546,7 +546,7 @@ export default {
     echoSubStatsType5: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType5 ?? null
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType5 ?? ""
         );
       },
       async set(value) {
