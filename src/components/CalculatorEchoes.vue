@@ -116,11 +116,7 @@ export default {
   },
   watch: {
     mainEcho: {
-      handler: async function (newEcho, oldEcho) {
-        if (newEcho != oldEcho) {
-          this.mainEchoBuffEnabled = false;
-          this.mainEchoStacks = 0;
-        }
+      handler: async function () {
         this.updateTotalStats();
       },
       immediate: true,
