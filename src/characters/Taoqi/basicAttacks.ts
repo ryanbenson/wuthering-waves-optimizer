@@ -122,6 +122,7 @@ export const basicAttacks = {
         "10": "78.70%",
       },
       type: "Basic",
+      attribute: "defense",
     },
     {
       key: "MidAirAttackDMG",

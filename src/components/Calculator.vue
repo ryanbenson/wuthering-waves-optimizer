@@ -812,7 +812,7 @@ export default defineComponent({
       }
     };
 
-    const calcCharStats = () => {
+    const calcCharStats = (returnValue = false, injectStats = null) => {
       let stats = {
         attackPercent: 0,
         hpPercent: 0,
@@ -857,6 +857,10 @@ export default defineComponent({
 
       if (charBuffsData.value) {
         addBuffs(charBuffsData.value, stats);
+      }
+
+      if (injectStats) {
+        addBuffs(injectStats, stats);
       }
 
       if (charResonanceChainsData.value) {
@@ -956,6 +960,18 @@ export default defineComponent({
           stats.aero += allElementAttributeBonus;
           stats.spectro += allElementAttributeBonus;
           stats.havoc += allElementAttributeBonus;
+        }
+      }
+
+      if (returnValue) {
+        switch (returnValue) {
+          case 'HP':
+            return charHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
+          case 'DEF':
+            return charDef * (1 + stats.defPercent / 100) + stats.defFlat;
+          case 'ATK':
+          default:
+            return (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) + stats.attackFlat;
         }
       }
 
@@ -1135,13 +1151,37 @@ export default defineComponent({
           teamBuffDmgDeepenForAttackType;
         const totalTalentModifierMultiply =
           talentModifierMultiply + talentModifierMultiplySelfBuff;
+        // check for any modifiers that change the individual instance of atk/hp/def
+        // re-calculate the base for this specific instance of damage
+        const modifyBaseAtk =
+          charBuffsData.value?.specificTalentBuffs?.[
+            `${attack.key}:ATK`
+          ] ?? 0;
+        const modifyBaseHp =
+          charBuffsData.value?.specificTalentBuffs?.[
+            `${attack.key}:HP`
+          ] ?? 0;
+        const modifyBaseDef =
+          charBuffsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DEF`
+          ] ?? 0;
+        let finalAtkDefHpVal = atkDefHpVal;
+        if (modifyBaseAtk) {
+          finalAtkDefHpVal = calcCharStats('ATK', { ATK: modifyBaseAtk } );
+        }
+        if (modifyBaseHp) {
+          finalAtkDefHpVal = calcCharStats('HP', { HP: modifyBaseHp } );
+        }
+        if (modifyBaseDef) {
+          finalAtkDefHpVal = calcCharStats('DEF', { DEF: modifyBaseDef } );
+        }
 
         return calcDamage(
           characterLevel.value,
           formData.enemyLevel,
           formData.enemyResist,
           talent,
-          atkDefHpVal,
+          finalAtkDefHpVal,
           totalDefIgnore,
           totalSkillDmgBonus,
           specificSkillDmg,

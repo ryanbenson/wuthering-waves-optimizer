@@ -11,6 +11,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 12, 2024</h3>
+    <ul>
+      <li>Fixes Changli Fiery Feather buff to only apply to her forte</li>
+    </ul>
     <h3>July 6, 2024</h3>
     <ul>
       <li>Fixes character level bug when using ascension level (with a +)</li>

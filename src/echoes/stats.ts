@@ -71,7 +71,7 @@ export const flatBonusesByRankByType: FlatBonusesByRankByType = {
     2: 296,
     3: 516,
     4: 957,
-    5: 1696,
+    5: 2280,
   },
   3: {
     2: 31,
