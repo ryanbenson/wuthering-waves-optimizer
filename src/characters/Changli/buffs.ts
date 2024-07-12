@@ -8,7 +8,7 @@ export const buffs = [
     modifiers: [
       {
         modifier: "ATK",
-        modifySpecificTalents: ["FlamingVowDMG"],
+        // modifySpecificTalents: ["FlamingVowDMG"], // TODO: Figure out how to add ATK% using this
         modifierValue: 0.25,
       },
     ],
