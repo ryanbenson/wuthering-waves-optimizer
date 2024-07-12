@@ -154,7 +154,6 @@ export default {
       subStats,
       subStatRanges,
       totalCost: 0,
-      totalStats: {},
     };
   },
   watch: {
@@ -269,8 +268,10 @@ export default {
         stats[stat] = (stats[stat] || 0) + statValue;
       }
       if (this.type && this.rank && this.stat) {
-        const max = this.statsTable[this.type][this.stat][this.rank];
-        stats[this.stat] = (stats[this.stat] || 0) + max;
+        const max = this.statsTable?.[this.type]?.[this.stat]?.[this.rank];
+        if (max) {
+          stats[this.stat] = (stats[this.stat] || 0) + max;
+        }
       }
       if (this.echoSubStatsType1 && this.echoSubStatsValue1) {
         stats[this.echoSubStatsType1] =
@@ -293,8 +294,7 @@ export default {
           (stats[this.echoSubStatsType5] || 0) + this.echoSubStatsValue5;
       }
 
-      this.totalStats = stats;
-      this.$emit("update-stats", { index: this.index, stats: this.totalStats });
+      this.$emit("update-stats", { index: this.index, stats });
     },
   },
   computed: {
