@@ -268,7 +268,6 @@ export default {
       }
       try {
         if (!this.weapon) {
-          this.weaponPassives = [];
           this.updateWeaponStats();
           return null;
         }
@@ -277,7 +276,7 @@ export default {
           this.weapon
         );
         this.chosenWeapon = weaponChosen;
-        this.weaponPassiveStats = {};
+        // this.weaponPassiveStats = {};
         this.updateWeaponStats();
       } catch (error) {
         // console.log("Failed to find weapon");

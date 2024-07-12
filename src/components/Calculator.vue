@@ -71,6 +71,7 @@
           </div>
           <CalculatorTalents
             :character="character"
+            :key="character"
             @character-talent-updated="
               handleCharacterTalentUpdated
             "></CalculatorTalents>
@@ -98,6 +99,7 @@
 
       <div class="screen--character" v-show="curScreen === 'echoes'">
         <CalculatorEchoes
+          :key="character"
           :character="character"
           @update-stats="updateStatsEchoes"></CalculatorEchoes>
       </div>
