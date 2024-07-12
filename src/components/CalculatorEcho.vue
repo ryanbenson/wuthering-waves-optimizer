@@ -36,7 +36,7 @@
       </option>
     </select>
 
-    <div>
+    <div class="sub-stat-selector">
       <select v-model="echoSubStatsType1" @change="updateTotalStats">
         <option value="">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
@@ -53,7 +53,7 @@
         class="sub-stat__input" />
     </div>
 
-    <div>
+    <div class="sub-stat-selector">
       <select v-model="echoSubStatsType2" @change="updateTotalStats">
         <option value="">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
@@ -70,7 +70,7 @@
         class="sub-stat__input" />
     </div>
 
-    <div>
+    <div class="sub-stat-selector">
       <select v-model="echoSubStatsType3" @change="updateTotalStats">
         <option value="">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
@@ -87,7 +87,7 @@
         class="sub-stat__input" />
     </div>
 
-    <div>
+    <div class="sub-stat-selector">
       <select v-model="echoSubStatsType4" @change="updateTotalStats">
         <option value="">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
@@ -104,7 +104,7 @@
         class="sub-stat__input" />
     </div>
 
-    <div>
+    <div class="sub-stat-selector">
       <select v-model="echoSubStatsType5" @change="updateTotalStats">
         <option value="">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
