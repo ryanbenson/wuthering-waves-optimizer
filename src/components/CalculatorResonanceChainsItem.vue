@@ -18,8 +18,14 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
 export default {
   props: {
+    character: {
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
     },
@@ -55,17 +61,27 @@ export default {
     },
   },
   data() {
-    return {
-      isEnabled: false,
-      stacks: 0,
-    };
+    return {};
   },
   watch: {
     buffStats: function () {
       this.updatedStats();
     },
+    isEnabled: {
+      handler: async function () {
+        this.updatedStats();
+      },
+      immediate: true,
+    },
+    stacks: {
+      handler: async function () {
+        this.updatedStats();
+      },
+      immediate: true,
+    },
   },
   methods: {
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
     updatedStats() {
       this.$emit("updated-character-buff", {
         key: this.uniqueKey,
@@ -79,6 +95,57 @@ export default {
     },
   },
   computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+    /**
+     * Getter/setter used in the form for the isEnabled state for this passive
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    isEnabled: {
+      get() {
+        return (
+          this.currentCharacter?.resonanceChains?.[this.uniqueKey]?.isEnabled ??
+          false
+        );
+      },
+      async set(value) {
+        const data = {
+          resonanceChains: {},
+        };
+        data.resonanceChains[this.uniqueKey] = {
+          isEnabled: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the stacks count state for this passive
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    stacks: {
+      get() {
+        return (
+          this.currentCharacter?.resonanceChains?.[this.uniqueKey]?.stacks ?? 0
+        );
+      },
+      async set(value) {
+        const data = {
+          resonanceChains: {},
+        };
+        data.resonanceChains[this.uniqueKey] = {
+          stacks: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
     buffStats() {
       const data = {};
       if (!this.isEnabled) {
@@ -96,10 +163,9 @@ export default {
           } else if (modifierItem.modifier === "Talent") {
             // this is the rare case where the modifier value needs a reference to another talent level
             // specifically Jinhsi incandescence buff scales off of her forte talent
-            const talentVal =
-              modifierItem.modifierValue[
-                this.talentData[modifierItem.modifierValueTalentRef]
-              ];
+            const talentRef =
+              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+            const talentVal = modifierItem.modifierValue[talentRef];
             data[modifierItem.modifierTalentKey] = talentVal;
           } else if (modifierItem.modifier === "talentModifierMultiply") {
             // for buffs that apply talentModifierMultiply to the calcs
@@ -127,10 +193,9 @@ export default {
               modifierItem.modifierValue * this.stacks;
             data.modifySpecificTalents.push(modifierItem);
           } else if (modifierItem.modifier === "Talent") {
-            const talentVal =
-              modifierItem.modifierValue[
-                this.talentData[modifierItem.modifierValueTalentRef]
-              ];
+            const talentRef =
+              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+            const talentVal = modifierItem.modifierValue[talentRef];
             data[modifierItem.modifierTalentKey] = talentVal * this.stacks;
           } else {
             const totalValue = modifierItem.modifierValue * this.stacks;

@@ -19,8 +19,15 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
+
 export default {
   props: {
+    character: {
+      type: String,
+      required: true,
+    },
     hasStacks: {
       type: Boolean,
       default: false,
@@ -48,27 +55,54 @@ export default {
       default: false,
     },
     refinement: {
-      type: Number,
+      type: String,
     },
     passiveKey: {
       type: String,
     },
   },
   data() {
-    return {
-      isEnabled: false,
-      stacks: 0,
-    };
+    return {};
   },
   watch: {
-    refinement: "updatedStats",
-    isEnabled: "updatedStats",
-    stacks: "updatedStats",
+    // we're using immediate so it'll react when we get data from the store
+    refinement: {
+      handler: async function () {
+        this.updateStats();
+      },
+      immediate: true,
+    },
+    isEnabled: {
+      handler: async function () {
+        this.updateStats();
+      },
+      immediate: true,
+    },
+    stacks: {
+      handler: async function () {
+        this.updateStats();
+      },
+      immediate: true,
+    },
   },
   methods: {
-    updatedStats() {
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
+    /**
+     * Updates the stats for the passive and emits up to the parent
+     * @emits updated-weapon-stats
+     */
+    updateStats() {
+      this.setCharacterData(this.character, {
+        weaponPassiveStats: {
+          ...this.weaponPassiveStats,
+          [this.passiveKey]: this.weaponPassiveStats,
+        },
+      });
       this.$emit("updated-weapon-stats", this.weaponPassiveStats);
     },
+    /**
+     * Prevents the user from exceeding the max stacks
+     */
     ensureMaxStacks() {
       if (this.stacks > this.maxStacks) {
         this.stacks = this.maxStacks;
@@ -76,6 +110,61 @@ export default {
     },
   },
   computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+    /**
+     * Getter/setter used in the form for the isEnabled state for this passive
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    isEnabled: {
+      get() {
+        return (
+          this.currentCharacter?.weaponPassives?.[this.passiveKey]?.isEnabled ??
+          false
+        );
+      },
+      async set(value) {
+        const data = {
+          weaponPassives: {},
+        };
+        data.weaponPassives[this.passiveKey] = {
+          isEnabled: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the stacks count state for this passive
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    stacks: {
+      get() {
+        return (
+          this.currentCharacter?.weaponPassives?.[this.passiveKey]?.stacks ?? 0
+        );
+      },
+      async set(value) {
+        const data = {
+          weaponPassives: {},
+        };
+        data.weaponPassives[this.passiveKey] = {
+          stacks: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Compiles the stats for this passive
+     * @returns {Object}
+     */
     weaponPassiveStats() {
       const data = {
         stat: this.modifier,
@@ -105,7 +194,7 @@ export default {
   mounted() {
     if (this.alwaysEnabled) {
       this.isEnabled = true;
-      this.updatedStats();
+      this.updateStats();
     }
   },
   beforeUnmount() {

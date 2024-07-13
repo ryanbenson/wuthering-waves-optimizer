@@ -4,6 +4,7 @@
       <CalculatorCharacterBuff
         v-for="buff in buffs"
         :key="buff.key"
+        :character="character"
         :unique-key="buff.key"
         :name="buff.name"
         :details="buff.details"
@@ -23,6 +24,10 @@
 import CalculatorCharacterBuff from "./CalculatorCharacterBuff.vue";
 export default {
   props: {
+    character: {
+      type: String,
+      required: true,
+    },
     buffs: {
       type: Array,
       default: () => [],
@@ -35,8 +40,6 @@ export default {
   components: { CalculatorCharacterBuff },
   data() {
     return {
-      isEnabled: false,
-      stacks: 0,
       buffsData: [],
     };
   },
@@ -46,9 +49,17 @@ export default {
     },
   },
   methods: {
+    /**
+     * Emits the buff data in its proper format
+     * @emits updated-character-buffs
+     */
     updatedStats() {
       this.$emit("updated-character-buffs", this.buffsFormatted);
     },
+    /**
+     * Handler for when the child components has buff data for us to consume
+     * @param {Object} buffInfo
+     */
     handleUpdatedCharacterBuff(buffInfo) {
       const buffIndex = this.buffsData.findIndex((buff) => {
         return buff.key === buffInfo.key;
@@ -61,6 +72,12 @@ export default {
     },
   },
   computed: {
+    /**
+     * Transformer to take all of the buffs we have, which can overlap
+     * and merge them together to provide an aggregated list of buffs
+     * in a hashmap to the parent to process in stats and damage
+     * @returns {Object}
+     */
     buffsFormatted() {
       const finalBuffData = {};
       let modifySpecificTalents = [];

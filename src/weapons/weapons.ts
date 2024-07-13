@@ -65,11 +65,15 @@ async function loadModule(type: string, weaponName: string) {
     const module = await import(`@/weapons/${type}/${weaponName}.ts`);
     return module.getWeapon();
   } catch (error) {
-    console.error("Error loading module:", error);
+    // console.error("Error loading weapon");
   }
 }
 
 export async function getWeaponByName(type: string, weaponName: string) {
-  const weaponData = await loadModule(type, weaponName);
-  return weaponData;
+  try {
+    const weaponData = await loadModule(type, weaponName);
+    return weaponData;
+  } catch (error) {
+    // throw "Unable to find weapon";
+  }
 }

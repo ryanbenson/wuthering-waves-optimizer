@@ -69,78 +69,18 @@
               </div>
             </div>
           </div>
-          <div class="data-input--talents">
-            <div class="form__group field">
-              <label for="talentBasic" class="form__label"
-                >Basic: {{ talentData.basic }}</label
-              >
-              <input
-                v-model="talentData.basic"
-                name="talentBasic"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-            <div class="form__group field">
-              <label for="talentSkill" class="form__label"
-                >Skill: {{ talentData.skill }}</label
-              >
-              <input
-                v-model="talentData.skill"
-                name="talentSkill"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-            <div class="form__group field">
-              <label for="talentForte" class="form__label"
-                >Forte Circuit: {{ talentData.forte }}</label
-              >
-              <input
-                v-model="talentData.forte"
-                name="talentForte"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-            <div class="form__group field">
-              <label for="talentLiberation" class="form__label"
-                >Liberation: {{ talentData.liberation }}</label
-              >
-              <input
-                v-model="talentData.liberation"
-                name="talentLiberation"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-            <div class="form__group field">
-              <label for="talentIntro" class="form__label"
-                >Intro: {{ talentData.intro }}</label
-              >
-              <input
-                v-model="talentData.intro"
-                name="talentIntro"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-          </div>
+          <CalculatorTalents
+            :character="character"
+            :key="character"
+            @character-talent-updated="
+              handleCharacterTalentUpdated
+            "></CalculatorTalents>
           <template v-if="chosenChar?.value?.buffs && isLoading === false">
             <CalculatorCharacterBuffs
               :key="character"
+              :character="character"
               :buffs="chosenChar?.value?.buffs"
-              :talent-data="talentData"
+              :talent-data="characters?.[character]?.talents"
               @updated-character-buffs="
                 handleUpdatedCharacterBuffs
               "></CalculatorCharacterBuffs>
@@ -150,13 +90,18 @@
 
       <div class="screen--character" v-show="curScreen === 'weapon'">
         <CalculatorWeapons
+          v-if="character"
           :key="character"
+          :character="character"
           @update-weapon="handleWeaponUpdated"
           :weapon-type="weaponType"></CalculatorWeapons>
       </div>
 
       <div class="screen--character" v-show="curScreen === 'echoes'">
-        <CalculatorEchoes @update-stats="updateStatsEchoes"></CalculatorEchoes>
+        <CalculatorEchoes
+          :key="character"
+          :character="character"
+          @update-stats="updateStatsEchoes"></CalculatorEchoes>
       </div>
 
       <div class="screen--character" v-show="curScreen === 'constellations'">
@@ -164,8 +109,9 @@
           v-if="chosenChar?.value?.resonanceChains && isLoading === false">
           <CalculatorResonanceChains
             :key="character"
+            :character="character"
             :buffs="chosenChar?.value?.resonanceChains"
-            :talent-data="talentData"
+            :talent-data="characters?.[character]?.talents"
             @updated-character-resonance-chains="
               handleUpdatedCharacterResonanceChains
             "></CalculatorResonanceChains>
@@ -174,7 +120,7 @@
 
       <div class="screen-character" v-show="curScreen === 'party'">
         <CalculatorPartyBuffs
-          :current-character="character"
+          :character="character"
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
@@ -634,6 +580,7 @@
 <script lang="ts">
 // @ts-nocheck
 import { defineComponent, reactive, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { calcDamage } from "../calculator/calculator";
 import {
   getCharactersAvailable,
@@ -644,21 +591,15 @@ import CalculatorWeapons from "./CalculatorWeapons.vue";
 import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
+import CalculatorTalents from "./CalculatorTalents.vue";
 import { mainEchoesData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
+import { useCharacterStore } from "../stores/character";
 
 interface FormData {
   [key: string]: number | string; // index signature
   enemyLevel: number;
   enemyResist: number;
-}
-
-interface TalentData {
-  basic: number;
-  skill: number;
-  forte: number;
-  liberation: number;
-  intro: number;
 }
 
 export default defineComponent({
@@ -669,34 +610,22 @@ export default defineComponent({
     CalculatorCharacterBuffs,
     CalculatorPartyBuffs,
     CalculatorResonanceChains,
+    CalculatorTalents,
   },
   setup() {
-    const formData = reactive<FormData>({
-      enemyLevel: 90,
-      enemyResist: 0.1,
-    });
-    const talentData = reactive<TalentData>({
-      basic: 10,
-      skill: 10,
-      forte: 10,
-      liberation: 10,
-      intro: 10,
-    });
+    const characterStore = useCharacterStore();
+    const { characters, activeCharacter } = storeToRefs(characterStore);
     const weaponData = reactive({});
     const charBuffsData = reactive({});
     const teamBuffsData = reactive({});
     const charResonanceChainsData = reactive({});
-
-    watch(formData, async (updatedFormData: FormData) => {
-      handleCalculation(updatedFormData);
-    });
 
     const allDamages = reactive({});
     const chosenWeapon = reactive({});
     const chosenChar = reactive({});
     const echoStats = reactive({});
     const characterLevel = ref("90");
-    const weaponType = ref("Swords");
+    const weaponType = ref("");
     const curScreen = ref("character");
     const damage = ref(0);
     const charactersList = ref([]);
@@ -745,6 +674,8 @@ export default defineComponent({
       isLoading.value = true;
       const chosen = await getCharByName(charName);
       chosenChar.value = chosen;
+      // set the character in the store
+      characterStore.setActiveCharacter(charName);
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
@@ -752,16 +683,51 @@ export default defineComponent({
       if (weaponType.value !== chosenChar.value?.basic?.weapon) {
         weaponType.value = chosenChar.value?.basic?.weapon ?? "Swords";
       }
+      // update the enemy data
+      formData.enemyLevel = characters.value?.[charName]?.enemyLevel ?? 90;
+      formData.enemyResist = characters.value?.[charName]?.enemyResist ?? 0.1;
       calcCharStats();
     });
     watch(characterLevel, () => {
-      calcCharStats();
-    });
-    watch(talentData, () => {
+      // set the character level in the store
+      const data = { characterLevel };
+      characterStore.setCharacterData(character.value, data);
       calcCharStats();
     });
 
-    character.value = charactersList.value[0];
+    // set the character to display, default to the first
+    let initialCharacter = activeCharacter?.value;
+    // it can be a blank string, if so, set it to the first item
+    if (!initialCharacter) {
+      initialCharacter = charactersList.value[0];
+    }
+    character.value = initialCharacter;
+
+    // seed initial enemy data with store data or default
+    const formData = reactive<FormData>({
+      enemyLevel: characters.value?.[character.value]?.enemyLevel ?? 90,
+      enemyResist: characters.value?.[character.value]?.enemyResist ?? 0.1,
+    });
+    watch(formData, async (updatedFormData: FormData) => {
+      // set the enemy data in the store per character
+      const data = { ...updatedFormData };
+      characterStore.setCharacterData(character.value, data);
+      handleCalculation(updatedFormData);
+    });
+
+    // set the character value
+    characterLevel.value =
+      characters.value?.[character.value]?.characterLevel ?? "90";
+
+    const talentData = reactive({
+      basic: characters.value?.[character.value]?.talents?.basic ?? 10,
+      skill: characters.value?.[character.value]?.talents?.skill ?? 10,
+      forte: characters.value?.[character.value]?.talents?.forte ?? 10,
+      liberation:
+        characters.value?.[character.value]?.talents?.liberation ?? 10,
+      intro: characters.value?.[character.value]?.talents?.intro ?? 10,
+    });
+
     const addBuffs = (source, target) => {
       if (source) {
         target.attackPercent += source?.ATK ? source.ATK * 100 : 0;
@@ -999,13 +965,16 @@ export default defineComponent({
 
       if (returnValue) {
         switch (returnValue) {
-          case 'HP':
+          case "HP":
             return charHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
-          case 'DEF':
+          case "DEF":
             return charDef * (1 + stats.defPercent / 100) + stats.defFlat;
-          case 'ATK':
+          case "ATK":
           default:
-            return (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) + stats.attackFlat;
+            return (
+              (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
+              stats.attackFlat
+            );
         }
       }
 
@@ -1188,26 +1157,20 @@ export default defineComponent({
         // check for any modifiers that change the individual instance of atk/hp/def
         // re-calculate the base for this specific instance of damage
         const modifyBaseAtk =
-          charBuffsData.value?.specificTalentBuffs?.[
-            `${attack.key}:ATK`
-          ] ?? 0;
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:ATK`] ?? 0;
         const modifyBaseHp =
-          charBuffsData.value?.specificTalentBuffs?.[
-            `${attack.key}:HP`
-          ] ?? 0;
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:HP`] ?? 0;
         const modifyBaseDef =
-          charBuffsData.value?.specificTalentBuffs?.[
-            `${attack.key}:DEF`
-          ] ?? 0;
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:DEF`] ?? 0;
         let finalAtkDefHpVal = atkDefHpVal;
         if (modifyBaseAtk) {
-          finalAtkDefHpVal = calcCharStats('ATK', { ATK: modifyBaseAtk } );
+          finalAtkDefHpVal = calcCharStats("ATK", { ATK: modifyBaseAtk });
         }
         if (modifyBaseHp) {
-          finalAtkDefHpVal = calcCharStats('HP', { HP: modifyBaseHp } );
+          finalAtkDefHpVal = calcCharStats("HP", { HP: modifyBaseHp });
         }
         if (modifyBaseDef) {
-          finalAtkDefHpVal = calcCharStats('DEF', { DEF: modifyBaseDef } );
+          finalAtkDefHpVal = calcCharStats("DEF", { DEF: modifyBaseDef });
         }
 
         return calcDamage(
@@ -1311,9 +1274,15 @@ export default defineComponent({
       return Math.ceil(damage);
     };
 
+    const handleCharacterTalentUpdated = (data) => {
+      talentData[data.type] = data.value;
+      calcAllDamages();
+    };
+
     return {
       allDamages,
       character,
+      characters,
       characterLevel,
       characterLevelOptions,
       charactersList,
@@ -1326,13 +1295,13 @@ export default defineComponent({
       fields,
       formData,
       updateStatsEchoes,
-      talentData,
       totalAtk,
       totalHp,
       totalDef,
       totalCritRate,
       totalCritDMG,
       weaponType,
+      handleCharacterTalentUpdated,
       handleWeaponUpdated,
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
@@ -1354,7 +1323,6 @@ export default defineComponent({
       ResistReduction,
       weaponData,
       isLoading,
-      // weaponLevelOptions,
     };
   },
 });
@@ -1480,13 +1448,6 @@ $tooltip-background-color: $sidebar-background-color;
   width: 100%;
   justify-content: space-between;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-.data-input--talents {
-  padding: 1rem 0;
-  label {
-    min-width: 120px;
-    display: inline-block;
-  }
 }
 .alert {
   background: #126a5a;

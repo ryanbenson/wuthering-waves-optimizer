@@ -1,7 +1,11 @@
 <template>
   <div class="data-input">
     <div class="form__group field">
-      <select name="weapon" v-model="weapon" class="form__field">
+      <select
+        name="weapon"
+        v-model="weapon"
+        class="form__field"
+        @change="flushPassives">
         <option :value="null">Choose a weapon</option>
         <option v-for="weap in weaponsList" :key="weap" :value="weap">
           {{ weap }}
@@ -28,24 +32,24 @@
     <div v-if="weaponDescription" class="weapon__desc">
       {{ weaponDescription }}
     </div>
-    {{ weapon }}
     <div v-if="hasWeaponPassive" class="weapon__passives" :key="weapon">
       <CalculatorWeaponsPassive
         v-for="(weaponPassive, i) in weaponPassives"
         class="weapon__passive"
         :key="weaponPassive.key"
+        :character="character"
         :passive-key="weaponPassive.key"
         :has-stacks="weaponPassive.hasStacks"
         :modifier="weaponPassive.modifier"
         :modifier-by-refinement="weaponPassive.modifierByRefinement"
-        :max-stacks="weaponPassive.maxStacks"
         :min-stacks="weaponPassive.minStacks"
+        :max-stacks="weaponPassive.maxStacks"
         :always-enabled="weaponPassive.alwaysEnabled"
         :details="weaponPassive.details"
         :refinement="refinement"
-        :duplicate-modifier="weaponPassive.duplicateModifier"
-        @updated-weapon-stats="handleUpdatedWeaponStats">
-      </CalculatorWeaponsPassive>
+        @updated-weapon-stats="
+          handleUpdatedWeaponStats
+        "></CalculatorWeaponsPassive>
     </div>
   </div>
 </template>
@@ -53,46 +57,169 @@
 <script>
 import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
 import CalculatorWeaponsPassive from "./CalculatorWeaponsPassive.vue";
+import { useCharacterStore } from "../stores/character";
+import { mapActions, mapState } from "pinia";
 
 export default {
   props: {
-    weaponType: {
-      type: String,
-      default: "Swords",
-    },
+    character: { type: String, required: true },
+    weaponType: { type: String, default: "" },
   },
   components: { CalculatorWeaponsPassive },
   data() {
     return {
-      weapon: null,
-      weaponsList: [],
-      weaponLevel: "90",
+      // this data we do not want in the store
       chosenWeapon: null,
-      refinement: 1,
       weaponPassiveStats: {},
-      weaponPassives: [],
+      weaponsList: [],
     };
   },
+  computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data from the store
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+    /**
+     * Getter/setter used in the form for the weapon choice
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {String|null}
+     */
+    weapon: {
+      get() {
+        return this.currentCharacter?.weapon ?? null;
+      },
+      async set(value) {
+        await this.setCharacterData(this.character, { weapon: value });
+      },
+    },
+    /**
+     * Getter/setter used in the form for the weapon level
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {String|null}
+     */
+    weaponLevel: {
+      get() {
+        return this.currentCharacter?.weaponLevel ?? "90";
+      },
+      async set(value) {
+        await this.setCharacterData(this.character, {
+          weaponLevel: value,
+        });
+      },
+    },
+    /**
+     * Getter/setter used in the form for the refinement choice
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {String|null}
+     */
+    refinement: {
+      get() {
+        return this.currentCharacter?.refinement ?? "1";
+      },
+      async set(value) {
+        await this.setCharacterData(this.character, {
+          refinement: value,
+        });
+      },
+    },
+    /**
+     * List of options for the weapon level
+     * @returns {Array}
+     */
+    weaponLevelOptions() {
+      return [
+        "1",
+        "20",
+        "20+",
+        "40",
+        "40+",
+        "50",
+        "50+",
+        "60",
+        "60+",
+        "70",
+        "70+",
+        "80",
+        "80+",
+        "90",
+      ];
+    },
+    /**
+     * List of options for the refinements options
+     * @returns {Array}
+     */
+    weaponRefinementLevels() {
+      return ["1", "2", "3", "4", "5"];
+    },
+    /**
+     * Determines if there are any weapon passives or not
+     * @returns {Boolean}
+     */
+    hasWeaponPassive() {
+      return this.weaponPassives && this.weaponPassives.length > 0;
+    },
+    /**
+     * The weapon description, typically in HTML
+     * @returns {String|null}
+     */
+    weaponDescription() {
+      return this.chosenWeapon?.info?.description ?? null;
+    },
+    /**
+     * The weapon passives data
+     * @returns {Array}
+     */
+    weaponPassives() {
+      const passives = this.chosenWeapon?.info?.passiveData ?? [];
+      return JSON.parse(JSON.stringify(passives));
+    },
+  },
   watch: {
-    weaponLevel: async function (weaponLevel) {
-      if (weaponLevel) {
-        this.updateWeaponStats();
-      }
+    // we're using immediate so it'll react when we get data from the store
+    weaponLevel: {
+      handler: async function (weaponLevel) {
+        if (weaponLevel) {
+          this.updateWeaponStats();
+        }
+      },
+      immediate: true,
     },
-    refinement: async function (refinement) {
-      if (refinement) {
-        this.updateWeaponStats();
-      }
+    refinement: {
+      handler: async function (refinement) {
+        if (refinement) {
+          this.updateWeaponStats();
+        }
+      },
+      immediate: true,
     },
-    weaponType: async function () {
-      await this.updateWeapons();
-      // await this.setFirstWeapon();
+    weaponType: {
+      handler: async function () {
+        await this.updateWeapons();
+        await this.weaponChanged();
+      },
+      immediate: true,
     },
-    weapon: async function (newWeapon) {
-      await this.weaponChanged(newWeapon);
+    weapon: {
+      handler: async function () {
+        await this.weaponChanged();
+      },
+      immediate: true,
     },
   },
   methods: {
+    ...mapActions(useCharacterStore, [
+      "setCharacterData",
+      "resetCharacterWeaponPassives",
+    ]),
+    /**
+     * Updates the weapon stats and send that off to the parent
+     * so we can update the stats and calcs
+     * @emtis update-weapon
+     */
     async updateWeaponStats() {
       if (this.chosenWeapon) {
         const { attack, modifier, modifierValue } =
@@ -114,84 +241,53 @@ export default {
         this.$emit("update-weapon", weaponData);
       }
     },
-    async setWeapon() {
-      if (!this.weapon) {
-        this.chosenWeapon = null;
-        return null;
-      }
-      const weaponChosen = await getWeaponByName(this.weaponType, this.weapon);
-      this.chosenWeapon = weaponChosen;
-    },
+    /**
+     * Updates the list of weapons to choose from
+     * It resets any weapon local state since the list changes
+     */
     async updateWeapons() {
       this.weaponsList = getWeaponsByType(this.weaponType);
       this.weaponPassiveStats = {};
       this.chosenWeapon = null;
-      this.weapon = null;
       this.updateWeaponStats();
     },
+    /**
+     * Update our passive data and trigger other function to emit out
+     */
     async handleUpdatedWeaponStats(data) {
       this.weaponPassiveStats[data.stat] = data.value;
       await this.updateWeaponStats();
     },
-    async weaponChanged(weapon) {
-      if (!weapon) {
-        this.chosenWeapon = null;
-        this.weaponPassives = [];
-        this.updateWeaponStats();
-        return null;
+    /**
+     * Handler for when you change the weapon choice
+     * fetches the new weapon data and resets
+     */
+    async weaponChanged() {
+      if (!this.weaponType) {
+        return;
       }
-      const weaponChosen = await getWeaponByName(this.weaponType, this.weapon);
-      this.chosenWeapon = weaponChosen;
-      this.weaponPassiveStats = {};
-      this.setWeaponPassives();
+      try {
+        if (!this.weapon) {
+          this.updateWeaponStats();
+          return null;
+        }
+        const weaponChosen = await getWeaponByName(
+          this.weaponType,
+          this.weapon
+        );
+        this.chosenWeapon = weaponChosen;
+        // this.weaponPassiveStats = {};
+        this.updateWeaponStats();
+      } catch (error) {
+        // console.log("Failed to find weapon");
+      }
     },
-    setWeaponPassives() {
-      this.weaponPassives = [];
-      const passives = this.chosenWeapon?.info?.passiveData ?? [];
-      this.weaponPassives = JSON.parse(JSON.stringify(passives));
-      this.updateWeaponStats();
+    // Doing this so we don't track passive data for every weapon, for every character
+    // can remove this later if we need to, but if we do:
+    // we're putting passive data on the character. we'll have to put it on the weapon level
+    async flushPassives() {
+      await this.resetCharacterWeaponPassives(this.character);
     },
-    // async setFirstWeapon() {
-    //   const weapon = this.weaponsList[0];
-    //   this.weapon = weapon;
-    //   const weaponChosen = await getWeaponByName(this.weaponType, weapon);
-    //   this.chosenWeapon = weaponChosen;
-    //   this.weaponPassiveStats = {};
-    //   this.setWeaponPassives();
-    // },
-  },
-  computed: {
-    weaponLevelOptions() {
-      return [
-        "1",
-        "20",
-        "20+",
-        "40",
-        "40+",
-        "50",
-        "50+",
-        "60",
-        "60+",
-        "70",
-        "70+",
-        "80",
-        "80+",
-        "90",
-      ];
-    },
-    weaponRefinementLevels() {
-      return ["1", "2", "3", "4", "5"];
-    },
-    hasWeaponPassive() {
-      return this.weaponPassives && this.weaponPassives.length > 0;
-    },
-    weaponDescription() {
-      return this.chosenWeapon?.info?.description ?? null;
-    },
-  },
-  async mounted() {
-    await this.updateWeapons();
-    // await this.setFirstWeapon();
   },
 };
 </script>

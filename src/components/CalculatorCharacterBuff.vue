@@ -18,8 +18,14 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
 export default {
   props: {
+    character: {
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
     },
@@ -49,29 +55,48 @@ export default {
       type: Array,
       default: () => [],
     },
+    // used in rare buffs that are based on a talent level
+    // e.g. Incandescence for Jinhsi
     talentData: {
       type: Object,
       default: () => {},
     },
   },
   data() {
-    return {
-      isEnabled: false,
-      stacks: 0,
-    };
+    return {};
   },
   watch: {
     buffStats: function () {
       this.updatedStats();
     },
+    isEnabled: {
+      handler: async function () {
+        this.updatedStats();
+      },
+      immediate: true,
+    },
+    stacks: {
+      handler: async function () {
+        this.updatedStats();
+      },
+      immediate: true,
+    },
   },
   methods: {
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
+    /**
+     * Updates the parent with the buff data
+     * @emits updated-character-buff
+     */
     updatedStats() {
       this.$emit("updated-character-buff", {
         key: this.uniqueKey,
         data: this.buffStats,
       });
     },
+    /**
+     * Ensures a user can't exceed the max stacks
+     */
     ensureMaxStacks() {
       if (this.stacks > this.maxStacks) {
         this.stacks = this.maxStacks;
@@ -79,6 +104,59 @@ export default {
     },
   },
   computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+    /**
+     * Getter/setter used in the form for the isEnabled state for this passive
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    isEnabled: {
+      get() {
+        return (
+          this.currentCharacter?.buffs?.[this.uniqueKey]?.isEnabled ?? false
+        );
+      },
+      async set(value) {
+        const data = {
+          buffs: {},
+        };
+        data.buffs[this.uniqueKey] = {
+          isEnabled: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the stacks count state for this passive
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    stacks: {
+      get() {
+        return this.currentCharacter?.buffs?.[this.uniqueKey]?.stacks ?? 0;
+      },
+      async set(value) {
+        const data = {
+          buffs: {},
+        };
+        data.buffs[this.uniqueKey] = {
+          stacks: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Transforms the buffs data into a hashmap of buffModifider : buffValue
+     * That gets sent throughout the calculator to reflect in the stats and damages
+     * @returns {Object}
+     */
     buffStats() {
       const data = {};
       if (!this.isEnabled) {
@@ -96,10 +174,9 @@ export default {
           } else if (modifierItem.modifier === "Talent") {
             // this is the rare case where the modifier value needs a reference to another talent level
             // specifically Jinhsi incandescence buff scales off of her forte talent
-            const talentVal =
-              modifierItem.modifierValue[
-                this.talentData[modifierItem.modifierValueTalentRef]
-              ];
+            const talentRef =
+              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+            const talentVal = modifierItem.modifierValue[talentRef];
             data[modifierItem.modifierTalentKey] = talentVal;
           } else if (modifierItem.modifier === "talentModifierMultiply") {
             // for buffs that apply talentModifierMultiply to the calcs
@@ -127,10 +204,9 @@ export default {
               modifierItem.modifierValue * this.stacks;
             data.modifySpecificTalents.push(modifierItem);
           } else if (modifierItem.modifier === "Talent") {
-            const talentVal =
-              modifierItem.modifierValue[
-                this.talentData[modifierItem.modifierValueTalentRef]
-              ];
+            const talentRef =
+              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+            const talentVal = modifierItem.modifierValue[talentRef];
             data[modifierItem.modifierTalentKey] = talentVal * this.stacks;
           } else {
             const totalValue = modifierItem.modifierValue * this.stacks;
