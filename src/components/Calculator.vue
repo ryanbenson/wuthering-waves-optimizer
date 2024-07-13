@@ -37,7 +37,10 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert" v-if="false">Yinlin is now available!⚡</div>
+          <div class="alert">
+            All character data is now saved to your browser, so it'll return
+            when you come back!💾
+          </div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
