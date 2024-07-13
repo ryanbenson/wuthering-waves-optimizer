@@ -6,7 +6,6 @@
       <li>More characters</li>
       <li>More weapons</li>
       <li>Custom rotations</li>
-      <li>Persisting your configurations in your browser</li>
       <li>Food</li>
       <li>More!</li>
     </ul>
