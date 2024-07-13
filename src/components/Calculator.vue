@@ -965,13 +965,16 @@ export default defineComponent({
 
       if (returnValue) {
         switch (returnValue) {
-          case 'HP':
+          case "HP":
             return charHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
-          case 'DEF':
+          case "DEF":
             return charDef * (1 + stats.defPercent / 100) + stats.defFlat;
-          case 'ATK':
+          case "ATK":
           default:
-            return (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) + stats.attackFlat;
+            return (
+              (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
+              stats.attackFlat
+            );
         }
       }
 
@@ -1154,26 +1157,20 @@ export default defineComponent({
         // check for any modifiers that change the individual instance of atk/hp/def
         // re-calculate the base for this specific instance of damage
         const modifyBaseAtk =
-          charBuffsData.value?.specificTalentBuffs?.[
-            `${attack.key}:ATK`
-          ] ?? 0;
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:ATK`] ?? 0;
         const modifyBaseHp =
-          charBuffsData.value?.specificTalentBuffs?.[
-            `${attack.key}:HP`
-          ] ?? 0;
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:HP`] ?? 0;
         const modifyBaseDef =
-          charBuffsData.value?.specificTalentBuffs?.[
-            `${attack.key}:DEF`
-          ] ?? 0;
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:DEF`] ?? 0;
         let finalAtkDefHpVal = atkDefHpVal;
         if (modifyBaseAtk) {
-          finalAtkDefHpVal = calcCharStats('ATK', { ATK: modifyBaseAtk } );
+          finalAtkDefHpVal = calcCharStats("ATK", { ATK: modifyBaseAtk });
         }
         if (modifyBaseHp) {
-          finalAtkDefHpVal = calcCharStats('HP', { HP: modifyBaseHp } );
+          finalAtkDefHpVal = calcCharStats("HP", { HP: modifyBaseHp });
         }
         if (modifyBaseDef) {
-          finalAtkDefHpVal = calcCharStats('DEF', { DEF: modifyBaseDef } );
+          finalAtkDefHpVal = calcCharStats("DEF", { DEF: modifyBaseDef });
         }
 
         return calcDamage(

@@ -22,7 +22,7 @@
         max="10"
         steps="1"
         class="form__field"
-        @input="talentUpdated" />
+        @input="(e) => talentUpdated('skill', e)" />
     </div>
     <div class="form__group field">
       <label for="talentForte" class="form__label"
@@ -36,7 +36,7 @@
         max="10"
         steps="1"
         class="form__field"
-        @input="talentUpdated" />
+        @input="(e) => talentUpdated('forte', e)" />
     </div>
     <div class="form__group field">
       <label for="talentLiberation" class="form__label"
@@ -50,7 +50,7 @@
         max="10"
         steps="1"
         class="form__field"
-        @input="talentUpdated" />
+        @input="(e) => talentUpdated('liberation', e)" />
     </div>
     <div class="form__group field">
       <label for="talentIntro" class="form__label">Intro: {{ intro }}</label>
@@ -62,7 +62,7 @@
         max="10"
         steps="1"
         class="form__field"
-        @input="talentUpdated" />
+        @input="(e) => talentUpdated('intro', e)" />
     </div>
   </div>
 </template>
