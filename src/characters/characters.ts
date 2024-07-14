@@ -4,6 +4,7 @@ export function getCharactersAvailable(): string[] {
     "Changli",
     "Yinlin",
     "Jiyan",
+    "Encore",
     "Calcharo",
     "Taoqi",
     "Danjin",

@@ -10,12 +10,16 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 14, 2024</h3>
+    <ul>
+      <li>Encore is now available!</li>
+    </ul>
     <h3>July 13, 2024</h3>
     <ul>
       <li>
         Major release: All data is stored in the browser so when you refresh the
         page, or come back, all data will come back. And it applies to all
-        characters, even if they're active or not.
+        characters, even if they're azctive or not.
       </li>
     </ul>
     <h3>July 12, 2024</h3>

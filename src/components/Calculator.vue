@@ -38,8 +38,7 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div class="alert">
-            All character data is now saved to your browser, so it'll return
-            when you come back!💾
+            All data is now saved 💾 Encore is available 🐻
           </div>
           <div class="character__selection">
             <div
