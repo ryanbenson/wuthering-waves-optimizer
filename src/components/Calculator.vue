@@ -58,17 +58,11 @@
                 </select>
                 <label for="character">Character</label>
               </div>
-              <div>
-                <select name="characterLevel" v-model="characterLevel">
-                  <option
-                    v-for="lvl in characterLevelOptions"
-                    :key="lvl"
-                    :value="lvl">
-                    {{ lvl }}
-                  </option>
-                </select>
-                <label for="characterLevel">Character Level</label>
-              </div>
+              <CalculatorCharacterLevel
+                :character="character"
+                @character-level-updated="
+                  handleCharacterLevelUpdated
+                "></CalculatorCharacterLevel>
             </div>
           </div>
           <CalculatorTalents
@@ -594,6 +588,7 @@ import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
 import CalculatorTalents from "./CalculatorTalents.vue";
+import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import { mainEchoesData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -610,6 +605,7 @@ export default defineComponent({
     CalculatorEchoes,
     CalculatorWeapons,
     CalculatorCharacterBuffs,
+    CalculatorCharacterLevel,
     CalculatorPartyBuffs,
     CalculatorResonanceChains,
     CalculatorTalents,
@@ -632,22 +628,6 @@ export default defineComponent({
     const damage = ref(0);
     const charactersList = ref([]);
     const character = ref("");
-    const characterLevelOptions = ref([
-      "1",
-      "20",
-      "20+",
-      "40",
-      "40+",
-      "50",
-      "50+",
-      "60",
-      "60+",
-      "70",
-      "70+",
-      "80",
-      "80+",
-      "90",
-    ]);
     const totalAtk = ref(0);
     const totalHp = ref(0);
     const totalDef = ref(0);
@@ -691,12 +671,6 @@ export default defineComponent({
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
-      calcCharStats();
-    });
-    watch(characterLevel, () => {
-      // set the character level in the store
-      const data = { characterLevel };
-      characterStore.setCharacterData(character.value, data);
       calcCharStats();
     });
 
@@ -1284,12 +1258,17 @@ export default defineComponent({
       calcAllDamages();
     };
 
+    const handleCharacterLevelUpdated = (level) => {
+      // set the character level in the store
+      characterLevel.value = level;
+      calcCharStats();
+    };
+
     return {
       allDamages,
       character,
       characters,
       characterLevel,
-      characterLevelOptions,
       charactersList,
       chosenChar,
       chosenWeapon,
@@ -1306,6 +1285,7 @@ export default defineComponent({
       totalCritRate,
       totalCritDMG,
       weaponType,
+      handleCharacterLevelUpdated,
       handleCharacterTalentUpdated,
       handleWeaponUpdated,
       handleUpdatedCharacterBuffs,
