@@ -678,9 +678,9 @@ export default defineComponent({
       chosenChar.value = chosen;
       // set the character in the store
       characterStore.setActiveCharacter(charName);
-      setTimeout(() => {
-        isLoading.value = false;
-      }, 10);
+      // update the character level
+      characterLevel.value =
+        characters.value?.[charName]?.characterLevel ?? "90";
       // update the weapons if needed
       if (weaponType.value !== chosenChar.value?.basic?.weapon) {
         weaponType.value = chosenChar.value?.basic?.weapon ?? "Swords";
@@ -688,6 +688,9 @@ export default defineComponent({
       // update the enemy data
       formData.enemyLevel = characters.value?.[charName]?.enemyLevel ?? 90;
       formData.enemyResist = characters.value?.[charName]?.enemyResist ?? 0.1;
+      setTimeout(() => {
+        isLoading.value = false;
+      }, 10);
       calcCharStats();
     });
     watch(characterLevel, () => {
