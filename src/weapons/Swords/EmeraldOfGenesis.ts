@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. When Resonance Skill is released, increases ATK by 6%/7.5%/9%/10.5%/12%, stacking up to 2 time(s). This effect lasts for 10s.",
   passiveData: [
     {
-      key: "EnergyRegen",
+      key: "EmeraldofGenesisEnergyRegen",
       hasStacks: false,
       modifier: "EnergyRegen",
       modifierByRefinement: {
@@ -23,7 +23,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: true,
     },
     {
-      key: "ATK",
+      key: "EmeraldofGenesisATK",
       hasStacks: true,
       modifier: "ATK",
       modifierByRefinement: {

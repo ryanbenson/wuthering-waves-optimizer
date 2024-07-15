@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "Increases the DMG Bonus of all Resonance Attributes by 12%/15%/18%/21%/24%. When Resonance Skill hits a target, increases ATK by 12%/15%/18%/21%/24%, stacking up to 2. When the equipped character is not on the field, increases their ATK by an additional 12%/15%/18%/21%/24%.",
   passiveData: [
     {
-      key: "AllElementAttributeBonus",
+      key: "StringmasterAllElementAttributeBonus",
       hasStacks: false,
       modifier: "AllElementAttributeBonus",
       modifierByRefinement: {
@@ -24,7 +24,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: true,
     },
     {
-      key: "ATK1",
+      key: "StringmasterATK1",
       hasStacks: true,
       modifier: "ATK",
       modifierByRefinement: {
@@ -41,7 +41,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: false,
     },
     {
-      key: "ATK2",
+      key: "StringmasterATK2",
       hasStacks: false,
       modifier: "ATK",
       modifierByRefinement: {

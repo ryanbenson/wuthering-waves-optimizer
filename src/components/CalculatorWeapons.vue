@@ -4,8 +4,7 @@
       <select
         name="weapon"
         v-model="weapon"
-        class="form__field"
-        @change="flushPassives">
+        class="form__field">
         <option :value="null">Choose a weapon</option>
         <option v-for="weap in weaponsList" :key="weap" :value="weap">
           {{ weap }}
@@ -281,12 +280,6 @@ export default {
       } catch (error) {
         // console.log("Failed to find weapon");
       }
-    },
-    // Doing this so we don't track passive data for every weapon, for every character
-    // can remove this later if we need to, but if we do:
-    // we're putting passive data on the character. we'll have to put it on the weapon level
-    async flushPassives() {
-      await this.resetCharacterWeaponPassives(this.character);
     },
   },
 };

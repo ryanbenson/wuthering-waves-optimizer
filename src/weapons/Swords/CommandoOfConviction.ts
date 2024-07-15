@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "When Intro Skill is released, increases ATK by 15%/18.75%/22.5%/26.25%/30%, lasting for 15s.",
   passiveData: [
     {
-      key: "ATK",
+      key: "CommandoofConvictionATK",
       hasStacks: false,
       modifier: "ATK",
       modifierByRefinement: {

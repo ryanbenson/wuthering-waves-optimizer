@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "When Intro Skill is released, increases the caster's ATK by 8%/10%/12%/14%/16% and HP by 10%/12.5%/15%/17.5%/20%, lasting for 15s.",
   passiveData: [
     {
-      key: "ATK",
+      key: "JinzhouKeeperATK",
       hasStacks: false,
       modifier: "ATK",
       modifierByRefinement: {
@@ -26,7 +26,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: false,
     },
     {
-      key: "HP",
+      key: "JinzhouKeeperHP",
       hasStacks: false,
       modifier: "HP",
       modifierByRefinement: {

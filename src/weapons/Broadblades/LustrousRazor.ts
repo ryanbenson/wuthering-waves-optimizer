@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. When Resonance Skill is released, Resonance Liberation DMG is increased by 7%/8.75%/10.5%/12.25%/14%, stacking up to 3 times. This effect lasts for 12s.",
   passiveData: [
     {
-      key: "ResonanceLiberationDMGBonus",
+      key: "LustrousRazorResonanceLiberationDMGBonus",
       hasStacks: true,
       modifier: "ResonanceLiberationDMGBonus",
       modifierByRefinement: {

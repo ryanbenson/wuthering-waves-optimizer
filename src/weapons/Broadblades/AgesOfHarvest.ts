@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "Gain 12%/15%/18%/21%/24% additional DMG Bonus for all Attributes. The wielder is bestowed with divine blessings and gains 1 stack of Blessing of Ages for each Basic Attack strike, for up to 4 stacks, which is removed when the wielder leaves the field. At 4 stacks of Blessing of Ages or more, the wielder consumes all stacks of Blessing of Ages when casting the next Resonance Skill, with its DMG increased by 48%/60%/72%/84%/96% for 2.5s. This can be triggered 1 time every 6s.",
   passiveData: [
     {
-      key: "AllElementAttributeBonus",
+      key: "AgesofHarvestAllElementAttributeBonus",
       hasStacks: false,
       modifier: "AllElementAttributeBonus",
       modifierByRefinement: {
@@ -24,7 +24,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: true,
     },
     {
-      key: "ResonanceSkillDMGBonus",
+      key: "AgesofHarvestResonanceSkillDMGBonus",
       hasStacks: true,
       modifier: "ResonanceSkillDMGBonus",
       modifierByRefinement: {
