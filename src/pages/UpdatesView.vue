@@ -11,6 +11,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 16, 2024</h3>
+    <ul>
+      <li>
+        Bug fix: where weapon passives from previous weapon were applied when
+        changing weapons
+      </li>
+      <li>Bug fix: where the substat range on echoes weren't set correctly</li>
+    </ul>
     <h3>July 15, 2024</h3>
     <ul>
       <li>
