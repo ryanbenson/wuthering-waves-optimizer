@@ -13,6 +13,8 @@
     <h1>Updates</h1>
     <h3>July 16, 2024</h3>
     <ul>
+      <li>Released Zhezhi</li>
+      <li>Now supports attacks based on resonance chains</li>
       <li>
         Bug fix: where weapon passives from previous weapon were applied when
         changing weapons
