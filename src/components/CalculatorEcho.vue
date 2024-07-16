@@ -62,8 +62,8 @@
       </select>
       <input
         v-model.number="echoSubStatsValue2"
-        :min="getSubStatRange(echoSubStatsType1).min"
-        :max="getSubStatRange(echoSubStatsType1).max"
+        :min="getSubStatRange(echoSubStatsType2).min"
+        :max="getSubStatRange(echoSubStatsType2).max"
         type="number"
         :disabled="!echoSubStatsType1"
         @input="updateTotalStats"
@@ -79,8 +79,8 @@
       </select>
       <input
         v-model.number="echoSubStatsValue3"
-        :min="getSubStatRange(echoSubStatsType1).min"
-        :max="getSubStatRange(echoSubStatsType1).max"
+        :min="getSubStatRange(echoSubStatsType3).min"
+        :max="getSubStatRange(echoSubStatsType3).max"
         type="number"
         :disabled="!echoSubStatsType1"
         @input="updateTotalStats"
@@ -96,8 +96,8 @@
       </select>
       <input
         v-model.number="echoSubStatsValue4"
-        :min="getSubStatRange(echoSubStatsType1).min"
-        :max="getSubStatRange(echoSubStatsType1).max"
+        :min="getSubStatRange(echoSubStatsType4).min"
+        :max="getSubStatRange(echoSubStatsType4).max"
         type="number"
         :disabled="!echoSubStatsType1"
         @input="updateTotalStats"
@@ -113,8 +113,8 @@
       </select>
       <input
         v-model.number="echoSubStatsValue5"
-        :min="getSubStatRange(echoSubStatsType1).min"
-        :max="getSubStatRange(echoSubStatsType1).max"
+        :min="getSubStatRange(echoSubStatsType5).min"
+        :max="getSubStatRange(echoSubStatsType5).max"
         type="number"
         :disabled="!echoSubStatsType1"
         @input="updateTotalStats"
