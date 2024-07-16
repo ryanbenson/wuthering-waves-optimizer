@@ -42,25 +42,6 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "InherentSkillDeadlyFocus",
-    name: "Inherent Skill: Deadly Focus",
-    details: `<div class="skilldescription">The damage of Resonance Skill <span class="Highlight">Lightning Execution</span> is increased by 10% when hitting targets marked with <span class="Highlight">Sinner's Mark</span>, and Yinlin's ATK is increased by 10% for 4s when this is triggered.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifySpecificTalents: ["LightningExecutionDamage"],
-        modifierValue: 0.1,
-      },
-      {
-        modifier: "ATK",
-        modifierValue: 0.1,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
     key: "StatBonusCritRate1",
     name: "Stat Bonus: Crit. Rate+",
     details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
