@@ -512,6 +512,38 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Zhezhi: [
+    {
+      key: "OutroSkillCarveandDraw",
+      name: "Outro Skill: Carve and Draw",
+      details: `<span class="skilldescription">The incoming Resonator has their Resonance Skill DMG Amplified by 20% for 14s or until they are switched out</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Skill",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4Hue",
+      name: "Sequence Node 4: Hue",
+      details: `<span class="skilldescription">When casting Resonance Liberation <span class="Highlight">Spiritful Animation</span>, the ATK of Resonators on the team increases by 20% for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -568,7 +600,7 @@ export const allEchoBuffs = [
     modifiers: [
       {
         modifier: "DMGBonus",
-        modifierValue: 0.10,
+        modifierValue: 0.1,
       },
     ],
     minStacks: 0,
@@ -598,4 +630,5 @@ export const allCharacters: string[] = [
   "Verina",
   "Taoqi",
   "Danjin",
+  "Zhezhi",
 ];

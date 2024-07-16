@@ -1,5 +1,6 @@
 export function getCharactersAvailable(): string[] {
   return [
+    "Zhezhi",
     "Jinhsi",
     "Changli",
     "Yinlin",

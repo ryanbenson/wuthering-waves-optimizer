@@ -1172,12 +1172,33 @@ export default defineComponent({
       };
 
       const processAttacks = (attacks, talentType) => {
-        return (attacks ?? []).map((attack) => ({
-          key: attack.key,
-          label: attack.label,
-          talent: attack.talents[talentType],
-          damage: calculateAttackDamage(attack, talentType),
-        }));
+        return (
+          (attacks ?? [])
+            .map((attack) => {
+              let isEnabled = true;
+              // if this attack requires a resonance chain to be unlocked, verify it's enabled
+              const requiresResonanceChain =
+                attack?.requiresResonanceChain ?? false;
+              if (requiresResonanceChain) {
+                const enabledAttacks =
+                  charResonanceChainsData.value?.EnableAttack ?? [];
+                const isAttackEnabled = enabledAttacks.includes(
+                  requiresResonanceChain
+                );
+                // flag this attack as enabled or not based on the resonance chain
+                isEnabled = isAttackEnabled;
+              }
+              return {
+                key: attack.key,
+                label: attack.label,
+                talent: attack.talents[talentType],
+                damage: calculateAttackDamage(attack, talentType),
+                isEnabled,
+              };
+            })
+            // remove any attacks that are not enabled
+            .filter((attack) => attack.isEnabled)
+        );
       };
 
       allDamages.value = {
