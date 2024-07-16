@@ -7,9 +7,19 @@
       <li>More weapons</li>
       <li>Custom rotations</li>
       <li>Food</li>
+      <li>Inventory system for equipment</li>
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 15, 2024</h3>
+    <ul>
+      <li>
+        Weapon passives now persist for all weapons for all characters. Soon
+        every weapon will persist their level and refinment per-character too.
+        (Inventory system has been added to the roadmap to streamline equipment
+        for characters)
+      </li>
+    </ul>
     <h3>July 14, 2024</h3>
     <ul>
       <li>Encore is now available!</li>
