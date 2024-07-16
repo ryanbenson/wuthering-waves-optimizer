@@ -275,7 +275,7 @@ export default {
           this.weapon
         );
         this.chosenWeapon = weaponChosen;
-        // this.weaponPassiveStats = {};
+        this.weaponPassiveStats = {};
         this.updateWeaponStats();
       } catch (error) {
         // console.log("Failed to find weapon");
