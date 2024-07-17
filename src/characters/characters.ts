@@ -33,6 +33,7 @@ export const allCharacters: string[] = [
   "Yangyang",
   "Yinlin",
   "Yuanwu",
+  "Zhezhi",
 ];
 
 async function loadModule(charName: string) {
