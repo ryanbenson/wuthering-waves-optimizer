@@ -34,7 +34,8 @@ export const liberationAttacks = {
         "9": "419.59%",
         "10": "419.59%",
       },
-      type: "Liberation",
+      type: "Skill",
+      requiresResonanceChain: "SequenceNode6PursuitofJustice",
     },
   ],
 };
