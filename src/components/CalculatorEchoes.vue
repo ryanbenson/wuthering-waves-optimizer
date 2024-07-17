@@ -1,11 +1,15 @@
 <template>
   <div>
+    <div v-if="isTotalCostOverCap" class="alert alert--error">
+      You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
+    </div>
     <CalculatorEcho
       v-for="(n, index) in 5"
       :key="index"
       :index="index"
       :character="character"
       class="echo-selector"
+      @updated-echo-cost="handleUpdatedEchoCost"
       @update-stats="handleEchoStats">
     </CalculatorEcho>
     <div class="set-bonus-selector">
@@ -16,7 +20,6 @@
         :character="character"
         @update-stats="handleSetBonusTwoData"></CalculatorEchoesSetBonusTwo>
     </div>
-    <div class="total-cost">Total Cost: {{ totalCost }} / 12</div>
     <h3>Main Echo</h3>
     <div class="main-echo__selection">
       <div
@@ -90,6 +93,8 @@ import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+const MAX_ECHO_COST = 12;
+
 export default {
   props: {
     character: {
@@ -112,6 +117,7 @@ export default {
         { type: "", stacks: 0 },
         { type: "", stacks: 0 },
       ],
+      echoCosts: [],
     };
   },
   watch: {
@@ -140,7 +146,9 @@ export default {
       const stats = {};
       // process all of the echo data
       if (this.echoData) {
-        const echoItemsData = Object.values(JSON.parse(JSON.stringify(this.echoData)));
+        const echoItemsData = Object.values(
+          JSON.parse(JSON.stringify(this.echoData))
+        );
         // go through each echo data and merge each stat
         for (const echo of echoItemsData) {
           for (const [stat, value] of Object.entries(echo)) {
@@ -150,13 +158,17 @@ export default {
       }
       // process the first set bonus
       if (this.setBonusOne) {
-        for (const [stat, value] of Object.entries(JSON.parse(JSON.stringify(this.setBonusOne)))) {
+        for (const [stat, value] of Object.entries(
+          JSON.parse(JSON.stringify(this.setBonusOne))
+        )) {
           stats[stat] = (stats[stat] || 0) + value;
         }
       }
       // process the second set bonus
       if (this.setBonusTwo) {
-        for (const [stat, value] of Object.entries(JSON.parse(JSON.stringify(this.setBonusTwo)))) {
+        for (const [stat, value] of Object.entries(
+          JSON.parse(JSON.stringify(this.setBonusTwo))
+        )) {
           stats[stat] = (stats[stat] || 0) + value;
         }
       }
@@ -196,6 +208,9 @@ export default {
       const statData = JSON.parse(JSON.stringify(stats));
       this.echoData[index] = stats;
       this.updateTotalStats();
+    },
+    handleUpdatedEchoCost({ index, cost }) {
+      this.echoCosts[index] = cost;
     },
   },
   computed: {
@@ -248,7 +263,7 @@ export default {
      * Data is persisted in the store. Avoids needing a local data + store data
      * @returns {Boolean}
      */
-     mainEchoStacks: {
+    mainEchoStacks: {
       get() {
         return this.currentCharacter?.mainEcho?.stacks ?? 0;
       },
@@ -305,6 +320,15 @@ export default {
     },
     mainEchoMaxStacks() {
       return this.chosenMainEchoData?.maxStacks ?? 0;
+    },
+    totalEchoCost() {
+      const totalCost = this.echoCosts.reduce((totalCost, cost) => {
+        return (totalCost += cost);
+      }, 0);
+      return totalCost;
+    },
+    isTotalCostOverCap() {
+      return this.totalEchoCost > MAX_ECHO_COST;
     },
   },
 };
@@ -418,5 +442,18 @@ export default {
 }
 .main-echo__enabled {
   margin-top: 1rem;
+}
+.alert {
+  background: #126a5a;
+  padding: 0.25rem 0.5rem;
+  font-size: 14px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  color: white;
+}
+.alert--error {
+  background-color: #7b7c27;
 }
 </style>

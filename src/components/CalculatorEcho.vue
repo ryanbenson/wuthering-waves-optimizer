@@ -158,7 +158,8 @@ export default {
   },
   watch: {
     type: {
-      handler: async function () {
+      handler: async function (value) {
+        this.$emit("updated-echo-cost", { index: this.index, cost: this.type });
         this.updateTotalStats();
       },
       immediate: true,

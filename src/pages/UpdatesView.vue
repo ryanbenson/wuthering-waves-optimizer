@@ -11,6 +11,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 17, 2024</h3>
+    <ul>
+      <li>
+        Yinlin's resonance chain 6 attack now requires the resonance chain to be
+        unlocked for it to available.
+      </li>
+      <li>Adds notification if you exceed the maximum amount of echo cost.</li>
+    </ul>
     <h3>July 16, 2024</h3>
     <ul>
       <li>Released Zhezhi</li>
