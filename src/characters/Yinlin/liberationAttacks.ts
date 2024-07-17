@@ -20,7 +20,7 @@ export const liberationAttacks = {
       type: "Liberation",
     },
     {
-      key: "FuriousThunder",
+      key: "SequenceNode6PursuitofJustice",
       label: "Pursuit of Justice: Furious Thunder",
       talents: {
         "1": "419.59%",
