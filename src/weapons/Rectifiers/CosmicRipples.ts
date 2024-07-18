@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. When hitting a target with Basic Attacks, increases Basic Attack DMG Bonus by 3.2%/4%/4.8%/5.6%/6.4%, stacking up to 5 time(s). This effect lasts for 8s and can be triggered 1 time(s) every 0.5s.",
   passiveData: [
     {
-      key: "BasicAttackDMGBonus",
+      key: "CosmicRipplesBasicAttackDMGBonus",
       hasStacks: true,
       modifier: "BasicAttackDMGBonus",
       modifierByRefinement: {

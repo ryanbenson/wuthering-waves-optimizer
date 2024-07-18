@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "When Intro Skill is released, increases ATK by 8%/10%/12%/14%/16% and DEF by 15%/18.75%/22.5%/26.25%/30%, lasting for 15s.",
   passiveData: [
     {
-      key: "ATK",
+      key: "DauntlessPassiveATK",
       hasStacks: false,
       modifier: "ATK",
       modifierByRefinement: {
@@ -26,7 +26,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: false,
     },
     {
-      key: "DEF",
+      key: "DauntlessPassiveDEF",
       hasStacks: false,
       modifier: "DEF",
       modifierByRefinement: {
@@ -39,7 +39,7 @@ const weaponInfo: WeaponInfo = {
       minStacks: 0,
       maxStacks: 0,
       details:
-        "When Intro Skill is released, increases ATK by 8%/10%/12%/14%/16% and DEF by 15%/18.75%/22.5%/26.25%/30%, lasting for 15s. (ATK)",
+        "When Intro Skill is released, increases ATK by 8%/10%/12%/14%/16% and DEF by 15%/18.75%/22.5%/26.25%/30%, lasting for 15s. (DEF)",
       alwaysEnabled: false,
     },
   ],

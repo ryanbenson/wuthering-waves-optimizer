@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "Increases Attribute DMG Bonus by 12%/15%/18%/21%/24%. Every time Intro Skill or Resonance Liberation is cast, increases Heavy Attack DMG Bonus by 24%/30%/36%/42%/48%, stacking up to 2 time(s). This effect lasts for 14s.",
   passiveData: [
     {
-      key: "AllElementAttributeBonus",
+      key: "VerdantSummitAllElementAttributeBonus",
       hasStacks: false,
       modifier: "AllElementAttributeBonus",
       modifierByRefinement: {
@@ -23,7 +23,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: true,
     },
     {
-      key: "HeavyAttackDMGBonus",
+      key: "VerdantSummitHeavyAttackDMGBonus",
       hasStacks: true,
       modifier: "HeavyAttackDMGBonus",
       modifierByRefinement: {

@@ -15,7 +15,7 @@
  * @returns 
  */
 export function calcHitDamage(
-  charLevel: number,
+  charLevel: string,
   enemyLevel: number,
   enemyResist: number,
   talent: number,
@@ -64,13 +64,16 @@ export function getTalentValue(talentStringWithPercent: string): number {
 }
 
 export function getDefenseModifier(
-  charLevl: number,
+  charLevelSpec: string,
   enemyLevel: number,
   defIgnore: number
 ): number {
+  const charLevel = Number.parseInt(
+    charLevelSpec.slice(-1) == "+" ? charLevelSpec.slice(0, -1) : charLevelSpec
+  );
   const enemyDef = getEnemyDefense(enemyLevel);
   return (
-    (800 + 8 * charLevl) / (800 + 8 * charLevl + enemyDef * (1 - defIgnore))
+    (800 + 8 * charLevel) / (800 + 8 * charLevel + enemyDef * (1 - defIgnore))
   );
 }
 
@@ -112,7 +115,7 @@ interface InstanceDamage {
   [instanceDamage: string]: number;
 }
 export function calcDamage(
-  charLevel: number,
+  charLevel: string,
   enemyLevel: number,
   enemyResist: number,
   talent: string,

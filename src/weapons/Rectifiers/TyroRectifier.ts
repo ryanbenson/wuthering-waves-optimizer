@@ -8,7 +8,7 @@ const weaponInfo: WeaponInfo = {
   passiveValue: "Increases ATK by 5%/6.25%/7.5%/8.75%/10%.",
   passiveData: [
     {
-      key: "ATK",
+      key: "TyroRectifierATK",
       hasStacks: false,
       modifier: "ATK",
       modifierByRefinement: {

@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "Within 12s after Resonance Skill is released, increases ATK by 3%/3.75%/4.5%/5.25%/6% every 2s, stacking up to 4 time(s). When the number of stacks reaches 12, all stacks will be reset within 1s.",
   passiveData: [
     {
-      key: "ATK",
+      key: "HeliosCleaverATK",
       hasStacks: true,
       modifier: "ATK",
       modifierByRefinement: {

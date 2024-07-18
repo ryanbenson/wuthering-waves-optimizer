@@ -6,11 +6,75 @@
       <li>More characters</li>
       <li>More weapons</li>
       <li>Custom rotations</li>
-      <li>Persisting your configurations in your browser</li>
       <li>Food</li>
+      <li>Inventory system for equipment</li>
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 17, 2024</h3>
+    <ul>
+      <li>
+        Yinlin's resonance chain 6 attack now requires the resonance chain to be
+        unlocked for it to available.
+      </li>
+      <li>Adds notification if you exceed the maximum amount of echo cost.</li>
+      <li>Updates Zhezhi outro to latest from beta.</li>
+    </ul>
+    <h3>July 16, 2024</h3>
+    <ul>
+      <li>Released Zhezhi</li>
+      <li>Now supports attacks based on resonance chains</li>
+      <li>
+        Bug fix: where weapon passives from previous weapon were applied when
+        changing weapons
+      </li>
+      <li>Bug fix: where the substat range on echoes weren't set correctly</li>
+    </ul>
+    <h3>July 15, 2024</h3>
+    <ul>
+      <li>
+        Weapon passives now persist for all weapons for all characters. Soon
+        every weapon will persist their level and refinment per-character too.
+        (Inventory system has been added to the roadmap to streamline equipment
+        for characters)
+      </li>
+    </ul>
+    <h3>July 14, 2024</h3>
+    <ul>
+      <li>Encore is now available!</li>
+    </ul>
+    <h3>July 13, 2024</h3>
+    <ul>
+      <li>
+        Major release: All data is stored in the browser so when you refresh the
+        page, or come back, all data will come back. And it applies to all
+        characters, even if they're azctive or not.
+      </li>
+    </ul>
+    <h3>July 12, 2024</h3>
+    <ul>
+      <li>Fixes Changli Fiery Feather buff to only apply to her forte</li>
+    </ul>
+    <h3>July 6, 2024</h3>
+    <ul>
+      <li>Fixes character level bug when using ascension level (with a +)</li>
+      <li>
+        Fixes Changli outro team buff with proper translation and resulting
+        deepen buff
+      </li>
+    </ul>
+    <h3>July 3, 2024</h3>
+    <ul>
+      <li>
+        Fixes weapon issues where if you changed weapons or adjusts passives the
+        stats wouldn't be accurate
+      </li>
+      <li>Fixed Jinhsi's intro buff</li>
+    </ul>
+    <h3>July 2, 2024</h3>
+    <ul>
+      <li>Releases Yinlin</li>
+    </ul>
     <h3>July 1, 2024</h3>
     <ul>
       <li>Adds Impermanence Heron to team buffs</li>

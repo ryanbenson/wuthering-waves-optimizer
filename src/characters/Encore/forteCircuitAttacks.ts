@@ -1,0 +1,40 @@
+export const forteCircuitAttacks = {
+  name: "Forte Circuit: Black & White Woolies",
+  description: `<div class="skilldescription"><span class="Title">Heavy Attack: Cloudy Frenzy</span><br>When Encore's "Mayhem" is full, after casting a <span class="Highlight">Heavy Attack</span>, Encore will consume all "Mayhem" to enter the Mayhem state, reducing damage taken by 70%. Switching Characters does not interrupt the Mayhem state.<br>After the Mayhem state ends, Encore will cast <span class="Highlight">Cloudy Frenzy</span>, dealing <span class="Fire">Fusion DMG</span>, considered as Resonance Liberation damage.<br> <br><span class="Title">Heavy Attack: Cosmos Rupture</span><br>During Cosmos Rave, when casting <span class="Highlight">Heavy Attack</span>, if "Mayhem" is full, Encore will consume all "Mayhem" to enter Cosmos' Mayhem state, reducing damage taken by 70%. Switching Characters does not interrupt the Cosmos' Mayhem state.<br>After Cosmos' Mayhem state ends, Encore will cast <span class="Highlight">Cosmos Rupture</span>, dealing <span class="Fire">Fusion DMG</span>, considered as Resonance Liberation damage. <br><span class="Title">Mayhem</span><br>Encore can hold up to 100 "Mayhem".<br>When Normal Attack <span class="Highlight">Wooly Attack</span> hits a target, Encore restores "Mayhem".<br>When Resonance Skill <span class="Highlight">Flaming Woolies</span> hits a target, Encore restores "Mayhem".<br>When Resonance Skill <span class="Highlight">Energetic Welcome</span> hits a target, Encore restores "Mayhem".<br>When Intro Skill <span class="Highlight">Woolies Helpers</span> hits a target, Encore restores "Mayhem".<br>During the duration of Resonance Liberation <span class="Highlight">Cosmos Rave</span>, Encore restores "Mayhem" when hitting a target.</div>`,
+  attacks: [
+    {
+      key: "CloudyFrenzyDamage",
+      label: "Cloudy Frenzy Damage",
+      talents: {
+        "1": "168.00%",
+        "2": "181.77%",
+        "3": "195.55%",
+        "4": "214.83%",
+        "5": "228.61%",
+        "6": "244.45%",
+        "7": "266.49%",
+        "8": "288.53%",
+        "9": "310.58%",
+        "10": "334.00%",
+      },
+      type: "Liberation",
+    },
+    {
+      key: "CosmosRuptureDamage",
+      label: "Cosmos Rupture Damage",
+      talents: {
+        "1": "23.35%*6 + 249.08%",
+        "2": "25.26%*6 + 269.51%",
+        "3": "27.18%*6 + 289.93%",
+        "4": "29.86%*6 + 318.53%",
+        "5": "31.77%*6 + 338.95%",
+        "6": "33.97%*6 + 362.44%",
+        "7": "37.04%*6 + 395.12%",
+        "8": "40.10%*6 + 427.80%",
+        "9": "43.17%*6 + 460.48%",
+        "10": "46.42%*6 + 495.21%",
+      },
+      type: "Liberation",
+    },
+  ],
+};

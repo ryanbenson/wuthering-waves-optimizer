@@ -1,5 +1,15 @@
 export function getCharactersAvailable(): string[] {
-  return ["Jinhsi", "Changli", "Jiyan", "Calcharo", "Taoqi", "Danjin"];
+  return [
+    "Zhezhi",
+    "Jinhsi",
+    "Changli",
+    "Yinlin",
+    "Jiyan",
+    "Encore",
+    "Calcharo",
+    "Taoqi",
+    "Danjin",
+  ];
 }
 
 export const allCharacters: string[] = [
@@ -23,6 +33,7 @@ export const allCharacters: string[] = [
   "Yangyang",
   "Yinlin",
   "Yuanwu",
+  "Zhezhi",
 ];
 
 async function loadModule(charName: string) {

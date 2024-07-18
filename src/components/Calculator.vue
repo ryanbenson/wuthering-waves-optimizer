@@ -37,7 +37,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Main echo buffs are now available! 💪</div>
+          <div class="alert">
+            All data is now saved 💾 Zhezhi is available 🖌️
+          </div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -56,91 +58,25 @@
                 </select>
                 <label for="character">Character</label>
               </div>
-              <div>
-                <select name="characterLevel" v-model="characterLevel">
-                  <option
-                    v-for="lvl in characterLevelOptions"
-                    :key="lvl"
-                    :value="lvl">
-                    {{ lvl }}
-                  </option>
-                </select>
-                <label for="characterLevel">Character Level</label>
-              </div>
+              <CalculatorCharacterLevel
+                :character="character"
+                @character-level-updated="
+                  handleCharacterLevelUpdated
+                "></CalculatorCharacterLevel>
             </div>
           </div>
-          <div class="data-input--talents">
-            <div class="form__group field">
-              <label for="talentBasic" class="form__label"
-                >Basic: {{ talentData.basic }}</label
-              >
-              <input
-                v-model="talentData.basic"
-                name="talentBasic"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-            <div class="form__group field">
-              <label for="talentSkill" class="form__label"
-                >Skill: {{ talentData.skill }}</label
-              >
-              <input
-                v-model="talentData.skill"
-                name="talentSkill"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-            <div class="form__group field">
-              <label for="talentForte" class="form__label"
-                >Forte Circuit: {{ talentData.forte }}</label
-              >
-              <input
-                v-model="talentData.forte"
-                name="talentForte"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-            <div class="form__group field">
-              <label for="talentLiberation" class="form__label"
-                >Liberation: {{ talentData.liberation }}</label
-              >
-              <input
-                v-model="talentData.liberation"
-                name="talentLiberation"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-            <div class="form__group field">
-              <label for="talentIntro" class="form__label"
-                >Intro: {{ talentData.intro }}</label
-              >
-              <input
-                v-model="talentData.intro"
-                name="talentIntro"
-                type="range"
-                min="1"
-                max="10"
-                steps="1"
-                class="form__field" />
-            </div>
-          </div>
+          <CalculatorTalents
+            :character="character"
+            :key="character"
+            @character-talent-updated="
+              handleCharacterTalentUpdated
+            "></CalculatorTalents>
           <template v-if="chosenChar?.value?.buffs && isLoading === false">
             <CalculatorCharacterBuffs
               :key="character"
+              :character="character"
               :buffs="chosenChar?.value?.buffs"
-              :talent-data="talentData"
+              :talent-data="characters?.[character]?.talents"
               @updated-character-buffs="
                 handleUpdatedCharacterBuffs
               "></CalculatorCharacterBuffs>
@@ -150,13 +86,18 @@
 
       <div class="screen--character" v-show="curScreen === 'weapon'">
         <CalculatorWeapons
+          v-if="character"
           :key="character"
+          :character="character"
           @update-weapon="handleWeaponUpdated"
           :weapon-type="weaponType"></CalculatorWeapons>
       </div>
 
       <div class="screen--character" v-show="curScreen === 'echoes'">
-        <CalculatorEchoes @update-stats="updateStatsEchoes"></CalculatorEchoes>
+        <CalculatorEchoes
+          :key="character"
+          :character="character"
+          @update-stats="updateStatsEchoes"></CalculatorEchoes>
       </div>
 
       <div class="screen--character" v-show="curScreen === 'constellations'">
@@ -164,8 +105,9 @@
           v-if="chosenChar?.value?.resonanceChains && isLoading === false">
           <CalculatorResonanceChains
             :key="character"
+            :character="character"
             :buffs="chosenChar?.value?.resonanceChains"
-            :talent-data="talentData"
+            :talent-data="characters?.[character]?.talents"
             @updated-character-resonance-chains="
               handleUpdatedCharacterResonanceChains
             "></CalculatorResonanceChains>
@@ -174,7 +116,7 @@
 
       <div class="screen-character" v-show="curScreen === 'party'">
         <CalculatorPartyBuffs
-          :current-character="character"
+          :character="character"
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
@@ -476,7 +418,11 @@
         </div>
       </div>
       <h2>Damage</h2>
-      <p>All damages are total damage. If an attack hits multiple times, it will show the total damage. Hover over the damage to see it broken down per hit.</p>
+      <div class="panel mb-1">
+        All damages are total damage. If an attack hits multiple times, it will
+        show the total damage. Hover over the damage to see it broken down per
+        hit.
+      </div>
       <div class="calculation__damage__item">
         <span>Name</span>
         <span>Normal</span>
@@ -630,6 +576,7 @@
 <script lang="ts">
 // @ts-nocheck
 import { defineComponent, reactive, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { calcDamage } from "../calculator/calculator";
 import {
   getCharactersAvailable,
@@ -640,21 +587,16 @@ import CalculatorWeapons from "./CalculatorWeapons.vue";
 import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
+import CalculatorTalents from "./CalculatorTalents.vue";
+import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import { mainEchoesData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
+import { useCharacterStore } from "../stores/character";
 
 interface FormData {
   [key: string]: number | string; // index signature
   enemyLevel: number;
   enemyResist: number;
-}
-
-interface TalentData {
-  basic: number;
-  skill: number;
-  forte: number;
-  liberation: number;
-  intro: number;
 }
 
 const decimalFormatter = new Intl.NumberFormat("en", {
@@ -670,56 +612,29 @@ export default defineComponent({
     CalculatorEchoes,
     CalculatorWeapons,
     CalculatorCharacterBuffs,
+    CalculatorCharacterLevel,
     CalculatorPartyBuffs,
     CalculatorResonanceChains,
+    CalculatorTalents,
   },
   setup() {
-    const formData = reactive<FormData>({
-      enemyLevel: 90,
-      enemyResist: 0.1,
-    });
-    const talentData = reactive<TalentData>({
-      basic: 10,
-      skill: 10,
-      forte: 10,
-      liberation: 10,
-      intro: 10,
-    });
+    const characterStore = useCharacterStore();
+    const { characters, activeCharacter } = storeToRefs(characterStore);
     const weaponData = reactive({});
     const charBuffsData = reactive({});
     const teamBuffsData = reactive({});
     const charResonanceChainsData = reactive({});
-
-    watch(formData, async (updatedFormData: FormData) => {
-      handleCalculation(updatedFormData);
-    });
 
     const allDamages = reactive({});
     const chosenWeapon = reactive({});
     const chosenChar = reactive({});
     const echoStats = reactive({});
     const characterLevel = ref("90");
-    const weaponType = ref("Swords");
+    const weaponType = ref("");
     const curScreen = ref("character");
     const damage = ref(0);
     const charactersList = ref([]);
     const character = ref("");
-    const characterLevelOptions = ref([
-      "1",
-      "20",
-      "20+",
-      "40",
-      "40+",
-      "50",
-      "50+",
-      "60",
-      "60+",
-      "70",
-      "70+",
-      "80",
-      "80+",
-      "90",
-    ]);
     const totalAtk = ref(0);
     const totalHp = ref(0);
     const totalDef = ref(0);
@@ -748,23 +663,57 @@ export default defineComponent({
       isLoading.value = true;
       const chosen = await getCharByName(charName);
       chosenChar.value = chosen;
-      setTimeout(() => {
-        isLoading.value = false;
-      }, 10);
+      // set the character in the store
+      characterStore.setActiveCharacter(charName);
+      // update the character level
+      characterLevel.value =
+        characters.value?.[charName]?.characterLevel ?? "90";
       // update the weapons if needed
       if (weaponType.value !== chosenChar.value?.basic?.weapon) {
         weaponType.value = chosenChar.value?.basic?.weapon ?? "Swords";
       }
-      calcCharStats();
-    });
-    watch(characterLevel, () => {
-      calcCharStats();
-    });
-    watch(talentData, () => {
+      // update the enemy data
+      formData.enemyLevel = characters.value?.[charName]?.enemyLevel ?? 90;
+      formData.enemyResist = characters.value?.[charName]?.enemyResist ?? 0.1;
+      setTimeout(() => {
+        isLoading.value = false;
+      }, 10);
       calcCharStats();
     });
 
-    character.value = charactersList.value[0];
+    // set the character to display, default to the first
+    let initialCharacter = activeCharacter?.value;
+    // it can be a blank string, if so, set it to the first item
+    if (!initialCharacter) {
+      initialCharacter = charactersList.value[0];
+    }
+    character.value = initialCharacter;
+
+    // seed initial enemy data with store data or default
+    const formData = reactive<FormData>({
+      enemyLevel: characters.value?.[character.value]?.enemyLevel ?? 90,
+      enemyResist: characters.value?.[character.value]?.enemyResist ?? 0.1,
+    });
+    watch(formData, async (updatedFormData: FormData) => {
+      // set the enemy data in the store per character
+      const data = { ...updatedFormData };
+      characterStore.setCharacterData(character.value, data);
+      handleCalculation(updatedFormData);
+    });
+
+    // set the character value
+    characterLevel.value =
+      characters.value?.[character.value]?.characterLevel ?? "90";
+
+    const talentData = reactive({
+      basic: characters.value?.[character.value]?.talents?.basic ?? 10,
+      skill: characters.value?.[character.value]?.talents?.skill ?? 10,
+      forte: characters.value?.[character.value]?.talents?.forte ?? 10,
+      liberation:
+        characters.value?.[character.value]?.talents?.liberation ?? 10,
+      intro: characters.value?.[character.value]?.talents?.intro ?? 10,
+    });
+
     const addBuffs = (source, target) => {
       if (source) {
         target.attackPercent += source?.ATK ? source.ATK * 100 : 0;
@@ -849,7 +798,7 @@ export default defineComponent({
       }
     };
 
-    const calcCharStats = () => {
+    const calcCharStats = (returnValue = false, injectStats = null) => {
       let stats = {
         attackPercent: 0,
         hpPercent: 0,
@@ -894,6 +843,10 @@ export default defineComponent({
 
       if (charBuffsData.value) {
         addBuffs(charBuffsData.value, stats);
+      }
+
+      if (injectStats) {
+        addBuffs(injectStats, stats);
       }
 
       if (charResonanceChainsData.value) {
@@ -993,6 +946,21 @@ export default defineComponent({
           stats.aero += allElementAttributeBonus;
           stats.spectro += allElementAttributeBonus;
           stats.havoc += allElementAttributeBonus;
+        }
+      }
+
+      if (returnValue) {
+        switch (returnValue) {
+          case "HP":
+            return charHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
+          case "DEF":
+            return charDef * (1 + stats.defPercent / 100) + stats.defFlat;
+          case "ATK":
+          default:
+            return (
+              (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
+              stats.attackFlat
+            );
         }
       }
 
@@ -1138,6 +1106,10 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
           ] ?? 0;
+        const talentModifierMultiplySelfBuff =
+          charBuffsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentModifierMultiply`
+          ] ?? 0;
         const totalDefIgnore =
           DefIgnore.value +
           extraDefIgnoreResonanceChain +
@@ -1166,13 +1138,33 @@ export default defineComponent({
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
           teamBuffDmgDeepenForAttackType;
+        const totalTalentModifierMultiply =
+          talentModifierMultiply + talentModifierMultiplySelfBuff;
+        // check for any modifiers that change the individual instance of atk/hp/def
+        // re-calculate the base for this specific instance of damage
+        const modifyBaseAtk =
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:ATK`] ?? 0;
+        const modifyBaseHp =
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:HP`] ?? 0;
+        const modifyBaseDef =
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:DEF`] ?? 0;
+        let finalAtkDefHpVal = atkDefHpVal;
+        if (modifyBaseAtk) {
+          finalAtkDefHpVal = calcCharStats("ATK", { ATK: modifyBaseAtk });
+        }
+        if (modifyBaseHp) {
+          finalAtkDefHpVal = calcCharStats("HP", { HP: modifyBaseHp });
+        }
+        if (modifyBaseDef) {
+          finalAtkDefHpVal = calcCharStats("DEF", { DEF: modifyBaseDef });
+        }
 
         return calcDamage(
           characterLevel.value,
           formData.enemyLevel,
           formData.enemyResist,
           talent,
-          atkDefHpVal,
+          finalAtkDefHpVal,
           totalDefIgnore,
           totalSkillDmgBonus,
           specificSkillDmg,
@@ -1182,17 +1174,38 @@ export default defineComponent({
           instanceDmgCritRate,
           instanceDmgCritDMG,
           totalTalentModifierAdd,
-          talentModifierMultiply
+          totalTalentModifierMultiply
         );
       };
 
       const processAttacks = (attacks, talentType) => {
-        return (attacks ?? []).map((attack) => ({
-          key: attack.key,
-          label: attack.label,
-          talent: attack.talents[talentType],
-          damage: calculateAttackDamage(attack, talentType),
-        }));
+        return (
+          (attacks ?? [])
+            .map((attack) => {
+              let isEnabled = true;
+              // if this attack requires a resonance chain to be unlocked, verify it's enabled
+              const requiresResonanceChain =
+                attack?.requiresResonanceChain ?? false;
+              if (requiresResonanceChain) {
+                const enabledAttacks =
+                  charResonanceChainsData.value?.EnableAttack ?? [];
+                const isAttackEnabled = enabledAttacks.includes(
+                  requiresResonanceChain
+                );
+                // flag this attack as enabled or not based on the resonance chain
+                isEnabled = isAttackEnabled;
+              }
+              return {
+                key: attack.key,
+                label: attack.label,
+                talent: attack.talents[talentType],
+                damage: calculateAttackDamage(attack, talentType),
+                isEnabled,
+              };
+            })
+            // remove any attacks that are not enabled
+            .filter((attack) => attack.isEnabled)
+        );
       };
 
       allDamages.value = {
@@ -1272,11 +1285,22 @@ export default defineComponent({
       return decimalFormatter.format(percentage) + '%';
     }
 
+    const handleCharacterTalentUpdated = (data) => {
+      talentData[data.type] = data.value;
+      calcAllDamages();
+    };
+
+    const handleCharacterLevelUpdated = (level) => {
+      // set the character level in the store
+      characterLevel.value = level;
+      calcCharStats();
+    };
+
     return {
       allDamages,
       character,
+      characters,
       characterLevel,
-      characterLevelOptions,
       charactersList,
       chosenChar,
       chosenWeapon,
@@ -1288,13 +1312,14 @@ export default defineComponent({
       fields,
       formData,
       updateStatsEchoes,
-      talentData,
       totalAtk,
       totalHp,
       totalDef,
       totalCritRate,
       totalCritDMG,
       weaponType,
+      handleCharacterLevelUpdated,
+      handleCharacterTalentUpdated,
       handleWeaponUpdated,
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
@@ -1316,7 +1341,6 @@ export default defineComponent({
       ResistReduction,
       weaponData,
       isLoading,
-      // weaponLevelOptions,
     };
   },
 });
@@ -1443,13 +1467,6 @@ $tooltip-background-color: $sidebar-background-color;
   justify-content: space-between;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-.data-input--talents {
-  padding: 1rem 0;
-  label {
-    min-width: 120px;
-    display: inline-block;
-  }
-}
 .alert {
   background: #126a5a;
   padding: 0.25rem 0.5rem;
@@ -1512,5 +1529,18 @@ $tooltip-background-color: $sidebar-background-color;
   .results {
     display: none !important;
   }
+}
+.panel {
+  margin-top: 1rem;
+  background-color: #161616;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+
+  @media (prefers-color-scheme: light) {
+    background-color: #f8f8f8;
+  }
+}
+.mb-1 {
+  margin-bottom: 1rem;
 }
 </style>

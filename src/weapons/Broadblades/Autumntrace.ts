@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "Increases ATK by 4%/6.2%/8.4%/10.6%/12.8% upon dealing Basic Attack DMG or Heavy Attack DMG, stacking up to 5 time(s). This effect lasts for 7s and can be triggered 1 time(s) every 1s.",
   passiveData: [
     {
-      key: "ATK",
+      key: "AutumntraceATK",
       hasStacks: true,
       modifier: "ATK",
       modifierByRefinement: {

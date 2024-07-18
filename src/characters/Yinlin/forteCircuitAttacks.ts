@@ -1,0 +1,40 @@
+export const forteCircuitAttacks = {
+  name: "Forte Circuit: Chameleon Cipher",
+  description: `<div class="skilldescription"><span class="Title">Chameleon Cipher</span><br>When Yinlin's Judgment Points are full, her <span class="Highlight">Heavy Attack</span> is replaced with <span class="Highlight">Chameleon Cipher</span>, which consumes all Judgment Points to attack the target, dealing <span class="Thunder">Electro DMG</span>. When it hits a target marked with <span class="Highlight">Sinner's Mark</span>, the <span class="Highlight">Sinner's Mark</span> is replaced with <span class="Highlight">Punishment Mark</span>, lasting for 18s.<br> <br><span class="Title">Sinner's Mark</span><br>Basic Attack <span class="Highlight">Zapstring's Dance</span>, Resonance Liberation <span class="Highlight">Thundering Wrath</span>, and Intro Skill <span class="Highlight">Roaring Storm</span> apply <span class="Highlight">Sinner's Mark</span> to the target on hit.<br><span class="Highlight">Sinner's Mark</span> is removed when Yinlin is switched out.<br> <br><span class="Title">Punishment Mark</span><br>When a target marked with <span class="Highlight">Punishment Mark</span> takes damage, <span class="Highlight">Judgement Strike</span> will fall, triggering Coordinated Attacks to all targets marked with <span class="Highlight">Punishment Mark</span>, dealing <span class="Thunder">Electro DMG</span>. This can be triggered up to 1 time per second.<br> <br><span class="Title">Judgment Points</span><br>Yinlin can hold up to 100 Judgement Points. Yinlin gains Judgement Points through the following ways:<br>Upon casting Intro Skill <span class="Highlight">Raging Storm</span><br>When Basic Attack <span class="Highlight">Zapstring's Dance</span> hits a target<br>Upon casting Resonance Skill <span class="Highlight">Magnetic Roar</span>;<br>When Resonance Skill <span class="Highlight">Electromagnetic Blast</span> hits a target;<br>Upon casting Resonance Skill <span class="Highlight">Lightning Execution</span>.</div>`,
+  attacks: [
+    {
+      key: "ChameleonCipherDMG",
+      label: "Chameleon Cipher Damage",
+      talents: {
+        "1": "90%*2",
+        "2": "97.38%*2",
+        "3": "104.76%*2",
+        "4": "115.1%*2",
+        "5": "122.48%*2",
+        "6": "130.96%*2",
+        "7": "142.77%*2",
+        "8": "154.58%*2",
+        "9": "166.39%*2",
+        "10": "178.93%*2",
+      },
+      type: "Heavy",
+    },
+    {
+      key: "JudgmentStrikeDMG",
+      label: "Judgment Strike Damage",
+      talents: {
+        "1": "39.56%",
+        "2": "42.8%",
+        "3": "46.05%",
+        "4": "50.59%",
+        "5": "53.83%",
+        "6": "57.56%",
+        "7": "62.75%",
+        "8": "67.94%",
+        "9": "73.13%",
+        "10": "78.64%",
+      },
+      type: "Skill",
+    },
+  ],
+};

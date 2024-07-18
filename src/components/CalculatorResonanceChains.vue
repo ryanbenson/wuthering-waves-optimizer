@@ -5,6 +5,7 @@
         v-for="buff in buffs"
         :key="buff.key"
         :unique-key="buff.key"
+        :character="character"
         :name="buff.name"
         :details="buff.details"
         :always-enabled="buff.alwaysEnabled"
@@ -23,6 +24,10 @@
 import CalculatorResonanceChainsItem from "./CalculatorResonanceChainsItem.vue";
 export default {
   props: {
+    character: {
+      type: String,
+      required: true,
+    },
     buffs: {
       type: Array,
       default: () => [],
@@ -35,8 +40,6 @@ export default {
   components: { CalculatorResonanceChainsItem },
   data() {
     return {
-      isEnabled: false,
-      stacks: 0,
       buffsData: [],
     };
   },
@@ -72,6 +75,12 @@ export default {
             const updatedSpecificTalentList =
               modifySpecificTalents.concat(value);
             modifySpecificTalents = updatedSpecificTalentList;
+          } else if (stat === "EnableAttack") {
+            if (Array.isArray(finalBuffData[stat])) {
+              finalBuffData[stat].push(value);
+            } else {
+              finalBuffData[stat] = [value];
+            }
           } else {
             finalBuffData[stat] = (finalBuffData[stat] || 0) + value;
           }
@@ -114,7 +123,7 @@ export default {
   background-color: #161616;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
-  
+
   @media (prefers-color-scheme: light) {
     background-color: #f8f8f8;
   }

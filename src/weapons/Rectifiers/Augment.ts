@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "When Resonance Liberation is released, increases the caster's ATK by 15%/23.25%/31.5%/39.75%/48%, lasting for 15s.",
   passiveData: [
     {
-      key: "ATK",
+      key: "AugmentATK",
       hasStacks: false,
       modifier: "ATK",
       modifierByRefinement: {

@@ -1,0 +1,41 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Spiritful Animation",
+  description: `<div class="skilldescription">Summon <span class="Highlight">Inklit Spirit</span> for assistance.<br><br><span class="Title">Inklit Spirit</span><br>When the active Resonator on the team deals DMG, <span class="Highlight">Inklit Spirit</span> will be summoned to perform a Coordinated Attack, dealing <span class="Ice">Glacio DMG</span>, considered as Basic Attack DMG.<br>-Each time DMG is dealt, 3 <span class="Highlight">Inklit Spirit(s)</span> will be summoned. Up to 1 <span class="Highlight">Inklit Spirits</span> can be summoned. Up to 21 <span class="Highlight">Inklit Spirit(s)</span> can be summoned every second.<br>-The effect lasts for 30s or until max <span class="Highlight">Inklit Spirits</span> are summoned.</div>`,
+  attacks: [
+    {
+      key: "InklitSpiritDMG",
+      label: "Inklit Spirit DMG",
+      talents: {
+        "1": "32.80%",
+        "2": "35.49%",
+        "3": "38.18%",
+        "4": "41.95%",
+        "5": "44.64%",
+        "6": "47.73%",
+        "7": "52.04%",
+        "8": "56.34%",
+        "9": "60.64%",
+        "10": "65.21%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "SequenceNode5ProperStructuring",
+      label: "Sequence Node 5: Proper Structuring",
+      talents: {
+        "1": "45.92%",
+        "2": "49.69%",
+        "3": "53.45%",
+        "4": "58.73%",
+        "5": "62.50%",
+        "6": "66.82%",
+        "7": "72.86%",
+        "8": "78.87%",
+        "9": "84.90%",
+        "10": "91.29%",
+      },
+      type: "Basic",
+      requiresResonanceChain: "SequenceNode5ProperStructuring",
+    },
+  ],
+};

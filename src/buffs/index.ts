@@ -165,15 +165,15 @@ export const buffsByCharacter = {
     {
       key: "OutroSkillStrategyofDuality",
       name: "Outro Skill: Strategy of Duality",
-      details: `<div class="skilldescription">Changli's Outro Skill increases the switched-in Resonator's Fusion DMG by 20% and their Resonance Liberation DMG by 25%, lasting for 10s. Switching to another Resonator ends this effect.</div>`,
+      details: `<div class="skilldescription">The incoming Resonator has their Fusion DMG Amplified by 20% and Resonance Liberation DMG Amplified by 25% for 10s or until the Resonator is switched out.</div>`,
       hasStacks: false,
       modifiers: [
         {
-          modifier: "Fusion",
-          modifierValue: 0.25,
+          modifier: "DMGDeepen:Fusion",
+          modifierValue: 0.2,
         },
         {
-          modifier: "ResonanceLiberationDMGBonus",
+          modifier: "DMGDeepen:Liberation",
           modifierValue: 0.25,
         },
       ],
@@ -512,6 +512,42 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Zhezhi: [
+    {
+      key: "OutroSkillWhitening",
+      name: "Outro Skill: Whitening",
+      details: `<span class="skilldescription">The next character to appear will have 20% increased Glacio Damage and 25% Resonance Skill Damage for 14 seconds, and the effect will end early if you switch to another character.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Glacio",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "DMGDeepen:Skill",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4Hue",
+      name: "Sequence Node 4: Hue",
+      details: `<span class="skilldescription">When casting Resonance Liberation <span class="Highlight">Spiritful Animation</span>, the ATK of Resonators on the team increases by 20% for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -568,7 +604,7 @@ export const allEchoBuffs = [
     modifiers: [
       {
         modifier: "DMGBonus",
-        modifierValue: 0.10,
+        modifierValue: 0.1,
       },
     ],
     minStacks: 0,
@@ -598,4 +634,5 @@ export const allCharacters: string[] = [
   "Verina",
   "Taoqi",
   "Danjin",
+  "Zhezhi",
 ];

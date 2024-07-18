@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "Increases Basic Attack DMG and Heavy Attack DMG by 12%/15%/18%/21%/24%.",
   passiveData: [
     {
-      key: "BasicAttackDMGBonus",
+      key: "GuardianBroadbladeBasicAttackDMGBonus",
       hasStacks: false,
       modifier: "BasicAttackDMGBonus",
       modifierByRefinement: {
@@ -26,7 +26,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: true,
     },
     {
-      key: "HeavyAttackDMGBonus",
+      key: "GuardianBroadbladeHeavyAttackDMGBonus",
       hasStacks: false,
       modifier: "HeavyAttackDMGBonus",
       modifierByRefinement: {

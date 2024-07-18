@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "When Resonance Skill is released, increases Basic Attack DMG and Heavy Attack DMG by 20%/31%/42%/53%/64%, stacking up to 1 time(s). This effect lasts for 10s and can be triggered 1 time(s) every 1s.",
   passiveData: [
     {
-      key: "BasicAttackDMGBonus",
+      key: "LuminglossBasicAttackDMGBonus",
       hasStacks: true,
       modifier: "BasicAttackDMGBonus",
       modifierByRefinement: {
@@ -26,7 +26,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: false,
     },
     {
-      key: "HeavyAttackDMGBonus",
+      key: "LuminglossHeavyAttackDMGBonus",
       hasStacks: true,
       modifier: "HeavyAttackDMGBonus",
       modifierByRefinement: {
