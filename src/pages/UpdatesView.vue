@@ -11,6 +11,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 18, 2024</h3>
+    <ul>
+      <li>
+        Makes character selection easier by grouping by 4/5* and alphabetized
+      </li>
+      <li>Fixes decimal issues on stats (except HP, ATK, DEF: coming soon)</li>
+    </ul>
     <h3>July 17, 2024</h3>
     <ul>
       <li>
