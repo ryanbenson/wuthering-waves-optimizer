@@ -514,14 +514,18 @@ export const buffsByCharacter = {
   ],
   Zhezhi: [
     {
-      key: "OutroSkillCarveandDraw",
-      name: "Outro Skill: Carve and Draw",
-      details: `<span class="skilldescription">The incoming Resonator has their Resonance Skill DMG Amplified by 20% for 14s or until they are switched out</span>`,
+      key: "OutroSkillWhitening",
+      name: "Outro Skill: Whitening",
+      details: `<span class="skilldescription">The next character to appear will have 20% increased Glacio Damage and 25% Resonance Skill Damage for 14 seconds, and the effect will end early if you switch to another character.</span>`,
       hasStacks: false,
       modifiers: [
         {
-          modifier: "DMGDeepen:Skill",
+          modifier: "DMGDeepen:Glacio",
           modifierValue: 0.2,
+        },
+        {
+          modifier: "DMGDeepen:Skill",
+          modifierValue: 0.25,
         },
       ],
       minStacks: 0,

@@ -18,6 +18,7 @@
         unlocked for it to available.
       </li>
       <li>Adds notification if you exceed the maximum amount of echo cost.</li>
+      <li>Updates Zhezhi outro to latest from beta.</li>
     </ul>
     <h3>July 16, 2024</h3>
     <ul>
