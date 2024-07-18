@@ -147,58 +147,58 @@
             <span>Defense:</span> <span>{{ totalDef }}</span>
           </div>
           <div>
-            <span>Crit Rate:</span> <span>{{ totalCritRate * 100 }}%</span>
+            <span>Crit Rate:</span> <span>{{ displayPercentage(totalCritRate * 100) }}</span>
           </div>
           <div>
-            <span>Crit DMG:</span> <span>{{ totalCritDMG * 100 }}%</span>
+            <span>Crit DMG:</span> <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
           </div>
           <div>
             <span>Basic Attack DMG Bonus:</span>
-            <span>{{ BasicAttackDMGBonus }}%</span>
+            <span>{{ displayPercentage(BasicAttackDMGBonus) }}</span>
           </div>
           <div>
             <span>Heavy Attack DMG Bonus:</span>
-            <span>{{ HeavyAttackDMGBonus }}%</span>
+            <span>{{ displayPercentage(HeavyAttackDMGBonus) }}</span>
           </div>
           <div>
             <span>Resonance Skill DMG Bonus:</span>
-            <span>{{ ResonanceSkillDMGBonus }}%</span>
+            <span>{{ displayPercentage(ResonanceSkillDMGBonus) }}</span>
           </div>
           <div>
             <span>Resonance Liberation DMG Bonus:</span>
-            <span>{{ ResonanceLiberationDMGBonus }}%</span>
+            <span>{{ displayPercentage(ResonanceLiberationDMGBonus) }}</span>
           </div>
           <div>
             <span>Intro Skill DMG Bonus:</span>
-            <span>{{ IntroSkillDMGBonus }}%</span>
+            <span>{{ displayPercentage(IntroSkillDMGBonus) }}</span>
           </div>
           <div>
-            <span>Glacio DMG Bonus:</span> <span>{{ Glacio }}%</span>
+            <span>Glacio DMG Bonus:</span> <span>{{ displayPercentage(Glacio) }}</span>
           </div>
           <div>
-            <span>Fusion DMG Bonus:</span> <span>{{ Fusion }}%</span>
+            <span>Fusion DMG Bonus:</span> <span>{{ displayPercentage(Fusion) }}</span>
           </div>
           <div>
-            <span>Electro DMG Bonus:</span> <span>{{ Electro }}%</span>
+            <span>Electro DMG Bonus:</span> <span>{{ displayPercentage(Electro) }}</span>
           </div>
           <div>
-            <span>Aero DMG Bonus:</span> <span>{{ Aero }}%</span>
+            <span>Aero DMG Bonus:</span> <span>{{ displayPercentage(Aero) }}</span>
           </div>
           <div>
-            <span>Spectro DMG Bonus:</span> <span>{{ Spectro }}%</span>
+            <span>Spectro DMG Bonus:</span> <span>{{ displayPercentage(Spectro) }}</span>
           </div>
           <div>
-            <span>Havoc DMG Bonus:</span> <span>{{ Havoc }}%</span>
+            <span>Havoc DMG Bonus:</span> <span>{{ displayPercentage(Havoc) }}</span>
           </div>
           <div>
-            <span>Defense Ignore:</span> <span>{{ DefIgnore * 100 }}%</span>
+            <span>Defense Ignore:</span> <span>{{ displayPercentage(DefIgnore * 100) }}</span>
           </div>
           <div>
             <span>Total Deepen Effect:</span>
-            <span>{{ TotalDeepenEffect * 100 }}%</span>
+            <span>{{ displayPercentage(TotalDeepenEffect * 100) }}</span>
           </div>
           <div>
-            <span>Resist Reduction:</span> <span>{{ ResistReduction }}%</span>
+            <span>Resist Reduction:</span> <span>{{ displayPercentage(ResistReduction) }}</span>
           </div>
         </div>
         <h2>Damage</h2>
@@ -363,58 +363,58 @@
           <span>Defense:</span> <span>{{ totalDef }}</span>
         </div>
         <div>
-          <span>Crit Rate:</span> <span>{{ totalCritRate * 100 }}%</span>
+          <span>Crit Rate:</span> <span>{{ displayPercentage(totalCritRate * 100) }}</span>
         </div>
         <div>
-          <span>Crit DMG:</span> <span>{{ totalCritDMG * 100 }}%</span>
+          <span>Crit DMG:</span> <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
         </div>
         <div>
           <span>Basic Attack DMG Bonus:</span>
-          <span>{{ BasicAttackDMGBonus }}%</span>
+          <span>{{ displayPercentage(BasicAttackDMGBonus) }}</span>
         </div>
         <div>
           <span>Heavy Attack DMG Bonus:</span>
-          <span>{{ HeavyAttackDMGBonus }}%</span>
+          <span>{{ displayPercentage(HeavyAttackDMGBonus) }}</span>
         </div>
         <div>
           <span>Resonance Skill DMG Bonus:</span>
-          <span>{{ ResonanceSkillDMGBonus }}%</span>
+          <span>{{ displayPercentage(ResonanceSkillDMGBonus) }}</span>
         </div>
         <div>
           <span>Resonance Liberation DMG Bonus:</span>
-          <span>{{ ResonanceLiberationDMGBonus }}%</span>
+          <span>{{ displayPercentage(ResonanceLiberationDMGBonus) }}</span>
         </div>
         <div>
           <span>Intro Skill DMG Bonus:</span>
-          <span>{{ IntroSkillDMGBonus }}%</span>
+          <span>{{ displayPercentage(IntroSkillDMGBonus) }}</span>
         </div>
         <div>
-          <span>Glacio DMG Bonus:</span> <span>{{ Glacio }}%</span>
+          <span>Glacio DMG Bonus:</span> <span>{{ displayPercentage(Glacio) }}</span>
         </div>
         <div>
-          <span>Fusion DMG Bonus:</span> <span>{{ Fusion }}%</span>
+          <span>Fusion DMG Bonus:</span> <span>{{ displayPercentage(Fusion) }}</span>
         </div>
         <div>
-          <span>Electro DMG Bonus:</span> <span>{{ Electro }}%</span>
+          <span>Electro DMG Bonus:</span> <span>{{ displayPercentage(Electro) }}</span>
         </div>
         <div>
-          <span>Aero DMG Bonus:</span> <span>{{ Aero }}%</span>
+          <span>Aero DMG Bonus:</span> <span>{{ displayPercentage(Aero) }}</span>
         </div>
         <div>
-          <span>Spectro DMG Bonus:</span> <span>{{ Spectro }}%</span>
+          <span>Spectro DMG Bonus:</span> <span>{{ displayPercentage(Spectro) }}</span>
         </div>
         <div>
-          <span>Havoc DMG Bonus:</span> <span>{{ Havoc }}%</span>
+          <span>Havoc DMG Bonus:</span> <span>{{ displayPercentage(Havoc) }}</span>
         </div>
         <div>
-          <span>Defense Ignore:</span> <span>{{ DefIgnore * 100 }}%</span>
+          <span>Defense Ignore:</span> <span>{{ displayPercentage(DefIgnore * 100) }}</span>
         </div>
         <div>
           <span>Total Deepen Effect:</span>
-          <span>{{ TotalDeepenEffect * 100 }}%</span>
+          <span>{{ displayPercentage(TotalDeepenEffect * 100) }}</span>
         </div>
         <div>
-          <span>Resist Reduction:</span> <span>{{ ResistReduction }}%</span>
+          <span>Resist Reduction:</span> <span>{{ displayPercentage(ResistReduction) }}</span>
         </div>
       </div>
       <h2>Damage</h2>
@@ -598,6 +598,13 @@ interface FormData {
   enemyLevel: number;
   enemyResist: number;
 }
+
+const decimalFormatter = new Intl.NumberFormat("en", {
+  style: "decimal",
+  maximumFractionDigits: 1,
+  minimumFractionDigits: 1,
+  roundingMode: 'floor',
+});
 
 export default defineComponent({
   name: "Calculator",
@@ -1274,6 +1281,10 @@ export default defineComponent({
       return Math.ceil(damage);
     };
 
+    const displayPercentage = (percentage: number) => {
+      return decimalFormatter.format(percentage) + '%';
+    }
+
     const handleCharacterTalentUpdated = (data) => {
       talentData[data.type] = data.value;
       calcAllDamages();
@@ -1297,6 +1308,7 @@ export default defineComponent({
       changeScreen,
       damage,
       displayDamage,
+      displayPercentage,
       fields,
       formData,
       updateStatsEchoes,
