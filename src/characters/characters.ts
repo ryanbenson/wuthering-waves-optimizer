@@ -11,7 +11,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Calcharo", name: "Calcharo" },
       { key: "Changli", name: "Changli" },
       { key: "Encore", name: "Encore" },
-      { key: "Jihnsi", name: "Jihnsi" },
+      { key: "Jinhsi", name: "Jinhsi" },
       { key: "Jiyan", name: "Jiyan" },
       { key: "Yinlin", name: "Yinlin" },
       { key: "Zhezhi", name: "Zhezhi" },
