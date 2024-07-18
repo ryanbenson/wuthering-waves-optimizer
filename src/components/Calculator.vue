@@ -49,12 +49,22 @@
             <div class="character__selection__form">
               <div class="character__selection__form--character">
                 <select name="character" v-model="character">
-                  <option
-                    v-for="char in charactersList"
-                    :key="char"
-                    :value="char">
-                    {{ char }}
-                  </option>
+                  <optgroup label="5 Star">
+                    <option
+                      v-for="char in charactersList.five"
+                      :key="char.key"
+                      :value="char.key">
+                      {{ char.name }}
+                    </option>
+                  </optgroup>
+                  <optgroup label="4 Star">
+                    <option
+                      v-for="char in charactersList.four"
+                      :key="char.key"
+                      :value="char.key">
+                      {{ char.name }}
+                    </option>
+                  </optgroup>
                 </select>
                 <label for="character">Character</label>
               </div>

@@ -1,16 +1,27 @@
-export function getCharactersAvailable(): string[] {
-  return [
-    "Zhezhi",
-    "Jinhsi",
-    "Changli",
-    "Yinlin",
-    "Jiyan",
-    "Encore",
-    "Calcharo",
-    "Taoqi",
-    "Danjin",
-  ];
+interface CharacterList {
+  [rating: string]: CharacterListItem[];
 }
+interface CharacterListItem {
+  key: string;
+  name: string;
+}
+export function getCharactersAvailable(): CharacterList {
+  return {
+    "five": [
+      { key: "Calcharo", name: "Calcharo" },
+      { key: "Changli", name: "Changli" },
+      { key: "Encore", name: "Encore" },
+      { key: "Jihnsi", name: "Jihnsi" },
+      { key: "Jiyan", name: "Jiyan" },
+      { key: "Yinlin", name: "Yinlin" },
+      { key: "Zhezhi", name: "Zhezhi" },
+    ],
+    "four": [
+      { key: "Danjin", name: "Danjin" },
+      { key: "Taoqi", name: "Taoqi" },
+    ]
+  };
+};
 
 export const allCharacters: string[] = [
   "Aalto",
