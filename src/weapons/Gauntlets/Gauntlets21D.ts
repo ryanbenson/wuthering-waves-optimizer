@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "When the Resonator dashes or dodges, increases ATK by 8%/10%/12%/14%/16%. Increases Counter Attack DMG by 50%/62.5%/75%/87.5%/100%, lasting for 8s. When Counter Attack is performed, restores the Resonator's HP by 5%/6.25%/7.5%/8.75%/10%. This effect can be triggered 1 time(s) every 6s.",
   passiveData: [
     {
-      key: "ATK",
+      key: "Gauntlets21DATK",
       hasStacks: false,
       modifier: "ATK",
       modifierByRefinement: {
@@ -26,7 +26,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: false,
     },
     {
-      key: "CounterAttackDmg",
+      key: "Gauntlets21DCounterAttackDmg",
       hasStacks: false,
       modifier: "CounterAttackDMGBonus",
       modifierByRefinement: {
@@ -43,7 +43,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: false,
     },
     {
-      key: "HP",
+      key: "Gauntlets21DHP",
       hasStacks: false,
       modifier: "HP",
       modifierByRefinement: {

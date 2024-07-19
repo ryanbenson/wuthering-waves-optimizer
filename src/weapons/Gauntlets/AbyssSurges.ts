@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. When hitting a target with Resonance Skill, increases Basic Attack DMG Bonus by 10%/12.5%/15%/17.5%/20%, lasting for 8s. When hitting a target with Basic Attacks, increases Resonance Skill DMG Bonus by 10%/12.5%/15%/17.5%/20%, lasting for 8s.",
   passiveData: [
     {
-      key: "BasicAttackDMGBonus",
+      key: "AbyssSurgesBasicAttackDMGBonus",
       hasStacks: false,
       modifier: "BasicAttackDMGBonus",
       modifierByRefinement: {
@@ -26,7 +26,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: false,
     },
     {
-      key: "ResonanceSkillDMGBonus",
+      key: "AbyssSurgesResonanceSkillDMGBonus",
       hasStacks: false,
       modifier: "ResonanceSkillDMGBonus",
       modifierByRefinement: {

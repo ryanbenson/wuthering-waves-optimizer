@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "When Intro Skill is released, increases Resonance Liberation DMG Bonus by 20%/25%/30%/35%/40%, lasting for 15s.",
   passiveData: [
     {
-      key: "ResonanceLiberationDMGBonus",
+      key: "AmityAccordResonanceLiberationDMGBonus",
       hasStacks: false,
       modifier: "ResonanceSkillDMGBonus",
       modifierByRefinement: {
