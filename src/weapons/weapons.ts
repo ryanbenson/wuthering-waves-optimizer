@@ -47,6 +47,21 @@ const rectifiersList = [
   "Variation",
 ];
 
+const pistolsList = [
+  "Cadenza",
+  "GuardianPistols",
+  "Novaburst",
+  "OriginiteTypeIII",
+  "Pistols26",
+  "PistolsOfNight",
+  "PistolsOfVoyager",
+  "StaticMist",
+  "Thunderbolt",
+  "TrainingPistols",
+  "TyroPistols",
+  "UndyingFlame",
+];
+
 export function getWeaponsByType(type: string) {
   if (type === "Swords") {
     return swordsList;
@@ -56,6 +71,9 @@ export function getWeaponsByType(type: string) {
   }
   if (type === "Rectifiers") {
     return rectifiersList;
+  }
+  if (type === "Pistols") {
+    return pistolsList;
   }
   return [];
 }
