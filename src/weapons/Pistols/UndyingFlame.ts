@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "When Intro Skill is released, increases Resonance Skill DMG Bonus by 20%/25%/30%/35%/40% for 15s.",
   passiveData: [
     {
-      key: "ResonanceSkillDMGBonus",
+      key: "UndyingFlameResonanceSkillDMGBonus",
       hasStacks: true,
       modifier: "ResonanceSkillDMGBonus",
       modifierByRefinement: {

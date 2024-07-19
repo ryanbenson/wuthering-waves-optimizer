@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "When the Resonator dashes or dodges, increases ATK by 4%/5%/6%/7%/8%, stacking up to 3 time(s). This effect lasts for 8s.",
   passiveData: [
     {
-      key: "ATK",
+      key: "NovaburstATK",
       hasStacks: true,
       modifier: "ATK",
       modifierByRefinement: {
