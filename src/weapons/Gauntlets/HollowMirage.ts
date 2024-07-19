@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "When Resonance Liberation is released, grants 3 stack(s) of Iron Armor. Each stack increases ATK and DEF by 3%/3.5%/4%/4.5%/5%, stacking up to 3 time(s). When the Resonator takes damage, reduces the number of stacks by 1.",
   passiveData: [
     {
-      key: "ATK",
+      key: "HollowMirageATK",
       hasStacks: true,
       modifier: "ATK",
       modifierByRefinement: {
@@ -26,7 +26,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: false,
     },
     {
-      key: "DEF",
+      key: "HollowMirageDEF",
       hasStacks: true,
       modifier: "DEF",
       modifierByRefinement: {

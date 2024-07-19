@@ -7,7 +7,7 @@ interface CharacterListItem {
 }
 export function getCharactersAvailable(): CharacterList {
   return {
-    "five": [
+    five: [
       { key: "Calcharo", name: "Calcharo" },
       { key: "Changli", name: "Changli" },
       { key: "Encore", name: "Encore" },
@@ -16,12 +16,13 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Yinlin", name: "Yinlin" },
       { key: "Zhezhi", name: "Zhezhi" },
     ],
-    "four": [
+    four: [
       { key: "Danjin", name: "Danjin" },
+      { key: "Mortefi", name: "Mortefi" },
       { key: "Taoqi", name: "Taoqi" },
-    ]
+    ],
   };
-};
+}
 
 export const allCharacters: string[] = [
   "Aalto",

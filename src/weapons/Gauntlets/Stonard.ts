@@ -9,7 +9,7 @@ const weaponInfo: WeaponInfo = {
     "When Resonance Skill is released, increases the caster's Resonance Liberation DMG Bonus by 18%/27%/36%/45%/54%, lasting for 15s.",
   passiveData: [
     {
-      key: "ResonanceLiberationDMGBonus",
+      key: "StonardResonanceLiberationDMGBonus",
       hasStacks: false,
       modifier: "ResonanceLiberationDMGBonus",
       modifierByRefinement: {
