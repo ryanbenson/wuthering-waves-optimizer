@@ -3,7 +3,7 @@ const weaponInfo: WeaponInfo = {
   description:
     "Forged from the scale of Jué, this weapon resembles a musical instrument more than a tool of destruction.",
   type: "Broadblade",
-  rarity: 5,
+  rarity: 3,
   passiveName: "Heaven Blessed",
   passiveValue:
     "When Intro Skill is cast, restores 4/5/6/7/8 Concerto Energy. When Outro Skill is cast, restores 4/5/6/7/8 Resonance Energy.",

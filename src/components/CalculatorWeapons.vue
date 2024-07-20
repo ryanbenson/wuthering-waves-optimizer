@@ -1,14 +1,48 @@
 <template>
   <div class="data-input">
     <div class="form__group field">
-      <select
-        name="weapon"
-        v-model="weapon"
-        class="form__field">
+      <select name="weapon" v-model="weapon" class="form__field">
         <option :value="null">Choose a weapon</option>
-        <option v-for="weap in weaponsList" :key="weap" :value="weap">
-          {{ weap }}
-        </option>
+        <optgroup label="5 Star">
+          <option
+            v-for="weap in weaponsList.five"
+            :key="weap.key"
+            :value="weap.key">
+            {{ weap.name }}
+          </option>
+        </optgroup>
+        <optgroup label="4 Star">
+          <option
+            v-for="weap in weaponsList.four"
+            :key="weap.key"
+            :value="weap.key">
+            {{ weap.name }}
+          </option>
+        </optgroup>
+        <optgroup label="3 Star">
+          <option
+            v-for="weap in weaponsList.three"
+            :key="weap.key"
+            :value="weap.key">
+            {{ weap.name }}
+          </option>
+        </optgroup>
+        <optgroup label="2 Star">
+          <option
+            v-for="weap in weaponsList.two"
+            :key="weap.key"
+            :value="weap.key">
+            {{ weap.name }}
+          </option>
+        </optgroup>
+        <optgroup label="1 Star">
+          <option
+            v-for="weap in weaponsList.one"
+            :key="weap.key"
+            :value="weap.key">
+            {{ weap.name }}
+          </option>
+        </optgroup>
       </select>
       <label for="weapon" class="form__label">Weapon</label>
     </div>
