@@ -21,6 +21,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Mortefi", name: "Mortefi" },
       { key: "Sanhua", name: "Sanhua" },
       { key: "Taoqi", name: "Taoqi" },
+      { key: "Yuanwu", name: "Yuanwu" },
     ],
   };
 }
