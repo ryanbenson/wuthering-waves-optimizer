@@ -6,7 +6,7 @@ const weaponInfo: WeaponInfo = {
   rarity: 5,
   passiveName: "Crimson Phoenix",
   passiveValue:
-    "Increases ATK by 12%/15%/18%/21%/24%. Upon dealing damage, increases [Searing Feather] by 1 stack, gaining 1 stack every 0.5s. When Resonance Skill is released, increases [Searing Feather] by an extra 5 stacks. Each stack of [Searing Feather] increases Resonance Skill DMG Bonus by 4%/5%/6%/7%/8%, stacking up to 14 times. After reaching 14 stacks of [Searing Feather], all stacks will reset within 10s.",
+    "Increases ATK by 12%/15%/18%/21%/24%. Upon dealing damage, increases [Searing Feather] by 1 stack, gaining 1 stack every 0.5s. When Resonance Skill is released, increases [Searing Feather] by an extra 5 stacks. Each stack of [Searing Feather] increases Resonance Skill DMG Bonus by 4%/5%/6%/7%/8%, stacking up to 14 times. After reaching 14 stacks of [Searing Feather], all stacks will reset within 12s.",
   passiveData: [
     {
       key: "BlazingBrillianceATK",
@@ -36,7 +36,7 @@ const weaponInfo: WeaponInfo = {
       minStacks: 0,
       maxStacks: 14,
       details:
-        "Upon dealing damage, increases [Searing Feather] by 1 stack, gaining 1 stack every 0.5s. When Resonance Skill is released, increases [Searing Feather] by an extra 5 stacks. Each stack of [Searing Feather] increases Resonance Skill DMG Bonus by 4%/5%/6%/7%/8%, stacking up to 14 times. After reaching 14 stacks of [Searing Feather], all stacks will reset within 10s.",
+        "Upon dealing damage, increases [Searing Feather] by 1 stack, gaining 1 stack every 0.5s. When Resonance Skill is released, increases [Searing Feather] by an extra 5 stacks. Each stack of [Searing Feather] increases Resonance Skill DMG Bonus by 4%/5%/6%/7%/8%, stacking up to 14 times. After reaching 14 stacks of [Searing Feather], all stacks will reset within 12s.",
       alwaysEnabled: false,
     },
   ],
