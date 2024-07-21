@@ -37,9 +37,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">
-            Mortefi is available! 🔥
-          </div>
+          <div class="alert">Mortefi is available! 🔥</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -157,10 +155,12 @@
             <span>Defense:</span> <span>{{ totalDef }}</span>
           </div>
           <div>
-            <span>Crit Rate:</span> <span>{{ displayPercentage(totalCritRate * 100) }}</span>
+            <span>Crit Rate:</span>
+            <span>{{ displayPercentage(totalCritRate * 100) }}</span>
           </div>
           <div>
-            <span>Crit DMG:</span> <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
+            <span>Crit DMG:</span>
+            <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
           </div>
           <div>
             <span>Basic Attack DMG Bonus:</span>
@@ -183,32 +183,40 @@
             <span>{{ displayPercentage(IntroSkillDMGBonus) }}</span>
           </div>
           <div>
-            <span>Glacio DMG Bonus:</span> <span>{{ displayPercentage(Glacio) }}</span>
+            <span>Glacio DMG Bonus:</span>
+            <span>{{ displayPercentage(Glacio) }}</span>
           </div>
           <div>
-            <span>Fusion DMG Bonus:</span> <span>{{ displayPercentage(Fusion) }}</span>
+            <span>Fusion DMG Bonus:</span>
+            <span>{{ displayPercentage(Fusion) }}</span>
           </div>
           <div>
-            <span>Electro DMG Bonus:</span> <span>{{ displayPercentage(Electro) }}</span>
+            <span>Electro DMG Bonus:</span>
+            <span>{{ displayPercentage(Electro) }}</span>
           </div>
           <div>
-            <span>Aero DMG Bonus:</span> <span>{{ displayPercentage(Aero) }}</span>
+            <span>Aero DMG Bonus:</span>
+            <span>{{ displayPercentage(Aero) }}</span>
           </div>
           <div>
-            <span>Spectro DMG Bonus:</span> <span>{{ displayPercentage(Spectro) }}</span>
+            <span>Spectro DMG Bonus:</span>
+            <span>{{ displayPercentage(Spectro) }}</span>
           </div>
           <div>
-            <span>Havoc DMG Bonus:</span> <span>{{ displayPercentage(Havoc) }}</span>
+            <span>Havoc DMG Bonus:</span>
+            <span>{{ displayPercentage(Havoc) }}</span>
           </div>
           <div>
-            <span>Defense Ignore:</span> <span>{{ displayPercentage(DefIgnore * 100) }}</span>
+            <span>Defense Ignore:</span>
+            <span>{{ displayPercentage(DefIgnore * 100) }}</span>
           </div>
           <div>
             <span>Total Deepen Effect:</span>
             <span>{{ displayPercentage(TotalDeepenEffect * 100) }}</span>
           </div>
           <div>
-            <span>Resist Reduction:</span> <span>{{ displayPercentage(ResistReduction) }}</span>
+            <span>Resist Reduction:</span>
+            <span>{{ displayPercentage(ResistReduction) }}</span>
           </div>
         </div>
         <h2>Damage</h2>
@@ -373,10 +381,12 @@
           <span>Defense:</span> <span>{{ totalDef }}</span>
         </div>
         <div>
-          <span>Crit Rate:</span> <span>{{ displayPercentage(totalCritRate * 100) }}</span>
+          <span>Crit Rate:</span>
+          <span>{{ displayPercentage(totalCritRate * 100) }}</span>
         </div>
         <div>
-          <span>Crit DMG:</span> <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
+          <span>Crit DMG:</span>
+          <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
         </div>
         <div>
           <span>Basic Attack DMG Bonus:</span>
@@ -399,32 +409,40 @@
           <span>{{ displayPercentage(IntroSkillDMGBonus) }}</span>
         </div>
         <div>
-          <span>Glacio DMG Bonus:</span> <span>{{ displayPercentage(Glacio) }}</span>
+          <span>Glacio DMG Bonus:</span>
+          <span>{{ displayPercentage(Glacio) }}</span>
         </div>
         <div>
-          <span>Fusion DMG Bonus:</span> <span>{{ displayPercentage(Fusion) }}</span>
+          <span>Fusion DMG Bonus:</span>
+          <span>{{ displayPercentage(Fusion) }}</span>
         </div>
         <div>
-          <span>Electro DMG Bonus:</span> <span>{{ displayPercentage(Electro) }}</span>
+          <span>Electro DMG Bonus:</span>
+          <span>{{ displayPercentage(Electro) }}</span>
         </div>
         <div>
-          <span>Aero DMG Bonus:</span> <span>{{ displayPercentage(Aero) }}</span>
+          <span>Aero DMG Bonus:</span>
+          <span>{{ displayPercentage(Aero) }}</span>
         </div>
         <div>
-          <span>Spectro DMG Bonus:</span> <span>{{ displayPercentage(Spectro) }}</span>
+          <span>Spectro DMG Bonus:</span>
+          <span>{{ displayPercentage(Spectro) }}</span>
         </div>
         <div>
-          <span>Havoc DMG Bonus:</span> <span>{{ displayPercentage(Havoc) }}</span>
+          <span>Havoc DMG Bonus:</span>
+          <span>{{ displayPercentage(Havoc) }}</span>
         </div>
         <div>
-          <span>Defense Ignore:</span> <span>{{ displayPercentage(DefIgnore * 100) }}</span>
+          <span>Defense Ignore:</span>
+          <span>{{ displayPercentage(DefIgnore * 100) }}</span>
         </div>
         <div>
           <span>Total Deepen Effect:</span>
           <span>{{ displayPercentage(TotalDeepenEffect * 100) }}</span>
         </div>
         <div>
-          <span>Resist Reduction:</span> <span>{{ displayPercentage(ResistReduction) }}</span>
+          <span>Resist Reduction:</span>
+          <span>{{ displayPercentage(ResistReduction) }}</span>
         </div>
       </div>
       <h2>Damage</h2>
@@ -613,7 +631,7 @@ const decimalFormatter = new Intl.NumberFormat("en", {
   style: "decimal",
   maximumFractionDigits: 1,
   minimumFractionDigits: 1,
-  roundingMode: 'floor',
+  roundingMode: "floor",
 });
 
 export default defineComponent({
@@ -695,7 +713,7 @@ export default defineComponent({
     let initialCharacter = activeCharacter?.value;
     // it can be a blank string, if so, set it to the first item
     if (!initialCharacter) {
-      initialCharacter = charactersList.value[0];
+      initialCharacter = charactersList.value?.five?.[0]?.key ?? "Calcharo";
     }
     character.value = initialCharacter;
 
@@ -1292,8 +1310,8 @@ export default defineComponent({
     };
 
     const displayPercentage = (percentage: number) => {
-      return decimalFormatter.format(percentage) + '%';
-    }
+      return decimalFormatter.format(percentage) + "%";
+    };
 
     const handleCharacterTalentUpdated = (data) => {
       talentData[data.type] = data.value;
