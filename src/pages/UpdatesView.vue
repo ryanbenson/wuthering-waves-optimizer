@@ -11,6 +11,15 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 20, 2024</h3>
+    <ul>
+      <li>
+        Makes weapon selection easier by grouping by rarity, and fixing names.
+      </li>
+      <li>
+        Bug fix: Fixes default character when one hasn't been set in state
+      </li>
+    </ul>
     <h3>July 19, 2024</h3>
     <ul>
       <li>Mortefi is now available.</li>
