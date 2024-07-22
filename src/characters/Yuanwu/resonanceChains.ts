@@ -1,20 +1,32 @@
 export const resonanceChains = [
-  // {
-  // key: "SequenceNode3UpholderofIntegrity",
-  // name: "Sequence Node 3: Upholder of Integrity",
-  // details: `<span class="skilldescription">When the Coordinated Attacks of Resonance Skill's <span class="Highlight">Thunder Wedge</span> hits a target, the damage is additionally increased by 20% of Yuanwu's DEF.</span>`,
-  // hasStacks: false,
-  // modifiers: [
-  //   {
-  // TBD: Unclear what this means
-  //     modifySpecificTalents: ["ThunderWedgeCoordinatedAttackDMG"],
-  //     modifierValue: 0.1,
-  //   },
-  // ],
-  // minStacks: 0,
-  // maxStacks: 0,
-  // alwaysEnabled: false,
-  // },
+  {
+    key: "SequenceNode3UpholderofIntegrity",
+    name: "Sequence Node 3: Upholder of Integrity",
+    details: `<span class="skilldescription">When the Coordinated Attacks of Resonance Skill's <span class="Highlight">Thunder Wedge</span> hits a target, the damage is additionally increased by 20% of Yuanwu's DEF.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Talent",
+        modifierTalentKey: "ThunderWedgeCoordinatedAttackDMG",
+        modifierValue: {
+          "1": 0.2,
+          "2": 0.2,
+          "3": 0.2,
+          "4": 0.2,
+          "5": 0.2,
+          "6": 0.2,
+          "7": 0.2,
+          "8": 0.2,
+          "9": 0.2,
+          "10": 0.2,
+        },
+        modifierValueTalentRef: "skill",
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
   {
     key: "SequenceNode5NeighborhoodProtector",
     name: "Sequence Node 5: Neighborhood Protector",
