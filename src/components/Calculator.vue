@@ -631,7 +631,9 @@ const decimalFormatter = new Intl.NumberFormat("en", {
   style: "decimal",
   maximumFractionDigits: 1,
   minimumFractionDigits: 1,
-  roundingMode: "floor",
+  // disabling for now. it's rounding oddly (1.8% is showing as 1.7%)
+  // TODO: More testing for this
+  // roundingMode: "floor",
 });
 
 export default defineComponent({

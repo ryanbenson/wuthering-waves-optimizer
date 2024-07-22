@@ -86,6 +86,25 @@ const pistolsList = {
   one: [{ key: "TrainingPistols", name: "Training Pistols" }],
 };
 
+const gauntletsList = {
+  five: [{ key: "AbyssSurges", name: "Abyss Surges" }],
+  four: [
+    { key: "AmityAccord", name: "Amity Accord" },
+    { key: "Gauntlets21D", name: "Gauntlets #21D" },
+    { key: "HollowMirage", name: "Hollow Mirage" },
+    { key: "Marcato", name: "Marcato" },
+    { key: "Stonard", name: "Stonard" },
+  ],
+  three: [
+    { key: "GauntletsofNight", name: "Gauntlets of Nights" },
+    { key: "GauntletsofVoyager", name: "Gauntlets of Voyager" },
+    { key: "GuardianGauntlets", name: "Guardian Gauntlets" },
+    { key: "OriginiteTypeIV", name: "Originite: Type IV" },
+  ],
+  two: [{ key: "TyroGauntlets", name: "Tyro Gauntlets" }],
+  one: [{ key: "TrainingGauntlets", name: "Training Gauntlets" }],
+};
+
 export function getWeaponsByType(type: string) {
   if (type === "Swords") {
     return swordsList;
@@ -98,6 +117,9 @@ export function getWeaponsByType(type: string) {
   }
   if (type === "Pistols") {
     return pistolsList;
+  }
+  if (type === "Gauntlets") {
+    return gauntletsList;
   }
   return [];
 }

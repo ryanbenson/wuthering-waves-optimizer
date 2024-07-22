@@ -1,5 +1,5 @@
 const weaponInfo: WeaponInfo = {
-  name: "Gauntlets of Night",
+  name: "Gauntlets of Nights",
   description:
     "May victory prevail the lasting night. In addition to the sworn oath of protection, these gauntlets also commemorates the sacrifices of those brave souls.",
   type: "Gauntlets",
