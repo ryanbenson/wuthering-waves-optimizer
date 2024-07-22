@@ -14,6 +14,7 @@
     <h3>July 21, 2024</h3>
     <ul>
       <li>Sanhua is now available.</li>
+      <li>Yuanwu is now available.</li>
     </ul>
     <h3>July 20, 2024</h3>
     <ul>
