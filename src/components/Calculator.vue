@@ -37,7 +37,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Sanhua ❄️ & Yuanwu ⚡ are available!</div>
+          <div class="alert">Rover Havoc is now available!</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -1153,9 +1153,11 @@ export default defineComponent({
           genericSkillDmgBonusEchoBuff / 100;
         const teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
+        const resonanceChainResistShredForCharElement =
+          charResonanceChainsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         const baseResistReduction = ResistReduction.value ?? 0;
         const totalResistReduction =
-          baseResistReduction + teamBuffResistShredForCharElement;
+          baseResistReduction + teamBuffResistShredForCharElement + resonanceChainResistShredForCharElement;
         // damage deepen
         const baseTotalDeepenEffect = TotalDeepenEffect.value;
         // so far damage deepen is from team buffs, add more later if needed

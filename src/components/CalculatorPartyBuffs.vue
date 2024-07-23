@@ -169,6 +169,11 @@ export default {
       },
     },
     availableCharacters() {
+      // if running rover, filter all rover out
+      // TODO: Remove this if we assume co-op, but we'll need to fix the resist reduction beyond 0
+      if (this.character.includes('Rover')) {
+        return this.allCharacters.filter((char) => !char.includes('Rover'));
+      }
       return this.allCharacters.filter((char) => char !== this.character);
     },
     buffsFormatted() {
