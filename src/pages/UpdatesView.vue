@@ -11,6 +11,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 23, 2024</h3>
+    <ul>
+      <li>Rover Havoc is now available.</li>
+    </ul>
     <h3>July 21, 2024</h3>
     <ul>
       <li>Sanhua is now available.</li>

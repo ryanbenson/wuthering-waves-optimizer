@@ -384,7 +384,24 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
-  "Rover-Havoc": [
+  RoverHavocMale: [
+    {
+      key: "SequenceNode4AnnihilatedSilence",
+      name: "Sequence Node 4: Annihilated Silence",
+      details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Devastation</span> and Resonance Liberation <span class="Highlight">Deadening Abyss</span> reduces enemy Havoc RES by 10% for 20s on hit.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResistShred:Havoc",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  RoverHavocFemale: [
     {
       key: "SequenceNode4AnnihilatedSilence",
       name: "Sequence Node 4: Annihilated Silence",
