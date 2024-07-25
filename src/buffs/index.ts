@@ -418,6 +418,23 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  XiangliYao: [
+    {
+      key: "SequenceNode4VesselofRebirth",
+      name: "Sequence Node 4: Vessel of Rebirth",
+      details: `<span class="skilldescription">After casting Resonance Liberation <span class="Highlight">Cogitation Model</span>, all team members' Resonance Liberation gains 25% DMG Bonus for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResonanceLiberationDMGBonus",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
   Verina: [
     {
       key: "InherentSkillGiftofNature",
