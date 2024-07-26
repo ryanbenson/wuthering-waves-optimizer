@@ -2,7 +2,7 @@ export const buffs = [
   {
     key: "CreationsZenith",
     name: "Creation's Zenith",
-    details: `<div class="skilldescription">Blink to the location of the Phantasmic Imprint and remove it, then summon a crane spirit to attack the target, dealing greater <span class="Ice">Glacio DMG</span>, considered as Basic Attack DMG, and additionally increasing the Basic Attack DMG Multiplier by 18% for 25s.</div>`,
+    details: `<div class="skilldescription">Blink to the location of the Phantasmic Imprint and remove it, then summon a crane spirit to attack the target, dealing greater <span class="Ice">Glacio DMG</span>, considered as Basic Attack DMG, and additionally increasing the Basic Attack DMG Multiplier by 18% for 27s.</div>`,
     hasStacks: false,
     modifiers: [
       {

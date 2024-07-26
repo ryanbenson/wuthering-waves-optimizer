@@ -1,7 +1,7 @@
 export const resonanceChains = [
   {
-    key: "SequenceNode2Anatomy",
-    name: "Sequence Node 2: Anatomy",
+    key: "SequenceNode1Anatomy",
+    name: "Sequence Node 1: Anatomy",
     details: `<span class="skilldescription">When casting Resonance Skill <span class="Highlight">Stroke of Maestro</span>, restore 15 Resonance Energy and increase CRIT Rate by 10% for 25s.</span>`,
     hasStacks: false,
     modifiers: [
