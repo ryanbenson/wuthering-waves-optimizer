@@ -17,7 +17,7 @@ export const forteCircuitAttacks = {
         "9": "369.93%",
         "10": "397.82%",
       },
-      type: "Skill",
+      type: "Liberation",
     },
     {
       key: "LawofReignsDMG",
@@ -34,7 +34,7 @@ export const forteCircuitAttacks = {
         "9": "89.02%*4 + 237.38%",
         "10": "95.73%*4 + 255.28%",
       },
-      type: "Skill",
+      type: "Liberation",
     },
     {
       key: "RevampDMG",
@@ -51,7 +51,7 @@ export const forteCircuitAttacks = {
         "9": "20.34%*4 + 61.01%*2",
         "10": "21.87%*4 + 65.61%*2",
       },
-      type: "Skill",
+      type: "Liberation",
     },
   ],
 };

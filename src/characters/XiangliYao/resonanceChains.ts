@@ -73,7 +73,10 @@ export const resonanceChains = [
           "PivotImpaleStage2DMG",
           "PivotImpaleStage3DMG",
           "DivergenceDMG",
-          "DodgeAttackUnfathomedDMG"
+          "DodgeAttackUnfathomedDMG",
+          "DecipherDMG",
+          "LawofReignsDMG",
+          "RevampDMG",
         ],
         modifierValue: 1,
       },
@@ -90,9 +93,7 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "LawofReignsDMG"
-        ],
+        modifySpecificTalents: ["LawofReignsDMG"],
         modifierValue: 1,
       },
     ],
