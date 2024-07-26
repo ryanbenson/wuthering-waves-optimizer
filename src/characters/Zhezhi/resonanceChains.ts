@@ -22,7 +22,7 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "ATK",
-        modifierValue: 0.1,
+        modifierValue: 0.15,
       },
     ],
     minStacks: 0,

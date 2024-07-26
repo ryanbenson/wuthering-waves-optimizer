@@ -2,16 +2,16 @@ export const buffs = [
   {
     key: "InherentSkillKnowing",
     name: "Inherent Skill: Knowing",
-    details: `<div class="skilldescription">Gain 15% Electro DMG Bonus.</div>`,
-    hasStacks: false,
+    details: `<div class="skilldescription">When casing Resonance Skill you Gain 5% Electro DMG Bonus, which lasts for 8 seconds, and is stacked up to 4 times.</div>`,
+    hasStacks: true,
     modifiers: [
       {
         modifier: "Electro",
-        modifierValue: 0.15,
+        modifierValue: 0.05,
       },
     ],
     minStacks: 0,
-    maxStacks: 0,
+    maxStacks: 4,
     alwaysEnabled: false,
   },
   {

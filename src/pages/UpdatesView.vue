@@ -13,6 +13,7 @@
     <h1>Updates</h1>
     <h3>July 26, 2024</h3>
     <ul>
+      <li>Updates Xiangli Yao for latest 1.2 beta changes.</li>
       <li>
         Bug fix: Xiangli Yao forte circuit attacks are now correctly liberation
         based.

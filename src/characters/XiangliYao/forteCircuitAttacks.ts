@@ -53,5 +53,23 @@ export const forteCircuitAttacks = {
       },
       type: "Liberation",
     },
+    {
+      key: "SequenceNode1ProdigyofProteges",
+      label: "Sequence Node 1: Prodigy of Protégés",
+      talents: {
+        "1": "3.85%*4 + 10.27%",
+        "2": "4.17%*4 + 11.11%",
+        "3": "4.48%*4 + 11.96%",
+        "4": "4.93%*4 + 13.14%",
+        "5": "5.24%*4 + 13.98%",
+        "6": "5.61%*4 + 14.95%",
+        "7": "6.11%*4 + 16.30%",
+        "8": "6.62%*4 + 17.64%",
+        "9": "7.12%*4 + 18.99%",
+        "10": "7.66%*4 + 20.42%",
+      },
+      type: "Liberation",
+      requiresResonanceChain: "SequenceNode1ProdigyofProteges",
+    },
   ],
 };
