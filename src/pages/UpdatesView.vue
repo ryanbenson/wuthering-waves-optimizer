@@ -11,6 +11,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 26, 2024</h3>
+    <ul>
+      <li>
+        Bug fix: Xiangli Yao forte circuit attacks are now correctly liberation
+        based.
+      </li>
+    </ul>
     <h3>July 25, 2024</h3>
     <ul>
       <li>Xiangli Yao is now available.</li>
