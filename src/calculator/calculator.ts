@@ -149,8 +149,10 @@ export function calcDamage(
     // if we have a talent multiplier, do it first before adding it to the total
     // make sure to add 1 to it (e.g. 100% * (1 + 1.2)
     if (talentModifierMultiply) {
+      console.log("before", t, talentModifierMultiply);
       let updatedTalentAfterMultiply = t * (1 + talentModifierMultiply);
       t = updatedTalentAfterMultiply;
+      console.log(t);
     }
     // update total talent value after any talent modifier adjustments
     totalTalentValue += t;
