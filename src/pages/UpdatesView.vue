@@ -33,7 +33,7 @@
     <h1>Updates</h1>
     <h3>July 29, 2024</h3>
     <ul>
-      <li>New feature: ability to import and export your data.</li>
+      <li>New feature: ability to import and export your calculator data.</li>
     </ul>
     <h3>July 26, 2024</h3>
     <ul>

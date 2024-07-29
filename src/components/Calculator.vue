@@ -37,7 +37,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">You can now import and export your data 💾!</div>
+          <div class="alert">
+            You can now import and export your calculator data 💾!
+          </div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
