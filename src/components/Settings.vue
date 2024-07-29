@@ -4,9 +4,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+// @ts-nocheck
+import { defineComponent } from "vue";
 import SettingsImportExport from "./SettingsImportExport.vue";
-export default {
+export default defineComponent({
   name: "Settings",
   components: { SettingsImportExport },
   data() {
@@ -14,5 +16,5 @@ export default {
       name: "hi",
     };
   },
-};
+});
 </script>

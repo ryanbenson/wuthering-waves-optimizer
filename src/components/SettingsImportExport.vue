@@ -40,9 +40,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+// @ts-nocheck
 import { useCharacterStore } from "../stores/character";
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "SettingsImportExport",
   data() {
     return {
@@ -176,7 +178,7 @@ export default {
       }, 5000);
     },
   },
-};
+});
 </script>
 
 <style scoped lang="scss">
