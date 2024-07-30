@@ -9,8 +9,18 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import Calculator from "../components/Calculator.vue";
+import { useCharacterStore } from "../stores/character";
 export default defineComponent({
   name: "HomeView",
   components: { Calculator },
+  methods: {
+    init() {
+      const characterStore = useCharacterStore();
+      // characterStore.$hydrate({ runHooks: false });
+    }
+  },
+  mounted() {
+    this.init();
+  }
 });
 </script>
