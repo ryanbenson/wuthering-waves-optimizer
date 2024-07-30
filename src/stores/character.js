@@ -24,5 +24,4 @@ export const useCharacterStore = defineStore("character", {
       }
     },
   },
-  persist: true,
 });
