@@ -50,14 +50,14 @@
     </select>
 
     <div class="sub-stat-selector">
-      <select v-model="echoSubStatsType1" @change="updateTotalStats">
+      <select v-model="tmpEchoSubStatsType1" @change="updateTotalStats">
         <option value="none">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
           {{ getReadableSubStatLabel(subStat) }}
         </option>
       </select>
       <input
-        v-model.number="echoSubStatsValue1"
+        v-model.number="tmpEchoSubStatsValue1"
         :min="getSubStatRange(echoSubStatsType1).min"
         :max="getSubStatRange(echoSubStatsType1).max"
         type="number"
@@ -167,6 +167,10 @@ export default {
       subStats,
       subStatRanges,
       totalCost: 0,
+      // data for substats
+      tmpEchoSubStatsType1: "none",
+      tmpEchoSubStatsValue1: 0
+
     };
   },
   watch: {
@@ -659,6 +663,10 @@ export default {
       return this.chosenMainEchoData?.maxStacks ?? 0;
     },
   },
+  mounted() {
+    this.tmpEchoSubStatsType1 = this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType1 ?? "none";
+    this.tmpEchoSubStatsValue1 = this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue1 ?? 0;
+  }
 };
 </script>
 
