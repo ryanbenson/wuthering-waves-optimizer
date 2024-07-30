@@ -332,11 +332,6 @@ export default {
 
       this.$emit("update-stats", { index: this.index, stats });
     },
-    preventBfcache() {
-      // Optional: Perform any additional cleanup here
-      // For example, clearing session data or logging
-      console.log("Page is being unloaded. bfcache will not be used.");
-    }
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -668,14 +663,10 @@ export default {
       return this.chosenMainEchoData?.maxStacks ?? 0;
     },
   },
-  // mounted() {
-  //   this.logs.push(performance.navigation.type);
-  // },
   mounted() {
-    window.addEventListener('unload', this.preventBfcache);
-  },
-  beforeDestroy() {
-    window.removeEventListener('unload', this.preventBfcache);
+    if (performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD) {
+      this.logs.push('CACHED');
+    }
   },
 };
 </script>
