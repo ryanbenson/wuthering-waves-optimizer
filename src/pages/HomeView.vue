@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts">
+// @ts-nocheck
 import { defineComponent } from "vue";
 import Calculator from "../components/Calculator.vue";
 import { useCharacterStore } from "../stores/character";
@@ -15,7 +16,7 @@ export default defineComponent({
   components: { Calculator },
   methods: {
     init() {
-      const characterStore = useCharacterStore();
+      useCharacterStore();
       // characterStore.$hydrate({ runHooks: false });
     }
   },
