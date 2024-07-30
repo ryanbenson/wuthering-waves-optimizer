@@ -54,9 +54,7 @@ window.addEventListener('pageshow', (event) => {
 });
 
 function refreshAppState() {
-  // Custom function to refresh or reset app state
-  // For example, fetch fresh data, reset UI components, etc.
-  characterStore.$hydrate({ runHooks: false });
+  location.reload();
 }
 
 app.mount("#app");
