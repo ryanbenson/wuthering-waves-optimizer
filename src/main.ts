@@ -54,6 +54,11 @@ window.addEventListener('pageshow', (event) => {
   }
 });
 
+if (performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD) {
+  alert('found old');
+  refreshAppState();
+}
+
 function refreshAppState() {
   location.reload();
 }
