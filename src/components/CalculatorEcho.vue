@@ -1,20 +1,5 @@
 <template>
   <div class="echo-selector">
-    <hr>
-    <pre><code>{{ currentCharacter?.echoes?.[this.index] }}</code></pre>
-    <pre><code>{{ echoSubStatsType1 }}</code></pre>
-    <pre><code>{{ echoSubStatsValue1 }}</code></pre>
-    <pre><code>{{ echoSubStatsType2 }}</code></pre>
-    <pre><code>{{ echoSubStatsValue2 }}</code></pre>
-    <pre><code>{{ echoSubStatsType3 }}</code></pre>
-    <pre><code>{{ echoSubStatsValue3 }}</code></pre>
-    <pre><code>{{ echoSubStatsType4 }}</code></pre>
-    <pre><code>{{ echoSubStatsValue4 }}</code></pre>
-    <pre><code>{{ echoSubStatsType5 }}</code></pre>
-    <pre><code>{{ echoSubStatsValue5 }}</code></pre>
-    <hr>
-    <pre><code>{{ logs }}</code></pre>
-    <hr>
     <label>Echo {{ index + 1 }}:</label>
     <div class="echo-setup">
       <!-- Cost Selection -->
@@ -169,7 +154,6 @@ export default {
       subStats,
       subStatRanges,
       totalCost: 0,
-      logs: []
     };
   },
   watch: {
@@ -662,11 +646,6 @@ export default {
     mainEchoMaxStacks() {
       return this.chosenMainEchoData?.maxStacks ?? 0;
     },
-  },
-  mounted() {
-    if (performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD) {
-      this.logs.push('CACHED');
-    }
   },
 };
 </script>
