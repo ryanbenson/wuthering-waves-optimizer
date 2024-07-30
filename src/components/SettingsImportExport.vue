@@ -119,7 +119,6 @@ export default defineComponent({
       if (file && file.type === "application/json") {
         const reader = new FileReader();
         reader.onload = (e) => {
-          console.log("test", e);
           try {
             const data = e.target.result;
             this.fileData = data;

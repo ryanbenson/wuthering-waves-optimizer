@@ -1,16 +1,40 @@
 <template>
   <div class="calculator__content">
     <div class="calculator__el">
-      <Calculator class="calculator"></Calculator>
+      <Calculator class="calculator" :key="key"></Calculator>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+// @ts-nocheck
 import { defineComponent } from "vue";
 import Calculator from "../components/Calculator.vue";
 export default defineComponent({
   name: "HomeView",
   components: { Calculator },
+  data() {
+    return {
+      key: self.crypto.randomUUID()
+    }
+  },
+  mounted() {
+    /**
+     * This catches if the user closes their browser and re-opens, which
+     * triggers a back_forward event type for the browser. This causes data conflicts.
+     * The browser will try to use its own cached data in the app, which overrides
+     * the data from the store and localstorage and causes UI and calc issues.
+     * If we find the back_forward event, we trash the initially mounted instance
+     * and make a new one by regenerating the key, which recycles the data
+     * to use the correct data.
+     */
+    const navigationEntries = performance.getEntriesByType("navigation");
+    const navigationActions = navigationEntries.map(nav => nav.type);
+    if (navigationActions.includes('back_forward')) {
+      setTimeout(() => {
+        this.key = self.crypto.randomUUID();
+      }, 10);
+    }
+  }
 });
 </script>

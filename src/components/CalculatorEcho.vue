@@ -30,7 +30,7 @@
       </div>
     </div>
     <select v-model="stat" @change="updateTotalStats" :disabled="!type">
-      <option value="">Select Stat</option>
+      <option value="none">Select Stat</option>
       <option v-for="s in getStats(type)" :key="s" :value="s">
         {{ getReadableSubStatLabel(s) }}
       </option>
@@ -38,7 +38,7 @@
 
     <div class="sub-stat-selector">
       <select v-model="echoSubStatsType1" @change="updateTotalStats">
-        <option value="">Select Sub Stat</option>
+        <option value="none">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
           {{ getReadableSubStatLabel(subStat) }}
         </option>
@@ -55,7 +55,7 @@
 
     <div class="sub-stat-selector">
       <select v-model="echoSubStatsType2" @change="updateTotalStats">
-        <option value="">Select Sub Stat</option>
+        <option value="none">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
           {{ getReadableSubStatLabel(subStat) }}
         </option>
@@ -72,7 +72,7 @@
 
     <div class="sub-stat-selector">
       <select v-model="echoSubStatsType3" @change="updateTotalStats">
-        <option value="">Select Sub Stat</option>
+        <option value="none">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
           {{ getReadableSubStatLabel(subStat) }}
         </option>
@@ -89,7 +89,7 @@
 
     <div class="sub-stat-selector">
       <select v-model="echoSubStatsType4" @change="updateTotalStats">
-        <option value="">Select Sub Stat</option>
+        <option value="none">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
           {{ getReadableSubStatLabel(subStat) }}
         </option>
@@ -106,7 +106,7 @@
 
     <div class="sub-stat-selector">
       <select v-model="echoSubStatsType5" @change="updateTotalStats">
-        <option value="">Select Sub Stat</option>
+        <option value="none">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
           {{ getReadableSubStatLabel(subStat) }}
         </option>
@@ -158,7 +158,7 @@ export default {
   },
   watch: {
     type: {
-      handler: async function (value) {
+      handler: async function () {
         this.$emit("updated-echo-cost", { index: this.index, cost: this.type });
         this.updateTotalStats();
       },
@@ -352,7 +352,7 @@ export default {
      */
     stat: {
       get() {
-        return this.currentCharacter?.echoes?.[this.index]?.stat ?? null;
+        return this.currentCharacter?.echoes?.[this.index]?.stat ?? "none";
       },
       async set(value) {
         const data = {
@@ -372,7 +372,7 @@ export default {
     echoSubStatsType1: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType1 ?? ""
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType1 ?? "none"
         );
       },
       async set(value) {
@@ -394,7 +394,7 @@ export default {
       get() {
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue1 ??
-          null
+          0
         );
       },
       async set(value) {
@@ -416,7 +416,7 @@ export default {
     echoSubStatsType2: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType2 ?? ""
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType2 ?? "none"
         );
       },
       async set(value) {
@@ -438,7 +438,7 @@ export default {
       get() {
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue2 ??
-          null
+          0
         );
       },
       async set(value) {
@@ -460,7 +460,7 @@ export default {
     echoSubStatsType3: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType3 ?? ""
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType3 ?? "none"
         );
       },
       async set(value) {
@@ -482,7 +482,7 @@ export default {
       get() {
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue3 ??
-          null
+          0
         );
       },
       async set(value) {
@@ -504,7 +504,7 @@ export default {
     echoSubStatsType4: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType4 ?? ""
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType4 ?? "none"
         );
       },
       async set(value) {
@@ -526,7 +526,7 @@ export default {
       get() {
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue4 ??
-          null
+          0
         );
       },
       async set(value) {
@@ -547,7 +547,7 @@ export default {
     echoSubStatsType5: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType5 ?? ""
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType5 ?? "none"
         );
       },
       async set(value) {
@@ -569,7 +569,7 @@ export default {
       get() {
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue5 ??
-          null
+          0
         );
       },
       async set(value) {
