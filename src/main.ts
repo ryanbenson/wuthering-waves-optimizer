@@ -45,23 +45,4 @@ const app = createApp(App).use(pinia).use(router).use(FloatingVue);
 import { useCharacterStore } from "./stores/character";
 const characterStore = useCharacterStore();
 
-window.addEventListener('pageshow', (event) => {
-  if (event.persisted) {
-    alert('caught');
-    console.log('Page was loaded from bfcache.');
-    // Reinitialize or reset the necessary state
-    refreshAppState();
-  }
-});
-
-// if (performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD) {
-//   alert('found old');
-//   refreshAppState();
-// }
-
-function refreshAppState() {
-  // location.reload();
-  characterStore = useCharacterStore();
-}
-
 app.mount("#app");
