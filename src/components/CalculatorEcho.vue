@@ -13,6 +13,8 @@
     <pre><code>{{ echoSubStatsType5 }}</code></pre>
     <pre><code>{{ echoSubStatsValue5 }}</code></pre>
     <hr>
+    <pre><code>{{ logs }}</code></pre>
+    <hr>
     <label>Echo {{ index + 1 }}:</label>
     <div class="echo-setup">
       <!-- Cost Selection -->
@@ -50,14 +52,14 @@
     </select>
 
     <div class="sub-stat-selector">
-      <select v-model="tmpEchoSubStatsType1" @change="updateTotalStats">
+      <select v-model="ehoSubStatsType1" @change="updateTotalStats">
         <option value="none">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
           {{ getReadableSubStatLabel(subStat) }}
         </option>
       </select>
       <input
-        v-model.number="tmpEchoSubStatsValue1"
+        v-model.number="echoSubStatsValue1"
         :min="getSubStatRange(echoSubStatsType1).min"
         :max="getSubStatRange(echoSubStatsType1).max"
         type="number"
@@ -167,10 +169,7 @@ export default {
       subStats,
       subStatRanges,
       totalCost: 0,
-      // data for substats
-      tmpEchoSubStatsType1: "none",
-      tmpEchoSubStatsValue1: 0
-
+      logs: []
     };
   },
   watch: {
@@ -206,7 +205,8 @@ export default {
       immediate: true,
     },
     echoSubStatsValue1: {
-      handler: async function () {
+      handler: async function (val) {
+        this.logs.push(val);
         this.updateTotalStats();
       },
       immediate: true,
@@ -663,10 +663,6 @@ export default {
       return this.chosenMainEchoData?.maxStacks ?? 0;
     },
   },
-  mounted() {
-    this.tmpEchoSubStatsType1 = this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType1 ?? "none";
-    this.tmpEchoSubStatsValue1 = this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue1 ?? 0;
-  }
 };
 </script>
 
