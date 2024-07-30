@@ -18,6 +18,7 @@ export default defineComponent({
     }
   },
   mounted() {
+    alert(JSON.stringify(performance.getEntriesByType("navigation")));
     if (performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD) {
       setTimeout(() => {
         this.key = self.crypto.randomUUID();
