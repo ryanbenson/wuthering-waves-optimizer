@@ -1,5 +1,8 @@
 <template>
   <div class="echo-selector">
+    <hr>
+    <pre><code>{{ currentCharacter?.echoes?.[this.index] }}</code></pre>
+    <hr>
     <label>Echo {{ index + 1 }}:</label>
     <div class="echo-setup">
       <!-- Cost Selection -->
