@@ -47,6 +47,7 @@ const characterStore = useCharacterStore();
 
 window.addEventListener('pageshow', (event) => {
   if (event.persisted) {
+    alert('caught');
     console.log('Page was loaded from bfcache.');
     // Reinitialize or reset the necessary state
     refreshAppState();
