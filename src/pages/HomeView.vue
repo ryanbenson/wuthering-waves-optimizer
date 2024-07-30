@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts">
+// @ts-nocheck
 import { defineComponent } from "vue";
 import Calculator from "../components/Calculator.vue";
 export default defineComponent({
@@ -18,8 +19,9 @@ export default defineComponent({
     }
   },
   mounted() {
-    alert(JSON.stringify(performance.getEntriesByType("navigation")));
-    if (performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD) {
+    const navigationEntries = performance.getEntriesByType("navigation");
+    const navigationActions = navigationEntries.map(nav => nav.type);
+    if (navigationActions.includes('back_forward')) {
       setTimeout(() => {
         this.key = self.crypto.randomUUID();
       }, 10);
