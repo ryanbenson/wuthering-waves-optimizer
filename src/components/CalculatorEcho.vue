@@ -663,8 +663,21 @@ export default {
       return this.chosenMainEchoData?.maxStacks ?? 0;
     },
   },
+  // mounted() {
+  //   this.logs.push(performance.navigation.type);
+  // },
   mounted() {
-    this.logs.push(performance.navigation.type);
+    window.addEventListener('unload', this.preventBfcache);
+  },
+  beforeDestroy() {
+    window.removeEventListener('unload', this.preventBfcache);
+  },
+  methods: {
+    preventBfcache() {
+      // Optional: Perform any additional cleanup here
+      // For example, clearing session data or logging
+      console.log("Page is being unloaded. bfcache will not be used.");
+    }
   }
 };
 </script>
