@@ -171,13 +171,13 @@ export default {
       immediate: true,
     },
     stat: {
-      handler: async function (val) {
+      handler: async function () {
         this.updateTotalStats();
       },
       immediate: true,
     },
     echoSubStatsType1: {
-      handler: async function (val) {
+      handler: async function () {
         this.updateTotalStats();
       },
       immediate: true,
@@ -189,7 +189,7 @@ export default {
       immediate: true,
     },
     echoSubStatsType2: {
-      handler: async function (val) {
+      handler: async function () {
         this.updateTotalStats();
       },
       immediate: true,
@@ -201,7 +201,7 @@ export default {
       immediate: true,
     },
     echoSubStatsType3: {
-      handler: async function (val) {
+      handler: async function () {
         this.updateTotalStats();
       },
       immediate: true,
@@ -213,7 +213,7 @@ export default {
       immediate: true,
     },
     echoSubStatsType4: {
-      handler: async function (val) {
+      handler: async function () {
         this.updateTotalStats();
       },
       immediate: true,
@@ -225,7 +225,7 @@ export default {
       immediate: true,
     },
     echoSubStatsType5: {
-      handler: async function (val) {
+      handler: async function () {
         this.updateTotalStats();
       },
       immediate: true,
