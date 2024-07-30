@@ -52,7 +52,7 @@
     </select>
 
     <div class="sub-stat-selector">
-      <select v-model="ehoSubStatsType1" @change="updateTotalStats">
+      <select v-model="echoSubStatsType1" @change="updateTotalStats">
         <option value="none">Select Sub Stat</option>
         <option v-for="subStat in subStats" :key="subStat" :value="subStat">
           {{ getReadableSubStatLabel(subStat) }}
@@ -663,6 +663,9 @@ export default {
       return this.chosenMainEchoData?.maxStacks ?? 0;
     },
   },
+  mounted() {
+    this.logs.push(performance.navigation.type);
+  }
 };
 </script>
 
