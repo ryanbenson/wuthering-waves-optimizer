@@ -91,8 +91,8 @@ export default {
      * Updates the stats for the passive and emits up to the parent
      * @emits updated-weapon-stats
      */
-    updateStats() {
-      this.setCharacterData(this.character, {
+    async updateStats() {
+      await this.setCharacterData(this.character, {
         weaponPassiveStats: {
           ...this.weaponPassiveStats,
           [this.passiveKey]: this.weaponPassiveStats,
