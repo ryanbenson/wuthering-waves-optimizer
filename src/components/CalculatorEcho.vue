@@ -172,34 +172,24 @@ export default {
     },
     stat: {
       handler: async function (val) {
-        if (val === "none") {
-          return;
-        }
         this.updateTotalStats();
       },
       immediate: true,
     },
     echoSubStatsType1: {
       handler: async function (val) {
-        if (val === "none") {
-          return;
-        }
         this.updateTotalStats();
       },
       immediate: true,
     },
     echoSubStatsValue1: {
-      handler: async function (val) {
-        this.logs.push(val);
+      handler: async function () {
         this.updateTotalStats();
       },
       immediate: true,
     },
     echoSubStatsType2: {
       handler: async function (val) {
-        if (val === "none") {
-          return;
-        }
         this.updateTotalStats();
       },
       immediate: true,
@@ -212,9 +202,6 @@ export default {
     },
     echoSubStatsType3: {
       handler: async function (val) {
-        if (val === "none") {
-          return;
-        }
         this.updateTotalStats();
       },
       immediate: true,
@@ -227,9 +214,6 @@ export default {
     },
     echoSubStatsType4: {
       handler: async function (val) {
-        if (val === "none") {
-          return;
-        }
         this.updateTotalStats();
       },
       immediate: true,
@@ -242,9 +226,6 @@ export default {
     },
     echoSubStatsType5: {
       handler: async function (val) {
-        if (val === "none") {
-          return;
-        }
         this.updateTotalStats();
       },
       immediate: true,
