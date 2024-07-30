@@ -3,6 +3,7 @@
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
+    <pre><code>{{ currentCharacter.echoes }}</code></pre>
     <CalculatorEcho
       v-for="(n, index) in 5"
       :key="character + '-' + index"
