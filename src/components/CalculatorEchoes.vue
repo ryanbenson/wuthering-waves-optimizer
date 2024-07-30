@@ -5,7 +5,7 @@
     </div>
     <CalculatorEcho
       v-for="(n, index) in 5"
-      :key="index"
+      :key="character + '-' + index"
       :index="index"
       :character="character"
       class="echo-selector"
