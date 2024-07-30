@@ -20,9 +20,8 @@ export default defineComponent({
   mounted() {
     if (performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD) {
       setTimeout(() => {
-        alert('regenerate key')
         this.key = self.crypto.randomUUID();
-      }, 250);
+      }, 10);
     }
   }
 });
