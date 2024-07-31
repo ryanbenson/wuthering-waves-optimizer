@@ -31,6 +31,11 @@ export default defineComponent({
     const navigationEntries = performance.getEntriesByType("navigation");
     const navigationActions = navigationEntries.map((nav) => nav.type);
     if (navigationActions.includes("back_forward")) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const debug = urlParams.get('debug');
+      if (debug == 'true') {
+        alert('welcome back');
+      }
       setTimeout(() => {
         this.key = self.crypto.randomUUID();
       }, 10);
