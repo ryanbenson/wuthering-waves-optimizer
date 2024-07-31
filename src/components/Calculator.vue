@@ -38,7 +38,7 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div class="alert">
-            You can now import and export your calculator data 💾!
+            Chixia is now available! ️‍🔥
           </div>
           <div class="character__selection">
             <div

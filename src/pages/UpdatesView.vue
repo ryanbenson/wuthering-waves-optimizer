@@ -31,6 +31,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 31, 2024</h3>
+    <ul>
+      <li>Chixia is now available.</li>
+    </ul>
+    <h3>July 30, 2024</h3>
+    <ul>
+      <li>Fixed rare edge case loading issues when you warm reload the page the echoes weren't loading correctly. This may still occur, but it should be resolved for more users.</li>
+    </ul>
     <h3>July 29, 2024</h3>
     <ul>
       <li>New feature: ability to import and export your calculator data.</li>
