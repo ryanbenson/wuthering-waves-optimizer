@@ -15,8 +15,8 @@ export default defineComponent({
   components: { Calculator },
   data() {
     return {
-      key: self.crypto.randomUUID()
-    }
+      key: self.crypto.randomUUID(),
+    };
   },
   mounted() {
     /**
@@ -29,12 +29,12 @@ export default defineComponent({
      * to use the correct data.
      */
     const navigationEntries = performance.getEntriesByType("navigation");
-    const navigationActions = navigationEntries.map(nav => nav.type);
-    if (navigationActions.includes('back_forward')) {
+    const navigationActions = navigationEntries.map((nav) => nav.type);
+    if (navigationActions.includes("back_forward")) {
       setTimeout(() => {
         this.key = self.crypto.randomUUID();
       }, 10);
     }
-  }
+  },
 });
 </script>
