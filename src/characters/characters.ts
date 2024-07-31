@@ -20,6 +20,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Zhezhi", name: "Zhezhi" },
     ],
     four: [
+      { key: "Chixia", name: "Chixia" },
       { key: "Danjin", name: "Danjin" },
       { key: "Mortefi", name: "Mortefi" },
       { key: "Sanhua", name: "Sanhua" },

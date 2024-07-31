@@ -1,0 +1,40 @@
+export const forteCircuitAttacks = {
+  name: "Forte Circuit: Heroic Bullets",
+  description: `<div class="skilldescription"><span class="Title">Resonance Skill: DAKA DAKA!</span><br>Hold Resonance Skill <span class="Highlight">Whizzing Fight Spirit</span> to enter <span class="Highlight">DAKA DAKA!</span>. In this state:<br>- Chixia continuously consumes "Thermobaric Bullets" to attack the target, dealing <span class="Fire">Fusion DMG</span>, considered as Resonance Skill DMG.<br>Tap <span class="Highlight">Basic Attack</span> to cast <span class="Highlight">Basic Attack 4</span>, dealing <span class="Fire">Fusion DMG</span>, considered as Basic Attack DMG. Then she exits the "DAKA DAKA!" state.<br>- If 30 "Thermobaric Bullets" have been fired when <span class="Highlight">Basic Attack</span> is activated, Chixia will cast Resonance Skill <span class="Highlight">Boom Boom</span> and terminate "DAKA DAKA!"<br>- Chixia exits the "DAKA DAKA!" state when all "Thermobaric Bullets" are consumed.<br> <br><span class="Title">Resonance Skill: Boom Boom</span><br>Deal <span class="Fire">Fusion DMG</span>, considered as Resonance Skill DMG.<br> <br><span class="Title">Thermobaric Bullets</span><br>Chixia can hold up to 60 "Thermobaric Bullets".<br>Inherent Skill <span class="Highlight">Scorching Magazine</span> increases Max "Thermobaric Bullets" by 10.<br>Chixia obtains "Thermobaric Bullets" for every Normal Attack <span class="Highlight">POW POW</span> on hit.<br>Chixia obtains "Thermobaric Bullets" upon casting Intro Skill <span class="Highlight">Grand Entrance</span> and Resonance Skill <span class="Highlight">Whizzing Fight Spirit</span>.</div>`,
+  attacks: [
+    {
+      key: "ThermobaricBulletsDamage",
+      label: "Thermobaric Bullets Damage",
+      talents: {
+        "1": "10.00%",
+        "2": "10.82%",
+        "3": "11.64%",
+        "4": "12.79%",
+        "5": "13.61%",
+        "6": "14.56%",
+        "7": "15.87%",
+        "8": "17.18%",
+        "9": "18.49%",
+        "10": "19.89%",
+      },
+      type: "Skill",
+    },
+    {
+      key: "BoomBoomDamage",
+      label: "Boom Boom Damage",
+      talents: {
+        "1": "220.00%",
+        "2": "238.04%",
+        "3": "256.08%",
+        "4": "281.34%",
+        "5": "299.38%",
+        "6": "320.13%",
+        "7": "348.99%",
+        "8": "377.85%",
+        "9": "406.72%",
+        "10": "437.39%",
+      },
+      type: "Skill",
+    },
+  ],
+};
