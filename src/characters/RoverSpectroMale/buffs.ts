@@ -1,13 +1,31 @@
 export const buffs = [
   {
-    key: "InherentSkillMetamorph",
-    name: "Inherent Skill: Metamorph",
-    details: `<div class="skilldescription">In the <span class="Highlight">Dark Surge</span> state, Havoc DMG Bonus is increased by 20%.</div>`,
+    key: "InherentSkillReticence",
+    name: "Inherent Skill: Reticence",
+    details: `<div class="skilldescription">DMG dealt by Rover's Basic Attack <span class="Highlight">Resonating Echoes</span> is increased by 60%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Havoc",
-        modifierValue: 0.2,
+        modifySpecificTalents: [
+          "ResonatingEchoesStage1DMG",
+          "ResonatingEchoesStage2DMG",
+        ],
+        modifierValue: 0.6,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "InherentSkillSilentListener",
+    name: "Inherent Skill: Silent Listener",
+    details: `<div class="skilldescription">Rover gains 15% ATK increase for 5s upon casting Heavy Attack <span class="Highlight">Resonance</span>.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.15,
       },
     ],
     minStacks: 0,
@@ -75,13 +93,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusHavoc1",
-    name: "Stat Bonus: Havoc+",
-    details: `<div class="skilldescription">Havoc DMG Bonus increased by 1.80%.</div>`,
+    key: "StatBonusSpectro1",
+    name: "Stat Bonus: Spectro+",
+    details: `<div class="skilldescription">Spectro DMG Bonus increased by 1.80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Havoc",
+        modifier: "Spectro",
         modifierValue: 0.018,
       },
     ],
@@ -90,13 +108,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusHavoc2",
-    name: "Stat Bonus: Havoc+",
-    details: `<div class="skilldescription">Havoc DMG Bonus increased by 1.80%.</div>`,
+    key: "StatBonusSpectro2",
+    name: "Stat Bonus: Spectro+",
+    details: `<div class="skilldescription">Spectro DMG Bonus increased by 1.80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Havoc",
+        modifier: "Spectro",
         modifierValue: 0.018,
       },
     ],
@@ -105,13 +123,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusHavoc3",
-    name: "Stat Bonus: Havoc+",
-    details: `<div class="skilldescription">Havoc DMG Bonus increased by 4.20%.</div>`,
+    key: "StatBonusSpectro3",
+    name: "Stat Bonus: Spectro+",
+    details: `<div class="skilldescription">Spectro DMG Bonus increased by 4.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Havoc",
+        modifier: "Spectro",
         modifierValue: 0.042,
       },
     ],
@@ -120,13 +138,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusHavoc4",
-    name: "Stat Bonus: Havoc+",
-    details: `<div class="skilldescription">Havoc DMG Bonus increased by 4.20%.</div>`,
+    key: "StatBonusSpectro4",
+    name: "Stat Bonus: Spectro+",
+    details: `<div class="skilldescription">Spectro DMG Bonus increased by 4.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Havoc",
+        modifier: "Spectro",
         modifierValue: 0.042,
       },
     ],
