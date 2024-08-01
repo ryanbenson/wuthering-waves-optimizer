@@ -38,7 +38,7 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div class="alert">
-            Chixia is now available! ️‍🔥
+            Rover Spectro is now available! 
           </div>
           <div class="character__selection">
             <div

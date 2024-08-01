@@ -31,6 +31,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 1, 2024</h3>
+    <ul>
+      <li>Rover Spectro is now available.</li>
+    </ul>
     <h3>July 31, 2024</h3>
     <ul>
       <li>Chixia is now available.</li>

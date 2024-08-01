@@ -76,7 +76,7 @@ export const buffs = [
   },
   {
     key: "StatBonusHavoc1",
-    name: "Stat Bonus: ATK+",
+    name: "Stat Bonus: Havoc+",
     details: `<div class="skilldescription">Havoc DMG Bonus increased by 1.80%.</div>`,
     hasStacks: false,
     modifiers: [
@@ -91,7 +91,7 @@ export const buffs = [
   },
   {
     key: "StatBonusHavoc2",
-    name: "Stat Bonus: ATK+",
+    name: "Stat Bonus: Havoc+",
     details: `<div class="skilldescription">Havoc DMG Bonus increased by 1.80%.</div>`,
     hasStacks: false,
     modifiers: [
@@ -106,7 +106,7 @@ export const buffs = [
   },
   {
     key: "StatBonusHavoc3",
-    name: "Stat Bonus: ATK+",
+    name: "Stat Bonus: Havoc+",
     details: `<div class="skilldescription">Havoc DMG Bonus increased by 4.20%.</div>`,
     hasStacks: false,
     modifiers: [
@@ -121,7 +121,7 @@ export const buffs = [
   },
   {
     key: "StatBonusHavoc4",
-    name: "Stat Bonus: ATK+",
+    name: "Stat Bonus: Havoc+",
     details: `<div class="skilldescription">Havoc DMG Bonus increased by 4.20%.</div>`,
     hasStacks: false,
     modifiers: [
