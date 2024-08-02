@@ -103,7 +103,7 @@ export default {
     return {
       // this data we do not want in the store
       chosenWeapon: null,
-      weaponPassiveStats: {},
+      weaponPassiveData: [],
       weaponsList: [],
     };
   },
@@ -210,6 +210,43 @@ export default {
       const passives = this.chosenWeapon?.info?.passiveData ?? [];
       return JSON.parse(JSON.stringify(passives));
     },
+    buffsFormatted() {
+      const finalBuffData = {};
+      let modifySpecificTalents = [];
+      const allBuffs = [
+        ...this.weaponPassiveData,
+      ];
+      allBuffs.forEach((buffInstance) => {
+        const { key, stat, value } = buffInstance;
+        if (stat === "modifySpecificTalents") {
+          const updatedSpecificTalentList =
+            modifySpecificTalents.concat(value);
+          modifySpecificTalents = updatedSpecificTalentList;
+        } else {
+          finalBuffData[stat] = (finalBuffData[stat] || 0) + value;
+        }
+      });
+      // format any specific talents
+      if (modifySpecificTalents.length > 0) {
+        const specificTalentBuffs = {};
+        // make it { talentKey: value }, if it has a modifier (e.g. DefIgnore), attach it to the talent
+        // so it won't auto buff, and we can grab it later
+        modifySpecificTalents.forEach((buffInstance) => {
+          const talentKeys = buffInstance?.modifySpecificTalents ?? [];
+          talentKeys.forEach((talent) => {
+            let talentName = talent;
+            if (buffInstance?.modifier) {
+              talentName = `${talentName}:${buffInstance.modifier}`;
+            }
+            specificTalentBuffs[talentName] =
+              (specificTalentBuffs[talentName] || 0) +
+              buffInstance.modifierValueCalculated;
+          });
+        });
+        finalBuffData.specificTalentBuffs = specificTalentBuffs;
+      }
+      return finalBuffData;
+    },
   },
   watch: {
     // we're using immediate so it'll react when we get data from the store
@@ -246,7 +283,6 @@ export default {
   methods: {
     ...mapActions(useCharacterStore, [
       "setCharacterData",
-      "resetCharacterWeaponPassives",
     ]),
     /**
      * Updates the weapon stats and send that off to the parent
@@ -261,7 +297,7 @@ export default {
           attack,
           modifier,
           modifierValue,
-          weaponPassiveStats: { ...this.weaponPassiveStats },
+          weaponPassiveStats: { ...this.buffsFormatted },
         };
         this.$emit("update-weapon", weaponData);
       } else {
@@ -288,7 +324,14 @@ export default {
      * Update our passive data and trigger other function to emit out
      */
     async handleUpdatedWeaponStats(data) {
-      this.weaponPassiveStats[data.stat] = data.value;
+      const buffIndex = this.weaponPassiveData.findIndex((buff) => {
+        return buff.key === data.key;
+      });
+      if (buffIndex === -1) {
+        this.weaponPassiveData.push(data);
+      } else {
+        this.weaponPassiveData[buffIndex] = data;
+      }
       await this.updateWeaponStats();
     },
     /**

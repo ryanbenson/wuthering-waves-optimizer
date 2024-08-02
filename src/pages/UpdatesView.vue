@@ -31,6 +31,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 2, 2024</h3>
+    <ul>
+      <li>Bug fix: Fixes weapon passives not always syncing on reload correctly.</li>
+    </ul>
     <h3>August 1, 2024</h3>
     <ul>
       <li>Rover Spectro is now available.</li>
