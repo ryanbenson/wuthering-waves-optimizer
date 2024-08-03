@@ -37,9 +37,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">
-            Rover Spectro is now available! 
-          </div>
+          <div class="alert">Lingyang is now available! ❄️</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -1223,8 +1221,14 @@ export default defineComponent({
               const requiresResonanceChain =
                 attack?.requiresResonanceChain ?? false;
               if (requiresResonanceChain) {
-                const enabledAttacks =
+                const resonanceChainsEnabledAttacks =
                   charResonanceChainsData.value?.EnableAttack ?? [];
+                const charBuffsEnabledAttacks =
+                  charBuffsData.value?.EnableAttack ?? [];
+                // merge all possible enabled attack arrays together
+                const enabledAttacks = []
+                  .concat(resonanceChainsEnabledAttacks)
+                  .concat(charBuffsEnabledAttacks);
                 const isAttackEnabled = enabledAttacks.includes(
                   requiresResonanceChain
                 );

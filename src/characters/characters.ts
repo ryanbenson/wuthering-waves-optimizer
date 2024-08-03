@@ -13,6 +13,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Encore", name: "Encore" },
       { key: "Jinhsi", name: "Jinhsi" },
       { key: "Jiyan", name: "Jiyan" },
+      { key: "Lingyang", name: "Lingyang" },
       { key: "RoverHavocFemale", name: "Rover Havoc (Female)" },
       { key: "RoverHavocMale", name: "Rover Havoc (Male)" },
       { key: "RoverSpectroFemale", name: "Rover Spectro (Female)" },

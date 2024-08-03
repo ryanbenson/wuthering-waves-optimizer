@@ -1,0 +1,41 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Strive: Lion's Vigor",
+  description: `<<div class="skilldescription">Attack the target, dealing <span class="Ice">Glacio DMG</span>, and receive the blessing of <span class="Highlight">Lion's Vigor</span>.<br> <br><span class="Title">Lion's Vigor</span><br>Lingyang's <span class="Ice">Glacio DMG Bonus</span> is increased by 50%;</div>`,
+  attacks: [
+    {
+      key: "LionsVigorDMG",
+      label: "Skill DMG",
+      talents: {
+        "1": "200.00%",
+        "2": "216.40%",
+        "3": "232.80%",
+        "4": "255.76%",
+        "5": "272.16%",
+        "6": "291.02%",
+        "7": "317.26%",
+        "8": "343.50%",
+        "9": "369.74%",
+        "10": "397.62%",
+      },
+      type: "Liberation",
+    },
+    {
+      key: "SequenceNode5SevenStarsShineSteppeduponHigh",
+      label: "Sequence Node 5: Seven Stars Shine, Stepped upon High",
+      talents: {
+        "1": "200%",
+        "2": "200%",
+        "3": "200%",
+        "4": "200%",
+        "5": "200%",
+        "6": "200%",
+        "7": "200%",
+        "8": "200%",
+        "9": "200%",
+        "10": "200%",
+      },
+      type: "Liberation",
+      requiresResonanceChain: "SequenceNode5SevenStarsShineSteppeduponHigh",
+    },
+  ],
+};
