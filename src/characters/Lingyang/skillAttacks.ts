@@ -1,0 +1,40 @@
+export const skillAttacks = {
+  name: "Resonance Skill: Ancient Arts",
+  description: `<div class="skilldescription"><span class="Title">Ancient Arts</span><br>Attack the target, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Furious Punches</span><br>When <span class="Highlight">Basic Attacks 3, 4, or 5</span> or Basic Attack <span class="Highlight">Feral Roars</span> hits the target, Resonance Skill <span class="Highlight">Ancient Arts</span> is replaced with Resonance Skill <span class="Highlight">Furious Punches</span>.<br>Lingyang's <span class="Highlight">Basic Attack</span> cycle starts from <span class="Highlight">Basic Attack 3</span> after casting Basic Attack <span class="Highlight">Feral Roars</span> and Resonance Skill <span class="Highlight">Furious Punches</span> in turn.<br> <br>Lingyang's Resonance Skill does not reset his Basic Attack cycle.</div>`,
+  attacks: [
+    {
+      key: "AncientArtsDMG",
+      label: "Ancient Arts DMG",
+      talents: {
+        "1": "66.70%",
+        "2": "72.17%",
+        "3": "77.64%",
+        "4": "85.30%",
+        "5": "90.77%",
+        "6": "97.06%",
+        "7": "105.81%",
+        "8": "114.56%",
+        "9": "123.31%",
+        "10": "132.61%",
+      },
+      type: "Skill",
+    },
+    {
+      key: "FuriousPunchesDMG",
+      label: "Furious Punches DMG",
+      talents: {
+        "1": "38.35%*2",
+        "2": "41.50%*2",
+        "3": "44.64%*2",
+        "4": "49.05%*2",
+        "5": "52.19%*2",
+        "6": "55.81%*2",
+        "7": "60.84%*2",
+        "8": "65.87%*2",
+        "9": "70.90%*2",
+        "10": "76.25%*2",
+      },
+      type: "Skill",
+    },
+  ],
+};

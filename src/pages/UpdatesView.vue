@@ -31,9 +31,15 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 3, 2024</h3>
+    <ul>
+      <li>Lingyang is now available.</li>
+    </ul>
     <h3>August 2, 2024</h3>
     <ul>
-      <li>Bug fix: Fixes weapon passives not always syncing on reload correctly.</li>
+      <li>
+        Bug fix: Fixes weapon passives not always syncing on reload correctly.
+      </li>
     </ul>
     <h3>August 1, 2024</h3>
     <ul>
@@ -45,7 +51,11 @@
     </ul>
     <h3>July 30, 2024</h3>
     <ul>
-      <li>Fixed rare edge case loading issues when you warm reload the page the echoes weren't loading correctly. This may still occur, but it should be resolved for more users.</li>
+      <li>
+        Fixed rare edge case loading issues when you warm reload the page the
+        echoes weren't loading correctly. This may still occur, but it should be
+        resolved for more users.
+      </li>
     </ul>
     <h3>July 29, 2024</h3>
     <ul>
