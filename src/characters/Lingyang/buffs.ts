@@ -32,11 +32,11 @@ export const buffs = [
   {
     key: "LionsVigor",
     name: "Lion's Vigor",
-    details: `<div class="skilldescription">Lingyang's <span class="Ice">Glacio DMG</span> Bonus is increased by 50%;</div>`,
+    details: `<div class="skilldescription">Lingyang's <span class="Ice">Glacio DMG</span> Bonus is increased by 50%, which lasts for 14 seconds.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifySpecificTalents: ["LionsVigorDMG"],
+        modifier: "Glacio",
         modifierValue: 0.5,
       },
     ],
