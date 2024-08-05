@@ -7,6 +7,25 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Luminous Protection",
   passiveValue:
     "When hitting a target with Basic Attacks or Heavy Attacks, increases Healing Bonus by 3%/3.5%/4%/4.5%/5%, stacking up to 3 time(s). This effect lasts for 8s and can be triggered 1 time(s) every 0.6s.",
+  passiveData: [
+    {
+      key: "CometFlareHealingBonus",
+      hasStacks: true,
+      modifier: "HealingBonus",
+      modifierByRefinement: {
+        "1": 0.03,
+        "2": 0.035,
+        "3": 0.04,
+        "4": 0.045,
+        "5": 0.05,
+      },
+      minStacks: 0,
+      maxStacks: 3,
+      details:
+        "When hitting a target with Basic Attacks or Heavy Attacks, increases Healing Bonus by 3%/3.5%/4%/4.5%/5%, stacking up to 3 time(s). This effect lasts for 8s and can be triggered 1 time(s) every 0.6s.",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

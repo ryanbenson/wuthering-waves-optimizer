@@ -12,72 +12,72 @@ const weaponInfo: WeaponInfo = {
 const weaponData: WeaponData = {
   "1": {
     attack: 24,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.072,
   },
   "20": {
     attack: 62,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.127,
   },
   "40": {
     attack: 118,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.183,
   },
   "50": {
     attack: 155,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.211,
   },
   "60": {
     attack: 191,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.239,
   },
   "70": {
     attack: 227,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.267,
   },
   "80": {
     attack: 263,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.295,
   },
   "90": {
     attack: 300,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.323,
   },
   "20+": {
     attack: 78,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.127,
   },
   "40+": {
     attack: 134,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.183,
   },
   "50+": {
     attack: 171,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.211,
   },
   "60+": {
     attack: 207,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.239,
   },
   "70+": {
     attack: 243,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.267,
   },
   "80+": {
     attack: 279,
-    modifier: "Energy Regen",
+    modifier: "EnergyRegen",
     modifierValue: 0.295,
   },
 };
