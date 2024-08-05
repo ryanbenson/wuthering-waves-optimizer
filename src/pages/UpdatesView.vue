@@ -31,6 +31,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 5, 2024</h3>
+    <ul>
+      <li>Yangyang is now available.</li>
+    </ul>
     <h3>August 3, 2024</h3>
     <ul>
       <li>Lingyang is now available.</li>

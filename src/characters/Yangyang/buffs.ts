@@ -1,13 +1,13 @@
 export const buffs = [
   {
-    key: "InherentSkillScorchingMagazine",
-    name: "Inherent Skill: Scorching Magazine",
-    details: `<div class="skilldescription">Max "Thermobaric Bullets" is increased by 10 rounds. The damage of Resonance Skill <span class="Highlight">Boom Boom</span> is increased by 50%.</div>`,
+    key: "InherentSkillLazulineMercy",
+    name: "Inherent Skill: Lazuline Mercy",
+    details: `<div class="skilldescription">Yangyang's Aero DMG Bonus is increased by 8% for 8s after casting Intro Skill <span class="Highlight">Cerulean Song</span>.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifySpecificTalents: ["BoomBoomDamage"],
-        modifierValue: 0.5,
+        modifier: "Aero",
+        modifierValue: 0.08,
       },
     ],
     minStacks: 0,
@@ -15,28 +15,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "InherentSkillNumbinglySpicy",
-    name: "Inherent Skill: Numbingly Spicy!",
-    details: `<div class="skilldescription">Each "Thermobaric Bullets" that hits a target during Resonance Skill <span class="Highlight">DAKA DAKA!</span> increases ATK by 1% for 10s, stacking up to 30 times.</div>`,
-    hasStacks: true,
-    modifiers: [
-      {
-        modifier: "ATK",
-        modifierValue: 0.01,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 30,
-    alwaysEnabled: false,
-  },
-  {
-    key: "StatBonusFusion1",
-    name: "Stat Bonus: Fusion DMG Bonus+",
-    details: `<div class="skilldescription">Fusion DMG Bonus increased by 1.80%.</div>`,
+    key: "StatBonusAero1",
+    name: "Stat Bonus: Aero DMG Bonus+",
+    details: `<div class="skilldescription">Aero DMG Bonus increased by 1.80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Fusion",
+        modifier: "Aero",
         modifierValue: 0.018,
       },
     ],
@@ -45,13 +30,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusFusion2",
-    name: "Stat Bonus: Fusion DMG Bonus+",
-    details: `<div class="skilldescription">Fusion DMG Bonus increased by 1.80%.</div>`,
+    key: "StatBonusAero2",
+    name: "Stat Bonus: Aero DMG Bonus+",
+    details: `<div class="skilldescription">Aero DMG Bonus increased by 1.80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Fusion",
+        modifier: "Aero",
         modifierValue: 0.018,
       },
     ],
@@ -60,13 +45,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusFusion3",
-    name: "Stat Bonus: Fusion DMG Bonus+",
-    details: `<div class="skilldescription">Fusion DMG Bonus increased by 4.20%.</div>`,
+    key: "StatBonusAero3",
+    name: "Stat Bonus: Aero DMG Bonus+",
+    details: `<div class="skilldescription">Aero DMG Bonus increased by 4.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Fusion",
+        modifier: "Aero",
         modifierValue: 0.042,
       },
     ],
@@ -75,13 +60,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusFusion4",
-    name: "Stat Bonus: Fusion DMG Bonus+",
-    details: `<div class="skilldescription">Fusion DMG Bonus increased by 4.20%.</div>`,
+    key: "StatBonusAero4",
+    name: "Stat Bonus: Aero DMG Bonus+",
+    details: `<div class="skilldescription">Aero DMG Bonus increased by 4.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Fusion",
+        modifier: "Aero",
         modifierValue: 0.042,
       },
     ],
