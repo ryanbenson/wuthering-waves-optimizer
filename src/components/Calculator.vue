@@ -163,6 +163,10 @@
             <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
           </div>
           <div>
+            <span>Energy Regen:</span>
+            <span>{{ displayPercentage(energyRegen * 100) }}</span>
+          </div>
+          <div>
             <span>Basic Attack DMG Bonus:</span>
             <span>{{ displayPercentage(BasicAttackDMGBonus) }}</span>
           </div>
@@ -205,6 +209,10 @@
           <div>
             <span>Havoc DMG Bonus:</span>
             <span>{{ displayPercentage(Havoc) }}</span>
+          </div>
+          <div>
+            <span>Healing Bonus:</span>
+            <span>{{ displayPercentage(healingBonus * 100) }}</span>
           </div>
           <div>
             <span>Defense Ignore:</span>
@@ -389,6 +397,10 @@
           <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
         </div>
         <div>
+          <span>Energy Regen:</span>
+          <span>{{ displayPercentage(energyRegen * 100) }}</span>
+        </div>
+        <div>
           <span>Basic Attack DMG Bonus:</span>
           <span>{{ displayPercentage(BasicAttackDMGBonus) }}</span>
         </div>
@@ -431,6 +443,10 @@
         <div>
           <span>Havoc DMG Bonus:</span>
           <span>{{ displayPercentage(Havoc) }}</span>
+        </div>
+        <div>
+          <span>Healing Bonus:</span>
+          <span>{{ displayPercentage(healingBonus * 100) }}</span>
         </div>
         <div>
           <span>Defense Ignore:</span>
@@ -670,6 +686,8 @@ export default defineComponent({
     const totalDef = ref(0);
     const totalCritRate = ref(0.05);
     const totalCritDMG = ref(0.5);
+    const energyRegen = ref(1);
+    const healingBonus = ref(0);
     const BasicAttackDMGBonus = ref(0);
     const HeavyAttackDMGBonus = ref(0);
     const ResonanceSkillDMGBonus = ref(0);
@@ -754,6 +772,8 @@ export default defineComponent({
         target.defFlat += source?.DEF_FLAT ?? 0;
         target.critRate += source?.CritRate ? source.CritRate * 100 : 0;
         target.critDMG += source?.CritDMG ? source.CritDMG * 100 : 0;
+        target.energyRegen += source?.EnergyRegen ? source.EnergyRegen : 0;
+        target.healingBonus += source?.HealingBonus ? source.HealingBonus : 0;
         target.basicAttackDMGBonus += source?.BasicAttackDMGBonus
           ? source.BasicAttackDMGBonus * 100
           : 0;
@@ -796,6 +816,8 @@ export default defineComponent({
         target.defFlat += source?.DEF_FLAT ?? 0;
         target.critRate += source?.CritRate ? source.CritRate : 0;
         target.critDMG += source?.CritDMG ? source.CritDMG : 0;
+        target.energyRegen += source?.EnergyRegen ? source.EnergyRegen / 100 : 0;
+        target.healingBonus += source?.HealingBonus ? source.HealingBonus / 100 : 0;
         target.basicAttackDMGBonus += source?.BasicAttackDMGBonus
           ? source.BasicAttackDMGBonus
           : 0;
@@ -838,6 +860,8 @@ export default defineComponent({
         defFlat: 0,
         critRate: 5,
         critDMG: 150,
+        energyRegen: 1,
+        healingBonus: 0,
         basicAttackDMGBonus: 0,
         heavyAttackDMGBonus: 0,
         resonanceSkillDMGBonus: 0,
@@ -948,6 +972,12 @@ export default defineComponent({
           case "CritDMG":
             stats.critDMG += weaponModifierValue * 100;
             break;
+          case "EnergyRegen":
+            stats.energyRegen += weaponModifierValue;
+            break;
+          case "HealingBonus":
+            stats.healingBonus += weaponModifierValue;
+            break;
         }
       }
 
@@ -1001,6 +1031,8 @@ export default defineComponent({
       totalDef.value = charDef * (1 + stats.defPercent / 100) + stats.defFlat;
       totalCritRate.value = stats.critRate / 100;
       totalCritDMG.value = stats.critDMG / 100;
+      energyRegen.value = stats.energyRegen;
+      healingBonus.value = stats.healingBonus;
       BasicAttackDMGBonus.value = stats.basicAttackDMGBonus;
       HeavyAttackDMGBonus.value = stats.heavyAttackDMGBonus;
       ResonanceSkillDMGBonus.value = stats.resonanceSkillDMGBonus;
@@ -1357,6 +1389,8 @@ export default defineComponent({
       totalDef,
       totalCritRate,
       totalCritDMG,
+      energyRegen,
+      healingBonus,
       weaponType,
       handleCharacterLevelUpdated,
       handleCharacterTalentUpdated,

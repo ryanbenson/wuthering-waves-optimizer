@@ -34,6 +34,7 @@
     <h3>August 5, 2024</h3>
     <ul>
       <li>Yangyang is now available.</li>
+      <li>Adds Healing Bonus and Energy Regen attributes.</li>
     </ul>
     <h3>August 3, 2024</h3>
     <ul>
