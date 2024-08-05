@@ -1,0 +1,40 @@
+export const forteCircuitAttacks = {
+  name: "Forte Circuit: Echoing Feathers",
+  description: `<div class="skilldescription"><span class="Title">Heavy Attack: Stormy Strike</span><br>When Yangyang has 3 Melodies, she can cast <span class="Highlight">Stormy Strike</span> after <span class="Highlight">Heavy Attack</span> or <span class="Highlight">Dodge Counter</span>, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Mid-air Attack: Feather Release</span><br>When Yangyang has 3 Melodies, cast <span class="Highlight">Basic Attack</span> in mid-air to consume all Melodies and perform consecutive strikes, diving from mid-air, dealing <span class="Wind">Aero DMG</span>. As Yangyang lands, she sheathes her sword with an attack, dealing <span class="Wind">Aero DMG</span>, considered as Basic Attack DMG.<br> <br><span class="Title">Melody</span><br>Yangyang can hold up to 3 Melodies<br>Yangyang obtains 1 Melody with every <span class="Highlight">Basic Attack 4</span> on hit.<br>Yangyang obtains 1 Melody for every Heavy Attack <span class="Highlight">Zephyr Song</span> on hit.<br>Yangyang obtains 1 Melody for every Resonance Skill <span class="Highlight">Zephyr Domain</span> on hit.<br>Yangyang obtains 1 Melody upon casting Intro Skill <span class="Highlight">Cerulean Song</span>.</div>`,
+  attacks: [
+    {
+      key: "StormyStrikeDamage",
+      label: "Stormy Strike Damage",
+      talents: {
+        "1": "19.12%*2",
+        "2": "20.69%*2",
+        "3": "22.26%*2",
+        "4": "24.45%*2",
+        "5": "26.02%*2",
+        "6": "27.82%*2",
+        "7": "30.33%*2",
+        "8": "32.84%*2",
+        "9": "35.35%*2",
+        "10": "38.02%*2",
+      },
+      type: "Heavy",
+    },
+    {
+      key: "FeatherReleaseDamage",
+      label: "Feather Release Damage",
+      talents: {
+        "1": "10.93%*5 + 63.78%*2",
+        "2": "11.83%*5 + 69.01%*2",
+        "3": "12.72%*5 + 74.24%*2",
+        "4": "13.98%*5 + 81.57%*2",
+        "5": "14.88%*5 + 86.80%*2",
+        "6": "15.91%*5 + 92.81%*2",
+        "7": "17.34%*5 + 101.18%*2",
+        "8": "18.78%*5 + 109.55%*2",
+        "9": "20.21%*5 + 117.92%*2",
+        "10": "21.73%*5 + 126.81%*2",
+      },
+      type: "Basic",
+    },
+  ],
+};
