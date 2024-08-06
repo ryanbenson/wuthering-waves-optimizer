@@ -31,6 +31,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 6, 2024</h3>
+    <ul>
+      <li>
+        Adjusts Xiangli Yao's Resonance Chain 5 to only affect his Liberation
+        talents.
+      </li>
+    </ul>
     <h3>August 5, 2024</h3>
     <ul>
       <li>Yangyang is now available.</li>
