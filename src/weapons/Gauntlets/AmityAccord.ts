@@ -11,7 +11,7 @@ const weaponInfo: WeaponInfo = {
     {
       key: "AmityAccordResonanceLiberationDMGBonus",
       hasStacks: false,
-      modifier: "ResonanceSkillDMGBonus",
+      modifier: "ResonanceLiberationDMGBonus",
       modifierByRefinement: {
         "1": 0.2,
         "2": 0.25,

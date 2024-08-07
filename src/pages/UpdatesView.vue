@@ -31,6 +31,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 7, 2024</h3>
+    <ul>
+      <li>Bug fix: Fixes Amity Discord passive</li>
+    </ul>
     <h3>August 6, 2024</h3>
     <ul>
       <li>
