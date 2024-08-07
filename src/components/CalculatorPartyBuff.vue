@@ -5,7 +5,7 @@
     <label v-if="!alwaysEnabled"
       ><input type="checkbox" v-model="isEnabled" /> Enabled?</label
     >
-    <span v-if="hasStacks">
+    <span v-if="hasStacks" class="party-buff__stacks">
       <input
         v-model="stacks"
         type="number"
@@ -14,6 +14,14 @@
         @input="ensureMaxStacks" />
       Stacks</span
     >
+    <div v-if="hasRefinements" class="party-buff__refinement">
+      <select name="refinement" v-model="refinement">
+        <option v-for="lvl in weaponRefinementLevels" :key="lvl" :value="lvl">
+          {{ lvl }}
+        </option>
+      </select>
+      <label for="weaponLevel">Refinement Level</label>
+    </div>
   </div>
 </template>
 
@@ -59,6 +67,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    hasRefinements: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {};
@@ -74,6 +86,12 @@ export default {
       immediate: true,
     },
     stacks: {
+      handler: async function () {
+        this.updatedStats();
+      },
+      immediate: true,
+    },
+    refinement: {
       handler: async function () {
         this.updatedStats();
       },
@@ -128,6 +146,30 @@ export default {
       },
     },
     /**
+     * Getter/setter used in the form for the refinement state for this passive
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    refinement: {
+      get() {
+        return (
+          this.currentCharacter?.teamBuffs?.buffs?.[this.uniqueKey]
+            ?.refinement ?? 1
+        );
+      },
+      async set(value) {
+        const data = {
+          teamBuffs: {
+            buffs: {},
+          },
+        };
+        data.teamBuffs.buffs[this.uniqueKey] = {
+          refinement: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
      * Getter/setter used in the form for the stacks count state for this passive
      * Data is persisted in the store. Avoids needing a local data + store data
      * @returns {Boolean}
@@ -155,14 +197,22 @@ export default {
       if (!this.isEnabled) {
         return data;
       }
+      console.log('yep', this.hasStacks);
       if (!this.hasStacks) {
         this.modifiers.forEach((modifierItem) => {
+          console.log(modifierItem);
           if (modifierItem?.modifySpecificTalents) {
             if (!data.modifySpecificTalents) {
               data.modifySpecificTalents = [];
             }
             // add our calculated value
-            modifierItem.modifierValueCalculated = modifierItem.modifierValue;
+            let modifierValue;
+            if (this.hasRefinements) {
+              modifierValue = modifierItem.modifierByRefinement[this.refinement];
+            } else {
+              modifierValue = modifierItem.modifierValue
+            }
+            modifierItem.modifierValueCalculated = modifierValue;
             data.modifySpecificTalents.push(modifierItem);
           } else if (modifierItem.modifier === "Talent") {
             // this is the rare case where the modifier value needs a reference to another talent level
@@ -178,7 +228,13 @@ export default {
             }
             data.talentModifierMultiply.push(modifierItem);
           } else {
-            data[modifierItem.modifier] = modifierItem.modifierValue;
+            let modifierValue;
+            if (this.hasRefinements) {
+              modifierValue = modifierItem.modifierByRefinement[this.refinement];
+            } else {
+              modifierValue = modifierItem.modifierValue
+            }
+            data[modifierItem.modifier] = modifierValue;
           }
         });
         return data;
@@ -188,13 +244,19 @@ export default {
           return data;
         }
         this.modifiers.forEach((modifierItem) => {
+          console.log(modifierItem);
           if (modifierItem?.modifySpecificTalents) {
             if (!data.modifySpecificTalents) {
               data.modifySpecificTalents = [];
             }
             // updadate modifer value with the value * stacks
-            modifierItem.modifierValueCalculated =
-              modifierItem.modifierValue * this.stacks;
+            let modifierValue;
+            if (this.hasRefinements) {
+              modifierValue = modifierItem.modifierByRefinement[this.refinement];
+            } else {
+              modifierValue = modifierItem.modifierValue
+            }
+            modifierItem.modifierValueCalculated = modifierValue * this.stacks;
             data.modifySpecificTalents.push(modifierItem);
           } else if (modifierItem.modifier === "Talent") {
             const talentRef =
@@ -202,13 +264,26 @@ export default {
             const talentVal = modifierItem.modifierValue[talentRef];
             data[modifierItem.modifierTalentKey] = talentVal * this.stacks;
           } else {
-            const totalValue = modifierItem.modifierValue * this.stacks;
+            let modifierValue;
+            if (this.hasRefinements) {
+              modifierValue = modifierItem.modifierByRefinement[this.refinement];
+            } else {
+              modifierValue = modifierItem.modifierValue
+            }
+            const totalValue = modifierValue * this.stacks;
             data[modifierItem.modifier] = totalValue;
           }
         });
       }
       // shouldn't get here
       return data;
+    },
+    /**
+     * List of options for the refinements options
+     * @returns {Array}
+     */
+    weaponRefinementLevels() {
+      return ["1", "2", "3", "4", "5"];
     },
   },
   mounted() {
@@ -237,5 +312,13 @@ export default {
 label {
   margin: 1rem 0 0;
   display: inline-block;
+}
+.party-buff__stacks {
+  margin-left: 1rem;
+}
+.party-buff__refinement {
+  label {
+    margin-left: 0.5rem;
+  }
 }
 </style>

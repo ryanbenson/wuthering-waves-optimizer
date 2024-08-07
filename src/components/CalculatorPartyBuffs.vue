@@ -92,11 +92,31 @@
         :talent-data="talentData"
         class="character__buff"></CalculatorPartyBuff>
     </div>
+
+    <div>
+      <h3>Team Weapon Buffs</h3>
+      <CalculatorPartyBuff
+        v-for="buff in allWeaponTeamBuffs"
+        :key="buff.key"
+        :character="character"
+        :unique-key="buff.key"
+        :name="buff.name"
+        :details="buff.details"
+        :always-enabled="buff.alwaysEnabled"
+        :has-stacks="buff.hasStacks"
+        :min-stacks="buff.minStacks"
+        :max-stacks="buff.maxStacks"
+        :modifiers="buff.modifiers"
+        @updated-party-buff="handleUpdatedPartyBuffEcho"
+        :talent-data="talentData"
+        :has-refinements="true"
+        class="character__buff"></CalculatorPartyBuff>
+    </div>
   </div>
 </template>
 
 <script>
-import { buffsByCharacter, allEchoBuffs } from "../buffs/index.ts";
+import { buffsByCharacter, allEchoBuffs, allWeaponTeamBuffs } from "../buffs/index.ts";
 import { allCharacters } from "../characters/characters.ts";
 import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
 import { mapActions, mapState } from "pinia";
@@ -115,6 +135,7 @@ export default {
     return {
       allEchoBuffs,
       buffsByCharacter,
+      allWeaponTeamBuffs,
       allCharacters,
       buffsDataChar1: [],
       buffsDataChar2: [],
