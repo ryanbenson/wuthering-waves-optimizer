@@ -647,6 +647,31 @@ export const allEchoBuffs = [
   },
 ];
 
+export const allWeaponTeamBuffs = [
+  {
+    name: "Static Mist",
+    key: "StaticMistATK",
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierByRefinement: {
+          "1": 0.1,
+          "2": 0.125,
+          "3": 0.15,
+          "4": 0.175,
+          "5": 0.2,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 1,
+    details:
+      "When Outro Skill is released, increases the switched-in Resonator's ATK by 10%/12.5%/15%/17.5%/20%, stacking up to 1 time(s). This effect lasts for 14s.",
+    alwaysEnabled: false,
+  },
+];
+
 export const allCharacters: string[] = [
   "Sanhua",
   "Baizhi",
