@@ -48,6 +48,7 @@ const broadbladesList = {
 const rectifiersList = {
   five: [
     { key: "CosmicRipples", name: "Cosmic Ripples" },
+    { key: "RimeDrapedSprouts", name: "Rime-Draped Sprouts" },
     { key: "Stringmaster", name: "Stringmaster" },
   ],
   four: [
@@ -87,7 +88,10 @@ const pistolsList = {
 };
 
 const gauntletsList = {
-  five: [{ key: "AbyssSurges", name: "Abyss Surges" }],
+  five: [
+    { key: "AbyssSurges", name: "Abyss Surges" },
+    { key: "VeritysHandle", name: "Verity's Handle" },
+  ],
   four: [
     { key: "AmityAccord", name: "Amity Accord" },
     { key: "Gauntlets21D", name: "Gauntlets #21D" },
