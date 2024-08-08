@@ -75,7 +75,7 @@ export const resonanceChains = [
           "DivergenceDMG",
           "DodgeAttackUnfathomedDMG",
         ],
-        modifierValue: 1.2,
+        modifierValue: 1,
       },
     ],
     minStacks: 0,
