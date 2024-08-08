@@ -37,7 +37,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Yangyang is now available! 🍃</div>
+          <div class="alert">
+            Zhezhi and Xiangli Yao's weapons are available.
+          </div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -816,8 +818,12 @@ export default defineComponent({
         target.defFlat += source?.DEF_FLAT ?? 0;
         target.critRate += source?.CritRate ? source.CritRate : 0;
         target.critDMG += source?.CritDMG ? source.CritDMG : 0;
-        target.energyRegen += source?.EnergyRegen ? source.EnergyRegen / 100 : 0;
-        target.healingBonus += source?.HealingBonus ? source.HealingBonus / 100 : 0;
+        target.energyRegen += source?.EnergyRegen
+          ? source.EnergyRegen / 100
+          : 0;
+        target.healingBonus += source?.HealingBonus
+          ? source.HealingBonus / 100
+          : 0;
         target.basicAttackDMGBonus += source?.BasicAttackDMGBonus
           ? source.BasicAttackDMGBonus
           : 0;

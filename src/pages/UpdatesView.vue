@@ -31,6 +31,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 8, 2024</h3>
+    <ul>
+      <li>Adds Zhezi and Xiangli Yao's weapons.</li>
+    </ul>
     <h3>August 7, 2024</h3>
     <ul>
       <li>Adds team weapon buffs.</li>
