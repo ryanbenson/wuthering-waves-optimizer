@@ -62,7 +62,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode5EndofStars",
     name: "Sequence Node 5: End of Stars",
-    details: `<span class="skilldescription">Outro Skill gains an additional DMG Multiplier of 170%. Resonance Liberation's DMG Multiplier is increased by 120%.</span>`,
+    details: `<span class="skilldescription">Outro Skill gains an additional DMG Multiplier of 170%. Resonance Liberation's DMG Multiplier is increased by 100%.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -75,7 +75,7 @@ export const resonanceChains = [
           "DivergenceDMG",
           "DodgeAttackUnfathomedDMG",
         ],
-        modifierValue: 1.2,
+        modifierValue: 1,
       },
     ],
     minStacks: 0,

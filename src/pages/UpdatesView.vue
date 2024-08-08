@@ -34,6 +34,7 @@
     <h3>August 8, 2024</h3>
     <ul>
       <li>Adds Zhezi and Xiangli Yao's weapons.</li>
+      <li>Updates Xiangli Yao for 1.2.6 beta changes</li>
     </ul>
     <h3>August 7, 2024</h3>
     <ul>
