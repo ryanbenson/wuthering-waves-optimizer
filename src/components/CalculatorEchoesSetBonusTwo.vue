@@ -84,7 +84,11 @@ export default {
         "Sun-sinking Eclipse 5 Set": { Havoc: 7.5, maxStacks: 4 },
         "Rejuvenating Glow 5 Set": { ATK: 15 },
         "Moonlit Clouds 5 Set": { ATK: 22.5 },
-        "Lingering Tunes 5 Set": { ATK: 5, maxStacks: 4, Outro: 60 },
+        "Lingering Tunes 5 Set": {
+          ATK: 5,
+          maxStacks: 4,
+          OutroSkillDMGBonus: 60,
+        },
       },
     };
   },
@@ -114,7 +118,10 @@ export default {
         const setBonusEffect = this.setBonusEffects[this.type];
         for (const [key, value] of Object.entries(setBonusEffect)) {
           if (key !== "maxStacks") {
-            if (this.type === "Lingering Tunes 5 Set" && key === "Outro") {
+            if (
+              this.type === "Lingering Tunes 5 Set" &&
+              key === "OutroSkillDMGBonus"
+            ) {
               // Apply Outro stat directly
               stats[key] = (stats[key] || 0) + value;
             } else {

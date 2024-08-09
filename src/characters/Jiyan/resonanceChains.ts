@@ -49,15 +49,14 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode5Resolution",
+    key: "SequenceNode5ResolutionOutro",
     name: "Sequence Node 5: Resolution",
-    details: `<span class="skilldescription">The DMG multiplier of Outro Skill <span class="Highlight">Discipline</span> is increased by 120%.
-    <br><br><em>Note: Outro skills are coming soon.</em></span>`,
+    details: `<span class="skilldescription">The DMG multiplier of Outro Skill <span class="Highlight">Discipline</span> is increased by 120%.</span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["Outro"],
+        modifySpecificTalents: ["OutroSkillDMG"],
         modifierValue: 1.2,
       },
     ],
@@ -66,7 +65,7 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode5Resolution",
+    key: "SequenceNode5ResolutionATK",
     name: "Sequence Node 5: Resolution",
     details: `<span class="skilldescription">When Jiyan's attacks hit a target, his ATK is increased by 3% for 8s, stacking up to 15 times; this effect is immediately maxed after he casts Intro Skill <span class="Highlight">Tactical Strike</span>.</span>`,
     hasStacks: true,

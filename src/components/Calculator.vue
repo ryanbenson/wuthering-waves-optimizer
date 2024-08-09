@@ -37,7 +37,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">
+          <div v-if="false" class="alert">
             Zhezhi and Xiangli Yao's weapons are available.
           </div>
           <div class="character__selection">
@@ -187,6 +187,10 @@
           <div>
             <span>Intro Skill DMG Bonus:</span>
             <span>{{ displayPercentage(IntroSkillDMGBonus) }}</span>
+          </div>
+          <div>
+            <span>Outro Skill DMG Bonus:</span>
+            <span>{{ displayPercentage(OutroSkillDMGBonus) }}</span>
           </div>
           <div>
             <span>Glacio DMG Bonus:</span>
@@ -376,6 +380,39 @@
             >{{ displayDamage(damageInstance.damage.critDamage) }}</span
           >
         </div>
+        <h4>Outro Attacks</h4>
+        <template v-if="!allDamages?.value?.outroAttacks.length">
+          {{ character }} does not have outro attacks.
+        </template>
+        <template v-else>
+          <div
+            v-for="damageInstance in allDamages?.value?.outroAttacks"
+            :key="damageInstance.key"
+            class="calculation__damage__item">
+            <span>{{ damageInstance.label }}: </span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+            >
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculationAvg,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+            >
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculationCrit,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+            >
+          </div>
+        </template>
       </div>
     </div>
     <div class="results">
@@ -421,6 +458,10 @@
         <div>
           <span>Intro Skill DMG Bonus:</span>
           <span>{{ displayPercentage(IntroSkillDMGBonus) }}</span>
+        </div>
+        <div>
+          <span>Outro Skill DMG Bonus:</span>
+          <span>{{ displayPercentage(OutroSkillDMGBonus) }}</span>
         </div>
         <div>
           <span>Glacio DMG Bonus:</span>
@@ -615,6 +656,39 @@
           >{{ displayDamage(damageInstance.damage.critDamage) }}</span
         >
       </div>
+      <h4>Outro Attacks</h4>
+      <template v-if="!allDamages?.value?.outroAttacks.length">
+        {{ character }} does not have outro attacks.
+      </template>
+      <template v-else>
+        <div
+          v-for="damageInstance in allDamages?.value?.outroAttacks"
+          :key="damageInstance.key"
+          class="calculation__damage__item">
+          <span>{{ damageInstance.label }}: </span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationAvg,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationCrit,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+          >
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -638,6 +712,7 @@ import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import { mainEchoesData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
+import { outroAttacks } from "../characters/Calcharo/outroAttacks";
 
 interface FormData {
   [key: string]: number | string; // index signature
@@ -695,6 +770,7 @@ export default defineComponent({
     const ResonanceSkillDMGBonus = ref(0);
     const ResonanceLiberationDMGBonus = ref(0);
     const IntroSkillDMGBonus = ref(0);
+    const OutroSkillDMGBonus = ref(0);
     const Glacio = ref(0);
     const Fusion = ref(0);
     const Electro = ref(0);
@@ -788,6 +864,9 @@ export default defineComponent({
         target.introSkillDMGBonus += source?.IntroSkillDMGBonus
           ? source.IntroSkillDMGBonus * 100
           : 0;
+        target.outroSkillDMGBonus += source?.OutroSkillDMGBonus
+          ? source.OutroSkillDMGBonus * 100
+          : 0;
         target.resonanceLiberationDMGBonus +=
           source?.ResonanceLiberationDMGBonus
             ? source.ResonanceLiberationDMGBonus * 100
@@ -837,6 +916,9 @@ export default defineComponent({
           source?.ResonanceLiberationDMGBonus
             ? source.ResonanceLiberationDMGBonus
             : 0;
+        target.outroSkillDMGBonus += source?.OutroSkillDMGBonus
+          ? source.OutroSkillDMGBonus
+          : 0;
         target.glacio += source?.Glacio ? source.Glacio : 0;
         target.fusion += source?.Fusion ? source.Fusion : 0;
         target.electro += source?.Electro ? source.Electro : 0;
@@ -872,6 +954,7 @@ export default defineComponent({
         heavyAttackDMGBonus: 0,
         resonanceSkillDMGBonus: 0,
         introSkillDMGBonus: 0,
+        outroSkillDMGBonus: 0,
         resonanceLiberationDMGBonus: 0,
         glacio: 0,
         fusion: 0,
@@ -920,6 +1003,7 @@ export default defineComponent({
           stats.resonanceSkillDMGBonus += allAttributeBonus;
           stats.resonanceLiberationDMGBonus += allAttributeBonus;
           stats.introSkillDMGBonus += allAttributeBonus;
+          stats.outroSkillDMGBonus += allAttributeBonus;
         }
         if (resonanceChainsData?.AllElementAttributeBonus) {
           const allElementAttributeBonus =
@@ -1002,6 +1086,7 @@ export default defineComponent({
           stats.resonanceSkillDMGBonus += allAttributeBonus;
           stats.resonanceLiberationDMGBonus += allAttributeBonus;
           stats.introSkillDMGBonus += allAttributeBonus;
+          stats.outroSkillDMGBonus += allAttributeBonus;
         }
         if (teamBuffsData?.value?.AllElementAttributeBonus) {
           const allElementAttributeBonus =
@@ -1043,6 +1128,7 @@ export default defineComponent({
       HeavyAttackDMGBonus.value = stats.heavyAttackDMGBonus;
       ResonanceSkillDMGBonus.value = stats.resonanceSkillDMGBonus;
       IntroSkillDMGBonus.value = stats.introSkillDMGBonus;
+      OutroSkillDMGBonus.value = stats.outroSkillDMGBonus;
       ResonanceLiberationDMGBonus.value = stats.resonanceLiberationDMGBonus;
       Glacio.value = stats.glacio;
       Fusion.value = stats.fusion;
@@ -1099,6 +1185,9 @@ export default defineComponent({
         case "Intro":
           val = IntroSkillDMGBonus.value;
           break;
+        case "Outro":
+          val = OutroSkillDMGBonus.value;
+          break;
         case "Liberation":
           val = ResonanceLiberationDMGBonus.value;
           break;
@@ -1129,12 +1218,21 @@ export default defineComponent({
         chosenChar.value?.basic?.element
       );
 
-      const calculateAttackDamage = (attack, talentType) => {
+      const calculateAttackDamage = (
+        attack,
+        talentType,
+        hasNoTalentLevel = false
+      ) => {
         const attackType = attack.type;
         const attackElement = chosenChar.value?.basic?.element;
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
-        const talent = attack.talents[talentType];
+        let talent;
+        if (hasNoTalentLevel) {
+          talent = attack.talent;
+        } else {
+          talent = attack.talents[talentType];
+        }
         const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
         const talentModifierAddFromResonanceChains =
           charResonanceChainsData.value?.[attack.key] ?? 0;
@@ -1250,7 +1348,11 @@ export default defineComponent({
         );
       };
 
-      const processAttacks = (attacks, talentType) => {
+      const processAttacks = (
+        attacks,
+        talentType,
+        hasNoTalentLevel = false
+      ) => {
         return (
           (attacks ?? [])
             .map((attack) => {
@@ -1273,11 +1375,21 @@ export default defineComponent({
                 // flag this attack as enabled or not based on the resonance chain
                 isEnabled = isAttackEnabled;
               }
+              let talent;
+              if (hasNoTalentLevel) {
+                talent = attack.talent;
+              } else {
+                talent = attack.talents[talentType];
+              }
               return {
                 key: attack.key,
                 label: attack.label,
-                talent: attack.talents[talentType],
-                damage: calculateAttackDamage(attack, talentType),
+                talent,
+                damage: calculateAttackDamage(
+                  attack,
+                  talentType,
+                  hasNoTalentLevel
+                ),
                 isEnabled,
               };
             })
@@ -1306,6 +1418,15 @@ export default defineComponent({
         introAttacks: processAttacks(
           chosenChar.value.introAttacks?.attacks,
           talentData.intro
+        ),
+        introAttacks: processAttacks(
+          chosenChar.value.introAttacks?.attacks,
+          talentData.intro
+        ),
+        outroAttacks: processAttacks(
+          chosenChar.value.outroAttacks?.attacks,
+          talentData.intro,
+          true // has no talent level
         ),
       };
     };
@@ -1408,6 +1529,7 @@ export default defineComponent({
       HeavyAttackDMGBonus,
       ResonanceSkillDMGBonus,
       IntroSkillDMGBonus,
+      OutroSkillDMGBonus,
       ResonanceLiberationDMGBonus,
       Glacio,
       Fusion,

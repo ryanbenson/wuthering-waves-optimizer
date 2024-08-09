@@ -7,6 +7,7 @@ import { forteCircuitAttacks } from "./forteCircuitAttacks.ts";
 import { introAttacks } from "./introAttacks.ts";
 import { buffs } from "./buffs.ts";
 import { resonanceChains } from "./resonanceChains.ts";
+import { outroAttacks } from "./outroAttacks.ts";
 
 export function getData() {
   return {
@@ -20,5 +21,6 @@ export function getData() {
     introAttacks,
     buffs,
     resonanceChains,
+    outroAttacks,
   };
 }

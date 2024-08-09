@@ -77,6 +77,11 @@ export const resonanceChains = [
         ],
         modifierValue: 1,
       },
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["OutroSkillDMG"],
+        modifierValue: 2.209,
+      },
     ],
     minStacks: 0,
     maxStacks: 0,
