@@ -62,6 +62,18 @@
       </select>
       <label for="weaponLevel" class="form__label">Refinement Level</label>
     </div>
+    <div v-if="weapon" class="weapon__stats">
+      <div v-if="weaponAttack" class="weapon__stat">
+        <span>Attack:</span>
+        <span>{{ weaponAttack }}</span>
+      </div>
+      <div
+        v-if="weaponModifierLabel && weaponModifierValue"
+        class="weapon__stat">
+        <span>{{ weaponModifierLabel }}:</span>
+        <span>{{ weaponModifierValue }}</span>
+      </div>
+    </div>
     <div v-if="weaponDescription" class="weapon__desc">
       {{ weaponDescription }}
     </div>
@@ -92,6 +104,7 @@ import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
 import CalculatorWeaponsPassive from "./CalculatorWeaponsPassive.vue";
 import { useCharacterStore } from "../stores/character";
 import { mapActions, mapState } from "pinia";
+import { subStatLabelMap } from "../echoes/stats";
 
 export default {
   props: {
@@ -210,17 +223,18 @@ export default {
       const passives = this.chosenWeapon?.info?.passiveData ?? [];
       return JSON.parse(JSON.stringify(passives));
     },
+    /**
+     * Returns the buffs data formatted to send to the stats collector
+     * @returns {Object}
+     */
     buffsFormatted() {
       const finalBuffData = {};
       let modifySpecificTalents = [];
-      const allBuffs = [
-        ...this.weaponPassiveData,
-      ];
+      const allBuffs = [...this.weaponPassiveData];
       allBuffs.forEach((buffInstance) => {
         const { key, stat, value } = buffInstance;
         if (stat === "modifySpecificTalents") {
-          const updatedSpecificTalentList =
-            modifySpecificTalents.concat(value);
+          const updatedSpecificTalentList = modifySpecificTalents.concat(value);
           modifySpecificTalents = updatedSpecificTalentList;
         } else {
           finalBuffData[stat] = (finalBuffData[stat] || 0) + value;
@@ -246,6 +260,68 @@ export default {
         finalBuffData.specificTalentBuffs = specificTalentBuffs;
       }
       return finalBuffData;
+    },
+    /**
+     * Gets the stats for the weapon chosen
+     * @returns {Object|null}
+     */
+    weaponStatsData() {
+      if (!this.weapon || !this.weaponLevel || !this.chosenWeapon) {
+        return null;
+      }
+      return this.chosenWeapon?.data?.[this.weaponLevel] ?? null;
+    },
+    /**
+     * Gets the attack value for the weapon
+     * @returns {number|null}
+     */
+    weaponAttack() {
+      if (!this.weaponStatsData) {
+        return null;
+      }
+      return this.weaponStatsData?.attack ?? null;
+    },
+    /**
+     * Gets the modifier (abbreviation) for the weapon
+     * @returns {string|null}
+     */
+    weaponModifier() {
+      if (!this.weaponStatsData) {
+        return null;
+      }
+      return this.weaponStatsData?.modifier ?? null;
+    },
+    /**
+     * Gets the modifier (human readable) for the weapon
+     * @returns {string|null}
+     */
+    weaponModifierLabel() {
+      if (!this.weaponModifier) {
+        return null;
+      }
+      return subStatLabelMap?.[this.weaponModifier] ?? null;
+    },
+    /**
+     * Gets the modifier value (human readable) for the weapon
+     * @returns {string|null}
+     */
+    weaponModifierValue() {
+      if (!this.weaponStatsData) {
+        return null;
+      }
+      const modifierValue = this.weaponStatsData?.modifierValue ?? null;
+      if (!modifierValue) {
+        return null;
+      }
+      const decimalFormatter = new Intl.NumberFormat("en", {
+        style: "decimal",
+        maximumFractionDigits: 1,
+        minimumFractionDigits: 1,
+        // disabling for now. it's rounding oddly (1.8% is showing as 1.7%)
+        // TODO: More testing for this
+        // roundingMode: "floor",
+      });
+      return decimalFormatter.format(modifierValue * 100) + "%";
     },
   },
   watch: {
@@ -281,9 +357,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useCharacterStore, [
-      "setCharacterData",
-    ]),
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
     /**
      * Updates the weapon stats and send that off to the parent
      * so we can update the stats and calcs
@@ -376,6 +450,13 @@ export default {
   span:first-of-type {
     font-weight: bold;
   }
+}
+.weapon__stats {
+  margin-bottom: 1rem;
+}
+.weapon__stat {
+  display: flex;
+  gap: 0.75rem;
 }
 .form__group.field {
   margin: 0 0 1rem 0;
