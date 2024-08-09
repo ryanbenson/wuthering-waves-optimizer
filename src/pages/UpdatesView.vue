@@ -34,6 +34,10 @@
     <h3>August 9, 2024</h3>
     <ul>
       <li>Outro damages are now supported.</li>
+      <li>
+        Weapon stats (attack, main stat, and main stat value) are now shown so
+        it's clear what you're getting from the weapon.
+      </li>
     </ul>
     <h3>August 8, 2024</h3>
     <ul>
