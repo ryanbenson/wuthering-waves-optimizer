@@ -64,13 +64,17 @@
     </div>
     <div v-if="weapon" class="weapon__stats">
       <div v-if="weaponAttack" class="weapon__stat">
-        <span>Attack:</span>
+        <span><img src="/images/atk.png" />Attack:</span>
         <span>{{ weaponAttack }}</span>
       </div>
       <div
         v-if="weaponModifierLabel && weaponModifierValue"
         class="weapon__stat">
-        <span>{{ weaponModifierLabel }}:</span>
+        <span
+          ><img v-if="weaponModifierImage" :src="weaponModifierImage" />{{
+            weaponModifierLabel
+          }}:</span
+        >
         <span>{{ weaponModifierValue }}</span>
       </div>
     </div>
@@ -302,6 +306,31 @@ export default {
       return subStatLabelMap?.[this.weaponModifier] ?? null;
     },
     /**
+     * Gets the right modifier image src
+     * @returns {string|null}
+     */
+    weaponModifierImage() {
+      if (!this.weaponModifier) {
+        return null;
+      }
+      switch (this.weaponModifier) {
+        case "ATK":
+          return "/images/atk.png";
+        case "DEF":
+          return "/images/def.png";
+        case "HP":
+          return "/images/hp.png";
+        case "CritRate":
+          return "/images/critrate.png";
+        case "CritDMG":
+          return "/images/critdamage.png";
+        case "EnergyRegen":
+          return "/images/energyregen.png";
+        default:
+          return null;
+      }
+    },
+    /**
      * Gets the modifier value (human readable) for the weapon
      * @returns {string|null}
      */
@@ -457,6 +486,23 @@ export default {
 .weapon__stat {
   display: flex;
   gap: 0.75rem;
+  align-items: center;
+
+  &:first-child {
+    margin-bottom: 0.5rem;
+  }
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  span img {
+    // make the white icons darker on light mode for stats
+    @media (prefers-color-scheme: light) {
+      filter: contrast(0.25);
+    }
+  }
 }
 .form__group.field {
   margin: 0 0 1rem 0;

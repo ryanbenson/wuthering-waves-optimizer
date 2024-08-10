@@ -427,3 +427,27 @@ body {
 .Fire {
   color: #f0744e;
 }
+.glacio--active {
+  filter: brightness(0) saturate(100%) invert(87%) sepia(8%) saturate(5402%)
+    hue-rotate(167deg) brightness(90%) contrast(91%) !important;
+}
+.fusion--active {
+  filter: brightness(0) saturate(100%) invert(45%) sepia(20%) saturate(1309%)
+    hue-rotate(314deg) brightness(98%) contrast(91%) !important;
+}
+.electro--active {
+  filter: brightness(0) saturate(100%) invert(61%) sepia(60%) saturate(3938%)
+    hue-rotate(237deg) brightness(85%) contrast(78%) !important;
+}
+.aero--active {
+  filter: brightness(0) saturate(100%) invert(86%) sepia(33%) saturate(290%)
+    hue-rotate(99deg) brightness(89%) contrast(87%) !important;
+}
+.spectro--active {
+  filter: brightness(0) saturate(100%) invert(71%) sepia(38%) saturate(436%)
+    hue-rotate(9deg) brightness(92%) contrast(90%) !important;
+}
+.havoc--active {
+  filter: brightness(0) saturate(100%) invert(67%) sepia(68%) saturate(6636%)
+    hue-rotate(299deg) brightness(95%) contrast(89%) !important;
+}

@@ -148,87 +148,125 @@
         <div class="results__stats">
           <h2 class="mt-0">Stats</h2>
           <div>
-            <span>Attack</span> <span>{{ totalAtk }}</span>
+            <span><img src="/images/atk.png" />Attack</span>
+            <span>{{ totalAtk }}</span>
           </div>
           <div>
-            <span>HP</span> <span>{{ totalHp }}</span>
+            <span><img src="/images/hp.png" />HP</span>
+            <span>{{ totalHp }}</span>
           </div>
           <div>
-            <span>Defense</span> <span>{{ totalDef }}</span>
+            <span><img src="/images/def.png" />Defense</span>
+            <span>{{ totalDef }}</span>
           </div>
           <div>
-            <span>Crit Rate</span>
+            <span><img src="/images/critrate.png" />Crit Rate</span>
             <span>{{ displayPercentage(totalCritRate * 100) }}</span>
           </div>
           <div>
-            <span>Crit DMG</span>
+            <span><img src="/images/critdamage.png" />Crit DMG</span>
             <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
           </div>
           <div>
-            <span>Energy Regen</span>
+            <span><img src="/images/energyregen.png" />Energy Regen</span>
             <span>{{ displayPercentage(energyRegen * 100) }}</span>
           </div>
           <div>
-            <span>Basic Attack DMG Bonus</span>
+            <span
+              ><img src="/images/basicatkdmgbonus.png" />Basic Attack DMG
+              Bonus</span
+            >
             <span>{{ displayPercentage(BasicAttackDMGBonus) }}</span>
           </div>
           <div>
-            <span>Heavy Attack DMG Bonus</span>
+            <span
+              ><img src="/images/heavyatkdmgbonus.png" />Heavy Attack DMG
+              Bonus</span
+            >
             <span>{{ displayPercentage(HeavyAttackDMGBonus) }}</span>
           </div>
           <div>
-            <span>Resonance Skill DMG Bonus</span>
+            <span
+              ><img src="/images/skilldmgbonus.png" />Resonance Skill DMG
+              Bonus</span
+            >
             <span>{{ displayPercentage(ResonanceSkillDMGBonus) }}</span>
           </div>
           <div>
-            <span>Resonance Liberation DMG Bonus</span>
+            <span
+              ><img src="/images/liberationdmgbonus.png" />Resonance Liberation
+              DMG Bonus</span
+            >
             <span>{{ displayPercentage(ResonanceLiberationDMGBonus) }}</span>
           </div>
-          <div>
+          <div v-if="false">
             <span>Intro Skill DMG Bonus</span>
             <span>{{ displayPercentage(IntroSkillDMGBonus) }}</span>
           </div>
-          <div>
+          <div v-if="false">
             <span>Outro Skill DMG Bonus</span>
             <span>{{ displayPercentage(OutroSkillDMGBonus) }}</span>
           </div>
           <div>
-            <span>Glacio DMG Bonus</span>
+            <span
+              ><img
+                src="/images/glaciodmgbonus.png"
+                class="glacio--active" />Glacio DMG Bonus</span
+            >
             <span>{{ displayPercentage(Glacio) }}</span>
           </div>
           <div>
-            <span>Fusion DMG Bonus</span>
+            <span
+              ><img
+                src="/images/fusiondmgbonus.png"
+                class="fusion--active" />Fusion DMG Bonus</span
+            >
             <span>{{ displayPercentage(Fusion) }}</span>
           </div>
           <div>
-            <span>Electro DMG Bonus</span>
+            <span
+              ><img
+                src="/images/electrodmgbonus.png"
+                class="electro--active" />Electro DMG Bonus</span
+            >
             <span>{{ displayPercentage(Electro) }}</span>
           </div>
           <div>
-            <span>Aero DMG Bonus</span>
+            <span
+              ><img src="/images/aerodmgbonus.png" class="aero--active" />Aero
+              DMG Bonus</span
+            >
             <span>{{ displayPercentage(Aero) }}</span>
           </div>
           <div>
-            <span>Spectro DMG Bonus</span>
+            <span
+              ><img
+                src="/images/spectrodmgbonus.png"
+                class="spectro--active" />Spectro DMG Bonus</span
+            >
             <span>{{ displayPercentage(Spectro) }}</span>
           </div>
           <div>
-            <span>Havoc DMG Bonus</span>
+            <span
+              ><img
+                src="/images/havocdmgbonus.png"
+                class="havoc--active" />Havoc DMG Bonus</span
+            >
             <span>{{ displayPercentage(Havoc) }}</span>
           </div>
           <div>
-            <span>Healing Bonus</span>
+            <span><img src="/images/healingbonus.png" />Healing Bonus</span>
             <span>{{ displayPercentage(healingBonus * 100) }}</span>
           </div>
-          <div>
+          <div v-if="false">
             <span>Defense Ignore</span>
             <span>{{ displayPercentage(DefIgnore * 100) }}</span>
           </div>
-          <div>
+          <div v-if="false">
             <span>Total Deepen Effect</span>
             <span>{{ displayPercentage(TotalDeepenEffect * 100) }}</span>
           </div>
-          <div>
+          <div v-if="false">
             <span>Resist Reduction</span>
             <span>{{ displayPercentage(ResistReduction) }}</span>
           </div>
@@ -422,87 +460,123 @@
       <div class="results__stats">
         <h2 class="mt-0">Stats</h2>
         <div>
-          <span>Attack</span> <span>{{ totalAtk }}</span>
+          <span><img src="/images/atk.png" />Attack</span>
+          <span>{{ totalAtk }}</span>
         </div>
         <div>
-          <span>HP</span> <span>{{ totalHp }}</span>
+          <span><img src="/images/hp.png" />HP</span> <span>{{ totalHp }}</span>
         </div>
         <div>
-          <span>Defense</span> <span>{{ totalDef }}</span>
+          <span><img src="/images/def.png" />Defense</span>
+          <span>{{ totalDef }}</span>
         </div>
         <div>
-          <span>Crit Rate</span>
+          <span><img src="/images/critrate.png" />Crit Rate</span>
           <span>{{ displayPercentage(totalCritRate * 100) }}</span>
         </div>
         <div>
-          <span>Crit DMG</span>
+          <span><img src="/images/critdamage.png" />Crit DMG</span>
           <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
         </div>
         <div>
-          <span>Energy Regen</span>
+          <span><img src="/images/energyregen.png" />Energy Regen</span>
           <span>{{ displayPercentage(energyRegen * 100) }}</span>
         </div>
         <div>
-          <span>Basic Attack DMG Bonus</span>
+          <span
+            ><img src="/images/basicatkdmgbonus.png" />Basic Attack DMG
+            Bonus</span
+          >
           <span>{{ displayPercentage(BasicAttackDMGBonus) }}</span>
         </div>
         <div>
-          <span>Heavy Attack DMG Bonus</span>
+          <span
+            ><img src="/images/heavyatkdmgbonus.png" />Heavy Attack DMG
+            Bonus</span
+          >
           <span>{{ displayPercentage(HeavyAttackDMGBonus) }}</span>
         </div>
         <div>
-          <span>Resonance Skill DMG Bonus</span>
+          <span
+            ><img src="/images/skilldmgbonus.png" />Resonance Skill DMG
+            Bonus</span
+          >
           <span>{{ displayPercentage(ResonanceSkillDMGBonus) }}</span>
         </div>
         <div>
-          <span>Resonance Liberation DMG Bonus</span>
+          <span
+            ><img src="/images/liberationdmgbonus.png" />Resonance Liberation
+            DMG Bonus</span
+          >
           <span>{{ displayPercentage(ResonanceLiberationDMGBonus) }}</span>
         </div>
-        <div>
+        <div v-if="false">
           <span>Intro Skill DMG Bonus</span>
           <span>{{ displayPercentage(IntroSkillDMGBonus) }}</span>
         </div>
-        <div>
+        <div v-if="false">
           <span>Outro Skill DMG Bonus</span>
           <span>{{ displayPercentage(OutroSkillDMGBonus) }}</span>
         </div>
         <div>
-          <span>Glacio DMG Bonus</span>
+          <span
+            ><img
+              src="/images/glaciodmgbonus.png"
+              class="glacio--active" />Glacio DMG Bonus</span
+          >
           <span>{{ displayPercentage(Glacio) }}</span>
         </div>
         <div>
-          <span>Fusion DMG Bonus</span>
+          <span
+            ><img
+              src="/images/fusiondmgbonus.png"
+              class="fusion--active" />Fusion DMG Bonus</span
+          >
           <span>{{ displayPercentage(Fusion) }}</span>
         </div>
         <div>
-          <span>Electro DMG Bonus</span>
+          <span
+            ><img
+              src="/images/electrodmgbonus.png"
+              class="electro--active" />Electro DMG Bonus</span
+          >
           <span>{{ displayPercentage(Electro) }}</span>
         </div>
         <div>
-          <span>Aero DMG Bonus</span>
+          <span
+            ><img src="/images/aerodmgbonus.png" class="aero--active" />Aero DMG
+            Bonus</span
+          >
           <span>{{ displayPercentage(Aero) }}</span>
         </div>
         <div>
-          <span>Spectro DMG Bonus</span>
+          <span
+            ><img
+              src="/images/spectrodmgbonus.png"
+              class="spectro--active" />Spectro DMG Bonus</span
+          >
           <span>{{ displayPercentage(Spectro) }}</span>
         </div>
         <div>
-          <span>Havoc DMG Bonus</span>
+          <span
+            ><img src="/images/havocdmgbonus.png" class="havoc--active" />Havoc
+            DMG Bonus</span
+          >
           <span>{{ displayPercentage(Havoc) }}</span>
         </div>
         <div>
-          <span>Healing Bonus</span>
+          <span><img src="/images/healingbonus.png" />Healing Bonus</span>
           <span>{{ displayPercentage(healingBonus * 100) }}</span>
         </div>
-        <div>
+        <div v-if="false">
           <span>Defense Ignore</span>
           <span>{{ displayPercentage(DefIgnore * 100) }}</span>
         </div>
-        <div>
+        <div v-if="false">
           <span>Total Deepen Effect</span>
           <span>{{ displayPercentage(TotalDeepenEffect * 100) }}</span>
         </div>
-        <div>
+        <div v-if="false">
           <span>Resist Reduction</span>
           <span>{{ displayPercentage(ResistReduction) }}</span>
         </div>
@@ -1740,6 +1814,12 @@ $tooltip-background-color: $sidebar-background-color;
     max-width: 400px;
     padding: 0.25rem 0.5rem;
     border-radius: 0.25rem;
+
+    span {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
   }
   div:nth-child(even) {
     background-color: transparent;
@@ -1749,6 +1829,12 @@ $tooltip-background-color: $sidebar-background-color;
 
     @media (prefers-color-scheme: light) {
       background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+  span img {
+    // make the white icons darker on light mode for stats
+    @media (prefers-color-scheme: light) {
+      filter: contrast(0.25);
     }
   }
 }
