@@ -4,8 +4,8 @@ export const outroAttacks = {
   attacks: [
     {
       key: "OutroSkillDMG",
-      label: "Skill DMG",
-      talent: "176.76%*4",
+      label: "Skill DMG DoT",
+      talent: "176.76%",
       type: "Outro",
     },
   ],

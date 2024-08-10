@@ -31,6 +31,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 10, 2024</h3>
+    <ul>
+      <li>
+        Updates XY, Jiyan, Rover Havoc, and Encore outro skill labels for
+        clarity
+      </li>
+    </ul>
     <h3>August 9, 2024</h3>
     <ul>
       <li>Outro damages are now supported.</li>
