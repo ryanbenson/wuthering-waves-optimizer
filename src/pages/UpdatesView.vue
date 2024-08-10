@@ -37,6 +37,7 @@
         Updates XY, Jiyan, Rover Havoc, and Encore outro skill labels for
         clarity
       </li>
+      <li>UI Enhancement to stats and damages list</li>
     </ul>
     <h3>August 9, 2024</h3>
     <ul>

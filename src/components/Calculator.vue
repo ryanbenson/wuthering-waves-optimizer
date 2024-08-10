@@ -148,88 +148,88 @@
         <div class="results__stats">
           <h2 class="mt-0">Stats</h2>
           <div>
-            <span>Attack:</span> <span>{{ totalAtk }}</span>
+            <span>Attack</span> <span>{{ totalAtk }}</span>
           </div>
           <div>
-            <span>HP:</span> <span>{{ totalHp }}</span>
+            <span>HP</span> <span>{{ totalHp }}</span>
           </div>
           <div>
-            <span>Defense:</span> <span>{{ totalDef }}</span>
+            <span>Defense</span> <span>{{ totalDef }}</span>
           </div>
           <div>
-            <span>Crit Rate:</span>
+            <span>Crit Rate</span>
             <span>{{ displayPercentage(totalCritRate * 100) }}</span>
           </div>
           <div>
-            <span>Crit DMG:</span>
+            <span>Crit DMG</span>
             <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
           </div>
           <div>
-            <span>Energy Regen:</span>
+            <span>Energy Regen</span>
             <span>{{ displayPercentage(energyRegen * 100) }}</span>
           </div>
           <div>
-            <span>Basic Attack DMG Bonus:</span>
+            <span>Basic Attack DMG Bonus</span>
             <span>{{ displayPercentage(BasicAttackDMGBonus) }}</span>
           </div>
           <div>
-            <span>Heavy Attack DMG Bonus:</span>
+            <span>Heavy Attack DMG Bonus</span>
             <span>{{ displayPercentage(HeavyAttackDMGBonus) }}</span>
           </div>
           <div>
-            <span>Resonance Skill DMG Bonus:</span>
+            <span>Resonance Skill DMG Bonus</span>
             <span>{{ displayPercentage(ResonanceSkillDMGBonus) }}</span>
           </div>
           <div>
-            <span>Resonance Liberation DMG Bonus:</span>
+            <span>Resonance Liberation DMG Bonus</span>
             <span>{{ displayPercentage(ResonanceLiberationDMGBonus) }}</span>
           </div>
           <div>
-            <span>Intro Skill DMG Bonus:</span>
+            <span>Intro Skill DMG Bonus</span>
             <span>{{ displayPercentage(IntroSkillDMGBonus) }}</span>
           </div>
           <div>
-            <span>Outro Skill DMG Bonus:</span>
+            <span>Outro Skill DMG Bonus</span>
             <span>{{ displayPercentage(OutroSkillDMGBonus) }}</span>
           </div>
           <div>
-            <span>Glacio DMG Bonus:</span>
+            <span>Glacio DMG Bonus</span>
             <span>{{ displayPercentage(Glacio) }}</span>
           </div>
           <div>
-            <span>Fusion DMG Bonus:</span>
+            <span>Fusion DMG Bonus</span>
             <span>{{ displayPercentage(Fusion) }}</span>
           </div>
           <div>
-            <span>Electro DMG Bonus:</span>
+            <span>Electro DMG Bonus</span>
             <span>{{ displayPercentage(Electro) }}</span>
           </div>
           <div>
-            <span>Aero DMG Bonus:</span>
+            <span>Aero DMG Bonus</span>
             <span>{{ displayPercentage(Aero) }}</span>
           </div>
           <div>
-            <span>Spectro DMG Bonus:</span>
+            <span>Spectro DMG Bonus</span>
             <span>{{ displayPercentage(Spectro) }}</span>
           </div>
           <div>
-            <span>Havoc DMG Bonus:</span>
+            <span>Havoc DMG Bonus</span>
             <span>{{ displayPercentage(Havoc) }}</span>
           </div>
           <div>
-            <span>Healing Bonus:</span>
+            <span>Healing Bonus</span>
             <span>{{ displayPercentage(healingBonus * 100) }}</span>
           </div>
           <div>
-            <span>Defense Ignore:</span>
+            <span>Defense Ignore</span>
             <span>{{ displayPercentage(DefIgnore * 100) }}</span>
           </div>
           <div>
-            <span>Total Deepen Effect:</span>
+            <span>Total Deepen Effect</span>
             <span>{{ displayPercentage(TotalDeepenEffect * 100) }}</span>
           </div>
           <div>
-            <span>Resist Reduction:</span>
+            <span>Resist Reduction</span>
             <span>{{ displayPercentage(ResistReduction) }}</span>
           </div>
         </div>
@@ -245,7 +245,7 @@
           v-for="damageInstance in allDamages?.value?.basicAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item">
-          <span>{{ damageInstance.label }}:</span>
+          <span>{{ damageInstance.label }}</span>
           <span
             v-tooltip="{
               content: damageInstance.damage.detailedCalculation,
@@ -273,7 +273,7 @@
           v-for="damageInstance in allDamages?.value?.skillAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item">
-          <span>{{ damageInstance.label }}: </span>
+          <span>{{ damageInstance.label }} </span>
           <span
             v-tooltip="{
               content: damageInstance.damage.detailedCalculation,
@@ -301,7 +301,7 @@
           v-for="damageInstance in allDamages?.value?.liberationAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item">
-          <span>{{ damageInstance.label }}: </span>
+          <span>{{ damageInstance.label }} </span>
           <span
             v-tooltip="{
               content: damageInstance.damage.detailedCalculation,
@@ -329,7 +329,7 @@
           v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item">
-          <span>{{ damageInstance.label }}: </span>
+          <span>{{ damageInstance.label }} </span>
           <span
             v-tooltip="{
               content: damageInstance.damage.detailedCalculation,
@@ -357,7 +357,7 @@
           v-for="damageInstance in allDamages?.value?.introAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item">
-          <span>{{ damageInstance.label }}: </span>
+          <span>{{ damageInstance.label }} </span>
           <span
             v-tooltip="{
               content: damageInstance.damage.detailedCalculation,
@@ -382,14 +382,17 @@
         </div>
         <h4>Outro Attacks</h4>
         <template v-if="!allDamages?.value?.outroAttacks.length">
-          {{ character }} does not have outro attacks.
+          <div
+            class="calculation__damage__item calculation__damage__item--fill">
+            {{ character }} does not have outro attacks.
+          </div>
         </template>
         <template v-else>
           <div
             v-for="damageInstance in allDamages?.value?.outroAttacks"
             :key="damageInstance.key"
             class="calculation__damage__item">
-            <span>{{ damageInstance.label }}: </span>
+            <span>{{ damageInstance.label }} </span>
             <span
               v-tooltip="{
                 content: damageInstance.damage.detailedCalculation,
@@ -419,88 +422,88 @@
       <div class="results__stats">
         <h2 class="mt-0">Stats</h2>
         <div>
-          <span>Attack:</span> <span>{{ totalAtk }}</span>
+          <span>Attack</span> <span>{{ totalAtk }}</span>
         </div>
         <div>
-          <span>HP:</span> <span>{{ totalHp }}</span>
+          <span>HP</span> <span>{{ totalHp }}</span>
         </div>
         <div>
-          <span>Defense:</span> <span>{{ totalDef }}</span>
+          <span>Defense</span> <span>{{ totalDef }}</span>
         </div>
         <div>
-          <span>Crit Rate:</span>
+          <span>Crit Rate</span>
           <span>{{ displayPercentage(totalCritRate * 100) }}</span>
         </div>
         <div>
-          <span>Crit DMG:</span>
+          <span>Crit DMG</span>
           <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
         </div>
         <div>
-          <span>Energy Regen:</span>
+          <span>Energy Regen</span>
           <span>{{ displayPercentage(energyRegen * 100) }}</span>
         </div>
         <div>
-          <span>Basic Attack DMG Bonus:</span>
+          <span>Basic Attack DMG Bonus</span>
           <span>{{ displayPercentage(BasicAttackDMGBonus) }}</span>
         </div>
         <div>
-          <span>Heavy Attack DMG Bonus:</span>
+          <span>Heavy Attack DMG Bonus</span>
           <span>{{ displayPercentage(HeavyAttackDMGBonus) }}</span>
         </div>
         <div>
-          <span>Resonance Skill DMG Bonus:</span>
+          <span>Resonance Skill DMG Bonus</span>
           <span>{{ displayPercentage(ResonanceSkillDMGBonus) }}</span>
         </div>
         <div>
-          <span>Resonance Liberation DMG Bonus:</span>
+          <span>Resonance Liberation DMG Bonus</span>
           <span>{{ displayPercentage(ResonanceLiberationDMGBonus) }}</span>
         </div>
         <div>
-          <span>Intro Skill DMG Bonus:</span>
+          <span>Intro Skill DMG Bonus</span>
           <span>{{ displayPercentage(IntroSkillDMGBonus) }}</span>
         </div>
         <div>
-          <span>Outro Skill DMG Bonus:</span>
+          <span>Outro Skill DMG Bonus</span>
           <span>{{ displayPercentage(OutroSkillDMGBonus) }}</span>
         </div>
         <div>
-          <span>Glacio DMG Bonus:</span>
+          <span>Glacio DMG Bonus</span>
           <span>{{ displayPercentage(Glacio) }}</span>
         </div>
         <div>
-          <span>Fusion DMG Bonus:</span>
+          <span>Fusion DMG Bonus</span>
           <span>{{ displayPercentage(Fusion) }}</span>
         </div>
         <div>
-          <span>Electro DMG Bonus:</span>
+          <span>Electro DMG Bonus</span>
           <span>{{ displayPercentage(Electro) }}</span>
         </div>
         <div>
-          <span>Aero DMG Bonus:</span>
+          <span>Aero DMG Bonus</span>
           <span>{{ displayPercentage(Aero) }}</span>
         </div>
         <div>
-          <span>Spectro DMG Bonus:</span>
+          <span>Spectro DMG Bonus</span>
           <span>{{ displayPercentage(Spectro) }}</span>
         </div>
         <div>
-          <span>Havoc DMG Bonus:</span>
+          <span>Havoc DMG Bonus</span>
           <span>{{ displayPercentage(Havoc) }}</span>
         </div>
         <div>
-          <span>Healing Bonus:</span>
+          <span>Healing Bonus</span>
           <span>{{ displayPercentage(healingBonus * 100) }}</span>
         </div>
         <div>
-          <span>Defense Ignore:</span>
+          <span>Defense Ignore</span>
           <span>{{ displayPercentage(DefIgnore * 100) }}</span>
         </div>
         <div>
-          <span>Total Deepen Effect:</span>
+          <span>Total Deepen Effect</span>
           <span>{{ displayPercentage(TotalDeepenEffect * 100) }}</span>
         </div>
         <div>
-          <span>Resist Reduction:</span>
+          <span>Resist Reduction</span>
           <span>{{ displayPercentage(ResistReduction) }}</span>
         </div>
       </div>
@@ -521,7 +524,7 @@
         v-for="damageInstance in allDamages?.value?.basicAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item">
-        <span>{{ damageInstance.label }}:</span>
+        <span>{{ damageInstance.label }}</span>
         <span
           v-tooltip="{
             content: damageInstance.damage.detailedCalculation,
@@ -549,7 +552,7 @@
         v-for="damageInstance in allDamages?.value?.skillAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item">
-        <span>{{ damageInstance.label }}: </span>
+        <span>{{ damageInstance.label }} </span>
         <span
           v-tooltip="{
             content: damageInstance.damage.detailedCalculation,
@@ -577,7 +580,7 @@
         v-for="damageInstance in allDamages?.value?.liberationAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item">
-        <span>{{ damageInstance.label }}: </span>
+        <span>{{ damageInstance.label }} </span>
         <span
           v-tooltip="{
             content: damageInstance.damage.detailedCalculation,
@@ -605,7 +608,7 @@
         v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item">
-        <span>{{ damageInstance.label }}: </span>
+        <span>{{ damageInstance.label }} </span>
         <span
           v-tooltip="{
             content: damageInstance.damage.detailedCalculation,
@@ -633,7 +636,7 @@
         v-for="damageInstance in allDamages?.value?.introAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item">
-        <span>{{ damageInstance.label }}: </span>
+        <span>{{ damageInstance.label }} </span>
         <span
           v-tooltip="{
             content: damageInstance.damage.detailedCalculation,
@@ -658,14 +661,16 @@
       </div>
       <h4>Outro Attacks</h4>
       <template v-if="!allDamages?.value?.outroAttacks.length">
-        {{ character }} does not have outro attacks.
+        <div class="calculation__damage__item">
+          {{ character }} does not have outro attacks.
+        </div>
       </template>
       <template v-else>
         <div
           v-for="damageInstance in allDamages?.value?.outroAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item">
-          <span>{{ damageInstance.label }}: </span>
+          <span>{{ damageInstance.label }} </span>
           <span
             v-tooltip="{
               content: damageInstance.damage.detailedCalculation,
@@ -1656,7 +1661,18 @@ $tooltip-background-color: $sidebar-background-color;
 .calculation__damage__item {
   display: grid;
   grid-template-columns: 1fr 100px 100px 100px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  &:nth-child(even) {
+    background-color: transparent;
+  }
+  &:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.1);
+
+    @media (prefers-color-scheme: light) {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
 
   @media (max-width: 480px) {
     grid-template-columns: 1fr 80px 80px 80px;
@@ -1715,11 +1731,26 @@ $tooltip-background-color: $sidebar-background-color;
     display: flex;
     justify-content: space-between;
     max-width: 400px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+  div:nth-child(even) {
+    background-color: transparent;
+  }
+  div:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.1);
+
+    @media (prefers-color-scheme: light) {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
   }
 }
 .results {
   display: block !important;
+
+  h4 {
+    padding-left: 0.5rem;
+  }
 }
 .calculations__nav--results {
   display: none !important;
@@ -1744,5 +1775,8 @@ $tooltip-background-color: $sidebar-background-color;
 }
 .mb-1 {
   margin-bottom: 1rem;
+}
+.calculation__damage__item--fill {
+  grid-template-columns: 1fr;
 }
 </style>
