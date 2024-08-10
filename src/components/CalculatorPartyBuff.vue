@@ -69,8 +69,8 @@ export default {
     },
     hasRefinements: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {};
@@ -197,10 +197,8 @@ export default {
       if (!this.isEnabled) {
         return data;
       }
-      console.log('yep', this.hasStacks);
       if (!this.hasStacks) {
         this.modifiers.forEach((modifierItem) => {
-          console.log(modifierItem);
           if (modifierItem?.modifySpecificTalents) {
             if (!data.modifySpecificTalents) {
               data.modifySpecificTalents = [];
@@ -208,9 +206,10 @@ export default {
             // add our calculated value
             let modifierValue;
             if (this.hasRefinements) {
-              modifierValue = modifierItem.modifierByRefinement[this.refinement];
+              modifierValue =
+                modifierItem.modifierByRefinement[this.refinement];
             } else {
-              modifierValue = modifierItem.modifierValue
+              modifierValue = modifierItem.modifierValue;
             }
             modifierItem.modifierValueCalculated = modifierValue;
             data.modifySpecificTalents.push(modifierItem);
@@ -230,9 +229,10 @@ export default {
           } else {
             let modifierValue;
             if (this.hasRefinements) {
-              modifierValue = modifierItem.modifierByRefinement[this.refinement];
+              modifierValue =
+                modifierItem.modifierByRefinement[this.refinement];
             } else {
-              modifierValue = modifierItem.modifierValue
+              modifierValue = modifierItem.modifierValue;
             }
             data[modifierItem.modifier] = modifierValue;
           }
@@ -244,7 +244,6 @@ export default {
           return data;
         }
         this.modifiers.forEach((modifierItem) => {
-          console.log(modifierItem);
           if (modifierItem?.modifySpecificTalents) {
             if (!data.modifySpecificTalents) {
               data.modifySpecificTalents = [];
@@ -252,9 +251,10 @@ export default {
             // updadate modifer value with the value * stacks
             let modifierValue;
             if (this.hasRefinements) {
-              modifierValue = modifierItem.modifierByRefinement[this.refinement];
+              modifierValue =
+                modifierItem.modifierByRefinement[this.refinement];
             } else {
-              modifierValue = modifierItem.modifierValue
+              modifierValue = modifierItem.modifierValue;
             }
             modifierItem.modifierValueCalculated = modifierValue * this.stacks;
             data.modifySpecificTalents.push(modifierItem);
@@ -266,9 +266,10 @@ export default {
           } else {
             let modifierValue;
             if (this.hasRefinements) {
-              modifierValue = modifierItem.modifierByRefinement[this.refinement];
+              modifierValue =
+                modifierItem.modifierByRefinement[this.refinement];
             } else {
-              modifierValue = modifierItem.modifierValue
+              modifierValue = modifierItem.modifierValue;
             }
             const totalValue = modifierValue * this.stacks;
             data[modifierItem.modifier] = totalValue;

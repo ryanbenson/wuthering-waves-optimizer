@@ -1305,10 +1305,17 @@ export default defineComponent({
         const baseTotalDeepenEffect = TotalDeepenEffect.value;
         // so far damage deepen is from team buffs, add more later if needed
         // get element first, then any skill specific ones next, then add together
-        const teamBuffDmgDeepenForCharElement =
+        // NOTE: all outro attacks cannot use the DMGDeepen:element|attackType
+        // as they expire before the outro attacks occur. so ignore these
+        // for outro attacks
+        let teamBuffDmgDeepenForCharElement =
           teamBuffsData.value?.[`DMGDeepen:${attackElement}`] ?? 0;
-        const teamBuffDmgDeepenForAttackType =
+        let teamBuffDmgDeepenForAttackType =
           teamBuffsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
+        if (attackType === "Outro") {
+          teamBuffDmgDeepenForCharElement = 0;
+          teamBuffDmgDeepenForAttackType = 0;
+        }
         const totalDmgDeepen =
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
