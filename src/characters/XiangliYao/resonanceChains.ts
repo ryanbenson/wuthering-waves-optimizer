@@ -17,11 +17,11 @@ export const resonanceChains = [
   {
     key: "SequenceNode2TracesofPredecessors",
     name: "Sequence Node 2: Traces of Predecessors",
-    details: `<span class="skilldescription">When casting Resonance Skill <span class="Highlight">Deduction</span> or Resonance Liberation <span class="Highlight">Cogitation Model</span>, increase Crit. Rate by 30%, lasting for 8 seconds.</span>`,
+    details: `<span class="skilldescription">When casting Resonance Skill <span class="Highlight">Deduction</span> or Resonance Liberation <span class="Highlight">Cogitation Model</span>, increase Crit. Damage by 30%, lasting for 8 seconds.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritRate",
+        modifier: "CritDMG",
         modifierValue: 0.3,
       },
     ],

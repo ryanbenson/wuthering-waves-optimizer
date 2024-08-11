@@ -31,6 +31,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 11, 2024</h3>
+    <ul>
+      <li>Updates XY's S2 to be Crit Damage instead of Crit Rate.</li>
+    </ul>
     <h3>August 10, 2024</h3>
     <ul>
       <li>
@@ -38,6 +42,10 @@
         clarity
       </li>
       <li>UI Enhancement to stats and damages list</li>
+      <li>
+        Removes some stats that weren't ever going to show values properly (e.g.
+        Def Shred)
+      </li>
     </ul>
     <h3>August 9, 2024</h3>
     <ul>
