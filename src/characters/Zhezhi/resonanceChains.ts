@@ -52,7 +52,7 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "EnableAttack",
-        modifierValue: "SequenceNode5ProperStructuring",
+        modifierValue: ["SequenceNode5ProperStructuring"],
       },
     ],
     minStacks: 0,
@@ -67,7 +67,7 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "EnableAttack",
-        modifierValue: "SequenceNode6ImitationandInheritance",
+        modifierValue: ["SequenceNode6ImitationandInheritance"],
       },
     ],
     minStacks: 0,

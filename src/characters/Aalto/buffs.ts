@@ -1,13 +1,13 @@
 export const buffs = [
   {
-    key: "InherentSkillLionsPride",
-    name: "Inherent Skill: Lion's Pride",
-    details: `<div class="skilldescription">DMG of the Intro Skill <span class="Highlight">Lion Awakens</span> is increased by 50%.</div>`,
+    key: "GateofQuandary",
+    name: "Gate of Quandary",
+    details: `<div class="skilldescription">Generate a "Gate of Quandary" in front, dealing <span class="Wind">Aero DMG</span>. When bullets pass through the "Gate of Quandary", ATK is increased. "Gate of Quandary" lasts for 10s.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifySpecificTalents: ["LionAwakensDMG"],
-        modifierValue: 0.5,
+        modifier: "ATK",
+        modifierValue: 0.1,
       },
     ],
     minStacks: 0,
@@ -15,14 +15,16 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "InherentSkillDiligentPractice",
-    name: "Inherent Skill: Diligent Practice",
-    details: `<div class="skilldescription">Under the Forte Circuit <span class="Highlight">Striding Lion</span> state, within 3s after each <span class="Highlight">Basic Attack</span>, the next Forte Circuit <span class="Highlight">Mountain Roamer</span> will deal an additional <span class="Ice">Glacio DMG</span>, equal to 150% of <span class="Highlight">Mountain Roamer</span> DMG, considered as Resonance Skill DMG.</div>`,
+    key: "InherentSkillPerfectPerformance",
+    name: "Inherent Skill: Perfect Performance",
+    details:
+      `<div class="skilldescription">Aalto's <span class="Highlight">Heavy Attack</span> will always critically hit, triggered once every 30s.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "EnableAttack",
-        modifierValue: ["InherentSkillDiligentPractice"],
+        modifier: "CritRate",
+        modifySpecificTalents: ["HalfTruthsAimedShotDMG", "HalfTruthsChargedAimedShotDMG"],
+        modifierValue: 0.25,
       },
     ],
     minStacks: 0,
@@ -30,28 +32,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "LionsVigor",
-    name: "Lion's Vigor",
-    details: `<div class="skilldescription">Lingyang's <span class="Ice">Glacio DMG</span> Bonus is increased by 50%, which lasts for 14 seconds.</div>`,
+    key: "StatBonusAeroDMGBonus1",
+    name: "Stat Bonus: Aero DMG Bonus+",
+    details: `<div class="skilldescription">Aero DMG Bonus increased by 1.80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Glacio",
-        modifierValue: 0.5,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "StatBonusGlacio1",
-    name: "Stat Bonus: Glacio DMG Bonus+",
-    details: `<div class="skilldescription">Glacio DMG Bonus increased by 1.80%.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "Glacio",
+        modifier: "Aero",
         modifierValue: 0.018,
       },
     ],
@@ -60,13 +47,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusGlacio2",
-    name: "Stat Bonus: Glacio DMG Bonus+",
-    details: `<div class="skilldescription">Glacio DMG Bonus increased by 1.80%.</div>`,
+    key: "StatBonusAeroDMGBonus2",
+    name: "Stat Bonus: Aero DMG Bonus+",
+    details: `<div class="skilldescription">Aero DMG Bonus increased by 1.80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Glacio",
+        modifier: "Aero",
         modifierValue: 0.018,
       },
     ],
@@ -75,13 +62,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusGlacio3",
-    name: "Stat Bonus: Glacio DMG Bonus+",
-    details: `<div class="skilldescription">Glacio DMG Bonus increased by 4.20%.</div>`,
+    key: "StatBonusAeroDMGBonus3",
+    name: "Stat Bonus: Aero DMG Bonus+",
+    details: `<div class="skilldescription">Aero DMG Bonus increased by 4.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Glacio",
+        modifier: "Aero",
         modifierValue: 0.042,
       },
     ],
@@ -90,13 +77,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusGlacio4",
-    name: "Stat Bonus: Glacio DMG Bonus+",
-    details: `<div class="skilldescription">Glacio DMG Bonus increased by 4.20%.</div>`,
+    key: "StatBonusAeroDMGBonus4",
+    name: "Stat Bonus: Aero DMG Bonus+",
+    details: `<div class="skilldescription">Aero DMG Bonus increased by 4.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Glacio",
+        modifier: "Aero",
         modifierValue: 0.042,
       },
     ],

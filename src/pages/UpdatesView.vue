@@ -33,6 +33,7 @@
     <h1>Updates</h1>
     <h3>August 12, 2024</h3>
     <ul>
+      <li>Aalto has been released.</li>
       <li>Bug fix: Fixes Spectro Rover HP, DEF, ATK stats.</li>
     </ul>
     <h3>August 11, 2024</h3>

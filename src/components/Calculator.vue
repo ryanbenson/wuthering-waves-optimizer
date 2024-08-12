@@ -37,8 +37,8 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert">
-            Zhezhi and Xiangli Yao's weapons are available.
+          <div class="alert">
+            Aalto is now available.
           </div>
           <div class="character__selection">
             <div
@@ -1456,7 +1456,7 @@ export default defineComponent({
                   .concat(resonanceChainsEnabledAttacks)
                   .concat(charBuffsEnabledAttacks);
                 const isAttackEnabled = enabledAttacks.includes(
-                  requiresResonanceChain
+                  attack.key
                 );
                 // flag this attack as enabled or not based on the resonance chain
                 isEnabled = isAttackEnabled;

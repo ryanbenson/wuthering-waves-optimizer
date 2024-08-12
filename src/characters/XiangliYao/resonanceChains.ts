@@ -7,7 +7,7 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "EnableAttack",
-        modifierValue: "SequenceNode1ProdigyofProteges",
+        modifierValue: ["SequenceNode1ProdigyofProteges"],
       },
     ],
     minStacks: 0,
