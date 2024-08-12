@@ -1456,7 +1456,7 @@ export default defineComponent({
                   .concat(resonanceChainsEnabledAttacks)
                   .concat(charBuffsEnabledAttacks);
                 const isAttackEnabled = enabledAttacks.includes(
-                  requiresResonanceChain
+                  attack.key
                 );
                 // flag this attack as enabled or not based on the resonance chain
                 isEnabled = isAttackEnabled;

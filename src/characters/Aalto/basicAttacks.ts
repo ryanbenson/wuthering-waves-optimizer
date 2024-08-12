@@ -157,7 +157,7 @@ export const basicAttacks = {
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage1DMG",
-      label: "S3 Hazey Transition Stage 1 DMG",
+      label: "Hazey Transition Stage 1 DMG",
       talents: {
         "1": "8%",
         "2": "8.66%",
@@ -171,10 +171,11 @@ export const basicAttacks = {
         "10": "15.91%",
       },
       type: "Basic",
+      requiresResonanceChain: "SequenceNode3HazeyTransition",
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage2DMG",
-      label: "S3 Hazey Transition Stage 2 DMG",
+      label: "Hazey Transition Stage 2 DMG",
       talents: {
         "1": "13.34%",
         "2": "14.43%",
@@ -188,10 +189,11 @@ export const basicAttacks = {
         "10": "26.51%",
       },
       type: "Basic",
+      requiresResonanceChain: "SequenceNode3HazeyTransition",
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage3DMG",
-      label: "S3 Hazey Transition Stage 3 DMG",
+      label: "Hazey Transition Stage 3 DMG",
       talents: {
         "1": "12%*2",
         "2": "12.99%*2",
@@ -205,10 +207,11 @@ export const basicAttacks = {
         "10": "23.86%*2",
       },
       type: "Basic",
+      requiresResonanceChain: "SequenceNode3HazeyTransition",
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage4DMG",
-      label: "S3 Hazey Transition Stage 4 DMG",
+      label: "Hazey Transition Stage 4 DMG",
       talents: {
         "1": "12.67%*2",
         "2": "13.71%*2",
@@ -222,10 +225,11 @@ export const basicAttacks = {
         "10": "25.19%*2",
       },
       type: "Basic",
+      requiresResonanceChain: "SequenceNode3HazeyTransition",
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage5DMG",
-      label: "S3 Hazey Transition Stage 5 DMG",
+      label: "Hazey Transition Stage 5 DMG",
       talents: {
         "1": "45.2%",
         "2": "48.91%",
@@ -239,10 +243,11 @@ export const basicAttacks = {
         "10": "89.87%",
       },
       type: "Basic",
+      requiresResonanceChain: "SequenceNode3HazeyTransition",
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsMidAirAttackDMG",
-      label: "S3 Hazey Transition Mid-air Attack",
+      label: "Hazey Transition Mid-air Attack",
       talents: {
         "1": "15%",
         "2": "16.23%",
@@ -256,6 +261,7 @@ export const basicAttacks = {
         "10": "29.83%",
       },
       type: "Basic",
+      requiresResonanceChain: "SequenceNode3HazeyTransition",
     },    
   ],
 };
