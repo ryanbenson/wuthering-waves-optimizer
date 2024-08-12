@@ -9,11 +9,11 @@ interface CharacterBasicInfo {
 
 export function getCharacterBasicInfo(): CharacterBasicInfo {
   return {
-    name: "Mortefi",
+    name: "Aalto",
     rarity: 4,
     weapon: "Pistols",
-    avatarUrl: "Mortefi.jpg",
+    avatarUrl: "Aalto.jpg",
     gender: "male",
-    element: "Fusion",
+    element: "Aero",
   };
 }
