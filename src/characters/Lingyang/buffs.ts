@@ -22,7 +22,7 @@ export const buffs = [
     modifiers: [
       {
         modifier: "EnableAttack",
-        modifierValue: "InherentSkillDiligentPractice",
+        modifierValue: ["InherentSkillDiligentPractice"],
       },
     ],
     minStacks: 0,

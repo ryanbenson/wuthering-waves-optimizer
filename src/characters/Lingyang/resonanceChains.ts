@@ -41,7 +41,7 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "EnableAttack",
-        modifierValue: "SequenceNode5SevenStarsShineSteppeduponHigh",
+        modifierValue: ["SequenceNode5SevenStarsShineSteppeduponHigh"],
       },
     ],
     minStacks: 0,

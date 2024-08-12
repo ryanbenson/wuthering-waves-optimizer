@@ -1,13 +1,29 @@
 export const buffs = [
   {
-    key: "InherentSkillHarmonicControl",
-    name: "Inherent Skill: Harmonic Control",
-    details:
-      `<div class="skilldescription">After casting Resonance Skill <span class="Highlight">Passionate Variation</span>, the damage of Resonance Skill <span class="Highlight">Fury Fugue</span> is increased by 25% for 8s.</div>`,
+    key: "GateofQuandary",
+    name: "Gate of Quandary",
+    details: `<div class="skilldescription">Generate a "Gate of Quandary" in front, dealing <span class="Wind">Aero DMG</span>. When bullets pass through the "Gate of Quandary", ATK is increased. "Gate of Quandary" lasts for 10s.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifySpecificTalents: ["FuryFugueDamage"],
+        modifier: "ATK",
+        modifierValue: 0.1,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "InherentSkillPerfectPerformance",
+    name: "Inherent Skill: Perfect Performance",
+    details:
+      `<div class="skilldescription">Aalto's <span class="Highlight">Heavy Attack</span> will always critically hit, triggered once every 30s.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifySpecificTalents: ["HalfTruthsAimedShotDMG", "HalfTruthsChargedAimedShotDMG"],
         modifierValue: 0.25,
       },
     ],
@@ -16,28 +32,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "InherentSkillRhythmicVibrato",
-    name: "Inherent Skill: Rhythmic Vibrato",
-    details: `<div class="skilldescription">During Resonance Liberation <span class="Highlight">Burning Rhapsody</span>, each hit of Resonance Liberation <span class="Highlight">Marcato</span> will increase the DMG of the next Resonance Liberation <span class="Highlight">Marcato</span> by 1.5%, which can be triggered once every 0.35s, stacking up to 50 times.<br>The effect will be reset after Resonance Liberation <span class="Highlight">Burning Rhapsody</span> ends.</div>`,
-    hasStacks: true,
-    modifiers: [
-      {
-        modifySpecificTalents: ["MarcatoDamage", "SequenceNodeFuneraryQuartet"],
-        modifierValue: 0.015,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 50,
-    alwaysEnabled: false,
-  },
-  {
-    key: "StatBonusFusionDMGBonus1",
-    name: "Stat Bonus: Fusion DMG Bonus+",
-    details: `<div class="skilldescription">Fusion DMG Bonus increased by 1.80%.</div>`,
+    key: "StatBonusAeroDMGBonus1",
+    name: "Stat Bonus: Aero DMG Bonus+",
+    details: `<div class="skilldescription">Aero DMG Bonus increased by 1.80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Fusion",
+        modifier: "Aero",
         modifierValue: 0.018,
       },
     ],
@@ -46,13 +47,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusFusionDMGBonus2",
-    name: "Stat Bonus: Fusion DMG Bonus+",
-    details: `<div class="skilldescription">Fusion DMG Bonus increased by 1.80%.</div>`,
+    key: "StatBonusAeroDMGBonus2",
+    name: "Stat Bonus: Aero DMG Bonus+",
+    details: `<div class="skilldescription">Aero DMG Bonus increased by 1.80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Fusion",
+        modifier: "Aero",
         modifierValue: 0.018,
       },
     ],
@@ -61,13 +62,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusFusionDMGBonus3",
-    name: "Stat Bonus: Fusion DMG Bonus+",
-    details: `<div class="skilldescription">Fusion DMG Bonus increased by 4.20%.</div>`,
+    key: "StatBonusAeroDMGBonus3",
+    name: "Stat Bonus: Aero DMG Bonus+",
+    details: `<div class="skilldescription">Aero DMG Bonus increased by 4.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Fusion",
+        modifier: "Aero",
         modifierValue: 0.042,
       },
     ],
@@ -76,13 +77,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusFusionDMGBonus4",
-    name: "Stat Bonus: Fusion DMG Bonus+",
-    details: `<div class="skilldescription">Fusion DMG Bonus increased by 4.20%.</div>`,
+    key: "StatBonusAeroDMGBonus4",
+    name: "Stat Bonus: Aero DMG Bonus+",
+    details: `<div class="skilldescription">Aero DMG Bonus increased by 4.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Fusion",
+        modifier: "Aero",
         modifierValue: 0.042,
       },
     ],

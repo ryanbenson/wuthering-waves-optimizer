@@ -77,9 +77,9 @@ export default {
             modifySpecificTalents = updatedSpecificTalentList;
           } else if (stat === "EnableAttack") {
             if (Array.isArray(finalBuffData[stat])) {
-              finalBuffData[stat].push(value);
+              finalBuffData[stat].push(...value);
             } else {
-              finalBuffData[stat] = [value];
+              finalBuffData[stat] = [...value];
             }
           } else {
             finalBuffData[stat] = (finalBuffData[stat] || 0) + value;

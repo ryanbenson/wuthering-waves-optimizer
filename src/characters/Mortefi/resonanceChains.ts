@@ -23,7 +23,7 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "EnableAttack",
-        modifierValue: "SequenceNodeFuneraryQuartet",
+        modifierValue: ["SequenceNodeFuneraryQuartet"],
       },
     ],
     minStacks: 0,

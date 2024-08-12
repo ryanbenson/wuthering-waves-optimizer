@@ -37,8 +37,8 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert">
-            Zhezhi and Xiangli Yao's weapons are available.
+          <div class="alert">
+            Aalto is now available.
           </div>
           <div class="character__selection">
             <div
