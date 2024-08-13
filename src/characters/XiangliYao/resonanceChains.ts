@@ -2,7 +2,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode1ProdigyofProteges",
     name: "Sequence Node 1: Prodigy of Protégés",
-    details: `<span class="skilldescription">When casting the resonance skill Law of Reigns, it will cause 6 additional damages, each damage is 8% of the resonance skill Law of Reigns.</span>`,
+    details: `<span class="skilldescription">Resonance Skill <span class="Hightlight">Law of Reigns</span> additionally launches 6 Convolution Matrices at enemies, each dealing Resonance Liberation DMG equal to 8% of the skill's DMG Multiplier.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -17,7 +17,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode2TracesofPredecessors",
     name: "Sequence Node 2: Traces of Predecessors",
-    details: `<span class="skilldescription">When casting Resonance Skill <span class="Highlight">Deduction</span> or Resonance Liberation <span class="Highlight">Cogitation Model</span>, increase Crit. Damage by 30%, lasting for 8 seconds.</span>`,
+    details: `<span class="skilldescription">Casting Resonance Skill or Resonance Liberation <span class="Highlight">Cogitation Model</span> increases Crit. DMG by 30% for 8s.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -32,7 +32,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode3RuinsofAncient",
     name: "Sequence Node 3: Ruins of Ancient",
-    details: `<span class="skilldescription">After casting Resonance Liberation <span class="Highlight">Cogitation Model</span>, the subsequent 5 casts of Resonance Skills gain 63% DMG Bonus.</span>`,
+    details: `<span class="skilldescription">Casting Resonance Liberation <span class="Highlight"><strong>Cogitation Model</strong></span> increases the DMG of the following Resonance Skill moves by 63% for 24s:<br><span class="Highlight"><strong>Decipher</strong></span>, <span class="Highlight"><strong>Deduction</strong></span>, <span class="Highlight"><strong>Divergence</strong></span>, and <span class="Highlight"><strong>Law of Reigns</strong></span>.<br>This effect can be triggered up to 5 times.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -47,7 +47,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode4VesselofRebirth",
     name: "Sequence Node 4: Vessel of Rebirth",
-    details: `<span class="skilldescription">After casting Resonance Liberation <span class="Highlight">Cogitation Model</span>, all team members' Resonance Liberation gains 25% DMG Bonus for 30s.</span>`,
+    details: `<span class="skilldescription">Casting Resonance Liberation <span class="Highlight"><strong>Cogitation Model</strong></span> grants a 25% DMG Bonus to all team members' Resonance Liberation for 30s.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -62,7 +62,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode5EndofStars",
     name: "Sequence Node 5: End of Stars",
-    details: `<span class="skilldescription">Outro Skill gains an additional DMG Multiplier of 220.09%. Resonance Liberation's DMG Multiplier is increased by 100%.</span>`,
+    details: `<span class="skilldescription"> The DMG Multiplier of Outro Skill <span class="Highlight"><strong>Chain Rule</strong></span> is increased by 222%. The DMG Multiplier of Resonance Liberation <span class="Highlight"><strong>Cogitation Model</strong></span> is increased by 100%. </span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -80,7 +80,7 @@ export const resonanceChains = [
       {
         modifier: "talentModifierMultiply",
         modifySpecificTalents: ["OutroSkillDMG"],
-        modifierValue: 2.209,
+        modifierValue: 2.22,
       },
     ],
     minStacks: 0,
@@ -88,9 +88,9 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode6ScentsofMortalLife",
-    name: "Sequence Node 6: Scents of Mortal Life",
-    details: `<span class="skilldescription">Enhance the Hypercubes obtained from Resonance Liberation <span class="Highlight">Cogitation Model</span>, increasing the DMG Multiplier of Resonance Skill <span class="Highlight">Law of Reigns</span> by 76%.</span>`,
+    key: "SequenceNode6SolaceoftheOrdinary",
+    name: "Sequence Node 6: Solace of the Ordinary",
+    details: `<span class="skilldescription"> The Hypercubes obtained from Resonance Liberation <span class="Highlight"><strong>Cogitation Model</strong></span> are enhanced, increasing the DMG Multiplier of Resonance Skill <span class="Highlight"><strong>Law of Reigns</strong></span> by 76%.</span>`,
     hasStacks: false,
     modifiers: [
       {

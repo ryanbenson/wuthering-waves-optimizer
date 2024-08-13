@@ -1,7 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Probe",
   description:
-    `<div class="skilldescription"><span class="Title">Stage</span><br>Perform up to 5 consecutive attacks, dealing <span class="Thunder">Electro DMG</span>.<br><br><span class="Title">Heavy Attack</span><br>Perform a charged attack at the cost of STA, dealing <span class="Thunder">Electro DMG</span>.<br><br><span class="Title">Mid-air Attack</span><br>Perform a Plunging Attack from mid-air at the cost of STA, dealing <span class="Thunder">Electro DMG</span>.<br><br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Stage</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
+    `<div class="skilldescription">Basic Attack<br>Perform up to 5 consecutive attacks, dealing <span style="color: #b45bff;"><strong>Electro DMG</strong></span>.<br> <br>Heavy Attack<br>Perform a charged attack at the cost of STA, dealing <span style="color: #b45bff;"><strong>Electro DMG</strong></span>.<br> <br>Mid-air Attack<br>Perform a Plunging Attack from mid-air at the cost of STA, dealing <span style="color: #b45bff;"><strong>Electro DMG</strong></span>.<br> <br>Dodge Counter<br>Use <span class="Highlight"><strong>Basic Attack</strong></span> after a successful <span class="Highlight"><strong>Dodge</strong></span> to attack the target, dealing <span style="color: #b45bff;"><strong>Electro DMG</strong></span>.</div>`,
   attacks: [
     {
       key: "ProbeStage1DMG",

@@ -1,9 +1,9 @@
 export const skillAttacks = {
-  name: "Resonance Skill: Depiction",
-  description: `<div class="skilldescription"><span class="Title">Press</span><br>Deal <span class="Ice">Glacio DMG</span>. If "Afflatus" is higher than 60, additionally consume 60 "Afflatus" to summon <span class="Highlight">Phatasmic Imprint: Left</span> and <span class="Highlight">Phatasmic Imprint: Right</span> on the ground.<br><br><span class="Title">Hold</span><br>Deal <span class="Ice">Glacio DMG</span>. If "Afflatus" is higher than 60, additionally consume 60 "Afflatus" to summon <span class="Highlight">Phatasmic Imprint: Left</span> and <span class="Highlight">Phatasmic Imprint: Right</span> in the air.<br><br><span class="Title">Press while in Mid-air</span><br>Deal <span class="Ice">Glacio DMG</span>. If "Afflatus" is higher than 60, additionally consume 60 "Afflatus" to summon <span class="Highlight">Phatasmic Imprint: Left</span> and <span class="Highlight">Phatasmic Imprint: Right</span> in the air.</div>`,
+  name: "Resonance Skill: Manifestation",
+  description: `<div class="skilldescription"> Deal <span class="Ice"><strong>Glacio DMG</strong></span>. If "Afflatus" is no less than 60, consume 60 "Afflatus" to summon <span class="Highlight"><strong>Phantasmic Imprint - Left</strong></span> and <span class="Highlight"><strong>Phantasmic Imprint - Right</strong></span>.<br>-Tap the button on the ground to summon the Phantasmic Imprints on the ground.<br>-Hold the button on the ground or tap the button in mi-dar to summon the Phantasmic Imprints in mid-air. </div>`,
   attacks: [
     {
-      key: "DepictionPressDMG",
+      key: "ManifestationPressDMG",
       label: "Press DMG",
       talents: {
         "1": "49.50%*3",
@@ -20,7 +20,7 @@ export const skillAttacks = {
       type: "Skill",
     },
     {
-      key: "DepictionHoldDMG",
+      key: "ManifestationHoldDMG",
       label: "Hold DMG",
       talents: {
         "1": "49.50%*3",
@@ -37,7 +37,7 @@ export const skillAttacks = {
       type: "Skill",
     },
     {
-      key: "DepictionMidAirDMG",
+      key: "ManifestationMidAirDMG",
       label: "Mid Air DMG",
       talents: {
         "1": "49.50%*3",
@@ -54,7 +54,7 @@ export const skillAttacks = {
       type: "Skill",
     },
     {
-      key: "SequenceNode6ImitationandInheritance",
+      key: "SequenceNode6InfiniteLegacy",
       label: "Sequence Node 6: Imitation and Inheritance",
       talents: {
         "1": "240.00%",
@@ -69,7 +69,7 @@ export const skillAttacks = {
         "10": "477.15%",
       },
       type: "Basic",
-      requiresResonanceChain: "SequenceNode6ImitationandInheritance",
+      requiresResonanceChain: "SequenceNode6InfiniteLegacy",
     },
   ],
 };

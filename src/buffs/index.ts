@@ -567,9 +567,9 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
     {
-      key: "SequenceNode4Hue",
-      name: "Sequence Node 4: Hue",
-      details: `<span class="skilldescription">When casting Resonance Liberation <span class="Highlight">Spiritful Animation</span>, the ATK of Resonators on the team increases by 20% for 30s.</span>`,
+      key: "SequenceNode4HuesSpectrum",
+      name: "Sequence Node 4: Hue's Spectrum",
+      details: `<span class="skilldescription">When Resonance Liberation <span class="Highlight"><strong>Living Canvas</strong></span> is cast, ATK of Resonators on the team increases by 20% for 30s.</span>`,
       hasStacks: false,
       modifiers: [
         {

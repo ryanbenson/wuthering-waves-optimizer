@@ -14,10 +14,10 @@ export const buffs = [
           "NormalAttackMidAirAttackDMG",
           "NormalAttackDodgeCounterDMG",
           "StrokeOfGeniusDMG",
-          "StrokeOfMaestroDMG",
+          "CreationsZenithDMG",
           "InklitSpiritDMG",
-          "SequenceNode5ProperStructuring",
-          "SequenceNode6ImitationandInheritance",
+          "SequenceNode5CompositionsClue",
+          "SequenceNode6InfiniteLegacy",
         ],
         modifierValue: 0.18,
       },
@@ -27,9 +27,9 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "InherentSkillDashtheBrush",
-    name: "Inherent Skill: Dash the Brush",
-    details: `<div class="skilldescription">When casting Resonance Skill <span class="Highlight">Stroke of Genius</span> or Resonance Skill <span class="Highlight">Stroke of Maestro</span>, ATK is increased by 6% for 22s. This can be stacked up to 3 times.</div>`,
+    key: "InherentSkillCalligraphersTouch",
+    name: "Inherent Skill: Calligrapher's Touch",
+    details: `<div class="skilldescription">When casting Resonance Skill <span class="Highlight"><strong>Stroke of Genius</strong></span> or Resonance Skill <span class="Highlight"><strong>Creation's Zenith</strong></span>, ATK is increased by 6% for 27s. This can be stacked up to 3 time(s)./div>`,
     hasStacks: true,
     modifiers: [
       {

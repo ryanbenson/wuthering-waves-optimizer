@@ -1,6 +1,6 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Cogitation Model",
-  description: `<div class="skilldescription">Attack the target, dealing <span class="Thunder">Electro DMG</span>. Enter <span class="Highlight">Intuition</span>.<br>When in <span class="Highlight">Intuition</span>:<br>·Obtain 3 Hypercubes. Each time Resonance Skill <span class="Highlight">Law of Reigns</span> is cast, consume 1 Hypercube. <span class="Highlight">Intuition</span> ends once all Hypercubes are consumed.<br>·<span class="Highlight">Basic Attack</span> and <span class="Highlight">Heavy Attack</span> are replaced with Basic Attack <span class="Highlight">Pivot - Impale</span>, which performs up to 3 consecutive attacks, dealing <span class="Thunder">Electro DMG</span>.<br>·Resonance Skill <span class="Highlight">Deduction</span> is replaced with Resonance Skill <span class="Highlight">Divergence</span>, which deals <span class="Thunder">Electro DMG</span>.<br>·<span class="Highlight">Dodge Attack</span> is replaced with <span class="Highlight">Dodge Attack - Unfathomed</span>, considered as Resonance Liberation DMG.</div>`,
+  description: `<div class="text-sm font-normal">Attack the target, dealing <span class="Thunder"><strong>Electro DMG</strong></span>. Enter <span class="Highlight"><strong>Intuition</strong></span>.<br>When in <span class="Highlight"><strong>Intuition</strong></span>:<br>-Obtain 3 Hypercube(s). Each time Resonance Skill <span class="Highlight"><strong>Law of Reigns</strong></span> is cast, consume 1 Hypercube(s). <span class="Highlight"><strong>Intuition</strong></span> ends once all Hypercubes are consumed.<br>-<span class="Highlight"><strong>Basic Attack</strong></span> and <span class="Highlight"><strong>Heavy Attack</strong></span> are replaced with Basic Attack <span class="Highlight"><strong>Pivot - Impale</strong></span>, which performs up to 3 consecutive attacks, dealing <span class="Thunder"><strong>Electro DMG</strong></span>.<br>-Resonance Skill <span class="Highlight"><strong>Deduction</strong></span> is replaced with Resonance Skill <span class="Highlight"><strong>Divergence</strong></span>, which deals <span class="Thunder"><strong>Electro DMG</strong></span>.<br>-<span class="Highlight"><strong>Dodge Counter</strong></span> is replaced with Dodge Counter <span class="Highlight"><strong>Unfathomed</strong></span>, considered as Resonance Liberation DMG.</div>`,
   attacks: [
     {
       key: "CogitationModelDMG",
@@ -89,7 +89,7 @@ export const liberationAttacks = {
     },
     {
       key: "DodgeAttackUnfathomedDMG",
-      label: "Dodge Attack - Unfathomed DMG",
+      label: "Unfathomed DMG",
       talents: {
         "1": "19.53%*2 + 156.22%",
         "2": "21.13%*2 + 169.03%",

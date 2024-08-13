@@ -1,6 +1,6 @@
 export const basicAttacks = {
   name: "Normal Attack: Dimming Brush",
-  description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Perform up to 3 consecutive strikes, dealing <span class="Ice">Glacio DMG</span>.<br><br><span class="Title">Heavy Attack</span><br>Consume STA to perform an attack, dealing <span class="Ice">Glacio DMG</span>.<br><br><span class="Title">Mid-air Attack</span><br>Consume STA to perform up to 2 consecutive attacks while in mid-air, dealing <span class="Ice">Glacio DMG</span>.<br><br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to counterattack, dealing <span class="Ice">Glacio DMG</span>.</div>`,
+  description: `<div class="skilldescription"> Basic Attack <br>Perform up to 3 consecutive attacks, dealing <span class="Ice"><strong>Glacio DMG</strong></span>.<br> Heavy Attack <br>Consume STA to perform an attack, dealing <span class="Ice"><strong>Glacio DMG</strong></span>.<br>Heavy Attack does not reset the Basic Attack cycle.<br> Mid-air Attack <br>Consume STA to perform up to 2 consecutive attacks while in mid-air, dealing <span class="Ice"><strong>Glacio DMG</strong></span>.<br>Dodge Counter<br>Use <span class="Highlight"><strong>Basic Attack</strong></span> after a successful <span class="Highlight"><strong>Dodge</strong></span> to attack the target, dealing <span class="Ice"><strong>Glacio DMG</strong></span>. </div>`,
   attacks: [
     {
       key: "NormalAttackStage1DMG",

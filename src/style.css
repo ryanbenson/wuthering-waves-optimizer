@@ -427,6 +427,9 @@ body {
 .Fire {
   color: #f0744e;
 }
+.Ice {
+  color: #41aefb;
+}
 .glacio--active {
   filter: brightness(0) saturate(100%) invert(87%) sepia(8%) saturate(5402%)
     hue-rotate(167deg) brightness(90%) contrast(91%) !important;
