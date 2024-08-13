@@ -36,7 +36,13 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ResonanceSkillDMGBonus",
+        modifySpecificTalents: [
+          "DecipherDMG",
+          "DeductionSkillDMG",
+          "DivergenceDMG",
+          "LawofReignsDMG",
+          "SequenceNode1ProdigyofProteges",
+        ],
         modifierValue: 0.63,
       },
     ],
