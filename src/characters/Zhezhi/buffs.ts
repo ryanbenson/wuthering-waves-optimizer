@@ -2,23 +2,11 @@ export const buffs = [
   {
     key: "CreationsZenith",
     name: "Creation's Zenith",
-    details: `<div class="skilldescription">Blink to the location of the Phantasmic Imprint and remove it, then summon a crane spirit to attack the target, dealing greater <span class="Ice">Glacio DMG</span>, considered as Basic Attack DMG, and additionally increasing the Basic Attack DMG Multiplier by 18% for 27s.</div>`,
+    details: `<div class="skilldescription">Move to the location of the <span class="Highlight">Phantasmic Imprint</span>, remove it, and then summon an Ivory Herald to attack the target, dealing greater <span class="Ice">Glacio DMG</span>, considered as Basic Attack DMG, additionally increasing the Basic Attack DMG Bonus by 18% for 27s.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "NormalAttackStage1DMG",
-          "NormalAttackStage2DMG",
-          "NormalAttackStage3DMG",
-          "NormalAttackMidAirAttackDMG",
-          "NormalAttackDodgeCounterDMG",
-          "StrokeOfGeniusDMG",
-          "CreationsZenithDMG",
-          "InklitSpiritDMG",
-          "SequenceNode5CompositionsClue",
-          "SequenceNode6InfiniteLegacy",
-        ],
+        modifier: "BasicAttackDMGBonus",
         modifierValue: 0.18,
       },
     ],

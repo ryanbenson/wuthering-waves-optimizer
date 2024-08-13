@@ -550,7 +550,7 @@ export const buffsByCharacter = {
     {
       key: "OutroSkillWhitening",
       name: "Outro Skill: Whitening",
-      details: `<span class="skilldescription">The next character to appear will have 20% increased Glacio Damage and 25% Resonance Skill Damage for 14 seconds, and the effect will end early if you switch to another character.</span>`,
+      details: `<span class="skilldescription">The incoming Resonator has their Glacio DMG Amplified by 20% and Resonance Skill DMG Amplified by 25% for 14s or until they are switched out.</span>`,
       hasStacks: false,
       modifiers: [
         {
