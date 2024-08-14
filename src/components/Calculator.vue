@@ -280,7 +280,9 @@
         <div
           v-for="damageInstance in allDamages?.value?.basicAttacks"
           :key="damageInstance.key"
-          class="calculation__damage__item">
+          class="calculation__damage__item"
+          :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
+        >
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
             <span
@@ -320,7 +322,9 @@
         <div
           v-for="damageInstance in allDamages?.value?.skillAttacks"
           :key="damageInstance.key"
-          class="calculation__damage__item">
+          class="calculation__damage__item"
+          :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
+        >
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
             <span
@@ -360,7 +364,9 @@
         <div
           v-for="damageInstance in allDamages?.value?.liberationAttacks"
           :key="damageInstance.key"
-          class="calculation__damage__item">
+          class="calculation__damage__item"
+          :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
+        >
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
             <span
@@ -400,7 +406,9 @@
         <div
           v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
           :key="damageInstance.key"
-          class="calculation__damage__item">
+          class="calculation__damage__item"
+          :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
+        >
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
             <span
@@ -440,7 +448,9 @@
         <div
           v-for="damageInstance in allDamages?.value?.introAttacks"
           :key="damageInstance.key"
-          class="calculation__damage__item">
+          class="calculation__damage__item"
+          :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
+        >
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
             <span
@@ -487,7 +497,9 @@
           <div
             v-for="damageInstance in allDamages?.value?.outroAttacks"
             :key="damageInstance.key"
-            class="calculation__damage__item">
+            class="calculation__damage__item"
+            :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
+          >
             <template v-if="damageInstance.type === 'Healing'">
               <span>{{ damageInstance.label }}</span>
               <span
@@ -667,7 +679,9 @@
       <div
         v-for="damageInstance in allDamages?.value?.basicAttacks"
         :key="damageInstance.key"
-        class="calculation__damage__item">
+        class="calculation__damage__item"
+        :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
+      >
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
           <span
@@ -707,7 +721,9 @@
       <div
         v-for="damageInstance in allDamages?.value?.skillAttacks"
         :key="damageInstance.key"
-        class="calculation__damage__item">
+        class="calculation__damage__item"
+        :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
+      >
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
           <span
@@ -747,7 +763,9 @@
       <div
         v-for="damageInstance in allDamages?.value?.liberationAttacks"
         :key="damageInstance.key"
-        class="calculation__damage__item">
+        class="calculation__damage__item"
+        :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
+      >
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
           <span
@@ -787,7 +805,9 @@
       <div
         v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
         :key="damageInstance.key"
-        class="calculation__damage__item">
+        class="calculation__damage__item"
+        :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
+      >
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
           <span
@@ -827,7 +847,9 @@
       <div
         v-for="damageInstance in allDamages?.value?.introAttacks"
         :key="damageInstance.key"
-        class="calculation__damage__item">
+        class="calculation__damage__item"
+        :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
+      >
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
           <span
@@ -873,7 +895,9 @@
         <div
           v-for="damageInstance in allDamages?.value?.outroAttacks"
           :key="damageInstance.key"
-          class="calculation__damage__item">
+          class="calculation__damage__item"
+          :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
+        >
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
             <span
@@ -1511,6 +1535,7 @@ export default defineComponent({
           genericSkillDmgBonusSelfBuff +
           genericSkillDmgBonusTeamEchoBuff +
           genericSkillDmgBonusEchoBuff / 100;
+        console.log('--', specificSkillDmgFromResonanceChains)
         const teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         const resonanceChainResistShredForCharElement =
@@ -1569,7 +1594,6 @@ export default defineComponent({
             totalTalentModifierAdd,
             totalTalentModifierMultiply
           );
-          console.log(talent, finalAtkDefHpVal, totalSkillDmgBonus, specificSkillDmg, h);
           return h;
         }
 
@@ -1613,7 +1637,7 @@ export default defineComponent({
                 const enabledAttacks = []
                   .concat(resonanceChainsEnabledAttacks)
                   .concat(charBuffsEnabledAttacks);
-                const isAttackEnabled = enabledAttacks.includes(attack.key);
+                const isAttackEnabled = enabledAttacks.includes(attack.requiresResonanceChain);
                 // flag this attack as enabled or not based on the resonance chain
                 isEnabled = isAttackEnabled;
               }
@@ -2028,5 +2052,12 @@ $tooltip-background-color: $sidebar-background-color;
 }
 .calculation__damage__item--fill {
   grid-template-columns: 1fr;
+}
+.calculation__damage__item--healing {
+  color: #3bea3b;
+
+  @media (prefers-color-scheme: light) {
+    color: #13a813;
+  }
 }
 </style>

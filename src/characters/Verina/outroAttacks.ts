@@ -4,9 +4,9 @@ export const outroAttacks = {
   attacks: [
     {
       key: "SequenceNode1MomentofEmergence",
-      label: "S5: Proper Structuring HoT",
+      label: "S1: Proper Structuring HoT",
       talent: "20.00%",
-      type: "Basic",
+      type: "Healing",
       requiresResonanceChain: "SequenceNode1MomentofEmergence",
     },
   ],

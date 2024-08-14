@@ -88,7 +88,7 @@ export const forteCircuitAttacks = {
       type: "Healing",
     },
     {
-      key: "SequenceNode1MomentofEmergenceDMG",
+      key: "SequenceNode6JoyousHarvestDMG",
       label: "S6: Joyous Harvest DMG",
       talents: {
         "1": "2.50%",
@@ -106,7 +106,7 @@ export const forteCircuitAttacks = {
       requiresResonanceChain: "SequenceNode6JoyousHarvest",
     },
     {
-      key: "SequenceNode1MomentofEmergenceHealing",
+      key: "SequenceNode6JoyousHarvestHealing",
       label: "S6: Joyous Harvest Healing",
       talents: {
         "1": "2.50%",

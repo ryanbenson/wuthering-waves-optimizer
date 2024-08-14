@@ -18,11 +18,15 @@ export const resonanceChains = [
     key: "SequenceNode3TheChoicetoFlourish",
     name: "Sequence Node 3: The Choice to Flourish",
     details: `<span class="skilldescription">Healing of Resonance Liberation's <span class="Highlight">Photosynthesis Mark</span> is increased by 12%.</span>`,
-    hasStacks: true,
+    hasStacks: false,
     modifiers: [
       {
-        modifier: "HealingBonus",
-        modifySpecificTalents: ["ArborealFlourishCoordinatedAttackHealing"],
+        // modifier: "HealingBonus",
+        modifySpecificTalents: [
+          "ArborealFlourishCoordinatedAttackHealing",
+          "SequenceNode6JoyousHarvestDMG",
+          "SequenceNode6JoyousHarvestHealing"
+        ],
         modifierValue: 0.12,
       },
     ],
