@@ -31,9 +31,19 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 14, 2024</h3>
+    <ul>
+      <li>
+        Bug fix: Fixed some weapon passives not resetting when changing weapons.
+      </li>
+    </ul>
     <h3>August 13, 2024</h3>
     <ul>
-      <li>Updates Zhezhi and Xiangli Yao's talent descriptions to match official 1.2. Note: if you had previous saved states for some buffs, it may have been reset (just this once) due to these changes.</li>
+      <li>
+        Updates Zhezhi and Xiangli Yao's talent descriptions to match official
+        1.2. Note: if you had previous saved states for some buffs, it may have
+        been reset (just this once) due to these changes.
+      </li>
     </ul>
     <h3>August 12, 2024</h3>
     <ul>

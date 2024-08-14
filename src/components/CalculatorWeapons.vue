@@ -419,7 +419,7 @@ export default {
      */
     async updateWeapons() {
       this.weaponsList = getWeaponsByType(this.weaponType);
-      this.weaponPassiveStats = {};
+      this.weaponPassiveData = [];
       this.chosenWeapon = null;
       this.updateWeaponStats();
     },
@@ -455,7 +455,7 @@ export default {
           this.weapon
         );
         this.chosenWeapon = weaponChosen;
-        this.weaponPassiveStats = {};
+        this.weaponPassiveData = [];
         this.updateWeaponStats();
       } catch (error) {
         // console.log("Failed to find weapon");

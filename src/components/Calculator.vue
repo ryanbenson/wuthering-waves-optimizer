@@ -37,9 +37,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">
-            Aalto is now available.
-          </div>
+          <div v-if="false" class="alert">Aalto is now available.</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -1615,9 +1613,7 @@ export default defineComponent({
                 const enabledAttacks = []
                   .concat(resonanceChainsEnabledAttacks)
                   .concat(charBuffsEnabledAttacks);
-                const isAttackEnabled = enabledAttacks.includes(
-                  attack.key
-                );
+                const isAttackEnabled = enabledAttacks.includes(attack.key);
                 // flag this attack as enabled or not based on the resonance chain
                 isEnabled = isAttackEnabled;
               }
