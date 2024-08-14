@@ -1,0 +1,41 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Living Canvas",
+  description: `<div class="skilldescription"> Summon <span class="Highlight"><strong>Inklit Spirits</strong></span> for assistance.<br>Can be cast in mid-air.<br>Inklit Spirit<<br>When the active Resonator deals DMG, an <span class="Highlight"><strong>Inklit Spirit</strong></span> will be summoned to perform a Coordinated Attack, dealing <span class="Ice"><strong>Glacio DMG</strong></span>, considered as Basic Attack DMG.<br>-In the 3s after DMG is dealt, 1 <span class="Highlight"><strong>Inklit Spirit</strong></span> is summoned every second. This effect can be triggered once every second. Damage dealt by Inklit Spirit will not trigger this effect.<br>-Up to 1 <span class="Highlight"><strong>Inklit Spirit</strong></span> can be summoned every second, and up to 21 in total.<br>-This effect lasts for 30s, until max <span class="Highlight"><strong>Inklit Spirits</strong></span> are summoned. </div>`,
+  attacks: [
+    {
+      key: "InklitSpiritDMG",
+      label: "Inklit Spirit DMG",
+      talents: {
+        "1": "32.80%",
+        "2": "35.49%",
+        "3": "38.18%",
+        "4": "41.95%",
+        "5": "44.64%",
+        "6": "47.73%",
+        "7": "52.04%",
+        "8": "56.34%",
+        "9": "60.64%",
+        "10": "65.21%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "SequenceNode5CompositionsClue",
+      label: "Sequence Node 5: Proper Structuring",
+      talents: {
+        "1": "45.92%",
+        "2": "49.69%",
+        "3": "53.45%",
+        "4": "58.73%",
+        "5": "62.50%",
+        "6": "66.82%",
+        "7": "72.86%",
+        "8": "78.87%",
+        "9": "84.90%",
+        "10": "91.29%",
+      },
+      type: "Basic",
+      requiresResonanceChain: "SequenceNode5CompositionsClue",
+    },
+  ],
+};
