@@ -32,7 +32,7 @@ export const buffs = [
   {
     key: "StatBonusHealingBonus1",
     name: "Stat Bonus: Healing Bonus+",
-    details: `<div class="skilldescription">Healing Bonus increased by 1.20%.</div>`,
+    details: `<div class="skilldescription">Healing Bonus increased by 1.80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -47,7 +47,7 @@ export const buffs = [
   {
     key: "StatBonusHealingBonus2",
     name: "Stat Bonus: Healing Bonus+",
-    details: `<div class="skilldescription">Healing Bonus increased by 1.20%.</div>`,
+    details: `<div class="skilldescription">Healing Bonus increased by 1.80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -62,7 +62,7 @@ export const buffs = [
   {
     key: "StatBonusHealingBonus3",
     name: "Stat Bonus: Healing Bonus+",
-    details: `<div class="skilldescription">Healing Bonus increased by 2.80%.</div>`,
+    details: `<div class="skilldescription">Healing Bonus increased by 4.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -77,7 +77,7 @@ export const buffs = [
   {
     key: "StatBonusHealingBonus4",
     name: "Stat Bonus: Healing Bonus+",
-    details: `<div class="skilldescription">Healing Bonus increased by 2.80%.</div>`,
+    details: `<div class="skilldescription">Healing Bonus increased by 4.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {

@@ -283,153 +283,57 @@
           v-for="damageInstance in allDamages?.value?.basicAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item">
-          <span>{{ damageInstance.label }}</span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationAvg,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationCrit,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-          >
+          <template v-if="damageInstance.type === 'Healing'">
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+            >
+          </template>
+          <template v-else>
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+            >
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculationAvg,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+            >
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculationCrit,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+            >
+          </template>
         </div>
         <h4>Skill Attacks</h4>
         <div
           v-for="damageInstance in allDamages?.value?.skillAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item">
-          <span>{{ damageInstance.label }} </span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationAvg,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationCrit,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-          >
-        </div>
-        <h4>Liberation Attacks</h4>
-        <div
-          v-for="damageInstance in allDamages?.value?.liberationAttacks"
-          :key="damageInstance.key"
-          class="calculation__damage__item">
-          <span>{{ damageInstance.label }} </span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationAvg,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationCrit,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-          >
-        </div>
-        <h4>Forte Circuit Attacks</h4>
-        <div
-          v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
-          :key="damageInstance.key"
-          class="calculation__damage__item">
-          <span>{{ damageInstance.label }} </span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationAvg,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationCrit,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-          >
-        </div>
-        <h4>Intro Attacks</h4>
-        <div
-          v-for="damageInstance in allDamages?.value?.introAttacks"
-          :key="damageInstance.key"
-          class="calculation__damage__item">
-          <span>{{ damageInstance.label }} </span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationAvg,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationCrit,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-          >
-        </div>
-        <h4>Outro Attacks</h4>
-        <template v-if="!allDamages?.value?.outroAttacks.length">
-          <div
-            class="calculation__damage__item calculation__damage__item--fill">
-            {{ character }} does not have outro attacks.
-          </div>
-        </template>
-        <template v-else>
-          <div
-            v-for="damageInstance in allDamages?.value?.outroAttacks"
-            :key="damageInstance.key"
-            class="calculation__damage__item">
+          <template v-if="damageInstance.type === 'Healing'">
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+            >
+          </template>
+          <template v-else>
             <span>{{ damageInstance.label }} </span>
             <span
               v-tooltip="{
@@ -452,6 +356,174 @@
               }"
               >{{ displayDamage(damageInstance.damage.critDamage) }}</span
             >
+          </template>
+        </div>
+        <h4>Liberation Attacks</h4>
+        <div
+          v-for="damageInstance in allDamages?.value?.liberationAttacks"
+          :key="damageInstance.key"
+          class="calculation__damage__item">
+          <template v-if="damageInstance.type === 'Healing'">
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+            >
+          </template>
+          <template v-else>
+            <span>{{ damageInstance.label }} </span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+            >
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculationAvg,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+            >
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculationCrit,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+            >
+          </template>
+        </div>
+        <h4>Forte Circuit Attacks</h4>
+        <div
+          v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
+          :key="damageInstance.key"
+          class="calculation__damage__item">
+          <template v-if="damageInstance.type === 'Healing'">
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+            >
+          </template>
+          <template v-else>
+            <span>{{ damageInstance.label }} </span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+            >
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculationAvg,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+            >
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculationCrit,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+            >
+          </template>
+        </div>
+        <h4>Intro Attacks</h4>
+        <div
+          v-for="damageInstance in allDamages?.value?.introAttacks"
+          :key="damageInstance.key"
+          class="calculation__damage__item">
+          <template v-if="damageInstance.type === 'Healing'">
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+            >
+          </template>
+          <template v-else>
+            <span>{{ damageInstance.label }} </span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+            >
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculationAvg,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+            >
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculationCrit,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+            >
+          </template>
+        </div>
+        <h4>Outro Attacks</h4>
+        <template v-if="!allDamages?.value?.outroAttacks.length">
+          <div
+            class="calculation__damage__item calculation__damage__item--fill">
+            {{ character }} does not have outro attacks.
+          </div>
+        </template>
+        <template v-else>
+          <div
+            v-for="damageInstance in allDamages?.value?.outroAttacks"
+            :key="damageInstance.key"
+            class="calculation__damage__item">
+            <template v-if="damageInstance.type === 'Healing'">
+              <span>{{ damageInstance.label }}</span>
+              <span
+                v-tooltip="{
+                  content: damageInstance.damage.detailedCalculation,
+                  html: true,
+                }"
+                >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+              >
+            </template>
+            <template v-else>
+              <span>{{ damageInstance.label }} </span>
+              <span
+                v-tooltip="{
+                  content: damageInstance.damage.detailedCalculation,
+                  html: true,
+                }"
+                >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+              >
+              <span
+                v-tooltip="{
+                  content: damageInstance.damage.detailedCalculationAvg,
+                  html: true,
+                }"
+                >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+              >
+              <span
+                v-tooltip="{
+                  content: damageInstance.damage.detailedCalculationCrit,
+                  html: true,
+                }"
+                >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+              >
+            </template>
           </div>
         </template>
       </div>
@@ -598,152 +670,57 @@
         v-for="damageInstance in allDamages?.value?.basicAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item">
-        <span>{{ damageInstance.label }}</span>
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculation,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-        >
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculationAvg,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-        >
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculationCrit,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-        >
+        <template v-if="damageInstance.type === 'Healing'">
+          <span>{{ damageInstance.label }}</span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+          >
+        </template>
+        <template v-else>
+          <span>{{ damageInstance.label }}</span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationAvg,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationCrit,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+          >
+        </template>
       </div>
       <h4>Skill Attacks</h4>
       <div
         v-for="damageInstance in allDamages?.value?.skillAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item">
-        <span>{{ damageInstance.label }} </span>
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculation,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-        >
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculationAvg,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-        >
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculationCrit,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-        >
-      </div>
-      <h4>Liberation Attacks</h4>
-      <div
-        v-for="damageInstance in allDamages?.value?.liberationAttacks"
-        :key="damageInstance.key"
-        class="calculation__damage__item">
-        <span>{{ damageInstance.label }} </span>
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculation,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-        >
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculationAvg,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-        >
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculationCrit,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-        >
-      </div>
-      <h4>Forte Circuit Attacks</h4>
-      <div
-        v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
-        :key="damageInstance.key"
-        class="calculation__damage__item">
-        <span>{{ damageInstance.label }} </span>
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculation,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-        >
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculationAvg,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-        >
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculationCrit,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-        >
-      </div>
-      <h4>Intro Attacks</h4>
-      <div
-        v-for="damageInstance in allDamages?.value?.introAttacks"
-        :key="damageInstance.key"
-        class="calculation__damage__item">
-        <span>{{ damageInstance.label }} </span>
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculation,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-        >
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculationAvg,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-        >
-        <span
-          v-tooltip="{
-            content: damageInstance.damage.detailedCalculationCrit,
-            html: true,
-          }"
-          >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-        >
-      </div>
-      <h4>Outro Attacks</h4>
-      <template v-if="!allDamages?.value?.outroAttacks.length">
-        <div class="calculation__damage__item">
-          {{ character }} does not have outro attacks.
-        </div>
-      </template>
-      <template v-else>
-        <div
-          v-for="damageInstance in allDamages?.value?.outroAttacks"
-          :key="damageInstance.key"
-          class="calculation__damage__item">
+        <template v-if="damageInstance.type === 'Healing'">
+          <span>{{ damageInstance.label }}</span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+          >
+        </template>
+        <template v-else>
           <span>{{ damageInstance.label }} </span>
           <span
             v-tooltip="{
@@ -766,6 +743,173 @@
             }"
             >{{ displayDamage(damageInstance.damage.critDamage) }}</span
           >
+        </template>
+      </div>
+      <h4>Liberation Attacks</h4>
+      <div
+        v-for="damageInstance in allDamages?.value?.liberationAttacks"
+        :key="damageInstance.key"
+        class="calculation__damage__item">
+        <template v-if="damageInstance.type === 'Healing'">
+          <span>{{ damageInstance.label }}</span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+          >
+        </template>
+        <template v-else>
+          <span>{{ damageInstance.label }} </span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationAvg,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationCrit,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+          >
+        </template>
+      </div>
+      <h4>Forte Circuit Attacks</h4>
+      <div
+        v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
+        :key="damageInstance.key"
+        class="calculation__damage__item">
+        <template v-if="damageInstance.type === 'Healing'">
+          <span>{{ damageInstance.label }}</span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+          >
+        </template>
+        <template v-else>
+          <span>{{ damageInstance.label }} </span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationAvg,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationCrit,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+          >
+        </template>
+      </div>
+      <h4>Intro Attacks</h4>
+      <div
+        v-for="damageInstance in allDamages?.value?.introAttacks"
+        :key="damageInstance.key"
+        class="calculation__damage__item">
+        <template v-if="damageInstance.type === 'Healing'">
+          <span>{{ damageInstance.label }}</span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+          >
+        </template>
+        <template v-else>
+          <span>{{ damageInstance.label }} </span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationAvg,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+          >
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculationCrit,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+          >
+        </template>
+      </div>
+      <h4>Outro Attacks</h4>
+      <template v-if="!allDamages?.value?.outroAttacks.length">
+        <div class="calculation__damage__item">
+          {{ character }} does not have outro attacks.
+        </div>
+      </template>
+      <template v-else>
+        <div
+          v-for="damageInstance in allDamages?.value?.outroAttacks"
+          :key="damageInstance.key"
+          class="calculation__damage__item">
+          <template v-if="damageInstance.type === 'Healing'">
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+            >
+          </template>
+          <template v-else>
+            <span>{{ damageInstance.label }} </span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+            >
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculationAvg,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+            >
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculationCrit,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+            >
+          </template>
         </div>
       </template>
     </div>
@@ -776,7 +920,7 @@
 // @ts-nocheck
 import { defineComponent, reactive, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
-import { calcDamage } from "../calculator/calculator";
+import { calcDamage, calcHeal } from "../calculator/calculator";
 import {
   getCharactersAvailable,
   getCharByName,
@@ -1270,6 +1414,9 @@ export default defineComponent({
         case "Liberation":
           val = ResonanceLiberationDMGBonus.value;
           break;
+        // do not divide this by 100
+        case "Healing":
+          return healingBonus.value;
       }
 
       return val / 100;
@@ -1415,6 +1562,19 @@ export default defineComponent({
           finalAtkDefHpVal = calcCharStats("DEF", { DEF: modifyBaseDef });
         }
 
+        if (attackType === 'Healing') {
+          const h = calcHeal(
+            talent,
+            finalAtkDefHpVal,
+            totalSkillDmgBonus, // char stat of healing bonus
+            specificSkillDmg, // any buffs for the skill
+            totalTalentModifierAdd,
+            totalTalentModifierMultiply
+          );
+          console.log(talent, finalAtkDefHpVal, totalSkillDmgBonus, specificSkillDmg, h);
+          return h;
+        }
+
         return calcDamage(
           characterLevel.value,
           formData.enemyLevel,
@@ -1477,6 +1637,7 @@ export default defineComponent({
                   hasNoTalentLevel
                 ),
                 isEnabled,
+                type: attack.type
               };
             })
             // remove any attacks that are not enabled
