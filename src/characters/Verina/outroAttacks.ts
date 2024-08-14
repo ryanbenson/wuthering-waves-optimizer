@@ -1,5 +1,13 @@
 export const outroAttacks = {
   name: "Outro Skill: Carve and Draw",
-  description: `<span class="skilldescription">The incoming Resonator has their Glacio DMG Amplified by 20% and Resonance Skill DMG Amplified by 25% for 14s or until they are switched out.</span>`,
-  attacks: [],
+  description: `<span class="skilldescription">Outro Skill <span class="Highlight">Blossom</span> grants the next character a continuous Healing effect, recovering HP by 20% of Verina's ATK every 5s for 30s.</span>`,
+  attacks: [
+    {
+      key: "SequenceNode1MomentofEmergence",
+      label: "S5: Proper Structuring HoT",
+      talent: "20.00%",
+      type: "Basic",
+      requiresResonanceChain: "SequenceNode1MomentofEmergence",
+    },
+  ],
 };

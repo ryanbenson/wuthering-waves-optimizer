@@ -1,13 +1,13 @@
 export const buffs = [
   {
-    key: "CreationsZenith",
-    name: "Creation's Zenith",
-    details: `<div class="skilldescription">Move to the location of the <span class="Highlight">Phantasmic Imprint</span>, remove it, and then summon an Ivory Herald to attack the target, dealing greater <span class="Ice">Glacio DMG</span>, considered as Basic Attack DMG, additionally increasing the Basic Attack DMG Bonus by 18% for 27s.</div>`,
+    key: "OutroSkillBlossom",
+    name: "Outro Skill: Blossom",
+    details: `<div class="skilldescription">Verina heals the next character by 19% of her ATK per second for 6s. All characters on nearby teams gain 15% All-Type DMG Deepen for 30s.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "BasicAttackDMGBonus",
-        modifierValue: 0.18,
+        modifier: "DMGDeepen",
+        modifierValue: 0.15,
       },
     ],
     minStacks: 0,
@@ -15,29 +15,14 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "InherentSkillCalligraphersTouch",
-    name: "Inherent Skill: Calligrapher's Touch",
-    details: `<div class="skilldescription">When casting Resonance Skill <span class="Highlight"><strong>Stroke of Genius</strong></span> or Resonance Skill <span class="Highlight"><strong>Creation's Zenith</strong></span>, ATK is increased by 6% for 27s. This can be stacked up to 3 time(s)./div>`,
-    hasStacks: true,
+    key: "InherentSkillGiftofNature",
+    name: "Inherent Skill: Gift of Nature",
+    details: `<div class="skilldescription">When Verina casts Heavy Attack <span class="Highlight">Starflower Blooms</span>, Mid-air Attack <span class="Highlight">Starflower Blooms</span>, Resonance Liberation <span class="Highlight">Arboreal Flourish</span> or Outro Skill <span class="Highlight">Blossom</span>, all team members' ATK are increased by 20% for 20s.</div>`,
+    hasStacks: false,
     modifiers: [
       {
         modifier: "ATK",
-        modifierValue: 0.06,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 3,
-    alwaysEnabled: false,
-  },
-  {
-    key: "StatBonusCritRate1",
-    name: "Stat Bonus: Crit. Rate+",
-    details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "CritRate",
-        modifierValue: 0.012,
+        modifierValue: 0.2,
       },
     ],
     minStacks: 0,
@@ -45,14 +30,14 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusCritRate2",
-    name: "Stat Bonus: Crit. Rate+",
-    details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
+    key: "StatBonusHealingBonus1",
+    name: "Stat Bonus: Healing Bonus+",
+    details: `<div class="skilldescription">Healing Bonus increased by 1.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritRate",
-        modifierValue: 0.012,
+        modifier: "HealingBonus",
+        modifierValue: 0.018,
       },
     ],
     minStacks: 0,
@@ -60,14 +45,14 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusCritRate3",
-    name: "Stat Bonus: Crit. Rate+",
-    details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
+    key: "StatBonusHealingBonus2",
+    name: "Stat Bonus: Healing Bonus+",
+    details: `<div class="skilldescription">Healing Bonus increased by 1.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritRate",
-        modifierValue: 0.028,
+        modifier: "HealingBonus",
+        modifierValue: 0.018,
       },
     ],
     minStacks: 0,
@@ -75,14 +60,29 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusCritRate4",
-    name: "Stat Bonus: Crit. Rate+",
-    details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
+    key: "StatBonusHealingBonus3",
+    name: "Stat Bonus: Healing Bonus+",
+    details: `<div class="skilldescription">Healing Bonus increased by 2.80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritRate",
-        modifierValue: 0.028,
+        modifier: "HealingBonus",
+        modifierValue: 0.042,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusHealingBonus4",
+    name: "Stat Bonus: Healing Bonus+",
+    details: `<div class="skilldescription">Healing Bonus increased by 2.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "HealingBonus",
+        modifierValue: 0.042,
       },
     ],
     minStacks: 0,

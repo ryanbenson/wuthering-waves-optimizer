@@ -1,13 +1,13 @@
 export const resonanceChains = [
   {
-    key: "SequenceNode1Brushwork'Finish",
-    name: "Sequence Node 1: Brushwork's Finish",
-    details: `<span class="skilldescription">When casting Resonance Skill <span class="Highlight"><strong>Creation's Zenith</strong></span>, Resonance Energy is restored by 15 and Crit. Rate is increased by 10% for 27s.</span>`,
+    key: "SequenceNode1MomentofEmergence",
+    name: "Sequence Node 1: Moment of Emergence",
+    details: `<span class="skilldescription">Outro Skill <span class="Highlight">Blossom</span> grants the next character a continuous Healing effect, recovering HP by 20% of Verina's ATK every 5s for 30s.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritRate",
-        modifierValue: 0.1,
+        modifier: "EnableAttack",
+        modifierValue: ["SequenceNode1MomentofEmergence"],
       },
     ],
     minStacks: 0,
@@ -15,28 +15,44 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode3ReflectionsGrace",
-    name: "Sequence Node 3: Reflection's Grace",
-    details: `<span class="skilldescription">When Resonance Skill <span class="Highlight"><strong>Manifestation</strong></span>, Resonance Skill <span class="Highlight"><strong>Stroke of Genius</strong></span>, or Resonance Skill <span class="Highlight"><strong>Creation's Zenith</strong></span> is cast, ATK increases by 15%, stacking up to 3 time(s) for 27s.</span>`,
+    key: "SequenceNode3TheChoicetoFlourish",
+    name: "Sequence Node 3: The Choice to Flourish",
+    details: `<span class="skilldescription">Healing of Resonance Liberation's <span class="Highlight">Photosynthesis Mark</span> is increased by 12%.</span>`,
     hasStacks: true,
     modifiers: [
       {
-        modifier: "ATK",
+        modifier: "HealingBonus",
+        modifySpecificTalents: ["ArborealFlourishCoordinatedAttackHealing"],
+        modifierValue: 0.12,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode4BlossomingEmbrace",
+    name: "Sequence Node 4: Blossoming Embrace",
+    details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Starflower Blooms</span>, Mid-Air Attack <span class="Highlight">Starflower Blooms</span>, Resonance Liberation <span class="Highlight">Arboreal Flourish</span> and Outro Skill <span class="Highlight">Blossom</span> increases the Spectro DMG Bonus of all team members by 15% for 24s.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Spectro",
         modifierValue: 0.15,
       },
     ],
     minStacks: 0,
-    maxStacks: 3,
+    maxStacks: 0,
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode4HuesSpectrum",
-    name: "Sequence Node 4: Hue's Spectrum",
-    details: `<span class="skilldescription">When Resonance Liberation <span class="Highlight"><strong>Living Canvas</strong></span> is cast, ATK of Resonators on the team increases by 20% for 30s.</span>`,
+    key: "SequenceNode5MiraculousBlooms",
+    name: "Sequence Node 5: Miraculous Blooms",
+    details: `<span class="skilldescription">When Verina heals a team member with HP less than 50%, her Healing is increased by 20%.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ATK",
+        modifier: "HealingBonus",
         modifierValue: 0.2,
       },
     ],
@@ -45,29 +61,23 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode5CompositionsClue",
-    name: "Sequence Node 5: Composition's Clue",
-    details: `<span class="skilldescription">For every 3 <span class="Highlight"><strong>Inklit Spirits</strong></span> summoned by Resonance Liberation <span class="Highlight"><strong>Living Canvas</strong></span>, 1 extra <span class="Highlight"><strong>Inklit Spirit</strong></span> is summoned to perform a Coordinated Attack, dealing DMG equal to 140% of Inklit Spirit's DMG, considered as Basic Attack DMG. This damage dealt will not further summon Inklit Spirit.</span>`,
+    key: "SequenceNode6JoyousHarvest",
+    name: "Sequence Node 6: Joyous Harvest",
+    details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Starflower Blooms</span> and Mid-Air Attack <span class="Highlight">Starflower Blooms</span> deal 20% more damage. They will trigger Coordinated Attack 1 time and heal all characters nearby. The DMG of this Coordinated Attack and the Healing are equal to those of the Resonance Liberation's <span class="Highlight">Photosynthesis Mark</span>.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "EnableAttack",
-        modifierValue: ["SequenceNode5CompositionsClue"],
+        modifySpecificTalents: [
+          "HeavyAttackStarflowerBloomsDMG",
+          "MidAirAttackStarflowerBloomsStage1DMG",
+          "MidAirAttackStarflowerBloomsStage2DMG",
+          "MidAirAttackStarflowerBloomsStage3DMG"
+        ],
+        modifierValue: 0.2,
       },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode6InfiniteLegacy",
-    name: "Sequence Node 6: Infinite Legacy",
-    details: `<span class="skilldescription">When Resonance Skill <span class="Highlight"><strong>Stroke of Genius</strong></span> or Resonance Skill <span class="Highlight"><strong>Creation's Zenith</strong></span> is cast, an extra <span class="Highlight"><strong>Ivory Herald</strong></span> will be summoned to deal DMG equal to 120% of Resonance Skill <span class="Highlight"><strong>Stroke of Genius</strong></span>'s DMG, considered as Basic Attack DMG.</span>`,
-    hasStacks: false,
-    modifiers: [
       {
         modifier: "EnableAttack",
-        modifierValue: ["SequenceNode6InfiniteLegacy"],
+        modifierValue: ["SequenceNode6JoyousHarvest"],
       },
     ],
     minStacks: 0,
