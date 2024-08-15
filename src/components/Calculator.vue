@@ -37,7 +37,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert">Aalto is now available.</div>
+          <div class="alert">Verina is now available.</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
