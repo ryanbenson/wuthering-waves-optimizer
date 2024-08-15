@@ -18,6 +18,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "RoverHavocMale", name: "Rover Havoc (Male)" },
       { key: "RoverSpectroFemale", name: "Rover Spectro (Female)" },
       { key: "RoverSpectroMale", name: "Rover Spectro (Male)" },
+      { key: "Verina", name: "Verina" },
       { key: "XiangliYao", name: "Xiangli Yao" },
       { key: "Yinlin", name: "Yinlin" },
       { key: "Zhezhi", name: "Zhezhi" },

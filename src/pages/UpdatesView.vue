@@ -31,6 +31,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 15, 2024</h3>
+    <ul>
+      <li>
+        Verina is now available.
+      </li>
+    </ul>
     <h3>August 14, 2024</h3>
     <ul>
       <li>

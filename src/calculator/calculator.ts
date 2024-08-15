@@ -302,3 +302,68 @@ function buildDetailedCalculationString(
 
   return detailedParts.join(" + ");
 }
+
+export function calcHeal(
+  talent: string,
+  finalAtkDefHpVal: number = 0,
+  totalSkillDmgBonus: number = 0, // char stat of healing bonus
+  specificSkillDmg: number = 0, // any buffs for the skill
+  talentModifierAdd: number = 0,
+  talentModifierMultiply: number = 0
+): any {
+  // Parse the talent string to get individual percentage values
+  let { flatBase, talentVal } = parseHealTalentString(talent);
+
+  // add any flat talent modifiers (e.g. Jinshi Incandescence)
+  if (talentModifierAdd) {
+    talentVal += talentModifierAdd;
+  }
+  // if we have a talent multiplier, do it first before adding it to the total
+  // make sure to add 1 to it (e.g. 100% * (1 + 1.2)
+  if (talentModifierMultiply) {
+    let updatedTalentAfterMultiply = talentVal * (1 + talentModifierMultiply);
+    talentVal = updatedTalentAfterMultiply;
+  }
+
+    const totalHealBonus = totalSkillDmgBonus + specificSkillDmg;
+  // Apply defense shred and any other multipliers
+  let healAmount = calcHitHeal(
+    talentVal,
+    flatBase,
+    finalAtkDefHpVal,
+    totalHealBonus,
+  );
+
+  // Return detailed damage information
+  return {
+    healAmount,
+    detailedCalculation: `<strong>${Math.ceil(healAmount)}</strong>`,
+  };
+};
+
+function calcHitHeal(
+  talent: number, // percent value of healing against hp/def/atk
+  flatBase: number = 0, // flat healing amount
+  finalAtkDefHpVal: number = 0,
+  totalHealBonus: number = 0, // total healing bonus
+): number {
+  return (talent * finalAtkDefHpVal + flatBase) * (1 + totalHealBonus);
+}
+
+function parseHealTalentString(talent: string): any {
+  let flatBase;
+  let talentVal;
+  // all heal talents are either: 100 + 20.00% or just 20%
+  const hasFlatBase = talent.includes('+');
+  if (hasFlatBase) {
+    const [flatBaseString, talentPercentString] = talent.split('+');
+    flatBase = Number(flatBaseString.trim());
+    talentVal = parseFloat(talentPercentString.replace("%", "")) / 100;
+  } else {
+    talentVal = parseFloat(talent.replace("%", "")) / 100;
+  }
+  return {
+    flatBase,
+    talentVal
+  };
+}
