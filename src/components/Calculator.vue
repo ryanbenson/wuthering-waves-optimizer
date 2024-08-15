@@ -1535,7 +1535,6 @@ export default defineComponent({
           genericSkillDmgBonusSelfBuff +
           genericSkillDmgBonusTeamEchoBuff +
           genericSkillDmgBonusEchoBuff / 100;
-        console.log('--', specificSkillDmgFromResonanceChains)
         const teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         const resonanceChainResistShredForCharElement =
