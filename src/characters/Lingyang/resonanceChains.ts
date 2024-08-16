@@ -55,7 +55,12 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "BasicAttackDMGBonus",
+        modifySpecificTalents: [
+          "FeralGyrateStage1DMG",
+          "FeralGyrateStage2DMG",
+          "StormyKicksDMG",
+          "TailStrikeDMG"
+        ],
         modifierValue: 1,
       },
     ],
