@@ -15,7 +15,6 @@ export const swordsList = {
     { key: "OriginiteTypeII", name: "Originite Type II" },
     { key: "SwordOfNight", name: "Sword Of Night" },
     { key: "SwordOfVoyager", name: "Sword Of Voyager" },
-    { key: "SwordOfVoyager", name: "Sword Of Voyager" },
   ],
   two: [{ key: "TyroSword", name: "Tyro Sword" }],
   one: [{ key: "TrainingSword", name: "Training Sword" }],

@@ -372,7 +372,8 @@ export default {
     echoSubStatsType1: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType1 ?? "none"
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType1 ??
+          "none"
         );
       },
       async set(value) {
@@ -393,8 +394,7 @@ export default {
     echoSubStatsValue1: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue1 ??
-          0
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue1 ?? 0
         );
       },
       async set(value) {
@@ -416,7 +416,8 @@ export default {
     echoSubStatsType2: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType2 ?? "none"
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType2 ??
+          "none"
         );
       },
       async set(value) {
@@ -437,8 +438,7 @@ export default {
     echoSubStatsValue2: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue2 ??
-          0
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue2 ?? 0
         );
       },
       async set(value) {
@@ -460,7 +460,8 @@ export default {
     echoSubStatsType3: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType3 ?? "none"
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType3 ??
+          "none"
         );
       },
       async set(value) {
@@ -481,8 +482,7 @@ export default {
     echoSubStatsValue3: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue3 ??
-          0
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue3 ?? 0
         );
       },
       async set(value) {
@@ -504,7 +504,8 @@ export default {
     echoSubStatsType4: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType4 ?? "none"
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType4 ??
+          "none"
         );
       },
       async set(value) {
@@ -525,8 +526,7 @@ export default {
     echoSubStatsValue4: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue4 ??
-          0
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue4 ?? 0
         );
       },
       async set(value) {
@@ -547,7 +547,8 @@ export default {
     echoSubStatsType5: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType5 ?? "none"
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType5 ??
+          "none"
         );
       },
       async set(value) {
@@ -568,8 +569,7 @@ export default {
     echoSubStatsValue5: {
       get() {
         return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue5 ??
-          0
+          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue5 ?? 0
         );
       },
       async set(value) {
@@ -616,7 +616,10 @@ export default {
       return echoes;
     },
     chosenMainEchoImage() {
-      return this.chosenMainEchoData?.image ?? "/images/echoes/monsters.png";
+      return (
+        this.chosenMainEchoData?.image ??
+        "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png"
+      );
     },
     mainEchoHasStacks() {
       return this.chosenMainEchoData?.hasStacks ?? false;

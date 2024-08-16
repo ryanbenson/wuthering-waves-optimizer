@@ -64,7 +64,10 @@
     </div>
     <div v-if="weapon" class="weapon__stats">
       <div v-if="weaponAttack" class="weapon__stat">
-        <span><img src="/images/atk.png" />Attack:</span>
+        <span
+          ><img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Attack:</span
+        >
         <span>{{ weaponAttack }}</span>
       </div>
       <div
@@ -315,17 +318,17 @@ export default {
       }
       switch (this.weaponModifier) {
         case "ATK":
-          return "/images/atk.png";
+          return "https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png";
         case "DEF":
-          return "/images/def.png";
+          return "https://ryanbenson.github.io/wuthering-waves-assets/images/def.png";
         case "HP":
-          return "/images/hp.png";
+          return "https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png";
         case "CritRate":
-          return "/images/critrate.png";
+          return "https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png";
         case "CritDMG":
-          return "/images/critdamage.png";
+          return "https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png";
         case "EnergyRegen":
-          return "/images/energyregen.png";
+          return "https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png";
         default:
           return null;
       }

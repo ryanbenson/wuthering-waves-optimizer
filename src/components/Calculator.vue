@@ -4,33 +4,45 @@
       <ul>
         <li @click="changeScreen('character')">
           <img
-            src="/images/T_IconAchv_002.png"
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png"
             class="icon"
             alt="Your Character" />
         </li>
         <li @click="changeScreen('weapon')">
           <img
-            src="/images/T_IconAchv_014.png"
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_014.png"
             class="icon"
             alt="Your Weapon" />
         </li>
         <li @click="changeScreen('echoes')">
-          <img src="/images/echoes.png" class="icon" alt="Your Echoes" />
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/echoes.png"
+            class="icon"
+            alt="Your Echoes" />
         </li>
         <li @click="changeScreen('constellations')">
           <img
-            src="/images/constellations.png"
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/constellations.png"
             class="icon"
             alt="Your Resonance Chains" />
         </li>
         <li @click="changeScreen('party')">
-          <img src="/images/team.png" class="icon" alt="Team Buffs" />
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/team.png"
+            class="icon"
+            alt="Team Buffs" />
         </li>
         <li @click="changeScreen('enemy')">
-          <img src="/images/enemy.png" class="icon" alt="Your Enemy" />
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png"
+            class="icon"
+            alt="Your Enemy" />
         </li>
         <li class="calculations__nav--results" @click="changeScreen('results')">
-          <img src="/images/damages.png" class="icon" alt="Results" />
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/damages.png"
+            class="icon"
+            alt="Results" />
         </li>
       </ul>
     </div>
@@ -42,7 +54,7 @@
             <div
               class="character__selection__avatar"
               :style="{
-                backgroundImage: `url(/images/${character}.png)`,
+                backgroundImage: `url(https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png)`,
               }"></div>
             <div class="character__selection__form">
               <div class="character__selection__form--character">
@@ -146,54 +158,79 @@
         <div class="results__stats">
           <h2 class="mt-0">Stats</h2>
           <div>
-            <span><img src="/images/atk.png" />Attack</span>
+            <span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Attack</span
+            >
             <span>{{ totalAtk }}</span>
           </div>
           <div>
-            <span><img src="/images/hp.png" />HP</span>
+            <span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />HP</span
+            >
             <span>{{ totalHp }}</span>
           </div>
           <div>
-            <span><img src="/images/def.png" />Defense</span>
+            <span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />Defense</span
+            >
             <span>{{ totalDef }}</span>
           </div>
           <div>
-            <span><img src="/images/critrate.png" />Crit Rate</span>
+            <span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />Crit
+              Rate</span
+            >
             <span>{{ displayPercentage(totalCritRate * 100) }}</span>
           </div>
           <div>
-            <span><img src="/images/critdamage.png" />Crit DMG</span>
+            <span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" />Crit
+              DMG</span
+            >
             <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
           </div>
           <div>
-            <span><img src="/images/energyregen.png" />Energy Regen</span>
+            <span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" />Energy
+              Regen</span
+            >
             <span>{{ displayPercentage(energyRegen * 100) }}</span>
           </div>
           <div>
             <span
-              ><img src="/images/basicatkdmgbonus.png" />Basic Attack DMG
-              Bonus</span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" />Basic
+              Attack DMG Bonus</span
             >
             <span>{{ displayPercentage(BasicAttackDMGBonus) }}</span>
           </div>
           <div>
             <span
-              ><img src="/images/heavyatkdmgbonus.png" />Heavy Attack DMG
-              Bonus</span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png" />Heavy
+              Attack DMG Bonus</span
             >
             <span>{{ displayPercentage(HeavyAttackDMGBonus) }}</span>
           </div>
           <div>
             <span
-              ><img src="/images/skilldmgbonus.png" />Resonance Skill DMG
-              Bonus</span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" />Resonance
+              Skill DMG Bonus</span
             >
             <span>{{ displayPercentage(ResonanceSkillDMGBonus) }}</span>
           </div>
           <div>
             <span
-              ><img src="/images/liberationdmgbonus.png" />Resonance Liberation
-              DMG Bonus</span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" />Resonance
+              Liberation DMG Bonus</span
             >
             <span>{{ displayPercentage(ResonanceLiberationDMGBonus) }}</span>
           </div>
@@ -208,7 +245,7 @@
           <div>
             <span
               ><img
-                src="/images/glaciodmgbonus.png"
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/glaciodmgbonus.png"
                 class="glacio--active" />Glacio DMG Bonus</span
             >
             <span>{{ displayPercentage(Glacio) }}</span>
@@ -216,7 +253,7 @@
           <div>
             <span
               ><img
-                src="/images/fusiondmgbonus.png"
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/fusiondmgbonus.png"
                 class="fusion--active" />Fusion DMG Bonus</span
             >
             <span>{{ displayPercentage(Fusion) }}</span>
@@ -224,22 +261,23 @@
           <div>
             <span
               ><img
-                src="/images/electrodmgbonus.png"
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/electrodmgbonus.png"
                 class="electro--active" />Electro DMG Bonus</span
             >
             <span>{{ displayPercentage(Electro) }}</span>
           </div>
           <div>
             <span
-              ><img src="/images/aerodmgbonus.png" class="aero--active" />Aero
-              DMG Bonus</span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/aerodmgbonus.png"
+                class="aero--active" />Aero DMG Bonus</span
             >
             <span>{{ displayPercentage(Aero) }}</span>
           </div>
           <div>
             <span
               ><img
-                src="/images/spectrodmgbonus.png"
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/spectrodmgbonus.png"
                 class="spectro--active" />Spectro DMG Bonus</span
             >
             <span>{{ displayPercentage(Spectro) }}</span>
@@ -247,13 +285,17 @@
           <div>
             <span
               ><img
-                src="/images/havocdmgbonus.png"
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/havocdmgbonus.png"
                 class="havoc--active" />Havoc DMG Bonus</span
             >
             <span>{{ displayPercentage(Havoc) }}</span>
           </div>
           <div>
-            <span><img src="/images/healingbonus.png" />Healing Bonus</span>
+            <span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png" />Healing
+              Bonus</span
+            >
             <span>{{ displayPercentage(healingBonus * 100) }}</span>
           </div>
           <div v-if="false">
@@ -281,8 +323,10 @@
           v-for="damageInstance in allDamages?.value?.basicAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item"
-          :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
-        >
+          :class="{
+            'calculation__damage__item--healing':
+              damageInstance.type === 'Healing',
+          }">
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
             <span
@@ -323,8 +367,10 @@
           v-for="damageInstance in allDamages?.value?.skillAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item"
-          :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
-        >
+          :class="{
+            'calculation__damage__item--healing':
+              damageInstance.type === 'Healing',
+          }">
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
             <span
@@ -365,8 +411,10 @@
           v-for="damageInstance in allDamages?.value?.liberationAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item"
-          :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
-        >
+          :class="{
+            'calculation__damage__item--healing':
+              damageInstance.type === 'Healing',
+          }">
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
             <span
@@ -407,8 +455,10 @@
           v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item"
-          :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
-        >
+          :class="{
+            'calculation__damage__item--healing':
+              damageInstance.type === 'Healing',
+          }">
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
             <span
@@ -449,8 +499,10 @@
           v-for="damageInstance in allDamages?.value?.introAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item"
-          :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
-        >
+          :class="{
+            'calculation__damage__item--healing':
+              damageInstance.type === 'Healing',
+          }">
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
             <span
@@ -498,8 +550,10 @@
             v-for="damageInstance in allDamages?.value?.outroAttacks"
             :key="damageInstance.key"
             class="calculation__damage__item"
-            :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
-          >
+            :class="{
+              'calculation__damage__item--healing':
+                damageInstance.type === 'Healing',
+            }">
             <template v-if="damageInstance.type === 'Healing'">
               <span>{{ damageInstance.label }}</span>
               <span
@@ -542,53 +596,79 @@
       <div class="results__stats">
         <h2 class="mt-0">Stats</h2>
         <div>
-          <span><img src="/images/atk.png" />Attack</span>
+          <span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Attack</span
+          >
           <span>{{ totalAtk }}</span>
         </div>
         <div>
-          <span><img src="/images/hp.png" />HP</span> <span>{{ totalHp }}</span>
+          <span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />HP</span
+          >
+          <span>{{ totalHp }}</span>
         </div>
         <div>
-          <span><img src="/images/def.png" />Defense</span>
+          <span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />Defense</span
+          >
           <span>{{ totalDef }}</span>
         </div>
         <div>
-          <span><img src="/images/critrate.png" />Crit Rate</span>
+          <span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />Crit
+            Rate</span
+          >
           <span>{{ displayPercentage(totalCritRate * 100) }}</span>
         </div>
         <div>
-          <span><img src="/images/critdamage.png" />Crit DMG</span>
+          <span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" />Crit
+            DMG</span
+          >
           <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
         </div>
         <div>
-          <span><img src="/images/energyregen.png" />Energy Regen</span>
+          <span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" />Energy
+            Regen</span
+          >
           <span>{{ displayPercentage(energyRegen * 100) }}</span>
         </div>
         <div>
           <span
-            ><img src="/images/basicatkdmgbonus.png" />Basic Attack DMG
-            Bonus</span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" />Basic
+            Attack DMG Bonus</span
           >
           <span>{{ displayPercentage(BasicAttackDMGBonus) }}</span>
         </div>
         <div>
           <span
-            ><img src="/images/heavyatkdmgbonus.png" />Heavy Attack DMG
-            Bonus</span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png" />Heavy
+            Attack DMG Bonus</span
           >
           <span>{{ displayPercentage(HeavyAttackDMGBonus) }}</span>
         </div>
         <div>
           <span
-            ><img src="/images/skilldmgbonus.png" />Resonance Skill DMG
-            Bonus</span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" />Resonance
+            Skill DMG Bonus</span
           >
           <span>{{ displayPercentage(ResonanceSkillDMGBonus) }}</span>
         </div>
         <div>
           <span
-            ><img src="/images/liberationdmgbonus.png" />Resonance Liberation
-            DMG Bonus</span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" />Resonance
+            Liberation DMG Bonus</span
           >
           <span>{{ displayPercentage(ResonanceLiberationDMGBonus) }}</span>
         </div>
@@ -603,7 +683,7 @@
         <div>
           <span
             ><img
-              src="/images/glaciodmgbonus.png"
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/glaciodmgbonus.png"
               class="glacio--active" />Glacio DMG Bonus</span
           >
           <span>{{ displayPercentage(Glacio) }}</span>
@@ -611,7 +691,7 @@
         <div>
           <span
             ><img
-              src="/images/fusiondmgbonus.png"
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/fusiondmgbonus.png"
               class="fusion--active" />Fusion DMG Bonus</span
           >
           <span>{{ displayPercentage(Fusion) }}</span>
@@ -619,35 +699,41 @@
         <div>
           <span
             ><img
-              src="/images/electrodmgbonus.png"
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/electrodmgbonus.png"
               class="electro--active" />Electro DMG Bonus</span
           >
           <span>{{ displayPercentage(Electro) }}</span>
         </div>
         <div>
           <span
-            ><img src="/images/aerodmgbonus.png" class="aero--active" />Aero DMG
-            Bonus</span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/aerodmgbonus.png"
+              class="aero--active" />Aero DMG Bonus</span
           >
           <span>{{ displayPercentage(Aero) }}</span>
         </div>
         <div>
           <span
             ><img
-              src="/images/spectrodmgbonus.png"
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/spectrodmgbonus.png"
               class="spectro--active" />Spectro DMG Bonus</span
           >
           <span>{{ displayPercentage(Spectro) }}</span>
         </div>
         <div>
           <span
-            ><img src="/images/havocdmgbonus.png" class="havoc--active" />Havoc
-            DMG Bonus</span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/havocdmgbonus.png"
+              class="havoc--active" />Havoc DMG Bonus</span
           >
           <span>{{ displayPercentage(Havoc) }}</span>
         </div>
         <div>
-          <span><img src="/images/healingbonus.png" />Healing Bonus</span>
+          <span
+            ><img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png" />Healing
+            Bonus</span
+          >
           <span>{{ displayPercentage(healingBonus * 100) }}</span>
         </div>
         <div v-if="false">
@@ -680,8 +766,10 @@
         v-for="damageInstance in allDamages?.value?.basicAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item"
-        :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
-      >
+        :class="{
+          'calculation__damage__item--healing':
+            damageInstance.type === 'Healing',
+        }">
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
           <span
@@ -722,8 +810,10 @@
         v-for="damageInstance in allDamages?.value?.skillAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item"
-        :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
-      >
+        :class="{
+          'calculation__damage__item--healing':
+            damageInstance.type === 'Healing',
+        }">
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
           <span
@@ -764,8 +854,10 @@
         v-for="damageInstance in allDamages?.value?.liberationAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item"
-        :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
-      >
+        :class="{
+          'calculation__damage__item--healing':
+            damageInstance.type === 'Healing',
+        }">
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
           <span
@@ -806,8 +898,10 @@
         v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item"
-        :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
-      >
+        :class="{
+          'calculation__damage__item--healing':
+            damageInstance.type === 'Healing',
+        }">
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
           <span
@@ -848,8 +942,10 @@
         v-for="damageInstance in allDamages?.value?.introAttacks"
         :key="damageInstance.key"
         class="calculation__damage__item"
-        :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
-      >
+        :class="{
+          'calculation__damage__item--healing':
+            damageInstance.type === 'Healing',
+        }">
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
           <span
@@ -896,8 +992,10 @@
           v-for="damageInstance in allDamages?.value?.outroAttacks"
           :key="damageInstance.key"
           class="calculation__damage__item"
-          :class="{'calculation__damage__item--healing': damageInstance.type === 'Healing'}"
-        >
+          :class="{
+            'calculation__damage__item--healing':
+              damageInstance.type === 'Healing',
+          }">
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
             <span
@@ -1584,7 +1682,7 @@ export default defineComponent({
           finalAtkDefHpVal = calcCharStats("DEF", { DEF: modifyBaseDef });
         }
 
-        if (attackType === 'Healing') {
+        if (attackType === "Healing") {
           const h = calcHeal(
             talent,
             finalAtkDefHpVal,
@@ -1636,7 +1734,9 @@ export default defineComponent({
                 const enabledAttacks = []
                   .concat(resonanceChainsEnabledAttacks)
                   .concat(charBuffsEnabledAttacks);
-                const isAttackEnabled = enabledAttacks.includes(attack.requiresResonanceChain);
+                const isAttackEnabled = enabledAttacks.includes(
+                  attack.requiresResonanceChain
+                );
                 // flag this attack as enabled or not based on the resonance chain
                 isEnabled = isAttackEnabled;
               }
@@ -1656,7 +1756,7 @@ export default defineComponent({
                   hasNoTalentLevel
                 ),
                 isEnabled,
-                type: attack.type
+                type: attack.type,
               };
             })
             // remove any attacks that are not enabled

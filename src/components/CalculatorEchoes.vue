@@ -310,7 +310,10 @@ export default {
       return echoes;
     },
     chosenMainEchoImage() {
-      return this.chosenMainEchoData?.image ?? "/images/echoes/monsters.png";
+      return (
+        this.chosenMainEchoData?.image ??
+        "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png"
+      );
     },
     mainEchoHasStacks() {
       return this.chosenMainEchoData?.hasStacks ?? false;
