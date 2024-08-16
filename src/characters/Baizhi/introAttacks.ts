@@ -1,0 +1,41 @@
+export const introAttacks = {
+  name: "Intro Skill: Overflowing Frost",
+  description: `<div class="skilldescription">Baizhi calls You'tan to perform 1 plunging attack, dealing <span class="Ice">Glacio DMG</span> while healing all characters on a nearby team.</div>`,
+  attacks: [
+    {
+      key: "OverflowingFrostDMG",
+      label: "Skill DMG",
+      talents: {
+        "1": "40.00%",
+        "2": "43.28%",
+        "3": "46.56%",
+        "4": "51.16%",
+        "5": "54.44%",
+        "6": "58.21%",
+        "7": "63.46%",
+        "8": "68.70%",
+        "9": "73.95%",
+        "10": "79.53%",
+      },
+      type: "Intro",
+    },
+    {
+      key: "OverflowingFrostHealing",
+      label: "Overflowing Frost Healing",
+      talents: {
+        "1": "75 + 0.38%",
+        "2": "82 + 0.41%",
+        "3": "88 + 0.44%",
+        "4": "96 + 0.48%",
+        "5": "103 + 0.51%",
+        "6": "110 + 0.55%",
+        "7": "119 + 0.60%",
+        "8": "129 + 0.65%",
+        "9": "139 + 0.70%",
+        "10": "150 + 0.75%",
+      },
+      type: "Healing",
+      attribute: "hp",
+    },
+  ],
+};

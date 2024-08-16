@@ -49,7 +49,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Verina is now available.</div>
+          <div class="alert">Baizhi is now available ❄️</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -1586,6 +1586,18 @@ export default defineComponent({
           talentModifierAdd + talentModifierAddFromResonanceChains;
         const specificSkillDmgFromResonanceChains =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
+        // there are bonuses that are based on Max HP, Max ATK, Max DEF
+        // we end up with DMG Bonus %, so we also / 100 in the end
+        const specificSkillDmgFromResonanceChainsBasedOnMaxHp =
+          charResonanceChainsData.value?.specificTalentBuffs?.[`${attack.key}:DMGBonus:MaxHP`] ?? 0;
+        const specificSkillDmgFromResonanceChainsBasedOnMaxAtk =
+          charResonanceChainsData.value?.specificTalentBuffs?.[`${attack.key}:DMGBonus:MaxAtk`] ?? 0;
+        const specificSkillDmgFromResonanceChainsBasedOnMaxDef =
+          charResonanceChainsData.value?.specificTalentBuffs?.[`${attack.key}:DMGBonus:MaxDef`] ?? 0;
+        const specificSkillDmgFromResonanceChainsBasedOnMaxHpVal = totalHp.value * specificSkillDmgFromResonanceChainsBasedOnMaxHp / 100;
+        const specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal = totalAtk.value * specificSkillDmgFromResonanceChainsBasedOnMaxAtk / 100;
+        const specificSkillDmgFromResonanceChainsBasedOnMaxDefVal = totalDef.value * specificSkillDmgFromResonanceChainsBasedOnMaxDef / 100;
+        // end max buff handlers
         const specificSkillDmgFromCharBuffs =
           charBuffsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const genericSkillDmgBonusResChain =
@@ -1632,6 +1644,9 @@ export default defineComponent({
           genericSkillDmgBonusResChain +
           genericSkillDmgBonusSelfBuff +
           genericSkillDmgBonusTeamEchoBuff +
+          specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +
+          specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal +
+          specificSkillDmgFromResonanceChainsBasedOnMaxDefVal +
           genericSkillDmgBonusEchoBuff / 100;
         const teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
