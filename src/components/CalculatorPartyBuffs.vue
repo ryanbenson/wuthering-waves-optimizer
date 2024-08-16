@@ -116,7 +116,11 @@
 </template>
 
 <script>
-import { buffsByCharacter, allEchoBuffs, allWeaponTeamBuffs } from "../buffs/index.ts";
+import {
+  buffsByCharacter,
+  allEchoBuffs,
+  allWeaponTeamBuffs,
+} from "../buffs/index.ts";
 import { allCharacters } from "../characters/characters.ts";
 import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
 import { mapActions, mapState } from "pinia";
@@ -192,8 +196,8 @@ export default {
     availableCharacters() {
       // if running rover, filter all rover out
       // TODO: Remove this if we assume co-op, but we'll need to fix the resist reduction beyond 0
-      if (this.character.includes('Rover')) {
-        return this.allCharacters.filter((char) => !char.includes('Rover'));
+      if (this.character.includes("Rover")) {
+        return this.allCharacters.filter((char) => !char.includes("Rover"));
       }
       return this.allCharacters.filter((char) => char !== this.character);
     },
@@ -260,9 +264,9 @@ export default {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
     getCharacterImage(character) {
       if (!character) {
-        return `/images/T_IconAchv_002.png`;
+        return `https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png`;
       }
-      return `/images/${character}.png`;
+      return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
     },
     updatedStats() {
       this.$emit("updated-team-buffs", this.buffsFormatted);
