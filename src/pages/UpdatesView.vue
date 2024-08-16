@@ -33,6 +33,7 @@
     <h1>Updates</h1>
     <h3>August 16, 2024</h3>
     <ul>
+      <li>Baizhi is now available.</li>
       <li>Moves assets to external service.</li>
       <li>Updates Lingyang S6 to only affect his Forte.</li>
     </ul>

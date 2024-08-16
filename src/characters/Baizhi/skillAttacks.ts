@@ -1,0 +1,42 @@
+export const skillAttacks = {
+  name: "Resonance Skill: Emergency Plan",
+  description: `<div class="skilldescription">Baizhi calls You'tan to attack the target, dealing <span class="Ice">Glacio DMG</span> while immediately healing all characters on nearby teams.</div>`,
+  attacks: [
+    {
+      key: "EmergencyPlanSkillDMG",
+      label: "Skill DMG",
+      talents: {
+        "1": "8.02%",
+        "2": "8.68%",
+        "3": "9.34%",
+        "4": "10.26%",
+        "5": "10.91%",
+        "6": "11.67%",
+        "7": "12.72%",
+        "8": "13.77%",
+        "9": "14.82%",
+        "10": "15.94%",
+      },
+      type: "Skill",
+      attribute: "hp",
+    },
+    {
+      key: "EmergencyPlanHealing",
+      label: "Healing",
+      talents: {
+        "1": "575 + 2.90%",
+        "2": "623 + 3.14%",
+        "3": "670 + 3.37%",
+        "4": "736 + 3.71%",
+        "5": "783 + 3.94%",
+        "6": "837 + 4.22%",
+        "7": "913 + 4.60%",
+        "8": "988 + 4.98%",
+        "9": "1064 + 5.36%",
+        "10": "1144 + 5.76%",
+      },
+      type: "Healing",
+      attribute: "hp",
+    },
+  ],
+};

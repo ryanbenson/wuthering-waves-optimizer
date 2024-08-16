@@ -25,6 +25,7 @@ export function getCharactersAvailable(): CharacterList {
     ],
     four: [
       { key: "Aalto", name: "Aalto" },
+      { key: "Baizhi", name: "Baizhi" },
       { key: "Chixia", name: "Chixia" },
       { key: "Danjin", name: "Danjin" },
       { key: "Mortefi", name: "Mortefi" },
