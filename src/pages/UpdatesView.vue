@@ -31,6 +31,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 17, 2024</h3>
+    <ul>
+      <li>
+        Bug fix: Fixes Aalto S3, it was not properly enabling his new hits. It
+        works again.
+      </li>
+    </ul>
     <h3>August 16, 2024</h3>
     <ul>
       <li>Baizhi is now available.</li>

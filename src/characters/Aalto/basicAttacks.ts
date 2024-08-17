@@ -171,7 +171,7 @@ export const basicAttacks = {
         "10": "15.91%*2",
       },
       type: "Basic",
-      requiresResonanceChain: "SequenceNode3HazeyTransition",
+      requiresResonanceChain: "SequenceNode3HazeyTransitionHalfTruthsStage1DMG",
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage2DMG",
@@ -189,7 +189,7 @@ export const basicAttacks = {
         "10": "26.51%*2",
       },
       type: "Basic",
-      requiresResonanceChain: "SequenceNode3HazeyTransition",
+      requiresResonanceChain: "SequenceNode3HazeyTransitionHalfTruthsStage2DMG",
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage3DMG",
@@ -207,7 +207,7 @@ export const basicAttacks = {
         "10": "23.86%*4",
       },
       type: "Basic",
-      requiresResonanceChain: "SequenceNode3HazeyTransition",
+      requiresResonanceChain: "SequenceNode3HazeyTransitionHalfTruthsStage3DMG",
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage4DMG",
@@ -225,7 +225,7 @@ export const basicAttacks = {
         "10": "25.19%*4",
       },
       type: "Basic",
-      requiresResonanceChain: "SequenceNode3HazeyTransition",
+      requiresResonanceChain: "SequenceNode3HazeyTransitionHalfTruthsStage4DMG",
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage5DMG",
@@ -243,7 +243,7 @@ export const basicAttacks = {
         "10": "89.87%*2",
       },
       type: "Basic",
-      requiresResonanceChain: "SequenceNode3HazeyTransition",
+      requiresResonanceChain: "SequenceNode3HazeyTransitionHalfTruthsStage5DMG",
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsMidAirAttackDMG",
@@ -261,7 +261,8 @@ export const basicAttacks = {
         "10": "29.83%*2",
       },
       type: "Basic",
-      requiresResonanceChain: "SequenceNode3HazeyTransition",
-    },    
+      requiresResonanceChain:
+        "SequenceNode3HazeyTransitionHalfTruthsMidAirAttackDMG",
+    },
   ],
 };
