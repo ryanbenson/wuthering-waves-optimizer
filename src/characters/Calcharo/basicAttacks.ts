@@ -1,5 +1,5 @@
 export const basicAttacks = {
-  name: "Gnawing Fangs",
+  name: "Basic Attacks: Gnawing Fangs",
   description:
     '<div class="skilldescription"><span class="Title">Basic Attack</span><br>Calcharo performs up to 4 consecutive attacks, dealing <span class="Thunder">Electro DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Consumes Stamina to attack the target, dealing <span class="Thunder">Electro DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Consumes Stamina to perform a Mid-Air Plunging Attack, dealing <span class="Thunder">Electro DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>',
   attacks: [

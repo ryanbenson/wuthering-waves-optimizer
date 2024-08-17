@@ -318,7 +318,7 @@
           <span>Average</span>
           <span>Crit</span>
         </div>
-        <h4>Basic Attacks</h4>
+        <h4>{{ chosenChar.value?.basicAttacks?.name ?? "Basic Attacks" }}</h4>
         <div
           v-for="damageInstance in allDamages?.value?.basicAttacks"
           :key="damageInstance.key"
@@ -362,7 +362,7 @@
             >
           </template>
         </div>
-        <h4>Skill Attacks</h4>
+        <h4>{{ chosenChar.value?.skillAttacks?.name ?? "Skill Attacks" }}</h4>
         <div
           v-for="damageInstance in allDamages?.value?.skillAttacks"
           :key="damageInstance.key"
@@ -406,7 +406,11 @@
             >
           </template>
         </div>
-        <h4>Liberation Attacks</h4>
+        <h4>
+          {{
+            chosenChar.value?.liberationAttacks?.name ?? "Liberation Attacks"
+          }}
+        </h4>
         <div
           v-for="damageInstance in allDamages?.value?.liberationAttacks"
           :key="damageInstance.key"
@@ -450,7 +454,12 @@
             >
           </template>
         </div>
-        <h4>Forte Circuit Attacks</h4>
+        <h4>
+          {{
+            chosenChar.value?.forteCircuitAttacks?.name ??
+            "Forte Circuit Attacks"
+          }}
+        </h4>
         <div
           v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
           :key="damageInstance.key"
@@ -494,7 +503,7 @@
             >
           </template>
         </div>
-        <h4>Intro Attacks</h4>
+        <h4>{{ chosenChar.value?.introAttacks?.name ?? "Intro Attacks" }}</h4>
         <div
           v-for="damageInstance in allDamages?.value?.introAttacks"
           :key="damageInstance.key"
@@ -538,7 +547,7 @@
             >
           </template>
         </div>
-        <h4>Outro Attacks</h4>
+        <h4>{{ chosenChar.value?.outroAttacks?.name ?? "Outro Attacks" }}</h4>
         <template v-if="!allDamages?.value?.outroAttacks.length">
           <div
             class="calculation__damage__item calculation__damage__item--fill">
@@ -761,7 +770,7 @@
         <span>Average</span>
         <span>Crit</span>
       </div>
-      <h4>Basic Attacks</h4>
+      <h4>{{ chosenChar.value?.basicAttacks?.name ?? "Basic Attacks" }}</h4>
       <div
         v-for="damageInstance in allDamages?.value?.basicAttacks"
         :key="damageInstance.key"
@@ -805,7 +814,7 @@
           >
         </template>
       </div>
-      <h4>Skill Attacks</h4>
+      <h4>{{ chosenChar.value?.skillAttacks?.name ?? "Skill Attacks" }}</h4>
       <div
         v-for="damageInstance in allDamages?.value?.skillAttacks"
         :key="damageInstance.key"
@@ -849,7 +858,9 @@
           >
         </template>
       </div>
-      <h4>Liberation Attacks</h4>
+      <h4>
+        {{ chosenChar.value?.liberationAttacks?.name ?? "Liberation Attacks" }}
+      </h4>
       <div
         v-for="damageInstance in allDamages?.value?.liberationAttacks"
         :key="damageInstance.key"
@@ -893,7 +904,11 @@
           >
         </template>
       </div>
-      <h4>Forte Circuit Attacks</h4>
+      <h4>
+        {{
+          chosenChar.value?.forteCircuitAttacks?.name ?? "Forte Circuit Attacks"
+        }}
+      </h4>
       <div
         v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
         :key="damageInstance.key"
@@ -937,7 +952,7 @@
           >
         </template>
       </div>
-      <h4>Intro Attacks</h4>
+      <h4>{{ chosenChar.value?.introAttacks?.name ?? "Intro Attacks" }}</h4>
       <div
         v-for="damageInstance in allDamages?.value?.introAttacks"
         :key="damageInstance.key"
@@ -981,7 +996,7 @@
           >
         </template>
       </div>
-      <h4>Outro Attacks</h4>
+      <h4>{{ chosenChar.value?.outroAttacks?.name ?? "Outro Attacks" }}</h4>
       <template v-if="!allDamages?.value?.outroAttacks.length">
         <div class="calculation__damage__item">
           {{ character }} does not have outro attacks.
@@ -1589,14 +1604,26 @@ export default defineComponent({
         // there are bonuses that are based on Max HP, Max ATK, Max DEF
         // we end up with DMG Bonus %, so we also / 100 in the end
         const specificSkillDmgFromResonanceChainsBasedOnMaxHp =
-          charResonanceChainsData.value?.specificTalentBuffs?.[`${attack.key}:DMGBonus:MaxHP`] ?? 0;
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DMGBonus:MaxHP`
+          ] ?? 0;
         const specificSkillDmgFromResonanceChainsBasedOnMaxAtk =
-          charResonanceChainsData.value?.specificTalentBuffs?.[`${attack.key}:DMGBonus:MaxAtk`] ?? 0;
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DMGBonus:MaxAtk`
+          ] ?? 0;
         const specificSkillDmgFromResonanceChainsBasedOnMaxDef =
-          charResonanceChainsData.value?.specificTalentBuffs?.[`${attack.key}:DMGBonus:MaxDef`] ?? 0;
-        const specificSkillDmgFromResonanceChainsBasedOnMaxHpVal = totalHp.value * specificSkillDmgFromResonanceChainsBasedOnMaxHp / 100;
-        const specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal = totalAtk.value * specificSkillDmgFromResonanceChainsBasedOnMaxAtk / 100;
-        const specificSkillDmgFromResonanceChainsBasedOnMaxDefVal = totalDef.value * specificSkillDmgFromResonanceChainsBasedOnMaxDef / 100;
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DMGBonus:MaxDef`
+          ] ?? 0;
+        const specificSkillDmgFromResonanceChainsBasedOnMaxHpVal =
+          (totalHp.value * specificSkillDmgFromResonanceChainsBasedOnMaxHp) /
+          100;
+        const specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal =
+          (totalAtk.value * specificSkillDmgFromResonanceChainsBasedOnMaxAtk) /
+          100;
+        const specificSkillDmgFromResonanceChainsBasedOnMaxDefVal =
+          (totalDef.value * specificSkillDmgFromResonanceChainsBasedOnMaxDef) /
+          100;
         // end max buff handlers
         const specificSkillDmgFromCharBuffs =
           charBuffsData.value?.specificTalentBuffs?.[attack.key] ?? 0;

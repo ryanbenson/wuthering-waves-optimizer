@@ -34,6 +34,10 @@
     <h3>August 17, 2024</h3>
     <ul>
       <li>
+        Adds the name of the type of attacks instead of generically saying
+        "Liberation Attack", it'll say "Resonance Liberation: Unmovable"
+      </li>
+      <li>
         Bug fix: Fixes Aalto S3, it was not properly enabling his new hits. It
         works again.
       </li>
