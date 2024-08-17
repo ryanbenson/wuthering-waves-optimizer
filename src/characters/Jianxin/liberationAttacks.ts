@@ -1,0 +1,40 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Purification Force Field",
+  description: `<div class="skilldescription">Create a strong wind field, continuously pulling targets within the wind field to the center and dealing <span class="Wind">Aero DMG</span>. When the wind field disappears, it will trigger an explosion to deal <span class="Wind">Aero DMG</span> to all targets within the range again.</div>`,
+  attacks: [
+    {
+      key: "PurificationForceFieldResonanceLiberationContinuousDamage",
+      label: "Resonance Liberation Continuous Damage",
+      talents: {
+        "1": "15.00%",
+        "2": "16.23%",
+        "3": "17.46%",
+        "4": "19.19%",
+        "5": "20.42%",
+        "6": "21.83%",
+        "7": "23.80%",
+        "8": "25.77%",
+        "9": "27.74%",
+        "10": "29.83%",
+      },
+      type: "Liberation",
+    },
+    {
+      key: "PurificationForceFieldResonanceLiberationExplosionDamage",
+      label: "Resonance Liberation Explosion Damage",
+      talents: {
+        "1": "320.00%",
+        "2": "346.24%",
+        "3": "372.48%",
+        "4": "409.22%",
+        "5": "435.46%",
+        "6": "465.64%",
+        "7": "507.62%",
+        "8": "549.60%",
+        "9": "591.59%",
+        "10": "636.20%",
+      },
+      type: "Liberation",
+    },
+  ],
+};

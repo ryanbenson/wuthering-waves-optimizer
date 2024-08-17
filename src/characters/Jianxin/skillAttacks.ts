@@ -1,0 +1,40 @@
+export const skillAttacks = {
+  name: "Resonance Skill: Calming Air",
+  description: `<div class="skilldescription">Hold <span class="Highlight">Resonance Skill</span> to enter <span class="Highlight">Parry Stance</span>.<br> <br><span class="Title">Chi Counter</span><br>When Jianxin is attacked in the <span class="Highlight">Parry Stance</span>, she does not take damage and immediately performs <span class="Highlight">Chi Counter</span>, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Chi Parry</span><br>Release the <span class="Highlight">Resonance Skill</span> button during <span class="Highlight">Parry Stance</span> to interrupt <span class="Highlight">Parry Stance</span> and perform <span class="Highlight">Chi Parry</span>, dealing <span class="Wind">Aero DMG</span>.</div>`,
+  attacks: [
+    {
+      key: "CalmingAirChiCounterDamage",
+      label: "Chi Counter Damage",
+      talents: {
+        "1": "168.30%",
+        "2": "182.11%",
+        "3": "195.91%",
+        "4": "215.23%",
+        "5": "229.03%",
+        "6": "244.90%",
+        "7": "266.98%",
+        "8": "289.06%",
+        "9": "311.14%",
+        "10": "334.60%",
+      },
+      type: "Skill",
+    },
+    {
+      key: "CalmingAirChiParryDamage",
+      label: "Chi Parry Damage",
+      talents: {
+        "1": "130.14%",
+        "2": "140.81%",
+        "3": "151.48%",
+        "4": "166.42%",
+        "5": "177.09%",
+        "6": "189.36%",
+        "7": "206.44%",
+        "8": "223.51%",
+        "9": "240.59%",
+        "10": "258.73%",
+      },
+      type: "Skill",
+    },
+  ],
+};

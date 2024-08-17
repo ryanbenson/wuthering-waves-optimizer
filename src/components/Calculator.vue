@@ -49,7 +49,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Baizhi is now available ❄️</div>
+          <div class="alert">
+            Jianxin is now available. All characters are in!✨
+          </div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
