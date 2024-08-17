@@ -23,7 +23,6 @@
     <h1>Upcoming Updates</h1>
     <ul>
       <li>Better UI</li>
-      <li>More characters</li>
       <li>More weapons</li>
       <li>Custom rotations</li>
       <li>Food</li>
@@ -33,6 +32,7 @@
     <h1>Updates</h1>
     <h3>August 17, 2024</h3>
     <ul>
+      <li>Jianxin is now avilable. All characters are done!</li>
       <li>
         Adds the name of the type of attacks instead of generically saying
         "Liberation Attack", it'll say "Resonance Liberation: Unmovable"

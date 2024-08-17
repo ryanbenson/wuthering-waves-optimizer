@@ -1,0 +1,35 @@
+export const resonanceChains = [
+  {
+    key: "SequenceNode4MultitideReflection",
+    name: "Sequence Node 4: Multitide Reflection",
+    details: `<span class="skilldescription">When performing Forte Circuit <span class="Highlight">Heavy Attack: Primordial Chi Spiral</span>, Jianxin's Resonance Liberation <span class="Highlight">Purification Force Field</span> damage is increased by 80% for 14s.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifySpecificTalents: [
+          "PurificationForceFieldResonanceLiberationContinuousDamage",
+          "PurificationForceFieldResonanceLiberationExplosionDamage",
+        ],
+        modifierValue: 0.8,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode6TruthfromWithin",
+    name: "Sequence Node 6: Truth from Within",
+    details: `<span class="skilldescription">During Forte Circuit <span class="Highlight">Heavy Attack: Primordial Qi Spiral</span>, if Jianxin performs <span class="Highlight">Pushing Punch</span>, enhanced Resonance Skill <span class="Highlight">Special Chi Counter</span> can be used 1 time(s) in 5s.  <span class="Highlight">Special Chi Counter</span>: Deals <span class="Wind">Aero DMG</span> equal to 556.67% of Jianxin's ATK, considered as Heavy Attack DMG. Obtain a Zhoutian Progress 4 Shield (Benefits from Inherent Skill <span class="Highlight">Reflection</span>'s bonus effect.)</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "EnableAttack",
+        modifierValue: ["SequenceNode6TruthfromWithinSpecialChiCounter"],
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+];
