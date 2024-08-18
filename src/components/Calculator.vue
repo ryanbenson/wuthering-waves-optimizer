@@ -142,19 +142,9 @@
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
-        <div
-          v-for="field in fields"
-          :key="field.name"
-          class="form__group field">
-          <input
-            :id="field.name"
-            :type="field.type"
-            v-model="formData[field.name]"
-            :step="field.step"
-            class="form__field"
-            :placeholder="field.name" />
-          <label :for="field.name" class="form__label">{{ field.label }}</label>
-        </div>
+        <CalculatorEnemy
+          :character="character"
+          @updated-enemy-data="handleUpdatedEnemy"></CalculatorEnemy>
       </div>
       <div class="screen--results" v-show="curScreen === 'results'">
         <div class="results__stats">
@@ -1069,16 +1059,10 @@ import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
 import CalculatorTalents from "./CalculatorTalents.vue";
 import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
+import CalculatorEnemy from "./CalculatorEnemy.vue";
 import { mainEchoesData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
-import { outroAttacks } from "../characters/Calcharo/outroAttacks";
-
-interface FormData {
-  [key: string]: number | string; // index signature
-  enemyLevel: number;
-  enemyResist: number;
-}
 
 const decimalFormatter = new Intl.NumberFormat("en", {
   style: "decimal",
@@ -1093,6 +1077,7 @@ export default defineComponent({
   name: "Calculator",
   components: {
     CalculatorEchoes,
+    CalculatorEnemy,
     CalculatorWeapons,
     CalculatorCharacterBuffs,
     CalculatorCharacterLevel,
@@ -1142,6 +1127,8 @@ export default defineComponent({
     const TotalDeepenEffect = ref(0);
     const ResistReduction = ref(0);
     const isLoading = ref(false);
+    const enemyLevel = ref(90);
+    const enemyResist = ref(0.1);
 
     charactersList.value = getCharactersAvailable();
 
@@ -1159,8 +1146,8 @@ export default defineComponent({
         weaponType.value = chosenChar.value?.basic?.weapon ?? "Swords";
       }
       // update the enemy data
-      formData.enemyLevel = characters.value?.[charName]?.enemyLevel ?? 90;
-      formData.enemyResist = characters.value?.[charName]?.enemyResist ?? 0.1;
+      enemyLevel.value = characters.value?.[charName]?.enemyLevel ?? 90;
+      enemyResist.value = characters.value?.[charName]?.enemyResist ?? 0.1;
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
@@ -1176,16 +1163,8 @@ export default defineComponent({
     character.value = initialCharacter;
 
     // seed initial enemy data with store data or default
-    const formData = reactive<FormData>({
-      enemyLevel: characters.value?.[character.value]?.enemyLevel ?? 90,
-      enemyResist: characters.value?.[character.value]?.enemyResist ?? 0.1,
-    });
-    watch(formData, async (updatedFormData: FormData) => {
-      // set the enemy data in the store per character
-      const data = { ...updatedFormData };
-      characterStore.setCharacterData(character.value, data);
-      handleCalculation(updatedFormData);
-    });
+    enemyLevel.value = characters.value?.[character.value]?.enemyLevel ?? 90;
+    enemyResist.value = characters.value?.[character.value]?.enemyResist ?? 0.1;
 
     // set the character value
     characterLevel.value =
@@ -1740,8 +1719,8 @@ export default defineComponent({
 
         return calcDamage(
           characterLevel.value,
-          formData.enemyLevel,
-          formData.enemyResist,
+          enemyLevel.value,
+          enemyResist.value,
           talent,
           finalAtkDefHpVal,
           totalDefIgnore,
@@ -1841,16 +1820,6 @@ export default defineComponent({
       };
     };
 
-    const fields = [
-      { name: "enemyLevel", label: "Enemy Level", type: "number", step: "1" },
-      {
-        name: "enemyResist",
-        label: "Enemy Resistance",
-        type: "number",
-        step: "0.1",
-      },
-    ];
-
     const handleCalculation = () => {
       calcAllDamages();
     };
@@ -1905,6 +1874,12 @@ export default defineComponent({
       calcCharStats();
     };
 
+    const handleUpdatedEnemy = (data) => {
+      enemyLevel.value = data.enemyLevel;
+      enemyResist.value = data.enemyResist;
+      calcAllDamages();
+    };
+
     return {
       allDamages,
       character,
@@ -1918,8 +1893,6 @@ export default defineComponent({
       damage,
       displayDamage,
       displayPercentage,
-      fields,
-      formData,
       updateStatsEchoes,
       totalAtk,
       totalHp,
@@ -1934,6 +1907,7 @@ export default defineComponent({
       handleWeaponUpdated,
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
+      handleUpdatedEnemy,
       handleUpdatedTeamBuffs,
       BasicAttackDMGBonus,
       HeavyAttackDMGBonus,
