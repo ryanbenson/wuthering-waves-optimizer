@@ -33,6 +33,9 @@
     <h3>August 18, 2024</h3>
     <ul>
       <li>
+        Quality of life: you can now click the box of a buff and it toggles it.
+      </li>
+      <li>
         Adds notice for enemy resist for ToA to make it more clear for people.
       </li>
       <li>

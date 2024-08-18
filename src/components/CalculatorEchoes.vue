@@ -62,25 +62,27 @@
         </optgroup>
       </select>
     </div>
-    <div
-      v-if="chosenMainEchoData"
-      class="main-echo__details"
-      v-html="chosenMainEchoData.details"></div>
-    <div class="main-echo__enabled" v-if="chosenMainEchoHasBuffs">
-      <label>
-        <input
-          type="checkbox"
-          v-model="mainEchoBuffEnabled"
-          name="mainEchoBuffEnabled" />
-        Enabled?</label
-      >
-      <div v-if="mainEchoHasStacks">
-        <label>Stacks:</label>
-        <input
-          v-model.number="mainEchoStacks"
-          type="number"
-          min="0"
-          :max="mainEchoMaxStacks" />
+    <div class="main-echo" @click="toggleMainEchoBuffEnabled">
+      <div
+        v-if="chosenMainEchoData"
+        class="main-echo__details"
+        v-html="chosenMainEchoData.details"></div>
+      <div class="main-echo__enabled" v-if="chosenMainEchoHasBuffs">
+        <label @click.stop>
+          <input
+            type="checkbox"
+            v-model="mainEchoBuffEnabled"
+            name="mainEchoBuffEnabled" />
+          Enabled?</label
+        >
+        <div v-if="mainEchoHasStacks" @click.stop>
+          <label>Stacks:</label>
+          <input
+            v-model.number="mainEchoStacks"
+            type="number"
+            min="0"
+            :max="mainEchoMaxStacks" />
+        </div>
       </div>
     </div>
   </div>
@@ -211,6 +213,9 @@ export default {
     },
     handleUpdatedEchoCost({ index, cost }) {
       this.echoCosts[index] = cost;
+    },
+    toggleMainEchoBuffEnabled() {
+      this.mainEchoBuffEnabled = !this.mainEchoBuffEnabled;
     },
   },
   computed: {
@@ -458,5 +463,19 @@ export default {
 }
 .alert--error {
   background-color: #7b7c27;
+}
+.main-echo {
+  background-color: #161616;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+
+  @media (prefers-color-scheme: light) {
+    background-color: #f8f8f8;
+  }
+
+  span:first-of-type {
+    font-weight: bold;
+  }
 }
 </style>

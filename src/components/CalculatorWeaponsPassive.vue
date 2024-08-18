@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div :class="{ 'weapon-passive': !alwaysEnabled }" @click="toggleEnabled">
     <p v-html="details"></p>
-    <label v-if="!alwaysEnabled">
+    <label v-if="!alwaysEnabled" @click.stop>
       <input type="checkbox" v-model="isEnabled" @change="updatedStats" />
       Enabled?
     </label>
-    <span v-if="hasStacks">
+    <span v-if="hasStacks" @click.stop>
       <input
         v-model="stacks"
         type="number"
@@ -107,6 +107,12 @@ export default {
       if (this.stacks > this.maxStacks) {
         this.stacks = this.maxStacks;
       }
+    },
+    toggleEnabled() {
+      if (this.alwaysEnabled) {
+        return;
+      }
+      this.isEnabled = !this.isEnabled;
     },
   },
   computed: {
@@ -210,5 +216,8 @@ p {
 label {
   margin: 1rem 0 0;
   display: inline-block;
+}
+.weapon-passive {
+  cursor: pointer;
 }
 </style>

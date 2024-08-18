@@ -1,11 +1,11 @@
 <template>
-  <div class="character__buff">
+  <div class="character__buff" @click="toggleEnabled">
     <span>{{ name }}</span>
     <div v-html="details"></div>
-    <label v-if="!alwaysEnabled"
+    <label v-if="!alwaysEnabled" @click.stop
       ><input type="checkbox" v-model="isEnabled" /> Enabled?</label
     >
-    <span v-if="hasStacks">
+    <span v-if="hasStacks" @click.stop>
       <input
         v-model="stacks"
         type="number"
@@ -92,6 +92,9 @@ export default {
       if (this.stacks > this.maxStacks) {
         this.stacks = this.maxStacks;
       }
+    },
+    toggleEnabled() {
+      this.isEnabled = !this.isEnabled;
     },
   },
   computed: {
