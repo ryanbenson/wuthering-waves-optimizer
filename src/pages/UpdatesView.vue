@@ -30,6 +30,17 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 18, 2024</h3>
+    <ul>
+      <li>
+        Adds notice for enemy resist for ToA to make it more clear for people.
+      </li>
+      <li>
+        Changes enemy resist to be % for the user but still decimal in code to
+        make it more accessible.
+      </li>
+      <li>Refactors enemy code.</li>
+    </ul>
     <h3>August 17, 2024</h3>
     <ul>
       <li>Jianxin is now avilable. All characters are done!</li>
