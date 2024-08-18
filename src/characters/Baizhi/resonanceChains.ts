@@ -7,11 +7,11 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "Glacio",
-        modifierValue: 0.15
+        modifierValue: 0.15,
       },
       {
         modifier: "HealingBonus",
-        modifierValue: 0.15
+        modifierValue: 0.15,
       },
     ],
     minStacks: 0,
@@ -45,13 +45,11 @@ export const resonanceChains = [
           "RemnantEntitiesDamage",
           "RemnantEntitiesHealing",
         ],
-        modifierValue: 0.5,
+        modifierValue: 0.2,
       },
       {
         modifier: "DMGBonus:MaxHP",
-        modifySpecificTalents: [
-          "RemnantEntitiesDamage",
-        ],
+        modifySpecificTalents: ["RemnantEntitiesDamage"],
         modifierValue: 0.012,
       },
     ],
