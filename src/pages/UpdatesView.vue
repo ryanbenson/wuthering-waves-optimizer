@@ -30,6 +30,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 19, 2024</h3>
+    <ul>
+      <li>You can now delete/empty your stored data in the settings.</li>
+    </ul>
     <h3>August 18, 2024</h3>
     <ul>
       <li>
