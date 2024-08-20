@@ -19,5 +19,23 @@ export const skillAttacks = {
       },
       type: "Skill",
     },
+    {
+      key: "InherentSkillGraceofLifeShield",
+      label: "Grace of Life Shield",
+      talents: {
+        "1": "120%",
+        "2": "120%",
+        "3": "120%",
+        "4": "120%",
+        "5": "120%",
+        "6": "120%",
+        "7": "120%",
+        "8": "120%",
+        "9": "120%",
+        "10": "120%",
+      },
+      type: "Shield",
+      requiresResonanceChain: "InherentSkillGraceofLife",
+    },
   ],
 };

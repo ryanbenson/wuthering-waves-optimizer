@@ -15,6 +15,21 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
+    key: "InherentSkillGraceofLife",
+    name: "Inherent Skill: Grace of Life",
+    details: `<div class="skilldescription">Verina protects a team member from fatal damage and grants a shield with strength equal to 120% of Verina's ATK, lasting for 10s. This can be triggered 1 time every 10 minutes.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "EnableAttack",
+        modifierValue: ["InherentSkillGraceofLife"],
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "InherentSkillGiftofNature",
     name: "Inherent Skill: Gift of Nature",
     details: `<div class="skilldescription">When Verina casts Heavy Attack <span class="Highlight">Starflower Blooms</span>, Mid-air Attack <span class="Highlight">Starflower Blooms</span>, Resonance Liberation <span class="Highlight">Arboreal Flourish</span> or Outro Skill <span class="Highlight">Blossom</span>, all team members' ATK are increased by 20% for 20s.</div>`,

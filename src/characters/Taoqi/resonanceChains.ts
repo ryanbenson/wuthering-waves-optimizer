@@ -1,7 +1,26 @@
 export const resonanceChains = [
   {
+    key: "SequenceNode1EssenseofTranquility",
+    name: "Sequence Node 1: Essense of Tranquility",
+    details: `<span class="skilldescription">Forte Circuit <span class="Highlight">Power Shift</span>'s Shield is increased by 40%.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifySpecificTalents: [
+          "TimedCountersPart1Shield",
+          "TimedCountersPart2Shield",
+          "TimedCountersPart3Shield",
+        ],
+        modifierValue: 0.4,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode2SilentStrengthCR",
-    name: "Sequence Node 2: Silent Strength - Crit Rate",
+    name: "Sequence Node 2: Silent Strength",
     details: `<span class="skilldescription">The Crit. Rate and Crit. DMG of Resonance Liberation <span class="Highlight">Unmovable</span> is increased by 20% and 20%, respectively.</span>`,
     hasStacks: false,
     modifiers: [
