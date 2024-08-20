@@ -49,7 +49,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">
+          <div v-if="false" class="alert">
             Jianxin is now available. All characters are in!✨
           </div>
           <div class="character__selection">

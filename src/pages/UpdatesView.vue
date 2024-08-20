@@ -30,6 +30,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 20, 2024</h3>
+    <ul>
+      <li>
+        Shields are now supported. Jianxin, Verina, and Toaqi have their shields
+        added.
+      </li>
+    </ul>
     <h3>August 19, 2024</h3>
     <ul>
       <li>You can now delete/empty your stored data in the settings.</li>
