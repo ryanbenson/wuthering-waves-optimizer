@@ -32,6 +32,9 @@
             class="icon"
             alt="Team Buffs" />
         </li>
+        <li @click="changeScreen('rotations')">
+          R
+        </li>
         <li @click="changeScreen('enemy')">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png"
@@ -140,6 +143,9 @@
         <CalculatorPartyBuffs
           :character="character"
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
+      </div>
+      <div class="screen--enemy" v-show="curScreen === 'rotations'">
+        <CalculatorRotations :character="character"></CalculatorRotations>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <CalculatorEnemy
@@ -1199,6 +1205,7 @@ import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
 import CalculatorTalents from "./CalculatorTalents.vue";
 import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import CalculatorEnemy from "./CalculatorEnemy.vue";
+import CalculatorRotations from "./CalculatorRotations.vue";
 import { mainEchoesData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -1222,6 +1229,7 @@ export default defineComponent({
     CalculatorCharacterLevel,
     CalculatorPartyBuffs,
     CalculatorResonanceChains,
+    CalculatorRotations,
     CalculatorTalents,
   },
   setup() {
