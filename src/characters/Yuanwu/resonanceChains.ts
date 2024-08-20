@@ -28,6 +28,21 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
+    key: "SequenceNode4RetributiveKnuckles",
+    name: "Sequence Node 4: Retributive Knuckles",
+    details: `<span class="skilldescription">When casting Resonance Liberation <span class="Highlight">Blazing Might</span>, the on-field character will gain a Shield equal to 200% of Yuanwu's DEF for 10s.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "EnableAttack",
+        modifierValue: ["SequenceNode4RetributiveKnuckles"],
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode5NeighborhoodProtector",
     name: "Sequence Node 5: Neighborhood Protector",
     details: `<span class="skilldescription">When Resonance Skill <span class="Highlight">Thunder Wedge</span> is on the field, Yuanwu's Resonance Liberation DMG Bonus is increased by 50%.</span>`,

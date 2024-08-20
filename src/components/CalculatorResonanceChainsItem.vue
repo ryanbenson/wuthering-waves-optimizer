@@ -221,6 +221,7 @@ export default {
 <style scoped lang="scss">
 .character__buff {
   margin-top: 1rem;
+  cursor: pointer;
 
   span:first-of-type {
     font-weight: bold;

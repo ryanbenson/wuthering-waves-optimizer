@@ -32,8 +32,9 @@
     <h1>Updates</h1>
     <h3>August 20, 2024</h3>
     <ul>
+      <li>Adds missing cursor change to resonance chains to indicate you can click the whole box to activate it.</li>
       <li>
-        Shields are now supported. Jianxin, Verina, and Toaqi have their shields
+        Shields are now supported. Jianxin, Verina, Yuanwu, and Toaqi have their shields
         added.
       </li>
     </ul>
