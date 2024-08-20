@@ -318,6 +318,8 @@
           :class="{
             'calculation__damage__item--healing':
               damageInstance.type === 'Healing',
+            'calculation__damage__item--shield':
+              damageInstance.type === 'Shield',
           }">
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
@@ -327,6 +329,16 @@
                 html: true,
               }"
               >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+            >
+          </template>
+          <template v-else-if="damageInstance.type === 'Shield'">
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
             >
           </template>
           <template v-else>
@@ -362,6 +374,8 @@
           :class="{
             'calculation__damage__item--healing':
               damageInstance.type === 'Healing',
+            'calculation__damage__item--shield':
+              damageInstance.type === 'Shield',
           }">
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
@@ -371,6 +385,16 @@
                 html: true,
               }"
               >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+            >
+          </template>
+          <template v-else-if="damageInstance.type === 'Shield'">
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
             >
           </template>
           <template v-else>
@@ -410,6 +434,8 @@
           :class="{
             'calculation__damage__item--healing':
               damageInstance.type === 'Healing',
+            'calculation__damage__item--shield':
+              damageInstance.type === 'Shield',
           }">
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
@@ -419,6 +445,16 @@
                 html: true,
               }"
               >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+            >
+          </template>
+          <template v-else-if="damageInstance.type === 'Shield'">
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
             >
           </template>
           <template v-else>
@@ -459,6 +495,8 @@
           :class="{
             'calculation__damage__item--healing':
               damageInstance.type === 'Healing',
+            'calculation__damage__item--shield':
+              damageInstance.type === 'Shield',
           }">
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
@@ -468,6 +506,16 @@
                 html: true,
               }"
               >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+            >
+          </template>
+          <template v-else-if="damageInstance.type === 'Shield'">
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
             >
           </template>
           <template v-else>
@@ -503,6 +551,8 @@
           :class="{
             'calculation__damage__item--healing':
               damageInstance.type === 'Healing',
+            'calculation__damage__item--shield':
+              damageInstance.type === 'Shield',
           }">
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
@@ -512,6 +562,16 @@
                 html: true,
               }"
               >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+            >
+          </template>
+          <template v-else-if="damageInstance.type === 'Shield'">
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
             >
           </template>
           <template v-else>
@@ -554,6 +614,8 @@
             :class="{
               'calculation__damage__item--healing':
                 damageInstance.type === 'Healing',
+              'calculation__damage__item--shield':
+                damageInstance.type === 'Shield',
             }">
             <template v-if="damageInstance.type === 'Healing'">
               <span>{{ damageInstance.label }}</span>
@@ -563,6 +625,16 @@
                   html: true,
                 }"
                 >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+              >
+            </template>
+            <template v-else-if="damageInstance.type === 'Shield'">
+              <span>{{ damageInstance.label }}</span>
+              <span
+                v-tooltip="{
+                  content: damageInstance.damage.detailedCalculation,
+                  html: true,
+                }"
+                >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
               >
             </template>
             <template v-else>
@@ -770,6 +842,7 @@
         :class="{
           'calculation__damage__item--healing':
             damageInstance.type === 'Healing',
+          'calculation__damage__item--shield': damageInstance.type === 'Shield',
         }">
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
@@ -779,6 +852,16 @@
               html: true,
             }"
             >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+          >
+        </template>
+        <template v-else-if="damageInstance.type === 'Shield'">
+          <span>{{ damageInstance.label }}</span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
           >
         </template>
         <template v-else>
@@ -814,6 +897,7 @@
         :class="{
           'calculation__damage__item--healing':
             damageInstance.type === 'Healing',
+          'calculation__damage__item--shield': damageInstance.type === 'Shield',
         }">
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
@@ -823,6 +907,16 @@
               html: true,
             }"
             >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+          >
+        </template>
+        <template v-else-if="damageInstance.type === 'Shield'">
+          <span>{{ damageInstance.label }}</span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
           >
         </template>
         <template v-else>
@@ -860,6 +954,7 @@
         :class="{
           'calculation__damage__item--healing':
             damageInstance.type === 'Healing',
+          'calculation__damage__item--shield': damageInstance.type === 'Shield',
         }">
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
@@ -869,6 +964,16 @@
               html: true,
             }"
             >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+          >
+        </template>
+        <template v-else-if="damageInstance.type === 'Shield'">
+          <span>{{ damageInstance.label }}</span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
           >
         </template>
         <template v-else>
@@ -908,6 +1013,7 @@
         :class="{
           'calculation__damage__item--healing':
             damageInstance.type === 'Healing',
+          'calculation__damage__item--shield': damageInstance.type === 'Shield',
         }">
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
@@ -917,6 +1023,16 @@
               html: true,
             }"
             >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+          >
+        </template>
+        <template v-else-if="damageInstance.type === 'Shield'">
+          <span>{{ damageInstance.label }}</span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
           >
         </template>
         <template v-else>
@@ -952,6 +1068,7 @@
         :class="{
           'calculation__damage__item--healing':
             damageInstance.type === 'Healing',
+          'calculation__damage__item--shield': damageInstance.type === 'Shield',
         }">
         <template v-if="damageInstance.type === 'Healing'">
           <span>{{ damageInstance.label }}</span>
@@ -961,6 +1078,16 @@
               html: true,
             }"
             >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+          >
+        </template>
+        <template v-else-if="damageInstance.type === 'Shield'">
+          <span>{{ damageInstance.label }}</span>
+          <span
+            v-tooltip="{
+              content: damageInstance.damage.detailedCalculation,
+              html: true,
+            }"
+            >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
           >
         </template>
         <template v-else>
@@ -1002,6 +1129,8 @@
           :class="{
             'calculation__damage__item--healing':
               damageInstance.type === 'Healing',
+            'calculation__damage__item--shield':
+              damageInstance.type === 'Shield',
           }">
           <template v-if="damageInstance.type === 'Healing'">
             <span>{{ damageInstance.label }}</span>
@@ -1011,6 +1140,16 @@
                 html: true,
               }"
               >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+            >
+          </template>
+          <template v-else-if="damageInstance.type === 'Shield'">
+            <span>{{ damageInstance.label }}</span>
+            <span
+              v-tooltip="{
+                content: damageInstance.damage.detailedCalculation,
+                html: true,
+              }"
+              >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
             >
           </template>
           <template v-else>
@@ -1047,7 +1186,7 @@
 // @ts-nocheck
 import { defineComponent, reactive, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
-import { calcDamage, calcHeal } from "../calculator/calculator";
+import { calcDamage, calcHeal, calcShield } from "../calculator/calculator";
 import {
   getCharactersAvailable,
   getCharByName,
@@ -1110,6 +1249,7 @@ export default defineComponent({
     const totalCritDMG = ref(0.5);
     const energyRegen = ref(1);
     const healingBonus = ref(0);
+    const shieldBonus = ref(0);
     const BasicAttackDMGBonus = ref(0);
     const HeavyAttackDMGBonus = ref(0);
     const ResonanceSkillDMGBonus = ref(0);
@@ -1191,6 +1331,7 @@ export default defineComponent({
         target.critDMG += source?.CritDMG ? source.CritDMG * 100 : 0;
         target.energyRegen += source?.EnergyRegen ? source.EnergyRegen : 0;
         target.healingBonus += source?.HealingBonus ? source.HealingBonus : 0;
+        target.shieldBonus += source?.ShieldBonus ? source.ShieldBonus : 0;
         target.basicAttackDMGBonus += source?.BasicAttackDMGBonus
           ? source.BasicAttackDMGBonus * 100
           : 0;
@@ -1289,6 +1430,7 @@ export default defineComponent({
         critDMG: 150,
         energyRegen: 1,
         healingBonus: 0,
+        shieldBonus: 0,
         basicAttackDMGBonus: 0,
         heavyAttackDMGBonus: 0,
         resonanceSkillDMGBonus: 0,
@@ -1463,6 +1605,7 @@ export default defineComponent({
       totalCritDMG.value = stats.critDMG / 100;
       energyRegen.value = stats.energyRegen;
       healingBonus.value = stats.healingBonus;
+      shieldBonus.value = stats.shieldBonus;
       BasicAttackDMGBonus.value = stats.basicAttackDMGBonus;
       HeavyAttackDMGBonus.value = stats.heavyAttackDMGBonus;
       ResonanceSkillDMGBonus.value = stats.resonanceSkillDMGBonus;
@@ -1533,6 +1676,8 @@ export default defineComponent({
         // do not divide this by 100
         case "Healing":
           return healingBonus.value;
+        case "Shield":
+          return shieldBonus.value;
       }
 
       return val / 100;
@@ -1710,6 +1855,18 @@ export default defineComponent({
             talent,
             finalAtkDefHpVal,
             totalSkillDmgBonus, // char stat of healing bonus
+            specificSkillDmg, // any buffs for the skill
+            totalTalentModifierAdd,
+            totalTalentModifierMultiply
+          );
+          return h;
+        }
+
+        if (attackType === "Shield") {
+          const h = calcShield(
+            talent,
+            finalAtkDefHpVal,
+            totalSkillDmgBonus, // char stat of shield bonus
             specificSkillDmg, // any buffs for the skill
             totalTalentModifierAdd,
             totalTalentModifierMultiply
@@ -2175,6 +2332,13 @@ $tooltip-background-color: $sidebar-background-color;
 
   @media (prefers-color-scheme: light) {
     color: #13a813;
+  }
+}
+.calculation__damage__item--shield {
+  color: #00adff;
+
+  @media (prefers-color-scheme: light) {
+    color: #4a92ff;
   }
 }
 </style>

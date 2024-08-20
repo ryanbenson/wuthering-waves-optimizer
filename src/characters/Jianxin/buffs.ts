@@ -18,6 +18,26 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
+    key: "InherentSkillReflection",
+    name: "Inherent Skill: Reflection",
+    details: `<div class="skilldescription">The Shield obtained with Heavy Attack <span class="Highlight">Primordial Chi Spiral</span> is increased by 20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifySpecificTalents: [
+          "PrimordialChiSpiralIncompleteMinorZhoutianFinalShield",
+          "PrimordialChiSpiralMinorZhoutianFinalShield",
+          "PrimordialChiSpiralMajorZhoutianInnerFinalShield",
+          "PrimordialChiSpiralMajorZhoutianOuterFinalShield",
+        ],
+        modifierValue: 0.2,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "StatBonusCritRate1",
     name: "Stat Bonus: Crit. Rate+",
     details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
