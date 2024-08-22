@@ -145,7 +145,7 @@
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'rotations'">
-        <CalculatorRotations :character="character"></CalculatorRotations>
+        <CalculatorRotations :character="character" :character-data="chosenChar.value"></CalculatorRotations>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <CalculatorEnemy
