@@ -1,147 +1,160 @@
 <template>
-    <div class="rotation">
-        <div class="rotation__head">
-            <span class="rotation__name">
-                <span>{{ name }}</span>
-            </span>
-            <div class="rotation__end">
-                <div class="rotation__actions-count">{{ actionsCount }} Actions</div>
-                <div class="rotation__expand" @click="toggleOpen">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                        <path d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z"/>
-                    </svg>
-                </div>
-            </div>
+  <div class="rotation">
+    <div class="rotation__head">
+      <span class="rotation__name">
+        <span>{{ name }}</span>
+      </span>
+      <div class="rotation__end">
+        <div class="rotation__actions-count">{{ actionsCount }} Actions</div>
+        <div class="rotation__expand" @click="toggleOpen">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path
+              d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z" />
+          </svg>
         </div>
-        <div class="rotation__body" v-if="isOpen">
-            <div class="rotation__desc">{{ description }}</div>
-            <div class="rotations__list">
-                <CalculatorRotationAction
-                    v-for="action in actions"
-                    :key="action.order + action.key"
-                    :character-data="characterData"
-                    :actionKey="action.key"
-                    :type="action.type"
-                    :order="action.order"
-                    :count="action.count"
-                    :buffs="action.buffs"
-                ></CalculatorRotationAction>
-            </div>
-            <button class="rotation__action--add">
-                Add Action
-            </button>
-        </div>
+      </div>
     </div>
+    <div class="rotation__body" v-if="isOpen">
+      <div class="rotation__desc">{{ description }}</div>
+      <div class="rotations__list">
+        <CalculatorRotationAction
+          v-for="action in actionsList"
+          :key="action.order + action.key"
+          :character-data="characterData"
+          :actionKey="action.key"
+          :type="action.type"
+          :order="action.order"
+          :count="action.count"
+          :buffs="action.buffs"></CalculatorRotationAction>
+      </div>
+      <button class="rotation__action--add" @click="addAction">
+        Add Action
+      </button>
+    </div>
+  </div>
 </template>
 
 <script>
-import CalculatorRotationAction from './CalculatorRotationAction.vue';
+import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 export default {
-    props: {
-        characterData: {
-            type: Object,
-            default() {
-                return {};
-            }
-        },
-        id: {
-            type: String,
-            required: true
-        },
-        name: {
-            type: String,
-            required: true
-        },
-        description: {
-            type: String,
-            required: true
-        },
-        actions: {
-            type: Array,
-            default() {
-                return [];
-            }
-        }
+  props: {
+    characterData: {
+      type: Object,
+      default() {
+        return {};
+      },
     },
-    components: {
-        CalculatorRotationAction
+    id: {
+      type: String,
+      required: true,
     },
-    data() {
-        return {
-            isOpen: false
-        };
+    name: {
+      type: String,
+      required: true,
     },
-    methods: {
-        toggleOpen() {
-            this.isOpen = !this.isOpen;
-        }
+    description: {
+      type: String,
+      required: true,
     },
-    computed: {
-        actionsCount() {
-            return this.actions?.length || 0;
-        }
-    }
-}
+    actions: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+  },
+  components: {
+    CalculatorRotationAction,
+  },
+  data() {
+    return {
+      isOpen: false,
+      actionsList: [],
+    };
+  },
+  methods: {
+    toggleOpen() {
+      this.isOpen = !this.isOpen;
+    },
+    addAction() {
+      const newSequence = this.actionsCount + 1;
+      this.actionsList.push({
+        type: null,
+        order: newSequence,
+        count: 1,
+        buffs: [],
+      });
+    },
+  },
+  computed: {
+    actionsCount() {
+      return this.actionsList?.length || 0;
+    },
+  },
+  mounted() {
+    this.actionsList = JSON.parse(JSON.stringify(this.actions));
+  },
+};
 </script>
 
 <style scoped lang="scss">
 .rotation {
-    background: #415171;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
+  background: #415171;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
 }
 .rotation__head {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+
+  .rotation__name {
     display: flex;
-    justify-content: space-between;
-    cursor: pointer;
+    gap: 0.5rem;
 
-    .rotation__name {
-        display: flex;
-        gap: 0.5rem;
-
-        span {
-            font-weight: bold;
-        }
+    span {
+      font-weight: bold;
     }
+  }
 
-    .rotation__info {
-        border: none;
-        background-color: #121212;
-        border-radius: 4rem;
-        
-        svg {
-            width: 1rem;
-            height: 1rem;
-        }
-    }
-}
-.rotation__end {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  .rotation__info {
+    border: none;
+    background-color: #121212;
+    border-radius: 4rem;
 
     svg {
-        width: 1rem;
-        height: 1rem;
-        filter: invert(100%);
+      width: 1rem;
+      height: 1rem;
     }
+  }
+}
+.rotation__end {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  svg {
+    width: 1rem;
+    height: 1rem;
+    filter: invert(100%);
+  }
 }
 .rotations__list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.5);
-    padding-top: 1rem;
-    margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  padding-top: 1rem;
+  margin-top: 1rem;
 }
 .rotation__action--add {
-    background: #076b89;
-    border: none;
-    border-radius: 6px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    display: block;
-    width: 100%;
-    margin: 1rem 0 0.5rem;
+  background: #076b89;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  display: block;
+  width: 100%;
+  margin: 1rem 0 0.5rem;
 }
 </style>

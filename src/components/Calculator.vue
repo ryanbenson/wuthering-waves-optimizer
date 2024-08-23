@@ -33,7 +33,10 @@
             alt="Team Buffs" />
         </li>
         <li @click="changeScreen('rotations')">
-          R
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/rotations.png"
+            class="icon"
+            alt="Rotations" />
         </li>
         <li @click="changeScreen('enemy')">
           <img
@@ -145,7 +148,9 @@
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'rotations'">
-        <CalculatorRotations :character="character" :character-data="chosenChar.value"></CalculatorRotations>
+        <CalculatorRotations
+          :character="character"
+          :character-data="chosenChar.value"></CalculatorRotations>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <CalculatorEnemy
