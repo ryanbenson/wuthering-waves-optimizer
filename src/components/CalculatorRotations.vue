@@ -1,8 +1,18 @@
 <template>
   <h2>Rotations</h2>
   <div class="actions">
-    <button>Create Rotation</button>
-    <button>Import Rotation</button>
+    <button class="button" @click="handleCreateRotation">
+      Create Rotation
+    </button>
+    <button class="button" @click="handleToggleImport">Import Rotation</button>
+  </div>
+  <div v-if="isImportOpen" class="action__import panel">
+    <p>Import a rotation in JSON form below.</p>
+    <textarea
+      v-model="importRotationData"
+      name="importRotation"
+      id="importRotaton"></textarea>
+    <button class="button" @click="handleImportRotation">Confirm Import</button>
   </div>
   <div class="rotations__list">
     <CalculatorRotation
@@ -12,13 +22,18 @@
       :id="rotation.id"
       :name="rotation.name"
       :description="rotation.description"
-      :actions="rotation.actions">
+      :actions="rotation.actions"
+      @updated-rotation="handleUpdatedRotation"
+      @rotation-delete="handleDeleteRotation">
     </CalculatorRotation>
   </div>
 </template>
 
 <script>
+import { mapActions, mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
 import { getCharByName } from "../characters/characters.ts";
+import { randomString } from "../utils/strings.ts";
 import CalculatorRotation from "./CalculatorRotation.vue";
 export default {
   props: {
@@ -38,229 +53,92 @@ export default {
   },
   data() {
     return {
-      rotations: [
-        {
-          id: "abc123",
-          name: "Changli s2 solo",
-          description:
-            "This is Changli s2 rotation when she is solo. It requires more Basic Attacks due to not being able to leverage her outros and intros, so building forte circuit attacks require more work.",
-          actions: [
-            {
-              order: 1,
-              key: "TrueSightCaptureDMG",
-              type: "skill",
-              count: 2,
-              buffs: [
-                {
-                  modifier: "ATK",
-                  modifierValue: 20,
-                },
-                {
-                  modifier: "CritRate",
-                  modifierValue: 25,
-                },
-              ],
-            },
-            {
-              order: 2,
-              key: "TrueSightConquestDMG",
-              type: "skill",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 3,
-              key: "FlamingVowDMG",
-              type: "forteCircuit",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 4,
-              key: "BasicAttack1DMG",
-              type: "basic",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 5,
-              key: "BasicAttack2DMG",
-              type: "basic",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 6,
-              key: "BasicAttack3DMG",
-              type: "basic",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 7,
-              key: "BasicAttack4DMG",
-              type: "basic",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 8,
-              key: "TrueSightConquestDMG",
-              type: "skill",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 9,
-              key: "FlamingVowDMG",
-              type: "forteCircuit",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 10,
-              key: "RadianceofFealty",
-              type: "liberation",
-              count: 1,
-              buffs: [],
-            },
-            {
-              order: 11,
-              key: "FlamingVowDMG",
-              type: "forteCircuit",
-              count: 1,
-              buffs: [],
-            },
-          ],
-        },
-        {
-          id: "abc123",
-          name: "Changli Verina Taoqi",
-          description: "Big number team, even if energy can be annoying",
-          actions: [
-            {
-              order: 0,
-              key: "TrueSightCaptureDMG",
-              type: "skill",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 1,
-              key: "TrueSightConquestDMG",
-              type: "skill",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 2,
-              key: "FlamingVowDMG",
-              type: "forteCircuit",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 3,
-              key: "BasicAttack1DMG",
-              type: "basic",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 4,
-              key: "BasicAttack2DMG",
-              type: "basic",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 5,
-              key: "BasicAttack3DMG",
-              type: "basic",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 6,
-              key: "BasicAttack4DMG",
-              type: "basic",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 7,
-              key: "TrueSightConquestDMG",
-              type: "skill",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 8,
-              key: "FlamingVowDMG",
-              type: "forteCircuit",
-              count: 2,
-              buffs: [],
-            },
-          ],
-        },
-        {
-          id: "abc123",
-          name: "Changli s2 Verina Encore",
-          description: "Just having some fun with duo fusion!",
-          actions: [
-            {
-              order: 0,
-              key: "TrueSightCaptureDMG",
-              type: "skill",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 1,
-              key: "TrueSightConquestDMG",
-              type: "skill",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 2,
-              key: "FlamingVowDMG",
-              type: "forteCircuit",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 3,
-              key: "BasicAttack1DMG",
-              type: "basic",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 4,
-              key: "BasicAttack2DMG",
-              type: "basic",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 5,
-              key: "BasicAttack3DMG",
-              type: "basic",
-              count: 2,
-              buffs: [],
-            },
-            {
-              order: 6,
-              key: "BasicAttack4DMG",
-              type: "basic",
-              count: 2,
-              buffs: [],
-            },
-          ],
-        },
-      ],
+      importRotationData: null,
+      isImportOpen: false,
+      rotations: [],
     };
+  },
+  computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+  },
+  methods: {
+    ...mapActions(useCharacterStore, [
+      "setCharacterData",
+      "setCharacterRotations",
+    ]),
+    /**
+     * Handles creating a new rotation
+     */
+    async handleCreateRotation() {
+      const newRotationData = {
+        id: randomString(),
+        name: "Untitled Rotation",
+        description: "",
+        actions: [],
+      };
+      this.rotations.push(newRotationData);
+      // update our store
+      const data = {
+        rotations: JSON.parse(JSON.stringify(this.rotations)),
+      };
+      await this.setCharacterData(this.character, data);
+    },
+    /**
+     * TODO: Add validation for the data
+     */
+    async handleImportRotation() {
+      try {
+        const rotationData = JSON.parse(this.importRotationData);
+        this.rotations.push(rotationData);
+        this.importRotationData = null;
+        this.isImportOpen = false;
+        // update our store
+        const data = {
+          rotations: JSON.parse(JSON.stringify(this.rotations)),
+        };
+        await this.setCharacterData(this.character, data);
+      } catch (error) {
+        alert("Rotation data is not valid");
+      }
+    },
+    handleToggleImport() {
+      this.isImportOpen = !this.isImportOpen;
+    },
+    async handleUpdatedRotation(rotationData) {
+      const rotations = JSON.parse(JSON.stringify(this.rotations));
+      const foundIndex = rotations.findIndex((rotation) => {
+        return rotation.id === rotationData.id;
+      });
+      if (foundIndex === -1) {
+        return;
+      }
+      rotations[foundIndex] = rotationData;
+      this.rotations = rotations;
+      // update our store
+      const data = {
+        rotations: JSON.parse(JSON.stringify(this.rotations)),
+      };
+      await this.setCharacterData(this.character, data);
+    },
+    async handleDeleteRotation(rotationId) {
+      const rotations = JSON.parse(JSON.stringify(this.rotations));
+      const updatedRotations = rotations.filter((rotation) => {
+        return rotation.id !== rotationId;
+      });
+      this.rotations = updatedRotations;
+      // update our store
+      await this.setCharacterRotations(this.character, updatedRotations);
+    },
+  },
+  mounted() {
+    this.rotations = this.currentCharacter?.rotations ?? [];
   },
 };
 </script>
@@ -273,19 +151,46 @@ h2 {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
+}
 
-  button {
-    background: #076b89;
-    border: none;
-    border-radius: 6px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-  }
+button.button {
+  background: #076b89;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
 }
 
 .rotations__list {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+textarea {
+  min-width: 320px;
+  min-height: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+
+  @media (max-width: 900px) {
+    min-width: 240px;
+  }
+}
+
+.panel {
+  margin: 1rem 0;
+  background-color: #161616;
+  padding: 1rem;
+  border-radius: 6px;
+  min-width: 368px;
+
+  p {
+    margin: 0 0 1rem;
+  }
+
+  @media (prefers-color-scheme: light) {
+    background-color: #f8f8f8;
+  }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="action__buff">
-    <select v-model="modifierType">
+    <select v-model="modifierType" @change="onModifierUpdate">
       <option
         v-for="option in modifierOptions"
         :value="option.key"
@@ -12,7 +12,8 @@
       v-model="modifierValueInput"
       type="number"
       name="modifierValueInput"
-      id="modifierValueInput" />
+      id="modifierValueInput"
+      @input="onModifierValueUpdate" />
     <div class="delete" @click="removeBuff">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
         <path
@@ -27,12 +28,16 @@
 import { subStatLabelMap, getReadableSubStatLabel } from "../echoes/stats";
 export default {
   props: {
+    id: {
+      type: String,
+      required: true,
+    },
     modifier: {
       type: String,
       default: null,
     },
     modifierValue: {
-      type: Number,
+      type: [Number, String],
       default: null,
     },
     allBuffs: {
@@ -66,7 +71,21 @@ export default {
   },
   methods: {
     removeBuff() {
-      this.$emit("remove-buff", this.modifierType);
+      this.$emit("remove-buff", this.id);
+    },
+    onModifierUpdate(e) {
+      this.$emit("updated-buff", {
+        id: this.id,
+        modifier: e.target.value,
+        modifierValue: this.modifierValueInput,
+      });
+    },
+    onModifierValueUpdate(e) {
+      this.$emit("updated-buff", {
+        id: this.id,
+        modifier: this.modifierType,
+        modifierValue: e.target.value,
+      });
     },
   },
   mounted() {

@@ -23,5 +23,10 @@ export const useCharacterStore = defineStore("character", {
         this.characters[characterId].weaponPassives = {};
       }
     },
+    setCharacterRotations(characterId, rotationData) {
+      if (this.characters[characterId]) {
+        this.characters[characterId].rotations = rotationData;
+      }
+    },
   },
 });

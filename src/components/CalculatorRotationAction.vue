@@ -27,11 +27,17 @@
               v-model="sequence"
               name="sequence"
               id="sequence"
-              type="number" />
+              type="number"
+              @input="onSequenceChange" />
           </div>
           <div class="edit__count">
             <label for="hits">x</label>
-            <input v-model="hits" name="hits" id="hits" type="number" />
+            <input
+              v-model="hits"
+              name="hits"
+              id="hits"
+              type="number"
+              @input="onHitsChange" />
           </div>
           <div class="edit__skill">
             <label for="actionKeyValue">Attack:</label>
@@ -100,10 +106,12 @@
         <div class="edit__buffs__list">
           <CalculatorRotationActionBuff
             v-for="buff in buffData"
-            :key="buff.modifier"
+            :key="buff.id"
+            :id="buff.id"
             :modifier="buff.modifier"
             :modifier-value="buff.modifierValue"
             :all-buffs="buffData"
+            @updated-buff="handleUpdatedBuff"
             @remove-buff="handleRemoveBuff"></CalculatorRotationActionBuff>
         </div>
       </div>
@@ -117,6 +125,7 @@
 </template>
 
 <script>
+import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
 export default {
   props: {
@@ -126,20 +135,24 @@ export default {
         return {};
       },
     },
-    actionKey: {
+    id: {
       type: String,
       required: true,
+    },
+    actionKey: {
+      type: String,
+      default: null,
     },
     type: {
       type: String,
-      required: true,
+      default: null,
     },
     order: {
-      type: Number,
+      type: [Number, String],
       required: true,
     },
     count: {
-      type: Number,
+      type: [Number, String],
       required: true,
     },
     buffs: {
@@ -217,22 +230,73 @@ export default {
       const skill = optgroup.getAttribute("data-skill");
       // update our skill
       this.actionSkillType = skill;
+
+      this.$emit("action-update", {
+        id: this.id,
+        order: this.order,
+        key: this.actionKeyValue,
+        type: this.actionSkillType,
+        count: this.hits,
+        buffs: this.buffData,
+      });
     },
     addBuff() {
       this.buffData.push({
+        id: randomString(),
         modifier: null,
         modifierValue: null,
       });
     },
-    handleRemoveBuff(modifier) {
+    handleRemoveBuff(removedBuffId) {
       const updatedBuffsList = this.buffData.filter((buff) => {
-        return buff.modifier !== modifier;
+        return buff.id !== removedBuffId;
       });
       this.buffData = updatedBuffsList;
     },
+    handleUpdatedBuff(buffData) {
+      const buffs = JSON.parse(JSON.stringify(this.buffData));
+      const foundIndex = buffs.findIndex((buff) => {
+        return buff.id === buffData.id;
+      });
+      if (foundIndex === -1) {
+        return;
+      }
+      buffs[foundIndex] = buffData;
+      this.buffData = buffs;
+
+      this.$emit("action-update", {
+        id: this.id,
+        order: this.order,
+        key: this.actionKeyValue,
+        type: this.actionSkillType,
+        count: this.hits,
+        buffs: this.buffData,
+      });
+    },
     removeAction() {
-      this.$emit("remove-action");
-      console.log("TO DO");
+      this.$emit("remove-action", {
+        id: this.id,
+      });
+    },
+    onSequenceChange(e) {
+      this.$emit("action-update", {
+        id: this.id,
+        order: e.target.value,
+        key: this.actionKeyValue,
+        type: this.actionSkillType,
+        count: this.hits,
+        buffs: this.buffData,
+      });
+    },
+    onHitsChange(e) {
+      this.$emit("action-update", {
+        id: this.id,
+        order: this.order,
+        key: this.actionKeyValue,
+        type: this.actionSkillType,
+        count: e.target.value,
+        buffs: this.buffData,
+      });
     },
   },
   mounted() {
