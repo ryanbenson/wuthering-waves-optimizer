@@ -144,16 +144,19 @@
 
       <div class="screen-character" v-show="curScreen === 'party'">
         <CalculatorPartyBuffs
+          :key="character"
           :character="character"
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'rotations'">
         <CalculatorRotations
+          :key="character"
           :character="character"
           :character-data="chosenChar.value"></CalculatorRotations>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <CalculatorEnemy
+          :key="character"
           :character="character"
           @updated-enemy-data="handleUpdatedEnemy"></CalculatorEnemy>
       </div>
