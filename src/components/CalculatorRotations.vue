@@ -41,12 +41,6 @@ export default {
       type: String,
       required: true,
     },
-    characterData: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
   },
   components: {
     CalculatorRotation,
@@ -56,6 +50,7 @@ export default {
       importRotationData: null,
       isImportOpen: false,
       rotations: [],
+      characterData: {},
     };
   },
   computed: {
@@ -137,8 +132,9 @@ export default {
       await this.setCharacterRotations(this.character, updatedRotations);
     },
   },
-  mounted() {
+  async mounted() {
     this.rotations = this.currentCharacter?.rotations ?? [];
+    this.characterData = await getCharByName(this.character);
   },
 };
 </script>

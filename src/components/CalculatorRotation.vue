@@ -151,7 +151,6 @@ export default {
       }
       actions[foundIndex] = actionData;
       this.actionsList = actions;
-      console.log(this.actionsList);
 
       this.$emit("updated-rotation", {
         id: this.id,

@@ -151,8 +151,7 @@
       <div class="screen--enemy" v-show="curScreen === 'rotations'">
         <CalculatorRotations
           :key="character"
-          :character="character"
-          :character-data="chosenChar.value"></CalculatorRotations>
+          :character="character"></CalculatorRotations>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <CalculatorEnemy
