@@ -107,7 +107,11 @@ input {
   padding: 0.25rem 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 0.3rem;
-  background-color: #36415b;
+  background-color: #2e2e2e;
+  @media (prefers-color-scheme: light) {
+    background-color: #b7b7b7;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+  }
 }
 input {
   padding: 0.395rem 0.5rem;
@@ -117,6 +121,9 @@ input {
   svg {
     width: 1rem;
     height: 1rem;
+    @media (prefers-color-scheme: light) {
+      filter: invert(100%);
+    }
   }
 }
 </style>

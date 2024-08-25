@@ -47,40 +47,42 @@
               id="actionKeyValue"
               @change="onSkillChange">
               <optgroup label="Basic" data-skill="basic">
-                <option v-for="attack in basicAttacks" :value="attack.key">
+                <option v-for="attack in basicAttacksList" :value="attack.key">
                   {{ attack.label }}
                 </option>
               </optgroup>
               <optgroup label="Skill" data-skill="skill">
-                <option v-for="attack in skillAttacks" :value="attack.key">
+                <option v-for="attack in skillAttacksList" :value="attack.key">
                   {{ attack.label }}
                 </option>
               </optgroup>
               <optgroup label="Forte Circuit" data-skill="forteCircuit">
                 <option
-                  v-for="attack in forteCircuitAttacks"
+                  v-for="attack in forteCircuitAttacksList"
                   :value="attack.key">
                   {{ attack.label }}
                 </option>
               </optgroup>
               <optgroup label="Liberation" data-skill="liberation">
-                <option v-for="attack in liberationAttacks" :value="attack.key">
+                <option
+                  v-for="attack in liberationAttacksList"
+                  :value="attack.key">
                   {{ attack.label }}
                 </option>
               </optgroup>
               <optgroup
                 label="Intro"
                 data-skill="intro"
-                v-if="introAttacks.length">
-                <option v-for="attack in introAttacks" :value="attack.key">
+                v-if="introAttacksList.length">
+                <option v-for="attack in introAttacksList" :value="attack.key">
                   {{ attack.label }}
                 </option>
               </optgroup>
               <optgroup
                 label="Outro"
                 data-skill="outro"
-                v-if="outroAttacks.length">
-                <option v-for="attack in outroAttacks" :value="attack.key">
+                v-if="outroAttacksList.length">
+                <option v-for="attack in outroAttacksList" :value="attack.key">
                   {{ attack.label }}
                 </option>
               </optgroup>
@@ -220,7 +222,7 @@ export default {
     buffsCount() {
       return this.buffData.length;
     },
-    basicAttacks() {
+    basicAttacksList() {
       const fullList = this.characterData.basicAttacks.attacks ?? [];
       const finalList = fullList.filter((attack) => {
         if (!attack?.requiresResonanceChain) {
@@ -240,7 +242,7 @@ export default {
       });
       return finalList;
     },
-    skillAttacks() {
+    skillAttacksList() {
       const fullList = this.characterData.skillAttacks.attacks ?? [];
       const finalList = fullList.filter((attack) => {
         if (!attack?.requiresResonanceChain) {
@@ -260,7 +262,7 @@ export default {
       });
       return finalList;
     },
-    forteCircuitAttacks() {
+    forteCircuitAttacksList() {
       const fullList = this.characterData.forteCircuitAttacks.attacks ?? [];
       const finalList = fullList.filter((attack) => {
         if (!attack?.requiresResonanceChain) {
@@ -280,7 +282,7 @@ export default {
       });
       return finalList;
     },
-    liberationAttacks() {
+    liberationAttacksList() {
       const fullList = this.characterData.liberationAttacks.attacks ?? [];
       const finalList = fullList.filter((attack) => {
         if (!attack?.requiresResonanceChain) {
@@ -300,7 +302,7 @@ export default {
       });
       return finalList;
     },
-    introAttacks() {
+    introAttacksList() {
       const fullList = this.characterData.introAttacks.attacks ?? [];
       const finalList = fullList.filter((attack) => {
         if (!attack?.requiresResonanceChain) {
@@ -320,7 +322,7 @@ export default {
       });
       return finalList;
     },
-    outroAttacks() {
+    outroAttacksList() {
       const fullList = this.characterData.outroAttacks.attacks ?? [];
       const finalList = fullList.filter((attack) => {
         if (!attack?.requiresResonanceChain) {
@@ -458,6 +460,9 @@ export default {
   padding: 0.25rem 0.75rem;
   background: #303173;
   border-radius: 2rem;
+  @media (prefers-color-scheme: light) {
+    color: #ffffff;
+  }
 }
 .rotation__action__info {
   display: flex;
@@ -474,6 +479,9 @@ export default {
   background: rgba(0, 0, 0, 0.25);
   padding: 0.25rem 0.75rem;
   border-radius: 2rem;
+  @media (prefers-color-scheme: light) {
+    color: #ffffff;
+  }
 }
 .buffsCount {
   display: flex;
@@ -482,6 +490,9 @@ export default {
   background: rgba(0, 0, 0, 0.25);
   padding: 0.25rem 0.75rem;
   border-radius: 2rem;
+  @media (prefers-color-scheme: light) {
+    color: #ffffff;
+  }
 
   svg {
     width: 1rem;
@@ -502,7 +513,11 @@ export default {
     padding: 0.25rem 0.5rem;
     border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: 0.3rem;
-    background-color: #36415b;
+    background-color: #2e2e2e;
+    @media (prefers-color-scheme: light) {
+      background-color: #b7b7b7;
+      border: 1px solid rgba(0, 0, 0, 0.5);
+    }
   }
 }
 .edit__basic-info {
@@ -525,6 +540,10 @@ export default {
     background-color: transparent;
     border-radius: 0.5rem;
     padding: 0.4rem 0.5rem;
+    @media (prefers-color-scheme: light) {
+      background-color: #b7b7b7;
+      border: 1px solid rgba(0, 0, 0, 0.5);
+    }
   }
 }
 .button__group {
@@ -551,6 +570,9 @@ export default {
   svg {
     width: 1rem;
     height: 1rem;
+    @media (prefers-color-scheme: light) {
+      filter: invert(100%);
+    }
   }
 }
 .edit__buffs__list {

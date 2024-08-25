@@ -301,6 +301,9 @@ export default {
     width: 1rem;
     height: 1rem;
     filter: invert(100%);
+    @media (prefers-color-scheme: light) {
+      filter: unset;
+    }
   }
 }
 .rotations__list {
@@ -323,6 +326,7 @@ button.button {
 
   &.button--danger {
     background: #890725;
+    color: #ffffff;
   }
 }
 .rotation__action--system {
@@ -346,6 +350,9 @@ textarea {
   background-color: transparent;
   border-radius: 0.5rem;
   padding: 0.4rem 0.5rem;
+  @media (prefers-color-scheme: light) {
+    border: 1px solid rgba(0, 0, 0, 0.5);
+  }
 }
 textarea {
   height: 6rem;
