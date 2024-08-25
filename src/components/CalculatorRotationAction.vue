@@ -28,7 +28,7 @@
               name="sequence"
               id="sequence"
               type="number"
-              @input="onSequenceChange" />
+              @blur="onSequenceChange" />
           </div>
           <div class="edit__count">
             <label for="hits">x</label>
@@ -279,7 +279,7 @@ export default {
       });
     },
     onSequenceChange(e) {
-      this.$emit("action-update", {
+      this.$emit("action-update:sequence", {
         id: this.id,
         order: e.target.value,
         key: this.actionKeyValue,

@@ -35,7 +35,7 @@
       <div class="rotations__list">
         <CalculatorRotationAction
           v-for="action in actionsList"
-          :key="action.id"
+          :key="action.order + action.id"
           :id="action.id"
           :character-data="characterData"
           :action-key="action.key"
@@ -44,6 +44,7 @@
           :count="action.count"
           :buffs="action.buffs"
           @action-update="handleActionUpdate"
+          @action-update:sequence="handleSequenceUpdate"
           @remove-action="handleRemoveAction"></CalculatorRotationAction>
       </div>
       <button class="rotation__action--add button" @click="addAction">
@@ -159,6 +160,59 @@ export default {
         actions: this.actionsList,
       });
     },
+    handleSequenceUpdate(actionData) {
+      const actions = JSON.parse(JSON.stringify(this.actionsList));
+      const { id, order: newOrder } = actionData;
+      const maxOrder = actions.length;
+
+      // Ensure the new order is within the valid range
+      let validatedOrder = Math.max(1, Math.min(newOrder, maxOrder));
+
+      // Find the action to be updated and remove it from the array temporarily
+      const actionIndex = actions.findIndex((action) => action.id === id);
+      const [updatedAction] = actions.splice(actionIndex, 1);
+
+      // Store the original order before updating
+      const originalOrder = updatedAction.order;
+
+      // Update the order of the action
+      updatedAction.order = validatedOrder;
+
+      // Adjust the orders of the remaining actions
+      actions.forEach((action) => {
+        if (
+          originalOrder < validatedOrder &&
+          action.order > originalOrder &&
+          action.order <= validatedOrder
+        ) {
+          // Shift down actions between the original and new order
+          action.order -= 1;
+        } else if (
+          originalOrder > validatedOrder &&
+          action.order < originalOrder &&
+          action.order >= validatedOrder
+        ) {
+          // Shift up actions between the new and original order
+          action.order += 1;
+        }
+      });
+
+      // Insert the updated action back into the array
+      actions.splice(validatedOrder - 1, 0, updatedAction);
+
+      // Reorder the actions array to ensure the correct order
+      actions.sort((a, b) => a.order - b.order);
+      // update our list and notify up
+      console.log(JSON.parse(JSON.stringify(this.actionsList)), actions);
+      this.actionsList = actions;
+
+      this.$emit("updated-rotation", {
+        id: this.id,
+        name: this.nameValue,
+        description: this.descriptionValue,
+        actions: this.actionsList,
+      });
+    },
     handleRemoveAction(actionData) {
       const actions = JSON.parse(JSON.stringify(this.actionsList));
       const updatedActions = actions.filter((action) => {
@@ -183,7 +237,10 @@ export default {
     },
   },
   mounted() {
-    this.actionsList = JSON.parse(JSON.stringify(this.actions));
+    const actions = JSON.parse(JSON.stringify(this.actions));
+    // make sure they're in the proper order
+    actions.sort((a, b) => a.order - b.order);
+    this.actionsList = actions;
     this.nameValue = this.name;
     this.descriptionValue = this.description;
   },
