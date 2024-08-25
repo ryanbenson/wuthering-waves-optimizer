@@ -37,6 +37,7 @@
           v-for="action in actionsList"
           :key="action.order + action.id"
           :id="action.id"
+          :character="character"
           :character-data="characterData"
           :action-key="action.key"
           :type="action.type"
@@ -70,6 +71,10 @@ export default {
       default() {
         return {};
       },
+    },
+    character: {
+      type: String,
+      required: true,
     },
     id: {
       type: String,
@@ -249,9 +254,12 @@ export default {
 
 <style scoped lang="scss">
 .rotation {
-  background: #415171;
+  background: rgba(255, 255, 255, 0.1);
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;
+  @media (prefers-color-scheme: light) {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 }
 .rotation__head {
   display: flex;

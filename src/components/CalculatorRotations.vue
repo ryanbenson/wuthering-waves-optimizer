@@ -18,6 +18,7 @@
     <CalculatorRotation
       v-for="rotation in rotations"
       :key="rotation.id"
+      :character="character"
       :character-data="characterData"
       :id="rotation.id"
       :name="rotation.name"

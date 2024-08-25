@@ -47,47 +47,40 @@
               id="actionKeyValue"
               @change="onSkillChange">
               <optgroup label="Basic" data-skill="basic">
-                <option
-                  v-for="attack in characterData.basicAttacks.attacks"
-                  :value="attack.key">
+                <option v-for="attack in basicAttacks" :value="attack.key">
                   {{ attack.label }}
                 </option>
               </optgroup>
               <optgroup label="Skill" data-skill="skill">
-                <option
-                  v-for="attack in characterData.skillAttacks.attacks"
-                  :value="attack.key">
+                <option v-for="attack in skillAttacks" :value="attack.key">
                   {{ attack.label }}
                 </option>
               </optgroup>
               <optgroup label="Forte Circuit" data-skill="forteCircuit">
                 <option
-                  v-for="attack in characterData.forteCircuitAttacks.attacks"
+                  v-for="attack in forteCircuitAttacks"
                   :value="attack.key">
                   {{ attack.label }}
                 </option>
               </optgroup>
               <optgroup label="Liberation" data-skill="liberation">
-                <option
-                  v-for="attack in characterData.liberationAttacks.attacks"
-                  :value="attack.key">
+                <option v-for="attack in liberationAttacks" :value="attack.key">
                   {{ attack.label }}
                 </option>
               </optgroup>
-              <optgroup label="Intro" data-skill="intro">
-                <option
-                  v-for="attack in characterData.introAttacks.attacks"
-                  :value="attack.key">
+              <optgroup
+                label="Intro"
+                data-skill="intro"
+                v-if="introAttacks.length">
+                <option v-for="attack in introAttacks" :value="attack.key">
                   {{ attack.label }}
                 </option>
               </optgroup>
               <optgroup
                 label="Outro"
                 data-skill="outro"
-                v-if="characterData.outroAttacks.attacks.length">
-                <option
-                  v-for="attack in characterData.outroAttacks.attacks"
-                  :value="attack.key">
+                v-if="outroAttacks.length">
+                <option v-for="attack in outroAttacks" :value="attack.key">
                   {{ attack.label }}
                 </option>
               </optgroup>
@@ -125,6 +118,8 @@
 </template>
 
 <script>
+import { mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
 export default {
@@ -134,6 +129,10 @@ export default {
       default() {
         return {};
       },
+    },
+    character: {
+      type: String,
+      required: true,
     },
     id: {
       type: String,
@@ -193,6 +192,14 @@ export default {
     };
   },
   computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
     skillType() {
       return this.skillKeyMap[this.actionSkillType] ?? null;
     },
@@ -212,6 +219,126 @@ export default {
     },
     buffsCount() {
       return this.buffData.length;
+    },
+    basicAttacks() {
+      const fullList = this.characterData.basicAttacks.attacks ?? [];
+      const finalList = fullList.filter((attack) => {
+        if (!attack?.requiresResonanceChain) {
+          return true;
+        }
+        const requiredKey = attack.requiresResonanceChain;
+        // if there is a requirement, check it. it can be a self buff or resonance chain to activate an attack
+        const isResonanceChainEnabled =
+          this.currentCharacter?.resonanceChains?.[requiredKey]?.isEnabled ??
+          false;
+        const isSelfBuffEnabled =
+          this.currentCharacter?.buffs?.[requiredKey]?.isEnabled ?? false;
+        if (isResonanceChainEnabled || isSelfBuffEnabled) {
+          return true;
+        }
+        return false;
+      });
+      return finalList;
+    },
+    skillAttacks() {
+      const fullList = this.characterData.skillAttacks.attacks ?? [];
+      const finalList = fullList.filter((attack) => {
+        if (!attack?.requiresResonanceChain) {
+          return true;
+        }
+        const requiredKey = attack.requiresResonanceChain;
+        // if there is a requirement, check it. it can be a self buff or resonance chain to activate an attack
+        const isResonanceChainEnabled =
+          this.currentCharacter?.resonanceChains?.[requiredKey]?.isEnabled ??
+          false;
+        const isSelfBuffEnabled =
+          this.currentCharacter?.buffs?.[requiredKey]?.isEnabled ?? false;
+        if (isResonanceChainEnabled || isSelfBuffEnabled) {
+          return true;
+        }
+        return false;
+      });
+      return finalList;
+    },
+    forteCircuitAttacks() {
+      const fullList = this.characterData.forteCircuitAttacks.attacks ?? [];
+      const finalList = fullList.filter((attack) => {
+        if (!attack?.requiresResonanceChain) {
+          return true;
+        }
+        const requiredKey = attack.requiresResonanceChain;
+        // if there is a requirement, check it. it can be a self buff or resonance chain to activate an attack
+        const isResonanceChainEnabled =
+          this.currentCharacter?.resonanceChains?.[requiredKey]?.isEnabled ??
+          false;
+        const isSelfBuffEnabled =
+          this.currentCharacter?.buffs?.[requiredKey]?.isEnabled ?? false;
+        if (isResonanceChainEnabled || isSelfBuffEnabled) {
+          return true;
+        }
+        return false;
+      });
+      return finalList;
+    },
+    liberationAttacks() {
+      const fullList = this.characterData.liberationAttacks.attacks ?? [];
+      const finalList = fullList.filter((attack) => {
+        if (!attack?.requiresResonanceChain) {
+          return true;
+        }
+        const requiredKey = attack.requiresResonanceChain;
+        // if there is a requirement, check it. it can be a self buff or resonance chain to activate an attack
+        const isResonanceChainEnabled =
+          this.currentCharacter?.resonanceChains?.[requiredKey]?.isEnabled ??
+          false;
+        const isSelfBuffEnabled =
+          this.currentCharacter?.buffs?.[requiredKey]?.isEnabled ?? false;
+        if (isResonanceChainEnabled || isSelfBuffEnabled) {
+          return true;
+        }
+        return false;
+      });
+      return finalList;
+    },
+    introAttacks() {
+      const fullList = this.characterData.introAttacks.attacks ?? [];
+      const finalList = fullList.filter((attack) => {
+        if (!attack?.requiresResonanceChain) {
+          return true;
+        }
+        const requiredKey = attack.requiresResonanceChain;
+        // if there is a requirement, check it. it can be a self buff or resonance chain to activate an attack
+        const isResonanceChainEnabled =
+          this.currentCharacter?.resonanceChains?.[requiredKey]?.isEnabled ??
+          false;
+        const isSelfBuffEnabled =
+          this.currentCharacter?.buffs?.[requiredKey]?.isEnabled ?? false;
+        if (isResonanceChainEnabled || isSelfBuffEnabled) {
+          return true;
+        }
+        return false;
+      });
+      return finalList;
+    },
+    outroAttacks() {
+      const fullList = this.characterData.outroAttacks.attacks ?? [];
+      const finalList = fullList.filter((attack) => {
+        if (!attack?.requiresResonanceChain) {
+          return true;
+        }
+        const requiredKey = attack.requiresResonanceChain;
+        // if there is a requirement, check it. it can be a self buff or resonance chain to activate an attack
+        const isResonanceChainEnabled =
+          this.currentCharacter?.resonanceChains?.[requiredKey]?.isEnabled ??
+          false;
+        const isSelfBuffEnabled =
+          this.currentCharacter?.buffs?.[requiredKey]?.isEnabled ?? false;
+        if (isResonanceChainEnabled || isSelfBuffEnabled) {
+          return true;
+        }
+        return false;
+      });
+      return finalList;
     },
   },
   methods: {
