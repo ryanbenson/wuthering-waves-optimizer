@@ -85,6 +85,10 @@ export default {
         rotations: JSON.parse(JSON.stringify(this.rotations)),
       };
       await this.setCharacterData(this.character, data);
+      this.$emit(
+        "updated-rotations",
+        JSON.parse(JSON.stringify(this.rotations))
+      );
     },
     /**
      * TODO: Add validation for the data
@@ -100,6 +104,10 @@ export default {
           rotations: JSON.parse(JSON.stringify(this.rotations)),
         };
         await this.setCharacterData(this.character, data);
+        this.$emit(
+          "updated-rotations",
+          JSON.parse(JSON.stringify(this.rotations))
+        );
       } catch (error) {
         alert("Rotation data is not valid");
       }
@@ -122,6 +130,10 @@ export default {
         rotations: JSON.parse(JSON.stringify(this.rotations)),
       };
       await this.setCharacterData(this.character, data);
+      this.$emit(
+        "updated-rotations",
+        JSON.parse(JSON.stringify(this.rotations))
+      );
     },
     async handleDeleteRotation(rotationId) {
       const rotations = JSON.parse(JSON.stringify(this.rotations));
@@ -131,10 +143,15 @@ export default {
       this.rotations = updatedRotations;
       // update our store
       await this.setCharacterRotations(this.character, updatedRotations);
+      this.$emit(
+        "updated-rotations",
+        JSON.parse(JSON.stringify(this.rotations))
+      );
     },
   },
   async mounted() {
     this.rotations = this.currentCharacter?.rotations ?? [];
+    this.$emit("updated-rotations", JSON.parse(JSON.stringify(this.rotations)));
     this.characterData = await getCharByName(this.character);
   },
 };

@@ -151,7 +151,8 @@
       <div class="screen--enemy" v-show="curScreen === 'rotations'">
         <CalculatorRotations
           :key="character"
-          :character="character"></CalculatorRotations>
+          :character="character"
+          @updated-rotations="handleUpdatedRotations"></CalculatorRotations>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <CalculatorEnemy
@@ -676,6 +677,70 @@
             </template>
           </div>
         </template>
+
+        <template v-if="rotationsList.length">
+          <div
+            v-for="rotation in allDamages.value.rotations"
+            class="rotation__item"
+            :key="rotation.id">
+            <h4 v-tooltip="rotation.description">{{ rotation.name }}</h4>
+            <div
+              v-for="damageInstance in rotation.attacks"
+              :key="damageInstance.key"
+              class="calculation__damage__item"
+              :class="{
+                'calculation__damage__item--healing':
+                  damageInstance.type === 'Healing',
+                'calculation__damage__item--shield':
+                  damageInstance.type === 'Shield',
+              }">
+              <template v-if="damageInstance.type === 'Healing'">
+                <span>{{ damageInstance.label }}</span>
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculation,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+                >
+              </template>
+              <template v-else-if="damageInstance.type === 'Shield'">
+                <span>{{ damageInstance.label }}</span>
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculation,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
+                >
+              </template>
+              <template v-else>
+                <span>{{ damageInstance.label }} </span>
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculation,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+                >
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculationAvg,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+                >
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculationCrit,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+                >
+              </template>
+            </div>
+          </div>
+        </template>
       </div>
     </div>
     <div class="results">
@@ -1191,6 +1256,69 @@
           </template>
         </div>
       </template>
+      <template v-if="rotationsList.length">
+        <div
+          v-for="rotation in allDamages.value.rotations"
+          class="rotation__item"
+          :key="rotation.id">
+          <h4 v-tooltip="rotation.description">{{ rotation.name }}</h4>
+          <div
+            v-for="damageInstance in rotation.attacks"
+            :key="damageInstance.key"
+            class="calculation__damage__item"
+            :class="{
+              'calculation__damage__item--healing':
+                damageInstance.type === 'Healing',
+              'calculation__damage__item--shield':
+                damageInstance.type === 'Shield',
+            }">
+            <template v-if="damageInstance.type === 'Healing'">
+              <span>{{ damageInstance.label }}</span>
+              <span
+                v-tooltip="{
+                  content: damageInstance.damage.detailedCalculation,
+                  html: true,
+                }"
+                >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+              >
+            </template>
+            <template v-else-if="damageInstance.type === 'Shield'">
+              <span>{{ damageInstance.label }}</span>
+              <span
+                v-tooltip="{
+                  content: damageInstance.damage.detailedCalculation,
+                  html: true,
+                }"
+                >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
+              >
+            </template>
+            <template v-else>
+              <span>{{ damageInstance.label }} </span>
+              <span
+                v-tooltip="{
+                  content: damageInstance.damage.detailedCalculation,
+                  html: true,
+                }"
+                >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+              >
+              <span
+                v-tooltip="{
+                  content: damageInstance.damage.detailedCalculationAvg,
+                  html: true,
+                }"
+                >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+              >
+              <span
+                v-tooltip="{
+                  content: damageInstance.damage.detailedCalculationCrit,
+                  html: true,
+                }"
+                >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+              >
+            </template>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -1256,6 +1384,7 @@ export default defineComponent({
     const curScreen = ref("character");
     const damage = ref(0);
     const charactersList = ref([]);
+    const rotationsList = ref([]);
     const character = ref("");
     const totalAtk = ref(0);
     const totalHp = ref(0);
@@ -1723,7 +1852,8 @@ export default defineComponent({
       const calculateAttackDamage = (
         attack,
         talentType,
-        hasNoTalentLevel = false
+        hasNoTalentLevel = false,
+        hasDynamicTalent = false
       ) => {
         const attackType = attack.type;
         const attackElement = chosenChar.value?.basic?.element;
@@ -1732,6 +1862,28 @@ export default defineComponent({
         let talent;
         if (hasNoTalentLevel) {
           talent = attack.talent;
+        } else if (hasDynamicTalent) {
+          switch (attack.actionType) {
+            case "basic":
+              talent = attack.talents[talentData.basic];
+              break;
+            case "skill":
+              talent = attack.talents[talentData.skill];
+              break;
+            case "forteCircuit":
+              talent = attack.talents[talentData.forte];
+              break;
+            case "liberation":
+              talent = attack.talents[talentData.liberation];
+              break;
+            case "intro":
+              talent = attack.talents[talentData.intro];
+              break;
+            // TODO: THIS WILL NEED FIXING
+            case "outro":
+              talent = attack.talents[talentData.outro];
+              break;
+          }
         } else {
           talent = attack.talents[talentType];
         }
@@ -1911,7 +2063,8 @@ export default defineComponent({
       const processAttacks = (
         attacks,
         talentType,
-        hasNoTalentLevel = false
+        hasNoTalentLevel = false,
+        dynamicTalentType = false
       ) => {
         return (
           (attacks ?? [])
@@ -1938,6 +2091,29 @@ export default defineComponent({
               let talent;
               if (hasNoTalentLevel) {
                 talent = attack.talent;
+              } else if (dynamicTalentType) {
+                let talent;
+                switch (attack.actionType) {
+                  case "basic":
+                    talent = attack.talents[talentData.basic];
+                    break;
+                  case "skill":
+                    talent = attack.talents[talentData.skill];
+                    break;
+                  case "forteCircuit":
+                    talent = attack.talents[talentData.forte];
+                    break;
+                  case "liberation":
+                    talent = attack.talents[talentData.liberation];
+                    break;
+                  case "intro":
+                    talent = attack.talents[talentData.intro];
+                    break;
+                  // TODO: THIS WILL NEED FIXING
+                  case "outro":
+                    talent = attack.talents[talentData.outro];
+                    break;
+                }
               } else {
                 talent = attack.talents[talentType];
               }
@@ -1948,7 +2124,8 @@ export default defineComponent({
                 damage: calculateAttackDamage(
                   attack,
                   talentType,
-                  hasNoTalentLevel
+                  hasNoTalentLevel,
+                  dynamicTalentType
                 ),
                 isEnabled,
                 type: attack.type,
@@ -1959,7 +2136,7 @@ export default defineComponent({
         );
       };
 
-      allDamages.value = {
+      const allDamagesData = {
         basicAttacks: processAttacks(
           chosenChar.value.basicAttacks?.attacks,
           talentData.basic
@@ -1990,6 +2167,23 @@ export default defineComponent({
           true // has no talent level
         ),
       };
+
+      if (rotationsList.value?.length) {
+        const rotationData = [];
+        rotationsList.value.forEach((rotation) => {
+          const rotationInfo = {
+            id: rotation.id,
+            name: rotation.name,
+            description: rotation.description,
+          };
+          const attacks = processAttacks(rotation.attacks, null, false, true);
+          rotationInfo.attacks = attacks;
+          rotationData.push(rotationInfo);
+        });
+        allDamagesData.rotations = rotationData;
+      }
+
+      allDamages.value = allDamagesData;
     };
 
     const handleCalculation = () => {
@@ -2052,6 +2246,43 @@ export default defineComponent({
       calcAllDamages();
     };
 
+    const handleUpdatedRotations = async (data) => {
+      // go through each rotation and each action and use the full talent data
+      // which will make the rotation system work
+      const chosenChar = await getCharByName(character.value);
+      const rotationData = [];
+      data.forEach((rotation) => {
+        const rotationInfo = {
+          id: rotation.id,
+          name: rotation.name,
+          description: rotation.description,
+        };
+        const rotationActionInfo = [];
+        rotation.actions.forEach((action) => {
+          const actionKey = action.key;
+          const actionType = action.type;
+          const actionBuffs = action.buffs;
+          const attacksList =
+            chosenChar?.[`${actionType}Attacks`]?.attacks ?? [];
+          const foundAction = attacksList.find((attack) => {
+            return attack.key === actionKey;
+          });
+          if (foundAction) {
+            const actionData = {
+              ...foundAction,
+              buffs: action.buffs,
+              actionType,
+            };
+            rotationActionInfo.push(actionData);
+          }
+        });
+        rotationInfo.attacks = rotationActionInfo;
+        rotationData.push(rotationInfo);
+      });
+      rotationsList.value = rotationData;
+      calcAllDamages();
+    };
+
     return {
       allDamages,
       character,
@@ -2060,6 +2291,7 @@ export default defineComponent({
       charactersList,
       chosenChar,
       chosenWeapon,
+      rotationsList,
       curScreen,
       changeScreen,
       damage,
@@ -2080,6 +2312,7 @@ export default defineComponent({
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
       handleUpdatedEnemy,
+      handleUpdatedRotations,
       handleUpdatedTeamBuffs,
       BasicAttackDMGBonus,
       HeavyAttackDMGBonus,
