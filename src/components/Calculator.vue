@@ -1317,6 +1317,22 @@
               >
             </template>
           </div>
+          <div class="rotation__aggregation">
+            <div v-if="rotation.damageAggregation.normalDamage" class="calculation__damage__item">
+              <span>Total Damage</span>
+              <span>{{ displayDamage(rotation.damageAggregation.normalDamage) }}</span>
+              <span>{{ displayDamage(rotation.damageAggregation.avgDamage) }}</span>
+              <span>{{ displayDamage(rotation.damageAggregation.critDamage) }}</span>
+            </div>
+            <div v-if="rotation.damageAggregation.healing" class="calculation__damage__item calculation__damage__item--healing">
+              <span>Total Healing</span>
+              <span>{{ displayDamage(rotation.damageAggregation.healing) }}</span>
+            </div>
+            <div v-if="rotation.damageAggregation.shield" class="calculation__damage__item calculation__damage__item--shield">
+              <span>Total Shield</span>
+              <span>{{ displayDamage(rotation.damageAggregation.shield) }}</span>
+            </div>
+          </div>
         </div>
       </template>
     </div>
@@ -2183,8 +2199,39 @@ export default defineComponent({
             name: rotation.name,
             description: rotation.description,
           };
+          // capture all damages
+          const damageAggregation = {
+            normalDamage: null,
+            avgDamage: null,
+            critDamage: null,
+            healing: null,
+            shield: null,
+          }
           const attacks = processAttacks(rotation.attacks, null, false, true);
+          // go through all attacks and update our aggregation
+          attacks.forEach((attack) => {
+            if (attack?.damage?.totalDamage !== undefined) {
+              damageAggregation.normalDamage = (damageAggregation.normalDamage || 0) + attack?.damage?.totalDamage;
+            }
+
+            if (attack?.damage?.avgDamage !== undefined) {
+              damageAggregation.avgDamage = (damageAggregation.avgDamage || 0) + attack?.damage?.avgDamage;
+            }
+
+            if (attack?.damage?.critDamage !== undefined) {
+              damageAggregation.critDamage = (damageAggregation.critDamage || 0) + attack?.damage?.critDamage;
+            }
+
+            if (attack.type === "Healing" && attack?.damage?.healAmount !== undefined) {
+              damageAggregation.healing = (damageAggregation.healing || 0) + attack?.damage?.healAmount;
+            }
+
+            if (attack.type === "Shield" && attack?.damage?.shieldAmount !== undefined) {
+              damageAggregation.shield = (damageAggregation.shield || 0) + attack?.damage?.shieldAmount;
+            }
+          });
           rotationInfo.attacks = attacks;
+          rotationInfo.damageAggregation = damageAggregation;
           rotationData.push(rotationInfo);
         });
         allDamagesData.rotations = rotationData;
@@ -2596,6 +2643,15 @@ $tooltip-background-color: $sidebar-background-color;
 
   @media (prefers-color-scheme: light) {
     color: #4a92ff;
+  }
+}
+.rotation__aggregation {
+  margin-top: 1rem;
+  background: #1c2737;
+  border-radius: 0.25rem;
+
+  @media (prefers-color-scheme: light) {
+    background: #cee2ff;
   }
 }
 </style>
