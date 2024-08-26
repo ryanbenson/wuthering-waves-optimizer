@@ -57,6 +57,8 @@ export default {
     modifierOptions() {
       const modifierOptionsList = [];
       const allModifiers = Object.entries(subStatLabelMap);
+      // add in Damage Deepen. It's a buff we want, but not from echo substats
+      allModifiers.push(['DMGDeepen', 'Damage Deepen'])
       allModifiers.forEach((modifier) => {
         const [key, label] = modifier;
         // find if this key is anywhere in the full list. if so, mark it as disabled

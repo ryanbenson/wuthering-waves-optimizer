@@ -1875,7 +1875,7 @@ export default defineComponent({
         const attackType = attack.type;
         const attackElement = chosenChar.value?.basic?.element;
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
-        const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
+        let totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         let talent;
         if (hasNoTalentLevel) {
           talent = attack.talent;
@@ -1959,9 +1959,9 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:CritDMG`
           ] ?? 0;
-        const instanceDmgCritRate =
+        let instanceDmgCritRate =
           totalCritRate.value + specificSkillExtraCritRate;
-        const instanceDmgCritDMG =
+        let instanceDmgCritDMG =
           totalCritDMG.value + specificSkillExtraCritDMG;
         const talentModifierMultiply =
           charResonanceChainsData.value?.specificTalentBuffs?.[
@@ -2009,32 +2009,53 @@ export default defineComponent({
           teamBuffDmgDeepenForCharElement = 0;
           teamBuffDmgDeepenForAttackType = 0;
         }
+        let attackLevelDmgDeepen = attack.buffs?.DMGDeepen ?? 0;
         const totalDmgDeepen =
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
-          teamBuffDmgDeepenForAttackType;
+          teamBuffDmgDeepenForAttackType +
+          attackLevelDmgDeepen;
         const totalTalentModifierMultiply =
           talentModifierMultiply + talentModifierMultiplySelfBuff;
         // check for any modifiers that change the individual instance of atk/hp/def
         // re-calculate the base for this specific instance of damage
-        const modifyBaseAtk =
+        let modifyBaseAtk =
           charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:ATK`] ?? 0;
-        const modifyBaseHp =
+        let modifyBaseHp =
           charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:HP`] ?? 0;
-        const modifyBaseDef =
+        let modifyBaseDef =
           charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:DEF`] ?? 0;
+        let modifyBaseAtkFlat =
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:ATK_FLAT`] ?? 0;
+        let modifyBaseHpFlat =
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:HP_FLAT`] ?? 0;
+        let modifyBaseDefFlat =
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:DEF_FLAT`] ?? 0;
+          // if there are any attack-level buffs for atk, hp, or def (% or flat, upate them)
+        if (attack?.buffs) {
+          modifyBaseAtk += attack.buffs?.ATK ?? 0;
+          modifyBaseHp += attack.buffs?.HP ?? 0;
+          modifyBaseDef += attack.buffs?.DEF ?? 0;
+          modifyBaseAtkFlat += attack.buffs?.ATK_FLAT ?? 0;
+          modifyBaseHpFlat += attack.buffs?.HP_FLAT ?? 0;
+          modifyBaseDefFlat += attack.buffs?.DEF_FLAT ?? 0;
+        }
         let finalAtkDefHpVal = atkDefHpVal;
         if (modifyBaseAtk) {
-          finalAtkDefHpVal = calcCharStats("ATK", { ATK: modifyBaseAtk });
+          finalAtkDefHpVal = calcCharStats("ATK", { ATK: modifyBaseAtk, ATK_FLAT: modifyBaseAtkFlat });
         }
         if (modifyBaseHp) {
-          finalAtkDefHpVal = calcCharStats("HP", { HP: modifyBaseHp });
+          finalAtkDefHpVal = calcCharStats("HP", { HP: modifyBaseHp, HP_FLAT: modifyBaseHpFlat });
         }
         if (modifyBaseDef) {
-          finalAtkDefHpVal = calcCharStats("DEF", { DEF: modifyBaseDef });
+          finalAtkDefHpVal = calcCharStats("DEF", { DEF: modifyBaseDef, DEF_FLAT: modifyBaseDefFlat });
         }
 
         if (attackType === "Healing") {
+          // apply any attack-level healing bonuses
+          if (attack?.buffs) {
+            totalSkillDmgBonus += attack.buffs?.HealingBonus ?? 0;
+          }
           const h = calcHeal(
             talent,
             finalAtkDefHpVal,
@@ -2060,6 +2081,11 @@ export default defineComponent({
           return h;
         }
 
+          // apply any generic attack-level buffs (e.g. CR, CD)
+        if (attack?.buffs) {
+          instanceDmgCritRate += attack.buffs?.CritRate ?? 0;
+          instanceDmgCritDMG += attack.buffs?.CritDMG ?? 0;
+        }
         return calcDamage(
           characterLevel.value,
           enemyLevel.value,
@@ -2199,6 +2225,7 @@ export default defineComponent({
             name: rotation.name,
             description: rotation.description,
           };
+          const attacks = processAttacks(rotation.attacks, null, false, true);
           // capture all damages
           const damageAggregation = {
             normalDamage: null,
@@ -2207,7 +2234,6 @@ export default defineComponent({
             healing: null,
             shield: null,
           }
-          const attacks = processAttacks(rotation.attacks, null, false, true);
           // go through all attacks and update our aggregation
           attacks.forEach((attack) => {
             if (attack?.damage?.totalDamage !== undefined) {
@@ -2325,10 +2351,26 @@ export default defineComponent({
           if (foundAction) {
             const actionData = {
               ...foundAction,
-              buffs: action.buffs,
+              buffs: null,
               actionType,
               count: actionCount,
             };
+            // if there are buffs, turn it into a hashmap
+            if (action?.buffs?.length) {
+              const buffsData = {};
+              // keys are unique, there should not be duplicates
+              action.buffs.forEach((buff) => {
+                // buffs are in human readable, convert to decimal except flat values
+                let buffValue;
+                if (['ATK_FLAT', 'HP_FLAT', 'DEF_FLAT'].includes(buff.modifier)) {
+                  buffValue = Number(buff.modifierValue);
+                } else {
+                  buffValue = Number(buff.modifierValue) / 100;
+                }
+                buffsData[buff.modifier] = buffValue;
+              });
+              actionData.buffs = buffsData;
+            }
             rotationActionInfo.push(actionData);
           }
         });
