@@ -1853,7 +1853,8 @@ export default defineComponent({
         attack,
         talentType,
         hasNoTalentLevel = false,
-        hasDynamicTalent = false
+        hasDynamicTalent = false,
+        count = 1
       ) => {
         const attackType = attack.type;
         const attackElement = chosenChar.value?.basic?.element;
@@ -1879,9 +1880,9 @@ export default defineComponent({
             case "intro":
               talent = attack.talents[talentData.intro];
               break;
-            // TODO: THIS WILL NEED FIXING
             case "outro":
-              talent = attack.talents[talentData.outro];
+              // outros have no talent tree, just a single value
+              talent = attack.talent;
               break;
           }
         } else {
@@ -2109,9 +2110,9 @@ export default defineComponent({
                   case "intro":
                     talent = attack.talents[talentData.intro];
                     break;
-                  // TODO: THIS WILL NEED FIXING
                   case "outro":
-                    talent = attack.talents[talentData.outro];
+                    // outro has no talent tree. it only has 1 value (e.g. 20.00%)
+                    talent = attack.talent;
                     break;
                 }
               } else {
@@ -2129,6 +2130,7 @@ export default defineComponent({
                 ),
                 isEnabled,
                 type: attack.type,
+                count: attack.count,
               };
             })
             // remove any attacks that are not enabled
@@ -2177,6 +2179,35 @@ export default defineComponent({
             description: rotation.description,
           };
           const attacks = processAttacks(rotation.attacks, null, false, true);
+          // post-process the attacks to multiply the damages by number of hits
+          const finalAttacks = attacks.map((attack) => {
+            const attackData = {
+              count: attack.count,
+              isEnabled: attack.isEnabled,
+              key: attack.key,
+              label: attack.label,
+              talent: attack.talent,
+              type: attack.type,
+            };
+            //update the damages if the count > 1
+            if (attack.count === 1) {
+              attackData.damage = attack.damage;
+            } else {
+              console.log(attack.count, attack.damage.avgDamage * attack.count);
+              const damageData = {
+                avgDamage: attack.damage.avgDamage * attack.count,
+                critDamage: attack.damage.critDamage * attack.count,
+                totalDamage: attack.damage.totalDamage * attack.count, // considered normal/non-crit
+                // update the tooltips
+                detailedCalculation: `${attack.count} * ${attack.damage.detailedCalculation}`,
+                detailedCalculationAvg: `${attack.count} * ${attack.damage.detailedCalculationAvg}`,
+                detailedCalculationCrit: `${attack.count} * ${attack.damage.detailedCalculationCrit}`,
+              };
+              attackData.damage = damageData;
+            }
+            return attackData;
+          });
+          console.log(attacks);
           rotationInfo.attacks = attacks;
           rotationData.push(rotationInfo);
         });
@@ -2262,6 +2293,7 @@ export default defineComponent({
           const actionKey = action.key;
           const actionType = action.type;
           const actionBuffs = action.buffs;
+          const actionCount = action.count;
           const attacksList =
             chosenChar?.[`${actionType}Attacks`]?.attacks ?? [];
           const foundAction = attacksList.find((attack) => {
@@ -2272,6 +2304,7 @@ export default defineComponent({
               ...foundAction,
               buffs: action.buffs,
               actionType,
+              count: actionCount,
             };
             rotationActionInfo.push(actionData);
           }
