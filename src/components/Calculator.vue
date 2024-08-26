@@ -2025,7 +2025,8 @@ export default defineComponent({
             totalSkillDmgBonus, // char stat of healing bonus
             specificSkillDmg, // any buffs for the skill
             totalTalentModifierAdd,
-            totalTalentModifierMultiply
+            totalTalentModifierMultiply,
+            count
           );
           return h;
         }
@@ -2037,7 +2038,8 @@ export default defineComponent({
             totalSkillDmgBonus, // char stat of shield bonus
             specificSkillDmg, // any buffs for the skill
             totalTalentModifierAdd,
-            totalTalentModifierMultiply
+            totalTalentModifierMultiply,
+            count
           );
           return h;
         }
@@ -2057,7 +2059,8 @@ export default defineComponent({
           instanceDmgCritRate,
           instanceDmgCritDMG,
           totalTalentModifierAdd,
-          totalTalentModifierMultiply
+          totalTalentModifierMultiply,
+          count
         );
       };
 
@@ -2118,6 +2121,7 @@ export default defineComponent({
               } else {
                 talent = attack.talents[talentType];
               }
+              const hitCount = attack?.count ?? 1;
               return {
                 key: attack.key,
                 label: attack.label,
@@ -2126,7 +2130,8 @@ export default defineComponent({
                   attack,
                   talentType,
                   hasNoTalentLevel,
-                  dynamicTalentType
+                  dynamicTalentType,
+                  hitCount
                 ),
                 isEnabled,
                 type: attack.type,
@@ -2179,35 +2184,6 @@ export default defineComponent({
             description: rotation.description,
           };
           const attacks = processAttacks(rotation.attacks, null, false, true);
-          // post-process the attacks to multiply the damages by number of hits
-          const finalAttacks = attacks.map((attack) => {
-            const attackData = {
-              count: attack.count,
-              isEnabled: attack.isEnabled,
-              key: attack.key,
-              label: attack.label,
-              talent: attack.talent,
-              type: attack.type,
-            };
-            //update the damages if the count > 1
-            if (attack.count === 1) {
-              attackData.damage = attack.damage;
-            } else {
-              console.log(attack.count, attack.damage.avgDamage * attack.count);
-              const damageData = {
-                avgDamage: attack.damage.avgDamage * attack.count,
-                critDamage: attack.damage.critDamage * attack.count,
-                totalDamage: attack.damage.totalDamage * attack.count, // considered normal/non-crit
-                // update the tooltips
-                detailedCalculation: `${attack.count} * ${attack.damage.detailedCalculation}`,
-                detailedCalculationAvg: `${attack.count} * ${attack.damage.detailedCalculationAvg}`,
-                detailedCalculationCrit: `${attack.count} * ${attack.damage.detailedCalculationCrit}`,
-              };
-              attackData.damage = damageData;
-            }
-            return attackData;
-          });
-          console.log(attacks);
           rotationInfo.attacks = attacks;
           rotationData.push(rotationInfo);
         });
