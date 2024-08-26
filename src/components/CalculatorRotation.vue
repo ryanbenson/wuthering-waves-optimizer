@@ -208,7 +208,6 @@ export default {
       // Reorder the actions array to ensure the correct order
       actions.sort((a, b) => a.order - b.order);
       // update our list and notify up
-      console.log(JSON.parse(JSON.stringify(this.actionsList)), actions);
       this.actionsList = actions;
 
       this.$emit("updated-rotation", {
