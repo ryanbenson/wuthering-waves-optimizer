@@ -6,8 +6,12 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "EnergyRegen",
-        modifierValue: 0.1,
+        modifier: "CritRate:AdditionalBase",
+        modifierValue: 0.01,
+        maximumValue: 0.1,
+        modifierBasedOn: "EnergyRegen",
+        modifierTargetAttr: "CritRate",
+        modifierStep: 0.2,
       },
     ],
     minStacks: 0,
@@ -21,8 +25,12 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "EnergyRegen",
-        modifierValue: 0.1,
+        modifier: "ATK:AdditionalBase",
+        modifierValue: 0.01,
+        maximumValue: 0.2,
+        modifierBasedOn: "EnergyRegen",
+        modifierTargetAttr: "ATK",
+        modifierStep: 0.1,
       },
     ],
     minStacks: 0,
