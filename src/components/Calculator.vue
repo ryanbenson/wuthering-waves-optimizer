@@ -1775,7 +1775,7 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:CritDMG`
           ] ?? 0;
-        const instanceDmgCritRate =
+        let instanceDmgCritRate =
           totalCritRate.value + specificSkillExtraCritRate;
         const instanceDmgCritDMG =
           totalCritDMG.value + specificSkillExtraCritDMG;
@@ -1874,6 +1874,10 @@ export default defineComponent({
           return h;
         }
 
+        // sometimes an attack will always crit, if so, make that instance have max CR
+        if (attack?.alwaysCrit) {
+          instanceDmgCritRate = 1;
+        }
         return calcDamage(
           characterLevel.value,
           enemyLevel.value,
