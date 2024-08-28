@@ -71,6 +71,8 @@
         :min-stacks="buff.minStacks"
         :max-stacks="buff.maxStacks"
         :modifiers="buff.modifiers"
+        :input-base="buff.inputBase"
+        :modifier-based-on="buff.modifierBasedOn"
         @updated-party-buff="handleUpdatedPartyBuff2"
         :talent-data="talentData"
         class="character__buff"></CalculatorPartyBuff>
