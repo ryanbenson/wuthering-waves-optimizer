@@ -1,5 +1,5 @@
 const weaponInfo: WeaponInfo = {
-  name: "Shorekeeper Signature (TBD)",
+  name: "Shorekeeper Signature",
   description:
     "The core carrying energy simulates the cycle of star evolution. Infinity takes the singularity as its source, scattering the star clusters it pulls in. However, as the extinction flows, there is always an endless echo at the end of the final fall - that is the greeting when a new star is born.",
   type: "Rectifier",

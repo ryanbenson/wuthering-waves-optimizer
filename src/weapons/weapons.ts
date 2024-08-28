@@ -48,7 +48,7 @@ const rectifiersList = {
   five: [
     { key: "CosmicRipples", name: "Cosmic Ripples" },
     { key: "RimeDrapedSprouts", name: "Rime-Draped Sprouts" },
-    { key: "ShorekeeperSignature", name: "Shorekeeper Signature (TBD)" },
+    { key: "ShorekeeperSignature", name: "Shorekeeper Signature" },
     { key: "Stringmaster", name: "Stringmaster" },
   ],
   four: [
