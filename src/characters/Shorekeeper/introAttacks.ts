@@ -35,6 +35,7 @@ export const introAttacks = {
         "10": "19.64%*3",
       },
       type: "Liberation",
+      attribute: "hp",
       alwaysCrit: true,
     },
     {
