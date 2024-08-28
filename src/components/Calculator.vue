@@ -49,9 +49,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert">
-            Jianxin is now available. All characters are in!✨
-          </div>
+          <div class="alert">Shorekeeper is now available. ✨</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -1581,6 +1579,71 @@ export default defineComponent({
         }
       }
 
+      // add any buffs that are based on total / additional stats
+      if (charBuffsData.value) {
+        const charBuffKeys = Object.keys(charBuffsData.value);
+        // find any with "Additional" in it
+        const additionalBasedBuffs = charBuffKeys.filter((buff) => {
+          return buff.includes("AdditionalBase");
+        });
+        const charBuffDetails = chosenChar.value?.buffs ?? [];
+        additionalBasedBuffs.forEach((buff) => {
+          // find the buff data, it has more data we need
+          let buffParams;
+          for (const charBuffDetail of charBuffDetails) {
+            const foundModifier = charBuffDetail.modifiers.find((modifier) => {
+              return modifier.modifier === buff;
+            });
+            if (foundModifier) {
+              buffParams = foundModifier;
+              break;
+            }
+          }
+          if (buffParams) {
+            // now calc the amount we get
+            let base = 0;
+            let currentAmount = 0;
+            switch (buffParams.modifierBasedOn) {
+              case "EnergyRegen":
+                base = 1;
+                currentAmount = stats.energyRegen;
+                break;
+              case "CritRate":
+                base = 0.05;
+                currentAmount = stats.critRate;
+                break;
+              case "CritDMG":
+                base = 1.5;
+                currentAmount = stats.critDMG;
+                break;
+              default:
+                base = 0;
+                break;
+            }
+            const additionalAmount = currentAmount - base;
+            const steps = Math.floor(
+              additionalAmount / buffParams.modifierStep
+            );
+            let buffValue = steps * buffParams.modifierValue;
+            if (buffValue > buffParams.maximumValue) {
+              buffValue = buffParams.maximumValue;
+            }
+            // now apply the buff
+            switch (buffParams.modifierTargetAttr) {
+              case "CritRate":
+                stats.critRate += buffValue * 100;
+                break;
+              case "CritDMG":
+                stats.critDMG += buffValue * 100;
+                break;
+              case "ATK":
+                stats.attackPercent += buffValue * 100;
+                break;
+            }
+          }
+        });
+      }
+
       if (returnValue) {
         switch (returnValue) {
           case "HP":
@@ -1775,7 +1838,7 @@ export default defineComponent({
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:CritDMG`
           ] ?? 0;
-        const instanceDmgCritRate =
+        let instanceDmgCritRate =
           totalCritRate.value + specificSkillExtraCritRate;
         const instanceDmgCritDMG =
           totalCritDMG.value + specificSkillExtraCritDMG;
@@ -1874,6 +1937,10 @@ export default defineComponent({
           return h;
         }
 
+        // sometimes an attack will always crit, if so, make that instance have max CR
+        if (attack?.alwaysCrit) {
+          instanceDmgCritRate = 1;
+        }
         return calcDamage(
           characterLevel.value,
           enemyLevel.value,
