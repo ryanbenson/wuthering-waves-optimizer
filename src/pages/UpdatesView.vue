@@ -30,6 +30,17 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 28, 2024</h3>
+    <ul>
+      <li>
+        Fixes Xiangli Yao's S5 to only affect the first hit of damage, not all
+        liberation actions.
+      </li>
+      <li>
+        Updates Shorekeeper ER calculation buffs to be inclusive of base ER
+        based on latest translations.
+      </li>
+    </ul>
     <h3>August 27, 2024</h3>
     <ul>
       <li>Adds Shorekeeper and Shorekeeper signature (name TBD)</li>

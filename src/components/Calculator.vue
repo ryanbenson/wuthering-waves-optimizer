@@ -1605,7 +1605,8 @@ export default defineComponent({
             let currentAmount = 0;
             switch (buffParams.modifierBasedOn) {
               case "EnergyRegen":
-                base = 1;
+                // TODO: Verify this. updated theory is all ER, not added ER
+                base = 0;
                 currentAmount = stats.energyRegen;
                 break;
               case "CritRate":

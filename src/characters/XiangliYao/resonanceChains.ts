@@ -73,14 +73,7 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "CogitationModelDMG",
-          "PivotImpaleStage1DMG",
-          "PivotImpaleStage2DMG",
-          "PivotImpaleStage3DMG",
-          "DivergenceDMG",
-          "DodgeAttackUnfathomedDMG",
-        ],
+        modifySpecificTalents: ["CogitationModelDMG"],
         modifierValue: 1,
       },
       {

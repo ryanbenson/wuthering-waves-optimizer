@@ -23,7 +23,7 @@
       <label for="weaponLevel">Refinement Level</label>
     </div>
     <div v-if="inputBase" class="party-buff__input-base" @click.stop>
-      <label for="baseAttrValue">Base {{ modifierBasedOn }}:</label>
+      <label for="baseAttrValue">{{ modifierBasedOn }}:</label>
       <input
         type="number"
         id="baseAttrValue"
@@ -279,7 +279,8 @@ export default {
             let base = 0;
             switch (this.modifierBasedOn) {
               case "Energy Regen":
-                base = 100;
+                // TODO: Verify this. Latest is that it is all ER, not added ER
+                base = 0;
                 break;
               case "CritRate":
                 base = 0.05;
