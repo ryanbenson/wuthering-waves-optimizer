@@ -751,6 +751,21 @@ export const allEchoBuffs = [
     maxStacks: 0,
     alwaysEnabled: false,
   },
+  {
+    key: "FallacyOfNoReturn",
+    name: "Fallacy of No Return",
+    details: `<span class="description">Increases attack of all team characters by <span class="Highlight">10%</span>, lasting for 20 seconds.`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.1,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allWeaponTeamBuffs = [
