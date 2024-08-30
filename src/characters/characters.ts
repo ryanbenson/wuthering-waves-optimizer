@@ -63,6 +63,7 @@ export const allCharacters: string[] = [
   "XiangliYao",
   "Yangyang",
   "Yinlin",
+  "Youhu",
   "Yuanwu",
   "Zhezhi",
 ];

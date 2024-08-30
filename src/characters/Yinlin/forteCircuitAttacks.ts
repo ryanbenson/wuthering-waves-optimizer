@@ -35,6 +35,7 @@ export const forteCircuitAttacks = {
         "10": "78.64%",
       },
       type: "Skill",
+      subType: "Coordinated",
     },
   ],
 };

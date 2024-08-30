@@ -7,6 +7,7 @@ export const outroAttacks = {
       label: "Coordinated Outro Skill DMG",
       talent: "237.63%",
       type: "Outro",
+      subType: "Coordinated",
     },
   ],
 };
