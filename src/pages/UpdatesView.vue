@@ -30,6 +30,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 30, 2024</h3>
+    <ul>
+      <li>Youhu is now available.</li>
+    </ul>
     <h3>August 29, 2024</h3>
     <ul>
       <li>Adds 1.3 new 4* weapons.</li>

@@ -49,7 +49,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Shorekeeper is now available. ✨</div>
+          <div class="alert">Youhu is now available. ❄️</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
