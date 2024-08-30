@@ -49,7 +49,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Shorekeeper is now available. ✨</div>
+          <div class="alert">Youhu is now available. ❄️</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -1885,6 +1885,12 @@ export default defineComponent({
           teamBuffsData.value?.[`DMGDeepen:${attackElement}`] ?? 0;
         let teamBuffDmgDeepenForAttackType =
           teamBuffsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
+        let teamBuffDmgDeepenForCoordinatedAttack =
+          teamBuffsData.value?.[`DMGDeepen:Coordinated`] ?? 0;
+        let coordinatedDmgDeepenEffect = 0;
+        if (attack?.subType === "Coordinated") {
+          coordinatedDmgDeepenEffect = teamBuffDmgDeepenForCoordinatedAttack;
+        }
         if (attackType === "Outro") {
           teamBuffDmgDeepenForCharElement = 0;
           teamBuffDmgDeepenForAttackType = 0;
@@ -1892,7 +1898,8 @@ export default defineComponent({
         const totalDmgDeepen =
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
-          teamBuffDmgDeepenForAttackType;
+          teamBuffDmgDeepenForAttackType +
+          coordinatedDmgDeepenEffect;
         const totalTalentModifierMultiply =
           talentModifierMultiply + talentModifierMultiplySelfBuff;
         // check for any modifiers that change the individual instance of atk/hp/def

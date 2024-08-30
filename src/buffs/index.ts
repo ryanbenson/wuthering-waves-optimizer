@@ -688,6 +688,23 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Youhu: [
+    {
+      key: "OutroSkillTimelessClassics",
+      name: "Outro Skill: Timeless Classics",
+      details: `<span class="skilldescription">The incoming Resonator has their Coordinated Attack DMG Amplified by 100% for 28s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Coordinated",
+          modifierValue: 1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

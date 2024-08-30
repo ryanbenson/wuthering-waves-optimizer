@@ -34,6 +34,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Sanhua", name: "Sanhua" },
       { key: "Taoqi", name: "Taoqi" },
       { key: "Yangyang", name: "Yangyang" },
+      { key: "Youhu", name: "Youhu" },
       { key: "Yuanwu", name: "Yuanwu" },
     ],
   };
@@ -62,6 +63,7 @@ export const allCharacters: string[] = [
   "XiangliYao",
   "Yangyang",
   "Yinlin",
+  "Youhu",
   "Yuanwu",
   "Zhezhi",
 ];
