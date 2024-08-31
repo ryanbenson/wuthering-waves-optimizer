@@ -30,12 +30,42 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 30, 2024</h3>
+    <ul>
+      <li>Youhu is now available.</li>
+    </ul>
+    <h3>August 29, 2024</h3>
+    <ul>
+      <li>Adds 1.3 new 4* weapons.</li>
+      <li>
+        Adds new 1.3 echo, Fallacy of No Return to personal echo and team buffs
+        list.
+      </li>
+    </ul>
+    <h3>August 28, 2024</h3>
+    <ul>
+      <li>
+        Fixes Xiangli Yao's S5 to only affect the first hit of damage, not all
+        liberation actions.
+      </li>
+      <li>
+        Updates Shorekeeper ER calculation buffs to be inclusive of base ER
+        based on latest translations.
+      </li>
+    </ul>
+    <h3>August 27, 2024</h3>
+    <ul>
+      <li>Adds Shorekeeper and Shorekeeper signature (name TBD)</li>
+    </ul>
     <h3>August 20, 2024</h3>
     <ul>
-      <li>Adds missing cursor change to resonance chains to indicate you can click the whole box to activate it.</li>
       <li>
-        Shields are now supported. Jianxin, Verina, Yuanwu, and Toaqi have their shields
-        added.
+        Adds missing cursor change to resonance chains to indicate you can click
+        the whole box to activate it.
+      </li>
+      <li>
+        Shields are now supported. Jianxin, Verina, Yuanwu, and Toaqi have their
+        shields added.
       </li>
     </ul>
     <h3>August 19, 2024</h3>

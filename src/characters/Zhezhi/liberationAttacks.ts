@@ -18,6 +18,7 @@ export const liberationAttacks = {
         "10": "65.21%",
       },
       type: "Basic",
+      subType: "Coordinated",
     },
     {
       key: "SequenceNode5CompositionsClue",
@@ -35,6 +36,7 @@ export const liberationAttacks = {
         "10": "91.29%",
       },
       type: "Basic",
+      subType: "Coordinated",
       requiresResonanceChain: "SequenceNode5CompositionsClue",
     },
   ],

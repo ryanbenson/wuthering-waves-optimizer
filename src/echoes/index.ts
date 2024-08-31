@@ -215,6 +215,26 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
   },
+  FallacyOfNoReturn: {
+    key: "FallacyOfNoReturn",
+    name: "Fallacy of No Return",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FallacyOfNoReturn.png",
+    details: `<span class="description">Use the Sound Corpse skill to summon a portion of the power of the Fallacy of No Return, causing 1 diffraction damage based on <span class="Highlight">9.91%/11.40%/12.88%/14.37%/15.86%</span> of the player's upper limit of health to surrounding enemies, increasing the player's <span class="Highlight">Energy Regen</span> by <span class="Highlight">10%</span> and the attack of all team characters by <span class="Highlight">10%</span>, lasting for 20 seconds. Long-press the Sound Corpse skill to consume stamina to continue attacking after the shock ends, causing <span class="Highlight">0.99%/1.14%/1.29%/1.44%/1.58%</span> of the upper limit of health each time; when the long-press ends, the final blow is triggered, causing <span class="Highlight">12.39%/14.25%/16.11%/17.97%/19.82%</span> of the upper limit of health.
+    
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "EnergyRegen",
+        modifierValue: 0.1,
+      },
+      {
+        modifier: "ATK",
+        modifierValue: 0.1,
+      },
+    ],
+  },
   FeilianBeringal: {
     key: "FeilianBeringal",
     name: "Feilian Beringal",

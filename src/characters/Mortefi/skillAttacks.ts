@@ -36,6 +36,7 @@ export const skillAttacks = {
         "10": "15.91%",
       },
       type: "Basic",
+      subType: "Coordinated",
       requiresResonanceChain: "SequenceNodeFuneraryQuartet",
     },
   ],

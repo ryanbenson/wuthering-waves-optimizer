@@ -582,6 +582,129 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Shorekeeper: [
+    {
+      key: "SophisticatedStellarealm",
+      name: "Sophisticated Stellarealm",
+      details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Elementary Stellarealm</span>, it evolves into <span class="Highlight">Sophisticated Stellarealm</span>. In <span class="Highlight">Sophisticated Stellarealm</span>, for every 20% in Shorekeeper's Energy Regen, all nearby team members in the domain gain a 1% increase in Crit. Rate, up to a maximum of 10%.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "CritRate",
+          modifierValue: 0.01,
+          maximumValue: 0.1,
+          modifierStep: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+      inputBase: true,
+      modifierBasedOn: "Energy Regen",
+    },
+    {
+      key: "ReleasedStellarealm",
+      name: "Released Stellarealm",
+      details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Sophisticated Stellarealm</span>, it evolves into <span class="Highlight">Released Stellarealm</span>. In <span class="Highlight">Released Stellarealm</span>, for every 10% increase in the Shorekeeper's Energy Regen, all nearby team members in the domain gain a 1% increase in ATK%, up to a maximum of 20%.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.01,
+          maximumValue: 0.2,
+          modifierStep: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+      inputBase: true,
+      modifierBasedOn: "Energy Regen",
+    },
+    {
+      key: "OutroSkillBinaryButterfly",
+      name: "Outro Skill: Binary Butterfly",
+      details: `<div class="skilldescription">When the <span class="Highlight">Dim Star Butterfly</span> is present, all nearby team members' DMG is amplified by 15%.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "InherentSkillSelfGravitation",
+      name: "Inherent Skill: Self Gravitation",
+      details: `<div class="skilldescription">When the Shorekeeper is in the team or when <span class="Highlight">Stellarealm</span> is active, or if the team is within the Black Shores area, the Shorekeeper's Energy Regen increases by 10%. If Rover is in the same team, their Energy Regen also increases by 10%.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "EnergyRegen",
+          modifierValue: 0.1,
+          specificCharacters: [
+            "RoverHavocFemale",
+            "RoverHavocMale",
+            "RoverSpectroFemale",
+            "RoverSpectroMale",
+          ],
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2NightsGiftandRefusalDmgBonus",
+      name: "Sequence Node 2: Night's Gift and Refusal",
+      details: `<span class="skilldescription">When the <span class="Highlight">Dim Star Butterfly</span> hits a target, all team members' DMG increases by 3%. This effect stacks up to 5 times, each stack lasts 30s.</span>`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "DMGBonus",
+          modifierValue: 0.03,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 5,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4OverflowingQuietude",
+      name: "Sequence Node 4: Overflowing Quietude",
+      details: `<span class="skilldescription">When casting Outro Skill <span class="Highlight">Binary Butterfly</span>, all nearby team members' DMG is amplified by 10%. This effect lasts for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Youhu: [
+    {
+      key: "OutroSkillTimelessClassics",
+      name: "Outro Skill: Timeless Classics",
+      details: `<span class="skilldescription">The incoming Resonator has their Coordinated Attack DMG Amplified by 100% for 28s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Coordinated",
+          modifierValue: 1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -638,6 +761,21 @@ export const allEchoBuffs = [
     modifiers: [
       {
         modifier: "DMGBonus",
+        modifierValue: 0.1,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "FallacyOfNoReturn",
+    name: "Fallacy of No Return",
+    details: `<span class="description">Increases attack of all team characters by <span class="Highlight">10%</span>, lasting for 20 seconds.`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
         modifierValue: 0.1,
       },
     ],

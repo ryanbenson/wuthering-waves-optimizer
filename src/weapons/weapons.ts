@@ -5,6 +5,7 @@ export const swordsList = {
   ],
   four: [
     { key: "CommandoOfConviction", name: "Commando Of Conviction" },
+    { key: "EndlessCollapse", name: "Endless Collapse" },
     { key: "Lumingloss", name: "Lumingloss" },
     { key: "LunarCutter", name: "Lunar Cutter" },
     { key: "ScaleSlasher", name: "Scale Slasher" },
@@ -32,6 +33,7 @@ const broadbladesList = {
     { key: "DauntlessEvernight", name: "Dauntless Evernight" },
     { key: "Discord", name: "Discord" },
     { key: "HeliosCleaver", name: "Helios Cleaver" },
+    { key: "WaningRedshift", name: "Waning Redshift" },
   ],
   three: [
     { key: "BeguilingMelody", name: "Beguiling Melody" },
@@ -48,11 +50,13 @@ const rectifiersList = {
   five: [
     { key: "CosmicRipples", name: "Cosmic Ripples" },
     { key: "RimeDrapedSprouts", name: "Rime-Draped Sprouts" },
+    { key: "ShorekeeperSignature", name: "Shorekeeper Signature" },
     { key: "Stringmaster", name: "Stringmaster" },
   ],
   four: [
     { key: "Augment", name: "Augment" },
-    { key: "CometFlare", name: "CometFlare" },
+    { key: "CometFlare", name: "Comet Flare" },
+    { key: "FusionAccretion", name: "Fusion Accretion" },
     { key: "JinzhouKeeper", name: "Jinzhou Keeper" },
     { key: "Variation", name: "Variation" },
   ],
@@ -74,7 +78,8 @@ const pistolsList = {
     { key: "Novaburst", name: "Novaburst" },
     { key: "Pistols26", name: "Pistols #26" },
     { key: "Thunderbolt", name: "Thunderbolt" },
-    { key: "UndyingFlame", name: "UndyingFlame" },
+    { key: "UndyingFlame", name: "Undying Flame" },
+    { key: "RelativisticJet", name: "Relativistic Jet" },
   ],
   three: [
     { key: "GuardianPistols", name: "Guardian Pistols" },
@@ -93,6 +98,7 @@ const gauntletsList = {
   ],
   four: [
     { key: "AmityAccord", name: "Amity Accord" },
+    { key: "CelestialSpiral", name: "Celestial Spiral" },
     { key: "Gauntlets21D", name: "Gauntlets #21D" },
     { key: "HollowMirage", name: "Hollow Mirage" },
     { key: "Marcato", name: "Marcato" },

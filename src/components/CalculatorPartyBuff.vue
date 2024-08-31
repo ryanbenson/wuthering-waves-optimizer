@@ -22,6 +22,14 @@
       </select>
       <label for="weaponLevel">Refinement Level</label>
     </div>
+    <div v-if="inputBase" class="party-buff__input-base" @click.stop>
+      <label for="baseAttrValue">{{ modifierBasedOn }}:</label>
+      <input
+        type="number"
+        id="baseAttrValue"
+        name="baseAttrValue"
+        v-model="baseAttrValue" />
+    </div>
   </div>
 </template>
 
@@ -70,6 +78,14 @@ export default {
     hasRefinements: {
       type: Boolean,
       default: false,
+    },
+    inputBase: {
+      type: Boolean,
+      default: false,
+    },
+    modifierBasedOn: {
+      type: String,
+      default: null,
     },
   },
   data() {
@@ -195,6 +211,30 @@ export default {
         await this.setCharacterData(this.character, data);
       },
     },
+    /**
+     * Getter/setter used in the form for the refinement state for this passive
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    baseAttrValue: {
+      get() {
+        return (
+          this.currentCharacter?.teamBuffs?.buffs?.[this.uniqueKey]
+            ?.baseAttrValue ?? 0
+        );
+      },
+      async set(value) {
+        const data = {
+          teamBuffs: {
+            buffs: {},
+          },
+        };
+        data.teamBuffs.buffs[this.uniqueKey] = {
+          baseAttrValue: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
     buffStats() {
       const data = {};
       if (!this.isEnabled) {
@@ -202,6 +242,12 @@ export default {
       }
       if (!this.hasStacks) {
         this.modifiers.forEach((modifierItem) => {
+          // if this buff only applies to specific characters, check the cur character
+          if (modifierItem?.specificCharacters?.length) {
+            if (!modifierItem.specificCharacters.includes(this.character)) {
+              return;
+            }
+          }
           if (modifierItem?.modifySpecificTalents) {
             if (!data.modifySpecificTalents) {
               data.modifySpecificTalents = [];
@@ -229,6 +275,42 @@ export default {
               data.talentModifierMultiply = [];
             }
             data.talentModifierMultiply.push(modifierItem);
+          } else if (this.inputBase === true) {
+            let base = 0;
+            switch (this.modifierBasedOn) {
+              case "Energy Regen":
+                // TODO: Verify this. Latest is that it is all ER, not added ER
+                base = 0;
+                break;
+              case "CritRate":
+                base = 0.05;
+                break;
+              case "CritDMG":
+                base = 1.5;
+                break;
+              default:
+                base = 0;
+                break;
+            }
+            const currentAmount = this.baseAttrValue ?? 0;
+            let additionalAmount = (currentAmount - base) / 100;
+
+            // Step 2: Calculate the number of steps of 0.2
+            let steps = Math.floor(
+              additionalAmount / modifierItem.modifierStep
+            );
+
+            // Step 3: Calculate the CritRate buff
+            let buffValue = steps * modifierItem.modifierValue;
+
+            // Step 4: Ensure the CritRate buff doesn't exceed the maximum value
+            if (buffValue > modifierItem.maximumValue) {
+              buffValue = modifierItem.maximumValue;
+            }
+            if (buffValue < 0) {
+              buffValue = 0;
+            }
+            data[modifierItem.modifier] = buffValue;
           } else {
             let modifierValue;
             if (this.hasRefinements) {
@@ -324,6 +406,11 @@ label {
 .party-buff__refinement {
   label {
     margin-left: 0.5rem;
+  }
+}
+.party-buff__input-base {
+  label {
+    margin-right: 0.5rem;
   }
 }
 </style>

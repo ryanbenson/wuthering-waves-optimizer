@@ -55,9 +55,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert">
-            Jianxin is now available. All characters are in!✨
-          </div>
+          <div class="alert">Youhu is now available. ❄️</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -1318,19 +1316,35 @@
             </template>
           </div>
           <div class="rotation__aggregation">
-            <div v-if="rotation.damageAggregation.normalDamage" class="calculation__damage__item">
+            <div
+              v-if="rotation.damageAggregation.normalDamage"
+              class="calculation__damage__item">
               <span>Total Damage</span>
-              <span>{{ displayDamage(rotation.damageAggregation.normalDamage) }}</span>
-              <span>{{ displayDamage(rotation.damageAggregation.avgDamage) }}</span>
-              <span>{{ displayDamage(rotation.damageAggregation.critDamage) }}</span>
+              <span>{{
+                displayDamage(rotation.damageAggregation.normalDamage)
+              }}</span>
+              <span>{{
+                displayDamage(rotation.damageAggregation.avgDamage)
+              }}</span>
+              <span>{{
+                displayDamage(rotation.damageAggregation.critDamage)
+              }}</span>
             </div>
-            <div v-if="rotation.damageAggregation.healing" class="calculation__damage__item calculation__damage__item--healing">
+            <div
+              v-if="rotation.damageAggregation.healing"
+              class="calculation__damage__item calculation__damage__item--healing">
               <span>Total Healing</span>
-              <span>{{ displayDamage(rotation.damageAggregation.healing) }}</span>
+              <span>{{
+                displayDamage(rotation.damageAggregation.healing)
+              }}</span>
             </div>
-            <div v-if="rotation.damageAggregation.shield" class="calculation__damage__item calculation__damage__item--shield">
+            <div
+              v-if="rotation.damageAggregation.shield"
+              class="calculation__damage__item calculation__damage__item--shield">
               <span>Total Shield</span>
-              <span>{{ displayDamage(rotation.damageAggregation.shield) }}</span>
+              <span>{{
+                displayDamage(rotation.damageAggregation.shield)
+              }}</span>
             </div>
           </div>
         </div>
@@ -1741,6 +1755,72 @@ export default defineComponent({
         }
       }
 
+      // add any buffs that are based on total / additional stats
+      if (charBuffsData.value) {
+        const charBuffKeys = Object.keys(charBuffsData.value);
+        // find any with "Additional" in it
+        const additionalBasedBuffs = charBuffKeys.filter((buff) => {
+          return buff.includes("AdditionalBase");
+        });
+        const charBuffDetails = chosenChar.value?.buffs ?? [];
+        additionalBasedBuffs.forEach((buff) => {
+          // find the buff data, it has more data we need
+          let buffParams;
+          for (const charBuffDetail of charBuffDetails) {
+            const foundModifier = charBuffDetail.modifiers.find((modifier) => {
+              return modifier.modifier === buff;
+            });
+            if (foundModifier) {
+              buffParams = foundModifier;
+              break;
+            }
+          }
+          if (buffParams) {
+            // now calc the amount we get
+            let base = 0;
+            let currentAmount = 0;
+            switch (buffParams.modifierBasedOn) {
+              case "EnergyRegen":
+                // TODO: Verify this. updated theory is all ER, not added ER
+                base = 0;
+                currentAmount = stats.energyRegen;
+                break;
+              case "CritRate":
+                base = 0.05;
+                currentAmount = stats.critRate;
+                break;
+              case "CritDMG":
+                base = 1.5;
+                currentAmount = stats.critDMG;
+                break;
+              default:
+                base = 0;
+                break;
+            }
+            const additionalAmount = currentAmount - base;
+            const steps = Math.floor(
+              additionalAmount / buffParams.modifierStep
+            );
+            let buffValue = steps * buffParams.modifierValue;
+            if (buffValue > buffParams.maximumValue) {
+              buffValue = buffParams.maximumValue;
+            }
+            // now apply the buff
+            switch (buffParams.modifierTargetAttr) {
+              case "CritRate":
+                stats.critRate += buffValue * 100;
+                break;
+              case "CritDMG":
+                stats.critDMG += buffValue * 100;
+                break;
+              case "ATK":
+                stats.attackPercent += buffValue * 100;
+                break;
+            }
+          }
+        });
+      }
+
       if (returnValue) {
         switch (returnValue) {
           case "HP":
@@ -1961,8 +2041,7 @@ export default defineComponent({
           ] ?? 0;
         let instanceDmgCritRate =
           totalCritRate.value + specificSkillExtraCritRate;
-        let instanceDmgCritDMG =
-          totalCritDMG.value + specificSkillExtraCritDMG;
+        let instanceDmgCritDMG = totalCritDMG.value + specificSkillExtraCritDMG;
         const talentModifierMultiply =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
@@ -2005,6 +2084,12 @@ export default defineComponent({
           teamBuffsData.value?.[`DMGDeepen:${attackElement}`] ?? 0;
         let teamBuffDmgDeepenForAttackType =
           teamBuffsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
+        let teamBuffDmgDeepenForCoordinatedAttack =
+          teamBuffsData.value?.[`DMGDeepen:Coordinated`] ?? 0;
+        let coordinatedDmgDeepenEffect = 0;
+        if (attack?.subType === "Coordinated") {
+          coordinatedDmgDeepenEffect = teamBuffDmgDeepenForCoordinatedAttack;
+        }
         if (attackType === "Outro") {
           teamBuffDmgDeepenForCharElement = 0;
           teamBuffDmgDeepenForAttackType = 0;
@@ -2014,7 +2099,8 @@ export default defineComponent({
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
           teamBuffDmgDeepenForAttackType +
-          attackLevelDmgDeepen;
+          attackLevelDmgDeepen +
+          coordinatedDmgDeepenEffect;
         const totalTalentModifierMultiply =
           talentModifierMultiply + talentModifierMultiplySelfBuff;
         // check for any modifiers that change the individual instance of atk/hp/def
@@ -2026,12 +2112,17 @@ export default defineComponent({
         let modifyBaseDef =
           charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:DEF`] ?? 0;
         let modifyBaseAtkFlat =
-          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:ATK_FLAT`] ?? 0;
+          charBuffsData.value?.specificTalentBuffs?.[
+            `${attack.key}:ATK_FLAT`
+          ] ?? 0;
         let modifyBaseHpFlat =
-          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:HP_FLAT`] ?? 0;
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:HP_FLAT`] ??
+          0;
         let modifyBaseDefFlat =
-          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:DEF_FLAT`] ?? 0;
-          // if there are any attack-level buffs for atk, hp, or def (% or flat, upate them)
+          charBuffsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DEF_FLAT`
+          ] ?? 0;
+        // if there are any attack-level buffs for atk, hp, or def (% or flat, upate them)
         if (attack?.buffs) {
           modifyBaseAtk += attack.buffs?.ATK ?? 0;
           modifyBaseHp += attack.buffs?.HP ?? 0;
@@ -2042,13 +2133,22 @@ export default defineComponent({
         }
         let finalAtkDefHpVal = atkDefHpVal;
         if (modifyBaseAtk) {
-          finalAtkDefHpVal = calcCharStats("ATK", { ATK: modifyBaseAtk, ATK_FLAT: modifyBaseAtkFlat });
+          finalAtkDefHpVal = calcCharStats("ATK", {
+            ATK: modifyBaseAtk,
+            ATK_FLAT: modifyBaseAtkFlat,
+          });
         }
         if (modifyBaseHp) {
-          finalAtkDefHpVal = calcCharStats("HP", { HP: modifyBaseHp, HP_FLAT: modifyBaseHpFlat });
+          finalAtkDefHpVal = calcCharStats("HP", {
+            HP: modifyBaseHp,
+            HP_FLAT: modifyBaseHpFlat,
+          });
         }
         if (modifyBaseDef) {
-          finalAtkDefHpVal = calcCharStats("DEF", { DEF: modifyBaseDef, DEF_FLAT: modifyBaseDefFlat });
+          finalAtkDefHpVal = calcCharStats("DEF", {
+            DEF: modifyBaseDef,
+            DEF_FLAT: modifyBaseDefFlat,
+          });
         }
 
         if (attackType === "Healing") {
@@ -2081,10 +2181,14 @@ export default defineComponent({
           return h;
         }
 
-          // apply any generic attack-level buffs (e.g. CR, CD)
+        // apply any generic attack-level buffs (e.g. CR, CD)
         if (attack?.buffs) {
           instanceDmgCritRate += attack.buffs?.CritRate ?? 0;
           instanceDmgCritDMG += attack.buffs?.CritDMG ?? 0;
+        }
+        // sometimes an attack will always crit, if so, make that instance have max CR
+        if (attack?.alwaysCrit) {
+          instanceDmgCritRate = 1;
         }
         return calcDamage(
           characterLevel.value,
@@ -2233,27 +2337,40 @@ export default defineComponent({
             critDamage: null,
             healing: null,
             shield: null,
-          }
+          };
           // go through all attacks and update our aggregation
           attacks.forEach((attack) => {
             if (attack?.damage?.totalDamage !== undefined) {
-              damageAggregation.normalDamage = (damageAggregation.normalDamage || 0) + attack?.damage?.totalDamage;
+              damageAggregation.normalDamage =
+                (damageAggregation.normalDamage || 0) +
+                attack?.damage?.totalDamage;
             }
 
             if (attack?.damage?.avgDamage !== undefined) {
-              damageAggregation.avgDamage = (damageAggregation.avgDamage || 0) + attack?.damage?.avgDamage;
+              damageAggregation.avgDamage =
+                (damageAggregation.avgDamage || 0) + attack?.damage?.avgDamage;
             }
 
             if (attack?.damage?.critDamage !== undefined) {
-              damageAggregation.critDamage = (damageAggregation.critDamage || 0) + attack?.damage?.critDamage;
+              damageAggregation.critDamage =
+                (damageAggregation.critDamage || 0) +
+                attack?.damage?.critDamage;
             }
 
-            if (attack.type === "Healing" && attack?.damage?.healAmount !== undefined) {
-              damageAggregation.healing = (damageAggregation.healing || 0) + attack?.damage?.healAmount;
+            if (
+              attack.type === "Healing" &&
+              attack?.damage?.healAmount !== undefined
+            ) {
+              damageAggregation.healing =
+                (damageAggregation.healing || 0) + attack?.damage?.healAmount;
             }
 
-            if (attack.type === "Shield" && attack?.damage?.shieldAmount !== undefined) {
-              damageAggregation.shield = (damageAggregation.shield || 0) + attack?.damage?.shieldAmount;
+            if (
+              attack.type === "Shield" &&
+              attack?.damage?.shieldAmount !== undefined
+            ) {
+              damageAggregation.shield =
+                (damageAggregation.shield || 0) + attack?.damage?.shieldAmount;
             }
           });
           rotationInfo.attacks = attacks;
@@ -2362,7 +2479,9 @@ export default defineComponent({
               action.buffs.forEach((buff) => {
                 // buffs are in human readable, convert to decimal except flat values
                 let buffValue;
-                if (['ATK_FLAT', 'HP_FLAT', 'DEF_FLAT'].includes(buff.modifier)) {
+                if (
+                  ["ATK_FLAT", "HP_FLAT", "DEF_FLAT"].includes(buff.modifier)
+                ) {
                   buffValue = Number(buff.modifierValue);
                 } else {
                   buffValue = Number(buff.modifierValue) / 100;

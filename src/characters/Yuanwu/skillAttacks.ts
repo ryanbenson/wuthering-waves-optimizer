@@ -36,6 +36,7 @@ export const skillAttacks = {
         "10": "7.96%",
       },
       type: "Skill",
+      subType: "Coordinated",
       attribute: "defense",
     },
     {

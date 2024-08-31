@@ -103,6 +103,7 @@ export const forteCircuitAttacks = {
         "10": "9.95%",
       },
       type: "Liberation",
+      subType: "Coordinated",
       requiresResonanceChain: "SequenceNode6JoyousHarvest",
     },
     {

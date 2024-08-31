@@ -52,6 +52,7 @@ export const liberationAttacks = {
         "10": "9.95%",
       },
       type: "Liberation",
+      subType: "Coordinated",
     },
     {
       key: "ArborealFlourishCoordinatedAttackHealing",
