@@ -1,11 +1,10 @@
 export const introAttacks = {
   name: "Intro Skill: Principle",
-  description:
-    `<div class="skilldescription">Attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
+  description: `<div class="skilldescription">Attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
   attacks: [
     {
       key: "PrincipleSkillDMG",
-      label: "Skill DMG",
+      label: "Principle DMG",
       talents: {
         "1": "50.00%*2",
         "2": "54.10%*2",

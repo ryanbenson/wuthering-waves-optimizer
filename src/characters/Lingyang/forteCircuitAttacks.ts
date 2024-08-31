@@ -4,7 +4,7 @@ export const forteCircuitAttacks = {
   attacks: [
     {
       key: "GloriousPlungeDMG",
-      label: "Glorious Plunge Damage",
+      label: "Glorious Plunge DMG",
       talents: {
         "1": "86.70%",
         "2": "93.81%",
@@ -55,7 +55,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "MountainRoamerDMG",
-      label: "Mountain Roamer Damage",
+      label: "Mountain Roamer DMG",
       talents: {
         "1": "41.69%*2",
         "2": "45.11%*2",
@@ -72,7 +72,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "StormyKicksDMG",
-      label: "Stormy Kicks Damage",
+      label: "Stormy Kicks DMG",
       talents: {
         "1": "18.13%*8 + 96.65%",
         "2": "19.61%*8 + 104.58%",
@@ -89,7 +89,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "TailStrikeDMG",
-      label: "Tail Strike Damage",
+      label: "Tail Strike DMG",
       talents: {
         "1": "88.00%*2",
         "2": "95.22%*2",
@@ -106,7 +106,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "InherentSkillDiligentPractice",
-      label: "Inherent Skill: Diligent Practice",
+      label: "Inherent Skill: Diligent Practice DMG",
       talents: {
         "1": "62.54%*2",
         "2": "67.67%*2",

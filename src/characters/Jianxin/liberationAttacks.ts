@@ -4,7 +4,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "PurificationForceFieldResonanceLiberationContinuousDamage",
-      label: "Resonance Liberation Continuous Damage",
+      label: "Resonance Liberation Continuous DMG",
       talents: {
         "1": "15.00%",
         "2": "16.23%",
@@ -21,7 +21,7 @@ export const liberationAttacks = {
     },
     {
       key: "PurificationForceFieldResonanceLiberationExplosionDamage",
-      label: "Resonance Liberation Explosion Damage",
+      label: "Resonance Liberation Explosion DMG",
       talents: {
         "1": "320.00%",
         "2": "346.24%",

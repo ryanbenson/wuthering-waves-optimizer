@@ -22,7 +22,7 @@ export const liberationAttacks = {
     },
     {
       key: "SequenceNode5CompositionsClue",
-      label: "Sequence Node 5: Proper Structuring",
+      label: "S5: Proper Structuring",
       talents: {
         "1": "45.92%",
         "2": "49.69%",

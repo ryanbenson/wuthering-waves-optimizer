@@ -4,7 +4,7 @@ export const forteCircuitAttacks = {
   attacks: [
     {
       key: "PrimordialChiSpiralPushingPunchDMG",
-      label: "Pushing Punch Damage",
+      label: "Pushing Punch DMG",
       talents: {
         "1": "125.00%",
         "2": "135.25%",
@@ -21,7 +21,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "PrimordialChiSpiralZhoutianProgressContinuousDMG",
-      label: "Zhoutian Progress Continuous Damage",
+      label: "Zhoutian Progress Continuous DMG",
       talents: {
         "1": "12.50%",
         "2": "13.53%",
@@ -38,7 +38,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "PrimordialChiSpiralMinorZhoutianShockDMG",
-      label: "Minor Zhoutian Shock Damage",
+      label: "Minor Zhoutian Shock DMG",
       talents: {
         "1": "70.00%",
         "2": "75.74%",
@@ -55,7 +55,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "PrimordialChiSpiralMajorZhoutianInnerShockDMG",
-      label: "Major Zhoutian: Inner Shock Damage",
+      label: "Major Zhoutian: Inner Shock DMG",
       talents: {
         "1": "190.00%",
         "2": "205.58%",
@@ -72,7 +72,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "PrimordialChiSpiralMajorZhoutianOuterShockDMG",
-      label: "Major Zhoutian: Outer Shock Damage",
+      label: "Major Zhoutian: Outer Shock DMG",
       talents: {
         "1": "260.00%",
         "2": "281.32%",
@@ -89,7 +89,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "PrimordialChiSpiralYieldingPullDMG",
-      label: "Yielding Pull Damage",
+      label: "Yielding Pull DMG",
       talents: {
         "1": "110.00%",
         "2": "119.02%",
@@ -174,7 +174,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "PrimordialChiSpiralShieldHealing",
-      label: "Shield Healing",
+      label: "Primordial Chi Spiral Shield Healing",
       talents: {
         "1": "700 + 27.30%",
         "2": "784 + 28.39%",
@@ -191,7 +191,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "SequenceNode6TruthfromWithinSpecialChiCounter",
-      label: "S6 Special Chi Counter",
+      label: "S6: Special Chi Counter DMG",
       talents: {
         "1": "556.67%",
         "2": "556.67%",

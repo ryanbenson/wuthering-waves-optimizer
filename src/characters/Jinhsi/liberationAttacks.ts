@@ -4,7 +4,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "PurgeOfLight",
-      label: "Skill DMG",
+      label: "Purge of Light DMG",
       talents: {
         "1": "251.40% + 586.60%",
         "2": "272.02% + 634.71%",

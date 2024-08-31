@@ -4,7 +4,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "ZephyrDomainSkillDMG",
-      label: "Skill DMG",
+      label: "Zephyr Domain DMG",
       talents: {
         "1": "17.37%*4 + 104.22%",
         "2": "18.79%*4 + 112.76%",

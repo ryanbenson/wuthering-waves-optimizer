@@ -4,7 +4,7 @@ export const forteCircuitAttacks = {
   attacks: [
     {
       key: "CloudyFrenzyDamage",
-      label: "Cloudy Frenzy Damage",
+      label: "Cloudy Frenzy DMG",
       talents: {
         "1": "168.00%",
         "2": "181.77%",
@@ -21,7 +21,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "CosmosRuptureDamage",
-      label: "Cosmos Rupture Damage",
+      label: "Cosmos Rupture DMG",
       talents: {
         "1": "23.35%*6 + 249.08%",
         "2": "25.26%*6 + 269.51%",

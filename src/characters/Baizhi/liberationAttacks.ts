@@ -4,7 +4,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "RemnantEntitiesDamage",
-      label: "Remnant Entities Damage",
+      label: "Remnant Entities DMG",
       talents: {
         "1": "2.05%",
         "2": "2.22%",

@@ -4,7 +4,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "ManifestationPressDMG",
-      label: "Press DMG",
+      label: "Manifestation Press DMG",
       talents: {
         "1": "49.50%*3",
         "2": "53.56%*3",
@@ -21,7 +21,7 @@ export const skillAttacks = {
     },
     {
       key: "ManifestationHoldDMG",
-      label: "Hold DMG",
+      label: "Manifestation Hold DMG",
       talents: {
         "1": "49.50%*3",
         "2": "53.56%*3",
@@ -38,7 +38,7 @@ export const skillAttacks = {
     },
     {
       key: "ManifestationMidAirDMG",
-      label: "Mid Air DMG",
+      label: "Manifestation Mid Air DMG",
       talents: {
         "1": "49.50%*3",
         "2": "53.56%*3",
@@ -55,7 +55,7 @@ export const skillAttacks = {
     },
     {
       key: "SequenceNode6InfiniteLegacy",
-      label: "Sequence Node 6: Imitation and Inheritance",
+      label: "S6: Imitation and Inheritance",
       talents: {
         "1": "240.00%",
         "2": "259.68%",

@@ -55,7 +55,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "SequenceNode1ProdigyofProteges",
-      label: "Sequence Node 1: Prodigy of Protégés",
+      label: "S1: Prodigy of Protégés DMG",
       talents: {
         "1": "25.68%*6",
         "2": "27.79%*6",

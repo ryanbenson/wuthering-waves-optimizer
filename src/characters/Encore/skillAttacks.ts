@@ -8,7 +8,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "FlamingWooliesDamage",
-      label: "Flaming Woolies Damage",
+      label: "Flaming Woolies DMG",
       talents: {
         "1": "38.53%*8",
         "2": "41.69%*8",
@@ -25,7 +25,7 @@ export const skillAttacks = {
     },
     {
       key: "EnergeticWelcomeDamage",
-      label: "Energetic Welcome Damage",
+      label: "Energetic Welcome DMG",
       talents: {
         "1": "170.60%",
         "2": "184.58%",

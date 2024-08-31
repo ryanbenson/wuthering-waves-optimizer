@@ -4,7 +4,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "SkillDMG",
-      label: "Skill DMG",
+      label: "Woolies Helpers DMG",
       talents: {
         "1": "100.00%",
         "2": "108.20%",

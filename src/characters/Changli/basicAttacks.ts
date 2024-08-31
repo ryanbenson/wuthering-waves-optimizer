@@ -141,7 +141,7 @@ export const basicAttacks = {
     },
     {
       key: "HeavyAttackDMG",
-      label: "Heavy Attack",
+      label: "Heavy Attack DMG",
       talents: {
         "1": "14.58%*3 + 18.75%",
         "2": "15.78%*3 + 20.28%",
@@ -158,7 +158,7 @@ export const basicAttacks = {
     },
     {
       key: "MidAirHeavyAttackDMG",
-      label: "Mid-Air Heavy Attack",
+      label: "Mid-Air Heavy Attack DMG",
       talents: {
         "1": "62.00%",
         "2": "67.09%",
@@ -175,7 +175,7 @@ export const basicAttacks = {
     },
     {
       key: "DodgeCounterDMG",
-      label: "Dodge Counter",
+      label: "Dodge Counter DMG",
       talents: {
         "1": "41.57%*3",
         "2": "44.98%*3",

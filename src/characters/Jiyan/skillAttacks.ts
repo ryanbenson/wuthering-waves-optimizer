@@ -6,7 +6,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "Windqueller",
-      label: "Skill DMG",
+      label: "Windqueller DMG",
       talents: {
         "1": "53.50%*4",
         "2": "57.88%*4",

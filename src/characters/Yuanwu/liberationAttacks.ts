@@ -4,7 +4,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "BlazingMightSkillDMG",
-      label: "Skill DMG",
+      label: "Blazing Might DMG",
       talents: {
         "1": "88.00%*2",
         "2": "95.22%*2",

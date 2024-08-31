@@ -4,7 +4,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "WindSpiralsSkillDMG",
-      label: "Skill DMG",
+      label: "Wind Spirals DMG",
       talents: {
         "1": "23.43%*12 + 187.46%",
         "2": "25.35%*12 + 202.83%",

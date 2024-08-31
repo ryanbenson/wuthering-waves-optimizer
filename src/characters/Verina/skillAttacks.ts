@@ -4,7 +4,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "BotanyExperimentDMG",
-      label: "Skill DMG",
+      label: "Botany Experiment DMG",
       talents: {
         "1": "18.00%*3 + 36.00%",
         "2": "19.48%*3 + 38.96%",

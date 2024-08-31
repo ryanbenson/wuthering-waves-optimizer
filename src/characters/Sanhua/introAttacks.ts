@@ -4,7 +4,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "FreezingThornsSkillDMG",
-      label: "Skill DMG",
+      label: "Freezing Thorns DMG",
       talents: {
         "1": "70.00%",
         "2": "75.74%",

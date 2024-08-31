@@ -4,7 +4,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "GrandEntranceSkillDMG",
-      label: "Skill DMG",
+      label: "Grand Entrance DMG",
       talents: {
         "1": "24.75%*2 + 12.38%*4",
         "2": "26.78%*2 + 13.39%*4",

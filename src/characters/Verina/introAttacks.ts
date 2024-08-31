@@ -4,7 +4,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "VerdantGrowthDMG",
-      label: "Skill DMG",
+      label: "Verdant Growth DMG",
       talents: {
         "1": "50.00%",
         "2": "54.10%",

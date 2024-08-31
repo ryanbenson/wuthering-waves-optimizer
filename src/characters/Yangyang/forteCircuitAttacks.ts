@@ -4,7 +4,7 @@ export const forteCircuitAttacks = {
   attacks: [
     {
       key: "StormyStrikeDamage",
-      label: "Stormy Strike Damage",
+      label: "Stormy Strike DMG",
       talents: {
         "1": "19.12%*2",
         "2": "20.69%*2",
@@ -21,7 +21,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "FeatherReleaseDamage",
-      label: "Feather Release Damage",
+      label: "Feather Release DMG",
       talents: {
         "1": "10.93%*5 + 63.78%*2",
         "2": "11.83%*5 + 69.01%*2",

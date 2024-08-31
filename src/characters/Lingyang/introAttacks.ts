@@ -4,7 +4,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "LionAwakensDMG",
-      label: "Skill DMG",
+      label: "Lion Awakens DMG",
       talents: {
         "1": "50.00%*2",
         "2": "54.10%*2",

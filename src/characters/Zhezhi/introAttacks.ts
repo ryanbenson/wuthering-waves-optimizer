@@ -4,7 +4,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "BrillianceInABrushDMG",
-      label: "DMG",
+      label: "Brilliance in a Brush DMG",
       talents: {
         "1": "43.34%*3",
         "2": "46.89%*3",

@@ -4,7 +4,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "Unmovable",
-      label: "Skill DMG",
+      label: "Unmovable DMG",
       talents: {
         "1": "226.2%",
         "2": "244.75%",

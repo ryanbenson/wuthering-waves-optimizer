@@ -4,7 +4,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "ThunderBombardmentSkillDMG",
-      label: "Skill DMG",
+      label: "Thunder Bombardment DMG",
       talents: {
         "1": "32.00%",
         "2": "34.63%",

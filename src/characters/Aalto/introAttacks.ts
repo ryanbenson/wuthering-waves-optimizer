@@ -1,11 +1,10 @@
 export const introAttacks = {
   name: "Intro Skill: Feint Shot",
-  description:
-    `<div class="skilldescription">Aalto shows up out of thin air to perform rapid continuous shooting, dealing <span class="Wind">Aero DMG</span>.</div>`,
+  description: `<div class="skilldescription">Aalto shows up out of thin air to perform rapid continuous shooting, dealing <span class="Wind">Aero DMG</span>.</div>`,
   attacks: [
     {
       key: "FeintShotSkillDMG",
-      label: "Skill DMG",
+      label: "Feint Shot DMG",
       talents: {
         "1": "33.34%*3",
         "2": "36.07%*3",

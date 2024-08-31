@@ -4,7 +4,7 @@ export const forteCircuitAttacks = {
   attacks: [
     {
       key: "ThunderUprisingDMG",
-      label: "Thunder Uprising Damage",
+      label: "Thunder Uprising DMG",
       talents: {
         "1": "20.00%",
         "2": "21.64%",
@@ -94,7 +94,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "LightningInfusedBasicAttackPartVDMG",
-      label: "Lightning Infused Basic Attack Part V Damage",
+      label: "Lightning Infused Basic Attack Part V DMG",
       talents: {
         "1": "8.24%*3 + 16.47%",
         "2": "8.91%*3 + 17.82%",
@@ -130,7 +130,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "ThunderweaverDMG",
-      label: "Thunderweaver Damage",
+      label: "Thunderweaver DMG",
       talents: {
         "1": "15.60% + 10.40%*2",
         "2": "16.88% + 11.26%*2",

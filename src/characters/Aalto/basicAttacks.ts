@@ -157,7 +157,7 @@ export const basicAttacks = {
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage1DMG",
-      label: "Hazey Transition Stage 1 DMG",
+      label: "S3 Hazey Transition Stage 1 DMG",
       talents: {
         "1": "8%*2",
         "2": "8.66%*2",
@@ -175,7 +175,7 @@ export const basicAttacks = {
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage2DMG",
-      label: "Hazey Transition Stage 2 DMG",
+      label: "S3 Hazey Transition Stage 2 DMG",
       talents: {
         "1": "13.34%*2",
         "2": "14.43%*2",
@@ -193,7 +193,7 @@ export const basicAttacks = {
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage3DMG",
-      label: "Hazey Transition Stage 3 DMG",
+      label: "S3 Hazey Transition Stage 3 DMG",
       talents: {
         "1": "12%*4",
         "2": "12.99%*4",
@@ -211,7 +211,7 @@ export const basicAttacks = {
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage4DMG",
-      label: "Hazey Transition Stage 4 DMG",
+      label: "S3 Hazey Transition Stage 4 DMG",
       talents: {
         "1": "12.67%*4",
         "2": "13.71%*4",
@@ -229,7 +229,7 @@ export const basicAttacks = {
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsStage5DMG",
-      label: "Hazey Transition Stage 5 DMG",
+      label: "S3 Hazey Transition Stage 5 DMG",
       talents: {
         "1": "45.2%*2",
         "2": "48.91%*2",
@@ -247,7 +247,7 @@ export const basicAttacks = {
     },
     {
       key: "SequenceNode3HazeyTransitionHalfTruthsMidAirAttackDMG",
-      label: "Hazey Transition Mid-air Attack",
+      label: "S3 Hazey Transition Mid-air Attack",
       talents: {
         "1": "15%*2",
         "2": "16.23%*2",

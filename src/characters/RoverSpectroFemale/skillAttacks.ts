@@ -1,11 +1,10 @@
 export const skillAttacks = {
   name: "Resonance Skill: Resonating Slashes",
-  description:
-    `<div class="skilldescription">Rover launches an attack forward, dealing <span class="Light">Spectro DMG</span>.</div>`,
+  description: `<div class="skilldescription">Rover launches an attack forward, dealing <span class="Light">Spectro DMG</span>.</div>`,
   attacks: [
     {
       key: "ResonatingSlashesSkillDMG",
-      label: "Skill DMG",
+      label: "Resonating Slashes DMG",
       talents: {
         "1": "118.80%",
         "2": "128.55%",

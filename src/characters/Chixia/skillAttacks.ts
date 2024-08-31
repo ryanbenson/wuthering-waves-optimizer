@@ -6,7 +6,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "WhizzingFightSpiritSkillDMG",
-      label: "Skill DMG",
+      label: "Whizzing Fight Spirit DMG",
       talents: {
         "1": "16.00%*8",
         "2": "17.32%*8",

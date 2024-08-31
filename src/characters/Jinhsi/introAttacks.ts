@@ -5,7 +5,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "LoongsHalo",
-      label: "Skill DMG",
+      label: "Loong's Halo DMG",
       talents: {
         "1": "80.00%",
         "2": "86.56%",

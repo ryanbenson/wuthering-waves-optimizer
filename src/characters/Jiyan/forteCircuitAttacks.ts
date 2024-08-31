@@ -4,7 +4,7 @@ export const forteCircuitAttacks = {
   attacks: [
     {
       key: "EmeraldStormFinaleDamage",
-      label: "Emerald Storm: Finale Damage",
+      label: "Emerald Storm: Finale DMG",
       talents: {
         "1": "71.88%*2 + 215.64%",
         "2": "77.77%*2 + 233.33%",

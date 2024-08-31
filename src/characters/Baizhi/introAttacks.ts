@@ -4,7 +4,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "OverflowingFrostDMG",
-      label: "Skill DMG",
+      label: "Overflowing Frost DMG",
       talents: {
         "1": "40.00%",
         "2": "43.28%",

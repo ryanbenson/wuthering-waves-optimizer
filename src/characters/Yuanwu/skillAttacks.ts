@@ -4,7 +4,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "LeihuangMasterSkillDMG",
-      label: "Skill DMG",
+      label: "Leihuang Master DMG",
       talents: {
         "1": "12.00%",
         "2": "12.99%",
@@ -41,7 +41,7 @@ export const skillAttacks = {
     },
     {
       key: "ThunderWedgeDetonationDMG",
-      label: "Thunder Wedge Detonation Damage",
+      label: "Thunder Wedge Detonation DMG",
       talents: {
         "1": "30.00%",
         "2": "32.46%",
@@ -59,7 +59,7 @@ export const skillAttacks = {
     },
     {
       key: "RumblingSparkDMG",
-      label: "Rumbling Spark Damage",
+      label: "Rumbling Spark DMG",
       talents: {
         "1": "54.60%",
         "2": "59.07%",
