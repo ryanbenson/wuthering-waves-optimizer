@@ -96,7 +96,10 @@ export default {
     async handleImportRotation() {
       try {
         const rotationData = JSON.parse(this.importRotationData);
-        this.rotations.push(rotationData);
+        const processedImportedRotation =
+          this.addIdsToImportedRotation(rotationData);
+        console.log(processedImportedRotation);
+        this.rotations.push(processedImportedRotation);
         this.importRotationData = null;
         this.isImportOpen = false;
         // update our store
@@ -111,6 +114,23 @@ export default {
       } catch (error) {
         alert("Rotation data is not valid");
       }
+    },
+    addIdsToImportedRotation(rotationData) {
+      // clone the data
+      const rotation = JSON.parse(JSON.stringify(rotationData));
+      // add root id
+      rotation.id = randomString();
+      // add ID to all actions
+      rotation.actions.forEach((action) => {
+        action.id = randomString();
+        // for all buffs, add an ID
+        if (action?.buffs) {
+          action.buffs.forEach((buff) => {
+            buff.id = randomString();
+          });
+        }
+      });
+      return rotation;
     },
     handleToggleImport() {
       this.isImportOpen = !this.isImportOpen;

@@ -127,9 +127,26 @@ export default {
         description: this.description,
         actions: this.actionsList,
       };
-      const rotationJson = JSON.stringify(rotationData);
-      navigator.clipboard.writeText(rotationJson);
+      const cleanRotationJson = this.removeIdsFromExport(rotationData);
+      const cleanRotationJsonString = JSON.stringify(cleanRotationJson);
+      navigator.clipboard.writeText(cleanRotationJsonString);
       alert("Rotation copied to clipboard!");
+    },
+    // remove any IDs from the export, they don't need to be shared
+    removeIdsFromExport(rotationData) {
+      // deep clone just in case
+      const rotation = JSON.parse(JSON.stringify(rotationData));
+      // remove main ID
+      delete rotation.id;
+      // remove all IDs in actions, and any IDs in attack buffs per action
+      rotation.actions.forEach((action) => {
+        delete action.id;
+        // go throuth the buffs now
+        action.buffs.forEach((buff) => {
+          delete buff.id;
+        });
+      });
+      return rotation;
     },
     onNameChange(e) {
       this.$emit("updated-rotation", {

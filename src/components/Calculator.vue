@@ -676,67 +676,78 @@
           </div>
         </template>
 
-        <template v-if="rotationsList.length">
+        <template v-if="rotationsList.length && allDamages.value?.rotations">
           <div
             v-for="rotation in allDamages.value.rotations"
             class="rotation__item"
             :key="rotation.id">
             <h4 v-tooltip="rotation.description">{{ rotation.name }}</h4>
-            <div
-              v-for="damageInstance in rotation.attacks"
-              :key="damageInstance.key"
-              class="calculation__damage__item"
-              :class="{
-                'calculation__damage__item--healing':
-                  damageInstance.type === 'Healing',
-                'calculation__damage__item--shield':
-                  damageInstance.type === 'Shield',
-              }">
-              <template v-if="damageInstance.type === 'Healing'">
-                <span>{{ damageInstance.label }}</span>
-                <span
-                  v-tooltip="{
-                    content: damageInstance.damage.detailedCalculation,
-                    html: true,
-                  }"
-                  >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-                >
-              </template>
-              <template v-else-if="damageInstance.type === 'Shield'">
-                <span>{{ damageInstance.label }}</span>
-                <span
-                  v-tooltip="{
-                    content: damageInstance.damage.detailedCalculation,
-                    html: true,
-                  }"
-                  >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-                >
-              </template>
-              <template v-else>
-                <span>{{ damageInstance.label }} </span>
-                <span
-                  v-tooltip="{
-                    content: damageInstance.damage.detailedCalculation,
-                    html: true,
-                  }"
-                  >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-                >
-                <span
-                  v-tooltip="{
-                    content: damageInstance.damage.detailedCalculationAvg,
-                    html: true,
-                  }"
-                  >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-                >
-                <span
-                  v-tooltip="{
-                    content: damageInstance.damage.detailedCalculationCrit,
-                    html: true,
-                  }"
-                  >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-                >
-              </template>
-            </div>
+            <template v-if="!rotation.attacks?.length">
+              <div class="calculation__damage__item">
+                No attacks in this rotation
+              </div>
+            </template>
+            <template v-else>
+              <div
+                v-for="damageInstance in rotation.attacks"
+                :key="damageInstance.key"
+                class="calculation__damage__item"
+                :class="{
+                  'calculation__damage__item--healing':
+                    damageInstance.type === 'Healing',
+                  'calculation__damage__item--shield':
+                    damageInstance.type === 'Shield',
+                }">
+                <template v-if="damageInstance.type === 'Healing'">
+                  <span>{{ damageInstance.label }}</span>
+                  <span
+                    v-tooltip="{
+                      content: damageInstance.damage.detailedCalculation,
+                      html: true,
+                    }"
+                    >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+                  >
+                </template>
+                <template v-else-if="damageInstance.type === 'Shield'">
+                  <span>{{ damageInstance.label }}</span>
+                  <span
+                    v-tooltip="{
+                      content: damageInstance.damage.detailedCalculation,
+                      html: true,
+                    }"
+                    >{{
+                      displayDamage(damageInstance.damage.shieldAmount)
+                    }}</span
+                  >
+                </template>
+                <template v-else>
+                  <span>{{ damageInstance.label }} </span>
+                  <span
+                    v-tooltip="{
+                      content: damageInstance.damage.detailedCalculation,
+                      html: true,
+                    }"
+                    >{{
+                      displayDamage(damageInstance.damage.totalDamage)
+                    }}</span
+                  >
+                  <span
+                    v-tooltip="{
+                      content: damageInstance.damage.detailedCalculationAvg,
+                      html: true,
+                    }"
+                    >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+                  >
+                  <span
+                    v-tooltip="{
+                      content: damageInstance.damage.detailedCalculationCrit,
+                      html: true,
+                    }"
+                    >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+                  >
+                </template>
+              </div>
+            </template>
           </div>
         </template>
       </div>
@@ -1254,67 +1265,74 @@
           </template>
         </div>
       </template>
-      <template v-if="rotationsList.length">
+      <template v-if="rotationsList.length && allDamages.value?.rotations">
         <div
           v-for="rotation in allDamages.value.rotations"
           class="rotation__item"
           :key="rotation.id">
           <h4 v-tooltip="rotation.description">{{ rotation.name }}</h4>
-          <div
-            v-for="damageInstance in rotation.attacks"
-            :key="damageInstance.key"
-            class="calculation__damage__item"
-            :class="{
-              'calculation__damage__item--healing':
-                damageInstance.type === 'Healing',
-              'calculation__damage__item--shield':
-                damageInstance.type === 'Shield',
-            }">
-            <template v-if="damageInstance.type === 'Healing'">
-              <span>{{ damageInstance.label }}</span>
-              <span
-                v-tooltip="{
-                  content: damageInstance.damage.detailedCalculation,
-                  html: true,
-                }"
-                >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-              >
-            </template>
-            <template v-else-if="damageInstance.type === 'Shield'">
-              <span>{{ damageInstance.label }}</span>
-              <span
-                v-tooltip="{
-                  content: damageInstance.damage.detailedCalculation,
-                  html: true,
-                }"
-                >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-              >
-            </template>
-            <template v-else>
-              <span>{{ damageInstance.label }} </span>
-              <span
-                v-tooltip="{
-                  content: damageInstance.damage.detailedCalculation,
-                  html: true,
-                }"
-                >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-              >
-              <span
-                v-tooltip="{
-                  content: damageInstance.damage.detailedCalculationAvg,
-                  html: true,
-                }"
-                >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-              >
-              <span
-                v-tooltip="{
-                  content: damageInstance.damage.detailedCalculationCrit,
-                  html: true,
-                }"
-                >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-              >
-            </template>
-          </div>
+          <template v-if="!rotation.attacks.length">
+            <div class="calculation__damage__item">
+              No attacks in this rotation.
+            </div></template
+          >
+          <template v-else>
+            <div
+              v-for="damageInstance in rotation.attacks"
+              :key="damageInstance.key"
+              class="calculation__damage__item"
+              :class="{
+                'calculation__damage__item--healing':
+                  damageInstance.type === 'Healing',
+                'calculation__damage__item--shield':
+                  damageInstance.type === 'Shield',
+              }">
+              <template v-if="damageInstance.type === 'Healing'">
+                <span>{{ damageInstance.label }}</span>
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculation,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+                >
+              </template>
+              <template v-else-if="damageInstance.type === 'Shield'">
+                <span>{{ damageInstance.label }}</span>
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculation,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
+                >
+              </template>
+              <template v-else>
+                <span>{{ damageInstance.label }} </span>
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculation,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+                >
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculationAvg,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+                >
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculationCrit,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+                >
+              </template>
+            </div>
+          </template>
           <div class="rotation__aggregation">
             <div
               v-if="rotation.damageAggregation.normalDamage"
