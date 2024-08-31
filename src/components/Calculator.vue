@@ -1959,7 +1959,7 @@ export default defineComponent({
     const calcAllDamages = () => {
       if (!chosenChar.value) return;
 
-      const elementalDmgBonusDecimal = getElementDmgBonusByType(
+      let elementalDmgBonusDecimal = getElementDmgBonusByType(
         chosenChar.value?.basic?.element
       );
 
@@ -2072,7 +2072,7 @@ export default defineComponent({
           DefIgnore.value +
           extraDefIgnoreResonanceChain +
           extraDefIgnoreCharBuff;
-        const specificSkillDmg =
+        let specificSkillDmg =
           specificSkillDmgFromResonanceChains +
           specificSkillDmgFromCharBuffs +
           genericSkillDmgBonusResChain +
@@ -2199,10 +2199,33 @@ export default defineComponent({
           return h;
         }
 
+        let totalInstanceDmgBuff = 0;
         // apply any generic attack-level buffs (e.g. CR, CD)
         if (attack?.buffs) {
           instanceDmgCritRate += attack.buffs?.CritRate ?? 0;
           instanceDmgCritDMG += attack.buffs?.CritDMG ?? 0;
+
+          // get any element and attack type buffs too
+          let attackTypeAttackBuff = 0;
+          switch (attackType) {
+            case "Basic":
+              attackTypeAttackBuff = attack.buffs?.BasicAttackDMGBonus ?? 0;
+              break;
+            case "Heavy":
+              attackTypeAttackBuff = attack.buffs?.HeavyAttackDMGBonus ?? 0;
+              break;
+            case "Skill":
+              attackTypeAttackBuff = attack.buffs?.ResonanceSkillDMGBonus ?? 0;
+              break;
+            case "Liberation":
+              attackTypeAttackBuff =
+                attack.buffs?.ResonanceLiberationDMGBonus ?? 0;
+              break;
+          }
+
+          // get any element and attack type buffs too (e.g. Glacio)
+          const instanceElementBuff = attack.buffs?.[attackElement] ?? 0;
+          totalInstanceDmgBuff = attackTypeAttackBuff + instanceElementBuff;
         }
         // sometimes an attack will always crit, if so, make that instance have max CR
         if (attack?.alwaysCrit) {
@@ -2217,7 +2240,7 @@ export default defineComponent({
           totalDefIgnore,
           totalSkillDmgBonus,
           specificSkillDmg,
-          elementalDmgBonusDecimal,
+          elementalDmgBonusDecimal + totalInstanceDmgBuff,
           totalDmgDeepen,
           totalResistReduction,
           instanceDmgCritRate,
