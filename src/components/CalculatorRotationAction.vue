@@ -418,12 +418,17 @@ export default {
       });
     },
     onHitsChange(e) {
+      let hitsVal = e.target.value;
+      if (hitsVal <= 0) {
+        hitsVal = 1;
+        this.hits = 1;
+      }
       this.$emit("action-update", {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
         type: this.actionSkillType,
-        count: e.target.value,
+        count: hitsVal,
         buffs: this.buffData,
       });
     },
