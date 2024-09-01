@@ -30,6 +30,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 1, 2024</h3>
+    <ul>
+      <li>Bug fix: DEF% on 1-slot echoes were off, fixes them.</li>
+    </ul>
     <h3>August 30, 2024</h3>
     <ul>
       <li>Youhu is now available.</li>
