@@ -1,11 +1,10 @@
 export const introAttacks = {
   name: "Intro Skill: Dissonance",
-  description:
-    `<div class="skilldescription">Attack the target, dealing <span class="Fire">Fusion DMG</span>.</div>`,
+  description: `<div class="skilldescription">Attack the target, dealing <span class="Fire">Fusion DMG</span>.</div>`,
   attacks: [
     {
       key: "DissonanceSkillDMG",
-      label: "Skill DMG",
+      label: "Dissonance DMG",
       talents: {
         "1": "85.00%",
         "2": "91.97%",

@@ -88,7 +88,7 @@ export const forteCircuitAttacks = {
       type: "Heavy",
     },
     {
-      key: "DodgeCounterDMG",
+      key: "ForteDodgeCounterDMG",
       label: "Incarnation: Dodge Counter DMG",
       talents: {
         "1": "22.08% + 16.56%*2 + 55.19%",

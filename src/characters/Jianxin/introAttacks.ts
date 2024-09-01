@@ -4,7 +4,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "EssenceofTaoSkillDMG",
-      label: "Skill DMG",
+      label: "Essence of Tao DMG",
       talents: {
         "1": "17.00%*3 + 34.00%",
         "2": "18.40%*3 + 36.79%",

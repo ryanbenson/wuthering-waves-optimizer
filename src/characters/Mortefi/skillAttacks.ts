@@ -1,11 +1,10 @@
 export const skillAttacks = {
   name: "Resonance Skill: Passionate Variation",
-  description:
-    `<div class="skilldescription">Launch a flashing lightning of flames forward, dealing <span class="Fire">Fusion DMG</span>.</div>`,
+  description: `<div class="skilldescription">Launch a flashing lightning of flames forward, dealing <span class="Fire">Fusion DMG</span>.</div>`,
   attacks: [
     {
       key: "PassionateVariation",
-      label: "Passionate Variation",
+      label: "Passionate Variation DMG",
       talents: {
         "1": "105.00%",
         "2": "113.61%",
@@ -22,7 +21,7 @@ export const skillAttacks = {
     },
     {
       key: "SequenceNodeFuneraryQuartet",
-      label: "Sequence Node 5: Funerary Quartet",
+      label: "S5: Funerary Quartet DMG",
       talents: {
         "1": "8.00%",
         "2": "8.66%",

@@ -4,8 +4,8 @@ export const introAttacks = {
     '<div class="skilldescription">Changli appears in mid-air, attacks the target, and enters <span class="Highlight">True Sight</span>, lasting for 12s.</div>',
   attacks: [
     {
-      key: "SkillDMG",
-      label: "Skill DMG",
+      key: "ObedienceofRulesSkillDMG",
+      label: "Obedience of Rules DMG",
       talents: {
         "1": "22.38% + 13.06%*4",
         "2": "24.22% + 14.13%*4",

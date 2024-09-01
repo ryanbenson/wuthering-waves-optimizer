@@ -72,7 +72,7 @@ export const basicAttacks = {
     },
     {
       key: "WooliesDamage",
-      label: "Woolies Damage",
+      label: "Woolies DMG",
       talents: {
         "1": "120.00%",
         "2": "129.84%",
@@ -106,7 +106,7 @@ export const basicAttacks = {
     },
     {
       key: "MidAirAttack",
-      label: "Mid-air Attack",
+      label: "Mid-air Attack DMG",
       talents: {
         "1": "62.00%",
         "2": "67.08%",

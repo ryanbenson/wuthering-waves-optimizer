@@ -1,11 +1,10 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Deadening Abyss",
-  description:
-    `<div class="skilldescription">Rover gathers resonating sounds to attack a target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
+  description: `<div class="skilldescription">Rover gathers resonating sounds to attack a target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
   attacks: [
     {
       key: "DeadeningAbyssSkillDMG",
-      label: "Skill DMG",
+      label: "Deadening Abyss DMG",
       talents: {
         "1": "765.00%",
         "2": "827.73%",

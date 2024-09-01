@@ -1,7 +1,6 @@
 export const basicAttacks = {
   name: "Normal Attack: Impromptu Show",
-  description:
-    `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Mortefi uses his dual pistols and flames to perform up to 4 consecutive shots, dealing <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Mortefi enters the aiming state for a more powerful shot.<br>The aimed shot fired after charging finishes deals <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Mortefi consumes STA to perform consecutive shots at the target in mid-air, dealing <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Fire">Fusion DMG</span>.</div>`,
+  description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Mortefi uses his dual pistols and flames to perform up to 4 consecutive shots, dealing <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Mortefi enters the aiming state for a more powerful shot.<br>The aimed shot fired after charging finishes deals <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Mortefi consumes STA to perform consecutive shots at the target in mid-air, dealing <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Fire">Fusion DMG</span>.</div>`,
   attacks: [
     {
       key: "ImpromptuShowStage1DMG",
@@ -73,7 +72,7 @@ export const basicAttacks = {
     },
     {
       key: "ImpromptuShowAimedShotDMG",
-      label: "Aimed Shot Damage",
+      label: "Aimed Shot DMG",
       talents: {
         "1": "49.14%",
         "2": "53.17%",
@@ -90,7 +89,7 @@ export const basicAttacks = {
     },
     {
       key: "ImpromptuShowFullyChargedAimedShotDMG",
-      label: "Fully Charged Aimed Shot Damage",
+      label: "Fully Charged Aimed Shot DMG",
       talents: {
         "1": "84.00%",
         "2": "90.89%",

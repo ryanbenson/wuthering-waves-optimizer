@@ -1,11 +1,10 @@
 export const introAttacks = {
   name: "Intro Skill: Instant of Annihilation",
-  description:
-    `<div class="skilldescription">Attack the target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
+  description: `<div class="skilldescription">Attack the target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
   attacks: [
     {
       key: "InstantofAnnihilationSkillDMG",
-      label: "Skill DMG",
+      label: "Instant of Annihilation DMG",
       talents: {
         "1": "100.00%",
         "2": "108.20%",

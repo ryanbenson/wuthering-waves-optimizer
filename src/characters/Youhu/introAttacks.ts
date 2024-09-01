@@ -4,7 +4,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "ScrollOfWondersDMG",
-      label: "Skill DMG",
+      label: "Scroll of Wonders DMG",
       talents: {
         "1": "45.00% + 55.00%",
         "2": "48.69% + 59.51%",

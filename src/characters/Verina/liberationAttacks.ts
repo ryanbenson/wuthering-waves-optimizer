@@ -4,7 +4,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "ArborealFlourishDMG",
-      label: "Skill DMG",
+      label: "Arboreal Flourish DMG",
       talents: {
         "1": "100.00%",
         "2": "108.20%",
@@ -38,7 +38,7 @@ export const liberationAttacks = {
     },
     {
       key: "ArborealFlourishCoordinatedAttackDMG",
-      label: "Coordinated Attack DMG",
+      label: "Arboreal Flourish Coordinated Attack DMG",
       talents: {
         "1": "5.00%",
         "2": "5.41%",
@@ -56,7 +56,7 @@ export const liberationAttacks = {
     },
     {
       key: "ArborealFlourishCoordinatedAttackHealing",
-      label: "Coordinated Attack Healing",
+      label: "Arboreal Flourish Coordinated Attack Healing",
       talents: {
         "1": "225 + 5.10%",
         "2": "270 + 5.87%",

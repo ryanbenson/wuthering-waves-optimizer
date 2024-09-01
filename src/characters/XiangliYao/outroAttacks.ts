@@ -4,7 +4,7 @@ export const outroAttacks = {
   attacks: [
     {
       key: "OutroSkillDMG",
-      label: "Coordinated Outro Skill DMG",
+      label: "Chain Rule Coordinated Outro DMG",
       talent: "237.63%",
       type: "Outro",
       subType: "Coordinated",

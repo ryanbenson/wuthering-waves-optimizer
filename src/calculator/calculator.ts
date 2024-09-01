@@ -129,7 +129,8 @@ export function calcDamage(
   critRate: number = 0,
   critDamage: number = 0,
   talentModifierAdd: number = 0,
-  talentModifierMultiply: number = 0
+  talentModifierMultiply: number = 0,
+  count: number = 1,
 ) {
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
@@ -187,26 +188,33 @@ export function calcDamage(
     totalDeepenEffect,
     resistenceReduction
   );
+  // multiply the final damage by the number of hits, usually 1,
+  // but can be > 1 in rotations
+  finalDamage = finalDamage * count;
   // Build the detailed damage calculation string
   let detailedCalculation = buildDetailedCalculationString(
     talent,
     instanceDamage,
     critRate,
-    critDamage
+    critDamage,
+    null,
+    count,
   );
   let detailedCalculationCrit = buildDetailedCalculationString(
     talent,
     instanceDamage,
     critRate,
     critDamage,
-    "crit"
+    "crit",
+    count,
   );
   let detailedCalculationAvg = buildDetailedCalculationString(
     talent,
     instanceDamage,
     critRate,
     critDamage,
-    "average"
+    "average",
+    count,
   );
 
   let totalCritDmg = calcCritDamage(finalDamage, critDamage);
@@ -269,10 +277,14 @@ function buildDetailedCalculationString(
   instanceDamage: any,
   critRate: number,
   critDamage: number,
-  adjustDamage: string | null = null
+  adjustDamage: string | null = null,
+  count: number = 1,
 ): string {
   let talentParts = talent.split("+").map((part) => part.trim());
-
+  let countPrefix = "";
+  if (count > 1) {
+    countPrefix = `${count} x `;
+  }
   let detailedParts = talentParts.map((part) => {
     if (part.includes("*")) {
       let [percentage, times] = part.split("*").map((str) => str.trim());
@@ -300,7 +312,9 @@ function buildDetailedCalculationString(
     }
   });
 
-  return detailedParts.join(" + ");
+  const calcString = detailedParts.join(" + ");
+  const finalCalcString = `${countPrefix}${calcString}`;
+  return finalCalcString;
 }
 
 export function calcHeal(
@@ -309,7 +323,8 @@ export function calcHeal(
   totalSkillDmgBonus: number = 0, // char stat of healing bonus
   specificSkillDmg: number = 0, // any buffs for the skill
   talentModifierAdd: number = 0,
-  talentModifierMultiply: number = 0
+  talentModifierMultiply: number = 0,
+  count: number = 1,
 ): any {
   // Parse the talent string to get individual percentage values
   let { flatBase, talentVal } = parseHealTalentString(talent);
@@ -334,10 +349,20 @@ export function calcHeal(
     totalHealBonus
   );
 
+  // multiply the heal by the number of count, usually 1
+  const finalHealAmount = count * healAmount;
+
+  // make the detailed calc for the tooltip
+  let countPrefix = "";
+  if (count > 1) {
+    countPrefix = `${count} x `;
+  }
+  let detailedCalculation = `${countPrefix}<strong>${Math.ceil(healAmount)}</strong>`;
+
   // Return detailed damage information
   return {
-    healAmount,
-    detailedCalculation: `<strong>${Math.ceil(healAmount)}</strong>`,
+    healAmount: finalHealAmount,
+    detailedCalculation,
   };
 }
 
@@ -374,7 +399,8 @@ export function calcShield(
   totalSkillDmgBonus: number = 0, // char stat of healing bonus
   specificSkillDmg: number = 0, // any buffs for the skill
   talentModifierAdd: number = 0,
-  talentModifierMultiply: number = 0
+  talentModifierMultiply: number = 0,
+  count: number = 1,
 ): any {
   // Parse the talent string to get individual percentage values
   let { flatBase, talentVal } = parseShieldTalentString(talent);
@@ -399,10 +425,19 @@ export function calcShield(
     totalShieldBonus
   );
 
+  // multiply the heal by the number of count, usually 1
+  const finalShieldAmount = count * shieldAmount;
+
+  // make the detailed calc for the tooltip
+  let countPrefix = "";
+  if (count > 1) {
+    countPrefix = `${count} x `;
+  }
+  let detailedCalculation = `${countPrefix}<strong>${Math.ceil(shieldAmount)}</strong>`;
   // Return detailed damage information
   return {
-    shieldAmount,
-    detailedCalculation: `<strong>${Math.ceil(shieldAmount)}</strong>`,
+    shieldAmount: finalShieldAmount,
+    detailedCalculation,
   };
 }
 

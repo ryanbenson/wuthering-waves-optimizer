@@ -4,7 +4,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "ScrollDivinationSkillDMG",
-      label: "Skill DMG",
+      label: "Scroll Divination DMG",
       talents: {
         "1": "78.70%",
         "2": "85.16%",

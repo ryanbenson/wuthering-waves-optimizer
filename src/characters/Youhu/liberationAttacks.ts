@@ -4,7 +4,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "FortunesFavorDamage",
-      label: "Skill DMG",
+      label: "Fortune's Favor DMG",
       talents: {
         "1": "164.58%",
         "2": "178.07%",

@@ -4,7 +4,7 @@ export const forteCircuitAttacks = {
   attacks: [
     {
       key: "ThermobaricBulletsDamage",
-      label: "Thermobaric Bullets Damage",
+      label: "Thermobaric Bullets DMG",
       talents: {
         "1": "10.00%",
         "2": "10.82%",
@@ -21,7 +21,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "BoomBoomDamage",
-      label: "Boom Boom Damage",
+      label: "Boom Boom DMG",
       talents: {
         "1": "220.00%",
         "2": "238.04%",

@@ -4,7 +4,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "EmergencyPlanSkillDMG",
-      label: "Skill DMG",
+      label: "Emergency Plan DMG",
       talents: {
         "1": "8.02%",
         "2": "8.68%",
@@ -22,7 +22,7 @@ export const skillAttacks = {
     },
     {
       key: "EmergencyPlanHealing",
-      label: "Healing",
+      label: "Emergency Plan Healing",
       talents: {
         "1": "575 + 2.90%",
         "2": "623 + 3.14%",

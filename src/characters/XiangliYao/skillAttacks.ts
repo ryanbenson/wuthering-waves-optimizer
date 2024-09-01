@@ -1,11 +1,10 @@
 export const skillAttacks = {
   name: "Resonance Skill: Deduction",
-  description:
-    `<div class="skilldescription">Attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
+  description: `<div class="skilldescription">Attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
   attacks: [
     {
       key: "DeductionSkillDMG",
-      label: "Skill DMG",
+      label: "Deduction DMG",
       talents: {
         "1": "100.00%",
         "2": "108.20%",

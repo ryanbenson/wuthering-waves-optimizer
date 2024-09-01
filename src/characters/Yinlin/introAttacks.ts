@@ -4,7 +4,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "RagingStorm",
-      label: "Raging Storm",
+      label: "Raging Storm DMG",
       talents: {
         "1": "7.2%*10",
         "2": "7.8%*10",

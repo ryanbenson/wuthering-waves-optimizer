@@ -4,7 +4,7 @@ export const forteCircuitAttacks = {
   attacks: [
     {
       key: "MercyDamage",
-      label: `"Mercy" Damage`,
+      label: `"Mercy" DMG`,
       talents: {
         "1": "19.67%*8 + 39.34%",
         "2": "21.29%*8 + 42.57%",
@@ -21,7 +21,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "DeathMessengerDamage",
-      label: `"Death Messenger" Damage`,
+      label: `"Death Messenger" DMG`,
       talents: {
         "1": "49.18%*8 + 98.35%",
         "2": "53.21%*8 + 106.42%",

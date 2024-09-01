@@ -89,7 +89,7 @@ export const basicAttacks = {
     },
     {
       key: "FeralRoarsDamage",
-      label: "Feral Roars Damage",
+      label: "Feral Roars DMG",
       talents: {
         "1": "40.00%*2",
         "2": "43.28%*2",

@@ -4,7 +4,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "MagneticRoarDamage",
-      label: "Magnetic Roar Damage",
+      label: "Magnetic Roar DMG",
       talents: {
         "1": "30%*3",
         "2": "32.46%*3",
@@ -21,7 +21,7 @@ export const skillAttacks = {
     },
     {
       key: "LightningExecutionDamage",
-      label: "Lightning Execution Damage",
+      label: "Lightning Execution DMG",
       talents: {
         "1": "45%*4",
         "2": "48.69%*4",
@@ -38,7 +38,7 @@ export const skillAttacks = {
     },
     {
       key: "ElectromagneticBlastDamage",
-      label: "Electromagnetic Blast Damage",
+      label: "Electromagnetic Blast DMG",
       talents: {
         "1": "10%",
         "2": "10.82%",

@@ -4,7 +4,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "LionsVigorDMG",
-      label: "Skill DMG",
+      label: "Strive: Lion's Vigor DMG",
       talents: {
         "1": "200.00%",
         "2": "216.40%",
@@ -21,7 +21,7 @@ export const liberationAttacks = {
     },
     {
       key: "SequenceNode5SevenStarsShineSteppeduponHigh",
-      label: "Sequence Node 5: Seven Stars Shine, Stepped upon High",
+      label: "S5: Seven Stars Shine, Stepped upon High",
       talents: {
         "1": "200%",
         "2": "200%",

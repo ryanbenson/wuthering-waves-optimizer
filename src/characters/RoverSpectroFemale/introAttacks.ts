@@ -1,11 +1,10 @@
 export const introAttacks = {
   name: "Intro Skill: Waveshock",
-  description:
-    `<div class="skilldescription">Rover attacks the target, dealing <span class="Light">Spectro DMG</span>.</div>`,
+  description: `<div class="skilldescription">Rover attacks the target, dealing <span class="Light">Spectro DMG</span>.</div>`,
   attacks: [
     {
       key: "WaveshockSkillDMG",
-      label: "Skill DMG",
+      label: "Waveshock DMG",
       talents: {
         "1": "85.00%",
         "2": "91.97%",

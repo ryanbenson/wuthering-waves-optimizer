@@ -4,7 +4,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "ThunderingWrath",
-      label: "Thundering Wrath",
+      label: "Thundering Wrath DMG",
       talents: {
         "1": "58.63%*7",
         "2": "63.44%*7",
@@ -21,7 +21,7 @@ export const liberationAttacks = {
     },
     {
       key: "SequenceNode6PursuitofJustice",
-      label: "Pursuit of Justice: Furious Thunder",
+      label: "S6: Pursuit of Justice: Furious Thunder DMG",
       talents: {
         "1": "419.59%",
         "2": "419.59%",

@@ -106,7 +106,7 @@ export const basicAttacks = {
     },
     {
       key: "FeatherasBladeZephyrSongDamage",
-      label: "Zephyr Song Damage",
+      label: "Zephyr Song DMG",
       talents: {
         "1": "53.62%",
         "2": "58.02%",

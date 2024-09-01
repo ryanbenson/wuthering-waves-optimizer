@@ -5,7 +5,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "RadianceofFealty",
-      label: "Skill DMG",
+      label: "Radiance of Fealty DMG",
       talents: {
         "1": "610.00%",
         "2": "660.02%",

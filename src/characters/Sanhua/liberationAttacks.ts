@@ -4,7 +4,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "GlacialGazeSkillDMG",
-      label: "Skill DMG",
+      label: "Glacial Gaze DMG",
       talents: {
         "1": "407.16%",
         "2": "440.55%",

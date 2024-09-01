@@ -23,7 +23,7 @@ export const basicAttacks = {
   attacks: [
     {
       key: "Part1DMG",
-      label: "Part 1 Damage",
+      label: "Part 1 DMG",
       talents: {
         "1": "45.34%",
         "2": "49.06%",
@@ -40,7 +40,7 @@ export const basicAttacks = {
     },
     {
       key: "Part2DMG",
-      label: "Part 2 Damage",
+      label: "Part 2 DMG",
       talents: {
         "1": "42.67%",
         "2": "46.17%",
@@ -57,7 +57,7 @@ export const basicAttacks = {
     },
     {
       key: "Part3DMG",
-      label: "Part 3 Damage",
+      label: "Part 3 DMG",
       talents: {
         "1": "56.00%",
         "2": "60.60%",
@@ -74,7 +74,7 @@ export const basicAttacks = {
     },
     {
       key: "Part4DMG",
-      label: "Part 4 Damage",
+      label: "Part 4 DMG",
       talents: {
         "1": "136.00%",
         "2": "147.16%",
@@ -91,7 +91,7 @@ export const basicAttacks = {
     },
     {
       key: "HeavyAttackDMG",
-      label: "Heavy Attack Damage",
+      label: "Heavy Attack DMG",
       talents: {
         "1": "110.84%",
         "2": "119.93%",
@@ -108,7 +108,7 @@ export const basicAttacks = {
     },
     {
       key: "StrategicParryDMG",
-      label: "Strategic Parry Damage",
+      label: "Strategic Parry DMG",
       talents: {
         "1": "39.59%",
         "2": "42.84%",
@@ -126,7 +126,7 @@ export const basicAttacks = {
     },
     {
       key: "MidAirAttackDMG",
-      label: "Mid-air Attack Damage",
+      label: "Mid-air Attack DMG",
       talents: {
         "1": "62.00%",
         "2": "67.09%",
@@ -143,7 +143,7 @@ export const basicAttacks = {
     },
     {
       key: "DodgeCounterDMG",
-      label: "Dodge Counter Damage",
+      label: "Dodge Counter DMG",
       talents: {
         "1": "125.00%",
         "2": "135.25%",

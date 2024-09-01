@@ -1,11 +1,10 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Echoing Orchestra",
-  description:
-    `<div class="skilldescription">Rover converges Spectro energy to assail the target area, detonating it after a short delay and dealing <span class="Light">Spectro DMG</span>.</div>`,
+  description: `<div class="skilldescription">Rover converges Spectro energy to assail the target area, detonating it after a short delay and dealing <span class="Light">Spectro DMG</span>.</div>`,
   attacks: [
     {
       key: "EchoingOrchestraSkillDMG",
-      label: "Skill DMG",
+      label: "Echoing Orchestra DMG",
       talents: {
         "1": "100.00% + 340.00%",
         "2": "108.20% + 367.88%",

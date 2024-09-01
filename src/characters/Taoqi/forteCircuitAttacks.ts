@@ -13,7 +13,7 @@ export const forteCircuitAttacks = {
   attacks: [
     {
       key: "TimedCountersPart1DMG",
-      label: "Timed Counters Part 1 Damage",
+      label: "Timed Counters Part 1 DMG",
       talents: {
         "1": "43.36%",
         "2": "46.92%",
@@ -31,7 +31,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "TimedCountersPart2DMG",
-      label: "Timed Counters Part 2 Damage",
+      label: "Timed Counters Part 2 DMG",
       talents: {
         "1": "55.80%",
         "2": "60.38%",
@@ -49,7 +49,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "TimedCountersPart3DMG",
-      label: "Timed Counters Part 3 Damage",
+      label: "Timed Counters Part 3 DMG",
       talents: {
         "1": "73.14%",
         "2": "79.14%",

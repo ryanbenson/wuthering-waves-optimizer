@@ -4,7 +4,7 @@ export const forteCircuitAttacks = {
   attacks: [
     {
       key: "ChameleonCipherDMG",
-      label: "Chameleon Cipher Damage",
+      label: "Chameleon Cipher DMG",
       talents: {
         "1": "90%*2",
         "2": "97.38%*2",
@@ -21,7 +21,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "JudgmentStrikeDMG",
-      label: "Judgment Strike Damage",
+      label: "Judgment Strike DMG",
       talents: {
         "1": "39.56%",
         "2": "42.8%",

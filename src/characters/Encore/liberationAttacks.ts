@@ -89,7 +89,7 @@ export const liberationAttacks = {
     },
     {
       key: "CosmosRampageDamage",
-      label: "Cosmos Rampage Damage",
+      label: "Cosmos Rampage DMG",
       talents: {
         "1": "31.85%*4",
         "2": "34.46%*4",

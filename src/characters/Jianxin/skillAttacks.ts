@@ -4,7 +4,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "CalmingAirChiCounterDamage",
-      label: "Chi Counter Damage",
+      label: "Chi Counter DMG",
       talents: {
         "1": "168.30%",
         "2": "182.11%",
@@ -21,7 +21,7 @@ export const skillAttacks = {
     },
     {
       key: "CalmingAirChiParryDamage",
-      label: "Chi Parry Damage",
+      label: "Chi Parry DMG",
       talents: {
         "1": "130.14%",
         "2": "140.81%",

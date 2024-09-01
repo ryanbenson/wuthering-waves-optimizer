@@ -4,7 +4,7 @@ export const forteCircuitAttacks = {
   attacks: [
     {
       key: "DetonateDMG",
-      label: "Detonate Damage",
+      label: "Detonate DMG",
       talents: {
         "1": "93.70%*2",
         "2": "101.39%*2",
@@ -21,7 +21,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "GlacierBurstDMG",
-      label: "Glacier Burst Damage",
+      label: "Glacier Burst DMG",
       talents: {
         "1": "70.00%",
         "2": "75.74%",
@@ -38,7 +38,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "IcePrismBurstDMG",
-      label: "Ice Prism Burst Damage",
+      label: "Ice Prism Burst DMG",
       talents: {
         "1": "40.00%",
         "2": "43.28%",
@@ -55,7 +55,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "IceThornBurstDMG",
-      label: "Ice Thorn Burst Damage",
+      label: "Ice Thorn Burst DMG",
       talents: {
         "1": "30.00%",
         "2": "32.46%",

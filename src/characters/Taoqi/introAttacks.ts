@@ -5,7 +5,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "DefenseFormation",
-      label: "Skill DMG",
+      label: "Defense Formation DMG",
       talents: {
         "1": "105%",
         "2": "113.61%",

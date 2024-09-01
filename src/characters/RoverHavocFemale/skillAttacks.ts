@@ -1,11 +1,10 @@
 export const skillAttacks = {
   name: "Resonance Skill: Wingblade",
-  description:
-    `<div class="skilldescription">Transform sound into feathers, dealing <span class="Dark">Havoc DMG</span>.</div>`,
+  description: `<div class="skilldescription">Transform sound into feathers, dealing <span class="Dark">Havoc DMG</span>.</div>`,
   attacks: [
     {
       key: "WingbladeSkillDMG",
-      label: "Skill DMG",
+      label: "Wingblade DMG",
       talents: {
         "1": "144.00%*2",
         "2": "155.81%*2",

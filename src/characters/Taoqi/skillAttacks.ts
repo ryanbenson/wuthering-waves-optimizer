@@ -4,7 +4,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "SkillDMG",
-      label: "Skill DMG",
+      label: "Fortified Defense DMG",
       talents: {
         "1": "67.86%",
         "2": "73.43%",

@@ -1,11 +1,10 @@
 export const forteCircuitAttacks = {
   name: "Forte Circuit: Umbra Eclipse",
-  description:
-    `<div class="skilldescription"><span class="Title">Devastation</span><br>When "Umbra" is full, hold <span class="Highlight">Basic Attack</span> to cast <span class="Highlight">Devastation</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>, considered as Heavy Attack DMG.<br> <br><span class="Title">Dark Surge</span><br>After casting <span class="Highlight">Devastation</span>, Rover enters the <span class="Highlight">Dark Surge</span> state. In this state:<br><span class="Highlight">Basic Attack</span> is replaced with <span class="Highlight">Enhanced Basic Attack</span>, which performs up to 5 consecutive attacks, dealing <span class="Dark">Havoc DMG</span>.<br><span class="Highlight">Heavy Attack</span> is replaced with <span class="Highlight">Enhanced Heavy Attack</span>;<br>Use <span class="Highlight">Basic Attack</span> after casting <span class="Highlight">Enhanced Heavy Attack</span> to cast Heavy Attack <span class="Highlight">Thwackblade</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>, considered as Heavy Attack DMG.<br>Use <span class="Highlight">Basic Attack</span> after casting Heavy Attack <span class="Highlight">Thwackblade</span> to cast <span class="Highlight"> Enhanced Basic Attack 3</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>;<br>Resonance Skill <span class="Highlight">Wingblade</span> is replaced with Resonance Skill <span class="Highlight">Lifetaker</span>, transforming sounds into blades to attack the target, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Umbra</span><br>Rover can hold up to 100 points of Umbra.<br>Normal Attack <span class="Highlight">Tuneslayer</span> recovers Umbra on hit.<br>Resonance Skill <span class="Highlight">Wingblade</span> recovers Umbra when cast.<br>Resonance Skill <span class="Highlight">Lifetaker</span> recovers Umbra when cast.<br>Intro Skill <span class="Highlight">Instant of Annihilation</span> recovers Umbra when cast.</div>`,
+  description: `<div class="skilldescription"><span class="Title">Devastation</span><br>When "Umbra" is full, hold <span class="Highlight">Basic Attack</span> to cast <span class="Highlight">Devastation</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>, considered as Heavy Attack DMG.<br> <br><span class="Title">Dark Surge</span><br>After casting <span class="Highlight">Devastation</span>, Rover enters the <span class="Highlight">Dark Surge</span> state. In this state:<br><span class="Highlight">Basic Attack</span> is replaced with <span class="Highlight">Enhanced Basic Attack</span>, which performs up to 5 consecutive attacks, dealing <span class="Dark">Havoc DMG</span>.<br><span class="Highlight">Heavy Attack</span> is replaced with <span class="Highlight">Enhanced Heavy Attack</span>;<br>Use <span class="Highlight">Basic Attack</span> after casting <span class="Highlight">Enhanced Heavy Attack</span> to cast Heavy Attack <span class="Highlight">Thwackblade</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>, considered as Heavy Attack DMG.<br>Use <span class="Highlight">Basic Attack</span> after casting Heavy Attack <span class="Highlight">Thwackblade</span> to cast <span class="Highlight"> Enhanced Basic Attack 3</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>;<br>Resonance Skill <span class="Highlight">Wingblade</span> is replaced with Resonance Skill <span class="Highlight">Lifetaker</span>, transforming sounds into blades to attack the target, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Umbra</span><br>Rover can hold up to 100 points of Umbra.<br>Normal Attack <span class="Highlight">Tuneslayer</span> recovers Umbra on hit.<br>Resonance Skill <span class="Highlight">Wingblade</span> recovers Umbra when cast.<br>Resonance Skill <span class="Highlight">Lifetaker</span> recovers Umbra when cast.<br>Intro Skill <span class="Highlight">Instant of Annihilation</span> recovers Umbra when cast.</div>`,
   attacks: [
     {
       key: "DevastationDamage",
-      label: "Devastation Damage",
+      label: "Devastation DMG",
       talents: {
         "1": "114.75%",
         "2": "124.16%",
@@ -124,7 +123,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "UmbraThwackbladeDamage",
-      label: "Umbra: Thwackblade Damage",
+      label: "Umbra: Thwackblade DMG",
       talents: {
         "1": "63.70% + 5.00%*4",
         "2": "68.93% + 5.41%*4",
@@ -175,7 +174,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "UmbraLifetakerDamage",
-      label: "Umbra: Lifetaker Damage",
+      label: "Umbra: Lifetaker DMG",
       talents: {
         "1": "139.00%*2 + 5.00%*4",
         "2": "150.40%*2 + 5.41%*4",
@@ -192,7 +191,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "SequenceNode5AeonSymphony",
-      label: "Sequence Node 5: Aeon Symphony",
+      label: "S5: Aeon Symphony DMG",
       talents: {
         "1": "7.18%*4 + 28.69%",
         "2": "7.76%*4 + 31.04%",

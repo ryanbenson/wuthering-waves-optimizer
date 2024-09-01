@@ -4,8 +4,8 @@ export const liberationAttacks = {
     '<div class="skilldescription">Calcharo attacks the target, dealing <span class="Electro">Electro DMG</span> and enters <span class="Highlight">Deathblade Gear</span> state. After Resonance Liberation Deathblade Gear state ends, Calcharo\'s next Intro Skill is replaced with Intro Skill "Necessary Means", which deals <span class="Electro">Electro DMG</span>, considered as Intro Skill damage.<br><span class="Title">Deathblade Gear</span><br><span class="Bullet">Basic Attack is replaced with Basic Attack <span class="Highlight">Hounds Roar</span>.</span><br><span class="Bullet">Dodge Counter deals increased damage, considered as Resonance Liberation damage.</span></div>',
   attacks: [
     {
-      key: "SkillDMG",
-      label: "Skill DMG",
+      key: "PhantomEtchingSkillDMG",
+      label: "Phantom Etching DMG",
       talents: {
         "1": "300.00%",
         "2": "324.60%",
@@ -123,8 +123,8 @@ export const liberationAttacks = {
       type: "Basic",
     },
     {
-      key: "HeavyAttackDMG",
-      label: "Heavy Attack DMG",
+      key: "PhantomEtchingHeavyAttackDMG",
+      label: "Phantom Etching Heavy Attack DMG",
       talents: {
         "1": "31.20%*5",
         "2": "33.76%*5",
@@ -140,8 +140,8 @@ export const liberationAttacks = {
       type: "Heavy",
     },
     {
-      key: "DodgeCounterDMG",
-      label: "Dodge Counter DMG",
+      key: "PhantomEtchingDodgeCounterDMG",
+      label: "Phantom Etching Dodge Counter DMG",
       talents: {
         "1": "28.67%*6",
         "2": "31.02%*6",
@@ -158,7 +158,7 @@ export const liberationAttacks = {
     },
     {
       key: "SequenceNode6TheUltimatum",
-      label: "Sequence Node 6: The Ultimatum",
+      label: "S6: The Ultimatum",
       talents: {
         "1": "100.00%*2",
         "2": "100.00%*2",

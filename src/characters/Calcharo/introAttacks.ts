@@ -4,8 +4,8 @@ export const introAttacks = {
     '<div class="skilldescription">Attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>',
   attacks: [
     {
-      key: "SkillDMG",
-      label: "Skill DMG",
+      key: "WantedOutlawSkillDMG",
+      label: "Wanted Outlaw DMG",
       talents: {
         "1": "20.00%*2 + 30.00%*2",
         "2": "21.64%*2 + 32.46%*2",

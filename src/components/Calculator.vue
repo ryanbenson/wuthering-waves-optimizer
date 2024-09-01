@@ -32,6 +32,12 @@
             class="icon"
             alt="Team Buffs" />
         </li>
+        <li @click="changeScreen('rotations')">
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/rotations.png"
+            class="icon"
+            alt="Rotations" />
+        </li>
         <li @click="changeScreen('enemy')">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png"
@@ -49,7 +55,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Youhu is now available. ❄️</div>
+          <div class="alert">Character rotations are now available. ↻</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -136,11 +142,19 @@
 
       <div class="screen-character" v-show="curScreen === 'party'">
         <CalculatorPartyBuffs
+          :key="character"
           :character="character"
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
+      <div class="screen--enemy" v-show="curScreen === 'rotations'">
+        <CalculatorRotations
+          :key="character"
+          :character="character"
+          @updated-rotations="handleUpdatedRotations"></CalculatorRotations>
+      </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <CalculatorEnemy
+          :key="character"
           :character="character"
           @updated-enemy-data="handleUpdatedEnemy"></CalculatorEnemy>
       </div>
@@ -661,6 +675,81 @@
             </template>
           </div>
         </template>
+
+        <template v-if="rotationsList.length && allDamages.value?.rotations">
+          <div
+            v-for="rotation in allDamages.value.rotations"
+            class="rotation__item"
+            :key="rotation.id">
+            <h4 v-tooltip="rotation.description">{{ rotation.name }}</h4>
+            <template v-if="!rotation.attacks?.length">
+              <div class="calculation__damage__item">
+                No attacks in this rotation
+              </div>
+            </template>
+            <template v-else>
+              <div
+                v-for="damageInstance in rotation.attacks"
+                :key="damageInstance.key"
+                class="calculation__damage__item"
+                :class="{
+                  'calculation__damage__item--healing':
+                    damageInstance.type === 'Healing',
+                  'calculation__damage__item--shield':
+                    damageInstance.type === 'Shield',
+                }">
+                <template v-if="damageInstance.type === 'Healing'">
+                  <span>{{ damageInstance.label }}</span>
+                  <span
+                    v-tooltip="{
+                      content: damageInstance.damage.detailedCalculation,
+                      html: true,
+                    }"
+                    >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+                  >
+                </template>
+                <template v-else-if="damageInstance.type === 'Shield'">
+                  <span>{{ damageInstance.label }}</span>
+                  <span
+                    v-tooltip="{
+                      content: damageInstance.damage.detailedCalculation,
+                      html: true,
+                    }"
+                    >{{
+                      displayDamage(damageInstance.damage.shieldAmount)
+                    }}</span
+                  >
+                </template>
+                <template v-else>
+                  <span>{{ damageInstance.label }} </span>
+                  <span
+                    v-tooltip="{
+                      content: damageInstance.damage.detailedCalculation,
+                      html: true,
+                    }"
+                    >{{
+                      displayDamage(damageInstance.damage.totalDamage)
+                    }}</span
+                  >
+                  <span
+                    v-tooltip="{
+                      content: damageInstance.damage.detailedCalculationAvg,
+                      html: true,
+                    }"
+                    >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+                  >
+                  <span
+                    v-tooltip="{
+                      content: damageInstance.damage.detailedCalculationCrit,
+                      html: true,
+                    }"
+                    >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+                  >
+                </template>
+              </div>
+            </template>
+          </div>
+        </template>
       </div>
     </div>
     <div class="results">
@@ -1176,6 +1265,108 @@
           </template>
         </div>
       </template>
+      <template v-if="rotationsList.length && allDamages.value?.rotations">
+        <div
+          v-for="rotation in allDamages.value.rotations"
+          class="rotation__item"
+          :key="rotation.id">
+          <h4 v-tooltip="rotation.description">{{ rotation.name }}</h4>
+          <template v-if="!rotation.attacks.length">
+            <div class="calculation__damage__item">
+              No attacks in this rotation.
+            </div></template
+          >
+          <template v-else>
+            <div
+              v-for="damageInstance in rotation.attacks"
+              :key="damageInstance.key"
+              class="calculation__damage__item"
+              :class="{
+                'calculation__damage__item--healing':
+                  damageInstance.type === 'Healing',
+                'calculation__damage__item--shield':
+                  damageInstance.type === 'Shield',
+              }">
+              <template v-if="damageInstance.type === 'Healing'">
+                <span>{{ damageInstance.label }}</span>
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculation,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.healAmount) }}</span
+                >
+              </template>
+              <template v-else-if="damageInstance.type === 'Shield'">
+                <span>{{ damageInstance.label }}</span>
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculation,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
+                >
+              </template>
+              <template v-else>
+                <span>{{ damageInstance.label }} </span>
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculation,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
+                >
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculationAvg,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
+                >
+                <span
+                  v-tooltip="{
+                    content: damageInstance.damage.detailedCalculationCrit,
+                    html: true,
+                  }"
+                  >{{ displayDamage(damageInstance.damage.critDamage) }}</span
+                >
+              </template>
+            </div>
+          </template>
+          <div class="rotation__aggregation">
+            <div
+              v-if="rotation.damageAggregation.normalDamage"
+              class="calculation__damage__item">
+              <span>Total Damage</span>
+              <span>{{
+                displayDamage(rotation.damageAggregation.normalDamage)
+              }}</span>
+              <span>{{
+                displayDamage(rotation.damageAggregation.avgDamage)
+              }}</span>
+              <span>{{
+                displayDamage(rotation.damageAggregation.critDamage)
+              }}</span>
+            </div>
+            <div
+              v-if="rotation.damageAggregation.healing"
+              class="calculation__damage__item calculation__damage__item--healing">
+              <span>Total Healing</span>
+              <span>{{
+                displayDamage(rotation.damageAggregation.healing)
+              }}</span>
+            </div>
+            <div
+              v-if="rotation.damageAggregation.shield"
+              class="calculation__damage__item calculation__damage__item--shield">
+              <span>Total Shield</span>
+              <span>{{
+                displayDamage(rotation.damageAggregation.shield)
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -1197,6 +1388,7 @@ import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
 import CalculatorTalents from "./CalculatorTalents.vue";
 import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import CalculatorEnemy from "./CalculatorEnemy.vue";
+import CalculatorRotations from "./CalculatorRotations.vue";
 import { mainEchoesData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -1220,6 +1412,7 @@ export default defineComponent({
     CalculatorCharacterLevel,
     CalculatorPartyBuffs,
     CalculatorResonanceChains,
+    CalculatorRotations,
     CalculatorTalents,
   },
   setup() {
@@ -1239,6 +1432,7 @@ export default defineComponent({
     const curScreen = ref("character");
     const damage = ref(0);
     const charactersList = ref([]);
+    const rotationsList = ref([]);
     const character = ref("");
     const totalAtk = ref(0);
     const totalHp = ref(0);
@@ -1765,22 +1959,46 @@ export default defineComponent({
     const calcAllDamages = () => {
       if (!chosenChar.value) return;
 
-      const elementalDmgBonusDecimal = getElementDmgBonusByType(
+      let elementalDmgBonusDecimal = getElementDmgBonusByType(
         chosenChar.value?.basic?.element
       );
 
       const calculateAttackDamage = (
         attack,
         talentType,
-        hasNoTalentLevel = false
+        hasNoTalentLevel = false,
+        hasDynamicTalent = false,
+        count = 1
       ) => {
         const attackType = attack.type;
         const attackElement = chosenChar.value?.basic?.element;
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
-        const totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
+        let totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         let talent;
         if (hasNoTalentLevel) {
           talent = attack.talent;
+        } else if (hasDynamicTalent) {
+          switch (attack.actionType) {
+            case "basic":
+              talent = attack.talents[talentData.basic];
+              break;
+            case "skill":
+              talent = attack.talents[talentData.skill];
+              break;
+            case "forteCircuit":
+              talent = attack.talents[talentData.forte];
+              break;
+            case "liberation":
+              talent = attack.talents[talentData.liberation];
+              break;
+            case "intro":
+              talent = attack.talents[talentData.intro];
+              break;
+            case "outro":
+              // outros have no talent tree, just a single value
+              talent = attack.talent;
+              break;
+          }
         } else {
           talent = attack.talents[talentType];
         }
@@ -1841,8 +2059,7 @@ export default defineComponent({
           ] ?? 0;
         let instanceDmgCritRate =
           totalCritRate.value + specificSkillExtraCritRate;
-        const instanceDmgCritDMG =
-          totalCritDMG.value + specificSkillExtraCritDMG;
+        let instanceDmgCritDMG = totalCritDMG.value + specificSkillExtraCritDMG;
         const talentModifierMultiply =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
@@ -1855,7 +2072,7 @@ export default defineComponent({
           DefIgnore.value +
           extraDefIgnoreResonanceChain +
           extraDefIgnoreCharBuff;
-        const specificSkillDmg =
+        let specificSkillDmg =
           specificSkillDmgFromResonanceChains +
           specificSkillDmgFromCharBuffs +
           genericSkillDmgBonusResChain +
@@ -1895,40 +2112,76 @@ export default defineComponent({
           teamBuffDmgDeepenForCharElement = 0;
           teamBuffDmgDeepenForAttackType = 0;
         }
+        let attackLevelDmgDeepen = attack.buffs?.DMGDeepen ?? 0;
         const totalDmgDeepen =
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
           teamBuffDmgDeepenForAttackType +
+          attackLevelDmgDeepen +
           coordinatedDmgDeepenEffect;
         const totalTalentModifierMultiply =
           talentModifierMultiply + talentModifierMultiplySelfBuff;
         // check for any modifiers that change the individual instance of atk/hp/def
         // re-calculate the base for this specific instance of damage
-        const modifyBaseAtk =
+        let modifyBaseAtk =
           charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:ATK`] ?? 0;
-        const modifyBaseHp =
+        let modifyBaseHp =
           charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:HP`] ?? 0;
-        const modifyBaseDef =
+        let modifyBaseDef =
           charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:DEF`] ?? 0;
+        let modifyBaseAtkFlat =
+          charBuffsData.value?.specificTalentBuffs?.[
+            `${attack.key}:ATK_FLAT`
+          ] ?? 0;
+        let modifyBaseHpFlat =
+          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:HP_FLAT`] ??
+          0;
+        let modifyBaseDefFlat =
+          charBuffsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DEF_FLAT`
+          ] ?? 0;
+        // if there are any attack-level buffs for atk, hp, or def (% or flat, upate them)
+        if (attack?.buffs) {
+          modifyBaseAtk += attack.buffs?.ATK ?? 0;
+          modifyBaseHp += attack.buffs?.HP ?? 0;
+          modifyBaseDef += attack.buffs?.DEF ?? 0;
+          modifyBaseAtkFlat += attack.buffs?.ATK_FLAT ?? 0;
+          modifyBaseHpFlat += attack.buffs?.HP_FLAT ?? 0;
+          modifyBaseDefFlat += attack.buffs?.DEF_FLAT ?? 0;
+        }
         let finalAtkDefHpVal = atkDefHpVal;
         if (modifyBaseAtk) {
-          finalAtkDefHpVal = calcCharStats("ATK", { ATK: modifyBaseAtk });
+          finalAtkDefHpVal = calcCharStats("ATK", {
+            ATK: modifyBaseAtk,
+            ATK_FLAT: modifyBaseAtkFlat,
+          });
         }
         if (modifyBaseHp) {
-          finalAtkDefHpVal = calcCharStats("HP", { HP: modifyBaseHp });
+          finalAtkDefHpVal = calcCharStats("HP", {
+            HP: modifyBaseHp,
+            HP_FLAT: modifyBaseHpFlat,
+          });
         }
         if (modifyBaseDef) {
-          finalAtkDefHpVal = calcCharStats("DEF", { DEF: modifyBaseDef });
+          finalAtkDefHpVal = calcCharStats("DEF", {
+            DEF: modifyBaseDef,
+            DEF_FLAT: modifyBaseDefFlat,
+          });
         }
 
         if (attackType === "Healing") {
+          // apply any attack-level healing bonuses
+          if (attack?.buffs) {
+            totalSkillDmgBonus += attack.buffs?.HealingBonus ?? 0;
+          }
           const h = calcHeal(
             talent,
             finalAtkDefHpVal,
             totalSkillDmgBonus, // char stat of healing bonus
             specificSkillDmg, // any buffs for the skill
             totalTalentModifierAdd,
-            totalTalentModifierMultiply
+            totalTalentModifierMultiply,
+            count
           );
           return h;
         }
@@ -1940,11 +2193,40 @@ export default defineComponent({
             totalSkillDmgBonus, // char stat of shield bonus
             specificSkillDmg, // any buffs for the skill
             totalTalentModifierAdd,
-            totalTalentModifierMultiply
+            totalTalentModifierMultiply,
+            count
           );
           return h;
         }
 
+        let totalInstanceDmgBuff = 0;
+        // apply any generic attack-level buffs (e.g. CR, CD)
+        if (attack?.buffs) {
+          instanceDmgCritRate += attack.buffs?.CritRate ?? 0;
+          instanceDmgCritDMG += attack.buffs?.CritDMG ?? 0;
+
+          // get any element and attack type buffs too
+          let attackTypeAttackBuff = 0;
+          switch (attackType) {
+            case "Basic":
+              attackTypeAttackBuff = attack.buffs?.BasicAttackDMGBonus ?? 0;
+              break;
+            case "Heavy":
+              attackTypeAttackBuff = attack.buffs?.HeavyAttackDMGBonus ?? 0;
+              break;
+            case "Skill":
+              attackTypeAttackBuff = attack.buffs?.ResonanceSkillDMGBonus ?? 0;
+              break;
+            case "Liberation":
+              attackTypeAttackBuff =
+                attack.buffs?.ResonanceLiberationDMGBonus ?? 0;
+              break;
+          }
+
+          // get any element and attack type buffs too (e.g. Glacio)
+          const instanceElementBuff = attack.buffs?.[attackElement] ?? 0;
+          totalInstanceDmgBuff = attackTypeAttackBuff + instanceElementBuff;
+        }
         // sometimes an attack will always crit, if so, make that instance have max CR
         if (attack?.alwaysCrit) {
           instanceDmgCritRate = 1;
@@ -1958,20 +2240,22 @@ export default defineComponent({
           totalDefIgnore,
           totalSkillDmgBonus,
           specificSkillDmg,
-          elementalDmgBonusDecimal,
+          elementalDmgBonusDecimal + totalInstanceDmgBuff,
           totalDmgDeepen,
           totalResistReduction,
           instanceDmgCritRate,
           instanceDmgCritDMG,
           totalTalentModifierAdd,
-          totalTalentModifierMultiply
+          totalTalentModifierMultiply,
+          count
         );
       };
 
       const processAttacks = (
         attacks,
         talentType,
-        hasNoTalentLevel = false
+        hasNoTalentLevel = false,
+        dynamicTalentType = false
       ) => {
         return (
           (attacks ?? [])
@@ -1998,9 +2282,33 @@ export default defineComponent({
               let talent;
               if (hasNoTalentLevel) {
                 talent = attack.talent;
+              } else if (dynamicTalentType) {
+                let talent;
+                switch (attack.actionType) {
+                  case "basic":
+                    talent = attack.talents[talentData.basic];
+                    break;
+                  case "skill":
+                    talent = attack.talents[talentData.skill];
+                    break;
+                  case "forteCircuit":
+                    talent = attack.talents[talentData.forte];
+                    break;
+                  case "liberation":
+                    talent = attack.talents[talentData.liberation];
+                    break;
+                  case "intro":
+                    talent = attack.talents[talentData.intro];
+                    break;
+                  case "outro":
+                    // outro has no talent tree. it only has 1 value (e.g. 20.00%)
+                    talent = attack.talent;
+                    break;
+                }
               } else {
                 talent = attack.talents[talentType];
               }
+              const hitCount = attack?.count ?? 1;
               return {
                 key: attack.key,
                 label: attack.label,
@@ -2008,10 +2316,13 @@ export default defineComponent({
                 damage: calculateAttackDamage(
                   attack,
                   talentType,
-                  hasNoTalentLevel
+                  hasNoTalentLevel,
+                  dynamicTalentType,
+                  hitCount
                 ),
                 isEnabled,
                 type: attack.type,
+                count: attack.count,
               };
             })
             // remove any attacks that are not enabled
@@ -2019,7 +2330,7 @@ export default defineComponent({
         );
       };
 
-      allDamages.value = {
+      const allDamagesData = {
         basicAttacks: processAttacks(
           chosenChar.value.basicAttacks?.attacks,
           talentData.basic
@@ -2050,6 +2361,67 @@ export default defineComponent({
           true // has no talent level
         ),
       };
+
+      if (rotationsList.value?.length) {
+        const rotationData = [];
+        rotationsList.value.forEach((rotation) => {
+          const rotationInfo = {
+            id: rotation.id,
+            name: rotation.name,
+            description: rotation.description,
+          };
+          const attacks = processAttacks(rotation.attacks, null, false, true);
+          // capture all damages
+          const damageAggregation = {
+            normalDamage: null,
+            avgDamage: null,
+            critDamage: null,
+            healing: null,
+            shield: null,
+          };
+          // go through all attacks and update our aggregation
+          attacks.forEach((attack) => {
+            if (attack?.damage?.totalDamage !== undefined) {
+              damageAggregation.normalDamage =
+                (damageAggregation.normalDamage || 0) +
+                attack?.damage?.totalDamage;
+            }
+
+            if (attack?.damage?.avgDamage !== undefined) {
+              damageAggregation.avgDamage =
+                (damageAggregation.avgDamage || 0) + attack?.damage?.avgDamage;
+            }
+
+            if (attack?.damage?.critDamage !== undefined) {
+              damageAggregation.critDamage =
+                (damageAggregation.critDamage || 0) +
+                attack?.damage?.critDamage;
+            }
+
+            if (
+              attack.type === "Healing" &&
+              attack?.damage?.healAmount !== undefined
+            ) {
+              damageAggregation.healing =
+                (damageAggregation.healing || 0) + attack?.damage?.healAmount;
+            }
+
+            if (
+              attack.type === "Shield" &&
+              attack?.damage?.shieldAmount !== undefined
+            ) {
+              damageAggregation.shield =
+                (damageAggregation.shield || 0) + attack?.damage?.shieldAmount;
+            }
+          });
+          rotationInfo.attacks = attacks;
+          rotationInfo.damageAggregation = damageAggregation;
+          rotationData.push(rotationInfo);
+        });
+        allDamagesData.rotations = rotationData;
+      }
+
+      allDamages.value = allDamagesData;
     };
 
     const handleCalculation = () => {
@@ -2112,6 +2484,63 @@ export default defineComponent({
       calcAllDamages();
     };
 
+    const handleUpdatedRotations = async (data) => {
+      // go through each rotation and each action and use the full talent data
+      // which will make the rotation system work
+      const chosenChar = await getCharByName(character.value);
+      const rotationData = [];
+      data.forEach((rotation) => {
+        const rotationInfo = {
+          id: rotation.id,
+          name: rotation.name,
+          description: rotation.description,
+        };
+        const rotationActionInfo = [];
+        rotation.actions.forEach((action) => {
+          const actionKey = action.key;
+          const actionType = action.type;
+          const actionBuffs = action.buffs;
+          const actionCount = action.count;
+          const attacksList =
+            chosenChar?.[`${actionType}Attacks`]?.attacks ?? [];
+          const foundAction = attacksList.find((attack) => {
+            return attack.key === actionKey;
+          });
+          if (foundAction) {
+            const actionData = {
+              ...foundAction,
+              buffs: null,
+              actionType,
+              count: actionCount,
+            };
+            // if there are buffs, turn it into a hashmap
+            if (action?.buffs?.length) {
+              const buffsData = {};
+              // keys are unique, there should not be duplicates
+              action.buffs.forEach((buff) => {
+                // buffs are in human readable, convert to decimal except flat values
+                let buffValue;
+                if (
+                  ["ATK_FLAT", "HP_FLAT", "DEF_FLAT"].includes(buff.modifier)
+                ) {
+                  buffValue = Number(buff.modifierValue);
+                } else {
+                  buffValue = Number(buff.modifierValue) / 100;
+                }
+                buffsData[buff.modifier] = buffValue;
+              });
+              actionData.buffs = buffsData;
+            }
+            rotationActionInfo.push(actionData);
+          }
+        });
+        rotationInfo.attacks = rotationActionInfo;
+        rotationData.push(rotationInfo);
+      });
+      rotationsList.value = rotationData;
+      calcAllDamages();
+    };
+
     return {
       allDamages,
       character,
@@ -2120,6 +2549,7 @@ export default defineComponent({
       charactersList,
       chosenChar,
       chosenWeapon,
+      rotationsList,
       curScreen,
       changeScreen,
       damage,
@@ -2140,6 +2570,7 @@ export default defineComponent({
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
       handleUpdatedEnemy,
+      handleUpdatedRotations,
       handleUpdatedTeamBuffs,
       BasicAttackDMGBonus,
       HeavyAttackDMGBonus,
@@ -2414,6 +2845,15 @@ $tooltip-background-color: $sidebar-background-color;
 
   @media (prefers-color-scheme: light) {
     color: #4a92ff;
+  }
+}
+.rotation__aggregation {
+  margin-top: 1rem;
+  background: #1c2737;
+  border-radius: 0.25rem;
+
+  @media (prefers-color-scheme: light) {
+    background: #cee2ff;
   }
 }
 </style>

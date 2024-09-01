@@ -4,7 +4,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "EternalFrostSkillDMG",
-      label: "Skill DMG",
+      label: "Eternal Frost DMG",
       talents: {
         "1": "181.00%",
         "2": "195.85%",

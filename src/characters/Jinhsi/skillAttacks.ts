@@ -4,7 +4,7 @@ export const skillAttacks = {
   attacks: [
     {
       key: "SkillDMG",
-      label: "Skill DMG",
+      label: "Trailing Lights of Eons DMG",
       talents: {
         "1": "9.79%*4 + 39.15%",
         "2": "10.60%*4 + 42.37%",

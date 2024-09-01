@@ -4,7 +4,7 @@ export const introAttacks = {
   attacks: [
     {
       key: "CeruleanSongSkillDMG",
-      label: "Skill DMG",
+      label: "Cerulean Song DMG",
       talents: {
         "1": "40.00%*2",
         "2": "43.28%*2",
