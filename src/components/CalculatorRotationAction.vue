@@ -381,6 +381,15 @@ export default {
         return buff.id !== removedBuffId;
       });
       this.buffData = updatedBuffsList;
+
+      this.$emit("action-update", {
+        id: this.id,
+        order: this.order,
+        key: this.actionKeyValue,
+        type: this.actionSkillType,
+        count: this.hits,
+        buffs: this.buffData,
+      });
     },
     handleUpdatedBuff(buffData) {
       const buffs = JSON.parse(JSON.stringify(this.buffData));
