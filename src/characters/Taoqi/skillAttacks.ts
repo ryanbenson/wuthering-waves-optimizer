@@ -20,5 +20,23 @@ export const skillAttacks = {
       type: "Skill",
       attribute: "defense",
     },
+    {
+      key: "FortifiedDefenseHPRecovery",
+      label: "HP Recovery",
+      talents: {
+        "1": "950 + 45.00%",
+        "2": "1064 + 46.80%",
+        "3": "1187 + 48.60%",
+        "4": "1330 + 51.30%",
+        "5": "1501 + 54.90%",
+        "6": "1662 + 58.50%",
+        "7": "1691 + 65.25%",
+        "8": "1729 + 72.90%",
+        "9": "1757 + 81.00%",
+        "10": "1805 + 94.50%",
+      },
+      type: "Healing",
+      attribute: "defense",
+    },
   ],
 };

@@ -24,7 +24,6 @@
     <ul>
       <li>Better UI</li>
       <li>More weapons</li>
-      <li>Custom rotations</li>
       <li>Food</li>
       <li>Inventory system for equipment</li>
       <li>More!</li>
@@ -32,6 +31,12 @@
     <h1>Updates</h1>
     <h3>September 1, 2024</h3>
     <ul>
+      <li>
+        Major update: Custom rotations has been released! You can now make your
+        own rotations and add buffs per action in a rotation to help you
+        understand how much damage you do more accurately.
+      </li>
+      <li>Adds Taoqi's healing on her skill.</li>
       <li>Bug fix: DEF% on 1-slot echoes were off, fixes them.</li>
     </ul>
     <h3>August 30, 2024</h3>
