@@ -31,6 +31,11 @@
     <h1>Updates</h1>
     <h3>September 1, 2024</h3>
     <ul>
+      <li>Updates Shorekeeper signature to use updated EN name.</li>
+      <li>Minor: Changes rotations icon</li>
+    </ul>
+    <h3>September 1, 2024</h3>
+    <ul>
       <li>
         Major update: Custom rotations has been released! You can now make your
         own rotations and add buffs per action in a rotation to help you

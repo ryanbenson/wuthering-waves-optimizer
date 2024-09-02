@@ -50,7 +50,7 @@ const rectifiersList = {
   five: [
     { key: "CosmicRipples", name: "Cosmic Ripples" },
     { key: "RimeDrapedSprouts", name: "Rime-Draped Sprouts" },
-    { key: "ShorekeeperSignature", name: "Shorekeeper Signature" },
+    { key: "StellarSymphony", name: "Stellar Symphony" },
     { key: "Stringmaster", name: "Stringmaster" },
   ],
   four: [
