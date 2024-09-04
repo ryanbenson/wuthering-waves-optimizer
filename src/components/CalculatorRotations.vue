@@ -1,5 +1,4 @@
 <template>
-  <h2>Rotations</h2>
   <div class="actions">
     <button class="button" @click="handleCreateRotation">
       Create Rotation
@@ -178,9 +177,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-h2 {
-  margin-top: 0;
-}
 .actions {
   display: flex;
   gap: 1rem;

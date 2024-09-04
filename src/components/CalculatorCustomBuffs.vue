@@ -1,6 +1,5 @@
 <template>
   <div class="custom__buffs">
-    <h2>Custom Buffs</h2>
     <div class="custom__buffs-list">
       <div>
         <span
@@ -292,8 +291,20 @@ export default {
       required: true,
     },
   },
+  watch: {
+    buffsData: {
+      handler: function () {
+        this.updatedStats();
+      },
+      immediate: true,
+    },
+  },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
+    updatedStats() {
+      const data = JSON.parse(JSON.stringify(this.buffsData));
+      this.$emit('custom-buffs-updated', data);
+    }
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -303,6 +314,51 @@ export default {
      */
     currentCharacter() {
       return this.characters[this.character] ?? {};
+    },
+    /**
+     * Provides an object of all data
+     * All % based values need to be divided by 100 for processing
+     */
+    buffsData() {
+      const ATK = this.ATK ? this.ATK / 100 : 0;
+      const HP = this.HP ? this.HP / 100 : 0;
+      const DEF = this.DEF ? this.DEF / 100 : 0;
+      const CritRate = this.CritRate ? this.CritRate / 100 : 0;
+      const CritDMG = this.CritDMG ? this.CritDMG / 100 : 0;
+      const EnergyRegen = this.EnergyRegen ? this.EnergyRegen / 100 : 0;
+      const BasicAttackDMGBonus = this.BasicAttackDMGBonus ? this.BasicAttackDMGBonus / 100 : 0;
+      const HeavyAttackDMGBonus = this.HeavyAttackDMGBonus ? this.HeavyAttackDMGBonus / 100 : 0;
+      const ResonanceSkillDMGBonus = this.ResonanceSkillDMGBonus ? this.ResonanceSkillDMGBonus / 100 : 0;
+      const ResonanceLiberationDMGBonus = this.ResonanceLiberationDMGBonus ? this.ResonanceLiberationDMGBonus / 100 : 0;
+      const Glacio = this.Glacio ? this.Glacio / 100 : 0;
+      const Fusion = this.Fusion ? this.Fusion / 100 : 0;
+      const Electro = this.Electro ? this.Electro / 100 : 0;
+      const Aero = this.Aero ? this.Aero / 100 : 0;
+      const Spectro = this.Spectro ? this.Spectro / 100 : 0;
+      const Havoc = this.Havoc ? this.Havoc / 100 : 0;
+      const HealingBonus = this.HealingBonus ? this.HealingBonus / 100 : 0;
+      return {
+        ATK,
+        ATK_FLAT: this.ATK_FLAT,
+        HP,
+        HP_FLAT: this.HP_FLAT,
+        DEF,
+        DEF_FLAT: this.DEF_FLAT,
+        CritRate,
+        CritDMG,
+        EnergyRegen,
+        BasicAttackDMGBonus,
+        HeavyAttackDMGBonus,
+        ResonanceSkillDMGBonus,
+        ResonanceLiberationDMGBonus,
+        Glacio,
+        Fusion,
+        Electro,
+        Aero,
+        Spectro,
+        Havoc,
+        HealingBonus
+      }
     },
     /**
      * Getter/setter used in the form for the attack %
@@ -631,17 +687,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h2 {
-  margin-top: 0;
-}
 .custom__buffs-list {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   div {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 1rem;
 
     span {
       display: flex;
