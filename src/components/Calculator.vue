@@ -2,31 +2,31 @@
   <div class="calculations">
     <div class="calcations__nav">
       <ul>
-        <li @click="changeScreen('character')">
+        <li @click="changeScreen('character')" :class="{'active': curScreen === 'character'}">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png"
             class="icon"
             alt="Your Character" />
         </li>
-        <li @click="changeScreen('weapon')">
+        <li @click="changeScreen('weapon')" :class="{'active': curScreen === 'weapon'}">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_014.png"
             class="icon"
             alt="Your Weapon" />
         </li>
-        <li @click="changeScreen('echoes')">
+        <li @click="changeScreen('echoes')" :class="{'active': curScreen === 'echoes'}">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/echoes.png"
             class="icon"
             alt="Your Echoes" />
         </li>
-        <li @click="changeScreen('constellations')">
+        <li @click="changeScreen('constellations')" :class="{'active': curScreen === 'constellations'}">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/constellations.png"
             class="icon"
             alt="Your Resonance Chains" />
         </li>
-        <li @click="changeScreen('party')">
+        <li @click="changeScreen('party')" :class="{'active': curScreen === 'party'}">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/team.png"
             class="icon"
@@ -34,14 +34,25 @@
         </li>
         <li
           @click="changeScreen('rotations')"
-          class="calcations__nav--rotations">
+          class="calcations__nav--icon-svg calcations__nav--rotations"
+          :class="{'active': curScreen === 'rotations'}">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path
               d="M386.3 160L336 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z"
               fill="#FFFFFF" />
           </svg>
         </li>
-        <li @click="changeScreen('enemy')">
+        <li
+          @click="changeScreen('custom-buffs')"
+          class="calcations__nav--icon-svg calcations__nav--custom-buffs"
+          :class="{'active': curScreen === 'custom-buffs'}">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path
+              d="M0 416c0 17.7 14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384c-17.7 0-32 14.3-32 32zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-32.8 0-61 19.7-73.3 48L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm73.3-64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64z"
+              fill="#FFFFFF" />
+          </svg>
+        </li>
+        <li @click="changeScreen('enemy')"  :class="{'active': curScreen === 'enemy'}">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png"
             class="icon"
@@ -58,7 +69,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Character rotations are now available. ↻</div>
+          <div class="alert">Custom buffs are available!</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -154,6 +165,12 @@
           :key="character"
           :character="character"
           @updated-rotations="handleUpdatedRotations"></CalculatorRotations>
+      </div>
+      <div class="screen--enemy" v-show="curScreen === 'custom-buffs'">
+        <CalculatorCustomBuffs
+          :key="character"
+          :character="character"
+          @custom-buffs-updated=handleCustomBuffs></CalculatorCustomBuffs>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <CalculatorEnemy
@@ -1392,6 +1409,7 @@ import CalculatorTalents from "./CalculatorTalents.vue";
 import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import CalculatorEnemy from "./CalculatorEnemy.vue";
 import CalculatorRotations from "./CalculatorRotations.vue";
+import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
 import { mainEchoesData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -1413,6 +1431,7 @@ export default defineComponent({
     CalculatorWeapons,
     CalculatorCharacterBuffs,
     CalculatorCharacterLevel,
+    CalculatorCustomBuffs,
     CalculatorPartyBuffs,
     CalculatorResonanceChains,
     CalculatorRotations,
@@ -1430,6 +1449,7 @@ export default defineComponent({
     const chosenWeapon = reactive({});
     const chosenChar = reactive({});
     const echoStats = reactive({});
+    const customBuffs = reactive({});
     const characterLevel = ref("90");
     const weaponType = ref("");
     const curScreen = ref("character");
@@ -1749,6 +1769,10 @@ export default defineComponent({
 
       if (echoStats) {
         addEchoBuffs(echoStats?.value, stats);
+      }
+
+      if (customBuffs.value) {
+        addBuffs(customBuffs?.value, stats);
       }
 
       if (teamBuffsData.value) {
@@ -2487,6 +2511,11 @@ export default defineComponent({
       calcAllDamages();
     };
 
+    const handleCustomBuffs = (data) => {
+      customBuffs.value = data;
+      calcCharStats();
+    };
+
     const handleUpdatedRotations = async (data) => {
       // go through each rotation and each action and use the full talent data
       // which will make the rotation system work
@@ -2569,6 +2598,7 @@ export default defineComponent({
       weaponType,
       handleCharacterLevelUpdated,
       handleCharacterTalentUpdated,
+      handleCustomBuffs,
       handleWeaponUpdated,
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
@@ -2692,12 +2722,12 @@ $tooltip-background-color: $sidebar-background-color;
         justify-content: center;
         align-items: center;
         padding: 0.5rem 0;
-        flex-basis: 48px;
-        padding: 0 0.5rem;
+        flex-basis: 36px;
+        padding: 0 0.25rem;
 
         .icon {
-          width: 32px;
-          height: 32px;
+          width: 30px;
+          height: 30px;
         }
       }
     }
@@ -2859,7 +2889,7 @@ $tooltip-background-color: $sidebar-background-color;
     background: #cee2ff;
   }
 }
-.calcations__nav--rotations {
+.calcations__nav--icon-svg {
   svg {
     width: 2rem;
     height: 2rem;
