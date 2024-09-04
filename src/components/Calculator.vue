@@ -69,7 +69,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Character rotations are now available. ↻</div>
+          <div class="alert">Custom buffs are available!</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"

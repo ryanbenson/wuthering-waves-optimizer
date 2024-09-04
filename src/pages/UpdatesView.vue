@@ -29,7 +29,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>September 1, 2024</h3>
+    <h3>September 4, 2024</h3>
+    <ul>
+      <li>Custom buffs are available.</li>
+    </ul>
+    <h3>September 2, 2024</h3>
     <ul>
       <li>Updates Shorekeeper signature to use updated EN name.</li>
       <li>Minor: Changes rotations icon</li>
