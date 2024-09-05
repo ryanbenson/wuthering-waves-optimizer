@@ -186,21 +186,21 @@
               ><img
                 src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Attack</span
             >
-            <span>{{ totalAtk }}</span>
+            <span>{{ displayInt(totalAtk) }}</span>
           </div>
           <div>
             <span
               ><img
                 src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />HP</span
             >
-            <span>{{ totalHp }}</span>
+            <span>{{ displayInt(totalHp) }}</span>
           </div>
           <div>
             <span
               ><img
                 src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />Defense</span
             >
-            <span>{{ totalDef }}</span>
+            <span>{{ displayInt(totalDef) }}</span>
           </div>
           <div>
             <span
@@ -780,21 +780,21 @@
             ><img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Attack</span
           >
-          <span>{{ totalAtk }}</span>
+          <span>{{ displayInt(totalAtk) }}</span>
         </div>
         <div>
           <span
             ><img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />HP</span
           >
-          <span>{{ totalHp }}</span>
+          <span>{{ displayInt(totalHp) }}</span>
         </div>
         <div>
           <span
             ><img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />Defense</span
           >
-          <span>{{ totalDef }}</span>
+          <span>{{ displayInt(totalDef) }}</span>
         </div>
         <div>
           <span
@@ -1421,6 +1421,12 @@ const decimalFormatter = new Intl.NumberFormat("en", {
   // disabling for now. it's rounding oddly (1.8% is showing as 1.7%)
   // TODO: More testing for this
   // roundingMode: "floor",
+});
+
+const numberFormatter = new Intl.NumberFormat("en", {
+  maximumFractionDigits: 0,
+  minimumFractionDigits: 0,
+  roundingMode: "floor",
 });
 
 export default defineComponent({
@@ -2494,6 +2500,10 @@ export default defineComponent({
       return decimalFormatter.format(percentage) + "%";
     };
 
+    const displayInt = (percentage: number) => {
+      return numberFormatter.format(percentage);
+    };
+
     const handleCharacterTalentUpdated = (data) => {
       talentData[data.type] = data.value;
       calcAllDamages();
@@ -2586,6 +2596,7 @@ export default defineComponent({
       changeScreen,
       damage,
       displayDamage,
+      displayInt,
       displayPercentage,
       updateStatsEchoes,
       totalAtk,

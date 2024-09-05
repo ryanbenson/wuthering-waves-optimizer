@@ -29,6 +29,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 5, 2024</h3>
+    <ul>
+      <li>Rounds the ATK, HP, and DEF. Floors the numbers after confirming that's how the game handles decimals.</li>
+    </ul>
     <h3>September 4, 2024</h3>
     <ul>
       <li>Custom buffs are available.</li>
