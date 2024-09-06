@@ -605,11 +605,11 @@ export const buffsByCharacter = {
     {
       key: "ReleasedStellarealm",
       name: "Released Stellarealm",
-      details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Sophisticated Stellarealm</span>, it evolves into <span class="Highlight">Released Stellarealm</span>. In <span class="Highlight">Released Stellarealm</span>, for every 10% increase in the Shorekeeper's Energy Regen, all nearby team members in the domain gain a 1% increase in ATK%, up to a maximum of 20%.</div>`,
+      details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Sophisticated Stellarealm</span>, it evolves into <span class="Highlight">Released Stellarealm</span>. In <span class="Highlight">Released Stellarealm</span>, for every 10% increase in the Shorekeeper's Energy Regen, all nearby team members in the domain gain a 1% increase in Crit DMG%, up to a maximum of 20%.</div>`,
       hasStacks: false,
       modifiers: [
         {
-          modifier: "ATK",
+          modifier: "CritDMG",
           modifierValue: 0.01,
           maximumValue: 0.2,
           modifierStep: 0.1,
@@ -806,6 +806,28 @@ export const allWeaponTeamBuffs = [
     maxStacks: 1,
     details:
       "When Outro Skill is released, increases the switched-in Resonator's ATK by 10%/12.5%/15%/17.5%/20%, stacking up to 1 time(s). This effect lasts for 14s.",
+    alwaysEnabled: false,
+  },
+  {
+    name: "Stellar Symphony",
+    key: "StellarSymphonyATK",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierByRefinement: {
+          "1": 0.1,
+          "2": 0.125,
+          "3": 0.15,
+          "4": 0.175,
+          "5": 0.2,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details:
+      "When the Intro skill causes healing, it restores 8 points of Concert Energy to itself and increases the ATK of all characters in the nearby team by 10%/12.5%/15%/17.5%/20% for 30 seconds. It can be triggered once every 20 seconds. Effects with the same name cannot be stacked.",
     alwaysEnabled: false,
   },
 ];

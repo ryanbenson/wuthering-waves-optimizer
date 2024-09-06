@@ -29,6 +29,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 6, 2024</h3>
+    <ul>
+      <li>Updates Shorekeeper buff for 1.3.9 beta, and adds Stellar Symphony to team buffs.</li>
+    </ul>
     <h3>September 5, 2024</h3>
     <ul>
       <li>Rounds the ATK, HP, and DEF. Floors the numbers after confirming that's how the game handles decimals.</li>

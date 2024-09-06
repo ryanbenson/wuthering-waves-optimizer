@@ -21,15 +21,15 @@ export const buffs = [
   {
     key: "ReleasedStellarealm",
     name: "Released Stellarealm",
-    details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Sophisticated Stellarealm</span>, it evolves into <span class="Highlight">Released Stellarealm</span>. In <span class="Highlight">Released Stellarealm</span>, for every 10% increase in the Shorekeeper's Energy Regen, all nearby team members in the domain gain a 1% increase in ATK%, up to a maximum of 20%.</div>`,
+    details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Sophisticated Stellarealm</span>, it evolves into <span class="Highlight">Released Stellarealm</span>. In <span class="Highlight">Released Stellarealm</span>, for every 10% increase in the Shorekeeper's Energy Regen, all nearby team members in the domain gain a 1% increase in Crit DMG%, up to a maximum of 20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ATK:AdditionalBase",
+        modifier: "CritDMG:AdditionalBase",
         modifierValue: 0.01,
         maximumValue: 0.2,
         modifierBasedOn: "EnergyRegen",
-        modifierTargetAttr: "ATK",
+        modifierTargetAttr: "CritDMG",
         modifierStep: 0.1,
       },
     ],
