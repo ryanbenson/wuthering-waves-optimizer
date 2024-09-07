@@ -29,6 +29,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 7, 2024</h3>
+    <ul>
+      <li>Refactors stats and damages code</li>
+      <li>Adds ability to see talent details</li>
+    </ul>
     <h3>September 6, 2024</h3>
     <ul>
       <li>Fixes 4-slot DEF% on echoes</li>
