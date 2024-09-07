@@ -2,31 +2,41 @@
   <div class="calculations">
     <div class="calcations__nav">
       <ul>
-        <li @click="changeScreen('character')" :class="{'active': curScreen === 'character'}">
+        <li
+          @click="changeScreen('character')"
+          :class="{ active: curScreen === 'character' }">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png"
             class="icon"
             alt="Your Character" />
         </li>
-        <li @click="changeScreen('weapon')" :class="{'active': curScreen === 'weapon'}">
+        <li
+          @click="changeScreen('weapon')"
+          :class="{ active: curScreen === 'weapon' }">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_014.png"
             class="icon"
             alt="Your Weapon" />
         </li>
-        <li @click="changeScreen('echoes')" :class="{'active': curScreen === 'echoes'}">
+        <li
+          @click="changeScreen('echoes')"
+          :class="{ active: curScreen === 'echoes' }">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/echoes.png"
             class="icon"
             alt="Your Echoes" />
         </li>
-        <li @click="changeScreen('constellations')" :class="{'active': curScreen === 'constellations'}">
+        <li
+          @click="changeScreen('constellations')"
+          :class="{ active: curScreen === 'constellations' }">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/constellations.png"
             class="icon"
             alt="Your Resonance Chains" />
         </li>
-        <li @click="changeScreen('party')" :class="{'active': curScreen === 'party'}">
+        <li
+          @click="changeScreen('party')"
+          :class="{ active: curScreen === 'party' }">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/team.png"
             class="icon"
@@ -35,7 +45,7 @@
         <li
           @click="changeScreen('rotations')"
           class="calcations__nav--icon-svg calcations__nav--rotations"
-          :class="{'active': curScreen === 'rotations'}">
+          :class="{ active: curScreen === 'rotations' }">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path
               d="M386.3 160L336 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z"
@@ -45,14 +55,16 @@
         <li
           @click="changeScreen('custom-buffs')"
           class="calcations__nav--icon-svg calcations__nav--custom-buffs"
-          :class="{'active': curScreen === 'custom-buffs'}">
+          :class="{ active: curScreen === 'custom-buffs' }">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
             <path
               d="M0 416c0 17.7 14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384c-17.7 0-32 14.3-32 32zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-32.8 0-61 19.7-73.3 48L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm73.3-64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64z"
               fill="#FFFFFF" />
           </svg>
         </li>
-        <li @click="changeScreen('enemy')"  :class="{'active': curScreen === 'enemy'}">
+        <li
+          @click="changeScreen('enemy')"
+          :class="{ active: curScreen === 'enemy' }">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png"
             class="icon"
@@ -170,7 +182,7 @@
         <CalculatorCustomBuffs
           :key="character"
           :character="character"
-          @custom-buffs-updated=handleCustomBuffs></CalculatorCustomBuffs>
+          @custom-buffs-updated="handleCustomBuffs"></CalculatorCustomBuffs>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <CalculatorEnemy
@@ -179,1214 +191,61 @@
           @updated-enemy-data="handleUpdatedEnemy"></CalculatorEnemy>
       </div>
       <div class="screen--results" v-show="curScreen === 'results'">
-        <div class="results__stats">
-          <h2 class="mt-0">Stats</h2>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Attack</span
-            >
-            <span>{{ displayInt(totalAtk) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />HP</span
-            >
-            <span>{{ displayInt(totalHp) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />Defense</span
-            >
-            <span>{{ displayInt(totalDef) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />Crit
-              Rate</span
-            >
-            <span>{{ displayPercentage(totalCritRate * 100) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" />Crit
-              DMG</span
-            >
-            <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" />Energy
-              Regen</span
-            >
-            <span>{{ displayPercentage(energyRegen * 100) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" />Basic
-              Attack DMG Bonus</span
-            >
-            <span>{{ displayPercentage(BasicAttackDMGBonus) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png" />Heavy
-              Attack DMG Bonus</span
-            >
-            <span>{{ displayPercentage(HeavyAttackDMGBonus) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" />Resonance
-              Skill DMG Bonus</span
-            >
-            <span>{{ displayPercentage(ResonanceSkillDMGBonus) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" />Resonance
-              Liberation DMG Bonus</span
-            >
-            <span>{{ displayPercentage(ResonanceLiberationDMGBonus) }}</span>
-          </div>
-          <div v-if="false">
-            <span>Intro Skill DMG Bonus</span>
-            <span>{{ displayPercentage(IntroSkillDMGBonus) }}</span>
-          </div>
-          <div v-if="false">
-            <span>Outro Skill DMG Bonus</span>
-            <span>{{ displayPercentage(OutroSkillDMGBonus) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/glaciodmgbonus.png"
-                class="glacio--active" />Glacio DMG Bonus</span
-            >
-            <span>{{ displayPercentage(Glacio) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/fusiondmgbonus.png"
-                class="fusion--active" />Fusion DMG Bonus</span
-            >
-            <span>{{ displayPercentage(Fusion) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/electrodmgbonus.png"
-                class="electro--active" />Electro DMG Bonus</span
-            >
-            <span>{{ displayPercentage(Electro) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/aerodmgbonus.png"
-                class="aero--active" />Aero DMG Bonus</span
-            >
-            <span>{{ displayPercentage(Aero) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/spectrodmgbonus.png"
-                class="spectro--active" />Spectro DMG Bonus</span
-            >
-            <span>{{ displayPercentage(Spectro) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/havocdmgbonus.png"
-                class="havoc--active" />Havoc DMG Bonus</span
-            >
-            <span>{{ displayPercentage(Havoc) }}</span>
-          </div>
-          <div>
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png" />Healing
-              Bonus</span
-            >
-            <span>{{ displayPercentage(healingBonus * 100) }}</span>
-          </div>
-          <div v-if="false">
-            <span>Defense Ignore</span>
-            <span>{{ displayPercentage(DefIgnore * 100) }}</span>
-          </div>
-          <div v-if="false">
-            <span>Total Deepen Effect</span>
-            <span>{{ displayPercentage(TotalDeepenEffect * 100) }}</span>
-          </div>
-          <div v-if="false">
-            <span>Resist Reduction</span>
-            <span>{{ displayPercentage(ResistReduction) }}</span>
-          </div>
-        </div>
-        <h2>Damage</h2>
-        <div class="calculation__damage__item">
-          <span>Name</span>
-          <span>Normal</span>
-          <span>Average</span>
-          <span>Crit</span>
-        </div>
-        <h4>{{ chosenChar.value?.basicAttacks?.name ?? "Basic Attacks" }}</h4>
-        <div
-          v-for="damageInstance in allDamages?.value?.basicAttacks"
-          :key="damageInstance.key"
-          class="calculation__damage__item"
-          :class="{
-            'calculation__damage__item--healing':
-              damageInstance.type === 'Healing',
-            'calculation__damage__item--shield':
-              damageInstance.type === 'Shield',
-          }">
-          <template v-if="damageInstance.type === 'Healing'">
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-            >
-          </template>
-          <template v-else-if="damageInstance.type === 'Shield'">
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-            >
-          </template>
-          <template v-else>
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-            >
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculationAvg,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-            >
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculationCrit,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-            >
-          </template>
-        </div>
-        <h4>{{ chosenChar.value?.skillAttacks?.name ?? "Skill Attacks" }}</h4>
-        <div
-          v-for="damageInstance in allDamages?.value?.skillAttacks"
-          :key="damageInstance.key"
-          class="calculation__damage__item"
-          :class="{
-            'calculation__damage__item--healing':
-              damageInstance.type === 'Healing',
-            'calculation__damage__item--shield':
-              damageInstance.type === 'Shield',
-          }">
-          <template v-if="damageInstance.type === 'Healing'">
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-            >
-          </template>
-          <template v-else-if="damageInstance.type === 'Shield'">
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-            >
-          </template>
-          <template v-else>
-            <span>{{ damageInstance.label }} </span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-            >
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculationAvg,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-            >
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculationCrit,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-            >
-          </template>
-        </div>
-        <h4>
-          {{
-            chosenChar.value?.liberationAttacks?.name ?? "Liberation Attacks"
-          }}
-        </h4>
-        <div
-          v-for="damageInstance in allDamages?.value?.liberationAttacks"
-          :key="damageInstance.key"
-          class="calculation__damage__item"
-          :class="{
-            'calculation__damage__item--healing':
-              damageInstance.type === 'Healing',
-            'calculation__damage__item--shield':
-              damageInstance.type === 'Shield',
-          }">
-          <template v-if="damageInstance.type === 'Healing'">
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-            >
-          </template>
-          <template v-else-if="damageInstance.type === 'Shield'">
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-            >
-          </template>
-          <template v-else>
-            <span>{{ damageInstance.label }} </span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-            >
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculationAvg,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-            >
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculationCrit,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-            >
-          </template>
-        </div>
-        <h4>
-          {{
-            chosenChar.value?.forteCircuitAttacks?.name ??
-            "Forte Circuit Attacks"
-          }}
-        </h4>
-        <div
-          v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
-          :key="damageInstance.key"
-          class="calculation__damage__item"
-          :class="{
-            'calculation__damage__item--healing':
-              damageInstance.type === 'Healing',
-            'calculation__damage__item--shield':
-              damageInstance.type === 'Shield',
-          }">
-          <template v-if="damageInstance.type === 'Healing'">
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-            >
-          </template>
-          <template v-else-if="damageInstance.type === 'Shield'">
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-            >
-          </template>
-          <template v-else>
-            <span>{{ damageInstance.label }} </span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-            >
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculationAvg,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-            >
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculationCrit,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-            >
-          </template>
-        </div>
-        <h4>{{ chosenChar.value?.introAttacks?.name ?? "Intro Attacks" }}</h4>
-        <div
-          v-for="damageInstance in allDamages?.value?.introAttacks"
-          :key="damageInstance.key"
-          class="calculation__damage__item"
-          :class="{
-            'calculation__damage__item--healing':
-              damageInstance.type === 'Healing',
-            'calculation__damage__item--shield':
-              damageInstance.type === 'Shield',
-          }">
-          <template v-if="damageInstance.type === 'Healing'">
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-            >
-          </template>
-          <template v-else-if="damageInstance.type === 'Shield'">
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-            >
-          </template>
-          <template v-else>
-            <span>{{ damageInstance.label }} </span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-            >
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculationAvg,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-            >
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculationCrit,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-            >
-          </template>
-        </div>
-        <h4>{{ chosenChar.value?.outroAttacks?.name ?? "Outro Attacks" }}</h4>
-        <template v-if="!allDamages?.value?.outroAttacks.length">
-          <div
-            class="calculation__damage__item calculation__damage__item--fill">
-            {{ character }} does not have outro attacks.
-          </div>
-        </template>
-        <template v-else>
-          <div
-            v-for="damageInstance in allDamages?.value?.outroAttacks"
-            :key="damageInstance.key"
-            class="calculation__damage__item"
-            :class="{
-              'calculation__damage__item--healing':
-                damageInstance.type === 'Healing',
-              'calculation__damage__item--shield':
-                damageInstance.type === 'Shield',
-            }">
-            <template v-if="damageInstance.type === 'Healing'">
-              <span>{{ damageInstance.label }}</span>
-              <span
-                v-tooltip="{
-                  content: damageInstance.damage.detailedCalculation,
-                  html: true,
-                }"
-                >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-              >
-            </template>
-            <template v-else-if="damageInstance.type === 'Shield'">
-              <span>{{ damageInstance.label }}</span>
-              <span
-                v-tooltip="{
-                  content: damageInstance.damage.detailedCalculation,
-                  html: true,
-                }"
-                >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-              >
-            </template>
-            <template v-else>
-              <span>{{ damageInstance.label }} </span>
-              <span
-                v-tooltip="{
-                  content: damageInstance.damage.detailedCalculation,
-                  html: true,
-                }"
-                >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-              >
-              <span
-                v-tooltip="{
-                  content: damageInstance.damage.detailedCalculationAvg,
-                  html: true,
-                }"
-                >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-              >
-              <span
-                v-tooltip="{
-                  content: damageInstance.damage.detailedCalculationCrit,
-                  html: true,
-                }"
-                >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-              >
-            </template>
-          </div>
-        </template>
-
-        <template v-if="rotationsList.length && allDamages.value?.rotations">
-          <div
-            v-for="rotation in allDamages.value.rotations"
-            class="rotation__item"
-            :key="rotation.id">
-            <h4 v-tooltip="rotation.description">{{ rotation.name }}</h4>
-            <template v-if="!rotation.attacks?.length">
-              <div class="calculation__damage__item">
-                No attacks in this rotation
-              </div>
-            </template>
-            <template v-else>
-              <div
-                v-for="damageInstance in rotation.attacks"
-                :key="damageInstance.key"
-                class="calculation__damage__item"
-                :class="{
-                  'calculation__damage__item--healing':
-                    damageInstance.type === 'Healing',
-                  'calculation__damage__item--shield':
-                    damageInstance.type === 'Shield',
-                }">
-                <template v-if="damageInstance.type === 'Healing'">
-                  <span>{{ damageInstance.label }}</span>
-                  <span
-                    v-tooltip="{
-                      content: damageInstance.damage.detailedCalculation,
-                      html: true,
-                    }"
-                    >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-                  >
-                </template>
-                <template v-else-if="damageInstance.type === 'Shield'">
-                  <span>{{ damageInstance.label }}</span>
-                  <span
-                    v-tooltip="{
-                      content: damageInstance.damage.detailedCalculation,
-                      html: true,
-                    }"
-                    >{{
-                      displayDamage(damageInstance.damage.shieldAmount)
-                    }}</span
-                  >
-                </template>
-                <template v-else>
-                  <span>{{ damageInstance.label }} </span>
-                  <span
-                    v-tooltip="{
-                      content: damageInstance.damage.detailedCalculation,
-                      html: true,
-                    }"
-                    >{{
-                      displayDamage(damageInstance.damage.totalDamage)
-                    }}</span
-                  >
-                  <span
-                    v-tooltip="{
-                      content: damageInstance.damage.detailedCalculationAvg,
-                      html: true,
-                    }"
-                    >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-                  >
-                  <span
-                    v-tooltip="{
-                      content: damageInstance.damage.detailedCalculationCrit,
-                      html: true,
-                    }"
-                    >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-                  >
-                </template>
-              </div>
-            </template>
-          </div>
-        </template>
+        <CalculatorStats
+          :key="character"
+          :character="character"
+          :total-atk="totalAtk"
+          :total-hp="totalHp"
+          :total-def="totalDef"
+          :total-crit-rate="totalCritRate"
+          :total-crit-dmg="totalCritDMG"
+          :energy-regen="energyRegen"
+          :basic-attack-dmg-bonus="BasicAttackDMGBonus"
+          :heavy-attack-dmg-bonus="HeavyAttackDMGBonus"
+          :resonance-skill-dmg-bonus="ResonanceSkillDMGBonus"
+          :resonance-liberation-dmg-bonus="ResonanceLiberationDMGBonus"
+          :glacio="Glacio"
+          :fusion="Fusion"
+          :electro="Electro"
+          :aero="Aero"
+          :spectro="Spectro"
+          :havoc="Havoc"
+          :healing-bonus="healingBonus"></CalculatorStats>
+        <CalculatorDamages
+          :key="character"
+          :character="character"
+          :all-damages="allDamages"
+          :rotations-list="rotationsList"
+          :chosen-char="chosenChar"></CalculatorDamages>
       </div>
     </div>
     <div class="results">
-      <div class="results__stats">
-        <h2 class="mt-0">Stats</h2>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Attack</span
-          >
-          <span>{{ displayInt(totalAtk) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />HP</span
-          >
-          <span>{{ displayInt(totalHp) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />Defense</span
-          >
-          <span>{{ displayInt(totalDef) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />Crit
-            Rate</span
-          >
-          <span>{{ displayPercentage(totalCritRate * 100) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" />Crit
-            DMG</span
-          >
-          <span>{{ displayPercentage(totalCritDMG * 100) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" />Energy
-            Regen</span
-          >
-          <span>{{ displayPercentage(energyRegen * 100) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" />Basic
-            Attack DMG Bonus</span
-          >
-          <span>{{ displayPercentage(BasicAttackDMGBonus) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png" />Heavy
-            Attack DMG Bonus</span
-          >
-          <span>{{ displayPercentage(HeavyAttackDMGBonus) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" />Resonance
-            Skill DMG Bonus</span
-          >
-          <span>{{ displayPercentage(ResonanceSkillDMGBonus) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" />Resonance
-            Liberation DMG Bonus</span
-          >
-          <span>{{ displayPercentage(ResonanceLiberationDMGBonus) }}</span>
-        </div>
-        <div v-if="false">
-          <span>Intro Skill DMG Bonus</span>
-          <span>{{ displayPercentage(IntroSkillDMGBonus) }}</span>
-        </div>
-        <div v-if="false">
-          <span>Outro Skill DMG Bonus</span>
-          <span>{{ displayPercentage(OutroSkillDMGBonus) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/glaciodmgbonus.png"
-              class="glacio--active" />Glacio DMG Bonus</span
-          >
-          <span>{{ displayPercentage(Glacio) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/fusiondmgbonus.png"
-              class="fusion--active" />Fusion DMG Bonus</span
-          >
-          <span>{{ displayPercentage(Fusion) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/electrodmgbonus.png"
-              class="electro--active" />Electro DMG Bonus</span
-          >
-          <span>{{ displayPercentage(Electro) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/aerodmgbonus.png"
-              class="aero--active" />Aero DMG Bonus</span
-          >
-          <span>{{ displayPercentage(Aero) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/spectrodmgbonus.png"
-              class="spectro--active" />Spectro DMG Bonus</span
-          >
-          <span>{{ displayPercentage(Spectro) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/havocdmgbonus.png"
-              class="havoc--active" />Havoc DMG Bonus</span
-          >
-          <span>{{ displayPercentage(Havoc) }}</span>
-        </div>
-        <div>
-          <span
-            ><img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png" />Healing
-            Bonus</span
-          >
-          <span>{{ displayPercentage(healingBonus * 100) }}</span>
-        </div>
-        <div v-if="false">
-          <span>Defense Ignore</span>
-          <span>{{ displayPercentage(DefIgnore * 100) }}</span>
-        </div>
-        <div v-if="false">
-          <span>Total Deepen Effect</span>
-          <span>{{ displayPercentage(TotalDeepenEffect * 100) }}</span>
-        </div>
-        <div v-if="false">
-          <span>Resist Reduction</span>
-          <span>{{ displayPercentage(ResistReduction) }}</span>
-        </div>
-      </div>
-      <h2>Damage</h2>
-      <div class="panel mb-1">
-        All damages are total damage. If an attack hits multiple times, it will
-        show the total damage. Hover over the damage to see it broken down per
-        hit.
-      </div>
-      <div class="calculation__damage__item">
-        <span>Name</span>
-        <span>Normal</span>
-        <span>Average</span>
-        <span>Crit</span>
-      </div>
-      <h4>{{ chosenChar.value?.basicAttacks?.name ?? "Basic Attacks" }}</h4>
-      <div
-        v-for="damageInstance in allDamages?.value?.basicAttacks"
-        :key="damageInstance.key"
-        class="calculation__damage__item"
-        :class="{
-          'calculation__damage__item--healing':
-            damageInstance.type === 'Healing',
-          'calculation__damage__item--shield': damageInstance.type === 'Shield',
-        }">
-        <template v-if="damageInstance.type === 'Healing'">
-          <span>{{ damageInstance.label }}</span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-          >
-        </template>
-        <template v-else-if="damageInstance.type === 'Shield'">
-          <span>{{ damageInstance.label }}</span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-          >
-        </template>
-        <template v-else>
-          <span>{{ damageInstance.label }}</span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationAvg,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationCrit,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-          >
-        </template>
-      </div>
-      <h4>{{ chosenChar.value?.skillAttacks?.name ?? "Skill Attacks" }}</h4>
-      <div
-        v-for="damageInstance in allDamages?.value?.skillAttacks"
-        :key="damageInstance.key"
-        class="calculation__damage__item"
-        :class="{
-          'calculation__damage__item--healing':
-            damageInstance.type === 'Healing',
-          'calculation__damage__item--shield': damageInstance.type === 'Shield',
-        }">
-        <template v-if="damageInstance.type === 'Healing'">
-          <span>{{ damageInstance.label }}</span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-          >
-        </template>
-        <template v-else-if="damageInstance.type === 'Shield'">
-          <span>{{ damageInstance.label }}</span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-          >
-        </template>
-        <template v-else>
-          <span>{{ damageInstance.label }} </span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationAvg,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationCrit,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-          >
-        </template>
-      </div>
-      <h4>
-        {{ chosenChar.value?.liberationAttacks?.name ?? "Liberation Attacks" }}
-      </h4>
-      <div
-        v-for="damageInstance in allDamages?.value?.liberationAttacks"
-        :key="damageInstance.key"
-        class="calculation__damage__item"
-        :class="{
-          'calculation__damage__item--healing':
-            damageInstance.type === 'Healing',
-          'calculation__damage__item--shield': damageInstance.type === 'Shield',
-        }">
-        <template v-if="damageInstance.type === 'Healing'">
-          <span>{{ damageInstance.label }}</span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-          >
-        </template>
-        <template v-else-if="damageInstance.type === 'Shield'">
-          <span>{{ damageInstance.label }}</span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-          >
-        </template>
-        <template v-else>
-          <span>{{ damageInstance.label }} </span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationAvg,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationCrit,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-          >
-        </template>
-      </div>
-      <h4>
-        {{
-          chosenChar.value?.forteCircuitAttacks?.name ?? "Forte Circuit Attacks"
-        }}
-      </h4>
-      <div
-        v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
-        :key="damageInstance.key"
-        class="calculation__damage__item"
-        :class="{
-          'calculation__damage__item--healing':
-            damageInstance.type === 'Healing',
-          'calculation__damage__item--shield': damageInstance.type === 'Shield',
-        }">
-        <template v-if="damageInstance.type === 'Healing'">
-          <span>{{ damageInstance.label }}</span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-          >
-        </template>
-        <template v-else-if="damageInstance.type === 'Shield'">
-          <span>{{ damageInstance.label }}</span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-          >
-        </template>
-        <template v-else>
-          <span>{{ damageInstance.label }} </span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationAvg,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationCrit,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-          >
-        </template>
-      </div>
-      <h4>{{ chosenChar.value?.introAttacks?.name ?? "Intro Attacks" }}</h4>
-      <div
-        v-for="damageInstance in allDamages?.value?.introAttacks"
-        :key="damageInstance.key"
-        class="calculation__damage__item"
-        :class="{
-          'calculation__damage__item--healing':
-            damageInstance.type === 'Healing',
-          'calculation__damage__item--shield': damageInstance.type === 'Shield',
-        }">
-        <template v-if="damageInstance.type === 'Healing'">
-          <span>{{ damageInstance.label }}</span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-          >
-        </template>
-        <template v-else-if="damageInstance.type === 'Shield'">
-          <span>{{ damageInstance.label }}</span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-          >
-        </template>
-        <template v-else>
-          <span>{{ damageInstance.label }} </span>
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculation,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationAvg,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-          >
-          <span
-            v-tooltip="{
-              content: damageInstance.damage.detailedCalculationCrit,
-              html: true,
-            }"
-            >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-          >
-        </template>
-      </div>
-      <h4>{{ chosenChar.value?.outroAttacks?.name ?? "Outro Attacks" }}</h4>
-      <template v-if="!allDamages?.value?.outroAttacks.length">
-        <div class="calculation__damage__item">
-          {{ character }} does not have outro attacks.
-        </div>
-      </template>
-      <template v-else>
-        <div
-          v-for="damageInstance in allDamages?.value?.outroAttacks"
-          :key="damageInstance.key"
-          class="calculation__damage__item"
-          :class="{
-            'calculation__damage__item--healing':
-              damageInstance.type === 'Healing',
-            'calculation__damage__item--shield':
-              damageInstance.type === 'Shield',
-          }">
-          <template v-if="damageInstance.type === 'Healing'">
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-            >
-          </template>
-          <template v-else-if="damageInstance.type === 'Shield'">
-            <span>{{ damageInstance.label }}</span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-            >
-          </template>
-          <template v-else>
-            <span>{{ damageInstance.label }} </span>
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculation,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-            >
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculationAvg,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-            >
-            <span
-              v-tooltip="{
-                content: damageInstance.damage.detailedCalculationCrit,
-                html: true,
-              }"
-              >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-            >
-          </template>
-        </div>
-      </template>
-      <template v-if="rotationsList.length && allDamages.value?.rotations">
-        <div
-          v-for="rotation in allDamages.value.rotations"
-          class="rotation__item"
-          :key="rotation.id">
-          <h4 v-tooltip="rotation.description">{{ rotation.name }}</h4>
-          <template v-if="!rotation.attacks.length">
-            <div class="calculation__damage__item">
-              No attacks in this rotation.
-            </div></template
-          >
-          <template v-else>
-            <div
-              v-for="damageInstance in rotation.attacks"
-              :key="damageInstance.key"
-              class="calculation__damage__item"
-              :class="{
-                'calculation__damage__item--healing':
-                  damageInstance.type === 'Healing',
-                'calculation__damage__item--shield':
-                  damageInstance.type === 'Shield',
-              }">
-              <template v-if="damageInstance.type === 'Healing'">
-                <span>{{ damageInstance.label }}</span>
-                <span
-                  v-tooltip="{
-                    content: damageInstance.damage.detailedCalculation,
-                    html: true,
-                  }"
-                  >{{ displayDamage(damageInstance.damage.healAmount) }}</span
-                >
-              </template>
-              <template v-else-if="damageInstance.type === 'Shield'">
-                <span>{{ damageInstance.label }}</span>
-                <span
-                  v-tooltip="{
-                    content: damageInstance.damage.detailedCalculation,
-                    html: true,
-                  }"
-                  >{{ displayDamage(damageInstance.damage.shieldAmount) }}</span
-                >
-              </template>
-              <template v-else>
-                <span>{{ damageInstance.label }} </span>
-                <span
-                  v-tooltip="{
-                    content: damageInstance.damage.detailedCalculation,
-                    html: true,
-                  }"
-                  >{{ displayDamage(damageInstance.damage.totalDamage) }}</span
-                >
-                <span
-                  v-tooltip="{
-                    content: damageInstance.damage.detailedCalculationAvg,
-                    html: true,
-                  }"
-                  >{{ displayDamage(damageInstance.damage.avgDamage) }}</span
-                >
-                <span
-                  v-tooltip="{
-                    content: damageInstance.damage.detailedCalculationCrit,
-                    html: true,
-                  }"
-                  >{{ displayDamage(damageInstance.damage.critDamage) }}</span
-                >
-              </template>
-            </div>
-          </template>
-          <div class="rotation__aggregation">
-            <div
-              v-if="rotation.damageAggregation.normalDamage"
-              class="calculation__damage__item">
-              <span>Total Damage</span>
-              <span>{{
-                displayDamage(rotation.damageAggregation.normalDamage)
-              }}</span>
-              <span>{{
-                displayDamage(rotation.damageAggregation.avgDamage)
-              }}</span>
-              <span>{{
-                displayDamage(rotation.damageAggregation.critDamage)
-              }}</span>
-            </div>
-            <div
-              v-if="rotation.damageAggregation.healing"
-              class="calculation__damage__item calculation__damage__item--healing">
-              <span>Total Healing</span>
-              <span>{{
-                displayDamage(rotation.damageAggregation.healing)
-              }}</span>
-            </div>
-            <div
-              v-if="rotation.damageAggregation.shield"
-              class="calculation__damage__item calculation__damage__item--shield">
-              <span>Total Shield</span>
-              <span>{{
-                displayDamage(rotation.damageAggregation.shield)
-              }}</span>
-            </div>
-          </div>
-        </div>
-      </template>
+      <CalculatorStats
+        :key="character"
+        :character="character"
+        :total-atk="totalAtk"
+        :total-hp="totalHp"
+        :total-def="totalDef"
+        :total-crit-rate="totalCritRate"
+        :total-crit-dmg="totalCritDMG"
+        :energy-regen="energyRegen"
+        :basic-attack-dmg-bonus="BasicAttackDMGBonus"
+        :heavy-attack-dmg-bonus="HeavyAttackDMGBonus"
+        :resonance-skill-dmg-bonus="ResonanceSkillDMGBonus"
+        :resonance-liberation-dmg-bonus="ResonanceLiberationDMGBonus"
+        :glacio="Glacio"
+        :fusion="Fusion"
+        :electro="Electro"
+        :aero="Aero"
+        :spectro="Spectro"
+        :havoc="Havoc"
+        :healing-bonus="healingBonus"></CalculatorStats>
+      <CalculatorDamages
+        :key="character"
+        :character="character"
+        :all-damages="allDamages"
+        :rotations-list="rotationsList"
+        :chosen-char="chosenChar"></CalculatorDamages>
     </div>
   </div>
 </template>
@@ -1410,28 +269,16 @@ import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import CalculatorEnemy from "./CalculatorEnemy.vue";
 import CalculatorRotations from "./CalculatorRotations.vue";
 import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
+import CalculatorStats from "./CalculatorStats.vue";
+import CalculatorDamages from "./CalculatorDamages.vue";
 import { mainEchoesData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 
-const decimalFormatter = new Intl.NumberFormat("en", {
-  style: "decimal",
-  maximumFractionDigits: 1,
-  minimumFractionDigits: 1,
-  // disabling for now. it's rounding oddly (1.8% is showing as 1.7%)
-  // TODO: More testing for this
-  // roundingMode: "floor",
-});
-
-const numberFormatter = new Intl.NumberFormat("en", {
-  maximumFractionDigits: 0,
-  minimumFractionDigits: 0,
-  roundingMode: "floor",
-});
-
 export default defineComponent({
   name: "Calculator",
   components: {
+    CalculatorDamages,
     CalculatorEchoes,
     CalculatorEnemy,
     CalculatorWeapons,
@@ -1441,6 +288,7 @@ export default defineComponent({
     CalculatorPartyBuffs,
     CalculatorResonanceChains,
     CalculatorRotations,
+    CalculatorStats,
     CalculatorTalents,
   },
   setup() {
@@ -2492,18 +1340,6 @@ export default defineComponent({
       curScreen.value = screen;
     };
 
-    const displayDamage = (damage: number) => {
-      return Math.ceil(damage);
-    };
-
-    const displayPercentage = (percentage: number) => {
-      return decimalFormatter.format(percentage) + "%";
-    };
-
-    const displayInt = (percentage: number) => {
-      return numberFormatter.format(percentage);
-    };
-
     const handleCharacterTalentUpdated = (data) => {
       talentData[data.type] = data.value;
       calcAllDamages();
@@ -2595,9 +1431,6 @@ export default defineComponent({
       curScreen,
       changeScreen,
       damage,
-      displayDamage,
-      displayInt,
-      displayPercentage,
       updateStatsEchoes,
       totalAtk,
       totalHp,
@@ -2744,33 +1577,6 @@ $tooltip-background-color: $sidebar-background-color;
     }
   }
 }
-.calculation__damage__item {
-  display: grid;
-  grid-template-columns: 1fr 100px 100px 100px;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  &:nth-child(even) {
-    background-color: transparent;
-  }
-  &:nth-child(odd) {
-    background-color: rgba(255, 255, 255, 0.1);
-
-    @media (prefers-color-scheme: light) {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-  }
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr 80px 80px 80px;
-    gap: 0.15rem;
-  }
-}
-.character__stat__item {
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
 .alert {
   background: #126a5a;
   padding: 0.25rem 0.5rem;
@@ -2812,37 +1618,6 @@ $tooltip-background-color: $sidebar-background-color;
   border-radius: 100%;
   border: 1px solid white;
 }
-.results__stats {
-  div {
-    display: flex;
-    justify-content: space-between;
-    max-width: 400px;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-
-    span {
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-    }
-  }
-  div:nth-child(even) {
-    background-color: transparent;
-  }
-  div:nth-child(odd) {
-    background-color: rgba(255, 255, 255, 0.1);
-
-    @media (prefers-color-scheme: light) {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-  }
-  span img {
-    // make the white icons darker on light mode for stats
-    @media (prefers-color-scheme: light) {
-      filter: contrast(0.25);
-    }
-  }
-}
 .results {
   display: block !important;
 
@@ -2859,45 +1634,6 @@ $tooltip-background-color: $sidebar-background-color;
   }
   .results {
     display: none !important;
-  }
-}
-.panel {
-  margin-top: 1rem;
-  background-color: #161616;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-
-  @media (prefers-color-scheme: light) {
-    background-color: #f8f8f8;
-  }
-}
-.mb-1 {
-  margin-bottom: 1rem;
-}
-.calculation__damage__item--fill {
-  grid-template-columns: 1fr;
-}
-.calculation__damage__item--healing {
-  color: #3bea3b;
-
-  @media (prefers-color-scheme: light) {
-    color: #13a813;
-  }
-}
-.calculation__damage__item--shield {
-  color: #00adff;
-
-  @media (prefers-color-scheme: light) {
-    color: #4a92ff;
-  }
-}
-.rotation__aggregation {
-  margin-top: 1rem;
-  background: #1c2737;
-  border-radius: 0.25rem;
-
-  @media (prefers-color-scheme: light) {
-    background: #cee2ff;
   }
 }
 .calcations__nav--icon-svg {
