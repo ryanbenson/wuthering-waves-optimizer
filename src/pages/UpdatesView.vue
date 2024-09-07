@@ -31,11 +31,23 @@
     <h1>Updates</h1>
     <h3>September 6, 2024</h3>
     <ul>
-      <li>Updates Shorekeeper buff for 1.3.9 beta, and adds Stellar Symphony to team buffs.</li>
+      <li>Fixes 4-slot DEF% on echoes</li>
+      <li>
+        Changes Taoqi BA3. Technically it hits twice in-game, but the talent
+        percent in-game, and on the wiki, have 1 values. But I've changed it to
+        hit twice and each hit have half the value.
+      </li>
+      <li>
+        Updates Shorekeeper buff for 1.3.9 beta, and adds Stellar Symphony to
+        team buffs.
+      </li>
     </ul>
     <h3>September 5, 2024</h3>
     <ul>
-      <li>Rounds the ATK, HP, and DEF. Floors the numbers after confirming that's how the game handles decimals.</li>
+      <li>
+        Rounds the ATK, HP, and DEF. Floors the numbers after confirming that's
+        how the game handles decimals.
+      </li>
     </ul>
     <h3>September 4, 2024</h3>
     <ul>
