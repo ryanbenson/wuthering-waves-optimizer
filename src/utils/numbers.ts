@@ -1,3 +1,5 @@
+// @ts-nocheck
+// TS throws an error on roundingMode, but it's legit
 const decimalFormatter = new Intl.NumberFormat("en", {
   style: "decimal",
   maximumFractionDigits: 1,
