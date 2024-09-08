@@ -31,6 +31,10 @@
     <h1>Updates</h1>
     <h3>September 8, 2024</h3>
     <ul>
+      <li>
+        Bug fix: Adds missing aggregations on custom rotations. The refactor
+        yesterday, Sept 7, removed it on accident.
+      </li>
       <li>Adds ability to quickly reset echoes back to blank</li>
     </ul>
     <h3>September 7, 2024</h3>

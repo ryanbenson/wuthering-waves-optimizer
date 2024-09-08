@@ -166,6 +166,34 @@
           :label="damageInstance.label"
           :damage="damageInstance.damage">
         </CalculatorDamage>
+        <div class="rotation__aggregation">
+          <div
+            v-if="rotation.damageAggregation.normalDamage"
+            class="calculation__damage__item">
+            <span>Total Damage</span>
+            <span>{{
+              displayDamage(rotation.damageAggregation.normalDamage)
+            }}</span>
+            <span>{{
+              displayDamage(rotation.damageAggregation.avgDamage)
+            }}</span>
+            <span>{{
+              displayDamage(rotation.damageAggregation.critDamage)
+            }}</span>
+          </div>
+          <div
+            v-if="rotation.damageAggregation.healing"
+            class="calculation__damage__item calculation__damage__item--healing">
+            <span>Total Healing</span>
+            <span>{{ displayDamage(rotation.damageAggregation.healing) }}</span>
+          </div>
+          <div
+            v-if="rotation.damageAggregation.shield"
+            class="calculation__damage__item calculation__damage__item--shield">
+            <span>Total Shield</span>
+            <span>{{ displayDamage(rotation.damageAggregation.shield) }}</span>
+          </div>
+        </div>
       </template>
     </div>
   </template>
