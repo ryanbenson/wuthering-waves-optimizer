@@ -29,12 +29,21 @@
         </div>
       </div>
     </div>
-    <select v-model="stat" @change="updateTotalStats" :disabled="!type">
-      <option value="none">Select Stat</option>
-      <option v-for="s in getStats(type)" :key="s" :value="s">
-        {{ getReadableSubStatLabel(s) }}
-      </option>
-    </select>
+    <div class="main__stat-selector">
+      <select v-model="stat" @change="updateTotalStats" :disabled="!type">
+        <option value="none">Select Stat</option>
+        <option v-for="s in getStats(type)" :key="s" :value="s">
+          {{ getReadableSubStatLabel(s) }}
+        </option>
+      </select>
+      <button class="echo__reset" v-tooltip="'Reset echo'" @click="reset">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+          <path
+            d="M386.3 160L336 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z"
+            fill="#FFFFFF" />
+        </svg>
+      </button>
+    </div>
 
     <div class="sub-stat-selector">
       <select v-model="echoSubStatsType1" @change="updateTotalStats">
@@ -296,6 +305,22 @@ export default {
       }
 
       this.$emit("update-stats", { index: this.index, stats });
+    },
+    // reset everything
+    reset() {
+      this.type = null;
+      this.rank = null;
+      this.stat = null;
+      this.echoSubStatsType1 = null;
+      this.echoSubStatsValue1 = null;
+      this.echoSubStatsType2 = null;
+      this.echoSubStatsValue2 = null;
+      this.echoSubStatsType3 = null;
+      this.echoSubStatsValue3 = null;
+      this.echoSubStatsType4 = null;
+      this.echoSubStatsValue4 = null;
+      this.echoSubStatsType5 = null;
+      this.echoSubStatsValue5 = null;
     },
   },
   computed: {
@@ -658,6 +683,12 @@ export default {
 }
 .echo-selector {
   margin-bottom: 20px;
+  max-width: 330px;
+}
+.main__stat-selector {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .cost-selector,
@@ -742,5 +773,17 @@ export default {
 }
 .main-echo__enabled {
   margin-top: 1rem;
+}
+.echo__reset {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  svg {
+    width: 1rem;
+    height: 1rem;
+    @media (prefers-color-scheme: light) {
+      filter: invert(100%);
+    }
+  }
 }
 </style>

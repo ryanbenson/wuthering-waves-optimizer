@@ -29,6 +29,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 8, 2024</h3>
+    <ul>
+      <li>Adds ability to quickly reset echoes back to blank</li>
+    </ul>
     <h3>September 7, 2024</h3>
     <ul>
       <li>Refactors stats and damages code</li>
