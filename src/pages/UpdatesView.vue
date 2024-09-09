@@ -31,6 +31,7 @@
     <h1>Updates</h1>
     <h3>September 9, 2024</h3>
     <ul>
+      <li>Adds weapon images to weapons UI.</li>
       <li>Adds Glacio Dreadmane echo</li>
       <li>Updates Shorekeeper for 1.3.9 beta changes</li>
     </ul>
