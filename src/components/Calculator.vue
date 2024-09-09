@@ -1489,6 +1489,10 @@ export default defineComponent({
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+  }
 }
 .results {
   overflow-y: auto;

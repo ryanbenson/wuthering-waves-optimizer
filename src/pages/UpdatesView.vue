@@ -32,6 +32,10 @@
     <h3>September 8, 2024</h3>
     <ul>
       <li>
+        Tweak mobile experience by giving it more space, which should alleviate
+        some elements getting cut off.
+      </li>
+      <li>
         Bug fix: Adds missing aggregations on custom rotations. The refactor
         yesterday, Sept 7, removed it on accident.
       </li>
