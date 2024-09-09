@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Sword of Night",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/SwordOfNight.png",
   description:
     "May victory prevail the lasting night. In addition to the sworn oath of protection, this sword also represents the ambition of those brave souls.",
   type: "Sword",

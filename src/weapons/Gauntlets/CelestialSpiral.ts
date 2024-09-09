@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Celestial Spiral",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/CelestialSpiral.png",
   description:
     "A prototype weapon designed by the Black Shores for elite combatants. These gauntlets take their name from the tragic demise of a blazar—a galactic nucleus whose blinding radiance pierces the cosmos, shining unmistakably across billions of light years.",
   type: "Gauntlet",

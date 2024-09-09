@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Verdant Summit",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/VerdantSummit.png",
   description:
     "The ancient mountain stands tall, its peak reaching towards the sky. A river flows for thousands of years, forming the blade of a powerful weapon. As it is unsheathed, a powerful dragon's roar echoes through the heavens and earth, causing the sea to churn. This awe-inspiring weapon strikes fear in all who witness its might.",
   type: "Broadblade",

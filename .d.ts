@@ -1,6 +1,7 @@
 interface WeaponInfo {
   name: string;
   description: string;
+  image: string;
   type: string;
   rarity: number;
   passiveName: string;

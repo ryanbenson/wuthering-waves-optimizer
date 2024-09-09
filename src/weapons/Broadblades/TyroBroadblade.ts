@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Tyro Broadblade",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/TyroBroadblade.png",
   description:
     "The onset of pinnacle pursuit. A broadblade designed for novice Resonators. Contains a power not to be underestimated under its simple outlook.",
   type: "Broadblade",

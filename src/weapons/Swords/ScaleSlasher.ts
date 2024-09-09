@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Scale: Slasher",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/ScaleSlasher.webp",
   description:
     "An ascending crescendo. This enchanting sword effortlessly cuts through anything in its way, like a glorious prelude.",
   type: "Sword",

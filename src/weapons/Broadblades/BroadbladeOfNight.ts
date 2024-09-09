@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Broadblade of Night",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/BroadbladeOfNight.png",
   description:
     "May victory prevail the lasting night. In addition to the sworn oath of protection, this broadblade also carries the resolution of those fighting souls.",
   type: "Broadblade",

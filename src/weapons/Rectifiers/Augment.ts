@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Augment",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Augment.png",
   description:
     "This Rectifier is a ceremonial weapon used by the Jinzhou Magistrate of Huanglong at the inauguration ceremony. The golden ginkgo leaf pattern represents that Huanglong should be like ginkgo, although it is left alone in the world, it is still prosperous and long-lasting.",
   type: "Rectifier",

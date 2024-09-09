@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Autumntrace",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Autumntrace.png",
   description:
     "This Broadblade is a ceremonial weapon used by the Jinzhou Magistrate of the Huanglong province at the inauguration ceremony. The golden ginkgo leaf pattern represents that Huanglong should be like ginkgo, although it is left alone in the world, it is still prosperous and long-lasting.",
   type: "Broadblade",

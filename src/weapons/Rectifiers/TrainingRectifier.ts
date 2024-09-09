@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Training Rectifier",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/TrainingRectifier.png",
   description:
     "This rectifier is designed specifically for training and teaching, offering only the basic features.",
   type: "Rectifier",

@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Training Sword",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/TrainingSword.png",
   description:
     "This sword is designed specifically for training and teaching, offering only the basic features.",
   type: "Sword",

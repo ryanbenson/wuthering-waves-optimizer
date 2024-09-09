@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Originite: Type IV",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/OriginiteTypeIV.png",
   description:
     "To develop new Tacetite weapons, the Huaxu Academy has built a test-type Gauntlets for the purpose of technical verification. In addition to the impressive weapon performance, the biggest feature is that it can enhance the physical activity of the Resonator to heal wounds through attacks.",
   type: "Gauntlets",

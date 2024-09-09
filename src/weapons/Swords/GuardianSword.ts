@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Guardian Sword",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/GuardianSword.png",
   description:
     "The first Jinzhou Magistrate, in memory of the mysterious person who helped defend the border and build the city, created the Guardian series under his guidance. Today, it has become an indispensable cornerstone for the development of new weapons.",
   type: "Sword",

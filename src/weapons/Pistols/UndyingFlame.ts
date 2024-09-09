@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Undying Flame",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/UndyingFlame.png",
   description:
     "A weapon designed to commemorate the Midnight Rangers' dedication. \"Let my body ablaze, flames dance to banish all evil's haze.\"",
   type: "Pistols",

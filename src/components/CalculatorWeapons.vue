@@ -1,66 +1,70 @@
 <template>
   <div class="data-input">
-    <div class="form__group field">
-      <select name="weapon" v-model="weapon" class="form__field">
-        <option :value="null">Choose a weapon</option>
-        <optgroup label="5 Star">
-          <option
-            v-for="weap in weaponsList.five"
-            :key="weap.key"
-            :value="weap.key">
-            {{ weap.name }}
+    <div class="weapon__basic-info">
+      <div class="weapon__selection__image" :style="weaponImageStyles"></div>
+      <div class="weapon__basic-data">
+        <div class="form__group field">
+          <select name="weapon" v-model="weapon" class="form__field">
+            <option :value="null">Choose a weapon</option>
+            <optgroup label="5 Star">
+              <option
+                v-for="weap in weaponsList.five"
+                :key="weap.key"
+                :value="weap.key">
+                {{ weap.name }}
+              </option>
+            </optgroup>
+            <optgroup label="4 Star">
+              <option
+                v-for="weap in weaponsList.four"
+                :key="weap.key"
+                :value="weap.key">
+                {{ weap.name }}
+              </option>
+            </optgroup>
+            <optgroup label="3 Star">
+              <option
+                v-for="weap in weaponsList.three"
+                :key="weap.key"
+                :value="weap.key">
+                {{ weap.name }}
+              </option>
+            </optgroup>
+            <optgroup label="2 Star">
+              <option
+                v-for="weap in weaponsList.two"
+                :key="weap.key"
+                :value="weap.key">
+                {{ weap.name }}
+              </option>
+            </optgroup>
+            <optgroup label="1 Star">
+              <option
+                v-for="weap in weaponsList.one"
+                :key="weap.key"
+                :value="weap.key">
+                {{ weap.name }}
+              </option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="form__group field">
+          <select name="weaponLevel" v-model="weaponLevel" class="form__field">
+            <option v-for="lvl in weaponLevelOptions" :key="lvl" :value="lvl">
+              {{ lvl }}
+            </option>
+          </select>
+          <label for="weaponLevel" class="form__label">Weapon Level</label>
+        </div>
+        <div class="form__group field">
+        <select name="refinement" v-model="refinement" class="form__field">
+          <option v-for="lvl in weaponRefinementLevels" :key="lvl" :value="lvl">
+            {{ lvl }}
           </option>
-        </optgroup>
-        <optgroup label="4 Star">
-          <option
-            v-for="weap in weaponsList.four"
-            :key="weap.key"
-            :value="weap.key">
-            {{ weap.name }}
-          </option>
-        </optgroup>
-        <optgroup label="3 Star">
-          <option
-            v-for="weap in weaponsList.three"
-            :key="weap.key"
-            :value="weap.key">
-            {{ weap.name }}
-          </option>
-        </optgroup>
-        <optgroup label="2 Star">
-          <option
-            v-for="weap in weaponsList.two"
-            :key="weap.key"
-            :value="weap.key">
-            {{ weap.name }}
-          </option>
-        </optgroup>
-        <optgroup label="1 Star">
-          <option
-            v-for="weap in weaponsList.one"
-            :key="weap.key"
-            :value="weap.key">
-            {{ weap.name }}
-          </option>
-        </optgroup>
-      </select>
-      <label for="weapon" class="form__label">Weapon</label>
+        </select>
+        <label for="weaponLevel" class="form__label">Refinement</label>
+      </div>
     </div>
-    <div class="form__group field">
-      <select name="weaponLevel" v-model="weaponLevel" class="form__field">
-        <option v-for="lvl in weaponLevelOptions" :key="lvl" :value="lvl">
-          {{ lvl }}
-        </option>
-      </select>
-      <label for="weaponLevel" class="form__label">Weapon Level</label>
-    </div>
-    <div class="form__group field">
-      <select name="refinement" v-model="refinement" class="form__field">
-        <option v-for="lvl in weaponRefinementLevels" :key="lvl" :value="lvl">
-          {{ lvl }}
-        </option>
-      </select>
-      <label for="weaponLevel" class="form__label">Refinement Level</label>
     </div>
     <div v-if="weapon" class="weapon__stats">
       <div v-if="weaponAttack" class="weapon__stat">
@@ -355,6 +359,18 @@ export default {
       });
       return decimalFormatter.format(modifierValue * 100) + "%";
     },
+    /**
+     * Provides the weapon image URL
+     * @returns {String|null}
+     */
+    weaponImageStyles() {
+      if (!this.weapon || !this.chosenWeapon) {
+        return null;
+      }
+      return {
+        backgroundImage: `url(${this.chosenWeapon?.info?.image})`
+      };
+    },
   },
   watch: {
     // we're using immediate so it'll react when we get data from the store
@@ -508,9 +524,24 @@ export default {
   }
 }
 .form__group.field {
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.5rem 0;
 }
 label.form__label {
   margin-left: 1rem;
+}
+.weapon__selection__image {
+  width: 100px;
+  height: 100px;
+  background-repeat: no-repeat;
+  display: block;
+  background-size: contain;
+  border-radius: 100%;
+  border: 1px solid white;
+}
+.weapon__basic-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 </style>

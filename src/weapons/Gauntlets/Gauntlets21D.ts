@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Gauntlets#21D",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Gauntlets21D.png",
   description:
     "Huaxu Academy has independently improved and developed the first set of highly practical high-performance Gauntlets based on the previous source energy weapons, representing the care and warmth of the Academy, stable and lasting.",
   type: "Gauntlets",

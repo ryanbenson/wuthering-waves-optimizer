@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Commando of Conviction",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/CommandoOfConviction.png",
   description:
     "A weapon designed to commemorate the Midnight Rangers' courage. \"A thousand echoes carry the war's tale, as spirits unite in resounding gorges of valor.”",
   type: "Sword",

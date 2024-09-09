@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Originite: Type II",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/OriginiteTypeII.png",
   description:
     "A mass-produced sword model developed in Huanglong. Codename: Edged.",
   type: "Sword",

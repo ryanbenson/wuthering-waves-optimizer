@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Rime-Draped Sprouts",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/RimeDrapedSprouts.png",
   description: "",
   type: "Rectifier",
   rarity: 5,

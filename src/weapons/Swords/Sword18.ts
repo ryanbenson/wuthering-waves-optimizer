@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Sword#18",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Sword18.png",
   description:
     "Improved version of a mass-produced sword model developed in Huanglong. With its sleek blade and minimalist design, this sword is exclusively crafted for the skilled hands of seasoned warriors.",
   type: "Sword",

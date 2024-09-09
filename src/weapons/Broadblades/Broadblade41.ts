@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Broadblade#41",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Broadblade41.png",
   description:
     "Improved version of a mass-produced broadblade model developed in Huanglong. With its formidable performance and innovative technologies, this broadblade carries a weight only to be wielded by seasoned warriors.",
   type: "Broadblade",

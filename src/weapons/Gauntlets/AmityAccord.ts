@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Amity Accord",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/AmityAccord.png",
   description:
     'A weapon designed to commemorate the Midnight Rangers\' comradeship. "Thin garments yield to icy moons, while armor withstands the chill of stars."',
   type: "Gauntlets",

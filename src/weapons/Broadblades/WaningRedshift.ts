@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Waning Redshift",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/WaningRedshift.png",
   description:
     "A prototype weapon designed by the Black Shores for elite combatants. This broadblade takes its name from the fate of a blazar—a galactic nucleus whose blinding radiance pierces the cosmos, shining unmistakably across billions of light years.",
   type: "Broadblade",

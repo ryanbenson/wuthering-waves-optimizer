@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Sword of Voyager",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/SwordOfVoyager.png",
   description:
     "The Sword provided by the Pioneer Association for the voyagers is bright in color, not easy to lose, hard in texture, and can cope with various extreme environments for a long time, and is very popular among the group of explorers.",
   type: "Sword",

@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Beguiling Melody",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/BeguilingMelody.png",
   description:
     "Forged from the scale of Jué, this weapon resembles a musical instrument more than a tool of destruction.",
   type: "Broadblade",

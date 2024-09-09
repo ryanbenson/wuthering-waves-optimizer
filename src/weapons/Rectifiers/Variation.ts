@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Variation",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Variation.png",
   description:
     "A descending adagio. This rectifier opens up an insightful window into the situation, changing the tune of the intense battle concerto.",
   type: "Rectifier",

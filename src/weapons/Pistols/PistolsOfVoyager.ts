@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Pistols of Voyager",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/PistolsOfVoyager.png",
   description:
     "The Pistols provided by the Pioneer Association for the far walkers, with bright colors, not easy to lose, hard texture, can cope with various extreme environments for a long time, and is very popular among the explorer group.",
   type: "Pistols",

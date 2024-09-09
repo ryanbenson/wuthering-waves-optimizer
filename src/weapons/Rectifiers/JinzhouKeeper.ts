@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Jinzhou Keeper",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/JinzhouKeeper.png",
   description:
     "A weapon designed to commemorate the Midnight Rangers' vigilant protection for Jinzhou. \"Cast your gaze towards the north, where the city's silhouette fades, its gates veiled by the tranquil rain.\"",
   type: "Rectifier",

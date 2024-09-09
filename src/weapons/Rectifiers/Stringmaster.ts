@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Stringmaster",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Stringmaster.png",
   description:
     "As the puppet palm unfurls, deadly strings are unleashed with a menacing hum. The air crackles with power, immobilizing any foes caught in its grasp. The rapid bolts of electricity leave unhealable scars on their victims.",
   type: "Rectifier",

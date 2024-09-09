@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Lunar Cutter",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/LunarCutter.png",
   description:
     "The Sword born from the aerial phenomenon. The forger integrates the feelings of witnessing the alien star into the weapon, making it look light and sharp, but it can exert the energy of breaking the sky and cutting iron like mud.",
   type: "Sword",

@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Tyro Rectifier",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/TyroRectifier.png",
   description:
     "The origin of universal genesis. A Rectifier designed for novice Resonators. Contains a power not to be underestimated under its simple outlook.",
   type: "Rectifier",

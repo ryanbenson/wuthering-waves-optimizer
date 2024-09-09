@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Novaburst",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Novaburst.png",
   description:
     "Pistols born from the strange phenomena in the sky. The forger infused the weapon with the feelings from witnessing the strange star, making it look hollow and light, yet extremely stable, with the power of thunder when it fires.",
   type: "Pistols",

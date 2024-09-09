@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Abyss Surges",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/AbyssSurges.png",
   description:
     "The Gauntlets pulsate with an uncontrollable force, emanating unspeakable anger from the depths of the unknown lake. As you don them, unleash your fury on helpless enemies. Feel its power surge through you.",
   type: "Gauntlets",

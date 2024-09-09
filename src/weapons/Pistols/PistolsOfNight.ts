@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Pistols of Night",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/PistolsOfNight.png",
   description:
     "May victory prevail the lasting night. This type of pistols not only carries the oath of protection but also contains the hope of rejuvenation.",
   type: "Pistols",

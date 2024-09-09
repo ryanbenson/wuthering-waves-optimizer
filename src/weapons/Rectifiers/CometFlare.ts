@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Comet Flare",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/CometFlare.png",
   description:
     "The Rectifier born from the aerial phenomenon. The forger integrates the feelings of witnessing the alien stars into the weapon, making it look delicate and light, but it can be stable and constant, and it can be responsive.",
   type: "Rectifier",

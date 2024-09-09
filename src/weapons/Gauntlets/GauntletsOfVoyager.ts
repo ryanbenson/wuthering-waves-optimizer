@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Gauntlets of Voyager",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/GauntletsOfVoyager.png",
   description:
     "The Gauntlets provided by the Pioneer Association for the far walkers, with bright colors, not easy to lose, hard texture, can cope with various extreme environments for a long time, and are very popular among the explorer group.",
   type: "Gauntlets",

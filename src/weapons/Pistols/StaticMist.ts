@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Static Mist",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/StaticMist.png",
   description:
     "Grip the sleek frame and feel its cool surface as you aim down the sight. With a pull of the trigger, unleash a thick smoke barrage onto the battlefield with these powerful Pistols in your hands.",
   type: "Pistols",

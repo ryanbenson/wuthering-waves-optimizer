@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Verity's Handle",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/VeritysHandle.png",
   description: "",
   type: "Gauntlets",
   rarity: 5,

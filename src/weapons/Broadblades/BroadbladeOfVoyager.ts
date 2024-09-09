@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Broadblade of Voyager",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/BroadbladeOfVoyager.png",
   description:
     "The Broadblade provided by the Pioneer Association for the explorers is brightly colored, not easy to lose, hard in texture, and can cope with various extreme environments for a long time, and is very popular among the explorers.",
   type: "Broadblade",

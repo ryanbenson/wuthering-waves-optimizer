@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Ages of Harvest",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/AgesOfHarvest.png",
   description:
     "Some see swordsmanship as the embodiment of the flows and shifts of time and space, with every move representing the answer to a philosophical inquisition into the ways of all beings. This bendy sword with its graceful handling seems to be capable of deconstructing even the indestructible and breaking away all that are in stasis: permafrost and stagnant time.",
   type: "Broadblade",

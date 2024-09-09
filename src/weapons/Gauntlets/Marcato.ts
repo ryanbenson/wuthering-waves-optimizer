@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Marcato",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Marcato.png",
   description:
     "A descending adagio. These gauntlets pulsate with the power of surging waves, shattering anything in their path like a deadly hymn.",
   type: "Gauntlets",

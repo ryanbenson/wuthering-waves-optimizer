@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Pistols#26",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Pistols26.png",
   description:
     "The Huaxu Academy has independently improved and developed the first highly practical high-performance Pistols based on the previous source energy weapons, representing the Academy's meticulous research and pointing directly to the profound.",
   type: "Pistols",

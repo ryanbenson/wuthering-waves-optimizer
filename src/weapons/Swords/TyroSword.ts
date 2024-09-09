@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Tyro Sword",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/TyroSword.png",
   description:
     "The birth of revolutionary tides. A sword designed for novice Resonators. Contains a power not to be underestimated under its simple outlook.",
   type: "Sword",

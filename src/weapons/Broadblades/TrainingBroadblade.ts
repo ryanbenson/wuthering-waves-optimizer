@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Training Broadblade",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/TrainingBroadblade.png",
   description:
     "This broadblade is designed specifically for training and teaching, offering only the basic features.",
   type: "Broadblade",

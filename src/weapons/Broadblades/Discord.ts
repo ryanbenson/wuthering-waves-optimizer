@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Discord",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Discord.png",
   description:
     "A descending adagio. This broadblade dominates the battlefield with the power of discordance. The curtain never falls on a masterpiece.",
   type: "Broadblade",

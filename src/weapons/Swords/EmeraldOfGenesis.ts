@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Emerald of Genesis",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/EmeraldOfGenesis.png",
   description:
     "Pay heed: the frigid blade reveals an icy current that amalgamates into a whirlpool of thoughts. Use this powerful sequence to crush your enemies with ease using the Sword.",
   type: "Sword",

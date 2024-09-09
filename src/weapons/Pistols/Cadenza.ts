@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Cadenza",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Cadenza.png",
   description:
     "An ascending crescendo. These pistols unleash bullets with the force of thunder, tearing through the heavens like a symphony of destruction.",
   type: "Pistols",

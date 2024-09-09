@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Dauntless Evernight",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/DauntlessEvernight.png",
   description:
     'A weapon designed to commemorate the Midnight Rangers\' preparedness. "Autumn fades in endless nights, ready blades gleam with silent might."',
   type: "Broadblade",

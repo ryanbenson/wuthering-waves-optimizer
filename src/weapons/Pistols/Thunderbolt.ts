@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Thunderbolt",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Thunderbolt.png",
   description:
     "These Pistols are ceremonial weapons used in the inauguration ceremony of the Jinzhou Magistrate of Huanglong. The golden ginkgo leaf pattern represents that Huanglong should be like the ginkgo, although it is left in the world, it is still thriving.",
   type: "Pistols",

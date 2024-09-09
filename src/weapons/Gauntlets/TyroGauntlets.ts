@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Tyro Gauntlets",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/TyroGauntlets.png",
   description:
     "The dawn of enduring endeavor. A pair of gauntlets designed for novice Resonators. Contains a power not to be underestimated under its simple outlook.",
   type: "Gauntlets",

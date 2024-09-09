@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Rectifier of Night",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/RectifierOfNight.png",
   description:
     "May victory prevail the lasting night. In addition to the sworn oath of protection, this rectifier signifies the confidence of those fighting souls.",
   type: "Rectifier",

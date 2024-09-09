@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Lumingloss",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Lumingloss.png",
   description:
     "This Sword is a ceremonial weapon used by the Jinzhou Magistrate of Huanglong at the inauguration ceremony. The golden ginkgo leaf pattern represents that Huanglong should be like ginkgo, although it is left in the world, it is still prosperous and long-lasting.",
   type: "Sword",

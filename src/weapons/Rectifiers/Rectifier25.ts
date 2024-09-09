@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Rectifier#25",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Rectifier25.png",
   description:
     "Improved version of a Rectifier prototype from the Huanglong next-gen mass production weaponry project. With surging power and highly purified lens, its sound is only played by the wise of steel-like will.",
   type: "Rectifier",

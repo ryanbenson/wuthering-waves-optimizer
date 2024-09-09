@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Blazing Brilliance",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/BlazingBrilliance.png",
   description:
     "Forged from the very essence and feathers of a legendary bird, this weapon blazes with an intensity that bathes the world in its luminous glow. With each fiery surge, it consumes all in its path, leaving nothing but ashes in its wake.",
   type: "Sword",

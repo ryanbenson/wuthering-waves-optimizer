@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Lustrous Razor",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/LustrousRazor.png",
   description:
     "Gaze upon this Broadblade, its sharp edges glistening in the frigid air. As you wield it, you feel the power coursing through like a frozen river.",
   type: "Broadblade",

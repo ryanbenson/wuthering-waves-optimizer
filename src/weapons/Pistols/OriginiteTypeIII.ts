@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Originite: Type III",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/OriginiteTypeIII.png",
   description:
     "To develop new Tacetite weapons, Huaxu Academy has built a test-type Pistols for the purpose of technical verification. In addition to the impressive weapon performance, the biggest feature is that it can enhance the physical activity of the Resonator to heal wounds through attacks.",
   type: "Pistols",

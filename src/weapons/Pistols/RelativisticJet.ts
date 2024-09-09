@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Relativistic Jet",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/RelativisticJet.png",
   description:
     "A prototype weapon designed by the Black Shores for elite combatants. These pistols take their name from the incessant course of destruction of a blazar—a galactic nucleus whose blinding radiance pierces the cosmos, shining unmistakably across billions of light years.",
   type: "Pistol",

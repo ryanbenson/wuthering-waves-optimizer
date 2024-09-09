@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Cosmic Ripples",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/CosmicRipples.png",
   description:
     "Take hold of the frozen Rectifier, a powerful tool imbued with the energy of the celestial lake. Let it lead you to ultimate knowledge and vanquish all obstacles in your path.",
   type: "Rectifier",

@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Originite: Type V",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/OriginiteTypeV.png",
   description:
     "A rectifier model mass-produced in Huanglong. Codename: Chrono.",
   type: "Rectifier",

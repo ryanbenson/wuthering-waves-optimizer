@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Helios Cleaver",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/HeliosCleaver.png",
   description:
     "The Broadblade born from the aerial phenomenon. The blacksmith incorporates the feelings of witnessing the alien star into the weapon, making it look hollow and light, but it can exert the invincible gravity of the starfall.",
   type: "Broadblade",

@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Rectifier of Voyager",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/RectifierOfVoyager.png",
   description:
     "The Rectifier provided by the Pioneer Association for the explorers, with bright colors, not easy to lose, hard texture, can cope with various extreme environments for a long time, is very popular among the explorers.",
   type: "Rectifier",

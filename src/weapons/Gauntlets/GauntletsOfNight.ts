@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Gauntlets of Nights",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/GauntletsOfNights.png",
   description:
     "May victory prevail the lasting night. In addition to the sworn oath of protection, these gauntlets also commemorates the sacrifices of those brave souls.",
   type: "Gauntlets",

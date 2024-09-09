@@ -1,5 +1,6 @@
 const weaponInfo: WeaponInfo = {
   name: "Hollow Mirage",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/HollowMirage.png",
   description:
     "The Gauntlets born from the strange phenomenon in the sky. The blacksmith infused the feelings of witnessing the strange star into the weapon, making it look hollow and light, but it can exert a tremendous momentum while protecting the user.",
   type: "Gauntlets",
