@@ -309,6 +309,17 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
   },
+  GlacioDreadmane: {
+    key: "GlacioDreadmane",
+    name: "Glacio Dreadmane",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/GlacioDreadmane.png",
+    details: `<span class="description">Lacerate enemies as a Glacio Dreadmane, dealing <span class="param">134.00%/154.10%/174.20%/194.30%/214.40%</span> Glacio DMG on each hit. Equipped with 2 charges and can be cast mid-air. Glacio Dreadmane deals <span class="param">20.00%</span> more DMG while in mid-air and generates 6 Icicles upon landing, each dealing <span class="param">20.00%/23.00%/26.00%/29.00%/32.00%</span> Glacio DMG.
+
+    CD: <span class="param">20</span>s</span>`,
+    modifiers: [],
+  },
   Gulpuff: {
     key: "Gulpuff",
     name: "Gulpuff",
