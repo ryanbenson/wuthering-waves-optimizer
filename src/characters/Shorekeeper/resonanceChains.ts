@@ -1,32 +1,17 @@
 export const resonanceChains = [
   {
-    key: "SequenceNode2NightsGiftandRefusalHealing",
+    key: "SequenceNode2NightsGiftandRefusal",
     name: "Sequence Node 2: Night's Gift and Refusal",
-    details: `<span class="skilldescription">When the <span class="Highlight">Flare Star Butterfly</span> hits a target, the Shorekeeper heals herself by 2% of her Max HP.</span>`,
+    details: `<span class="skilldescription">The <span class="Highlight">Outer Stellarealm</span> now increases the ATK of all team members by 40%.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "EnableAttack",
-        modifierValue: ["SequenceNode2NightsGiftandRefusal"],
+        modifier: "ATK",
+        modifierValue: 0.4,
       },
     ],
     minStacks: 0,
     maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode2NightsGiftandRefusalDmgBonus",
-    name: "Sequence Node 2: Night's Gift and Refusal",
-    details: `<span class="skilldescription">When the <span class="Highlight">Dim Star Butterfly</span> hits a target, all team members' DMG increases by 3%. This effect stacks up to 5 times, each stack lasts 30s.</span>`,
-    hasStacks: true,
-    modifiers: [
-      {
-        modifier: "DMGBonus",
-        modifierValue: 0.03,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 5,
     alwaysEnabled: false,
   },
   {
@@ -63,13 +48,13 @@ export const resonanceChains = [
   {
     key: "SequenceNode6TotheNewWorldCritDMG",
     name: "Sequence Node 6: To the New World",
-    details: `<span class="skilldescription">When casting Chain Intro Skill <span class="Highlight">Discernment</span>, the Shorekeeper's Crit. DMG is increased by 200%.</span>`,
+    details: `<span class="skilldescription">When casting Chain Intro Skill <span class="Highlight">Discernment</span>, the Shorekeeper's Crit. DMG is increased by 500%.</span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "CritDMG",
         modifySpecificTalents: ["DiscernmentDMG"],
-        modifierValue: 2,
+        modifierValue: 5,
       },
     ],
     minStacks: 0,

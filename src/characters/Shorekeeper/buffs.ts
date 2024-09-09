@@ -1,17 +1,17 @@
 export const buffs = [
   {
-    key: "SophisticatedStellarealm",
+    key: "SophisticatedStellarealmCritRate",
     name: "Sophisticated Stellarealm",
-    details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Elementary Stellarealm</span>, it evolves into <span class="Highlight">Sophisticated Stellarealm</span>. In <span class="Highlight">Sophisticated Stellarealm</span>, for every 20% in Shorekeeper's Energy Regen, all nearby team members in the domain gain a 1% increase in Crit. Rate, up to a maximum of 10%.</div>`,
+    details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Elementary Stellarealm</span>, it evolves into <span class="Highlight">Sophisticated Stellarealm</span>. In <span class="Highlight">Sophisticated Stellarealm</span>, for every 0.2% of Shorekeeper's Energy Regen, all party members gain 0.01% bonus Crit. Rate, up to 12.5%</div>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "CritRate:AdditionalBase",
-        modifierValue: 0.01,
-        maximumValue: 0.1,
+        modifierValue: 0.0001,
+        maximumValue: 0.125,
+        modifierStep: 0.002,
         modifierBasedOn: "EnergyRegen",
         modifierTargetAttr: "CritRate",
-        modifierStep: 0.2,
       },
     ],
     minStacks: 0,
@@ -19,18 +19,18 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "ReleasedStellarealm",
+    key: "ReleasedStellarealmCritDMG",
     name: "Released Stellarealm",
-    details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Sophisticated Stellarealm</span>, it evolves into <span class="Highlight">Released Stellarealm</span>. In <span class="Highlight">Released Stellarealm</span>, for every 10% increase in the Shorekeeper's Energy Regen, all nearby team members in the domain gain a 1% increase in Crit DMG%, up to a maximum of 20%.</div>`,
+    details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Sophisticated Stellarealm</span>, it evolves into <span class="Highlight">Released Stellarealm</span>. In <span class="Highlight">Released Stellarealm</span>, for every 0.1% of Shorekeeper's Energy Regen, all party members gain a 0.01% increase of Crit. DMG, up to 25%.</div>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "CritDMG:AdditionalBase",
-        modifierValue: 0.01,
-        maximumValue: 0.2,
+        modifierValue: 0.0001,
+        maximumValue: 0.25,
+        modifierStep: 0.001,
         modifierBasedOn: "EnergyRegen",
-        modifierTargetAttr: "CritDMG",
-        modifierStep: 0.1,
+        modifierTargetAttr: "CritRate",
       },
     ],
     minStacks: 0,

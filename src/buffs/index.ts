@@ -584,16 +584,16 @@ export const buffsByCharacter = {
   ],
   Shorekeeper: [
     {
-      key: "SophisticatedStellarealm",
+      key: "SophisticatedStellarealmCritRate",
       name: "Sophisticated Stellarealm",
-      details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Elementary Stellarealm</span>, it evolves into <span class="Highlight">Sophisticated Stellarealm</span>. In <span class="Highlight">Sophisticated Stellarealm</span>, for every 20% in Shorekeeper's Energy Regen, all nearby team members in the domain gain a 1% increase in Crit. Rate, up to a maximum of 10%.</div>`,
+      details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Elementary Stellarealm</span>, it evolves into <span class="Highlight">Sophisticated Stellarealm</span>. In <span class="Highlight">Sophisticated Stellarealm</span>, for every 0.2% of Shorekeeper's Energy Regen, all party members gain 0.01% bonus Crit. Rate, up to 12.5%</div>`,
       hasStacks: false,
       modifiers: [
         {
           modifier: "CritRate",
-          modifierValue: 0.01,
-          maximumValue: 0.1,
-          modifierStep: 0.2,
+          modifierValue: 0.0001,
+          maximumValue: 0.125,
+          modifierStep: 0.002,
         },
       ],
       minStacks: 0,
@@ -603,16 +603,16 @@ export const buffsByCharacter = {
       modifierBasedOn: "Energy Regen",
     },
     {
-      key: "ReleasedStellarealm",
+      key: "ReleasedStellarealmCritDMG",
       name: "Released Stellarealm",
-      details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Sophisticated Stellarealm</span>, it evolves into <span class="Highlight">Released Stellarealm</span>. In <span class="Highlight">Released Stellarealm</span>, for every 10% increase in the Shorekeeper's Energy Regen, all nearby team members in the domain gain a 1% increase in Crit DMG%, up to a maximum of 20%.</div>`,
+      details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Sophisticated Stellarealm</span>, it evolves into <span class="Highlight">Released Stellarealm</span>. In <span class="Highlight">Released Stellarealm</span>, for every 0.1% of Shorekeeper's Energy Regen, all party members gain a 0.01% increase of Crit. DMG, up to 25%.</div>`,
       hasStacks: false,
       modifiers: [
         {
           modifier: "CritDMG",
-          modifierValue: 0.01,
-          maximumValue: 0.2,
-          modifierStep: 0.1,
+          modifierValue: 0.0001,
+          maximumValue: 0.25,
+          modifierStep: 0.001,
         },
       ],
       minStacks: 0,
@@ -658,18 +658,18 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
     {
-      key: "SequenceNode2NightsGiftandRefusalDmgBonus",
+      key: "SequenceNode2NightsGiftandRefusal",
       name: "Sequence Node 2: Night's Gift and Refusal",
-      details: `<span class="skilldescription">When the <span class="Highlight">Dim Star Butterfly</span> hits a target, all team members' DMG increases by 3%. This effect stacks up to 5 times, each stack lasts 30s.</span>`,
-      hasStacks: true,
+      details: `<span class="skilldescription">The <span class="Highlight">Outer Stellarealm</span> now increases the ATK of all team members by 40%.</span>`,
+      hasStacks: false,
       modifiers: [
         {
-          modifier: "DMGBonus",
-          modifierValue: 0.03,
+          modifier: "ATK",
+          modifierValue: 0.4,
         },
       ],
       minStacks: 0,
-      maxStacks: 5,
+      maxStacks: 0,
       alwaysEnabled: false,
     },
     {
@@ -816,18 +816,18 @@ export const allWeaponTeamBuffs = [
       {
         modifier: "ATK",
         modifierByRefinement: {
-          "1": 0.1,
-          "2": 0.125,
-          "3": 0.15,
-          "4": 0.175,
-          "5": 0.2,
+          "1": 0.14,
+          "2": 0.175,
+          "3": 0.21,
+          "4": 0.245,
+          "5": 0.28,
         },
       },
     ],
     minStacks: 0,
     maxStacks: 0,
     details:
-      "When the Intro skill causes healing, it restores 8 points of Concert Energy to itself and increases the ATK of all characters in the nearby team by 10%/12.5%/15%/17.5%/20% for 30 seconds. It can be triggered once every 20 seconds. Effects with the same name cannot be stacked.",
+      "When the Intro skill causes healing, it restores 8 points of Concert Energy to itself and increases the ATK of all characters in the nearby team by 14%/17.5%/21%/24.5%/28% for 30 seconds. It can be triggered once every 20 seconds. Effects with the same name cannot be stacked.",
     alwaysEnabled: false,
   },
 ];
