@@ -30,27 +30,27 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
   },
-  AlteredClangBang: {
-    key: "AlteredClangBang",
-    name: "Altered Clang Bang",
-    class: "Common",
-    image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/AlteredClangBang.png",
-    details: `Summon a Clang Bang that follows the enemy and eventually self-combusts, dealing 20.00%+40/23.00%+46/26.00%+52/29.00%+58/32.00%+64 Glacio DMG.`,
-    modifiers: [],
-  },
-  AlteredLightcrusher: {
-    key: "AlteredLightcrusher",
-    name: "Altered Lightcrusher",
-    class: "",
-    image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/AlteredLightcrusher.png",
-    details: `
-    Transform into Lightcrusher that lunges forward, dealing 84.60%/97.29%/109.98%/122.67%/135.36% Spectro DMG. Generate 6 Ablucence on hit. Each Ablucence explosion deals 9.40%/10.81%/12.22%/13.63%/15.04% Spectro DMG.
-    Hold the Echo Skill to stay in the Lightcrusher form, allowing you to lunge forward and walk in mid-air for a short distance.
-    Cooldown: 15s`,
-    modifiers: [],
-  },
+  // AlteredClangBang: {
+  //   key: "AlteredClangBang",
+  //   name: "Altered Clang Bang",
+  //   class: "Common",
+  //   image:
+  //     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/AlteredClangBang.png",
+  //   details: `Summon a Clang Bang that follows the enemy and eventually self-combusts, dealing 20.00%+40/23.00%+46/26.00%+52/29.00%+58/32.00%+64 Glacio DMG.`,
+  //   modifiers: [],
+  // },
+  // AlteredLightcrusher: {
+  //   key: "AlteredLightcrusher",
+  //   name: "Altered Lightcrusher",
+  //   class: "",
+  //   image:
+  //     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/AlteredLightcrusher.png",
+  //   details: `
+  //   Transform into Lightcrusher that lunges forward, dealing 84.60%/97.29%/109.98%/122.67%/135.36% Spectro DMG. Generate 6 Ablucence on hit. Each Ablucence explosion deals 9.40%/10.81%/12.22%/13.63%/15.04% Spectro DMG.
+  //   Hold the Echo Skill to stay in the Lightcrusher form, allowing you to lunge forward and walk in mid-air for a short distance.
+  //   Cooldown: 15s`,
+  //   modifiers: [],
+  // },
   AutopuppetScout: {
     key: "AutopuppetScout",
     name: "Autopuppet Scout",
@@ -512,6 +512,17 @@ export const mainEchoesData: MainEchoes = {
     hasStacks: true,
     minStacks: 0,
     maxStacks: 3,
+  },
+  LavaLarva: {
+    key: "LavaLarva",
+    name: "Lava Larva",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/LavaLarva.png",
+    details: `<span class="description">Summon a Lava Larva that continuously attacks enemies, dealing <span class="param">24.00%/27.60%/31.20%/34.80%/38.40%</span> Fusion DMG with each hit. The Lava Larva disappears when the summoner is switched out or moves too far away.
+
+    CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
   },
   Lightcrusher: {
     key: "Lightcrusher",
