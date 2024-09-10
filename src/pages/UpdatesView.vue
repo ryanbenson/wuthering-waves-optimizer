@@ -31,6 +31,7 @@
     <h1>Updates</h1>
     <h3>September 10, 2024</h3>
     <ul>
+      <li>Weapon level and refinements are finally remembered per-weapon.</li>
       <li>
         Bug fix: Fixes Shorekeeper self-buff for CD. It was incorrectly applying
         it to CR, this got patched.

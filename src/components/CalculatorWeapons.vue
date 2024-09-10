@@ -160,11 +160,15 @@ export default {
      */
     weaponLevel: {
       get() {
-        return this.currentCharacter?.weaponLevel ?? "90";
+        return this.currentCharacter?.weapons?.[this.weapon]?.weaponLevel ?? "90";
       },
       async set(value) {
         await this.setCharacterData(this.character, {
-          weaponLevel: value,
+          weapons: {
+            [this.weapon]: {
+              weaponLevel: value,
+            }
+          }
         });
       },
     },
@@ -175,11 +179,15 @@ export default {
      */
     refinement: {
       get() {
-        return this.currentCharacter?.refinement ?? "1";
+        return this.currentCharacter?.weapons?.[this.weapon]?.refinement ?? "1";
       },
       async set(value) {
         await this.setCharacterData(this.character, {
-          refinement: value,
+          weapons: {
+            [this.weapon]: {
+              refinement: value,
+            }
+          }
         });
       },
     },
