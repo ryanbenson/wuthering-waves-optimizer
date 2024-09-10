@@ -30,7 +30,7 @@ export const buffs = [
         maximumValue: 0.25,
         modifierStep: 0.001,
         modifierBasedOn: "EnergyRegen",
-        modifierTargetAttr: "CritRate",
+        modifierTargetAttr: "CritDMG",
       },
     ],
     minStacks: 0,
