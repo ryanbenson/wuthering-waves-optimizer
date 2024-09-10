@@ -23,6 +23,18 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: true,
     },
   ],
+  maxLevel: "60+",
+  weaponLevelOverride: [
+    "1",
+    "20",
+    "20+",
+    "40",
+    "40+",
+    "50",
+    "50+",
+    "60",
+    "60+",
+  ]
 };
 
 const weaponData: WeaponData = {

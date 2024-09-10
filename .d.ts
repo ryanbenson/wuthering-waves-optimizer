@@ -7,6 +7,8 @@ interface WeaponInfo {
   passiveName: string;
   passiveValue?: string;
   passiveData?: WeaponPassiveData[];
+  maxLevel?: string;
+  weaponLevelOverride?: string[];
 }
 
 interface WeaponPassiveData {

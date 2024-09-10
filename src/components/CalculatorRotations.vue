@@ -97,7 +97,6 @@ export default {
         const rotationData = JSON.parse(this.importRotationData);
         const processedImportedRotation =
           this.addIdsToImportedRotation(rotationData);
-        console.log(processedImportedRotation);
         this.rotations.push(processedImportedRotation);
         this.importRotationData = null;
         this.isImportOpen = false;

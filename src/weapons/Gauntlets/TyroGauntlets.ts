@@ -22,9 +22,21 @@ const weaponInfo: WeaponInfo = {
       minStacks: 0,
       maxStacks: 0,
       details: "Increases ATK by 5%/6.25%/7.5%/8.75%/10%.",
-      alwaysEnabled: false,
+      alwaysEnabled: true,
     },
   ],
+  maxLevel: "60+",
+  weaponLevelOverride: [
+    "1",
+    "20",
+    "20+",
+    "40",
+    "40+",
+    "50",
+    "50+",
+    "60",
+    "60+",
+  ]
 };
 
 const weaponData: WeaponData = {

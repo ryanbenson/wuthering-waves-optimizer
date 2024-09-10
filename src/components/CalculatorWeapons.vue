@@ -160,7 +160,11 @@ export default {
      */
     weaponLevel: {
       get() {
-        return this.currentCharacter?.weapons?.[this.weapon]?.weaponLevel ?? "90";
+        let defaultMaxLevel = "90";
+        if (this.chosenWeapon?.info?.maxLevel) {
+          defaultMaxLevel = this.chosenWeapon?.info?.maxLevel;
+        }
+        return this.currentCharacter?.weapons?.[this.weapon]?.weaponLevel ?? defaultMaxLevel;
       },
       async set(value) {
         await this.setCharacterData(this.character, {
@@ -196,7 +200,7 @@ export default {
      * @returns {Array}
      */
     weaponLevelOptions() {
-      return [
+      const defaultOption = [
         "1",
         "20",
         "20+",
@@ -212,6 +216,10 @@ export default {
         "80+",
         "90",
       ];
+      if (this.chosenWeapon?.info?.weaponLevelOverride) {
+        return this.chosenWeapon?.info?.weaponLevelOverride;
+      }
+      return defaultOption;
     },
     /**
      * List of options for the refinements options

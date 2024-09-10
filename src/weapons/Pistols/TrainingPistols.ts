@@ -10,7 +10,7 @@ const weaponInfo: WeaponInfo = {
   passiveData: [
     {
       key: "TrainingPistolsATK",
-      hasStacks: true,
+      hasStacks: false,
       modifier: "ATK",
       modifierByRefinement: {
         "1": 0.04,
@@ -20,11 +20,23 @@ const weaponInfo: WeaponInfo = {
         "5": 0.08,
       },
       minStacks: 0,
-      maxStacks: 3,
+      maxStacks: 0,
       details: "Increases ATK by 4%/5%/6%/7%/8%.",
-      alwaysEnabled: false,
+      alwaysEnabled: true,
     },
   ],
+  maxLevel: "60+",
+  weaponLevelOverride: [
+    "1",
+    "20",
+    "20+",
+    "40",
+    "40+",
+    "50",
+    "50+",
+    "60",
+    "60+",
+  ]
 };
 
 const weaponData: WeaponData = {

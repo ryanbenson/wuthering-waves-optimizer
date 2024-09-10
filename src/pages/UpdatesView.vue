@@ -31,6 +31,7 @@
     <h1>Updates</h1>
     <h3>September 10, 2024</h3>
     <ul>
+      <li>For 1 and 2 star weapons, changes the list of levels and default level since they cap at level 60+.</li>
       <li>Weapon level and refinements are finally remembered per-weapon.</li>
       <li>
         Bug fix: Fixes Shorekeeper self-buff for CD. It was incorrectly applying
