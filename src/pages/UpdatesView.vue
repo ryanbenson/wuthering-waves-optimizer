@@ -29,6 +29,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 10, 2024</h3>
+    <ul>
+      <li>
+        Bug fix: Fixes Shorekeeper self-buff for CD. It was incorrectly applying
+        it to CR, this got patched.
+      </li>
+      <li>Adds Lava Larva echo</li>
+    </ul>
     <h3>September 9, 2024</h3>
     <ul>
       <li>Adds weapon images to weapons UI.</li>
