@@ -1,6 +1,7 @@
 const weaponInfo: WeaponInfo = {
   name: "Training Pistols",
-  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/TrainingPistols.png",
+  image:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/TrainingPistols.png",
   description:
     "These pistols are designed specifically for training and teaching, offering only the basic features.",
   type: "Pistols",

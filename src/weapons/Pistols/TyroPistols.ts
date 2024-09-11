@@ -1,6 +1,7 @@
 const weaponInfo: WeaponInfo = {
   name: "Tyro Pistols",
-  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/TyroPistols.png",
+  image:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/TyroPistols.png",
   description:
     "The inception of valiant venture. A pair of pistols designed for novice Resonators. Contains a power not to be underestimated under its simple outlook.",
   type: "Pistols",

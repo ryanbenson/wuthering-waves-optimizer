@@ -37,7 +37,7 @@
               name="hits"
               id="hits"
               type="number"
-              @input="onHitsChange" />
+              @blur="onHitsChange" />
           </div>
           <div class="edit__skill">
             <label for="actionKeyValue">Attack:</label>

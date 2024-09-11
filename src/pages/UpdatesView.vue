@@ -29,9 +29,20 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 11, 2024</h3>
+    <ul>
+      <li>
+        Updates when rotation action hit count takes affect. It updates the
+        calculations on blur instead of on value change so you can enter the
+        value easier.
+      </li>
+    </ul>
     <h3>September 10, 2024</h3>
     <ul>
-      <li>For 1 and 2 star weapons, changes the list of levels and default level since they cap at level 70.</li>
+      <li>
+        For 1 and 2 star weapons, changes the list of levels and default level
+        since they cap at level 70.
+      </li>
       <li>Weapon level and refinements are finally remembered per-weapon.</li>
       <li>
         Bug fix: Fixes Shorekeeper self-buff for CD. It was incorrectly applying
