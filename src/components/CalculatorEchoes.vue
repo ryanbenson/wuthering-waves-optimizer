@@ -62,6 +62,17 @@
         </optgroup>
       </select>
     </div>
+    <div class="main-echo-level">
+      <label for="mainEchoRank">Choose Main Echo Rank</label>
+      <select name="mainEchoRank" v-model="mainEchoRank">
+        <option value="">Select a rank</option>
+        <option value="5">5</option>
+        <option value="4">4</option>
+        <option value="3">3</option>
+        <option value="2">2</option>
+        <option value="1">1</option>
+      </select>
+    </div>
     <div class="main-echo" @click="toggleMainEchoBuffEnabled">
       <div
         v-if="chosenMainEchoData"
@@ -125,7 +136,14 @@ export default {
   watch: {
     mainEcho: {
       handler: async function () {
+        this.handleMainEchoChange();
         this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    mainEchoRank: {
+      handler: async function () {
+        this.handleMainEchoRank();
       },
       immediate: true,
     },
@@ -217,6 +235,12 @@ export default {
     toggleMainEchoBuffEnabled() {
       this.mainEchoBuffEnabled = !this.mainEchoBuffEnabled;
     },
+    handleMainEchoChange() {
+      this.$emit("updated-main-echo", this.mainEcho);
+    },
+    handleMainEchoRank() {
+      this.$emit("updated-main-echo-rank", this.mainEchoRank);
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -240,6 +264,23 @@ export default {
         const data = {
           mainEcho: {
             echo: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the the main echo rarity
+     * @returns {Boolean}
+     */
+    mainEchoRank: {
+      get() {
+        return this.currentCharacter?.mainEcho?.rank ?? 5;
+      },
+      async set(value) {
+        const data = {
+          mainEcho: {
+            rank: value,
           },
         };
         await this.setCharacterData(this.character, data);

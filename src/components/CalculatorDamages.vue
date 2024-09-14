@@ -119,8 +119,9 @@
     :label="damageInstance.label"
     :damage="damageInstance.damage">
   </CalculatorDamage>
+
   <h4 class="damage__title">
-    <span>{{ chosenChar.value?.outroAttacks?.name ?? "Outro Attacks" }}</span>
+    <span>{{ chosenEchoName }} Attacks</span>
     <span class="damage__title__button" @click="toggleOutroDetails"
       ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
@@ -132,14 +133,14 @@
     v-if="isOutroDetailsShown"
     v-html="chosenChar.value?.outroAttacks?.description"
     class="panel mb-1"></div>
-  <template v-if="!allDamages?.value?.outroAttacks.length">
+  <template v-if="!allDamages?.value?.echoAttacks.length">
     <div class="calculation__damage__item calculation__damage__item--fill">
-      {{ character }} does not have outro attacks.
+      {{ character }} does not have an echo with actions.
     </div>
   </template>
   <template v-else>
     <CalculatorDamage
-      v-for="damageInstance in allDamages?.value?.outroAttacks"
+      v-for="damageInstance in allDamages?.value?.echoAttacks"
       :key="damageInstance.key"
       :character="character"
       :type="damageInstance.type"
@@ -219,6 +220,10 @@ export default {
     chosenChar: {
       type: Object,
       required: true,
+    },
+    chosenEchoName: {
+      type: String,
+      default: null,
     },
   },
   components: {

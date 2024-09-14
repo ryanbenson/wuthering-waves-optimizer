@@ -149,7 +149,11 @@
         <CalculatorEchoes
           :key="character"
           :character="character"
-          @update-stats="updateStatsEchoes"></CalculatorEchoes>
+          @update-stats="updateStatsEchoes"
+          @updated-main-echo="handleUpdatedMainEcho"
+          @updated-main-echo-rank="
+            handleUpdatedMainEchoRank
+          "></CalculatorEchoes>
       </div>
 
       <div class="screen--character" v-show="curScreen === 'constellations'">
@@ -216,7 +220,8 @@
           :character="character"
           :all-damages="allDamages"
           :rotations-list="rotationsList"
-          :chosen-char="chosenChar"></CalculatorDamages>
+          :chosen-char="chosenChar"
+          :chosen-echo-name="mainEcho"></CalculatorDamages>
       </div>
     </div>
     <div class="results">
@@ -245,7 +250,8 @@
         :character="character"
         :all-damages="allDamages"
         :rotations-list="rotationsList"
-        :chosen-char="chosenChar"></CalculatorDamages>
+        :chosen-char="chosenChar"
+        :chosen-echo-name="mainEcho"></CalculatorDamages>
     </div>
   </div>
 </template>
@@ -271,7 +277,7 @@ import CalculatorRotations from "./CalculatorRotations.vue";
 import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
 import CalculatorStats from "./CalculatorStats.vue";
 import CalculatorDamages from "./CalculatorDamages.vue";
-import { mainEchoesData } from "../echoes";
+import { mainEchoesData, getEchoData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 
@@ -307,6 +313,8 @@ export default defineComponent({
     const characterLevel = ref("90");
     const weaponType = ref("");
     const curScreen = ref("character");
+    const mainEcho = ref("");
+    const mainEchoRank = ref(5);
     const damage = ref(0);
     const charactersList = ref([]);
     const rotationsList = ref([]);
@@ -1232,16 +1240,19 @@ export default defineComponent({
           chosenChar.value.introAttacks?.attacks,
           talentData.intro
         ),
-        introAttacks: processAttacks(
-          chosenChar.value.introAttacks?.attacks,
-          talentData.intro
-        ),
         outroAttacks: processAttacks(
           chosenChar.value.outroAttacks?.attacks,
           talentData.intro,
           true // has no talent level
         ),
       };
+
+      let chosenEcho;
+      if (mainEcho.value) {
+        chosenEcho = getEchoData(mainEcho.value);
+        const echoDmg = processAttacks(chosenEcho.actions, mainEchoRank.value);
+        allDamagesData.echoAttacks = echoDmg;
+      }
 
       if (rotationsList.value?.length) {
         const rotationData = [];
@@ -1419,6 +1430,16 @@ export default defineComponent({
       calcAllDamages();
     };
 
+    const handleUpdatedMainEcho = (chosenEcho) => {
+      mainEcho.value = chosenEcho;
+      calcAllDamages();
+    };
+
+    const handleUpdatedMainEchoRank = (chosenEchoRank) => {
+      mainEchoRank.value = chosenEchoRank;
+      calcAllDamages();
+    };
+
     return {
       allDamages,
       character,
@@ -1447,6 +1468,8 @@ export default defineComponent({
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
       handleUpdatedEnemy,
+      handleUpdatedMainEcho,
+      handleUpdatedMainEchoRank,
       handleUpdatedRotations,
       handleUpdatedTeamBuffs,
       BasicAttackDMGBonus,
@@ -1467,6 +1490,7 @@ export default defineComponent({
       ResistReduction,
       weaponData,
       isLoading,
+      mainEcho,
     };
   },
 });

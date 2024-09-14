@@ -8,6 +8,16 @@ interface Echo {
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
+  actions?: EchoAction[];
+}
+
+interface EchoAction {
+  key: string;
+  label: string;
+  talents: Record<string, string>;
+  description: string;
+  element: string;
+  type: string;
 }
 
 interface EchoModifier {
@@ -17,7 +27,9 @@ interface EchoModifier {
 
 type MainEchoes = Record<string, Echo>;
 
-// getting the html: copy(document.querySelector('.description').outerHTML)
+export function getEchoData(echoKey: string): Echo {
+  return mainEchoesData[echoKey];
+}
 
 export const mainEchoesData: MainEchoes = {
   AeroPredator: {
@@ -464,6 +476,36 @@ export const mainEchoesData: MainEchoes = {
       {
         modifier: "BasicAttackDMGBonus",
         modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "InfernoRiderSlash",
+        label: "Slash Damage",
+        description: `Transform into Inferno Rider to launch up to 3 consecutive slashes in a row, each slash dealing <span class="param">151.50%/174.23%/196.95%/219.68%/242.40%</span>, <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span>, and <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span> Fusion DMG respectively.`,
+        talents: {
+          "1": "151.50% + 175.75%*2",
+          "2": "174.23% + 203.26%*2",
+          "3": "196.85% + 229.78%*2",
+          "4": "219.68% + 256.29%*2",
+          "5": "242.40% + 282.80%*2",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+      {
+        key: "InfernoRiderSlash",
+        label: "Exit Rider Damage",
+        description: `When exiting the Riding Mode, deal <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span> Fusion DMG to enemies in front.`,
+        talents: {
+          "1": "176.75%",
+          "2": "203.26%",
+          "3": "203.26%",
+          "4": "229.78%",
+          "5": "282.80%",
+        },
+        type: "Echo",
+        element: "Fusion",
       },
     ],
   },
