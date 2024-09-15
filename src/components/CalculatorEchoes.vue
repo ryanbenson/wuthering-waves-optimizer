@@ -487,7 +487,6 @@ export default {
   align-items: flex-start;
   justify-content: center;
   gap: 1rem;
-  padding-bottom: 2rem;
 }
 .main-echo__enabled {
   margin-top: 1rem;
@@ -505,9 +504,16 @@ export default {
 .alert--error {
   background-color: #7b7c27;
 }
+.main-echo-level {
+  padding-top: 0.5rem;
+  label {
+    display: block;
+  }
+}
 .main-echo {
   background-color: #161616;
   padding: 0.5rem 0.75rem;
+  margin-top: 2rem;
   border-radius: 6px;
   cursor: pointer;
 
