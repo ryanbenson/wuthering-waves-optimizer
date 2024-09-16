@@ -193,21 +193,29 @@ export default {
         }
       }
 
+      let modifySpecificTalents = [];
       // process the main echo buffs, only if enabled
       if (this.mainEchoBuffEnabled) {
         for (const mainEchoBuff of this.chosenMainEchoBuffs) {
-          // we're dealing with full numbers right now, not decimals,
-          // so multiply * 100
-          // TODO: Remove this when we refactor this whole thing to use decimals
-          if (this.mainEchoHasStacks) {
-            const buffVal = mainEchoBuff.modifierValue * 100;
-            stats[mainEchoBuff.modifier] =
-              (stats[mainEchoBuff.modifier] || 0) +
-              buffVal * this.mainEchoStacks;
+          if (mainEchoBuff?.modifySpecificTalents) {
+            stats.specificTalentBuffs = {};
+            mainEchoBuff?.modifySpecificTalents.forEach((buffTalentName) => {
+              stats.specificTalentBuffs[buffTalentName] = mainEchoBuff.modifierValue;
+            });
           } else {
-            const buffVal = mainEchoBuff.modifierValue * 100;
-            stats[mainEchoBuff.modifier] =
-              (stats[mainEchoBuff.modifier] || 0) + buffVal;
+            // we're dealing with full numbers right now, not decimals,
+            // so multiply * 100
+            // TODO: Remove this when we refactor this whole thing to use decimals
+            if (this.mainEchoHasStacks) {
+              const buffVal = mainEchoBuff.modifierValue * 100;
+              stats[mainEchoBuff.modifier] =
+                (stats[mainEchoBuff.modifier] || 0) +
+                buffVal * this.mainEchoStacks;
+            } else {
+              const buffVal = mainEchoBuff.modifierValue * 100;
+              stats[mainEchoBuff.modifier] =
+                (stats[mainEchoBuff.modifier] || 0) + buffVal;
+            }
           }
         }
       }

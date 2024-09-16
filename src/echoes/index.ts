@@ -18,10 +18,13 @@ interface EchoAction {
   description: string;
   element: string;
   type: string;
+  attribute?: string;
+  subType?: string;
 }
 
 interface EchoModifier {
   modifier?: string;
+  modifySpecificTalents?: string[];
   modifierValue?: number;
 }
 
@@ -88,6 +91,23 @@ export const mainEchoesData: MainEchoes = {
       {
         modifier: "DMGBonus",
         modifierValue: 0.1,
+      },
+    ],
+    actions: [
+      {
+        key: "BellBorneGeocheloneActivation",
+        label: "Activation DMG",
+        description: `Activate the protection of Bell-Borne Geochelone. Deal Glacio DMG based on <span class="param">91.20%/104.88%/118.56%/132.24%/145.92%</span> of the current character's DEF to nearby enemies, and obtain a Bell-Borne Shield that lasts for <span class="param">15</span>s`,
+        talents: {
+          "1": "91.20%",
+          "2": "104.88%",
+          "3": "118.56%",
+          "4": "132.24%",
+          "5": "145.92%",
+        },
+        type: "Echo",
+        element: "Glacio",
+        attribute: "def"
       },
     ],
   },
@@ -193,7 +213,42 @@ export const mainEchoesData: MainEchoes = {
     The DMG of this Echo Skill is increased by <span class="param">50.00%</span> during the first <span class="param">5</span>s after Rover: Havoc casts Resonance Liberation: Deadening Abyss.
     
     CD: <span class="param">20</span>s</span>`,
-    modifiers: [],
+    modifiers: [
+      {
+        modifySpecificTalents: ["DreamlessFirstStrikes", "DreamlessFinalStrike"],
+        modifierValue: 0.5,
+      },
+    ],
+    actions: [
+      {
+        key: "DreamlessFirstStrikes",
+        label: "Strikes DMG",
+        description: `Transform into Dreamless and perform 6 consecutive strikes. The first 5 strikes deal <span class="param">33.80%/38.87%/43.94%/49.01%/54.08%</span> Havoc DMG each`,
+        talents: {
+          "1": "33.80%*5",
+          "2": "38.87%*5",
+          "3": "43.94%*5",
+          "4": "49.01%*5",
+          "5": "54.08%*5",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+      {
+        key: "DreamlessFinalStrike",
+        label: "Final Strike DMG",
+        description: `The last strike deals <span class="param">169.00%/194.35%/219.70%/245.05%/270.40%</span> Havoc DMG.`,
+        talents: {
+          "1": "169.00%",
+          "2": "194.35%",
+          "3": "219.70%",
+          "4": "245.05%",
+          "5": "270.40%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
   },
   DwarfCassowary: {
     key: "DwarfCassowary",
@@ -481,7 +536,7 @@ export const mainEchoesData: MainEchoes = {
     actions: [
       {
         key: "InfernoRiderSlash",
-        label: "Slash Damage",
+        label: "Slash DMG",
         description: `Transform into Inferno Rider to launch up to 3 consecutive slashes in a row, each slash dealing <span class="param">151.50%/174.23%/196.95%/219.68%/242.40%</span>, <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span>, and <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span> Fusion DMG respectively.`,
         talents: {
           "1": "151.50% + 175.75%*2",
@@ -495,7 +550,7 @@ export const mainEchoesData: MainEchoes = {
       },
       {
         key: "InfernoRiderSlash",
-        label: "Exit Rider Damage",
+        label: "Exit Rider DMG",
         description: `When exiting the Riding Mode, deal <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span> Fusion DMG to enemies in front.`,
         talents: {
           "1": "176.75%",
@@ -525,6 +580,65 @@ export const mainEchoesData: MainEchoes = {
       {
         modifier: "ResonanceSkillDMGBonus",
         modifierValue: 0.16,
+      },
+    ],
+    actions: [
+      {
+        key: "JueSummonDMG",
+        label: "Summon DMG",
+        description: `Summon Jué to the aid. Jué soars through the air, dealing <span class="param">34.96%/39.52%/44.08%/48.64%</span> Spectro DMG`,
+        talents: {
+          "1": "34.96%",
+          "2": "34.96%",
+          "3": "39.52%",
+          "4": "44.08%",
+          "5": "48.64%",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+      {
+        key: "JueThunderboltDMG",
+        label: "Thunderbolt DMG",
+        description: `Summons thunderbolts that strike nearby enemies up to 5 times, each hit dealing <span class="param">13.98%/15.81%/17.63%/19.46%</span> Spectro DMG`,
+        talents: {
+          "1": "13.98%*5",
+          "2": "13.98%*5",
+          "3": "15.81%*5",
+          "4": "17.63%*5",
+          "5": "19.46%*5",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+      {
+        key: "JueSpiralDMG",
+        label: "Spiral DMG",
+        description: `Jué then spirals downward, attacking surrounding enemies twice, each hit dealing <span class="param">34.96%/39.52%/44.08%/48.64%</span> Spectro DMG`,
+        talents: {
+          "1": "34.96%*2",
+          "2": "34.96%*2",
+          "3": "39.52%*2",
+          "4": "44.08%*2",
+          "5": "48.64%*2",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+      {
+        key: "JueSkillCoordinatedDMG",
+        label: "Coordinated DMG",
+        description: `When the Resonator's Resonance Skill hits the target, inflict <span class="param">11.50%/13.00%/14.50%/16.00%</span> Spectro DMG 1 time per second for 15s, considered as the Resonator's Resonance Skill DMG.`,
+        talents: {
+          "1": "11.50%",
+          "2": "11.50%",
+          "3": "13.00%",
+          "4": "14.50%",
+          "5": "16.00%",
+        },
+        type: "Skill",
+        element: "Spectro",
+        subType: "Coordinated",
       },
     ],
   },

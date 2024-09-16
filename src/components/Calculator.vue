@@ -924,6 +924,8 @@ export default defineComponent({
         // end max buff handlers
         const specificSkillDmgFromCharBuffs =
           charBuffsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
+        const specificSkillDmgFromEchoes =
+          echoStats.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const genericSkillDmgBonusResChain =
           charResonanceChainsData.value?.DMGBonus ?? 0;
         const genericSkillDmgBonusSelfBuff = charBuffsData.value?.DMGBonus ?? 0;
@@ -967,6 +969,7 @@ export default defineComponent({
           genericSkillDmgBonusResChain +
           genericSkillDmgBonusSelfBuff +
           genericSkillDmgBonusTeamEchoBuff +
+          specificSkillDmgFromEchoes +
           specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +
           specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal +
           specificSkillDmgFromResonanceChainsBasedOnMaxDefVal +

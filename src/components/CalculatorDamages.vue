@@ -130,7 +130,7 @@
     ></span>
   </h4>
   <div v-if="isEchoDetailsShown" v-html="echoDetails" class="panel mb-1"></div>
-  <template v-if="!allDamages?.value?.echoAttacks.length">
+  <template v-if="!allDamages?.value?.echoAttacks?.length">
     <div class="calculation__damage__item calculation__damage__item--fill">
       {{ character }} does not have an echo with actions.
     </div>
