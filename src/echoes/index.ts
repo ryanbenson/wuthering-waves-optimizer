@@ -107,7 +107,7 @@ export const mainEchoesData: MainEchoes = {
         },
         type: "Echo",
         element: "Glacio",
-        attribute: "def"
+        attribute: "def",
       },
     ],
   },
@@ -172,6 +172,22 @@ export const mainEchoesData: MainEchoes = {
         modifierValue: 0.12,
       },
     ],
+    actions: [
+      {
+        key: "CrownlessAttack",
+        label: "Attacks DMG",
+        description: `Transform into Crownless and perform up to 4 consecutive attacks. The first 2 attacks deal <span class="param">83.80%/96.37%/108.94%/121.51%/134.08%</span> Havoc DMG each, the 3rd attack deals <span class="param">62.85%/72.28%/81.71%/91.13%/100.56%</span> Havoc DMG 2 times, and the 4th attack deals <span class="param">41.90%/48.19%/54.47%/60.76%/67.04%</span> Havoc DMG 3 times.`,
+        talents: {
+          "1": "83.80%*2 + 62.85%*2 + 41.90%*3",
+          "2": "96.37%*2 + 72.28%*2 + 48.19%*3",
+          "3": "108.94%*2 + 81.71%*2 + 54.47%*3",
+          "4": "121.51%*2 + 91.13%*2 + 60.76%*3",
+          "5": "134.08%*2 + 100.56%*2 + 67.04%*3",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
   },
   Cruisewing: {
     key: "Cruisewing",
@@ -215,7 +231,10 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">20</span>s</span>`,
     modifiers: [
       {
-        modifySpecificTalents: ["DreamlessFirstStrikes", "DreamlessFinalStrike"],
+        modifySpecificTalents: [
+          "DreamlessFirstStrikes",
+          "DreamlessFinalStrike",
+        ],
         modifierValue: 0.5,
       },
     ],
@@ -299,6 +318,53 @@ export const mainEchoesData: MainEchoes = {
       {
         modifier: "ATK",
         modifierValue: 0.1,
+      },
+    ],
+    actions: [
+      {
+        key: "FallacyOfNoReturnDiffraction",
+        label: "Diffraction DMG",
+        description: `Use the Sound Corpse skill to summon a portion of the power of the Fallacy of No Return, causing 1 diffraction damage based on <span class="Highlight">9.91%/11.40%/12.88%/14.37%/15.86%</span> of the player's upper limit of health to surrounding enemies`,
+        talents: {
+          "1": "9.91%",
+          "2": "11.40%",
+          "3": "12.88%",
+          "4": "14.37%",
+          "5": "15.86%",
+        },
+        type: "Echo",
+        element: "Glacio",
+        attribute: "hp",
+      },
+      {
+        key: "FallacyOfNoReturnSoundCorpseDoT",
+        label: "Sound Corpse DoT DMG",
+        description: `Long-press the Sound Corpse skill to consume stamina to continue attacking after the shock ends, causing <span class="Highlight">0.99%/1.14%/1.29%/1.44%/1.58%</span> of the upper limit of health each time.`,
+        talents: {
+          "1": "0.99%",
+          "2": "1.14%",
+          "3": "1.29%",
+          "4": "1.44%",
+          "5": "1.58%",
+        },
+        type: "Echo",
+        element: "Glacio",
+        attribute: "hp",
+      },
+      {
+        key: "FallacyOfNoReturnFinalBlow",
+        label: "Final Blow DMG",
+        description: `When the long-press ends, the final blow is triggered, causing <span class="Highlight">12.39%/14.25%/16.11%/17.97%/19.82%</span> of the upper limit of health.`,
+        talents: {
+          "1": "12.39%",
+          "2": "14.25%",
+          "3": "16.11%",
+          "4": "17.97%",
+          "5": "19.82%",
+        },
+        type: "Echo",
+        element: "Glacio",
+        attribute: "hp",
       },
     ],
   },
