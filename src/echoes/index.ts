@@ -794,6 +794,24 @@ export const mainEchoesData: MainEchoes = {
     hasStacks: true,
     minStacks: 0,
     maxStacks: 3,
+    actions: [
+      {
+        key: "LampylumenMyriadAttacks",
+        label: "Transform Attacks DMG",
+        description: `Transform into Lampylumen Myriad. Perform up to 3 consecutive attacks.
+
+        Unleash a freezing shock by performing consecutive forward strikes, with the initial two strikes inflicting <span class="param">125.10%/143.87%/162.63%/181.40%/200.16%</span> and <span class="param">125.10%/143.87%/162.63%/181.40%/200.16%</span> Glacio DMG respectively, and the final strike dealing <span class="param">166.80%/191.82%/216.84%/241.86%/266.88%</span> Glacio DMG. Enemies will be frozen on hit.`,
+        talents: {
+          "1": "125.10%*2 + 166.80%",
+          "2": "143.87%*2 + 191.82%",
+          "3": "162.63%*2 + 216.84%",
+          "4": "181.40%*2 + 241.86%",
+          "5": "200.16%*2 + 266.88%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
   },
   LavaLarva: {
     key: "LavaLarva",
@@ -847,6 +865,50 @@ export const mainEchoesData: MainEchoes = {
         modifierValue: 0.12,
       },
     ],
+    actions: [
+      {
+        key: "MechAbominationStrike",
+        label: "Strike DMG",
+        description: `Strike enemies in front, dealing <span class="param">30.40%/34.96%/39.52%/44.08%/48.64%</span> Electro DMG.`,
+        talents: {
+          "1": "30.40%",
+          "2": "34.96%",
+          "3": "39.52%",
+          "4": "44.08%",
+          "5": "48.64",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+      {
+        key: "MechAbominationMechWaste",
+        label: "Mech Waste DMG",
+        description: `Summon Mech Waste to attack. Mech Waste deals <span class="param">200.00%/230.00%/260.00%/290.00%/320.00%</span> Electro DMG on hit.`,
+        talents: {
+          "1": "200.00%",
+          "2": "230.00%",
+          "3": "260.00%",
+          "4": "290.00%",
+          "5": "320.00%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+      {
+        key: "MechAbominationMechWaste",
+        label: "Mech Waste Explosion DMG",
+        description: `Mech Waste explodes after a while, dealing <span class="param">100.00%/115.00%/130.00%/145.00%/160.00%</span> Electro DMG.`,
+        talents: {
+          "1": "100.00%",
+          "2": "115.00%",
+          "3": "130.00%",
+          "4": "145.00%",
+          "5": "160.00%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
   },
   MourningAix: {
     key: "MourningAix",
@@ -867,6 +929,22 @@ export const mainEchoesData: MainEchoes = {
       {
         modifier: "ResonanceLiberationDMGBonus",
         modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "MourningAixClaw",
+        label: "Claw DMG",
+        description: `Transform into Mourning Aix and perform 2 consecutive claw attacks, each attack dealing <span class="param">98.40%/113.16%/127.92%/142.68%/157.44%</span> and <span class="param">147.60%/169.74%/191.88%/214.02%/236.16%</span> Spectro DMG respectively.`,
+        talents: {
+          "1": "98.40% + 147.60%",
+          "2": "113.16% + 169.74%",
+          "3": "127.92% + 191.88%",
+          "4": "142.68% + 214.02%",
+          "5": "157.44% + 236.16%",
+        },
+        type: "Echo",
+        element: "Spectro",
       },
     ],
   },
@@ -1024,11 +1102,7 @@ export const mainEchoesData: MainEchoes = {
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/TempestMephis.png",
     details: `<span class="description">Transform into Tempest Mephis to perform tail swing attacks followed by a claw attack. The lightning strike summoned by the tail swing deals <span class="param">64.05%/73.66%/83.27%/92.87%/102.48%</span> Electro DMG each time, while the claw attack deals <span class="param">109.80%/126.27%/142.74%/159.21%/175.68%</span> Electro DMG.
 
-
-
     After the claw hit, increase the current character’s Electro DMG by <span class="param">12.00%</span> and Heavy Attack DMG by <span class="param">12.00%</span> for <span class="param">15</span>s.
-    
-    
     
     CD: <span class="param">20</span>s</span>`,
     modifiers: [
@@ -1039,6 +1113,36 @@ export const mainEchoesData: MainEchoes = {
       {
         modifier: "HeavyAttackDMGBonus",
         modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "TempestMephisTailSwing",
+        label: "Tail Swing DMG",
+        description: `Transform into Tempest Mephis to perform tail swing attacks followed by a claw attack. The lightning strike summoned by the tail swing deals <span class="param">64.05%/73.66%/83.27%/92.87%/102.48%</span> Electro DMG each time.`,
+        talents: {
+          "1": "64.05%",
+          "2": "73.66%",
+          "3": "83.27%",
+          "4": "92.87%",
+          "5": "102.48%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+      {
+        key: "TempestMephisClaw",
+        label: "Claw DMG",
+        description: `Transform into Tempest Mephis to perform tail swing attacks followed by a claw attack. The claw attack deals <span class="param">109.80%/126.27%/142.74%/159.21%/175.68%</span> Electro DMG.`,
+        talents: {
+          "1": "109.80%",
+          "2": "126.27%",
+          "3": "142.74%",
+          "4": "159.21%",
+          "5": "175.68%",
+        },
+        type: "Echo",
+        element: "Electro",
       },
     ],
   },
@@ -1061,6 +1165,22 @@ export const mainEchoesData: MainEchoes = {
       {
         modifier: "ResonanceLiberationDMGBonus",
         modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "ThunderingMephisStrike",
+        label: "Strike DMG",
+        description: `Transform into Thundering Mephis, engaging in a rapid assault of up to 6 strikes. The first 5 strikes deal <span class="param">82.88%/95.31%/107.74%/120.18%/132.61%</span> Electro DMG each, while the final strike inflicts <span class="param">118.40%/136.16%/153.92%/171.68%/189.44%</span> Electro DMG, with an additional <span class="param">19.73%/22.69%/25.65%/28.61%/31.57%</span> Electro DMG from the thunder.`,
+        talents: {
+          "1": "82.88%*5 + 118.40% + 19.73%",
+          "2": "95.31%*5 + 136.16% + 22.69%",
+          "3": "107.74%*5 + 153.92% + 25.65%",
+          "4": "120.18%*5 + 171.68% + 28.61%",
+          "5": "132.61%*5 + 189.44% + 31.57%",
+        },
+        type: "Echo",
+        element: "Electro",
       },
     ],
   },
