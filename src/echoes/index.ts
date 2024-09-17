@@ -389,6 +389,36 @@ export const mainEchoesData: MainEchoes = {
         modifierValue: 0.12,
       },
     ],
+    actions: [
+      {
+        key: "FeilianBeringalKick",
+        label: "Kick DMG",
+        description: `Transform into Feilian Beringal to perform a powerful kick. If the kick lands on an enemy, immediately perform a follow-up strike. The kick deals <span class="param">144.90%/166.64%/188.37%/210.11%/231.84%</span> Aero DMG.`,
+        talents: {
+          "1": "144.90%",
+          "2": "166.64%",
+          "3": "188.37%",
+          "4": "210.11%",
+          "5": "231.84%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+      {
+        key: "FeilianBeringalFollowUp",
+        label: "Follow-Up Strike DMG",
+        description: `Transform into Feilian Beringal to perform a powerful kick. If the kick lands on an enemy, immediately perform a follow-up strike. the follow-up strike deals <span class="param">177.10%/203.67%/230.23%/256.80%/283.36%</span> Aero DMG.`,
+        talents: {
+          "1": "177.10%",
+          "2": "203.67%",
+          "3": "230.23%",
+          "4": "256.80%",
+          "5": "283.36%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
   },
   FissionJunrock: {
     key: "FissionJunrock",
@@ -575,6 +605,36 @@ export const mainEchoesData: MainEchoes = {
     
     CD: <span class="param">20</span>s</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "ImpermanenceHeronFlySmack",
+        label: "Fly Up & Smack Down DMG",
+        description: `Transform into Impermanence Heron to fly up and smack down, dealing <span class="param">194.10%/223.22%/252.33%/281.45%/310.56%</span> Havoc DMG.`,
+        talents: {
+          "1": "194.10%",
+          "2": "223.22%",
+          "3": "252.33%",
+          "4": "281.45%",
+          "5": "310.56%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+      {
+        key: "ImpermanenceHeronFlames",
+        label: "Flames Continuous DMG",
+        description: `Long press to stay as Impermanence Heron and continuously spit flames, each attack dealing <span class="param">34.83%/40.05%/45.28%/50.50%/55.73%</span> Havoc DMG.`,
+        talents: {
+          "1": "34.83%",
+          "2": "40.05%",
+          "3": "45.28%",
+          "4": "50.50%",
+          "5": "55.73%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
   },
   InfernoRider: {
     key: "InfernoRider",
