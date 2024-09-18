@@ -62,6 +62,17 @@
         </optgroup>
       </select>
     </div>
+    <div class="main-echo-level">
+      <label for="mainEchoRank">Choose Main Echo Rank</label>
+      <select name="mainEchoRank" v-model="mainEchoRank">
+        <option value="">Select a rank</option>
+        <option value="5">5</option>
+        <option value="4">4</option>
+        <option value="3">3</option>
+        <option value="2">2</option>
+        <option value="1">1</option>
+      </select>
+    </div>
     <div class="main-echo" @click="toggleMainEchoBuffEnabled">
       <div
         v-if="chosenMainEchoData"
@@ -125,7 +136,14 @@ export default {
   watch: {
     mainEcho: {
       handler: async function () {
+        this.handleMainEchoChange();
         this.updateTotalStats();
+      },
+      immediate: true,
+    },
+    mainEchoRank: {
+      handler: async function () {
+        this.handleMainEchoRank();
       },
       immediate: true,
     },
@@ -175,21 +193,29 @@ export default {
         }
       }
 
+      let modifySpecificTalents = [];
       // process the main echo buffs, only if enabled
       if (this.mainEchoBuffEnabled) {
         for (const mainEchoBuff of this.chosenMainEchoBuffs) {
-          // we're dealing with full numbers right now, not decimals,
-          // so multiply * 100
-          // TODO: Remove this when we refactor this whole thing to use decimals
-          if (this.mainEchoHasStacks) {
-            const buffVal = mainEchoBuff.modifierValue * 100;
-            stats[mainEchoBuff.modifier] =
-              (stats[mainEchoBuff.modifier] || 0) +
-              buffVal * this.mainEchoStacks;
+          if (mainEchoBuff?.modifySpecificTalents) {
+            stats.specificTalentBuffs = {};
+            mainEchoBuff?.modifySpecificTalents.forEach((buffTalentName) => {
+              stats.specificTalentBuffs[buffTalentName] = mainEchoBuff.modifierValue;
+            });
           } else {
-            const buffVal = mainEchoBuff.modifierValue * 100;
-            stats[mainEchoBuff.modifier] =
-              (stats[mainEchoBuff.modifier] || 0) + buffVal;
+            // we're dealing with full numbers right now, not decimals,
+            // so multiply * 100
+            // TODO: Remove this when we refactor this whole thing to use decimals
+            if (this.mainEchoHasStacks) {
+              const buffVal = mainEchoBuff.modifierValue * 100;
+              stats[mainEchoBuff.modifier] =
+                (stats[mainEchoBuff.modifier] || 0) +
+                buffVal * this.mainEchoStacks;
+            } else {
+              const buffVal = mainEchoBuff.modifierValue * 100;
+              stats[mainEchoBuff.modifier] =
+                (stats[mainEchoBuff.modifier] || 0) + buffVal;
+            }
           }
         }
       }
@@ -217,6 +243,12 @@ export default {
     toggleMainEchoBuffEnabled() {
       this.mainEchoBuffEnabled = !this.mainEchoBuffEnabled;
     },
+    handleMainEchoChange() {
+      this.$emit("updated-main-echo", this.mainEcho);
+    },
+    handleMainEchoRank() {
+      this.$emit("updated-main-echo-rank", this.mainEchoRank);
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -240,6 +272,23 @@ export default {
         const data = {
           mainEcho: {
             echo: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the the main echo rarity
+     * @returns {Boolean}
+     */
+    mainEchoRank: {
+      get() {
+        return this.currentCharacter?.mainEcho?.rank ?? 5;
+      },
+      async set(value) {
+        const data = {
+          mainEcho: {
+            rank: value,
           },
         };
         await this.setCharacterData(this.character, data);
@@ -446,7 +495,6 @@ export default {
   align-items: flex-start;
   justify-content: center;
   gap: 1rem;
-  padding-bottom: 2rem;
 }
 .main-echo__enabled {
   margin-top: 1rem;
@@ -464,9 +512,16 @@ export default {
 .alert--error {
   background-color: #7b7c27;
 }
+.main-echo-level {
+  padding-top: 0.5rem;
+  label {
+    display: block;
+  }
+}
 .main-echo {
   background-color: #161616;
   padding: 0.5rem 0.75rem;
+  margin-top: 2rem;
   border-radius: 6px;
   cursor: pointer;
 

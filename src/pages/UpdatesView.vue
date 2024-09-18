@@ -29,6 +29,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 18, 2024</h3>
+    <ul>
+      <li>
+        Echo damages are now available! It includes Calamity, Overlord,
+        and elite. Common echoes will come later.
+      </li>
+    </ul>
     <h3>September 11, 2024</h3>
     <ul>
       <li>

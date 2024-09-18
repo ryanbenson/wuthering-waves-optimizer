@@ -8,16 +8,31 @@ interface Echo {
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
+  actions?: EchoAction[];
+}
+
+interface EchoAction {
+  key: string;
+  label: string;
+  talents: Record<string, string>;
+  description: string;
+  element: string;
+  type: string;
+  attribute?: string;
+  subType?: string;
 }
 
 interface EchoModifier {
   modifier?: string;
+  modifySpecificTalents?: string[];
   modifierValue?: number;
 }
 
 type MainEchoes = Record<string, Echo>;
 
-// getting the html: copy(document.querySelector('.description').outerHTML)
+export function getEchoData(echoKey: string): Echo {
+  return mainEchoesData[echoKey];
+}
 
 export const mainEchoesData: MainEchoes = {
   AeroPredator: {
@@ -29,6 +44,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Summon an Aero Predator that throws a dart forward. The dart will bounce between enemies up to three times, dealing <span class="param">18.00%/20.70%/23.40%/26.10%/28.80%</span> Aero DMG each time it hits.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   // AlteredClangBang: {
   //   key: "AlteredClangBang",
@@ -60,6 +76,22 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Transform into Autopuppet Scout, dealing <span class="param">170.00%/195.50%/221.00%/246.50%/272.00%</span> Glacio DMG to the surroundings, and generate up to 3 Ice Walls to block off the enemies.
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "AutopuppetScoutAttacak",
+        label: "Attack DMG",
+        description: `Transform into Autopuppet Scout, dealing <span class="param">170.00%/195.50%/221.00%/246.50%/272.00%</span> Glacio DMG to the surroundings, and generate up to 3 Ice Walls to block off the enemies.`,
+        talents: {
+          "1": "170.00%",
+          "2": "195.50%",
+          "3": "221.00%",
+          "4": "246.50%",
+          "5": "272.00%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
   },
   BellBorneGeochelone: {
     key: "BellBorneGeochelone",
@@ -78,6 +110,23 @@ export const mainEchoesData: MainEchoes = {
         modifierValue: 0.1,
       },
     ],
+    actions: [
+      {
+        key: "BellBorneGeocheloneActivation",
+        label: "Activation DMG",
+        description: `Activate the protection of Bell-Borne Geochelone. Deal Glacio DMG based on <span class="param">91.20%/104.88%/118.56%/132.24%/145.92%</span> of the current character's DEF to nearby enemies, and obtain a Bell-Borne Shield that lasts for <span class="param">15</span>s`,
+        talents: {
+          "1": "91.20%",
+          "2": "104.88%",
+          "3": "118.56%",
+          "4": "132.24%",
+          "5": "145.92%",
+        },
+        type: "Echo",
+        element: "Glacio",
+        attribute: "def",
+      },
+    ],
   },
   Chaserazor: {
     key: "Chaserazor",
@@ -88,6 +137,22 @@ export const mainEchoesData: MainEchoes = {
     details: `Transform into Carapace to perform a spinning attack that deals 80.50%/91.00%/101.50%/112.00% Aero DMG, followed by a slash that deals 120.75%/136.50%/152.25%/168.00% Aero DMG.
     CD: 15s`,
     modifiers: [],
+    actions: [
+      {
+        key: "ChaserazorSpinningAttack",
+        label: "Spinning Attack DMG",
+        description: `Transform into Carapace to perform a spinning attack that deals 80.50%/91.00%/101.50%/112.00% Aero DMG, followed by a slash that deals 120.75%/136.50%/152.25%/168.00% Aero DMG.`,
+        talents: {
+          "1": "80.50% + 120.75%",
+          "2": "91.00% + 120.75%",
+          "3": "91.00% + 136.50%",
+          "4": "101.50% + 152.25%",
+          "5": "112.00% + 168.00%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
   },
   ChasmGuardian: {
     key: "ChasmGuardian",
@@ -98,6 +163,22 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Transform into Chasm Guardian to perform a Leap Strike that deals <span class="param">171.00%/196.65%/222.30%/247.95%/273.60%</span> Havoc DMG on hit. Current character loses <span class="param">10.00%</span> HP after the hit lands. Periodically restore current character's HP after <span class="param">5</span>s for up to <span class="param">10.00%</span> of their Max HP.
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "ChasmGuardianLeap",
+        label: "Leap DMG",
+        description: `Transform into Chasm Guardian to perform a Leap Strike that deals <span class="param">171.00%/196.65%/222.30%/247.95%/273.60%</span> Havoc DMG on hit`,
+        talents: {
+          "1": "171.00%",
+          "2": "196.65%",
+          "3": "222.30%",
+          "4": "247.95%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
   },
   Chirpuff: {
     key: "Chirpuff",
@@ -108,6 +189,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Summon a Chirpuff that self-inflates and blasts a powerful gust of wind forward <span class="param">3</span> times. Each blast inflicts <span class="param">24.00%/27.60%/31.20%/34.80%/38.40%</span> Aero DMG and pushes enemies backwards.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   ClangBang: {
     key: "ClangBang",
@@ -118,6 +200,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Summon a Clang Bang that follows the enemy and eventually self-combusts, dealing <span class="param">20.00%+40/23.00%+46/26.00%+52/29.00%+58/32.00%+64</span> Glacio DMG.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   Crownless: {
     key: "Crownless",
@@ -140,6 +223,22 @@ export const mainEchoesData: MainEchoes = {
         modifierValue: 0.12,
       },
     ],
+    actions: [
+      {
+        key: "CrownlessAttack",
+        label: "Attacks DMG",
+        description: `Transform into Crownless and perform up to 4 consecutive attacks. The first 2 attacks deal <span class="param">83.80%/96.37%/108.94%/121.51%/134.08%</span> Havoc DMG each, the 3rd attack deals <span class="param">62.85%/72.28%/81.71%/91.13%/100.56%</span> Havoc DMG 2 times, and the 4th attack deals <span class="param">41.90%/48.19%/54.47%/60.76%/67.04%</span> Havoc DMG 3 times.`,
+        talents: {
+          "1": "83.80%*2 + 62.85%*2 + 41.90%*3",
+          "2": "96.37%*2 + 72.28%*2 + 48.19%*3",
+          "3": "108.94%*2 + 81.71%*2 + 54.47%*3",
+          "4": "121.51%*2 + 91.13%*2 + 60.76%*3",
+          "5": "134.08%*2 + 100.56%*2 + 67.04%*3",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
   },
   Cruisewing: {
     key: "Cruisewing",
@@ -150,6 +249,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Summon a Cruisewing that restores HP for all current team characters by <span class="param">1%/1.20%/1.40%/1.60%/1.80%</span> of their Max HPs plus an additional <span class="param">80</span> points of HP, up to 4 times.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   CyanFeatheredHeron: {
     key: "CyanFeatheredHeron",
@@ -160,6 +260,22 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Transform into Cyan-Feathered Heron and charge at the enemies, dealing <span class="param">148.00%/170.20%/192.40%/214.60%/236.80%</span> Aero DMG; This Echo Skill interrupts enemy <color=highlight>Special Skills upon dealing damage.
     CD: <span class="param">15</span>s</color=highlight></span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "CyanFeatheredHeronCharge",
+        label: "Activation DMG",
+        description: `Transform into Cyan-Feathered Heron and charge at the enemies, dealing <span class="param">148.00%/170.20%/192.40%/214.60%/236.80%</span> Aero DMG.`,
+        talents: {
+          "1": "148.00%",
+          "2": "170.20%",
+          "3": "192.40%",
+          "4": "214.60%",
+          "5": "236.80%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
   },
   Diamondclaw: {
     key: "Diamondclaw",
@@ -170,6 +286,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Transform into Crystal Scorpion and enter a Parry State. Counterattack when the Parry State is over, dealing <span class="param">30.00%+60/34.50%+69/39.00%+78/43.50%+87/48.00%+96</span> Physical DMG.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   Dreamless: {
     key: "Dreamless",
@@ -181,7 +298,45 @@ export const mainEchoesData: MainEchoes = {
     The DMG of this Echo Skill is increased by <span class="param">50.00%</span> during the first <span class="param">5</span>s after Rover: Havoc casts Resonance Liberation: Deadening Abyss.
     
     CD: <span class="param">20</span>s</span>`,
-    modifiers: [],
+    modifiers: [
+      {
+        modifySpecificTalents: [
+          "DreamlessFirstStrikes",
+          "DreamlessFinalStrike",
+        ],
+        modifierValue: 0.5,
+      },
+    ],
+    actions: [
+      {
+        key: "DreamlessFirstStrikes",
+        label: "Strikes DMG",
+        description: `Transform into Dreamless and perform 6 consecutive strikes. The first 5 strikes deal <span class="param">33.80%/38.87%/43.94%/49.01%/54.08%</span> Havoc DMG each`,
+        talents: {
+          "1": "33.80%*5",
+          "2": "38.87%*5",
+          "3": "43.94%*5",
+          "4": "49.01%*5",
+          "5": "54.08%*5",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+      {
+        key: "DreamlessFinalStrike",
+        label: "Final Strike DMG",
+        description: `The last strike deals <span class="param">169.00%/194.35%/219.70%/245.05%/270.40%</span> Havoc DMG.`,
+        talents: {
+          "1": "169.00%",
+          "2": "194.35%",
+          "3": "219.70%",
+          "4": "245.05%",
+          "5": "270.40%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
   },
   DwarfCassowary: {
     key: "DwarfCassowary",
@@ -193,6 +348,7 @@ export const mainEchoesData: MainEchoes = {
 
     Cooldown: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   ElectroPredator: {
     key: "ElectroPredator",
@@ -203,6 +359,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Summon an Electro Predator to shoot the enemy 5 times. The first 4 shots deals <span class="param">10.80%/12.42%/14.04%/15.66%/17.28%</span> Electro DMG, and the last deals <span class="param">28.80%/33.12%/37.44%/41.76%/46.08%</span> Electro DMG.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   Excarat: {
     key: "Excarat",
@@ -214,6 +371,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   FallacyOfNoReturn: {
     key: "FallacyOfNoReturn",
@@ -232,6 +390,53 @@ export const mainEchoesData: MainEchoes = {
       {
         modifier: "ATK",
         modifierValue: 0.1,
+      },
+    ],
+    actions: [
+      {
+        key: "FallacyOfNoReturnDiffraction",
+        label: "Diffraction DMG",
+        description: `Use the Sound Corpse skill to summon a portion of the power of the Fallacy of No Return, causing 1 diffraction damage based on <span class="Highlight">9.91%/11.40%/12.88%/14.37%/15.86%</span> of the player's upper limit of health to surrounding enemies`,
+        talents: {
+          "1": "9.91%",
+          "2": "11.40%",
+          "3": "12.88%",
+          "4": "14.37%",
+          "5": "15.86%",
+        },
+        type: "Echo",
+        element: "Glacio",
+        attribute: "hp",
+      },
+      {
+        key: "FallacyOfNoReturnSoundCorpseDoT",
+        label: "Sound Corpse DoT DMG",
+        description: `Long-press the Sound Corpse skill to consume stamina to continue attacking after the shock ends, causing <span class="Highlight">0.99%/1.14%/1.29%/1.44%/1.58%</span> of the upper limit of health each time.`,
+        talents: {
+          "1": "0.99%",
+          "2": "1.14%",
+          "3": "1.29%",
+          "4": "1.44%",
+          "5": "1.58%",
+        },
+        type: "Echo",
+        element: "Glacio",
+        attribute: "hp",
+      },
+      {
+        key: "FallacyOfNoReturnFinalBlow",
+        label: "Final Blow DMG",
+        description: `When the long-press ends, the final blow is triggered, causing <span class="Highlight">12.39%/14.25%/16.11%/17.97%/19.82%</span> of the upper limit of health.`,
+        talents: {
+          "1": "12.39%",
+          "2": "14.25%",
+          "3": "16.11%",
+          "4": "17.97%",
+          "5": "19.82%",
+        },
+        type: "Echo",
+        element: "Glacio",
+        attribute: "hp",
       },
     ],
   },
@@ -256,6 +461,36 @@ export const mainEchoesData: MainEchoes = {
         modifierValue: 0.12,
       },
     ],
+    actions: [
+      {
+        key: "FeilianBeringalKick",
+        label: "Kick DMG",
+        description: `Transform into Feilian Beringal to perform a powerful kick. If the kick lands on an enemy, immediately perform a follow-up strike. The kick deals <span class="param">144.90%/166.64%/188.37%/210.11%/231.84%</span> Aero DMG.`,
+        talents: {
+          "1": "144.90%",
+          "2": "166.64%",
+          "3": "188.37%",
+          "4": "210.11%",
+          "5": "231.84%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+      {
+        key: "FeilianBeringalFollowUp",
+        label: "Follow-Up Strike DMG",
+        description: `Transform into Feilian Beringal to perform a powerful kick. If the kick lands on an enemy, immediately perform a follow-up strike. the follow-up strike deals <span class="param">177.10%/203.67%/230.23%/256.80%/283.36%</span> Aero DMG.`,
+        talents: {
+          "1": "177.10%",
+          "2": "203.67%",
+          "3": "230.23%",
+          "4": "256.80%",
+          "5": "283.36%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
   },
   FissionJunrock: {
     key: "FissionJunrock",
@@ -267,6 +502,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   Flautist: {
     key: "Flautist",
@@ -277,6 +513,22 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Transform into Flautist, continuously emitting Electro lasers, dealing <span class="param">33.30%/38.30%/43.29%/48.29%/53.28%</span> Electro DMG for a total of 10 times. Gain <span class="param">1</span> Concerto Energy every time a hit lands.
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "FlautistLasers",
+        label: "Lasers DMG",
+        description: `Transform into Flautist, continuously emitting Electro lasers, dealing <span class="param">33.30%/38.30%/43.29%/48.29%/53.28%</span> Electro DMG for a total of 10 times`,
+        talents: {
+          "1": "33.30%*10",
+          "2": "38.30%*10",
+          "3": "43.29%*10",
+          "4": "48.29%*10",
+          "5": "53.28%*10",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
   },
   FusionDreadmane: {
     key: "FusionDreadmane",
@@ -287,6 +539,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Summon a Fusion Dreadmane that fiercely strikes the enemy, dealing <span class="param">20.00%+40/23.00%+46/26.00%+52/29.00%+58/32.00%+64</span> Fusion DMG.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   FusionPrism: {
     key: "FusionPrism",
@@ -297,6 +550,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Summon a Fusion Prism to fire a crystal shard, dealing <span class="param">20.00%+40/23.00%+46/26.00%+52/29.00%+58/32.00%+64</span> Fusion DMG.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   FusionWarrior: {
     key: "FusionWarrior",
@@ -308,6 +562,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   GlacioDreadmane: {
     key: "GlacioDreadmane",
@@ -319,6 +574,50 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">20</span>s</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "GlacioDreadmaneLacerate",
+        label: "Lacerate DMG",
+        description: `Lacerate enemies as a Glacio Dreadmane, dealing <span class="param">134.00%/154.10%/174.20%/194.30%/214.40%</span> Glacio DMG on each hit.`,
+        talents: {
+          "1": "134.00%",
+          "2": "154.10%",
+          "3": "174.20%",
+          "4": "194.30%",
+          "5": "214.40%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+      {
+        key: "GlacioDreadmaneMidAirLacerate",
+        label: "Mid-Air Lacerate DMG",
+        description: `Lacerate enemies as a Glacio Dreadmane, dealing <span class="param">134.00%/154.10%/174.20%/194.30%/214.40%</span> Glacio DMG on each hit. Glacio Dreadmane deals <span class="param">20.00%</span> more DMG while in mid-air.`,
+        talents: {
+          "1": "154.00%",
+          "2": "174.10%",
+          "3": "194.20%",
+          "4": "214.30%",
+          "5": "234.40%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+      {
+        key: "GlacioDreadmaneIcicle",
+        label: "Icicle DMG",
+        description: `Glacio Dreadmane deals <span class="param">20.00%</span> more DMG while in mid-air and generates 6 Icicles upon landing, each dealing <span class="param">20.00%/23.00%/26.00%/29.00%/32.00%</span> Glacio DMG.`,
+        talents: {
+          "1": "20.00%*6",
+          "2": "23.00%*6",
+          "3": "26.00%*6",
+          "4": "29.00%*6",
+          "5": "32.00%*6",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
   },
   Gulpuff: {
     key: "Gulpuff",
@@ -329,6 +628,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Summon a Gulpuff that blows bubbles <span class="param">5</span> times, each time dealing <span class="param">14.40%/16.56%/18.72%/20.88%/23.04%</span> Glacio DMG.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   HavocDreadmane: {
     key: "HavocDreadmane",
@@ -340,6 +640,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   HavocPrism: {
     key: "HavocPrism",
@@ -350,6 +651,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Summon a Havoc Prism to fire five crystal shards, each dealing <span class="param">14.40%/16.56%/18.72%/20.88%/23.04%</span> Havoc DMG.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   HavocWarrior: {
     key: "HavocWarrior",
@@ -361,6 +663,7 @@ export const mainEchoesData: MainEchoes = {
  
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   Hoartoise: {
     key: "Hoartoise",
@@ -372,6 +675,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   Hoochief: {
     key: "Hoochief",
@@ -383,6 +687,22 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "HoochiefSmack",
+        label: "Smack DMG",
+        description: `Transform into Hoochief Cyclone and smack the enemies, dealing <span class="param">149%/178.80%/208.60%/238.40%/268.20%</span> Aero DMG.`,
+        talents: {
+          "1": "149%",
+          "2": "178.80%",
+          "3": "208.60%",
+          "4": "238.40%",
+          "5": "268.20%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
   },
   HoochiefCyclone: {
     key: "HoochiefCyclone",
@@ -392,11 +712,27 @@ export const mainEchoesData: MainEchoes = {
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/HoochiefCyclone.png",
     details: `Transform into Hoochief Cyclone and smack the enemies, dealing 178.80%/208.60%/238.40%/268.20% Aero DMG.`,
     modifiers: [],
+    actions: [
+      {
+        key: "HoochiefCycloneSmack",
+        label: "Smack DMG",
+        description: `Transform into Hoochief Cyclone and smack the enemies, dealing 178.80%/208.60%/238.40%/268.20% Aero DMG.`,
+        talents: {
+          "1": "178.80%",
+          "2": "208.60%",
+          "3": "238.40%",
+          "4": "238.40%",
+          "5": "268.20%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
   },
   // HoochiefMenace: {
   //   key: "HoochiefMenace",
   //   name: "Hoochief Menace",
-  //   class: "Elitezs",
+  //   class: "Elite",
   //   image: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/HoochiefMenace.png",
   //   details: ``,
   //   modifiers: [],
@@ -411,6 +747,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   // HooscampClapperclaw: {
   //   key: "HooscampClapperclaw",
@@ -442,6 +779,36 @@ export const mainEchoesData: MainEchoes = {
     
     CD: <span class="param">20</span>s</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "ImpermanenceHeronFlySmack",
+        label: "Fly Up & Smack Down DMG",
+        description: `Transform into Impermanence Heron to fly up and smack down, dealing <span class="param">194.10%/223.22%/252.33%/281.45%/310.56%</span> Havoc DMG.`,
+        talents: {
+          "1": "194.10%",
+          "2": "223.22%",
+          "3": "252.33%",
+          "4": "281.45%",
+          "5": "310.56%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+      {
+        key: "ImpermanenceHeronFlames",
+        label: "Flames Continuous DMG",
+        description: `Long press to stay as Impermanence Heron and continuously spit flames, each attack dealing <span class="param">34.83%/40.05%/45.28%/50.50%/55.73%</span> Havoc DMG.`,
+        talents: {
+          "1": "34.83%",
+          "2": "40.05%",
+          "3": "45.28%",
+          "4": "50.50%",
+          "5": "55.73%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
   },
   InfernoRider: {
     key: "InfernoRider",
@@ -466,6 +833,36 @@ export const mainEchoesData: MainEchoes = {
         modifierValue: 0.12,
       },
     ],
+    actions: [
+      {
+        key: "InfernoRiderSlash",
+        label: "Slash DMG",
+        description: `Transform into Inferno Rider to launch up to 3 consecutive slashes in a row, each slash dealing <span class="param">151.50%/174.23%/196.95%/219.68%/242.40%</span>, <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span>, and <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span> Fusion DMG respectively.`,
+        talents: {
+          "1": "151.50% + 175.75%*2",
+          "2": "174.23% + 203.26%*2",
+          "3": "196.85% + 229.78%*2",
+          "4": "219.68% + 256.29%*2",
+          "5": "242.40% + 282.80%*2",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+      {
+        key: "InfernoRiderSlash",
+        label: "Exit Rider DMG",
+        description: `When exiting the Riding Mode, deal <span class="param">176.75%/203.26%/229.78%/256.29%/282.80%</span> Fusion DMG to enemies in front.`,
+        talents: {
+          "1": "176.75%",
+          "2": "203.26%",
+          "3": "203.26%",
+          "4": "229.78%",
+          "5": "282.80%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
   },
   Jué: {
     key: "Jué",
@@ -483,6 +880,65 @@ export const mainEchoesData: MainEchoes = {
       {
         modifier: "ResonanceSkillDMGBonus",
         modifierValue: 0.16,
+      },
+    ],
+    actions: [
+      {
+        key: "JueSummonDMG",
+        label: "Summon DMG",
+        description: `Summon Jué to the aid. Jué soars through the air, dealing <span class="param">34.96%/39.52%/44.08%/48.64%</span> Spectro DMG`,
+        talents: {
+          "1": "34.96%",
+          "2": "34.96%",
+          "3": "39.52%",
+          "4": "44.08%",
+          "5": "48.64%",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+      {
+        key: "JueThunderboltDMG",
+        label: "Thunderbolt DMG",
+        description: `Summons thunderbolts that strike nearby enemies up to 5 times, each hit dealing <span class="param">13.98%/15.81%/17.63%/19.46%</span> Spectro DMG`,
+        talents: {
+          "1": "13.98%*5",
+          "2": "13.98%*5",
+          "3": "15.81%*5",
+          "4": "17.63%*5",
+          "5": "19.46%*5",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+      {
+        key: "JueSpiralDMG",
+        label: "Spiral DMG",
+        description: `Jué then spirals downward, attacking surrounding enemies twice, each hit dealing <span class="param">34.96%/39.52%/44.08%/48.64%</span> Spectro DMG`,
+        talents: {
+          "1": "34.96%*2",
+          "2": "34.96%*2",
+          "3": "39.52%*2",
+          "4": "44.08%*2",
+          "5": "48.64%*2",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+      {
+        key: "JueSkillCoordinatedDMG",
+        label: "Coordinated DMG",
+        description: `When the Resonator's Resonance Skill hits the target, inflict <span class="param">11.50%/13.00%/14.50%/16.00%</span> Spectro DMG 1 time per second for 15s, considered as the Resonator's Resonance Skill DMG.`,
+        talents: {
+          "1": "11.50%",
+          "2": "11.50%",
+          "3": "13.00%",
+          "4": "14.50%",
+          "5": "16.00%",
+        },
+        type: "Skill",
+        element: "Spectro",
+        subType: "Coordinated",
       },
     ],
   },
@@ -512,6 +968,24 @@ export const mainEchoesData: MainEchoes = {
     hasStacks: true,
     minStacks: 0,
     maxStacks: 3,
+    actions: [
+      {
+        key: "LampylumenMyriadAttacks",
+        label: "Transform Attacks DMG",
+        description: `Transform into Lampylumen Myriad. Perform up to 3 consecutive attacks.
+
+        Unleash a freezing shock by performing consecutive forward strikes, with the initial two strikes inflicting <span class="param">125.10%/143.87%/162.63%/181.40%/200.16%</span> and <span class="param">125.10%/143.87%/162.63%/181.40%/200.16%</span> Glacio DMG respectively, and the final strike dealing <span class="param">166.80%/191.82%/216.84%/241.86%/266.88%</span> Glacio DMG. Enemies will be frozen on hit.`,
+        talents: {
+          "1": "125.10%*2 + 166.80%",
+          "2": "143.87%*2 + 191.82%",
+          "3": "162.63%*2 + 216.84%",
+          "4": "181.40%*2 + 241.86%",
+          "5": "200.16%*2 + 266.88%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
   },
   LavaLarva: {
     key: "LavaLarva",
@@ -523,6 +997,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   Lightcrusher: {
     key: "Lightcrusher",
@@ -535,6 +1010,36 @@ export const mainEchoesData: MainEchoes = {
     
     Cooldown: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "LightcrusherLunge",
+        label: "Lunge DMG",
+        description: `Lunge forward as a Lightcrusher, dealing <span class="param">84.60%/97.29%/109.98%/122.67%/135.36%</span> Spectro DMG. Generate <span class="param">6</span> Ablucence on hit.`,
+        talents: {
+          "1": "84.60%",
+          "2": "97.29%",
+          "3": "109.98%",
+          "4": "122.67%",
+          "5": "135.36%",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+      {
+        key: "LightcrusherAblucence",
+        label: "Ablucence DMG",
+        description: `Each Ablucence explosion deals <span class="param">9.40%/10.81%/12.22%/13.63%/15.04%</span> Spectro DMG.`,
+        talents: {
+          "1": "9.40%*6",
+          "2": "10.81%*6",
+          "3": "12.22%*6",
+          "4": "13.63%*6",
+          "5": "15.04%*6",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+    ],
   },
   LumiscaleConstruct: {
     key: "LumiscaleConstruct",
@@ -546,6 +1051,50 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">15</span>s</color=highlight></color=highlight></span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "LumiscaleConstructSlash",
+        label: "Slash DMG",
+        description: `Transform into a Lumiscale Construct and enter a Parry Stance. If you are not attacked during the Parry Stance, slash to deal <span class="param">346.00%/397.90%/449.80%/501.70%/553.60%</span> Glacio DMG when the stance finishes.`,
+        talents: {
+          "1": "346.00%",
+          "2": "397.90%",
+          "3": "449.80%",
+          "4": "501.70%",
+          "5": "553.60%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+      {
+        key: "LumiscaleConstructCounter",
+        label: "Counter Attack DMG",
+        description: `If attacked, counterattack instantly, dealing <span class="param">346.00%+173.00%/397.90%+198.95%/449.80%+224.90%/501.70%+250.85%/553.60%+276.80%</span> Glacio DMG.`,
+        talents: {
+          "1": "346.00%+173.00%",
+          "2": "397.90%+198.95%",
+          "3": "449.80%+224.90%",
+          "4": "501.70%+250.85%",
+          "5": "553.60%+276.80%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+      {
+        key: "LumiscaleConstructSkillCounter",
+        label: "Skill Counter Attack DMG",
+        description: `When hit with a <color=highlight>Special Skill attack while in the Parry Stance, break the <color=highlight>Special Skill and counterattack, dealing <span class="param">346.00%+173.00%/397.90%+198.95%/449.80%+224.90%/501.70%+250.85%/553.60%+276.80%</span> Glacio DMG.`,
+        talents: {
+          "1": "346.00%+173.00%",
+          "2": "397.90%+198.95%",
+          "3": "449.80%+224.90%",
+          "4": "501.70%+250.85%",
+          "5": "553.60%+276.80%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
   },
   MechAbomination: {
     key: "MechAbomination",
@@ -563,6 +1112,50 @@ export const mainEchoesData: MainEchoes = {
       {
         modifier: "ATK",
         modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "MechAbominationStrike",
+        label: "Strike DMG",
+        description: `Strike enemies in front, dealing <span class="param">30.40%/34.96%/39.52%/44.08%/48.64%</span> Electro DMG.`,
+        talents: {
+          "1": "30.40%",
+          "2": "34.96%",
+          "3": "39.52%",
+          "4": "44.08%",
+          "5": "48.64",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+      {
+        key: "MechAbominationMechWaste",
+        label: "Mech Waste DMG",
+        description: `Summon Mech Waste to attack. Mech Waste deals <span class="param">200.00%/230.00%/260.00%/290.00%/320.00%</span> Electro DMG on hit.`,
+        talents: {
+          "1": "200.00%",
+          "2": "230.00%",
+          "3": "260.00%",
+          "4": "290.00%",
+          "5": "320.00%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+      {
+        key: "MechAbominationMechWaste",
+        label: "Mech Waste Explosion DMG",
+        description: `Mech Waste explodes after a while, dealing <span class="param">100.00%/115.00%/130.00%/145.00%/160.00%</span> Electro DMG.`,
+        talents: {
+          "1": "100.00%",
+          "2": "115.00%",
+          "3": "130.00%",
+          "4": "145.00%",
+          "5": "160.00%",
+        },
+        type: "Echo",
+        element: "Electro",
       },
     ],
   },
@@ -585,6 +1178,22 @@ export const mainEchoesData: MainEchoes = {
       {
         modifier: "ResonanceLiberationDMGBonus",
         modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "MourningAixClaw",
+        label: "Claw DMG",
+        description: `Transform into Mourning Aix and perform 2 consecutive claw attacks, each attack dealing <span class="param">98.40%/113.16%/127.92%/142.68%/157.44%</span> and <span class="param">147.60%/169.74%/191.88%/214.02%/236.16%</span> Spectro DMG respectively.`,
+        talents: {
+          "1": "98.40% + 147.60%",
+          "2": "113.16% + 169.74%",
+          "3": "127.92% + 191.88%",
+          "4": "142.68% + 214.02%",
+          "5": "157.44% + 236.16%",
+        },
+        type: "Echo",
+        element: "Spectro",
       },
     ],
   },
@@ -643,13 +1252,60 @@ export const mainEchoesData: MainEchoes = {
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/RocksteadyGuardian.png",
     details: `<span class="description">Transform into Rocksteady Guardian and enter a Parry State. Upon being attacked, deal Spectro DMG equal to <span class="param">5.18%/5.96%/6.73%/7.51%/8.29%</span> of the Resonator's Max HP, and perform a follow-up attack that deals Spectro DMG equal to <span class="param">5.18%/5.96%/6.73%/7.51%/8.29%</span> of the Resonator's Max HP.
- 
+
     Use the Echo Skill again to exit the transformation.
-     
+
     If the attack received is a <color=highlight>Special Skill attack, interrupt the enemy's <color=highlight>Special Skill, gain a Shield equal to 30% Max HP, and perform a two-stage follow-up attack, each dealing Spectro DMG equal to <span class="param">3.45%/3.97%/4.49%/5.00%/5.52%</span> of the Resonator's Max HP. These follow-up attacks simultaneously launch three ground-breaking waves, each dealing Spectro DMG equal to <span class="param">2.87%/3.30%/3.73%/4.16%/4.59%</span> of the Resonator's Max HP.
-     
+
     CD: <span class="param">15</span>s</color=highlight></color=highlight></span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "RocksteadyGuardianParry",
+        label: "Parry DMG",
+        description: `Transform into Rocksteady Guardian and enter a Parry State. Upon being attacked, deal Spectro DMG equal to <span class="param">5.18%/5.96%/6.73%/7.51%/8.29%</span> of the Resonator's Max HP, and perform a follow-up attack that deals Spectro DMG equal to <span class="param">5.18%/5.96%/6.73%/7.51%/8.29%</span> of the Resonator's Max HP.`,
+        talents: {
+          "1": "5.18%*2",
+          "2": "5.96%*2",
+          "3": "6.73%*2",
+          "4": "7.51%*2",
+          "5": "8.29%*2",
+        },
+        type: "Echo",
+        element: "Spectro",
+        attribute: "hp",
+      },
+      {
+        key: "RocksteadyGuardianSpecialParry",
+        label: "Special Attack Parry DMG",
+        description: `If the attack received is a <color=highlight>Special Skill attack, interrupt the enemy's <color=highlight>Special Skill, perform a two-stage follow-up attack, each dealing Spectro DMG equal to <span class="param">3.45%/3.97%/4.49%/5.00%/5.52%</span> of the Resonator's Max HP. These follow-up attacks simultaneously launch three ground-breaking waves, each dealing Spectro DMG equal to <span class="param">2.87%/3.30%/3.73%/4.16%/4.59%</span> of the Resonator's Max HP.`,
+        talents: {
+          "1": "3.45%*2 + 2.87%*3",
+          "2": "3.97%*2 + 3.30%*3",
+          "3": "4.49%*2 + 3.73%*3",
+          "4": "5.00%*2 + 4.16%*3",
+          "5": "5.52%*2 + 4.59%*3",
+        },
+        type: "Echo",
+        element: "Spectro",
+        attribute: "hp",
+      },
+      {
+        key: "RocksteadyGuardianSpecialParry",
+        label: "Special Attack Shield",
+        description: `If the attack received is a <color=highlight>Special Skill attack, interrupt the enemy's <color=highlight>Special Skill, gain a Shield equal to 30% Max HP.`,
+        talents: {
+          "1": "30%",
+          "2": "30%",
+          "3": "30%",
+          "4": "30%",
+          "5": "30%",
+        },
+        type: "Shield",
+        element: "Spectro",
+        attribute: "hp",
+      },
+    ],
   },
   Roseshroom: {
     key: "Roseshroom",
@@ -658,9 +1314,25 @@ export const mainEchoesData: MainEchoes = {
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Roseshroom.png",
     details: `<span class="description">Summon a Roseshroom that fires a laser, dealing <span class="param">35.67%/41.02%/46.37%/51.72%/57.07%</span> Havoc DMG up to <span class="param">3</span> times.
- 
+
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "RoseshroomLaser",
+        label: "Laser DMG",
+        description: `Summon a Roseshroom that fires a laser, dealing <span class="param">35.67%/41.02%/46.37%/51.72%/57.07%</span> Havoc DMG up to <span class="param">3</span> times.`,
+        talents: {
+          "1": "35.67%*3",
+          "2": "41.02%*3",
+          "3": "46.37%*3",
+          "4": "51.72%*3",
+          "5": "57.07%*3",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
   },
   SabyrBoar: {
     key: "SabyrBoar",
@@ -672,6 +1344,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   // Scar: {
   //   key: "Scar",
@@ -691,6 +1364,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   Spearback: {
     key: "Spearback",
@@ -702,6 +1376,22 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "SpearbackAttack",
+        label: "Slash DMG",
+        description: `Summon a Spearback to perform 5 consecutive attacks. The first 4 attacks deal <span class="param">18.73%/21.53%/24.34%/27.15%/29.96%</span> Physical DMG, and the last deals <span class="param">32.10%/36.92%/41.73%/46.55%/51.36%</span> Physical DMG.`,
+        talents: {
+          "1": "18.73%*4 + 32.10%",
+          "2": "21.53%*4 + 36.92%",
+          "3": "24.34%*4 + 41.73%",
+          "4": "27.15%*4 + 46.55%",
+          "5": "29.96%*4 + 51.36%",
+        },
+        type: "Echo",
+        element: "Physical",
+      },
+    ],
   },
   SpectroPrism: {
     key: "SpectroPrism",
@@ -713,6 +1403,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   StonewallBracer: {
     key: "StonewallBracer",
@@ -724,6 +1415,37 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "StonewallBracerCharge",
+        label: "Charge DMG",
+        description: `Transform into Stonewall Bracer and charge forward, dealing <span class="param">70.40%/80.96%/91.52%/102.08%/112.64%</span> Physical DMG on-hit, then smash to deal <span class="param">105.60%/121.44%/137.28%/153.12%/168.96%</span> Physical DMG.`,
+        talents: {
+          "1": "70.40% + 105.60%",
+          "2": "80.96% + 121.44%",
+          "3": "91.52% + 137.28%",
+          "4": "102.08% + 153.12%",
+          "5": "112.64% + 168.96%",
+        },
+        type: "Echo",
+        element: "Physical",
+      },
+      {
+        key: "StonewallBracerShield",
+        label: "Charge Shield",
+        description: `Gain a shield of <span class="param">10.00%</span> of current character's Max HP that lasts <span class="param">7</span>s.`,
+        talents: {
+          "1": "10%",
+          "2": "10%",
+          "3": "10%",
+          "4": "10%",
+          "5": "10%",
+        },
+        type: "Shield",
+        element: "Physical",
+        attribute: "hp",
+      },
+    ],
   },
   Tambourinist: {
     key: "Tambourinist",
@@ -733,6 +1455,22 @@ export const mainEchoesData: MainEchoes = {
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Tambourinist.png",
     details: `<span class="description">Summon a Tambourinist that periodically emits Melodies of Annihilation. Friendly units hit with Melodies of Annihilation deal an extra Havoc DMG of <span class="param">10.35%/11.70%/13.05%/14.40%</span> with their attacks, up to 10 times.</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "TambourinistAnnihilation",
+        label: "Annihilation DoT DMG",
+        description: `Summon a Tambourinist that periodically emits Melodies of Annihilation. Friendly units hit with Melodies of Annihilation deal an extra Havoc DMG of <span class="param">10.35%/11.70%/13.05%/14.40%</span> with their attacks, up to 10 times.`,
+        talents: {
+          "1": "10.35%",
+          "2": "10.35%",
+          "3": "11.70%",
+          "4": "13.05%",
+          "5": "14.40%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
   },
   TempestMephis: {
     key: "TempestMephis",
@@ -742,11 +1480,7 @@ export const mainEchoesData: MainEchoes = {
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/TempestMephis.png",
     details: `<span class="description">Transform into Tempest Mephis to perform tail swing attacks followed by a claw attack. The lightning strike summoned by the tail swing deals <span class="param">64.05%/73.66%/83.27%/92.87%/102.48%</span> Electro DMG each time, while the claw attack deals <span class="param">109.80%/126.27%/142.74%/159.21%/175.68%</span> Electro DMG.
 
-
-
     After the claw hit, increase the current character’s Electro DMG by <span class="param">12.00%</span> and Heavy Attack DMG by <span class="param">12.00%</span> for <span class="param">15</span>s.
-    
-    
     
     CD: <span class="param">20</span>s</span>`,
     modifiers: [
@@ -757,6 +1491,36 @@ export const mainEchoesData: MainEchoes = {
       {
         modifier: "HeavyAttackDMGBonus",
         modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "TempestMephisTailSwing",
+        label: "Tail Swing DMG",
+        description: `Transform into Tempest Mephis to perform tail swing attacks followed by a claw attack. The lightning strike summoned by the tail swing deals <span class="param">64.05%/73.66%/83.27%/92.87%/102.48%</span> Electro DMG each time.`,
+        talents: {
+          "1": "64.05%",
+          "2": "73.66%",
+          "3": "83.27%",
+          "4": "92.87%",
+          "5": "102.48%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+      {
+        key: "TempestMephisClaw",
+        label: "Claw DMG",
+        description: `Transform into Tempest Mephis to perform tail swing attacks followed by a claw attack. The claw attack deals <span class="param">109.80%/126.27%/142.74%/159.21%/175.68%</span> Electro DMG.`,
+        talents: {
+          "1": "109.80%",
+          "2": "126.27%",
+          "3": "142.74%",
+          "4": "159.21%",
+          "5": "175.68%",
+        },
+        type: "Echo",
+        element: "Electro",
       },
     ],
   },
@@ -781,6 +1545,22 @@ export const mainEchoesData: MainEchoes = {
         modifierValue: 0.12,
       },
     ],
+    actions: [
+      {
+        key: "ThunderingMephisStrike",
+        label: "Strike DMG",
+        description: `Transform into Thundering Mephis, engaging in a rapid assault of up to 6 strikes. The first 5 strikes deal <span class="param">82.88%/95.31%/107.74%/120.18%/132.61%</span> Electro DMG each, while the final strike inflicts <span class="param">118.40%/136.16%/153.92%/171.68%/189.44%</span> Electro DMG, with an additional <span class="param">19.73%/22.69%/25.65%/28.61%/31.57%</span> Electro DMG from the thunder.`,
+        talents: {
+          "1": "82.88%*5 + 118.40% + 19.73%",
+          "2": "95.31%*5 + 136.16% + 22.69%",
+          "3": "107.74%*5 + 153.92% + 25.65%",
+          "4": "120.18%*5 + 171.68% + 28.61%",
+          "5": "132.61%*5 + 189.44% + 31.57%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
   },
   TickTack: {
     key: "TickTack",
@@ -792,6 +1572,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   TrafficIlluminator: {
     key: "TrafficIlluminator",
@@ -803,6 +1584,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   VanguardJunrock: {
     key: "VanguardJunrock",
@@ -814,6 +1596,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   VioletFeatheredHeron: {
     key: "VioletFeatheredHeron",
@@ -825,6 +1608,22 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [
+      {
+        key: "VioletFeatheredHeron",
+        label: "Counter Attack DMG",
+        description: `Transform into Violet-Feathered Heron and enter a Parry Stance. Counterattack when the Parry stance is over, dealing <span class="param">180.00%/207.00%/234.00%/261.00%/288.00%</span> Electro DMG.`,
+        talents: {
+          "1": "180.00%",
+          "2": "207.00%",
+          "3": "234.00%",
+          "4": "261.00%",
+          "5": "288.00%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
   },
   WhiffWhaff: {
     key: "WhiffWhaff",
@@ -836,6 +1635,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   YoungGeohideSaurian: {
     key: "YoungGeohideSaurian",
@@ -845,6 +1645,7 @@ export const mainEchoesData: MainEchoes = {
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/YoungGeohideSaurian.png",
     details: `Transform into Baby Viridblaze Saurian to rest in place, and slowly restore HP.`,
     modifiers: [],
+    actions: [],
   },
   YoungRoseshroom: {
     key: "YoungRoseshroom",
@@ -856,6 +1657,7 @@ export const mainEchoesData: MainEchoes = {
 
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
   ZigZag: {
     key: "ZigZag",
@@ -865,9 +1667,8 @@ export const mainEchoesData: MainEchoes = {
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ZigZag.png",
     details: `<span class="description">Summon a Zig Zag that denotates Spectro energy, dealing <span class="param">30.00%+60/34.50%+69/39.00%+78/43.50%+87/48.00%+96</span> Spectro DMG and creating a Stagnation Zone that lasts 1.8s.
 
-
-
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
+    actions: [],
   },
 };

@@ -119,27 +119,25 @@
     :label="damageInstance.label"
     :damage="damageInstance.damage">
   </CalculatorDamage>
+
   <h4 class="damage__title">
-    <span>{{ chosenChar.value?.outroAttacks?.name ?? "Outro Attacks" }}</span>
-    <span class="damage__title__button" @click="toggleOutroDetails"
+    <span>{{ echoName }} Attacks</span>
+    <span class="damage__title__button" @click="toggleEchoDetails"
       ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
           d="M64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16l160 0 0 80c0 17.7 14.3 32 32 32l80 0 0 288c0 8.8-7.2 16-16 16L64 464zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-293.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"
           fill="#FFFFFF" /></svg
     ></span>
   </h4>
-  <div
-    v-if="isOutroDetailsShown"
-    v-html="chosenChar.value?.outroAttacks?.description"
-    class="panel mb-1"></div>
-  <template v-if="!allDamages?.value?.outroAttacks.length">
+  <div v-if="isEchoDetailsShown" v-html="echoDetails" class="panel mb-1"></div>
+  <template v-if="!allDamages?.value?.echoAttacks?.length">
     <div class="calculation__damage__item calculation__damage__item--fill">
-      {{ character }} does not have outro attacks.
+      {{ character }} does not have an echo with actions.
     </div>
   </template>
   <template v-else>
     <CalculatorDamage
-      v-for="damageInstance in allDamages?.value?.outroAttacks"
+      v-for="damageInstance in allDamages?.value?.echoAttacks"
       :key="damageInstance.key"
       :character="character"
       :type="damageInstance.type"
@@ -201,6 +199,7 @@
 
 <script>
 import { displayDamage } from "../utils/numbers";
+import { getEchoData } from "../echoes";
 import CalculatorDamage from "./CalculatorDamage.vue";
 export default {
   props: {
@@ -220,6 +219,10 @@ export default {
       type: Object,
       required: true,
     },
+    chosenEchoName: {
+      type: String,
+      default: null,
+    },
   },
   components: {
     CalculatorDamage,
@@ -232,6 +235,7 @@ export default {
       isForteCircuitDetailsShown: false,
       isIntroDetailsShown: false,
       isOutroDetailsShown: false,
+      isEchoDetailsShown: false,
     };
   },
   methods: {
@@ -253,6 +257,29 @@ export default {
     },
     toggleOutroDetails() {
       this.isOutroDetailsShown = !this.isOutroDetailsShown;
+    },
+    toggleEchoDetails() {
+      this.isEchoDetailsShown = !this.isEchoDetailsShown;
+    },
+  },
+  computed: {
+    echoData() {
+      if (!this.chosenEchoName) {
+        return null;
+      }
+      return getEchoData(this.chosenEchoName);
+    },
+    echoName() {
+      if (!this.chosenEchoName) {
+        return null;
+      }
+      return this.echoData?.name ?? null;
+    },
+    echoDetails() {
+      if (!this.chosenEchoName) {
+        return null;
+      }
+      return this.echoData?.details ?? null;
     },
   },
 };
