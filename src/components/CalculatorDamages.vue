@@ -120,6 +120,19 @@
     :damage="damageInstance.damage">
   </CalculatorDamage>
 
+  <div
+    v-if="isOutroDetailsShown"
+    v-html="chosenChar.value?.outroAttacks?.description"
+    class="panel mb-1"></div>
+  <CalculatorDamage
+    v-for="damageInstance in allDamages?.value?.outroAttacks"
+    :key="damageInstance.key"
+    :character="character"
+    :type="damageInstance.type"
+    :label="damageInstance.label"
+    :damage="damageInstance.damage">
+  </CalculatorDamage>
+
   <h4 class="damage__title">
     <span>{{ echoName }} Attacks</span>
     <span class="damage__title__button" @click="toggleEchoDetails"
