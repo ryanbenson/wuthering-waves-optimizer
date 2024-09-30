@@ -29,6 +29,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 30, 2024</h3>
+    <ul>
+      <li>
+        Fixes custom buffs where it greatly alters stats if you have blank Flat HP, ATK, DEF values.
+      </li>
+    </ul>
     <h3>September 18, 2024</h3>
     <ul>
       <li>

@@ -323,6 +323,9 @@ export default {
       const ATK = this.ATK ? this.ATK / 100 : 0;
       const HP = this.HP ? this.HP / 100 : 0;
       const DEF = this.DEF ? this.DEF / 100 : 0;
+      const ATK_FLAT = this.ATK_FLAT ? this.ATK_FLAT  : 0;
+      const HP_FLAT = this.HP_FLAT ? this.HP_FLAT : 0;
+      const DEF_FLAT = this.DEF_FLAT ? this.DEF_FLAT : 0;
       const CritRate = this.CritRate ? this.CritRate / 100 : 0;
       const CritDMG = this.CritDMG ? this.CritDMG / 100 : 0;
       const EnergyRegen = this.EnergyRegen ? this.EnergyRegen / 100 : 0;
@@ -339,11 +342,11 @@ export default {
       const HealingBonus = this.HealingBonus ? this.HealingBonus / 100 : 0;
       return {
         ATK,
-        ATK_FLAT: this.ATK_FLAT,
+        ATK_FLAT,
         HP,
-        HP_FLAT: this.HP_FLAT,
+        HP_FLAT,
         DEF,
-        DEF_FLAT: this.DEF_FLAT,
+        DEF_FLAT,
         CritRate,
         CritDMG,
         EnergyRegen,
