@@ -133,14 +133,21 @@
     v-if="isOutroDetailsShown"
     v-html="chosenChar.value?.outroAttacks?.description"
     class="panel mb-1"></div>
-  <CalculatorDamage
-    v-for="damageInstance in allDamages?.value?.outroAttacks"
-    :key="damageInstance.key"
-    :character="character"
-    :type="damageInstance.type"
-    :label="damageInstance.label"
-    :damage="damageInstance.damage">
-  </CalculatorDamage>
+  <template v-if="!allDamages?.value?.outroAttacks?.length">
+    <div class="calculation__damage__item calculation__damage__item--fill">
+      {{ character }} does not have any outro attacks.
+    </div>
+  </template>
+  <template v-else>
+    <CalculatorDamage
+      v-for="damageInstance in allDamages?.value?.outroAttacks"
+      :key="damageInstance.key"
+      :character="character"
+      :type="damageInstance.type"
+      :label="damageInstance.label"
+      :damage="damageInstance.damage">
+    </CalculatorDamage>
+</template>
 
   <h4 class="damage__title">
     <span>{{ echoName }} Attacks</span>
