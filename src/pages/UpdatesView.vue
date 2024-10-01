@@ -32,19 +32,25 @@
     <h3>October 1, 2024</h3>
     <ul>
       <li>Fixes 1-cost echo HP%</li>
+      <li>Enables choosing the current character in party buffs.</li>
+      <li>
+        Updates the title and text for when a character does not have an echo
+        with attacks.
+      </li>
     </ul>
     <h3>September 30, 2024</h3>
     <ul>
       <li>Fixes missing outro attacks in damages list.</li>
       <li>
-        Fixes custom buffs where it greatly alters stats if you have blank Flat HP, ATK, DEF values.
+        Fixes custom buffs where it greatly alters stats if you have blank Flat
+        HP, ATK, DEF values.
       </li>
     </ul>
     <h3>September 18, 2024</h3>
     <ul>
       <li>
-        Echo damages are now available! It includes Calamity, Overlord,
-        and elite. Common echoes will come later.
+        Echo damages are now available! It includes Calamity, Overlord, and
+        elite. Common echoes will come later.
       </li>
     </ul>
     <h3>September 11, 2024</h3>

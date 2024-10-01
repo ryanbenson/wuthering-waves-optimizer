@@ -9,7 +9,7 @@ interface CharacterBasicInfo {
 
 export function getCharacterBasicInfo(): CharacterBasicInfo {
   return {
-    name: "RoverSpectroFemale",
+    name: "Rover Spectro",
     rarity: 5,
     weapon: "Swords",
     avatarUrl: "RoverSpectroFemale.jpg",

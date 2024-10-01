@@ -135,7 +135,7 @@
     class="panel mb-1"></div>
   <template v-if="!allDamages?.value?.outroAttacks?.length">
     <div class="calculation__damage__item calculation__damage__item--fill">
-      {{ character }} does not have any outro attacks.
+      {{ charName }} does not have any outro attacks.
     </div>
   </template>
   <template v-else>
@@ -147,10 +147,10 @@
       :label="damageInstance.label"
       :damage="damageInstance.damage">
     </CalculatorDamage>
-</template>
+  </template>
 
   <h4 class="damage__title">
-    <span>{{ echoName }} Attacks</span>
+    <span>{{ echoName ?? "Echo" }} Attacks</span>
     <span class="damage__title__button" @click="toggleEchoDetails"
       ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
@@ -161,7 +161,7 @@
   <div v-if="isEchoDetailsShown" v-html="echoDetails" class="panel mb-1"></div>
   <template v-if="!allDamages?.value?.echoAttacks?.length">
     <div class="calculation__damage__item calculation__damage__item--fill">
-      {{ character }} does not have an echo with actions.
+      {{ charName }} does not have an echo with actions.
     </div>
   </template>
   <template v-else>
@@ -309,6 +309,13 @@ export default {
         return null;
       }
       return this.echoData?.details ?? null;
+    },
+    charName() {
+      if (!this.chosenChar) {
+        return null;
+      }
+      console.log(this.chosenChar);
+      return this.chosenChar?.value?.basic?.name ?? null;
     },
   },
 };
