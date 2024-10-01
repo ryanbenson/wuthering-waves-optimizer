@@ -29,6 +29,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 1, 2024</h3>
+    <ul>
+      <li>Fixes 1-cost echo HP%</li>
+    </ul>
     <h3>September 30, 2024</h3>
     <ul>
       <li>Fixes missing outro attacks in damages list.</li>
