@@ -314,7 +314,6 @@ export default {
       if (!this.chosenChar) {
         return null;
       }
-      console.log(this.chosenChar);
       return this.chosenChar?.value?.basic?.name ?? null;
     },
   },
