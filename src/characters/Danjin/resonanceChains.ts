@@ -23,7 +23,7 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode2",
-    name: "Sequence Node 3: Dusted Mirror",
+    name: "Sequence Node 2: Dusted Mirror",
     details: `
       <span class="skilldescription">
         When Danjin attacks a target with Resonance Skill's
