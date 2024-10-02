@@ -31,6 +31,10 @@
     <h1>Updates</h1>
     <h3>October 1, 2024</h3>
     <ul>
+      <li>Adds tooltip to show breakdown of ATK, HP, and DEF on stats.</li>
+    </ul>
+    <h3>October 1, 2024</h3>
+    <ul>
       <li>Fixes 1-cost echo HP%</li>
       <li>Enables choosing the current character in party buffs.</li>
       <li>

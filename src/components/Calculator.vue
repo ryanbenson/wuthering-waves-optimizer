@@ -196,11 +196,19 @@
       </div>
       <div class="screen--results" v-show="curScreen === 'results'">
         <CalculatorStats
-          :key="character"
+          :key="character + weaponAtk"
           :character="character"
+          :character-level="characterLevel"
+          :weapon-atk="weaponAtk"
           :total-atk="totalAtk"
+          :total-atk-percent="totalAtkPercent"
+          :total-atk-flat="totalAtkFlat"
           :total-hp="totalHp"
+          :total-hp-percent="totalHpPercent"
+          :total-hp-flat="totalHpFlat"
           :total-def="totalDef"
+          :total-def-percent="totalDefPercent"
+          :total-def-flat="totalDefFlat"
           :total-crit-rate="totalCritRate"
           :total-crit-dmg="totalCritDMG"
           :energy-regen="energyRegen"
@@ -226,11 +234,19 @@
     </div>
     <div class="results">
       <CalculatorStats
-        :key="character"
+        :key="character + weaponAtk"
         :character="character"
+        :character-level="characterLevel"
+        :weapon-atk="weaponAtk"
         :total-atk="totalAtk"
+        :total-atk-percent="totalAtkPercent"
+        :total-atk-flat="totalAtkFlat"
         :total-hp="totalHp"
+        :total-hp-percent="totalHpPercent"
+        :total-hp-flat="totalHpFlat"
         :total-def="totalDef"
+        :total-def-percent="totalDefPercent"
+        :total-def-flat="totalDefFlat"
         :total-crit-rate="totalCritRate"
         :total-crit-dmg="totalCritDMG"
         :energy-regen="energyRegen"
@@ -301,6 +317,7 @@ export default defineComponent({
     const characterStore = useCharacterStore();
     const { characters, activeCharacter } = storeToRefs(characterStore);
     const weaponData = reactive({});
+    const weaponAtk = ref(0);
     const charBuffsData = reactive({});
     const teamBuffsData = reactive({});
     const charResonanceChainsData = reactive({});
@@ -320,8 +337,14 @@ export default defineComponent({
     const rotationsList = ref([]);
     const character = ref("");
     const totalAtk = ref(0);
+    const totalAtkPercent = ref(0);
+    const totalAtkFlat = ref(0);
     const totalHp = ref(0);
+    const totalHpPercent = ref(0);
+    const totalHpFlat = ref(0);
     const totalDef = ref(0);
+    const totalDefPercent = ref(0);
+    const totalDefFlat = ref(0);
     const totalCritRate = ref(0.05);
     const totalCritDMG = ref(0.5);
     const energyRegen = ref(1);
@@ -743,6 +766,12 @@ export default defineComponent({
         }
       }
 
+      totalAtkPercent.value = stats.attackPercent;
+      totalAtkFlat.value = stats.attackFlat;
+      totalHpPercent.value = stats.hpPercent;
+      totalHpFlat.value = stats.hpFlat;
+      totalDefPercent.value = stats.defPercent;
+      totalDefFlat.value = stats.defFlat;
       totalAtk.value =
         (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
         stats.attackFlat;
@@ -1325,6 +1354,7 @@ export default defineComponent({
 
     const handleWeaponUpdated = (givenWeaponData) => {
       weaponData.value = givenWeaponData;
+      weaponAtk.value = givenWeaponData.attack;
       calcCharStats();
     };
 
@@ -1457,8 +1487,14 @@ export default defineComponent({
       damage,
       updateStatsEchoes,
       totalAtk,
+      totalAtkPercent,
+      totalAtkFlat,
       totalHp,
+      totalHpPercent,
+      totalHpFlat,
       totalDef,
+      totalDefPercent,
+      totalDefFlat,
       totalCritRate,
       totalCritDMG,
       energyRegen,
@@ -1492,6 +1528,7 @@ export default defineComponent({
       TotalDeepenEffect,
       ResistReduction,
       weaponData,
+      weaponAtk,
       isLoading,
       mainEcho,
     };

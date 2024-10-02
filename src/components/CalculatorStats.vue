@@ -6,21 +6,33 @@
         ><img
           src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Attack</span
       >
-      <span>{{ displayInt(totalAtk) }}</span>
+      <span
+        v-tooltip="{
+          content: atkTooltipContent,
+          html: true,
+        }">{{ displayInt(totalAtk) }}</span>
     </div>
     <div>
       <span
         ><img
           src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />HP</span
       >
-      <span>{{ displayInt(totalHp) }}</span>
+      <span
+        v-tooltip="{
+          content: hpTooltipContent,
+          html: true,
+        }">{{ displayInt(totalHp) }}</span>
     </div>
     <div>
       <span
         ><img
           src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />Defense</span
       >
-      <span>{{ displayInt(totalDef) }}</span>
+      <span
+        v-tooltip="{
+          content: defTooltipContent,
+          html: true,
+        }">{{ displayInt(totalDef) }}</span>
     </div>
     <div>
       <span
@@ -139,13 +151,30 @@
 
 <script>
 import { displayPercentage, displayInt } from "../utils/numbers";
+import { getCharByName } from "../characters/characters";
 export default {
   props: {
     character: {
       type: String,
       required: true,
     },
+    characterLevel: {
+      type: String,
+      required: true,
+    },
+    weaponAtk: {
+      type: Number,
+      required: true,
+    },
     totalAtk: {
+      type: Number,
+      required: true,
+    },
+    totalAtkPercent: {
+      type: Number,
+      required: true,
+    },
+    totalAtkFlat: {
       type: Number,
       required: true,
     },
@@ -153,7 +182,23 @@ export default {
       type: Number,
       required: true,
     },
+    totalHpPercent: {
+      type: Number,
+      required: true,
+    },
+    totalHpFlat: {
+      type: Number,
+      required: true,
+    },
     totalDef: {
+      type: Number,
+      required: true,
+    },
+    totalDefPercent: {
+      type: Number,
+      required: true,
+    },
+    totalDefFlat: {
       type: Number,
       required: true,
     },
@@ -214,10 +259,37 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      baseHp: 0,
+      baseAtk: 0,
+      baseDef: 0,
+    }
+  },
   methods: {
     displayPercentage,
     displayInt,
   },
+  computed: {
+    hpTooltipContent() {
+      return `<span class="Highlight">${this.baseHp}</span> * (1 + <span class="Highlight">${this.totalHpPercent}%</span>) + <span class="Highlight">${this.totalHpFlat}</span>`;
+    },
+    atkTooltipContent() {
+      return `<span class="Highlight">(${this.baseAtk} + ${this.weaponAtk})</span> * (1 + <span class="Highlight">${this.totalAtkPercent}%</span>) + <span class="Highlight">${this.totalAtkFlat}</span>`;
+    },
+    defTooltipContent() {
+      return `<span class="Highlight">${this.baseDef}</span> * (1 + <span class="Highlight">${this.totalDefPercent}%</span>) + <span class="Highlight">${this.totalDefFlat}</span>`;
+    }
+  },
+  async mounted() {
+    const chosenChar = await getCharByName(this.character);
+    if (chosenChar) {
+      const { hp, attack, defense } = chosenChar.getCharacterStatsByLevel(this.characterLevel);
+      this.baseHp = hp;
+      this.baseAtk = attack;
+      this.baseDef = defense;
+    }
+  }
 };
 </script>
 
