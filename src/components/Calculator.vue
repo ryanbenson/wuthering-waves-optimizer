@@ -1095,6 +1095,11 @@ export default defineComponent({
           if (attack?.buffs) {
             totalSkillDmgBonus += attack.buffs?.HealingBonus ?? 0;
           }
+        const specificSkillHealingBonus =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:HealingBonus`
+          ] ?? 0;
+          totalSkillDmgBonus += specificSkillHealingBonus;
           const h = calcHeal(
             talent,
             finalAtkDefHpVal,

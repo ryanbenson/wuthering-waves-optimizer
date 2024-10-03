@@ -17,12 +17,13 @@ export const resonanceChains = [
   {
     key: "SequenceNode4OverflowingQuietude",
     name: "Sequence Node 4: Overflowing Quietude",
-    details: `<span class="skilldescription">When casting Outro Skill <span class="Highlight">Binary Butterfly</span>, all nearby team members' DMG is amplified by 10%. This effect lasts for 30s.</span>`,
+    details: `<span class="skilldescription">Gain 70% additional Healing Bonus when casting Resonance Skill <span class="Highlight">Chaos Theory</span>.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "DMGDeepen",
-        modifierValue: 0.1,
+        modifier: "HealingBonus",
+        modifySpecificTalents: ["ChaosTheoryHealing"],
+        modifierValue: 0.7,
       },
     ],
     minStacks: 0,

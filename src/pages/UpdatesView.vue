@@ -29,7 +29,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>October 1, 2024</h3>
+    <h3>October 3, 2024</h3>
+    <ul>
+      <li>Fixes Shorekeeper S4, it changed on release.</li>
+    </ul>
+    <h3>October 2, 2024</h3>
     <ul>
       <li>Adds tooltip to show breakdown of ATK, HP, and DEF on stats.</li>
     </ul>
