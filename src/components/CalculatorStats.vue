@@ -10,7 +10,9 @@
         v-tooltip="{
           content: atkTooltipContent,
           html: true,
-        }">{{ displayInt(totalAtk) }}</span>
+        }"
+        >{{ displayInt(totalAtk) }}</span
+      >
     </div>
     <div>
       <span
@@ -21,7 +23,9 @@
         v-tooltip="{
           content: hpTooltipContent,
           html: true,
-        }">{{ displayInt(totalHp) }}</span>
+        }"
+        >{{ displayInt(totalHp) }}</span
+      >
     </div>
     <div>
       <span
@@ -32,7 +36,9 @@
         v-tooltip="{
           content: defTooltipContent,
           html: true,
-        }">{{ displayInt(totalDef) }}</span>
+        }"
+        >{{ displayInt(totalDef) }}</span
+      >
     </div>
     <div>
       <span
@@ -264,7 +270,7 @@ export default {
       baseHp: 0,
       baseAtk: 0,
       baseDef: 0,
-    }
+    };
   },
   methods: {
     displayPercentage,
@@ -275,21 +281,23 @@ export default {
       return `<span class="Highlight">${this.baseHp}</span> * (1 + <span class="Highlight">${this.totalHpPercent}%</span>) + <span class="Highlight">${this.totalHpFlat}</span>`;
     },
     atkTooltipContent() {
-      return `<span class="Highlight">(${this.baseAtk} + ${this.weaponAtk})</span> * (1 + <span class="Highlight">${this.totalAtkPercent}%</span>) + <span class="Highlight">${this.totalAtkFlat}</span>`;
+      return `(<span class="Highlight">${this.baseAtk}</span> + <span class="Highlight">${this.weaponAtk}</span>) * (1 + <span class="Highlight">${this.totalAtkPercent}%</span>) + <span class="Highlight">${this.totalAtkFlat}</span>`;
     },
     defTooltipContent() {
       return `<span class="Highlight">${this.baseDef}</span> * (1 + <span class="Highlight">${this.totalDefPercent}%</span>) + <span class="Highlight">${this.totalDefFlat}</span>`;
-    }
+    },
   },
   async mounted() {
     const chosenChar = await getCharByName(this.character);
     if (chosenChar) {
-      const { hp, attack, defense } = chosenChar.getCharacterStatsByLevel(this.characterLevel);
+      const { hp, attack, defense } = chosenChar.getCharacterStatsByLevel(
+        this.characterLevel
+      );
       this.baseHp = hp;
       this.baseAtk = attack;
       this.baseDef = defense;
     }
-  }
+  },
 };
 </script>
 
