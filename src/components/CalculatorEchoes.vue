@@ -137,6 +137,10 @@ export default {
     mainEcho: {
       handler: async function () {
         this.handleMainEchoChange();
+        // prevent stacks from exceeding max stacks
+        if (this.mainEchoStacks > this.mainEchoMaxStacks) {
+          this.mainEchoStacks = this.mainEchoMaxStacks;
+        }
         this.updateTotalStats();
       },
       immediate: true,
@@ -154,7 +158,11 @@ export default {
       immediate: true,
     },
     mainEchoStacks: {
-      handler: async function () {
+      handler: async function (stacksVal) {
+        // prevent stacks from exceeding max stacks
+        if (stacksVal > this.mainEchoMaxStacks) {
+          this.mainEchoStacks = this.mainEchoMaxStacks;
+        }
         this.updateTotalStats();
       },
       immediate: true,

@@ -31,6 +31,7 @@
     <h1>Updates</h1>
     <h3>October 3, 2024</h3>
     <ul>
+      <li>Prevents echo and echo set bonus from exceeding max possible stacks when you change echoes and bonus sets.</li>
       <li>Fixes Shorekeeper S4, it changed on release.</li>
     </ul>
     <h3>October 2, 2024</h3>

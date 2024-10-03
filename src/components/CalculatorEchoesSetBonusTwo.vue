@@ -95,12 +95,19 @@ export default {
   watch: {
     type: {
       handler: async function () {
+        // if we change echo set bonus, ensure the stacks don't exceed the max
+        if (this.stacks > this.getMaxStacks) {
+          this.stacks = this.getMaxStacks;
+        }
         this.updatedStats();
       },
       immediate: true,
     },
     stacks: {
-      handler: async function () {
+      handler: async function (stacksVal) {
+        if (stacksVal > this.getMaxStacks) {
+          this.stacks = this.getMaxStacks;
+        }
         this.updatedStats();
       },
       immediate: true,
