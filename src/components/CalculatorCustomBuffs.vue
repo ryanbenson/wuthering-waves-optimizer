@@ -1,6 +1,5 @@
 <template>
   <div class="custom__buffs">
-    <h1 className="text-3xl font-bold underline">Hello world!</h1>
     <div class="custom__buffs-list">
       <div>
         <span
