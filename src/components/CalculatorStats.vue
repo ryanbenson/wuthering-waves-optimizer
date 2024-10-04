@@ -1,164 +1,164 @@
 <template>
-  <table class="table table-zebra table-sm">
+  <table class="calculator__stats table table-zebra table-xs">
     <tbody>
       <tr>
-        <td class="w-12"
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" /></td>
-            <td>Attack</td
-        >
+        <td class="w-10">
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
+        </td>
+        <td>Attack</td>
         <td
           v-tooltip="{
             content: atkTooltipContent,
             html: true,
-          }"
-          >{{ displayInt(totalAtk) }}</td
-        >
+          }">
+          {{ displayInt(totalAtk) }}
+        </td>
       </tr>
       <tr>
-        <td
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" /></td>
-            <td>HP</td
-        >
+        <td>
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />
+        </td>
+        <td>HP</td>
         <td
           v-tooltip="{
             content: hpTooltipContent,
             html: true,
-          }"
-          >{{ displayInt(totalHp) }}</td
-        >
+          }">
+          {{ displayInt(totalHp) }}
+        </td>
       </tr>
       <tr>
-        <td
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" /></td>
-            <td>Defense</td
-        >
+        <td>
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />
+        </td>
+        <td>Defense</td>
         <td
           v-tooltip="{
             content: defTooltipContent,
             html: true,
-          }"
-          >{{ displayInt(totalDef) }}</td
-        >
+          }">
+          {{ displayInt(totalDef) }}
+        </td>
       </tr>
       <tr>
-        <td
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" /></td>
-            <td>Crit Rate</td
-        >
+        <td>
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />
+        </td>
+        <td>Crit Rate</td>
         <td>{{ displayPercentage(totalCritRate * 100) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" /></td>
-            <td>Crit DMG</td
-        >
+        <td>
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" />
+        </td>
+        <td>Crit DMG</td>
         <td>{{ displayPercentage(totalCritDmg * 100) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" /></td>
-            <td>Energy Regen</td
-        >
+        <td>
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" />
+        </td>
+        <td>Energy Regen</td>
         <td>{{ displayPercentage(energyRegen * 100) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" /></td>
-            <td>Basic Attack DMG Bonus</td
-        >
+        <td>
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" />
+        </td>
+        <td>Basic Attack DMG Bonus</td>
         <td>{{ displayPercentage(basicAttackDmgBonus) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png" /></td>
-            <td>Heavy Attack DMG Bonus</td
-        >
+        <td>
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png" />
+        </td>
+        <td>Heavy Attack DMG Bonus</td>
         <td>{{ displayPercentage(heavyAttackDmgBonus) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" /></td>
-            <td>Resonance Skill DMG Bonus</td
-        >
+        <td>
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" />
+        </td>
+        <td>Resonance Skill DMG Bonus</td>
         <td>{{ displayPercentage(resonanceSkillDmgBonus) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" /></td>
-            <td>Resonance Liberation DMG Bonus</td
-        >
+        <td>
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" />
+        </td>
+        <td>Resonance Liberation DMG Bonus</td>
         <td>{{ displayPercentage(resonanceLiberationDmgBonus) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
+        <td>
+          <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/glaciodmgbonus.png"
-            class="glacio--active" /></td>
-            <td>Glacio DMG Bonus</td
-        >
+            class="glacio--active" />
+        </td>
+        <td>Glacio DMG Bonus</td>
         <td>{{ displayPercentage(glacio) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
+        <td>
+          <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/fusiondmgbonus.png"
-            class="fusion--active" /></td>
-            <td>Fusion DMG Bonus</td
-        >
+            class="fusion--active" />
+        </td>
+        <td>Fusion DMG Bonus</td>
         <td>{{ displayPercentage(fusion) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
+        <td>
+          <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/electrodmgbonus.png"
-            class="electro--active" /></td>
-            <td>Electro DMG Bonus</td
-        >
+            class="electro--active" />
+        </td>
+        <td>Electro DMG Bonus</td>
         <td>{{ displayPercentage(electro) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
+        <td>
+          <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/aerodmgbonus.png"
-            class="aero--active" /></td>
-            <td>Aero DMG Bonus</td
-        >
+            class="aero--active" />
+        </td>
+        <td>Aero DMG Bonus</td>
         <td>{{ displayPercentage(aero) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
+        <td>
+          <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/spectrodmgbonus.png"
-            class="spectro--active" /></td>
-            <td>Spectro DMG Bonus</td
-        >
+            class="spectro--active" />
+        </td>
+        <td>Spectro DMG Bonus</td>
         <td>{{ displayPercentage(spectro) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
+        <td>
+          <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/havocdmgbonus.png"
-            class="havoc--active" /></td>
-            <td>Havoc DMG Bonus</td
-        >
+            class="havoc--active" />
+        </td>
+        <td>Havoc DMG Bonus</td>
         <td>{{ displayPercentage(havoc) }}</td>
       </tr>
       <tr>
-        <td
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png" /></td>
-            <td>Healing Bonus</td
-        >
+        <td>
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png" />
+        </td>
+        <td>Healing Bonus</td>
         <td>{{ displayPercentage(healingBonus * 100) }}</td>
       </tr>
     </tbody>
@@ -312,6 +312,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+html[data-theme="light"] {
+  td img {
+    filter: contrast(0);
+  }
+}
 td img {
   // make the white icons darker on light mode for stats
   @media (prefers-color-scheme: light) {
