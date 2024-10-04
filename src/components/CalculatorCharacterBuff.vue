@@ -1,19 +1,27 @@
 <template>
-  <div class="character__buff" @click="toggleEnabled">
-    <span>{{ name }}</span>
-    <div v-html="details"></div>
-    <label v-if="!alwaysEnabled" @click.stop
-      ><input type="checkbox" v-model="isEnabled" /> Enabled?</label
-    >
-    <span v-if="hasStacks" @click.stop>
-      <input
-        v-model="stacks"
-        type="number"
-        :min="minStacks"
-        :max="maxStacks"
-        @input="ensureMaxStacks" />
-      Stacks</span
-    >
+  <div
+    class="card card-bordered card-compact bg-base-100 shadow mb-2"
+    @click="toggleEnabled">
+    <div class="card-body">
+      <h2 class="card-title">{{ name }}</h2>
+      <div v-html="details"></div>
+      <div class="form-control inline-flex" @click.stop>
+        <label class="label cursor-pointer" v-if="!alwaysEnabled">
+          <span class="label-text mr-2">Enabled?</span
+          ><input type="checkbox" class="checkbox" v-model="isEnabled" />
+        </label>
+      </div>
+      <span v-if="hasStacks" @click.stop>
+        <input
+          v-model="stacks"
+          type="number"
+          class="input input-bordered input-xs"
+          :min="minStacks"
+          :max="maxStacks"
+          @input="ensureMaxStacks" />
+        Stacks</span
+      >
+    </div>
   </div>
 </template>
 
@@ -245,8 +253,7 @@ export default {
     font-weight: bold;
   }
 }
-label {
-  margin: 1rem 0 0;
-  display: inline-block;
+.shadow {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 </style>

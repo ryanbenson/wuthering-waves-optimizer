@@ -82,6 +82,7 @@
         <label @click.stop>
           <input
             type="checkbox"
+            class="checkbox"
             v-model="mainEchoBuffEnabled"
             name="mainEchoBuffEnabled" />
           Enabled?</label
@@ -208,7 +209,8 @@ export default {
           if (mainEchoBuff?.modifySpecificTalents) {
             stats.specificTalentBuffs = {};
             mainEchoBuff?.modifySpecificTalents.forEach((buffTalentName) => {
-              stats.specificTalentBuffs[buffTalentName] = mainEchoBuff.modifierValue;
+              stats.specificTalentBuffs[buffTalentName] =
+                mainEchoBuff.modifierValue;
             });
           } else {
             // we're dealing with full numbers right now, not decimals,

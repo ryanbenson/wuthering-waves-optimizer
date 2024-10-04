@@ -19,7 +19,7 @@
       ></RouterLink>
     </ul>
   </div>
-  <div class="page-info">
+  <article class="prose page-info">
     <h1>Wuthering Waves Calculator & Optimizer</h1>
     <p>
       Welcome to the Wuthering Waves Calculator & Optimizer. It's pretty simple,
@@ -89,7 +89,7 @@
     </p>
     <h3>Privacy</h3>
     <p>See our <RouterLink to="/privacy">privacy policy</RouterLink></p>
-  </div>
+  </article>
 </template>
 
 <script lang="ts">

@@ -3,7 +3,8 @@
     <span>{{ name }}</span>
     <div v-html="details"></div>
     <label v-if="!alwaysEnabled" @click.stop
-      ><input type="checkbox" v-model="isEnabled" /> Enabled?</label
+      ><input type="checkbox" class="checkbox" v-model="isEnabled" />
+      Enabled?</label
     >
     <span v-if="hasStacks" class="party-buff__stacks" @click.stop>
       <input

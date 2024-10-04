@@ -81,7 +81,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert">Calamity, overlord, and elite echo damages are available!</div>
+          <div v-if="false" class="alert">
+            Calamity, overlord, and elite echo damages are available!
+          </div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -90,7 +92,10 @@
               }"></div>
             <div class="character__selection__form">
               <div class="character__selection__form--character">
-                <select name="character" v-model="character">
+                <select
+                  name="character"
+                  v-model="character"
+                  class="select select-bordered select-sm">
                   <optgroup label="5 Star">
                     <option
                       v-for="char in charactersList.five"
@@ -108,7 +113,6 @@
                     </option>
                   </optgroup>
                 </select>
-                <label for="character">Character</label>
               </div>
               <CalculatorCharacterLevel
                 :character="character"
@@ -1095,10 +1099,10 @@ export default defineComponent({
           if (attack?.buffs) {
             totalSkillDmgBonus += attack.buffs?.HealingBonus ?? 0;
           }
-        const specificSkillHealingBonus =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:HealingBonus`
-          ] ?? 0;
+          const specificSkillHealingBonus =
+            charResonanceChainsData.value?.specificTalentBuffs?.[
+              `${attack.key}:HealingBonus`
+            ] ?? 0;
           totalSkillDmgBonus += specificSkillHealingBonus;
           const h = calcHeal(
             talent,

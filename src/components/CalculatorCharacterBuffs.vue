@@ -14,8 +14,7 @@
         :max-stacks="buff.maxStacks"
         :modifiers="buff.modifiers"
         @updated-character-buff="handleUpdatedCharacterBuff"
-        :talent-data="talentData"
-        class="character__buff"></CalculatorCharacterBuff>
+        :talent-data="talentData"></CalculatorCharacterBuff>
     </div>
   </div>
 </template>

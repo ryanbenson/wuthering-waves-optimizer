@@ -19,7 +19,7 @@
       ></RouterLink>
     </ul>
   </div>
-  <div class="page-updates">
+  <article class="prose page-updates">
     <h1>Upcoming Updates</h1>
     <ul>
       <li>Better UI</li>
@@ -31,7 +31,10 @@
     <h1>Updates</h1>
     <h3>October 3, 2024</h3>
     <ul>
-      <li>Prevents echo and echo set bonus from exceeding max possible stacks when you change echoes and bonus sets.</li>
+      <li>
+        Prevents echo and echo set bonus from exceeding max possible stacks when
+        you change echoes and bonus sets.
+      </li>
       <li>Fixes Shorekeeper S4, it changed on release.</li>
     </ul>
     <h3>October 2, 2024</h3>
@@ -563,7 +566,7 @@
       <li>Update to the echo selection UI</li>
       <li>Makes update page to make updates more visible</li>
     </ul>
-  </div>
+  </article>
 </template>
 
 <script lang="ts">

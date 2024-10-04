@@ -9,7 +9,7 @@
         min="1"
         max="10"
         steps="1"
-        class="form__field"
+        class="range range-xs"
         @input="(e) => talentUpdated('basic', e)" />
     </div>
     <div class="form__group field">
@@ -21,7 +21,7 @@
         min="1"
         max="10"
         steps="1"
-        class="form__field"
+        class="range range-xs"
         @input="(e) => talentUpdated('skill', e)" />
     </div>
     <div class="form__group field">
@@ -35,7 +35,7 @@
         min="1"
         max="10"
         steps="1"
-        class="form__field"
+        class="range range-xs"
         @input="(e) => talentUpdated('forte', e)" />
     </div>
     <div class="form__group field">
@@ -49,7 +49,7 @@
         min="1"
         max="10"
         steps="1"
-        class="form__field"
+        class="range range-xs"
         @input="(e) => talentUpdated('liberation', e)" />
     </div>
     <div class="form__group field">
@@ -61,7 +61,7 @@
         min="1"
         max="10"
         steps="1"
-        class="form__field"
+        class="range range-xs"
         @input="(e) => talentUpdated('intro', e)" />
     </div>
   </div>
