@@ -1,17 +1,12 @@
 <template>
-  <h2>Damage</h2>
-  <div class="panel mb-1">
-    All damages are total damage. If an attack hits multiple times, it will show
-    the total damage. Hover over the damage to see it broken down per hit.
-  </div>
-  <div class="calculation__damage__item">
-    <span>Name</span>
-    <span>Normal</span>
-    <span>Average</span>
-    <span>Crit</span>
+  <div class="card card-bordered card-compact bg-base-100 shadow my-6 cursor-pointer bg-accent-content">
+    <div class="card-body">
+      All damages are total damage. If an attack hits multiple times, it will show
+      the total damage. Hover over the damage to see it broken down per hit.
+    </div>
   </div>
   <h4 class="damage__title">
-    <span>{{ chosenChar.value?.basicAttacks?.name ?? "Basic Attacks" }}</span>
+    <span class="text-lg font-bold">{{ chosenChar.value?.basicAttacks?.name ?? "Basic Attacks" }}</span>
     <span class="damage__title__button" @click="toggleBasicDetails"
       ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
@@ -23,14 +18,26 @@
     v-if="isBasicDetailsShown"
     v-html="chosenChar.value?.basicAttacks?.description"
     class="panel mb-1"></div>
-  <CalculatorDamage
-    v-for="damageInstance in allDamages?.value?.basicAttacks"
-    :key="damageInstance.key"
-    :character="character"
-    :type="damageInstance.type"
-    :label="damageInstance.label"
-    :damage="damageInstance.damage">
-  </CalculatorDamage>
+  <table class="table table-zebra table-sm">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th>Normal</th>
+        <th>Average</th>
+        <th>Crit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <CalculatorDamage
+        v-for="damageInstance in allDamages?.value?.basicAttacks"
+        :key="damageInstance.key"
+        :character="character"
+        :type="damageInstance.type"
+        :label="damageInstance.label"
+        :damage="damageInstance.damage">
+      </CalculatorDamage>
+    </tbody>
+  </table>
   <h4 class="damage__title">
     <span>{{ chosenChar.value?.skillAttacks?.name ?? "Skill Attacks" }}</span>
     <span class="damage__title__button" @click="toggleSkillDetails"
@@ -42,8 +49,13 @@
   </h4>
   <div
     v-if="isSkillDetailsShown"
+    class="card card-bordered card-compact bg-base-100 shadow my-6 cursor-pointer bg-accent-content"
+  >
+    <div
+    class="card-body"
     v-html="chosenChar.value?.skillAttacks?.description"
-    class="panel mb-1"></div>
+    ></div>
+  </div>
   <CalculatorDamage
     v-for="damageInstance in allDamages?.value?.skillAttacks"
     :key="damageInstance.key"

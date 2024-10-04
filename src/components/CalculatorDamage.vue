@@ -1,55 +1,55 @@
 <template>
-  <div
-    class="calculation__damage__item"
+  <tr
+    class=""
     :class="{
       'calculation__damage__item--healing': type === 'Healing',
       'calculation__damage__item--shield': type === 'Shield',
     }">
     <template v-if="type === 'Healing'">
-      <span>{{ label }}</span>
-      <span
+      <td>{{ label }}</td>
+      <td
         v-tooltip="{
           content: damage.detailedCalculation,
           html: true,
         }"
-        >{{ displayDamage(damage.healAmount) }}</span
+        >{{ displayDamage(damage.healAmount) }}</td
       >
     </template>
     <template v-else-if="type === 'Shield'">
-      <span>{{ label }}</span>
-      <span
+      <td>{{ label }}</td>
+      <td
         v-tooltip="{
           content: damage.detailedCalculation,
           html: true,
         }"
-        >{{ displayDamage(damage.shieldAmount) }}</span
+        >{{ displayDamage(damage.shieldAmount) }}</td
       >
     </template>
     <template v-else>
-      <span>{{ label }}</span>
-      <span
+      <td>{{ label }}</td>
+      <td
         v-tooltip="{
           content: damage.detailedCalculation,
           html: true,
         }"
-        >{{ displayDamage(damage.totalDamage) }}</span
+        >{{ displayDamage(damage.totalDamage) }}</td
       >
-      <span
+      <td
         v-tooltip="{
           content: damage.detailedCalculationAvg,
           html: true,
         }"
-        >{{ displayDamage(damage.avgDamage) }}</span
+        >{{ displayDamage(damage.avgDamage) }}</td
       >
-      <span
+      <td
         v-tooltip="{
           content: damage.detailedCalculationCrit,
           html: true,
         }"
-        >{{ displayDamage(damage.critDamage) }}</span
+        >{{ displayDamage(damage.critDamage) }}</td
       >
     </template>
-  </div>
+  </tr>
 </template>
 
 <script>

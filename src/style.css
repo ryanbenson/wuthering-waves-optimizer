@@ -59,7 +59,7 @@ body {
 /* Highlights */
 .Highlight {
   font-style: italic;
-  color: #cbd053;
+  color: oklch(var(--wa));
 }
 .param {
   color: #f8e56c;

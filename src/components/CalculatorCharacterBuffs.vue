@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="buffs" class="character__buffs">
+    <div v-if="buffs" class="character__buffs p-2">
       <CalculatorCharacterBuff
         v-for="buff in buffs"
         :key="buff.key"

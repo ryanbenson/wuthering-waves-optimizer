@@ -1,28 +1,35 @@
 <template>
   <div
-    class="card card-bordered card-compact bg-base-100 shadow mb-2"
+    class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
     @click="toggleEnabled">
     <div class="card-body">
       <h2 class="card-title">{{ name }}</h2>
       <div v-html="details"></div>
-      <div class="form-control" @click.stop>
-        <label
-          class="label cursor-pointer inline-flex justify-start"
-          v-if="!alwaysEnabled">
-          <span class="label-text mr-2">Enabled?</span
-          ><input type="checkbox" class="checkbox" v-model="isEnabled" />
-        </label>
-      </div>
-      <span v-if="hasStacks" @click.stop>
-        <input
-          v-model="stacks"
-          type="number"
-          class="input input-bordered input-xs"
-          :min="minStacks"
-          :max="maxStacks"
-          @input="ensureMaxStacks" />
-        Stacks</span
-      >
+      <div class="flex gap-2 items-center">
+        <div class="form-control" @click.stop>
+          <label
+            class="label cursor-pointer inline-flex justify-start"
+            v-if="!alwaysEnabled">
+            <span class="label-text mr-2">Enabled?</span
+            ><input type="checkbox" class="checkbox checkbox-sm" v-model="isEnabled" />
+          </label>
+        </div>
+        <div v-if="hasStacks" class="form-control" @click.stop>
+          <label
+            class="label cursor-pointer inline-flex justify-start"
+            v-if="!alwaysEnabled">
+            <span class="label-text mr-2">Stacks</span
+            >
+          <input
+            v-model="stacks"
+            type="number"
+            class="input input-bordered input-xs"
+            :min="minStacks"
+            :max="maxStacks"
+            @input="ensureMaxStacks" />
+          </label>
+        </div>
+    </div>
     </div>
   </div>
 </template>
