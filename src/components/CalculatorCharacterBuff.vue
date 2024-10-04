@@ -5,8 +5,10 @@
     <div class="card-body">
       <h2 class="card-title">{{ name }}</h2>
       <div v-html="details"></div>
-      <div class="form-control inline-flex" @click.stop>
-        <label class="label cursor-pointer" v-if="!alwaysEnabled">
+      <div class="form-control" @click.stop>
+        <label
+          class="label cursor-pointer inline-flex justify-start"
+          v-if="!alwaysEnabled">
           <span class="label-text mr-2">Enabled?</span
           ><input type="checkbox" class="checkbox" v-model="isEnabled" />
         </label>
