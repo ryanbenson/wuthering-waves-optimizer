@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /**** FONTS ****/
 .poiret-one-regular {
   font-family: "Poiret One", sans-serif;

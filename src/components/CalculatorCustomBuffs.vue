@@ -1,5 +1,6 @@
 <template>
   <div class="custom__buffs">
+    <h1 className="text-3xl font-bold underline">Hello world!</h1>
     <div class="custom__buffs-list">
       <div>
         <span
@@ -303,8 +304,8 @@ export default {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
     updatedStats() {
       const data = JSON.parse(JSON.stringify(this.buffsData));
-      this.$emit('custom-buffs-updated', data);
-    }
+      this.$emit("custom-buffs-updated", data);
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -323,16 +324,24 @@ export default {
       const ATK = this.ATK ? this.ATK / 100 : 0;
       const HP = this.HP ? this.HP / 100 : 0;
       const DEF = this.DEF ? this.DEF / 100 : 0;
-      const ATK_FLAT = this.ATK_FLAT ? this.ATK_FLAT  : 0;
+      const ATK_FLAT = this.ATK_FLAT ? this.ATK_FLAT : 0;
       const HP_FLAT = this.HP_FLAT ? this.HP_FLAT : 0;
       const DEF_FLAT = this.DEF_FLAT ? this.DEF_FLAT : 0;
       const CritRate = this.CritRate ? this.CritRate / 100 : 0;
       const CritDMG = this.CritDMG ? this.CritDMG / 100 : 0;
       const EnergyRegen = this.EnergyRegen ? this.EnergyRegen / 100 : 0;
-      const BasicAttackDMGBonus = this.BasicAttackDMGBonus ? this.BasicAttackDMGBonus / 100 : 0;
-      const HeavyAttackDMGBonus = this.HeavyAttackDMGBonus ? this.HeavyAttackDMGBonus / 100 : 0;
-      const ResonanceSkillDMGBonus = this.ResonanceSkillDMGBonus ? this.ResonanceSkillDMGBonus / 100 : 0;
-      const ResonanceLiberationDMGBonus = this.ResonanceLiberationDMGBonus ? this.ResonanceLiberationDMGBonus / 100 : 0;
+      const BasicAttackDMGBonus = this.BasicAttackDMGBonus
+        ? this.BasicAttackDMGBonus / 100
+        : 0;
+      const HeavyAttackDMGBonus = this.HeavyAttackDMGBonus
+        ? this.HeavyAttackDMGBonus / 100
+        : 0;
+      const ResonanceSkillDMGBonus = this.ResonanceSkillDMGBonus
+        ? this.ResonanceSkillDMGBonus / 100
+        : 0;
+      const ResonanceLiberationDMGBonus = this.ResonanceLiberationDMGBonus
+        ? this.ResonanceLiberationDMGBonus / 100
+        : 0;
       const Glacio = this.Glacio ? this.Glacio / 100 : 0;
       const Fusion = this.Fusion ? this.Fusion / 100 : 0;
       const Electro = this.Electro ? this.Electro / 100 : 0;
@@ -360,8 +369,8 @@ export default {
         Aero,
         Spectro,
         Havoc,
-        HealingBonus
-      }
+        HealingBonus,
+      };
     },
     /**
      * Getter/setter used in the form for the attack %
