@@ -672,21 +672,6 @@ export const buffsByCharacter = {
       maxStacks: 0,
       alwaysEnabled: false,
     },
-    {
-      key: "SequenceNode4OverflowingQuietude",
-      name: "Sequence Node 4: Overflowing Quietude",
-      details: `<span class="skilldescription">When casting Outro Skill <span class="Highlight">Binary Butterfly</span>, all nearby team members' DMG is amplified by 10%. This effect lasts for 30s.</span>`,
-      hasStacks: false,
-      modifiers: [
-        {
-          modifier: "DMGDeepen",
-          modifierValue: 0.1,
-        },
-      ],
-      minStacks: 0,
-      maxStacks: 0,
-      alwaysEnabled: false,
-    },
   ],
   Youhu: [
     {
