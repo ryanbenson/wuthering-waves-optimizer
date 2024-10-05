@@ -18,7 +18,7 @@
         </div>
         <ul
           tabindex="0"
-          class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+          class="menu menu-sm dropdown-content bg-base-300 rounded-box z-[1] mt-3 w-52 p-2 shadow">
           <li>
             <a
               @click="changeScreen('character')"
@@ -271,11 +271,43 @@
                   d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
               </svg>
             </summary>
-            <ul class="bg-base-100 rounded-t-none p-2 right-0 z-50">
-              <li><RouterLink to="/settings">Settings</RouterLink></li>
-              <li><RouterLink to="/info">Info</RouterLink></li>
-              <li><RouterLink to="/updates">Updates</RouterLink></li>
-              <li><RouterLink to="/privacy">Privacy</RouterLink></li>
+            <ul class="subnav bg-base-300 rounded-t-none p-2 right-0 z-50">
+              <li>
+                <RouterLink
+                  to="/settings"
+                  class="text-white active:text-white focus:text-white"
+                  >Settings</RouterLink
+                >
+              </li>
+              <li>
+                <RouterLink
+                  to="/info"
+                  class="text-white active:text-white focus:text-white"
+                  >Info</RouterLink
+                >
+              </li>
+              <li>
+                <RouterLink
+                  to="/updates"
+                  class="text-white active:text-white focus:text-white"
+                  >Updates</RouterLink
+                >
+              </li>
+              <li>
+                <RouterLink
+                  to="/privacy"
+                  class="text-white active:text-white focus:text-white"
+                  >Privacy</RouterLink
+                >
+              </li>
+              <li>
+                <a
+                  href="https://discord.gg/pDKjxNjJWW"
+                  target="_blank"
+                  class="text-white active:text-white focus:text-white"
+                  >Discord</a
+                >
+              </li>
             </ul>
           </details>
         </li>
@@ -300,12 +332,14 @@
 }
 
 html[data-theme="light"] {
-  .navbar.bg-base-300 {
+  .navbar.bg-base-300,
+  .subnav.bg-base-300 {
     background: oklch(var(--n)) !important;
   }
 }
 @media (prefers-color-scheme: light) {
-  .navbar.bg-base-300 {
+  .navbar.bg-base-300,
+  .subnav.bg-base-300 {
     background: oklch(var(--n)) !important;
   }
   .menu summary {
