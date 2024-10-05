@@ -1,5 +1,5 @@
 <template>
-  <div class="page-privacy">
+  <div class="page-privacy prose">
     <h1>Privacy Policy</h1>
     <h2>Analytics</h2>
     <p>

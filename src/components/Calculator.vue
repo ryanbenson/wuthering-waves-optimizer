@@ -1,6 +1,6 @@
 <template>
   <div class="calculations">
-    <div class="calcations__nav">
+    <div v-if="false" class="calcations__nav">
       <ul>
         <li
           @click="changeScreen('character')"
@@ -1548,8 +1548,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .calculations {
   display: grid;
-  grid-template-columns: 80px 1fr 1fr;
-  height: 100vh;
+  // grid-template-columns: 80px 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  height: calc(100vh - 80px);
 
   @media (max-width: 768px) {
     display: block;
