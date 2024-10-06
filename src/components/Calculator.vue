@@ -24,7 +24,8 @@
               <li>
                 <a
                   @click="changeScreen('character')"
-                  :class="{ active: curScreen === 'character' }">
+                  :class="{ active: curScreen === 'character' }"
+                  class="text-white hover:text-primary">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png"
                     class="size-8"
@@ -35,7 +36,8 @@
               <li>
                 <a
                   @click="changeScreen('weapon')"
-                  :class="{ active: curScreen === 'weapon' }">
+                  :class="{ active: curScreen === 'weapon' }"
+                  class="text-white hover:text-primary">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_014.png"
                     class="size-8"
@@ -46,7 +48,8 @@
               <li>
                 <a
                   @click="changeScreen('echoes')"
-                  :class="{ active: curScreen === 'echoes' }">
+                  :class="{ active: curScreen === 'echoes' }"
+                  class="text-white hover:text-primary">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/echoes.png"
                     class="size-8"
@@ -57,7 +60,8 @@
               <li>
                 <a
                   @click="changeScreen('constellations')"
-                  :class="{ active: curScreen === 'constellations' }">
+                  :class="{ active: curScreen === 'constellations' }"
+                  class="text-white hover:text-primary">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/constellations.png"
                     class="size-8"
@@ -68,7 +72,8 @@
               <li>
                 <a
                   @click="changeScreen('party')"
-                  :class="{ active: curScreen === 'party' }">
+                  :class="{ active: curScreen === 'party' }"
+                  class="text-white hover:text-primary">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/team.png"
                     class="size-8"
@@ -79,7 +84,7 @@
               <li class="h-9 my-0.5">
                 <a
                   @click="changeScreen('rotations')"
-                  class="calcations__nav--icon-svg calcations__nav--rotations mr-2"
+                  class="calcations__nav--icon-svg calcations__nav--rotations mr-2 text-white hover:text-primary"
                   :class="{ active: curScreen === 'rotations' }">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +100,7 @@
               <li class="h-9 my-0.5">
                 <a
                   @click="changeScreen('custom-buffs')"
-                  class="calcations__nav--icon-svg calcations__nav--custom-buffs mr-2"
+                  class="calcations__nav--icon-svg calcations__nav--custom-buffs mr-2 text-white hover:text-primary"
                   :class="{ active: curScreen === 'custom-buffs' }">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -111,7 +116,8 @@
               <li>
                 <a
                   @click="changeScreen('enemy')"
-                  :class="{ active: curScreen === 'enemy' }">
+                  :class="{ active: curScreen === 'enemy' }"
+                  class="text-white hover:text-primary">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png"
                     class="size-8"
@@ -121,7 +127,7 @@
               </li>
               <li>
                 <a
-                  class="calculations__nav--results"
+                  class="calculations__nav--results text-white hover:text-primary"
                   @click="changeScreen('results')">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/damages.png"
