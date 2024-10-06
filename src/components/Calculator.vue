@@ -3,8 +3,8 @@
     <Teleport to="#navbar-container">
       <div class="navbar bg-base-300 shadow">
         <div class="navbar-start">
-          <div class="dropdown">
-            <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+          <details class="main-menu-mobile dropdown">
+            <summary tabindex="0" role="button" class="btn btn-ghost lg:hidden">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-5 w-5"
@@ -17,7 +17,7 @@
                   stroke-width="2"
                   d="M4 6h16M4 12h8m-8 6h16" />
               </svg>
-            </div>
+            </summary>
             <ul
               tabindex="0"
               class="menu menu-sm dropdown-content bg-base-300 rounded-box z-[1] mt-3 w-52 p-2 shadow">
@@ -131,7 +131,7 @@
                 </a>
               </li>
             </ul>
-          </div>
+          </details>
           <a class="btn btn-ghost text-xl"
             ><RouterLink
               to="/"
@@ -258,7 +258,7 @@
         <div class="navbar-end">
           <ul class="menu menu-horizontal px-1">
             <li>
-              <details>
+              <details class="options-menu">
                 <summary>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -276,6 +276,7 @@
                   <li>
                     <RouterLink
                       to="/settings"
+                      @click="toggleOptionsMenu"
                       class="text-white active:text-white focus:text-white"
                       >Settings</RouterLink
                     >
@@ -283,6 +284,7 @@
                   <li>
                     <RouterLink
                       to="/info"
+                      @click="toggleOptionsMenu"
                       class="text-white active:text-white focus:text-white"
                       >Info</RouterLink
                     >
@@ -290,6 +292,7 @@
                   <li>
                     <RouterLink
                       to="/updates"
+                      @click="toggleOptionsMenu"
                       class="text-white active:text-white focus:text-white"
                       >Updates</RouterLink
                     >
@@ -297,6 +300,7 @@
                   <li>
                     <RouterLink
                       to="/privacy"
+                      @click="toggleOptionsMenu"
                       class="text-white active:text-white focus:text-white"
                       >Privacy</RouterLink
                     >
@@ -305,6 +309,7 @@
                     <a
                       href="https://discord.gg/pDKjxNjJWW"
                       target="_blank"
+                      @click="toggleOptionsMenu"
                       class="text-white active:text-white focus:text-white"
                       >Discord</a
                     >
@@ -1629,6 +1634,10 @@ export default defineComponent({
 
     const changeScreen = (screen: string) => {
       curScreen.value = screen;
+      const mainMenuEl = document.querySelector(".main-menu-mobile");
+      if (mainMenuEl) {
+        mainMenuEl.removeAttribute("open");
+      }
     };
 
     const handleCharacterTalentUpdated = (data) => {
@@ -1720,6 +1729,13 @@ export default defineComponent({
       calcAllDamages();
     };
 
+    const toggleOptionsMenu = () => {
+      const optionEl = document.querySelector(".options-menu");
+      if (optionEl) {
+        optionEl.removeAttribute("open");
+      }
+    };
+
     return {
       allDamages,
       character,
@@ -1778,6 +1794,7 @@ export default defineComponent({
       weaponAtk,
       isLoading,
       mainEcho,
+      toggleOptionsMenu,
     };
   },
 });
