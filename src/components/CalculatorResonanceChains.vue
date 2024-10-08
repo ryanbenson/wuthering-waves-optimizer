@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="buffs" class="character__buffs">
+    <div v-if="buffs" class="character__buffs p-2">
       <CalculatorResonanceChainsItem
         v-for="buff in buffs"
         :key="buff.key"
@@ -117,18 +117,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.character__buff {
-  margin-top: 1rem;
-  background-color: #161616;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-
-  @media (prefers-color-scheme: light) {
-    background-color: #f8f8f8;
-  }
-}
-.character__buff:first-child {
-  margin-top: 0;
-}
-</style>
+<style scoped lang="scss"></style>

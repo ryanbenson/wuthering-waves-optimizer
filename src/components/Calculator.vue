@@ -1849,7 +1849,6 @@ export default defineComponent({
   }
 }
 .screen--character {
-  padding-top: 1rem;
   overflow: hidden;
 }
 .character__selection {
