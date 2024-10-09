@@ -44,7 +44,22 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Summon an Aero Predator that throws a dart forward. The dart will bounce between enemies up to three times, dealing <span class="param">18.00%/20.70%/23.40%/26.10%/28.80%</span> Aero DMG each time it hits.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
-    actions: [],
+    actions: [
+      {
+        key: "AeroPredatorDart",
+        label: "Dart DMG",
+        description: `Summon an Aero Predator that throws a dart forward. The dart will bounce between enemies up to three times, dealing <span class="param">18.00%/20.70%/23.40%/26.10%/28.80%</span> Aero DMG each time it hits.`,
+        talents: {
+          "1": "18.00%*3",
+          "2": "20.70%*3",
+          "3": "23.40%*3",
+          "4": "26.10%*3",
+          "5": "28.80%*3",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
   },
   // AlteredClangBang: {
   //   key: "AlteredClangBang",
@@ -189,7 +204,22 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Summon a Chirpuff that self-inflates and blasts a powerful gust of wind forward <span class="param">3</span> times. Each blast inflicts <span class="param">24.00%/27.60%/31.20%/34.80%/38.40%</span> Aero DMG and pushes enemies backwards.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
-    actions: [],
+    actions: [
+      {
+        key: "ChirpuffGust",
+        label: "Gust DMG",
+        description: `Summon a Chirpuff that self-inflates and blasts a powerful gust of wind forward <span class="param">3</span> times. Each blast inflicts <span class="param">24.00%/27.60%/31.20%/34.80%/38.40%</span> Aero DMG and pushes enemies backwards.`,
+        talents: {
+          "1": "24.00%*3",
+          "2": "27.60%*3",
+          "3": "31.20%*3",
+          "4": "34.80%*3",
+          "5": "38.40%*3",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
   },
   ClangBang: {
     key: "ClangBang",
@@ -249,7 +279,24 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">Summon a Cruisewing that restores HP for all current team characters by <span class="param">1%/1.20%/1.40%/1.60%/1.80%</span> of their Max HPs plus an additional <span class="param">80</span> points of HP, up to 4 times.
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
-    actions: [],
+    actions: [
+      // TODO: Need the healing to support the * 4 part
+      // {
+      //   key: "CruisewingHeal",
+      //   label: "Healing",
+      //   description: `Summon a Cruisewing that restores HP for all current team characters by <span class="param">1%/1.20%/1.40%/1.60%/1.80%</span> of their Max HPs plus an additional <span class="param">80</span> points of HP, up to 4 times.`,
+      //   talents: {
+      //     "1": "80 + 1%*4",
+      //     "2": "80 + 1.20%*4",
+      //     "3": "80 + 1.40%*4",
+      //     "4": "80 + 1.60%*4",
+      //     "5": "80 + 1.80%*4",
+      //   },
+      //   type: "Healing",
+      //   element: "Healing",
+      //   attribute: "hp",
+      // },
+    ],
   },
   CyanFeatheredHeron: {
     key: "CyanFeatheredHeron",
