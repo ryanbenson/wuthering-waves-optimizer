@@ -1,24 +1,40 @@
 <template>
-  <div :class="{ 'weapon-passive': !alwaysEnabled }" @click="toggleEnabled">
-    <p v-html="details"></p>
-    <label v-if="!alwaysEnabled" @click.stop>
-      <input
-        type="checkbox"
-        class="checkbox"
-        v-model="isEnabled"
-        @change="updatedStats" />
-      Enabled?
-    </label>
-    <span v-if="hasStacks" @click.stop>
-      <input
-        v-model="stacks"
-        type="number"
-        :min="minStacks"
-        :max="maxStacks"
-        @input="ensureMaxStacks"
-        @change="updatedStats" />
-      Stacks
-    </span>
+  <div  class="card card-bordered card-compact bg-base-100 shadow mb-2">
+    <div class="card-body">
+      <div :class="{ 'weapon-passive': !alwaysEnabled }" @click="toggleEnabled">
+        <p v-html="details"></p>
+        <div class="flex gap-2 items-center">
+          <div class="form-control" @click.stop>
+            <label
+              class="label cursor-pointer inline-flex justify-start pl-0"
+              v-if="!alwaysEnabled">
+              <span class="label-text mr-2">Enabled?</span
+                >
+              <input
+                type="checkbox"
+                class="checkbox checkbox-sm"
+                v-model="isEnabled"
+                @change="updatedStats" />
+            </label>
+          </div>
+          <div v-if="hasStacks" class="form-control" @click.stop>
+            <label
+              class="label cursor-pointer inline-flex justify-start"
+              v-if="!alwaysEnabled">
+              <span class="label-text mr-2">Stacks</span>
+              <input
+                v-model="stacks"
+                type="number"
+                  class="input input-bordered input-xs"
+                :min="minStacks"
+                :max="maxStacks"
+                @input="ensureMaxStacks"
+                @change="updatedStats" />
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -214,13 +230,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-p {
-  margin: 0;
-}
-label {
-  margin: 1rem 0 0;
-  display: inline-block;
-}
 .weapon-passive {
   cursor: pointer;
 }
