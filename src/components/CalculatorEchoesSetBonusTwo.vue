@@ -21,7 +21,7 @@
     </select>
 
     <div v-if="setDescription" v-html="setDescription" class="mt-1 mb-1"></div>
-    <div v-if="!setAlwaysEnabled">
+    <div v-if="!setAlwaysEnabled && type">
       <label @click.stop>
         <input v-model="isEnabled" type="checkbox" /> Enabled?
       </label>
@@ -74,27 +74,100 @@ export default {
         "Lingering Tunes 5 Set",
       ],
       setBonusEffects: {
-        "Freezing Frost 2 Set": { Glacio: 10, description: `<span class="Ice">Glacio</span> DMG increased by <span class="Highlight">10%</span>`, alwaysEnabled: true },
-        "Molten Rift 2 Set": { Fusion: 10, description: `<span class="Fire">Fusion</span> DMG increased by <span class="Highlight">10%</span>`, alwaysEnabled: true },
-        "Void Thunder 2 Set": { Electro: 10, description: `<span class="Thunder">Electro</span> DMG increased by <span class="Highlight">10%</span>`, alwaysEnabled: true },
-        "Sierra Gale 2 Set": { Aero: 10, description: `<span class="Wind">Aero</span> DMG increased by <span class="Highlight">10%</span>`, alwaysEnabled: true },
-        "Celestial Light 2 Set": { Spectro: 10, description: `<span class="Light">Spectro</span> DMG increased by <span class="Highlight">10%</span>`, alwaysEnabled: true },
-        "Sun-sinking Eclipse 2 Set": { Havoc: 10, description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`, alwaysEnabled: true },
-        "Rejuvenating Glow 2 Set": { HealingBonus: 10, description: `Healing increases by <span class="Highlight">10%</span>`, alwaysEnabled: true },
-        "Moonlit Clouds 2 Set": { EnergyRegen: 10, description: `Energy Regen increases by <span class="Highlight">10%</span>`, alwaysEnabled: true },
-        "Lingering Tunes 2 Set": { ATK: 10,description: `ATK increases by <span class="Highlight">10%</span>`, alwaysEnabled: true },
-        "Freezing Frost 5 Set": { Glacio: 10, maxStacks: 3, description: `Upon using Basic Attack or Heavy Attack, <span class="Ice">Glacio</span> DMG increases by <span class="Highlight">10%</span>, stacking up to three times, lasting for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
-        "Molten Rift 5 Set": { Fusion: 30, description: `Upon using Resonance Skill, <span class="Fire">Fusion</span> DMG increases by <span class="Highlight">30%</span> for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
-        "Void Thunder 5 Set": { Electro: 15, maxStacks: 2, description: `Upon using Heavy Attack or Resonance Skill, <span class="Thunder">Electro</span> DMG increases by <span class="Highlight">15%</span>, stacking up to <span class="Highlight">2</span> times, each stack lasting for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
-        "Sierra Gale 5 Set": { Aero: 30, description: `Upon using Intro Skill, <span class="Wind">Aero</span> DMG increases by <span class="Highlight">30%</span> for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
-        "Celestial Light 5 Set": { Spectro: 30, description: `Upon using Intro Skill, <span class="Light">Spectro</span> DMG increases by <span class="Highlight">30%</span> for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
-        "Sun-sinking Eclipse 5 Set": { Havoc: 7.5, maxStacks: 4, description: `Upon using Basic Attack or Heavy Attack, <span class="Dark">Havoc</span> DMG increases by <span class="Highlight">7.5%</span>, stacking up to four times for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
-        "Rejuvenating Glow 5 Set": { ATK: 15, description: `Upon healing allies, increase ATK of the entire team by <span class="Highlight">15%</span>, lasting <span class="Highlight">30s.</span>`, alwaysEnabled: false },
-        "Moonlit Clouds 5 Set": { ATK: 22.5, description: `Upon using Outro Skill, ATK of the next Resonator increases by <span class="Highlight">22.5%</span> for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
+        "Freezing Frost 2 Set": {
+          Glacio: 10,
+          description: `<span class="Ice">Glacio</span> DMG increased by <span class="Highlight">10%</span>`,
+          alwaysEnabled: true,
+        },
+        "Molten Rift 2 Set": {
+          Fusion: 10,
+          description: `<span class="Fire">Fusion</span> DMG increased by <span class="Highlight">10%</span>`,
+          alwaysEnabled: true,
+        },
+        "Void Thunder 2 Set": {
+          Electro: 10,
+          description: `<span class="Thunder">Electro</span> DMG increased by <span class="Highlight">10%</span>`,
+          alwaysEnabled: true,
+        },
+        "Sierra Gale 2 Set": {
+          Aero: 10,
+          description: `<span class="Wind">Aero</span> DMG increased by <span class="Highlight">10%</span>`,
+          alwaysEnabled: true,
+        },
+        "Celestial Light 2 Set": {
+          Spectro: 10,
+          description: `<span class="Light">Spectro</span> DMG increased by <span class="Highlight">10%</span>`,
+          alwaysEnabled: true,
+        },
+        "Sun-sinking Eclipse 2 Set": {
+          Havoc: 10,
+          description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
+          alwaysEnabled: true,
+        },
+        "Rejuvenating Glow 2 Set": {
+          HealingBonus: 10,
+          description: `Healing increases by <span class="Highlight">10%</span>`,
+          alwaysEnabled: true,
+        },
+        "Moonlit Clouds 2 Set": {
+          EnergyRegen: 10,
+          description: `Energy Regen increases by <span class="Highlight">10%</span>`,
+          alwaysEnabled: true,
+        },
+        "Lingering Tunes 2 Set": {
+          ATK: 10,
+          description: `ATK increases by <span class="Highlight">10%</span>`,
+          alwaysEnabled: true,
+        },
+        "Freezing Frost 5 Set": {
+          Glacio: 10,
+          maxStacks: 3,
+          description: `Upon using Basic Attack or Heavy Attack, <span class="Ice">Glacio</span> DMG increases by <span class="Highlight">10%</span>, stacking up to three times, lasting for <span class="Highlight">15s.</span>`,
+          alwaysEnabled: false,
+        },
+        "Molten Rift 5 Set": {
+          Fusion: 30,
+          description: `Upon using Resonance Skill, <span class="Fire">Fusion</span> DMG increases by <span class="Highlight">30%</span> for <span class="Highlight">15s.</span>`,
+          alwaysEnabled: false,
+        },
+        "Void Thunder 5 Set": {
+          Electro: 15,
+          maxStacks: 2,
+          description: `Upon using Heavy Attack or Resonance Skill, <span class="Thunder">Electro</span> DMG increases by <span class="Highlight">15%</span>, stacking up to <span class="Highlight">2</span> times, each stack lasting for <span class="Highlight">15s.</span>`,
+          alwaysEnabled: false,
+        },
+        "Sierra Gale 5 Set": {
+          Aero: 30,
+          description: `Upon using Intro Skill, <span class="Wind">Aero</span> DMG increases by <span class="Highlight">30%</span> for <span class="Highlight">15s.</span>`,
+          alwaysEnabled: false,
+        },
+        "Celestial Light 5 Set": {
+          Spectro: 30,
+          description: `Upon using Intro Skill, <span class="Light">Spectro</span> DMG increases by <span class="Highlight">30%</span> for <span class="Highlight">15s.</span>`,
+          alwaysEnabled: false,
+        },
+        "Sun-sinking Eclipse 5 Set": {
+          Havoc: 7.5,
+          maxStacks: 4,
+          description: `Upon using Basic Attack or Heavy Attack, <span class="Dark">Havoc</span> DMG increases by <span class="Highlight">7.5%</span>, stacking up to four times for <span class="Highlight">15s.</span>`,
+          alwaysEnabled: false,
+        },
+        "Rejuvenating Glow 5 Set": {
+          ATK: 15,
+          description: `Upon healing allies, increase ATK of the entire team by <span class="Highlight">15%</span>, lasting <span class="Highlight">30s.</span>`,
+          alwaysEnabled: false,
+        },
+        "Moonlit Clouds 5 Set": {
+          ATK: 22.5,
+          description: `Upon using Outro Skill, ATK of the next Resonator increases by <span class="Highlight">22.5%</span> for <span class="Highlight">15s.</span>`,
+          alwaysEnabled: false,
+        },
         "Lingering Tunes 5 Set": {
           ATK: 5,
           maxStacks: 4,
-          OutroSkillDMGBonus: 60, description: `While on the field, ATK increases by <span class="Highlight">5%</span> every <span class="Highlight">1.5s</span>, stacking up to 4 times. Outro Skill DMG increases by <span class="Highlight">60%.</span>`, alwaysEnabled: false
+          OutroSkillDMGBonus: 60,
+          description: `While on the field, ATK increases by <span class="Highlight">5%</span> every <span class="Highlight">1.5s</span>, stacking up to 4 times. Outro Skill DMG increases by <span class="Highlight">60%.</span>`,
+          alwaysEnabled: false,
         },
       },
     };
@@ -162,12 +235,12 @@ export default {
       this.$emit("update-stats", stats);
     },
     toggleEnabled() {
-      if (this.setAlwaysEnabled) { 
+      if (this.setAlwaysEnabled) {
         this.isEnabled = true;
         return;
       }
       this.isEnabled = !this.isEnabled;
-    }
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -248,7 +321,7 @@ export default {
       if (!this.type) {
         return false;
       }
-      return this.setBonusEffects[this.type]?.description ?? '';
+      return this.setBonusEffects[this.type]?.description ?? "";
     },
     setAlwaysEnabled() {
       if (!this.type) {
