@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="panel" @click="toggleEnabled">
     <select v-model="type">
       <option value="">Select 5 Set Bonus or another 2 Set Bonus</option>
       <optgroup label="5 Set Bonuses">
@@ -19,17 +19,22 @@
         </option>
       </optgroup>
     </select>
-  </div>
-  <label>Enabled?</label>
-  <input v-model="isEnabled" type="checkbox" />
-  <div v-if="needsStacks">
-    <label>Stacks:</label>
-    <input
-      v-model.number="stacks"
-      type="number"
-      min="0"
-      :max="getMaxStacks"
-      @input="updateTotalStats" />
+
+    <div v-if="setDescription" v-html="setDescription" class="mt-1 mb-1"></div>
+    <div v-if="!setAlwaysEnabled">
+      <label @click.stop>
+        <input v-model="isEnabled" type="checkbox" /> Enabled?
+      </label>
+    </div>
+    <div v-if="needsStacks" @click.stop class="mt-1">
+      <label>Stacks: </label>
+      <input
+        v-model.number="stacks"
+        type="number"
+        min="0"
+        :max="getMaxStacks"
+        @input="updateTotalStats" />
+    </div>
   </div>
 </template>
 
@@ -69,27 +74,27 @@ export default {
         "Lingering Tunes 5 Set",
       ],
       setBonusEffects: {
-        "Freezing Frost 2 Set": { Glacio: 10 },
-        "Molten Rift 2 Set": { Fusion: 10 },
-        "Void Thunder 2 Set": { Electro: 10 },
-        "Sierra Gale 2 Set": { Aero: 10 },
-        "Celestial Light 2 Set": { Spectro: 10 },
-        "Sun-sinking Eclipse 2 Set": { Havoc: 10 },
-        "Rejuvenating Glow 2 Set": { HealingBonus: 10 },
-        "Moonlit Clouds 2 Set": { EnergyRegen: 10 },
-        "Lingering Tunes 2 Set": { ATK: 10 },
-        "Freezing Frost 5 Set": { Glacio: 10, maxStacks: 3 },
-        "Molten Rift 5 Set": { Fusion: 30 },
-        "Void Thunder 5 Set": { Electro: 15, maxStacks: 2 },
-        "Sierra Gale 5 Set": { Aero: 30 },
-        "Celestial Light 5 Set": { Spectro: 30 },
-        "Sun-sinking Eclipse 5 Set": { Havoc: 7.5, maxStacks: 4 },
-        "Rejuvenating Glow 5 Set": { ATK: 15 },
-        "Moonlit Clouds 5 Set": { ATK: 22.5 },
+        "Freezing Frost 2 Set": { Glacio: 10, description: `<span class="Ice">Glacio</span> DMG increased by <span class="Highlight">10%</span>`, alwaysEnabled: true },
+        "Molten Rift 2 Set": { Fusion: 10, description: `<span class="Fire">Fusion</span> DMG increased by <span class="Highlight">10%</span>`, alwaysEnabled: true },
+        "Void Thunder 2 Set": { Electro: 10, description: `<span class="Thunder">Electro</span> DMG increased by <span class="Highlight">10%</span>`, alwaysEnabled: true },
+        "Sierra Gale 2 Set": { Aero: 10, description: `<span class="Wind">Aero</span> DMG increased by <span class="Highlight">10%</span>`, alwaysEnabled: true },
+        "Celestial Light 2 Set": { Spectro: 10, description: `<span class="Light">Spectro</span> DMG increased by <span class="Highlight">10%</span>`, alwaysEnabled: true },
+        "Sun-sinking Eclipse 2 Set": { Havoc: 10, description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`, alwaysEnabled: true },
+        "Rejuvenating Glow 2 Set": { HealingBonus: 10, description: `Healing increases by <span class="Highlight">10%</span>`, alwaysEnabled: true },
+        "Moonlit Clouds 2 Set": { EnergyRegen: 10, description: `Energy Regen increases by <span class="Highlight">10%</span>`, alwaysEnabled: true },
+        "Lingering Tunes 2 Set": { ATK: 10,description: `ATK increases by <span class="Highlight">10%</span>`, alwaysEnabled: true },
+        "Freezing Frost 5 Set": { Glacio: 10, maxStacks: 3, description: `Upon using Basic Attack or Heavy Attack, <span class="Ice">Glacio</span> DMG increases by <span class="Highlight">10%</span>, stacking up to three times, lasting for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
+        "Molten Rift 5 Set": { Fusion: 30, description: `Upon using Resonance Skill, <span class="Fire">Fusion</span> DMG increases by <span class="Highlight">30%</span> for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
+        "Void Thunder 5 Set": { Electro: 15, maxStacks: 2, description: `Upon using Heavy Attack or Resonance Skill, <span class="Thunder">Electro</span> DMG increases by <span class="Highlight">15%</span>, stacking up to <span class="Highlight">2</span> times, each stack lasting for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
+        "Sierra Gale 5 Set": { Aero: 30, description: `Upon using Intro Skill, <span class="Wind">Aero</span> DMG increases by <span class="Highlight">30%</span> for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
+        "Celestial Light 5 Set": { Spectro: 30, description: `Upon using Intro Skill, <span class="Light">Spectro</span> DMG increases by <span class="Highlight">30%</span> for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
+        "Sun-sinking Eclipse 5 Set": { Havoc: 7.5, maxStacks: 4, description: `Upon using Basic Attack or Heavy Attack, <span class="Dark">Havoc</span> DMG increases by <span class="Highlight">7.5%</span>, stacking up to four times for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
+        "Rejuvenating Glow 5 Set": { ATK: 15, description: `Upon healing allies, increase ATK of the entire team by <span class="Highlight">15%</span>, lasting <span class="Highlight">30s.</span>`, alwaysEnabled: false },
+        "Moonlit Clouds 5 Set": { ATK: 22.5, description: `Upon using Outro Skill, ATK of the next Resonator increases by <span class="Highlight">22.5%</span> for <span class="Highlight">15s.</span>`, alwaysEnabled: false },
         "Lingering Tunes 5 Set": {
           ATK: 5,
           maxStacks: 4,
-          OutroSkillDMGBonus: 60,
+          OutroSkillDMGBonus: 60, description: `While on the field, ATK increases by <span class="Highlight">5%</span> every <span class="Highlight">1.5s</span>, stacking up to 4 times. Outro Skill DMG increases by <span class="Highlight">60%.</span>`, alwaysEnabled: false
         },
       },
     };
@@ -100,6 +105,9 @@ export default {
         // if we change echo set bonus, ensure the stacks don't exceed the max
         if (this.stacks > this.getMaxStacks) {
           this.stacks = this.getMaxStacks;
+        }
+        if (this.setAlwaysEnabled) {
+          this.isEnabled = true;
         }
         this.updatedStats();
       },
@@ -114,6 +122,12 @@ export default {
       },
       immediate: true,
     },
+    isEnabled: {
+      handler: async function () {
+        this.updatedStats();
+      },
+      immediate: true,
+    },
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
@@ -123,6 +137,10 @@ export default {
      */
     updatedStats() {
       let stats = {};
+      if (!this.isEnabled) {
+        this.$emit("update-stats", stats);
+        return;
+      }
       if (this.type) {
         const setBonusEffect = this.setBonusEffects[this.type];
         for (const [key, value] of Object.entries(setBonusEffect)) {
@@ -143,6 +161,13 @@ export default {
       }
       this.$emit("update-stats", stats);
     },
+    toggleEnabled() {
+      if (this.setAlwaysEnabled) { 
+        this.isEnabled = true;
+        return;
+      }
+      this.isEnabled = !this.isEnabled;
+    }
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -219,6 +244,38 @@ export default {
       }
       return !!this.setBonusEffects[this.type]?.maxStacks;
     },
+    setDescription() {
+      if (!this.type) {
+        return false;
+      }
+      return this.setBonusEffects[this.type]?.description ?? '';
+    },
+    setAlwaysEnabled() {
+      if (!this.type) {
+        return false;
+      }
+      return this.setBonusEffects[this.type]?.alwaysEnabled ?? false;
+    },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.panel {
+  margin-top: 1rem;
+  background-color: #161616;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+
+  @media (prefers-color-scheme: light) {
+    background-color: #f8f8f8;
+  }
+}
+.mb-1 {
+  margin-bottom: 1rem;
+}
+.mt-1 {
+  margin-top: 1rem;
+}
+</style>
