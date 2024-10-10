@@ -20,6 +20,8 @@
       </optgroup>
     </select>
   </div>
+  <label>Enabled?</label>
+  <input v-model="isEnabled" type="checkbox" />
   <div v-if="needsStacks">
     <label>Stacks:</label>
     <input
@@ -150,6 +152,24 @@ export default {
      */
     currentCharacter() {
       return this.characters[this.character] ?? {};
+    },
+    /**
+     * Getter/setter used in the form for isEnabled
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    isEnabled: {
+      get() {
+        return this.currentCharacter?.echoSetBonus?.setBonusTwoEnabled ?? false;
+      },
+      async set(value) {
+        const data = {
+          echoSetBonus: {
+            setBonusTwoEnabled: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
     },
     /**
      * Getter/setter used in the form for the type
