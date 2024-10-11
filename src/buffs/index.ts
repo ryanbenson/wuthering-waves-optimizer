@@ -690,6 +690,23 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Camellya: [
+    {
+      key: "SequenceNode4ItsRootsContinueIntoEternity",
+      name: "Sequence Node 4: Its Roots Continue Into Eternity",
+      details: `<span class="skilldescription">After casting Intro Skill, the Resonators in the team receive a 25% increase in Basic Attack damage, lasting for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "BasicAttackDMGBonus",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

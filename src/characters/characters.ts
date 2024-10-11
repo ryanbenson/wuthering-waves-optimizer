@@ -45,6 +45,7 @@ export const allCharacters: string[] = [
   "Aalto",
   "Baizhi",
   "Calcharo",
+  "Camellya",
   "Changli",
   "Chixia",
   "Danjin",
