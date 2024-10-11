@@ -17,7 +17,7 @@ export const buffs = [
   {
     key: "InherentSkillCalligraphersTouch",
     name: "Inherent Skill: Calligrapher's Touch",
-    details: `<div class="skilldescription">When casting Resonance Skill <span class="Highlight"><strong>Stroke of Genius</strong></span> or Resonance Skill <span class="Highlight"><strong>Creation's Zenith</strong></span>, ATK is increased by 6% for 27s. This can be stacked up to 3 time(s)./div>`,
+    details: `<div class="skilldescription">When casting Resonance Skill <span class="Highlight"><strong>Stroke of Genius</strong></span> or Resonance Skill <span class="Highlight"><strong>Creation's Zenith</strong></span>, ATK is increased by 6% for 27s. This can be stacked up to 3 time(s).</div>`,
     hasStacks: true,
     modifiers: [
       {

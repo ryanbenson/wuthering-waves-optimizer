@@ -81,7 +81,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert">Calamity, overlord, and elite echo damages are available!</div>
+          <div class="alert">Camellya is now available!</div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -888,7 +888,15 @@ export default defineComponent({
         hasDynamicTalent = false,
         count = 1
       ) => {
-        const attackType = attack.type;
+        let attackType = attack.type;
+        // is there an attack type override? if so, update it
+        const attackTypeOverride =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentTypeOverride`
+          ] ?? null;
+        if (attackTypeOverride) {
+          attackType = attackTypeOverride;
+        }
         const attackElement = chosenChar.value?.basic?.element;
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         let totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
@@ -1095,10 +1103,10 @@ export default defineComponent({
           if (attack?.buffs) {
             totalSkillDmgBonus += attack.buffs?.HealingBonus ?? 0;
           }
-        const specificSkillHealingBonus =
-          charResonanceChainsData.value?.specificTalentBuffs?.[
-            `${attack.key}:HealingBonus`
-          ] ?? 0;
+          const specificSkillHealingBonus =
+            charResonanceChainsData.value?.specificTalentBuffs?.[
+              `${attack.key}:HealingBonus`
+            ] ?? 0;
           totalSkillDmgBonus += specificSkillHealingBonus;
           const h = calcHeal(
             talent,

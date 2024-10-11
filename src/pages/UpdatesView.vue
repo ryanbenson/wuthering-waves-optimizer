@@ -29,6 +29,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 11, 2024</h3>
+    <ul>
+      <li>Releases Camellya and her signature.</li>
+    </ul>
     <h3>October 10, 2024</h3>
     <ul>
       <li>
