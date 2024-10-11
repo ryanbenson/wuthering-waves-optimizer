@@ -296,7 +296,6 @@ import CalculatorDamages from "./CalculatorDamages.vue";
 import { mainEchoesData, getEchoData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
-import { resonanceChains } from "../characters/Aalto/resonanceChains";
 
 export default defineComponent({
   name: "Calculator",
