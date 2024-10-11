@@ -1,6 +1,7 @@
 export const swordsList = {
   five: [
     { key: "BlazingBrilliance", name: "Blazing Brilliance" },
+    { key: "CamellyaSignature", name: "Camellya Signature" },
     { key: "EmeraldOfGenesis", name: "Emerald Of Genesis" },
   ],
   four: [
