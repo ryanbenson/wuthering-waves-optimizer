@@ -22,16 +22,12 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "DayflowerDMG",
-        ],
+        modifySpecificTalents: ["DayflowerDMG"],
         modifierValue: 1.2,
       },
       {
         modifier: "talentTypeOverride",
-        modifySpecificTalents: [
-          "HeavyAttackDMG",
-        ],
+        modifySpecificTalents: ["HeavyAttackDMG"],
         modifierValue: "Basic",
       },
     ],
@@ -41,16 +37,14 @@ export const resonanceChains = [
   },
   {
     key: "S3AThornisBetterThanaThousandFlowerSeedsLiberation",
-    name: "Sequence Node 4: A Thorn is Better Than a Thousand Flower Seeds",
+    name: "Sequence Node 3: A Thorn is Better Than a Thousand Flower Seeds",
     details: `<span class="skilldescription"><span class="Highlight">Resonance Liberation</span> damage multiplier increases by <span class="Highlight">50%</span>.
     </span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "TheEmbersofYouthDMG",
-        ],
+        modifySpecificTalents: ["TheEmbersofYouthDMG"],
         modifierValue: 0.5,
       },
     ],
@@ -97,17 +91,12 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "TheEmbersofYouthDMG",
-        ],
+        modifySpecificTalents: ["TheEmbersofYouthDMG"],
         modifierValue: 0.5,
       },
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "EntangleDMG",
-          "EntangleDayflowerDMG",
-        ],
+        modifySpecificTalents: ["EntangleDMG", "EntangleDayflowerDMG"],
         modifierValue: 0.68,
       },
     ],
