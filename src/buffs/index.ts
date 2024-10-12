@@ -694,12 +694,44 @@ export const buffsByCharacter = {
     {
       key: "SequenceNode4ItsRootsContinueIntoEternity",
       name: "Sequence Node 4: Its Roots Continue Into Eternity",
-      details: `<span class="skilldescription">After casting Intro Skill, the Resonators in the team receive a 25% increase in Basic Attack damage, lasting for 30s.</span>`,
+      details: `<span class="skilldescription">After casting <span class="Highlight">Intro Skill</span>, the Resonators in the team receive a <span class="Highlight">25%</span> increase in Basic Attack damage, lasting for <span class="Highlight">30s</span>.</span>`,
       hasStacks: false,
       modifiers: [
         {
           modifier: "BasicAttackDMGBonus",
           modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Lumi: [
+    {
+      key: "OutroSkillConvoy",
+      name: "Outro Skill: Convoy",
+      details: `<span class="skilldescription">The upcoming Resonator has their <span class="Highlight">Resonance Skill Damage Deepen</span> by <span class="Highlight">38%</span>,  this effect lasts for <span class="Highlight">10s</span>. This effect ends early when switching to another Resonator.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Skill",
+          modifierValue: 0.38,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode6GiveaFiveStarPraise",
+      name: "Sequence Node 6: Give a Five-Star Praise",
+      details: `<span class="skilldescription">When casting <span class="Highlight">Outro Skill</span>, Resonators in the team increases their Attack power by <span class="Highlight">20%</span>, lasting for <span class="Highlight">‘?’s</span>.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
         },
       ],
       minStacks: 0,

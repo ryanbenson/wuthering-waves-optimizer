@@ -1,0 +1,159 @@
+export const basicAttacks = {
+  name: "Normal Attack: Leading the Way Forward",
+  description: `<div class="skilldescription">
+  <span class="Highlight">Yellow Light Normal Attack</span><br>
+Summons Tweet to perform 3 consecutive attacks, dealing <span class="Thunder">Electro</span> damage.
+<br><br>
+<span class="Highlight">Yellow Light Sprint</span><br>
+Press <span class="Highlight">Dodge</span>, cast <span class="Highlight">Dash</span> to enter the Sprint state; Immediately cast <span class="Highlight">Flying Stars</span> to attack locked enemies, dealing <span class="Thunder">Electro</span> damage, this damage counts as <span class="Highlight">Basic Attack</span> damage.
+<br><br>
+<span class="Highlight">Red Light Normal Attack</span><br>
+Performs up to 3 consecutive attacks, dealing <span class="Thunder">Electro</span> damage.
+<br><br>
+<span class="Highlight">Red Light Heavy Attack</span><br>
+Consumes Stamina, Tweet and Lumi smashes downward, attacking the target, dealing <span class="Highlight">Electro</span> damage, this damage counts as <span class="Highlight">Basic Attack</span> damage.
+<br><br>
+<span class="Highlight">Red Light Plunging Attack</span><br>
+Consumes Stamina to perform a plunging attack, dealing <span class="Thunder">Electro</span> damage.
+<br><br>
+<span class="Highlight">Red Light Dodge Counter</span><br>
+When pressing the <span class="Highlight">Normal Attack</span> after successfully dodging, attack the target, dealing <span class="Thunder">Electro</span> damage.</div>`,
+  attacks: [
+    {
+      key: "YellowLightNormalAttack",
+      label: "Yellow Light Normal Attack",
+      talents: {
+        "1": "16.00%*3",
+        "2": "17.32%*3",
+        "3": "18.63%*3",
+        "4": "20.47%*3",
+        "5": "21.78%*3",
+        "6": "23.29%*3",
+        "7": "25.39%*3",
+        "8": "27.48%*3",
+        "9": "29.58%*3",
+        "10": "31.81%*3",
+      },
+      type: "Basic",
+    },
+    {
+      key: "FlyingStars",
+      label: "Flying Stars",
+      talents: {
+        "1": "32.00%",
+        "2": "34.63%",
+        "3": "37.25%",
+        "4": "40.93%",
+        "5": "43.55%",
+        "6": "46.57%",
+        "7": "50.77%",
+        "8": "54.96%",
+        "9": "59.16%",
+        "10": "63.62%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "YellowLightPlungingAttack",
+      label: "Yellow Light Plunging Attack",
+      talents: {
+        "1": "48.00%",
+        "2": "51.94%",
+        "3": "55.88%",
+        "4": "61.39%",
+        "5": "65.32%",
+        "6": "69.85%",
+        "7": "76.15%",
+        "8": "82.44%",
+        "9": "88.74%",
+        "10": "95.43%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "RedLightStage1DMG",
+      label: "Red Light Stage 1 DMG",
+      talents: {
+        "1": "45.60%",
+        "2": "49.34%",
+        "3": "53.08%",
+        "4": "58.32%",
+        "5": "62.06%",
+        "6": "66.36%",
+        "7": "72.34%",
+        "8": "78.32%",
+        "9": "84.31%",
+        "10": "90.66%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "RedLightStage2DMG",
+      label: "Red Light Stage 2 DMG",
+      talents: {
+        "1": "54.15% + 10.83%*5",
+        "2": "58.60% + 11.72%*5",
+        "3": "63.04% + 12.61%*5",
+        "4": "69.25% + 13.85%*5",
+        "5": "73.69% + 14.74%*5",
+        "6": "78.80% + 15.76%*5",
+        "7": "85.90% + 17.18%*5",
+        "8": "93.01% + 18.61%*5",
+        "9": "100.11% + 20.03%*5",
+        "10": "107.66% + 21.54%*5",
+      },
+      type: "Basic",
+    },
+    {
+      key: "RedLightStage3DMG",
+      label: "Red Light Stage 3 DMG",
+      talents: {
+        "1": "32.49% + 75.81%",
+        "2": "35.16% + 82.03%",
+        "3": "37.82% + 88.25%",
+        "4": "41.55% + 96.95%",
+        "5": "44.22% + 103.17%",
+        "6": "47.28% + 110.32%",
+        "7": "51.54% + 120.26%",
+        "8": "55.81% + 130.21%",
+        "9": "60.07% + 140.15%",
+        "10": "64.60% + 150.72%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "RedLightHeavyAttack",
+      label: "Red Light Heavy Attack",
+      talents: {
+        "1": "33.25%*2",
+        "2": "35.98%*2",
+        "3": "38.71%*2",
+        "4": "42.53%*2",
+        "5": "45.25%*2",
+        "6": "48.39%*2",
+        "7": "52.75%*2",
+        "8": "57.11%*2",
+        "9": "61.47%*2",
+        "10": "66.11%*2",
+      },
+      type: "Basic",
+    },
+    {
+      key: "RedLightPlungingAttack",
+      label: "Red Light Plunging Attack",
+      talents: {
+        "1": "57.00%",
+        "2": "61.68%",
+        "3": "66.35%",
+        "4": "72.90%",
+        "5": "77.57%",
+        "6": "82.95%",
+        "7": "90.42%",
+        "8": "97.90%",
+        "9": "105.38%",
+        "10": "113.33%",
+      },
+      type: "Basic",
+    },
+  ],
+};
