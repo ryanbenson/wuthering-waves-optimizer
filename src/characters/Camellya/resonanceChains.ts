@@ -54,7 +54,7 @@ export const resonanceChains = [
   },
   {
     key: "S3AThornisBetterThanaThousandFlowerSeedsATK",
-    name: "Sequence Node 4: A Thorn is Better Than a Thousand Flower Seeds",
+    name: "Sequence Node 3: A Thorn is Better Than a Thousand Flower Seeds",
     details: `<span class="skilldescription">During Bud state, Camellya’s attack power increases by <span class="Highlight">58%</span>.
     </span>`,
     hasStacks: false,
