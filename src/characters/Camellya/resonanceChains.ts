@@ -2,7 +2,7 @@ export const resonanceChains = [
   {
     key: "S1OnASecretPathNoOneKnows",
     name: "Sequence Node 1: On a Secret Path No One Knows",
-    details: `<span class="skilldescription">When casting <span class="Highlight">Intro Skill</span> and <span class="Highlight">Outro Skill</span> Entangle, additionally restores 50 points of 【Red Camellia·Pistil】. When dealing basic attack damage, Critical Damage increases by 6%, lasting for 10s ; Triggers once every 1 sec, stacking up to 5 times.</span>`,
+    details: `<span class="skilldescription">When casting <span class="Highlight">Intro Skill</span> and <span class="Highlight">Outro Skill</span> Entangle, additionally restores 50 points of 【Red Camellia Pistil】. When dealing basic attack damage, Critical Damage increases by 6%, lasting for 10s ; Triggers once every 1 sec, stacking up to 5 times.</span>`,
     hasStacks: true,
     modifiers: [
       {
@@ -108,7 +108,7 @@ export const resonanceChains = [
     key: "S6Blooming orYouThousandsofTimes",
     name: "Sequence Node 6: Blooming for You Thousands of Times",
     details: `<span class="skilldescription">During <span class="Highlight">Resonance Circuit</span> Bud state, <span class="Highlight">Normal Attack</span>, <span class="Highlight">Heavy Attack</span>, <span class="Highlight">Normal Attack Vine Dance</span>, <span class="Highlight">Resonance Skill Red Camellia Bloom</span>, <span class="Highlight">Resonance Skill Dark Pistil Seeker</span> damage multiplier additionally increases by <span class="Highlight">150%</span>;<br>
-    <span class="Highlight">Resonance Skill Eternal Flower</span>: Within 15s after casting <span class="Highlight">Resonance Skill Dayflower</span>, if Concerto Energy is filled up to <span class="Highlight">100</span> points, <span class="Highlight">Eternal Flower</span> can be casted, consuming <span class="Highlight">50</span> Concerto points, restoring <span class="Highlight">50</span> points of 【Red Camellia·Pistil】, then enters the Bud state, can be casted once every <span class="Highlight">25s</span>.</span>`,
+    <span class="Highlight">Resonance Skill Eternal Flower</span>: Within 15s after casting <span class="Highlight">Resonance Skill Dayflower</span>, if Concerto Energy is filled up to <span class="Highlight">100</span> points, <span class="Highlight">Eternal Flower</span> can be casted, consuming <span class="Highlight">50</span> Concerto points, restoring <span class="Highlight">50</span> points of 【Red Camellia Pistil】, then enters the Bud state, can be casted once every <span class="Highlight">25s</span>.</span>`,
     hasStacks: false,
     modifiers: [
       {

@@ -58,7 +58,7 @@ export const buffs = [
   {
     key: "BudStateDayflowerMultiplier",
     name: "Bud State Dayflower",
-    details: `<div class="skilldescription">When casting <span class="Highlight">Resonance Skill Dayflower</span>, removes all <span class="Highlight">Red Camellia·Bud</span>, every stack of <span class="Highlight">Red Camellia·Bud</span> additionally increases the damage multiplier by 5%, up to 50%;</div>`,
+    details: `<div class="skilldescription">When casting <span class="Highlight">Resonance Skill Dayflower</span>, removes all <span class="Highlight">Red Camellia Bud</span>, every stack of <span class="Highlight">Red Camellia Bud</span> additionally increases the damage multiplier by 5%, up to 50%;</div>`,
     hasStacks: true,
     modifiers: [
       {
