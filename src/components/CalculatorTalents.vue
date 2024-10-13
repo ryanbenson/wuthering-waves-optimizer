@@ -1,26 +1,30 @@
 <template>
   <div class="data-input--talents mt-8">
     <div class="flex flex-col pb-7 relative">
-      <label for="talentBasic" class="talent__label">Basic <span class="text-primary">{{ basic }}</span></label>
+      <label for="talentBasic" class="talent__label"
+        >Basic <span class="text-primary">{{ basic }}</span></label
+      >
       <input
         v-model="basic"
         name="talentBasic"
         type="range"
         min="1"
         max="10"
-        steps="1"
+        step="1"
         class="range range-xs"
         @input="(e) => talentUpdated('basic', e)" />
     </div>
     <div class="flex flex-col pb-7 relative">
-      <label for="talentSkill" class="talent__label">Skill <span class="text-primary">{{ skill }}</span></label>
+      <label for="talentSkill" class="talent__label"
+        >Skill <span class="text-primary">{{ skill }}</span></label
+      >
       <input
         v-model="skill"
         name="talentSkill"
         type="range"
         min="1"
         max="10"
-        steps="1"
+        step="1"
         class="range range-xs"
         @input="(e) => talentUpdated('skill', e)" />
     </div>
@@ -34,7 +38,7 @@
         type="range"
         min="1"
         max="10"
-        steps="1"
+        step="1"
         class="range range-xs"
         @input="(e) => talentUpdated('forte', e)" />
     </div>
@@ -48,19 +52,21 @@
         type="range"
         min="1"
         max="10"
-        steps="1"
+        step="1"
         class="range range-xs"
         @input="(e) => talentUpdated('liberation', e)" />
     </div>
     <div class="flex flex-col pb-7 relative">
-      <label for="talentIntro" class="talent__label">Intro <span class="text-primary">{{ intro }}</span></label>
+      <label for="talentIntro" class="talent__label"
+        >Intro <span class="text-primary">{{ intro }}</span></label
+      >
       <input
         v-model="intro"
         name="talentIntro"
         type="range"
         min="1"
         max="10"
-        steps="1"
+        step="1"
         class="range range-xs"
         @input="(e) => talentUpdated('intro', e)" />
     </div>
