@@ -1,23 +1,44 @@
 <template>
-  <div class="panel mb-1">
-    Enemies in Tower of Adversity (ToA) have increased resistence, typically 20%
-    and 60%.
+  <div class="card card-bordered card-compact shadow mb-12 bg-primary">
+    <div class="card-body text-white">
+      Enemies in Tower of Adversity (ToA) have increased resistence, typically
+      20% and 60%.
+    </div>
   </div>
-  <div class="form__group field">
-    <input
-      id="enemyLevel"
-      type="number"
-      v-model="enemyLevel"
-      class="form__field form__field--short" />
-    <label for="enemyLevel" class="form__label">Enemy Level</label>
+
+  <div class="data-input--talents mt-8">
+    <div class="flex flex-col pb-7 relative">
+      <label for="enemyLevel" class="talent__label"
+        >Enemy level <span class="text-primary">{{ enemyLevel }}</span></label
+      >
+      <input
+        v-model="enemyLevel"
+        name="enemyLevel"
+        id="enemyLevel"
+        type="range"
+        min="1"
+        max="120"
+        step="1"
+        class="range range-xs" />
+    </div>
   </div>
-  <div class="form__group field">
-    <select v-model="enemyResist" id="enemyResist" name="enemyResist">
-      <option v-for="option in enemyResistOptions" :value="option.key">
-        {{ option.label }}
-      </option>
-    </select>
-    <label for="enemyResist" class="form__label">Enemy Resist</label>
+
+  <div class="data-input--talents mt-8">
+    <div class="flex flex-col pb-7 relative">
+      <label for="enemyResist" class="talent__label"
+        >Enemy Resistence
+        <span class="text-primary">{{ enemyResist * 100 }}%</span></label
+      >
+      <input
+        v-model="enemyResist"
+        name="enemyResist"
+        id="enemyResist"
+        type="range"
+        min="0"
+        max="1"
+        step="0.1"
+        class="range range-xs" />
+    </div>
   </div>
 </template>
 
@@ -124,26 +145,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.panel {
-  margin-top: 1rem;
-  background-color: #161616;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-
-  @media (prefers-color-scheme: light) {
-    background-color: #f8f8f8;
-  }
-}
-.mb-1 {
-  margin-bottom: 1rem;
-}
-.form__field--short {
-  max-width: 55px;
-}
-label {
-  margin-left: 0.5rem;
-}
-.field {
-  margin-bottom: 1rem;
+.talent__label {
+  font-size: 24px;
+  font-weight: 700;
+  position: absolute;
+  top: -1.6rem;
+  left: 0.5rem;
+  z-index: -1;
 }
 </style>
