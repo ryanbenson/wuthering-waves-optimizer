@@ -330,7 +330,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div class="alert">Camellya & Lumi are now available!</div>
+          <div class="alert alert-success mb-6 text-white p-2 px-4">
+            Camellya & Lumi are now available!
+          </div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -1840,20 +1842,6 @@ export default defineComponent({
   padding: 2rem;
 }
 
-.alert {
-  background: #126a5a;
-  padding: 0.25rem 0.5rem;
-  font-size: 14px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  color: white;
-
-  &.alert--info {
-    background: #12526a;
-  }
-}
 .screen--character {
   overflow: hidden;
 }
