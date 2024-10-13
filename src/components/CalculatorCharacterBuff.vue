@@ -249,21 +249,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.character__buff {
-  margin-top: 1rem;
-  background-color: #161616;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  cursor: pointer;
-
-  @media (prefers-color-scheme: light) {
-    background-color: #f8f8f8;
-  }
-
-  span:first-of-type {
-    font-weight: bold;
-  }
-}
 .shadow {
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }

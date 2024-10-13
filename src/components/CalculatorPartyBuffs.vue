@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>Team Buffs</h2>
     <div class="teammate_selects">
       <div class="teammate__select">
         <div
@@ -8,8 +7,9 @@
           :style="{
             backgroundImage: `url(${getCharacterImage(selectedCharacter1)})`,
           }"></div>
-        <label>Select Teammate 1</label>
-        <select v-model="selectedCharacter1">
+        <select
+          v-model="selectedCharacter1"
+          class="select select-bordered select-sm">
           <option
             v-for="character in availableCharacters"
             :key="character"
@@ -24,8 +24,9 @@
           :style="{
             backgroundImage: `url(${getCharacterImage(selectedCharacter2)})`,
           }"></div>
-        <label>Select Teammate 2</label>
-        <select v-model="selectedCharacter2">
+        <select
+          v-model="selectedCharacter2"
+          class="select select-bordered select-sm">
           <option
             v-for="character in availableCharacters"
             :key="character"
@@ -37,7 +38,9 @@
     </div>
 
     <div v-if="selectedCharacter1">
-      <h3>Buffs for {{ selectedCharacter1 }}</h3>
+      <h2 class="text-lg font-bold mt-6 mb-2">
+        Buffs for {{ selectedCharacter1 }}
+      </h2>
       <CalculatorPartyBuff
         v-for="buff in buffsByCharacter[selectedCharacter1]"
         :key="buff.key"
@@ -58,7 +61,9 @@
     </div>
 
     <div v-if="selectedCharacter2">
-      <h3>Buffs for {{ selectedCharacter2 }}</h3>
+      <h2 class="text-lg font-bold mt-6 mb-2">
+        Buffs for {{ selectedCharacter2 }}
+      </h2>
       <CalculatorPartyBuff
         v-for="buff in buffsByCharacter[selectedCharacter2]"
         :key="buff.key"
@@ -79,7 +84,7 @@
     </div>
 
     <div>
-      <h3>Team Echo Buffs</h3>
+      <h2 class="text-lg font-bold mt-6 mb-2">Team Echo Buffs</h2>
       <CalculatorPartyBuff
         v-for="buff in allEchoBuffs"
         :key="buff.key"
@@ -98,7 +103,7 @@
     </div>
 
     <div>
-      <h3>Team Weapon Buffs</h3>
+      <h2 class="text-lg font-bold mt-6 mb-2">Team Weapon Buffs</h2>
       <CalculatorPartyBuff
         v-for="buff in allWeaponTeamBuffs"
         :key="buff.key"
