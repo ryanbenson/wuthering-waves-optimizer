@@ -1,6 +1,6 @@
 <template>
   <label>Set Bonuses:</label>
-  <div>
+  <div class="panel mb-1">
     <select v-model="type">
       <option value="">Select 2 Set Bonus</option>
       <option
@@ -10,6 +10,7 @@
         {{ setBonus }}
       </option>
     </select>
+    <div v-if="setDescription" v-html="setDescription" class="mt-1"></div>
   </div>
 </template>
 
@@ -38,15 +39,15 @@ export default {
         "Lingering Tunes 2 Set",
       ],
       setBonusEffects: {
-        "Freezing Frost 2 Set": { Glacio: 10 },
-        "Molten Rift 2 Set": { Fusion: 10 },
-        "Void Thunder 2 Set": { Electro: 10 },
-        "Sierra Gale 2 Set": { Aero: 10 },
-        "Celestial Light 2 Set": { Spectro: 10 },
-        "Sun-sinking Eclipse 2 Set": { Havoc: 10 },
-        "Rejuvenating Glow 2 Set": { HealingBonus: 10 },
-        "Moonlit Clouds 2 Set": { EnergyRegen: 10 },
-        "Lingering Tunes 2 Set": { ATK: 10 },
+        "Freezing Frost 2 Set": { Glacio: 10, description: `<span class="Ice">Glacio</span> DMG increased by <span class="Highlight">10%</span>` },
+        "Molten Rift 2 Set": { Fusion: 10, description: `<span class="Fire">Fusion</span> DMG increased by <span class="Highlight">10%</span>` },
+        "Void Thunder 2 Set": { Electro: 10, description: `<span class="Thunder">Electro</span> DMG increased by <span class="Highlight">10%</span>` },
+        "Sierra Gale 2 Set": { Aero: 10, description: `<span class="Wind">Aero</span> DMG increased by <span class="Highlight">10%</span>` },
+        "Celestial Light 2 Set": { Spectro: 10, description: `<span class="Light">Spectro</span> DMG increased by <span class="Highlight">10%</span>` },
+        "Sun-sinking Eclipse 2 Set": { Havoc: 10, description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>` },
+        "Rejuvenating Glow 2 Set": { HealingBonus: 10, description: `Healing increases by <span class="Highlight">10%</span>` },
+        "Moonlit Clouds 2 Set": { EnergyRegen: 10, description: `Energy Regen increases by <span class="Highlight">10%</span>` },
+        "Lingering Tunes 2 Set": { ATK: 10,description: `ATK increases by <span class="Highlight">10%</span>` },
       },
     };
   },
@@ -99,6 +100,31 @@ export default {
         await this.setCharacterData(this.character, data);
       },
     },
+    setDescription() {
+      if (!this.type) {
+        return false;
+      }
+      return this.setBonusEffects[this.type]?.description ?? '';
+    },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.panel {
+  margin-top: 1rem;
+  background-color: #161616;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+
+  @media (prefers-color-scheme: light) {
+    background-color: #f8f8f8;
+  }
+}
+.mb-1 {
+  margin-bottom: 1rem;
+}
+.mt-1 {
+  margin-top: 1rem;
+}
+</style>

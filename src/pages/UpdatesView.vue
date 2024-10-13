@@ -92,6 +92,29 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 12, 2024</h3>
+    <ul>
+      <li>Releases Lumi.</li>
+    </ul>
+    <h3>October 11, 2024</h3>
+    <ul>
+      <li>Releases Camellya and her signature.</li>
+    </ul>
+    <h3>October 10, 2024</h3>
+    <ul>
+      <li>
+        Adds echo set descriptions for 2pc and 5pc, and adds enabled toggle for
+        5pc set effect.
+      </li>
+    </ul>
+    <h3>October 8, 2024</h3>
+    <ul>
+      <li>Adds a few missing common echo actions, more to come.</li>
+    </ul>
+    <h3>October 4, 2024</h3>
+    <ul>
+      <li>Removes Shorekeeper old S4 from team buffs.</li>
+    </ul>
     <h3>October 3, 2024</h3>
     <ul>
       <li>

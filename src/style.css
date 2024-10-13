@@ -67,6 +67,9 @@ body {
 .Light {
   color: #f8e56c;
 }
+.Dark {
+  color: #e649a6;
+}
 .Thunder {
   color: #b46bff;
 }
@@ -75,6 +78,9 @@ body {
 }
 .Ice {
   color: #41aefb;
+}
+.Wind {
+  color: #55ffb5;
 }
 .glacio--active {
   filter: brightness(0) saturate(100%) invert(87%) sepia(8%) saturate(5402%)

@@ -1,13 +1,13 @@
 export const buffs = [
   {
-    key: "CreationsZenith",
-    name: "Creation's Zenith",
-    details: `<div class="skilldescription">Move to the location of the <span class="Highlight">Phantasmic Imprint</span>, remove it, and then summon an Ivory Herald to attack the target, dealing greater <span class="Ice">Glacio DMG</span>, considered as Basic Attack DMG, additionally increasing the Basic Attack DMG Bonus by 18% for 27s.</div>`,
+    key: "InherentSkillPathfinding",
+    name: "Inherent Skill: Pathfinding",
+    details: `<div class="skilldescription">During <span class="Highlight">Red Light Mode</span>, Lumi increases <span class="Thunder">Electro</span> damage by <span class="Highlight">10%</span>.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "BasicAttackDMGBonus",
-        modifierValue: 0.18,
+        modifier: "Electro",
+        modifierValue: 0.1,
       },
     ],
     minStacks: 0,
@@ -15,18 +15,19 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "InherentSkillCalligraphersTouch",
-    name: "Inherent Skill: Calligrapher's Touch",
-    details: `<div class="skilldescription">When casting Resonance Skill <span class="Highlight"><strong>Stroke of Genius</strong></span> or Resonance Skill <span class="Highlight"><strong>Creation's Zenith</strong></span>, ATK is increased by 6% for 27s. This can be stacked up to 3 time(s).</div>`,
-    hasStacks: true,
+    key: "InherentSkillRushing",
+    name: "Inherent Skill: Rushing",
+    details:
+      `<div class="skilldescription">When casting <span class="Highlight">Enhanced Lunge</span> or <span class="Highlight">Enhanced Backstep</span>, Lumi increases Attack power by <span class="Highlight">10%</span> for <span class="Highlight">5s</span>.</div>`,
+    hasStacks: false,
     modifiers: [
       {
         modifier: "ATK",
-        modifierValue: 0.06,
+        modifierValue: 0.1,
       },
     ],
     minStacks: 0,
-    maxStacks: 3,
+    maxStacks: 0,
     alwaysEnabled: false,
   },
   {

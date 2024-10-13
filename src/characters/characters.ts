@@ -9,6 +9,7 @@ export function getCharactersAvailable(): CharacterList {
   return {
     five: [
       { key: "Calcharo", name: "Calcharo" },
+      { key: "Camellya", name: "Camellya" },
       { key: "Changli", name: "Changli" },
       { key: "Encore", name: "Encore" },
       { key: "Jianxin", name: "Jianxin" },
@@ -30,6 +31,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Baizhi", name: "Baizhi" },
       { key: "Chixia", name: "Chixia" },
       { key: "Danjin", name: "Danjin" },
+      { key: "Lumi", name: "Lumi" },
       { key: "Mortefi", name: "Mortefi" },
       { key: "Sanhua", name: "Sanhua" },
       { key: "Taoqi", name: "Taoqi" },
@@ -44,6 +46,7 @@ export const allCharacters: string[] = [
   "Aalto",
   "Baizhi",
   "Calcharo",
+  "Camellya",
   "Changli",
   "Chixia",
   "Danjin",
@@ -52,6 +55,7 @@ export const allCharacters: string[] = [
   "Jinhsi",
   "Jiyan",
   "Lingyang",
+  "Lumi",
   "Mortefi",
   "RoverHavocFemale",
   "RoverHavocMale",
