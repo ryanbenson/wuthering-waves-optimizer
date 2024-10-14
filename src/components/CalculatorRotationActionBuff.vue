@@ -1,6 +1,6 @@
 <template>
-  <div class="action__buff">
-    <select v-model="modifierType" @change="onModifierUpdate">
+  <div class="action__buff pb-4">
+    <select v-model="modifierType" @change="onModifierUpdate" class="select select-bordered select-xs w-full">
       <option
         v-for="option in modifierOptions"
         :value="option.key"
@@ -13,6 +13,7 @@
       type="number"
       name="modifierValueInput"
       id="modifierValueInput"
+      class="input input-xs input-bordered w-24"
       @input="onModifierValueUpdate" />
     <div class="delete" @click="removeBuff">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -102,21 +103,6 @@ export default {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-}
-select,
-input {
-  display: block;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 0.3rem;
-  background-color: #2e2e2e;
-  @media (prefers-color-scheme: light) {
-    background-color: #b7b7b7;
-    border: 1px solid rgba(0, 0, 0, 0.5);
-  }
-}
-input {
-  padding: 0.395rem 0.5rem;
 }
 .delete {
   margin-top: 0.3rem;
