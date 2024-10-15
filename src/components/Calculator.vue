@@ -1886,25 +1886,4 @@ export default defineComponent({
     display: none !important;
   }
 }
-
-html[data-theme="light"] {
-  .navbar.bg-base-300,
-  .subnav.bg-base-300 {
-    background: oklch(var(--n)) !important;
-  }
-}
-@media (prefers-color-scheme: light) {
-  .navbar.bg-base-300,
-  .subnav.bg-base-300 {
-    background: oklch(var(--n)) !important;
-  }
-  .menu summary {
-    &:after {
-      color: white !important;
-    }
-    svg {
-      stroke: white !important;
-    }
-  }
-}
 </style>

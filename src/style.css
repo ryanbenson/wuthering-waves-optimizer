@@ -106,3 +106,21 @@ body {
   filter: brightness(0) saturate(100%) invert(67%) sepia(68%) saturate(6636%)
     hue-rotate(299deg) brightness(95%) contrast(89%) !important;
 }
+
+
+html[data-theme="light"] .navbar.bg-base-300,
+html[data-theme="light"] .subnav.bg-base-300 {
+    background: oklch(var(--n)) !important;
+}
+@media (prefers-color-scheme: light) {
+  .navbar.bg-base-300,
+  .subnav.bg-base-300 {
+    background: oklch(var(--n)) !important;
+  }
+  .menu summary:after {
+    color: white !important;
+  }
+  .menu summary svg {
+      stroke: white !important;
+  }
+}
