@@ -3,6 +3,72 @@
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
+    <div class="echo__list">
+      <div class="echo__item card card-bordered card-compact bg-base-100 shadow mb-2">
+        <div class="card-body">
+          <div class="echo__content flex gap-6">
+            <div class="echo__item__left">
+              <div
+                class="echo__item__image rounded-full border border-solid border-amber-300 neutral-content size-20 mb-2 bg-cover"
+                style="background-image: url(https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FallacyOfNoReturn.png);">
+              </div>
+              <div class="echo__item__actions flex gap-2 justify-center mt-4">
+                <span class="echo__item__edit"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4"><path d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z" fill="#FFFFFF"/></svg></span>
+                <span class="echo__item__delete"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4"><path d="M367.2 412.5L99.5 144.8C77.1 176.1 64 214.5 64 256c0 106 86 192 192 192c41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3C434.9 335.9 448 297.5 448 256c0-106-86-192-192-192c-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z" fill="#FFFFFF"/></svg></span>
+              </div>
+            </div>
+            <div class="echo__item__stats mb-2 w-full relative">
+              <h2 class="card-title text-amber-300 flex items-center justify-between">
+                <span>Fallacy of No Return</span>
+                <div class="echo__item__meta flex gap-2 items-center">
+                  <span class="echo__item__set size-6 rounded-full border border-solid border-white"><img src="https://www.prydwen.gg/static/5f4daa43c4a07ee8fb472a7e4f8feea1/8257c/set_8.webp"></span>
+                  <span class="echo__item__cost badge badge-primary">Cost 4</span>
+                </div>
+              </h2>
+              <table class="echo__item__sub-stats table table-zebra">
+                <tbody>
+                  <tr>
+                    <td class="flex gap-2 items-center"><img src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />Crit Rate</td>
+                    <td>22%</td>
+                  </tr>
+                  <tr>
+                    <td class="flex gap-2 items-center"><img src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />ATK</td>
+                    <td>150</td>
+                  </tr>
+                  <tr class=" substats__label">
+                    <td class="font-bold font-size-8">Substats</td>
+                  </tr>
+                  <tr class="relative" style="z-index: 1;">
+                    <td class="flex gap-2 items-center"><img src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" /> Crit DMG</td>
+                    <td>21%</td>
+                  </tr>
+                  <tr>
+                    <td class="flex gap-2 items-center"><img src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" /> Crit Rate</td>
+                    <td>6.3%</td>
+                  </tr>
+                  <tr>
+                    <td class="flex gap-2 items-center"><img src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" /> ATK%</td>
+                    <td>6.8%</td>
+                  </tr>
+                  <tr>
+                    <td class="flex gap-2 items-center"><img src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" /> Basic Attack DMG Bonus</td>
+                    <td>11.1%</td>
+                  </tr>
+                  <tr>
+                    <td class="flex gap-2 items-center"><img src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" /> Crit DMG</td>
+                    <td>40</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="echo__item__image rounded-full border border-solid neutral-content size-16 ml-1 mb-2"></div>
+      <div class="echo__item__image rounded-full border border-solid neutral-content size-16 ml-1 mb-2"></div>
+      <div class="echo__item__image rounded-full border border-solid neutral-content size-16 ml-1 mb-2"></div>
+      <div class="echo__item__image rounded-full border border-solid neutral-content size-16 ml-1"></div>
+    </div>
     <CalculatorEcho
       v-for="(n, index) in 5"
       :key="character + '-' + index"
@@ -542,5 +608,12 @@ export default {
   span:first-of-type {
     font-weight: bold;
   }
+}
+.substats__label {
+  position: relative;
+  left: -10px;
+  top: 14px;
+  z-index: 0;
+  font-size: 28px;
 }
 </style>
