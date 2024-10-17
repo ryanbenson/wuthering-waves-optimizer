@@ -127,7 +127,7 @@
               </li>
               <li>
                 <a
-                  class="calculations__nav--results text-white hover:text-primary"
+                  class="calculations__nav--results text-neutral hover:text-primary"
                   @click="changeScreen('results')">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/damages.png"
@@ -141,7 +141,7 @@
           <a class="btn btn-ghost text-xl"
             ><RouterLink
               to="/"
-              class="logo poiret-one-regular text-white hover:text-primary"
+              class="logo poiret-one-regular text-primary hover:text-primary"
               >WT</RouterLink
             ></a
           >
@@ -1883,5 +1883,10 @@ export default defineComponent({
 }
 .menu {
   z-index: 100;
+}
+.options-menu {
+  summary:after {
+    display: none;
+  }
 }
 </style>

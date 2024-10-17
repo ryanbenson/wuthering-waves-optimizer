@@ -11,6 +11,7 @@
 .contain {
   display: grid;
   grid-template-columns: 1fr;
+  background-color: #23292f;
 
   @media (max-width: 768px) {
     display: block;

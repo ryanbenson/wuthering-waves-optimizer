@@ -5,13 +5,13 @@
         <a class="btn btn-ghost text-xl"
           ><RouterLink
             to="/"
-            class="logo poiret-one-regular text-white hover:text-primary"
+            class="logo poiret-one-regular text-primary hover:text-primary"
             >WT</RouterLink
           ></a
         >
         <RouterLink
           to="/"
-          class="poiret-one-regular btn btn-ghost text-xl text-white hover:text-primary"
+          class="poiret-one-regular btn btn-ghost text-xl hover:text-primary"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 384 512"

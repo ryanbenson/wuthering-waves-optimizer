@@ -162,4 +162,33 @@ html[data-theme="light"] .subnav img {
 
     color: oklch(var(--n)) !important;
   }
+  .dropdown-content,
+  .subnav {
+    background: oklch(var(--b1)) !important;
+
+    a {
+      color: oklch(var(--n)) !important;
+    }
+    a:hover,
+    a.active {
+      background-color: oklch(var(--b3)) !important;
+
+      img {
+        filter: invert(100%);
+      }
+
+      svg {
+        stroke: black !important;
+        fill: black !important;
+      }
+    }
+  }
+}
+
+body {
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    overflow: auto;
+  }
 }

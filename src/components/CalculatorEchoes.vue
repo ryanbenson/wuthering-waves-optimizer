@@ -1,5 +1,149 @@
 <template>
   <div>
+    <button class="btn" onclick="my_modal_3.showModal()">open modal</button>
+    <dialog id="my_modal_3" class="modal">
+      <div class="modal-box">
+        <form method="dialog">
+          <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <div class="py-4">
+          <div class="echo__selection flex w-full items-center gap-6">
+            <div
+              class="echo__item__image rounded-full border border-solid border-amber-300 neutral-content size-24 bg-cover min-w-24 text-center"
+              style="background-image: url(https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FallacyOfNoReturn.png);">
+            </div>
+            <div class="echo__item__main-selection flex flex-col gap-4">
+              <select name="mainEcho" class="select select-bordered select select-sm">
+                <optgroup label="Calamity">
+                  <option
+                    v-for="option in mainEchoOptions.Calamity"
+                    :key="option.key"
+                    :value="option.key">
+                    {{ option.name }}
+                  </option>
+                </optgroup>
+                <optgroup label="Overlord">
+                  <option
+                    v-for="option in mainEchoOptions.Overlord"
+                    :key="option.key"
+                    :value="option.key">
+                    {{ option.name }}
+                  </option>
+                </optgroup>
+                <optgroup label="Elite">
+                  <option
+                    v-for="option in mainEchoOptions.Elite"
+                    :key="option.key"
+                    :value="option.key">
+                    {{ option.name }}
+                  </option>
+                </optgroup>
+                <optgroup label="Common">
+                  <option
+                    v-for="option in mainEchoOptions.Common"
+                    :key="option.key"
+                    :value="option.key">
+                    {{ option.name }}
+                  </option>
+                </optgroup>
+              </select>
+              <select name="mainStat" class="select select-bordered select select-sm">
+                <option value="CritRate">Crit Rate</option>
+                <option value="CritDMG">Crit DMG</option>
+              </select>
+            </div>
+            <div class="echo__item__set w-full relative">
+              <span class="font-bold mb-2 inline-flex">Echo Set</span>
+              <div class="echo__item__set-selection flex gap-4">
+                <div class="size-8 rounded-full border border-solid border-white"><img src="https://www.prydwen.gg/static/5f4daa43c4a07ee8fb472a7e4f8feea1/8257c/set_8.webp"></div>
+                <div class="size-8 rounded-full"><img src="https://www.prydwen.gg/static/321492541c283d76ce00e5b199247274/8257c/set_7.webp"></div>
+              </div>
+            </div>
+          </div>
+          <div class="echo__selection__input w-full mt-8">
+            <div class="echo__selection__rank flex flex-col pb-7 relative">
+              <label for="rank" class="rank__label">Rank <span class="text-primary">5</span></label>
+              <input type="range" id="rank" min="1" max="5" value="5" step="1" class="echo__selection__rank__input range range-xs" />
+            </div>
+          </div>
+          <div class="echo__selection_substats w-full">
+            <span class="font-bold text-2xl mb-6 inline-flex">Substats</span>
+            <div class="echo__selection_substats__list">
+              <div class="echo__selection_substat relative">
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" checked="checked" />
+                  <span class="label-text substat__label">Crit Rate <span class="text-primary">6.3%</span></span>
+                  <input type="range" id="rank" min="1" max="5" value="5" step="1" class="echo__selection__rank__input range range-xs" />
+                </div>
+
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" checked="checked" />
+                  <span class="label-text substat__label">Crit DMG <span class="text-primary">21%</span></span>
+                  <input type="range" id="rank" min="1" max="5" value="1" step="1" class="echo__selection__rank__input range range-xs" />
+                </div>
+
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
+                  <span class="label-text text-base">ATK% <span class="text-primary"></span></span>
+                </div>
+
+<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+  <input type="checkbox" class="toggle toggle-sm toggle-accent" checked="checked" />
+  <span class="label-text substat__label">ATK <span class="text-primary">150</span></span>
+  <input type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
+</div>
+
+<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
+  <span class="label-text text-base">HP%</span>
+</div>
+
+<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
+  <span class="label-text text-base">HP</span>
+</div>
+
+<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
+  <span class="label-text text-base">DEF%</span>
+</div>
+
+<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
+  <span class="label-text text-base">DEF</span>
+</div>
+
+<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
+  <span class="label-text text-base">Basic Attack DMG Bonus</span>
+</div>
+
+<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
+  <span class="label-text text-base">Heavy Attack DMG Bonus</span>
+</div>
+
+<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
+  <span class="label-text text-base">Skill DMG Bonus</span>
+</div>
+
+<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
+  <span class="label-text text-base">Liberation DMG Bonus</span>
+</div>
+
+<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
+  <span class="label-text text-base">Energy Recharge</span>
+</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
@@ -25,7 +169,7 @@
                   <span class="echo__item__cost badge badge-primary">Cost 4</span>
                 </div>
               </h2>
-              <table class="echo__item__sub-stats table table-zebra">
+              <table class="echo__item__sub-stats table table-zebra table-xs">
                 <tbody>
                   <tr>
                     <td class="flex gap-2 items-center"><img src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />Crit Rate</td>
@@ -612,8 +756,37 @@ export default {
 .substats__label {
   position: relative;
   left: -10px;
-  top: 14px;
+  top: 4px;
   z-index: 0;
-  font-size: 28px;
+  font-size: 24px;
+}
+.echo__item__actions {
+  @media (prefers-color-scheme: light) {
+    svg {
+      filter: invert(100%);
+    }
+  }
+}
+
+
+
+.rank__label {
+  font-size: 24px;
+  font-weight: 700;
+  position: absolute;
+  top: -1.6rem;
+  left: 0.5rem;
+  z-index: 0;
+}
+.substat__label {
+  font-size: 16px;
+  position: absolute;
+  left: 3rem;
+  top: -0.9rem;
+  z-index: 0;
+}
+.echo__selection__rank__input {
+  position: relative;
+  z-index: 10;
 }
 </style>
