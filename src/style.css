@@ -108,7 +108,7 @@ body {
 }
 
 
-html[data-theme="light"] .navbar.bg-base-300,
+/* html[data-theme="light"] .navbar.bg-base-300,
 html[data-theme="light"] .subnav.bg-base-300 {
     background: oklch(var(--n)) !important;
 }
@@ -122,5 +122,44 @@ html[data-theme="light"] .subnav.bg-base-300 {
   }
   .menu summary svg {
       stroke: white !important;
+  }
+} */
+
+
+html[data-theme="light"] .navbar img,
+html[data-theme="light"] .subnav img {
+    filter: invert(100%);
+}
+@media (prefers-color-scheme: light) {
+  .navbar {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  .navbar img,
+  .subnav img {
+    filter: invert(100%);
+  }
+  .navbar svg path,
+  .subnav svg path {
+      stroke: black !important;
+      fill: black !important;
+  }
+  .navbar a.active img,
+  .subnav  a.activeimg {
+    filter: none;
+  }
+  .navbar a.active svg path,
+  .subnav a.active svg path {
+      stroke: white !important;
+      fill: white !important;
+  }
+  .subnav.bg-base-100 {
+    background: oklch(var(--b1)) !important;
+
+  }
+  #navbar-container .navbar,
+  .subnav.bg-base-300 {
+    background: oklch(var(--b1)) !important;
+
+    color: oklch(var(--n)) !important;
   }
 }

@@ -283,7 +283,6 @@
                     <RouterLink
                       to="/settings"
                       @click="toggleOptionsMenu"
-                      class="text-white active:text-white focus:text-white"
                       >Settings</RouterLink
                     >
                   </li>
@@ -291,7 +290,6 @@
                     <RouterLink
                       to="/info"
                       @click="toggleOptionsMenu"
-                      class="text-white active:text-white focus:text-white"
                       >Info</RouterLink
                     >
                   </li>
@@ -299,7 +297,6 @@
                     <RouterLink
                       to="/updates"
                       @click="toggleOptionsMenu"
-                      class="text-white active:text-white focus:text-white"
                       >Updates</RouterLink
                     >
                   </li>
@@ -307,7 +304,6 @@
                     <RouterLink
                       to="/privacy"
                       @click="toggleOptionsMenu"
-                      class="text-white active:text-white focus:text-white"
                       >Privacy</RouterLink
                     >
                   </li>
@@ -316,7 +312,6 @@
                       href="https://discord.gg/pDKjxNjJWW"
                       target="_blank"
                       @click="toggleOptionsMenu"
-                      class="text-white active:text-white focus:text-white"
                       >Discord</a
                     >
                   </li>
@@ -1885,5 +1880,8 @@ export default defineComponent({
   .results {
     display: none !important;
   }
+}
+.menu {
+  z-index: 100;
 }
 </style>

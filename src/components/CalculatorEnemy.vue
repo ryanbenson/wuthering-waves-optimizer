@@ -151,6 +151,10 @@ export default {
   position: absolute;
   top: -1.6rem;
   left: 0.5rem;
-  z-index: -1;
+  z-index: 0;
+}
+.data-input--talents input {
+  position: relative;
+  z-index: 10;
 }
 </style>

@@ -16,4 +16,15 @@
     display: block;
   }
 }
+
+html[data-theme="light"] {
+  .contain {
+    background: oklch(var(--b1)) !important;
+  }
+}
+@media (prefers-color-scheme: light) {
+  .contain {
+    background: oklch(var(--b1)) !important;
+  }
+}
 </style>
