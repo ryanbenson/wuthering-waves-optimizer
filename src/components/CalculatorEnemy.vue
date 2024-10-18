@@ -34,6 +34,7 @@ export default {
   data() {
     return {
       enemyResistOptions: [
+        { key: 0, label: "0%" },
         { key: 0.1, label: "10%" },
         { key: 0.2, label: "20%" },
         { key: 0.3, label: "30%" },

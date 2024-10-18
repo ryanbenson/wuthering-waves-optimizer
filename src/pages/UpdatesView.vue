@@ -29,6 +29,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 18, 2024</h3>
+    <ul>
+      <li>Adds 0% enemy resist option.</li>
+    </ul>
     <h3>October 12, 2024</h3>
     <ul>
       <li>Releases Lumi.</li>
