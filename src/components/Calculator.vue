@@ -1054,6 +1054,11 @@ export default defineComponent({
         // re-calculate the base for this specific instance of damage
         let modifyBaseAtk =
           charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:ATK`] ?? 0;
+        let modifyBaseAtkResChain =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:ATK`
+          ] ?? 0;
+        modifyBaseAtk += modifyBaseAtkResChain;
         let modifyBaseHp =
           charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:HP`] ?? 0;
         let modifyBaseDef =

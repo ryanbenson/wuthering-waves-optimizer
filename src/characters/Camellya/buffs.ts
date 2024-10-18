@@ -38,6 +38,13 @@ export const buffs = [
       {
         modifier: "talentModifierMultiply",
         modifySpecificTalents: [
+          "NormalAttackStage1DMG",
+          "NormalAttackStage2DMG",
+          "NormalAttackStage3DMG",
+          "NormalAttackStage4DMG",
+          "NormalAttackStage5DMG",
+          "MidAirAttackDMG",
+          "DodgeCounterDMG",
           "VineDanceStage1DMG",
           "VineDanceStage2DMG",
           "VineDanceStage3DMG",
