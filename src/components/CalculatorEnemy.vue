@@ -26,7 +26,7 @@
   <div class="data-input--talents mt-8">
     <div class="flex flex-col pb-7 relative">
       <label for="enemyResist" class="talent__label"
-        >Enemy Resistence
+        >Enemy Resistance
         <span class="text-primary">{{ enemyResist * 100 }}%</span></label
       >
       <input
