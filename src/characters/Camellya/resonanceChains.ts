@@ -135,6 +135,14 @@ export const resonanceChains = [
       {
         modifier: "talentModifierMultiply",
         modifySpecificTalents: [
+          "NormalAttackStage1DMG",
+          "NormalAttackStage2DMG",
+          "NormalAttackStage3DMG",
+          "NormalAttackStage4DMG",
+          "NormalAttackStage5DMG",
+          "MidAirAttackDMG",
+          "HeavyAttackDMG",
+          "DodgeCounterDMG",
           "VineDanceStage1DMG",
           "VineDanceStage2DMG",
           "VineDanceStage3DMG",

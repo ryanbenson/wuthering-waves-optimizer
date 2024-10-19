@@ -33,8 +33,8 @@
     <ul>
       <li>Adds 0% enemy resist option.</li>
       <li>
-        Fixes Camellya s3 ATK buff to not be a global buff, and adds her basic
-        attacks to her self buff.
+        Fixes Camellya s6, s3 ATK buff to not be a global buff, and adds her
+        basic attacks to her self buff.
       </li>
     </ul>
     <h3>October 12, 2024</h3>
