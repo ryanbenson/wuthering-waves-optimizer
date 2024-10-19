@@ -6,12 +6,15 @@ Attacks the target, dealing <span class="Dark">Havoc</span> damage, then enters 
 Can be casted in the air.
 <br><br>
 <span class="Highlight">Bloom state</span><br>
--Can’t move during the Bloom state.<br>
+-Can’t move during the Bloom state, and Vine Dance.<br>
 -<span class="Highlight">Basic Attack</span> and <span class="Highlight">Heavy Attack</span> will be replaced with <span class="Highlight">Basic Attack Vine Dance</span>, performing up to 4 consecutive attacks, dealing <span class="Dark">Havoc</span> damage, this damage counts as <span class="Highlight">Basic Attack</span> damage.
 -When casting <span class="Highlight">Basic Attack Stage 3 Vine Dance</span>, holding the <span class="Highlight">Normal Attack</span> will cast <span class="Highlight">Basic Attack Ashen Blossom Vine Dance</span>, dealing <span class="Dark">Havoc</span> damage, then immediately cast <span class="Highlight">Basic Attack Stage 4 Vine Dance</span><br>
 -<span class="Highlight">Dodge Counter</span> replaced with <span class="Highlight">Dodge Counter Atonement</span>. When pressing the <span class="Highlight">Normal Attack</span> after successfully dodging, Camellya attacks the target, dealing <span class="Dark">Havoc</span> damage; this damage counts as <span class="Highlight">Basic Attack</span> damage.<br>
 -<span class="Highlight">Resonance Skill</span> replaced with <span class="Highlight">Resonance Skill Dark Pistil Seeker</span>. Casting <span class="Highlight">Dark Pistil Seeker</span> deals damage to the target, dealing <span class="Dark">Havoc</span> damage, this damage counts as <span class="Highlight">Basic Attack</span> damage.<br>
 -After casting <span class="Highlight">Resonance Skill Dark Pistil Seeker</span>, Camellya exits the Bloom state.<br>
+-Unable to restore stamina when casting <span class="Highlight">Resonance Skill Dark Pistil Seeker</span> mid-air.<br>
+-Continuously consumes stamina when under the state of Vine Dance during mid-air.<br>
+-When manipulating objects, Camellya exits the Bloom state.<br>
 -Jumping replaced with <span class="Highlight">Basic Attack Whirling Dance</span>. Tap jump to attack the target, dealing <span class="Dark">Havoc</span> damage, this damage counts as <span class="Highlight">Basic Attack</span> damage, Camellya then exits the Bloom state.
 </div>`,
   attacks: [

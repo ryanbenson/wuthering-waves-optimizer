@@ -29,6 +29,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 19, 2024</h3>
+    <ul>
+      <li>Updates Camellya for 1.4.3 beta changes.</li>
+      <li>Text change for Lumi for 1.4.3 beta changes.</li>
+    </ul>
+
     <h3>October 18, 2024</h3>
     <ul>
       <li>Adds 0% enemy resist option.</li>

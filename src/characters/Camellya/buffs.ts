@@ -31,8 +31,8 @@ export const buffs = [
   },
   {
     key: "BudStateMultiplier",
-    name: "Bud State",
-    details: `<div class="skilldescription"><span class="Highlight">Basic Attack</span>, <span class="Highlight">Plunging Attack</span>, <span class="Highlight">Normal Attack Vine Dance</span>, <span class="Highlight">Normal Attack Whirling Dance</span>, <span class="Highlight">Dodge Counter</span>, <span class="Highlight">Dodge Counter Atonement</span>, <span class="Highlight">Resonance Skill Red Camellia Bloom</span>, <span class="Highlight">Resonance Skill Dark Pistil Seeker</span> damage multiplier increases by 50%;</div>`,
+    name: "Deep Slumber",
+    details: `<div class="skilldescription"><span class="Highlight">Deep Slumber</span>: <span class="Highlight">Basic Attack</span>, <span class="Highlight">Normal Attack Vine Dance</span>, <span class="Highlight">Normal Attack Whirling Dance</span>, <span class="Highlight">Dodge Counter Atonement</span>, <span class="Highlight">Resonance Skill Red Camellia Bloom</span>, <span class="Highlight">Resonance Skill Dark Pistil Seeker</span> damage multiplier increases by 50%;</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -64,13 +64,30 @@ export const buffs = [
   },
   {
     key: "BudStateDayflowerMultiplier",
-    name: "Bud State Dayflower",
-    details: `<div class="skilldescription">When casting <span class="Highlight">Resonance Skill Dayflower</span>, removes all <span class="Highlight">Red Camellia Bud</span>, every stack of <span class="Highlight">Red Camellia Bud</span> additionally increases the damage multiplier by 5%, up to 50%;</div>`,
+    name: "Deep Slumber Dayflower",
+    details: `<div class="skilldescription">When casting <span class="Highlight">Dayflower</span>, removes all <span class="Highlght">Red Camellia Bud</span>, every stack of <span class="Highlight">Red Camellia Bud</span> additional increases the damage multiplier of <span class="Highlight">Deep Slumber</span> by 5%, up to 50%;</div>`,
     hasStacks: true,
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["DayflowerDMG"],
+        modifySpecificTalents: [
+          "NormalAttackStage1DMG",
+          "NormalAttackStage2DMG",
+          "NormalAttackStage3DMG",
+          "NormalAttackStage4DMG",
+          "NormalAttackStage5DMG",
+          "MidAirAttackDMG",
+          "DodgeCounterDMG",
+          "VineDanceStage1DMG",
+          "VineDanceStage2DMG",
+          "VineDanceStage3DMG",
+          "VineDanceStage4DMG",
+          "WhirlingDanceDMG",
+          "AshenBlossomVineDanceDMG",
+          "AtonementDMG",
+          "FullBloomDMG",
+          "DarkPistilSeekerDMG",
+        ],
         modifierValue: 0.05,
       },
     ],
