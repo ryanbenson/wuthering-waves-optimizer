@@ -89,6 +89,7 @@ When casting <span class="Highlight">Intro Skill</span>, additionally restores 5
           "VineDanceStage2DMG",
           "VineDanceStage3DMG",
           "VineDanceStage4DMG",
+          "AshenBlossomVineDanceDMG",
           "WhirlingDanceDMG",
           "AtonementDMG",
           "FullBloomDMG",
