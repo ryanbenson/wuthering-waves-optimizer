@@ -1,6 +1,6 @@
 export const forteCircuitAttacks = {
   name: "Forte Circuit: Botanical Universe",
-  description: `<div class="skilldescription"><p>When <span class="Highlight">Basic Attack</span>, <span class="Highlight">Plunging Attack</span>, <span class="Highlight">Normal Attack Vine Dance</span>, <span class="Highlight">Normal Attack Whirling Dance</span>, <span class="Highlight">Dodge Counter</span>, <span class="Highlight">Dodge Counter Atonement</span> hits the target, consumes <span class="Highlight">【Red Camellia Pistil】</span>, the base resonance energy recovery efficiency of this attack is increased by 150%.</p>
+  description: `<div class="skilldescription"><p>When <span class="Highlight">Basic Attack</span>, <span class="Highlight">Normal Attack Vine Dance</span>, <span class="Highlight">Normal Attack Whirling Dance</span>, <span class="Highlight">Dodge Counter Atonement</span>, <span class="Highlight">Dodge Counter Atonement</span>, <span class="Highlight">Resonance Skill Red Camellia Bloom</span>, <span class="Highlight">Resonance Skill Dark Pistil</span> Seeker hits the target, consumes <span class="Highlight">【Red Camellia Pistil】</span>, the base resonance energy recovery efficiency of this attack is increased by 150%.</p>
   <p>Every 10 points of <span class="Highlight">【Red Camellia Pistil】</span> consumed, restores 4 points of <span class="Highlight">Concerto Energy</span>, then gain 1 stack of <span class="Highlight">【Red Camellia Bud】</span>, lasting for 15s, stacking up to 10 stacks.</p>
   
   <p><strong>Resonance Skill-Dayflower</strong><br>
@@ -10,20 +10,21 @@ export const forteCircuitAttacks = {
   </p>
   
   <p><strong>Bud state</strong><br>
-  <span class="Highlight">Basic Attack</span>, <span class="Highlight">Plunging Attack</span>, <span class="Highlight">Normal Attack Vine Dance</span>, <span class="Highlight">Normal Attack Whirling Dance</span>, <span class="Highlight">Dodge Counter</span>, <span class="Highlight">Dodge Counter Atonement</span>, <span class="Highlight">Resonance Skill Red Camellia Bloom</span>, <span class="Highlight">Resonance Skill Dark Pistil Seeker</span> damage multiplier increases by 50%;<br>
-  When casting <span class="Highlight">Resonance Skill Dayflower</span>, removes all <span class="Highlight">Red Camellia Bud</span>, every stack of <span class="Highlight">Red Camellia Bud</span> additionally increases the damage multiplier by 5%, up to 50%;<br>
-  When <span class="Highlight">Resonance Skill Red Camellia Bloom</span>, <span class="Highlight">Resonance Skill Dark Pistil Seeker</span> hits the target, consumes <span class="Highlight">【Red Camellia Pistil】</span>;<br>
-  During the Bud state, Camellya’s base resonance energy recovery efficiency is reduced to 0%.<br>
-  When <span class="Highlight">【Red Camellia Pistil】</span> is fully consumed, the Bud state will end early.
-  </p>
+  <span class="Highlight">Deep Slumber</span>: <span class="Highlight">Basic Attack</span>, <span class="Highlight">Normal Attack Vine Dance</span>, <span class="Highlight">Normal Attack Whirling Dance</span>, <span class="Highlight">Dodge Counter Atonement</span>, <span class="Highlight">Resonance Skill Red Camellia Bloom</span>, <span class="Highlight">Resonance Skill Dark Pistil Seeker</span> damage multiplier increases by 50%;<br>
+  - When casting <span class="Highlight">Dayflower</span>, removes all <span class="Highlght">Red Camellia Bud</span>, every stack of <span class="Highlight">Red Camellia Bud</span> additional increases the damage multiplier of <span class="Highlight">Deep Slumber</span> by 5%, up to 50%;<br>
+  -During the Bud state, unable to increase Red Camellia·Bud stacks.<br>
+  - When <span class="Highlight">Resonance Skill Red Camellia Bloom</span>, <span class="Highlight">Resonance Skill Dark Pistil Seeker</span> hits the target, consumes <span class="Dark">【Red Camellia Pistil】</span>;<br>
+  - During the Bud state, Camellya’s base resonance energy recovery efficiency is reduced to 0%.<br>
+-When switching to another Resonator, the Bud state will end early.<br>
+-During the Bud state, Camellya’s base resonance energy recovery efficiency is reduced to 0%
+When <span class="Dark">【Red Camellia·Pistil】</span>is fully consumed, the Bud state will end early.
   
   <p><strong>Red Camellia Pistil</strong><br>
   Maximum limit of 100 points.<br>
-  Can’t restore <span class="Dark">【Red Camellia Pistil】</span> under the <span class="Dark">Bud state</span>.<br>
+  During Bud state, <span class="Highlight">Resonance Skill Red Camellia Bloom</span>, <span class="Highlight">Resonance Skill Dark Pistil Seeker</span> are unable to restore <span class="Highlight">【Red Camellia·Pistil】</span><br>
   After casting <span class="Highlight">Intro Skill</span>, restores 50 <span class="Dark">【Red Camellia Pistil】</span> points.<br>
   After casting <span class="Highlight">Outro Skill</span>, restores 50 <span class="Dark">【Red Camellia Pistil】</span> points.<br>
-  After casting <span class="Highlight">Resonance Skill Red Camellia Bloom</span>, restores 20 <span class="Dark">【Red Camellia Pistil】</span> points.<br>
-  After casting <span class="Highlight">Resonance Skill Dark Pistil Seeker</span>, restores 20 <span class="Dark">【Red Camellia Pistil】</span> points.
+After casting <span class="Highlight">Resonance Skill Dark Pistil Seeker</span>, restores 100  <span class="Dark">【Red Camellia·Pistil】</span>points.
   </p>
   </div>`,
   attacks: [

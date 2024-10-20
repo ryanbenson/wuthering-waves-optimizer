@@ -92,6 +92,26 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 20, 2024</h3>
+    <ul>
+      <li>
+        Updates Camellya, removes Ashen Blossom Vine Dance from Deep Slumber
+        buffs.
+      </li>
+    </ul>
+    <h3>October 19, 2024</h3>
+    <ul>
+      <li>Updates Camellya for 1.4.3 beta changes.</li>
+      <li>Text change for Lumi for 1.4.3 beta changes.</li>
+    </ul>
+    <h3>October 18, 2024</h3>
+    <ul>
+      <li>Adds 0% enemy resist option.</li>
+      <li>
+        Fixes Camellya s6, s3 ATK buff to not be a global buff, and adds her
+        basic attacks to her self buff.
+      </li>
+    </ul>
     <h3>October 12, 2024</h3>
     <ul>
       <li>Releases Lumi.</li>
