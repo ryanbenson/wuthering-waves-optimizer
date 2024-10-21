@@ -606,9 +606,35 @@ export default {
       if (!isChecked) {
         this.deleteSubStatData(mainStat);
         this.syncMainStats();
+        return;
       }
-      // TO DO: set up the new data on enabled
-      console.log("======= GOTTA DO THIS ========");
+      // find the first item that's null or "none" and fill it in
+      if (!this.echoSubStatsType1 || this.echoSubStatsType1 === "none") {
+        this.echoSubStatsType1 = mainStat;
+        this.echoSubStatsValue1 = null;
+        return;
+      }
+      if (!this.echoSubStatsType2 || this.echoSubStatsType2 === "none") {
+        this.echoSubStatsType2 = mainStat;
+        this.echoSubStatsValue2 = null;
+        return;
+      }
+      if (!this.echoSubStatsType3 || this.echoSubStatsType3 === "none") {
+        this.echoSubStatsType3 = mainStat;
+        this.echoSubStatsValue3 = null;
+        return;
+      }
+      if (!this.echoSubStatsType4 || this.echoSubStatsType4 === "none") {
+        this.echoSubStatsType4 = mainStat;
+        this.echoSubStatsValue4 = null;
+        return;
+      }
+      if (!this.echoSubStatsType5 || this.echoSubStatsType5 === "none") {
+        this.echoSubStatsType5 = mainStat;
+        this.echoSubStatsValue5 = null;
+        return;
+      }
+      
     },
     deleteSubStatData(mainStat) {
       if (this.echoSubStatsType1 === mainStat) {
