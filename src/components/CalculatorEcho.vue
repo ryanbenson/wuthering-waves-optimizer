@@ -1,7 +1,7 @@
 <template>
 
-<button class="btn" onclick="my_modal_3.showModal()">open modal</button>
-    <dialog id="my_modal_3" class="modal">
+<button class="btn" @click="handleOpenModal">open modal</button>
+    <dialog :id="modalId" class="modal">
       <div class="modal-box">
         <form method="dialog">
           <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
@@ -13,8 +13,8 @@
               :class="{
                 'border-amber-300': rank === '5',
                 'border-violet-600': rank === '4',
-                'border-green-500': rank === '3',
-                'border-blue-500': rank === '2'
+                'border-blue-500': rank === '3',
+                'border-green-500': rank === '2'
               }"
               style="background-image: url(https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FallacyOfNoReturn.png);">
             </div>
@@ -80,72 +80,82 @@
             <div class="echo__selection_substats__list">
               <div class="echo__selection_substat relative">
                 <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                  <input type="checkbox" class="toggle toggle-sm toggle-accent" checked="checked" />
-                  <span class="label-text substat__label">Crit Rate <span class="text-primary">6.3%</span></span>
-                  <input type="range" id="rank" min="1" max="5" value="5" step="1" class="echo__selection__rank__input range range-xs" />
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isCritRateChecked" @change="toggleSubStat" value="CritRate" :disabled="isCritRateDisabled" />
+                  <span class="label-text" :class="{'substat__label': isCritRateChecked}">Crit Rate <span v-if="isCritRateChecked" class="text-primary">6.3%</span></span>
+                  <input v-if="isCritRateChecked" type="range" id="rank" min="1" max="5" value="5" step="1" class="echo__selection__rank__input range range-xs" />
                 </div>
 
                 <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                  <input type="checkbox" class="toggle toggle-sm toggle-accent" checked="checked" />
-                  <span class="label-text substat__label">Crit DMG <span class="text-primary">21%</span></span>
-                  <input type="range" id="rank" min="1" max="5" value="1" step="1" class="echo__selection__rank__input range range-xs" />
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isCritDMGChecked" @change="toggleSubStat" value="CritDMG" :disabled="isCritDMGDisabled" />
+                  <span class="label-text" :class="{'substat__label': isCritDMGChecked}">Crit DMG <span v-if="isCritDMGChecked" class="text-primary">21%</span></span>
+                  <input v-if="isCritDMGChecked" type="range" id="rank" min="1" max="5" value="1" step="1" class="echo__selection__rank__input range range-xs" />
                 </div>
 
                 <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-                  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
-                  <span class="label-text text-base">ATK% <span class="text-primary"></span></span>
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isAtkChecked" @change="toggleSubStat"  :disabled="isAtkDisabled" value="ATK" />
+                  <span class="label-text" :class="{'substat__label': isAtkChecked}">ATK% <span v-if="isAtkChecked" class="text-primary"></span></span>
+                  <input v-if="isAtkChecked" type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
                 </div>
 
-<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-  <input type="checkbox" class="toggle toggle-sm toggle-accent" checked="checked" />
-  <span class="label-text substat__label">ATK <span class="text-primary">150</span></span>
-  <input type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
-</div>
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isFlatAtkChecked" @change="toggleSubStat" :disabled="isFlatAtkDisabled" value="ATK_FLAT" />
+                  <span class="label-text" :class="{'substat__label': isFlatAtkChecked}">ATK <span v-if="isFlatAtkChecked" class="text-primary">150</span></span>
+                  <input v-if="isFlatAtkChecked" type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
+                </div>
 
-<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
-  <span class="label-text text-base">HP%</span>
-</div>
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isHpChecked" @change="toggleSubStat"  :disabled="isHpDisabled" value="HP" />
+                  <span class="label-text" :class="{'substat__label': isHpChecked}">HP% <span v-if="isHpChecked" class="text-primary"></span></span>
+                  <input v-if="isHpChecked" type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
+                </div>
 
-<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
-  <span class="label-text text-base">HP</span>
-</div>
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isFlatHpChecked" @change="toggleSubStat"  :disabled="isFlatHpDisabled" value="HP_FLAT" />
+                  <span class="label-text" :class="{'substat__label': isFlatHpChecked}">HP <span v-if="isFlatHpChecked" class="text-primary"></span></span>
+                  <input v-if="isFlatHpChecked" type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
+                </div>
 
-<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
-  <span class="label-text text-base">DEF%</span>
-</div>
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isDefChecked" @change="toggleSubStat"  :disabled="isDefDisabled" value="DEF" />
+                  <span class="label-text" :class="{'substat__label': isDefChecked}">DEF% <span v-if="isDefChecked" class="text-primary"></span></span>
+                  <input v-if="isDefChecked" type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
+                </div>
 
-<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
-  <span class="label-text text-base">DEF</span>
-</div>
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isFlatDefChecked" @change="toggleSubStat"  :disabled="isFlatDefDisabled" value="DEF_FLAT" />
+                  <span class="label-text" :class="{'substat__label': isFlatDefChecked}">DEF <span v-if="isFlatDefChecked" class="text-primary"></span></span>
+                  <input v-if="isFlatDefChecked" type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
+                </div>
 
-<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
-  <span class="label-text text-base">Basic Attack DMG Bonus</span>
-</div>
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isBasicChecked" @change="toggleSubStat"  :disabled="isBasicDisabled" value="BasicAttackDMGBonus" />
+                  <span class="label-text" :class="{'substat__label': isBasicChecked}">Basic Attack DMG Bonus <span v-if="isBasicChecked" class="text-primary"></span></span>
+                  <input v-if="isBasicChecked" type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
+                </div>
 
-<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
-  <span class="label-text text-base">Heavy Attack DMG Bonus</span>
-</div>
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isHeavyChecked" @change="toggleSubStat"  :disabled="isHeavyDisabled" value="HeavyAttackDMGBonus" />
+                  <span class="label-text" :class="{'substat__label': isHeavyChecked}">Heavy Attack DMG Bonus <span v-if="isHeavyChecked" class="text-primary"></span></span>
+                  <input v-if="isHeavyChecked" type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
+                </div>
 
-<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
-  <span class="label-text text-base">Skill DMG Bonus</span>
-</div>
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isSkillChecked" @change="toggleSubStat"  :disabled="isSkillDisabled" value="ResonanceSkillDMGBonus" />
+                  <span class="label-text" :class="{'substat__label': isSkillChecked}">Skill DMG Bonus <span v-if="isSkillChecked" class="text-primary"></span></span>
+                  <input v-if="isSkillChecked" type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
+                </div>
 
-<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
-  <span class="label-text text-base">Liberation DMG Bonus</span>
-</div>
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isLiberationChecked" @change="toggleSubStat"  :disabled="isLiberationDisabled" value="ResonanceLiberationDMGBonus" />
+                  <span class="label-text" :class="{'substat__label': isLiberationChecked}">Liberation DMG Bonus <span v-if="isLiberationChecked" class="text-primary"></span></span>
+                  <input v-if="isLiberationChecked" type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
+                </div>
 
-<div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
-  <input type="checkbox" class="toggle toggle-sm toggle-accent" />
-  <span class="label-text text-base">Energy Recharge</span>
-</div>
+                <div class="echo__selection_substat__info flex gap-4 items-center relative mb-6">
+                  <input type="checkbox" class="toggle toggle-sm toggle-accent" :checked="isEnergyRechargeChecked"   @change="toggleSubStat" :disabled="isEnergyRechargeDisabled" value="EnergyRegen" />
+                  <span class="label-text" :class="{'substat__label': isEnergyRechargeChecked}">Energy Recharge <span v-if="isEnergyRechargeChecked" class="text-primary"></span></span>
+                  <input v-if="isEnergyRechargeChecked" type="range" id="rank" min="1" max="5" value="3" step="1" class="echo__selection__rank__input range range-xs" />
+                </div>
               </div>
             </div>
           </div>
@@ -162,8 +172,8 @@
                 :class="{
                   'border-amber-300': rank === '5',
                   'border-violet-600': rank === '4',
-                  'border-green-500': rank === '3',
-                  'border-blue-500': rank === '2'
+                  'border-blue-500': rank === '3',
+                  'border-green-500': rank === '2'
                 }"
                 style="background-image: url(https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FallacyOfNoReturn.png);">
               </div>
@@ -190,7 +200,7 @@
               <table class="echo__item__sub-stats table table-zebra table-xs">
                 <tbody>
                   <tr>
-                    <td class="flex gap-2 items-center"><img src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />{{ stat }}</td>
+                    <td class="flex gap-2 items-center"><img src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />{{ getReadableSubStatLabel(stat) }}</td>
                     <td>22%</td>
                   </tr>
                   <tr>
@@ -385,6 +395,14 @@ export default {
       subStats,
       subStatRanges,
       totalCost: 0,
+      allSubStatsEnabled: {
+        echoSubStatsType1: false,
+        echoSubStatsType2: false,
+        echoSubStatsType3: false,
+        echoSubStatsType4: false,
+        echoSubStatsType5: false,
+      },
+      allSubStats: []
     };
   },
   watch: {
@@ -410,6 +428,7 @@ export default {
     echoSubStatsType1: {
       handler: async function () {
         this.updateTotalStats();
+        this.syncMainStats();
       },
       immediate: true,
     },
@@ -422,6 +441,7 @@ export default {
     echoSubStatsType2: {
       handler: async function () {
         this.updateTotalStats();
+        this.syncMainStats();
       },
       immediate: true,
     },
@@ -434,6 +454,7 @@ export default {
     echoSubStatsType3: {
       handler: async function () {
         this.updateTotalStats();
+        this.syncMainStats();
       },
       immediate: true,
     },
@@ -446,6 +467,7 @@ export default {
     echoSubStatsType4: {
       handler: async function () {
         this.updateTotalStats();
+        this.syncMainStats();
       },
       immediate: true,
     },
@@ -458,6 +480,7 @@ export default {
     echoSubStatsType5: {
       handler: async function () {
         this.updateTotalStats();
+        this.syncMainStats();
       },
       immediate: true,
     },
@@ -490,6 +513,38 @@ export default {
     },
     needsStacks(type) {
       return !!this.setBonusEffects[type]?.maxStacks;
+    },
+    syncMainStats() {
+      this.allSubStats = [];
+      this.allSubStatsEnabled = {
+        echoSubStatsType1: false,
+        echoSubStatsType2: false,
+        echoSubStatsType3: false,
+        echoSubStatsType4: false,
+        echoSubStatsType5: false,
+      };
+      let updatedSubStats = [];
+      if (this.echoSubStatsType1 && this.echoSubStatsType1 !== "none") {
+        this.allSubStatsEnabled['echoSubStatsType1'] = true;
+        updatedSubStats.push(this.echoSubStatsType1);
+      }
+      if (this.echoSubStatsType2 && this.echoSubStatsType2 !== "none") {
+        this.allSubStatsEnabled['echoSubStatsType2'] = true;
+        updatedSubStats.push(this.echoSubStatsType2);
+      }
+      if (this.echoSubStatsType3 && this.echoSubStatsType3 !== "none") {
+        this.allSubStatsEnabled['echoSubStatsType3'] = true;
+        updatedSubStats.push(this.echoSubStatsType3);
+      }
+      if (this.echoSubStatsType4 && this.echoSubStatsType4 !== "none") {
+        this.allSubStatsEnabled['echoSubStatsType4'] = true;
+        updatedSubStats.push(this.echoSubStatsType4);
+      }
+      if (this.echoSubStatsType5 && this.echoSubStatsType5 !== "none") {
+        this.allSubStatsEnabled['echoSubStatsType5'] = true;
+        updatedSubStats.push(this.echoSubStatsType5);
+      }
+      this.allSubStats = updatedSubStats;
     },
     updateTotalStats() {
       const stats = {};
@@ -543,6 +598,43 @@ export default {
       this.echoSubStatsValue4 = null;
       this.echoSubStatsType5 = null;
       this.echoSubStatsValue5 = null;
+    },
+    toggleSubStat(e) {
+      const mainStat = e.target.value;
+      const isChecked = e.target.checked;
+      // if the checked is now false, find the main stat and disable it
+      if (!isChecked) {
+        this.deleteSubStatData(mainStat);
+        this.syncMainStats();
+      }
+      // TO DO: set up the new data on enabled
+      console.log("======= GOTTA DO THIS ========");
+    },
+    deleteSubStatData(mainStat) {
+      if (this.echoSubStatsType1 === mainStat) {
+        this.echoSubStatsType1 = null;
+        this.echoSubStatsValue1 = null;
+      }
+      if (this.echoSubStatsType2 === mainStat) {
+        this.echoSubStatsType2 = null;
+        this.echoSubStatsValue2 = null;
+      }
+      if (this.echoSubStatsType3 === mainStat) {
+        this.echoSubStatsType3 = null;
+        this.echoSubStatsValue3 = null;
+      }
+      if (this.echoSubStatsType4 === mainStat) {
+        this.echoSubStatsType4 = null;
+        this.echoSubStatsValue4 = null;
+      }
+      if (this.echoSubStatsType5 === mainStat) {
+        this.echoSubStatsType5 = null;
+        this.echoSubStatsValue5 = null;
+      }
+    },
+    handleOpenModal() {
+      const modalEl = document.getElementById(this.modalId);
+      modalEl.showModal();
     },
   },
   computed: {
@@ -877,11 +969,141 @@ export default {
     mainEchoMaxStacks() {
       return this.chosenMainEchoData?.maxStacks ?? 0;
     },
+    modalId() {
+      return `echoModal${this.index}`;
+    },
+    totalSubStatsEnabled() {
+      const allValues = Object.values(this.allSubStatsEnabled);
+      const allTrueValues = allValues.filter((val) => val === true);
+      console.log(allTrueValues, this.allSubStatsEnabled);
+      return allTrueValues.length;
+    },
+    isMaxSubstats() {
+      console.log(this.totalSubStatsEnabled);
+      return this.totalSubStatsEnabled >= 5;
+    },
+    isCritRateDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('CritRate');
+    },
+    isCritDMGDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('CritDMG');
+    },
+    isAtkDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('ATK');
+    },
+    isFlatAtkDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('ATK_FLAT');
+    },
+    isHpDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('HP');
+    },
+    isFlatHpDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('HP_FLAT');
+    },
+    isDefDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('DEF');
+    },
+    isFlatDefDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('DEF_FLAT');
+    },
+    isBasicDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('BasicAttackDMGBonus');
+    },
+    isHeavyDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('HeavyAttackDMGBonus');
+    },
+    isSkillDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('ResonanceSkillDMGBonus');
+    },
+    isLiberationDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('ResonanceLiberationDMGBonus');
+    },
+    isEnergyRechargeDisabled() {
+      if (!this.isMaxSubstats) {
+        return false;
+      }
+      return !this.allSubStats.includes('EnergyRegen');
+    },
+    isCritRateChecked() {
+      return this.allSubStats.includes('CritRate');
+    },
+    isCritDMGChecked() {
+      return this.allSubStats.includes('CritDMG');
+    },
+    isAtkChecked() {
+      return this.allSubStats.includes('ATK');
+    },
+    isFlatAtkChecked() {
+      return this.allSubStats.includes('ATK_FLAT');
+    },
+    isHpChecked() {
+      return this.allSubStats.includes('HP');
+    },
+    isFlatHpChecked() {
+      return this.allSubStats.includes('HP_FLAT');
+    },
+    isDefChecked() {
+      return this.allSubStats.includes('DEF');
+    },
+    isFlatDefChecked() {
+      return this.allSubStats.includes('DEF_FLAT');
+    },
+    isBasicChecked() {
+      return this.allSubStats.includes('BasicAttackDMGBonus');
+    },
+    isHeavyChecked() {
+      return this.allSubStats.includes('HeavyAttackDMGBonus');
+    },
+    isSkillChecked() {
+      return this.allSubStats.includes('ResonanceSkillDMGBonus');
+    },
+    isLiberationChecked() {
+      return this.allSubStats.includes('ResonanceLiberationDMGBonus');
+    },
+    isEnergyRechargeChecked() {
+      return this.allSubStats.includes('EnergyRegen');
+    }
   },
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .echo-selector {
   margin-bottom: 20px;
 }
@@ -1007,5 +1229,16 @@ export default {
       filter: invert(100%);
     }
   }
+}
+.substat__label {
+  font-size: 16px;
+  position: absolute;
+  left: 3rem;
+  top: -0.9rem;
+  z-index: 0;
+}
+.echo__selection__rank__input {
+  position: relative;
+  z-index: 10;
 }
 </style>
