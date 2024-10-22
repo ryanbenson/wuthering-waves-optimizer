@@ -55,6 +55,26 @@ export const statsTable: StatsTable = {
   },
 };
 
+interface SubStatTable {
+  [stat: string]: number[]
+}
+
+export const subStatsTable: SubStatTable = {
+  CritRate: [6.3, 6.9, 7.5, 8.1, 9.3, 9.9, 10.5],
+  CritDMG: [12.6, 13.8, 16.2, 17.4, 18.6, 19.8, 21],
+  ATK: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
+  ATK_FLAT: [40, 50, 60, 70],
+  HP: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
+  HP_FLAT: [320, 360, 390, 430, 479, 510, 540, 580],
+  DEF: [8.1, 9, 10, 10.9, 11.8, 12.8, 13.8, 14.7],
+  DEF_FLAT: [40, 50, 60, 70],
+  BasicAttackDMGBonus: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
+  HeavyAttackDMGBonus: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
+  ResonanceSkillDMGBonus: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
+  ResonanceLiberationDMGBonus: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
+  EnergyRegen: [6.8, 7.6, 8.4, 9.2, 10, 10.8, 11.6, 12.4],
+};
+
 interface FlatBonusesByRankByType {
   [level: number]: FlatBonusesByRankByTypeData;
 }
