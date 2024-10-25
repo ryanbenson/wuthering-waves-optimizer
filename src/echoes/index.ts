@@ -9,6 +9,7 @@ interface Echo {
   minStacks?: number;
   maxStacks?: number;
   actions?: EchoAction[];
+  sets: string[];
 }
 
 interface EchoAction {
@@ -60,6 +61,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Aero",
       },
     ],
+    sets: ["Void Thunder", "Sierra Gale"],
   },
   // AlteredClangBang: {
   //   key: "AlteredClangBang",
@@ -107,6 +109,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Glacio",
       },
     ],
+    sets: ["Freezing Frost", "Celestial Light"],
   },
   BellBorneGeochelone: {
     key: "BellBorneGeochelone",
@@ -142,10 +145,11 @@ export const mainEchoesData: MainEchoes = {
         attribute: "def",
       },
     ],
+    sets: ["Rejuvenating Glow", "Moonlit Clouds"],
   },
   Chaserazor: {
-    key: "Chaserazor",
-    name: "Chaserazor",
+    key: "Carapace",
+    name: "Carapace",
     class: "Elite",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Chaserazor.png",
@@ -154,7 +158,7 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [
       {
-        key: "ChaserazorSpinningAttack",
+        key: "CarapaceSpinningAttack",
         label: "Spinning Attack DMG",
         description: `Transform into Carapace to perform a spinning attack that deals 80.50%/91.00%/101.50%/112.00% Aero DMG, followed by a slash that deals 120.75%/136.50%/152.25%/168.00% Aero DMG.`,
         talents: {
@@ -168,6 +172,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Aero",
       },
     ],
+    sets: ["Sierra Gale", "Moonlit Clouds"],
   },
   ChasmGuardian: {
     key: "ChasmGuardian",
@@ -194,6 +199,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Havoc",
       },
     ],
+    sets: ["Rejuvenating Glow", "Lingering Tunes"],
   },
   Chirpuff: {
     key: "Chirpuff",
@@ -220,6 +226,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Aero",
       },
     ],
+    sets: ["Sierra Gale", "Sun-sinking Eclipse"],
   },
   ClangBang: {
     key: "ClangBang",
@@ -231,6 +238,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["Freezing Frost", "Celestial Light"],
   },
   Crownless: {
     key: "Crownless",
@@ -269,6 +277,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Havoc",
       },
     ],
+    sets: ["Sun-sinking Eclipse"],
   },
   Cruisewing: {
     key: "Cruisewing",
@@ -297,6 +306,7 @@ export const mainEchoesData: MainEchoes = {
       //   attribute: "hp",
       // },
     ],
+    sets: ["Celestial Light", "Rejuvenating Glow", "Moonlit Clouds"],
   },
   CyanFeatheredHeron: {
     key: "CyanFeatheredHeron",
@@ -323,6 +333,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Aero",
       },
     ],
+    sets: ["Sierra Gale", "Celestial Light"],
   },
   Diamondclaw: {
     key: "Diamondclaw",
@@ -334,6 +345,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["Moonlit Clouds", "Lingering Tunes"],
   },
   Dreamless: {
     key: "Dreamless",
@@ -384,6 +396,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Havoc",
       },
     ],
+    sets: ["Sun-sinking Eclipse"],
   },
   DwarfCassowary: {
     key: "DwarfCassowary",
@@ -396,6 +409,7 @@ export const mainEchoesData: MainEchoes = {
     Cooldown: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["Sierra Gale", "Rejuvenating Glow"],
   },
   ElectroPredator: {
     key: "ElectroPredator",
@@ -407,6 +421,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["Molten Rift", "Void Thunder"],
   },
   Excarat: {
     key: "Excarat",
@@ -419,6 +434,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["Freezing Frost", "Sun-sinking Eclipse"],
   },
   FallacyOfNoReturn: {
     key: "FallacyOfNoReturn",
@@ -486,6 +502,7 @@ export const mainEchoesData: MainEchoes = {
         attribute: "hp",
       },
     ],
+    sets: ["Rejuvenating Glow"],
   },
   FeilianBeringal: {
     key: "FeilianBeringal",
@@ -538,6 +555,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Aero",
       },
     ],
+    sets: ["Sierra Gale"],
   },
   FissionJunrock: {
     key: "FissionJunrock",
@@ -550,6 +568,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["Void Thunder", "Rejuvenating Glow", "Moonlit Clouds"],
   },
   Flautist: {
     key: "Flautist",
@@ -576,6 +595,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Electro",
       },
     ],
+    sets: ["Void Thunder", "Lingering Tunes"],
   },
   FusionDreadmane: {
     key: "FusionDreadmane",
@@ -587,6 +607,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["Molten Rift", "Rejuvenating Glow"],
   },
   FusionPrism: {
     key: "FusionPrism",
@@ -598,6 +619,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["Freezing Frost", "Molten Rift", "Lingering Tunes"],
   },
   FusionWarrior: {
     key: "FusionWarrior",
@@ -610,6 +632,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["Molten Rift", "Void Thunder", "Sierra Gale"],
   },
   GlacioDreadmane: {
     key: "GlacioDreadmane",
@@ -665,6 +688,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Glacio",
       },
     ],
+    sets: ["Freezing Frost", "Moonlit Clouds"],
   },
   Gulpuff: {
     key: "Gulpuff",
@@ -676,6 +700,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["Freezing Frost", "Celestial Light"],
   },
   HavocDreadmane: {
     key: "HavocDreadmane",
@@ -688,6 +713,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["Molten Rift", "Sun-sinking Eclipse"],
   },
   HavocPrism: {
     key: "HavocPrism",
@@ -699,6 +725,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["Void Thunder", "Celestial Light", "Sun-sinking Eclipse"],
   },
   HavocWarrior: {
     key: "HavocWarrior",
