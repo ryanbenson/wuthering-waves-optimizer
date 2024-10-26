@@ -553,45 +553,42 @@
               <tr class="substats__label">
                 <td class="font-bold font-size-8">Substats</td>
               </tr>
-              <tr class="relative" style="z-index: 1">
+              <tr v-if="echoSubStatsType1" class="relative" style="z-index: 1">
                 <td class="flex gap-2 items-center">
                   <img
-                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" />
-                  Crit DMG
+                    v-if="echoSubStatsType1 && echoSubStatsType1 !== 'none'"
+                    :src="echoSubStat1Icon" />
+                  {{ getReadableSubStatLabel(echoSubStatsType1) }}
                 </td>
-                <td>21%</td>
+                <td>{{ echoSubStatsValue1Display }}</td>
               </tr>
-              <tr>
+              <tr v-if="echoSubStatsType2 && echoSubStatsType2 !== 'none'">
                 <td class="flex gap-2 items-center">
-                  <img
-                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />
-                  Crit Rate
+                  <img :src="echoSubStat2Icon" />
+                  {{ getReadableSubStatLabel(echoSubStatsType2) }}
                 </td>
-                <td>6.3%</td>
+                <td>{{ echoSubStatsValue2Display }}</td>
               </tr>
-              <tr>
+              <tr v-if="echoSubStatsType3 && echoSubStatsType3 !== 'none'">
                 <td class="flex gap-2 items-center">
-                  <img
-                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
-                  ATK%
+                  <img v-if="echoSubStatsType3" :src="echoSubStat3Icon" />
+                  {{ getReadableSubStatLabel(echoSubStatsType3) }}
                 </td>
-                <td>6.8%</td>
+                <td>{{ echoSubStatsValue3Display }}</td>
               </tr>
-              <tr>
+              <tr v-if="echoSubStatsType4 && echoSubStatsType4 !== 'none'">
                 <td class="flex gap-2 items-center">
-                  <img
-                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" />
-                  Basic Attack DMG Bonus
+                  <img :src="echoSubStat4Icon" />
+                  {{ getReadableSubStatLabel(echoSubStatsType4) }}
                 </td>
-                <td>11.1%</td>
+                <td>{{ echoSubStatsValue4Display }}</td>
               </tr>
-              <tr>
+              <tr v-if="echoSubStatsType5 && echoSubStatsType5 !== 'none'">
                 <td class="flex gap-2 items-center">
-                  <img
-                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />
-                  Crit DMG
+                  <img :src="echoSubStat5Icon" />
+                  {{ getReadableSubStatLabel(echoSubStatsType5) }}
                 </td>
-                <td>40</td>
+                <td>{{ echoSubStatsValue5Display }}</td>
               </tr>
             </tbody>
           </table>
@@ -737,6 +734,7 @@ import {
   subStatRanges,
   subStatLabelMap,
   getReadableSubStatLabel,
+  getSubStatIconByType,
 } from "../echoes/stats";
 import {
   mainEchoesData,
@@ -1427,12 +1425,6 @@ export default {
       });
       return echoes;
     },
-    chosenMainEchoImage() {
-      return (
-        this.chosenMainEchoData?.image ??
-        "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png"
-      );
-    },
     mainEchoHasStacks() {
       return this.chosenMainEchoData?.hasStacks ?? false;
     },
@@ -1448,11 +1440,9 @@ export default {
     totalSubStatsEnabled() {
       const allValues = Object.values(this.allSubStatsEnabled);
       const allTrueValues = allValues.filter((val) => val === true);
-      console.log(allTrueValues, this.allSubStatsEnabled);
       return allTrueValues.length;
     },
     isMaxSubstats() {
-      console.log(this.totalSubStatsEnabled);
       return this.totalSubStatsEnabled >= 5;
     },
     isCritRateDisabled() {
@@ -1807,13 +1797,88 @@ export default {
       }
     },
     echoImage() {
-      const defaultImageUrl = "";
+      const defaultImageUrl =
+        "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png";
       if (!this.echo) {
         return defaultImageUrl;
       }
       const echoData = getEchoData(this.echo);
-      console.log(echoData);
       return echoData?.image ?? defaultImageUrl;
+    },
+    echoSubStatsValue1Display() {
+      if (!this.echoSubStatsValue1) {
+        return null;
+      }
+      if (this.echoSubStatsType1.includes("FLAT")) {
+        return this.echoSubStatsValue1;
+      }
+      return `${this.echoSubStatsValue1}%`;
+    },
+    echoSubStatsValue2Display() {
+      if (!this.echoSubStatsValue2) {
+        return null;
+      }
+      if (this.echoSubStatsType2.includes("FLAT")) {
+        return this.echoSubStatsValue2;
+      }
+      return `${this.echoSubStatsValue2}%`;
+    },
+    echoSubStatsValue3Display() {
+      if (!this.echoSubStatsValue3) {
+        return null;
+      }
+      if (this.echoSubStatsType3.includes("FLAT")) {
+        return this.echoSubStatsValue3;
+      }
+      return `${this.echoSubStatsValue3}%`;
+    },
+    echoSubStatsValue4Display() {
+      if (!this.echoSubStatsValue4) {
+        return null;
+      }
+      if (this.echoSubStatsType4.includes("FLAT")) {
+        return this.echoSubStatsValue4;
+      }
+      return `${this.echoSubStatsValue4}%`;
+    },
+    echoSubStatsValue5Display() {
+      if (!this.echoSubStatsValue5) {
+        return null;
+      }
+      if (this.echoSubStatsType5.includes("FLAT")) {
+        return this.echoSubStatsValue5;
+      }
+      return `${this.echoSubStatsValue5}%`;
+    },
+    echoSubStat1Icon() {
+      if (!this.echoSubStatsType1) {
+        return null;
+      }
+      return getSubStatIconByType(this.echoSubStatsType1);
+    },
+    echoSubStat2Icon() {
+      if (!this.echoSubStatsType2) {
+        return null;
+      }
+      return getSubStatIconByType(this.echoSubStatsType2);
+    },
+    echoSubStat3Icon() {
+      if (!this.echoSubStatsType3) {
+        return null;
+      }
+      return getSubStatIconByType(this.echoSubStatsType3);
+    },
+    echoSubStat4Icon() {
+      if (!this.echoSubStatsType4) {
+        return null;
+      }
+      return getSubStatIconByType(this.echoSubStatsType4);
+    },
+    echoSubStat5Icon() {
+      if (!this.echoSubStatsType5) {
+        return null;
+      }
+      return getSubStatIconByType(this.echoSubStatsType5);
     },
   },
 };

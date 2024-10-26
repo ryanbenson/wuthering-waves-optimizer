@@ -56,7 +56,7 @@ export const statsTable: StatsTable = {
 };
 
 interface SubStatTable {
-  [stat: string]: number[]
+  [stat: string]: number[];
 }
 
 export const subStatsTable: SubStatTable = {
@@ -176,4 +176,46 @@ export const subStatLabelMap: SubStatLabelMap = {
 
 export function getReadableSubStatLabel(key: string): string {
   return subStatLabelMap[key];
+}
+
+export const subStatIconMap: Record<string, string> = {
+  HP_FLAT: "https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png",
+  ATK_FLAT:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png",
+  DEF_FLAT:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/def.png",
+  ATK: "https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png",
+  HP: "https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png",
+  DEF: "https://ryanbenson.github.io/wuthering-waves-assets/images/def.png",
+  EnergyRegen:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png",
+  CritRate:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png",
+  CritDMG:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png",
+  BasicAttackDMGBonus:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/basicattackdmgbonus.png",
+  HeavyAttackDMGBonus:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/heavyattackdmgbonus.png",
+  ResonanceSkillDMGBonus:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png",
+  ResonanceLiberationDMGBonus:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png",
+  Glacio:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/glaciodmgbonus.png",
+  Fusion:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/fusiondmgbonus.png",
+  Electro:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/electrodmgbonus.png",
+  Aero: "https://ryanbenson.github.io/wuthering-waves-assets/images/aerodmgbonus.png",
+  Spectro:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/spectrodmgbonus.png",
+  Havoc:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/havocdmgbonus.png",
+  HealingBonus:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png",
+};
+
+export function getSubStatIconByType(type: string): string {
+  return subStatIconMap[type];
 }
