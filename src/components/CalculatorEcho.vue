@@ -1,5 +1,4 @@
 <template>
-  <button class="btn" @click="handleOpenModal">open modal</button>
   <dialog :id="modalId" class="modal">
     <div class="modal-box">
       <form method="dialog">
@@ -12,10 +11,10 @@
           <div
             class="echo__item__image rounded-full border border-solid neutral-content size-24 bg-cover min-w-24 text-center"
             :class="{
-              'border-amber-300': rank == '5',
-              'border-violet-600': rank == '4',
-              'border-blue-500': rank == '3',
-              'border-green-500': rank == '2',
+              'border-amber-300': rank === '5' || rank === 5,
+              'border-violet-600': rank === '4' || rank === 4,
+              'border-blue-500': rank === '3' || rank === 3,
+              'border-green-500': rank === '2' || rank === 2,
             }"
             :style="{
               backgroundImage: `url(${echoImage})`,
@@ -478,18 +477,19 @@
       <div class="echo__content flex gap-6">
         <div class="echo__item__left">
           <div
-            class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover"
+            class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover  cursor-pointer"
             :class="{
-              'border-amber-300': rank == '5',
-              'border-violet-600': rank == '4',
-              'border-blue-500': rank == '3',
-              'border-green-500': rank == '2',
+              'border-amber-300': rank === '5' || rank === 5,
+              'border-violet-600': rank === '4' || rank === 4,
+              'border-blue-500': rank === '3' || rank === 3,
+              'border-green-500': rank === '2' || rank === 2,
             }"
             :style="{
               backgroundImage: `url(${echoImage})`,
-            }"></div>
+            }"
+            @click="handleOpenModal"></div>
           <div class="echo__item__actions flex gap-2 justify-center mt-4">
-            <span class="echo__item__edit">
+            <span class="echo__item__edit cursor-pointer" @click="handleOpenModal">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
@@ -499,7 +499,7 @@
                   fill="#FFFFFF" />
               </svg>
             </span>
-            <span class="echo__item__delete">
+            <span class="echo__item__delete cursor-pointer" @click="reset" v-tooltip="'Reset echo'">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
@@ -513,14 +513,14 @@
         </div>
         <div class="echo__item__stats mb-2 w-full relative">
           <h2
-            class="card-title flex items-center justify-between"
+            class="card-title flex items-center justify-between">
+            <span
             :class="{
-              'text-amber-300': rank === '5',
-              'text-violet-600': rank === '4',
-              'text-green-500': rank === '3',
-              'text-blue-500': rank === '2',
-            }">
-            <span>Fallacy of No Return</span>
+              'text-amber-300': rank === '5' || rank === 5,
+              'text-violet-600': rank === '4' || rank === 4,
+              'text-green-500': rank === '3' || rank === 3,
+              'text-blue-500': rank === '2' || rank === 2,
+            }">{{ echoName }}</span>
             <div class="echo__item__meta flex gap-2 items-center">
               <span
                 class="echo__item__set size-6 rounded-full border border-solid border-white">
@@ -534,21 +534,21 @@
           </h2>
           <table class="echo__item__sub-stats table table-zebra table-xs">
             <tbody>
-              <tr>
+              <tr v-if="mainStatValue" :key="stat">
                 <td class="flex gap-2 items-center">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />
                   {{ getReadableSubStatLabel(stat) }}
                 </td>
-                <td>22%</td>
+                <td>{{ mainStatValue }}%</td>
               </tr>
-              <tr>
+              <tr v-if="mainStatValue">
                 <td class="flex gap-2 items-center">
                   <img
-                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
-                  ATK
+                    :src="echoFreeSubStatIcon" />
+                  {{ getReadableSubStatLabel(echoFreeSubStatType) }}
                 </td>
-                <td>150</td>
+                <td>{{ echoFreeSubStatValue }}</td>
               </tr>
               <tr class="substats__label">
                 <td class="font-bold font-size-8">Substats</td>
@@ -596,7 +596,7 @@
       </div>
     </div>
   </div>
-  <div class="echo-selector">
+  <div v-if="false" class="echo-selector">
     <label>Echo {{ index + 1 }}:</label>
     <div class="echo-setup">
       <!-- Cost Selection -->
@@ -777,8 +777,8 @@ export default {
   },
   watch: {
     echo: {
-      handler: async function (val) {
-        this.updateEchoChoice(val);
+      handler: async function (val, previousVal) {
+        this.updateEchoChoice(val, previousVal);
       },
       immediate: true,
     },
@@ -869,11 +869,23 @@ export default {
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
-    updateEchoChoice(echo) {
+    updateEchoChoice(echo, previousEcho) {
       const echoData = getEchoData(echo);
       const echoClass = echoData?.class;
       const echoCost = getCostByClass(echoClass);
       this.selectCost(echoCost);
+      // get the cost of the previous echo, if they are different then
+      // reset the main stat type and value
+      let prevEchoCost = null;
+      if (previousEcho) {
+        const prevEchoData = getEchoData(previousEcho);
+        const prevEchoClass = prevEchoData?.class;
+        prevEchoCost = getCostByClass(prevEchoClass);
+      }
+      if (echoCost !== prevEchoCost) {
+        this.stat = 'none';
+      }
+
     },
     selectCost(cost) {
       this.type = cost;
@@ -1880,6 +1892,39 @@ export default {
       }
       return getSubStatIconByType(this.echoSubStatsType5);
     },
+    mainStatValue() {
+      if (this.type && this.stat && this.stat !== "none" && this.rank) {
+        return this.statsTable?.[this.type]?.[this.stat]?.[this.rank];
+      }
+      return null;
+    },
+    echoName() {
+      if (!this.echo) {
+        return null;
+      }
+      const echoData = getEchoData(this.echo);
+      return echoData?.name ?? null;
+    },
+    echoFreeSubStatType() {
+      if (this.type && this.rank) {
+        let stat = this.type == "1" ? "HP_FLAT" : "ATK_FLAT";
+        return stat;
+      }
+      return null;
+    },
+    echoFreeSubStatValue() {
+      if (this.type && this.rank) {
+        let statValue = this.flatBonusesByRankByType[this.type][this.rank];
+        return statValue;
+      }
+      return null;
+    },
+    echoFreeSubStatIcon() {
+      if (!this.echoFreeSubStatType) {
+        return null;
+      }
+      return getSubStatIconByType(this.echoFreeSubStatType);
+    }
   },
 };
 </script>

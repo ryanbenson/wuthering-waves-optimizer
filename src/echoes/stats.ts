@@ -194,7 +194,7 @@ export const subStatIconMap: Record<string, string> = {
   CritDMG:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png",
   BasicAttackDMGBonus:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/basicattackdmgbonus.png",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png",
   HeavyAttackDMGBonus:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/heavyattackdmgbonus.png",
   ResonanceSkillDMGBonus:
