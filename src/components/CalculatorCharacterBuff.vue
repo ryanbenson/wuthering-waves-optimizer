@@ -10,8 +10,8 @@
           <label
             class="label cursor-pointer inline-flex justify-start"
             v-if="!alwaysEnabled">
-            <span class="label-text mr-2">Enabled?</span
-            ><input
+            <span class="label-text mr-2">Enabled?</span>
+            <input
               type="checkbox"
               class="checkbox checkbox-sm"
               v-model="isEnabled" />
