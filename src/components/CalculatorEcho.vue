@@ -979,6 +979,7 @@ export default {
     },
     // reset everything
     reset() {
+      this.echo = null;
       this.type = null;
       this.rank = null;
       this.stat = null;
