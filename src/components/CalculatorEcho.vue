@@ -528,7 +528,7 @@
                   src="https://www.prydwen.gg/static/5f4daa43c4a07ee8fb472a7e4f8feea1/8257c/set_8.webp" />
               </span>
               <span class="echo__item__cost badge badge-primary">
-                Cost {{ cost }}
+                Cost {{ type }}
               </span>
             </div>
           </h2>
