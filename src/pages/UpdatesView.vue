@@ -29,6 +29,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 25, 2024</h3>
+    <ul>
+      <li>
+        Updates Camellya, adds Ashen Blossom Vine Dance from Deep Slumber buffs
+        after confirming it gets buffed.
+      </li>
+    </ul>
     <h3>October 20, 2024</h3>
     <ul>
       <li>
