@@ -522,8 +522,8 @@
               :class="{
                 'text-amber-300': rank === '5' || rank === 5,
                 'text-violet-600': rank === '4' || rank === 4,
-                'text-green-500': rank === '3' || rank === 3,
-                'text-blue-500': rank === '2' || rank === 2,
+                'text-blue-500': rank === '3' || rank === 3,
+                'text-green-500': rank === '2' || rank === 2,
               }">
               {{ echoName }}
             </span>
