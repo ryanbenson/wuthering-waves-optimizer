@@ -11,7 +11,8 @@
         :character="character"
         class="echo-selector"
         @updated-echo-cost="handleUpdatedEchoCost"
-        @update-stats="handleEchoStats">
+        @update-stats="handleEchoStats"
+        @echo:set-chosen="handleEchoSetChosen">
       </CalculatorEcho>
     </div>
     <div class="set-bonus-selector">
@@ -104,6 +105,7 @@
 
 <script>
 import { mainEchoesData } from "../echoes/index.ts";
+import { getEchoSetLabelByType } from "../echoes/stats.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
@@ -134,6 +136,7 @@ export default {
         { type: "", stacks: 0 },
       ],
       echoCosts: [],
+      echoSetsChosen: [],
     };
   },
   watch: {
@@ -235,6 +238,7 @@ export default {
       this.$emit("update-stats", stats);
     },
     handleSetBonusOneData(data) {
+      console.log(data);
       const stats = JSON.parse(JSON.stringify(data));
       this.setBonusOne = stats;
       this.updateTotalStats();
@@ -261,6 +265,49 @@ export default {
     handleMainEchoRank() {
       this.$emit("updated-main-echo-rank", this.mainEchoRank);
     },
+    async handleEchoSetChosen({ set, index }) {
+      this.echoSetsChosen[index] = set;
+      // Filter out nulls and create a count map for each value
+      const counts = this.echoSetsChosen.filter(v => v !== null).reduce((acc, val) => {
+          acc[val] = (acc[val] || 0) + 1;
+          return acc;
+      }, {});
+
+      // Get the unique values and their counts
+      const uniqueValues = Object.keys(counts);
+      const uniqueCounts = Object.values(counts);
+
+      // Reset bonuses
+      let setBonusOneVal = null;
+      let setBonusTwoVal = null;
+
+      if (uniqueValues.length === 1 && uniqueCounts[0] === 5) {
+          // Case 1: All 5 values are the same
+          setBonusOneVal = `${getEchoSetLabelByType(uniqueValues[0])} 2 Set`;
+          setBonusTwoVal = `${getEchoSetLabelByType(uniqueValues[0])} 5 Set`;
+      } else if (uniqueValues.length === 2 && uniqueCounts.every(count => count === 2)) {
+          // Case 2: Two different values each repeated twice
+          setBonusOneVal = `${getEchoSetLabelByType(uniqueValues[0])} 2 Set`;
+          setBonusTwoVal = `${getEchoSetLabelByType(uniqueValues[1])} 2 Set`;
+        } else if (uniqueCounts.some(count => count >= 2) && uniqueCounts.filter(count => count >= 2).length === 1) {
+          // Case 3: Only one value has a repetition of 2, no others repeat more than once
+          const repeatedValue = uniqueValues[uniqueCounts.findIndex(count => count >= 2)];
+          setBonusOneVal = `${getEchoSetLabelByType(repeatedValue)} 2 Set`;
+          setBonusTwoVal = null;
+      } else {
+          // Case 4: No value is repeated
+          setBonusOneVal = null;
+          setBonusTwoVal = null;
+      }
+      // update the store
+      const data = {
+        echoSetBonus: {
+          setBonusOne: setBonusOneVal,
+          setBonusTwo: setBonusTwoVal,
+        },
+      };
+      await this.setCharacterData(this.character, data);
+    }
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),

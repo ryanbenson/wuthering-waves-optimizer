@@ -792,6 +792,12 @@ export default {
       },
       immediate: true,
     },
+    echoSet: {
+      handler: function(val) {
+        this.$emit('echo:set-chosen', { set: val, index: this.index });
+      },
+      immediate: true
+    },
     type: {
       handler: async function () {
         this.$emit("updated-echo-cost", { index: this.index, cost: this.type });
