@@ -72,14 +72,16 @@
           </div>
           <div class="echo__item__set w-full relative">
             <span class="font-bold mb-2 inline-flex">Echo Set</span>
-            <div class="echo__item__set-selection flex gap-4">
-              <div class="size-8 rounded-full border border-solid border-white">
+            <div class="echo__item__set-selection flex gap-3">
+              <div
+                v-for="echo in echoSets"
+                :key="echo"
+                @click="handleChooseEchoSet(echo)"
+                class="size-8 rounded-full cursor-pointer"
+                :class="{'border border-white': isSetSelected(echo)}"
+              >
                 <img
-                  src="https://www.prydwen.gg/static/5f4daa43c4a07ee8fb472a7e4f8feea1/8257c/set_8.webp" />
-              </div>
-              <div class="size-8 rounded-full">
-                <img
-                  src="https://www.prydwen.gg/static/321492541c283d76ce00e5b199247274/8257c/set_7.webp" />
+                  :src="getEchoSetIcon(echo)" />
               </div>
             </div>
           </div>
@@ -529,9 +531,11 @@
             </span>
             <div class="echo__item__meta flex gap-2 items-center">
               <span
-                class="echo__item__set size-6 rounded-full border border-solid border-white">
+                v-if="echoSet"
+                class="echo__item__set size-6 rounded-full"
+              >
                 <img
-                  src="https://www.prydwen.gg/static/5f4daa43c4a07ee8fb472a7e4f8feea1/8257c/set_8.webp" />
+                  :src="getEchoSetIcon(echoSet)" />
               </span>
               <span class="echo__item__cost badge badge-primary">
                 Cost {{ type }}
@@ -740,6 +744,7 @@ import {
   subStatLabelMap,
   getReadableSubStatLabel,
   getSubStatIconByType,
+  getEchoSetIconByType,
 } from "../echoes/stats";
 import {
   mainEchoesData,
@@ -887,7 +892,9 @@ export default {
         const prevEchoClass = prevEchoData?.class;
         prevEchoCost = getCostByClass(prevEchoClass);
       }
-      if (echoCost !== prevEchoCost) {
+      // only reset if there was a previous one,
+      // otherwise it will reset on load
+      if (previousEcho && echoCost !== prevEchoCost) {
         this.stat = "none";
       }
     },
@@ -987,6 +994,7 @@ export default {
       this.type = null;
       this.rank = null;
       this.stat = null;
+      this.echoSet = null;
       this.echoSubStatsType1 = null;
       this.echoSubStatsValue1 = null;
       this.echoSubStatsType2 = null;
@@ -1105,6 +1113,15 @@ export default {
       const middleVal = range[Math.floor(range.length / 2)];
       return middleVal;
     },
+    getEchoSetIcon(type) {
+      return getEchoSetIconByType(type);
+    },
+    handleChooseEchoSet(set) {
+      this.echoSet = set;
+    },
+    isSetSelected(set) {
+      return this.echoSet === set;
+    }
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -1149,6 +1166,25 @@ export default {
         };
         data.echoes[this.index] = {
           echo: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the type for this echo set
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    echoSet: {
+      get() {
+        return this.currentCharacter?.echoes?.[this.index]?.echoSet ?? null;
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          echoSet: value,
         };
         await this.setCharacterData(this.character, data);
       },
@@ -1933,6 +1969,13 @@ export default {
       }
       return getSubStatIconByType(this.echoFreeSubStatType);
     },
+    echoSets() {
+      if (!this.echo) {
+        return [];
+      }
+      const echoData = getEchoData(this.echo);
+      return echoData?.sets ?? [];
+    }
   },
 };
 </script>

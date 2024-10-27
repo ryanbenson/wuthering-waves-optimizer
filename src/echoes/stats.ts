@@ -196,7 +196,7 @@ export const subStatIconMap: Record<string, string> = {
   BasicAttackDMGBonus:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png",
   HeavyAttackDMGBonus:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/heavyattackdmgbonus.png",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png",
   ResonanceSkillDMGBonus:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png",
   ResonanceLiberationDMGBonus:
@@ -218,4 +218,36 @@ export const subStatIconMap: Record<string, string> = {
 
 export function getSubStatIconByType(type: string): string {
   return subStatIconMap[type];
+}
+
+export const echoSetImageMap: Record<string, string> = {
+  FreezingFrost: "https://ryanbenson.github.io/wuthering-waves-assets/images/FreezingFrost.webp",
+  MoltenRift: "https://ryanbenson.github.io/wuthering-waves-assets/images/MoltenRift.webp",
+  VoidThunder: "https://ryanbenson.github.io/wuthering-waves-assets/images/VoidThunder.webp",
+  SierraGale: "https://ryanbenson.github.io/wuthering-waves-assets/images/SierraGale.webp",
+  CelestialLight: "https://ryanbenson.github.io/wuthering-waves-assets/images/CelestialLight.webp",
+  SunSinkingEclipse: "https://ryanbenson.github.io/wuthering-waves-assets/images/SunSinkingEclipse.webp",
+  RejuvenatingGlow: "https://ryanbenson.github.io/wuthering-waves-assets/images/RejuvenatingGlow.webp",
+  MoonlitClouds: "https://ryanbenson.github.io/wuthering-waves-assets/images/MoonlitClouds.webp",
+  LingeringTunes: "https://ryanbenson.github.io/wuthering-waves-assets/images/LingeringTunes.webp",
+};
+
+export function getEchoSetIconByType(type: string): string {
+  return echoSetImageMap[type];
+}
+
+export const echoSetLabelMap: Record<string, string> = {
+  FreezingFrost: "Freezing Frost",
+  MoltenRift: "Molten Rift",
+  VoidThunder: "Void Thunder",
+  SierraGale: "Sierra Gale",
+  CelestialLight: "Celestial Light",
+  SunSinkingEclipse: "Sun-sinking Eclipse",
+  RejuvenatingGlow: "Rejuvenating Glow",
+  MoonlitClouds: "Moonlit Clouds",
+  LingeringTunes: "Lingering Tunes",
+};
+
+export function getEchoSetLabelByType(type: string): string {
+  return echoSetLabelMap[type];
 }
