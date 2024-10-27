@@ -477,7 +477,7 @@
       <div class="echo__content flex gap-6">
         <div class="echo__item__left">
           <div
-            class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover  cursor-pointer"
+            class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer"
             :class="{
               'border-amber-300': rank === '5' || rank === 5,
               'border-violet-600': rank === '4' || rank === 4,
@@ -489,7 +489,9 @@
             }"
             @click="handleOpenModal"></div>
           <div class="echo__item__actions flex gap-2 justify-center mt-4">
-            <span class="echo__item__edit cursor-pointer" @click="handleOpenModal">
+            <span
+              class="echo__item__edit cursor-pointer"
+              @click="handleOpenModal">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
@@ -499,7 +501,10 @@
                   fill="#FFFFFF" />
               </svg>
             </span>
-            <span class="echo__item__delete cursor-pointer" @click="reset" v-tooltip="'Reset echo'">
+            <span
+              class="echo__item__delete cursor-pointer"
+              @click="reset"
+              v-tooltip="'Reset echo'">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
@@ -512,15 +517,16 @@
           </div>
         </div>
         <div class="echo__item__stats mb-2 w-full relative">
-          <h2
-            class="card-title flex items-center justify-between">
+          <h2 class="card-title flex items-center justify-between">
             <span
-            :class="{
-              'text-amber-300': rank === '5' || rank === 5,
-              'text-violet-600': rank === '4' || rank === 4,
-              'text-green-500': rank === '3' || rank === 3,
-              'text-blue-500': rank === '2' || rank === 2,
-            }">{{ echoName }}</span>
+              :class="{
+                'text-amber-300': rank === '5' || rank === 5,
+                'text-violet-600': rank === '4' || rank === 4,
+                'text-green-500': rank === '3' || rank === 3,
+                'text-blue-500': rank === '2' || rank === 2,
+              }">
+              {{ echoName }}
+            </span>
             <div class="echo__item__meta flex gap-2 items-center">
               <span
                 class="echo__item__set size-6 rounded-full border border-solid border-white">
@@ -544,13 +550,12 @@
               </tr>
               <tr v-if="mainStatValue">
                 <td class="flex gap-2 items-center">
-                  <img
-                    :src="echoFreeSubStatIcon" />
+                  <img :src="echoFreeSubStatIcon" />
                   {{ getReadableSubStatLabel(echoFreeSubStatType) }}
                 </td>
                 <td>{{ echoFreeSubStatValue }}</td>
               </tr>
-              <tr class="substats__label">
+              <tr v-if="hasSubStats" class="substats__label">
                 <td class="font-bold font-size-8">Substats</td>
               </tr>
               <tr v-if="echoSubStatsType1" class="relative" style="z-index: 1">
@@ -883,9 +888,8 @@ export default {
         prevEchoCost = getCostByClass(prevEchoClass);
       }
       if (echoCost !== prevEchoCost) {
-        this.stat = 'none';
+        this.stat = "none";
       }
-
     },
     selectCost(cost) {
       this.type = cost;
@@ -1458,6 +1462,9 @@ export default {
     isMaxSubstats() {
       return this.totalSubStatsEnabled >= 5;
     },
+    hasSubStats() {
+      return this.totalSubStatsEnabled > 0;
+    },
     isCritRateDisabled() {
       if (!this.isMaxSubstats) {
         return false;
@@ -1925,7 +1932,7 @@ export default {
         return null;
       }
       return getSubStatIconByType(this.echoFreeSubStatType);
-    }
+    },
   },
 };
 </script>
