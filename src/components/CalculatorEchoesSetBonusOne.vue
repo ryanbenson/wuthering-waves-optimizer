@@ -1,16 +1,12 @@
 <template>
-  <label>Set Bonuses:</label>
-  <div class="panel mb-1">
-    <select v-model="type">
-      <option value="">Select 2 Set Bonus</option>
-      <option
-        v-for="setBonus in twoSetBonuses"
-        :key="setBonus"
-        :value="setBonus">
-        {{ setBonus }}
-      </option>
-    </select>
-    <div v-if="setDescription" v-html="setDescription" class="mt-1"></div>
+  <h2 class="text-lg font-bold mt-6 mb-2">Set Bonuses</h2>
+  <div
+    class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+    <div class="card-body">
+      <h2 v-if="setName" class="card-title">{{ setName }}</h2>
+      <div v-if="setDescription" v-html="setDescription" ></div>
+      <div v-else>No first echo set bonus is configured.</div>
+    </div>
   </div>
 </template>
 
@@ -39,15 +35,15 @@ export default {
         "Lingering Tunes 2 Set",
       ],
       setBonusEffects: {
-        "Freezing Frost 2 Set": { Glacio: 10, description: `<span class="Ice">Glacio</span> DMG increased by <span class="Highlight">10%</span>` },
-        "Molten Rift 2 Set": { Fusion: 10, description: `<span class="Fire">Fusion</span> DMG increased by <span class="Highlight">10%</span>` },
-        "Void Thunder 2 Set": { Electro: 10, description: `<span class="Thunder">Electro</span> DMG increased by <span class="Highlight">10%</span>` },
-        "Sierra Gale 2 Set": { Aero: 10, description: `<span class="Wind">Aero</span> DMG increased by <span class="Highlight">10%</span>` },
-        "Celestial Light 2 Set": { Spectro: 10, description: `<span class="Light">Spectro</span> DMG increased by <span class="Highlight">10%</span>` },
-        "Sun-sinking Eclipse 2 Set": { Havoc: 10, description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>` },
-        "Rejuvenating Glow 2 Set": { HealingBonus: 10, description: `Healing increases by <span class="Highlight">10%</span>` },
-        "Moonlit Clouds 2 Set": { EnergyRegen: 10, description: `Energy Regen increases by <span class="Highlight">10%</span>` },
-        "Lingering Tunes 2 Set": { ATK: 10,description: `ATK increases by <span class="Highlight">10%</span>` },
+        "Freezing Frost 2 Set": { Glacio: 10, description: `<span class="Ice">Glacio</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Freezing Frost' },
+        "Molten Rift 2 Set": { Fusion: 10, description: `<span class="Fire">Fusion</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Molten Rift' },
+        "Void Thunder 2 Set": { Electro: 10, description: `<span class="Thunder">Electro</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Void Thunder' },
+        "Sierra Gale 2 Set": { Aero: 10, description: `<span class="Wind">Aero</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Sierra Gale' },
+        "Celestial Light 2 Set": { Spectro: 10, description: `<span class="Light">Spectro</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Celestial Light' },
+        "Sun-sinking Eclipse 2 Set": { Havoc: 10, description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Sun-sinking Eclipse' },
+        "Rejuvenating Glow 2 Set": { HealingBonus: 10, description: `Healing increases by <span class="Highlight">10%</span>`, name: 'Rejuvenating Glow' },
+        "Moonlit Clouds 2 Set": { EnergyRegen: 10, description: `Energy Regen increases by <span class="Highlight">10%</span>`, name: 'Moonlit Clouds' },
+        "Lingering Tunes 2 Set": { ATK: 10,description: `ATK increases by <span class="Highlight">10%</span>`, name: 'Lingering Tunes' },
       },
     };
   },
@@ -105,6 +101,12 @@ export default {
         return false;
       }
       return this.setBonusEffects[this.type]?.description ?? '';
+    },
+    setName() {
+      if (!this.type) {
+        return false;
+      }
+      return this.setBonusEffects[this.type]?.name ?? '';
     },
   },
 };
