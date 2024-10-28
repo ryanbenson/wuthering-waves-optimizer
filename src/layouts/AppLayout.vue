@@ -8,7 +8,9 @@
 </template>
 
 <script>
-export default {
+// @ts-nocheck
+import { defineComponent } from "vue";
+export default defineComponent({
   // only on the home/calculator view should the body have overflow hidden
   // the other pages should use it
   created() {
@@ -34,7 +36,7 @@ export default {
       }
     }
   }
-}
+});
 </script>
 
 <style lang="scss" scoped>
