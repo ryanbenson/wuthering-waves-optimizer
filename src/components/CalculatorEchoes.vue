@@ -285,10 +285,25 @@ export default {
           // Case 1: All 5 values are the same
           setBonusOneVal = `${getEchoSetLabelByType(uniqueValues[0])} 2 Set`;
           setBonusTwoVal = `${getEchoSetLabelByType(uniqueValues[0])} 5 Set`;
-      } else if (uniqueValues.length === 2 && uniqueCounts.every(count => count === 2)) {
-          // Case 2: Two different values each repeated twice
-          setBonusOneVal = `${getEchoSetLabelByType(uniqueValues[0])} 2 Set`;
-          setBonusTwoVal = `${getEchoSetLabelByType(uniqueValues[1])} 2 Set`;
+        } else if (
+          uniqueValues.length === 2 &&
+          (
+              (uniqueCounts.includes(2) && uniqueCounts.includes(3)) ||  // Case 2a: 2 and 3 or 3 and 2
+              uniqueCounts.filter(count => count === 2).length === 2     // Case 2b: 2 and 2
+          )
+        ) {
+          // Case 2: Two different values with counts (2 and 3) or (2 and 2)
+          const [value1, value2] = uniqueValues;
+          const [count1, count2] = uniqueCounts;
+
+          // Assign bonuses based on the counts
+          if (count1 === 2 && count2 === 2) {
+              setBonusOneVal = `${getEchoSetLabelByType(value1)} 2 Set`;
+              setBonusTwoVal = `${getEchoSetLabelByType(value2)} 2 Set`;
+          } else if ((count1 === 2 && count2 === 3) || (count1 === 3 && count2 === 2)) {
+              setBonusOneVal = `${count1 === 2 ? getEchoSetLabelByType(value1) : getEchoSetLabelByType(value2)} 2 Set`;
+              setBonusTwoVal = `${count1 === 3 ? getEchoSetLabelByType(value1) : getEchoSetLabelByType(value2)} 2 Set`;
+          }
         } else if (uniqueCounts.some(count => count >= 2) && uniqueCounts.filter(count => count >= 2).length === 1) {
           // Case 3: Only one value has a repetition of 2, no others repeat more than once
           const repeatedValue = uniqueValues[uniqueCounts.findIndex(count => count >= 2)];
