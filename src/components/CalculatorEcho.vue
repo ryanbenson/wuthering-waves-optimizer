@@ -793,7 +793,10 @@ export default {
       immediate: true,
     },
     echoSet: {
-      handler: function(val) {
+      handler: function(val, previousVal) {
+        if (val === null && previousVal === undefined) {
+          return;
+        }
         this.$emit('echo:set-chosen', { set: val, index: this.index });
       },
       immediate: true

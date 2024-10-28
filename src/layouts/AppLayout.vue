@@ -7,6 +7,36 @@
   </div>
 </template>
 
+<script>
+export default {
+  // only on the home/calculator view should the body have overflow hidden
+  // the other pages should use it
+  created() {
+    this.updateBodyOverflow(this.$route.name);
+
+    this.unwatchRoute = this.$watch(
+      () => this.$route.name,
+      (newRouteName) => {
+        this.updateBodyOverflow(newRouteName);
+      },
+      { immediate: true }
+    );
+  },
+  beforeUnmount() {
+    if (this.unwatchRoute) this.unwatchRoute(); // Cleanup the watcher when the component is destroyed
+  },
+  methods: {
+    updateBodyOverflow(routeName) {
+      if (routeName === 'HomeView') {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
+      }
+    }
+  }
+}
+</script>
+
 <style lang="scss" scoped>
 .contain {
   display: grid;
