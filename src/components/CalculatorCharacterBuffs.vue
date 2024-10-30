@@ -112,9 +112,15 @@ export default {
             if (buffInstance?.modifier) {
               talentName = `${talentName}:${buffInstance.modifier}`;
             }
-            specificTalentBuffs[talentName] =
-              (specificTalentBuffs[talentName] || 0) +
-              buffInstance.modifierValueCalculated;
+            if (buffInstance.modifier === "talentTypeOverride") {
+              specificTalentBuffs[talentName] =
+                (specificTalentBuffs[talentName] || "") +
+                buffInstance.modifierValueCalculated;
+            } else {
+              specificTalentBuffs[talentName] =
+                (specificTalentBuffs[talentName] || 0) +
+                buffInstance.modifierValueCalculated;
+            }
           });
         });
         finalBuffData.specificTalentBuffs = specificTalentBuffs;

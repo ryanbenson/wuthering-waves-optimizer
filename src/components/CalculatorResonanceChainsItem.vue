@@ -176,6 +176,12 @@ export default {
               data.talentModifierMultiply = [];
             }
             data.talentModifierMultiply.push(modifierItem);
+          } else if (modifierItem.modifier === "talentModifierMultiplySetValue") {
+            // for buffs that apply talentModifierMultiply to the calcs
+            if (!data.talentModifierMultiplySetValue) {
+              data.talentModifierMultiplySetValue = [];
+            }
+            data.talentModifierMultiplySetValue.push(modifierItem);
           } else {
             data[modifierItem.modifier] = modifierItem.modifierValue;
           }
