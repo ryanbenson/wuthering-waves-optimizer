@@ -34,6 +34,7 @@
       <li>
         Updates Camellya for 1.4.6 changes.
       </li>
+    </ul>
     <h3>October 25, 2024</h3>
     <ul>
       <li>
