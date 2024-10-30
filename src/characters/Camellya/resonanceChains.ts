@@ -2,7 +2,7 @@ export const resonanceChains = [
   {
     key: "S1OnASecretPathNoOneKnows",
     name: "Sequence Node 1: On a Secret Path No One Knows",
-    details: `<span class="skilldescription">When casting <span class="Highlight">Intro Skill</span>, <span class="Highlight">Critical Damage</span> increases by <span class="Highlight">28%</span><br>Lasting for <span class="Highlight">18s</span>, can trigger once every <span class="Highlight">25s</span>. <strong class="Highlight">Resonance Circuit Dayflower</span> immune to interruption`,
+    details: `<span class="skilldescription">When casting <span class="Highlight">Intro Skill</span>, <span class="Highlight">Critical Damage</span> increases by <span class="Highlight">28%</span><br>Lasting for <span class="Highlight">18s</span>, can trigger once every <span class="Highlight">25s</span>. <span class="Highlight">Resonance Circuit Dayflower</span> immune to interruption`,
     hasStacks: false,
     modifiers: [
       {
