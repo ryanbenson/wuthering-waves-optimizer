@@ -76,6 +76,8 @@ export const resonanceChains = [
           "TheEmbersofYouthDMG",
           "EntangleDMG",
           "EntangleDayflowerDMG",
+          "DayflowerDMG",
+          "SequenceNode6EternalFlowerDMG",
         ],
         modifierValue: 0.58,
       },
