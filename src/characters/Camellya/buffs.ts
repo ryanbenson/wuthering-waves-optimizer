@@ -2,12 +2,17 @@ export const buffs = [
   {
     key: "InherentSkillBreedingGround",
     name: "Inherent Skill: Breeding Ground",
-    details: `<div class="skilldescription"><span class="Dark">Havoc</span> damage increases by 15%</div>`,
+    details: `<div class="skilldescription"><span class="Dark">Havoc</span> damage increases by 15%. <span class="Highlight">Heavy Attack</span> counts as <span class="Highlight">Basic Attack</span> damage.</span></div>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "Havoc",
         modifierValue: 0.15,
+      },
+      {
+        modifier: "talentTypeOverride",
+        modifySpecificTalents: ["HeavyAttackDMG"],
+        modifierValue: "Basic",
       },
     ],
     minStacks: 0,
@@ -50,6 +55,7 @@ export const buffs = [
           "VineDanceStage3DMG",
           "VineDanceStage4DMG",
           "WhirlingDanceDMG",
+          "AshenBlossomVineDanceDMG",
           "AtonementDMG",
           "FullBloomDMG",
           "DarkPistilSeekerDMG",
@@ -82,6 +88,7 @@ export const buffs = [
           "VineDanceStage3DMG",
           "VineDanceStage4DMG",
           "WhirlingDanceDMG",
+          "AshenBlossomVineDanceDMG",
           "AtonementDMG",
           "FullBloomDMG",
           "DarkPistilSeekerDMG",

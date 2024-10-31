@@ -92,6 +92,25 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 31, 2024</h3>
+    <ul>
+      <li>Fixes Camellya S6 Eternal Flower damage. It was missing the S2 buff.</li>
+      <li>Updates Camellya S3 to include Dayflower and Eternal Flower in the ATK buff.</li>
+    </ul>
+    <h3>October 30, 2024</h3>
+    <ul>
+      <li>
+        Updates Camellya for 1.4.6 changes.
+      </li>
+      <li>Updates Camellya S6 to set her multiplier to 250% instead of being additive 250%.</li>
+    </ul>
+    <h3>October 25, 2024</h3>
+    <ul>
+      <li>
+        Updates Camellya, adds Ashen Blossom Vine Dance from Deep Slumber buffs
+        after confirming it gets buffed.
+      </li>
+    </ul>
     <h3>October 20, 2024</h3>
     <ul>
       <li>

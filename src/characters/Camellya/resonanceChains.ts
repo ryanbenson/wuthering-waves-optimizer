@@ -1,14 +1,13 @@
 export const resonanceChains = [
   {
-    key: "S1OnASecretPathNoOneKnowsFlat",
+    key: "S1OnASecretPathNoOneKnows",
     name: "Sequence Node 1: On a Secret Path No One Knows",
-    details: `<span class="skilldescription">When casting <span class="Highlight">Intro Skill</span>, <span class="Highlight">Critical Damage</span> increases by <span class="Highlight">18%</span><br>Lasting for <span class="Highlight">18s</span>, can trigger once every <span class="Highlight">25s</span>
-When casting <span class="Highlight">Intro Skill</span>, additionally restores 50 points of <span class="Dark">【Red Camellia·Pistil】</span>, can trigger once every <span class="Highlight">25s</span>.</span>`,
+    details: `<span class="skilldescription">When casting <span class="Highlight">Intro Skill</span>, <span class="Highlight">Critical Damage</span> increases by <span class="Highlight">28%</span><br>Lasting for <span class="Highlight">18s</span>, can trigger once every <span class="Highlight">25s</span>. <span class="Highlight">Resonance Circuit Dayflower</span> immune to interruption`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "CritDMG",
-        modifierValue: 0.18,
+        modifierValue: 0.28,
       },
     ],
     minStacks: 0,
@@ -16,35 +15,15 @@ When casting <span class="Highlight">Intro Skill</span>, additionally restores 5
     alwaysEnabled: false,
   },
   {
-    key: "S1OnASecretPathNoOneKnowsStacks",
-    name: "Sequence Node 1: On a Secret Path No One Knows",
-    details: `<span class="skilldescription">For every remaining 1 point of <span class="Dark">【Red Camellia·Pistil】</span>, additionally increase the <span class="Highlight">Critical Damage</span> by <span class="Highlight">0.2%</span>, up to <span class="Highlight">10%</span>; Lasting for <span class="Highlight">18s</span>, can trigger once every <span class="Highlight">25s</span>.`,
-    hasStacks: true,
-    modifiers: [
-      {
-        modifier: "CritDMG",
-        modifierValue: 0.002,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 50,
-    alwaysEnabled: false,
-  },
-  {
     key: "S2CallingfortheFragranceoftheSilentFlower",
     name: "Sequence Node 2: Calling for the Fragrance of the Silent Flower",
-    details: `<span class="skilldescription"><span class="Highlight">Resonance Skill Dayflower</span> damage multiplier increases by <span class="Highlight">120%</span>. <span class="Highlight">Heavy Attack</span> counts as <span class="Highlight">Basic Attack</span> damage.</span>`,
+    details: `<span class="skilldescription"><span class="Highlight">Resonance Skill Dayflower</span> damage multiplier increases by <span class="Highlight">120%</span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["DayflowerDMG"],
+        modifySpecificTalents: ["DayflowerDMG", "SequenceNode6EternalFlowerDMG"],
         modifierValue: 1.2,
-      },
-      {
-        modifier: "talentTypeOverride",
-        modifySpecificTalents: ["HeavyAttackDMG"],
-        modifierValue: "Basic",
       },
     ],
     minStacks: 0,
@@ -97,6 +76,8 @@ When casting <span class="Highlight">Intro Skill</span>, additionally restores 5
           "TheEmbersofYouthDMG",
           "EntangleDMG",
           "EntangleDayflowerDMG",
+          "DayflowerDMG",
+          "SequenceNode6EternalFlowerDMG",
         ],
         modifierValue: 0.58,
       },
@@ -145,7 +126,10 @@ When casting <span class="Highlight">Intro Skill</span>, additionally restores 5
     key: "S6Blooming orYouThousandsofTimesDeepSlumberBuff",
     name: "Sequence Node 6: Blooming for You Thousands of Times",
     details: `<span class="skilldescription"><span class="Highlight">Resonance Circuit Deep Slumber</span> damage multiplier additionally increases by <span class="Highlight">150%</span>;<br>
-<span class="Highlight">Resonance Circuit Eternal Flower</span>: Within <span class="Highlight">15s</span> after casting <span class="Highlight">Resonance Circuit Dayflower</span>, if Concerto Energy is fully filled, <span class="Highlight">Eternal Flower</span> can be casted, consuming <span class="Highlight">50</span> Concerto points, restoring <span class="Highlight">50</span> points of <span class="Dark">【Red Camellia·Pistil】</span>, can be casted once every <span class="Highlight">25s</span>.</span>`,
+<span class="Highlight">Resonance Circuit Eternal Flower</span>: Within 15s after casting <span class="Highlight">Resonance Circuit Dayflower</span>, if Concerto Energy is fully filled, and if <span class="Highlight">Resonance Circuit Eternal Flower</span> is not in cooldown, Resonance Skill replaced with <span class="Highlight">Eternal Flower</span>.<br>
+When casting <span class="Highlight">Eternal Flower</span>, consumes 50 Concerto Energy, then restores 50 <span class="Dark">【Red Camellia·Pistil】</span>, dealing 100% of <span class="Highlight">Resonance Circuit Dayflower</span> as <span class="Dark">Havoc</span> damage, this damage is considered <span class="Highlight">Basic Attack</span> damage, and can be triggered once every 25s.<br>
+<span class="Highlight">Resonance Circuit Eternal Flower</span> is immune to interruption.
+`,
     hasStacks: false,
     modifiers: [
       {
@@ -163,11 +147,18 @@ When casting <span class="Highlight">Intro Skill</span>, additionally restores 5
           "VineDanceStage3DMG",
           "VineDanceStage4DMG",
           "WhirlingDanceDMG",
+          "AshenBlossomVineDanceDMG",
           "AtonementDMG",
           "FullBloomDMG",
           "DarkPistilSeekerDMG",
         ],
         modifierValue: 1.5,
+      },
+      {
+        modifier: "EnableAttack",
+        modifierValue: [
+          "SequenceNode6EternalFlowerDMG",
+        ],
       },
     ],
     minStacks: 0,
@@ -181,7 +172,8 @@ When casting <span class="Highlight">Intro Skill</span>, additionally restores 5
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
+        modifier: "talentModifierMultiplySetValue",
+        // modifier: "talentModifierMultiply",
         modifySpecificTalents: [
           "NormalAttackStage1DMG",
           "NormalAttackStage2DMG",
@@ -195,6 +187,7 @@ When casting <span class="Highlight">Intro Skill</span>, additionally restores 5
           "VineDanceStage3DMG",
           "VineDanceStage4DMG",
           "WhirlingDanceDMG",
+          "AshenBlossomVineDanceDMG",
           "AtonementDMG",
           "FullBloomDMG",
           "DarkPistilSeekerDMG",

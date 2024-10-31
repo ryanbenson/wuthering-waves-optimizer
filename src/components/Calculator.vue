@@ -1138,12 +1138,19 @@ export default defineComponent({
       ) => {
         let attackType = attack.type;
         // is there an attack type override? if so, update it
-        const attackTypeOverride =
+        const attackTypeOverrideResChain =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentTypeOverride`
           ] ?? null;
-        if (attackTypeOverride) {
-          attackType = attackTypeOverride;
+        const attackTypeOverrideSelfBuff =
+          charBuffsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentTypeOverride`
+          ] ?? null;
+        if (attackTypeOverrideResChain) {
+          attackType = attackTypeOverrideResChain;
+        }
+        if (attackTypeOverrideSelfBuff) {
+          attackType = attackTypeOverrideSelfBuff;
         }
         const attackElement = chosenChar.value?.basic?.element;
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
@@ -1296,7 +1303,7 @@ export default defineComponent({
           teamBuffDmgDeepenForAttackType +
           attackLevelDmgDeepen +
           coordinatedDmgDeepenEffect;
-        const totalTalentModifierMultiply =
+        let totalTalentModifierMultiply =
           talentModifierMultiply + talentModifierMultiplySelfBuff;
         // check for any modifiers that change the individual instance of atk/hp/def
         // re-calculate the base for this specific instance of damage
@@ -1349,6 +1356,16 @@ export default defineComponent({
             DEF: modifyBaseDef,
             DEF_FLAT: modifyBaseDefFlat,
           });
+        }
+
+        // set the multiplier hard set here
+        // talentModifierMultiplySetValue
+        const talentModifierMultiplySet =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentModifierMultiplySetValue`
+          ] ?? null;
+        if (talentModifierMultiplySet) {
+          totalTalentModifierMultiply = talentModifierMultiplySet;
         }
 
         if (attackType === "Healing") {
