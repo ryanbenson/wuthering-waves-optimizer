@@ -12,7 +12,10 @@
         class="echo-selector"
         @updated-echo-cost="handleUpdatedEchoCost"
         @update-stats="handleEchoStats"
-        @echo:set-chosen="handleEchoSetChosen">
+        @echo:set-chosen="handleEchoSetChosen"
+        @main-echo:updated="handleMainEchoUpdated"
+        @main-echo-rank:updated="handleMainEchoRankUpdated"
+      >
       </CalculatorEcho>
     </div>
     <div class="set-bonus-selector">
@@ -23,80 +26,53 @@
         :character="character"
         @update-stats="handleSetBonusTwoData"></CalculatorEchoesSetBonusTwo>
     </div>
-    <h3>Main Echo</h3>
-    <div class="main-echo__selection">
-      <div
-        :style="{
-          backgroundImage: `url(${chosenMainEchoImage})`,
+    <h2 v-if="false" class="text-lg font-bold mt-6 mb-2">Main Echo Buff</h2>
+    <div class="main__echo relative mt-12">
+      <h3
+        v-if="echoName"
+        class="main-echo__name"
+        :class="{
+          'text-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+          'text-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+          'text-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+          'text-green-500': mainEchoRank === '2' || mainEchoRank === 2,
         }"
-        class="main-echo__image"></div>
-      <select name="mainEcho" v-model="mainEcho">
-        <optgroup label="Calamity">
-          <option
-            v-for="option in mainEchoOptions.Calamity"
-            :key="option.key"
-            :value="option.key">
-            {{ option.name }}
-          </option>
-        </optgroup>
-        <optgroup label="Overlord">
-          <option
-            v-for="option in mainEchoOptions.Overlord"
-            :key="option.key"
-            :value="option.key">
-            {{ option.name }}
-          </option>
-        </optgroup>
-        <optgroup label="Elite">
-          <option
-            v-for="option in mainEchoOptions.Elite"
-            :key="option.key"
-            :value="option.key">
-            {{ option.name }}
-          </option>
-        </optgroup>
-        <optgroup label="Common">
-          <option
-            v-for="option in mainEchoOptions.Common"
-            :key="option.key"
-            :value="option.key">
-            {{ option.name }}
-          </option>
-        </optgroup>
-      </select>
-    </div>
-    <div class="main-echo-level">
-      <label for="mainEchoRank">Choose Main Echo Rank</label>
-      <select name="mainEchoRank" v-model="mainEchoRank">
-        <option value="">Select a rank</option>
-        <option value="5">5</option>
-        <option value="4">4</option>
-        <option value="3">3</option>
-        <option value="2">2</option>
-        <option value="1">1</option>
-      </select>
-    </div>
-    <div class="main-echo" @click="toggleMainEchoBuffEnabled">
-      <div
-        v-if="chosenMainEchoData"
-        class="main-echo__details"
-        v-html="chosenMainEchoData.details"></div>
-      <div class="main-echo__enabled" v-if="chosenMainEchoHasBuffs">
-        <label @click.stop>
-          <input
-            type="checkbox"
-            class="checkbox"
-            v-model="mainEchoBuffEnabled"
-            name="mainEchoBuffEnabled" />
-          Enabled?</label
-        >
-        <div v-if="mainEchoHasStacks" @click.stop>
-          <label>Stacks:</label>
-          <input
-            v-model.number="mainEchoStacks"
-            type="number"
-            min="0"
-            :max="mainEchoMaxStacks" />
+      >{{ echoName }}</h3>
+      <div v-if="mainEcho" class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer relative z-10" @click="toggleMainEchoBuffEnabled">
+        <div class="card-body">
+          <div
+            v-if="chosenMainEchoData"
+            class="main-echo__details"
+            v-html="chosenMainEchoData.details"></div>
+
+          
+          <div class="flex gap-2 items-center">
+            <div class="form-control" @click.stop>
+              <label
+                class="label cursor-pointer inline-flex justify-start"
+                v-if="!setAlwaysEnabled"
+                @click.stop>
+                <span class="label-text mr-2">Enabled?</span>
+                <input
+                  type="checkbox"
+                  class="checkbox checkbox-sm"
+                  v-model="mainEchoBuffEnabled" />
+              </label>
+            </div>
+            <div v-if="mainEchoHasStacks" class="form-control" @click.stop>
+              <label
+                class="label cursor-pointer inline-flex justify-start"
+                v-if="!setAlwaysEnabled">
+                <span class="label-text mr-2">Stacks</span>
+                <input
+                  v-model="mainEchoStacks"
+                  type="number"
+                  class="input input-bordered input-xs"
+                  :min="0"
+                  :max="mainEchoMaxStacks" />
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -104,7 +80,7 @@
 </template>
 
 <script>
-import { mainEchoesData } from "../echoes/index.ts";
+import { mainEchoesData, getEchoData } from "../echoes/index.ts";
 import { getEchoSetLabelByType } from "../echoes/stats.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
@@ -322,6 +298,12 @@ export default {
         },
       };
       await this.setCharacterData(this.character, data);
+    },
+    handleMainEchoUpdated(echo) {
+      this.mainEcho = echo;
+    },
+    handleMainEchoRankUpdated(rank) {
+      this.mainEchoRank = rank;
     }
   },
   computed: {
@@ -460,6 +442,13 @@ export default {
     },
     isTotalCostOverCap() {
       return this.totalEchoCost > MAX_ECHO_COST;
+    },
+    echoName() {
+      if (!this.mainEcho) {
+        return null;
+      }
+      const echoData = getEchoData(this.mainEcho);
+      return echoData?.name ?? null;
     },
   },
 };
@@ -622,6 +611,14 @@ export default {
   }
 }
 
+.main-echo__name {
+  font-size: 36px;
+  font-weight: 700;
+  position: absolute;
+  top: -2.4rem;
+  left: 0.5rem;
+  z-index: 0;
+}
 
 
 .rank__label {

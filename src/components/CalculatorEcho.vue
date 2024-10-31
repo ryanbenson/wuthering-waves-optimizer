@@ -809,7 +809,11 @@ export default {
       immediate: true,
     },
     rank: {
-      handler: async function () {
+      handler: async function (rank) {
+        // update the main echo rank if it's the first one
+        if (this.index === 0) {
+          this.$emit('main-echo-rank:updated', rank);
+        }
         this.updateTotalStats();
       },
       immediate: true,
@@ -893,6 +897,10 @@ export default {
       const echoClass = echoData?.class;
       const echoCost = getCostByClass(echoClass);
       this.selectCost(echoCost);
+      // update the main echo if it's the first one
+      if (this.index === 0) {
+        this.$emit('main-echo:updated', echo);
+      }
       // get the cost of the previous echo, if they are different then
       // reset the main stat type and value
       let prevEchoCost = null;
@@ -905,6 +913,10 @@ export default {
       // otherwise it will reset on load
       if (previousEcho && echoCost !== prevEchoCost) {
         this.stat = "none";
+        // update the main echo if it's the first one
+        if (this.index === 0) {
+          this.$emit('main-echo:updated', null);
+        }
       }
     },
     selectCost(cost) {

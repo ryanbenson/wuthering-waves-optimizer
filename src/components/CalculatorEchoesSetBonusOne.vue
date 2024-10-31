@@ -1,7 +1,7 @@
 <template>
   <h2 class="text-lg font-bold mt-6 mb-2">Set Bonuses</h2>
   <div
-    class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+    class="card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
       <h2 v-if="setName" class="card-title">{{ setName }}</h2>
       <div v-if="setDescription" v-html="setDescription" ></div>
