@@ -170,8 +170,8 @@ When casting <span class="Highlight">Eternal Flower</span>, consumes 50 Concerto
     hasStacks: false,
     modifiers: [
       {
-        // modifier: "talentModifierMultiplySetValue",
-        modifier: "talentModifierMultiply",
+        modifier: "talentModifierMultiplySetValue",
+        // modifier: "talentModifierMultiply",
         modifySpecificTalents: [
           "NormalAttackStage1DMG",
           "NormalAttackStage2DMG",

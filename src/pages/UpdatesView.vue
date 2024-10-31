@@ -34,6 +34,7 @@
       <li>
         Updates Camellya for 1.4.6 changes.
       </li>
+      <li>Updates Camellya S6 to set her multiplier to 250% instead of being additive 250%.</li>
     </ul>
     <h3>October 25, 2024</h3>
     <ul>
