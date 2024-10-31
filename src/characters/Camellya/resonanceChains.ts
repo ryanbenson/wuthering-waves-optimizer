@@ -22,7 +22,7 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["DayflowerDMG"],
+        modifySpecificTalents: ["DayflowerDMG", "SequenceNode6EternalFlowerDMG"],
         modifierValue: 1.2,
       },
     ],

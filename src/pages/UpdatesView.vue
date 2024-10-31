@@ -29,6 +29,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 31, 2024</h3>
+    <ul>
+      <li>Fixes Camellya S6 Eternal Flower damage. It was missing the S2 buff.</li>
+    </ul>
     <h3>October 30, 2024</h3>
     <ul>
       <li>
