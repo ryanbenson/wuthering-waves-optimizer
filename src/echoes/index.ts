@@ -158,7 +158,7 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["RejuvenatingGlow", "MoonlitClouds"],
   },
-  Chaserazor: {
+  Carapace: {
     key: "Carapace",
     name: "Carapace",
     class: "Elite",

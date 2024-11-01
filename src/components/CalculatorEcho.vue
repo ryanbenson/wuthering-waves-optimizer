@@ -7,7 +7,7 @@
         </button>
       </form>
       <div class="py-4">
-        <div class="echo__selection flex w-full items-center gap-6">
+        <div class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row">
           <div
             class="echo__item__image rounded-full border border-solid neutral-content size-24 bg-cover min-w-24 text-center"
             :class="{
@@ -71,13 +71,13 @@
             </select>
           </div>
           <div class="echo__item__set w-full relative">
-            <span class="font-bold mb-2 inline-flex">Echo Set</span>
-            <div class="echo__item__set-selection flex gap-3">
+            <span class="font-bold mb-2 inline-flex w-full justify-center sm:justify-start">Echo Set</span>
+            <div class="echo__item__set-selection flex gap-3 justify-center sm:justify-start">
               <div
                 v-for="echo in echoSets"
                 :key="echo"
                 @click="handleChooseEchoSet(echo)"
-                class="size-8 rounded-full cursor-pointer"
+                class="size-8 rounded-full cursor-pointer echo__item__set-selection--icon"
                 :class="{'border border-white': isSetSelected(echo)}"
               >
                 <img
@@ -476,10 +476,10 @@
   <div
     class="echo__item card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
-      <div class="echo__content flex gap-6">
+      <div class="echo__content flex gap-6 flex-col lg:flex-row">
         <div class="echo__item__left">
           <div
-            class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer"
+            class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
             :class="{
               'border-amber-300': rank === '5' || rank === 5,
               'border-violet-600': rank === '4' || rank === 4,
@@ -2138,5 +2138,27 @@ export default {
 .echo__selection__rank__input {
   position: relative;
   z-index: 10;
+}
+.echo__item__set-selection--icon {
+  @media (prefers-color-scheme: light) {
+    border-color: oklch(var(--bc));
+    img {
+      filter: invert(100%);
+    }
+  }
+}
+.echo__item__stats {
+  @media (prefers-color-scheme: light) {
+    img {
+      filter: invert(100%);
+    }
+  }
+}
+.echo__item__actions {
+  @media (prefers-color-scheme: light) {
+    svg {
+      filter: invert(100%);
+    }
+  }
 }
 </style>

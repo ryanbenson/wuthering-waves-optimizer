@@ -33,6 +33,9 @@ body {
   margin: 0;
   display: flex;
   min-height: 100vh;
+  @media (max-width: 768px) {
+    overflow: auto !important;
+  }
 }
 
 #app {
@@ -62,7 +65,7 @@ body {
   color: oklch(var(--wa));
 }
 .param {
-  color: #f8e56c;
+  color: oklch(var(--wa));
 }
 .Light {
   color: #f8e56c;

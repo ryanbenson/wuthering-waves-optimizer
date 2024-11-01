@@ -354,5 +354,9 @@ export default {
   background-size: contain;
   border-radius: 100%;
   border: 1px solid white;
+
+  @media (prefers-color-scheme: light) {
+    border-color: oklch(var(--bc));
+  }
 }
 </style>

@@ -81,9 +81,7 @@
           <div
             v-if="weaponModifierLabel && weaponModifierValue"
             class="weapon__stat  flex gap-2 items-center">
-            <span
-              ><img v-if="weaponModifierImage" :src="weaponModifierImage" /></span
-            >
+            <span><img v-if="weaponModifierImage" :src="weaponModifierImage" /></span>
             <span class="font-bold">{{ weaponModifierLabel }}:</span>
             <span>{{ weaponModifierValue }}</span>
           </div>
@@ -522,6 +520,10 @@ export default {
   background-size: contain;
   border-radius: 100%;
   border: 1px solid white;
+
+  @media (prefers-color-scheme: light) {
+    border-color: oklch(var(--bc));
+  }
 }
 .weapon__basic-info {
   display: flex;
