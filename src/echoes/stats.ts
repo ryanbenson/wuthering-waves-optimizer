@@ -60,8 +60,8 @@ interface SubStatTable {
 }
 
 export const subStatsTable: SubStatTable = {
-  CritRate: [6.3, 6.9, 7.5, 8.1, 9.3, 9.9, 10.5],
-  CritDMG: [12.6, 13.8, 16.2, 17.4, 18.6, 19.8, 21],
+  CritRate: [6.3, 6.9, 7.5, 8.1, 8.7, 9.3, 9.9, 10.5],
+  CritDMG: [12.6, 13.8, 15, 16.2, 17.4, 18.6, 19.8, 21],
   ATK: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
   ATK_FLAT: [40, 50, 60, 70],
   HP: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
@@ -221,15 +221,24 @@ export function getSubStatIconByType(type: string): string {
 }
 
 export const echoSetImageMap: Record<string, string> = {
-  FreezingFrost: "https://ryanbenson.github.io/wuthering-waves-assets/images/FreezingFrost.webp",
-  MoltenRift: "https://ryanbenson.github.io/wuthering-waves-assets/images/MoltenRift.webp",
-  VoidThunder: "https://ryanbenson.github.io/wuthering-waves-assets/images/VoidThunder.webp",
-  SierraGale: "https://ryanbenson.github.io/wuthering-waves-assets/images/SierraGale.webp",
-  CelestialLight: "https://ryanbenson.github.io/wuthering-waves-assets/images/CelestialLight.webp",
-  SunSinkingEclipse: "https://ryanbenson.github.io/wuthering-waves-assets/images/SunSinkingEclipse.webp",
-  RejuvenatingGlow: "https://ryanbenson.github.io/wuthering-waves-assets/images/RejuvenatingGlow.webp",
-  MoonlitClouds: "https://ryanbenson.github.io/wuthering-waves-assets/images/MoonlitClouds.webp",
-  LingeringTunes: "https://ryanbenson.github.io/wuthering-waves-assets/images/LingeringTunes.webp",
+  FreezingFrost:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/FreezingFrost.webp",
+  MoltenRift:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/MoltenRift.webp",
+  VoidThunder:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/VoidThunder.webp",
+  SierraGale:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/SierraGale.webp",
+  CelestialLight:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/CelestialLight.webp",
+  SunSinkingEclipse:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/SunSinkingEclipse.webp",
+  RejuvenatingGlow:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/RejuvenatingGlow.webp",
+  MoonlitClouds:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/MoonlitClouds.webp",
+  LingeringTunes:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/LingeringTunes.webp",
 };
 
 export function getEchoSetIconByType(type: string): string {
