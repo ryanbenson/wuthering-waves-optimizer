@@ -234,7 +234,6 @@ export default {
       if (this.type) {
         const setBonusEffect = this.setBonusEffects[this.type];
         for (const [key, value] of Object.entries(setBonusEffect)) {
-          console.log(key, value);
           if (key !== "maxStacks") {
             if (
               this.type === "Lingering Tunes 5 Set" &&
@@ -253,7 +252,6 @@ export default {
           }
         }
       }
-      console.log(stats);
       this.$emit("update-stats", stats);
     },
     toggleEnabled() {

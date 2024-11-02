@@ -214,7 +214,6 @@ export default {
       this.$emit("update-stats", stats);
     },
     handleSetBonusOneData(data) {
-      console.log(data);
       const stats = JSON.parse(JSON.stringify(data));
       this.setBonusOne = stats;
       this.updateTotalStats();

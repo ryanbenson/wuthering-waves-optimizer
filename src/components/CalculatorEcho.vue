@@ -913,10 +913,6 @@ export default {
       // otherwise it will reset on load
       if (previousEcho && echoCost !== prevEchoCost) {
         this.stat = "none";
-        // update the main echo if it's the first one
-        if (this.index === 0) {
-          this.$emit('main-echo:updated', null);
-        }
       }
     },
     selectCost(cost) {
@@ -1036,30 +1032,33 @@ export default {
         this.syncMainStats();
         return;
       }
+      const range = this.getSubStatRange(mainStat);
+      // get the first option as the initial val
+      const initialSubStatValue = range[0];
       // find the first item that's null or "none" and fill it in
       if (!this.echoSubStatsType1 || this.echoSubStatsType1 === "none") {
         this.echoSubStatsType1 = mainStat;
-        this.echoSubStatsValue1 = null;
+        this.echoSubStatsValue1 = initialSubStatValue;
         return;
       }
       if (!this.echoSubStatsType2 || this.echoSubStatsType2 === "none") {
         this.echoSubStatsType2 = mainStat;
-        this.echoSubStatsValue2 = null;
+        this.echoSubStatsValue2 = initialSubStatValue;
         return;
       }
       if (!this.echoSubStatsType3 || this.echoSubStatsType3 === "none") {
         this.echoSubStatsType3 = mainStat;
-        this.echoSubStatsValue3 = null;
+        this.echoSubStatsValue3 = initialSubStatValue;
         return;
       }
       if (!this.echoSubStatsType4 || this.echoSubStatsType4 === "none") {
         this.echoSubStatsType4 = mainStat;
-        this.echoSubStatsValue4 = null;
+        this.echoSubStatsValue4 = initialSubStatValue;
         return;
       }
       if (!this.echoSubStatsType5 || this.echoSubStatsType5 === "none") {
         this.echoSubStatsType5 = mainStat;
-        this.echoSubStatsValue5 = null;
+        this.echoSubStatsValue5 = initialSubStatValue;
         return;
       }
     },
