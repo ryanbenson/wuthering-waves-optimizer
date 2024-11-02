@@ -181,8 +181,10 @@ html[data-theme="light"] .subnav img {
       }
 
       svg {
-        stroke: black !important;
-        fill: black !important;
+        path {
+          stroke: black !important;
+          fill: black !important;
+        }
       }
     }
   }
