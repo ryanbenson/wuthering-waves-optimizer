@@ -102,7 +102,7 @@ export const mainEchoesData: MainEchoes = {
     sets: ["FreezingFrost", "CelestialLight"],
   },
   BabyViridblazeSaurian: {
-    key: "Baby Viridblaze Saurian",
+    key: "BabyViridblazeSaurian",
     name: "Baby Viridblaze Saurian",
     class: "Common",
     image:
