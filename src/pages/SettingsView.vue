@@ -23,6 +23,7 @@
       </div>
       <div class="navbar-end">
         <ul class="menu menu-horizontal px-1">
+          <ThemeChooser></ThemeChooser>
           <li>
             <details>
               <summary>
@@ -88,9 +89,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import Settings from "../components/Settings.vue";
+import ThemeChooser from "../components/ThemeChooser.vue";
 export default defineComponent({
   name: "SettingsView",
-  components: { Settings },
+  components: { Settings, ThemeChooser },
 });
 </script>
 

@@ -23,6 +23,7 @@
       </div>
       <div class="navbar-end">
         <ul class="menu menu-horizontal px-1">
+          <ThemeChooser></ThemeChooser>
           <li>
             <details>
               <summary>
@@ -39,6 +40,7 @@
                 </svg>
               </summary>
               <ul class="subnav bg-base-300 rounded-t-none p-2 right-0 z-50">
+                <ThemeChooser></ThemeChooser>
                 <li>
                   <RouterLink
                     to="/settings"
@@ -92,6 +94,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 3, 2024</h3>
+    <ul>
+      <li>Major release: UI overhaul! Enjoy the new UI! Everything should be backwards compatible, but a lot easier to use. It also includes saving your echo enemy data, and automatically figures out your echo sets, and your main echo based on your echoes.</li>
+    </ul>
     <h3>October 31, 2024</h3>
     <ul>
       <li>Fixes Camellya S6 Eternal Flower damage. It was missing the S2 buff.</li>
@@ -696,8 +702,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import ThemeChooser from "../components/ThemeChooser.vue";
 export default defineComponent({
   name: "UpdatesView",
+  components: { ThemeChooser },
 });
 </script>
 
