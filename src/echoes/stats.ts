@@ -55,6 +55,26 @@ export const statsTable: StatsTable = {
   },
 };
 
+interface SubStatTable {
+  [stat: string]: number[];
+}
+
+export const subStatsTable: SubStatTable = {
+  CritRate: [6.3, 6.9, 7.5, 8.1, 8.7, 9.3, 9.9, 10.5],
+  CritDMG: [12.6, 13.8, 15, 16.2, 17.4, 18.6, 19.8, 21],
+  ATK: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
+  ATK_FLAT: [40, 50, 60, 70],
+  HP: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
+  HP_FLAT: [320, 360, 390, 430, 479, 510, 540, 580],
+  DEF: [8.1, 9, 10, 10.9, 11.8, 12.8, 13.8, 14.7],
+  DEF_FLAT: [40, 50, 60, 70],
+  BasicAttackDMGBonus: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
+  HeavyAttackDMGBonus: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
+  ResonanceSkillDMGBonus: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
+  ResonanceLiberationDMGBonus: [6.4, 7.1, 7.9, 8.6, 9.4, 10.1, 10.9, 11.6],
+  EnergyRegen: [6.8, 7.6, 8.4, 9.2, 10, 10.8, 11.6, 12.4],
+};
+
 interface FlatBonusesByRankByType {
   [level: number]: FlatBonusesByRankByTypeData;
 }
@@ -156,4 +176,87 @@ export const subStatLabelMap: SubStatLabelMap = {
 
 export function getReadableSubStatLabel(key: string): string {
   return subStatLabelMap[key];
+}
+
+export const subStatIconMap: Record<string, string> = {
+  HP_FLAT: "https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png",
+  ATK_FLAT:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png",
+  DEF_FLAT:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/def.png",
+  ATK: "https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png",
+  HP: "https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png",
+  DEF: "https://ryanbenson.github.io/wuthering-waves-assets/images/def.png",
+  EnergyRegen:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png",
+  CritRate:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png",
+  CritDMG:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png",
+  BasicAttackDMGBonus:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png",
+  HeavyAttackDMGBonus:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png",
+  ResonanceSkillDMGBonus:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png",
+  ResonanceLiberationDMGBonus:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png",
+  Glacio:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/glaciodmgbonus.png",
+  Fusion:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/fusiondmgbonus.png",
+  Electro:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/electrodmgbonus.png",
+  Aero: "https://ryanbenson.github.io/wuthering-waves-assets/images/aerodmgbonus.png",
+  Spectro:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/spectrodmgbonus.png",
+  Havoc:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/havocdmgbonus.png",
+  HealingBonus:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png",
+};
+
+export function getSubStatIconByType(type: string): string {
+  return subStatIconMap[type];
+}
+
+export const echoSetImageMap: Record<string, string> = {
+  FreezingFrost:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/FreezingFrost.webp",
+  MoltenRift:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/MoltenRift.webp",
+  VoidThunder:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/VoidThunder.webp",
+  SierraGale:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/SierraGale.webp",
+  CelestialLight:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/CelestialLight.webp",
+  SunSinkingEclipse:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/SunSinkingEclipse.webp",
+  RejuvenatingGlow:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/RejuvenatingGlow.webp",
+  MoonlitClouds:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/MoonlitClouds.webp",
+  LingeringTunes:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/LingeringTunes.webp",
+};
+
+export function getEchoSetIconByType(type: string): string {
+  return echoSetImageMap[type];
+}
+
+export const echoSetLabelMap: Record<string, string> = {
+  FreezingFrost: "Freezing Frost",
+  MoltenRift: "Molten Rift",
+  VoidThunder: "Void Thunder",
+  SierraGale: "Sierra Gale",
+  CelestialLight: "Celestial Light",
+  SunSinkingEclipse: "Sun-sinking Eclipse",
+  RejuvenatingGlow: "Rejuvenating Glow",
+  MoonlitClouds: "Moonlit Clouds",
+  LingeringTunes: "Lingering Tunes",
+};
+
+export function getEchoSetLabelByType(type: string): string {
+  return echoSetLabelMap[type];
 }

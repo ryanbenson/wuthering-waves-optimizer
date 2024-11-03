@@ -3,8 +3,8 @@
     <div class="weapon__basic-info">
       <div class="weapon__selection__image" :style="weaponImageStyles"></div>
       <div class="weapon__basic-data">
-        <div class="form__group field">
-          <select name="weapon" v-model="weapon" class="form__field">
+        <div class="mb-2">
+          <select name="weapon" v-model="weapon" class="select select-bordered select-sm">
             <option :value="null">Choose a weapon</option>
             <optgroup label="5 Star">
               <option
@@ -48,64 +48,67 @@
             </optgroup>
           </select>
         </div>
-        <div class="form__group field">
-          <select name="weaponLevel" v-model="weaponLevel" class="form__field">
+        <div class="mb-2">
+          <select name="weaponLevel" v-model="weaponLevel" class="select select-bordered select-sm">
             <option v-for="lvl in weaponLevelOptions" :key="lvl" :value="lvl">
               {{ lvl }}
             </option>
           </select>
-          <label for="weaponLevel" class="form__label">Weapon Level</label>
+          <label for="weaponLevel" class="ml-2">Weapon Level</label>
         </div>
-        <div class="form__group field">
-        <select name="refinement" v-model="refinement" class="form__field">
+        <div class="">
+        <select name="refinement" v-model="refinement" class="select select-bordered select-sm">
           <option v-for="lvl in weaponRefinementLevels" :key="lvl" :value="lvl">
             {{ lvl }}
           </option>
         </select>
-        <label for="weaponLevel" class="form__label">Refinement</label>
+        <label for="weaponLevel" class="ml-2">Refinement</label>
       </div>
     </div>
     </div>
-    <div v-if="weapon" class="weapon__stats">
-      <div v-if="weaponAttack" class="weapon__stat">
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Attack:</span
-        >
-        <span>{{ weaponAttack }}</span>
-      </div>
-      <div
-        v-if="weaponModifierLabel && weaponModifierValue"
-        class="weapon__stat">
-        <span
-          ><img v-if="weaponModifierImage" :src="weaponModifierImage" />{{
-            weaponModifierLabel
-          }}:</span
-        >
-        <span>{{ weaponModifierValue }}</span>
+    <div v-if="weapon" class="p-2">
+      <div  class="card card-bordered card-compact bg-base-100 shadow mb-2">
+        <div class="card-body">
+          <div class="weapon__stats flex gap-6 items-center">
+          <div v-if="weaponAttack" class="weapon__stat flex gap-2 items-center">
+            <span
+              ><img
+                src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" /></span
+            >
+            <span class="font-bold">Attack:</span>
+            <span>{{ weaponAttack }}</span>
+          </div>
+          <div
+            v-if="weaponModifierLabel && weaponModifierValue"
+            class="weapon__stat  flex gap-2 items-center">
+            <span><img v-if="weaponModifierImage" :src="weaponModifierImage" /></span>
+            <span class="font-bold">{{ weaponModifierLabel }}:</span>
+            <span>{{ weaponModifierValue }}</span>
+          </div>
+        </div>
+        <div v-if="weaponDescription" class="weapon__desc" v-html="weaponDescription">
+        </div>
       </div>
     </div>
-    <div v-if="weaponDescription" class="weapon__desc">
-      {{ weaponDescription }}
-    </div>
-    <div v-if="hasWeaponPassive" class="weapon__passives" :key="weapon">
-      <CalculatorWeaponsPassive
-        v-for="(weaponPassive, i) in weaponPassives"
-        class="weapon__passive"
-        :key="weaponPassive.key"
-        :character="character"
-        :passive-key="weaponPassive.key"
-        :has-stacks="weaponPassive.hasStacks"
-        :modifier="weaponPassive.modifier"
-        :modifier-by-refinement="weaponPassive.modifierByRefinement"
-        :min-stacks="weaponPassive.minStacks"
-        :max-stacks="weaponPassive.maxStacks"
-        :always-enabled="weaponPassive.alwaysEnabled"
-        :details="weaponPassive.details"
-        :refinement="refinement"
-        @updated-weapon-stats="
-          handleUpdatedWeaponStats
-        "></CalculatorWeaponsPassive>
+        <div v-if="hasWeaponPassive" class="weapon__passives" :key="weapon">
+          <CalculatorWeaponsPassive
+            v-for="(weaponPassive, i) in weaponPassives"
+            class="weapon__passive"
+            :key="weaponPassive.key"
+            :character="character"
+            :passive-key="weaponPassive.key"
+            :has-stacks="weaponPassive.hasStacks"
+            :modifier="weaponPassive.modifier"
+            :modifier-by-refinement="weaponPassive.modifierByRefinement"
+            :min-stacks="weaponPassive.minStacks"
+            :max-stacks="weaponPassive.maxStacks"
+            :always-enabled="weaponPassive.alwaysEnabled"
+            :details="weaponPassive.details"
+            :refinement="refinement"
+            @updated-weapon-stats="
+              handleUpdatedWeaponStats
+            "></CalculatorWeaponsPassive>
+      </div>
     </div>
   </div>
 </template>
@@ -501,50 +504,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.weapon__passive {
-  background-color: #161616;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  margin-top: 1rem;
-
-  @media (prefers-color-scheme: light) {
-    background-color: #f8f8f8;
-  }
-
-  span:first-of-type {
-    font-weight: bold;
-  }
-}
-.weapon__stats {
-  margin-bottom: 1rem;
-}
-.weapon__stat {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-
-  &:first-child {
-    margin-bottom: 0.5rem;
-  }
-
-  span {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-  span img {
-    // make the white icons darker on light mode for stats
-    @media (prefers-color-scheme: light) {
-      filter: contrast(0.25);
-    }
-  }
-}
-.form__group.field {
-  margin: 0 0 0.5rem 0;
-}
-label.form__label {
-  margin-left: 1rem;
-}
 .weapon__selection__image {
   width: 100px;
   height: 100px;
@@ -553,6 +512,16 @@ label.form__label {
   background-size: contain;
   border-radius: 100%;
   border: 1px solid white;
+}
+html[data-theme="light"] {
+  .weapon__stat {
+    span img {
+        filter: contrast(0.25);
+    }
+  }
+  .weapon__selection__image {
+    border-color: oklch(var(--bc));
+  }
 }
 .weapon__basic-info {
   display: flex;

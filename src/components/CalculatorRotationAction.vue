@@ -1,14 +1,14 @@
 <template>
-  <div class="rotation__action" @click="toggleEdit">
+  <div class="rotation__action p-4 rounded-lg" @click="toggleEdit">
     <div class="rotation__action__info">
       <div class="name">
-        <div class="order">#{{ sequence }}</div>
-        <div class="count">x{{ hits }}</div>
+        <div class="order badge">#{{ sequence }}</div>
+        <div class="count badge">x{{ hits }}</div>
         <span>{{ attackLabel }}</span>
       </div>
       <div class="rotation__action__end">
-        <div class="type" v-if="skillTypeLabel">{{ skillTypeLabel }}</div>
-        <div class="buffsCount">
+        <div class="type badge badge-primary" v-if="skillTypeLabel">{{ skillTypeLabel }}</div>
+        <div class="buffsCount badge">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path
               d="M160 80c0-26.5 21.5-48 48-48l32 0c26.5 0 48 21.5 48 48l0 352c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48l0-352zM0 272c0-26.5 21.5-48 48-48l32 0c26.5 0 48 21.5 48 48l0 160c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48L0 272zM368 96l32 0c26.5 0 48 21.5 48 48l0 288c0 26.5-21.5 48-48 48l-32 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48z"
@@ -28,6 +28,7 @@
               name="sequence"
               id="sequence"
               type="number"
+              class="input input-xs input-bordered w-14"
               @blur="onSequenceChange" />
           </div>
           <div class="edit__count">
@@ -37,6 +38,7 @@
               name="hits"
               id="hits"
               type="number"
+              class="input input-xs input-bordered w-14"
               @blur="onHitsChange" />
           </div>
           <div class="edit__skill">
@@ -45,6 +47,7 @@
               v-model="actionKeyValue"
               name="actionKeyValue"
               id="actionKeyValue"
+              class="select select-bordered select-xs w-full"
               @change="onSkillChange">
               <optgroup label="Basic" data-skill="basic">
                 <option v-for="attack in basicAttacksList" :value="attack.key">
@@ -111,7 +114,7 @@
         </div>
       </div>
       <div class="button__group">
-        <button class="rotation__action--add-buff" @click="addBuff">
+        <button class="rotation__action--add-buff btn btn-xs w-full btn-accent" @click="addBuff">
           Add Buff
         </button>
       </div>
@@ -458,8 +461,6 @@ export default {
 }
 .rotation__action {
   background: rgba(0, 0, 0, 0.2);
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
   cursor: pointer;
 }
 .name {
@@ -469,14 +470,6 @@ export default {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-.type {
-  padding: 0.25rem 0.75rem;
-  background: #303173;
-  border-radius: 2rem;
-  @media (prefers-color-scheme: light) {
-    color: #ffffff;
-  }
 }
 .rotation__action__info {
   display: flex;
@@ -488,25 +481,10 @@ export default {
   align-items: center;
   gap: 0.5rem;
 }
-.order,
-.count {
-  background: rgba(0, 0, 0, 0.25);
-  padding: 0.25rem 0.75rem;
-  border-radius: 2rem;
-  @media (prefers-color-scheme: light) {
-    color: #ffffff;
-  }
-}
 .buffsCount {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  background: rgba(0, 0, 0, 0.25);
-  padding: 0.25rem 0.75rem;
-  border-radius: 2rem;
-  @media (prefers-color-scheme: light) {
-    color: #ffffff;
-  }
 
   svg {
     width: 1rem;
@@ -521,18 +499,6 @@ export default {
   label {
     display: none;
   }
-  select {
-    width: 100%;
-    display: block;
-    padding: 0.25rem 0.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 0.3rem;
-    background-color: #2e2e2e;
-    @media (prefers-color-scheme: light) {
-      background-color: #b7b7b7;
-      border: 1px solid rgba(0, 0, 0, 0.5);
-    }
-  }
 }
 .edit__basic-info {
   display: flex;
@@ -544,38 +510,16 @@ export default {
   position: relative;
   label {
     position: absolute;
-    top: 5px;
+    top: 2px;
     left: 0.3rem;
   }
   input {
     text-align: right;
-    max-width: 3rem;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    background-color: transparent;
-    border-radius: 0.5rem;
-    padding: 0.4rem 0.5rem;
-    @media (prefers-color-scheme: light) {
-      background-color: #b7b7b7;
-      border: 1px solid rgba(0, 0, 0, 0.5);
-    }
   }
 }
 .button__group {
   display: flex;
   gap: 0.5rem;
-
-  button {
-    border: none;
-    border-radius: 6px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    display: block;
-    width: 100%;
-    margin: 1rem 0 0.5rem;
-  }
-}
-.rotation__action--add-buff {
-  background: #076b89;
 }
 .rotation__action--remove {
   background-color: transparent;
@@ -584,14 +528,19 @@ export default {
   svg {
     width: 1rem;
     height: 1rem;
-    @media (prefers-color-scheme: light) {
-      filter: invert(100%);
-    }
   }
 }
 .edit__buffs__list {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+html[data-theme="light"] {
+  .buffsCount,
+  .rotation__action--remove {
+    svg {
+      filter: invert(100%);
+    }
+  }
 }
 </style>

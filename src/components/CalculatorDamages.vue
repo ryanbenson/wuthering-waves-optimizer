@@ -1,17 +1,15 @@
 <template>
-  <h2>Damage</h2>
-  <div class="panel mb-1">
-    All damages are total damage. If an attack hits multiple times, it will show
-    the total damage. Hover over the damage to see it broken down per hit.
-  </div>
-  <div class="calculation__damage__item">
-    <span>Name</span>
-    <span>Normal</span>
-    <span>Average</span>
-    <span>Crit</span>
+  <div class="card card-bordered card-compact shadow my-6 bg-primary">
+    <div class="card-body text-white">
+      All damages are total damage. If an attack hits multiple times, it will
+      show the total damage. Hover over the damage to see it broken down per
+      hit.
+    </div>
   </div>
   <h4 class="damage__title">
-    <span>{{ chosenChar.value?.basicAttacks?.name ?? "Basic Attacks" }}</span>
+    <span class="text-lg font-bold">{{
+      chosenChar.value?.basicAttacks?.name ?? "Basic Attacks"
+    }}</span>
     <span class="damage__title__button" @click="toggleBasicDetails"
       ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
@@ -21,18 +19,35 @@
   </h4>
   <div
     v-if="isBasicDetailsShown"
-    v-html="chosenChar.value?.basicAttacks?.description"
-    class="panel mb-1"></div>
-  <CalculatorDamage
-    v-for="damageInstance in allDamages?.value?.basicAttacks"
-    :key="damageInstance.key"
-    :character="character"
-    :type="damageInstance.type"
-    :label="damageInstance.label"
-    :damage="damageInstance.damage">
-  </CalculatorDamage>
-  <h4 class="damage__title">
-    <span>{{ chosenChar.value?.skillAttacks?.name ?? "Skill Attacks" }}</span>
+    class="card card-bordered card-compact shadow my-6 bg-primary">
+    <div
+      class="card-body text-white"
+      v-html="chosenChar.value?.basicAttacks?.description"></div>
+  </div>
+  <table class="table table-zebra table-sm">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th class="w-20">Normal</th>
+        <th class="w-20">Average</th>
+        <th class="w-20">Crit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <CalculatorDamage
+        v-for="damageInstance in allDamages?.value?.basicAttacks"
+        :key="damageInstance.key"
+        :character="character"
+        :type="damageInstance.type"
+        :label="damageInstance.label"
+        :damage="damageInstance.damage">
+      </CalculatorDamage>
+    </tbody>
+  </table>
+  <h4 class="damage__title pt-8">
+    <span class="text-lg font-bold">{{
+      chosenChar.value?.skillAttacks?.name ?? "Skill Attacks"
+    }}</span>
     <span class="damage__title__button" @click="toggleSkillDetails"
       ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
@@ -42,18 +57,33 @@
   </h4>
   <div
     v-if="isSkillDetailsShown"
-    v-html="chosenChar.value?.skillAttacks?.description"
-    class="panel mb-1"></div>
-  <CalculatorDamage
-    v-for="damageInstance in allDamages?.value?.skillAttacks"
-    :key="damageInstance.key"
-    :character="character"
-    :type="damageInstance.type"
-    :label="damageInstance.label"
-    :damage="damageInstance.damage">
-  </CalculatorDamage>
-  <h4 class="damage__title">
-    <span>{{
+    class="card card-bordered card-compact shadow my-6 bg-primary">
+    <div
+      class="card-body text-white"
+      v-html="chosenChar.value?.skillAttacks?.description"></div>
+  </div>
+  <table class="table table-zebra table-sm">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th class="w-20">Normal</th>
+        <th class="w-20">Average</th>
+        <th class="w-20">Crit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <CalculatorDamage
+        v-for="damageInstance in allDamages?.value?.skillAttacks"
+        :key="damageInstance.key"
+        :character="character"
+        :type="damageInstance.type"
+        :label="damageInstance.label"
+        :damage="damageInstance.damage">
+      </CalculatorDamage>
+    </tbody>
+  </table>
+  <h4 class="damage__title pt-8">
+    <span class="text-lg font-bold">{{
       chosenChar.value?.liberationAttacks?.name ?? "Liberation Attacks"
     }}</span>
     <span class="damage__title__button" @click="toggleLiberationDetails"
@@ -65,18 +95,33 @@
   </h4>
   <div
     v-if="isLiberationDetailsShown"
-    v-html="chosenChar.value?.liberationAttacks?.description"
-    class="panel mb-1"></div>
-  <CalculatorDamage
-    v-for="damageInstance in allDamages?.value?.liberationAttacks"
-    :key="damageInstance.key"
-    :character="character"
-    :type="damageInstance.type"
-    :label="damageInstance.label"
-    :damage="damageInstance.damage">
-  </CalculatorDamage>
-  <h4 class="damage__title">
-    <span>{{
+    class="card card-bordered card-compact shadow my-6 bg-primary">
+    <div
+      class="card-body text-white"
+      v-html="chosenChar.value?.liberationAttacks?.description"></div>
+  </div>
+  <table class="table table-zebra table-sm">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th class="w-20">Normal</th>
+        <th class="w-20">Average</th>
+        <th class="w-20">Crit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <CalculatorDamage
+        v-for="damageInstance in allDamages?.value?.liberationAttacks"
+        :key="damageInstance.key"
+        :character="character"
+        :type="damageInstance.type"
+        :label="damageInstance.label"
+        :damage="damageInstance.damage">
+      </CalculatorDamage>
+    </tbody>
+  </table>
+  <h4 class="damage__title pt-8">
+    <span class="text-lg font-bold">{{
       chosenChar.value?.forteCircuitAttacks?.name ?? "Forte Circuit Attacks"
     }}</span>
     <span class="damage__title__button" @click="toggleForteCircuitDetails"
@@ -88,18 +133,35 @@
   </h4>
   <div
     v-if="isForteCircuitDetailsShown"
-    v-html="chosenChar.value?.forteCircuitAttacks?.description"
-    class="panel mb-1"></div>
-  <CalculatorDamage
-    v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
-    :key="damageInstance.key"
-    :character="character"
-    :type="damageInstance.type"
-    :label="damageInstance.label"
-    :damage="damageInstance.damage">
-  </CalculatorDamage>
-  <h4 class="damage__title">
-    <span>{{ chosenChar.value?.introAttacks?.name ?? "Intro Attacks" }}</span>
+    class="card card-bordered card-compact shadow my-6 bg-primary">
+    <div
+      class="card-body text-white"
+      v-html="chosenChar.value?.forteCircuitAttacks?.description"></div>
+  </div>
+  <table class="table table-zebra table-sm">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th class="w-20">Normal</th>
+        <th class="w-20">Average</th>
+        <th class="w-20">Crit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <CalculatorDamage
+        v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
+        :key="damageInstance.key"
+        :character="character"
+        :type="damageInstance.type"
+        :label="damageInstance.label"
+        :damage="damageInstance.damage">
+      </CalculatorDamage>
+    </tbody>
+  </table>
+  <h4 class="damage__title pt-8">
+    <span class="text-lg font-bold">{{
+      chosenChar.value?.introAttacks?.name ?? "Intro Attacks"
+    }}</span>
     <span class="damage__title__button" @click="toggleIntroDetails"
       ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
@@ -109,19 +171,36 @@
   </h4>
   <div
     v-if="isIntroDetailsShown"
-    v-html="chosenChar.value?.introAttacks?.description"
-    class="panel mb-1"></div>
-  <CalculatorDamage
-    v-for="damageInstance in allDamages?.value?.introAttacks"
-    :key="damageInstance.key"
-    :character="character"
-    :type="damageInstance.type"
-    :label="damageInstance.label"
-    :damage="damageInstance.damage">
-  </CalculatorDamage>
+    class="card card-bordered card-compact shadow my-6 bg-primary">
+    <div
+      class="card-body text-white"
+      v-html="chosenChar.value?.introAttacks?.description"></div>
+  </div>
+  <table class="table table-zebra table-sm">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th class="w-20">Normal</th>
+        <th class="w-20">Average</th>
+        <th class="w-20">Crit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <CalculatorDamage
+        v-for="damageInstance in allDamages?.value?.introAttacks"
+        :key="damageInstance.key"
+        :character="character"
+        :type="damageInstance.type"
+        :label="damageInstance.label"
+        :damage="damageInstance.damage">
+      </CalculatorDamage>
+    </tbody>
+  </table>
 
-  <h4 class="damage__title">
-    <span>{{ chosenChar.value?.outroAttacks?.name ?? "Outro Attacks" }}</span>
+  <h4 class="damage__title pt-8">
+    <span class="text-lg font-bold">{{
+      chosenChar.value?.outroAttacks?.name ?? "Outro Attacks"
+    }}</span>
     <span class="damage__title__button" @click="toggleOutroDetails"
       ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
@@ -131,26 +210,44 @@
   </h4>
   <div
     v-if="isOutroDetailsShown"
-    v-html="chosenChar.value?.outroAttacks?.description"
-    class="panel mb-1"></div>
-  <template v-if="!allDamages?.value?.outroAttacks?.length">
-    <div class="calculation__damage__item calculation__damage__item--fill">
-      {{ charName }} does not have any outro attacks.
-    </div>
-  </template>
-  <template v-else>
-    <CalculatorDamage
-      v-for="damageInstance in allDamages?.value?.outroAttacks"
-      :key="damageInstance.key"
-      :character="character"
-      :type="damageInstance.type"
-      :label="damageInstance.label"
-      :damage="damageInstance.damage">
-    </CalculatorDamage>
-  </template>
+    class="card card-bordered card-compact shadow my-6 bg-primary">
+    <div
+      class="card-body text-white"
+      v-html="chosenChar.value?.outroAttacks?.description"></div>
+  </div>
+  <table class="table table-zebra table-sm">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th class="w-20">Normal</th>
+        <th class="w-20">Average</th>
+        <th class="w-20">Crit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <template v-if="!allDamages?.value?.outroAttacks?.length">
+        <tr>
+          <td>N/A</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </template>
+      <template v-else>
+        <CalculatorDamage
+          v-for="damageInstance in allDamages?.value?.outroAttacks"
+          :key="damageInstance.key"
+          :character="character"
+          :type="damageInstance.type"
+          :label="damageInstance.label"
+          :damage="damageInstance.damage">
+        </CalculatorDamage>
+      </template>
+    </tbody>
+  </table>
 
-  <h4 class="damage__title">
-    <span>{{ echoName ?? "Echo" }} Attacks</span>
+  <h4 class="damage__title pt-8">
+    <span class="text-lg font-bold">{{ echoName ?? "Echo" }} Attacks</span>
     <span class="damage__title__button" @click="toggleEchoDetails"
       ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
@@ -158,69 +255,99 @@
           fill="#FFFFFF" /></svg
     ></span>
   </h4>
-  <div v-if="isEchoDetailsShown" v-html="echoDetails" class="panel mb-1"></div>
+  <div
+    v-if="isEchoDetailsShown"
+    class="card card-bordered card-compact shadow my-6 bg-primary">
+    <div class="card-body text-white" v-html="echoDetails"></div>
+  </div>
   <template v-if="!allDamages?.value?.echoAttacks?.length">
     <div class="calculation__damage__item calculation__damage__item--fill">
       {{ charName }} does not have an echo with actions.
     </div>
   </template>
   <template v-else>
-    <CalculatorDamage
-      v-for="damageInstance in allDamages?.value?.echoAttacks"
-      :key="damageInstance.key"
-      :character="character"
-      :type="damageInstance.type"
-      :label="damageInstance.label"
-      :damage="damageInstance.damage">
-    </CalculatorDamage>
-  </template>
-
-  <template v-if="rotationsList.length && allDamages.value?.rotations">
-    <div
-      v-for="rotation in allDamages.value.rotations"
-      class="rotation__item"
-      :key="rotation.id">
-      <h4 v-tooltip="rotation.description">{{ rotation.name }}</h4>
-      <template v-if="!rotation.attacks?.length">
-        <div class="calculation__damage__item">No attacks in this rotation</div>
-      </template>
-      <template v-else>
+    <table class="table table-zebra table-sm">
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          <th class="w-20">Normal</th>
+          <th class="w-20">Average</th>
+          <th class="w-20">Crit</th>
+        </tr>
+      </thead>
+      <tbody>
         <CalculatorDamage
-          v-for="damageInstance in rotation.attacks"
+          v-for="damageInstance in allDamages?.value?.echoAttacks"
           :key="damageInstance.key"
           :character="character"
           :type="damageInstance.type"
           :label="damageInstance.label"
           :damage="damageInstance.damage">
         </CalculatorDamage>
-        <div class="rotation__aggregation">
-          <div
-            v-if="rotation.damageAggregation.normalDamage"
-            class="calculation__damage__item">
-            <span>Total Damage</span>
-            <span>{{
-              displayDamage(rotation.damageAggregation.normalDamage)
-            }}</span>
-            <span>{{
-              displayDamage(rotation.damageAggregation.avgDamage)
-            }}</span>
-            <span>{{
-              displayDamage(rotation.damageAggregation.critDamage)
-            }}</span>
-          </div>
-          <div
-            v-if="rotation.damageAggregation.healing"
-            class="calculation__damage__item calculation__damage__item--healing">
-            <span>Total Healing</span>
-            <span>{{ displayDamage(rotation.damageAggregation.healing) }}</span>
-          </div>
-          <div
-            v-if="rotation.damageAggregation.shield"
-            class="calculation__damage__item calculation__damage__item--shield">
-            <span>Total Shield</span>
-            <span>{{ displayDamage(rotation.damageAggregation.shield) }}</span>
-          </div>
-        </div>
+      </tbody>
+    </table>
+  </template>
+
+  <template v-if="rotationsList.length && allDamages.value?.rotations">
+    <div
+      v-for="rotation in allDamages.value.rotations"
+      class="rotation__item pt-8"
+      :key="rotation.id">
+      <h4 class="text-lg font-bold" v-tooltip="rotation.description">
+        {{ rotation.name }}
+      </h4>
+      <template v-if="!rotation.attacks?.length">
+        <div class="calculation__damage__item">No attacks in this rotation</div>
+      </template>
+      <template v-else>
+        <table class="table table-zebra table-sm">
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              <th class="w-20">Normal</th>
+              <th class="w-20">Average</th>
+              <th class="w-20">Crit</th>
+            </tr>
+          </thead>
+          <tbody>
+            <CalculatorDamage
+              v-for="damageInstance in rotation.attacks"
+              :key="damageInstance.key"
+              :character="character"
+              :type="damageInstance.type"
+              :label="damageInstance.label"
+              :damage="damageInstance.damage">
+            </CalculatorDamage>
+          </tbody>
+          <tfoot>
+            <tr v-if="rotation.damageAggregation.normalDamage" class="">
+              <td>Total Damage</td>
+              <td>
+                {{ displayDamage(rotation.damageAggregation.normalDamage) }}
+              </td>
+              <td>{{ displayDamage(rotation.damageAggregation.avgDamage) }}</td>
+              <td>
+                {{ displayDamage(rotation.damageAggregation.critDamage) }}
+              </td>
+            </tr>
+            <tr
+              v-if="rotation.damageAggregation.healing"
+              class="calculation__damage__item--healing">
+              <td>Total Healing</td>
+              <td>{{ displayDamage(rotation.damageAggregation.healing) }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr
+              v-if="rotation.damageAggregation.shield"
+              class="calculation__damage__item--shield">
+              <td>Total Shield</td>
+              <td>{{ displayDamage(rotation.damageAggregation.shield) }}</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
       </template>
     </div>
   </template>
@@ -321,71 +448,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.calculation__damage__item {
-  display: grid;
-  grid-template-columns: 1fr 100px 100px 100px;
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  &:nth-child(even) {
-    background-color: transparent;
-  }
-  &:nth-child(odd) {
-    background-color: rgba(255, 255, 255, 0.1);
-
-    @media (prefers-color-scheme: light) {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
-  }
-
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr 80px 80px 80px;
-    gap: 0.15rem;
-  }
-}
-.calculation__damage__item--fill {
-  grid-template-columns: 1fr;
-}
 .calculation__damage__item--healing {
   color: #3bea3b;
-
-  @media (prefers-color-scheme: light) {
-    color: #13a813;
-  }
 }
 .calculation__damage__item--shield {
   color: #00adff;
-
-  @media (prefers-color-scheme: light) {
-    color: #4a92ff;
-  }
-}
-.rotation__aggregation {
-  margin-top: 1rem;
-  background: #1c2737;
-  border-radius: 0.25rem;
-
-  @media (prefers-color-scheme: light) {
-    background: #cee2ff;
-  }
-}
-.panel {
-  margin-top: 1rem;
-  background-color: #161616;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-
-  @media (prefers-color-scheme: light) {
-    background-color: #f8f8f8;
-  }
-}
-.mb-1 {
-  margin-bottom: 1rem;
 }
 .damage__title {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   .damage__title__button {
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 50%;
@@ -400,6 +472,14 @@ export default {
   svg {
     width: 1rem;
     height: 1rem;
+  }
+}
+html[data-theme="light"] {
+  .calculation__damage__item--healing {
+    color: #13a813;
+  }
+  .calculation__damage__item--shield {
+    color: #4a92ff;
   }
 }
 </style>

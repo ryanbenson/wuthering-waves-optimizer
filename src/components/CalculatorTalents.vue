@@ -1,32 +1,36 @@
 <template>
-  <div class="data-input--talents">
-    <div class="form__group field">
-      <label for="talentBasic" class="form__label">Basic: {{ basic }}</label>
+  <div class="data-input--talents mt-8">
+    <div class="flex flex-col pb-7 relative">
+      <label for="talentBasic" class="talent__label"
+        >Basic <span class="text-primary">{{ basic }}</span></label
+      >
       <input
         v-model="basic"
         name="talentBasic"
         type="range"
         min="1"
         max="10"
-        steps="1"
-        class="form__field"
+        step="1"
+        class="range range-xs"
         @input="(e) => talentUpdated('basic', e)" />
     </div>
-    <div class="form__group field">
-      <label for="talentSkill" class="form__label">Skill: {{ skill }}</label>
+    <div class="flex flex-col pb-7 relative">
+      <label for="talentSkill" class="talent__label"
+        >Skill <span class="text-primary">{{ skill }}</span></label
+      >
       <input
         v-model="skill"
         name="talentSkill"
         type="range"
         min="1"
         max="10"
-        steps="1"
-        class="form__field"
+        step="1"
+        class="range range-xs"
         @input="(e) => talentUpdated('skill', e)" />
     </div>
-    <div class="form__group field">
-      <label for="talentForte" class="form__label"
-        >Forte Circuit: {{ forte }}</label
+    <div class="flex flex-col pb-7 relative">
+      <label for="talentForte" class="talent__label"
+        >Forte Circuit <span class="text-primary">{{ forte }}</span></label
       >
       <input
         v-model="forte"
@@ -34,13 +38,13 @@
         type="range"
         min="1"
         max="10"
-        steps="1"
-        class="form__field"
+        step="1"
+        class="range range-xs"
         @input="(e) => talentUpdated('forte', e)" />
     </div>
-    <div class="form__group field">
-      <label for="talentLiberation" class="form__label"
-        >Liberation: {{ liberation }}</label
+    <div class="flex flex-col pb-7 relative">
+      <label for="talentLiberation" class="talent__label"
+        >Liberation <span class="text-primary">{{ liberation }}</span></label
       >
       <input
         v-model="liberation"
@@ -48,20 +52,22 @@
         type="range"
         min="1"
         max="10"
-        steps="1"
-        class="form__field"
+        step="1"
+        class="range range-xs"
         @input="(e) => talentUpdated('liberation', e)" />
     </div>
-    <div class="form__group field">
-      <label for="talentIntro" class="form__label">Intro: {{ intro }}</label>
+    <div class="flex flex-col pb-7 relative">
+      <label for="talentIntro" class="talent__label"
+        >Intro <span class="text-primary">{{ intro }}</span></label
+      >
       <input
         v-model="intro"
         name="talentIntro"
         type="range"
         min="1"
         max="10"
-        steps="1"
-        class="form__field"
+        step="1"
+        class="range range-xs"
         @input="(e) => talentUpdated('intro', e)" />
     </div>
   </div>
@@ -189,14 +195,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.data-input--talents {
-  padding: 1rem 0;
-  label {
-    min-width: 120px;
-    display: inline-block;
-  }
+.talent__label {
+  font-size: 24px;
+  font-weight: 700;
+  position: absolute;
+  top: -1.6rem;
+  left: 0.5rem;
+  z-index: 0;
 }
-.form__group.field {
-  display: flex;
+.data-input--talents input {
+  position: relative;
+  z-index: 10;
 }
 </style>

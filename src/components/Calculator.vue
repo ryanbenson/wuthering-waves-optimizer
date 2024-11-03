@@ -1,87 +1,335 @@
 <template>
   <div class="calculations">
-    <div class="calcations__nav">
-      <ul>
-        <li
-          @click="changeScreen('character')"
-          :class="{ active: curScreen === 'character' }">
-          <img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png"
-            class="icon"
-            alt="Your Character" />
-        </li>
-        <li
-          @click="changeScreen('weapon')"
-          :class="{ active: curScreen === 'weapon' }">
-          <img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_014.png"
-            class="icon"
-            alt="Your Weapon" />
-        </li>
-        <li
-          @click="changeScreen('echoes')"
-          :class="{ active: curScreen === 'echoes' }">
-          <img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/echoes.png"
-            class="icon"
-            alt="Your Echoes" />
-        </li>
-        <li
-          @click="changeScreen('constellations')"
-          :class="{ active: curScreen === 'constellations' }">
-          <img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/constellations.png"
-            class="icon"
-            alt="Your Resonance Chains" />
-        </li>
-        <li
-          @click="changeScreen('party')"
-          :class="{ active: curScreen === 'party' }">
-          <img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/team.png"
-            class="icon"
-            alt="Team Buffs" />
-        </li>
-        <li
-          @click="changeScreen('rotations')"
-          class="calcations__nav--icon-svg calcations__nav--rotations"
-          :class="{ active: curScreen === 'rotations' }">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path
-              d="M386.3 160L336 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z"
-              fill="#FFFFFF" />
-          </svg>
-        </li>
-        <li
-          @click="changeScreen('custom-buffs')"
-          class="calcations__nav--icon-svg calcations__nav--custom-buffs"
-          :class="{ active: curScreen === 'custom-buffs' }">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path
-              d="M0 416c0 17.7 14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384c-17.7 0-32 14.3-32 32zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-32.8 0-61 19.7-73.3 48L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm73.3-64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64z"
-              fill="#FFFFFF" />
-          </svg>
-        </li>
-        <li
-          @click="changeScreen('enemy')"
-          :class="{ active: curScreen === 'enemy' }">
-          <img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png"
-            class="icon"
-            alt="Your Enemy" />
-        </li>
-        <li class="calculations__nav--results" @click="changeScreen('results')">
-          <img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/damages.png"
-            class="icon"
-            alt="Results" />
-        </li>
-      </ul>
-    </div>
+    <Teleport to="#navbar-container">
+      <div class="navbar bg-base-300 shadow">
+        <div class="navbar-start">
+          <details class="main-menu-mobile dropdown">
+            <summary tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h8m-8 6h16" />
+              </svg>
+            </summary>
+            <ul
+              tabindex="0"
+              class="menu menu-sm dropdown-content bg-base-300 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+              <li>
+                <a
+                  @click="changeScreen('character')"
+                  :class="{ active: curScreen === 'character' }"
+                  class="text-white hover:text-primary">
+                  <img
+                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png"
+                    class="size-8"
+                    alt="Your Character" />
+                  Character
+                </a>
+              </li>
+              <li>
+                <a
+                  @click="changeScreen('weapon')"
+                  :class="{ active: curScreen === 'weapon' }"
+                  class="text-white hover:text-primary">
+                  <img
+                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_014.png"
+                    class="size-8"
+                    alt="Your Weapon" />
+                  Weapon
+                </a>
+              </li>
+              <li>
+                <a
+                  @click="changeScreen('echoes')"
+                  :class="{ active: curScreen === 'echoes' }"
+                  class="text-white hover:text-primary">
+                  <img
+                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/echoes.png"
+                    class="size-8"
+                    alt="Your Echoes" />
+                  Echoes
+                </a>
+              </li>
+              <li>
+                <a
+                  @click="changeScreen('constellations')"
+                  :class="{ active: curScreen === 'constellations' }"
+                  class="text-white hover:text-primary">
+                  <img
+                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/constellations.png"
+                    class="size-8"
+                    alt="Your Resonance Chains" />
+                  Resonance Chains
+                </a>
+              </li>
+              <li>
+                <a
+                  @click="changeScreen('party')"
+                  :class="{ active: curScreen === 'party' }"
+                  class="text-white hover:text-primary">
+                  <img
+                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/team.png"
+                    class="size-8"
+                    alt="Team Buffs" />
+                  Team Buffs
+                </a>
+              </li>
+              <li class="h-9 my-0.5">
+                <a
+                  @click="changeScreen('rotations')"
+                  class="calcations__nav--icon-svg calcations__nav--rotations text-white hover:text-primary"
+                  :class="{ active: curScreen === 'rotations' }">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                    class="size-6 m-1">
+                    <path
+                      d="M386.3 160L336 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z"
+                      fill="#FFFFFF" />
+                  </svg>
+                  Rotations
+                </a>
+              </li>
+              <li class="h-9 my-0.5">
+                <a
+                  @click="changeScreen('custom-buffs')"
+                  class="calcations__nav--icon-svg calcations__nav--custom-buffs text-white hover:text-primary"
+                  :class="{ active: curScreen === 'custom-buffs' }">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 512 512"
+                    class="size-6 m-1">
+                    <path
+                      d="M0 416c0 17.7 14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384c-17.7 0-32 14.3-32 32zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-32.8 0-61 19.7-73.3 48L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm73.3-64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64z"
+                      fill="#FFFFFF" />
+                  </svg>
+                  Custom Buffs
+                </a>
+              </li>
+              <li class="mt-0.5">
+                <a
+                  @click="changeScreen('enemy')"
+                  :class="{ active: curScreen === 'enemy' }"
+                  class="text-white hover:text-primary">
+                  <img
+                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png"
+                    class="size-8"
+                    alt="Your Enemy" />
+                  Enemy
+                </a>
+              </li>
+              <li>
+                <a
+                  class="calculations__nav--results text-white hover:text-primary"
+                  :class="{ active: curScreen === 'results' }"
+                  @click="changeScreen('results')">
+                  <img
+                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/damages.png"
+                    class="size-8"
+                    alt="Results" />
+                  Stats & Damages
+                </a>
+              </li>
+            </ul>
+          </details>
+          <a class="btn btn-ghost text-xl"
+            ><RouterLink
+              to="/"
+              class="logo poiret-one-regular text-primary hover:text-primary"
+              >WT</RouterLink
+            ></a
+          >
+          <RouterLink
+            to="/"
+            class="poiret-one-regular btn btn-ghost text-xl text-white hover:text-primary"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 384 512"
+              class="size-6">
+              <path
+                fill="#FFFFFF"
+                d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM96 64H288c17.7 0 32 14.3 32 32v32c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V96c0-17.7 14.3-32 32-32zm32 160a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM96 352a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM64 416c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H96c-17.7 0-32-14.3-32-32zM192 256a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm64-64a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM288 448a32 32 0 1 1 0-64 32 32 0 1 1 0 64z" /></svg
+          ></RouterLink>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+          <ul class="menu menu-horizontal px-1">
+            <li>
+              <a
+                @click="changeScreen('character')"
+                :class="{ active: curScreen === 'character' }">
+                <img
+                  src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png"
+                  class="size-8"
+                  alt="Your Character" />
+              </a>
+            </li>
+            <li>
+              <a
+                @click="changeScreen('weapon')"
+                :class="{ active: curScreen === 'weapon' }">
+                <img
+                  src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_014.png"
+                  class="size-8"
+                  alt="Your Weapon" />
+              </a>
+            </li>
+            <li>
+              <a
+                @click="changeScreen('echoes')"
+                :class="{ active: curScreen === 'echoes' }">
+                <img
+                  src="https://ryanbenson.github.io/wuthering-waves-assets/images/echoes.png"
+                  class="size-8"
+                  alt="Your Echoes" />
+              </a>
+            </li>
+            <li>
+              <a
+                @click="changeScreen('constellations')"
+                :class="{ active: curScreen === 'constellations' }">
+                <img
+                  src="https://ryanbenson.github.io/wuthering-waves-assets/images/constellations.png"
+                  class="size-8"
+                  alt="Your Resonance Chains" />
+              </a>
+            </li>
+            <li>
+              <a
+                @click="changeScreen('party')"
+                :class="{ active: curScreen === 'party' }">
+                <img
+                  src="https://ryanbenson.github.io/wuthering-waves-assets/images/team.png"
+                  class="size-8"
+                  alt="Team Buffs" />
+              </a>
+            </li>
+            <li>
+              <a
+                @click="changeScreen('rotations')"
+                class="calcations__nav--icon-svg calcations__nav--rotations mr-2 h-12"
+                :class="{ active: curScreen === 'rotations' }">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  class="size-6 mt-1">
+                  <path
+                    d="M386.3 160L336 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z"
+                    fill="#FFFFFF" />
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a
+                @click="changeScreen('custom-buffs')"
+                class="calcations__nav--icon-svg calcations__nav--custom-buffs h-12"
+                :class="{ active: curScreen === 'custom-buffs' }">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  class="size-6 mt-1">
+                  <path
+                    d="M0 416c0 17.7 14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384c-17.7 0-32 14.3-32 32zm128 0a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zM320 256a32 32 0 1 1 64 0 32 32 0 1 1 -64 0zm32-80c-32.8 0-61 19.7-73.3 48L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48zM192 128a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm73.3-64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64z"
+                    fill="#FFFFFF" />
+                </svg>
+              </a>
+            </li>
+            <li>
+              <a
+                @click="changeScreen('enemy')"
+                :class="{ active: curScreen === 'enemy' }">
+                <img
+                  src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png"
+                  class="size-8"
+                  alt="Your Enemy" />
+              </a>
+            </li>
+            <li>
+              <a
+                class="calculations__nav--results"
+                @click="changeScreen('results')">
+                <img
+                  src="https://ryanbenson.github.io/wuthering-waves-assets/images/damages.png"
+                  class="size-8"
+                  alt="Results" />
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="navbar-end">
+          <ul class="menu menu-horizontal px-1">
+            <ThemeChooser></ThemeChooser>
+            <li>
+              <details class="options-menu">
+                <summary>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    class="inline-block h-5 w-5 stroke-current">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+                  </svg>
+                </summary>
+                <ul class="subnav bg-base-300 rounded-t-none p-2 right-0 z-50">
+                  <li>
+                    <RouterLink
+                      to="/settings"
+                      @click="toggleOptionsMenu"
+                      >Settings</RouterLink
+                    >
+                  </li>
+                  <li>
+                    <RouterLink
+                      to="/info"
+                      @click="toggleOptionsMenu"
+                      >Info</RouterLink
+                    >
+                  </li>
+                  <li>
+                    <RouterLink
+                      to="/updates"
+                      @click="toggleOptionsMenu"
+                      >Updates</RouterLink
+                    >
+                  </li>
+                  <li>
+                    <RouterLink
+                      to="/privacy"
+                      @click="toggleOptionsMenu"
+                      >Privacy</RouterLink
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://discord.gg/pDKjxNjJWW"
+                      target="_blank"
+                      @click="toggleOptionsMenu"
+                      >Discord</a
+                    >
+                  </li>
+                </ul>
+              </details>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </Teleport>
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert">Camellya & Lumi are now available!</div>
+          <div v-if="false" class="alert alert-success mb-6 text-white p-2 px-4">
+            Camellya & Lumi are now available!
+          </div>
           <div class="character__selection">
             <div
               class="character__selection__avatar"
@@ -90,7 +338,10 @@
               }"></div>
             <div class="character__selection__form">
               <div class="character__selection__form--character">
-                <select name="character" v-model="character">
+                <select
+                  name="character"
+                  v-model="character"
+                  class="select select-bordered select-sm">
                   <optgroup label="5 Star">
                     <option
                       v-for="char in charactersList.five"
@@ -108,7 +359,6 @@
                     </option>
                   </optgroup>
                 </select>
-                <label for="character">Character</label>
               </div>
               <CalculatorCharacterLevel
                 :character="character"
@@ -296,6 +546,7 @@ import CalculatorDamages from "./CalculatorDamages.vue";
 import { mainEchoesData, getEchoData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
+import ThemeChooser from "./ThemeChooser.vue";
 
 export default defineComponent({
   name: "Calculator",
@@ -312,6 +563,7 @@ export default defineComponent({
     CalculatorRotations,
     CalculatorStats,
     CalculatorTalents,
+    ThemeChooser,
   },
   setup() {
     const characterStore = useCharacterStore();
@@ -1417,6 +1669,10 @@ export default defineComponent({
 
     const changeScreen = (screen: string) => {
       curScreen.value = screen;
+      const mainMenuEl = document.querySelector(".main-menu-mobile");
+      if (mainMenuEl) {
+        mainMenuEl.removeAttribute("open");
+      }
     };
 
     const handleCharacterTalentUpdated = (data) => {
@@ -1508,6 +1764,13 @@ export default defineComponent({
       calcAllDamages();
     };
 
+    const toggleOptionsMenu = () => {
+      const optionEl = document.querySelector(".options-menu");
+      if (optionEl) {
+        optionEl.removeAttribute("open");
+      }
+    };
+
     return {
       allDamages,
       character,
@@ -1566,6 +1829,7 @@ export default defineComponent({
       weaponAtk,
       isLoading,
       mainEcho,
+      toggleOptionsMenu,
     };
   },
 });
@@ -1574,8 +1838,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .calculations {
   display: grid;
-  grid-template-columns: 80px 1fr 1fr;
-  height: 100vh;
+  // grid-template-columns: 80px 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  height: calc(100vh - 80px);
 
   @media (max-width: 768px) {
     display: block;
@@ -1598,104 +1863,7 @@ export default defineComponent({
   padding: 2rem;
 }
 
-$sidebar-background-color: #121212;
-$active-sidebar-link-color: #22252e;
-$hover-sidebar-link-color: $active-sidebar-link-color;
-$active-link-color: #98d7ec;
-$tooltip-background-color: $sidebar-background-color;
-.calcations__nav {
-  display: inline-block;
-  min-height: 100vh;
-  background-color: #000;
-  float: left;
-  flex-basis: 80px;
-  width: 80px;
-  z-index: 999;
-
-  ul {
-    text-align: center;
-    color: white;
-    padding: 0;
-    margin: 0;
-
-    li {
-      height: 64px;
-      max-height: 64px;
-      cursor: pointer;
-      transition: all ease-out 120ms;
-      list-style-type: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0.5rem 0;
-
-      .icon {
-        width: 48px;
-        height: 48px;
-      }
-
-      &:hover,
-      &.active {
-        background-color: $active-sidebar-link-color;
-
-        i {
-          color: $active-link-color;
-        }
-      }
-    }
-  }
-  @media (max-width: 768px) {
-    display: block;
-    height: 48px;
-    background: #000;
-    height: 48px;
-    min-height: 48px;
-    width: 100%;
-    position: sticky;
-    top: 48px;
-    left: 0;
-
-    ul {
-      display: flex;
-      flex-direction: row;
-
-      li {
-        height: 48px;
-        max-height: 48px;
-        cursor: pointer;
-        transition: all ease-out 0.12s;
-        list-style-type: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 0.5rem 0;
-        flex-basis: 36px;
-        padding: 0 0.25rem;
-
-        .icon {
-          width: 30px;
-          height: 30px;
-        }
-      }
-    }
-  }
-}
-.alert {
-  background: #126a5a;
-  padding: 0.25rem 0.5rem;
-  font-size: 14px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  color: white;
-
-  &.alert--info {
-    background: #12526a;
-  }
-}
 .screen--character {
-  padding-top: 1rem;
   overflow: hidden;
 }
 .character__selection {
@@ -1739,15 +1907,12 @@ $tooltip-background-color: $sidebar-background-color;
     display: none !important;
   }
 }
-.calcations__nav--icon-svg {
-  svg {
-    width: 2rem;
-    height: 2rem;
-
-    @media (max-width: 768px) {
-      width: 1.5rem;
-      height: 1.5rem;
-    }
+.menu {
+  z-index: 100;
+}
+.options-menu {
+  summary:after {
+    display: none;
   }
 }
 </style>

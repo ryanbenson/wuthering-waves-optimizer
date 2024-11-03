@@ -9,6 +9,7 @@ interface Echo {
   minStacks?: number;
   maxStacks?: number;
   actions?: EchoAction[];
+  sets: string[];
 }
 
 interface EchoAction {
@@ -32,6 +33,17 @@ type MainEchoes = Record<string, Echo>;
 
 export function getEchoData(echoKey: string): Echo {
   return mainEchoesData[echoKey];
+}
+
+export const echoCostClassMap: Record<string, number> = {
+  Calamity: 4,
+  Overlord: 4,
+  Elite: 3,
+  Common: 1,
+};
+
+export function getCostByClass(echoClass: string): number {
+  return echoCostClassMap[echoClass];
 }
 
 export const mainEchoesData: MainEchoes = {
@@ -60,28 +72,8 @@ export const mainEchoesData: MainEchoes = {
         element: "Aero",
       },
     ],
+    sets: ["VoidThunder", "SierraGale"],
   },
-  // AlteredClangBang: {
-  //   key: "AlteredClangBang",
-  //   name: "Altered Clang Bang",
-  //   class: "Common",
-  //   image:
-  //     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/AlteredClangBang.png",
-  //   details: `Summon a Clang Bang that follows the enemy and eventually self-combusts, dealing 20.00%+40/23.00%+46/26.00%+52/29.00%+58/32.00%+64 Glacio DMG.`,
-  //   modifiers: [],
-  // },
-  // AlteredLightcrusher: {
-  //   key: "AlteredLightcrusher",
-  //   name: "Altered Lightcrusher",
-  //   class: "",
-  //   image:
-  //     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/AlteredLightcrusher.png",
-  //   details: `
-  //   Transform into Lightcrusher that lunges forward, dealing 84.60%/97.29%/109.98%/122.67%/135.36% Spectro DMG. Generate 6 Ablucence on hit. Each Ablucence explosion deals 9.40%/10.81%/12.22%/13.63%/15.04% Spectro DMG.
-  //   Hold the Echo Skill to stay in the Lightcrusher form, allowing you to lunge forward and walk in mid-air for a short distance.
-  //   Cooldown: 15s`,
-  //   modifiers: [],
-  // },
   AutopuppetScout: {
     key: "AutopuppetScout",
     name: "Autopuppet Scout",
@@ -107,6 +99,18 @@ export const mainEchoesData: MainEchoes = {
         element: "Glacio",
       },
     ],
+    sets: ["FreezingFrost", "CelestialLight"],
+  },
+  BabyViridblazeSaurian: {
+    key: "BabyViridblazeSaurian",
+    name: "Baby Viridblaze Saurian",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/YoungGeohideSaurian.png",
+    details: `Transform into Baby Viridblaze Saurian to rest in place, and slowly restore HP.`,
+    modifiers: [],
+    actions: [],
+    sets: ["MoltenRift", "VoidThunder", "LingeringTunes"],
   },
   BellBorneGeochelone: {
     key: "BellBorneGeochelone",
@@ -142,10 +146,11 @@ export const mainEchoesData: MainEchoes = {
         attribute: "def",
       },
     ],
+    sets: ["RejuvenatingGlow", "MoonlitClouds"],
   },
-  Chaserazor: {
-    key: "Chaserazor",
-    name: "Chaserazor",
+  Carapace: {
+    key: "Carapace",
+    name: "Carapace",
     class: "Elite",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Chaserazor.png",
@@ -154,7 +159,7 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [
       {
-        key: "ChaserazorSpinningAttack",
+        key: "CarapaceSpinningAttack",
         label: "Spinning Attack DMG",
         description: `Transform into Carapace to perform a spinning attack that deals 80.50%/91.00%/101.50%/112.00% Aero DMG, followed by a slash that deals 120.75%/136.50%/152.25%/168.00% Aero DMG.`,
         talents: {
@@ -168,6 +173,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Aero",
       },
     ],
+    sets: ["SierraGale", "MoonlitClouds"],
   },
   ChasmGuardian: {
     key: "ChasmGuardian",
@@ -194,6 +200,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Havoc",
       },
     ],
+    sets: ["RejuvenatingGlow", "LingeringTunes"],
   },
   Chirpuff: {
     key: "Chirpuff",
@@ -220,6 +227,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Aero",
       },
     ],
+    sets: ["SierraGale", "SunSinkingEclipse"],
   },
   ClangBang: {
     key: "ClangBang",
@@ -231,6 +239,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["FreezingFrost", "CelestialLight"],
   },
   Crownless: {
     key: "Crownless",
@@ -269,6 +278,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Havoc",
       },
     ],
+    sets: ["SunSinkingEclipse"],
   },
   Cruisewing: {
     key: "Cruisewing",
@@ -297,6 +307,7 @@ export const mainEchoesData: MainEchoes = {
       //   attribute: "hp",
       // },
     ],
+    sets: ["CelestialLight", "RejuvenatingGlow", "MoonlitClouds"],
   },
   CyanFeatheredHeron: {
     key: "CyanFeatheredHeron",
@@ -323,6 +334,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Aero",
       },
     ],
+    sets: ["SierraGale", "CelestialLight"],
   },
   Diamondclaw: {
     key: "Diamondclaw",
@@ -334,6 +346,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["MoonlitClouds", "LingeringTunes"],
   },
   Dreamless: {
     key: "Dreamless",
@@ -384,6 +397,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Havoc",
       },
     ],
+    sets: ["SunSinkingEclipse"],
   },
   DwarfCassowary: {
     key: "DwarfCassowary",
@@ -396,6 +410,7 @@ export const mainEchoesData: MainEchoes = {
     Cooldown: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["SierraGale", "RejuvenatingGlow"],
   },
   ElectroPredator: {
     key: "ElectroPredator",
@@ -407,6 +422,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["MoltenRift", "VoidThunder"],
   },
   Excarat: {
     key: "Excarat",
@@ -419,6 +435,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["FreezingFrost", "SunSinkingEclipse"],
   },
   FallacyOfNoReturn: {
     key: "FallacyOfNoReturn",
@@ -486,6 +503,7 @@ export const mainEchoesData: MainEchoes = {
         attribute: "hp",
       },
     ],
+    sets: ["RejuvenatingGlow"],
   },
   FeilianBeringal: {
     key: "FeilianBeringal",
@@ -538,6 +556,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Aero",
       },
     ],
+    sets: ["SierraGale"],
   },
   FissionJunrock: {
     key: "FissionJunrock",
@@ -550,6 +569,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["VoidThunder", "RejuvenatingGlow", "MoonlitClouds"],
   },
   Flautist: {
     key: "Flautist",
@@ -576,6 +596,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Electro",
       },
     ],
+    sets: ["VoidThunder", "LingeringTunes"],
   },
   FusionDreadmane: {
     key: "FusionDreadmane",
@@ -587,6 +608,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["MoltenRift", "RejuvenatingGlow"],
   },
   FusionPrism: {
     key: "FusionPrism",
@@ -598,6 +620,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["FreezingFrost", "MoltenRift", "LingeringTunes"],
   },
   FusionWarrior: {
     key: "FusionWarrior",
@@ -610,6 +633,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["MoltenRift", "VoidThunder", "SierraGale"],
   },
   GlacioDreadmane: {
     key: "GlacioDreadmane",
@@ -665,6 +689,29 @@ export const mainEchoesData: MainEchoes = {
         element: "Glacio",
       },
     ],
+    sets: ["FreezingFrost", "MoonlitClouds"],
+  },
+  GlacioPredator: {
+    key: "GlacioPredator",
+    name: "Glacio Predator",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/GlacioPredator.png",
+    details: `<span class="description">Summon a Glacio Predator that throws an ice spear, dealing <span class="param">28.80%/33.12%/37.44%/41.76%/46.08%</span> Glacio DMG on hit. Deal <span class="param">2.88%/3.31%/3.74%/4.18%/4.61%</span> Glacio DMG up to 10 times during the charging time, and <span class="param">14.40%/16.56%/18.72%/20.88%/23.04%</span> Glacio DMG when the spear explodes. CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["FreezingFrost", "CelestialLight"],
+  },
+  GlacioPrism: {
+    key: "GlacioPrism",
+    name: "Glacio Prism",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/GlacioPrism.png",
+    details: `<span class="description">Summon a Glacio Prism that continuously fires three crystal shards, each dealing <span class="param">24.00%/27.60%/31.20%/34.80%/38.40%</span> Glacio DMG. CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["FreezingFrost", "SunSinkingEclipse", "MoonlitClouds"],
   },
   Gulpuff: {
     key: "Gulpuff",
@@ -676,11 +723,12 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["FreezingFrost", "CelestialLight"],
   },
   HavocDreadmane: {
     key: "HavocDreadmane",
     name: "Havoc Dreadmane",
-    class: "Common",
+    class: "Elite",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/HavocDreadmane.png",
     details: `<span class="description">Transform into a Havoc Dreadmane to perform up to 2 tail strikes. Each strike deals <span class="param">72.90%/83.84%/94.77%/105.71%/116.64%</span> Havoc DMG and inflicts an additional instance of <span class="param">48.60%/55.89%/63.18%/70.47%/77.76%</span> Havoc DMG upon hitting the target.
@@ -688,6 +736,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["MoltenRift", "SunSinkingEclipse"],
   },
   HavocPrism: {
     key: "HavocPrism",
@@ -699,6 +748,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["VoidThunder", "CelestialLight", "SunSinkingEclipse"],
   },
   HavocWarrior: {
     key: "HavocWarrior",
@@ -707,10 +757,11 @@ export const mainEchoesData: MainEchoes = {
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/HavocWarrior.png",
     details: `<span class="description">Transform into Havoc Warrior to attack up to 3 times, dealing <span class="param">107.33%/123.43%/139.53%/155.63%/171.73%</span> Havoc DMG each time.
- 
+
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["CelestialLight", "SunSinkingEclipse"],
   },
   Hoartoise: {
     key: "Hoartoise",
@@ -723,6 +774,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["FreezingFrost", "CelestialLight"],
   },
   Hoochief: {
     key: "Hoochief",
@@ -750,40 +802,8 @@ export const mainEchoesData: MainEchoes = {
         element: "Aero",
       },
     ],
+    sets: ["SierraGale", "RejuvenatingGlow"],
   },
-  HoochiefCyclone: {
-    key: "HoochiefCyclone",
-    name: "Hoochief Cyclone",
-    class: "Elite",
-    image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/HoochiefCyclone.png",
-    details: `Transform into Hoochief Cyclone and smack the enemies, dealing 178.80%/208.60%/238.40%/268.20% Aero DMG.`,
-    modifiers: [],
-    actions: [
-      {
-        key: "HoochiefCycloneSmack",
-        label: "Smack DMG",
-        description: `Transform into Hoochief Cyclone and smack the enemies, dealing 178.80%/208.60%/238.40%/268.20% Aero DMG.`,
-        talents: {
-          "1": "178.80%",
-          "2": "208.60%",
-          "3": "238.40%",
-          "4": "238.40%",
-          "5": "268.20%",
-        },
-        type: "Echo",
-        element: "Aero",
-      },
-    ],
-  },
-  // HoochiefMenace: {
-  //   key: "HoochiefMenace",
-  //   name: "Hoochief Menace",
-  //   class: "Elite",
-  //   image: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/HoochiefMenace.png",
-  //   details: ``,
-  //   modifiers: [],
-  // },
   Hooscamp: {
     key: "Hooscamp",
     name: "Hooscamp",
@@ -795,23 +815,8 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["SierraGale", "LingeringTunes"],
   },
-  // HooscampClapperclaw: {
-  //   key: "HooscampClapperclaw",
-  //   name: "Hooscamp Clapperclaw",
-  //   class: "",
-  //   image: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/HooscampClapperclaw.png",
-  //   details: ``,
-  //   modifiers: [],
-  // },
-  // HooscampFlinger: {
-  //   key: "HooscampFlinger",
-  //   name: "Hooscamp Flinger",
-  //   class: "",
-  //   image: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/HooscampFlinger.png",
-  //   details: ``,
-  //   modifiers: [],
-  // },
   ImpermanenceHeron: {
     key: "ImpermanenceHeron",
     name: "Impermanence Heron",
@@ -856,6 +861,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Havoc",
       },
     ],
+    sets: ["MoonlitClouds"],
   },
   InfernoRider: {
     key: "InfernoRider",
@@ -910,6 +916,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Fusion",
       },
     ],
+    sets: ["MoltenRift"],
   },
   Jué: {
     key: "Jué",
@@ -988,6 +995,7 @@ export const mainEchoesData: MainEchoes = {
         subType: "Coordinated",
       },
     ],
+    sets: ["CelestialLight"],
   },
   LampylumenMyriad: {
     key: "LampylumenMyriad",
@@ -1033,6 +1041,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Glacio",
       },
     ],
+    sets: ["FreezingFrost"],
   },
   LavaLarva: {
     key: "LavaLarva",
@@ -1045,6 +1054,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["MoltenRift", "LingeringTunes"],
   },
   Lightcrusher: {
     key: "Lightcrusher",
@@ -1087,6 +1097,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Spectro",
       },
     ],
+    sets: ["CelestialLight"],
   },
   LumiscaleConstruct: {
     key: "LumiscaleConstruct",
@@ -1142,6 +1153,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Glacio",
       },
     ],
+    sets: ["FreezingFrost", "VoidThunder"],
   },
   MechAbomination: {
     key: "MechAbomination",
@@ -1205,6 +1217,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Electro",
       },
     ],
+    sets: ["LingeringTunes"],
   },
   MourningAix: {
     key: "MourningAix",
@@ -1243,55 +1256,8 @@ export const mainEchoesData: MainEchoes = {
         element: "Spectro",
       },
     ],
+    sets: ["CelestialLight"],
   },
-  // PhantomFeilianBeringal: {
-  //   key: "PhantomFeilianBeringal",
-  //   name: "Phantom: Feilian Beringal",
-  //   class: "",
-  //   image: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/PhantomFeilianBeringal.png",
-  //   details: ``,
-  //   modifiers: [],
-  // },
-  // PhantomHoartoise: {
-  //   key: "PhantomHoartoise",
-  //   name: "Phantom: Hoartoise",
-  //   class: "",
-  //   image: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/PhantomHoartoise.png",
-  //   details: ``,
-  //   modifiers: [],
-  // },
-  // PhantomImpermanenceHeron: {
-  //   key: "PhantomImpermanenceHeron",
-  //   name: "Phantom: Impermanence Heron",
-  //   class: "",
-  //   image: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/PhantomImpermanenceHeron.png",
-  //   details: ``,
-  //   modifiers: [],
-  // },
-  // PhantomMourningAix: {
-  //   key: "PhantomMourningAix",
-  //   name: "Phantom: Mourning Aix",
-  //   class: "",
-  //   image: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/PhantomMourningAix.png",
-  //   details: ``,
-  //   modifiers: [],
-  // },
-  // PhantomRocksteadyGuardian: {
-  //   key: "PhantomRocksteadyGuardian",
-  //   name: "Phantom: Rocksteady Guardian",
-  //   class: "",
-  //   image: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/PhantomRocksteadyGuardian.png",
-  //   details: ``,
-  //   modifiers: [],
-  // },
-  // PhantomThunderingMephis: {
-  //   key: "PhantomThunderingMephis",
-  //   name: "Phantom: Thundering Mephis",
-  //   class: "",
-  //   image: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/PhantomThunderingMephis.png",
-  //   details: ``,
-  //   modifiers: [],
-  // },
   RocksteadyGuardian: {
     key: "RocksteadyGuardian",
     name: "Rocksteady Guardian",
@@ -1353,6 +1319,7 @@ export const mainEchoesData: MainEchoes = {
         attribute: "hp",
       },
     ],
+    sets: ["CelestialLight", "RejuvenatingGlow"],
   },
   Roseshroom: {
     key: "Roseshroom",
@@ -1380,6 +1347,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Havoc",
       },
     ],
+    sets: ["FreezingFrost", "SunSinkingEclipse"],
   },
   SabyrBoar: {
     key: "SabyrBoar",
@@ -1392,15 +1360,8 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["FreezingFrost", "SierraGale", "MoonlitClouds"],
   },
-  // Scar: {
-  //   key: "Scar",
-  //   name: "Scar",
-  //   class: "",
-  //   image: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Scar.png",
-  //   details: ``,
-  //   modifiers: [],
-  // },
   SnipSnap: {
     key: "SnipSnap",
     name: "Snip Snap",
@@ -1412,6 +1373,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["MoltenRift", "RejuvenatingGlow", "LingeringTunes"],
   },
   Spearback: {
     key: "Spearback",
@@ -1439,6 +1401,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Physical",
       },
     ],
+    sets: ["MoonlitClouds", "LingeringTunes"],
   },
   SpectroPrism: {
     key: "SpectroPrism",
@@ -1451,6 +1414,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["MoltenRift", "VoidThunder", "CelestialLight"],
   },
   StonewallBracer: {
     key: "StonewallBracer",
@@ -1493,6 +1457,7 @@ export const mainEchoesData: MainEchoes = {
         attribute: "hp",
       },
     ],
+    sets: ["RejuvenatingGlow", "MoonlitClouds"],
   },
   Tambourinist: {
     key: "Tambourinist",
@@ -1518,6 +1483,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Havoc",
       },
     ],
+    sets: ["FreezingFrost", "SunSinkingEclipse"],
   },
   TempestMephis: {
     key: "TempestMephis",
@@ -1570,6 +1536,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Electro",
       },
     ],
+    sets: ["VoidThunder"],
   },
   ThunderingMephis: {
     key: "ThunderingMephis",
@@ -1608,6 +1575,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Electro",
       },
     ],
+    sets: ["VoidThunder"],
   },
   TickTack: {
     key: "TickTack",
@@ -1620,6 +1588,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["SunSinkingEclipse", "RejuvenatingGlow", "LingeringTunes"],
   },
   TrafficIlluminator: {
     key: "TrafficIlluminator",
@@ -1632,6 +1601,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["MoltenRift", "VoidThunder", "SierraGale"],
   },
   VanguardJunrock: {
     key: "VanguardJunrock",
@@ -1644,6 +1614,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["VoidThunder", "RejuvenatingGlow", "LingeringTunes"],
   },
   VioletFeatheredHeron: {
     key: "VioletFeatheredHeron",
@@ -1671,6 +1642,7 @@ export const mainEchoesData: MainEchoes = {
         element: "Electro",
       },
     ],
+    sets: ["MoltenRift", "VoidThunder"],
   },
   WhiffWhaff: {
     key: "WhiffWhaff",
@@ -1683,16 +1655,18 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["SierraGale", "RejuvenatingGlow", "MoonlitClouds"],
   },
-  YoungGeohideSaurian: {
-    key: "YoungGeohideSaurian",
-    name: "Young Geohide Saurian",
-    class: "Common",
+  ViridblazeSaurian: {
+    key: "ViridblazeSaurian",
+    name: "Viridblaze Saurian",
+    class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/YoungGeohideSaurian.png",
-    details: `Transform into Baby Viridblaze Saurian to rest in place, and slowly restore HP.`,
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ViridblazeSaurian.png",
+    details: `<span class="description">Summon a Viridblaze Saurian to continuously spit fire, dealing <span class="param">10.70%/12.31%/13.91%/15.52%/17.12%</span> Fusion DMG 10 times. CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["MoltenRift", "MoonlitClouds"],
   },
   YoungRoseshroom: {
     key: "YoungRoseshroom",
@@ -1705,6 +1679,7 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["SierraGale", "SunSinkingEclipse"],
   },
   ZigZag: {
     key: "ZigZag",
@@ -1717,5 +1692,6 @@ export const mainEchoesData: MainEchoes = {
     CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
+    sets: ["CelestialLight", "MoonlitClouds", "LingeringTunes"],
   },
 };

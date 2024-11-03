@@ -1,19 +1,23 @@
 <template>
-  <div class="actions">
-    <button class="button" @click="handleCreateRotation">
+  <div class="flex gap-4 mb-4">
+    <button class="btn btn-primary" @click="handleCreateRotation">
       Create Rotation
     </button>
-    <button class="button" @click="handleToggleImport">Import Rotation</button>
+    <button class="btn btn-primary" @click="handleToggleImport">Import Rotation</button>
   </div>
-  <div v-if="isImportOpen" class="action__import panel">
-    <p>Import a rotation in JSON form below.</p>
-    <textarea
-      v-model="importRotationData"
-      name="importRotation"
-      id="importRotaton"></textarea>
-    <button class="button" @click="handleImportRotation">Confirm Import</button>
+  <div v-if="isImportOpen" class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+    <div class="card-body">
+      <h2 class="card-title">{{ name }}</h2>
+      <p>Import a rotation in JSON form below.</p>
+      <textarea
+        v-model="importRotationData"
+        name="importRotation"
+        id="importRotaton"
+        class="textarea textarea-bordered"></textarea>
+      <button class="btn btn-primary" @click="handleImportRotation">Confirm Import</button>
+    </div>
   </div>
-  <div class="rotations__list">
+  <div class="flex flex-col gap-4">
     <CalculatorRotation
       v-for="rotation in rotations"
       :key="rotation.id"
@@ -175,51 +179,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.actions {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-button.button {
-  background: #076b89;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
-
-.rotations__list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-textarea {
-  min-width: 320px;
-  min-height: 3rem;
-  display: block;
-  margin-bottom: 1rem;
-
-  @media (max-width: 900px) {
-    min-width: 240px;
-  }
-}
-
-.panel {
-  margin: 1rem 0;
-  background-color: #161616;
-  padding: 1rem;
-  border-radius: 6px;
-  min-width: 368px;
-
-  p {
-    margin: 0 0 1rem;
-  }
-
-  @media (prefers-color-scheme: light) {
-    background-color: #f8f8f8;
-  }
-}
-</style>
+<style scoped lang="scss"></style>

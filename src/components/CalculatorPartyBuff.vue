@@ -1,34 +1,70 @@
 <template>
-  <div class="character__buff" @click="toggleEnabled">
-    <span>{{ name }}</span>
-    <div v-html="details"></div>
-    <label v-if="!alwaysEnabled" @click.stop
-      ><input type="checkbox" v-model="isEnabled" /> Enabled?</label
-    >
-    <span v-if="hasStacks" class="party-buff__stacks" @click.stop>
-      <input
-        v-model="stacks"
-        type="number"
-        :min="minStacks"
-        :max="maxStacks"
-        @input="ensureMaxStacks" />
-      Stacks</span
-    >
-    <div v-if="hasRefinements" class="party-buff__refinement" @click.stop>
-      <select name="refinement" v-model="refinement">
-        <option v-for="lvl in weaponRefinementLevels" :key="lvl" :value="lvl">
-          {{ lvl }}
-        </option>
-      </select>
-      <label for="weaponLevel">Refinement Level</label>
-    </div>
-    <div v-if="inputBase" class="party-buff__input-base" @click.stop>
-      <label for="baseAttrValue">{{ modifierBasedOn }}:</label>
-      <input
-        type="number"
-        id="baseAttrValue"
-        name="baseAttrValue"
-        v-model="baseAttrValue" />
+  <div
+    class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
+    @click="toggleEnabled">
+    <div class="card-body">
+      <div class="character__buff">
+        <h2 class="card-title">{{ name }}</h2>
+        <div v-html="details"></div>
+        <div class="flex gap-2 items-center">
+          <div class="form-control" @click.stop>
+            <label
+              class="label cursor-pointer inline-flex justify-start pl-0"
+              v-if="!alwaysEnabled">
+              <span class="label-text mr-2">Enabled?</span>
+              <input
+                type="checkbox"
+                class="checkbox checkbox-sm"
+                v-model="isEnabled"
+                @change="updatedStats" />
+            </label>
+          </div>
+          <div v-if="hasStacks" class="form-control" @click.stop>
+            <label
+              class="label cursor-pointer inline-flex justify-start"
+              v-if="!alwaysEnabled">
+              <span class="label-text mr-2">Stacks</span>
+              <input
+                v-model="stacks"
+                type="number"
+                class="input input-bordered input-xs"
+                :min="minStacks"
+                :max="maxStacks"
+                @input="ensureMaxStacks"
+                @change="updatedStats" />
+            </label>
+          </div>
+
+          <div v-if="hasRefinements" class="form-control" @click.stop>
+            <label class="label cursor-pointer inline-flex justify-start">
+              <span class="label-text mr-2">Refinement Level</span>
+              <select
+                name="refinement"
+                class="select select-bordered select-xs"
+                v-model="refinement">
+                <option
+                  v-for="lvl in weaponRefinementLevels"
+                  :key="lvl"
+                  :value="lvl">
+                  {{ lvl }}
+                </option>
+              </select>
+            </label>
+          </div>
+
+          <div v-if="inputBase" class="form-control" @click.stop>
+            <label class="label cursor-pointer inline-flex justify-start">
+              <span class="label-text mr-2">{{ modifierBasedOn }}</span>
+              <input
+                type="number"
+                id="baseAttrValue"
+                name="baseAttrValue"
+                class="input input-bordered input-xs"
+                v-model="baseAttrValue" />
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -380,37 +416,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.character__buff {
-  margin-top: 1rem;
-  background-color: #161616;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  cursor: pointer;
-
-  @media (prefers-color-scheme: light) {
-    background-color: #f8f8f8;
-  }
-
-  span:first-of-type {
-    font-weight: bold;
-  }
-}
-label {
-  margin: 1rem 0 0;
-  display: inline-block;
-}
-.party-buff__stacks {
-  margin-left: 1rem;
-}
-.party-buff__refinement {
-  label {
-    margin-left: 0.5rem;
-  }
-}
-.party-buff__input-base {
-  label {
-    margin-right: 0.5rem;
-  }
-}
-</style>
+<style scoped lang="scss"></style>

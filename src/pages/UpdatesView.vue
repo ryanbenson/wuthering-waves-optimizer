@@ -1,25 +1,90 @@
 <template>
-  <div class="sub-nav">
-    <ul>
-      <RouterLink to="/info">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <Teleport to="#navbar-container">
+    <div class="navbar bg-base-300 shadow">
+      <div class="navbar-start">
+        <a class="btn btn-ghost text-xl"
+          ><RouterLink
+            to="/"
+            class="logo poiret-one-regular text-primary hover:text-primary"
+            >WT</RouterLink
+          ></a
+        >
+        <RouterLink
+          to="/"
+          class="poiret-one-regular btn btn-ghost text-xl hover:text-primary"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 384 512"
+            class="size-6">
             <path
-              d="M464 256A208 208 0 1 0 48 256a208 208 0 1 0 416 0zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256zm169.8-90.7c7.9-22.3 29.1-37.3 52.8-37.3h58.3c34.9 0 63.1 28.3 63.1 63.1c0 22.6-12.1 43.5-31.7 54.8L280 264.4c-.2 13-10.9 23.6-24 23.6c-13.3 0-24-10.7-24-24V250.5c0-8.6 4.6-16.5 12.1-20.8l44.3-25.4c4.7-2.7 7.6-7.7 7.6-13.1c0-8.4-6.8-15.1-15.1-15.1H222.6c-3.4 0-6.4 2.1-7.5 5.3l-.4 1.2c-4.4 12.5-18.2 19-30.6 14.6s-19-18.2-14.6-30.6l.4-1.2zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"
-              fill="#ffffff" />
-          </svg></div
-      ></RouterLink>
-      <RouterLink to="/updates">
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path
-              d="M480 32c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9L381.7 53c-48 48-113.1 75-181 75H192 160 64c-35.3 0-64 28.7-64 64v96c0 35.3 28.7 64 64 64l0 128c0 17.7 14.3 32 32 32h64c17.7 0 32-14.3 32-32V352l8.7 0c67.9 0 133 27 181 75l43.6 43.6c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V300.4c18.6-8.8 32-32.5 32-60.4s-13.4-51.6-32-60.4V32zm-64 76.7V240 371.3C357.2 317.8 280.5 288 200.7 288H192V192h8.7c79.8 0 156.5-29.8 215.3-83.3z"
-              fill="#ffffff" />
-          </svg></div
-      ></RouterLink>
-    </ul>
-  </div>
-  <div class="page-updates">
+              fill="#FFFFFF"
+              d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM96 64H288c17.7 0 32 14.3 32 32v32c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V96c0-17.7 14.3-32 32-32zm32 160a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM96 352a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM64 416c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H96c-17.7 0-32-14.3-32-32zM192 256a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm64-64a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM288 448a32 32 0 1 1 0-64 32 32 0 1 1 0 64z" /></svg
+        ></RouterLink>
+      </div>
+      <div class="navbar-end">
+        <ul class="menu menu-horizontal px-1">
+          <ThemeChooser></ThemeChooser>
+          <li>
+            <details>
+              <summary>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  class="inline-block h-5 w-5 stroke-current">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
+                </svg>
+              </summary>
+              <ul class="subnav bg-base-300 rounded-t-none p-2 right-0 z-50">
+                <ThemeChooser></ThemeChooser>
+                <li>
+                  <RouterLink
+                    to="/settings"
+                    class="text-white active:text-white focus:text-white"
+                    >Settings</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink
+                    to="/info"
+                    class="text-white active:text-white focus:text-white"
+                    >Info</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink
+                    to="/updates"
+                    class="text-white active:text-white focus:text-white"
+                    >Updates</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink
+                    to="/privacy"
+                    class="text-white active:text-white focus:text-white"
+                    >Privacy</RouterLink
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://discord.gg/pDKjxNjJWW"
+                    target="_blank"
+                    class="text-white active:text-white focus:text-white"
+                    >Discord</a
+                  >
+                </li>
+              </ul>
+            </details>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </Teleport>
+  <article class="prose page-updates">
     <h1>Upcoming Updates</h1>
     <ul>
       <li>Better UI</li>
@@ -29,6 +94,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 3, 2024</h3>
+    <ul>
+      <li>Major release: UI overhaul! Enjoy the new UI! Everything should be backwards compatible, but a lot easier to use. It also includes saving your echo enemy data, and automatically figures out your echo sets, and your main echo based on your echoes.</li>
+    </ul>
     <h3>October 31, 2024</h3>
     <ul>
       <li>Fixes Camellya S6 Eternal Flower damage. It was missing the S2 buff.</li>
@@ -628,139 +697,24 @@
       <li>Update to the echo selection UI</li>
       <li>Makes update page to make updates more visible</li>
     </ul>
-  </div>
+  </article>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import ThemeChooser from "../components/ThemeChooser.vue";
 export default defineComponent({
   name: "UpdatesView",
+  components: { ThemeChooser },
 });
 </script>
 
 <style scoped lang="scss">
 .page-updates {
   padding: 2rem 3rem;
-  margin-left: 4rem;
   max-width: 640px;
   @media (max-width: 768px) {
     margin-left: 0;
-  }
-}
-$sidebar-background-color: #121212;
-$active-sidebar-link-color: #22252e;
-$hover-sidebar-link-color: $active-sidebar-link-color;
-$active-link-color: #98d7ec;
-$tooltip-background-color: $sidebar-background-color;
-.sub-nav {
-  display: inline-block;
-  min-height: 100vh;
-  background-color: #000;
-  float: left;
-  flex-basis: 80px;
-  width: 80px;
-  z-index: 999;
-  a {
-    height: 64px;
-    max-height: 64px;
-    cursor: pointer;
-    transition: all ease-out 120ms;
-    list-style-type: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    .icon {
-      width: 24px;
-      height: 24px;
-
-      svg {
-        max-height: 24px;
-      }
-    }
-
-    &:hover,
-    &.active {
-      background-color: $active-sidebar-link-color;
-
-      i {
-        color: $active-link-color;
-      }
-    }
-  }
-
-  ul {
-    text-align: center;
-    color: white;
-    padding: 0;
-    margin: 0;
-
-    li {
-      height: 64px;
-      max-height: 64px;
-      cursor: pointer;
-      transition: all ease-out 120ms;
-      list-style-type: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0.5rem 0;
-
-      .icon {
-        width: 48px;
-        height: 48px;
-      }
-
-      &:hover,
-      &.active {
-        background-color: $active-sidebar-link-color;
-
-        i {
-          color: $active-link-color;
-        }
-      }
-    }
-  }
-  @media (max-width: 768px) {
-    display: block;
-    height: 48px;
-    background: #000;
-    height: 48px;
-    min-height: 48px;
-    width: 100%;
-    position: sticky;
-    top: 48px;
-    left: 0;
-
-    ul {
-      display: flex;
-      flex-direction: row;
-
-      a {
-        height: 48px;
-        max-height: 48px;
-        flex-basis: 48px;
-      }
-
-      li {
-        height: 48px;
-        max-height: 48px;
-        cursor: pointer;
-        transition: all ease-out 0.12s;
-        list-style-type: none;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 0.5rem 0;
-        flex-basis: 48px;
-        padding: 0 0.5rem;
-
-        .icon {
-          width: 32px;
-          height: 32px;
-        }
-      }
-    }
   }
 }
 </style>

@@ -3,12 +3,12 @@
     <select
       name="characterLevel"
       v-model="characterLevel"
-      @input="levelUpdated">
+      @input="levelUpdated"
+      class="select select-bordered select-sm">
       <option v-for="lvl in characterLevelOptions" :key="lvl" :value="lvl">
         {{ lvl }}
       </option>
     </select>
-    <label for="characterLevel">Character Level</label>
   </div>
 </template>
 <script>

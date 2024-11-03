@@ -1,55 +1,55 @@
 <template>
-  <div
-    class="calculation__damage__item"
+  <tr
+    class=""
     :class="{
       'calculation__damage__item--healing': type === 'Healing',
       'calculation__damage__item--shield': type === 'Shield',
     }">
     <template v-if="type === 'Healing'">
-      <span>{{ label }}</span>
-      <span
+      <td>{{ label }}</td>
+      <td
         v-tooltip="{
           content: damage.detailedCalculation,
           html: true,
         }"
-        >{{ displayDamage(damage.healAmount) }}</span
+        >{{ displayDamage(damage.healAmount) }}</td
       >
     </template>
     <template v-else-if="type === 'Shield'">
-      <span>{{ label }}</span>
-      <span
+      <td>{{ label }}</td>
+      <td
         v-tooltip="{
           content: damage.detailedCalculation,
           html: true,
         }"
-        >{{ displayDamage(damage.shieldAmount) }}</span
+        >{{ displayDamage(damage.shieldAmount) }}</td
       >
     </template>
     <template v-else>
-      <span>{{ label }}</span>
-      <span
+      <td>{{ label }}</td>
+      <td
         v-tooltip="{
           content: damage.detailedCalculation,
           html: true,
         }"
-        >{{ displayDamage(damage.totalDamage) }}</span
+        >{{ displayDamage(damage.totalDamage) }}</td
       >
-      <span
+      <td
         v-tooltip="{
           content: damage.detailedCalculationAvg,
           html: true,
         }"
-        >{{ displayDamage(damage.avgDamage) }}</span
+        >{{ displayDamage(damage.avgDamage) }}</td
       >
-      <span
+      <td
         v-tooltip="{
           content: damage.detailedCalculationCrit,
           html: true,
         }"
-        >{{ displayDamage(damage.critDamage) }}</span
+        >{{ displayDamage(damage.critDamage) }}</td
       >
     </template>
-  </div>
+  </tr>
 </template>
 
 <script>
@@ -90,10 +90,6 @@ export default {
   }
   &:nth-child(odd) {
     background-color: rgba(255, 255, 255, 0.1);
-
-    @media (prefers-color-scheme: light) {
-      background-color: rgba(0, 0, 0, 0.1);
-    }
   }
 
   @media (max-width: 480px) {
@@ -106,25 +102,30 @@ export default {
 }
 .calculation__damage__item--healing {
   color: #3bea3b;
-
-  @media (prefers-color-scheme: light) {
-    color: #13a813;
-  }
 }
 .calculation__damage__item--shield {
   color: #00adff;
-
-  @media (prefers-color-scheme: light) {
-    color: #4a92ff;
-  }
 }
 .rotation__aggregation {
   margin-top: 1rem;
   background: #1c2737;
   border-radius: 0.25rem;
-
-  @media (prefers-color-scheme: light) {
+}
+html[data-theme="light"] {
+  .calculation__damage__item {
+    &:nth-child(odd) {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+  .calculation__damage__item--shield {
+    color: #4a92ff;
+  }
+  .rotation__aggregation {
     background: #cee2ff;
+  }
+  .calculation__damage__item--healing {
+    color: #13a813;
+
   }
 }
 </style>

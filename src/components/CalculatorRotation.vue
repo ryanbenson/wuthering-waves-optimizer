@@ -1,61 +1,66 @@
 <template>
-  <div class="rotation" @click="toggleOpen">
+  <div class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer" @click="toggleOpen">
     <div class="rotation__head">
-      <span class="rotation__name">
-        <span v-if="!isOpen" v-tooltip="description">{{ name }}</span>
-        <input
-          v-else
-          type="text"
-          name="name"
-          id="name"
-          v-model="nameValue"
-          @input="onNameChange"
-          @click.stop />
-      </span>
-      <div class="rotation__end">
-        <div class="rotation__actions-count">{{ actionsCount }} Actions</div>
-        <div class="rotation__expand">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path
-              d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z" />
-          </svg>
+      <div class="card-body">
+        <h2 class="card-title flex justify-between">
+          <span v-if="!isOpen" v-tooltip="description">{{ name }}</span>
+          <input
+            v-else
+            type="text"
+            name="name"
+            id="name"
+            class="input input-bordered w-full max-w-lg"
+            v-model="nameValue"
+            @input="onNameChange"
+            @click.stop />
+
+            <div class="rotation__end">
+              <div class="rotation__actions-count min-w-24">{{ actionsCount }} Actions</div>
+              <div class="rotation__expand">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path
+                    d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z" />
+                </svg>
+              </div>
+            </div>
+        </h2>
+        <div class="rotation__body" v-if="isOpen" @click.stop>
+          <div class="rotation__desc">
+            <textarea
+              v-model="descriptionValue"
+              name="description"
+              id="description"
+              class="textarea textarea-bordered"
+              @input="onDescriptionChange"
+              >{{ description }}</textarea
+            >
+          </div>
+          <div class="rotations__list">
+            <CalculatorRotationAction
+              v-for="action in actionsList"
+              :key="action.order + action.id"
+              :id="action.id"
+              :character="character"
+              :character-data="characterData"
+              :action-key="action.key"
+              :type="action.type"
+              :order="action.order"
+              :count="action.count"
+              :buffs="action.buffs"
+              @action-update="handleActionUpdate"
+              @action-update:sequence="handleSequenceUpdate"
+              @remove-action="handleRemoveAction"></CalculatorRotationAction>
+          </div>
+          <button class="rotation__action--add btn btn-primary my-4 btn-xs w-full" @click="addAction">
+            Add Action
+          </button>
+          <div class="rotation__action--system">
+            <button class="btn btn-primary btn-xs" @click="handleRotationExport">Export</button>
+            <button class="btn btn-error btn-xs" @click="handleRotationDelete">
+              Delete
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="rotation__body" v-if="isOpen" @click.stop>
-      <div class="rotation__desc">
-        <textarea
-          v-model="descriptionValue"
-          name="description"
-          id="description"
-          @input="onDescriptionChange"
-          >{{ description }}</textarea
-        >
-      </div>
-      <div class="rotations__list">
-        <CalculatorRotationAction
-          v-for="action in actionsList"
-          :key="action.order + action.id"
-          :id="action.id"
-          :character="character"
-          :character-data="characterData"
-          :action-key="action.key"
-          :type="action.type"
-          :order="action.order"
-          :count="action.count"
-          :buffs="action.buffs"
-          @action-update="handleActionUpdate"
-          @action-update:sequence="handleSequenceUpdate"
-          @remove-action="handleRemoveAction"></CalculatorRotationAction>
-      </div>
-      <button class="rotation__action--add button" @click="addAction">
-        Add Action
-      </button>
-      <div class="rotation__action--system">
-        <button class="button" @click="handleRotationExport">Export</button>
-        <button class="button button--danger" @click="handleRotationDelete">
-          Delete
-        </button>
       </div>
     </div>
   </div>
@@ -269,14 +274,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.rotation {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  @media (prefers-color-scheme: light) {
-    background-color: rgba(0, 0, 0, 0.1);
-  }
-}
 .rotation__head {
   display: flex;
   gap: 1rem;
@@ -317,7 +314,11 @@ export default {
     width: 1rem;
     height: 1rem;
     filter: invert(100%);
-    @media (prefers-color-scheme: light) {
+  }
+}
+html[data-theme="light"] {
+  .rotation__end {
+    svg {
       filter: unset;
     }
   }
@@ -326,24 +327,8 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.5);
   padding-top: 1rem;
   margin-top: 1rem;
-}
-button.button {
-  background: #076b89;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  display: block;
-  width: 100%;
-  margin: 1rem 0 0.5rem;
-
-  &.button--danger {
-    background: #890725;
-    color: #ffffff;
-  }
 }
 .rotation__action--system {
   display: flex;
@@ -360,16 +345,6 @@ button.button {
   margin-top: 1rem;
 }
 
-input,
-textarea {
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  background-color: transparent;
-  border-radius: 0.5rem;
-  padding: 0.4rem 0.5rem;
-  @media (prefers-color-scheme: light) {
-    border: 1px solid rgba(0, 0, 0, 0.5);
-  }
-}
 textarea {
   height: 6rem;
 }

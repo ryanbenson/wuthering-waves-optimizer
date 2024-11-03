@@ -1,281 +1,173 @@
 <template>
   <div class="custom__buffs">
-    <div class="custom__buffs-list">
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Attack
-          %</span
-        >
-        <span
-          ><input type="number" v-model="ATK" min="0" name="ATK" id="ATK"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Flat
-          Attack</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="ATK_FLAT"
-            min="0"
-            name="ATK_FLAT"
-            id="ATK_FLAT"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />HP
-          %</span
-        >
-        <span
-          ><input type="number" v-model="HP" min="0" name="HP" id="HP"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />Flat
-          HP</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="HP_FLAT"
-            min="0"
-            name="HP_FLAT"
-            id="HP_FLAT"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />Defense
-          %</span
-        >
-        <span
-          ><input type="number" v-model="DEF" min="0" name="DEF" id="DEF"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />Flat
-          Defense</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="DEF_FLAT"
-            min="0"
-            name="DEF_FLAT"
-            id="DEF_FLAT"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />Crit
-          Rate</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="CritRate"
-            min="0"
-            name="CritRate"
-            id="CritRate"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" />Crit
-          DMG</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="CritDMG"
-            min="0"
-            name="CritDMG"
-            id="CritDMG"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" />Energy
-          Regen</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="EnergyRegen"
-            min="0"
-            name="EnergyRegen"
-            id="EnergyRegen"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" />Basic
-          Attack DMG Bonus</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="BasicAttackDMGBonus"
-            min="0"
-            name="BasicAttackDMGBonus"
-            id="BasicAttackDMGBonus"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png" />Heavy
-          Attack DMG Bonus</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="HeavyAttackDMGBonus"
-            min="0"
-            name="HeavyAttackDMGBonus"
-            id="HeavyAttackDMGBonus"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" />Resonance
-          Skill DMG Bonus</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="ResonanceSkillDMGBonus"
-            min="0"
-            name="ResonanceSkillDMGBonus"
-            id="ResonanceSkillDMGBonus"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" />Resonance
-          Liberation DMG Bonus</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="ResonanceLiberationDMGBonus"
-            min="0"
-            name="ResonanceLiberationDMGBonus"
-            id="ResonanceLiberationDMGBonus"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/glaciodmgbonus.png"
-            class="glacio--active" />Glacio DMG Bonus</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="Glacio"
-            min="0"
-            name="Glacio"
-            id="Glacio"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/fusiondmgbonus.png"
-            class="fusion--active" />Fusion DMG Bonus</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="Fusion"
-            min="0"
-            name="Fusion"
-            id="Fusion"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/electrodmgbonus.png"
-            class="electro--active" />Electro DMG Bonus</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="Electro"
-            min="0"
-            name="Electro"
-            id="Electro"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/aerodmgbonus.png"
-            class="aero--active" />Aero DMG Bonus</span
-        >
-        <span
-          ><input type="number" v-model="Aero" min="0" name="Aero" id="Aero"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/spectrodmgbonus.png"
-            class="spectro--active" />Spectro DMG Bonus</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="Spectro"
-            min="0"
-            name="Spectro"
-            id="Spectro"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/havocdmgbonus.png"
-            class="havoc--active" />Havoc DMG Bonus</span
-        >
-        <span
-          ><input type="number" v-model="Havoc" min="0" name="Havoc" id="Havoc"
-        /></span>
-      </div>
-      <div>
-        <span
-          ><img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png" />Healing
-          Bonus</span
-        >
-        <span
-          ><input
-            type="number"
-            v-model="HealingBonus"
-            min="0"
-            name="HealingBonus"
-            id="HealingBonus"
-        /></span>
-      </div>
+    <div class="custom__buffs-list w-max">
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Attack %
+          </span>
+        </div>
+        <input type="number" v-model="ATK" min="0" name="ATK" id="ATK" class="input input-md input-bordered" />
+      </label>
+
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />Flat Attack
+          </span>
+        </div>
+        <input type="number" v-model="ATK_FLAT" min="0" name="ATK_FLAT" id="ATK_FLAT" class="input input-md input-bordered" />
+      </label>
+
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />HP %
+          </span>
+        </div>
+        <input type="number" v-model="HP" min="0" name="HP" id="HP" class="input input-md input-bordered" />
+      </label>
+
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />Flat HP
+          </span>
+        </div>
+        <input type="number" v-model="HP_FLAT" min="0" name="HP_FLAT" id="HP_FLAT" class="input input-md input-bordered" />
+      </label>
+
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />Defense %
+          </span>
+        </div>
+        <input type="number" v-model="DEF" min="0" name="DEF" id="DEF" class="input input-md input-bordered" />
+      </label>
+
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />Flat Defense
+          </span>
+        </div>
+        <input type="number" v-model="DEF_FLAT" min="0" name="DEF_FLAT" id="DEF_FLAT" class="input input-md input-bordered" />
+      </label>
+
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />Crit Rate
+          </span>
+        </div>
+        <input type="number" v-model="CritRate" min="0" name="CritRate" id="CritRate" class="input input-md input-bordered" />
+      </label>
+
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" />Crit DMG
+          </span>
+        </div>
+        <input type="number" v-model="CritDMG" min="0" name="CritDMG" id="CritDMG" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" />Energy Regen
+          </span>
+        </div>
+        <input type="number" v-model="EnergyRegen" min="0" name="EnergyRegen" id="EnergyRegen" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" />Basic Attack DMG Bonus
+          </span>
+        </div>
+        <input type="number" v-model="BasicAttackDMGBonus" min="0" name="BasicAttackDMGBonus" id="BasicAttackDMGBonus" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png" />Heavy Attack DMG Bonus
+          </span>
+        </div>
+        <input type="number" v-model="HeavyAttackDMGBonus" min="0" name="HeavyAttackDMGBonus" id="HeavyAttackDMGBonus" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" />Resonance Skill DMG Bonus
+          </span>
+        </div>
+        <input type="number" v-model="ResonanceSkillDMGBonus" min="0" name="ResonanceSkillDMGBonus" id="ResonanceSkillDMGBonus" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" />Resonance Liberation DMG Bonus
+          </span>
+        </div>
+        <input type="number" v-model="ResonanceLiberationDMGBonus" min="0" name="ResonanceLiberationDMGBonus" id="ResonanceLiberationDMGBonus" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/glaciodmgbonus.png" class="glacio--active" />Glacio DMG Bonus
+          </span>
+        </div>
+        <input type="number" v-model="Glacio" min="0" name="Glacio" id="Glacio" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/fusiondmgbonus.png" class="fusion--active" />Fusion DMG Bonus
+          </span>
+        </div>
+        <input type="number" v-model="Fusion" min="0" name="Fusion" id="Fusion" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/electrodmgbonus.png" class="electro--active" />Electro DMG Bonus
+          </span>
+        </div>
+        <input type="number" v-model="Electro" min="0" name="Electro" id="Electro" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/aerodmgbonus.png" class="aero--active" />Aero DMG Bonus
+          </span>
+        </div>
+        <input type="number" v-model="Aero" min="0" name="Aero" id="Aero" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/spectrodmgbonus.png" class="spectro--active" />Spectro DMG Bonus
+          </span>
+        </div>
+        <input type="number" v-model="Spectro" min="0" name="Spectro" id="Spectro" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/havocdmgbonus.png" class="havoc--active" />Havoc DMG Bonus
+          </span>
+        </div>
+        <input type="number" v-model="Havoc" min="0" name="Havoc" id="Havoc" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png" />Healing Bonus
+          </span>
+        </div>
+        <input type="number" v-model="HealingBonus" min="0" name="HealingBonus" id="HealingBonus" class="input input-md input-bordered" />
+      </label>
     </div>
   </div>
 </template>
@@ -303,8 +195,8 @@ export default {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
     updatedStats() {
       const data = JSON.parse(JSON.stringify(this.buffsData));
-      this.$emit('custom-buffs-updated', data);
-    }
+      this.$emit("custom-buffs-updated", data);
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -323,16 +215,24 @@ export default {
       const ATK = this.ATK ? this.ATK / 100 : 0;
       const HP = this.HP ? this.HP / 100 : 0;
       const DEF = this.DEF ? this.DEF / 100 : 0;
-      const ATK_FLAT = this.ATK_FLAT ? this.ATK_FLAT  : 0;
+      const ATK_FLAT = this.ATK_FLAT ? this.ATK_FLAT : 0;
       const HP_FLAT = this.HP_FLAT ? this.HP_FLAT : 0;
       const DEF_FLAT = this.DEF_FLAT ? this.DEF_FLAT : 0;
       const CritRate = this.CritRate ? this.CritRate / 100 : 0;
       const CritDMG = this.CritDMG ? this.CritDMG / 100 : 0;
       const EnergyRegen = this.EnergyRegen ? this.EnergyRegen / 100 : 0;
-      const BasicAttackDMGBonus = this.BasicAttackDMGBonus ? this.BasicAttackDMGBonus / 100 : 0;
-      const HeavyAttackDMGBonus = this.HeavyAttackDMGBonus ? this.HeavyAttackDMGBonus / 100 : 0;
-      const ResonanceSkillDMGBonus = this.ResonanceSkillDMGBonus ? this.ResonanceSkillDMGBonus / 100 : 0;
-      const ResonanceLiberationDMGBonus = this.ResonanceLiberationDMGBonus ? this.ResonanceLiberationDMGBonus / 100 : 0;
+      const BasicAttackDMGBonus = this.BasicAttackDMGBonus
+        ? this.BasicAttackDMGBonus / 100
+        : 0;
+      const HeavyAttackDMGBonus = this.HeavyAttackDMGBonus
+        ? this.HeavyAttackDMGBonus / 100
+        : 0;
+      const ResonanceSkillDMGBonus = this.ResonanceSkillDMGBonus
+        ? this.ResonanceSkillDMGBonus / 100
+        : 0;
+      const ResonanceLiberationDMGBonus = this.ResonanceLiberationDMGBonus
+        ? this.ResonanceLiberationDMGBonus / 100
+        : 0;
       const Glacio = this.Glacio ? this.Glacio / 100 : 0;
       const Fusion = this.Fusion ? this.Fusion / 100 : 0;
       const Electro = this.Electro ? this.Electro / 100 : 0;
@@ -360,8 +260,8 @@ export default {
         Aero,
         Spectro,
         Havoc,
-        HealingBonus
-      }
+        HealingBonus,
+      };
     },
     /**
      * Getter/setter used in the form for the attack %
@@ -690,36 +590,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.custom__buffs-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  div {
-    display: grid;
-    grid-template-columns: 10rem 1fr;
-    gap: 1rem;
-
-    span {
-      display: flex;
-      align-items: center;
-    }
-
-    img {
-      margin-right: 0.25rem;
-    }
-
-    input {
-      display: block;
-      padding: 0.25rem 0.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      border-radius: 0.3rem;
-      background-color: #2e2e2e;
-      width: 5rem;
-      @media (prefers-color-scheme: light) {
-        background-color: #b7b7b7;
-        border: 1px solid rgba(0, 0, 0, 0.5);
-      }
-    }
+html[data-theme="light"] {
+  img {
+    filter: contrast(0);
   }
 }
 </style>

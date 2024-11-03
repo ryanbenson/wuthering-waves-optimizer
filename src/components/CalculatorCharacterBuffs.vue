@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="buffs" class="character__buffs">
+    <div v-if="buffs" class="character__buffs p-2">
       <CalculatorCharacterBuff
         v-for="buff in buffs"
         :key="buff.key"
@@ -14,8 +14,7 @@
         :max-stacks="buff.maxStacks"
         :modifiers="buff.modifiers"
         @updated-character-buff="handleUpdatedCharacterBuff"
-        :talent-data="talentData"
-        class="character__buff"></CalculatorCharacterBuff>
+        :talent-data="talentData"></CalculatorCharacterBuff>
     </div>
   </div>
 </template>
@@ -143,8 +142,9 @@ export default {
   background-color: #161616;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
-
-  @media (prefers-color-scheme: light) {
+}
+html[data-theme="light"] {
+  .character__buff {
     background-color: #f8f8f8;
   }
 }

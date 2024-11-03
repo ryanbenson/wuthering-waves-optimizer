@@ -17,13 +17,13 @@ import PrivacyView from "./pages/PrivacyView.vue";
 import SettingsView from "./pages/SettingsView.vue";
 
 const routes = [
-  { path: "/", component: HomeView },
-  { path: "/calculator", component: HomeView },
-  { path: "/optimizer", component: OptimizerView },
-  { path: "/updates", component: UpdatesView },
-  { path: "/info", component: InfoView },
-  { path: "/privacy", component: PrivacyView },
-  { path: "/settings", component: SettingsView },
+  { path: "/", component: HomeView, name: 'HomeView' },
+  // { path: "/calculator", component: HomeView, name: 'HomeView' },
+  { path: "/optimizer", component: OptimizerView, name: 'OptimizerView' },
+  { path: "/updates", component: UpdatesView , name: 'UpdatesView'},
+  { path: "/info", component: InfoView, name: 'InfoView' },
+  { path: "/privacy", component: PrivacyView, name: 'PrivacyView' },
+  { path: "/settings", component: SettingsView, name: 'SettingsView' },
 ];
 
 const router = createRouter({

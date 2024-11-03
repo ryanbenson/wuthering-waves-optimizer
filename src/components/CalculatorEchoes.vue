@@ -3,15 +3,21 @@
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
-    <CalculatorEcho
-      v-for="(n, index) in 5"
-      :key="character + '-' + index"
-      :index="index"
-      :character="character"
-      class="echo-selector"
-      @updated-echo-cost="handleUpdatedEchoCost"
-      @update-stats="handleEchoStats">
-    </CalculatorEcho>
+    <div class="echo__list">
+      <CalculatorEcho
+        v-for="(n, index) in 5"
+        :key="character + '-' + index"
+        :index="index"
+        :character="character"
+        class="echo-selector"
+        @updated-echo-cost="handleUpdatedEchoCost"
+        @update-stats="handleEchoStats"
+        @echo:set-chosen="handleEchoSetChosen"
+        @main-echo:updated="handleMainEchoUpdated"
+        @main-echo-rank:updated="handleMainEchoRankUpdated"
+      >
+      </CalculatorEcho>
+    </div>
     <div class="set-bonus-selector">
       <CalculatorEchoesSetBonusOne
         :character="character"
@@ -20,79 +26,53 @@
         :character="character"
         @update-stats="handleSetBonusTwoData"></CalculatorEchoesSetBonusTwo>
     </div>
-    <h3>Main Echo</h3>
-    <div class="main-echo__selection">
-      <div
-        :style="{
-          backgroundImage: `url(${chosenMainEchoImage})`,
+    <h2 v-if="false" class="text-lg font-bold mt-6 mb-2">Main Echo Buff</h2>
+    <div class="main__echo relative mt-12">
+      <h3
+        v-if="echoName"
+        class="main-echo__name"
+        :class="{
+          'text-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+          'text-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+          'text-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+          'text-green-500': mainEchoRank === '2' || mainEchoRank === 2,
         }"
-        class="main-echo__image"></div>
-      <select name="mainEcho" v-model="mainEcho">
-        <optgroup label="Calamity">
-          <option
-            v-for="option in mainEchoOptions.Calamity"
-            :key="option.key"
-            :value="option.key">
-            {{ option.name }}
-          </option>
-        </optgroup>
-        <optgroup label="Overlord">
-          <option
-            v-for="option in mainEchoOptions.Overlord"
-            :key="option.key"
-            :value="option.key">
-            {{ option.name }}
-          </option>
-        </optgroup>
-        <optgroup label="Elite">
-          <option
-            v-for="option in mainEchoOptions.Elite"
-            :key="option.key"
-            :value="option.key">
-            {{ option.name }}
-          </option>
-        </optgroup>
-        <optgroup label="Common">
-          <option
-            v-for="option in mainEchoOptions.Common"
-            :key="option.key"
-            :value="option.key">
-            {{ option.name }}
-          </option>
-        </optgroup>
-      </select>
-    </div>
-    <div class="main-echo-level">
-      <label for="mainEchoRank">Choose Main Echo Rank</label>
-      <select name="mainEchoRank" v-model="mainEchoRank">
-        <option value="">Select a rank</option>
-        <option value="5">5</option>
-        <option value="4">4</option>
-        <option value="3">3</option>
-        <option value="2">2</option>
-        <option value="1">1</option>
-      </select>
-    </div>
-    <div class="main-echo" @click="toggleMainEchoBuffEnabled">
-      <div
-        v-if="chosenMainEchoData"
-        class="main-echo__details"
-        v-html="chosenMainEchoData.details"></div>
-      <div class="main-echo__enabled" v-if="chosenMainEchoHasBuffs">
-        <label @click.stop>
-          <input
-            type="checkbox"
-            v-model="mainEchoBuffEnabled"
-            name="mainEchoBuffEnabled" />
-          Enabled?</label
-        >
-        <div v-if="mainEchoHasStacks" @click.stop>
-          <label>Stacks:</label>
-          <input
-            v-model.number="mainEchoStacks"
-            type="number"
-            min="0"
-            :max="mainEchoMaxStacks" />
+      >{{ echoName }}</h3>
+      <div v-if="mainEcho" class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer relative z-10" @click="toggleMainEchoBuffEnabled">
+        <div class="card-body">
+          <div
+            v-if="chosenMainEchoData"
+            class="main-echo__details"
+            v-html="chosenMainEchoData.details"></div>
+
+          
+          <div class="flex gap-2 items-center">
+            <div class="form-control" @click.stop>
+              <label
+                class="label cursor-pointer inline-flex justify-start"
+                v-if="!setAlwaysEnabled"
+                @click.stop>
+                <span class="label-text mr-2">Enabled?</span>
+                <input
+                  type="checkbox"
+                  class="checkbox checkbox-sm"
+                  v-model="mainEchoBuffEnabled" />
+              </label>
+            </div>
+            <div v-if="mainEchoHasStacks" class="form-control" @click.stop>
+              <label
+                class="label cursor-pointer inline-flex justify-start"
+                v-if="!setAlwaysEnabled">
+                <span class="label-text mr-2">Stacks</span>
+                <input
+                  v-model="mainEchoStacks"
+                  type="number"
+                  class="input input-bordered input-xs"
+                  :min="0"
+                  :max="mainEchoMaxStacks" />
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -100,7 +80,8 @@
 </template>
 
 <script>
-import { mainEchoesData } from "../echoes/index.ts";
+import { mainEchoesData, getEchoData } from "../echoes/index.ts";
+import { getEchoSetLabelByType } from "../echoes/stats.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
@@ -131,6 +112,7 @@ export default {
         { type: "", stacks: 0 },
       ],
       echoCosts: [],
+      echoSetsChosen: [],
     };
   },
   watch: {
@@ -208,7 +190,8 @@ export default {
           if (mainEchoBuff?.modifySpecificTalents) {
             stats.specificTalentBuffs = {};
             mainEchoBuff?.modifySpecificTalents.forEach((buffTalentName) => {
-              stats.specificTalentBuffs[buffTalentName] = mainEchoBuff.modifierValue;
+              stats.specificTalentBuffs[buffTalentName] =
+                mainEchoBuff.modifierValue;
             });
           } else {
             // we're dealing with full numbers right now, not decimals,
@@ -257,6 +240,70 @@ export default {
     handleMainEchoRank() {
       this.$emit("updated-main-echo-rank", this.mainEchoRank);
     },
+    async handleEchoSetChosen({ set, index }) {
+      this.echoSetsChosen[index] = set;
+      // Filter out nulls and create a count map for each value
+      const counts = this.echoSetsChosen.filter(v => v !== null).reduce((acc, val) => {
+          acc[val] = (acc[val] || 0) + 1;
+          return acc;
+      }, {});
+
+      // Get the unique values and their counts
+      const uniqueValues = Object.keys(counts);
+      const uniqueCounts = Object.values(counts);
+
+      // Reset bonuses
+      let setBonusOneVal = null;
+      let setBonusTwoVal = null;
+
+      if (uniqueValues.length === 1 && uniqueCounts[0] === 5) {
+          // Case 1: All 5 values are the same
+          setBonusOneVal = `${getEchoSetLabelByType(uniqueValues[0])} 2 Set`;
+          setBonusTwoVal = `${getEchoSetLabelByType(uniqueValues[0])} 5 Set`;
+        } else if (
+          uniqueValues.length === 2 &&
+          (
+              (uniqueCounts.includes(2) && uniqueCounts.includes(3)) ||  // Case 2a: 2 and 3 or 3 and 2
+              uniqueCounts.filter(count => count === 2).length === 2     // Case 2b: 2 and 2
+          )
+        ) {
+          // Case 2: Two different values with counts (2 and 3) or (2 and 2)
+          const [value1, value2] = uniqueValues;
+          const [count1, count2] = uniqueCounts;
+
+          // Assign bonuses based on the counts
+          if (count1 === 2 && count2 === 2) {
+              setBonusOneVal = `${getEchoSetLabelByType(value1)} 2 Set`;
+              setBonusTwoVal = `${getEchoSetLabelByType(value2)} 2 Set`;
+          } else if ((count1 === 2 && count2 === 3) || (count1 === 3 && count2 === 2)) {
+              setBonusOneVal = `${count1 === 2 ? getEchoSetLabelByType(value1) : getEchoSetLabelByType(value2)} 2 Set`;
+              setBonusTwoVal = `${count1 === 3 ? getEchoSetLabelByType(value1) : getEchoSetLabelByType(value2)} 2 Set`;
+          }
+        } else if (uniqueCounts.some(count => count >= 2) && uniqueCounts.filter(count => count >= 2).length === 1) {
+          // Case 3: Only one value has a repetition of 2, no others repeat more than once
+          const repeatedValue = uniqueValues[uniqueCounts.findIndex(count => count >= 2)];
+          setBonusOneVal = `${getEchoSetLabelByType(repeatedValue)} 2 Set`;
+          setBonusTwoVal = null;
+      } else {
+          // Case 4: No value is repeated
+          setBonusOneVal = null;
+          setBonusTwoVal = null;
+      }
+      // update the store
+      const data = {
+        echoSetBonus: {
+          setBonusOne: setBonusOneVal,
+          setBonusTwo: setBonusTwoVal,
+        },
+      };
+      await this.setCharacterData(this.character, data);
+    },
+    handleMainEchoUpdated(echo) {
+      this.mainEcho = echo;
+    },
+    handleMainEchoRankUpdated(rank) {
+      this.mainEchoRank = rank;
+    }
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -394,6 +441,13 @@ export default {
     },
     isTotalCostOverCap() {
       return this.totalEchoCost > MAX_ECHO_COST;
+    },
+    echoName() {
+      if (!this.mainEcho) {
+        return null;
+      }
+      const echoData = getEchoData(this.mainEcho);
+      return echoData?.name ?? null;
     },
   },
 };
@@ -533,12 +587,55 @@ export default {
   border-radius: 6px;
   cursor: pointer;
 
-  @media (prefers-color-scheme: light) {
-    background-color: #f8f8f8;
-  }
-
   span:first-of-type {
     font-weight: bold;
   }
+}
+.substats__label {
+  position: relative;
+  left: -10px;
+  top: 4px;
+  z-index: 0;
+  font-size: 24px;
+}
+html[data-theme="light"] {
+  .main-echo {
+    background-color: #f8f8f8;
+  }
+  .echo__item__actions {
+    svg {
+      filter: invert(100%);
+    }
+  }
+}
+
+.main-echo__name {
+  font-size: 36px;
+  font-weight: 700;
+  position: absolute;
+  top: -2.4rem;
+  left: 0.5rem;
+  z-index: 0;
+}
+
+
+.rank__label {
+  font-size: 24px;
+  font-weight: 700;
+  position: absolute;
+  top: -1.6rem;
+  left: 0.5rem;
+  z-index: 0;
+}
+.substat__label {
+  font-size: 16px;
+  position: absolute;
+  left: 3rem;
+  top: -0.9rem;
+  z-index: 0;
+}
+.echo__selection__rank__input {
+  position: relative;
+  z-index: 10;
 }
 </style>

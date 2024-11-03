@@ -1,54 +1,59 @@
 <template>
   <div
     v-if="isNotificationShown"
-    class="notification"
-    :class="{ 'notification--error': notificationError }">
+    class="alert mb-8"
+    :class="{ 'alert-error': notificationError, 'alert-success': !notificationError }">
     {{ message }}
   </div>
-  <h2>Database</h2>
-  <h3>Backup your data</h3>
-  <div class="actions actions--fetch">
-    <div class="settings__import-export__copy panel">
-      <p>Export your character data?</p>
-      <button @click="copyCharacterData" class="button">
-        Copy to clipboard
-      </button>
-    </div>
-  </div>
-  <div class="actions actions--fetch">
-    <div class="settings__import-export__download panel">
-      <p>Download your character data?</p>
-      <button @click="downloadCharacterData" class="button">Download</button>
+  <h2 class="text-2xl font-bold mb-4">Export your database</h2>
+
+  <div  class="card card-bordered card-compact bg-base-100 shadow mb-2">
+    <div class="card-body">
+      <h3 class="card-title">Backup your data</h3>
+      <div class="actions actions--fetch">
+        <div class="settings__import-export__copy panel">
+          <p class="mb-2">Export your character data?</p>
+          <button @click="copyCharacterData" class="btn btn-primary mr-2">
+            Copy to clipboard
+          </button>
+          <button @click="downloadCharacterData" class="btn btn-primary">Download</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <h3>Overwrite your existing data</h3>
+  <h3 class="text-2xl font-bold mb-4 mt-8">Overwrite your existing data</h3>
 
-  <div class="actions actions--overwrite">
-    <div class="settings__import-export__import-text panel">
-      <p>Import your character data? Paste your data here</p>
-      <textarea v-model="importedRawCharacterData"></textarea>
-      <button @click="importRawCharacterData" class="button button--danger">
+  <div  class="card card-bordered card-compact bg-base-100 shadow mb-2">
+    <div class="card-body">
+      <h3 class="card-title">Import from text</h3>
+      <p>Import your character data? Paste your data here. This will overwrite your existing data.</p>
+      <textarea v-model="importedRawCharacterData" class="textarea textarea-bordered"></textarea>
+      <button @click="importRawCharacterData" class="btn btn-error">
         Confirm Import
       </button>
     </div>
   </div>
-  <div class="actions actions--overwrite">
-    <div class="settings__import-export__import-file panel">
-      <p>Upload your character data?</p>
-      <input type="file" @change="handleFileUpload" accept=".json" />
-      <textarea v-model="fileData" readonly></textarea>
-      <button @click="confirmUpload" class="button button--danger">
+
+  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
+    <div class="card-body">
+      <h3 class="card-title">Import from file</h3>
+      <p>Upload your character data? This will overwrite your existing data.</p>
+      <input type="file" @change="handleFileUpload" accept=".json" class="file-input file-input-bordered" />
+      <textarea v-model="fileData" readonly class="textarea textarea-bordered"></textarea>
+      <button @click="confirmUpload" class="btn btn-error">
         Confirm Overwrite with File Data
       </button>
     </div>
   </div>
 
-  <h3>Delete your data</h3>
-  <div class="actions actions--delete">
-    <div class="settings__import-delete panel">
-      <p>Delete your data?</p>
-      <button @click="confirmDelete" class="button button--danger">
+  <h3 class="text-2xl font-bold mb-4">Delete your data</h3>
+
+  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
+    <div class="card-body">
+      <h3 class="card-title">Delete your data</h3>
+      <p>This will reset your data to a blank state.</p>
+      <button @click="confirmDelete" class="btn btn-error">
         Delete
       </button>
     </div>
@@ -220,18 +225,10 @@ textarea {
   min-width: 320px;
   min-height: 3rem;
   display: block;
-  margin-bottom: 1rem;
 
   @media (max-width: 900px) {
     min-width: 240px;
   }
-}
-p,
-h2 {
-  margin-top: 0;
-}
-h3 {
-  margin: 2rem 0 0;
 }
 .notification {
   background: #045c04;
@@ -250,28 +247,6 @@ h3 {
 }
 input[type="file"] {
   margin-bottom: 1rem;
-}
-.button {
-  background: #076b89;
-  border: none;
-  border-radius: 6px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-
-  &.button--danger {
-    background: #890725;
-  }
-}
-.panel {
-  margin-top: 1rem;
-  background-color: #161616;
-  padding: 1rem;
-  border-radius: 6px;
-  min-width: 368px;
-
-  @media (prefers-color-scheme: light) {
-    background-color: #f8f8f8;
-  }
 }
 .mb-1 {
   margin-bottom: 1rem;
