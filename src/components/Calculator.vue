@@ -264,6 +264,7 @@
         </div>
         <div class="navbar-end">
           <ul class="menu menu-horizontal px-1">
+            <ThemeChooser></ThemeChooser>
             <li>
               <details class="options-menu">
                 <summary>
@@ -545,6 +546,7 @@ import CalculatorDamages from "./CalculatorDamages.vue";
 import { mainEchoesData, getEchoData } from "../echoes";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
+import ThemeChooser from "./ThemeChooser.vue";
 
 export default defineComponent({
   name: "Calculator",
@@ -561,6 +563,7 @@ export default defineComponent({
     CalculatorRotations,
     CalculatorStats,
     CalculatorTalents,
+    ThemeChooser,
   },
   setup() {
     const characterStore = useCharacterStore();

@@ -10,8 +10,8 @@ export const useSettingsStore = defineStore("settings", {
       this.config = config;
     },
     addToConfig(data) {
-      const udpatedData = merge(this.config, data);
-      this.config = udpatedData;
+      const updatedData = merge(this.config, data);
+      this.config = updatedData;
     },
   },
 });

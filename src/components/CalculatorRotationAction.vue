@@ -489,9 +489,6 @@ export default {
   svg {
     width: 1rem;
     height: 1rem;
-    @media (prefers-color-scheme: light) {
-      filter: invert(100%);
-    }
   }
 }
 .edit__action {
@@ -537,5 +534,13 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+html[data-theme="light"] {
+  .buffsCount,
+  .rotation__action--remove {
+    svg {
+      filter: invert(100%);
+    }
+  }
 }
 </style>

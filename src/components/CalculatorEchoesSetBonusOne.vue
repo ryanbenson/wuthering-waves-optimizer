@@ -113,16 +113,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.panel {
-  margin-top: 1rem;
-  background-color: #161616;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-
-  @media (prefers-color-scheme: light) {
-    background-color: #f8f8f8;
-  }
-}
 .mb-1 {
   margin-bottom: 1rem;
 }

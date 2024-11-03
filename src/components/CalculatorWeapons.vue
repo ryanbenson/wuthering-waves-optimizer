@@ -504,14 +504,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.weapon__stat {
-  span img {
-    // make the white icons darker on light mode for stats
-    @media (prefers-color-scheme: light) {
-      filter: contrast(0.25);
-    }
-  }
-}
 .weapon__selection__image {
   width: 100px;
   height: 100px;
@@ -520,8 +512,14 @@ export default {
   background-size: contain;
   border-radius: 100%;
   border: 1px solid white;
-
-  @media (prefers-color-scheme: light) {
+}
+html[data-theme="light"] {
+  .weapon__stat {
+    span img {
+        filter: contrast(0.25);
+    }
+  }
+  .weapon__selection__image {
     border-color: oklch(var(--bc));
   }
 }

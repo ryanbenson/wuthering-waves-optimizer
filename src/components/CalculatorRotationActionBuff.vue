@@ -109,7 +109,11 @@ export default {
   svg {
     width: 1rem;
     height: 1rem;
-    @media (prefers-color-scheme: light) {
+  }
+}
+html[data-theme="light"] {
+  .delete {
+    svg {
       filter: invert(100%);
     }
   }

@@ -595,10 +595,4 @@ html[data-theme="light"] {
     filter: contrast(0);
   }
 }
-img {
-  // make the white icons darker on light mode for stats
-  @media (prefers-color-scheme: light) {
-    filter: contrast(0);
-  }
-}
 </style>

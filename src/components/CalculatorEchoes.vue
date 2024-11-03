@@ -587,10 +587,6 @@ export default {
   border-radius: 6px;
   cursor: pointer;
 
-  @media (prefers-color-scheme: light) {
-    background-color: #f8f8f8;
-  }
-
   span:first-of-type {
     font-weight: bold;
   }
@@ -602,8 +598,11 @@ export default {
   z-index: 0;
   font-size: 24px;
 }
-.echo__item__actions {
-  @media (prefers-color-scheme: light) {
+html[data-theme="light"] {
+  .main-echo {
+    background-color: #f8f8f8;
+  }
+  .echo__item__actions {
     svg {
       filter: invert(100%);
     }

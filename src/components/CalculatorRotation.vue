@@ -314,7 +314,11 @@ export default {
     width: 1rem;
     height: 1rem;
     filter: invert(100%);
-    @media (prefers-color-scheme: light) {
+  }
+}
+html[data-theme="light"] {
+  .rotation__end {
+    svg {
       filter: unset;
     }
   }

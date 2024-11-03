@@ -142,8 +142,9 @@ export default {
   background-color: #161616;
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
-
-  @media (prefers-color-scheme: light) {
+}
+html[data-theme="light"] {
+  .character__buff {
     background-color: #f8f8f8;
   }
 }

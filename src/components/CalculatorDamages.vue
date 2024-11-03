@@ -450,17 +450,9 @@ export default {
 <style lang="scss" scoped>
 .calculation__damage__item--healing {
   color: #3bea3b;
-
-  @media (prefers-color-scheme: light) {
-    color: #13a813;
-  }
 }
 .calculation__damage__item--shield {
   color: #00adff;
-
-  @media (prefers-color-scheme: light) {
-    color: #4a92ff;
-  }
 }
 .damage__title {
   display: flex;
@@ -480,6 +472,14 @@ export default {
   svg {
     width: 1rem;
     height: 1rem;
+  }
+}
+html[data-theme="light"] {
+  .calculation__damage__item--healing {
+    color: #13a813;
+  }
+  .calculation__damage__item--shield {
+    color: #4a92ff;
   }
 }
 </style>

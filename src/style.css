@@ -13,7 +13,6 @@
 
 :root {
   line-height: 1.5;
-  color-scheme: light dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -41,7 +40,7 @@ body {
 #app {
   width: 100%;
 }
-@media (prefers-color-scheme: light) {
+html[data-theme="light"] {
   :root {
     color: #213547;
     background-color: #ffffff;
@@ -50,7 +49,7 @@ body {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    /* background-color: #f9f9f9; */
   }
 }
 
@@ -110,30 +109,11 @@ body {
     hue-rotate(299deg) brightness(95%) contrast(89%) !important;
 }
 
-
-/* html[data-theme="light"] .navbar.bg-base-300,
-html[data-theme="light"] .subnav.bg-base-300 {
-    background: oklch(var(--n)) !important;
-}
-@media (prefers-color-scheme: light) {
-  .navbar.bg-base-300,
-  .subnav.bg-base-300 {
-    background: oklch(var(--n)) !important;
-  }
-  .menu summary:after {
-    color: white !important;
-  }
-  .menu summary svg {
-      stroke: white !important;
-  }
-} */
-
-
 html[data-theme="light"] .navbar img,
 html[data-theme="light"] .subnav img {
     filter: invert(100%);
 }
-@media (prefers-color-scheme: light) {
+html[data-theme="light"] {
   .navbar {
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   }
@@ -196,4 +176,15 @@ body {
   @media (max-width: 768px) {
     overflow: auto;
   }
+}
+
+html[data-theme="light"] input[type="number"] {
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    background-color: #ffffff;
+    color: #213547;
+  }
+
+  box-shadow: none;
+  outline: none;
 }

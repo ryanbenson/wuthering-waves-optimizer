@@ -2125,9 +2125,6 @@ export default {
   svg {
     width: 1rem;
     height: 1rem;
-    @media (prefers-color-scheme: light) {
-      filter: invert(100%);
-    }
   }
 }
 .substat__label {
@@ -2141,26 +2138,30 @@ export default {
   position: relative;
   z-index: 10;
 }
-.echo__item__set-selection--icon {
-  @media (prefers-color-scheme: light) {
+html[data-theme="light"] {
+  .echo__reset {
+    svg {
+      filter: invert(100%);
+    }
+  }
+  .echo__item__set-selection--icon {
     border-color: oklch(var(--bc));
     img {
       filter: invert(100%);
     }
   }
-}
-.echo__item__stats {
-  @media (prefers-color-scheme: light) {
+  .echo__item__stats {
     img {
       filter: invert(100%);
     }
   }
-}
-.echo__item__actions {
-  @media (prefers-color-scheme: light) {
+  .echo__item__actions {
     svg {
       filter: invert(100%);
     }
+  }
+  .modal-backdrop {
+    opacity: 0.5;
   }
 }
 </style>
