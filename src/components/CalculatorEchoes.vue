@@ -613,7 +613,7 @@ html[data-theme="light"] {
   font-size: 36px;
   font-weight: 700;
   position: absolute;
-  top: -2.4rem;
+  top: -2.6rem;
   left: 0.5rem;
   z-index: 0;
 }

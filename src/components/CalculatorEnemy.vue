@@ -150,7 +150,7 @@ export default {
   font-size: 24px;
   font-weight: 700;
   position: absolute;
-  top: -1.6rem;
+  top: -1.7rem;
   left: 0.5rem;
   z-index: 0;
 }
