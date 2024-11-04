@@ -7,7 +7,7 @@ const weaponInfo: WeaponInfo = {
   rarity: 5,
   passiveName: "Coming Soon",
   passiveValue:
-    "Attack power increases by 12/15/18/21/24%. When dealing Basic Attack damage, Basic Attack damage increases by 12/15/18/21/24%, lasting for 12s; Can be triggered once every 1s, stacking up to 5 times.",
+    "Attack power increases by 12/15/18/21/24%. When dealing Basic Attack DMG, the wielder gains 10%/12.5%/15%/17.5%/20% Basic Attack DMG Bonus for 14s. This effect can be triggered once per second, stacking up to 3 times. When the wielder's Concerto Energy is consumed, gain 40%/50%/60%/70%/80% Basic DMG Bonus for 10. This effect can be triggered once per second and ends when the wielder is switched off the field.",
   passiveData: [
     {
       key: "CamellyaSigAtk",
@@ -28,16 +28,33 @@ const weaponInfo: WeaponInfo = {
       hasStacks: true,
       modifier: "BasicAttackDMGBonus",
       modifierByRefinement: {
-        "1": 0.12,
-        "2": 0.15,
-        "3": 0.18,
-        "4": 0.21,
-        "5": 0.24,
+        "1": 0.10,
+        "2": 0.125,
+        "3": 0.15,
+        "4": 0.175,
+        "5": 0.2,
       },
       minStacks: 0,
-      maxStacks: 5,
+      maxStacks: 3,
       details:
-        "When dealing Basic Attack damage, Basic Attack damage increases by 12/15/18/21/24%, lasting for 12s; Can be triggered once every 1s, stacking up to 5 times.",
+        "When dealing Basic Attack DMG, the wielder gains 10%/12.5%/15%/17.5%/20% Basic Attack DMG Bonus for 14s. This effect can be triggered once per second, stacking up to 3 times.",
+      alwaysEnabled: false,
+    },
+    {
+      key: "CamellyaSigBasicBonusOutro",
+      hasStacks: false,
+      modifier: "BasicAttackDMGBonus",
+      modifierByRefinement: {
+        "1": 0.4,
+        "2": 0.5,
+        "3": 0.6,
+        "4": 0.7,
+        "5": 0.8,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When the wielder's Concerto Energy is consumed, gain 40%/50%/60%/70%/80% Basic DMG Bonus for 10. This effect can be triggered once per second and ends when the wielder is switched off the field.",
       alwaysEnabled: false,
     },
   ],

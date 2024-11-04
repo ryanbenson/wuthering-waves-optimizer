@@ -94,6 +94,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 4, 2024</h3>
+    <ul>
+      <li>Updates Camellya signature for 1.4.7 beta updates.</li>
+    </ul>
     <h3>November 3, 2024</h3>
     <ul>
       <li>Major release: UI overhaul! Enjoy the new UI! Everything should be backwards compatible, but a lot easier to use. It also includes saving your echo enemy data, and automatically figures out your echo sets, and your main echo based on your echoes.</li>
