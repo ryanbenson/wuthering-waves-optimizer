@@ -98,6 +98,7 @@
     <ul>
       <li>Updates Camellya signature for 1.4.7 beta updates.</li>
       <li>UI Update: Adjusts the hidden text to be more legible.</li>
+      <li>Fixes flat HP value, had a typo.</li>
     </ul>
     <h3>November 3, 2024</h3>
     <ul>
