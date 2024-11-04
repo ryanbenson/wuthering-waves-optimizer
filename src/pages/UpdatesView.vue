@@ -97,6 +97,7 @@
     <h3>November 4, 2024</h3>
     <ul>
       <li>Updates Camellya signature for 1.4.7 beta updates.</li>
+      <li>UI Update: Adjusts the hidden text to be more legible.</li>
     </ul>
     <h3>November 3, 2024</h3>
     <ul>
