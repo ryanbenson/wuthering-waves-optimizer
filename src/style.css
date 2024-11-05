@@ -188,3 +188,12 @@ html[data-theme="light"] input[type="number"] {
   box-shadow: none;
   outline: none;
 }
+
+.card-compact .card-body {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.label-text {
+  font-size: 16px;
+}

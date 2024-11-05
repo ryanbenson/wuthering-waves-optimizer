@@ -52,24 +52,24 @@
                 class="label cursor-pointer inline-flex justify-start"
                 v-if="!setAlwaysEnabled"
                 @click.stop>
-                <span class="label-text mr-2">Enabled?</span>
                 <input
                   type="checkbox"
                   class="checkbox checkbox-sm"
                   v-model="mainEchoBuffEnabled" />
+                <span class="label-text ml-2">Enabled?</span>
               </label>
             </div>
             <div v-if="mainEchoHasStacks" class="form-control" @click.stop>
               <label
                 class="label cursor-pointer inline-flex justify-start"
                 v-if="!setAlwaysEnabled">
-                <span class="label-text mr-2">Stacks</span>
                 <input
                   v-model="mainEchoStacks"
                   type="number"
                   class="input input-bordered input-xs"
                   :min="0"
                   :max="mainEchoMaxStacks" />
+                <span class="label-text ml-2">Stacks</span>
               </label>
             </div>
           </div>

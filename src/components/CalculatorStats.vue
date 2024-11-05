@@ -1,5 +1,5 @@
 <template>
-  <table class="calculator__stats table table-zebra table-xs">
+  <table class="calculator__stats table table-zebra">
     <tbody>
       <tr>
         <td class="w-10">
@@ -8,6 +8,7 @@
         </td>
         <td>Attack</td>
         <td
+          class="text-right"
           v-tooltip="{
             content: atkTooltipContent,
             html: true,
@@ -22,6 +23,7 @@
         </td>
         <td>HP</td>
         <td
+          class="text-right"
           v-tooltip="{
             content: hpTooltipContent,
             html: true,
@@ -36,6 +38,7 @@
         </td>
         <td>Defense</td>
         <td
+          class="text-right"
           v-tooltip="{
             content: defTooltipContent,
             html: true,
@@ -49,7 +52,7 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />
         </td>
         <td>Crit Rate</td>
-        <td>{{ displayPercentage(totalCritRate * 100) }}</td>
+        <td class="text-right">{{ displayPercentage(totalCritRate * 100) }}</td>
       </tr>
       <tr>
         <td>
@@ -57,7 +60,7 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" />
         </td>
         <td>Crit DMG</td>
-        <td>{{ displayPercentage(totalCritDmg * 100) }}</td>
+        <td class="text-right">{{ displayPercentage(totalCritDmg * 100) }}</td>
       </tr>
       <tr>
         <td>
@@ -65,7 +68,7 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" />
         </td>
         <td>Energy Regen</td>
-        <td>{{ displayPercentage(energyRegen * 100) }}</td>
+        <td class="text-right">{{ displayPercentage(energyRegen * 100) }}</td>
       </tr>
       <tr>
         <td>
@@ -73,7 +76,7 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" />
         </td>
         <td>Basic Attack DMG Bonus</td>
-        <td>{{ displayPercentage(basicAttackDmgBonus) }}</td>
+        <td class="text-right">{{ displayPercentage(basicAttackDmgBonus) }}</td>
       </tr>
       <tr>
         <td>
@@ -81,7 +84,7 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png" />
         </td>
         <td>Heavy Attack DMG Bonus</td>
-        <td>{{ displayPercentage(heavyAttackDmgBonus) }}</td>
+        <td class="text-right">{{ displayPercentage(heavyAttackDmgBonus) }}</td>
       </tr>
       <tr>
         <td>
@@ -89,7 +92,7 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" />
         </td>
         <td>Resonance Skill DMG Bonus</td>
-        <td>{{ displayPercentage(resonanceSkillDmgBonus) }}</td>
+        <td class="text-right">{{ displayPercentage(resonanceSkillDmgBonus) }}</td>
       </tr>
       <tr>
         <td>
@@ -97,7 +100,7 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" />
         </td>
         <td>Resonance Liberation DMG Bonus</td>
-        <td>{{ displayPercentage(resonanceLiberationDmgBonus) }}</td>
+        <td class="text-right">{{ displayPercentage(resonanceLiberationDmgBonus) }}</td>
       </tr>
       <tr>
         <td>
@@ -106,7 +109,7 @@
             class="glacio--active" />
         </td>
         <td>Glacio DMG Bonus</td>
-        <td>{{ displayPercentage(glacio) }}</td>
+        <td class="text-right">{{ displayPercentage(glacio) }}</td>
       </tr>
       <tr>
         <td>
@@ -115,7 +118,7 @@
             class="fusion--active" />
         </td>
         <td>Fusion DMG Bonus</td>
-        <td>{{ displayPercentage(fusion) }}</td>
+        <td class="text-right">{{ displayPercentage(fusion) }}</td>
       </tr>
       <tr>
         <td>
@@ -124,7 +127,7 @@
             class="electro--active" />
         </td>
         <td>Electro DMG Bonus</td>
-        <td>{{ displayPercentage(electro) }}</td>
+        <td class="text-right">{{ displayPercentage(electro) }}</td>
       </tr>
       <tr>
         <td>
@@ -133,7 +136,7 @@
             class="aero--active" />
         </td>
         <td>Aero DMG Bonus</td>
-        <td>{{ displayPercentage(aero) }}</td>
+        <td class="text-right">{{ displayPercentage(aero) }}</td>
       </tr>
       <tr>
         <td>
@@ -142,7 +145,7 @@
             class="spectro--active" />
         </td>
         <td>Spectro DMG Bonus</td>
-        <td>{{ displayPercentage(spectro) }}</td>
+        <td class="text-right">{{ displayPercentage(spectro) }}</td>
       </tr>
       <tr>
         <td>
@@ -151,7 +154,7 @@
             class="havoc--active" />
         </td>
         <td>Havoc DMG Bonus</td>
-        <td>{{ displayPercentage(havoc) }}</td>
+        <td class="text-right">{{ displayPercentage(havoc) }}</td>
       </tr>
       <tr>
         <td>
@@ -159,7 +162,7 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png" />
         </td>
         <td>Healing Bonus</td>
-        <td>{{ displayPercentage(healingBonus * 100) }}</td>
+        <td class="text-right">{{ displayPercentage(healingBonus * 100) }}</td>
       </tr>
     </tbody>
   </table>
@@ -315,6 +318,12 @@ export default {
 html[data-theme="light"] {
   td img {
     filter: contrast(0);
+  }
+}
+.calculator__stats {
+  td {
+    padding: 0.5rem;
+    font-size: 16px;
   }
 }
 </style>

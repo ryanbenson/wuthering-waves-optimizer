@@ -94,6 +94,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 5, 2024</h3>
+    <ul>
+      <li>UI adjustments for legibility.</li>
+    </ul>
     <h3>November 4, 2024</h3>
     <ul>
       <li>Updates Camellya signature for 1.4.7 beta updates.</li>

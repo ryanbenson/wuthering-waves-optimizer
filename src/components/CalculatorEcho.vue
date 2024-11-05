@@ -545,7 +545,7 @@
               </span>
             </div>
           </h2>
-          <table class="echo__item__sub-stats table table-zebra table-xs">
+          <table class="echo__item__sub-stats table table-zebra">
             <tbody>
               <tr v-if="mainStatValue" :key="stat">
                 <td class="flex gap-2 items-center">
@@ -2163,5 +2163,14 @@ html[data-theme="light"] {
   .modal-backdrop {
     opacity: 0.5;
   }
+}
+.echo__item__sub-stats {
+  td {
+    padding: 0.5rem;
+    font-size: 16px;
+  }
+}
+.label-text {
+  font-size: 16px;
 }
 </style>
