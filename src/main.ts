@@ -44,6 +44,8 @@ const app = createApp(App).use(pinia).use(router).use(FloatingVue);
 
 import { useCharacterStore } from "./stores/character";
 const characterStore = useCharacterStore();
+import { useInventoryStore } from "./stores/inventory";
+const inventoryStore = useInventoryStore();
 
 // prevent bfcache
 window.addEventListener("unload", () => {

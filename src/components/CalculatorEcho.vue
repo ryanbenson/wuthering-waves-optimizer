@@ -519,6 +519,9 @@
                   fill="#FFFFFF" />
               </svg>
             </span>
+            <span class="echo__item__save cursor-pointer" @click="saveEchoItem" v-tooltip="'Save echo'">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-4"><path d="M48 96l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-245.5c0-4.2-1.7-8.3-4.7-11.3l33.9-33.9c12 12 18.7 28.3 18.7 45.3L448 416c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l245.5 0c17 0 33.3 6.7 45.3 18.7l74.5 74.5-33.9 33.9L320.8 84.7c-.3-.3-.5-.5-.8-.8L320 184c0 13.3-10.7 24-24 24l-192 0c-13.3 0-24-10.7-24-24L80 80 64 80c-8.8 0-16 7.2-16 16zm80-16l0 80 144 0 0-80L128 80zm32 240a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z" fill="#FFFFFF"/></svg>
+            </span>
           </div>
         </div>
         <div class="echo__item__stats mb-2 w-full relative">
@@ -533,6 +536,12 @@
               {{ echoName }}
             </span>
             <div class="echo__item__meta flex gap-2 items-center">
+              <span
+                v-if="echoId"
+                class="echo__item__set size-6 rounded-full"
+              >
+                <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png" />
+              </span>
               <span
                 v-if="echoSet"
                 class="echo__item__set size-6 rounded-full"
@@ -738,6 +747,7 @@
 <script>
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
 import {
   rankColors,
   statsTable,
@@ -756,6 +766,7 @@ import {
 } from "../echoes/index.ts";
 import { subStatsTable } from "../echoes/stats.ts";
 import Range from "./input/Range.vue";
+import { randomString } from "../utils/strings.ts";
 export default {
   props: {
     character: {
@@ -895,6 +906,7 @@ export default {
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
+    ...mapActions(useInventoryStore, ["saveEcho", "deleteEcho"]),
     updateEchoChoice(echo, previousEcho) {
       const echoData = getEchoData(echo);
       const echoClass = echoData?.class;
@@ -1014,6 +1026,7 @@ export default {
       this.type = null;
       this.rank = null;
       this.stat = null;
+      this.echoId = null;
       this.echoSet = null;
       this.echoSubStatsType1 = null;
       this.echoSubStatsValue1 = null;
@@ -1144,16 +1157,65 @@ export default {
     },
     isSetSelected(set) {
       return this.echoSet === set;
+    },
+    saveEchoItem() {
+      let id = null;
+      if (this.echoId) {
+        id = this.echoId;
+      } else {
+        id = randomString();
+        this.echoId = id;
+      }
+      const data = {
+        id,
+        echo: this.echo,
+        echoSet: this.echoSet,
+        echoSubStatsType1: this.echoSubStatsType1,
+        echoSubStatsType2: this.echoSubStatsType2,
+        echoSubStatsType3: this.echoSubStatsType3,
+        echoSubStatsType4: this.echoSubStatsType4,
+        echoSubStatsType5: this.echoSubStatsType5,
+        echoSubStatsValue1: this.echoSubStatsValue1,
+        echoSubStatsValue2: this.echoSubStatsValue2,
+        echoSubStatsValue3: this.echoSubStatsValue3,
+        echoSubStatsValue4: this.echoSubStatsValue4,
+        echoSubStatsValue5: this.echoSubStatsValue5,
+        rank: this.ranks,
+        stat: this.stat,
+        type: this.type,
+      };
+      
+      this.saveEcho(data);
     }
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
+    ...mapState(useInventoryStore, ["echoes"]),
     /**
      * The current character data
      * @returns {Object}
      */
     currentCharacter() {
       return this.characters[this.character] ?? {};
+    },
+    /**
+     * Getter/setter used in the form for the type for this echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    echoId: {
+      get() {
+        return this.currentCharacter?.echoes?.[this.index]?.echoId ?? null;
+      },
+      async set(value) {
+        const data = {
+          echoes: {},
+        };
+        data.echoes[this.index] = {
+          echoId: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
     },
     /**
      * Getter/setter used in the form for the type for this echo

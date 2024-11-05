@@ -63,6 +63,7 @@
 <script lang="ts">
 // @ts-nocheck
 import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "SettingsImportExport",
@@ -77,10 +78,20 @@ export default defineComponent({
   },
   methods: {
     /**
+     * Gets all of the data to save
+     */
+    getData() {
+      const data = {
+        character: localStorage.getItem("character"),
+        inventory: localStorage.getItem("inventory"),
+      };
+      return JSON.stringify(data);
+    },
+    /**
      * Handler to copy the contents of the character data into the user's clipboard
      */
     copyCharacterData() {
-      const data = localStorage.getItem("character");
+      const data = this.getData();
       navigator.clipboard.writeText(data);
       this.triggerNotification(
         "Character data has been copied to your clipboard"
@@ -90,7 +101,7 @@ export default defineComponent({
      * Handler to download the character data as a JSON file
      */
     downloadCharacterData() {
-      const data = localStorage.getItem("character");
+      const data = this.getData();
       const blob = new Blob([data], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
