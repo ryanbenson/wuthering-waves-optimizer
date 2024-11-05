@@ -522,6 +522,9 @@
             <span class="echo__item__save cursor-pointer" @click="saveEchoItem" v-tooltip="'Save echo'">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-4"><path d="M48 96l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-245.5c0-4.2-1.7-8.3-4.7-11.3l33.9-33.9c12 12 18.7 28.3 18.7 45.3L448 416c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l245.5 0c17 0 33.3 6.7 45.3 18.7l74.5 74.5-33.9 33.9L320.8 84.7c-.3-.3-.5-.5-.8-.8L320 184c0 13.3-10.7 24-24 24l-192 0c-13.3 0-24-10.7-24-24L80 80 64 80c-8.8 0-16 7.2-16 16zm80-16l0 80 144 0 0-80L128 80zm32 240a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z" fill="#FFFFFF"/></svg>
             </span>
+            <span @click="openEchoBrowser" class="echo__item__open cursor-pointer" v-tooltip="'Browse echoes'">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" class="size-4"><path d="M384 480l48 0c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224l-400 0c-11.4 0-21.9 6-27.6 15.9L48 357.1 48 96c0-8.8 7.2-16 16-16l117.5 0c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8L416 144c8.8 0 16 7.2 16 16l0 32 48 0 0-32c0-35.3-28.7-64-64-64L298.5 96c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l23.7 0L384 480z" fill="#FFFFFF"/></svg>
+            </span>
           </div>
         </div>
         <div class="echo__item__stats mb-2 w-full relative">
@@ -1186,6 +1189,9 @@ export default {
       };
       
       this.saveEcho(data);
+    },
+    openEchoBrowser() {
+      console.log('open echo browser')
     }
   },
   computed: {
