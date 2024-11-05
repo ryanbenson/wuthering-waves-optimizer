@@ -553,14 +553,14 @@
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />
                   {{ getReadableSubStatLabel(stat) }}
                 </td>
-                <td>{{ mainStatValue }}%</td>
+                <td class="text-right">{{ mainStatValue }}%</td>
               </tr>
               <tr v-if="mainStatValue">
                 <td class="flex gap-2 items-center">
                   <img :src="echoFreeSubStatIcon" />
                   {{ getReadableSubStatLabel(echoFreeSubStatType) }}
                 </td>
-                <td>{{ echoFreeSubStatValue }}</td>
+                <td class="text-right">{{ echoFreeSubStatValue }}</td>
               </tr>
               <tr v-if="hasSubStats" class="substats__label">
                 <td class="font-bold font-size-8">Substats</td>
@@ -572,35 +572,35 @@
                     :src="echoSubStat1Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType1) }}
                 </td>
-                <td>{{ echoSubStatsValue1Display }}</td>
+                <td class="text-right">{{ echoSubStatsValue1Display }}</td>
               </tr>
               <tr v-if="echoSubStatsType2 && echoSubStatsType2 !== 'none'">
                 <td class="flex gap-2 items-center">
                   <img :src="echoSubStat2Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType2) }}
                 </td>
-                <td>{{ echoSubStatsValue2Display }}</td>
+                <td class="text-right">{{ echoSubStatsValue2Display }}</td>
               </tr>
               <tr v-if="echoSubStatsType3 && echoSubStatsType3 !== 'none'">
                 <td class="flex gap-2 items-center">
                   <img v-if="echoSubStatsType3" :src="echoSubStat3Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType3) }}
                 </td>
-                <td>{{ echoSubStatsValue3Display }}</td>
+                <td class="text-right">{{ echoSubStatsValue3Display }}</td>
               </tr>
               <tr v-if="echoSubStatsType4 && echoSubStatsType4 !== 'none'">
                 <td class="flex gap-2 items-center">
                   <img :src="echoSubStat4Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType4) }}
                 </td>
-                <td>{{ echoSubStatsValue4Display }}</td>
+                <td class="text-right">{{ echoSubStatsValue4Display }}</td>
               </tr>
               <tr v-if="echoSubStatsType5 && echoSubStatsType5 !== 'none'">
                 <td class="flex gap-2 items-center">
                   <img :src="echoSubStat5Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType5) }}
                 </td>
-                <td>{{ echoSubStatsValue5Display }}</td>
+                <td class="text-right">{{ echoSubStatsValue5Display }}</td>
               </tr>
             </tbody>
           </table>
