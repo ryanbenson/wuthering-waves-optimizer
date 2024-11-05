@@ -11,18 +11,17 @@
           <label
             class="label cursor-pointer inline-flex justify-start"
             v-if="!setAlwaysEnabled">
-            <span class="label-text mr-2">Enabled?</span>
             <input
               type="checkbox"
               class="checkbox checkbox-sm"
               v-model="isEnabled" />
+            <span class="label-text ml-2">Enabled?</span>
           </label>
         </div>
         <div v-if="needsStacks" class="form-control" @click.stop>
           <label
             class="label cursor-pointer inline-flex justify-start"
             v-if="!setAlwaysEnabled">
-            <span class="label-text mr-2">Stacks</span>
             <input
               v-model="stacks"
               type="number"
@@ -30,6 +29,7 @@
               :min="0"
               :max="getMaxStacks"
               @input="updateTotalStats" />
+            <span class="label-text ml-2">Stacks</span>
           </label>
         </div>
       </div>

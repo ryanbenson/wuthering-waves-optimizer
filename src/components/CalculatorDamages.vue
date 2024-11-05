@@ -24,7 +24,7 @@
       class="card-body text-white"
       v-html="chosenChar.value?.basicAttacks?.description"></div>
   </div>
-  <table class="table table-zebra table-sm">
+  <table class="calculator__damages table table-zebra">
     <thead>
       <tr>
         <th>&nbsp;</th>
@@ -62,7 +62,7 @@
       class="card-body text-white"
       v-html="chosenChar.value?.skillAttacks?.description"></div>
   </div>
-  <table class="table table-zebra table-sm">
+  <table class="calculator__damages table table-zebra table-sm">
     <thead>
       <tr>
         <th>&nbsp;</th>
@@ -100,7 +100,7 @@
       class="card-body text-white"
       v-html="chosenChar.value?.liberationAttacks?.description"></div>
   </div>
-  <table class="table table-zebra table-sm">
+  <table class="calculator__damages table table-zebra table-sm">
     <thead>
       <tr>
         <th>&nbsp;</th>
@@ -138,7 +138,7 @@
       class="card-body text-white"
       v-html="chosenChar.value?.forteCircuitAttacks?.description"></div>
   </div>
-  <table class="table table-zebra table-sm">
+  <table class="calculator__damages table table-zebra table-sm">
     <thead>
       <tr>
         <th>&nbsp;</th>
@@ -176,7 +176,7 @@
       class="card-body text-white"
       v-html="chosenChar.value?.introAttacks?.description"></div>
   </div>
-  <table class="table table-zebra table-sm">
+  <table class="calculator__damages table table-zebra table-sm">
     <thead>
       <tr>
         <th>&nbsp;</th>
@@ -215,7 +215,7 @@
       class="card-body text-white"
       v-html="chosenChar.value?.outroAttacks?.description"></div>
   </div>
-  <table class="table table-zebra table-sm">
+  <table class="calculator__damages table table-zebra table-sm">
     <thead>
       <tr>
         <th>&nbsp;</th>
@@ -266,7 +266,7 @@
     </div>
   </template>
   <template v-else>
-    <table class="table table-zebra table-sm">
+    <table class="calculator__damages table table-zebra table-sm">
       <thead>
         <tr>
           <th>&nbsp;</th>
@@ -300,7 +300,7 @@
         <div class="calculation__damage__item">No attacks in this rotation</div>
       </template>
       <template v-else>
-        <table class="table table-zebra table-sm">
+        <table class="calculator__damages table table-zebra table-sm">
           <thead>
             <tr>
               <th>&nbsp;</th>
@@ -488,6 +488,13 @@ html[data-theme="light"] {
 .skilldescription {
   .Title {
     font-weight: bold;
+  }
+}
+
+.calculator__damages {
+  td {
+    padding: 0.5rem;
+    font-size: 16px;
   }
 }
 </style>
