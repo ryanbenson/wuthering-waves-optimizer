@@ -1191,7 +1191,7 @@ export default {
       this.saveEcho(data);
     },
     openEchoBrowser() {
-      console.log('open echo browser')
+      this.$emit('open-echoes-browser', this.index);
     }
   },
   computed: {

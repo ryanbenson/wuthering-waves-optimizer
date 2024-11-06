@@ -1,0 +1,191 @@
+<template>
+  <dialog id="modal-echoes-browser" class="modal">
+      <form method="dialog" class="modal-backdrop" @click="handleClose">
+        <button>close</button>
+      </form>
+    <div class="modal-box max-w-5xl">
+      <form method="dialog" @click="handleClose">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+          ✕
+        </button>
+      </form>
+      <div class="py-4">
+        <div class="echoes__filters flex align-center gap-2 mb-6">
+          <select
+            v-model="echo"
+            name="mainEcho"
+            class="select select-bordered select select-sm"
+          >
+            <option :value="null">Select an echo</option>
+            <optgroup label="Calamity">
+              <option
+                v-for="option in mainEchoOptions.Calamity"
+                :key="option.key"
+                :value="option.key">
+                {{ option.name }}
+              </option>
+            </optgroup>
+            <optgroup label="Overlord">
+              <option
+                v-for="option in mainEchoOptions.Overlord"
+                :key="option.key"
+                :value="option.key">
+                {{ option.name }}
+              </option>
+            </optgroup>
+            <optgroup label="Elite">
+              <option
+                v-for="option in mainEchoOptions.Elite"
+                :key="option.key"
+                :value="option.key">
+                {{ option.name }}
+              </option>
+            </optgroup>
+            <optgroup label="Common">
+              <option
+                v-for="option in mainEchoOptions.Common"
+                :key="option.key"
+                :value="option.key">
+                {{ option.name }}
+              </option>
+            </optgroup>
+          </select>
+          <button
+            v-for="echoSet in echoSetsList"
+            :key="echoSet"
+            @click="toggleEchoSetFilter(echoSet)"
+            class="rounded mr-1"
+            :class="{'btn-active': isEchoSetFilterActive(echoSet)}"
+          >
+            <img :src="getEchoSetImage(echoSet)" class="size-8" />
+          </button>
+        </div>
+
+        <div class="echoes__list grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CalculatorEchoCard
+            v-for="echo in echoesList"
+            class="echo__item"
+            :key="echo.echoId"
+            :rank="echo.rank"
+            :type="echo.type"
+            :echo-id="echo.echoId"
+            :echo-set="echo.echoSet"
+            :stat="echo.stat"
+            :echo="echo.echo"
+            :echo-sub-stats-type-1="echo.echoSubStatsType1"
+            :echo-sub-stats-value-1="echo.echoSubStatsValue1"
+            :echo-sub-stats-type-2="echo.echoSubStatsType2"
+            :echo-sub-stats-value-2="echo.echoSubStatsValue2"
+            :echo-sub-stats-type-3="echo.echoSubStatsType3"
+            :echo-sub-stats-value-3="echo.echoSubStatsValue3"
+            :echo-sub-stats-type-4="echo.echoSubStatsType4"
+            :echo-sub-stats-value-4="echo.echoSubStatsValue4"
+            :echo-sub-stats-type-5="echo.echoSubStatsType5"
+            :echo-sub-stats-value-5="echo.echoSubStatsValue5"
+          >
+            <button class="btn btn-primary btn-sm">Use echo</button>
+          </CalculatorEchoCard>
+        </div>
+      </div>
+    </div>
+  </dialog>
+</template>
+
+<script>
+import { mainEchoesData, getEchoData } from "../echoes/index.ts";
+import { echoSetLabelMap, getEchoSetIconByType } from "../echoes/stats";
+import { mapActions, mapState } from "pinia";
+import { useInventoryStore } from "../stores/inventory";
+import CalculatorEchoCard from './CalculatorEchoCard.vue';
+export default {
+  name: 'CalculatorEchoesBrowser',
+  data() {
+    return {
+      echoIndex: null,
+      echoSetLabelMap,
+      echoSet: null,
+      echo: null,
+    };
+  },
+  components: {
+    CalculatorEchoCard
+  },
+  computed: {
+    ...mapState(useInventoryStore, ["echoes"]),
+    echoSetsList() {
+      return Object.keys(echoSetLabelMap);
+    },
+    echoesList() {
+      let allEchoes = this.echoes ?? [];
+      // don't bother filtering if there are none
+      if (allEchoes.length <= 0) {
+        return allEchoes;
+      }
+      // filter by type if set
+      if (this.echoSet) {
+        allEchoes = allEchoes.filter((echo) => echo.echoSet === this.echoSet);
+      }
+      // filter by main echo if set
+      if (this.echo) {
+        allEchoes = allEchoes.filter((echo) => echo.echo === this.echo);
+      }
+
+      return allEchoes;
+    },
+    mainEchoesData() {
+      return { ...mainEchoesData };
+    },
+    mainEchoOptions() {
+      const echoes = {
+        Calamity: [],
+        Overlord: [],
+        Elite: [],
+        Common: [],
+      };
+      const mainEchoValues = Object.values(this.mainEchoesData);
+      mainEchoValues.forEach((echo) => {
+        if (echo?.class && echoes?.[echo.class]) {
+          echoes[echo.class].push(echo);
+        }
+      });
+      return echoes;
+    },
+  },
+  methods: {
+    triggerOpenModal(echoIndex) {
+      this.echoIndex = echoIndex;
+      const modalEl = document.getElementById('modal-echoes-browser');
+      modalEl.showModal();
+    },
+    handleClose() {
+      this.reset();
+    },
+    reset() {
+      this.echoIndex = null;
+      this.echoSet = null;
+      this.echo = null;
+    },
+    getEchoSetImage(echoSet) {
+      return getEchoSetIconByType(echoSet);
+    },
+    toggleEchoSetFilter(echoSet) {
+      if (this.echoSet === echoSet) {
+        this.echoSet = null;
+      } else {
+        this.echoSet = echoSet;
+      }
+    },
+    isEchoSetFilterActive(echoSet) {
+      return this.echoSet === echoSet;
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+html[data-theme="light"] {
+  .modal-backdrop {
+    opacity: 0.5;
+  }
+}
+</style>
