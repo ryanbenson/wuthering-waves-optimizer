@@ -1170,7 +1170,7 @@ export default {
         this.echoId = id;
       }
       const data = {
-        id,
+        echoId: id,
         echo: this.echo,
         echoSet: this.echoSet,
         echoSubStatsType1: this.echoSubStatsType1,

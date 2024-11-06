@@ -83,7 +83,7 @@
             :echo-sub-stats-type-5="echo.echoSubStatsType5"
             :echo-sub-stats-value-5="echo.echoSubStatsValue5"
           >
-            <button class="btn btn-primary btn-sm">Use echo</button>
+            <button @click="assignEcho(echo.echoId)" class="btn btn-primary btn-sm">Use echo</button>
           </CalculatorEchoCard>
         </div>
       </div>
@@ -96,9 +96,16 @@ import { mainEchoesData, getEchoData } from "../echoes/index.ts";
 import { echoSetLabelMap, getEchoSetIconByType } from "../echoes/stats";
 import { mapActions, mapState } from "pinia";
 import { useInventoryStore } from "../stores/inventory";
+import { useCharacterStore } from "../stores/character";
 import CalculatorEchoCard from './CalculatorEchoCard.vue';
 export default {
   name: 'CalculatorEchoesBrowser',
+  props: {
+    character: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       echoIndex: null,
@@ -152,10 +159,16 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useInventoryStore, ["getEchoById"]),
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
     triggerOpenModal(echoIndex) {
       this.echoIndex = echoIndex;
       const modalEl = document.getElementById('modal-echoes-browser');
       modalEl.showModal();
+    },
+    triggerCloseModal() {
+      const modalEl = document.getElementById('modal-echoes-browser');
+      modalEl.close();
     },
     handleClose() {
       this.reset();
@@ -177,6 +190,38 @@ export default {
     },
     isEchoSetFilterActive(echoSet) {
       return this.echoSet === echoSet;
+    },
+    async assignEcho(echoId) {
+      const echo = this.getEchoById(echoId);
+      if (!echo) {
+        console.error("Could not find echo", echoId);
+        return;
+      }
+      const echoData = {
+        echo: echo.echo,
+        type: echo.type,
+        rank: echo.rank,
+        stat: echo.stat,
+        echoId: echo.echoId,
+        echoSet: echo.echoSet,
+        echoSubStatsType1: echo.echoSubStatsType1,
+        echoSubStatsValue1: echo.echoSubStatsValue1,
+        echoSubStatsType2: echo.echoSubStatsType2,
+        echoSubStatsValue2: echo.echoSubStatsValue2,
+        echoSubStatsType3: echo.echoSubStatsType3,
+        echoSubStatsValue3: echo.echoSubStatsValue3,
+        echoSubStatsType4: echo.echoSubStatsType4,
+        echoSubStatsValue4: echo.echoSubStatsValue4,
+        echoSubStatsType5: echo.echoSubStatsType5,
+        echoSubStatsValue5: echo.echoSubStatsValue5,
+      };
+      const data = { echoes: {} };
+      data.echoes[this.echoIndex] = echoData
+      await this.setCharacterData(this.character, data);
+
+      // wrap up the modal
+      this.reset();
+      this.triggerCloseModal();
     }
   }
 };

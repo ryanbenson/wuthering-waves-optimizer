@@ -6,19 +6,22 @@ export const useInventoryStore = defineStore("inventory", {
   }),
   actions: {
     saveEcho(data) {
-      const { id } = data;
-      const foundIndex = this.echoes.findIndex((echo) => echo.id ===  id);
+      const { echoId } = data;
+      const foundIndex = this.echoes.findIndex((echo) => echo.echoId ===  echoId);
       if (foundIndex >= 0) {
         this.echoes[foundIndex] = data;
       } else {
         this.echoes.push(data);
       }
     },
-    deleteEcho(id) {
-      const foundIndex = this.echoes.findIndex((echo) => echo.id ===  id);
+    deleteEcho(echoId) {
+      const foundIndex = this.echoes.findIndex((echo) => echo.echoId ===  echoId);
       if (foundIndex) {
         this.echoes.splice(foundIndex, 1);
       }
+    },
+    getEchoById(echoId) {
+      return this.echoes.find((echo) => echo.echoId ===  echoId);
     }
   },
 });

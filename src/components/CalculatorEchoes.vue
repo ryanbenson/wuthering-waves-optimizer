@@ -1,6 +1,9 @@
 <template>
   <div>
-    <CalculatorEchoesBrowser ref="echoesBrowser"></CalculatorEchoesBrowser>
+    <CalculatorEchoesBrowser
+      ref="echoesBrowser" 
+      :character="character"
+    ></CalculatorEchoesBrowser>
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
