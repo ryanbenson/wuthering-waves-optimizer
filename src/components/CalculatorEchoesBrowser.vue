@@ -14,7 +14,7 @@
           <select
             v-model="echo"
             name="mainEcho"
-            class="select select-bordered select select-sm"
+            class="select select-bordered select select-sm mr-4"
           >
             <option :value="null">Select an echo</option>
             <optgroup label="Calamity">
@@ -59,32 +59,38 @@
           >
             <img :src="getEchoSetImage(echoSet)" class="size-8" />
           </button>
+          <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
         </div>
 
         <div class="echoes__list grid grid-cols-1 md:grid-cols-2 gap-4">
-          <CalculatorEchoCard
-            v-for="echo in echoesList"
-            class="echo__item"
-            :key="echo.echoId"
-            :rank="echo.rank"
-            :type="echo.type"
-            :echo-id="echo.echoId"
-            :echo-set="echo.echoSet"
-            :stat="echo.stat"
-            :echo="echo.echo"
-            :echo-sub-stats-type-1="echo.echoSubStatsType1"
-            :echo-sub-stats-value-1="echo.echoSubStatsValue1"
-            :echo-sub-stats-type-2="echo.echoSubStatsType2"
-            :echo-sub-stats-value-2="echo.echoSubStatsValue2"
-            :echo-sub-stats-type-3="echo.echoSubStatsType3"
-            :echo-sub-stats-value-3="echo.echoSubStatsValue3"
-            :echo-sub-stats-type-4="echo.echoSubStatsType4"
-            :echo-sub-stats-value-4="echo.echoSubStatsValue4"
-            :echo-sub-stats-type-5="echo.echoSubStatsType5"
-            :echo-sub-stats-value-5="echo.echoSubStatsValue5"
-          >
-            <button @click="assignEcho(echo.echoId)" class="btn btn-primary btn-sm">Use echo</button>
-          </CalculatorEchoCard>
+          <template v-if="!echoesList.length">
+            <div class="echoes__list--empty py-12 text-center w-full col-span-2">No echoes found</div>
+          </template>
+          <template v-else>
+            <CalculatorEchoCard
+              v-for="echo in echoesList"
+              class="echo__item"
+              :key="echo.echoId"
+              :rank="echo.rank"
+              :type="echo.type"
+              :echo-id="echo.echoId"
+              :echo-set="echo.echoSet"
+              :stat="echo.stat"
+              :echo="echo.echo"
+              :echo-sub-stats-type-1="echo.echoSubStatsType1"
+              :echo-sub-stats-value-1="echo.echoSubStatsValue1"
+              :echo-sub-stats-type-2="echo.echoSubStatsType2"
+              :echo-sub-stats-value-2="echo.echoSubStatsValue2"
+              :echo-sub-stats-type-3="echo.echoSubStatsType3"
+              :echo-sub-stats-value-3="echo.echoSubStatsValue3"
+              :echo-sub-stats-type-4="echo.echoSubStatsType4"
+              :echo-sub-stats-value-4="echo.echoSubStatsValue4"
+              :echo-sub-stats-type-5="echo.echoSubStatsType5"
+              :echo-sub-stats-value-5="echo.echoSubStatsValue5"
+            >
+              <button @click="assignEcho(echo.echoId)" class="btn btn-primary btn-sm">Use echo</button>
+            </CalculatorEchoCard>
+          </template>
         </div>
       </div>
     </div>
@@ -222,7 +228,11 @@ export default {
       // wrap up the modal
       this.reset();
       this.triggerCloseModal();
-    }
+    },
+    resetFilters() {
+      this.echoSet = null;
+      this.echo = null;
+    },
   }
 };
 </script>
