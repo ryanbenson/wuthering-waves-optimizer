@@ -23,7 +23,7 @@
             :style="{
               backgroundImage: `url(${echoImage})`,
             }"></div>
-            <button @click="openEchoPicker" class="btn btn-sm">
+            <button @click="openEchoPicker" class="btn btn-sm btn--echo--find">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
                 <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill="#FFFFFF"/>
               </svg>
@@ -495,7 +495,7 @@
         </button>
       </form>
       <div class="py-4">
-        <div class="echoes__filters flex align-center gap-2 mb-6 items-center">
+        <div class="echoes__filters flex align-center gap-2 mb-6 items-center flex-wrap">
           <span class="mr-2">Filter</span>
           <button
             v-for="echoSet in echoSetsList"
@@ -504,7 +504,7 @@
             class="rounded mr-1"
             :class="{'btn-active': isEchoSetFilterActive(echoSet)}"
           >
-            <img :src="getEchoSetImage(echoSet)" class="size-8" />
+            <img :src="getEchoSetImage(echoSet)" class="size-8 m-width-8" />
           </button>
           <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
         </div>
@@ -2276,7 +2276,8 @@ export default {
   z-index: 10;
 }
 html[data-theme="light"] {
-  .echo__reset {
+  .echo__reset,
+  .btn--echo--find {
     svg {
       filter: invert(100%);
     }
@@ -2287,7 +2288,8 @@ html[data-theme="light"] {
       filter: invert(100%);
     }
   }
-  .echo__item__stats {
+  .echo__item__stats,
+  .echoes__filters {
     img {
       filter: invert(100%);
     }
