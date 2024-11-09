@@ -480,6 +480,7 @@ export default {
      * fetches the new weapon data and resets
      */
     async weaponChanged() {
+      this.weaponPassiveData = [];
       if (!this.weaponType) {
         return;
       }
@@ -493,12 +494,15 @@ export default {
           this.weapon
         );
         this.chosenWeapon = weaponChosen;
-        this.weaponPassiveData = [];
         this.updateWeaponStats();
       } catch (error) {
         // console.log("Failed to find weapon");
       }
     },
+  },
+  beforeUnmount() {
+    this.weaponPassiveData = [];
+    this.chosenWeapon = null;
   },
 };
 </script>
