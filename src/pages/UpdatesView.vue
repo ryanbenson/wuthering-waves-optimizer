@@ -95,10 +95,18 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 10, 2024</h3>
+    <ul>
+      <li>
+        Fixes issue when you change weapons, sometimes the buffs wouldn't clear
+        out from the previous weapon.
+      </li>
+    </ul>
     <h3>November 9, 2024</h3>
     <ul>
       <li>
-        Fixes issue when you change characters and sometimes the weapon passives do not load properly.
+        Fixes issue when you change characters and sometimes the weapon passives
+        do not load properly.
       </li>
     </ul>
     <h3>November 7, 2024</h3>

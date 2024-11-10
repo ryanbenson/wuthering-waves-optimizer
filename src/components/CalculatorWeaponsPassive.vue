@@ -1,5 +1,5 @@
 <template>
-  <div  class="card card-bordered card-compact bg-base-100 shadow mb-2">
+  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
       <div :class="{ 'weapon-passive': !alwaysEnabled }" @click="toggleEnabled">
         <p v-html="details"></p>
@@ -13,7 +13,7 @@
                 class="checkbox checkbox-sm"
                 v-model="isEnabled"
                 @change="updatedStats" />
-                <span class="label-text ml-2">Enabled?</span>
+              <span class="label-text ml-2">Enabled?</span>
             </label>
           </div>
           <div v-if="hasStacks" class="form-control" @click.stop>
@@ -23,7 +23,7 @@
               <input
                 v-model="stacks"
                 type="number"
-                  class="input input-bordered input-xs"
+                class="input input-bordered input-xs"
                 :min="minStacks"
                 :max="maxStacks"
                 @input="ensureMaxStacks"
@@ -110,7 +110,7 @@ export default {
         }
       },
       immediate: true,
-    }
+    },
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
@@ -226,7 +226,11 @@ export default {
     },
   },
   beforeUnmount() {
-    this.$emit("updated-weapon-stats", {});
+    this.$emit("updated-weapon-stats", {
+      stat: this.modifier,
+      value: 0,
+      key: this.passiveKey,
+    });
   },
 };
 </script>

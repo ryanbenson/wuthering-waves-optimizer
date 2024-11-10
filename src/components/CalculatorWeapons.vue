@@ -4,7 +4,10 @@
       <div class="weapon__selection__image" :style="weaponImageStyles"></div>
       <div class="weapon__basic-data">
         <div class="mb-2">
-          <select name="weapon" v-model="weapon" class="select select-bordered select-sm">
+          <select
+            name="weapon"
+            v-model="weapon"
+            class="select select-bordered select-sm">
             <option :value="null">Choose a weapon</option>
             <optgroup label="5 Star">
               <option
@@ -49,7 +52,10 @@
           </select>
         </div>
         <div class="mb-2">
-          <select name="weaponLevel" v-model="weaponLevel" class="select select-bordered select-sm">
+          <select
+            name="weaponLevel"
+            v-model="weaponLevel"
+            class="select select-bordered select-sm">
             <option v-for="lvl in weaponLevelOptions" :key="lvl" :value="lvl">
               {{ lvl }}
             </option>
@@ -57,57 +63,69 @@
           <label for="weaponLevel" class="ml-2">Weapon Level</label>
         </div>
         <div class="">
-        <select name="refinement" v-model="refinement" class="select select-bordered select-sm">
-          <option v-for="lvl in weaponRefinementLevels" :key="lvl" :value="lvl">
-            {{ lvl }}
-          </option>
-        </select>
-        <label for="weaponLevel" class="ml-2">Refinement</label>
+          <select
+            name="refinement"
+            v-model="refinement"
+            class="select select-bordered select-sm">
+            <option
+              v-for="lvl in weaponRefinementLevels"
+              :key="lvl"
+              :value="lvl">
+              {{ lvl }}
+            </option>
+          </select>
+          <label for="weaponLevel" class="ml-2">Refinement</label>
+        </div>
       </div>
-    </div>
     </div>
     <div v-if="weapon" class="p-2">
-      <div  class="card card-bordered card-compact bg-base-100 shadow mb-2">
+      <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
         <div class="card-body">
           <div class="weapon__stats flex gap-6 items-center">
-          <div v-if="weaponAttack" class="weapon__stat flex gap-2 items-center">
-            <span
-              ><img
-                src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" /></span
-            >
-            <span class="font-bold">Attack:</span>
-            <span>{{ weaponAttack }}</span>
+            <div
+              v-if="weaponAttack"
+              class="weapon__stat flex gap-2 items-center">
+              <span>
+                <img
+                  src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
+              </span>
+              <span class="font-bold">Attack:</span>
+              <span>{{ weaponAttack }}</span>
+            </div>
+            <div
+              v-if="weaponModifierLabel && weaponModifierValue"
+              class="weapon__stat flex gap-2 items-center">
+              <span>
+                <img v-if="weaponModifierImage" :src="weaponModifierImage" />
+              </span>
+              <span class="font-bold">{{ weaponModifierLabel }}:</span>
+              <span>{{ weaponModifierValue }}</span>
+            </div>
           </div>
           <div
-            v-if="weaponModifierLabel && weaponModifierValue"
-            class="weapon__stat  flex gap-2 items-center">
-            <span><img v-if="weaponModifierImage" :src="weaponModifierImage" /></span>
-            <span class="font-bold">{{ weaponModifierLabel }}:</span>
-            <span>{{ weaponModifierValue }}</span>
-          </div>
-        </div>
-        <div v-if="weaponDescription" class="weapon__desc" v-html="weaponDescription">
+            v-if="weaponDescription"
+            class="weapon__desc"
+            v-html="weaponDescription"></div>
         </div>
       </div>
-    </div>
-        <div v-if="hasWeaponPassive" class="weapon__passives" :key="weapon">
-          <CalculatorWeaponsPassive
-            v-for="(weaponPassive, i) in weaponPassives"
-            class="weapon__passive"
-            :key="weaponPassive.key"
-            :character="character"
-            :passive-key="weaponPassive.key"
-            :has-stacks="weaponPassive.hasStacks"
-            :modifier="weaponPassive.modifier"
-            :modifier-by-refinement="weaponPassive.modifierByRefinement"
-            :min-stacks="weaponPassive.minStacks"
-            :max-stacks="weaponPassive.maxStacks"
-            :always-enabled="weaponPassive.alwaysEnabled"
-            :details="weaponPassive.details"
-            :refinement="refinement"
-            @updated-weapon-stats="
-              handleUpdatedWeaponStats
-            "></CalculatorWeaponsPassive>
+      <div v-if="hasWeaponPassive" class="weapon__passives" :key="weapon">
+        <CalculatorWeaponsPassive
+          v-for="(weaponPassive, i) in weaponPassives"
+          class="weapon__passive"
+          :key="weaponPassive.key"
+          :character="character"
+          :passive-key="weaponPassive.key"
+          :has-stacks="weaponPassive.hasStacks"
+          :modifier="weaponPassive.modifier"
+          :modifier-by-refinement="weaponPassive.modifierByRefinement"
+          :min-stacks="weaponPassive.minStacks"
+          :max-stacks="weaponPassive.maxStacks"
+          :always-enabled="weaponPassive.alwaysEnabled"
+          :details="weaponPassive.details"
+          :refinement="refinement"
+          @updated-weapon-stats="
+            handleUpdatedWeaponStats
+          "></CalculatorWeaponsPassive>
       </div>
     </div>
   </div>
@@ -167,15 +185,18 @@ export default {
         if (this.chosenWeapon?.info?.maxLevel) {
           defaultMaxLevel = this.chosenWeapon?.info?.maxLevel;
         }
-        return this.currentCharacter?.weapons?.[this.weapon]?.weaponLevel ?? defaultMaxLevel;
+        return (
+          this.currentCharacter?.weapons?.[this.weapon]?.weaponLevel ??
+          defaultMaxLevel
+        );
       },
       async set(value) {
         await this.setCharacterData(this.character, {
           weapons: {
             [this.weapon]: {
               weaponLevel: value,
-            }
-          }
+            },
+          },
         });
       },
     },
@@ -193,8 +214,8 @@ export default {
           weapons: {
             [this.weapon]: {
               refinement: value,
-            }
-          }
+            },
+          },
         });
       },
     },
@@ -387,7 +408,7 @@ export default {
         return null;
       }
       return {
-        backgroundImage: `url(${this.chosenWeapon?.info?.image})`
+        backgroundImage: `url(${this.chosenWeapon?.info?.image})`,
       };
     },
   },
@@ -486,15 +507,15 @@ export default {
       }
       try {
         if (!this.weapon) {
-          this.updateWeaponStats();
+          await this.updateWeaponStats();
           return null;
         }
         const weaponChosen = await getWeaponByName(
           this.weaponType,
-          this.weapon
+          this.weapon,
         );
         this.chosenWeapon = weaponChosen;
-        this.updateWeaponStats();
+        await this.updateWeaponStats();
       } catch (error) {
         // console.log("Failed to find weapon");
       }
@@ -520,7 +541,7 @@ export default {
 html[data-theme="light"] {
   .weapon__stat {
     span img {
-        filter: contrast(0.25);
+      filter: contrast(0.25);
     }
   }
   .weapon__selection__image {
