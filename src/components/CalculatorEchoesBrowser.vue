@@ -10,7 +10,19 @@
         </button>
       </form>
       <div class="py-4">
-        <div class="echoes__filters flex align-center gap-2 mb-6">
+        <div class="echoes__filters flex flex-wrap align-center gap-2 mb-6">
+          <select
+            v-model="mainStatFilter"
+            name="mainEcho"
+            class="select select-bordered select select-sm"
+          >
+            <option :value="null">Select a main stat</option>
+            <option
+              v-for="mainStat in allMainStats"
+              :key="mainStat"
+              :value="mainStat"
+            >{{ getReadableSubStatLabel(mainStat) }}</option>
+          </select>
           <select
             v-model="echo"
             name="mainEcho"
@@ -50,15 +62,17 @@
               </option>
             </optgroup>
           </select>
-          <button
-            v-for="echoSet in echoSetsList"
-            :key="echoSet"
-            @click="toggleEchoSetFilter(echoSet)"
-            class="rounded mr-1"
-            :class="{'btn-active': isEchoSetFilterActive(echoSet)}"
-          >
-            <img :src="getEchoSetImage(echoSet)" class="size-8" />
-          </button>
+          <div class="echoes__filters__sets">
+            <button
+              v-for="echoSet in echoSetsList"
+              :key="echoSet"
+              @click="toggleEchoSetFilter(echoSet)"
+              class="rounded mr-1"
+              :class="{'btn-active': isEchoSetFilterActive(echoSet)}"
+            >
+              <img :src="getEchoSetImage(echoSet)" class="size-8" />
+            </button>
+          </div>
           <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
         </div>
 
@@ -99,7 +113,7 @@
 
 <script>
 import { mainEchoesData, getEchoData } from "../echoes/index.ts";
-import { echoSetLabelMap, getEchoSetIconByType } from "../echoes/stats";
+import { echoSetLabelMap, getEchoSetIconByType, getReadableSubStatLabel, statsTable } from "../echoes/stats";
 import { mapActions, mapState } from "pinia";
 import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
@@ -116,8 +130,10 @@ export default {
     return {
       echoIndex: null,
       echoSetLabelMap,
+      statsTable,
       echoSet: null,
       echo: null,
+      mainStatFilter: null,
     };
   },
   components: {
@@ -142,6 +158,10 @@ export default {
       if (this.echo) {
         allEchoes = allEchoes.filter((echo) => echo.echo === this.echo);
       }
+      // filter by main stat if set
+      if (this.mainStatFilter) {
+        allEchoes = allEchoes.filter((echo) => echo.stat === this.mainStatFilter);
+      }
 
       return allEchoes;
     },
@@ -163,10 +183,19 @@ export default {
       });
       return echoes;
     },
+    allMainStats() {
+      const fourSlotOptions = Object.keys(this.statsTable['4']);
+      const threeSlotOptions = Object.keys(this.statsTable['3']);
+      const oneSlotOptions = Object.keys(this.statsTable['1']);
+      const allOptions = [...fourSlotOptions, ...threeSlotOptions, ...oneSlotOptions];
+      // filter out any dupes
+      return [...new Set(allOptions)];
+    },
   },
   methods: {
     ...mapActions(useInventoryStore, ["getEchoById"]),
     ...mapActions(useCharacterStore, ["setCharacterData"]),
+    getReadableSubStatLabel,
     triggerOpenModal(echoIndex) {
       this.echoIndex = echoIndex;
       const modalEl = document.getElementById('modal-echoes-browser');
@@ -183,6 +212,7 @@ export default {
       this.echoIndex = null;
       this.echoSet = null;
       this.echo = null;
+      this.mainStatFilter = null;
     },
     getEchoSetImage(echoSet) {
       return getEchoSetIconByType(echoSet);
