@@ -1,5 +1,5 @@
 <template>
-  <div  class="card card-bordered card-compact bg-base-100 shadow mb-2">
+  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
       <div :class="{ 'weapon-passive': !alwaysEnabled }" @click="toggleEnabled">
         <p v-html="details"></p>
@@ -13,7 +13,7 @@
                 class="checkbox checkbox-sm"
                 v-model="isEnabled"
                 @change="updatedStats" />
-                <span class="label-text ml-2">Enabled?</span>
+              <span class="label-text ml-2">Enabled?</span>
             </label>
           </div>
           <div v-if="hasStacks" class="form-control" @click.stop>
@@ -23,7 +23,7 @@
               <input
                 v-model="stacks"
                 type="number"
-                  class="input input-bordered input-xs"
+                class="input input-bordered input-xs"
                 :min="minStacks"
                 :max="maxStacks"
                 @input="ensureMaxStacks"
@@ -87,19 +87,27 @@ export default {
     // we're using immediate so it'll react when we get data from the store
     refinement: {
       handler: async function () {
-        this.updateStats();
+        await this.updateStats();
       },
       immediate: true,
     },
     isEnabled: {
-      handler: async function () {
-        this.updateStats();
+      handler: async function (val) {
+        await this.updateStats();
       },
       immediate: true,
     },
     stacks: {
       handler: async function () {
-        this.updateStats();
+        await this.updateStats();
+      },
+      immediate: true,
+    },
+    alwaysEnabled: {
+      handler: async function (val) {
+        if (val === true) {
+          this.isEnabled = true;
+        }
       },
       immediate: true,
     },
@@ -111,12 +119,13 @@ export default {
      * @emits updated-weapon-stats
      */
     async updateStats() {
-      await this.setCharacterData(this.character, {
-        weaponPassiveStats: {
-          ...this.weaponPassiveStats,
-          [this.passiveKey]: this.weaponPassiveStats,
-        },
-      });
+      // TODO: Determine if this is really needed. Not sure why this is here
+      // await this.setCharacterData(this.character, {
+      //   weaponPassiveStats: {
+      //     ...this.weaponPassiveStats,
+      //     [this.passiveKey]: this.weaponPassiveStats,
+      //   },
+      // });
       this.$emit("updated-weapon-stats", this.weaponPassiveStats);
     },
     /**
@@ -216,14 +225,12 @@ export default {
       return data;
     },
   },
-  mounted() {
-    if (this.alwaysEnabled) {
-      this.isEnabled = true;
-      this.updateStats();
-    }
-  },
   beforeUnmount() {
-    this.$emit("updated-weapon-stats", {});
+    this.$emit("updated-weapon-stats", {
+      stat: this.modifier,
+      value: 0,
+      key: this.passiveKey,
+    });
   },
 };
 </script>

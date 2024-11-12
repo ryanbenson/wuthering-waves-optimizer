@@ -1,4 +1,5 @@
 interface WeaponInfo {
+  key?: string;
   name: string;
   description: string;
   image: string;

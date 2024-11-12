@@ -1,6 +1,8 @@
 const weaponInfo: WeaponInfo = {
+  key: "Stonard",
   name: "Stonard",
-  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Stonard.png",
+  image:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Stonard.png",
   description:
     "These Gauntlets are ceremonial weapon used at the inauguration ceremony of the Huanglong Magistrate. The golden ginkgo leaf pattern represents that Huanglong should be like a ginkgo, although it is left alone in the world, it is still prosperous and long-lasting.",
   type: "Gauntlets",

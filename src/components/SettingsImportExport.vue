@@ -140,6 +140,7 @@ export default defineComponent({
       characterStore.$hydrate({ runHooks: false });
       alert("Your data has been ovwerwriten!");
       this.importedRawCharacterData = null;
+      location.reload();
     },
     /**
      * Process the file and store the data
@@ -180,6 +181,7 @@ export default defineComponent({
       characterStore.$hydrate({ runHooks: false });
       alert("Your data has been ovwerwriten!");
       this.fileData = null;
+      location.reload();
     },
     /**
      * Confirms the deletion of user data
