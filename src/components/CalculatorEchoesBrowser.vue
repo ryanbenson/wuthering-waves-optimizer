@@ -76,34 +76,46 @@
           <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
         </div>
 
-        <div class="echoes__list grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="echoes__list">
           <template v-if="!echoesList.length">
-            <div class="echoes__list--empty py-12 text-center w-full col-span-2">No echoes found</div>
+            <div class="echoes__list--empty py-12 text-center w-full">No echoes found</div>
           </template>
           <template v-else>
-            <CalculatorEchoCard
-              v-for="echo in echoesList"
-              class="echo__item"
-              :key="echo.echoId"
-              :rank="echo.rank"
-              :type="echo.type"
-              :echo-id="echo.echoId"
-              :echo-set="echo.echoSet"
-              :stat="echo.stat"
-              :echo="echo.echo"
-              :echo-sub-stats-type-1="echo.echoSubStatsType1"
-              :echo-sub-stats-value-1="echo.echoSubStatsValue1"
-              :echo-sub-stats-type-2="echo.echoSubStatsType2"
-              :echo-sub-stats-value-2="echo.echoSubStatsValue2"
-              :echo-sub-stats-type-3="echo.echoSubStatsType3"
-              :echo-sub-stats-value-3="echo.echoSubStatsValue3"
-              :echo-sub-stats-type-4="echo.echoSubStatsType4"
-              :echo-sub-stats-value-4="echo.echoSubStatsValue4"
-              :echo-sub-stats-type-5="echo.echoSubStatsType5"
-              :echo-sub-stats-value-5="echo.echoSubStatsValue5"
-            >
-              <button @click="assignEcho(echo.echoId)" class="btn btn-primary btn-sm">Use echo</button>
-            </CalculatorEchoCard>
+            <div class="join flex justify-center py-4">
+              <button @click="prevPage" class="join-item btn btn-sm">«</button>
+              <button class="join-item btn btn-sm">Page {{ page }} / {{ totalPages }}</button>
+              <button @click="nextPage" class="join-item btn btn-sm">»</button>
+            </div>
+            <div class="echoes__list__items grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CalculatorEchoCard
+                v-for="echo in paginatedEchoesList"
+                class="echo__item"
+                :key="echo.echoId"
+                :rank="echo.rank"
+                :type="echo.type"
+                :echo-id="echo.echoId"
+                :echo-set="echo.echoSet"
+                :stat="echo.stat"
+                :echo="echo.echo"
+                :echo-sub-stats-type-1="echo.echoSubStatsType1"
+                :echo-sub-stats-value-1="echo.echoSubStatsValue1"
+                :echo-sub-stats-type-2="echo.echoSubStatsType2"
+                :echo-sub-stats-value-2="echo.echoSubStatsValue2"
+                :echo-sub-stats-type-3="echo.echoSubStatsType3"
+                :echo-sub-stats-value-3="echo.echoSubStatsValue3"
+                :echo-sub-stats-type-4="echo.echoSubStatsType4"
+                :echo-sub-stats-value-4="echo.echoSubStatsValue4"
+                :echo-sub-stats-type-5="echo.echoSubStatsType5"
+                :echo-sub-stats-value-5="echo.echoSubStatsValue5"
+              >
+                <button @click="assignEcho(echo.echoId)" class="btn btn-primary btn-sm">Use echo</button>
+              </CalculatorEchoCard>
+            </div>
+            <div class="join flex justify-center py-4">
+              <button @click="prevPage" class="join-item btn btn-sm">«</button>
+              <button class="join-item btn btn-sm">Page {{ page }} / {{ totalPages }}</button>
+              <button @click="nextPage" class="join-item btn btn-sm">»</button>
+            </div>
           </template>
         </div>
       </div>
@@ -134,6 +146,8 @@ export default {
       echoSet: null,
       echo: null,
       mainStatFilter: null,
+      page: 1,
+      perPage: 2,
     };
   },
   components: {
@@ -164,6 +178,15 @@ export default {
       }
 
       return allEchoes;
+    },
+    paginatedEchoesList() {
+      const start = (this.page - 1) * this.perPage;
+      const end = this.page * this.perPage;
+      const slicedEchoes = this.echoesList.slice(start, end);
+      return slicedEchoes;
+    },
+    totalPages() {
+      return Math.ceil(this.echoesList.length / this.perPage);
     },
     mainEchoesData() {
       return { ...mainEchoesData };
@@ -263,6 +286,20 @@ export default {
       this.echoSet = null;
       this.echo = null;
     },
+    prevPage() {
+      if (this.page <= 1) {
+        this.page = 1;
+      } else {
+        this.page--;
+      }
+    },
+    nextPage() {
+      if (this.page >= this.totalPages) {
+        this.page = this.totalPages;
+      } else {
+        this.page++;
+      }
+    }
   }
 };
 </script>
