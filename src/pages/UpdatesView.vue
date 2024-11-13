@@ -71,6 +71,13 @@
                   </RouterLink>
                 </li>
                 <li>
+                  <RouterLink
+                    to="/legal"
+                    class="text-white active:text-white focus:text-white">
+                    Legal
+                  </RouterLink>
+                </li>
+                <li>
                   <a
                     href="https://discord.gg/pDKjxNjJWW"
                     target="_blank"
@@ -95,6 +102,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 12, 2024</h3>
+    <ul>
+      <li>Adds legal page.</li>
+    </ul>
     <h3>November 10, 2024</h3>
     <ul>
       <li>

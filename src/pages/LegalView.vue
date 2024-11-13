@@ -91,40 +91,93 @@
       </div>
     </div>
   </Teleport>
-  <div class="page-privacy prose">
-    <h1>Privacy Policy</h1>
-    <h2>Analytics</h2>
+  <article class="prose page-info">
+    <h1>Legal Disclaimer for Wuthering Tools</h1>
     <p>
-      We use privacy-first analytics, so no personal or identifiable information
-      is stored or collected about you and we don't use cookies for analytics.
-      Refer to:
-      <a href="https://www.simpleanalytics.com/" rel="noreferrer">
-        Simple Analytics
-      </a>
-      and
-      <a href="https://vercel.com/docs/analytics" rel="noreferrer">
-        Vercel Analytics
-      </a>
+      <strong>Wuthering Tools</strong>
+      is a fan-made, non-commercial application created for the enjoyment and
+      convenience of the Wuthering Waves community. This application is
+      <strong>
+        not affiliated with, endorsed by, sponsored by, or approved by Kuro
+        Games
+      </strong>
+      or any of its partners.
     </p>
-    <h2>Changes</h2>
+
     <p>
-      Changes may occur to this policy at any time, so check back to this for
-      the latest.
+      All assets, game content, and materials used within this application,
+      including character names, images, icons, and other game-related elements,
+      are the property of
+      <strong>Kuro Games</strong>
+      and are protected by trademark and copyright law.
+      <strong>Wuthering Waves</strong>
+      and all related names and materials are trademarks and copyrights of Kuro
+      Games.
     </p>
-  </div>
+
+    <h2>Non-Commercial Use</h2>
+    <p>
+      Wuthering Tools is a
+      <strong>non-commercial project</strong>
+      . This application is provided free of charge and will never require any
+      payment, subscriptions, or in-app purchases. The creators of Wuthering
+      Tools will
+      <strong>never monetize or profit from this application</strong>
+      .
+    </p>
+
+    <h2>Data Sources</h2>
+    <p>
+      All content and data used within Wuthering Tools is sourced from publicly
+      available, fan-supported websites, including:
+    </p>
+    <ul>
+      <li>
+        <a href="https://wuthering.wiki/" target="_blank">
+          https://wuthering.wiki/
+        </a>
+      </li>
+      <li>
+        <a href="https://ww.hakush.in" target="_blank">https://ww.hakush.in</a>
+      </li>
+    </ul>
+    <p>
+      We extend our gratitude to these sources for providing comprehensive data
+      and resources to the Wuthering Waves community.
+    </p>
+
+    <h2>Contact & Content Removal</h2>
+    <p>
+      If you are a representative of Kuro Games or another copyright holder and
+      have any concerns regarding the content within Wuthering Tools, please
+      contact us immediately. We are committed to honoring all copyright and
+      trademark rights and will
+      <strong>promptly remove or alter any content</strong>
+      upon valid request.
+    </p>
+    <p>
+      You can contact us by
+      <a href="https://discord.gg/pDKjxNjJWW">joining the Discord</a>
+      and contacting the app developers directly.
+    </p>
+  </article>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import ThemeChooser from "../components/ThemeChooser.vue";
 export default defineComponent({
-  name: "PrivacyView",
+  name: "LegalView",
   components: { ThemeChooser },
 });
 </script>
 
-<style scoped>
-.page-privacy {
+<style scoped lang="scss">
+.page-info {
   padding: 2rem 3rem;
+  max-width: 640px;
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
 }
 </style>
