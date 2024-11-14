@@ -1,6 +1,6 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Thundering Wrath",
-  description: `<div class="skilldescription">Unleash the power of a heart's wish to deal <span class="Highlight">Spectro DMG</span>.<br>Can be cast in mid-air.</div>`,
+  description: `<div class="skilldescription">Command "Zapstring" to call for thunder to fall upon a large range, dealing <span class="Thunder">Electro DMG</span>.</div>`,
   attacks: [
     {
       key: "ThunderingWrath",

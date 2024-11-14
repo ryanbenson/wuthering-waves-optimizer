@@ -102,6 +102,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 14, 2024</h3>
+    <ul>
+      <li>Updates Yinlin talent descriptions since they were updated in the game in 1.4.</li>
+    </ul>
     <h3>November 12, 2024</h3>
     <ul>
       <li>Adds legal page.</li>
