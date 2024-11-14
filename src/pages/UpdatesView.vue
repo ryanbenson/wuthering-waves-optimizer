@@ -105,6 +105,8 @@
     <h3>November 14, 2024</h3>
     <ul>
       <li>Updates Yinlin talent descriptions since they were updated in the game in 1.4.</li>
+      <li>Adds new 1.4 weapon: Somnoire Anchor</li>
+      <li>Updates Camellya sig to use 1.4 release text and image.</li>
     </ul>
     <h3>November 12, 2024</h3>
     <ul>

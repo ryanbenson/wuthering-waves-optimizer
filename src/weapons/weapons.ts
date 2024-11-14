@@ -1,8 +1,8 @@
 export const swordsList = {
   five: [
     { key: "BlazingBrilliance", name: "Blazing Brilliance" },
-    { key: "CamellyaSignature", name: "Camellya Signature" },
     { key: "EmeraldOfGenesis", name: "Emerald Of Genesis" },
+    { key: "RedSpring", name: "Red Spring" },
   ],
   four: [
     { key: "CommandoOfConviction", name: "Commando Of Conviction" },
@@ -10,6 +10,7 @@ export const swordsList = {
     { key: "Lumingloss", name: "Lumingloss" },
     { key: "LunarCutter", name: "Lunar Cutter" },
     { key: "ScaleSlasher", name: "Scale Slasher" },
+    { key: "SomnoireAnchor", name: "Somnoire Anchor" },
     { key: "Sword18", name: "Sword #18" },
   ],
   three: [
