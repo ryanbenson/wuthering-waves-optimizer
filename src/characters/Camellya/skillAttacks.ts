@@ -1,26 +1,10 @@
 export const skillAttacks = {
-  name: "Resonance Skill: Dance of Blooming and Withering",
-  description: `<div class="skilldescription">
-  <span class="Highlight">Full Bloom</span><br>
-Attacks the target, dealing <span class="Dark">Havoc</span> damage, then enters the Bloom state, this damage counts as <span class="Highlight">Basic Attack</span> damage.
-Can be casted in the air.
-<br><br>
-<span class="Highlight">Bloom state</span><br>
--Unable to move while suspended on vines.<br>
--<span class="Highlight">Basic Attack</span> and <span class="Highlight">Heavy Attack</span> will be replaced with <span class="Highlight">Basic Attack Vine Dance</span>, performing up to 4 consecutive attacks, dealing <span class="Dark">Havoc</span> damage, this damage counts as <span class="Highlight">Basic Attack</span> damage.<br>
--When casting <span class="Highlight">Basic Attack Stage 3 Vine Dance</span>, holding the <span class="Highlight">Normal Attack</span> will cast <span class="Highlight">Basic Attack Ashen Blossom Vine Dance</span>, dealing <span class="Dark">Havoc</span> damage, then immediately cast <span class="Highlight">Basic Attack Stage 4 Vine Dance</span><br>
--<span class="Highlight">Dodge Counter</span> replaced with <span class="Highlight">Dodge Counter Atonement</span>. When pressing the <span class="Highlight">Normal Attack</span> after successfully dodging, Camellya attacks the target, dealing <span class="Dark">Havoc</span> damage; this damage counts as <span class="Highlight">Basic Attack</span> damage.<br>
--<span class="Highlight">Resonance Skill</span> replaced with <span class="Highlight">Resonance Skill Dark Pistil Seeker</span>. Casting <span class="Highlight">Dark Pistil Seeker</span> deals damage to the target, dealing <span class="Dark">Havoc</span> damage, this damage counts as <span class="Highlight">Basic Attack</span> damage.<br>
--After casting <span class="Highlight">Resonance Skill Dark Pistil Seeker</span>, Camellya exits the Bloom state.<br>
--Unable to restore stamina when casting <span class="Highlight">Resonance Skill Dark Pistil Seeker</span> mid-air.<br>
--Continuously consumes stamina when under the state of Vine Dance during mid-air.<br>
--When manipulating objects, Camellya exits the Bloom state.<br>
--Jumping replaced with <span class="Highlight">Basic Attack Whirling Dance</span>. Tap jump to attack the target, dealing <span class="Dark">Havoc</span> damage, this damage counts as <span class="Highlight">Basic Attack</span> damage, Camellya then exits the Bloom state.
-</div>`,
+  name: "Resonance Skill: Valse of Bloom and Blight",
+  description: `<div class="skilldescription"><span class="Title">Crimson Blossom</span><br>Attack the target, dealing <span class="Dark">Havoc DMG</span> (considered Basic Attack DMG), then enter <span class="Highlight">Blossom Mode</span>.<br>This attack can be performed in mid-air.<br> <br><span class="Title">Blossom Mode</span><br>- Unable to move while suspended on vines.<br>- <span class="Highlight">Basic Attack</span> and Heavy Attack <span class="Highlight">Pruning</span> are replaced by Basic Attack <span class="Highlight">Vining Waltz</span>: chain together 4 consecutive attacks, dealing <span class="Dark">Havoc DMG</span>, considered Basic Attack DMG.<br>- When performing <span class="Highlight">Vining Waltz Stage 3</span>, hold <span class="Highlight">Normal Attack Button</span> to cast <span class="Highlight">Blazing Waltz</span> that deals <span class="Dark">Havoc DMG</span> before automatically performing <span class="Highlight">Vining Waltz Stage 4</span>.<br>- <span class="Highlight">Dodge Counter</span> is replaced by Dodge Counter <span class="Highlight">Atonement</span>. Press <span class="Highlight">Normal Attack Button</span> right after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>, considered Basic Attack DMG.<br>- Resonance Skill is replaced by Resonance Skill <span class="Highlight">Floral Ravage</span>. Casting <span class="Highlight">Floral Ravage</span> deals <span class="Dark">Havoc DMG</span>, considered Basic Attack DMG.<br>- Resonance Skill <span class="Highlight">Floral Ravage</span> can be cast in mid-air.<br>- <span class="Highlight">Blossom Mode</span> ends after casting Resonance Skill <span class="Highlight">Floral Ravage</span>.<br>- <span class="Highlight">Blossom Mode</span> ends after using the <span class="Highlight">Levitator</span>.<br>- Jump is replaced with Basic Attack <span class="Highlight">Vining Ronde</span>. Press Jump to attack the target at the cost of STA, dealing <span class="Dark">Havoc DMG</span> (considered Basic Attack DMG). This ends the <span class="Highlight">Blossom Mode</span>.<br>- Using Basic Attack <span class="Highlight">Vining Waltz</span> and Basic Attack <span class="Highlight">Blazing Waltz</span> in mid-air consumes STA.<br>- Casting Resonance Skill <span class="Highlight">Floral Ravage</span> doesn't restore STA.<br>- Consume STA continuously to stay suspended on the vines.</div>`,
   attacks: [
     {
-      key: "FullBloomDMG",
-      label: "Full Bloom DMG",
+      key: "CrimsonBlossomDMG",
+      label: "Crimson Blossom DMG",
       talents: {
         "1": "57.15%*2",
         "2": "61.84%*2",
@@ -36,8 +20,8 @@ Can be casted in the air.
       type: "Basic",
     },
     {
-      key: "VineDanceStage1DMG",
-      label: "Vine Dance 1st Hit DMG",
+      key: "ViningWaltz1DMG",
+      label: "Vining Waltz 1 DMG",
       talents: {
         "1": "48.45%",
         "2": "52.43%",
@@ -53,8 +37,8 @@ Can be casted in the air.
       type: "Basic",
     },
     {
-      key: "VineDanceStage2DMG",
-      label: "Vine Dance 2nd Hit DMG",
+      key: "ViningWaltz2DMG",
+      label: "Vining Waltz 2 DMG",
       talents: {
         "1": "22.95%*2",
         "2": "24.84%*2",
@@ -70,8 +54,8 @@ Can be casted in the air.
       type: "Basic",
     },
     {
-      key: "VineDanceStage3DMG",
-      label: "Vine Dance 3rd Hit DMG",
+      key: "ViningWaltz3DMG",
+      label: "Vining Waltz 3 DMG",
       talents: {
         "1": "11.04%*6",
         "2": "11.95%*6",
@@ -87,8 +71,8 @@ Can be casted in the air.
       type: "Basic",
     },
     {
-      key: "VineDanceStage4DMG",
-      label: "Vine Dance 4th Hit DMG",
+      key: "ViningWaltz4DMG",
+      label: "Vining Waltz 4 DMG",
       talents: {
         "1": "34.00%*3",
         "2": "36.79%*3",
@@ -104,8 +88,8 @@ Can be casted in the air.
       type: "Basic",
     },
     {
-      key: "AshenBlossomVineDanceDMG",
-      label: "Ashen Blossom Vine Dance DMG",
+      key: "BlazingWaltzDMG",
+      label: "Blazing Waltz DMG",
       talents: {
         "1": "11.04%*19",
         "2": "11.95%*19",
@@ -121,8 +105,8 @@ Can be casted in the air.
       type: "Basic",
     },
     {
-      key: "DarkPistilSeekerDMG",
-      label: "Dark Pistil Seeker DMG",
+      key: "FloralRavageDMG",
+      label: "Floral Ravage DMG",
       talents: {
         "1": "26.46%*5",
         "2": "28.63%*5",
@@ -138,8 +122,8 @@ Can be casted in the air.
       type: "Basic",
     },
     {
-      key: "WhirlingDanceDMG",
-      label: "Whirling Dance DMG",
+      key: "ViningRondeDMG",
+      label: "Vining Ronde DMG",
       talents: {
         "1": "26.64%*3",
         "2": "28.82%*3",
