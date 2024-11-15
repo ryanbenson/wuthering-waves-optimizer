@@ -104,11 +104,21 @@
     <h1>Updates</h1>
     <h3>November 15, 2024</h3>
     <ul>
-      <li>Minor adjustment to Camellya's Outro multiplier numbers. It was missing decimals, so the change will be largely unnoticed in terms of damage calculated.</li>
+      <li>
+        Minor adjustment to Camellya's Outro multiplier numbers. It was missing
+        decimals, so the change will be largely unnoticed in terms of damage
+        calculated.
+      </li>
+      <li>
+        Fixes Verina BA1 talents. It had two hits, it should only have one.
+      </li>
     </ul>
     <h3>November 14, 2024</h3>
     <ul>
-      <li>Updates Yinlin talent descriptions since they were updated in the game in 1.4.</li>
+      <li>
+        Updates Yinlin talent descriptions since they were updated in the game
+        in 1.4.
+      </li>
       <li>Adds new 1.4 weapon: Somnoire Anchor</li>
       <li>Updates Camellya sig to use 1.4 release text and image.</li>
       <li>Updates Camellya text across the board.</li>
