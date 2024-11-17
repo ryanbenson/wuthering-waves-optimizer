@@ -102,7 +102,7 @@ export const resonanceChains = [
   {
     key: "S5InfinityHeldinYourPalm",
     name: "Sequence Node 5: Infinity Held in Your Palm",
-    details: `<span class="skilldescription">The DMG Multipliers of Outro Skill <span class="Highlight">Everblooming</span> is increased by 303% and Intro Skill <span class="Highlight">Twining</span> is increased by 68%.</span>`,
+    details: `<span class="skilldescription">The DMG Multipliers of Intro Skill <span class="Highlight">Everblooming</span> is increased by 303% and Outro Skill <span class="Highlight">Twining</span> is increased by 68%.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -150,9 +150,7 @@ export const resonanceChains = [
       },
       {
         modifier: "EnableAttack",
-        modifierValue: [
-          "SequenceNode6PerennialDMG",
-        ],
+        modifierValue: ["SequenceNode6PerennialDMG"],
       },
     ],
     minStacks: 0,
