@@ -102,6 +102,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 17, 2024</h3>
+    <ul>
+      <li>
+        Adjusts the background color on the talent descriptions so it's easier
+        to read.
+      </li>
+    </ul>
     <h3>November 15, 2024</h3>
     <ul>
       <li>
