@@ -69,6 +69,9 @@ html[data-theme="light"] {
 .Light {
   color: #f8e56c;
 }
+html[data-theme="light"] .Light {
+  color: #e1c200;
+}
 .Dark {
   color: #e649a6;
 }
@@ -83,6 +86,9 @@ html[data-theme="light"] {
 }
 .Wind {
   color: #55ffb5;
+}
+html[data-theme="light"] .Wind {
+  color: #0dc776;
 }
 .glacio--active {
   filter: brightness(0) saturate(100%) invert(87%) sepia(8%) saturate(5402%)
@@ -111,7 +117,7 @@ html[data-theme="light"] {
 
 html[data-theme="light"] .navbar img,
 html[data-theme="light"] .subnav img {
-    filter: invert(100%);
+  filter: invert(100%);
 }
 html[data-theme="light"] {
   .navbar {
@@ -123,21 +129,20 @@ html[data-theme="light"] {
   }
   .navbar svg path,
   .subnav svg path {
-      stroke: black !important;
-      fill: black !important;
+    stroke: black !important;
+    fill: black !important;
   }
   .navbar a.active img,
-  .subnav  a.activeimg {
+  .subnav a.activeimg {
     filter: none;
   }
   .navbar a.active svg path,
   .subnav a.active svg path {
-      stroke: white !important;
-      fill: white !important;
+    stroke: white !important;
+    fill: white !important;
   }
   .subnav.bg-base-100 {
     background: oklch(var(--b1)) !important;
-
   }
   #navbar-container .navbar,
   .subnav.bg-base-300 {
