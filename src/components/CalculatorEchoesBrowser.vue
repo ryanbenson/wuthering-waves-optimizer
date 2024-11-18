@@ -147,7 +147,7 @@ export default {
       echo: null,
       mainStatFilter: null,
       page: 1,
-      perPage: 2,
+      perPage: 20,
     };
   },
   components: {
@@ -155,6 +155,17 @@ export default {
   },
   computed: {
     ...mapState(useInventoryStore, ["echoes"]),
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+    currentCharacterEchoes() {
+      return this.currentCharacter?.echoes ?? {};
+    },
     echoSetsList() {
       return Object.keys(echoSetLabelMap);
     },
@@ -216,7 +227,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useInventoryStore, ["getEchoById"]),
+    ...mapActions(useInventoryStore, ["getEchoById", "setEquippedData"]),
     ...mapActions(useCharacterStore, ["setCharacterData"]),
     getReadableSubStatLabel,
     triggerOpenModal(echoIndex) {
@@ -251,6 +262,12 @@ export default {
       return this.echoSet === echoSet;
     },
     async assignEcho(echoId) {
+      // is the echo already being used? if so, then reject
+      const isUsed = this.isEchoUsedByChar(echoId);
+      if (isUsed) {
+        alert('Echo is already being used.');
+        return;
+      }
       const echo = this.getEchoById(echoId);
       if (!echo) {
         console.error("Could not find echo", echoId);
@@ -277,6 +294,9 @@ export default {
       const data = { echoes: {} };
       data.echoes[this.echoIndex] = echoData
       await this.setCharacterData(this.character, data);
+      const equippedData = {};
+      equippedData[this.character] = this.echoIndex;
+      await this.setEquippedData(echoId, equippedData);
 
       // wrap up the modal
       this.reset();
@@ -298,6 +318,23 @@ export default {
         this.page = this.totalPages;
       } else {
         this.page++;
+      }
+    },
+    isEchoUsedByChar(echoId) {
+      if (this.currentCharacterEchoes?.[0]?.echoId === echoId) {
+        return true;
+      }
+      if (this.currentCharacterEchoes?.[1]?.echoId === echoId) {
+        return true;
+      }
+      if (this.currentCharacterEchoes?.[2]?.echoId === echoId) {
+        return true;
+      }
+      if (this.currentCharacterEchoes?.[3]?.echoId === echoId) {
+        return true;
+      }
+      if (this.currentCharacterEchoes?.[4]?.echoId === echoId) {
+        return true;
       }
     }
   }
