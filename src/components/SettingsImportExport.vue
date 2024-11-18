@@ -188,9 +188,14 @@ export default defineComponent({
      */
     confirmDelete() {
       if (window.confirm("Do you really want to delete everything?")) {
-        const data = localStorage.setItem("character", "");
+        // empty character data
+        localStorage.setItem("character", "");
         const characterStore = useCharacterStore();
         characterStore.$hydrate({ runHooks: false });
+        // empty the inventory
+        localStorage.setItem("inventory", "");
+        const inventoryStore = useInventoryStore();
+        inventoryStore.$hydrate({ runHooks: false });
         alert("Your data has been deleted!");
         location.reload();
       }

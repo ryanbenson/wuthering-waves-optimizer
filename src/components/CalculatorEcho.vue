@@ -97,6 +97,9 @@
             </div>
           </div>
         </div>
+        <div v-if="isInInventory" class="echo__in-inventory alert alert-info my-2 flex items-center p-2">
+          <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png" class="size-8" /> This echo is in your inventory.
+        </div>
         <div class="echo__selection__input w-full mt-8">
           <div class="echo__selection__rank flex flex-col pb-7 relative">
             <label for="rank" class="rank__label">
@@ -692,131 +695,6 @@
       </div>
     </div>
   </div>
-  <div v-if="false" class="echo-selector">
-    <label>Echo {{ index + 1 }}:</label>
-    <div class="echo-setup">
-      <!-- Cost Selection -->
-      <div class="cost-selector">
-        <label>Cost:</label>
-        <div class="cost-options">
-          <button
-            v-for="cost in [1, 3, 4]"
-            :key="cost"
-            :class="{ selected: type == cost }"
-            @click="selectCost(cost)">
-            0{{ cost }}
-          </button>
-        </div>
-      </div>
-
-      <!-- Rank Selection -->
-      <div class="rank-selector">
-        <label>Rank:</label>
-        <div class="rank-options">
-          <div
-            v-for="r in [2, 3, 4, 5]"
-            :key="r"
-            :class="['rank-circle', { selected: rank == r }]"
-            :style="{ backgroundColor: rankColors[r] }"
-            @click="selectRank(r)"></div>
-        </div>
-      </div>
-    </div>
-    <div class="main__stat-selector">
-      <button class="echo__reset" v-tooltip="'Reset echo'" @click="reset">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <path
-            d="M386.3 160L336 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 51.2L414.4 97.6c-87.5-87.5-229.3-87.5-316.8 0s-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3s163.8-62.5 226.3 0L386.3 160z"
-            fill="#FFFFFF" />
-        </svg>
-      </button>
-    </div>
-
-    <div class="sub-stat-selector">
-      <select v-model="echoSubStatsType1" @change="updateTotalStats">
-        <option value="none">Select Sub Stat</option>
-        <option v-for="subStat in subStats" :key="subStat" :value="subStat">
-          {{ getReadableSubStatLabel(subStat) }}
-        </option>
-      </select>
-      <input
-        v-model.number="echoSubStatsValue1"
-        :min="getSubStatRange(echoSubStatsType1).min"
-        :max="getSubStatRange(echoSubStatsType1).max"
-        type="number"
-        :disabled="!echoSubStatsType1"
-        @input="updateTotalStats"
-        class="sub-stat__input" />
-    </div>
-
-    <div class="sub-stat-selector">
-      <select v-model="echoSubStatsType2" @change="updateTotalStats">
-        <option value="none">Select Sub Stat</option>
-        <option v-for="subStat in subStats" :key="subStat" :value="subStat">
-          {{ getReadableSubStatLabel(subStat) }}
-        </option>
-      </select>
-      <input
-        v-model.number="echoSubStatsValue2"
-        :min="getSubStatRange(echoSubStatsType2).min"
-        :max="getSubStatRange(echoSubStatsType2).max"
-        type="number"
-        :disabled="!echoSubStatsType1"
-        @input="updateTotalStats"
-        class="sub-stat__input" />
-    </div>
-
-    <div class="sub-stat-selector">
-      <select v-model="echoSubStatsType3" @change="updateTotalStats">
-        <option value="none">Select Sub Stat</option>
-        <option v-for="subStat in subStats" :key="subStat" :value="subStat">
-          {{ getReadableSubStatLabel(subStat) }}
-        </option>
-      </select>
-      <input
-        v-model.number="echoSubStatsValue3"
-        :min="getSubStatRange(echoSubStatsType3).min"
-        :max="getSubStatRange(echoSubStatsType3).max"
-        type="number"
-        :disabled="!echoSubStatsType1"
-        @input="updateTotalStats"
-        class="sub-stat__input" />
-    </div>
-
-    <div class="sub-stat-selector">
-      <select v-model="echoSubStatsType4" @change="updateTotalStats">
-        <option value="none">Select Sub Stat</option>
-        <option v-for="subStat in subStats" :key="subStat" :value="subStat">
-          {{ getReadableSubStatLabel(subStat) }}
-        </option>
-      </select>
-      <input
-        v-model.number="echoSubStatsValue4"
-        :min="getSubStatRange(echoSubStatsType4).min"
-        :max="getSubStatRange(echoSubStatsType4).max"
-        type="number"
-        :disabled="!echoSubStatsType1"
-        @input="updateTotalStats"
-        class="sub-stat__input" />
-    </div>
-
-    <div class="sub-stat-selector">
-      <select v-model="echoSubStatsType5" @change="updateTotalStats">
-        <option value="none">Select Sub Stat</option>
-        <option v-for="subStat in subStats" :key="subStat" :value="subStat">
-          {{ getReadableSubStatLabel(subStat) }}
-        </option>
-      </select>
-      <input
-        v-model.number="echoSubStatsValue5"
-        :min="getSubStatRange(echoSubStatsType5).min"
-        :max="getSubStatRange(echoSubStatsType5).max"
-        type="number"
-        :disabled="!echoSubStatsType1"
-        @input="updateTotalStats"
-        class="sub-stat__input" />
-    </div>
-  </div>
 </template>
 
 <script>
@@ -984,7 +862,7 @@ export default {
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
-    ...mapActions(useInventoryStore, ["saveEcho", "deleteEcho"]),
+    ...mapActions(useInventoryStore, ["saveEcho", "patchEcho", "deleteEcho", "getEchoById", "setEquippedData"]),
     updateEchoChoice(echo, previousEcho) {
       const echoData = getEchoData(echo);
       const echoClass = echoData?.class;
@@ -1099,23 +977,28 @@ export default {
       this.$emit("update-stats", { index: this.index, stats });
     },
     // reset everything
-    reset() {
-      this.echo = null;
-      this.type = null;
-      this.rank = null;
-      this.stat = null;
-      this.echoId = null;
-      this.echoSet = null;
-      this.echoSubStatsType1 = null;
-      this.echoSubStatsValue1 = null;
-      this.echoSubStatsType2 = null;
-      this.echoSubStatsValue2 = null;
-      this.echoSubStatsType3 = null;
-      this.echoSubStatsValue3 = null;
-      this.echoSubStatsType4 = null;
-      this.echoSubStatsValue4 = null;
-      this.echoSubStatsType5 = null;
-      this.echoSubStatsValue5 = null;
+    async reset() {
+      const echoData = {
+        echo: null,
+        type: null,
+        rank: null,
+        stat: null,
+        echoId: null,
+        echoSet: null,
+        echoSubStatsType1: null,
+        echoSubStatsValue1: null,
+        echoSubStatsType2: null,
+        echoSubStatsValue2: null,
+        echoSubStatsType3: null,
+        echoSubStatsValue3: null,
+        echoSubStatsType4: null,
+        echoSubStatsValue4: null,
+        echoSubStatsType5: null,
+        echoSubStatsValue5: null,
+      };
+      const data = { echoes: {} };
+      data.echoes[this.index] = echoData;
+      await this.setCharacterData(this.character, data);
     },
     toggleSubStat(e) {
       const mainStat = e.target.value;
@@ -1240,13 +1123,12 @@ export default {
     isSetSelected(set) {
       return this.echoSet === set;
     },
-    saveEchoItem() {
+    async saveEchoItem() {
       let id = null;
       if (this.echoId) {
         id = this.echoId;
       } else {
         id = randomString();
-        this.echoId = id;
       }
       const data = {
         echoId: id,
@@ -1262,12 +1144,40 @@ export default {
         echoSubStatsValue3: this.echoSubStatsValue3,
         echoSubStatsValue4: this.echoSubStatsValue4,
         echoSubStatsValue5: this.echoSubStatsValue5,
-        rank: this.ranks,
+        rank: this.rank,
         stat: this.stat,
         type: this.type,
       };
       
-      this.saveEcho(data);
+      await this.saveEcho(data);
+      // update the character to reference the inventory
+      // when we assign the echo from inventory, clear out all data except echoId
+      // the stats will come from the inventory to have one source of truth for its stats
+      const echoData = {
+        echo: null,
+        type: null,
+        rank: null,
+        stat: null,
+        echoId: id,
+        echoSet: null,
+        echoSubStatsType1: null,
+        echoSubStatsValue1: null,
+        echoSubStatsType2: null,
+        echoSubStatsValue2: null,
+        echoSubStatsType3: null,
+        echoSubStatsValue3: null,
+        echoSubStatsType4: null,
+        echoSubStatsValue4: null,
+        echoSubStatsType5: null,
+        echoSubStatsValue5: null,
+      };
+      const charData = { echoes: {} };
+      charData.echoes[this.index] = echoData;
+      await this.setCharacterData(this.character, charData);
+      // add to our equipped list
+      const equippedData = {};
+      equippedData[this.character] = this.index;
+      await this.setEquippedData(id, equippedData);
     },
     openEchoBrowser() {
       this.$emit('open-echoes-browser', this.index);
@@ -1309,6 +1219,16 @@ export default {
       return this.characters[this.character] ?? {};
     },
     /**
+     * Returns the current echo from the inventory
+     * @returns {Object|null}
+     */
+    currentEcho() {
+      if (!this.echoId) {
+        return null;
+      }
+      return this.getEchoById(this.echoId);
+    },
+    /**
      * Getter/setter used in the form for the type for this echo
      * Data is persisted in the store. Avoids needing a local data + store data
      * @returns {Boolean}
@@ -1334,16 +1254,23 @@ export default {
      */
     type: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.type;
+        }
         return this.currentCharacter?.echoes?.[this.index]?.type ?? null;
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          type: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          this.patchEcho(this.echoId, { type: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            type: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
     /**
@@ -1353,16 +1280,23 @@ export default {
      */
     echo: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.echo ?? null;
+        }
         return this.currentCharacter?.echoes?.[this.index]?.echo ?? null;
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echo: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { echo: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            echo: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
     /**
@@ -1372,16 +1306,23 @@ export default {
      */
     echoSet: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.echoSet ?? null;
+        }
         return this.currentCharacter?.echoes?.[this.index]?.echoSet ?? null;
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoSet: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { echoSet: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            echoSet: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
     /**
@@ -1391,16 +1332,23 @@ export default {
      */
     rank: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.rank ?? 5;
+        }
         return this.currentCharacter?.echoes?.[this.index]?.rank ?? 5;
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          rank: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { rank: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            rank: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
     /**
@@ -1410,16 +1358,23 @@ export default {
      */
     stat: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.stat ?? "none";
+        }
         return this.currentCharacter?.echoes?.[this.index]?.stat ?? "none";
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          stat: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { stat: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            stat: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
     /**
@@ -1429,19 +1384,26 @@ export default {
      */
     echoSubStatsType1: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.echoSubStatsType1 ?? "none";
+        }
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType1 ??
           "none"
         );
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoSubStatsType1: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { echoSubStatsType1: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            echoSubStatsType1: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
     /**
@@ -1451,18 +1413,25 @@ export default {
      */
     echoSubStatsValue1: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.echoSubStatsValue1 ?? 0;
+        }
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue1 ?? 0
         );
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoSubStatsValue1: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { echoSubStatsValue1: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            echoSubStatsValue1: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
 
@@ -1473,19 +1442,26 @@ export default {
      */
     echoSubStatsType2: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.echoSubStatsType2 ?? "none";
+        }
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType2 ??
           "none"
         );
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoSubStatsType2: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { echoSubStatsType2: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            echoSubStatsType2: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
     /**
@@ -1495,18 +1471,25 @@ export default {
      */
     echoSubStatsValue2: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.echoSubStatsValue2 ?? 0;
+        }
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue2 ?? 0
         );
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoSubStatsValue2: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { echoSubStatsValue2: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            echoSubStatsValue2: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
 
@@ -1517,19 +1500,26 @@ export default {
      */
     echoSubStatsType3: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.echoSubStatsType3 ?? "none";
+        }
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType3 ??
           "none"
         );
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoSubStatsType3: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { echoSubStatsType3: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            echoSubStatsType3: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
     /**
@@ -1539,18 +1529,25 @@ export default {
      */
     echoSubStatsValue3: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.echoSubStatsValue3 ?? 0;
+        }
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue3 ?? 0
         );
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoSubStatsValue3: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { echoSubStatsValue3: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            echoSubStatsValue3: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
 
@@ -1561,19 +1558,26 @@ export default {
      */
     echoSubStatsType4: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.echoSubStatsType4 ?? "none";
+        }
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType4 ??
           "none"
         );
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoSubStatsType4: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { echoSubStatsType4: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            echoSubStatsType4: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
     /**
@@ -1583,18 +1587,25 @@ export default {
      */
     echoSubStatsValue4: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.echoSubStatsValue4 ?? 0;
+        }
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue4 ?? 0
         );
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoSubStatsValue4: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { echoSubStatsValue4: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            echoSubStatsValue4: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
     /**
@@ -1604,19 +1615,26 @@ export default {
      */
     echoSubStatsType5: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.echoSubStatsType5 ?? "none";
+        }
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType5 ??
           "none"
         );
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoSubStatsType5: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { echoSubStatsType5: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            echoSubStatsType5: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
     /**
@@ -1626,18 +1644,25 @@ export default {
      */
     echoSubStatsValue5: {
       get() {
+        if (this.currentEcho) {
+          return this.currentEcho.echoSubStatsValue5 ?? 0;
+        }
         return (
           this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue5 ?? 0
         );
       },
       async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoSubStatsValue5: value,
-        };
-        await this.setCharacterData(this.character, data);
+        if (this.currentEcho) {
+          await this.patchEcho(this.echoId, { echoSubStatsValue5: value });
+        } else {
+          const data = {
+            echoes: {},
+          };
+          data.echoes[this.index] = {
+            echoSubStatsValue5: value,
+          };
+          await this.setCharacterData(this.character, data);
+        }
       },
     },
     mainEchoesData() {
@@ -2203,6 +2228,13 @@ export default {
         return classComparison;
       });
       return sortedEchoes;
+    },
+    /**
+     * Determines if the echo is in your inventory or not
+     * @returns {Boolean}
+     */
+    isInInventory() {
+      return !!this.echoId;
     }
   },
 };
@@ -2379,5 +2411,8 @@ html[data-theme="light"] {
 }
 .label-text {
   font-size: 16px;
+}
+.echo__in-inventory img {
+  filter: invert(100%);
 }
 </style>

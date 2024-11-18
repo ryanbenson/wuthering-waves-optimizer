@@ -273,26 +273,28 @@ export default {
         console.error("Could not find echo", echoId);
         return;
       }
+      // when we assign the echo from inventory, clear out all data except echoId
+      // the stats will come from the inventory to have one source of truth for its stats
       const echoData = {
-        echo: echo.echo,
-        type: echo.type,
-        rank: echo.rank,
-        stat: echo.stat,
+        echo: null,
+        type: null,
+        rank: null,
+        stat: null,
         echoId: echo.echoId,
-        echoSet: echo.echoSet,
-        echoSubStatsType1: echo.echoSubStatsType1,
-        echoSubStatsValue1: echo.echoSubStatsValue1,
-        echoSubStatsType2: echo.echoSubStatsType2,
-        echoSubStatsValue2: echo.echoSubStatsValue2,
-        echoSubStatsType3: echo.echoSubStatsType3,
-        echoSubStatsValue3: echo.echoSubStatsValue3,
-        echoSubStatsType4: echo.echoSubStatsType4,
-        echoSubStatsValue4: echo.echoSubStatsValue4,
-        echoSubStatsType5: echo.echoSubStatsType5,
-        echoSubStatsValue5: echo.echoSubStatsValue5,
+        echoSet: null,
+        echoSubStatsType1: null,
+        echoSubStatsValue1: null,
+        echoSubStatsType2: null,
+        echoSubStatsValue2: null,
+        echoSubStatsType3: null,
+        echoSubStatsValue3: null,
+        echoSubStatsType4: null,
+        echoSubStatsValue4: null,
+        echoSubStatsType5: null,
+        echoSubStatsValue5: null,
       };
       const data = { echoes: {} };
-      data.echoes[this.echoIndex] = echoData
+      data.echoes[this.echoIndex] = echoData;
       await this.setCharacterData(this.character, data);
       const equippedData = {};
       equippedData[this.character] = this.echoIndex;

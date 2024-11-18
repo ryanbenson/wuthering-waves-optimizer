@@ -16,6 +16,14 @@ export const useInventoryStore = defineStore("inventory", {
         this.echoes.push(data);
       }
     },
+    patchEcho(echoId, data) {
+      const foundIndex = this.echoes.findIndex((echo) => echo.echoId ===  echoId);
+      if (foundIndex >= 0) {
+        const existingData = this.echoes[foundIndex];
+        const updatedData = merge(existingData, data);
+        this.echoes[foundIndex] = updatedData;
+      }
+    },
     deleteEcho(echoId) {
       const foundIndex = this.echoes.findIndex((echo) => echo.echoId ===  echoId);
       if (foundIndex) {

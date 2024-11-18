@@ -201,7 +201,8 @@ export default {
   },
   data() {
     return {
-      statsTable
+      statsTable,
+      flatBonusesByRankByType
     };
   },
   computed: {
