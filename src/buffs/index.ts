@@ -692,9 +692,9 @@ export const buffsByCharacter = {
   ],
   Camellya: [
     {
-      key: "SequenceNode4ItsRootsContinueIntoEternity",
-      name: "Sequence Node 4: Its Roots Continue Into Eternity",
-      details: `<span class="skilldescription">After casting <span class="Highlight">Intro Skill</span>, the Resonators in the team receive a <span class="Highlight">25%</span> increase in Basic Attack damage, lasting for <span class="Highlight">30s</span>.</span>`,
+      key: "SequenceNode4RootsSetDeepInEternity",
+      name: "Sequence Node 4: Roots Set Deep In Eternity",
+      details: `<span class="skilldescription">Casting <span class="Highlight">Everblooming</span> gives all team members 25% Basic Attack DMG Bonus for 30s.</span>`,
       hasStacks: false,
       modifiers: [
         {

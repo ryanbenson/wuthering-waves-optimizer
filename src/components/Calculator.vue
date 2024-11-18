@@ -139,24 +139,25 @@
               </li>
             </ul>
           </details>
-          <a class="btn btn-ghost text-xl"
-            ><RouterLink
+          <a class="btn btn-ghost text-xl">
+            <RouterLink
               to="/"
-              class="logo poiret-one-regular text-primary hover:text-primary"
-              >WT</RouterLink
-            ></a
-          >
+              class="logo poiret-one-regular text-primary hover:text-primary">
+              WT
+            </RouterLink>
+          </a>
           <RouterLink
             to="/"
-            class="poiret-one-regular btn btn-ghost text-xl text-white hover:text-primary"
-            ><svg
+            class="poiret-one-regular btn btn-ghost text-xl text-white hover:text-primary">
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 384 512"
               class="size-6">
               <path
                 fill="#FFFFFF"
-                d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM96 64H288c17.7 0 32 14.3 32 32v32c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V96c0-17.7 14.3-32 32-32zm32 160a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM96 352a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM64 416c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H96c-17.7 0-32-14.3-32-32zM192 256a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm64-64a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM288 448a32 32 0 1 1 0-64 32 32 0 1 1 0 64z" /></svg
-          ></RouterLink>
+                d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM96 64H288c17.7 0 32 14.3 32 32v32c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V96c0-17.7 14.3-32 32-32zm32 160a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM96 352a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM64 416c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H96c-17.7 0-32-14.3-32-32zM192 256a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm64-64a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM288 448a32 32 0 1 1 0-64 32 32 0 1 1 0 64z" />
+            </svg>
+          </RouterLink>
         </div>
         <div class="navbar-center hidden lg:flex">
           <ul class="menu menu-horizontal px-1">
@@ -282,40 +283,37 @@
                 </summary>
                 <ul class="subnav bg-base-300 rounded-t-none p-2 right-0 z-50">
                   <li>
-                    <RouterLink
-                      to="/settings"
-                      @click="toggleOptionsMenu"
-                      >Settings</RouterLink
-                    >
+                    <RouterLink to="/settings" @click="toggleOptionsMenu">
+                      Settings
+                    </RouterLink>
                   </li>
                   <li>
-                    <RouterLink
-                      to="/info"
-                      @click="toggleOptionsMenu"
-                      >Info</RouterLink
-                    >
+                    <RouterLink to="/info" @click="toggleOptionsMenu">
+                      Info
+                    </RouterLink>
                   </li>
                   <li>
-                    <RouterLink
-                      to="/updates"
-                      @click="toggleOptionsMenu"
-                      >Updates</RouterLink
-                    >
+                    <RouterLink to="/updates" @click="toggleOptionsMenu">
+                      Updates
+                    </RouterLink>
                   </li>
                   <li>
-                    <RouterLink
-                      to="/privacy"
-                      @click="toggleOptionsMenu"
-                      >Privacy</RouterLink
-                    >
+                    <RouterLink to="/privacy" @click="toggleOptionsMenu">
+                      Privacy
+                    </RouterLink>
+                  </li>
+                  <li>
+                    <RouterLink to="/legal" @click="toggleOptionsMenu">
+                      Legal
+                    </RouterLink>
                   </li>
                   <li>
                     <a
                       href="https://discord.gg/pDKjxNjJWW"
                       target="_blank"
-                      @click="toggleOptionsMenu"
-                      >Discord</a
-                    >
+                      @click="toggleOptionsMenu">
+                      Discord
+                    </a>
                   </li>
                 </ul>
               </details>
@@ -327,7 +325,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert alert-success mb-6 text-white p-2 px-4">
+          <div
+            v-if="false"
+            class="alert alert-success mb-6 text-white p-2 px-4">
             Camellya & Lumi are now available!
           </div>
           <div class="character__selection">
@@ -857,7 +857,7 @@ export default defineComponent({
         weaponPassiveData = weaponData.value?.weaponPassiveStats ?? {};
 
         weaponPassiveData = Object.fromEntries(
-          Object.entries(weaponPassiveData).filter(([_, v]) => v != null)
+          Object.entries(weaponPassiveData).filter(([_, v]) => v != null),
         );
 
         addBuffs(weaponPassiveData, stats);
@@ -981,7 +981,7 @@ export default defineComponent({
             }
             const additionalAmount = currentAmount - base;
             const steps = Math.floor(
-              additionalAmount / buffParams.modifierStep
+              additionalAmount / buffParams.modifierStep,
             );
             let buffValue = steps * buffParams.modifierValue;
             if (buffValue > buffParams.maximumValue) {
@@ -1130,7 +1130,7 @@ export default defineComponent({
       if (!chosenChar.value) return;
 
       let elementalDmgBonusDecimal = getElementDmgBonusByType(
-        chosenChar.value?.basic?.element
+        chosenChar.value?.basic?.element,
       );
 
       const calculateAttackDamage = (
@@ -1138,7 +1138,7 @@ export default defineComponent({
         talentType,
         hasNoTalentLevel = false,
         hasDynamicTalent = false,
-        count = 1
+        count = 1,
       ) => {
         let attackType = attack.type;
         // is there an attack type override? if so, update it
@@ -1389,7 +1389,7 @@ export default defineComponent({
             specificSkillDmg, // any buffs for the skill
             totalTalentModifierAdd,
             totalTalentModifierMultiply,
-            count
+            count,
           );
           return h;
         }
@@ -1402,7 +1402,7 @@ export default defineComponent({
             specificSkillDmg, // any buffs for the skill
             totalTalentModifierAdd,
             totalTalentModifierMultiply,
-            count
+            count,
           );
           return h;
         }
@@ -1455,7 +1455,7 @@ export default defineComponent({
           instanceDmgCritDMG,
           totalTalentModifierAdd,
           totalTalentModifierMultiply,
-          count
+          count,
         );
       };
 
@@ -1463,7 +1463,7 @@ export default defineComponent({
         attacks,
         talentType,
         hasNoTalentLevel = false,
-        dynamicTalentType = false
+        dynamicTalentType = false,
       ) => {
         return (
           (attacks ?? [])
@@ -1482,7 +1482,7 @@ export default defineComponent({
                   .concat(resonanceChainsEnabledAttacks)
                   .concat(charBuffsEnabledAttacks);
                 const isAttackEnabled = enabledAttacks.includes(
-                  attack.requiresResonanceChain
+                  attack.requiresResonanceChain,
                 );
                 // flag this attack as enabled or not based on the resonance chain
                 isEnabled = isAttackEnabled;
@@ -1526,7 +1526,7 @@ export default defineComponent({
                   talentType,
                   hasNoTalentLevel,
                   dynamicTalentType,
-                  hitCount
+                  hitCount,
                 ),
                 isEnabled,
                 type: attack.type,
@@ -1541,28 +1541,28 @@ export default defineComponent({
       const allDamagesData = {
         basicAttacks: processAttacks(
           chosenChar.value.basicAttacks?.attacks,
-          talentData.basic
+          talentData.basic,
         ),
         skillAttacks: processAttacks(
           chosenChar.value.skillAttacks?.attacks,
-          talentData.skill
+          talentData.skill,
         ),
         liberationAttacks: processAttacks(
           chosenChar.value.liberationAttacks?.attacks,
-          talentData.liberation
+          talentData.liberation,
         ),
         forteCircuitAttacks: processAttacks(
           chosenChar.value.forteCircuitAttacks?.attacks,
-          talentData.forte
+          talentData.forte,
         ),
         introAttacks: processAttacks(
           chosenChar.value.introAttacks?.attacks,
-          talentData.intro
+          talentData.intro,
         ),
         outroAttacks: processAttacks(
           chosenChar.value.outroAttacks?.attacks,
           talentData.intro,
-          true // has no talent level
+          true, // has no talent level
         ),
       };
 
@@ -1656,7 +1656,7 @@ export default defineComponent({
     };
 
     const handleUpdatedCharacterResonanceChains = (
-      givenResonanceChainsData
+      givenResonanceChainsData,
     ) => {
       charResonanceChainsData.value = givenResonanceChainsData;
       calcCharStats();

@@ -7,21 +7,22 @@
     </div>
   </div>
   <h4 class="damage__title">
-    <span class="text-lg font-bold">{{
-      chosenChar.value?.basicAttacks?.name ?? "Basic Attacks"
-    }}</span>
-    <span class="damage__title__button" @click="toggleBasicDetails"
-      ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+    <span class="text-lg font-bold">
+      {{ chosenChar.value?.basicAttacks?.name ?? "Basic Attacks" }}
+    </span>
+    <span class="damage__title__button" @click="toggleBasicDetails">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
           d="M64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16l160 0 0 80c0 17.7 14.3 32 32 32l80 0 0 288c0 8.8-7.2 16-16 16L64 464zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-293.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"
-          fill="#FFFFFF" /></svg
-    ></span>
+          fill="#FFFFFF" />
+      </svg>
+    </span>
   </h4>
   <div
     v-if="isBasicDetailsShown"
-    class="card card-bordered card-compact shadow my-6 bg-primary">
+    class="card card-bordered card-compact shadow my-6 bg-base-100">
     <div
-      class="card-body text-white"
+      class="card-body"
       v-html="chosenChar.value?.basicAttacks?.description"></div>
   </div>
   <table class="calculator__damages table table-zebra">
@@ -40,26 +41,26 @@
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
-        :damage="damageInstance.damage">
-      </CalculatorDamage>
+        :damage="damageInstance.damage"></CalculatorDamage>
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">{{
-      chosenChar.value?.skillAttacks?.name ?? "Skill Attacks"
-    }}</span>
-    <span class="damage__title__button" @click="toggleSkillDetails"
-      ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+    <span class="text-lg font-bold">
+      {{ chosenChar.value?.skillAttacks?.name ?? "Skill Attacks" }}
+    </span>
+    <span class="damage__title__button" @click="toggleSkillDetails">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
           d="M64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16l160 0 0 80c0 17.7 14.3 32 32 32l80 0 0 288c0 8.8-7.2 16-16 16L64 464zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-293.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"
-          fill="#FFFFFF" /></svg
-    ></span>
+          fill="#FFFFFF" />
+      </svg>
+    </span>
   </h4>
   <div
     v-if="isSkillDetailsShown"
-    class="card card-bordered card-compact shadow my-6 bg-primary">
+    class="card card-bordered card-compact shadow my-6 bg-base-100">
     <div
-      class="card-body text-white"
+      class="card-body"
       v-html="chosenChar.value?.skillAttacks?.description"></div>
   </div>
   <table class="calculator__damages table table-zebra table-sm">
@@ -78,26 +79,26 @@
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
-        :damage="damageInstance.damage">
-      </CalculatorDamage>
+        :damage="damageInstance.damage"></CalculatorDamage>
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">{{
-      chosenChar.value?.liberationAttacks?.name ?? "Liberation Attacks"
-    }}</span>
-    <span class="damage__title__button" @click="toggleLiberationDetails"
-      ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+    <span class="text-lg font-bold">
+      {{ chosenChar.value?.liberationAttacks?.name ?? "Liberation Attacks" }}
+    </span>
+    <span class="damage__title__button" @click="toggleLiberationDetails">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
           d="M64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16l160 0 0 80c0 17.7 14.3 32 32 32l80 0 0 288c0 8.8-7.2 16-16 16L64 464zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-293.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"
-          fill="#FFFFFF" /></svg
-    ></span>
+          fill="#FFFFFF" />
+      </svg>
+    </span>
   </h4>
   <div
     v-if="isLiberationDetailsShown"
-    class="card card-bordered card-compact shadow my-6 bg-primary">
+    class="card card-bordered card-compact shadow my-6 bg-base-100">
     <div
-      class="card-body text-white"
+      class="card-body"
       v-html="chosenChar.value?.liberationAttacks?.description"></div>
   </div>
   <table class="calculator__damages table table-zebra table-sm">
@@ -116,26 +117,28 @@
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
-        :damage="damageInstance.damage">
-      </CalculatorDamage>
+        :damage="damageInstance.damage"></CalculatorDamage>
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">{{
-      chosenChar.value?.forteCircuitAttacks?.name ?? "Forte Circuit Attacks"
-    }}</span>
-    <span class="damage__title__button" @click="toggleForteCircuitDetails"
-      ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+    <span class="text-lg font-bold">
+      {{
+        chosenChar.value?.forteCircuitAttacks?.name ?? "Forte Circuit Attacks"
+      }}
+    </span>
+    <span class="damage__title__button" @click="toggleForteCircuitDetails">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
           d="M64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16l160 0 0 80c0 17.7 14.3 32 32 32l80 0 0 288c0 8.8-7.2 16-16 16L64 464zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-293.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"
-          fill="#FFFFFF" /></svg
-    ></span>
+          fill="#FFFFFF" />
+      </svg>
+    </span>
   </h4>
   <div
     v-if="isForteCircuitDetailsShown"
-    class="card card-bordered card-compact shadow my-6 bg-primary">
+    class="card card-bordered card-compact shadow my-6 bg-base-100">
     <div
-      class="card-body text-white"
+      class="card-body"
       v-html="chosenChar.value?.forteCircuitAttacks?.description"></div>
   </div>
   <table class="calculator__damages table table-zebra table-sm">
@@ -154,26 +157,26 @@
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
-        :damage="damageInstance.damage">
-      </CalculatorDamage>
+        :damage="damageInstance.damage"></CalculatorDamage>
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">{{
-      chosenChar.value?.introAttacks?.name ?? "Intro Attacks"
-    }}</span>
-    <span class="damage__title__button" @click="toggleIntroDetails"
-      ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+    <span class="text-lg font-bold">
+      {{ chosenChar.value?.introAttacks?.name ?? "Intro Attacks" }}
+    </span>
+    <span class="damage__title__button" @click="toggleIntroDetails">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
           d="M64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16l160 0 0 80c0 17.7 14.3 32 32 32l80 0 0 288c0 8.8-7.2 16-16 16L64 464zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-293.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"
-          fill="#FFFFFF" /></svg
-    ></span>
+          fill="#FFFFFF" />
+      </svg>
+    </span>
   </h4>
   <div
     v-if="isIntroDetailsShown"
-    class="card card-bordered card-compact shadow my-6 bg-primary">
+    class="card card-bordered card-compact shadow my-6 bg-base-100">
     <div
-      class="card-body text-white"
+      class="card-body"
       v-html="chosenChar.value?.introAttacks?.description"></div>
   </div>
   <table class="calculator__damages table table-zebra table-sm">
@@ -192,27 +195,27 @@
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
-        :damage="damageInstance.damage">
-      </CalculatorDamage>
+        :damage="damageInstance.damage"></CalculatorDamage>
     </tbody>
   </table>
 
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">{{
-      chosenChar.value?.outroAttacks?.name ?? "Outro Attacks"
-    }}</span>
-    <span class="damage__title__button" @click="toggleOutroDetails"
-      ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+    <span class="text-lg font-bold">
+      {{ chosenChar.value?.outroAttacks?.name ?? "Outro Attacks" }}
+    </span>
+    <span class="damage__title__button" @click="toggleOutroDetails">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
           d="M64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16l160 0 0 80c0 17.7 14.3 32 32 32l80 0 0 288c0 8.8-7.2 16-16 16L64 464zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-293.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"
-          fill="#FFFFFF" /></svg
-    ></span>
+          fill="#FFFFFF" />
+      </svg>
+    </span>
   </h4>
   <div
     v-if="isOutroDetailsShown"
-    class="card card-bordered card-compact shadow my-6 bg-primary">
+    class="card card-bordered card-compact shadow my-6 bg-base-100">
     <div
-      class="card-body text-white"
+      class="card-body"
       v-html="chosenChar.value?.outroAttacks?.description"></div>
   </div>
   <table class="calculator__damages table table-zebra table-sm">
@@ -240,25 +243,25 @@
           :character="character"
           :type="damageInstance.type"
           :label="damageInstance.label"
-          :damage="damageInstance.damage">
-        </CalculatorDamage>
+          :damage="damageInstance.damage"></CalculatorDamage>
       </template>
     </tbody>
   </table>
 
   <h4 class="damage__title pt-8">
     <span class="text-lg font-bold">{{ echoName ?? "Echo" }} Attacks</span>
-    <span class="damage__title__button" @click="toggleEchoDetails"
-      ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+    <span class="damage__title__button" @click="toggleEchoDetails">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
         <path
           d="M64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16l160 0 0 80c0 17.7 14.3 32 32 32l80 0 0 288c0 8.8-7.2 16-16 16L64 464zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-293.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"
-          fill="#FFFFFF" /></svg
-    ></span>
+          fill="#FFFFFF" />
+      </svg>
+    </span>
   </h4>
   <div
     v-if="isEchoDetailsShown"
-    class="card card-bordered card-compact shadow my-6 bg-primary">
-    <div class="card-body text-white" v-html="echoDetails"></div>
+    class="card card-bordered card-compact shadow my-6 bg-base-100">
+    <div class="card-body" v-html="echoDetails"></div>
   </div>
   <template v-if="!allDamages?.value?.echoAttacks?.length">
     <div class="calculation__damage__item calculation__damage__item--fill">
@@ -282,8 +285,7 @@
           :character="character"
           :type="damageInstance.type"
           :label="damageInstance.label"
-          :damage="damageInstance.damage">
-        </CalculatorDamage>
+          :damage="damageInstance.damage"></CalculatorDamage>
       </tbody>
     </table>
   </template>
@@ -316,8 +318,7 @@
               :character="character"
               :type="damageInstance.type"
               :label="damageInstance.label"
-              :damage="damageInstance.damage">
-            </CalculatorDamage>
+              :damage="damageInstance.damage"></CalculatorDamage>
           </tbody>
           <tfoot>
             <tr v-if="rotation.damageAggregation.normalDamage" class="">

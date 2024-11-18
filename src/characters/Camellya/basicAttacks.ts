@@ -1,22 +1,10 @@
 export const basicAttacks = {
-  name: "Normal Attack: Breeding",
-  description: `<div class="skilldescription"><span class="Highlight">Basic</span><br>Performs up to 5 consecutive attacks, dealing <span class="Dark">Havoc</span> damage.
-  After casting <span class="Highlight">Basic Attack Stage 3</span>, holding <span class="Highlight">Normal Attack</span> will continuously attack the target, dealing <span class="Dark">Havoc</span> damage.
-  When <span class="Highlight">Basic Attack Stage 4</span> ends, immediately cast <span class="Highlight">Basic Attack Stage 5.</span>
-  <br><br>
-  <span class="Highlight">Heavy</span><br>
-  Consumes Stamina to attack the target, dealing <span class="Dark">Havoc</span> damage.
-  <br><br>
-  <span class="Highlight">Plunging</span><br>
-  Consumes Stamina to perform a plunging attack, dealing <span class="Havoc">Havoc</span> damage.
-  <br><br>
-  <span class="Highlight">Dodge Counter</span><br>
-  When pressing the <span class="Highlight">Normal Attack</span> after successfully dodging, Camellya attacks the target, dealing <span class="Dark">Havoc</span> damage.
-  </div>`,
+  name: "Normal Attack: Burgeoning",
+  description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Perform up to 5 consecutive attacks, dealing <span class="Dark">Havoc DMG</span>.<br>After performing <span class="Highlight">Basic Attack Stage 3</span> or Heavy Attack <span class="Highlight">Pruning</span>, hold <span class="Highlight">Normal Attack Button</span> to continuously strike the target, dealing <span class="Dark">Havoc DMG</span>.<br><span class="Highlight">Basic Attack Stage 4</span> is automatically followed by <span class="Highlight">Basic Attack Stage 5</span>.<br> <br><span class="Title">Heavy Attack - Pruning</span><br>Consume STA to attack the target, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Consume STA to perform Plunging Attack, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> right after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
   attacks: [
     {
-      key: "NormalAttackStage1DMG",
-      label: "Stage 1 DMG",
+      key: "BasicAttack1DMG",
+      label: "Basic Attack 1 DMG",
       talents: {
         "1": "31.45%",
         "2": "34.03%",
@@ -32,8 +20,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "NormalAttackStage2DMG",
-      label: "Stage 2 DMG",
+      key: "BasicAttack2DMG",
+      label: "Basic Attack 2 DMG",
       talents: {
         "1": "23.38%*2",
         "2": "25.30%*2",
@@ -49,8 +37,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "NormalAttackStage3DMG",
-      label: "Stage 3 DMG",
+      key: "BasicAttack3DMG",
+      label: "Basic Attack 3 DMG",
       talents: {
         "1": "25.50%*3",
         "2": "27.59%*3",
@@ -66,8 +54,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "NormalAttackStage4DMG",
-      label: "Stage 4 DMG",
+      key: "BasicAttack4DMG",
+      label: "Basic Attack 4 DMG",
       talents: {
         "1": "12.42%*20",
         "2": "13.44%*20",
@@ -83,8 +71,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "NormalAttackStage5DMG",
-      label: "Stage 5 DMG",
+      key: "BasicAttack5DMG",
+      label: "Basic Attack 5 DMG",
       talents: {
         "1": "24.23%*4",
         "2": "26.22%*4",

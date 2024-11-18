@@ -71,6 +71,13 @@
                   </RouterLink>
                 </li>
                 <li>
+                  <RouterLink
+                    to="/legal"
+                    class="text-white active:text-white focus:text-white">
+                    Legal
+                  </RouterLink>
+                </li>
+                <li>
                   <a
                     href="https://discord.gg/pDKjxNjJWW"
                     target="_blank"
@@ -95,6 +102,41 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 17, 2024</h3>
+    <ul>
+      <li>
+        Adjusts the background color on the talent descriptions so it's easier
+        to read.
+      </li>
+      <li>Behind the scenes code optimizations, removed 200 redundant LoC.</li>
+      <li>Fixed Camellya's R5 text. The calculations were correct.</li>
+      <li>Changes Camellya R3 to be a global ATK buff given video evidence.</li>
+    </ul>
+    <h3>November 15, 2024</h3>
+    <ul>
+      <li>
+        Minor adjustment to Camellya's Outro multiplier numbers. It was missing
+        decimals, so the change will be largely unnoticed in terms of damage
+        calculated.
+      </li>
+      <li>
+        Fixes Verina BA1 talents. It had two hits, it should only have one.
+      </li>
+    </ul>
+    <h3>November 14, 2024</h3>
+    <ul>
+      <li>
+        Updates Yinlin talent descriptions since they were updated in the game
+        in 1.4.
+      </li>
+      <li>Adds new 1.4 weapon: Somnoire Anchor</li>
+      <li>Updates Camellya sig to use 1.4 release text and image.</li>
+      <li>Updates Camellya text across the board.</li>
+    </ul>
+    <h3>November 12, 2024</h3>
+    <ul>
+      <li>Adds legal page.</li>
+    </ul>
     <h3>November 10, 2024</h3>
     <ul>
       <li>

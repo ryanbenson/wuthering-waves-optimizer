@@ -1,10 +1,10 @@
 export const introAttacks = {
-  name: "Intro Skill: Eight Thousand Years",
+  name: "Intro Skill: Everblooming",
   description: `<div class="skilldescription">Attacks the target, dealing <span class="Dark">Havoc</span> damage.</div>`,
   attacks: [
     {
-      key: "EightThousandYearsDMG",
-      label: "Eight Thousand Years DMG",
+      key: "EverbloomingDMG",
+      label: "Skill DMG",
       talents: {
         "1": "100.00%",
         "2": "108.20%",

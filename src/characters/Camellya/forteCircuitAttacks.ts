@@ -1,33 +1,10 @@
 export const forteCircuitAttacks = {
-  name: "Forte Circuit: Botanical Universe",
-  description: `<div class="skilldescription"><p>When <span class="Highlight">Basic Attack</span>, <span class="Highlight">Normal Attack Vine Dance</span>, <span class="Highlight">Normal Attack Whirling Dance</span>, <span class="Highlight">Dodge Counter Atonement</span>, <span class="Highlight">Resonance Skill Red Camellia Bloom</span>, <span class="Highlight">Resonance Skill Dark Pistil</span> Seeker hits the target, consumes <span class="Highlight">【Red Camellia Pistil】</span>, the base resonance energy recovery efficiency of this attack is increased by 150%.</p>
-  <p>Every 10 points of <span class="Highlight">【Red Camellia Pistil】</span> consumed, restores 4 points of <span class="Highlight">Concerto Energy</span>, then gain 1 stack of <span class="Highlight">【Red Camellia Bud】</span>, lasting for 15s, stacking up to 10 stacks.</p>
-  
-  <p><strong>Resonance Skill-Dayflower</strong><br>
-  When <span class="Highlight">Concerto Energy</span> is filled, Resonance Skill is replaced with <span class="Highlight">Resonance Skill Dayflower</span>.<br>
-  When casting <span class="Highlight">Resonance Skill Dayflower</span>, consumes 70 <span class="Highlight">Concerto Energy</span>, then attack the target, dealing <span class="Dark">Havoc</span> damage.<br>
-  After casting <span class="Highlight">Resonance Skill Dayflower</span>, enters the Bud state.
-  </p>
-  
-  <p><strong>Bud state</strong><br>
-  <span class="Highlight">Deep Slumber</span>: <span class="Highlight">Basic Attack</span>, <span class="Highlight">Normal Attack Vine Dance</span>, <span class="Highlight">Normal Attack Whirling Dance</span>, <span class="Highlight">Dodge Counter Atonement</span>, <span class="Highlight">Resonance Skill Red Camellia Bloom</span>, <span class="Highlight">Resonance Skill Dark Pistil Seeker</span> damage multiplier increases by 50%;<br>
-  - When casting <span class="Highlight">Dayflower</span>, removes all <span class="Highlght">Red Camellia Bud</span>, every stack of <span class="Highlight">Red Camellia Bud</span> additional increases the damage multiplier of <span class="Highlight">Deep Slumber</span> by 5%, up to 50%;<br>
-  -During the Bud state, unable to increase Red Camellia·Bud stacks.<br>
-  - During the Bud state, Camellya’s base resonance energy recovery efficiency is reduced to 0%.<br>
--When switching to another Resonator, the Bud state will end early.<br>
--During the Bud state, Camellya’s base resonance energy recovery efficiency is reduced to 0%
-When <span class="Dark">【Red Camellia·Pistil】</span>is fully consumed, the Bud state will end early.
-  
-  <p><strong>Red Camellia Pistil</strong><br>
-  Maximum limit of 100 points.<br>
-  After casting <span class="Highlight">Intro Skill</span>, restores 100 <span class="Dark">【Red Camellia Pistil】</span> points.<br>
-After casting <span class="Highlight">Resonance Skill Dark Pistil Seeker</span>, restores 100  <span class="Dark">【Red Camellia·Pistil】</span>points.
-  </p>
-  </div>`,
+  name: "Forte Circuit: Vegetative Universe",
+  description: `<div class="skilldescription">Hitting a target with <span class="Highlight">Normal Attack</span>, Basic Attack <span class="Highlight">Vining Waltz</span>, Basic Attack <span class="Highlight">Blazing Waltz</span>, Basic Attack <span class="Highlight">Vining Ronde</span>, Dodge Counter <span class="Highlight">Atonement </span>, Resonance Skill <span class="Highlight">Crimson Blossom</span>, and Resonance Skill <span class="Highlight">Floral Ravage</span> consumes Crimson Pistils. The Energy Regen Multiplier of this attack is increased by 150%.<br>Consuming 10 Crimson Pistils recovers 4 Concerto Energy and obtains <saptag=3>1 Crimson Bud. Each bud lasts for 15s, stacking up to 10 times.<br> <br><span class="Title">Forte Circuit: Ephemeral</span><br>When Concerto Energy is fully recovered, and <span class="Highlight">Ephemeral</span> is not on Cooldown, Resonance Skill is replaced with <span class="Highlight">Ephemeral</span>.<br>Casting <span class="Highlight">Ephemeral</span> consumes 70 Concerto Energy and deals <span class="Dark">Havoc DMG</span> to the targets. This damage is considered Basic Attack DMG.<br>Camellya enters <span class="Highlight">Budding Mode</span> after casting <span class="Highlight">Ephemeral</span>.<br>This can be cast in mid-air.<br> <br><span class="Title">Budding Mode</span><br>- <span class="Highlight">Sweet Dream</span>: Increase the DMG Multiplier of <span class="Highlight">Normal Attack</span>, Basic Attack <span class="Highlight">Vining Waltz</span>, Basic Attack <span class="Highlight">Blazing Waltz</span>, Basic Attack <span class="Highlight">Vining Ronde</span>, Dodge Counter <span class="Highlight">Atonement</span>, Resonance Skill <span class="Highlight">Crimson Blossom</span>, and Resonance Skill <span class="Highlight">Floral Ravage</span> by 50%.<br>- Casting <span class="Highlight">Ephemeral</span> consumes all Crimson Buds. Each Crimson Bud consumed additionally increases the DMG Multiplier of <span class="Highlight">Sweet Dream</span> by 5%, up to 50%. <br>- When in <span class="Highlight">Budding Mode</span>, Camellya cannot gain Crimson Buds.<br>- When in <span class="Highlight">Budding Mode</span>, the Energy Regen Multiplier of <span class="Highlight">Normal Attack</span>, Basic Attack <span class="Highlight">Vining Waltz</span>, Basic Attack <span class="Highlight">Blazing Waltz</span>, Basic Attack <span class="Highlight">Vining Ronde</span>, Dodge Counter <span class="Highlight">Atonement</span>, Resonance Skill <span class="Highlight">Crimson Blossom</span>, and Resonance Skill <span class="Highlight">Floral Ravage</span> is reduced to 0%.<br>- <span class="Highlight">Budding Mode</span> ends when Camellya is switched off the field.<br>- <span class="Highlight">Budding Mode</span> ends when all Crimson Pistils are consumed.<br> <br><span class="Title">Crimson Pistil</span><br>Camellya can hold up to 100 Crimson Pistils.<br>- Casting Intro Skill <span class="Highlight">Everblooming</span> recovers 100 Crimson Pistils.<br>- Activating Forte Circuit's <span class="Highlight">Ephemeral</span> recovers 100 Crimson Pistils.</saptag=3></div>`,
   attacks: [
     {
-      key: "DayflowerDMG",
-      label: "Dayflower DMG",
+      key: "EphemeralDMG",
+      label: "Ephemeral DMG",
       talents: {
         "1": "635.00%",
         "2": "687.07%",
@@ -43,8 +20,8 @@ After casting <span class="Highlight">Resonance Skill Dark Pistil Seeker</span>,
       type: "Basic",
     },
     {
-      key: "SequenceNode6EternalFlowerDMG",
-      label: "S6 Eternal Flower",
+      key: "SequenceNode6PerennialDMG",
+      label: "S6 Perennial Flower",
       talents: {
         "1": "635.00%",
         "2": "687.07%",
@@ -58,7 +35,7 @@ After casting <span class="Highlight">Resonance Skill Dark Pistil Seeker</span>,
         "10": "1262.45%",
       },
       type: "Basic",
-      requiresResonanceChain: "SequenceNode6EternalFlowerDMG",
+      requiresResonanceChain: "SequenceNode6PerennialDMG",
     },
   ],
 };

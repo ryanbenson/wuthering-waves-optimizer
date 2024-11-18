@@ -15,15 +15,17 @@ import UpdatesView from "./pages/UpdatesView.vue";
 import InfoView from "./pages/InfoView.vue";
 import PrivacyView from "./pages/PrivacyView.vue";
 import SettingsView from "./pages/SettingsView.vue";
+import LegalView from "./pages/LegalView.vue";
 
 const routes = [
-  { path: "/", component: HomeView, name: 'HomeView' },
+  { path: "/", component: HomeView, name: "HomeView" },
   // { path: "/calculator", component: HomeView, name: 'HomeView' },
-  { path: "/optimizer", component: OptimizerView, name: 'OptimizerView' },
-  { path: "/updates", component: UpdatesView , name: 'UpdatesView'},
-  { path: "/info", component: InfoView, name: 'InfoView' },
-  { path: "/privacy", component: PrivacyView, name: 'PrivacyView' },
-  { path: "/settings", component: SettingsView, name: 'SettingsView' },
+  { path: "/optimizer", component: OptimizerView, name: "OptimizerView" },
+  { path: "/updates", component: UpdatesView, name: "UpdatesView" },
+  { path: "/info", component: InfoView, name: "InfoView" },
+  { path: "/privacy", component: PrivacyView, name: "PrivacyView" },
+  { path: "/settings", component: SettingsView, name: "SettingsView" },
+  { path: "/legal", component: LegalView, name: "LegalView" },
 ];
 
 const router = createRouter({
@@ -37,7 +39,7 @@ const pinia = createPinia();
 pinia.use(
   createPersistedState({
     auto: true,
-  })
+  }),
 );
 
 const app = createApp(App).use(pinia).use(router).use(FloatingVue);

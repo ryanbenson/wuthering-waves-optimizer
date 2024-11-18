@@ -2,24 +2,25 @@
   <Teleport to="#navbar-container">
     <div class="navbar bg-base-300 shadow">
       <div class="navbar-start">
-        <a class="btn btn-ghost text-xl"
-          ><RouterLink
+        <a class="btn btn-ghost text-xl">
+          <RouterLink
             to="/"
-            class="logo poiret-one-regular text-primary hover:text-primary"
-            >WT</RouterLink
-          ></a
-        >
+            class="logo poiret-one-regular text-primary hover:text-primary">
+            WT
+          </RouterLink>
+        </a>
         <RouterLink
           to="/"
-          class="poiret-one-regular btn btn-ghost text-xl hover:text-primary"
-          ><svg
+          class="poiret-one-regular btn btn-ghost text-xl hover:text-primary">
+          <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 384 512"
             class="size-6">
             <path
               fill="#FFFFFF"
-              d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM96 64H288c17.7 0 32 14.3 32 32v32c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V96c0-17.7 14.3-32 32-32zm32 160a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM96 352a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM64 416c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H96c-17.7 0-32-14.3-32-32zM192 256a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm64-64a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM288 448a32 32 0 1 1 0-64 32 32 0 1 1 0 64z" /></svg
-        ></RouterLink>
+              d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM96 64H288c17.7 0 32 14.3 32 32v32c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V96c0-17.7 14.3-32 32-32zm32 160a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM96 352a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM64 416c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H96c-17.7 0-32-14.3-32-32zM192 256a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm64-64a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM288 448a32 32 0 1 1 0-64 32 32 0 1 1 0 64z" />
+          </svg>
+        </RouterLink>
       </div>
       <div class="navbar-end">
         <ul class="menu menu-horizontal px-1">
@@ -43,38 +44,45 @@
                 <li>
                   <RouterLink
                     to="/settings"
-                    class="text-white active:text-white focus:text-white"
-                    >Settings</RouterLink
-                  >
+                    class="text-white active:text-white focus:text-white">
+                    Settings
+                  </RouterLink>
                 </li>
                 <li>
                   <RouterLink
                     to="/info"
-                    class="text-white active:text-white focus:text-white"
-                    >Info</RouterLink
-                  >
+                    class="text-white active:text-white focus:text-white">
+                    Info
+                  </RouterLink>
                 </li>
                 <li>
                   <RouterLink
                     to="/updates"
-                    class="text-white active:text-white focus:text-white"
-                    >Updates</RouterLink
-                  >
+                    class="text-white active:text-white focus:text-white">
+                    Updates
+                  </RouterLink>
                 </li>
                 <li>
                   <RouterLink
                     to="/privacy"
-                    class="text-white active:text-white focus:text-white"
-                    >Privacy</RouterLink
-                  >
+                    class="text-white active:text-white focus:text-white">
+                    Privacy
+                  </RouterLink>
+                </li>
+                <li>
+                  <RouterLink
+                    to="/legal"
+                    class="text-white active:text-white focus:text-white">
+                    Legal
+                  </RouterLink>
                 </li>
                 <li>
                   <a
                     href="https://discord.gg/pDKjxNjJWW"
                     target="_blank"
-                    class="text-white active:text-white focus:text-white"
-                    >Discord</a
-                  >
+                    class="text-white active:text-white focus:text-white">
+                    Discord
+                  </a>
                 </li>
               </ul>
             </details>

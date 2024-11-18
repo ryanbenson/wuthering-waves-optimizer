@@ -1,11 +1,10 @@
 export const liberationAttacks = {
-  name: "Resonance Liberation: The Embers of Youth",
-  description: `<div class="skilldescription">Attacks the target, dealing <span class="Dark">Havoc</span> damage.
-  Can be casted in the air.</div>`,
+  name: "Resonance Liberation: Fervor Efflorescent",
+  description: `<div class="skilldescription">Attack the target, dealing <span class="Dark">Havoc DMG</span>.<br>This attack can be performed in mid-air.</div>`,
   attacks: [
     {
-      key: "TheEmbersofYouthDMG",
-      label: "The Embers of Youth DMG",
+      key: "FervorEfflorescentDMG",
+      label: "Skill DMG",
       talents: {
         "1": "605.00%",
         "2": "654.61%",

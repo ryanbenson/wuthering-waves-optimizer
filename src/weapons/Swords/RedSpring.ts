@@ -1,16 +1,17 @@
 const weaponInfo: WeaponInfo = {
-  name: "Camellya Signature",
-  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/CamellyaSigTmp.jpg",
+  name: "Red Spring",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/RedSpring.png",
   description:
-    "Coming Soon",
+    "A camellia bud silently unfurls. As promised, she holds this infinite world in bloom in her palms, where fine crimson vines twine around her fingertips. The dull ache, like sand scratching against the heart, is proof of your fateful encounter.",
   type: "Sword",
   rarity: 5,
-  passiveName: "Coming Soon",
+  passiveName: "Beyond the Cycle",
   passiveValue:
-    "Attack power increases by 12/15/18/21/24%. When dealing Basic Attack DMG, the wielder gains 10%/12.5%/15%/17.5%/20% Basic Attack DMG Bonus for 14s. This effect can be triggered once per second, stacking up to 3 times. When the wielder's Concerto Energy is consumed, gain 40%/50%/60%/70%/80% Basic DMG Bonus for 10. This effect can be triggered once per second and ends when the wielder is switched off the field.",
+    `<span class="skilldescription">Increase ATK by <span class="param">12%/15%/18%/21%/24%</span>. When dealing Basic Attack DMG, the wielder gains <span class="param">10%/12.5%/15%/17.5%/20%</span> Basic Attack DMG Bonus for <span class="param">14</span>s. This effect can be triggered once per second, stacking up to <span class="param">3</span> times.<br>
+When the wielder's Concerto Energy is consumed, gain <span class="param">40%/50%/60%/70%/80%</span> Basic DMG Bonus for <span class="param">10</span>. This effect can be triggered once per second and ends when the wielder is switched off the field.</span>`,
   passiveData: [
     {
-      key: "CamellyaSigAtk",
+      key: "BeyondtheCycleAtk",
       hasStacks: false,
       modifier: "ATK",
       modifierByRefinement: {
@@ -24,7 +25,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: true,
     },
     {
-      key: "CamellyaSigBasicBonus",
+      key: "BeyondtheCycleBasicBonus",
       hasStacks: true,
       modifier: "BasicAttackDMGBonus",
       modifierByRefinement: {
@@ -41,7 +42,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: false,
     },
     {
-      key: "CamellyaSigBasicBonusOutro",
+      key: "BeyondtheCycleBasicBonusOutro",
       hasStacks: false,
       modifier: "BasicAttackDMGBonus",
       modifierByRefinement: {
