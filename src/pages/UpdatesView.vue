@@ -110,6 +110,7 @@
       </li>
       <li>Behind the scenes code optimizations, removed 200 redundant LoC.</li>
       <li>Fixed Camellya's R5 text. The calculations were correct.</li>
+      <li>Changes Camellya R3 to be a global ATK buff given video evidence.</li>
     </ul>
     <h3>November 15, 2024</h3>
     <ul>
