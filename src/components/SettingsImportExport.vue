@@ -62,6 +62,10 @@
 
 <script lang="ts">
 // @ts-nocheck
+/**
+ * Version 1 (which has no meta) only includes character data as a root property
+ * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
+ */
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { defineComponent } from "vue";
@@ -81,18 +85,26 @@ export default defineComponent({
      * Gets all of the data to save
      */
     getData() {
+      const meta = {
+        version: '2',
+        source: 'WutheringTools',
+      };
       const data = {
         character: localStorage.getItem("character"),
         inventory: localStorage.getItem("inventory"),
       };
-      return JSON.stringify(data);
+      const d = {
+        meta,
+        data
+      }
+      return JSON.stringify(d);
     },
     /**
      * Handler to copy the contents of the character data into the user's clipboard
      */
     copyCharacterData() {
       const data = this.getData();
-      navigator.clipboard.writeText(data);
+      navigator.clipboard.writeText(JSON.stringify(data));
       this.triggerNotification(
         "Character data has been copied to your clipboard"
       );
@@ -102,7 +114,7 @@ export default defineComponent({
      */
     downloadCharacterData() {
       const data = this.getData();
-      const blob = new Blob([data], { type: "application/json" });
+      const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -122,6 +134,25 @@ export default defineComponent({
       return `character_data_${date}.json`;
     },
     /**
+     * Provides the data to import based on changes to the structures
+     * If there's a meta tag, then that got introduced in v2
+     * v2 also introduces inventory data
+     * If there's no meta, then that's v1, which is just the character data itself
+     *   and has nothing else
+     * @returns {Object}
+     */
+    getImportData(data) {
+      const parsedData = JSON.parse(data);
+      const returnData = {};
+      if (parsedData?.meta && parsedData?.meta.version === '2') {
+        returnData.character = parsedData?.data?.character;
+        returnData.inventory = parsedData?.data?.inventory;
+      } else {
+        returnData.character = JSON.stringify(parsedData);
+      }
+      return returnData;
+    },
+    /**
      * Imports the raw character data through a given string in the input
      */
     importRawCharacterData() {
@@ -132,13 +163,23 @@ export default defineComponent({
         this.triggerNotification("Character data given is invalid", true);
       }
       // overwrite the local storage then rehydrate
-      const data = localStorage.setItem(
+      const importData = this.getImportData(this.importedRawCharacterData);
+      // console.log(importData);
+      // return;
+      localStorage.setItem(
         "character",
-        this.importedRawCharacterData
+        importData.character
       );
       const characterStore = useCharacterStore();
       characterStore.$hydrate({ runHooks: false });
-      alert("Your data has been ovwerwriten!");
+      // only if there's inventory data
+      if (importData?.inventory) {
+        console.log(importData?.inventory);
+        localStorage.setItem("inventory", importData.inventory);
+        const inventoryStore = useInventoryStore();
+        inventoryStore.$hydrate({ runHooks: false });
+      }
+      alert("Your data has been overwritten!");
       this.importedRawCharacterData = null;
       location.reload();
     },
@@ -175,10 +216,20 @@ export default defineComponent({
       if (this.isJsonString(this.fileData) === false) {
         this.triggerNotification("Character data given is invalid", true);
       }
+      const importData = this.getImportData(this.fileData);
       // overwrite the local storage then rehydrate
-      const data = localStorage.setItem("character", this.fileData);
+      localStorage.setItem("character", "");
+      localStorage.setItem("character", importData.character);
+      console.log(importData.character);
       const characterStore = useCharacterStore();
       characterStore.$hydrate({ runHooks: false });
+      // only if there's inventory data
+      if (importData?.inventory) {
+        localStorage.setItem("inventory", "");
+        localStorage.setItem("inventory", importData.inventory);
+        const inventoryStore = useInventoryStore();
+        inventoryStore.$hydrate({ runHooks: false });
+      }
       alert("Your data has been ovwerwriten!");
       this.fileData = null;
       location.reload();
