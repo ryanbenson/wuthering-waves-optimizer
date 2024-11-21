@@ -102,11 +102,9 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>November 18, 2024</h3>
+    <h3>November 20, 2024</h3>
     <ul>
-      <li>
-        Fixes a bug with deleting an action from a rotation. It wasn't syncing properly.
-      </li>
+      <li>Adds colors to the echo sets in the various echo UI.</li>
     </ul>
     <h3>November 17, 2024</h3>
     <ul>

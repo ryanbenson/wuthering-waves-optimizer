@@ -25,7 +25,7 @@ export function calcHitDamage(
   bonusSpecificSkillDmg: number = 0,
   bonusElementDmg: number = 0,
   totalDeepenEffect: number = 0,
-  resistenceReduction: number = 0
+  resistenceReduction: number = 0,
   // critRate: number,
   // critDamage: number,
 ): number {
@@ -33,7 +33,7 @@ export function calcHitDamage(
     bonusTotalSkillDmg,
     bonusSpecificSkillDmg,
     bonusElementDmg,
-    totalDeepenEffect
+    totalDeepenEffect,
   );
   const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
   const resistValue = getEnemyResistValue(enemyResist, resistenceReduction);
@@ -42,8 +42,11 @@ export function calcHitDamage(
     attack,
     baseDamageValue,
     defModifier,
-    resistValue
+    resistValue,
   );
+  if (talent === 4.4971) {
+    console.log(talent, attack, baseDamageValue, defModifier, resistValue);
+  }
   return baseDamage;
 }
 
@@ -52,7 +55,7 @@ export function getBaseDamage(
   attack: number,
   baseDamageValue: number,
   defModifier: number,
-  resistValue: number
+  resistValue: number,
 ): number {
   return attack * talent * baseDamageValue * defModifier * resistValue;
 }
@@ -66,10 +69,10 @@ export function getTalentValue(talentStringWithPercent: string): number {
 export function getDefenseModifier(
   charLevelSpec: string,
   enemyLevel: number,
-  defIgnore: number
+  defIgnore: number,
 ): number {
   const charLevel = Number.parseInt(
-    charLevelSpec.slice(-1) == "+" ? charLevelSpec.slice(0, -1) : charLevelSpec
+    charLevelSpec.slice(-1) == "+" ? charLevelSpec.slice(0, -1) : charLevelSpec,
   );
   const enemyDef = getEnemyDefense(enemyLevel);
   return (
@@ -85,7 +88,7 @@ export function getBonusDamageValue(
   bonusTotalSkillDmg: number = 0,
   bonusSpecificSkillDmg: number = 0,
   bonusElementDmg: number = 0,
-  totalDeepenEffect: number = 0
+  totalDeepenEffect: number = 0,
 ): number {
   return (
     (1 + bonusTotalSkillDmg + bonusSpecificSkillDmg + bonusElementDmg) *
@@ -96,7 +99,7 @@ export function getBonusDamageValue(
 // we need to half the reduction if the resist goes under 0
 export function getEnemyResistValue(
   enemyResist: number,
-  resistenceReduction: number
+  resistenceReduction: number,
 ): number {
   if (enemyResist < 0) {
     resistenceReduction /= 2;
@@ -169,7 +172,7 @@ export function calcDamage(
         bonusSpecificSkillDmg,
         bonusElementDmg,
         totalDeepenEffect,
-        resistenceReduction
+        resistenceReduction,
       );
     }
   });
@@ -186,7 +189,7 @@ export function calcDamage(
     bonusSpecificSkillDmg,
     bonusElementDmg,
     totalDeepenEffect,
-    resistenceReduction
+    resistenceReduction,
   );
   // multiply the final damage by the number of hits, usually 1,
   // but can be > 1 in rotations
@@ -218,6 +221,7 @@ export function calcDamage(
   );
 
   let totalCritDmg = calcCritDamage(finalDamage, critDamage);
+  console.log(critDamage);
   let totalAvgDmg = calcAvgDamage(finalDamage, critRate, critDamage);
 
   // Return detailed damage information
@@ -239,7 +243,7 @@ function calcCritDamage(damage: number, critDamage: number): number {
 function calcAvgDamage(
   damage: number,
   critRate: number,
-  critDamage: number
+  critDamage: number,
 ): number {
   // don't allow over-crit rate to affect the damage
   if (critRate > 1) {
@@ -346,7 +350,7 @@ export function calcHeal(
     talentVal,
     flatBase,
     finalAtkDefHpVal,
-    totalHealBonus
+    totalHealBonus,
   );
 
   // multiply the heal by the number of count, usually 1
@@ -357,7 +361,9 @@ export function calcHeal(
   if (count > 1) {
     countPrefix = `${count} x `;
   }
-  let detailedCalculation = `${countPrefix}<strong>${Math.ceil(healAmount)}</strong>`;
+  let detailedCalculation = `${countPrefix}<strong>${Math.ceil(
+    healAmount,
+  )}</strong>`;
 
   // Return detailed damage information
   return {
@@ -370,7 +376,7 @@ function calcHitHeal(
   talent: number, // percent value of healing against hp/def/atk
   flatBase: number = 0, // flat healing amount
   finalAtkDefHpVal: number = 0,
-  totalHealBonus: number = 0 // total healing bonus
+  totalHealBonus: number = 0, // total healing bonus
 ): number {
   return (talent * finalAtkDefHpVal + flatBase) * (1 + totalHealBonus);
 }
@@ -422,7 +428,7 @@ export function calcShield(
     talentVal,
     flatBase,
     finalAtkDefHpVal,
-    totalShieldBonus
+    totalShieldBonus,
   );
 
   // multiply the heal by the number of count, usually 1
@@ -433,7 +439,9 @@ export function calcShield(
   if (count > 1) {
     countPrefix = `${count} x `;
   }
-  let detailedCalculation = `${countPrefix}<strong>${Math.ceil(shieldAmount)}</strong>`;
+  let detailedCalculation = `${countPrefix}<strong>${Math.ceil(
+    shieldAmount,
+  )}</strong>`;
   // Return detailed damage information
   return {
     shieldAmount: finalShieldAmount,
@@ -445,7 +453,7 @@ function calcHitShield(
   talent: number, // percent value of healing against hp/def/atk
   flatBase: number = 0, // flat healing amount
   finalAtkDefHpVal: number = 0,
-  totalShieldBonus: number = 0 // total healing bonus
+  totalShieldBonus: number = 0, // total healing bonus
 ): number {
   return (talent * finalAtkDefHpVal + flatBase) * (1 + totalShieldBonus);
 }

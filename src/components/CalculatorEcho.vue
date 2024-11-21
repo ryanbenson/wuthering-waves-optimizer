@@ -1,8 +1,8 @@
 <template>
   <dialog :id="modalId" class="modal">
-      <form method="dialog" class="modal-backdrop">
-        <button>close</button>
-      </form>
+    <form method="dialog" class="modal-backdrop">
+      <button>close</button>
+    </form>
     <div class="modal-box max-w-xl">
       <form method="dialog">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
@@ -10,22 +10,28 @@
         </button>
       </form>
       <div class="py-4">
-        <div class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row">
+        <div
+          class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row">
           <div class="echo__item__img-actions flex flex-col gap-2 items-center">
-          <div
-            class="echo__item__image rounded-full border border-solid neutral-content size-24 bg-cover min-w-24 text-center"
-            :class="{
-              'border-amber-300': rank === '5' || rank === 5,
-              'border-violet-600': rank === '4' || rank === 4,
-              'border-blue-500': rank === '3' || rank === 3,
-              'border-green-500': rank === '2' || rank === 2,
-            }"
-            :style="{
-              backgroundImage: `url(${echoImage})`,
-            }"></div>
+            <div
+              class="echo__item__image rounded-full border border-solid neutral-content size-24 bg-cover min-w-24 text-center"
+              :class="{
+                'border-amber-300': rank === '5' || rank === 5,
+                'border-violet-600': rank === '4' || rank === 4,
+                'border-blue-500': rank === '3' || rank === 3,
+                'border-green-500': rank === '2' || rank === 2,
+              }"
+              :style="{
+                backgroundImage: `url(${echoImage})`,
+              }"></div>
             <button @click="openEchoPicker" class="btn btn-sm btn--echo--find">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
-                <path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" fill="#FFFFFF"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                class="size-4">
+                <path
+                  d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+                  fill="#FFFFFF" />
               </svg>
               Find
             </button>
@@ -82,17 +88,19 @@
             </select>
           </div>
           <div class="echo__item__set w-full relative">
-            <span class="font-bold mb-2 inline-flex w-full justify-center sm:justify-start">Echo Set</span>
-            <div class="echo__item__set-selection flex gap-3 justify-center sm:justify-start">
+            <span
+              class="font-bold mb-2 inline-flex w-full justify-center sm:justify-start">
+              Echo Set
+            </span>
+            <div
+              class="echo__item__set-selection flex gap-3 justify-center sm:justify-start">
               <div
                 v-for="echo in echoSets"
                 :key="echo"
                 @click="handleChooseEchoSet(echo)"
                 class="size-8 rounded-full cursor-pointer echo__item__set-selection--icon"
-                :class="{'border border-white': isSetSelected(echo)}"
-              >
-                <img
-                  :src="getEchoSetIcon(echo)" />
+                :class="{ 'border border-white': isSetSelected(echo) }">
+                <img :src="getEchoSetIcon(echo)" :class="echo" />
               </div>
             </div>
           </div>
@@ -495,52 +503,64 @@
         </button>
       </form>
       <div class="py-4">
-        <div class="echoes__filters flex align-center gap-2 mb-6 items-center flex-wrap">
+        <div
+          class="echoes__filters flex align-center gap-2 mb-6 items-center flex-wrap">
           <span class="mr-2">Filter</span>
           <button
             v-for="echoSet in echoSetsList"
             :key="echoSet"
             @click="toggleEchoSetFilter(echoSet)"
             class="rounded mr-1"
-            :class="{'btn-active': isEchoSetFilterActive(echoSet)}"
-          >
-            <img :src="getEchoSetImage(echoSet)" class="size-8 m-width-8" />
+            :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
+            <img
+              :src="getEchoSetImage(echoSet)"
+              class="size-8 m-width-8"
+              :class="echoSet" />
           </button>
-          <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
+          <button @click="resetFilters" class="btn btn-sm btn-ghost">
+            Clear
+          </button>
         </div>
       </div>
       <div class="echoes__list grid grid-cols-1 md:grid-cols-4 gap-4">
         <template v-if="!allEchoesListFiltered.length">
-          <div class="echoes__list--empty py-12 text-center w-full col-span-2">No echoes found</div>
+          <div class="echoes__list--empty py-12 text-center w-full col-span-2">
+            No echoes found
+          </div>
         </template>
         <template v-else>
           <div
             v-for="echoesToChoose in allEchoesListFiltered"
             :key="echoesToChoose.key"
             class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
-            @click="chooseMainEcho(echoesToChoose.key)"
-          >
+            @click="chooseMainEcho(echoesToChoose.key)">
             <div class="card-body items-center">
               <div
                 class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
                 :style="{
                   backgroundImage: `url(${echoesToChoose.image})`,
                 }"
-                @click="handleOpenModal"
-              ></div>
-              <h2 class="card-title text-center text-lg">{{ echoesToChoose.name }}</h2>
+                @click="handleOpenModal"></div>
+              <h2 class="card-title text-center text-lg">
+                {{ echoesToChoose.name }}
+              </h2>
               <h3 class="text-sm">{{ echoesToChoose.class }}</h3>
-              <div class="echo__item__set-selection flex gap-3 justify-center sm:justify-start">
+              <div
+                class="echo__item__set-selection flex gap-3 justify-center sm:justify-start">
                 <div
                   v-for="echoSetItem in echoesToChoose.sets"
                   :key="echoSetItem"
-                  class="size-8 rounded-full cursor-pointer echo__item__set-selection--icon"
-                >
+                  class="size-8 rounded-full cursor-pointer echo__item__set-selection--icon">
                   <img
-                    :src="getEchoSetIcon(echoSetItem)" />
+                    :src="getEchoSetIcon(echoSetItem)"
+                    :class="echoSetItem" />
                 </div>
               </div>
-              <button @click="chooseMainEcho(echoesToChoose.key)" class="btn btn-sm btn-primary">Use echo</button>
+              <button
+                @click="chooseMainEcho(echoesToChoose.key)"
+                class="btn btn-sm btn-primary">
+                Use echo
+              </button>
             </div>
           </div>
         </template>
@@ -605,12 +625,8 @@
               {{ echoName }}
             </span>
             <div class="echo__item__meta flex gap-2 items-center">
-              <span
-                v-if="echoSet"
-                class="echo__item__set size-6 rounded-full"
-              >
-                <img
-                  :src="getEchoSetIcon(echoSet)" />
+              <span v-if="echoSet" class="echo__item__set size-6 rounded-full">
+                <img :src="getEchoSetIcon(echoSet)" :class="echoSet" />
               </span>
               <span class="echo__item__cost badge badge-primary">
                 Cost {{ type }}
@@ -871,13 +887,13 @@ export default {
       immediate: true,
     },
     echoSet: {
-      handler: function(val, previousVal) {
+      handler: function (val, previousVal) {
         if (val === null && previousVal === undefined) {
           return;
         }
-        this.$emit('echo:set-chosen', { set: val, index: this.index });
+        this.$emit("echo:set-chosen", { set: val, index: this.index });
       },
-      immediate: true
+      immediate: true,
     },
     type: {
       handler: async function () {
@@ -890,7 +906,7 @@ export default {
       handler: async function (rank) {
         // update the main echo rank if it's the first one
         if (this.index === 0) {
-          this.$emit('main-echo-rank:updated', rank);
+          this.$emit("main-echo-rank:updated", rank);
         }
         this.updateTotalStats();
       },
@@ -977,7 +993,7 @@ export default {
       this.selectCost(echoCost);
       // update the main echo if it's the first one
       if (this.index === 0) {
-        this.$emit('main-echo:updated', echo);
+        this.$emit("main-echo:updated", echo);
       }
       // get the cost of the previous echo, if they are different then
       // reset the main stat type and value
@@ -2112,30 +2128,32 @@ export default {
     allEchoesListFiltered() {
       let allEchoes = Object.values(this.mainEchoesData);
       if (this.echoSetFilter) {
-        allEchoes = allEchoes.filter((echo) => echo.sets.includes(this.echoSetFilter));
+        allEchoes = allEchoes.filter((echo) =>
+          echo.sets.includes(this.echoSetFilter),
+        );
       }
       // now sort by class then by name
       const classOrder = {
-        'Calamity': 0,
-        'Overlord': 1,
-        'Elite': 2,
-        'Common': 3
+        Calamity: 0,
+        Overlord: 1,
+        Elite: 2,
+        Common: 3,
       };
 
       // Sort by class first (using classOrder), then by name alphabetically
       const sortedEchoes = allEchoes.sort((a, b) => {
         // First, compare by class based on the classOrder
         const classComparison = classOrder[a.class] - classOrder[b.class];
-        
+
         // If classes are the same, sort by name alphabetically
         if (classComparison === 0) {
           return a.name.localeCompare(b.name);
         }
-        
+
         return classComparison;
       });
       return sortedEchoes;
-    }
+    },
   },
 };
 </script>
