@@ -9,7 +9,9 @@ export const useInventoryStore = defineStore("inventory", {
   actions: {
     saveEcho(data) {
       const { echoId } = data;
-      const foundIndex = this.echoes.findIndex((echo) => echo.echoId ===  echoId);
+      const foundIndex = this.echoes.findIndex(
+        (echo) => echo.echoId === echoId,
+      );
       if (foundIndex >= 0) {
         this.echoes[foundIndex] = data;
       } else {
@@ -17,7 +19,9 @@ export const useInventoryStore = defineStore("inventory", {
       }
     },
     patchEcho(echoId, data) {
-      const foundIndex = this.echoes.findIndex((echo) => echo.echoId ===  echoId);
+      const foundIndex = this.echoes.findIndex(
+        (echo) => echo.echoId === echoId,
+      );
       if (foundIndex >= 0) {
         const existingData = this.echoes[foundIndex];
         const updatedData = merge(existingData, data);
@@ -25,18 +29,24 @@ export const useInventoryStore = defineStore("inventory", {
       }
     },
     deleteEcho(echoId) {
-      const foundIndex = this.echoes.findIndex((echo) => echo.echoId ===  echoId);
+      const foundIndex = this.echoes.findIndex(
+        (echo) => echo.echoId === echoId,
+      );
       if (foundIndex) {
         this.echoes.splice(foundIndex, 1);
       }
     },
     getEchoById(echoId) {
-      return this.echoes.find((echo) => echo.echoId ===  echoId);
+      return this.echoes.find((echo) => echo.echoId === echoId);
     },
     setEquippedData(echoId, data) {
       const existingData = this.equipped[echoId] ?? {};
       const updatedData = merge(existingData, data);
       this.equipped[echoId] = updatedData;
+    },
+    hardSetState(data) {
+      this.echoes = data.echoes;
+      this.equipped = data.equipped;
     },
   },
 });

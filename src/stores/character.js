@@ -28,5 +28,9 @@ export const useCharacterStore = defineStore("character", {
         this.characters[characterId].rotations = rotationData;
       }
     },
+    hardSetState(data) {
+      this.characters = data.characters;
+      this.activeCharacter = data.activeCharacter;
+    },
   },
 });
