@@ -41,7 +41,7 @@
                 class="echo__item__set size-6 rounded-full"
               >
                 <img
-                  :src="getEchoSetIcon(echoSet)" />
+                  :src="getEchoSetIcon(echoSet)" :class="echoSet" />
               </span>
               <span class="echo__item__cost badge badge-primary">
                 Cost {{ type }}

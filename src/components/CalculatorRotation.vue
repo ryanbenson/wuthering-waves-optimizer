@@ -38,7 +38,7 @@
           <div class="rotations__list">
             <CalculatorRotationAction
               v-for="action in actionsList"
-              :key="action.order + action.id"
+              :key="action.id"
               :id="action.id"
               :character="character"
               :character-data="characterData"
@@ -242,7 +242,7 @@ export default {
     handleRemoveAction(actionData) {
       const actions = JSON.parse(JSON.stringify(this.actionsList));
       const updatedActions = actions.filter((action) => {
-        return action.id === actionData.id;
+        return action.id !== actionData.id;
       });
       this.actionsList = updatedActions;
 

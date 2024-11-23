@@ -60,7 +60,7 @@
             class="rounded mr-1"
             :class="{'btn-active': isEchoSetFilterActive(echoSet)}"
         >
-            <img :src="getEchoSetImage(echoSet)" class="size-8" />
+            <img :src="getEchoSetImage(echoSet)" class="size-8" :class="echoSet" />
         </button>
         </div>
         <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>

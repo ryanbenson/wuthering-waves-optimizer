@@ -148,10 +148,7 @@ export default {
       rotations[foundIndex] = rotationData;
       this.rotations = rotations;
       // update our store
-      const data = {
-        rotations: JSON.parse(JSON.stringify(this.rotations)),
-      };
-      await this.setCharacterData(this.character, data);
+      await this.setCharacterRotations(this.character, JSON.parse(JSON.stringify(this.rotations)));
       this.$emit(
         "updated-rotations",
         JSON.parse(JSON.stringify(this.rotations))
