@@ -33,7 +33,7 @@
         </RouterLink>
         <RouterLink
           to="/inventory"
-          class="btn btn-ghost">
+          class="btn btn-ghost btn-active">
           <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png" class="size-8" />
         </RouterLink>
       </div>
@@ -96,8 +96,8 @@
       </div>
     </div>
   </Teleport>
-  <div class="inventory__content">
-    <CalculatorEchoesBrowser character="none"></CalculatorEchoesBrowser>
+  <div class="inventory__content p-8">
+    <InventoryEchoesBrowser></InventoryEchoesBrowser>
   </div>
 </div>
 </template>
@@ -106,11 +106,11 @@
 // @ts-nocheck
 import { defineComponent } from "vue";
 import ThemeChooser from "./ThemeChooser.vue";
-import CalculatorEchoesBrowser from "./CalculatorEchoesBrowser.vue";
+import InventoryEchoesBrowser from "./InventoryEchoesBrowser.vue";
 export default defineComponent({
   name: "Inventory",
   components: {
-    CalculatorEchoesBrowser,
+    InventoryEchoesBrowser,
     ThemeChooser
   }
 });

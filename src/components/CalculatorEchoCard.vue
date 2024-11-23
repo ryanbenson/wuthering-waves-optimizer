@@ -31,7 +31,7 @@
             </span>
             <div class="echo__item__meta flex gap-2 items-center">
               <span
-                v-if="echoId"
+                v-if="echoId && !hideInventory"
                 class="echo__item__set size-6 rounded-full"
               >
                 <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png" />
@@ -198,6 +198,10 @@ export default {
       type: [Number, String],
       required: true,
     },
+    hideInventory: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {

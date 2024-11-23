@@ -48,5 +48,9 @@ export const useInventoryStore = defineStore("inventory", {
       this.echoes = data.echoes;
       this.equipped = data.equipped;
     },
+    getEchoEquippedChars(echoId) {
+      const equipped = this.equipped[echoId] ?? {};
+      return Object.keys(equipped);
+    }
   },
 });
