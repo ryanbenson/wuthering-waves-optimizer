@@ -102,6 +102,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 24, 2024</h3>
+    <ul>
+      <li>
+        Fixes small bug with echo sets where 2-2-1 would result in no sets being
+        given. Should be fixed now.
+      </li>
+    </ul>
     <h3>November 20, 2024</h3>
     <ul>
       <li>Adds colors to the echo sets in the various echo UI.</li>
