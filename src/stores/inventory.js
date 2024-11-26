@@ -6,6 +6,11 @@ export const useInventoryStore = defineStore("inventory", {
     echoes: [],
     equipped: {},
   }),
+  getters: {
+    getEquippedEchoData: (state) => {
+      return (echoId) => state.equipped?.[echoId] ?? {};
+    },
+  },
   actions: {
     saveEcho(data) {
       const { echoId } = data;
@@ -32,7 +37,8 @@ export const useInventoryStore = defineStore("inventory", {
       const foundIndex = this.echoes.findIndex(
         (echo) => echo.echoId === echoId,
       );
-      if (foundIndex) {
+      console.log(foundIndex, echoId)
+      if (foundIndex >= 0) {
         this.echoes.splice(foundIndex, 1);
       }
     },
@@ -51,6 +57,9 @@ export const useInventoryStore = defineStore("inventory", {
     getEchoEquippedChars(echoId) {
       const equipped = this.equipped[echoId] ?? {};
       return Object.keys(equipped);
+    },
+    deleteEchoEquippedMapping(echoId) {
+      delete this.equipped[echoId];
     }
   },
 });

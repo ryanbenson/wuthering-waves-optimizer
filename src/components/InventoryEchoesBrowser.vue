@@ -111,7 +111,7 @@
                 </div>
                 <div class="echoes__item__foot__actions flex gap-2">
                     <button class="btn btn-primary btn-sm min-w-16">Edit</button>
-                    <button class="btn btn-error btn-sm min-w-16">Delete</button>
+                    <button @click="removeEcho(echo.echoId)" class="btn btn-error btn-sm min-w-16">Delete</button>
                 </div>
             </div>
             </CalculatorEchoCard>
@@ -131,6 +131,7 @@ import { mainEchoesData, getEchoData } from "../echoes/index.ts";
 import { echoSetLabelMap, getEchoSetIconByType, getReadableSubStatLabel, statsTable } from "../echoes/stats";
 import { mapActions, mapState } from "pinia";
 import { useInventoryStore } from "../stores/inventory";
+import { useCharacterStore } from "../stores/character";
 import CalculatorEchoCard from './CalculatorEchoCard.vue';
 export default {
   name: 'InventoryEchoesBrowser',
@@ -151,7 +152,7 @@ export default {
     CalculatorEchoCard
   },
   computed: {
-    ...mapState(useInventoryStore, ["echoes"]),
+    ...mapState(useInventoryStore, ["echoes", "getEquippedEchoData"]),
     echoSetsList() {
       return Object.keys(echoSetLabelMap);
     },
@@ -213,7 +214,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useInventoryStore, ["getEchoById", "getEchoEquippedChars"]),
+    ...mapActions(useInventoryStore, ["getEchoById", "getEchoEquippedChars", "deleteEcho", "deleteEchoEquippedMapping"]),
+    ...mapActions(useCharacterStore, ["removeCharacterEcho"]),
     getReadableSubStatLabel,
     triggerOpenModal(echoIndex) {
       this.echoIndex = echoIndex;
@@ -269,6 +271,18 @@ export default {
     },
     getCharImg(character) {
       return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
+    },
+    async removeEcho(echoId) {
+      if (window.confirm("Do you really want to delete this echo?")) {
+        await this.deleteEcho(echoId);
+        await this.deleteEchoEquippedMapping(echoId);
+        const equippedCharsData = this.getEquippedEchoData(echoId);
+        const equippedChars = Object.entries(equippedCharsData);
+        for (const equippedChar of equippedChars) {
+          const [character, index] = equippedChar;
+          await this.removeCharacterEcho(character, index);
+        }
+      }
     }
   }
 };
