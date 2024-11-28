@@ -59,4 +59,21 @@ export const resonanceChains = [
     maxStacks: 0,
     alwaysEnabled: false,
   },
+  {
+    key: "Sequence Node 6: The Ultimatum",
+    name: "SequenceNode6TheUltimatum",
+    details: `<span class="skilldescription">When casting Resonance Liberation <span class="Highlight">"Death Messenger"</span>, Calcharo will summon 2 <span class="Highlight">Phantoms</span> to perform Coordinated Attacks. Each <span class="Highlight">Phantom</span> deals <span class="Thunder">Electro DMG</span> equal to 100.00% of Calcharo's ATK, which is considered Resonance Liberation DMG.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "EnableAttack",
+        modifierValue: [
+          "SequenceNode6TheUltimatum",
+        ],
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
 ];

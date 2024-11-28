@@ -1,7 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Phantom Etching",
   description:
-    '<div class="skilldescription">Calcharo attacks the target, dealing <span class="Electro">Electro DMG</span> and enters <span class="Highlight">Deathblade Gear</span> state. After Resonance Liberation Deathblade Gear state ends, Calcharo\'s next Intro Skill is replaced with Intro Skill "Necessary Means", which deals <span class="Electro">Electro DMG</span>, considered as Intro Skill damage.<br><span class="Title">Deathblade Gear</span><br><span class="Bullet">Basic Attack is replaced with Basic Attack <span class="Highlight">Hounds Roar</span>.</span><br><span class="Bullet">Dodge Counter deals increased damage, considered as Resonance Liberation damage.</span></div>',
+    `<div class="skilldescription">Calcharo attacks the target, dealing <span class="Thunder">Electro DMG</span> and enters <span class="Highlight">Deathblade Gear</span> state. After <span class="Highlight">Deathblade Gear</span> state ends, Calcharo's next Intro Skill is replaced with Intro Skill <span class="Highlight">"Necessary Means"</span>, which deals <span class="Thunder">Electro DMG</span>, considered as Intro Skill DMG.<br> <br><span class="Title">Deathblade Gear</span><br>-<span class="Highlight">Basic Attack</span> is replaced with Basic Attack <span class="Highlight">Hounds Roar</span>.<br>-<span class="Highlight">Heavy Attack</span> deals increased DMG, considered as Resonance Liberation DMG.<br>-<span class="Highlight">Dodge Counter</span> deals increased DMG, considered as Resonance Liberation DMG.<br> <br><span class="Title">Basic Attack: Hounds Roar</span><br>Calcharo performs up to 5 consecutive attacks, dealing <span class="Thunder">Electro DMG</span>, considered as Basic Attack DMG.</div>`,
   attacks: [
     {
       key: "PhantomEtchingSkillDMG",
@@ -172,6 +172,7 @@ export const liberationAttacks = {
         "10": "100.00%*2",
       },
       type: "Liberation",
+      requiresResonanceChain: "SequenceNode6TheUltimatum",
     },
   ],
 };

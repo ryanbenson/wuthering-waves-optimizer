@@ -1,7 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Wanted Outlaw",
   description:
-    '<div class="skilldescription">Attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>',
+    `<div class="skilldescription">Attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
   attacks: [
     {
       key: "WantedOutlawSkillDMG",

@@ -1,7 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Extermination Order",
   description:
-    '<div class="skilldescription"><span class="Title">Extermination Order</span><br>Calcharo performs up to 3 consecutive attacks, dealing <span class="Electro">Electro DMG</span>.<br>If Calcharo is switched off field, or if Resonance Skill Extermination Order is not performed again in a while, this skill will enter Cooldown.<br>Resonance Skill Extermination Order does not interrupt Calcharo\'s Basic Attack combo.</div>',
+    `<div class="skilldescription">Calcharo performs up to 3 consecutive attacks, dealing <span class="Thunder">Electro DMG</span>.<br>If Calcharo is switched off field, or if Resonance Skill <span class="Highlight">Extermination Order</span> is not activated again in a while, this skill will enter Cooldown.<br>Resonance Skill <span class="Highlight">Extermination Order</span> does not interrupt Calcharo's Basic Attack cycle.</div>`,
   attacks: [
     {
       key: "ExterminationOrderPart1DMG",
