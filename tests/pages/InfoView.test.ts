@@ -2,37 +2,52 @@ import { render, screen } from "@testing-library/vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { createTestingPinia } from "@pinia/testing";
 import InfoView from "../../src/pages/InfoView.vue";
+import { it, describe, expect } from 'vitest';
+import '@testing-library/jest-dom'
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    { path: "/info", component: InfoView },
+    { path: "/privacy", component: InfoView },
     { path: "/", component: InfoView },
-    // Define additional routes as needed
+    { path: "/settings", component: InfoView },
+    { path: "/updates", component: InfoView },
+    { path: "/legal", component: InfoView }
   ],
-});
+}); 
+beforeEach(() => {
+  // create teleport target
+  const el = document.createElement('div')
+  el.id = 'navbar-container'
+  document.body.appendChild(el)
+})
 
-test("renders content", async () => {
-  render(InfoView, {
-    global: {
-      plugins: [
-        router,
-        createTestingPinia({
-          stubActions: false, // Keep actions functional if needed
-        }),
-      ],
-    },
+afterEach(() => {
+  // clean up
+  document.body.innerHTML = ''
+})
+
+describe('InfoView', () => {
+  it("renders content", async () => {
+    render(InfoView, {
+      global: {
+        plugins: [
+          router,
+          createTestingPinia({
+            stubActions: false, // Keep actions functional if needed
+          }),
+        ],
+      },
+    });
+
+    router.push("/info");
+    await router.isReady();
+
+    const heading = screen.getByRole("heading", {
+      name: 'Wuthering Waves Calculator & Optimizer',
+    });
+
+    expect(heading).toBeInTheDocument();
   });
-
-  router.push("/");
-  await router.isReady();
-
-  // Debug DOM if needed
-  screen.debug();
-
-  // Assert heading is rendered
-  const heading = screen.getByRole("heading", {
-    name: /wuthering waves calculator & optimizer/i,
-  });
-
-  expect(heading).toBeInTheDocument();
 });
