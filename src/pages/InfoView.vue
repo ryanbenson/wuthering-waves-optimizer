@@ -94,11 +94,11 @@
   <article class="prose page-info">
     <h1>Wuthering Waves Calculator & Optimizer</h1>
     <p>
-      Welcome to the Wuthering Waves Calculator & Optimizer. It's pretty simple,
-      configure your character like you would in the game and it will tell you
-      the normal hit (without crit or crit damage), average damage, and crit
-      damage (assuming 100% crit rate). So far the calculations match up with
-      the game when I use my own characters and builds.
+      Welcome to the It's pretty simple, configure your character like you would
+      in the game and it will tell you the normal hit (without crit or crit
+      damage), average damage, and crit damage (assuming 100% crit rate). So far
+      the calculations match up with the game when I use my own characters and
+      builds.
     </p>
     <p>
       This is still a work in progress, so keep an eye on the updates in the
