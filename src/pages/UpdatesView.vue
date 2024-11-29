@@ -108,6 +108,7 @@
         Updated damage deepen label on rotation actions to be damage amplify for
         clarity.
       </li>
+      <li>Updates Lingyang's inherit skill attack multiplier, it was doing two hits when it should have been doing just one.</li>
     </ul>
     <h3>November 28, 2024</h3>
     <ul>
