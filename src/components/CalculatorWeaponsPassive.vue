@@ -2,7 +2,7 @@
   <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
       <div :class="{ 'weapon-passive': !alwaysEnabled }" @click="toggleEnabled">
-        <p v-html="details"></p>
+        <div v-html="details"></div>
         <div class="flex gap-2 items-center">
           <div class="form-control" @click.stop>
             <label
