@@ -108,7 +108,7 @@
         Fixes Stellar Symphony second passive. It was using the old beta
         version. The effect doesn't change, just the text.
       </li>
-      <li>Enables text highlighting on weapon passives.</li>
+      <li>Enables text highlighting on weapon passives and team buffs.</li>
     </ul>
     <h3>November 29, 2024</h3>
     <ul>
