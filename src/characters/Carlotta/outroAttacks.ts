@@ -3,10 +3,17 @@ export const outroAttacks = {
   description: `<div class="skilldescription">Attack the target, dealing Glacio damage equal to 772.01% of Carlotta's Attack.</div>`,
   attacks: [
     {
-      key: "OutroSkillDMG",
-      label: "Frosty Marks DMG",
-      talent: "587.94%",
+      key: "FinalAddressDMG",
+      label: "Final Address DMG",
+      talent: "772.01%",
       type: "Outro",
+    },
+    {
+      key: "S3StepForwardEleganceinProgressionDMG",
+      label: "S3 Step Forward, Elegance in Progression DMG",
+      talent: "779.67%",
+      type: "Outro",
+      requiresResonanceChain: "SequenceNode3StepForwardEleganceinProgression",
     },
   ],
 };

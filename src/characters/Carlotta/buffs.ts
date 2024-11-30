@@ -1,16 +1,31 @@
 export const buffs = [
   {
+    key: "Dissociation",
+    name: "Dissociation",
+    details: `<div class="skilldescription">Carlotta ignores 18% of the target's defense when dealing damage to a target affected by <span class="Highlight">Dissociation</span>.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DEFIgnore",
+        modifySpecificTalents: [
+          "DeathsEndDMG",
+          "DeathOmenFuneralDMG",
+          "DeathOmenRestDMG",
+        ],
+        modifierValue: 0.18,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "InherentSkillFlawlessPurity",
     name: "Inherent Skill: Flawless Purity",
     details: `<div class="skilldescription">After casting the Resonance Skill Brilliant Will, performing an Aerial Attack within a certain time grants immunity to damage and being hit before the attack deals damage.<br>
 Soaring Stamina consumption -20%.</div>`,
     hasStacks: false,
-    modifiers: [
-      {
-        modifySpecificTalents: ["LionAwakensDMG"],
-        modifierValue: 0.5,
-      },
-    ],
+    modifiers: [],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
@@ -22,8 +37,15 @@ Soaring Stamina consumption -20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "EnableAttack",
-        modifierValue: ["InherentSkillDiligentPractice"],
+        modifier: "DEFIgnore",
+        modifySpecificTalents: [
+          "WintersLamentDMG",
+          "BrilliantWillDMG",
+          "EndoftheRoadDMG",
+          "DeathOmenFuneralDMG",
+          "DeathOmenRestDMG",
+        ],
+        modifierValue: 0.18,
       },
     ],
     minStacks: 0,

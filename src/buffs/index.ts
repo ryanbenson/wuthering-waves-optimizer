@@ -739,6 +739,23 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Carlotta: [
+    {
+      key: "SequenceNode4WithOldRainaHymnofBitterWine",
+      name: "Sequence Node 4: With Old Rain, a Hymn of Bitter Wine",
+      details: `<span class="skilldescription">When Carlotta casts Heavy Attack, Heavy Attack Restrictive Strategy, or Heavy Attack "End of the Road," all nearby allies’ Basic Attack damage is increased by 25% for 30 seconds.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "BasicAttackDMGBonus",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -874,6 +891,7 @@ export const allCharacters: string[] = [
   "Mortefi",
   "Changli",
   "Calcharo",
+  "Carlotta",
   "Yinlin",
   "Yuanwu",
   "Jinhsi",
