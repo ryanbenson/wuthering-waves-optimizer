@@ -10,6 +10,7 @@ export function getCharactersAvailable(): CharacterList {
     five: [
       { key: "Calcharo", name: "Calcharo" },
       { key: "Camellya", name: "Camellya" },
+      { key: "Carlotta", name: "Carlotta" },
       { key: "Changli", name: "Changli" },
       { key: "Encore", name: "Encore" },
       { key: "Jianxin", name: "Jianxin" },
@@ -47,6 +48,7 @@ export const allCharacters: string[] = [
   "Baizhi",
   "Calcharo",
   "Camellya",
+  "Carlotta",
   "Changli",
   "Chixia",
   "Danjin",

@@ -1,0 +1,178 @@
+export const basicAttacks = {
+  name: "Normal Attack: Silent Execution",
+  description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>
+Perform up to 2 consecutive attacks, dealing <span class="Ice">Glacio</span> damage.<br><br>
+
+<span class="Title">Basic Attack: Necessary Means</span><br>
+When Carlotta has <span class="Highlight">【Amorphous Prism】</span> on her, the Basic Attack will be replaced with Necessary Means.
+Perform up to 3 consecutive attacks, dealing <span class="Ice">Glacio</span> damage. Each Necessary Means will consume 1<span class="Highlight"> 【Amorphous Prism】</span>.<br><br>
+
+<span class="Title">Heavy Attack</span><br>
+Consume STAMINA to attack the target, dealing <span class="Ice">Glacio</span> damage.<br><br>
+
+<span class="Title">Restrictive Strategy</span><br>
+When Carlotta's <span class="Highlight">【Spiritual Extract】</span> is full, the Charged Attack will be replaced with Restrictive Strategy, consuming all <span class="Highlight">【Spiritual Extract】</span>, dealing <span class="Ice">Glacio</span> damage, and reducing the cooldown of the Resonance Skill Aesthetics of Violence by 6 seconds.<br><br>
+
+<span class="Title">Aerial Attack</span><br>
+Consume STAMINA to perform an aerial downward attack, dealing <span class="Ice">Glacio</span> damage. After performing the aerial attack, if you press Basic Attack within a short time upon landing, you can perform Ceremonial Greeting.<br>
+Aerial Attack: Ceremonial Greeting<br>
+Perform a backward somersault and attack, dealing <span class="Ice">Glacio</span> damage.<br><br>
+
+<span class="Title">Dodge Counterattack</span><br>
+When successfully dodging, pressing Basic Attack within a short time will attack the target, dealing <span class="Ice">Glacio</span> damage, and consuming 1 <span class="Highlight">【Amorphous Prism】</span>.`,
+  attacks: [
+    {
+      key: "MajesticFistStage1DMG",
+      label: "Stage 1 DMG",
+      talents: {
+        "1": "30.00%",
+        "2": "32.46%",
+        "3": "34.92%",
+        "4": "38.37%",
+        "5": "40.83%",
+        "6": "43.66%",
+        "7": "47.59%",
+        "8": "51.53%",
+        "9": "55.47%",
+        "10": "59.65%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "MajesticFistStage2DMG",
+      label: "Stage 2 DMG",
+      talents: {
+        "1": "40.00%",
+        "2": "43.28%",
+        "3": "46.56%",
+        "4": "51.16%",
+        "5": "54.44%",
+        "6": "58.21%",
+        "7": "63.46%",
+        "8": "68.70%",
+        "9": "73.95%",
+        "10": "79.53%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "MajesticFistStage3DMG",
+      label: "Stage 3 DMG",
+      talents: {
+        "1": "36.65%*2",
+        "2": "39.66%*2",
+        "3": "42.67%*2",
+        "4": "46.87%*2",
+        "5": "49.88%*2",
+        "6": "53.33%*2",
+        "7": "58.14%*2",
+        "8": "62.95%*2",
+        "9": "67.76%*2",
+        "10": "72.87%*2",
+      },
+      type: "Basic",
+    },
+    {
+      key: "MajesticFistStage4DMG",
+      label: "Stage 4 DMG",
+      talents: {
+        "1": "10.27%*5 + 21.99%",
+        "2": "11.11%*5 + 23.80%",
+        "3": "11.95%*5 + 25.60%",
+        "4": "13.13%*5 + 28.13%",
+        "5": "13.97%*5 + 29.93%",
+        "6": "14.94%*5 + 32.00%",
+        "7": "16.28%*5 + 34.89%",
+        "8": "17.63%*5 + 37.77%",
+        "9": "18.98%*5 + 40.66%",
+        "10": "20.41%*5 + 43.72%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "MajesticFistStage5DMG",
+      label: "Stage 5 DMG",
+      talents: {
+        "1": "76.70%",
+        "2": "82.99%",
+        "3": "89.28%",
+        "4": "98.09%",
+        "5": "104.38%",
+        "6": "111.61%",
+        "7": "121.67%",
+        "8": "131.74%",
+        "9": "141.80%",
+        "10": "152.49%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "FeralRoarsDamage",
+      label: "Feral Roars DMG",
+      talents: {
+        "1": "40.00%*2",
+        "2": "43.28%*2",
+        "3": "46.56%*2",
+        "4": "51.16%*2",
+        "5": "54.44%*2",
+        "6": "58.21%*2",
+        "7": "63.46%*2",
+        "8": "68.70%*2",
+        "9": "73.95%*2",
+        "10": "79.53%*2",
+      },
+      type: "Basic",
+    },
+    {
+      key: "MajesticFistHeavyAttackDMG",
+      label: "Heavy Attack DMG",
+      talents: {
+        "1": "73.30%",
+        "2": "79.32%",
+        "3": "85.33%",
+        "4": "93.74%",
+        "5": "99.75%",
+        "6": "106.66%",
+        "7": "116.28%",
+        "8": "125.90%",
+        "9": "135.51%",
+        "10": "145.73%",
+      },
+      type: "Heavy",
+    },
+    {
+      key: "MajesticFistMidAirAttackDMG",
+      label: "Mid-air Attack DMG",
+      talents: {
+        "1": "62.00%",
+        "2": "67.09%",
+        "3": "72.17%",
+        "4": "79.29%",
+        "5": "84.37%",
+        "6": "90.22%",
+        "7": "98.36%",
+        "8": "106.49%",
+        "9": "114.62%",
+        "10": "123.27%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "MajesticFistDodgeCounterDMG",
+      label: "Dodge Counter DMG",
+      talents: {
+        "1": "63.40%*2",
+        "2": "68.60%*2",
+        "3": "73.80%*2",
+        "4": "81.08%*2",
+        "5": "86.28%*2",
+        "6": "92.26%*2",
+        "7": "100.58%*2",
+        "8": "108.89%*2",
+        "9": "117.21%*2",
+        "10": "126.05%*2",
+      },
+      type: "Basic",
+    },
+  ],
+};
