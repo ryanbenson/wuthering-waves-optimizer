@@ -102,13 +102,24 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 30, 2024</h3>
+    <ul>
+      <li>
+        Fixes Stellar Symphony second passive. It was using the old beta
+        version. The effect doesn't change, just the text.
+      </li>
+      <li>Enables text highlighting on weapon passives and team buffs.</li>
+    </ul>
     <h3>November 29, 2024</h3>
     <ul>
       <li>
         Updated damage deepen label on rotation actions to be damage amplify for
         clarity.
       </li>
-      <li>Updates Lingyang's inherit skill attack multiplier, it was doing two hits when it should have been doing just one.</li>
+      <li>
+        Updates Lingyang's inherit skill attack multiplier, it was doing two
+        hits when it should have been doing just one.
+      </li>
     </ul>
     <h3>November 28, 2024</h3>
     <ul>
