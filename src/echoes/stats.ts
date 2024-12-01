@@ -239,6 +239,8 @@ export const echoSetImageMap: Record<string, string> = {
     "https://ryanbenson.github.io/wuthering-waves-assets/images/MoonlitClouds.webp",
   LingeringTunes:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/LingeringTunes.webp",
+  AHeartOfDetermination:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/aheartofdetermination.png",
 };
 
 export function getEchoSetIconByType(type: string): string {
@@ -255,6 +257,7 @@ export const echoSetLabelMap: Record<string, string> = {
   RejuvenatingGlow: "Rejuvenating Glow",
   MoonlitClouds: "Moonlit Clouds",
   LingeringTunes: "Lingering Tunes",
+  AHeartOfDetermination: "A Heart Of Determination",
 };
 
 export function getEchoSetLabelByType(type: string): string {

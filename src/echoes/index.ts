@@ -47,6 +47,28 @@ export function getCostByClass(echoClass: string): number {
 }
 
 export const mainEchoesData: MainEchoes = {
+  AbyssalVenator: {
+    key: "Abyssal Venator",
+    name: "Abyssal Venator",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/abyssalvenator.png",
+    details: `<span class="description">A humanoid Tacet Discord born of the abyssal sea that assumes the semblance of an aristocrat, a fully differentiated form of Primordia Bloom.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["AHeartOfDetermination"],
+  },
+  AbyssalMercator: {
+    key: "AbyssalMercator",
+    name: "Abyssal Mercator",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/abyssalmercator.png",
+    details: `<span class="description">A humanoid Tacet Discord born of the abyssal sea that assumes the semblance of a merchant, a fully differentiated form of Primordia Bloom.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["AHeartOfDetermination"],
+  },
   AeroPredator: {
     key: "AeroPredator",
     name: "Aero Predator",
@@ -202,6 +224,17 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["RejuvenatingGlow", "LingeringTunes"],
   },
+  ChestMimic: {
+    key: "ChestMimic",
+    name: "Chest Mimic",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/chestmimic.png",
+    details: `<span class="description">A deceptive Tacet Discord disguised as a supply chest, preying on the greed of its victims and devouring those who approach.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["AHeartOfDetermination"],
+  },
   Chirpuff: {
     key: "Chirpuff",
     name: "Chirpuff",
@@ -228,6 +261,28 @@ export const mainEchoesData: MainEchoes = {
       },
     ],
     sets: ["SierraGale", "SunSinkingEclipse"],
+  },
+  ChopChopLeftless: {
+    key: "ChopChopLeftless",
+    name: "Chop Chop: Leftless",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/chopchopleftless.png",
+    details: `<span class="description">A Tacet Discord functions as the "left hand" of Chop Chop.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["AHeartOfDetermination"],
+  },
+  ChopChopRightless: {
+    key: "ChopChopRightless",
+    name: "Chop Chop: Rightless",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/chopchoprightless.png",
+    details: `<span class="description">A Tacet Discord functions as the "right hand" of Chop Chop.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["AHeartOfDetermination"],
   },
   ClangBang: {
     key: "ClangBang",
@@ -308,6 +363,17 @@ export const mainEchoesData: MainEchoes = {
       // },
     ],
     sets: ["CelestialLight", "RejuvenatingGlow", "MoonlitClouds"],
+  },
+  CuddleWuddle: {
+    key: "CuddleWuddle",
+    name: "Cuddle Wuddle",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/cuddlewuddle.png",
+    details: `<span class="description">An incorporeal Tacet Discord inhabiting the body of a large, ragged plushie.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["AHeartOfDetermination"],
   },
   CyanFeatheredHeron: {
     key: "CyanFeatheredHeron",
@@ -635,6 +701,17 @@ export const mainEchoesData: MainEchoes = {
     actions: [],
     sets: ["MoltenRift", "VoidThunder", "SierraGale"],
   },
+  GalescourgeStalker: {
+    key: "GalescourgeStalker",
+    name: "Galescourge Stalker",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/galescourgestalker.png",
+    details: `<span class="description">A wolf-like Tacet Discord reigning high-altitude regions, known for its relentless predation of its prey.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["AHeartOfDetermination"],
+  },
   GlacioDreadmane: {
     key: "GlacioDreadmane",
     name: "Glacio Dreadmane",
@@ -775,6 +852,17 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [],
     sets: ["FreezingFrost", "CelestialLight"],
+  },
+  HocusPocus: {
+    key: "HocusPocus",
+    name: "Hocus Pocus",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/hocuspocus.png",
+    details: `<span class="description">An incorporeal Tacet Discord inhabiting the body of a charming, dashing plushie.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["AHeartOfDetermination"],
   },
   Hoochief: {
     key: "Hoochief",
@@ -1099,6 +1187,17 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["CelestialLight"],
   },
+  LottieLost: {
+    key: "LottieLost",
+    name: "Lottie Lost",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/lottielost.png",
+    details: `<span class="description">An incorporeal Tacet Discord inhabiting the body of a quiet, compassionate plushie.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["AHeartOfDetermination"],
+  },
   LumiscaleConstruct: {
     key: "LumiscaleConstruct",
     name: "Lumiscale Construct",
@@ -1258,6 +1357,17 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["CelestialLight"],
   },
+  QuestlessKnight: {
+    key: "QuestlessKnight",
+    name: "Questless Knight",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/questlessknight.png",
+    details: `<span class="description">A humanoid Tacet Discord clad in fine attire, wielding a sharp blade and extraordinary might existing only in legends.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["AHeartOfDetermination"],
+  },
   RocksteadyGuardian: {
     key: "RocksteadyGuardian",
     name: "Rocksteady Guardian",
@@ -1361,6 +1471,55 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [],
     sets: ["FreezingFrost", "SierraGale", "MoonlitClouds"],
+  },
+  SentryConstruct: {
+    key: "SentryConstruct",
+    name: "Sentry Construct",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sentryconstruct.png",
+    details: `<span class="description">A precise and powerful battle machine that has been refitted with special technology. It carries out its master's commands with absolute loyalty. When equipped with this Sound Shell skill, the current character gains a 12.00% <span class="Ice">Glacio</span> damage bonus increase and a 12.00% <span class="Highlight">Resonance Skill</span> damage bonus increase.</span>`,
+    modifiers: [
+      {
+        modifier: "Glacio",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceSkillDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "SentryConstructAttack",
+        label: "Attack DMG",
+        description: `Use the Sound Shell skill to transform into a heterogeneous weapon and attack the target in front, causing <span class="Highlight">225.00%/270.00%/315.00%/360.00%/405.00%</span> <span class="Ice">Glacio</span> damage.`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+      {
+        key: "SentryConstructUpgradedAttack",
+        label: "Upgraded Attack DMG",
+        description: `When the equipped character casts Resonance Release, the "Assault Power" can be continuously improved. When the "Assault Power" is fully upgraded, the Sound Shell skill can be used to transform into a heterogeneous weapon, take off and dive towards the target, causing 225.00%/270.00%/315.00%/360.00%/405.00% condensation damage and freezing the target. Skill cooldown: 25 seconds`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
+    sets: ["AHeartOfDetermination"],
   },
   SnipSnap: {
     key: "SnipSnap",

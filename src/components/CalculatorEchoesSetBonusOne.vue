@@ -1,10 +1,9 @@
 <template>
   <h2 class="text-lg font-bold mt-6 mb-2">Set Bonuses</h2>
-  <div
-    class="card card-bordered card-compact bg-base-100 shadow mb-2">
+  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
       <h2 v-if="setName" class="card-title">{{ setName }}</h2>
-      <div v-if="setDescription" v-html="setDescription" ></div>
+      <div v-if="setDescription" v-html="setDescription"></div>
       <div v-else>No first echo set bonus is configured.</div>
     </div>
   </div>
@@ -33,17 +32,59 @@ export default {
         "Rejuvenating Glow 2 Set",
         "Moonlit Clouds 2 Set",
         "Lingering Tunes 2 Set",
+        "A Heart Of Determination 2 Set",
       ],
       setBonusEffects: {
-        "Freezing Frost 2 Set": { Glacio: 10, description: `<span class="Ice">Glacio</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Freezing Frost' },
-        "Molten Rift 2 Set": { Fusion: 10, description: `<span class="Fire">Fusion</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Molten Rift' },
-        "Void Thunder 2 Set": { Electro: 10, description: `<span class="Thunder">Electro</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Void Thunder' },
-        "Sierra Gale 2 Set": { Aero: 10, description: `<span class="Wind">Aero</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Sierra Gale' },
-        "Celestial Light 2 Set": { Spectro: 10, description: `<span class="Light">Spectro</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Celestial Light' },
-        "Sun-sinking Eclipse 2 Set": { Havoc: 10, description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Sun-sinking Eclipse' },
-        "Rejuvenating Glow 2 Set": { HealingBonus: 10, description: `Healing increases by <span class="Highlight">10%</span>`, name: 'Rejuvenating Glow' },
-        "Moonlit Clouds 2 Set": { EnergyRegen: 10, description: `Energy Regen increases by <span class="Highlight">10%</span>`, name: 'Moonlit Clouds' },
-        "Lingering Tunes 2 Set": { ATK: 10,description: `ATK increases by <span class="Highlight">10%</span>`, name: 'Lingering Tunes' },
+        "Freezing Frost 2 Set": {
+          Glacio: 10,
+          description: `<span class="Ice">Glacio</span> DMG increased by <span class="Highlight">10%</span>`,
+          name: "Freezing Frost",
+        },
+        "Molten Rift 2 Set": {
+          Fusion: 10,
+          description: `<span class="Fire">Fusion</span> DMG increased by <span class="Highlight">10%</span>`,
+          name: "Molten Rift",
+        },
+        "Void Thunder 2 Set": {
+          Electro: 10,
+          description: `<span class="Thunder">Electro</span> DMG increased by <span class="Highlight">10%</span>`,
+          name: "Void Thunder",
+        },
+        "Sierra Gale 2 Set": {
+          Aero: 10,
+          description: `<span class="Wind">Aero</span> DMG increased by <span class="Highlight">10%</span>`,
+          name: "Sierra Gale",
+        },
+        "Celestial Light 2 Set": {
+          Spectro: 10,
+          description: `<span class="Light">Spectro</span> DMG increased by <span class="Highlight">10%</span>`,
+          name: "Celestial Light",
+        },
+        "Sun-sinking Eclipse 2 Set": {
+          Havoc: 10,
+          description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
+          name: "Sun-sinking Eclipse",
+        },
+        "Rejuvenating Glow 2 Set": {
+          HealingBonus: 10,
+          description: `Healing increases by <span class="Highlight">10%</span>`,
+          name: "Rejuvenating Glow",
+        },
+        "Moonlit Clouds 2 Set": {
+          EnergyRegen: 10,
+          description: `Energy Regen increases by <span class="Highlight">10%</span>`,
+          name: "Moonlit Clouds",
+        },
+        "Lingering Tunes 2 Set": {
+          ATK: 10,
+          description: `ATK increases by <span class="Highlight">10%</span>`,
+          name: "Lingering Tunes",
+        },
+        "A Heart Of Determination 2 Set": {
+          ResonanceSkillDMGBonus: 12,
+          description: `Increase Resonance Skill DMG by <span class="Highlight">12%</span>`,
+          name: "A Heart Of Determination",
+        },
       },
     };
   },
@@ -100,13 +141,13 @@ export default {
       if (!this.type) {
         return false;
       }
-      return this.setBonusEffects[this.type]?.description ?? '';
+      return this.setBonusEffects[this.type]?.description ?? "";
     },
     setName() {
       if (!this.type) {
         return false;
       }
-      return this.setBonusEffects[this.type]?.name ?? '';
+      return this.setBonusEffects[this.type]?.name ?? "";
     },
   },
 };
