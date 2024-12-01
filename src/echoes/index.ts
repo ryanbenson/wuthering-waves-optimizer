@@ -48,7 +48,7 @@ export function getCostByClass(echoClass: string): number {
 
 export const mainEchoesData: MainEchoes = {
   AbyssalVenator: {
-    key: "Abyssal Venator",
+    key: "AbyssalVenator",
     name: "Abyssal Venator",
     class: "Elite",
     image:
