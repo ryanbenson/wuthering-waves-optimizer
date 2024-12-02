@@ -1,140 +1,162 @@
 <template>
-<div class="py-4">
+  <InventoryEchoEdit ref="inventoryEchoEdit"></InventoryEchoEdit>
+  <div class="py-4">
     <div class="echoes__filters flex flex-wrap align-center gap-2 mb-6">
-        <select
+      <select
         v-model="mainStatFilter"
         name="mainEcho"
-        class="select select-bordered select select-sm"
-        >
+        class="select select-bordered select select-sm">
         <option :value="null">Select a main stat</option>
         <option
-            v-for="mainStat in allMainStats"
-            :key="mainStat"
-            :value="mainStat"
-        >{{ getReadableSubStatLabel(mainStat) }}</option>
-        </select>
-        <select
+          v-for="mainStat in allMainStats"
+          :key="mainStat"
+          :value="mainStat">
+          {{ getReadableSubStatLabel(mainStat) }}
+        </option>
+      </select>
+      <select
         v-model="echo"
         name="mainEcho"
-        class="select select-bordered select select-sm mr-4"
-        >
+        class="select select-bordered select select-sm mr-4">
         <option :value="null">Select an echo</option>
         <optgroup label="Calamity">
-            <option
+          <option
             v-for="option in mainEchoOptions.Calamity"
             :key="option.key"
             :value="option.key">
             {{ option.name }}
-            </option>
+          </option>
         </optgroup>
         <optgroup label="Overlord">
-            <option
+          <option
             v-for="option in mainEchoOptions.Overlord"
             :key="option.key"
             :value="option.key">
             {{ option.name }}
-            </option>
+          </option>
         </optgroup>
         <optgroup label="Elite">
-            <option
+          <option
             v-for="option in mainEchoOptions.Elite"
             :key="option.key"
             :value="option.key">
             {{ option.name }}
-            </option>
+          </option>
         </optgroup>
         <optgroup label="Common">
-            <option
+          <option
             v-for="option in mainEchoOptions.Common"
             :key="option.key"
             :value="option.key">
             {{ option.name }}
-            </option>
+          </option>
         </optgroup>
-        </select>
-        <div class="echoes__filters__sets">
+      </select>
+      <div class="echoes__filters__sets">
         <button
-            v-for="echoSet in echoSetsList"
-            :key="echoSet"
-            @click="toggleEchoSetFilter(echoSet)"
-            class="rounded mr-1"
-            :class="{'btn-active': isEchoSetFilterActive(echoSet)}"
-        >
-            <img :src="getEchoSetImage(echoSet)" class="size-8" :class="echoSet" />
+          v-for="echoSet in echoSetsList"
+          :key="echoSet"
+          @click="toggleEchoSetFilter(echoSet)"
+          class="rounded mr-1"
+          :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
+          <img
+            :src="getEchoSetImage(echoSet)"
+            class="size-8"
+            :class="echoSet" />
         </button>
-        </div>
-        <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
+      </div>
+      <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
     </div>
 
     <div class="echoes__list">
-        <template v-if="!echoesList.length">
-        <div class="echoes__list--empty py-12 text-center w-full">No echoes found</div>
-        </template>
-        <template v-else>
+      <template v-if="!echoesList.length">
+        <div class="echoes__list--empty py-12 text-center w-full">
+          No echoes found
+        </div>
+      </template>
+      <template v-else>
         <div class="join flex justify-center py-4">
-            <button @click="prevPage" class="join-item btn btn-sm">«</button>
-            <button class="join-item btn btn-sm">Page {{ page }} / {{ totalPages }}</button>
-            <button @click="nextPage" class="join-item btn btn-sm">»</button>
+          <button @click="prevPage" class="join-item btn btn-sm">«</button>
+          <button class="join-item btn btn-sm">
+            Page {{ page }} / {{ totalPages }}
+          </button>
+          <button @click="nextPage" class="join-item btn btn-sm">»</button>
         </div>
         <div class="echoes__list__items grid grid-cols-1 md:grid-cols-2 gap-4">
-            <CalculatorEchoCard
-                v-for="echo in paginatedEchoesList"
-                class="echo__item"
-                :key="echo.echoId"
-                :rank="echo.rank"
-                :type="echo.type"
-                :echo-id="echo.echoId"
-                :echo-set="echo.echoSet"
-                :stat="echo.stat"
-                :echo="echo.echo"
-                :echo-sub-stats-type-1="echo.echoSubStatsType1"
-                :echo-sub-stats-value-1="echo.echoSubStatsValue1"
-                :echo-sub-stats-type-2="echo.echoSubStatsType2"
-                :echo-sub-stats-value-2="echo.echoSubStatsValue2"
-                :echo-sub-stats-type-3="echo.echoSubStatsType3"
-                :echo-sub-stats-value-3="echo.echoSubStatsValue3"
-                :echo-sub-stats-type-4="echo.echoSubStatsType4"
-                :echo-sub-stats-value-4="echo.echoSubStatsValue4"
-                :echo-sub-stats-type-5="echo.echoSubStatsType5"
-                :echo-sub-stats-value-5="echo.echoSubStatsValue5"
-                :hide-inventory="true"
-            >
-            <div class="echoes__item__foot flex gap-2 justify-between items-center">
-                <div class="echoes__items__foot__equipped">
-                    <div class="avatar-group -space-x-6 rtl:space-x-reverse">
-                      <div class="avatar" v-for="char in getCharsEquipped(echo)">
-                        <div class="w-12 bg-accent-content">
-                          <img :src="getCharImg(char)" />
-                        </div>
-                      </div>
+          <CalculatorEchoCard
+            v-for="echo in paginatedEchoesList"
+            class="echo__item"
+            :key="echo.echoId"
+            :rank="echo.rank"
+            :type="echo.type"
+            :echo-id="echo.echoId"
+            :echo-set="echo.echoSet"
+            :stat="echo.stat"
+            :echo="echo.echo"
+            :echo-sub-stats-type-1="echo.echoSubStatsType1"
+            :echo-sub-stats-value-1="echo.echoSubStatsValue1"
+            :echo-sub-stats-type-2="echo.echoSubStatsType2"
+            :echo-sub-stats-value-2="echo.echoSubStatsValue2"
+            :echo-sub-stats-type-3="echo.echoSubStatsType3"
+            :echo-sub-stats-value-3="echo.echoSubStatsValue3"
+            :echo-sub-stats-type-4="echo.echoSubStatsType4"
+            :echo-sub-stats-value-4="echo.echoSubStatsValue4"
+            :echo-sub-stats-type-5="echo.echoSubStatsType5"
+            :echo-sub-stats-value-5="echo.echoSubStatsValue5"
+            :hide-inventory="true">
+            <div
+              class="echoes__item__foot flex gap-2 justify-between items-center">
+              <div class="echoes__items__foot__equipped">
+                <div class="avatar-group -space-x-6 rtl:space-x-reverse">
+                  <div class="avatar" v-for="char in getCharsEquipped(echo)">
+                    <div class="w-12 bg-accent-content">
+                      <img :src="getCharImg(char)" />
                     </div>
+                  </div>
                 </div>
-                <div class="echoes__item__foot__actions flex gap-2">
-                    <button class="btn btn-primary btn-sm min-w-16">Edit</button>
-                    <button @click="removeEcho(echo.echoId)" class="btn btn-error btn-sm min-w-16">Delete</button>
-                </div>
+              </div>
+              <div class="echoes__item__foot__actions flex gap-2">
+                <button
+                  @click="handleEditEcho(echo.echoId)"
+                  class="btn btn-primary btn-sm min-w-16">
+                  Edit
+                </button>
+                <button
+                  @click="removeEcho(echo.echoId)"
+                  class="btn btn-error btn-sm min-w-16">
+                  Delete
+                </button>
+              </div>
             </div>
-            </CalculatorEchoCard>
+          </CalculatorEchoCard>
         </div>
         <div class="join flex justify-center py-4">
-            <button @click="prevPage" class="join-item btn btn-sm">«</button>
-            <button class="join-item btn btn-sm">Page {{ page }} / {{ totalPages }}</button>
-            <button @click="nextPage" class="join-item btn btn-sm">»</button>
+          <button @click="prevPage" class="join-item btn btn-sm">«</button>
+          <button class="join-item btn btn-sm">
+            Page {{ page }} / {{ totalPages }}
+          </button>
+          <button @click="nextPage" class="join-item btn btn-sm">»</button>
         </div>
-        </template>
+      </template>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
 import { mainEchoesData, getEchoData } from "../echoes/index.ts";
-import { echoSetLabelMap, getEchoSetIconByType, getReadableSubStatLabel, statsTable } from "../echoes/stats";
+import {
+  echoSetLabelMap,
+  getEchoSetIconByType,
+  getReadableSubStatLabel,
+  statsTable,
+} from "../echoes/stats";
 import { mapActions, mapState } from "pinia";
 import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
-import CalculatorEchoCard from './CalculatorEchoCard.vue';
+import CalculatorEchoCard from "./CalculatorEchoCard.vue";
+import InventoryEchoEdit from "./InventoryEchoEdit.vue";
 export default {
-  name: 'InventoryEchoesBrowser',
+  name: "InventoryEchoesBrowser",
   props: {},
   data() {
     return {
@@ -149,7 +171,8 @@ export default {
     };
   },
   components: {
-    CalculatorEchoCard
+    CalculatorEchoCard,
+    InventoryEchoEdit,
   },
   computed: {
     ...mapState(useInventoryStore, ["echoes", "getEquippedEchoData"]),
@@ -172,7 +195,9 @@ export default {
       }
       // filter by main stat if set
       if (this.mainStatFilter) {
-        allEchoes = allEchoes.filter((echo) => echo.stat === this.mainStatFilter);
+        allEchoes = allEchoes.filter(
+          (echo) => echo.stat === this.mainStatFilter,
+        );
       }
 
       return allEchoes;
@@ -205,29 +230,42 @@ export default {
       return echoes;
     },
     allMainStats() {
-      const fourSlotOptions = Object.keys(this.statsTable['4']);
-      const threeSlotOptions = Object.keys(this.statsTable['3']);
-      const oneSlotOptions = Object.keys(this.statsTable['1']);
-      const allOptions = [...fourSlotOptions, ...threeSlotOptions, ...oneSlotOptions];
+      const fourSlotOptions = Object.keys(this.statsTable["4"]);
+      const threeSlotOptions = Object.keys(this.statsTable["3"]);
+      const oneSlotOptions = Object.keys(this.statsTable["1"]);
+      const allOptions = [
+        ...fourSlotOptions,
+        ...threeSlotOptions,
+        ...oneSlotOptions,
+      ];
       // filter out any dupes
       return [...new Set(allOptions)];
     },
   },
   methods: {
-    ...mapActions(useInventoryStore, ["getEchoById", "getEchoEquippedChars", "deleteEcho", "deleteEchoEquippedMapping"]),
+    ...mapActions(useInventoryStore, [
+      "getEchoById",
+      "getEchoEquippedChars",
+      "deleteEcho",
+      "deleteEchoEquippedMapping",
+    ]),
     ...mapActions(useCharacterStore, ["removeCharacterEcho"]),
     getReadableSubStatLabel,
     triggerOpenModal(echoIndex) {
       this.echoIndex = echoIndex;
-      const modalEl = document.getElementById('modal-echoes-browser');
+      const modalEl = document.getElementById("modal-echoes-browser");
       modalEl.showModal();
     },
     triggerCloseModal() {
-      const modalEl = document.getElementById('modal-echoes-browser');
+      const modalEl = document.getElementById("modal-echoes-browser");
       modalEl.close();
     },
     handleClose() {
       this.reset();
+    },
+    handleEditEcho(echoId) {
+      this.$refs.inventoryEchoEdit.setEchoId(echoId);
+      this.$refs.inventoryEchoEdit.handleOpenModal();
     },
     reset() {
       this.echoIndex = null;
@@ -283,8 +321,8 @@ export default {
           await this.removeCharacterEcho(character, index);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

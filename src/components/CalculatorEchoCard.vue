@@ -46,8 +46,7 @@
             <tbody>
               <tr v-if="mainStatValue" :key="stat">
                 <td class="flex gap-2 items-center">
-                  <img
-                    src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />
+                  <img :src="getSubStatIconByType(stat)" />
                   {{ getReadableSubStatLabel(stat) }}
                 </td>
                 <td>{{ mainStatValue }}%</td>
@@ -337,6 +336,7 @@ export default {
   },
   methods: {
     getReadableSubStatLabel,
+    getSubStatIconByType,
     getEchoSetIcon(type) {
       return getEchoSetIconByType(type);
     },
