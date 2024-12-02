@@ -289,6 +289,7 @@ export default {
     resetFilters() {
       this.echoSet = null;
       this.echo = null;
+      this.mainStatFilter = null;
     },
     prevPage() {
       if (this.page <= 1) {
