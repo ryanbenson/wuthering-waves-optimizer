@@ -860,8 +860,7 @@ export const allWeaponTeamBuffs = [
     ],
     minStacks: 0,
     maxStacks: 0,
-    details:
-      "When the Intro skill causes healing, it restores 8 points of Concert Energy to itself and increases the ATK of all characters in the nearby team by 14%/17.5%/21%/24.5%/28% for 30 seconds. It can be triggered once every 20 seconds. Effects with the same name cannot be stacked.",
+    details: `<span class="skilldescription">Restore <span class="param">8/10/12/14/16</span> Concerto Energy when casting Resonance Liberation. This effect can be triggered <span class="param">1</span> time(s) every <span class="param">20</span>s. When casting Resonance Skill that heals, increase nearby party members' ATK by <span class="param">14%/17.5%/21%/24.5%/28%</span> for <span class="param">30</span>s. Effects of the same name cannot be stacked.</span>`,
     alwaysEnabled: false,
   },
 ];

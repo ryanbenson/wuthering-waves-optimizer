@@ -1,9 +1,8 @@
 <template>
   <div>
     <CalculatorEchoesBrowser
-      ref="echoesBrowser" 
-      :character="character"
-    ></CalculatorEchoesBrowser>
+      ref="echoesBrowser"
+      :character="character"></CalculatorEchoesBrowser>
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
@@ -19,9 +18,7 @@
         @echo:set-chosen="handleEchoSetChosen"
         @main-echo:updated="handleMainEchoUpdated"
         @main-echo-rank:updated="handleMainEchoRankUpdated"
-        @open-echoes-browser="handleOpenEchoesBrowser"
-      >
-      </CalculatorEcho>
+        @open-echoes-browser="handleOpenEchoesBrowser"></CalculatorEcho>
     </div>
     <div class="set-bonus-selector">
       <CalculatorEchoesSetBonusOne
@@ -41,16 +38,19 @@
           'text-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
           'text-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
           'text-green-500': mainEchoRank === '2' || mainEchoRank === 2,
-        }"
-      >{{ echoName }}</h3>
-      <div v-if="mainEcho" class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer relative z-10" @click="toggleMainEchoBuffEnabled">
+        }">
+        {{ echoName }}
+      </h3>
+      <div
+        v-if="mainEcho"
+        class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer relative z-10"
+        @click="toggleMainEchoBuffEnabled">
         <div class="card-body">
           <div
             v-if="chosenMainEchoData"
             class="main-echo__details"
             v-html="chosenMainEchoData.details"></div>
 
-          
           <div class="flex gap-2 items-center">
             <div class="form-control" @click.stop>
               <label
@@ -164,7 +164,7 @@ export default {
       // process all of the echo data
       if (this.echoData) {
         const echoItemsData = Object.values(
-          JSON.parse(JSON.stringify(this.echoData))
+          JSON.parse(JSON.stringify(this.echoData)),
         );
         // go through each echo data and merge each stat
         for (const echo of echoItemsData) {
@@ -176,7 +176,7 @@ export default {
       // process the first set bonus
       if (this.setBonusOne) {
         for (const [stat, value] of Object.entries(
-          JSON.parse(JSON.stringify(this.setBonusOne))
+          JSON.parse(JSON.stringify(this.setBonusOne)),
         )) {
           stats[stat] = (stats[stat] || 0) + value;
         }
@@ -184,7 +184,7 @@ export default {
       // process the second set bonus
       if (this.setBonusTwo) {
         for (const [stat, value] of Object.entries(
-          JSON.parse(JSON.stringify(this.setBonusTwo))
+          JSON.parse(JSON.stringify(this.setBonusTwo)),
         )) {
           stats[stat] = (stats[stat] || 0) + value;
         }
@@ -250,10 +250,12 @@ export default {
     async handleEchoSetChosen({ set, index }) {
       this.echoSetsChosen[index] = set;
       // Filter out nulls and create a count map for each value
-      const counts = this.echoSetsChosen.filter(v => v !== null).reduce((acc, val) => {
+      const counts = this.echoSetsChosen
+        .filter((v) => v !== null)
+        .reduce((acc, val) => {
           acc[val] = (acc[val] || 0) + 1;
           return acc;
-      }, {});
+        }, {});
 
       // Get the unique values and their counts
       const uniqueValues = Object.keys(counts);
@@ -264,39 +266,49 @@ export default {
       let setBonusTwoVal = null;
 
       if (uniqueValues.length === 1 && uniqueCounts[0] === 5) {
-          // Case 1: All 5 values are the same
-          setBonusOneVal = `${getEchoSetLabelByType(uniqueValues[0])} 2 Set`;
-          setBonusTwoVal = `${getEchoSetLabelByType(uniqueValues[0])} 5 Set`;
-        } else if (
-          uniqueValues.length === 2 &&
-          (
-              (uniqueCounts.includes(2) && uniqueCounts.includes(3)) ||  // Case 2a: 2 and 3 or 3 and 2
-              uniqueCounts.filter(count => count === 2).length === 2     // Case 2b: 2 and 2
-          )
-        ) {
-          // Case 2: Two different values with counts (2 and 3) or (2 and 2)
-          const [value1, value2] = uniqueValues;
-          const [count1, count2] = uniqueCounts;
+        // Case 1: All 5 values are the same
+        setBonusOneVal = `${getEchoSetLabelByType(uniqueValues[0])} 2 Set`;
+        setBonusTwoVal = `${getEchoSetLabelByType(uniqueValues[0])} 5 Set`;
+      } else if (
+        uniqueValues.length >= 2 &&
+        uniqueCounts.filter((count) => count === 2).length === 2
+      ) {
+        // Case 2: Two pairs of 2, ignore any outliers
+        const pairs = uniqueValues.filter((value) => counts[value] === 2);
+        setBonusOneVal = `${getEchoSetLabelByType(pairs[0])} 2 Set`;
+        setBonusTwoVal = `${getEchoSetLabelByType(pairs[1])} 2 Set`;
+      } else if (
+        uniqueValues.length === 2 &&
+        ((uniqueCounts.includes(2) && uniqueCounts.includes(3)) ||
+          (uniqueCounts.includes(3) && uniqueCounts.includes(2)))
+      ) {
+        // Case 3: Two values with counts 2 and 3
+        const [value1, value2] = uniqueValues;
+        const [count1, count2] = uniqueCounts;
 
-          // Assign bonuses based on the counts
-          if (count1 === 2 && count2 === 2) {
-              setBonusOneVal = `${getEchoSetLabelByType(value1)} 2 Set`;
-              setBonusTwoVal = `${getEchoSetLabelByType(value2)} 2 Set`;
-          } else if ((count1 === 2 && count2 === 3) || (count1 === 3 && count2 === 2)) {
-              setBonusOneVal = `${count1 === 2 ? getEchoSetLabelByType(value1) : getEchoSetLabelByType(value2)} 2 Set`;
-              setBonusTwoVal = `${count1 === 3 ? getEchoSetLabelByType(value1) : getEchoSetLabelByType(value2)} 2 Set`;
-          }
-        } else if (uniqueCounts.some(count => count >= 2) && uniqueCounts.filter(count => count >= 2).length === 1) {
-          // Case 3: Only one value has a repetition of 2, no others repeat more than once
-          const repeatedValue = uniqueValues[uniqueCounts.findIndex(count => count >= 2)];
-          setBonusOneVal = `${getEchoSetLabelByType(repeatedValue)} 2 Set`;
-          setBonusTwoVal = null;
+        if (count1 === 2 && count2 === 3) {
+          setBonusOneVal = `${getEchoSetLabelByType(value1)} 2 Set`;
+          setBonusTwoVal = `${getEchoSetLabelByType(value2)} 2 Set`;
+        } else if (count1 === 3 && count2 === 2) {
+          setBonusOneVal = `${getEchoSetLabelByType(value2)} 2 Set`;
+          setBonusTwoVal = `${getEchoSetLabelByType(value1)} 2 Set`;
+        }
+      } else if (
+        uniqueCounts.some((count) => count >= 2) &&
+        uniqueCounts.filter((count) => count >= 2).length === 1
+      ) {
+        // Case 4: Only one value has a repetition of 2, no others repeat more than once
+        const repeatedValue =
+          uniqueValues[uniqueCounts.findIndex((count) => count >= 2)];
+        setBonusOneVal = `${getEchoSetLabelByType(repeatedValue)} 2 Set`;
+        setBonusTwoVal = null;
       } else {
-          // Case 4: No value is repeated
-          setBonusOneVal = null;
-          setBonusTwoVal = null;
+        // Case 5: No value is repeated
+        setBonusOneVal = null;
+        setBonusTwoVal = null;
       }
-      // update the store
+
+      // Update the store
       const data = {
         echoSetBonus: {
           setBonusOne: setBonusOneVal,
@@ -313,7 +325,7 @@ export default {
     },
     handleOpenEchoesBrowser(echoIndex) {
       this.$refs.echoesBrowser.triggerOpenModal(echoIndex);
-    }
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -627,7 +639,6 @@ html[data-theme="light"] {
   left: 0.5rem;
   z-index: 0;
 }
-
 
 .rank__label {
   font-size: 24px;

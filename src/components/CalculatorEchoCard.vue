@@ -1,5 +1,4 @@
 <template>
-
   <div
     class="echo__item card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
@@ -15,8 +14,7 @@
             }"
             :style="{
               backgroundImage: `url(${echoImage})`,
-            }"
-          ></div>
+            }"></div>
         </div>
         <div class="echo__item__stats mb-2 w-full relative">
           <h2 class="card-title flex items-center justify-between">
@@ -32,18 +30,14 @@
             <div class="echo__item__meta flex gap-2 items-center">
               <span
                 v-if="echoId && !hideInventory"
-                class="echo__item__set size-6 rounded-full"
-              >
-                <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png" />
-              </span>
-              <span
-                v-if="echoSet"
-                class="echo__item__set size-6 rounded-full"
-              >
+                class="echo__item__set size-6 rounded-full">
                 <img
-                  :src="getEchoSetIcon(echoSet)" :class="echoSet" />
+                  src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png" />
               </span>
-              <span class="echo__item__cost badge badge-primary">
+              <span v-if="echoSet" class="echo__item__set size-6 rounded-full">
+                <img :src="getEchoSetIcon(echoSet)" :class="echoSet" />
+              </span>
+              <span class="echo__item__cost badge badge-primary min-w-16">
                 Cost {{ type }}
               </span>
             </div>
@@ -132,7 +126,7 @@ import {
   getCostByClass,
 } from "../echoes/index.ts";
 export default {
-  name: 'CalculatorEchoCard',
+  name: "CalculatorEchoCard",
   props: {
     rank: {
       type: [Number, String],
@@ -200,13 +194,13 @@ export default {
     },
     hideInventory: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
       statsTable,
-      flatBonusesByRankByType
+      flatBonusesByRankByType,
     };
   },
   computed: {
@@ -346,6 +340,6 @@ export default {
     getEchoSetIcon(type) {
       return getEchoSetIconByType(type);
     },
-  }
+  },
 };
 </script>

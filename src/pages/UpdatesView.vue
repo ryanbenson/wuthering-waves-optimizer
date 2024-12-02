@@ -102,6 +102,39 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 30, 2024</h3>
+    <ul>
+      <li>
+        Fixes Stellar Symphony second passive. It was using the old beta
+        version. The effect doesn't change, just the text.
+      </li>
+      <li>Enables text highlighting on weapon passives and team buffs.</li>
+    </ul>
+    <h3>November 29, 2024</h3>
+    <ul>
+      <li>
+        Updated damage deepen label on rotation actions to be damage amplify for
+        clarity.
+      </li>
+      <li>
+        Updates Lingyang's inherit skill attack multiplier, it was doing two
+        hits when it should have been doing just one.
+      </li>
+    </ul>
+    <h3>November 28, 2024</h3>
+    <ul>
+      <li>Fixes Calcharo S6. It is now behind a toggle.</li>
+      <li>
+        Updates Calcharo's skill formats to include coloring and highlighting.
+      </li>
+    </ul>
+    <h3>November 24, 2024</h3>
+    <ul>
+      <li>
+        Fixes small bug with echo sets where 2-2-1 would result in no sets being
+        given. Should be fixed now.
+      </li>
+    </ul>
     <h3>November 20, 2024</h3>
     <ul>
       <li>Adds colors to the echo sets in the various echo UI.</li>

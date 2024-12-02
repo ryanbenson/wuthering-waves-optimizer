@@ -1,6 +1,9 @@
 <template>
   <div class="action__buff pb-4">
-    <select v-model="modifierType" @change="onModifierUpdate" class="select select-bordered select-xs w-full">
+    <select
+      v-model="modifierType"
+      @change="onModifierUpdate"
+      class="select select-bordered select-xs w-full">
       <option
         v-for="option in modifierOptions"
         :value="option.key"
@@ -59,7 +62,7 @@ export default {
       const modifierOptionsList = [];
       const allModifiers = Object.entries(subStatLabelMap);
       // add in Damage Deepen. It's a buff we want, but not from echo substats
-      allModifiers.push(['DMGDeepen', 'Damage Deepen'])
+      allModifiers.push(["DMGDeepen", "Damage Amplify"]);
       allModifiers.forEach((modifier) => {
         const [key, label] = modifier;
         // find if this key is anywhere in the full list. if so, mark it as disabled

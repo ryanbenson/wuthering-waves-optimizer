@@ -44,9 +44,6 @@ export function calcHitDamage(
     defModifier,
     resistValue,
   );
-  if (talent === 4.4971) {
-    console.log(talent, attack, baseDamageValue, defModifier, resistValue);
-  }
   return baseDamage;
 }
 
@@ -221,7 +218,6 @@ export function calcDamage(
   );
 
   let totalCritDmg = calcCritDamage(finalDamage, critDamage);
-  console.log(critDamage);
   let totalAvgDmg = calcAvgDamage(finalDamage, critRate, critDamage);
 
   // Return detailed damage information
