@@ -37,7 +37,6 @@ export const useInventoryStore = defineStore("inventory", {
       const foundIndex = this.echoes.findIndex(
         (echo) => echo.echoId === echoId,
       );
-      console.log(foundIndex, echoId)
       if (foundIndex >= 0) {
         this.echoes.splice(foundIndex, 1);
       }

@@ -79,7 +79,6 @@
               name="mainStat"
               class="select select-bordered select select-sm"
               v-model="stat"
-              @change="updateTotalStats"
               :disabled="!type">
               <option value="none">Select Stat</option>
               <option v-for="s in getStats(type)" :key="s" :value="s">
@@ -617,6 +616,44 @@ export default {
       echoSetFilter: null,
     };
   },
+  watch: {
+    echo: {
+      handler: async function (val, previousVal) {
+        this.updateEchoChoice(val, previousVal);
+      },
+      immediate: true,
+    },
+    echoSubStatsType1: {
+      handler: async function () {
+        this.syncMainStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsType2: {
+      handler: async function () {
+        this.syncMainStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsType3: {
+      handler: async function () {
+        this.syncMainStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsType4: {
+      handler: async function () {
+        this.syncMainStats();
+      },
+      immediate: true,
+    },
+    echoSubStatsType5: {
+      handler: async function () {
+        this.syncMainStats();
+      },
+      immediate: true,
+    },
+  },
   methods: {
     ...mapActions(useInventoryStore, [
       "saveEcho",
@@ -762,7 +799,6 @@ export default {
     },
     handleOpenModal() {
       const modalEl = document.getElementById(this.modalId);
-      console.log(modalEl);
       modalEl.showModal();
     },
     openEchoPicker() {

@@ -68,7 +68,7 @@
               :key="echoSet"
               @click="toggleEchoSetFilter(echoSet)"
               class="rounded mr-1"
-              :class="{'btn-active': isEchoSetFilterActive(echoSet)}"
+              :class="{'btn-active': isEchoSetFilterActive(echoSet), echoSet}"
             >
               <img :src="getEchoSetImage(echoSet)" class="size-8" :class="echoSet" />
             </button>
@@ -347,6 +347,9 @@ export default {
 html[data-theme="light"] {
   .modal-backdrop {
     opacity: 0.5;
+  }
+  .MoonlitClouds {
+    filter: contrast(0);
   }
 }
 </style>

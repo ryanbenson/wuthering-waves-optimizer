@@ -58,7 +58,7 @@
           :key="echoSet"
           @click="toggleEchoSetFilter(echoSet)"
           class="rounded mr-1"
-          :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
+          :class="{ 'btn-active': isEchoSetFilterActive(echoSet), echoSet }">
           <img
             :src="getEchoSetImage(echoSet)"
             class="size-8"
@@ -67,7 +67,11 @@
       </div>
       <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
     </div>
-
+    <div class="echoes__actions flex justify-center items-center">
+      <button @click="createEcho" class="btn btn-primary btn-wide">
+        Add echo
+      </button>
+    </div>
     <div class="echoes__list">
       <template v-if="!echoesList.length">
         <div class="echoes__list--empty py-12 text-center w-full">
@@ -155,6 +159,7 @@ import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
+import { randomString } from "../utils/strings";
 export default {
   name: "InventoryEchoesBrowser",
   props: {},
@@ -248,6 +253,7 @@ export default {
       "getEchoEquippedChars",
       "deleteEcho",
       "deleteEchoEquippedMapping",
+      "saveEcho"
     ]),
     ...mapActions(useCharacterStore, ["removeCharacterEcho"]),
     getReadableSubStatLabel,
@@ -323,6 +329,29 @@ export default {
         }
       }
     },
+    async createEcho() {
+      const echoId = randomString();
+      const echoData = {
+        echo: null,
+        type: null,
+        rank: null,
+        stat: null,
+        echoId,
+        echoSet: null,
+        echoSubStatsType1: null,
+        echoSubStatsValue1: null,
+        echoSubStatsType2: null,
+        echoSubStatsValue2: null,
+        echoSubStatsType3: null,
+        echoSubStatsValue3: null,
+        echoSubStatsType4: null,
+        echoSubStatsValue4: null,
+        echoSubStatsType5: null,
+        echoSubStatsValue5: null,
+      };
+      await this.saveEcho(echoData);
+      this.handleEditEcho(echoId);
+    }
   },
 };
 </script>
@@ -331,6 +360,9 @@ export default {
 html[data-theme="light"] {
   .modal-backdrop {
     opacity: 0.5;
+  }
+  .MoonlitClouds {
+    filter: contrast(0);
   }
 }
 </style>

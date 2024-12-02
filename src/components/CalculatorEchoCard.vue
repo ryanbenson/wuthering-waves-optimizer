@@ -37,7 +37,7 @@
               <span v-if="echoSet" class="echo__item__set size-6 rounded-full">
                 <img :src="getEchoSetIcon(echoSet)" :class="echoSet" />
               </span>
-              <span class="echo__item__cost badge badge-primary min-w-16">
+              <span class="echo__item__cost badge badge-primary text-nowrap">
                 Cost {{ type }}
               </span>
             </div>
@@ -203,6 +203,12 @@ export default {
     };
   },
   computed: {
+    echoFreeSubStatIcon() {
+      if (!this.echoFreeSubStatType) {
+        return null;
+      }
+      return getSubStatIconByType(this.echoFreeSubStatType);
+    },
     mainStatValue() {
       if (this.type && this.stat && this.stat !== "none" && this.rank) {
         return this.statsTable?.[this.type]?.[this.stat]?.[this.rank];
@@ -343,3 +349,11 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+html[data-theme="light"] {
+  .echo__item__sub-stats img {
+    filter: contrast(0);
+  }
+}
+</style>
