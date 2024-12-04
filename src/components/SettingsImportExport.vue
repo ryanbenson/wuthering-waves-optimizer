@@ -2,12 +2,15 @@
   <div
     v-if="isNotificationShown"
     class="alert mb-8"
-    :class="{ 'alert-error': notificationError, 'alert-success': !notificationError }">
+    :class="{
+      'alert-error': notificationError,
+      'alert-success': !notificationError,
+    }">
     {{ message }}
   </div>
   <h2 class="text-2xl font-bold mb-4">Export your database</h2>
 
-  <div  class="card card-bordered card-compact bg-base-100 shadow mb-2">
+  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
       <h3 class="card-title">Backup your data</h3>
       <div class="actions actions--fetch">
@@ -16,7 +19,9 @@
           <button @click="copyCharacterData" class="btn btn-primary mr-2">
             Copy to clipboard
           </button>
-          <button @click="downloadCharacterData" class="btn btn-primary">Download</button>
+          <button @click="downloadCharacterData" class="btn btn-primary">
+            Download
+          </button>
         </div>
       </div>
     </div>
@@ -24,11 +29,16 @@
 
   <h3 class="text-2xl font-bold mb-4 mt-8">Overwrite your existing data</h3>
 
-  <div  class="card card-bordered card-compact bg-base-100 shadow mb-2">
+  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
       <h3 class="card-title">Import from text</h3>
-      <p>Import your character data? Paste your data here. This will overwrite your existing data.</p>
-      <textarea v-model="importedRawCharacterData" class="textarea textarea-bordered"></textarea>
+      <p>
+        Import your character data? Paste your data here. This will overwrite
+        your existing data.
+      </p>
+      <textarea
+        v-model="importedRawCharacterData"
+        class="textarea textarea-bordered"></textarea>
       <button @click="importRawCharacterData" class="btn btn-error">
         Confirm Import
       </button>
@@ -39,8 +49,15 @@
     <div class="card-body">
       <h3 class="card-title">Import from file</h3>
       <p>Upload your character data? This will overwrite your existing data.</p>
-      <input type="file" @change="handleFileUpload" accept=".json" class="file-input file-input-bordered" />
-      <textarea v-model="fileData" readonly class="textarea textarea-bordered"></textarea>
+      <input
+        type="file"
+        @change="handleFileUpload"
+        accept=".json"
+        class="file-input file-input-bordered" />
+      <textarea
+        v-model="fileData"
+        readonly
+        class="textarea textarea-bordered"></textarea>
       <button @click="confirmUpload" class="btn btn-error">
         Confirm Overwrite with File Data
       </button>
@@ -53,16 +70,19 @@
     <div class="card-body">
       <h3 class="card-title">Delete your data</h3>
       <p>This will reset your data to a blank state.</p>
-      <button @click="confirmDelete" class="btn btn-error">
-        Delete
-      </button>
+      <button @click="confirmDelete" class="btn btn-error">Delete</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 // @ts-nocheck
+/**
+ * Version 1 (which has no meta) only includes character data as a root property
+ * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
+ */
 import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
 import { defineComponent } from "vue";
 export default defineComponent({
   name: "SettingsImportExport",
@@ -77,21 +97,41 @@ export default defineComponent({
   },
   methods: {
     /**
+     * Gets all of the data to save
+     */
+    getData() {
+      const meta = {
+        version: "2",
+        source: "WutheringTools",
+      };
+      const data = {
+        character: localStorage.getItem("character"),
+        inventory: localStorage.getItem("inventory"),
+      };
+      const d = {
+        meta,
+        data,
+      };
+      return d;
+    },
+    /**
      * Handler to copy the contents of the character data into the user's clipboard
      */
     copyCharacterData() {
-      const data = localStorage.getItem("character");
-      navigator.clipboard.writeText(data);
+      const data = this.getData();
+      navigator.clipboard.writeText(JSON.stringify(data));
       this.triggerNotification(
-        "Character data has been copied to your clipboard"
+        "Character data has been copied to your clipboard",
       );
     },
     /**
      * Handler to download the character data as a JSON file
      */
     downloadCharacterData() {
-      const data = localStorage.getItem("character");
-      const blob = new Blob([data], { type: "application/json" });
+      const data = this.getData();
+      const blob = new Blob([JSON.stringify(data)], {
+        type: "application/json",
+      });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -111,6 +151,29 @@ export default defineComponent({
       return `character_data_${date}.json`;
     },
     /**
+     * Provides the data to import based on changes to the structures
+     * If there's a meta tag, then that got introduced in v2
+     * v2 also introduces inventory data
+     * If there's no meta, then that's v1, which is just the character data itself
+     *   and has nothing else
+     * @returns {Object}
+     */
+    getImportData(data, toParse = false) {
+      let parsedData = data;
+      if (toParse) {
+        parsedData = JSON.parse(data);
+      }
+      const returnData = {};
+      if (parsedData?.meta && parsedData?.meta.version === "2") {
+        returnData.character = parsedData?.data?.character;
+        returnData.inventory = parsedData?.data?.inventory;
+      } else {
+        returnData.character = parsedData;
+        returnData.inventory = { echoes: [], equipped: {} };
+      }
+      return returnData;
+    },
+    /**
      * Imports the raw character data through a given string in the input
      */
     importRawCharacterData() {
@@ -121,13 +184,26 @@ export default defineComponent({
         this.triggerNotification("Character data given is invalid", true);
       }
       // overwrite the local storage then rehydrate
-      const data = localStorage.setItem(
-        "character",
-        this.importedRawCharacterData
+      const importData = this.getImportData(
+        this.importedRawCharacterData,
+        true,
       );
+      // import char data
       const characterStore = useCharacterStore();
-      characterStore.$hydrate({ runHooks: false });
-      alert("Your data has been ovwerwriten!");
+      let charData = importData.character;
+      if (typeof charData === "string") {
+        charData = JSON.parse(charData);
+      }
+      characterStore.hardSetState(charData);
+      // import inventory data
+      const inventoryStore = useInventoryStore();
+      let inventoryData = importData.inventory;
+      if (typeof inventoryData === "string") {
+        inventoryData = JSON.parse(inventoryData);
+      }
+      inventoryStore.hardSetState(inventoryData);
+      // notify user and refresh
+      alert("Your data has been overwritten!");
       this.importedRawCharacterData = null;
       location.reload();
     },
@@ -164,11 +240,23 @@ export default defineComponent({
       if (this.isJsonString(this.fileData) === false) {
         this.triggerNotification("Character data given is invalid", true);
       }
-      // overwrite the local storage then rehydrate
-      const data = localStorage.setItem("character", this.fileData);
+      const importData = this.getImportData(this.fileData, true);
+      // import char data
       const characterStore = useCharacterStore();
-      characterStore.$hydrate({ runHooks: false });
-      alert("Your data has been ovwerwriten!");
+      let charData = importData.character;
+      if (typeof charData === "string") {
+        charData = JSON.parse(charData);
+      }
+      characterStore.hardSetState(charData);
+      // import inventory data
+      const inventoryStore = useInventoryStore();
+      let inventoryData = importData.inventory;
+      if (typeof inventoryData === "string") {
+        inventoryData = JSON.parse(inventoryData);
+      }
+      inventoryStore.hardSetState(inventoryData);
+      // notify user and refresh
+      alert("Your data has been overwritten!");
       this.fileData = null;
       location.reload();
     },
@@ -177,9 +265,14 @@ export default defineComponent({
      */
     confirmDelete() {
       if (window.confirm("Do you really want to delete everything?")) {
-        const data = localStorage.setItem("character", "");
+        // empty character data
+        localStorage.setItem("character", "");
         const characterStore = useCharacterStore();
         characterStore.$hydrate({ runHooks: false });
+        // empty the inventory
+        localStorage.setItem("inventory", "");
+        const inventoryStore = useInventoryStore();
+        inventoryStore.$hydrate({ runHooks: false });
         alert("Your data has been deleted!");
         location.reload();
       }

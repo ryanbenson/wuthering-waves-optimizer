@@ -16,6 +16,7 @@ import InfoView from "./pages/InfoView.vue";
 import PrivacyView from "./pages/PrivacyView.vue";
 import SettingsView from "./pages/SettingsView.vue";
 import LegalView from "./pages/LegalView.vue";
+import InventoryView from "./pages/InventoryView.vue";
 
 const routes = [
   { path: "/", component: HomeView, name: "HomeView" },
@@ -26,6 +27,7 @@ const routes = [
   { path: "/privacy", component: PrivacyView, name: "PrivacyView" },
   { path: "/settings", component: SettingsView, name: "SettingsView" },
   { path: "/legal", component: LegalView, name: "LegalView" },
+  { path: "/inventory", component: InventoryView, name: "InventoryView" },
 ];
 
 const router = createRouter({
@@ -46,6 +48,8 @@ const app = createApp(App).use(pinia).use(router).use(FloatingVue);
 
 import { useCharacterStore } from "./stores/character";
 const characterStore = useCharacterStore();
+import { useInventoryStore } from "./stores/inventory";
+const inventoryStore = useInventoryStore();
 
 // prevent bfcache
 window.addEventListener("unload", () => {

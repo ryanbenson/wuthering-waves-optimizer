@@ -28,5 +28,29 @@ export const useCharacterStore = defineStore("character", {
         this.characters[characterId].rotations = rotationData;
       }
     },
+    hardSetState(data) {
+      this.characters = data.characters;
+      this.activeCharacter = data.activeCharacter;
+    },
+    removeCharacterEcho(characterId, echoIndex) {
+      this.characters[characterId].echoes[echoIndex] = {
+        echo: null,
+        type: null,
+        rank: null,
+        stat: null,
+        echoId: null,
+        echoSet: null,
+        echoSubStatsType1: null,
+        echoSubStatsValue1: null,
+        echoSubStatsType2: null,
+        echoSubStatsValue2: null,
+        echoSubStatsType3: null,
+        echoSubStatsValue3: null,
+        echoSubStatsType4: null,
+        echoSubStatsValue4: null,
+        echoSubStatsType5: null,
+        echoSubStatsValue5: null,
+      };
+    }
   },
 });
