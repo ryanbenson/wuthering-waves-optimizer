@@ -98,10 +98,13 @@
       <li>Better UI</li>
       <li>More weapons</li>
       <li>Food</li>
-      <li>Inventory system for equipment</li>
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>December 4, 2024</h3>
+    <ul>
+      <li>Releases inventory system to manage and house echoes.</li>
+    </ul>
     <h3>November 30, 2024</h3>
     <ul>
       <li>
