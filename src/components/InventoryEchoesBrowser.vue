@@ -253,7 +253,7 @@ export default {
       "getEchoEquippedChars",
       "deleteEcho",
       "deleteEchoEquippedMapping",
-      "saveEcho"
+      "saveEcho",
     ]),
     ...mapActions(useCharacterStore, ["removeCharacterEcho"]),
     getReadableSubStatLabel,
@@ -334,7 +334,7 @@ export default {
       const echoData = {
         echo: null,
         type: null,
-        rank: null,
+        rank: 5,
         stat: null,
         echoId,
         echoSet: null,
@@ -351,7 +351,7 @@ export default {
       };
       await this.saveEcho(echoData);
       this.handleEditEcho(echoId);
-    }
+    },
   },
 };
 </script>
