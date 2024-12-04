@@ -1,5 +1,8 @@
 <template>
   <div>
+    <CalculatorEchoesBrowser
+      ref="echoesBrowser"
+      :character="character"></CalculatorEchoesBrowser>
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
@@ -14,7 +17,8 @@
         @update-stats="handleEchoStats"
         @echo:set-chosen="handleEchoSetChosen"
         @main-echo:updated="handleMainEchoUpdated"
-        @main-echo-rank:updated="handleMainEchoRankUpdated"></CalculatorEcho>
+        @main-echo-rank:updated="handleMainEchoRankUpdated"
+        @open-echoes-browser="handleOpenEchoesBrowser"></CalculatorEcho>
     </div>
     <div class="set-bonus-selector">
       <CalculatorEchoesSetBonusOne
@@ -86,6 +90,7 @@ import { getEchoSetLabelByType } from "../echoes/stats.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
+import CalculatorEchoesBrowser from "./CalculatorEchoesBrowser.vue";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 const MAX_ECHO_COST = 12;
@@ -99,6 +104,7 @@ export default {
   },
   components: {
     CalculatorEcho,
+    CalculatorEchoesBrowser,
     CalculatorEchoesSetBonusOne,
     CalculatorEchoesSetBonusTwo,
   },
@@ -316,6 +322,9 @@ export default {
     },
     handleMainEchoRankUpdated(rank) {
       this.mainEchoRank = rank;
+    },
+    handleOpenEchoesBrowser(echoIndex) {
+      this.$refs.echoesBrowser.triggerOpenModal(echoIndex);
     },
   },
   computed: {

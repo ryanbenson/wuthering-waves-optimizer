@@ -79,7 +79,6 @@
               name="mainStat"
               class="select select-bordered select select-sm"
               v-model="stat"
-              @change="updateTotalStats"
               :disabled="!type">
               <option value="none">Select Stat</option>
               <option v-for="s in getStats(type)" :key="s" :value="s">
@@ -104,14 +103,6 @@
               </div>
             </div>
           </div>
-        </div>
-        <div
-          v-if="isInInventory"
-          class="echo__in-inventory alert alert-info my-2 flex items-center p-2">
-          <img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png"
-            class="size-8" />
-          This echo is in your inventory.
         </div>
         <div class="echo__selection__input w-full mt-8">
           <div class="echo__selection__rank flex flex-col pb-7 relative">
@@ -575,169 +566,10 @@
       </div>
     </div>
   </dialog>
-
-  <div
-    class="echo__item card card-bordered card-compact bg-base-100 shadow mb-2">
-    <div class="card-body">
-      <div class="echo__content flex gap-6 flex-col lg:flex-row">
-        <div class="echo__item__left">
-          <div
-            class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
-            :class="{
-              'border-amber-300': rank === '5' || rank === 5,
-              'border-violet-600': rank === '4' || rank === 4,
-              'border-blue-500': rank === '3' || rank === 3,
-              'border-green-500': rank === '2' || rank === 2,
-            }"
-            :style="{
-              backgroundImage: `url(${echoImage})`,
-            }"
-            @click="handleOpenModal"></div>
-          <div class="echo__item__actions flex gap-2 justify-center mt-4">
-            <span
-              class="echo__item__edit cursor-pointer"
-              @click="handleOpenModal">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                class="size-4">
-                <path
-                  d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z"
-                  fill="#FFFFFF" />
-              </svg>
-            </span>
-            <span
-              class="echo__item__delete cursor-pointer"
-              @click="reset"
-              v-tooltip="'Reset echo'">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                class="size-4">
-                <path
-                  d="M367.2 412.5L99.5 144.8C77.1 176.1 64 214.5 64 256c0 106 86 192 192 192c41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3C434.9 335.9 448 297.5 448 256c0-106-86-192-192-192c-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"
-                  fill="#FFFFFF" />
-              </svg>
-            </span>
-            <span
-              class="echo__item__save cursor-pointer"
-              @click="saveEchoItem"
-              v-tooltip="'Save echo'">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                class="size-4">
-                <path
-                  d="M48 96l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-245.5c0-4.2-1.7-8.3-4.7-11.3l33.9-33.9c12 12 18.7 28.3 18.7 45.3L448 416c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l245.5 0c17 0 33.3 6.7 45.3 18.7l74.5 74.5-33.9 33.9L320.8 84.7c-.3-.3-.5-.5-.8-.8L320 184c0 13.3-10.7 24-24 24l-192 0c-13.3 0-24-10.7-24-24L80 80 64 80c-8.8 0-16 7.2-16 16zm80-16l0 80 144 0 0-80L128 80zm32 240a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z"
-                  fill="#FFFFFF" />
-              </svg>
-            </span>
-            <span
-              @click="openEchoBrowser"
-              class="echo__item__open cursor-pointer"
-              v-tooltip="'Browse echoes'">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 576 512"
-                class="size-4">
-                <path
-                  d="M384 480l48 0c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224l-400 0c-11.4 0-21.9 6-27.6 15.9L48 357.1 48 96c0-8.8 7.2-16 16-16l117.5 0c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8L416 144c8.8 0 16 7.2 16 16l0 32 48 0 0-32c0-35.3-28.7-64-64-64L298.5 96c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l23.7 0L384 480z"
-                  fill="#FFFFFF" />
-              </svg>
-            </span>
-          </div>
-        </div>
-        <div class="echo__item__stats mb-2 w-full relative">
-          <h2 class="card-title flex items-center justify-between">
-            <span
-              :class="{
-                'text-amber-300': rank === '5' || rank === 5,
-                'text-violet-600': rank === '4' || rank === 4,
-                'text-blue-500': rank === '3' || rank === 3,
-                'text-green-500': rank === '2' || rank === 2,
-              }">
-              {{ echoName }}
-            </span>
-            <div class="echo__item__meta flex gap-2 items-center">
-              <span v-if="echoId" class="echo__item__set size-6 rounded-full">
-                <img
-                  src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png" />
-              </span>
-              <span v-if="echoSet" class="echo__item__set size-6 rounded-full">
-                <img :src="getEchoSetIcon(echoSet)" :class="echoSet" />
-              </span>
-              <span class="echo__item__cost badge badge-primary min-w-16">
-                Cost {{ type }}
-              </span>
-            </div>
-          </h2>
-          <table class="echo__item__sub-stats table table-zebra">
-            <tbody>
-              <tr v-if="mainStatValue" :key="stat">
-                <td class="flex gap-2 items-center">
-                  <img :src="getSubStatIconByType(stat)" />
-                  {{ getReadableSubStatLabel(stat) }}
-                </td>
-                <td class="text-right">{{ mainStatValue }}%</td>
-              </tr>
-              <tr v-if="mainStatValue">
-                <td class="flex gap-2 items-center">
-                  <img :src="echoFreeSubStatIcon" />
-                  {{ getReadableSubStatLabel(echoFreeSubStatType) }}
-                </td>
-                <td class="text-right">{{ echoFreeSubStatValue }}</td>
-              </tr>
-              <tr v-if="hasSubStats" class="substats__label">
-                <td class="font-bold font-size-8">Substats</td>
-              </tr>
-              <tr v-if="echoSubStatsType1" class="relative" style="z-index: 1">
-                <td class="flex gap-2 items-center">
-                  <img
-                    v-if="echoSubStatsType1 && echoSubStatsType1 !== 'none'"
-                    :src="echoSubStat1Icon" />
-                  {{ getReadableSubStatLabel(echoSubStatsType1) }}
-                </td>
-                <td class="text-right">{{ echoSubStatsValue1Display }}</td>
-              </tr>
-              <tr v-if="echoSubStatsType2 && echoSubStatsType2 !== 'none'">
-                <td class="flex gap-2 items-center">
-                  <img :src="echoSubStat2Icon" />
-                  {{ getReadableSubStatLabel(echoSubStatsType2) }}
-                </td>
-                <td class="text-right">{{ echoSubStatsValue2Display }}</td>
-              </tr>
-              <tr v-if="echoSubStatsType3 && echoSubStatsType3 !== 'none'">
-                <td class="flex gap-2 items-center">
-                  <img v-if="echoSubStatsType3" :src="echoSubStat3Icon" />
-                  {{ getReadableSubStatLabel(echoSubStatsType3) }}
-                </td>
-                <td class="text-right">{{ echoSubStatsValue3Display }}</td>
-              </tr>
-              <tr v-if="echoSubStatsType4 && echoSubStatsType4 !== 'none'">
-                <td class="flex gap-2 items-center">
-                  <img :src="echoSubStat4Icon" />
-                  {{ getReadableSubStatLabel(echoSubStatsType4) }}
-                </td>
-                <td class="text-right">{{ echoSubStatsValue4Display }}</td>
-              </tr>
-              <tr v-if="echoSubStatsType5 && echoSubStatsType5 !== 'none'">
-                <td class="flex gap-2 items-center">
-                  <img :src="echoSubStat5Icon" />
-                  {{ getReadableSubStatLabel(echoSubStatsType5) }}
-                </td>
-                <td class="text-right">{{ echoSubStatsValue5Display }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "pinia";
-import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import {
   rankColors,
@@ -758,23 +590,14 @@ import {
 } from "../echoes/index.ts";
 import { subStatsTable } from "../echoes/stats.ts";
 import Range from "./input/Range.vue";
-import { randomString } from "../utils/strings.ts";
 export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    index: {
-      type: Number,
-      required: true,
-    },
-  },
+  props: {},
   components: {
     Range,
   },
   data() {
     return {
+      echoId: null,
       rankColors,
       statsTable,
       flatBonusesByRankByType,
@@ -800,106 +623,38 @@ export default {
       },
       immediate: true,
     },
-    echoSet: {
-      handler: function (val, previousVal) {
-        if (val === null && previousVal === undefined) {
-          return;
-        }
-        this.$emit("echo:set-chosen", { set: val, index: this.index });
-      },
-      immediate: true,
-    },
-    type: {
-      handler: async function () {
-        this.$emit("updated-echo-cost", { index: this.index, cost: this.type });
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-    rank: {
-      handler: async function (rank) {
-        // update the main echo rank if it's the first one
-        if (this.index === 0) {
-          this.$emit("main-echo-rank:updated", rank);
-        }
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-    stat: {
-      handler: async function () {
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
     echoSubStatsType1: {
       handler: async function () {
-        this.updateTotalStats();
         this.syncMainStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsValue1: {
-      handler: async function () {
-        this.updateTotalStats();
       },
       immediate: true,
     },
     echoSubStatsType2: {
       handler: async function () {
-        this.updateTotalStats();
         this.syncMainStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsValue2: {
-      handler: async function () {
-        this.updateTotalStats();
       },
       immediate: true,
     },
     echoSubStatsType3: {
       handler: async function () {
-        this.updateTotalStats();
         this.syncMainStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsValue3: {
-      handler: async function () {
-        this.updateTotalStats();
       },
       immediate: true,
     },
     echoSubStatsType4: {
       handler: async function () {
-        this.updateTotalStats();
         this.syncMainStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsValue4: {
-      handler: async function () {
-        this.updateTotalStats();
       },
       immediate: true,
     },
     echoSubStatsType5: {
       handler: async function () {
-        this.updateTotalStats();
         this.syncMainStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsValue5: {
-      handler: async function () {
-        this.updateTotalStats();
       },
       immediate: true,
     },
   },
   methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
     ...mapActions(useInventoryStore, [
       "saveEcho",
       "patchEcho",
@@ -907,16 +662,15 @@ export default {
       "getEchoById",
       "setEquippedData",
     ]),
-    getSubStatIconByType,
+    setEchoId(echoId) {
+      this.echoId = echoId;
+      this.syncMainStats();
+    },
     updateEchoChoice(echo, previousEcho) {
       const echoData = getEchoData(echo);
       const echoClass = echoData?.class;
       const echoCost = getCostByClass(echoClass);
       this.selectCost(echoCost);
-      // update the main echo if it's the first one
-      if (this.index === 0) {
-        this.$emit("main-echo:updated", echo);
-      }
       // get the cost of the previous echo, if they are different then
       // reset the main stat type and value
       let prevEchoCost = null;
@@ -933,11 +687,9 @@ export default {
     },
     selectCost(cost) {
       this.type = cost;
-      this.updateTotalStats();
     },
     selectRank(rank) {
       this.rank = rank;
-      this.updateTotalStats();
     },
     getReadableSubStatLabel,
     getStats(cost) {
@@ -983,67 +735,6 @@ export default {
         updatedSubStats.push(this.echoSubStatsType5);
       }
       this.allSubStats = updatedSubStats;
-    },
-    updateTotalStats() {
-      const stats = {};
-      // add in the base stats (flat HP and flat ATK) that's guaranteed
-      if (this.type && this.rank) {
-        let stat = this.type == "1" ? "HP_FLAT" : "ATK_FLAT";
-        let statValue = this.flatBonusesByRankByType[this.type][this.rank];
-        stats[stat] = (stats[stat] || 0) + statValue;
-      }
-      if (this.type && this.rank && this.stat) {
-        const max = this.statsTable?.[this.type]?.[this.stat]?.[this.rank];
-        if (max) {
-          stats[this.stat] = (stats[this.stat] || 0) + max;
-        }
-      }
-      if (this.echoSubStatsType1 && this.echoSubStatsValue1) {
-        stats[this.echoSubStatsType1] =
-          (stats[this.echoSubStatsType1] || 0) + this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 && this.echoSubStatsValue2) {
-        stats[this.echoSubStatsType2] =
-          (stats[this.echoSubStatsType2] || 0) + this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 && this.echoSubStatsValue3) {
-        stats[this.echoSubStatsType3] =
-          (stats[this.echoSubStatsType3] || 0) + this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 && this.echoSubStatsValue4) {
-        stats[this.echoSubStatsType4] =
-          (stats[this.echoSubStatsType4] || 0) + this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 && this.echoSubStatsValue5) {
-        stats[this.echoSubStatsType5] =
-          (stats[this.echoSubStatsType5] || 0) + this.echoSubStatsValue5;
-      }
-
-      this.$emit("update-stats", { index: this.index, stats });
-    },
-    // reset everything
-    async reset() {
-      const echoData = {
-        echo: null,
-        type: null,
-        rank: null,
-        stat: null,
-        echoId: null,
-        echoSet: null,
-        echoSubStatsType1: null,
-        echoSubStatsValue1: null,
-        echoSubStatsType2: null,
-        echoSubStatsValue2: null,
-        echoSubStatsType3: null,
-        echoSubStatsValue3: null,
-        echoSubStatsType4: null,
-        echoSubStatsValue4: null,
-        echoSubStatsType5: null,
-        echoSubStatsValue5: null,
-      };
-      const data = { echoes: {} };
-      data.echoes[this.index] = echoData;
-      await this.setCharacterData(this.character, data);
     },
     toggleSubStat(e) {
       const mainStat = e.target.value;
@@ -1168,62 +859,6 @@ export default {
     isSetSelected(set) {
       return this.echoSet === set;
     },
-    async saveEchoItem() {
-      let id = null;
-      if (this.echoId) {
-        id = this.echoId;
-      } else {
-        id = randomString();
-      }
-      const data = {
-        echoId: id,
-        echo: this.echo,
-        echoSet: this.echoSet,
-        echoSubStatsType1: this.echoSubStatsType1,
-        echoSubStatsType2: this.echoSubStatsType2,
-        echoSubStatsType3: this.echoSubStatsType3,
-        echoSubStatsType4: this.echoSubStatsType4,
-        echoSubStatsType5: this.echoSubStatsType5,
-        echoSubStatsValue1: this.echoSubStatsValue1,
-        echoSubStatsValue2: this.echoSubStatsValue2,
-        echoSubStatsValue3: this.echoSubStatsValue3,
-        echoSubStatsValue4: this.echoSubStatsValue4,
-        echoSubStatsValue5: this.echoSubStatsValue5,
-        rank: this.rank,
-        stat: this.stat,
-        type: this.type,
-      };
-
-      await this.saveEcho(data);
-      // update the character to reference the inventory
-      // when we assign the echo from inventory, clear out all data except echoId
-      // the stats will come from the inventory to have one source of truth for its stats
-      const echoData = {
-        echo: null,
-        type: null,
-        rank: null,
-        stat: null,
-        echoId: id,
-        echoSet: null,
-        echoSubStatsType1: null,
-        echoSubStatsValue1: null,
-        echoSubStatsType2: null,
-        echoSubStatsValue2: null,
-        echoSubStatsType3: null,
-        echoSubStatsValue3: null,
-        echoSubStatsType4: null,
-        echoSubStatsValue4: null,
-        echoSubStatsType5: null,
-        echoSubStatsValue5: null,
-      };
-      const charData = { echoes: {} };
-      charData.echoes[this.index] = echoData;
-      await this.setCharacterData(this.character, charData);
-      // add to our equipped list
-      const equippedData = {};
-      equippedData[this.character] = this.index;
-      await this.setEquippedData(id, equippedData);
-    },
     openEchoBrowser() {
       this.$emit("open-echoes-browser", this.index);
     },
@@ -1254,15 +889,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(useCharacterStore, ["characters"]),
     ...mapState(useInventoryStore, ["echoes"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
     /**
      * Returns the current echo from the inventory
      * @returns {Object|null}
@@ -1278,44 +905,12 @@ export default {
      * Data is persisted in the store. Avoids needing a local data + store data
      * @returns {Boolean}
      */
-    echoId: {
-      get() {
-        return this.currentCharacter?.echoes?.[this.index]?.echoId ?? null;
-      },
-      async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoId: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the type for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
     type: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.type;
-        }
-        return this.currentCharacter?.echoes?.[this.index]?.type ?? null;
+        return this.currentEcho?.type;
       },
       async set(value) {
-        if (this.currentEcho) {
-          this.patchEcho(this.echoId, { type: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            type: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        this.patchEcho(this.echoId, { type: value });
       },
     },
     /**
@@ -1325,23 +920,10 @@ export default {
      */
     echo: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echo ?? null;
-        }
-        return this.currentCharacter?.echoes?.[this.index]?.echo ?? null;
+        return this.currentEcho?.echo ?? null;
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echo: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echo: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { echo: value });
       },
     },
     /**
@@ -1351,23 +933,10 @@ export default {
      */
     echoSet: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSet ?? null;
-        }
-        return this.currentCharacter?.echoes?.[this.index]?.echoSet ?? null;
+        return this.currentEcho?.echoSet ?? null;
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSet: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSet: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { echoSet: value });
       },
     },
     /**
@@ -1377,23 +946,10 @@ export default {
      */
     rank: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.rank ?? 5;
-        }
-        return this.currentCharacter?.echoes?.[this.index]?.rank ?? 5;
+        return this.currentEcho?.rank ?? 5;
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { rank: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            rank: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { rank: value });
       },
     },
     /**
@@ -1403,23 +959,10 @@ export default {
      */
     stat: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.stat ?? "none";
-        }
-        return this.currentCharacter?.echoes?.[this.index]?.stat ?? "none";
+        return this.currentEcho?.stat ?? "none";
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { stat: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            stat: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { stat: value });
       },
     },
     /**
@@ -1429,26 +972,10 @@ export default {
      */
     echoSubStatsType1: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsType1 ?? "none";
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType1 ??
-          "none"
-        );
+        return this.currentEcho?.echoSubStatsType1 ?? "none";
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsType1: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsType1: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { echoSubStatsType1: value });
       },
     },
     /**
@@ -1458,25 +985,10 @@ export default {
      */
     echoSubStatsValue1: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsValue1 ?? 0;
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue1 ?? 0
-        );
+        return this.currentEcho?.echoSubStatsValue1 ?? 0;
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsValue1: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsValue1: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { echoSubStatsValue1: value });
       },
     },
 
@@ -1487,26 +999,10 @@ export default {
      */
     echoSubStatsType2: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsType2 ?? "none";
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType2 ??
-          "none"
-        );
+        return this.currentEcho?.echoSubStatsType2 ?? "none";
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsType2: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsType2: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { echoSubStatsType2: value });
       },
     },
     /**
@@ -1516,25 +1012,10 @@ export default {
      */
     echoSubStatsValue2: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsValue2 ?? 0;
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue2 ?? 0
-        );
+        return this.currentEcho?.echoSubStatsValue2 ?? 0;
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsValue2: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsValue2: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { echoSubStatsValue2: value });
       },
     },
 
@@ -1545,26 +1026,10 @@ export default {
      */
     echoSubStatsType3: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsType3 ?? "none";
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType3 ??
-          "none"
-        );
+        return this.currentEcho?.echoSubStatsType3 ?? "none";
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsType3: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsType3: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { echoSubStatsType3: value });
       },
     },
     /**
@@ -1574,25 +1039,10 @@ export default {
      */
     echoSubStatsValue3: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsValue3 ?? 0;
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue3 ?? 0
-        );
+        return this.currentEcho?.echoSubStatsValue3 ?? 0;
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsValue3: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsValue3: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { echoSubStatsValue3: value });
       },
     },
 
@@ -1603,26 +1053,10 @@ export default {
      */
     echoSubStatsType4: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsType4 ?? "none";
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType4 ??
-          "none"
-        );
+        return this.currentEcho?.echoSubStatsType4 ?? "none";
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsType4: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsType4: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { echoSubStatsType4: value });
       },
     },
     /**
@@ -1632,25 +1066,10 @@ export default {
      */
     echoSubStatsValue4: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsValue4 ?? 0;
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue4 ?? 0
-        );
+        return this.currentEcho?.echoSubStatsValue4 ?? 0;
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsValue4: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsValue4: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { echoSubStatsValue4: value });
       },
     },
     /**
@@ -1660,26 +1079,10 @@ export default {
      */
     echoSubStatsType5: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsType5 ?? "none";
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType5 ??
-          "none"
-        );
+        return this.currentEcho?.echoSubStatsType5 ?? "none";
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsType5: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsType5: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { echoSubStatsType5: value });
       },
     },
     /**
@@ -1689,25 +1092,10 @@ export default {
      */
     echoSubStatsValue5: {
       get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsValue5 ?? 0;
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue5 ?? 0
-        );
+        return this.currentEcho?.echoSubStatsValue5 ?? 0;
       },
       async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsValue5: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsValue5: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
+        await this.patchEcho(this.echoId, { echoSubStatsValue5: value });
       },
     },
     mainEchoesData() {
@@ -1753,10 +1141,10 @@ export default {
       return this.chosenMainEchoData?.maxStacks ?? 0;
     },
     modalId() {
-      return `echoModal${this.index}`;
+      return `echoModal`;
     },
     modalIdPicker() {
-      return `echoModal${this.index}Picker`;
+      return `echoModalPicker`;
     },
     totalSubStatsEnabled() {
       const allValues = Object.values(this.allSubStatsEnabled);
