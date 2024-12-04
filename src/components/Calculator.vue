@@ -962,21 +962,22 @@ export default defineComponent({
             let base = 0;
             let currentAmount = 0;
             switch (buffParams.modifierBasedOn) {
+              // if there's a minStatValue, use that or use the default base
+              // some characters use full base (e.g. SK), some use a minimum amount (Roccia)
               case "EnergyRegen":
-                // TODO: Verify this. updated theory is all ER, not added ER
-                base = 0;
+                base = buffParams?.minStatValue ?? 0;
                 currentAmount = stats.energyRegen;
                 break;
               case "CritRate":
-                base = 0.05;
+                base = buffParams?.minStatValue ?? 0.05;
                 currentAmount = stats.critRate;
                 break;
               case "CritDMG":
-                base = 1.5;
+                base = buffParams?.minStatValue ?? 1.5;
                 currentAmount = stats.critDMG;
                 break;
               default:
-                base = 0;
+                base = buffParams?.minStatValue ?? 0;
                 break;
             }
             const additionalAmount = currentAmount - base;
@@ -986,6 +987,10 @@ export default defineComponent({
             let buffValue = steps * buffParams.modifierValue;
             if (buffValue > buffParams.maximumValue) {
               buffValue = buffParams.maximumValue;
+            }
+            // don't allow the buff to go negative and reduce your stats
+            if (buffValue < 0) {
+              buffValue = 0;
             }
             // now apply the buff
             switch (buffParams.modifierTargetAttr) {
@@ -997,6 +1002,9 @@ export default defineComponent({
                 break;
               case "ATK":
                 stats.attackPercent += buffValue * 100;
+                break;
+              case "ATK_FLAT":
+                stats.attackFlat += buffValue;
                 break;
             }
           }

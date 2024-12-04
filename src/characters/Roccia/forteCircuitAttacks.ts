@@ -66,5 +66,23 @@ Casting the Resonance Skill High-Difficulty Design or the Intro Skill Perlo, Com
       },
       type: "Skill",
     },
+    {
+      key: "SequenceNode6FlyonGoldenWingsRealityDMG",
+      label: "S6: Fly, on Golden Wings DMG",
+      talents: {
+        "1": "180.00%",
+        "2": "194.76%",
+        "3": "209.52%",
+        "4": "230.19%",
+        "5": "244.95%",
+        "6": "261.92%",
+        "7": "285.54%",
+        "8": "309.15%",
+        "9": "332.77%",
+        "10": "357.86%",
+      },
+      type: "Skill",
+      requiresResonanceChain: "SequenceNode6FlyonGoldenWingsRealityDMG",
+    },
   ],
 };

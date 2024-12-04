@@ -3,7 +3,7 @@ export const skillAttacks = {
   description: `<div class="skilldescription">Roccia projects the storm of thoughts from her mind, pulling nearby targets and dealing <span class="Dark">Havoc</span> damage, while launching Roccia into the air, entering a Leap Fantasy state.</div>`,
   attacks: [
     {
-      key: "HighDifficultyDesign",
+      key: "HighDifficultyDesignDMG",
       label: "Skill DMG",
       talents: {
         "1": "30.92%*8",

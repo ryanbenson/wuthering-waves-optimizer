@@ -3,6 +3,7 @@
     class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
     @click="toggleEnabled">
     <div class="card-body">
+      {{ minStatValue }}
       <div class="character__buff">
         <h2 class="card-title">{{ name }}</h2>
         <div v-html="details"></div>
@@ -316,16 +317,16 @@ export default {
             switch (this.modifierBasedOn) {
               case "Energy Regen":
                 // TODO: Verify this. Latest is that it is all ER, not added ER
-                base = 0;
+                base = modifierItem?.minStatValue ?? 0;
                 break;
               case "CritRate":
-                base = 0.05;
+                base = modifierItem?.minStatValue ?? 0.05;
                 break;
               case "CritDMG":
-                base = 1.5;
+                base = modifierItem?.minStatValue ?? 1.5;
                 break;
               default:
-                base = 0;
+                base = modifierItem?.minStatValue ?? 0;
                 break;
             }
             const currentAmount = this.baseAttrValue ?? 0;
@@ -333,7 +334,7 @@ export default {
 
             // Step 2: Calculate the number of steps of 0.2
             let steps = Math.floor(
-              additionalAmount / modifierItem.modifierStep
+              additionalAmount / modifierItem.modifierStep,
             );
 
             // Step 3: Calculate the CritRate buff

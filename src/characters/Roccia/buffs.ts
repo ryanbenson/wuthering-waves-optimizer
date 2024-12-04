@@ -1,18 +1,18 @@
 export const buffs = [
   {
-    key: "Dissociation",
-    name: "Dissociation",
-    details: `<div class="skilldescription">Carlotta ignores 18% of the target's defense when dealing damage to a target affected by <span class="Highlight">Dissociation</span>.</div>`,
+    key: "FantasyIntoReality",
+    name: "Fantasy Into Reality",
+    details: `<div class="skilldescription">When Roccia's <span class="Highlight">Crit Rate</span> is above <span class="Highlight">50%</span>, for every additional <span class="Highlight">0.1%</span> critical rate, the 3rd attack of the Basic Attack Fantasy into reality will increase the <span class="Highlight">ATK</span> of all characters in the team by <span class="Highlight">1</span> point, lasting for 30 seconds. This can be increased up to <span class="Highlight">200</span> points.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "DEFIgnore",
-        modifySpecificTalents: [
-          "DeathsEndDMG",
-          "DeathOmenFuneralDMG",
-          "DeathOmenRestDMG",
-        ],
-        modifierValue: 0.18,
+        modifier: "ATK_FLAT:AdditionalBase",
+        modifierValue: 1,
+        maximumValue: 200,
+        modifierStep: 0.1,
+        modifierBasedOn: "CritRate",
+        modifierTargetAttr: "ATK_FLAT",
+        minStatValue: 50,
       },
     ],
     minStacks: 0,
@@ -20,10 +20,27 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "InherentSkillFlawlessPurity",
-    name: "Inherent Skill: Flawless Purity",
-    details: `<div class="skilldescription">After casting the Resonance Skill Brilliant Will, performing an Aerial Attack within a certain time grants immunity to damage and being hit before the attack deals damage.<br>
-Soaring Stamina consumption -20%.</div>`,
+    key: "InheritSkillImmersivePerformance",
+    name: "Inherit Skill: Immersive Performance",
+    details: `<div class="skilldescription">When casting a <span class="Highlight">Resonance Skill</span> or <span class="Highlight">Heavy Attack</span>, Roccia's <span class="Highlight">ATK</span> is increased by <span class="Highlight">20%</span>, lasting for <span class="Highlight">12</span> seconds.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.12,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "InherentSkillEndlessGravityPreciousBox",
+    name: "Inherent Skill: Endless Gravity: Precious Box",
+    details: `<div class="skilldescription">After casting an <span class="Highlight">Outro Skill</span>, the next character to appear will have their exploration tool replaced by the Precious Box.<br>
+<span class="Title">【Precious Box】</span><br>
+When used, it pulls nearby targets toward the Precious Box.<br>
+Precious Box lasts for <span class="Highlight">14</span> seconds. If switched to another character, the Precious Box will disappear prematurely.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -31,19 +48,14 @@ Soaring Stamina consumption -20%.</div>`,
     alwaysEnabled: false,
   },
   {
-    key: "InherentSkillArtAboveAll",
-    name: "Inherent Skill: Art Above All",
-    details: `<div class="skilldescription">The Intro Skill Winter's Sigh, Resonance Skill Brilliant Will, Resonance Liberation Death Omen, and Heavy Attack End of the Road can inflict the Dissociation effect on hit targets.</div>`,
+    key: "StatBonusCritDMG1",
+    name: "Stat Bonus: Crit. DMG+",
+    details: `<div class="skilldescription">Crit. DMG increased by 2.40%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "DEFIgnore",
-        modifySpecificTalents: [
-          "WintersLamentDMG",
-          "BrilliantWillDMG",
-          "EndoftheRoadDMG",
-        ],
-        modifierValue: 0.18,
+        modifier: "CritDMG",
+        modifierValue: 0.024,
       },
     ],
     minStacks: 0,
@@ -51,14 +63,14 @@ Soaring Stamina consumption -20%.</div>`,
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusCritRate1",
-    name: "Stat Bonus: Crit. Rate+",
-    details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
+    key: "StatBonusCritDMG2",
+    name: "Stat Bonus: Crit. DMG+",
+    details: `<div class="skilldescription">Crit. DMG increased by 2.40%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritRate",
-        modifierValue: 0.012,
+        modifier: "CritDMG",
+        modifierValue: 0.024,
       },
     ],
     minStacks: 0,
@@ -66,14 +78,29 @@ Soaring Stamina consumption -20%.</div>`,
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusCritRate2",
-    name: "Stat Bonus: Crit. Rate+",
-    details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
+    key: "StatBonusCritDMG3",
+    name: "Stat Bonus: Crit. DMG+",
+    details: `<div class="skilldescription">Crit. DMG increased by 5.60%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritRate",
-        modifierValue: 0.012,
+        modifier: "CritDMG",
+        modifierValue: 0.056,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritDMG4",
+    name: "Stat Bonus: Crit. DMG+",
+    details: `<div class="skilldescription">Crit. DMG increased by 5.60%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifierValue: 0.056,
       },
     ],
     minStacks: 0,
@@ -104,36 +131,6 @@ Soaring Stamina consumption -20%.</div>`,
       {
         modifier: "ATK",
         modifierValue: 0.018,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "StatBonusCritRate3",
-    name: "Stat Bonus: Crit. Rate+",
-    details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "CritRate",
-        modifierValue: 0.028,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "StatBonusCritRate4",
-    name: "Stat Bonus: Crit. Rate+",
-    details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "CritRate",
-        modifierValue: 0.028,
       },
     ],
     minStacks: 0,

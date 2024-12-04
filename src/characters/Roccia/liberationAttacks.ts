@@ -3,7 +3,7 @@ export const liberationAttacks = {
   description: `<div class="skilldescription">Roccia's improv comedy opening! Deals <span class="Dark">Havoc</span> damage to the target.</div>`,
   attacks: [
     {
-      key: "ImproComedyOpeningDMG",
+      key: "ImprovComedyOpeningDMG",
       label: "Skill DMG",
       talents: {
         "1": "140.00%*3",
