@@ -60,6 +60,7 @@ const rectifiersList = {
     { key: "CometFlare", name: "Comet Flare" },
     { key: "FusionAccretion", name: "Fusion Accretion" },
     { key: "JinzhouKeeper", name: "Jinzhou Keeper" },
+    { key: "ThePretentiousWaltz", name: "The Pretentious Waltz" },
     { key: "Variation", name: "Variation" },
   ],
   three: [
