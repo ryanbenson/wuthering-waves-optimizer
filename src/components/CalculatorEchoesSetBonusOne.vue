@@ -85,6 +85,11 @@ export default {
           description: `Increase Resonance Skill DMG by <span class="Highlight">12%</span>`,
           name: "A Heart Of Determination",
         },
+        "The Veil of Hidden Night 2 Set": {
+          Havoc: 10,
+          description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
+          name: "The Veil of Hidden Night",
+        },
       },
     };
   },

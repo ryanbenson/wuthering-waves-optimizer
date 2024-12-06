@@ -135,6 +135,11 @@ export default {
           description: `Increase Resonance Skill DMG by <span class="Highlight">12%</span>`,
           name: "A Heart Of Determination",
         },
+        "The Veil of Hidden Night 2 Set": {
+          Havoc: 10,
+          description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
+          name: "The Veil of Hidden Night",
+        },
         "Freezing Frost 5 Set": {
           Glacio: 10,
           maxStacks: 3,
@@ -199,6 +204,11 @@ export default {
           Glacio: 30,
           description: `For 6 seconds after using Resonance Liberation, increase <span class="Ice">Glacio</span> DMG by <span class="Highlight">30%</span>, and <span class="Highlight">Resonance Skill</span> DMG by <span class="Highlight">30%</span>.`,
           name: "A Heart Of Determination",
+        },
+        "The Veil of Hidden Night 5 Set": {
+          EnableAttack: "TheVeilofHiddenNight",
+          description: `When the character uses an <span class="Highlight">Outro Skill</span>, it deals an additional <span class="Highlight">480%</span> <span class="Dark">Havoc</span> DMG and increases the next character's <span class="Dark">Havoc</span> DMG by <span class="Highlight">15%</span> for <span class="Highlight">15</span> seconds`,
+          name: "The Veil of Hidden Night",
         },
       },
     };
