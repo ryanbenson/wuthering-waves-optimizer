@@ -1226,9 +1226,33 @@ export const mainEchoesData: MainEchoes = {
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Lorelei.webp",
-    details: `<span class="description"></span>`,
-    modifiers: [],
-    actions: [],
+    details: `<span class="description">Use the Sound Corpse skill to transform into Lorelei, causing <span class="Highlight">316.00%/363.40%/410.80%/458.20%/505.60%</span> <span class="Dark">Havoc</span> DMG to surrounding enemies. When the first character to equip this Sound Corpse skill, the current character's <span class="Dark">Havoc</span> DMG bonus increases by <span class="Highlight">12.00%</span>, and the Resonance Liberation damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "SoundCorpseDMG",
+        label: "Sound Corpse DMG",
+        description: `Use the Sound Corpse skill to transform into Lorelei, causing <span class="Highlight">316.00%/363.40%/410.80%/458.20%/505.60%</span> <span class="Dark">Havoc</span> DMG to surrounding enemies.`,
+        talents: {
+          "1": "316.00%",
+          "2": "363.40%",
+          "3": "410.80%",
+          "4": "458.20%",
+          "5": "505.60%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      }
+    ],
     sets: ["AHeartOfDetermination", "TheVeilofHiddenNight"],
   },
   LottieLost: {
@@ -1407,9 +1431,33 @@ export const mainEchoesData: MainEchoes = {
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareImpermanenceHeron.webp",
-    details: `<span class="description"></span>`,
-    modifiers: [],
-    actions: [],
+    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare Impermanence Heron, causing 10 stages of <span class="Hightlight">32.00%/36.80%/41.60%/46.40%/51.20%</span> <span class="Dark">Havoc</span> DMG to surrounding enemies. When the first character to equip this Sound Corpse skill, the current character's <span class="Dark">Havoc</span> DMG bonus increases by <span class="Highlight">12.00%</span>, and the Resonance Skill damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceSkillDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "ImperSoundCorpseDMG",
+        label: "Sound Corpse DMG",
+        description: `Use the Sound Corpse skill to transform into Nightmare Impermanence Heron, causing 10 stages of <span class="Hightlight">32.00%/36.80%/41.60%/46.40%/51.20%</span> <span class="Dark">Havoc</span> DMG to surrounding enemies.`,
+        talents: {
+          "1": "32.00%*10",
+          "2": "36.80%*10",
+          "3": "41.60%*10",
+          "4": "46.40%*10",
+          "5": "51.20%*10",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
     sets: ["TheVeilofHiddenNight"],
   },
   NocturnusKnight: {
