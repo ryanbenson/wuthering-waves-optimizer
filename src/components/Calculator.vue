@@ -1544,7 +1544,7 @@ export default defineComponent({
       const outroAttacks = chosenChar.value.outroAttacks?.attacks ?? [];
       const hasEchoOutroAttack = echoStats.value?.EnableAttack === "TheVeilofHiddenNight";
       const hasEchoOutroAttackSet = outroAttacks.find((attack) => attack.key === "TheVeilofHiddenNightDMG");
-      if (!hasEchoOutroAttackSet) {
+      if (!hasEchoOutroAttackSet && hasEchoOutroAttack) {
         outroAttacks.push({
           key: "TheVeilofHiddenNightDMG",
           label: "The Veil of Hidden Night DMG",
