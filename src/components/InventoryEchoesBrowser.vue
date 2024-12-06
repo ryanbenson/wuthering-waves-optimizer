@@ -179,6 +179,18 @@ export default {
     CalculatorEchoCard,
     InventoryEchoEdit,
   },
+  watch: {
+    // when any filter changes, reset the page number
+    mainStatFilter() {
+      this.page = 1;
+    },
+    echoSet() {
+      this.page = 1;
+    },
+    echo() {
+      this.page = 1;
+    },
+  },
   computed: {
     ...mapState(useInventoryStore, ["echoes", "getEquippedEchoData"]),
     echoSetsList() {

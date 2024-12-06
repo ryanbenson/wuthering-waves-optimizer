@@ -101,9 +101,18 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>December 6, 2024</h3>
+    <ul>
+      <li>
+        Fixes browsing saved echoes pagination when you apply a filter, it now
+        resets the page to 1.
+      </li>
+    </ul>
     <h3>December 4, 2024</h3>
     <ul>
-      <li>Releases inventory system to manage and house echoes.</li>
+      <li>
+        Major release: Releases inventory system to manage and house echoes.
+      </li>
     </ul>
     <h3>November 30, 2024</h3>
     <ul>

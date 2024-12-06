@@ -1,8 +1,8 @@
 <template>
   <dialog id="modal-echoes-browser" class="modal">
-      <form method="dialog" class="modal-backdrop" @click="handleClose">
-        <button>close</button>
-      </form>
+    <form method="dialog" class="modal-backdrop" @click="handleClose">
+      <button>close</button>
+    </form>
     <div class="modal-box max-w-5xl">
       <form method="dialog" @click="handleClose">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
@@ -14,20 +14,19 @@
           <select
             v-model="mainStatFilter"
             name="mainEcho"
-            class="select select-bordered select select-sm"
-          >
+            class="select select-bordered select select-sm">
             <option :value="null">Select a main stat</option>
             <option
               v-for="mainStat in allMainStats"
               :key="mainStat"
-              :value="mainStat"
-            >{{ getReadableSubStatLabel(mainStat) }}</option>
+              :value="mainStat">
+              {{ getReadableSubStatLabel(mainStat) }}
+            </option>
           </select>
           <select
             v-model="echo"
             name="mainEcho"
-            class="select select-bordered select select-sm mr-4"
-          >
+            class="select select-bordered select select-sm mr-4">
             <option :value="null">Select an echo</option>
             <optgroup label="Calamity">
               <option
@@ -68,25 +67,37 @@
               :key="echoSet"
               @click="toggleEchoSetFilter(echoSet)"
               class="rounded mr-1"
-              :class="{'btn-active': isEchoSetFilterActive(echoSet), echoSet}"
-            >
-              <img :src="getEchoSetImage(echoSet)" class="size-8" :class="echoSet" />
+              :class="{
+                'btn-active': isEchoSetFilterActive(echoSet),
+                echoSet,
+              }">
+              <img
+                :src="getEchoSetImage(echoSet)"
+                class="size-8"
+                :class="echoSet" />
             </button>
           </div>
-          <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
+          <button @click="resetFilters" class="btn btn-sm btn-ghost">
+            Clear
+          </button>
         </div>
 
         <div class="echoes__list">
           <template v-if="!echoesList.length">
-            <div class="echoes__list--empty py-12 text-center w-full">No echoes found</div>
+            <div class="echoes__list--empty py-12 text-center w-full">
+              No echoes found
+            </div>
           </template>
           <template v-else>
             <div class="join flex justify-center py-4">
               <button @click="prevPage" class="join-item btn btn-sm">«</button>
-              <button class="join-item btn btn-sm">Page {{ page }} / {{ totalPages }}</button>
+              <button class="join-item btn btn-sm">
+                Page {{ page }} / {{ totalPages }}
+              </button>
               <button @click="nextPage" class="join-item btn btn-sm">»</button>
             </div>
-            <div class="echoes__list__items grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              class="echoes__list__items grid grid-cols-1 md:grid-cols-2 gap-4">
               <CalculatorEchoCard
                 v-for="echo in paginatedEchoesList"
                 class="echo__item"
@@ -106,14 +117,19 @@
                 :echo-sub-stats-type-4="echo.echoSubStatsType4"
                 :echo-sub-stats-value-4="echo.echoSubStatsValue4"
                 :echo-sub-stats-type-5="echo.echoSubStatsType5"
-                :echo-sub-stats-value-5="echo.echoSubStatsValue5"
-              >
-                <button @click="assignEcho(echo.echoId)" class="btn btn-primary btn-sm">Use echo</button>
+                :echo-sub-stats-value-5="echo.echoSubStatsValue5">
+                <button
+                  @click="assignEcho(echo.echoId)"
+                  class="btn btn-primary btn-sm">
+                  Use echo
+                </button>
               </CalculatorEchoCard>
             </div>
             <div class="join flex justify-center py-4">
               <button @click="prevPage" class="join-item btn btn-sm">«</button>
-              <button class="join-item btn btn-sm">Page {{ page }} / {{ totalPages }}</button>
+              <button class="join-item btn btn-sm">
+                Page {{ page }} / {{ totalPages }}
+              </button>
               <button @click="nextPage" class="join-item btn btn-sm">»</button>
             </div>
           </template>
@@ -125,13 +141,18 @@
 
 <script>
 import { mainEchoesData, getEchoData } from "../echoes/index.ts";
-import { echoSetLabelMap, getEchoSetIconByType, getReadableSubStatLabel, statsTable } from "../echoes/stats";
+import {
+  echoSetLabelMap,
+  getEchoSetIconByType,
+  getReadableSubStatLabel,
+  statsTable,
+} from "../echoes/stats";
 import { mapActions, mapState } from "pinia";
 import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
-import CalculatorEchoCard from './CalculatorEchoCard.vue';
+import CalculatorEchoCard from "./CalculatorEchoCard.vue";
 export default {
-  name: 'CalculatorEchoesBrowser',
+  name: "CalculatorEchoesBrowser",
   props: {
     character: {
       type: String,
@@ -151,7 +172,19 @@ export default {
     };
   },
   components: {
-    CalculatorEchoCard
+    CalculatorEchoCard,
+  },
+  watch: {
+    // when any filter changes, reset the page number
+    mainStatFilter() {
+      this.page = 1;
+    },
+    echoSet() {
+      this.page = 1;
+    },
+    echo() {
+      this.page = 1;
+    },
   },
   computed: {
     ...mapState(useInventoryStore, ["echoes"]),
@@ -185,7 +218,9 @@ export default {
       }
       // filter by main stat if set
       if (this.mainStatFilter) {
-        allEchoes = allEchoes.filter((echo) => echo.stat === this.mainStatFilter);
+        allEchoes = allEchoes.filter(
+          (echo) => echo.stat === this.mainStatFilter,
+        );
       }
 
       return allEchoes;
@@ -218,10 +253,14 @@ export default {
       return echoes;
     },
     allMainStats() {
-      const fourSlotOptions = Object.keys(this.statsTable['4']);
-      const threeSlotOptions = Object.keys(this.statsTable['3']);
-      const oneSlotOptions = Object.keys(this.statsTable['1']);
-      const allOptions = [...fourSlotOptions, ...threeSlotOptions, ...oneSlotOptions];
+      const fourSlotOptions = Object.keys(this.statsTable["4"]);
+      const threeSlotOptions = Object.keys(this.statsTable["3"]);
+      const oneSlotOptions = Object.keys(this.statsTable["1"]);
+      const allOptions = [
+        ...fourSlotOptions,
+        ...threeSlotOptions,
+        ...oneSlotOptions,
+      ];
       // filter out any dupes
       return [...new Set(allOptions)];
     },
@@ -232,11 +271,11 @@ export default {
     getReadableSubStatLabel,
     triggerOpenModal(echoIndex) {
       this.echoIndex = echoIndex;
-      const modalEl = document.getElementById('modal-echoes-browser');
+      const modalEl = document.getElementById("modal-echoes-browser");
       modalEl.showModal();
     },
     triggerCloseModal() {
-      const modalEl = document.getElementById('modal-echoes-browser');
+      const modalEl = document.getElementById("modal-echoes-browser");
       modalEl.close();
     },
     handleClose() {
@@ -265,7 +304,7 @@ export default {
       // is the echo already being used? if so, then reject
       const isUsed = this.isEchoUsedByChar(echoId);
       if (isUsed) {
-        alert('Echo is already being used.');
+        alert("Echo is already being used.");
         return;
       }
       const echo = this.getEchoById(echoId);
@@ -338,8 +377,8 @@ export default {
       if (this.currentCharacterEchoes?.[4]?.echoId === echoId) {
         return true;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
