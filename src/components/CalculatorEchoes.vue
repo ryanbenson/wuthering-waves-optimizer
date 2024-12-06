@@ -186,7 +186,11 @@ export default {
         for (const [stat, value] of Object.entries(
           JSON.parse(JSON.stringify(this.setBonusTwo)),
         )) {
-          stats[stat] = (stats[stat] || 0) + value;
+          if (stat === "EnableAttack") {
+            stats[stat] = value;
+          } else {
+            stats[stat] = (stats[stat] || 0) + value;
+          }
         }
       }
 

@@ -1131,10 +1131,6 @@ export default defineComponent({
     const calcAllDamages = () => {
       if (!chosenChar.value) return;
 
-      let elementalDmgBonusDecimal = getElementDmgBonusByType(
-        chosenChar.value?.basic?.element,
-      );
-
       const calculateAttackDamage = (
         attack,
         talentType,
@@ -1158,7 +1154,12 @@ export default defineComponent({
         if (attackTypeOverrideSelfBuff) {
           attackType = attackTypeOverrideSelfBuff;
         }
-        const attackElement = chosenChar.value?.basic?.element;
+        // an attack can have its own element override
+        const attackElement = attack?.element ?? chosenChar.value?.basic?.element;
+
+        let elementalDmgBonusDecimal = getElementDmgBonusByType(
+          attackElement
+        );
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         let totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         let talent;
@@ -1540,6 +1541,19 @@ export default defineComponent({
         );
       };
 
+      const outroAttacks = chosenChar.value.outroAttacks?.attacks ?? [];
+      const hasEchoOutroAttack = echoStats.value?.EnableAttack === "TheVeilofHiddenNight";
+      const hasEchoOutroAttackSet = outroAttacks.find((attack) => attack.key === "TheVeilofHiddenNightDMG");
+      if (!hasEchoOutroAttackSet) {
+        outroAttacks.push({
+          key: "TheVeilofHiddenNightDMG",
+          label: "The Veil of Hidden Night DMG",
+          talent: "480%",
+          type: "Outro",
+          element: "Havoc",
+        });
+      }
+
       const allDamagesData = {
         basicAttacks: processAttacks(
           chosenChar.value.basicAttacks?.attacks,
@@ -1562,7 +1576,7 @@ export default defineComponent({
           talentData.intro,
         ),
         outroAttacks: processAttacks(
-          chosenChar.value.outroAttacks?.attacks,
+          outroAttacks,
           talentData.intro,
           true, // has no talent level
         ),

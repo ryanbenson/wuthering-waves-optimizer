@@ -110,8 +110,12 @@ export default {
     updatedStats() {
       let stats = {};
       if (this.type) {
-        stats = this.setBonusEffects[this.type] ?? {};
+        const cloneType = JSON.parse(JSON.stringify(this.setBonusEffects[this.type]));
+        delete cloneType.name;
+        delete cloneType.description;
+        stats = cloneType ?? {};
       }
+      console.log(stats);
       this.$emit("update-stats", stats);
     },
   },

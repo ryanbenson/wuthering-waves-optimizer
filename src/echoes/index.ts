@@ -47,6 +47,17 @@ export function getCostByClass(echoClass: string): number {
 }
 
 export const mainEchoesData: MainEchoes = {
+  AbyssalGladius: {
+    key: "AbyssalGladius",
+    name: "Abyssal Gladius",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/AbyssalGladius.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TheVeilofHiddenNight"],
+  },
   AbyssalVenator: {
     key: "AbyssalVenator",
     name: "Abyssal Venator",
@@ -233,7 +244,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">A deceptive Tacet Discord disguised as a supply chest, preying on the greed of its victims and devouring those who approach.</span>`,
     modifiers: [],
     actions: [],
-    sets: ["AHeartOfDetermination"],
+    sets: ["AHeartOfDetermination", "TheVeilofHiddenNight"],
   },
   Chirpuff: {
     key: "Chirpuff",
@@ -373,7 +384,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">An incorporeal Tacet Discord inhabiting the body of a large, ragged plushie.</span>`,
     modifiers: [],
     actions: [],
-    sets: ["AHeartOfDetermination"],
+    sets: ["AHeartOfDetermination", "TheVeilofHiddenNight"],
   },
   CyanFeatheredHeron: {
     key: "CyanFeatheredHeron",
@@ -502,6 +513,17 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [],
     sets: ["FreezingFrost", "SunSinkingEclipse"],
+  },
+  FaeIgnis: {
+    key: "FaeIgnis",
+    name: "Fae Ignis",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FaeIgnis.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TheVeilofHiddenNight"],
   },
   FallacyOfNoReturn: {
     key: "FallacyOfNoReturn",
@@ -663,6 +685,17 @@ export const mainEchoesData: MainEchoes = {
       },
     ],
     sets: ["VoidThunder", "LingeringTunes"],
+  },
+  FrostscourgeStalker: {
+    key: "FrostscourgeStalker",
+    name: "Frostscourge Stalker",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FrostscourgeStalker.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TheVeilofHiddenNight"],
   },
   FusionDreadmane: {
     key: "FusionDreadmane",
@@ -1187,6 +1220,17 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["CelestialLight"],
   },
+  Lorelei: {
+    key: "Lorelei",
+    name: "Lorelei",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Lorelei.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["AHeartOfDetermination", "TheVeilofHiddenNight"],
+  },
   LottieLost: {
     key: "LottieLost",
     name: "Lottie Lost",
@@ -1357,6 +1401,28 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["CelestialLight"],
   },
+  NightmareImpermanenceHeron: {
+    key: "NightmareImpermanenceHeron",
+    name: "Nightmare: Impermanence Heron",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareImpermanenceHeron.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TheVeilofHiddenNight"],
+  },
+  NocturnusKnight: {
+    key: "NocturnusKnight",
+    name: "Nocturnus Knight",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NocturnusKnight.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TheVeilofHiddenNight"],
+  },
   QuestlessKnight: {
     key: "QuestlessKnight",
     name: "Questless Knight",
@@ -1366,7 +1432,7 @@ export const mainEchoesData: MainEchoes = {
     details: `<span class="description">A humanoid Tacet Discord clad in fine attire, wielding a sharp blade and extraordinary might existing only in legends.</span>`,
     modifiers: [],
     actions: [],
-    sets: ["AHeartOfDetermination"],
+    sets: ["AHeartOfDetermination", "TheVeilofHiddenNight"],
   },
   RocksteadyGuardian: {
     key: "RocksteadyGuardian",
@@ -1802,6 +1868,17 @@ export const mainEchoesData: MainEchoes = {
       },
     ],
     sets: ["MoltenRift", "VoidThunder"],
+  },
+  VoltscourgeStalker: {
+    key: "VoltscourgeStalker",
+    name: "Voltscourge Stalker",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/VoltscourgeStalker.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TheVeilofHiddenNight"],
   },
   WhiffWhaff: {
     key: "WhiffWhaff",

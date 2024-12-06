@@ -209,6 +209,7 @@ export default {
           EnableAttack: "TheVeilofHiddenNight",
           description: `When the character uses an <span class="Highlight">Outro Skill</span>, it deals an additional <span class="Highlight">480%</span> <span class="Dark">Havoc</span> DMG and increases the next character's <span class="Dark">Havoc</span> DMG by <span class="Highlight">15%</span> for <span class="Highlight">15</span> seconds`,
           name: "The Veil of Hidden Night",
+          alwaysEnabled: true,
         },
       },
     };
@@ -258,7 +259,9 @@ export default {
       if (this.type) {
         const setBonusEffect = this.setBonusEffects[this.type];
         for (const [key, value] of Object.entries(setBonusEffect)) {
-          if (key !== "maxStacks") {
+          if (key === "EnableAttack") {
+            stats[key] = value;
+          } else if (key !== "maxStacks") {
             if (
               this.type === "Lingering Tunes 5 Set" &&
               key === "OutroSkillDMGBonus"
