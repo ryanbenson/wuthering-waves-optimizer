@@ -1548,18 +1548,16 @@ export default defineComponent({
       // clone the list of attacks so it doesn't mutate the base character data
       // this makes it where we dont have to manage the list of attacks,
       // and the rotations list has its own list of echo set attacks to choose from
-      const outroAttacks =
-        JSON.parse(JSON.stringify(chosenChar.value.outroAttacks?.attacks)) ??
-        [];
+      const echoSetAttacks = [];
       // TODO: Makes this scalable and more maintainable
       // can wait for another echo set attack, so okay for now
       const hasEchoOutroAttack =
         echoStats.value?.EnableAttack === "TheVeilofHiddenNight";
-      const echoOutroAttackSetIndex = outroAttacks.findIndex(
+      const echoOutroAttackSetIndex = echoSetAttacks.findIndex(
         (attack) => attack.key === "TheVeilofHiddenNightDMG",
       );
       if (echoOutroAttackSetIndex < 0 && hasEchoOutroAttack) {
-        outroAttacks.push({
+        echoSetAttacks.push({
           key: "TheVeilofHiddenNightDMG",
           label: "The Veil of Hidden Night DMG",
           talent: "480%",
@@ -1590,8 +1588,13 @@ export default defineComponent({
           talentData.intro,
         ),
         outroAttacks: processAttacks(
-          outroAttacks,
-          talentData.intro,
+          chosenChar.value.outroAttacks?.attacks,
+          talentData.intro, // TODO: What is this?
+          true, // has no talent level
+        ),
+        echoSetAttacks: processAttacks(
+          echoSetAttacks,
+          talentData.intro, // TODO: What is this?
           true, // has no talent level
         ),
       };
