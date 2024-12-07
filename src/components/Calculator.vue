@@ -1155,11 +1155,10 @@ export default defineComponent({
           attackType = attackTypeOverrideSelfBuff;
         }
         // an attack can have its own element override
-        const attackElement = attack?.element ?? chosenChar.value?.basic?.element;
+        const attackElement =
+          attack?.element ?? chosenChar.value?.basic?.element;
 
-        let elementalDmgBonusDecimal = getElementDmgBonusByType(
-          attackElement
-        );
+        let elementalDmgBonusDecimal = getElementDmgBonusByType(attackElement);
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         let totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         let talent;
@@ -1542,9 +1541,12 @@ export default defineComponent({
       };
 
       const outroAttacks = chosenChar.value.outroAttacks?.attacks ?? [];
-      const hasEchoOutroAttack = echoStats.value?.EnableAttack === "TheVeilofHiddenNight";
-      const hasEchoOutroAttackSet = outroAttacks.find((attack) => attack.key === "TheVeilofHiddenNightDMG");
-      if (!hasEchoOutroAttackSet && hasEchoOutroAttack) {
+      const hasEchoOutroAttack =
+        echoStats.value?.EnableAttack === "TheVeilofHiddenNight";
+      const echoOutroAttackSetIndex = outroAttacks.findIndex(
+        (attack) => attack.key === "TheVeilofHiddenNightDMG",
+      );
+      if (echoOutroAttackSetIndex < 0 && hasEchoOutroAttack) {
         outroAttacks.push({
           key: "TheVeilofHiddenNightDMG",
           label: "The Veil of Hidden Night DMG",
@@ -1552,6 +1554,10 @@ export default defineComponent({
           type: "Outro",
           element: "Havoc",
         });
+      }
+      // if there is no attack, if there is one set, if so remove it
+      if (echoOutroAttackSetIndex >= 0 && !hasEchoOutroAttack) {
+        outroAttacks.splice(echoOutroAttackSetIndex, 1);
       }
 
       const allDamagesData = {
