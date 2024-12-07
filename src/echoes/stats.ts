@@ -266,3 +266,20 @@ export const echoSetLabelMap: Record<string, string> = {
 export function getEchoSetLabelByType(type: string): string {
   return echoSetLabelMap[type];
 }
+
+type EchoAttack = {
+  key: string;
+  label: string;
+  talent: string;
+  type: string;
+  element: string;
+};
+export const echoAttacks: EchoAttack[] = [
+  {
+    key: "TheVeilofHiddenNightDMG",
+    label: "The Veil of Hidden Night DMG",
+    talent: "480%",
+    type: "Outro",
+    element: "Havoc",
+  },
+];

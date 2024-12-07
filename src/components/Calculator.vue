@@ -538,6 +538,7 @@ import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
 import CalculatorStats from "./CalculatorStats.vue";
 import CalculatorDamages from "./CalculatorDamages.vue";
 import { mainEchoesData, getEchoData } from "../echoes";
+import { echoAttacks } from "../echoes/stats";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import ThemeChooser from "./ThemeChooser.vue";
@@ -1185,6 +1186,10 @@ export default defineComponent({
               // outros have no talent tree, just a single value
               talent = attack.talent;
               break;
+            case "echoAttacks":
+              // echo set attacks have no talent tree, just a single value
+              talent = attack.talent;
+              break;
           }
         } else {
           talent = attack.talents[talentType];
@@ -1540,7 +1545,14 @@ export default defineComponent({
         );
       };
 
-      const outroAttacks = chosenChar.value.outroAttacks?.attacks ?? [];
+      // clone the list of attacks so it doesn't mutate the base character data
+      // this makes it where we dont have to manage the list of attacks,
+      // and the rotations list has its own list of echo set attacks to choose from
+      const outroAttacks =
+        JSON.parse(JSON.stringify(chosenChar.value.outroAttacks?.attacks)) ??
+        [];
+      // TODO: Makes this scalable and more maintainable
+      // can wait for another echo set attack, so okay for now
       const hasEchoOutroAttack =
         echoStats.value?.EnableAttack === "TheVeilofHiddenNight";
       const echoOutroAttackSetIndex = outroAttacks.findIndex(
@@ -1554,10 +1566,6 @@ export default defineComponent({
           type: "Outro",
           element: "Havoc",
         });
-      }
-      // if there is no attack, if there is one set, if so remove it
-      if (echoOutroAttackSetIndex >= 0 && !hasEchoOutroAttack) {
-        outroAttacks.splice(echoOutroAttackSetIndex, 1);
       }
 
       const allDamagesData = {
@@ -1738,9 +1746,16 @@ export default defineComponent({
           const actionCount = action.count;
           const attacksList =
             chosenChar?.[`${actionType}Attacks`]?.attacks ?? [];
-          const foundAction = attacksList.find((attack) => {
-            return attack.key === actionKey;
-          });
+          let foundAction;
+          if (actionType === "echoAttacks") {
+            foundAction = echoAttacks.find((attack) => {
+              return attack.key === actionKey;
+            });
+          } else {
+            foundAction = attacksList.find((attack) => {
+              return attack.key === actionKey;
+            });
+          }
           if (foundAction) {
             const actionData = {
               ...foundAction,
