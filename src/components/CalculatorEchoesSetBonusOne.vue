@@ -90,6 +90,21 @@ export default {
           description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
           name: "The Veil of Hidden Night",
         },
+        "The Eternal Light 2 Set": {
+          Spectro: 10,
+          description: `<span class="Light">Spectro</span> DMG increased by <span class="Highlight">10%</span>`,
+          name: "The Eternal Light",
+        },
+        "A Song of High Heavens 2 Set": {
+          EnergyRegen: 10,
+          description: `Energy Regen increases by <span class="Highlight">10%</span>`,
+          name: "A Song of High Heavens",
+        },
+        "Brave the Waves 2 Set": {
+          HP: 10,
+          description: `HP increases by <span class="Highlight">10%</span>`,
+          name: "Brave the Waves",
+        },
       },
     };
   },

@@ -908,12 +908,27 @@ export const allEchoBuffs = [
   {
     key: "TheVeilofHiddenNight",
     name: "The Veil of Hidden Night",
-    details: `<span class="description">Increases the next character's <span class="Dark">Havoc</span> DMG by <span class="Highlight">15%</span> for <span class="Highlight">15</span> seconds`,
+    details: `<span class="description">Increases the next character's <span class="Dark">Havoc</span> DMG by <span class="Highlight">15%</span> for <span class="Highlight">15</span> seconds</span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "Havoc",
         modifierValue: 0.15,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "ASongofHighHeavens",
+    name: "A Song of High Heavens",
+    details: `<span class="description">when a coordinated attack deals Crit DMG, the whole team gains <span class="Highlight">20%</span> ATK bonus.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.2,
       },
     ],
     minStacks: 0,

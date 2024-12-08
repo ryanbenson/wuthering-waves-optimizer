@@ -140,6 +140,21 @@ export default {
           description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
           name: "The Veil of Hidden Night",
         },
+        "The Eternal Light 2 Set": {
+          Spectro: 10,
+          description: `<span class="Light">Spectro</span> DMG increased by <span class="Highlight">10%</span>`,
+          name: "The Eternal Light",
+        },
+        "A Song of High Heavens 2 Set": {
+          EnergyRegen: 10,
+          description: `Energy Regen increases by <span class="Highlight">10%</span>`,
+          name: "A Song of High Heavens",
+        },
+        "Brave the Waves 2 Set": {
+          HP: 10,
+          description: `HP increases by <span class="Highlight">10%</span>`,
+          name: "Brave the Waves",
+        },
         "Freezing Frost 5 Set": {
           Glacio: 10,
           maxStacks: 3,
@@ -210,6 +225,25 @@ export default {
           description: `When the character uses an <span class="Highlight">Outro Skill</span>, it deals an additional <span class="Highlight">480%</span> <span class="Dark">Havoc</span> DMG and increases the next character's <span class="Dark">Havoc</span> DMG by <span class="Highlight">15%</span> for <span class="Highlight">15</span> seconds`,
           name: "The Veil of Hidden Night",
           alwaysEnabled: true,
+        },
+        "The Eternal Light 5 Set": {
+          Spectro: 15,
+          CritDMG: 20,
+          description: `When a character adds [light noise effect] to a target, the characters Crit DMG is increased by <span class="Highlight">20%</span> for <span class="Highlight">15</span> seconds. When attacking an enemy with 10 stacks of [light noise effect] the character gains <span class="Highlight">15%</span> <span class="Light">Spectro</span> DMG bonus for <span class="Highlight">15</span> seconds`,
+          name: "The Eternal Light",
+        },
+        "A Song of High Heavens 5 Set": {
+          CoordinatedDMGBonus: 80,
+          ATK: 20,
+          description: `Increases the DMG dealt by coordinated attacks by <span class="Highlight">80%</span>, when a coordinated attack deals Crit DMG, the whole team gains <span class="Highlight">20%</span> ATK bonus.`,
+          name: "A Song of High Heavens",
+        },
+        "Brave the Waves 5 Set": {
+          // TODO: Separate this. the CritRate has stacks, but HP does not
+          HP: 20,
+          CritRate: 15,
+          description: `When the character has a shield, increases max HP by <span class="Highlight">20%</span>, when characters health is reduced, the characters Crit Rate increases by <span class="Highlight">5%</span> for 15 seconds, triggering up to <span class="Highlight">1</span> time per second and stacking up to <span class="Highlight">3</span> times.`,
+          name: "Brave the Waves",
         },
       },
     };
