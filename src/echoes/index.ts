@@ -273,6 +273,28 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["SierraGale", "SunSinkingEclipse"],
   },
+  ChopChop: {
+    key: "ChopChop",
+    name: "Chop Chop",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ChopChop.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: [],
+  },
+  ChopChopHeadless: {
+    key: "ChopChopHeadless",
+    name: "Chop Chop: Headless",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ChopChopHeadless.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: [],
+  },
   ChopChopLeftless: {
     key: "ChopChopLeftless",
     name: "Chop Chop: Leftless",
@@ -424,6 +446,65 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [],
     sets: ["MoonlitClouds", "LingeringTunes"],
+  },
+  DiggyDuggy: {
+    key: "DiggyDuggy",
+    name: "Diggy Duggy",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/DiggyDuggy.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: [],
+  },
+  DiurnusKnight: {
+    key: "DiurnusKnight",
+    name: "Diurnus Knight",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/DiurnusKnight.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: [],
+  },
+  DragonofDirge: {
+    key: "DragonofDirge",
+    name: "Dragon of Dirge",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/DragonofDirge.webp",
+    details: `<span class="description">Use the Sound Corpse skill to transform into the Sighing Ancient Dragon, cast "Meteor of Judgment", attack enemies in the "Sorrow Field", summon up to 10 "Meteors", each "Meteor" causes <span class="Highlight">31.10%/35.77%/40.43%/45.10%/49.76%</span> of <span class="Fire">Fusion</span> to the enemy.<br>
+When the first character to equip this Sound Corpse skill, the current character gains a <span class="Highlight">12.00%</span> <span class="Fire">Fusion</span> damage bonus and a <span class="Highlight">12.00%</span> Basic attack damage bonus.<br>
+Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "BasicAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "DragonofDirgeMeteorDMG",
+        label: "Meteor DMG",
+        description: `Use the Sound Corpse skill to transform into the Sighing Ancient Dragon, cast "Meteor of Judgment", attack enemies in the "Sorrow Field", summon up to 10 "Meteors", each "Meteor" causes <span class="Highlight">31.10%/35.77%/40.43%/45.10%/49.76%</span> of <span class="Fire">Fusion</span> to the enemy.`,
+        talents: {
+          "1": "31.10%",
+          "2": "35.77%",
+          "3": "40.43%",
+          "4": "45.10%",
+          "5": "49.76%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: [],
   },
   Dreamless: {
     key: "Dreamless",
@@ -686,6 +767,17 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["VoidThunder", "LingeringTunes"],
   },
+  FractsidusThruster: {
+    key: "FractsidusThruster",
+    name: "Fractsidus Thruster",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FractsidusThruster.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: [],
+  },
   FrostscourgeStalker: {
     key: "FrostscourgeStalker",
     name: "Frostscourge Stalker",
@@ -872,6 +964,37 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [],
     sets: ["CelestialLight", "SunSinkingEclipse"],
+  },
+  Hecate: {
+    key: "Hecate",
+    name: "Hecate",
+    class: "Calamity",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Hecate.webp",
+    details: `<span class="description">Use the Sound Shell skill to summon 3 "Moon Maids" that continuously dance around you. The "Moon Maids"' whirling blades will cause <span class="Highlight">25.33%/29.13%/32.93%/36.73%/40.53%</span> <span class="Dark">Havoc</span> damage to the enemy. When the whirling blades successfully trigger a counterattack, the existence time of the "Moon Maid" is extended.<br>When the first character to equip this Sound Shell skill, the damage caused by the current character's coordinated attack is increased by 40.00%. Skill cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "CoordinatedDMGBonus",
+        modifierValue: 0.4,
+      },
+    ],
+    actions: [
+      {
+        key: "HecateBladeDMG",
+        label: "Whirling Blades DMG",
+        description: `Use the Sound Shell skill to summon 3 "Moon Maids" that continuously dance around you. The "Moon Maids"' whirling blades will cause <span class="Highlight">25.33%/29.13%/32.93%/36.73%/40.53%</span> <span class="Dark">Havoc</span> damage to the enemy. When the whirling blades successfully trigger a counterattack, the existence time of the "Moon Maid" is extended.`,
+        talents: {
+          "1": "25.33%",
+          "2": "29.13%",
+          "3": "32.93%",
+          "4": "36.73%",
+          "5": "40.53%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: [],
   },
   Hoartoise: {
     key: "Hoartoise",
@@ -1251,7 +1374,7 @@ export const mainEchoesData: MainEchoes = {
         },
         type: "Echo",
         element: "Havoc",
-      }
+      },
     ],
     sets: ["AHeartOfDetermination", "TheVeilofHiddenNight"],
   },
@@ -1425,6 +1548,101 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["CelestialLight"],
   },
+  NimbusWraith: {
+    key: "NimbusWraith",
+    name: "Nimbus Wraith",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NimbusWraith.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: [],
+  },
+  NightmareCrownless: {
+    key: "NightmareCrownless",
+    name: "Nightmare: Crownless",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareCrownless.webp",
+    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare Uncrowned, dealing <span class="Highlight">175.00%/201.25%/227.50%/253.75%/280.00%</span> <span class="Dark">Havoc</span> damage to the enemy in front. When the first character to equip this Sound Corpse skill, the current character's <span class="Dark">Havoc</span> damage bonus increases by <span class="Highlight">12.00%</span>, and the Basic attack damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "BasicAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareUncrownedDMG",
+        label: "Nightmare Uncrowned DMG",
+        description: `Use the Sound Corpse skill to transform into Nightmare Uncrowned, dealing <span class="Highlight">175.00%/201.25%/227.50%/253.75%/280.00%</span> <span class="Dark">Havoc</span> damage to the enemy in front`,
+        talents: {
+          "1": "175.00%",
+          "2": "201.25%",
+          "3": "227.50%",
+          "4": "253.75%",
+          "5": "280.00%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["TheVeilofHiddenNight"],
+  },
+  NightmareFeilianBeringal: {
+    key: "NightmareFeilianBeringal",
+    name: "Nightmare: Feilian Beringal",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareFeilianBeringal.webp",
+    details: `<span class="description">Use the Sound Corpse skill to summon Nightmare Feilian Ape to attack the enemy, causing <span class="Highlight">91.20%/104.88%/118.56%/132.24%/145.92%</span> of <span class="Wind">Aero</span> damage; the remaining "Wind Whirl Banyan" will continue to attack surrounding enemies, causing 5 stages of <span class="Highlight">12.16%/13.98%/15.81%/17.63%/19.46%</span> of <span class="Wind">Aero</span> damage.<br>When the first character to equip this Sound Corpse skill, the current character's <span class="Wind">Aero</span> damage bonus increases by 12.00%, and the heavy attack damage bonus increases by 12.00%. Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareFeilianDMG",
+        label: "Sound Corpse DMG",
+        description: `Use the Sound Corpse skill to summon Nightmare Feilian Ape to attack the enemy, causing <span class="Highlight">91.20%/104.88%/118.56%/132.24%/145.92%</span> of <span class="Wind">Aero</span> damage.`,
+        talents: {
+          "1": "91.20%",
+          "2": "104.88%",
+          "3": "118.56%",
+          "4": "132.24%",
+          "5": "145.92%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+      {
+        key: "NightmareFeilianWindWhirlBanyanDMG",
+        label: "Wind Whirl Banyan DMG",
+        description: `The remaining "Wind Whirl Banyan" will continue to attack surrounding enemies, causing 5 stages of <span class="Highlight">12.16%/13.98%/15.81%/17.63%/19.46%</span> of <span class="Wind">Aero</span> damage.`,
+        talents: {
+          "1": "12.16%*5",
+          "2": "13.98%*5",
+          "3": "15.81%*5",
+          "4": "17.63%*5",
+          "5": "19.46%*5",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["TheVeilofHiddenNight"],
+  },
   NightmareImpermanenceHeron: {
     key: "NightmareImpermanenceHeron",
     name: "Nightmare: Impermanence Heron",
@@ -1456,6 +1674,156 @@ export const mainEchoesData: MainEchoes = {
         },
         type: "Echo",
         element: "Havoc",
+      },
+    ],
+    sets: ["TheVeilofHiddenNight"],
+  },
+  NightmareInfernoRider: {
+    key: "NightmareInfernoRider",
+    name: "Nightmare: Inferno Rider",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareInfernoRider.webp",
+    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare Burning Knight, leap up and deal <span class="Highlight">332.00%/381.80%/431.60%/481.40%/531.20%</span> of <span class="Fire">Fusion</span> damage to the enemy in front. When the first character to equip this Sound Corpse skill, the current character's <span class="Fire">Fusion</span> damage bonus increases by <span class="Highlight">12.00%</span>, and the Resonance Skill damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceSkillDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareBurningKnightDMG",
+        label: "Nightmare Burning Knight DMG",
+        description: `Use the Sound Corpse skill to transform into Nightmare Burning Knight, leap up and deal <span class="Highlight">332.00%/381.80%/431.60%/481.40%/531.20%</span> of <span class="Fire">Fusion</span> damage to the enemy in front.`,
+        talents: {
+          "1": "332.00%",
+          "2": "381.80%",
+          "3": "431.60%",
+          "4": "481.40%",
+          "5": "531.20%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["TheVeilofHiddenNight"],
+  },
+  NightmareMourningAix: {
+    key: "NightmareMourningAix",
+    name: "Nightmare: Mourning Aix",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareMourningAix.webp",
+    details: `<span class="description">Use the Sound Shell skill to summon Nightmare Screaming Bird, causing <span class="Highlight">258.00%/296.70%/335.40%/374.10%/412.80%</span> of <span class="Light">Spectro</span> damage to surrounding enemies. If the enemy is under the influence of the "Light Noise Effect", the damage caused by Screaming Bird is increased by 100.00%. When the first character equipped with this Sound Shell skill, the current character's <span class="Light">Spectro</span> damage bonus is increased by 12.00%. Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Spectro",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareScreamingBirdDMG",
+        label: "Nightmare Screaming Bird DMG",
+        description: `Use the Sound Shell skill to summon Nightmare Screaming Bird, causing <span class="Highlight">258.00%/296.70%/335.40%/374.10%/412.80%</span> of <span class="Light">Spectro</span> damage to surrounding enemies.`,
+        talents: {
+          "1": "258.00%",
+          "2": "296.70%",
+          "3": "335.40%",
+          "4": "374.10%",
+          "5": "412.80%",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+      {
+        key: "NightmareScreamingBirdDMG",
+        label: "Light Noise Nightmare Screaming Bird DMG",
+        description: `If the enemy is under the influence of the "Light Noise Effect", the damage caused by Screaming Bird is increased by 100.00%.`,
+        talents: {
+          "1": "516.00%",
+          "2": "595.40%",
+          "3": "670.80%",
+          "4": "748.20%",
+          "5": "825.60%",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+    ],
+    sets: ["TheVeilofHiddenNight"],
+  },
+  NightmareTempestMephis: {
+    key: "NightmareTempestMephis",
+    name: "Nightmare: Tempest Mephis",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareTempestMephis.webp",
+    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare: Thunder Scale, causing <span class="Highlight">479.00%/550.85%/622.70%/694.55%/766.40%</span> of <span class="Thunder">Electro</span> damage to surrounding enemies. When the first character to equip this Sound Corpse skill, the current character's <span class="Thunder">Electro</span> damage bonus increases by <span class="Highlight">12.00%</span>, and the resonance skill damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceSkillDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareThunderScaleDMG",
+        label: "Nightmare Thunder Scale DMG",
+        description: `Use the Sound Corpse skill to transform into Nightmare: Thunder Scale, causing <span class="Highlight">479.00%/550.85%/622.70%/694.55%/766.40%</span> of <span class="Thunder">Electro</span> damage to surrounding enemies.`,
+        talents: {
+          "1": "479.00%",
+          "2": "550.85%",
+          "3": "622.70%",
+          "4": "694.55%",
+          "5": "766.40%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["TheVeilofHiddenNight"],
+  },
+  NightmareThunderingMephis: {
+    key: "NightmareThunderingMephis",
+    name: "Nightmare: Thundering Mephis",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareThunderingMephis.webp",
+    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare Cloud Flash Scale, causing <span class="Highlight">267.00%/307.05%/347.10%/387.15%/427.20%</span> <span class="Thunder">Electro</span> damage to the enemy in front.<br>When the first character to equip this Sound Corpse skill, the <span class="Thunder">Electro</span> damage bonus of the current character is increased by <span class="Highlight">12.00%</span>, and the Resonance Liberation damage bonus is increased by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: " NightmareCloudFlashScaleDMG",
+        label: " Nightmare Cloud Flash Scale DMG",
+        description: `Use the Sound Corpse skill to transform into Nightmare Cloud Flash Scale, causing <span class="Highlight">267.00%/307.05%/347.10%/387.15%/427.20%</span> <span class="Thunder">Electro</span> damage to the enemy in front.`,
+        talents: {
+          "1": "267.00%",
+          "2": "307.05%",
+          "3": "347.10%",
+          "4": "387.15%",
+          "5": "427.20%",
+        },
+        type: "Echo",
+        element: "Electro",
       },
     ],
     sets: ["TheVeilofHiddenNight"],
