@@ -280,7 +280,7 @@ export const mainEchoesData: MainEchoes = {
   ChopChop: {
     key: "ChopChop",
     name: "Chop Chop",
-    class: "Common",
+    class: "Elite",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ChopChop.webp",
     details: `<span class="description"></span>`,
@@ -465,7 +465,7 @@ export const mainEchoesData: MainEchoes = {
   DiurnusKnight: {
     key: "DiurnusKnight",
     name: "Diurnus Knight",
-    class: "Common",
+    class: "Elite",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/DiurnusKnight.webp",
     details: `<span class="description"></span>`,
