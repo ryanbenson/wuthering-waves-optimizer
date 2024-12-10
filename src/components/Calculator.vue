@@ -1220,6 +1220,11 @@ export default defineComponent({
           talentModifierAdd + talentModifierAddFromResonanceChains;
         const specificSkillDmgFromResonanceChains =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
+        // apply echo based coordianted dmg bonus (both echo set and main echo)
+        let coordinatedEchoDmgBonus = 0;
+        if (attack?.subType === "Coordinated") {
+          coordinatedEchoDmgBonus = echoStats?.value?.CoordinatedDMGBonus ?? 0;
+        }
         // there are bonuses that are based on Max HP, Max ATK, Max DEF
         // we end up with DMG Bonus %, so we also / 100 in the end
         const specificSkillDmgFromResonanceChainsBasedOnMaxHp =
@@ -1295,6 +1300,9 @@ export default defineComponent({
           specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +
           specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal +
           specificSkillDmgFromResonanceChainsBasedOnMaxDefVal +
+          // echo buffs are in full integers, need to divide since everything else is decimal
+          // TODO: when refactoring echoes, move to decimals
+          coordinatedEchoDmgBonus / 100 +
           genericSkillDmgBonusEchoBuff / 100;
         const teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
