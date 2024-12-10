@@ -762,6 +762,25 @@ export default defineComponent({
         target.resistReduction += source?.ResistReduction
           ? source.ResistReduction
           : 0;
+
+        if (source?.AllAttributeBonus) {
+          const allAttributeBonus = source.AllAttributeBonus;
+          target.basicAttackDMGBonus += allAttributeBonus;
+          target.heavyAttackDMGBonus += allAttributeBonus;
+          target.resonanceSkillDMGBonus += allAttributeBonus;
+          target.resonanceLiberationDMGBonus += allAttributeBonus;
+          target.introSkillDMGBonus += allAttributeBonus;
+          target.outroSkillDMGBonus += allAttributeBonus;
+        }
+        if (source?.AllElementAttributeBonus) {
+          const allElementAttributeBonus = source.AllElementAttributeBonus;
+          target.glacio += allElementAttributeBonus;
+          target.fusion += allElementAttributeBonus;
+          target.electro += allElementAttributeBonus;
+          target.aero += allElementAttributeBonus;
+          target.spectro += allElementAttributeBonus;
+          target.havoc += allElementAttributeBonus;
+        }
       }
     };
 

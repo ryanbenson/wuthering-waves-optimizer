@@ -239,10 +239,10 @@ export default {
           name: "A Song of High Heavens",
         },
         "Brave the Waves 5 Set": {
-          // TODO: Separate this. the CritRate has stacks, but HP does not
-          HP: 20,
-          CritRate: 15,
-          description: `When the character has a shield, increases max HP by <span class="Highlight">20%</span>, when characters health is reduced, the characters Crit Rate increases by <span class="Highlight">5%</span> for 15 seconds, triggering up to <span class="Highlight">1</span> time per second and stacking up to <span class="Highlight">3</span> times.`,
+          // TODO: Separate this
+          ATK: 15,
+          AllElementAttributeBonus: 30,
+          description: `ATK is increased by <span class="Highlight">15%</span>, after Energy Regen reaches <span class="Highlight">250%</span> the current character's all attribute DMG is increased by <span class="Highlight">30%</span>.`,
           name: "Brave the Waves",
         },
       },
