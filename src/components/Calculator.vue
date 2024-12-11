@@ -1205,6 +1205,10 @@ export default defineComponent({
               // outros have no talent tree, just a single value
               talent = attack.talent;
               break;
+            case "utility":
+              // utility have no talent tree, just a single value
+              talent = attack.talent;
+              break;
             case "echoAttacks":
               // echo set attacks have no talent tree, just a single value
               talent = attack.talent;
@@ -1330,7 +1334,9 @@ export default defineComponent({
         if (attack?.subType === "Coordinated") {
           coordinatedDmgDeepenEffect = teamBuffDmgDeepenForCoordinatedAttack;
         }
-        if (attackType === "Outro") {
+        // outro and utility attacks lose dmg deepen for specific elements and attack types
+        // because they're off-field, but keep global ones like Verina
+        if (attackType === "Outro" || attackType === "Utility") {
           teamBuffDmgDeepenForCharElement = 0;
           teamBuffDmgDeepenForAttackType = 0;
         }
@@ -1543,6 +1549,10 @@ export default defineComponent({
                     talent = attack.talents[talentData.intro];
                     break;
                   case "outro":
+                    // outro has no talent tree. it only has 1 value (e.g. 20.00%)
+                    talent = attack.talent;
+                    break;
+                  case "utility":
                     // outro has no talent tree. it only has 1 value (e.g. 20.00%)
                     talent = attack.talent;
                     break;

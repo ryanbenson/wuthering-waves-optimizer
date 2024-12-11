@@ -1,6 +1,6 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Improv Comedy, Opening",
-  description: `<div class="skilldescription">Roccia's improv comedy opening! Deals <span class="Dark">Havoc</span> damage to the target.</div>`,
+  description: `<div class="skilldescription">Roccia's improv comedy opening! Deals <span class="Dark">Havoc</span> damage to the target. This damage is considered <span class="Highlight">Heavy Attack</span> damage.</div>`,
   attacks: [
     {
       key: "ImprovComedyOpeningDMG",
@@ -17,7 +17,7 @@ export const liberationAttacks = {
         "9": "258.82%*3",
         "10": "278.34%*3",
       },
-      type: "Liberation",
+      type: "Heavy",
     },
   ],
 };

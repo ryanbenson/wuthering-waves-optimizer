@@ -12,7 +12,9 @@ When Roccia's critical rate is above <span class="Highlight">50%</span>, for eve
 <span class="Title">【Imagination】 Acquisition Rules</span><br>
 The maximum 【Imagination】 is 300 points.<br>
 Normal Attack damage restores 【Imagination】.<br>
-Casting the Resonance Skill High-Difficulty Design or the Intro Skill Perlo, Come Help restores 【Imagination】.
+Hold down Basic Attack to charge and gain 【Imagination】.<br>
+Casting the Resonance Skill High-Difficulty Design restores 100 points of 【Imagination】.<br>
+Casting the Intro Skill Perlo, Lend a Hand! restores 100 points of 【Imagination】.
 </div>`,
   attacks: [
     {
@@ -81,7 +83,7 @@ Casting the Resonance Skill High-Difficulty Design or the Intro Skill Perlo, Com
         "9": "332.77%",
         "10": "357.86%",
       },
-      type: "Skill",
+      type: "Heavy",
       requiresResonanceChain: "SequenceNode6FlyonGoldenWingsRealityDMG",
     },
   ],

@@ -7,7 +7,7 @@ const weaponInfo: WeaponInfo = {
   rarity: 5,
   passiveName: "Fool's Song",
   passiveValue:
-    "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. When hitting a target with Resonance Skill, increases Basic Attack DMG Bonus by 10%/12.5%/15%/17.5%/20%, lasting for 8s. When hitting a target with Basic Attacks, increases Resonance Skill DMG Bonus by 10%/12.5%/15%/17.5%/20%, lasting for 8s.",
+    `Increases Energy Regen by <span class="Param">12.8%/16%/19.2%/22.4%/25.6%</span>. When casting Basic Attack or Intro Skill, the wielder’s <span class="Highlight">Heavy Attack</span> damage increases by <span class="Param">48%/60%/72%/84%/96%</span>, lasting for 3s.`,
   passiveData: [
     {
       key: "RocciaSignatureATK",
@@ -26,9 +26,9 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: true,
     },
     {
-      key: "RocciaSignatureResonanceSkillDMGBonus",
+      key: "RocciaSignatureResonanceHeavyDMGBonus",
       hasStacks: false,
-      modifier: "ResonanceSkillDMGBonus",
+      modifier: "HeavyAttackDMGBonus",
       modifierByRefinement: {
         "1": 0.48,
         "2": 0.6,
@@ -39,7 +39,7 @@ const weaponInfo: WeaponInfo = {
       minStacks: 0,
       maxStacks: 0,
       details:
-        " When casting Basic Attack or Intro Skill, the wielder’s resonance skill damage increases by 48%/60%/72%/84%/96%, lasting for 3s. Repeated activation refreshes the duration.",
+        `When casting Basic Attack or Intro Skill, the wielder’s <span class="Highlight">Heavy Attack</span> damage increases by <span class="Param">48%/60%/72%/84%/96%</span>, lasting for 3s.`,
       alwaysEnabled: false,
     },
   ],
