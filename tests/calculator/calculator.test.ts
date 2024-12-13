@@ -4,6 +4,8 @@ import {
   getTalentValue,
   getEnemyDefense,
   getDefenseModifier,
+  getBonusDamageValue,
+  getEnemyResistValue,
 } from "../../src/calculator/calculator";
 
 describe("#getBaseDamage", () => {
@@ -152,6 +154,117 @@ describe("#getDefenseModifier", () => {
     const defIgnore = 0.15;
     const expected = 0.5155377344980667;
     const result = getDefenseModifier(charLevel, enemyLevel, defIgnore);
+    expect(result).toEqual(expected);
+  });
+});
+
+describe("#getBonusDamageValue", () => {
+  it("when no bonuses are given", () => {
+    const bonusTotalSkillDmg = 0;
+    const bonusSpecificSkillDmg = 0;
+    const bonusElementDmg = 0;
+    const totalDeepenEffect = 0;
+    const expected = 1;
+    const result = getBonusDamageValue(
+      bonusTotalSkillDmg,
+      bonusSpecificSkillDmg,
+      bonusElementDmg,
+      totalDeepenEffect,
+    );
+    expect(result).toEqual(expected);
+  });
+  it("when just skill dmg is given", () => {
+    const bonusTotalSkillDmg = 0.5;
+    const bonusSpecificSkillDmg = 0;
+    const bonusElementDmg = 0;
+    const totalDeepenEffect = 0;
+    const expected = 1.5;
+    const result = getBonusDamageValue(
+      bonusTotalSkillDmg,
+      bonusSpecificSkillDmg,
+      bonusElementDmg,
+      totalDeepenEffect,
+    );
+    expect(result).toEqual(expected);
+  });
+  it("when skill dmg is given", () => {
+    const bonusTotalSkillDmg = 0.5;
+    const bonusSpecificSkillDmg = 1.2;
+    const bonusElementDmg = 0;
+    const totalDeepenEffect = 0;
+    const expected = 2.7;
+    const result = getBonusDamageValue(
+      bonusTotalSkillDmg,
+      bonusSpecificSkillDmg,
+      bonusElementDmg,
+      totalDeepenEffect,
+    );
+    expect(result).toEqual(expected);
+  });
+  it("when skill dmg is given with elemental dmg bonus", () => {
+    const bonusTotalSkillDmg = 0.5;
+    const bonusSpecificSkillDmg = 1.2;
+    const bonusElementDmg = 1.5;
+    const totalDeepenEffect = 0;
+    const expected = 4.2;
+    const result = getBonusDamageValue(
+      bonusTotalSkillDmg,
+      bonusSpecificSkillDmg,
+      bonusElementDmg,
+      totalDeepenEffect,
+    );
+    expect(result).toEqual(expected);
+  });
+  it("when skill dmg is given with elemental dmg bonus with amplify", () => {
+    const bonusTotalSkillDmg = 0.5;
+    const bonusSpecificSkillDmg = 1.2;
+    const bonusElementDmg = 1.5;
+    const totalDeepenEffect = 0.38;
+    const expected = 5.795999999999999;
+    const result = getBonusDamageValue(
+      bonusTotalSkillDmg,
+      bonusSpecificSkillDmg,
+      bonusElementDmg,
+      totalDeepenEffect,
+    );
+    expect(result).toEqual(expected);
+  });
+});
+
+describe("#getEnemyResistValue", () => {
+  it("when the enemy resist is normal and no shred", () => {
+    const enemyResist = 0.2;
+    const resistenceReduction = 0;
+    const expected = 0.8;
+    const result = getEnemyResistValue(enemyResist, resistenceReduction);
+    expect(result).toEqual(expected);
+  });
+  it("when the enemy resist is normal and shred that stays above 0", () => {
+    const enemyResist = 0.2;
+    const resistenceReduction = 0.15;
+    const expected = 0.9500000000000001;
+    const result = getEnemyResistValue(enemyResist, resistenceReduction);
+    expect(result).toEqual(expected);
+  });
+  it("when the enemy resist is normal and shred that dips below 0", () => {
+    const enemyResist = 0.2;
+    const resistenceReduction = 0.3;
+    const expected = 1.1;
+    const result = getEnemyResistValue(enemyResist, resistenceReduction);
+    expect(result).toEqual(expected);
+  });
+  it("when the enemy resist is starts below 0 with shred", () => {
+    const enemyResist = -0.2;
+    const resistenceReduction = 0.3;
+    const expected = 1.3499999999999999;
+    const result = getEnemyResistValue(enemyResist, resistenceReduction);
+    expect(result).toEqual(expected);
+  });
+  it("when the enemy resist is maxed", () => {
+    const enemyResist = 1;
+    const resistenceReduction = 0;
+    const expected = 0;
+    const result = getEnemyResistValue(enemyResist, resistenceReduction);
     expect(result).toEqual(expected);
   });
 });
