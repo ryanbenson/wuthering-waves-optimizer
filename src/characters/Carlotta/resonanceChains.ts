@@ -2,12 +2,13 @@ export const resonanceChains = [
   {
     key: "SequenceNode1BeautyorDeathBrillianceFadesintoWithering",
     name: "Sequence Node 1: Beauty or Death, Brilliance Fades into Withering",
-    details: `<span class="skilldescription">When Carlotta casts the Intro Skill "Winter's Lament," she restores 3 units of <span class="Highlight">【Amorphous Prism】</span> and increases her <span class="Ice">Glacio</span> damage bonus by 30% for 15 seconds. When casting the Resonance Skill <span class="Highlight">"Brilliant Will"</span> on a target in the Chroma state, and hitting it, she additionally restores 30 points of <span class="Highlight">【Spiritual Extract】</span>.</span>`,
+    details: `<span class="skilldescription">When Carlotta casts the Resonance Skill Aesthetics of Violence, her <span class="Ice">Glacio</span> damage is increased by 25% for 15 seconds.<br>
+When the Resonance Skill Brilliant Will is cast and hits a target in the Chroma state, an additional 30 points of 【Spiritual Extract】 are restored.</span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "Glacio",
-        modifierValue: 0.3,
+        modifierValue: 0.25,
       },
     ],
     minStacks: 0,
@@ -17,55 +18,12 @@ export const resonanceChains = [
   {
     key: "SequenceNode2SilenceandDeathDecayBecomesRebirth",
     name: "Sequence Node 2: Silence and Death, Decay Becomes Rebirth",
-    details: `<span class="skilldescription">When Carlotta attacks a target with the Dissociation effect, the critical hit chance of that damage increases by 15%, and critical hit damage is increased by 20%.</span>`,
+    details: `<span class="skilldescription">When Carlotta attacks a target affected by the Dissociation effect, the critical rate of that attack is increased by 25%.</span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "CritRate",
-        modifySpecificTalents: [
-          "DeathsEndDMG",
-          "DeathOmenFuneralDMG",
-          "DeathOmenRestDMG",
-        ],
-        modifierValue: 0.15,
-      },
-      {
-        modifier: "CritDMG",
-        modifySpecificTalents: [
-          "DeathsEndDMG",
-          "DeathOmenFuneralDMG",
-          "DeathOmenRestDMG",
-        ],
-        modifierValue: 0.2,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode2SilenceandDeathDecayBecomesRebirthAboveAll",
-    name: "Sequence Node 2: Silence and Death, Decay Becomes Rebirth",
-    details: `<span class="skilldescription"><em>Activate if Art Above All is enabled</em><br>When Carlotta attacks a target with the Dissociation effect, the critical hit chance of that damage increases by 15%, and critical hit damage is increased by 20%.</span>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "CritRate",
-        modifySpecificTalents: [
-          "WintersLamentDMG",
-          "BrilliantWillDMG",
-          "EndoftheRoadDMG",
-        ],
-        modifierValue: 0.15,
-      },
-      {
-        modifier: "CritDMG",
-        modifySpecificTalents: [
-          "WintersLamentDMG",
-          "BrilliantWillDMG",
-          "EndoftheRoadDMG",
-        ],
-        modifierValue: 0.2,
+        modifierValue: 0.25,
       },
     ],
     minStacks: 0,
@@ -75,7 +33,9 @@ export const resonanceChains = [
   {
     key: "SequenceNode3StepForwardEleganceinProgression",
     name: "Sequence Node 3: Step Forward, Elegance in Progression",
-    details: `<span class="skilldescription">After casting the Outro Skill "Final Address," Carlotta performs an additional attack, dealing 779.67% of her Attack as Glacio damage. The damage multiplier for the Heavy Attack "End of the Road" is increased by 80%.</span>`,
+    details: `<span class="skilldescription">Outro Skill: Shattered Mirror Blossoms
+After casting the Outro Skill Final Address, an additional attack is made, dealing <span class="Ice">Glacio</span> damage equal to 1032.18% of Carlotta's Attack.
+The damage multiplier for the Resonance Skills Aesthetics of Violence and Brilliant Will is increased by 70%.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -84,8 +44,8 @@ export const resonanceChains = [
       },
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["EndoftheRoadDMG"],
-        modifierValue: 0.8,
+        modifySpecificTalents: ["AestheticsofViolenceDMG", "BrilliantWillDMG"],
+        modifierValue: 0.7,
       },
     ],
     minStacks: 0,
@@ -95,11 +55,11 @@ export const resonanceChains = [
   {
     key: "SequenceNode4WithOldRainaHymnofBitterWine",
     name: "Sequence Node 4: With Old Rain, a Hymn of Bitter Wine",
-    details: `<span class="skilldescription">When Carlotta casts Heavy Attack, Heavy Attack Restrictive Strategy, or Heavy Attack "End of the Road," all nearby allies’ Basic Attack damage is increased by 25% for 30 seconds.</span>`,
+    details: `<span class="skilldescription">When Carlotta casts a Heavy Attack, the Heavy Attack Restrictive Strategy, or the Heavy Attack End of the Road, Resonance Skill damage for all characters in the team is increased by 25% for 30 seconds.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "BasicAttackDMGBonus",
+        modifier: "ResonanceSkillDMGBonus",
         modifierValue: 0.25,
       },
     ],
@@ -125,13 +85,14 @@ export const resonanceChains = [
   {
     key: "SequenceNode6IRemaintheSameAttheEndoftheCurtain",
     name: "Sequence Node 6: I Remain the Same, At the End of the Curtain",
-    details: `<span class="skilldescription">The damage multiplier of "Funeral" in the Death Omen skill is increased by 109%, and each Death Omen: Rest in Peace generates 1 more bullet. When the Resonance Liberation "Funeral" hits a target, it applies the Iridescent effect, which prevents any actions from being performed during its duration. The effect is removed if damage is taken or after 1 second.</span>`,
+    details: `<span class="skilldescription">The Resonance Liberation Death Omen shot deals significantly higher damage, and the number of generated crystals is doubled, with a total multiplier increase of 145.6%.
+When the Resonance Liberation Death Omen shot hits a target, it applies the Iridescent effect: the target cannot perform any actions during the effect's duration. The effect is cleared if the target takes damage or after 1.5 seconds.</span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["DeathOmenFuneralDMG"],
-        modifierValue: 1.09,
+        modifySpecificTalents: ["DeathOmenDMG"],
+        modifierValue: 1.456,
       },
     ],
     minStacks: 0,

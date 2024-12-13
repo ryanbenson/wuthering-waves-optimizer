@@ -7,11 +7,6 @@ export const buffs = [
     modifiers: [
       {
         modifier: "DEFIgnore",
-        modifySpecificTalents: [
-          "DeathsEndDMG",
-          "DeathOmenFuneralDMG",
-          "DeathOmenRestDMG",
-        ],
         modifierValue: 0.18,
       },
     ],
@@ -23,7 +18,7 @@ export const buffs = [
     key: "InherentSkillFlawlessPurity",
     name: "Inherent Skill: Flawless Purity",
     details: `<div class="skilldescription">After casting the Resonance Skill Brilliant Will, performing an Aerial Attack within a certain time grants immunity to damage and being hit before the attack deals damage.<br>
-Soaring Stamina consumption -20%.</div>`,
+When Carlotta is in the team, Stamina consumption for airborne maneuvers by active characters is reduced by 20%.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -35,17 +30,7 @@ Soaring Stamina consumption -20%.</div>`,
     name: "Inherent Skill: Art Above All",
     details: `<div class="skilldescription">The Intro Skill Winter's Sigh, Resonance Skill Brilliant Will, Resonance Liberation Death Omen, and Heavy Attack End of the Road can inflict the Dissociation effect on hit targets.</div>`,
     hasStacks: false,
-    modifiers: [
-      {
-        modifier: "DEFIgnore",
-        modifySpecificTalents: [
-          "WintersLamentDMG",
-          "BrilliantWillDMG",
-          "EndoftheRoadDMG",
-        ],
-        modifierValue: 0.18,
-      },
-    ],
+    modifiers: [],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,

@@ -743,11 +743,11 @@ export const buffsByCharacter = {
     {
       key: "SequenceNode4WithOldRainaHymnofBitterWine",
       name: "Sequence Node 4: With Old Rain, a Hymn of Bitter Wine",
-      details: `<span class="skilldescription">When Carlotta casts Heavy Attack, Heavy Attack Restrictive Strategy, or Heavy Attack "End of the Road," all nearby allies’ Basic Attack damage is increased by 25% for 30 seconds.</span>`,
+      details: `<span class="skilldescription">When Carlotta casts a Heavy Attack, the Heavy Attack Restrictive Strategy, or the Heavy Attack End of the Road, Resonance Skill damage for all characters in the team is increased by 25% for 30 seconds.</span>`,
       hasStacks: false,
       modifiers: [
         {
-          modifier: "BasicAttackDMGBonus",
+          modifier: "ResonanceSkillDMGBonus",
           modifierValue: 0.25,
         },
       ],

@@ -35,7 +35,7 @@ Successful dodge restores 3 【Amorphous Prisms】.<br>
         "9": "62.15% * 5 + 466.07%",
         "10": "66.83% * 5 + 501.21%",
       },
-      type: "Heavy",
+      type: "Skill",
     },
   ],
 };

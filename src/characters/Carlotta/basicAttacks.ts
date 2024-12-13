@@ -1,25 +1,28 @@
 export const basicAttacks = {
   name: "Normal Attack: Silent Execution",
-  description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>
-Perform up to 2 consecutive attacks, dealing <span class="Ice">Glacio</span> damage.<br><br>
-
+  description: `<div class="skilldescription">
+<span class="Title">Basic Attack</span><br>
+Perform up to 2 consecutive attacks, dealing <span class="Ice">Glacio</span> damage.<br>
+<br>
 <span class="Title">Basic Attack: Necessary Means</span><br>
-When Carlotta has <span class="Highlight">【Amorphous Prism】</span> on her, the Basic Attack will be replaced with Necessary Means.
-Perform up to 3 consecutive attacks, dealing <span class="Ice">Glacio</span> damage. Each Necessary Means will consume 1<span class="Highlight"> 【Amorphous Prism】</span>.<br><br>
-
+When Carlotta has 【Amorphous Prism】 on her, the Basic Attack will be replaced with Necessary Means.<br>
+Perform up to 3 consecutive attacks, dealing <span class="Ice">Glacio</span> damage. Each Necessary Means will consume 1 【Amorphous Prism】.<br>
+<br>
 <span class="Title">Heavy Attack</span><br>
-Consume STAMINA to attack the target, dealing <span class="Ice">Glacio</span> damage.<br><br>
-
-<span class="Title">Restrictive Strategy</span><br>
-When Carlotta's <span class="Highlight">【Spiritual Extract】</span> is full, the Charged Attack will be replaced with Restrictive Strategy, consuming all <span class="Highlight">【Spiritual Extract】</span>, dealing <span class="Ice">Glacio</span> damage, and reducing the cooldown of the Resonance Skill Aesthetics of Violence by 6 seconds.<br><br>
-
+Consume STAMINA to attack the target, dealing <span class="Ice">Glacio</span> damage.<br>
+<br>
+<span class="Title">Heavy Attack: Restrictive Strategy</span><br>
+When Carlotta's 【Spiritual Extract】 is full, the Charged Attack will be replaced with Restrictive Strategy, consuming all 【Spiritual Extract】, dealing <span class="Ice">Glacio</span> damage, and reducing the cooldown of the Resonance Skill Aesthetics of Violence by 6 seconds.<br>
+<br>
 <span class="Title">Aerial Attack</span><br>
 Consume STAMINA to perform an aerial downward attack, dealing <span class="Ice">Glacio</span> damage. After performing the aerial attack, if you press Basic Attack within a short time upon landing, you can perform Ceremonial Greeting.<br>
-Aerial Attack: Ceremonial Greeting<br>
-Perform a backward somersault and attack, dealing <span class="Ice">Glacio</span> damage.<br><br>
-
+<br>
+<span class="Title">Aerial Attack: Ceremonial Greeting</span><br>
+Perform a backward somersault and attack, dealing <span class="Ice">Glacio</span> damage.<br>
+<br>
 <span class="Title">Dodge Counterattack</span><br>
-When successfully dodging, pressing Basic Attack within a short time will attack the target, dealing <span class="Ice">Glacio</span> damage, and consuming 1 <span class="Highlight">【Amorphous Prism】</span>.`,
+When successfully dodging, pressing Basic Attack within a short time will attack the target, dealing <span class="Ice">Glacio</span> damage, and consuming 1 【Amorphous Prism】.
+</div>.`,
   attacks: [
     {
       key: "SilentExecutionStage1DMG",

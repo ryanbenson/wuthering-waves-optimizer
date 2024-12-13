@@ -8,7 +8,7 @@ const weaponInfo: WeaponInfo = {
   rarity: 4,
   passiveName: "TBD",
   passiveValue:
-    "Attack Power increases by 12%(24%). When casting Intro Skill or Resonance Liberation, the wielder resonance skill damage increases by 48%(96%), lasting for 5s. Repeated activation refreshes the duration.",
+    "Attack Power increases by 12%(24%). When casting Intro Skill or Resonance Liberation, the wielder resonance skill damage increases by 48%(96%), lasting for 5s.",
   passiveData: [
     {
       key: "CarlottaSigATK",
