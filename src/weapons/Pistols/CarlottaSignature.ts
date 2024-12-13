@@ -40,7 +40,7 @@ const weaponInfo: WeaponInfo = {
       minStacks: 0,
       maxStacks: 0,
       details:
-        "When casting Intro Skill or Resonance Liberation, the wielder resonance skill damage increases by 48%/60%/72%/84%/96%, lasting for 5s. Repeated activation refreshes the duration.",
+        "When casting Intro Skill or Resonance Liberation, the wielder resonance skill damage increases by 48%/60%/72%/84%/96%, lasting for 5s.",
       alwaysEnabled: false,
     },
   ],
