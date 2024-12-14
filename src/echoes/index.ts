@@ -1602,7 +1602,7 @@ Skill Cooldown: 20 seconds</span>`,
         element: "Havoc",
       },
     ],
-    sets: [],
+    sets: ["SunSinkingEclipse"],
   },
   NightmareFeilianBeringal: {
     key: "NightmareFeilianBeringal",
