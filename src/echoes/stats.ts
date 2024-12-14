@@ -283,7 +283,7 @@ type EchoAttack = {
   type: string;
   element: string;
 };
-export const echoAttacks: EchoAttack[] = [
+export const echoSetAttacks: EchoAttack[] = [
   {
     key: "TheVeilofHiddenNightDMG",
     label: "The Veil of Hidden Night DMG",

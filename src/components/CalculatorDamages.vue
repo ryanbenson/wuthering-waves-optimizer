@@ -265,7 +265,7 @@
       </span>
     </h4>
     <div
-      v-if="isOutroDetailsShown"
+      v-if="false"
       class="card card-bordered card-compact shadow my-6 bg-base-100">
       <div
         class="card-body"
@@ -292,6 +292,60 @@
         <template v-else>
           <CalculatorDamage
             v-for="damageInstance in allDamages?.value?.echoSetAttacks"
+            :key="damageInstance.key"
+            :character="character"
+            :type="damageInstance.type"
+            :label="damageInstance.label"
+            :damage="damageInstance.damage"></CalculatorDamage>
+        </template>
+      </tbody>
+    </table>
+  </template>
+
+  <template v-if="allDamages?.value?.utilityAttacks?.length">
+    <h4 class="damage__title pt-8">
+      <span class="text-lg font-bold">
+        {{ chosenChar.value?.utilityAttacks?.name ?? "Utility Attacks" }}
+      </span>
+      <span
+        v-if="false"
+        class="damage__title__button"
+        @click="toggleOutroDetails">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+          <path
+            d="M64 464c-8.8 0-16-7.2-16-16L48 64c0-8.8 7.2-16 16-16l160 0 0 80c0 17.7 14.3 32 32 32l80 0 0 288c0 8.8-7.2 16-16 16L64 464zM64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-293.5c0-17-6.7-33.3-18.7-45.3L274.7 18.7C262.7 6.7 246.5 0 229.5 0L64 0zm56 256c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0zm0 96c-13.3 0-24 10.7-24 24s10.7 24 24 24l144 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-144 0z"
+            fill="#FFFFFF" />
+        </svg>
+      </span>
+    </h4>
+    <div
+      v-if="false"
+      class="card card-bordered card-compact shadow my-6 bg-base-100">
+      <div
+        class="card-body"
+        v-html="chosenChar.value?.utilityAttacks?.description"></div>
+    </div>
+    <table class="calculator__damages table table-zebra table-sm">
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          <th class="w-20">Normal</th>
+          <th class="w-20">Average</th>
+          <th class="w-20">Crit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <template v-if="!allDamages?.value?.utilityAttacks?.length">
+          <tr>
+            <td>N/A</td>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </template>
+        <template v-else>
+          <CalculatorDamage
+            v-for="damageInstance in allDamages?.value?.utilityAttacks"
             :key="damageInstance.key"
             :character="character"
             :type="damageInstance.type"

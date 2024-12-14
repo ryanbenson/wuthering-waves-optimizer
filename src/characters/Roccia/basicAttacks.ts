@@ -2,10 +2,10 @@ export const basicAttacks = {
   name: `Normal Attack: "Perlo, take it easy."`,
   description: `<div class="skilldescription">
 <span class="Title">Basic Attack</span><br>
-Performs up to 4 consecutive attacks, dealing Havoc damage.<br>
+Performs up to 4 consecutive attacks, dealing <span class="Dark">Havoc</span> damage.<br>
 <br>
 <span class="Title">Heavy Attack</span><br>
-Consumes STAMINA, attacks the target, and deals <span class="Dark">Havoc</span> damage. If the target's <span class="Highlight">【Imagination】</span> is at least 100, Perlo will launch the target into the air, entering a Leap Fantasy state. By holding down the Basic Attack, <span class="Highlight">【Imagination】</span> can be charged. The longer the charge, the more <span class="Highlight">【Imagination】</span> gained. Releasing Basic Attack midway or reaching the maximum charge time will automatically perform the Heavy Attack.<br>
+Consumes STAMINA to attack a target, dealing <span class="Dark">Havoc</span> damage. If the target is hit and 【Imagination】 has at least 100 points, Roccia is launched into the air, entering the Leap Fantasy state. You can charge by holding the Basic Attack button, with longer charging increasing the amount of 【Imagination】 gained. Charging can continue even if STAMINA is exhausted. Releasing the Basic Attack mid-charge, or reaching the maximum charging time, will automatically cast a Heavy Attack..<br>
 <br>
 <span class="Title">Aerial Attack</span><br>
 Consumes STAMINA to perform a downward aerial attack, dealing <span class="Dark">Havoc</span> damage.<br>

@@ -299,6 +299,12 @@ export default {
             }
             modifierItem.modifierValueCalculated = modifierValue;
             data.modifySpecificTalents.push(modifierItem);
+          } else if (modifierItem.modifier === "EnableAttack") {
+            if (Array.isArray(data[modifierItem.modifier])) {
+              data[modifierItem.modifier].push(...modifierItem.modifierValue);
+            } else {
+              data[modifierItem.modifier] = [...modifierItem.modifierValue];
+            }
           } else if (modifierItem.modifier === "Talent") {
             // this is the rare case where the modifier value needs a reference to another talent level
             // specifically Jinhsi incandescence buff scales off of her forte talent
@@ -359,6 +365,7 @@ export default {
             data[modifierItem.modifier] = modifierValue;
           }
         });
+        console.log(data);
         return data;
       }
       if (this.hasStacks) {

@@ -540,10 +540,11 @@ import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
 import CalculatorStats from "./CalculatorStats.vue";
 import CalculatorDamages from "./CalculatorDamages.vue";
 import { mainEchoesData, getEchoData } from "../echoes";
-import { echoAttacks } from "../echoes/stats";
-import { allEchoBuffs } from "../buffs";
+import { echoSetAttacks } from "../echoes/stats";
+import { allEchoBuffs, utilityAttacks } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import ThemeChooser from "./ThemeChooser.vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "Calculator",
@@ -1207,11 +1208,11 @@ export default defineComponent({
               // outros have no talent tree, just a single value
               talent = attack.talent;
               break;
-            case "utility":
+            case "utilityAttacks":
               // utility have no talent tree, just a single value
               talent = attack.talent;
               break;
-            case "echoAttacks":
+            case "echoSetAttacks":
               // echo set attacks have no talent tree, just a single value
               talent = attack.talent;
               break;
@@ -1534,6 +1535,7 @@ export default defineComponent({
                 talent = attack.talent;
               } else if (dynamicTalentType) {
                 let talent;
+                console.log(attack.actionType);
                 switch (attack.actionType) {
                   case "basic":
                     talent = attack.talents[talentData.basic];
@@ -1554,7 +1556,7 @@ export default defineComponent({
                     // outro has no talent tree. it only has 1 value (e.g. 20.00%)
                     talent = attack.talent;
                     break;
-                  case "utility":
+                  case "utilityAttacks":
                     // outro has no talent tree. it only has 1 value (e.g. 20.00%)
                     talent = attack.talent;
                     break;
@@ -1605,6 +1607,27 @@ export default defineComponent({
         });
       }
 
+      // similar principle applies to utility attacks (e.g. Roccia passive)
+      const utilityAttacks = [];
+      // TODO: Makes this scalable and more maintainable
+      const utilityAttacksFromTeamBuffs =
+        teamBuffsData.value?.EnableAttack ?? [];
+      const hasUtilityAttack = utilityAttacksFromTeamBuffs.includes(
+        "InherentSkillEndlessGravityPreciousBox",
+      );
+      const alreadyHasUtilityAttackConfigured = utilityAttacks.findIndex(
+        (attack) => attack.key === "InherentSkillEndlessGravityPreciousBox",
+      );
+      if (alreadyHasUtilityAttackConfigured < 0 && hasUtilityAttack) {
+        utilityAttacks.push({
+          key: "InherentSkillEndlessGravityPreciousBox",
+          label: "Endless Gravity: Precious Box",
+          talent: "20%*5",
+          type: "Utility",
+          element: "Havoc",
+        });
+      }
+
       const allDamagesData = {
         basicAttacks: processAttacks(
           chosenChar.value.basicAttacks?.attacks,
@@ -1633,6 +1656,11 @@ export default defineComponent({
         ),
         echoSetAttacks: processAttacks(
           echoSetAttacks,
+          talentData.intro, // TODO: What is this?
+          true, // has no talent level
+        ),
+        utilityAttacks: processAttacks(
+          utilityAttacks,
           talentData.intro, // TODO: What is this?
           true, // has no talent level
         ),
@@ -1789,8 +1817,12 @@ export default defineComponent({
           const attacksList =
             chosenChar?.[`${actionType}Attacks`]?.attacks ?? [];
           let foundAction;
-          if (actionType === "echoAttacks") {
-            foundAction = echoAttacks.find((attack) => {
+          if (actionType === "echoSetAttacks") {
+            foundAction = echoSetAttacks.find((attack) => {
+              return attack.key === actionKey;
+            });
+          } else if (actionType === "utilityAttacks") {
+            foundAction = utilityAttacks.find((attack) => {
               return attack.key === actionKey;
             });
           } else {

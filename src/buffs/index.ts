@@ -758,6 +758,24 @@ export const buffsByCharacter = {
   ],
   Roccia: [
     {
+      key: "InherentSkillEndlessGravityPreciousBox",
+      name: "Inherent Skill: Endless Gravity: Precious Box",
+      details: `<div class="skilldescription">After casting an <span class="Highlight">Outro Skill</span>, the next character to appear will have their exploration tool replaced by the Precious Box.<br>
+  <span class="Title">【Precious Box】</span><br>
+  Using Mystery Box as the center, it pulls surrounding targets and deals <span class="Dark">Havoc</span> damage equal to 20% of the attacking characters' Attack * 5. This damage is considered Exploration Tool damage.<br>
+  Precious Box lasts for 14 seconds. If switched to another character, the Precious Box will disappear prematurely.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "EnableAttack",
+          modifierValue: ["InherentSkillEndlessGravityPreciousBox"],
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
       key: "FantasyIntoReality",
       name: "Fantasy Into Reality",
       details: `<div class="skilldescription">When Roccia's <span class="Highlight">Crit Rate</span> is above <span class="Highlight">50%</span>, for every additional <span class="Highlight">0.1%</span> critical rate, the 3rd attack of the Basic Attack Fantasy into reality will increase the <span class="Highlight">ATK</span> of all characters in the team by <span class="Highlight">1</span> point, lasting for 30 seconds. This can be increased up to <span class="Highlight">200</span> points.<br><br><em>Enter Roccia's total Crit Rate</em>.</div>`,
@@ -1007,4 +1025,21 @@ export const allCharacters: string[] = [
   "Taoqi",
   "Danjin",
   "Zhezhi",
+];
+
+type UtilityAttack = {
+  key: string;
+  label: string;
+  talent: string;
+  type: string;
+  element: string;
+};
+export const utilityAttacks: UtilityAttack[] = [
+  {
+    key: "InherentSkillEndlessGravityPreciousBox",
+    label: "Endless Gravity: Precious Box",
+    talent: "20%*5",
+    type: "Utility",
+    element: "Havoc",
+  },
 ];

@@ -39,17 +39,10 @@ export const buffs = [
     name: "Inherent Skill: Endless Gravity: Precious Box",
     details: `<div class="skilldescription">After casting an <span class="Highlight">Outro Skill</span>, the next character to appear will have their exploration tool replaced by the Precious Box.<br>
 <span class="Title">【Precious Box】</span><br>
-Upon use, pull nearby targets toward the center of the 【Precious Box】, dealing Havoc damage equal to 20% of Roccia's Attack * 5. This damage is considered exploration tool damage.<br>
+Using Mystery Box as the center, it pulls surrounding targets and deals <span class="Dark">Havoc</span> damage equal to 20% of the attacking characters' Attack * 5. This damage is considered Exploration Tool damage.<br>
 Precious Box lasts for 14 seconds. If switched to another character, the Precious Box will disappear prematurely.</div>`,
     hasStacks: false,
-    modifiers: [
-      {
-        modifier: "EnableAttack",
-        modifierValue: [
-          "InherentSkillEndlessGravityPreciousBox",
-        ],
-      }
-    ],
+    modifiers: [],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,

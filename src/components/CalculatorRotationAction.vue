@@ -92,11 +92,21 @@
                 </option>
               </optgroup>
               <optgroup
-                label="Echo Attacks"
-                data-skill="echoAttacks"
+                label="Echo Set Attacks"
+                data-skill="echoSetAttacks"
                 v-if="echoSetAttacksList.length">
                 <option
                   v-for="attack in echoSetAttacksList"
+                  :value="attack.key">
+                  {{ attack.label }}
+                </option>
+              </optgroup>
+              <optgroup
+                label="Utility Attacks"
+                data-skill="utilityAttacks"
+                v-if="utilityAttacksList.length">
+                <option
+                  v-for="attack in utilityAttacksList"
                   :value="attack.key">
                   {{ attack.label }}
                 </option>
@@ -141,7 +151,8 @@ import { mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
-import { echoAttacks } from "../echoes/stats";
+import { echoSetAttacks } from "../echoes/stats";
+import { utilityAttacks } from "../buffs";
 export default {
   props: {
     characterData: {
@@ -200,7 +211,8 @@ export default {
         liberation: "liberationAttacks",
         intro: "introAttacks",
         outro: "outroAttacks",
-        echoAttacks: "echoAttacks",
+        echoSetAttacks: "echoSetAttacks",
+        utilityAttacks: "utilityAttacks",
       },
       skillKeyLabelMap: {
         basic: "Basic",
@@ -209,7 +221,8 @@ export default {
         liberation: "Liberation",
         intro: "Intro",
         outro: "Outro",
-        echoAttacks: "Echo",
+        echoSetAttacks: "Echo Set",
+        utilityAttacks: "Utility",
       },
     };
   },
@@ -233,8 +246,14 @@ export default {
     },
     attackData() {
       // if the attack is an echo, find the data from the echo list
-      if (this.skillType === "echoAttacks") {
+      if (this.skillType === "echoSetAttacks") {
         return this.echoSetAttacksList.find((attack) => {
+          return attack.key === this.actionKeyValue;
+        });
+      }
+      // if the attack is a utility, find the data from the utility list
+      if (this.skillType === "utilityAttacks") {
+        return this.utilityAttacksList.find((attack) => {
           return attack.key === this.actionKeyValue;
         });
       }
@@ -369,7 +388,10 @@ export default {
       return finalList;
     },
     echoSetAttacksList() {
-      return echoAttacks;
+      return echoSetAttacks;
+    },
+    utilityAttacksList() {
+      return utilityAttacks;
     },
   },
   methods: {

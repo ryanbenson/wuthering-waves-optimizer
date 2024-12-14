@@ -3,7 +3,7 @@ export const forteCircuitAttacks = {
   description: `<div class="skilldescription"><br>
 <span class="Title">Leap Fantasy</span><br>
 When Roccia is in the Leap Fantasy state and has at least 100 points of 【Imagination】, she can press <span class="Highlight">Basic Attack</span> to consume 100 points of 【Imagination】 and cast the Basic Attack Fantasy into reality.<br>
-This state will end when Roccia lands.<br>
+This state will be removed when Roccia is no longer in the air or when she exits the field.<br>
 <br>
 <span class="Title">Basic Attack · Fantasy Into Reality</span>
 Performs up to 3 consecutive attacks, dealing <span class="Dark">Havoc damage</span>. This damage is considered <span class="Highlight">Resonance Skill</span> damage. After the 1st and 2nd attacks land, Roccia will be launched into the air, entering the Leap Fantasy state.<br>

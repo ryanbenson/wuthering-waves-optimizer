@@ -2,7 +2,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode1TheDrearyGreyFloodsintotheShipsCabin",
     name: "Sequence Node 1: The Dreary Grey Floods into the Ship's Cabin",
-    details: `<span class="skilldescription">When casting the <span class="Highlight">Resonance Skill</span> High-Difficulty Design, additionally restores <span class="Highlight">100</span> points of <span class="Highlight">【Imagination】</span> and <span class="Highlight">10</span> points of <span class="Highlight">Concerto Value</span>.</span>`,
+    details: `<span class="skilldescription">When casting the <span class="Highlight">Resonance Skill</span> High-Difficulty Design, additionally restores <span class="Highlight">100</span> points of <span class="Highlight">【Imagination】</span> and <span class="Highlight">10</span> points of <span class="Highlight">Concerto Value</span>.<br>The Basic Attack Fantasy into Reality is immune to interruption.</span>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -98,9 +98,12 @@ export const resonanceChains = [
   {
     key: "SequenceNode6FlyonGoldenWings",
     name: "Sequence Node 6: Fly, on Golden Wings",
-    details: `<span class="skilldescription">When casting the <span class="Highlight">Resonance Liberation</span> Improv Comedy, Opening, the following effects are gained:<br>
-For <span class="Highlight">12</span> seconds, <span class="Highlight">Basic Attack</span> Fantasy into Reality ignores <span class="Highlight">60%</span> of the target's <span class="Highlight">defense</span> when attacking.
-For <span class="Highlight">12</span> seconds, after the 3rd hit of Basic Attack Fantasy into Reality lands, <span class="Highlight">Basic Attack</span> Construct Reality can be consecutively performed, dealing <span class="Highlight">100%</span> of the 3rd hit's damage. This damage is considered <span class="Highlight">Resonance Skill</span> damage.</span>`,
+    details: `<span class="skilldescription">When casting the Resonance Liberation Improvised Comedy, the following effects are granted for 12 seconds:<br>
+When the Basic Attack Fantasy into Reality hits a target, it ignores 60% of the target's Defense.<br>
+After the third hit of the Basic Attack Fantasy into Reality lands, it will launch Roccia into the air, entering the Leap Fantasy state. At this point, a short press of the Basic Attack will trigger Construct Reality, dealing 100% of the third hit's damage. This damage is considered Heavy Attack damage.<br>
+After Construct Reality lands, it will launch Roccia into the air, entering the Leap Fantasy state. Construct Reality can only be cast while in the Leap Fantasy state.<br>
+Construct Reality is immune to interruption.
+</span>`,
     hasStacks: false,
     modifiers: [
       {

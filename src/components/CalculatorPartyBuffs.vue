@@ -221,6 +221,8 @@ export default {
             const updatedSpecificTalentList =
               modifySpecificTalents.concat(value);
             modifySpecificTalents = updatedSpecificTalentList;
+          } else if (stat === "EnableAttack") {
+            finalBuffData[stat] = value;
           } else {
             finalBuffData[stat] = (finalBuffData[stat] || 0) + value;
           }
