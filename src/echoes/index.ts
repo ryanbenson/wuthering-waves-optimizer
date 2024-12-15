@@ -1353,14 +1353,14 @@ Skill Cooldown: 20 seconds</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Lorelei.webp",
-    details: `<span class="description">Use the Sound Corpse skill to transform into Lorelei, causing <span class="Highlight">316.00%/363.40%/410.80%/458.20%/505.60%</span> <span class="Dark">Havoc</span> DMG to surrounding enemies. When the first character to equip this Sound Corpse skill, the current character's <span class="Dark">Havoc</span> DMG bonus increases by <span class="Highlight">12.00%</span>, and the Resonance Liberation damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    details: `<span class="description">Use the Sound Corpse skill to transform into Lorelei, causing <span class="Highlight">316.00%/363.40%/410.80%/458.20%/505.60%</span> <span class="Dark">Havoc</span> DMG to surrounding enemies. When the first character to equip this Sound Corpse skill, the current character's <span class="Dark">Havoc</span> DMG bonus increases by <span class="Highlight">12.00%</span>, and the Basic Attack damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
     modifiers: [
       {
         modifier: "Havoc",
         modifierValue: 0.12,
       },
       {
-        modifier: "ResonanceLiberationDMGBonus",
+        modifier: "BasicAttackDMGBonus",
         modifierValue: 0.12,
       },
     ],
@@ -1659,14 +1659,14 @@ Skill Cooldown: 20 seconds</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareImpermanenceHeron.webp",
-    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare Impermanence Heron, causing 10 stages of <span class="Hightlight">32.00%/36.80%/41.60%/46.40%/51.20%</span> <span class="Dark">Havoc</span> DMG to surrounding enemies. When the first character to equip this Sound Corpse skill, the current character's <span class="Dark">Havoc</span> DMG bonus increases by <span class="Highlight">12.00%</span>, and the Resonance Skill damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare Impermanence Heron, causing 10 stages of <span class="Hightlight">32.00%/36.80%/41.60%/46.40%/51.20%</span> <span class="Dark">Havoc</span> DMG to surrounding enemies. When the first character to equip this Sound Corpse skill, the current character's <span class="Dark">Havoc</span> DMG bonus increases by <span class="Highlight">12.00%</span>, and the Heavy Attack damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
     modifiers: [
       {
         modifier: "Havoc",
         modifierValue: 0.12,
       },
       {
-        modifier: "ResonanceSkillDMGBonus",
+        modifier: "HeavyAttackDMGBonus",
         modifierValue: 0.12,
       },
     ],
@@ -1985,7 +1985,7 @@ Skill Cooldown: 20 seconds</span>`,
       {
         key: "SentryConstructAttack",
         label: "Attack DMG",
-        description: `Use the Sound Shell skill to transform into a heterogeneous weapon and attack the target in front, causing <span class="Highlight">225.00%/270.00%/315.00%/360.00%/405.00%</span> <span class="Ice">Glacio</span> damage.`,
+        description: `Transform into Sentry Construct and attack enemies in front, dealing <span class="Highlight">225.00%/270.00%/315.00%/360.00%/405.00%</span> <span class="Ice">Glacio</span> damage. Each time the Resonator with this Echo casts Resonance Liberation, it enhances the Strike Capacitor.`,
         talents: {
           "1": "225.00%",
           "2": "270.00%",
@@ -1999,7 +1999,7 @@ Skill Cooldown: 20 seconds</span>`,
       {
         key: "SentryConstructUpgradedAttack",
         label: "Upgraded Attack DMG",
-        description: `When the equipped character casts Resonance Release, the "Assault Power" can be continuously improved. When the "Assault Power" is fully upgraded, the Sound Shell skill can be used to transform into a heterogeneous weapon, take off and dive towards the target, causing 225.00%/270.00%/315.00%/360.00%/405.00% condensation damage and freezing the target. Skill cooldown: 25 seconds`,
+        description: `Once Strike Capacitor is at max level, the Echo Skill cooldown will be reset. Use Echo Skill to transform into Sentry Construct and dive into enemies from the air, dealing 225.00%/270.00%/315.00%/360.00%/405.00% <span class="Ice">Glacio</span> damage and freezing the target. Skill cooldown: 25 seconds`,
         talents: {
           "1": "225.00%",
           "2": "270.00%",
