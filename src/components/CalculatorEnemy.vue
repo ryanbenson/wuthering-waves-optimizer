@@ -1,16 +1,17 @@
 <template>
   <div class="card card-bordered card-compact shadow mb-12 bg-primary">
     <div class="card-body text-white">
-      Enemies in Tower of Adversity (ToA) have increased resistence, typically
+      Enemies in Tower of Adversity (ToA) have increased resistance, typically
       20% and 60%.
     </div>
   </div>
 
   <div class="data-input--talents mt-8">
     <div class="flex flex-col pb-7 relative">
-      <label for="enemyLevel" class="talent__label"
-        >Enemy level <span class="text-primary">{{ enemyLevel }}</span></label
-      >
+      <label for="enemyLevel" class="talent__label">
+        Enemy level
+        <span class="text-primary">{{ enemyLevel }}</span>
+      </label>
       <input
         v-model="enemyLevel"
         name="enemyLevel"
@@ -25,10 +26,10 @@
 
   <div class="data-input--talents mt-8">
     <div class="flex flex-col pb-7 relative">
-      <label for="enemyResist" class="talent__label"
-        >Enemy Resistance
-        <span class="text-primary">{{ enemyResist * 100 }}%</span></label
-      >
+      <label for="enemyResist" class="talent__label">
+        Enemy Resistance
+        <span class="text-primary">{{ enemyResist * 100 }}%</span>
+      </label>
       <input
         v-model="enemyResist"
         name="enemyResist"
