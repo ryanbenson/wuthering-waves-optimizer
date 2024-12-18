@@ -83,7 +83,7 @@ export const buffs = [
     modifiers: [
       {
         modifier: "DEF",
-        modifierValue: 0.028,
+        modifierValue: 0.0228,
       },
     ],
     minStacks: 0,
@@ -98,7 +98,7 @@ export const buffs = [
     modifiers: [
       {
         modifier: "DEF",
-        modifierValue: 0.028,
+        modifierValue: 0.0228,
       },
     ],
     minStacks: 0,
