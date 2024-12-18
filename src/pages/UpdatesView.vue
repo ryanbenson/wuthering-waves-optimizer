@@ -104,6 +104,10 @@
     <h3>December 17, 2024</h3>
     <ul>
       <li>Fixes spelling error on notice for enemy settings.</li>
+      <li>
+        Fixes Yuanwu's 1st set of DEF stat bonuses. The percent was slightly
+        off.
+      </li>
     </ul>
     <h3>December 6, 2024</h3>
     <ul>
