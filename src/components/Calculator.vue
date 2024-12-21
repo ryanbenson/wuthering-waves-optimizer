@@ -1535,7 +1535,6 @@ export default defineComponent({
                 talent = attack.talent;
               } else if (dynamicTalentType) {
                 let talent;
-                console.log(attack.actionType);
                 switch (attack.actionType) {
                   case "basic":
                     talent = attack.talents[talentData.basic];

@@ -365,7 +365,6 @@ export default {
             data[modifierItem.modifier] = modifierValue;
           }
         });
-        console.log(data);
         return data;
       }
       if (this.hasStacks) {

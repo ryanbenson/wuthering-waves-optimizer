@@ -16,7 +16,11 @@
           :max-stacks="passive.maxStacks"
           :details="passive.details"
           :always-enabled="passive.alwaysEnabled"
-          :passive-key="passive.key"></CalculatorEchoSetPassive>
+          :modifiers="passive.modifiers"
+          :passive-key="passive.key"
+          @updated-echo-passive-stats="
+            handleUpdatedEchoPassiveStats
+          "></CalculatorEchoSetPassive>
       </template>
     </div>
   </div>
@@ -47,6 +51,7 @@ export default {
       twoSetBonuses,
       fiveSetBonuses,
       setBonusEffects: setBonusEffectsTwo,
+      passiveData: [],
     };
   },
   watch: {
@@ -86,39 +91,18 @@ export default {
      * @emits update-stats
      */
     updatedStats() {
-      let stats = {};
-      if (!this.isEnabled) {
-        this.$emit("update-stats", stats);
-        return;
+      this.$emit("update-stats", this.buffsFormatted);
+    },
+    handleUpdatedEchoPassiveStats(data) {
+      const buffIndex = this.passiveData.findIndex((buff) => {
+        return buff.key === data.key;
+      });
+      if (buffIndex === -1) {
+        this.passiveData.push(data);
+      } else {
+        this.passiveData[buffIndex] = data;
       }
-      if (this.type) {
-        const setBonusEffect = this.setBonusEffects[this.type];
-        for (const [key, value] of Object.entries(setBonusEffect)) {
-          if (key === "EnableAttack") {
-            stats[key] = value;
-          } else if (key !== "maxStacks") {
-            if (
-              this.type === "Lingering Tunes 5 Set" &&
-              key === "OutroSkillDMGBonus"
-            ) {
-              // Apply Outro stat directly
-              stats[key] = (stats[key] || 0) + value;
-            } else {
-              if (
-                key === "description" ||
-                key === "alwaysEnabled" ||
-                key === "name"
-              ) {
-                continue;
-              }
-              // Apply other stats with stacks if applicable
-              const bonus = value * (this.needsStacks ? this.stacks : 1);
-              stats[key] = (stats[key] || 0) + bonus;
-            }
-          }
-        }
-      }
-      this.$emit("update-stats", stats);
+      this.updatedStats();
     },
   },
   computed: {
@@ -196,6 +180,28 @@ export default {
       }
       return this.setBonusEffects[this.type]?.passives ?? [];
     },
+    /**
+     * Returns the buffs data formatted to send to the stats collector
+     * @returns {Object}
+     */
+    buffsFormatted() {
+      const finalBuffData = {};
+      const allBuffs = [...this.passiveData];
+      allBuffs.forEach((buffInstance) => {
+        const { stats } = buffInstance;
+        Object.entries(stats).forEach(([stat, value]) => {
+          if (finalBuffData[stat] === "EnableAttack") {
+            finalBuffData[stat] = value;
+          } else {
+            finalBuffData[stat] = (finalBuffData[stat] || 0) + value;
+          }
+        });
+      });
+      return finalBuffData;
+    },
+  },
+  beforeUnmount() {
+    this.passiveData = [];
   },
 };
 </script>

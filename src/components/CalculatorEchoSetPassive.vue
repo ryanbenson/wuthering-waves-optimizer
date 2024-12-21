@@ -72,6 +72,10 @@ export default {
     passiveKey: {
       type: String,
     },
+    modifiers: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {};
@@ -102,17 +106,13 @@ export default {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
     /**
      * Updates the stats for the passive and emits up to the parent
-     * @emits updated-weapon-stats
+     * @emits updated-echo-passive-stats
      */
     async updateStats() {
-      // TODO: Determine if this is really needed. Not sure why this is here
-      // await this.setCharacterData(this.character, {
-      //   weaponPassiveStats: {
-      //     ...this.weaponPassiveStats,
-      //     [this.passiveKey]: this.weaponPassiveStats,
-      //   },
-      // });
-      this.$emit("updated-weapon-stats", this.weaponPassiveStats);
+      this.$emit("updated-echo-passive-stats", {
+        stats: this.buffStats,
+        key: this.passiveKey,
+      });
     },
     /**
      * Prevents the user from exceeding the max stacks
@@ -185,35 +185,99 @@ export default {
      * Compiles the stats for this passive
      * @returns {Object}
      */
-    weaponPassiveStats() {
-      const data = {
-        stat: this.modifier,
-        value: 0,
-        key: this.passiveKey,
-      };
+    // weaponPassiveStats() {
+    //   const data = {
+    //     stat: this.modifier,
+    //     value: 0,
+    //     key: this.passiveKey,
+    //   };
+    //   if (!this.isEnabled) {
+    //     return data;
+    //   }
+    //   if (!this.hasStacks) {
+    //     data.stat = this.modifier;
+    //     data.value = this.modifierValue;
+    //     return data;
+    //   }
+    //   if (this.hasStacks) {
+    //     if (this.stacks === 0) {
+    //       return data;
+    //     }
+    //     data.stat = this.modifier;
+    //     const totalValue = this.modifieValue * this.stacks;
+    //     data.value = totalValue;
+    //   }
+    //   return data;
+    // },
+
+    /**
+     * Transforms the buffs data into a hashmap of buffModifider : buffValue
+     * That gets sent throughout the calculator to reflect in the stats and damages
+     * @returns {Object}
+     */
+    buffStats() {
+      const data = {};
       if (!this.isEnabled) {
         return data;
       }
       if (!this.hasStacks) {
-        data.stat = this.modifier;
-        data.value = this.modifierValue;
+        this.modifiers.forEach((modifierItem) => {
+          if (modifierItem?.modifySpecificTalents) {
+            if (!data.modifySpecificTalents) {
+              data.modifySpecificTalents = [];
+            }
+            // add our calculated value
+            modifierItem.modifierValueCalculated = modifierItem.modifierValue;
+            data.modifySpecificTalents.push(modifierItem);
+          } else if (modifierItem.modifier === "Talent") {
+            // this is the rare case where the modifier value needs a reference to another talent level
+            // specifically Jinhsi incandescence buff scales off of her forte talent
+            const talentRef =
+              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+            const talentVal = modifierItem.modifierValue[talentRef];
+            data[modifierItem.modifierTalentKey] = talentVal;
+          } else if (modifierItem.modifier === "talentModifierMultiply") {
+            // for buffs that apply talentModifierMultiply to the calcs
+            if (!data.talentModifierMultiply) {
+              data.talentModifierMultiply = [];
+            }
+            data.talentModifierMultiply.push(modifierItem);
+          } else {
+            data[modifierItem.modifier] = modifierItem.modifierValue;
+          }
+        });
         return data;
       }
       if (this.hasStacks) {
         if (this.stacks === 0) {
           return data;
         }
-        data.stat = this.modifier;
-        const totalValue = this.modifieValue * this.stacks;
-        data.value = totalValue;
+        this.modifiers.forEach((modifierItem) => {
+          if (modifierItem?.modifySpecificTalents) {
+            if (!data.modifySpecificTalents) {
+              data.modifySpecificTalents = [];
+            }
+            // updadate modifer value with the value * stacks
+            modifierItem.modifierValueCalculated =
+              modifierItem.modifierValue * this.stacks;
+            data.modifySpecificTalents.push(modifierItem);
+          } else if (modifierItem.modifier === "Talent") {
+            const talentRef =
+              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+            const talentVal = modifierItem.modifierValue[talentRef];
+            data[modifierItem.modifierTalentKey] = talentVal * this.stacks;
+          } else {
+            const totalValue = modifierItem.modifierValue * this.stacks;
+            data[modifierItem.modifier] = totalValue;
+          }
+        });
       }
       return data;
     },
   },
   beforeUnmount() {
-    this.$emit("updated-weapon-stats", {
-      stat: this.modifier,
-      value: 0,
+    this.$emit("updated-echo-passive-stats", {
+      stats: {},
       key: this.passiveKey,
     });
   },

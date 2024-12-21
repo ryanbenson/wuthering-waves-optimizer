@@ -16,7 +16,11 @@
           :max-stacks="passive.maxStacks"
           :details="passive.details"
           :always-enabled="passive.alwaysEnabled"
-          :passive-key="passive.key"></CalculatorEchoSetPassive>
+          :modifiers="passive.modifiers"
+          :passive-key="passive.key"
+          @updated-echo-passive-stats="
+            handleUpdatedEchoPassiveStats
+          "></CalculatorEchoSetPassive>
       </template>
     </div>
   </div>
@@ -43,6 +47,7 @@ export default {
     return {
       twoSetBonuses,
       setBonusEffects: setBonusEffectsOne,
+      passiveData: [],
     };
   },
   watch: {
@@ -60,16 +65,18 @@ export default {
      * @emits update-stats
      */
     updatedStats() {
-      let stats = {};
-      if (this.type) {
-        const cloneType = JSON.parse(
-          JSON.stringify(this.setBonusEffects[this.type]),
-        );
-        delete cloneType.name;
-        delete cloneType.description;
-        stats = cloneType ?? {};
+      this.$emit("update-stats", this.buffsFormatted);
+    },
+    handleUpdatedEchoPassiveStats(data) {
+      const buffIndex = this.passiveData.findIndex((buff) => {
+        return buff.key === data.key;
+      });
+      if (buffIndex === -1) {
+        this.passiveData.push(data);
+      } else {
+        this.passiveData[buffIndex] = data;
       }
-      this.$emit("update-stats", stats);
+      this.updatedStats();
     },
   },
   computed: {
@@ -117,6 +124,28 @@ export default {
       }
       return this.setBonusEffects[this.type]?.passives ?? [];
     },
+    /**
+     * Returns the buffs data formatted to send to the stats collector
+     * @returns {Object}
+     */
+    buffsFormatted() {
+      const finalBuffData = {};
+      const allBuffs = [...this.passiveData];
+      allBuffs.forEach((buffInstance) => {
+        const { stats } = buffInstance;
+        Object.entries(stats).forEach(([stat, value]) => {
+          if (finalBuffData[stat] === "EnableAttack") {
+            finalBuffData[stat] = value;
+          } else {
+            finalBuffData[stat] = (finalBuffData[stat] || 0) + value;
+          }
+        });
+      });
+      return finalBuffData;
+    },
+  },
+  beforeUnmount() {
+    this.passiveData = [];
   },
 };
 </script>
