@@ -15,6 +15,26 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
+    key: "GrandUnveiling",
+    name: "Grand Unveiling",
+    details: `<div class="skilldescription"Increase the <span class="Highlight">DMG Multiplier</span> of Resonance Liberation <span class="Highlight">New Wave Era</span>, Resonance Liberation <span class="Highlight">Death's Omen</span>, Resonance Liberation <span class="Highlight">Death's End</span> by 80%. Switching to other Resonators ends this effect.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "NewWaveEraDMG",
+          "DeathOmenDMG",
+          "DeathsEndDMG",
+        ],
+        modifierValue: 0.8,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "InherentSkillFlawlessPurity",
     name: "Inherent Skill: Flawless Purity",
     details: `<div class="skilldescription">After casting the Resonance Skill Brilliant Will, performing an Aerial Attack within a certain time grants immunity to damage and being hit before the attack deals damage.<br>

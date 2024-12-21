@@ -2,8 +2,11 @@ export const forteCircuitAttacks = {
   name: "Forte Circuit: Art Odyssey",
   description: `<div class="skilldescription">
 <span class="Title">Heavy Attack · End of the Road</span><br> 
-Carlotta can activate 【Chroma Prism】 every 22 seconds. When 【Spiritual Extract】 is full and 【Chroma Prism】 is in its activated state, holding the Basic Attack will consume all 【Spiritual Extract】 and trigger the Heavy Attack End of the Road. After casting, 【Chroma Prism】 enters cooldown. This damage is considered <span class="Ice">Glacio</span> damage and reduces the cooldown of the Resonance Skill Violent Aesthetics by 6 seconds.<br> <br> 
-
+Carlotta can activate 【Chroma Prism】 every 22 seconds. When 【Spiritual Extract】 is full and 【Chroma Prism】 is in its activated state, holding the Basic Attack will consume all 【Spiritual Extract】 and trigger the Heavy Attack End of the Road. After casting, 【Chroma Prism】 enters cooldown. This damage is considered <span class="Ice">Glacio</span> damage and reduces the cooldown of the Resonance Skill Violent Aesthetics by 6 seconds, and enter <span class="Highlight">Grand Unveiling</span> state..<br> <br> 
+<br>
+<span class="Title">Grand Unveiling</span><br> 
+Increase the <span class="Highlight">DMG Multiplier</span> of Resonance Liberation <span class="Highlight">New Wave Era</span>, Resonance Liberation <span class="Highlight">Death's Omen</span>, Resonance Liberation <span class="Highlight">Death's End</span> by 80%. Switching to other Resonators ends this effect.<br>
+<br>
 <span class="Title">【Spiritual Extract】 Acquisition Rules</span><br> 
 Maximum 120 points.<br> 
 Casting the Intro Skill Winter’s Lament restores 30 points of 【Spiritual Extract】.<br> 

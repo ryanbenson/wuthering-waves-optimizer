@@ -70,12 +70,13 @@ The damage multiplier for the Resonance Skills Aesthetics of Violence and Brilli
   {
     key: "SequenceNode5SalutingtheNightPastTodayandThatMoment",
     name: "Sequence Node 5: Saluting the Night Past, Today, and That Moment",
-    details: `<span class="skilldescription">When Carlotta casts the Resonance Skill "Aesthetic Violence," her attack is increased by 10% for 20 seconds.</span>`,
+    details: `<span class="skilldescription">The DMG Multiplier of Heavy Attack <span class="Highlight">End of the Road</span> is increased by <span class="Param">40%</span>.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ATK",
-        modifierValue: 0.1,
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["EndoftheRoadDMG"],
+        modifierValue: 0.4,
       },
     ],
     minStacks: 0,
