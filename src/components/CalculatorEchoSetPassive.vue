@@ -236,6 +236,8 @@ export default {
               this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
             const talentVal = modifierItem.modifierValue[talentRef];
             data[modifierItem.modifierTalentKey] = talentVal;
+          } else if (modifierItem.modifier === "EnableAttack") {
+            data[modifierItem.modifier] = modifierItem.modifierValue;
           } else if (modifierItem.modifier === "talentModifierMultiply") {
             // for buffs that apply talentModifierMultiply to the calcs
             if (!data.talentModifierMultiply) {

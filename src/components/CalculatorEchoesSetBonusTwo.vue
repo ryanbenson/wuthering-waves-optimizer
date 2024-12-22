@@ -190,7 +190,7 @@ export default {
       allBuffs.forEach((buffInstance) => {
         const { stats } = buffInstance;
         Object.entries(stats).forEach(([stat, value]) => {
-          if (finalBuffData[stat] === "EnableAttack") {
+          if (stat === "EnableAttack") {
             finalBuffData[stat] = value;
           } else {
             finalBuffData[stat] = (finalBuffData[stat] || 0) + value;

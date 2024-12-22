@@ -273,11 +273,11 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     key: "BraveTheWaves2Set",
     passives: [
       {
-        key: "BraveTheWaves2SetHP",
-        details: `HP increases by <span class="Highlight">10%</span>`,
+        key: "BraveTheWaves2SetEnergyRegen",
+        details: `Energy Regen increases by <span class="Highlight">10%</span>`,
         modifiers: [
           {
-            modifier: "HP",
+            modifier: "EnergyRegen",
             modifierValue: 10,
           },
         ],
@@ -548,18 +548,18 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
   "The Eternal Light 5 Set": {
     key: "TheEternalLight5Set",
     name: "The Eternal Light",
-    details: `When a character adds [light noise effect] to a target, the characters Crit DMG is increased by <span class="Highlight">20%</span> for <span class="Highlight">15</span> seconds. When attacking an enemy with 10 stacks of [light noise effect] the character gains <span class="Highlight">15%</span> <span class="Light">Spectro</span> DMG bonus for <span class="Highlight">15</span> seconds`,
+    details: `When a character adds [light noise effect] to a target, the characters Crit Rate is increased by <span class="Highlight">20%</span> for <span class="Highlight">15</span> seconds. When attacking an enemy with 10 stacks of [light noise effect] the character gains <span class="Highlight">15%</span> <span class="Light">Spectro</span> DMG bonus for <span class="Highlight">15</span> seconds`,
     passives: [
       {
         key: "TheEternalLight5SetCritDMG",
         modifiers: [
           {
-            modifier: "CritDMG",
+            modifier: "CritRate",
             modifierValue: 20,
           },
         ],
         alwaysEnabled: false,
-        details: `When a character adds [light noise effect] to a target, the characters Crit DMG is increased by <span class="Highlight">20%</span> for <span class="Highlight">15</span> seconds.`,
+        details: `When a character adds [light noise effect] to a target, the characters Crit Rate is increased by <span class="Highlight">20%</span> for <span class="Highlight">15</span> seconds.`,
       },
       {
         key: "TheEternalLight5SetSpectro",
@@ -606,7 +606,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
   "Brave the Waves 5 Set": {
     name: "Brave the Waves",
     key: "BravetheWaves",
-    details: `ATK is increased by <span class="Highlight">15%</span>, after Energy Regen reaches <span class="Highlight">250%</span> the current character's all attribute DMG is increased by <span class="Highlight">30%</span>.`,
+    details: `ATK is increased by <span class="Highlight">15%</span>, after Energy Regen reaches <span class="Highlight">250%</span> the current character's all attribute DMG is increased by <span class="Highlight">30%</span> for the Resonator.`,
     passives: [
       {
         key: "BravetheWaves5SetATK",
@@ -628,7 +628,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
           },
         ],
         alwaysEnabled: false,
-        details: `When a coordinated attack deals Crit DMG, the whole team gains <span class="Highlight">20%</span> ATK bonus.`,
+        details: `After Energy Regen reaches <span class="Highlight">250%</span> the current character's all attribute DMG is increased by <span class="Highlight">30%</span> for the Resonator.`,
       },
     ],
   },
