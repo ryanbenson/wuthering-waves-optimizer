@@ -32,7 +32,7 @@ Casting the Intro Skill Perlo, Lend a Hand! restores 100 points of 【Imaginatio
         "9": "299.49%",
         "10": "322.08%",
       },
-      type: "Skill",
+      type: "Heavy",
     },
     {
       key: "LeapFantasySecondHit",
@@ -49,7 +49,7 @@ Casting the Intro Skill Perlo, Lend a Hand! restores 100 points of 【Imaginatio
         "9": "316.13%",
         "10": "339.97%",
       },
-      type: "Skill",
+      type: "Heavy",
     },
     {
       key: "LeapFantasyThirdHit",
@@ -66,7 +66,7 @@ Casting the Intro Skill Perlo, Lend a Hand! restores 100 points of 【Imaginatio
         "9": "332.77%",
         "10": "357.86%",
       },
-      type: "Skill",
+      type: "Heavy",
     },
     {
       key: "SequenceNode6FlyonGoldenWingsRealityDMG",
