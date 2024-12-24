@@ -1,17 +1,16 @@
 const weaponInfo: WeaponInfo = {
-  name: "Carlotta Signature",
+  name: "The Last Dance",
   image:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/CarlottaSignature.png",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/TheLastDance.png",
   description:
-    "An ascending crescendo. These pistols unleash bullets with the force of thunder, tearing through the heavens like a symphony of destruction.",
+    "The radiant crystals, ever shattering and reshaping, beckon you into a treacherous dance, a gamble where life is the wager. Cortado, cortado... relentless draw each other in until all we can hear are our quivers. When the crimson finale arrives, remember, death comes for all.",
   type: "Pistols",
-  rarity: 4,
-  passiveName: "TBD",
-  passiveValue:
-    "Attack Power increases by 12%(24%). When casting Intro Skill or Resonance Liberation, the wielder resonance skill damage increases by 48%(96%), lasting for 5s.",
+  rarity: 5,
+  passiveName: "Silent Eulogy",
+  passiveValue: `<span class="skilldescription">Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>. Every time Intro Skill or Resonance Liberation is cast, Resonance Skill DMG Bonus increases by <span class="param">48%/60%/72%/84%/96%</span> for <span class="param">5</span>s.</span>`,
   passiveData: [
     {
-      key: "CarlottaSigATK",
+      key: "TheLastDanceATK",
       hasStacks: false,
       modifier: "ATK",
       modifierByRefinement: {
@@ -23,11 +22,11 @@ const weaponInfo: WeaponInfo = {
       },
       minStacks: 0,
       maxStacks: 0,
-      details: "Attack Power increases by by 12%/15%/18%/21%/24%.",
+      details: `Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>`,
       alwaysEnabled: true,
     },
     {
-      key: "CarlottaSigSKillBonus",
+      key: "TheLastDanceSKillBonus",
       hasStacks: false,
       modifier: "ResonanceSkillDMGBonus",
       modifierByRefinement: {
@@ -39,8 +38,7 @@ const weaponInfo: WeaponInfo = {
       },
       minStacks: 0,
       maxStacks: 0,
-      details:
-        "When casting Intro Skill or Resonance Liberation, the wielder resonance skill damage increases by 48%/60%/72%/84%/96%, lasting for 5s.",
+      details: `Every time Intro Skill or Resonance Liberation is cast, Resonance Skill DMG Bonus increases by <span class="param">48%/60%/72%/84%/96%</span> for <span class="param">5</span>s.</span>`,
       alwaysEnabled: false,
     },
   ],

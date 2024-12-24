@@ -1,32 +1,10 @@
 export const basicAttacks = {
   name: "Normal Attack: Silent Execution",
-  description: `<div class="skilldescription">
-<span class="Title">Basic Attack</span><br>
-Perform up to 2 consecutive attacks, dealing <span class="Ice">Glacio</span> damage.<br>
-<br>
-<span class="Title">Basic Attack: Necessary Means</span><br>
-When Carlotta has 【Amorphous Prism】 on her, the Basic Attack will be replaced with Necessary Means.<br>
-Perform up to 3 consecutive attacks, dealing <span class="Ice">Glacio</span> damage. Each Necessary Means will consume 1 【Amorphous Prism】.<br>
-<br>
-<span class="Title">Heavy Attack</span><br>
-Consume STAMINA to attack the target, dealing <span class="Ice">Glacio</span> damage.<br>
-<br>
-<span class="Title">Heavy Attack: Restrictive Strategy</span><br>
-When Carlotta's 【Spiritual Extract】 is full, the Charged Attack will be replaced with Restrictive Strategy, consuming all 【Spiritual Extract】, dealing <span class="Ice">Glacio</span> damage, and reducing the cooldown of the Resonance Skill Aesthetics of Violence by 6 seconds.<br>
-<br>
-<span class="Title">Aerial Attack</span><br>
-Consume STAMINA to perform an aerial downward attack, dealing <span class="Ice">Glacio</span> damage. After performing the aerial attack, if you press Basic Attack within a short time upon landing, you can perform Ceremonial Greeting.<br>
-<br>
-<span class="Title">Aerial Attack: Ceremonial Greeting</span><br>
-Perform a backward somersault and attack, dealing <span class="Ice">Glacio</span> damage.<br>
-<br>
-<span class="Title">Dodge Counterattack</span><br>
-When successfully dodging, pressing Basic Attack within a short time will attack the target, dealing <span class="Ice">Glacio</span> damage, and consuming 1 【Amorphous Prism】.
-</div>.`,
+  description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Perform up to 2 consecutive strikes, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Basic Attack - Necessary Measures</span><br>With Moldable Crystals, Carlotta's <span class="Highlight">Basic Attack</span> is replaced with <span class="Highlight">Necessary Measures</span>.<br>Chain up to 3 strikes, dealing <span class="Ice">Glacio DMG</span>. Each strike of <span class="Highlight">Necessary Measures</span> consumes <saptag=1>1 Moldable Crystal.<br> <br><span class="Title">Heavy Attack</span><br>Deliver a charged attack at the target at the cost of STA, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Heavy Attack - Containment Tactics</span><br>When Carlotta's Substance is full, her <span class="Highlight">Heavy Attack</span> will be replaced with <span class="Highlight">Containment Tactics</span>: consume all Substance to deal <span class="Ice">Glacio DMG</span> and reduce the cooldown of Resonance Skill <span class="Highlight">Art of Violence</span> by 6s.<br> <br><span class="Title">Mid-air Attack</span><br>Perform a Plunging Attack at the cost of STA, dealing <span class="Ice">Glacio DMG</span>. Using <span class="Highlight">Basic Attack</span> shortly after the landing will cast <span class="Highlight">Customary Greetings</span>.<br> <br><span class="Title">Mid-air Attack - Customary Greetings</span><br>Flip over the target and deliver a surprise shot, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Press <span class="Highlight">Normal Attack</span> shortly after a successful <span class="Highlight">Dodge</span> to deliver a riposte shot, dealing <span class="Ice">Glacio DMG</span>. This consumes <saptag=6>1 Moldable Crystal.</saptag=6></saptag=1></div>`,
   attacks: [
     {
-      key: "SilentExecutionStage1DMG",
-      label: "Stage 1 DMG",
+      key: "BasicAttackStage1DMG",
+      label: "Basic Attack Stage 1 DMG",
       talents: {
         "1": "27.20%",
         "2": "29.44%",
@@ -42,8 +20,8 @@ When successfully dodging, pressing Basic Attack within a short time will attack
       type: "Basic",
     },
     {
-      key: "SilentExecutionStage2DMG",
-      label: "Stage 2 DMG",
+      key: "BasicAttackStage2DMG",
+      label: "Basic Attack Stage 2 DMG",
       talents: {
         "1": "19.89% + 19.89% + 26.52%",
         "2": "21.53% + 21.53% + 28.70%",
@@ -59,8 +37,8 @@ When successfully dodging, pressing Basic Attack within a short time will attack
       type: "Basic",
     },
     {
-      key: "NecessaryMeansStage1DMG",
-      label: "Necessary Means Stage 1 DMG",
+      key: "NecessaryMeasuresStage1DMG",
+      label: "Necessary Measures Stage 1 DMG",
       talents: {
         "1": "33.15%",
         "2": "35.87%",
@@ -76,8 +54,8 @@ When successfully dodging, pressing Basic Attack within a short time will attack
       type: "Basic",
     },
     {
-      key: "NecessaryMeansStage2DMG",
-      label: "Necessary Means Stage 2 DMG",
+      key: "NecessaryMeasuresStage2DMG",
+      label: "Necessary Measures Stage 2 DMG",
       talents: {
         "1": "30.22% + 36.94%",
         "2": "32.70% + 39.97%",
@@ -93,8 +71,8 @@ When successfully dodging, pressing Basic Attack within a short time will attack
       type: "Basic",
     },
     {
-      key: "NecessaryMeansStage3DMG",
-      label: "Necessary Means Stage 3 DMG",
+      key: "NecessaryMeasuresStage3DMG",
+      label: "Necessary Measures Stage 3 DMG",
       talents: {
         "1": "70.38% + 11.73%*4",
         "2": "76.16% + 12.70%*4",
@@ -127,8 +105,8 @@ When successfully dodging, pressing Basic Attack within a short time will attack
       type: "Heavy",
     },
     {
-      key: "RestrictiveStrategyDMG",
-      label: "Restrictive Strategy DMG",
+      key: "ContainmentTacticsDMG",
+      label: "Containment Tactics DMG",
       talents: {
         "1": "17.22%*2 + 17.22%*2 + 45.90%",
         "2": "18.63%*2 + 18.63%*2 + 49.67%",
@@ -144,8 +122,8 @@ When successfully dodging, pressing Basic Attack within a short time will attack
       type: "Heavy",
     },
     {
-      key: "AerialAttackDMG",
-      label: "Aerial Attack DMG",
+      key: "MidairAttackDMG",
+      label: "Mid-air Attack DMG",
       talents: {
         "1": "52.70%",
         "2": "57.03%",
@@ -161,8 +139,8 @@ When successfully dodging, pressing Basic Attack within a short time will attack
       type: "Basic",
     },
     {
-      key: "CeremonialGreetingDMG",
-      label: "Ceremonial Greeting DMG",
+      key: "CustomaryGreetingsDMG",
+      label: "Customary Greetings DMG",
       talents: {
         "1": "54.32%",
         "2": "58.77%",
@@ -178,8 +156,8 @@ When successfully dodging, pressing Basic Attack within a short time will attack
       type: "Basic",
     },
     {
-      key: "DodgeCounterattackDMG",
-      label: "Dodge Counterattack DMG",
+      key: "DodgeCounterDMG",
+      label: "Dodge Counter DMG",
       talents: {
         "1": "52.20% + 69.19%",
         "2": "56.48% + 74.86%",

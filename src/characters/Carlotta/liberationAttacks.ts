@@ -1,30 +1,10 @@
 export const liberationAttacks = {
-  name: "Resonance Liberation: New Wave Era",
-  description: `<div class="skilldescription">
-Deals <span class="Ice">Glacio</span> damage to targets within range and applies the Dissociation effect to hit targets. Enters the Gunflower Waltz state. This damage is considered Resonance Skill damage.<br>
-Can be cast while airborne.<br>
-<br>
-<span class="Title">Dissociation</span><br>
-Carlotta ignores 18% of the target's defense when dealing damage to a target affected by Dissociation.<br>
-<br>
-<span class="Title">Gunflower Waltz</span><br>
-While in the Gunflower Waltz state, pressing Basic Attack or Resonance Liberation casts Death Omen.<br>
-Each time Death Omen is cast, gain 1 【Kaleido Prism】.<br>
-When 【Kaleido Prism】 reaches 4 points, pressing Basic Attack or Resonance Liberation will cast Death's End.<br>
-Entering or exiting the Gunflower Waltz state clears 【Spiritual Extract】. During the Gunflower Waltz state, the Basic Attack Essential Means, the Heavy Attack Restrictive Strategy, and the Heavy Attack End of the Road cannot be cast.<br>
-<br>
-<span class="Title">Death Omen</span><br>
-Carlotta fires her gunlance and summons crystals to attack enemies, dealing <span class="Ice">Glacio</span> damage. This damage is considered Resonance Skill damage.<br>
-Each time Death Omen is cast, Carlotta can move a short distance in the direction of the arrow keys.<br>
-<br>
-<span class="Title">Death's End</span><br>
-Deals <span class="Ice">Glacio</span> damage to targets within range. This damage is considered Resonance Skill damage.<br>
-Casting Death's End ends the Gunflower Waltz state.
-</div>`,
+  name: "Resonance Liberation: Era of New Wave",
+  description: `<div class="skilldescription">Deal <span class="Ice">Glacio DMG</span> to all targets in an area (considered Resonance Skill DMG) and inflict <span class="Highlight">Deconstruction</span> on targets hit, then activate <span class="Highlight">Twilight Tango</span>.<br>Can be cast in mid-air close to the ground.<br> <br><span class="Title">Deconstruction</span><br>Dealing DMG to targets inflicted with <span class="Highlight">Deconstruction</span> ignores 18% of their DEF.<br> <br><span class="Title">Twilight Tango</span><br>While in <span class="Highlight">Twilight Tango</span>, press <span class="Highlight">Normal Attack</span> or <span class="Highlight">Resonance Liberation</span> to cast <span class="Highlight">Death Knell</span>.<br>Each <span class="Highlight">Death Knell</span> grants <saptag=3>1 Meta Vector.<br>With 4 Meta Vectors, press <span class="Highlight">Normal Attack</span> or <span class="Highlight">Resonance Liberation</span> to cast <span class="Highlight">Fatal Finale</span>. <br>- All Substance is removed when activating and ending <span class="Highlight">Twilight Tango</span>. Cannot perform Basic Attack <span class="Highlight">Necessary Measures</span>, Heavy Attack <span class="Highlight">Containment Tactics</span>, and Heavy Attack <span class="Highlight">Imminent Oblivion</span> while in <span class="Highlight">Twilight Tango</span>.<br> <br><span class="Title">Death Knell</span><br>Carlotta fires powerful shots with her musket and summons 4 crystal shards to attack the target, dealing <span class="Ice">Glacio DMG</span>, considered Resonance Skill DMG.<br>- Carlotta moves in the direction of the movement input with each shot of <span class="Highlight">Death Knell</span>.<br> <br><span class="Title">Fatal Finale</span><br>Deal <span class="Ice">Glacio DMG</span> to an area, considered Resonance Skill DMG.<br>- <span class="Highlight">Twilight Tango</span> ends after casting <span class="Highlight">Fatal Finale</span>.</saptag=3></div>`,
   attacks: [
     {
-      key: "NewWaveEraDMG",
-      label: "New Wave Era DMG",
+      key: "EraofNewWaveDMG",
+      label: "Era of New Wave DMG",
       talents: {
         "1": "202.56%",
         "2": "219.17%",
@@ -40,8 +20,8 @@ Casting Death's End ends the Gunflower Waltz state.
       type: "Skill",
     },
     {
-      key: "DeathOmenDMG",
-      label: "Death Omen DMG",
+      key: "DeathKnellDMG",
+      label: "Death Knell DMG",
       talents: {
         "1": "92.37%+7.30%*4",
         "2": "99.94%+7.89%*4",
@@ -57,8 +37,8 @@ Casting Death's End ends the Gunflower Waltz state.
       type: "Skill",
     },
     {
-      key: "DeathsEndDMG",
-      label: "Death's End DMG",
+      key: "FatalFinaleDMG",
+      label: "Fatal Finale DMG",
       talents: {
         "1": "324.09%",
         "2": "350.67%",

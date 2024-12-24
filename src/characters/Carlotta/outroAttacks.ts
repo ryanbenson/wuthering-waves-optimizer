@@ -1,10 +1,10 @@
 export const outroAttacks = {
-  name: "Outro Skill: Final Address",
-  description: `<div class="skilldescription">Attack the target, dealing Glacio damage equal to 794.2% of Carlotta's Attack.</div>`,
+  name: "Outro Skill: Closing Remark",
+  description: `<div class="skilldescription">Attack the target, dealing <span class="Ice">Glacio DMG</span> equal to 794.2% of Carlotta's ATK</div>`,
   attacks: [
     {
-      key: "FinalAddressDMG",
-      label: "Final Address DMG",
+      key: "ClosingRemarkDMG",
+      label: "Closing Remark DMG",
       talent: "794.2%",
       type: "Outro",
     },

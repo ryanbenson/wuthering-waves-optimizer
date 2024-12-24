@@ -1,18 +1,10 @@
 export const skillAttacks = {
-  name: "Resonance Skill: Aesthetics of Violence",
-  description: `<div class="skilldescription">
-Deals <span class="Ice">Glacio</span> damage and applies the Chroma effect to hit targets. After casting, pressing the Resonance Skill within a short time will trigger Brilliant Will.zv
-zv
-<span class="Title">Chroma</span><br>
-During the effect's duration, no actions can be performed. The effect lasts for 1.5 seconds.<br>
-<br>
-<span class="Title">Brilliant Will</span><br>
-Carlotta consumes all of her current 【Amorphous Prism】 to deal <span class="Ice">Glacio</span> damage to the target.
-If the Resonance Skill Brilliant Will is not cast within a certain time or if the character is switched, the skill enters cooldown.</div>`,
+  name: "Resonance Skill: Art of Violence",
+  description: `<div class="skilldescription">Deal <span class="Ice">Glacio DMG</span> and inflict <span class="Highlight">Dispersion</span> on the target. Press <span class="Highlight">Resonance Skill</span> again shortly after to cast <span class="Highlight">Chromatic Splendor</span>. <br> <br><span class="Title">Dispersion</span><br>Targets with Dispersion are immobilized for 1.5s. <br> <br><span class="Title">Chromatic Splendor</span><br>Consume all Moldable Crystals and deal <span class="Ice">Glacio DMG</span>.<br>The Resonance Skill enters cooldown after a while if <span class="Highlight">Chromatic Splendor</span> is not cast or Carlotta is switched off the field.</div>`,
   attacks: [
     {
-      key: "AestheticsofViolenceDMG",
-      label: "Aesthetics of Violence DMG",
+      key: "ArtofViolenceDMG",
+      label: "Art of Violence DMG",
       talents: {
         "1": "72.49%+72.49%",
         "2": "78.43%+78.43%",
@@ -28,8 +20,8 @@ If the Resonance Skill Brilliant Will is not cast within a certain time or if th
       type: "Skill",
     },
     {
-      key: "BrilliantWillDMG",
-      label: "Brilliant Will DMG",
+      key: "ChromaticSplendorDMG",
+      label: "Chromatic Splendor DMG",
       talents: {
         "1": "56.70%+56.70%+170.10%",
         "2": "61.35%+61.35%+184.05%",

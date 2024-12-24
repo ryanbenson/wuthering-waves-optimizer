@@ -1,9 +1,8 @@
 export const resonanceChains = [
   {
-    key: "SequenceNode1BeautyorDeathBrillianceFadesintoWithering",
-    name: "Sequence Node 1: Beauty or Death, Brilliance Fades into Withering",
-    details: `<span class="skilldescription">When Carlotta casts the Resonance Skill Aesthetics of Violence, her <span class="Ice">Glacio</span> damage is increased by 25% for 15 seconds.<br>
-When the Resonance Skill Brilliant Will is cast and hits a target in the Chroma state, an additional 30 points of 【Spiritual Extract】 are restored.</span>`,
+    key: "SequenceNode1BeautyBlazesBrightestBeforeItFades",
+    name: "Sequence Node 1: Beauty Blazes Brightest Before It Fades",
+    details: `<span class="skilldescription">Casting Resonance Skill <span class="Highlight">Art of Violence</span> increases Glacio DMG Bonus by 25% for 15s.<br>When Resonance Skill <span class="Highlight">Chromatic Splendor</span> hits a target inflicted with <span class="Highlight">Dispersion</span>, Carlotta additionally restores 30 points of Substance.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -16,9 +15,9 @@ When the Resonance Skill Brilliant Will is cast and hits a target in the Chroma 
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode2SilenceandDeathDecayBecomesRebirth",
-    name: "Sequence Node 2: Silence and Death, Decay Becomes Rebirth",
-    details: `<span class="skilldescription">When Carlotta attacks a target affected by the Dissociation effect, the critical rate of that attack is increased by 25%.</span>`,
+    key: "SequenceNode2FallenPetalsGiveLifetoNewBlooms",
+    name: "Sequence Node 2: Fallen Petals Give Life to New Blooms",
+    details: `<span class="skilldescription">Dealing DMG to targets inflicted with <span class="Highlight">Deconstruction</span> increases the Crit. Rate of this attack by 25%.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -31,11 +30,9 @@ When the Resonance Skill Brilliant Will is cast and hits a target in the Chroma 
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode3StepForwardEleganceinProgression",
-    name: "Sequence Node 3: Step Forward, Elegance in Progression",
-    details: `<span class="skilldescription">Outro Skill: Shattered Mirror Blossoms
-After casting the Outro Skill Final Address, an additional attack is made, dealing <span class="Ice">Glacio</span> damage equal to 1032.18% of Carlotta's Attack.
-The damage multiplier for the Resonance Skills Aesthetics of Violence and Brilliant Will is increased by 70%.</span>`,
+    key: "SequenceNode3AdelanteCortadoSpinninginGrace",
+    name: "Sequence Node 3: Adelante, Cortado, Spinning in Grace",
+    details: `<span class="skilldescription">Enable Outro Skill <span class="Highlight">Kaleidoscope Sparks</span>: Deal 1 additional strike at the end of Outro Skill <span class="Highlight">Closing Remark</span>, dealing Glacio DMG equal to 1032.18% of Carlotta's ATK. The DMG Multiplier of Resonance Skill <span class="Highlight">Art of Violence</span> and Resonance Skill <span class="Highlight">Chromatic Splendor</span> is increased by 70%.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -44,7 +41,7 @@ The damage multiplier for the Resonance Skills Aesthetics of Violence and Brilli
       },
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["AestheticsofViolenceDMG", "BrilliantWillDMG"],
+        modifySpecificTalents: ["ArtofViolenceDMG", "ChromaticSplendorDMG"],
         modifierValue: 0.7,
       },
     ],
@@ -53,9 +50,9 @@ The damage multiplier for the Resonance Skills Aesthetics of Violence and Brilli
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode4WithOldRainaHymnofBitterWine",
-    name: "Sequence Node 4: With Old Rain, a Hymn of Bitter Wine",
-    details: `<span class="skilldescription">When Carlotta casts a Heavy Attack, the Heavy Attack Restrictive Strategy, or the Heavy Attack End of the Road, Resonance Skill damage for all characters in the team is increased by 25% for 30 seconds.</span>`,
+    key: "SequenceNode4YesterdaysRaindropsMakeFinestWine",
+    name: "Sequence Node 4: Yesterday's Raindrops Make Finest Wine",
+    details: `<span class="skilldescription">Casting Heavy Attack, Heavy Attack <span class="Highlight">Containment Tactics</span>, and Heavy Attack <span class="Highlight">Imminent Oblivion</span> grants all team members 25% Resonance Skill DMG Bonus for 30s.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -68,14 +65,14 @@ The damage multiplier for the Resonance Skills Aesthetics of Violence and Brilli
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode5SalutingtheNightPastTodayandThatMoment",
-    name: "Sequence Node 5: Saluting the Night Past, Today, and That Moment",
-    details: `<span class="skilldescription">The DMG Multiplier of Heavy Attack <span class="Highlight">End of the Road</span> is increased by <span class="Param">40%</span>.</span>`,
+    key: "SequenceNode5ToasttoPastTodayandEveryDaytoCome",
+    name: "Sequence Node 5: Toast to Past, Today, and Every Day to Come",
+    details: `<span class="skilldescription">The DMG Multiplier of Heavy Attack <span class="Highlight">Imminent Oblivion</span> is increased by 40%.</span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["EndoftheRoadDMG"],
+        modifySpecificTalents: ["ImminentOblivionDMG"],
         modifierValue: 0.4,
       },
     ],
@@ -84,15 +81,14 @@ The damage multiplier for the Resonance Skills Aesthetics of Violence and Brilli
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode6IRemaintheSameAttheEndoftheCurtain",
-    name: "Sequence Node 6: I Remain the Same, At the End of the Curtain",
-    details: `<span class="skilldescription">The Resonance Liberation Death Omen shot deals significantly higher damage, and the number of generated crystals is doubled, with a total multiplier increase of 145.6%.
-When the Resonance Liberation Death Omen shot hits a target, it applies the Iridescent effect: the target cannot perform any actions during the effect's duration. The effect is cleared if the target takes damage or after 1.5 seconds.</span>`,
+    key: "SequenceNode6AstheCurtainFallsIRemainWhatIAm",
+    name: "Sequence Node 6: As the Curtain Falls, I Remain What I Am",
+    details: `<span class="skilldescription">Shots of Resonance Liberation <span class="Highlight">Death Knell</span> deal higher DMG and shoot out double the number of crystal shards, representing a total increase of 169.5% in the DMG Multiplier of Resonance Liberation <span class="Highlight">Death Knell</span>.<br>Shots of Resonance Liberation <span class="Highlight">Death Knell</span> inflict <span class="Highlight">Scattering</span> on targets when hit, during which the target is immobilized. This effect is removed after 1.5s or when the target receives DMG.</span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["DeathOmenDMG"],
+        modifySpecificTalents: ["DeathKnellDMG"],
         modifierValue: 1.456,
       },
     ],

@@ -1,10 +1,10 @@
 export const introAttacks = {
-  name: "Intro Skill: Winter's Lament",
-  description: `<div class="skilldescription">Attack the target, dealing Glacio damage.</div>`,
+  name: "Intro Skill: Wintertime Aria",
+  description: `<div class="skilldescription">Attack the target, dealing <span class="Ice">Glacio DMG</span>.</div>`,
   attacks: [
     {
-      key: "WintersLamentDMG",
-      label: "Winter's Lament DMG",
+      key: "WintertimeAriaDMG",
+      label: "Wintertime Aria DMG",
       talents: {
         "1": "90.00%+30.00%*2",
         "2": "97.38%+32.46%*2",

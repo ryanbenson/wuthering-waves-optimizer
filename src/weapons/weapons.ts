@@ -80,7 +80,7 @@ const rectifiersList = {
 const pistolsList = {
   five: [
     { key: "StaticMist", name: "Static Mist" },
-    { key: "CarlottaSignature", name: "Carlotta Signature" },
+    { key: "TheLastDance", name: "The Last Dance" },
   ],
   four: [
     { key: "Cadenza", name: "Cadenza" },
