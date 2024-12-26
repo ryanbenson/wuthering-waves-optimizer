@@ -105,35 +105,6 @@
       updates page. I'll occasionally push a banner up when something notable
       happens like a new character is added, etc.
     </p>
-    <h3>Sources</h3>
-    <p>
-      If you're interested in the data and formula sources. I've essentially
-      merged the two source and spent many hours verifying in-game, in Excel,
-      and the calculations here.
-    </p>
-    <ul>
-      <li>
-        <a
-          href="https://wutheringwaves.gg/damage-calculation-guide/"
-          target="_blank">
-          https://wutheringwaves.gg/damage-calculation-guide/
-        </a>
-        - has a simplified version of the formula. However, their DEF modifier
-        calculation is wrong. They make assumptions and shortcuts here that I
-        did not follow.
-      </li>
-      <li>
-        <a href="https://wutheringwaves.fandom.com/wiki/Damage" target="_blank">
-          https://wutheringwaves.fandom.com/wiki/Damage
-        </a>
-        - has a similar formula, but most notably a correct DEF modifier
-        calculation. I have not implemented some aspects of this formula,
-        because there are parts that cannot be verified hat they're even in use
-        (e.g. Special DMG: they say: "Note that currently it is unknown as to
-        what differentiates Special DMG from DMG Amplify, and the stat remains
-        unused in the game.")
-      </li>
-    </ul>
     <h3>Discord</h3>
     <p>
       If you want to keep up with the latest, or have any ideas, or see any

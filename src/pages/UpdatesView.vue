@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>December 26, 2024</h3>
+    <ul>
+      <li>Updates to legal and info pages.</li>
+    </ul>
     <h3>December 17, 2024</h3>
     <ul>
       <li>Fixes spelling error on notice for enemy settings.</li>
