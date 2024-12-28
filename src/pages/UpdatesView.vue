@@ -108,6 +108,10 @@
         skill and S1 which don't affect his damages, and also organizes his stat
         bonuses better.
       </li>
+      <li>
+        Updates Encore: adds missing S2, but it does not affect her output as
+        it's a quality of life resonance chain.
+      </li>
     </ul>
     <h3>December 27, 2024</h3>
     <ul>
