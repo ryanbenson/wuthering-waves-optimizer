@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>December 27, 2024</h3>
+    <ul>
+      <li>Updates Lumi text, and fixed Lumi S5.</li>
+    </ul>
     <h3>December 26, 2024</h3>
     <ul>
       <li>Updates to legal and info pages.</li>

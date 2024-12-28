@@ -1,17 +1,23 @@
 export const resonanceChains = [
   {
-    key: "SequenceNode2WuWuLogisticsHasReceivedthePackage",
-    name: "Sequence Node 2: WuWu Logistics Has Received the Package",
-    details: `<span class="skilldescription">When <span class="Highlight">Enhanced Lunge</span> and <span class="Highlight">Enhanced Backstep</span> hits an enemy, ignores <span class="Highlight">20%</span> of the target’s defense.
-    </span>`,
+    key: "SequenceNode1ParcelToBeDelivered",
+    name: "Sequence Node 1: Parcel To Be Delivered",
+    details: `<span class="skilldescription">After casting <span class="Highlight">Energized Rebound</span>, additionally recovers 60 STA within 3s.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode2LolloLogisticsReadytoHelp",
+    name: "Sequence Node 2: Lollo Logistics, Ready to Help",
+    details: `<span class="skilldescription"><span class="Highlight">Energized Pounce</span> and <span class="Highlight">Energized Rebound</span> ignore 20% of the target's DEF.</span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "DEFIgnore",
-        modifySpecificTalents: [
-          "EnhancedLungeDMG",
-          "EnhancedBackstepDMG",
-        ],
+        modifySpecificTalents: ["EnergizedPounceDMG", "EnergizedReboundDMG"],
         modifierValue: 0.2,
       },
     ],
@@ -20,13 +26,13 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode3ExpressDeliveryinTransit",
-    name: "Sequence Node 3: Express Delivery in Transit",
-    details: `<span class="skilldescription"><span class="Highlight">Resonance Liberation Tweet Delivery</span> damage increases by <span class="Highlight">30%</span>.</span>`,
+    key: "SequenceNode3PriorityParcelInTransit",
+    name: "Sequence Node 3: Priority Parcel In Transit",
+    details: `<span class="skilldescription">The DMG of Resonance Liberation <span class="Highlight">Squeakie Express</span> is increased by 30%.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifySpecificTalents: ["TweetDeliveryDMG"],
+        modifySpecificTalents: ["SqueakieExpressSkillDMG"],
         modifierValue: 0.3,
       },
     ],
@@ -35,9 +41,9 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode4TheLightsareBeingDeliveredtoYou",
-    name: "Sequence Node 4: The Lights are Being Delivered to You",
-    details: `<span class="skilldescription">Lumi’s <span class="Highlight">Basic Attack</span> damage increases by <span class="Highlight">30%</span>.</span>`,
+    key: "SequenceNode4CaptainLumiAtYourService",
+    name: "Sequence Node 4: Captain Lumi, At Your Service",
+    details: `<span class="skilldescription">Gain 30% Basic Attack DMG Bonus.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -50,14 +56,14 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode5TheExpressHasBeenSuccessfullySignedFor",
-    name: "Sequence Node 5: The Express Has Been Successfully Signed For",
-    details: `<span class="skilldescription">When <span class="Highlight">【Red Light Energy】</span> is full, <span class="Highlight">Piercing Bright Light</span> damage multiplier increases by <span class="Highlight">100%.</span>`,
+    key: "SequenceNode5ParcelCollectedOnTime",
+    name: "Sequence Node 5: Parcel Collected On Time",
+    details: `<span class="skilldescription">When Spark is fully recovered, <span class="Highlight">Laser</span> DMG Multiplier is increased by 100%.</span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["PiercingBrightLightDMG"],
+        modifySpecificTalents: ["SingleLaserBeamDMG"],
         modifierValue: 1,
       },
     ],
@@ -66,9 +72,9 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode6GiveaFiveStarPraise",
-    name: "Sequence Node 6: Give a Five-Star Praise",
-    details: `<span class="skilldescription">When casting <span class="Highlight">Outro Skill</span>, Resonators in the team increases their Attack power by <span class="Highlight">20%</span>, lasting for <span class="Highlight">‘?’s</span>.</span>`,
+    key: "SequenceNode6Giv MeAFivestarRating",
+    name: "Sequence Node 6: Give Me A Five-star Rating",
+    details: `<span class="skilldescription">Casting Resonance Liberation <span class="Highlight">Squeakie Express</span> increases all team members' ATK by 20% for 20s.</span>`,
     hasStacks: false,
     modifiers: [
       {

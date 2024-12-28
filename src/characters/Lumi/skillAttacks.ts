@@ -1,21 +1,10 @@
 export const skillAttacks = {
-  name: "Resonance Skill: Light Searchlight",
-  description: `<div class="skilldescription">
-  <span class="Highlight">Lunge</span><br>
-During <span class="Highlight">Yellow Light mode</span>, <span class="Highlight">Resonance Skill</span> is replaced with <span class="Highlight">Lunge</span>, consuming Stamina, Lumi lunges towards the target’s direction to perform a claw attack, then switches to <span class="Highlight">Red Light mode</span>.
-<br><br>
-<span class="Highlight">Backstep</span><br>
-During <span class="Highlight">Red Light mode</span>, <span class="Highlight">Resonance Skill</span> is replaced with <span class="Highlight">Backstep</span>, consuming Stamina, Lumi steps backwards, attacking the target, then switches to <span class="Highlight">Yellow Light mode</span>.
-<br><br>
-<span class="Highlight">Yellow Light mode</span><br>
-During <span class="Highlight">Yellow Light mode</span>, performs ranged attacks, unable to cast <span class="Highlight">Dodge Counter</span> and <span class="Highlight">Resonance Liberation</span>.
-<br><br>
-<span class="Highlight">Red Light mode</span><br>
-During <span class="Highlight">Red Light mode</span>, performs melee attacks, able to cast <span class="Highlight">Dodge Counter</span> and <span class="Highlight">Resonance Liberation</span>.</div>`,
+  name: "Resonance Skill: Searchlight Service",
+  description: `<div class="skilldescription"><span class="Title">Pounce</span><br>When in <span class="Highlight">Yellow Light Mode</span>, use Resonance Skill to perform Pounce, which consumes STA to pounce on the target before switching to <span class="Highlight">Red Light Mode</span>.<br>Lumi will perform a <span class="Highlight">Pounce</span> without STA cost when switched onto the field.<br><span class="Title">Rebound</span><br>When in <span class="Highlight">Red Light Mode</span>, use Resonance Skill to perform Rebound, which consumes STA to leap backward and attack the target before switching to <span class="Highlight">Yellow Light Mode</span>.<br><span class="Title">Yellow Light Mode</span><br>Perform ranged attacks when in Yellow Light Mode.<br><span class="Title">Red Light Mode</span><br>Perform melee attacks when in Red Light Mode.</div>`,
   attacks: [
     {
-      key: "LungeDamage",
-      label: "Lunge DMG",
+      key: "PounceDMG",
+      label: "Pounce DMG",
       talents: {
         "1": "91.20%",
         "2": "98.68%",
@@ -31,8 +20,8 @@ During <span class="Highlight">Red Light mode</span>, performs melee attacks, ab
       type: "Skill",
     },
     {
-      key: "BackstepDamage",
-      label: "Backstep DMG",
+      key: "ReboundDMG",
+      label: "Rebound DMG",
       talents: {
         "1": "87.40%",
         "2": "94.57%",

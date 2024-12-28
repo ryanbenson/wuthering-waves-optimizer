@@ -2,7 +2,7 @@ export const buffs = [
   {
     key: "InherentSkillPathfinding",
     name: "Inherent Skill: Pathfinding",
-    details: `<div class="skilldescription">During <span class="Highlight">Red Light Mode</span>, Lumi increases <span class="Thunder">Electro</span> damage by <span class="Highlight">10%</span>.</div>`,
+    details: `<div class="skilldescription">Gain 10% Electro DMG Bonus when in Red Light Mode.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -15,10 +15,9 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "InherentSkillRushing",
-    name: "Inherent Skill: Rushing",
-    details:
-      `<div class="skilldescription">When casting <span class="Highlight">Enhanced Lunge</span> or <span class="Highlight">Enhanced Backstep</span>, Lumi increases Attack power by <span class="Highlight">10%</span> for <span class="Highlight">5s</span>.</div>`,
+    key: "InherentSkillExpediting",
+    name: "Inherent Skill: Expediting",
+    details: `<div class="skilldescription">Casting <span class="Highlight">Energized Pounce</span> or <span class="Highlight">Energized Rebound</span> increases ATK by 10% for 5s.</div>`,
     hasStacks: false,
     modifiers: [
       {
