@@ -112,6 +112,7 @@
         Updates Encore: adds missing S2, but it does not affect her output as
         it's a quality of life resonance chain.
       </li>
+      <li>Updates Rime-Draped Sprouts text format, and adds description.</li>
     </ul>
     <h3>December 27, 2024</h3>
     <ul>
