@@ -113,6 +113,7 @@
         it's a quality of life resonance chain.
       </li>
       <li>Updates Rime-Draped Sprouts text format, and adds description.</li>
+      <li>Adds missing ER passive on Static Mist</li>
     </ul>
     <h3>December 27, 2024</h3>
     <ul>
