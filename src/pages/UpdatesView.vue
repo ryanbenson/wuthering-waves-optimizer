@@ -101,6 +101,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>December 28, 2024</h3>
+    <ul>
+      <li>
+        Updates Calcharo: small label updates, and adds his missing inherit
+        skill and S1 which don't affect his damages, and also organizes his stat
+        bonuses better.
+      </li>
+    </ul>
     <h3>December 27, 2024</h3>
     <ul>
       <li>Updates Lumi text, and fixed Lumi S5.</li>

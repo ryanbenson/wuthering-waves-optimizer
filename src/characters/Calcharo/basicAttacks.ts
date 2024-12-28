@@ -1,11 +1,10 @@
 export const basicAttacks = {
   name: "Basic Attacks: Gnawing Fangs",
-  description:
-    `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Calcharo performs up to 4 consecutive attacks, dealing <span class="Thunder">Electro DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Consumes STA to attack the target, dealing <span class="Thunder">Electro DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Consumes STA to perform a Mid-Air Plunging Attack, dealing <span class="Thunder">Electro DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
+  description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Calcharo performs up to 4 consecutive attacks, dealing <span class="Thunder">Electro DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Consumes STA to attack the target, dealing <span class="Thunder">Electro DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Consumes STA to perform a Mid-Air Plunging Attack, dealing <span class="Thunder">Electro DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
   attacks: [
     {
       key: "Part1Damage",
-      label: "Part 1 DMG",
+      label: "Stage 1 DMG",
       talents: {
         "1": "23.00%*2",
         "2": "24.89%*2",
@@ -22,7 +21,7 @@ export const basicAttacks = {
     },
     {
       key: "Part2Damage",
-      label: "Part 2 DMG",
+      label: "Stage 2 DMG",
       talents: {
         "1": "50.00%",
         "2": "54.10%",
@@ -56,7 +55,7 @@ export const basicAttacks = {
     },
     {
       key: "Part4Damage",
-      label: "Part 4 DMG",
+      label: "Stage 4 DMG",
       talents: {
         "1": "39.99%*2 + 53.32%",
         "2": "43.27%*2 + 57.70%",
