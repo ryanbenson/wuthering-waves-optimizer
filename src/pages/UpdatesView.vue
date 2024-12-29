@@ -114,6 +114,10 @@
       </li>
       <li>Updates Rime-Draped Sprouts text format, and adds description.</li>
       <li>Adds missing ER passive on Static Mist</li>
+      <li>
+        Fixes Rover Havoc S6, it was not applying the Crit Rate to Liberation
+        attack.
+      </li>
     </ul>
     <h3>December 27, 2024</h3>
     <ul>

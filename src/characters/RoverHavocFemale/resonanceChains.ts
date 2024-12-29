@@ -65,6 +65,7 @@ export const resonanceChains = [
           "UmbraDodgeCounterDMG",
           "UmbraLifetakerDamage",
           "SequenceNode5AeonSymphony",
+          "DeadeningAbyssSkillDMG",
         ],
         modifierValue: 0.25,
       },
