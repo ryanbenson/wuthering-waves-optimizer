@@ -101,6 +101,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>December 30, 2024</h3>
+    <ul>
+      <li>
+        Removes Moonlit echo set buff from self-buffs since it only affects the
+        next character. You still can enable it from team buffs.
+      </li>
+    </ul>
     <h3>December 29, 2024</h3>
     <ul>
       <li>
