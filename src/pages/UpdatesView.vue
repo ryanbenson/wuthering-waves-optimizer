@@ -101,6 +101,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>December 29, 2024</h3>
+    <ul>
+      <li>
+        Adds missing Jianxin resonance chains. This does not affect her damage
+        output, they were quality of life resonance chains.
+      </li>
+    </ul>
     <h3>December 28, 2024</h3>
     <ul>
       <li>
