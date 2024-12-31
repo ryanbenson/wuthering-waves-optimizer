@@ -1592,13 +1592,13 @@ export default defineComponent({
       // TODO: Makes this scalable and more maintainable
       // can wait for another echo set attack, so okay for now
       const hasEchoOutroAttack =
-        echoStats.value?.EnableAttack === "TheVeilofHiddenNight";
+        echoStats.value?.EnableAttack === "MidnightVeil";
       const echoOutroAttackSetIndex = echoSetAttacks.findIndex(
-        (attack) => attack.key === "TheVeilofHiddenNightDMG",
+        (attack) => attack.key === "MidnightVeilDMG",
       );
       if (echoOutroAttackSetIndex < 0 && hasEchoOutroAttack) {
         echoSetAttacks.push({
-          key: "TheVeilofHiddenNightDMG",
+          key: "MidnightVeilDMG",
           label: "The Veil of Hidden Night DMG",
           talent: "480%",
           type: "Outro",

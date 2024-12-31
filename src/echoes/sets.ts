@@ -8,7 +8,11 @@ export const twoSetBonuses: string[] = [
   "Rejuvenating Glow 2 Set",
   "Moonlit Clouds 2 Set",
   "Lingering Tunes 2 Set",
-  "A Heart Of Determination 2 Set",
+  "Tidebreaking Courage 2 Set",
+  "Empyrean Anthem 2 Set",
+  "Eternal Radiance 2 Set",
+  "Midnight Veil 2 Set",
+  "Frosty Resolve 2 Set",
 ];
 export const fiveSetBonuses: string[] = [
   "Freezing Frost 5 Set",
@@ -20,11 +24,11 @@ export const fiveSetBonuses: string[] = [
   "Rejuvenating Glow 5 Set",
   "Moonlit Clouds 5 Set",
   "Lingering Tunes 5 Set",
-  "Brave the Waves 5 Set",
-  "A Song of High Heavens 5 Set",
-  "The Eternal Light 5 Set",
-  "The Veil of Hidden Night 5 Set",
-  "A Heart Of Determination 5 Set",
+  "Tidebreaking Courage 5 Set",
+  "Empyrean Anthem 5 Set",
+  "Eternal Radiance 5 Set",
+  "Midnight Veil 5 Set",
+  "Frosty Resolve 5 Set",
 ];
 
 type EchoSetBonus = {
@@ -228,8 +232,8 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     ],
     details: `ATK increases by <span class="Highlight">10%</span>`,
   },
-  "A Heart Of Determination 2 Set": {
-    name: "A Heart Of Determination",
+  "Frosty Resolve 2 Set": {
+    name: "Frosty Resolve",
     key: "HeartOfDetermination2Set",
     passives: [
       {
@@ -248,8 +252,8 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     ],
     details: `Increase Resonance Skill DMG by <span class="Highlight">12%</span>`,
   },
-  "A Song of High Heavens 2 Set": {
-    name: "A Song of High Heavens",
+  "Empyrean Anthem 2 Set": {
+    name: "Empyrean Anthem",
     key: "SongOfHighHeavens2Set",
     passives: [
       {
@@ -268,12 +272,12 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     ],
     details: `Energy Regen increases by <span class="Highlight">10%</span>`,
   },
-  "Brave the Waves 2 Set": {
-    name: "Brave the Waves",
-    key: "BraveTheWaves2Set",
+  "Tidebreaking Courage 2 Set": {
+    name: "Tidebreaking Courage",
+    key: "TidebreakingCourage2Set",
     passives: [
       {
-        key: "BraveTheWaves2SetEnergyRegen",
+        key: "TidebreakingCourage2SetEnergyRegen",
         details: `Energy Regen increases by <span class="Highlight">10%</span>`,
         modifiers: [
           {
@@ -288,12 +292,12 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     ],
     details: `HP increases by <span class="Highlight">10%</span>`,
   },
-  "The Eternal Light 2 Set": {
-    name: "The Eternal Light",
-    key: "TheEternalLight2Set",
+  "Eternal Radiance 2 Set": {
+    name: "Eternal Radiance",
+    key: "EternalRadiance2Set",
     passives: [
       {
-        key: "TheEternalLight2SetHP",
+        key: "EternalRadiance2SetHP",
         details: `Increases Spectro DMG by 10%`,
         modifiers: [
           {
@@ -308,12 +312,12 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     ],
     details: `Increases Spectro DMG by 10%`,
   },
-  "The Veil of Hidden Night 2 Set": {
-    name: "The Veil of Hidden Night",
-    key: "TheVeilofHiddenNight2Set",
+  "Midnight Veil 2 Set": {
+    name: "Midnight Veil",
+    key: "MidnightVeil2Set",
     passives: [
       {
-        key: "TheVeilofHiddenNight2SetHavoc",
+        key: "MidnightVeil2SetHavoc",
         details: `Increases Havoc DMG by 10%`,
         modifiers: [
           {
@@ -505,39 +509,49 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
       },
     ],
   },
-  "A Heart Of Determination 5 Set": {
-    key: "AHeartOfDetermination5Set",
-    name: "A Heart Of Determination",
-    details: `For 6 seconds after using Resonance Liberation, increase <span class="Ice">Glacio</span> DMG by <span class="Highlight">30%</span>, and <span class="Highlight">Resonance Skill</span> DMG by <span class="Highlight">30%</span>.`,
+  "Frosty Resolve 5 Set": {
+    key: "FrostyResolve5Set",
+    name: "Frosty Resolve",
+    details: `Casting Resonance Skill grants <span class="Param">22.5%</span> <span class="Ice">Glacio</span> DMG Bonus for 15s and casting Resonance Liberation increases Resonance Skill DMG by <span class="Param">18%</span>, lasting for 5s. This effect stacks up to 2 times.`,
     passives: [
       {
-        key: "AHeartOfDetermination5Set5SetGlacioSkillDMGBonus",
+        key: "FrostyResolve5Set5SetGlacioDMGBonus",
         modifiers: [
           {
             modifier: "Glacio",
-            modifierValue: 30,
-          },
-          {
-            modifier: "ResonanceSkillDMGBonus",
-            modifierValue: 30,
+            modifierValue: 22.5,
           },
         ],
         alwaysEnabled: false,
-        details: `For 6 seconds after using Resonance Liberation, increase <span class="Ice">Glacio</span> DMG by <span class="Highlight">30%</span>, and <span class="Highlight">Resonance Skill</span> DMG by <span class="Highlight">30%</span>.`,
+        details: `Casting Resonance Skill grants <span class="Param">22.5%</span> <span class="Ice">Glacio</span> DMG Bonus for 15s.`,
+      },
+      {
+        key: "FrostyResolve5Set5SetSkillDMGBonus",
+        modifiers: [
+          {
+            modifier: "ResonanceSkillDMGBonus",
+            modifierValue: 18,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `casting Resonance Liberation increases Resonance Skill DMG by <span class="Param">18%</span>, lasting for 5s. This effect stacks up to 2 times.`,
+        hasStacks: true,
+        minStacks: 0,
+        maxStacks: 2,
       },
     ],
   },
-  "The Veil of Hidden Night 5 Set": {
-    key: "TheVeilofHiddenNight5Set",
-    name: "The Veil of Hidden Night",
+  "Midnight Veil 5 Set": {
+    key: "MidnightVeil5Set",
+    name: "Midnight Veil",
     details: `When the character uses an <span class="Highlight">Outro Skill</span>, it deals an additional <span class="Highlight">480%</span> <span class="Dark">Havoc</span> DMG and increases the next character's <span class="Dark">Havoc</span> DMG by <span class="Highlight">15%</span> for <span class="Highlight">15</span> seconds`,
     passives: [
       {
-        key: "TheVeilofHiddenNight5SetAttack",
+        key: "MidnightVeil5SetAttack",
         modifiers: [
           {
             modifier: "EnableAttack",
-            modifierValue: "TheVeilofHiddenNight",
+            modifierValue: "MidnightVeil",
           },
         ],
         alwaysEnabled: false,
@@ -545,13 +559,13 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
       },
     ],
   },
-  "The Eternal Light 5 Set": {
-    key: "TheEternalLight5Set",
-    name: "The Eternal Light",
-    details: `When a character adds [light noise effect] to a target, the characters Crit Rate is increased by <span class="Highlight">20%</span> for <span class="Highlight">15</span> seconds. When attacking an enemy with 10 stacks of [light noise effect] the character gains <span class="Highlight">15%</span> <span class="Light">Spectro</span> DMG bonus for <span class="Highlight">15</span> seconds`,
+  "Eternal Radiance 5 Set": {
+    key: "EternalRadiance5Set",
+    name: "Eternal Radiance",
+    details: `Inflicting enemies with Spectro Frazzle increases Crit. Rate by 20% for 15s. Attacking enemies with 10 stacks of Spectro Frazzle grants 15% Spectro DMG Bonus for 15s.`,
     passives: [
       {
-        key: "TheEternalLight5SetCritDMG",
+        key: "EternalRadiance5SetCritRate",
         modifiers: [
           {
             modifier: "CritRate",
@@ -559,10 +573,10 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
           },
         ],
         alwaysEnabled: false,
-        details: `When a character adds [light noise effect] to a target, the characters Crit Rate is increased by <span class="Highlight">20%</span> for <span class="Highlight">15</span> seconds.`,
+        details: `Inflicting enemies with Spectro Frazzle increases Crit. Rate by 20% for 15s.`,
       },
       {
-        key: "TheEternalLight5SetSpectro",
+        key: "EternalRadiance5SetSpectro",
         modifiers: [
           {
             modifier: "Spectro",
@@ -570,17 +584,17 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
           },
         ],
         alwaysEnabled: false,
-        details: `When attacking an enemy with 10 stacks of [light noise effect] the character gains <span class="Highlight">15%</span> <span class="Light">Spectro</span> DMG bonus for <span class="Highlight">15</span> seconds`,
+        details: `Attacking enemies with 10 stacks of Spectro Frazzle grants 15% Spectro DMG Bonus for 15s.`,
       },
     ],
   },
-  "A Song of High Heavens 5 Set": {
-    key: "ASongOfHighHeavens5Set",
-    name: "A Song of High Heavens",
+  "Empyrean Anthem 5 Set": {
+    key: "EmpyreanAnthem5Set",
+    name: "Empyrean Anthem",
     details: `Increases the DMG dealt by coordinated attacks by <span class="Highlight">80%</span>, when a coordinated attack deals Crit DMG, the whole team gains <span class="Highlight">20%</span> ATK bonus.`,
     passives: [
       {
-        key: "ASongOfHighHeavens5SetCoordinatedDMGBonus",
+        key: "EmpyreanAnthem5SetCoordinatedDMGBonus",
         modifiers: [
           {
             modifier: "CoordinatedDMGBonus",
@@ -591,7 +605,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         details: `Increases the DMG dealt by coordinated attacks by <span class="Highlight">80%</span>.`,
       },
       {
-        key: "ASongOfHighHeavens5SetATK",
+        key: "EmpyreanAnthem5SetATK",
         modifiers: [
           {
             modifier: "ATK",
@@ -603,13 +617,13 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
       },
     ],
   },
-  "Brave the Waves 5 Set": {
-    name: "Brave the Waves",
-    key: "BravetheWaves",
+  "Tidebreaking Courage 5 Set": {
+    name: "Tidebreaking Courage",
+    key: "TidebreakingCourage",
     details: `ATK is increased by <span class="Highlight">15%</span>, after Energy Regen reaches <span class="Highlight">250%</span> the current character's all attribute DMG is increased by <span class="Highlight">30%</span> for the Resonator.`,
     passives: [
       {
-        key: "BravetheWaves5SetATK",
+        key: "TidebreakingCourage5SetATK",
         modifiers: [
           {
             modifier: "ATK",
@@ -620,7 +634,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         details: `ATK is increased by <span class="Highlight">15%</span>.`,
       },
       {
-        key: "BravetheWaves5SetAllElementAttributeBonus",
+        key: "TidebreakingCourage5SetAllElementAttributeBonus",
         modifiers: [
           {
             modifier: "AllElementAttributeBonus",

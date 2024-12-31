@@ -239,16 +239,16 @@ export const echoSetImageMap: Record<string, string> = {
     "https://ryanbenson.github.io/wuthering-waves-assets/images/MoonlitClouds.webp",
   LingeringTunes:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/LingeringTunes.webp",
-  AHeartOfDetermination:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/aheartofdetermination.png",
-  TheVeilofHiddenNight:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/TheVeilofHiddenNight.png",
-  TheEternalLight:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/TheEternalLight.png",
-  ASongofHighHeavens:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/ASongofHighHeavens.png",
-  BravetheWaves:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/BravetheWaves.png",
+  FrostyResolve:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/frostyresolve.png",
+  MidnightVeil:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/MidnightVeil.png",
+  EternalRadiance:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/EternalRadiance.png",
+  EmpyreanAnthem:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/EmpyreanAnthem.png",
+  TidebreakingCourage:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/TidebreakingCourage.png",
 };
 
 export function getEchoSetIconByType(type: string): string {
@@ -265,11 +265,11 @@ export const echoSetLabelMap: Record<string, string> = {
   RejuvenatingGlow: "Rejuvenating Glow",
   MoonlitClouds: "Moonlit Clouds",
   LingeringTunes: "Lingering Tunes",
-  AHeartOfDetermination: "A Heart Of Determination",
-  TheVeilofHiddenNight: "The Veil of Hidden Night",
-  TheEternalLight: "The Eternal Light",
-  ASongofHighHeavens: "A Song of High Heavens",
-  BravetheWaves: "Brave the Waves",
+  FrostyResolve: "Frosty Resolve",
+  MidnightVeil: "Midnight Veil",
+  EternalRadiance: "Eternal Radiance",
+  EmpyreanAnthem: "Empyrean Anthem",
+  TidebreakingCourage: "Tidebreaking Courage",
 };
 
 export function getEchoSetLabelByType(type: string): string {
@@ -285,8 +285,8 @@ type EchoAttack = {
 };
 export const echoSetAttacks: EchoAttack[] = [
   {
-    key: "TheVeilofHiddenNightDMG",
-    label: "The Veil of Hidden Night DMG",
+    key: "MidnightVeilDMG",
+    label: "Midnight Veil DMG",
     talent: "480%",
     type: "Outro",
     element: "Havoc",

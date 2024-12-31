@@ -924,8 +924,8 @@ export const allEchoBuffs = [
     alwaysEnabled: false,
   },
   {
-    key: "TheVeilofHiddenNight",
-    name: "The Veil of Hidden Night",
+    key: "MidnightVeil",
+    name: "Midnight Veil",
     details: `<span class="description">Increases the next character's <span class="Dark">Havoc</span> DMG by <span class="Highlight">15%</span> for <span class="Highlight">15</span> seconds</span>`,
     hasStacks: false,
     modifiers: [
@@ -939,8 +939,8 @@ export const allEchoBuffs = [
     alwaysEnabled: false,
   },
   {
-    key: "ASongofHighHeavens",
-    name: "A Song of High Heavens",
+    key: "EmpyreanAnthem",
+    name: "Empyrean Anthem",
     details: `<span class="description">when a coordinated attack deals Crit DMG, the whole team gains <span class="Highlight">20%</span> ATK bonus.</span>`,
     hasStacks: false,
     modifiers: [
