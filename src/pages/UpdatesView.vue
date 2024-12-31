@@ -107,6 +107,11 @@
         Removes Moonlit echo set buff from self-buffs since it only affects the
         next character. You still can enable it from team buffs.
       </li>
+      <li>
+        Changes Stringmaster passives. They work differently than expected. The
+        second passive adds to the first passive only, it does not work
+        independently.
+      </li>
     </ul>
     <h3>December 29, 2024</h3>
     <ul>

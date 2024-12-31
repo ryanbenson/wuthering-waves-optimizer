@@ -204,6 +204,8 @@ export default {
         stat: this.modifier,
         value: 0,
         key: this.passiveKey,
+        stacks: 0,
+        valueBeforeStacks: 0,
       };
       if (!this.isEnabled) {
         return data;
@@ -218,6 +220,8 @@ export default {
           return data;
         }
         data.stat = this.modifier;
+        data.stacks = this.stacks;
+        data.valueBeforeStacks = this.modifierByRefinement[this.refinement];
         const totalValue =
           this.modifierByRefinement[this.refinement] * this.stacks;
         data.value = totalValue;
@@ -230,6 +234,8 @@ export default {
       stat: this.modifier,
       value: 0,
       key: this.passiveKey,
+      stacks: 0,
+      valueBeforeStacks: 0,
     });
   },
 };
