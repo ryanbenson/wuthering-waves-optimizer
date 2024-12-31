@@ -101,6 +101,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>December 31, 2024</h3>
+    <ul>
+      <li>
+        Adds missing Jinhsi S2 resonance chain. This does not affect her damage
+        output, it is a quality of life resonance chain.
+      </li>
+    </ul>
     <h3>December 30, 2024</h3>
     <ul>
       <li>
