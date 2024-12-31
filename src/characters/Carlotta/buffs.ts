@@ -15,9 +15,9 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "GrandUnveiling",
-    name: "Grand Unveiling",
-    details: `<div class="skilldescription"Increase the <span class="Highlight">DMG Multiplier</span> of Resonance Liberation <span class="Highlight">New Wave Era</span>, Resonance Liberation <span class="Highlight">Death's Omen</span>, Resonance Liberation <span class="Highlight">Death's End</span> by 80%. Switching to other Resonators ends this effect.</div>`,
+    key: "FinalBow",
+    name: "Final Bow",
+    details: `<span class="Title">Final Bow</span><br>When Substance is full, enter the <span class="Highlight">Final Bow</span> state.<br>Increase the DMG Multiplier of Resonance Liberation <span class="Highlight">Era of New Wave </span>, Resonance Liberation <span class="Highlight">Death Knell</span>, and Resonance Liberation <span class="Highlight">Fatal Finale</span> by 80%. This effect ends when Carlotta is switched off the field during <span class="Highlight">Twilight Tango</span> or when <span class="Highlight">Twilight Tango</span> ends.`,
     hasStacks: false,
     modifiers: [
       {
