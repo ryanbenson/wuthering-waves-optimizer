@@ -59,10 +59,10 @@ const rectifiersList = {
   ],
   four: [
     { key: "Augment", name: "Augment" },
+    { key: "CalloftheAbyss", name: "Call of the Abyss" },
     { key: "CometFlare", name: "Comet Flare" },
     { key: "FusionAccretion", name: "Fusion Accretion" },
     { key: "JinzhouKeeper", name: "Jinzhou Keeper" },
-    { key: "ThePretentiousWaltz", name: "The Pretentious Waltz" },
     { key: "WaltzinMasquerade", name: "Waltz in Masquerade" },
     { key: "Variation", name: "Variation" },
   ],
