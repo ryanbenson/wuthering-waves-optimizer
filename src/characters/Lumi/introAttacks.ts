@@ -1,6 +1,6 @@
 export const introAttacks = {
   name: "Intro Skill: Special Delivery",
-  description: `<div class="skilldescription">Attacks the target, dealing <span class="Thunder">Electro</span> damage. Lumi will enter <span class="Highlight">Yellow Light Mode</span>.</div>`,
+  description: `<div class="skilldescription">Enter <span class="Highlight">Yellow Light Mode</span> and attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
   attacks: [
     {
       key: "SpecialDeliveryDMG",

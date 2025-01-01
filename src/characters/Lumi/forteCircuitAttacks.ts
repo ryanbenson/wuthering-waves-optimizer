@@ -1,36 +1,10 @@
 export const forteCircuitAttacks = {
-  name: "Forte Circuit: Misty Cover",
-  description:
-    `<div class="skilldescription">
-    <span class="Highlight">Enhanced Lunge</span><br>
-When <span class="Highlight">【Yellow Light Energy】</span> is full, <span class="Highlight">Resonance Skill</span> is replaced with <span class="Highlight">Enhanced Lunge</span>, dealing <span class="Thunder">Electro</span> damage, then enters <span class="Highlight">Red Light Focus mode</span>, this damage counts as <span class="Highlight">Basic Attack</span> damage.
-During <span class="Highlight">Red Light Focus mode</span>, <span class="Highlight">Red Light Normal Attack</span> and <span class="Highlight">Red Light Heavy Attack</span> damage multipliers increases, increases <span class="Highlight">【Light Energy】</span> restoration
-After casting <span class="Highlight">Basic Attack Stage 4</span> or <span class="Highlight">Heavy Attack</span>, exits the <span class="Highlight">Red Light Focus mode</span>.
-<br><br>
-<span class="Highlight">Enhanced Backstep</span><br>
-When <span class="Highlight">【Red Light Energy】</span> is full, <span class="Highlight">Resonance Skill</span> is replaced with <span class="Highlight">Enhanced Backstep</span>, dealing <span class="Thunder">Electro</span> damage, then enters <span class="Highlight">Yellow Light Focus mode</span>, this damage counts as <span class="Highlight">Basic Attack damage.</span>
-During <span class="Highlight">Yellow Light Focus mode</span>, <span class="Highlight">Flying Stars</span> is replaced with <span class="Highlight">Bright Light</span>, increasing the damage multiplier, increases <span class="Highlight">【Light Energy】</span> restoration
-After casting <span class="Highlight">6</span> times of <span class="Highlight">Bright Light</span>, exits the <span class="Highlight">Yellow Light Focus mode</span>.
-<br><br>
-<span class="Highlight">Piercing Bright Light</span><br>
-When Lumi casts <span class="Highlight">Outro Skill</span>, it consumes all <span class="Highlight">【Light Energy】</span> of the previous mode.
-If the <span class="Highlight">【Light Energy】</span> consumed exceeds <span class="Highlight">25</span> points, <span class="Highlight">Piercing Bright Light</span> will be casted, dealing <span class="Thunder">Electro</span> damage, this damage counts as <span class="Highlight">Basic Attack</span> damage.
-Every <span class="Highlight">25</span> points of <span class="Highlight">【Light Energy】</span> increases the number of <span class="Highlight">Piercing Bright Light</span> by <span class="Highlight">1</span>, up to <span class="Highlight">4</span> times.
-<br><br>
-<span class="Highlight">Yellow Light Energy</span><br>
-Up to <span class="Highlight">100</span> points.<br>
-When <span class="Highlight">Normal Attack Yellow Light Mode</span> hits a target, gains <span class="Highlight">【Yellow Light Energy】</span><br>
-When <span class="Highlight">Flying Stars</span> hits a target, gains <span class="Highlight">【Yellow Light Energy】</span><br>
-When <span class="Highlight">Bright Light</span> hits a target, gains <span class="Highlight">【Yellow Light Energy】</span><br>
-When <span class="Highlight">Resonance Skill Enhanced Backstep</span> hits a target, gains <span class="Highlight">【Yellow Light Energy】</span><br>
-<br><br>
-<span class="Highlight">Red Light Energy</span><br>
-Up to <span class="Highlight">100</span> points.<br>
-During <span class="Highlight">Red Light</span> or <span class="Highlight">Red Light Focus mode</span>, when <span class="Highlight">Normal Attack</span> hits a target, gains <span class="Highlight">【Red Light Energy】</span></div>`,
+  name: "Forte Circuit: Signal Light",
+  description: `<div class="skilldescription"><span class="Title">Energized Pounce</span><br>When Yellow Light Spark is fully recovered, replace Resonance Skill with Resonance Skill <span class="Highlight">Energized Pounce</span> that deals <span class="Thunder">Electro DMG</span> and enter <span class="Highlight">Red Spotlight Mode</span>. The DMG dealt is considered Basic Attack DMG.<br>When in <span class="Highlight">Red Spotlight Mode</span>, the DMG Multiplier of <span class="Highlight">Red Light: Basic Attack</span> and <span class="Highlight">Red Light: Heavy Attack</span> is increased, with an extra amount of Sparks recovered.<br><span class="Highlight">Red Spotlight Mode</span> ends after performing altogether 4 Basic Attacks and/or Heavy Attacks.<br><span class="Title">Energized Rebound</span><br>When Red Light Spark is fully recovered, replace Resonance Skill with Resonance Skill <span class="Highlight">Energized Rebound</span> that deals <span class="Thunder">Electro DMG</span> and enter <span class="Highlight">Yellow Spotlight Mode</span>. The DMG dealt is considered Basic Attack DMG.<br>When in <span class="Highlight">Yellow Spotlight Mode</span>, <span class="Highlight">Glitter</span> is replaced by <span class="Highlight">Glare</span>, with an increased DMG Multiplier and an extra amount of Sparks recovered.<br><span class="Highlight">Yellow Spotlight Mode</span> ends after shooting 6 <span class="Highlight">Glares</span>.<br><span class="Title">Laser</span><br>Casting Outro Skill consumes all Sparks obtained in the current mode.<br>Laser can be cast when the amount of consumed Sparks is greater than or equal to 25, dealing <span class="Thunder">Electro DMG</span>.  The DMG dealt is considered Basic Attack DMG. <br>Every 25 Sparks consumed generates 1 extra Laser beam, up to 4 Laser beams.<br><span class="Title">Yellow Light Spark</span><br>Lumi can hold up to 100 Yellow Light Sparks.<br>Lumi obtains Yellow Light Spark under the following conditions: <br>When <span class="Highlight">Yellow Light: Basic Attack</span> hits the target;<br>When <span class="Highlight">Glitter</span> hits the target;<br>When <span class="Highlight">Glare</span> hits the target;<br>When Resonance Skill <span class="Highlight">Energized Rebound</span> hits the target;<br>When casting Intro Skill <span class="Highlight">Special Delivery</span>.<br><span class="Title">Red Light Spark</span><br>Lumi can hold up to 100 Red Light Sparks.<br>Lumi obtains Red Light Spark under the following conditions:<br>When Normal Attack <span class="Highlight">Navigation Support</span> hits the target in <span class="Highlight">Red Light Mode</span> or <span class="Highlight">Red Spotlight Mode</span>.</div>`,
   attacks: [
     {
-      key: "PiercingBrightLightDMG",
-      label: "Piercing Bright Light DMG",
+      key: "GlareDMG",
+      label: "Glare DMG",
       talents: {
         "1": "41.00%",
         "2": "44.37%",
@@ -46,8 +20,8 @@ During <span class="Highlight">Red Light</span> or <span class="Highlight">Red L
       type: "Basic",
     },
     {
-      key: "RedLightFocusNormalAttackStage1DMG",
-      label: "Red Light Focus Normal Attack Stage 1 DMG",
+      key: "RedSpotlightBasicAttack1DMG",
+      label: "Red Spotlight: Basic Attack 1 DMG",
       talents: {
         "1": "60.48%",
         "2": "65.44%",
@@ -63,8 +37,8 @@ During <span class="Highlight">Red Light</span> or <span class="Highlight">Red L
       type: "Basic",
     },
     {
-      key: "RedLightFocusNormalAttackStage2DMG",
-      label: "Red Light Focus Normal Attack Stage 2 DMG",
+      key: "RedSpotlightBasicAttack2DMG",
+      label: "Red Spotlight: Basic Attack 2 DMG",
       talents: {
         "1": "69.57% + 13.92%*5",
         "2": "75.28% + 15.06%*5",
@@ -80,8 +54,8 @@ During <span class="Highlight">Red Light</span> or <span class="Highlight">Red L
       type: "Basic",
     },
     {
-      key: "RedLightFocusNormalAttackStage3DMG",
-      label: "Red Light Focus Normal Attack Stage 3 DMG",
+      key: "RedSpotlightBasicAttack3DMG",
+      label: "Red Spotlight: Basic Attack 3 DMG",
       talents: {
         "1": "47.15% + 110.00%",
         "2": "51.01% + 119.02%",
@@ -97,8 +71,8 @@ During <span class="Highlight">Red Light</span> or <span class="Highlight">Red L
       type: "Basic",
     },
     {
-      key: "RedLightFocusHeavyAttackDMG",
-      label: "Red Light Focus Heavy Attack DMG",
+      key: "RedSpotlightHeavyAttackDMG",
+      label: "Red Spotlight: Heavy Attack DMG",
       talents: {
         "1": "44.35%*2",
         "2": "47.99%*2",
@@ -114,8 +88,8 @@ During <span class="Highlight">Red Light</span> or <span class="Highlight">Red L
       type: "Basic",
     },
     {
-      key: "EnhancedLungeDMG",
-      label: "Enhanced Lunge DMG",
+      key: "EnergizedPounceDMG",
+      label: "Energized Pounce DMG",
       talents: {
         "1": "92.20%*2",
         "2": "99.77%*2",
@@ -131,8 +105,8 @@ During <span class="Highlight">Red Light</span> or <span class="Highlight">Red L
       type: "Skill",
     },
     {
-      key: "EnhancedBackstepDMG",
-      label: "Enhanced Backstep DMG",
+      key: "EnergizedReboundDMG",
+      label: "Energized Rebound DMG",
       talents: {
         "1": "126.60%",
         "2": "136.99%",
@@ -146,6 +120,23 @@ During <span class="Highlight">Red Light</span> or <span class="Highlight">Red L
         "10": "251.79%",
       },
       type: "Skill",
+    },
+    {
+      key: "SingleLaserBeamDMG",
+      label: "Single Laser Beam DMG",
+      talents: {
+        "1": "37.50%",
+        "2": "40.58%",
+        "3": "43.65%",
+        "4": "47.96%",
+        "5": "51.03%",
+        "6": "54.57%",
+        "7": "59.49%",
+        "8": "64.41%",
+        "9": "69.33%",
+        "10": "74.56%",
+      },
+      type: "Basic",
     },
   ],
 };

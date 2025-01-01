@@ -1,27 +1,10 @@
 export const basicAttacks = {
-  name: "Normal Attack: Leading the Way Forward",
-  description: `<div class="skilldescription">
-  <span class="Highlight">Yellow Light Normal Attack</span><br>
-Summons Tweet to perform 3 consecutive attacks, dealing <span class="Thunder">Electro</span> damage.
-<br><br>
-<span class="Highlight">Yellow Light Sprint</span><br>
-Press <span class="Highlight">Dodge</span>, cast <span class="Highlight">Dash</span> to enter the Sprint state; Immediately cast <span class="Highlight">Flying Stars</span> to attack locked enemies, dealing <span class="Thunder">Electro</span> damage, this damage counts as <span class="Highlight">Basic Attack</span> damage.
-<br><br>
-<span class="Highlight">Red Light Normal Attack</span><br>
-Performs up to 3 consecutive attacks, dealing <span class="Thunder">Electro</span> damage.
-<br><br>
-<span class="Highlight">Red Light Heavy Attack</span><br>
-Consumes Stamina, Tweet and Lumi smashes downward, attacking the target, dealing <span class="Highlight">Electro</span> damage, this damage counts as <span class="Highlight">Basic Attack</span> damage.
-<br><br>
-<span class="Highlight">Red Light Plunging Attack</span><br>
-Consumes Stamina to perform a plunging attack, dealing <span class="Thunder">Electro</span> damage.
-<br><br>
-<span class="Highlight">Red Light Dodge Counter</span><br>
-When pressing the <span class="Highlight">Normal Attack</span> after successfully dodging, attack the target, dealing <span class="Thunder">Electro</span> damage.</div>`,
+  name: "Normal Attack: Navigation Support",
+  description: `<div class="skilldescription"><span class="Title">Yellow Light: Basic Attack</span><br>Summon Squeakie to shoot three shots in a row, dealing <span class="Thunder">Electro DMG</span>.<br><span class="Title">Yellow Light: Sprint</span> <br>Dodge to perform <span class="Highlight">Sprint</span> and enter <span class="Highlight">Zoom Mode</span>. Lumi is unable to Dodge when performing <span class="Highlight">Sprint</span>.<br><span class="Title">Yellow Light: Zoom</span><br>When in this state, automatically shoot <span class="Highlight">Glitters</span> at a locked-on target and deal <span class="Thunder">Electro DMG</span>, considered Basic Attack DMG.<br><span class="Title">Yellow Light: Plunging Attack</span><br>Consume STA to perform a Plunging Attack, dealing <span class="Thunder">Electro DMG</span>.<br><span class="Title">Red Light: Basic Attack</span><br>Perform up to 3 consecutive attacks, dealing <span class="Thunder">Electro DMG</span>.<br><span class="Title">Red Light: Heavy Attack</span><br>Consume STA to strike the ground with Squeakie, causing an impact dealing <span class="Thunder">Electro DMG</span>, considered Basic Attack DMG.<br><span class="Title">Red Light: Plunging Attack</span><br>Consume STA to perform a Plunging Attack, dealing <span class="Thunder">Electro DMG</span>.<br><span class="Title">Red Light: Dodge Counter</span><br>Use Basic Attack right after a successful Dodge to attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
   attacks: [
     {
-      key: "YellowLightNormalAttack",
-      label: "Yellow Light Normal Attack",
+      key: "YellowLightBasicAttack",
+      label: "Yellow Light: Basic Attack DMG",
       talents: {
         "1": "16.00%*3",
         "2": "17.32%*3",
@@ -38,7 +21,7 @@ When pressing the <span class="Highlight">Normal Attack</span> after successfull
     },
     {
       key: "FlyingStars",
-      label: "Flying Stars",
+      label: "Glitter DMG",
       talents: {
         "1": "32.00%",
         "2": "34.63%",
@@ -55,7 +38,7 @@ When pressing the <span class="Highlight">Normal Attack</span> after successfull
     },
     {
       key: "YellowLightPlungingAttack",
-      label: "Yellow Light Plunging Attack",
+      label: "Yellow Light: Plunging Attack DMG",
       talents: {
         "1": "48.00%",
         "2": "51.94%",
@@ -72,7 +55,7 @@ When pressing the <span class="Highlight">Normal Attack</span> after successfull
     },
     {
       key: "RedLightStage1DMG",
-      label: "Red Light Stage 1 DMG",
+      label: "Red Light: Basic Attack 1 DMG",
       talents: {
         "1": "45.60%",
         "2": "49.34%",
@@ -89,7 +72,7 @@ When pressing the <span class="Highlight">Normal Attack</span> after successfull
     },
     {
       key: "RedLightStage2DMG",
-      label: "Red Light Stage 2 DMG",
+      label: "Red Light: Basic Attack 2 DMG",
       talents: {
         "1": "54.15% + 10.83%*5",
         "2": "58.60% + 11.72%*5",
@@ -106,7 +89,7 @@ When pressing the <span class="Highlight">Normal Attack</span> after successfull
     },
     {
       key: "RedLightStage3DMG",
-      label: "Red Light Stage 3 DMG",
+      label: "Red Light: Basic Attack 3 DMG",
       talents: {
         "1": "32.49% + 75.81%",
         "2": "35.16% + 82.03%",
@@ -123,7 +106,7 @@ When pressing the <span class="Highlight">Normal Attack</span> after successfull
     },
     {
       key: "RedLightHeavyAttack",
-      label: "Red Light Heavy Attack",
+      label: "Red Light: Heavy Attack DMG",
       talents: {
         "1": "33.25%*2",
         "2": "35.98%*2",
@@ -140,7 +123,7 @@ When pressing the <span class="Highlight">Normal Attack</span> after successfull
     },
     {
       key: "RedLightPlungingAttack",
-      label: "Red Light Plunging Attack",
+      label: "Red Light: Dodge Counter DMG",
       talents: {
         "1": "57.00%",
         "2": "61.68%",

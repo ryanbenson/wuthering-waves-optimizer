@@ -1,13 +1,31 @@
 const weaponInfo: WeaponInfo = {
   name: "Static Mist",
-  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/StaticMist.png",
+  image:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/StaticMist.png",
   description:
     "Grip the sleek frame and feel its cool surface as you aim down the sight. With a pull of the trigger, unleash a thick smoke barrage onto the battlefield with these powerful Pistols in your hands.",
   type: "Pistols",
   rarity: 5,
   passiveName: "Stormy Resolution",
-  passiveValue:
-    "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. When Outro Skill is released, increases the switched-in Resonator's ATK by 10%/12.5%/15%/17.5%/20%, stacking up to 1 time(s). This effect lasts for 14s.",
+  passiveValue: `Increases Energy Regen by <span class="param">12.8%/16%/19.2%/22.4%/25.6%</span>. Incoming Resonator’s ATK is increased by <span class="param">10%/12.5%/15%/17.5%/20%</span> for <span class="param">14</span>s, stackable for up to <span class="param">1</span> times after the wielder casts Outro Skill.`,
+  passiveData: [
+    {
+      key: "StaticMistEnergyRegen",
+      hasStacks: false,
+      modifier: "EnergyRegen",
+      modifierByRefinement: {
+        "1": 0.128,
+        "2": 0.16,
+        "3": 0.192,
+        "4": 0.224,
+        "5": 0.256,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details: `Increases Energy Regen by <span class="param">12.8%/16%/19.2%/22.4%/25.6%</span>.`,
+      alwaysEnabled: true,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {

@@ -709,9 +709,9 @@ export const buffsByCharacter = {
   ],
   Lumi: [
     {
-      key: "OutroSkillConvoy",
-      name: "Outro Skill: Convoy",
-      details: `<span class="skilldescription">The upcoming Resonator has their <span class="Highlight">Resonance Skill Damage Deepen</span> by <span class="Highlight">38%</span>,  this effect lasts for <span class="Highlight">10s</span>. This effect ends early when switching to another Resonator.</span>`,
+      key: "OutroSkillEscorting",
+      name: "Outro Skill: Escorting",
+      details: `<div class="skilldescription">The incoming Resonator has their Resonance Skill DMG Amplified by 38% for 10s or until they are switched out.</div>`,
       hasStacks: false,
       modifiers: [
         {
@@ -724,9 +724,9 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
     {
-      key: "SequenceNode6GiveaFiveStarPraise",
-      name: "Sequence Node 6: Give a Five-Star Praise",
-      details: `<span class="skilldescription">When casting <span class="Highlight">Outro Skill</span>, Resonators in the team increases their Attack power by <span class="Highlight">20%</span>, lasting for <span class="Highlight">‘?’s</span>.</span>`,
+      key: "SequenceNode6GiveMeAFivestarRating",
+      name: "Sequence Node 6: Give Me A Five-star Rating",
+      details: `<span class="skilldescription">Casting Resonance Liberation <span class="Highlight">Squeakie Express</span> increases all team members' ATK by 20% for 20s.</span>`,
       hasStacks: false,
       modifiers: [
         {

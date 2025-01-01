@@ -15,6 +15,16 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
+    key: "SequenceNode2ChronofrostRepose",
+    name: "Sequence Node 2: Chronofrost Repose",
+    details: `<span class="skilldescription">Jinhsi restores 50 Incandescence while staying out of combat for more than 4s. This effect can only be triggered 1 time(s) every 4s.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode3CelestialIncarnate",
     name: "Sequence Node 3: Celestial Incarnate",
     details: `<span class="skilldescription">Jinhsi gains one stack of <span class="Highlight">Immortal's Descendancy</span> after casting Intro Skill <span class="Highlight">Loong's Halo</span>. Each stack of <span class="Highlight">Immortal's Descendancy</span> increases Jinhsi's ATK by 25%, stacking up to 2 time(s) and lasting for 20s</span>.`,

@@ -1,12 +1,13 @@
 const weaponInfo: WeaponInfo = {
   name: "Rime-Draped Sprouts",
-  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/RimeDrapedSprouts.png",
-  description: "",
+  image:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/RimeDrapedSprouts.png",
+  description:
+    "An artist's seal adorned with rimed sprouts. It is stamped on numerous paintings that capture mountains and ravines in expressive, mesmerizing strokes. The tender sprouts symbolize the perpetual blossoming of artistic marvels.",
   type: "Rectifier",
   rarity: 5,
   passiveName: "Scenery outside the scenery",
-  passiveValue:
-    "Increase ATK by 12%/15%/18%/21%/24%. When casting a Resonance Skill, increase Basic Attack damage bonus for 12%/15%/18%/21%/24% for this character when on-field, stacking up to 3 times. When casting an outro skill, if the character has 3 stacks, remove all current stacks and increase the character's Basic Attack damage bonus by 52%/65%/78%/91%/104% (when this character is off-field - not sure on this part) for 27 seconds.",
+  passiveValue: `<span class="skilldescription">Increase ATK by <span class="param">12%/15%/18%/21%/24%</span>. While the wielder is on the field, using Resonance Skill grants <span class="param">12%/15%/18%/21%/24%</span> Basic Attack DMG Bonus, stacking up to <span class="param">3</span> times for <span class="param">6</span>s. At <span class="param">3</span> stacks or above, casting Outro Skill consumes all stacks of this effect and grants the wielder <span class="param">52%/65%/78%/91%/104%</span> Basic Attack DMG Bonus for <span class="param">27</span>s, effective when the wielder is off the field.</span>`,
   passiveData: [
     {
       key: "RimeDrapedSproutsATK",
@@ -19,7 +20,7 @@ const weaponInfo: WeaponInfo = {
         "4": 0.21,
         "5": 0.24,
       },
-      details: "Increase ATK by 12%/15%/18%/21%/24%.",
+      details: `Increase ATK by <span class="param">12%/15%/18%/21%/24%</span>.`,
       alwaysEnabled: true,
     },
     {
@@ -35,8 +36,7 @@ const weaponInfo: WeaponInfo = {
       },
       minStacks: 0,
       maxStacks: 3,
-      details:
-        "When casting a Resonance Skill, increase Basic Attack damage bonus for 12%/15%/18%/21%/24% for this character when on-field, stacking up to 3 times.",
+      details: `While the wielder is on the field, using Resonance Skill grants <span class="param">12%/15%/18%/21%/24%</span> Basic Attack DMG Bonus, stacking up to <span class="param">3</span> times for <span class="param">6</span>s.`,
       alwaysEnabled: false,
     },
     {
@@ -52,8 +52,7 @@ const weaponInfo: WeaponInfo = {
       },
       minStacks: 0,
       maxStacks: 0,
-      details:
-        "When casting an outro skill, if the character has 3 stacks, remove all current stacks and increase the character's Basic Attack damage bonus by 52%/65%/78%/91%/104% (when this character is off-field - not sure on this part) for 27 seconds.",
+      details: `At <span class="param">3</span> stacks or above, casting Outro Skill consumes all stacks of this effect and grants the wielder <span class="param">52%/65%/78%/91%/104%</span> Basic Attack DMG Bonus for <span class="param">27</span>s, effective when the wielder is off the field.`,
       alwaysEnabled: false,
     },
   ],

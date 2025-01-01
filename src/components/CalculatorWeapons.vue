@@ -282,6 +282,39 @@ export default {
       const finalBuffData = {};
       let modifySpecificTalents = [];
       const allBuffs = [...this.weaponPassiveData];
+      // handle special case for Stringmaster, everything else uses normal handler
+      // 1. the second passive does not work without the first
+      // 2. the second passive adds itself to the raw/un-stacked value
+      if (this.weapon === "Stringmaster") {
+        const allElementPassive = allBuffs.find(
+          (passive) => passive.key === "StringmasterAllElementAttributeBonus",
+        );
+        const stringmasterBuffs = {};
+        stringmasterBuffs[allElementPassive.stat] = allElementPassive.value;
+        const firstStringmasterPassive = this.weaponPassiveData.find(
+          (passive) => passive.key === "StringmasterATK1",
+        );
+        const secondStringmasterPassive = this.weaponPassiveData.find(
+          (passive) => passive.key === "StringmasterATK2",
+        );
+        // first, if there is no first passive, then
+        if (!firstStringmasterPassive) {
+          return stringmasterBuffs;
+        }
+        // we do have the first passive, so if there's a second passive
+        // add it to the first, then re-multiply the stacks
+        const firstPassiveValuePreStacks =
+          firstStringmasterPassive.valueBeforeStacks;
+        const firstPassiveStacks = firstStringmasterPassive.stacks;
+        const secondPassiveValue = secondStringmasterPassive?.value ?? 0;
+        const finalStringmasterPassiveValue =
+          (firstPassiveValuePreStacks + secondPassiveValue) *
+          firstPassiveStacks;
+        stringmasterBuffs[firstStringmasterPassive.stat] =
+          finalStringmasterPassiveValue;
+        return stringmasterBuffs;
+      }
+      // all other weapons use the normal handler
       allBuffs.forEach((buffInstance) => {
         const { key, stat, value } = buffInstance;
         if (stat === "modifySpecificTalents") {

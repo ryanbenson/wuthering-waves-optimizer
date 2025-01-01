@@ -15,6 +15,16 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
+    key: "SequenceNode2SheepcountingLullaby",
+    name: "Sequence Node 2: Sheep-counting Lullaby",
+    details: `<span class="skilldescription">Encore additionally restores 10 Resonance Energy when casting Basic Attack <span class="Highlight">Wooly Strike</span> or Resonance Skill <span class="Highlight">Energetic Welcome</span>. This can be triggered once every 10s.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode3FogTheBlackShores",
     name: "Sequence Node 3: Fog? The Black Shores!",
     details: `<span class="skilldescription">The DMG multiplier of Heavy Attack <span class="Highlight">Cloudy Frenzy</span> and Heavy Attack <span class="Highlight">Cosmos Rupture</span> is increased by 40%.</span>`,

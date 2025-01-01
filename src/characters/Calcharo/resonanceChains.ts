@@ -1,5 +1,15 @@
 export const resonanceChains = [
   {
+    key: "SequenceNode1CovertNegotiation",
+    name: "Sequence Node 1: Covert Negotiation",
+    details: `<span class="skilldescription">When Resonance Skill <span class="Highlight">Extermination Order</span> hits a target, it additionally recovers 10 Resonance Energy. This can be triggered once every 20s.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode2ZeroSumGame",
     name: "Sequence Node 2: Zero-Sum Game",
     details: `<span class="skilldescription">After Calcharo casts Intro Skill <span class="Highlight">Wanted Criminal</span> or Intro Skill <span class="Highlight">"Necessary Means"</span>, his Resonance Skill DMG Bonus is increased by 30% for 15s.</span>`,
@@ -67,9 +77,7 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "EnableAttack",
-        modifierValue: [
-          "SequenceNode6TheUltimatum",
-        ],
+        modifierValue: ["SequenceNode6TheUltimatum"],
       },
     ],
     minStacks: 0,

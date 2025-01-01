@@ -1,10 +1,10 @@
 export const liberationAttacks = {
-  name: "Resonance Liberation: Tweet Delivery",
-  description: `<div class="skilldescription">Lumi throws a gigantified Tweet, attacking the target, dealing <span class="Thunder">Electro</span> damage.</div>`,
+  name: "Resonance Liberation: Squeakie Express",
+  description: `<div class="skilldescription">Throw the giant Squeakie at the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
   attacks: [
     {
-      key: "TweetDeliveryDMG",
-      label: "Tweet Delivery DMG",
+      key: "SqueakieExpressSkillDMG",
+      label: "Squeakie Express Skill DMG",
       talents: {
         "1": "480.00%",
         "2": "519.36%",

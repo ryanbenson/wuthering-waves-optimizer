@@ -101,6 +101,58 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>December 31, 2024</h3>
+    <ul>
+      <li>
+        Adds missing Jinhsi S2 resonance chain. This does not affect her damage
+        output, it is a quality of life resonance chain.
+      </li>
+    </ul>
+    <h3>December 30, 2024</h3>
+    <ul>
+      <li>
+        Removes Moonlit echo set buff from self-buffs since it only affects the
+        next character. You still can enable it from team buffs.
+      </li>
+      <li>
+        Changes Stringmaster passives. They work differently than expected. The
+        second passive adds to the first passive only, it does not work
+        independently.
+      </li>
+    </ul>
+    <h3>December 29, 2024</h3>
+    <ul>
+      <li>
+        Adds missing Jianxin resonance chains. This does not affect her damage
+        output, they were quality of life resonance chains.
+      </li>
+    </ul>
+    <h3>December 28, 2024</h3>
+    <ul>
+      <li>
+        Updates Calcharo: small label updates, and adds his missing inherit
+        skill and S1 which don't affect his damages, and also organizes his stat
+        bonuses better.
+      </li>
+      <li>
+        Updates Encore: adds missing S2, but it does not affect her output as
+        it's a quality of life resonance chain.
+      </li>
+      <li>Updates Rime-Draped Sprouts text format, and adds description.</li>
+      <li>Adds missing ER passive on Static Mist</li>
+      <li>
+        Fixes Rover Havoc S6, it was not applying the Crit Rate to Liberation,
+        Intro, and Outro attacks.
+      </li>
+    </ul>
+    <h3>December 27, 2024</h3>
+    <ul>
+      <li>Updates Lumi text, and fixed Lumi S5.</li>
+    </ul>
+    <h3>December 26, 2024</h3>
+    <ul>
+      <li>Updates to legal and info pages.</li>
+    </ul>
     <h3>December 17, 2024</h3>
     <ul>
       <li>Fixes spelling error on notice for enemy settings.</li>

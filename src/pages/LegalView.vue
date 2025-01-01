@@ -126,26 +126,6 @@
       .
     </p>
 
-    <h2>Data Sources</h2>
-    <p>
-      All content and data used within Wuthering Tools is sourced from publicly
-      available, fan-supported websites, including:
-    </p>
-    <ul>
-      <li>
-        <a href="https://wuthering.wiki/" target="_blank">
-          https://wuthering.wiki/
-        </a>
-      </li>
-      <li>
-        <a href="https://ww.hakush.in" target="_blank">https://ww.hakush.in</a>
-      </li>
-    </ul>
-    <p>
-      We extend our gratitude to these sources for providing comprehensive data
-      and resources to the Wuthering Waves community.
-    </p>
-
     <h2>Contact & Content Removal</h2>
     <p>
       If you are a representative of Kuro Games or another copyright holder and
