@@ -59,7 +59,7 @@ export const mainEchoesData: MainEchoes = {
     sets: ["MidnightVeil", "TidebreakingCourage"],
   },
   AbyssalPatricius: {
-    key: "AbyssalVPatricius",
+    key: "AbyssalPatricius",
     name: "Abyssal Patricius",
     class: "Elite",
     image:
