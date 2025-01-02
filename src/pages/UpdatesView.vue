@@ -101,6 +101,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 1, 2025</h3>
+    <ul>
+      <li>
+        Content for 2.0 has been released! Carlotta, her sig, new 4* weapons,
+        new echoes, new echo sets, supports echo sets having independent
+        passives, and more!
+      </li>
+    </ul>
     <h3>December 31, 2024</h3>
     <ul>
       <li>
