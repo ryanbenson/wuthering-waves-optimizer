@@ -3,9 +3,13 @@
     <button class="btn btn-primary" @click="handleCreateRotation">
       Create Rotation
     </button>
-    <button class="btn btn-primary" @click="handleToggleImport">Import Rotation</button>
+    <button class="btn btn-primary" @click="handleToggleImport">
+      Import Rotation
+    </button>
   </div>
-  <div v-if="isImportOpen" class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+  <div
+    v-if="isImportOpen"
+    class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
     <div class="card-body">
       <h2 class="card-title">{{ name }}</h2>
       <p>Import a rotation in JSON form below.</p>
@@ -14,7 +18,9 @@
         name="importRotation"
         id="importRotaton"
         class="textarea textarea-bordered"></textarea>
-      <button class="btn btn-primary" @click="handleImportRotation">Confirm Import</button>
+      <button class="btn btn-primary" @click="handleImportRotation">
+        Confirm Import
+      </button>
     </div>
   </div>
   <div class="flex flex-col gap-4">
@@ -28,8 +34,7 @@
       :description="rotation.description"
       :actions="rotation.actions"
       @updated-rotation="handleUpdatedRotation"
-      @rotation-delete="handleDeleteRotation">
-    </CalculatorRotation>
+      @rotation-delete="handleDeleteRotation"></CalculatorRotation>
   </div>
 </template>
 
@@ -90,7 +95,7 @@ export default {
       await this.setCharacterData(this.character, data);
       this.$emit(
         "updated-rotations",
-        JSON.parse(JSON.stringify(this.rotations))
+        JSON.parse(JSON.stringify(this.rotations)),
       );
     },
     /**
@@ -111,7 +116,7 @@ export default {
         await this.setCharacterData(this.character, data);
         this.$emit(
           "updated-rotations",
-          JSON.parse(JSON.stringify(this.rotations))
+          JSON.parse(JSON.stringify(this.rotations)),
         );
       } catch (error) {
         alert("Rotation data is not valid");
@@ -148,10 +153,13 @@ export default {
       rotations[foundIndex] = rotationData;
       this.rotations = rotations;
       // update our store
-      await this.setCharacterRotations(this.character, JSON.parse(JSON.stringify(this.rotations)));
+      await this.setCharacterRotations(
+        this.character,
+        JSON.parse(JSON.stringify(this.rotations)),
+      );
       this.$emit(
         "updated-rotations",
-        JSON.parse(JSON.stringify(this.rotations))
+        JSON.parse(JSON.stringify(this.rotations)),
       );
     },
     async handleDeleteRotation(rotationId) {
@@ -164,7 +172,7 @@ export default {
       await this.setCharacterRotations(this.character, updatedRotations);
       this.$emit(
         "updated-rotations",
-        JSON.parse(JSON.stringify(this.rotations))
+        JSON.parse(JSON.stringify(this.rotations)),
       );
     },
   },

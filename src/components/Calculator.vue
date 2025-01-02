@@ -540,9 +540,11 @@ import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
 import CalculatorStats from "./CalculatorStats.vue";
 import CalculatorDamages from "./CalculatorDamages.vue";
 import { mainEchoesData, getEchoData } from "../echoes";
-import { allEchoBuffs } from "../buffs";
+import { echoSetAttacks } from "../echoes/stats";
+import { allEchoBuffs, utilityAttacks } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import ThemeChooser from "./ThemeChooser.vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "Calculator",
@@ -763,6 +765,25 @@ export default defineComponent({
         target.resistReduction += source?.ResistReduction
           ? source.ResistReduction
           : 0;
+
+        if (source?.AllAttributeBonus) {
+          const allAttributeBonus = source.AllAttributeBonus;
+          target.basicAttackDMGBonus += allAttributeBonus;
+          target.heavyAttackDMGBonus += allAttributeBonus;
+          target.resonanceSkillDMGBonus += allAttributeBonus;
+          target.resonanceLiberationDMGBonus += allAttributeBonus;
+          target.introSkillDMGBonus += allAttributeBonus;
+          target.outroSkillDMGBonus += allAttributeBonus;
+        }
+        if (source?.AllElementAttributeBonus) {
+          const allElementAttributeBonus = source.AllElementAttributeBonus;
+          target.glacio += allElementAttributeBonus;
+          target.fusion += allElementAttributeBonus;
+          target.electro += allElementAttributeBonus;
+          target.aero += allElementAttributeBonus;
+          target.spectro += allElementAttributeBonus;
+          target.havoc += allElementAttributeBonus;
+        }
       }
     };
 
@@ -958,21 +979,22 @@ export default defineComponent({
             let base = 0;
             let currentAmount = 0;
             switch (buffParams.modifierBasedOn) {
+              // if there's a minStatValue, use that or use the default base
+              // some characters use full base (e.g. SK), some use a minimum amount (Roccia)
               case "EnergyRegen":
-                // TODO: Verify this. updated theory is all ER, not added ER
-                base = 0;
+                base = buffParams?.minStatValue ?? 0;
                 currentAmount = stats.energyRegen;
                 break;
               case "CritRate":
-                base = 0.05;
+                base = buffParams?.minStatValue ?? 0.05;
                 currentAmount = stats.critRate;
                 break;
               case "CritDMG":
-                base = 1.5;
+                base = buffParams?.minStatValue ?? 1.5;
                 currentAmount = stats.critDMG;
                 break;
               default:
-                base = 0;
+                base = buffParams?.minStatValue ?? 0;
                 break;
             }
             const additionalAmount = currentAmount - base;
@@ -982,6 +1004,10 @@ export default defineComponent({
             let buffValue = steps * buffParams.modifierValue;
             if (buffValue > buffParams.maximumValue) {
               buffValue = buffParams.maximumValue;
+            }
+            // don't allow the buff to go negative and reduce your stats
+            if (buffValue < 0) {
+              buffValue = 0;
             }
             // now apply the buff
             switch (buffParams.modifierTargetAttr) {
@@ -993,6 +1019,9 @@ export default defineComponent({
                 break;
               case "ATK":
                 stats.attackPercent += buffValue * 100;
+                break;
+              case "ATK_FLAT":
+                stats.attackFlat += buffValue;
                 break;
             }
           }
@@ -1125,10 +1154,6 @@ export default defineComponent({
     const calcAllDamages = () => {
       if (!chosenChar.value) return;
 
-      let elementalDmgBonusDecimal = getElementDmgBonusByType(
-        chosenChar.value?.basic?.element,
-      );
-
       const calculateAttackDamage = (
         attack,
         talentType,
@@ -1152,7 +1177,11 @@ export default defineComponent({
         if (attackTypeOverrideSelfBuff) {
           attackType = attackTypeOverrideSelfBuff;
         }
-        const attackElement = chosenChar.value?.basic?.element;
+        // an attack can have its own element override
+        const attackElement =
+          attack?.element ?? chosenChar.value?.basic?.element;
+
+        let elementalDmgBonusDecimal = getElementDmgBonusByType(attackElement);
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         let totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         let talent;
@@ -1179,6 +1208,14 @@ export default defineComponent({
               // outros have no talent tree, just a single value
               talent = attack.talent;
               break;
+            case "utilityAttacks":
+              // utility have no talent tree, just a single value
+              talent = attack.talent;
+              break;
+            case "echoSetAttacks":
+              // echo set attacks have no talent tree, just a single value
+              talent = attack.talent;
+              break;
           }
         } else {
           talent = attack.talents[talentType];
@@ -1190,6 +1227,11 @@ export default defineComponent({
           talentModifierAdd + talentModifierAddFromResonanceChains;
         const specificSkillDmgFromResonanceChains =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
+        // apply echo based coordianted dmg bonus (both echo set and main echo)
+        let coordinatedEchoDmgBonus = 0;
+        if (attack?.subType === "Coordinated") {
+          coordinatedEchoDmgBonus = echoStats?.value?.CoordinatedDMGBonus ?? 0;
+        }
         // there are bonuses that are based on Max HP, Max ATK, Max DEF
         // we end up with DMG Bonus %, so we also / 100 in the end
         const specificSkillDmgFromResonanceChainsBasedOnMaxHp =
@@ -1265,6 +1307,9 @@ export default defineComponent({
           specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +
           specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal +
           specificSkillDmgFromResonanceChainsBasedOnMaxDefVal +
+          // echo buffs are in full integers, need to divide since everything else is decimal
+          // TODO: when refactoring echoes, move to decimals
+          coordinatedEchoDmgBonus / 100 +
           genericSkillDmgBonusEchoBuff / 100;
         const teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
@@ -1292,7 +1337,9 @@ export default defineComponent({
         if (attack?.subType === "Coordinated") {
           coordinatedDmgDeepenEffect = teamBuffDmgDeepenForCoordinatedAttack;
         }
-        if (attackType === "Outro") {
+        // outro and utility attacks lose dmg deepen for specific elements and attack types
+        // because they're off-field, but keep global ones like Verina
+        if (attackType === "Outro" || attackType === "Utility") {
           teamBuffDmgDeepenForCharElement = 0;
           teamBuffDmgDeepenForAttackType = 0;
         }
@@ -1508,6 +1555,10 @@ export default defineComponent({
                     // outro has no talent tree. it only has 1 value (e.g. 20.00%)
                     talent = attack.talent;
                     break;
+                  case "utilityAttacks":
+                    // outro has no talent tree. it only has 1 value (e.g. 20.00%)
+                    talent = attack.talent;
+                    break;
                 }
               } else {
                 talent = attack.talents[talentType];
@@ -1534,6 +1585,48 @@ export default defineComponent({
         );
       };
 
+      // clone the list of attacks so it doesn't mutate the base character data
+      // this makes it where we dont have to manage the list of attacks,
+      // and the rotations list has its own list of echo set attacks to choose from
+      const echoSetAttacks = [];
+      // TODO: Makes this scalable and more maintainable
+      // can wait for another echo set attack, so okay for now
+      const hasEchoOutroAttack =
+        echoStats.value?.EnableAttack === "MidnightVeil";
+      const echoOutroAttackSetIndex = echoSetAttacks.findIndex(
+        (attack) => attack.key === "MidnightVeilDMG",
+      );
+      if (echoOutroAttackSetIndex < 0 && hasEchoOutroAttack) {
+        echoSetAttacks.push({
+          key: "MidnightVeilDMG",
+          label: "The Veil of Hidden Night DMG",
+          talent: "480%",
+          type: "Outro",
+          element: "Havoc",
+        });
+      }
+
+      // similar principle applies to utility attacks (e.g. Roccia passive)
+      const utilityAttacks = [];
+      // TODO: Makes this scalable and more maintainable
+      const utilityAttacksFromTeamBuffs =
+        teamBuffsData.value?.EnableAttack ?? [];
+      const hasUtilityAttack = utilityAttacksFromTeamBuffs.includes(
+        "InherentSkillEndlessGravityPreciousBox",
+      );
+      const alreadyHasUtilityAttackConfigured = utilityAttacks.findIndex(
+        (attack) => attack.key === "InherentSkillEndlessGravityPreciousBox",
+      );
+      if (alreadyHasUtilityAttackConfigured < 0 && hasUtilityAttack) {
+        utilityAttacks.push({
+          key: "InherentSkillEndlessGravityPreciousBox",
+          label: "Endless Gravity: Precious Box",
+          talent: "20%*5",
+          type: "Utility",
+          element: "Havoc",
+        });
+      }
+
       const allDamagesData = {
         basicAttacks: processAttacks(
           chosenChar.value.basicAttacks?.attacks,
@@ -1557,7 +1650,17 @@ export default defineComponent({
         ),
         outroAttacks: processAttacks(
           chosenChar.value.outroAttacks?.attacks,
-          talentData.intro,
+          talentData.intro, // TODO: What is this?
+          true, // has no talent level
+        ),
+        echoSetAttacks: processAttacks(
+          echoSetAttacks,
+          talentData.intro, // TODO: What is this?
+          true, // has no talent level
+        ),
+        utilityAttacks: processAttacks(
+          utilityAttacks,
+          talentData.intro, // TODO: What is this?
           true, // has no talent level
         ),
       };
@@ -1712,9 +1815,20 @@ export default defineComponent({
           const actionCount = action.count;
           const attacksList =
             chosenChar?.[`${actionType}Attacks`]?.attacks ?? [];
-          const foundAction = attacksList.find((attack) => {
-            return attack.key === actionKey;
-          });
+          let foundAction;
+          if (actionType === "echoSetAttacks") {
+            foundAction = echoSetAttacks.find((attack) => {
+              return attack.key === actionKey;
+            });
+          } else if (actionType === "utilityAttacks") {
+            foundAction = utilityAttacks.find((attack) => {
+              return attack.key === actionKey;
+            });
+          } else {
+            foundAction = attacksList.find((attack) => {
+              return attack.key === actionKey;
+            });
+          }
           if (foundAction) {
             const actionData = {
               ...foundAction,

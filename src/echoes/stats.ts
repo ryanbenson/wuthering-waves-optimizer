@@ -239,6 +239,16 @@ export const echoSetImageMap: Record<string, string> = {
     "https://ryanbenson.github.io/wuthering-waves-assets/images/MoonlitClouds.webp",
   LingeringTunes:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/LingeringTunes.webp",
+  FrostyResolve:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/frostyresolve.png",
+  MidnightVeil:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/MidnightVeil.png",
+  EternalRadiance:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/EternalRadiance.png",
+  EmpyreanAnthem:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/EmpyreanAnthem.png",
+  TidebreakingCourage:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/TidebreakingCourage.png",
 };
 
 export function getEchoSetIconByType(type: string): string {
@@ -255,8 +265,30 @@ export const echoSetLabelMap: Record<string, string> = {
   RejuvenatingGlow: "Rejuvenating Glow",
   MoonlitClouds: "Moonlit Clouds",
   LingeringTunes: "Lingering Tunes",
+  FrostyResolve: "Frosty Resolve",
+  MidnightVeil: "Midnight Veil",
+  EternalRadiance: "Eternal Radiance",
+  EmpyreanAnthem: "Empyrean Anthem",
+  TidebreakingCourage: "Tidebreaking Courage",
 };
 
 export function getEchoSetLabelByType(type: string): string {
   return echoSetLabelMap[type];
 }
+
+type EchoAttack = {
+  key: string;
+  label: string;
+  talent: string;
+  type: string;
+  element: string;
+};
+export const echoSetAttacks: EchoAttack[] = [
+  {
+    key: "MidnightVeilDMG",
+    label: "Midnight Veil DMG",
+    talent: "480%",
+    type: "Outro",
+    element: "Havoc",
+  },
+];

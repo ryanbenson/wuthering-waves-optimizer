@@ -739,6 +739,112 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Carlotta: [
+    {
+      key: "SequenceNode4WithOldRainaHymnofBitterWine",
+      name: "Sequence Node 4: With Old Rain, a Hymn of Bitter Wine",
+      details: `<span class="skilldescription">Casting Heavy Attack, Heavy Attack <span class="Highlight">Containment Tactics</span>, and Heavy Attack <span class="Highlight">Imminent Oblivion</span> grants all Resonators in the team 25% Resonance Skill DMG Bonus for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResonanceSkillDMGBonus",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  // Roccia: [
+  //   {
+  //     key: "InherentSkillEndlessGravityPreciousBox",
+  //     name: "Inherent Skill: Endless Gravity: Precious Box",
+  //     details: `<div class="skilldescription">After casting an <span class="Highlight">Outro Skill</span>, the next character to appear will have their exploration tool replaced by the Precious Box.<br>
+  // <span class="Title">【Precious Box】</span><br>
+  // Using Mystery Box as the center, it pulls surrounding targets and deals <span class="Dark">Havoc</span> damage equal to 20% of the attacking characters' Attack * 5. This damage is considered Exploration Tool damage.<br>
+  // Precious Box lasts for 14 seconds. If switched to another character, the Precious Box will disappear prematurely.</div>`,
+  //     hasStacks: false,
+  //     modifiers: [
+  //       {
+  //         modifier: "EnableAttack",
+  //         modifierValue: ["InherentSkillEndlessGravityPreciousBox"],
+  //       },
+  //     ],
+  //     minStacks: 0,
+  //     maxStacks: 0,
+  //     alwaysEnabled: false,
+  //   },
+  //   {
+  //     key: "FantasyIntoReality",
+  //     name: "Fantasy Into Reality",
+  //     details: `<div class="skilldescription">When Roccia's <span class="Highlight">Crit Rate</span> is above <span class="Highlight">50%</span>, for every additional <span class="Highlight">0.1%</span> critical rate, the 3rd attack of the Basic Attack Fantasy into reality will increase the <span class="Highlight">ATK</span> of all characters in the team by <span class="Highlight">1</span> point, lasting for 30 seconds. This can be increased up to <span class="Highlight">200</span> points.<br><br><em>Enter Roccia's total Crit Rate</em>.</div>`,
+  //     hasStacks: false,
+  //     modifiers: [
+  //       {
+  //         modifier: "ATK_FLAT",
+  //         modifierValue: 1,
+  //         maximumValue: 200,
+  //         modifierStep: 0.001,
+  //         minStatValue: 50,
+  //       },
+  //     ],
+  //     minStacks: 0,
+  //     maxStacks: 0,
+  //     alwaysEnabled: false,
+  //     inputBase: true,
+  //     modifierBasedOn: "Crit Rate",
+  //   },
+  //   {
+  //     key: "OutroSkillBinaryButterfly",
+  //     name: "Outro Skill: Binary Butterfly",
+  //     details: `<div class="skilldescription">The next character to appear will have their <span class="Dark">Havoc</span> damage increased by <span class="Highlight">20%</span> and <span class="Highlight">Basic Attack</span> damage increased by <span class="Highlight">25%</span>, lasting for <span class="Highlight">14</span> seconds. If switched to another character, the effect will end prematurely.</div>`,
+  //     hasStacks: false,
+  //     modifiers: [
+  //       {
+  //         modifier: "DMGDeepen:Havoc",
+  //         modifierValue: 0.2,
+  //       },
+  //       {
+  //         modifier: "DMGDeepen:Basic",
+  //         modifierValue: 0.25,
+  //       },
+  //     ],
+  //     minStacks: 0,
+  //     maxStacks: 0,
+  //     alwaysEnabled: false,
+  //   },
+  //   {
+  //     key: "SequenceNode2TheSeafireStoneFlickerswithFaintLight",
+  //     name: "Sequence Node 2: The Seafire Stone Flickers with Faint Light",
+  //     details: `<span class="skilldescription">When casting <span class="Highlight">Basic Attack</span> Fantasy into Reality, all characters in the team receive a <span class="Highlight">10%</span> increase in <span class="Dark">Havoc</span> damage. This effect can stack up to <span class="Highlight">3</span> times, lasting <span class="Highlight">30</span> seconds.</span>`,
+  //     hasStacks: true,
+  //     modifiers: [
+  //       {
+  //         modifier: "Havoc",
+  //         modifierValue: 0.1,
+  //       },
+  //     ],
+  //     minStacks: 0,
+  //     maxStacks: 3,
+  //     alwaysEnabled: false,
+  //   },
+  //   {
+  //     key: "SequenceNode2TheSeafireStoneFlickerswithFaintLightMax",
+  //     name: "Sequence Node 2: The Seafire Stone Flickers with Faint Light",
+  //     details: `<span class="skilldescription">When fully stacked, the <span class="Dark">Havoc</span> damage increase for the team is further raised by <span class="Highlight">10%</span>, lasting <span class="Highlight">30</span> seconds.</span>`,
+  //     hasStacks: false,
+  //     modifiers: [
+  //       {
+  //         modifier: "Havoc",
+  //         modifierValue: 0.1,
+  //       },
+  //     ],
+  //     minStacks: 0,
+  //     maxStacks: 0,
+  //     alwaysEnabled: false,
+  //   },
+  // ],
 };
 
 export const allEchoBuffs = [
@@ -817,6 +923,36 @@ export const allEchoBuffs = [
     maxStacks: 0,
     alwaysEnabled: false,
   },
+  {
+    key: "MidnightVeil",
+    name: "Midnight Veil",
+    details: `<span class="description">Increases the next character's <span class="Dark">Havoc</span> DMG by <span class="Highlight">15%</span> for <span class="Highlight">15</span> seconds</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.15,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "EmpyreanAnthem",
+    name: "Empyrean Anthem",
+    details: `<span class="description">when a coordinated attack deals Crit DMG, the whole team gains <span class="Highlight">20%</span> ATK bonus.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.2,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allWeaponTeamBuffs = [
@@ -874,6 +1010,7 @@ export const allCharacters: string[] = [
   "Mortefi",
   "Changli",
   "Calcharo",
+  "Carlotta",
   "Yinlin",
   "Yuanwu",
   "Jinhsi",
@@ -881,10 +1018,28 @@ export const allCharacters: string[] = [
   "Aalto",
   "Jiyan",
   "Jianxin",
+  "Roccia",
   "Rover-Spectro",
   "Rover-Havoc",
   "Verina",
   "Taoqi",
   "Danjin",
   "Zhezhi",
+];
+
+type UtilityAttack = {
+  key: string;
+  label: string;
+  talent: string;
+  type: string;
+  element: string;
+};
+export const utilityAttacks: UtilityAttack[] = [
+  {
+    key: "InherentSkillEndlessGravityPreciousBox",
+    label: "Endless Gravity: Precious Box",
+    talent: "20%*5",
+    type: "Utility",
+    element: "Havoc",
+  },
 ];

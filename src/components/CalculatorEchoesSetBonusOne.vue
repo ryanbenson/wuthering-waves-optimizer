@@ -1,11 +1,27 @@
 <template>
   <h2 class="text-lg font-bold mt-6 mb-2">Set Bonuses</h2>
-  <div
-    class="card card-bordered card-compact bg-base-100 shadow mb-2">
+  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
       <h2 v-if="setName" class="card-title">{{ setName }}</h2>
-      <div v-if="setDescription" v-html="setDescription" ></div>
       <div v-else>No first echo set bonus is configured.</div>
+      <template v-if="setName">
+        <CalculatorEchoSetPassive
+          v-for="passive in setPassives"
+          :key="passive.key"
+          :character="character"
+          :has-stacks="passive.hasStacks"
+          :modifier="passive.modifier"
+          :modifier-value="passive.modifierValue"
+          :min-stacks="passive.minStacks"
+          :max-stacks="passive.maxStacks"
+          :details="passive.details"
+          :always-enabled="passive.alwaysEnabled"
+          :modifiers="passive.modifiers"
+          :passive-key="passive.key"
+          @updated-echo-passive-stats="
+            handleUpdatedEchoPassiveStats
+          "></CalculatorEchoSetPassive>
+      </template>
     </div>
   </div>
 </template>
@@ -13,6 +29,9 @@
 <script>
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import CalculatorEchoSetPassive from "./CalculatorEchoSetPassive.vue";
+import { character } from "../characters/Aalto/character";
+import { twoSetBonuses, setBonusEffectsOne } from "../echoes/sets";
 export default {
   props: {
     character: {
@@ -20,31 +39,15 @@ export default {
       required: true,
     },
   },
+  components: {
+    CalculatorEchoSetPassive,
+  },
   emits: ["update-stats"],
   data() {
     return {
-      twoSetBonuses: [
-        "Freezing Frost 2 Set",
-        "Molten Rift 2 Set",
-        "Void Thunder 2 Set",
-        "Sierra Gale 2 Set",
-        "Celestial Light 2 Set",
-        "Sun-sinking Eclipse 2 Set",
-        "Rejuvenating Glow 2 Set",
-        "Moonlit Clouds 2 Set",
-        "Lingering Tunes 2 Set",
-      ],
-      setBonusEffects: {
-        "Freezing Frost 2 Set": { Glacio: 10, description: `<span class="Ice">Glacio</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Freezing Frost' },
-        "Molten Rift 2 Set": { Fusion: 10, description: `<span class="Fire">Fusion</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Molten Rift' },
-        "Void Thunder 2 Set": { Electro: 10, description: `<span class="Thunder">Electro</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Void Thunder' },
-        "Sierra Gale 2 Set": { Aero: 10, description: `<span class="Wind">Aero</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Sierra Gale' },
-        "Celestial Light 2 Set": { Spectro: 10, description: `<span class="Light">Spectro</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Celestial Light' },
-        "Sun-sinking Eclipse 2 Set": { Havoc: 10, description: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`, name: 'Sun-sinking Eclipse' },
-        "Rejuvenating Glow 2 Set": { HealingBonus: 10, description: `Healing increases by <span class="Highlight">10%</span>`, name: 'Rejuvenating Glow' },
-        "Moonlit Clouds 2 Set": { EnergyRegen: 10, description: `Energy Regen increases by <span class="Highlight">10%</span>`, name: 'Moonlit Clouds' },
-        "Lingering Tunes 2 Set": { ATK: 10,description: `ATK increases by <span class="Highlight">10%</span>`, name: 'Lingering Tunes' },
-      },
+      twoSetBonuses,
+      setBonusEffects: setBonusEffectsOne,
+      passiveData: [],
     };
   },
   watch: {
@@ -62,11 +65,18 @@ export default {
      * @emits update-stats
      */
     updatedStats() {
-      let stats = {};
-      if (this.type) {
-        stats = this.setBonusEffects[this.type] ?? {};
+      this.$emit("update-stats", this.buffsFormatted);
+    },
+    handleUpdatedEchoPassiveStats(data) {
+      const buffIndex = this.passiveData.findIndex((buff) => {
+        return buff.key === data.key;
+      });
+      if (buffIndex === -1) {
+        this.passiveData.push(data);
+      } else {
+        this.passiveData[buffIndex] = data;
       }
-      this.$emit("update-stats", stats);
+      this.updatedStats();
     },
   },
   computed: {
@@ -100,14 +110,42 @@ export default {
       if (!this.type) {
         return false;
       }
-      return this.setBonusEffects[this.type]?.description ?? '';
+      return this.setBonusEffects[this.type]?.details ?? "";
     },
     setName() {
       if (!this.type) {
         return false;
       }
-      return this.setBonusEffects[this.type]?.name ?? '';
+      return this.setBonusEffects[this.type]?.name ?? "";
     },
+    setPassives() {
+      if (!this.type) {
+        return false;
+      }
+      return this.setBonusEffects[this.type]?.passives ?? [];
+    },
+    /**
+     * Returns the buffs data formatted to send to the stats collector
+     * @returns {Object}
+     */
+    buffsFormatted() {
+      const finalBuffData = {};
+      const allBuffs = [...this.passiveData];
+      allBuffs.forEach((buffInstance) => {
+        const { stats } = buffInstance;
+        Object.entries(stats).forEach(([stat, value]) => {
+          if (finalBuffData[stat] === "EnableAttack") {
+            finalBuffData[stat] = value;
+          } else {
+            finalBuffData[stat] = (finalBuffData[stat] || 0) + value;
+          }
+        });
+      });
+      return finalBuffData;
+    },
+  },
+  beforeUnmount() {
+    this.passiveData = [];
   },
 };
 </script>

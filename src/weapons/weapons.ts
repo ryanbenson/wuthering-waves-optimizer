@@ -7,6 +7,7 @@ export const swordsList = {
   four: [
     { key: "CommandoOfConviction", name: "Commando Of Conviction" },
     { key: "EndlessCollapse", name: "Endless Collapse" },
+    { key: "FablesofWisdom", name: "Fables of Wisdom" },
     { key: "Lumingloss", name: "Lumingloss" },
     { key: "LunarCutter", name: "Lunar Cutter" },
     { key: "ScaleSlasher", name: "Scale Slasher" },
@@ -35,6 +36,7 @@ const broadbladesList = {
     { key: "DauntlessEvernight", name: "Dauntless Evernight" },
     { key: "Discord", name: "Discord" },
     { key: "HeliosCleaver", name: "Helios Cleaver" },
+    { key: "MeditationsonMercy", name: "Meditations on Mercy" },
     { key: "WaningRedshift", name: "Waning Redshift" },
   ],
   three: [
@@ -57,9 +59,11 @@ const rectifiersList = {
   ],
   four: [
     { key: "Augment", name: "Augment" },
+    { key: "CalloftheAbyss", name: "Call of the Abyss" },
     { key: "CometFlare", name: "Comet Flare" },
     { key: "FusionAccretion", name: "Fusion Accretion" },
     { key: "JinzhouKeeper", name: "Jinzhou Keeper" },
+    { key: "WaltzinMasquerade", name: "Waltz in Masquerade" },
     { key: "Variation", name: "Variation" },
   ],
   three: [
@@ -74,11 +78,15 @@ const rectifiersList = {
 };
 
 const pistolsList = {
-  five: [{ key: "StaticMist", name: "Static Mist" }],
+  five: [
+    { key: "StaticMist", name: "Static Mist" },
+    { key: "TheLastDance", name: "The Last Dance" },
+  ],
   four: [
     { key: "Cadenza", name: "Cadenza" },
     { key: "Novaburst", name: "Novaburst" },
     { key: "Pistols26", name: "Pistols #26" },
+    { key: "RomanceinFarewell", name: "Romance in Farewell" },
     { key: "Thunderbolt", name: "Thunderbolt" },
     { key: "UndyingFlame", name: "Undying Flame" },
     { key: "RelativisticJet", name: "Relativistic Jet" },
@@ -96,6 +104,7 @@ const pistolsList = {
 const gauntletsList = {
   five: [
     { key: "AbyssSurges", name: "Abyss Surges" },
+    // { key: "RocciaSignature", name: "Roccia Signature" },
     { key: "VeritysHandle", name: "Verity's Handle" },
   ],
   four: [
@@ -103,6 +112,7 @@ const gauntletsList = {
     { key: "CelestialSpiral", name: "Celestial Spiral" },
     { key: "Gauntlets21D", name: "Gauntlets #21D" },
     { key: "HollowMirage", name: "Hollow Mirage" },
+    { key: "LegendofDrunkenHero", name: "Legend of Drunken Hero" },
     { key: "Marcato", name: "Marcato" },
     { key: "Stonard", name: "Stonard" },
   ],

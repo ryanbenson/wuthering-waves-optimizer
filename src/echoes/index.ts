@@ -47,6 +47,39 @@ export function getCostByClass(echoClass: string): number {
 }
 
 export const mainEchoesData: MainEchoes = {
+  AbyssalGladius: {
+    key: "AbyssalGladius",
+    name: "Abyssal Gladius",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/AbyssalGladius.webp",
+    details: `A humanoid Tacet Discord born from the abyssal sea that assumes the semblance of an aristocratic knight, a fully differentiated form of Primordia Bloom.`,
+    modifiers: [],
+    actions: [],
+    sets: ["MidnightVeil", "TidebreakingCourage"],
+  },
+  AbyssalPatricius: {
+    key: "AbyssalVPatricius",
+    name: "Abyssal Patricius",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/abyssalvenator.png",
+    details: `A humanoid Tacet Discord born from the abyssal sea that assumes the semblance of an aristocrat, a fully differentiated form of Primordia Bloom.`,
+    modifiers: [],
+    actions: [],
+    sets: ["FrostyResolve", "EmpyreanAnthem"],
+  },
+  AbyssalMercator: {
+    key: "AbyssalMercator",
+    name: "Abyssal Mercator",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/abyssalmercator.png",
+    details: `A humanoid Tacet Discord born from the abyssal sea that assumes the semblance of an aristocratic merchant, a fully differentiated form of Primordia Bloom.`,
+    modifiers: [],
+    actions: [],
+    sets: ["FrostyResolve", "EternalRadiance"],
+  },
   AeroPredator: {
     key: "AeroPredator",
     name: "Aero Predator",
@@ -202,6 +235,17 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["RejuvenatingGlow", "LingeringTunes"],
   },
+  ChestMimic: {
+    key: "ChestMimic",
+    name: "Chest Mimic",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/chestmimic.png",
+    details: `A deceptive Tacet Discord disguised as a supply chest, preying on the greed of its victims and devouring those who approach.`,
+    modifiers: [],
+    actions: [],
+    sets: ["FrostyResolve", "MidnightVeil", "EmpyreanAnthem"],
+  },
   Chirpuff: {
     key: "Chirpuff",
     name: "Chirpuff",
@@ -228,6 +272,50 @@ export const mainEchoesData: MainEchoes = {
       },
     ],
     sets: ["SierraGale", "SunSinkingEclipse"],
+  },
+  ChopChop: {
+    key: "ChopChop",
+    name: "Chop Chop",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ChopChop.webp",
+    details: `A Tacet Discord often seen hovering atop large structures, feigning an imposing posture as if the buildings are extensions of its body. Its silhouette blends with the architecture, towering like a menacing giant.`,
+    modifiers: [],
+    actions: [],
+    sets: ["EmpyreanAnthem", "TidebreakingCourage"],
+  },
+  ChopChopHeadless: {
+    key: "ChopChopHeadless",
+    name: "Chop Chop: Headless",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ChopChopHeadless.webp",
+    details: `A Tacet Discord that functions as the "head" of Chop Chop.`,
+    modifiers: [],
+    actions: [],
+    sets: ["EternalRadiance", "TidebreakingCourage"],
+  },
+  ChopChopLeftless: {
+    key: "ChopChopLeftless",
+    name: "Chop Chop: Leftless",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/chopchopleftless.png",
+    details: `A Tacet Discord that functions as the "left hand" of Chop Chop.`,
+    modifiers: [],
+    actions: [],
+    sets: ["FrostyResolve", "TidebreakingCourage"],
+  },
+  ChopChopRightless: {
+    key: "ChopChopRightless",
+    name: "Chop Chop: Rightless",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/chopchoprightless.png",
+    details: `A Tacet Discord that functions as the "right hand" of Chop Chop.`,
+    modifiers: [],
+    actions: [],
+    sets: ["FrostyResolve", "TidebreakingCourage"],
   },
   ClangBang: {
     key: "ClangBang",
@@ -309,6 +397,17 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["CelestialLight", "RejuvenatingGlow", "MoonlitClouds"],
   },
+  CuddleWuddle: {
+    key: "CuddleWuddle",
+    name: "Cuddle Wuddle",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/cuddlewuddle.png",
+    details: `An incorporeal Tacet Discord inhabiting the body of a large, ragged plushie.`,
+    modifiers: [],
+    actions: [],
+    sets: ["FrostyResolve", "MidnightVeil", "MoltenRift", "VoidThunder"],
+  },
   CyanFeatheredHeron: {
     key: "CyanFeatheredHeron",
     name: "Cyan-Feathered Heron",
@@ -347,6 +446,65 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [],
     sets: ["MoonlitClouds", "LingeringTunes"],
+  },
+  DiggyDuggy: {
+    key: "DiggyDuggy",
+    name: "Diggy Duggy",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/DiggyDuggy.webp",
+    details: `An incorporeal Tacet Discord inhabiting the body of a sturdy, diligent plushie.`,
+    modifiers: [],
+    actions: [],
+    sets: ["EternalRadiance", "TidebreakingCourage"],
+  },
+  DiurnusKnight: {
+    key: "DiurnusKnight",
+    name: "Diurnus Knight",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/DiurnusKnight.webp",
+    details: `A humanoid Tacet Discord clad in fine attire, wielding a sharp blade. Seen only in the radiance of the sun.`,
+    modifiers: [],
+    actions: [],
+    sets: ["EternalRadiance", "TidebreakingCourage"],
+  },
+  DragonofDirge: {
+    key: "DragonofDirge",
+    name: "Dragon of Dirge",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/DragonofDirge.webp",
+    details: `<span class="description">Transform into Dragon of Dirge and summon a Grief Rift lasting for 5s. Periodically deal <span class="param">20.45%/24.54%/28.63%/32.72%/36.81%</span> Fusion DMG to enemies within the area of effect.
+The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Fusion DMG Bonus and <span class="param">12.00%</span> Basic Attack DMG Bonus.
+CD: <span class="param">25</span>s.</span>`,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "BasicAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "GriefRiftDMG",
+        label: "Grief Rift DMG",
+        description: `Transform into Dragon of Dirge and summon a Grief Rift lasting for 5s. Periodically deal <span class="param">20.45%/24.54%/28.63%/32.72%/36.81%</span> Fusion DMG to enemies within the area of effect.`,
+        talents: {
+          "1": "20.45%",
+          "2": "24.54%",
+          "3": "28.63%",
+          "4": "32.72%",
+          "5": "36.81%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["TidebreakingCourage"],
   },
   Dreamless: {
     key: "Dreamless",
@@ -436,6 +594,17 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [],
     sets: ["FreezingFrost", "SunSinkingEclipse"],
+  },
+  FaeIgnis: {
+    key: "FaeIgnis",
+    name: "Fae Ignis",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FaeIgnis.webp",
+    details: `An avian Tacet Discord prowling the Penitent's End. In darkness, its form blends into shadow, leaving only its mask flickering like ignis fatuus.`,
+    modifiers: [],
+    actions: [],
+    sets: ["MidnightVeil", "EternalRadiance"],
   },
   FallacyOfNoReturn: {
     key: "FallacyOfNoReturn",
@@ -598,6 +767,28 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["VoidThunder", "LingeringTunes"],
   },
+  FractsidusThruster: {
+    key: "FractsidusThruster",
+    name: "Fractsidus Thruster",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FractsidusThruster.webp",
+    details: `<span class="description"></span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["EternalRadiance", "EmpyreanAnthem"],
+  },
+  FrostscourgeStalker: {
+    key: "FrostscourgeStalker",
+    name: "Frostscourge Stalker",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FrostscourgeStalker.webp",
+    details: `A wolf-like Tacet Discord ravaging frostbitten regions, known for its cold-blooded and ruthless nature.`,
+    modifiers: [],
+    actions: [],
+    sets: ["MidnightVeil", "EternalRadiance"],
+  },
   FusionDreadmane: {
     key: "FusionDreadmane",
     name: "Fusion Dreadmane",
@@ -634,6 +825,17 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [],
     sets: ["MoltenRift", "VoidThunder", "SierraGale"],
+  },
+  GalescourgeStalker: {
+    key: "GalescourgeStalker",
+    name: "Galescourge Stalker",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/galescourgestalker.png",
+    details: `A wolf-like Tacet Discord dominating high-altitude regions, notorious for its relentless predation.`,
+    modifiers: [],
+    actions: [],
+    sets: ["FrostyResolve", "EmpyreanAnthem"],
   },
   GlacioDreadmane: {
     key: "GlacioDreadmane",
@@ -763,6 +965,39 @@ export const mainEchoesData: MainEchoes = {
     actions: [],
     sets: ["CelestialLight", "SunSinkingEclipse"],
   },
+  Hecate: {
+    key: "Hecate",
+    name: "Hecate",
+    class: "Calamity",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Hecate.webp",
+    details: `<span class="description">Summon 3 twirling Crescent Servants around you. Crescent Servants attack enemies with their spinning blades, dealing <span class="param">25.33%/30.40%/35.46%/40.53%/45.59%</span> Havoc DMG. Triggering a Counterattack with the Echo attacks extends the Crescent Servants’ summon duration.
+The Resonator with this Echo equipped in the main slot has their Coordinated Attack DMG increased by <span class="param">40.00%</span>.
+CD: <span class="param">20</span>s.</span>`,
+    modifiers: [
+      {
+        modifier: "CoordinatedDMGBonus",
+        modifierValue: 0.4,
+      },
+    ],
+    actions: [
+      {
+        key: "CrescentServantsDMG",
+        label: "Crescent Servants DMG",
+        description: `Summon 3 twirling Crescent Servants around you. Crescent Servants attack enemies with their spinning blades, dealing <span class="param">25.33%/30.40%/35.46%/40.53%/45.59%</span> Havoc DMG. Triggering a Counterattack with the Echo attacks extends the Crescent Servants’ summon duration.`,
+        talents: {
+          "1": "25.33%",
+          "2": "29.13%",
+          "3": "32.93%",
+          "4": "36.73%",
+          "5": "40.53%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["EmpyreanAnthem"],
+  },
   Hoartoise: {
     key: "Hoartoise",
     name: "Hoartoise",
@@ -775,6 +1010,17 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [],
     sets: ["FreezingFrost", "CelestialLight"],
+  },
+  HocusPocus: {
+    key: "HocusPocus",
+    name: "Hocus Pocus",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/hocuspocus.png",
+    details: `An incorporeal Tacet Discord inhabiting the body of a charming, dashing plushie.>`,
+    modifiers: [],
+    actions: [],
+    sets: ["FrostyResolve", "EmpyreanAnthem"],
   },
   Hoochief: {
     key: "Hoochief",
@@ -1099,6 +1345,60 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["CelestialLight"],
   },
+  Lorelei: {
+    key: "Lorelei",
+    name: "Lorelei",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Lorelei.webp",
+    details: `<span class="description">Transform into Lorelei and attack surrounding enemies, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Havoc DMG.
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Havoc DMG Bonus and <span class="param">12.00%</span> Resonance Liberation DMG Bonus.
+CD: <span class="param">25</span>s.</span>`,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "LoreleiDMG",
+        label: "Lorelei DMG",
+        description: `Transform into Lorelei and attack surrounding enemies, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Havoc DMG.`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["FrostyResolve", "MidnightVeil"],
+  },
+  LottieLost: {
+    key: "LottieLost",
+    name: "Lottie Lost",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/lottielost.png",
+    details: `An incorporeal Tacet Discord inhabiting the body of a quiet, compassionate plushie.`,
+    modifiers: [],
+    actions: [],
+    sets: [
+      "FrostyResolve",
+      "TidebreakingCourage",
+      "CelestialLight",
+      "MoonlitClouds",
+      "LingeringTunes",
+    ],
+  },
   LumiscaleConstruct: {
     key: "LumiscaleConstruct",
     name: "Lumiscale Construct",
@@ -1258,6 +1558,314 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["CelestialLight"],
   },
+  NimbusWraith: {
+    key: "NimbusWraith",
+    name: "Nimbus Wraith",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NimbusWraith.webp",
+    details: `Once a remnant creature in Nimbus Sanctum, it decayed into a Tacet Discord as its frequency wanes, leaving it wandering in perpetual sorrow.`,
+    modifiers: [],
+    actions: [],
+    sets: ["EmpyreanAnthem", "MidnightVeil"],
+  },
+  NightmareCrownless: {
+    key: "NightmareCrownless",
+    name: "Nightmare: Crownless",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareCrownless.webp",
+    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare Uncrowned, dealing <span class="Highlight">175.00%/201.25%/227.50%/253.75%/280.00%</span> <span class="Dark">Havoc</span> damage to the enemy in front. When the first character to equip this Sound Corpse skill, the current character's <span class="Dark">Havoc</span> damage bonus increases by <span class="Highlight">12.00%</span>, and the Basic attack damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "BasicAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareUncrownedDMG",
+        label: "Nightmare Uncrowned DMG",
+        description: `Use the Sound Corpse skill to transform into Nightmare Uncrowned, dealing <span class="Highlight">175.00%/201.25%/227.50%/253.75%/280.00%</span> <span class="Dark">Havoc</span> damage to the enemy in front`,
+        talents: {
+          "1": "175.00%",
+          "2": "201.25%",
+          "3": "227.50%",
+          "4": "253.75%",
+          "5": "280.00%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["SunSinkingEclipse"],
+  },
+  NightmareFeilianBeringal: {
+    key: "NightmareFeilianBeringal",
+    name: "Nightmare: Feilian Beringal",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareFeilianBeringal.webp",
+    details: `<span class="description">Use the Sound Corpse skill to summon Nightmare Feilian Ape to attack the enemy, causing <span class="Highlight">91.20%/104.88%/118.56%/132.24%/145.92%</span> of <span class="Wind">Aero</span> damage; the remaining "Wind Whirl Banyan" will continue to attack surrounding enemies, causing 5 stages of <span class="Highlight">12.16%/13.98%/15.81%/17.63%/19.46%</span> of <span class="Wind">Aero</span> damage.<br>When the first character to equip this Sound Corpse skill, the current character's <span class="Wind">Aero</span> damage bonus increases by 12.00%, and the heavy attack damage bonus increases by 12.00%. Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareFeilianDMG",
+        label: "Sound Corpse DMG",
+        description: `Use the Sound Corpse skill to summon Nightmare Feilian Ape to attack the enemy, causing <span class="Highlight">91.20%/104.88%/118.56%/132.24%/145.92%</span> of <span class="Wind">Aero</span> damage.`,
+        talents: {
+          "1": "91.20%",
+          "2": "104.88%",
+          "3": "118.56%",
+          "4": "132.24%",
+          "5": "145.92%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+      {
+        key: "NightmareFeilianWindWhirlBanyanDMG",
+        label: "Wind Whirl Banyan DMG",
+        description: `The remaining "Wind Whirl Banyan" will continue to attack surrounding enemies, causing 5 stages of <span class="Highlight">12.16%/13.98%/15.81%/17.63%/19.46%</span> of <span class="Wind">Aero</span> damage.`,
+        talents: {
+          "1": "12.16%*5",
+          "2": "13.98%*5",
+          "3": "15.81%*5",
+          "4": "17.63%*5",
+          "5": "19.46%*5",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["SierraGale"],
+  },
+  NightmareImpermanenceHeron: {
+    key: "NightmareImpermanenceHeron",
+    name: "Nightmare: Impermanence Heron",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareImpermanenceHeron.webp",
+    details: `<span class="description">Transform into Nightmare: Impermanence Heron and deliver up to 10 consecutive strikes to surrounding enemies, each dealing <span class="param">22.50%/27.00%/31.50%/36.00%/40.50%</span> Havoc DMG.
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Havoc DMG Bonus and <span class="param">12.00%</span> Heavy Attack DMG Bonus.
+CD: <span class="param">25</span>s.</span>`,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "ImperStrikeDMG",
+        label: "Strike DMG",
+        description: `Transform into Nightmare: Impermanence Heron and deliver up to 10 consecutive strikes to surrounding enemies, each dealing <span class="param">22.50%/27.00%/31.50%/36.00%/40.50%</span> Havoc DMG.`,
+        talents: {
+          "1": "22.50%*10",
+          "2": "27.00%*10",
+          "3": "31.50%*10",
+          "4": "36.00%*10",
+          "5": "40.50%*10",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["MidnightVeil"],
+  },
+  NightmareInfernoRider: {
+    key: "NightmareInfernoRider",
+    name: "Nightmare: Inferno Rider",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareInfernoRider.webp",
+    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare Burning Knight, leap up and deal <span class="Highlight">332.00%/381.80%/431.60%/481.40%/531.20%</span> of <span class="Fire">Fusion</span> damage to the enemy in front. When the first character to equip this Sound Corpse skill, the current character's <span class="Fire">Fusion</span> damage bonus increases by <span class="Highlight">12.00%</span>, and the Resonance Skill damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceSkillDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareBurningKnightDMG",
+        label: "Nightmare Burning Knight DMG",
+        description: `Use the Sound Corpse skill to transform into Nightmare Burning Knight, leap up and deal <span class="Highlight">332.00%/381.80%/431.60%/481.40%/531.20%</span> of <span class="Fire">Fusion</span> damage to the enemy in front.`,
+        talents: {
+          "1": "332.00%",
+          "2": "381.80%",
+          "3": "431.60%",
+          "4": "481.40%",
+          "5": "531.20%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["MoltenRift"],
+  },
+  NightmareMourningAix: {
+    key: "NightmareMourningAix",
+    name: "Nightmare: Mourning Aix",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareMourningAix.webp",
+    details: `<span class="description">Transform into Nightmare: Mourning Aix and attack surrounding enemies, dealing <span class="param">152.00%/182.40%/212.80%/243.20%/273.60%</span> Spectro DMG. DMG dealt to enemies inflicted by Spectro Frazzle is increased by <span class="param">100.00%</span>.
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Spectro DMG Bonus.
+CD: <span class="param">25</span>s.</span>`,
+    modifiers: [
+      {
+        modifier: "Spectro",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareScreamingBirdDMG",
+        label: "Nightmare Screaming Bird DMG",
+        description: `Transform into Nightmare: Mourning Aix and attack surrounding enemies, dealing <span class="param">152.00%/182.40%/212.80%/243.20%/273.60%</span> Spectro DMG.`,
+        talents: {
+          "1": "152.00%",
+          "2": "182.40%",
+          "3": "212.80%",
+          "4": "243.20%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+      {
+        key: "NightmareScreamingBirdDMG",
+        label: "Light Noise Nightmare Screaming Bird DMG",
+        description: `DMG dealt to enemies inflicted by Spectro Frazzle is increased by <span class="param">100.00%</span>.`,
+        talents: {
+          "1": "304.00%",
+          "2": "364.80%",
+          "3": "425.60%",
+          "4": "468.40%",
+          "5": "547.20%",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+    ],
+    sets: ["EternalRadiance"],
+  },
+  NightmareTempestMephis: {
+    key: "NightmareTempestMephis",
+    name: "Nightmare: Tempest Mephis",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareTempestMephis.webp",
+    details: `<span class="description">Transform into Nightmare: Tempest Mephis and attack surrounding enemies, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Electro DMG.
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Electro DMG Bonus and <span class="param">12.00%</span> Resonance Skill DMG Bonus.
+CD: <span class="param">25</span>s.</span>`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceSkillDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareTempestMephisDMG",
+        label: "Nightmare: Tempest Mephis DMG",
+        description: `Transform into Nightmare: Tempest Mephis and attack surrounding enemies, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Electro DMG.`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["EmpyreanAnthem", "VoidThunder"],
+  },
+  NightmareThunderingMephis: {
+    key: "NightmareThunderingMephis",
+    name: "Nightmare: Thundering Mephis",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareThunderingMephis.webp",
+    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare Cloud Flash Scale, causing <span class="Highlight">267.00%/307.05%/347.10%/387.15%/427.20%</span> <span class="Thunder">Electro</span> damage to the enemy in front.<br>When the first character to equip this Sound Corpse skill, the <span class="Thunder">Electro</span> damage bonus of the current character is increased by <span class="Highlight">12.00%</span>, and the Resonance Liberation damage bonus is increased by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: " NightmareCloudFlashScaleDMG",
+        label: " Nightmare Cloud Flash Scale DMG",
+        description: `Use the Sound Corpse skill to transform into Nightmare Cloud Flash Scale, causing <span class="Highlight">267.00%/307.05%/347.10%/387.15%/427.20%</span> <span class="Thunder">Electro</span> damage to the enemy in front.`,
+        talents: {
+          "1": "267.00%",
+          "2": "307.05%",
+          "3": "347.10%",
+          "4": "387.15%",
+          "5": "427.20%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["VoidThunder"],
+  },
+  NocturnusKnight: {
+    key: "NocturnusKnight",
+    name: "Nocturnus Knight",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NocturnusKnight.webp",
+    details: `A humanoid Tacet Discord clad in fine attire, wielding a sharp blade. Seen only in the pale glow of the moon.`,
+    modifiers: [],
+    actions: [],
+    sets: ["MidnightVeil", "EmpyreanAnthem"],
+  },
+  QuestlessKnight: {
+    key: "QuestlessKnight",
+    name: "Questless Knight",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/questlessknight.png",
+    details: `A humanoid Tacet Discord clad in fine attire, wielding a sharp blade and extraordinary might existing only in legends.`,
+    modifiers: [],
+    actions: [],
+    sets: ["FrostyResolve", "MidnightVeil"],
+  },
   RocksteadyGuardian: {
     key: "RocksteadyGuardian",
     name: "Rocksteady Guardian",
@@ -1361,6 +1969,58 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [],
     sets: ["FreezingFrost", "SierraGale", "MoonlitClouds"],
+  },
+  SentryConstruct: {
+    key: "SentryConstruct",
+    name: "Sentry Construct",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sentryconstruct.png",
+    details: `<span class="description">Transform into Sentry Construct and attack enemies in front, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Glacio DMG. Each time the Resonator with this Echo casts Resonance Liberation, it enhances the Strike Capacitor.
+Once Strike Capacitor is at max level, the Echo Skill cooldown will be reset. Use Echo Skill to transform into Sentry Construct and dive into enemies from the air, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Glacio DMG and freezing the target.
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Glacio DMG Bonus and <span class="param">12.00%</span> Resonance Skill DMG Bonus.
+CD: <span class="param">25</span>s.</span>`,
+    modifiers: [
+      {
+        modifier: "Glacio",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceSkillDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "SentryConstructAttack",
+        label: "Attack DMG",
+        description: `Transform into Sentry Construct and attack enemies in front, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Glacio DMG. Each time the Resonator with this Echo casts Resonance Liberation, it enhances the Strike Capacitor.`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+      {
+        key: "SentryConstructUpgradedAttack",
+        label: "Upgraded Attack DMG",
+        description: `Once Strike Capacitor is at max level, the Echo Skill cooldown will be reset. Use Echo Skill to transform into Sentry Construct and dive into enemies from the air, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Glacio DMG and freezing the target.`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
+    sets: ["FrostyResolve"],
   },
   SnipSnap: {
     key: "SnipSnap",
@@ -1643,6 +2303,17 @@ export const mainEchoesData: MainEchoes = {
       },
     ],
     sets: ["MoltenRift", "VoidThunder"],
+  },
+  VoltscourgeStalker: {
+    key: "VoltscourgeStalker",
+    name: "Voltscourge Stalker",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/VoltscourgeStalker.webp",
+    details: `A wolf-like Tacet Discord prowling storm-stricken regions, known for its aggressiveness and lightning speed.`,
+    modifiers: [],
+    actions: [],
+    sets: ["MidnightVeil", "EmpyreanAnthem"],
   },
   WhiffWhaff: {
     key: "WhiffWhaff",

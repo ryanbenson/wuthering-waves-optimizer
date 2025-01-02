@@ -7,7 +7,9 @@
         <span>{{ attackLabel }}</span>
       </div>
       <div class="rotation__action__end">
-        <div class="type badge badge-primary" v-if="skillTypeLabel">{{ skillTypeLabel }}</div>
+        <div class="type badge badge-primary" v-if="skillTypeLabel">
+          {{ skillTypeLabel }}
+        </div>
         <div class="buffsCount badge">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path
@@ -89,6 +91,26 @@
                   {{ attack.label }}
                 </option>
               </optgroup>
+              <optgroup
+                label="Echo Set Attacks"
+                data-skill="echoSetAttacks"
+                v-if="echoSetAttacksList.length">
+                <option
+                  v-for="attack in echoSetAttacksList"
+                  :value="attack.key">
+                  {{ attack.label }}
+                </option>
+              </optgroup>
+              <optgroup
+                label="Utility Attacks"
+                data-skill="utilityAttacks"
+                v-if="utilityAttacksList.length">
+                <option
+                  v-for="attack in utilityAttacksList"
+                  :value="attack.key">
+                  {{ attack.label }}
+                </option>
+              </optgroup>
             </select>
           </div>
           <button class="rotation__action--remove" @click="removeAction">
@@ -114,7 +136,9 @@
         </div>
       </div>
       <div class="button__group">
-        <button class="rotation__action--add-buff btn btn-xs w-full btn-accent" @click="addBuff">
+        <button
+          class="rotation__action--add-buff btn btn-xs w-full btn-accent"
+          @click="addBuff">
           Add Buff
         </button>
       </div>
@@ -127,6 +151,8 @@ import { mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
+import { echoSetAttacks } from "../echoes/stats";
+import { utilityAttacks } from "../buffs";
 export default {
   props: {
     characterData: {
@@ -185,6 +211,8 @@ export default {
         liberation: "liberationAttacks",
         intro: "introAttacks",
         outro: "outroAttacks",
+        echoSetAttacks: "echoSetAttacks",
+        utilityAttacks: "utilityAttacks",
       },
       skillKeyLabelMap: {
         basic: "Basic",
@@ -193,6 +221,8 @@ export default {
         liberation: "Liberation",
         intro: "Intro",
         outro: "Outro",
+        echoSetAttacks: "Echo Set",
+        utilityAttacks: "Utility",
       },
     };
   },
@@ -215,6 +245,18 @@ export default {
       return this.characterData?.[this.skillType]?.attacks ?? [];
     },
     attackData() {
+      // if the attack is an echo, find the data from the echo list
+      if (this.skillType === "echoSetAttacks") {
+        return this.echoSetAttacksList.find((attack) => {
+          return attack.key === this.actionKeyValue;
+        });
+      }
+      // if the attack is a utility, find the data from the utility list
+      if (this.skillType === "utilityAttacks") {
+        return this.utilityAttacksList.find((attack) => {
+          return attack.key === this.actionKeyValue;
+        });
+      }
       return this.skillAttacks.find((attack) => {
         return attack.key === this.actionKeyValue;
       });
@@ -344,6 +386,12 @@ export default {
         return false;
       });
       return finalList;
+    },
+    echoSetAttacksList() {
+      return echoSetAttacks;
+    },
+    utilityAttacksList() {
+      return utilityAttacks;
     },
   },
   methods: {

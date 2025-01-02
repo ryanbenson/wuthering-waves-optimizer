@@ -93,7 +93,7 @@
               Echo Set
             </span>
             <div
-              class="echo__item__set-selection flex gap-3 justify-center sm:justify-start">
+              class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap">
               <div
                 v-for="echo in echoSets"
                 :key="echo"

@@ -2,8 +2,8 @@ import { render, screen } from "@testing-library/vue";
 import { createRouter, createWebHistory } from "vue-router";
 import { createTestingPinia } from "@pinia/testing";
 import InfoView from "../../src/pages/InfoView.vue";
-import { it, describe, expect } from 'vitest';
-import '@testing-library/jest-dom'
+import { it, describe, expect } from "vitest";
+import "@testing-library/jest-dom";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,22 +13,22 @@ const router = createRouter({
     { path: "/", component: InfoView },
     { path: "/settings", component: InfoView },
     { path: "/updates", component: InfoView },
-    { path: "/legal", component: InfoView }
+    { path: "/legal", component: InfoView },
   ],
-}); 
+});
 beforeEach(() => {
   // create teleport target
-  const el = document.createElement('div')
-  el.id = 'navbar-container'
-  document.body.appendChild(el)
-})
+  const el = document.createElement("div");
+  el.id = "navbar-container";
+  document.body.appendChild(el);
+});
 
 afterEach(() => {
   // clean up
-  document.body.innerHTML = ''
-})
+  document.body.innerHTML = "";
+});
 
-describe('InfoView', () => {
+describe("InfoView", () => {
   it("renders content", async () => {
     render(InfoView, {
       global: {
@@ -45,7 +45,7 @@ describe('InfoView', () => {
     await router.isReady();
 
     const heading = screen.getByRole("heading", {
-      name: 'Wuthering Waves Calculator & Optimizer',
+      name: "Wuthering Waves Calculator & Optimizer",
     });
 
     expect(heading).toBeInTheDocument();

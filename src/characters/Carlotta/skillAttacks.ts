@@ -1,0 +1,40 @@
+export const skillAttacks = {
+  name: "Resonance Skill: Art of Violence",
+  description: `<div class="skilldescription">Deal <span class="Ice">Glacio DMG</span> and inflict <span class="Highlight">Dispersion</span> on the target. Press <span class="Highlight">Resonance Skill</span> again shortly after to cast <span class="Highlight">Chromatic Splendor</span>. <br> <br><span class="Title">Dispersion</span><br>Targets with Dispersion are immobilized for 1.5s. <br> <br><span class="Title">Chromatic Splendor</span><br>Consume all Moldable Crystals and deal <span class="Ice">Glacio DMG</span>.<br>The Resonance Skill enters cooldown after a while if <span class="Highlight">Chromatic Splendor</span> is not cast or Carlotta is switched off the field.</div>`,
+  attacks: [
+    {
+      key: "ArtofViolenceDMG",
+      label: "Art of Violence DMG",
+      talents: {
+        "1": "72.49%+72.49%",
+        "2": "78.43%+78.43%",
+        "3": "84.37%+84.37%",
+        "4": "92.69%+92.69%",
+        "5": "98.64%+98.64%",
+        "6": "105.47%+105.47%",
+        "7": "114.98%+114.98%",
+        "8": "124.49%+124.49%",
+        "9": "134.00%+134.00%",
+        "10": "144.11%+144.11%",
+      },
+      type: "Skill",
+    },
+    {
+      key: "ChromaticSplendorDMG",
+      label: "Chromatic Splendor DMG",
+      talents: {
+        "1": "56.70%+56.70%+170.10%",
+        "2": "61.35%+61.35%+184.05%",
+        "3": "66.00%+66.00%+198.00%",
+        "4": "72.51%+72.51%+217.53%",
+        "5": "77.16%+77.16%+231.48%",
+        "6": "82.51%+82.51%+247.52%",
+        "7": "89.95%+89.95%+269.83%",
+        "8": "97.39%+97.39%+292.15%",
+        "9": "104.83%+104.83%+314.47%",
+        "10": "112.73%+112.73%+338.18%",
+      },
+      type: "Skill",
+    },
+  ],
+};
