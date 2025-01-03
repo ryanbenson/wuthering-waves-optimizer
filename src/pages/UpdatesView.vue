@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 3, 2025</h3>
+    <ul>
+      <li>Fixes minor character capitalization issues in the echo sets.</li>
+    </ul>
     <h3>January 2, 2025</h3>
     <ul>
       <li>
