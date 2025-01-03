@@ -101,6 +101,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 2, 2025</h3>
+    <ul>
+      <li>
+        Adds Jiyan S1. It is a quality of life resonance chain, so it has no
+        effect on his damage.
+      </li>
+    </ul>
     <h3>January 1, 2025</h3>
     <ul>
       <li>

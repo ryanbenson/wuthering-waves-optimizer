@@ -1,5 +1,16 @@
 export const resonanceChains = [
   {
+    key: "SequenceNode1Benevolence",
+    name: "Sequence Node 1: Benevolence",
+    details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Windqueller</span> can be used 1 more time.
+<br>When casting Resonance Skill <span class="Highlight">Windqueller</span>, the "Resolve" cost is decreased by 15.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode2Versatility",
     name: "Sequence Node 2: Versatility",
     details: `<span class="skilldescription">After casting Intro Skill <span class="Highlight">Tactical Strike</span>, Jiyan gains 30 "Resolve" and his ATK is increased by 28% for 15s. This can be triggered once every 15s.</span>`,
