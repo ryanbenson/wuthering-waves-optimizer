@@ -112,6 +112,10 @@
         in the official description, but since it doesn't change from the talent
         increase, the description has been updated to make it more clear.
       </li>
+      <li>
+        Adds all 1.0 echo sets to Hecate as there's a box that allows that echo
+        to have the new set plus all old sets.
+      </li>
     </ul>
     <h3>January 1, 2025</h3>
     <ul>

@@ -554,7 +554,7 @@
               </h2>
               <h3 class="text-sm">{{ echoesToChoose.class }}</h3>
               <div
-                class="echo__item__set-selection flex gap-3 justify-center sm:justify-start">
+                class="echo__item__set-selection flex gap-3 justify-center sm:justify-start flex-wrap">
                 <div
                   v-for="echoSetItem in echoesToChoose.sets"
                   :key="echoSetItem"
