@@ -2,7 +2,7 @@ export const buffs = [
   {
     key: "GateofQuandary",
     name: "Gate of Quandary",
-    details: `<div class="skilldescription">Generate a "Gate of Quandary" in front, dealing <span class="Wind">Aero DMG</span>. When bullets pass through the "Gate of Quandary", ATK is increased. "Gate of Quandary" lasts for 10s.</div>`,
+    details: `<div class="skilldescription">Generate a "Gate of Quandary" in front, dealing <span class="Wind">Aero DMG</span>. When bullets pass through the "Gate of Quandary", ATK is increased by 10%. "Gate of Quandary" lasts for 10s.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -17,13 +17,15 @@ export const buffs = [
   {
     key: "InherentSkillPerfectPerformance",
     name: "Inherent Skill: Perfect Performance",
-    details:
-      `<div class="skilldescription">Aalto's <span class="Highlight">Heavy Attack</span> will always critically hit, triggered once every 30s.</div>`,
+    details: `<div class="skilldescription">Aalto's <span class="Highlight">Heavy Attack</span> will always critically hit, triggered once every 30s.</div>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "CritRate",
-        modifySpecificTalents: ["HalfTruthsAimedShotDMG", "HalfTruthsChargedAimedShotDMG"],
+        modifySpecificTalents: [
+          "HalfTruthsAimedShotDMG",
+          "HalfTruthsChargedAimedShotDMG",
+        ],
         modifierValue: 0.25,
       },
     ],

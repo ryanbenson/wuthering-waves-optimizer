@@ -305,7 +305,7 @@ export const buffsByCharacter = {
     {
       key: "GateofQuandary",
       name: "Gate of Quandary",
-      details: `<div class="skilldescription">Generate a "Gate of Quandary" in front, dealing <span class="Wind">Aero DMG</span>. When bullets pass through the "Gate of Quandary", ATK is increased. "Gate of Quandary" lasts for 10s.</div>`,
+      details: `<div class="skilldescription">Generate a "Gate of Quandary" in front, dealing <span class="Wind">Aero DMG</span>. When bullets pass through the "Gate of Quandary", ATK is increased by 10%. "Gate of Quandary" lasts for 10s</div>`,
       hasStacks: false,
       modifiers: [
         {

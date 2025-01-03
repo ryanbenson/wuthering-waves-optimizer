@@ -107,6 +107,11 @@
         Adds Jiyan S1. It is a quality of life resonance chain, so it has no
         effect on his damage.
       </li>
+      <li>
+        Added clarifying text to Aalto's Gate of Quandry. The ATK amount isn't
+        in the official description, but since it doesn't change from the talent
+        increase, the description has been updated to make it more clear.
+      </li>
     </ul>
     <h3>January 1, 2025</h3>
     <ul>
