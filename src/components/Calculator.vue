@@ -1619,7 +1619,7 @@ export default defineComponent({
         utilityAttacks.push({
           key: "InherentSkillSuperAttractiveMagicBox",
           label: "Magic Box DMG",
-          talent: "1%",
+          talent: "100%",
           type: "Utility",
           element: "Havoc",
         });
