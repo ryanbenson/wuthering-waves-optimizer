@@ -1,10 +1,10 @@
 export const introAttacks = {
-  name: "Intro Skill: Perlo, Come Help",
-  description: `<div class="skilldescription">Attacks the target, dealing <span class="Dark">Havoc</span> damage. After using this skill, pressing Basic Attack within a certain time will unleash the 4th hit of the Basic Attack.</div>`,
+  name: "Intro Skill: Pero, Help",
+  description: `<div class="skilldescription">Attack the target, dealing <span class="Dark">Havoc DMG</span>. Use <span class="Highlight">Basic Attack</span> right after casting this skill to cast <span class="Highlight">Basic Attack Stage 4</span>.</div>`,
   attacks: [
     {
-      key: "PerloComeHelpDMG",
-      label: "Skill DMG",
+      key: "PerloHelpDMG",
+      label: "Pero, Help DMG",
       talents: {
         "1": "85.00%",
         "2": "91.97%",

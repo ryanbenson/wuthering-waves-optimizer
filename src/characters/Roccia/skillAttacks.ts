@@ -1,10 +1,10 @@
 export const skillAttacks = {
-  name: "Resonance Skill: High-Difficulty Design",
-  description: `<div class="skilldescription">Roccia projects the storm of thoughts from her mind, pulling nearby targets and dealing <span class="Dark">Havoc</span> damage, while launching Roccia into the air, entering a Leap Fantasy state.</div>`,
+  name: "Resonance Skill: Acrobatic Trick",
+  description: `<div class="skilldescription">Roccia projects her creativity into reality, pulling in nearby targets and dealing <span class="Dark">Havoc DMG</span>. She then launches into mid-air and activates the <span class="Highlight">Beyond Imagination</span> state.</div>`,
   attacks: [
     {
-      key: "HighDifficultyDesignDMG",
-      label: "Skill DMG",
+      key: "AcrobaticTrickDMG",
+      label: "Acrobatic Trick DMG",
       talents: {
         "1": "30.92%*8",
         "2": "33.46%*8",

@@ -1610,16 +1610,16 @@ export default defineComponent({
       const utilityAttacksFromTeamBuffs =
         teamBuffsData.value?.EnableAttack ?? [];
       const hasUtilityAttack = utilityAttacksFromTeamBuffs.includes(
-        "InherentSkillEndlessGravityPreciousBox",
+        "InherentSkillSuperAttractiveMagicBox",
       );
       const alreadyHasUtilityAttackConfigured = utilityAttacks.findIndex(
-        (attack) => attack.key === "InherentSkillEndlessGravityPreciousBox",
+        (attack) => attack.key === "InherentSkillSuperAttractiveMagicBox",
       );
       if (alreadyHasUtilityAttackConfigured < 0 && hasUtilityAttack) {
         utilityAttacks.push({
-          key: "InherentSkillEndlessGravityPreciousBox",
-          label: "Endless Gravity: Precious Box",
-          talent: "20%*5",
+          key: "InherentSkillSuperAttractiveMagicBox",
+          label: "Magic Box DMG",
+          talent: "1%",
           type: "Utility",
           element: "Havoc",
         });

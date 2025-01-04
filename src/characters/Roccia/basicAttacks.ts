@@ -1,17 +1,6 @@
 export const basicAttacks = {
-  name: `Normal Attack: "Perlo, take it easy."`,
-  description: `<div class="skilldescription">
-<span class="Title">Basic Attack</span><br>
-Performs up to 4 consecutive attacks, dealing <span class="Dark">Havoc</span> damage.<br>
-<br>
-<span class="Title">Heavy Attack</span><br>
-Consumes STAMINA to attack a target, dealing <span class="Dark">Havoc</span> damage. If the target is hit and 【Imagination】 has at least 100 points, Roccia is launched into the air, entering the Leap Fantasy state. You can charge by holding the Basic Attack button, with longer charging increasing the amount of 【Imagination】 gained. Charging can continue even if STAMINA is exhausted. Releasing the Basic Attack mid-charge, or reaching the maximum charging time, will automatically cast a Heavy Attack..<br>
-<br>
-<span class="Title">Aerial Attack</span><br>
-Consumes STAMINA to perform a downward aerial attack, dealing <span class="Dark">Havoc</span> damage.<br>
-<br>
-<span class="Title">Dodge Counterattack</span><br>
-After successfully dodging, pressing Basic Attack within a short time will attack the target, dealing <span class="Dark">Havoc</span> damage.</span>.`,
+  name: `Normal Attack: Pero, Easy`,
+  description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Perform up to 4 consecutive attacks, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Consume STA to attack, dealing <span class="Dark">Havoc DMG</span>. Hitting a target with at least 100 Imagination sends Roccia into mid-air and activates the <span class="Highlight">Beyond Imagination</span> state. The longer you hold the <span class="Highlight">Basic Attack</span> button, the more Imagination Roccia gains. In this state, Roccia can continue to charge the attack even when her STA depletes. Heavy Attack will be automatically cast when you release the <span class="Highlight">Basic Attack</span> button while charging or when Imagination reaches the max limit.<br> <br><span class="Title">Mid-air Attack</span><br>Consume STA to perform a Plunging Attack, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> right after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
   attacks: [
     {
       key: "BasicAttackStage1DMG",
@@ -100,7 +89,7 @@ After successfully dodging, pressing Basic Attack within a short time will attac
     },
     {
       key: "AerialAttackDMG",
-      label: "Aerial Attack DMG",
+      label: "Mid-Air Attack DMG",
       talents: {
         "1": "52.70%",
         "2": "57.03%",
@@ -117,7 +106,7 @@ After successfully dodging, pressing Basic Attack within a short time will attac
     },
     {
       key: "DodgeCounterattackDMG",
-      label: "Dodge Counterattack DMG",
+      label: "Dodge Counter DMG",
       talents: {
         "1": "34.66%*3",
         "2": "37.50%*3",

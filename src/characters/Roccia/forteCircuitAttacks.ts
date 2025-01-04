@@ -1,25 +1,10 @@
 export const forteCircuitAttacks = {
-  name: "Forte Circuit: Art Odyssey",
-  description: `<div class="skilldescription"><br>
-<span class="Title">Leap Fantasy</span><br>
-When Roccia is in the Leap Fantasy state and has at least 100 points of 【Imagination】, she can press <span class="Highlight">Basic Attack</span> to consume 100 points of 【Imagination】 and cast the Basic Attack Fantasy into reality.<br>
-This state will be removed when Roccia is no longer in the air or when she exits the field.<br>
-<br>
-<span class="Title">Basic Attack · Fantasy Into Reality</span>
-Performs up to 3 consecutive attacks, dealing <span class="Dark">Havoc damage</span>. This damage is considered <span class="Highlight">Resonance Skill</span> damage. After the 1st and 2nd attacks land, Roccia will be launched into the air, entering the Leap Fantasy state.<br>
-When Roccia's critical rate is above <span class="Highlight">50%</span>, for every additional <span class="Highlight">0.1% critical rate</span>, the 3rd attack of the Basic Attack Fantasy into reality will increase the attack of all characters in the team by <span class="Highlight">1</span> point, lasting for <span class="Highlight">30</span> seconds. This can be increased up to <span class="Highlight">200</span> points.<br>
-<br>
-<span class="Title">【Imagination】 Acquisition Rules</span><br>
-The maximum 【Imagination】 is 300 points.<br>
-Normal Attack damage restores 【Imagination】.<br>
-Hold down Basic Attack to charge and gain 【Imagination】.<br>
-Casting the Resonance Skill High-Difficulty Design restores 100 points of 【Imagination】.<br>
-Casting the Intro Skill Perlo, Lend a Hand! restores 100 points of 【Imagination】.
-</div>`,
+  name: "Forte Circuit: A Prop Master Prepares",
+  description: `<div class="skilldescription"><span class="Title">Beyond Imagination</span><br>- When Roccia is in <span class="Highlight">Beyond Imagination</span> with at least 100 Imagination, press the <span class="Highlight">Basic Attack</span> button to consume 100 Imagination to cast Basic Attack <span class="Highlight">Real Fantasy</span>.<br>- Roccia exits this state when she is not airborne or when switched off the field.<br> <br><span class="Title">Basic Attack - Real Fantasy</span><br>- Perform up to 3 consecutive attacks, dealing <span class="Dark">Havoc DMG</span>, considered Heavy Attack DMG. When Roccia lands after Stage 1 and Stage 2 attacks with over 100 Imagination, she will launch into mid-air and activate <span class="Highlight">Beyond Imagination</span>.<br> <br><span class="Title">Imagination</span><br>Roccia can hold up to 300 Imagination.<br>- Dealing DMG with Normal Attacks restores Imagination.<br>- Hold <span class="Highlight">Normal Attack</span> to charge the next attack while restoring Imagination.<br>- Casting Resonance Skill <span class="Highlight">Acrobatic Trick</span> restores 100 Imagination.<br>- Casting Intro Skill <span class="Highlight">Pero, Help</span> restores 100 Imagination.</div>`,
   attacks: [
     {
-      key: "LeapFantasyFirstHit",
-      label: "Leap Fantasy - First Hit DMG",
+      key: "RealFantasyStage1DMG",
+      label: "Real Fantasy Stage 1 DMG",
       talents: {
         "1": "162.00%",
         "2": "175.29%",
@@ -35,8 +20,8 @@ Casting the Intro Skill Perlo, Lend a Hand! restores 100 points of 【Imaginatio
       type: "Heavy",
     },
     {
-      key: "LeapFantasySecondHit",
-      label: "Leap Fantasy - Second Hit DMG",
+      key: "RealFantasyStage2DMG",
+      label: "Real Fantasy Stage 2 DMG",
       talents: {
         "1": "171.00%",
         "2": "185.03%",
@@ -52,8 +37,8 @@ Casting the Intro Skill Perlo, Lend a Hand! restores 100 points of 【Imaginatio
       type: "Heavy",
     },
     {
-      key: "LeapFantasyThirdHit",
-      label: "Leap Fantasy - Third Hit DMG",
+      key: "RealFantasyStage3DMG",
+      label: "Real Fantasy Stage 3 DMG",
       talents: {
         "1": "180.00%",
         "2": "194.76%",
@@ -69,8 +54,8 @@ Casting the Intro Skill Perlo, Lend a Hand! restores 100 points of 【Imaginatio
       type: "Heavy",
     },
     {
-      key: "SequenceNode6FlyonGoldenWingsRealityDMG",
-      label: "S6: Fly, on Golden Wings DMG",
+      key: "SequenceNode6WhentheGoldenWingsFlyDMG",
+      label: "S6: Reality Recreation DMG",
       talents: {
         "1": "180.00%",
         "2": "194.76%",
@@ -84,7 +69,7 @@ Casting the Intro Skill Perlo, Lend a Hand! restores 100 points of 【Imaginatio
         "10": "357.86%",
       },
       type: "Heavy",
-      requiresResonanceChain: "SequenceNode6FlyonGoldenWingsRealityDMG",
+      requiresResonanceChain: "SequenceNode6WhentheGoldenWingsFlyDMG",
     },
   ],
 };
