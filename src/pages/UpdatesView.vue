@@ -107,6 +107,10 @@
         Adds Roccia! Note that her Magic Box damage is innacurate right now,
         we're trying to finalize the damage on it.
       </li>
+      <li>
+        Updates Carlotta s2. It now multiplies against the other multipliers
+        which is accurate against in-game damages.
+      </li>
     </ul>
     <h3>January 3, 2025</h3>
     <ul>

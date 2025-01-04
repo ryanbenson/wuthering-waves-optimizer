@@ -13,10 +13,9 @@
             <input
               type="checkbox"
               class="checkbox checkbox-sm"
-              v-model="isEnabled"
-            />
+              v-model="isEnabled" />
             <span class="label-text ml-2">Enabled?</span>
-        </label>
+          </label>
         </div>
         <div v-if="hasStacks" class="form-control" @click.stop>
           <label
@@ -196,7 +195,17 @@ export default {
               data.talentModifierMultiply = [];
             }
             data.talentModifierMultiply.push(modifierItem);
-          } else if (modifierItem.modifier === "talentModifierMultiplySetValue") {
+          } else if (
+            modifierItem.modifier === "talentModifierSpecialMultiply"
+          ) {
+            // for buffs that apply talentModifierMultiply to the calcs
+            if (!data.talentModifierSpecialMultiply) {
+              data.talentModifierSpecialMultiply = [];
+            }
+            data.talentModifierSpecialMultiply.push(modifierItem);
+          } else if (
+            modifierItem.modifier === "talentModifierMultiplySetValue"
+          ) {
             // for buffs that apply talentModifierMultiply to the calcs
             if (!data.talentModifierMultiplySetValue) {
               data.talentModifierMultiplySetValue = [];

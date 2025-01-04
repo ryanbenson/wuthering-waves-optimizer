@@ -21,7 +21,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
+        modifier: "talentModifierSpecialMultiply",
         modifySpecificTalents: ["FatalFinaleDMG"],
         modifierValue: 1.26,
       },

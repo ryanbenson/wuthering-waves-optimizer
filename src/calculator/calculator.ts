@@ -130,6 +130,7 @@ export function calcDamage(
   critDamage: number = 0,
   talentModifierAdd: number = 0,
   talentModifierMultiply: number = 0,
+  totalTalentModifierSpecialMultiply: number = 0,
   count: number = 1,
 ) {
   // Parse the talent string to get individual percentage values
@@ -152,6 +153,12 @@ export function calcDamage(
     if (talentModifierMultiply) {
       let updatedTalentAfterMultiply = t * (1 + talentModifierMultiply);
       t = updatedTalentAfterMultiply;
+    }
+    // if we have a special multplier, multiply this against the first set of multipliers
+    if (totalTalentModifierSpecialMultiply) {
+      let updatedTalentAfterSpecialMultiply =
+        t * (1 + totalTalentModifierSpecialMultiply);
+      t = updatedTalentAfterSpecialMultiply;
     }
     // update total talent value after any talent modifier adjustments
     totalTalentValue += t;

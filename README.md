@@ -30,6 +30,30 @@ When you need to add a multiplier to the base talent value (e.g. Changli R5)
   },
 ```
 
+### Special talent multiplier
+
+When you need to add a multiplier to the base talent value (e.g. Changli R5), but it gets multiplied as a separate base multiplier (base _ normalMultiplier _ specialMultiplier), see Carlotta s2.
+
+```
+
+  {
+    key: "SequenceNode5SacrificedGains1",
+    name: "Sequence Node 5: Sacrificed Gains: Flaming Vow Buff",
+    details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Flaming Vow</span>'s multiplier is increased by 50%.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "talentModifierSpecialMultiply",
+        modifySpecificTalents: ["FlamingVowDMG"],
+        modifierValue: 0.5,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+```
+
 ### Base talent addition
 
 When you need to add to the base talent multiplier, but not multiply to it (e.g. Jinhsi Incandescence), this also takes in the the talent level of something like "forte" to know which modifier to use. If you don't need that, just use the same value for all of them.

@@ -1350,6 +1350,13 @@ export default defineComponent({
           coordinatedDmgDeepenEffect;
         let totalTalentModifierMultiply =
           talentModifierMultiply + talentModifierMultiplySelfBuff;
+        // grab any special multipliers, and then multiply the previous total by that
+        const talentModifierSpecialMultiplyResChains =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentModifierSpecialMultiply`
+          ] ?? 0;
+        let totalTalentModifierSpecialMultiply =
+          talentModifierSpecialMultiplyResChains;
         // check for any modifiers that change the individual instance of atk/hp/def
         // re-calculate the base for this specific instance of damage
         let modifyBaseAtk =
@@ -1496,6 +1503,7 @@ export default defineComponent({
           instanceDmgCritDMG,
           totalTalentModifierAdd,
           totalTalentModifierMultiply,
+          totalTalentModifierSpecialMultiply,
           count,
         );
       };
