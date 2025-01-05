@@ -1,6 +1,7 @@
 const weaponInfo: WeaponInfo = {
   name: "Undying Flame",
-  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/UndyingFlame.png",
+  image:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/UndyingFlame.png",
   description:
     "A weapon designed to commemorate the Midnight Rangers' dedication. \"Let my body ablaze, flames dance to banish all evil's haze.\"",
   type: "Pistols",
@@ -11,7 +12,7 @@ const weaponInfo: WeaponInfo = {
   passiveData: [
     {
       key: "UndyingFlameResonanceSkillDMGBonus",
-      hasStacks: true,
+      hasStacks: false,
       modifier: "ResonanceSkillDMGBonus",
       modifierByRefinement: {
         "1": 0.2,
@@ -21,7 +22,7 @@ const weaponInfo: WeaponInfo = {
         "5": 0.4,
       },
       minStacks: 0,
-      maxStacks: 3,
+      maxStacks: 0,
       details:
         "When Intro Skill is released, increases Resonance Skill DMG Bonus by 20%/25%/30%/35%/40% for 15s.",
       alwaysEnabled: false,
