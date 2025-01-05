@@ -104,7 +104,7 @@ const pistolsList = {
 const gauntletsList = {
   five: [
     { key: "AbyssSurges", name: "Abyss Surges" },
-    // { key: "RocciaSignature", name: "Roccia Signature" },
+    { key: "Tragicomedy", name: "Tragicomedy" },
     { key: "VeritysHandle", name: "Verity's Handle" },
   ],
   four: [

@@ -92,14 +92,7 @@ export const resonanceChains = [
       },
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "HeavyAttackDMG",
-          "CommediaImprovvisoDMG",
-          "RealFantasyStage1DMG",
-          "RealFantasyStage2DMG",
-          "RealFantasyStage3DMG",
-          "SequenceNode6WhentheGoldenWingsFlyDMG",
-        ],
+        modifySpecificTalents: ["HeavyAttackDMG"],
         modifierValue: 0.8,
       },
     ],

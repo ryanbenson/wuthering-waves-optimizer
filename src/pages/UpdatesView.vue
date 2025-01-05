@@ -101,6 +101,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 5, 2025</h3>
+    <ul>
+      <li>Adds Roccia signature.</li>
+      <li>Fixes Roccia s5. It no longer affects her forte circuit attacks.</li>
+    </ul>
     <h3>January 4, 2025</h3>
     <ul>
       <li>

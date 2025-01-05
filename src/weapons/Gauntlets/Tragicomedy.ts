@@ -1,16 +1,16 @@
 const weaponInfo: WeaponInfo = {
-  name: "Roccia Signature",
+  name: "Tragicomedy",
   image:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/RocciaSignature.png",
-  description: "TBD",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Tragicomedy.png",
+  description:
+    "The joys and sorrows of life dance in an endless circle; Pain and tears shift in an instant into a carnival.",
   type: "Gauntlets",
   rarity: 5,
-  passiveName: "Fool's Song",
-  passiveValue:
-    `Increases Energy Regen by <span class="Param">12.8%/16%/19.2%/22.4%/25.6%</span>. When casting Basic Attack or Intro Skill, the wielder’s <span class="Highlight">Heavy Attack</span> damage increases by <span class="Param">48%/60%/72%/84%/96%</span>, lasting for 3s.`,
+  passiveName: "Fool's Warble",
+  passiveValue: `<span class="skilldescription">Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>. Every time Basic Attack or Intro Skill is cast, Heavy Attack DMG Bonus increases by <span class="param">48%/60%/72%/84%/96%</span> for <span class="param">3</span>s.</span>`,
   passiveData: [
     {
-      key: "RocciaSignatureATK",
+      key: "TragicomedyATK",
       hasStacks: false,
       modifier: "ATK",
       modifierByRefinement: {
@@ -22,11 +22,11 @@ const weaponInfo: WeaponInfo = {
       },
       minStacks: 0,
       maxStacks: 0,
-      details: "Attack Power increases by 12%/15%/18%/21%/24%.",
+      details: `Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>.`,
       alwaysEnabled: true,
     },
     {
-      key: "RocciaSignatureResonanceHeavyDMGBonus",
+      key: "TragicomedyHeavyDMGBonus",
       hasStacks: false,
       modifier: "HeavyAttackDMGBonus",
       modifierByRefinement: {
@@ -38,8 +38,7 @@ const weaponInfo: WeaponInfo = {
       },
       minStacks: 0,
       maxStacks: 0,
-      details:
-        `When casting Basic Attack or Intro Skill, the wielder’s <span class="Highlight">Heavy Attack</span> damage increases by <span class="Param">48%/60%/72%/84%/96%</span>, lasting for 3s.`,
+      details: `Every time Basic Attack or Intro Skill is cast, Heavy Attack DMG Bonus increases by <span class="param">48%/60%/72%/84%/96%</span> for <span class="param">3</span>s.</span>`,
       alwaysEnabled: false,
     },
   ],
