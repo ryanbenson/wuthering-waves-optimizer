@@ -1388,7 +1388,7 @@ CD: <span class="param">25</span>s.</span>`,
         element: "Havoc",
       },
     ],
-    sets: ["FrostyResolve", "MidnightVeil"],
+    sets: ["MidnightVeil"],
   },
   LottieLost: {
     key: "LottieLost",
