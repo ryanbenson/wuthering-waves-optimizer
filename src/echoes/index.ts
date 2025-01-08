@@ -2312,6 +2312,17 @@ CD: <span class="param">25</span>s.</span>`,
     ],
     sets: ["MoltenRift", "VoidThunder"],
   },
+  VitreumDancer: {
+    key: "VitreumDancer",
+    name: "Vitreum Dancer",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/VitreumDancer.png",
+    details: `A humanoid Tacet Discord with a body assembled from shattered stained glass. Glittering lights beam from its body with each move.`,
+    modifiers: [],
+    actions: [],
+    sets: ["EternalRadiance", "EmpyreanAnthem"],
+  },
   VoltscourgeStalker: {
     key: "VoltscourgeStalker",
     name: "Voltscourge Stalker",

@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 8, 2025</h3>
+    <ul>
+      <li>Adds Vitreum Dancer echo</li>
+    </ul>
     <h3>January 6, 2025</h3>
     <ul>
       <li>Fixes Lorelei sets</li>
