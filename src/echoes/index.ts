@@ -1360,7 +1360,7 @@ CD: <span class="param">20</span>s.</span>`,
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Lorelei.webp",
     details: `<span class="description">Transform into Lorelei and attack surrounding enemies, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Havoc DMG.
-The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Havoc DMG Bonus and <span class="param">12.00%</span> Resonance Liberation DMG Bonus.
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Havoc DMG Bonus and <span class="param">12.00%</span> Basic Attack DMG Bonus.
 CD: <span class="param">25</span>s.</span>`,
     modifiers: [
       {
@@ -1368,7 +1368,7 @@ CD: <span class="param">25</span>s.</span>`,
         modifierValue: 0.12,
       },
       {
-        modifier: "ResonanceLiberationDMGBonus",
+        modifier: "BasicAttackDMGBonus",
         modifierValue: 0.12,
       },
     ],
