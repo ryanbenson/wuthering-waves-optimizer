@@ -104,6 +104,7 @@
     <h3>January 10, 2025</h3>
     <ul>
       <li>Fixes Lorelei buffs</li>
+      <li>Fixes Cosmic Ripples ATK% on level 1 and 90, it was off by .1%</li>
     </ul>
     <h3>January 8, 2025</h3>
     <ul>

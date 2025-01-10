@@ -33,7 +33,7 @@ const weaponData: WeaponData = {
   "1": {
     attack: 40,
     modifier: "ATK",
-    modifierValue: 0.12,
+    modifierValue: 0.119,
   },
   "20": {
     attack: 104,
@@ -68,7 +68,7 @@ const weaponData: WeaponData = {
   "90": {
     attack: 500,
     modifier: "ATK",
-    modifierValue: 0.54,
+    modifierValue: 0.539,
   },
   "20+": {
     attack: 130,

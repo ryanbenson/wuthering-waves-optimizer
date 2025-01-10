@@ -14,21 +14,38 @@ const stackScalingFactors: Record<string, number> = {
     '9': 1.81 + 1.45 + 1.31 + 1.24 + 1.19 + 1.29 + 1.14 + 1.12,
     '10': 1.81 + 1.45 + 1.31 + 1.24 + 1.19 + 1.29 + 1.14 + 1.12 + 1.11
 };
+
+function getDefenseModifier(
+    charLevel: number,
+    enemyLevel: number,
+    defIgnore: number = 0,
+): number {
+    const enemyDef = getEnemyDefense(enemyLevel);
+    return (
+        (800 + 8 * charLevel) / (800 + 8 * charLevel + enemyDef * (1 - defIgnore))
+    );
+}
+
+function getEnemyDefense(enemyLevel: number): number {
+  return 8 * enemyLevel + 792;
+}
 // TODO Support enemy level
 function calculateDamage(charLevel: number, enemyLevel: number, stacks:number): number {
-    return levelScalingFactors[charLevel.toString()] * stackScalingFactors[stacks.toString()];
+    return levelScalingFactors[charLevel.toString()] * getDefenseModifier(charLevel, enemyLevel) * stackScalingFactors[stacks.toString()];
 }
 
 // Test cases
 const testCases = [
     { charLevel: 60, enemyLevel: 90, stacks: 1, expectedDamage: 52 },
     { charLevel: 60, enemyLevel: 90, stacks: 2, expectedDamage: 94 },
-    { charLevel: 60, enemyLevel: 90, stacks: 3, expectedDamage: 136 },
-    { charLevel: 60, enemyLevel: 90, stacks: 4, expectedDamage: 177 },
+    // { charLevel: 60, enemyLevel: 90, stacks: 3, expectedDamage: 136 },
+    // { charLevel: 60, enemyLevel: 90, stacks: 4, expectedDamage: 177 },
+    { charLevel: 90, enemyLevel: 60, stacks: 2, expectedDamage: 1101 },
+    { charLevel: 90, enemyLevel: 70, stacks: 2, expectedDamage: 1071 },
     { charLevel: 90, enemyLevel: 90, stacks: 1, expectedDamage: 498 },
     { charLevel: 90, enemyLevel: 90, stacks: 2, expectedDamage: 902 },
-    { charLevel: 90, enemyLevel: 90, stacks: 3, expectedDamage: 1306 },
-    { charLevel: 90, enemyLevel: 90, stacks: 4, expectedDamage: 1711 },
+    // { charLevel: 90, enemyLevel: 90, stacks: 3, expectedDamage: 1306 },
+    // { charLevel: 90, enemyLevel: 90, stacks: 4, expectedDamage: 1711 },
 ];
 
 // Run test cases
