@@ -102,6 +102,8 @@ export default {
               specificTalentBuffs[talentName] =
                 (specificTalentBuffs[talentName] || "") +
                 buffInstance.modifierValueCalculated;
+            } else if (buffInstance.modifier === "talentReplace") {
+              specificTalentBuffs[talentName] = buffInstance.modifierValue;
             } else {
               specificTalentBuffs[talentName] =
                 (specificTalentBuffs[talentName] || 0) +

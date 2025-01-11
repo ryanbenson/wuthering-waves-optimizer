@@ -30,9 +30,9 @@ When you need to add a multiplier to the base talent value (e.g. Changli R5)
   },
 ```
 
-### Special talent multiplier
+### talent override
 
-When you need to add a multiplier to the base talent value (e.g. Changli R5), but it gets multiplied as a separate base multiplier (base _ normalMultiplier _ specialMultiplier), see Carlotta s2.
+When an entire talent tree is changed through a buff, like 2 of Carlotta's do this.
 
 ```
 
@@ -43,9 +43,20 @@ When you need to add a multiplier to the base talent value (e.g. Changli R5), bu
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierSpecialMultiply",
-        modifySpecificTalents: ["FlamingVowDMG"],
-        modifierValue: 0.5,
+        modifier: "talentReplace",
+        modifySpecificTalents: ["FatalFinaleDMG"],
+        modifierValue: {
+          "1": "732.45%",
+          "2": "792.51%",
+          "3": "852.56%",
+          "4": "936.66%",
+          "5": "996.73%",
+          "6": "1065.79%",
+          "7": "1161.89%",
+          "8": "1257.98%",
+          "9": "1354.08%",
+          "10": "1456.17%",
+        },
       },
     ],
     minStacks: 0,

@@ -545,6 +545,7 @@ import { allEchoBuffs, utilityAttacks } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import ThemeChooser from "./ThemeChooser.vue";
 import { useRoute } from "vue-router";
+import { resonanceChains } from "../characters/Aalto/resonanceChains";
 
 export default defineComponent({
   name: "Calculator",
@@ -1185,24 +1186,35 @@ export default defineComponent({
         const atkDefHpVal = getDamageValByAttr(attack?.attribute);
         let totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
         let talent;
+        let talentTree = attack?.talents;
+
+        // see if we have a talent modifier replacement to override the talent value
+        const talentModifierReplace =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentReplace`
+          ] ?? null;
+        if (talentModifierReplace) {
+          talentTree = talentModifierReplace;
+        }
+
         if (hasNoTalentLevel) {
           talent = attack.talent;
         } else if (hasDynamicTalent) {
           switch (attack.actionType) {
             case "basic":
-              talent = attack.talents[talentData.basic];
+              talent = talentTree[talentData.basic];
               break;
             case "skill":
-              talent = attack.talents[talentData.skill];
+              talent = talentTree[talentData.skill];
               break;
             case "forteCircuit":
-              talent = attack.talents[talentData.forte];
+              talent = talentTree[talentData.forte];
               break;
             case "liberation":
-              talent = attack.talents[talentData.liberation];
+              talent = talentTree[talentData.liberation];
               break;
             case "intro":
-              talent = attack.talents[talentData.intro];
+              talent = talentTree[talentData.intro];
               break;
             case "outro":
               // outros have no talent tree, just a single value
@@ -1218,7 +1230,7 @@ export default defineComponent({
               break;
           }
         } else {
-          talent = attack.talents[talentType];
+          talent = talentTree[talentType];
         }
         const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
         const talentModifierAddFromResonanceChains =

@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 11, 2025</h3>
+    <ul>
+      <li>Updates Carlotta's S6</li>
+    </ul>
     <h3>January 10, 2025</h3>
     <ul>
       <li>Fixes Lorelei buffs</li>

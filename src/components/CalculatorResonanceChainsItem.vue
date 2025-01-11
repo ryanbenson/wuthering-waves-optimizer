@@ -195,6 +195,11 @@ export default {
               data.talentModifierMultiply = [];
             }
             data.talentModifierMultiply.push(modifierItem);
+          } else if (modifierItem.modifier === "talentReplace") {
+            if (!data.talentReplace) {
+              data.talentReplace = [];
+            }
+            data.talentReplace.push(modifierItem);
           } else if (
             modifierItem.modifier === "talentModifierSpecialMultiply"
           ) {
@@ -241,7 +246,6 @@ export default {
           }
         });
       }
-      // shouldn't get here
       return data;
     },
   },
