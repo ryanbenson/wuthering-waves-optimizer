@@ -935,21 +935,6 @@ export const allEchoBuffs = [
     maxStacks: 0,
     alwaysEnabled: false,
   },
-  {
-    key: "EmpyreanAnthem",
-    name: "Empyrean Anthem",
-    details: `<span class="description">when a coordinated attack deals Crit DMG, the whole team gains <span class="Highlight">20%</span> ATK bonus.</span>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "ATK",
-        modifierValue: 0.2,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
 ];
 
 export const allWeaponTeamBuffs = [

@@ -591,7 +591,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
   "Empyrean Anthem 5 Set": {
     key: "EmpyreanAnthem5Set",
     name: "Empyrean Anthem",
-    details: `Increases the DMG dealt by coordinated attacks by <span class="Highlight">80%</span>, when a coordinated attack deals Crit DMG, the whole team gains <span class="Highlight">20%</span> ATK bonus.`,
+    details: `Increases the DMG dealt by coordinated attacks by <span class="Highlight">80%</span>. Upon a critical hit of Coordinated Attack, increase the active Resonator's ATK by <span class="Highlight">20%</span> for 4s.`,
     passives: [
       {
         key: "EmpyreanAnthem5SetCoordinatedDMGBonus",
@@ -613,7 +613,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
           },
         ],
         alwaysEnabled: false,
-        details: `When a coordinated attack deals Crit DMG, the whole team gains <span class="Highlight">20%</span> ATK bonus.`,
+        details: `Upon a critical hit of Coordinated Attack, increase the active Resonator's ATK by <span class="Highlight">20%</span> for 4s.`,
       },
     ],
   },
