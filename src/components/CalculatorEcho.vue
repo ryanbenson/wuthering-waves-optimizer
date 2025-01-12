@@ -943,9 +943,9 @@ export default {
     getStats(cost) {
       return Object.keys(this.statsTable[cost] || {});
     },
-    getSubStatRange(type) {
-      return this.subStatRanges[type] || { min: 0, max: 0 };
-    },
+    // getSubStatRange(type) {
+    //   return this.subStatRanges[type] || { min: 0, max: 0 };
+    // },
     getMaxStacks(type) {
       return this.setBonusEffects[type]?.maxStacks || 0;
     },

@@ -104,6 +104,7 @@
     <h3>January 12, 2025</h3>
     <ul>
       <li>Fixes Empyrean Anthem, no longer a team buff.</li>
+      <li>Changes the flat attack and def ranges for substats</li>
     </ul>
     <h3>January 11, 2025</h3>
     <ul>
