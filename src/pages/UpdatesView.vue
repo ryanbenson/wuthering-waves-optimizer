@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 13, 2025</h3>
+    <ul>
+      <li>Updates Bell text</li>
+    </ul>
     <h3>January 12, 2025</h3>
     <ul>
       <li>Fixes Empyrean Anthem, no longer a team buff.</li>

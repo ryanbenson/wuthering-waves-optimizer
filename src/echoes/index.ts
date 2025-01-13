@@ -153,9 +153,9 @@ export const mainEchoesData: MainEchoes = {
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/BellBorneGeochelone.png",
     details: `<span class="description">Activate the protection of Bell-Borne Geochelone. Deal Glacio DMG based on <span class="param">91.20%/104.88%/118.56%/132.24%/145.92%</span> of the current character's DEF to nearby enemies, and obtain a Bell-Borne Shield that lasts for <span class="param">15</span>s
 
-    The Bell-Borne Shield provides <span class="param">50.00%</span> DMG Reduction and <span class="param">10.00%</span> DMG Boost for the current team members, and disappears after the current character is hit for <span class="param">3</span> times.
-    
-    CD: <span class="param">20</span>s</span>`,
+The Bell-Borne Shield provides <span class="param">50.00%</span> DMG Reduction and <span class="param">10.00%</span> DMG Boost for the current team members, and disappears after the current character is hit for <span class="param">3</span> times.
+
+CD: <span class="param">20</span>s</span>`,
     modifiers: [
       {
         modifier: "DMGBonus",
@@ -166,7 +166,11 @@ export const mainEchoesData: MainEchoes = {
       {
         key: "BellBorneGeocheloneActivation",
         label: "Activation DMG",
-        description: `Activate the protection of Bell-Borne Geochelone. Deal Glacio DMG based on <span class="param">91.20%/104.88%/118.56%/132.24%/145.92%</span> of the current character's DEF to nearby enemies, and obtain a Bell-Borne Shield that lasts for <span class="param">15</span>s`,
+        description: `<span class="description">Activate the protection of Bell-Borne Geochelone. Deal Glacio DMG based on <span class="param">91.20%/104.88%/118.56%/132.24%/145.92%</span> of the current character's DEF to nearby enemies, and obtain a Bell-Borne Shield that lasts for <span class="param">15</span>s
+
+The Bell-Borne Shield provides <span class="param">50.00%</span> DMG Reduction and <span class="param">10.00%</span> DMG Boost for the current team members, and disappears after the current character is hit for <span class="param">3</span> times.
+
+CD: <span class="param">20</span>s</span>`,
         talents: {
           "1": "91.20%",
           "2": "104.88%",
