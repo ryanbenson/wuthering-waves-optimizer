@@ -142,6 +142,18 @@
           Add Buff
         </button>
       </div>
+      <div class="ignore__buffs mt-4">
+        <div class="form-control flex flex-wra flex-row gap-4">
+          <label class="label cursor-pointer flex gap-2">
+            <input v-model="excludeSelfBuffs" type="checkbox" class="checkbox checkbox-sm" @change="onExcludeSelfBuffsChange" />
+            <span class="label-text">Exclude self buffs</span>
+          </label>
+          <label class="label cursor-pointer flex gap-2">
+            <input v-model="excludeTeamBuffs" type="checkbox" class="checkbox checkbox-sm" @change="onExcludeTeamBuffsChange" />
+            <span class="label-text">Exclude team buffs</span>
+          </label>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -185,6 +197,14 @@ export default {
       type: [Number, String],
       required: true,
     },
+    ignoreSelfBuffs: {
+      type: Boolean,
+      default: false,
+    },
+    ignoreTeamBuffs: {
+      type: Boolean,
+      default: false,
+    },
     buffs: {
       type: Array,
       default() {
@@ -203,6 +223,8 @@ export default {
       actionSkillType: null,
       sequence: 0,
       hits: 0,
+      excludeSelfBuffs: false,
+      excludeTeamBuffs: false,
       buffData: [],
       skillKeyMap: {
         basic: "basicAttacks",
@@ -418,6 +440,8 @@ export default {
         type: this.actionSkillType,
         count: this.hits,
         buffs: this.buffData,
+        excludeSelfBuffs: this.excludeSelfBuffs,
+        excludeTeamBuffs: this.excludeTeamBuffs,
       });
     },
     addBuff() {
@@ -440,6 +464,8 @@ export default {
         type: this.actionSkillType,
         count: this.hits,
         buffs: this.buffData,
+        excludeSelfBuffs: this.excludeSelfBuffs,
+        excludeTeamBuffs: this.excludeTeamBuffs,
       });
     },
     handleUpdatedBuff(buffData) {
@@ -460,6 +486,8 @@ export default {
         type: this.actionSkillType,
         count: this.hits,
         buffs: this.buffData,
+        excludeSelfBuffs: this.excludeSelfBuffs,
+        excludeTeamBuffs: this.excludeTeamBuffs,
       });
     },
     removeAction() {
@@ -475,6 +503,8 @@ export default {
         type: this.actionSkillType,
         count: this.hits,
         buffs: this.buffData,
+        excludeSelfBuffs: this.excludeSelfBuffs,
+        excludeTeamBuffs: this.excludeTeamBuffs,
       });
     },
     onHitsChange(e) {
@@ -490,14 +520,42 @@ export default {
         type: this.actionSkillType,
         count: hitsVal,
         buffs: this.buffData,
+        excludeSelfBuffs: this.excludeSelfBuffs,
+        excludeTeamBuffs: this.excludeTeamBuffs,
       });
     },
+    onExcludeSelfBuffsChange() {
+      this.$emit("action-update", {
+        id: this.id,
+        order: this.order,
+        key: this.actionKeyValue,
+        type: this.actionSkillType,
+        count: this.hits,
+        buffs: this.buffData,
+        excludeSelfBuffs: this.excludeSelfBuffs,
+        excludeTeamBuffs: this.excludeTeamBuffs,
+      });
+    },
+    onExcludeTeamBuffsChange() {
+      this.$emit("action-update", {
+        id: this.id,
+        order: this.order,
+        key: this.actionKeyValue,
+        type: this.actionSkillType,
+        count: this.hits,
+        buffs: this.buffData,
+        excludeSelfBuffs: this.excludeSelfBuffs,
+        excludeTeamBuffs: this.excludeTeamBuffs,
+      });
+    }
   },
   mounted() {
     this.actionKeyValue = this.actionKey;
     this.actionSkillType = this.type;
     this.sequence = this.order;
     this.hits = this.count;
+    this.excludeSelfBuffs = this.ignoreSelfBuffs;
+    this.excludeTeamBuffs = this.ignoreTeamBuffs;
     this.buffData = JSON.parse(JSON.stringify(this.buffs));
   },
 };

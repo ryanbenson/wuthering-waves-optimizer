@@ -1162,6 +1162,10 @@ export default defineComponent({
         hasDynamicTalent = false,
         count = 1,
       ) => {
+        const { excludeSelfBuffs, excludeTeamBuffs } = attack;
+        if (excludeSelfBuffs || excludeTeamBuffs) {
+          console.log(excludeSelfBuffs, excludeTeamBuffs);
+        }
         let attackType = attack.type;
         // is there an attack type override? if so, update it
         const attackTypeOverrideResChain =
@@ -1855,6 +1859,8 @@ export default defineComponent({
               buffs: null,
               actionType,
               count: actionCount,
+              excludeSelfBuffs: action.excludeSelfBuffs ?? false,
+              excludeTeamBuffs: action.excludeTeamBuffs ?? false,
             };
             // if there are buffs, turn it into a hashmap
             if (action?.buffs?.length) {
