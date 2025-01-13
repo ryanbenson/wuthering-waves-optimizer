@@ -104,6 +104,9 @@
     <h3>January 13, 2025</h3>
     <ul>
       <li>Updates Bell text</li>
+      <li>
+        Re-adds the Empyrean Anthem team buffs, accidentally got rid of it.
+      </li>
     </ul>
     <h3>January 12, 2025</h3>
     <ul>

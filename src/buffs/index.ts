@@ -935,6 +935,21 @@ export const allEchoBuffs = [
     maxStacks: 0,
     alwaysEnabled: false,
   },
+  {
+    key: "EmpyreanAnthem",
+    name: "Empyrean Anthem",
+    details: `<span class="description">Upon a critical hit of Coordinated Attack, increase the active Resonator's ATK by 20% for 4s.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.2,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allWeaponTeamBuffs = [
