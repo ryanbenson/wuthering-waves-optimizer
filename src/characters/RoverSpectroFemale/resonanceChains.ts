@@ -30,6 +30,36 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
+    key: "SequenceNode3VisagesofDust",
+    name: "Sequence Node 3: Visages of Dust",
+    details: `Rover's Energy Regen is increased by 20%.`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "EnergyRegen",
+        modifierValue: 0.2,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode4ResonatingLamella",
+    name: "Sequence Node 4: Resonating Lamella",
+    details: `<span class="skilldescription">When casting Resonance Liberation <span class="Highlight">Echoing Resonance</span>, Rover continuously restores HP for all team members: HP equal to 20% of Rover's ATK will be restored every second for 5s.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "EnableAttack",
+        modifierValue: ["SequenceNode4ResonatingLamella"],
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode5TemporalVirtuoso",
     name: "Sequence Node 5: Temporal Virtuoso",
     details: `<span class="skilldescription">Rover's Resonance Liberation DMG Bonus is increased by 40%.</span>`,

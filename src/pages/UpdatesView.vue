@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 15, 2025</h3>
+    <ul>
+      <li>Adds Rover Spectro missing S3 and S4</li>
+    </ul>
     <h3>January 13, 2025</h3>
     <ul>
       <li>Updates Bell text</li>
