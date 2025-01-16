@@ -1280,8 +1280,12 @@ export default defineComponent({
           charResonanceChainsData.value?.DMGBonus ?? 0;
         const genericSkillDmgBonusSelfBuff = charBuffsData.value?.DMGBonus ?? 0;
         const genericSkillDmgBonusEchoBuff = echoStats.value?.DMGBonus ?? 0;
-        const genericSkillDmgBonusTeamEchoBuff =
+        let genericSkillDmgBonusTeamEchoBuff =
           teamBuffsData.value?.DMGBonus ?? 0;
+        if (excludeTeamBuffs) {
+          genericSkillDmgBonusTeamEchoBuff = 0;
+        }
+
         const extraDefIgnoreResonanceChain =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DEFIgnore`
@@ -1327,8 +1331,12 @@ export default defineComponent({
           // TODO: when refactoring echoes, move to decimals
           coordinatedEchoDmgBonus / 100 +
           genericSkillDmgBonusEchoBuff / 100;
-        const teamBuffResistShredForCharElement =
+        let teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
+        if (excludeTeamBuffs) {
+          teamBuffResistShredForCharElement = 0;
+        }
+
         const resonanceChainResistShredForCharElement =
           charResonanceChainsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         const baseResistReduction = ResistReduction.value ?? 0;
@@ -1349,6 +1357,11 @@ export default defineComponent({
           teamBuffsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
         let teamBuffDmgDeepenForCoordinatedAttack =
           teamBuffsData.value?.[`DMGDeepen:Coordinated`] ?? 0;
+        if (excludeTeamBuffs) {
+          teamBuffDmgDeepenForCharElement = 0;
+          teamBuffDmgDeepenForAttackType = 0;
+          teamBuffDmgDeepenForCoordinatedAttack = 0;
+        }
         let coordinatedDmgDeepenEffect = 0;
         if (attack?.subType === "Coordinated") {
           coordinatedDmgDeepenEffect = teamBuffDmgDeepenForCoordinatedAttack;
@@ -1633,8 +1646,9 @@ export default defineComponent({
       // similar principle applies to utility attacks (e.g. Roccia passive)
       const utilityAttacks = [];
       // TODO: Makes this scalable and more maintainable
-      const utilityAttacksFromTeamBuffs =
+      let utilityAttacksFromTeamBuffs =
         teamBuffsData.value?.EnableAttack ?? [];
+      // TODO: Exclude the attack if using exclude from team buffs
       const hasUtilityAttack = utilityAttacksFromTeamBuffs.includes(
         "InherentSkillSuperAttractiveMagicBox",
       );
