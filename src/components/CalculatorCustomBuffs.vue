@@ -168,6 +168,22 @@
         </div>
         <input type="number" v-model="HealingBonus" min="0" name="HealingBonus" id="HealingBonus" class="input input-md input-bordered" />
       </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Damage Amplify
+          </span>
+        </div>
+        <input type="number" v-model="DamageAmplify" min="0" name="DamageAmplify" id="DamageAmplify" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Resist Shred
+          </span>
+        </div>
+        <input type="number" v-model="ResistShred" min="0" name="ResistShred" id="ResistShred" class="input input-md input-bordered" />
+      </label>
     </div>
   </div>
 </template>
@@ -240,6 +256,8 @@ export default {
       const Spectro = this.Spectro ? this.Spectro / 100 : 0;
       const Havoc = this.Havoc ? this.Havoc / 100 : 0;
       const HealingBonus = this.HealingBonus ? this.HealingBonus / 100 : 0;
+      const DamageAmplify = this.DamageAmplify ? this.DamageAmplify / 100 : 0;
+      const ResistShred = this.ResistShred ? this.ResistShred / 100 : 0;
       return {
         ATK,
         ATK_FLAT,
@@ -261,6 +279,8 @@ export default {
         Spectro,
         Havoc,
         HealingBonus,
+        DamageAmplify,
+        ResistShred,
       };
     },
     /**
@@ -580,6 +600,38 @@ export default {
         const data = {
           customBuffs: {
             HealingBonus: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for DamageAmplify
+     */
+    DamageAmplify: {
+      get() {
+        return this.currentCharacter?.customBuffs?.DamageAmplify ?? 0;
+      },
+      async set(value) {
+        const data = {
+          customBuffs: {
+            DamageAmplify: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for ResistShred
+     */
+    ResistShred: {
+      get() {
+        return this.currentCharacter?.customBuffs?.ResistShred ?? 0;
+      },
+      async set(value) {
+        const data = {
+          customBuffs: {
+            ResistShred: value,
           },
         };
         await this.setCharacterData(this.character, data);

@@ -1328,10 +1328,12 @@ export default defineComponent({
         const resonanceChainResistShredForCharElement =
           charResonanceChainsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         const baseResistReduction = ResistReduction.value ?? 0;
+        const customResistReduction = customBuffs.value?.ResistShred ?? 0;
         const totalResistReduction =
           baseResistReduction +
           teamBuffResistShredForCharElement +
-          resonanceChainResistShredForCharElement;
+          resonanceChainResistShredForCharElement +
+          customResistReduction;
         // damage deepen
         const baseTotalDeepenEffect = TotalDeepenEffect.value;
         // so far damage deepen is from team buffs, add more later if needed
@@ -1356,12 +1358,14 @@ export default defineComponent({
           teamBuffDmgDeepenForAttackType = 0;
         }
         let attackLevelDmgDeepen = attack.buffs?.DMGDeepen ?? 0;
+        const customDamageDeepen = customBuffs.value?.DamageAmplify ?? 0;
         const totalDmgDeepen =
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
           teamBuffDmgDeepenForAttackType +
           attackLevelDmgDeepen +
-          coordinatedDmgDeepenEffect;
+          coordinatedDmgDeepenEffect +
+          customDamageDeepen;
         let totalTalentModifierMultiply =
           talentModifierMultiply + talentModifierMultiplySelfBuff;
         // grab any special multipliers, and then multiply the previous total by that
