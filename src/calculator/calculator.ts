@@ -482,7 +482,7 @@ function parseShieldTalentString(talent: string): any {
 export function getSpectroFrazzleModifierByLevelByStacks(
   charLevel: string,
   stacks: number,
-): number {
+): number | null {
   const levelScalingFactors: Record<string, Record<number, number>> = {
     // TODO: Add the reset of the levels, and support ascension (e.g. 60+)
     "60": {
@@ -498,17 +498,16 @@ export function getSpectroFrazzleModifierByLevelByStacks(
       1: 12.63,
     },
     "80": {
-      // TODO: fix these values
-      10: 57.82 * 0.9,
-      9: 57.96 * 0.9,
-      8: 58.14 * 0.9,
-      7: 58.38 * 0.9,
-      6: 58.69 * 0.9,
-      5: 59.12 * 0.9,
-      4: 59.78 * 0.9,
-      3: 60.87 * 0.9,
-      2: 63.05 * 0.9,
-      1: 69.58 * 0.9,
+      10: 52.04,
+      9: 52.17,
+      8: 52.33,
+      7: 52.54,
+      6: 52.82,
+      5: 53.21,
+      4: 53.8,
+      3: 54.78,
+      2: 56.74,
+      1: 62.63,
     },
     "90": {
       10: 94.09,
@@ -523,11 +522,15 @@ export function getSpectroFrazzleModifierByLevelByStacks(
       1: 113.12,
     },
   };
-  const modifier = levelScalingFactors?.[charLevel]?.[stacks] ?? 0;
+  const modifier = levelScalingFactors?.[charLevel]?.[stacks] ?? null;
+  if (!modifier) {
+    return null;
+  }
   return modifier / 100;
 }
 
 export function getSpectroFrazzleDamage(
+  motionValue: number,
   stacks: number,
   charLevel: string,
   enemyLevel: number,
@@ -539,15 +542,9 @@ export function getSpectroFrazzleDamage(
   const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
   // 1000*res*def*stack number*MV%
   const baseModifier = 1000;
-  const modifierByLevelAndStacks = getSpectroFrazzleModifierByLevelByStacks(
-    charLevel,
-    stacks,
-  );
-  return (
-    baseModifier *
-    resistModifier *
-    defModifier *
-    stacks *
-    modifierByLevelAndStacks
-  );
+  // const modifierByLevelAndStacks = getSpectroFrazzleModifierByLevelByStacks(
+  //   charLevel,
+  //   stacks,
+  // );
+  return baseModifier * resistModifier * defModifier * stacks * motionValue;
 }

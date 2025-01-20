@@ -41,6 +41,27 @@
         class="range range-xs" />
     </div>
   </div>
+
+  <template v-if="hasElementEffects">
+    <h3 class="text-4xl font-bold mb-4 text-primary">Elemental Effects</h3>
+    <div v-if="isSpectroFrazzleEnabled" class="data-input--talents mt-8">
+      <div class="flex flex-col pb-7 relative">
+        <label for="enemyResist" class="talent__label">
+          Spectro Frazzle Stacks
+          <span class="text-primary">{{ spectroFrazzleStacks }}</span>
+        </label>
+        <input
+          v-model="spectroFrazzleStacks"
+          name="spectroFrazzleStacks"
+          id="spectroFrazzleStacks"
+          type="range"
+          min="0"
+          max="10"
+          step="1"
+          class="range range-xs" />
+      </div>
+    </div>
+  </template>
 </template>
 
 <script>
@@ -51,6 +72,10 @@ export default {
     character: {
       type: String,
       required: true,
+    },
+    isSpectroFrazzleEnabled: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -80,6 +105,7 @@ export default {
         this.$emit("updated-enemy-data", {
           enemyLevel: this.enemyLevel,
           enemyResist: this.enemyResist,
+          spectroFrazzleStacks: this.spectroFrazzleStacks,
         });
       },
       immediate: true,
@@ -93,6 +119,21 @@ export default {
         this.$emit("updated-enemy-data", {
           enemyLevel: this.enemyLevel,
           enemyResist: this.enemyResist,
+          spectroFrazzleStacks: this.spectroFrazzleStacks,
+        });
+      },
+      immediate: true,
+    },
+    spectroFrazzleStacks: {
+      /**
+       * Emits the buff data in its proper format
+       * @emits updated-enemy
+       */
+      handler: async function () {
+        this.$emit("updated-enemy-data", {
+          enemyLevel: this.enemyLevel,
+          enemyResist: this.enemyResist,
+          spectroFrazzleStacks: this.spectroFrazzleStacks,
         });
       },
       immediate: true,
@@ -141,6 +182,29 @@ export default {
         };
         await this.setCharacterData(this.character, data);
       },
+    },
+    /**
+     * Getter/setter used in the form for the number of spectro frazzle stacks
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    spectroFrazzleStacks: {
+      get() {
+        return this.currentCharacter?.spectroFrazzleStacks ?? 0;
+      },
+      async set(value) {
+        const data = {
+          spectroFrazzleStacks: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Determines if there are any element effects
+     * @returns {Boolean}
+     */
+    hasElementEffects() {
+      return this.isSpectroFrazzleEnabled;
     },
   },
 };

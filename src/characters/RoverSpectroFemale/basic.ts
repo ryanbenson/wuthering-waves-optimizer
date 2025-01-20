@@ -6,5 +6,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     avatarUrl: "RoverSpectroFemale.jpg",
     gender: "female",
     element: "Spectro",
+    spectroFrazzle: true,
   };
 }
