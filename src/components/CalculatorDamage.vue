@@ -11,9 +11,9 @@
         v-tooltip="{
           content: damage.detailedCalculation,
           html: true,
-        }"
-        >{{ displayDamage(damage.healAmount) }}</td
-      >
+        }">
+        {{ displayDamage(damage.healAmount) }}
+      </td>
     </template>
     <template v-else-if="type === 'Shield'">
       <td>{{ label }}</td>
@@ -21,9 +21,19 @@
         v-tooltip="{
           content: damage.detailedCalculation,
           html: true,
-        }"
-        >{{ displayDamage(damage.shieldAmount) }}</td
-      >
+        }">
+        {{ displayDamage(damage.shieldAmount) }}
+      </td>
+    </template>
+    <template v-else-if="type === 'ElementalEffect'">
+      <td>{{ label }}</td>
+      <td
+        v-tooltip="{
+          content: damage,
+          html: true,
+        }">
+        {{ displayDamage(damage) }}
+      </td>
     </template>
     <template v-else>
       <td>{{ label }}</td>
@@ -31,23 +41,23 @@
         v-tooltip="{
           content: damage.detailedCalculation,
           html: true,
-        }"
-        >{{ displayDamage(damage.totalDamage) }}</td
-      >
+        }">
+        {{ displayDamage(damage.totalDamage) }}
+      </td>
       <td
         v-tooltip="{
           content: damage.detailedCalculationAvg,
           html: true,
-        }"
-        >{{ displayDamage(damage.avgDamage) }}</td
-      >
+        }">
+        {{ displayDamage(damage.avgDamage) }}
+      </td>
       <td
         v-tooltip="{
           content: damage.detailedCalculationCrit,
           html: true,
-        }"
-        >{{ displayDamage(damage.critDamage) }}</td
-      >
+        }">
+        {{ displayDamage(damage.critDamage) }}
+      </td>
     </template>
   </tr>
 </template>
@@ -125,7 +135,6 @@ html[data-theme="light"] {
   }
   .calculation__damage__item--healing {
     color: #13a813;
-
   }
 }
 </style>

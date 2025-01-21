@@ -438,7 +438,10 @@
         <CalculatorEnemy
           :key="character"
           :character="character"
-          @updated-enemy-data="handleUpdatedEnemy"></CalculatorEnemy>
+          @updated-enemy-data="handleUpdatedEnemy"
+          :is-spectro-frazzle-enabled="
+            isSpectroFrazzleEnabled
+          "></CalculatorEnemy>
       </div>
       <div class="screen--results" v-show="curScreen === 'results'">
         <CalculatorStats
@@ -475,7 +478,8 @@
           :all-damages="allDamages"
           :rotations-list="rotationsList"
           :chosen-char="chosenChar"
-          :chosen-echo-name="mainEcho"></CalculatorDamages>
+          :chosen-echo-name="mainEcho"
+          :is-missing-spectro-data="isMissingSpectroData"></CalculatorDamages>
       </div>
     </div>
     <div class="results">
@@ -513,7 +517,8 @@
         :all-damages="allDamages"
         :rotations-list="rotationsList"
         :chosen-char="chosenChar"
-        :chosen-echo-name="mainEcho"></CalculatorDamages>
+        :chosen-echo-name="mainEcho"
+        :is-missing-spectro-data="isMissingSpectroData"></CalculatorDamages>
     </div>
   </div>
 </template>
@@ -522,7 +527,13 @@
 // @ts-nocheck
 import { defineComponent, reactive, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
-import { calcDamage, calcHeal, calcShield } from "../calculator/calculator";
+import {
+  calcDamage,
+  calcHeal,
+  calcShield,
+  getSpectroFrazzleDamage,
+  getSpectroFrazzleModifierByLevelByStacks,
+} from "../calculator/calculator";
 import {
   getCharactersAvailable,
   getCharByName,
@@ -620,6 +631,10 @@ export default defineComponent({
     const isLoading = ref(false);
     const enemyLevel = ref(90);
     const enemyResist = ref(0.1);
+    // elemental effects
+    const isSpectroFrazzleEnabled = ref(false);
+    const spectroFrazzleStacks = ref(0);
+    const isMissingSpectroData = ref(false);
 
     charactersList.value = getCharactersAvailable();
 
@@ -639,6 +654,9 @@ export default defineComponent({
       // update the enemy data
       enemyLevel.value = characters.value?.[charName]?.enemyLevel ?? 90;
       enemyResist.value = characters.value?.[charName]?.enemyResist ?? 0.1;
+      // update any elemental effects
+      isSpectroFrazzleEnabled.value =
+        chosenChar?.value?.basic?.spectroFrazzle ?? false;
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
@@ -1438,6 +1456,21 @@ export default defineComponent({
           totalTalentModifierMultiply = talentModifierMultiplySet;
         }
 
+        if (attackType === "ElementalEffect") {
+          if (attack?.subType === "SpectroFrazzle") {
+            const elementalEffectDmg = getSpectroFrazzleDamage(
+              attack.talent,
+              attack?.stacks ?? 0,
+              characterLevel.value,
+              enemyLevel.value,
+              enemyResist.value,
+              totalResistReduction,
+              totalDefIgnore,
+            );
+            return elementalEffectDmg;
+          }
+        }
+
         if (attackType === "Healing") {
           // apply any attack-level healing bonuses
           if (attack?.buffs) {
@@ -1689,6 +1722,35 @@ export default defineComponent({
         ),
       };
 
+      // add any elemental effects
+      if (isSpectroFrazzleEnabled.value && spectroFrazzleStacks.value > 0) {
+        isMissingSpectroData.value = false;
+        // get the MV based on stacks and character level
+        const spectroFrazzleMv = getSpectroFrazzleModifierByLevelByStacks(
+          characterLevel.value,
+          spectroFrazzleStacks.value,
+        );
+        if (!spectroFrazzleMv) {
+          isMissingSpectroData.value = true;
+        }
+        if (spectroFrazzleMv) {
+          const spectroFrazzleAttack = {
+            key: "ElementalEffectSpectroFrazzle",
+            label: "Spectro Frazzle",
+            talent: spectroFrazzleMv,
+            type: "ElementalEffect",
+            element: "Spectro",
+            subType: "SpectroFrazzle",
+            stacks: spectroFrazzleStacks.value,
+          };
+          allDamagesData.elementalReactions = processAttacks(
+            [{ ...spectroFrazzleAttack }],
+            talentData.intro,
+            true, // has no talent level
+          );
+        }
+      }
+
       let chosenEcho;
       if (mainEcho.value) {
         chosenEcho = getEchoData(mainEcho.value);
@@ -1812,6 +1874,7 @@ export default defineComponent({
     const handleUpdatedEnemy = (data) => {
       enemyLevel.value = data.enemyLevel;
       enemyResist.value = data.enemyResist;
+      spectroFrazzleStacks.value = data.spectroFrazzleStacks;
       calcAllDamages();
     };
 
@@ -1964,6 +2027,9 @@ export default defineComponent({
       isLoading,
       mainEcho,
       toggleOptionsMenu,
+      // elemental effects
+      isSpectroFrazzleEnabled,
+      isMissingSpectroData,
     };
   },
 });

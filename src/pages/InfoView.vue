@@ -124,6 +124,10 @@
         Jäger, Bachelor, Nekuro(NekroLight), AlecJohn, juste - for all of your
         help with the calculations and great ideas! 🎉
       </li>
+      <li>
+        Namelag, and Dustin for all of your help with the Spectro Frazzle
+        formula!
+      </li>
     </ul>
     <h3>Privacy</h3>
     <p>

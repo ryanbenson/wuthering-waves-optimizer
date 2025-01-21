@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 21, 2025</h3>
+    <ul>
+      <li>Releases Spectro Frazzle support</li>
+    </ul>
     <h3>January 17, 2025</h3>
     <ul>
       <li>Adds resist shred and damage amplify to custom buffs</li>

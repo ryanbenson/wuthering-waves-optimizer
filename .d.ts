@@ -5,6 +5,7 @@ interface CharacterBasicInfo {
   avatarUrl: string;
   gender: string;
   element: string;
+  spectroFrazzle?: boolean;
 }
 interface WeaponInfo {
   key?: string;

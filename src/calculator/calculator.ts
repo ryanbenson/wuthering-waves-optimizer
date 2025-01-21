@@ -478,3 +478,87 @@ function parseShieldTalentString(talent: string): any {
     talentVal,
   };
 }
+
+export function getSpectroFrazzleModifierByLevelByStacks(
+  charLevel: string,
+  stacks: number,
+): number | null {
+  // remove any + since ascension doesn't affect the data
+  const characterLevel = charLevel.replace("+", "");
+  const levelScalingFactors: Record<string, Record<number, number>> = {
+    // TODO: Add the reset of the levels
+    "60": {
+      10: 10.43,
+      9: 10.46,
+      8: 10.49,
+      7: 10.54,
+      6: 10.6,
+      5: 10.68,
+      4: 10.8,
+      3: 11.0,
+      2: 11.41,
+      1: 12.63,
+    },
+    "70": {
+      10: 26.81,
+      9: 26.86,
+      8: 26.95,
+      7: 27.06,
+      6: 27.22,
+      5: 27.43,
+      4: 27.7,
+      3: 28.21,
+      2: 29.25,
+      1: 32.35,
+    },
+    "80": {
+      10: 52.04,
+      9: 52.17,
+      8: 52.33,
+      7: 52.54,
+      6: 52.82,
+      5: 53.21,
+      4: 53.8,
+      3: 54.78,
+      2: 56.74,
+      1: 62.63,
+    },
+    "90": {
+      10: 94.09,
+      9: 94.33,
+      8: 94.61,
+      7: 94.99,
+      6: 95.5,
+      5: 96.23,
+      4: 97.25,
+      3: 99.04,
+      2: 102.62,
+      1: 113.12,
+    },
+  };
+  const modifier = levelScalingFactors?.[characterLevel]?.[stacks] ?? null;
+  if (!modifier) {
+    return null;
+  }
+  return modifier / 100;
+}
+
+export function getSpectroFrazzleDamage(
+  motionValue: number,
+  stacks: number,
+  charLevel: string,
+  enemyLevel: number,
+  enemyResist: number,
+  resistenceReduction: number,
+  defIgnore: number = 0,
+): number {
+  const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
+  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
+  // 1000*res*def*stack number*MV%
+  const baseModifier = 1000;
+  // const modifierByLevelAndStacks = getSpectroFrazzleModifierByLevelByStacks(
+  //   charLevel,
+  //   stacks,
+  // );
+  return baseModifier * resistModifier * defModifier * stacks * motionValue;
+}
