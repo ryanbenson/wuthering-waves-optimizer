@@ -478,7 +478,8 @@
           :all-damages="allDamages"
           :rotations-list="rotationsList"
           :chosen-char="chosenChar"
-          :chosen-echo-name="mainEcho"></CalculatorDamages>
+          :chosen-echo-name="mainEcho"
+          :is-missing-spectro-data="isMissingSpectroData"></CalculatorDamages>
       </div>
     </div>
     <div class="results">
@@ -516,7 +517,8 @@
         :all-damages="allDamages"
         :rotations-list="rotationsList"
         :chosen-char="chosenChar"
-        :chosen-echo-name="mainEcho"></CalculatorDamages>
+        :chosen-echo-name="mainEcho"
+        :is-missing-spectro-data="isMissingSpectroData"></CalculatorDamages>
     </div>
   </div>
 </template>
@@ -632,6 +634,7 @@ export default defineComponent({
     // elemental effects
     const isSpectroFrazzleEnabled = ref(false);
     const spectroFrazzleStacks = ref(0);
+    const isMissingSpectroData = ref(false);
 
     charactersList.value = getCharactersAvailable();
 
@@ -1721,11 +1724,15 @@ export default defineComponent({
 
       // add any elemental effects
       if (isSpectroFrazzleEnabled.value && spectroFrazzleStacks.value > 0) {
+        isMissingSpectroData.value = false;
         // get the MV based on stacks and character level
         const spectroFrazzleMv = getSpectroFrazzleModifierByLevelByStacks(
           characterLevel.value,
           spectroFrazzleStacks.value,
         );
+        if (!spectroFrazzleMv) {
+          isMissingSpectroData.value = true;
+        }
         if (spectroFrazzleMv) {
           const spectroFrazzleAttack = {
             key: "ElementalEffectSpectroFrazzle",
@@ -2022,6 +2029,7 @@ export default defineComponent({
       toggleOptionsMenu,
       // elemental effects
       isSpectroFrazzleEnabled,
+      isMissingSpectroData,
     };
   },
 });

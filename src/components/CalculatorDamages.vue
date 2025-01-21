@@ -356,7 +356,10 @@
     </table>
   </template>
 
-  <template v-if="allDamages?.value?.elementalReactions?.length">
+  <template
+    v-if="
+      allDamages?.value?.elementalReactions?.length || isMissingSpectroData
+    ">
     <h4 class="damage__title pt-8">
       <span class="text-lg font-bold">Elemental Effects</span>
       <span
@@ -377,7 +380,17 @@
         class="card-body"
         v-html="chosenChar.value?.elementalReactions?.description"></div>
     </div>
-    <table class="calculator__damages table table-zebra table-sm">
+    <div
+      v-if="isMissingSpectroData"
+      class="card card-bordered card-compact shadow my-6 bg-primary">
+      <div class="card-body text-white">
+        We do not have Spectro Frazzle data for this character level. Join the
+        Discord and help us fill out this data!
+      </div>
+    </div>
+    <table
+      v-if="!isMissingSpectroData"
+      class="calculator__damages table table-zebra table-sm">
       <thead>
         <tr>
           <th>&nbsp;</th>
@@ -539,6 +552,10 @@ export default {
     chosenEchoName: {
       type: String,
       default: null,
+    },
+    isMissingSpectroData: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {

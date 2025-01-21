@@ -483,8 +483,10 @@ export function getSpectroFrazzleModifierByLevelByStacks(
   charLevel: string,
   stacks: number,
 ): number | null {
+  // remove any + since ascension doesn't affect the data
+  const characterLevel = charLevel.replace("+", "");
   const levelScalingFactors: Record<string, Record<number, number>> = {
-    // TODO: Add the reset of the levels, and support ascension (e.g. 60+)
+    // TODO: Add the reset of the levels
     "60": {
       10: 10.43,
       9: 10.46,
@@ -496,6 +498,18 @@ export function getSpectroFrazzleModifierByLevelByStacks(
       3: 11.0,
       2: 11.41,
       1: 12.63,
+    },
+    "70": {
+      10: 26.81,
+      9: 26.86,
+      8: 26.95,
+      7: 27.06,
+      6: 27.22,
+      5: 27.43,
+      4: 27.7,
+      3: 28.21,
+      2: 29.25,
+      1: 32.35,
     },
     "80": {
       10: 52.04,
@@ -522,7 +536,7 @@ export function getSpectroFrazzleModifierByLevelByStacks(
       1: 113.12,
     },
   };
-  const modifier = levelScalingFactors?.[charLevel]?.[stacks] ?? null;
+  const modifier = levelScalingFactors?.[characterLevel]?.[stacks] ?? null;
   if (!modifier) {
     return null;
   }
