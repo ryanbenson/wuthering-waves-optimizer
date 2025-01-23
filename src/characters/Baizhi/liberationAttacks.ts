@@ -37,6 +37,8 @@ export const liberationAttacks = {
         "10": "1.2%",
       },
       attribute: "hp",
+      type: "Liberation",
+      subType: "Coordinated",
       requiresResonanceChain: "SequenceNode4EternalVerity",
     },
     {
