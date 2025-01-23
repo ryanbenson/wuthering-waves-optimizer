@@ -45,9 +45,8 @@ export const resonanceChains = [
         modifierValue: 0.2,
       },
       {
-        modifier: "DMGBonus:MaxHP",
-        modifySpecificTalents: ["RemnantEntitiesDamage"],
-        modifierValue: 0.012,
+        modifier: "EnableAttack",
+        modifierValue: ["SequenceNode4EternalVerity"],
       },
     ],
     minStacks: 0,

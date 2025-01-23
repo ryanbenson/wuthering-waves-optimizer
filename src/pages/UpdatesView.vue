@@ -109,7 +109,7 @@
       </li>
       <li>
         Fixes an S4 bug on Baizhi, removes the 20% multiplier change from the
-        damage.
+        damage. And fixes her S4 to properly add a new coordianted attack.
       </li>
     </ul>
     <h3>January 21, 2025</h3>
