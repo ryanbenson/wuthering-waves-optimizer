@@ -1587,7 +1587,9 @@ CD: <span class="param">25</span>s.</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareCrownless.webp",
-    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare Uncrowned, dealing <span class="Highlight">175.00%/201.25%/227.50%/253.75%/280.00%</span> <span class="Dark">Havoc</span> damage to the enemy in front. When the first character to equip this Sound Corpse skill, the current character's <span class="Dark">Havoc</span> damage bonus increases by <span class="Highlight">12.00%</span>, and the Basic attack damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    details: `<span class="description">Transform into Nightmare: Crownless and attack enemies in front, dealing <span class="param">147.00%/176.40%/205.80%/235.20%/264.60%</span> Havoc DMG. The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Havoc DMG Bonus and <span class="param">12.00%</span> Basic Attack DMG Bonus.
+This skill has <span class="param">3</span> initial charges, replenished once every <span class="param">12</span>s, max <span class="param">3</span> charges. When Nightmare: Crownless hits a target, DMG dealt by this skill is increased by <span class="param">20.00%</span>. This effect lasts for <span class="param">2</span>s and does not stack.
+CD: <span class="param">12</span>s.</span>`,
     modifiers: [
       {
         modifier: "Havoc",
@@ -1600,9 +1602,9 @@ CD: <span class="param">25</span>s.</span>`,
     ],
     actions: [
       {
-        key: "NightmareUncrownedDMG",
-        label: "Nightmare Uncrowned DMG",
-        description: `Use the Sound Corpse skill to transform into Nightmare Uncrowned, dealing <span class="Highlight">147.00%/176.40%/205.80%/235.20%/264.60%</span> <span class="Dark">Havoc</span> damage to the enemy in front`,
+        key: "NightmareCrownlessAttackDMG",
+        label: "Nightmare Crownless Attack DMG",
+        description: `Transform into Nightmare: Crownless and attack enemies in front, dealing <span class="param">147.00%/176.40%/205.80%/235.20%/264.60%</span> Havoc DMG.`,
         talents: {
           "1": "147.00%",
           "2": "176.40%",
@@ -1622,7 +1624,9 @@ CD: <span class="param">25</span>s.</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareFeilianBeringal.webp",
-    details: `<span class="description">Use the Sound Corpse skill to summon Nightmare Feilian Ape to attack the enemy, causing <span class="Highlight">91.20%/104.88%/118.56%/132.24%/145.92%</span> of <span class="Wind">Aero</span> damage; the remaining "Wind Whirl Banyan" will continue to attack surrounding enemies, causing 5 stages of <span class="Highlight">12.16%/13.98%/15.81%/17.63%/19.46%</span> of <span class="Wind">Aero</span> damage.<br>When the first character to equip this Sound Corpse skill, the current character's <span class="Wind">Aero</span> damage bonus increases by 12.00%, and the heavy attack damage bonus increases by 12.00%. Skill Cooldown: 20 seconds</span>`,
+    details: `<span class="description">Summon a Nightmare: Feilian Beringal to attack enemies, dealing <span class="param">91.20%/109.44%/127.68%/145.92%/164.16%</span> Aero DMG. The remaining Whirlwind Beam will continuously attack surrounding enemies up to 5 times, each dealing <span class="param">12.16%/14.59%/17.02%/19.46%/21.89%</span> Aero DMG.
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Aero DMG Bonus and <span class="param">12.00%</span> Heavy Attack DMG Bonus.
+CD: <span class="param">20</span>s.</span>`,
     modifiers: [
       {
         modifier: "Aero",
@@ -1635,29 +1639,29 @@ CD: <span class="param">25</span>s.</span>`,
     ],
     actions: [
       {
-        key: "NightmareFeilianDMG",
-        label: "Sound Corpse DMG",
-        description: `Use the Sound Corpse skill to summon Nightmare Feilian Ape to attack the enemy, causing <span class="Highlight">91.20%/104.88%/118.56%/132.24%/145.92%</span> of <span class="Wind">Aero</span> damage.`,
+        key: "NightmareFeilianAttackDMG",
+        label: "Nightmare Feilian Attack DMG",
+        description: `Summon a Nightmare: Feilian Beringal to attack enemies, dealing <span class="param">91.20%/109.44%/127.68%/145.92%/164.16%</span> Aero DMG.`,
         talents: {
           "1": "91.20%",
-          "2": "104.88%",
-          "3": "118.56%",
-          "4": "132.24%",
-          "5": "145.92%",
+          "2": "109.44%",
+          "3": "127.68%",
+          "4": "145.92%",
+          "5": "164.16%",
         },
         type: "Echo",
         element: "Aero",
       },
       {
-        key: "NightmareFeilianWindWhirlBanyanDMG",
-        label: "Wind Whirl Banyan DMG",
-        description: `The remaining "Wind Whirl Banyan" will continue to attack surrounding enemies, causing 5 stages of <span class="Highlight">12.16%/13.98%/15.81%/17.63%/19.46%</span> of <span class="Wind">Aero</span> damage.`,
+        key: "NightmareFeilianWhirlwindDMG",
+        label: "Nightmare Feilian Whirlwind DMG",
+        description: `The remaining Whirlwind Beam will continuously attack surrounding enemies up to 5 times, each dealing <span class="param">12.16%/14.59%/17.02%/19.46%/21.89%</span> Aero DMG.`,
         talents: {
           "1": "12.16%*5",
-          "2": "13.98%*5",
-          "3": "15.81%*5",
-          "4": "17.63%*5",
-          "5": "19.46%*5",
+          "2": "14.59%*5",
+          "3": "17.02%*5",
+          "4": "19.46%*5",
+          "5": "21.89%*5",
         },
         type: "Echo",
         element: "Aero",
@@ -1708,7 +1712,10 @@ CD: <span class="param">25</span>s.</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareInfernoRider.webp",
-    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare Burning Knight, leap up and deal <span class="Highlight">332.00%/381.80%/431.60%/481.40%/531.20%</span> of <span class="Fire">Fusion</span> damage to the enemy in front. When the first character to equip this Sound Corpse skill, the current character's <span class="Fire">Fusion</span> damage bonus increases by <span class="Highlight">12.00%</span>, and the Resonance Skill damage bonus increases by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    details: `<span class="description">Transform into Nightmare: Inferno Rider and jump to attack enemies in front, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Fusion DMG.
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Fusion DMG Bonus and <span class="param">12.00%</span> Resonance Skill DMG Bonus.
+Hold Echo Skill to transform into Nightmare: Inferno Rider and enter Riding Mode. When exiting Riding Mode, deal <span class="param">157.50%/189.00%/220.50%/252.00%/283.50%</span> Fusion DMG to enemies in front.
+CD: <span class="param">25</span>s.</span>`,
     modifiers: [
       {
         modifier: "Fusion",
@@ -1721,15 +1728,29 @@ CD: <span class="param">25</span>s.</span>`,
     ],
     actions: [
       {
-        key: "NightmareBurningKnightDMG",
-        label: "Nightmare Burning Knight DMG",
-        description: `Use the Sound Corpse skill to transform into Nightmare Burning Knight, leap up and deal <span class="Highlight">332.00%/381.80%/431.60%/481.40%/531.20%</span> of <span class="Fire">Fusion</span> damage to the enemy in front.`,
+        key: "NightmareInfernoRiderJumpDMG",
+        label: "Nightmare Inferno Rider Jump DMG",
+        description: `Transform into Nightmare: Inferno Rider and jump to attack enemies in front, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Fusion DMG.`,
         talents: {
-          "1": "332.00%",
-          "2": "381.80%",
-          "3": "431.60%",
-          "4": "481.40%",
-          "5": "531.20%",
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+      {
+        key: "NightmareInfernoRiderRidingDMG",
+        label: "Nightmare Inferno Rider Riding DMG",
+        description: `Hold Echo Skill to transform into Nightmare: Inferno Rider and enter Riding Mode. When exiting Riding Mode, deal <span class="param">157.50%/189.00%/220.50%/252.00%/283.50%</span> Fusion DMG to enemies in front.`,
+        talents: {
+          "1": "157.50%",
+          "2": "189.00%",
+          "3": "220.50%",
+          "4": "252.00%",
+          "5": "283.50%",
         },
         type: "Echo",
         element: "Fusion",
@@ -1743,9 +1764,9 @@ CD: <span class="param">25</span>s.</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareMourningAix.webp",
-    details: `<span class="description">Transform into Nightmare: Mourning Aix and attack surrounding enemies, dealing <span class="param">152.00%/182.40%/212.80%/243.20%/273.60%</span> Spectro DMG. DMG dealt to enemies inflicted by Spectro Frazzle is increased by <span class="param">100.00%</span>.
+    details: `<span class="description">Summon a Nightmare: Mourning Aix to attack surrounding enemies, dealing <span class="param">152.00%/182.40%/212.80%/243.20%/273.60%</span> Spectro DMG. DMG dealt to enemies inflicted by Spectro Frazzle is increased by <span class="param">100.00%</span>.
 The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Spectro DMG Bonus.
-CD: <span class="param">25</span>s.</span>`,
+CD: <span class="param">20</span>s.</span>`,
     modifiers: [
       {
         modifier: "Spectro",
@@ -1754,9 +1775,9 @@ CD: <span class="param">25</span>s.</span>`,
     ],
     actions: [
       {
-        key: "NightmareScreamingBirdDMG",
-        label: "Nightmare Screaming Bird DMG",
-        description: `Transform into Nightmare: Mourning Aix and attack surrounding enemies, dealing <span class="param">152.00%/182.40%/212.80%/243.20%/273.60%</span> Spectro DMG.`,
+        key: "NightmareMourningAixAttackDMG",
+        label: "Nightmare Mourning Aix Attack DMG",
+        description: `Summon a Nightmare: Mourning Aix to attack surrounding enemies, dealing <span class="param">152.00%/182.40%/212.80%/243.20%/273.60%</span> Spectro DMG.`,
         talents: {
           "1": "152.00%",
           "2": "182.40%",
@@ -1768,8 +1789,8 @@ CD: <span class="param">25</span>s.</span>`,
         element: "Spectro",
       },
       {
-        key: "NightmareScreamingBirdDMG",
-        label: "Light Noise Nightmare Screaming Bird DMG",
+        key: "NightmareMourningAixBuffedAttackDMG",
+        label: "Nightmare Mourning Aix Buffed Attack DMG",
         description: `DMG dealt to enemies inflicted by Spectro Frazzle is increased by <span class="param">100.00%</span>.`,
         talents: {
           "1": "304.00%",
@@ -1827,7 +1848,9 @@ CD: <span class="param">25</span>s.</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareThunderingMephis.webp",
-    details: `<span class="description">Use the Sound Corpse skill to transform into Nightmare Cloud Flash Scale, causing <span class="Highlight">267.00%/307.05%/347.10%/387.15%/427.20%</span> <span class="Thunder">Electro</span> damage to the enemy in front.<br>When the first character to equip this Sound Corpse skill, the <span class="Thunder">Electro</span> damage bonus of the current character is increased by <span class="Highlight">12.00%</span>, and the Resonance Liberation damage bonus is increased by <span class="Highlight">12.00%</span>. Skill Cooldown: 20 seconds</span>`,
+    details: `<span class="description">Transform into Nightmare: Thundering Mephis and attack enemies in front, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Electro DMG.
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Electro DMG Bonus and <span class="param">12.00%</span> Resonance Liberation DMG Bonus.
+CD: <span class="param">25</span>s.</span>`,
     modifiers: [
       {
         modifier: "Electro",
@@ -1840,15 +1863,15 @@ CD: <span class="param">25</span>s.</span>`,
     ],
     actions: [
       {
-        key: " NightmareCloudFlashScaleDMG",
-        label: " Nightmare Cloud Flash Scale DMG",
-        description: `Use the Sound Corpse skill to transform into Nightmare Cloud Flash Scale, causing <span class="Highlight">267.00%/307.05%/347.10%/387.15%/427.20%</span> <span class="Thunder">Electro</span> damage to the enemy in front.`,
+        key: "NightmareThunderingMephisAttackDMG",
+        label: "Nightmare Thundering Mephis Attack DMG",
+        description: `Transform into Nightmare: Thundering Mephis and attack enemies in front, dealing <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Electro DMG.`,
         talents: {
-          "1": "267.00%",
-          "2": "307.05%",
-          "3": "347.10%",
-          "4": "387.15%",
-          "5": "427.20%",
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
         },
         type: "Echo",
         element: "Electro",

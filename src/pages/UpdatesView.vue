@@ -101,6 +101,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 23, 2025</h3>
+    <ul>
+      <li>
+        Updates a few Nightmare echoes. Some text and attack motion values were
+        off.
+      </li>
+    </ul>
     <h3>January 21, 2025</h3>
     <ul>
       <li>Releases Spectro Frazzle support</li>
