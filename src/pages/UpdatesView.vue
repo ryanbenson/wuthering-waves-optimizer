@@ -107,6 +107,10 @@
         Updates a few Nightmare echoes. Some text and attack motion values were
         off.
       </li>
+      <li>
+        Fixes an S4 bug on Baizhi, removes the 20% multiplier change from the
+        damage.
+      </li>
     </ul>
     <h3>January 21, 2025</h3>
     <ul>

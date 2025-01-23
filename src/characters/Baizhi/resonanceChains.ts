@@ -41,10 +41,7 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "RemnantEntitiesDamage",
-          "RemnantEntitiesHealing",
-        ],
+        modifySpecificTalents: ["RemnantEntitiesHealing"],
         modifierValue: 0.2,
       },
       {
