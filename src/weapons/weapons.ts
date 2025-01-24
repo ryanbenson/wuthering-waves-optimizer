@@ -10,7 +10,7 @@ export const swordsList = {
     { key: "FablesofWisdom", name: "Fables of Wisdom" },
     { key: "Lumingloss", name: "Lumingloss" },
     { key: "LunarCutter", name: "Lunar Cutter" },
-    { key: "ScaleSlasher", name: "Scale Slasher" },
+    { key: "Overture", name: "Overture" },
     { key: "SomnoireAnchor", name: "Somnoire Anchor" },
     { key: "Sword18", name: "Sword #18" },
   ],
