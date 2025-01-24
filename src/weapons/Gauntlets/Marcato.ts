@@ -8,6 +8,25 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Ceaseless Aria",
   passiveValue:
     "When Resonance Skill is released, restores Concerto Energy by 8/10/12/14/16. This effect can be triggered 1 time every 20s.",
+  passiveData: [
+    {
+      key: "MarcatoConcertoEnergy",
+      hasStacks: true,
+      modifier: null,
+      modifierByRefinement: {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0,
+      },
+      minStacks: 0,
+      maxStacks: 1,
+      details:
+        "When Resonance Skill is released, restores Concerto Energy by 8/10/12/14/16. This effect can be triggered 1 time every 20s.",
+      alwaysEnabled: true,
+    },
+  ]
 };
 
 const weaponData: WeaponData = {

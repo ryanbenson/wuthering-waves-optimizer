@@ -24,7 +24,7 @@ interface WeaponInfo {
 interface WeaponPassiveData {
   key: string;
   hasStacks: boolean;
-  modifier: string;
+  modifier: string | null;
   modifierByRefinement: WeaponPassiveModifierByRefinement;
   minStacks?: number;
   maxStacks?: number;
