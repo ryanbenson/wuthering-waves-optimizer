@@ -573,8 +573,8 @@ export function calcMidnightVeilDMG() {
     totalDamage: 100,
     critDamage: 100,
     avgDamage: 100,
-    detailedCalculation: "<strong>5</strong> x 20",
-    detailedCalculationCrit: "<strong>5</strong> x 20",
-    detailedCalculationAvg: "<strong>5</strong> x 20",
+    detailedCalculation: "<strong>5</strong> * 20",
+    detailedCalculationCrit: "<strong>5</strong> * 20",
+    detailedCalculationAvg: "<strong>5</strong> * 20",
   };
 }
