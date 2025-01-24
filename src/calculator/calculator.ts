@@ -569,12 +569,12 @@ export function getSpectroFrazzleDamage(
  */
 export function calcMidnightVeilDMG() {
   return {
-    instanceDamage: 5,
-    totalDamage: 5,
-    critDamage: 5,
-    avgDamage: 5,
-    detailedCalculation: "5",
-    detailedCalculationCrit: "5",
-    detailedCalculationAvg: "5",
+    instanceDamage: 100,
+    totalDamage: 100,
+    critDamage: 100,
+    avgDamage: 100,
+    detailedCalculation: "<strong>5</strong> x 20",
+    detailedCalculationCrit: "<strong>5</strong> x 20",
+    detailedCalculationAvg: "<strong>5</strong> x 20",
   };
 }
