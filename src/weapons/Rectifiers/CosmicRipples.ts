@@ -1,6 +1,7 @@
 const weaponInfo: WeaponInfo = {
   name: "Cosmic Ripples",
-  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/CosmicRipples.png",
+  image:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/CosmicRipples.png",
   description:
     "Take hold of the frozen Rectifier, a powerful tool imbued with the energy of the celestial lake. Let it lead you to ultimate knowledge and vanquish all obstacles in your path.",
   type: "Rectifier",
@@ -9,6 +10,20 @@ const weaponInfo: WeaponInfo = {
   passiveValue:
     "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. When hitting a target with Basic Attacks, increases Basic Attack DMG Bonus by 3.2%/4%/4.8%/5.6%/6.4%, stacking up to 5 time(s). This effect lasts for 8s and can be triggered 1 time(s) every 0.5s.",
   passiveData: [
+    {
+      key: "CosmicRipplesEnergyRegen",
+      hasStacks: false,
+      modifier: "EnergyRegen",
+      modifierByRefinement: {
+        "1": 0.128,
+        "2": 0.16,
+        "3": 0.192,
+        "4": 0.224,
+        "5": 0.256,
+      },
+      details: "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%.",
+      alwaysEnabled: true,
+    },
     {
       key: "CosmicRipplesBasicAttackDMGBonus",
       hasStacks: true,

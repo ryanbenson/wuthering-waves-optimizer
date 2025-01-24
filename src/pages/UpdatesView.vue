@@ -101,6 +101,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 24, 2025</h3>
+    <ul>
+      <li>
+        Adds missing enery recharge on standard 5* weapons that were missing it
+        (broadblade, gauntlet, and recitifer)
+      </li>
+      <li>Updates Magic Box DMG to be set to 5.</li>
+    </ul>
     <h3>January 23, 2025</h3>
     <ul>
       <li>

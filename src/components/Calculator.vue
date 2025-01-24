@@ -533,6 +533,7 @@ import {
   calcShield,
   getSpectroFrazzleDamage,
   getSpectroFrazzleModifierByLevelByStacks,
+  calcMidnightVeilDMG,
 } from "../calculator/calculator";
 import {
   getCharactersAvailable,
@@ -1444,6 +1445,11 @@ export default defineComponent({
             DEF: modifyBaseDef,
             DEF_FLAT: modifyBaseDefFlat,
           });
+        }
+
+        // special calc for MidnightVeilDMG
+        if (attack.key === "InherentSkillSuperAttractiveMagicBox") {
+          return calcMidnightVeilDMG();
         }
 
         // set the multiplier hard set here

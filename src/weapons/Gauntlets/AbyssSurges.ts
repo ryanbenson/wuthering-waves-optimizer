@@ -1,6 +1,7 @@
 const weaponInfo: WeaponInfo = {
   name: "Abyss Surges",
-  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/AbyssSurges.png",
+  image:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/AbyssSurges.png",
   description:
     "The Gauntlets pulsate with an uncontrollable force, emanating unspeakable anger from the depths of the unknown lake. As you don them, unleash your fury on helpless enemies. Feel its power surge through you.",
   type: "Gauntlets",
@@ -9,6 +10,20 @@ const weaponInfo: WeaponInfo = {
   passiveValue:
     "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. When hitting a target with Resonance Skill, increases Basic Attack DMG Bonus by 10%/12.5%/15%/17.5%/20%, lasting for 8s. When hitting a target with Basic Attacks, increases Resonance Skill DMG Bonus by 10%/12.5%/15%/17.5%/20%, lasting for 8s.",
   passiveData: [
+    {
+      key: "AbyssSurgesEnergyRegen",
+      hasStacks: false,
+      modifier: "EnergyRegen",
+      modifierByRefinement: {
+        "1": 0.128,
+        "2": 0.16,
+        "3": 0.192,
+        "4": 0.224,
+        "5": 0.256,
+      },
+      details: "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%.",
+      alwaysEnabled: true,
+    },
     {
       key: "AbyssSurgesBasicAttackDMGBonus",
       hasStacks: false,

@@ -1,6 +1,7 @@
 const weaponInfo: WeaponInfo = {
   name: "Lustrous Razor",
-  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/LustrousRazor.png",
+  image:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/LustrousRazor.png",
   description:
     "Gaze upon this Broadblade, its sharp edges glistening in the frigid air. As you wield it, you feel the power coursing through like a frozen river.",
   type: "Broadblade",
@@ -9,6 +10,20 @@ const weaponInfo: WeaponInfo = {
   passiveValue:
     "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%. When Resonance Skill is released, Resonance Liberation DMG is increased by 7%/8.75%/10.5%/12.25%/14%, stacking up to 3 times. This effect lasts for 12s.",
   passiveData: [
+    {
+      key: "LustrousRazorEnergyRegen",
+      hasStacks: false,
+      modifier: "EnergyRegen",
+      modifierByRefinement: {
+        "1": 0.128,
+        "2": 0.16,
+        "3": 0.192,
+        "4": 0.224,
+        "5": 0.256,
+      },
+      details: "Increases Energy Regen by 12.8%/16%/19.2%/22.4%/25.6%.",
+      alwaysEnabled: true,
+    },
     {
       key: "LustrousRazorResonanceLiberationDMGBonus",
       hasStacks: true,

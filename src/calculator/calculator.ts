@@ -562,3 +562,19 @@ export function getSpectroFrazzleDamage(
   // );
   return baseModifier * resistModifier * defModifier * stacks * motionValue;
 }
+
+/**
+ * Calculate the damage for MidnightVeilDMG
+ * It's a special utility attack that only does 5 damage
+ */
+export function calcMidnightVeilDMG() {
+  return {
+    instanceDamage: 5,
+    totalDamage: 5,
+    critDamage: 5,
+    avgDamage: 5,
+    detailedCalculation: "5",
+    detailedCalculationCrit: "5",
+    detailedCalculationAvg: "5",
+  };
+}
