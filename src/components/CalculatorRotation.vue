@@ -51,6 +51,8 @@
               :order="action.order"
               :count="action.count"
               :buffs="action.buffs"
+              :ignore-self-buffs="action.excludeSelfBuffs"
+              :ignore-team-buffs="action.excludeTeamBuffs"
               @action-update="handleActionUpdate"
               @action-update:sequence="handleSequenceUpdate"
               @remove-action="handleRemoveAction"></CalculatorRotationAction>
