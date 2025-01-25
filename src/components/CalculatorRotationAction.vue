@@ -142,14 +142,14 @@
           Add Buff
         </button>
       </div>
-      <div class="ignore__buffs mt-4">
+      <div class="ignore__buffs mt-2">
         <div class="form-control flex flex-wra flex-row gap-4">
-          <label class="label cursor-pointer flex gap-2">
-            <input v-model="excludeSelfBuffs" type="checkbox" class="checkbox checkbox-sm" @change="onExcludeSelfBuffsChange" />
+          <label v-if="false" class="label cursor-pointer flex gap-2">
+            <input v-model="excludeSelfBuffs" type="checkbox" class="checkbox checkbox-xs" @change="onExcludeSelfBuffsChange" />
             <span class="label-text">Exclude self buffs</span>
           </label>
           <label class="label cursor-pointer flex gap-2">
-            <input v-model="excludeTeamBuffs" type="checkbox" class="checkbox checkbox-sm" @change="onExcludeTeamBuffsChange" />
+            <input v-model="excludeTeamBuffs" type="checkbox" class="checkbox checkbox-xs" @change="onExcludeTeamBuffsChange" />
             <span class="label-text">Exclude team buffs</span>
           </label>
         </div>

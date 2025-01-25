@@ -788,7 +788,12 @@ export default defineComponent({
       }
     };
 
-    const calcCharStats = (returnValue = false, injectStats = null) => {
+    const calcCharStats = (
+      returnValue = false,
+      injectStats = null,
+      ignoreBuffs = {}, // e.g. {ignoreTeamBuffs: true}
+    ) => {
+      const { ignoreTeamBuffs } = ignoreBuffs;
       let stats = {
         attackPercent: 0,
         hpPercent: 0,
@@ -930,7 +935,7 @@ export default defineComponent({
         addBuffs(customBuffs?.value, stats);
       }
 
-      if (teamBuffsData.value) {
+      if (teamBuffsData.value && !ignoreTeamBuffs) {
         addBuffs(teamBuffsData.value, stats);
 
         if (teamBuffsData?.value?.AllAttributeBonus) {
@@ -1031,6 +1036,16 @@ export default defineComponent({
 
       if (returnValue) {
         switch (returnValue) {
+          case "All":
+            const returnedStats = { ...stats };
+            returnedStats.totalAtk = (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
+              stats.attackFlat
+            returnedStats.totalHp = charHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
+            returnedStats.totalDef = charDef * (1 + stats.defPercent / 100) + stats.defFlat;
+            returnedStats.totalCritRate = stats.critRate / 100;
+            returnedStats.totalCritDMG = stats.critDMG / 100;
+            returnedStats.DefIgnore = stats.defIgnore / 100;
+            return returnedStats;
           case "HP":
             return charHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
           case "DEF":
@@ -1080,75 +1095,72 @@ export default defineComponent({
       calcAllDamages();
     };
 
-    const getElementDmgBonusByType = (element) => {
+    const getElementDmgBonusByType = (element, providedStats) => {
       let val = 0;
       switch (element) {
         case "Glacio":
-          val = Glacio.value;
+          val = providedStats?.glacio ?? Glacio.value;
           break;
         case "Fusion":
-          val = Fusion.value;
+          val = providedStats?.fusion ?? Fusion.value;
           break;
         case "Electro":
-          val = Electro.value;
+          val = providedStats?.electro ?? Electro.value;
           break;
         case "Aero":
-          val = Aero.value;
+          val = providedStats?.aero ?? Aero.value;
           break;
         case "Spectro":
-          val = Spectro.value;
+          val = providedStats?.spectro ?? Spectro.value;
           break;
         case "Havoc":
-          val = Havoc.value;
+          val = providedStats?.havoc ?? Havoc.value;
           break;
       }
 
       return val / 100;
     };
 
-    const getDamageTypeBonusByType = (type) => {
+    const getDamageTypeBonusByType = (type, providedStats) => {
       let val = 0;
       switch (type) {
         case "Basic":
-          val = BasicAttackDMGBonus.value;
+          val = providedStats?.basicAttackDMGBonus ?? BasicAttackDMGBonus.value;
           break;
         case "Heavy":
-          val = HeavyAttackDMGBonus.value;
+          val = providedStats?.heavyAttackDMGBonus ?? HeavyAttackDMGBonus.value;
           break;
         case "Skill":
-          val = ResonanceSkillDMGBonus.value;
+          val = providedStats?.resonanceSkillDMGBonus ?? ResonanceSkillDMGBonus.value;
           break;
         case "Intro":
-          val = IntroSkillDMGBonus.value;
+          val = providedStats?.introSkillDMGBonus ?? IntroSkillDMGBonus.value;
           break;
         case "Outro":
-          val = OutroSkillDMGBonus.value;
+          val = providedStats?.outroSkillDMGBonus ?? OutroSkillDMGBonus.value;
           break;
         case "Liberation":
-          val = ResonanceLiberationDMGBonus.value;
+          val = providedStats?.resonanceLiberationDMGBonus ?? ResonanceLiberationDMGBonus.value;
           break;
         // do not divide this by 100
         case "Healing":
-          return healingBonus.value;
+          return providedStats?.healingBonus ?? healingBonus.value;
         case "Shield":
-          return shieldBonus.value;
+          return providedStats?.shieldBonus ?? shieldBonus.value;
       }
 
       return val / 100;
     };
 
-    const getDamageValByAttr = (attribute = "attack") => {
+    const getDamageValByAttr = (attribute = "attack", providedStats) => {
       switch (attribute) {
         case "defense":
-          return totalDef.value;
-          break;
+          return providedStats?.totalDef ?? totalDef.value;
         case "hp":
-          return totalHp.value;
-          return;
+          return providedStats?.totalHp ?? totalHp.value;
         case "attack":
         default:
-          return totalAtk.value;
-          break;
+          return providedStats?.totalAtk ?? totalAtk.value;
       }
     };
 
@@ -1162,9 +1174,10 @@ export default defineComponent({
         hasDynamicTalent = false,
         count = 1,
       ) => {
-        const { excludeSelfBuffs, excludeTeamBuffs } = attack;
-        if (excludeSelfBuffs || excludeTeamBuffs) {
-          console.log(excludeSelfBuffs, excludeTeamBuffs);
+        const { excludeTeamBuffs } = attack;
+        let statsWithoutTeamBuffs = null;
+        if (excludeTeamBuffs) {
+          statsWithoutTeamBuffs = calcCharStats("All", null, { ignoreTeamBuffs: true });
         }
         let attackType = attack.type;
         // is there an attack type override? if so, update it
@@ -1185,10 +1198,9 @@ export default defineComponent({
         // an attack can have its own element override
         const attackElement =
           attack?.element ?? chosenChar.value?.basic?.element;
-
-        let elementalDmgBonusDecimal = getElementDmgBonusByType(attackElement);
-        const atkDefHpVal = getDamageValByAttr(attack?.attribute);
-        let totalSkillDmgBonus = getDamageTypeBonusByType(attackType);
+        let elementalDmgBonusDecimal = getElementDmgBonusByType(attackElement, statsWithoutTeamBuffs);
+        const atkDefHpVal = getDamageValByAttr(attack?.attribute, statsWithoutTeamBuffs);
+        let totalSkillDmgBonus = getDamageTypeBonusByType(attackType, statsWithoutTeamBuffs);
         let talent;
         let talentTree = attack?.talents;
 
@@ -1304,7 +1316,15 @@ export default defineComponent({
           ] ?? 0;
         let instanceDmgCritRate =
           totalCritRate.value + specificSkillExtraCritRate;
+        if (excludeTeamBuffs) {
+          instanceDmgCritRate = statsWithoutTeamBuffs?.totalCritRate ?? 0;
+          instanceDmgCritRate += specificSkillExtraCritRate;
+        }
         let instanceDmgCritDMG = totalCritDMG.value + specificSkillExtraCritDMG;
+        if (excludeTeamBuffs) {
+          instanceDmgCritDMG = statsWithoutTeamBuffs?.totalCritDMG ?? 0;
+          instanceDmgCritDMG += specificSkillExtraCritDMG;
+        }
         const talentModifierMultiply =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
@@ -1345,7 +1365,7 @@ export default defineComponent({
           teamBuffResistShredForCharElement +
           resonanceChainResistShredForCharElement;
         // damage deepen
-        const baseTotalDeepenEffect = TotalDeepenEffect.value;
+        let baseTotalDeepenEffect = TotalDeepenEffect.value;
         // so far damage deepen is from team buffs, add more later if needed
         // get element first, then any skill specific ones next, then add together
         // NOTE: all outro attacks cannot use the DMGDeepen:element|attackType
@@ -1358,6 +1378,7 @@ export default defineComponent({
         let teamBuffDmgDeepenForCoordinatedAttack =
           teamBuffsData.value?.[`DMGDeepen:Coordinated`] ?? 0;
         if (excludeTeamBuffs) {
+          baseTotalDeepenEffect = statsWithoutTeamBuffs?.totalDeepenEffect ?? 0;
           teamBuffDmgDeepenForCharElement = 0;
           teamBuffDmgDeepenForAttackType = 0;
           teamBuffDmgDeepenForCoordinatedAttack = 0;
@@ -1412,7 +1433,7 @@ export default defineComponent({
           charBuffsData.value?.specificTalentBuffs?.[
             `${attack.key}:DEF_FLAT`
           ] ?? 0;
-        // if there are any attack-level buffs for atk, hp, or def (% or flat, upate them)
+        // if there are any attack-level buffs for atk, hp, or def (% or flat, update them)
         if (attack?.buffs) {
           modifyBaseAtk += attack.buffs?.ATK ?? 0;
           modifyBaseHp += attack.buffs?.HP ?? 0;
@@ -1422,23 +1443,29 @@ export default defineComponent({
           modifyBaseDefFlat += attack.buffs?.DEF_FLAT ?? 0;
         }
         let finalAtkDefHpVal = atkDefHpVal;
-        if (modifyBaseAtk) {
+        if (modifyBaseAtk || modifyBaseAtkFlat) {
           finalAtkDefHpVal = calcCharStats("ATK", {
-            ATK: modifyBaseAtk,
-            ATK_FLAT: modifyBaseAtkFlat,
-          });
+              ATK: modifyBaseAtk,
+              ATK_FLAT: modifyBaseAtkFlat,
+            },
+            { ignoreTeamBuffs: excludeTeamBuffs }
+          );
         }
-        if (modifyBaseHp) {
+        if (modifyBaseHp || modifyBaseHpFlat) {
           finalAtkDefHpVal = calcCharStats("HP", {
-            HP: modifyBaseHp,
-            HP_FLAT: modifyBaseHpFlat,
-          });
+              HP: modifyBaseHp,
+              HP_FLAT: modifyBaseHpFlat,
+            },
+            { ignoreTeamBuffs: excludeTeamBuffs }
+          );
         }
-        if (modifyBaseDef) {
+        if (modifyBaseDef || modifyBaseDefFlat) {
           finalAtkDefHpVal = calcCharStats("DEF", {
-            DEF: modifyBaseDef,
-            DEF_FLAT: modifyBaseDefFlat,
-          });
+              DEF: modifyBaseDef,
+              DEF_FLAT: modifyBaseDefFlat,
+            },
+            { ignoreTeamBuffs: excludeTeamBuffs }
+          );
         }
 
         // set the multiplier hard set here
