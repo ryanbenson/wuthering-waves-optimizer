@@ -591,7 +591,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
   "Empyrean Anthem 5 Set": {
     key: "EmpyreanAnthem5Set",
     name: "Empyrean Anthem",
-    details: `Increases the DMG dealt by coordinated attacks by <span class="Highlight">80%</span>. Upon a critical hit of Coordinated Attack, increase the active Resonator's ATK by <span class="Highlight">20%</span> for 4s.`,
+    details: `Increase the Resonator's Coordinated Attack DMG by 80%. Upon a critical hit of Coordinated Attack, increase the active Resonator's ATK by <span class="Highlight">20%</span> for 4s.`,
     passives: [
       {
         key: "EmpyreanAnthem5SetCoordinatedDMGBonus",
@@ -601,8 +601,8 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
             modifierValue: 80,
           },
         ],
-        alwaysEnabled: false,
-        details: `Increases the DMG dealt by coordinated attacks by <span class="Highlight">80%</span>.`,
+        alwaysEnabled: true,
+        details: `Increase the Resonator's Coordinated Attack DMG by 80%.`,
       },
       {
         key: "EmpyreanAnthem5SetATK",

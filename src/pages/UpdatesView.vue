@@ -101,6 +101,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 26, 2025</h3>
+    <ul>
+      <li>Updates Sanhua's outro text.</li>
+      <li>Makes Empyrean Anthem set bonus for coordinated dmg bonus automatically enabled.</li>
+    </ul>
     <h3>January 25, 2025</h3>
     <ul>
       <li>Minor feature: you can now exclude team buffs in a rotation action.</li>

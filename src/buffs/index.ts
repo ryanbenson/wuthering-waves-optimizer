@@ -3,7 +3,7 @@ export const buffsByCharacter = {
     {
       key: "Silversnow",
       name: "Outro: Silversnow",
-      details: `<span class="skilldescription">The next character (or other characters on a nearby team that activates an Outro Skill) gains <span class="Highlight">38% Basic Attack DMG Deepen</span> for 14s, or until the character is switched off field.</span>`,
+      details: `<span class="skilldescription">The incoming Resonator has their Basic Attack DMG Amplified by 38% for 14s or until they are switched out.</span>`,
       hasStacks: false,
       modifiers: [
         {
