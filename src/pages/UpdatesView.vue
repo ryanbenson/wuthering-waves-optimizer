@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>January 27, 2025</h3>
+    <ul>
+      <li>Adds Def Ignore, and Coordinated DMG Bonus as custom buffs options.</li>
+    </ul>
     <h3>January 26, 2025</h3>
     <ul>
       <li>Updates Sanhua's outro text.</li>

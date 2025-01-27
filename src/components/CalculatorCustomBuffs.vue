@@ -170,6 +170,12 @@
       </label>
       <label class="form-control mb-4">
         <div class="label">
+          Coordinated DMG Bonus
+        </div>
+        <input type="number" v-model="CoordinatedDMGBonus" min="0" name="CoordinatedDMGBonus" id="CoordinatedDMGBonus" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
           <span class="label-text mr-2 flex items-center gap-1">
             Damage Amplify
           </span>
@@ -183,6 +189,14 @@
           </span>
         </div>
         <input type="number" v-model="ResistShred" min="0" name="ResistShred" id="ResistShred" class="input input-md input-bordered" />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Defense Ignore
+          </span>
+        </div>
+        <input type="number" v-model="DefIgnore" min="0" name="DefIgnore" id="DefIgnore" class="input input-md input-bordered" />
       </label>
     </div>
   </div>
@@ -258,6 +272,8 @@ export default {
       const HealingBonus = this.HealingBonus ? this.HealingBonus / 100 : 0;
       const DamageAmplify = this.DamageAmplify ? this.DamageAmplify / 100 : 0;
       const ResistShred = this.ResistShred ? this.ResistShred / 100 : 0;
+      const DefIgnore = this.DefIgnore ? this.DefIgnore / 100 : 0;
+      const CoordinatedDMGBonus = this.CoordinatedDMGBonus ? this.CoordinatedDMGBonus / 100 : 0;
       return {
         ATK,
         ATK_FLAT,
@@ -281,6 +297,8 @@ export default {
         HealingBonus,
         DamageAmplify,
         ResistShred,
+        DefIgnore,
+        CoordinatedDMGBonus,
       };
     },
     /**
@@ -632,6 +650,38 @@ export default {
         const data = {
           customBuffs: {
             ResistShred: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for DefIgnore
+     */
+    DefIgnore: {
+      get() {
+        return this.currentCharacter?.customBuffs?.DefIgnore ?? 0;
+      },
+      async set(value) {
+        const data = {
+          customBuffs: {
+            DefIgnore: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for CoordinatedDMGBonus
+     */
+    CoordinatedDMGBonus: {
+      get() {
+        return this.currentCharacter?.customBuffs?.CoordinatedDMGBonus ?? 0;
+      },
+      async set(value) {
+        const data = {
+          customBuffs: {
+            CoordinatedDMGBonus: value,
           },
         };
         await this.setCharacterData(this.character, data);

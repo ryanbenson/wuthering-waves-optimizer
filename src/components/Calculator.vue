@@ -1275,9 +1275,12 @@ export default defineComponent({
         const specificSkillDmgFromResonanceChains =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         // apply echo based coordianted dmg bonus (both echo set and main echo)
+        // as well as custom buffs for coordinated attacks
         let coordinatedEchoDmgBonus = 0;
+        let coordinatedDmgBonusCustomBuffs = 0;
         if (attack?.subType === "Coordinated") {
           coordinatedEchoDmgBonus = echoStats?.value?.CoordinatedDMGBonus ?? 0;
+          coordinatedDmgBonusCustomBuffs = customBuffs?.value?.CoordinatedDMGBonus ?? 0;
         }
         // there are bonuses that are based on Max HP, Max ATK, Max DEF
         // we end up with DMG Bonus %, so we also / 100 in the end
@@ -1325,6 +1328,8 @@ export default defineComponent({
           charBuffsData.value?.specificTalentBuffs?.[
             `${attack.key}:DEFIgnore`
           ] ?? 0;
+        const extraDefIgnoreCustomBuffs =
+          customBuffs.value?.DefIgnore ?? 0;
         const specificSkillExtraCritRate =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:CritRate`
@@ -1355,7 +1360,8 @@ export default defineComponent({
         const totalDefIgnore =
           DefIgnore.value +
           extraDefIgnoreResonanceChain +
-          extraDefIgnoreCharBuff;
+          extraDefIgnoreCharBuff +
+          extraDefIgnoreCustomBuffs;
         let specificSkillDmg =
           specificSkillDmgFromResonanceChains +
           specificSkillDmgFromCharBuffs +
@@ -1369,7 +1375,8 @@ export default defineComponent({
           // echo buffs are in full integers, need to divide since everything else is decimal
           // TODO: when refactoring echoes, move to decimals
           coordinatedEchoDmgBonus / 100 +
-          genericSkillDmgBonusEchoBuff / 100;
+          genericSkillDmgBonusEchoBuff / 100 + 
+          coordinatedDmgBonusCustomBuffs;
         let teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         if (excludeTeamBuffs) {
