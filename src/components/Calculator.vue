@@ -326,43 +326,15 @@
             class="alert alert-success mb-6 text-white p-2 px-4">
             2.0 content is now available!
           </div>
-          <div class="character__selection">
-            <div
-              class="character__selection__avatar"
-              :style="{
-                backgroundImage: `url(https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png)`,
-              }"></div>
-            <div class="character__selection__form">
-              <div class="character__selection__form--character">
-                <select
-                  name="character"
-                  v-model="character"
-                  class="select select-bordered select-sm">
-                  <optgroup label="5 Star">
-                    <option
-                      v-for="char in charactersList.five"
-                      :key="char.key"
-                      :value="char.key">
-                      {{ char.name }}
-                    </option>
-                  </optgroup>
-                  <optgroup label="4 Star">
-                    <option
-                      v-for="char in charactersList.four"
-                      :key="char.key"
-                      :value="char.key">
-                      {{ char.name }}
-                    </option>
-                  </optgroup>
-                </select>
-              </div>
-              <CalculatorCharacterLevel
-                :character="character"
-                @character-level-updated="
-                  handleCharacterLevelUpdated
-                "></CalculatorCharacterLevel>
-            </div>
-          </div>
+          <CalculatorCharacterSelect
+            :character="character"
+            @updated-chosen-character="handleUpdatedCharacter"
+          />
+          <CalculatorCharacterLevel
+          :character="character"
+          @character-level-updated="
+              handleCharacterLevelUpdated
+          "></CalculatorCharacterLevel>
           <CalculatorTalents
             :character="character"
             :key="character"
@@ -536,7 +508,6 @@ import {
   calcMidnightVeilDMG,
 } from "../calculator/calculator";
 import {
-  getCharactersAvailable,
   getCharByName,
 } from "../characters/characters";
 import CalculatorEchoes from "./CalculatorEchoes.vue";
@@ -544,6 +515,7 @@ import CalculatorWeapons from "./CalculatorWeapons.vue";
 import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
+import CalculatorCharacterSelect from "./CalculatorCharacterSelect.vue";
 import CalculatorTalents from "./CalculatorTalents.vue";
 import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import CalculatorEnemy from "./CalculatorEnemy.vue";
@@ -562,6 +534,7 @@ import { resonanceChains } from "../characters/Aalto/resonanceChains";
 export default defineComponent({
   name: "Calculator",
   components: {
+    CalculatorCharacterSelect,
     CalculatorDamages,
     CalculatorEchoes,
     CalculatorEnemy,
@@ -596,7 +569,6 @@ export default defineComponent({
     const mainEcho = ref("");
     const mainEchoRank = ref(5);
     const damage = ref(0);
-    const charactersList = ref([]);
     const rotationsList = ref([]);
     const character = ref("");
     const totalAtk = ref(0);
@@ -636,8 +608,6 @@ export default defineComponent({
     const isSpectroFrazzleEnabled = ref(false);
     const spectroFrazzleStacks = ref(0);
     const isMissingSpectroData = ref(false);
-
-    charactersList.value = getCharactersAvailable();
 
     watch(character, async (charName) => {
       isLoading.value = true;
@@ -2011,6 +1981,10 @@ export default defineComponent({
       calcAllDamages();
     };
 
+    const handleUpdatedCharacter = (chosenCharacter) => {
+      character.value = chosenCharacter;
+    };
+
     const handleUpdatedMainEcho = (chosenEcho) => {
       mainEcho.value = chosenEcho;
       calcAllDamages();
@@ -2033,7 +2007,6 @@ export default defineComponent({
       character,
       characters,
       characterLevel,
-      charactersList,
       chosenChar,
       chosenWeapon,
       rotationsList,
@@ -2059,6 +2032,7 @@ export default defineComponent({
       handleCharacterTalentUpdated,
       handleCustomBuffs,
       handleWeaponUpdated,
+      handleUpdatedCharacter,
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
       handleUpdatedEnemy,
@@ -2125,29 +2099,6 @@ export default defineComponent({
 
 .screen--character {
   overflow: hidden;
-}
-.character__selection {
-  display: grid;
-  grid-template-columns: 100px 1fr;
-  align-items: center;
-  grid-gap: 2rem;
-}
-.character__selection__form--character {
-  margin-bottom: 1rem;
-}
-.character__selection__form {
-  label {
-    margin-left: 0.5rem;
-  }
-}
-.character__selection__avatar {
-  width: 100px;
-  height: 100px;
-  background-repeat: no-repeat;
-  display: block;
-  background-size: contain;
-  border-radius: 100%;
-  border: 1px solid white;
 }
 .results {
   display: block !important;
