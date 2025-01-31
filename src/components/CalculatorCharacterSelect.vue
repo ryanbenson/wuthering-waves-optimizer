@@ -32,12 +32,18 @@
         </select>
         </div>
     </div>
+    <CalculatorCharacterBrowser
+      :character="character"
+      ref="characterBrowser"
+    />
+    <button @click="openCharacterBrowser">Find</button>
 </div>
 </template>
 
 <script>
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import {
   getCharactersAvailable,
   getCharByName,
@@ -48,6 +54,9 @@ export default {
         type: String,
         required: true,
     }
+  },
+  components: {
+    CalculatorCharacterBrowser
   },
   data() {
     return {
@@ -62,6 +71,12 @@ export default {
     handleUpdatedCharacter(e) {
         const character = e.target.value;
         this.$emit('updated-chosen-character', character);
+    },
+    /**
+     * Tells the character browser to open
+     */
+    openCharacterBrowser() {
+      this.$refs.characterBrowser.triggerOpenModal();
     }
   },
   mounted() {
