@@ -20,7 +20,7 @@
             <span class="character__item__set size-6 rounded-full">
               <img :src="elementImage" :class="getElementClass" />
             </span>
-            <span class="character__item__cost size-6 rounded-full">
+            <span class="character__weapon size-6 rounded-full">
               <img
                 :src="weaponImage"
               />
@@ -84,8 +84,8 @@ export default {
 
 <style lang="scss" scoped>
 html[data-theme="light"] {
-  .character__item__sub-stats img {
-    filter: contrast(0);
+  .character__weapon img {
+    filter: invert(1);
   }
 }
 </style>

@@ -224,8 +224,8 @@ html[data-theme="light"] {
   .modal-backdrop {
     opacity: 0.5;
   }
-  .MoonlitClouds {
-    filter: contrast(0);
+  .characters__filter__weapon img {
+    filter: invert(1);
   }
 }
 </style>

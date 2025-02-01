@@ -329,12 +329,9 @@
           <CalculatorCharacterSelect
             :character="character"
             @updated-chosen-character="handleUpdatedCharacter"
+            @character-level-updated="handleCharacterLevelUpdated"
+            class="pb-4"
           />
-          <CalculatorCharacterLevel
-          :character="character"
-          @character-level-updated="
-              handleCharacterLevelUpdated
-          "></CalculatorCharacterLevel>
           <CalculatorTalents
             :character="character"
             :key="character"
@@ -517,7 +514,6 @@ import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
 import CalculatorCharacterSelect from "./CalculatorCharacterSelect.vue";
 import CalculatorTalents from "./CalculatorTalents.vue";
-import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import CalculatorEnemy from "./CalculatorEnemy.vue";
 import CalculatorRotations from "./CalculatorRotations.vue";
 import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
@@ -540,7 +536,6 @@ export default defineComponent({
     CalculatorEnemy,
     CalculatorWeapons,
     CalculatorCharacterBuffs,
-    CalculatorCharacterLevel,
     CalculatorCustomBuffs,
     CalculatorPartyBuffs,
     CalculatorResonanceChains,
