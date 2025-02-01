@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>February 1, 2025</h3>
+    <ul>
+      <li>Adds visual character selection.</li>
+    </ul>
     <h3>January 31, 2025</h3>
     <ul>
       <li>Updates Changli forte text.</li>
