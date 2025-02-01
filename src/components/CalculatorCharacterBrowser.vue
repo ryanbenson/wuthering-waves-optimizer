@@ -211,7 +211,7 @@ export default {
      * Emits: character-browser:chosen-character
      */
     chooseCharacter(character) {
-        this.$emit('character-browser:chosen-character', character.name);
+        this.$emit('character-browser:chosen-character', character.key);
         this.handleClose();
         this.triggerCloseModal();
     }
