@@ -1,64 +1,63 @@
 <template>
-<div class="character__selection">
-  <div class="character__selection__left flex flex-col gap-2">
-    <div
+  <div class="character__selection">
+    <div class="character__selection__left flex flex-col gap-2">
+      <div
         class="character__selection__avatar cursor-pointer"
         :style="{
-        backgroundImage: `url(https://ryanbenson.github.io/wuthering-waves-assets/images/${characterChosen}.png)`,
+          backgroundImage: `url(https://ryanbenson.github.io/wuthering-waves-assets/images/${characterChosen}.png)`,
         }"
-        @click="openCharacterBrowser"
-    >
-    </div>
+        @click="openCharacterBrowser"></div>
 
-    <button @click="openCharacterBrowser" class="btn btn-sm btn--character--find">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 512 512"
-        class="size-4">
-        <path
-          d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
-          fill="#FFFFFF" />
-      </svg>
-      Find
-    </button>
-  </div>
+      <button
+        @click="openCharacterBrowser"
+        class="btn btn-sm btn--character--find">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 512 512"
+          class="size-4">
+          <path
+            d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+            fill="#FFFFFF" />
+        </svg>
+        Find
+      </button>
+    </div>
     <div class="character__selection__form">
-        <div class="character__selection__form--character">
+      <div class="character__selection__form--character">
         <select
-            name="character"
-            v-model="characterChosen"
-            class="select select-bordered select-sm"
-            @input="handleUpdatedCharacter">
-            <optgroup label="5 Star">
+          name="character"
+          v-model="characterChosen"
+          class="select select-bordered select-sm"
+          @input="handleUpdatedCharacter">
+          <optgroup label="5 Star">
             <option
-                v-for="char in charactersList.five"
-                :key="char.key"
-                :value="char.key">
-                {{ char.name }}
+              v-for="char in charactersList.five"
+              :key="char.key"
+              :value="char.key">
+              {{ char.name }}
             </option>
-            </optgroup>
-            <optgroup label="4 Star">
+          </optgroup>
+          <optgroup label="4 Star">
             <option
-                v-for="char in charactersList.four"
-                :key="char.key"
-                :value="char.key">
-                {{ char.name }}
+              v-for="char in charactersList.four"
+              :key="char.key"
+              :value="char.key">
+              {{ char.name }}
             </option>
-            </optgroup>
+          </optgroup>
         </select>
-        </div>
-          <CalculatorCharacterLevel
-          :character="character"
-          @character-level-updated="
-              handleCharacterLevelUpdated
-          "></CalculatorCharacterLevel>
+      </div>
+      <CalculatorCharacterLevel
+        :character="character"
+        @character-level-updated="
+          handleCharacterLevelUpdated
+        "></CalculatorCharacterLevel>
     </div>
     <CalculatorCharacterBrowser
       :character="character"
       ref="characterBrowser"
-      @character-browser:chosen-character="handleChosenCharacter"
-    />
-</div>
+      @character-browser:chosen-character="handleChosenCharacter" />
+  </div>
 </template>
 
 <script>
@@ -73,13 +72,13 @@ import {
 export default {
   props: {
     character: {
-        type: String,
-        required: true,
-    }
+      type: String,
+      required: true,
+    },
   },
   components: {
     CalculatorCharacterBrowser,
-    CalculatorCharacterLevel
+    CalculatorCharacterLevel,
   },
   data() {
     return {
@@ -92,12 +91,12 @@ export default {
      * @emits updated-chosen-character
      */
     handleUpdatedCharacter(e) {
-        const character = e.target.value;
-        this.$emit('updated-chosen-character', character);
+      const character = e.target.value;
+      this.$emit("updated-chosen-character", character);
     },
     handleChosenCharacter(character) {
       this.characterChosen = character;
-      this.$emit('updated-chosen-character', character);
+      this.$emit("updated-chosen-character", character);
     },
     /**
      * Tells the character browser to open
@@ -110,13 +109,13 @@ export default {
      * emits: character-level-updated
      */
     handleCharacterLevelUpdated(charLevel) {
-      this.$emit('character-level-updated', charLevel);
-    }
+      this.$emit("character-level-updated", charLevel);
+    },
   },
   mounted() {
     this.charactersList = getCharactersAvailable();
     this.characterChosen = this.character;
-  }
+  },
 };
 </script>
 

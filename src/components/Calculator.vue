@@ -327,6 +327,7 @@
             2.0 content is now available!
           </div>
           <CalculatorCharacterSelect
+            :key="character"
             :character="character"
             @updated-chosen-character="handleUpdatedCharacter"
             @character-level-updated="handleCharacterLevelUpdated"
