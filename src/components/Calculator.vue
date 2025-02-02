@@ -330,8 +330,7 @@
             :character="character"
             @updated-chosen-character="handleUpdatedCharacter"
             @character-level-updated="handleCharacterLevelUpdated"
-            class="pb-4"
-          />
+            class="pb-4" />
           <CalculatorTalents
             :character="character"
             :key="character"
@@ -506,6 +505,7 @@ import {
 } from "../calculator/calculator";
 import {
   getCharByName,
+  getCharactersAvailable,
 } from "../characters/characters";
 import CalculatorEchoes from "./CalculatorEchoes.vue";
 import CalculatorWeapons from "./CalculatorWeapons.vue";
@@ -552,7 +552,7 @@ export default defineComponent({
     const charBuffsData = reactive({});
     const teamBuffsData = reactive({});
     const charResonanceChainsData = reactive({});
-
+    const charactersList = ref([]);
     const allDamages = reactive({});
     const chosenWeapon = reactive({});
     const chosenChar = reactive({});
@@ -603,6 +603,8 @@ export default defineComponent({
     const isSpectroFrazzleEnabled = ref(false);
     const spectroFrazzleStacks = ref(0);
     const isMissingSpectroData = ref(false);
+
+    charactersList.value = getCharactersAvailable();
 
     watch(character, async (charName) => {
       isLoading.value = true;
@@ -1022,10 +1024,13 @@ export default defineComponent({
         switch (returnValue) {
           case "All":
             const returnedStats = { ...stats };
-            returnedStats.totalAtk = (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
-              stats.attackFlat
-            returnedStats.totalHp = charHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
-            returnedStats.totalDef = charDef * (1 + stats.defPercent / 100) + stats.defFlat;
+            returnedStats.totalAtk =
+              (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
+              stats.attackFlat;
+            returnedStats.totalHp =
+              charHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
+            returnedStats.totalDef =
+              charDef * (1 + stats.defPercent / 100) + stats.defFlat;
             returnedStats.totalCritRate = stats.critRate / 100;
             returnedStats.totalCritDMG = stats.critDMG / 100;
             returnedStats.DefIgnore = stats.defIgnore / 100;
@@ -1115,7 +1120,9 @@ export default defineComponent({
           val = providedStats?.heavyAttackDMGBonus ?? HeavyAttackDMGBonus.value;
           break;
         case "Skill":
-          val = providedStats?.resonanceSkillDMGBonus ?? ResonanceSkillDMGBonus.value;
+          val =
+            providedStats?.resonanceSkillDMGBonus ??
+            ResonanceSkillDMGBonus.value;
           break;
         case "Intro":
           val = providedStats?.introSkillDMGBonus ?? IntroSkillDMGBonus.value;
@@ -1124,7 +1131,9 @@ export default defineComponent({
           val = providedStats?.outroSkillDMGBonus ?? OutroSkillDMGBonus.value;
           break;
         case "Liberation":
-          val = providedStats?.resonanceLiberationDMGBonus ?? ResonanceLiberationDMGBonus.value;
+          val =
+            providedStats?.resonanceLiberationDMGBonus ??
+            ResonanceLiberationDMGBonus.value;
           break;
         // do not divide this by 100
         case "Healing":
@@ -1161,7 +1170,9 @@ export default defineComponent({
         const { excludeTeamBuffs } = attack;
         let statsWithoutTeamBuffs = null;
         if (excludeTeamBuffs) {
-          statsWithoutTeamBuffs = calcCharStats("All", null, { ignoreTeamBuffs: true });
+          statsWithoutTeamBuffs = calcCharStats("All", null, {
+            ignoreTeamBuffs: true,
+          });
         }
         let attackType = attack.type;
         // is there an attack type override? if so, update it
@@ -1182,9 +1193,18 @@ export default defineComponent({
         // an attack can have its own element override
         const attackElement =
           attack?.element ?? chosenChar.value?.basic?.element;
-        let elementalDmgBonusDecimal = getElementDmgBonusByType(attackElement, statsWithoutTeamBuffs);
-        const atkDefHpVal = getDamageValByAttr(attack?.attribute, statsWithoutTeamBuffs);
-        let totalSkillDmgBonus = getDamageTypeBonusByType(attackType, statsWithoutTeamBuffs);
+        let elementalDmgBonusDecimal = getElementDmgBonusByType(
+          attackElement,
+          statsWithoutTeamBuffs,
+        );
+        const atkDefHpVal = getDamageValByAttr(
+          attack?.attribute,
+          statsWithoutTeamBuffs,
+        );
+        let totalSkillDmgBonus = getDamageTypeBonusByType(
+          attackType,
+          statsWithoutTeamBuffs,
+        );
         let talent;
         let talentTree = attack?.talents;
 
@@ -1245,7 +1265,8 @@ export default defineComponent({
         let coordinatedDmgBonusCustomBuffs = 0;
         if (attack?.subType === "Coordinated") {
           coordinatedEchoDmgBonus = echoStats?.value?.CoordinatedDMGBonus ?? 0;
-          coordinatedDmgBonusCustomBuffs = customBuffs?.value?.CoordinatedDMGBonus ?? 0;
+          coordinatedDmgBonusCustomBuffs =
+            customBuffs?.value?.CoordinatedDMGBonus ?? 0;
         }
         // there are bonuses that are based on Max HP, Max ATK, Max DEF
         // we end up with DMG Bonus %, so we also / 100 in the end
@@ -1293,8 +1314,7 @@ export default defineComponent({
           charBuffsData.value?.specificTalentBuffs?.[
             `${attack.key}:DEFIgnore`
           ] ?? 0;
-        const extraDefIgnoreCustomBuffs =
-          customBuffs.value?.DefIgnore ?? 0;
+        const extraDefIgnoreCustomBuffs = customBuffs.value?.DefIgnore ?? 0;
         const specificSkillExtraCritRate =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:CritRate`
@@ -1340,7 +1360,7 @@ export default defineComponent({
           // echo buffs are in full integers, need to divide since everything else is decimal
           // TODO: when refactoring echoes, move to decimals
           coordinatedEchoDmgBonus / 100 +
-          genericSkillDmgBonusEchoBuff / 100 + 
+          genericSkillDmgBonusEchoBuff / 100 +
           coordinatedDmgBonusCustomBuffs;
         let teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
@@ -1439,27 +1459,33 @@ export default defineComponent({
         }
         let finalAtkDefHpVal = atkDefHpVal;
         if (modifyBaseAtk || modifyBaseAtkFlat) {
-          finalAtkDefHpVal = calcCharStats("ATK", {
+          finalAtkDefHpVal = calcCharStats(
+            "ATK",
+            {
               ATK: modifyBaseAtk,
               ATK_FLAT: modifyBaseAtkFlat,
             },
-            { ignoreTeamBuffs: excludeTeamBuffs }
+            { ignoreTeamBuffs: excludeTeamBuffs },
           );
         }
         if (modifyBaseHp || modifyBaseHpFlat) {
-          finalAtkDefHpVal = calcCharStats("HP", {
+          finalAtkDefHpVal = calcCharStats(
+            "HP",
+            {
               HP: modifyBaseHp,
               HP_FLAT: modifyBaseHpFlat,
             },
-            { ignoreTeamBuffs: excludeTeamBuffs }
+            { ignoreTeamBuffs: excludeTeamBuffs },
           );
         }
         if (modifyBaseDef || modifyBaseDefFlat) {
-          finalAtkDefHpVal = calcCharStats("DEF", {
+          finalAtkDefHpVal = calcCharStats(
+            "DEF",
+            {
               DEF: modifyBaseDef,
               DEF_FLAT: modifyBaseDefFlat,
             },
-            { ignoreTeamBuffs: excludeTeamBuffs }
+            { ignoreTeamBuffs: excludeTeamBuffs },
           );
         }
 
@@ -1688,8 +1714,7 @@ export default defineComponent({
       // similar principle applies to utility attacks (e.g. Roccia passive)
       const utilityAttacks = [];
       // TODO: Makes this scalable and more maintainable
-      let utilityAttacksFromTeamBuffs =
-        teamBuffsData.value?.EnableAttack ?? [];
+      let utilityAttacksFromTeamBuffs = teamBuffsData.value?.EnableAttack ?? [];
       // TODO: Exclude the attack if using exclude from team buffs
       const hasUtilityAttack = utilityAttacksFromTeamBuffs.includes(
         "InherentSkillSuperAttractiveMagicBox",
