@@ -1,5 +1,5 @@
 <template>
-  <dialog id="modal-echoes-browser" class="modal">
+  <dialog id="modal-character-browser" class="modal">
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
@@ -33,18 +33,16 @@
               @click="toggleRarityFilter(5)"
               :class="{
                 'btn-active': isRarityFilterActive(5),
-              }"
-            >
-                5✦
+              }">
+              5✦
             </button>
             <button
               class="rounded mr-1 inline-flex justify-center size-8 items-center"
               @click="toggleRarityFilter(4)"
               :class="{
                 'btn-active': isRarityFilterActive(4),
-              }"
-            >
-                4✦
+              }">
+              4✦
             </button>
           </div>
           <div class="characters__filter__weapon ml-2">
@@ -57,10 +55,7 @@
                 'btn-active': isWeaponFilterActive(weapon),
                 weapon,
               }">
-              <img
-                :src="weaponIcon.toLowerCase()"
-                class="size-8"
-              />
+              <img :src="weaponIcon.toLowerCase()" class="size-8" />
             </button>
           </div>
           <button @click="resetFilters" class="btn btn-sm btn-ghost">
@@ -77,24 +72,23 @@
           <template v-else>
             <div
               class="characters__list__items grid grid-cols-1 md:grid-cols-4 gap-4">
-                <CalculatorCharacterCard
-                    v-for="character in charactersList"
-                    :key="character.key"
-                    :name-key="character.key"
-                    :name="character.name"
-                    :rarity="character.rarity"
-                    :element="character.element"
-                    :weapon="character.weapon"
-                    :is-active="false"
-                    @click="chooseCharacter(character)"
-                    class="cursor-pointer"
-                > 
-                    <button
-                        @click="chooseCharacter(character)"
-                        class="btn btn-sm btn-primary">
-                        Use character
-                    </button>
-                </CalculatorCharacterCard>
+              <CalculatorCharacterCard
+                v-for="character in charactersList"
+                :key="character.key"
+                :name-key="character.key"
+                :name="character.name"
+                :rarity="character.rarity"
+                :element="character.element"
+                :weapon="character.weapon"
+                :is-active="false"
+                @click="chooseCharacter(character)"
+                class="cursor-pointer">
+                <button
+                  @click="chooseCharacter(character)"
+                  class="btn btn-sm btn-primary">
+                  Use character
+                </button>
+              </CalculatorCharacterCard>
             </div>
           </template>
         </div>
@@ -104,7 +98,11 @@
 </template>
 
 <script>
-import { allCharactersList, characterElementsSetImageMap, weaponTypesImageMap } from "../characters/characters";
+import {
+  allCharactersList,
+  characterElementsSetImageMap,
+  weaponTypesImageMap,
+} from "../characters/characters";
 import CalculatorCharacterCard from "./CalculatorCharacterCard.vue";
 export default {
   name: "CalculatorEchoesBrowser",
@@ -116,46 +114,46 @@ export default {
   },
   data() {
     return {
-        characterElementsSetImageMap,
-        weaponTypesImageMap,
-        allCharactersList,
-        filterElement: null,
-        filterRarity: null,
-        filterWeapon: null,
+      characterElementsSetImageMap,
+      weaponTypesImageMap,
+      allCharactersList,
+      filterElement: null,
+      filterRarity: null,
+      filterWeapon: null,
     };
   },
   components: {
-    CalculatorCharacterCard
+    CalculatorCharacterCard,
   },
   computed: {
     charactersList() {
-        let characterList = JSON.parse(JSON.stringify(this.allCharactersList));
-        if (this.filterElement) {
-            characterList = characterList.filter((character) => {
-                return character.element === this.filterElement;
-            });
-        }
-        if (this.filterRarity) {
-            characterList = characterList.filter((character) => {
-                return character.rarity === this.filterRarity;
-            });
-        }
-        if (this.filterWeapon) {
-            characterList = characterList.filter((character) => {
-                return character.weapon === this.filterWeapon;
-            });
-        }
-        return characterList;
-    }
+      let characterList = JSON.parse(JSON.stringify(this.allCharactersList));
+      if (this.filterElement) {
+        characterList = characterList.filter((character) => {
+          return character.element === this.filterElement;
+        });
+      }
+      if (this.filterRarity) {
+        characterList = characterList.filter((character) => {
+          return character.rarity === this.filterRarity;
+        });
+      }
+      if (this.filterWeapon) {
+        characterList = characterList.filter((character) => {
+          return character.weapon === this.filterWeapon;
+        });
+      }
+      return characterList;
+    },
   },
   methods: {
     triggerOpenModal(echoIndex) {
       this.echoIndex = echoIndex;
-      const modalEl = document.getElementById("modal-echoes-browser");
+      const modalEl = document.getElementById("modal-character-browser");
       modalEl.showModal();
     },
     triggerCloseModal() {
-      const modalEl = document.getElementById("modal-echoes-browser");
+      const modalEl = document.getElementById("modal-character-browser");
       modalEl.close();
     },
     handleClose() {
@@ -211,10 +209,10 @@ export default {
      * Emits: character-browser:chosen-character
      */
     chooseCharacter(character) {
-        this.$emit('character-browser:chosen-character', character.key);
-        this.handleClose();
-        this.triggerCloseModal();
-    }
+      this.$emit("character-browser:chosen-character", character.key);
+      this.handleClose();
+      this.triggerCloseModal();
+    },
   },
 };
 </script>
