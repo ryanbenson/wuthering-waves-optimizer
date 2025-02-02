@@ -117,7 +117,7 @@ const gauntletsList = {
     { key: "Stonard", name: "Stonard" },
   ],
   three: [
-    { key: "GauntletsOfNight", name: "Gauntlets of Nights" },
+    { key: "GauntletsOfNight", name: "Gauntlets of Night" },
     { key: "GauntletsOfVoyager", name: "Gauntlets of Voyager" },
     { key: "GuardianGauntlets", name: "Guardian Gauntlets" },
     { key: "OriginiteTypeIV", name: "Originite: Type IV" },
