@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>February 2, 2025</h3>
+    <ul>
+      <li>Adds visual weapon selection.</li>
+    </ul>
     <h3>February 1, 2025</h3>
     <ul>
       <li>Adds visual character selection.</li>
