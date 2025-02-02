@@ -74,6 +74,8 @@
                 :name-key="weapon.key"
                 :rarity="weapon.rarity"
                 :is-active="false"
+                @click="chooseWeapon(weapon)"
+                class="cursor-pointer"
               >
                 <button
                   @click="chooseWeapon(weapon)"
