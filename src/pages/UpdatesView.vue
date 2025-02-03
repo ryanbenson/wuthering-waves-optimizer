@@ -104,6 +104,7 @@
     <h3>February 2, 2025</h3>
     <ul>
       <li>Adds visual weapon selection.</li>
+      <li>Adds missing stacks to Sanhua's S6.</li>
     </ul>
     <h3>February 1, 2025</h3>
     <ul>
@@ -115,16 +116,23 @@
     </ul>
     <h3>January 27, 2025</h3>
     <ul>
-      <li>Adds Def Ignore, and Coordinated DMG Bonus as custom buffs options.</li>
+      <li>
+        Adds Def Ignore, and Coordinated DMG Bonus as custom buffs options.
+      </li>
     </ul>
     <h3>January 26, 2025</h3>
     <ul>
       <li>Updates Sanhua's outro text.</li>
-      <li>Makes Empyrean Anthem set bonus for coordinated dmg bonus automatically enabled.</li>
+      <li>
+        Makes Empyrean Anthem set bonus for coordinated dmg bonus automatically
+        enabled.
+      </li>
     </ul>
     <h3>January 25, 2025</h3>
     <ul>
-      <li>Minor feature: you can now exclude team buffs in a rotation action.</li>
+      <li>
+        Minor feature: you can now exclude team buffs in a rotation action.
+      </li>
     </ul>
     <h3>January 24, 2025</h3>
     <ul>

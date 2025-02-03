@@ -69,7 +69,7 @@ export const resonanceChains = [
     key: "SequenceNode6DaybreakRadiance",
     name: "Sequence Node 6: Daybreak Radiance",
     details: `<span class="skilldescription">After an Ice Prism or a Glacier is detonated, all team members' ATK is increased by 10% for 20s, stacking up to 2 times.</span>`,
-    hasStacks: false,
+    hasStacks: true,
     modifiers: [
       {
         modifier: "ATK",
@@ -77,7 +77,7 @@ export const resonanceChains = [
       },
     ],
     minStacks: 0,
-    maxStacks: 0,
+    maxStacks: 2,
     alwaysEnabled: false,
   },
 ];
