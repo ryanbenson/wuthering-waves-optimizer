@@ -3,6 +3,10 @@
     <div class="character__selection__left flex flex-col gap-2">
       <div
         class="character__selection__avatar cursor-pointer"
+        :class="{
+          'border-amber-300': characterRarity === '5' || characterRarity === 5,
+          'border-violet-600': characterRarity === '4' || characterRarity === 4,
+        }"
         :style="{
           backgroundImage: `url(https://ryanbenson.github.io/wuthering-waves-assets/images/${characterChosen}.png)`,
         }"
@@ -68,6 +72,7 @@ import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import {
   getCharactersAvailable,
   getCharByName,
+  allCharactersList,
 } from "../characters/characters";
 export default {
   props: {
@@ -82,6 +87,7 @@ export default {
   },
   data() {
     return {
+      allCharactersList,
       charactersList: [],
       characterChosen: "",
     };
@@ -112,6 +118,19 @@ export default {
       this.$emit("character-level-updated", charLevel);
     },
   },
+  computed: {
+    basicCharacterData() {
+      return this.allCharactersList.find((char) => {
+        return char.key === this.characterChosen;
+      });
+    },
+    characterRarity() {
+      if (this.basicCharacterData) {
+        return this.basicCharacterData?.rarity;
+      }
+      return 5;
+    }
+  },
   mounted() {
     this.charactersList = getCharactersAvailable();
     this.characterChosen = this.character;
@@ -141,7 +160,8 @@ export default {
   display: block;
   background-size: contain;
   border-radius: 100%;
-  border: 1px solid white;
+  border-width: 1px;
+  border-style: solid;
 }
 
 html[data-theme="light"] {

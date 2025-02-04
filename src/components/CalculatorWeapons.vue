@@ -2,7 +2,13 @@
   <div class="data-input">
     <div class="weapon__basic-info">
       <div class="weapon__left flex flex-col gap-2">
-        <div class="weapon__selection__image" :style="weaponImageStyles"></div>
+        <div class="weapon__selection__image" :style="weaponImageStyles" :class="{
+              'border-amber-300': weaponRarity === '5' || weaponRarity === 5,
+              'border-violet-600': weaponRarity === '4' || weaponRarity === 4,
+              'border-blue-500': weaponRarity === '3' || weaponRarity === 3,
+              'border-green-500': weaponRarity === '2' || weaponRarity === 2,
+              'border-gray-500': weaponRarity === '1' || weaponRarity === 1,
+            }"></div>
         <button
           @click="openWeaponBrowser"
           class="btn btn-sm btn--weapon--find">
@@ -288,6 +294,13 @@ export default {
      */
     weaponDescription() {
       return this.chosenWeapon?.info?.description ?? null;
+    },
+    /**
+     * The weapon description, typically in HTML
+     * @returns {String|null}
+     */
+    weaponRarity() {
+      return this.chosenWeapon?.info?.rarity ?? 5;
     },
     /**
      * The weapon passives data
@@ -580,7 +593,6 @@ export default {
       this.$refs.weaponBrowser.triggerOpenModal();
     },
     handleChosenWeapon(weapon) {
-      console.log('weapon', weapon)
       this.weapon = weapon;
     }
   },
@@ -599,16 +611,14 @@ export default {
   display: block;
   background-size: contain;
   border-radius: 100%;
-  border: 1px solid white;
+  border-width: 1px;
+  border-style: solid;
 }
 html[data-theme="light"] {
   .weapon__stat {
     span img {
       filter: contrast(0.25);
     }
-  }
-  .weapon__selection__image {
-    border-color: oklch(var(--bc));
   }
 }
 .weapon__basic-info {
