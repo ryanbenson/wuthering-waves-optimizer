@@ -15,6 +15,15 @@
         </option>
       </select>
       <select
+        v-model="costFilter"
+        name="cost"
+        class="select select-bordered select select-sm">
+        <option :value="null">Select a cost</option>
+        <option v-for="cost in [4, 3, 1]" :key="cost" :value="cost">
+          {{ cost }} Cost
+        </option>
+      </select>
+      <select
         v-model="echo"
         name="mainEcho"
         class="select select-bordered select select-sm mr-4">
@@ -170,6 +179,7 @@ export default {
       statsTable,
       echoSet: null,
       echo: null,
+      costFilter: null,
       mainStatFilter: null,
       page: 1,
       perPage: 20,
@@ -209,6 +219,10 @@ export default {
       // filter by main echo if set
       if (this.echo) {
         allEchoes = allEchoes.filter((echo) => echo.echo === this.echo);
+      }
+      // filter by main echo if set
+      if (this.costFilter) {
+        allEchoes = allEchoes.filter((echo) => echo.type === this.costFilter);
       }
       // filter by main stat if set
       if (this.mainStatFilter) {
@@ -290,6 +304,7 @@ export default {
       this.echoSet = null;
       this.echo = null;
       this.mainStatFilter = null;
+      this.costFilter = null;
     },
     getEchoSetImage(echoSet) {
       return getEchoSetIconByType(echoSet);
@@ -308,6 +323,7 @@ export default {
       this.echoSet = null;
       this.echo = null;
       this.mainStatFilter = null;
+      this.costFilter = null;
     },
     prevPage() {
       if (this.page <= 1) {
