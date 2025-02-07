@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>February 7, 2025</h3>
+    <ul>
+      <li>Fixes Roccia base stats.</li>
+    </ul>
     <h3>February 5, 2025</h3>
     <ul>
       <li>Adds the ability to filter echo lists by cost.</li>
