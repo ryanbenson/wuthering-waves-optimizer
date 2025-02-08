@@ -15,7 +15,10 @@
     "build": "vue-tsc && vite build",
     "preview": "npm run build && vite preview",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test:e2e": "vite dev & wait-on http://localhost:5173 && cypress run"
   },
   "dependencies": {
     "lodash": "^4.17.21",
@@ -34,6 +37,7 @@
     "@vitest/browser": "^2.1.6",
     "@vitest/coverage-v8": "^2.1.6",
     "autoprefixer": "^10.4.20",
+    "cypress": "^14.0.2",
     "daisyui": "^4.12.11",
     "eslint": "^9.13.0",
     "eslint-config-prettier": "^9.1.0",
@@ -48,6 +52,7 @@
     "vitest": "^2.1.6",
     "vitest-browser-vue": "^0.0.1",
     "vue-router": "^4.3.2",
-    "vue-tsc": "^2.0.6"
+    "vue-tsc": "^2.0.6",
+    "wait-on": "^8.0.2"
   }
 }

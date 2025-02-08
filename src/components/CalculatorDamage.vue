@@ -1,10 +1,13 @@
 <template>
   <tr
-    class=""
-    :class="{
-      'calculation__damage__item--healing': type === 'Healing',
-      'calculation__damage__item--shield': type === 'Shield',
-    }">
+    :class="[
+      slugifiedLabel, 
+      {
+        'calculation__damage__item--healing': type === 'Healing',
+        'calculation__damage__item--shield': type === 'Shield',
+      }
+    ]"
+  >
     <template v-if="type === 'Healing'">
       <td>{{ label }}</td>
       <td
@@ -64,6 +67,7 @@
 
 <script>
 import { displayDamage } from "../utils/numbers";
+import { slugify } from "../utils/strings";
 export default {
   props: {
     character: {
@@ -85,7 +89,13 @@ export default {
   },
   methods: {
     displayDamage,
+    slugify
   },
+  computed: {
+    slugifiedLabel() {
+      return slugify(this.label) ?? '';
+    }
+  }
 };
 </script>
 

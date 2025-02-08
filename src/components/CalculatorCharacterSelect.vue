@@ -1,5 +1,5 @@
 <template>
-  <div class="character__selection">
+  <div class="character__selection" :class="character">
     <div class="character__selection__left flex flex-col gap-2">
       <div
         class="character__selection__avatar cursor-pointer"
@@ -74,6 +74,7 @@ import {
   getCharByName,
   allCharactersList,
 } from "../characters/characters";
+import { character } from "../characters/Aalto/character";
 export default {
   props: {
     character: {
