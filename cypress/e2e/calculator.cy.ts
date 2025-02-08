@@ -20,6 +20,8 @@ describe('Home E2E Tests', () => {
 
   it('should accept inputs for character details, and buffs', () => {
     cy.get('.character__selection__form--character select').select('Changli');
+    cy.get('.character__self-buffs').should('be.visible'); // wait for things to load
+    cy.get('.character__selection.Changli').should('be.visible');
     cy.get('select[name=characterLevel]').select('80');
     cy.get('.character__buffs').should('be.visible');
     cy.get('.data-input--talents').should('be.visible');
