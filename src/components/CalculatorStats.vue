@@ -1,7 +1,7 @@
 <template>
   <table class="calculator__stats table table-zebra">
     <tbody>
-      <tr>
+      <tr class="stat-atk">
         <td class="w-10">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
@@ -16,7 +16,7 @@
           {{ displayInt(totalAtk) }}
         </td>
       </tr>
-      <tr>
+      <tr class="stat-hp">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />
@@ -31,7 +31,7 @@
           {{ displayInt(totalHp) }}
         </td>
       </tr>
-      <tr>
+      <tr class="stat-def">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />
@@ -46,7 +46,7 @@
           {{ displayInt(totalDef) }}
         </td>
       </tr>
-      <tr>
+      <tr class="stat-cr">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />
@@ -54,7 +54,7 @@
         <td>Crit Rate</td>
         <td class="text-right">{{ displayPercentage(totalCritRate * 100) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-cd">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" />
@@ -62,7 +62,7 @@
         <td>Crit DMG</td>
         <td class="text-right">{{ displayPercentage(totalCritDmg * 100) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-er">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" />
@@ -70,7 +70,7 @@
         <td>Energy Regen</td>
         <td class="text-right">{{ displayPercentage(energyRegen * 100) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-basic">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" />
@@ -78,7 +78,7 @@
         <td>Basic Attack DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(basicAttackDmgBonus) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-heavy">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png" />
@@ -86,7 +86,7 @@
         <td>Heavy Attack DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(heavyAttackDmgBonus) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-skill">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" />
@@ -94,7 +94,7 @@
         <td>Resonance Skill DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(resonanceSkillDmgBonus) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-liberation">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" />
@@ -102,7 +102,7 @@
         <td>Resonance Liberation DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(resonanceLiberationDmgBonus) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-glacio">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/glaciodmgbonus.png"
@@ -111,7 +111,7 @@
         <td>Glacio DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(glacio) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-fusion">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/fusiondmgbonus.png"
@@ -120,7 +120,7 @@
         <td>Fusion DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(fusion) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-electro">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/electrodmgbonus.png"
@@ -129,7 +129,7 @@
         <td>Electro DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(electro) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-aero">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/aerodmgbonus.png"
@@ -138,7 +138,7 @@
         <td>Aero DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(aero) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-spectro">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/spectrodmgbonus.png"
@@ -147,7 +147,7 @@
         <td>Spectro DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(spectro) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-havoc">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/havocdmgbonus.png"
@@ -156,7 +156,7 @@
         <td>Havoc DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(havoc) }}</td>
       </tr>
-      <tr>
+      <tr class="stat-healing">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png" />

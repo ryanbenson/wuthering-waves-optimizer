@@ -344,6 +344,7 @@
               :character="character"
               :buffs="chosenChar?.value?.buffs"
               :talent-data="characters?.[character]?.talents"
+              class="character__self-buffs"
               @updated-character-buffs="
                 handleUpdatedCharacterBuffs
               "></CalculatorCharacterBuffs>
