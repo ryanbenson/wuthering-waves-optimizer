@@ -101,6 +101,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>February 9, 2025</h3>
+    <ul>
+      <li>Adds CV to echoes in the echoes screen and inventory.</li>
+    </ul>
+    <h3>February 8, 2025</h3>
+    <ul>
+      <li>Adds home page E2E test suites, more to come. You won't see these changes, but they'll help prevent bugs from getting released.</li>
+    </ul>
     <h3>February 7, 2025</h3>
     <ul>
       <li>Fixes Roccia base stats.</li>
