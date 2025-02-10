@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>February 10, 2025</h3>
+    <ul>
+      <li>Adds Luminous Hymn and Ocean's Gift weapons.</li>
+    </ul>
     <h3>February 9, 2025</h3>
     <ul>
       <li>Adds CV to echoes in the echoes screen and inventory.</li>

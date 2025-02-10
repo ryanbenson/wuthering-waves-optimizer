@@ -996,6 +996,28 @@ export const allWeaponTeamBuffs = [
     details: `<span class="skilldescription">Restore <span class="param">8/10/12/14/16</span> Concerto Energy when casting Resonance Liberation. This effect can be triggered <span class="param">1</span> time(s) every <span class="param">20</span>s. When casting Resonance Skill that heals, increase nearby party members' ATK by <span class="param">14%/17.5%/21%/24.5%/28%</span> for <span class="param">30</span>s. Effects of the same name cannot be stacked.</span>`,
     alwaysEnabled: false,
   },
+  {
+    name: "Luminous Hymn Spectro Frazzle Amplify",
+    key: "LuminousHymnSpectroFrazzle",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DMGDeepen:SpectroFrazzle",
+        modifierByRefinement: {
+        "1": 0.3,
+        "2": 0.375,
+        "3": 0.45,
+        "4": 0.525,
+        "5": 0.6,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details:
+      `Casing Outro Skill Amplifies the DMG from Spectro Frazzle on enemies around the active resonator by <span class="param">30%/37.5%/45%/52.5%/60%</span> for 30s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allCharacters: string[] = [

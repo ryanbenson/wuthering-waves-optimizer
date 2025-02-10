@@ -551,6 +551,7 @@ export function getSpectroFrazzleDamage(
   enemyResist: number,
   resistenceReduction: number,
   defIgnore: number = 0,
+  DMGDeepen: number = 0,
 ): number {
   const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
   const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
@@ -560,7 +561,7 @@ export function getSpectroFrazzleDamage(
   //   charLevel,
   //   stacks,
   // );
-  return baseModifier * resistModifier * defModifier * stacks * motionValue;
+  return baseModifier * resistModifier * defModifier * stacks * motionValue * (1 + DMGDeepen);
 }
 
 /**

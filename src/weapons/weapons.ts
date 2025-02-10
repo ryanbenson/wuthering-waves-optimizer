@@ -53,6 +53,7 @@ const broadbladesList = {
 const rectifiersList = {
   five: [
     { key: "CosmicRipples", name: "Cosmic Ripples" },
+    { key: "LuminousHymn", name: "Luminous Hymn" },
     { key: "RimeDrapedSprouts", name: "Rime-Draped Sprouts" },
     { key: "StellarSymphony", name: "Stellar Symphony" },
     { key: "Stringmaster", name: "Stringmaster" },
@@ -63,6 +64,7 @@ const rectifiersList = {
     { key: "CometFlare", name: "Comet Flare" },
     { key: "FusionAccretion", name: "Fusion Accretion" },
     { key: "JinzhouKeeper", name: "Jinzhou Keeper" },
+    { key: "OceansGift", name: "Ocean's Gift" },
     { key: "WaltzinMasquerade", name: "Waltz in Masquerade" },
     { key: "Variation", name: "Variation" },
   ],

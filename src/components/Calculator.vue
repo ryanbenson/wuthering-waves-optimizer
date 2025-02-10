@@ -1507,6 +1507,12 @@ export default defineComponent({
         }
 
         if (attackType === "ElementalEffect") {
+          let totalSpectroFrazzleDeepen = 0;
+          // get any SpectroFrazzle dmg deepen/amplify
+          // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
+          const spectroFrazzleDeepenWeaponBuffs = weaponData.value?.weaponPassiveStats?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+          const spectroFrazzleDeepenTeamBuffs = teamBuffsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+          totalSpectroFrazzleDeepen = spectroFrazzleDeepenWeaponBuffs + spectroFrazzleDeepenTeamBuffs;
           if (attack?.subType === "SpectroFrazzle") {
             const elementalEffectDmg = getSpectroFrazzleDamage(
               attack.talent,
@@ -1516,6 +1522,7 @@ export default defineComponent({
               enemyResist.value,
               totalResistReduction,
               totalDefIgnore,
+              totalSpectroFrazzleDeepen,
             );
             return elementalEffectDmg;
           }
