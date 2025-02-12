@@ -1,11 +1,31 @@
 export const resonanceChains = [
   {
-    key: "SequenceNode1WarmLightandBedsideWishes",
-    name: "Sequence Node 1: Warm Light and Bedside Wishes",
-    details: `<span class="skilldescription">When in <span class="Highlight">Absolution</span>, Resonance Liberation <span class="Highlight">Dawn of Enlightenment</span> now increases DMG Multiplier by 480% instead of 255%. <br>When in <span class="Highlight">Confession</span>, Resonance Liberation <span class="Highlight">Dawn of Enlightenment </span> increases DMG Multiplier by 90% and applies <span class="Highlight">Spectro Frazzle</span> to the targets with the maximum stack the targets can receive.</span>`,
+    key: "SequenceNode1WarmLightandBedsideWishesAbsolution",
+    name: "Sequence Node 1: Warm Light and Bedside Wishes - Absolution",
+    details: `<span class="skilldescription">When in <span class="Highlight">Absolution</span>, Resonance Liberation <span class="Highlight">Dawn of Enlightenment</span> now increases DMG Multiplier by 480% instead of 255%.</span>`,
     hasStacks: false,
     modifiers: [
-      // TO DO
+      {
+        modifier: "talentModifierMultiplySetValue",
+        modifySpecificTalents: ["DawnofEnlightenmentDMG"],
+        modifierValue: 4.8,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode1WarmLightandBedsideWishesConfession",
+    name: "Sequence Node 1: Warm Light and Bedside Wishes - Confession",
+    details: `<span class="skilldescription">When in <span class="Highlight">Confession</span>, Resonance Liberation <span class="Highlight">Dawn of Enlightenment </span> increases DMG Multiplier by 90% and applies <span class="Highlight">Spectro Frazzle</span> to the targets with the maximum stack the targets can receive.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["DawnofEnlightenmentDMG"],
+        modifierValue: 0.9,
+      },
     ],
     minStacks: 0,
     maxStacks: 0,
