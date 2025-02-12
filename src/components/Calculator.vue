@@ -1366,6 +1366,8 @@ export default defineComponent({
           coordinatedDmgBonusCustomBuffs;
         let teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
+        let selfBuffResistShredForCharElement =
+          charBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         if (excludeTeamBuffs) {
           teamBuffResistShredForCharElement = 0;
         }
@@ -1378,6 +1380,7 @@ export default defineComponent({
           baseResistReduction +
           teamBuffResistShredForCharElement +
           resonanceChainResistShredForCharElement +
+          selfBuffResistShredForCharElement +
           customResistReduction;
         // damage deepen
         let baseTotalDeepenEffect = TotalDeepenEffect.value;
@@ -1512,7 +1515,9 @@ export default defineComponent({
           // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
           const spectroFrazzleDeepenWeaponBuffs = weaponData.value?.weaponPassiveStats?.["DMGDeepen:SpectroFrazzle"] ?? 0;
           const spectroFrazzleDeepenTeamBuffs = teamBuffsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
-          totalSpectroFrazzleDeepen = spectroFrazzleDeepenWeaponBuffs + spectroFrazzleDeepenTeamBuffs;
+          const spectroFrazzleDeepenSelfBuffs = charBuffsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+          const spectroFrazzleDeepenResonanceChains = charResonanceChainsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+          totalSpectroFrazzleDeepen = spectroFrazzleDeepenWeaponBuffs + spectroFrazzleDeepenTeamBuffs + spectroFrazzleDeepenSelfBuffs + spectroFrazzleDeepenResonanceChains;
           if (attack?.subType === "SpectroFrazzle") {
             const elementalEffectDmg = getSpectroFrazzleDamage(
               attack.talent,
