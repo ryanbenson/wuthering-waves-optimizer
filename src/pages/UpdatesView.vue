@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>February 12, 2025</h3>
+    <ul>
+      <li>Releases Phoebe.</li>
+    </ul>
     <h3>February 10, 2025</h3>
     <ul>
       <li>Adds Luminous Hymn and Ocean's Gift weapons.</li>
@@ -111,7 +115,10 @@
     </ul>
     <h3>February 8, 2025</h3>
     <ul>
-      <li>Adds home page E2E test suites, more to come. You won't see these changes, but they'll help prevent bugs from getting released.</li>
+      <li>
+        Adds home page E2E test suites, more to come. You won't see these
+        changes, but they'll help prevent bugs from getting released.
+      </li>
     </ul>
     <h3>February 7, 2025</h3>
     <ul>

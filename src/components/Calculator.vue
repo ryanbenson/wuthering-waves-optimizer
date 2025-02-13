@@ -321,10 +321,8 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div
-            v-if="false"
-            class="alert alert-success mb-6 text-white p-2 px-4">
-            2.0 content is now available!
+          <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
+            Phoebe is now available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
@@ -1513,11 +1511,21 @@ export default defineComponent({
           let totalSpectroFrazzleDeepen = 0;
           // get any SpectroFrazzle dmg deepen/amplify
           // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
-          const spectroFrazzleDeepenWeaponBuffs = weaponData.value?.weaponPassiveStats?.["DMGDeepen:SpectroFrazzle"] ?? 0;
-          const spectroFrazzleDeepenTeamBuffs = teamBuffsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
-          const spectroFrazzleDeepenSelfBuffs = charBuffsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
-          const spectroFrazzleDeepenResonanceChains = charResonanceChainsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
-          totalSpectroFrazzleDeepen = spectroFrazzleDeepenWeaponBuffs + spectroFrazzleDeepenTeamBuffs + spectroFrazzleDeepenSelfBuffs + spectroFrazzleDeepenResonanceChains;
+          const spectroFrazzleDeepenWeaponBuffs =
+            weaponData.value?.weaponPassiveStats?.[
+              "DMGDeepen:SpectroFrazzle"
+            ] ?? 0;
+          const spectroFrazzleDeepenTeamBuffs =
+            teamBuffsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+          const spectroFrazzleDeepenSelfBuffs =
+            charBuffsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+          const spectroFrazzleDeepenResonanceChains =
+            charResonanceChainsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+          totalSpectroFrazzleDeepen =
+            spectroFrazzleDeepenWeaponBuffs +
+            spectroFrazzleDeepenTeamBuffs +
+            spectroFrazzleDeepenSelfBuffs +
+            spectroFrazzleDeepenResonanceChains;
           if (attack?.subType === "SpectroFrazzle") {
             const elementalEffectDmg = getSpectroFrazzleDamage(
               attack.talent,
