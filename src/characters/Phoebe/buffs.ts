@@ -13,7 +13,7 @@ export const buffs = [
         modifierValue: 2.55,
       },
       {
-        modifier: "talentModifierMultiply",
+        modifier: "DMGDeepen",
         modifySpecificTalents: ["HeavyAttackStarflashDMG"],
         modifierValue: 2.56,
       },

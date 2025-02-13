@@ -1393,6 +1393,10 @@ export default defineComponent({
           teamBuffsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
         let teamBuffDmgDeepenForCoordinatedAttack =
           teamBuffsData.value?.[`DMGDeepen:Coordinated`] ?? 0;
+        const selfBuffSpecificAttackGenericDmgDeepen =
+          charBuffsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DMGDeepen`
+          ] ?? 0;
         if (excludeTeamBuffs) {
           baseTotalDeepenEffect = statsWithoutTeamBuffs?.totalDeepenEffect ?? 0;
           teamBuffDmgDeepenForCharElement = 0;
@@ -1417,6 +1421,7 @@ export default defineComponent({
           teamBuffDmgDeepenForAttackType +
           attackLevelDmgDeepen +
           coordinatedDmgDeepenEffect +
+          selfBuffSpecificAttackGenericDmgDeepen +
           customDamageDeepen;
         let totalTalentModifierMultiply =
           talentModifierMultiply + talentModifierMultiplySelfBuff;
