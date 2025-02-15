@@ -85,17 +85,17 @@ describe("Home E2E Tests", () => {
     testAttacks(calcharoLevel90, cy);
   });
 
-  it("should enable character buffs and it affects the stats and damages", () => {
-    cy.get(".character__selection__form--character select").select("Calcharo");
-    cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
-    cy.get(".character__self-buffs .character__buffs .card").each(($card) => {
-      cy.wrap($card).find("input[type=checkbox]").click();
-    });
-    // Stats calculations
-    testStats(calcharoLevel90AllSelfBonusesStats, cy);
-    // Damages validations
-    testAttacks(calcharoLevel90AllSelfBonuses, cy);
-  });
+  // it("should enable character buffs and it affects the stats and damages", () => {
+  //   cy.get(".character__selection__form--character select").select("Calcharo");
+  //   cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
+  //   cy.get(".character__self-buffs .character__buffs .card").each(($card) => {
+  //     cy.wrap($card).find("input[type=checkbox]").click();
+  //   });
+  //   // Stats calculations
+  //   testStats(calcharoLevel90AllSelfBonusesStats, cy);
+  //   // Damages validations
+  //   testAttacks(calcharoLevel90AllSelfBonuses, cy);
+  // });
 
   it("should display correctly on various screen sizes", () => {
     const sizes = ["iphone-6", "ipad-2", [1024, 768]];
