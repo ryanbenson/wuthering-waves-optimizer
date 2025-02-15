@@ -101,7 +101,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>February 12, 2025</h3>
+    <h3>February 14, 2025</h3>
+    <ul>
+      <li>Fixes Phoebe's S6, it is now correctly 10% ATK, it was 20% before.</li>
+    </ul>
+    <h3>February 13, 2025</h3>
     <ul>
       <li>Fixes Phoebe's Starflash buff from Absolution.</li>
     </ul>
