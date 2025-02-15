@@ -561,7 +561,14 @@ export function getSpectroFrazzleDamage(
   //   charLevel,
   //   stacks,
   // );
-  return baseModifier * resistModifier * defModifier * stacks * motionValue * (1 + DMGDeepen);
+  return (
+    baseModifier *
+    resistModifier *
+    defModifier *
+    stacks *
+    motionValue *
+    (1 + DMGDeepen)
+  );
 }
 
 /**
