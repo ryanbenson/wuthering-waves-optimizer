@@ -321,7 +321,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert alert-success mb-6 text-white p-2 px-4">
+          <div
+            v-if="false"
+            class="alert alert-success mb-6 text-white p-2 px-4">
             Phoebe is now available!
           </div>
           <CalculatorCharacterSelect
@@ -949,11 +951,25 @@ export default defineComponent({
       // add any buffs that are based on total / additional stats
       if (charBuffsData.value) {
         const charBuffKeys = Object.keys(charBuffsData.value);
-        // find any with "Additional" in it
-        const additionalBasedBuffs = charBuffKeys.filter((buff) => {
-          return buff.includes("AdditionalBase");
-        });
         const charBuffDetails = chosenChar.value?.buffs ?? [];
+        // find any with "Additional" in it
+        const additionalBasedBuffs = charBuffKeys.filter(
+          (buff, index, allBuffKeys) => {
+            // TODO: Implement the replacedBy logic
+            // Temporary: Brant has two flat buffs. The first one
+            // replaces the second one. This is a temporary fix.
+            if (character.value === "Brant") {
+              if (
+                buff === "ATK_FLAT2:AdditionalBase" &&
+                allBuffKeys.includes("ATK_FLAT:AdditionalBase")
+              ) {
+                return false;
+              }
+            }
+            return buff.includes("AdditionalBase");
+          },
+        );
+
         additionalBasedBuffs.forEach((buff) => {
           // find the buff data, it has more data we need
           let buffParams;
@@ -1564,12 +1580,12 @@ export default defineComponent({
           totalSkillDmgBonus += specificSkillHealingBonus;
           // overwrite the specific skill buff to avoid generic dmg bonuses affecting healing
           const specificSkillDmg =
-          specificSkillDmgFromResonanceChains +
-          specificSkillDmgFromCharBuffs +
-          specificSkillDmgFromEchoes +
-          specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +
-          specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal +
-          specificSkillDmgFromResonanceChainsBasedOnMaxDefVal;
+            specificSkillDmgFromResonanceChains +
+            specificSkillDmgFromCharBuffs +
+            specificSkillDmgFromEchoes +
+            specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +
+            specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal +
+            specificSkillDmgFromResonanceChainsBasedOnMaxDefVal;
           const h = calcHeal(
             talent,
             finalAtkDefHpVal,
@@ -1585,12 +1601,12 @@ export default defineComponent({
         if (attackType === "Shield") {
           // overwrite the specific skill buff to avoid generic dmg bonuses affecting shield
           const specificSkillDmg =
-          specificSkillDmgFromResonanceChains +
-          specificSkillDmgFromCharBuffs +
-          specificSkillDmgFromEchoes +
-          specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +
-          specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal +
-          specificSkillDmgFromResonanceChainsBasedOnMaxDefVal;
+            specificSkillDmgFromResonanceChains +
+            specificSkillDmgFromCharBuffs +
+            specificSkillDmgFromEchoes +
+            specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +
+            specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal +
+            specificSkillDmgFromResonanceChainsBasedOnMaxDefVal;
           const h = calcShield(
             talent,
             finalAtkDefHpVal,
@@ -1635,9 +1651,7 @@ export default defineComponent({
         if (attack?.alwaysCrit) {
           instanceDmgCritRate = 1;
         }
-        if (attack.key === "HeavyAttackStarflashDMG") {
-          console.log(talent, totalTalentModifierAdd, totalTalentModifierMultiply, totalTalentModifierSpecialMultiply)
-        }
+
         return calcDamage(
           characterLevel.value,
           enemyLevel.value,

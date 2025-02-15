@@ -9,7 +9,7 @@ export const buffs = [
         modifier: "ATK_FLAT:AdditionalBase",
         modifierValue: 20,
         maximumValue: 2600,
-        modifierStep: .01,
+        modifierStep: 0.01,
         modifierBasedOn: "EnergyRegen",
         modifierTargetAttr: "ATK_FLAT",
         minStatValue: 1.5,
@@ -18,6 +18,7 @@ export const buffs = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    replacesBuff: "TheatricalMoment",
   },
   {
     key: `TheatricalMoment`,
@@ -30,7 +31,7 @@ export const buffs = [
         modifier: "ATK_FLAT2:AdditionalBase",
         modifierValue: 12,
         maximumValue: 1560,
-        modifierStep: .01,
+        modifierStep: 0.01,
         modifierBasedOn: "EnergyRegen",
         modifierTargetAttr: "ATK_FLAT",
         minStatValue: 1.5,
@@ -39,6 +40,7 @@ export const buffs = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    replacedBy: "MyMoment",
   },
   {
     key: "InherentSkillVoyagersBlaze",
@@ -47,11 +49,9 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifySpecificTalents: [
-          "WavesofAcclaimsHealing",
-        ],
+        modifySpecificTalents: ["WavesofAcclaimsHealing"],
         modifierValue: 0.2,
-      }
+      },
     ],
     minStacks: 0,
     maxStacks: 0,
