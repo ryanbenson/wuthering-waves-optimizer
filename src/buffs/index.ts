@@ -898,21 +898,6 @@ export const buffsByCharacter = {
       maxStacks: 0,
       alwaysEnabled: false,
     },
-    {
-      key: "SequenceNode4RingingBellsonWingsAloft",
-      name: "Sequence Node 4: Ringing Bells on Wings Aloft",
-      details: `<span class="skilldescription">When <span class="Highlight">Basic Attack</span>, Basic Attack <span class="Highlight">Chamuel's Star</span>, <span class="Highlight">Dodge Counter</span>, or <span class="Highlight">Chamuel‘s Star: Dodge Counter</span>hits, the target's Spectro RES is reduced by 10% for 30s.</span>`,
-      hasStacks: false,
-      modifiers: [
-        {
-          modifier: "ResistShred:Spectro",
-          modifierValue: 0.1,
-        },
-      ],
-      minStacks: 0,
-      maxStacks: 0,
-      alwaysEnabled: false,
-    },
   ],
 };
 
