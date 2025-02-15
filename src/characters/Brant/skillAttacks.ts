@@ -1,0 +1,40 @@
+export const skillAttacks = {
+  name: "Resonance Skill: Anchors Aweigh!",
+  description: `<div class="skilldescription">Brant launches himself into the air and blasts all targets in an area, dealing <span class="Fire">Fusion DMG</span>. While in mid-air, if Bravo is not full, Resonance Skill <span class="Highlight">Anchors Aweigh!</span> is replaced with <span class="Highlight">Plunging Attack</span>.<br> <br><span class="Title">Plunging Attack</span><br>Plunge at the target at the cost of STA, dealing <span class="Fire">Fusion DMG</span>, which is considered <span class="Highlight">Basic Attack DMG</span>.<br>- If Brant fails to reach the target with the Grapple swing of <span class="Highlight">Mid-air Attack Stage 1</span>, he instead performs a slash forward. Afterward, press Normal Attack to perform <span class="Highlight">Plunging Attack</span>.<br>- If Brant reaches the target with the Grapple swing of Mid-air Attack <span class="Highlight">Stage 1</span> or <span class="Highlight">Stage 2</span> but the attack fails to hit the target, press Normal Attack to perform <span class="Highlight">Plunging Attack</span> during the suspension.<br> </div>`,
+  attacks: [
+    {
+      key: "AnchorsAweighDMG",
+      label: "Anchors Aweigh DMG",
+      talents: {
+        "1": "100.77% + 67.18%",
+        "2": "109.04% + 72.69%",
+        "3": "117.30% + 78.20%",
+        "4": "128.87% + 85.91%",
+        "5": "137.13% + 91.42%",
+        "6": "146.64% + 97.76%",
+        "7": "159.86% + 106.57%",
+        "8": "173.08% + 115.39%",
+        "9": "186.30% + 124.20%",
+        "10": "200.35% + 133.57%",
+      },
+      type: "Skill",
+    },
+    {
+      key: "PlungingAttackDMG",
+      label: "Plunging Attack DMG",
+      talents: {
+        "1": "52.70%",
+        "2": "57.03%",
+        "3": "61.35%",
+        "4": "67.40%",
+        "5": "71.72%",
+        "6": "76.69%",
+        "7": "83.60%",
+        "8": "90.52%",
+        "9": "97.43%",
+        "10": "104.78%",
+      },
+      type: "Basic",
+    },
+  ],
+};

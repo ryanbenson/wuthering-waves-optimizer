@@ -842,6 +842,78 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Phoebe: [
+    {
+      key: "OutroSkillAttentiveHeart",
+      name: "Outro Skill: Attentive Heart",
+      details: `<span class="Highlight">Confession</span> Enhancement: Grant <span class="Highlight">Silent Prayer</span> to the Resonator on the field, reducing the Spectro RES of nearby targets by 10% and granting 100% <span class="Highlight">Spectro Frazzle</span> DMG Amplification. When <span class="Highlight">Spectro Frazzle</span> inflicts DMG, extend <span class="Highlight">Spectro Frazzle's</span> damage interval by 50%. This effect lasts 30s or until Phoebe switches to <span class="Highlight">Absolution</span> status.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:SpectroFrazzle",
+          modifierValue: 1,
+        },
+        {
+          modifier: "ResistShred:Spectro",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4RingingBellsonWingsAloft",
+      name: "Sequence Node 4: Ringing Bells on Wings Aloft",
+      details: `<span class="skilldescription">When <span class="Highlight">Basic Attack</span>, Basic Attack <span class="Highlight">Chamuel's Star</span>, <span class="Highlight">Dodge Counter</span>, or <span class="Highlight">Chamuel‘s Star: Dodge Counter</span>hits, the target's Spectro RES is reduced by 10% for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResistShred:Spectro",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Brant: [
+    {
+      key: "OutroSkillAttentiveHeart",
+      name: "Outro Skill: Attentive Heart",
+      details: `Ampify the incoming Resonator's Fusion DMG by 20% and Resonance Skill DMG by 25% for 14s or until the Resonator is switched out.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Fusion",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "DMGDeepen:Skill",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4RingingBellsonWingsAloft",
+      name: "Sequence Node 4: Ringing Bells on Wings Aloft",
+      details: `<span class="skilldescription">When <span class="Highlight">Basic Attack</span>, Basic Attack <span class="Highlight">Chamuel's Star</span>, <span class="Highlight">Dodge Counter</span>, or <span class="Highlight">Chamuel‘s Star: Dodge Counter</span>hits, the target's Spectro RES is reduced by 10% for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResistShred:Spectro",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

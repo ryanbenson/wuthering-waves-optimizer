@@ -10,6 +10,7 @@
         :style="{
           backgroundImage: `url(https://ryanbenson.github.io/wuthering-waves-assets/images/${characterChosen}.png)`,
         }"
+        :data-test-char-avatar="character"
         @click="openCharacterBrowser"></div>
 
       <button

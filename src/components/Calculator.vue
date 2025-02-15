@@ -1151,6 +1151,12 @@ export default defineComponent({
           return providedStats?.totalDef ?? totalDef.value;
         case "hp":
           return providedStats?.totalHp ?? totalHp.value;
+        case "EnergyRegen":
+          // we store the ER in decimal form, but for calculating damages based on ER
+          // it uses the full amount (1.5 => 150%)
+          const decimalEnergy = providedStats?.energyRegen ?? energyRegen.value;
+          const intEnergy = decimalEnergy * 100;
+          return intEnergy;
         case "attack":
         default:
           return providedStats?.totalAtk ?? totalAtk.value;
@@ -1556,6 +1562,14 @@ export default defineComponent({
               `${attack.key}:HealingBonus`
             ] ?? 0;
           totalSkillDmgBonus += specificSkillHealingBonus;
+          // overwrite the specific skill buff to avoid generic dmg bonuses affecting healing
+          const specificSkillDmg =
+          specificSkillDmgFromResonanceChains +
+          specificSkillDmgFromCharBuffs +
+          specificSkillDmgFromEchoes +
+          specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +
+          specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal +
+          specificSkillDmgFromResonanceChainsBasedOnMaxDefVal;
           const h = calcHeal(
             talent,
             finalAtkDefHpVal,
@@ -1569,6 +1583,14 @@ export default defineComponent({
         }
 
         if (attackType === "Shield") {
+          // overwrite the specific skill buff to avoid generic dmg bonuses affecting shield
+          const specificSkillDmg =
+          specificSkillDmgFromResonanceChains +
+          specificSkillDmgFromCharBuffs +
+          specificSkillDmgFromEchoes +
+          specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +
+          specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal +
+          specificSkillDmgFromResonanceChainsBasedOnMaxDefVal;
           const h = calcShield(
             talent,
             finalAtkDefHpVal,

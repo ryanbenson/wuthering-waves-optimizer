@@ -1,0 +1,41 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: To the Horizon",
+  description: `<div class="skilldescription">Deal <span class="Fire">Fusion DMG</span> to targets within the range and heal all nearby Resonators in the team before entering the <span class="Highlight">Aflame</span> state.<br>Can be cast in mid-air.<br> <br><span class="Title">Aflame</span><br>The efficiency of gaining Bravo is increased by 100%  when <span class="Highlight">Normal Attack</span> or Resonance Skill <span class="Highlight">Anchors Aweigh!</span> hits the target. Meanwhile, Forte Circuit <span class="Highlight">Theatrical Moment</span> is replaced by <span class="Highlight">"My" Moment</span>.<br> <br><span class="Title">"My" Moment</span><br>Brant gains additional ATK based on his Energy Regen: For every 1% of his Energy Regen over 150%, Brant gains additional 20 points of ATK, up to 2600.<br> </div>`,
+  attacks: [
+    {
+      key: "TotheHorizonDMG",
+      label: "To the Horizon DMG",
+      talents: {
+        "1": "42.78%*4 + 171.12%",
+        "2": "46.29%*4 + 185.16%",
+        "3": "49.80%*4 + 199.19%",
+        "4": "54.71%*4 + 218.83%",
+        "5": "58.22%*4 + 232.87%",
+        "6": "62.25%*4 + 249.00%",
+        "7": "67.87%*4 + 271.45%",
+        "8": "73.48%*4 + 293.90%",
+        "9": "79.09%*4 + 316.35%",
+        "10": "85.06%*4 + 340.21%",
+      },
+      type: "Liberation",
+    },
+    {
+      key: "TotheHorizonHealing",
+      label: "To the Horizon Healing",
+      talents: {
+        "1": "500 + 1.75%",
+        "2": "560 + 1.96%",
+        "3": "625 + 2.18%",
+        "4": "700 + 2.45%",
+        "5": "790 + 2.76%",
+        "6": "875 + 3.06%",
+        "7": "890 + 3.11%",
+        "8": "910 + 3.18%",
+        "9": "925 + 3.23%",
+        "10": "950 + 3.32%",
+      },
+      attribute: "EnergyRegen",
+      type: "Healing",
+    },
+  ],
+};
