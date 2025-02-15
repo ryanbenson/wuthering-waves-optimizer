@@ -33,6 +33,8 @@ export const resonanceChains = [
           "MidairAttackStage3DMG",
           "MidairAttackStage3FlipDMG",
           "MidairAttackStage4DMG",
+          "ReturnedfromAshesDMG",
+          "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
         ],
         modifierValue: 0.3,
       },

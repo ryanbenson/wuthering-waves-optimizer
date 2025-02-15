@@ -20,13 +20,14 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: `Theatrical Moment`,
+    key: `TheatricalMoment`,
     name: `Theatrical Moment`,
     details: `Brant gains additional ATK based on his Energy Regen: For every 1% of his Energy Regen over 150%, Brant gains additional 12 points of ATK, up to 1560.`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ATK_FLAT:AdditionalBase",
+        // the 2 won't affect the calcs, it's to avoid collision with the first buff
+        modifier: "ATK_FLAT2:AdditionalBase",
         modifierValue: 12,
         maximumValue: 1560,
         modifierStep: .01,
