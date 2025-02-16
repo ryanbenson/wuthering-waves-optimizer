@@ -1,5 +1,5 @@
 <template>
-  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
+  <div class="weapon-passive-item card card-bordered card-compact bg-base-100 shadow mb-2" :data-test-weapon-passive="passiveKey">
     <div class="card-body">
       <div :class="{ 'weapon-passive': !alwaysEnabled }" @click="toggleEnabled">
         <div v-html="details"></div>

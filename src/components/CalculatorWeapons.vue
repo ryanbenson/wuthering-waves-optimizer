@@ -11,7 +11,8 @@
             }"></div>
         <button
           @click="openWeaponBrowser"
-          class="btn btn-sm btn--weapon--find">
+          class="btn btn-sm btn--weapon--find"
+          data-test-weapon-open-browser>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 512 512"
@@ -28,7 +29,8 @@
           <select
             name="weapon"
             v-model="weapon"
-            class="select select-bordered select-sm">
+            class="select select-bordered select-sm"
+            data-test-weapon-select>
             <option :value="null">Choose a weapon</option>
             <optgroup label="5 Star">
               <option
@@ -99,7 +101,7 @@
         </div>
       </div>
     </div>
-    <div v-if="weapon" class="p-2">
+    <div v-if="weapon" class="p-2" data-test-weapon-basic-stats>
       <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
         <div class="card-body">
           <div class="weapon__stats flex gap-6 items-center">
@@ -129,7 +131,7 @@
             v-html="weaponDescription"></div>
         </div>
       </div>
-      <div v-if="hasWeaponPassive" class="weapon__passives" :key="weapon">
+      <div v-if="hasWeaponPassive" class="weapon__passives" :key="weapon"  data-test-weapon-passives>
         <CalculatorWeaponsPassive
           v-for="(weaponPassive, i) in weaponPassives"
           class="weapon__passive"

@@ -25,7 +25,8 @@
                 <a
                   @click="changeScreen('character')"
                   :class="{ active: curScreen === 'character' }"
-                  class="text-white hover:text-primary">
+                  class="text-white hover:text-primary"
+                  data-test-calculator-mobile-nav="character">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png"
                     class="size-8"
@@ -37,7 +38,8 @@
                 <a
                   @click="changeScreen('weapon')"
                   :class="{ active: curScreen === 'weapon' }"
-                  class="text-white hover:text-primary">
+                  class="text-white hover:text-primary"
+                  data-test-calculator-mobile-nav="weapon">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_014.png"
                     class="size-8"
@@ -49,7 +51,8 @@
                 <a
                   @click="changeScreen('echoes')"
                   :class="{ active: curScreen === 'echoes' }"
-                  class="text-white hover:text-primary">
+                  class="text-white hover:text-primary"
+                  data-test-calculator-mobile-nav="echoes">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/echoes.png"
                     class="size-8"
@@ -61,7 +64,8 @@
                 <a
                   @click="changeScreen('constellations')"
                   :class="{ active: curScreen === 'constellations' }"
-                  class="text-white hover:text-primary">
+                  class="text-white hover:text-primary"
+                  data-test-calculator-mobile-nav="resonanceChains">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/constellations.png"
                     class="size-8"
@@ -73,7 +77,8 @@
                 <a
                   @click="changeScreen('party')"
                   :class="{ active: curScreen === 'party' }"
-                  class="text-white hover:text-primary">
+                  class="text-white hover:text-primary"
+                  data-test-calculator-mobile-nav="team">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/team.png"
                     class="size-8"
@@ -85,7 +90,8 @@
                 <a
                   @click="changeScreen('rotations')"
                   class="calcations__nav--icon-svg calcations__nav--rotations text-white hover:text-primary"
-                  :class="{ active: curScreen === 'rotations' }">
+                  :class="{ active: curScreen === 'rotations' }"
+                  data-test-calculator-mobile-nav="rotations">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 512 512"
@@ -101,7 +107,8 @@
                 <a
                   @click="changeScreen('custom-buffs')"
                   class="calcations__nav--icon-svg calcations__nav--custom-buffs text-white hover:text-primary"
-                  :class="{ active: curScreen === 'custom-buffs' }">
+                  :class="{ active: curScreen === 'custom-buffs' }"
+                  data-test-calculator-mobile-nav="customBuffs">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 512 512"
@@ -117,7 +124,8 @@
                 <a
                   @click="changeScreen('enemy')"
                   :class="{ active: curScreen === 'enemy' }"
-                  class="text-white hover:text-primary">
+                  class="text-white hover:text-primary"
+                  data-test-calculator-mobile-nav="enemy">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png"
                     class="size-8"
@@ -129,7 +137,8 @@
                 <a
                   class="calculations__nav--results text-white hover:text-primary"
                   :class="{ active: curScreen === 'results' }"
-                  @click="changeScreen('results')">
+                  @click="changeScreen('results')"
+                  data-test-calculator-mobile-nav="stats">
                   <img
                     src="https://ryanbenson.github.io/wuthering-waves-assets/images/damages.png"
                     class="size-8"
@@ -160,7 +169,8 @@
             <li>
               <a
                 @click="changeScreen('character')"
-                :class="{ active: curScreen === 'character' }">
+                :class="{ active: curScreen === 'character' }"
+                data-test-calculator-nav="character">
                 <img
                   src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png"
                   class="size-8"
@@ -170,7 +180,8 @@
             <li>
               <a
                 @click="changeScreen('weapon')"
-                :class="{ active: curScreen === 'weapon' }">
+                :class="{ active: curScreen === 'weapon' }"
+                data-test-calculator-nav="weapon">
                 <img
                   src="https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_014.png"
                   class="size-8"
@@ -180,7 +191,8 @@
             <li>
               <a
                 @click="changeScreen('echoes')"
-                :class="{ active: curScreen === 'echoes' }">
+                :class="{ active: curScreen === 'echoes' }"
+                data-test-calculator-nav="echoes">
                 <img
                   src="https://ryanbenson.github.io/wuthering-waves-assets/images/echoes.png"
                   class="size-8"
@@ -190,7 +202,8 @@
             <li>
               <a
                 @click="changeScreen('constellations')"
-                :class="{ active: curScreen === 'constellations' }">
+                :class="{ active: curScreen === 'constellations' }"
+                data-test-calculator-nav="resonanceChains">
                 <img
                   src="https://ryanbenson.github.io/wuthering-waves-assets/images/constellations.png"
                   class="size-8"
@@ -200,7 +213,8 @@
             <li>
               <a
                 @click="changeScreen('party')"
-                :class="{ active: curScreen === 'party' }">
+                :class="{ active: curScreen === 'party' }"
+                data-test-calculator-nav="team">
                 <img
                   src="https://ryanbenson.github.io/wuthering-waves-assets/images/team.png"
                   class="size-8"
@@ -211,7 +225,8 @@
               <a
                 @click="changeScreen('rotations')"
                 class="calcations__nav--icon-svg calcations__nav--rotations mr-2 h-12"
-                :class="{ active: curScreen === 'rotations' }">
+                :class="{ active: curScreen === 'rotations' }"
+                data-test-calculator-nav="rotations">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 512 512"
@@ -226,7 +241,8 @@
               <a
                 @click="changeScreen('custom-buffs')"
                 class="calcations__nav--icon-svg calcations__nav--custom-buffs h-12"
-                :class="{ active: curScreen === 'custom-buffs' }">
+                :class="{ active: curScreen === 'custom-buffs' }"
+                data-test-calculator-nav="customBuffs">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 512 512"
@@ -240,7 +256,8 @@
             <li>
               <a
                 @click="changeScreen('enemy')"
-                :class="{ active: curScreen === 'enemy' }">
+                :class="{ active: curScreen === 'enemy' }"
+                data-test-calculator-nav="enemy">
                 <img
                   src="https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png"
                   class="size-8"
@@ -250,7 +267,8 @@
             <li>
               <a
                 class="calculations__nav--results"
-                @click="changeScreen('results')">
+                @click="changeScreen('results')"
+                data-test-calculator-nav="stats">
                 <img
                   src="https://ryanbenson.github.io/wuthering-waves-assets/images/damages.png"
                   class="size-8"

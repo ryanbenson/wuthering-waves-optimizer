@@ -76,26 +76,21 @@ describe("Home E2E Tests", () => {
     testAttacks(changliLevel80, cy);
   });
 
-  it("should calculate and display the correct damage output and stats", () => {
+  it("should calculate and display the correct damage output and stats, activate all passives and verify stats and calcs", () => {
     cy.get(".character__selection__form--character select").select("Calcharo");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     // Stats calculations
     testStats(calcharoLevel90BaseStats, cy);
     // Damages validations
     testAttacks(calcharoLevel90, cy);
+    cy.get(".character__self-buffs .character__buffs .card").each(($card) => {
+      cy.wrap($card).find("input[type=checkbox]").click();
+    });
+    // Stats calculations
+    testStats(calcharoLevel90AllSelfBonusesStats, cy);
+    // Damages validations
+    testAttacks(calcharoLevel90AllSelfBonuses, cy);
   });
-
-  // it("should enable character buffs and it affects the stats and damages", () => {
-  //   cy.get(".character__selection__form--character select").select("Calcharo");
-  //   cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
-  //   cy.get(".character__self-buffs .character__buffs .card").each(($card) => {
-  //     cy.wrap($card).find("input[type=checkbox]").click();
-  //   });
-  //   // Stats calculations
-  //   testStats(calcharoLevel90AllSelfBonusesStats, cy);
-  //   // Damages validations
-  //   testAttacks(calcharoLevel90AllSelfBonuses, cy);
-  // });
 
   it("should display correctly on various screen sizes", () => {
     const sizes = ["iphone-6", "ipad-2", [1024, 768]];
