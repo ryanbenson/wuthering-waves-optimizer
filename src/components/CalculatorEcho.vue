@@ -479,7 +479,7 @@
                 <span
                   class="label-text"
                   :class="{ substat__label: isEnergyRechargeChecked }">
-                  Energy Recharge
+                  Energy Regen
                   <span v-if="isEnergyRechargeChecked" class="text-primary">
                     {{ energyRegenValue }}
                   </span>
@@ -656,8 +656,11 @@
                 'text-blue-500': rank === '3' || rank === 3,
                 'text-green-500': rank === '2' || rank === 2,
               }">
-              {{ echoName }}<br>
-              <span class="echo__item__cost badge badge-primary text-nowrap" :class="critValueBadgeClass">
+              {{ echoName }}
+              <br />
+              <span
+                class="echo__item__cost badge badge-primary text-nowrap"
+                :class="critValueBadgeClass">
                 CV {{ formattedCritValue }}%
               </span>
             </span>
@@ -669,7 +672,8 @@
               <span v-if="echoSet" class="echo__item__set size-6 rounded-full">
                 <img :src="getEchoSetIcon(echoSet)" :class="echoSet" />
               </span>
-              <span class="echo__item__cost badge badge-primary min-w-16 text-nowrap">
+              <span
+                class="echo__item__cost badge badge-primary min-w-16 text-nowrap">
                 Cost {{ type }}
               </span>
             </div>
@@ -2291,10 +2295,10 @@ export default {
       for (let i = 1; i <= 5; i++) {
         const typeKey = `echoSubStatsType${i}`;
         const valueKey = `echoSubStatsValue${i}`;
-        
-        if (this[typeKey] === 'CritRate') {
+
+        if (this[typeKey] === "CritRate") {
           cv += this[valueKey] * 2; // Double the value for CritRate
-        } else if (this[typeKey] === 'CritDMG') {
+        } else if (this[typeKey] === "CritDMG") {
           cv += this[valueKey]; // Add the value for CritDMG
         }
       }
@@ -2302,44 +2306,44 @@ export default {
     },
     critValueBadgeClass() {
       const cv = this.critValue ?? 0;
-      
+
       // Ensure cv is within the valid range
       const percentage = Math.min(Math.max(cv, 0), 42);
 
       let bgColor;
-      let color = 'text-white';
+      let color = "text-white";
       let boxShadow;
       let borderColor;
 
       if (percentage <= 7) {
-        bgColor = 'bg-emerald-800';  // Dark Green
-        borderColor = 'border-emerald-800';
+        bgColor = "bg-emerald-800"; // Dark Green
+        borderColor = "border-emerald-800";
       } else if (percentage <= 14) {
-        bgColor = 'bg-green-500';  // Lighter Green
-        borderColor = 'border-green-500';
+        bgColor = "bg-green-500"; // Lighter Green
+        borderColor = "border-green-500";
       } else if (percentage <= 21) {
-        bgColor = 'bg-blue-600';   // Blue
-        borderColor = 'border-blue-600';
-        color = 'text-black';
+        bgColor = "bg-blue-600"; // Blue
+        borderColor = "border-blue-600";
+        color = "text-black";
       } else if (percentage <= 28) {
-        bgColor = 'bg-purple-600'; // Purple
-        borderColor = 'border-purple-600';
-        color = 'text-black';
+        bgColor = "bg-purple-600"; // Purple
+        borderColor = "border-purple-600";
+        color = "text-black";
       } else if (percentage <= 35) {
-        bgColor = 'bg-purple-400'; // Lighter Purple
-        borderColor = 'border-purple-400';
-        color = 'text-black';
+        bgColor = "bg-purple-400"; // Lighter Purple
+        borderColor = "border-purple-400";
+        color = "text-black";
       } else {
-        bgColor = 'bg-yellow-500'; // Gold or Red (depending on preference)
-        borderColor = 'border-yellow-500';
-        color = 'text-black';
+        bgColor = "bg-yellow-500"; // Gold or Red (depending on preference)
+        borderColor = "border-yellow-500";
+        color = "text-black";
       }
       if (percentage >= 40) {
-        boxShadow = 'shadow-md shadow-yellow-500/50';
+        boxShadow = "shadow-md shadow-yellow-500/50";
       }
 
       return [
-        bgColor,  // Dynamically return the class based on the cv
+        bgColor, // Dynamically return the class based on the cv
         color,
         borderColor,
         boxShadow,
@@ -2348,10 +2352,10 @@ export default {
     formattedCritValue() {
       const num = this.critValue;
       if (Number.isInteger(num)) {
-        return num;  // If it's an integer, return it as is
+        return num; // If it's an integer, return it as is
       } else {
-        const rounded = num.toFixed(1);  // Round to 1 decimal place
-        return (rounded.endsWith('.0')) ? parseInt(rounded) : parseFloat(rounded);  // Remove the '.0' if it's a whole number
+        const rounded = num.toFixed(1); // Round to 1 decimal place
+        return rounded.endsWith(".0") ? parseInt(rounded) : parseFloat(rounded); // Remove the '.0' if it's a whole number
       }
     },
   },

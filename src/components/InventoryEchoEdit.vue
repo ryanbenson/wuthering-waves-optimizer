@@ -470,7 +470,7 @@
                 <span
                   class="label-text"
                   :class="{ substat__label: isEnergyRechargeChecked }">
-                  Energy Recharge
+                  Energy Regen
                   <span v-if="isEnergyRechargeChecked" class="text-primary">
                     {{ energyRegenValue }}
                   </span>
