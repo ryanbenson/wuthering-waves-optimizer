@@ -26,7 +26,7 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "BasicAttackDMGBonus",
+        modifier: "Havoc",
         modifierValue: 0.15,
       },
     ],

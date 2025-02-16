@@ -104,6 +104,7 @@
     <h3>February 16, 2025</h3>
     <ul>
       <li>Fixes energy regen label on echo modal.</li>
+      <li>Fixes Epiphyte buff for Camellya.</li>
     </ul>
     <h3>February 15, 2025</h3>
     <ul>
