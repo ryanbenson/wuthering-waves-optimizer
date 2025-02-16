@@ -1,8 +1,9 @@
 import { carlottaBaseDamages, carlottaBaseStats } from "./base";
-import { carlottaBaseWeaponDamages, carlottaBaseWeaponStats } from "./weapon";
+import { carlottaWeaponDamages, carlottaBaseWeaponStats, carlottaWeaponStatsPassive } from "./weapon";
 export {
   carlottaBaseDamages,
   carlottaBaseStats,
-  carlottaBaseWeaponDamages,
+  carlottaWeaponDamages,
   carlottaBaseWeaponStats,
+  carlottaWeaponStatsPassive,
 };

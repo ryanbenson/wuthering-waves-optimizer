@@ -1,91 +1,24 @@
 export const carlottaBaseDamages: AttackTests = [
-  {
-      selector: ".stage-1-dmg",
-      values: ["Stage 1 DMG", "181", "185", "271"],
-  },
-  {
-      selector: ".stage-2-dmg",
-      values: ["Stage 2 DMG", "197", "201", "295"],
-  },
-  { selector: ".part-3-dmg", values: ["Part 3 DMG", "420", "431", "630"] },
-  {
-      selector: ".stage-4-dmg",
-      values: ["Stage 4 DMG", "523", "536", "784"],
-  },
-  {
-      selector: ".heavy-attack-dmg",
-      values: ["Heavy Attack DMG", "408", "418", "612"],
-  },
-  {
-      selector: ".mid-air-attack-dmg",
-      values: ["Mid-Air Attack DMG", "244", "250", "365"],
-  },
-  {
-      selector: ".dodge-counter-dmg",
-      values: ["Dodge Counter DMG", "562", "576", "843"],
-  },
-  {
-      selector: ".extermination-order-part-1-dmg",
-      values: ["Extermination Order Part 1 DMG", "339", "348", "509"],
-  },
-  {
-      selector: ".extermination-order-part-2-dmg",
-      values: ["Extermination Order Part 2 DMG", "509", "522", "763"],
-  },
-  {
-      selector: ".extermination-order-part-3-dmg",
-      values: ["Extermination Order Part 3 DMG", "848", "869", "1271"],
-  },
-  {
-      selector: ".phantom-etching-dmg",
-      values: ["Phantom Etching DMG", "1176", "1206", "1764"],
-  },
-  {
-      selector: ".necessary-means-dmg",
-      values: ["Necessary Means DMG", "784", "804", "1176"],
-  },
-  {
-      selector: ".hounds-roar-part-1-dmg",
-      values: ["Hounds Roar Part 1 DMG", "174", "178", "261"],
-  },
-  {
-      selector: ".hounds-roar-part-2-dmg",
-      values: ["Hounds Roar Part 2 DMG", "348", "356", "521"],
-  },
-  {
-      selector: ".hounds-roar-part-3-dmg",
-      values: ["Hounds Roar Part 3 DMG", "324", "332", "485"],
-  },
-  {
-      selector: ".hounds-roar-part-4-dmg",
-      values: ["Hounds Roar Part 4 DMG", "412", "423", "618"],
-  },
-  {
-      selector: ".hounds-roar-part-5-dmg",
-      values: ["Hounds Roar Part 5 DMG", "593", "608", "889"],
-  },
-  {
-      selector: ".phantom-etching-heavy-attack-dmg",
-      values: ["Phantom Etching Heavy Attack DMG", "612", "627", "918"],
-  },
-  {
-      selector: ".phantom-etching-dodge-counter-dmg",
-      values: ["Phantom Etching Dodge Counter DMG", "675", "692", "1012"],
-  },
-  { selector: ".mercy-dmg", values: [`"Mercy" DMG`, "772", "791", "1157"] },
-  {
-      selector: ".death-messenger-dmg",
-      values: [`"Death Messenger" DMG`, "1928", "1976", "2892"],
-  },
-  {
-      selector: ".wanted-outlaw-dmg",
-      values: ["Wanted Outlaw DMG", "393", "402", "589"],
-  },
-  {
-      selector: ".shadowy-raid-dmg",
-      values: ["Shadowy Raid DMG", "1160", "1189", "1739"],
-  },
+  { selector: ".basic-attack-stage-1-dmg", values: ["Basic Attack Stage 1 DMG", "113", "116", "170"] },
+  { selector: ".basic-attack-stage-2-dmg", values: ["Basic Attack Stage 2 DMG", "275", "282", "413"] },
+  { selector: ".necessary-measures-stage-1-dmg", values: ["Necessary Measures Stage 1 DMG", "138", "141", "207"] },
+  { selector: ".necessary-measures-stage-2-dmg", values: ["Necessary Measures Stage 2 DMG", "279", "286", "418"] },
+  { selector: ".necessary-measures-stage-3-dmg", values: ["Necessary Measures Stage 3 DMG", "487", "499", "730"] },
+  { selector: ".heavy-attack-dmg", values: ["Heavy Attack DMG", "318", "326", "476"] },
+  { selector: ".containment-tactics-dmg", values: ["Containment Tactics DMG", "476", "488", "714"] },
+  { selector: ".mid-air-attack-dmg", values: ["Mid-air Attack DMG", "219", "224", "328"] },
+  { selector: ".customary-greetings-dmg", values: ["Customary Greetings DMG", "501", "513", "751"] },
+  { selector: ".dodge-counter-dmg", values: ["Dodge Counter DMG", "504", "516", "755"] },
+  { selector: ".art-of-violence-dmg", values: ["Art of Violence DMG", "601", "616", "902"] },
+  { selector: ".chromatic-splendor-dmg", values: ["Chromatic Splendor DMG", "1175", "1205", "1763"] },
+  { selector: ".era-of-new-wave-dmg", values: ["Era of New Wave DMG", "840", "861", "1260"] },
+  { selector: ".death-knell-dmg", values: ["Death Knell DMG", "504", "517", "756"] },
+  { selector: ".fatal-finale-dmg", values: ["Fatal Finale DMG", "1344", "1377", "2015"] },
+  { selector: ".imminent-oblivion-dmg", values: ["Imminent Oblivion DMG", "1742", "1785", "2612"] },
+  { selector: ".wintertime-aria-dmg", values: ["Wintertime Aria DMG", "622", "638", "933"] },
+  { selector: ".closing-remark-dmg", values: ["Closing Remark DMG", "1656", "1697", "2484"] },
 ];
+
 
 export const carlottaBaseStats: StatTests = [
   { selector: ".stat-atk", value: "462" },

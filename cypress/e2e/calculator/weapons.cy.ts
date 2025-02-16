@@ -1,8 +1,9 @@
 import {
     carlottaBaseDamages,
     carlottaBaseStats,
-    carlottaBaseWeaponDamages,
+    carlottaWeaponDamages,
     carlottaBaseWeaponStats,
+    carlottaWeaponStatsPassive,
 } from "./data/Carlotta/index";
 import { testAttacks } from "./utils/attackUtils";
 import { testStats } from "./utils/statUtils";
@@ -27,6 +28,7 @@ describe("Calculator Weapons", () => {
     cy.get(".character__selection.Carlotta").should("be.visible");
     // validate stats and damages before choosing a weapon
     testStats(carlottaBaseStats, cy);
+    testAttacks(carlottaBaseDamages, cy);
     // should be good at this point
     cy.get('[data-test-calculator-nav="weapon"]').click();
     // open the browser
@@ -48,19 +50,12 @@ describe("Calculator Weapons", () => {
     // validate the stats and damages after choosing a weapon
     testStats(carlottaBaseWeaponStats, cy);
 
-
-    // TODO: Choose passives and re-validate
-    // should only have the rarity filters
-    // Stats calculations
-    // testStats(calcharoLevel90BaseStats, cy);
-    // // Damages validations
-    // testAttacks(calcharoLevel90, cy);
-    // cy.get(".character__self-buffs .character__buffs .card").each(($card) => {
-    //   cy.wrap($card).find("input[type=checkbox]").click();
-    // });
-    // // Stats calculations
-    // testStats(calcharoLevel90AllSelfBonusesStats, cy);
-    // // Damages validations
-    // testAttacks(calcharoLevel90AllSelfBonuses, cy);
+    // should only be one
+    cy.get('[data-test-weapon-passive="TheLastDanceSKillBonus"]').each(($card) => {
+      cy.wrap($card).find("input[type=checkbox]").click();
+    });
+    // validate the stats and damages after enabling passive
+    testStats(carlottaWeaponStatsPassive, cy);
+    testAttacks(carlottaWeaponDamages, cy);
   });
 });
