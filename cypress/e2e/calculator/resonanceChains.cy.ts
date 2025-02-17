@@ -5,7 +5,7 @@ import {
 import { testAttacks } from "./utils/attackUtils";
 import { testStats } from "./utils/statUtils";
 
-describe("Calculator Weapons", () => {
+describe("Calculator Resonance Chains", () => {
   beforeEach(() => {
     cy.visit("/");
   });
