@@ -101,10 +101,15 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>February 17, 2025</h3>
+    <ul>
+      <li>Adds 2.1 echoes.</li>
+    </ul>
     <h3>February 16, 2025</h3>
     <ul>
       <li>Fixes energy regen label on echo modal.</li>
       <li>Fixes Epiphyte buff for Camellya.</li>
+      <li>Fixes some base stats for Brant.</li>
     </ul>
     <h3>February 15, 2025</h3>
     <ul>

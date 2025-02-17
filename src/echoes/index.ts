@@ -107,6 +107,34 @@ export const mainEchoesData: MainEchoes = {
     ],
     sets: ["VoidThunder", "SierraGale"],
   },
+  AeroPrism: {
+    key: "AeroPrism",
+    name: "Aero Prism",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/AeroPrism.png",
+    details: `<span class="description">Summon an Aero Prism to attack enemies, dealing <span class="param">10.70%/12.84%/14.98%/17.12%/19.26%</span> Aero DMG.
+CD: <span class="param">15</span>s.</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "AeroPrismDMG",
+        label: "Aero Prism DMG",
+        description: `Summon an Aero Prism to attack enemies, dealing <span class="param">10.70%/12.84%/14.98%/17.12%/19.26%</span> Aero DMG.
+CD: <span class="param">15</span>s.`,
+        talents: {
+          "1": "10.70%",
+          "2": "12.84%",
+          "3": "14.98%",
+          "4": "17.12%",
+          "5": "19.26%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["EternalRadiance", "TidebreakingCourage"],
+  },
   AutopuppetScout: {
     key: "AutopuppetScout",
     name: "Autopuppet Scout",
@@ -184,6 +212,18 @@ CD: <span class="param">20</span>s</span>`,
       },
     ],
     sets: ["RejuvenatingGlow", "MoonlitClouds"],
+  },
+  CalcifiedJunrock: {
+    key: "CalcifiedJunrock",
+    name: "Calcified Junrock",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/CalcifiedJunrock.png",
+    details: `<span class="description">Summon a Calcified Junrock that restores HP for nearby Resonators in the team by <span class="param">1.40%/1.68%/1.96%/2.24%/2.52%</span> of their Max HP, up to 5 times.
+CD: <span class="param">15</span>s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["EmpyreanAnthem", "TidebreakingCourage"],
   },
   Carapace: {
     key: "Carapace",
@@ -919,6 +959,34 @@ CD: <span class="param">25</span>s.</span>`,
     actions: [],
     sets: ["FreezingFrost", "SunSinkingEclipse", "MoonlitClouds"],
   },
+  GoldenJunrock: {
+    key: "GoldenJunrock",
+    name: "Golden Junrock",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/GoldenJunrock.png",
+    details: `<span class="description">Summon a Golden Junrock that charges forward, dealing <span class="param">72.00%/86.40%/100.80%/115.20%/129.60%</span> Spectro DMG to enemies in its path.
+CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "GoldenJunrockLungeDMG",
+        label: "Golden Junrock Lunge DMG",
+        description: `Summon a Golden Junrock that charges forward, dealing <span class="param">72.00%/86.40%/100.80%/115.20%/129.60%</span> Spectro DMG to enemies in its path.
+CD: <span class="param">8</span>s`,
+        talents: {
+          "1": "72.00%%",
+          "2": "86.40%",
+          "3": "100.80%",
+          "4": "115.20%",
+          "5": "129.60%",
+        },
+        type: "Echo",
+        element: "Sepctro",
+      },
+    ],
+    sets: ["FrostyResolve", "EternalRadiance"],
+  },
   Gulpuff: {
     key: "Gulpuff",
     name: "Gulpuff",
@@ -1074,6 +1142,33 @@ CD: <span class="param">20</span>s.</span>`,
     modifiers: [],
     actions: [],
     sets: ["SierraGale", "LingeringTunes"],
+  },
+  Hurriclaw: {
+    key: "Hurriclaw",
+    name: "Hurriclaw",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Hurriclaw.png",
+    details: `<span class="description">Transform into Hurriclaw and charge forward, dealing <span class="param">87.00%/104.40%/121.80%/139.20%/156.60%</span> Aero DMG upon hit plus <span class="param">87.00%/104.40%/121.80%/139.20%/156.60%</span> Aero DMG with a sweep attack. Hold the Echo Skill to continue charging forward. Use Echo Skill again while charging to perform a sweep attack.
+CD: <span class="param">20</span>s.</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "Hurriclaw",
+        label: "Charge and Sweep DMG",
+        description: `Transform into Hurriclaw and charge forward, dealing <span class="param">87.00%/104.40%/121.80%/139.20%/156.60%</span> Aero DMG upon hit plus <span class="param">87.00%/104.40%/121.80%/139.20%/156.60%</span> Aero DMG with a sweep attack. Hold the Echo Skill to continue charging forward. Use Echo Skill again while charging to perform a sweep attack.`,
+        talents: {
+          "1": "87.00% + 87.00%",
+          "2": "104.40% + 104.40%",
+          "3": "121.80% + 121.80%",
+          "4": "139.20% + 139.20%",
+          "5": "156.60% + 156.60%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["TidebreakingCourage"],
   },
   ImpermanenceHeron: {
     key: "ImpermanenceHeron",
@@ -1900,6 +1995,47 @@ CD: <span class="param">25</span>s.</span>`,
     modifiers: [],
     actions: [],
     sets: ["FrostyResolve", "MidnightVeil"],
+  },
+  RageAgainsttheStatue: {
+    key: "RageAgainsttheStatue",
+    name: "Rage Against the Statue",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/RageAgainsttheStatue.png",
+    details: `<span class="description">Transform into Rage Against the Statue to attack enemies, dealing <span class="param">174.00%/208.80%/243.60%/278.40%/313.20%</span> Spectro DMG. Hold the Echo Skill to maintain the Echo form and charge towards enemies, dealing <span class="param">261.00%/313.20%/365.40%/417.60%/469.80%</span> Spectro DMG.
+CD: <span class="param">20</span>s.</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "RageAgainsttheStatueAttackDMG",
+        label: "Attack DMG",
+        description: `Transform into Rage Against the Statue to attack enemies, dealing <span class="param">174.00%/208.80%/243.60%/278.40%/313.20%</span> Spectro DMG.`,
+        talents: {
+          "1": "174.00%",
+          "2": "208.80%",
+          "3": "243.60%",
+          "4": "278.40%",
+          "5": "313.20%",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+      {
+        key: "RageAgainsttheStatueChargeDMG",
+        label: "Charge DMG",
+        description: `Hold the Echo Skill to maintain the Echo form and charge towards enemies, dealing <span class="param">261.00%/313.20%/365.40%/417.60%/469.80%</span> Spectro DMG.`,
+        talents: {
+          "1": "261.00%",
+          "2": "313.20%",
+          "3": "365.40%",
+          "4": "417.60%",
+          "5": "469.80%",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+    ],
+    sets: ["EternalRadiance"],
   },
   RocksteadyGuardian: {
     key: "RocksteadyGuardian",
