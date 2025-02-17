@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div v-if="buffs" class="character__buffs p-2">
+    <div
+      v-if="buffs"
+      class="character__buffs character__resonance-chains p-2"
+      data-test-resonance-chains>
       <CalculatorResonanceChainsItem
         v-for="buff in buffs"
         :key="buff.key"
@@ -15,7 +18,8 @@
         :modifiers="buff.modifiers"
         @updated-character-buff="handleUpdatedCharacterBuff"
         :talent-data="talentData"
-        class="character__buff"></CalculatorResonanceChainsItem>
+        class="character__buff character__resonance-chain"
+        :data-test-resonance-chain="buff.key"></CalculatorResonanceChainsItem>
     </div>
   </div>
 </template>
