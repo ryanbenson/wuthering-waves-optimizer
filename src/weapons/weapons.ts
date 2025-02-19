@@ -3,6 +3,7 @@ export const swordsList = {
     { key: "BlazingBrilliance", name: "Blazing Brilliance" },
     { key: "EmeraldOfGenesis", name: "Emerald Of Genesis" },
     { key: "RedSpring", name: "Red Spring" },
+    { key: "UnflickeringValor", name: "Unflickering Valor" },
   ],
   four: [
     { key: "CommandoOfConviction", name: "Commando Of Conviction" },
