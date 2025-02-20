@@ -26,9 +26,14 @@
                 'text-green-500': rank === '2' || rank === 2,
               }">
               {{ echoName }}<br>
-              <span class="echo__item__cost badge text-nowrap" :class="critValueBadgeClass">
-                CV {{ formattedCritValue }}%
-              </span>
+              <div v-if="hasSubStats" class="echo__item__meta flex gap-2">
+                <span class="echo__item__cost badge text-nowrap" :class="critValueBadgeClass">
+                  CV {{ formattedCritValue }}%
+                </span>
+                <span class="echo__item__cost badge text-nowrap" :class="rollValueBadgeClass">
+                  RV {{ echoRollValue }}%
+                </span>
+              </div>
             </span>
             <div class="echo__item__meta flex gap-2 items-center">
               <span
@@ -121,6 +126,7 @@ import {
   getReadableSubStatLabel,
   getSubStatIconByType,
   getEchoSetIconByType,
+  getRollValue,
 } from "../echoes/stats";
 import {
   mainEchoesData,
@@ -409,7 +415,75 @@ export default {
         borderColor,
         boxShadow,
       ];
-    }
+    },
+    echoStatsFormatted() {
+      const substatType1 = this.echoSubStatsType1;
+      const substatType2 = this.echoSubStatsType2;
+      const substatType3 = this.echoSubStatsType3;
+      const substatType4 = this.echoSubStatsType4;
+      const substatType5 = this.echoSubStatsType5;
+      const echoData = {};
+      if (substatType1) {
+        echoData[substatType1.toString()] = this.echoSubStatsValue1 ?? 0;
+      }
+      if (substatType2) {
+        echoData[substatType2.toString()] = this.echoSubStatsValue2 ?? 0;
+      }
+      if (substatType3) {
+        echoData[substatType3.toString()] = this.echoSubStatsValue3 ?? 0;
+      }
+      if (substatType4) {
+        echoData[substatType4.toString()] = this.echoSubStatsValue4 ?? 0;
+      }
+      if (substatType5) {
+        echoData[substatType5.toString()] = this.echoSubStatsValue5 ?? 0;
+      }
+      return echoData;
+    },
+    echoRollValue() {
+      return getRollValue(this.echoStatsFormatted);
+    },
+    rollValueBadgeClass() {
+      const rv = this.echoRollValue ?? 0;
+      
+      // Ensure cv is within the valid range
+      const percentage = Math.min(Math.max(rv, 0), 600);
+
+      let bgColor;
+      let color = 'text-white';
+      let boxShadow;
+      let borderColor;
+
+      if (percentage <= 280) {
+        bgColor = 'bg-emerald-800';  // Dark Green
+        borderColor = 'border-emerald-800';
+      } else if (percentage <= 320) {
+        bgColor = 'bg-green-500';  // Lighter Green
+        borderColor = 'border-green-500';
+      } else if (percentage <= 400) {
+        bgColor = 'bg-blue-600';   // Blue
+        borderColor = 'border-blue-600';
+        color = 'text-black';
+      } else if (percentage < 500) {
+        bgColor = 'bg-purple-600'; // Purple
+        borderColor = 'border-purple-600';
+        color = 'text-black';
+      } else {
+        bgColor = 'bg-yellow-500'; // Gold or Red (depending on preference)
+        borderColor = 'border-yellow-500';
+        color = 'text-black';
+      }
+      if (percentage >= 550) {
+        boxShadow = 'shadow-md shadow-yellow-500/50';
+      }
+
+      return [
+        bgColor,  // Dynamically return the class based on the cv
+        color,
+        borderColor,
+        boxShadow,
+      ];
+    },
   },
   methods: {
     getReadableSubStatLabel,

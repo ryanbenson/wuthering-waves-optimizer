@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>February 20, 2025</h3>
+    <ul>
+      <li>Adds roll value to echoes.</li>
+    </ul>
     <h3>February 17, 2025</h3>
     <ul>
       <li>Adds 2.1 echoes.</li>
