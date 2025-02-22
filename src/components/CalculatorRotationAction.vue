@@ -31,7 +31,7 @@
               id="sequence"
               type="number"
               class="input input-xs input-bordered w-14"
-              @blur="onSequenceChange" />
+              @input="onSequenceChange" />
           </div>
           <div class="edit__count">
             <label for="hits">x</label>
@@ -41,7 +41,7 @@
               id="hits"
               type="number"
               class="input input-xs input-bordered w-14"
-              @blur="onHitsChange" />
+              @input="onHitsChange" />
           </div>
           <div class="edit__skill">
             <label for="actionKeyValue">Attack:</label>
