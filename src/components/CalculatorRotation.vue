@@ -51,6 +51,7 @@
               :order="action.order"
               :count="action.count"
               :buffs="action.buffs"
+              :is-disabled="action.isDisabled"
               :ignore-self-buffs="action.excludeSelfBuffs"
               :ignore-team-buffs="action.excludeTeamBuffs"
               @action-update="handleActionUpdate"

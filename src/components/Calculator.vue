@@ -2035,6 +2035,11 @@ export default defineComponent({
           const actionType = action.type;
           const actionBuffs = action.buffs;
           const actionCount = action.count;
+          const actionDisabled = action?.isDisabled ?? false;
+          // if the action is disabled, just skip it
+          if (actionDisabled) {
+            return;
+          }
           const attacksList =
             chosenChar?.[`${actionType}Attacks`]?.attacks ?? [];
           let foundAction;

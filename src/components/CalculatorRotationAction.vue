@@ -1,5 +1,5 @@
 <template>
-  <div class="rotation__action p-4 rounded-lg" @click="toggleEdit">
+  <div class="rotation__action p-4 rounded-lg" :class="{'opacity-50': disabled}" @click="toggleEdit">
     <div class="rotation__action__info">
       <div class="name">
         <div class="order badge">#{{ sequence }}</div>
@@ -152,6 +152,10 @@
             <input v-model="excludeTeamBuffs" type="checkbox" class="checkbox checkbox-xs" @change="onExcludeTeamBuffsChange" />
             <span class="label-text">Exclude team buffs</span>
           </label>
+          <label class="label cursor-pointer flex gap-2">
+            <input v-model="disabled" type="checkbox" class="checkbox checkbox-xs" @change="onChangeDisabled" />
+            <span class="label-text">Disabled</span>
+          </label>
         </div>
       </div>
     </div>
@@ -205,6 +209,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
     buffs: {
       type: Array,
       default() {
@@ -225,6 +233,7 @@ export default {
       hits: 0,
       excludeSelfBuffs: false,
       excludeTeamBuffs: false,
+      disabled: false,
       buffData: [],
       skillKeyMap: {
         basic: "basicAttacks",
@@ -442,6 +451,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        isDisabled: this.disabled,
       });
     },
     addBuff() {
@@ -466,6 +476,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        isDisabled: this.disabled,
       });
     },
     handleUpdatedBuff(buffData) {
@@ -488,6 +499,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        isDisabled: this.disabled,
       });
     },
     removeAction() {
@@ -505,6 +517,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        isDisabled: this.disabled,
       });
     },
     onHitsChange(e) {
@@ -522,6 +535,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        isDisabled: this.disabled,
       });
     },
     onExcludeSelfBuffsChange() {
@@ -534,6 +548,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        isDisabled: this.disabled,
       });
     },
     onExcludeTeamBuffsChange() {
@@ -546,6 +561,20 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        isDisabled: this.disabled,
+      });
+    },
+    onChangeDisabled() {
+      this.$emit("action-update", {
+        id: this.id,
+        order: this.order,
+        key: this.actionKeyValue,
+        type: this.actionSkillType,
+        count: this.hits,
+        buffs: this.buffData,
+        excludeSelfBuffs: this.excludeSelfBuffs,
+        excludeTeamBuffs: this.excludeTeamBuffs,
+        isDisabled: this.disabled,
       });
     }
   },
@@ -556,6 +585,7 @@ export default {
     this.hits = this.count;
     this.excludeSelfBuffs = this.ignoreSelfBuffs;
     this.excludeTeamBuffs = this.ignoreTeamBuffs;
+    this.disabled = this.isDisabled;
     this.buffData = JSON.parse(JSON.stringify(this.buffs));
   },
 };
@@ -640,6 +670,9 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+.rotation__action--disabled {
+  opacity: 0.5;
 }
 html[data-theme="light"] {
   .buffsCount,

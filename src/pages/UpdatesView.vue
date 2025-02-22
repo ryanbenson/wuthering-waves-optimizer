@@ -106,6 +106,7 @@
       <li>
         Fixes Phoebe S2, it now does amplify instead of a multiplier change.
       </li>
+      <li>Enables you to disable an action in a rotation.</li>
     </ul>
     <h3>February 20, 2025</h3>
     <ul>
