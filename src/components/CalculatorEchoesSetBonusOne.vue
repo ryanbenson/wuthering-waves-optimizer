@@ -1,7 +1,22 @@
 <template>
-  <h2 class="text-lg font-bold mt-6 mb-2">Set Bonuses</h2>
   <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
+      <label v-if="isOverrideEnabled" class="form-control mb-4">
+        <div class="label pt-0">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Choose first set
+          </span>
+        </div>
+        <select
+          name="characterLevel"
+          v-model="setManual"
+          class="select select-bordered select-sm"
+          @change="onSetManualChange">
+          <option v-for="set in [...twoSetBonuses]" :key="set" :value="set">
+            {{ set }}
+          </option>
+        </select>
+      </label>
       <h2 v-if="setName" class="card-title">{{ setName }}</h2>
       <div v-else>No first echo set bonus is configured.</div>
       <template v-if="setName">
@@ -38,6 +53,10 @@ export default {
       type: String,
       required: true,
     },
+    isOverrideEnabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
     CalculatorEchoSetPassive,
@@ -48,6 +67,7 @@ export default {
       twoSetBonuses,
       setBonusEffects: setBonusEffectsOne,
       passiveData: [],
+      setManual: null,
     };
   },
   watch: {
@@ -78,6 +98,10 @@ export default {
       }
       this.updatedStats();
     },
+    onSetManualChange(e) {
+      const value = e.target.value;
+      this.type = value;
+    }
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -143,6 +167,9 @@ export default {
       });
       return finalBuffData;
     },
+  },
+  mounted() {
+    this.setManual = this.type;
   },
   beforeUnmount() {
     this.passiveData = [];

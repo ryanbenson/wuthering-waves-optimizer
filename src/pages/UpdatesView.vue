@@ -108,6 +108,7 @@
       </li>
       <li>Enables you to disable an action in a rotation.</li>
       <li>Fixes minor bug with changing rotation sequence and hits.</li>
+      <li>Allows you to override the echo sets and manually set them.</li>
     </ul>
     <h3>February 20, 2025</h3>
     <ul>

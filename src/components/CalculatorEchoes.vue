@@ -20,12 +20,24 @@
         @main-echo-rank:updated="handleMainEchoRankUpdated"
         @open-echoes-browser="handleOpenEchoesBrowser"></CalculatorEcho>
     </div>
-    <div class="set-bonus-selector">
+    <div class="set-bonus-selector mt-6 mb-2">
+      <div class="set-bonus-selector__header flex justify-between items-center">
+        <h2 class="text-lg font-bold">Set Bonuses</h2>
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <input type="checkbox" v-model="setOverride" class="toggle toggle-primary" />
+            <span class="label-text p-0 m-0 ml-2">Enable set override</span>
+          </label>
+        </div>
+      </div>
+
       <CalculatorEchoesSetBonusOne
         :character="character"
+        :is-override-enabled="setOverride"
         @update-stats="handleSetBonusOneData"></CalculatorEchoesSetBonusOne>
       <CalculatorEchoesSetBonusTwo
         :character="character"
+        :is-override-enabled="setOverride"
         @update-stats="handleSetBonusTwoData"></CalculatorEchoesSetBonusTwo>
     </div>
     <h2 v-if="false" class="text-lg font-bold mt-6 mb-2">Main Echo Buff</h2>
@@ -311,7 +323,10 @@ export default {
         setBonusOneVal = null;
         setBonusTwoVal = null;
       }
-
+      // if the user wants to manually manage the sets, don't automatically set the sets
+      if (this.setOverride) {
+        return;
+      }
       // Update the store
       const data = {
         echoSetBonus: {
@@ -354,6 +369,22 @@ export default {
           mainEcho: {
             echo: value,
           },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used to determine if the user can manually change the echo sets
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    setOverride: {
+      get() {
+        return this.currentCharacter?.setOverride ?? null;
+      },
+      async set(value) {
+        const data = {
+          setOverride: value
         };
         await this.setCharacterData(this.character, data);
       },
