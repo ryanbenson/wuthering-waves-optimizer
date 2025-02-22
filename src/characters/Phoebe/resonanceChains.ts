@@ -38,8 +38,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["AttentiveHeartDMG"],
+        modifier: "DMGDeepen:Outro",
         modifierValue: 1.2,
       },
     ],

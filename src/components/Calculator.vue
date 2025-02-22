@@ -1455,6 +1455,8 @@ export default defineComponent({
         }
         let attackLevelDmgDeepen = attack.buffs?.DMGDeepen ?? 0;
         const customDamageDeepen = customBuffs.value?.DamageAmplify ?? 0;
+        let resonanceChainDmgDeepenForAttackType =
+          charResonanceChainsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
         const totalDmgDeepen =
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
@@ -1462,6 +1464,7 @@ export default defineComponent({
           attackLevelDmgDeepen +
           coordinatedDmgDeepenEffect +
           selfBuffSpecificAttackGenericDmgDeepen +
+          resonanceChainDmgDeepenForAttackType +
           customDamageDeepen;
         let totalTalentModifierMultiply =
           talentModifierMultiply + talentModifierMultiplySelfBuff;

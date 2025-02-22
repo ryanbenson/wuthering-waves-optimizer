@@ -101,6 +101,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>February 22, 2025</h3>
+    <ul>
+      <li>
+        Fixes Phoebe S2, it now does amplify instead of a multiplier change.
+      </li>
+    </ul>
     <h3>February 20, 2025</h3>
     <ul>
       <li>Adds roll value to echoes.</li>
