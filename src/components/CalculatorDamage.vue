@@ -32,7 +32,7 @@
       <td>{{ label }}</td>
       <td
         v-tooltip="{
-          content: damage,
+          content: displayDamage(damage),
           html: true,
         }">
         {{ displayDamage(damage) }}

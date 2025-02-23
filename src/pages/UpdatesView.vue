@@ -104,6 +104,7 @@
     <h3>February 23, 2025</h3>
     <ul>
       <li>Fixes Camellya's Epiphyte buff.</li>
+      <li>Rounds the spectro frazzle damage in the tooltip.</li>
     </ul>
     <h3>February 22, 2025</h3>
     <ul>
