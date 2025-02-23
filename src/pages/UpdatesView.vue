@@ -101,6 +101,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>February 23, 2025</h3>
+    <ul>
+      <li>Fixes Camellya's Epiphyte buff.</li>
+    </ul>
     <h3>February 22, 2025</h3>
     <ul>
       <li>

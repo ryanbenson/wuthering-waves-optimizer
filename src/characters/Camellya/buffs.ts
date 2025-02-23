@@ -22,11 +22,11 @@ export const buffs = [
   {
     key: "InherentSkillEpiphyte",
     name: "Inherent Skill: Epiphyte",
-    details: `<div class="skilldescription">Gain 15% Havoc DMG Bonus. Gain increased resistance to interruption when casting <span class="Highlight">Basic Attack</span>, Basic Attack <span class="Highlight">Vining Waltz</span>, and Basic Attack <span class="Highlight">Blazing Waltz</span>.</div>`,
+    details: `<div class="skilldescription">Gain 15% Basic DMG Bonus. Gain increased resistance to interruption when casting <span class="Highlight">Basic Attack</span>, Basic Attack <span class="Highlight">Vining Waltz</span>, and Basic Attack <span class="Highlight">Blazing Waltz</span>.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "Havoc",
+        modifier: "BasicAttackDMGBonus",
         modifierValue: 0.15,
       },
     ],
