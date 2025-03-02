@@ -95,12 +95,17 @@
   <article class="prose page-updates">
     <h1>Upcoming Updates</h1>
     <ul>
-      <li>Better UI</li>
-      <li>More weapons</li>
+      <li>Optimizer</li>
+      <li>Team rotations</li>
+      <li>Translations</li>
       <li>Food</li>
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 2, 2025</h3>
+    <ul>
+      <li>Adds Brant's weapon</li>
+    </ul>
     <h3>February 23, 2025</h3>
     <ul>
       <li>Fixes Camellya's Epiphyte buff.</li>
