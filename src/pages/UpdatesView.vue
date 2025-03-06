@@ -102,6 +102,15 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 6, 2025</h3>
+    <ul>
+      <li>Adds non-damage related sequences for Shorekeeper. Fixes some of her sequence text.</li>
+      <li>Adds better timezone support for the filename for exporting data.</li>
+    </ul>
+    <h3>March 3, 2025</h3>
+    <ul>
+      <li>Fixes Brant's Forte Circuit healing numbers.</li>
+    </ul>
     <h3>March 2, 2025</h3>
     <ul>
       <li>Adds Brant's weapon</li>

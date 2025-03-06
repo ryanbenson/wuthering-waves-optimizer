@@ -146,9 +146,33 @@ export default defineComponent({
      * Gets a filename for the JSON file
      */
     generateFilename() {
-      const today = new Date();
-      const date = today.toISOString().split("T")[0]; // YYYY-MM-DD format
-      return `character_data_${date}.json`;
+      const date = new Date();
+      const dateFormatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+      });
+
+      const parts = dateFormatter.formatToParts(date);
+      const partsValues = {
+        month: '',
+        day: '',
+        year: ''
+      };
+      parts.forEach(({type, value}) => {
+        if (type === 'month') {
+          partsValues.month = value;
+        }
+        if (type === 'day') {
+          partsValues.day = value;
+        }
+        if (type === 'year') {
+          partsValues.year = value;
+        }
+      });
+      const dateStr = `${partsValues.year}-${partsValues.month}-${partsValues.day}`;
+      return `character_data_${dateStr}.json`;
     },
     /**
      * Provides the data to import based on changes to the structures
