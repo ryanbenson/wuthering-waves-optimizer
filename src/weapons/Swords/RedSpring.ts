@@ -8,7 +8,7 @@ const weaponInfo: WeaponInfo = {
   passiveName: "Beyond the Cycle",
   passiveValue:
     `<span class="skilldescription">Increase ATK by <span class="param">12%/15%/18%/21%/24%</span>. When dealing Basic Attack DMG, the wielder gains <span class="param">10%/12.5%/15%/17.5%/20%</span> Basic Attack DMG Bonus for <span class="param">14</span>s. This effect can be triggered once per second, stacking up to <span class="param">3</span> times.<br>
-When the wielder's Concerto Energy is consumed, gain <span class="param">40%/50%/60%/70%/80%</span> Basic DMG Bonus for <span class="param">10</span>. This effect can be triggered once per second and ends when the wielder is switched off the field.</span>`,
+When the wielder's Concerto Energy is consumed, gain <span class="param">40%/50%/60%/70%/80%</span> Basic DMG Bonus for <span class="param">10</span>s. This effect can be triggered once per second and ends when the wielder is switched off the field.</span>`,
   passiveData: [
     {
       key: "BeyondtheCycleAtk",
@@ -55,7 +55,7 @@ When the wielder's Concerto Energy is consumed, gain <span class="param">40%/50%
       minStacks: 0,
       maxStacks: 0,
       details:
-        "When the wielder's Concerto Energy is consumed, gain 40%/50%/60%/70%/80% Basic DMG Bonus for 10. This effect can be triggered once per second and ends when the wielder is switched off the field.",
+        "When the wielder's Concerto Energy is consumed, gain 40%/50%/60%/70%/80% Basic DMG Bonus for 10s. This effect can be triggered once per second and ends when the wielder is switched off the field.",
       alwaysEnabled: false,
     },
   ],

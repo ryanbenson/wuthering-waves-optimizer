@@ -105,6 +105,7 @@
     <h3>March 3, 2025</h3>
     <ul>
       <li>Fixes Brant's S2 Crit Rate buff.</li>
+      <li>Fixes small typo on Red Spring sword.</li>
     </ul>
     <h3>March 6, 2025</h3>
     <ul>
