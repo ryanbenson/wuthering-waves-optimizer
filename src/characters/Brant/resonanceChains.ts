@@ -17,25 +17,11 @@ export const resonanceChains = [
   {
     key: "SequenceNode2ForSmilesandCheers",
     name: "Sequence Node 2: For Smiles and Cheers",
-    details: `<span class="skilldescription">Brant's Crit. Rate increases by 30% when <span class="Highlight">Mid-air Attack</span> and <span class="Highlight">Returned from Ashes</span>. <br>Brant's Outro Skill <span class="Highlight">The Course is Set!</span> gains new enhancement. Within 20s after Brant's Outro Skill:<br>When <span class="Highlight">Resonance Skill</span> cast by the incoming Resonator (or nearby Resonators who activate Brant's Outro Skill) hits a target, Brant blasts the target, dealing <span class="Fire">Fusion DMG</span> equal to 440% of Brant's ATK (considered Basic Attack DMG). Up to <saptag=3>1explosion per second, max 2 explosions.<br>- This effect remains active when Brant is switched off the field.</saptag=3></span>`,
+    details: `<span class="skilldescription">Casting <span class="Highlight">Mid-air Attack</span> and <span class="Highlight">Returned from Ashes</span> increases Brant's Crit. Rate by 30%. <br>Brant's Outro Skill <span class="Highlight">The Course is Set!</span> gains a new enhancement:<br>When <span class="Highlight">Resonance Skill</span> cast by the incoming Resonator (or nearby Resonators who activate Brant's Outro Skill) hits a target within 20s after Brant's Outro Skill, Brant blasts the hit target, dealing <span class="Fire">Fusion DMG</span> equal to 440% of Brant's ATK (considered Basic Attack DMG). This explosion can be triggered <saptag=3>1 time per second, up to 2 explosions in total.<br>- This effect remains active when Brant is switched off the field.</saptag=3></span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "CritRate",
-        modifySpecificTalents: [
-          "MidairAttackStage1DMG",
-          "MidAirAttackStage1ChargedAttackDMG",
-          "MidAirAttackStage1FlipDMG",
-          "MidAirAttackStage1SlashDMG",
-          "MidAirAttackStage2DMG",
-          "MidairAttackStage2ChargedAttackDMG",
-          "MidairAttackStage2FlipDMG",
-          "MidairAttackStage3DMG",
-          "MidairAttackStage3FlipDMG",
-          "MidairAttackStage4DMG",
-          "ReturnedfromAshesDMG",
-          "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
-        ],
         modifierValue: 0.3,
       },
       {

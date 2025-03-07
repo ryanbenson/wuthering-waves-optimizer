@@ -102,6 +102,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 3, 2025</h3>
+    <ul>
+      <li>Fixes Brant's S2 Crit Rate buff.</li>
+    </ul>
     <h3>March 6, 2025</h3>
     <ul>
       <li>Adds non-damage related sequences for Shorekeeper. Fixes some of her sequence text.</li>
