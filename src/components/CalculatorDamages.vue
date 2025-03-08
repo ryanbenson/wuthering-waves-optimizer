@@ -6,6 +6,9 @@
       hit.
     </div>
   </div>
+  <div style="width: 800px">
+    <canvas id="acquisitions" ref="chartCanvas"></canvas>
+  </div>
   <h4 class="damage__title">
     <span class="text-lg font-bold">
       {{ chosenChar.value?.basicAttacks?.name ?? "Basic Attacks" }}
@@ -471,6 +474,7 @@
       <h4 class="text-lg font-bold" v-tooltip="rotation.description">
         {{ rotation.name }}
       </h4>
+
       <template v-if="!rotation.attacks?.length">
         <div class="calculation__damage__item">No attacks in this rotation</div>
       </template>
@@ -531,6 +535,7 @@
 import { displayDamage } from "../utils/numbers";
 import { getEchoData } from "../echoes";
 import CalculatorDamage from "./CalculatorDamage.vue";
+import Chart from "chart.js/auto";
 export default {
   props: {
     character: {
@@ -570,6 +575,27 @@ export default {
       isIntroDetailsShown: false,
       isOutroDetailsShown: false,
       isEchoDetailsShown: false,
+      chart: {
+        config: {
+          type: "pie",
+          data: {
+            labels: ["Red", "Blue", "Yellow"],
+            datasets: [
+              {
+                label: "My First Dataset",
+                data: [300, 50, 100],
+                backgroundColor: [
+                  "rgb(255, 99, 132)",
+                  "rgb(54, 162, 235)",
+                  "rgb(255, 205, 86)",
+                ],
+                hoverOffset: 4,
+              },
+            ],
+          },
+        },
+      },
+      chartObj: null,
     };
   },
   methods: {
@@ -621,6 +647,41 @@ export default {
       }
       return this.chosenChar?.value?.basic?.name ?? null;
     },
+  },
+  mounted() {
+    if (!this.$refs.chartCanvas) return;
+
+    const ctx = this.$refs.chartCanvas.getContext("2d");
+
+    // Destroy existing chart instance if it exists
+    let chartStatus = Chart.getChart(this.$refs.chartCanvas);
+    if (chartStatus) {
+      chartStatus.destroy();
+    }
+
+    this.chartObj = new Chart(ctx, {
+      type: "pie",
+      data: {
+        labels: ["Red", "Blue", "Yellow"],
+        datasets: [
+          {
+            label: "My First Dataset",
+            data: [300, 50, 100],
+            backgroundColor: [
+              "rgb(255, 99, 132)",
+              "rgb(54, 162, 235)",
+              "rgb(255, 205, 86)",
+            ],
+            hoverOffset: 4,
+          },
+        ],
+      },
+    });
+  },
+  beforeUnmount() {
+    if (this.chartObj) {
+      this.chartObj.destroy();
+    }
   },
 };
 </script>

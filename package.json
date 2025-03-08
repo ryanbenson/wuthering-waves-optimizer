@@ -21,6 +21,7 @@
     "test:e2e": "vite dev & wait-on http://localhost:5173 && cypress run"
   },
   "dependencies": {
+    "chart.js": "^4.4.8",
     "lodash": "^4.17.21",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
