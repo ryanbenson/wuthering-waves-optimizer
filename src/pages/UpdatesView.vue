@@ -102,14 +102,21 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>March 3, 2025</h3>
+    <h3>March 8, 2025</h3>
+    <ul>
+      <li>Revert fix for Brant's S2 Crit Rate buff.</li>
+    </ul>
+    <h3>March 7, 2025</h3>
     <ul>
       <li>Fixes Brant's S2 Crit Rate buff.</li>
       <li>Fixes small typo on Red Spring sword.</li>
     </ul>
     <h3>March 6, 2025</h3>
     <ul>
-      <li>Adds non-damage related sequences for Shorekeeper. Fixes some of her sequence text.</li>
+      <li>
+        Adds non-damage related sequences for Shorekeeper. Fixes some of her
+        sequence text.
+      </li>
       <li>Adds better timezone support for the filename for exporting data.</li>
     </ul>
     <h3>March 3, 2025</h3>

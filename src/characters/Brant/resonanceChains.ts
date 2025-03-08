@@ -22,12 +22,26 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "CritRate",
+        modifySpecificTalents: [
+          "MidairAttackStage1DMG",
+          "MidAirAttackStage1ChargedAttackDMG",
+          "MidAirAttackStage1FlipDMG",
+          "MidAirAttackStage1SlashDMG",
+          "MidAirAttackStage2DMG",
+          "MidairAttackStage2ChargedAttackDMG",
+          "MidairAttackStage2FlipDMG",
+          "MidairAttackStage3DMG",
+          "MidairAttackStage3FlipDMG",
+          "MidairAttackStage4DMG",
+          "ReturnedfromAshesDMG",
+          "S6AlltheWorldsaCaptainsCarnevaleBlastDMG",
+        ],
         modifierValue: 0.3,
       },
       {
-          modifier: "EnableAttack",
-          modifierValue: ["SequenceNode2ForSmilesandCheers"],
-      }
+        modifier: "EnableAttack",
+        modifierValue: ["SequenceNode2ForSmilesandCheers"],
+      },
     ],
     minStacks: 0,
     maxStacks: 0,
@@ -59,15 +73,13 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-          modifier: "EnableAttack",
-          modifierValue: ["SequenceNode4ToFreedomISing"],
+        modifier: "EnableAttack",
+        modifierValue: ["SequenceNode4ToFreedomISing"],
       },
       {
-        modifySpecificTalents: [
-          "ReturnedfromAshesShield",
-        ],
+        modifySpecificTalents: ["ReturnedfromAshesShield"],
         modifierValue: 0.2,
-      }
+      },
     ],
     minStacks: 0,
     maxStacks: 0,
@@ -111,8 +123,8 @@ export const resonanceChains = [
         modifierValue: 0.3,
       },
       {
-          modifier: "EnableAttack",
-          modifierValue: ["SequenceNode6AlltheWorldsaCaptainsCarnevale"],
+        modifier: "EnableAttack",
+        modifierValue: ["SequenceNode6AlltheWorldsaCaptainsCarnevale"],
       },
     ],
     minStacks: 0,
