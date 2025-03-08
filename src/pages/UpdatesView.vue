@@ -105,6 +105,11 @@
     <h3>March 8, 2025</h3>
     <ul>
       <li>Revert fix for Brant's S2 Crit Rate buff.</li>
+      <li>
+        Updates Brant flat attack buffs for My Moment and Theatrical Moment, to
+        give you attack for decimals in your ER, so it doesn't require full
+        integers to get ATK.
+      </li>
     </ul>
     <h3>March 7, 2025</h3>
     <ul>

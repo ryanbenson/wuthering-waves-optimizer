@@ -6,10 +6,11 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
+        // supports ER that has a decimal (e.g. 250.2), and the .2 gives you a little ATK
         modifier: "ATK_FLAT:AdditionalBase",
-        modifierValue: 20,
+        modifierValue: 2.0,
         maximumValue: 2600,
-        modifierStep: 0.01,
+        modifierStep: 0.001,
         modifierBasedOn: "EnergyRegen",
         modifierTargetAttr: "ATK_FLAT",
         minStatValue: 1.5,
@@ -27,11 +28,12 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
+        // supports ER that has a decimal (e.g. 250.2), and the .2 gives you a little ATK
         // the 2 won't affect the calcs, it's to avoid collision with the first buff
         modifier: "ATK_FLAT2:AdditionalBase",
-        modifierValue: 12,
+        modifierValue: 1.2,
         maximumValue: 1560,
-        modifierStep: 0.01,
+        modifierStep: 0.001,
         modifierBasedOn: "EnergyRegen",
         modifierTargetAttr: "ATK_FLAT",
         minStatValue: 1.5,
