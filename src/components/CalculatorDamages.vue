@@ -476,6 +476,12 @@
         <div class="calculation__damage__item">No attacks in this rotation</div>
       </template>
       <template v-else>
+        <CalculatorDamageChart
+          :key="rotation.id"
+          :character="character"
+          :rotation="rotation"
+          :unique-key="rotation.id"
+          :name="rotation.name" />
         <table class="calculator__damages table table-zebra table-sm">
           <thead>
             <tr>
@@ -486,12 +492,6 @@
             </tr>
           </thead>
           <tbody>
-            <CalculatorDamageChart
-              :key="rotation.id"
-              :character="character"
-              :rotation="rotation"
-              :unique-key="rotation.id"
-              :name="rotation.name" />
             <CalculatorDamage
               v-for="damageInstance in rotation.attacks"
               :key="damageInstance.key"
