@@ -471,10 +471,17 @@
       <h4 class="text-lg font-bold" v-tooltip="rotation.description">
         {{ rotation.name }}
       </h4>
+
       <template v-if="!rotation.attacks?.length">
         <div class="calculation__damage__item">No attacks in this rotation</div>
       </template>
       <template v-else>
+        <CalculatorDamageChart
+          :key="rotation.id"
+          :character="character"
+          :rotation="rotation"
+          :unique-key="rotation.id"
+          :name="rotation.name" />
         <table class="calculator__damages table table-zebra table-sm">
           <thead>
             <tr>
@@ -531,6 +538,7 @@
 import { displayDamage } from "../utils/numbers";
 import { getEchoData } from "../echoes";
 import CalculatorDamage from "./CalculatorDamage.vue";
+import CalculatorDamageChart from "./CalculatorDamageChart.vue";
 export default {
   props: {
     character: {
@@ -560,6 +568,7 @@ export default {
   },
   components: {
     CalculatorDamage,
+    CalculatorDamageChart,
   },
   data() {
     return {

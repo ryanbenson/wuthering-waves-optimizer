@@ -102,6 +102,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 9, 2025</h3>
+    <ul>
+      <li>Adds data visualization for rotation's damages broken down by type.</li>
+    </ul>
     <h3>March 8, 2025</h3>
     <ul>
       <li>Revert fix for Brant's S2 Crit Rate buff.</li>
