@@ -6,9 +6,6 @@
       hit.
     </div>
   </div>
-  <div style="width: 800px">
-    <canvas id="acquisitions" ref="chartCanvas"></canvas>
-  </div>
   <h4 class="damage__title">
     <span class="text-lg font-bold">
       {{ chosenChar.value?.basicAttacks?.name ?? "Basic Attacks" }}
@@ -489,6 +486,12 @@
             </tr>
           </thead>
           <tbody>
+            <CalculatorDamageChart
+              :key="rotation.id"
+              :character="character"
+              :rotation="rotation"
+              :unique-key="rotation.id"
+              :name="rotation.name" />
             <CalculatorDamage
               v-for="damageInstance in rotation.attacks"
               :key="damageInstance.key"
@@ -535,7 +538,7 @@
 import { displayDamage } from "../utils/numbers";
 import { getEchoData } from "../echoes";
 import CalculatorDamage from "./CalculatorDamage.vue";
-import Chart from "chart.js/auto";
+import CalculatorDamageChart from "./CalculatorDamageChart.vue";
 export default {
   props: {
     character: {
@@ -565,6 +568,7 @@ export default {
   },
   components: {
     CalculatorDamage,
+    CalculatorDamageChart,
   },
   data() {
     return {
@@ -575,27 +579,6 @@ export default {
       isIntroDetailsShown: false,
       isOutroDetailsShown: false,
       isEchoDetailsShown: false,
-      chart: {
-        config: {
-          type: "pie",
-          data: {
-            labels: ["Red", "Blue", "Yellow"],
-            datasets: [
-              {
-                label: "My First Dataset",
-                data: [300, 50, 100],
-                backgroundColor: [
-                  "rgb(255, 99, 132)",
-                  "rgb(54, 162, 235)",
-                  "rgb(255, 205, 86)",
-                ],
-                hoverOffset: 4,
-              },
-            ],
-          },
-        },
-      },
-      chartObj: null,
     };
   },
   methods: {
@@ -647,41 +630,6 @@ export default {
       }
       return this.chosenChar?.value?.basic?.name ?? null;
     },
-  },
-  mounted() {
-    if (!this.$refs.chartCanvas) return;
-
-    const ctx = this.$refs.chartCanvas.getContext("2d");
-
-    // Destroy existing chart instance if it exists
-    let chartStatus = Chart.getChart(this.$refs.chartCanvas);
-    if (chartStatus) {
-      chartStatus.destroy();
-    }
-
-    this.chartObj = new Chart(ctx, {
-      type: "pie",
-      data: {
-        labels: ["Red", "Blue", "Yellow"],
-        datasets: [
-          {
-            label: "My First Dataset",
-            data: [300, 50, 100],
-            backgroundColor: [
-              "rgb(255, 99, 132)",
-              "rgb(54, 162, 235)",
-              "rgb(255, 205, 86)",
-            ],
-            hoverOffset: 4,
-          },
-        ],
-      },
-    });
-  },
-  beforeUnmount() {
-    if (this.chartObj) {
-      this.chartObj.destroy();
-    }
   },
 };
 </script>
