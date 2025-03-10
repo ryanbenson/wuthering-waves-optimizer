@@ -102,6 +102,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 10, 2025</h3>
+    <ul>
+      <li>Updates a lot of Changli text with latest text changes.</li>
+      <li>Merges Changli S5 buffs into one.</li>
+    </ul>
     <h3>March 9, 2025</h3>
     <ul>
       <li>Adds data visualization for rotation's damages broken down by type.</li>

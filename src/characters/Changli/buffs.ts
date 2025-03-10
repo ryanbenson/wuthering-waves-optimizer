@@ -3,7 +3,7 @@ export const buffs = [
     key: "FieryFeather",
     name: "Fiery Feather",
     details:
-      '<div class="skilldescription">When Changli releases Heavy Attack <span class="Highlight">Flaming Sacrifice</span> within 10s, her ATK is increased by 25%, after which <span class="Highlight">Fiery Feather</span> ends.</div>',
+      `When Changli releases Heavy Attack <span class="Highlight">Flaming Sacrifice</span> within 10s, her ATK is increased by 25%, after which <span class="Highlight">Fiery Feather</span> ends.`,
     hasStacks: false,
     modifiers: [
       {
@@ -19,7 +19,7 @@ export const buffs = [
   {
     key: "InherentSkillSecretStrategist",
     name: "Inherent Skill: Secret Strategist",
-    details: `<div class="skilldescription">When Changli releases Basic Attack: <span class="Highlight">True Sight - Conquest</span> or Basic Attack: <span class="Highlight">True Sight - Charge</span>, for each stack of [Enflamement], Changli's Fusion DMG is increased by 5%.</div>`,
+    details: `<div class="skilldescription">When Changli releases Basic Attack: <span class="Highlight">True Sight - Conquest</span> or Basic Attack: <span class="Highlight">True Sight - Charge</span>, for each stack of Enflamement, Changli's Fusion DMG Bonus is increased by 5%.</div>`,
     hasStacks: true,
     modifiers: [
       {
@@ -34,7 +34,7 @@ export const buffs = [
   {
     key: "InherentSkillSweepingForce",
     name: "Inherent Skill: Sweeping Force",
-    details: `<div class="skilldescription">When Changli releases Heavy Attack <span class="Highlight">Flaming Sacrifice</span> or Resonance Liberation <span class="Highlight">Radiance of Fealty</span>, Changli's Fusion DMG Bonus is increased by 20%, and Changli ignores 15% of the target's DEF when dealing damage.</div>`,
+    details: `<div class="skilldescription">Casting Heavy Attack <span class="Highlight">Flaming Sacrifice</span> or Resonance Liberation <span class="Highlight">Radiance of Fealty</span> gives 20% Fusion DMG Bonus and ignores 15% of the target's DEF when dealing damage.</div>`,
     hasStacks: false,
     modifiers: [
       {
