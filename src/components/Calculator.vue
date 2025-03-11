@@ -1756,6 +1756,22 @@ export default defineComponent({
                 talent = attack.talents[talentType];
               }
               const hitCount = attack?.count ?? 1;
+              let attackType = attack.type;
+              // is there an attack type override? if so, update it
+              const attackTypeOverrideResChain =
+                charResonanceChainsData.value?.specificTalentBuffs?.[
+                  `${attack.key}:talentTypeOverride`
+                ] ?? null;
+              const attackTypeOverrideSelfBuff =
+                charBuffsData.value?.specificTalentBuffs?.[
+                  `${attack.key}:talentTypeOverride`
+                ] ?? null;
+              if (attackTypeOverrideResChain) {
+                attackType = attackTypeOverrideResChain;
+              }
+              if (attackTypeOverrideSelfBuff) {
+                attackType = attackTypeOverrideSelfBuff;
+              }
               return {
                 key: attack.key,
                 label: attack.label,
@@ -1768,7 +1784,7 @@ export default defineComponent({
                   hitCount,
                 ),
                 isEnabled,
-                type: attack.type,
+                type: attackType,
                 count: attack.count,
               };
             })

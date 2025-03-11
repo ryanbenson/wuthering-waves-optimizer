@@ -29,11 +29,11 @@ export default {
   },
   watch: {
     rotation: {
-      handler: function(updatedRotation) {
+      handler: function (updatedRotation) {
         this.initChart(updatedRotation);
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   data() {
     return {
@@ -55,12 +55,12 @@ export default {
         Healing: 0,
       };
       attacks.forEach((attack) => {
-        if (attack.type === 'Shield') {
+        if (attack.type === "Shield") {
           attackDamagesByType[attack.type] += attack.damage.shieldAmount;
-        } else if (attack.type === 'Healing') {
+        } else if (attack.type === "Healing") {
           attackDamagesByType[attack.type] += attack.damage.healAmount;
         } else {
-          attackDamagesByType[attack.type] += attack.damage.totalDamage;
+          attackDamagesByType[attack.type] += attack.damage.avgDamage;
         }
       });
       // remove any keys that are 0
@@ -78,17 +78,17 @@ export default {
     },
     colorByType() {
       return {
-        Basic: 'rgb(255, 99, 132)', // Muted Red
-        Skill: 'rgb(255, 159, 64)', // Muted Orange
-        Liberation: 'rgb(255, 205, 86)', // Muted Yellow
-        Intro: 'rgb(153, 102, 255)', // Muted Purple
-        Heavy: 'rgb(75, 192, 192)', // Teal
-        Outro: 'rgb(201, 203, 207)', // Soft Gray
-        Utility: 'rgb(120, 120, 120)', // Dark Gray
-        Shield: 'rgb(0, 173, 255)', // Blue
-        Healing: 'rgb(59, 234, 59)', // Green
+        Basic: "rgb(255, 99, 132)", // Muted Red
+        Skill: "rgb(255, 159, 64)", // Muted Orange
+        Liberation: "rgb(255, 205, 86)", // Muted Yellow
+        Intro: "rgb(153, 102, 255)", // Muted Purple
+        Heavy: "rgb(75, 192, 192)", // Teal
+        Outro: "rgb(201, 203, 207)", // Soft Gray
+        Utility: "rgb(120, 120, 120)", // Dark Gray
+        Shield: "rgb(0, 173, 255)", // Blue
+        Healing: "rgb(59, 234, 59)", // Green
       };
-    }
+    },
   },
   methods: {
     initChart(rotationData) {
@@ -118,7 +118,7 @@ export default {
           ],
         },
       });
-    }
+    },
   },
   mounted() {
     this.initChart(this.rotation);
