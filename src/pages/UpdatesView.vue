@@ -102,6 +102,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 11, 2025</h3>
+    <ul>
+      <li>Changes rotation damage chart to use average damage.</li>
+      <li>
+        Fixes rotation damage chart to support attack type overrides like
+        Camellya. The damage was correct, it was just incorrectly categorized.
+      </li>
+    </ul>
     <h3>March 10, 2025</h3>
     <ul>
       <li>Updates a lot of Changli text with latest text changes.</li>
@@ -109,7 +117,9 @@
     </ul>
     <h3>March 9, 2025</h3>
     <ul>
-      <li>Adds data visualization for rotation's damages broken down by type.</li>
+      <li>
+        Adds data visualization for rotation's damages broken down by type.
+      </li>
     </ul>
     <h3>March 8, 2025</h3>
     <ul>
