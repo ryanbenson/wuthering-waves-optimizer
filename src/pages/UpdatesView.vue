@@ -102,6 +102,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 13, 2025</h3>
+    <ul>
+      <li>
+        In rotations, it now shows all possible actions including ones locked
+        behind resonance chains. If you have not activated that resonance chain,
+        the action will be disabled until you unlock it.
+      </li>
+    </ul>
     <h3>March 11, 2025</h3>
     <ul>
       <li>Changes rotation damage chart to use average damage.</li>
