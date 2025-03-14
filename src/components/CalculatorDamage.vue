@@ -5,8 +5,12 @@
       {
         'calculation__damage__item--healing': type === 'Healing',
         'calculation__damage__item--shield': type === 'Shield',
+        'opacity-50': isEnabled && !originalIsEnabled,
       }
     ]"
+    v-tooltip="{
+          content: isEnabled && !originalIsEnabled ? 'Action is not enabled, unlock this action to enable it.' : '',
+        }"
   >
     <template v-if="type === 'Healing'">
       <td>{{ label }}</td>
@@ -86,6 +90,14 @@ export default {
       type: Object,
       required: true,
     },
+    isEnabled: {
+      type: Boolean,
+      default: true,
+    },
+    originalIsEnabled: {
+      type: Boolean,
+      default: false
+    }
   },
   methods: {
     displayDamage,

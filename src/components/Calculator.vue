@@ -1699,11 +1699,13 @@ export default defineComponent({
         talentType,
         hasNoTalentLevel = false,
         dynamicTalentType = false,
+        excludeDisabledAttacks = true, // e.g. ones that are unlocked through chains should be hidden by default
       ) => {
         return (
           (attacks ?? [])
             .map((attack) => {
               let isEnabled = true;
+              let originalIsEnabled = true; // used for rotations. we show them, but disable them, so isEnabled is overwritten
               // if this attack requires a resonance chain to be unlocked, verify it's enabled
               const requiresResonanceChain =
                 attack?.requiresResonanceChain ?? false;
@@ -1721,6 +1723,10 @@ export default defineComponent({
                 );
                 // flag this attack as enabled or not based on the resonance chain
                 isEnabled = isAttackEnabled;
+                originalIsEnabled = isEnabled;
+              }
+              if (!excludeDisabledAttacks) {
+                isEnabled = true;
               }
               let talent;
               if (hasNoTalentLevel) {
@@ -1784,6 +1790,7 @@ export default defineComponent({
                   hitCount,
                 ),
                 isEnabled,
+                originalIsEnabled,
                 type: attackType,
                 count: attack.count,
               };
@@ -1917,7 +1924,7 @@ export default defineComponent({
             name: rotation.name,
             description: rotation.description,
           };
-          const attacks = processAttacks(rotation.attacks, null, false, true);
+          const attacks = processAttacks(rotation.attacks, null, false, true, false);
           // capture all damages
           const damageAggregation = {
             normalDamage: null,
@@ -1928,6 +1935,9 @@ export default defineComponent({
           };
           // go through all attacks and update our aggregation
           attacks.forEach((attack) => {
+            if (attack?.originalIsEnabled === false) {
+              return;
+            }
             if (attack?.damage?.totalDamage !== undefined) {
               damageAggregation.normalDamage =
                 (damageAggregation.normalDamage || 0) +

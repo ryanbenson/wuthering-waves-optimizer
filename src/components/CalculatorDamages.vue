@@ -498,7 +498,9 @@
               :character="character"
               :type="damageInstance.type"
               :label="damageInstance.label"
-              :damage="damageInstance.damage"></CalculatorDamage>
+              :damage="damageInstance.damage"
+              :is-enabled="damageInstance.isEnabled"
+              :original-is-enabled="damageInstance.originalIsEnabled"></CalculatorDamage>
           </tbody>
           <tfoot>
             <tr v-if="rotation.damageAggregation.normalDamage" class="">
