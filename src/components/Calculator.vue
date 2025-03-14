@@ -467,7 +467,9 @@
           :rotations-list="rotationsList"
           :chosen-char="chosenChar"
           :chosen-echo-name="mainEcho"
-          :is-missing-spectro-data="isMissingSpectroData"></CalculatorDamages>
+          :is-missing-spectro-data="isMissingSpectroData"
+          :char-buffs-data="charBuffsData"
+          :char-resonance-chains-data="charResonanceChainsData"></CalculatorDamages>
       </div>
     </div>
     <div class="results">
@@ -506,7 +508,9 @@
         :rotations-list="rotationsList"
         :chosen-char="chosenChar"
         :chosen-echo-name="mainEcho"
-        :is-missing-spectro-data="isMissingSpectroData"></CalculatorDamages>
+        :is-missing-spectro-data="isMissingSpectroData"
+        :char-buffs-data="charBuffsData"
+        :char-resonance-chains-data="charResonanceChainsData"></CalculatorDamages>
     </div>
   </div>
 </template>
@@ -1791,6 +1795,7 @@ export default defineComponent({
                 ),
                 isEnabled,
                 originalIsEnabled,
+                requiresResonanceChain,
                 type: attackType,
                 count: attack.count,
               };
@@ -2146,6 +2151,8 @@ export default defineComponent({
       characters,
       characterLevel,
       chosenChar,
+      charBuffsData,
+      charResonanceChainsData,
       chosenWeapon,
       rotationsList,
       curScreen,

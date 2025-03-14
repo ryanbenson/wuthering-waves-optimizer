@@ -26,6 +26,14 @@ export default {
       type: String,
       required: true,
     },
+    charBuffsData: {
+      type: Object,
+      required: true,
+    },
+    charResonanceChainsData: {
+      type: Object,
+      required: true,
+    },
   },
   watch: {
     rotation: {
@@ -55,6 +63,26 @@ export default {
         Healing: 0,
       };
       attacks.forEach((attack) => {
+        // if this attack requires a resonance chain to be unlocked, verify it's enabled
+        const requiresResonanceChain =
+          attack?.requiresResonanceChain ?? false;
+        if (requiresResonanceChain) {
+          const resonanceChainsEnabledAttacks =
+            this.charResonanceChainsData?.value?.EnableAttack ?? [];
+          const charBuffsEnabledAttacks =
+            this.charBuffsData?.value?.EnableAttack ?? [];
+          // merge all possible enabled attack arrays together
+          const enabledAttacks = []
+            .concat(resonanceChainsEnabledAttacks)
+            .concat(charBuffsEnabledAttacks);
+          const isAttackEnabled = enabledAttacks.includes(
+            attack.requiresResonanceChain,
+          );
+          console.log('requires chain', attack.key, isAttackEnabled)
+          if (!isAttackEnabled) {
+            return;
+          }
+        }
         if (attack.type === "Shield") {
           attackDamagesByType[attack.type] += attack.damage.shieldAmount;
         } else if (attack.type === "Healing") {

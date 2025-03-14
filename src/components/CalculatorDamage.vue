@@ -96,7 +96,7 @@ export default {
     },
     originalIsEnabled: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   methods: {

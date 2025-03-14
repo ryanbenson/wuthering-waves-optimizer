@@ -481,7 +481,10 @@
           :character="character"
           :rotation="rotation"
           :unique-key="rotation.id"
-          :name="rotation.name" />
+          :name="rotation.name"
+          :char-buffs-data="charBuffsData"
+          :char-resonance-chains-data="charResonanceChainsData"
+        />
         <table class="calculator__damages table table-zebra table-sm">
           <thead>
             <tr>
@@ -566,6 +569,14 @@ export default {
     isMissingSpectroData: {
       type: Boolean,
       default: false,
+    },
+    charBuffsData: {
+      type: Object,
+      required: true,
+    },
+    charResonanceChainsData: {
+      type: Object,
+      required: true,
     },
   },
   components: {
