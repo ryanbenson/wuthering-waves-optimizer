@@ -102,6 +102,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 15, 2025</h3>
+    <ul>
+      <li>
+        Adds presets for rotations and many rotations from TCers to various characters.
+      </li>
+    </ul>
     <h3>March 14, 2025</h3>
     <ul>
       <li>

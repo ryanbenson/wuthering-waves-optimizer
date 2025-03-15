@@ -1,10 +1,16 @@
 <template>
   <div class="flex gap-4 mb-4">
     <button class="btn btn-primary" @click="handleCreateRotation">
-      Create Rotation
+      Create
     </button>
     <button class="btn btn-primary" @click="handleToggleImport">
-      Import Rotation
+      Import
+    </button>
+    <button
+      class="btn btn-primary"
+      @click="togglePresetRotations"
+    >
+      List Presets
     </button>
   </div>
   <div
@@ -22,6 +28,35 @@
         Confirm Import
       </button>
     </div>
+  </div>
+  <div v-if="isPresetRotationsOpen">
+    <template v-if="!hasRotations">
+    <div
+      class="presetRotations card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+      <div class="card-body">
+        No presets are available for {{ character }} yet.
+      </div>
+    </div>
+    </template>
+    <template v-else>
+      <div
+        v-for="preset in presets"
+        :key="preset.name"
+        class="presetRotations card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+        <div class="card-body">
+          <h2 class="card-title">{{ preset.name }}</h2>
+          <p>
+            {{ preset.description }}
+          </p>
+          <p class="italic">
+            Author: {{ preset.author }}
+          </p>
+          <button class="btn btn-primary" @click="handleImportPreset(preset)">
+            Import
+          </button>
+        </div>
+      </div>
+    </template>
   </div>
   <div class="flex flex-col gap-4">
     <CalculatorRotation
@@ -58,8 +93,10 @@ export default {
     return {
       importRotationData: null,
       isImportOpen: false,
+      isPresetRotationsOpen: false,
       rotations: [],
       characterData: {},
+      presets: [],
     };
   },
   computed: {
@@ -71,6 +108,13 @@ export default {
     currentCharacter() {
       return this.characters[this.character] ?? {};
     },
+    /**
+     * Determines if there are rotation presets for this char or not
+     * @returns {Boolean}
+     */
+    hasRotations() {
+      return this.presets.length > 0;
+    }
   },
   methods: {
     ...mapActions(useCharacterStore, [
@@ -104,6 +148,27 @@ export default {
     async handleImportRotation() {
       try {
         const rotationData = JSON.parse(this.importRotationData);
+        const processedImportedRotation =
+          this.addIdsToImportedRotation(rotationData);
+        this.rotations.push(processedImportedRotation);
+        this.importRotationData = null;
+        this.isImportOpen = false;
+        // update our store
+        const data = {
+          rotations: JSON.parse(JSON.stringify(this.rotations)),
+        };
+        await this.setCharacterData(this.character, data);
+        this.$emit(
+          "updated-rotations",
+          JSON.parse(JSON.stringify(this.rotations)),
+        );
+      } catch (error) {
+        alert("Rotation data is not valid");
+      }
+    },
+    async handleImportPreset(preset) {
+      try {
+        const rotationData = JSON.parse(JSON.stringify(preset.data)); // clone just to be safe
         const processedImportedRotation =
           this.addIdsToImportedRotation(rotationData);
         this.rotations.push(processedImportedRotation);
@@ -175,11 +240,16 @@ export default {
         JSON.parse(JSON.stringify(this.rotations)),
       );
     },
+    togglePresetRotations() {
+      this.isPresetRotationsOpen = !this.isPresetRotationsOpen;
+    },
   },
   async mounted() {
     this.rotations = this.currentCharacter?.rotations ?? [];
     this.$emit("updated-rotations", JSON.parse(JSON.stringify(this.rotations)));
     this.characterData = await getCharByName(this.character);
+    const rotations = this.characterData?.rotations ?? [];
+    this.presets = rotations;
   },
 };
 </script>

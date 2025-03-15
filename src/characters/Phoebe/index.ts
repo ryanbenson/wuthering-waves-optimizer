@@ -8,6 +8,7 @@ import { introAttacks } from "./introAttacks.ts";
 import { buffs } from "./buffs.ts";
 import { resonanceChains } from "./resonanceChains.ts";
 import { outroAttacks } from "./outroAttacks.ts";
+import { rotations } from "./presets.ts";
 
 export function getData() {
   return {
@@ -22,5 +23,6 @@ export function getData() {
     buffs,
     resonanceChains,
     outroAttacks,
+    rotations
   };
 }

@@ -78,7 +78,6 @@ export default {
           const isAttackEnabled = enabledAttacks.includes(
             attack.requiresResonanceChain,
           );
-          console.log('requires chain', attack.key, isAttackEnabled)
           if (!isAttackEnabled) {
             return;
           }

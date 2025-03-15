@@ -1,0 +1,8 @@
+export const rotations: RotationPreset[] = [
+    {
+        name: `Prydwen Rotation`,
+        description: `Standard s0 rotation`,
+        author: `Prydwen`,
+        data: {"name":"Prydwen Rotation","description":"","actions":[{"order":1,"key":"GoldenGraceDMG","type":"intro","count":1,"buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false},{"order":2,"key":"ToWhereLightShinesDMG","type":"skill","count":1,"buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false},{"order":3,"key":"RingofMirrorsRefractedHolyLightDMG","type":"skill","count":1,"buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false},{"order":4,"key":"AbsolutionLitanyDMG","type":"forteCircuit","count":1,"buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false},{"order":5,"key":"DawnofEnlightenmentDMG","type":"liberation","count":1,"buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false},{"order":6,"key":"ChamuelsStarStage1DMG","type":"skill","count":"4","buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false},{"order":7,"key":"ChamuelsStarStage2DMG","type":"skill","count":"4","buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false},{"order":8,"key":"ChamuelsStarStage3DMG","type":"skill","count":"4","buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false},{"order":9,"key":"HeavyAttackStarflashDMG","type":"forteCircuit","count":"4","buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false},{"order":10,"key":"AttentiveHeartDMG","type":"outro","count":1,"buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false}]}
+    },
+];
