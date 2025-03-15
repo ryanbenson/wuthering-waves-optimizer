@@ -89,3 +89,10 @@ interface Action {
   count: number; // how many hits
   buffs: ActionBuff[]; // any buffs for this specific action
 }
+
+type RotationPreset = {
+  name: string;
+  description: string;
+  author?: string;
+  data: any; // this is a rotation config, we can build this out later
+}

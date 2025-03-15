@@ -4,7 +4,7 @@ export const liberationAttacks = {
   attacks: [
     {
       key: "FervorEfflorescentDMG",
-      label: "Skill DMG",
+      label: "Fervor Efflorescent DMG",
       talents: {
         "1": "605.00%",
         "2": "654.61%",
