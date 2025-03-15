@@ -6,6 +6,9 @@
     <button class="btn btn-primary" @click="handleToggleImport">
       Import Rotation
     </button>
+    <button class="btn btn-primary" @click="togglePresetRotations">
+      List Preset Rotations
+    </button>
   </div>
   <div
     v-if="isImportOpen"
@@ -21,6 +24,34 @@
       <button class="btn btn-primary" @click="handleImportRotation">
         Confirm Import
       </button>
+    </div>
+  </div>
+  <div v-if="isPresetRotationsOpen">
+    <div
+      class="presetRotations card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+      <div class="card-body">
+        <h2 class="card-title">DPS Rotation</h2>
+        <p>
+          E + MDA1 + MDA12 + MDA12 + Intro + Intro + E (Nuke) + R + MDA2
+          (Charged) + MDA34 + Heavy + E (Nuke) + Q + Outro
+        </p>
+        <button class="btn btn-primary" @click="handleImportRotation">
+          Import
+        </button>
+      </div>
+    </div>
+    <div
+      class="presetRotations card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+      <div class="card-body">
+        <h2 class="card-title">Support Rotation</h2>
+        <p>
+          E + MDA1 + MDA12 + MDA12 + E (Nuke) + R + MDA2 (Charged) + MDA34 +
+          Heavy + E (Nuke) + Q + Outro
+        </p>
+        <button class="btn btn-primary" @click="handleImportRotation">
+          Import
+        </button>
+      </div>
     </div>
   </div>
   <div class="flex flex-col gap-4">
@@ -58,6 +89,7 @@ export default {
     return {
       importRotationData: null,
       isImportOpen: false,
+      isPresetRotationsOpen: false,
       rotations: [],
       characterData: {},
     };
@@ -174,6 +206,9 @@ export default {
         "updated-rotations",
         JSON.parse(JSON.stringify(this.rotations)),
       );
+    },
+    togglePresetRotations() {
+      this.isPresetRotationsOpen = !this.isPresetRotationsOpen;
     },
   },
   async mounted() {
