@@ -174,7 +174,11 @@ export default {
         this.rotations.push(processedImportedRotation);
         this.importRotationData = null;
         this.isImportOpen = false;
-        await this.setCharacterData(this.character, rotationData);
+        // update our store
+        const data = {
+          rotations: JSON.parse(JSON.stringify(this.rotations)),
+        };
+        await this.setCharacterData(this.character, data);
         this.$emit(
           "updated-rotations",
           JSON.parse(JSON.stringify(this.rotations)),
