@@ -102,16 +102,24 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 16, 2025</h3>
+    <ul>
+      <li>Adds new rotation for Chixia.</li>
+    </ul>
     <h3>March 15, 2025</h3>
     <ul>
       <li>
-        Adds presets for rotations and many rotations from TCers to various characters.
+        Adds presets for rotations and many rotations from TCers to various
+        characters.
       </li>
     </ul>
     <h3>March 14, 2025</h3>
     <ul>
       <li>
-        In rotations, when a rotation action is in a rotation it now always appears in the list. However, if the chain is not unlocked (e.g. resonance chain), then it is not added to the final aggregation, and it is has less opacity, and a tooltip explaining it.
+        In rotations, when a rotation action is in a rotation it now always
+        appears in the list. However, if the chain is not unlocked (e.g.
+        resonance chain), then it is not added to the final aggregation, and it
+        is has less opacity, and a tooltip explaining it.
       </li>
     </ul>
     <h3>March 13, 2025</h3>
