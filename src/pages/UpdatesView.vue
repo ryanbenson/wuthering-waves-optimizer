@@ -102,6 +102,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 17, 2025</h3>
+    <ul>
+      <li>Adds new rotations for Aalto.</li>
+    </ul>
     <h3>March 16, 2025</h3>
     <ul>
       <li>Adds new rotation for Chixia.</li>
