@@ -104,6 +104,11 @@
     <h1>Updates</h1>
     <h3>March 17, 2025</h3>
     <ul>
+      <li>Fixes an action in a new preset rotation for Aalto.</li>
+      <li>Adds a preset rotation for Carlotta.</li>
+    </ul>
+    <h3>March 17, 2025</h3>
+    <ul>
       <li>Adds new rotations for Aalto.</li>
     </ul>
     <h3>March 16, 2025</h3>
