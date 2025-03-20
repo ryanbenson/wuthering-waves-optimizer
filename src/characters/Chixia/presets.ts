@@ -371,4 +371,10 @@ export const rotations: RotationPreset[] = [
       ],
     },
   },
+  {
+    name: `DPS Rotation (On-Field Role)`,
+    description: `Skill → Echo Swap → Intro → DkDk ×30 → Ult → Boom → DkDk ×30 → Boom → Outro`,
+    author: `Namelag`,
+    data: {"name":"DPS Rotation (On-Field Role)","description":"Skill → Echo Swap → Intro → DkDk ×30 → Ult → Boom → DkDk ×30 → Boom → Outro","actions":[{"order":1,"key":"WhizzingFightSpiritSkillDMG","type":"skill","count":1,"buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false,"isDisabled":false},{"order":2,"key":"GrandEntranceSkillDMG","type":"intro","count":1,"buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false,"isDisabled":false},{"order":3,"key":"ThermobaricBulletsDamage","type":"forteCircuit","count":"30","buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false,"isDisabled":false},{"order":4,"key":"BlazingFlamesSkillDMG","type":"liberation","count":1,"buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false,"isDisabled":false},{"order":5,"key":"BoomBoomDamage","type":"forteCircuit","count":1,"buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false,"isDisabled":false},{"order":6,"key":"ThermobaricBulletsDamage","type":"forteCircuit","count":"30","buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false,"isDisabled":false},{"order":7,"key":"BoomBoomDamage","type":"forteCircuit","count":1,"buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false,"isDisabled":false},{"order":8,"key":"OutroSkillDMG","type":"outro","count":1,"buffs":[],"excludeSelfBuffs":false,"excludeTeamBuffs":false,"isDisabled":false}]}
+  }
 ];

@@ -102,7 +102,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>March 17, 2025</h3>
+    <h3>March 20, 2025</h3>
+    <ul>
+      <li>Adds a preset rotations for Changli, Chixia, Sanhua.</li>
+    </ul>
+    <h3>March 18, 2025</h3>
     <ul>
       <li>Fixes an action in a new preset rotation for Aalto.</li>
       <li>Adds a preset rotation for Carlotta.</li>
