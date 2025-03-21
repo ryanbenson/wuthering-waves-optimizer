@@ -102,6 +102,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 21, 2025</h3>
+    <ul>
+      <li>
+        Fixes Brant's Heavy Attack - Rhapsodic Riff DMG damage type, it now
+        properly does Heavy.
+      </li>
+    </ul>
     <h3>March 20, 2025</h3>
     <ul>
       <li>Adds a preset rotations for Changli, Chixia, Sanhua.</li>

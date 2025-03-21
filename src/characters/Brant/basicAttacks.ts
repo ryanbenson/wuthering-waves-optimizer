@@ -102,7 +102,7 @@ export const basicAttacks = {
         "9": "157.14%",
         "10": "168.99%",
       },
-      type: "Basic",
+      type: "Heavy",
     },
     {
       key: "MidairAttackStage1DMG",
