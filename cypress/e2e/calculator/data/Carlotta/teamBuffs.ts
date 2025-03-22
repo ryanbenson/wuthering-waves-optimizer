@@ -1,22 +1,76 @@
 export const carlottaDamagesAfterAllTeamBuffs: AttackTests = [
-  { selector: ".basic-attack-stage-1-dmg", values: ["Basic Attack Stage 1 DMG", "512", "579", "896"] },
-  { selector: ".basic-attack-stage-2-dmg", values: ["Basic Attack Stage 2 DMG", "1247", "1411", "2183"] },
-  { selector: ".necessary-measures-stage-1-dmg", values: ["Necessary Measures Stage 1 DMG", "624", "706", "1091"] },
-  { selector: ".necessary-measures-stage-2-dmg", values: ["Necessary Measures Stage 2 DMG", "1263", "1429", "2210"] },
-  { selector: ".necessary-measures-stage-3-dmg", values: ["Necessary Measures Stage 3 DMG", "2207", "2496", "3861"] },
-  { selector: ".heavy-attack-dmg", values: ["Heavy Attack DMG", "1439", "1628", "2518"] },
-  { selector: ".containment-tactics-dmg", values: ["Containment Tactics DMG", "2159", "2442", "3777"] },
-  { selector: ".mid-air-attack-dmg", values: ["Mid-air Attack DMG", "992", "1122", "1735"] },
-  { selector: ".customary-greetings-dmg", values: ["Customary Greetings DMG", "2270", "2568", "3973"] },
-  { selector: ".dodge-counter-dmg", values: ["Dodge Counter DMG", "2283", "2583", "3995"] },
-  { selector: ".art-of-violence-dmg", values: ["Art of Violence DMG", "3231", "3655", "5655"] },
-  { selector: ".chromatic-splendor-dmg", values: ["Chromatic Splendor DMG", "6319", "7148", "11058"] },
-  { selector: ".era-of-new-wave-dmg", values: ["Era of New Wave DMG", "4515", "5107", "7901"] },
-  { selector: ".death-knell-dmg", values: ["Death Knell DMG", "2709", "3065", "4741"] },
-  { selector: ".fatal-finale-dmg", values: ["Fatal Finale DMG", "7223", "8171", "1021264092"] },
-  { selector: ".imminent-oblivion-dmg", values: ["Imminent Oblivion DMG", "9365", "10594", "16388"] },
-  { selector: ".wintertime-aria-dmg", values: ["Wintertime Aria DMG", "2821", "3191", "4937"] },
-  { selector: ".closing-remark-dmg", values: ["Closing Remark DMG", "6399", "7239", "11199"] },
+  {
+    selector: ".basic-attack-stage-1-dmg",
+    values: ["Basic Attack Stage 1 DMG", "512", "579", "896"],
+  },
+  {
+    selector: ".basic-attack-stage-2-dmg",
+    values: ["Basic Attack Stage 2 DMG", "1247", "1411", "2183"],
+  },
+  {
+    selector: ".necessary-measures-stage-1-dmg",
+    values: ["Necessary Measures Stage 1 DMG", "624", "706", "1091"],
+  },
+  {
+    selector: ".necessary-measures-stage-2-dmg",
+    values: ["Necessary Measures Stage 2 DMG", "1263", "1429", "2210"],
+  },
+  {
+    selector: ".necessary-measures-stage-3-dmg",
+    values: ["Necessary Measures Stage 3 DMG", "2207", "2496", "3861"],
+  },
+  {
+    selector: ".heavy-attack-dmg",
+    values: ["Heavy Attack DMG", "1439", "1628", "2518"],
+  },
+  {
+    selector: ".containment-tactics-dmg",
+    values: ["Containment Tactics DMG", "2159", "2442", "3777"],
+  },
+  {
+    selector: ".mid-air-attack-dmg",
+    values: ["Mid-air Attack DMG", "992", "1122", "1735"],
+  },
+  {
+    selector: ".customary-greetings-dmg",
+    values: ["Customary Greetings DMG", "2270", "2568", "3973"],
+  },
+  {
+    selector: ".dodge-counter-dmg",
+    values: ["Dodge Counter DMG", "2283", "2583", "3995"],
+  },
+  {
+    selector: ".art-of-violence-dmg",
+    values: ["Art of Violence DMG", "3231", "3655", "5655"],
+  },
+  {
+    selector: ".chromatic-splendor-dmg",
+    values: ["Chromatic Splendor DMG", "6319", "7148", "11058"],
+  },
+  {
+    selector: ".era-of-new-wave-dmg",
+    values: ["Era of New Wave DMG", "4515", "5107", "7901"],
+  },
+  {
+    selector: ".death-knell-dmg",
+    values: ["Death Knell DMG", "2709", "3065", "4741"],
+  },
+  {
+    selector: ".fatal-finale-dmg",
+    values: ["Fatal Finale DMG", "7223", "8171", "12640"],
+  },
+  {
+    selector: ".imminent-oblivion-dmg",
+    values: ["Imminent Oblivion DMG", "9365", "10594", "16388"],
+  },
+  {
+    selector: ".wintertime-aria-dmg",
+    values: ["Wintertime Aria DMG", "2821", "3191", "4937"],
+  },
+  {
+    selector: ".closing-remark-dmg",
+    values: ["Closing Remark DMG", "6399", "7239", "11199"],
+  },
 ];
 
 export const carlottaStatsAfterAllTeamBuffs: StatTests = [
