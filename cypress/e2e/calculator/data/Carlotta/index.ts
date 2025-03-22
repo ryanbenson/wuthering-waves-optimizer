@@ -12,6 +12,7 @@ import {
   carlottaOnlyCustomBuffsDamages,
   carlottaOnlyCustomBuffsStats,
 } from "./customBuffs";
+import { carlottaEnemyFifty } from "./enemy";
 
 export {
   carlottaBaseDamages,
@@ -23,4 +24,5 @@ export {
   carlottaOnlyResonanceChainsStats,
   carlottaOnlyCustomBuffsDamages,
   carlottaOnlyCustomBuffsStats,
+  carlottaEnemyFifty,
 };

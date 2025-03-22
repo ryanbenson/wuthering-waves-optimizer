@@ -1,14 +1,16 @@
 <template>
-  <div class="card card-bordered card-compact shadow mb-12 bg-primary">
+  <div
+    class="card card-bordered card-compact shadow mb-12 bg-primary"
+    data-test-enemy-info>
     <div class="card-body text-white">
       Enemies in Tower of Adversity (ToA) have increased resistance, typically
       20% and 60%.
     </div>
   </div>
 
-  <div class="data-input--talents mt-8">
+  <div class="data-input--talents mt-8" data-test-enemy-level>
     <div class="flex flex-col pb-7 relative">
-      <label for="enemyLevel" class="talent__label">
+      <label for="enemyLevel" class="talent__label" data-test-enemy-level-label>
         Enemy level
         <span class="text-primary">{{ enemyLevel }}</span>
       </label>
@@ -20,13 +22,17 @@
         min="1"
         max="120"
         step="1"
-        class="range range-xs" />
+        class="range range-xs"
+        data-test-enemy-level-input />
     </div>
   </div>
 
-  <div class="data-input--talents mt-8">
+  <div class="data-input--talents mt-8" data-test-enemy-resist>
     <div class="flex flex-col pb-7 relative">
-      <label for="enemyResist" class="talent__label">
+      <label
+        for="enemyResist"
+        class="talent__label"
+        data-test-enemy-resist-label>
         Enemy Resistance
         <span class="text-primary">{{ enemyResist * 100 }}%</span>
       </label>
@@ -38,15 +44,26 @@
         min="0"
         max="1"
         step="0.1"
-        class="range range-xs" />
+        class="range range-xs"
+        data-test-enemy-resist-input />
     </div>
   </div>
 
   <template v-if="hasElementEffects">
-    <h3 class="text-4xl font-bold mb-4 text-primary">Elemental Effects</h3>
-    <div v-if="isSpectroFrazzleEnabled" class="data-input--talents mt-8">
+    <h3
+      class="text-4xl font-bold mb-4 text-primary"
+      data-test-enemy-elemental-effects-title>
+      Elemental Effects
+    </h3>
+    <div
+      v-if="isSpectroFrazzleEnabled"
+      class="data-input--talents mt-8"
+      data-test-enemy-spectro-frazzle>
       <div class="flex flex-col pb-7 relative">
-        <label for="enemyResist" class="talent__label">
+        <label
+          for="enemyResist"
+          class="talent__label"
+          data-test-enemy-spectro-frazzle-label>
           Spectro Frazzle Stacks
           <span class="text-primary">{{ spectroFrazzleStacks }}</span>
         </label>
@@ -58,7 +75,8 @@
           min="0"
           max="10"
           step="1"
-          class="range range-xs" />
+          class="range range-xs"
+          data-test-enemy-spectro-frazzle-input />
       </div>
     </div>
   </template>
