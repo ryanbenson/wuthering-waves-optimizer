@@ -9,7 +9,8 @@
           }"></div>
         <select
           v-model="selectedCharacter1"
-          class="select select-bordered select-sm">
+          class="select select-bordered select-sm"
+          data-test-party-member-1-input>
           <option
             v-for="character in availableCharacters"
             :key="character"
@@ -26,7 +27,8 @@
           }"></div>
         <select
           v-model="selectedCharacter2"
-          class="select select-bordered select-sm">
+          class="select select-bordered select-sm"
+          data-test-party-member-2-input>
           <option
             v-for="character in availableCharacters"
             :key="character"
@@ -38,7 +40,7 @@
     </div>
 
     <div v-if="selectedCharacter1">
-      <h2 class="text-lg font-bold mt-6 mb-2">
+      <h2 class="text-lg font-bold mt-6 mb-2" data-test-party-member-1-name>
         Buffs for {{ selectedCharacter1 }}
       </h2>
       <CalculatorPartyBuff
@@ -57,11 +59,11 @@
         :modifier-based-on="buff.modifierBasedOn"
         @updated-party-buff="handleUpdatedPartyBuff1"
         :talent-data="talentData"
-        class="character__buff"></CalculatorPartyBuff>
+        class="character__buff character__buffs__one"></CalculatorPartyBuff>
     </div>
 
     <div v-if="selectedCharacter2">
-      <h2 class="text-lg font-bold mt-6 mb-2">
+      <h2 class="text-lg font-bold mt-6 mb-2" data-test-party-member-2-name>
         Buffs for {{ selectedCharacter2 }}
       </h2>
       <CalculatorPartyBuff
@@ -80,7 +82,7 @@
         :modifier-based-on="buff.modifierBasedOn"
         @updated-party-buff="handleUpdatedPartyBuff2"
         :talent-data="talentData"
-        class="character__buff"></CalculatorPartyBuff>
+        class="character__buff character__buffs__two"></CalculatorPartyBuff>
     </div>
 
     <div>
@@ -99,7 +101,7 @@
         :modifiers="buff.modifiers"
         @updated-party-buff="handleUpdatedPartyBuffEcho"
         :talent-data="talentData"
-        class="character__buff"></CalculatorPartyBuff>
+        class="character__buff character__buffs__echoes"></CalculatorPartyBuff>
     </div>
 
     <div>
@@ -119,7 +121,7 @@
         @updated-party-buff="handleUpdatedPartyBuffEcho"
         :talent-data="talentData"
         :has-refinements="true"
-        class="character__buff"></CalculatorPartyBuff>
+        class="character__buff character__buffs__weapons"></CalculatorPartyBuff>
     </div>
   </div>
 </template>

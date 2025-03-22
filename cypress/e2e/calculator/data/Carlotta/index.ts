@@ -13,6 +13,10 @@ import {
   carlottaOnlyCustomBuffsStats,
 } from "./customBuffs";
 import { carlottaEnemyFifty } from "./enemy";
+import {
+  carlottaDamagesAfterAllTeamBuffs,
+  carlottaStatsAfterAllTeamBuffs,
+} from "./teamBuffs";
 
 export {
   carlottaBaseDamages,
@@ -25,4 +29,6 @@ export {
   carlottaOnlyCustomBuffsDamages,
   carlottaOnlyCustomBuffsStats,
   carlottaEnemyFifty,
+  carlottaDamagesAfterAllTeamBuffs,
+  carlottaStatsAfterAllTeamBuffs,
 };
