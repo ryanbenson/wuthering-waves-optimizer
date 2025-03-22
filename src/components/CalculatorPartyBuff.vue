@@ -1,11 +1,11 @@
 <template>
   <div
     class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
-    @click="toggleEnabled">
+    @click="toggleEnabled"
+    :data-test-party-buff="uniqueKey">
     <div class="card-body">
-      {{ minStatValue }}
       <div class="character__buff">
-        <h2 class="card-title">{{ name }}</h2>
+        <h2 class="card-title" :data-test-party-buff-title="uniqueKey">{{ name }}</h2>
         <div v-html="details"></div>
         <div class="flex gap-2 items-center">
           <div class="form-control" @click.stop>
@@ -16,7 +16,8 @@
                 type="checkbox"
                 class="checkbox checkbox-sm"
                 v-model="isEnabled"
-                @change="updatedStats" />
+                @change="updatedStats"
+                :data-test-party-buff-enabled="uniqueKey" />
               <span class="label-text ml-2">Enabled?</span>
             </label>
           </div>
@@ -31,7 +32,8 @@
                 :min="minStacks"
                 :max="maxStacks"
                 @input="ensureMaxStacks"
-                @change="updatedStats" />
+                @change="updatedStats"
+                :data-test-party-buff-stacks="uniqueKey" />
               <span class="label-text ml-2">Stacks</span>
             </label>
           </div>
@@ -42,7 +44,8 @@
               <select
                 name="refinement"
                 class="select select-bordered select-xs"
-                v-model="refinement">
+                v-model="refinement"
+                :data-test-party-refinements="uniqueKey">
                 <option
                   v-for="lvl in weaponRefinementLevels"
                   :key="lvl"
@@ -61,7 +64,8 @@
                 id="baseAttrValue"
                 name="baseAttrValue"
                 class="input input-bordered input-xs"
-                v-model="baseAttrValue" />
+                v-model="baseAttrValue"
+                :data-test-party-buff-input-base="uniqueKey" />
             </label>
           </div>
         </div>
