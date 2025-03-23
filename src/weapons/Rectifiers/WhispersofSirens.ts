@@ -5,7 +5,7 @@ const weaponInfo: WeaponInfo = {
   description: `From the sea, some see stars, some catch the moon, and some hear countless whispers and murmurs. Those murmurs seep into her venom, flowing through every winding river. In the end, the murmurs envelope, like the bell of a jellyfish, like the sea.`,
   type: "Rectifier",
   rarity: 5,
-  passiveName: "Astral Evolvement",
+  passiveName: "From the Deep",
   passiveValue: `<span class="skilldescription">Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>. Casting Echo Skill within <span class="param">10</span>s after casting Intro Skill or Basic Attacks grants <span class="param">1</span> of Gentle Dream. Echoes with the same name can only trigger this effect once, stacking up to <span class="param">2</span> times, lasting for <span class="param">10</span>s. When reaching 2 stacks, casting Echo Skill no longer resets the duration of this effect. This effect activates up to once per 10s. Switching to another Resonator ends this effect early.<br>
 With <span class="param">1</span> stack: Grants <span class="param">40%/50%/60%/70%/80%</span> Basic Attack DMG Bonus.<br>
 With <span class="param">2</span> stacks: Ignores <span class="param">12%/15%/18%/21%/24%</span> of the target's Havoc RES.</span>`,
