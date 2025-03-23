@@ -1,6 +1,7 @@
 export const swordsList = {
   five: [
     { key: "BlazingBrilliance", name: "Blazing Brilliance" },
+    { key: "BloodpactsPledge", name: "Bloodpact's Pledge" },
     { key: "EmeraldOfGenesis", name: "Emerald Of Genesis" },
     { key: "RedSpring", name: "Red Spring" },
     { key: "UnflickeringValor", name: "Unflickering Valor" },
@@ -58,6 +59,7 @@ const rectifiersList = {
     { key: "RimeDrapedSprouts", name: "Rime-Draped Sprouts" },
     { key: "StellarSymphony", name: "Stellar Symphony" },
     { key: "Stringmaster", name: "Stringmaster" },
+    { key: "WhispersofSirens", name: "Whispers of Sirens" },
   ],
   four: [
     { key: "Augment", name: "Augment" },

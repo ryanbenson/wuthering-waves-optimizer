@@ -469,7 +469,9 @@
           :chosen-echo-name="mainEcho"
           :is-missing-spectro-data="isMissingSpectroData"
           :char-buffs-data="charBuffsData"
-          :char-resonance-chains-data="charResonanceChainsData"></CalculatorDamages>
+          :char-resonance-chains-data="
+            charResonanceChainsData
+          "></CalculatorDamages>
       </div>
     </div>
     <div class="results">
@@ -510,7 +512,9 @@
         :chosen-echo-name="mainEcho"
         :is-missing-spectro-data="isMissingSpectroData"
         :char-buffs-data="charBuffsData"
-        :char-resonance-chains-data="charResonanceChainsData"></CalculatorDamages>
+        :char-resonance-chains-data="
+          charResonanceChainsData
+        "></CalculatorDamages>
     </div>
   </div>
 </template>
@@ -1410,6 +1414,10 @@ export default defineComponent({
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         let selfBuffResistShredForCharElement =
           charBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
+        let weaponBuffResistShredForCharElement =
+          weaponData.value?.weaponPassiveStats?.[
+            `ResistShred:${attackElement}`
+          ] ?? 0;
         if (excludeTeamBuffs) {
           teamBuffResistShredForCharElement = 0;
         }
@@ -1423,6 +1431,7 @@ export default defineComponent({
           teamBuffResistShredForCharElement +
           resonanceChainResistShredForCharElement +
           selfBuffResistShredForCharElement +
+          weaponBuffResistShredForCharElement +
           customResistReduction;
         // damage deepen
         let baseTotalDeepenEffect = TotalDeepenEffect.value;
@@ -1461,6 +1470,10 @@ export default defineComponent({
         const customDamageDeepen = customBuffs.value?.DamageAmplify ?? 0;
         let resonanceChainDmgDeepenForAttackType =
           charResonanceChainsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
+        let weaponBuffDmgDeepenElement =
+          weaponData.value?.weaponPassiveStats?.[
+            `DMGDeepen:${attackElement}`
+          ] ?? 0;
         const totalDmgDeepen =
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
@@ -1469,6 +1482,7 @@ export default defineComponent({
           coordinatedDmgDeepenEffect +
           selfBuffSpecificAttackGenericDmgDeepen +
           resonanceChainDmgDeepenForAttackType +
+          weaponBuffDmgDeepenElement +
           customDamageDeepen;
         let totalTalentModifierMultiply =
           talentModifierMultiply + talentModifierMultiplySelfBuff;
@@ -1929,7 +1943,13 @@ export default defineComponent({
             name: rotation.name,
             description: rotation.description,
           };
-          const attacks = processAttacks(rotation.attacks, null, false, true, false);
+          const attacks = processAttacks(
+            rotation.attacks,
+            null,
+            false,
+            true,
+            false,
+          );
           // capture all damages
           const damageAggregation = {
             normalDamage: null,

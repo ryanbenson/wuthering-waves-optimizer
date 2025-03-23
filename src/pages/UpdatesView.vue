@@ -102,6 +102,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 23, 2025</h3>
+    <ul>
+      <li>Adds 2.2 weapons: Bloodpact's Pledge, and Whispers of Sirens.</li>
+    </ul>
     <h3>March 21, 2025</h3>
     <ul>
       <li>

@@ -1061,18 +1061,38 @@ export const allWeaponTeamBuffs = [
       {
         modifier: "DMGDeepen:SpectroFrazzle",
         modifierByRefinement: {
-        "1": 0.3,
-        "2": 0.375,
-        "3": 0.45,
-        "4": 0.525,
-        "5": 0.6,
+          "1": 0.3,
+          "2": 0.375,
+          "3": 0.45,
+          "4": 0.525,
+          "5": 0.6,
         },
       },
     ],
     minStacks: 0,
     maxStacks: 0,
-    details:
-      `Casing Outro Skill Amplifies the DMG from Spectro Frazzle on enemies around the active resonator by <span class="param">30%/37.5%/45%/52.5%/60%</span> for 30s. Effects of the same name cannot be stacked.`,
+    details: `Casing Outro Skill Amplifies the DMG from Spectro Frazzle on enemies around the active resonator by <span class="param">30%/37.5%/45%/52.5%/60%</span> for 30s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
+  {
+    name: "Bloodpact's Pledge Aero Amplify",
+    key: "BloodpactsPledgeAeroDeepen",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DMGDeepen:Aero",
+        modifierByRefinement: {
+          "1": 0.1,
+          "2": 0.14,
+          "3": 0.18,
+          "4": 0.22,
+          "5": 0.26,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `When Rover: Aero casts Resonance Skill Unbound Flow, Aero DMG dealt by nearby Resonators on the field is Amplified by <span class="param">10%/14%/18%/22%/26%</span> for <span class="param">30</span>s.</span>`,
     alwaysEnabled: false,
   },
 ];
