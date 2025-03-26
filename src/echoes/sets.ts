@@ -13,6 +13,7 @@ export const twoSetBonuses: string[] = [
   "Eternal Radiance 2 Set",
   "Midnight Veil 2 Set",
   "Frosty Resolve 2 Set",
+  "Gusts of Welkin 2 Set",
 ];
 export const fiveSetBonuses: string[] = [
   "Freezing Frost 5 Set",
@@ -29,6 +30,7 @@ export const fiveSetBonuses: string[] = [
   "Eternal Radiance 5 Set",
   "Midnight Veil 5 Set",
   "Frosty Resolve 5 Set",
+  "Gusts of Welkin 5 Set",
 ];
 
 type EchoSetBonus = {
@@ -331,6 +333,26 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
       },
     ],
     details: `Increases Havoc DMG by 10%`,
+  },
+  "Gusts of Welkin 2 Set": {
+    name: "Gusts of Welkin",
+    key: "GustsofWelkin2Set",
+    passives: [
+      {
+        key: "GustsofWelkin2Set",
+        details: `Increases Aero DMG by 10%`,
+        modifiers: [
+          {
+            modifier: "Aero",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Increases Aero DMG by 10%`,
   },
 };
 
@@ -643,6 +665,35 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         ],
         alwaysEnabled: false,
         details: `After Energy Regen reaches <span class="Highlight">250%</span> the current character's all attribute DMG is increased by <span class="Highlight">30%</span> for the Resonator.`,
+      },
+    ],
+  },
+  "Gusts of Welkin 5 Set": {
+    name: "Gusts of Welkin",
+    key: "GustsofWelkin",
+    details: `Inflicting Aero Erosion upon enemies increases Aero DMG for all Resonators in the team by 15%, and for the Resonator triggering this effect by an additional 15%, lasting for 20s.`,
+    passives: [
+      {
+        key: "GustsofWelkin5SetAeroAll",
+        modifiers: [
+          {
+            modifier: "Aero",
+            modifierValue: 15,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Inflicting Aero Erosion upon enemies increases Aero DMG for all Resonators in the team by 15%.`,
+      },
+      {
+        key: "GustsofWelkin5SetAeroSelf",
+        modifiers: [
+          {
+            modifier: "Aero",
+            modifierValue: 15,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `And for the Resonator triggering this effect by an additional 15%, lasting for 20s.`,
       },
     ],
   },
