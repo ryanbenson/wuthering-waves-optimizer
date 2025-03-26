@@ -1,7 +1,7 @@
 const weaponInfo: WeaponInfo = {
   name: "Bloodpact's Pledge",
   image:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/BloodpactsPledge.png",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/BloodpactsPledge.webp",
   description: `This weapon is a testament to the unbreakable blood pact: One shall never betray, never surrender, and fight until the last drop of blood is shed.`,
   type: "Sword",
   rarity: 5,
