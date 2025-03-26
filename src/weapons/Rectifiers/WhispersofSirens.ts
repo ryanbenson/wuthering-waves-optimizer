@@ -1,7 +1,7 @@
 const weaponInfo: WeaponInfo = {
   name: "Whispers of Sirens",
   image:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/WhispersofSirens.png",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/WhispersofSirens.webp",
   description: `From the sea, some see stars, some catch the moon, and some hear countless whispers and murmurs. Those murmurs seep into her venom, flowing through every winding river. In the end, the murmurs envelope, like the bell of a jellyfish, like the sea.`,
   type: "Rectifier",
   rarity: 5,
