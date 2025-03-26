@@ -102,6 +102,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 26, 2025</h3>
+    <ul>
+      <li>Updaes a Brant preset rotation.</li>
+    </ul>
     <h3>March 24, 2025</h3>
     <ul>
       <li>Adds missing forte description for Shorekeeper, and a new Shorekeeper rotation.</li>
