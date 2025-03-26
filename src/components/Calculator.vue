@@ -1616,12 +1616,17 @@ export default defineComponent({
             charResonanceChainsData.value?.specificTalentBuffs?.[
               `${attack.key}:HealingBonus`
             ] ?? 0;
+          const specificSkillHealingBonusSelfBuff =
+            charBuffsData.value?.specificTalentBuffs?.[
+              `${attack.key}:HealingBonus`
+            ] ?? 0;
           totalSkillDmgBonus += specificSkillHealingBonus;
           // overwrite the specific skill buff to avoid generic dmg bonuses affecting healing
           const specificSkillDmg =
             specificSkillDmgFromResonanceChains +
             specificSkillDmgFromCharBuffs +
             specificSkillDmgFromEchoes +
+            specificSkillHealingBonusSelfBuff +
             specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +
             specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal +
             specificSkillDmgFromResonanceChainsBasedOnMaxDefVal;
