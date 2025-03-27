@@ -76,64 +76,142 @@ export const subStatsTable: SubStatTable = {
 };
 
 type subStatsTableRollValue = {
-  [stat: string]: Record<string, number>
-}
+  [stat: string]: Record<string, number>;
+};
 export const subStatsTableRollValue: subStatsTableRollValue = {
-  "CritRate": {
-    "6.3": 30, "6.9": 40, "7.5": 50, "8.1": 60, "8.7": 70, "9.3": 80, "9.9": 90, "10.5": 100
+  CritRate: {
+    "6.3": 30,
+    "6.9": 40,
+    "7.5": 50,
+    "8.1": 60,
+    "8.7": 70,
+    "9.3": 80,
+    "9.9": 90,
+    "10.5": 100,
   },
-  "CritDMG": {
-    "12.6": 30, "13.8": 40, "15": 50, "16.2": 60, "17.4": 70, "18.6": 80, "19.8": 90, "21": 100
+  CritDMG: {
+    "12.6": 30,
+    "13.8": 40,
+    "15": 50,
+    "16.2": 60,
+    "17.4": 70,
+    "18.6": 80,
+    "19.8": 90,
+    "21": 100,
   },
-  "ATK": {
-    "6.4": 30, "7.1": 40, "7.9": 50, "8.6": 60, "9.4": 70, "10.1": 80, "10.9": 90, "11.6": 100
+  ATK: {
+    "6.4": 30,
+    "7.1": 40,
+    "7.9": 50,
+    "8.6": 60,
+    "9.4": 70,
+    "10.1": 80,
+    "10.9": 90,
+    "11.6": 100,
   },
-  "ATK_FLAT": {
-    "30": 40, "40": 60, "50": 80, "60": 100
+  ATK_FLAT: {
+    "30": 40,
+    "40": 60,
+    "50": 80,
+    "60": 100,
   },
-  "HP": {
-    "6.4": 30, "7.1": 40, "7.9": 50, "8.6": 60, "9.4": 70, "10.1": 80, "10.9": 90, "11.6": 100
+  HP: {
+    "6.4": 30,
+    "7.1": 40,
+    "7.9": 50,
+    "8.6": 60,
+    "9.4": 70,
+    "10.1": 80,
+    "10.9": 90,
+    "11.6": 100,
   },
-  "HP_FLAT": {
-    "320": 30, "360": 40, "390": 50, "430": 60, "470": 70, "510": 80, "540": 90, "580": 100
+  HP_FLAT: {
+    "320": 30,
+    "360": 40,
+    "390": 50,
+    "430": 60,
+    "470": 70,
+    "510": 80,
+    "540": 90,
+    "580": 100,
   },
-  "DEF": {
-    "8.1": 30, "9": 40, "10": 50, "10.9": 60, "11.8": 70, "12.8": 80, "13.8": 90, "14.7": 100
+  DEF: {
+    "8.1": 30,
+    "9": 40,
+    "10": 50,
+    "10.9": 60,
+    "11.8": 70,
+    "12.8": 80,
+    "13.8": 90,
+    "14.7": 100,
   },
-  "DEF_FLAT": {
-    "40": 40, "50": 60, "60": 80, "70": 100
+  DEF_FLAT: {
+    "40": 40,
+    "50": 60,
+    "60": 80,
+    "70": 100,
   },
-  "BasicAttackDMGBonus": {
-    "6.4": 30, "7.1": 40, "7.9": 50, "8.6": 60, "9.4": 70, "10.1": 80, "10.9": 90, "11.6": 100
+  BasicAttackDMGBonus: {
+    "6.4": 30,
+    "7.1": 40,
+    "7.9": 50,
+    "8.6": 60,
+    "9.4": 70,
+    "10.1": 80,
+    "10.9": 90,
+    "11.6": 100,
   },
-  "HeavyAttackDMGBonus": {
-    "6.4": 30, "7.1": 40, "7.9": 50, "8.6": 60, "9.4": 70, "10.1": 80, "10.9": 90, "11.6": 100
+  HeavyAttackDMGBonus: {
+    "6.4": 30,
+    "7.1": 40,
+    "7.9": 50,
+    "8.6": 60,
+    "9.4": 70,
+    "10.1": 80,
+    "10.9": 90,
+    "11.6": 100,
   },
-  "ResonanceSkillDMGBonus": {
-    "6.4": 30, "7.1": 40, "7.9": 50, "8.6": 60, "9.4": 70, "10.1": 80, "10.9": 90, "11.6": 100
+  ResonanceSkillDMGBonus: {
+    "6.4": 30,
+    "7.1": 40,
+    "7.9": 50,
+    "8.6": 60,
+    "9.4": 70,
+    "10.1": 80,
+    "10.9": 90,
+    "11.6": 100,
   },
-  "ResonanceLiberationDMGBonus": {
-    "6.4": 30, "7.1": 40, "7.9": 50, "8.6": 60, "9.4": 70, "10.1": 80, "10.9": 90, "11.6": 100
+  ResonanceLiberationDMGBonus: {
+    "6.4": 30,
+    "7.1": 40,
+    "7.9": 50,
+    "8.6": 60,
+    "9.4": 70,
+    "10.1": 80,
+    "10.9": 90,
+    "11.6": 100,
   },
-  "EnergyRegen": {
-    "6.8": 30, "7.6": 40, "8.4": 50, "9.2": 60, "10": 70, "10.8": 80, "11.6": 90, "12.4": 100
-  }
+  EnergyRegen: {
+    "6.8": 30,
+    "7.6": 40,
+    "8.4": 50,
+    "9.2": 60,
+    "10": 70,
+    "10.8": 80,
+    "11.6": 90,
+    "12.4": 100,
+  },
 };
 
-export function getSubstatRollValue(
-  stat: string, 
-  statValue: string
-): number {
+export function getSubstatRollValue(stat: string, statValue: string): number {
   const substat = subStatsTableRollValue[stat];
   return substat?.[statValue] ?? 0;
 }
 
 type echoRollValueData = {
-  [stat: string]: string
-}
-export function getRollValue(
-  echoData: echoRollValueData
-): number {
+  [stat: string]: string;
+};
+export function getRollValue(echoData: echoRollValueData): number {
   const echoStats = Object.entries(echoData);
   let totalRollValue = 100; // 100 by default
   echoStats.forEach((echoStat) => {
@@ -318,6 +396,8 @@ export const echoSetImageMap: Record<string, string> = {
     "https://ryanbenson.github.io/wuthering-waves-assets/images/EmpyreanAnthem.png",
   TidebreakingCourage:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/TidebreakingCourage.png",
+  GustsofWelkin:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/GustsofWelkin.png",
 };
 
 export function getEchoSetIconByType(type: string): string {
@@ -339,6 +419,7 @@ export const echoSetLabelMap: Record<string, string> = {
   EternalRadiance: "Eternal Radiance",
   EmpyreanAnthem: "Empyrean Anthem",
   TidebreakingCourage: "Tidebreaking Courage",
+  GustsofWelkin: "Gusts of Welkin",
 };
 
 export function getEchoSetLabelByType(type: string): string {

@@ -899,6 +899,27 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Cantarella: [
+    {
+      key: "OutroSkillGentleTentacles",
+      name: "Outro Skill: Gentle Tentacles",
+      details: `Amplify the incoming Resonator's Havoc DMG by 20% and Resonance Skill DMG by 25% for 14s. Switching Resonators ends this effect.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Havoc",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "DMGDeepen:Skill",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

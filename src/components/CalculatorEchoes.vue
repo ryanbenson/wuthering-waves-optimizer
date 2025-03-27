@@ -210,6 +210,15 @@ export default {
       // process the main echo buffs, only if enabled
       if (this.mainEchoBuffEnabled) {
         for (const mainEchoBuff of this.chosenMainEchoBuffs) {
+          // if it has buffs for specific characters, validate that first
+          const specificCharacters = mainEchoBuff?.specificCharacters ?? [];
+          if (specificCharacters.length > 0) {
+            // check if the current character key is in the list
+            const isValidCharacter = specificCharacters.includes(this.character);
+            if (!isValidCharacter) {
+              continue;
+            }
+          }
           if (mainEchoBuff?.modifySpecificTalents) {
             stats.specificTalentBuffs = {};
             mainEchoBuff?.modifySpecificTalents.forEach((buffTalentName) => {
