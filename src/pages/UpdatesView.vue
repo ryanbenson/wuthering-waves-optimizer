@@ -104,11 +104,17 @@
     <h1>Updates</h1>
     <h3>March 26, 2025</h3>
     <ul>
-      <li>Updaes a Brant preset rotation.</li>
+      <li>Updates a Brant preset rotation.</li>
+      <li>
+        Releases 2.2 content: characters, weapons, echoes, and new echo set.
+      </li>
     </ul>
     <h3>March 24, 2025</h3>
     <ul>
-      <li>Adds missing forte description for Shorekeeper, and a new Shorekeeper rotation.</li>
+      <li>
+        Adds missing forte description for Shorekeeper, and a new Shorekeeper
+        rotation.
+      </li>
     </ul>
     <h3>March 23, 2025</h3>
     <ul>
