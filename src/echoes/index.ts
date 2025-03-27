@@ -27,6 +27,7 @@ interface EchoModifier {
   modifier?: string;
   modifySpecificTalents?: string[];
   modifierValue?: number;
+  specificCharacters?: string[];
 }
 
 type MainEchoes = Record<string, Echo>;
@@ -79,6 +80,17 @@ export const mainEchoesData: MainEchoes = {
     modifiers: [],
     actions: [],
     sets: ["FrostyResolve", "EternalRadiance"],
+  },
+  AeroDrake: {
+    key: "AeroDrake",
+    name: "Aero Drake",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/AeroDrake.webp",
+    details: ``,
+    modifiers: [],
+    actions: [],
+    sets: ["GustsofWelkin", "TidebreakingCourage"],
   },
   AeroPredator: {
     key: "AeroPredator",
@@ -224,6 +236,43 @@ CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
     sets: ["EmpyreanAnthem", "TidebreakingCourage"],
+  },
+  Capitaneus: {
+    key: "Capitaneus",
+    name: "Capitaneus",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Capitaneus.webp",
+    details: `Summon a Capitaneus to jump up and smash enemies, dealing 79.20% Spectro DMG. This attack generates 4 extra Merciless Judgements, each dealing 39.60% Spectro DMG.<br>
+The Resonator with this Echo equipped in their main slot gains 12.00% Spectro DMG Bonus and 12.00% Heavy Attack DMG Bonus.<br>
+CD: 20s.`,
+    modifiers: [
+      {
+        modifier: "Spectro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "CapitaneusDMG",
+        label: "Capitaneus DMG",
+        description: `Summon a Capitaneus to jump up and smash enemies, dealing 79.20%/92.40%/105.60%/118.80% Spectro DMG. This attack generates 4 extra Merciless Judgements, each dealing 39.60%/46.20%/52.80%/59.40% Spectro DMG.`,
+        talents: {
+          "1": "79.20% + 39.60%*4",
+          "2": "79.20% + 39.60%*4",
+          "3": "92.40% + 46.20%%*4",
+          "4": "105.60% + 52.80%*4",
+          "5": "118.00% + 59.50%*4",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+    ],
+    sets: ["GustsofWelkin", "EternalRadiance"],
   },
   Carapace: {
     key: "Carapace",
@@ -614,6 +663,17 @@ CD: <span class="param">25</span>s.</span>`,
     actions: [],
     sets: ["SierraGale", "RejuvenatingGlow"],
   },
+  ElectroDrake: {
+    key: "ElectroDrake",
+    name: "Electro Drake",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ElectroDrake.webp",
+    details: ``,
+    modifiers: [],
+    actions: [],
+    sets: ["GustsofWelkin", "MidnightVeil"],
+  },
   ElectroPredator: {
     key: "ElectroPredator",
     name: "Electro Predator",
@@ -880,6 +940,17 @@ CD: <span class="param">25</span>s.</span>`,
     modifiers: [],
     actions: [],
     sets: ["FrostyResolve", "EmpyreanAnthem"],
+  },
+  GlacioDrake: {
+    key: "GlacioDrake",
+    name: "Glacio Drake",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/GlacioDrake.webp",
+    details: ``,
+    modifiers: [],
+    actions: [],
+    sets: ["GustsofWelkin"],
   },
   GlacioDreadmane: {
     key: "GlacioDreadmane",
@@ -1349,6 +1420,17 @@ CD: <span class="param">20</span>s.</span>`,
       },
     ],
     sets: ["CelestialLight"],
+  },
+  LaGuardia: {
+    key: "LaGuardia",
+    name: "La Guardia",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/LaGuardia.webp",
+    details: ``,
+    modifiers: [],
+    actions: [],
+    sets: ["MidnightVeil", "GustsofWelkin"],
   },
   LampylumenMyriad: {
     key: "LampylumenMyriad",
@@ -2037,6 +2119,47 @@ CD: <span class="param">20</span>s.</span>`,
     ],
     sets: ["EternalRadiance", "GustsofWelkin"],
   },
+  ReminiscenceFleurdelys: {
+    key: "ReminiscenceFleurdelys",
+    name: "Reminiscence: Fleurdelys",
+    class: "Calamity",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReminiscenceFleurdelys.webp",
+    details: `Summon the Windcleaver to attack the target, dealing 18.24%/21.28%/24.32%/27.36% Aero DMG 8 times and 106.40%/121.60%/136.80% Aero DMG once.<br>
+The Resonator with this Echo equipped in their main slot gains 10.00% Aero DMG Bonus. If this Resonator is Rover: Aero or ???, grant another 10.00% Aero DMG Bonus.<br>
+CD: 20s.`,
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.10,
+      },
+      {
+        modifier: "Aero",
+        modifierValue: 0.10,
+        specificCharacters: [
+          "RoverAeroFemale",
+          "RoverAeroMale",
+        ],
+      },
+    ],
+    actions: [
+      {
+        key: "WindcleaverDMG",
+        label: "Windcleaver DMG",
+        description: `Summon the Windcleaver to attack the target, dealing 18.24%/21.28%/24.32%/27.36% Aero DMG 8 times and 106.40%/121.60%/136.80% Aero DMG once.`,
+        talents: {
+          "1": "18.24%*8 + 91.20%",
+          "2": "18.24%*8 + 91.20%",
+          "3": "21.28%*8 + 106.40%",
+          "4": "24.32%*8 + 121.60%",
+          "5": "27.36%*8 + 126.80%",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+    ],
+    sets: ["GustsofWelkin", "EternalRadiance"],
+  },
   RocksteadyGuardian: {
     key: "RocksteadyGuardian",
     name: "Rocksteady Guardian",
@@ -2140,6 +2263,28 @@ CD: <span class="param">20</span>s.</span>`,
     modifiers: [],
     actions: [],
     sets: ["FreezingFrost", "SierraGale", "MoonlitClouds"],
+  },
+  Sacerdos: {
+    key: "Sacerdos",
+    name: "Sacerdos",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Sacerdos.webp",
+    details: ``,
+    modifiers: [],
+    actions: [],
+    sets: ["GustsofWelkin"],
+  },
+  Sagittario: {
+    key: "Sagittario",
+    name: "Sagittario",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Sagittario.webp",
+    details: ``,
+    modifiers: [],
+    actions: [],
+    sets: ["EternalRadiance", "GustsofWelkin"],
   },
   SentryConstruct: {
     key: "SentryConstruct",
