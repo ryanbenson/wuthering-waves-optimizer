@@ -102,6 +102,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 28, 2025</h3>
+    <ul>
+      <li>Adds a preset rotation for Verina.</li>
+    </ul>
     <h3>March 26, 2025</h3>
     <ul>
       <li>Updates a Brant preset rotation.</li>
