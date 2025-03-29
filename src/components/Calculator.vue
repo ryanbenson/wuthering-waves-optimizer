@@ -1424,12 +1424,14 @@ export default defineComponent({
           charResonanceChainsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         const baseResistReduction = ResistReduction.value ?? 0;
         const customResistReduction = customBuffs.value?.ResistShred ?? 0;
+        const actionBuffResistReduction = attack.buffs?.ResistShred ?? 0;
         const totalResistReduction =
           baseResistReduction +
           teamBuffResistShredForCharElement +
           resonanceChainResistShredForCharElement +
           selfBuffResistShredForCharElement +
           weaponBuffResistShredForCharElement +
+          actionBuffResistReduction +
           customResistReduction;
         // damage deepen
         let baseTotalDeepenEffect = TotalDeepenEffect.value;
