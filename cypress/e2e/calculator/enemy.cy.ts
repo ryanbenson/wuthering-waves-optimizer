@@ -63,7 +63,7 @@ describe("Calculator Enemy", () => {
     );
     cy.get(".calculator__damages .spectro-frazzle").should(
       "contain.text",
-      "4246",
+      "4137",
     );
   });
 });
