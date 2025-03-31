@@ -105,6 +105,7 @@
     <h3>March 31, 2025</h3>
     <ul>
       <li>Updates spectro frazzle MVs due to the 2.2 nerf in the spectro frazzle damage.</li>
+      <li>Adds missing Nightmare: Lampylumen Myriad echo.</li>
     </ul>
     <h3>March 29, 2025</h3>
     <ul>

@@ -1935,6 +1935,43 @@ CD: <span class="param">25</span>s.</span>`,
     ],
     sets: ["MoltenRift"],
   },
+  NightmareLampylumenMyriad: {
+    key: "NightmareLampylumenMyriad",
+    name: "Nightmare: Lampylumen Myriad",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareLampylumenMyriad.png",
+    details: `<span class="description">Summon a Nightmare: Lampylumen Myriad and attack nearby enemies, dealing <span class="param">152.00%/182.40%/212.80%/243.20%/273.60%</span> Glacio DMG.<br>
+The Resonator with this Echo equipped in their main slot gains <span class="param">12.00%</span> Glacio DMG Bonus and has their Coordinated Attack DMG increased by <span class="param">30.00%</span>.<br>
+CD: <span class="param">20</span>s.</span>`,
+    modifiers: [
+      {
+        modifier: "Glacio",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "CoordinatedDMGBonus",
+        modifierValue: 0.3,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareLampylumenMyriadDMG",
+        label: "Nightmare: Lampylumen Myriad DMG",
+        description: `Summon a Nightmare: Lampylumen Myriad and attack nearby enemies, dealing <span class="param">152.00%/182.40%/212.80%/243.20%/273.60%</span> Glacio DMG.`,
+        talents: {
+          "1": "152.00%",
+          "2": "182.40%",
+          "3": "212.80%",
+          "4": "243.20%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
+    sets: ["FrostyResolve", "EmpyreanAnthem"],
+  },
   NightmareMourningAix: {
     key: "NightmareMourningAix",
     name: "Nightmare: Mourning Aix",
