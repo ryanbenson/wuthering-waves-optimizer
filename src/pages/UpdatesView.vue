@@ -102,6 +102,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>March 31, 2025</h3>
+    <ul>
+      <li>Updates spectro frazzle MVs due to the 2.2 nerf in the spectro frazzle damage.</li>
+    </ul>
     <h3>March 29, 2025</h3>
     <ul>
       <li>Adds resist reduction/shred to the list of rotation action level buffs.</li>
