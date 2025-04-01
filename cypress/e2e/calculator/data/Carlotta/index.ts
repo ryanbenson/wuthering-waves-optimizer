@@ -17,6 +17,7 @@ import {
   carlottaDamagesAfterAllTeamBuffs,
   carlottaStatsAfterAllTeamBuffs,
 } from "./teamBuffs";
+import { carlottaRotationTest001Damages, carlottaRotationStats } from "./rotations";
 
 export {
   carlottaBaseDamages,
@@ -31,4 +32,6 @@ export {
   carlottaEnemyFifty,
   carlottaDamagesAfterAllTeamBuffs,
   carlottaStatsAfterAllTeamBuffs,
+  carlottaRotationTest001Damages,
+  carlottaRotationStats,
 };

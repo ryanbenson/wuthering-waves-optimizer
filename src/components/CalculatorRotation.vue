@@ -14,10 +14,11 @@
             class="input input-bordered w-full max-w-lg"
             v-model="nameValue"
             @input="onNameChange"
-            @click.stop />
+            @click.stop
+            :data-test-rotation-name-input="nameValue" />
 
           <div class="rotation__end">
-            <div class="rotation__actions-count min-w-24">
+            <div class="rotation__actions-count min-w-24" :data-test-rotation-actions-count="nameValue">
               {{ actionsCount }} Actions
             </div>
             <div class="rotation__expand">
@@ -56,20 +57,25 @@
               :ignore-team-buffs="action.excludeTeamBuffs"
               @action-update="handleActionUpdate"
               @action-update:sequence="handleSequenceUpdate"
-              @remove-action="handleRemoveAction"></CalculatorRotationAction>
+              @remove-action="handleRemoveAction"
+              :data-test-rotation-action-by-parent-name="nameValue"
+              :data-test-rotation-action-by-attack-key="action.key ?? 'none'"
+              :data-test-rotation-action-by-id="action.id"></CalculatorRotationAction>
           </div>
           <button
             class="rotation__action--add btn btn-primary my-4 btn-xs w-full"
-            @click="addAction">
+            @click="addAction"
+            :data-test-rotation-action-add="nameValue">
             Add Action
           </button>
           <div class="rotation__action--system">
             <button
               class="btn btn-primary btn-xs"
-              @click="handleRotationExport">
+              @click="handleRotationExport"
+              :data-test-rotation-action-export="nameValue">
               Export
             </button>
-            <button class="btn btn-error btn-xs" @click="handleRotationDelete">
+            <button class="btn btn-error btn-xs" @click="handleRotationDelete" :data-test-rotation-action-delete="nameValue">
               Delete
             </button>
           </div>

@@ -3,7 +3,8 @@
     <select
       v-model="modifierType"
       @change="onModifierUpdate"
-      class="select select-bordered select-xs w-full">
+      class="select select-bordered select-xs w-full"
+      :data-test-action-buff-input="modifier ?? 'none'">
       <option
         v-for="option in modifierOptions"
         :value="option.key"
@@ -17,7 +18,8 @@
       name="modifierValueInput"
       id="modifierValueInput"
       class="input input-xs input-bordered w-24"
-      @input="onModifierValueUpdate" />
+      @input="onModifierValueUpdate"
+      :data-test-action-buff-value-input="modifier ?? 'none'" />
     <div class="delete" @click="removeBuff">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
         <path

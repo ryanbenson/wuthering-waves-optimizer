@@ -44,7 +44,8 @@
               id="hits"
               type="number"
               class="input input-xs input-bordered w-14"
-              @input="onHitsChange" />
+              @input="onHitsChange"
+              :data-test-rotation-action-hits-input="hits" />
           </div>
           <div class="edit__skill">
             <label for="actionKeyValue">Attack:</label>
@@ -53,7 +54,8 @@
               name="actionKeyValue"
               id="actionKeyValue"
               class="select select-bordered select-xs w-full"
-              @change="onSkillChange">
+              @change="onSkillChange"
+              :data-test-rotation-action-skill-input="actionKeyValue ?? 'none'">
               <optgroup label="Basic" data-skill="basic">
                 <option
                   v-for="attack in basicAttacksList"
@@ -151,13 +153,15 @@
             :modifier-value="buff.modifierValue"
             :all-buffs="buffData"
             @updated-buff="handleUpdatedBuff"
-            @remove-buff="handleRemoveBuff"></CalculatorRotationActionBuff>
+            @remove-buff="handleRemoveBuff"
+            :data-test-rotation-action-buff="buff.modifier"></CalculatorRotationActionBuff>
         </div>
       </div>
       <div class="button__group">
         <button
           class="rotation__action--add-buff btn btn-xs w-full btn-accent"
-          @click="addBuff">
+          @click="addBuff"
+          :data-test-action-add-buff="actionKeyValue">
           Add Buff
         </button>
       </div>

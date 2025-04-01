@@ -1,14 +1,15 @@
 <template>
   <div class="flex gap-4 mb-4">
-    <button class="btn btn-primary" @click="handleCreateRotation">
+    <button class="btn btn-primary" @click="handleCreateRotation" data-test-rotations-action="create">
       Create
     </button>
-    <button class="btn btn-primary" @click="handleToggleImport">
+    <button class="btn btn-primary" @click="handleToggleImport" data-test-rotations-action="import">
       Import
     </button>
     <button
       class="btn btn-primary"
       @click="togglePresetRotations"
+      data-test-rotations-action="presets"
     >
       List Presets
     </button>
@@ -69,7 +70,9 @@
       :description="rotation.description"
       :actions="rotation.actions"
       @updated-rotation="handleUpdatedRotation"
-      @rotation-delete="handleDeleteRotation"></CalculatorRotation>
+      @rotation-delete="handleDeleteRotation"
+      :data-test-rotation-item="rotation.id"
+      :data-test-rotation-item-by-name="rotation.name"></CalculatorRotation>
   </div>
 </template>
 

@@ -467,7 +467,8 @@
     <div
       v-for="rotation in allDamages.value.rotations"
       class="rotation__item pt-8"
-      :key="rotation.id">
+      :key="rotation.id"
+      :data-test-damages-list-rotation="rotation.name">
       <h4 class="text-lg font-bold" v-tooltip="rotation.description">
         {{ rotation.name }}
       </h4>
@@ -506,7 +507,7 @@
               :original-is-enabled="damageInstance.originalIsEnabled"></CalculatorDamage>
           </tbody>
           <tfoot>
-            <tr v-if="rotation.damageAggregation.normalDamage" class="">
+            <tr v-if="rotation.damageAggregation.normalDamage" class="rotation-total-damage">
               <td>Total Damage</td>
               <td>
                 {{ displayDamage(rotation.damageAggregation.normalDamage) }}
