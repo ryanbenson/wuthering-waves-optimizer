@@ -1,6 +1,6 @@
 export const carlottaRotationTest001Damages: AttackTests = [
   { selector: `[data-test-damages-list-rotation="Test001"] .basic-attack-stage-1-dmg`, values: ["Basic Attack Stage 1 DMG", "113", "116", "170"] },
-  { selector: `[data-test-damages-list-rotation="Test001"] .basic-attack-stage-1-dmg`, values: ["Fatal Finale DMG", "1679", "2141", "2519"] },
+  { selector: `[data-test-damages-list-rotation="Test001"] .fatal-finale-dmg`, values: ["Fatal Finale DMG", "1679", "2141", "2519"] },
   { selector: `[data-test-damages-list-rotation="Test001"] .rotation-total-damage`, values: ["Total Damage", "1792", "2257", "2688"] },
 ];
 
