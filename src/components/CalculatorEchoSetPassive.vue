@@ -4,13 +4,14 @@
     <div class="flex gap-2 items-center">
       <div class="form-control" @click.stop>
         <label
-          class="label cursor-pointer inline-flex justify-start pl-0"
-          v-if="!alwaysEnabled">
+          class="label inline-flex justify-start pl-0"
+          :class="{'cursor-pointer': !alwaysEnabled}">
           <input
             type="checkbox"
             class="checkbox checkbox-sm"
             v-model="isEnabled"
-            @change="updatedStats" />
+            @change="updatedStats"
+            :disabled="alwaysEnabled" />
           <span class="label-text ml-2">Enabled?</span>
         </label>
       </div>
