@@ -1,5 +1,25 @@
 export const resonanceChains = [
   {
+    key: "SequenceNode1SteamingCupofJustice",
+    name: "Sequence Node 1: Steaming Cup of Justice",
+    details: `<span class="skilldescription">When Yuanwu is in Forte Circuit's <span class="Highlight">Lightning Infused</span> state, his Basic Attack Speed is increased by 20%, and his Heavy Attack Speed is increased by 20%.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode2FierceHeartSereneMind",
+    name: "Sequence Node 2: Fierce Heart, Serene Mind",
+    details: `<span class="skilldescription">Intro Skill <span class="Highlight">Thunder Bombardment</span> additionally recovers 15 Resonance Energy for Yuanwu.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode3UpholderofIntegrity",
     name: "Sequence Node 3: Upholder of Integrity",
     details: `<span class="skilldescription">When the Coordinated Attacks of Resonance Skill's <span class="Highlight">Thunder Wedge</span> hits a target, the damage is additionally increased by 20% of Yuanwu's DEF.</span>`,

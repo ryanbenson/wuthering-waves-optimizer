@@ -15,6 +15,16 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
+    key: "SequenceNode2NestingTwigsinBeaksTheyHarrow",
+    name: "Sequence Node 2: Nesting Twigs, in Beaks They Harrow",
+    details: `<span class="skilldescription"><span class="Highlight">Heavy Attack</span> recovers an additional 10 Resonance Energy for Yangyang when it hits a target, which can be triggered 1 time every 20s.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode3NatureSingsinSymphony",
     name: "Sequence Node 3: Nature Sings in Symphony",
     details: `<span class="skilldescription">Resonance Skill DMG Bonus is increased by 40%. The Wind Field's pulling effect on surrounding targets is enhanced, and the pulling range is expanded by 33%.</span>`,

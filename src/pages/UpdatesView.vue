@@ -102,18 +102,32 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 3, 2025</h3>
+    <ul>
+      <li>
+        Adds missing non-damage resonance chains for Yangyang, and Yuanwu.
+      </li>
+    </ul>
     <h3>April 2, 2025</h3>
     <ul>
-      <li>Adds the Enabled text and checkbox to any buff that's automatically enabled, and disables it, to make it more apparent that it is enabled.</li>
+      <li>
+        Adds the Enabled text and checkbox to any buff that's automatically
+        enabled, and disables it, to make it more apparent that it is enabled.
+      </li>
     </ul>
     <h3>March 31, 2025</h3>
     <ul>
-      <li>Updates spectro frazzle MVs due to the 2.2 nerf in the spectro frazzle damage.</li>
+      <li>
+        Updates spectro frazzle MVs due to the 2.2 nerf in the spectro frazzle
+        damage.
+      </li>
       <li>Adds missing Nightmare: Lampylumen Myriad echo.</li>
     </ul>
     <h3>March 29, 2025</h3>
     <ul>
-      <li>Adds resist reduction/shred to the list of rotation action level buffs.</li>
+      <li>
+        Adds resist reduction/shred to the list of rotation action level buffs.
+      </li>
     </ul>
     <h3>March 28, 2025</h3>
     <ul>
