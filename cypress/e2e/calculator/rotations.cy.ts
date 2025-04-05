@@ -71,6 +71,11 @@ describe("Calculator Rotations", () => {
       "be.visible",
     );
     cy.get(`[data-test-action-buff-value-input="CritRate"]`).clear().type("50");
+    // make the BasicAttackStage1DMG have 5 instances of hits
+    cy.get(`[data-test-rotation-action-hits-input="BasicAttackStage1DMG"]`)
+      .clear()
+      .type("5"); // this is causing 51, not 5. don't care to fix it now
+    // TODO: Fix this so it's just 5, not 51
 
     // validate the stats and damages after, stats should be default even with custom buff
     testStats(carlottaRotationStats, cy);

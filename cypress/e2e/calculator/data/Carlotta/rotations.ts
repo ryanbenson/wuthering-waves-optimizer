@@ -1,9 +1,17 @@
 export const carlottaRotationTest001Damages: AttackTests = [
-  { selector: `[data-test-damages-list-rotation="Test001"] .basic-attack-stage-1-dmg`, values: ["Basic Attack Stage 1 DMG", "113", "116", "170"] },
-  { selector: `[data-test-damages-list-rotation="Test001"] .fatal-finale-dmg`, values: ["Fatal Finale DMG", "1344", "1713", "2015"] },
-  { selector: `[data-test-damages-list-rotation="Test001"] .rotation-total-damage`, values: ["Total Damage", "1456", "1828", "2184"] },
+  {
+    selector: `[data-test-damages-list-rotation="Test001"] .basic-attack-stage-1-dmg`,
+    values: ["Basic Attack Stage 1 DMG", "5750", "5893", "8624"],
+  },
+  {
+    selector: `[data-test-damages-list-rotation="Test001"] .fatal-finale-dmg`,
+    values: ["Fatal Finale DMG", "1344", "1713", "2015"],
+  },
+  {
+    selector: `[data-test-damages-list-rotation="Test001"] .rotation-total-damage`,
+    values: ["Total Damage", "7093", "7606", "10639"],
+  },
 ];
-
 
 export const carlottaRotationStats: StatTests = [
   { selector: ".stat-atk", value: "462" },

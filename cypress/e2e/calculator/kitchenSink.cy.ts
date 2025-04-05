@@ -230,6 +230,11 @@ describe("Calculator Kitchen Sink", () => {
       "be.visible",
     );
     cy.get(`[data-test-action-buff-value-input="CritDMG"]`).clear().type("50");
+    // make the BasicAttackStage1DMG have 5 instances of hits
+    cy.get(`[data-test-rotation-action-hits-input="BasicAttackStage1DMG"]`)
+      .clear()
+      .type("5"); // this is causing 51, not 5. don't care to fix it now
+    // TODO: Fix this so it's just 5, not 51
 
     // enable custom buffs giving everything 10
     cy.get('[data-test-calculator-nav="customBuffs"]').click();

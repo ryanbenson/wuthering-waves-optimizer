@@ -45,7 +45,9 @@
               type="number"
               class="input input-xs input-bordered w-14"
               @input="onHitsChange"
-              :data-test-rotation-action-hits-input="hits" />
+              :data-test-rotation-action-hits-input="
+                actionKeyValue ?? 'none'
+              " />
           </div>
           <div class="edit__skill">
             <label for="actionKeyValue">Attack:</label>
@@ -154,7 +156,9 @@
             :all-buffs="buffData"
             @updated-buff="handleUpdatedBuff"
             @remove-buff="handleRemoveBuff"
-            :data-test-rotation-action-buff="buff.modifier"></CalculatorRotationActionBuff>
+            :data-test-rotation-action-buff="
+              buff.modifier
+            "></CalculatorRotationActionBuff>
         </div>
       </div>
       <div class="button__group">

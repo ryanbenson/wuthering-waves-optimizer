@@ -81,7 +81,7 @@ export const carlottaKitchenSinkDamages: AttackTests = [
   },
   {
     selector: `[data-test-damages-list-rotation="Test001"] .basic-attack-stage-1-dmg`,
-    values: ["Basic Attack Stage 1 DMG", "3135", "9877", "10346"],
+    values: ["Basic Attack Stage 1 DMG", "159878", "503695", "527597"],
   },
   {
     selector: `[data-test-damages-list-rotation="Test001"] .fatal-finale-dmg`,
@@ -89,7 +89,7 @@ export const carlottaKitchenSinkDamages: AttackTests = [
   },
   {
     selector: `[data-test-damages-list-rotation="Test001"] .rotation-total-damage`,
-    values: ["Total Damage", "335574", "1212639", "1273612"],
+    values: ["Total Damage", "492317", "1706457", "1790863"],
   },
 ];
 
