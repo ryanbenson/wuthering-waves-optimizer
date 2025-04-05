@@ -102,6 +102,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 4, 2025</h3>
+    <ul>
+      <li>Adds a few missing resonance chains for Youhu.</li>
+    </ul>
     <h3>April 3, 2025</h3>
     <ul>
       <li>

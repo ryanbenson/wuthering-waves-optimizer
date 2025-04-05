@@ -339,7 +339,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert alert-success mb-6 text-white p-2 px-4">
+          <div
+            v-if="false"
+            class="alert alert-success mb-6 text-white p-2 px-4">
             2.2 content is now available!
           </div>
           <CalculatorCharacterSelect
@@ -1221,13 +1223,40 @@ export default defineComponent({
           });
         }
         let attackType = attack.type;
+        const selfBuffs = JSON.parse(JSON.stringify(charBuffsData.value ?? {}));
+        /**
+         * check if there are any buffs that buff another buff
+         * look through the object of charResonanceChainsData.value for any ${attack.key}:MultiplySelfBuffs
+         * and apply them to the selfBuffs object. it will be in specificTalentBuffs
+         * { specificTalentBuffs: { PoeticEssenceSkillDMG:MultiplySelfBuff: 2 } }
+         */
+        const resonanceChainsKeys = Object.keys(
+          charResonanceChainsData.value?.specificTalentBuffs ?? {},
+        );
+        const resonanceChainsKeysWithMultiply = resonanceChainsKeys.filter(
+          (key) => key.includes("MultiplySelfBuff"),
+        );
+        if (resonanceChainsKeysWithMultiply.length > 0) {
+          resonanceChainsKeysWithMultiply.forEach((key) => {
+            const buffValue =
+              charResonanceChainsData.value?.specificTalentBuffs?.[key];
+            const buffReferenceKey = key.split(":")[0]; // e.g. PoeticEssenceSkillDMG
+            // // check if the buffReferenceKey is in the selfBuffs object
+            if (selfBuffs?.specificTalentBuffs?.[buffReferenceKey]) {
+              // multiply the buff value by the buffValue
+              selfBuffs.specificTalentBuffs[buffReferenceKey] *= buffValue;
+            }
+          });
+        }
+
+        // apply any buff changes
         // is there an attack type override? if so, update it
         const attackTypeOverrideResChain =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:talentTypeOverride`
           ] ?? null;
         const attackTypeOverrideSelfBuff =
-          charBuffsData.value?.specificTalentBuffs?.[
+          selfBuffs?.specificTalentBuffs?.[
             `${attack.key}:talentTypeOverride`
           ] ?? null;
         if (attackTypeOverrideResChain) {
@@ -1298,7 +1327,7 @@ export default defineComponent({
         } else {
           talent = talentTree[talentType];
         }
-        const talentModifierAdd = charBuffsData.value?.[attack.key] ?? 0;
+        const talentModifierAdd = selfBuffs?.[attack.key] ?? 0;
         const talentModifierAddFromResonanceChains =
           charResonanceChainsData.value?.[attack.key] ?? 0;
         const totalTalentModifierAdd =
@@ -1339,12 +1368,12 @@ export default defineComponent({
           100;
         // end max buff handlers
         const specificSkillDmgFromCharBuffs =
-          charBuffsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
+          selfBuffs?.specificTalentBuffs?.[attack.key] ?? 0;
         const specificSkillDmgFromEchoes =
           echoStats.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const genericSkillDmgBonusResChain =
           charResonanceChainsData.value?.DMGBonus ?? 0;
-        const genericSkillDmgBonusSelfBuff = charBuffsData.value?.DMGBonus ?? 0;
+        const genericSkillDmgBonusSelfBuff = selfBuffs?.DMGBonus ?? 0;
         const genericSkillDmgBonusEchoBuff = echoStats.value?.DMGBonus ?? 0;
         let genericSkillDmgBonusTeamEchoBuff =
           teamBuffsData.value?.DMGBonus ?? 0;
@@ -1357,9 +1386,7 @@ export default defineComponent({
             `${attack.key}:DEFIgnore`
           ] ?? 0;
         const extraDefIgnoreCharBuff =
-          charBuffsData.value?.specificTalentBuffs?.[
-            `${attack.key}:DEFIgnore`
-          ] ?? 0;
+          selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEFIgnore`] ?? 0;
         const extraDefIgnoreCustomBuffs = customBuffs.value?.DefIgnore ?? 0;
         const specificSkillExtraCritRate =
           charResonanceChainsData.value?.specificTalentBuffs?.[
@@ -1385,7 +1412,7 @@ export default defineComponent({
             `${attack.key}:talentModifierMultiply`
           ] ?? 0;
         const talentModifierMultiplySelfBuff =
-          charBuffsData.value?.specificTalentBuffs?.[
+          selfBuffs?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
           ] ?? 0;
         const totalDefIgnore =
@@ -1411,7 +1438,7 @@ export default defineComponent({
         let teamBuffResistShredForCharElement =
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         let selfBuffResistShredForCharElement =
-          charBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
+          selfBuffs?.[`ResistShred:${attackElement}`] ?? 0;
         let weaponBuffResistShredForCharElement =
           weaponData.value?.weaponPassiveStats?.[
             `ResistShred:${attackElement}`
@@ -1447,9 +1474,7 @@ export default defineComponent({
         let teamBuffDmgDeepenForCoordinatedAttack =
           teamBuffsData.value?.[`DMGDeepen:Coordinated`] ?? 0;
         const selfBuffSpecificAttackGenericDmgDeepen =
-          charBuffsData.value?.specificTalentBuffs?.[
-            `${attack.key}:DMGDeepen`
-          ] ?? 0;
+          selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGDeepen`] ?? 0;
         if (excludeTeamBuffs) {
           baseTotalDeepenEffect = statsWithoutTeamBuffs?.totalDeepenEffect ?? 0;
           teamBuffDmgDeepenForCharElement = 0;
@@ -1496,27 +1521,22 @@ export default defineComponent({
         // check for any modifiers that change the individual instance of atk/hp/def
         // re-calculate the base for this specific instance of damage
         let modifyBaseAtk =
-          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:ATK`] ?? 0;
+          selfBuffs?.specificTalentBuffs?.[`${attack.key}:ATK`] ?? 0;
         let modifyBaseAtkResChain =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:ATK`
           ] ?? 0;
         modifyBaseAtk += modifyBaseAtkResChain;
         let modifyBaseHp =
-          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:HP`] ?? 0;
+          selfBuffs?.specificTalentBuffs?.[`${attack.key}:HP`] ?? 0;
         let modifyBaseDef =
-          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:DEF`] ?? 0;
+          selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEF`] ?? 0;
         let modifyBaseAtkFlat =
-          charBuffsData.value?.specificTalentBuffs?.[
-            `${attack.key}:ATK_FLAT`
-          ] ?? 0;
+          selfBuffs?.specificTalentBuffs?.[`${attack.key}:ATK_FLAT`] ?? 0;
         let modifyBaseHpFlat =
-          charBuffsData.value?.specificTalentBuffs?.[`${attack.key}:HP_FLAT`] ??
-          0;
+          selfBuffs?.specificTalentBuffs?.[`${attack.key}:HP_FLAT`] ?? 0;
         let modifyBaseDefFlat =
-          charBuffsData.value?.specificTalentBuffs?.[
-            `${attack.key}:DEF_FLAT`
-          ] ?? 0;
+          selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEF_FLAT`] ?? 0;
         // if there are any attack-level buffs for atk, hp, or def (% or flat, update them)
         if (attack?.buffs) {
           modifyBaseAtk += attack.buffs?.ATK ?? 0;
@@ -1584,7 +1604,7 @@ export default defineComponent({
           const spectroFrazzleDeepenTeamBuffs =
             teamBuffsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
           const spectroFrazzleDeepenSelfBuffs =
-            charBuffsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+            selfBuffs?.["DMGDeepen:SpectroFrazzle"] ?? 0;
           const spectroFrazzleDeepenResonanceChains =
             charResonanceChainsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
           totalSpectroFrazzleDeepen =
@@ -1617,9 +1637,7 @@ export default defineComponent({
               `${attack.key}:HealingBonus`
             ] ?? 0;
           const specificSkillHealingBonusSelfBuff =
-            charBuffsData.value?.specificTalentBuffs?.[
-              `${attack.key}:HealingBonus`
-            ] ?? 0;
+            selfBuffs?.specificTalentBuffs?.[`${attack.key}:HealingBonus`] ?? 0;
           totalSkillDmgBonus += specificSkillHealingBonus;
           // overwrite the specific skill buff to avoid generic dmg bonuses affecting healing
           const specificSkillDmg =
