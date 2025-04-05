@@ -1,17 +1,21 @@
 <template>
-  <div :class="{ 'weapon-passive': !alwaysEnabled }" @click="toggleEnabled">
+  <div
+    :class="{ 'weapon-passive': !alwaysEnabled }"
+    @click="toggleEnabled"
+    :data-test-echo-set-passive="passiveKey">
     <div v-html="details"></div>
     <div class="flex gap-2 items-center">
       <div class="form-control" @click.stop>
         <label
           class="label inline-flex justify-start pl-0"
-          :class="{'cursor-pointer': !alwaysEnabled}">
+          :class="{ 'cursor-pointer': !alwaysEnabled }">
           <input
             type="checkbox"
             class="checkbox checkbox-sm"
             v-model="isEnabled"
             @change="updatedStats"
-            :disabled="alwaysEnabled" />
+            :disabled="alwaysEnabled"
+            :data-test-echo-set-passive-enabled="passiveKey" />
           <span class="label-text ml-2">Enabled?</span>
         </label>
       </div>
@@ -26,7 +30,8 @@
             :min="minStacks"
             :max="maxStacks"
             @input="ensureMaxStacks"
-            @change="updatedStats" />
+            @change="updatedStats"
+            :data-test-echo-set-stacks="passiveKey" />
           <span class="label-text ml-2">Stacks</span>
         </label>
       </div>

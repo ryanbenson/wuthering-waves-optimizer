@@ -5,7 +5,9 @@
     </form>
     <div class="modal-box max-w-xl">
       <form method="dialog">
-        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+        <button
+          class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          data-test-echo-modal-close>
           ✕
         </button>
       </form>
@@ -40,7 +42,7 @@
             <select
               v-model="echo"
               name="mainEcho"
-              class="select select-bordered select select-sm">
+              class="main-echo-selector select select-bordered select select-sm">
               <optgroup label="Calamity">
                 <option
                   v-for="option in mainEchoOptions.Calamity"
@@ -77,7 +79,7 @@
 
             <select
               name="mainStat"
-              class="select select-bordered select select-sm"
+              class="select select-bordered select select-sm echo-main-stat-selector"
               v-model="stat"
               @change="updateTotalStats"
               :disabled="!type">
@@ -99,7 +101,8 @@
                 :key="echo"
                 @click="handleChooseEchoSet(echo)"
                 class="size-8 rounded-full cursor-pointer echo__item__set-selection--icon"
-                :class="{ 'border border-white': isSetSelected(echo) }">
+                :class="{ 'border border-white': isSetSelected(echo) }"
+                :data-test-echo-set="echo">
                 <img :src="getEchoSetIcon(echo)" :class="echo" />
               </div>
             </div>
@@ -141,10 +144,12 @@
                   :checked="isCritRateChecked"
                   @change="toggleSubStat"
                   value="CritRate"
-                  :disabled="isCritRateDisabled" />
+                  :disabled="isCritRateDisabled"
+                  data-test-substat-checkbox="CritRate" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isCritRateChecked }">
+                  :class="{ substat__label: isCritRateChecked }"
+                  data-test-substat-label="CritRate">
                   Crit Rate
                   <span v-if="isCritRateChecked" class="text-primary">
                     {{ critRateValue }}
@@ -157,7 +162,8 @@
                   :default-value="getDefaultValue('CritRate')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('CritRate', val)" />
+                  @update-value="(val) => subStatUpdated('CritRate', val)"
+                  data-test-substat-range="CritRate" />
               </div>
 
               <div
@@ -168,10 +174,12 @@
                   :checked="isCritDMGChecked"
                   @change="toggleSubStat"
                   value="CritDMG"
-                  :disabled="isCritDMGDisabled" />
+                  :disabled="isCritDMGDisabled"
+                  data-test-substat-checkbox="CritDMG" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isCritDMGChecked }">
+                  :class="{ substat__label: isCritDMGChecked }"
+                  data-test-substat-label="CritDMG">
                   Crit DMG
                   <span v-if="isCritDMGChecked" class="text-primary">
                     {{ critDmgValue }}
@@ -184,7 +192,8 @@
                   :default-value="getDefaultValue('CritDMG')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('CritDMG', val)" />
+                  @update-value="(val) => subStatUpdated('CritDMG', val)"
+                  data-test-substat-range="CritDMG" />
               </div>
 
               <div
@@ -195,10 +204,12 @@
                   :checked="isAtkChecked"
                   @change="toggleSubStat"
                   :disabled="isAtkDisabled"
-                  value="ATK" />
+                  value="ATK"
+                  data-test-substat-checkbox="ATK" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isAtkChecked }">
+                  :class="{ substat__label: isAtkChecked }"
+                  data-test-substat-label="ATK">
                   ATK%
                   <span v-if="isAtkChecked" class="text-primary">
                     {{ atkValue }}
@@ -211,7 +222,8 @@
                   :default-value="getDefaultValue('ATK')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('ATK', val)" />
+                  @update-value="(val) => subStatUpdated('ATK', val)"
+                  data-test-substat-range="ATK" />
               </div>
 
               <div
@@ -222,10 +234,12 @@
                   :checked="isFlatAtkChecked"
                   @change="toggleSubStat"
                   :disabled="isFlatAtkDisabled"
-                  value="ATK_FLAT" />
+                  value="ATK_FLAT"
+                  data-test-substat-checkbox="ATK_FLAT" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isFlatAtkChecked }">
+                  :class="{ substat__label: isFlatAtkChecked }"
+                  data-test-substat-label="ATK_FLAT">
                   ATK
                   <span v-if="isFlatAtkChecked" class="text-primary">
                     {{ atkFlatValue }}
@@ -238,7 +252,8 @@
                   :default-value="getDefaultValue('ATK_FLAT')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('ATK_FLAT', val)" />
+                  @update-value="(val) => subStatUpdated('ATK_FLAT', val)"
+                  data-test-substat-range="ATK_FLAT" />
               </div>
 
               <div
@@ -249,10 +264,12 @@
                   :checked="isHpChecked"
                   @change="toggleSubStat"
                   :disabled="isHpDisabled"
-                  value="HP" />
+                  value="HP"
+                  data-test-substat-checkbox="HP" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isHpChecked }">
+                  :class="{ substat__label: isHpChecked }"
+                  data-test-substat-label="HP">
                   HP%
                   <span v-if="isHpChecked" class="text-primary">
                     {{ hpValue }}
@@ -265,7 +282,8 @@
                   :default-value="getDefaultValue('HP')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('HP', val)" />
+                  @update-value="(val) => subStatUpdated('HP', val)"
+                  data-test-substat-range="HP" />
               </div>
 
               <div
@@ -276,10 +294,12 @@
                   :checked="isFlatHpChecked"
                   @change="toggleSubStat"
                   :disabled="isFlatHpDisabled"
-                  value="HP_FLAT" />
+                  value="HP_FLAT"
+                  data-test-substat-checkbox="HP_FLAT" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isFlatHpChecked }">
+                  :class="{ substat__label: isFlatHpChecked }"
+                  data-test-substat-label="HP_FLAT">
                   HP
                   <span v-if="isFlatHpChecked" class="text-primary">
                     {{ hpFlatValue }}
@@ -292,7 +312,8 @@
                   :default-value="getDefaultValue('HP_FLAT')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('HP_FLAT', val)" />
+                  @update-value="(val) => subStatUpdated('HP_FLAT', val)"
+                  data-test-substat-range="HP_FLAT" />
               </div>
 
               <div
@@ -303,10 +324,12 @@
                   :checked="isDefChecked"
                   @change="toggleSubStat"
                   :disabled="isDefDisabled"
-                  value="DEF" />
+                  value="DEF"
+                  data-test-substat-checkbox="DEF" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isDefChecked }">
+                  :class="{ substat__label: isDefChecked }"
+                  data-test-substat-label="DEF">
                   DEF%
                   <span v-if="isDefChecked" class="text-primary">
                     {{ defValue }}
@@ -319,7 +342,8 @@
                   :default-value="getDefaultValue('DEF')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('DEF', val)" />
+                  @update-value="(val) => subStatUpdated('DEF', val)"
+                  data-test-substat-range="DEF" />
               </div>
 
               <div
@@ -330,10 +354,12 @@
                   :checked="isFlatDefChecked"
                   @change="toggleSubStat"
                   :disabled="isFlatDefDisabled"
-                  value="DEF_FLAT" />
+                  value="DEF_FLAT"
+                  data-test-substat-checkbox="DEF_FLAT" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isFlatDefChecked }">
+                  :class="{ substat__label: isFlatDefChecked }"
+                  data-test-substat-label="DEF_FLAT">
                   DEF
                   <span v-if="isFlatDefChecked" class="text-primary">
                     {{ defFlatValue }}
@@ -346,7 +372,8 @@
                   :default-value="getDefaultValue('DEF_FLAT')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('DEF_FLAT', val)" />
+                  @update-value="(val) => subStatUpdated('DEF_FLAT', val)"
+                  data-test-substat-range="DEF_FLAT" />
               </div>
 
               <div
@@ -357,10 +384,12 @@
                   :checked="isBasicChecked"
                   @change="toggleSubStat"
                   :disabled="isBasicDisabled"
-                  value="BasicAttackDMGBonus" />
+                  value="BasicAttackDMGBonus"
+                  data-test-substat-checkbox="BasicAttackDMGBonus" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isBasicChecked }">
+                  :class="{ substat__label: isBasicChecked }"
+                  data-test-substat-label="BasicAttackDMGBonus">
                   Basic Attack DMG Bonus
                   <span v-if="isBasicChecked" class="text-primary">
                     {{ basicValue }}
@@ -375,7 +404,8 @@
                   class="echo__selection__rank__input w-full"
                   @update-value="
                     (val) => subStatUpdated('BasicAttackDMGBonus', val)
-                  " />
+                  "
+                  data-test-substat-range="BasicAttackDMGBonus" />
               </div>
 
               <div
@@ -386,10 +416,12 @@
                   :checked="isHeavyChecked"
                   @change="toggleSubStat"
                   :disabled="isHeavyDisabled"
-                  value="HeavyAttackDMGBonus" />
+                  value="HeavyAttackDMGBonus"
+                  data-test-substat-checkbox="HeavyAttackDMGBonus" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isHeavyChecked }">
+                  :class="{ substat__label: isHeavyChecked }"
+                  data-test-substat-label="HeavyAttackDMGBonus">
                   Heavy Attack DMG Bonus
                   <span v-if="isHeavyChecked" class="text-primary">
                     {{ heavyValue }}
@@ -404,7 +436,8 @@
                   class="echo__selection__rank__input w-full"
                   @update-value="
                     (val) => subStatUpdated('HeavyAttackDMGBonus', val)
-                  " />
+                  "
+                  data-test-substat-range="HeavyAttackDMGBonus" />
               </div>
 
               <div
@@ -415,10 +448,12 @@
                   :checked="isSkillChecked"
                   @change="toggleSubStat"
                   :disabled="isSkillDisabled"
-                  value="ResonanceSkillDMGBonus" />
+                  value="ResonanceSkillDMGBonus"
+                  data-test-substat-checkbox="ResonanceSkillDMGBonus" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isSkillChecked }">
+                  :class="{ substat__label: isSkillChecked }"
+                  data-test-substat-label="ResonanceSkillDMGBonus">
                   Skill DMG Bonus
                   <span v-if="isSkillChecked" class="text-primary">
                     {{ skillValue }}
@@ -433,7 +468,8 @@
                   class="echo__selection__rank__input w-full"
                   @update-value="
                     (val) => subStatUpdated('ResonanceSkillDMGBonus', val)
-                  " />
+                  "
+                  data-test-substat-range="ResonanceSkillDMGBonus" />
               </div>
 
               <div
@@ -444,10 +480,12 @@
                   :checked="isLiberationChecked"
                   @change="toggleSubStat"
                   :disabled="isLiberationDisabled"
-                  value="ResonanceLiberationDMGBonus" />
+                  value="ResonanceLiberationDMGBonus"
+                  data-test-substat-checkbox="ResonanceLiberationDMGBonus" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isLiberationChecked }">
+                  :class="{ substat__label: isLiberationChecked }"
+                  data-test-substat-label="ResonanceLiberationDMGBonus">
                   Liberation DMG Bonus
                   <span v-if="isLiberationChecked" class="text-primary">
                     {{ liberationValue }}
@@ -464,7 +502,8 @@
                   class="echo__selection__rank__input w-full"
                   @update-value="
                     (val) => subStatUpdated('ResonanceLiberationDMGBonus', val)
-                  " />
+                  "
+                  data-test-substat-range="ResonanceLiberationDMGBonus" />
               </div>
 
               <div
@@ -475,10 +514,12 @@
                   :checked="isEnergyRechargeChecked"
                   @change="toggleSubStat"
                   :disabled="isEnergyRechargeDisabled"
-                  value="EnergyRegen" />
+                  value="EnergyRegen"
+                  data-test-substat-checkbox="EnergyRegen" />
                 <span
                   class="label-text"
-                  :class="{ substat__label: isEnergyRechargeChecked }">
+                  :class="{ substat__label: isEnergyRechargeChecked }"
+                  data-test-substat-label="EnergyRegen">
                   Energy Regen
                   <span v-if="isEnergyRechargeChecked" class="text-primary">
                     {{ energyRegenValue }}
@@ -491,7 +532,8 @@
                   :default-value="getDefaultValue('EnergyRegen')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('EnergyRegen', val)" />
+                  @update-value="(val) => subStatUpdated('EnergyRegen', val)"
+                  data-test-substat-checkbox="EnergyRegen" />
               </div>
             </div>
           </div>
@@ -577,7 +619,8 @@
   </dialog>
 
   <div
-    class="echo__item card card-bordered card-compact bg-base-100 shadow mb-2">
+    class="echo__item card card-bordered card-compact bg-base-100 shadow mb-2"
+    :data-test-echo-item="index">
     <div class="card-body">
       <div class="echo__content flex gap-6 flex-col lg:flex-row">
         <div class="echo__item__left">
@@ -659,10 +702,14 @@
               {{ echoName }}
               <br />
               <div v-if="hasSubStats" class="echo__item__meta flex gap-2">
-                <span class="echo__item__cost badge text-nowrap" :class="critValueBadgeClass">
+                <span
+                  class="echo__item__cost badge text-nowrap"
+                  :class="critValueBadgeClass">
                   CV {{ formattedCritValue }}%
                 </span>
-                <span class="echo__item__cost badge text-nowrap" :class="rollValueBadgeClass">
+                <span
+                  class="echo__item__cost badge text-nowrap"
+                  :class="rollValueBadgeClass">
                   RV {{ echoRollValue }}%
                 </span>
               </div>
@@ -2391,40 +2438,40 @@ export default {
     },
     rollValueBadgeClass() {
       const rv = this.echoRollValue ?? 0;
-      
+
       // Ensure cv is within the valid range
       const percentage = Math.min(Math.max(rv, 0), 600);
 
       let bgColor;
-      let color = 'text-white';
+      let color = "text-white";
       let boxShadow;
       let borderColor;
 
       if (percentage <= 280) {
-        bgColor = 'bg-emerald-800';  // Dark Green
-        borderColor = 'border-emerald-800';
+        bgColor = "bg-emerald-800"; // Dark Green
+        borderColor = "border-emerald-800";
       } else if (percentage <= 320) {
-        bgColor = 'bg-green-500';  // Lighter Green
-        borderColor = 'border-green-500';
+        bgColor = "bg-green-500"; // Lighter Green
+        borderColor = "border-green-500";
       } else if (percentage <= 400) {
-        bgColor = 'bg-blue-600';   // Blue
-        borderColor = 'border-blue-600';
-        color = 'text-black';
+        bgColor = "bg-blue-600"; // Blue
+        borderColor = "border-blue-600";
+        color = "text-black";
       } else if (percentage < 500) {
-        bgColor = 'bg-purple-600'; // Purple
-        borderColor = 'border-purple-600';
-        color = 'text-black';
+        bgColor = "bg-purple-600"; // Purple
+        borderColor = "border-purple-600";
+        color = "text-black";
       } else {
-        bgColor = 'bg-yellow-500'; // Gold or Red (depending on preference)
-        borderColor = 'border-yellow-500';
-        color = 'text-black';
+        bgColor = "bg-yellow-500"; // Gold or Red (depending on preference)
+        borderColor = "border-yellow-500";
+        color = "text-black";
       }
       if (percentage >= 550) {
-        boxShadow = 'shadow-md shadow-yellow-500/50';
+        boxShadow = "shadow-md shadow-yellow-500/50";
       }
 
       return [
-        bgColor,  // Dynamically return the class based on the cv
+        bgColor, // Dynamically return the class based on the cv
         color,
         borderColor,
         boxShadow,

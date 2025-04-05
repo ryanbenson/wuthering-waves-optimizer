@@ -25,7 +25,10 @@
         <h2 class="text-lg font-bold">Set Bonuses</h2>
         <div class="form-control">
           <label class="label cursor-pointer">
-            <input type="checkbox" v-model="setOverride" class="toggle toggle-primary" />
+            <input
+              type="checkbox"
+              v-model="setOverride"
+              class="toggle toggle-primary" />
             <span class="label-text p-0 m-0 ml-2">Enable set override</span>
           </label>
         </div>
@@ -34,11 +37,13 @@
       <CalculatorEchoesSetBonusOne
         :character="character"
         :is-override-enabled="setOverride"
-        @update-stats="handleSetBonusOneData"></CalculatorEchoesSetBonusOne>
+        @update-stats="handleSetBonusOneData"
+        data-test-echoes-set-one></CalculatorEchoesSetBonusOne>
       <CalculatorEchoesSetBonusTwo
         :character="character"
         :is-override-enabled="setOverride"
-        @update-stats="handleSetBonusTwoData"></CalculatorEchoesSetBonusTwo>
+        @update-stats="handleSetBonusTwoData"
+        data-test-echoes-set-two></CalculatorEchoesSetBonusTwo>
     </div>
     <h2 v-if="false" class="text-lg font-bold mt-6 mb-2">Main Echo Buff</h2>
     <div class="main__echo relative mt-12">
@@ -67,13 +72,14 @@
             <div class="form-control" @click.stop>
               <label
                 class="label inline-flex justify-start"
-                :class="{'cursor-pointer': !setAlwaysEnabled}"
+                :class="{ 'cursor-pointer': !setAlwaysEnabled }"
                 @click.stop>
                 <input
                   type="checkbox"
                   class="checkbox checkbox-sm"
                   v-model="mainEchoBuffEnabled"
-                  :disabled="setAlwaysEnabled" />
+                  :disabled="setAlwaysEnabled"
+                  :data-test-main-echo-enabled="mainEcho" />
                 <span class="label-text ml-2">Enabled?</span>
               </label>
             </div>
@@ -86,7 +92,8 @@
                   type="number"
                   class="input input-bordered input-xs"
                   :min="0"
-                  :max="mainEchoMaxStacks" />
+                  :max="mainEchoMaxStacks"
+                  :data-test-main-echo-stacks="mainEcho" />
                 <span class="label-text ml-2">Stacks</span>
               </label>
             </div>
@@ -215,7 +222,9 @@ export default {
           const specificCharacters = mainEchoBuff?.specificCharacters ?? [];
           if (specificCharacters.length > 0) {
             // check if the current character key is in the list
-            const isValidCharacter = specificCharacters.includes(this.character);
+            const isValidCharacter = specificCharacters.includes(
+              this.character,
+            );
             if (!isValidCharacter) {
               continue;
             }
@@ -394,7 +403,7 @@ export default {
       },
       async set(value) {
         const data = {
-          setOverride: value
+          setOverride: value,
         };
         await this.setCharacterData(this.character, data);
       },
