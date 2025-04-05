@@ -22,6 +22,10 @@ import {
   carlottaRotationStats,
 } from "./rotations";
 import { carlottaEchoesStats, carlottaEchoesDamages } from "./echoes";
+import {
+  carlottaKitchenSinkStats,
+  carlottaKitchenSinkDamages,
+} from "./kitchenSink";
 
 export {
   carlottaBaseDamages,
@@ -40,4 +44,6 @@ export {
   carlottaRotationStats,
   carlottaEchoesStats,
   carlottaEchoesDamages,
+  carlottaKitchenSinkStats,
+  carlottaKitchenSinkDamages,
 };

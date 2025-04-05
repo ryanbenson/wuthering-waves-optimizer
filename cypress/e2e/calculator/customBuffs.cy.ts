@@ -24,7 +24,6 @@ describe("Calculator Custom Buffs", () => {
     cy.get(".character__selection.Carlotta").should("be.visible");
     cy.get('[data-test-calculator-nav="customBuffs"]').click();
 
-    // should only be one
     cy.get(".custom__buffs-list .form-control").each(($input) => {
       cy.wrap($input).find("input[type=number]").clear().type("50");
     });

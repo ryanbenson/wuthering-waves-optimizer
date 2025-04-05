@@ -22,7 +22,6 @@ describe("Calculator Resonance Chains", () => {
     cy.get(".character__selection.Carlotta").should("be.visible");
     cy.get('[data-test-calculator-nav="resonanceChains"]').click();
 
-    // should only be one
     cy.get(".character__resonance-chain").each(($card) => {
       cy.wrap($card).find("input[type=checkbox]").click();
     });
