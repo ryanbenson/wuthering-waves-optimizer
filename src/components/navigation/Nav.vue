@@ -1,6 +1,8 @@
 <template>
   <Teleport to="#navbar-container">
-    <div class="navbar bg-base-300 shadow">
+    <div
+      class="navbar bg-base-300 shadow"
+      :class="{ 'h-20': curPage === 'inventory' }">
       <div class="navbar-start">
         <details class="main-menu-mobile dropdown">
           <summary tabindex="0" role="button" class="btn btn-ghost lg:hidden">
