@@ -646,6 +646,8 @@ export const buffsByCharacter = {
           modifier: "EnergyRegen",
           modifierValue: 0.1,
           specificCharacters: [
+            "RoverAeroFemale",
+            "RoverAeroMale",
             "RoverHavocFemale",
             "RoverHavocMale",
             "RoverSpectroFemale",

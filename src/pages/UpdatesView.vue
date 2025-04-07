@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 7, 2025</h3>
+    <ul>
+      <li>Adds Rover Aero to Shorekeeper's team buff.</li>
+    </ul>
     <h3>April 6, 2025</h3>
     <ul>
       <li>Updates Aalto's S3 MVs, they were too high before.</li>
