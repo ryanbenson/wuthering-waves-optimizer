@@ -320,6 +320,26 @@ export const subStatLabelMap: SubStatLabelMap = {
   Havoc: "Havoc DMG Bonus",
   HealingBonus: "Healing Bonus",
 };
+export const verboseStatLabelMap: Record<string, string> = {
+  ATK: "ATK",
+  HP: "HP",
+  DEF: "DEF",
+  "Energy Regen": "EnergyRegen",
+  "Crit. Rate": "CritRate",
+  "Crit. DMG": "CritDMG",
+  "Basic Attack DMG Bonus": "BasicAttackDMGBonus",
+  "Heavy Attack DMG Bonus": "HeavyAttackDMGBonus",
+  "Resonance Skill DMG Bonus": "ResonanceSkillDMGBonus",
+  "Resonance Skill DMG": "ResonanceSkillDMGBonus",
+  "Resonance Liberation DMG Bonus": "ResonanceLiberationDMGBonus",
+  "Glacio DMG Bonus": "Glacio",
+  "Fusion DMG Bonus": "Fusion",
+  "Electro DMG Bonus": "Electro",
+  "Aero DMG Bonus": "Aero",
+  "Spectro DMG Bonus": "Spectro",
+  "Havoc DMG Bonus": "Havoc",
+  "Healing Bonus": "HealingBonus",
+};
 
 export function getReadableSubStatLabel(key: string): string {
   return subStatLabelMap[key];

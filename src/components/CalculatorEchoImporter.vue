@@ -1,229 +1,126 @@
 <template>
-<div v-if="debug" class="image-container" style="width: 960px; height: 540px;">
-    <img
-    :src="imageSrc"
-    ref="imageRef"
-    width="960"
-    height="540"
-    @load="onImageLoad"
-    />
-    <div
-    class="debug-box"
-    v-for="(box, i) in allBoxes"
-    :key="i"
-    :style="getFixedBoxStyle(box)"
-    ></div>
-</div>
-    <div class="echo-parser">
-    <h2>Echo Parser</h2>
-    <input type="file" @change="onFileChange" accept="image/*" />
-    <div v-if="echoes.length">
-        <h3>Parsed Echoes:</h3>
-        <pre>{{ JSON.stringify(echoes, null, 2) }}</pre>
+  <dialog id="modal-echoes-importer" class="modal">
+    <form method="dialog" class="modal-backdrop" @click="handleClose">
+      <button>close</button>
+    </form>
+    <div class="modal-box max-w-5xl">
+      <form method="dialog" @click="handleClose">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+          ✕
+        </button>
+      </form>
+      <div class="py-4">
+        <input type="checkbox" class="checkbox checkbox-sm" />
+        Save all to Inventory?
+        <CalculatorEchoParser
+          @echoes-parsed="handleEchoesParsed"></CalculatorEchoParser>
+      </div>
     </div>
-    </div>
+  </dialog>
 </template>
 
 <script>
-import Tesseract from 'tesseract.js';
-
+import CalculatorEchoParser from "./CalculatorEchoParser.vue";
+import { verboseStatLabelMap } from "../echoes/stats";
+import { mapActions, mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
 export default {
-    name: 'EchoParser',
-    data() {
-    return {
-        echoes: [],
-        imageElement: null,
-        imageSrc: null,
-        imageDimensions: { width: 1, height: 1 },
-        debug: false,
-    };
+  name: "CalculatorEchoImporter",
+  components: {
+    CalculatorEchoParser,
+  },
+  props: {
+    character: {
+      type: String,
+      default: false,
     },
-    methods: {
-    onFileChange(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const img = new Image();
-        img.onload = async () => {
-        console.time("Parse")
-        this.imageElement = img;
-        this.imageSrc = img.src;
-        this.echoes = await this.parseEchoes();
-        console.timeEnd("Parse");
-        };
-        img.src = URL.createObjectURL(file);
+  },
+  methods: {
+    ...mapActions(useCharacterStore, ["setCharacterEchoes"]),
+    triggerOpenModal() {
+      const modalEl = document.getElementById("modal-echoes-importer");
+      modalEl.showModal();
     },
-    
-    onImageLoad() {
-        const img = this.$refs.imageRef;
-        this.imageDimensions = {
-        width: img.naturalWidth,
-        height: img.naturalHeight
-        };
+    triggerCloseModal() {
+      const modalEl = document.getElementById("modal-echoes-importer");
+      modalEl.close();
     },
-    getFixedBoxStyle(box) {
-    // Your input coords are based on 1920x1080, and this scales them by 0.5 for a 960x540 preview
-    return {
-        position: 'absolute',
-        left: `${box.x * 0.5}px`,
-        top: `${box.y * 0.5}px`,
-        width: `${box.width * 0.5}px`,
-        height: `${box.height * 0.5}px`,
-        border: '2px dashed red',
-        boxSizing: 'border-box',
-        pointerEvents: 'none',
-        background: 'rgba(255, 0, 0, 0.1)'
-    };
-    },
-
-    async parseEchoes() {
-        const results = [];
-
-        for (const echo of this.echoCoordinates) {
-        let cost = await this.extractTextFromRegion(echo.cost, true);
-        if (cost === "<B>") {
-            cost = 4;
-        }
-        const mainStatLabel = await this.extractTextFromRegion(echo.mainStatLabel);
-
-        const substats = [];
-        for (const sub of echo.substats) {
-            const raw = await this.extractTextFromRegion(sub);
-
-            // 🧼 Clean up newlines and weird characters
-            const cleaned = raw.replace(/\n/g, ' ').replace(/[^\w.%+ ]/g, '').trim();
-            const match = cleaned.match(/(.+?)\s+(\d+(\.\d+)?%?)(\s|$)/);
-            if (match) {
-            substats.push({
-                subStat: match[1].trim(),
-                subStatValue: this.ensureValidSubStatValue(match[1].trim(), match[2].trim()),
-            });
-            } else if (cleaned) {
-            substats.push({ subStat: cleaned, subStatValue: '' });
-            }
-        }
-
-        results.push({ cost, mainStatLabel: mainStatLabel.trim(), substats });
-        }
-        console.log(results);
-
-        return results;
-    },
-
-    ensureValidSubStatValue(mainStat, value) {
-        if (mainStat === 'Crit. Rate' && value === '17.5%') {
-        return '7.5%';
-        }
-        return value;
-    },
-
-    extractTextFromRegion(coords) {
-        const canvas = document.createElement('canvas');
-        canvas.width = coords.width;
-        canvas.height = coords.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(
-        this.imageElement,
-        coords.x,
-        coords.y,
-        coords.width,
-        coords.height,
-        0,
-        0,
-        coords.width,
-        coords.height
+    handleEchoesParsed(echoData) {
+      const echoes = echoData.map((echo) => {
+        const echoSubStatsType1 = this.getSubstatType(echo.substats[0]);
+        const echoSubStatsValue1 = this.getSubstatValue(
+          echo.substats[0].subStatValue,
         );
-        let whitelist = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.%+ ';
-        return Tesseract.recognize(canvas.toDataURL(), 'eng', {
-    tessedit_char_whitelist: whitelist,
-    tessedit_pageseg_mode: 7,
-    }).then((result) => {
-    const text = result.data.text.trim();
-    // console.log(`[OCR]`, JSON.stringify(result.data));
-    return text;
-    });
+        const echoSubStatsType2 = this.getSubstatType(echo.substats[1]);
+        const echoSubStatsValue2 = this.getSubstatValue(
+          echo.substats[1].subStatValue,
+        );
+        const echoSubStatsType3 = this.getSubstatType(echo.substats[2]);
+        const echoSubStatsValue3 = this.getSubstatValue(
+          echo.substats[2].subStatValue,
+        );
+        const echoSubStatsType4 = this.getSubstatType(echo.substats[3]);
+        const echoSubStatsValue4 = this.getSubstatValue(
+          echo.substats[3].subStatValue,
+        );
+        const echoSubStatsType5 = this.getSubstatType(echo.substats[4]);
+        const echoSubStatsValue5 = this.getSubstatValue(
+          echo.substats[4].subStatValue,
+        );
+        return {
+          echo: null,
+          type: null,
+          rank: echo.rank ?? 5,
+          stat: echo.mainStatLabel
+            ? verboseStatLabelMap[echo.mainStatLabel]
+            : null,
+          echoId: null,
+          echoSet: null,
+          echoSubStatsType1,
+          echoSubStatsValue1,
+          echoSubStatsType2,
+          echoSubStatsValue2,
+          echoSubStatsType3,
+          echoSubStatsValue3,
+          echoSubStatsType4,
+          echoSubStatsValue4,
+          echoSubStatsType5,
+          echoSubStatsValue5,
+        };
+      });
+      // update store
+      this.setCharacterEchoes(this.character, echoes);
+      // close modal
+      this.triggerCloseModal();
     },
+    getSubstatValue(subStatValue) {
+      const valueWithoutPercent = subStatValue.replace("%", "");
+      return Number(valueWithoutPercent);
     },
-    computed: {
-    // echoCoordinates() {
-    //   // ✏️ Replace these with real coordinates
-    //   return [
-    //     {
-    //       cost: { x: 313, y: 655, width: 61, height: 61 },
-    //       mainStatLabel: { x: 211, y: 720, width: 173, height: 40 },
-    //       // mainStatValue: { x: 0, y: 30, width: 100, height: 30 }, // we infer the value from the cost and main stat type
-    //       substats: [
-    //         { x: 64, y: 880, width: 320, height: 38 },
-    //         { x: 64, y: 918, width: 320, height: 38 },
-    //         { x: 64, y: 952, width: 320, height: 38 },
-    //         { x: 64, y: 986, width: 320, height: 38 },
-    //         { x: 64, y: 1021, width: 320, height: 38 },
-    //       ],
-    //     },
-    //     // ⬇ Repeat for Echo 2–5
-    //   ];
-    // },
-    echoCoordinates() {
-    const spacingX = 374; // distance between Echoes horizontally
-    const baseX = 64;     // starting X position for Echo 1
-    const baseY = 674;    // base Y position stays the same for all
-
-    const echoes = [];
-
-    for (let i = 0; i < 5; i++) {
-    const offsetX = i * spacingX;
-    echoes.push({
-        cost: { x: 336 + offsetX, y: baseY, width: 18, height: 24 },
-        mainStatLabel: { x: 215 + offsetX, y: 720, width: 173, height: 40 },
-        substats: [
-        { x: 64 + offsetX, y: 880, width: 320, height: 38 },
-        { x: 64 + offsetX, y: 918, width: 320, height: 38 },
-        { x: 64 + offsetX, y: 950, width: 320, height: 38 },
-        { x: 64 + offsetX, y: 984, width: 320, height: 38 },
-        { x: 64 + offsetX, y: 1020, width: 320, height: 38 },
-        ],
-    });
-    }
-
-    return echoes;
-}
-,
-    allBoxes() {
-        return this.echoCoordinates.flatMap(echo => [
-        echo.cost,
-        echo.mainStatLabel,
-        // echo.mainStatValue, // if you bring it back
-        ...echo.substats
-        ]);
-    }
-
+    getSubstatType(subStatData) {
+      let type = subStatData.subStat;
+      const value = subStatData.subStatValue;
+      if (["ATK", "DEF", "HP"].includes(type)) {
+        // if the value has % then keep the type
+        // if it does not have %, then it is the TYPE with _FLAT at the end
+        if (value.includes("%")) {
+          return type;
+        } else {
+          return type + "_FLAT";
+        }
+      }
+      return verboseStatLabelMap[type] ?? null;
     },
+  },
+  computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+  },
 };
 </script>
-
-<style scoped>
-.echo-parser {
-    max-width: 600px;
-    margin: 2rem auto;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 12px;
-    font-family: sans-serif;
-}
-.image-container {
-    position: relative;
-    display: inline-block;
-}
-
-.image-container img {
-    max-width: 100%;
-    display: block;
-}
-
-.debug-box {
-    position: absolute;
-    border: 1px dashed red;
-    z-index: 10;
-}
-</style>
-

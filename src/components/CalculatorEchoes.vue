@@ -1,10 +1,18 @@
 <template>
   <div>
+    <CalculatorEchoImporter
+      ref="echoesImporter"
+      :character="character"></CalculatorEchoImporter>
     <CalculatorEchoesBrowser
       ref="echoesBrowser"
       :character="character"></CalculatorEchoesBrowser>
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
+    </div>
+    <div class="actions mb-4">
+      <button class="btn btn-primary" @click="handleOpenEchoesImporter">
+        Import Echoes
+      </button>
     </div>
     <div class="echo__list">
       <CalculatorEcho
@@ -111,6 +119,7 @@ import CalculatorEcho from "./CalculatorEcho.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
 import CalculatorEchoesBrowser from "./CalculatorEchoesBrowser.vue";
+import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 const MAX_ECHO_COST = 12;
@@ -127,6 +136,7 @@ export default {
     CalculatorEchoesBrowser,
     CalculatorEchoesSetBonusOne,
     CalculatorEchoesSetBonusTwo,
+    CalculatorEchoImporter,
   },
   data() {
     return {
@@ -363,6 +373,9 @@ export default {
     },
     handleOpenEchoesBrowser(echoIndex) {
       this.$refs.echoesBrowser.triggerOpenModal(echoIndex);
+    },
+    handleOpenEchoesImporter() {
+      this.$refs.echoesImporter.triggerOpenModal();
     },
   },
   computed: {
