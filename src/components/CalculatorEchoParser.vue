@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import Tesseract from "tesseract.js";
+import { createWorker } from "tesseract.js";
 
 export default {
   name: "EchoParser",
@@ -40,6 +40,7 @@ export default {
       imageDimensions: { width: 1, height: 1 },
       debug: false,
       isLoading: false,
+      worker: null,
     };
   },
   methods: {
@@ -53,9 +54,18 @@ export default {
         console.time("Parse");
         this.imageElement = img;
         this.imageSrc = img.src;
+        this.worker = await createWorker("eng");
+        let whitelist =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.%+ ";
+        await this.worker.setParameters({
+          tessedit_char_whitelist: whitelist, // your whitelist
+          tessedit_pageseg_mode: 7, // PSM 7: Treat the image as a single text line
+        });
         this.echoes = await this.parseEchoes();
         console.timeEnd("Parse");
         this.isLoading = true;
+        this.worker.terminate();
+        this.worker = null;
         this.sendToParent();
         this.reset();
       };
@@ -160,14 +170,8 @@ export default {
         coords.width,
         coords.height,
       );
-      let whitelist =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.%+ ";
-      return Tesseract.recognize(canvas.toDataURL(), "eng", {
-        tessedit_char_whitelist: whitelist,
-        tessedit_pageseg_mode: 7,
-      }).then((result) => {
+      return this.worker.recognize(canvas.toDataURL()).then((result) => {
         const text = result.data.text.trim();
-        // console.log(`[OCR]`, JSON.stringify(result.data));
         return text;
       });
     },

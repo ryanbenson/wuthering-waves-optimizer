@@ -100,6 +100,9 @@ export default {
     getSubstatType(subStatData) {
       let type = subStatData.subStat;
       const value = subStatData.subStatValue;
+      if (type === "DEF Y") {
+        return "DEF";
+      }
       if (["ATK", "DEF", "HP"].includes(type)) {
         // if the value has % then keep the type
         // if it does not have %, then it is the TYPE with _FLAT at the end
