@@ -39,7 +39,7 @@ export default {
       imageElement: null,
       imageSrc: null,
       imageDimensions: { width: 1, height: 1 },
-      debug: false,
+      debug: true,
       isLoading: false,
       worker: null,
     };
@@ -67,8 +67,8 @@ export default {
         this.isLoading = true;
         this.worker.terminate();
         this.worker = null;
-        this.sendToParent();
-        this.reset();
+        // this.sendToParent();
+        // this.reset();
       };
       img.src = URL.createObjectURL(file);
     },
@@ -141,6 +141,10 @@ export default {
           }
         }
 
+        // get the echo reference
+        const result = await this.matchEchoRegion(echo.echoImage, cost);
+        console.log(result);
+
         results.push({ cost, mainStatLabel: mainStatLabel.trim(), substats });
       }
       console.log(results);
@@ -155,26 +159,94 @@ export default {
       return value;
     },
 
-    extractTextFromRegion(coords) {
-      const canvas = document.createElement("canvas");
-      canvas.width = coords.width;
-      canvas.height = coords.height;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(
-        this.imageElement,
-        coords.x,
-        coords.y,
-        coords.width,
-        coords.height,
-        0,
-        0,
-        coords.width,
-        coords.height,
-      );
-      return this.worker.recognize(canvas.toDataURL()).then((result) => {
-        const text = result.data.text.trim();
-        return text;
-      });
+extractTextFromRegion(coords) {
+  const canvas = document.createElement("canvas");
+  canvas.width = coords.width;
+  canvas.height = coords.height;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(
+    this.imageElement,
+    coords.x,
+    coords.y,
+    coords.width,
+    coords.height,
+    0,
+    0,
+    coords.width,
+    coords.height,
+  );
+  return this.worker.recognize(canvas.toDataURL()).then((result) => {
+    const text = result.data.text.trim();
+    return text;
+  });
+},
+
+extractImageRegion(coords) {
+  const canvas = document.createElement("canvas");
+  canvas.width = coords.width;
+  canvas.height = coords.height;
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(
+    this.imageElement,
+    coords.x,
+    coords.y,
+    coords.width,
+    coords.height,
+    0,
+    0,
+    coords.width,
+    coords.height,
+  );
+  return ctx;
+},
+    compareImages(imgA, imgB) {
+      console.log(imgA);
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const size = 50; // Assuming square icons/avatars
+      canvas.width = size;
+      canvas.height = size;
+
+      // ctx.drawImage(imgA, 0, 0, size, size);
+      const dataA = imgA.getImageData(0, 0, 192, 182).data;
+
+      ctx.clearRect(0, 0, size, size);
+      ctx.drawImage(imgB, 0, 0, size, size);
+      const dataB = ctx.getImageData(0, 0, 192, 182).data;
+
+      let diff = 0;
+      for (let i = 0; i < dataA.length; i += 4) {
+        const rDiff = dataA[i] - dataB[i];
+        const gDiff = dataA[i + 1] - dataB[i + 1];
+        const bDiff = dataA[i + 2] - dataB[i + 2];
+        diff += rDiff * rDiff + gDiff * gDiff + bDiff * bDiff;
+      }
+      return diff; // Lower is better
+    },
+    async matchEchoRegion(coords, cost) {
+      const regionImg = await this.extractImageRegion(coords);
+
+      let bestMatch = null;
+      let lowestDiff = Infinity;
+      let images = [];
+      if (Number(cost) === 4) {
+        images = this.allFourCostEchoesKeyImageMap;
+      } else if(Number(cost) === 3) {
+        images = this.allThreeCostEchoesKeyImageMap;
+      } else {
+        images = this.allOneCostEchoesKeyImageMap;
+      }
+      console.log(images, cost);
+      for (const [name, iconImg] of Object.entries(images)) {
+        console.log(name ,iconImg); 
+        const diff = this.compareImages(regionImg, iconImg);
+        if (diff < lowestDiff) {
+          lowestDiff = diff;
+          bestMatch = name;
+        }
+      }
+
+      return bestMatch;
     },
   },
   computed: {
@@ -215,6 +287,7 @@ export default {
             { x: 64 + offsetX, y: 984, width: 320, height: 38 },
             { x: 64 + offsetX, y: 1020, width: 320, height: 38 },
           ],
+          echoImage: { x: 22 + offsetX, y: 650, width: 192, height: 182 },
         });
       }
 
@@ -223,15 +296,17 @@ export default {
     allBoxes() {
       return this.echoCoordinates.flatMap((echo) => [
         echo.cost,
+        echo.echoImage,
         echo.mainStatLabel,
         // echo.mainStatValue, // if you bring it back
         ...echo.substats,
       ]);
     },
     allFourCostEchoes() {
-      const echoes = this.mainEchoesData.filter(
+      const echoes = Object.values(mainEchoesData ?? {}).filter(
         (echo) => echo.class === "Overlord" || echo.class === "Calamity",
       );
+      console.log(this.mainEchoesData, echoes);
       return echoes;
     },
     allFourCostEchoesKeyImageMap() {
@@ -242,7 +317,7 @@ export default {
       return map;
     },
     allThreeCostEchoes() {
-      const echoes = this.mainEchoesData.filter(
+      const echoes = Object.values(mainEchoesData ?? {}).filter(
         (echo) => echo.class === "Elite",
       );
       return echoes;
@@ -255,7 +330,7 @@ export default {
       return map;
     },
     allOneCostEchoes() {
-      const echoes = this.mainEchoesData.filter(
+      const echoes = Object.values(mainEchoesData ?? {}).filter(
         (echo) => echo.class === "Common",
       );
       return echoes;
@@ -268,6 +343,16 @@ export default {
       return map;
     },
   },
+  mounted() {
+    const oneCostEchoImages = Object.values(this.allOneCostEchoesKeyImageMap);
+    const threeCostEchoImages = Object.values(this.allThreeCostEchoesKeyImageMap);
+    const fourCostEchoImages = Object.values(this.allFourCostEchoesKeyImageMap);
+    const echoImages = [...oneCostEchoImages, ...threeCostEchoImages, ...fourCostEchoImages];
+    echoImages.forEach((file) => {
+      const img = new Image();
+      img.src = file;
+    });
+  }
 };
 </script>
 
