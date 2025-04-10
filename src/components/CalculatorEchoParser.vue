@@ -29,6 +29,7 @@
 
 <script>
 import { createWorker } from "tesseract.js";
+import { mainEchoesData } from "../echoes/index";
 
 export default {
   name: "EchoParser",
@@ -226,6 +227,45 @@ export default {
         // echo.mainStatValue, // if you bring it back
         ...echo.substats,
       ]);
+    },
+    allFourCostEchoes() {
+      const echoes = this.mainEchoesData.filter(
+        (echo) => echo.class === "Overlord" || echo.class === "Calamity",
+      );
+      return echoes;
+    },
+    allFourCostEchoesKeyImageMap() {
+      const map = {};
+      this.allFourCostEchoes.forEach((echo) => {
+        map[echo.key] = echo.image;
+      });
+      return map;
+    },
+    allThreeCostEchoes() {
+      const echoes = this.mainEchoesData.filter(
+        (echo) => echo.class === "Elite",
+      );
+      return echoes;
+    },
+    allThreeCostEchoesKeyImageMap() {
+      const map = {};
+      this.allThreeCostEchoes.forEach((echo) => {
+        map[echo.key] = echo.image;
+      });
+      return map;
+    },
+    allOneCostEchoes() {
+      const echoes = this.mainEchoesData.filter(
+        (echo) => echo.class === "Common",
+      );
+      return echoes;
+    },
+    allOneCostEchoesKeyImageMap() {
+      const map = {};
+      this.allOneCostEchoes.forEach((echo) => {
+        map[echo.key] = echo.image;
+      });
+      return map;
     },
   },
 };
