@@ -39,7 +39,7 @@ export default {
       imageElement: null,
       imageSrc: null,
       imageDimensions: { width: 1, height: 1 },
-      debug: true,
+      debug: false,
       isLoading: false,
       worker: null,
     };
@@ -67,8 +67,8 @@ export default {
         this.isLoading = true;
         this.worker.terminate();
         this.worker = null;
-        // this.sendToParent();
-        // this.reset();
+        this.sendToParent();
+        this.reset();
       };
       img.src = URL.createObjectURL(file);
     },
@@ -142,12 +142,11 @@ export default {
         }
 
         // get the echo reference
-        const result = await this.matchEchoRegion(echo.echoImage, cost);
-        console.log(result);
+        const matchedEcho = await this.matchEchoRegion(echo.echoImage, cost);
+        console.log(matchedEcho);
 
-        results.push({ cost, mainStatLabel: mainStatLabel.trim(), substats });
+        results.push({ cost, mainStatLabel: mainStatLabel.trim(), substats, echo: matchedEcho });
       }
-      console.log(results);
 
       return results;
     },
@@ -180,7 +179,6 @@ extractTextFromRegion(coords) {
     return text;
   });
 },
-
 extractImageRegion(coords) {
   const canvas = document.createElement("canvas");
   canvas.width = coords.width;
@@ -195,36 +193,38 @@ extractImageRegion(coords) {
     0,
     0,
     coords.width,
-    coords.height,
+    coords.height
   );
+  return canvas; // 👈 return the canvas here
+},
+compareImages(ctxA, ctxB) {
+  const width = 192;
+  const height = 182;
+
+  const dataA = ctxA.getImageData(0, 0, width, height).data;
+  const dataB = ctxB.getImageData(0, 0, width, height).data;
+
+  let diff = 0;
+  for (let i = 0; i < dataA.length; i += 4) {
+    const rDiff = dataA[i] - dataB[i];
+    const gDiff = dataA[i + 1] - dataB[i + 1];
+    const bDiff = dataA[i + 2] - dataB[i + 2];
+    diff += rDiff * rDiff + gDiff * gDiff + bDiff * bDiff;
+  }
+
+  return diff;
+},
+imageToCanvasCtx(img, width = 192, height = 182) {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(img, 0, 0, width, height);
   return ctx;
 },
-    compareImages(imgA, imgB) {
-      console.log(imgA);
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      const size = 50; // Assuming square icons/avatars
-      canvas.width = size;
-      canvas.height = size;
-
-      // ctx.drawImage(imgA, 0, 0, size, size);
-      const dataA = imgA.getImageData(0, 0, 192, 182).data;
-
-      ctx.clearRect(0, 0, size, size);
-      ctx.drawImage(imgB, 0, 0, size, size);
-      const dataB = ctx.getImageData(0, 0, 192, 182).data;
-
-      let diff = 0;
-      for (let i = 0; i < dataA.length; i += 4) {
-        const rDiff = dataA[i] - dataB[i];
-        const gDiff = dataA[i + 1] - dataB[i + 1];
-        const bDiff = dataA[i + 2] - dataB[i + 2];
-        diff += rDiff * rDiff + gDiff * gDiff + bDiff * bDiff;
-      }
-      return diff; // Lower is better
-    },
     async matchEchoRegion(coords, cost) {
-      const regionImg = await this.extractImageRegion(coords);
+      const regionCanvas = await this.extractImageRegion(coords);
+      const regionCtx = regionCanvas.getContext("2d");
 
       let bestMatch = null;
       let lowestDiff = Infinity;
@@ -236,10 +236,13 @@ extractImageRegion(coords) {
       } else {
         images = this.allOneCostEchoesKeyImageMap;
       }
-      console.log(images, cost);
-      for (const [name, iconImg] of Object.entries(images)) {
-        console.log(name ,iconImg); 
-        const diff = this.compareImages(regionImg, iconImg);
+      // console.log(images, cost);
+      for (const [name, iconImgUrl] of Object.entries(images)) {
+        // console.log(name ,iconImgUrl); 
+        // convert the icon/avatar into a canvas context
+        const iconImgObj = await this.loadImage(iconImgUrl);
+        const iconCtx = this.imageToCanvasCtx(iconImgObj);
+        const diff = this.compareImages(regionCtx, iconCtx);
         if (diff < lowestDiff) {
           lowestDiff = diff;
           bestMatch = name;
@@ -248,6 +251,15 @@ extractImageRegion(coords) {
 
       return bestMatch;
     },
+    async loadImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = 'Anonymous'; // needed if loading from other domains'
+        img.onload = () => resolve(img);
+        img.onerror = (err) => reject(err);
+        img.src = src;
+      });
+    }
   },
   computed: {
     // echoCoordinates() {
@@ -306,7 +318,6 @@ extractImageRegion(coords) {
       const echoes = Object.values(mainEchoesData ?? {}).filter(
         (echo) => echo.class === "Overlord" || echo.class === "Calamity",
       );
-      console.log(this.mainEchoesData, echoes);
       return echoes;
     },
     allFourCostEchoesKeyImageMap() {

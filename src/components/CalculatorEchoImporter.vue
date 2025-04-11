@@ -68,7 +68,7 @@ export default {
           echo.substats[4].subStatValue,
         );
         return {
-          echo: null,
+          echo: echo.echo ?? null,
           type: null,
           rank: echo.rank ?? 5,
           stat: echo.mainStatLabel
