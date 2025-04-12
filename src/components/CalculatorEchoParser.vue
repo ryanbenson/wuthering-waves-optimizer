@@ -29,7 +29,8 @@
 
 <script>
 import { createWorker } from "tesseract.js";
-import { mainEchoesData } from "../echoes/index";
+import { mainEchoesData, getEchoData } from "../echoes/index";
+import { getEchoSetIconByType } from "../echoes/stats";
 
 export default {
   name: "EchoParser",
@@ -99,7 +100,7 @@ export default {
         top: `${box.y * 0.5}px`,
         width: `${box.width * 0.5}px`,
         height: `${box.height * 0.5}px`,
-        border: "2px dashed red",
+        border: "1px dashed red",
         boxSizing: "border-box",
         pointerEvents: "none",
         background: "rgba(255, 0, 0, 0.1)",
@@ -143,9 +144,25 @@ export default {
 
         // get the echo reference
         const matchedEcho = await this.matchEchoRegion(echo.echoImage, cost);
-        console.log(matchedEcho);
+        let set = null;
+        if (matchedEcho) {
+          const echoData = getEchoData(matchedEcho);
+          const echoSets = echoData.sets ?? [];
+          if (echoSets.length === 1) {
+            set = echoSets[0];
+          } else {
+            set = await this.matchSetRegion(echo.set, echoSets);
+          }
+        }
+        console.log(set);
 
-        results.push({ cost, mainStatLabel: mainStatLabel.trim(), substats, echo: matchedEcho });
+        results.push({
+          cost,
+          mainStatLabel: mainStatLabel.trim(),
+          substats,
+          echo: matchedEcho,
+          set,
+        });
       }
 
       return results;
@@ -158,70 +175,67 @@ export default {
       return value;
     },
 
-extractTextFromRegion(coords) {
-  const canvas = document.createElement("canvas");
-  canvas.width = coords.width;
-  canvas.height = coords.height;
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(
-    this.imageElement,
-    coords.x,
-    coords.y,
-    coords.width,
-    coords.height,
-    0,
-    0,
-    coords.width,
-    coords.height,
-  );
-  return this.worker.recognize(canvas.toDataURL()).then((result) => {
-    const text = result.data.text.trim();
-    return text;
-  });
-},
-extractImageRegion(coords) {
-  const canvas = document.createElement("canvas");
-  canvas.width = coords.width;
-  canvas.height = coords.height;
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(
-    this.imageElement,
-    coords.x,
-    coords.y,
-    coords.width,
-    coords.height,
-    0,
-    0,
-    coords.width,
-    coords.height
-  );
-  return canvas; // 👈 return the canvas here
-},
-compareImages(ctxA, ctxB) {
-  const width = 192;
-  const height = 182;
+    extractTextFromRegion(coords) {
+      const canvas = document.createElement("canvas");
+      canvas.width = coords.width;
+      canvas.height = coords.height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(
+        this.imageElement,
+        coords.x,
+        coords.y,
+        coords.width,
+        coords.height,
+        0,
+        0,
+        coords.width,
+        coords.height,
+      );
+      return this.worker.recognize(canvas.toDataURL()).then((result) => {
+        const text = result.data.text.trim();
+        return text;
+      });
+    },
+    extractImageRegion(coords) {
+      const canvas = document.createElement("canvas");
+      canvas.width = coords.width;
+      canvas.height = coords.height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(
+        this.imageElement,
+        coords.x,
+        coords.y,
+        coords.width,
+        coords.height,
+        0,
+        0,
+        coords.width,
+        coords.height,
+      );
+      return canvas; // 👈 return the canvas here
+    },
+    compareImages(ctxA, ctxB, width = 192, height = 182) {
+      const dataA = ctxA.getImageData(0, 0, width, height).data;
+      const dataB = ctxB.getImageData(0, 0, width, height).data;
 
-  const dataA = ctxA.getImageData(0, 0, width, height).data;
-  const dataB = ctxB.getImageData(0, 0, width, height).data;
+      let diff = 0;
+      for (let i = 0; i < dataA.length; i += 4) {
+        const rDiff = dataA[i] - dataB[i];
+        const gDiff = dataA[i + 1] - dataB[i + 1];
+        const bDiff = dataA[i + 2] - dataB[i + 2];
+        diff += rDiff * rDiff + gDiff * gDiff + bDiff * bDiff;
+      }
 
-  let diff = 0;
-  for (let i = 0; i < dataA.length; i += 4) {
-    const rDiff = dataA[i] - dataB[i];
-    const gDiff = dataA[i + 1] - dataB[i + 1];
-    const bDiff = dataA[i + 2] - dataB[i + 2];
-    diff += rDiff * rDiff + gDiff * gDiff + bDiff * bDiff;
-  }
-
-  return diff;
-},
-imageToCanvasCtx(img, width = 192, height = 182) {
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(img, 0, 0, width, height);
-  return ctx;
-},
+      return diff;
+    },
+    imageToCanvasCtx(img, width = 192, height = 182) {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, width, height);
+      return ctx;
+    },
     async matchEchoRegion(coords, cost) {
       const regionCanvas = await this.extractImageRegion(coords);
       const regionCtx = regionCanvas.getContext("2d");
@@ -231,14 +245,14 @@ imageToCanvasCtx(img, width = 192, height = 182) {
       let images = [];
       if (Number(cost) === 4) {
         images = this.allFourCostEchoesKeyImageMap;
-      } else if(Number(cost) === 3) {
+      } else if (Number(cost) === 3) {
         images = this.allThreeCostEchoesKeyImageMap;
       } else {
         images = this.allOneCostEchoesKeyImageMap;
       }
       // console.log(images, cost);
       for (const [name, iconImgUrl] of Object.entries(images)) {
-        // console.log(name ,iconImgUrl); 
+        // console.log(name ,iconImgUrl);
         // convert the icon/avatar into a canvas context
         const iconImgObj = await this.loadImage(iconImgUrl);
         const iconCtx = this.imageToCanvasCtx(iconImgObj);
@@ -251,35 +265,46 @@ imageToCanvasCtx(img, width = 192, height = 182) {
 
       return bestMatch;
     },
+    async matchSetRegion(coords, echoSets) {
+      const regionCanvas = await this.extractImageRegion(coords);
+      const regionCtx = regionCanvas.getContext("2d");
+      // need to resize the echo set extracted icon to 32 to compare
+      const resizedCanvas = document.createElement("canvas");
+      resizedCanvas.width = 32;
+      resizedCanvas.height = 32;
+      const resizedCtx = resizedCanvas.getContext("2d");
+      resizedCtx.drawImage(regionCanvas, 0, 0, 32, 32);
+
+      let bestMatch = null;
+      let lowestDiff = Infinity;
+      let images = [];
+      console.log(echoSets);
+      for (const set of echoSets) {
+        const setImageSrc = getEchoSetIconByType(set);
+        // console.log("HELLO", setImageSrc, set);
+        // convert the icon/avatar into a canvas context
+        const iconImgObj = await this.loadImage(setImageSrc);
+        const iconCtx = this.imageToCanvasCtx(iconImgObj, 32, 32);
+        const diff = this.compareImages(resizedCtx, iconCtx, 32, 32);
+        if (diff < lowestDiff) {
+          lowestDiff = diff;
+          bestMatch = set;
+        }
+      }
+
+      return bestMatch;
+    },
     async loadImage(src) {
       return new Promise((resolve, reject) => {
         const img = new Image();
-        img.crossOrigin = 'Anonymous'; // needed if loading from other domains'
+        img.crossOrigin = "Anonymous"; // needed if loading from other domains'
         img.onload = () => resolve(img);
         img.onerror = (err) => reject(err);
         img.src = src;
       });
-    }
+    },
   },
   computed: {
-    // echoCoordinates() {
-    //   // ✏️ Replace these with real coordinates
-    //   return [
-    //     {
-    //       cost: { x: 313, y: 655, width: 61, height: 61 },
-    //       mainStatLabel: { x: 211, y: 720, width: 173, height: 40 },
-    //       // mainStatValue: { x: 0, y: 30, width: 100, height: 30 }, // we infer the value from the cost and main stat type
-    //       substats: [
-    //         { x: 64, y: 880, width: 320, height: 38 },
-    //         { x: 64, y: 918, width: 320, height: 38 },
-    //         { x: 64, y: 952, width: 320, height: 38 },
-    //         { x: 64, y: 986, width: 320, height: 38 },
-    //         { x: 64, y: 1021, width: 320, height: 38 },
-    //       ],
-    //     },
-    //     // ⬇ Repeat for Echo 2–5
-    //   ];
-    // },
     echoCoordinates() {
       const spacingX = 374; // distance between Echoes horizontally
       const baseX = 64; // starting X position for Echo 1
@@ -297,9 +322,10 @@ imageToCanvasCtx(img, width = 192, height = 182) {
             { x: 64 + offsetX, y: 918, width: 320, height: 38 },
             { x: 64 + offsetX, y: 950, width: 320, height: 38 },
             { x: 64 + offsetX, y: 984, width: 320, height: 38 },
-            { x: 64 + offsetX, y: 1020, width: 320, height: 38 },
+            { x: 64 + offsetX, y: 1019, width: 320, height: 38 },
           ],
           echoImage: { x: 22 + offsetX, y: 650, width: 192, height: 182 },
+          set: { x: 264 + offsetX, y: 660, width: 56, height: 56 },
         });
       }
 
@@ -310,6 +336,7 @@ imageToCanvasCtx(img, width = 192, height = 182) {
         echo.cost,
         echo.echoImage,
         echo.mainStatLabel,
+        echo.set,
         // echo.mainStatValue, // if you bring it back
         ...echo.substats,
       ]);
@@ -356,14 +383,20 @@ imageToCanvasCtx(img, width = 192, height = 182) {
   },
   mounted() {
     const oneCostEchoImages = Object.values(this.allOneCostEchoesKeyImageMap);
-    const threeCostEchoImages = Object.values(this.allThreeCostEchoesKeyImageMap);
+    const threeCostEchoImages = Object.values(
+      this.allThreeCostEchoesKeyImageMap,
+    );
     const fourCostEchoImages = Object.values(this.allFourCostEchoesKeyImageMap);
-    const echoImages = [...oneCostEchoImages, ...threeCostEchoImages, ...fourCostEchoImages];
+    const echoImages = [
+      ...oneCostEchoImages,
+      ...threeCostEchoImages,
+      ...fourCostEchoImages,
+    ];
     echoImages.forEach((file) => {
       const img = new Image();
       img.src = file;
     });
-  }
+  },
 };
 </script>
 

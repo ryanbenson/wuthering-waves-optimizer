@@ -331,7 +331,10 @@ export const verboseStatLabelMap: Record<string, string> = {
   "Heavy Attack DMG Bonus": "HeavyAttackDMGBonus",
   "Resonance Skill DMG Bonus": "ResonanceSkillDMGBonus",
   "Resonance Skill DMG": "ResonanceSkillDMGBonus",
+  "Resonance Skill": "ResonanceSkillDMGBonus",
   "Resonance Liberation DMG Bonus": "ResonanceLiberationDMGBonus",
+  "Resonance Liberation DMG": "ResonanceLiberationDMGBonus",
+  "Resonance Liberation": "ResonanceLiberationDMGBonus",
   "Glacio DMG Bonus": "Glacio",
   "Fusion DMG Bonus": "Fusion",
   "Electro DMG Bonus": "Electro",
@@ -389,15 +392,15 @@ export function getSubStatIconByType(type: string): string {
 
 export const echoSetImageMap: Record<string, string> = {
   FreezingFrost:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/FreezingFrost.webp",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FreezingFrost.webp",
   MoltenRift:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/MoltenRift.webp",
   VoidThunder:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/VoidThunder.webp",
   SierraGale:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/SierraGale.webp",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/SierraGale.webp",
   CelestialLight:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/CelestialLight.webp",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/CelestialLight.webp",
   SunSinkingEclipse:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/SunSinkingEclipse.webp",
   RejuvenatingGlow:

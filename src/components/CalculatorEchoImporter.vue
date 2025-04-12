@@ -69,13 +69,13 @@ export default {
         );
         return {
           echo: echo.echo ?? null,
-          type: null,
+          type: echo.cost ?? null,
           rank: echo.rank ?? 5,
           stat: echo.mainStatLabel
             ? verboseStatLabelMap[echo.mainStatLabel]
             : null,
           echoId: null,
-          echoSet: null,
+          echoSet: echo.set,
           echoSubStatsType1,
           echoSubStatsValue1,
           echoSubStatsType2,
