@@ -12,6 +12,7 @@
     <h1>Updates</h1>
     <h3>April 13, 2025</h3>
     <ul>
+      <li>Releases echo importer through wuwabot build images.</li>
       <li>Fixes some minor navigation issues.</li>
       <li>Adds formulas to Info page.</li>
     </ul>

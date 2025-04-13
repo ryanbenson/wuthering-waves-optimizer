@@ -13,13 +13,35 @@
       :style="getFixedBoxStyle(box)"></div>
   </div>
   <div class="echo-parser">
-    <h2>Upload image from the wuwa discord bot</h2>
-    <input
-      type="file"
-      @change="onFileChange"
-      accept="image/*"
-      class="file-input file-input-sm file-input-primary" />
-    <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
+    <h2 class="text-xl font-bold">Upload image from the wuwa discord bot</h2>
+    <p>
+      <span class="text-primary">File must be 1920x1080.</span>
+      Get the highest quality image possible, try to use the image from the bot
+      itself. Either directly download, or open in browser to get your image
+      from the bot.
+    </p>
+    <p class="mt-2">Tips and notes:</p>
+    <ul class="list-disc list-inside ml-4 mb-4">
+      <li class="font-bold">
+        The processing won't be perfect. You may need to tweak the results you
+        get.
+      </li>
+      <li>
+        Don't share in Discord, Reddit, etc. then use the image that you
+        uploaded there, because they lower the quality.
+      </li>
+      <li>The higher the quality the image, the better the results.</li>
+      <li>It will take a little bit of time to parse it.</li>
+    </ul>
+    <div class="flex items-center flex-start gap-4">
+      <input
+        type="file"
+        @change="onFileChange"
+        ref="fileUpload"
+        accept="image/*"
+        class="file-input file-input-sm file-input-primary" />
+      <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
+    </div>
     <div v-if="echoes.length">
       <h3>Parsed Echoes:</h3>
       <pre>{{ JSON.stringify(echoes, null, 2) }}</pre>
@@ -79,6 +101,7 @@ export default {
       this.imageSrc = null;
       this.echoes = [];
       this.isLoading = false;
+      this.$refs.fileUpload.value = null;
     },
 
     sendToParent() {
@@ -154,7 +177,6 @@ export default {
             set = await this.matchSetRegion(echo.set, echoSets);
           }
         }
-        console.log(set);
 
         results.push({
           cost,
@@ -247,12 +269,12 @@ export default {
         images = this.allFourCostEchoesKeyImageMap;
       } else if (Number(cost) === 3) {
         images = this.allThreeCostEchoesKeyImageMap;
-      } else {
+      } else if (Number(cost) === 1) {
         images = this.allOneCostEchoesKeyImageMap;
+      } else {
+        images = this.allCostEchoesImageMap;
       }
-      // console.log(images, cost);
       for (const [name, iconImgUrl] of Object.entries(images)) {
-        // console.log(name ,iconImgUrl);
         // convert the icon/avatar into a canvas context
         const iconImgObj = await this.loadImage(iconImgUrl);
         const iconCtx = this.imageToCanvasCtx(iconImgObj);
@@ -278,10 +300,8 @@ export default {
       let bestMatch = null;
       let lowestDiff = Infinity;
       let images = [];
-      console.log(echoSets);
       for (const set of echoSets) {
         const setImageSrc = getEchoSetIconByType(set);
-        // console.log("HELLO", setImageSrc, set);
         // convert the icon/avatar into a canvas context
         const iconImgObj = await this.loadImage(setImageSrc);
         const iconCtx = this.imageToCanvasCtx(iconImgObj, 32, 32);
@@ -340,6 +360,14 @@ export default {
         // echo.mainStatValue, // if you bring it back
         ...echo.substats,
       ]);
+    },
+    allCostEchoesImageMap() {
+      const echoes = Object.values(mainEchoesData ?? {});
+      const map = {};
+      echoes.forEach((echo) => {
+        map[echo.key] = echo.image;
+      });
+      return map;
     },
     allFourCostEchoes() {
       const echoes = Object.values(mainEchoesData ?? {}).filter(

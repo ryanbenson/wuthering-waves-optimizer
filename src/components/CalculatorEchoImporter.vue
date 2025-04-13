@@ -10,8 +10,6 @@
         </button>
       </form>
       <div class="py-4">
-        <input type="checkbox" class="checkbox checkbox-sm" />
-        Save all to Inventory?
         <CalculatorEchoParser
           @echoes-parsed="handleEchoesParsed"></CalculatorEchoParser>
       </div>
@@ -89,6 +87,7 @@ export default {
         };
       });
       // update store
+      this.setCharacterEchoes(this.character, {}); // flush first
       this.setCharacterEchoes(this.character, echoes);
       // close modal
       this.triggerCloseModal();

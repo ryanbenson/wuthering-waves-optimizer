@@ -13,7 +13,7 @@ export default defineComponent({
   components: { SettingsImportExport },
   data() {
     return {
-      name: "hi",
+      name: "Settings",
     };
   },
 });

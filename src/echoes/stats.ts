@@ -394,33 +394,33 @@ export const echoSetImageMap: Record<string, string> = {
   FreezingFrost:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FreezingFrost.webp",
   MoltenRift:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/MoltenRift.webp",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/MoltenRift.webp",
   VoidThunder:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/VoidThunder.webp",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/VoidThunder.webp",
   SierraGale:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/SierraGale.webp",
   CelestialLight:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/CelestialLight.webp",
   SunSinkingEclipse:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/SunSinkingEclipse.webp",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/SunSinkingEclipse.webp",
   RejuvenatingGlow:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/RejuvenatingGlow.webp",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/RejuvenatingGlow.webp",
   MoonlitClouds:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/MoonlitClouds.webp",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/MoonlitClouds.webp",
   LingeringTunes:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/LingeringTunes.webp",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/LingeringTunes.webp",
   FrostyResolve:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/frostyresolve.png",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FrostyResolve.webp",
   MidnightVeil:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/MidnightVeil.png",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/MidnightVeil.webp",
   EternalRadiance:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/EternalRadiance.png",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/EternalRadiance.webp",
   EmpyreanAnthem:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/EmpyreanAnthem.png",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/EmpyreanAnthem.webp",
   TidebreakingCourage:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/TidebreakingCourage.png",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/TidebreakingCourage.webp",
   GustsofWelkin:
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/GustsofWelkin.png",
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/GustsofWelkin.webp",
 };
 
 export function getEchoSetIconByType(type: string): string {
