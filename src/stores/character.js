@@ -28,6 +28,11 @@ export const useCharacterStore = defineStore("character", {
         this.characters[characterId].rotations = rotationData;
       }
     },
+    setCharacterEchoes(characterId, echoes) {
+      if (this.characters[characterId]) {
+        this.characters[characterId].echoes = echoes;
+      }
+    },
     hardSetState(data) {
       this.characters = data.characters;
       this.activeCharacter = data.activeCharacter;
@@ -51,6 +56,6 @@ export const useCharacterStore = defineStore("character", {
         echoSubStatsType5: null,
         echoSubStatsValue5: null,
       };
-    }
+    },
   },
 });
