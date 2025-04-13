@@ -1962,23 +1962,4 @@ export default defineComponent({
     padding-left: 0.5rem;
   }
 }
-.calculations__nav--results {
-  display: none !important;
-}
-@media (max-width: 768px) {
-  .calculations__nav--results {
-    display: flex !important;
-  }
-  .results {
-    display: none !important;
-  }
-}
-.menu {
-  z-index: 100;
-}
-.options-menu {
-  summary:after {
-    display: none;
-  }
-}
 </style>

@@ -4,7 +4,7 @@
       class="navbar bg-base-300 shadow"
       :class="{ 'h-20': curPage === 'inventory' }">
       <div class="navbar-start">
-        <details class="main-menu-mobile dropdown">
+        <details class="main-menu-mobile dropdown" v-if="!disableMobileNav">
           <summary tabindex="0" role="button" class="btn btn-ghost lg:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -134,6 +134,10 @@ export default {
       type: String,
       default: "home",
     },
+    disableMobileNav: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     toggleOptionsMenu() {
@@ -145,3 +149,14 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.menu {
+  z-index: 100;
+}
+.options-menu {
+  summary:after {
+    display: none;
+  }
+}
+</style>

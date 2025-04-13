@@ -10,6 +10,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 13, 2025</h3>
+    <ul>
+      <li>Fixes some minor navigation issues.</li>
+      <li>Adds formulas to Info page.</li>
+    </ul>
     <h3>April 7, 2025</h3>
     <ul>
       <li>Adds Rover Aero to Shorekeeper's team buff.</li>

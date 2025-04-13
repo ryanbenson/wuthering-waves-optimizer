@@ -98,17 +98,6 @@
           alt="Your Enemy" />
       </a>
     </li>
-    <li>
-      <a
-        class="calculations__nav--results"
-        @click="changeScreen('results')"
-        data-test-calculator-nav="stats">
-        <img
-          src="https://ryanbenson.github.io/wuthering-waves-assets/images/damages.png"
-          class="size-8"
-          alt="Results" />
-      </a>
-    </li>
   </ul>
 </template>
 
@@ -137,3 +126,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.menu {
+  z-index: 100;
+}
+</style>
