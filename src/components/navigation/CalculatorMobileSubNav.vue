@@ -159,3 +159,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.menu {
+  z-index: 100;
+}
+</style>

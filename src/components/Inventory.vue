@@ -1,6 +1,6 @@
 <template>
   <div class="calculations">
-    <Nav cur-page="inventory"></Nav>
+    <Nav cur-page="inventory" :disable-mobile-nav="true"></Nav>
     <div class="inventory__content p-8">
       <InventoryEchoesBrowser></InventoryEchoesBrowser>
     </div>
