@@ -32,6 +32,10 @@
       </li>
       <li>The higher the quality the image, the better the results.</li>
       <li>It will take a little bit of time to parse it.</li>
+      <li>
+        It only supports English right now. You'll get mixed results with other
+        languages.
+      </li>
     </ul>
     <div class="flex items-center flex-start gap-4">
       <input
