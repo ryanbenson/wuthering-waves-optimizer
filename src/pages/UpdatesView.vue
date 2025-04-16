@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 16, 2025</h3>
+    <ul>
+      <li>Supports copy and paste, and drag n drop on echo importer.</li>
+    </ul>
     <h3>April 13, 2025</h3>
     <ul>
       <li>Releases echo importer through wuwabot build images.</li>

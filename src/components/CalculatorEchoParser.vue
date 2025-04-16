@@ -13,7 +13,7 @@
       :style="getFixedBoxStyle(box)"></div>
   </div>
   <div class="echo-parser">
-    <h2 class="text-xl font-bold">Upload image from the wuwa discord bot</h2>
+    <h2 class="text-xl font-bold">Upload, or paste your image from the wuwa discord bot</h2>
     <p>
       <span class="text-primary">File must be 1920x1080.</span>
       Get the highest quality image possible, try to use the image from the bot
@@ -37,19 +37,37 @@
         languages.
       </li>
     </ul>
-    <div class="flex items-center flex-start gap-4">
+    <div
+      class="flex items-center gap-4 p-4 border-2 border-primary border-dotted rounded"
+      :class="{ 'bg-base-300': isDragging }"
+      @dragover.prevent="onDragOver"
+      @dragenter.prevent="onDragEnter"
+      @dragleave.prevent="onDragLeave"
+      @drop.prevent="onDrop"
+    >
       <input
         type="file"
         @change="onFileChange"
         ref="fileUpload"
         accept="image/*"
-        class="file-input file-input-sm file-input-primary" />
-      <span v-if="isLoading" class="loading loading-spinner loading-sm"></span>
+        class="file-input file-input-sm file-input-primary hidden"
+      />
+      <div class="flex flex-col gap-2 items-center w-full">
+        <span v-if="isLoading" class="loading loading-spinner loading-md"></span>
+        <span>
+          Drag &amp; drop an image here, or paste
+        </span>
+        <a href="#" @click.prevent="triggerFileSelect" class="text-blue-600 underline">
+          Or click here to choose an image
+        </a>
+      </div>
     </div>
-    <div v-if="echoes.length">
-      <h3>Parsed Echoes:</h3>
-      <pre>{{ JSON.stringify(echoes, null, 2) }}</pre>
-    </div>
+    <template v-if="debug">
+      <div v-if="echoes.length">
+        <h3>Parsed Echoes:</h3>
+        <pre>{{ JSON.stringify(echoes, null, 2) }}</pre>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -68,14 +86,43 @@ export default {
       imageDimensions: { width: 1, height: 1 },
       debug: false,
       isLoading: false,
+      isDragging: false,
+      dragCounter: 0,
       worker: null,
     };
   },
   methods: {
     onFileChange(e) {
       const file = e.target.files[0];
-      if (!file) return;
-
+      if (file) {
+        this.handleImageFile(file);
+      }
+    },
+    onDragOver(e) {
+      /* required to allow drop */
+    },
+    onDragEnter(e) {
+      this.dragCounter++;
+      this.isDragging = true;
+    },
+    onDragLeave(e) {
+      this.dragCounter--;
+      if (this.dragCounter === 0) {
+        this.isDragging = false;
+      }
+    },
+    onDrop(e) {
+      this.dragCounter = 0;
+      this.isDragging = false;
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        this.handleImageFile(file);
+      }
+    },
+    triggerFileSelect() {
+      this.$refs.fileUpload.click();
+    },
+    async handleImageFile(file) {
       const img = new Image();
       img.onload = async () => {
         this.isLoading = true;
@@ -83,11 +130,11 @@ export default {
         this.imageElement = img;
         this.imageSrc = img.src;
         this.worker = await createWorker("eng");
-        let whitelist =
+        const whitelist =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.%+ ";
         await this.worker.setParameters({
-          tessedit_char_whitelist: whitelist, // your whitelist
-          tessedit_pageseg_mode: 7, // PSM 7: Treat the image as a single text line
+          tessedit_char_whitelist: whitelist,
+          tessedit_pageseg_mode: 7,
         });
         this.echoes = await this.parseEchoes();
         console.timeEnd("Parse");
@@ -327,6 +374,20 @@ export default {
         img.src = src;
       });
     },
+    onPaste(event) {
+      const items = event.clipboardData?.items;
+      if (!items) return;
+
+      for (const item of items) {
+        if (item.type.startsWith("image/")) {
+          const file = item.getAsFile();
+          if (file) {
+            this.handleImageFile(file);
+            break;
+          }
+        }
+      }
+    },
   },
   computed: {
     echoCoordinates() {
@@ -428,6 +489,11 @@ export default {
       const img = new Image();
       img.src = file;
     });
+
+    document.addEventListener("paste", this.onPaste);
+  },
+  beforeUnmount() {
+    document.removeEventListener("paste", this.onPaste);
   },
 };
 </script>
