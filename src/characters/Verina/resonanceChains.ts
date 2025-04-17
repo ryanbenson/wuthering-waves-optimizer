@@ -15,6 +15,16 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
+    key: "SequenceNode2SproutingReflections",
+    name: "Sequence Node 2: Sprouting Reflections",
+    details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Botany Experiment</span> additionally grants 1 [Photosynthetic Energy] and 10 Concerto Energy.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode3TheChoicetoFlourish",
     name: "Sequence Node 3: The Choice to Flourish",
     details: `<span class="skilldescription">Healing of Resonance Liberation's <span class="Highlight">Photosynthesis Mark</span> is increased by 12%.</span>`,
@@ -25,7 +35,7 @@ export const resonanceChains = [
         modifySpecificTalents: [
           "ArborealFlourishCoordinatedAttackHealing",
           "SequenceNode6JoyousHarvestDMG",
-          "SequenceNode6JoyousHarvestHealing"
+          "SequenceNode6JoyousHarvestHealing",
         ],
         modifierValue: 0.12,
       },
@@ -75,7 +85,7 @@ export const resonanceChains = [
           "HeavyAttackStarflowerBloomsDMG",
           "MidAirAttackStarflowerBloomsStage1DMG",
           "MidAirAttackStarflowerBloomsStage2DMG",
-          "MidAirAttackStarflowerBloomsStage3DMG"
+          "MidAirAttackStarflowerBloomsStage3DMG",
         ],
         modifierValue: 0.2,
       },

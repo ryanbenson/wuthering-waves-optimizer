@@ -40,6 +40,16 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
+    key: "SequenceNode3KeeneyedObserver",
+    name: "Sequence Node 3: Keen-eyed Observer",
+    details: `<span class="skilldescription">The duration of Resonance Skill <span class="Highlight">Rocksteady Shield</span> is extended to 30s.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode4HeavyliftingDuty",
     name: "Sequence Node 4: Heavylifting Duty",
     details: `<span class="skilldescription">When Taoqi successfully triggers Heavy Attack <span class="Highlight">Strategic Parry</span>, she restores 25% HP and increases her DEF by 50% for 5s. This can be triggered once every 15s.</span>`,

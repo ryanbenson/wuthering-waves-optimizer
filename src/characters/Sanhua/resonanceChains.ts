@@ -15,6 +15,16 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
+    key: "SequenceNode2SnowyClarity",
+    name: "Sequence Node 2: Snowy Clarity",
+    details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Detonate</span> STA cost is reduced by 10. When Sanhua casts Resonance Skill <span class="Highlight">Eternal Frost</span>, her resistance to interruption is enhanced for 10s.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode3AnomalousVision",
     name: "Sequence Node 3: Anomalous Vision",
     details: `<span class="skilldescription">Sanhua's damage dealt is increased by 35% against targets with HP below 70%.</span>`,

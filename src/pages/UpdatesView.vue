@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 17, 2025</h3>
+    <ul>
+      <li>
+        Adds missing non-damage based resonance chains for Verina, Taoqi, and
+        Sanhua.
+      </li>
+    </ul>
     <h3>April 16, 2025</h3>
     <ul>
       <li>Supports copy and paste, and drag n drop on echo importer.</li>
