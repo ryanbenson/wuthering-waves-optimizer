@@ -10,6 +10,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 18, 2025</h3>
+    <ul>
+      <li>
+        Fixed the resist modifier. It wasn't properly handling the resist shred if you ended up having more shred than base resist. it was supposed to half it, but it was missing that part.
+      </li>
+    </ul>
     <h3>April 17, 2025</h3>
     <ul>
       <li>
