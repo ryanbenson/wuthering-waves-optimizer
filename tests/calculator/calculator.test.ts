@@ -242,21 +242,21 @@ describe("#getEnemyResistValue", () => {
   it("when the enemy resist is normal and shred that stays above 0", () => {
     const enemyResist = 0.2;
     const resistenceReduction = 0.15;
-    const expected = 0.9500000000000001;
+    const expected = 0.95;
     const result = getEnemyResistValue(enemyResist, resistenceReduction);
     expect(result).toEqual(expected);
   });
   it("when the enemy resist is normal and shred that dips below 0", () => {
     const enemyResist = 0.2;
     const resistenceReduction = 0.3;
-    const expected = 1.1;
+    const expected = 1.05;
     const result = getEnemyResistValue(enemyResist, resistenceReduction);
     expect(result).toEqual(expected);
   });
   it("when the enemy resist is starts below 0 with shred", () => {
     const enemyResist = -0.2;
     const resistenceReduction = 0.3;
-    const expected = 1.3499999999999999;
+    const expected = 1.35;
     const result = getEnemyResistValue(enemyResist, resistenceReduction);
     expect(result).toEqual(expected);
   });

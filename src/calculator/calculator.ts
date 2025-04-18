@@ -95,20 +95,28 @@ export function getBonusDamageValue(
 
 // we need to half the reduction if the resist goes under 0
 export function getEnemyResistValue(
-  enemyResist: number,
-  resistenceReduction: number,
+  baseResist: number,
+  reduction: number,
 ): number {
-  if (enemyResist < 0) {
-    resistenceReduction /= 2;
+  if (reduction === 0) {
+    return 1 - baseResist;
   }
 
-  let finalResist = 1 - enemyResist + resistenceReduction;
-
-  if (finalResist < 0) {
-    finalResist = finalResist / 2;
+  if (baseResist <= 0) {
+    // If base resist is negative, reduction is halved
+    const effectiveResist = baseResist - (reduction / 2);
+    return 1 - effectiveResist;
+  } else {
+    const reductionExceedsBase = reduction - baseResist;
+    if (reductionExceedsBase <= 0) {
+      // Reduction doesn't fully overcome base resist
+      return 1 - (baseResist - reduction);
+    } else {
+      // Resistance dips below 0, the excess is halved
+      const remainder = (reductionExceedsBase) / 2;
+      return 1 + remainder;
+    }
   }
-
-  return finalResist;
 }
 
 interface InstanceDamage {
