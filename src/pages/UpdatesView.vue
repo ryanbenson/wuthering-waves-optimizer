@@ -15,6 +15,7 @@
       <li>
         Fixed the resist modifier. It wasn't properly handling the resist shred if you ended up having more shred than base resist. it was supposed to half it, but it was missing that part.
       </li>
+      <li>Fixes echo sets on Reminiscence: Fleurdelys.</li>
     </ul>
     <h3>April 17, 2025</h3>
     <ul>

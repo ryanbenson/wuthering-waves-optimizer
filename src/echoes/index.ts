@@ -2195,7 +2195,7 @@ CD: 20s.`,
         element: "Spectro",
       },
     ],
-    sets: ["GustsofWelkin", "EternalRadiance"],
+    sets: ["GustsofWelkin"],
   },
   RocksteadyGuardian: {
     key: "RocksteadyGuardian",
