@@ -159,3 +159,4 @@ dist
 
 # Cypress
 cypress/screenshots
+cypress/downloads

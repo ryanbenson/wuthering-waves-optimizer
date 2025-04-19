@@ -10,7 +10,7 @@ describe("Calculator Custom Buffs", () => {
     cy.visit("/");
   });
 
-  it("should verify that by default no resonance chains are chosen", () => {
+  it("should verify that by default no values are 0", () => {
     cy.get('[data-test-calculator-nav="customBuffs"]').click();
     cy.get(".custom__buffs-list").should("be.visible");
     cy.get(".custom__buffs-list .form-control").each(($input) => {
