@@ -1,5 +1,15 @@
 export const resonanceChains = [
   {
+    key: "SequenceNode1TrickstersOpeningShow",
+    name: "Sequence Node 1: Trickster's Opening Show",
+    details: `<span class="skilldescription">The cooldown of Resonance Skill <span class="Highlight">Shift Trick</span> is reduced by 4s.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode2MistweaversDebut",
     name: "Sequence Node 2: Mistweaver's Debut",
     details: `<span class="skilldescription">"Mist Avatar" inherits 100% more HP from Aalto. When Aalto attacks targets taunted by the "Mist Avatar(s)", his ATK is increased by 15%.</span>`,
@@ -77,7 +87,10 @@ export const resonanceChains = [
         modifierValue: 0.08,
       },
       {
-        modifySpecificTalents: ["HalfTruthsAimedShotDMG", "HalfTruthsChargedAimedShotDMG"],
+        modifySpecificTalents: [
+          "HalfTruthsAimedShotDMG",
+          "HalfTruthsChargedAimedShotDMG",
+        ],
         modifierValue: 0.5,
       },
     ],

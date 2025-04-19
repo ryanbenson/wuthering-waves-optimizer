@@ -10,10 +10,19 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 19, 2025</h3>
+    <ul>
+      <li>
+        Adds missing non-damage based resonance chains for Aalto, Baizhi,
+        Chixia, and Mortefi.
+      </li>
+    </ul>
     <h3>April 18, 2025</h3>
     <ul>
       <li>
-        Fixed the resist modifier. It wasn't properly handling the resist shred if you ended up having more shred than base resist. it was supposed to half it, but it was missing that part.
+        Fixed the resist modifier. It wasn't properly handling the resist shred
+        if you ended up having more shred than base resist. it was supposed to
+        half it, but it was missing that part.
       </li>
       <li>Fixes echo sets on Reminiscence: Fleurdelys.</li>
     </ul>

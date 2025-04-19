@@ -1,5 +1,15 @@
 export const resonanceChains = [
   {
+    key: "SequenceNode1ComplexSimplicity",
+    name: "Sequence Node 1: Complex Simplicity",
+    details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Emergency Plan</span> additionally restores 2.5 Resonance Energy for every 1 "Concentration" consumed.</span>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "SequenceNode2SilentTundra",
     name: "Sequence Node 2: Silent Tundra",
     details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Emergency Plan</span> increases Baizhi's Glacio DMG Bonus by 15% and her Healing by 15% if she has 4 "Concentration". These effects last for 12s.</span>`,
@@ -49,6 +59,16 @@ export const resonanceChains = [
         modifierValue: ["SequenceNode4EternalVerity"],
       },
     ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode5AWishAnswered",
+    name: "Sequence Node 5: A Wish Answered",
+    details: `If a team member is knocked out when Baizhi is alive on the team, immediately revive them and restore 100% of their Max HP. This effect can be triggered once every 10 minute(s).`,
+    hasStacks: false,
+    modifiers: [],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
