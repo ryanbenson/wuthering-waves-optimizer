@@ -16,6 +16,15 @@
         Adds attack damage type, and any sub type (e.g. Coordinated) to the list
         of actions in your rotation.
       </li>
+      <li>
+        Fixes an edge case where if you import echoes when you already have
+        echoes equipped, it can sometimes throw an issue where your cost is more
+        than 12.
+      </li>
+      <li>
+        Fixes an edge case where sometimes your cost isn't found in echo
+        importer, it will use the cost from the found echo.
+      </li>
     </ul>
     <h3>April 19, 2025</h3>
     <ul>

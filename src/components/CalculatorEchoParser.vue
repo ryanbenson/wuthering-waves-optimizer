@@ -13,7 +13,9 @@
       :style="getFixedBoxStyle(box)"></div>
   </div>
   <div class="echo-parser">
-    <h2 class="text-xl font-bold">Upload, or paste your image from the wuwa discord bot</h2>
+    <h2 class="text-xl font-bold">
+      Upload, or paste your image from the wuwa discord bot
+    </h2>
     <p>
       <span class="text-primary">File must be 1920x1080.</span>
       Get the highest quality image possible, try to use the image from the bot
@@ -43,21 +45,22 @@
       @dragover.prevent="onDragOver"
       @dragenter.prevent="onDragEnter"
       @dragleave.prevent="onDragLeave"
-      @drop.prevent="onDrop"
-    >
+      @drop.prevent="onDrop">
       <input
         type="file"
         @change="onFileChange"
         ref="fileUpload"
         accept="image/*"
-        class="file-input file-input-sm file-input-primary hidden"
-      />
+        class="file-input file-input-sm file-input-primary hidden" />
       <div class="flex flex-col gap-2 items-center w-full">
-        <span v-if="isLoading" class="loading loading-spinner loading-md"></span>
-        <span>
-          Drag &amp; drop an image here, or paste
-        </span>
-        <a href="#" @click.prevent="triggerFileSelect" class="text-blue-600 underline">
+        <span
+          v-if="isLoading"
+          class="loading loading-spinner loading-md"></span>
+        <span>Drag &amp; drop an image here, or paste</span>
+        <a
+          href="#"
+          @click.prevent="triggerFileSelect"
+          class="text-blue-600 underline">
           Or click here to choose an image
         </a>
       </div>
@@ -73,7 +76,7 @@
 
 <script>
 import { createWorker } from "tesseract.js";
-import { mainEchoesData, getEchoData } from "../echoes/index";
+import { mainEchoesData, getEchoData, getCostByClass } from "../echoes/index";
 import { getEchoSetIconByType } from "../echoes/stats";
 
 export default {
@@ -115,7 +118,7 @@ export default {
       this.dragCounter = 0;
       this.isDragging = false;
       const file = e.dataTransfer.files[0];
-      if (file && file.type.startsWith('image/')) {
+      if (file && file.type.startsWith("image/")) {
         this.handleImageFile(file);
       }
     },
@@ -221,6 +224,9 @@ export default {
         let set = null;
         if (matchedEcho) {
           const echoData = getEchoData(matchedEcho);
+          if (!cost) {
+            cost = getCostByClass(echoData.class);
+          }
           const echoSets = echoData.sets ?? [];
           if (echoSets.length === 1) {
             set = echoSets[0];
