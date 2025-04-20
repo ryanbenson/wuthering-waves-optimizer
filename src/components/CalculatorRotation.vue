@@ -18,7 +18,9 @@
             :data-test-rotation-name-input="nameValue" />
 
           <div class="rotation__end">
-            <div class="rotation__actions-count min-w-24" :data-test-rotation-actions-count="nameValue">
+            <div
+              class="rotation__actions-count min-w-24"
+              :data-test-rotation-actions-count="nameValue">
               {{ actionsCount }} Actions
             </div>
             <div class="rotation__expand">
@@ -60,7 +62,9 @@
               @remove-action="handleRemoveAction"
               :data-test-rotation-action-by-parent-name="nameValue"
               :data-test-rotation-action-by-attack-key="action.key ?? 'none'"
-              :data-test-rotation-action-by-id="action.id"></CalculatorRotationAction>
+              :data-test-rotation-action-by-id="
+                action.id
+              "></CalculatorRotationAction>
           </div>
           <button
             class="rotation__action--add btn btn-primary my-4 btn-xs w-full"
@@ -75,7 +79,10 @@
               :data-test-rotation-action-export="nameValue">
               Export
             </button>
-            <button class="btn btn-error btn-xs" @click="handleRotationDelete" :data-test-rotation-action-delete="nameValue">
+            <button
+              class="btn btn-error btn-xs"
+              @click="handleRotationDelete"
+              :data-test-rotation-action-delete="nameValue">
               Delete
             </button>
           </div>

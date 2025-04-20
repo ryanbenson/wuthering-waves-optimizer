@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 20, 2025</h3>
+    <ul>
+      <li>
+        Adds attack damage type, and any sub type (e.g. Coordinated) to the list
+        of actions in your rotation.
+      </li>
+    </ul>
     <h3>April 19, 2025</h3>
     <ul>
       <li>

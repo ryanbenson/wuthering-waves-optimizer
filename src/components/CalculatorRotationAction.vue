@@ -10,8 +10,16 @@
         <span>{{ attackLabel }}</span>
       </div>
       <div class="rotation__action__end">
-        <div class="type badge badge-primary" v-if="skillTypeLabel">
-          {{ skillTypeLabel }}
+        <div class="rotation__action__types flex flex-col items-end gap-2">
+          <div class="type badge badge-primary size-max" v-if="skillTypeLabel">
+            {{ skillTypeLabel }}
+          </div>
+          <div v-if="damageType" class="type badge badge-secondary size-max">
+            {{ damageType }} DMG
+          </div>
+          <div v-if="damageSubType" class="type badge badge-accent size-max">
+            {{ damageSubType }} DMG
+          </div>
         </div>
         <div class="buffsCount badge">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -330,6 +338,12 @@ export default {
       return this.skillAttacks.find((attack) => {
         return attack.key === this.actionKeyValue;
       });
+    },
+    damageType() {
+      return this.attackData?.type ?? null;
+    },
+    damageSubType() {
+      return this.attackData?.subType ?? null;
     },
     attackLabel() {
       return this.attackData?.label ?? null;
