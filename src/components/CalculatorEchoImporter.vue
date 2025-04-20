@@ -67,7 +67,7 @@ export default {
         );
         return {
           echo: echo.echo ?? null,
-          type: echo.cost ?? null,
+          type: Number(echo.cost) ?? null, // make sure the cost is a number so it counts max cost without breaking
           rank: echo.rank ?? 5,
           stat: echo.mainStatLabel
             ? verboseStatLabelMap[echo.mainStatLabel]
