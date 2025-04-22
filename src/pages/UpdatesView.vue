@@ -10,6 +10,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 22, 2025</h3>
+    <ul>
+      <li>
+        Changes Roll Value to start at 0%, not 100%.
+      </li>
+    </ul>
     <h3>April 20, 2025</h3>
     <ul>
       <li>

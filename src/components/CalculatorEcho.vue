@@ -2447,17 +2447,17 @@ export default {
       let boxShadow;
       let borderColor;
 
-      if (percentage <= 280) {
+      if (percentage <= 180) {
         bgColor = "bg-emerald-800"; // Dark Green
         borderColor = "border-emerald-800";
-      } else if (percentage <= 320) {
+      } else if (percentage <= 220) {
         bgColor = "bg-green-500"; // Lighter Green
         borderColor = "border-green-500";
-      } else if (percentage <= 400) {
+      } else if (percentage <= 300) {
         bgColor = "bg-blue-600"; // Blue
         borderColor = "border-blue-600";
         color = "text-black";
-      } else if (percentage < 500) {
+      } else if (percentage < 400) {
         bgColor = "bg-purple-600"; // Purple
         borderColor = "border-purple-600";
         color = "text-black";
@@ -2466,7 +2466,7 @@ export default {
         borderColor = "border-yellow-500";
         color = "text-black";
       }
-      if (percentage >= 550) {
+      if (percentage >= 450) {
         boxShadow = "shadow-md shadow-yellow-500/50";
       }
 

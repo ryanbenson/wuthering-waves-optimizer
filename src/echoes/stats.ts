@@ -213,7 +213,7 @@ type echoRollValueData = {
 };
 export function getRollValue(echoData: echoRollValueData): number {
   const echoStats = Object.entries(echoData);
-  let totalRollValue = 100; // 100 by default
+  let totalRollValue = 0;
   echoStats.forEach((echoStat) => {
     const [stat, statValue] = echoStat;
     const statRollValue = getSubstatRollValue(stat, statValue);
