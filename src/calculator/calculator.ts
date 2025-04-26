@@ -104,7 +104,7 @@ export function getEnemyResistValue(
 
   if (baseResist <= 0) {
     // If base resist is negative, reduction is halved
-    const effectiveResist = baseResist - (reduction / 2);
+    const effectiveResist = baseResist - reduction / 2;
     return 1 - effectiveResist;
   } else {
     const reductionExceedsBase = reduction - baseResist;
@@ -113,7 +113,7 @@ export function getEnemyResistValue(
       return 1 - (baseResist - reduction);
     } else {
       // Resistance dips below 0, the excess is halved
-      const remainder = (reductionExceedsBase) / 2;
+      const remainder = reductionExceedsBase / 2;
       return 1 + remainder;
     }
   }

@@ -922,6 +922,38 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Zani: [
+    {
+      key: "OutroSkillBeaconFortheFuture",
+      name: "Outro Skill: Beacon For the Future",
+      details: `The Spectro DMG dealt by other Resonators in the team to the target marked by <span class="Highlight">Heliacal Ember</span> is Amplified by 20% for 20s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4MoreEfficiencyLessDrama",
+      name: "Sequence Node 4: More Efficiency, Less Drama",
+      details: ``,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -1143,6 +1175,7 @@ export const allCharacters: string[] = [
   "Verina",
   "Taoqi",
   "Danjin",
+  "Zani",
   "Zhezhi",
 ];
 

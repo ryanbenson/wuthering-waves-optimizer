@@ -30,6 +30,29 @@ When you need to add a multiplier to the base talent value (e.g. Changli R5)
   },
 ```
 
+### Base talent multiplier additional
+
+When you need to add a multiplier to the base talent value (e.g. Changli R5), but it's a straight addition to the multiplier (e.g. Zani S3). Only works with Resonance Chains right now.
+
+```
+  {
+    key: "SequenceNode3EachDayANewCommute",
+    name: "Sequence Node 3: Each Day A New Commute",
+    details: ``,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "talentModifierMultiplyAdd",
+        modifySpecificTalents: ["TheLastStandDMG"],
+        modifierValue: 0.08,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 150,
+    alwaysEnabled: false,
+  },
+```
+
 ### talent override
 
 When an entire talent tree is changed through a buff, like 2 of Carlotta's do this.
