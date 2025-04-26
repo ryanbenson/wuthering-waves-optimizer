@@ -1819,31 +1819,6 @@ html[data-theme="light"] {
   }
   .echo__item__set-selection--icon {
     border-color: oklch(var(--bc));
-    img.FreezingFrost,
-    img.MoltenRift,
-    img.MoltenRift,
-    img.SierraGale,
-    img.CelestialLight,
-    img.SunSinkingEclipse,
-    img.RejuvenatingGlow,
-    img.MoonlitClouds,
-    img.LingeringTunes {
-      filter: invert(100%);
-    }
-  }
-  .echo__item__stats,
-  .echoes__filters {
-    img.FreezingFrost,
-    img.MoltenRift,
-    img.MoltenRift,
-    img.SierraGale,
-    img.CelestialLight,
-    img.SunSinkingEclipse,
-    img.RejuvenatingGlow,
-    img.MoonlitClouds,
-    img.LingeringTunes {
-      filter: invert(100%);
-    }
   }
   .echo__item__actions {
     svg {

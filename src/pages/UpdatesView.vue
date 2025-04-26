@@ -10,11 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 25, 2025</h3>
+    <ul>
+      <li>Fixes light mode icons in echoes and inventory pages.</li>
+    </ul>
     <h3>April 22, 2025</h3>
     <ul>
-      <li>
-        Changes Roll Value to start at 0%, not 100%.
-      </li>
+      <li>Changes Roll Value to start at 0%, not 100%.</li>
     </ul>
     <h3>April 20, 2025</h3>
     <ul>
