@@ -1,17 +1,19 @@
 <template>
   <tr
     :class="[
-      slugifiedLabel, 
+      slugifiedLabel,
       {
         'calculation__damage__item--healing': type === 'Healing',
         'calculation__damage__item--shield': type === 'Shield',
         'opacity-50': isEnabled && !originalIsEnabled,
-      }
+      },
     ]"
     v-tooltip="{
-          content: isEnabled && !originalIsEnabled ? 'Action is not enabled, unlock this action to enable it.' : '',
-        }"
-  >
+      content:
+        isEnabled && !originalIsEnabled
+          ? 'Action is not enabled, unlock this action to enable it.'
+          : '',
+    }">
     <template v-if="type === 'Healing'">
       <td>{{ label }}</td>
       <td
@@ -46,17 +48,21 @@
       <td>{{ label }}</td>
       <td
         v-tooltip="{
-          content: damage.detailedCalculation,
+          content: normalDmgTooltipText,
           html: true,
         }">
-        {{ displayDamage(damage.totalDamage) }}
+        <template v-if="!alwaysCrit">
+          {{ displayDamage(damage.totalDamage) }}
+        </template>
       </td>
       <td
         v-tooltip="{
-          content: damage.detailedCalculationAvg,
+          content: avgDmgTooltipText,
           html: true,
         }">
-        {{ displayDamage(damage.avgDamage) }}
+        <template v-if="!alwaysCrit">
+          {{ displayDamage(damage.avgDamage) }}
+        </template>
       </td>
       <td
         v-tooltip="{
@@ -96,18 +102,34 @@ export default {
     },
     originalIsEnabled: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
+    alwaysCrit: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     displayDamage,
-    slugify
+    slugify,
   },
   computed: {
     slugifiedLabel() {
-      return slugify(this.label) ?? '';
-    }
-  }
+      return slugify(this.label) ?? "";
+    },
+    normalDmgTooltipText() {
+      if (this.alwaysCrit) {
+        return null;
+      }
+      return this.damage.detailedCalculation;
+    },
+    avgDmgTooltipText() {
+      if (this.alwaysCrit) {
+        return null;
+      }
+      return this.damage.detailedCalculationAvg;
+    },
+  },
 };
 </script>
 

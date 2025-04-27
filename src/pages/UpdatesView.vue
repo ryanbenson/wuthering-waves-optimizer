@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 27, 2025</h3>
+    <ul>
+      <li>Hides normal and average damage when a damage will always crit.</li>
+    </ul>
     <h3>April 25, 2025</h3>
     <ul>
       <li>Fixes light mode icons in echoes and inventory pages.</li>

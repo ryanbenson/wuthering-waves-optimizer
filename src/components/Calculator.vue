@@ -15,7 +15,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert alert-success mb-6 text-white p-2 px-4">
+          <div
+            v-if="false"
+            class="alert alert-success mb-6 text-white p-2 px-4">
             You can now import echoes from wuwabot images!
           </div>
           <CalculatorCharacterSelect
@@ -1512,6 +1514,7 @@ export default defineComponent({
                 requiresResonanceChain,
                 type: attackType,
                 count: attack.count,
+                alwaysCrit: attack.alwaysCrit ?? false,
               };
             })
             // remove any attacks that are not enabled
