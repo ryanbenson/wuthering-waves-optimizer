@@ -40,7 +40,7 @@ export const skillAttacks = {
       key: "TargetedActionDMG",
       label: "Targeted Action DMG",
       type: "Skill",
-      // subType: "SpectroFrazzle",
+      subType: "SpectroFrazzle",
       talents: {
         "1": "43.35% + 14.45% + 86.70%",
         "2": "46.91% + 15.64% + 93.81%",
@@ -58,7 +58,7 @@ export const skillAttacks = {
       key: "ForcibleRiposteDMG",
       label: "Forcible Riposte DMG",
       type: "Skill",
-      // subType: "SpectroFrazzle",
+      subType: "SpectroFrazzle",
       talents: {
         "1": "43.35% + 14.45% + 86.70%",
         "2": "46.91% + 15.64% + 93.81%",
