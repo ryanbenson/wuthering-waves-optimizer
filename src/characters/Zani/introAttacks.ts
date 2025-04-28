@@ -1,6 +1,6 @@
 export const introAttacks = {
   name: "Intro Skill: Immediate Execution",
-  description: ``,
+  description: `<div class="skilldescription">Attack the target, dealing <span class="Light">Spectro DMG</span>.</div>`,
   attacks: [
     {
       key: "ImmediateExecutionDMG",

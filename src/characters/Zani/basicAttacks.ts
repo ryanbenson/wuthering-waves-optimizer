@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Routine Negotiation",
-  description: ``,
+  description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Perform up to 4 consecutive attacks to deal <span class="Light">Spectro DMG</span>.<br>After performing <span class="Highlight">Basic Attack Stage 3</span>, press <span class="Highlight">Normal Attack</span> at the right time to perform Basic Attack <span class="Highlight">Breakthrough</span>, which can be followed by <span class="Highlight">Basic Attack Stage 4</span> by pressing Normal Attack again.
+  <br><span class="Title">Heavy Attack</span><br>Consume STA to attack the target, dealing <span class="Light">Spectro DMG</span>. Press <span class="Highlight">Normal Attack</span> within a certain time to perform <span class="Highlight">Basic Attack Stage 3</span>.<br><span class="Title">Mid-air Attack</span><br>Consume STA to perform a plunging attack, dealing <span class="Light">Spectro DMG</span>. Press <span class="Highlight">Normal Attack</span> within a certain time to perform <span class="Highlight">Basic Attack Stage 3</span>.<br><span class="Title">Dodge Counter</span><br>Press <span class="Highlight">Normal Attack</span> within a certain time after a successful Dodge to attack the target, dealing <span class="Light">Spectro DMG</span>. Then press <span class="Highlight">Normal Attack</span> at the right time to cast Basic Attack <span class="Highlight">Breakthrough</span>.</div>`,
   attacks: [
     {
       key: "Stage1DMG",

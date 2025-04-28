@@ -1,6 +1,24 @@
 export const skillAttacks = {
   name: "Resonance Skill: Restless Watch",
-  description: ``,
+  description: `<div class="skilldescription">
+  <span class="Title">Standard Defense Protocol</span><br />
+  Attack the target to deal <span class="Light">Spectro DMG</span> and enter a block stance. This state ends early if Zani is switched off the field. Press <span class="Highlight">Normal Attack</span> within a certain time to perform
+  <span class="Highlight">Basic Attack Stage 3</span>, recovering 10 points of Redundant Energy and Stagnating the target on hit.<br />
+  When attacked by the enemy in the block stance, reduce this instance of damage by 100% and Stagnate nearby targets, then cast Resonance Skill <span class="Highlight">Pinpoint Strike</span>, dealing
+  <span class="Light">Spectro DMG</span> and additionally reducing their Vibration Strength by 5%. The DMG taken by Zani is reduced by 30% within the next 2s.<br />
+  <span class="Title">Crisis Response Protocol</span><br />
+  When Zani is not in <span class="Highlight">Inferno Mode</span> and has full Redundant Energy, her <span class="Highlight">Resonance Skill</span> is replaced with Resonance Skill <span class="Highlight">Crisis Response Protocol</span>.
+  <br />
+  Hold <span class="Highlight">Resonance Skill</span> to enter <span class="Highlight">Ready Stance</span>. While in <span class="Highlight">Ready Stance</span>, Zani is immune to interruption. This state ends early if Zani is switched off
+  the field. After releasing <span class="Highlight">Resonance Skill</span> button or when the stance duration ends, consume all Redundant Energy to cast <span class="Highlight">Targeted Action</span>, dealing
+  <span class="Light">Spectro DMG</span>, which is also considered <span class="Highlight">Spectro Frazzle</span> DMG. <br />
+  When attacked by the enemy in <span class="Highlight">Ready Stance</span>, reduce this instance of damage by 100% and consume all Redundant Energy to cast <span class="Highlight">Forcible Riposte</span>, dealing
+  <span class="Light">Spectro DMG</span> (also considered <span class="Highlight">Spectro Frazzle</span> DMG), Stagnating the target, and further reducing their Vibration Strength by 5%. The DMG taken by Zani is reduced by 30% within the next 2s.<br />
+  Casting <span class="Highlight">Targeted Action</span> or <span class="Highlight">Forcible Riposte</span> sends Zani into <span class="Highlight">Sunburst</span> mode and inflicts a stack of Heliacal Ember upon the target on hit. The last stage of the attack recovers Blaze.<br />
+  <span class="Title">Sunburst</span><br />
+  The <span class="Highlight">Spectro Frazzle</span> DMG dealt by Zani to the target is Amplified by 20%.
+</div>
+`,
   attacks: [
     {
       key: "StandardDefenseProtocolDMG",
