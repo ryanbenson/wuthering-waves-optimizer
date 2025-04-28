@@ -865,6 +865,21 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
     {
+      key: "SequenceNode2ABoatAdriftinTears",
+      name: "Sequence Node 2: A Boat Adrift in Tears",
+      details: `When in <span class="Highlight">Confession</span>, <span class="Highlight">Silent Prayer</span> grants 120% more DMG Amplification for <span class="Highlight">Spectro Frazzle.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:SpectroFrazzle",
+          modifierValue: 1.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
       key: "SequenceNode4RingingBellsonWingsAloft",
       name: "Sequence Node 4: Ringing Bells on Wings Aloft",
       details: `<span class="skilldescription">When <span class="Highlight">Basic Attack</span>, Basic Attack <span class="Highlight">Chamuel's Star</span>, <span class="Highlight">Dodge Counter</span>, or <span class="Highlight">Chamuel‘s Star: Dodge Counter</span>hits, the target's Spectro RES is reduced by 10% for 30s.</span>`,
