@@ -2,11 +2,12 @@ const weaponInfo: WeaponInfo = {
   name: "Blazing Justice",
   image:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/BlazingJustice.png",
-  description: "",
+  description:
+    "It heralds justice, precise and inexorable as a clock's toll. All sins are cleansed in flame, dissipating like night beneath the dawn's gaze.",
   type: "Gauntlets",
   rarity: 5,
   passiveName: "Darkness Breaker",
-  passiveValue: ``,
+  passiveValue: `<span class="skilldescription">Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>. Casting Resonance Liberation grants the following effects: Dealing damage ignores <span class="param">8%/10%/12%/14%/16%</span> of the target's DEF and Amplifies Spectro Frazzle DMG dealt by <span class="param">50%/62.5%/75%/87.5%/100%</span> for <span class="param">6</span>s. Retriggering the effect resets its duration.</span>`,
   passiveData: [
     {
       key: "BlazingJusticeATK",
