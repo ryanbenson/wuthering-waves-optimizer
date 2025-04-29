@@ -7,7 +7,7 @@ const weaponInfo: WeaponInfo = {
   type: "Gauntlets",
   rarity: 5,
   passiveName: "Darkness Breaker",
-  passiveValue: `<span class="skilldescription">Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>. Casting Resonance Liberation grants the following effects: Dealing damage ignores <span class="param">8%/10%/12%/14%/16%</span> of the target's DEF and Amplifies Spectro Frazzle DMG dealt by <span class="param">50%/62.5%/75%/87.5%/100%</span> for <span class="param">6</span>s. Retriggering the effect resets its duration.</span>`,
+  passiveValue: `<span class="skilldescription">Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>. Casting Basic Attack grants the following effects: Dealing damage ignores <span class="param">8%/10%/12%/14%/16%</span> of the target's DEF and Amplifies Spectro Frazzle DMG dealt by <span class="param">50%/62.5%/75%/87.5%/100%</span> for <span class="param">6</span>s. Retriggering the effect resets its duration.</span>`,
   passiveData: [
     {
       key: "BlazingJusticeATK",
@@ -38,7 +38,7 @@ const weaponInfo: WeaponInfo = {
       },
       minStacks: 0,
       maxStacks: 0,
-      details: `Casting Resonance Liberation grants the following effects: Dealing damage ignores 8%/10%/12%/14%/16% of the target's DEF for 6s.`,
+      details: `Casting Basic Attack grants the following effects: Dealing damage ignores <span class="param">8%/10%/12%/14%/16%</span> of the target's DEF for 6s. Retriggering the effect resets its duration.`,
       alwaysEnabled: false,
     },
     {
@@ -54,7 +54,7 @@ const weaponInfo: WeaponInfo = {
       },
       minStacks: 0,
       maxStacks: 0,
-      details: `Casting Resonance Liberation grants the following effects: Amplifies Spectro Frazzle DMG dealt by 50%/62.5%/75%/87.5%/100% for 6s`,
+      details: `Casting Basic Attack grants the following effects: Dealing damage Amplifies Spectro Frazzle DMG dealt by <span class="param">50%/62.5%/75%/87.5%/100%</span> for <span class="param">6</span>s. Retriggering the effect resets its duration.`,
       alwaysEnabled: false,
     },
   ],

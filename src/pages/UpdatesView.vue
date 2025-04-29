@@ -13,6 +13,7 @@
     <h3>April 29, 2025</h3>
     <ul>
       <li>Fixed Zani's Nightfall DMG, it was getting overbuffed.</li>
+      <li>Updates Blazing Justice text.</li>
     </ul>
     <h3>April 28, 2025</h3>
     <ul>
