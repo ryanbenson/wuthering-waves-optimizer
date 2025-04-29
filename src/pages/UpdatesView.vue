@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 29, 2025</h3>
+    <ul>
+      <li>Fixed Zani's Nightfall DMG, it was getting overbuffed.</li>
+    </ul>
     <h3>April 28, 2025</h3>
     <ul>
       <li>Releases Zani and her signature.</li>

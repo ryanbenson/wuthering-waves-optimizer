@@ -1426,6 +1426,7 @@ export default defineComponent({
           totalTalentModifierMultiply,
           totalTalentModifierSpecialMultiply,
           count,
+          attack.key,
         );
       };
 

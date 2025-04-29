@@ -140,22 +140,25 @@ export function calcDamage(
   talentModifierMultiply: number = 0,
   totalTalentModifierSpecialMultiply: number = 0,
   count: number = 1,
+  attackKey: string = null,
 ) {
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
 
   // Calculate the base damage for each talent value
   let totalTalentValue = 0;
+  // add any flat talent modifiers (e.g. Jinshi Incandescence)
+  // it only gets added once, not for each instance of a hit within
+  // a single talent
+  if (talentModifierAdd) {
+    totalTalentValue += talentModifierAdd;
+  }
 
   // Calculate individual instance damages
   let instanceDamage: InstanceDamage = {};
   talents.forEach((t) => {
     // we may modify this, but we need the original values for instanceDamage struct
     let originalTalent = t;
-    // add any flat talent modifiers (e.g. Jinshi Incandescence)
-    if (talentModifierAdd) {
-      t += talentModifierAdd;
-    }
     // if we have a talent multiplier, do it first before adding it to the total
     // make sure to add 1 to it (e.g. 100% * (1 + 1.2)
     if (talentModifierMultiply) {
@@ -170,6 +173,10 @@ export function calcDamage(
     }
     // update total talent value after any talent modifier adjustments
     totalTalentValue += t;
+    // TODO: Clean this up when we're done debugging
+    // if (attackKey === "HeavySlashNightfallDMG") {
+    //   console.log(t, totalTalentValue, talentModifierAdd);
+    // }
     // use the original talent as that's what is in the struct
     let percentageString = (originalTalent * 100).toFixed(2).toString() + "%";
     if (!instanceDamage[percentageString]) {
