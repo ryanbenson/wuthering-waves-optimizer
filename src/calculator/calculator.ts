@@ -140,7 +140,6 @@ export function calcDamage(
   talentModifierMultiply: number = 0,
   totalTalentModifierSpecialMultiply: number = 0,
   count: number = 1,
-  attackKey: string = null,
 ) {
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
@@ -173,10 +172,6 @@ export function calcDamage(
     }
     // update total talent value after any talent modifier adjustments
     totalTalentValue += t;
-    // TODO: Clean this up when we're done debugging
-    // if (attackKey === "HeavySlashNightfallDMG") {
-    //   console.log(t, totalTalentValue, talentModifierAdd);
-    // }
     // use the original talent as that's what is in the struct
     let percentageString = (originalTalent * 100).toFixed(2).toString() + "%";
     if (!instanceDamage[percentageString]) {
