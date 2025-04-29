@@ -1,0 +1,40 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Between Dawn and Dusk",
+  description: `<div class="skilldescription"><span class="Title">Rekindle</span><br>Deal <span class="Light">Spectro DMG</span> and enter <span class="Highlight">Inferno Mode</span>, increasing Max Blaze from 100 to 150 and granting 50 Blazes. When in <span class="Highlight">Inferno Mode</span>, the DMG Multiplier of Basic Attack is increased.<br><span class="Title">The Last Stand</span><br>When in <span class="Highlight">Inferno Mode</span>, Resonance Liberation <span class="Highlight">The Last Stand</span> becomes available when Blaze is lower than 30 or after 8s in <span class="Highlight">Inferno Mode</span>.<br>Casting Resonance Liberation <span class="Highlight">The Last Stand</span> deals <span class="Light">Spectro DMG</span> and ends the <span class="Highlight">Inferno Mode</span>.</div>`,
+  attacks: [
+    {
+      key: "RekindleDMG",
+      label: "Rekindle DMG",
+      type: "Liberation",
+      talents: {
+        "1": "160.22%",
+        "2": "173.35%",
+        "3": "186.49%",
+        "4": "204.88%",
+        "5": "218.02%",
+        "6": "233.13%",
+        "7": "254.15%",
+        "8": "275.17%",
+        "9": "296.19%",
+        "10": "318.52%",
+      },
+    },
+    {
+      key: "TheLastStandDMG",
+      label: "The Last Stand DMG",
+      type: "Liberation",
+      talents: {
+        "1": "96.13% + 544.73%",
+        "2": "104.01% + 589.39%",
+        "3": "111.90% + 634.06%",
+        "4": "122.93% + 696.59%",
+        "5": "130.81% + 741.26%",
+        "6": "139.88% + 792.63%",
+        "7": "152.49% + 864.10%",
+        "8": "165.10% + 935.56%",
+        "9": "177.72% + 1007.03%",
+        "10": "191.12% + 1082.96%",
+      },
+    },
+  ],
+};

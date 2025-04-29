@@ -1007,10 +1007,22 @@ export default defineComponent({
           talent = talentTree[talentType];
         }
         const talentModifierAdd = selfBuffs?.[attack.key] ?? 0;
+        // TODO: Is this used anywhere?
         const talentModifierAddFromResonanceChains =
           charResonanceChainsData.value?.[attack.key] ?? 0;
+        // flat adding to the base multiplier for a specific attack
+        const talentModifierAddFromResonanceChainsAdd =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:talentModifierMultiplyAdd`
+          ] ?? 0;
+        const talentModifierAddFromSelfBuffs =
+          selfBuffs?.[`${attack.key}:talentModifierMultiplyAdd`] ?? 0;
         const totalTalentModifierAdd =
-          talentModifierAdd + talentModifierAddFromResonanceChains;
+          talentModifierAdd +
+          talentModifierAddFromResonanceChains +
+          talentModifierAddFromResonanceChainsAdd +
+          talentModifierAddFromSelfBuffs;
+
         const specificSkillDmgFromResonanceChains =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
         // apply echo based coordianted dmg bonus (both echo set and main echo)
@@ -1146,23 +1158,22 @@ export default defineComponent({
         // NOTE: all outro attacks cannot use the DMGDeepen:element|attackType
         // as they expire before the outro attacks occur. so ignore these
         // for outro attacks
+        // self subtype dmg deepen
+        let selfBuffDmgDeepenForSubType =
+          charBuffsData.value?.[`DMGDeepen:${attack.subType}`] ?? 0;
         let teamBuffDmgDeepenForCharElement =
           teamBuffsData.value?.[`DMGDeepen:${attackElement}`] ?? 0;
         let teamBuffDmgDeepenForAttackType =
           teamBuffsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
-        let teamBuffDmgDeepenForCoordinatedAttack =
-          teamBuffsData.value?.[`DMGDeepen:Coordinated`] ?? 0;
+        let teamBuffDmgDeepenForSubType =
+          teamBuffsData.value?.[`DMGDeepen:${attack.subType}`] ?? 0;
         const selfBuffSpecificAttackGenericDmgDeepen =
           selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGDeepen`] ?? 0;
         if (excludeTeamBuffs) {
           baseTotalDeepenEffect = statsWithoutTeamBuffs?.totalDeepenEffect ?? 0;
           teamBuffDmgDeepenForCharElement = 0;
           teamBuffDmgDeepenForAttackType = 0;
-          teamBuffDmgDeepenForCoordinatedAttack = 0;
-        }
-        let coordinatedDmgDeepenEffect = 0;
-        if (attack?.subType === "Coordinated") {
-          coordinatedDmgDeepenEffect = teamBuffDmgDeepenForCoordinatedAttack;
+          teamBuffDmgDeepenForSubType = 0;
         }
         // outro and utility attacks lose dmg deepen for specific elements and attack types
         // because they're off-field, but keep global ones like Verina
@@ -1178,16 +1189,22 @@ export default defineComponent({
           weaponData.value?.weaponPassiveStats?.[
             `DMGDeepen:${attackElement}`
           ] ?? 0;
+        let weaponBuffDmgDeepenSubType =
+          weaponData.value?.weaponPassiveStats?.[
+            `DMGDeepen:${attack.subType}`
+          ] ?? 0;
         const totalDmgDeepen =
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
           teamBuffDmgDeepenForAttackType +
           attackLevelDmgDeepen +
-          coordinatedDmgDeepenEffect +
+          teamBuffDmgDeepenForSubType +
           selfBuffSpecificAttackGenericDmgDeepen +
           resonanceChainDmgDeepenForAttackType +
           weaponBuffDmgDeepenElement +
-          customDamageDeepen;
+          weaponBuffDmgDeepenSubType +
+          customDamageDeepen +
+          selfBuffDmgDeepenForSubType;
         let totalTalentModifierMultiply =
           talentModifierMultiply + talentModifierMultiplySelfBuff;
         // grab any special multipliers, and then multiply the previous total by that

@@ -1,0 +1,106 @@
+export const forteCircuitAttacks = {
+  name: "Forte Circuit: There Will Be A Light",
+  description: `<div class="skilldescription"><span class="Title">Heliacal Ember</span>
+    <br>When Zani is in the team and a nearby Resonator inflicts <span class="Highlight">Spectro Frazzle</span> upon a target, immediately consume all Spectro Frazzle stacks and trigger the corresponding DMG, then convert Spectro Frazzle into an equal number
+    of Heliacal Embers. Every time the conversion happens, Zani obtains Blaze based on the stacks of Heliacal Ember inflicted. Heliacal Ember is capped at 60 stacks, with each stack lasting for 6s. Heliacal Ember stacks are counted toward the Spectro
+    Frazzle stacks for the Eternal Radiance Sonata Effect.
+    <br><span class="Title">Scorching Light</span>
+    <br>When Zani is in <span class="Highlight">Inferno Mode</span>, <span class="Highlight">Heavy Slash - Daybreak</span>, <span class="Highlight">Heavy Slash - Dawning</span>, <span class="Highlight">Heavy Slash - Nightfall</span>, and <span class="Highlight">Heavy Slash - Lightsmash</span>    become available, which deal <span class="Light">Spectro DMG</span> that is considered both Heavy Attack DMG and <span class="Highlight">Spectro Frazzle</span> DMG.
+    <br>When Blaze is no less than 30, Resonance Skill <span class="Highlight">Standard Defense Protocol</span> is replaced with Resonance Skill <span class="Highlight">Scorching Light</span>.
+    <br>Hold <span class="Highlight">Resonance Skill</span> to enter <span class="Highlight">Ready Stance</span>, during which Zani is immune to interruption. This state ends early when Zani is switched off the field. Release <span class="Highlight">Resonance Skill</span> button  within a certain time to consume Blaze and perform <span class="Highlight">Heavy Slash - Daybreak</span>.
+    <br>When attacked in a certain time after entering <span class="Highlight">Ready Stance</span>, reduce this instance of damage by 100% and Stagnate nearby targets, then perform <span class="Highlight">Heavy Slash - Lightsmash</span>, consuming Blazes
+    and further reducing their Vibration Strength by 10%. The DMG taken within the next 2s is reduced by 30%.
+    <br>After casting <span class="Highlight">Heavy Slash - Lightsmash</span>, <span class="Highlight">Basic Attack</span> is replaced with <span class="Highlight">Heavy Slash - Nightfall</span>, consuming up to 40 Blazes on hit, with each Blaze increasing
+    the DMG Multiplier of <span class="Highlight">Heavy Slash - Nightfall</span>. If <span class="Highlight">Heavy Slash - Nightfall</span> Stage 1 is interrupted, press Basic Attack again to cast <span class="Highlight">Heavy Slash - Nightfall</span> Stage 2.<br>
+    <br>When Blaze is no less than 30, <span class="Highlight">Basic Attack</span> is replaced with <span class="Highlight">Heavy Slash - Daybreak</span>. After entering <span class="Highlight">Inferno Mode</span>, casting <span class="Highlight">Basic Attack</span>    immediately replaces the current <span class="Highlight">Basic Attack</span> with Resonance Skill <span class="Highlight">Scorching Light</span>. Hold <span class="Highlight">Basic Attack</span> to enter <span class="Highlight">Ready Stance</span>.
+    <br>After performing <span class="Highlight">Heavy Slash - Daybreak</span>, press <span class="Highlight">Basic Attack</span> to perform <span class="Highlight">Heavy Slash - Dawning</span> at the cost of Blaze.
+    <br>After performing <span class="Highlight">Heavy Slash - Dawning</span>, <span class="Highlight">Basic Attack</span> is replaced with <span class="Highlight">Heavy Slash - Nightfall</span>.
+    <br>If <span class="Highlight">Basic Attack</span> is not replaced with <span class="Highlight">Heavy Slash - Nightfall</span> after a successful Dodge and Zani has no less than 30 Blazes, press <span class="Highlight">Normal Attack</span> within a certain time to perform <span class="Highlight">Heavy Slash - Lightsmash</span>    at the cost of Blazes.
+    <br><span class="Title">Redundant Energy</span>
+    <br>Zani can hold up to 100 Redundant Energy.
+    <br>Obtain Redundant Energy when Normal Attacks hit a target.
+    <br>Obtain Redundant Energy when Intro Skill <span class="Highlight">Immediate Execution</span> hits a target.
+    <br>Obtain Redundant Energy when casting Resonance Skill <span class="Highlight">Standard Defense Protocol</span>.
+    <br>Obtain Redundant Energy when casting <span class="Highlight">Pinpoint Strike</span>.
+    <br>Cannot obtain Redundant Energy while in <span class="Highlight">Inferno Mode</span>.
+    <br><span class="Title">Blaze</span>
+    <br>Blaze is capped at 100 when not in <span class="Highlight">Inferno Mode</span>.
+    <br>Blaze is capped at 150 in <span class="Highlight">Inferno Mode</span>.
+    <br>Casting <span class="Highlight">Targeted Action</span> or <span class="Highlight">Forcible Riposte</span> grants 10 Blazes.
+    <br>Every stack of Heliacal Ember converted from <span class="Highlight">Spectro Frazzle</span> grants 5 Blazes.
+    <br>Casting Resonance Liberation <span class="Highlight">Rekindle</span> grants 50 Blazes.</div>`,
+  attacks: [
+    {
+      key: "HeavySlashDaybreakDMG",
+      label: "Heavy Slash - Daybreak DMG",
+      type: "Heavy",
+      subType: "SpectroFrazzle",
+      talents: {
+        "1": "100.00%",
+        "2": "108.20%",
+        "3": "116.40%",
+        "4": "127.88%",
+        "5": "136.08%",
+        "6": "145.51%",
+        "7": "158.63%",
+        "8": "171.75%",
+        "9": "184.87%",
+        "10": "198.81%",
+      },
+    },
+    {
+      key: "HeavySlashDawningDMG",
+      label: "Heavy Slash - Dawning DMG",
+      type: "Heavy",
+      subType: "SpectroFrazzle",
+      talents: {
+        "1": "213.30%",
+        "2": "230.80%",
+        "3": "248.29%",
+        "4": "272.77%",
+        "5": "290.26%",
+        "6": "310.38%",
+        "7": "338.36%",
+        "8": "366.35%",
+        "9": "394.33%",
+        "10": "424.07%",
+      },
+    },
+    {
+      key: "HeavySlashNightfallDMG",
+      label: "Heavy Slash - Nightfall DMG",
+      type: "Heavy",
+      subType: "SpectroFrazzle",
+      talents: {
+        "1": "68.00% + 132.00%",
+        "2": "73.58% + 142.83%",
+        "3": "79.16% + 153.65%",
+        "4": "86.96% + 168.81%",
+        "5": "92.54% + 179.63%",
+        "6": "98.95% + 192.08%",
+        "7": "107.87% + 209.40%",
+        "8": "116.79% + 226.71%",
+        "9": "125.72% + 244.03%",
+        "10": "135.20% + 262.43%",
+      },
+    },
+    {
+      key: "HeavySlashLightsmashDMG",
+      label: "Heavy Slash - Lightsmash DMG",
+      type: "Heavy",
+      subType: "SpectroFrazzle",
+      talents: {
+        "1": "213.30%",
+        "2": "230.80%",
+        "3": "248.29%",
+        "4": "272.77%",
+        "5": "290.26%",
+        "6": "310.38%",
+        "7": "338.36%",
+        "8": "366.35%",
+        "9": "394.33%",
+        "10": "424.07%",
+      },
+    },
+  ],
+};

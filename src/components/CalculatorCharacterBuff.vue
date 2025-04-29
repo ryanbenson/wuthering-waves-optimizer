@@ -9,7 +9,7 @@
         <div class="form-control" @click.stop>
           <label
             class="label inline-flex justify-start"
-            :class="{'cursor-pointer': !alwaysEnabled}">
+            :class="{ 'cursor-pointer': !alwaysEnabled }">
             <input
               type="checkbox"
               class="checkbox checkbox-sm"
@@ -200,7 +200,9 @@ export default {
             const talentRef =
               this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
             const talentVal = modifierItem.modifierValue[talentRef];
-            data[modifierItem.modifierTalentKey] = talentVal;
+            data[
+              `${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`
+            ] = talentVal;
           } else if (modifierItem.modifier === "talentModifierMultiply") {
             // for buffs that apply talentModifierMultiply to the calcs
             if (!data.talentModifierMultiply) {
@@ -230,7 +232,9 @@ export default {
             const talentRef =
               this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
             const talentVal = modifierItem.modifierValue[talentRef];
-            data[modifierItem.modifierTalentKey] = talentVal * this.stacks;
+            data[
+              `${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`
+            ] = talentVal * this.stacks;
           } else {
             const totalValue = modifierItem.modifierValue * this.stacks;
             data[modifierItem.modifier] = totalValue;

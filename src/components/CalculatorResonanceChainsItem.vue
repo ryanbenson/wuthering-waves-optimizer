@@ -9,7 +9,7 @@
         <div class="form-control" @click.stop>
           <label
             class="label inline-flex justify-start"
-            :class="{'cursor-pointer': !alwaysEnabled}">
+            :class="{ 'cursor-pointer': !alwaysEnabled }">
             <input
               type="checkbox"
               class="checkbox checkbox-sm"
