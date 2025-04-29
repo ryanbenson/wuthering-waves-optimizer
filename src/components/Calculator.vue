@@ -1531,6 +1531,7 @@ export default defineComponent({
                 requiresResonanceChain,
                 type: attackType,
                 count: attack.count,
+                alwaysCrit: attack.alwaysCrit ?? false,
               };
             })
             // remove any attacks that are not enabled

@@ -41,7 +41,8 @@
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
-        :damage="damageInstance.damage"></CalculatorDamage>
+        :damage="damageInstance.damage"
+        :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
@@ -79,7 +80,8 @@
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
-        :damage="damageInstance.damage"></CalculatorDamage>
+        :damage="damageInstance.damage"
+        :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
@@ -117,7 +119,8 @@
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
-        :damage="damageInstance.damage"></CalculatorDamage>
+        :damage="damageInstance.damage"
+        :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
@@ -157,7 +160,8 @@
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
-        :damage="damageInstance.damage"></CalculatorDamage>
+        :damage="damageInstance.damage"
+        :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
@@ -195,7 +199,8 @@
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
-        :damage="damageInstance.damage"></CalculatorDamage>
+        :damage="damageInstance.damage"
+        :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
     </tbody>
   </table>
 
@@ -243,7 +248,8 @@
           :character="character"
           :type="damageInstance.type"
           :label="damageInstance.label"
-          :damage="damageInstance.damage"></CalculatorDamage>
+          :damage="damageInstance.damage"
+          :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
       </template>
     </tbody>
   </table>
@@ -296,7 +302,8 @@
             :character="character"
             :type="damageInstance.type"
             :label="damageInstance.label"
-            :damage="damageInstance.damage"></CalculatorDamage>
+            :damage="damageInstance.damage"
+            :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
         </template>
       </tbody>
     </table>
@@ -350,7 +357,8 @@
             :character="character"
             :type="damageInstance.type"
             :label="damageInstance.label"
-            :damage="damageInstance.damage"></CalculatorDamage>
+            :damage="damageInstance.damage"
+            :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
         </template>
       </tbody>
     </table>
@@ -415,7 +423,8 @@
             :character="character"
             :type="damageInstance.type"
             :label="damageInstance.label"
-            :damage="damageInstance.damage"></CalculatorDamage>
+            :damage="damageInstance.damage"
+            :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
         </template>
       </tbody>
     </table>
@@ -458,7 +467,8 @@
           :character="character"
           :type="damageInstance.type"
           :label="damageInstance.label"
-          :damage="damageInstance.damage"></CalculatorDamage>
+          :damage="damageInstance.damage"
+          :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
       </tbody>
     </table>
   </template>
@@ -484,8 +494,7 @@
           :unique-key="rotation.id"
           :name="rotation.name"
           :char-buffs-data="charBuffsData"
-          :char-resonance-chains-data="charResonanceChainsData"
-        />
+          :char-resonance-chains-data="charResonanceChainsData" />
         <table class="calculator__damages table table-zebra table-sm">
           <thead>
             <tr>
@@ -504,10 +513,13 @@
               :label="damageInstance.label"
               :damage="damageInstance.damage"
               :is-enabled="damageInstance.isEnabled"
-              :original-is-enabled="damageInstance.originalIsEnabled"></CalculatorDamage>
+              :original-is-enabled="damageInstance.originalIsEnabled"
+              :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
           </tbody>
           <tfoot>
-            <tr v-if="rotation.damageAggregation.normalDamage" class="rotation-total-damage">
+            <tr
+              v-if="rotation.damageAggregation.normalDamage"
+              class="rotation-total-damage">
               <td>Total Damage</td>
               <td>
                 {{ displayDamage(rotation.damageAggregation.normalDamage) }}
