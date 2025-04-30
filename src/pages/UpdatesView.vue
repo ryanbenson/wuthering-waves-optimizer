@@ -13,6 +13,7 @@
     <h3>April 30, 2025</h3>
     <ul>
       <li>Fixed where to put additive multipliers in multi-hits in the tooltip. The total damage was correct.</li>
+      <li>Adds buffs and damage for echoes: Abyssal Patricius, and Vitreum Dancer.</li>
     </ul>
     <h3>April 29, 2025</h3>
     <ul>

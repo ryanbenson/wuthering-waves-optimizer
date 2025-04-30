@@ -65,9 +65,31 @@ export const mainEchoesData: MainEchoes = {
     class: "Elite",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/abyssalvenator.png",
-    details: `A humanoid Tacet Discord born from the abyssal sea that assumes the semblance of an aristocrat, a fully differentiated form of Primordia Bloom.`,
-    modifiers: [],
-    actions: [],
+    details: `Transform into Abyssal Patricius and charge forward to attack enemies, dealing 268.20% Glacio DMG.
+The Resonator with this Echo equipped in the main slot gains 12.00% Glacio DMG Bonus.
+CD: 15s.`,
+    modifiers: [
+      {
+        modifier: "Glacio",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "ChargeDMG",
+        label: "Charge DMG",
+        description: `Transform into Abyssal Patricius and charge forward to attack enemies, dealing 268.20% Glacio DMG.`,
+        talents: {
+          "1": "178.80%",
+          "2": "178.80%",
+          "3": "208.60%",
+          "4": "238.40%",
+          "5": "268.20%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
     sets: ["FrostyResolve", "EmpyreanAnthem"],
   },
   AbyssalMercator: {
@@ -2663,9 +2685,31 @@ CD: <span class="param">25</span>s.</span>`,
     class: "Elite",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/VitreumDancer.png",
-    details: `A humanoid Tacet Discord with a body assembled from shattered stained glass. Glittering lights beam from its body with each move.`,
-    modifiers: [],
-    actions: [],
+    details: `Transform into Vitreum Dancer and attack surrounding enemies, dealing 313.20% Electro DMG.
+The Resonator with this Echo equipped in their main slot gains 12.00% Electro DMG Bonus.
+CD: 20s.`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "VitreumDancerDMG",
+        label: "Vitreum Dancer DMG",
+        description: `Transform into Vitreum Dancer and attack surrounding enemies, dealing 208.80%/243.60%/278.40%/313.20% Electro DMG.`,
+        talents: {
+          "1": "208.80%",
+          "2": "208.80%",
+          "3": "243.60%",
+          "4": "278.40%",
+          "5": "313.20%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
     sets: ["EternalRadiance", "EmpyreanAnthem"],
   },
   VoltscourgeStalker: {
