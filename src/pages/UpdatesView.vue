@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>April 30, 2025</h3>
+    <ul>
+      <li>Fixed where to put additive multipliers in multi-hits in the tooltip. The total damage was correct.</li>
+    </ul>
     <h3>April 29, 2025</h3>
     <ul>
       <li>Fixed Zani's Nightfall DMG, it was getting overbuffed.</li>

@@ -146,18 +146,22 @@ export function calcDamage(
 
   // Calculate the base damage for each talent value
   let totalTalentValue = 0;
-  // add any flat talent modifiers (e.g. Jinshi Incandescence)
-  // it only gets added once, not for each instance of a hit within
-  // a single talent
-  if (talentModifierAdd) {
-    totalTalentValue += talentModifierAdd;
-  }
 
   // Calculate individual instance damages
   let instanceDamage: InstanceDamage = {};
-  talents.forEach((t) => {
+  const talentsLen = talents.length;
+  talents.forEach((t, index) => {
     // we may modify this, but we need the original values for instanceDamage struct
     let originalTalent = t;
+    // add any flat talent modifiers (e.g. Jinshi Incandescence)
+    // only add it to the LAST instance
+    // TODO: Change this if this is altered later. Jinhsi only hits once
+    // But Zani has multi-hit, and it seems it applies to the last hit only
+    if (index === talentsLen - 1) {
+      if (talentModifierAdd) {
+        t += talentModifierAdd;
+      }
+    }
     // if we have a talent multiplier, do it first before adding it to the total
     // make sure to add 1 to it (e.g. 100% * (1 + 1.2)
     if (talentModifierMultiply) {
