@@ -119,6 +119,19 @@ export function getEnemyResistValue(
   }
 }
 
+function getNightfallStacksPerHit(stacks: number): number[] {
+  const caps = [5, 5, 15, 15];
+  const result = [];
+
+  for (let cap of caps) {
+    const value = Math.min(stacks, cap);
+    result.push(value);
+    stacks -= value;
+  }
+
+  return result;
+}
+
 interface InstanceDamage {
   [instanceDamage: string]: number;
 }
@@ -140,6 +153,9 @@ export function calcDamage(
   talentModifierMultiply: number = 0,
   totalTalentModifierSpecialMultiply: number = 0,
   count: number = 1,
+  skillKey: string = "",
+  additiveMultiplierStacks: number = 0,
+  additiveMultiplierPercent: number = 0,
 ) {
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
@@ -157,9 +173,60 @@ export function calcDamage(
     // only add it to the LAST instance
     // TODO: Change this if this is altered later. Jinhsi only hits once
     // But Zani has multi-hit, and it seems it applies to the last hit only
-    if (index === talentsLen - 1) {
-      if (talentModifierAdd) {
-        t += talentModifierAdd;
+    // However, this does not apply to HeavySlashNightfallDMG, which is far more complicated
+    if (talentModifierAdd) {
+      if (skillKey !== "HeavySlashNightfallDMG") {
+        if (index === talentsLen - 1) {
+          t += talentModifierAdd;
+        }
+      } else {
+        /**
+         * Specific handler for: HeavySlashNightfallDMG
+         * It has two major chunks, and 4 major attacks
+         * It also has 5 instances of damages that are not direct hits, but "side hits"
+         * The additive multiplier has very specific rules. Example: If you have 40 stacks, then it's parsed into:
+         * 5+5+15+15. So, assuming talent level 10:
+         * Full talent string: 51.7%*2 + 15.91%*2 + 79.53% + 7.96%*2 + 27.84% + 139.17%
+         * 51.7 = gets 5 stacks applied
+         * 51.7 = gets 5 stacks applied (this hits twice)
+         * 79.53 = gets 15 stacks
+         * 139.17 = gets 15 stacks
+         * However, you may not have 40 stacks. If you have less, then it starts to subtract at the end
+         * so it uses the full quota in each step. Say if you have 30:
+         * 51.7 = gets 5 stacks applied
+         * 51.7 = gets 5 stacks applied (this hits twice)
+         * 79.53 = gets 15 stacks
+         * 139.17 = gets 5 stacks
+         * But since the talent number changes, we will have to make it index based, assuming max stacks
+         * 0 = 5 stacks
+         * 1 = 5 stacks
+         * 4 = 15 stacks
+         * 8 = 15 stacks
+         * 
+         * The stacks is multiplied by a percent, which is based on the talent
+         * So it needs to be calculated on-demand
+         */
+        const nightfallStacksPerHit = getNightfallStacksPerHit(additiveMultiplierStacks);
+        if (index === 0) {
+          const stacks = nightfallStacksPerHit[0] ?? 0;
+          const talentModifierAdd = stacks * additiveMultiplierPercent;
+          t += talentModifierAdd;
+        }
+        if (index === 1) {
+          const stacks = nightfallStacksPerHit[1] ?? 0;
+          const talentModifierAdd = stacks * additiveMultiplierPercent;
+          t += talentModifierAdd;
+        }
+        if (index === 4) {
+          const stacks = nightfallStacksPerHit[2] ?? 0;
+          const talentModifierAdd = stacks * additiveMultiplierPercent;
+          t += talentModifierAdd;
+        }
+        if (index === 8) {
+          const stacks = nightfallStacksPerHit[3] ?? 0;
+          const talentModifierAdd = stacks * additiveMultiplierPercent;
+          t += talentModifierAdd;
+        }
       }
     }
     // if we have a talent multiplier, do it first before adding it to the total

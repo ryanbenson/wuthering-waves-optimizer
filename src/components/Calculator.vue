@@ -15,7 +15,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
+          <div v-if="false" class="alert alert-success mb-6 text-white p-2 px-4">
             Zani is now available!
           </div>
           <CalculatorCharacterSelect
@@ -229,6 +229,7 @@ import { useRoute } from "vue-router";
 import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
+import { buffs } from "../characters/Aalto/buffs";
 
 export default defineComponent({
   name: "Calculator",
@@ -1408,6 +1409,25 @@ export default defineComponent({
           instanceDmgCritRate = 1;
         }
 
+        let additiveMultiplierStacks = 0;
+        let additiveMultiplierPercent = 0;
+        // special additive handler for HeavySlashNightfallDMG
+        if (attack.key === "HeavySlashNightfallDMG") {
+          let { isEnabled, stacks } = characters.value?.[character.value]?.buffs?.HeavySlashNightfallBlazeStacks ?? {};
+          // only apply these if it's enabled
+          if (isEnabled) {
+            if (!stacks) {
+              stacks = 0;
+            }
+            additiveMultiplierStacks = stacks;
+            const forteLevel = characters.value?.[character.value]?.talents?.forte ?? 10;
+            const buffsList = chosenChar.value?.buffs ?? [];
+            const foundBuff = buffsList.find((buff) => buff.key === "HeavySlashNightfallBlazeStacks");
+            const modifierPercent = foundBuff?.modifiers?.[0]?.modifierValue?.[forteLevel] ?? 0;
+            additiveMultiplierPercent = modifierPercent;
+          }
+        }
+
         return calcDamage(
           characterLevel.value,
           enemyLevel.value,
@@ -1426,6 +1446,9 @@ export default defineComponent({
           totalTalentModifierMultiply,
           totalTalentModifierSpecialMultiply,
           count,
+          attack.key,
+          additiveMultiplierStacks,
+          additiveMultiplierPercent,
         );
       };
 

@@ -29,7 +29,8 @@
               :min="minStacks"
               :max="maxStacks"
               @input="ensureMaxStacks" />
-            <span class="label-text ml-2">Stacks</span>
+              <span class="label-text ml-2">Stacks</span>
+              <span class="ml-1 text-sm italic">(Max {{ maxStacks }})</span>
           </label>
         </div>
       </div>

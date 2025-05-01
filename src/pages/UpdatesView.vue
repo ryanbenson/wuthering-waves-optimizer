@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 1, 2025</h3>
+    <ul>
+      <li>Update Zani Nightfall damages. The numbers displayed in the forte stats are misleading in-game. It does 9 hits instead of 2. And it also changes how the Blaze stacks are applied. At best (40 stacks), it's actually broken into 5+5+15+15, and if you have less it takes away from the end.</li>
+    </ul>
     <h3>April 30, 2025</h3>
     <ul>
       <li>Fixed where to put additive multipliers in multi-hits in the tooltip. The total damage was correct.</li>
