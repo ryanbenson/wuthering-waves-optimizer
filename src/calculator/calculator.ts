@@ -120,7 +120,7 @@ export function getEnemyResistValue(
 }
 
 function getNightfallStacksPerHit(stacks: number): number[] {
-  const caps = [5, 5, 15, 15];
+  const caps = [5, 5, 20, 10];
   const result = [];
 
   for (let cap of caps) {
@@ -189,19 +189,19 @@ export function calcDamage(
          * Full talent string: 51.7%*2 + 15.91%*2 + 79.53% + 7.96%*2 + 27.84% + 139.17%
          * 51.7 = gets 5 stacks applied
          * 51.7 = gets 5 stacks applied (this hits twice)
-         * 79.53 = gets 15 stacks
-         * 139.17 = gets 15 stacks
+         * 79.53 = gets 20 stacks
+         * 139.17 = gets 10 stacks
          * However, you may not have 40 stacks. If you have less, then it starts to subtract at the end
          * so it uses the full quota in each step. Say if you have 30:
          * 51.7 = gets 5 stacks applied
          * 51.7 = gets 5 stacks applied (this hits twice)
-         * 79.53 = gets 15 stacks
-         * 139.17 = gets 5 stacks
+         * 79.53 = gets 20 stacks
+         * 139.17 = gets 0 stacks
          * But since the talent number changes, we will have to make it index based, assuming max stacks
          * 0 = 5 stacks
          * 1 = 5 stacks
-         * 4 = 15 stacks
-         * 8 = 15 stacks
+         * 4 = 20 stacks
+         * 8 = 10 stacks
          * 
          * The stacks is multiplied by a percent, which is based on the talent
          * So it needs to be calculated on-demand
