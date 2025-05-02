@@ -38,6 +38,7 @@
         It only supports English right now. You'll get mixed results with other
         languages.
       </li>
+      <li>Hop into the main WuWa Discord, or our WutheringTools Discord to use the bot. Type /bind to connect your account ,then /create to generate the image. The bot is made by Kuro, so your account information is safe.</li>
     </ul>
     <div
       class="flex items-center gap-4 p-4 border-2 border-primary border-dotted rounded"
