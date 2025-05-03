@@ -10,19 +10,36 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>May 1, 2025</h3>
+    <h3>May 3, 2025</h3>
+    <ul>
+      <li>Ciaccona is now available since she is in the in-game gallery.</li>
+    </ul>
+    <h3>May 2, 2025</h3>
     <ul>
       <li>Adds a note on how to use the wuwa bot for importing echoes.</li>
     </ul>
     <h3>May 1, 2025</h3>
     <ul>
-      <li>Update Zani Nightfall damages. The numbers displayed in the forte stats are misleading in-game. It does 9 hits instead of 2. And it also changes how the Blaze stacks are applied. At best (40 stacks), it's actually broken into 5+5+15+15, and if you have less it takes away from the end.</li>
+      <li>
+        Update Zani Nightfall damages. The numbers displayed in the forte stats
+        are misleading in-game. It does 9 hits instead of 2. And it also changes
+        how the Blaze stacks are applied. At best (40 stacks), it's actually
+        broken into 5+5+15+15, and if you have less it takes away from the end.
+      </li>
     </ul>
     <h3>April 30, 2025</h3>
     <ul>
-      <li>Fixed where to put additive multipliers in multi-hits in the tooltip. The total damage was correct.</li>
-      <li>Adds buffs and damage for echoes: Abyssal Patricius, and Vitreum Dancer.</li>
-      <li>Updates Zani Dawning and Daybreak skill details percentages to reflect the game damage instances.</li>
+      <li>
+        Fixed where to put additive multipliers in multi-hits in the tooltip.
+        The total damage was correct.
+      </li>
+      <li>
+        Adds buffs and damage for echoes: Abyssal Patricius, and Vitreum Dancer.
+      </li>
+      <li>
+        Updates Zani Dawning and Daybreak skill details percentages to reflect
+        the game damage instances.
+      </li>
     </ul>
     <h3>April 29, 2025</h3>
     <ul>

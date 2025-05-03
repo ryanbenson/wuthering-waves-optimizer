@@ -969,6 +969,63 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Ciaccona: [
+    {
+      key: "OutroSkillWindcallingTune",
+      name: "Outro Skill: Windcalling Tune",
+      details: `<div class="skilldescription"><span class="Highlight">Aero Erosion</span> DMG dealt to targets near the active Resonator is Amplified by 100% for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:AeroErosion",
+          modifierValue: 1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SoloConcert",
+      name: "Solo Concert",
+      details: `When Ciaccona or Ensemble Sylph performs Solo Concert, they give 24% Aero DMG Bonus to all nearby Resonators in the team. This effect is not stackable.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Aero",
+          modifierValue: 0.24,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2SongoftheFourSeasons",
+      name: "Sequence Node 2: Song of the Four Seasons",
+      details: `<span class="skilldescription">During Resonance Liberation <span class="Highlight">Singer's Triple Cadenza</span>, Resonators in the team gain 40% Aero DMG Bonus.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Aero",
+          modifierValue: 0.4,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode5EternalIdylltoLastinSummer",
+      name: "Sequence Node 5: Eternal Idyll to Lasting Summer",
+      details: `>DMG taken by Resonators within and around the range of Resonance Liberation <span class="Highlight">Singer's Triple Cadenza</span> is reduced by 30%.</span>`,
+      hasStacks: false,
+      modifiers: [],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
