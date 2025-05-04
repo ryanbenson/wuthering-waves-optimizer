@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 4, 2025</h3>
+    <ul>
+      <li>Adds a quick way to reset all of your custom buffs.</li>
+    </ul>
     <h3>May 3, 2025</h3>
     <ul>
       <li>Ciaccona is now available since she is in the in-game gallery.</li>

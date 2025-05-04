@@ -1,5 +1,13 @@
 <template>
   <div class="custom__buffs">
+    <div class="actions mb-4">
+      <button
+        class="btn btn-primary"
+        @click="handleResetCustomBuffs"
+        data-test-custom-buff-reset-btn>
+        Reset Custom Buffs
+      </button>
+    </div>
     <div class="custom__buffs-list w-max">
       <label class="form-control mb-4">
         <div class="label">
@@ -438,6 +446,32 @@ export default {
     updatedStats() {
       const data = JSON.parse(JSON.stringify(this.buffsData));
       this.$emit("custom-buffs-updated", data);
+    },
+    handleResetCustomBuffs() {
+      this.ATK = 0;
+      this.ATK_FLAT = 0;
+      this.HP = 0;
+      this.HP_FLAT = 0;
+      this.DEF = 0;
+      this.DEF_FLAT = 0;
+      this.CritRate = 0;
+      this.CritDMG = 0;
+      this.EnergyRegen = 0;
+      this.BasicAttackDMGBonus = 0;
+      this.HeavyAttackDMGBonus = 0;
+      this.ResonanceSkillDMGBonus = 0;
+      this.ResonanceLiberationDMGBonus = 0;
+      this.Glacio = 0;
+      this.Fusion = 0;
+      this.Electro = 0;
+      this.Aero = 0;
+      this.Spectro = 0;
+      this.Havoc = 0;
+      this.HealingBonus = 0;
+      this.DamageAmplify = 0;
+      this.ResistShred = 0;
+      this.DefIgnore = 0;
+      this.CoordinatedDMGBonus = 0;
     },
   },
   computed: {
