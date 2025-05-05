@@ -1,16 +1,21 @@
 <template>
   <div class="flex gap-4 mb-4">
-    <button class="btn btn-primary" @click="handleCreateRotation" data-test-rotations-action="create">
+    <button
+      class="btn btn-primary"
+      @click="handleCreateRotation"
+      data-test-rotations-action="create">
       Create
     </button>
-    <button class="btn btn-primary" @click="handleToggleImport" data-test-rotations-action="import">
+    <button
+      class="btn btn-primary"
+      @click="handleToggleImport"
+      data-test-rotations-action="import">
       Import
     </button>
     <button
       class="btn btn-primary"
       @click="togglePresetRotations"
-      data-test-rotations-action="presets"
-    >
+      data-test-rotations-action="presets">
       List Presets
     </button>
   </div>
@@ -32,12 +37,12 @@
   </div>
   <div v-if="isPresetRotationsOpen">
     <template v-if="!hasRotations">
-    <div
-      class="presetRotations card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
-      <div class="card-body">
-        No presets are available for {{ character }} yet.
+      <div
+        class="presetRotations card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+        <div class="card-body">
+          No presets are available for {{ character }} yet.
+        </div>
       </div>
-    </div>
     </template>
     <template v-else>
       <div
@@ -49,9 +54,7 @@
           <p>
             {{ preset.description }}
           </p>
-          <p class="italic">
-            Author: {{ preset.author }}
-          </p>
+          <p class="italic">Author: {{ preset.author }}</p>
           <button class="btn btn-primary" @click="handleImportPreset(preset)">
             Import
           </button>
@@ -63,6 +66,7 @@
     <CalculatorRotation
       v-for="rotation in rotations"
       :key="rotation.id"
+      :ref="rotation.id"
       :character="character"
       :character-data="characterData"
       :id="rotation.id"
@@ -117,7 +121,7 @@ export default {
      */
     hasRotations() {
       return this.presets.length > 0;
-    }
+    },
   },
   methods: {
     ...mapActions(useCharacterStore, [
@@ -128,13 +132,18 @@ export default {
      * Handles creating a new rotation
      */
     async handleCreateRotation() {
+      const id = randomString();
       const newRotationData = {
-        id: randomString(),
+        id,
         name: "Untitled Rotation",
         description: "",
         actions: [],
       };
       this.rotations.push(newRotationData);
+      // open the new rotation
+      this.$nextTick(() => {
+        this.$refs[id][0].toggleOpen();
+      });
       // update our store
       const data = {
         rotations: JSON.parse(JSON.stringify(this.rotations)),

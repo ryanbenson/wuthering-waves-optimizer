@@ -13,8 +13,8 @@
     <h3>May 5, 2025</h3>
     <ul>
       <li>
-        Automatically opens a new rotation action when you create one, saving a
-        click.
+        Automatically opens a new rotation, and rotation action when you create
+        one, saving a click.
       </li>
     </ul>
     <h3>May 4, 2025</h3>
