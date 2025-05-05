@@ -13,6 +13,7 @@
     <h3>May 4, 2025</h3>
     <ul>
       <li>Adds a quick way to reset all of your custom buffs.</li>
+      <li>Fixed minor text issue on Phoebe S4.</li>
     </ul>
     <h3>May 3, 2025</h3>
     <ul>
