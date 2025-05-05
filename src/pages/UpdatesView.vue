@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 5, 2025</h3>
+    <ul>
+      <li>
+        Automatically opens a new rotation action when you create one, saving a
+        click.
+      </li>
+    </ul>
     <h3>May 4, 2025</h3>
     <ul>
       <li>Adds a quick way to reset all of your custom buffs.</li>

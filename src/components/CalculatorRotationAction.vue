@@ -63,6 +63,7 @@
               v-model="actionKeyValue"
               name="actionKeyValue"
               id="actionKeyValue"
+              ref="actionKeys"
               class="select select-bordered select-xs w-full"
               @change="onSkillChange"
               :data-test-rotation-action-skill-input="actionKeyValue ?? 'none'">

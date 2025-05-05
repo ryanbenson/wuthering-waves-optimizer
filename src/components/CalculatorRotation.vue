@@ -47,6 +47,7 @@
               v-for="action in actionsList"
               :key="action.id"
               :id="action.id"
+              :ref="action.id"
               :character="character"
               :character-data="characterData"
               :action-key="action.key"
@@ -143,12 +144,17 @@ export default {
     },
     addAction() {
       const newSequence = this.actionsCount + 1;
+      const id = randomString();
       this.actionsList.push({
-        id: randomString(),
+        id,
         type: null,
         order: newSequence,
         count: 1,
         buffs: [],
+      });
+      this.$nextTick(() => {
+        // open the new action for editing
+        this.$refs[id][0].toggleEdit();
       });
     },
     handleRotationExport() {
