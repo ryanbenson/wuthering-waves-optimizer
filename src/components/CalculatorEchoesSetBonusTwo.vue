@@ -13,7 +13,7 @@
           v-model="setManual"
           class="select select-bordered select-sm"
           @change="onSetManualChange">
-          <option v-for="set in [...twoSetBonuses, ...fiveSetBonuses]" :key="set" :value="set">
+          <option v-for="set in [...optionsList]" :key="set" :value="set">
             {{ set }}
           </option>
         </select>
@@ -224,6 +224,16 @@ export default {
       });
       return finalBuffData;
     },
+    /**
+     * Provides the list of options from the set list
+     * @returns {Array}
+     */
+    optionsList() {
+      const twoSetList = JSON.parse(JSON.stringify(twoSetBonuses));
+      const fiveSetList = JSON.parse(JSON.stringify(fiveSetBonuses));
+      const list = [...twoSetBonuses, ...fiveSetBonuses];
+      return list.sort();
+    }
   },
   mounted() {
     this.setManual = this.type;

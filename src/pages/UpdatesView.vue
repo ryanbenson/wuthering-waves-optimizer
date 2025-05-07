@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 7, 2025</h3>
+    <ul>
+      <li>
+        Alphabetized the list of set bonuses for 2 and 5 set choices to make it
+        easier to find the set you are looking for.
+      </li>
+    </ul>
     <h3>May 6, 2025</h3>
     <ul>
       <li>
