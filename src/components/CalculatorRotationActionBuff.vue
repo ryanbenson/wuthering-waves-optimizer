@@ -66,7 +66,12 @@ export default {
       // add in Damage Deepen. It's a buff we want, but not from echo substats
       allModifiers.push(["DMGDeepen", "Damage Amplify"]);
       // also add in resist shred
-      allModifiers.push(["ResistShred", "Resist Reduction"])
+      allModifiers.push(["ResistShred", "Resist Reduction"]);
+      // also add in def shred
+      allModifiers.push(["DefIgnore", "Defense Reduction"]);
+      // also add in multipliers too
+      allModifiers.push(["talentModifierMultiply", "DMG Multiplier"]);
+      allModifiers.push(["talentModifierAdd", "DMG Multiplier Additive"]);
       allModifiers.forEach((modifier) => {
         const [key, label] = modifier;
         // find if this key is anywhere in the full list. if so, mark it as disabled

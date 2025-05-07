@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 6, 2025</h3>
+    <ul>
+      <li>
+        Adds Def Ignore, DMG multiplier, and DMG multiplier additive to rotation
+        action buffs.
+      </li>
+    </ul>
     <h3>May 5, 2025</h3>
     <ul>
       <li>

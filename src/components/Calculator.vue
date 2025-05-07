@@ -1016,11 +1016,14 @@ export default defineComponent({
           ] ?? 0;
         const talentModifierAddFromSelfBuffs =
           selfBuffs?.[`${attack.key}:talentModifierMultiplyAdd`] ?? 0;
+        const attackBuffsTalentModifierAdd =
+          attack?.buffs?.talentModifierAdd ?? 0;
         const totalTalentModifierAdd =
           talentModifierAdd +
           talentModifierAddFromResonanceChains +
           talentModifierAddFromResonanceChainsAdd +
-          talentModifierAddFromSelfBuffs;
+          talentModifierAddFromSelfBuffs +
+          attackBuffsTalentModifierAdd;
 
         const specificSkillDmgFromResonanceChains =
           charResonanceChainsData.value?.specificTalentBuffs?.[attack.key] ?? 0;
@@ -1078,6 +1081,7 @@ export default defineComponent({
         const extraDefIgnoreCharBuff =
           selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEFIgnore`] ?? 0;
         const extraDefIgnoreCustomBuffs = customBuffs.value?.DefIgnore ?? 0;
+        const attackBuffsDefIgnore = attack?.buffs?.DefIgnore ?? 0;
         const specificSkillExtraCritRate =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:CritRate`
@@ -1105,11 +1109,14 @@ export default defineComponent({
           selfBuffs?.specificTalentBuffs?.[
             `${attack.key}:talentModifierMultiply`
           ] ?? 0;
+        const talentModifierMultiplyAttackBuff =
+          attack?.buffs?.talentModifierMultiply ?? 0;
         const totalDefIgnore =
           DefIgnore.value +
           extraDefIgnoreResonanceChain +
           extraDefIgnoreCharBuff +
-          extraDefIgnoreCustomBuffs;
+          extraDefIgnoreCustomBuffs +
+          attackBuffsDefIgnore;
         let specificSkillDmg =
           specificSkillDmgFromResonanceChains +
           specificSkillDmgFromCharBuffs +
@@ -1205,7 +1212,9 @@ export default defineComponent({
           customDamageDeepen +
           selfBuffDmgDeepenForSubType;
         let totalTalentModifierMultiply =
-          talentModifierMultiply + talentModifierMultiplySelfBuff;
+          talentModifierMultiply +
+          talentModifierMultiplySelfBuff +
+          talentModifierMultiplyAttackBuff;
         // grab any special multipliers, and then multiply the previous total by that
         const talentModifierSpecialMultiplyResChains =
           charResonanceChainsData.value?.specificTalentBuffs?.[
