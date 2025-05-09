@@ -97,11 +97,14 @@ export default {
         }
       });
       // convert to array of objects
-      return Object.keys(attackDamagesByType).map((key) => ({
+      const data = Object.keys(attackDamagesByType).map((key) => ({
         label: key,
         value: attackDamagesByType[key],
         color: this.colorByType[key],
       }));
+      // sort the data so it shows highest -> lowest damages
+      data.sort((a, b) => b.value - a.value);
+      return data;
     },
     colorByType() {
       return {
