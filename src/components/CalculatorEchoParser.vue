@@ -13,6 +13,11 @@
       :style="getFixedBoxStyle(box)"></div>
   </div>
   <div class="echo-parser">
+    <div v-if="errorImageSize" class="alert alert-error mb-4">
+      <div class="flex-1">
+        <label>Image must be 1920x1080</label>
+      </div>
+    </div>
     <h2 class="text-xl font-bold">
       Upload, or paste your image from the wuwa discord bot
     </h2>
@@ -38,7 +43,11 @@
         It only supports English right now. You'll get mixed results with other
         languages.
       </li>
-      <li>Hop into the main WuWa Discord, or our WutheringTools Discord to use the bot. Type /bind to connect your account ,then /create to generate the image. The bot is made by Kuro, so your account information is safe.</li>
+      <li>
+        Hop into the main WuWa Discord, or our WutheringTools Discord to use the
+        bot. Type /bind to connect your account ,then /create to generate the
+        image. The bot is made by Kuro, so your account information is safe.
+      </li>
     </ul>
     <div
       class="flex items-center gap-4 p-4 border-2 border-primary border-dotted rounded"
@@ -93,6 +102,7 @@ export default {
       isDragging: false,
       dragCounter: 0,
       worker: null,
+      errorImageSize: false,
     };
   },
   methods: {
@@ -127,12 +137,19 @@ export default {
       this.$refs.fileUpload.click();
     },
     async handleImageFile(file) {
+      this.errorImageSize = false;
       const img = new Image();
       img.onload = async () => {
         this.isLoading = true;
         console.time("Parse");
         this.imageElement = img;
         this.imageSrc = img.src;
+        // validate that the image is 1920x1080
+        if (img.naturalWidth !== 1920 || img.naturalHeight !== 1080) {
+          this.errorImageSize = true;
+          this.reset();
+          return;
+        }
         this.worker = await createWorker("eng");
         const whitelist =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.%+ ";

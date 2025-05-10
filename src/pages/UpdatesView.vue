@@ -10,10 +10,18 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 10, 2025</h3>
+    <ul>
+      <li>
+        Adds validation to echo importer to ensure the image is the correct
+        size.
+      </li>
+    </ul>
     <h3>May 9, 2025</h3>
     <ul>
       <li>
-        Sorts the rotation chart data so it shows damage type from highest to lowest.
+        Sorts the rotation chart data so it shows damage type from highest to
+        lowest.
       </li>
     </ul>
     <h3>May 7, 2025</h3>
