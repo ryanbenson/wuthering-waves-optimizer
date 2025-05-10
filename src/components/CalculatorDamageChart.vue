@@ -8,6 +8,9 @@
 
 <script>
 import Chart from "chart.js/auto";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+Chart.register(ChartDataLabels);
+
 export default {
   props: {
     character: {
@@ -64,8 +67,7 @@ export default {
       };
       attacks.forEach((attack) => {
         // if this attack requires a resonance chain to be unlocked, verify it's enabled
-        const requiresResonanceChain =
-          attack?.requiresResonanceChain ?? false;
+        const requiresResonanceChain = attack?.requiresResonanceChain ?? false;
         if (requiresResonanceChain) {
           const resonanceChainsEnabledAttacks =
             this.charResonanceChainsData?.value?.EnableAttack ?? [];
@@ -110,7 +112,7 @@ export default {
       return {
         Basic: "rgb(255, 99, 132)", // Muted Red
         Skill: "rgb(255, 159, 64)", // Muted Orange
-        Liberation: "rgb(255, 205, 86)", // Muted Yellow
+        Liberation: "rgb(255, 205, 125)", // Muted Yellow
         Intro: "rgb(153, 102, 255)", // Muted Purple
         Heavy: "rgb(75, 192, 192)", // Teal
         Outro: "rgb(201, 203, 207)", // Soft Gray
@@ -133,6 +135,7 @@ export default {
 
       const labels = this.chartData.map((data) => data.label);
       const values = this.chartData.map((data) => Math.round(data.value));
+      const total = values.reduce((a, b) => a + b, 0);
       const colors = this.chartData.map((data) => data.color);
 
       this.chartObj = new Chart(ctx, {
@@ -147,6 +150,36 @@ export default {
             },
           ],
         },
+        options: {
+          plugins: {
+            datalabels: {
+              color: "#fff",
+              font: {
+                weight: "bold",
+              },
+              formatter: (value, context) => {
+                const percentage = (value / total) * 100;
+                return percentage >= 8 ? `${percentage.toFixed(1)}%` : null;
+              },
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => {
+                  const value = context.parsed;
+                  const percentage = ((value / total) * 100).toFixed(1);
+                  const label = context.label || "";
+                  return `${label}: ${value} (${percentage}%)`;
+                },
+              },
+            },
+            legend: {
+              labels: {
+                color: "#7480ff",
+              },
+            },
+          },
+        },
+        plugins: [ChartDataLabels],
       });
     },
   },
