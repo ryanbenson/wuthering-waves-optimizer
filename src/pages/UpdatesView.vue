@@ -16,6 +16,10 @@
         Adds validation to echo importer to ensure the image is the correct
         size.
       </li>
+      <li>
+        Adds percentage to the rotation pie chart, and adjusts legend color to
+        make it easier to read in light and dark mode.
+      </li>
     </ul>
     <h3>May 9, 2025</h3>
     <ul>
