@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 11, 2025</h3>
+    <ul>
+      <li>
+        Adds Forte text to the rotation action to help clarify which forte an
+        action is based off of.
+      </li>
+    </ul>
     <h3>May 10, 2025</h3>
     <ul>
       <li>
