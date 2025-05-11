@@ -12,7 +12,7 @@
       <div class="rotation__action__end">
         <div class="rotation__action__types flex flex-col items-end gap-2">
           <div class="type badge badge-primary size-max" v-if="skillTypeLabel">
-            {{ skillTypeLabel }}
+            Forte: {{ skillTypeLabel }}
           </div>
           <div v-if="damageType" class="type badge badge-secondary size-max">
             {{ damageType }} DMG
