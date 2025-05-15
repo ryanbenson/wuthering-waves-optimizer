@@ -483,7 +483,7 @@
         {{ rotation.name }}
       </h3>
       <h4 class="text">
-        <span class="font-bold">Total DMG</span> Normal: {{ displayDamage(rotation.damageAggregation.normalDamage) }} / Average: {{ displayDamage(rotation.damageAggregation.avgDamage) }} / Crit {{ displayDamage(rotation.damageAggregation.critDamage) }}
+        <span class="font-bold">Total DMG</span> Normal: {{ displayDamage(rotation.damageAggregation.normalDamage) }} / Average: {{ displayDamage(rotation.damageAggregation.avgDamage) }} / Crit: {{ displayDamage(rotation.damageAggregation.critDamage) }}
       </h4>
       <h4 v-if="rotation.damageAggregation.healing" class="text calculation__damage__item--healing">
         <span class="font-bold">Total Healing</span> {{ displayDamage(rotation.damageAggregation.healing) }}
