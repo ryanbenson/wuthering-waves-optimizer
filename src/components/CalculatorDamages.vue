@@ -479,8 +479,17 @@
       class="rotation__item pt-8"
       :key="rotation.id"
       :data-test-damages-list-rotation="rotation.name">
-      <h4 class="text-lg font-bold" v-tooltip="rotation.description">
+      <h3 class="text-2xl font-bold" v-tooltip="rotation.description">
         {{ rotation.name }}
+      </h3>
+      <h4 class="text">
+        <span class="font-bold">Total DMG</span> Normal: {{ displayDamage(rotation.damageAggregation.normalDamage) }} / Average: {{ displayDamage(rotation.damageAggregation.avgDamage) }} / Crit {{ displayDamage(rotation.damageAggregation.critDamage) }}
+      </h4>
+      <h4 v-if="rotation.damageAggregation.healing" class="text calculation__damage__item--healing">
+        <span class="font-bold">Total Healing</span> {{ displayDamage(rotation.damageAggregation.healing) }}
+      </h4>
+      <h4 v-if="rotation.damageAggregation.shield" class="text calculation__damage__item--shield">
+        <span class="font-bold">Total Shield</span> {{ displayDamage(rotation.damageAggregation.shield) }}
       </h4>
 
       <template v-if="!rotation.attacks?.length">
