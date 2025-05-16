@@ -2014,6 +2014,10 @@ export default defineComponent({
 .results {
   display: block !important;
 
+  @media (max-width: 768px) {
+    display: none !important;
+  }
+
   h4 {
     padding-left: 0.5rem;
   }

@@ -10,6 +10,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 16, 2025</h3>
+    <ul>
+      <li>
+        Fixed display bug on mobile where the stats and damages were always showing.
+      </li>
+    </ul>
     <h3>May 15, 2025</h3>
     <ul>
       <li>
