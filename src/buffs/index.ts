@@ -1222,6 +1222,27 @@ export const allWeaponTeamBuffs = [
     details: `When Rover: Aero casts Resonance Skill Unbound Flow, Aero DMG dealt by nearby Resonators on the field is Amplified by <span class="param">10%/14%/18%/22%/26%</span> for <span class="param">30</span>s.</span>`,
     alwaysEnabled: false,
   },
+  {
+    name: "Woodland Aria Aero RES Reduction",
+    key: "WoodlandAriaAeroShred",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ResistShred:Aero",
+        modifierByRefinement: {
+          "1": 0.1,
+          "2": 0.115,
+          "3": 0.13,
+          "4": 0.145,
+          "5": 0.16,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `Hitting targets with Aero Erosion reduces their Aero RES by <span class="param">10%/11.5%/13%/14.5%/16%</span> for <span class="param">20</span>s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allCharacters: string[] = [

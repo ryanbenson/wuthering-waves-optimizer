@@ -13,6 +13,7 @@
     <h3>May 18, 2025</h3>
     <ul>
       <li>Adds Ciaccona's signature weapon, Woodland Aria.</li>
+      <li>Adds Woodland Aria team buff.</li>
     </ul>
     <h3>May 16, 2025</h3>
     <ul>
