@@ -86,6 +86,7 @@ const pistolsList = {
   five: [
     { key: "StaticMist", name: "Static Mist" },
     { key: "TheLastDance", name: "The Last Dance" },
+    { key: "WoodlandAria", name: "Woodland Aria" },
   ],
   four: [
     { key: "Cadenza", name: "Cadenza" },

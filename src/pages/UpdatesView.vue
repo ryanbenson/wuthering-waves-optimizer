@@ -10,16 +10,22 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 18, 2025</h3>
+    <ul>
+      <li>Adds Ciaccona's signature weapon, Woodland Aria.</li>
+    </ul>
     <h3>May 16, 2025</h3>
     <ul>
       <li>
-        Fixed display bug on mobile where the stats and damages were always showing.
+        Fixed display bug on mobile where the stats and damages were always
+        showing.
       </li>
     </ul>
     <h3>May 15, 2025</h3>
     <ul>
       <li>
-        Adds rotation summary to the top of the rotation for quick access to see the total damage, shield, and healing.
+        Adds rotation summary to the top of the rotation for quick access to see
+        the total damage, shield, and healing.
       </li>
     </ul>
     <h3>May 11, 2025</h3>
