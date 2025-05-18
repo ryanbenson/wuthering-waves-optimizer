@@ -6,11 +6,6 @@
     <p>
       We use privacy-first analytics, so no personal or identifiable information
       is stored or collected about you and we don't use cookies for analytics.
-      Refer to:
-      <a href="https://www.simpleanalytics.com/" rel="noreferrer">
-        Simple Analytics
-      </a>
-      and
       <a href="https://vercel.com/docs/analytics" rel="noreferrer">
         Vercel Analytics
       </a>
