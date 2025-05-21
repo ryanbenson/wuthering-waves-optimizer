@@ -22,6 +22,8 @@ import CalculatorEchoParser from "./CalculatorEchoParser.vue";
 import { verboseStatLabelMap } from "../echoes/stats";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
+import { randomString } from "../utils/strings.ts";
 export default {
   name: "CalculatorEchoImporter",
   components: {
@@ -35,6 +37,10 @@ export default {
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterEchoes"]),
+    ...mapActions(useInventoryStore, [
+      "saveEcho",
+      "setEquippedData",
+    ]),
     triggerOpenModal() {
       const modalEl = document.getElementById("modal-echoes-importer");
       modalEl.showModal();
@@ -43,7 +49,7 @@ export default {
       const modalEl = document.getElementById("modal-echoes-importer");
       modalEl.close();
     },
-    handleEchoesParsed(echoData) {
+    async handleEchoesParsed(echoData, isSavingToInventory) {
       const echoes = echoData.map((echo) => {
         const echoSubStatsType1 = this.getSubstatType(echo.substats[0]);
         const echoSubStatsValue1 = this.getSubstatValue(
@@ -65,6 +71,10 @@ export default {
         const echoSubStatsValue5 = this.getSubstatValue(
           echo.substats[4].subStatValue,
         );
+        let echoId = null;
+        if (isSavingToInventory) {
+          echoId = randomString();
+        }
         return {
           echo: echo.echo ?? null,
           type: Number(echo.cost) ?? null, // make sure the cost is a number so it counts max cost without breaking
@@ -72,7 +82,7 @@ export default {
           stat: echo.mainStatLabel
             ? verboseStatLabelMap[echo.mainStatLabel]
             : null,
-          echoId: null,
+          echoId,
           echoSet: echo.set,
           echoSubStatsType1,
           echoSubStatsValue1,
@@ -87,8 +97,19 @@ export default {
         };
       });
       // update store
-      this.setCharacterEchoes(this.character, {}); // flush first
-      this.setCharacterEchoes(this.character, echoes);
+      await this.setCharacterEchoes(this.character, {}); // flush first
+      await this.setCharacterEchoes(this.character, echoes);
+
+      // if we're saving to the inventory, save each echo,
+      // then add it to the char
+      if (isSavingToInventory) {
+        for (const [index, echo] of echoes.entries()) {
+          await this.saveEcho(echo);
+          const equippedData = {};
+          equippedData[this.character] = index;
+          await this.setEquippedData(echo.echoId, equippedData);
+        }
+      }
       // close modal
       this.triggerCloseModal();
     },

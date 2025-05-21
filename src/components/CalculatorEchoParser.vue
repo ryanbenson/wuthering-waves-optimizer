@@ -49,6 +49,18 @@
         image. The bot is made by Kuro, so your account information is safe.
       </li>
     </ul>
+    <div class="flex gap-2 items-center justify-center">
+      <div class="form-control mb-2" @click.stop>
+        <label
+          class="label inline-flex justify-start">
+          <input
+            type="checkbox"
+            class="checkbox checkbox-sm"
+            v-model="isSavingToInventory" />
+          <span class="label-text ml-2 font-bold">Save to Inventory?</span>
+        </label>
+      </div>
+    </div>
     <div
       class="flex items-center gap-4 p-4 border-2 border-primary border-dotted rounded"
       :class="{ 'bg-base-300': isDragging }"
@@ -103,6 +115,7 @@ export default {
       dragCounter: 0,
       worker: null,
       errorImageSize: false,
+      isSavingToInventory: false,
     };
   },
   methods: {
@@ -174,10 +187,11 @@ export default {
       this.echoes = [];
       this.isLoading = false;
       this.$refs.fileUpload.value = null;
+      this.isSavingToInventory = false;
     },
 
     sendToParent() {
-      this.$emit("echoes-parsed", this.echoes);
+      this.$emit("echoes-parsed", this.echoes, this.isSavingToInventory);
     },
 
     onImageLoad() {
