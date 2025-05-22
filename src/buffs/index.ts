@@ -1134,6 +1134,21 @@ export const allEchoBuffs = [
     maxStacks: 0,
     alwaysEnabled: false,
   },
+  {
+    key: "GustsofWelkin",
+    name: "Gusts of Welkin",
+    details: `Inflicting Aero Erosion upon enemies increases <span class="Wind">Aero</span> DMG for all Resonators in the team by 15%.`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.15,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allWeaponTeamBuffs = [

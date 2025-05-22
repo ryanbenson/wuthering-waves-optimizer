@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 22, 2025</h3>
+    <ul>
+      <li>Adds Gusts of Welkin team buff.</li>
+    </ul>
     <h3>May 21, 2025</h3>
     <ul>
       <li>Adds support to save imported echoes to inventory upon import.</li>
