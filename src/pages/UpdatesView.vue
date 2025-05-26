@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 26, 2025</h3>
+    <ul>
+      <li>Adds new theme, and theme chooser.</li>
+    </ul>
     <h3>May 22, 2025</h3>
     <ul>
       <li>Adds Gusts of Welkin team buff.</li>
