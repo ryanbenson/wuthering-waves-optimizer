@@ -21,7 +21,7 @@ export default defineComponent({
       (newRouteName) => {
         this.updateBodyOverflow(newRouteName);
       },
-      { immediate: true }
+      { immediate: true },
     );
   },
   beforeUnmount() {
@@ -29,13 +29,13 @@ export default defineComponent({
   },
   methods: {
     updateBodyOverflow(routeName) {
-      if (routeName === 'HomeView') {
-        document.body.style.overflow = 'hidden';
+      if (routeName === "HomeView") {
+        document.body.style.overflow = "hidden";
       } else {
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = "auto";
       }
-    }
-  }
+    },
+  },
 });
 </script>
 
@@ -51,6 +51,12 @@ export default defineComponent({
 }
 
 html[data-theme="light"] {
+  .contain {
+    background: oklch(var(--b1)) !important;
+  }
+}
+
+html[data-theme="black"] {
   .contain {
     background: oklch(var(--b1)) !important;
   }
