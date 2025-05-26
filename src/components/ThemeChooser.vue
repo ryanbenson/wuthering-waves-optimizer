@@ -24,7 +24,7 @@
     </div>
     <div
       tabindex="0"
-      class="dropdown-content bg-base-200 text-base-content rounded-box top-px h-[30.5rem] max-h-[calc(100vh-8.6rem)] overflow-y-auto border border-white/5 shadow-2xl outline-1 outline-black/5 mt-16">
+      class="dropdown-content bg-base-200 text-base-content rounded-box top-px max-h-[calc(100vh-8.6rem)] overflow-y-auto border border-white/5 shadow-2xl outline-1 outline-black/5 mt-16">
       <ul class="menu w-56">
         <li class="menu-title text-xs">Theme</li>
         <!--[-->
