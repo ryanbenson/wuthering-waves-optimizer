@@ -1,9 +1,10 @@
 <template>
   <div class="data-input--talents mt-8">
     <div class="flex flex-col pb-7 relative">
-      <label for="talentBasic" class="talent__label"
-        >Basic <span class="text-primary">{{ basic }}</span></label
-      >
+      <label for="talentBasic" class="talent__label">
+        Basic
+        <span class="text-primary">{{ basic }}</span>
+      </label>
       <input
         v-model="basic"
         name="talentBasic"
@@ -12,12 +13,14 @@
         max="10"
         step="1"
         class="range range-xs"
+        :class="classes"
         @input="(e) => talentUpdated('basic', e)" />
     </div>
     <div class="flex flex-col pb-7 relative">
-      <label for="talentSkill" class="talent__label"
-        >Skill <span class="text-primary">{{ skill }}</span></label
-      >
+      <label for="talentSkill" class="talent__label">
+        Skill
+        <span class="text-primary">{{ skill }}</span>
+      </label>
       <input
         v-model="skill"
         name="talentSkill"
@@ -26,12 +29,14 @@
         max="10"
         step="1"
         class="range range-xs"
+        :class="classes"
         @input="(e) => talentUpdated('skill', e)" />
     </div>
     <div class="flex flex-col pb-7 relative">
-      <label for="talentForte" class="talent__label"
-        >Forte Circuit <span class="text-primary">{{ forte }}</span></label
-      >
+      <label for="talentForte" class="talent__label">
+        Forte Circuit
+        <span class="text-primary">{{ forte }}</span>
+      </label>
       <input
         v-model="forte"
         name="talentForte"
@@ -40,12 +45,14 @@
         max="10"
         step="1"
         class="range range-xs"
+        :class="classes"
         @input="(e) => talentUpdated('forte', e)" />
     </div>
     <div class="flex flex-col pb-7 relative">
-      <label for="talentLiberation" class="talent__label"
-        >Liberation <span class="text-primary">{{ liberation }}</span></label
-      >
+      <label for="talentLiberation" class="talent__label">
+        Liberation
+        <span class="text-primary">{{ liberation }}</span>
+      </label>
       <input
         v-model="liberation"
         name="talentLiberation"
@@ -54,12 +61,14 @@
         max="10"
         step="1"
         class="range range-xs"
+        :class="classes"
         @input="(e) => talentUpdated('liberation', e)" />
     </div>
     <div class="flex flex-col pb-7 relative">
-      <label for="talentIntro" class="talent__label"
-        >Intro <span class="text-primary">{{ intro }}</span></label
-      >
+      <label for="talentIntro" class="talent__label">
+        Intro
+        <span class="text-primary">{{ intro }}</span>
+      </label>
       <input
         v-model="intro"
         name="talentIntro"
@@ -68,6 +77,7 @@
         max="10"
         step="1"
         class="range range-xs"
+        :class="classes"
         @input="(e) => talentUpdated('intro', e)" />
     </div>
   </div>
@@ -75,6 +85,7 @@
 <script>
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { useSettingsStore } from "../stores/settings";
 export default {
   props: {
     character: {
@@ -93,12 +104,24 @@ export default {
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
+    ...mapState(useSettingsStore, ["config"]),
+    settingsTheme() {
+      const settingsTheme = this.config?.theme ?? null;
+      return settingsTheme;
+    },
     /**
      * The current character data
      * @returns {Object}
      */
     currentCharacter() {
       return this.characters[this.character] ?? {};
+    },
+    classes() {
+      const classes = [];
+      if (this.settingsTheme === "black") {
+        classes.push("[--range-shdw:gray]");
+      }
+      return classes;
     },
     /**
      * Getter/setter used in the form for the basic talent state

@@ -129,6 +129,7 @@
               max="5"
               v-model="rank"
               step="1"
+              :class="rangeClasses"
               class="echo__selection__rank__input range range-xs" />
           </div>
         </div>
@@ -796,6 +797,7 @@
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { useSettingsStore } from "../stores/settings";
 import {
   rankColors,
   statsTable,
@@ -1314,6 +1316,18 @@ export default {
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
     ...mapState(useInventoryStore, ["echoes"]),
+    ...mapState(useSettingsStore, ["config"]),
+    settingsTheme() {
+      const settingsTheme = this.config?.theme ?? null;
+      return settingsTheme;
+    },
+    rangeClasses() {
+      const classes = [];
+      if (this.settingsTheme === "black") {
+        classes.push("[--range-shdw:gray]");
+      }
+      return classes;
+    },
     /**
      * The current character data
      * @returns {Object}

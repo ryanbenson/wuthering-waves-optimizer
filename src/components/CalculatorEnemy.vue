@@ -23,6 +23,7 @@
         max="120"
         step="1"
         class="range range-xs"
+        :class="rangeClasses"
         data-test-enemy-level-input />
     </div>
   </div>
@@ -45,6 +46,7 @@
         max="1"
         step="0.1"
         class="range range-xs"
+        :class="rangeClasses"
         data-test-enemy-resist-input />
     </div>
   </div>
@@ -76,6 +78,7 @@
           max="10"
           step="1"
           class="range range-xs"
+          :class="rangeClasses"
           data-test-enemy-spectro-frazzle-input />
       </div>
     </div>
@@ -85,6 +88,7 @@
 <script>
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { useSettingsStore } from "../stores/settings";
 export default {
   props: {
     character: {
@@ -162,6 +166,18 @@ export default {
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
+    ...mapState(useSettingsStore, ["config"]),
+    settingsTheme() {
+      const settingsTheme = this.config?.theme ?? null;
+      return settingsTheme;
+    },
+    rangeClasses() {
+      const classes = [];
+      if (this.settingsTheme === "black") {
+        classes.push("[--range-shdw:gray]");
+      }
+      return classes;
+    },
     /**
      * The current character data
      * @returns {Object}
