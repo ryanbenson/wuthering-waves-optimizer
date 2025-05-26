@@ -159,4 +159,10 @@ export default {
     display: none;
   }
 }
+
+html[data-theme="black"] {
+  .navbar {
+    background: oklch(var(--b1)) !important;
+  }
+}
 </style>
