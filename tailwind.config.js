@@ -19,7 +19,6 @@ module.exports = {
           "base-100": "#000000", // <- black background
           "base-200": "#111111",
           "base-300": "#1a1a1a",
-          "base-content": "#ffffff",
 
           info: "#3abff8",
           success: "#36d399",
@@ -39,7 +38,7 @@ module.exports = {
           "base-100": "#000000", // Override base colors
           "base-200": "#111111",
           "base-300": "#1a1a1a",
-          "base-content": "#ffffff",
+          "base-content": "oklab(0.87609 0 0 / 0.8)",
           "rounded-box": "0.5rem",
           "rounded-btn": "0.5rem",
           "rounded-badge": "1rem",
