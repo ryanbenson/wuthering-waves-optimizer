@@ -3,11 +3,6 @@
 @tailwind utilities;
 
 /**** FONTS ****/
-.poiret-one-regular {
-  font-family: "Poiret One", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
 
 /**** custom styles ****/
 
@@ -32,9 +27,20 @@ body {
   margin: 0;
   display: flex;
   min-height: 100vh;
+  font-family: "Figtree", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
   @media (max-width: 768px) {
     overflow: auto !important;
   }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Figtree", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
 }
 
 #app {

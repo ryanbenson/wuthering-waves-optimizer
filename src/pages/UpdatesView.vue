@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 27, 2025</h3>
+    <ul>
+      <li>Changes app font.</li>
+    </ul>
     <h3>May 26, 2025</h3>
     <ul>
       <li>Adds new theme, and theme chooser.</li>
