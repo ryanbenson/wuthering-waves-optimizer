@@ -39,9 +39,13 @@
       </div>
     </div>
 
-    <div v-if="selectedCharacter1" class="collapse collapse-arrow bg-base-100 border-base-300 border my-4">
+    <div
+      v-if="selectedCharacter1"
+      class="collapse collapse-arrow bg-base-100 border-base-300 border my-4">
       <input type="checkbox" />
-      <h3 class="collapse-title text-xl">Buffs for {{ selectedCharacter1 }}</h3>
+      <h3 class="collapse-title text-xl" data-test-party-member-1-name>
+        Buffs for {{ selectedCharacter1 }}
+      </h3>
       <div class="collapse-content">
         <CalculatorPartyBuff
           v-for="buff in buffsByCharacter[selectedCharacter1]"
@@ -63,9 +67,13 @@
       </div>
     </div>
 
-    <div v-if="selectedCharacter2" class="collapse collapse-arrow bg-base-100 border-base-300 border my-4">
+    <div
+      v-if="selectedCharacter2"
+      class="collapse collapse-arrow bg-base-100 border-base-300 border my-4">
       <input type="checkbox" />
-      <h3 class="collapse-title text-xl">Buffs for {{ selectedCharacter2 }}</h3>
+      <h3 class="collapse-title text-xl" data-test-party-member-2-name>
+        Buffs for {{ selectedCharacter2 }}
+      </h3>
       <div class="collapse-content">
         <CalculatorPartyBuff
           v-for="buff in buffsByCharacter[selectedCharacter2]"
@@ -87,7 +95,8 @@
       </div>
     </div>
 
-    <div class="collapse collapse-arrow bg-base-100 border-base-300 border my-4">
+    <div
+      class="collapse collapse-arrow bg-base-100 border-base-300 border my-4">
       <input type="checkbox" />
       <h3 class="collapse-title text-xl">Echo Buffs</h3>
       <div class="collapse-content">
@@ -109,7 +118,8 @@
       </div>
     </div>
 
-    <div class="collapse collapse-arrow bg-base-100 border-base-300 border my-4">
+    <div
+      class="collapse collapse-arrow bg-base-100 border-base-300 border my-4">
       <input type="checkbox" />
       <h3 class="collapse-title text-xl">Weapon Buffs</h3>
       <div class="collapse-content">

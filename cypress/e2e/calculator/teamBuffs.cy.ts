@@ -21,6 +21,10 @@ describe("Calculator Team Buffs", () => {
     // choose 2 characters for team buffs
     cy.get("[data-test-party-member-1-input]").select("Shorekeeper");
     cy.get("[data-test-party-member-2-input]").select("Zhezhi");
+    // open all accordions
+    cy.get(".collapse").each(($item) => {
+      cy.wrap($item).click();
+    });
     cy.get("[data-test-party-member-1-name]").should(
       "contain.text",
       "Shorekeeper",
