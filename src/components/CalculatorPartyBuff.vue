@@ -1,11 +1,11 @@
 <template>
   <div
-    class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
+    class="mt-2 cursor-pointer"
     @click="toggleEnabled"
     :data-test-party-buff="uniqueKey">
-    <div class="card-body">
+    <div class="">
       <div class="character__buff">
-        <h2 class="card-title" :data-test-party-buff-title="uniqueKey">{{ name }}</h2>
+        <h2 class="text-lg" :data-test-party-buff-title="uniqueKey">{{ name }}</h2>
         <div v-html="details"></div>
         <div class="flex gap-2 items-center">
           <div class="form-control" @click.stop>
