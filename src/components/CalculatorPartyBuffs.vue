@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="teammate_selects">
+    <div class="teammate_selects flex justify-center">
       <div class="teammate__select">
         <div
           class="character__selection__avatar"
@@ -350,7 +350,7 @@ export default {
 }
 .teammate_selects {
   display: flex;
-  gap: 4rem;
+  gap: 2rem;
 
   @media (max-width: 480px) {
     gap: 1rem;
@@ -358,8 +358,12 @@ export default {
   @media (max-width: 900px) {
     gap: 2rem;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
+  }
+  @media (max-width: 768px) {
+    flex-direction: row;
+  }
+  @media (max-width: 500px) {
+    flex-direction: column;
   }
 }
 .teammate__select {

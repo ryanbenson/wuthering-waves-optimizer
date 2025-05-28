@@ -16,6 +16,7 @@
         Updates team buffs page to group sections into accordions since the list
         of buffs was getting really long.
       </li>
+      <li>Centered the character selections in team buffs.</li>
     </ul>
     <h3>May 27, 2025</h3>
     <ul>
