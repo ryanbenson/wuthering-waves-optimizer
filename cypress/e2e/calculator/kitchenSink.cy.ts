@@ -125,10 +125,7 @@ describe("Calculator Kitchen Sink", () => {
     cy.get('[data-test-calculator-nav="team"]').click();
     cy.get("[data-test-party-member-1-input]").select("Shorekeeper");
     cy.get("[data-test-party-member-2-input]").select("Zhezhi");
-    // open all accordions
-    cy.get(".collapse").each(($item) => {
-      cy.wrap($item).click();
-    });
+    cy.get('[data-test-party-buff-char-1-collapse-bar]').click();
     cy.get("[data-test-party-member-1-name]").should(
       "contain.text",
       "Shorekeeper",
@@ -147,6 +144,7 @@ describe("Calculator Kitchen Sink", () => {
     cy.get(
       `[data-test-party-buff-input-base="ReleasedStellarealmCritDMG"]`,
     ).type("250");
+    cy.get('[data-test-party-buff-char-2-collapse-bar]').click();
     cy.get(
       `[data-test-party-buff-enabled="OutroSkillBinaryButterfly"]`,
     ).check();
@@ -162,6 +160,7 @@ describe("Calculator Kitchen Sink", () => {
       `[data-test-party-buff-enabled="SequenceNode4HuesSpectrum"]`,
     ).check();
     // activate all team echo buffs
+    cy.get('[data-test-party-buff-echoes-collapse-bar]').click();
     cy.get(`[data-test-party-buff-enabled="RejuvenatingGlow"]`).check();
     cy.get(`[data-test-party-buff-enabled="MoonlitClouds"]`).check();
     cy.get(`[data-test-party-buff-enabled="ImpermanenceHeron"]`).check();
@@ -170,6 +169,7 @@ describe("Calculator Kitchen Sink", () => {
     cy.get(`[data-test-party-buff-enabled="MidnightVeil"]`).check();
     cy.get(`[data-test-party-buff-enabled="EmpyreanAnthem"]`).check();
     // activate all team weapon buffs
+    cy.get('[data-test-party-buff-weapons-collapse-bar]').click();
     cy.get(`[data-test-party-buff-enabled="StaticMistATK"]`).check();
     cy.get(`[data-test-party-buff-stacks="StaticMistATK"]`).type("1");
     cy.get(`[data-test-party-refinements="StaticMistATK"]`).select("5");
