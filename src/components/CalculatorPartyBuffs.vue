@@ -39,89 +39,111 @@
       </div>
     </div>
 
-    <div v-if="selectedCharacter1">
-      <h2 class="text-lg font-bold mt-6 mb-2" data-test-party-member-1-name>
+    <div
+      v-if="selectedCharacter1"
+      class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
+      data-test-party-buff-char-1-collapse-bar>
+      <input type="checkbox" />
+      <h3 class="collapse-title text-xl" data-test-party-member-1-name>
         Buffs for {{ selectedCharacter1 }}
-      </h2>
-      <CalculatorPartyBuff
-        v-for="buff in buffsByCharacter[selectedCharacter1]"
-        :key="buff.key"
-        :character="character"
-        :unique-key="buff.key"
-        :name="buff.name"
-        :details="buff.details"
-        :always-enabled="buff.alwaysEnabled"
-        :has-stacks="buff.hasStacks"
-        :min-stacks="buff.minStacks"
-        :max-stacks="buff.maxStacks"
-        :modifiers="buff.modifiers"
-        :input-base="buff.inputBase"
-        :modifier-based-on="buff.modifierBasedOn"
-        @updated-party-buff="handleUpdatedPartyBuff1"
-        :talent-data="talentData"
-        class="character__buff character__buffs__one"></CalculatorPartyBuff>
+      </h3>
+      <div class="collapse-content">
+        <CalculatorPartyBuff
+          v-for="buff in buffsByCharacter[selectedCharacter1]"
+          :key="buff.key"
+          :character="character"
+          :unique-key="buff.key"
+          :name="buff.name"
+          :details="buff.details"
+          :always-enabled="buff.alwaysEnabled"
+          :has-stacks="buff.hasStacks"
+          :min-stacks="buff.minStacks"
+          :max-stacks="buff.maxStacks"
+          :modifiers="buff.modifiers"
+          :input-base="buff.inputBase"
+          :modifier-based-on="buff.modifierBasedOn"
+          @updated-party-buff="handleUpdatedPartyBuff1"
+          :talent-data="talentData"
+          class="character__buff character__buffs__one"></CalculatorPartyBuff>
+      </div>
     </div>
 
-    <div v-if="selectedCharacter2">
-      <h2 class="text-lg font-bold mt-6 mb-2" data-test-party-member-2-name>
+    <div
+      v-if="selectedCharacter2"
+      class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
+      data-test-party-buff-char-2-collapse-bar>
+      <input type="checkbox" />
+      <h3 class="collapse-title text-xl" data-test-party-member-2-name>
         Buffs for {{ selectedCharacter2 }}
-      </h2>
-      <CalculatorPartyBuff
-        v-for="buff in buffsByCharacter[selectedCharacter2]"
-        :key="buff.key"
-        :character="character"
-        :unique-key="buff.key"
-        :name="buff.name"
-        :details="buff.details"
-        :always-enabled="buff.alwaysEnabled"
-        :has-stacks="buff.hasStacks"
-        :min-stacks="buff.minStacks"
-        :max-stacks="buff.maxStacks"
-        :modifiers="buff.modifiers"
-        :input-base="buff.inputBase"
-        :modifier-based-on="buff.modifierBasedOn"
-        @updated-party-buff="handleUpdatedPartyBuff2"
-        :talent-data="talentData"
-        class="character__buff character__buffs__two"></CalculatorPartyBuff>
+      </h3>
+      <div class="collapse-content">
+        <CalculatorPartyBuff
+          v-for="buff in buffsByCharacter[selectedCharacter2]"
+          :key="buff.key"
+          :character="character"
+          :unique-key="buff.key"
+          :name="buff.name"
+          :details="buff.details"
+          :always-enabled="buff.alwaysEnabled"
+          :has-stacks="buff.hasStacks"
+          :min-stacks="buff.minStacks"
+          :max-stacks="buff.maxStacks"
+          :modifiers="buff.modifiers"
+          :input-base="buff.inputBase"
+          :modifier-based-on="buff.modifierBasedOn"
+          @updated-party-buff="handleUpdatedPartyBuff2"
+          :talent-data="talentData"
+          class="character__buff character__buffs__two"></CalculatorPartyBuff>
+      </div>
     </div>
 
-    <div>
-      <h2 class="text-lg font-bold mt-6 mb-2">Team Echo Buffs</h2>
-      <CalculatorPartyBuff
-        v-for="buff in allEchoBuffs"
-        :key="buff.key"
-        :character="character"
-        :unique-key="buff.key"
-        :name="buff.name"
-        :details="buff.details"
-        :always-enabled="buff.alwaysEnabled"
-        :has-stacks="buff.hasStacks"
-        :min-stacks="buff.minStacks"
-        :max-stacks="buff.maxStacks"
-        :modifiers="buff.modifiers"
-        @updated-party-buff="handleUpdatedPartyBuffEcho"
-        :talent-data="talentData"
-        class="character__buff character__buffs__echoes"></CalculatorPartyBuff>
+    <div
+      class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
+      data-test-party-buff-echoes-collapse-bar>
+      <input type="checkbox" />
+      <h3 class="collapse-title text-xl">Echo Buffs</h3>
+      <div class="collapse-content">
+        <CalculatorPartyBuff
+          v-for="buff in allEchoBuffs"
+          :key="buff.key"
+          :character="character"
+          :unique-key="buff.key"
+          :name="buff.name"
+          :details="buff.details"
+          :always-enabled="buff.alwaysEnabled"
+          :has-stacks="buff.hasStacks"
+          :min-stacks="buff.minStacks"
+          :max-stacks="buff.maxStacks"
+          :modifiers="buff.modifiers"
+          @updated-party-buff="handleUpdatedPartyBuffEcho"
+          :talent-data="talentData"
+          class="character__buff character__buffs__echoes"></CalculatorPartyBuff>
+      </div>
     </div>
 
-    <div>
-      <h2 class="text-lg font-bold mt-6 mb-2">Team Weapon Buffs</h2>
-      <CalculatorPartyBuff
-        v-for="buff in allWeaponTeamBuffs"
-        :key="buff.key"
-        :character="character"
-        :unique-key="buff.key"
-        :name="buff.name"
-        :details="buff.details"
-        :always-enabled="buff.alwaysEnabled"
-        :has-stacks="buff.hasStacks"
-        :min-stacks="buff.minStacks"
-        :max-stacks="buff.maxStacks"
-        :modifiers="buff.modifiers"
-        @updated-party-buff="handleUpdatedPartyBuffEcho"
-        :talent-data="talentData"
-        :has-refinements="true"
-        class="character__buff character__buffs__weapons"></CalculatorPartyBuff>
+    <div
+      class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
+      data-test-party-buff-weapons-collapse-bar>
+      <input type="checkbox" />
+      <h3 class="collapse-title text-xl">Weapon Buffs</h3>
+      <div class="collapse-content">
+        <CalculatorPartyBuff
+          v-for="buff in allWeaponTeamBuffs"
+          :key="buff.key"
+          :character="character"
+          :unique-key="buff.key"
+          :name="buff.name"
+          :details="buff.details"
+          :always-enabled="buff.alwaysEnabled"
+          :has-stacks="buff.hasStacks"
+          :min-stacks="buff.minStacks"
+          :max-stacks="buff.maxStacks"
+          :modifiers="buff.modifiers"
+          @updated-party-buff="handleUpdatedPartyBuffEcho"
+          :talent-data="talentData"
+          :has-refinements="true"
+          class="character__buff character__buffs__weapons"></CalculatorPartyBuff>
+      </div>
     </div>
   </div>
 </template>

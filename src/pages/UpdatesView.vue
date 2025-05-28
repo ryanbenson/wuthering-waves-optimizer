@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 28, 2025</h3>
+    <ul>
+      <li>
+        Updates team buffs page to group sections into accordions since the list
+        of buffs was getting really long.
+      </li>
+    </ul>
     <h3>May 27, 2025</h3>
     <ul>
       <li>Changes app font.</li>
