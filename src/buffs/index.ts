@@ -1149,6 +1149,21 @@ export const allEchoBuffs = [
     maxStacks: 0,
     alwaysEnabled: false,
   },
+  {
+    key: "FlamingClawprint",
+    name: "Flaming Clawprint",
+    details: `Casting Resonance Liberation increases Fusion DMG of Resonators in the team by 15%, lasting for 35s.`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.15,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allWeaponTeamBuffs = [

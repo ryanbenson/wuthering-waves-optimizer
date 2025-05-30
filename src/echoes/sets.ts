@@ -14,6 +14,8 @@ export const twoSetBonuses: string[] = [
   "Midnight Veil 2 Set",
   "Frosty Resolve 2 Set",
   "Gusts of Welkin 2 Set",
+  "Windward Pilgrimage 2 Set",
+  "Flaming Clawprint 2 Set",
 ];
 export const fiveSetBonuses: string[] = [
   "Freezing Frost 5 Set",
@@ -31,6 +33,8 @@ export const fiveSetBonuses: string[] = [
   "Midnight Veil 5 Set",
   "Frosty Resolve 5 Set",
   "Gusts of Welkin 5 Set",
+  "Windward Pilgrimage 5 Set",
+  "Flaming Clawprint 5 Set",
 ];
 
 type EchoSetBonus = {
@@ -353,6 +357,46 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
       },
     ],
     details: `Increases Aero DMG by 10%`,
+  },
+  "Windward Pilgrimage 2 Set": {
+    name: "Windward Pilgrimage",
+    key: "WindwardPilgrimage2Set",
+    passives: [
+      {
+        key: "WindwardPilgrimage2Set",
+        details: `Aero DMG + 10%`,
+        modifiers: [
+          {
+            modifier: "Aero",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Aero DMG + 10%`,
+  },
+  "Flaming Clawprint 2 Set": {
+    name: "Flaming Clawprint",
+    key: "FlamingClawprint2Set",
+    passives: [
+      {
+        key: "FlamingClawprint2Set",
+        details: `Fusion DMG + 10%`,
+        modifiers: [
+          {
+            modifier: "Fusion",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Fusion DMG + 10%`,
   },
 };
 
@@ -694,6 +738,64 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         ],
         alwaysEnabled: false,
         details: `And for the Resonator triggering this effect by an additional 15%, lasting for 20s.`,
+      },
+    ],
+  },
+  "Windward Pilgrimage 5 Set": {
+    name: "Windward Pilgrimage",
+    key: "WindwardPilgrimage",
+    details: `Hitting a target with Aero Erosion increases Crit. Rate by 10% and grants 30% Aero DMG Bonus, lasting for 10s.`,
+    passives: [
+      {
+        key: "WindwardPilgrimage5SetCritRate",
+        modifiers: [
+          {
+            modifier: "CritRate",
+            modifierValue: 10,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Hitting a target with Aero Erosion increases Crit. Rate by 10% for 10s`,
+      },
+      {
+        key: "WindwardPilgrimage5SetAero",
+        modifiers: [
+          {
+            modifier: "Aero",
+            modifierValue: 30,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Hitting a target with Aero Erosion grants 30% Aero DMG Bonus, lasting for 10s.`,
+      },
+    ],
+  },
+  "Flaming Clawprint 5 Set": {
+    name: "Flaming Clawprint",
+    key: "FlamingClawprint",
+    details: `Casting Resonance Liberation increases Fusion DMG of Resonators in the team by 15% and the caster's Resonance Liberation DMG by 20%, lasting for 35s.`,
+    passives: [
+      {
+        key: "FlamingClawprintFusion",
+        modifiers: [
+          {
+            modifier: "Fusion",
+            modifierValue: 15,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Casting Resonance Liberation increases Fusion DMG of Resonators in the team by 15%, lasting for 35s.`,
+      },
+      {
+        key: "FlamingClawprintLiberation",
+        modifiers: [
+          {
+            modifier: "ResonanceLiberationDMGBonus",
+            modifierValue: 20,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Casting Resonance Liberation increases the caster's Resonance Liberation DMG by 20%, lasting for 35s.`,
       },
     ],
   },

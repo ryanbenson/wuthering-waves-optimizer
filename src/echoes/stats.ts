@@ -421,6 +421,10 @@ export const echoSetImageMap: Record<string, string> = {
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/TidebreakingCourage.webp",
   GustsofWelkin:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/GustsofWelkin.webp",
+  WindwardPilgrimage:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/WindwardPilgrimage.webp",
+  FlamingClawprint:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FlamingClawprint.webp",
 };
 
 export function getEchoSetIconByType(type: string): string {
@@ -443,6 +447,8 @@ export const echoSetLabelMap: Record<string, string> = {
   EmpyreanAnthem: "Empyrean Anthem",
   TidebreakingCourage: "Tidebreaking Courage",
   GustsofWelkin: "Gusts of Welkin",
+  WindwardPilgrimage: "Windward Pilgrimage",
+  FlamingClawprint: "Flaming Clawprint",
 };
 
 export function getEchoSetLabelByType(type: string): string {

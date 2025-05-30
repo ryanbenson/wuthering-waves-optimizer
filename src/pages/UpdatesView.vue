@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 30, 2025</h3>
+    <ul>
+      <li>Adds 2.4 echo sets.</li>
+    </ul>
     <h3>May 28, 2025</h3>
     <ul>
       <li>
