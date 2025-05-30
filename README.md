@@ -4,6 +4,10 @@
 
 See the project for more information on where things are at, and where things are going: https://github.com/users/ryanbenson/projects/2
 
+## UI
+
+* [Daisy UI](https://daisyui.com/)
+
 ## Buff configurations
 
 ### Base talent multiplier
