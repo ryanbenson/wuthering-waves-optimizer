@@ -561,11 +561,11 @@
             v-for="echoSet in echoSetsList"
             :key="echoSet"
             @click="toggleEchoSetFilter(echoSet)"
-            class="rounded mr-1"
+            class="rounded"
             :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
             <img
               :src="getEchoSetImage(echoSet)"
-              class="size-8 m-width-8"
+              class="size-8 m-width-8 p-[.15rem]"
               :class="echoSet" />
           </button>
           <button @click="resetFilters" class="btn btn-sm btn-ghost">

@@ -55,7 +55,7 @@
                 'btn-active': isWeaponFilterActive(weapon),
                 weapon,
               }">
-              <img :src="weaponIcon.toLowerCase()" class="size-8" />
+              <img :src="weaponIcon.toLowerCase()" class="size-8 p-[.15rem]" />
             </button>
           </div>
           <button @click="resetFilters" class="btn btn-sm btn-ghost">

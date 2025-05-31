@@ -10,6 +10,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>May 31, 2025</h3>
+    <ul>
+      <li>Fixed icons in a few views where the icon was filling up the whole button space.</li>
+      <li>Fixed the highlighted color for black theme when choosing filters.</li>
+      <li>Fixed Moonlit icon in light theme.</li>
+    </ul>
     <h3>May 30, 2025</h3>
     <ul>
       <li>Adds 2.4 echo sets.</li>

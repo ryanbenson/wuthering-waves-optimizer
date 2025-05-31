@@ -70,7 +70,7 @@
           :class="{ 'btn-active': isEchoSetFilterActive(echoSet), echoSet }">
           <img
             :src="getEchoSetImage(echoSet)"
-            class="size-8"
+            class="size-8 p-[.15rem]"
             :class="echoSet" />
         </button>
       </div>
@@ -388,9 +388,6 @@ export default {
 html[data-theme="light"] {
   .modal-backdrop {
     opacity: 0.5;
-  }
-  .MoonlitClouds {
-    filter: contrast(0);
   }
 }
 </style>

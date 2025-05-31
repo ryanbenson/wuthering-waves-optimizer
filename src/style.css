@@ -59,6 +59,10 @@ html[data-theme="light"] {
   }
 }
 
+html[data-theme="black"] .btn-active {
+  background-color: #3f3f3f;
+}
+
 /* generics */
 .mt-0 {
   margin-top: 0;
