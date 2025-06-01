@@ -18,6 +18,7 @@
             {{ character }}
           </option>
         </select>
+        <div class="btn btn-xs btn-primary" @click="clearCharacter1">Clear</div>
       </div>
       <div class="teammate__select">
         <div
@@ -36,6 +37,7 @@
             {{ character }}
           </option>
         </select>
+        <div class="btn btn-xs btn-primary" @click="clearCharacter2">Clear</div>
       </div>
     </div>
 
@@ -333,6 +335,12 @@ export default {
         this.buffsDataEcho[buffIndex] = buffInfo;
       }
       this.updatedStats();
+    },
+    clearCharacter1() {
+      this.selectedCharacter1 = null;
+    },
+    clearCharacter2() {
+      this.selectedCharacter2 = null;
     },
   },
   mounted() {
