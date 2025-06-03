@@ -81,6 +81,24 @@ export default {
       const finalBuffData = {};
       let modifySpecificTalents = [];
       this.buffsData.forEach((buffInstance) => {
+        // TODO: implement the replacedBy logic
+        if (this.character === "Jiyan") {
+          if (buffInstance.key === "ForteCircuitQingloongatWar1") {
+            // if we have buffsData[]{key: "ForteCircuitQingloongatWar2"}, skip this buff
+            const hasForteCircuitQingloongatWar2 = this.buffsData.find(
+              (buff) => buff.key === "ForteCircuitQingloongatWar2",
+            );
+            // hasForteCircuitQingloongatWar2 must have properties in "data" to be considered valid
+            // if it has no data, we can skip this buff
+
+            if (
+              hasForteCircuitQingloongatWar2 &&
+              Object.keys(hasForteCircuitQingloongatWar2.data).length > 0
+            ) {
+              return; // skip this buff for Jiyan
+            }
+          }
+        }
         const stat = buffInstance.key;
         const buffDataArr = Object.entries(buffInstance.data);
         buffDataArr.forEach(([stat, value]) => {

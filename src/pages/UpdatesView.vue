@@ -10,6 +10,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 3, 2025</h3>
+    <ul>
+      <li>
+        Updates Jiyan's buffs so you can no longer get both Forte Circuit:
+        Qingloong at War buffs active since it's not possible in game to avoid
+        misleading damage being displayed.
+      </li>
+    </ul>
     <h3>June 1, 2025</h3>
     <ul>
       <li>Adds ability to clear a teammate.</li>
