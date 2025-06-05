@@ -8,26 +8,8 @@
     }">
     {{ message }}
   </div>
-  <h2 class="text-2xl font-bold mb-4">Export your database</h2>
 
-  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
-    <div class="card-body">
-      <h3 class="card-title">Backup your data</h3>
-      <div class="actions actions--fetch">
-        <div class="settings__import-export__copy panel">
-          <p class="mb-2">Export your character data?</p>
-          <button @click="copyCharacterData" class="btn btn-primary mr-2">
-            Copy to clipboard
-          </button>
-          <button @click="downloadCharacterData" class="btn btn-primary">
-            Download
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <h3 class="text-2xl font-bold mb-4 mt-8">Overwrite your existing data</h3>
+  <h3 class="text-2xl font-bold mb-4">Overwrite your existing data</h3>
 
   <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
@@ -63,16 +45,6 @@
       </button>
     </div>
   </div>
-
-  <h3 class="text-2xl font-bold mb-4">Delete your data</h3>
-
-  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
-    <div class="card-body">
-      <h3 class="card-title">Delete your data</h3>
-      <p>This will reset your data to a blank state.</p>
-      <button @click="confirmDelete" class="btn btn-error">Delete</button>
-    </div>
-  </div>
 </template>
 
 <script lang="ts">
@@ -96,84 +68,6 @@ export default defineComponent({
     };
   },
   methods: {
-    /**
-     * Gets all of the data to save
-     */
-    getData() {
-      const meta = {
-        version: "2",
-        source: "WutheringTools",
-      };
-      const data = {
-        character: localStorage.getItem("character"),
-        inventory: localStorage.getItem("inventory"),
-      };
-      const d = {
-        meta,
-        data,
-      };
-      return d;
-    },
-    /**
-     * Handler to copy the contents of the character data into the user's clipboard
-     */
-    copyCharacterData() {
-      const data = this.getData();
-      navigator.clipboard.writeText(JSON.stringify(data));
-      this.triggerNotification(
-        "Character data has been copied to your clipboard",
-      );
-    },
-    /**
-     * Handler to download the character data as a JSON file
-     */
-    downloadCharacterData() {
-      const data = this.getData();
-      const blob = new Blob([JSON.stringify(data)], {
-        type: "application/json",
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = this.generateFilename();
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      this.triggerNotification("Character data has been downloaded");
-    },
-    /**
-     * Gets a filename for the JSON file
-     */
-    generateFilename() {
-      const date = new Date();
-      const dateFormatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-      });
-
-      const parts = dateFormatter.formatToParts(date);
-      const partsValues = {
-        month: '',
-        day: '',
-        year: ''
-      };
-      parts.forEach(({type, value}) => {
-        if (type === 'month') {
-          partsValues.month = value;
-        }
-        if (type === 'day') {
-          partsValues.day = value;
-        }
-        if (type === 'year') {
-          partsValues.year = value;
-        }
-      });
-      const dateStr = `${partsValues.year}-${partsValues.month}-${partsValues.day}`;
-      return `character_data_${dateStr}.json`;
-    },
     /**
      * Provides the data to import based on changes to the structures
      * If there's a meta tag, then that got introduced in v2
@@ -283,23 +177,6 @@ export default defineComponent({
       alert("Your data has been overwritten!");
       this.fileData = null;
       location.reload();
-    },
-    /**
-     * Confirms the deletion of user data
-     */
-    confirmDelete() {
-      if (window.confirm("Do you really want to delete everything?")) {
-        // empty character data
-        localStorage.setItem("character", "");
-        const characterStore = useCharacterStore();
-        characterStore.$hydrate({ runHooks: false });
-        // empty the inventory
-        localStorage.setItem("inventory", "");
-        const inventoryStore = useInventoryStore();
-        inventoryStore.$hydrate({ runHooks: false });
-        alert("Your data has been deleted!");
-        location.reload();
-      }
     },
     /**
      * Determines if the given JSON is valid or not

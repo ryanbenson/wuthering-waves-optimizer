@@ -16,6 +16,5 @@ export default defineComponent({
 <style scoped lang="scss">
 .page-settings {
   padding: 2rem 3rem;
-  max-width: 640px;
 }
 </style>

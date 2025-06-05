@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 5, 2025</h3>
+    <ul>
+      <li>Enhanced the UI for the settings area.</li>
+    </ul>
     <h3>June 3, 2025</h3>
     <ul>
       <li>
