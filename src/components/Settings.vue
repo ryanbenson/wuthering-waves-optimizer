@@ -12,7 +12,7 @@
       >
         <a
           href="#"
-          class="tab-link text-neutral-content px-4 py-2"
+          class="tab-link text-base-content px-4 py-2"
           :class="getActiveClasses('export')"
           @click="setTab('export')"
         >
@@ -20,7 +20,7 @@
         </a>
         <a
           href="#"
-          class="tab-link text-neutral-content px-4 py-2"
+          class="tab-link text-base-content px-4 py-2"
           :class="getActiveClasses('import')"
           @click="setTab('import')"
         >
@@ -28,7 +28,7 @@
         </a>
         <a
           href="#"
-          class="tab-link text-neutral-content px-4 py-2"
+          class="tab-link text-base-content px-4 py-2"
           :class="getActiveClasses('advanced')"
           @click="setTab('advanced')"
         >
