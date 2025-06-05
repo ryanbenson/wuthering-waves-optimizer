@@ -1,4 +1,4 @@
-# wuthering-waves-optimizer
+# Wuthering Waves Optimizer
 
 [Optimizer for your resonators and weapons and echoes](https://ryanbenson.github.io/wuthering-waves-optimizer/)
 
