@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 6, 2025</h3>
+    <ul>
+      <li>Fixes the navigation to the top and some overall layout cleanup.</li>
+    </ul>
     <h3>June 5, 2025</h3>
     <ul>
       <li>Enhanced the UI for the settings area.</li>

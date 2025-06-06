@@ -1,6 +1,6 @@
 <template>
-  <div id="navbar-container"></div>
-  <div class="contain">
+  <div id="navbar-container" class="fixed top-0 left-0 right-0 z-50"></div>
+  <div class="contain h-[calc(100vh-80px)] mt-20">
     <div class="content">
       <RouterView />
     </div>
@@ -43,21 +43,23 @@ export default defineComponent({
 .contain {
   display: grid;
   grid-template-columns: 1fr;
-  background-color: #23292f;
 
   @media (max-width: 768px) {
     display: block;
   }
 }
+body, .contain, .content {
+  background-color: #23292f;
+}
 
 html[data-theme="light"] {
-  .contain {
+  body, .contain, .content {
     background: oklch(var(--b1)) !important;
   }
 }
 
 html[data-theme="black"] {
-  .contain {
+  body, .contain, .content {
     background: oklch(var(--b1)) !important;
   }
 }

@@ -92,9 +92,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<style lang="scss">
-.contain {
-  min-height: 100%;
-}
-</style>
