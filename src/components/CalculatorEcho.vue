@@ -1305,6 +1305,10 @@ export default {
     },
     chooseMainEcho(echoKey) {
       this.echo = echoKey;
+      // if we chose a filter for echo set, assume that's what they want
+      if (this.echoSetFilter) {
+        this.echoSet = this.echoSetFilter;
+      }
       this.closeEchoChooser();
     },
     closeEchoChooser() {

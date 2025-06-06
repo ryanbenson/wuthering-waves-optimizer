@@ -13,6 +13,7 @@
     <h3>June 6, 2025</h3>
     <ul>
       <li>Fixes the navigation to the top and some overall layout cleanup.</li>
+      <li>If you are creating a new echo and you filter the list of echoes by set, it will automatically select that set for the echo you choose to save you a click.</li>
     </ul>
     <h3>June 5, 2025</h3>
     <ul>
