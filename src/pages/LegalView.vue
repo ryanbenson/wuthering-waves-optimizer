@@ -1,5 +1,5 @@
 <template>
-  <Nav cur-page="legal"></Nav>
+  <Nav cur-page="legal" :disable-mobile-nav="true"></Nav>
   <article class="prose page-info">
     <h1>Legal Disclaimer for Wuthering Tools</h1>
     <p>

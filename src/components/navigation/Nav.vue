@@ -6,7 +6,7 @@
       style="min-height: 80px">
       <div class="navbar-start">
         <details class="main-menu-mobile dropdown" v-if="!disableMobileNav">
-          <summary tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+          <summary tabindex="0" role="button" class="btn btn-ghost size-5 p-0 flex justify-center min-w-[48px] mr-2 lg:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-5 w-5"
@@ -24,7 +24,7 @@
         </details>
         <RouterLink
           to="/"
-          class="btn btn-ghost"
+          class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2"
           :class="{ 'btn-active': curPage === 'home' }">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +37,7 @@
         </RouterLink>
         <RouterLink
           to="/inventory"
-          class="btn btn-ghost"
+          class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px]"
           :class="{ 'btn-active': curPage === 'inventory' }">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png"
@@ -66,7 +66,7 @@
                 </svg>
               </summary>
               <ul class="subnav bg-base-300 rounded-t-none p-2 right-0 z-50">
-                <li>
+                <li class="mb-2">
                   <RouterLink
                     to="/settings"
                     @click="toggleOptionsMenu"
@@ -74,7 +74,7 @@
                     Settings
                   </RouterLink>
                 </li>
-                <li>
+                <li class="mb-2">
                   <RouterLink
                     to="/info"
                     @click="toggleOptionsMenu"
@@ -82,7 +82,7 @@
                     Info
                   </RouterLink>
                 </li>
-                <li>
+                <li class="mb-2">
                   <RouterLink
                     to="/updates"
                     @click="toggleOptionsMenu"
@@ -90,7 +90,7 @@
                     Updates
                   </RouterLink>
                 </li>
-                <li>
+                <li class="mb-2">
                   <RouterLink
                     to="/privacy"
                     @click="toggleOptionsMenu"
@@ -98,7 +98,7 @@
                     Privacy
                   </RouterLink>
                 </li>
-                <li>
+                <li class="mb-2">
                   <RouterLink
                     to="/legal"
                     @click="toggleOptionsMenu"

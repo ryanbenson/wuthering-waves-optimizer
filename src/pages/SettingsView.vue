@@ -1,5 +1,5 @@
 <template>
-  <Nav cur-page="settings"></Nav>
+  <Nav cur-page="settings" :disable-mobile-nav="true"></Nav>
   <div class="page-settings"><Settings></Settings></div>
 </template>
 

@@ -133,6 +133,16 @@ html[data-theme="light"] .Wind {
     hue-rotate(67deg) brightness(93%) contrast(88%) !important;
 } */
 
+.subnav {
+  a {
+    color: white;
+  }
+}
+html[data-theme="black"] {
+  .subnav {
+    background: oklch(var(--b1)) !important;
+  }
+}
 html[data-theme="light"] .navbar img,
 html[data-theme="light"] .subnav img {
   filter: invert(100%);

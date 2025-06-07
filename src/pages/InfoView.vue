@@ -1,5 +1,5 @@
 <template>
-  <Nav cur-page="info"></Nav>
+  <Nav cur-page="info" :disable-mobile-nav="true"></Nav>
   <article class="prose page-info">
     <h1>Wuthering Waves Calculator & Optimizer</h1>
     <p>

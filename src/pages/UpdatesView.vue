@@ -1,5 +1,5 @@
 <template>
-  <Nav cur-page="updates"></Nav>
+  <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Upcoming Updates</h1>
     <ul>
@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 7, 2025</h3>
+    <ul>
+      <li>Updates spacing in main nav and fixes minor pages to remove unnecessary mobile nav.</li>
+    </ul>
     <h3>June 6, 2025</h3>
     <ul>
       <li>Fixes the navigation to the top and some overall layout cleanup.</li>

@@ -1,5 +1,5 @@
 <template>
-  <Nav cur-page="privacy"></Nav>
+  <Nav cur-page="privacy" :disable-mobile-nav="true"></Nav>
   <div class="page-privacy prose">
     <h1>Privacy Policy</h1>
     <h2>Analytics</h2>
