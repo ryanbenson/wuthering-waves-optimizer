@@ -352,6 +352,7 @@ export const allCharacters: string[] = [
   "Camellya",
   "Cantarella",
   "Carlotta",
+  "Cartethyia",
   "Changli",
   "Chixia",
   "Ciaccona",
