@@ -1,4 +1,4 @@
-Can you help take a data table that has character attack data in it and create an array of objects for me?
+Can you help take a data table that has character attack data in it and create an array of objects for me? Please generate every entry, even if there are several.
 
 This is the format that I need it in:
 

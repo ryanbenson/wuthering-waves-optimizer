@@ -13,6 +13,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Camellya", name: "Camellya" },
       { key: "Cantarella", name: "Cantarella" },
       { key: "Carlotta", name: "Carlotta" },
+      { key: "Cartethyia", name: "Cartethyia" },
       { key: "Changli", name: "Changli" },
       { key: "Ciaccona", name: "Ciaccona" },
       { key: "Encore", name: "Encore" },
@@ -87,6 +88,13 @@ export const allCharactersList = [
     element: "Glacio",
     rarity: 5,
     weapon: "Pistol",
+  },
+  {
+    key: "Cartethyia",
+    name: "Cartethyia",
+    element: "Aero",
+    rarity: 5,
+    weapon: "Sword",
   },
   {
     key: "Changli",

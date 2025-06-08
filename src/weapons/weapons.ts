@@ -2,6 +2,7 @@ export const swordsList = {
   five: [
     { key: "BlazingBrilliance", name: "Blazing Brilliance" },
     { key: "BloodpactsPledge", name: "Bloodpact's Pledge" },
+    { key: "DefiersThorn", name: "Defier's Thorn" },
     { key: "EmeraldOfGenesis", name: "Emerald Of Genesis" },
     { key: "RedSpring", name: "Red Spring" },
     { key: "UnflickeringValor", name: "Unflickering Valor" },
