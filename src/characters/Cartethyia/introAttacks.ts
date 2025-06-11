@@ -1,6 +1,6 @@
 export const introAttacks = {
   name: "Intro Skill: Sword to Mark Tide's Trace",
-  description: ``,
+  description: `<div class="skilldescription"><span class="Title">Cartethyia - Sword to Mark Tide's Trace</span><br>Deal Aero DMG and inflict 2 stacks of <span class="Wind">Aero Erosion</span> on targets hit. Summon Sword of Discord’s Shadow.<br>Up 1 <span class="Highlight">Sword of Discord’s Shadow</span> may exist at the same time, lasting 20s.<br>Click <span class="Highlight">Normal Attack</span> shortly after <span class="Highlight">Cartethyia - Sword to Mark Tide's Trace</span> to perform <span class="Highlight">Basic Attack - Cartethyia Stage 2</span>.<br> <br><span class="Title">Fleurdelys - Sword to Call for Freedom</span><br>Thrust forward to impale the target, dealing <span class="Wind">Aero DMG</span> and restoring <span class="Highlight">Resolve</span>.<br>Click <span class="Highlight">Normal Attack</span> shortly after <span class="Highlight">Fleurdelys - Sword to Call for Freedom</span> to cast <span class="Highlight">Basic Attack - Fleurdelys Stage 2</span>.</div>`,
   attacks: [
     {
       key: "SwordtoMarkTidesTraceDMG",

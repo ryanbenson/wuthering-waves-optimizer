@@ -1,20 +1,5 @@
 export const buffs = [
   {
-    key: `Manifest`,
-    name: `Manifest`,
-    details: `During <span class="Highlight">Manifest, Fleurdelys</span> gains 60% Aero DMG Bonus.`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "Aero",
-        modifierValue: 0.6,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
     key: `MandateofDivinity`,
     name: `Mandate of Divinity`,
     details: `When <span class="Highlight">Fleurdelys</span> has <span class="Highlight">Mandate of Divinity</span> in <span class="Highlight">Manifest</span>:<br>
@@ -50,7 +35,7 @@ export const buffs = [
   {
     key: `InherentSkillAHeartsTruestWishes`,
     name: `Inherent Skill: A Heart's Truest Wishes`,
-    details: ``,
+    details: `<div class="skilldescription">The healing received by all Resonators other than <span class="Highlight">Cartethyia/Fleurdelys</span> in the team is increased by 20% and their resistance to interruption is enhanced. If Rover: Aero is in the team, Rover: Aero additionally restores 25 <span class="Highlight">Windstrings</span> upon casting <span class="Highlight">Omega Storm</span>.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -60,7 +45,7 @@ export const buffs = [
   {
     key: `InherentSkillWindsIndelibleImprintFirstStacks`,
     name: `Inherent Skill: Wind's Indelible Imprint: First Stacks`,
-    details: `Targets with 1 to 3 stacks of Aero Erosion take 30% more DMG from Cartethyia and Fleurdelys.`,
+    details: `<div class="skilldescription">Targets with 1 to 3 stacks of <span class="Wind">Aero Erosion</span> take 30% more DMG from <span class="Highlight">Cartethyia</span> and <span class="Highlight">Fleurdelys</span>. Targets with more than 3 stacks of <span class="Wind">Aero Erosion</span> additionally take 10% more DMG from <span class="Highlight">Cartethyia</span> and <span class="Highlight">Fleurdelys</span> for each stack of <span class="Wind">Aero Erosion</span> they have, up to 3 stacks.</div>`,
     hasStacks: false,
     modifiers: [
       {
