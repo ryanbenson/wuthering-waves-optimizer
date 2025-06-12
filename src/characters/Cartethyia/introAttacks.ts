@@ -1,0 +1,42 @@
+export const introAttacks = {
+  name: "Intro Skill: Sword to Mark Tide's Trace",
+  description: `<div class="skilldescription"><span class="Title">Cartethyia - Sword to Mark Tide's Trace</span><br>Deal Aero DMG and inflict 2 stacks of <span class="Wind">Aero Erosion</span> on targets hit. Summon Sword of Discord’s Shadow.<br>Up 1 <span class="Highlight">Sword of Discord’s Shadow</span> may exist at the same time, lasting 20s.<br>Click <span class="Highlight">Normal Attack</span> shortly after <span class="Highlight">Cartethyia - Sword to Mark Tide's Trace</span> to perform <span class="Highlight">Basic Attack - Cartethyia Stage 2</span>.<br> <br><span class="Title">Fleurdelys - Sword to Call for Freedom</span><br>Thrust forward to impale the target, dealing <span class="Wind">Aero DMG</span> and restoring <span class="Highlight">Resolve</span>.<br>Click <span class="Highlight">Normal Attack</span> shortly after <span class="Highlight">Fleurdelys - Sword to Call for Freedom</span> to cast <span class="Highlight">Basic Attack - Fleurdelys Stage 2</span>.</div>`,
+  attacks: [
+    {
+      key: "SwordtoMarkTidesTraceDMG",
+      label: "Sword to Mark Tide's Trace DMG",
+      talents: {
+        "1": "1.05%*3 + 3.14%",
+        "2": "1.14%*3 + 3.40%",
+        "3": "1.22%*3 + 3.65%",
+        "4": "1.34%*3 + 4.01%",
+        "5": "1.43%*3 + 4.27%",
+        "6": "1.53%*3 + 4.57%",
+        "7": "1.66%*3 + 4.98%",
+        "8": "1.80%*3 + 5.39%",
+        "9": "1.94%*3 + 5.80%",
+        "10": "2.08%*3 + 6.24%",
+      },
+      type: "Intro",
+      attribute: "hp",
+    },
+    {
+      key: "SwordtoCallforFreedomDMG",
+      label: "Sword to Call for Freedom DMG",
+      talents: {
+        "1": "2.15% + 5.02%",
+        "2": "2.33% + 5.43%",
+        "3": "2.51% + 5.84%",
+        "4": "2.75% + 6.41%",
+        "5": "2.93% + 6.83%",
+        "6": "3.13% + 7.30%",
+        "7": "3.41% + 7.96%",
+        "8": "3.69% + 8.61%",
+        "9": "3.98% + 9.27%",
+        "10": "4.28% + 9.97%",
+      },
+      type: "Intro",
+      attribute: "hp",
+    },
+  ],
+};

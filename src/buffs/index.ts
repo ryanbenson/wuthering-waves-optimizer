@@ -1026,6 +1026,58 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Cartethyia: [
+    {
+      key: "OutroSkillWindsDivineBlessing",
+      name: "Outro Skill: Wind's Divine Blessing",
+      details: `Aero DMG dealt by the active Resonator in the team other than Cartethyia/Fleurdelys to targets with Negative Statuses is Amplified by 17.5% for 20s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Aero",
+          modifierValue: 0.175,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4SacrificeMadeforSalvation",
+      name: "Sequence Node 4: Sacrifice Made for Salvation",
+      details: `When Resonators in the team inflict Havoc Bane, Fusion Burst, Spectro Frazzle, Electro Flare, Glacio Chafe and Aero Erosion, all Resonators in the team gain 20% DMG Bonus for all Attributes for 20s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Glacio",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Electro",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Aero",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Havoc",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Spectro",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

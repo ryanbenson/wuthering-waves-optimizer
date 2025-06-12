@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 11, 2025</h3>
+    <ul>
+      <li>Releases Cartethyia, her sig, and 2.4 echoes!</li>
+    </ul>
     <h3>June 7, 2025</h3>
     <ul>
       <li>Updates spacing in main nav and fixes minor pages to remove unnecessary mobile nav.</li>

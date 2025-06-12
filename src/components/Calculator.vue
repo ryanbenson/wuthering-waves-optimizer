@@ -16,9 +16,9 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div
-            v-if="false"
+            v-if="true"
             class="alert alert-success mb-6 text-white p-2 px-4">
-            Ciaccona is now available!
+            Cartethyia, her sig, and 2.4 echoes are now available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
@@ -1169,6 +1169,8 @@ export default defineComponent({
         // self subtype dmg deepen
         let selfBuffDmgDeepenForSubType =
           charBuffsData.value?.[`DMGDeepen:${attack.subType}`] ?? 0;
+        let selfBuffDmgDeepenForElement =
+          charBuffsData.value?.[`DMGDeepen:${attackElement}`] ?? 0;
         let teamBuffDmgDeepenForCharElement =
           teamBuffsData.value?.[`DMGDeepen:${attackElement}`] ?? 0;
         let teamBuffDmgDeepenForAttackType =
@@ -1212,7 +1214,8 @@ export default defineComponent({
           weaponBuffDmgDeepenElement +
           weaponBuffDmgDeepenSubType +
           customDamageDeepen +
-          selfBuffDmgDeepenForSubType;
+          selfBuffDmgDeepenForSubType +
+          selfBuffDmgDeepenForElement;
         let totalTalentModifierMultiply =
           talentModifierMultiply +
           talentModifierMultiplySelfBuff +
