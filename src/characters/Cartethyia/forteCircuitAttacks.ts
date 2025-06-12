@@ -93,7 +93,7 @@ export const forteCircuitAttacks = {
       },
     },
     {
-      key: "DodgeCounterDMG",
+      key: "ForteDodgeCounterDMG",
       label: "Dodge Counter DMG",
       type: "Basic",
       attribute: "hp",
@@ -129,7 +129,7 @@ export const forteCircuitAttacks = {
       },
     },
     {
-      key: "HeavyAttackDMG",
+      key: "ForteHeavyAttackDMG",
       label: "Heavy Attack DMG",
       type: "Basic",
       attribute: "hp",

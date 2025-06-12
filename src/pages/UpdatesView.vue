@@ -10,18 +10,29 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 12, 2025</h3>
+    <ul>
+      <li>Fixes Cartethyia S1 and S6, they now only apply to Fleurdelys.</li>
+    </ul>
     <h3>June 11, 2025</h3>
     <ul>
       <li>Releases Cartethyia, her sig, and 2.4 echoes!</li>
     </ul>
     <h3>June 7, 2025</h3>
     <ul>
-      <li>Updates spacing in main nav and fixes minor pages to remove unnecessary mobile nav.</li>
+      <li>
+        Updates spacing in main nav and fixes minor pages to remove unnecessary
+        mobile nav.
+      </li>
     </ul>
     <h3>June 6, 2025</h3>
     <ul>
       <li>Fixes the navigation to the top and some overall layout cleanup.</li>
-      <li>If you are creating a new echo and you filter the list of echoes by set, it will automatically select that set for the echo you choose to save you a click.</li>
+      <li>
+        If you are creating a new echo and you filter the list of echoes by set,
+        it will automatically select that set for the echo you choose to save
+        you a click.
+      </li>
     </ul>
     <h3>June 5, 2025</h3>
     <ul>
