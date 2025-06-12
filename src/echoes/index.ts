@@ -2391,7 +2391,7 @@ CD: <span class="param">20</span>s.</span>`,
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReminiscenceFleurdelys.webp",
     details: `Summon the Windcleaver to attack the target, dealing 18.24%/21.28%/24.32%/27.36% Aero DMG 8 times and 106.40%/121.60%/136.80% Aero DMG once.<br>
-The Resonator with this Echo equipped in their main slot gains 10.00% Aero DMG Bonus. If this Resonator is Rover: Aero or ???, grant another 10.00% Aero DMG Bonus.<br>
+The Resonator with this Echo equipped in their main slot gains 10.00% Aero DMG Bonus. If this Resonator is Rover: Aero or Cartethyia, grant another 10.00% Aero DMG Bonus.<br>
 CD: 20s.`,
     modifiers: [
       {
@@ -2404,6 +2404,7 @@ CD: 20s.`,
         specificCharacters: [
           "RoverAeroFemale",
           "RoverAeroMale",
+          "Cartethyia",
         ],
       },
     ],

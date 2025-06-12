@@ -13,6 +13,7 @@
     <h3>June 12, 2025</h3>
     <ul>
       <li>Fixes Cartethyia S1 and S6, they now only apply to Fleurdelys.</li>
+      <li>Adds Cartethyia to Reminiscence: Fleurdelys echo buff.</li>
     </ul>
     <h3>June 11, 2025</h3>
     <ul>
