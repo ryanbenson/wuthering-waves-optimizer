@@ -370,6 +370,7 @@ export const allCharacters: string[] = [
   "Jinhsi",
   "Jiyan",
   "Lingyang",
+  "Lupa",
   "Lumi",
   "Mortefi",
   "Phoebe",

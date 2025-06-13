@@ -1114,7 +1114,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
     {
-      key: `PackHuntFusionTeam`,
+      key: `PackHuntFusionEnhanced`,
       name: `Pack Hunt Enhanced`,
       details: `When the active Resonator casts <span class="Highlight">Intro Skill, Pack Hunt</span> is enhanced, granting an additional 6% ATK increase to all Resonators in the team, up to a maximum of 18%.`,
       hasStacks: true,
@@ -1461,6 +1461,7 @@ export const allCharacters: string[] = [
   "Sanhua",
   "Baizhi",
   "Lingyang",
+  "Lupa",
   "Chixia",
   "Encore",
   "Mortefi",
