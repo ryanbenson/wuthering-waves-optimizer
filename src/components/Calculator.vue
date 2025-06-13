@@ -18,7 +18,7 @@
           <div
             v-if="true"
             class="alert alert-success mb-6 text-white p-2 px-4">
-            Cartethyia, her sig, and 2.4 echoes are now available!
+            Cartethyia, Defier's Thorn, Lupa, and 2.4 echoes are now available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
