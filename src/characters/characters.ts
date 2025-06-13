@@ -21,6 +21,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Jinhsi", name: "Jinhsi" },
       { key: "Jiyan", name: "Jiyan" },
       { key: "Lingyang", name: "Lingyang" },
+      { key: "Lupa", name: "Lupa" },
       { key: "Phoebe", name: "Phoebe" },
       { key: "Roccia", name: "Roccia" },
       { key: "RoverAeroFemale", name: "Rover Aero (Female)" },
@@ -144,6 +145,13 @@ export const allCharactersList = [
     element: "Glacio",
     rarity: 5,
     weapon: "Gauntlet",
+  },
+  {
+    key: "Lupa",
+    name: "Lupa",
+    element: "Fusion",
+    rarity: 5,
+    weapon: "Broadblade",
   },
   {
     key: "Phoebe",

@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 13, 2025</h3>
+    <ul>
+      <li>Releases Lupa!</li>
+    </ul>
     <h3>June 12, 2025</h3>
     <ul>
       <li>Fixes Cartethyia S1 and S6, they now only apply to Fleurdelys.</li>

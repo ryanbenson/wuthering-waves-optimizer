@@ -1078,6 +1078,136 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Lupa: [
+    {
+      key: `PackHunt`,
+      name: `Pack Hunt`,
+      details: `Resonators with <span class="Highlight">Pack Hunt</span> gain a 6% ATK increase, and 10% Fusion DMG Bonus when they attack Overlord Class or Calamity Class targets (Both are non-stackable).`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.06,
+        },
+        {
+          modifier: "Fusion",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `PackHuntFusionTeam`,
+      name: `Pack Hunt Fusion Team`,
+      details: `Resonators with <span class="Highlight">Pack Hunt</span>: If there are 3 Fusion Resonators in the team, the Fusion DMG Bonus against Overlord Class or Calamity Class targets additionally increases by 10%.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `PackHuntFusionTeam`,
+      name: `Pack Hunt Enhanced`,
+      details: `When the active Resonator casts <span class="Highlight">Intro Skill, Pack Hunt</span> is enhanced, granting an additional 6% ATK increase to all Resonators in the team, up to a maximum of 18%.`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.06,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 3,
+      alwaysEnabled: false,
+    },
+    {
+      key: `InherentSkillApplauseofVictory`,
+      name: `Inherent Skill: Applause of Victory`,
+      details: `<div class="skilldescription">Defeating a <span class="Highlight">marked</span> target resets the cooldown of Resonance Skill <span class="Highlight">Shewolf's Hunt</span>.<br><span class="Title">Resonance Liberation - Glory</span><br>Casting Resonance Liberation <span class="Highlight">Fire-Kissed Glory</span> grants <span class="Highlight">Glory</span>. Within 35s:<br>Attacks of all Resonators in the team ignore 3% of the target's Fusion RES. For each Fusion Resonator in the team other than Lupa, this effect increases by 3%, up to the maximum of 9%.</div>`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "ResistShred:Fusion",
+          modifierValue: 0.03,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 3,
+      alwaysEnabled: false,
+    },
+    {
+      key: `InherentSkillApplauseofVictoryFullFusionTeam`,
+      name: `Inherent Skill: Applause of Victory: Fusion Team`,
+      details: `When there are 3 Fusion Resonators in the team, Resonators' attacks further ignore 6% Fusion RES.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResistShred:Fusion",
+          modifierValue: 0.06,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `OutroSkillStandbyMeWarrior`,
+      name: `Outro Skill: Stand by Me, Warrior`,
+      details: `The incoming Resonator will have their Fusion DMG Amplified by 20% and Basic Attack DMG Amplified by 25% for 14s or until the Resonator is switched out.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Fusion",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "DMGDeepen:Basic",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2EveryGroundHerHuntingField",
+      name: "Sequence Node 2: Every Ground, Her Hunting Field",
+      details: `<span class="skilldescription">Performing <span class="Highlight">Fire-Kissed Glory</span>, <span class="Highlight">Heavy Attack - Wolf's Gnawing</span>,  <span class="Highlight">Heavy Attack - Wolf's Claw</span>, or <span class="Highlight">Mid-air Attack - Firestrike</span> gives 20% Fusion DMG Bonus to all Resonators in the team for 30s, stacking up to 2 times.</span>`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 2,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode3WolflameHowlsinHerWake",
+      name: "Sequence Node 3: Wolflame Howls in Her Wake",
+      details: `<span class="skilldescription">The effect of Resonance Liberation <span class="Highlight">Glory</span> is now updated as follows:<br>Casting Resonance Liberation <span class="Highlight">Fire-Kissed Glory</span> grants <span class="Highlight">Glory</span>. Attacks of all Resonators in the team ignore 15% Fusion RES for 35s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResistShred:Fusion",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
