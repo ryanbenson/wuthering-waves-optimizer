@@ -16,7 +16,7 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div
-            v-if="true"
+            v-if="false"
             class="alert alert-success mb-6 text-white p-2 px-4">
             Cartethyia, Defier's Thorn, Lupa, and 2.4 echoes are now available!
           </div>
@@ -1703,6 +1703,7 @@ export default defineComponent({
             id: rotation.id,
             name: rotation.name,
             description: rotation.description,
+            duration: rotation.duration ?? null,
           };
           const attacks = processAttacks(
             rotation.attacks,
@@ -1836,6 +1837,7 @@ export default defineComponent({
           id: rotation.id,
           name: rotation.name,
           description: rotation.description,
+          duration: rotation.duration ?? null,
         };
         const rotationActionInfo = [];
         rotation.actions.forEach((action) => {

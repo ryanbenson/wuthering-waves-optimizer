@@ -32,7 +32,8 @@
           </div>
         </h2>
         <div class="rotation__body" v-if="isOpen" @click.stop>
-          <div class="rotation__desc">
+          <div class="rotation__desc flex flex-col gap-2">
+            <label for="description">Description</label>
             <textarea
               v-model="descriptionValue"
               name="description"
@@ -41,6 +42,18 @@
               @input="onDescriptionChange"
               >{{ description }}</textarea
             >
+          </div>
+          <div class="rotation__duration flex flex-col gap-2 mt-4">
+            <label for="duration">Duration (seconds)</label>
+            <input
+              type="text"
+              name="duration"
+              id="duration"
+              class="input input-bordered w-full max-w-lg"
+              v-model="durationValue"
+              @input="onDurationChange"
+              @click.stop
+              :data-test-rotation-name-input="durationValue" />
           </div>
           <div class="rotations__list">
             <CalculatorRotationAction
@@ -120,6 +133,10 @@ export default {
       type: String,
       required: true,
     },
+    duration: {
+      type: [String, Number],
+      default: null,
+    },
     actions: {
       type: Array,
       default() {
@@ -135,6 +152,7 @@ export default {
       isOpen: false,
       nameValue: null,
       descriptionValue: null,
+      durationValue: null,
       actionsList: [],
     };
   },
@@ -190,6 +208,7 @@ export default {
         id: this.id,
         name: e.target.value,
         description: this.descriptionValue,
+        duration: this.durationValue,
         actions: this.actionsList,
       });
     },
@@ -198,6 +217,16 @@ export default {
         id: this.id,
         name: this.nameValue,
         description: e.target.value,
+        duration: this.durationValue,
+        actions: this.actionsList,
+      });
+    },
+    onDurationChange(e) {
+      this.$emit("updated-rotation", {
+        id: this.id,
+        name: this.nameValue,
+        description: this.descriptionValue,
+        duration: e.target.value,
         actions: this.actionsList,
       });
     },
@@ -268,6 +297,7 @@ export default {
         id: this.id,
         name: this.nameValue,
         description: this.descriptionValue,
+        duration: this.durationValue,
         actions: this.actionsList,
       });
     },
@@ -282,6 +312,7 @@ export default {
         id: this.id,
         name: this.nameValue,
         description: this.descriptionValue,
+        duration: this.durationValue,
         actions: this.actionsList,
       });
     },
@@ -301,6 +332,7 @@ export default {
     this.actionsList = actions;
     this.nameValue = this.name;
     this.descriptionValue = this.description;
+    this.durationValue = this.duration || null;
   },
 };
 </script>
@@ -369,12 +401,6 @@ html[data-theme="light"] {
   button {
     flex-grow: 2;
   }
-}
-
-.rotation__desc {
-  display: flex;
-  flex-direction: column;
-  margin-top: 1rem;
 }
 
 textarea {

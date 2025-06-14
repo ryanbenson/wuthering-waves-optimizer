@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 14, 2025</h3>
+    <ul>
+      <li>Adds option for rotation duration and displays DPS if provided.</li>
+    </ul>
     <h3>June 13, 2025</h3>
     <ul>
       <li>Releases Lupa!</li>

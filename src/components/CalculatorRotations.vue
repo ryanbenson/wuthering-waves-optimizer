@@ -72,6 +72,7 @@
       :id="rotation.id"
       :name="rotation.name"
       :description="rotation.description"
+      :duration="rotation.duration"
       :actions="rotation.actions"
       @updated-rotation="handleUpdatedRotation"
       @rotation-delete="handleDeleteRotation"
@@ -137,6 +138,7 @@ export default {
         id,
         name: "Untitled Rotation",
         description: "",
+        duration: null,
         actions: [],
       };
       this.rotations.push(newRotationData);
