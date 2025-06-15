@@ -174,3 +174,31 @@ Basic ATK, CR, etc.
     alwaysEnabled: false,
   },
 ```
+
+### Special DMG Multiplier
+
+When you need to add a speceial dmg multiplier to the base talent value (e.g. Cartethyia S6)
+
+```
+
+  {
+    key: "...",
+    name: "...",
+    details: `...`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "specialMultiplier",
+        modifySpecificTalents: [
+          "SwordtoCallforFreedomDMG",
+          "BladeofHowlingSquallDMG",
+          ...
+        ],
+        modifierValue: 0.4,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+```

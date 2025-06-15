@@ -61,7 +61,7 @@ export function getBaseDamage(
     attack *
     talent *
     baseDamageValue *
-    specialMultiplier *
+    (1 + specialMultiplier) *
     defModifier *
     resistValue
   );
