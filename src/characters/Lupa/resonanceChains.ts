@@ -59,6 +59,7 @@ export const resonanceChains = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    replaces: "InherentSkillApplauseofVictory",
   },
   {
     key: "SequenceNode4HighandAflameIsHerBanner",

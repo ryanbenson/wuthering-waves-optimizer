@@ -10,6 +10,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 15, 2025</h3>
+    <ul>
+      <li>
+        Fixes Lupa S3 to override her Inherent Skill: Applause of Victory.
+      </li>
+    </ul>
     <h3>June 14, 2025</h3>
     <ul>
       <li>Adds option for rotation duration and displays DPS if provided.</li>

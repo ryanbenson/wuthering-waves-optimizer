@@ -103,6 +103,7 @@ export const buffs = [
     minStacks: 0,
     maxStacks: 3,
     alwaysEnabled: false,
+    replacedBy: "SequenceNode3WolflameHowlsinHerWakeIgnoreFusion",
   },
   {
     key: `InherentSkillApplauseofVictoryFullFusionTeam`,
@@ -118,6 +119,7 @@ export const buffs = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    replacedBy: "SequenceNode3WolflameHowlsinHerWakeIgnoreFusion",
   },
   {
     key: "StatBonusCritRate1",

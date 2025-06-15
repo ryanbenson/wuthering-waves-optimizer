@@ -29,8 +29,8 @@
               :min="minStacks"
               :max="maxStacks"
               @input="ensureMaxStacks" />
-              <span class="label-text ml-2">Stacks</span>
-              <span class="ml-1 text-sm italic">(Max {{ maxStacks }})</span>
+            <span class="label-text ml-2">Stacks</span>
+            <span class="ml-1 text-sm italic">(Max {{ maxStacks }})</span>
           </label>
         </div>
       </div>
@@ -185,6 +185,22 @@ export default {
       const data = {};
       if (!this.isEnabled) {
         return data;
+      }
+      // if this buff got overridden by another buff, we don't want to apply it
+      // TODO: Implement the replaces and replacedBy logic
+      // it needs to check both character buffs and resonance chains
+      if (
+        this.character === "Lupa" &&
+        (this.uniqueKey === "InherentSkillApplauseofVictory" ||
+          this.uniqueKey === "InherentSkillApplauseofVictoryFullFusionTeam")
+      ) {
+        if (
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode3WolflameHowlsinHerWakeIgnoreFusion?.isEnabled
+        ) {
+          console.log("override is enabled");
+          return data;
+        }
       }
       if (!this.hasStacks) {
         this.modifiers.forEach((modifierItem) => {
