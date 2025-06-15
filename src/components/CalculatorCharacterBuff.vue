@@ -198,7 +198,6 @@ export default {
           this.currentCharacter?.resonanceChains
             ?.SequenceNode3WolflameHowlsinHerWakeIgnoreFusion?.isEnabled
         ) {
-          console.log("override is enabled");
           return data;
         }
       }
