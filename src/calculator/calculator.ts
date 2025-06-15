@@ -26,6 +26,7 @@ export function calcHitDamage(
   bonusElementDmg: number = 0,
   totalDeepenEffect: number = 0,
   resistenceReduction: number = 0,
+  specialMultiplier: number = 0,
   // critRate: number,
   // critDamage: number,
 ): number {
@@ -43,6 +44,7 @@ export function calcHitDamage(
     baseDamageValue,
     defModifier,
     resistValue,
+    specialMultiplier,
   );
   return baseDamage;
 }
@@ -53,8 +55,16 @@ export function getBaseDamage(
   baseDamageValue: number,
   defModifier: number,
   resistValue: number,
+  specialMultiplier: number = 0,
 ): number {
-  return attack * talent * baseDamageValue * defModifier * resistValue;
+  return (
+    attack *
+    talent *
+    baseDamageValue *
+    (1 + specialMultiplier) *
+    defModifier *
+    resistValue
+  );
 }
 
 export function getTalentValue(talentStringWithPercent: string): number {
@@ -156,6 +166,7 @@ export function calcDamage(
   skillKey: string = "",
   additiveMultiplierStacks: number = 0,
   additiveMultiplierPercent: number = 0,
+  specialMultiplier: number = 0,
 ) {
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
@@ -202,11 +213,13 @@ export function calcDamage(
          * 1 = 5 stacks
          * 4 = 10 stacks
          * 8 = 20 stacks
-         * 
+         *
          * The stacks is multiplied by a percent, which is based on the talent
          * So it needs to be calculated on-demand
          */
-        const nightfallStacksPerHit = getNightfallStacksPerHit(additiveMultiplierStacks);
+        const nightfallStacksPerHit = getNightfallStacksPerHit(
+          additiveMultiplierStacks,
+        );
         if (index === 0) {
           const stacks = nightfallStacksPerHit[0] ?? 0;
           const talentModifierAdd = stacks * additiveMultiplierPercent;
@@ -275,6 +288,7 @@ export function calcDamage(
     bonusElementDmg,
     totalDeepenEffect,
     resistenceReduction,
+    specialMultiplier,
   );
   // multiply the final damage by the number of hits, usually 1,
   // but can be > 1 in rotations

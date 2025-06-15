@@ -1447,7 +1447,14 @@ export default defineComponent({
             additiveMultiplierPercent = modifierPercent;
           }
         }
-
+        console.log(charResonanceChainsData.value);
+        let totalSpecialMultiplier = 0;
+        let resonanceChainAttackSpecialMultiplier =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:specialMultiplier`
+          ] ?? 0;
+        totalSpecialMultiplier += resonanceChainAttackSpecialMultiplier;
+        console.log(`totalSpecialMultplier: ${totalSpecialMultiplier}`);
         return calcDamage(
           characterLevel.value,
           enemyLevel.value,
@@ -1469,6 +1476,7 @@ export default defineComponent({
           attack.key,
           additiveMultiplierStacks,
           additiveMultiplierPercent,
+          totalSpecialMultiplier,
         );
       };
 

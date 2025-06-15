@@ -15,6 +15,7 @@
       <li>
         Fixes Lupa S3 to override her Inherent Skill: Applause of Victory.
       </li>
+      <li>Fixes Cartethyia S6, uses Special DMG multiplier now.</li>
     </ul>
     <h3>June 14, 2025</h3>
     <ul>

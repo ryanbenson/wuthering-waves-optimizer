@@ -139,6 +139,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
+        modifier: "specialMultiplier",
         modifySpecificTalents: [
           "SwordtoCallforFreedomDMG",
           "BladeofHowlingSquallDMG",
