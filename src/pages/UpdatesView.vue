@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 16, 2025</h3>
+    <ul>
+      <li>Fixes tooltip breakdown of Cartethyia's damages for S6, it wasn't applying the special multiplier, but it's resolved now.</li>
+    </ul>
     <h3>June 15, 2025</h3>
     <ul>
       <li>
