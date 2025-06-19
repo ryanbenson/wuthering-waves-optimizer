@@ -10,9 +10,19 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 19, 2025</h3>
+    <ul>
+      <li>
+        Adds Aero Erosion damages, specifically for character levels 80, and 90.
+        The rest are coming soon!
+      </li>
+    </ul>
     <h3>June 16, 2025</h3>
     <ul>
-      <li>Fixes tooltip breakdown of Cartethyia's damages for S6, it wasn't applying the special multiplier, but it's resolved now.</li>
+      <li>
+        Fixes tooltip breakdown of Cartethyia's damages for S6, it wasn't
+        applying the special multiplier, but it's resolved now.
+      </li>
     </ul>
     <h3>June 15, 2025</h3>
     <ul>
