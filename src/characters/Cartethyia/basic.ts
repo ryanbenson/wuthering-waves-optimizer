@@ -6,6 +6,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     avatarUrl: "Cartethyia.png",
     gender: "female",
     element: "Aero",
-    spectroFrazzle: false,
+    aeroErosion: true,
   };
 }

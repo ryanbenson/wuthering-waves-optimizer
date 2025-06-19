@@ -366,7 +366,9 @@
 
   <template
     v-if="
-      allDamages?.value?.elementalReactions?.length || isMissingSpectroData
+      allDamages?.value?.elementalReactions?.length ||
+      isMissingSpectroData ||
+      isMissingAeroErosionData
     ">
     <h4 class="damage__title pt-8">
       <span class="text-lg font-bold">Elemental Effects</span>
@@ -396,8 +398,16 @@
         Discord and help us fill out this data!
       </div>
     </div>
+    <div
+      v-if="isMissingAeroErosionData"
+      class="card card-bordered card-compact shadow my-6 bg-primary">
+      <div class="card-body text-white">
+        We do not have Aero Erosion data for this character level / stacks. Join
+        the Discord and help us fill out this data!
+      </div>
+    </div>
     <table
-      v-if="!isMissingSpectroData"
+      v-if="!isMissingSpectroData || !isMissingAeroErosionData"
       class="calculator__damages table table-zebra table-sm">
       <thead>
         <tr>
@@ -619,6 +629,10 @@ export default {
       default: null,
     },
     isMissingSpectroData: {
+      type: Boolean,
+      default: false,
+    },
+    isMissingAeroErosionData: {
       type: Boolean,
       default: false,
     },

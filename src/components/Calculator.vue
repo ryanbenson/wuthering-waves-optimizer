@@ -103,9 +103,8 @@
           :key="character"
           :character="character"
           @updated-enemy-data="handleUpdatedEnemy"
-          :is-spectro-frazzle-enabled="
-            isSpectroFrazzleEnabled
-          "></CalculatorEnemy>
+          :is-spectro-frazzle-enabled="isSpectroFrazzleEnabled"
+          :is-aero-erosion-enabled="isAeroErosionEnabled"></CalculatorEnemy>
       </div>
       <div class="screen--results" v-show="curScreen === 'results'">
         <CalculatorStats
@@ -144,6 +143,7 @@
           :chosen-char="chosenChar"
           :chosen-echo-name="mainEcho"
           :is-missing-spectro-data="isMissingSpectroData"
+          :is-missing-aero-erosion-data="isMissingAeroErosionData"
           :char-buffs-data="charBuffsData"
           :char-resonance-chains-data="
             charResonanceChainsData
@@ -187,6 +187,7 @@
         :chosen-char="chosenChar"
         :chosen-echo-name="mainEcho"
         :is-missing-spectro-data="isMissingSpectroData"
+        :is-missing-aero-erosion-data="isMissingAeroErosionData"
         :char-buffs-data="charBuffsData"
         :char-resonance-chains-data="
           charResonanceChainsData
@@ -205,6 +206,8 @@ import {
   calcShield,
   getSpectroFrazzleDamage,
   getSpectroFrazzleModifierByLevelByStacks,
+  getAeroErosionDamage,
+  getAeroErosionModifierByLevelByStacks,
   calcMidnightVeilDMG,
 } from "../calculator/calculator";
 import {
@@ -311,6 +314,9 @@ export default defineComponent({
     const isSpectroFrazzleEnabled = ref(false);
     const spectroFrazzleStacks = ref(0);
     const isMissingSpectroData = ref(false);
+    const isAeroErosionEnabled = ref(false);
+    const aeroErosionStacks = ref(0);
+    const isMissingAeroErosionData = ref(false);
 
     charactersList.value = getCharactersAvailable();
 
@@ -333,6 +339,8 @@ export default defineComponent({
       // update any elemental effects
       isSpectroFrazzleEnabled.value =
         chosenChar?.value?.basic?.spectroFrazzle ?? false;
+      isAeroErosionEnabled.value =
+        chosenChar?.value?.basic?.aeroErosion ?? false;
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
@@ -1302,7 +1310,10 @@ export default defineComponent({
           totalTalentModifierMultiply = talentModifierMultiplySet;
         }
 
-        if (attackType === "ElementalEffect") {
+        if (
+          attackType === "ElementalEffect" &&
+          attack?.subType === "SpectroFrazzle"
+        ) {
           let totalSpectroFrazzleDeepen = 0;
           // get any SpectroFrazzle dmg deepen/amplify
           // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
@@ -1334,6 +1345,45 @@ export default defineComponent({
             );
             return elementalEffectDmg;
           }
+        }
+
+        if (
+          attackType === "ElementalEffect" &&
+          attack?.subType === "AeroErosion"
+        ) {
+          let totalAeroErosionDeepen = 0;
+          // get any SpectroFrazzle dmg deepen/amplify
+          // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
+          const aeroErosionDeepenWeaponBuffs =
+            weaponData.value?.weaponPassiveStats?.["DMGDeepen:AeroErosion"] ??
+            0;
+          const aeroErosionDeepenTeamBuffs =
+            teamBuffsData.value?.["DMGDeepen:AeroErosion"] ?? 0;
+          const aeroErosionDeepenSelfBuffs =
+            selfBuffs?.["DMGDeepen:AeroErosion"] ?? 0;
+          const specificAeroErosionDeepenSelfBuffs =
+            selfBuffs?.specificTalentBuffs?.[
+              "AeroErosion:DMGDeepen:AeroErosion"
+            ] ?? 0;
+          const aeroErosionDeepenResonanceChains =
+            charResonanceChainsData.value?.["DMGDeepen:AeroErosion"] ?? 0;
+          totalAeroErosionDeepen =
+            aeroErosionDeepenWeaponBuffs +
+            aeroErosionDeepenTeamBuffs +
+            aeroErosionDeepenSelfBuffs +
+            aeroErosionDeepenResonanceChains +
+            specificAeroErosionDeepenSelfBuffs;
+          const elementalEffectDmg = getAeroErosionDamage(
+            attack.talent,
+            attack?.stacks ?? 0,
+            characterLevel.value,
+            enemyLevel.value,
+            enemyResist.value,
+            totalResistReduction,
+            0, // TODO: AeroErosion does not use DefIgnore?
+            totalAeroErosionDeepen,
+          );
+          return elementalEffectDmg;
         }
 
         if (attackType === "Healing") {
@@ -1447,14 +1497,12 @@ export default defineComponent({
             additiveMultiplierPercent = modifierPercent;
           }
         }
-        console.log(charResonanceChainsData.value);
         let totalSpecialMultiplier = 0;
         let resonanceChainAttackSpecialMultiplier =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:specialMultiplier`
           ] ?? 0;
         totalSpecialMultiplier += resonanceChainAttackSpecialMultiplier;
-        console.log(`totalSpecialMultplier: ${totalSpecialMultiplier}`);
         return calcDamage(
           characterLevel.value,
           enemyLevel.value,
@@ -1696,6 +1744,33 @@ export default defineComponent({
           );
         }
       }
+      if (isAeroErosionEnabled.value && aeroErosionStacks.value > 0) {
+        isMissingAeroErosionData.value = false;
+        // get the MV based on stacks and character level
+        const aeroErosionMv = getAeroErosionModifierByLevelByStacks(
+          characterLevel.value,
+          aeroErosionStacks.value,
+        );
+        if (!aeroErosionMv) {
+          isMissingAeroErosionData.value = true;
+        }
+        if (aeroErosionMv) {
+          const aeroErosionAttack = {
+            key: "ElementalEffectAeroErosion",
+            label: "Aero Erosion",
+            talent: aeroErosionMv,
+            type: "ElementalEffect",
+            element: "Aero",
+            subType: "AeroErosion",
+            stacks: aeroErosionStacks.value,
+          };
+          allDamagesData.elementalReactions = processAttacks(
+            [{ ...aeroErosionAttack }],
+            talentData.intro,
+            true, // has no talent level
+          );
+        }
+      }
 
       let chosenEcho;
       if (mainEcho.value) {
@@ -1827,6 +1902,7 @@ export default defineComponent({
       enemyLevel.value = data.enemyLevel;
       enemyResist.value = data.enemyResist;
       spectroFrazzleStacks.value = data.spectroFrazzleStacks;
+      aeroErosionStacks.value = data.aeroErosionStacks;
       calcAllDamages();
     };
 
@@ -1988,6 +2064,8 @@ export default defineComponent({
       // elemental effects
       isSpectroFrazzleEnabled,
       isMissingSpectroData,
+      isAeroErosionEnabled,
+      isMissingAeroErosionData,
     };
   },
 });
