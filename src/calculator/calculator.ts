@@ -639,6 +639,38 @@ export function getSpectroFrazzleModifierByLevelByStacks(
   return modifier / 100;
 }
 
+export function getAeroErosionModifierByLevelByStacks(
+  charLevel: string,
+  stacks: number,
+): number | null {
+  // remove any + since ascension doesn't affect the data
+  const characterLevel = charLevel.replace("+", "");
+  const levelScalingFactors: Record<string, Record<number, number>> = {
+    // TODO: Add the reset of the levels
+    "80": {
+      6: 1.8799,
+      5: 1.8045,
+      4: 1.691875,
+      3: 1.5038,
+      2: 1.1279,
+      1: 0.903,
+    },
+    "90": {
+      6: 3.4444,
+      5: 3.30675,
+      4: 3.1,
+      3: 2.7556,
+      2: 2.06695,
+      1: 1.6535,
+    },
+  };
+  const modifier = levelScalingFactors?.[characterLevel]?.[stacks] ?? null;
+  if (!modifier) {
+    return null;
+  }
+  return modifier;
+}
+
 export function getSpectroFrazzleDamage(
   motionValue: number,
   stacks: number,
@@ -657,6 +689,30 @@ export function getSpectroFrazzleDamage(
   //   charLevel,
   //   stacks,
   // );
+  return (
+    baseModifier *
+    resistModifier *
+    defModifier *
+    stacks *
+    motionValue *
+    (1 + DMGDeepen)
+  );
+}
+
+export function getAeroErosionDamage(
+  motionValue: number,
+  stacks: number,
+  charLevel: string,
+  enemyLevel: number,
+  enemyResist: number,
+  resistenceReduction: number,
+  defIgnore: number = 0,
+  DMGDeepen: number = 0,
+): number {
+  const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
+  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
+  // 1000*res*def*stack number*MV%
+  const baseModifier = 1000;
   return (
     baseModifier *
     resistModifier *

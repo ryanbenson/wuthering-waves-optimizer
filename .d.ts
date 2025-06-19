@@ -6,6 +6,7 @@ interface CharacterBasicInfo {
   gender: string;
   element: string;
   spectroFrazzle?: boolean;
+  aeroErosion?: boolean;
 }
 interface WeaponInfo {
   key?: string;
@@ -95,4 +96,4 @@ type RotationPreset = {
   description: string;
   author?: string;
   data: any; // this is a rotation config, we can build this out later
-}
+};
