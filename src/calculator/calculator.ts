@@ -647,7 +647,34 @@ export function getAeroErosionModifierByLevelByStacks(
   const characterLevel = charLevel.replace("+", "");
   const levelScalingFactors: Record<string, Record<number, number>> = {
     // TODO: Add the reset of the levels
+    "50": {
+      6: 0.21475,
+      5: 0.2061,
+      4: 0.19318,
+      3: 0.1718,
+      2: 0.1288,
+      1: 0.10355,
+    },
+    "60": {
+      6: 0.3562,
+      5: 0.3422,
+      4: 0.3207,
+      3: 0.2855,
+      2: 0.214,
+      1: 0.171,
+    },
+    "70": {
+      6: 0.9422,
+      5: 0.90454,
+      4: 0.8479,
+      3: 0.7537,
+      2: 0.5651,
+      1: 0.4531,
+    },
     "80": {
+      9: 2.005,
+      8: 1.97375,
+      7: 1.93345,
       6: 1.8799,
       5: 1.8045,
       4: 1.691875,

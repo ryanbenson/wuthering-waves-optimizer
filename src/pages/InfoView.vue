@@ -84,6 +84,7 @@
         Namelag, and Dustin for all of your help with the Spectro Frazzle
         formula!
       </li>
+      <li>noyaosu for your help in data gathering for Aero Erosion!</li>
     </ul>
     <h3>Privacy</h3>
     <p>

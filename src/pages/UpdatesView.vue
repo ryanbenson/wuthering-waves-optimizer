@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 21, 2025</h3>
+    <ul>
+      <li>
+        Adds Aero Erosion damages for stacks 7-9 for level 80 characters. Also
+        adds Aero Erosion data (stacks 1-6) for level 50, 60, and 70 characters.
+      </li>
+    </ul>
     <h3>June 19, 2025</h3>
     <ul>
       <li>
