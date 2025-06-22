@@ -10,6 +10,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 22, 2025</h3>
+    <ul>
+      <li>
+        Adds Aero Erosion data (stacks 1-6) for level 1, 20, and 40 characters.
+      </li>
+    </ul>
     <h3>June 21, 2025</h3>
     <ul>
       <li>
