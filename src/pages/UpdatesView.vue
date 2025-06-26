@@ -10,6 +10,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>June 26, 2025</h3>
+    <ul>
+      <li>
+        Changes the echo set override, when you disable it after using it to customize echoes, it will re-evaluate your sets based on what's equipped.
+      </li>
+    </ul>
     <h3>June 22, 2025</h3>
     <ul>
       <li>

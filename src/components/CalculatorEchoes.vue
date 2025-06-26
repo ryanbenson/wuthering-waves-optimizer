@@ -186,6 +186,11 @@ export default {
       },
       immediate: true,
     },
+    setOverride(newValue) {
+      if (newValue === false) {
+        this.updateEchoSets();
+      }
+    }
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
@@ -294,6 +299,9 @@ export default {
     },
     async handleEchoSetChosen({ set, index }) {
       this.echoSetsChosen[index] = set;
+      await this.updateEchoSets();
+    },
+    async updateEchoSets() {
       // Filter out nulls and create a count map for each value
       const counts = this.echoSetsChosen
         .filter((v) => v !== null)
