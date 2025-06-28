@@ -1077,6 +1077,8 @@ export default defineComponent({
         const genericSkillDmgBonusResChain =
           charResonanceChainsData.value?.DMGBonus ?? 0;
         const genericSkillDmgBonusSelfBuff = selfBuffs?.DMGBonus ?? 0;
+        const genericSkillDmgBonusWeaponBuff =
+          weaponData?.value?.weaponPassiveStats?.DMGBonus ?? 0;
         const genericSkillDmgBonusEchoBuff = echoStats.value?.DMGBonus ?? 0;
         let genericSkillDmgBonusTeamEchoBuff =
           teamBuffsData.value?.DMGBonus ?? 0;
@@ -1132,6 +1134,7 @@ export default defineComponent({
           specificSkillDmgFromCharBuffs +
           genericSkillDmgBonusResChain +
           genericSkillDmgBonusSelfBuff +
+          genericSkillDmgBonusWeaponBuff +
           genericSkillDmgBonusTeamEchoBuff +
           specificSkillDmgFromEchoes +
           specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +

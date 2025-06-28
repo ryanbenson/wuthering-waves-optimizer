@@ -31,6 +31,7 @@ const broadbladesList = {
   five: [
     { key: "AgesOfHarvest", name: "Ages Of Harvest" },
     { key: "LustrousRazor", name: "Lustrous Razor" },
+    { key: "WildfireMark", name: "Wildfire Mark" },
     { key: "VerdantSummit", name: "Verdant Summit" },
   ],
   four: [

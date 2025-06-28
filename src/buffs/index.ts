@@ -1455,6 +1455,27 @@ export const allWeaponTeamBuffs = [
     details: `Hitting targets with Aero Erosion reduces their Aero RES by <span class="param">10%/11.5%/13%/14.5%/16%</span> for <span class="param">20</span>s. Effects of the same name cannot be stacked.`,
     alwaysEnabled: false,
   },
+  {
+    name: "Wildfire Mark",
+    key: "WildfireMarkDMGBonus",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DMGBonus",
+        modifierByRefinement: {
+          "1": 0.24,
+          "2": 0.3,
+          "3": 0.36,
+          "4": 0.42,
+          "5": 0.48,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `Each successful extension gives <span class="param">24%/30%/36%/42%/48%</span> DMG Bonus to all Resonators in the team for <span class="param">30</span>s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allCharacters: string[] = [
