@@ -6,7 +6,7 @@ const weaponInfo: WeaponInfo = {
   type: "Broadblade",
   rarity: 5,
   passiveName: `Blazing Starfire`,
-  passiveValue: `Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>. Performing Intro Skill or Resonance Liberation increases Resonance Liberation DMG by <span class="param">24%/30%/36%/42%/48%</span> for <span class="param">6</span>s. Dealing Heavy Attack DMG extends this effect by <span class="param">4</span>s, up to <span class="param">1</span> times. Each successful extension gives <span class="param">24%/30%/36%/42%/48%</span> DMG Bonus to all Resonators in the team for <span class="param">30</span>s. Effects of the same name cannot be stacked.`,
+  passiveValue: `Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>. Performing Intro Skill or Resonance Liberation increases Resonance Liberation DMG by <span class="param">24%/30%/36%/42%/48%</span> for <span class="param">6</span>s. Dealing Heavy Attack DMG extends this effect by <span class="param">4</span>s, up to <span class="param">1</span> times. Each successful extension gives <span class="param">24%/30%/36%/42%/48%</span> Fusion DMG Bonus to all Resonators in the team for <span class="param">30</span>s. Effects of the same name cannot be stacked.`,
   passiveData: [
     {
       key: "WildfireMarkATK",
@@ -41,7 +41,7 @@ const weaponInfo: WeaponInfo = {
     {
       key: "WildfireMarkDMGBonus",
       hasStacks: false,
-      modifier: "DMGBonus",
+      modifier: "Fusion",
       modifierByRefinement: {
         "1": 0.24,
         "2": 0.3,
@@ -51,7 +51,7 @@ const weaponInfo: WeaponInfo = {
       },
       minStacks: 0,
       maxStacks: 0,
-      details: `Each successful extension gives <span class="param">24%/30%/36%/42%/48%</span> DMG Bonus to all Resonators in the team for <span class="param">30</span>s. Effects of the same name cannot be stacked.`,
+      details: `Each successful extension gives <span class="param">24%/30%/36%/42%/48%</span> Fusion DMG Bonus to all Resonators in the team for <span class="param">30</span>s. Effects of the same name cannot be stacked.`,
       alwaysEnabled: false,
     },
   ],
