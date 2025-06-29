@@ -1461,7 +1461,7 @@ export const allWeaponTeamBuffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "DMGBonus",
+        modifier: "Fusion",
         modifierByRefinement: {
           "1": 0.24,
           "2": 0.3,
@@ -1473,7 +1473,7 @@ export const allWeaponTeamBuffs = [
     ],
     minStacks: 0,
     maxStacks: 0,
-    details: `Each successful extension gives <span class="param">24%/30%/36%/42%/48%</span> DMG Bonus to all Resonators in the team for <span class="param">30</span>s. Effects of the same name cannot be stacked.`,
+    details: `Each successful extension gives <span class="param">24%/30%/36%/42%/48%</span> Fusion DMG Bonus to all Resonators in the team for <span class="param">30</span>s. Effects of the same name cannot be stacked.`,
     alwaysEnabled: false,
   },
 ];
