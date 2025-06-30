@@ -10,6 +10,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>
+      <ul>
+        <li>Fixes echo damage for Reminiscence: Fleurdelys, it now properly does Aero damage.</li>
+      </ul>
+    </h3>
     <h3>June 28, 2025</h3>
     <ul>
       <li>Adds Lupa signature, Wildfire Mark.</li>
