@@ -1259,7 +1259,11 @@ export const allEchoBuffs = [
   {
     key: "BellBorne eochelone",
     name: "Bell-Borne Geochelone",
-    details: `<span class="skilldescription">The Bell-Borne Shield provides <span class="Highlight">50.00%</span> DMG Reduction and <span class="Highlight">10.0%</span> DMG Boost for the current team members, and disappears after the current character is hit for 3 times.</span>`,
+    details: `<span class="description">Activate the protection of Bell-Borne Geochelone. Obtain a Bell-Borne Shield that lasts for <span class="param">15</span>s
+
+The Bell-Borne Shield provides <span class="param">50.00%</span> DMG Reduction and <span class="param">10.00%</span> DMG Boost for the current team members, and disappears after the current character is hit for <span class="param">3</span> times.
+
+CD: <span class="param">20</span>s</span>`,
     hasStacks: false,
     modifiers: [
       {

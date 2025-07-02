@@ -1719,6 +1719,7 @@ export default defineComponent({
         ),
       };
 
+      const elementalReactionsAttacks = [];
       // add any elemental effects
       if (isSpectroFrazzleEnabled.value && spectroFrazzleStacks.value > 0) {
         isMissingSpectroData.value = false;
@@ -1740,11 +1741,7 @@ export default defineComponent({
             subType: "SpectroFrazzle",
             stacks: spectroFrazzleStacks.value,
           };
-          allDamagesData.elementalReactions = processAttacks(
-            [{ ...spectroFrazzleAttack }],
-            talentData.intro,
-            true, // has no talent level
-          );
+          elementalReactionsAttacks.push(spectroFrazzleAttack);
         }
       }
       if (isAeroErosionEnabled.value && aeroErosionStacks.value > 0) {
@@ -1767,14 +1764,16 @@ export default defineComponent({
             subType: "AeroErosion",
             stacks: aeroErosionStacks.value,
           };
+          elementalReactionsAttacks.push(aeroErosionAttack);
+        }
+      }
+      if (elementalReactionsAttacks.length > 0) {
           allDamagesData.elementalReactions = processAttacks(
-            [{ ...aeroErosionAttack }],
+            elementalReactionsAttacks,
             talentData.intro,
             true, // has no talent level
           );
-        }
       }
-
       let chosenEcho;
       if (mainEcho.value) {
         chosenEcho = getEchoData(mainEcho.value);

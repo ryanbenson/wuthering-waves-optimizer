@@ -7,5 +7,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     gender: "female",
     element: "Aero",
     spectroFrazzle: true,
+    aeroErosion: true,
   };
 }

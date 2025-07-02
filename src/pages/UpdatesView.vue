@@ -10,11 +10,15 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>
-      <ul>
-        <li>Fixes echo damage for Reminiscence: Fleurdelys, it now properly does Aero damage.</li>
-      </ul>
-    </h3>
+    <h3>July 2, 2025</h3>
+    <ul>
+      <li>Enables Aero Erosion for Ciaccona.</li>
+      <li>Fixes Bell text by adding cooldown and duration.</li>
+    </ul>
+    <h3>June 30, 2025</h3>
+    <ul>
+      <li>Fixes echo damage for Reminiscence: Fleurdelys, it now properly does Aero damage.</li>
+    </ul>
     <h3>June 28, 2025</h3>
     <ul>
       <li>Adds Lupa signature, Wildfire Mark.</li>
