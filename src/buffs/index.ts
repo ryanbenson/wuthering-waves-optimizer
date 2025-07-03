@@ -1082,7 +1082,7 @@ export const buffsByCharacter = {
     {
       key: `PackHunt`,
       name: `Pack Hunt`,
-      details: `Resonators with <span class="Highlight">Pack Hunt</span> gain a 6% ATK increase, and 10% Fusion DMG Bonus when they attack Overlord Class or Calamity Class targets (Both are non-stackable).`,
+      details: `Resonators with <span class="Highlight">Pack Hunt</span> gain a 6% ATK increase, and 10% Fusion DMG Bonus when they attack Overlord Class or Calamity Class targets (Both are non-stackable).<br><em>These buffs may not appear in your stats in-game.</em>`,
       hasStacks: false,
       modifiers: [
         {
@@ -1101,7 +1101,7 @@ export const buffsByCharacter = {
     {
       key: `PackHuntFusionTeam`,
       name: `Pack Hunt Fusion Team`,
-      details: `Resonators with <span class="Highlight">Pack Hunt</span>: If there are 3 Fusion Resonators in the team, the Fusion DMG Bonus against Overlord Class or Calamity Class targets additionally increases by 10%.`,
+      details: `Resonators with <span class="Highlight">Pack Hunt</span>: If there are 3 Fusion Resonators in the team, the Fusion DMG Bonus against Overlord Class or Calamity Class targets additionally increases by 10%.<br><em>These buffs may not appear in your stats in-game.</em>`,
       hasStacks: false,
       modifiers: [
         {

@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 3, 2025</h3>
+    <ul>
+      <li>
+        Adds note to Lupa team buffs since a couple of buffs don't appear in the
+        in-game stats.
+      </li>
+    </ul>
     <h3>July 2, 2025</h3>
     <ul>
       <li>Enables Aero Erosion for Ciaccona.</li>
@@ -17,7 +24,10 @@
     </ul>
     <h3>June 30, 2025</h3>
     <ul>
-      <li>Fixes echo damage for Reminiscence: Fleurdelys, it now properly does Aero damage.</li>
+      <li>
+        Fixes echo damage for Reminiscence: Fleurdelys, it now properly does
+        Aero damage.
+      </li>
     </ul>
     <h3>June 28, 2025</h3>
     <ul>
