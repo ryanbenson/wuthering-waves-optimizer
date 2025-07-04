@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 4, 2025</h3>
+    <ul>
+      <li>
+        Fixes Lupa team buffs, S3 now properly overwrites the resist reduction
+        buffs.
+      </li>
+    </ul>
     <h3>July 3, 2025</h3>
     <ul>
       <li>
