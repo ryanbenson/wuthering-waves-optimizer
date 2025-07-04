@@ -61,7 +61,7 @@ export const buffs = [
       },
     ],
     minStacks: 0,
-    maxStacks: 3,
+    maxStacks: 2,
     alwaysEnabled: false,
   },
   {

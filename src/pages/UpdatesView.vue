@@ -16,6 +16,7 @@
         Fixes Lupa team buffs, S3 now properly overwrites the resist reduction
         buffs.
       </li>
+      <li>Changes Lupa Pack Hunt Enhanced buff to have max stacks of 2 to meet the 18% ATK cap.</li>
     </ul>
     <h3>July 3, 2025</h3>
     <ul>
