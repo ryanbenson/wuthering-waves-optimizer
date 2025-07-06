@@ -32,16 +32,18 @@
             @character-talent-updated="
               handleCharacterTalentUpdated
             "></CalculatorTalents>
-          <CalculatorCharacterBuffs
-            :key="character"
-            :character="character"
-            :buffs="chosenChar?.value?.buffs"
-            :talent-data="characters?.[character]?.talents"
-            class="character__self-buffs"
-            ref="characterBuffsRef"
-            @updated-character-buffs="
-              handleUpdatedCharacterBuffs
-            "></CalculatorCharacterBuffs>
+          <template v-if="chosenChar?.value?.buffs && isLoading === false">
+            <CalculatorCharacterBuffs
+              :key="character"
+              :character="character"
+              :buffs="chosenChar?.value?.buffs"
+              :talent-data="characters?.[character]?.talents"
+              class="character__self-buffs"
+              ref="characterBuffsRef"
+              @updated-character-buffs="
+                handleUpdatedCharacterBuffs
+              "></CalculatorCharacterBuffs>
+            </template>
         </div>
       </div>
 
@@ -66,6 +68,7 @@
       </div>
 
       <div class="screen--character" v-show="curScreen === 'constellations'">
+        <template v-if="chosenChar?.value?.resonanceChains && isLoading === false">
         <CalculatorResonanceChains
           :key="character"
           :character="character"
@@ -74,6 +77,7 @@
           @updated-character-resonance-chains="
             handleUpdatedCharacterResonanceChains
           "></CalculatorResonanceChains>
+        </template>
       </div>
 
       <div class="screen-character" v-show="curScreen === 'party'">
