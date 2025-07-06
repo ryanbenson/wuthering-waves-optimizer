@@ -15,6 +15,21 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
+    key: "OutroSkillWindcallingTune",
+    name: "Outro Skill: Windcalling Tune",
+    details: `<div class="skilldescription"><span class="Highlight">Aero Erosion</span> DMG dealt to targets near the active Resonator is Amplified by 100% for 30s.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DMGDeepen:AeroErosion",
+        modifierValue: 1,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: `InherentSkillInterludeTune`,
     name: `Inherent Skill: Interlude Tune`,
     details: `<div class="skilldescription">Casting Resonance Liberation <span class="Highlight">Singer's Triple Cadenza</span> grants Ciaccona a Shield equal to 100% of her Max HP for 4s. Switching out Ciaccona removes the Shield.</div>`,

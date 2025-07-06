@@ -16,6 +16,7 @@
         Fixes Lupa S6 and pre-S6. Pre-S6 Nowhere to Run! DMG now no longer gets
         Glory and Pack Hunt buffs. It now gets included in S6.
       </li>
+      <li>Adds Ciaccona's outro to her own buffs.</li>
     </ul>
     <h3>July 5, 2025</h3>
     <ul>
