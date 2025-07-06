@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 6, 2025</h3>
+    <ul>
+      <li>
+        Fixes Lupa S6 and pre-S6. Pre-S6 Nowhere to Run! DMG now no longer gets
+        Glory and Pack Hunt buffs. It now gets included in S6.
+      </li>
+    </ul>
     <h3>July 5, 2025</h3>
     <ul>
       <li>Adds Flaming Clawprint set to Aero Drake.</li>
@@ -20,7 +27,10 @@
         Fixes Lupa team buffs, S3 now properly overwrites the resist reduction
         buffs.
       </li>
-      <li>Changes Lupa Pack Hunt Enhanced buff to have max stacks of 2 to meet the 18% ATK cap.</li>
+      <li>
+        Changes Lupa Pack Hunt Enhanced buff to have max stacks of 2 to meet the
+        18% ATK cap.
+      </li>
     </ul>
     <h3>July 3, 2025</h3>
     <ul>

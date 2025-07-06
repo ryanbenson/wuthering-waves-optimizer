@@ -32,17 +32,16 @@
             @character-talent-updated="
               handleCharacterTalentUpdated
             "></CalculatorTalents>
-          <template v-if="chosenChar?.value?.buffs && isLoading === false">
-            <CalculatorCharacterBuffs
-              :key="character"
-              :character="character"
-              :buffs="chosenChar?.value?.buffs"
-              :talent-data="characters?.[character]?.talents"
-              class="character__self-buffs"
-              @updated-character-buffs="
-                handleUpdatedCharacterBuffs
-              "></CalculatorCharacterBuffs>
-          </template>
+          <CalculatorCharacterBuffs
+            :key="character"
+            :character="character"
+            :buffs="chosenChar?.value?.buffs"
+            :talent-data="characters?.[character]?.talents"
+            class="character__self-buffs"
+            ref="characterBuffsRef"
+            @updated-character-buffs="
+              handleUpdatedCharacterBuffs
+            "></CalculatorCharacterBuffs>
         </div>
       </div>
 
@@ -67,17 +66,14 @@
       </div>
 
       <div class="screen--character" v-show="curScreen === 'constellations'">
-        <template
-          v-if="chosenChar?.value?.resonanceChains && isLoading === false">
-          <CalculatorResonanceChains
-            :key="character"
-            :character="character"
-            :buffs="chosenChar?.value?.resonanceChains"
-            :talent-data="characters?.[character]?.talents"
-            @updated-character-resonance-chains="
-              handleUpdatedCharacterResonanceChains
-            "></CalculatorResonanceChains>
-        </template>
+        <CalculatorResonanceChains
+          :key="character"
+          :character="character"
+          :buffs="chosenChar?.value?.resonanceChains"
+          :talent-data="characters?.[character]?.talents"
+          @updated-character-resonance-chains="
+            handleUpdatedCharacterResonanceChains
+          "></CalculatorResonanceChains>
       </div>
 
       <div class="screen-character" v-show="curScreen === 'party'">
@@ -198,7 +194,7 @@
 
 <script lang="ts">
 // @ts-nocheck
-import { defineComponent, reactive, ref, watch } from "vue";
+import { defineComponent, reactive, ref, watch, nextTick } from "vue";
 import { storeToRefs } from "pinia";
 import {
   calcDamage,
@@ -317,6 +313,8 @@ export default defineComponent({
     const isAeroErosionEnabled = ref(false);
     const aeroErosionStacks = ref(0);
     const isMissingAeroErosionData = ref(false);
+    // component refs
+    const characterBuffsRef = ref(null);
 
     charactersList.value = getCharactersAvailable();
 
@@ -1072,6 +1070,9 @@ export default defineComponent({
         // end max buff handlers
         const specificSkillDmgFromCharBuffs =
           selfBuffs?.specificTalentBuffs?.[attack.key] ?? 0;
+        const specificSkillDmgFromCharBuffsWithElement =
+          selfBuffs?.specificTalentBuffs?.[`${attack.key}:${attackElement}`] ??
+          0;
         const specificSkillDmgFromEchoes =
           echoStats.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const genericSkillDmgBonusResChain =
@@ -1085,7 +1086,6 @@ export default defineComponent({
         if (excludeTeamBuffs) {
           genericSkillDmgBonusTeamEchoBuff = 0;
         }
-
         const extraDefIgnoreResonanceChain =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DEFIgnore`
@@ -1132,6 +1132,7 @@ export default defineComponent({
         let specificSkillDmg =
           specificSkillDmgFromResonanceChains +
           specificSkillDmgFromCharBuffs +
+          specificSkillDmgFromCharBuffsWithElement +
           genericSkillDmgBonusResChain +
           genericSkillDmgBonusSelfBuff +
           genericSkillDmgBonusWeaponBuff +
@@ -1149,6 +1150,10 @@ export default defineComponent({
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         let selfBuffResistShredForCharElement =
           selfBuffs?.[`ResistShred:${attackElement}`] ?? 0;
+        let selfBuffResistShredForCharElementSpecificAttack =
+          selfBuffs?.specificTalentBuffs?.[
+            `${attack.key}:ResistShred:${attackElement}`
+          ] ?? 0;
         let weaponBuffResistShredForCharElement =
           weaponData.value?.weaponPassiveStats?.[
             `ResistShred:${attackElement}`
@@ -1167,6 +1172,7 @@ export default defineComponent({
           teamBuffResistShredForCharElement +
           resonanceChainResistShredForCharElement +
           selfBuffResistShredForCharElement +
+          selfBuffResistShredForCharElementSpecificAttack +
           weaponBuffResistShredForCharElement +
           actionBuffResistReduction +
           customResistReduction;
@@ -1768,11 +1774,11 @@ export default defineComponent({
         }
       }
       if (elementalReactionsAttacks.length > 0) {
-          allDamagesData.elementalReactions = processAttacks(
-            elementalReactionsAttacks,
-            talentData.intro,
-            true, // has no talent level
-          );
+        allDamagesData.elementalReactions = processAttacks(
+          elementalReactionsAttacks,
+          talentData.intro,
+          true, // has no talent level
+        );
       }
       let chosenEcho;
       if (mainEcho.value) {
@@ -1876,6 +1882,10 @@ export default defineComponent({
     const handleUpdatedCharacterResonanceChains = (
       givenResonanceChainsData,
     ) => {
+      if (character.value === "Lupa") {
+        characterBuffsRef.value.retriggerBuffCalculations();
+      }
+
       charResonanceChainsData.value = givenResonanceChainsData;
       calcCharStats();
     };
@@ -2068,6 +2078,8 @@ export default defineComponent({
       isMissingSpectroData,
       isAeroErosionEnabled,
       isMissingAeroErosionData,
+      // component refs
+      characterBuffsRef,
     };
   },
 });

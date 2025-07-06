@@ -20,7 +20,9 @@
 </template>
 
 <script>
+import { mapState } from "pinia";
 import CalculatorCharacterBuff from "./CalculatorCharacterBuff.vue";
+import { useCharacterStore } from "../stores/character";
 export default {
   props: {
     character: {
@@ -40,6 +42,7 @@ export default {
   data() {
     return {
       buffsData: [],
+      triggerBuffUpdate: 0, // used to force reactivity
     };
   },
   watch: {
@@ -69,8 +72,19 @@ export default {
         this.buffsData[buffIndex] = buffInfo;
       }
     },
+    retriggerBuffCalculations() {
+      this.triggerBuffUpdate++; // increment to force reactivity
+    },
   },
   computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
     /**
      * Transformer to take all of the buffs we have, which can overlap
      * and merge them together to provide an aggregated list of buffs
@@ -78,6 +92,9 @@ export default {
      * @returns {Object}
      */
     buffsFormatted() {
+      if (this.triggerBuffUpdate) {
+        // will force reactivity
+      }
       const finalBuffData = {};
       let modifySpecificTalents = [];
       this.buffsData.forEach((buffInstance) => {
@@ -141,6 +158,28 @@ export default {
           });
         });
         finalBuffData.specificTalentBuffs = specificTalentBuffs;
+      }
+      if (this.character === "Lupa" && finalBuffData.specificTalentBuffs) {
+        if (
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode6TotheBrightestFlamingStar?.isEnabled
+        ) {
+          // copy the same buffs for NowheretoRunDMG from the other intro
+          const atk =
+            finalBuffData.specificTalentBuffs?.[`TryFocusingEhDMG:ATK`];
+          const fusion =
+            finalBuffData?.specificTalentBuffs?.[`TryFocusingEhDMG:Fusion`];
+          const resistReduction =
+            finalBuffData?.specificTalentBuffs?.[
+              `TryFocusingEhDMG:ResistShred:Fusion`
+            ];
+          finalBuffData.specificTalentBuffs["NowheretoRunDMG:ATK"] = atk || 0;
+          finalBuffData.specificTalentBuffs["NowheretoRunDMG:Fusion"] =
+            fusion || 0;
+          finalBuffData.specificTalentBuffs[
+            "NowheretoRunDMG:ResistShred:Fusion"
+          ] = resistReduction || 0;
+        }
       }
       return finalBuffData;
     },
