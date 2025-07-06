@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 5, 2025</h3>
+    <ul>
+      <li>Adds Flaming Clawprint set to Aero Drake.</li>
+    </ul>
     <h3>July 4, 2025</h3>
     <ul>
       <li>
