@@ -112,7 +112,7 @@ CD: 15s.`,
     details: ``,
     modifiers: [],
     actions: [],
-    sets: ["GustsofWelkin", "TidebreakingCourage"],
+    sets: ["GustsofWelkin", "TidebreakingCourage", "FlamingClawprint"],
   },
   AeroPredator: {
     key: "AeroPredator",
