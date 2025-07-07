@@ -25,7 +25,8 @@
         <RouterLink
           to="/"
           class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2"
-          :class="{ 'btn-active': curPage === 'home' }">
+          :class="{ 'btn-active': curPage === 'home' }"
+          data-test-nav-calculator>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 384 512"
@@ -51,7 +52,7 @@
         <ul class="menu menu-horizontal px-1">
           <ThemeChooser></ThemeChooser>
           <li>
-            <details class="options-menu">
+            <details class="options-menu" data-test-options-menu>
               <summary>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +71,8 @@
                   <RouterLink
                     to="/settings"
                     @click="toggleOptionsMenu"
-                    :class="{ active: curPage === 'settings' }">
+                    :class="{ active: curPage === 'settings' }"
+                    data-test-options-settings>
                     Settings
                   </RouterLink>
                 </li>

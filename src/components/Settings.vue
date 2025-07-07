@@ -15,6 +15,7 @@
           class="tab-link text-base-content px-4 py-2"
           :class="getActiveClasses('export')"
           @click="setTab('export')"
+          data-test-settings-export
         >
           Export
         </a>
@@ -23,6 +24,7 @@
           class="tab-link text-base-content px-4 py-2"
           :class="getActiveClasses('import')"
           @click="setTab('import')"
+          data-test-settings-import
         >
           Import
         </a>
@@ -31,6 +33,7 @@
           class="tab-link text-base-content px-4 py-2"
           :class="getActiveClasses('advanced')"
           @click="setTab('advanced')"
+          data-test-settings-advanced
         >
           Advanced
         </a>

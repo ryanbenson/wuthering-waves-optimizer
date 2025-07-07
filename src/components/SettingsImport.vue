@@ -20,8 +20,9 @@
       </p>
       <textarea
         v-model="importedRawCharacterData"
-        class="textarea textarea-bordered"></textarea>
-      <button @click="importRawCharacterData" class="btn btn-error">
+        class="textarea textarea-bordered"
+        data-test-import-raw-text></textarea>
+      <button @click="importRawCharacterData" class="btn btn-error" data-test-import-raw-button>
         Confirm Import
       </button>
     </div>
@@ -95,11 +96,12 @@ export default defineComponent({
      * Imports the raw character data through a given string in the input
      */
     importRawCharacterData() {
+      console.log(this.importedRawCharacterData);
       if (!this.importedRawCharacterData) {
-        this.triggerNotification("No character data given", true);
+        return this.triggerNotification("No character data given", true);
       }
       if (this.isJsonString(this.importedRawCharacterData) === false) {
-        this.triggerNotification("Character data given is invalid", true);
+        return this.triggerNotification("Character data given is invalid", true);
       }
       // overwrite the local storage then rehydrate
       const importData = this.getImportData(
