@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 10, 2025</h3>
+    <ul>
+      <li>Adds rotation presets for Zani, and Cantarella.</li>
+    </ul>
     <h3>July 7, 2025</h3>
     <ul>
       <li>Adds rotation presets for Cartethyia, and Encore.</li>
