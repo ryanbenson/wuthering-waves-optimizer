@@ -6,10 +6,12 @@ See the project for more information on where things are at, and where things ar
 
 ## UI
 
-* [Daisy UI](https://daisyui.com/)
-* [Tailwind](https://tailwindcss.com/)
+- [Daisy UI](https://daisyui.com/)
+- [Tailwind](https://tailwindcss.com/)
 
 ## Buff configurations
+
+TBD
 
 ### Base talent multiplier
 
