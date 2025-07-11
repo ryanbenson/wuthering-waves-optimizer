@@ -10,9 +10,18 @@
         </button>
       </form>
       <div class="py-4">
-        <pre>
-        {{ currentCharacter }}
-        </pre>
+        <p v-if="!hasEchoPresets">No echo presets available</p>
+        <div class="echoes-presets-list">
+          <div
+            v-for="echoPreset in echoPresets"
+            :key="echoPreset.name"
+          >
+            <p>{{ echoPreset.name }}</p>
+            <p>{{ echoPreset.description }}</p>
+            <p>{{ echoPreset.author }}</p>
+            <button class="btn btn-sm" @click="applyPreset(echoPreset)">Apply preset</button>
+          </div>
+        </div>
       </div>
     </div>
   </dialog>
@@ -22,6 +31,7 @@
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { getCharByName } from "../characters/characters.ts";
 export default {
   name: "CalculatorEchoImporter",
   components: {
@@ -32,6 +42,11 @@ export default {
       type: String,
       default: false,
     },
+  },
+  data() {
+    return {
+      echoPresets: []
+    }
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterEchoes"]),
@@ -47,91 +62,11 @@ export default {
       const modalEl = document.getElementById("modal-echoes-presets");
       modalEl.close();
     },
-    // async handleEchoesParsed(echoData, isSavingToInventory) {
-    //   const echoes = echoData.map((echo) => {
-    //     const echoSubStatsType1 = this.getSubstatType(echo.substats[0]);
-    //     const echoSubStatsValue1 = this.getSubstatValue(
-    //       echo.substats[0].subStatValue,
-    //     );
-    //     const echoSubStatsType2 = this.getSubstatType(echo.substats[1]);
-    //     const echoSubStatsValue2 = this.getSubstatValue(
-    //       echo.substats[1].subStatValue,
-    //     );
-    //     const echoSubStatsType3 = this.getSubstatType(echo.substats[2]);
-    //     const echoSubStatsValue3 = this.getSubstatValue(
-    //       echo.substats[2].subStatValue,
-    //     );
-    //     const echoSubStatsType4 = this.getSubstatType(echo.substats[3]);
-    //     const echoSubStatsValue4 = this.getSubstatValue(
-    //       echo.substats[3].subStatValue,
-    //     );
-    //     const echoSubStatsType5 = this.getSubstatType(echo.substats[4]);
-    //     const echoSubStatsValue5 = this.getSubstatValue(
-    //       echo.substats[4].subStatValue,
-    //     );
-    //     let echoId = null;
-    //     if (isSavingToInventory) {
-    //       echoId = randomString();
-    //     }
-    //     return {
-    //       echo: echo.echo ?? null,
-    //       type: Number(echo.cost) ?? null, // make sure the cost is a number so it counts max cost without breaking
-    //       rank: echo.rank ?? 5,
-    //       stat: echo.mainStatLabel
-    //         ? verboseStatLabelMap[echo.mainStatLabel]
-    //         : null,
-    //       echoId,
-    //       echoSet: echo.set,
-    //       echoSubStatsType1,
-    //       echoSubStatsValue1,
-    //       echoSubStatsType2,
-    //       echoSubStatsValue2,
-    //       echoSubStatsType3,
-    //       echoSubStatsValue3,
-    //       echoSubStatsType4,
-    //       echoSubStatsValue4,
-    //       echoSubStatsType5,
-    //       echoSubStatsValue5,
-    //     };
-    //   });
-    //   // update store
-    //   await this.setCharacterEchoes(this.character, {}); // flush first
-    //   await this.setCharacterEchoes(this.character, echoes);
-
-    //   // if we're saving to the inventory, save each echo,
-    //   // then add it to the char
-    //   if (isSavingToInventory) {
-    //     for (const [index, echo] of echoes.entries()) {
-    //       await this.saveEcho(echo);
-    //       const equippedData = {};
-    //       equippedData[this.character] = index;
-    //       await this.setEquippedData(echo.echoId, equippedData);
-    //     }
-    //   }
-    //   // close modal
-    //   this.triggerCloseModal();
-    // },
-    // getSubstatValue(subStatValue) {
-    //   const valueWithoutPercent = subStatValue.replace("%", "");
-    //   return Number(valueWithoutPercent);
-    // },
-    // getSubstatType(subStatData) {
-    //   let type = subStatData.subStat;
-    //   const value = subStatData.subStatValue;
-    //   if (type === "DEF Y") {
-    //     return "DEF";
-    //   }
-    //   if (["ATK", "DEF", "HP"].includes(type)) {
-    //     // if the value has % then keep the type
-    //     // if it does not have %, then it is the TYPE with _FLAT at the end
-    //     if (value.includes("%")) {
-    //       return type;
-    //     } else {
-    //       return type + "_FLAT";
-    //     }
-    //   }
-    //   return verboseStatLabelMap[type] ?? null;
-    // },
+    async applyPreset(presetData) {
+      const data = JSON.parse(JSON.stringify(presetData)); // clone so we don't use the raw data
+      await this.setCharacterEchoes(this.character, {}); // flush first
+      await this.setCharacterEchoes(this.character,  data.data.echoes);
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -142,6 +77,14 @@ export default {
     currentCharacter() {
       return this.characters[this.character] ?? {};
     },
+    hasEchoPresets() {
+      return this.echoPresets.length > 0;
+    }
   },
+  async mounted() {
+    this.characterData = await getCharByName(this.character);
+    const echoes = this.characterData?.echoes ?? [];
+    this.echoPresets = echoes;
+  }
 };
 </script>
