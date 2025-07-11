@@ -6,12 +6,18 @@
     <CalculatorEchoesBrowser
       ref="echoesBrowser"
       :character="character"></CalculatorEchoesBrowser>
+    <CalculatorEchoesPresets
+      ref="echoesPresets"
+      :character="character"></CalculatorEchoesPresets>
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
-    <div class="actions mb-4">
+    <div class="actions mb-4 flex gap-2">
       <button class="btn btn-primary" @click="handleOpenEchoesImporter">
         Import Echoes
+      </button>
+      <button class="btn btn-primary" @click="handleOpenEchoesPreset">
+        Use Preset Echoes
       </button>
     </div>
     <div class="echo__list">
@@ -120,6 +126,7 @@ import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
 import CalculatorEchoesBrowser from "./CalculatorEchoesBrowser.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
+import CalculatorEchoesPresets from "./CalculatorEchoesPresets.vue";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 const MAX_ECHO_COST = 12;
@@ -134,6 +141,7 @@ export default {
   components: {
     CalculatorEcho,
     CalculatorEchoesBrowser,
+    CalculatorEchoesPresets,
     CalculatorEchoesSetBonusOne,
     CalculatorEchoesSetBonusTwo,
     CalculatorEchoImporter,
@@ -384,6 +392,9 @@ export default {
     },
     handleOpenEchoesImporter() {
       this.$refs.echoesImporter.triggerOpenModal();
+    },
+    handleOpenEchoesPreset() {
+      this.$refs.echoesPresets.triggerOpenModal();
     },
   },
   computed: {
