@@ -48,7 +48,7 @@ const weaponInfo: WeaponInfo = {
         "2": 0.65,
         "3": 0.78,
         "4": 0.91,
-        "5": 0.104,
+        "5": 1.04,
       },
       minStacks: 0,
       maxStacks: 0,
