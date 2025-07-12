@@ -13,6 +13,7 @@
     <h3>July 11, 2025</h3>
     <ul>
       <li>Adds rotation presets for Aero Rover, Roccia, and Calcharo.</li>
+      <li>Fixed R5 Rime-Draped Sprouts modifier</li>
     </ul>
     <h3>July 10, 2025</h3>
     <ul>
