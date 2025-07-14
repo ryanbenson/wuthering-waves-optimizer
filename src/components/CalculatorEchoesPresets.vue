@@ -11,15 +11,18 @@
       </form>
       <div class="py-4">
         <p v-if="!hasEchoPresets">No echo presets available</p>
-        <div class="echoes-presets-list">
+        <div v-else class="echoes-presets-list">
+          <h3 class="text-xl mb-4">Choose a preset to apply to your build</h3>
           <div
             v-for="echoPreset in echoPresets"
             :key="echoPreset.name"
-          >
-            <p>{{ echoPreset.name }}</p>
+        class="presetEchoes card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+            <div class="card-body">
+            <h2 class="card-title">{{ echoPreset.name }}</h2>
             <p>{{ echoPreset.description }}</p>
-            <p>{{ echoPreset.author }}</p>
-            <button class="btn btn-sm" @click="applyPreset(echoPreset)">Apply preset</button>
+            <p class="italic">Author: {{ echoPreset.author }}</p>
+            <button class="btn btn-primary" @click="applyPreset(echoPreset)">Apply preset</button>
+            </div>
           </div>
         </div>
       </div>
@@ -66,6 +69,7 @@ export default {
       const data = JSON.parse(JSON.stringify(presetData)); // clone so we don't use the raw data
       await this.setCharacterEchoes(this.character, {}); // flush first
       await this.setCharacterEchoes(this.character,  data.data.echoes);
+      this.triggerCloseModal();
     },
   },
   computed: {

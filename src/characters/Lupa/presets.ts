@@ -1,1 +1,10 @@
 export const rotations: RotationPreset[] = [];
+
+export const echoes = [
+    {
+        name: `Standard Build`,
+        description: `43311 CR / 2x Fusion Flaming Clawprint Build. 40.5% CR, 81% CD, 17.2% ATK, 17.2% Liberation, 100 ATK, 18.4% ER`,
+        author: `lavasnake`,
+        data: {"echoes":{"0":{"type":4,"echo":"LionessofGlory","echoSet":"FlamingClawprint","stat":"CritRate","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"ATK","echoSubStatsValue3":8.6,"echoSubStatsType4":"ATK_FLAT","echoSubStatsValue4":50,"echoSubStatsType5":"ResonanceLiberationDMGBonus","echoSubStatsValue5":8.6},"1":{"type":3,"echo":"Kerasaur","echoSet":"FlamingClawprint","stat":"Fusion","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"ATK","echoSubStatsValue3":8.6,"echoSubStatsType4":"ATK_FLAT","echoSubStatsValue4":50,"echoSubStatsType5":"ResonanceLiberationDMGBonus","echoSubStatsValue5":8.6},"2":{"type":3,"echo":"PilgrimsShell","echoSet":"FlamingClawprint","stat":"Fusion","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"EnergyRegen","echoSubStatsValue3":9.2,"echoSubStatsType4":"HP","echoSubStatsValue4":8.6,"echoSubStatsType5":"DEF","echoSubStatsValue5":10.9},"3":{"type":1,"echo":"AeroDrake","echoSet":"FlamingClawprint","stat":"ATK","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"EnergyRegen","echoSubStatsValue3":9.2,"echoSubStatsType4":"HP","echoSubStatsValue4":8.6,"echoSubStatsType5":"DEF","echoSubStatsValue5":10.9},"4":{"type":1,"echo":"HavocDrake","echoSet":"FlamingClawprint","stat":"ATK","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"HP","echoSubStatsValue3":8.6,"echoSubStatsType4":"DEF","echoSubStatsValue4":10.9,"echoSubStatsType5":"HP_FLAT","echoSubStatsValue5":430}}}
+    }
+];
