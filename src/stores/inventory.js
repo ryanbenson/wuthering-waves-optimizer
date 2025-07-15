@@ -50,8 +50,8 @@ export const useInventoryStore = defineStore("inventory", {
       this.equipped[echoId] = updatedData;
     },
     hardSetState(data) {
-      this.echoes = data.echoes;
-      this.equipped = data.equipped;
+      this.echoes = data?.echoes ?? [];
+      this.equipped = data?.equipped ?? {};
     },
     getEchoEquippedChars(echoId) {
       const equipped = this.equipped[echoId] ?? {};

@@ -96,7 +96,6 @@ export default defineComponent({
      * Imports the raw character data through a given string in the input
      */
     importRawCharacterData() {
-      console.log(this.importedRawCharacterData);
       if (!this.importedRawCharacterData) {
         return this.triggerNotification("No character data given", true);
       }

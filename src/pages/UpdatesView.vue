@@ -10,6 +10,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 15, 2025</h3>
+    <ul>
+      <li>Adds echo presets for Carlotta and Cartethyia.</li>
+      <li>Fixes a minor bug in importing settings.</li>
+    </ul>
     <h3>July 14, 2025</h3>
     <ul>
       <li>Echo presets are now available! There are presets currently for Zani and Lupa. More to come!</li>
