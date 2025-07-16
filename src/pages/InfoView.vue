@@ -14,6 +14,11 @@
       updates page. I'll occasionally push a banner up when something notable
       happens like a new character is added, etc.
     </p>
+    <h3>CV and RV</h3>
+    <ul>
+      <li>CV = Crit value. That's the amount of Crit you have on your echo. It's Crit Rate * 2 + Crit DMG</li>
+      <li>RV = Roll value. That's how lucky your substat rolls were. It isn't unique per creator (at least right now). The higher the value your rolls, the higher the RV</li>
+    </ul>
     <h3>Formulas</h3>
     <p>
       The formulas that this application uses are the same formulas found in the
