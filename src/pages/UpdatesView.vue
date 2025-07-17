@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 15, 2025</h3>
+    <ul>
+      <li>Adds echo presets for Camellya and Changli.</li>
+    </ul>
     <h3>July 16, 2025</h3>
     <ul>
       <li>Adds icon and tooltip to explain CV and RV.</li>
