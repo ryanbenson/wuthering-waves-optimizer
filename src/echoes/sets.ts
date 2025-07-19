@@ -815,7 +815,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
             modifierValue: 20,
           },
           {
-            modifier: "Echo",
+            modifier: "EchoDMGBonus",
             modifierValue: 35,
           },
         ],

@@ -374,6 +374,17 @@
           data-test-custom-buff-coordinated />
       </label>
       <label class="form-control mb-4">
+        <div class="label">Echo DMG Bonus</div>
+        <input
+          type="number"
+          v-model="EchoDMGBonus"
+          min="0"
+          name="EchoDMGBonus"
+          id="EchoDMGBonus"
+          class="input input-md input-bordered"
+          data-test-custom-buff-echo />
+      </label>
+      <label class="form-control mb-4">
         <div class="label">
           <span class="label-text mr-2 flex items-center gap-1">
             Damage Amplify
@@ -461,6 +472,7 @@ export default {
       this.HeavyAttackDMGBonus = 0;
       this.ResonanceSkillDMGBonus = 0;
       this.ResonanceLiberationDMGBonus = 0;
+      this.EchoDMGBonus = 0;
       this.Glacio = 0;
       this.Fusion = 0;
       this.Electro = 0;
@@ -509,6 +521,9 @@ export default {
       const ResonanceLiberationDMGBonus = this.ResonanceLiberationDMGBonus
         ? this.ResonanceLiberationDMGBonus / 100
         : 0;
+      const EchoDMGBonus = this.EchoDMGBonus
+        ? this.EchoDMGBonus / 100
+        : 0;
       const Glacio = this.Glacio ? this.Glacio / 100 : 0;
       const Fusion = this.Fusion ? this.Fusion / 100 : 0;
       const Electro = this.Electro ? this.Electro / 100 : 0;
@@ -536,6 +551,7 @@ export default {
         HeavyAttackDMGBonus,
         ResonanceSkillDMGBonus,
         ResonanceLiberationDMGBonus,
+        EchoDMGBonus,
         Glacio,
         Fusion,
         Electro,
@@ -754,6 +770,24 @@ export default {
         const data = {
           customBuffs: {
             ResonanceLiberationDMGBonus: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the echo dmg bonus
+     */
+    EchoDMGBonus: {
+      get() {
+        return (
+          this.currentCharacter?.customBuffs?.EchoDMGBonus ?? 0
+        );
+      },
+      async set(value) {
+        const data = {
+          customBuffs: {
+            EchoDMGBonus: value,
           },
         };
         await this.setCharacterData(this.character, data);

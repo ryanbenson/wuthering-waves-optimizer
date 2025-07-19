@@ -232,9 +232,9 @@ export default {
      */
     optionsList() {
       const twoSetList = JSON.parse(JSON.stringify(twoSetBonuses));
-      const threeSetBonuses = JSON.parse(JSON.stringify(threeSetBonuses));
+      const threeSetList = JSON.parse(JSON.stringify(threeSetBonuses));
       const fiveSetList = JSON.parse(JSON.stringify(fiveSetBonuses));
-      const list = [...twoSetBonuses, ...threeSetBonuses, ...fiveSetBonuses];
+      const list = [...twoSetBonuses, ...threeSetList, ...fiveSetBonuses];
       return list.sort();
     }
   },

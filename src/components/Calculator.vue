@@ -295,6 +295,7 @@ export default defineComponent({
     const HeavyAttackDMGBonus = ref(0);
     const ResonanceSkillDMGBonus = ref(0);
     const ResonanceLiberationDMGBonus = ref(0);
+    const EchoDMGBonus = ref(0);
     const IntroSkillDMGBonus = ref(0);
     const OutroSkillDMGBonus = ref(0);
     const Glacio = ref(0);
@@ -406,6 +407,10 @@ export default defineComponent({
           source?.ResonanceLiberationDMGBonus
             ? source.ResonanceLiberationDMGBonus * 100
             : 0;
+        target.echoDMGBonus +=
+          source?.EchoDMGBonus
+            ? source.EchoDMGBonus * 100
+            : 0;
         target.glacio += source?.Glacio ? source.Glacio * 100 : 0;
         target.fusion += source?.Fusion ? source.Fusion * 100 : 0;
         target.electro += source?.Electro ? source.Electro * 100 : 0;
@@ -450,6 +455,10 @@ export default defineComponent({
         target.resonanceLiberationDMGBonus +=
           source?.ResonanceLiberationDMGBonus
             ? source.ResonanceLiberationDMGBonus
+            : 0;
+        target.echoDMGBonus +=
+          source?.EchoDMGBonus
+            ? source.EchoDMGBonus
             : 0;
         target.outroSkillDMGBonus += source?.OutroSkillDMGBonus
           ? source.OutroSkillDMGBonus
@@ -516,6 +525,7 @@ export default defineComponent({
         introSkillDMGBonus: 0,
         outroSkillDMGBonus: 0,
         resonanceLiberationDMGBonus: 0,
+        echoDMGBonus: 0,
         glacio: 0,
         fusion: 0,
         electro: 0,
@@ -802,6 +812,7 @@ export default defineComponent({
       IntroSkillDMGBonus.value = stats.introSkillDMGBonus;
       OutroSkillDMGBonus.value = stats.outroSkillDMGBonus;
       ResonanceLiberationDMGBonus.value = stats.resonanceLiberationDMGBonus;
+      EchoDMGBonus.value = stats.echoDMGBonus;
       Glacio.value = stats.glacio;
       Fusion.value = stats.fusion;
       Electro.value = stats.electro;
@@ -866,6 +877,11 @@ export default defineComponent({
           val =
             providedStats?.resonanceLiberationDMGBonus ??
             ResonanceLiberationDMGBonus.value;
+          break;
+        case "Echo":
+          val =
+            providedStats?.echoDmgBonus ??
+            EchoDMGBonus.value;
           break;
         // do not divide this by 100
         case "Healing":

@@ -1202,7 +1202,6 @@ CD: <span class="param">20</span>s.</span>`,
       "SierraGale",
       "CelestialLight",
       "SunSinkingEclipse",
-      "DreamoftheLost",
     ],
   },
   Hoartoise: {
