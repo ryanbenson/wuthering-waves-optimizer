@@ -705,7 +705,7 @@ CD: <span class="param">25</span>s.</span>`,
     details: ``,
     modifiers: [],
     actions: [],
-    sets: ["GustsofWelkin", "MidnightVeil"],
+    sets: ["GustsofWelkin", "MidnightVeil", "FlamingClawprint"],
   },
   ElectroPredator: {
     key: "ElectroPredator",
