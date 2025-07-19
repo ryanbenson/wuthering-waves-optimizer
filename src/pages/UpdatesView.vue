@@ -10,7 +10,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>July 15, 2025</h3>
+    <h3>July 19, 2025</h3>
+    <ul>
+      <li>Adds 3 missing echoes to the Flaming Clawprint set.</li>
+      <li>Adds echo presets for Danjin and Jinhsi.</li>
+    </ul>
+    <h3>July 17, 2025</h3>
     <ul>
       <li>Adds echo presets for Camellya and Changli.</li>
     </ul>
