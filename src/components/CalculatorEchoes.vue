@@ -120,7 +120,12 @@
 
 <script>
 import { mainEchoesData, getEchoData } from "../echoes/index.ts";
-import { getEchoSetLabelByType } from "../echoes/stats.ts";
+import { getEchoSetLabelByType, echoSetLabelMap } from "../echoes/stats.ts";
+import {
+  twoSetBonuses,
+  threeSetBonuses,
+  fiveSetBonuses,
+} from "../echoes/sets.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
@@ -158,6 +163,10 @@ export default {
       ],
       echoCosts: [],
       echoSetsChosen: [],
+      // needed data
+      twoSetBonuses,
+      threeSetBonuses,
+      fiveSetBonuses,
     };
   },
   watch: {
@@ -312,66 +321,108 @@ export default {
     async updateEchoSets() {
       // Filter out nulls and create a count map for each value
       const counts = this.echoSetsChosen
-        .filter((v) => v !== null)
+        .filter(v => v !== null)
         .reduce((acc, val) => {
           acc[val] = (acc[val] || 0) + 1;
           return acc;
         }, {});
 
-      // Get the unique values and their counts
-      const uniqueValues = Object.keys(counts);
-      const uniqueCounts = Object.values(counts);
+      // Create lookup sets from your constants for which bonuses exist
+      const has2SetBonus = new Set(
+        this.twoSetBonuses.map(bonus => {
+          const match = bonus.match(/^(.+) 2 Set$/);
+          return match ? Object.keys(echoSetLabelMap).find(key => 
+            getEchoSetLabelByType(key) === match[1]
+          ) : null;
+        }).filter(Boolean)
+      );
 
-      // Reset bonuses
+      const has3SetBonus = new Set(
+        this.threeSetBonuses.map(bonus => {
+          const match = bonus.match(/^(.+) 3 Set$/);
+          return match ? Object.keys(echoSetLabelMap).find(key => 
+            getEchoSetLabelByType(key) === match[1]
+          ) : null;
+        }).filter(Boolean)
+      );
+
+      const has5SetBonus = new Set(
+        this.fiveSetBonuses.map(bonus => {
+          const match = bonus.match(/^(.+) 5 Set$/);
+          return match ? Object.keys(echoSetLabelMap).find(key => 
+            getEchoSetLabelByType(key) === match[1]
+          ) : null;
+        }).filter(Boolean)
+      );
+
+      // Get all possible bonuses for each set
+      const availableBonuses = [];
+      
+      for (const [setType, count] of Object.entries(counts)) {
+        const setLabel = getEchoSetLabelByType(setType);
+        
+        // Add bonuses based on count and what bonuses exist for this set
+        if (count >= 5 && has5SetBonus.has(setType)) {
+          availableBonuses.push({ bonus: `${setLabel} 5 Set`, priority: 3, setType });
+        }
+        if (count >= 3 && has3SetBonus.has(setType)) {
+          availableBonuses.push({ bonus: `${setLabel} 3 Set`, priority: 2, setType });
+        }
+        if (count >= 2 && has2SetBonus.has(setType)) {
+          availableBonuses.push({ bonus: `${setLabel} 2 Set`, priority: 1, setType });
+        }
+      }
+
+      // Separate 2-set bonuses from higher-tier bonuses
+      const twoSetBonuses = availableBonuses.filter(b => b.bonus.includes('2 Set'));
+      const higherTierBonuses = availableBonuses.filter(b => b.bonus.includes('3 Set') || b.bonus.includes('5 Set'));
+      
+      // Sort each group by set type for consistency
+      twoSetBonuses.sort((a, b) => a.setType.localeCompare(b.setType));
+      higherTierBonuses.sort((a, b) => {
+        // Priority: 5-set > 3-set, then by set type
+        if (a.priority !== b.priority) {
+          return b.priority - a.priority;
+        }
+        return a.setType.localeCompare(b.setType);
+      });
+
+      // Select bonuses following game rules
       let setBonusOneVal = null;
       let setBonusTwoVal = null;
 
-      if (uniqueValues.length === 1 && uniqueCounts[0] === 5) {
-        // Case 1: All 5 values are the same
-        setBonusOneVal = `${getEchoSetLabelByType(uniqueValues[0])} 2 Set`;
-        setBonusTwoVal = `${getEchoSetLabelByType(uniqueValues[0])} 5 Set`;
-      } else if (
-        uniqueValues.length >= 2 &&
-        uniqueCounts.filter((count) => count === 2).length === 2
-      ) {
-        // Case 2: Two pairs of 2, ignore any outliers
-        const pairs = uniqueValues.filter((value) => counts[value] === 2);
-        setBonusOneVal = `${getEchoSetLabelByType(pairs[0])} 2 Set`;
-        setBonusTwoVal = `${getEchoSetLabelByType(pairs[1])} 2 Set`;
-      } else if (
-        uniqueValues.length === 2 &&
-        ((uniqueCounts.includes(2) && uniqueCounts.includes(3)) ||
-          (uniqueCounts.includes(3) && uniqueCounts.includes(2)))
-      ) {
-        // Case 3: Two values with counts 2 and 3
-        const [value1, value2] = uniqueValues;
-        const [count1, count2] = uniqueCounts;
-
-        if (count1 === 2 && count2 === 3) {
-          setBonusOneVal = `${getEchoSetLabelByType(value1)} 2 Set`;
-          setBonusTwoVal = `${getEchoSetLabelByType(value2)} 2 Set`;
-        } else if (count1 === 3 && count2 === 2) {
-          setBonusOneVal = `${getEchoSetLabelByType(value2)} 2 Set`;
-          setBonusTwoVal = `${getEchoSetLabelByType(value1)} 2 Set`;
-        }
-      } else if (
-        uniqueCounts.some((count) => count >= 2) &&
-        uniqueCounts.filter((count) => count >= 2).length === 1
-      ) {
-        // Case 4: Only one value has a repetition of 2, no others repeat more than once
-        const repeatedValue =
-          uniqueValues[uniqueCounts.findIndex((count) => count >= 2)];
-        setBonusOneVal = `${getEchoSetLabelByType(repeatedValue)} 2 Set`;
-        setBonusTwoVal = null;
-      } else {
-        // Case 5: No value is repeated
-        setBonusOneVal = null;
-        setBonusTwoVal = null;
+      // setBonusOne: Always a 2-set bonus (pick the first available)
+      if (twoSetBonuses.length > 0) {
+        setBonusOneVal = twoSetBonuses[0].bonus;
       }
-      // if the user wants to manually manage the sets, don't automatically set the sets
+
+      // setBonusTwo: Can be 2-set, 3-set, or 5-set
+      // Priority: higher-tier bonuses first, then remaining 2-set bonuses
+      const usedSetTypes = setBonusOneVal ? new Set([twoSetBonuses[0].setType]) : new Set();
+      
+      // First try higher-tier bonuses
+      for (const { bonus, setType } of higherTierBonuses) {
+        if (!usedSetTypes.has(setType) || setBonusOneVal?.includes(getEchoSetLabelByType(setType))) {
+          setBonusTwoVal = bonus;
+          break;
+        }
+      }
+      
+      // If no higher-tier bonus found, try remaining 2-set bonuses
+      if (!setBonusTwoVal) {
+        for (const { bonus, setType } of twoSetBonuses.slice(1)) {
+          if (!usedSetTypes.has(setType)) {
+            setBonusTwoVal = bonus;
+            break;
+          }
+        }
+      }
+
+      // If the user wants to manually manage the sets, don't automatically set them
       if (this.setOverride) {
         return;
       }
+
       // Update the store
       const data = {
         echoSetBonus: {
@@ -379,6 +430,7 @@ export default {
           setBonusTwo: setBonusTwoVal,
         },
       };
+
       await this.setCharacterData(this.character, data);
     },
     handleMainEchoUpdated(echo) {

@@ -451,7 +451,7 @@ export const echoSetLabelMap: Record<string, string> = {
   GustsofWelkin: "Gusts of Welkin",
   WindwardPilgrimage: "Windward Pilgrimage",
   FlamingClawprint: "Flaming Clawprint",
-  DreamoftheLost: "DreamoftheLost",
+  DreamoftheLost: "Dream of the Lost",
 };
 
 export function getEchoSetLabelByType(type: string): string {
