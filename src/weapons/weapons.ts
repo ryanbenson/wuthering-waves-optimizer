@@ -57,6 +57,7 @@ const broadbladesList = {
 const rectifiersList = {
   five: [
     { key: "CosmicRipples", name: "Cosmic Ripples" },
+    { key: "LetheanElegy", name: "Lethean Elegy" },
     { key: "LuminousHymn", name: "Luminous Hymn" },
     { key: "RimeDrapedSprouts", name: "Rime-Draped Sprouts" },
     { key: "StellarSymphony", name: "Stellar Symphony" },

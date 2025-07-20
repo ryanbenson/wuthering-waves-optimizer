@@ -43,7 +43,7 @@
               @updated-character-buffs="
                 handleUpdatedCharacterBuffs
               "></CalculatorCharacterBuffs>
-            </template>
+          </template>
         </div>
       </div>
 
@@ -68,15 +68,16 @@
       </div>
 
       <div class="screen--character" v-show="curScreen === 'constellations'">
-        <template v-if="chosenChar?.value?.resonanceChains && isLoading === false">
-        <CalculatorResonanceChains
-          :key="character"
-          :character="character"
-          :buffs="chosenChar?.value?.resonanceChains"
-          :talent-data="characters?.[character]?.talents"
-          @updated-character-resonance-chains="
-            handleUpdatedCharacterResonanceChains
-          "></CalculatorResonanceChains>
+        <template
+          v-if="chosenChar?.value?.resonanceChains && isLoading === false">
+          <CalculatorResonanceChains
+            :key="character"
+            :character="character"
+            :buffs="chosenChar?.value?.resonanceChains"
+            :talent-data="characters?.[character]?.talents"
+            @updated-character-resonance-chains="
+              handleUpdatedCharacterResonanceChains
+            "></CalculatorResonanceChains>
         </template>
       </div>
 
@@ -407,10 +408,9 @@ export default defineComponent({
           source?.ResonanceLiberationDMGBonus
             ? source.ResonanceLiberationDMGBonus * 100
             : 0;
-        target.echoDMGBonus +=
-          source?.EchoDMGBonus
-            ? source.EchoDMGBonus * 100
-            : 0;
+        target.echoDMGBonus += source?.EchoDMGBonus
+          ? source.EchoDMGBonus * 100
+          : 0;
         target.glacio += source?.Glacio ? source.Glacio * 100 : 0;
         target.fusion += source?.Fusion ? source.Fusion * 100 : 0;
         target.electro += source?.Electro ? source.Electro * 100 : 0;
@@ -456,10 +456,7 @@ export default defineComponent({
           source?.ResonanceLiberationDMGBonus
             ? source.ResonanceLiberationDMGBonus
             : 0;
-        target.echoDMGBonus +=
-          source?.EchoDMGBonus
-            ? source.EchoDMGBonus
-            : 0;
+        target.echoDMGBonus += source?.EchoDMGBonus ? source.EchoDMGBonus : 0;
         target.outroSkillDMGBonus += source?.OutroSkillDMGBonus
           ? source.OutroSkillDMGBonus
           : 0;
@@ -879,9 +876,7 @@ export default defineComponent({
             ResonanceLiberationDMGBonus.value;
           break;
         case "Echo":
-          val =
-            providedStats?.echoDmgBonus ??
-            EchoDMGBonus.value;
+          val = providedStats?.echoDmgBonus ?? EchoDMGBonus.value;
           break;
         // do not divide this by 100
         case "Healing":
@@ -1240,6 +1235,9 @@ export default defineComponent({
           weaponData.value?.weaponPassiveStats?.[
             `DMGDeepen:${attack.subType}`
           ] ?? 0;
+        let weaponBuffDmgDeepenType =
+          weaponData.value?.weaponPassiveStats?.[`DMGDeepen:${attackType}`] ??
+          0;
         const totalDmgDeepen =
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
@@ -1252,6 +1250,7 @@ export default defineComponent({
           weaponBuffDmgDeepenSubType +
           customDamageDeepen +
           selfBuffDmgDeepenForSubType +
+          weaponBuffDmgDeepenType +
           selfBuffDmgDeepenForElement;
         let totalTalentModifierMultiply =
           talentModifierMultiply +
