@@ -36,7 +36,12 @@ body {
   }
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: "Figtree", sans-serif;
   font-optical-sizing: auto;
   font-weight: 700;
@@ -69,6 +74,10 @@ html[data-theme="black"] .btn-active {
 }
 
 /* Highlights */
+.Title,
+.ingame-Title {
+  font-weight: bold;
+}
 .Highlight {
   font-style: italic;
   color: oklch(var(--wa));
@@ -76,28 +85,36 @@ html[data-theme="black"] .btn-active {
 .param {
   color: oklch(var(--wa));
 }
-.Light {
+.Light,
+.ingame-Light {
   color: #f8e56c;
 }
-html[data-theme="light"] .Light {
+html[data-theme="light"] .Light,
+html[data-theme="light"] .ingame-Light {
   color: #e1c200;
 }
-.Dark {
+.Dark,
+.ingame-Dark {
   color: #e649a6;
 }
-.Thunder {
+.Thunder,
+.ingame-Thunder {
   color: #b46bff;
 }
-.Fire {
+.Fire,
+.ingame-Fire {
   color: #f0744e;
 }
-.Ice {
+.Ice,
+.ingame-Ice {
   color: #41aefb;
 }
-.Wind {
+.Wind,
+.ingame-Wind {
   color: #55ffb5;
 }
-html[data-theme="light"] .Wind {
+html[data-theme="light"] .Wind,
+html[data-theme="light"] .ingame-Wind {
   color: #0dc776;
 }
 .glacio--active {
