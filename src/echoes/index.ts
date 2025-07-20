@@ -1999,6 +1999,66 @@ CD: <span class="param">20</span>s.</span>`,
     ],
     sets: ["SierraGale"],
   },
+  NightmareGlacioPredator: {
+    key: "NightmareGlacioPredator",
+    name: "Nightmare: Glacio Predator",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareGlacioPredator.png",
+    details: `Summon a Glacio Predator that throws an ice spear, dealing 46.08% Glacio DMG on hit. Deal 4.61% Glacio DMG up to 10 times during the charging time, and 23.04% Glacio DMG when the spear explodes.`,
+    modifiers: [],
+    actions: [],
+    sets: ["DreamoftheLost"],
+  },
+  NightmareHavocWarrior: {
+    key: "NightmareHavocWarrior",
+    name: "Nightmare: Havoc Warrior",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareHavocWarrior.png",
+    details: `Transform into Havoc Warrior to attack up to 3 times, dealing 171.73% Havoc DMG each time.<br>
+CD: 15s`,
+    modifiers: [],
+    actions: [],
+    sets: ["DreamoftheLost"],
+  },
+  NightmareHecate: {
+    key: "NightmareHecate",
+    name: "Nightmare: Hecate",
+    class: "Calamity",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareHecate.png",
+    details: `Transform into Nightmare: Hecate. Leap up and smash down, dealing 3 stages of damage, each dealing Havoc DMG equal to 101.59%/118.52%/135.46%/152.39% of her ATK.<br>
+The Resonator with the Echo equipped in the main slot gains 12.00% Havoc DMG Bonus and 20.00% Echo Skill DMG Bonus.<br>
+CD: 25s`,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "EchoDMGBonus",
+        modifierValue: 0.2,
+      },
+    ],
+    actions: [
+      {
+        key: "NightmareHecateSmashDMG",
+        label: "Nightmare: Hecate DMG",
+        description: `Transform into Nightmare: Hecate. Leap up and smash down, dealing 3 stages of damage, each dealing Havoc DMG equal to 101.59%/118.52%/135.46%/152.39% of her ATK.`,
+        talents: {
+          "1": "101.59%*3",
+          "2": "101.59%*3",
+          "3": "118.52%*3",
+          "4": "135.46%*3",
+          "5": "152.39%*3",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["DreamoftheLost"],
+  },
   NightmareImpermanenceHeron: {
     key: "NightmareImpermanenceHeron",
     name: "Nightmare: Impermanence Heron",
@@ -2221,6 +2281,18 @@ CD: <span class="param">20</span>s.</span>`,
     ],
     sets: ["EternalRadiance"],
   },
+  NightmareTambourinist: {
+    key: "NightmareTambourinist",
+    name: "Nightmare: Tambourinist",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareTambourinist.png",
+    details: `Summon a Tambourinist that plays out Melodies of Annihilation. Any Resonator on the team gains the following effect for 10s upon obtaining a Melody of Annihilation: When the Resonator hits a target, the Tambourinist deals 14.40% Havoc DMG to the target, up to 10 times.<br>
+CD: 15s`,
+    modifiers: [],
+    actions: [],
+    sets: ["DreamoftheLost"],
+  },
   NightmareTempestMephis: {
     key: "NightmareTempestMephis",
     name: "Nightmare: Tempest Mephis",
@@ -2384,6 +2456,43 @@ CD: <span class="param">20</span>s.</span>`,
     ],
     sets: ["EternalRadiance", "GustsofWelkin"],
   },
+  ReminiscenceFenrico: {
+    key: "ReminiscenceFenrico",
+    name: "Reminiscence: Fenrico",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReminiscenceFenrico.png",
+    details: `Summon the Talons of Decree to attack nearby enemies, dealing 182.40%/212.80%/243.20%/273.60% Aero DMG.<br>
+The Resonator with this Echo equipped in their main slot gains 12.00% Aero DMG Bonus and 12.00% Heavy Attack DMG Bonus.<br>
+CD: 20s.`,
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "ReminiscenceFenricoDMG",
+        label: "Reminiscence: Fenrico DMG",
+        description: `Summon the Talons of Decree to attack nearby enemies, dealing 182.40%/212.80%/243.20%/273.60% Aero DMG.`,
+        talents: {
+          "1": "182.40%",
+          "2": "182.40%",
+          "3": "/212.80%",
+          "4": "243.20%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["DreamoftheLost"],
+  },
   ReminiscenceFleurdelys: {
     key: "ReminiscenceFleurdelys",
     name: "Reminiscence: Fleurdelys",
@@ -2396,16 +2505,12 @@ CD: 20s.`,
     modifiers: [
       {
         modifier: "Aero",
-        modifierValue: 0.10,
+        modifierValue: 0.1,
       },
       {
         modifier: "Aero",
-        modifierValue: 0.10,
-        specificCharacters: [
-          "RoverAeroFemale",
-          "RoverAeroMale",
-          "Cartethyia",
-        ],
+        modifierValue: 0.1,
+        specificCharacters: ["RoverAeroFemale", "RoverAeroMale", "Cartethyia"],
       },
     ],
     actions: [
