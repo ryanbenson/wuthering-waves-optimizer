@@ -1208,6 +1208,42 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Prolova: [
+    {
+      key: "OutroSkillUnfinishedPiece",
+      name: "Outro Skill: Unfinished Piece",
+      details: `The incoming Resonator gains 20% Havoc DMG Amplification and 25% Heavy DMG Amplification for 14s or until they are switched out.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Havoc",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "DMGDeepen:Heavy",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4ATorchIlluminatingthePath",
+      name: "Sequence Node 4: A Torch Illuminating the Path",
+      details: `After casting <span class="Highlight">Echo Skill</span>, grant 20% ATK increase for all Resonators in the team for 30s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

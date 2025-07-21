@@ -1,15 +1,48 @@
 export const buffs = [
   {
-    key: `MandateofDivinity`,
-    name: `Mandate of Divinity`,
-    details: `When <span class="Highlight">Fleurdelys</span> has <span class="Highlight">Mandate of Divinity</span> in <span class="Highlight">Manifest</span>:<br>
-<span class="Wind">Aero Erosion</span> DMG is Amplified by 50% and the damage interval is decreased by 50% for enemies within a certain distance from <span class="Highlight">Fleurdelys</span>.`,
+    key: `Aftersound`,
+    name: `Aftersound`,
+    details: `Each stack of <span class="ingame-Highlight">Aftersound</span> additionally increases the DMG Multiplier of this instance of damage.`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "Talent",
+        modifierTalentKey: "ScarletCodaDMG",
+        modifierValue: {
+          "1": 0.4153,
+          "2": 0.449,
+          "3": 0.4836,
+          "4": 0.5313,
+          "5": 0.565,
+          "6": 0.6038,
+          "7": 0.6588,
+          "8": 0.7132,
+          "9": 0.7675,
+          "10": 0.8255,
+        },
+        modifierValueTalentRef: "basic",
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 24,
+    alwaysEnabled: false,
+  },
+  {
+    key: `Maestro`,
+    name: `Maestro`,
+    details: `Gain 120% ATK increase.`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "DMGDeepen:AeroErosion",
-        modifySpecificTalents: ["AeroErosion"],
-        modifierValue: 0.5,
+        modifier: "ATK",
+        modifySpecificTalents: [
+          "BasicAttackHecateStage1DMG",
+          "BasicAttackHecateStage2DMG",
+          "EnhancedAttackHecateStringsDMG",
+          "EnhancedAttackHecateWindsDMG",
+          "EnhancedAttackHecateCadenzaDMG",
+        ],
+        modifierValue: 1.2,
       },
     ],
     minStacks: 0,
@@ -17,25 +50,9 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: `BladeofHowlingSquallAeroErosionStacks`,
-    name: `Blade of Howling Squall: Aero Erosion Stack`,
-    details: `Upon hitting the target, remove all stacks of <span class="Wind">Aero Erosion</span> on the target. Each stack removed Amplifies the DMG taken by the targets by 20%, up to 5 stacks.`,
-    hasStacks: true,
-    modifiers: [
-      {
-        modifier: "DMGDeepen",
-        modifySpecificTalents: ["BladeofHowlingSquallDMG"],
-        modifierValue: 0.2,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 5,
-    alwaysEnabled: false,
-  },
-  {
-    key: `InherentSkillAHeartsTruestWishes`,
-    name: `Inherent Skill: A Heart's Truest Wishes`,
-    details: `<div class="skilldescription">The healing received by all Resonators other than <span class="Highlight">Cartethyia/Fleurdelys</span> in the team is increased by 20% and their resistance to interruption is enhanced. If Rover: Aero is in the team, Rover: Aero additionally restores 25 <span class="Highlight">Windstrings</span> upon casting <span class="Highlight">Omega Storm</span>.</div>`,
+    key: `InherentSkillAccidental`,
+    name: `Inherent Skill: Accidental`,
+    details: `<div class="skilldescription">Casting <span class="ingame-Highlight">Echo Skill</span> grants increased resistance to interruption and reduces damage taken by 30% for 15s.<br>After casting <span class="ingame-Highlight">Suite of Quietus</span>, <span class="ingame-Highlight">Suite of Immortality</span>, and <span class="ingame-Highlight">Echo Skill</span>, the next <span class="ingame-Highlight">Volatile Note becomes <color=highlight>Volatile Note - Cadenza</color=highlight></span>.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -43,33 +60,33 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: `InherentSkillWindsIndelibleImprintFirstStacks`,
-    name: `Inherent Skill: Wind's Indelible Imprint: First Stacks`,
-    details: `<div class="skilldescription">Targets with 1 to 3 stacks of <span class="Wind">Aero Erosion</span> take 30% more DMG from <span class="Highlight">Cartethyia</span> and <span class="Highlight">Fleurdelys</span>. Targets with more than 3 stacks of <span class="Wind">Aero Erosion</span> additionally take 10% more DMG from <span class="Highlight">Cartethyia</span> and <span class="Highlight">Fleurdelys</span> for each stack of <span class="Wind">Aero Erosion</span> they have, up to 3 stacks.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "DMGBonus",
-        modifierValue: 0.3,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: `InherentSkillWindsIndelibleImprintAdditionalStacks`,
-    name: `Inherent Skill: Wind's Indelible Imprint: Additional Stacks`,
-    details: `Targets with more than 3 stacks of Aero Erosion additionally take 10% more DMG from Cartethyia and Fleurdelys for each stack of Aero Erosion they have, up to 3 stacks.`,
+    key: `InherentSkillOctet`,
+    name: `Inherent Skill: Octet`,
+    details: `<div class="skilldescription">Obtain 10 stacks of <span class="ingame-Highlight">Aftersound</span> upon entering the battle. This effect cannot be triggered again within 1s after exiting the combat state. For every 1 stacks of <span class="ingame-Highlight">Aftersound</span>, Crit. DMG is increased by 2.5%.</div>`,
     hasStacks: true,
     modifiers: [
       {
-        modifier: "DMGBonus",
-        modifierValue: 0.1,
+        modifier: "CritDMG",
+        modifierValue: 0.025,
       },
     ],
     minStacks: 0,
-    maxStacks: 3,
+    maxStacks: 24,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillOctetAdditionalStacks`,
+    name: `Inherent Skill: Octet (Additional Stacks)`,
+    details: `<div class="skilldescription">When <span class="ingame-Highlight">Aftersound</span> reaches the max, obtaining new <span class="ingame-Highlight">Aftersound</span> increases Phrolova's Crit. DMG by 1%, up to 100%. The increased Crit. DMG is removed when <span class="ingame-Highlight">Aftersound</span> stacks are cleared.</div>`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifierValue: 0.01,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 100,
     alwaysEnabled: false,
   },
   {
@@ -133,13 +150,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusHP1",
-    name: "Stat Bonus: HP+",
-    details: `<div class="skilldescription">HP increased by 1.8%.</div>`,
+    key: "StatBonusATK1",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 1.8%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "HP",
+        modifier: "ATK",
         modifierValue: 0.018,
       },
     ],
@@ -148,13 +165,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusHP2",
-    name: "Stat Bonus: HP+",
-    details: `<div class="skilldescription">HP increased by 1.8%.</div>`,
+    key: "StatBonusATK2",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 1.8%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "HP",
+        modifier: "ATK",
         modifierValue: 0.018,
       },
     ],
@@ -163,13 +180,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusHP3",
-    name: "Stat Bonus: HP+",
-    details: `<div class="skilldescription">HP increased by 4.2%.</div>`,
+    key: "StatBonusATK3",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 4.2%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "HP",
+        modifier: "ATK",
         modifierValue: 0.042,
       },
     ],
@@ -178,13 +195,13 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusHP4",
-    name: "Stat Bonus: HP+",
-    details: `<div class="skilldescription">HP increased by 4.2%.</div>`,
+    key: "StatBonusATK4",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 4.2%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "HP",
+        modifier: "ATK",
         modifierValue: 0.042,
       },
     ],
