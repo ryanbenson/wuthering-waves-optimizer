@@ -17,8 +17,7 @@ export const liberationAttacks = {
         "9": "25.89%",
         "10": "27.84%",
       },
-      type: "Basic",
-      subType: "Echo",
+      type: "Echo",
     },
     {
       key: "BasicAttackHecateStage2DMG",
@@ -35,8 +34,7 @@ export const liberationAttacks = {
         "9": "12.95%*2",
         "10": "13.92%*2",
       },
-      type: "Basic",
-      subType: "Echo",
+      type: "Echo",
     },
     {
       key: "EnhancedAttackHecateStringsDMG",
@@ -53,8 +51,7 @@ export const liberationAttacks = {
         "9": "97.06%+226.47%",
         "10": "104.38%+243.55%",
       },
-      type: "Basic",
-      subType: "Echo",
+      type: "Echo",
     },
     {
       key: "EnhancedAttackHecateWindsDMG",
@@ -71,8 +68,7 @@ export const liberationAttacks = {
         "9": "92.21%+215.15%",
         "10": "99.16%+231.37%",
       },
-      type: "Basic",
-      subType: "Echo",
+      type: "Echo",
     },
     {
       key: "EnhancedAttackHecateCadenzaDMG",
@@ -89,8 +85,7 @@ export const liberationAttacks = {
         "9": "97.06%+226.47%",
         "10": "104.38%+243.55%",
       },
-      type: "Basic",
-      subType: "Echo",
+      type: "Echo",
     },
     {
       key: "CurtainCallHecateDMG",
