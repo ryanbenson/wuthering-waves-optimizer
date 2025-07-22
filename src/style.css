@@ -78,7 +78,8 @@ html[data-theme="black"] .btn-active {
 .ingame-Title {
   font-weight: bold;
 }
-.Highlight {
+.Highlight,
+.ingame-Highlight {
   font-style: italic;
   color: oklch(var(--wa));
 }
