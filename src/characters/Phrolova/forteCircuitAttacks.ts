@@ -36,5 +36,23 @@ export const forteCircuitAttacks = {
       },
       type: "Skill",
     },
+    {
+      key: "ApparitionofBeyondHecate",
+      label: "S6 Apparition of Beyond - Hecate",
+      talents: {
+        "1": "216.42%",
+        "2": "216.42%",
+        "3": "216.42%",
+        "4": "216.42%",
+        "5": "216.42%",
+        "6": "216.42%",
+        "7": "216.42%",
+        "8": "216.42%",
+        "9": "216.42%",
+        "10": "216.42%",
+      },
+      type: "Skill",
+      requiresResonanceChain: "ApparitionofBeyondHecate",
+    },
   ],
 };
