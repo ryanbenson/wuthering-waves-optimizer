@@ -1208,7 +1208,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
-  Prolova: [
+  Phrolova: [
     {
       key: "OutroSkillUnfinishedPiece",
       name: "Outro Skill: Unfinished Piece",
