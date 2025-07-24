@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 24, 2025</h3>
+    <ul>
+      <li>Fixes the Echo Skill buff in Phrolova S3, it now properly buffs Scarlet Coda DMG.</li>
+    </ul>
     <h3>July 23, 2025</h3>
     <ul>
       <li>Releases 2.5 content.</li>

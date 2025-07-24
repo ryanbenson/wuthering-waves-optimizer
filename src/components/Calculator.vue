@@ -1225,6 +1225,8 @@ export default defineComponent({
         const customDamageDeepen = customBuffs.value?.DamageAmplify ?? 0;
         let resonanceChainDmgDeepenForAttackType =
           charResonanceChainsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
+        let resonanceChainDmgDeepenForAttackSubType =
+          charResonanceChainsData.value?.[`DMGDeepen:${attack.subType}`] ?? 0;
         let weaponBuffDmgDeepenElement =
           weaponData.value?.weaponPassiveStats?.[
             `DMGDeepen:${attackElement}`
@@ -1244,6 +1246,7 @@ export default defineComponent({
           teamBuffDmgDeepenForSubType +
           selfBuffSpecificAttackGenericDmgDeepen +
           resonanceChainDmgDeepenForAttackType +
+          resonanceChainDmgDeepenForAttackSubType +
           weaponBuffDmgDeepenElement +
           weaponBuffDmgDeepenSubType +
           customDamageDeepen +
