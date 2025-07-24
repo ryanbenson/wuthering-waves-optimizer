@@ -752,7 +752,8 @@ html[data-theme="light"] {
 
 <style lang="scss">
 .skilldescription {
-  .Title {
+  .Title,
+  .ingame-Title {
     font-weight: bold;
   }
 }

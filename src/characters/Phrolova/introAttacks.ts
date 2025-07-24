@@ -1,0 +1,40 @@
+export const introAttacks = {
+  name: "Intro Skill: Suite of Quietus",
+  description: `<div><span class="ww-wiki-font-bold"><span class="ingame-Title">Suite of Quietus</span></span><br>Attack the target, dealing <span class="ingame-Dark">Havoc DMG</span>.<br>Press <span class="ingame-Highlight">Normal Attack</span> shortly after casting this skill to cast <span class="ingame-Highlight">Basic Attack Stage 3</span>.<br><span class="ww-wiki-font-bold"></span><br><span class="ww-wiki-font-bold"><span class="ingame-Title">Suite of Immortality</span></span><br>When the <span class="ingame-Highlight">Maestro</span> state ends, the next <span class="ingame-Highlight">Suite of Quietus</span> is replaced with <span class="ingame-Highlight">Suite of Immortality</span>. Cancel this replacement if <span class="ingame-Highlight">Curtain Call</span> is cast in the duration. <span class="ingame-Highlight">Suite of Immortality</span> deals <span class="ingame-Dark">Havoc DMG</span> (considered <span class="ingame-Highlight">Resonance Skill DMG</span>) and Stagnates the target.<br>Press <span class="ingame-Highlight">Normal Attack</span> shortly after casting this skill to cast <span class="ingame-Highlight">Basic Attack Stage 3</span>.</div>`,
+  attacks: [
+    {
+      key: "SuiteofQuietusDMG",
+      label: "Suite of Quietus DMG",
+      talents: {
+        "1": "40.55%+60.82%",
+        "2": "43.87%+65.81%",
+        "3": "47.20%+70.79%",
+        "4": "51.85%+77.78%",
+        "5": "55.18%+82.76%",
+        "6": "59.00%+88.50%",
+        "7": "64.32%+96.48%",
+        "8": "69.64%+104.46%",
+        "9": "74.96%+112.44%",
+        "10": "80.61%+120.91%",
+      },
+      type: "Intro",
+    },
+    {
+      key: "SuiteofImmortalityDMG",
+      label: "Suite of Immortality DMG",
+      talents: {
+        "1": "300.00%",
+        "2": "324.60%",
+        "3": "349.20%",
+        "4": "383.64%",
+        "5": "408.24%",
+        "6": "436.53%",
+        "7": "475.89%",
+        "8": "515.25%",
+        "9": "554.61%",
+        "10": "596.43%",
+      },
+      type: "Skill",
+    },
+  ],
+};

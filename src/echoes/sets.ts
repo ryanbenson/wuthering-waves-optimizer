@@ -17,6 +17,9 @@ export const twoSetBonuses: string[] = [
   "Windward Pilgrimage 2 Set",
   "Flaming Clawprint 2 Set",
 ];
+export const threeSetBonuses: string[] = [
+  "Dream of the Lost 3 Set",
+];
 export const fiveSetBonuses: string[] = [
   "Freezing Frost 5 Set",
   "Molten Rift 5 Set",
@@ -796,6 +799,28 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         ],
         alwaysEnabled: false,
         details: `Casting Resonance Liberation increases the caster's Resonance Liberation DMG by 20%, lasting for 35s.`,
+      },
+    ],
+  },
+  "Dream of the Lost 3 Set": {
+    name: "Dream of the Lost",
+    key: "DreamoftheLost",
+    details: `Holding 0 Resonance Energy increases Crit. Rate by 20% and grants 35% Echo Skill DMG Bonus.`,
+    passives: [
+      {
+        key: "DreamoftheLostCritRateEchoSkill",
+        modifiers: [
+          {
+            modifier: "CritRate",
+            modifierValue: 20,
+          },
+          {
+            modifier: "EchoDMGBonus",
+            modifierValue: 35,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Holding 0 Resonance Energy increases Crit. Rate by 20% and grants 35% Echo Skill DMG Bonus.`,
       },
     ],
   },
