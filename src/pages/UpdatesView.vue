@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 23, 2025</h3>
+    <ul>
+      <li>Releases 2.5 content.</li>
+    </ul>
     <h3>July 19, 2025</h3>
     <ul>
       <li>Adds 3 missing echoes to the Flaming Clawprint set.</li>
@@ -31,7 +35,10 @@
     </ul>
     <h3>July 14, 2025</h3>
     <ul>
-      <li>Echo presets are now available! There are presets currently for Zani and Lupa. More to come!</li>
+      <li>
+        Echo presets are now available! There are presets currently for Zani and
+        Lupa. More to come!
+      </li>
     </ul>
     <h3>July 11, 2025</h3>
     <ul>

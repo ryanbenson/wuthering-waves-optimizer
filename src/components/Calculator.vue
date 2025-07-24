@@ -15,10 +15,8 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div
-            v-if="false"
-            class="alert alert-success mb-6 text-white p-2 px-4">
-            Cartethyia, Defier's Thorn, Lupa, and 2.4 echoes are now available!
+          <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
+            2.5 content is now available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
