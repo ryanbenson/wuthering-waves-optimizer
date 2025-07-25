@@ -10,9 +10,16 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 25, 2025</h3>
+    <ul>
+      <li>Adds echo presets for Brant and Encore.</li>
+    </ul>
     <h3>July 24, 2025</h3>
     <ul>
-      <li>Fixes the Echo Skill buff in Phrolova S3, it now properly buffs Scarlet Coda DMG.</li>
+      <li>
+        Fixes the Echo Skill buff in Phrolova S3, it now properly buffs Scarlet
+        Coda DMG.
+      </li>
       <li>Fixes Lethean Elegy main stat.</li>
     </ul>
     <h3>July 23, 2025</h3>
