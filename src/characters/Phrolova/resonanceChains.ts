@@ -113,7 +113,7 @@ During <span class="Highlight">Movement of Fate</span> and <span class="Highligh
       },
       {
         modifier: "EnableAttack",
-        modifierValue: ["ApparitionofBeyondHecate"],
+        modifierValue: ["SequenceNode6ANighttoDepartFromEternalRest"],
       },
     ],
     minStacks: 0,

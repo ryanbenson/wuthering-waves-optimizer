@@ -52,7 +52,7 @@ export const forteCircuitAttacks = {
         "10": "216.42%",
       },
       type: "Skill",
-      requiresResonanceChain: "ApparitionofBeyondHecate",
+      requiresResonanceChain: "SequenceNode6ANighttoDepartFromEternalRest",
     },
   ],
 };
