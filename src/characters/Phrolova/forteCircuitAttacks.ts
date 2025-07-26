@@ -51,7 +51,7 @@ export const forteCircuitAttacks = {
         "9": "216.42%",
         "10": "216.42%",
       },
-      type: "Skill",
+      type: "Echo",
       requiresResonanceChain: "SequenceNode6ANighttoDepartFromEternalRest",
     },
   ],
