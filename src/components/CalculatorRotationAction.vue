@@ -179,7 +179,7 @@
         </button>
       </div>
       <div class="ignore__buffs mt-2">
-        <div class="form-control flex flex-wra flex-row gap-4">
+        <div class="form-control flex flex-wrap flex-row gap-2">
           <label v-if="false" class="label cursor-pointer flex gap-2">
             <input
               v-model="excludeSelfBuffs"
@@ -195,6 +195,14 @@
               class="checkbox checkbox-xs"
               @change="onExcludeTeamBuffsChange" />
             <span class="label-text">Exclude team buffs</span>
+          </label>
+          <label class="label cursor-pointer flex gap-2">
+            <input
+              v-model="excludeWeaponBuffs"
+              type="checkbox"
+              class="checkbox checkbox-xs"
+              @change="onExcludeWeaponBuffsChange" />
+            <span class="label-text">Exclude weapon buffs</span>
           </label>
           <label class="label cursor-pointer flex gap-2">
             <input
@@ -257,6 +265,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    ignoreWeaponBuffs: {
+      type: Boolean,
+      default: false,
+    },
     isDisabled: {
       type: Boolean,
       default: false,
@@ -281,6 +293,7 @@ export default {
       hits: 0,
       excludeSelfBuffs: false,
       excludeTeamBuffs: false,
+      excludeWeaponBuffs: false,
       disabled: false,
       buffData: [],
       skillKeyMap: {
@@ -403,6 +416,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
       });
     },
@@ -428,6 +442,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
       });
     },
@@ -451,6 +466,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
       });
     },
@@ -469,6 +485,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
       });
     },
@@ -487,6 +504,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
       });
     },
@@ -500,6 +518,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
       });
     },
@@ -513,6 +532,21 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        excludeWeaponBuffs: this.excludeWeaponBuffs,
+        isDisabled: this.disabled,
+      });
+    },
+    onExcludeWeaponBuffsChange() {
+      this.$emit("action-update", {
+        id: this.id,
+        order: this.order,
+        key: this.actionKeyValue,
+        type: this.actionSkillType,
+        count: this.hits,
+        buffs: this.buffData,
+        excludeSelfBuffs: this.excludeSelfBuffs,
+        excludeTeamBuffs: this.excludeTeamBuffs,
+        excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
       });
     },
@@ -526,6 +560,7 @@ export default {
         buffs: this.buffData,
         excludeSelfBuffs: this.excludeSelfBuffs,
         excludeTeamBuffs: this.excludeTeamBuffs,
+        excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
       });
     },
@@ -553,6 +588,7 @@ export default {
     this.hits = this.count;
     this.excludeSelfBuffs = this.ignoreSelfBuffs;
     this.excludeTeamBuffs = this.ignoreTeamBuffs;
+    this.excludeWeaponBuffs = this.ignoreWeaponBuffs;
     this.disabled = this.isDisabled;
     this.buffData = JSON.parse(JSON.stringify(this.buffs));
   },

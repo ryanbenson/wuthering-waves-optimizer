@@ -318,6 +318,7 @@ export const subStatLabelMap: SubStatLabelMap = {
   Aero: "Aero DMG Bonus",
   Spectro: "Spectro DMG Bonus",
   Havoc: "Havoc DMG Bonus",
+  EchoDMGBonus: "Echo DMG Bonus",
   HealingBonus: "Healing Bonus",
 };
 export const verboseStatLabelMap: Record<string, string> = {
@@ -341,6 +342,7 @@ export const verboseStatLabelMap: Record<string, string> = {
   "Aero DMG Bonus": "Aero",
   "Spectro DMG Bonus": "Spectro",
   "Havoc DMG Bonus": "Havoc",
+  "Echo DMG Bonus": "EchoDMGBonus",
   "Healing Bonus": "HealingBonus",
 };
 

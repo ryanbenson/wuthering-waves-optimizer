@@ -15,7 +15,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
+          <div
+            v-if="false"
+            class="alert alert-success mb-6 text-white p-2 px-4">
             2.5 content is now available!
           </div>
           <CalculatorCharacterSelect
@@ -501,7 +503,7 @@ export default defineComponent({
       injectStats = null,
       ignoreBuffs = {}, // e.g. {ignoreTeamBuffs: true}
     ) => {
-      const { ignoreTeamBuffs } = ignoreBuffs;
+      const { ignoreTeamBuffs, ignoreWeaponBuffs } = ignoreBuffs;
       let stats = {
         attackPercent: 0,
         hpPercent: 0,
@@ -592,23 +594,25 @@ export default defineComponent({
           Object.entries(weaponPassiveData).filter(([_, v]) => v != null),
         );
 
-        addBuffs(weaponPassiveData, stats);
+        if (!ignoreWeaponBuffs) {
+          addBuffs(weaponPassiveData, stats);
 
-        if (weaponPassiveData?.AllElementAttributeBonus) {
-          const allElementAttributeBonus =
-            weaponPassiveData.AllElementAttributeBonus * 100;
-          stats.glacio += allElementAttributeBonus;
-          stats.fusion += allElementAttributeBonus;
-          stats.electro += allElementAttributeBonus;
-          stats.aero += allElementAttributeBonus;
-          stats.spectro += allElementAttributeBonus;
-          stats.havoc += allElementAttributeBonus;
-        }
+          if (weaponPassiveData?.AllElementAttributeBonus) {
+            const allElementAttributeBonus =
+              weaponPassiveData.AllElementAttributeBonus * 100;
+            stats.glacio += allElementAttributeBonus;
+            stats.fusion += allElementAttributeBonus;
+            stats.electro += allElementAttributeBonus;
+            stats.aero += allElementAttributeBonus;
+            stats.spectro += allElementAttributeBonus;
+            stats.havoc += allElementAttributeBonus;
+          }
 
-        if (weaponPassiveData?.AllResonanceDMG) {
-          const allResonanceDMG = weaponPassiveData.AllResonanceDMG * 100;
-          stats.resonanceSkillDMGBonus += allResonanceDMG;
-          stats.resonanceLiberationDMGBonus += allResonanceDMG;
+          if (weaponPassiveData?.AllResonanceDMG) {
+            const allResonanceDMG = weaponPassiveData.AllResonanceDMG * 100;
+            stats.resonanceSkillDMGBonus += allResonanceDMG;
+            stats.resonanceLiberationDMGBonus += allResonanceDMG;
+          }
         }
 
         switch (weaponModifer) {
@@ -914,11 +918,12 @@ export default defineComponent({
         hasDynamicTalent = false,
         count = 1,
       ) => {
-        const { excludeTeamBuffs } = attack;
+        const { excludeTeamBuffs, excludeWeaponBuffs } = attack;
         let statsWithoutTeamBuffs = null;
-        if (excludeTeamBuffs) {
+        if (excludeTeamBuffs || excludeWeaponBuffs) {
           statsWithoutTeamBuffs = calcCharStats("All", null, {
-            ignoreTeamBuffs: true,
+            ignoreTeamBuffs: excludeTeamBuffs,
+            ignoreWeaponBuffs: excludeWeaponBuffs,
           });
         }
         let attackType = attack.type;
@@ -1091,8 +1096,11 @@ export default defineComponent({
         const genericSkillDmgBonusResChain =
           charResonanceChainsData.value?.DMGBonus ?? 0;
         const genericSkillDmgBonusSelfBuff = selfBuffs?.DMGBonus ?? 0;
-        const genericSkillDmgBonusWeaponBuff =
+        let genericSkillDmgBonusWeaponBuff =
           weaponData?.value?.weaponPassiveStats?.DMGBonus ?? 0;
+        if (excludeWeaponBuffs) {
+          genericSkillDmgBonusWeaponBuff = 0;
+        }
         const genericSkillDmgBonusEchoBuff = echoStats.value?.DMGBonus ?? 0;
         let genericSkillDmgBonusTeamEchoBuff =
           teamBuffsData.value?.DMGBonus ?? 0;
@@ -1171,6 +1179,9 @@ export default defineComponent({
           weaponData.value?.weaponPassiveStats?.[
             `ResistShred:${attackElement}`
           ] ?? 0;
+        if (excludeWeaponBuffs) {
+          weaponBuffResistShredForCharElement = 0;
+        }
         if (excludeTeamBuffs) {
           teamBuffResistShredForCharElement = 0;
         }
@@ -1238,6 +1249,11 @@ export default defineComponent({
         let weaponBuffDmgDeepenType =
           weaponData.value?.weaponPassiveStats?.[`DMGDeepen:${attackType}`] ??
           0;
+        if (excludeWeaponBuffs) {
+          weaponBuffDmgDeepenElement = 0;
+          weaponBuffDmgDeepenSubType = 0;
+          weaponBuffDmgDeepenType = 0;
+        }
         const totalDmgDeepen =
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
@@ -1300,7 +1316,10 @@ export default defineComponent({
               ATK: modifyBaseAtk,
               ATK_FLAT: modifyBaseAtkFlat,
             },
-            { ignoreTeamBuffs: excludeTeamBuffs },
+            {
+              ignoreTeamBuffs: excludeTeamBuffs,
+              ignoreWeaponBuffs: excludeWeaponBuffs,
+            },
           );
         }
         if (modifyBaseHp || modifyBaseHpFlat) {
@@ -1310,7 +1329,10 @@ export default defineComponent({
               HP: modifyBaseHp,
               HP_FLAT: modifyBaseHpFlat,
             },
-            { ignoreTeamBuffs: excludeTeamBuffs },
+            {
+              ignoreTeamBuffs: excludeTeamBuffs,
+              ignoreWeaponBuffs: excludeWeaponBuffs,
+            },
           );
         }
         if (modifyBaseDef || modifyBaseDefFlat) {
@@ -1320,7 +1342,10 @@ export default defineComponent({
               DEF: modifyBaseDef,
               DEF_FLAT: modifyBaseDefFlat,
             },
-            { ignoreTeamBuffs: excludeTeamBuffs },
+            {
+              ignoreTeamBuffs: excludeTeamBuffs,
+              ignoreWeaponBuffs: excludeWeaponBuffs,
+            },
           );
         }
 
@@ -1346,12 +1371,18 @@ export default defineComponent({
           let totalSpectroFrazzleDeepen = 0;
           // get any SpectroFrazzle dmg deepen/amplify
           // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
-          const spectroFrazzleDeepenWeaponBuffs =
+          let spectroFrazzleDeepenWeaponBuffs =
             weaponData.value?.weaponPassiveStats?.[
               "DMGDeepen:SpectroFrazzle"
             ] ?? 0;
-          const spectroFrazzleDeepenTeamBuffs =
+          if (excludeWeaponBuffs) {
+            spectroFrazzleDeepenWeaponBuffs = 0;
+          }
+          let spectroFrazzleDeepenTeamBuffs =
             teamBuffsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+          if (excludeTeamBuffs) {
+            spectroFrazzleDeepenTeamBuffs = 0;
+          }
           const spectroFrazzleDeepenSelfBuffs =
             selfBuffs?.["DMGDeepen:SpectroFrazzle"] ?? 0;
           const spectroFrazzleDeepenResonanceChains =
@@ -1383,11 +1414,17 @@ export default defineComponent({
           let totalAeroErosionDeepen = 0;
           // get any SpectroFrazzle dmg deepen/amplify
           // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
-          const aeroErosionDeepenWeaponBuffs =
+          let aeroErosionDeepenWeaponBuffs =
             weaponData.value?.weaponPassiveStats?.["DMGDeepen:AeroErosion"] ??
             0;
-          const aeroErosionDeepenTeamBuffs =
+          if (excludeWeaponBuffs) {
+            aeroErosionDeepenWeaponBuffs = 0;
+          }
+          let aeroErosionDeepenTeamBuffs =
             teamBuffsData.value?.["DMGDeepen:AeroErosion"] ?? 0;
+          if (excludeTeamBuffs) {
+            aeroErosionDeepenTeamBuffs = 0;
+          }
           const aeroErosionDeepenSelfBuffs =
             selfBuffs?.["DMGDeepen:AeroErosion"] ?? 0;
           const specificAeroErosionDeepenSelfBuffs =
@@ -1490,6 +1527,8 @@ export default defineComponent({
             case "Liberation":
               attackTypeAttackBuff =
                 attack.buffs?.ResonanceLiberationDMGBonus ?? 0;
+            case "Echo":
+              attackTypeAttackBuff = attack.buffs?.EchoDMGBonus ?? 0;
               break;
           }
 
@@ -1990,6 +2029,7 @@ export default defineComponent({
               count: actionCount,
               excludeSelfBuffs: action.excludeSelfBuffs ?? false,
               excludeTeamBuffs: action.excludeTeamBuffs ?? false,
+              excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
             };
             // if there are buffs, turn it into a hashmap
             if (action?.buffs?.length) {

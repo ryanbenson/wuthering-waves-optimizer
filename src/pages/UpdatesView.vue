@@ -10,6 +10,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 26, 2025</h3>
+    <ul>
+      <li>Adds ability to disable weapon buffs in a rotation action.</li>
+      <li>Adds Echo DMG Bonus to rotation action buffs.</li>
+    </ul>
     <h3>July 25, 2025</h3>
     <ul>
       <li>Adds echo presets for Brant and Encore.</li>
