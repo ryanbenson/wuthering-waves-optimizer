@@ -15,6 +15,7 @@
       <li>Adds ability to disable weapon buffs in a rotation action.</li>
       <li>Adds Echo DMG Bonus to rotation action buffs.</li>
       <li>Adds rotation for Lupa and Cartethyia.</li>
+      <li>Removes Echo DMG Amplify from applying to Scarlet Coda DMG.</li>
     </ul>
     <h3>July 25, 2025</h3>
     <ul>

@@ -86,7 +86,7 @@ export const basicAttacks = {
         "10": "33.01%*2+12.38%*8+495.10%",
       },
       type: "Skill",
-      subType: "Echo",
+      // subType: "Echo",
     },
     {
       key: "MidairAttackDMG",
