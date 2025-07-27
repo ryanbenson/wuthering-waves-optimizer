@@ -16,6 +16,13 @@
         Fixes Lumi's Energized Rebound DMG and Energized Pounce DMG to be Basic
         DMG.
       </li>
+      <li>
+        Updates Scarlet Coda DMG's individual hits. The additive multiplier
+        bonus from Aftersound is distributed differently. It is now properly
+        distrubted as: 2(5%) + 8(1.875%) + 75%. The overall damage is the same,
+        but the individual hits will now better represent what would appear in
+        game.
+      </li>
     </ul>
     <h3>July 26, 2025</h3>
     <ul>

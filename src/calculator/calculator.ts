@@ -186,9 +186,26 @@ export function calcDamage(
     // But Zani has multi-hit, and it seems it applies to the last hit only
     // However, this does not apply to HeavySlashNightfallDMG, which is far more complicated
     if (talentModifierAdd) {
-      if (skillKey !== "HeavySlashNightfallDMG") {
+      if (
+        skillKey !== "HeavySlashNightfallDMG" &&
+        skillKey !== "ScarletCodaDMG"
+      ) {
         if (index === talentsLen - 1) {
           t += talentModifierAdd;
+        }
+      } else if (skillKey === "ScarletCodaDMG") {
+        /**
+         * Scarlet coda does 11 hits. The talentModifierAdd needs to be split according to these rules:
+         * 1st and 2nd hit get 5% each of talentModifierAdd
+         * The next 8 hits get 1.875% each of talentModifierAdd
+         * The last hit gets 75% of talentModifierAdd
+         */
+        if (index === 0 || index === 1) {
+          t += talentModifierAdd * 0.05; // 5% for first two hits
+        } else if (index >= 2 && index <= 9) {
+          t += talentModifierAdd * 0.01875; // 1.875% for next 8 hits
+        } else if (index === 10) {
+          t += talentModifierAdd * 0.75; // 75% for the last hit
         }
       } else {
         /**
@@ -198,7 +215,7 @@ export function calcDamage(
          * The additive multiplier has very specific rules. Example: If you have 40 stacks, then it's parsed into:
          * 5+5+15+15. So, assuming talent level 10:
          * Full talent string: 51.7%*2 + 15.91%*2 + 79.53% + 7.96%*2 + 27.84% + 139.17%
-         * 51.7 = gets 5 stacks applied
+         * 51.7 = gets 5 stacks appliedzzs
          * 51.7 = gets 5 stacks applied (this hits twice)
          * 79.53 = gets 10 stacks
          * 139.17 = gets 20 stacks
