@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 27, 2025</h3>
+    <ul>
+      <li>
+        Fixes Lumi's Energized Rebound DMG and Energized Pounce DMG to be Basic
+        DMG.
+      </li>
+    </ul>
     <h3>July 26, 2025</h3>
     <ul>
       <li>Adds ability to disable weapon buffs in a rotation action.</li>
