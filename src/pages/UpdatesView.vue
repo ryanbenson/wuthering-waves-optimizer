@@ -23,6 +23,7 @@
         but the individual hits will now better represent what would appear in
         game.
       </li>
+      <li>Adds missing Lumi Counter DMG.</li>
     </ul>
     <h3>July 26, 2025</h3>
     <ul>
