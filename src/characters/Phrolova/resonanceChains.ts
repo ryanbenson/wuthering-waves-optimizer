@@ -21,23 +21,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode2ARopeTiedtoaLifeBeyond",
     name: "Sequence Node 2: A Rope Tied to a Life Beyond",
-    details: `<span class="skilldescription">The DMG Multiplier of <span class="ingame-Highlight">Scarlet Coda</span> is increased by 75%.</span>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["ScarletCodaDMG"],
-        modifierValue: 0.75,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode2ARopeTiedtoaLifeBeyondAftersound",
-    name: "Sequence Node 2: A Rope Tied to a Life Beyond (Aftersound)",
-    details: `<span class="skilldescription"><span class="ingame-Highlight">Aftersound</span> now additionally increased the DMG Multiplier of <span class="ingame-Highlight">Scarlet Coda</span> by 75%.<br>Casting <span class="ingame-Highlight">Scarlet Coda</span> grants 14 Stacks of <span class="ingame-Highlight">Aftersound</span>.</span>`,
+    details: `<span class="skilldescription">The DMG Multiplier of <span class="ingame-Highlight">Scarlet Coda</span> is increased by 75%.</span> <span class="ingame-Highlight">Aftersound</span> now additionally increased the DMG Multiplier of <span class="ingame-Highlight">Scarlet Coda</span> by 75%.<br>Casting <span class="ingame-Highlight">Scarlet Coda</span> grants 14 Stacks of <span class="ingame-Highlight">Aftersound</span>`,
     hasStacks: false,
     modifiers: [
       {
