@@ -13,6 +13,7 @@
     <h3>July 30, 2025</h3>
     <ul>
       <li>Removes the second S2 option for Phrolova.</li>
+      <li>Adds another echo preset for Changli.</li>
     </ul>
     <h3>July 27, 2025</h3>
     <ul>
