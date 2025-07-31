@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 31, 2025</h3>
+    <ul>
+      <li>
+        Fixes Phrolova S4 to properly be all attribute bonus instead of ATK.
+      </li>
+      <li>Adds 2 missing echoes to Dream of the Lost echo set.</li>
+    </ul>
     <h3>July 30, 2025</h3>
     <ul>
       <li>Removes the second S2 option for Phrolova.</li>

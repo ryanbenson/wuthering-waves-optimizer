@@ -57,11 +57,31 @@ export const resonanceChains = [
   {
     key: "SequenceNode4ATorchIlluminatingthePath",
     name: "Sequence Node 4: A Torch Illuminating the Path",
-    details: `<span class="skilldescription">After casting <span class="ingame-Highlight">Echo Skill</span>, grant 20% ATK increase for all Resonators in the team for 30s.</span>`,
+    details: `<span class="skilldescription">Casting <span class="ingame-Highlight">Echo Skill</span> grants 20% Attribute DMG Bonus for all Resonators in the team for 30s.`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ATK",
+        modifier: "Fusion",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Glacio",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Electro",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Aero",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Havoc",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Spectro",
         modifierValue: 0.2,
       },
     ],
