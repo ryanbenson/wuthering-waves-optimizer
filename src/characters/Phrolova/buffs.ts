@@ -2,7 +2,7 @@ export const buffs = [
   {
     key: `Aftersound`,
     name: `Aftersound`,
-    details: `Each stack of <span class="ingame-Highlight">Aftersound</span> additionally increases the DMG Multiplier of this instance of damage.`,
+    details: `Each stack of <span class="ingame-Highlight">Aftersound</span> additionally increases the DMG Multiplier of <span class="Highlight">Scarlet Coda</span>.`,
     hasStacks: true,
     modifiers: [
       {
@@ -52,7 +52,7 @@ export const buffs = [
   {
     key: `InherentSkillAccidental`,
     name: `Inherent Skill: Accidental`,
-    details: `<div class="skilldescription">Casting <span class="ingame-Highlight">Echo Skill</span> grants increased resistance to interruption and reduces damage taken by 30% for 15s.<br>After casting <span class="ingame-Highlight">Suite of Quietus</span>, <span class="ingame-Highlight">Suite of Immortality</span>, and <span class="ingame-Highlight">Echo Skill</span>, the next <span class="ingame-Highlight">Volatile Note becomes <color=highlight>Volatile Note - Cadenza</color=highlight></span>.</div>`,
+    details: `<div class="skilldescription">Casting <span class="ingame-Highlight">Echo Skill</span> grants increased resistance to interruption and reduces damage taken by 30% for 15s.<br>After casting <span class="ingame-Highlight">Suite of Quietus</span>, <span class="ingame-Highlight">Suite of Immortality</span>, and <span class="ingame-Highlight">Echo Skill</span>, the next <span class="ingame-Highlight">Volatile Note</span> becomes <span class="ingame-Highlight">Volatile Note - Cadenza</span>.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -62,7 +62,7 @@ export const buffs = [
   {
     key: `InherentSkillOctet`,
     name: `Inherent Skill: Octet`,
-    details: `<div class="skilldescription">Obtain 10 stacks of <span class="ingame-Highlight">Aftersound</span> upon entering the battle. This effect cannot be triggered again within 1s after exiting the combat state. For every 1 stacks of <span class="ingame-Highlight">Aftersound</span>, Crit. DMG is increased by 2.5%.</div>`,
+    details: `<div class="skilldescription">Obtain 10 stacks of <span class="ingame-Highlight">Aftersound</span> upon entering battle. This effect cannot be triggered again within 4s after exiting the combat state. For every 1 stacks of <span class="ingame-Highlight">Aftersound</span>, Crit. DMG is increased by 2.5%.</div>`,
     hasStacks: true,
     modifiers: [
       {
@@ -77,7 +77,7 @@ export const buffs = [
   {
     key: `InherentSkillOctetAdditionalStacks`,
     name: `Inherent Skill: Octet (Additional Stacks)`,
-    details: `<div class="skilldescription">When <span class="ingame-Highlight">Aftersound</span> reaches the max, obtaining new <span class="ingame-Highlight">Aftersound</span> increases Phrolova's Crit. DMG by 1%, up to 100%. The increased Crit. DMG is removed when <span class="ingame-Highlight">Aftersound</span> stacks are cleared.</div>`,
+    details: `<div class="skilldescription">When <span class="ingame-Highlight">Aftersound</span> reaches the max, each new stack of <span class="ingame-Highlight">Aftersound</span> increases Phrolova's Crit. DMG by 1%, up to 100%. The increased Crit. DMG is removed when <span class="ingame-Highlight">Aftersound</span> stacks are cleared.</div>`,
     hasStacks: true,
     modifiers: [
       {

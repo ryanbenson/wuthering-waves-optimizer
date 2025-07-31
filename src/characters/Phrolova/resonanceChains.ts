@@ -2,7 +2,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode1AKeytoNetherworldsSecrets",
     name: "Sequence Node 1: A Key to Netherworld's Secrets",
-    details: `<span class="skilldescription">The DMG Multiplier of <span class="ingame-Highlight">Movement of Fate and Finality</span> is increased by 80%.<br>The DMG Multiplier of <span class="ingame-Highlight">Murmurs in a Haunting Dream</span> is increased by 80%.<br>If Phrolova has less than 2 <span class="ingame-Highlight">Volatile Notes</span> when she is not in the <span class="ingame-Highlight">Maestro</span> and stays out of combat for 4s, she gains <span class="ingame-Highlight">Volatile Note - Cadenza</span> until she has at least 2 <span class="ingame-Highlight">Volatile Notes</span>.</span>`,
+    details: `<span class="skilldescription">The DMG Multiplier of <span class="ingame-Highlight">Movement of Fate and Finality</span> is increased by 80%.<br>The DMG Multiplier of <span class="ingame-Highlight">Murmurs in a Haunting Dream</span> is increased by 80%.<br>If Phrolova has less than 2 <span class="ingame-Highlight">Volatile Notes</span> when she is not in the <span class="ingame-Highlight">Maestro</span> state and stays out of combat for 4s, she gains <span class="ingame-Highlight">Volatile Note - Cadenza</span> until she has at least 2 <span class="ingame-Highlight">Volatile Notes</span>.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -21,7 +21,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode2ARopeTiedtoaLifeBeyond",
     name: "Sequence Node 2: A Rope Tied to a Life Beyond",
-    details: `<span class="skilldescription">The DMG Multiplier of <span class="ingame-Highlight">Scarlet Coda</span> is increased by 75%.</span> <span class="ingame-Highlight">Aftersound</span> now additionally increased the DMG Multiplier of <span class="ingame-Highlight">Scarlet Coda</span> by 75%.<br>Casting <span class="ingame-Highlight">Scarlet Coda</span> grants 14 Stacks of <span class="ingame-Highlight">Aftersound</span>`,
+    details: `<span class="skilldescription">The DMG Multiplier of <span class="ingame-Highlight">Scarlet Coda</span> is increased by 75%. <span class="ingame-Highlight">Aftersound</span> now additionally increases the DMG Multiplier of <span class="ingame-Highlight">Scarlet Coda</span> by 75%.<br>Casting <span class="ingame-Highlight">Scarlet Coda</span> grants 14 stacks of <span class="ingame-Highlight">Aftersound</span>.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -37,7 +37,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode3ADaggertoCutCleanObsessions",
     name: "Sequence Node 3: A Dagger to Cut Clean Obsessions",
-    details: `<span class="skilldescription">Echo Skill DMG is Amplified by 80%.<br>The DMG Multiplier of <span class="ingame-Highlight">Suite of Immortality</span> is increased by 80%.<br>Casting <span class="ingame-Highlight">Scarlet Coda</span>, all <span class="ingame-Highlight">Volatile Notes</span> will be converted to <span class="ingame-Highlight">Volatile Notes - Cadenza</span> in order of acquisition.<br>Targets hit by <span class="ingame-Highlight">Enhanced Attack - Hecate: Cadenza</span> will have their ATK reduced by 20% for 15s.</span>`,
+    details: `<span class="skilldescription">Echo Skill DMG is Amplified by 80%.<br>Casting <span class="ingame-Highlight">Scarlet Coda</span> will convert all <span class="ingame-Highlight">Volatile Notes</span> to <span class="ingame-Highlight">Volatile Notes - Cadenza</span> in turn. Targets hit by <span class="ingame-Highlight">Enhanced Attack - Hecate: Cadenza</span> will have their ATK reduced by 20% for 15s.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -102,8 +102,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode6ANighttoDepartFromEternalRest",
     name: "Sequence Node 6: A Night to Depart From Eternal Rest",
-    details: `<span class="skilldescription">The DMG Multiplier of <span class="Highlight">Enhanced Attack - Hecate</span> is increased by 24%.<br><br>
-During <span class="Highlight">Movement of Fate</span> and <span class="Highlight">Finality and Murmurs in a Haunting Dream</span>, command Hecate to cast 1 <span class="Highlight">Apparition of Beyond - Hecate</span>, dealing <span class="Dark">Havoc DMG</span> equal to 216.42% of Phrolova's ATK (considered Echo Skill DMG) and granting 8 stacks of <span class="Highlight">Aftersound</span> on hit.</span>`,
+    details: `<span class="skilldescription">The DMG Multiplier of <span class="ingame-Highlight">Enhanced Attack - Hecate</span> is increased by 24%. <br><span class="ww-wiki-font-bold"></span><br>During <span class="ingame-Highlight">Movement of Fate and Finality</span> and <span class="ingame-Highlight">Murmurs in a Haunting Dream</span>, command Hecate to cast 1 <span class="ingame-Highlight">Apparition of Beyond - Hecate</span>, dealing <span class="ingame-Dark">Havoc DMG</span> equal to 216.42% of Phrolova's ATK (considered <span class="ingame-Highlight">Echo Skill DMG</span>) and granting 8 stacks of <span class="ingame-Highlight">Aftersound</span> on hit.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -127,7 +126,7 @@ During <span class="Highlight">Movement of Fate</span> and <span class="Highligh
   {
     key: "SequenceNode6ANighttoDepartFromEternalRestOffField",
     name: "Sequence Node 6: A Night to Depart From Eternal Rest (Off-Field)",
-    details: `<span class="skilldescription">If Phrolova is not the active Resonator during the Maestro state, targets take 40% more DMG from Hecate and Phrolova.</span>`,
+    details: `<span class="skilldescription">If Phrolova is not the active Resonator during the <span class="ingame-Highlight">Maestro</span> state, targets take 40% more DMG from Hecate and Phrolova.</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -149,7 +148,7 @@ During <span class="Highlight">Movement of Fate</span> and <span class="Highligh
   {
     key: "SequenceNode6ANighttoDepartFromEternalRestOnField",
     name: "Sequence Node 6: A Night to Depart From Eternal Rest (On-Field)",
-    details: `<span class="skilldescription"> If Phrolova is the active Resonator during the Maestro state, gain 60% Havoc DMG Bonus.</span>`,
+    details: `<span class="skilldescription">If Phrolova is the active Resonator during the <span class="ingame-Highlight">Maestro</span> state, gain 60% Havoc DMG Bonus.</span>`,
     hasStacks: false,
     modifiers: [
       {
