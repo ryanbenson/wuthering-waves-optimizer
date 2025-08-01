@@ -5,6 +5,7 @@ export const useInventoryStore = defineStore("inventory", {
   state: () => ({
     echoes: [],
     equipped: {},
+    echoPresets: [],
   }),
   getters: {
     getEquippedEchoData: (state) => {
@@ -23,6 +24,17 @@ export const useInventoryStore = defineStore("inventory", {
         this.echoes.push(data);
       }
     },
+    saveEchoPreset(data) {
+      const { presetId } = data;
+      const foundIndex = this.echoPresets.findIndex(
+        (echoPreset) => echoPreset.presetId === presetId,
+      );
+      if (foundIndex >= 0) {
+        this.echoPresets[foundIndex] = data;
+      } else {
+        this.echoPresets.push(data);
+      }
+    },
     patchEcho(echoId, data) {
       const foundIndex = this.echoes.findIndex(
         (echo) => echo.echoId === echoId,
@@ -33,6 +45,16 @@ export const useInventoryStore = defineStore("inventory", {
         this.echoes[foundIndex] = updatedData;
       }
     },
+    patchEchoPreset(presetId, data) {
+      const foundIndex = this.echoPresets.findIndex(
+        (echoPreset) => echoPreset.presetId === presetId,
+      );
+      if (foundIndex >= 0) {
+        const existingData = this.echoPresets[foundIndex];
+        const updatedData = merge(existingData, data);
+        this.echoPresets[foundIndex] = updatedData;
+      }
+    },
     deleteEcho(echoId) {
       const foundIndex = this.echoes.findIndex(
         (echo) => echo.echoId === echoId,
@@ -41,8 +63,19 @@ export const useInventoryStore = defineStore("inventory", {
         this.echoes.splice(foundIndex, 1);
       }
     },
+    deleteEchoPreset(presetId) {
+      const foundIndex = this.echoPresets.findIndex(
+        (echoPreset) => echoPreset.presetId === presetId,
+      );
+      if (foundIndex >= 0) {
+        this.echoPresets.splice(foundIndex, 1);
+      }
+    },
     getEchoById(echoId) {
       return this.echoes.find((echo) => echo.echoId === echoId);
+    },
+    getEchoPresetById(presetId) {
+      return this.echoPresets.find((echoPreset) => echoPreset.presetId === presetId);
     },
     setEquippedData(echoId, data) {
       const existingData = this.equipped[echoId] ?? {};
@@ -52,6 +85,7 @@ export const useInventoryStore = defineStore("inventory", {
     hardSetState(data) {
       this.echoes = data?.echoes ?? [];
       this.equipped = data?.equipped ?? {};
+      this.echoPresets = data?.echoPresets ?? [];
     },
     getEchoEquippedChars(echoId) {
       const equipped = this.equipped[echoId] ?? {};
