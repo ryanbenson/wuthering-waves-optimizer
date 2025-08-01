@@ -82,6 +82,31 @@
           data-test-enemy-spectro-frazzle-input />
       </div>
     </div>
+    <div
+      v-if="isAeroErosionEnabled"
+      class="data-input--talents mt-8"
+      data-test-enemy-aero-erosion>
+      <div class="flex flex-col pb-7 relative">
+        <label
+          for="enemyResist"
+          class="talent__label"
+          data-test-enemy-aero-erosion-label>
+          Aero Erosion Stacks
+          <span class="text-primary">{{ aeroErosionStacks }}</span>
+        </label>
+        <input
+          v-model="aeroErosionStacks"
+          name="aeroErosionStacks"
+          id="aeroErosionStacks"
+          type="range"
+          min="0"
+          max="10"
+          step="1"
+          class="range range-xs"
+          :class="rangeClasses"
+          data-test-enemy-aero-erosion-input />
+      </div>
+    </div>
   </template>
 </template>
 
@@ -96,6 +121,10 @@ export default {
       required: true,
     },
     isSpectroFrazzleEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    isAeroErosionEnabled: {
       type: Boolean,
       default: false,
     },
@@ -128,6 +157,7 @@ export default {
           enemyLevel: this.enemyLevel,
           enemyResist: this.enemyResist,
           spectroFrazzleStacks: this.spectroFrazzleStacks,
+          aeroErosionStacks: this.aeroErosionStacks,
         });
       },
       immediate: true,
@@ -142,6 +172,7 @@ export default {
           enemyLevel: this.enemyLevel,
           enemyResist: this.enemyResist,
           spectroFrazzleStacks: this.spectroFrazzleStacks,
+          aeroErosionStacks: this.aeroErosionStacks,
         });
       },
       immediate: true,
@@ -156,6 +187,22 @@ export default {
           enemyLevel: this.enemyLevel,
           enemyResist: this.enemyResist,
           spectroFrazzleStacks: this.spectroFrazzleStacks,
+          aeroErosionStacks: this.aeroErosionStacks,
+        });
+      },
+      immediate: true,
+    },
+    aeroErosionStacks: {
+      /**
+       * Emits the buff data in its proper format
+       * @emits updated-enemy
+       */
+      handler: async function () {
+        this.$emit("updated-enemy-data", {
+          enemyLevel: this.enemyLevel,
+          enemyResist: this.enemyResist,
+          spectroFrazzleStacks: this.spectroFrazzleStacks,
+          aeroErosionStacks: this.aeroErosionStacks,
         });
       },
       immediate: true,
@@ -220,7 +267,6 @@ export default {
     /**
      * Getter/setter used in the form for the number of spectro frazzle stacks
      * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
      */
     spectroFrazzleStacks: {
       get() {
@@ -234,11 +280,26 @@ export default {
       },
     },
     /**
+     * Getter/setter used in the form for the number of spectro frazzle stacks
+     * Data is persisted in the store. Avoids needing a local data + store data
+     */
+    aeroErosionStacks: {
+      get() {
+        return this.currentCharacter?.aeroErosionStacks ?? 0;
+      },
+      async set(value) {
+        const data = {
+          aeroErosionStacks: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
      * Determines if there are any element effects
      * @returns {Boolean}
      */
     hasElementEffects() {
-      return this.isSpectroFrazzleEnabled;
+      return this.isSpectroFrazzleEnabled || this.isAeroErosionEnabled;
     },
   },
 };

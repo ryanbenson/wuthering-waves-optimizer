@@ -48,6 +48,7 @@ import { useCharacterStore } from "../stores/character";
 import CalculatorEchoSetPassive from "./CalculatorEchoSetPassive.vue";
 import {
   twoSetBonuses,
+  threeSetBonuses,
   fiveSetBonuses,
   setBonusEffectsTwo,
 } from "../echoes/sets";
@@ -69,6 +70,7 @@ export default {
   data() {
     return {
       twoSetBonuses,
+      threeSetBonuses,
       fiveSetBonuses,
       setBonusEffects: setBonusEffectsTwo,
       passiveData: [],
@@ -230,8 +232,9 @@ export default {
      */
     optionsList() {
       const twoSetList = JSON.parse(JSON.stringify(twoSetBonuses));
+      const threeSetList = JSON.parse(JSON.stringify(threeSetBonuses));
       const fiveSetList = JSON.parse(JSON.stringify(fiveSetBonuses));
-      const list = [...twoSetBonuses, ...fiveSetBonuses];
+      const list = [...twoSetBonuses, ...threeSetList, ...fiveSetBonuses];
       return list.sort();
     }
   },

@@ -1082,7 +1082,7 @@ export const buffsByCharacter = {
     {
       key: `PackHunt`,
       name: `Pack Hunt`,
-      details: `Resonators with <span class="Highlight">Pack Hunt</span> gain a 6% ATK increase, and 10% Fusion DMG Bonus when they attack Overlord Class or Calamity Class targets (Both are non-stackable).`,
+      details: `Resonators with <span class="Highlight">Pack Hunt</span> gain a 6% ATK increase, and 10% Fusion DMG Bonus when they attack Overlord Class or Calamity Class targets (Both are non-stackable).<br><em>These buffs may not appear in your stats in-game.</em>`,
       hasStacks: false,
       modifiers: [
         {
@@ -1101,7 +1101,7 @@ export const buffsByCharacter = {
     {
       key: `PackHuntFusionTeam`,
       name: `Pack Hunt Fusion Team`,
-      details: `Resonators with <span class="Highlight">Pack Hunt</span>: If there are 3 Fusion Resonators in the team, the Fusion DMG Bonus against Overlord Class or Calamity Class targets additionally increases by 10%.`,
+      details: `Resonators with <span class="Highlight">Pack Hunt</span>: If there are 3 Fusion Resonators in the team, the Fusion DMG Bonus against Overlord Class or Calamity Class targets additionally increases by 10%.<br><em>These buffs may not appear in your stats in-game.</em>`,
       hasStacks: false,
       modifiers: [
         {
@@ -1208,6 +1208,62 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Phrolova: [
+    {
+      key: "OutroSkillUnfinishedPiece",
+      name: "Outro Skill: Unfinished Piece",
+      details: `The incoming Resonator gains 20% Havoc DMG Amplification and 25% Heavy DMG Amplification for 14s or until they are switched out.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Havoc",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "DMGDeepen:Heavy",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4ATorchIlluminatingthePath",
+      name: "Sequence Node 4: A Torch Illuminating the Path",
+      details: `Casting <span class="Highlight">Echo Skill</span> grants 20% Attribute DMG Bonus for all Resonators in the team for 30s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Glacio",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Electro",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Aero",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Havoc",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Spectro",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -1259,7 +1315,11 @@ export const allEchoBuffs = [
   {
     key: "BellBorne eochelone",
     name: "Bell-Borne Geochelone",
-    details: `<span class="skilldescription">The Bell-Borne Shield provides <span class="Highlight">50.00%</span> DMG Reduction and <span class="Highlight">10.0%</span> DMG Boost for the current team members, and disappears after the current character is hit for 3 times.</span>`,
+    details: `<span class="description">Activate the protection of Bell-Borne Geochelone. Obtain a Bell-Borne Shield that lasts for <span class="param">15</span>s
+
+The Bell-Borne Shield provides <span class="param">50.00%</span> DMG Reduction and <span class="param">10.00%</span> DMG Boost for the current team members, and disappears after the current character is hit for <span class="param">3</span> times.
+
+CD: <span class="param">20</span>s</span>`,
     hasStacks: false,
     modifiers: [
       {
@@ -1453,6 +1513,27 @@ export const allWeaponTeamBuffs = [
     minStacks: 0,
     maxStacks: 0,
     details: `Hitting targets with Aero Erosion reduces their Aero RES by <span class="param">10%/11.5%/13%/14.5%/16%</span> for <span class="param">20</span>s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
+  {
+    name: "Wildfire Mark",
+    key: "WildfireMarkDMGBonus",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierByRefinement: {
+          "1": 0.24,
+          "2": 0.3,
+          "3": 0.36,
+          "4": 0.42,
+          "5": 0.48,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `Each successful extension gives <span class="param">24%/30%/36%/42%/48%</span> Fusion DMG Bonus to all Resonators in the team for <span class="param">30</span>s. Effects of the same name cannot be stacked.`,
     alwaysEnabled: false,
   },
 ];

@@ -107,6 +107,19 @@ export const resonanceChains = [
         ],
         modifierValue: 0.3,
       },
+      {
+        // TODO: This doesn't work. but it will need to. Essentially, the modifierValue
+        // list is a list of team buffs with a list of attacks it buffs.
+        // we need to add the NowheretoRunDMG to that list when this gets activated.
+        modifier: "AppendAnotherTalent",
+        modifySpecificTalents: ["NowheretoRunDMG"],
+        modifierValue: [
+          "PackHuntFusionTeam",
+          "PackHuntFusionEnhanced",
+          "InherentSkillApplauseofVictory",
+          "InherentSkillApplauseofVictoryFullFusionTeam",
+        ],
+      },
     ],
     minStacks: 0,
     maxStacks: 0,

@@ -102,7 +102,7 @@ export const forteCircuitAttacks = {
         "9": "170.46%*2",
         "10": "183.31%*2",
       },
-      type: "Skill",
+      type: "Basic",
     },
     {
       key: "EnergizedReboundDMG",
@@ -119,7 +119,7 @@ export const forteCircuitAttacks = {
         "9": "234.03%",
         "10": "251.79%",
       },
-      type: "Skill",
+      type: "Basic",
     },
     {
       key: "SingleLaserBeamDMG",

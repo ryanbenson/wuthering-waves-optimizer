@@ -71,6 +71,7 @@
               :is-disabled="action.isDisabled"
               :ignore-self-buffs="action.excludeSelfBuffs"
               :ignore-team-buffs="action.excludeTeamBuffs"
+              :ignore-weapon-buffs="action.excludeWeaponBuffs"
               @action-update="handleActionUpdate"
               @action-update:sequence="handleSequenceUpdate"
               @remove-action="handleRemoveAction"

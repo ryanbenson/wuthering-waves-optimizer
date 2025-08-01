@@ -10,9 +10,176 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>July 31, 2025</h3>
+    <ul>
+      <li>
+        Fixes Phrolova S4 to properly be all attribute bonus instead of ATK.
+      </li>
+      <li>Adds 2 missing echoes to Dream of the Lost echo set.</li>
+      <li>Updates Phrolova's text since there have been text patches.</li>
+    </ul>
+    <h3>July 30, 2025</h3>
+    <ul>
+      <li>Removes the second S2 option for Phrolova.</li>
+      <li>Adds another echo preset for Changli.</li>
+    </ul>
+    <h3>July 27, 2025</h3>
+    <ul>
+      <li>
+        Fixes Lumi's Energized Rebound DMG and Energized Pounce DMG to be Basic
+        DMG.
+      </li>
+      <li>
+        Updates Scarlet Coda DMG's individual hits. The additive multiplier
+        bonus from Aftersound is distributed differently. It is now properly
+        distrubted as: 2(5%) + 8(1.875%) + 75%. The overall damage is the same,
+        but the individual hits will now better represent what would appear in
+        game.
+      </li>
+      <li>Adds missing Lumi Counter DMG.</li>
+    </ul>
+    <h3>July 26, 2025</h3>
+    <ul>
+      <li>Adds ability to disable weapon buffs in a rotation action.</li>
+      <li>Adds Echo DMG Bonus to rotation action buffs.</li>
+      <li>Adds rotation for Lupa and Cartethyia.</li>
+      <li>Removes Echo DMG Amplify from applying to Scarlet Coda DMG.</li>
+    </ul>
+    <h3>July 25, 2025</h3>
+    <ul>
+      <li>Adds echo presets for Brant and Encore.</li>
+    </ul>
+    <h3>July 24, 2025</h3>
+    <ul>
+      <li>
+        Fixes the Echo Skill buff in Phrolova S3, it now properly buffs Scarlet
+        Coda DMG.
+      </li>
+      <li>Fixes Lethean Elegy main stat.</li>
+    </ul>
+    <h3>July 23, 2025</h3>
+    <ul>
+      <li>Releases 2.5 content.</li>
+    </ul>
+    <h3>July 19, 2025</h3>
+    <ul>
+      <li>Adds 3 missing echoes to the Flaming Clawprint set.</li>
+      <li>Adds echo presets for Danjin and Jinhsi.</li>
+    </ul>
+    <h3>July 17, 2025</h3>
+    <ul>
+      <li>Adds echo presets for Camellya and Changli.</li>
+    </ul>
+    <h3>July 16, 2025</h3>
+    <ul>
+      <li>Adds icon and tooltip to explain CV and RV.</li>
+      <li>Adds deeper explanation for CV and RV in the Info page.</li>
+    </ul>
+    <h3>July 15, 2025</h3>
+    <ul>
+      <li>Adds echo presets for Carlotta and Cartethyia.</li>
+      <li>Fixes a minor bug in importing settings.</li>
+    </ul>
+    <h3>July 14, 2025</h3>
+    <ul>
+      <li>
+        Echo presets are now available! There are presets currently for Zani and
+        Lupa. More to come!
+      </li>
+    </ul>
+    <h3>July 11, 2025</h3>
+    <ul>
+      <li>Adds rotation presets for Aero Rover, Roccia, and Calcharo.</li>
+      <li>Fixed R5 Rime-Draped Sprouts modifier</li>
+    </ul>
+    <h3>July 10, 2025</h3>
+    <ul>
+      <li>Adds rotation presets for Zani, and Cantarella.</li>
+    </ul>
+    <h3>July 7, 2025</h3>
+    <ul>
+      <li>Adds rotation presets for Cartethyia, and Encore.</li>
+    </ul>
+    <h3>July 6, 2025</h3>
+    <ul>
+      <li>
+        Fixes Lupa S6 and pre-S6. Pre-S6 Nowhere to Run! DMG now no longer gets
+        Glory and Pack Hunt buffs. It now gets included in S6.
+      </li>
+      <li>Adds Ciaccona's outro to her own buffs.</li>
+    </ul>
+    <h3>July 5, 2025</h3>
+    <ul>
+      <li>Adds Flaming Clawprint set to Aero Drake.</li>
+    </ul>
+    <h3>July 4, 2025</h3>
+    <ul>
+      <li>
+        Fixes Lupa team buffs, S3 now properly overwrites the resist reduction
+        buffs.
+      </li>
+      <li>
+        Changes Lupa Pack Hunt Enhanced buff to have max stacks of 2 to meet the
+        18% ATK cap.
+      </li>
+    </ul>
+    <h3>July 3, 2025</h3>
+    <ul>
+      <li>
+        Adds note to Lupa team buffs since a couple of buffs don't appear in the
+        in-game stats.
+      </li>
+    </ul>
+    <h3>July 2, 2025</h3>
+    <ul>
+      <li>Enables Aero Erosion for Ciaccona.</li>
+      <li>Fixes Bell text by adding cooldown and duration.</li>
+    </ul>
+    <h3>June 30, 2025</h3>
+    <ul>
+      <li>
+        Fixes echo damage for Reminiscence: Fleurdelys, it now properly does
+        Aero damage.
+      </li>
+    </ul>
+    <h3>June 28, 2025</h3>
+    <ul>
+      <li>Adds Lupa signature, Wildfire Mark.</li>
+    </ul>
+    <h3>June 26, 2025</h3>
+    <ul>
+      <li>
+        Changes the echo set override, when you disable it after using it to
+        customize echoes, it will re-evaluate your sets based on what's
+        equipped.
+      </li>
+    </ul>
+    <h3>June 22, 2025</h3>
+    <ul>
+      <li>
+        Adds Aero Erosion data (stacks 1-6) for level 1, 20, and 40 characters.
+      </li>
+    </ul>
+    <h3>June 21, 2025</h3>
+    <ul>
+      <li>
+        Adds Aero Erosion damages for stacks 7-9 for level 80 characters. Also
+        adds Aero Erosion data (stacks 1-6) for level 50, 60, and 70 characters.
+      </li>
+    </ul>
+    <h3>June 19, 2025</h3>
+    <ul>
+      <li>
+        Adds Aero Erosion damages, specifically for character levels 80, and 90.
+        The rest are coming soon!
+      </li>
+    </ul>
     <h3>June 16, 2025</h3>
     <ul>
-      <li>Fixes tooltip breakdown of Cartethyia's damages for S6, it wasn't applying the special multiplier, but it's resolved now.</li>
+      <li>
+        Fixes tooltip breakdown of Cartethyia's damages for S6, it wasn't
+        applying the special multiplier, but it's resolved now.
+      </li>
     </ul>
     <h3>June 15, 2025</h3>
     <ul>

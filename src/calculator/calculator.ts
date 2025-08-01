@@ -186,9 +186,26 @@ export function calcDamage(
     // But Zani has multi-hit, and it seems it applies to the last hit only
     // However, this does not apply to HeavySlashNightfallDMG, which is far more complicated
     if (talentModifierAdd) {
-      if (skillKey !== "HeavySlashNightfallDMG") {
+      if (
+        skillKey !== "HeavySlashNightfallDMG" &&
+        skillKey !== "ScarletCodaDMG"
+      ) {
         if (index === talentsLen - 1) {
           t += talentModifierAdd;
+        }
+      } else if (skillKey === "ScarletCodaDMG") {
+        /**
+         * Scarlet coda does 11 hits. The talentModifierAdd needs to be split according to these rules:
+         * 1st and 2nd hit get 5% each of talentModifierAdd
+         * The next 8 hits get 1.875% each of talentModifierAdd
+         * The last hit gets 75% of talentModifierAdd
+         */
+        if (index === 0 || index === 1) {
+          t += talentModifierAdd * 0.05; // 5% for first two hits
+        } else if (index >= 2 && index <= 9) {
+          t += talentModifierAdd * 0.01875; // 1.875% for next 8 hits
+        } else if (index === 10) {
+          t += talentModifierAdd * 0.75; // 75% for the last hit
         }
       } else {
         /**
@@ -198,7 +215,7 @@ export function calcDamage(
          * The additive multiplier has very specific rules. Example: If you have 40 stacks, then it's parsed into:
          * 5+5+15+15. So, assuming talent level 10:
          * Full talent string: 51.7%*2 + 15.91%*2 + 79.53% + 7.96%*2 + 27.84% + 139.17%
-         * 51.7 = gets 5 stacks applied
+         * 51.7 = gets 5 stacks appliedzzs
          * 51.7 = gets 5 stacks applied (this hits twice)
          * 79.53 = gets 10 stacks
          * 139.17 = gets 20 stacks
@@ -639,6 +656,88 @@ export function getSpectroFrazzleModifierByLevelByStacks(
   return modifier / 100;
 }
 
+export function getAeroErosionModifierByLevelByStacks(
+  charLevel: string,
+  stacks: number,
+): number | null {
+  // remove any + since ascension doesn't affect the data
+  const characterLevel = charLevel.replace("+", "");
+  const levelScalingFactors: Record<string, Record<number, number>> = {
+    "1": {
+      6: 0.0103,
+      5: 0.00987,
+      4: 0.0093,
+      3: 0.00823,
+      2: 0.00625,
+      1: 0.00509,
+    },
+    "20": {
+      6: 0.0225,
+      5: 0.0218,
+      4: 0.02022,
+      3: 0.0182,
+      2: 0.0135,
+      1: 0.0109,
+    },
+    "40": {
+      6: 0.07971,
+      5: 0.07653,
+      4: 0.07175,
+      3: 0.0635,
+      2: 0.0477,
+      1: 0.0382,
+    },
+    "50": {
+      6: 0.21475,
+      5: 0.2061,
+      4: 0.19318,
+      3: 0.1718,
+      2: 0.1288,
+      1: 0.10355,
+    },
+    "60": {
+      6: 0.3562,
+      5: 0.3422,
+      4: 0.3207,
+      3: 0.2855,
+      2: 0.214,
+      1: 0.171,
+    },
+    "70": {
+      6: 0.9422,
+      5: 0.90454,
+      4: 0.8479,
+      3: 0.7537,
+      2: 0.5651,
+      1: 0.4531,
+    },
+    "80": {
+      9: 2.005,
+      8: 1.97375,
+      7: 1.93345,
+      6: 1.8799,
+      5: 1.8045,
+      4: 1.691875,
+      3: 1.5038,
+      2: 1.1279,
+      1: 0.903,
+    },
+    "90": {
+      6: 3.4444,
+      5: 3.30675,
+      4: 3.1,
+      3: 2.7556,
+      2: 2.06695,
+      1: 1.6535,
+    },
+  };
+  const modifier = levelScalingFactors?.[characterLevel]?.[stacks] ?? null;
+  if (!modifier) {
+    return null;
+  }
+  return modifier;
+}
+
 export function getSpectroFrazzleDamage(
   motionValue: number,
   stacks: number,
@@ -657,6 +756,30 @@ export function getSpectroFrazzleDamage(
   //   charLevel,
   //   stacks,
   // );
+  return (
+    baseModifier *
+    resistModifier *
+    defModifier *
+    stacks *
+    motionValue *
+    (1 + DMGDeepen)
+  );
+}
+
+export function getAeroErosionDamage(
+  motionValue: number,
+  stacks: number,
+  charLevel: string,
+  enemyLevel: number,
+  enemyResist: number,
+  resistenceReduction: number,
+  defIgnore: number = 0,
+  DMGDeepen: number = 0,
+): number {
+  const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
+  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
+  // 1000*res*def*stack number*MV%
+  const baseModifier = 1000;
   return (
     baseModifier *
     resistModifier *

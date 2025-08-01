@@ -1,0 +1,212 @@
+export const buffs = [
+  {
+    key: `Aftersound`,
+    name: `Aftersound`,
+    details: `Each stack of <span class="ingame-Highlight">Aftersound</span> additionally increases the DMG Multiplier of <span class="Highlight">Scarlet Coda</span>.`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "Talent",
+        modifierTalentKey: "ScarletCodaDMG",
+        modifierValue: {
+          "1": 0.4153,
+          "2": 0.449,
+          "3": 0.4836,
+          "4": 0.5313,
+          "5": 0.565,
+          "6": 0.6038,
+          "7": 0.6588,
+          "8": 0.7132,
+          "9": 0.7675,
+          "10": 0.8255,
+        },
+        modifierValueTalentRef: "basic",
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 24,
+    alwaysEnabled: false,
+  },
+  {
+    key: `Maestro`,
+    name: `Maestro`,
+    details: `Gain 120% ATK increase.`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifySpecificTalents: [
+          "BasicAttackHecateStage1DMG",
+          "BasicAttackHecateStage2DMG",
+          "EnhancedAttackHecateStringsDMG",
+          "EnhancedAttackHecateWindsDMG",
+          "EnhancedAttackHecateCadenzaDMG",
+        ],
+        modifierValue: 1.2,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillAccidental`,
+    name: `Inherent Skill: Accidental`,
+    details: `<div class="skilldescription">Casting <span class="ingame-Highlight">Echo Skill</span> grants increased resistance to interruption and reduces damage taken by 30% for 15s.<br>After casting <span class="ingame-Highlight">Suite of Quietus</span>, <span class="ingame-Highlight">Suite of Immortality</span>, and <span class="ingame-Highlight">Echo Skill</span>, the next <span class="ingame-Highlight">Volatile Note</span> becomes <span class="ingame-Highlight">Volatile Note - Cadenza</span>.</div>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillOctet`,
+    name: `Inherent Skill: Octet`,
+    details: `<div class="skilldescription">Obtain 10 stacks of <span class="ingame-Highlight">Aftersound</span> upon entering battle. This effect cannot be triggered again within 4s after exiting the combat state. For every 1 stacks of <span class="ingame-Highlight">Aftersound</span>, Crit. DMG is increased by 2.5%.</div>`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifierValue: 0.025,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 24,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillOctetAdditionalStacks`,
+    name: `Inherent Skill: Octet (Additional Stacks)`,
+    details: `<div class="skilldescription">When <span class="ingame-Highlight">Aftersound</span> reaches the max, each new stack of <span class="ingame-Highlight">Aftersound</span> increases Phrolova's Crit. DMG by 1%, up to 100%. The increased Crit. DMG is removed when <span class="ingame-Highlight">Aftersound</span> stacks are cleared.</div>`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifierValue: 0.01,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 100,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritRate1",
+    name: "Stat Bonus: Crit. Rate+",
+    details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.012,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritRate2",
+    name: "Stat Bonus: Crit. Rate+",
+    details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.012,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritRate3",
+    name: "Stat Bonus: Crit. Rate+",
+    details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.028,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritRate4",
+    name: "Stat Bonus: Crit. Rate+",
+    details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.028,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK1",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 1.8%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.018,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK2",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 1.8%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.018,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK3",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 4.2%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.042,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK4",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 4.2%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.042,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+];

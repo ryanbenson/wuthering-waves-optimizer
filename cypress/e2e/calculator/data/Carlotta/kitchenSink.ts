@@ -73,11 +73,11 @@ export const carlottaKitchenSinkDamages: AttackTests = [
   },
   {
     selector: ".attack-dmg",
-    values: ["Attack DMG", "23264", "73293", "76771"],
+    values: ["Attack DMG", "23477", "73964", "77473"],
   },
   {
     selector: ".upgraded-attack-dmg",
-    values: ["Upgraded Attack DMG", "23264", "73293", "76771"],
+    values: ["Upgraded Attack DMG", "23477", "73964", "77473"],
   },
   {
     selector: `[data-test-damages-list-rotation="Test001"] .basic-attack-stage-1-dmg`,

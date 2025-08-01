@@ -18,7 +18,7 @@
           <div
             v-if="false"
             class="alert alert-success mb-6 text-white p-2 px-4">
-            Cartethyia, Defier's Thorn, Lupa, and 2.4 echoes are now available!
+            2.5 content is now available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
@@ -39,6 +39,7 @@
               :buffs="chosenChar?.value?.buffs"
               :talent-data="characters?.[character]?.talents"
               class="character__self-buffs"
+              ref="characterBuffsRef"
               @updated-character-buffs="
                 handleUpdatedCharacterBuffs
               "></CalculatorCharacterBuffs>
@@ -103,9 +104,8 @@
           :key="character"
           :character="character"
           @updated-enemy-data="handleUpdatedEnemy"
-          :is-spectro-frazzle-enabled="
-            isSpectroFrazzleEnabled
-          "></CalculatorEnemy>
+          :is-spectro-frazzle-enabled="isSpectroFrazzleEnabled"
+          :is-aero-erosion-enabled="isAeroErosionEnabled"></CalculatorEnemy>
       </div>
       <div class="screen--results" v-show="curScreen === 'results'">
         <CalculatorStats
@@ -144,6 +144,7 @@
           :chosen-char="chosenChar"
           :chosen-echo-name="mainEcho"
           :is-missing-spectro-data="isMissingSpectroData"
+          :is-missing-aero-erosion-data="isMissingAeroErosionData"
           :char-buffs-data="charBuffsData"
           :char-resonance-chains-data="
             charResonanceChainsData
@@ -187,6 +188,7 @@
         :chosen-char="chosenChar"
         :chosen-echo-name="mainEcho"
         :is-missing-spectro-data="isMissingSpectroData"
+        :is-missing-aero-erosion-data="isMissingAeroErosionData"
         :char-buffs-data="charBuffsData"
         :char-resonance-chains-data="
           charResonanceChainsData
@@ -197,7 +199,7 @@
 
 <script lang="ts">
 // @ts-nocheck
-import { defineComponent, reactive, ref, watch } from "vue";
+import { defineComponent, reactive, ref, watch, nextTick } from "vue";
 import { storeToRefs } from "pinia";
 import {
   calcDamage,
@@ -205,6 +207,8 @@ import {
   calcShield,
   getSpectroFrazzleDamage,
   getSpectroFrazzleModifierByLevelByStacks,
+  getAeroErosionDamage,
+  getAeroErosionModifierByLevelByStacks,
   calcMidnightVeilDMG,
 } from "../calculator/calculator";
 import {
@@ -292,6 +296,7 @@ export default defineComponent({
     const HeavyAttackDMGBonus = ref(0);
     const ResonanceSkillDMGBonus = ref(0);
     const ResonanceLiberationDMGBonus = ref(0);
+    const EchoDMGBonus = ref(0);
     const IntroSkillDMGBonus = ref(0);
     const OutroSkillDMGBonus = ref(0);
     const Glacio = ref(0);
@@ -311,6 +316,11 @@ export default defineComponent({
     const isSpectroFrazzleEnabled = ref(false);
     const spectroFrazzleStacks = ref(0);
     const isMissingSpectroData = ref(false);
+    const isAeroErosionEnabled = ref(false);
+    const aeroErosionStacks = ref(0);
+    const isMissingAeroErosionData = ref(false);
+    // component refs
+    const characterBuffsRef = ref(null);
 
     charactersList.value = getCharactersAvailable();
 
@@ -333,6 +343,8 @@ export default defineComponent({
       // update any elemental effects
       isSpectroFrazzleEnabled.value =
         chosenChar?.value?.basic?.spectroFrazzle ?? false;
+      isAeroErosionEnabled.value =
+        chosenChar?.value?.basic?.aeroErosion ?? false;
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
@@ -396,6 +408,9 @@ export default defineComponent({
           source?.ResonanceLiberationDMGBonus
             ? source.ResonanceLiberationDMGBonus * 100
             : 0;
+        target.echoDMGBonus += source?.EchoDMGBonus
+          ? source.EchoDMGBonus * 100
+          : 0;
         target.glacio += source?.Glacio ? source.Glacio * 100 : 0;
         target.fusion += source?.Fusion ? source.Fusion * 100 : 0;
         target.electro += source?.Electro ? source.Electro * 100 : 0;
@@ -441,6 +456,7 @@ export default defineComponent({
           source?.ResonanceLiberationDMGBonus
             ? source.ResonanceLiberationDMGBonus
             : 0;
+        target.echoDMGBonus += source?.EchoDMGBonus ? source.EchoDMGBonus : 0;
         target.outroSkillDMGBonus += source?.OutroSkillDMGBonus
           ? source.OutroSkillDMGBonus
           : 0;
@@ -487,7 +503,7 @@ export default defineComponent({
       injectStats = null,
       ignoreBuffs = {}, // e.g. {ignoreTeamBuffs: true}
     ) => {
-      const { ignoreTeamBuffs } = ignoreBuffs;
+      const { ignoreTeamBuffs, ignoreWeaponBuffs } = ignoreBuffs;
       let stats = {
         attackPercent: 0,
         hpPercent: 0,
@@ -506,6 +522,7 @@ export default defineComponent({
         introSkillDMGBonus: 0,
         outroSkillDMGBonus: 0,
         resonanceLiberationDMGBonus: 0,
+        echoDMGBonus: 0,
         glacio: 0,
         fusion: 0,
         electro: 0,
@@ -577,23 +594,25 @@ export default defineComponent({
           Object.entries(weaponPassiveData).filter(([_, v]) => v != null),
         );
 
-        addBuffs(weaponPassiveData, stats);
+        if (!ignoreWeaponBuffs) {
+          addBuffs(weaponPassiveData, stats);
 
-        if (weaponPassiveData?.AllElementAttributeBonus) {
-          const allElementAttributeBonus =
-            weaponPassiveData.AllElementAttributeBonus * 100;
-          stats.glacio += allElementAttributeBonus;
-          stats.fusion += allElementAttributeBonus;
-          stats.electro += allElementAttributeBonus;
-          stats.aero += allElementAttributeBonus;
-          stats.spectro += allElementAttributeBonus;
-          stats.havoc += allElementAttributeBonus;
-        }
+          if (weaponPassiveData?.AllElementAttributeBonus) {
+            const allElementAttributeBonus =
+              weaponPassiveData.AllElementAttributeBonus * 100;
+            stats.glacio += allElementAttributeBonus;
+            stats.fusion += allElementAttributeBonus;
+            stats.electro += allElementAttributeBonus;
+            stats.aero += allElementAttributeBonus;
+            stats.spectro += allElementAttributeBonus;
+            stats.havoc += allElementAttributeBonus;
+          }
 
-        if (weaponPassiveData?.AllResonanceDMG) {
-          const allResonanceDMG = weaponPassiveData.AllResonanceDMG * 100;
-          stats.resonanceSkillDMGBonus += allResonanceDMG;
-          stats.resonanceLiberationDMGBonus += allResonanceDMG;
+          if (weaponPassiveData?.AllResonanceDMG) {
+            const allResonanceDMG = weaponPassiveData.AllResonanceDMG * 100;
+            stats.resonanceSkillDMGBonus += allResonanceDMG;
+            stats.resonanceLiberationDMGBonus += allResonanceDMG;
+          }
         }
 
         switch (weaponModifer) {
@@ -792,6 +811,7 @@ export default defineComponent({
       IntroSkillDMGBonus.value = stats.introSkillDMGBonus;
       OutroSkillDMGBonus.value = stats.outroSkillDMGBonus;
       ResonanceLiberationDMGBonus.value = stats.resonanceLiberationDMGBonus;
+      EchoDMGBonus.value = stats.echoDMGBonus;
       Glacio.value = stats.glacio;
       Fusion.value = stats.fusion;
       Electro.value = stats.electro;
@@ -857,6 +877,9 @@ export default defineComponent({
             providedStats?.resonanceLiberationDMGBonus ??
             ResonanceLiberationDMGBonus.value;
           break;
+        case "Echo":
+          val = providedStats?.echoDmgBonus ?? EchoDMGBonus.value;
+          break;
         // do not divide this by 100
         case "Healing":
           return providedStats?.healingBonus ?? healingBonus.value;
@@ -895,11 +918,12 @@ export default defineComponent({
         hasDynamicTalent = false,
         count = 1,
       ) => {
-        const { excludeTeamBuffs } = attack;
+        const { excludeTeamBuffs, excludeWeaponBuffs } = attack;
         let statsWithoutTeamBuffs = null;
-        if (excludeTeamBuffs) {
+        if (excludeTeamBuffs || excludeWeaponBuffs) {
           statsWithoutTeamBuffs = calcCharStats("All", null, {
-            ignoreTeamBuffs: true,
+            ignoreTeamBuffs: excludeTeamBuffs,
+            ignoreWeaponBuffs: excludeWeaponBuffs,
           });
         }
         let attackType = attack.type;
@@ -1064,18 +1088,25 @@ export default defineComponent({
         // end max buff handlers
         const specificSkillDmgFromCharBuffs =
           selfBuffs?.specificTalentBuffs?.[attack.key] ?? 0;
+        const specificSkillDmgFromCharBuffsWithElement =
+          selfBuffs?.specificTalentBuffs?.[`${attack.key}:${attackElement}`] ??
+          0;
         const specificSkillDmgFromEchoes =
           echoStats.value?.specificTalentBuffs?.[attack.key] ?? 0;
         const genericSkillDmgBonusResChain =
           charResonanceChainsData.value?.DMGBonus ?? 0;
         const genericSkillDmgBonusSelfBuff = selfBuffs?.DMGBonus ?? 0;
+        let genericSkillDmgBonusWeaponBuff =
+          weaponData?.value?.weaponPassiveStats?.DMGBonus ?? 0;
+        if (excludeWeaponBuffs) {
+          genericSkillDmgBonusWeaponBuff = 0;
+        }
         const genericSkillDmgBonusEchoBuff = echoStats.value?.DMGBonus ?? 0;
         let genericSkillDmgBonusTeamEchoBuff =
           teamBuffsData.value?.DMGBonus ?? 0;
         if (excludeTeamBuffs) {
           genericSkillDmgBonusTeamEchoBuff = 0;
         }
-
         const extraDefIgnoreResonanceChain =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:DEFIgnore`
@@ -1122,8 +1153,10 @@ export default defineComponent({
         let specificSkillDmg =
           specificSkillDmgFromResonanceChains +
           specificSkillDmgFromCharBuffs +
+          specificSkillDmgFromCharBuffsWithElement +
           genericSkillDmgBonusResChain +
           genericSkillDmgBonusSelfBuff +
+          genericSkillDmgBonusWeaponBuff +
           genericSkillDmgBonusTeamEchoBuff +
           specificSkillDmgFromEchoes +
           specificSkillDmgFromResonanceChainsBasedOnMaxHpVal +
@@ -1138,10 +1171,17 @@ export default defineComponent({
           teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
         let selfBuffResistShredForCharElement =
           selfBuffs?.[`ResistShred:${attackElement}`] ?? 0;
+        let selfBuffResistShredForCharElementSpecificAttack =
+          selfBuffs?.specificTalentBuffs?.[
+            `${attack.key}:ResistShred:${attackElement}`
+          ] ?? 0;
         let weaponBuffResistShredForCharElement =
           weaponData.value?.weaponPassiveStats?.[
             `ResistShred:${attackElement}`
           ] ?? 0;
+        if (excludeWeaponBuffs) {
+          weaponBuffResistShredForCharElement = 0;
+        }
         if (excludeTeamBuffs) {
           teamBuffResistShredForCharElement = 0;
         }
@@ -1156,6 +1196,7 @@ export default defineComponent({
           teamBuffResistShredForCharElement +
           resonanceChainResistShredForCharElement +
           selfBuffResistShredForCharElement +
+          selfBuffResistShredForCharElementSpecificAttack +
           weaponBuffResistShredForCharElement +
           actionBuffResistReduction +
           customResistReduction;
@@ -1195,6 +1236,8 @@ export default defineComponent({
         const customDamageDeepen = customBuffs.value?.DamageAmplify ?? 0;
         let resonanceChainDmgDeepenForAttackType =
           charResonanceChainsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
+        let resonanceChainDmgDeepenForAttackSubType =
+          charResonanceChainsData.value?.[`DMGDeepen:${attack.subType}`] ?? 0;
         let weaponBuffDmgDeepenElement =
           weaponData.value?.weaponPassiveStats?.[
             `DMGDeepen:${attackElement}`
@@ -1203,6 +1246,14 @@ export default defineComponent({
           weaponData.value?.weaponPassiveStats?.[
             `DMGDeepen:${attack.subType}`
           ] ?? 0;
+        let weaponBuffDmgDeepenType =
+          weaponData.value?.weaponPassiveStats?.[`DMGDeepen:${attackType}`] ??
+          0;
+        if (excludeWeaponBuffs) {
+          weaponBuffDmgDeepenElement = 0;
+          weaponBuffDmgDeepenSubType = 0;
+          weaponBuffDmgDeepenType = 0;
+        }
         const totalDmgDeepen =
           baseTotalDeepenEffect +
           teamBuffDmgDeepenForCharElement +
@@ -1211,10 +1262,12 @@ export default defineComponent({
           teamBuffDmgDeepenForSubType +
           selfBuffSpecificAttackGenericDmgDeepen +
           resonanceChainDmgDeepenForAttackType +
+          resonanceChainDmgDeepenForAttackSubType +
           weaponBuffDmgDeepenElement +
           weaponBuffDmgDeepenSubType +
           customDamageDeepen +
           selfBuffDmgDeepenForSubType +
+          weaponBuffDmgDeepenType +
           selfBuffDmgDeepenForElement;
         let totalTalentModifierMultiply =
           talentModifierMultiply +
@@ -1263,7 +1316,10 @@ export default defineComponent({
               ATK: modifyBaseAtk,
               ATK_FLAT: modifyBaseAtkFlat,
             },
-            { ignoreTeamBuffs: excludeTeamBuffs },
+            {
+              ignoreTeamBuffs: excludeTeamBuffs,
+              ignoreWeaponBuffs: excludeWeaponBuffs,
+            },
           );
         }
         if (modifyBaseHp || modifyBaseHpFlat) {
@@ -1273,7 +1329,10 @@ export default defineComponent({
               HP: modifyBaseHp,
               HP_FLAT: modifyBaseHpFlat,
             },
-            { ignoreTeamBuffs: excludeTeamBuffs },
+            {
+              ignoreTeamBuffs: excludeTeamBuffs,
+              ignoreWeaponBuffs: excludeWeaponBuffs,
+            },
           );
         }
         if (modifyBaseDef || modifyBaseDefFlat) {
@@ -1283,7 +1342,10 @@ export default defineComponent({
               DEF: modifyBaseDef,
               DEF_FLAT: modifyBaseDefFlat,
             },
-            { ignoreTeamBuffs: excludeTeamBuffs },
+            {
+              ignoreTeamBuffs: excludeTeamBuffs,
+              ignoreWeaponBuffs: excludeWeaponBuffs,
+            },
           );
         }
 
@@ -1302,16 +1364,25 @@ export default defineComponent({
           totalTalentModifierMultiply = talentModifierMultiplySet;
         }
 
-        if (attackType === "ElementalEffect") {
+        if (
+          attackType === "ElementalEffect" &&
+          attack?.subType === "SpectroFrazzle"
+        ) {
           let totalSpectroFrazzleDeepen = 0;
           // get any SpectroFrazzle dmg deepen/amplify
           // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
-          const spectroFrazzleDeepenWeaponBuffs =
+          let spectroFrazzleDeepenWeaponBuffs =
             weaponData.value?.weaponPassiveStats?.[
               "DMGDeepen:SpectroFrazzle"
             ] ?? 0;
-          const spectroFrazzleDeepenTeamBuffs =
+          if (excludeWeaponBuffs) {
+            spectroFrazzleDeepenWeaponBuffs = 0;
+          }
+          let spectroFrazzleDeepenTeamBuffs =
             teamBuffsData.value?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+          if (excludeTeamBuffs) {
+            spectroFrazzleDeepenTeamBuffs = 0;
+          }
           const spectroFrazzleDeepenSelfBuffs =
             selfBuffs?.["DMGDeepen:SpectroFrazzle"] ?? 0;
           const spectroFrazzleDeepenResonanceChains =
@@ -1334,6 +1405,51 @@ export default defineComponent({
             );
             return elementalEffectDmg;
           }
+        }
+
+        if (
+          attackType === "ElementalEffect" &&
+          attack?.subType === "AeroErosion"
+        ) {
+          let totalAeroErosionDeepen = 0;
+          // get any SpectroFrazzle dmg deepen/amplify
+          // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
+          let aeroErosionDeepenWeaponBuffs =
+            weaponData.value?.weaponPassiveStats?.["DMGDeepen:AeroErosion"] ??
+            0;
+          if (excludeWeaponBuffs) {
+            aeroErosionDeepenWeaponBuffs = 0;
+          }
+          let aeroErosionDeepenTeamBuffs =
+            teamBuffsData.value?.["DMGDeepen:AeroErosion"] ?? 0;
+          if (excludeTeamBuffs) {
+            aeroErosionDeepenTeamBuffs = 0;
+          }
+          const aeroErosionDeepenSelfBuffs =
+            selfBuffs?.["DMGDeepen:AeroErosion"] ?? 0;
+          const specificAeroErosionDeepenSelfBuffs =
+            selfBuffs?.specificTalentBuffs?.[
+              "AeroErosion:DMGDeepen:AeroErosion"
+            ] ?? 0;
+          const aeroErosionDeepenResonanceChains =
+            charResonanceChainsData.value?.["DMGDeepen:AeroErosion"] ?? 0;
+          totalAeroErosionDeepen =
+            aeroErosionDeepenWeaponBuffs +
+            aeroErosionDeepenTeamBuffs +
+            aeroErosionDeepenSelfBuffs +
+            aeroErosionDeepenResonanceChains +
+            specificAeroErosionDeepenSelfBuffs;
+          const elementalEffectDmg = getAeroErosionDamage(
+            attack.talent,
+            attack?.stacks ?? 0,
+            characterLevel.value,
+            enemyLevel.value,
+            enemyResist.value,
+            totalResistReduction,
+            0, // TODO: AeroErosion does not use DefIgnore?
+            totalAeroErosionDeepen,
+          );
+          return elementalEffectDmg;
         }
 
         if (attackType === "Healing") {
@@ -1411,6 +1527,8 @@ export default defineComponent({
             case "Liberation":
               attackTypeAttackBuff =
                 attack.buffs?.ResonanceLiberationDMGBonus ?? 0;
+            case "Echo":
+              attackTypeAttackBuff = attack.buffs?.EchoDMGBonus ?? 0;
               break;
           }
 
@@ -1447,14 +1565,12 @@ export default defineComponent({
             additiveMultiplierPercent = modifierPercent;
           }
         }
-        console.log(charResonanceChainsData.value);
         let totalSpecialMultiplier = 0;
         let resonanceChainAttackSpecialMultiplier =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:specialMultiplier`
           ] ?? 0;
         totalSpecialMultiplier += resonanceChainAttackSpecialMultiplier;
-        console.log(`totalSpecialMultplier: ${totalSpecialMultiplier}`);
         return calcDamage(
           characterLevel.value,
           enemyLevel.value,
@@ -1668,6 +1784,7 @@ export default defineComponent({
         ),
       };
 
+      const elementalReactionsAttacks = [];
       // add any elemental effects
       if (isSpectroFrazzleEnabled.value && spectroFrazzleStacks.value > 0) {
         isMissingSpectroData.value = false;
@@ -1689,14 +1806,39 @@ export default defineComponent({
             subType: "SpectroFrazzle",
             stacks: spectroFrazzleStacks.value,
           };
-          allDamagesData.elementalReactions = processAttacks(
-            [{ ...spectroFrazzleAttack }],
-            talentData.intro,
-            true, // has no talent level
-          );
+          elementalReactionsAttacks.push(spectroFrazzleAttack);
         }
       }
-
+      if (isAeroErosionEnabled.value && aeroErosionStacks.value > 0) {
+        isMissingAeroErosionData.value = false;
+        // get the MV based on stacks and character level
+        const aeroErosionMv = getAeroErosionModifierByLevelByStacks(
+          characterLevel.value,
+          aeroErosionStacks.value,
+        );
+        if (!aeroErosionMv) {
+          isMissingAeroErosionData.value = true;
+        }
+        if (aeroErosionMv) {
+          const aeroErosionAttack = {
+            key: "ElementalEffectAeroErosion",
+            label: "Aero Erosion",
+            talent: aeroErosionMv,
+            type: "ElementalEffect",
+            element: "Aero",
+            subType: "AeroErosion",
+            stacks: aeroErosionStacks.value,
+          };
+          elementalReactionsAttacks.push(aeroErosionAttack);
+        }
+      }
+      if (elementalReactionsAttacks.length > 0) {
+        allDamagesData.elementalReactions = processAttacks(
+          elementalReactionsAttacks,
+          talentData.intro,
+          true, // has no talent level
+        );
+      }
       let chosenEcho;
       if (mainEcho.value) {
         chosenEcho = getEchoData(mainEcho.value);
@@ -1799,6 +1941,10 @@ export default defineComponent({
     const handleUpdatedCharacterResonanceChains = (
       givenResonanceChainsData,
     ) => {
+      if (character.value === "Lupa") {
+        characterBuffsRef.value.retriggerBuffCalculations();
+      }
+
       charResonanceChainsData.value = givenResonanceChainsData;
       calcCharStats();
     };
@@ -1827,6 +1973,7 @@ export default defineComponent({
       enemyLevel.value = data.enemyLevel;
       enemyResist.value = data.enemyResist;
       spectroFrazzleStacks.value = data.spectroFrazzleStacks;
+      aeroErosionStacks.value = data.aeroErosionStacks;
       calcAllDamages();
     };
 
@@ -1882,6 +2029,7 @@ export default defineComponent({
               count: actionCount,
               excludeSelfBuffs: action.excludeSelfBuffs ?? false,
               excludeTeamBuffs: action.excludeTeamBuffs ?? false,
+              excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
             };
             // if there are buffs, turn it into a hashmap
             if (action?.buffs?.length) {
@@ -1988,6 +2136,10 @@ export default defineComponent({
       // elemental effects
       isSpectroFrazzleEnabled,
       isMissingSpectroData,
+      isAeroErosionEnabled,
+      isMissingAeroErosionData,
+      // component refs
+      characterBuffsRef,
     };
   },
 });

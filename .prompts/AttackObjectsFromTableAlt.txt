@@ -1,0 +1,55 @@
+Can you help take a data table that has character attack data in it and create an array of objects for me? Please generate every entry, even if there are several.
+
+This is the format that I need it in:
+
+[
+
+    {
+      key: "Stage1DMG",
+      label: "Stage 1 DMG",
+      talents: {
+        "1": "14.85%",
+        "2": "16.07%",
+        "3": "17.29%",
+        "4": "19.00%",
+        "5": "20.21%",
+        "6": "21.61%",
+        "7": "23.56%",
+        "8": "25.51%",
+        "9": "27.46%",
+        "10": "29.53%",
+      },
+      type: "Basic",
+    },
+]
+
+Essentially: 
+key - you'll be given a human readable name, that needs to be the key with any spaces and special characters removed, so it's alpha numeric
+name - you can copy and paste the human readable name here
+type - you can hard code as "Basic" for now, I can fill this in later
+talents - another object with keys 1 through 10. The data table will include values for each talent level in it. They should be copied and pasted into the values as they exist in the data table with no changes.
+
+You can ignore all values in the example I gave, but the example is the data format I need.
+
+Here's the data table. It will include the same attacks but for different levels.
+
+Level 1:
+
+Level 2:
+
+Level 3:
+
+Level 4:
+
+Level 5:
+
+Level 6:
+
+Level 7:
+
+Level 8:
+
+Level 9:
+
+
+Level 10:

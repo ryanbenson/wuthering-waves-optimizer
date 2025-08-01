@@ -318,6 +318,7 @@ export const subStatLabelMap: SubStatLabelMap = {
   Aero: "Aero DMG Bonus",
   Spectro: "Spectro DMG Bonus",
   Havoc: "Havoc DMG Bonus",
+  EchoDMGBonus: "Echo DMG Bonus",
   HealingBonus: "Healing Bonus",
 };
 export const verboseStatLabelMap: Record<string, string> = {
@@ -341,6 +342,7 @@ export const verboseStatLabelMap: Record<string, string> = {
   "Aero DMG Bonus": "Aero",
   "Spectro DMG Bonus": "Spectro",
   "Havoc DMG Bonus": "Havoc",
+  "Echo DMG Bonus": "EchoDMGBonus",
   "Healing Bonus": "HealingBonus",
 };
 
@@ -425,6 +427,8 @@ export const echoSetImageMap: Record<string, string> = {
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/WindwardPilgrimage.webp",
   FlamingClawprint:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FlamingClawprint.webp",
+  DreamoftheLost:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/DreamoftheLost.webp",
 };
 
 export function getEchoSetIconByType(type: string): string {
@@ -449,6 +453,7 @@ export const echoSetLabelMap: Record<string, string> = {
   GustsofWelkin: "Gusts of Welkin",
   WindwardPilgrimage: "Windward Pilgrimage",
   FlamingClawprint: "Flaming Clawprint",
+  DreamoftheLost: "Dream of the Lost",
 };
 
 export function getEchoSetLabelByType(type: string): string {

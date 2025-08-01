@@ -123,7 +123,7 @@ export const basicAttacks = {
     },
     {
       key: "RedLightPlungingAttack",
-      label: "Red Light: Dodge Counter DMG",
+      label: "Red Light: Plunging DMG",
       talents: {
         "1": "57.00%",
         "2": "61.68%",
@@ -135,6 +135,23 @@ export const basicAttacks = {
         "8": "97.90%",
         "9": "105.38%",
         "10": "113.33%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "RedLightDodgeCounterDMG",
+      label: "Red Light: Dodge Counter DMG",
+      talents: {
+        "1": "84.15% + 16.83%*5",
+        "2": "91.06% + 18.22%*5",
+        "3": "97.96% + 19.60%*5",
+        "4": "107.62% + 21.53%*5",
+        "5": "114.52% + 22.91%*5",
+        "6": "122.45% + 24.49%*5",
+        "7": "133.49% + 26.70%*5",
+        "8": "144.53% + 28.91%*5",
+        "9": "155.57% + 31.12%*5",
+        "10": "167.30% + 33.46%*5",
       },
       type: "Basic",
     },

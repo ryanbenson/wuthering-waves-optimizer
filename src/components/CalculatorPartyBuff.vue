@@ -5,13 +5,15 @@
     :data-test-party-buff="uniqueKey">
     <div class="">
       <div class="character__buff">
-        <h2 class="text-lg" :data-test-party-buff-title="uniqueKey">{{ name }}</h2>
+        <h2 class="text-lg" :data-test-party-buff-title="uniqueKey">
+          {{ name }}
+        </h2>
         <div v-html="details"></div>
         <div class="flex gap-2 items-center">
           <div class="form-control" @click.stop>
             <label
               class="label inline-flex justify-start pl-0"
-              :class="{'cursor-pointer': !alwaysEnabled}">
+              :class="{ 'cursor-pointer': !alwaysEnabled }">
               <input
                 type="checkbox"
                 class="checkbox checkbox-sm"
@@ -282,6 +284,19 @@ export default {
       const data = {};
       if (!this.isEnabled) {
         return data;
+      }
+      // TODO: Implement the replaces and replacedBy logic
+      // SequenceNode3WolflameHowlsinHerWake replaces both InherentSkillApplauseofVictory and InherentSkillApplauseofVictoryFullFusionTeam
+      if (
+        this.uniqueKey === "InherentSkillApplauseofVictory" ||
+        this.uniqueKey === "InherentSkillApplauseofVictoryFullFusionTeam"
+      ) {
+        if (
+          this.currentCharacter?.teamBuffs?.buffs
+            ?.SequenceNode3WolflameHowlsinHerWake?.isEnabled
+        ) {
+          return data;
+        }
       }
       if (!this.hasStacks) {
         this.modifiers.forEach((modifierItem) => {

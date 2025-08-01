@@ -31,6 +31,7 @@ const broadbladesList = {
   five: [
     { key: "AgesOfHarvest", name: "Ages Of Harvest" },
     { key: "LustrousRazor", name: "Lustrous Razor" },
+    { key: "WildfireMark", name: "Wildfire Mark" },
     { key: "VerdantSummit", name: "Verdant Summit" },
   ],
   four: [
@@ -56,6 +57,7 @@ const broadbladesList = {
 const rectifiersList = {
   five: [
     { key: "CosmicRipples", name: "Cosmic Ripples" },
+    { key: "LetheanElegy", name: "Lethean Elegy" },
     { key: "LuminousHymn", name: "Luminous Hymn" },
     { key: "RimeDrapedSprouts", name: "Rime-Draped Sprouts" },
     { key: "StellarSymphony", name: "Stellar Symphony" },
