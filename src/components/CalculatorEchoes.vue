@@ -9,9 +9,19 @@
     <CalculatorEchoesPresets
       ref="echoesPresets"
       :character="character"></CalculatorEchoesPresets>
+    <CalculatorSaveEchoesPreset
+      ref="echoesSavePreset"
+      @on-save-echo-preset="handleOnSaveEchoPreset"></CalculatorSaveEchoesPreset>
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
+  <div
+    v-if="echoPresetName"
+    class="card card-bordered card-compact shadow mb-12 bg-primary">
+    <div class="card-body text-white">
+      Using {{  echoPresetName }} echo preset.
+    </div>
+  </div>
     <div class="actions mb-4 flex gap-2">
       <button class="btn btn-primary" @click="handleOpenEchoesImporter">
         Import Echoes
@@ -19,11 +29,15 @@
       <button class="btn btn-primary" @click="handleOpenEchoesPreset">
         Use Preset Echoes
       </button>
+      <button class="btn btn-primary" @click="handleOpenSaveEchoPreset">
+        Save Echo Preset
+      </button>
     </div>
     <div class="echo__list">
       <CalculatorEcho
         v-for="(n, index) in 5"
         :key="character + '-' + index"
+        :ref="'echo' + index"
         :index="index"
         :character="character"
         class="echo-selector"
@@ -132,8 +146,11 @@ import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
 import CalculatorEchoesBrowser from "./CalculatorEchoesBrowser.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import CalculatorEchoesPresets from "./CalculatorEchoesPresets.vue";
+import CalculatorSaveEchoesPreset from "./CalculatorSaveEchoesPreset.vue";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
+import { randomString } from "../utils/strings.ts";
 const MAX_ECHO_COST = 12;
 
 export default {
@@ -150,6 +167,7 @@ export default {
     CalculatorEchoesSetBonusOne,
     CalculatorEchoesSetBonusTwo,
     CalculatorEchoImporter,
+    CalculatorSaveEchoesPreset,
   },
   data() {
     return {
@@ -211,6 +229,12 @@ export default {
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
+    ...mapActions(useInventoryStore, [
+      "saveEchoPreset",
+      "patchEchoPreset",
+      "deleteEchoPreset",
+      "getEchoPresetById",
+    ]),
     updateTotalStats() {
       const stats = {};
       // process all of the echo data
@@ -448,9 +472,41 @@ export default {
     handleOpenEchoesPreset() {
       this.$refs.echoesPresets.triggerOpenModal();
     },
+    handleOpenSaveEchoPreset() {
+      if (this.echoPresetName) {
+        this.$refs.echoesSavePreset.setPresetName(this.echoPresetName);
+      }
+      this.$refs.echoesSavePreset.triggerOpenModal();
+    },
+    async handleOnSaveEchoPreset(data) {
+      let id;
+      if (this.echoPresetId) {
+        id = this.echoPresetId;
+      } else {
+        id = randomString();
+      }
+      // make sure all echoes are saved
+      await this.$refs.echo0[0].saveEchoItem();
+      await this.$refs.echo1[0].saveEchoItem();
+      await this.$refs.echo2[0].saveEchoItem();
+      await this.$refs.echo3[0].saveEchoItem();
+      await this.$refs.echo4[0].saveEchoItem();
+      const presetData = {
+        presetId: id,
+        name: data.name,
+        echo1Id: this.currentCharacter?.echoes?.[0]?.echoId ?? null,
+        echo2Id: this.currentCharacter?.echoes?.[1]?.echoId ?? null,
+        echo3Id: this.currentCharacter?.echoes?.[2]?.echoId ?? null,
+        echo4Id: this.currentCharacter?.echoes?.[3]?.echoId ?? null,
+        echo5Id: this.currentCharacter?.echoes?.[4]?.echoId ?? null,
+      };
+      await this.saveEchoPreset(presetData);
+      this.echoPresetId = id;
+    }
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
+    ...mapState(useInventoryStore, ["getEchoPresetData"]),
     /**
      * The current character data
      * @returns {Object}
@@ -472,6 +528,22 @@ export default {
           mainEcho: {
             echo: value,
           },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the the main echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    echoPresetId: {
+      get() {
+        return this.currentCharacter?.echoPresetId ?? null;
+      },
+      async set(value) {
+        const data = {
+          echoPresetId: value
         };
         await this.setCharacterData(this.character, data);
       },
@@ -609,6 +681,12 @@ export default {
       const echoData = getEchoData(this.mainEcho);
       return echoData?.name ?? null;
     },
+    echoPresetData() {
+      return this.getEchoPresetData(this.echoPresetId);
+    },
+    echoPresetName() {
+      return this.echoPresetData?.name ?? null;
+    }
   },
 };
 </script>

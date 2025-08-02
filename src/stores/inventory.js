@@ -11,6 +11,9 @@ export const useInventoryStore = defineStore("inventory", {
     getEquippedEchoData: (state) => {
       return (echoId) => state.equipped?.[echoId] ?? {};
     },
+    getEchoPresetData: (state) => {
+      return (presetId) => state.echoPresets.find((preset) => preset.presetId === presetId);
+    }
   },
   actions: {
     saveEcho(data) {
