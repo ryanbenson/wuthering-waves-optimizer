@@ -10,36 +10,50 @@
         </button>
       </form>
       <div class="py-4">
-        <p v-if="!hasDefaultEchoPresets">No default echo presets available</p>
-        <div v-else class="echoes-presets-list">
-          <h3 class="text-xl mb-4">Choose a preset to apply to your build</h3>
-          <div
-            v-for="defaultEchoPreset in defaultEchoPresets"
-            :key="defaultEchoPreset.name"
-        class="presetEchoes card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
-            <div class="card-body">
-            <h2 class="card-title">{{ defaultEchoPreset.name }}</h2>
-            <p>{{ defaultEchoPreset.description }}</p>
-            <p class="italic">Author: {{ defaultEchoPreset.author }}</p>
-            <button class="btn btn-primary" @click="applyPreset(defaultEchoPreset)">Apply preset</button>
+        <h3 class="text-xl mb-4">Choose a preset to apply to your build</h3>
+        <div role="tablist" class="tabs tabs-bordered">
+          <input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="My Presets"
+            checked="checked" />
+          <div role="tabpanel" class="tab-content mt-6">
+            <p v-if="!hasEchoPresets">No echo presets available</p>
+            <div v-else class="echoes-presets-list">
+              <EchoCustomPreset
+                v-for="echoPreset in echoPresets"
+                :key="echoPreset.name"
+                :preset-id="echoPreset.presetId"
+                :name="echoPreset.name"
+                :echo-1-id="echoPreset.echo1Id"
+                :echo-2-id="echoPreset.echo2Id"
+                :echo-3-id="echoPreset.echo3Id"
+                :echo-4-id="echoPreset.echo4Id"
+                :echo-5-id="echoPreset.echo5Id"
+                @click="applyCustomPreset(echoPreset)"
+              />
             </div>
           </div>
-        </div>
-        <p v-if="!hasEchoPresets">No custom echo presets available</p>
-        <div v-else class="echoes-presets-list">
-          <h3 class="text-xl mb-4">Choose a custom preset to apply to your build</h3>
-          <EchoCustomPreset
-            v-for="echoPreset in echoPresets"
-            :key="echoPreset.name"
-            :preset-id="echoPreset.presetId"
-            :name="echoPreset.name"
-            :echo-1-id="echoPreset.echo1Id"
-            :echo-2-id="echoPreset.echo2Id"
-            :echo-3-id="echoPreset.echo3Id"
-            :echo-4-id="echoPreset.echo4Id"
-            :echo-5-id="echoPreset.echo5Id"
-            @click="applyCustomPreset(echoPreset)"
-          />
+
+          <input
+            type="radio"
+            name="my_tabs_1"
+            role="tab"
+            class="tab"
+            aria-label="Other Presets" />
+          <div role="tabpanel" class="tab-content mt-6">
+            <p v-if="!hasDefaultEchoPresets">No default echo presets available</p>
+            <div v-else class="echoes-presets-list">
+              <div
+                v-for="defaultEchoPreset in defaultEchoPresets"
+                :key="defaultEchoPreset.name"
+            class="presetEchoes card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+                <div class="card-body">
+                <h2 class="card-title">{{ defaultEchoPreset.name }}</h2>
+                <p>{{ defaultEchoPreset.description }}</p>
+                <p class="italic">Author: {{ defaultEchoPreset.author }}</p>
+                <button class="btn btn-primary" @click="applyPreset(defaultEchoPreset)">Apply preset</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
