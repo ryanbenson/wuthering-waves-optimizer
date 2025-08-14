@@ -46,7 +46,8 @@
         @echo:set-chosen="handleEchoSetChosen"
         @main-echo:updated="handleMainEchoUpdated"
         @main-echo-rank:updated="handleMainEchoRankUpdated"
-        @open-echoes-browser="handleOpenEchoesBrowser"></CalculatorEcho>
+        @open-echoes-browser="handleOpenEchoesBrowser"
+        @on-echo-removed="handleEchoRemoved"></CalculatorEcho>
     </div>
     <div class="set-bonus-selector mt-6 mb-2">
       <div class="set-bonus-selector__header flex justify-between items-center">
@@ -478,14 +479,20 @@ export default {
       }
       this.$refs.echoesSavePreset.triggerOpenModal();
     },
+    /**
+     * Only support new echo presets when you save
+     * You can only edit a name later in the listing screen
+     */
     async handleOnSaveEchoPreset(data) {
-      let id;
-      if (this.echoPresetId) {
-        id = this.echoPresetId;
-      } else {
-        id = randomString();
-      }
+      // TODO: If we want to support edit later
+      // let id;
+      // if (this.echoPresetId) {
+      //   id = this.echoPresetId;
+      // } else {
+      //   id = randomString();
+      // }
       // make sure all echoes are saved
+      const id = randomString();
       await this.$refs.echo0[0].saveEchoItem();
       await this.$refs.echo1[0].saveEchoItem();
       await this.$refs.echo2[0].saveEchoItem();
@@ -502,6 +509,9 @@ export default {
       };
       await this.saveEchoPreset(presetData);
       this.echoPresetId = id;
+    },
+    handleEchoRemoved() {
+      this.echoPresetId = null;
     }
   },
   computed: {
