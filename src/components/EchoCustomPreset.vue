@@ -2,7 +2,7 @@
 <div class="presetEchoes card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
     <div class="card-body">
         <h2 class="card-title">{{ name }}</h2>
-        <div v-if="totalRv > 0 || totalCv > 0" class="mb-2 flex gap-2">
+        <div class="mb-2 flex gap-2">
             <span class="echo__item__cost badge text-nowrap" :class="critValueBadgeClass">
                 CV {{ formattedCritValue }}%
             </span>
@@ -198,7 +198,7 @@ export default {
       }
     },
     critValueBadgeClass() {
-      const cv = this.critValue ?? 0;
+      const cv = (this.totalCv / 5) ?? 0;
       
       // Ensure cv is within the valid range
       const percentage = Math.min(Math.max(cv, 0), 42);
