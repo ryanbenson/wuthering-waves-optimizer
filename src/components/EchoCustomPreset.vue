@@ -37,7 +37,7 @@
                 :echo-id="echo5Id"
             />
         </div>
-        <button class="btn btn-primary">Apply preset</button>
+        <button v-if="!disableAction" class="btn btn-primary">Apply preset</button>
     </div>
 </div>
 </template>
@@ -73,6 +73,10 @@ export default {
         echo5Id: {
             type: String,
         },
+        disableAction: {
+            type: Boolean,
+            default: false,
+        }
     },
     components: {
         EchoCustomPresetEcho,
