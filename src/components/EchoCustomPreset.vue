@@ -38,6 +38,7 @@
             />
         </div>
         <button v-if="!disableAction" class="btn btn-primary">Apply preset</button>
+        <slot></slot>
     </div>
 </div>
 </template>
@@ -45,7 +46,7 @@
 <script>
 import EchoCustomPresetEcho from "./EchoCustomPresetEcho.vue";
 import { getRollValue } from "../echoes/stats";
-import { mapActions } from "pinia";
+import { mapActions, mapState } from "pinia";
 import { useInventoryStore } from "../stores/inventory";
 export default {
     name: 'EchoCustomPreset',
@@ -76,7 +77,11 @@ export default {
         disableAction: {
             type: Boolean,
             default: false,
-        }
+        },
+        showEquippedChars: {
+            type: Boolean,
+            default: false,
+        },
     },
     components: {
         EchoCustomPresetEcho,

@@ -49,8 +49,33 @@
             :echo-4-id="echoPreset.echo4Id"
             :echo-5-id="echoPreset.echo5Id"
             :disable-action="true"
-            @click="editEchoPresetName(echoPreset.presetId, echoPreset.name)"
-          />
+            :show-equipped-chars="true"
+          >
+            <div
+              class="echoes__item__foot flex gap-2 justify-between items-center">
+              <div class="echoes__items__foot__equipped">
+                <div class="avatar-group -space-x-6 rtl:space-x-reverse">
+                  <div class="avatar" v-for="char in getCharsEquipped(echoPreset.presetId)">
+                    <div class="w-12 bg-accent-content">
+                      <img :src="getCharImg(char)" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="echoes__item__foot__actions flex gap-2">
+                <button
+                  @click="editEchoPresetName(echoPreset.presetId, echoPreset.name)"
+                  class="btn btn-primary btn-sm min-w-16">
+                  Edit
+                </button>
+                <button
+                  @click="handleDeleteEchoPreset(echoPreset.presetId)"
+                  class="btn btn-error btn-sm min-w-16">
+                  Delete
+                </button>
+              </div>
+            </div>
+          </EchoCustomPreset>
         </div>
         <div class="join flex justify-center py-4">
           <button @click="prevPage" class="join-item btn btn-sm">«</button>
@@ -85,7 +110,7 @@ export default {
     EchoCustomPreset,
   },
   computed: {
-    ...mapState(useInventoryStore, ["echoPresets", "getEchoPresetData"]),
+    ...mapState(useInventoryStore, ["echoPresets", "getEchoPresetData", "getEchoPresetCharacters"]),
     presetsList() {
       const copyOfList = JSON.parse(JSON.stringify(this.echoPresets));
       return copyOfList;
@@ -104,7 +129,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useInventoryStore, ["patchEchoPreset"]),
+    ...mapActions(useInventoryStore, ["patchEchoPreset", "deleteEchoPreset", "deleteEquippedPreset"]),
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
     prevPage() {
       if (this.page <= 1) {
         this.page = 1;
@@ -143,6 +169,25 @@ export default {
       this.echoPresetId = null;
       this.echoPresetName = null;
     },
+    getCharsEquipped(presetId) {
+      return this.getEchoPresetCharacters(presetId);
+    },
+    getCharImg(character) {
+      return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
+    },
+    // we'll delete the references to it in the equipped list, and the preset
+    // but we won't clear out the echo configs on the characters themselves, we'll leave those
+    async handleDeleteEchoPreset(presetId) {
+      // delete all of the character references for this preset first before we clear up the preset itself
+      const allCharacters = this.getCharsEquipped(presetId);
+      for (const character of allCharacters) {
+        await this.deleteEquippedPreset(character);
+        // also remove the presetId reference in the character data
+        const data = { echoPresetId: null };
+        await this.setCharacterData(character, data);
+      }
+      await this.deleteEchoPreset(presetId);
+    }
   },
 };
 </script>

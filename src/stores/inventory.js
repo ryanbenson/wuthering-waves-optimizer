@@ -6,6 +6,7 @@ export const useInventoryStore = defineStore("inventory", {
     echoes: [],
     equipped: {},
     echoPresets: [],
+    equippedPresets: {},
   }),
   getters: {
     getEquippedEchoData: (state) => {
@@ -13,7 +14,20 @@ export const useInventoryStore = defineStore("inventory", {
     },
     getEchoPresetData: (state) => {
       return (presetId) => state.echoPresets.find((preset) => preset.presetId === presetId);
-    }
+    },
+    getEchoPresetCharacters: (state) => {
+      return (requestedPresetId) => {
+        const charactersList = [];
+        const allCharactersPresets = Object.entries(state.equippedPresets);
+        allCharactersPresets.forEach((characterPreset) => {
+          const [character, presetId] = characterPreset;
+          if (presetId === requestedPresetId) {
+            charactersList.push(character);
+          }
+        });
+        return charactersList;
+      }
+    },
   },
   actions: {
     saveEcho(data) {
@@ -84,6 +98,12 @@ export const useInventoryStore = defineStore("inventory", {
       const existingData = this.equipped[echoId] ?? {};
       const updatedData = merge(existingData, data);
       this.equipped[echoId] = updatedData;
+    },
+    setEquippedPresetData(character, presetId) {
+      this.equippedPresets[character] = presetId;
+    },
+    deleteEquippedPreset(character) {
+      delete this.equippedPresets[character];
     },
     hardSetState(data) {
       this.echoes = data?.echoes ?? [];

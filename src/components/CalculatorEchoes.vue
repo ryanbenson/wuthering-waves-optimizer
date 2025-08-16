@@ -236,6 +236,8 @@ export default {
       "patchEchoPreset",
       "deleteEchoPreset",
       "getEchoPresetById",
+      "deleteEquippedPreset",
+      "setEquippedPresetData",
     ]),
     updateTotalStats() {
       const stats = {};
@@ -510,8 +512,10 @@ export default {
       };
       await this.saveEchoPreset(presetData);
       this.echoPresetId = id;
+      await this.setEquippedPresetData(this.character, id);
     },
-    handleEchoRemoved() {
+    async handleEchoRemoved() {
+      await this.deleteEquippedPreset(this.character);
       this.echoPresetId = null;
     },
     handleChosenEchoInventory() {

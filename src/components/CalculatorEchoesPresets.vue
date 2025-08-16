@@ -66,6 +66,7 @@ import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { getCharByName } from "../characters/characters.ts";
 import EchoCustomPreset from "./EchoCustomPreset.vue";
+import { character } from "../characters/Aalto/character.ts";
 export default {
   name: "CalculatorEchoImporter",
   components: {
@@ -88,6 +89,7 @@ export default {
       "saveEcho",
       "setEquippedData",
       "getEchoById",
+      "setEquippedPresetData",
     ]),
     triggerOpenModal() {
       const modalEl = document.getElementById("modal-echoes-presets");
@@ -107,6 +109,8 @@ export default {
       const data = JSON.parse(JSON.stringify(presetData)); // clone so we don't use the raw data
       // set the preset id
       await this.setCharacterData(this.character, { echoPresetId: presetData.presetId });
+      // set the preset equipped
+      await this.setEquippedPresetData(this.character, presetData.presetId);
       // flush current echo data
       await this.setCharacterEchoes(this.character, {});
       // need to setup the echo data to apply {0: echoData..., 1: echoData...}
