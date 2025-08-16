@@ -16,13 +16,6 @@
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
-  <div
-    v-if="echoPresetName"
-    class="card card-bordered card-compact shadow mb-12 bg-primary">
-    <div class="card-body text-white">
-      Using {{  echoPresetName }} echo preset.
-    </div>
-  </div>
     <div class="actions mb-4 flex gap-2">
       <button class="btn btn-primary" @click="handleOpenEchoesImporter">
         Import Echoes
@@ -33,6 +26,9 @@
       <button class="btn btn-primary" @click="handleOpenSaveEchoPreset">
         Save Echo Preset
       </button>
+    </div>
+    <div v-if="echoPresetName" class="badge badge-primary badge-outline mb-4">
+      {{  echoPresetName }} echo preset.
     </div>
     <div class="echo__list">
       <CalculatorEcho
