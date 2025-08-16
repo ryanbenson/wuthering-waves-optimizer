@@ -28,7 +28,7 @@
       </button>
     </div>
     <div v-if="echoPresetName" class="badge badge-primary badge-outline mb-4">
-      {{  echoPresetName }} echo preset.
+      {{  echoPresetName }} echo preset
     </div>
     <div class="echo__list">
       <CalculatorEcho
