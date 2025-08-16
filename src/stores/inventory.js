@@ -96,6 +96,9 @@ export const useInventoryStore = defineStore("inventory", {
     },
     deleteEchoEquippedMapping(echoId) {
       delete this.equipped[echoId];
+    },
+    deleteEchoEquippedMappingCharacter(echoId, character) {
+      delete this.equipped[echoId][character];
     }
   },
 });

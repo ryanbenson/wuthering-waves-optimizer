@@ -5,7 +5,8 @@
       :character="character"></CalculatorEchoImporter>
     <CalculatorEchoesBrowser
       ref="echoesBrowser"
-      :character="character"></CalculatorEchoesBrowser>
+      :character="character"
+      @chosen-echo-inventory="handleChosenEchoInventory"></CalculatorEchoesBrowser>
     <CalculatorEchoesPresets
       ref="echoesPresets"
       :character="character"></CalculatorEchoesPresets>
@@ -512,6 +513,9 @@ export default {
     },
     handleEchoRemoved() {
       this.echoPresetId = null;
+    },
+    handleChosenEchoInventory() {
+      this.handleEchoRemoved();
     }
   },
   computed: {

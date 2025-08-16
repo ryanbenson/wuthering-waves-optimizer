@@ -974,7 +974,7 @@ export default {
       "deleteEcho",
       "getEchoById",
       "setEquippedData",
-      "deleteEchoEquippedMapping",
+      "deleteEchoEquippedMappingCharacter",
     ]),
     getSubStatIconByType,
     updateEchoChoice(echo, previousEcho) {
@@ -1093,7 +1093,7 @@ export default {
     // reset everything
     async reset() {
       if (this.echoId) {
-        await this.deleteEchoEquippedMapping(this.echoId);
+        await this.deleteEchoEquippedMappingCharacter(this.echoId, this.character);
         this.$emit('on-echo-removed');
       }
       const echoData = {

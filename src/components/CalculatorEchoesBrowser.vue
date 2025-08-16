@@ -347,6 +347,8 @@ export default {
         echoSubStatsType5: null,
         echoSubStatsValue5: null,
       };
+      const oldEchoId = this.currentCharacterEchoes?.[this.echoIndex]?.echoId ?? null;
+      // remove the old echo id and character in equipped
       const data = { echoes: {} };
       data.echoes[this.echoIndex] = echoData;
       await this.setCharacterData(this.character, data);
@@ -357,6 +359,7 @@ export default {
       // wrap up the modal
       this.reset();
       this.triggerCloseModal();
+      this.$emit('chosen-echo-inventory');
     },
     resetFilters() {
       this.echoSet = null;
