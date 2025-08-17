@@ -2091,7 +2091,7 @@ export default defineComponent({
 
     const handleOptimize = () => {
       const echoes = inventoryStore.echoes;
-      const allowedSets = [];
+      const allowedSets = new Set(["MoltenRift"]);
       const topN = 5;
       totalCombos.value = 0;
       processedCombos.value = 0;
@@ -2100,8 +2100,8 @@ export default defineComponent({
 
       // 1. Filter upfront
       let filteredEchoes = echoes;
-      if (allowedSets.length) {
-        filteredEchoes = echoes.filter(e => allowedSets.has(e.set));
+      if (allowedSets.size) {
+        filteredEchoes = echoes.filter(e => allowedSets.has(e.echoSet));
       }
       totalCombos.value = estimateCombos(filteredEchoes);
       const results = optimize(filteredEchoes, allowedSets, topN);
