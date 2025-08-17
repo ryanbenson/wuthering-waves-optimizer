@@ -62,6 +62,18 @@
     </li>
     <li>
       <a
+        @click="changeScreen('optimizer')"
+        :class="{ active: curScreen === 'optimizer' }"
+        class="p-0 flex justify-center min-w-[48px] min-h-[48px] mr-2"
+        data-test-calculator-nav="optimizer">
+        <img
+          src="https://ryanbenson.github.io/wuthering-waves-assets/images/sparkles.png"
+          class="size-7"
+          alt="Optimizer" />
+      </a>
+    </li>
+    <li>
+      <a
         @click="changeScreen('rotations')"
         class="calcations__nav--icon-svg calcations__nav--rotations mr-2 h-12 p-0 flex justify-center min-w-[48px] min-h-[48px]"
         :class="{ active: curScreen === 'rotations' }"

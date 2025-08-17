@@ -47,7 +47,7 @@
         </div>
       </div>
 
-      <div class="screen--character" v-show="curScreen === 'weapon'">
+      <div class="screen--weapon" v-show="curScreen === 'weapon'">
         <CalculatorWeapons
           v-if="character"
           :key="character"
@@ -56,7 +56,7 @@
           :weapon-type="weaponType"></CalculatorWeapons>
       </div>
 
-      <div class="screen--character" v-show="curScreen === 'echoes'">
+      <div class="screen--echoes" v-show="curScreen === 'echoes'">
         <CalculatorEchoes
           :key="character"
           :character="character"
@@ -67,7 +67,7 @@
           "></CalculatorEchoes>
       </div>
 
-      <div class="screen--character" v-show="curScreen === 'constellations'">
+      <div class="screen--resonance-chains" v-show="curScreen === 'constellations'">
         <template
           v-if="chosenChar?.value?.resonanceChains && isLoading === false">
           <CalculatorResonanceChains
@@ -81,19 +81,28 @@
         </template>
       </div>
 
-      <div class="screen-character" v-show="curScreen === 'party'">
+      <div class="screen-party" v-show="curScreen === 'party'">
         <CalculatorPartyBuffs
           :key="character"
           :character="character"
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
-      <div class="screen--enemy" v-show="curScreen === 'rotations'">
+      <div class="screen--optimizer" v-show="curScreen === 'optimizer'">
+        <CalculatorOptimizer
+          :key="character"
+          :character="character"
+          :total-combos="totalCombos"
+          :processed-combos="processedCombos"
+          :optimizer-results="optimizerResults"
+          @optimizer:optimize="handleOptimize"></CalculatorOptimizer>
+      </div>
+      <div class="screen--rotations" v-show="curScreen === 'rotations'">
         <CalculatorRotations
           :key="character"
           :character="character"
           @updated-rotations="handleUpdatedRotations"></CalculatorRotations>
       </div>
-      <div class="screen--enemy" v-show="curScreen === 'custom-buffs'">
+      <div class="screen--custom-buffs" v-show="curScreen === 'custom-buffs'">
         <CalculatorCustomBuffs
           :key="character"
           :character="character"
@@ -227,15 +236,16 @@ import CalculatorRotations from "./CalculatorRotations.vue";
 import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
 import CalculatorStats from "./CalculatorStats.vue";
 import CalculatorDamages from "./CalculatorDamages.vue";
+import CalculatorOptimizer from "./CalculatorOptimizer.vue";
 import { mainEchoesData, getEchoData } from "../echoes";
 import { echoSetAttacks } from "../echoes/stats";
 import { allEchoBuffs, utilityAttacks } from "../buffs";
 import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
 import { useRoute } from "vue-router";
 import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
-import { buffs } from "../characters/Aalto/buffs";
 
 export default defineComponent({
   name: "Calculator",
@@ -252,12 +262,14 @@ export default defineComponent({
     CalculatorRotations,
     CalculatorStats,
     CalculatorTalents,
+    CalculatorOptimizer,
     CalculatorMobileSubNav,
     CalculatorSubNav,
     Nav,
   },
   setup() {
     const characterStore = useCharacterStore();
+    const inventoryStore = useInventoryStore();
     const { characters, activeCharacter } = storeToRefs(characterStore);
     const weaponData = reactive({});
     const weaponAtk = ref(0);
@@ -321,6 +333,10 @@ export default defineComponent({
     const isMissingAeroErosionData = ref(false);
     // component refs
     const characterBuffsRef = ref(null);
+    // optimizer
+    const totalCombos = ref(0);
+    const processedCombos = ref(0);
+    const optimizerResults = ref([]);
 
     charactersList.value = getCharactersAvailable();
 
@@ -2073,6 +2089,109 @@ export default defineComponent({
       calcAllDamages();
     };
 
+    const handleOptimize = () => {
+      const echoes = inventoryStore.echoes;
+      const allowedSets = [];
+      const topN = 5;
+      totalCombos.value = 0;
+      processedCombos.value = 0;
+      optimizerResults.value = null;
+
+
+      // 1. Filter upfront
+      let filteredEchoes = echoes;
+      if (allowedSets.length) {
+        filteredEchoes = echoes.filter(e => allowedSets.has(e.set));
+      }
+      totalCombos.value = estimateCombos(filteredEchoes);
+      const results = optimize(filteredEchoes, allowedSets, topN);
+      processedCombos.value = totalCombos.value;
+      optimizerResults.value = results;
+      console.log(results);
+    };
+
+    function estimateCombos(echoes: {cost: number}[]) {
+  // dp[size][cost] = # of combos of this size and total cost
+  const dp: number[][] = Array.from({length: 6}, () => Array(13).fill(0));
+  dp[0][0] = 1; // empty combo
+
+  for (const echo of echoes) {
+    for (let size = 4; size >= 0; size--) {
+      for (let cost = 12 - echo.type; cost >= 0; cost--) {
+        if (dp[size][cost] > 0) {
+          dp[size + 1][cost + echo.type] += dp[size][cost];
+        }
+      }
+    }
+  }
+
+  // Sum all non-empty valid combos (size 1-5, cost <= 12)
+  let total = 0;
+  for (let size = 1; size <= 5; size++) {
+    for (let cost = 0; cost <= 12; cost++) {
+      total += dp[size][cost];
+    }
+  }
+
+  return total;
+}
+
+
+    function* generateLoadouts(echoes, start = 0, combo = [], cost = 0) {
+      // Valid combination? Yield it (ignore empty set)
+      if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
+        yield combo;
+      }
+
+      // Stop exploring if combo already too big
+      if (combo.length === 5 || cost >= 12) return;
+
+      for (let i = start; i < echoes.length; i++) {
+        const next = echoes[i];
+        const nextCost = cost + next.type; // echo.type === echo.cost
+        if (nextCost <= 12) {
+          yield* generateLoadouts(echoes, i + 1, [...combo, next], nextCost);
+        }
+      }
+    }
+
+    function optimize(echoes, allowedSets = [], topN = 5) {
+      // 2. Min-heap for topN results
+      const heap = [];
+
+      for (const loadout of generateLoadouts(echoes)) {
+        /* TODO:
+         * Update calcCharStats - change return ALL to include all stats, including various bonuses including healing, etc
+         * Figure out the final stats of the echos, including echo set bonuses
+         * Ask the user to fill out any echo set bonus options (stacks, etc)
+         * Use injectStats when calcCharStats and likely need to divide by 100
+         * That should be final stats
+         * 
+         * For DMG:
+         * - Ask the user to choose: stat (e.g. HP, CD), a single attack (choose one), or rotation (choose one), and for any attack: if they want to look at normal / average / crit
+         * - For stat, bypass the calculateDamage, and just look for the highest stat given
+         * - For single attack: use calculateAttackDamage (will likely need to pull that out so its usable, it's inside another function)
+         * - For rotation, look at: rotationsList.value.forEach((rotation) => { ... }
+         */
+
+        // const stats = calculateStats(loadout);
+        // const dmg = calculateDamage(stats);
+        const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
+        processedCombos.value++;
+
+        if (heap.length < topN) {
+          heap.push({ loadout, dmg });
+          heap.sort((a, b) => a.dmg - b.dmg); // min at index 0
+        } else if (dmg > heap[0].dmg) {
+          heap[0] = { loadout, dmg };
+          heap.sort((a, b) => a.dmg - b.dmg);
+        }
+      }
+
+      return heap.sort((a, b) => b.dmg - a.dmg); // descending
+    }
+
+
     return {
       allDamages,
       character,
@@ -2105,6 +2224,7 @@ export default defineComponent({
       handleCharacterTalentUpdated,
       handleCustomBuffs,
       handleWeaponUpdated,
+      handleOptimize,
       handleUpdatedCharacter,
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
@@ -2140,6 +2260,10 @@ export default defineComponent({
       isMissingAeroErosionData,
       // component refs
       characterBuffsRef,
+      // optimizer stuff
+      totalCombos,
+      processedCombos,
+      optimizerResults,
     };
   },
 });
