@@ -1,5 +1,5 @@
 <template>
-<div class="presetEchoes card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+<div class="presetEchoes card card-bordered card-compact bg-base-100 shadow mb-2">
     <div class="card-body">
         <h2 class="card-title">{{ name }}</h2>
         <div class="mb-2 flex gap-2">
@@ -37,7 +37,7 @@
                 :echo-id="echo5Id"
             />
         </div>
-        <button v-if="!disableAction" class="btn btn-primary">Apply preset</button>
+        <button v-if="!disableAction" class="btn btn-sm btn-primary max-w-40 mt-2">Apply preset</button>
         <slot></slot>
     </div>
 </div>

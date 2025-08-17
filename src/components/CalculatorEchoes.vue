@@ -17,18 +17,18 @@
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
     <div class="actions mb-4 flex gap-2">
-      <button class="btn btn-primary" @click="handleOpenEchoesImporter">
+      <button class="btn btn-sm btn-primary" @click="handleOpenEchoesImporter">
         Import Echoes
       </button>
-      <button class="btn btn-primary" @click="handleOpenEchoesPreset">
-        Use Preset Echoes
+      <button class="btn btn-sm btn-primary" @click="handleOpenEchoesPreset">
+        Use Presets
       </button>
-      <button class="btn btn-primary" @click="handleOpenSaveEchoPreset">
-        Save Echo Preset
+      <button class="btn btn-sm btn-primary" @click="handleOpenSaveEchoPreset">
+        Save Preset
       </button>
     </div>
     <div v-if="echoPresetName" class="badge badge-primary badge-outline mb-4">
-      {{  echoPresetName }} echo preset
+      Preset: {{  echoPresetName }}
     </div>
     <div class="echo__list">
       <CalculatorEcho

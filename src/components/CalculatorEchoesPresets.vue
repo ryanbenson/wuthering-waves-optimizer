@@ -12,7 +12,7 @@
       <div class="py-4">
         <h3 class="text-xl mb-4">Choose a preset to apply to your build</h3>
         <div role="tablist" class="tabs tabs-bordered">
-          <input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="My Presets"
+          <input type="radio" name="my_tabs_1" role="tab" class="tab whitespace-nowrap" aria-label="My Presets"
             checked="checked" />
           <div role="tabpanel" class="tab-content mt-6">
             <p v-if="!hasEchoPresets">No echo presets available</p>
@@ -36,7 +36,7 @@
             type="radio"
             name="my_tabs_1"
             role="tab"
-            class="tab"
+            class="tab whitespace-nowrap"
             aria-label="Other Presets" />
           <div role="tabpanel" class="tab-content mt-6">
             <p v-if="!hasDefaultEchoPresets">No default echo presets available</p>
@@ -44,12 +44,12 @@
               <div
                 v-for="defaultEchoPreset in defaultEchoPresets"
                 :key="defaultEchoPreset.name"
-            class="presetEchoes card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
+            class="presetEchoes card card-bordered card-compact bg-base-100 shadow mb-2">
                 <div class="card-body">
                 <h2 class="card-title">{{ defaultEchoPreset.name }}</h2>
                 <p>{{ defaultEchoPreset.description }}</p>
                 <p class="italic">Author: {{ defaultEchoPreset.author }}</p>
-                <button class="btn btn-primary" @click="applyPreset(defaultEchoPreset)">Apply preset</button>
+                <button class="btn btn-sm btn-primary max-w-40 mt-2" @click="applyPreset(defaultEchoPreset)">Apply preset</button>
                 </div>
               </div>
             </div>
@@ -90,6 +90,7 @@ export default {
       "setEquippedData",
       "getEchoById",
       "setEquippedPresetData",
+      "setEquippedData",
     ]),
     triggerOpenModal() {
       const modalEl = document.getElementById("modal-echoes-presets");
@@ -118,25 +119,46 @@ export default {
       if (data.echo1Id) {
         const echo1Data = await this.getEchoById(data.echo1Id);
         echoData[0] = echo1Data;
+        // update our equipped echoes list
+        const equippedData = {};
+        equippedData[this.character] = 0;
+        await this.setEquippedData(data.echo1Id, equippedData);
       }
       if (data.echo2Id) {
         const echo2Data = await this.getEchoById(data.echo2Id);
         echoData[1] = echo2Data;
+        // update our equipped echoes list
+        const equippedData = {};
+        equippedData[this.character] = 1;
+        await this.setEquippedData(data.echo2Id, equippedData);
       }
       if (data.echo3Id) {
         const echo3Data = await this.getEchoById(data.echo3Id);
         echoData[2] = echo3Data;
+        // update our equipped echoes list
+        const equippedData = {};
+        equippedData[this.character] = 2;
+        await this.setEquippedData(data.echo3Id, equippedData);
       }
       if (data.echo4Id) {
         const echo4Data = await this.getEchoById(data.echo4Id);
         echoData[3] = echo4Data;
+        // update our equipped echoes list
+        const equippedData = {};
+        equippedData[this.character] = 3;
+        await this.setEquippedData(data.echo4Id, equippedData);
       }
       if (data.echo5Id) {
         const echo5Data = await this.getEchoById(data.echo5Id);
         echoData[4] = echo5Data;
+        // update our equipped echoes list
+        const equippedData = {};
+        equippedData[this.character] = 4;
+        await this.setEquippedData(data.echo5Id, equippedData);
       }
       // set the echo data now
       await this.setCharacterEchoes(this.character, echoData);
+
       this.triggerCloseModal();
     }
   },
