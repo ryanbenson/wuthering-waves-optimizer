@@ -974,6 +974,7 @@ export default {
       "deleteEcho",
       "getEchoById",
       "setEquippedData",
+      "deleteEchoEquippedMappingCharacter",
     ]),
     getSubStatIconByType,
     updateEchoChoice(echo, previousEcho) {
@@ -1091,6 +1092,10 @@ export default {
     },
     // reset everything
     async reset() {
+      if (this.echoId) {
+        await this.deleteEchoEquippedMappingCharacter(this.echoId, this.character);
+        this.$emit('on-echo-removed');
+      }
       const echoData = {
         echo: null,
         type: null,
@@ -1311,7 +1316,7 @@ export default {
     resetFilters() {
       this.echoSetFilter = null;
     },
-    chooseMainEcho(echoKey) {
+    async chooseMainEcho(echoKey) {
       this.echo = echoKey;
       // if we chose a filter for echo set, assume that's what they want
       if (this.echoSetFilter) {

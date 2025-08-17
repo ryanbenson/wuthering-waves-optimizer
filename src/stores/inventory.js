@@ -5,10 +5,28 @@ export const useInventoryStore = defineStore("inventory", {
   state: () => ({
     echoes: [],
     equipped: {},
+    echoPresets: [],
+    equippedPresets: {},
   }),
   getters: {
     getEquippedEchoData: (state) => {
       return (echoId) => state.equipped?.[echoId] ?? {};
+    },
+    getEchoPresetData: (state) => {
+      return (presetId) => state.echoPresets.find((preset) => preset.presetId === presetId);
+    },
+    getEchoPresetCharacters: (state) => {
+      return (requestedPresetId) => {
+        const charactersList = [];
+        const allCharactersPresets = Object.entries(state.equippedPresets);
+        allCharactersPresets.forEach((characterPreset) => {
+          const [character, presetId] = characterPreset;
+          if (presetId === requestedPresetId) {
+            charactersList.push(character);
+          }
+        });
+        return charactersList;
+      }
     },
   },
   actions: {
@@ -23,6 +41,17 @@ export const useInventoryStore = defineStore("inventory", {
         this.echoes.push(data);
       }
     },
+    saveEchoPreset(data) {
+      const { presetId } = data;
+      const foundIndex = this.echoPresets.findIndex(
+        (echoPreset) => echoPreset.presetId === presetId,
+      );
+      if (foundIndex >= 0) {
+        this.echoPresets[foundIndex] = data;
+      } else {
+        this.echoPresets.push(data);
+      }
+    },
     patchEcho(echoId, data) {
       const foundIndex = this.echoes.findIndex(
         (echo) => echo.echoId === echoId,
@@ -33,6 +62,16 @@ export const useInventoryStore = defineStore("inventory", {
         this.echoes[foundIndex] = updatedData;
       }
     },
+    patchEchoPreset(presetId, data) {
+      const foundIndex = this.echoPresets.findIndex(
+        (echoPreset) => echoPreset.presetId === presetId,
+      );
+      if (foundIndex >= 0) {
+        const existingData = this.echoPresets[foundIndex];
+        const updatedData = merge(existingData, data);
+        this.echoPresets[foundIndex] = updatedData;
+      }
+    },
     deleteEcho(echoId) {
       const foundIndex = this.echoes.findIndex(
         (echo) => echo.echoId === echoId,
@@ -41,17 +80,35 @@ export const useInventoryStore = defineStore("inventory", {
         this.echoes.splice(foundIndex, 1);
       }
     },
+    deleteEchoPreset(presetId) {
+      const foundIndex = this.echoPresets.findIndex(
+        (echoPreset) => echoPreset.presetId === presetId,
+      );
+      if (foundIndex >= 0) {
+        this.echoPresets.splice(foundIndex, 1);
+      }
+    },
     getEchoById(echoId) {
       return this.echoes.find((echo) => echo.echoId === echoId);
+    },
+    getEchoPresetById(presetId) {
+      return this.echoPresets.find((echoPreset) => echoPreset.presetId === presetId);
     },
     setEquippedData(echoId, data) {
       const existingData = this.equipped[echoId] ?? {};
       const updatedData = merge(existingData, data);
       this.equipped[echoId] = updatedData;
     },
+    setEquippedPresetData(character, presetId) {
+      this.equippedPresets[character] = presetId;
+    },
+    deleteEquippedPreset(character) {
+      delete this.equippedPresets[character];
+    },
     hardSetState(data) {
       this.echoes = data?.echoes ?? [];
       this.equipped = data?.equipped ?? {};
+      this.echoPresets = data?.echoPresets ?? [];
     },
     getEchoEquippedChars(echoId) {
       const equipped = this.equipped[echoId] ?? {};
@@ -59,6 +116,9 @@ export const useInventoryStore = defineStore("inventory", {
     },
     deleteEchoEquippedMapping(echoId) {
       delete this.equipped[echoId];
+    },
+    deleteEchoEquippedMappingCharacter(echoId, character) {
+      delete this.equipped[echoId][character];
     }
   },
 });
