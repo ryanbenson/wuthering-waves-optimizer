@@ -2089,9 +2089,9 @@ export default defineComponent({
       calcAllDamages();
     };
 
-    const handleOptimize = () => {
+    const handleOptimize = (setFilters) => {
       const echoes = inventoryStore.echoes;
-      const allowedSets = new Set(["MoltenRift"]);
+      const allowedSets = new Set(setFilters);
       const topN = 5;
       totalCombos.value = 0;
       processedCombos.value = 0;
