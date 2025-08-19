@@ -2089,7 +2089,25 @@ export default defineComponent({
       calcAllDamages();
     };
 
-    const handleOptimize = (setFilters) => {
+        /* TODO:
+         * Update calcCharStats - change return ALL to include all stats, including various bonuses including healing, etc
+         * Figure out the final stats of the echos, including echo set bonuses
+         * Ask the user to fill out any echo set bonus options (stacks, etc)
+         * Use injectStats when calcCharStats and likely need to divide by 100
+         * That should be final stats
+         * 
+         * For DMG:
+         * - Ask the user to choose: stat (e.g. HP, CD), a single attack (choose one), or rotation (choose one), and for any attack: if they want to look at normal / average / crit
+         * - For stat, bypass the calculateDamage, and just look for the highest stat given
+         * - For single attack: use calculateAttackDamage (will likely need to pull that out so its usable, it's inside another function)
+         * - For rotation, look at: rotationsList.value.forEach((rotation) => { ... }
+         */
+
+        // const stats = calculateStats(loadout);
+        // const dmg = calculateDamage(stats);
+
+    const handleOptimize = (setFilters = [], mainEchoes = []) => {
+      console.log("NOT USING THIS RIGHT NOW", mainEchoes)
       const echoes = inventoryStore.echoes;
       const allowedSets = new Set(setFilters);
       const topN = 5;
@@ -2111,31 +2129,30 @@ export default defineComponent({
     };
 
     function estimateCombos(echoes: {cost: number}[]) {
-  // dp[size][cost] = # of combos of this size and total cost
-  const dp: number[][] = Array.from({length: 6}, () => Array(13).fill(0));
-  dp[0][0] = 1; // empty combo
+      // dp[size][cost] = # of combos of this size and total cost
+      const dp: number[][] = Array.from({length: 6}, () => Array(13).fill(0));
+      dp[0][0] = 1; // empty combo
 
-  for (const echo of echoes) {
-    for (let size = 4; size >= 0; size--) {
-      for (let cost = 12 - echo.type; cost >= 0; cost--) {
-        if (dp[size][cost] > 0) {
-          dp[size + 1][cost + echo.type] += dp[size][cost];
+      for (const echo of echoes) {
+        for (let size = 4; size >= 0; size--) {
+          for (let cost = 12 - echo.type; cost >= 0; cost--) {
+            if (dp[size][cost] > 0) {
+              dp[size + 1][cost + echo.type] += dp[size][cost];
+            }
+          }
         }
       }
+
+      // Sum all non-empty valid combos (size 1-5, cost <= 12)
+      let total = 0;
+      for (let size = 1; size <= 5; size++) {
+        for (let cost = 0; cost <= 12; cost++) {
+          total += dp[size][cost];
+        }
+      }
+
+      return total;
     }
-  }
-
-  // Sum all non-empty valid combos (size 1-5, cost <= 12)
-  let total = 0;
-  for (let size = 1; size <= 5; size++) {
-    for (let cost = 0; cost <= 12; cost++) {
-      total += dp[size][cost];
-    }
-  }
-
-  return total;
-}
-
 
     function* generateLoadouts(echoes, start = 0, combo = [], cost = 0) {
       // Valid combination? Yield it (ignore empty set)
@@ -2160,22 +2177,6 @@ export default defineComponent({
       const heap = [];
 
       for (const loadout of generateLoadouts(echoes)) {
-        /* TODO:
-         * Update calcCharStats - change return ALL to include all stats, including various bonuses including healing, etc
-         * Figure out the final stats of the echos, including echo set bonuses
-         * Ask the user to fill out any echo set bonus options (stacks, etc)
-         * Use injectStats when calcCharStats and likely need to divide by 100
-         * That should be final stats
-         * 
-         * For DMG:
-         * - Ask the user to choose: stat (e.g. HP, CD), a single attack (choose one), or rotation (choose one), and for any attack: if they want to look at normal / average / crit
-         * - For stat, bypass the calculateDamage, and just look for the highest stat given
-         * - For single attack: use calculateAttackDamage (will likely need to pull that out so its usable, it's inside another function)
-         * - For rotation, look at: rotationsList.value.forEach((rotation) => { ... }
-         */
-
-        // const stats = calculateStats(loadout);
-        // const dmg = calculateDamage(stats);
         const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
         processedCombos.value++;
 
@@ -2190,6 +2191,102 @@ export default defineComponent({
 
       return heap.sort((a, b) => b.dmg - a.dmg); // descending
     }
+
+
+    /**
+     * TO DO: THIS IS AN ATTEMPT with mainEchoes affecting things
+     * but nothing is working right now.
+     */
+//     const handleOptimize = (setFilters = [], mainEchoes = []) => {
+//   const echoes = inventoryStore.echoes;
+//   const allowedSets = new Set(setFilters);
+//   const topN = 5;
+//   totalCombos.value = 0;
+//   processedCombos.value = 0;
+//   optimizerResults.value = null;
+
+//   // 1. Filter upfront
+//   let filteredEchoes = echoes;
+//   if (allowedSets.size) {
+//     filteredEchoes = echoes.filter(e => allowedSets.has(e.echoSet));
+//   }
+
+//   // Separate mains vs others
+//   const mains = filteredEchoes.filter(e => mainEchoes.includes(e.echo));
+//   const others = filteredEchoes.filter(e => !mainEchoes.includes(e.echo));
+
+//   // Rough estimate (ignores main requirement for now)
+//   totalCombos.value = estimateCombos(filteredEchoes, setFilters, mainEchoes);
+
+//   // Run optimizer
+//   const results = optimize(mains, others, topN);
+//   optimizerResults.value = results;
+//   console.log("Processed:", processedCombos.value, "Total estimate:", totalCombos.value);
+//   console.log(results);
+// };
+
+// function estimateCombos(filtered, allowedSets, mainEchoes) {
+
+//   // slot 0 (main echo) choices
+//   let slot0Count;
+//   if (mainEchoes.length > 0) {
+//     // only count echoes whose "echo" property matches one of the chosen main echoes
+//     slot0Count = filtered.filter(e => mainEchoes.includes(e.echo)).length;
+//   } else {
+//     slot0Count = filtered.length;
+//   }
+
+//   // remaining slots (1–4) are just from filtered pool
+//   const otherSlotsCount = Math.pow(filtered.length, 4);
+
+//   return slot0Count * otherSlotsCount;
+// }
+
+
+// // Generate loadouts starting with a main echo
+// function* generateLoadoutsWithMain(mains, others, maxCost = 12) {
+//   for (const main of mains) {
+//     if (main.type > maxCost) continue;
+//     yield* generateRest([main], others, 4, maxCost - main.type, 0);
+//   }
+// }
+
+// // Helper: recursively fill remaining slots
+// function* generateRest(combo, pool, slotsRemaining, costLeft, startIdx) {
+//   // Yield if valid combo (1–5 echoes, within cost)
+//   if (combo.length > 0 && combo.length <= 5 && costLeft >= 0) {
+//     yield combo;
+//   }
+
+//   if (slotsRemaining === 0 || costLeft <= 0) return;
+
+//   for (let i = startIdx; i < pool.length; i++) {
+//     const next = pool[i];
+//     if (next.type <= costLeft) {
+//       yield* generateRest([...combo, next], pool, slotsRemaining - 1, costLeft - next.type, i + 1);
+//     }
+//   }
+// }
+
+// function optimize(mains, others, topN = 5) {
+//   const heap = [];
+
+//   for (const loadout of generateLoadoutsWithMain(mains, others)) {
+//     const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
+//     processedCombos.value++;
+
+//     if (heap.length < topN) {
+//       heap.push({ loadout, dmg });
+//       heap.sort((a, b) => a.dmg - b.dmg);
+//     } else if (dmg > heap[0].dmg) {
+//       heap[0] = { loadout, dmg };
+//       heap.sort((a, b) => a.dmg - b.dmg);
+//     }
+//   }
+
+//   return heap.sort((a, b) => b.dmg - a.dmg); // descending
+// }
+
 
 
     return {
