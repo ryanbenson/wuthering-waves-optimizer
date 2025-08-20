@@ -10,6 +10,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 17, 2025</h3>
+    <ul>
+      <li>
+        You can now define and manage custom echo loadouts as presets and share them among characters.
+      </li>
+    </ul>
     <h3>July 31, 2025</h3>
     <ul>
       <li>
