@@ -109,6 +109,8 @@
 <script>
 import { echoSetLabelMap, getEchoSetIconByType } from "../echoes/stats";
 import { mainEchoesData } from "../echoes/index";
+import { mapActions, mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
 export default {
     name: "CalculatorOptimizer",
     props: {
@@ -140,6 +142,7 @@ export default {
         }
     },
     methods: {
+        ...mapActions(useCharacterStore, ["setCharacterData"]),
         echoSetLabelMap,
         getEchoSetIconByType,
         handleOptimize() {
@@ -147,6 +150,7 @@ export default {
         },
         chooseMainEcho(echoKey) {
             this.mainEchoes.push(echoKey);
+            this.syncOptimizerConfig();
             this.closeEchoChooser();
         },
         toggleSetFilter(set) {
@@ -156,6 +160,16 @@ export default {
             } else {
                 this.setFilters.push(set);
             }
+            this.syncOptimizerConfig();
+        },
+        async syncOptimizerConfig() {
+            const data = {
+                optimizer: {
+                    mainEchoes: JSON.parse(JSON.stringify(this.mainEchoes)),
+                    echoSets: JSON.parse(JSON.stringify(this.setFilters)),
+                }
+            };
+            await this.setCharacterData(this.character, data);
         },
         isSetFilterActive(set) {
             return this.setFilters.find((setFilter) => { return setFilter === set});
@@ -196,6 +210,14 @@ export default {
     },
     },
     computed: {
+        ...mapState(useCharacterStore, ["characters"]),
+        /**
+         * The current character data
+         * @returns {Object}
+         */
+        currentCharacter() {
+            return this.characters[this.character] ?? {};
+        },
         isValid() {
             const echoSetsCount = this.setFilters.length;
             const mainEchoesCount = this.mainEchoes.length;
@@ -233,6 +255,10 @@ export default {
       });
       return sortedEchoes;
     },
+    },
+    mounted() {
+        this.mainEchoes = this.currentCharacter?.optimizer?.mainEchoes ?? [];
+        this.setFilters = this.currentCharacter?.optimizer?.echoSets ?? [];
     }
 }
 </script>
