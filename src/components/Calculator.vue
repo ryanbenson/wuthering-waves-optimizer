@@ -2106,186 +2106,182 @@ export default defineComponent({
         // const stats = calculateStats(loadout);
         // const dmg = calculateDamage(stats);
 
-    const handleOptimize = (setFilters = [], mainEchoes = []) => {
-      console.log("NOT USING THIS RIGHT NOW", mainEchoes)
-      const echoes = inventoryStore.echoes;
-      const allowedSets = new Set(setFilters);
-      const topN = 5;
-      totalCombos.value = 0;
-      processedCombos.value = 0;
-      optimizerResults.value = null;
+        // keeping because it works
+    // const handleOptimize = (setFilters = [], mainEchoes = []) => {
+    //   console.log("NOT USING THIS RIGHT NOW", mainEchoes)
+    //   const echoes = inventoryStore.echoes;
+    //   const allowedSets = new Set(setFilters);
+    //   const topN = 5;
+    //   totalCombos.value = 0;
+    //   processedCombos.value = 0;
+    //   optimizerResults.value = null;
 
 
-      // 1. Filter upfront
-      let filteredEchoes = echoes;
-      if (allowedSets.size) {
-        filteredEchoes = echoes.filter(e => allowedSets.has(e.echoSet));
+    //   // 1. Filter upfront
+    //   let filteredEchoes = echoes;
+    //   if (allowedSets.size) {
+    //     filteredEchoes = echoes.filter(e => allowedSets.has(e.echoSet));
+    //   }
+    //   totalCombos.value = estimateCombos(filteredEchoes);
+    //   const results = optimize(filteredEchoes, allowedSets, topN);
+    //   processedCombos.value = totalCombos.value;
+    //   optimizerResults.value = results;
+    //   console.log(results);
+    // };
+
+    // function estimateCombos(echoes: {cost: number}[]) {
+    //   // dp[size][cost] = # of combos of this size and total cost
+    //   const dp: number[][] = Array.from({length: 6}, () => Array(13).fill(0));
+    //   dp[0][0] = 1; // empty combo
+
+    //   for (const echo of echoes) {
+    //     for (let size = 4; size >= 0; size--) {
+    //       for (let cost = 12 - echo.type; cost >= 0; cost--) {
+    //         if (dp[size][cost] > 0) {
+    //           dp[size + 1][cost + echo.type] += dp[size][cost];
+    //         }
+    //       }
+    //     }
+    //   }
+
+    //   // Sum all non-empty valid combos (size 1-5, cost <= 12)
+    //   let total = 0;
+    //   for (let size = 1; size <= 5; size++) {
+    //     for (let cost = 0; cost <= 12; cost++) {
+    //       total += dp[size][cost];
+    //     }
+    //   }
+
+    //   return total;
+    // }
+
+    // function* generateLoadouts(echoes, start = 0, combo = [], cost = 0) {
+    //   // Valid combination? Yield it (ignore empty set)
+    //   if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
+    //     yield combo;
+    //   }
+
+    //   // Stop exploring if combo already too big
+    //   if (combo.length === 5 || cost >= 12) return;
+
+    //   for (let i = start; i < echoes.length; i++) {
+    //     const next = echoes[i];
+    //     const nextCost = cost + next.type; // echo.type === echo.cost
+    //     if (nextCost <= 12) {
+    //       yield* generateLoadouts(echoes, i + 1, [...combo, next], nextCost);
+    //     }
+    //   }
+    // }
+
+    // function optimize(echoes, allowedSets = [], topN = 5) {
+    //   // 2. Min-heap for topN results
+    //   const heap = [];
+
+    //   for (const loadout of generateLoadouts(echoes)) {
+    //     const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
+    //     processedCombos.value++;
+
+    //     if (heap.length < topN) {
+    //       heap.push({ loadout, dmg });
+    //       heap.sort((a, b) => a.dmg - b.dmg); // min at index 0
+    //     } else if (dmg > heap[0].dmg) {
+    //       heap[0] = { loadout, dmg };
+    //       heap.sort((a, b) => a.dmg - b.dmg);
+    //     }
+    //   }
+
+    //   return heap.sort((a, b) => b.dmg - a.dmg); // descending
+    // }
+const handleOptimize = (setFilters = [], mainEchoes = []) => {
+  console.log("Main Echo Keys:", mainEchoes);
+  const echoes = inventoryStore.echoes;
+  const allowedSets = new Set(setFilters);
+  const topN = 5;
+  processedCombos.value = 0;
+  optimizerResults.value = null;
+
+  // 1. Filter upfront
+  let filteredEchoes = echoes;
+  if (allowedSets.size) {
+    filteredEchoes = echoes.filter(e => allowedSets.has(e.echoSet));
+  }
+  
+  const results = optimize(filteredEchoes, allowedSets, topN, mainEchoes);
+  optimizerResults.value = results;
+  totalCombos.value = processedCombos.value;
+  console.log(results);
+};
+
+function* generateLoadouts(echoes, mainEchoKeys = [], start = 0, combo = [], cost = 0) {
+  // If we have main echo keys and combo is empty, we need to start with one of those
+  if (mainEchoKeys.length > 0 && combo.length === 0) {
+    // Find all echoes that match the main echo keys
+    const mainEchoCopies = echoes.filter(e => mainEchoKeys.includes(e.echo));
+    
+    // For each copy of the main echo, start a new combination
+    for (const mainEcho of mainEchoCopies) {
+      const nextCost = cost + mainEcho.type;
+      if (nextCost <= 12) {
+        yield* generateLoadouts(echoes, mainEchoKeys, start, [mainEcho], nextCost);
       }
-      totalCombos.value = estimateCombos(filteredEchoes);
-      const results = optimize(filteredEchoes, allowedSets, topN);
-      processedCombos.value = totalCombos.value;
-      optimizerResults.value = results;
-      console.log(results);
-    };
-
-    function estimateCombos(echoes: {cost: number}[]) {
-      // dp[size][cost] = # of combos of this size and total cost
-      const dp: number[][] = Array.from({length: 6}, () => Array(13).fill(0));
-      dp[0][0] = 1; // empty combo
-
-      for (const echo of echoes) {
-        for (let size = 4; size >= 0; size--) {
-          for (let cost = 12 - echo.type; cost >= 0; cost--) {
-            if (dp[size][cost] > 0) {
-              dp[size + 1][cost + echo.type] += dp[size][cost];
-            }
-          }
-        }
-      }
-
-      // Sum all non-empty valid combos (size 1-5, cost <= 12)
-      let total = 0;
-      for (let size = 1; size <= 5; size++) {
-        for (let cost = 0; cost <= 12; cost++) {
-          total += dp[size][cost];
-        }
-      }
-
-      return total;
     }
+    return;
+  }
 
-    function* generateLoadouts(echoes, start = 0, combo = [], cost = 0) {
-      // Valid combination? Yield it (ignore empty set)
-      if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
-        yield combo;
-      }
+  // Valid combination? Yield it (ignore empty set)
+  if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
+    yield combo;
+  }
 
-      // Stop exploring if combo already too big
-      if (combo.length === 5 || cost >= 12) return;
+  // Stop exploring if combo already too big
+  if (combo.length === 5 || cost >= 12) return;
 
-      for (let i = start; i < echoes.length; i++) {
-        const next = echoes[i];
-        const nextCost = cost + next.type; // echo.type === echo.cost
-        if (nextCost <= 12) {
-          yield* generateLoadouts(echoes, i + 1, [...combo, next], nextCost);
-        }
-      }
+  // If we have main echo keys and combo is empty, we've already handled the first slot
+  if (mainEchoKeys.length > 0 && combo.length === 0) return;
+
+  for (let i = start; i < echoes.length; i++) {
+    const next = echoes[i];
+    const nextCost = cost + next.type;
+    if (nextCost <= 12) {
+      yield* generateLoadouts(echoes, mainEchoKeys, i + 1, [...combo, next], nextCost);
     }
+  }
+}
 
-    function optimize(echoes, allowedSets = [], topN = 5) {
-      // 2. Min-heap for topN results
-      const heap = [];
+function optimize(echoes, allowedSets = [], topN = 5, mainEchoKeys = []) {
+  // 2. Min-heap for topN results
+  const heap = [];
+  const seenCombinations = new Set(); // Track unique combinations
 
-      for (const loadout of generateLoadouts(echoes)) {
-        const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
-        processedCombos.value++;
-
-        if (heap.length < topN) {
-          heap.push({ loadout, dmg });
-          heap.sort((a, b) => a.dmg - b.dmg); // min at index 0
-        } else if (dmg > heap[0].dmg) {
-          heap[0] = { loadout, dmg };
-          heap.sort((a, b) => a.dmg - b.dmg);
-        }
-      }
-
-      return heap.sort((a, b) => b.dmg - a.dmg); // descending
+  for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
+    // Create a unique key for this combination based on echo keys, sorted
+    // This prevents duplicates like [InfernoRider, FireBlade, IceSword] vs [InfernoRider, IceSword, FireBlade]
+    const combinationKey = loadout
+      .map(echo => echo.echo) // Use echo key instead of echoId
+      .sort()
+      .join('|');
+    
+    // Skip if we've already seen this combination
+    if (seenCombinations.has(combinationKey)) {
+      continue;
     }
+    
+    seenCombinations.add(combinationKey);
+    
+    const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
+    processedCombos.value++;
 
+    if (heap.length < topN) {
+      heap.push({ loadout, dmg });
+      heap.sort((a, b) => a.dmg - b.dmg); // min at index 0
+    } else if (dmg > heap[0].dmg) {
+      heap[0] = { loadout, dmg };
+      heap.sort((a, b) => a.dmg - b.dmg);
+    }
+  }
 
-    /**
-     * TO DO: THIS IS AN ATTEMPT with mainEchoes affecting things
-     * but nothing is working right now.
-     */
-//     const handleOptimize = (setFilters = [], mainEchoes = []) => {
-//   const echoes = inventoryStore.echoes;
-//   const allowedSets = new Set(setFilters);
-//   const topN = 5;
-//   totalCombos.value = 0;
-//   processedCombos.value = 0;
-//   optimizerResults.value = null;
-
-//   // 1. Filter upfront
-//   let filteredEchoes = echoes;
-//   if (allowedSets.size) {
-//     filteredEchoes = echoes.filter(e => allowedSets.has(e.echoSet));
-//   }
-
-//   // Separate mains vs others
-//   const mains = filteredEchoes.filter(e => mainEchoes.includes(e.echo));
-//   const others = filteredEchoes.filter(e => !mainEchoes.includes(e.echo));
-
-//   // Rough estimate (ignores main requirement for now)
-//   totalCombos.value = estimateCombos(filteredEchoes, setFilters, mainEchoes);
-
-//   // Run optimizer
-//   const results = optimize(mains, others, topN);
-//   optimizerResults.value = results;
-//   console.log("Processed:", processedCombos.value, "Total estimate:", totalCombos.value);
-//   console.log(results);
-// };
-
-// function estimateCombos(filtered, allowedSets, mainEchoes) {
-
-//   // slot 0 (main echo) choices
-//   let slot0Count;
-//   if (mainEchoes.length > 0) {
-//     // only count echoes whose "echo" property matches one of the chosen main echoes
-//     slot0Count = filtered.filter(e => mainEchoes.includes(e.echo)).length;
-//   } else {
-//     slot0Count = filtered.length;
-//   }
-
-//   // remaining slots (1–4) are just from filtered pool
-//   const otherSlotsCount = Math.pow(filtered.length, 4);
-
-//   return slot0Count * otherSlotsCount;
-// }
-
-
-// // Generate loadouts starting with a main echo
-// function* generateLoadoutsWithMain(mains, others, maxCost = 12) {
-//   for (const main of mains) {
-//     if (main.type > maxCost) continue;
-//     yield* generateRest([main], others, 4, maxCost - main.type, 0);
-//   }
-// }
-
-// // Helper: recursively fill remaining slots
-// function* generateRest(combo, pool, slotsRemaining, costLeft, startIdx) {
-//   // Yield if valid combo (1–5 echoes, within cost)
-//   if (combo.length > 0 && combo.length <= 5 && costLeft >= 0) {
-//     yield combo;
-//   }
-
-//   if (slotsRemaining === 0 || costLeft <= 0) return;
-
-//   for (let i = startIdx; i < pool.length; i++) {
-//     const next = pool[i];
-//     if (next.type <= costLeft) {
-//       yield* generateRest([...combo, next], pool, slotsRemaining - 1, costLeft - next.type, i + 1);
-//     }
-//   }
-// }
-
-// function optimize(mains, others, topN = 5) {
-//   const heap = [];
-
-//   for (const loadout of generateLoadoutsWithMain(mains, others)) {
-//     const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
-//     processedCombos.value++;
-
-//     if (heap.length < topN) {
-//       heap.push({ loadout, dmg });
-//       heap.sort((a, b) => a.dmg - b.dmg);
-//     } else if (dmg > heap[0].dmg) {
-//       heap[0] = { loadout, dmg };
-//       heap.sort((a, b) => a.dmg - b.dmg);
-//     }
-//   }
-
-//   return heap.sort((a, b) => b.dmg - a.dmg); // descending
-// }
+  return heap.sort((a, b) => b.dmg - a.dmg); // descending
+}
 
 
 
