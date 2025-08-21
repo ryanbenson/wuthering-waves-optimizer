@@ -238,7 +238,7 @@ import CalculatorStats from "./CalculatorStats.vue";
 import CalculatorDamages from "./CalculatorDamages.vue";
 import CalculatorOptimizer from "./CalculatorOptimizer.vue";
 import { mainEchoesData, getEchoData } from "../echoes";
-import { echoSetAttacks } from "../echoes/stats";
+import { echoSetAttacks, getEchoStats, getCombinedEchoStats } from "../echoes/stats";
 import { allEchoBuffs, utilityAttacks } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
@@ -443,7 +443,13 @@ export default defineComponent({
           : 0;
       }
     };
-    const addEchoBuffs = (source, target) => {
+    const addEchoBuffs = (source, target, returnCopy = false) => {
+      // we make a clone to make sure we don't mutate the original
+      // mostly used in the optimizer so we can have a constant base, and then layer on the echo buffs
+      // without messing up the original state of stats
+      if (returnCopy) {
+        target = JSON.parse(JSON.stringify(target));
+      }
       if (source) {
         target.attackPercent += source?.ATK ? source.ATK : 0;
         target.hpPercent += source?.HP ? source.HP : 0;
@@ -512,6 +518,9 @@ export default defineComponent({
           target.havoc += allElementAttributeBonus;
         }
       }
+      if (returnCopy) {
+        return target;
+      }
     };
 
     const calcCharStats = (
@@ -519,7 +528,7 @@ export default defineComponent({
       injectStats = null,
       ignoreBuffs = {}, // e.g. {ignoreTeamBuffs: true}
     ) => {
-      const { ignoreTeamBuffs, ignoreWeaponBuffs } = ignoreBuffs;
+      const { ignoreTeamBuffs, ignoreWeaponBuffs, ignoreEchoes } = ignoreBuffs;
       let stats = {
         attackPercent: 0,
         hpPercent: 0,
@@ -656,7 +665,7 @@ export default defineComponent({
         }
       }
 
-      if (echoStats) {
+      if (echoStats && !ignoreEchoes) {
         addEchoBuffs(echoStats?.value, stats);
       }
 
@@ -2250,6 +2259,8 @@ function* generateLoadouts(echoes, mainEchoKeys = [], start = 0, combo = [], cos
 }
 
 function optimize(echoes, allowedSets = [], topN = 5, mainEchoKeys = []) {
+  const statsWithoutEchoes = calcCharStats('All', null, { ignoreEchoes: true });
+  console.log(statsWithoutEchoes);
   // 2. Min-heap for topN results
   const heap = [];
   const seenCombinations = new Set(); // Track unique combinations
@@ -2270,6 +2281,11 @@ function optimize(echoes, allowedSets = [], topN = 5, mainEchoKeys = []) {
     seenCombinations.add(combinationKey);
     
     // TODO: implement the stats and damage/desire stat
+    // calculate the total buffs from the echoes + set bonuses + main echo bonuses
+    // TODO: We have the echo stats, need to add in set bonuses and main echo bonuses
+    const echoStats = getCombinedEchoStats(loadout);
+    const finalStats = addEchoBuffs(echoStats, statsWithoutEchoes, true);
+    console.log(echoStats, finalStats);
     const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
     processedCombos.value++;
 
