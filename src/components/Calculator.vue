@@ -2220,6 +2220,7 @@ function* generateLoadouts(echoes, mainEchoKeys = [], start = 0, combo = [], cos
     
     // For each copy of the main echo, start a new combination
     for (const mainEcho of mainEchoCopies) {
+      // the main echo isn't guaranteed to be 4, sometimes it's an elite, so 3
       const nextCost = cost + mainEcho.type;
       if (nextCost <= 12) {
         yield* generateLoadouts(echoes, mainEchoKeys, start, [mainEcho], nextCost);
@@ -2255,9 +2256,9 @@ function optimize(echoes, allowedSets = [], topN = 5, mainEchoKeys = []) {
 
   for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
     // Create a unique key for this combination based on echo keys, sorted
-    // This prevents duplicates like [InfernoRider, FireBlade, IceSword] vs [InfernoRider, IceSword, FireBlade]
+    // Using echo.echoId to ensure we dont use the same specific echo, but we can use the same echoes
     const combinationKey = loadout
-      .map(echo => echo.echo) // Use echo key instead of echoId
+      .map(echo => echo.echoId)
       .sort()
       .join('|');
     
@@ -2268,6 +2269,7 @@ function optimize(echoes, allowedSets = [], topN = 5, mainEchoKeys = []) {
     
     seenCombinations.add(combinationKey);
     
+    // TODO: implement the stats and damage/desire stat
     const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
     processedCombos.value++;
 
