@@ -74,6 +74,7 @@
       </div>
     </div>
   </dialog>
+  <div class="optimizer" v-if="!isLoading">
     <div class="optimizer-filters">
         <div class="optimizer-filters__sets">
             <h3>Choose echo sets</h3>
@@ -92,7 +93,15 @@
             <div>
                 <button @click="openEchoChooser" class="btn btn-primary btn-sm">Choose an echo</button>
             </div>
-            {{  mainEchoes }}
+        </div>
+        <div class="optimizer-filters__sets">
+            <h3>Choose target stats</h3>
+            <CalculatorOptimizerMinStats
+              :character="character"
+              :key="character"
+              :min-stats="minStats"
+              @updated-min-stats="handleUpdatedMinStats"
+            ></CalculatorOptimizerMinStats>
         </div>
     </div>
     <div class="mt-4">Processed {{ processedCombos }} of {{  totalCombos }}</div>
@@ -101,9 +110,11 @@
         <p v-if="!isValid">Choose echo sets and main echoes</p>
         <button class="btn btn-primary" @click="handleOptimize" :disabled="!isValid">Optimize</button>
     </div>
-    <pre>{{ optimizerResults }}</pre>
     <pre>{{ setFilters }}</pre>
     <pre>{{  mainEchoes }}</pre>
+    <hr></hr>
+    <pre>{{ optimizerResults }}</pre>
+  </div>
 </template>
 
 <script>
@@ -111,6 +122,7 @@ import { echoSetLabelMap, getEchoSetIconByType } from "../echoes/stats";
 import { mainEchoesData } from "../echoes/index";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import CalculatorOptimizerMinStats from "./CalculatorOptimizerMinStats.vue";
 export default {
     name: "CalculatorOptimizer",
     props: {
@@ -129,6 +141,9 @@ export default {
             default: () => []
         }
     },
+    components: {
+      CalculatorOptimizerMinStats,
+    },
     data() {
         return {
             echoSetLabelMap,
@@ -139,6 +154,9 @@ export default {
             // filters
             setFilters: [],
             mainEchoes: [],
+            minStats: [],
+            // state
+            isLoading: true,
         }
     },
     methods: {
@@ -146,7 +164,7 @@ export default {
         echoSetLabelMap,
         getEchoSetIconByType,
         handleOptimize() {
-            this.$emit('optimizer:optimize', this.setFilters, this.mainEchoes)
+            this.$emit('optimizer:optimize', this.setFilters, this.mainEchoes, this.minStats)
         },
         chooseMainEcho(echoKey) {
             this.mainEchoes.push(echoKey);
@@ -167,6 +185,7 @@ export default {
                 optimizer: {
                     mainEchoes: JSON.parse(JSON.stringify(this.mainEchoes)),
                     echoSets: JSON.parse(JSON.stringify(this.setFilters)),
+                    minStats: JSON.parse(JSON.stringify(this.minStats)),
                 }
             };
             await this.setCharacterData(this.character, data);
@@ -208,6 +227,11 @@ export default {
     getEchoSetIcon(type) {
       return getEchoSetIconByType(type);
     },
+      handleUpdatedMinStats(stats) {
+        const minStats = JSON.parse(JSON.stringify(stats));
+        this.minStats = minStats;
+        this.syncOptimizerConfig();
+      }
     },
     computed: {
         ...mapState(useCharacterStore, ["characters"]),
@@ -257,8 +281,11 @@ export default {
     },
     },
     mounted() {
+        this.isLoading = true;
         this.mainEchoes = this.currentCharacter?.optimizer?.mainEchoes ?? [];
         this.setFilters = this.currentCharacter?.optimizer?.echoSets ?? [];
+        this.minStats = this.currentCharacter?.optimizer?.minStats ?? [];
+        this.isLoading = false;
     }
 }
 </script>

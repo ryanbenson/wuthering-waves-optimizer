@@ -2201,7 +2201,7 @@ export default defineComponent({
 
     //   return heap.sort((a, b) => b.dmg - a.dmg); // descending
     // }
-const handleOptimize = (setFilters = [], mainEchoes = []) => {
+const handleOptimize = (setFilters = [], mainEchoes = [], minStats = []) => {
   console.log("Main Echo Keys:", mainEchoes);
   const echoes = inventoryStore.echoes;
   const allowedSets = new Set(setFilters);
@@ -2215,7 +2215,7 @@ const handleOptimize = (setFilters = [], mainEchoes = []) => {
     filteredEchoes = echoes.filter(e => allowedSets.has(e.echoSet));
   }
   
-  const results = optimize(filteredEchoes, allowedSets, topN, mainEchoes);
+  const results = optimize(filteredEchoes, allowedSets, topN, mainEchoes, minStats);
   optimizerResults.value = results;
   totalCombos.value = processedCombos.value;
   console.log(results);
@@ -2258,7 +2258,7 @@ function* generateLoadouts(echoes, mainEchoKeys = [], start = 0, combo = [], cos
   }
 }
 
-function optimize(echoes, allowedSets = [], topN = 5, mainEchoKeys = []) {
+function optimize(echoes, allowedSets = [], topN = 5, mainEchoKeys = [], minStats = []) {
   const statsWithoutEchoes = calcCharStats('All', null, { ignoreEchoes: true });
   console.log(statsWithoutEchoes);
   // 2. Min-heap for topN results
@@ -2277,15 +2277,29 @@ function optimize(echoes, allowedSets = [], topN = 5, mainEchoKeys = []) {
     if (seenCombinations.has(combinationKey)) {
       continue;
     }
-    
-    seenCombinations.add(combinationKey);
+
     
     // TODO: implement the stats and damage/desire stat
     // calculate the total buffs from the echoes + set bonuses + main echo bonuses
     // TODO: We have the echo stats, need to add in set bonuses and main echo bonuses
     const echoStats = getCombinedEchoStats(loadout);
     const finalStats = addEchoBuffs(echoStats, statsWithoutEchoes, true);
-    console.log(echoStats, finalStats);
+
+    // if we have some min stats, check them before we add them to the list of usable loadouts
+    if (minStats.length > 0) {
+      for (const minStat of minStats) {
+        const statValue = finalStats?.[minStat.stat];
+        const desiredValue = Number(minStat.minValue) / 100; // we need to divide as we're getting full int, but the stats calculated are decimals
+        // if any of the min stats aren't good enough, then don't use the loadout
+        if (statValue < desiredValue) {
+          continue;
+        }
+      }
+    }
+
+    seenCombinations.add(combinationKey);
+
+    // console.log(echoStats, finalStats);
     const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
     processedCombos.value++;
 
