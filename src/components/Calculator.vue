@@ -245,6 +245,7 @@ import {
   getEchoStats,
   getCombinedEchoStats,
 } from "../echoes/stats";
+import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs, utilityAttacks } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
@@ -2326,6 +2327,12 @@ export default defineComponent({
         // TODO: We have the echo stats, need to add in set bonuses and main echo bonuses
         const echoStats = getCombinedEchoStats(loadout);
         const finalStats = addEchoBuffs(echoStats, statsWithoutEchoes, true);
+        // get the echo sets list
+        const echoSets = getSetsFromEchoes(loadout);
+        const echoSetBonuses = getSetBonusEffects(echoSets);
+        // apply the echo set bonuses
+        console.log("Echo Sets", echoSets);
+        console.log("Echo Set Bonuses", echoSetBonuses);
 
         // if we have some min stats, check them before we add them to the list of usable loadouts
         if (minStats.length > 0) {
