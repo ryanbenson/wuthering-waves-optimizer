@@ -459,7 +459,7 @@ export const echoSetAttacks: EchoAttack[] = [
   },
 ];
 
-type EchoObject = {
+export type EchoObject = {
   echoId: string; // random string
   echo: string; // name of the echo. I use basically the name that's alpha-numeric e.g. AbyssalGladius
   echoSet: string; // name of the echo set, similar: MidnightVeil
@@ -476,45 +476,45 @@ type EchoObject = {
   rank: number; // rarity of the echo (1-5)
   stat: string; // main stat of the echo (e.g. Fusion, CritDMG, HP)
   type: number | string; // cost of the echo (1-4)
-}
+};
 
 export function getEchoStats(echo: EchoObject): Record<string, number> {
   const stats: Record<string, number> = {};
-  
+
   // add in the base stats (flat HP and flat ATK) that's guaranteed
   if (echo.type && echo.rank) {
     let stat = Number(echo.type) === 1 ? "HP_FLAT" : "ATK_FLAT";
     let statValue = flatBonusesByRankByType[Number(echo.type)][echo.rank];
     stats[stat] = (stats[stat] || 0) + statValue;
   }
-  
+
   if (echo.type && echo.rank && echo.stat) {
     const max = statsTable?.[Number(echo.type)]?.[echo.stat]?.[echo.rank];
     if (max) {
       stats[echo.stat] = (stats[echo.stat] || 0) + max;
     }
   }
-  
+
   if (echo.echoSubStatsType1 && echo.echoSubStatsValue1) {
     stats[echo.echoSubStatsType1] =
       (stats[echo.echoSubStatsType1] || 0) + echo.echoSubStatsValue1;
   }
-  
+
   if (echo.echoSubStatsType2 && echo.echoSubStatsValue2) {
     stats[echo.echoSubStatsType2] =
       (stats[echo.echoSubStatsType2] || 0) + echo.echoSubStatsValue2;
   }
-  
+
   if (echo.echoSubStatsType3 && echo.echoSubStatsValue3) {
     stats[echo.echoSubStatsType3] =
       (stats[echo.echoSubStatsType3] || 0) + echo.echoSubStatsValue3;
   }
-  
+
   if (echo.echoSubStatsType4 && echo.echoSubStatsValue4) {
     stats[echo.echoSubStatsType4] =
       (stats[echo.echoSubStatsType4] || 0) + echo.echoSubStatsValue4;
   }
-  
+
   if (echo.echoSubStatsType5 && echo.echoSubStatsValue5) {
     stats[echo.echoSubStatsType5] =
       (stats[echo.echoSubStatsType5] || 0) + echo.echoSubStatsValue5;
@@ -523,13 +523,15 @@ export function getEchoStats(echo: EchoObject): Record<string, number> {
   return stats;
 }
 
-export function getCombinedEchoStats(echoes: EchoObject[]): Record<string, number> {
+export function getCombinedEchoStats(
+  echoes: EchoObject[],
+): Record<string, number> {
   const combinedStats: Record<string, number> = {};
-  
+
   for (let i = 0; i < echoes.length; i++) {
     const echo = echoes[i];
     const echoStats = getEchoStats(echo);
-    
+
     // Use Object.keys for slightly better performance than Object.entries
     const statTypes = Object.keys(echoStats);
     for (let j = 0; j < statTypes.length; j++) {
@@ -538,6 +540,6 @@ export function getCombinedEchoStats(echoes: EchoObject[]): Record<string, numbe
       combinedStats[statType] = (combinedStats[statType] || 0) + statValue;
     }
   }
-  
+
   return combinedStats;
 }

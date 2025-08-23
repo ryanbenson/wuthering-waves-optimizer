@@ -1,3 +1,5 @@
+import { EchoObject } from "../stats";
+
 export const twoSetBonuses: string[] = [
   "Freezing Frost 2 Set",
   "Molten Rift 2 Set",
@@ -17,9 +19,7 @@ export const twoSetBonuses: string[] = [
   "Windward Pilgrimage 2 Set",
   "Flaming Clawprint 2 Set",
 ];
-export const threeSetBonuses: string[] = [
-  "Dream of the Lost 3 Set",
-];
+export const threeSetBonuses: string[] = ["Dream of the Lost 3 Set"];
 export const fiveSetBonuses: string[] = [
   "Freezing Frost 5 Set",
   "Molten Rift 5 Set",
@@ -39,6 +39,16 @@ export const fiveSetBonuses: string[] = [
   "Windward Pilgrimage 5 Set",
   "Flaming Clawprint 5 Set",
 ];
+
+export function getSetsFromEchoes(echoes: EchoObject[]): string[] {
+  const sets: string[] = [];
+  echoes.forEach((echo) => {
+    if (echo) {
+      sets.push(echo.echoSet);
+    }
+  });
+  return sets;
+}
 
 type EchoSetBonus = {
   name: string;
