@@ -46,8 +46,7 @@
                 class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
                 :style="{
                   backgroundImage: `url(${echoesToChoose.image})`,
-                }"
-                ></div>
+                }"></div>
               <h2 class="card-title text-center text-lg">
                 {{ echoesToChoose.name }}
               </h2>
@@ -76,199 +75,262 @@
   </dialog>
   <div class="optimizer" v-if="!isLoading">
     <div class="optimizer-filters">
-        <div class="optimizer-filters__sets">
-            <h3>Choose echo sets</h3>
-            <div class="optimizer-filters__sets--two flex gap-2">
-                <button
-                    v-for="set in echoSets"
-                    :key="set"
-                    @click="toggleSetFilter(set)"
-                    class="size-8 rounded p-[.15rem]"
-                    :class="{'btn-active': isSetFilterActive(set)}"
-                >
-                    <img :src="getSetIcon(set)" :alt="set" />
-                </button>
-            </div>
-            <h3 class="mt-6">Choose main echoes</h3>
-            <div class="optimizer-echoes-chosen flex gap-2">
-              <div v-for="echoKey in mainEchoes" :key="echoKey" class="text-wrap w-[6rem] flex flex-col items-center">
-                  <div
-                      class="echo__item__image rounded-full border border-solid neutral-content size-12 mb-2 bg-cover cursor-pointer"
-                      :style="{
-                          backgroundImage: `url(${mainEchoesData[echoKey]?.image})`,
-                      }"
-                  ></div>
-                  <div class="text-center text-sm">{{ mainEchoesData[echoKey]?.name }}</div>
-                  <button class="btn btn-xs btn-outline mt-1" @click="removeMainEcho(echoKey)">Remove</button>
-              </div>
-            </div>
-            <div>
-                <button @click="openEchoChooser" class="btn btn-primary btn-sm">Choose an echo</button>
-            </div>
+      <div class="optimizer-filters__sets">
+        <h3>Choose echo sets</h3>
+        <div class="optimizer-filters__sets--two flex gap-2">
+          <button
+            v-for="set in echoSets"
+            :key="set"
+            @click="toggleSetFilter(set)"
+            class="size-8 rounded p-[.15rem]"
+            :class="{ 'btn-active': isSetFilterActive(set) }">
+            <img :src="getSetIcon(set)" :alt="set" />
+          </button>
         </div>
-        <div class="optimizer-filters__sets">
-            <h3>Choose target stats</h3>
-            <CalculatorOptimizerMinStats
-              :character="character"
-              :key="character"
-              :min-stats="minStats"
-              @updated-min-stats="handleUpdatedMinStats"
-            ></CalculatorOptimizerMinStats>
+        <div v-if="currentSetBonuses.length" class="optimizer-echo-set-buffs">
+          <h3>Configure echo set buffs</h3>
+          <CalculatorOptimizerEchoSet
+            v-for="(setBonus, index) in currentSetBonuses"
+            :key="setBonus.key"
+            :set-key="setBonus.key"
+            :character="character"
+            :name="setBonus.name"
+            :passives="setBonus.passives"
+            :details="setBonus.details"
+            @updated-optimizer-echo-set-stats="
+              handleUpdatedSetStats
+            "></CalculatorOptimizerEchoSet>
         </div>
+        <h3 class="mt-6">Choose main echoes</h3>
+        <div class="optimizer-echoes-chosen flex gap-2">
+          <div
+            v-for="echoKey in mainEchoes"
+            :key="echoKey"
+            class="text-wrap w-[6rem] flex flex-col items-center">
+            <div
+              class="echo__item__image rounded-full border border-solid neutral-content size-12 mb-2 bg-cover cursor-pointer"
+              :style="{
+                backgroundImage: `url(${mainEchoesData[echoKey]?.image})`,
+              }"></div>
+            <div class="text-center text-sm">
+              {{ mainEchoesData[echoKey]?.name }}
+            </div>
+            <button
+              class="btn btn-xs btn-outline mt-1"
+              @click="removeMainEcho(echoKey)">
+              Remove
+            </button>
+          </div>
+        </div>
+        <div>
+          <button @click="openEchoChooser" class="btn btn-primary btn-sm">
+            Choose an echo
+          </button>
+        </div>
+      </div>
+      <div class="optimizer-filters__sets">
+        <h3>Choose target stats</h3>
+        <CalculatorOptimizerMinStats
+          :character="character"
+          :key="character"
+          :min-stats="minStats"
+          @updated-min-stats="
+            handleUpdatedMinStats
+          "></CalculatorOptimizerMinStats>
+      </div>
     </div>
-    <div class="mt-4">Processed {{ processedCombos }} of {{  totalCombos }}</div>
-    <progress class="progress progress-primary w-56" :value="processedCombos" :max="totalCombos"></progress>
+    <div class="mt-4">Processed {{ processedCombos }} of {{ totalCombos }}</div>
+    <progress
+      class="progress progress-primary w-56"
+      :value="processedCombos"
+      :max="totalCombos"></progress>
     <div>
-        <p v-if="!isValid">Choose echo sets and main echoes</p>
-        <button class="btn btn-primary" @click="handleOptimize" :disabled="!isValid">Optimize</button>
+      <p v-if="!isValid">Choose echo sets and main echoes</p>
+      <button
+        class="btn btn-primary"
+        @click="handleOptimize"
+        :disabled="!isValid">
+        Optimize
+      </button>
     </div>
     <pre>{{ setFilters }}</pre>
-    <pre>{{  mainEchoes }}</pre>
-    <hr></hr>
+    <pre>{{ mainEchoes }}</pre>
+    <hr />
     <pre>{{ optimizerResults }}</pre>
   </div>
 </template>
 
 <script>
 import { echoSetLabelMap, getEchoSetIconByType } from "../echoes/stats";
+import {
+  getSetBonusEffectsFromListOfSetKeys,
+  getSetLabelByKey,
+} from "../echoes/sets";
 import { mainEchoesData } from "../echoes/index";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import CalculatorOptimizerMinStats from "./CalculatorOptimizerMinStats.vue";
+import CalculatorOptimizerEchoSet from "./CalculatorOptimizerEchoSet.vue";
 export default {
-    name: "CalculatorOptimizer",
-    props: {
-        character: {
-            type: String,
-            required: true,
-        },
-        totalCombos: {
-            type: Number
-        },
-        processedCombos: {
-            type: Number
-        },
-        optimizerResults: {
-            type: Array,
-            default: () => []
-        }
+  name: "CalculatorOptimizer",
+  props: {
+    character: {
+      type: String,
+      required: true,
     },
-    components: {
-      CalculatorOptimizerMinStats,
+    totalCombos: {
+      type: Number,
     },
-    data() {
-        return {
-            echoSetLabelMap,
-            mainEchoesData,
-            // echo chooser modal
-            modalIdPicker: "optimizerEchoPicker",
-            echoSetFilter: null,
-            // filters
-            setFilters: [],
-            mainEchoes: [],
-            minStats: [],
-            // state
-            isLoading: true,
-        }
+    processedCombos: {
+      type: Number,
     },
-    methods: {
-        ...mapActions(useCharacterStore, ["setCharacterData"]),
-        echoSetLabelMap,
-        getEchoSetIconByType,
-        handleOptimize() {
-            this.$emit('optimizer:optimize', this.setFilters, this.mainEchoes, this.minStats)
+    optimizerResults: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  components: {
+    CalculatorOptimizerMinStats,
+    CalculatorOptimizerEchoSet,
+  },
+  data() {
+    return {
+      echoSetLabelMap,
+      mainEchoesData,
+      // echo chooser modal
+      modalIdPicker: "optimizerEchoPicker",
+      echoSetFilter: null,
+      // filters
+      setFilters: [],
+      mainEchoes: [],
+      minStats: [],
+      // state
+      isLoading: true,
+      // passive stats list
+      echoSetPassiveStats: {},
+    };
+  },
+  methods: {
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
+    echoSetLabelMap,
+    getEchoSetIconByType,
+    getSetBonusEffectsFromListOfSetKeys,
+    handleOptimize() {
+      this.$emit(
+        "optimizer:optimize",
+        this.setFilters,
+        this.mainEchoes,
+        this.minStats,
+        this.echoSetDataByLabel,
+      );
+    },
+    chooseMainEcho(echoKey) {
+      this.mainEchoes.push(echoKey);
+      this.syncOptimizerConfig();
+      this.closeEchoChooser();
+    },
+    toggleSetFilter(set) {
+      const index = this.setFilters.findIndex((setFilter) => {
+        return setFilter === set;
+      });
+      if (index >= 0) {
+        this.setFilters.splice(index, 1);
+      } else {
+        this.setFilters.push(set);
+      }
+      this.syncOptimizerConfig();
+    },
+    async syncOptimizerConfig() {
+      const data = {
+        optimizer: {
+          mainEchoes: JSON.parse(JSON.stringify(this.mainEchoes)),
+          echoSets: JSON.parse(JSON.stringify(this.setFilters)),
+          minStats: JSON.parse(JSON.stringify(this.minStats)),
         },
-        chooseMainEcho(echoKey) {
-            this.mainEchoes.push(echoKey);
-            this.syncOptimizerConfig();
-            this.closeEchoChooser();
-        },
-        toggleSetFilter(set) {
-            const index = this.setFilters.findIndex((setFilter) => { return setFilter === set});
-            if (index >= 0) {
-                this.setFilters.splice(index, 1);
-            } else {
-                this.setFilters.push(set);
-            }
-            this.syncOptimizerConfig();
-        },
-        async syncOptimizerConfig() {
-            const data = {
-                optimizer: {
-                    mainEchoes: JSON.parse(JSON.stringify(this.mainEchoes)),
-                    echoSets: JSON.parse(JSON.stringify(this.setFilters)),
-                    minStats: JSON.parse(JSON.stringify(this.minStats)),
-                }
-            };
-            await this.setCharacterData(this.character, data);
-        },
-        isSetFilterActive(set) {
-            return this.setFilters.find((setFilter) => { return setFilter === set});
-        },
-        isMainEchoActive(echoKey) {
-            return this.mainEchoes.find((echo) => { return echo === echoKey});
-        },
-        getSetIcon(set) {
-            return this.getEchoSetIconByType(set);
-        },
-        openEchoChooser() {
-        const modalEl = document.getElementById(this.modalIdPicker);
-        modalEl.showModal();
-        },
-        closeEchoChooser() {
-            this.echoSetFilter = null;
-            const modalEl = document.getElementById(this.modalIdPicker);
-            modalEl.close();
-        },
-        toggleEchoSetFilter(echoSet) {
-        if (this.echoSetFilter === echoSet) {
-            this.echoSetFilter = null;
-        } else {
-            this.echoSetFilter = echoSet;
-        }
-        },
-        isEchoSetFilterActive(echoSet) {
-        return this.echoSetFilter === echoSet;
-        },
-        resetFilters() {
+      };
+      await this.setCharacterData(this.character, data);
+    },
+    isSetFilterActive(set) {
+      return this.setFilters.find((setFilter) => {
+        return setFilter === set;
+      });
+    },
+    isMainEchoActive(echoKey) {
+      return this.mainEchoes.find((echo) => {
+        return echo === echoKey;
+      });
+    },
+    getSetIcon(set) {
+      return this.getEchoSetIconByType(set);
+    },
+    openEchoChooser() {
+      const modalEl = document.getElementById(this.modalIdPicker);
+      modalEl.showModal();
+    },
+    closeEchoChooser() {
+      this.echoSetFilter = null;
+      const modalEl = document.getElementById(this.modalIdPicker);
+      modalEl.close();
+    },
+    toggleEchoSetFilter(echoSet) {
+      if (this.echoSetFilter === echoSet) {
         this.echoSetFilter = null;
-        },
-        getEchoSetImage(echoSet) {
-        return getEchoSetIconByType(echoSet);
-        },
+      } else {
+        this.echoSetFilter = echoSet;
+      }
+    },
+    isEchoSetFilterActive(echoSet) {
+      return this.echoSetFilter === echoSet;
+    },
+    resetFilters() {
+      this.echoSetFilter = null;
+    },
+    getEchoSetImage(echoSet) {
+      return getEchoSetIconByType(echoSet);
+    },
     getEchoSetIcon(type) {
       return getEchoSetIconByType(type);
     },
-      handleUpdatedMinStats(stats) {
-        const minStats = JSON.parse(JSON.stringify(stats));
-        this.minStats = minStats;
+    handleUpdatedMinStats(stats) {
+      const minStats = JSON.parse(JSON.stringify(stats));
+      this.minStats = minStats;
+      this.syncOptimizerConfig();
+    },
+    removeMainEcho(echoKey) {
+      const index = this.mainEchoes.findIndex((echo) => echo === echoKey);
+      if (index >= 0) {
+        this.mainEchoes.splice(index, 1);
         this.syncOptimizerConfig();
-      },
-      removeMainEcho(echoKey) {
-        const index = this.mainEchoes.findIndex((echo) => echo === echoKey);
-        if (index >= 0) {
-          this.mainEchoes.splice(index, 1);
-          this.syncOptimizerConfig();
-        }
       }
     },
-    computed: {
-        ...mapState(useCharacterStore, ["characters"]),
-        /**
-         * The current character data
-         * @returns {Object}
-         */
-        currentCharacter() {
-            return this.characters[this.character] ?? {};
-        },
-        isValid() {
-            const echoSetsCount = this.setFilters.length;
-            const mainEchoesCount = this.mainEchoes.length;
-            return echoSetsCount > 0 && mainEchoesCount > 0;
-        },
-        echoSets() {
-            return Object.keys(this.echoSetLabelMap);
-        },
+    handleUpdatedSetStats({ setKey, stats, key }) {
+      const hasSetAlready = Object.prototype.hasOwnProperty.call(
+        this.echoSetPassiveStats,
+        setKey,
+      );
+      if (!hasSetAlready) {
+        this.echoSetPassiveStats[setKey] = {};
+      }
+      this.echoSetPassiveStats[setKey][key] = stats;
+    },
+  },
+  computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
+    isValid() {
+      const echoSetsCount = this.setFilters.length;
+      const mainEchoesCount = this.mainEchoes.length;
+      return echoSetsCount > 0 && mainEchoesCount > 0;
+    },
+    echoSets() {
+      return Object.keys(this.echoSetLabelMap);
+    },
     allEchoesListFiltered() {
       let allEchoes = Object.values(this.mainEchoesData);
       if (this.echoSetFilter) {
@@ -298,13 +360,44 @@ export default {
       });
       return sortedEchoes;
     },
+    currentSetBonuses() {
+      return this.getSetBonusEffectsFromListOfSetKeys(this.setFilters);
     },
-    mounted() {
-        this.isLoading = true;
-        this.mainEchoes = this.currentCharacter?.optimizer?.mainEchoes ?? [];
-        this.setFilters = this.currentCharacter?.optimizer?.echoSets ?? [];
-        this.minStats = this.currentCharacter?.optimizer?.minStats ?? [];
-        this.isLoading = false;
-    }
-}
+    echoSetPassiveStatsByLabel() {
+      const result = {};
+      Object.keys(this.echoSetPassiveStats).forEach((setKey) => {
+        const label = getSetLabelByKey(setKey);
+        result[label] = this.echoSetPassiveStats[setKey];
+      });
+      return result;
+    },
+    echoSetDataByLabel() {
+      const result = {};
+      Object.entries(this.echoSetPassiveStatsByLabel).forEach(
+        ([label, passives]) => {
+          // loop through all passves and merge the stats, put merged stats into the result object
+          // keyed by the current label
+          const mergedStats = {};
+          Object.values(passives).forEach((passiveStats) => {
+            Object.entries(passiveStats).forEach(([stat, value]) => {
+              if (!mergedStats[stat]) {
+                mergedStats[stat] = 0;
+              }
+              mergedStats[stat] += value;
+            });
+          });
+          result[label] = mergedStats;
+        },
+      );
+      return result;
+    },
+  },
+  mounted() {
+    this.isLoading = true;
+    this.mainEchoes = this.currentCharacter?.optimizer?.mainEchoes ?? [];
+    this.setFilters = this.currentCharacter?.optimizer?.echoSets ?? [];
+    this.minStats = this.currentCharacter?.optimizer?.minStats ?? [];
+    this.isLoading = false;
+  },
+};
 </script>

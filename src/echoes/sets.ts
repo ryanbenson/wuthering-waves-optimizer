@@ -40,6 +40,49 @@ export const fiveSetBonuses: string[] = [
   "Flaming Clawprint 5 Set",
 ];
 
+// Function to convert a list of echo set keys (e.g. MidnightVeil)
+// to their corresponding set bonus effects
+// may need to use getEchoSetLabelByType to convert keys to labels
+// it should provide the matching data from setBonusEffectsTwo
+// it can match the top level property which will match the name of the set bonus (e.g. Midnight Veil 2 Set)
+export function getSetBonusEffectsFromListOfSetKeys(
+  echoSetKeys: (string | null)[],
+): EchoSetBonus[] {
+  const echoSets = echoSetKeys.map((key) =>
+    key ? getEchoSetLabelByType(key) : null,
+  );
+  // go through each echoSets,
+  // look at setBonusEffectsTwo keys
+  // do a match (ignore the 2 Set, 3 Set, 5 Set part)
+  // if found, add it to the list and return the full list
+  const setBonuses: EchoSetBonus[] = [];
+  echoSets.forEach((set) => {
+    if (set) {
+      const matchingBonus = Object.keys(setBonusEffectsTwo).filter((bonus) =>
+        bonus.startsWith(set),
+      );
+      if (matchingBonus.length > 0) {
+        // for each matching bonus, get the full object value from setBonusEffectsTwo
+        // and add that to the setBonuses array
+        matchingBonus.forEach((bonus) => {
+          setBonuses.push(setBonusEffectsTwo[bonus]);
+        });
+      }
+    }
+  });
+  return setBonuses;
+}
+
+export function getSetLabelByKey(setKey: string): string | null {
+  const entries = Object.entries(setBonusEffectsTwo);
+  for (const [setLabel, setData] of entries) {
+    if (setData.key === setKey) {
+      return setLabel;
+    }
+  }
+  return null;
+}
+
 export function getSetsFromEchoes(echoes: EchoObject[]): string[] {
   const sets: string[] = [];
   echoes.forEach((echo) => {

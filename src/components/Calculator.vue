@@ -2211,6 +2211,7 @@ export default defineComponent({
       setFilters = [],
       mainEchoes = [],
       minStats = [],
+      echoSetPassiveBuffs = {},
     ) => {
       console.log("Main Echo Keys:", mainEchoes);
       const echoes = inventoryStore.echoes;
@@ -2231,6 +2232,7 @@ export default defineComponent({
         topN,
         mainEchoes,
         minStats,
+        echoSetPassiveBuffs,
       );
       optimizerResults.value = results;
       totalCombos.value = processedCombos.value;
@@ -2300,6 +2302,7 @@ export default defineComponent({
       topN = 5,
       mainEchoKeys = [],
       minStats = [],
+      echoSetPassiveBuffs = {},
     ) {
       const statsWithoutEchoes = calcCharStats("All", null, {
         ignoreEchoes: true,
@@ -2326,13 +2329,27 @@ export default defineComponent({
         // calculate the total buffs from the echoes + set bonuses + main echo bonuses
         // TODO: We have the echo stats, need to add in set bonuses and main echo bonuses
         const echoStats = getCombinedEchoStats(loadout);
-        const finalStats = addEchoBuffs(echoStats, statsWithoutEchoes, true);
+        let finalStats = addEchoBuffs(echoStats, statsWithoutEchoes, true);
         // get the echo sets list
         const echoSets = getSetsFromEchoes(loadout);
         const echoSetBonuses = getSetBonusEffects(echoSets);
-        // apply the echo set bonuses
-        console.log("Echo Sets", echoSets);
-        console.log("Echo Set Bonuses", echoSetBonuses);
+        const setBonusOne = echoSetBonuses?.setBonusOne ?? null;
+        const setBonusTwo = echoSetBonuses?.setBonusTwo ?? null;
+        if (setBonusOne) {
+          const setBonuses = echoSetPassiveBuffs?.[setBonusOne] ?? null;
+          if (setBonuses) {
+            // if we have some user-inputted buffs for this set bonus, apply them
+            finalStats = addEchoBuffs(setBonuses, finalStats, true);
+          }
+        }
+        if (setBonusTwo) {
+          const setBonuses = echoSetPassiveBuffs?.[setBonusTwo] ?? null;
+          if (setBonuses) {
+            // if we have some user-inputted buffs for this set bonus, apply them
+            finalStats = addEchoBuffs(setBonuses, finalStats, true);
+          }
+        }
+        // TODO: apply the main echo buffs too
 
         // if we have some min stats, check them before we add them to the list of usable loadouts
         if (minStats.length > 0) {
