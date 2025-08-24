@@ -90,6 +90,18 @@
                 </button>
             </div>
             <h3 class="mt-6">Choose main echoes</h3>
+            <div class="optimizer-echoes-chosen flex gap-2">
+              <div v-for="echoKey in mainEchoes" :key="echoKey" class="text-wrap w-[6rem] flex flex-col items-center">
+                  <div
+                      class="echo__item__image rounded-full border border-solid neutral-content size-12 mb-2 bg-cover cursor-pointer"
+                      :style="{
+                          backgroundImage: `url(${mainEchoesData[echoKey]?.image})`,
+                      }"
+                  ></div>
+                  <div class="text-center text-sm">{{ mainEchoesData[echoKey]?.name }}</div>
+                  <button class="btn btn-xs btn-outline mt-1" @click="removeMainEcho(echoKey)">Remove</button>
+              </div>
+            </div>
             <div>
                 <button @click="openEchoChooser" class="btn btn-primary btn-sm">Choose an echo</button>
             </div>
@@ -231,6 +243,13 @@ export default {
         const minStats = JSON.parse(JSON.stringify(stats));
         this.minStats = minStats;
         this.syncOptimizerConfig();
+      },
+      removeMainEcho(echoKey) {
+        const index = this.mainEchoes.findIndex((echo) => echo === echoKey);
+        if (index >= 0) {
+          this.mainEchoes.splice(index, 1);
+          this.syncOptimizerConfig();
+        }
       }
     },
     computed: {
