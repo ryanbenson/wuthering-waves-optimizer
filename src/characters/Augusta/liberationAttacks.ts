@@ -1,0 +1,40 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Fire-Kissed Glory",
+  description: `<div class="skilldescription">Attack the target and deal <span class="Fire">Fusion DMG</span>. Performing this attack consumes all Wolfaith and restores 100 points of Wolflame. Use Basic Attack or Resonance Skill shortly after to cast Resonance Skill <span class="Highlight">Foebreaker</span>.<br>Can be performed in mid-air close to the ground.<br>Performing this skill strengthens all Resonators in the team. Within 35s:<br>- All Resonators in the team gain <span class="Highlight">Pack Hunt</span> effect.<br>- If the active Resonator is hit or launched into the air, they immediately recover and are considered to have successfully dodged the attack when they are on the ground. Can be triggered up to 3 times.<br><span class="Title">Pack Hunt</span><br>Resonators with <span class="Highlight">Pack Hunt</span> gain a 6% ATK increase, and 10% Fusion DMG Bonus when they attack Overlord Class or Calamity Class targets (Both are non-stackable). If there are 3 Fusion Resonators in the team, the Fusion DMG Bonus against Overlord Class or Calamity Class targets additionally increases by 10%. When the active Resonator casts <span class="Highlight">Intro Skill</span>, <span class="Highlight">Pack Hunt</span> is enhanced, granting an additional 6% ATK increase to all Resonators in the team, up to a maximum of 18%.<br>If Lupa's <span class="Highlight">Pack Hunt</span> reaches its cap within its duration, she enters <span class="Highlight">Wild Hunt</span> and Intro Skill <span class="Highlight">Nowhere to Run!</span> becomes available. <span class="Highlight">Wild Hunt</span> can be triggered once per <span class="Highlight">Pack Hunt</span>.<br><span class="Title">Resonance Skill - Foebreaker</span><br>Consume all Wolflame to perform <span class="Highlight">Foebreaker</span>, dealing <span class="Fire">Fusion DMG</span> and entering <span class="Highlight">Burning Matchpoint</span> state. <br><span class="Title">Burning Matchpoint</span><br>Normal Attacks increase Wolflame Regen by 500% on hit. Cannot perform Resonance Skill <span class="Highlight">Shewolf's Hunt</span> and Resonance Skill <span class="Highlight">Feral Fang</span> in this state.</div>`,
+  attacks: [
+    {
+      key: "FireKissedGloryDMG",
+      label: "Fire-Kissed Glory DMG",
+      talents: {
+        "1": "412.68%",
+        "2": "446.52%",
+        "3": "480.36%",
+        "4": "527.73%",
+        "5": "561.57%",
+        "6": "600.48%",
+        "7": "654.63%",
+        "8": "708.77%",
+        "9": "762.91%",
+        "10": "820.44%",
+      },
+      type: "Liberation",
+    },
+    {
+      key: "FoebreakerDMG",
+      label: "Foebreaker DMG",
+      talents: {
+        "1": "153.14%",
+        "2": "165.70%",
+        "3": "178.26%",
+        "4": "195.84%",
+        "5": "208.40%",
+        "6": "222.84%",
+        "7": "242.93%",
+        "8": "263.02%",
+        "9": "283.11%",
+        "10": "304.46%",
+      },
+      type: "Skill",
+    },
+  ],
+};
