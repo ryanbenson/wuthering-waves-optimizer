@@ -2212,6 +2212,7 @@ export default defineComponent({
       mainEchoes = [],
       minStats = [],
       echoSetPassiveBuffs = {},
+      mainEchoStats = {},
     ) => {
       console.log("Main Echo Keys:", mainEchoes);
       const echoes = inventoryStore.echoes;
@@ -2233,6 +2234,7 @@ export default defineComponent({
         mainEchoes,
         minStats,
         echoSetPassiveBuffs,
+        mainEchoStats,
       );
       optimizerResults.value = results;
       totalCombos.value = processedCombos.value;
@@ -2303,6 +2305,7 @@ export default defineComponent({
       mainEchoKeys = [],
       minStats = [],
       echoSetPassiveBuffs = {},
+      mainEchoStats = {},
     ) {
       const statsWithoutEchoes = calcCharStats("All", null, {
         ignoreEchoes: true,
@@ -2349,7 +2352,10 @@ export default defineComponent({
             finalStats = addEchoBuffs(setBonuses, finalStats, true);
           }
         }
-        // TODO: apply the main echo buffs too
+        //add in the main echo buff, if we have some
+        const mainEchoKey = loadout[0]?.echo;
+        const mainEchoBuff = mainEchoStats?.[mainEchoKey] ?? {};
+        finalStats = addEchoBuffs(mainEchoBuff, finalStats, true);
 
         // if we have some min stats, check them before we add them to the list of usable loadouts
         if (minStats.length > 0) {

@@ -39,8 +39,7 @@
           <div
             v-for="echoesToChoose in allEchoesListFiltered"
             :key="echoesToChoose.key"
-            class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
-            @click="chooseMainEcho(echoesToChoose.key)">
+            class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
             <div class="card-body items-center">
               <div
                 class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
@@ -104,20 +103,20 @@
         <h3 class="mt-6">Choose main echoes</h3>
         <div class="optimizer-echoes-chosen flex gap-2">
           <div
-            v-for="echoKey in mainEchoes"
-            :key="echoKey"
+            v-for="echo in allMainEchoesData"
+            :key="echo.key"
             class="text-wrap w-[6rem] flex flex-col items-center">
             <div
               class="echo__item__image rounded-full border border-solid neutral-content size-12 mb-2 bg-cover cursor-pointer"
               :style="{
-                backgroundImage: `url(${mainEchoesData[echoKey]?.image})`,
+                backgroundImage: `url(${echo.image})`,
               }"></div>
             <div class="text-center text-sm">
-              {{ mainEchoesData[echoKey]?.name }}
+              {{ echo.name }}
             </div>
             <button
               class="btn btn-xs btn-outline mt-1"
-              @click="removeMainEcho(echoKey)">
+              @click="removeMainEcho(echo.key)">
               Remove
             </button>
           </div>
@@ -127,6 +126,25 @@
             Choose an echo
           </button>
         </div>
+      </div>
+      <div class="optimizer-main-echoes-chosen">
+        <CalculatorOptimizerMainEcho
+          v-for="echo in allMainEchoesData"
+          :key="echo.key"
+          :echo-key="echo.key"
+          :name="echo.name"
+          :echo-class="echo.class"
+          :image="echo.image"
+          :sets="echo.sets"
+          :details="echo.details"
+          :modifiers="echo.modifiers"
+          :actions="echo.actions"
+          :has-stacks="echo.hasStacks"
+          :min-stacks="echo.minStacks"
+          :max-stacks="echo.maxStacks"
+          @updated-main-echo-buffs="
+            handleUpdatedMainEchoBuffs
+          "></CalculatorOptimizerMainEcho>
       </div>
       <div class="optimizer-filters__sets">
         <h3>Choose target stats</h3>
@@ -154,7 +172,7 @@
       </button>
     </div>
     <pre>{{ setFilters }}</pre>
-    <pre>{{ mainEchoes }}</pre>
+    <pre>{{ mainEchoStats }}</pre>
     <hr />
     <pre>{{ optimizerResults }}</pre>
   </div>
@@ -166,11 +184,13 @@ import {
   getSetBonusEffectsFromListOfSetKeys,
   getSetLabelByKey,
 } from "../echoes/sets";
-import { mainEchoesData } from "../echoes/index";
+import { mainEchoesData, getEchoData } from "../echoes/index";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import CalculatorOptimizerMinStats from "./CalculatorOptimizerMinStats.vue";
 import CalculatorOptimizerEchoSet from "./CalculatorOptimizerEchoSet.vue";
+import CalculatorOptimizerMainEcho from "./CalculatorOptimizerMainEcho.vue";
+import Calculator from "./Calculator.vue";
 export default {
   name: "CalculatorOptimizer",
   props: {
@@ -192,6 +212,7 @@ export default {
   components: {
     CalculatorOptimizerMinStats,
     CalculatorOptimizerEchoSet,
+    CalculatorOptimizerMainEcho,
   },
   data() {
     return {
@@ -208,6 +229,7 @@ export default {
       isLoading: true,
       // passive stats list
       echoSetPassiveStats: {},
+      mainEchoStats: {},
     };
   },
   methods: {
@@ -222,6 +244,7 @@ export default {
         this.mainEchoes,
         this.minStats,
         this.echoSetDataByLabel,
+        this.mainEchoStats,
       );
     },
     chooseMainEcho(echoKey) {
@@ -313,6 +336,16 @@ export default {
       }
       this.echoSetPassiveStats[setKey][key] = stats;
     },
+    handleUpdatedMainEchoBuffs({ key, stats }) {
+      const hasEchoAlready = Object.prototype.hasOwnProperty.call(
+        this.mainEchoStats,
+        key,
+      );
+      if (!hasEchoAlready) {
+        this.mainEchoStats[key] = {};
+      }
+      this.mainEchoStats[key] = stats;
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -390,6 +423,15 @@ export default {
         },
       );
       return result;
+    },
+    allMainEchoesData() {
+      const echoData = [];
+      this.mainEchoes.forEach((echoKey) => {
+        if (this.mainEchoesData[echoKey]) {
+          echoData.push(getEchoData([echoKey]));
+        }
+      });
+      return echoData;
     },
   },
   mounted() {
