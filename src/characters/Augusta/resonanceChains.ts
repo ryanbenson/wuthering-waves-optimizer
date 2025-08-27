@@ -13,12 +13,8 @@ export const resonanceChains = [
     key: "SequenceNode2CleansedinCrimsonWar",
     name: "Sequence Node 2: Cleansed in Crimson War",
     details: `<div>- <a onclick="showTermExplan(130601)" class="ingame-term-desc">Crown of Wills</a> provides additional effects: Each stack increases Augusta's Crit. Rate by 20%.<br>- For every 1% of Crit. Rate over 100%, Augusta gains 2% Crit. DMG increase, up to 100%.</div>`,
-    hasStacks: true,
+    hasStacks: false,
     modifiers: [
-      {
-        modifier: "CritRate",
-        modifierValue: 0.2,
-      },
       {
         modifier: "CritOverflow",
         modifierValue: 0.02,
@@ -28,7 +24,7 @@ export const resonanceChains = [
       },
     ],
     minStacks: 0,
-    maxStacks: 2,
+    maxStacks: 0,
     alwaysEnabled: false,
   },
   {

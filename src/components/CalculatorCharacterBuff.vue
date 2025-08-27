@@ -114,6 +114,12 @@
         immediate: true,
       },
       // Watch for changes in resonance chains to recalculate buff stats
+      'currentCharacter.resonanceChains.SequenceNode1StainedinScorchedEarth.isEnabled': {
+        handler: function() {
+          this.updatedStats();
+        },
+        immediate: true,
+      },
       'currentCharacter.resonanceChains.SequenceNode2CleansedinCrimsonWar.isEnabled': {
         handler: function() {
           this.updatedStats();
@@ -212,26 +218,42 @@
         let effectiveModifiers = [...this.modifiers];
         let effectiveStacks = this.stacks || 0; // Use the actual user input stacks
   
-        // Check if resonance chain buffs are enabled and apply their effects
-        const sequenceNode1 = this.currentCharacter?.resonanceChains?.SequenceNode1StainedinScorchedEarthExtraElectroBuff;
-        const sequenceNode6 = this.currentCharacter?.resonanceChains?.SequenceNode6EngravedinRadiantLight;
-  
-        // Apply SequenceNode2 effects if enabled
-        if (sequenceNode1?.isEnabled) {
-          effectiveMaxStacks = 2;
-          // Add CritDMG modifier if not already present
-          const hasCritDMG = effectiveModifiers.some(mod => mod.modifier === 'CritDMG');
-          if (!hasCritDMG) {
-            effectiveModifiers.push({
-              modifier: 'CritDMG',
-              modifierValue: 0.12
-            });
+        // this only applies to CrownofWills on Augusta
+        if (this.character === "Augusta" && this.uniqueKey === "CrownofWills") {
+          // Check if resonance chain buffs are enabled and apply their effects
+          const sequenceNode1 = this.currentCharacter?.resonanceChains?.SequenceNode1StainedinScorchedEarth;
+          const sequenceNode2 = this.currentCharacter?.resonanceChains?.SequenceNode2CleansedinCrimsonWar;
+          const sequenceNode6 = this.currentCharacter?.resonanceChains?.SequenceNode6EngravedinRadiantLight;
+    
+          // Apply SequenceNode1 effects if enabled
+          if (sequenceNode1?.isEnabled) {
+            effectiveMaxStacks = 2;
+            // Add CritDMG modifier if not already present
+            const hasCritDMG = effectiveModifiers.some(mod => mod.modifier === 'CritDMG');
+            if (!hasCritDMG) {
+              effectiveModifiers.push({
+                modifier: 'CritDMG',
+                modifierValue: 0.12
+              });
+            }
           }
-        }
-  
-        // Apply SequenceNode6 effects if enabled
-        if (sequenceNode6?.isEnabled) {
-          effectiveMaxStacks = 4;
+
+          // Apply SequenceNode2 effects if enabled
+          if (sequenceNode2?.isEnabled) {
+            // Add CritDMG modifier if not already present
+            const hasCritDMG = effectiveModifiers.some(mod => mod.modifier === 'CritRate');
+            if (!hasCritDMG) {
+              effectiveModifiers.push({
+                modifier: 'CritRate',
+                modifierValue: 0.2
+              });
+            }
+          }
+    
+          // Apply SequenceNode6 effects if enabled
+          if (sequenceNode6?.isEnabled) {
+            effectiveMaxStacks = 4;
+          }
         }
   
         // If both are enabled, SequenceNode6 takes precedence (4 max stacks)
