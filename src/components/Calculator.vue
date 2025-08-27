@@ -761,6 +761,11 @@ export default defineComponent({
         });
       }
 
+      // check for CritOverflow
+      // TODO: if this is Augusta, look for "SequenceNode2CleansedinCrimsonWar", and SequenceNode6EngravedinRadiantLight
+      // in the resonance chains of the character in the store
+      // if found, then apply the crit overflow logic
+
       if (returnValue) {
         switch (returnValue) {
           case "All":
