@@ -1,32 +1,12 @@
 export const resonanceChains = [
   {
-    key: "SequenceNode1StainedinScorchedEarthExtraElectroBuff",
-    name: "Sequence Node 1: Stained in Scorched Earth - Extra Electro Buff",
-    details: `<div>The max stack of Crown of Wills is increased to 2.<br>- Casting <span class="ingame-Highlight">Intro Skill - Stride of Goldenflare</span> now grants 1 stack of Crown of Wills. <br>- <span class="ingame-Highlight">Resonance Skill - Undying Sunlight: Strike</span>, <span class="ingame-Highlight">Resonance Skill - Undying Sunlight: Leap</span>, and <span class="ingame-Highlight">Resonance Skill - Undying Sunlight: Plunge</span> are now immune to interruption.</div>`,
-    hasStacks: true,
-    modifiers: [
-      {
-        modifier: "Electro",
-        modifierValue: 0.15,
-      },
-    ],
+    key: "SequenceNode1StainedinScorchedEarth",
+    name: "Sequence Node 1: Stained in Scorched Earth",
+    details: `<div>- Each stack of <a onclick="showTermExplan(130601)" class="ingame-term-desc">Crown of Wills</a> additionally increases Augusta's Crit. DMG by 15%. <br>- The max stack of Crown of Wills is increased to 2.<br>- Casting <span class="ingame-Highlight">Intro Skill - Stride of Goldenflare</span> now grants 1 stack of Crown of Wills. <br>- <span class="ingame-Highlight">Resonance Skill - Undying Sunlight: Strike</span>, <span class="ingame-Highlight">Resonance Skill - Undying Sunlight: Leap</span>, and <span class="ingame-Highlight">Resonance Skill - Undying Sunlight: Plunge</span> are now immune to interruption.</div>`,
+    hasStacks: false,
+    modifiers: [],
     minStacks: 0,
-    maxStacks: 1,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode1StainedinScorchedEarthCritDMG",
-    name: "Sequence Node 1: Stained in Scorched Earth - Crit DMG",
-    details: `<div>- Each stack of Crown of Wills additionally increases Augusta's Crit. DMG by 15%. <br>- The max stack of Crown of Wills is increased to 2.</div>`,
-    hasStacks: true,
-    modifiers: [
-      {
-        modifier: "CritDMG",
-        modifierValue: 0.15,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 2,
+    maxStacks: 0,
     alwaysEnabled: false,
   },
   {
@@ -108,7 +88,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode6EngravedinRadiantLight",
     name: "Sequence Node 6: Engraved in Radiant Light",
-    details: `<div>- For every 1% of Crit. Rate over 150%, Augusta gains 2% Crit. DMG increase, up to 50%.<br>- When Augusta performs <span class="ingame-Highlight">Heavy Attack - Thunderoar: Spinslash</span> or <span class="ingame-Highlight">Heavy Attack - Thunderoar: Uppercut</span>, she obtains 2 stacks of Crown of Wills. Augusta can only obtain 2 stacks of Crown of Wills every 1s via <span class="ingame-Highlight">Engraved in Radiant Light</span>. <br>- While casting <span class="ingame-Highlight">Heavy Attack - Thunderoar: Spinslash</span> or <span class="ingame-Highlight">Heavy Attack - Thunderoar: Uppercut</span>, Thunder Rage is triggered at the spot, dealing two instances of <span class="ingame-Thunder">Electro DMG</span>, with each instance equal to 100% of Augusta's ATK, considered as Heavy Attack DMG.</div>`,
+    details: `<div>- Augusta can now hold up to 4 stacks of <a onclick="showTermExplan(130601)" class="ingame-term-desc">Crown of Wills</a>. <br>- For every 1% of Crit. Rate over 150%, Augusta gains 2% Crit. DMG increase, up to 50%.<br>- When Augusta performs <span class="ingame-Highlight">Heavy Attack - Thunderoar: Spinslash</span> or <span class="ingame-Highlight">Heavy Attack - Thunderoar: Uppercut</span>, she obtains 2 stacks of Crown of Wills. Augusta can only obtain 2 stacks of Crown of Wills every 1s via <span class="ingame-Highlight">Engraved in Radiant Light</span>. <br>- While casting <span class="ingame-Highlight">Heavy Attack - Thunderoar: Spinslash</span> or <span class="ingame-Highlight">Heavy Attack - Thunderoar: Uppercut</span>, Thunder Rage is triggered at the spot, dealing two instances of <span class="ingame-Thunder">Electro DMG</span>, with each instance equal to 100% of Augusta's ATK, considered as Heavy Attack DMG.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -125,25 +105,6 @@ export const resonanceChains = [
     ],
     minStacks: 0,
     maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode6EngravedinRadiantLightCrownofWills",
-    name: "Sequence Node 6: Engraved in Radiant Light - Additional Crown of Wills",
-    details: `<div>- Augusta can now hold up to 4 stacks of Crown of Wills.</div>`,
-    hasStacks: true,
-    modifiers: [
-      {
-        modifier: "CritDMG",
-        modifierValue: 0.15,
-      },
-      {
-        modifier: "Electro",
-        modifierValue: 0.15,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 2,
     alwaysEnabled: false,
   },
 ];
