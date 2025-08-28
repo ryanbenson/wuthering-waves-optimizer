@@ -52,6 +52,9 @@ describe("Home E2E Tests", () => {
   });
 
   it("should have the main titles of all attack groups for default character", () => {
+    cy.get(".character__selection__form--character select").select("Brant");
+    cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
+    cy.get(".character__selection.Brant").should("be.visible");
     cy.get(`[data-test-char-avatar="Brant"]`).should("be.visible");
     cy.get(".damage__title")
       .should("contain.text", "Normal Attack: Captain's Rhapsody")

@@ -8,6 +8,7 @@ interface CharacterListItem {
 export function getCharactersAvailable(): CharacterList {
   return {
     five: [
+      { key: "Augusta", name: "Augusta" },
       { key: "Brant", name: "Brant" },
       { key: "Calcharo", name: "Calcharo" },
       { key: "Camellya", name: "Camellya" },
@@ -56,6 +57,13 @@ export function getCharactersAvailable(): CharacterList {
 
 export const allCharactersList = [
   // rarity 5
+  {
+    key: "Augusta",
+    name: "Augusta",
+    element: "Electro",
+    rarity: 5,
+    weapon: "Broadblade",
+  },
   {
     key: "Brant",
     name: "Brant",
@@ -362,6 +370,7 @@ export const weaponTypesImageMap: Record<string, string> = {
 
 export const allCharacters: string[] = [
   "Aalto",
+  "Augusta",
   "Baizhi",
   "Brant",
   "Calcharo",

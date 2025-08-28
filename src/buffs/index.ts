@@ -1264,6 +1264,39 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Augusta: [
+    {
+      key: "OutroSkillBattlesongoftheUnyielding",
+      name: "Outro Skill: Battlesong of the Unyielding",
+      details: `The next Resonator switched onto the field gains the following effects for 14s, which end immediately if they are switched out:<br>
+- Gain 15% DMG Amplification for all Attributes.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4AscentinSunandGlory",
+      name: "Sequence Node 4: Ascent in Sun and Glory",
+      details: `<div>Casting <span class="ingame-Highlight">Intro Skill - Stride of Goldenflare</span> increases the ATK of all Resonators in the team by 20% for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
