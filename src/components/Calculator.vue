@@ -15,10 +15,8 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div
-            v-if="false"
-            class="alert alert-success mb-6 text-white p-2 px-4">
-            2.5 content is now available!
+          <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
+            Augusta, her sig, 4* weapons, and echoes are available.
           </div>
           <CalculatorCharacterSelect
             :key="character"
@@ -766,8 +764,12 @@ export default defineComponent({
       // in the resonance chains of the character in the store
       // if found, then apply the crit overflow logic
       if (character.value === "Augusta") {
-        const isAugustaS2Enabled = characters.value?.[character.value]?.resonanceChains?.SequenceNode2CleansedinCrimsonWar?.isEnabled ?? false;
-        const isAugustaS6Enabled = characters.value?.[character.value]?.resonanceChains?.SequenceNode6EngravedinRadiantLight?.isEnabled ?? false;
+        const isAugustaS2Enabled =
+          characters.value?.[character.value]?.resonanceChains
+            ?.SequenceNode2CleansedinCrimsonWar?.isEnabled ?? false;
+        const isAugustaS6Enabled =
+          characters.value?.[character.value]?.resonanceChains
+            ?.SequenceNode6EngravedinRadiantLight?.isEnabled ?? false;
         if (isAugustaS2Enabled) {
           const overflowConfigs = {
             modifier: "CritOverflow",
@@ -778,18 +780,17 @@ export default defineComponent({
           };
           const currentCritRate = stats.critRate;
           if (currentCritRate > overflowConfigs.overflowMin) {
-            const {
-              modifierValue,
-              overflowStep,
-              overflowMin,
-              overflowMax,
-            } = overflowConfigs;
+            const { modifierValue, overflowStep, overflowMin, overflowMax } =
+              overflowConfigs;
             // Calculate how much Crit Rate is overflowing (above 100%)
             const overflowAmount = Math.max(0, currentCritRate - overflowMin);
             // Calculate how many overflow steps we have
             const overflowSteps = Math.floor(overflowAmount / overflowStep);
             // Calculate the Crit DMG bonus from overflow (capped by overflowMax)
-            const overflowBonus = Math.min(overflowSteps * modifierValue, overflowMax);
+            const overflowBonus = Math.min(
+              overflowSteps * modifierValue,
+              overflowMax,
+            );
             // Apply the overflow bonus to Crit DMG
             stats.critDMG += overflowBonus;
           }
@@ -804,18 +805,17 @@ export default defineComponent({
           };
           const currentCritRate = stats.critRate;
           if (currentCritRate > overflowConfigs.overflowMin) {
-            const {
-              modifierValue,
-              overflowStep,
-              overflowMin,
-              overflowMax,
-            } = overflowConfigs;
+            const { modifierValue, overflowStep, overflowMin, overflowMax } =
+              overflowConfigs;
             // Calculate how much Crit Rate is overflowing (above 100%)
             const overflowAmount = Math.max(0, currentCritRate - overflowMin);
             // Calculate how many overflow steps we have
             const overflowSteps = Math.floor(overflowAmount / overflowStep);
             // Calculate the Crit DMG bonus from overflow (capped by overflowMax)
-            const overflowBonus = Math.min(overflowSteps * modifierValue, overflowMax);
+            const overflowBonus = Math.min(
+              overflowSteps * modifierValue,
+              overflowMax,
+            );
             // Apply the overflow bonus to Crit DMG
             stats.critDMG += overflowBonus;
           }
