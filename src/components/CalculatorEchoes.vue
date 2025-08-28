@@ -13,10 +13,12 @@
     <CalculatorSaveEchoesPreset
       ref="echoesSavePreset"
       @on-save-echo-preset="handleOnSaveEchoPreset"></CalculatorSaveEchoesPreset>
+    <CalculatorEchoesPresetsGuide
+      ref="echoesPresetsGuide"></CalculatorEchoesPresetsGuide>
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
-    <div class="actions mb-4 flex gap-2">
+    <div class="actions mb-4 flex gap-2 flex-wrap">
       <button class="btn btn-sm btn-primary" @click="handleOpenEchoesImporter">
         Import Echoes
       </button>
@@ -25,6 +27,9 @@
       </button>
       <button class="btn btn-sm btn-primary" @click="handleOpenSaveEchoPreset">
         Save Preset
+      </button>
+      <button class="btn btn-sm btn-primary btn-outline" @click="handleOpenPresetsGuide">
+        Presets Guide
       </button>
     </div>
     <div v-if="echoPresetName" class="badge badge-primary badge-outline mb-4">
@@ -145,6 +150,7 @@ import CalculatorEchoesBrowser from "./CalculatorEchoesBrowser.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import CalculatorEchoesPresets from "./CalculatorEchoesPresets.vue";
 import CalculatorSaveEchoesPreset from "./CalculatorSaveEchoesPreset.vue";
+import CalculatorEchoesPresetsGuide from "./CalculatorEchoesPresetsGuide.vue";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
@@ -166,6 +172,7 @@ export default {
     CalculatorEchoesSetBonusTwo,
     CalculatorEchoImporter,
     CalculatorSaveEchoesPreset,
+    CalculatorEchoesPresetsGuide,
   },
   data() {
     return {
@@ -471,6 +478,9 @@ export default {
     },
     handleOpenEchoesPreset() {
       this.$refs.echoesPresets.triggerOpenModal();
+    },
+    handleOpenPresetsGuide() {
+      this.$refs.echoesPresetsGuide.triggerOpenModal();
     },
     handleOpenSaveEchoPreset() {
       if (this.echoPresetName) {

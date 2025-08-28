@@ -10,6 +10,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 28, 2025</h3>
+    <ul>
+      <li>
+        Added an echo presets guide to explain the feature and things to avoid.
+      </li>
+    </ul>
     <h3>August 27, 2025</h3>
     <ul>
       <li>
