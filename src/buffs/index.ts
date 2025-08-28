@@ -1439,6 +1439,21 @@ CD: <span class="param">20</span>s</span>`,
     maxStacks: 0,
     alwaysEnabled: false,
   },
+  {
+    key: "LawofHarmony",
+    name: "Law of Harmony",
+    details: `Casting Echo Skill grants 30% Heavy Attack DMG Bonus to the caster for 4s.</br>Additionally, all Resonators in the team gain 4% Echo Skill DMG Bonus for 30s, stacking up to 4 times. Echoes of the same name can only trigger this effect once. The record of Echo triggering this effect is cleared along with this effect. At 4 stacks, casting Echo Skill again resets the duration of this effect.`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "EchoDMGBonus",
+        modifierValue: 0.04,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 4,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allWeaponTeamBuffs = [
