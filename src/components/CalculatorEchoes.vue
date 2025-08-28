@@ -483,8 +483,8 @@ export default {
       this.$refs.echoesPresetsGuide.triggerOpenModal();
     },
     handleOpenSaveEchoPreset() {
-      if (this.echoPresetName) {
-        this.$refs.echoesSavePreset.setPresetName(this.echoPresetName);
+      if (this.echoPresetId) {
+        this.$refs.echoesSavePreset.setPresetId(this.echoPresetId);
       }
       this.$refs.echoesSavePreset.triggerOpenModal();
     },
