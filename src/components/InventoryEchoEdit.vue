@@ -104,6 +104,11 @@
             </div>
           </div>
         </div>
+        <div
+          v-if="echoPresetsFoundWithEcho.length"
+          class="echo__in-preset alert alert-info my-2 flex items-center p-2">
+            This echo is found in {{ echoPresetsFoundWithEcho.length }} presets. Any changes will affect those too.
+        </div>
         <div class="echo__selection__input w-full mt-8">
           <div class="echo__selection__rank flex flex-col pb-7 relative">
             <label for="rank" class="rank__label">
@@ -891,8 +896,11 @@ export default {
     },
   },
   computed: {
-    ...mapState(useInventoryStore, ["echoes"]),
+    ...mapState(useInventoryStore, ["echoes", "getEchoPresetsByEchoId"]),
     ...mapState(useSettingsStore, ["config"]),
+    echoPresetsFoundWithEcho() {
+      return this.getEchoPresetsByEchoId(this.echoId);
+    },
     settingsTheme() {
       const settingsTheme = this.config?.theme ?? null;
       return settingsTheme;

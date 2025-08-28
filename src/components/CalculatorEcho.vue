@@ -3,7 +3,7 @@
     <form method="dialog" class="modal-backdrop">
       <button>close</button>
     </form>
-    <div class="modal-box max-w-xl">
+    <div class="modal-box max-w-2xl">
       <form method="dialog">
         <button
           class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
@@ -115,6 +115,9 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png"
             class="size-8" />
           This echo is in your inventory.
+          <template v-if="echoPresetsFoundWithEcho.length">
+            This echo is found in {{ echoPresetsFoundWithEcho.length }} presets. Any changes will affect those too.
+          </template>
         </div>
         <div class="echo__selection__input w-full mt-8">
           <div class="echo__selection__rank flex flex-col pb-7 relative">
@@ -1332,11 +1335,14 @@ export default {
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
-    ...mapState(useInventoryStore, ["echoes"]),
+    ...mapState(useInventoryStore, ["echoes", "getEchoPresetsByEchoId"]),
     ...mapState(useSettingsStore, ["config"]),
     settingsTheme() {
       const settingsTheme = this.config?.theme ?? null;
       return settingsTheme;
+    },
+    echoPresetsFoundWithEcho() {
+      return this.getEchoPresetsByEchoId(this.echoId);
     },
     rangeClasses() {
       const classes = [];
