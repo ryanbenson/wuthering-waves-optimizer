@@ -1176,9 +1176,12 @@ export default defineComponent({
           selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEFIgnore`] ?? 0;
         const extraDefIgnoreCustomBuffs = customBuffs.value?.DefIgnore ?? 0;
         const attackBuffsDefIgnore = attack?.buffs?.DefIgnore ?? 0;
-        const weaponDefIgnoreSpecificDmgType =
+        let weaponDefIgnoreSpecificDmgType =
           weaponData?.value?.weaponPassiveStats?.[`DEFIgnore:${attack.type}`] ??
           0;
+        if (excludeWeaponBuffs) {
+          weaponDefIgnoreSpecificDmgType = 0;
+        }
         const specificSkillExtraCritRate =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:CritRate`
