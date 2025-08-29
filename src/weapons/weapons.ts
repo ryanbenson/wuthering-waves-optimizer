@@ -119,6 +119,7 @@ const gauntletsList = {
   five: [
     { key: "AbyssSurges", name: "Abyss Surges" },
     { key: "BlazingJustice", name: "Blazing Justice" },
+    { key: "MoongazersSigil", name: "Moongazer's Sigil" },
     { key: "Tragicomedy", name: "Tragicomedy" },
     { key: "VeritysHandle", name: "Verity's Handle" },
   ],
