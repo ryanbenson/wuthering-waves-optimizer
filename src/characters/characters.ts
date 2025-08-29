@@ -128,6 +128,13 @@ export const allCharactersList = [
     weapon: "Rectifier",
   },
   {
+    key: "Iuno",
+    name: "Iuno",
+    element: "Aero",
+    rarity: 5,
+    weapon: "Gauntlet",
+  },
+  {
     key: "Jianxin",
     name: "Jianxin",
     element: "Aero",
@@ -383,6 +390,7 @@ export const allCharacters: string[] = [
   "Ciaccona",
   "Danjin",
   "Encore",
+  "Iuno",
   "Jianxin",
   "Jinhsi",
   "Jiyan",
