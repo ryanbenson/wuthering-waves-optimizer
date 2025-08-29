@@ -41,7 +41,7 @@ const weaponInfo: WeaponInfo = {
     {
       key: "ThunderblazeEminenceDefIgnore",
       hasStacks: true,
-      modifier: "DEFIgnore",
+      modifier: "DEFIgnore:Heavy",
       modifierByRefinement: {
         "1": 0.072,
         "2": 0.084,
@@ -106,12 +106,12 @@ const weaponData: WeaponData = {
   "70": {
     attack: 511,
     modifier: "CritRate",
-    modifierValue: 0.10,
+    modifierValue: 0.1,
   },
   "70+": {
     attack: 547,
     modifier: "CritRate",
-    modifierValue: 0.10,
+    modifierValue: 0.1,
   },
   "80": {
     attack: 593,

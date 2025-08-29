@@ -13,6 +13,10 @@
     <h3>August 29, 2025</h3>
     <ul>
       <li>Reverts the change to the echo window to make it smaller again.</li>
+      <li>
+        Fixes Thunderflare Dominion DEF Ignore, it now properly only applies to
+        Heavy attacks.
+      </li>
     </ul>
     <h3>August 28, 2025</h3>
     <ul>
