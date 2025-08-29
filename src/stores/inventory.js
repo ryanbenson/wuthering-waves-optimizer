@@ -34,6 +34,9 @@ export const useInventoryStore = defineStore("inventory", {
         return echoIds.includes(echoId);
       });
     },
+    echoById: (state) => {
+      return (echoId) => state.echoes.find((echo) => echo.echoId === echoId);
+    }
   },
   actions: {
     saveEcho(data) {
