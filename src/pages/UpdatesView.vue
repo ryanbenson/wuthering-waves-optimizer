@@ -10,13 +10,23 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 29, 2025</h3>
+    <ul>
+      <li>Reverts the change to the echo window to make it smaller again.</li>
+    </ul>
     <h3>August 28, 2025</h3>
     <ul>
       <li>
         Added an echo presets guide to explain the feature and things to avoid.
       </li>
-      <li>Added notice when saving a preset to let you know if you already have a preset with those echoes.</li>
-      <li>Adds note in editing an echo to notify you if it's used in presets, so you know it'll affect those.</li>
+      <li>
+        Added notice when saving a preset to let you know if you already have a
+        preset with those echoes.
+      </li>
+      <li>
+        Adds note in editing an echo to notify you if it's used in presets, so
+        you know it'll affect those.
+      </li>
       <li>Adds rotation for Augusta.</li>
     </ul>
     <h3>August 27, 2025</h3>
