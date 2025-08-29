@@ -233,7 +233,7 @@
             if (!hasCritDMG) {
               effectiveModifiers.push({
                 modifier: 'CritDMG',
-                modifierValue: 0.12
+                modifierValue: 0.15
               });
             }
           }
