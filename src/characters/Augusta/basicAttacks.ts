@@ -257,6 +257,7 @@ export const basicAttacks = {
         "9": "100%*2",
         "10": "100%*2",
       },
+      type: "Heavy",
       requiresResonanceChain: "SequenceNode6EngravedinRadiantLight",
     },
   ],

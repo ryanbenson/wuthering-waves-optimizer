@@ -13,6 +13,7 @@
     <h3>August 30, 2025</h3>
     <ul>
       <li>Adds Iuno and her signature weapon.</li>
+      <li>Fixes Augusta's S6 attacks, they're considered Heavy DMG now.</li>
     </ul>
     <h3>August 29, 2025</h3>
     <ul>
