@@ -1,64 +1,85 @@
 export const resonanceChains = [
   {
-    key: "SequenceNode1StainedinScorchedEarth",
-    name: "Sequence Node 1: Stained in Scorched Earth",
-    details: `<div>- Each stack of <a onclick="showTermExplan(130601)" class="ingame-term-desc">Crown of Wills</a> additionally increases Augusta's Crit. DMG by 15%. <br>- The max stack of Crown of Wills is increased to 2.<br>- Casting <span class="ingame-Highlight">Intro Skill - Stride of Goldenflare</span> now grants 1 stack of Crown of Wills. <br>- <span class="ingame-Highlight">Resonance Skill - Undying Sunlight: Strike</span>, <span class="ingame-Highlight">Resonance Skill - Undying Sunlight: Leap</span>, and <span class="ingame-Highlight">Resonance Skill - Undying Sunlight: Plunge</span> are now immune to interruption.</div>`,
-    hasStacks: false,
-    modifiers: [],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode2CleansedinCrimsonWar",
-    name: "Sequence Node 2: Cleansed in Crimson War",
-    details: `<div>- <a onclick="showTermExplan(130601)" class="ingame-term-desc">Crown of Wills</a> provides additional effects: Each stack increases Augusta's Crit. Rate by 20%.<br>- For every 1% of Crit. Rate over 100%, Augusta gains 2% Crit. DMG increase, up to 100%.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "CritOverflow",
-        modifierValue: 0.02,
-        overflowStep: 1, // for every 1% CR
-        overflowMin: 1, // must be 100% CR
-        overflowMax: 1, // can only get 100% CD from this
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode3ForgedinRotandRuin",
-    name: "Sequence Node 3: Forged in Rot and Ruin",
-    details: `<div>The following skills have their DMG Multiplier increased by 25%: <br>- <span class="ingame-Highlight">Heavy Attack - Thunderoar: Backstep</span>, <span class="ingame-Highlight">Dodge Counter - Thunderoar: Backstep</span>, <span class="ingame-Highlight">Heavy Attack - Thunderoar: Spinslash</span>, <span class="ingame-Highlight">Heavy Attack - Thunderoar: Uppercut</span>.<br>- <span class="ingame-Highlight">Resonance Skill - Undying Sunlight: Plunge</span>.<br>- <span class="ingame-Highlight">Resonance Liberation - Sublime is the Sun: Sunborne</span>, <span class="ingame-Highlight">Resonance Liberation - Sublime is the Sun: Everbright Protector</span>.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "HeavyAttackThunderoarBackstepDMG",
-          "DodgeCounterThunderoarBackstepDMG",
-          "HeavyAttackThunderoarSpinslashDMG",
-          "HeavyAttackThunderoarUppercutDMG",
-          "ResonanceSkillUndyingSunlightPlungeDMG",
-          "SublimeistheSunSunborneDMG",
-          "SublimeistheSunEverbrightProtectorDMG",
-        ],
-        modifierValue: 0.25,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode4AscentinSunandGlory",
-    name: "Sequence Node 4: Ascent in Sun and Glory",
-    details: `<div>Casting <span class="ingame-Highlight">Intro Skill - Stride of Goldenflare</span> increases the ATK of all Resonators in the team by 20% for 30s.</div>`,
+    key: "SequenceNode1WaxorWaneAllGildtheBough",
+    name: "Sequence Node 1: Wax or Wane, All Gild the Bough",
+    details: `<div>When Iuno is in <span class="ingame-Highlight"><a onclick="showTermExplan(141001)" class="ingame-term-desc">Lunar Cycle</a></span>, her ATK is increased by 40%.<br>When Iuno is inside the <span class="ingame-Highlight">Full Moon Domain</span>, she additionally restores 1 point of Resonance Energy per second.<br><span class="ingame-Highlight">Resonance Skill - Arc Beyond the Edge</span> and <span class="ingame-Highlight">Heavy Attack - Absolute Fullness</span> become immune to interruption.</div>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "ATK",
+        modifierValue: 0.4,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode2DayorNightLetThisBeEternal",
+    name: "Sequence Node 2: Day or Night, Let This Be Eternal",
+    details: `<div>Resonators in the team with 10 stacks of <span class="ingame-Highlight"><a onclick="showTermExplan(141002)" class="ingame-term-desc">Blessing of the Wan Light</a></span> gain an additional 40% all DMG Amplification.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DMGDeepen",
+        modifierValue: 0.4,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode3IDrinkDeepofTheirForgetting",
+    name: "Sequence Node 3: I Drink Deep of Their Forgetting",
+    details: `<div>When Iuno is in <span class="ingame-Highlight"><a onclick="showTermExplan(141001)" class="ingame-term-desc">Lunar Cycle</a></span>, DMG dealt by <span class="ingame-Highlight">Moonbow - Basic Attack</span>, <span class="ingame-Highlight">Resonance Skill - Arc Beyond the Edge</span>, and <span class="ingame-Highlight">Moonbow - Dodge Counter</span> is Amplified by 65%.<br>Within a certain period after performing <span class="ingame-Highlight">Moonbow - Basic Attack</span> or <span class="ingame-Highlight"> Moonbow - Dodge Counter</span>, casting <span class="ingame-Highlight">Resonance Skill - Arc Beyond the Edge</span> does not reset the cycle of <span class="ingame-Highlight">Moonbow - Basic Attack</span>.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DMGDeepen",
+        modifySpecificTalents: [
+          "MoonbowBasicAttack1DMG",
+          "MoonbowBasicAttack2DMG",
+          "MoonbowBasicAttack3DMG",
+          "MoonbowDodgeCounterDMG",
+          "ArcBeyondtheEdgeDMG",
+          // enhanced versions
+          "EnhancedMoonbowBasicAttack1DMG",
+          "EnhancedMoonbowBasicAttack2DMG",
+          "EnhancedMoonbowBasicAttack3DMG",
+          "EnhancedMoonbowDodgeCounterDMG",
+          "EnhancedArcBeyondtheEdgeDMG",
+        ],
+        modifierValue: 0.65,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode4RainySeasonDwellinMyEyes",
+    name: "Sequence Node 4: Rainy Season Dwell in My Eyes",
+    details: `<div>Casting <span class="ingame-Highlight">Heavy Attack - Absolute Fullness</span> grants a Shield equal to 160% of Iuno's ATK to all Resonators in the team for 30s, which cannot be passed on to the incoming Resonator.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "EnableAttack",
+        modifierValue: ["SequenceNode4RainySeasonDwellinMyEyes"],
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode5AThousandFutileGlimpses",
+    name: "Sequence Node 5: A Thousand Futile Glimpses",
+    details: `<div>Iuno gains 20% Resonance Liberation DMG Bonus.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ResonanceLiberationDMGBonus",
         modifierValue: 0.2,
       },
     ],
@@ -67,36 +88,15 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode5UnshakeninWrathfulTides",
-    name: "Sequence Node 5: Unshaken in Wrathful Tides",
-    details: `<div>The Shield provided by <span class="ingame-Highlight">Inherent Skill - Glory's Favor</span> is increased by 50%.</div>`,
+    key: "SequenceNode6IAmtheConstantintheChaos",
+    name: "Sequence Node 6: I Am the Constant in the Chaos",
+    details: `<div>The DMG Multiplier of <span class="ingame-Highlight">Heavy Attack - Absolute Fullness</span> is increased by 1600%. Upon casting this skill, Iuno re-enters <span class="ingame-Highlight"><a onclick="showTermExplan(141001)" class="ingame-term-desc">Lunar Cycle</a> - New Moon</span>, gains 100 points of <span class="ingame-Highlight"><a onclick="showTermExplan(141003)" class="ingame-term-desc">Sentience</a></span>, and resets all the cooldown of <span class="ingame-Highlight">Resonance Skill - Arc Beyond the Edge</span>.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifySpecificTalents: ["InherentSkillGlorysFavor"],
-        modifierValue: 0.5,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode6EngravedinRadiantLight",
-    name: "Sequence Node 6: Engraved in Radiant Light",
-    details: `<div>- Augusta can now hold up to 4 stacks of <a onclick="showTermExplan(130601)" class="ingame-term-desc">Crown of Wills</a>. <br>- For every 1% of Crit. Rate over 150%, Augusta gains 2% Crit. DMG increase, up to 50%.<br>- When Augusta performs <span class="ingame-Highlight">Heavy Attack - Thunderoar: Spinslash</span> or <span class="ingame-Highlight">Heavy Attack - Thunderoar: Uppercut</span>, she obtains 2 stacks of Crown of Wills. Augusta can only obtain 2 stacks of Crown of Wills every 1s via <span class="ingame-Highlight">Engraved in Radiant Light</span>. <br>- While casting <span class="ingame-Highlight">Heavy Attack - Thunderoar: Spinslash</span> or <span class="ingame-Highlight">Heavy Attack - Thunderoar: Uppercut</span>, Thunder Rage is triggered at the spot, dealing two instances of <span class="ingame-Thunder">Electro DMG</span>, with each instance equal to 100% of Augusta's ATK, considered as Heavy Attack DMG.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "CritOverflow",
-        modifierValue: 0.02,
-        overflowStep: 1, // for every 1% CR
-        overflowMin: 1.5, // must be 100% CR
-        overflowMax: 0.5, // can only get 100% CD from this
-      },
-      {
-        modifier: "EnableAttack",
-        modifierValue: ["SequenceNode6EngravedinRadiantLight"],
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["AbsoluteFullnessDMG"],
+        modifierValue: 16,
       },
     ],
     minStacks: 0,

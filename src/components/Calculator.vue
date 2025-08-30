@@ -16,7 +16,7 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
-            Augusta, her sig, 4* weapons, and echoes are available.
+            All 2.6 content is now available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
@@ -1288,6 +1288,10 @@ export default defineComponent({
           teamBuffsData.value?.[`DMGDeepen:${attack.subType}`] ?? 0;
         const selfBuffSpecificAttackGenericDmgDeepen =
           selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGDeepen`] ?? 0;
+        const resonanceChainBuffSpecificAttackGenericDmgDeepen =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DMGDeepen`
+          ] ?? 0;
         if (excludeTeamBuffs) {
           baseTotalDeepenEffect = statsWithoutTeamBuffs?.totalDeepenEffect ?? 0;
           teamBuffDmgDeepenForCharElement = 0;
@@ -1329,6 +1333,7 @@ export default defineComponent({
           attackLevelDmgDeepen +
           teamBuffDmgDeepenForSubType +
           selfBuffSpecificAttackGenericDmgDeepen +
+          resonanceChainBuffSpecificAttackGenericDmgDeepen +
           resonanceChainDmgDeepenForAttackType +
           resonanceChainDmgDeepenForAttackSubType +
           weaponBuffDmgDeepenElement +

@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 30, 2025</h3>
+    <ul>
+      <li>Adds Iuno and her signature weapon.</li>
+    </ul>
     <h3>August 29, 2025</h3>
     <ul>
       <li>Reverts the change to the echo window to make it smaller again.</li>
@@ -17,7 +21,10 @@
         Fixes Thunderflare Dominion DEF Ignore, it now properly only applies to
         Heavy attacks.
       </li>
-      <li>Fixes RV and CV reactivity bug with custom presets, they were not always updating these when you changed echo stats.</li>
+      <li>
+        Fixes RV and CV reactivity bug with custom presets, they were not always
+        updating these when you changed echo stats.
+      </li>
     </ul>
     <h3>August 28, 2025</h3>
     <ul>

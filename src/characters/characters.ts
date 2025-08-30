@@ -18,6 +18,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Changli", name: "Changli" },
       { key: "Ciaccona", name: "Ciaccona" },
       { key: "Encore", name: "Encore" },
+      { key: "Iuno", name: "Iuno" },
       { key: "Jianxin", name: "Jianxin" },
       { key: "Jinhsi", name: "Jinhsi" },
       { key: "Jiyan", name: "Jiyan" },

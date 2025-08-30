@@ -1569,7 +1569,7 @@ CD: <span class="param">20</span>s.</span>`,
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/LadyoftheSea.png",
     details: `<span class="description">Summon a Tidestorm to deal <span class="param">112.50%/135.00%/157.50%/180.00%/202.50%</span> Aero DMG ten times and <span class="param">12.00%</span> Aero DMG one time to enemies.<br><br>
-The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Aero DMG Bonus and <span class="param">12</span> Resonance Liberation DMG Bonus.
+The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Aero DMG Bonus and <span class="param">12%.00</span> Resonance Liberation DMG Bonus.
 CD: 20s</span>`,
     modifiers: [
       {
@@ -1577,7 +1577,7 @@ CD: 20s</span>`,
         modifierValue: 0.12,
       },
       {
-        modifier: "ResonanceLiberationMGBonus",
+        modifier: "ResonanceLiberationDMGBonus",
         modifierValue: 0.12,
       },
     ],

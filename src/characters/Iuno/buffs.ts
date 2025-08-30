@@ -1,43 +1,28 @@
 export const buffs = [
   {
-    key: `RulersRealm`,
-    name: `Ruler's Realm`,
-    details: `<div class="skilldescription">When Resonators in the team cast <span class="Highlight">Intro Skill</span> within <span class="Highlight">Ruler's Realm</span>, they gain a shield equal to 650 + 5% of Augusta's Max HP for 10s. This effect is unstackable. This Shield will not be passed on to the incoming Resonator.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "EnableAttack",
-        modifierValue: ["RulersRealm"],
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: `CrownofWills`,
-    name: `Crown of Wills`,
-    details: `<div class="skilldescription">Each stack grants 15% Electro DMG Bonus, up to 1 stack. When <span class="Highlight">Resonance Liberation - Sublime is the Sun: Everbright Protector</span> ends, all stacks of Crown of Wills are removed.</div>`,
+    key: `BlessingoftheWanLight`,
+    name: `Blessing of the Wan Light`,
+    details: `<div class="skilldescription">Gaining a Shield inside the <span class="Highlight">Full Moon Domain</span> domain grants 1 stack of <span class="Highlight">Blessing of the Wan Light</span>. This effect can be triggered once every 0.5s.<br><br>The receiving Resonator gains 4% all DMG Amplification for 10s, stacking up to 10 times. Gaining new stacks resets the duration. This effect ends early if the receiving Resonator is switched off the field.</div>`,
     hasStacks: true,
     modifiers: [
       {
-        modifier: "Electro",
-        modifierValue: 0.15,
+        modifier: "DMGDeepen",
+        modifierValue: 0.04,
       },
     ],
     minStacks: 0,
-    maxStacks: 1,
+    maxStacks: 10,
     alwaysEnabled: false,
   },
   {
-    key: `InherentSkillGlorysFavor`,
-    name: `Inherent Skill: Glory's Favor`,
-    details: `<div class="skilldescription">When Augusta deals damage, she gains a shield equal to 350 + 2.5% of her Max HP for 5s, triggered once every 0.5s. This effect is unstackable. This Shield will not be passed on to the incoming Resonator.</span>.</div>`,
+    key: `InherentSkillWaxingAscent`,
+    name: `Inherent Skill: Waxing Ascent`,
+    details: `<div class="skilldescription">Every time Iuno casts Basic Attack, Heavy Attack, Dodge Counter, Resonance Skill, Resonance Liberation, or Intro Skill, she gains 1 Shield equal to 32% of her ATK for 15s. This Shield will not be passed on to the incoming Resonator.</div>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "EnableAttack",
-        modifierValue: ["InherentSkillGlorysFavor"],
+        modifierValue: ["InherentSkillWaxingAscent"],
       },
     ],
     minStacks: 0,
@@ -45,11 +30,9 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: `InherentSkillBlazingValor`,
-    name: `Inherent Skill: Blazing Valor`,
-    details: `<div class="skilldescription">When Augusta is out of combat for over 4s, she gains the following effects that can be triggered once every 4s:<br>
-- If Majesty is less than 1 stack, restore 1 stack.<br>
-- Fully restore Crown of Wills.</div>`,
+    key: `InherentSkillDerivation`,
+    name: `Inherent Skill: Derivation`,
+    details: `<div>When Iuno casts Intro Skill or Resonance Liberation, she immediately gains 5 stacks of <span class="ingame-Highlight"><a onclick="showTermExplan(141002)" class="ingame-term-desc">Blessing of the Wan Light</a></span>.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,

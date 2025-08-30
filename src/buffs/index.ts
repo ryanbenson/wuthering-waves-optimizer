@@ -1297,6 +1297,53 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Iuno: [
+    {
+      key: "OutroSkillFromGloomtoGleam",
+      name: "Outro Skill: From Gloom to Gleam",
+      details: `<div>The incoming Resonator gains 50% Heavy Attack DMG Amplification for 14s. This effect ends early if they are switched off the field.<br>Casting <span class="ingame-Highlight">Outro Skill</span> won't interrupt <span class="ingame-Highlight">Heavy Attack - Absolute Fullness</span>, and the Outro Skill effect still applies.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Heavy",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "BlessingoftheWanLight",
+      name: "Blessing of the Wan Light",
+      details: `<div class="skilldescription">Gaining a Shield inside the <span class="Highlight">Full Moon Domain</span> domain grants 1 stack of <span class="Highlight">Blessing of the Wan Light</span>. This effect can be triggered once every 0.5s.<br><br>The receiving Resonator gains 4% all DMG Amplification for 10s, stacking up to 10 times. Gaining new stacks resets the duration. This effect ends early if the receiving Resonator is switched off the field.</div>`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.04,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 10,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2DayorNightLetThisBeEternal",
+      name: "Sequence Node 2: Day or Night, Let This Be Eternal",
+      details: `<div>Resonators in the team with 10 stacks of <span class="ingame-Highlight"><a onclick="showTermExplan(141002)" class="ingame-term-desc">Blessing of the Wan Light</a></span> gain an additional 40% all DMG Amplification.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.4,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
