@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 31, 2025</h3>
+    <ul>
+      <li>Fixed an issue with Danjin's Forte, two labels were mixed up.</li>
+    </ul>
     <h3>August 30, 2025</h3>
     <ul>
       <li>Adds Iuno and her signature weapon.</li>
