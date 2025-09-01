@@ -19,7 +19,11 @@ export const twoSetBonuses: string[] = [
   "Windward Pilgrimage 2 Set",
   "Flaming Clawprint 2 Set",
 ];
-export const threeSetBonuses: string[] = ["Dream of the Lost 3 Set"];
+export const threeSetBonuses: string[] = [
+  "Crown of Valor 3 Set",
+  "Dream of the Lost 3 Set",
+  "Law of Harmony 3 Set",
+];
 export const fiveSetBonuses: string[] = [
   "Freezing Frost 5 Set",
   "Molten Rift 5 Set",
@@ -1020,6 +1024,63 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         ],
         alwaysEnabled: false,
         details: `Holding 0 Resonance Energy increases Crit. Rate by 20% and grants 35% Echo Skill DMG Bonus.`,
+      },
+    ],
+  },
+  "Crown of Valor 3 Set": {
+    name: "Crown of Valor",
+    key: "CrownofValor",
+    details: `Upon gaining a Shield, increase the Resonator's ATK by 6% and Crit. DMG by 4% for 4s. This effect can be triggered once every 0.5s and stacks up to 5 times.`,
+    passives: [
+      {
+        key: "CrownofValorATKCD",
+        modifiers: [
+          {
+            modifier: "ATK",
+            modifierValue: 6,
+          },
+          {
+            modifier: "CritDMG",
+            modifierValue: 4,
+          },
+        ],
+        alwaysEnabled: false,
+        hasStacks: true,
+        minStacks: 0,
+        maxStacks: 5,
+        details: `Upon gaining a Shield, increase the Resonator's ATK by 6% and Crit. DMG by 4% for 4s. This effect can be triggered once every 0.5s and stacks up to 5 times.`,
+      },
+    ],
+  },
+  "Law of Harmony 3 Set": {
+    name: "Law of Harmony",
+    key: "LawofHarmony",
+    details: `Casting Echo Skill grants 30% Heavy Attack DMG Bonus to the caster for 4s.</br>Additionally, all Resonators in the team gain 4% Echo Skill DMG Bonus for 30s, stacking up to 4 times. Echoes of the same name can only trigger this effect once. The record of Echo triggering this effect is cleared along with this effect. At 4 stacks, casting Echo Skill again resets the duration of this effect.`,
+    passives: [
+      {
+        key: "LawofHarmonyHeavy",
+        modifiers: [
+          {
+            modifier: "HeavyAttackDMGBonus",
+            modifierValue: 30,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Casting Echo Skill grants 30% Heavy Attack DMG Bonus to the caster for 4s.`,
+      },
+      {
+        key: "LawofHarmonyEchoSkill",
+        modifiers: [
+          {
+            modifier: "EchoDMGBonus",
+            modifierValue: 4,
+          },
+        ],
+        alwaysEnabled: false,
+        hasStacks: true,
+        minStacks: 0,
+        maxStacks: 4,
+        details: `Additionally, all Resonators in the team gain 4% Echo Skill DMG Bonus for 30s, stacking up to 4 times. Echoes of the same name can only trigger this effect once. The record of Echo triggering this effect is cleared along with this effect. At 4 stacks, casting Echo Skill again resets the duration of this effect.`,
       },
     ],
   },

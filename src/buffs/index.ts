@@ -1264,6 +1264,86 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Augusta: [
+    {
+      key: "OutroSkillBattlesongoftheUnyielding",
+      name: "Outro Skill: Battlesong of the Unyielding",
+      details: `The next Resonator switched onto the field gains the following effects for 14s, which end immediately if they are switched out:<br>
+- Gain 15% DMG Amplification for all Attributes.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4AscentinSunandGlory",
+      name: "Sequence Node 4: Ascent in Sun and Glory",
+      details: `<div>Casting <span class="ingame-Highlight">Intro Skill - Stride of Goldenflare</span> increases the ATK of all Resonators in the team by 20% for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Iuno: [
+    {
+      key: "OutroSkillFromGloomtoGleam",
+      name: "Outro Skill: From Gloom to Gleam",
+      details: `<div>The incoming Resonator gains 50% Heavy Attack DMG Amplification for 14s. This effect ends early if they are switched off the field.<br>Casting <span class="ingame-Highlight">Outro Skill</span> won't interrupt <span class="ingame-Highlight">Heavy Attack - Absolute Fullness</span>, and the Outro Skill effect still applies.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Heavy",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "BlessingoftheWanLight",
+      name: "Blessing of the Wan Light",
+      details: `<div class="skilldescription">Gaining a Shield inside the <span class="Highlight">Full Moon Domain</span> domain grants 1 stack of <span class="Highlight">Blessing of the Wan Light</span>. This effect can be triggered once every 0.5s.<br><br>The receiving Resonator gains 4% all DMG Amplification for 10s, stacking up to 10 times. Gaining new stacks resets the duration. This effect ends early if the receiving Resonator is switched off the field.</div>`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.04,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 10,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2DayorNightLetThisBeEternal",
+      name: "Sequence Node 2: Day or Night, Let This Be Eternal",
+      details: `<div>Resonators in the team with 10 stacks of <span class="ingame-Highlight"><a onclick="showTermExplan(141002)" class="ingame-term-desc">Blessing of the Wan Light</a></span> gain an additional 40% all DMG Amplification.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.4,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -1404,6 +1484,21 @@ CD: <span class="param">20</span>s</span>`,
     ],
     minStacks: 0,
     maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "LawofHarmony",
+    name: "Law of Harmony",
+    details: `Casting Echo Skill grants 30% Heavy Attack DMG Bonus to the caster for 4s.</br>Additionally, all Resonators in the team gain 4% Echo Skill DMG Bonus for 30s, stacking up to 4 times. Echoes of the same name can only trigger this effect once. The record of Echo triggering this effect is cleared along with this effect. At 4 stacks, casting Echo Skill again resets the duration of this effect.`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "EchoDMGBonus",
+        modifierValue: 0.04,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 4,
     alwaysEnabled: false,
   },
 ];

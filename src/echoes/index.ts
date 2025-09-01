@@ -257,7 +257,7 @@ CD: <span class="param">20</span>s</span>`,
 CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
-    sets: ["EmpyreanAnthem", "TidebreakingCourage"],
+    sets: ["EmpyreanAnthem", "TidebreakingCourage", "CrownofValor"],
   },
   Capitaneus: {
     key: "Capitaneus",
@@ -443,6 +443,43 @@ CD: 20s.`,
     modifiers: [],
     actions: [],
     sets: ["FreezingFrost", "CelestialLight"],
+  },
+  Corrosaurus: {
+    key: "Corrosaurus",
+    name: "Corrosaurus",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Corrosaurus.png",
+    details: `<span class="description">Summon a Corrosaurus to attack enemies, dealing <span class="param">152.00%/182.40%/212.80%/243.20%/273.60%</span> Fusion DMG.<br><br>
+The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Fusion DMG Bonus and <span class="param">20.00%</span> Echo Skill DMG Bonus.<br><br>
+CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "EchoDMGBonus",
+        modifierValue: 0.2,
+      },
+    ],
+    actions: [
+      {
+        key: "CorrosaurusAttack",
+        label: "Attacks DMG",
+        description: `Summon a Corrosaurus to attack enemies, dealing <span class="param">152.00%/182.40%/212.80%/243.20%/273.60%</span> Fusion DMG.`,
+        talents: {
+          "1": "152.00%",
+          "2": "182.40%",
+          "3": "212.80%",
+          "4": "243.20%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["FlamingClawprint"],
   },
   Crownless: {
     key: "Crownless",
@@ -1100,7 +1137,7 @@ CD: <span class="param">8</span>s`,
         element: "Sepctro",
       },
     ],
-    sets: ["FrostyResolve", "EternalRadiance"],
+    sets: ["FrostyResolve", "EternalRadiance", "LawofHarmony"],
   },
   Gulpuff: {
     key: "Gulpuff",
@@ -1294,7 +1331,7 @@ CD: <span class="param">20</span>s.</span>`,
         element: "Aero",
       },
     ],
-    sets: ["TidebreakingCourage", "GustsofWelkin"],
+    sets: ["TidebreakingCourage", "GustsofWelkin", "CrownofValor"],
   },
   ImpermanenceHeron: {
     key: "ImpermanenceHeron",
@@ -1524,6 +1561,43 @@ CD: <span class="param">20</span>s.</span>`,
       },
     ],
     sets: ["WindwardPilgrimage", "FlamingClawprint"],
+  },
+  LadyoftheSea: {
+    key: "LadyoftheSea",
+    name: "Lady of the Sea",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/LadyoftheSea.png",
+    details: `<span class="description">Summon a Tidestorm to deal <span class="param">112.50%/135.00%/157.50%/180.00%/202.50%</span> Aero DMG ten times and <span class="param">12.00%</span> Aero DMG one time to enemies.<br><br>
+The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Aero DMG Bonus and <span class="param">12%.00</span> Resonance Liberation DMG Bonus.
+CD: 20s</span>`,
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "LadyoftheSeaTidestorm",
+        label: "Tidestorm DMG",
+        description: `Summon a Tidestorm to deal 9.12%/12.16%/13.68% Aero DMG ten times and 109.44%/127.68%/145.92%/164.16% Aero DMG one time to enemies.`,
+        talents: {
+          "1": "9.12%*10 + 109.44%",
+          "2": "9.12%*10 + 109.44%",
+          "3": "10.64%*10 + 127.68%",
+          "4": "12.16%*10 + 145.92%",
+          "5": "13.68%*10 + 164.16%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["CrownofValor"],
   },
   LaGuardia: {
     key: "LaGuardia",
@@ -1911,6 +1985,45 @@ CD: <span class="param">25</span>s.</span>`,
     actions: [],
     sets: ["EmpyreanAnthem", "MidnightVeil"],
   },
+  NightmareAeroPredator: {
+    key: "NightmareAeroPredator",
+    name: "Nightmare: Aero Predator",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareAeroPredator.png",
+    details: `<span class="description">Summon an Aero Predator that throws a dart forward. The dart will bounce between enemies up to three times, dealing <span class="param">18.00%/20.70%/23.40%/26.10%/28.80%</span> Aero DMG each time it hits.<br><br>
+CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "NightmareAeroPredatorDart",
+        label: "Dart DMG",
+        description: `Summon an Aero Predator that throws a dart forward. The dart will bounce between enemies up to three times, dealing <span class="param">18.00%/20.70%/23.40%/26.10%/28.80%</span> Aero DMG each time it hits.`,
+        talents: {
+          "1": "18.00%*3",
+          "2": "20.70%*3",
+          "3": "23.40%*3",
+          "4": "26.10%*3",
+          "5": "28.80%*3",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["CrownofValor"],
+  },
+  NightmareChirpuff: {
+    key: "NightmareChirpuff",
+    name: "Nightmare: Chirpuff",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareChirpuff.png",
+    details: `<span class="description">Summon a Chirpuff that self-inflates and blasts a powerful gust of wind forward <span class="param">3</span> times. Each blast inflicts <span class="param">24.00%/27.60%/31.20%/34.80%/38.40%</span> Aero DMG and pushes enemies backwards.<br>
+CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["LawofHarmony"],
+  },
   NightmareCrownless: {
     key: "NightmareCrownless",
     name: "Nightmare: Crownless",
@@ -1947,6 +2060,60 @@ CD: <span class="param">12</span>s.</span>`,
       },
     ],
     sets: ["SunSinkingEclipse"],
+  },
+  NightmareCyanFeatheredHeron: {
+    key: "NightmareCyanFeatheredHeron",
+    name: "Nightmare: Cyan-Feathered Heron",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareCyanFeatheredHeron.png",
+    details: `<span class="description">Transform into Cyan-Feathered Heron and charge at the enemies, dealing <span class="param">148.00%/170.20%/192.40%/214.60%/236.80%</span> Aero DMG; This Echo Skill interrupts enemy Special Skills upon dealing damage.<br><br>
+CD: <span class="param">15</span>s</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "NightmareCyanFeatheredHeronCharge",
+        label: "Charge DMG",
+        description: `Transform into Cyan-Feathered Heron and charge at the enemies, dealing <span class="param">148.00%/170.20%/192.40%/214.60%/236.80%</span> Aero DMG`,
+        talents: {
+          "1": "148.00%",
+          "2": "170.20%",
+          "3": "192.40%",
+          "4": "214.60%",
+          "5": "236.80%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["LawofHarmony"],
+  },
+  NightmareElectroPredator: {
+    key: "NightmareElectroPredator",
+    name: "Nightmare: Electro Predator",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareElectroPredator.png",
+    details: `<span class="description">Summon an Electro Predator to shoot the enemy 5 times. The first 4 shots deals <span class="param">10.80%/12.42%/14.04%/15.66%/17.28%</span> Electro DMG, and the last deals <span class="param">28.80%/33.12%/37.44%/41.76%/46.08%</span> Electro DMG.<br><br>
+CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "NightmareElectroPredatorShoot",
+        label: "Shoot DMG",
+        description: `Summon an Electro Predator to shoot the enemy 5 times. The first 4 shots deals <span class="param">10.80%/12.42%/14.04%/15.66%/17.28%</span> Electro DMG, and the last deals <span class="param">28.80%/33.12%/37.44%/41.76%/46.08%</span> Electro DMG.`,
+        talents: {
+          "1": "10.80%*4 + 28.80%",
+          "2": "12.42%*4 + 33.12%",
+          "3": "14.04%*4 + 37.44%",
+          "4": "15.66%*4 + 41.76%",
+          "5": "17.28%*4 + 46.08%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["CrownofValor"],
   },
   NightmareFeilianBeringal: {
     key: "NightmareFeilianBeringal",
@@ -2009,6 +2176,18 @@ CD: <span class="param">20</span>s.</span>`,
     modifiers: [],
     actions: [],
     sets: ["DreamoftheLost"],
+  },
+  NightmareGulpuff: {
+    key: "NightmareGulpuff",
+    name: "Nightmare: Gulpuff",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareGulpuff.png",
+    details: `<span class="description">Summon a Gulpuff that blows bubbles <span class="param">5</span> times, each time dealing <span class="param">14.40%/16.56%/18.72%/20.88%/23.04%</span> Glacio DMG.<br>
+CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["LawofHarmony"],
   },
   NightmareHavocWarrior: {
     key: "NightmareHavocWarrior",
@@ -2367,6 +2546,33 @@ CD: <span class="param">25</span>s.</span>`,
     ],
     sets: ["VoidThunder"],
   },
+  NightmareVioletFeatheredHeron: {
+    key: "NightmareVioletFeatheredHeron",
+    name: "Nightmare: Violet-Feathered Heron",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareVioletFeatheredHeron.png",
+    details: `<span class="description">Transform into Violet-Feathered Heron and enter a Parry Stance. Counterattack when the Parry stance is over, dealing <span class="param">180.00%/207.00%/234.00%/261.00%/288.00%</span> Electro DMG. If attacked during Parry Stance, you can counterattack in advance and additionally recover <span class="param">5</span> Concerto Energy.<br><br>
+CD: <span class="param">15</span>s</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "NightmareVioletFeatheredHeronParry",
+        label: "Parry DMG",
+        description: `Transform into Violet-Feathered Heron and enter a Parry Stance. Counterattack when the Parry stance is over, dealing <span class="param">180.00%/207.00%/234.00%/261.00%/288.00%</span> Electro DMG.`,
+        talents: {
+          "1": "180.00%",
+          "2": "207.00%",
+          "3": "234.00%",
+          "4": "261.00%",
+          "5": "288.00%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["CrownofValor"],
+  },
   NocturnusKnight: {
     key: "NocturnusKnight",
     name: "Nocturnus Knight",
@@ -2454,7 +2660,7 @@ CD: <span class="param">20</span>s.</span>`,
         element: "Spectro",
       },
     ],
-    sets: ["EternalRadiance", "GustsofWelkin"],
+    sets: ["EternalRadiance", "GustsofWelkin", "LawofHarmony"],
   },
   ReminiscenceFenrico: {
     key: "ReminiscenceFenrico",
@@ -2491,7 +2697,7 @@ CD: 20s.`,
         element: "Aero",
       },
     ],
-    sets: ["DreamoftheLost"],
+    sets: ["DreamoftheLost", "LawofHarmony"],
   },
   ReminiscenceFleurdelys: {
     key: "ReminiscenceFleurdelys",
@@ -2895,6 +3101,58 @@ CD: <span class="param">25</span>s.</span>`,
       },
     ],
     sets: ["VoidThunder"],
+  },
+  TheFalseSovereign: {
+    key: "TheFalseSovereign",
+    name: "The False Sovereign",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/TheFalseSovereign.png",
+    details: `<span class="description">Transform into the False Sovereign and dash forward in a spinning strike, dealing <span class="param">41.25%/49.50%/57.75%/66.00%/74.25%</span> Electro DMG 4 times.<br><br>
+The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Electro DMG Bonus and <span class="param">12.00%</span> Heavy Attack DMG Bonus. Upon casting Intro Skill, summon Overflowing Tidal Blight to deal <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Havoc DMG.<br><br>
+Starts with <span class="param">2</span> charges. Gains 1 charge every <span class="param">15</span>s, up to <span class="param">2</span> charges.<br><br>
+CD: <span class="param">15</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "TheFalseSovereignSpinning",
+        label: "Spinning DMG",
+        description: `Transform into the False Sovereign and dash forward in a spinning strike, dealing <span class="param">41.25%/49.50%/57.75%/66.00%/74.25%</span> Electro DMG 4 times.`,
+        talents: {
+          "1": "41.25%*4",
+          "2": "49.50%*4",
+          "3": "57.75%*4",
+          "4": "66.00%*4",
+          "5": "74.25%*4",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+      {
+        key: "TheFalseSovereignSpinning",
+        label: "Overflowing Tidal Blight DMG",
+        description: `Upon casting Intro Skill, summon Overflowing Tidal Blight to deal <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Havoc DMG.`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["CrownofValor"],
   },
   ThunderingMephis: {
     key: "ThunderingMephis",

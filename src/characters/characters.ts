@@ -8,6 +8,7 @@ interface CharacterListItem {
 export function getCharactersAvailable(): CharacterList {
   return {
     five: [
+      { key: "Augusta", name: "Augusta" },
       { key: "Brant", name: "Brant" },
       { key: "Calcharo", name: "Calcharo" },
       { key: "Camellya", name: "Camellya" },
@@ -17,6 +18,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Changli", name: "Changli" },
       { key: "Ciaccona", name: "Ciaccona" },
       { key: "Encore", name: "Encore" },
+      { key: "Iuno", name: "Iuno" },
       { key: "Jianxin", name: "Jianxin" },
       { key: "Jinhsi", name: "Jinhsi" },
       { key: "Jiyan", name: "Jiyan" },
@@ -56,6 +58,13 @@ export function getCharactersAvailable(): CharacterList {
 
 export const allCharactersList = [
   // rarity 5
+  {
+    key: "Augusta",
+    name: "Augusta",
+    element: "Electro",
+    rarity: 5,
+    weapon: "Broadblade",
+  },
   {
     key: "Brant",
     name: "Brant",
@@ -118,6 +127,13 @@ export const allCharactersList = [
     element: "Fusion",
     rarity: 5,
     weapon: "Rectifier",
+  },
+  {
+    key: "Iuno",
+    name: "Iuno",
+    element: "Aero",
+    rarity: 5,
+    weapon: "Gauntlet",
   },
   {
     key: "Jianxin",
@@ -362,6 +378,7 @@ export const weaponTypesImageMap: Record<string, string> = {
 
 export const allCharacters: string[] = [
   "Aalto",
+  "Augusta",
   "Baizhi",
   "Brant",
   "Calcharo",
@@ -374,6 +391,7 @@ export const allCharacters: string[] = [
   "Ciaccona",
   "Danjin",
   "Encore",
+  "Iuno",
   "Jianxin",
   "Jinhsi",
   "Jiyan",

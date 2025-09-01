@@ -10,6 +10,56 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>August 31, 2025</h3>
+    <ul>
+      <li>Fixed an issue with Danjin's Forte, two labels were mixed up.</li>
+    </ul>
+    <h3>August 30, 2025</h3>
+    <ul>
+      <li>Adds Iuno and her signature weapon.</li>
+      <li>Fixes Augusta's S6 attacks, they're considered Heavy DMG now.</li>
+    </ul>
+    <h3>August 29, 2025</h3>
+    <ul>
+      <li>Reverts the change to the echo window to make it smaller again.</li>
+      <li>
+        Fixes Thunderflare Dominion DEF Ignore, it now properly only applies to
+        Heavy attacks.
+      </li>
+      <li>
+        Fixes RV and CV reactivity bug with custom presets, they were not always
+        updating these when you changed echo stats.
+      </li>
+    </ul>
+    <h3>August 28, 2025</h3>
+    <ul>
+      <li>
+        Added an echo presets guide to explain the feature and things to avoid.
+      </li>
+      <li>
+        Added notice when saving a preset to let you know if you already have a
+        preset with those echoes.
+      </li>
+      <li>
+        Adds note in editing an echo to notify you if it's used in presets, so
+        you know it'll affect those.
+      </li>
+      <li>Adds rotation for Augusta.</li>
+    </ul>
+    <h3>August 27, 2025</h3>
+    <ul>
+      <li>
+        Augusta, her signature weapon, the new 4* BP weapones, echoes, and echo
+        sets are now available!
+      </li>
+    </ul>
+    <h3>August 17, 2025</h3>
+    <ul>
+      <li>
+        You can now define and manage custom echo loadouts as presets and share
+        them among characters.
+      </li>
+    </ul>
     <h3>July 31, 2025</h3>
     <ul>
       <li>

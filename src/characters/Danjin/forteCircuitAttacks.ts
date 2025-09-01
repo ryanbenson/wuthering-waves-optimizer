@@ -62,8 +62,8 @@ export const forteCircuitAttacks = {
       type: "Heavy",
     },
     {
-      key: "FullScatterbloomDamage",
-      label: "Full Energy Scatterbloom DMG",
+      key: "FullChaoscleaveDamage",
+      label: "Full Energy Chaoscleave DMG",
       talents: {
         "1": "72.00%*7",
         "2": "77.91%*7",
@@ -79,8 +79,8 @@ export const forteCircuitAttacks = {
       type: "Heavy",
     },
     {
-      key: "FullChaoscleaveDamage",
-      label: "Full Energy Chaoscleave DMG",
+      key: "FullScatterbloomDamage",
+      label: "Full Energy Scatterbloom DMG",
       talents: {
         "1": "216.00%",
         "2": "233.72%",

@@ -28,6 +28,15 @@ export const useInventoryStore = defineStore("inventory", {
         return charactersList;
       }
     },
+    getEchoPresetsByEchoId: (state) => {
+      return (echoId) => state.echoPresets.filter((preset) => {
+        const echoIds = [preset.echo1Id, preset.echo2Id, preset.echo3Id, preset.echo4Id, preset.echo5Id];
+        return echoIds.includes(echoId);
+      });
+    },
+    echoById: (state) => {
+      return (echoId) => state.echoes.find((echo) => echo.echoId === echoId);
+    }
   },
   actions: {
     saveEcho(data) {

@@ -15,10 +15,8 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div
-            v-if="false"
-            class="alert alert-success mb-6 text-white p-2 px-4">
-            2.5 content is now available!
+          <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
+            All 2.6 content is now available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
@@ -793,6 +791,69 @@ export default defineComponent({
         });
       }
 
+      // check for CritOverflow
+      // TODO: if this is Augusta, look for "SequenceNode2CleansedinCrimsonWar", and SequenceNode6EngravedinRadiantLight
+      // in the resonance chains of the character in the store
+      // if found, then apply the crit overflow logic
+      if (character.value === "Augusta") {
+        const isAugustaS2Enabled =
+          characters.value?.[character.value]?.resonanceChains
+            ?.SequenceNode2CleansedinCrimsonWar?.isEnabled ?? false;
+        const isAugustaS6Enabled =
+          characters.value?.[character.value]?.resonanceChains
+            ?.SequenceNode6EngravedinRadiantLight?.isEnabled ?? false;
+        if (isAugustaS2Enabled) {
+          const overflowConfigs = {
+            modifier: "CritOverflow",
+            modifierValue: 2,
+            overflowStep: 1, // for every 1% CR
+            overflowMin: 100, // must be 100% CR
+            overflowMax: 100, // can only get 100% CD from this
+          };
+          const currentCritRate = stats.critRate;
+          if (currentCritRate > overflowConfigs.overflowMin) {
+            const { modifierValue, overflowStep, overflowMin, overflowMax } =
+              overflowConfigs;
+            // Calculate how much Crit Rate is overflowing (above 100%)
+            const overflowAmount = Math.max(0, currentCritRate - overflowMin);
+            // Calculate how many overflow steps we have
+            const overflowSteps = Math.floor(overflowAmount / overflowStep);
+            // Calculate the Crit DMG bonus from overflow (capped by overflowMax)
+            const overflowBonus = Math.min(
+              overflowSteps * modifierValue,
+              overflowMax,
+            );
+            // Apply the overflow bonus to Crit DMG
+            stats.critDMG += overflowBonus;
+          }
+        }
+        if (isAugustaS6Enabled) {
+          const overflowConfigs = {
+            modifier: "CritOverflow",
+            modifierValue: 2,
+            overflowStep: 1, // for every 1% CR
+            overflowMin: 150, // must be 100% CR
+            overflowMax: 50, // can only get 100% CD from this
+          };
+          const currentCritRate = stats.critRate;
+          if (currentCritRate > overflowConfigs.overflowMin) {
+            const { modifierValue, overflowStep, overflowMin, overflowMax } =
+              overflowConfigs;
+            // Calculate how much Crit Rate is overflowing (above 100%)
+            const overflowAmount = Math.max(0, currentCritRate - overflowMin);
+            // Calculate how many overflow steps we have
+            const overflowSteps = Math.floor(overflowAmount / overflowStep);
+            // Calculate the Crit DMG bonus from overflow (capped by overflowMax)
+            const overflowBonus = Math.min(
+              overflowSteps * modifierValue,
+              overflowMax,
+            );
+            // Apply the overflow bonus to Crit DMG
+            stats.critDMG += overflowBonus;
+          }
+        }
+      }
+
       if (returnValue) {
         switch (returnValue) {
           case "All":
@@ -1147,6 +1208,12 @@ export default defineComponent({
           selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEFIgnore`] ?? 0;
         const extraDefIgnoreCustomBuffs = customBuffs.value?.DefIgnore ?? 0;
         const attackBuffsDefIgnore = attack?.buffs?.DefIgnore ?? 0;
+        let weaponDefIgnoreSpecificDmgType =
+          weaponData?.value?.weaponPassiveStats?.[`DEFIgnore:${attack.type}`] ??
+          0;
+        if (excludeWeaponBuffs) {
+          weaponDefIgnoreSpecificDmgType = 0;
+        }
         const specificSkillExtraCritRate =
           charResonanceChainsData.value?.specificTalentBuffs?.[
             `${attack.key}:CritRate`
@@ -1181,7 +1248,8 @@ export default defineComponent({
           extraDefIgnoreResonanceChain +
           extraDefIgnoreCharBuff +
           extraDefIgnoreCustomBuffs +
-          attackBuffsDefIgnore;
+          attackBuffsDefIgnore +
+          weaponDefIgnoreSpecificDmgType;
         let specificSkillDmg =
           specificSkillDmgFromResonanceChains +
           specificSkillDmgFromCharBuffs +
@@ -1252,6 +1320,10 @@ export default defineComponent({
           teamBuffsData.value?.[`DMGDeepen:${attack.subType}`] ?? 0;
         const selfBuffSpecificAttackGenericDmgDeepen =
           selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGDeepen`] ?? 0;
+        const resonanceChainBuffSpecificAttackGenericDmgDeepen =
+          charResonanceChainsData.value?.specificTalentBuffs?.[
+            `${attack.key}:DMGDeepen`
+          ] ?? 0;
         if (excludeTeamBuffs) {
           baseTotalDeepenEffect = statsWithoutTeamBuffs?.totalDeepenEffect ?? 0;
           teamBuffDmgDeepenForCharElement = 0;
@@ -1293,6 +1365,7 @@ export default defineComponent({
           attackLevelDmgDeepen +
           teamBuffDmgDeepenForSubType +
           selfBuffSpecificAttackGenericDmgDeepen +
+          resonanceChainBuffSpecificAttackGenericDmgDeepen +
           resonanceChainDmgDeepenForAttackType +
           resonanceChainDmgDeepenForAttackSubType +
           weaponBuffDmgDeepenElement +
