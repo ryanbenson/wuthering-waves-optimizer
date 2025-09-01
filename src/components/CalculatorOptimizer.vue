@@ -157,6 +157,14 @@
           "></CalculatorOptimizerMinStats>
       </div>
     </div>
+    <div class="optimizer-target">
+      <h3>Choose your optimization target</h3>
+      <CalculatorOptimizerTarget
+        :character="character"
+        @optimizer:target-updated="
+          handleUpdatedTarget
+        "></CalculatorOptimizerTarget>
+    </div>
     <div class="mt-4">Processed {{ processedCombos }} of {{ totalCombos }}</div>
     <progress
       class="progress progress-primary w-56"
@@ -190,6 +198,7 @@ import { useCharacterStore } from "../stores/character";
 import CalculatorOptimizerMinStats from "./CalculatorOptimizerMinStats.vue";
 import CalculatorOptimizerEchoSet from "./CalculatorOptimizerEchoSet.vue";
 import CalculatorOptimizerMainEcho from "./CalculatorOptimizerMainEcho.vue";
+import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import Calculator from "./Calculator.vue";
 export default {
   name: "CalculatorOptimizer",
@@ -213,6 +222,7 @@ export default {
     CalculatorOptimizerMinStats,
     CalculatorOptimizerEchoSet,
     CalculatorOptimizerMainEcho,
+    CalculatorOptimizerTarget,
   },
   data() {
     return {
@@ -225,6 +235,7 @@ export default {
       setFilters: [],
       mainEchoes: [],
       minStats: [],
+      optimiazationTarget: null,
       // state
       isLoading: true,
       // passive stats list
@@ -245,6 +256,7 @@ export default {
         this.minStats,
         this.echoSetDataByLabel,
         this.mainEchoStats,
+        this.optimizationTarget,
       );
     },
     chooseMainEcho(echoKey) {
@@ -263,12 +275,17 @@ export default {
       }
       this.syncOptimizerConfig();
     },
+    handleUpdatedTarget(target) {
+      this.optimizationTarget = target;
+      this.syncOptimizerConfig();
+    },
     async syncOptimizerConfig() {
       const data = {
         optimizer: {
           mainEchoes: JSON.parse(JSON.stringify(this.mainEchoes)),
           echoSets: JSON.parse(JSON.stringify(this.setFilters)),
           minStats: JSON.parse(JSON.stringify(this.minStats)),
+          optimizationTarget: this.optimizationTarget,
         },
       };
       await this.setCharacterData(this.character, data);
