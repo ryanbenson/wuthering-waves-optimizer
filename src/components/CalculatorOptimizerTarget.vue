@@ -88,7 +88,6 @@ export default {
   },
   watch: {
     optimizationTarget() {
-      console.log("Optimization target changed:", this.optimizationTarget);
       this.updatedTarget();
     },
   },
@@ -104,12 +103,12 @@ export default {
     optimizationTargets() {
       return {
         Stats: [
-          { key: "HP", label: "HP" },
-          { key: "ATK", label: "ATK" },
-          { key: "DEF", label: "DEF" },
-          { key: "CritRate", label: "Crit Rate" },
-          { key: "CritDMG", label: "Crit DMG" },
-          { key: "EnergyRegen", label: "Energy Regen" },
+          { key: "totalHp", label: "HP" },
+          { key: "totalAtk", label: "ATK" },
+          { key: "totalDef", label: "DEF" },
+          { key: "totalCritRate", label: "Crit Rate" },
+          { key: "totalCritDMG", label: "Crit DMG" },
+          { key: "energyRegen", label: "Energy Regen" },
         ],
       };
     },

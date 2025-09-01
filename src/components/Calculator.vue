@@ -532,6 +532,7 @@ export default defineComponent({
       returnValue = false,
       injectStats = null,
       ignoreBuffs = {}, // e.g. {ignoreTeamBuffs: true}
+      injectEchoStats = null,
     ) => {
       const { ignoreTeamBuffs, ignoreWeaponBuffs, ignoreEchoes } = ignoreBuffs;
       let stats = {
@@ -672,6 +673,10 @@ export default defineComponent({
 
       if (echoStats && !ignoreEchoes) {
         addEchoBuffs(echoStats?.value, stats);
+      }
+
+      if (injectEchoStats) {
+        addEchoBuffs(injectEchoStats, stats);
       }
 
       if (customBuffs.value) {
@@ -2286,8 +2291,8 @@ export default defineComponent({
       minStats = [],
       echoSetPassiveBuffs = {},
       mainEchoStats = {},
+      target = "ATK",
     ) => {
-      console.log("Main Echo Keys:", mainEchoes);
       const echoes = inventoryStore.echoes;
       const allowedSets = new Set(setFilters);
       const topN = 5;
@@ -2308,6 +2313,7 @@ export default defineComponent({
         minStats,
         echoSetPassiveBuffs,
         mainEchoStats,
+        target,
       );
       optimizerResults.value = results;
       totalCombos.value = processedCombos.value;
@@ -2379,12 +2385,9 @@ export default defineComponent({
       minStats = [],
       echoSetPassiveBuffs = {},
       mainEchoStats = {},
+      target = "ATK",
     ) {
-      const statsWithoutEchoes = calcCharStats("All", null, {
-        ignoreEchoes: true,
-      });
-      console.log(statsWithoutEchoes);
-      // 2. Min-heap for topN results
+      // Min-heap for topN results
       const heap = [];
       const seenCombinations = new Set(); // Track unique combinations
 
@@ -2405,30 +2408,63 @@ export default defineComponent({
         // calculate the total buffs from the echoes + set bonuses + main echo bonuses
         // TODO: We have the echo stats, need to add in set bonuses and main echo bonuses
         const echoStats = getCombinedEchoStats(loadout);
-        let finalStats = addEchoBuffs(echoStats, statsWithoutEchoes, true);
         // get the echo sets list
         const echoSets = getSetsFromEchoes(loadout);
         const echoSetBonuses = getSetBonusEffects(echoSets);
         const setBonusOne = echoSetBonuses?.setBonusOne ?? null;
         const setBonusTwo = echoSetBonuses?.setBonusTwo ?? null;
-        if (setBonusOne) {
-          const setBonuses = echoSetPassiveBuffs?.[setBonusOne] ?? null;
-          if (setBonuses) {
-            // if we have some user-inputted buffs for this set bonus, apply them
-            finalStats = addEchoBuffs(setBonuses, finalStats, true);
-          }
-        }
-        if (setBonusTwo) {
-          const setBonuses = echoSetPassiveBuffs?.[setBonusTwo] ?? null;
-          if (setBonuses) {
-            // if we have some user-inputted buffs for this set bonus, apply them
-            finalStats = addEchoBuffs(setBonuses, finalStats, true);
-          }
-        }
         //add in the main echo buff, if we have some
         const mainEchoKey = loadout[0]?.echo;
         const mainEchoBuff = mainEchoStats?.[mainEchoKey] ?? {};
-        finalStats = addEchoBuffs(mainEchoBuff, finalStats, true);
+
+        // go through these buffs, and overlap them to get a final set of buffs in one object
+        // the keys will the stat keys, and the values will be the total buff value
+        // and we need to add them up
+        const setBonusOneBuffs = echoSetPassiveBuffs?.[setBonusOne] ?? {};
+        const setBonusTwoBuffs = echoSetPassiveBuffs?.[setBonusTwo] ?? {};
+        const allBuffsToAdd = [
+          echoStats,
+          mainEchoBuff,
+          setBonusOneBuffs,
+          setBonusTwoBuffs,
+        ];
+        const combinedEchoBuffs = {};
+        allBuffsToAdd.forEach((buffs) => {
+          Object.keys(buffs).forEach((key) => {
+            if (combinedEchoBuffs[key]) {
+              combinedEchoBuffs[key] += buffs[key];
+            } else {
+              combinedEchoBuffs[key] = buffs[key];
+            }
+          });
+        });
+        const finalStats = calcCharStats(
+          "All",
+          null,
+          {
+            ignoreEchoes: true,
+          },
+          combinedEchoBuffs,
+        );
+
+        // re-calculate the "total" stats
+        // TODO: Make this better
+        const { hp, attack, defense } =
+          chosenChar.value.getCharacterStatsByLevel(characterLevel.value);
+        const charHp = hp;
+        const charAtk = attack;
+        const charDef = defense;
+        const weaponAtk = weaponData.value?.attack;
+        finalStats.totalAtk =
+          (charAtk + weaponAtk) * (1 + finalStats.attackPercent / 100) +
+          finalStats.attackFlat;
+        finalStats.totalHp =
+          charHp * (1 + finalStats.hpPercent / 100) + finalStats.hpFlat;
+        finalStats.totalDef =
+          charDef * (1 + finalStats.defPercent / 100) + finalStats.defFlat;
+        finalStats.totalCritRate = finalStats.critRate / 100;
+        finalStats.totalCritDMG = finalStats.critDMG / 100;
+        finalStats.DefIgnore = finalStats.defIgnore / 100;
 
         // if we have some min stats, check them before we add them to the list of usable loadouts
         if (minStats.length > 0) {
@@ -2444,20 +2480,29 @@ export default defineComponent({
 
         seenCombinations.add(combinationKey);
 
-        // console.log(echoStats, finalStats);
-        const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
+        const targetElements = target.split(":");
+        const [targetType, targetObject] = targetElements;
+        let targetValue = 0;
+        if (targetType === "Stat") {
+          // get the stat wer'e looking for from our final stats
+          targetValue = finalStats?.[targetObject] ?? 0;
+        } else {
+          // TODO: calculate the damage of the target attack or rotation
+          // for now, just random
+          targetValue = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
+        }
         processedCombos.value++;
 
         if (heap.length < topN) {
-          heap.push({ loadout, dmg });
-          heap.sort((a, b) => a.dmg - b.dmg); // min at index 0
-        } else if (dmg > heap[0].dmg) {
-          heap[0] = { loadout, dmg };
-          heap.sort((a, b) => a.dmg - b.dmg);
+          heap.push({ loadout, targetValue });
+          heap.sort((a, b) => a.targetValue - b.targetValue); // min at index 0
+        } else if (targetValue > heap[0].targetValue) {
+          heap[0] = { loadout, targetValue };
+          heap.sort((a, b) => a.targetValue - b.targetValue);
         }
       }
 
-      return heap.sort((a, b) => b.dmg - a.dmg); // descending
+      return heap.sort((a, b) => b.targetValue - a.targetValue); // descending
     }
 
     return {

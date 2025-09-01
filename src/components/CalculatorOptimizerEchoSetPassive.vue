@@ -116,7 +116,7 @@ export default {
      * @emits updated-echo-passive-stats
      */
     async updateStats() {
-      this.$emit("updated-echo-passive-stats", {
+      this.$emit("updated-optimizer-echo-passive-stats", {
         stats: this.buffStats,
         key: this.passiveKey,
       });

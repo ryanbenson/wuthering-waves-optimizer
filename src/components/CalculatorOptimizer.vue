@@ -161,6 +161,7 @@
       <h3>Choose your optimization target</h3>
       <CalculatorOptimizerTarget
         :character="character"
+        :current-optimization-target="optimizationTarget"
         @optimizer:target-updated="
           handleUpdatedTarget
         "></CalculatorOptimizerTarget>
@@ -456,6 +457,8 @@ export default {
     this.mainEchoes = this.currentCharacter?.optimizer?.mainEchoes ?? [];
     this.setFilters = this.currentCharacter?.optimizer?.echoSets ?? [];
     this.minStats = this.currentCharacter?.optimizer?.minStats ?? [];
+    this.optimizationTarget =
+      this.currentCharacter?.optimizer?.optimizationTarget ?? [];
     this.isLoading = false;
   },
 };
