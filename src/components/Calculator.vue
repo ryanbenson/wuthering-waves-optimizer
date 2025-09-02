@@ -2326,12 +2326,13 @@ export default defineComponent({
       start = 0,
       combo = [],
       cost = 0,
+      usedEchoIds = new Set(),
     ) {
       // If we have main echo keys and combo is empty, we need to start with one of those
       if (mainEchoKeys.length > 0 && combo.length === 0) {
         // Find all echoes that match the main echo keys
         const mainEchoCopies = echoes.filter((e) =>
-          mainEchoKeys.includes(e.echo),
+          mainEchoKeys.includes(e.echo) && !usedEchoIds.has(e.echoId),
         );
 
         // For each copy of the main echo, start a new combination
@@ -2339,13 +2340,17 @@ export default defineComponent({
           // the main echo isn't guaranteed to be 4, sometimes it's an elite, so 3
           const nextCost = cost + mainEcho.type;
           if (nextCost <= 12) {
+            // Add to used set instead of filtering
+            usedEchoIds.add(mainEcho.echoId);
             yield* generateLoadouts(
               echoes,
               mainEchoKeys,
-              start,
+              0,
               [mainEcho],
               nextCost,
+              usedEchoIds,
             );
+            usedEchoIds.delete(mainEcho.echoId); // Backtrack
           }
         }
         return;
@@ -2364,15 +2369,24 @@ export default defineComponent({
 
       for (let i = start; i < echoes.length; i++) {
         const next = echoes[i];
+        // Skip if already used
+        if (usedEchoIds.has(next.echoId)) continue;
+
         const nextCost = cost + next.type;
         if (nextCost <= 12) {
+          // Add to used set instead of filtering
+          usedEchoIds.add(next.echoId);
+          combo.push(next); // Mutate instead of creating new array
           yield* generateLoadouts(
             echoes,
             mainEchoKeys,
-            i + 1,
-            [...combo, next],
+            i + 1, // Can keep original index since we're not filtering
+            combo,
             nextCost,
+            usedEchoIds,
           );
+          combo.pop(); // Backtrack
+          usedEchoIds.delete(next.echoId); // Backtrack
         }
       }
     }
@@ -2394,10 +2408,9 @@ export default defineComponent({
       for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
         // Create a unique key for this combination based on echo keys, sorted
         // Using echo.echoId to ensure we dont use the same specific echo, but we can use the same echoes
-        const combinationKey = loadout
-          .map((echo) => echo.echoId)
-          .sort()
-          .join("|");
+        const echoIds = loadout.map((echo) => echo.echoId);
+        echoIds.sort(); // Sort in place for better performance
+        const combinationKey = echoIds.join("|");
 
         // Skip if we've already seen this combination
         if (seenCombinations.has(combinationKey)) {
@@ -2504,6 +2517,7 @@ export default defineComponent({
 
       return heap.sort((a, b) => b.targetValue - a.targetValue); // descending
     }
+
 
     return {
       allDamages,
