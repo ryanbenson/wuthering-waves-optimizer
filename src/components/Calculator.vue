@@ -2285,42 +2285,43 @@ export default defineComponent({
 
     //   return heap.sort((a, b) => b.dmg - a.dmg); // descending
     // }
-    const handleOptimize = (
-      setFilters = [],
-      mainEchoes = [],
-      minStats = [],
-      echoSetPassiveBuffs = {},
-      mainEchoStats = {},
-      target = "ATK",
-    ) => {
-      const echoes = inventoryStore.echoes;
-      const allowedSets = new Set(setFilters);
-      const topN = 5;
-      processedCombos.value = 0;
-      optimizerResults.value = null;
+    
+const handleOptimize = (
+    setFilters = [],
+    mainEchoes = [],
+    minStats = [],
+    echoSetPassiveBuffs = {},
+    mainEchoStats = {},
+    target = "ATK",
+  ) => {
+    const echoes = inventoryStore.echoes;
+    const allowedSets = new Set(setFilters);
+    const topN = 5;
+    processedCombos.value = 0;
+    optimizerResults.value = null;
 
-      // 1. Filter upfront
-      let filteredEchoes = echoes;
-      if (allowedSets.size) {
-        filteredEchoes = echoes.filter((e) => allowedSets.has(e.echoSet));
-      }
+    // 1. Filter upfront
+    let filteredEchoes = echoes;
+    if (allowedSets.size) {
+      filteredEchoes = echoes.filter((e) => allowedSets.has(e.echoSet));
+    }
 
-      const results = optimize(
-        filteredEchoes,
-        allowedSets,
-        topN,
-        mainEchoes,
-        minStats,
-        echoSetPassiveBuffs,
-        mainEchoStats,
-        target,
-      );
-      optimizerResults.value = results;
-      totalCombos.value = processedCombos.value;
-      console.log(results);
-    };
+    const results = optimize(
+      filteredEchoes,
+      allowedSets,
+      topN,
+      mainEchoes,
+      minStats,
+      echoSetPassiveBuffs,
+      mainEchoStats,
+      target,
+    );
+    optimizerResults.value = results;
+    totalCombos.value = processedCombos.value;
+    console.log(results);
+  };
 
-    function* generateLoadouts(
+      function* generateLoadouts(
       echoes,
       mainEchoKeys = [],
       start = 0,
@@ -2332,7 +2333,7 @@ export default defineComponent({
       if (mainEchoKeys.length > 0 && combo.length === 0) {
         // Find all echoes that match the main echo keys
         const mainEchoCopies = echoes.filter((e) =>
-          mainEchoKeys.includes(e.echo) && !usedEchoIds.has(e.echoId),
+          mainEchoKeys.includes(e.echo),
         );
 
         // For each copy of the main echo, start a new combination
@@ -2340,183 +2341,183 @@ export default defineComponent({
           // the main echo isn't guaranteed to be 4, sometimes it's an elite, so 3
           const nextCost = cost + mainEcho.type;
           if (nextCost <= 12) {
-            // Add to used set instead of filtering
-            usedEchoIds.add(mainEcho.echoId);
+            // Create a fresh usedEchoIds Set for each main echo group
+            const groupUsedEchoIds = new Set([mainEcho.echoId]);
             yield* generateLoadouts(
               echoes,
               mainEchoKeys,
               0,
               [mainEcho],
               nextCost,
-              usedEchoIds,
+              groupUsedEchoIds,
             );
-            usedEchoIds.delete(mainEcho.echoId); // Backtrack
           }
         }
         return;
       }
 
-      // Valid combination? Yield it (ignore empty set)
-      if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
-        yield combo;
-      }
-
-      // Stop exploring if combo already too big
-      if (combo.length === 5 || cost >= 12) return;
-
-      // If we have main echo keys and combo is empty, we've already handled the first slot
-      if (mainEchoKeys.length > 0 && combo.length === 0) return;
-
-      for (let i = start; i < echoes.length; i++) {
-        const next = echoes[i];
-        // Skip if already used
-        if (usedEchoIds.has(next.echoId)) continue;
-
-        const nextCost = cost + next.type;
-        if (nextCost <= 12) {
-          // Add to used set instead of filtering
-          usedEchoIds.add(next.echoId);
-          combo.push(next); // Mutate instead of creating new array
-          yield* generateLoadouts(
-            echoes,
-            mainEchoKeys,
-            i + 1, // Can keep original index since we're not filtering
-            combo,
-            nextCost,
-            usedEchoIds,
-          );
-          combo.pop(); // Backtrack
-          usedEchoIds.delete(next.echoId); // Backtrack
-        }
-      }
+    // Valid combination? Yield it (ignore empty set)
+    if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
+      yield combo;
     }
 
-    function optimize(
-      echoes,
-      allowedSets = [],
-      topN = 5,
-      mainEchoKeys = [],
-      minStats = [],
-      echoSetPassiveBuffs = {},
-      mainEchoStats = {},
-      target = "ATK",
-    ) {
-      // Min-heap for topN results
-      const heap = [];
-      const seenCombinations = new Set(); // Track unique combinations
+    // Stop exploring if combo already too big
+    if (combo.length === 5 || cost >= 12) return;
 
-      for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
-        // Create a unique key for this combination based on echo keys, sorted
-        // Using echo.echoId to ensure we dont use the same specific echo, but we can use the same echoes
-        const echoIds = loadout.map((echo) => echo.echoId);
-        echoIds.sort(); // Sort in place for better performance
-        const combinationKey = echoIds.join("|");
+    // If we have main echo keys and combo is empty, we've already handled the first slot
+    if (mainEchoKeys.length > 0 && combo.length === 0) return;
 
-        // Skip if we've already seen this combination
-        if (seenCombinations.has(combinationKey)) {
-          continue;
-        }
+    for (let i = start; i < echoes.length; i++) {
+      const next = echoes[i];
+      // Skip if already used
+      if (usedEchoIds.has(next.echoId)) continue;
 
-        // TODO: implement the stats and damage/desire stat
-        // calculate the total buffs from the echoes + set bonuses + main echo bonuses
-        // TODO: We have the echo stats, need to add in set bonuses and main echo bonuses
-        const echoStats = getCombinedEchoStats(loadout);
-        // get the echo sets list
-        const echoSets = getSetsFromEchoes(loadout);
-        const echoSetBonuses = getSetBonusEffects(echoSets);
-        const setBonusOne = echoSetBonuses?.setBonusOne ?? null;
-        const setBonusTwo = echoSetBonuses?.setBonusTwo ?? null;
-        //add in the main echo buff, if we have some
-        const mainEchoKey = loadout[0]?.echo;
-        const mainEchoBuff = mainEchoStats?.[mainEchoKey] ?? {};
-
-        // go through these buffs, and overlap them to get a final set of buffs in one object
-        // the keys will the stat keys, and the values will be the total buff value
-        // and we need to add them up
-        const setBonusOneBuffs = echoSetPassiveBuffs?.[setBonusOne] ?? {};
-        const setBonusTwoBuffs = echoSetPassiveBuffs?.[setBonusTwo] ?? {};
-        const allBuffsToAdd = [
-          echoStats,
-          mainEchoBuff,
-          setBonusOneBuffs,
-          setBonusTwoBuffs,
-        ];
-        const combinedEchoBuffs = {};
-        allBuffsToAdd.forEach((buffs) => {
-          Object.keys(buffs).forEach((key) => {
-            if (combinedEchoBuffs[key]) {
-              combinedEchoBuffs[key] += buffs[key];
-            } else {
-              combinedEchoBuffs[key] = buffs[key];
-            }
-          });
-        });
-        const finalStats = calcCharStats(
-          "All",
-          null,
-          {
-            ignoreEchoes: true,
-          },
-          combinedEchoBuffs,
+      const nextCost = cost + next.type;
+      if (nextCost <= 12) {
+        // Add to used set instead of filtering
+        usedEchoIds.add(next.echoId);
+        combo.push(next); // Mutate instead of creating new array
+        yield* generateLoadouts(
+          echoes,
+          mainEchoKeys,
+          i + 1, // Can keep original index since we're not filtering
+          combo,
+          nextCost,
+          usedEchoIds,
         );
+        combo.pop(); // Backtrack
+        usedEchoIds.delete(next.echoId); // Backtrack
+      }
+    }
+  }
 
-        // re-calculate the "total" stats
-        // TODO: Make this better
-        const { hp, attack, defense } =
-          chosenChar.value.getCharacterStatsByLevel(characterLevel.value);
-        const charHp = hp;
-        const charAtk = attack;
-        const charDef = defense;
-        const weaponAtk = weaponData.value?.attack;
-        finalStats.totalAtk =
-          (charAtk + weaponAtk) * (1 + finalStats.attackPercent / 100) +
-          finalStats.attackFlat;
-        finalStats.totalHp =
-          charHp * (1 + finalStats.hpPercent / 100) + finalStats.hpFlat;
-        finalStats.totalDef =
-          charDef * (1 + finalStats.defPercent / 100) + finalStats.defFlat;
-        finalStats.totalCritRate = finalStats.critRate / 100;
-        finalStats.totalCritDMG = finalStats.critDMG / 100;
-        finalStats.DefIgnore = finalStats.defIgnore / 100;
+  function optimize(
+    echoes,
+    allowedSets = [],
+    topN = 5,
+    mainEchoKeys = [],
+    minStats = [],
+    echoSetPassiveBuffs = {},
+    mainEchoStats = {},
+    target = "ATK",
+  ) {
+    // Min-heap for topN results
+    const heap = [];
+    const seenCombinations = new Set(); // Track unique combinations
 
-        // if we have some min stats, check them before we add them to the list of usable loadouts
-        if (minStats.length > 0) {
-          for (const minStat of minStats) {
-            const statValue = finalStats?.[minStat.stat];
-            const desiredValue = Number(minStat.minValue) / 100; // we need to divide as we're getting full int, but the stats calculated are decimals
-            // if any of the min stats aren't good enough, then don't use the loadout
-            if (statValue < desiredValue) {
-              continue;
-            }
+    for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
+      // Create a unique key for this combination based on echo keys, sorted
+      // Using echo.echoId to ensure we dont use the same specific echo, but we can use the same echoes
+      const echoIds = loadout.map((echo) => echo.echoId);
+      echoIds.sort(); // Sort in place for better performance
+      const combinationKey = echoIds.join("|");
+
+      // Skip if we've already seen this combination
+      if (seenCombinations.has(combinationKey)) {
+        continue;
+      }
+
+      // TODO: implement the stats and damage/desire stat
+      // calculate the total buffs from the echoes + set bonuses + main echo bonuses
+      // TODO: We have the echo stats, need to add in set bonuses and main echo bonuses
+      const echoStats = getCombinedEchoStats(loadout);
+      // get the echo sets list
+      const echoSets = getSetsFromEchoes(loadout);
+      const echoSetBonuses = getSetBonusEffects(echoSets);
+      const setBonusOne = echoSetBonuses?.setBonusOne ?? null;
+      const setBonusTwo = echoSetBonuses?.setBonusTwo ?? null;
+      //add in the main echo buff, if we have some
+      const mainEchoKey = loadout[0]?.echo;
+      const mainEchoBuff = mainEchoStats?.[mainEchoKey] ?? {};
+
+      // go through these buffs, and overlap them to get a final set of buffs in one object
+      // the keys will the stat keys, and the values will be the total buff value
+      // and we need to add them up
+      const setBonusOneBuffs = echoSetPassiveBuffs?.[setBonusOne] ?? {};
+      const setBonusTwoBuffs = echoSetPassiveBuffs?.[setBonusTwo] ?? {};
+      const allBuffsToAdd = [
+        echoStats,
+        mainEchoBuff,
+        setBonusOneBuffs,
+        setBonusTwoBuffs,
+      ];
+      const combinedEchoBuffs = {};
+      allBuffsToAdd.forEach((buffs) => {
+        Object.keys(buffs).forEach((key) => {
+          if (combinedEchoBuffs[key]) {
+            combinedEchoBuffs[key] += buffs[key];
+          } else {
+            combinedEchoBuffs[key] = buffs[key];
+          }
+        });
+      });
+      const finalStats = calcCharStats(
+        "All",
+        null,
+        {
+          ignoreEchoes: true,
+        },
+        combinedEchoBuffs,
+      );
+
+      // re-calculate the "total" stats
+      // TODO: Make this better
+      const { hp, attack, defense } =
+        chosenChar.value.getCharacterStatsByLevel(characterLevel.value);
+      const charHp = hp;
+      const charAtk = attack;
+      const charDef = defense;
+      const weaponAtk = weaponData.value?.attack;
+      finalStats.totalAtk =
+        (charAtk + weaponAtk) * (1 + finalStats.attackPercent / 100) +
+        finalStats.attackFlat;
+      finalStats.totalHp =
+        charHp * (1 + finalStats.hpPercent / 100) + finalStats.hpFlat;
+      finalStats.totalDef =
+        charDef * (1 + finalStats.defPercent / 100) + finalStats.defFlat;
+      finalStats.totalCritRate = finalStats.critRate / 100;
+      finalStats.totalCritDMG = finalStats.critDMG / 100;
+      finalStats.DefIgnore = finalStats.defIgnore / 100;
+
+      // if we have some min stats, check them before we add them to the list of usable loadouts
+      if (minStats.length > 0) {
+        for (const minStat of minStats) {
+          const statValue = finalStats?.[minStat.stat];
+          const desiredValue = Number(minStat.minValue) / 100; // we need to divide as we're getting full int, but the stats calculated are decimals
+          // if any of the min stats aren't good enough, then don't use the loadout
+          if (statValue < desiredValue) {
+            continue;
           }
         }
-
-        seenCombinations.add(combinationKey);
-
-        const targetElements = target.split(":");
-        const [targetType, targetObject] = targetElements;
-        let targetValue = 0;
-        if (targetType === "Stat") {
-          // get the stat wer'e looking for from our final stats
-          targetValue = finalStats?.[targetObject] ?? 0;
-        } else {
-          // TODO: calculate the damage of the target attack or rotation
-          // for now, just random
-          targetValue = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
-        }
-        processedCombos.value++;
-
-        if (heap.length < topN) {
-          heap.push({ loadout, targetValue });
-          heap.sort((a, b) => a.targetValue - b.targetValue); // min at index 0
-        } else if (targetValue > heap[0].targetValue) {
-          heap[0] = { loadout, targetValue };
-          heap.sort((a, b) => a.targetValue - b.targetValue);
-        }
       }
 
-      return heap.sort((a, b) => b.targetValue - a.targetValue); // descending
+      seenCombinations.add(combinationKey);
+
+      const targetElements = target.split(":");
+      const [targetType, targetObject] = targetElements;
+      let targetValue = 0;
+      if (targetType === "Stat") {
+        // get the stat wer'e looking for from our final stats
+        targetValue = finalStats?.[targetObject] ?? 0;
+      } else {
+        // TODO: calculate the damage of the target attack or rotation
+        // for now, just random
+        targetValue = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
+      }
+      processedCombos.value++;
+
+      if (heap.length < topN) {
+        heap.push({ loadout, targetValue });
+        heap.sort((a, b) => a.targetValue - b.targetValue); // min at index 0
+      } else if (targetValue > heap[0].targetValue) {
+        heap[0] = { loadout, targetValue };
+        heap.sort((a, b) => a.targetValue - b.targetValue);
+      }
     }
+
+    return heap.sort((a, b) => b.targetValue - a.targetValue); // descending
+  }
+
 
 
     return {
