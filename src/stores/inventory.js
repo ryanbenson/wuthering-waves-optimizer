@@ -13,7 +13,8 @@ export const useInventoryStore = defineStore("inventory", {
       return (echoId) => state.equipped?.[echoId] ?? {};
     },
     getEchoPresetData: (state) => {
-      return (presetId) => state.echoPresets.find((preset) => preset.presetId === presetId);
+      return (presetId) =>
+        state.echoPresets.find((preset) => preset.presetId === presetId);
     },
     getEchoPresetCharacters: (state) => {
       return (requestedPresetId) => {
@@ -26,17 +27,24 @@ export const useInventoryStore = defineStore("inventory", {
           }
         });
         return charactersList;
-      }
+      };
     },
     getEchoPresetsByEchoId: (state) => {
-      return (echoId) => state.echoPresets.filter((preset) => {
-        const echoIds = [preset.echo1Id, preset.echo2Id, preset.echo3Id, preset.echo4Id, preset.echo5Id];
-        return echoIds.includes(echoId);
-      });
+      return (echoId) =>
+        state.echoPresets.filter((preset) => {
+          const echoIds = [
+            preset.echo1Id,
+            preset.echo2Id,
+            preset.echo3Id,
+            preset.echo4Id,
+            preset.echo5Id,
+          ];
+          return echoIds.includes(echoId);
+        });
     },
     echoById: (state) => {
       return (echoId) => state.echoes.find((echo) => echo.echoId === echoId);
-    }
+    },
   },
   actions: {
     saveEcho(data) {
@@ -101,7 +109,9 @@ export const useInventoryStore = defineStore("inventory", {
       return this.echoes.find((echo) => echo.echoId === echoId);
     },
     getEchoPresetById(presetId) {
-      return this.echoPresets.find((echoPreset) => echoPreset.presetId === presetId);
+      return this.echoPresets.find(
+        (echoPreset) => echoPreset.presetId === presetId,
+      );
     },
     setEquippedData(echoId, data) {
       const existingData = this.equipped[echoId] ?? {};
@@ -124,10 +134,13 @@ export const useInventoryStore = defineStore("inventory", {
       return Object.keys(equipped);
     },
     deleteEchoEquippedMapping(echoId) {
+      if (!this.equipped[echoId]) return;
       delete this.equipped[echoId];
     },
     deleteEchoEquippedMappingCharacter(echoId, character) {
+      if (!this.equipped[echoId]) return;
+      if (!this.equipped[echoId][character]) return;
       delete this.equipped[echoId][character];
-    }
+    },
   },
 });
