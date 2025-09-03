@@ -2415,7 +2415,41 @@ const handleOptimize = (
     let attackData;
     if (targetType === "Attack") {
       const [attackType, attackKey] = targetObject.split("|");
-      attackData = getAttackData(chosenChar.value, attackType, attackKey);
+      const attackInfo = getAttackData(chosenChar.value, attackType, attackKey);
+      let actionTypeForAttackData;
+      switch (attackType) {
+        case 'basicAttacks':
+          actionTypeForAttackData = 'basic';
+          break;
+        case 'skillAttacks':
+          actionTypeForAttackData = 'skill';
+          break;
+        case 'forteCircuitAttacks':
+          actionTypeForAttackData = 'forte';
+          break;
+        case 'liberationAttacks':
+          actionTypeForAttackData = 'liberation';
+          break;
+        case 'introAttacks':
+          actionTypeForAttackData = 'intro';
+          break;
+        case 'outroAttacks':
+          actionTypeForAttackData = 'outro';
+          break;
+      }
+      attackData = {
+        actionType: actionTypeForAttackData,
+        buffs: null,
+        count: 1,
+        excludeSelfBuffs: false,
+        excludeTeamBuffs: false,
+        excludeWeaponBuffs: false,
+        key: attackKey,
+        label: attackInfo.label,
+        talents: attackInfo.talents,
+        type: attackInfo.type,
+      };
+      console.log(attackData);
       if (!attackData) {
         console.error('Could not find the attack data chosen');
         return;
@@ -2515,27 +2549,17 @@ const handleOptimize = (
         // get the stat wer'e looking for from our final stats
         targetValue = finalStats?.[targetObject] ?? 0;
       } else if (targetType === "Attack") {
-        console.log('yep');
-        // TODO: calculate the damage of the target attack or rotation
-        // for now, just random
-        /**
-         * 
-          const attacks = processAttacks(
-            rotation.attacks,
-            null,
-            false,
-            true,
-            false,
-          );
-         */
+        // TODO: We need to pass in the stats we have on-hand from the loadout
+        // and not use the stats that the current user has
+        // INFO: It works as it is right now, and the damages match, which is good
         const attacks = processAttacks(
-            [attackData],
-            null,
-            false,
-            true,
-            false,
+            [attackData], // attacks list, just the one since we're just doing 1 attack to optimize
+            null, // talentType = null since it will be figured out dynamically
+            false, // hasNoTalentType = no, unless it's outro (TODO)
+            true, // dynamicTalentType = yes, this will figure out the talent data for us
+            false, // excludeDisabledAttacks = no, unless we need to (TODO)
           );
-          console.log(attacks);
+          console.log(attacks?.[0]?.damage?.critDamage);
         targetValue = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
       } else if (targetType === "Rotation") {
         console.log('process rotation');
