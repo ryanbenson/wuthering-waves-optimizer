@@ -14,42 +14,42 @@
     <optgroup label="Basic" data-skill="basic">
       <option
         v-for="attack in basicAttacksList"
-        :value="`Attack:${attack.key}`">
+        :value="`Attack:basicAttacks|${attack.key}`">
         {{ attack.label }}
       </option>
     </optgroup>
     <optgroup label="Skill" data-skill="skill">
       <option
         v-for="attack in skillAttacksList"
-        :value="`Attack:${attack.key}`">
+        :value="`Attack:skillAttacks|${attack.key}`">
         {{ attack.label }}
       </option>
     </optgroup>
     <optgroup label="Forte Circuit" data-skill="forteCircuit">
       <option
         v-for="attack in forteCircuitAttacksList"
-        :value="`Attack:${attack.key}`">
+        :value="`Attack:forteCircuitAttacks|${attack.key}`">
         {{ attack.label }}
       </option>
     </optgroup>
     <optgroup label="Liberation" data-skill="liberation">
       <option
         v-for="attack in liberationAttacksList"
-        :value="`Attack:${attack.key}`">
+        :value="`Attack:liberationAttacks|${attack.key}`">
         {{ attack.label }}
       </option>
     </optgroup>
     <optgroup label="Intro" data-skill="intro" v-if="introAttacksList.length">
       <option
         v-for="attack in introAttacksList"
-        :value="`Attack:${attack.key}`">
+        :value="`Attack:introAttacks|${attack.key}`">
         {{ attack.label }}
       </option>
     </optgroup>
     <optgroup label="Outro" data-skill="outro" v-if="outroAttacksList.length">
       <option
         v-for="attack in outroAttacksList"
-        :value="`Attack:${attack.key}`">
+        :value="`Attack:outroAttacks|${attack.key}`">
         {{ attack.label }}
       </option>
     </optgroup>

@@ -434,3 +434,9 @@ export async function getCharByName(charName: string) {
   const data = charModule.getData();
   return data;
 }
+
+export function getAttackData(charData: any, forteType: string, attackKey: string): any {
+  const charAttacks = charData?.[forteType]?.attacks ?? [];
+  console.log(charAttacks);
+  return charAttacks.find((attack: any) => attack.key === attackKey);
+}

@@ -223,6 +223,7 @@ import {
 import {
   getCharByName,
   getCharactersAvailable,
+  getAttackData,
 } from "../characters/characters";
 import CalculatorEchoes from "./CalculatorEchoes.vue";
 import CalculatorWeapons from "./CalculatorWeapons.vue";
@@ -1006,8 +1007,115 @@ export default defineComponent({
       }
     };
 
-    const calcAllDamages = () => {
-      if (!chosenChar.value) return;
+
+      const processAttacks = (
+        attacks,
+        talentType,
+        hasNoTalentLevel = false,
+        dynamicTalentType = false,
+        excludeDisabledAttacks = true, // e.g. ones that are unlocked through chains should be hidden by default
+      ) => {
+        return (
+          (attacks ?? [])
+            .map((attack) => {
+              let isEnabled = true;
+              let originalIsEnabled = true; // used for rotations. we show them, but disable them, so isEnabled is overwritten
+              // if this attack requires a resonance chain to be unlocked, verify it's enabled
+              const requiresResonanceChain =
+                attack?.requiresResonanceChain ?? false;
+              if (requiresResonanceChain) {
+                const resonanceChainsEnabledAttacks =
+                  charResonanceChainsData.value?.EnableAttack ?? [];
+                const charBuffsEnabledAttacks =
+                  charBuffsData.value?.EnableAttack ?? [];
+                // merge all possible enabled attack arrays together
+                const enabledAttacks = []
+                  .concat(resonanceChainsEnabledAttacks)
+                  .concat(charBuffsEnabledAttacks);
+                const isAttackEnabled = enabledAttacks.includes(
+                  attack.requiresResonanceChain,
+                );
+                // flag this attack as enabled or not based on the resonance chain
+                isEnabled = isAttackEnabled;
+                originalIsEnabled = isEnabled;
+              }
+              if (!excludeDisabledAttacks) {
+                isEnabled = true;
+              }
+              let talent;
+              if (hasNoTalentLevel) {
+                talent = attack.talent;
+              } else if (dynamicTalentType) {
+                let talent;
+                switch (attack.actionType) {
+                  case "basic":
+                    talent = attack.talents[talentData.basic];
+                    break;
+                  case "skill":
+                    talent = attack.talents[talentData.skill];
+                    break;
+                  case "forteCircuit":
+                    talent = attack.talents[talentData.forte];
+                    break;
+                  case "liberation":
+                    talent = attack.talents[talentData.liberation];
+                    break;
+                  case "intro":
+                    talent = attack.talents[talentData.intro];
+                    break;
+                  case "outro":
+                    // outro has no talent tree. it only has 1 value (e.g. 20.00%)
+                    talent = attack.talent;
+                    break;
+                  case "utilityAttacks":
+                    // outro has no talent tree. it only has 1 value (e.g. 20.00%)
+                    talent = attack.talent;
+                    break;
+                }
+              } else {
+                talent = attack.talents[talentType];
+              }
+              const hitCount = attack?.count ?? 1;
+              let attackType = attack.type;
+              // is there an attack type override? if so, update it
+              const attackTypeOverrideResChain =
+                charResonanceChainsData.value?.specificTalentBuffs?.[
+                  `${attack.key}:talentTypeOverride`
+                ] ?? null;
+              const attackTypeOverrideSelfBuff =
+                charBuffsData.value?.specificTalentBuffs?.[
+                  `${attack.key}:talentTypeOverride`
+                ] ?? null;
+              if (attackTypeOverrideResChain) {
+                attackType = attackTypeOverrideResChain;
+              }
+              if (attackTypeOverrideSelfBuff) {
+                attackType = attackTypeOverrideSelfBuff;
+              }
+              return {
+                key: attack.key,
+                label: attack.label,
+                talent,
+                damage: calculateAttackDamage(
+                  attack,
+                  talentType,
+                  hasNoTalentLevel,
+                  dynamicTalentType,
+                  hitCount,
+                ),
+                isEnabled,
+                originalIsEnabled,
+                requiresResonanceChain,
+                type: attackType,
+                count: attack.count,
+                alwaysCrit: attack.alwaysCrit ?? false,
+              };
+            })
+            // remove any attacks that are not enabled
+            .filter((attack) => attack.isEnabled)
+        );
+      };
+
 
       const calculateAttackDamage = (
         attack,
@@ -1706,113 +1814,8 @@ export default defineComponent({
         );
       };
 
-      const processAttacks = (
-        attacks,
-        talentType,
-        hasNoTalentLevel = false,
-        dynamicTalentType = false,
-        excludeDisabledAttacks = true, // e.g. ones that are unlocked through chains should be hidden by default
-      ) => {
-        return (
-          (attacks ?? [])
-            .map((attack) => {
-              let isEnabled = true;
-              let originalIsEnabled = true; // used for rotations. we show them, but disable them, so isEnabled is overwritten
-              // if this attack requires a resonance chain to be unlocked, verify it's enabled
-              const requiresResonanceChain =
-                attack?.requiresResonanceChain ?? false;
-              if (requiresResonanceChain) {
-                const resonanceChainsEnabledAttacks =
-                  charResonanceChainsData.value?.EnableAttack ?? [];
-                const charBuffsEnabledAttacks =
-                  charBuffsData.value?.EnableAttack ?? [];
-                // merge all possible enabled attack arrays together
-                const enabledAttacks = []
-                  .concat(resonanceChainsEnabledAttacks)
-                  .concat(charBuffsEnabledAttacks);
-                const isAttackEnabled = enabledAttacks.includes(
-                  attack.requiresResonanceChain,
-                );
-                // flag this attack as enabled or not based on the resonance chain
-                isEnabled = isAttackEnabled;
-                originalIsEnabled = isEnabled;
-              }
-              if (!excludeDisabledAttacks) {
-                isEnabled = true;
-              }
-              let talent;
-              if (hasNoTalentLevel) {
-                talent = attack.talent;
-              } else if (dynamicTalentType) {
-                let talent;
-                switch (attack.actionType) {
-                  case "basic":
-                    talent = attack.talents[talentData.basic];
-                    break;
-                  case "skill":
-                    talent = attack.talents[talentData.skill];
-                    break;
-                  case "forteCircuit":
-                    talent = attack.talents[talentData.forte];
-                    break;
-                  case "liberation":
-                    talent = attack.talents[talentData.liberation];
-                    break;
-                  case "intro":
-                    talent = attack.talents[talentData.intro];
-                    break;
-                  case "outro":
-                    // outro has no talent tree. it only has 1 value (e.g. 20.00%)
-                    talent = attack.talent;
-                    break;
-                  case "utilityAttacks":
-                    // outro has no talent tree. it only has 1 value (e.g. 20.00%)
-                    talent = attack.talent;
-                    break;
-                }
-              } else {
-                talent = attack.talents[talentType];
-              }
-              const hitCount = attack?.count ?? 1;
-              let attackType = attack.type;
-              // is there an attack type override? if so, update it
-              const attackTypeOverrideResChain =
-                charResonanceChainsData.value?.specificTalentBuffs?.[
-                  `${attack.key}:talentTypeOverride`
-                ] ?? null;
-              const attackTypeOverrideSelfBuff =
-                charBuffsData.value?.specificTalentBuffs?.[
-                  `${attack.key}:talentTypeOverride`
-                ] ?? null;
-              if (attackTypeOverrideResChain) {
-                attackType = attackTypeOverrideResChain;
-              }
-              if (attackTypeOverrideSelfBuff) {
-                attackType = attackTypeOverrideSelfBuff;
-              }
-              return {
-                key: attack.key,
-                label: attack.label,
-                talent,
-                damage: calculateAttackDamage(
-                  attack,
-                  talentType,
-                  hasNoTalentLevel,
-                  dynamicTalentType,
-                  hitCount,
-                ),
-                isEnabled,
-                originalIsEnabled,
-                requiresResonanceChain,
-                type: attackType,
-                count: attack.count,
-                alwaysCrit: attack.alwaysCrit ?? false,
-              };
-            })
-            // remove any attacks that are not enabled
-            .filter((attack) => attack.isEnabled)
-        );
-      };
+    const calcAllDamages = () => {
+      if (!chosenChar.value) return;
 
       // clone the list of attacks so it doesn't mutate the base character data
       // this makes it where we dont have to manage the list of attacks,
@@ -2405,6 +2408,20 @@ const handleOptimize = (
     const heap = [];
     const seenCombinations = new Set(); // Track unique combinations
 
+    // get info on our target
+    const targetElements = target.split(":");
+    const [targetType, targetObject] = targetElements;
+    // if it's an attack, get the attack info, the targetObject is Type|skillkey
+    let attackData;
+    if (targetType === "Attack") {
+      const [attackType, attackKey] = targetObject.split("|");
+      attackData = getAttackData(chosenChar.value, attackType, attackKey);
+      if (!attackData) {
+        console.error('Could not find the attack data chosen');
+        return;
+      }
+    }
+
     for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
       // Create a unique key for this combination based on echo keys, sorted
       // Using echo.echoId to ensure we dont use the same specific echo, but we can use the same echoes
@@ -2493,16 +2510,35 @@ const handleOptimize = (
 
       seenCombinations.add(combinationKey);
 
-      const targetElements = target.split(":");
-      const [targetType, targetObject] = targetElements;
       let targetValue = 0;
       if (targetType === "Stat") {
         // get the stat wer'e looking for from our final stats
         targetValue = finalStats?.[targetObject] ?? 0;
-      } else {
+      } else if (targetType === "Attack") {
+        console.log('yep');
         // TODO: calculate the damage of the target attack or rotation
         // for now, just random
+        /**
+         * 
+          const attacks = processAttacks(
+            rotation.attacks,
+            null,
+            false,
+            true,
+            false,
+          );
+         */
+        const attacks = processAttacks(
+            [attackData],
+            null,
+            false,
+            true,
+            false,
+          );
+          console.log(attacks);
         targetValue = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
+      } else if (targetType === "Rotation") {
+        console.log('process rotation');
       }
       processedCombos.value++;
 
