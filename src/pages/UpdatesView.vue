@@ -10,6 +10,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 3, 2025</h3>
+    <ul>
+      <li>
+        Fixed an issue when you change rotation action ordering, it causes the
+        damages list for the rotation to duplicate rows, though the totals were
+        correct.
+      </li>
+    </ul>
     <h3>August 31, 2025</h3>
     <ul>
       <li>Fixed an issue with Danjin's Forte, two labels were mixed up.</li>

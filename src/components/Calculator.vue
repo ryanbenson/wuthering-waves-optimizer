@@ -236,6 +236,7 @@ import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
 import { buffs } from "../characters/Aalto/buffs";
+import { idText } from "typescript";
 
 export default defineComponent({
   name: "Calculator",
@@ -1756,6 +1757,7 @@ export default defineComponent({
                 attackType = attackTypeOverrideSelfBuff;
               }
               return {
+                id: attack.id ?? attack.key,
                 key: attack.key,
                 label: attack.label,
                 talent,
@@ -2075,6 +2077,7 @@ export default defineComponent({
           const actionType = action.type;
           const actionBuffs = action.buffs;
           const actionCount = action.count;
+          const actionId = action.id;
           const actionDisabled = action?.isDisabled ?? false;
           // if the action is disabled, just skip it
           if (actionDisabled) {
@@ -2102,6 +2105,7 @@ export default defineComponent({
               buffs: null,
               actionType,
               count: actionCount,
+              id: actionId,
               excludeSelfBuffs: action.excludeSelfBuffs ?? false,
               excludeTeamBuffs: action.excludeTeamBuffs ?? false,
               excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,

@@ -556,7 +556,7 @@
           <tbody>
             <CalculatorDamage
               v-for="damageInstance in rotation.attacks"
-              :key="damageInstance.key"
+              :key="damageInstance.id"
               :character="character"
               :type="damageInstance.type"
               :label="damageInstance.label"
