@@ -15,7 +15,7 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
+          <div v-if="false" class="alert alert-success mb-6 text-white p-2 px-4">
             All 2.6 content is now available!
           </div>
           <CalculatorCharacterSelect
@@ -1014,6 +1014,7 @@ export default defineComponent({
         hasNoTalentLevel = false,
         dynamicTalentType = false,
         excludeDisabledAttacks = true, // e.g. ones that are unlocked through chains should be hidden by default
+        providedStats = null, // use this set of base stats instead of the global stats
       ) => {
         return (
           (attacks ?? [])
@@ -1103,6 +1104,7 @@ export default defineComponent({
                   hasNoTalentLevel,
                   dynamicTalentType,
                   hitCount,
+                  providedStats, // pass along the provided stats, if we have them
                 ),
                 isEnabled,
                 originalIsEnabled,
@@ -1124,6 +1126,7 @@ export default defineComponent({
         hasNoTalentLevel = false,
         hasDynamicTalent = false,
         count = 1,
+        providedFullStats = null, // use this as our stats data, otherwise default to the global stats, this should exclude personal buffs, weapon buffs, chain buffs, custom buffs, team buffs. The only things to use are attack-level buffs
       ) => {
         const { excludeTeamBuffs, excludeWeaponBuffs } = attack;
         let statsWithoutTeamBuffs = null;
@@ -1181,15 +1184,15 @@ export default defineComponent({
           attack?.element ?? chosenChar.value?.basic?.element;
         let elementalDmgBonusDecimal = getElementDmgBonusByType(
           attackElement,
-          statsWithoutTeamBuffs,
+          statsWithoutTeamBuffs ?? providedFullStats,
         );
         const atkDefHpVal = getDamageValByAttr(
           attack?.attribute,
-          statsWithoutTeamBuffs,
+          statsWithoutTeamBuffs ?? providedFullStats,
         );
         let totalSkillDmgBonus = getDamageTypeBonusByType(
           attackType,
-          statsWithoutTeamBuffs,
+          statsWithoutTeamBuffs ?? providedFullStats,
         );
         let talent;
         let talentTree = attack?.talents;
@@ -2452,7 +2455,6 @@ const handleOptimize = (
         talents: attackInfo.talents,
         type: attackInfo.type,
       };
-      console.log(attackData);
       if (!attackData) {
         console.error('Could not find the attack data chosen');
         return;
@@ -2561,6 +2563,7 @@ const handleOptimize = (
             false, // hasNoTalentType = no, unless it's outro (TODO)
             true, // dynamicTalentType = yes, this will figure out the talent data for us
             false, // excludeDisabledAttacks = no, unless we need to (TODO)
+            finalStats, // give our stats, it will use this instead of the global state
           );
           console.log(attacks?.[0]?.damage?.critDamage);
         targetValue = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
