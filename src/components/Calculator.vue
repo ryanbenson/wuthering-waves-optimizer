@@ -1093,6 +1093,7 @@ export default defineComponent({
                 attackType = attackTypeOverrideSelfBuff;
               }
               return {
+                id: attack.id ?? attack.key,
                 key: attack.key,
                 label: attack.label,
                 talent,
@@ -2113,6 +2114,7 @@ export default defineComponent({
           const actionType = action.type;
           const actionBuffs = action.buffs;
           const actionCount = action.count;
+          const actionId = action.id;
           const actionDisabled = action?.isDisabled ?? false;
           // if the action is disabled, just skip it
           if (actionDisabled) {
@@ -2140,6 +2142,7 @@ export default defineComponent({
               buffs: null,
               actionType,
               count: actionCount,
+              id: actionId,
               excludeSelfBuffs: action.excludeSelfBuffs ?? false,
               excludeTeamBuffs: action.excludeTeamBuffs ?? false,
               excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
