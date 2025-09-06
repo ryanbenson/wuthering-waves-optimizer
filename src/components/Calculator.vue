@@ -506,6 +506,10 @@ export default defineComponent({
         target.resistReduction += source?.ResistReduction
           ? source.ResistReduction
           : 0;
+        target.coordinatedDmgBonus += source?.CoordinatedDMGBonus
+          ? source.CoordinatedDMGBonus
+          : 0;
+        target.dmgBonus += source?.DMGBonus ? source.DMGBonus : 0;
 
         if (source?.AllAttributeBonus) {
           const allAttributeBonus = source.AllAttributeBonus;
@@ -547,6 +551,7 @@ export default defineComponent({
         defFlat: 0,
         critRate: 5,
         critDMG: 150,
+        dmgBonus: 0,
         energyRegen: 1,
         healingBonus: 0,
         shieldBonus: 0,
@@ -567,6 +572,7 @@ export default defineComponent({
         bonusSpecificSkillDMGBonus: 0,
         totalDeepenEffect: 0,
         resistReduction: 0,
+        coordinatedDmgBonus: 0,
       };
       let charHp = 0;
       let charAtk = 0;
@@ -1265,10 +1271,17 @@ export default defineComponent({
       // as well as custom buffs for coordinated attacks
       let coordinatedEchoDmgBonus = 0;
       let coordinatedDmgBonusCustomBuffs = 0;
+      // get the coordinated dmg bonus from provided stats, but ignore custom buffs
+      // if we have provided stats
       if (attack?.subType === "Coordinated") {
-        coordinatedEchoDmgBonus = echoStats?.value?.CoordinatedDMGBonus ?? 0;
-        coordinatedDmgBonusCustomBuffs =
-          customBuffs?.value?.CoordinatedDMGBonus ?? 0;
+        coordinatedEchoDmgBonus =
+          providedFullStats?.coordinatedDmgBonus ||
+          echoStats?.value?.CoordinatedDMGBonus ||
+          0;
+        if (!providedFullStats) {
+          coordinatedDmgBonusCustomBuffs =
+            customBuffs?.value?.CoordinatedDMGBonus ?? 0;
+        }
       }
       // there are bonuses that are based on Max HP, Max ATK, Max DEF
       // we end up with DMG Bonus %, so we also / 100 in the end
@@ -1307,9 +1320,10 @@ export default defineComponent({
       if (excludeWeaponBuffs) {
         genericSkillDmgBonusWeaponBuff = 0;
       }
-      const genericSkillDmgBonusEchoBuff = echoStats.value?.DMGBonus ?? 0;
+      const genericSkillDmgBonusEchoBuff =
+        providedFullStats?.dmgBonus || echoStats.value?.DMGBonus || 0;
       let genericSkillDmgBonusTeamEchoBuff = teamBuffsData.value?.DMGBonus ?? 0;
-      if (excludeTeamBuffs) {
+      if (excludeTeamBuffs || providedFullStats) {
         genericSkillDmgBonusTeamEchoBuff = 0;
       }
       const extraDefIgnoreResonanceChain =
@@ -1318,7 +1332,10 @@ export default defineComponent({
         ] ?? 0;
       const extraDefIgnoreCharBuff =
         selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEFIgnore`] ?? 0;
-      const extraDefIgnoreCustomBuffs = customBuffs.value?.DefIgnore ?? 0;
+      let extraDefIgnoreCustomBuffs = customBuffs.value?.DefIgnore ?? 0;
+      if (providedFullStats) {
+        extraDefIgnoreCustomBuffs = 0;
+      }
       const attackBuffsDefIgnore = attack?.buffs?.DefIgnore ?? 0;
       let weaponDefIgnoreSpecificDmgType =
         weaponData?.value?.weaponPassiveStats?.[`DEFIgnore:${attack.type}`] ??
@@ -1334,13 +1351,16 @@ export default defineComponent({
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:CritDMG`
         ] ?? 0;
-      let instanceDmgCritRate =
-        totalCritRate.value + specificSkillExtraCritRate;
+      const baseCritRate =
+        providedFullStats?.totalCritRate || totalCritRate.value;
+      let instanceDmgCritRate = baseCritRate + specificSkillExtraCritRate;
       if (excludeTeamBuffs) {
         instanceDmgCritRate = statsWithoutTeamBuffs?.totalCritRate ?? 0;
         instanceDmgCritRate += specificSkillExtraCritRate;
       }
-      let instanceDmgCritDMG = totalCritDMG.value + specificSkillExtraCritDMG;
+      const baseCritDamage =
+        providedFullStats?.totalCritDMG || totalCritDMG.value;
+      let instanceDmgCritDMG = baseCritDamage + specificSkillExtraCritDMG;
       if (excludeTeamBuffs) {
         instanceDmgCritDMG = statsWithoutTeamBuffs?.totalCritDMG ?? 0;
         instanceDmgCritDMG += specificSkillExtraCritDMG;
@@ -1355,8 +1375,10 @@ export default defineComponent({
         ] ?? 0;
       const talentModifierMultiplyAttackBuff =
         attack?.buffs?.talentModifierMultiply ?? 0;
+      const currentDefIgnore =
+        providedFullStats?.DefIgnore || DefIgnore.value || 0;
       const totalDefIgnore =
-        DefIgnore.value +
+        currentDefIgnore +
         extraDefIgnoreResonanceChain +
         extraDefIgnoreCharBuff +
         extraDefIgnoreCustomBuffs +
@@ -1379,6 +1401,8 @@ export default defineComponent({
         coordinatedEchoDmgBonus / 100 +
         genericSkillDmgBonusEchoBuff / 100 +
         coordinatedDmgBonusCustomBuffs;
+
+      // Resist Shred:
       let teamBuffResistShredForCharElement =
         teamBuffsData.value?.[`ResistShred:${attackElement}`] ?? 0;
       let selfBuffResistShredForCharElement =
@@ -1400,8 +1424,12 @@ export default defineComponent({
 
       const resonanceChainResistShredForCharElement =
         charResonanceChainsData.value?.[`ResistShred:${attackElement}`] ?? 0;
-      const baseResistReduction = ResistReduction.value ?? 0;
-      const customResistReduction = customBuffs.value?.ResistShred ?? 0;
+      const baseResistReduction =
+        providedFullStats?.resistReduction || ResistReduction.value || 0;
+      let customResistReduction = customBuffs.value?.ResistShred ?? 0;
+      if (providedFullStats) {
+        customResistReduction = 0;
+      }
       const actionBuffResistReduction = attack.buffs?.ResistShred ?? 0;
       const totalResistReduction =
         baseResistReduction +
@@ -1412,8 +1440,10 @@ export default defineComponent({
         weaponBuffResistShredForCharElement +
         actionBuffResistReduction +
         customResistReduction;
-      // damage deepen
-      let baseTotalDeepenEffect = TotalDeepenEffect.value;
+
+      // damage deepen:
+      let baseTotalDeepenEffect =
+        providedFullStats?.totalDeepenEffect || TotalDeepenEffect.value || 0;
       // so far damage deepen is from team buffs, add more later if needed
       // get element first, then any skill specific ones next, then add together
       // NOTE: all outro attacks cannot use the DMGDeepen:element|attackType
@@ -1449,6 +1479,9 @@ export default defineComponent({
         teamBuffDmgDeepenForAttackType = 0;
       }
       let attackLevelDmgDeepen = attack.buffs?.DMGDeepen ?? 0;
+      // DO NOT RESET THIS WITH providedStats, it's not properly handled in calcCharStats yet
+      // it's because this is DamageAmplify, not DMGDeepen
+      // TODO: Fix this.
       const customDamageDeepen = customBuffs.value?.DamageAmplify ?? 0;
       let resonanceChainDmgDeepenForAttackType =
         charResonanceChainsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
@@ -1523,6 +1556,7 @@ export default defineComponent({
         modifyBaseDefFlat += attack.buffs?.DEF_FLAT ?? 0;
       }
       let finalAtkDefHpVal = atkDefHpVal;
+      // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
       if (modifyBaseAtk || modifyBaseAtkFlat) {
         finalAtkDefHpVal = calcCharStats(
           "ATK",
@@ -1536,6 +1570,7 @@ export default defineComponent({
           },
         );
       }
+      // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
       if (modifyBaseHp || modifyBaseHpFlat) {
         finalAtkDefHpVal = calcCharStats(
           "HP",
@@ -1549,6 +1584,7 @@ export default defineComponent({
           },
         );
       }
+      // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
       if (modifyBaseDef || modifyBaseDefFlat) {
         finalAtkDefHpVal = calcCharStats(
           "DEF",
@@ -1783,6 +1819,26 @@ export default defineComponent({
           `${attack.key}:specialMultiplier`
         ] ?? 0;
       totalSpecialMultiplier += resonanceChainAttackSpecialMultiplier;
+      // console.table({
+      //   attack: attack.key,
+      //   attackType,
+      //   attackElement,
+      //   talent,
+      //   finalAtkDefHpVal,
+      //   totalDefIgnore,
+      //   totalSkillDmgBonus,
+      //   specificSkillDmg,
+      //   elementalDmgBonusDecimal,
+      //   totalInstanceDmgBuff,
+      //   totalDmgDeepen,
+      //   totalResistReduction,
+      //   instanceDmgCritRate,
+      //   instanceDmgCritDMG,
+      //   totalTalentModifierAdd,
+      //   totalTalentModifierMultiply,
+      //   totalTalentModifierSpecialMultiply,
+      //   count,
+      // });
       return calcDamage(
         characterLevel.value,
         enemyLevel.value,
@@ -2448,6 +2504,8 @@ export default defineComponent({
           label: attackInfo.label,
           talents: attackInfo.talents,
           type: attackInfo.type,
+          subType: attackInfo.subType,
+          element: attackInfo.element,
         };
         if (!attackData) {
           console.error("Could not find the attack data chosen");
@@ -2544,6 +2602,7 @@ export default defineComponent({
         seenCombinations.add(combinationKey);
 
         let targetValue = 0;
+        const loadoutArr = JSON.parse(JSON.stringify(loadout));
         if (targetType === "Stat") {
           // get the stat wer'e looking for from our final stats
           targetValue = finalStats?.[targetObject] ?? 0;
@@ -2559,18 +2618,27 @@ export default defineComponent({
             false, // excludeDisabledAttacks = no, unless we need to (TODO)
             finalStats, // give our stats, it will use this instead of the global state
           );
-          console.log(attacks?.[0]?.damage?.critDamage);
-          targetValue = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
+
+          // TODO: implement the choice of normal / avg / crit
+          // for now, just use critDamage
+          targetValue = attacks?.[0]?.damage?.critDamage ?? 0;
+          // console.log(
+          //   targetValue,
+          //   attacks,
+          //   JSON.parse(JSON.stringify(loadout)),
+          //   finalStats,
+          // );
+          // console.log("==============================");
         } else if (targetType === "Rotation") {
           console.log("process rotation");
         }
         processedCombos.value++;
 
         if (heap.length < topN) {
-          heap.push({ loadout, targetValue });
+          heap.push({ loadout: loadoutArr, targetValue });
           heap.sort((a, b) => a.targetValue - b.targetValue); // min at index 0
         } else if (targetValue > heap[0].targetValue) {
-          heap[0] = { loadout, targetValue };
+          heap[0] = { loadout: loadoutArr, targetValue };
           heap.sort((a, b) => a.targetValue - b.targetValue);
         }
       }
