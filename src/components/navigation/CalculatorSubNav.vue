@@ -60,7 +60,7 @@
           alt="Team Buffs" />
       </a>
     </li>
-    <li>
+    <li v-if="isFeatureOptimizerEnabled">
       <a
         @click="changeScreen('optimizer')"
         :class="{ active: curScreen === 'optimizer' }"
@@ -120,6 +120,8 @@
 </template>
 
 <script>
+import { mapState } from "pinia";
+import { useSettingsStore } from "../../stores/settings";
 export default {
   name: "CalculatorSubNav",
   props: {
@@ -137,6 +139,12 @@ export default {
     changeScreen(screen) {
       this.$emit("change-screen", screen);
       this.curScreen = screen;
+    },
+  },
+  computed: {
+    ...mapState(useSettingsStore, ["labs"]),
+    isFeatureOptimizerEnabled() {
+      return this.labs?.optimizer?.isEnabled ?? false;
     },
   },
   mounted() {

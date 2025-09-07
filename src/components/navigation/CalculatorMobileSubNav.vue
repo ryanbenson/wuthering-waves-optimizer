@@ -67,7 +67,7 @@
         Team Buffs
       </a>
     </li>
-    <li class="mb-2">
+    <li v-if="isFeatureOptimizerEnabled" class="mb-2">
       <a
         @click="changeScreen('optimizer')"
         :class="{ active: curScreen === 'optimizer' }"
@@ -144,6 +144,8 @@
 </template>
 
 <script>
+import { mapState } from "pinia";
+import { useSettingsStore } from "../../stores/settings";
 export default {
   name: "CalculatorMobileSubNav",
   props: {
@@ -165,6 +167,12 @@ export default {
       if (mainMenuEl) {
         mainMenuEl.removeAttribute("open");
       }
+    },
+  },
+  computed: {
+    ...mapState(useSettingsStore, ["labs"]),
+    isFeatureOptimizerEnabled() {
+      return this.labs?.optimizer?.isEnabled ?? false;
     },
   },
   mounted() {

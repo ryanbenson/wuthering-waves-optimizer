@@ -7,35 +7,57 @@
     <br />
     If you find anything, communicate them in the Discord.
   </p>
-
-  <div class="labs-list max-w-lg">
-    <div class="form-control mt-4">
-      <label class="label cursor-pointer flex gap-4 justify-start">
-        <input
-          type="checkbox"
-          class="toggle toggle-primary"
-          checked="checked" />
-        <span class="label-text">Optimizer</span>
-      </label>
+  <template v-if="!labsFeatures.length">
+    <div role="alert" class="alert shadow-lg mt-4">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        class="stroke-info h-6 w-6 shrink-0">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <div>
+        <h3 class="font-bold">
+          No labs are currently running, check back soon!
+        </h3>
+      </div>
     </div>
-  </div>
+  </template>
+  <template v-else>
+    <SettingsLab
+      v-for="lab in labsFeatures"
+      :key="lab.key"
+      :lab-key="lab.key"
+      :label="lab.label"
+      :details="lab.details"></SettingsLab>
+  </template>
 </template>
 
 <script lang="ts">
 // @ts-nocheck
-/**
- * Version 1 (which has no meta) only includes character data as a root property
- * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
- */
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { defineComponent } from "vue";
+import SettingsLab from "./SettingsLab.vue";
 export default defineComponent({
   name: "SettingsLabs",
   data() {
-    return {};
+    return {
+      labsFeatures: [
+        {
+          key: "optimizer",
+          label: "Optimizer",
+          details:
+            "Automatically find the best build from your inventory of echoes!",
+        },
+      ],
+    };
   },
-  methods: {},
+  components: { SettingsLab },
 });
 </script>
 
