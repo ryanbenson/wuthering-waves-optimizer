@@ -166,6 +166,15 @@
           handleUpdatedTarget
         "></CalculatorOptimizerTarget>
     </div>
+    <div class="optimizer-target">
+      <h3>Choose your damage type target</h3>
+      <CalculatorOptimizerDamageType
+        :character="character"
+        :current-damage-type="damageType"
+        @optimizer:damage-type-updated="
+          handleUpdatedDamageType
+        "></CalculatorOptimizerDamageType>
+    </div>
     <div class="mt-4">Processed {{ processedCombos }} of {{ totalCombos }}</div>
     <progress
       class="progress progress-primary w-56"
@@ -200,7 +209,7 @@ import CalculatorOptimizerMinStats from "./CalculatorOptimizerMinStats.vue";
 import CalculatorOptimizerEchoSet from "./CalculatorOptimizerEchoSet.vue";
 import CalculatorOptimizerMainEcho from "./CalculatorOptimizerMainEcho.vue";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
-import Calculator from "./Calculator.vue";
+import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 export default {
   name: "CalculatorOptimizer",
   props: {
@@ -224,6 +233,7 @@ export default {
     CalculatorOptimizerEchoSet,
     CalculatorOptimizerMainEcho,
     CalculatorOptimizerTarget,
+    CalculatorOptimizerDamageType,
   },
   data() {
     return {
@@ -236,7 +246,8 @@ export default {
       setFilters: [],
       mainEchoes: [],
       minStats: [],
-      optimiazationTarget: null,
+      optimizationTarget: null,
+      damageType: "Average",
       // state
       isLoading: true,
       // passive stats list
@@ -258,6 +269,7 @@ export default {
         this.echoSetDataByLabel,
         this.mainEchoStats,
         this.optimizationTarget,
+        this.damageType,
       );
     },
     chooseMainEcho(echoKey) {
@@ -280,6 +292,10 @@ export default {
       this.optimizationTarget = target;
       this.syncOptimizerConfig();
     },
+    handleUpdatedDamageType(damageType) {
+      this.damageType = damageType;
+      this.syncOptimizerConfig();
+    },
     async syncOptimizerConfig() {
       const data = {
         optimizer: {
@@ -287,6 +303,7 @@ export default {
           echoSets: JSON.parse(JSON.stringify(this.setFilters)),
           minStats: JSON.parse(JSON.stringify(this.minStats)),
           optimizationTarget: this.optimizationTarget,
+          damageType: this.damageType,
         },
       };
       await this.setCharacterData(this.character, data);

@@ -2348,6 +2348,7 @@ export default defineComponent({
       echoSetPassiveBuffs = {},
       mainEchoStats = {},
       target = "ATK",
+      damageType = "Average",
     ) => {
       const echoes = inventoryStore.echoes;
       const allowedSets = new Set(setFilters);
@@ -2370,6 +2371,7 @@ export default defineComponent({
         echoSetPassiveBuffs,
         mainEchoStats,
         target,
+        damageType,
       );
       optimizerResults.value = results;
       totalCombos.value = processedCombos.value;
@@ -2455,6 +2457,7 @@ export default defineComponent({
       echoSetPassiveBuffs = {},
       mainEchoStats = {},
       target = "ATK",
+      damageType = "Average",
     ) {
       // Min-heap for topN results
       const heap = [];
@@ -2512,6 +2515,16 @@ export default defineComponent({
           return;
         }
       }
+
+      // get the mapping of the damage target
+      // we'll use this to get the damage out of the damage calculation (Normal/Avg/Crit)
+      // default to average if we didn't match anything
+      const damageTargetMap = {
+        Normal: "totalDamage",
+        Average: "avgDamage",
+        Crit: "critDamage",
+      };
+      const damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
 
       for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
         // Create a unique key for this combination based on echo keys, sorted
@@ -2618,10 +2631,7 @@ export default defineComponent({
             false, // excludeDisabledAttacks = no, unless we need to (TODO)
             finalStats, // give our stats, it will use this instead of the global state
           );
-
-          // TODO: implement the choice of normal / avg / crit
-          // for now, just use critDamage
-          targetValue = attacks?.[0]?.damage?.critDamage ?? 0;
+          targetValue = attacks?.[0]?.damage?.[damageTargetReference] ?? 0;
           // console.log(
           //   targetValue,
           //   attacks,
