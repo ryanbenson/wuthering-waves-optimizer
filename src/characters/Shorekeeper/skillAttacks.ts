@@ -1,6 +1,6 @@
 export const skillAttacks = {
   name: "Resonance Skill: Chaos Theory",
-  description: `<div class="skilldescription">Restore HP for all team members and summon 5 <span class="Highlight">Dim Star Butterflies</span>. <span class="Highlight">Dim Star Butterflies</span> automatically track and attack a target, dealing <span class="Light">Spectro DMG</span>.<br>It can be performed in mid-air.</div>`,
+  description: `<div class="skilldescription">Restore HP for all nearby party members and summon 5 <span class="Highlight">Dim Star Butterflies</span>, which automatically track and attack a target, dealing <span class="Light">Spectro DMG</span>. Follow up with <span class="Highlight">Basic Attack</span> in time to start the Basic Attack cycle from <span class="Highlight">Stage 2</span>.<br>Can be performed in mid-air.</div>`,
   attacks: [
     {
       key: "DimStarButterflyDMG",

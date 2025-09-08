@@ -2,7 +2,7 @@ export const buffs = [
   {
     key: "SophisticatedStellarealmCritRate",
     name: "Sophisticated Stellarealm",
-    details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Elementary Stellarealm</span>, it evolves into <span class="Highlight">Sophisticated Stellarealm</span>. In <span class="Highlight">Sophisticated Stellarealm</span>, for every 0.2% of Shorekeeper's Energy Regen, all party members gain 0.01% bonus Crit. Rate, up to 12.5%</div>`,
+    details: `<div class="skilldescription">When a party member uses <span class="Highlight">Intro Skill</span> within the <span class="Highlight">Outer Stellarealm</span>, it evolves into the <span class="Highlight">Inner Stellarealm</span>. Within the effective range of the <span class="Highlight">Inner Stellarealm</span>, for every 0.2% of Shorekeeper's Energy Regen, all party members gain a 0.01% increase of Crit. Rate, up to 12.5%.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -20,8 +20,8 @@ export const buffs = [
   },
   {
     key: "ReleasedStellarealmCritDMG",
-    name: "Released Stellarealm",
-    details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Sophisticated Stellarealm</span>, it evolves into <span class="Highlight">Released Stellarealm</span>. In <span class="Highlight">Released Stellarealm</span>, for every 0.1% of Shorekeeper's Energy Regen, all party members gain a 0.01% increase of Crit. DMG, up to 25%.</div>`,
+    name: "Supernal Stellarealm",
+    details: `<div class="skilldescription">When a party member uses <span class="Highlight">Intro Skill</span> within the <span class="Highlight">Inner Stellarealm</span>, it evolves into the <span class="Highlight">Supernal Stellarealm</span>. Within the effective range of the <span class="Highlight">Supernal Stellarealm</span>, for every 0.1% of Shorekeeper's Energy Regen, all party members gain a 0.01% increase of Crit. DMG, up to 25%.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -40,7 +40,7 @@ export const buffs = [
   {
     key: "OutroSkillBinaryButterfly",
     name: "Outro Skill: Binary Butterfly",
-    details: `<div class="skilldescription">When the <span class="Highlight">Dim Star Butterfly</span> is present, all nearby team members' DMG is amplified by 15%.</div>`,
+    details: `<div class="skilldescription">All nearby party members' DMG is Amplified by 15%.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -53,9 +53,19 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
+    key: "InherentSkillLifeEntwined",
+    name: "Inherent Skill: Life Entwined",
+    details: `<div class="skilldescription">When a Resonator other than Shorekeeper takes a fatal blow, they will not be knocked out and will instead be healed for 50% of Shorekeeper's HP while Shorekeeper loses the same amount of HP. Shorekeeper's HP will not go below 1 from this effect. This effect can be triggered once every 10 minutes.</div>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "InherentSkillSelfGravitation",
     name: "Inherent Skill: Self Gravitation",
-    details: `<div class="skilldescription">When the Shorekeeper is in the team or when <span class="Highlight">Stellarealm</span> is active, or if the team is within the Black Shores area, the Shorekeeper's Energy Regen increases by 10%. If Rover is in the same team, their Energy Regen also increases by 10%.</div>`,
+    details: `<div class="skilldescription">When the on-field Resonator is within range of a <span class="Highlight">Stellarealm</span>, Shorekeeper's Energy Regen is increased by 10%, and Rover's Energy Regen is also increased by 10% if Rover is on the team.</div>`,
     hasStacks: false,
     modifiers: [
       {

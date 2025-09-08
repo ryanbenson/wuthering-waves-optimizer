@@ -10,6 +10,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 8, 2025</h3>
+    <ul>
+      <li>Updates Shorekeeper's text.</li>
+    </ul>
+    <h3>September 7, 2025</h3>
+    <ul>
+      <li>Fixes Fallacy's echo damage element.</li>
+    </ul>
     <h3>September 3, 2025</h3>
     <ul>
       <li>
