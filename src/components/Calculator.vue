@@ -2615,6 +2615,11 @@ export default defineComponent({
         seenCombinations.add(combinationKey);
 
         let targetValue = 0;
+        let context = {
+          finalStats,
+          targetType,
+          targetObject,
+        };
         const loadoutArr = JSON.parse(JSON.stringify(loadout));
         if (targetType === "Stat") {
           // get the stat wer'e looking for from our final stats
@@ -2632,6 +2637,7 @@ export default defineComponent({
             finalStats, // give our stats, it will use this instead of the global state
           );
           targetValue = attacks?.[0]?.damage?.[damageTargetReference] ?? 0;
+          context.attacks = attacks;
           // console.log(
           //   targetValue,
           //   attacks,
@@ -2645,10 +2651,10 @@ export default defineComponent({
         processedCombos.value++;
 
         if (heap.length < topN) {
-          heap.push({ loadout: loadoutArr, targetValue });
+          heap.push({ loadout: loadoutArr, targetValue, context });
           heap.sort((a, b) => a.targetValue - b.targetValue); // min at index 0
         } else if (targetValue > heap[0].targetValue) {
-          heap[0] = { loadout: loadoutArr, targetValue };
+          heap[0] = { loadout: loadoutArr, targetValue, context };
           heap.sort((a, b) => a.targetValue - b.targetValue);
         }
       }
