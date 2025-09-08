@@ -786,9 +786,9 @@ CD: <span class="param">25</span>s.</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FallacyOfNoReturn.png",
-    details: `<span class="description">Use the Sound Corpse skill to summon a portion of the power of the Fallacy of No Return, causing 1 diffraction damage based on <span class="Highlight">9.91%/11.40%/12.88%/14.37%/15.86%</span> of the player's upper limit of health to surrounding enemies, increasing the player's <span class="Highlight">Energy Regen</span> by <span class="Highlight">10%</span> and the attack of all team characters by <span class="Highlight">10%</span>, lasting for 20 seconds. Long-press the Sound Corpse skill to consume stamina to continue attacking after the shock ends, causing <span class="Highlight">0.99%/1.14%/1.29%/1.44%/1.58%</span> of the upper limit of health each time; when the long-press ends, the final blow is triggered, causing <span class="Highlight">12.39%/14.25%/16.11%/17.97%/19.82%</span> of the upper limit of health.
-    
-    CD: <span class="param">20</span>s</span>`,
+    details: `<span class="description">Activate the Echo Skill to summon a fraction of the Fallacy of No Return's power and deal a blast to the surrounding area, inflicting Spectro DMG equal to <span class="param">9.91%/11.40%/12.88%/14.37%/15.86%</span> of max HP, after which the Resonator gains 10% bonus Energy Regen and all team members 10% bonus ATK for 20s.<br><br>
+Hold Echo Skill to unleash a series of flurry assaults at the cost of STA, each dealing Spectro DMG equal to <span class="param">0.99%/1.14%/1.29%/1.44%/1.58%</span> of max HP; Release to end the assail in a powerful blow, dealing Spectro DMG equal to <span class="param">12.39%/14.25%/16.11%/17.97%/19.82%</span> of max HP.<br><br>
+CD: <span class="param">20</span>s</span>`,
     modifiers: [
       {
         modifier: "EnergyRegen",
@@ -802,8 +802,8 @@ CD: <span class="param">25</span>s.</span>`,
     actions: [
       {
         key: "FallacyOfNoReturnDiffraction",
-        label: "Diffraction DMG",
-        description: `Use the Sound Corpse skill to summon a portion of the power of the Fallacy of No Return, causing 1 diffraction damage based on <span class="Highlight">9.91%/11.40%/12.88%/14.37%/15.86%</span> of the player's upper limit of health to surrounding enemies`,
+        label: "Blast DMG",
+        description: `Activate the Echo Skill to summon a fraction of the Fallacy of No Return's power and deal a blast to the surrounding area, inflicting Spectro DMG equal to <span class="param">9.91%/11.40%/12.88%/14.37%/15.86%</span> of max HP`,
         talents: {
           "1": "9.91%",
           "2": "11.40%",
@@ -817,8 +817,8 @@ CD: <span class="param">25</span>s.</span>`,
       },
       {
         key: "FallacyOfNoReturnSoundCorpseDoT",
-        label: "Sound Corpse DoT DMG",
-        description: `Long-press the Sound Corpse skill to consume stamina to continue attacking after the shock ends, causing <span class="Highlight">0.99%/1.14%/1.29%/1.44%/1.58%</span> of the upper limit of health each time.`,
+        label: "Flurry Assault DMG",
+        description: `Hold Echo Skill to unleash a series of flurry assaults at the cost of STA, each dealing Spectro DMG equal to <span class="param">0.99%/1.14%/1.29%/1.44%/1.58%</span> of max HP`,
         talents: {
           "1": "0.99%",
           "2": "1.14%",
@@ -833,7 +833,7 @@ CD: <span class="param">25</span>s.</span>`,
       {
         key: "FallacyOfNoReturnFinalBlow",
         label: "Final Blow DMG",
-        description: `When the long-press ends, the final blow is triggered, causing <span class="Highlight">12.39%/14.25%/16.11%/17.97%/19.82%</span> of the upper limit of health.`,
+        description: `Release to end the assail in a powerful blow, dealing Spectro DMG equal to <span class="param">12.39%/14.25%/16.11%/17.97%/19.82%</span> of max HP`,
         talents: {
           "1": "12.39%",
           "2": "14.25%",
