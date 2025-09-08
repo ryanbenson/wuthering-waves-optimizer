@@ -189,10 +189,11 @@
         Optimize
       </button>
     </div>
-    <pre>{{ setFilters }}</pre>
-    <pre>{{ mainEchoStats }}</pre>
-    <hr />
-    <pre>{{ optimizerResults }}</pre>
+    <CalculatorOptimizerResults
+      v-if="optimizerResults"
+      :character-element="characterElement"
+      :results="optimizerResults"
+    />
   </div>
 </template>
 
@@ -210,6 +211,8 @@ import CalculatorOptimizerEchoSet from "./CalculatorOptimizerEchoSet.vue";
 import CalculatorOptimizerMainEcho from "./CalculatorOptimizerMainEcho.vue";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
+import CalculatorOptimizerResults from "./CalculatorOptimizerResults.vue";
+import { character } from "../characters/Aalto/character";
 export default {
   name: "CalculatorOptimizer",
   props: {
@@ -227,6 +230,10 @@ export default {
       type: Array,
       default: () => [],
     },
+    characterElement: {
+      type: String,
+      required: true,
+    },
   },
   components: {
     CalculatorOptimizerMinStats,
@@ -234,6 +241,7 @@ export default {
     CalculatorOptimizerMainEcho,
     CalculatorOptimizerTarget,
     CalculatorOptimizerDamageType,
+    CalculatorOptimizerResults,
   },
   data() {
     return {

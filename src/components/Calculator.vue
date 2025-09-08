@@ -96,6 +96,7 @@
           :total-combos="totalCombos"
           :processed-combos="processedCombos"
           :optimizer-results="optimizerResults"
+          :character-element="characterElement"
           @optimizer:optimize="handleOptimize"></CalculatorOptimizer>
       </div>
       <div class="screen--rotations" v-show="curScreen === 'rotations'">
@@ -254,6 +255,7 @@ import { useRoute } from "vue-router";
 import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
+import { randomString } from "../utils/strings";
 
 export default defineComponent({
   name: "Calculator",
@@ -332,6 +334,7 @@ export default defineComponent({
     const isLoading = ref(false);
     const enemyLevel = ref(90);
     const enemyResist = ref(0.1);
+    const characterElement = ref('');
     // elemental effects
     const isSpectroFrazzleEnabled = ref(false);
     const spectroFrazzleStacks = ref(0);
@@ -369,6 +372,8 @@ export default defineComponent({
         chosenChar?.value?.basic?.spectroFrazzle ?? false;
       isAeroErosionEnabled.value =
         chosenChar?.value?.basic?.aeroErosion ?? false;
+      // hold onto the character's main element
+      characterElement.value = chosenChar.value?.basic?.element;
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
@@ -2651,10 +2656,10 @@ export default defineComponent({
         processedCombos.value++;
 
         if (heap.length < topN) {
-          heap.push({ loadout: loadoutArr, targetValue, context });
+          heap.push({ loadout: loadoutArr, targetValue, context, id: randomString() });
           heap.sort((a, b) => a.targetValue - b.targetValue); // min at index 0
         } else if (targetValue > heap[0].targetValue) {
-          heap[0] = { loadout: loadoutArr, targetValue, context };
+          heap[0] = { loadout: loadoutArr, targetValue, context, id: randomString() };
           heap.sort((a, b) => a.targetValue - b.targetValue);
         }
       }
@@ -2721,6 +2726,7 @@ export default defineComponent({
       ResistReduction,
       weaponData,
       weaponAtk,
+      characterElement,
       isLoading,
       mainEcho,
       // elemental effects
