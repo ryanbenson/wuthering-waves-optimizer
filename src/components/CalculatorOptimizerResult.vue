@@ -1,5 +1,8 @@
 <template>
 <div class="optimizer_result" :data-test-optimizer-result-id="id">
+    <CalculatorOptimizerResultLoadout
+      :loadout="loadout"
+    />
     <div class="optimizer_result_target">
         <div v-if="targetType === 'Attack'">
           <CalculatorOptimizerResultDamage
@@ -13,14 +16,14 @@
           :final-stats="context.finalStats"
         />
     </div>
-    <pre v-if="false">{{ loadout }}</pre>
 </div>
 </template>
 
 <script>
 import { displayPercentage, displayInt, displayDamage } from "../utils/numbers";
 import CalculatorOptimizerResultStats from "./CalculatorOptimizerResultStats.vue";
-import CalculatorOptimizerResultDamage from "./CalculatorOptimizerResultDamage.vue"
+import CalculatorOptimizerResultDamage from "./CalculatorOptimizerResultDamage.vue";
+import CalculatorOptimizerResultLoadout from "./CalculatorOptimizerResultLoadout.vue";
 export default {
   name: "CalculatorOptimizerResults",
   props: {
@@ -48,6 +51,7 @@ export default {
   components: {
     CalculatorOptimizerResultStats,
     CalculatorOptimizerResultDamage,
+    CalculatorOptimizerResultLoadout,
   },
   computed: {
     targetType() {
