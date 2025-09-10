@@ -91,7 +91,6 @@ export default {
     displayPercentage,
     displayDamage,
     async equipLoadout() {
-      console.log('whut', this.loadoutLen);
       for (let i = 0; i<this.loadoutLen; i++) {
         // update the character to reference the inventory
         // when we assign the echo from inventory, clear out all data except echoId
