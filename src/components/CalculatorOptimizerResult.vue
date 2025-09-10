@@ -3,6 +3,7 @@
     <CalculatorOptimizerResultLoadout
       :loadout="loadout"
     />
+    <button class="btn btn-primary" @click="equipLoadout">Equip Loadout</button>
     <div class="optimizer_result_target">
         <div v-if="targetType === 'Attack'">
           <CalculatorOptimizerResultDamage
@@ -24,9 +25,16 @@ import { displayPercentage, displayInt, displayDamage } from "../utils/numbers";
 import CalculatorOptimizerResultStats from "./CalculatorOptimizerResultStats.vue";
 import CalculatorOptimizerResultDamage from "./CalculatorOptimizerResultDamage.vue";
 import CalculatorOptimizerResultLoadout from "./CalculatorOptimizerResultLoadout.vue";
+import { mapActions, mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
 export default {
   name: "CalculatorOptimizerResults",
   props: {
+    character: {
+      type: String,
+      required: true,
+    },
     id: {
       type: String,
       required: true,
@@ -72,11 +80,51 @@ export default {
         }
         return this.context?.attacks?.[0];
     },
+    loadoutLen() {
+      return this.loadout.length;
+    }
   },
   methods: {
+    ...mapActions(useCharacterStore, ["setCharacterData"]),
+    ...mapActions(useInventoryStore, ["setEquippedData"]),
     displayInt,
     displayPercentage,
     displayDamage,
+    async equipLoadout() {
+      console.log('whut', this.loadoutLen);
+      for (let i = 0; i<this.loadoutLen; i++) {
+        // update the character to reference the inventory
+        // when we assign the echo from inventory, clear out all data except echoId
+        // the stats will come from the inventory to have one source of truth for its stats
+        const id = this.loadout[i]?.echoId;
+        console.log(i, this.loadout[i], id)
+        const echoData = {
+          echo: null,
+          type: null,
+          rank: null,
+          stat: null,
+          echoId: id,
+          echoSet: null,
+          echoSubStatsType1: null,
+          echoSubStatsValue1: null,
+          echoSubStatsType2: null,
+          echoSubStatsValue2: null,
+          echoSubStatsType3: null,
+          echoSubStatsValue3: null,
+          echoSubStatsType4: null,
+          echoSubStatsValue4: null,
+          echoSubStatsType5: null,
+          echoSubStatsValue5: null,
+        };
+        const charData = { echoes: {} };
+        charData.echoes[i] = echoData;
+        await this.setCharacterData(this.character, charData);
+        // add to our equipped list
+        const equippedData = {};
+        equippedData[this.character] = this.index;
+        await this.setEquippedData(id, equippedData);
+      }
+    }
   }
 };
 </script>

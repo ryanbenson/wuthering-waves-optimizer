@@ -191,6 +191,7 @@
     </div>
     <CalculatorOptimizerResults
       v-if="optimizerResults"
+      :character="character"
       :character-element="characterElement"
       :results="optimizerResults"
     />
