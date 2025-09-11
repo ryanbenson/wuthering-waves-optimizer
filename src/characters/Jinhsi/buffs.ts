@@ -3,7 +3,7 @@ export const buffs = [
     key: "Incandescence",
     name: "Incandescence",
     details:
-      '<div class="skilldescription">When Jinhsi has "Incandescence", consume up to 50 Incandescence, each point of Incandescence grants an additional DMG multiplier percentage to the <span class="Highlight">Star Glamour</span>.</div>',
+      '<div class="skilldescription">Consume up to 50 Incandescence, with each point of Incandescence granting bonus DMG Multiplier percentage to <span class="Highlight">Stella Glamor</span></div>',
     hasStacks: true,
     modifiers: [
       {
@@ -31,7 +31,7 @@ export const buffs = [
   {
     key: "InherentSkillRadiantSurge",
     name: "Inherent Skill: Radiant Surge",
-    details: `<div class="skilldescription">Jinhsi's Spectro DMG Bonus is increased by 20%.</div>`,
+    details: `<div class="skilldescription">Jinhsi gains 20% Spectro DMG Bonus.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -46,7 +46,7 @@ export const buffs = [
   {
     key: "InherentSkillConvergedFlash",
     name: "Inherent Skill: Converged Flash",
-    details: `<div class="skilldescription">Intro Skill <span class="Highlight">Loong's Halo</span> gains 50% additional DMG.</div>`,
+    details: `<div class="skilldescription">DMG Multiplier of Intro Skill <span class="Highlight">Loong's Halo</span> is increased by 50%.</div>`,
     hasStacks: false,
     modifiers: [
       {
