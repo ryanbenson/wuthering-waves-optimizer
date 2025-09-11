@@ -1,6 +1,6 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Purge of Light",
-  description: `<div class="skilldescription">Unleash the power of a heart's wish to deal <span class="Highlight">Spectro DMG</span>.<br>Can be cast in mid-air.</div>`,
+  description: `<div class="skilldescription">Unleash the power of invocation to deal <span class="Light">Spectro DMG</span>.<br>Can be cast in mid-air.</div>`,
   attacks: [
     {
       key: "PurgeOfLight",

@@ -1,6 +1,6 @@
 export const skillAttacks = {
   name: "Resonance Skill: Trailing Lights of Eons",
-  description: `<div class="skilldescription">Dash forward and perform consecutive strikes that inflict <span class="Light">Spectro DMG</span>.<br><br><span class="Title">Overflowing Radiance</span><br>After Jinhsi uses <span class="Light">Basic Attack 4</span> or, while not in <span class="Highlight">Incarnation</span>, Intro Skill <span class="Highlight">Loong's Halo</span>, an alternative Resonance Skill <span class="Highlight">Overflowing Radiance</span> becomes available within 5s.<br>Resonance Skill <span class="Highlight">Overflowing Radiance</span> inflicts <span class="Highlight">Spectro DMG</span> and sends Jinhsi into <span class="Highlight"> Incarnation</span>.<br>Can be cast in mid-air.</div>`,
+  description: `<div class="skilldescription">Dash forward and perform consecutive strikes that inflict <span class="Light">Spectro DMG</span>.<br><br><span class="Title">Overflowing Radiance</span><br>After Jinhsi uses <span class="Highlight">Basic Attack 4</span> or, while not in <span class="Highlight">Incarnation</span>, Intro Skill <span class="Highlight">Loong's Halo</span>, an alternative Resonance Skill <span class="Highlight">Overflowing Radiance</span> is available within 5s.<br>Resonance Skill <span class="Highlight">Overflowing Radiance</span> inflicts <span class="Light">Spectro DMG</span> and sends Jinhsi into <span class="Highlight">Incarnation</span>.<br>Can be cast in mid-air.</div>`,
   attacks: [
     {
       key: "SkillDMG",

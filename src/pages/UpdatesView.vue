@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 11, 2025</h3>
+    <ul>
+      <li>Updates Jinhsi's text.</li>
+    </ul>
     <h3>September 8, 2025</h3>
     <ul>
       <li>Updates Shorekeeper's text.</li>

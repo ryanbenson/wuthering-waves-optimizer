@@ -1,7 +1,6 @@
 export const introAttacks = {
   name: "Intro Skill: Loong's Halo",
-  description:
-    '<div class="skilldescription">Attack the target, dealing <span class="Highlight">Spectro DMG</span>.</div>',
+  description: `div class="skilldescription">Attack the target, dealing <span class="Light">Spectro DMG</span>.</div>`,
   attacks: [
     {
       key: "LoongsHalo",

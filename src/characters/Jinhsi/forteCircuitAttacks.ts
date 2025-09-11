@@ -1,10 +1,10 @@
 export const forteCircuitAttacks = {
   name: "Forte Circuit: Luminal Synthesis",
-  description: `<div class="skilldescription"><span class="Title">Incarnation</span><br>While in <span class="Highlight">Incarnation</span>:<br>- Alternative Basic Attack <span class="Highlight">"Incarnation: Basic Attack"</span> becomes available. Perform up to 4 consecutive strikes, dealing <span class="Light">Spectro DMG</span>. The basic attack cycle of this will not be reset. Can be cast in mid-air.<br>- Alternative Resonance Skill <span class="Highlight">"Crescent Divinity"</span> becomes available. Deal <span class="Light">Spectro DMG</span>. Can be cast in mid-air.<br>- Alternative Heavy Attack <span class="Highlight">"Incarnation: Heavy Attack"</span> becomes available. Attack the target in mid-air at the cost of Stamina, dealing <span class="Light">Spectro DMG</span>.<br>- Alternative Dodge <span class="Highlight">"Incarnation: Dodge"</span> becomes available while airborne. Can be cast multiple times at the cost of Stamina.<br>- Alternative Dodge Counter <span class="Highlight">"Incarnation: Dodge Counter"</span> becomes available. Deal <span class="Light">Spectro Damage</span>.<br>Can be cast in mid-air.<br><br><span class="Title">Resonance Skill: Illuminous Epiphany</span><br>After Stage 4 of <span class="Highlight">Incarnation: Basic Attack</span>, <span class="Highlight">Incarnation</span> terminates and Jinhsi gains <span class="Highlight">Ordination Glow</span>. <br>Can be cast in mid-air.<br>While <span class="Highlight">Ordination Glow</span> lasts:<br>- Basic Attack is replaced with the Alternative Heavy Attack <span class="Highlight">"Incarnation: Heavy Attack"</span> when airborne. Attack the target in mid-air at the cost of Stamina, dealing <span class="Light">Spectro DMG</span>.<br>Resonance Skill is replaced with Resonance Skill <span class="Highlight">Illuminous Epiphany</span>. Send out <span class="Highlight">Solar Flare</span> that detonates as <span class="Highlight">Stella Glamour</span> that deals <span class="Light">Spectro Damage</span> after a short delay. When Jinhsi has "Incandescence", consume up to 50 Incandescence, each point of Incandescence grants an additional DMG multiplier percentage to the <span class="Highlight">Star Glamour</span>. Can be cast in mid-air.<br>After casting Resonance Skill <span class="Highlight">Illuminous Epiphany</span>, Jinhsi gains <span class="Highlight">Unison</span>. This can be triggered once in 25s.<br><br><span class="Title">Unison</span><br>While Jinhsi has <span class="Highlight">Unison</span>, switching to other Characters will remove Jinhsi's <span class="Highlight">Unison</span> to trigger Jinhsi's Outro Skill and the incoming character's Intro Skill. <span class="Highlight">Unison</span> will be consumed in priority in place of Concerto Energy when Concerto Energy is full.<br><br><span class="Title">Incandescence</span><br>Jinhsi can hold up to 40 Incandescence。<br>When Jinhsi is on the team, all nearby characters on the team gain <span class="Highlight">Eras in Unity</span>. When characters with <span class="Highlight">Eras in Unity</span> deal Damage with an attribute, Jinhsi gains 1 Incandescence. Damage of the same attribute can provide up to 1 Incandescence every 3s.</div>`,
+  description: `<div class="skilldescription"><span class="Title">Incarnation</span><br>While in <span class="Highlight">Incarnation</span>:<br>- Alternative Basic Attack <span class="Highlight">"Incarnation - Basic Attack"</span> becomes available. Perform up to 4 consecutive strikes, dealing <span class="Light">Spectro DMG</span> considered as Resonance Skill DMG. The basic attack cycle of this will not be reset. Can be cast in mid-air.<br>- Alternative Resonance Skill <span class="Highlight">"Crescent Divinity"</span> becomes available. Deal <span class="Light">Spectro DMG</span>. Can be cast in mid-air.<br>- Alternative Heavy Attack <span class="Highlight">"Incarnation - Heavy Attack"</span> becomes available. Attack the target in mid-air at the cost of Stamina, dealing <span class="Light">Spectro DMG</span>.<br>- Alternative Dodge <span class="Highlight">"Incarnation - Dodge"</span> is available while in mid-air. Can be cast multiple times at the cost of Stamina.<br>- Alternative Dodge Counter <span class="Highlight">"Incarnation - Dodge Counter"</span> becomes available. Deal <span class="Light">Spectro DMG</span>.<br>Can be cast in mid-air.<br><br><span class="Title">Resonance Skill - Illuminous Epiphany</span><br>After Stage 4 of <span class="Highlight">Incarnation - Basic Attack</span>, <span class="Highlight">Incarnation</span> terminates and Jinhsi gains <span class="Highlight">Ordination Glow</span>. <br>Can be cast in mid-air.<br>While <span class="Highlight">Ordination Glow</span> lasts:<br>- Basic Attack is replaced with Heavy Attack <span class="Highlight">"Incarnation - Heavy Attack"</span>. Attack the target in mid-air at the cost of Stamina, dealing <span class="Light">Spectro DMG</span>.<br>- Resonance Skill is replaced with Resonance Skill <span class="Highlight">"Illuminous Epiphany"</span>. Send out <span class="Highlight">Solar Flare</span> that detonates as <span class="Highlight">Stella Glamor</span>, dealing <span class="Light">Spectro DMG</span> after a short delay. Consume up to 50 Incandescence, with each point of Incandescence granting bonus DMG Multiplier percentage to <span class="Highlight">Stella Glamor</span>.<br>Can be cast in mid-air.<br>- After casting Resonance Skill <span class="Highlight">Illuminous Epiphany</span>, Jinhsi gains <span class="Highlight">Unison</span>. This can be triggered once every 25s.<br><br><span class="Title">Unison</span><br>While Jinhsi has <span class="Highlight">Unison</span>, switching to other Resonators will remove Jinhsi's <span class="Highlight">Unison</span> to trigger Jinhsi's Outro Skill and the incoming Resonator's Intro Skill. <span class="Highlight">Unison</span> will be consumed in priority in place of Concerto Energy when Concerto Energy is full.<br><br><span class="Title">Incandescence</span><br>Jinhsi can hold up to 50 Incandescence.<br>When Jinhsi is in the party, all nearby Resonators in the party gain <span class="Highlight">Eras in Unity</span>.<br><span class="Highlight">Eras in Unity</span> provides 2 independent effects:<br>Jinhsi gains 1 Incandescence anytime Resonators in the party inflict Attribute DMG. This effect may be triggered by damage of the same Attribute for up to 1 time(s) every 3s. Additionally, Jinhsi gains 2 Incandescence when Resonators in the party damage the enemy with Coordinated Attacks. This effect may be triggered by Coordinated Attacks of the same Attribute for up to 1 time(s) every 3s.</div>`,
   attacks: [
     {
       key: "BasicAttack1DMG",
-      label: "Incarnation: Basic Attack 1 DMG",
+      label: "Incarnation - Basic Attack 1 DMG",
       talents: {
         "1": "44.58%",
         "2": "48.23%",
@@ -21,7 +21,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "BasicAttack2DMG",
-      label: "Incarnation: Basic Attack 2 DMG",
+      label: "Incarnation - Basic Attack 2 DMG",
       talents: {
         "1": "39.22% + 13.08% + 13.08%",
         "2": "42.44% + 14.15% + 14.15%",
@@ -38,7 +38,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "BasicAttack3DMG",
-      label: "Incarnation: Basic Attack 3 DMG",
+      label: "Incarnation - Basic Attack 3 DMG",
       talents: {
         "1": "50.02% + 33.35%",
         "2": "54.12% + 36.08%",
@@ -55,7 +55,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "BasicAttack4DMG",
-      label: "Incarnation: Basic Attack 4 DMG",
+      label: "Incarnation - Basic Attack 4 DMG",
       talents: {
         "1": "9.39%*6 + 37.56%",
         "2": "10.16%*6 + 40.64%",
@@ -72,7 +72,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "HeavyAttackDMG",
-      label: "Incarnation: Heavy Attack DMG",
+      label: "Incarnation - Heavy Attack DMG",
       talents: {
         "1": "24.00% + 56.00%",
         "2": "25.97% + 60.60%",
@@ -89,7 +89,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "ForteDodgeCounterDMG",
-      label: "Incarnation: Dodge Counter DMG",
+      label: "Incarnation - Dodge Counter DMG",
       talents: {
         "1": "22.08% + 16.56%*2 + 55.19%",
         "2": "23.89% + 17.92%*2 + 59.71%",
@@ -140,7 +140,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "StarGlamourDMG",
-      label: "Illuminous Epiphany: Star Glamour DMG",
+      label: "Illuminous Epiphany: Stella Glamor DMG",
       talents: {
         "1": "175.00%",
         "2": "189.35%",
