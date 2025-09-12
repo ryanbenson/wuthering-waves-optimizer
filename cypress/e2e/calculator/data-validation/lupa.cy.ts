@@ -19,8 +19,8 @@ describe("Calculator Data Verification: Lupa", () => {
     cy.get('[data-test-import-raw-button]').click();
     // go back to the calculator
     cy.get('[data-test-nav-calculator]').click();
-    // ensure it's Zani before we validate
-    cy.get(".character__selection.Zani").should("be.visible");
+    // ensure it's Lupa before we validate
+    cy.get(".character__selection.Lupa").should("be.visible");
 
     // validate the stats and damages after
     testStats(dataStats, cy);
