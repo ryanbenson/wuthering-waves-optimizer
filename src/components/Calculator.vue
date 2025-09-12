@@ -2106,10 +2106,11 @@ export default defineComponent({
       calcCharStats();
     };
 
-    const handleUpdatedCharacterResonanceChains = (
+    const handleUpdatedCharacterResonanceChains = async (
       givenResonanceChainsData,
     ) => {
       if (character.value === "Lupa") {
+        await nextTick();
         characterBuffsRef.value.retriggerBuffCalculations();
       }
 
