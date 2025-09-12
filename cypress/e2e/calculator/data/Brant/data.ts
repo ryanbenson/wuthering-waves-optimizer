@@ -131,7 +131,7 @@ export const dataStats: StatTests = [
     { selector: ".stat-basic", value: "94.2%" },
     { selector: ".stat-heavy", value: "2.0%" },
     { selector: ".stat-skill", value: "2.0%" },
-    { selector: ".stat-liberation", value: "2[0%" },
+    { selector: ".stat-liberation", value: "2.0%" },
     { selector: ".stat-glacio", value: "32.0%" },
     { selector: ".stat-fusion", value: "119.0%" },
     { selector: ".stat-electro", value: "32.0%" },
