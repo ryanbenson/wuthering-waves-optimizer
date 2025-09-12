@@ -1,18 +1,17 @@
 <template>
   <CalculatorOptimizerResult
-    v-for="result in results"
+    v-for="result in resultList"
     :key="result.id"
     :id="result.id"
     :character="character"
     :loadout="result.loadout"
     :target-value="result.targetValue"
     :context="result.context"
-    :character-element="characterElement"
-  />
+    :character-element="characterElement" />
 </template>
 
 <script>
-import CalculatorOptimizerResult from "./CalculatorOptimizerResult.vue"
+import CalculatorOptimizerResult from "./CalculatorOptimizerResult.vue";
 export default {
   name: "CalculatorOptimizerResults",
   props: {
@@ -31,6 +30,11 @@ export default {
   },
   components: {
     CalculatorOptimizerResult,
+  },
+  computed: {
+    resultList() {
+      return JSON.parse(JSON.stringify(this.results));
+    },
   },
 };
 </script>

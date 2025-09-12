@@ -1,23 +1,20 @@
 <template>
-<div class="optimizer_result" :data-test-optimizer-result-id="id">
-    <CalculatorOptimizerResultLoadout
-      :loadout="loadout"
-    />
+  <div class="optimizer_result" :data-test-optimizer-result-id="id">
+    <CalculatorOptimizerResultLoadout :loadout="loadoutData" />
     <button class="btn btn-primary" @click="equipLoadout">Equip Loadout</button>
     <div class="optimizer_result_target">
-        <div v-if="targetType === 'Attack'">
-          <CalculatorOptimizerResultDamage
-            :attack-info="attackInfo"
-            :attack-label="attackLabel"
-          />
-        </div>
+      <div v-if="targetType === 'Attack'">
+        <CalculatorOptimizerResultDamage
+          :attack-info="attackInfo"
+          :attack-label="attackLabel" />
+      </div>
     </div>
     <div class="optimizer_result_stats">
-        <CalculatorOptimizerResultStats
-          :final-stats="context.finalStats"
-        />
+      <CalculatorOptimizerResultStats
+        :character-element="characterElement"
+        :final-stats="context.finalStats" />
     </div>
-</div>
+  </div>
 </template>
 
 <script>
@@ -49,11 +46,11 @@ export default {
     },
     context: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     characterElement: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
   },
   components: {
@@ -63,26 +60,29 @@ export default {
   },
   computed: {
     targetType() {
-        return this.context?.targetType;
+      return this.context?.targetType;
     },
     targetObject() {
-        return this.context?.targetObject;
+      return this.context?.targetObject;
     },
     attackLabel() {
-        if (!this.targetType === 'Attack') {
-            return;
-        }
-        return this.context?.attacks?.[0]?.label;
+      if (!this.targetType === "Attack") {
+        return;
+      }
+      return this.context?.attacks?.[0]?.label;
     },
     attackInfo() {
-        if (!this.targetType === 'Attack') {
-            return;
-        }
-        return this.context?.attacks?.[0];
+      if (!this.targetType === "Attack") {
+        return;
+      }
+      return this.context?.attacks?.[0];
     },
     loadoutLen() {
       return this.loadout.length;
-    }
+    },
+    loadoutData() {
+      return JSON.parse(JSON.stringify(this.loadout));
+    },
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
@@ -91,29 +91,31 @@ export default {
     displayPercentage,
     displayDamage,
     async equipLoadout() {
-      for (let i = 0; i<this.loadoutLen; i++) {
+      // clear any loadout first
+      await this.setCharacterData(this.character, { echoPresetId: null });
+      for (let i = 0; i < this.loadoutLen; i++) {
         // update the character to reference the inventory
         // when we assign the echo from inventory, clear out all data except echoId
-        // the stats will come from the inventory to have one source of truth for its stats
-        const id = this.loadout[i]?.echoId;
-        console.log(i, this.loadout[i], id)
+        const echo = this.loadout[i];
+        const id = echo?.echoId;
+        console.log(i, this.loadout[i], id);
         const echoData = {
-          echo: null,
-          type: null,
-          rank: null,
-          stat: null,
+          echo: echo?.echo ?? null,
+          type: echo?.type ?? null,
+          rank: echo?.rank ?? null,
+          stat: echo?.stat ?? null,
           echoId: id,
-          echoSet: null,
-          echoSubStatsType1: null,
-          echoSubStatsValue1: null,
-          echoSubStatsType2: null,
-          echoSubStatsValue2: null,
-          echoSubStatsType3: null,
-          echoSubStatsValue3: null,
-          echoSubStatsType4: null,
-          echoSubStatsValue4: null,
-          echoSubStatsType5: null,
-          echoSubStatsValue5: null,
+          echoSet: echo?.echoSet ?? null,
+          echoSubStatsType1: echo?.echoSubStatsType1 ?? null,
+          echoSubStatsValue1: echo?.echoSubStatsValue1 ?? null,
+          echoSubStatsType2: echo?.echoSubStatsType2 ?? null,
+          echoSubStatsValue2: echo?.echoSubStatsValue2 ?? null,
+          echoSubStatsType3: echo?.echoSubStatsType3 ?? null,
+          echoSubStatsValue3: echo?.echoSubStatsValue3 ?? null,
+          echoSubStatsType4: echo?.echoSubStatsType4 ?? null,
+          echoSubStatsValue4: echo?.echoSubStatsValue4 ?? null,
+          echoSubStatsType5: echo?.echoSubStatsType5 ?? null,
+          echoSubStatsValue5: echo?.echoSubStatsValue5 ?? null,
         };
         const charData = { echoes: {} };
         charData.echoes[i] = echoData;
@@ -123,7 +125,7 @@ export default {
         equippedData[this.character] = this.index;
         await this.setEquippedData(id, equippedData);
       }
-    }
-  }
+    },
+  },
 };
 </script>

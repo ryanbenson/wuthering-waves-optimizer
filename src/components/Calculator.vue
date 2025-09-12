@@ -334,7 +334,7 @@ export default defineComponent({
     const isLoading = ref(false);
     const enemyLevel = ref(90);
     const enemyResist = ref(0.1);
-    const characterElement = ref('');
+    const characterElement = ref("");
     // elemental effects
     const isSpectroFrazzleEnabled = ref(false);
     const spectroFrazzleStacks = ref(0);
@@ -1226,6 +1226,7 @@ export default defineComponent({
             talent = talentTree[talentData.skill];
             break;
           case "forteCircuit":
+          case "forte":
             talent = talentTree[talentData.forte];
             break;
           case "liberation":
@@ -2607,15 +2608,21 @@ export default defineComponent({
         finalStats.DefIgnore = finalStats.defIgnore / 100;
 
         // if we have some min stats, check them before we add them to the list of usable loadouts
+        let isMeetingMinRequirements = true;
         if (minStats.length > 0) {
           for (const minStat of minStats) {
             const statValue = finalStats?.[minStat.stat];
             const desiredValue = Number(minStat.minValue) / 100; // we need to divide as we're getting full int, but the stats calculated are decimals
             // if any of the min stats aren't good enough, then don't use the loadout
             if (statValue < desiredValue) {
-              continue;
+              isMeetingMinRequirements = false;
+              break;
             }
           }
+        }
+        // drop this loadout if it didnt meet the min requirements
+        if (!isMeetingMinRequirements) {
+          continue;
         }
 
         seenCombinations.add(combinationKey);
@@ -2657,10 +2664,20 @@ export default defineComponent({
         processedCombos.value++;
 
         if (heap.length < topN) {
-          heap.push({ loadout: loadoutArr, targetValue, context, id: randomString() });
+          heap.push({
+            loadout: loadoutArr,
+            targetValue,
+            context,
+            id: randomString(),
+          });
           heap.sort((a, b) => a.targetValue - b.targetValue); // min at index 0
         } else if (targetValue > heap[0].targetValue) {
-          heap[0] = { loadout: loadoutArr, targetValue, context, id: randomString() };
+          heap[0] = {
+            loadout: loadoutArr,
+            targetValue,
+            context,
+            id: randomString(),
+          };
           heap.sort((a, b) => a.targetValue - b.targetValue);
         }
       }
