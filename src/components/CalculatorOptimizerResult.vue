@@ -85,7 +85,10 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
+    ...mapActions(useCharacterStore, [
+      "setCharacterData",
+      "setCharacterEchoes",
+    ]),
     ...mapActions(useInventoryStore, ["setEquippedData"]),
     displayInt,
     displayPercentage,
@@ -93,6 +96,10 @@ export default {
     async equipLoadout() {
       // clear any loadout first
       await this.setCharacterData(this.character, { echoPresetId: null });
+      // reset our echo data before we save each one
+      await this.setCharacterEchoes(this.character, []);
+
+      const newEchoes = [];
       for (let i = 0; i < this.loadoutLen; i++) {
         // update the character to reference the inventory
         // when we assign the echo from inventory, clear out all data except echoId
@@ -100,31 +107,30 @@ export default {
         const id = echo?.echoId;
         console.log(i, this.loadout[i], id);
         const echoData = {
-          echo: echo?.echo ?? null,
-          type: echo?.type ?? null,
-          rank: echo?.rank ?? null,
-          stat: echo?.stat ?? null,
+          echo: null,
+          type: null,
+          rank: null,
+          stat: null,
           echoId: id,
-          echoSet: echo?.echoSet ?? null,
-          echoSubStatsType1: echo?.echoSubStatsType1 ?? null,
-          echoSubStatsValue1: echo?.echoSubStatsValue1 ?? null,
-          echoSubStatsType2: echo?.echoSubStatsType2 ?? null,
-          echoSubStatsValue2: echo?.echoSubStatsValue2 ?? null,
-          echoSubStatsType3: echo?.echoSubStatsType3 ?? null,
-          echoSubStatsValue3: echo?.echoSubStatsValue3 ?? null,
-          echoSubStatsType4: echo?.echoSubStatsType4 ?? null,
-          echoSubStatsValue4: echo?.echoSubStatsValue4 ?? null,
-          echoSubStatsType5: echo?.echoSubStatsType5 ?? null,
-          echoSubStatsValue5: echo?.echoSubStatsValue5 ?? null,
+          echoSet: null,
+          echoSubStatsType1: null,
+          echoSubStatsValue1: null,
+          echoSubStatsType2: null,
+          echoSubStatsValue2: null,
+          echoSubStatsType3: null,
+          echoSubStatsValue3: null,
+          echoSubStatsType4: null,
+          echoSubStatsValue4: null,
+          echoSubStatsType5: null,
+          echoSubStatsValue5: null,
         };
-        const charData = { echoes: {} };
-        charData.echoes[i] = echoData;
-        await this.setCharacterData(this.character, charData);
-        // add to our equipped list
-        const equippedData = {};
-        equippedData[this.character] = this.index;
-        await this.setEquippedData(id, equippedData);
+        newEchoes.push(echoData);
       }
+      await this.setCharacterEchoes(this.character, newEchoes);
+      // add to our equipped list
+      const equippedData = {};
+      equippedData[this.character] = this.index;
+      await this.setEquippedData(id, equippedData);
     },
   },
 };
