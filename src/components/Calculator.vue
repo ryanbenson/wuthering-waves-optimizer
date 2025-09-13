@@ -2392,6 +2392,7 @@ export default defineComponent({
       combo = [],
       cost = 0,
       usedEchoIds = new Set(),
+      usedEchoes = new Set(),
     ) {
       // If we have main echo keys and combo is empty, we need to start with one of those
       if (mainEchoKeys.length > 0 && combo.length === 0) {
@@ -2435,11 +2436,15 @@ export default defineComponent({
         const next = echoes[i];
         // Skip if already used
         if (usedEchoIds.has(next.echoId)) continue;
+        // Skip if the echo has
+        if (usedEchoes.has(next.echo)) continue;
 
         const nextCost = cost + next.type;
         if (nextCost <= 12) {
           // Add to used set instead of filtering
           usedEchoIds.add(next.echoId);
+          // Add the echo key instead of filtering
+          usedEchoes.add(next.echo);
           combo.push(next); // Mutate instead of creating new array
           yield* generateLoadouts(
             echoes,
