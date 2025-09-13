@@ -2453,9 +2453,11 @@ export default defineComponent({
             combo,
             nextCost,
             usedEchoIds,
+            usedEchoes,
           );
           combo.pop(); // Backtrack
           usedEchoIds.delete(next.echoId); // Backtrack
+          usedEchoes.delete(next.echo);
         }
       }
     }
