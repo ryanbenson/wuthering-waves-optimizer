@@ -1,7 +1,7 @@
 <template>
   <select
     v-model="optimizationTarget"
-    class="select select-bordered select-sm w-full max-w-xs">
+    class="select select-bordered select w-full max-w-xs">
     <option disabled :value="null">Select target</option>
     <optgroup
       v-for="target in Object.entries(optimizationTargets)"

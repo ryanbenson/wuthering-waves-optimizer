@@ -97,9 +97,9 @@ export default {
       // clear any loadout first
       await this.setCharacterData(this.character, { echoPresetId: null });
       // reset our echo data before we save each one
-      await this.setCharacterEchoes(this.character, []);
+      await this.setCharacterEchoes(this.character, {});
 
-      const newEchoes = [];
+      const newEchoes = {};
       for (let i = 0; i < this.loadoutLen; i++) {
         // update the character to reference the inventory
         // when we assign the echo from inventory, clear out all data except echoId
@@ -124,13 +124,13 @@ export default {
           echoSubStatsType5: null,
           echoSubStatsValue5: null,
         };
-        newEchoes.push(echoData);
+        newEchoes[i] = echoData;
+        // add to our equipped list
+        const equippedData = {};
+        equippedData[this.character] = this.index;
+        await this.setEquippedData(id, equippedData);
       }
       await this.setCharacterEchoes(this.character, newEchoes);
-      // add to our equipped list
-      const equippedData = {};
-      equippedData[this.character] = this.index;
-      await this.setEquippedData(id, equippedData);
     },
   },
 };

@@ -76,7 +76,7 @@
     <div class="optimizer-filters">
       <div class="optimizer-filters__sets">
         <h3>Choose echo sets</h3>
-        <div class="optimizer-filters__sets--two flex gap-2">
+        <div class="optimizer-filters__sets--two flex gap-2 flex-wrap">
           <button
             v-for="set in echoSets"
             :key="set"
@@ -159,21 +159,20 @@
     </div>
     <div class="optimizer-target">
       <h3>Choose your optimization target</h3>
-      <CalculatorOptimizerTarget
-        :character="character"
-        :current-optimization-target="optimizationTarget"
-        @optimizer:target-updated="
-          handleUpdatedTarget
-        "></CalculatorOptimizerTarget>
-    </div>
-    <div class="optimizer-target">
-      <h3>Choose your damage type target</h3>
-      <CalculatorOptimizerDamageType
-        :character="character"
-        :current-damage-type="damageType"
-        @optimizer:damage-type-updated="
-          handleUpdatedDamageType
-        "></CalculatorOptimizerDamageType>
+      <div class="optimizer-target-options flex gap-2">
+        <CalculatorOptimizerTarget
+          :character="character"
+          :current-optimization-target="optimizationTarget"
+          @optimizer:target-updated="
+            handleUpdatedTarget
+          "></CalculatorOptimizerTarget>
+        <CalculatorOptimizerDamageType
+          :character="character"
+          :current-damage-type="damageType"
+          @optimizer:damage-type-updated="
+            handleUpdatedDamageType
+          "></CalculatorOptimizerDamageType>
+      </div>
     </div>
     <div class="mt-4">Processed {{ processedCombos }} of {{ totalCombos }}</div>
     <progress
@@ -193,8 +192,7 @@
       v-if="optimizerResults"
       :character="character"
       :character-element="characterElement"
-      :results="optimizerResults"
-    />
+      :results="optimizerResults" />
   </div>
 </template>
 

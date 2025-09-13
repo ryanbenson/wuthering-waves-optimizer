@@ -1,39 +1,44 @@
 <template>
-  <h3>{{ name }}</h3>
+  <div
+    class="optimizer-echo-set card card-bordered card-compact bg-base-100 shadow mb-2">
+    <div class="card-body">
+      <h3 class="card-title text-lg">{{ name }}</h3>
 
-  <div @click="toggleEnabled">
-    <div v-html="details"></div>
-    <div class="flex gap-2 items-center">
-      <div class="form-control" @click.stop>
-        <label
-          class="label inline-flex justify-start pl-0"
-          :class="{ 'cursor-pointer': !alwaysEnabled }">
-          <input
-            type="checkbox"
-            class="checkbox checkbox-sm"
-            v-model="isEnabled"
-            @change="updatedStats"
-            :disabled="alwaysEnabled"
-            :data-test-optimizer-main-echo-passive-enabled="echoKey" />
-          <span class="label-text ml-2">Enabled?</span>
-        </label>
-      </div>
-      <div v-if="hasStacks" class="form-control" @click.stop>
-        <label
-          class="label cursor-pointer inline-flex justify-start"
-          v-if="!alwaysEnabled">
-          <input
-            v-model="stacks"
-            type="number"
-            class="input input-bordered input-xs"
-            :min="minStacks"
-            :max="maxStacks"
-            @input="ensureMaxStacks"
-            @change="updatedStats"
-            :data-test-main-echo-stacks="echoKey" />
-          <span class="label-text ml-2">Stacks</span>
-          <span class="ml-1 text-sm italic">(Max {{ maxStacks }})</span>
-        </label>
+      <div @click="toggleEnabled">
+        <div v-html="details"></div>
+        <div class="flex gap-2 items-center">
+          <div class="form-control" @click.stop>
+            <label
+              class="label inline-flex justify-start pl-0"
+              :class="{ 'cursor-pointer': !alwaysEnabled }">
+              <input
+                type="checkbox"
+                class="checkbox checkbox-sm"
+                v-model="isEnabled"
+                @change="updatedStats"
+                :disabled="alwaysEnabled"
+                :data-test-optimizer-main-echo-passive-enabled="echoKey" />
+              <span class="label-text ml-2">Enabled?</span>
+            </label>
+          </div>
+          <div v-if="hasStacks" class="form-control" @click.stop>
+            <label
+              class="label cursor-pointer inline-flex justify-start"
+              v-if="!alwaysEnabled">
+              <input
+                v-model="stacks"
+                type="number"
+                class="input input-bordered input-xs"
+                :min="minStacks"
+                :max="maxStacks"
+                @input="ensureMaxStacks"
+                @change="updatedStats"
+                :data-test-main-echo-stacks="echoKey" />
+              <span class="label-text ml-2">Stacks</span>
+              <span class="ml-1 text-sm italic">(Max {{ maxStacks }})</span>
+            </label>
+          </div>
+        </div>
       </div>
     </div>
   </div>
