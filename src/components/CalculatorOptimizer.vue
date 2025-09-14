@@ -75,7 +75,7 @@
   <div class="optimizer" v-if="!isLoading">
     <div class="optimizer-filters">
       <div class="optimizer-filters__sets">
-        <h3>Choose echo sets</h3>
+        <h3 class="mb-2">Choose echo sets</h3>
         <div class="optimizer-filters__sets--two flex gap-2 flex-wrap">
           <button
             v-for="set in echoSets"
@@ -86,68 +86,122 @@
             <img :src="getSetIcon(set)" :alt="set" />
           </button>
         </div>
-        <div v-if="currentSetBonuses.length" class="optimizer-echo-set-buffs">
-          <h3>Configure echo set buffs</h3>
-          <CalculatorOptimizerEchoSet
-            v-for="(setBonus, index) in currentSetBonuses"
-            :key="setBonus.key"
-            :set-key="setBonus.key"
-            :character="character"
-            :name="setBonus.name"
-            :passives="setBonus.passives"
-            :details="setBonus.details"
-            @updated-optimizer-echo-set-stats="
-              handleUpdatedSetStats
-            "></CalculatorOptimizerEchoSet>
-        </div>
-        <h3 class="mt-6">Choose main echoes</h3>
+        <h3 class="mt-6 mb-2">Choose main echoes</h3>
         <div class="optimizer-echoes-chosen flex gap-2">
+          <div
+            class="card card-bordered card-compact bg-base-100 shadow text-wrap w-[6rem] flex flex-col items-center">
+            <div
+              @click="openEchoChooser"
+              class="card-body items-center justify-center cursor-pointer">
+              <div class="flex flex-col gap-2 justify-center items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  class="bi bi-plus-circle"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                  <path
+                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                </svg>
+                <span class="text-center">Choose Echo</span>
+              </div>
+            </div>
+          </div>
           <div
             v-for="echo in allMainEchoesData"
             :key="echo.key"
-            class="text-wrap w-[6rem] flex flex-col items-center">
-            <div
-              class="echo__item__image rounded-full border border-solid neutral-content size-12 mb-2 bg-cover cursor-pointer"
-              :style="{
-                backgroundImage: `url(${echo.image})`,
-              }"></div>
-            <div class="text-center text-sm">
-              {{ echo.name }}
+            class="card card-bordered card-compact bg-base-100 shadow text-wrap w-[6rem] flex flex-col items-center">
+            <div class="card-body items-center">
+              <div
+                class="echo__item__image rounded-full border border-solid neutral-content size-12 mb-2 bg-cover cursor-pointer"
+                :style="{
+                  backgroundImage: `url(${echo.image})`,
+                }"></div>
+              <div class="text-center text-sm grow">
+                {{ echo.name }}
+              </div>
+              <div class="card-actions">
+                <button
+                  class="btn btn-xs btn-outline mt-1"
+                  @click="removeMainEcho(echo.key)">
+                  Remove
+                </button>
+              </div>
             </div>
-            <button
-              class="btn btn-xs btn-outline mt-1"
-              @click="removeMainEcho(echo.key)">
-              Remove
-            </button>
           </div>
         </div>
-        <div>
-          <button @click="openEchoChooser" class="btn btn-primary btn-sm">
-            Choose an echo
-          </button>
+
+        <div
+          v-if="currentSetBonuses.length"
+          class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
+          data-test-optimizer-echo-set-buffs-collapse-bar>
+          <input type="checkbox" />
+          <h3 class="collapse-title text-xl" data-test-optimizer-echo-set>
+            Echo set buffs
+          </h3>
+          <div class="collapse-content">
+            <div v-if="!currentSetBonuses.length">
+              <p class="my-6 text-center">
+                Choose echo sets to configure their set bonuses
+              </p>
+            </div>
+            <template v-else>
+              <CalculatorOptimizerEchoSet
+                v-for="(setBonus, index) in currentSetBonuses"
+                :key="setBonus.key"
+                :set-key="setBonus.key"
+                :character="character"
+                :name="setBonus.name"
+                :passives="setBonus.passives"
+                :details="setBonus.details"
+                @updated-optimizer-echo-set-stats="
+                  handleUpdatedSetStats
+                "></CalculatorOptimizerEchoSet>
+            </template>
+          </div>
         </div>
       </div>
-      <div class="optimizer-main-echoes-chosen">
-        <CalculatorOptimizerMainEcho
-          v-for="echo in allMainEchoesData"
-          :key="echo.key"
-          :echo-key="echo.key"
-          :name="echo.name"
-          :echo-class="echo.class"
-          :image="echo.image"
-          :sets="echo.sets"
-          :details="echo.details"
-          :modifiers="echo.modifiers"
-          :actions="echo.actions"
-          :has-stacks="echo.hasStacks"
-          :min-stacks="echo.minStacks"
-          :max-stacks="echo.maxStacks"
-          @updated-main-echo-buffs="
-            handleUpdatedMainEchoBuffs
-          "></CalculatorOptimizerMainEcho>
+
+      <div
+        class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
+        data-test-optimizer-main-echo-buffs-bar>
+        <input type="checkbox" />
+        <h3 class="collapse-title text-xl" data-test-optimizer-main-echo-buffs>
+          Main echo buffs
+        </h3>
+        <div class="collapse-content">
+          <div v-if="!mainEchoes.length">
+            <p class="my-6 text-center">
+              Choose main echoes to configure their buffs
+            </p>
+          </div>
+          <template v-else>
+            <CalculatorOptimizerMainEcho
+              v-for="echo in allMainEchoesData"
+              :key="echo.key"
+              :echo-key="echo.key"
+              :name="echo.name"
+              :echo-class="echo.class"
+              :image="echo.image"
+              :sets="echo.sets"
+              :details="echo.details"
+              :modifiers="echo.modifiers"
+              :actions="echo.actions"
+              :has-stacks="echo.hasStacks"
+              :min-stacks="echo.minStacks"
+              :max-stacks="echo.maxStacks"
+              @updated-main-echo-buffs="
+                handleUpdatedMainEchoBuffs
+              "></CalculatorOptimizerMainEcho>
+          </template>
+        </div>
       </div>
+
       <div class="optimizer-filters__sets">
-        <h3>Choose target stats</h3>
+        <h3 class="mt-6 mb-2">Choose target stats (optional)</h3>
         <CalculatorOptimizerMinStats
           :character="character"
           :key="character"
@@ -158,7 +212,7 @@
       </div>
     </div>
     <div class="optimizer-target">
-      <h3>Choose your optimization target</h3>
+      <h3 class="mt-6 mb-2">Choose your optimization target</h3>
       <div class="optimizer-target-options flex gap-2">
         <CalculatorOptimizerTarget
           :character="character"
@@ -174,19 +228,25 @@
           "></CalculatorOptimizerDamageType>
       </div>
     </div>
-    <div class="mt-4">Processed {{ processedCombos }} of {{ totalCombos }}</div>
-    <progress
-      class="progress progress-primary w-56"
-      :value="processedCombos"
-      :max="totalCombos"></progress>
-    <div>
-      <p v-if="!isValid">Choose echo sets and main echoes</p>
+    <div class="optimizer-actions mt-6 flex gap-4 items-center">
       <button
         class="btn btn-primary"
         @click="handleOptimize"
         :disabled="!isValid">
         Optimize
       </button>
+      <p v-if="!isValid" class="text-warning">
+        Choose at least one echo and set
+      </p>
+    </div>
+    <div class="optimizer-progress" v-if="hasTriggeredOptimizer">
+      <div class="mt-4">
+        Processed {{ processedCombos }} of {{ totalCombos }}
+      </div>
+      <progress
+        class="progress progress-primary w-56"
+        :value="processedCombos"
+        :max="totalCombos"></progress>
     </div>
     <CalculatorOptimizerResults
       v-if="optimizerResults"
@@ -211,7 +271,6 @@ import CalculatorOptimizerMainEcho from "./CalculatorOptimizerMainEcho.vue";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorOptimizerResults from "./CalculatorOptimizerResults.vue";
-import { character } from "../characters/Aalto/character";
 export default {
   name: "CalculatorOptimizer",
   props: {
@@ -257,6 +316,7 @@ export default {
       damageType: "Average",
       // state
       isLoading: true,
+      hasTriggeredOptimizer: false,
       // passive stats list
       echoSetPassiveStats: {},
       mainEchoStats: {},
@@ -268,6 +328,7 @@ export default {
     getEchoSetIconByType,
     getSetBonusEffectsFromListOfSetKeys,
     handleOptimize() {
+      this.hasTriggeredOptimizer = true;
       this.$emit(
         "optimizer:optimize",
         this.setFilters,
