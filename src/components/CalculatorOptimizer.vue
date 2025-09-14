@@ -239,12 +239,14 @@
         Choose at least one echo and set
       </p>
     </div>
-    <div class="optimizer-progress" v-if="hasTriggeredOptimizer">
-      <div class="mt-4">
-        Processed {{ processedCombos }} of {{ totalCombos }}
+    <div class="optimizer-progress my-6" v-if="hasTriggeredOptimizer">
+      <div>
+        Generated and processed
+        <span class="font-bold">{{ totalCombos }}</span>
+        loadouts
       </div>
       <progress
-        class="progress progress-primary w-56"
+        class="progress progress-primary"
         :value="processedCombos"
         :max="totalCombos"></progress>
     </div>

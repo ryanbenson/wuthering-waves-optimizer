@@ -1,15 +1,25 @@
 <template>
-  <div class="optimizer_result" :data-test-optimizer-result-id="id">
+  <div
+    class="optimizer-result bg-neutral rounded-xl p-4 mt-4"
+    :data-test-optimizer-result-id="id">
+    <div
+      class="optimizer-result__header flex justify-between mb-2 items-center">
+      <span class="badge">Loadout #{{ index }}</span>
+      <button class="btn btn-primary btn-sm" @click="equipLoadout">
+        Equip Loadout
+      </button>
+    </div>
     <CalculatorOptimizerResultLoadout :loadout="loadoutData" />
-    <button class="btn btn-primary" @click="equipLoadout">Equip Loadout</button>
     <div class="optimizer_result_target">
       <div v-if="targetType === 'Attack'">
+        <h3 class="my-2 text-center">Attack Result</h3>
         <CalculatorOptimizerResultDamage
           :attack-info="attackInfo"
           :attack-label="attackLabel" />
       </div>
     </div>
     <div class="optimizer_result_stats">
+      <h3 class="mb-2 mt-4 text-center">Basic Stats</h3>
       <CalculatorOptimizerResultStats
         :character-element="characterElement"
         :final-stats="context.finalStats" />
@@ -34,6 +44,10 @@ export default {
     },
     id: {
       type: String,
+      required: true,
+    },
+    index: {
+      type: Number,
       required: true,
     },
     targetValue: {
@@ -135,3 +149,11 @@ export default {
   },
 };
 </script>
+
+<style>
+html[data-theme="light"] {
+  .optimizer-result {
+    background-color: oklch(var(--nc));
+  }
+}
+</style>

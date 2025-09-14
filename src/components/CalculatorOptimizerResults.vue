@@ -1,8 +1,9 @@
 <template>
   <CalculatorOptimizerResult
-    v-for="result in resultList"
+    v-for="(result, i) in resultList"
     :key="result.id"
     :id="result.id"
+    :index="i"
     :character="character"
     :loadout="result.loadout"
     :target-value="result.targetValue"
