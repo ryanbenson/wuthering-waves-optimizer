@@ -17,7 +17,7 @@
             'opacity-50': attackInfo.isEnabled && !attackInfo.originalIsEnabled,
           },
         ]">
-        <template v-if="type === 'Healing'">
+        <template v-if="attackInfo.type === 'Healing'">
           <td>{{ attackLabel }}</td>
           <td
             v-tooltip="{
@@ -27,7 +27,7 @@
             {{ displayDamage(attackInfo.damage.healAmount) }}
           </td>
         </template>
-        <template v-else-if="type === 'Shield'">
+        <template v-else-if="attackInfo.type === 'Shield'">
           <td>{{ attackLabel }}</td>
           <td
             v-tooltip="{
@@ -37,7 +37,7 @@
             {{ displayDamage(attackInfo.damage.shieldAmount) }}
           </td>
         </template>
-        <template v-else-if="type === 'ElementalEffect'">
+        <template v-else-if="attackInfo.type === 'ElementalEffect'">
           <td>{{ attackLabel }}</td>
           <td
             v-tooltip="{
@@ -99,3 +99,53 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.calculation__damage__item {
+  display: grid;
+  grid-template-columns: 1fr 100px 100px 100px;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  &:nth-child(even) {
+    background-color: transparent;
+  }
+  &:nth-child(odd) {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr 80px 80px 80px;
+    gap: 0.15rem;
+  }
+}
+.calculation__damage__item--fill {
+  grid-template-columns: 1fr;
+}
+.calculation__damage__item--healing {
+  color: #3bea3b;
+}
+.calculation__damage__item--shield {
+  color: #00adff;
+}
+.rotation__aggregation {
+  margin-top: 1rem;
+  background: #1c2737;
+  border-radius: 0.25rem;
+}
+html[data-theme="light"] {
+  .calculation__damage__item {
+    &:nth-child(odd) {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+  }
+  .calculation__damage__item--shield {
+    color: #4a92ff;
+  }
+  .rotation__aggregation {
+    background: #cee2ff;
+  }
+  .calculation__damage__item--healing {
+    color: #13a813;
+  }
+}
+</style>
