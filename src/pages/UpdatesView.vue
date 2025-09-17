@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 17, 2025</h3>
+    <ul>
+      <li>Fixes Lady of the Sea text, and some custom buff labels.</li>
+    </ul>
     <h3>September 11, 2025</h3>
     <ul>
       <li>Updates Jinhsi's text.</li>

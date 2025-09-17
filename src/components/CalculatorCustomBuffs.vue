@@ -387,7 +387,7 @@
       <label class="form-control mb-4">
         <div class="label">
           <span class="label-text mr-2 flex items-center gap-1">
-            Damage Amplify
+            DMG Amplify
           </span>
         </div>
         <input
@@ -417,7 +417,7 @@
       <label class="form-control mb-4">
         <div class="label">
           <span class="label-text mr-2 flex items-center gap-1">
-            Defense Ignore
+            DEF Ignore
           </span>
         </div>
         <input
@@ -521,9 +521,7 @@ export default {
       const ResonanceLiberationDMGBonus = this.ResonanceLiberationDMGBonus
         ? this.ResonanceLiberationDMGBonus / 100
         : 0;
-      const EchoDMGBonus = this.EchoDMGBonus
-        ? this.EchoDMGBonus / 100
-        : 0;
+      const EchoDMGBonus = this.EchoDMGBonus ? this.EchoDMGBonus / 100 : 0;
       const Glacio = this.Glacio ? this.Glacio / 100 : 0;
       const Fusion = this.Fusion ? this.Fusion / 100 : 0;
       const Electro = this.Electro ? this.Electro / 100 : 0;
@@ -780,9 +778,7 @@ export default {
      */
     EchoDMGBonus: {
       get() {
-        return (
-          this.currentCharacter?.customBuffs?.EchoDMGBonus ?? 0
-        );
+        return this.currentCharacter?.customBuffs?.EchoDMGBonus ?? 0;
       },
       async set(value) {
         const data = {
