@@ -1568,7 +1568,7 @@ CD: <span class="param">20</span>s.</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/LadyoftheSea.png",
-    details: `<span class="description">Summon a Tidestorm to deal <span class="Param">9.12%/12.16%/13.68%</span> Aero DMG ten times and <span class="Param">109.44%/127.68%/145.92%/164.16%</span> Aero DMG one time to enemies.<br><br>
+    details: `<span class="description">Summon a Tidestorm to deal <span class="param">9.12%/12.16%/13.68%</span> Aero DMG ten times and <span class="param">109.44%/127.68%/145.92%/164.16%</span> Aero DMG one time to enemies.<br><br>
 The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Aero DMG Bonus and <span class="param">12%.00</span> Resonance Liberation DMG Bonus.
 CD: 20s</span>`,
     modifiers: [
