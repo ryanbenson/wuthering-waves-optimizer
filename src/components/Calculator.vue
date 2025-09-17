@@ -2523,6 +2523,8 @@ export default defineComponent({
           type: attackInfo.type,
           subType: attackInfo.subType,
           element: attackInfo.element,
+          attribute: attackInfo?.attribute ?? null,
+          alwaysCrit: attackInfo?.alwaysCrit ?? false,
         };
         if (!attackData) {
           console.error("Could not find the attack data chosen");
@@ -2538,7 +2540,13 @@ export default defineComponent({
         Average: "avgDamage",
         Crit: "critDamage",
       };
-      const damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
+      let damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
+      if (attackData.type === "Shield") {
+        damageTargetReference = "shieldAmount";
+      }
+      if (attackData.type === "Healing") {
+        damageTargetReference = "healAmount";
+      }
 
       for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
         // Create a unique key for this combination based on echo keys, sorted
