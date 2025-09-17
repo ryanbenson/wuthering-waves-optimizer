@@ -64,11 +64,11 @@ export default {
       const modifierOptionsList = [];
       const allModifiers = Object.entries(subStatLabelMap);
       // add in Damage Deepen. It's a buff we want, but not from echo substats
-      allModifiers.push(["DMGDeepen", "Damage Amplify"]);
+      allModifiers.push(["DMGDeepen", "DMG Amplify"]);
       // also add in resist shred
       allModifiers.push(["ResistShred", "Resist Reduction"]);
       // also add in def shred
-      allModifiers.push(["DefIgnore", "Defense Reduction"]);
+      allModifiers.push(["DefIgnore", "DEF Ignore"]);
       // also add in multipliers too
       allModifiers.push(["talentModifierMultiply", "DMG Multiplier"]);
       allModifiers.push(["talentModifierAdd", "DMG Multiplier Additive"]);
