@@ -12,7 +12,12 @@
       <div class="py-4">
         <h3 class="text-xl mb-4">Choose a preset to apply to your build</h3>
         <div role="tablist" class="tabs tabs-bordered">
-          <input type="radio" name="my_tabs_1" role="tab" class="tab whitespace-nowrap" aria-label="My Presets"
+          <input
+            type="radio"
+            name="my_tabs_1"
+            role="tab"
+            class="tab whitespace-nowrap"
+            aria-label="My Presets"
             checked="checked" />
           <div role="tabpanel" class="tab-content mt-6">
             <p v-if="!hasEchoPresets">No echo presets available</p>
@@ -27,8 +32,7 @@
                 :echo-3-id="echoPreset.echo3Id"
                 :echo-4-id="echoPreset.echo4Id"
                 :echo-5-id="echoPreset.echo5Id"
-                @click="applyCustomPreset(echoPreset)"
-              />
+                @click="applyCustomPreset(echoPreset)" />
             </div>
           </div>
 
@@ -39,17 +43,23 @@
             class="tab whitespace-nowrap"
             aria-label="Other Presets" />
           <div role="tabpanel" class="tab-content mt-6">
-            <p v-if="!hasDefaultEchoPresets">No default echo presets available</p>
+            <p v-if="!hasDefaultEchoPresets">
+              No default echo presets available
+            </p>
             <div v-else class="echoes-presets-list">
               <div
                 v-for="defaultEchoPreset in defaultEchoPresets"
                 :key="defaultEchoPreset.name"
-            class="presetEchoes card card-bordered card-compact bg-base-100 shadow mb-2">
+                class="presetEchoes card card-bordered card-compact bg-base-100 shadow mb-2">
                 <div class="card-body">
-                <h2 class="card-title">{{ defaultEchoPreset.name }}</h2>
-                <p>{{ defaultEchoPreset.description }}</p>
-                <p class="italic">Author: {{ defaultEchoPreset.author }}</p>
-                <button class="btn btn-sm btn-primary max-w-40 mt-2" @click="applyPreset(defaultEchoPreset)">Apply preset</button>
+                  <h2 class="card-title">{{ defaultEchoPreset.name }}</h2>
+                  <p>{{ defaultEchoPreset.description }}</p>
+                  <p class="italic">Author: {{ defaultEchoPreset.author }}</p>
+                  <button
+                    class="btn btn-sm btn-primary max-w-40 mt-2"
+                    @click="applyPreset(defaultEchoPreset)">
+                    Apply preset
+                  </button>
                 </div>
               </div>
             </div>
@@ -80,17 +90,21 @@ export default {
   },
   data() {
     return {
-      defaultEchoPresets: []
-    }
+      defaultEchoPresets: [],
+    };
   },
   methods: {
-    ...mapActions(useCharacterStore, ["setCharacterEchoes", "setCharacterData"]),
+    ...mapActions(useCharacterStore, [
+      "setCharacterEchoes",
+      "setCharacterData",
+    ]),
     ...mapActions(useInventoryStore, [
       "saveEcho",
       "setEquippedData",
       "getEchoById",
       "setEquippedPresetData",
       "setEquippedData",
+      "removeCharacterFromAllEquipped",
     ]),
     triggerOpenModal() {
       const modalEl = document.getElementById("modal-echoes-presets");
@@ -103,17 +117,25 @@ export default {
     async applyPreset(presetData) {
       const data = JSON.parse(JSON.stringify(presetData)); // clone so we don't use the raw data
       await this.setCharacterEchoes(this.character, {}); // flush first
-      await this.setCharacterEchoes(this.character,  data.data.echoes);
+      await this.setCharacterEchoes(this.character, data.data.echoes);
+      // flush out any equip references. This is a TCer preset,
+      // so we don't assign the equipments, but we reset
+      await this.removeCharacterFromAllEquipped(this.character);
+      console.log("did you not do it?");
       this.triggerCloseModal();
     },
     async applyCustomPreset(presetData) {
       const data = JSON.parse(JSON.stringify(presetData)); // clone so we don't use the raw data
       // set the preset id
-      await this.setCharacterData(this.character, { echoPresetId: presetData.presetId });
+      await this.setCharacterData(this.character, {
+        echoPresetId: presetData.presetId,
+      });
       // set the preset equipped
       await this.setEquippedPresetData(this.character, presetData.presetId);
       // flush current echo data
       await this.setCharacterEchoes(this.character, {});
+      // also flush any equip references
+      await this.removeCharacterFromAllEquipped(this.character);
       // need to setup the echo data to apply {0: echoData..., 1: echoData...}
       const echoData = {};
       if (data.echo1Id) {
@@ -160,7 +182,7 @@ export default {
       await this.setCharacterEchoes(this.character, echoData);
 
       this.triggerCloseModal();
-    }
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -177,12 +199,12 @@ export default {
     },
     hasEchoPresets() {
       return this.echoPresets.length > 0;
-    }
+    },
   },
   async mounted() {
     this.characterData = await getCharByName(this.character);
     const echoes = this.characterData?.echoes ?? [];
     this.defaultEchoPresets = echoes;
-  }
+  },
 };
 </script>
