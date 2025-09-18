@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 18, 2025</h3>
+    <ul>
+      <li>
+        Fixes equipment references where it would not always clear them out when
+        you changed your echoes.
+      </li>
+    </ul>
     <h3>September 17, 2025</h3>
     <ul>
       <li>Fixes Lady of the Sea text, and some custom buff labels.</li>
