@@ -103,7 +103,10 @@ export default {
       "setCharacterData",
       "setCharacterEchoes",
     ]),
-    ...mapActions(useInventoryStore, ["setEquippedData"]),
+    ...mapActions(useInventoryStore, [
+      "setEquippedData",
+      "removeCharacterFromAllEquipped",
+    ]),
     displayInt,
     displayPercentage,
     displayDamage,
@@ -112,6 +115,8 @@ export default {
       await this.setCharacterData(this.character, { echoPresetId: null });
       // reset our echo data before we save each one
       await this.setCharacterEchoes(this.character, {});
+      // flush out any equip references
+      await this.removeCharacterFromAllEquipped(this.character);
 
       const newEchoes = {};
       for (let i = 0; i < this.loadoutLen; i++) {
