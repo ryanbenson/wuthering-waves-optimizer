@@ -94,7 +94,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
+        modifier: "talentModifierMultiplyAdd",
         modifySpecificTalents: ["AbsoluteFullnessDMG"],
         modifierValue: 16,
       },

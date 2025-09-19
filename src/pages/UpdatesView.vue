@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 19, 2025</h3>
+    <ul>
+      <li>Updates Iuno S6. It is additive multiplier bonus.</li>
+    </ul>
     <h3>September 18, 2025</h3>
     <ul>
       <li>
