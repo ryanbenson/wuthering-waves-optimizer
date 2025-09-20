@@ -30,6 +30,14 @@
                   Showing the percentage difference of a loadout compared to
                   your current build.
                 </li>
+                <li>
+                  Automatically enable echo buffs on your character profile when
+                  equipping a loadout.
+                </li>
+                <li>
+                  Performance enhancements, especially when looking through a
+                  very large amount of possible loadouts.
+                </li>
                 <li>More to come as well!</li>
               </ul>
             </div>
