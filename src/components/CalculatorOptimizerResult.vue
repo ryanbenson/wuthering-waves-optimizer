@@ -4,7 +4,7 @@
     :data-test-optimizer-result-id="id">
     <div
       class="optimizer-result__header flex justify-between mb-2 items-center">
-      <span class="badge">Loadout #{{ index }}</span>
+      <span class="badge">Loadout #{{ index + 1 }}</span>
       <button class="btn btn-primary btn-sm" @click="equipLoadout">
         Equip Loadout
       </button>

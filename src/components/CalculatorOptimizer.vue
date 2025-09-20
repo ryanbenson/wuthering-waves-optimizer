@@ -1,4 +1,5 @@
 <template>
+  <CalculatorOptimizerGuide ref="optimizerGuide"></CalculatorOptimizerGuide>
   <dialog :id="modalIdPicker" class="modal">
     <form method="dialog" class="modal-backdrop" @click="closeEchoChooser">
       <button>close</button>
@@ -73,6 +74,11 @@
     </div>
   </dialog>
   <div class="optimizer" v-if="!isLoading">
+    <button
+      class="btn btn-sm w-full btn-primary btn-outline mb-4"
+      @click="handleOpenOptimizerGuide">
+      🧪 Optimizer Lab! See guide.
+    </button>
     <div class="optimizer-filters">
       <div class="optimizer-filters__sets">
         <h3 class="mb-2">Choose echo sets</h3>
@@ -277,6 +283,7 @@ import CalculatorOptimizerMainEcho from "./CalculatorOptimizerMainEcho.vue";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorOptimizerResults from "./CalculatorOptimizerResults.vue";
+import CalculatorOptimizerGuide from "./CalculatorOptimizerGuide.vue";
 export default {
   name: "CalculatorOptimizer",
   props: {
@@ -306,6 +313,7 @@ export default {
     CalculatorOptimizerTarget,
     CalculatorOptimizerDamageType,
     CalculatorOptimizerResults,
+    CalculatorOptimizerGuide,
   },
   data() {
     return {
@@ -454,6 +462,9 @@ export default {
         this.mainEchoStats[key] = {};
       }
       this.mainEchoStats[key] = stats;
+    },
+    handleOpenOptimizerGuide() {
+      this.$refs.optimizerGuide.triggerOpenModal();
     },
   },
   computed: {
