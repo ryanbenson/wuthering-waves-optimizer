@@ -1116,7 +1116,6 @@ export default {
         );
         this.$emit("on-echo-removed");
       }
-      console.log("resetting");
       // clear the echo before changing the data to avoid data merge issues
       await this.removeCharacterEcho(this.character, this.index);
     },

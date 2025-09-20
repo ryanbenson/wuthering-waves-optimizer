@@ -124,7 +124,7 @@ export default {
         // when we assign the echo from inventory, clear out all data except echoId
         const echo = this.loadout[i];
         const id = echo?.echoId;
-        console.log(i, this.loadout[i], id);
+        // console.log(i, this.loadout[i], id);
         const echoData = {
           echo: null,
           type: null,

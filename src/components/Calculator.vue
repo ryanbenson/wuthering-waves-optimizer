@@ -545,6 +545,7 @@ export default defineComponent({
       injectStats = null,
       ignoreBuffs = {}, // e.g. {ignoreTeamBuffs: true}
       injectEchoStats = null,
+      providedFullStats = null,
     ) => {
       const { ignoreTeamBuffs, ignoreWeaponBuffs, ignoreEchoes } = ignoreBuffs;
       let stats = {
@@ -579,6 +580,9 @@ export default defineComponent({
         resistReduction: 0,
         coordinatedDmgBonus: 0,
       };
+      if (providedFullStats) {
+        stats = { ...stats, ...providedFullStats };
+      }
       let charHp = 0;
       let charAtk = 0;
       let charDef = 0;
@@ -596,7 +600,7 @@ export default defineComponent({
         charDef = defense;
       }
 
-      if (charBuffsData.value) {
+      if (charBuffsData.value && !providedFullStats) {
         addBuffs(charBuffsData.value, stats);
       }
 
@@ -604,7 +608,7 @@ export default defineComponent({
         addBuffs(injectStats, stats);
       }
 
-      if (charResonanceChainsData.value) {
+      if (charResonanceChainsData.value && !providedFullStats) {
         addBuffs(charResonanceChainsData.value, stats);
 
         resonanceChainsData = charResonanceChainsData.value ?? {};
@@ -639,7 +643,7 @@ export default defineComponent({
           Object.entries(weaponPassiveData).filter(([_, v]) => v != null),
         );
 
-        if (!ignoreWeaponBuffs) {
+        if (!ignoreWeaponBuffs && !providedFullStats) {
           addBuffs(weaponPassiveData, stats);
 
           if (weaponPassiveData?.AllElementAttributeBonus) {
@@ -660,44 +664,46 @@ export default defineComponent({
           }
         }
 
-        switch (weaponModifer) {
-          case "ATK":
-            stats.attackPercent += weaponModifierValue * 100;
-            break;
-          case "HP":
-            stats.hpPercent += weaponModifierValue * 100;
-            break;
-          case "DEF":
-            stats.defPercent += weaponModifierValue * 100;
-            break;
-          case "CritRate":
-            stats.critRate += weaponModifierValue * 100;
-            break;
-          case "CritDMG":
-            stats.critDMG += weaponModifierValue * 100;
-            break;
-          case "EnergyRegen":
-            stats.energyRegen += weaponModifierValue;
-            break;
-          case "HealingBonus":
-            stats.healingBonus += weaponModifierValue;
-            break;
+        if (!providedFullStats) {
+          switch (weaponModifer) {
+            case "ATK":
+              stats.attackPercent += weaponModifierValue * 100;
+              break;
+            case "HP":
+              stats.hpPercent += weaponModifierValue * 100;
+              break;
+            case "DEF":
+              stats.defPercent += weaponModifierValue * 100;
+              break;
+            case "CritRate":
+              stats.critRate += weaponModifierValue * 100;
+              break;
+            case "CritDMG":
+              stats.critDMG += weaponModifierValue * 100;
+              break;
+            case "EnergyRegen":
+              stats.energyRegen += weaponModifierValue;
+              break;
+            case "HealingBonus":
+              stats.healingBonus += weaponModifierValue;
+              break;
+          }
         }
       }
 
-      if (echoStats && !ignoreEchoes) {
+      if (echoStats && !ignoreEchoes && !providedFullStats) {
         addEchoBuffs(echoStats?.value, stats);
       }
 
-      if (injectEchoStats) {
+      if (injectEchoStats && !providedFullStats) {
         addEchoBuffs(injectEchoStats, stats);
       }
 
-      if (customBuffs.value) {
+      if (customBuffs.value && !providedFullStats) {
         addBuffs(customBuffs?.value, stats);
       }
 
-      if (teamBuffsData.value && !ignoreTeamBuffs) {
+      if (teamBuffsData.value && !ignoreTeamBuffs && !providedFullStats) {
         addBuffs(teamBuffsData.value, stats);
 
         if (teamBuffsData?.value?.AllAttributeBonus) {
@@ -723,6 +729,8 @@ export default defineComponent({
       }
 
       // add any buffs that are based on total / additional stats
+      // TODO: Keeping it calculating even if you provide full stats
+      // need to verify if this is correct or not
       if (charBuffsData.value) {
         const charBuffKeys = Object.keys(charBuffsData.value);
         const charBuffDetails = chosenChar.value?.buffs ?? [];
@@ -1574,6 +1582,8 @@ export default defineComponent({
             ignoreTeamBuffs: excludeTeamBuffs,
             ignoreWeaponBuffs: excludeWeaponBuffs,
           },
+          null,
+          providedFullStats,
         );
       }
       // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
@@ -1588,6 +1598,8 @@ export default defineComponent({
             ignoreTeamBuffs: excludeTeamBuffs,
             ignoreWeaponBuffs: excludeWeaponBuffs,
           },
+          null,
+          providedFullStats,
         );
       }
       // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
@@ -1602,6 +1614,8 @@ export default defineComponent({
             ignoreTeamBuffs: excludeTeamBuffs,
             ignoreWeaponBuffs: excludeWeaponBuffs,
           },
+          null,
+          providedFullStats,
         );
       }
 
@@ -2382,7 +2396,7 @@ export default defineComponent({
       );
       optimizerResults.value = results;
       totalCombos.value = processedCombos.value;
-      console.log(results);
+      // console.log(results);
     };
 
     function* generateLoadouts(

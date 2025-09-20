@@ -236,7 +236,11 @@
         Optimize
       </button>
       <p v-if="!isValid" class="text-warning">
-        Choose at least one echo and set
+        <template v-if="isTargetUnavailable" class="text-warning">
+          Rotation targets are not supported yet.
+          <br />
+        </template>
+        Choose at least one echo, echo set, and a valid target.
       </p>
     </div>
     <div class="optimizer-progress my-6" v-if="hasTriggeredOptimizer">
@@ -464,7 +468,16 @@ export default {
     isValid() {
       const echoSetsCount = this.setFilters.length;
       const mainEchoesCount = this.mainEchoes.length;
-      return echoSetsCount > 0 && mainEchoesCount > 0;
+      const hasValidTarget = this.optimizationTarget !== null;
+      return (
+        !this.isTargetUnavailable &&
+        hasValidTarget &&
+        echoSetsCount > 0 &&
+        mainEchoesCount > 0
+      );
+    },
+    isTargetUnavailable() {
+      return this.optimizationTarget.includes("Rotation");
     },
     echoSets() {
       return Object.keys(this.echoSetLabelMap);
