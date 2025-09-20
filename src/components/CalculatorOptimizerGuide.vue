@@ -40,13 +40,25 @@
           This is a quick guide to help you understand how the optimizer works
           and to get the most out of it!
         </p>
-        <p class="mt-2">
+        <div class="mt-2">
           <strong>Important to know:</strong>
-          <br />
-          The optimizer works off of your inventory of echoes. Ideally you pull
-          in all of your echoes from the game into your inventory. This will
-          make the optimizer more effective at giving you the best build.
-        </p>
+          <ul>
+            <li>
+              The optimizer works off of your inventory of echoes. Ideally you
+              pull in all of your echoes from the game into your inventory. This
+              will make the optimizer more effective at giving you the best
+              build.
+            </li>
+
+            <li>
+              If you do not have the echo set, or main echo bonuses enabled in
+              your Echoes screen, this will not automatically enable it for you.
+              You'll need to enable those, otherwise you may see a difference in
+              the loadout versus what the right panel says after you equip the
+              loadout.
+            </li>
+          </ul>
+        </div>
         <div class="mt-2">
           How it works is simple:
           <ul>
