@@ -60,6 +60,18 @@
           alt="Team Buffs" />
       </a>
     </li>
+    <li v-if="isFeatureOptimizerEnabled">
+      <a
+        @click="changeScreen('optimizer')"
+        :class="{ active: curScreen === 'optimizer' }"
+        class="p-0 flex justify-center min-w-[48px] min-h-[48px] mr-2"
+        data-test-calculator-nav="optimizer">
+        <img
+          src="https://ryanbenson.github.io/wuthering-waves-assets/images/sparkles.png"
+          class="size-7"
+          alt="Optimizer" />
+      </a>
+    </li>
     <li>
       <a
         @click="changeScreen('rotations')"
@@ -108,6 +120,8 @@
 </template>
 
 <script>
+import { mapState } from "pinia";
+import { useSettingsStore } from "../../stores/settings";
 export default {
   name: "CalculatorSubNav",
   props: {
@@ -125,6 +139,12 @@ export default {
     changeScreen(screen) {
       this.$emit("change-screen", screen);
       this.curScreen = screen;
+    },
+  },
+  computed: {
+    ...mapState(useSettingsStore, ["labs"]),
+    isFeatureOptimizerEnabled() {
+      return this.labs?.optimizer?.isEnabled ?? false;
     },
   },
   mounted() {

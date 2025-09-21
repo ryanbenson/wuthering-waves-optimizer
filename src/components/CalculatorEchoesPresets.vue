@@ -121,7 +121,6 @@ export default {
       // flush out any equip references. This is a TCer preset,
       // so we don't assign the equipments, but we reset
       await this.removeCharacterFromAllEquipped(this.character);
-      console.log("did you not do it?");
       this.triggerCloseModal();
     },
     async applyCustomPreset(presetData) {

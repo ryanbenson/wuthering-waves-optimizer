@@ -4,19 +4,16 @@
 
     <!-- Main container switches from vertical to horizontal layout -->
     <div class="tab-group flex flex-col sm:flex-row w-full">
-      
       <!-- Tabs switch from horizontal to vertical depending on screen -->
       <div
         role="tablist"
-        class="relative flex flex-row sm:flex-col border-b border-base-300 sm:border-b-0"
-      >
+        class="relative flex flex-row sm:flex-col border-b border-base-300 sm:border-b-0">
         <a
           href="#"
           class="tab-link text-base-content px-4 py-2"
           :class="getActiveClasses('export')"
           @click="setTab('export')"
-          data-test-settings-export
-        >
+          data-test-settings-export>
           Export
         </a>
         <a
@@ -24,8 +21,7 @@
           class="tab-link text-base-content px-4 py-2"
           :class="getActiveClasses('import')"
           @click="setTab('import')"
-          data-test-settings-import
-        >
+          data-test-settings-import>
           Import
         </a>
         <a
@@ -33,9 +29,16 @@
           class="tab-link text-base-content px-4 py-2"
           :class="getActiveClasses('advanced')"
           @click="setTab('advanced')"
-          data-test-settings-advanced
-        >
+          data-test-settings-advanced>
           Advanced
+        </a>
+        <a
+          href="#"
+          class="tab-link text-base-content px-4 py-2"
+          :class="getActiveClasses('labs')"
+          @click="setTab('labs')"
+          data-test-settings-labs>
+          Labs
         </a>
       </div>
 
@@ -44,11 +47,11 @@
         <SettingsExport v-if="tab === 'export'" />
         <SettingsImport v-if="tab === 'import'" />
         <SettingsDelete v-if="tab === 'advanced'" />
+        <SettingsLabs v-if="tab === 'labs'" />
       </div>
     </div>
   </div>
 </template>
-
 
 <script lang="ts">
 // @ts-nocheck
@@ -56,9 +59,10 @@ import { defineComponent } from "vue";
 import SettingsDelete from "./SettingsDelete.vue";
 import SettingsExport from "./SettingsExport.vue";
 import SettingsImport from "./SettingsImport.vue";
+import SettingsLabs from "./SettingsLabs.vue";
 export default defineComponent({
   name: "Settings",
-  components: { SettingsDelete, SettingsExport, SettingsImport },
+  components: { SettingsDelete, SettingsExport, SettingsImport, SettingsLabs },
   data() {
     return {
       tab: "export",
@@ -91,7 +95,7 @@ export default defineComponent({
       } else {
         return "";
       }
-    }
-  }
+    },
+  },
 });
 </script>

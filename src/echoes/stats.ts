@@ -12,20 +12,9 @@ export const rankColors: RankColors = {
   5: "#e1e115",
 };
 
-interface StatLevel {
-  [stat: string]: StatLevelData;
-}
+type StatLevel = Record<string, Record<string, number>>;
 
-interface StatLevelData {
-  "2": number;
-  "3": number;
-  "4": number;
-  "5": number;
-}
-
-interface StatsTable {
-  [level: number]: StatLevel;
-}
+type StatsTable = Record<number, StatLevel>;
 
 export const statsTable: StatsTable = {
   1: {
@@ -222,16 +211,9 @@ export function getRollValue(echoData: echoRollValueData): number {
   return totalRollValue;
 }
 
-interface FlatBonusesByRankByType {
-  [level: number]: FlatBonusesByRankByTypeData;
-}
+type FlatBonusesByRankByTypeData = Record<number, number>;
 
-interface FlatBonusesByRankByTypeData {
-  "2": number;
-  "3": number;
-  "4": number;
-  "5": number;
-}
+type FlatBonusesByRankByType = Record<number, FlatBonusesByRankByTypeData>;
 
 export const flatBonusesByRankByType: FlatBonusesByRankByType = {
   1: {
@@ -482,3 +464,88 @@ export const echoSetAttacks: EchoAttack[] = [
     element: "Havoc",
   },
 ];
+
+export type EchoObject = {
+  echoId: string; // random string
+  echo: string; // name of the echo. I use basically the name that's alpha-numeric e.g. AbyssalGladius
+  echoSet: string; // name of the echo set, similar: MidnightVeil
+  echoSubStatsType1: string; // substat (e.g. CritDMG, ATK, ATK_FLAT)
+  echoSubStatsType2: string; // substat (e.g. CritDMG, ATK, ATK_FLAT)
+  echoSubStatsType3: string; // substat (e.g. CritDMG, ATK, ATK_FLAT)
+  echoSubStatsType4: string; // substat (e.g. CritDMG, ATK, ATK_FLAT)
+  echoSubStatsType5: string; // substat (e.g. CritDMG, ATK, ATK_FLAT)
+  echoSubStatsValue1: number; // e.g. 7.5, not in decimals
+  echoSubStatsValue2: number; // e.g. 7.5, not in decimals
+  echoSubStatsValue3: number; // e.g. 7.5, not in decimals
+  echoSubStatsValue4: number; // e.g. 7.5, not in decimals
+  echoSubStatsValue5: number; // e.g. 7.5, not in decimals
+  rank: number; // rarity of the echo (1-5)
+  stat: string; // main stat of the echo (e.g. Fusion, CritDMG, HP)
+  type: number | string; // cost of the echo (1-4)
+};
+
+export function getEchoStats(echo: EchoObject): Record<string, number> {
+  const stats: Record<string, number> = {};
+
+  // add in the base stats (flat HP and flat ATK) that's guaranteed
+  if (echo.type && echo.rank) {
+    let stat = Number(echo.type) === 1 ? "HP_FLAT" : "ATK_FLAT";
+    let statValue = flatBonusesByRankByType[Number(echo.type)][echo.rank];
+    stats[stat] = (stats[stat] || 0) + statValue;
+  }
+
+  if (echo.type && echo.rank && echo.stat) {
+    const max = statsTable?.[Number(echo.type)]?.[echo.stat]?.[echo.rank];
+    if (max) {
+      stats[echo.stat] = (stats[echo.stat] || 0) + max;
+    }
+  }
+
+  if (echo.echoSubStatsType1 && echo.echoSubStatsValue1) {
+    stats[echo.echoSubStatsType1] =
+      (stats[echo.echoSubStatsType1] || 0) + echo.echoSubStatsValue1;
+  }
+
+  if (echo.echoSubStatsType2 && echo.echoSubStatsValue2) {
+    stats[echo.echoSubStatsType2] =
+      (stats[echo.echoSubStatsType2] || 0) + echo.echoSubStatsValue2;
+  }
+
+  if (echo.echoSubStatsType3 && echo.echoSubStatsValue3) {
+    stats[echo.echoSubStatsType3] =
+      (stats[echo.echoSubStatsType3] || 0) + echo.echoSubStatsValue3;
+  }
+
+  if (echo.echoSubStatsType4 && echo.echoSubStatsValue4) {
+    stats[echo.echoSubStatsType4] =
+      (stats[echo.echoSubStatsType4] || 0) + echo.echoSubStatsValue4;
+  }
+
+  if (echo.echoSubStatsType5 && echo.echoSubStatsValue5) {
+    stats[echo.echoSubStatsType5] =
+      (stats[echo.echoSubStatsType5] || 0) + echo.echoSubStatsValue5;
+  }
+
+  return stats;
+}
+
+export function getCombinedEchoStats(
+  echoes: EchoObject[],
+): Record<string, number> {
+  const combinedStats: Record<string, number> = {};
+
+  for (let i = 0; i < echoes.length; i++) {
+    const echo = echoes[i];
+    const echoStats = getEchoStats(echo);
+
+    // Use Object.keys for slightly better performance than Object.entries
+    const statTypes = Object.keys(echoStats);
+    for (let j = 0; j < statTypes.length; j++) {
+      const statType = statTypes[j];
+      const statValue = echoStats[statType];
+      combinedStats[statType] = (combinedStats[statType] || 0) + statValue;
+    }
+  }
+
+  return combinedStats;
+}

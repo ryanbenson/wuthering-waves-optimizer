@@ -6,13 +6,17 @@
     <CalculatorEchoesBrowser
       ref="echoesBrowser"
       :character="character"
-      @chosen-echo-inventory="handleChosenEchoInventory"></CalculatorEchoesBrowser>
+      @chosen-echo-inventory="
+        handleChosenEchoInventory
+      "></CalculatorEchoesBrowser>
     <CalculatorEchoesPresets
       ref="echoesPresets"
       :character="character"></CalculatorEchoesPresets>
     <CalculatorSaveEchoesPreset
       ref="echoesSavePreset"
-      @on-save-echo-preset="handleOnSaveEchoPreset"></CalculatorSaveEchoesPreset>
+      @on-save-echo-preset="
+        handleOnSaveEchoPreset
+      "></CalculatorSaveEchoesPreset>
     <CalculatorEchoesPresetsGuide
       ref="echoesPresetsGuide"></CalculatorEchoesPresetsGuide>
     <div v-if="isTotalCostOverCap" class="alert alert--error">
@@ -28,12 +32,14 @@
       <button class="btn btn-sm btn-primary" @click="handleOpenSaveEchoPreset">
         Save Preset
       </button>
-      <button class="btn btn-sm btn-primary btn-outline" @click="handleOpenPresetsGuide">
+      <button
+        class="btn btn-sm btn-primary btn-outline"
+        @click="handleOpenPresetsGuide">
         Presets Guide
       </button>
     </div>
     <div v-if="echoPresetName" class="badge badge-primary badge-outline mb-4">
-      Preset: {{  echoPresetName }}
+      Preset: {{ echoPresetName }}
     </div>
     <div class="echo__list">
       <CalculatorEcho
@@ -230,7 +236,7 @@ export default {
       if (newValue === false) {
         this.updateEchoSets();
       }
-    }
+    },
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
@@ -352,7 +358,7 @@ export default {
     async updateEchoSets() {
       // Filter out nulls and create a count map for each value
       const counts = this.echoSetsChosen
-        .filter(v => v !== null)
+        .filter((v) => v !== null)
         .reduce((acc, val) => {
           acc[val] = (acc[val] || 0) + 1;
           return acc;
@@ -360,54 +366,82 @@ export default {
 
       // Create lookup sets from your constants for which bonuses exist
       const has2SetBonus = new Set(
-        this.twoSetBonuses.map(bonus => {
-          const match = bonus.match(/^(.+) 2 Set$/);
-          return match ? Object.keys(echoSetLabelMap).find(key => 
-            getEchoSetLabelByType(key) === match[1]
-          ) : null;
-        }).filter(Boolean)
+        this.twoSetBonuses
+          .map((bonus) => {
+            const match = bonus.match(/^(.+) 2 Set$/);
+            return match
+              ? Object.keys(echoSetLabelMap).find(
+                  (key) => getEchoSetLabelByType(key) === match[1],
+                )
+              : null;
+          })
+          .filter(Boolean),
       );
 
       const has3SetBonus = new Set(
-        this.threeSetBonuses.map(bonus => {
-          const match = bonus.match(/^(.+) 3 Set$/);
-          return match ? Object.keys(echoSetLabelMap).find(key => 
-            getEchoSetLabelByType(key) === match[1]
-          ) : null;
-        }).filter(Boolean)
+        this.threeSetBonuses
+          .map((bonus) => {
+            const match = bonus.match(/^(.+) 3 Set$/);
+            return match
+              ? Object.keys(echoSetLabelMap).find(
+                  (key) => getEchoSetLabelByType(key) === match[1],
+                )
+              : null;
+          })
+          .filter(Boolean),
       );
 
       const has5SetBonus = new Set(
-        this.fiveSetBonuses.map(bonus => {
-          const match = bonus.match(/^(.+) 5 Set$/);
-          return match ? Object.keys(echoSetLabelMap).find(key => 
-            getEchoSetLabelByType(key) === match[1]
-          ) : null;
-        }).filter(Boolean)
+        this.fiveSetBonuses
+          .map((bonus) => {
+            const match = bonus.match(/^(.+) 5 Set$/);
+            return match
+              ? Object.keys(echoSetLabelMap).find(
+                  (key) => getEchoSetLabelByType(key) === match[1],
+                )
+              : null;
+          })
+          .filter(Boolean),
       );
 
       // Get all possible bonuses for each set
       const availableBonuses = [];
-      
+
       for (const [setType, count] of Object.entries(counts)) {
         const setLabel = getEchoSetLabelByType(setType);
-        
+
         // Add bonuses based on count and what bonuses exist for this set
         if (count >= 5 && has5SetBonus.has(setType)) {
-          availableBonuses.push({ bonus: `${setLabel} 5 Set`, priority: 3, setType });
+          availableBonuses.push({
+            bonus: `${setLabel} 5 Set`,
+            priority: 3,
+            setType,
+          });
         }
         if (count >= 3 && has3SetBonus.has(setType)) {
-          availableBonuses.push({ bonus: `${setLabel} 3 Set`, priority: 2, setType });
+          availableBonuses.push({
+            bonus: `${setLabel} 3 Set`,
+            priority: 2,
+            setType,
+          });
         }
         if (count >= 2 && has2SetBonus.has(setType)) {
-          availableBonuses.push({ bonus: `${setLabel} 2 Set`, priority: 1, setType });
+          availableBonuses.push({
+            bonus: `${setLabel} 2 Set`,
+            priority: 1,
+            setType,
+          });
         }
       }
 
       // Separate 2-set bonuses from higher-tier bonuses
-      const twoSetBonuses = availableBonuses.filter(b => b.bonus.includes('2 Set'));
-      const higherTierBonuses = availableBonuses.filter(b => b.bonus.includes('3 Set') || b.bonus.includes('5 Set'));
-      
+      const twoSetBonuses = availableBonuses.filter((b) =>
+        b.bonus.includes("2 Set"),
+      );
+      const higherTierBonuses = availableBonuses.filter(
+        (b) => b.bonus.includes("3 Set") || b.bonus.includes("5 Set"),
+      );
+
       // Sort each group by set type for consistency
       twoSetBonuses.sort((a, b) => a.setType.localeCompare(b.setType));
       higherTierBonuses.sort((a, b) => {
@@ -429,16 +463,21 @@ export default {
 
       // setBonusTwo: Can be 2-set, 3-set, or 5-set
       // Priority: higher-tier bonuses first, then remaining 2-set bonuses
-      const usedSetTypes = setBonusOneVal ? new Set([twoSetBonuses[0].setType]) : new Set();
-      
+      const usedSetTypes = setBonusOneVal
+        ? new Set([twoSetBonuses[0].setType])
+        : new Set();
+
       // First try higher-tier bonuses
       for (const { bonus, setType } of higherTierBonuses) {
-        if (!usedSetTypes.has(setType) || setBonusOneVal?.includes(getEchoSetLabelByType(setType))) {
+        if (
+          !usedSetTypes.has(setType) ||
+          setBonusOneVal?.includes(getEchoSetLabelByType(setType))
+        ) {
           setBonusTwoVal = bonus;
           break;
         }
       }
-      
+
       // If no higher-tier bonus found, try remaining 2-set bonuses
       if (!setBonusTwoVal) {
         for (const { bonus, setType } of twoSetBonuses.slice(1)) {
@@ -526,7 +565,7 @@ export default {
     },
     handleChosenEchoInventory() {
       this.handleEchoRemoved();
-    }
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
@@ -567,7 +606,7 @@ export default {
       },
       async set(value) {
         const data = {
-          echoPresetId: value
+          echoPresetId: value,
         };
         await this.setCharacterData(this.character, data);
       },
@@ -710,7 +749,7 @@ export default {
     },
     echoPresetName() {
       return this.echoPresetData?.name ?? null;
-    }
+    },
   },
 };
 </script>

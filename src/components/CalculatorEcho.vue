@@ -981,7 +981,10 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
+    ...mapActions(useCharacterStore, [
+      "setCharacterData",
+      "removeCharacterEcho",
+    ]),
     ...mapActions(useInventoryStore, [
       "saveEcho",
       "patchEcho",
@@ -1113,27 +1116,8 @@ export default {
         );
         this.$emit("on-echo-removed");
       }
-      const echoData = {
-        echo: null,
-        type: null,
-        rank: null,
-        stat: null,
-        echoId: null,
-        echoSet: null,
-        echoSubStatsType1: null,
-        echoSubStatsValue1: null,
-        echoSubStatsType2: null,
-        echoSubStatsValue2: null,
-        echoSubStatsType3: null,
-        echoSubStatsValue3: null,
-        echoSubStatsType4: null,
-        echoSubStatsValue4: null,
-        echoSubStatsType5: null,
-        echoSubStatsValue5: null,
-      };
-      const data = { echoes: {} };
-      data.echoes[this.index] = echoData;
-      await this.setCharacterData(this.character, data);
+      // clear the echo before changing the data to avoid data merge issues
+      await this.removeCharacterEcho(this.character, this.index);
     },
     toggleSubStat(e) {
       const mainStat = e.target.value;

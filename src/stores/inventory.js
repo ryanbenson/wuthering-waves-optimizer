@@ -144,7 +144,6 @@ export const useInventoryStore = defineStore("inventory", {
     },
     removeCharacterFromAllEquipped(character) {
       Object.keys(this.equipped).forEach((echoId) => {
-        console.log(this.equipped[echoId][character]);
         if (this.equipped[echoId][character] >= 0) {
           delete this.equipped[echoId][character];
         }

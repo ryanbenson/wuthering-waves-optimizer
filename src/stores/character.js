@@ -28,6 +28,14 @@ export const useCharacterStore = defineStore("character", {
         this.characters[characterId].rotations = rotationData;
       }
     },
+    setCharacterOptimizerMinStats(characterId, data) {
+      if (this.characters[characterId]) {
+        if (!this.characters[characterId].optimizer) {
+          this.characters[characterId].optimizer = {};
+        }
+        this.characters[characterId].optimizer.minStats = data;
+      }
+    },
     setCharacterEchoes(characterId, echoes) {
       if (this.characters[characterId]) {
         this.characters[characterId].echoes = echoes;

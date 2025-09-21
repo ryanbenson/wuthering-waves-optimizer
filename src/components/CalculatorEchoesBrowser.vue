@@ -281,7 +281,10 @@ export default {
   },
   methods: {
     ...mapActions(useInventoryStore, ["getEchoById", "setEquippedData"]),
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
+    ...mapActions(useCharacterStore, [
+      "setCharacterData",
+      "removeCharacterEcho",
+    ]),
     getReadableSubStatLabel,
     triggerOpenModal(echoIndex) {
       this.echoIndex = echoIndex;
@@ -327,6 +330,8 @@ export default {
         console.error("Could not find echo", echoId);
         return;
       }
+      // clear the original echo before changing the data to avoid data merge issues
+      await this.removeCharacterEcho(this.character, this.echoIndex);
       // when we assign the echo from inventory, clear out all data except echoId
       // the stats will come from the inventory to have one source of truth for its stats
       const echoData = {
@@ -347,8 +352,7 @@ export default {
         echoSubStatsType5: null,
         echoSubStatsValue5: null,
       };
-      const oldEchoId = this.currentCharacterEchoes?.[this.echoIndex]?.echoId ?? null;
-      // remove the old echo id and character in equipped
+      // assign the new echo to the right spot
       const data = { echoes: {} };
       data.echoes[this.echoIndex] = echoData;
       await this.setCharacterData(this.character, data);
@@ -359,7 +363,7 @@ export default {
       // wrap up the modal
       this.reset();
       this.triggerCloseModal();
-      this.$emit('chosen-echo-inventory');
+      this.$emit("chosen-echo-inventory");
     },
     resetFilters() {
       this.echoSet = null;
