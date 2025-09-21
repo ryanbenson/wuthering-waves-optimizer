@@ -1334,10 +1334,10 @@ export default defineComponent({
       if (excludeWeaponBuffs) {
         genericSkillDmgBonusWeaponBuff = 0;
       }
-      const genericSkillDmgBonusEchoBuff =
+      let genericSkillDmgBonusEchoBuff =
         providedFullStats?.dmgBonus || echoStats.value?.DMGBonus || 0;
       let genericSkillDmgBonusTeamEchoBuff = teamBuffsData.value?.DMGBonus ?? 0;
-      if (excludeTeamBuffs || providedFullStats) {
+      if (excludeTeamBuffs) {
         genericSkillDmgBonusTeamEchoBuff = 0;
       }
       const extraDefIgnoreResonanceChain =

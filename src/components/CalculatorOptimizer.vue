@@ -188,6 +188,7 @@
             <CalculatorOptimizerMainEcho
               v-for="echo in allMainEchoesData"
               :key="echo.key"
+              :character="character"
               :echo-key="echo.key"
               :name="echo.name"
               :echo-class="echo.class"
@@ -284,6 +285,7 @@ import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorOptimizerResults from "./CalculatorOptimizerResults.vue";
 import CalculatorOptimizerGuide from "./CalculatorOptimizerGuide.vue";
+import { character } from "../characters/Aalto/character";
 export default {
   name: "CalculatorOptimizer",
   props: {

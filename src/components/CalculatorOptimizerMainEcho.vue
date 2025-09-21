@@ -47,9 +47,14 @@
 <script>
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { character } from "../characters/Aalto/character";
 export default {
   name: "CalculatorOptimizerMainEcho",
   props: {
+    character: {
+      type: String,
+      required: true,
+    },
     echoKey: {
       type: String,
       required: true,
@@ -213,6 +218,17 @@ export default {
       }
       if (!this.hasStacks) {
         this.modifiers.forEach((modifierItem) => {
+          // if it has buffs for specific characters, validate that first
+          const specificCharacters = modifierItem?.specificCharacters ?? [];
+          if (specificCharacters.length > 0) {
+            // check if the current character key is in the list
+            const isValidCharacter = specificCharacters.includes(
+              this.character,
+            );
+            if (!isValidCharacter) {
+              return; // skip this modifier
+            }
+          }
           if (modifierItem?.modifySpecificTalents) {
             if (!data.modifySpecificTalents) {
               data.modifySpecificTalents = [];
@@ -236,7 +252,12 @@ export default {
             }
             data.talentModifierMultiply.push(modifierItem);
           } else {
-            data[modifierItem.modifier] = modifierItem.modifierValue * 100;
+            // if the same modifier appears multiple times, they should add up
+            if (data[modifierItem.modifier]) {
+              data[modifierItem.modifier] += modifierItem.modifierValue * 100;
+            } else {
+              data[modifierItem.modifier] = modifierItem.modifierValue * 100;
+            }
           }
         });
         return data;
