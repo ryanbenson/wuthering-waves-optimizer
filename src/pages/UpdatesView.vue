@@ -10,9 +10,16 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>September 19, 2025</h3>
+    <h3>September 2, 2025</h3>
     <ul>
-      <li>Updates Iuno S6. It is additive multiplier bonus.</li>
+      <li>
+        Fixes a bug in the optimizer where it would sometimes use multiple
+        copies of the same main echo.
+      </li>
+    </ul>
+    <h3>September 21, 2025</h3>
+    <ul>
+      <li>Releases Optimizer as a Lab beta feature.</li>
     </ul>
     <h3>September 18, 2025</h3>
     <ul>
