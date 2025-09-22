@@ -16,6 +16,7 @@
         Fixes a bug in the optimizer where it would sometimes use multiple
         copies of the same main echo.
       </li>
+      <li>Fixes The False Sovereign summon damage modifiers and type.</li>
     </ul>
     <h3>September 21, 2025</h3>
     <ul>

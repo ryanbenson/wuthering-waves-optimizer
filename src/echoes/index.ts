@@ -3108,10 +3108,10 @@ CD: <span class="param">25</span>s.</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/TheFalseSovereign.png",
-    details: `<span class="description">Transform into the False Sovereign and dash forward in a spinning strike, dealing <span class="param">41.25%/49.50%/57.75%/66.00%/74.25%</span> Electro DMG 4 times.<br><br>
-The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Electro DMG Bonus and <span class="param">12.00%</span> Heavy Attack DMG Bonus. Upon casting Intro Skill, summon Overflowing Tidal Blight to deal <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Havoc DMG.<br><br>
-Starts with <span class="param">2</span> charges. Gains 1 charge every <span class="param">15</span>s, up to <span class="param">2</span> charges.<br><br>
-CD: <span class="param">15</span>s</span>`,
+    details: `<span class="description">Transform into the False Sovereign and dash forward in a spinning strike, dealing <span class="param">36.90%/43.05%/49.20%/55.35%K</span> Electro DMG 4 times.
+The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Electro DMG Bonus and <span class="param">12.00%</span> Heavy Attack DMG Bonus. Upon casting Intro Skill, the False Sovereign is also summoned to deal <span class="param">270.00%/315.00%/360.00%/405.00%</span> Electro DMG.
+Start with 2 charges. Gain 1 charge every 8s, up to 2 charges.
+CD: 8s</span>`,
     modifiers: [
       {
         modifier: "Electro",
@@ -3126,21 +3126,22 @@ CD: <span class="param">15</span>s</span>`,
       {
         key: "TheFalseSovereignSpinning",
         label: "Spinning DMG",
-        description: `Transform into the False Sovereign and dash forward in a spinning strike, dealing <span class="param">41.25%/49.50%/57.75%/66.00%/74.25%</span> Electro DMG 4 times.`,
+        description: `Transform into the False Sovereign and dash forward in a spinning strike, dealing <span class="param">36.90%/43.05%/49.20%/55.35%</span> Electro DMG 4 times.`,
         talents: {
-          "1": "41.25%*4",
-          "2": "49.50%*4",
-          "3": "57.75%*4",
-          "4": "66.00%*4",
-          "5": "74.25%*4",
+          "1": "36.90%*4",
+          "2": "36.90%*4",
+          "3": "43.05%*4",
+          "4": "49.20%*4",
+          "5": "55.35%*4",
         },
         type: "Echo",
         element: "Electro",
       },
       {
-        key: "TheFalseSovereignSpinning",
-        label: "Overflowing Tidal Blight DMG",
-        description: `Upon casting Intro Skill, summon Overflowing Tidal Blight to deal <span class="param">225.00%/270.00%/315.00%/360.00%/405.00%</span> Havoc DMG.`,
+        key: "TheFalseSovereignSummon",
+        label: "Summon DMG",
+        description: `Upon casting Intro Skill, the False Sovereign is also summoned to deal <span class="param">270.00%/315.00%/360.00%/405.00%</span> Electro DMG.
+Start with 2 charges. Gain 1 charge every 8s, up to 2 charges.`,
         talents: {
           "1": "225.00%",
           "2": "270.00%",
@@ -3149,7 +3150,7 @@ CD: <span class="param">15</span>s</span>`,
           "5": "405.00%",
         },
         type: "Echo",
-        element: "Havoc",
+        element: "Electro",
       },
     ],
     sets: ["CrownofValor"],
