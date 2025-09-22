@@ -2422,6 +2422,9 @@ export default defineComponent({
           if (nextCost <= 12) {
             // Create a fresh usedEchoIds Set for each main echo group
             const groupUsedEchoIds = new Set([mainEcho.echoId]);
+            // add the main echo to the list of echoes already used so we dont try to use
+            // another copy of the same echo
+            const groupUsedEchoes = new Set([mainEcho.echo]);
             yield* generateLoadouts(
               echoes,
               mainEchoKeys,
@@ -2429,6 +2432,7 @@ export default defineComponent({
               [mainEcho],
               nextCost,
               groupUsedEchoIds,
+              groupUsedEchoes,
             );
           }
         }
