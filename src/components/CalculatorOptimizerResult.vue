@@ -17,6 +17,9 @@
           :attack-info="attackInfo"
           :attack-label="attackLabel" />
       </div>
+      <div v-if="targetType === 'Rotation'">
+        <pre>{{ context.attacks.damageAggregation }}</pre>
+      </div>
     </div>
     <div class="optimizer_result_stats">
       <h3 class="mb-2 mt-4 text-center">Basic Stats</h3>

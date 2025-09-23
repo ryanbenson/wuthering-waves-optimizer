@@ -490,6 +490,7 @@ export default {
       );
     },
     isTargetUnavailable() {
+      return false;
       return this.optimizationTarget.includes("Rotation");
     },
     echoSets() {

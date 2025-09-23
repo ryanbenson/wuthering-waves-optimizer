@@ -2550,20 +2550,111 @@ export default defineComponent({
         }
       }
 
+      let rotationData;
+      if (targetType === "Rotation") {
+        const rotationId = targetObject;
+        const rotation = characterStore.getRotationById(
+          character.value,
+          rotationId,
+        );
+        // TODO: this is also copy and pasted to build the rotation data
+        // Refactor this out
+        // console.log(rotationId, rotation, targetObject);
+        const rotationInfo = {
+          id: rotationId,
+          name: rotation.name,
+          description: rotation.description,
+          duration: rotation.duration ?? null,
+        };
+        const rotationActionInfo = [];
+        rotation.actions.forEach((action) => {
+          const actionKey = action.key;
+          const actionType = action.type;
+          const actionBuffs = action.buffs;
+          const actionCount = action.count;
+          const actionId = action.id;
+          const actionDisabled = action?.isDisabled ?? false;
+          // if the action is disabled, just skip it
+          if (actionDisabled) {
+            return;
+          }
+          const attacksList =
+            chosenChar.value?.[`${actionType}Attacks`]?.attacks ?? [];
+          let foundAction;
+          if (actionType === "echoSetAttacks") {
+            foundAction = echoSetAttacks.find((attack) => {
+              return attack.key === actionKey;
+            });
+          } else if (actionType === "utilityAttacks") {
+            foundAction = utilityAttacks.find((attack) => {
+              return attack.key === actionKey;
+            });
+          } else {
+            foundAction = attacksList.find((attack) => {
+              return attack.key === actionKey;
+            });
+          }
+          if (foundAction) {
+            const actionData = {
+              ...foundAction,
+              buffs: null,
+              actionType,
+              count: actionCount,
+              id: actionId,
+              excludeSelfBuffs: action.excludeSelfBuffs ?? false,
+              excludeTeamBuffs: action.excludeTeamBuffs ?? false,
+              excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
+            };
+            // if there are buffs, turn it into a hashmap
+            if (action?.buffs?.length) {
+              const buffsData = {};
+              // keys are unique, there should not be duplicates
+              action.buffs.forEach((buff) => {
+                // buffs are in human readable, convert to decimal except flat values
+                let buffValue;
+                if (
+                  ["ATK_FLAT", "HP_FLAT", "DEF_FLAT"].includes(buff.modifier)
+                ) {
+                  buffValue = Number(buff.modifierValue);
+                } else {
+                  buffValue = Number(buff.modifierValue) / 100;
+                }
+                buffsData[buff.modifier] = buffValue;
+              });
+              actionData.buffs = buffsData;
+            }
+            rotationActionInfo.push(actionData);
+          }
+        });
+        rotationInfo.attacks = rotationActionInfo;
+        rotationData = rotationInfo;
+      }
+
       // get the mapping of the damage target
       // we'll use this to get the damage out of the damage calculation (Normal/Avg/Crit)
       // default to average if we didn't match anything
-      const damageTargetMap = {
-        Normal: "totalDamage",
-        Average: "avgDamage",
-        Crit: "critDamage",
-      };
-      let damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
-      if (attackData.type === "Shield") {
-        damageTargetReference = "shieldAmount";
+      let damageTargetReference;
+      if (targetType === "Attack") {
+        const damageTargetMap = {
+          Normal: "totalDamage",
+          Average: "avgDamage",
+          Crit: "critDamage",
+        };
+        damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
+        if (targetType === "Attack" && attackData.type === "Shield") {
+          damageTargetReference = "shieldAmount";
+        }
+        if (targetType === "Attack" && attackData.type === "Healing") {
+          damageTargetReference = "healAmount";
+        }
       }
-      if (attackData.type === "Healing") {
-        damageTargetReference = "healAmount";
+      if (targetType === "Rotation") {
+        const damageTargetMap = {
+          Normal: "normalDamage",
+          Average: "avgDamage",
+          Crit: "critDamage",
+        };
+        damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
       }
 
       for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
@@ -2692,7 +2783,76 @@ export default defineComponent({
           // );
           // console.log("==============================");
         } else if (targetType === "Rotation") {
-          console.log("process rotation");
+          // TODO: This is a copy and paste of the original rotations processing
+          // We should abstract this out
+
+          const rotationInfo = {
+            id: rotationData.id,
+            name: rotationData.name,
+            description: rotationData.description,
+            duration: rotationData.duration ?? null,
+          };
+          const attacks = processAttacks(
+            rotationData.attacks, // process all attacks in this rotations
+            null, // talentType = null since it will be figured out dynamically
+            false, // hasNoTalentType = no, unless it's outro (TODO)
+            true, // dynamicTalentType = yes, this will figure out the talent data for us
+            false, // excludeDisabledAttacks = no, unless we need to (TODO)
+            finalStats, // give our stats, it will use this instead of the global state
+          );
+          // capture all damages
+          const damageAggregation = {
+            normalDamage: null,
+            avgDamage: null,
+            critDamage: null,
+            healing: null,
+            shield: null,
+          };
+          // go through all attacks and update our aggregation
+          attacks.forEach((attack) => {
+            if (attack?.originalIsEnabled === false) {
+              return;
+            }
+            if (attack?.damage?.totalDamage !== undefined) {
+              damageAggregation.normalDamage =
+                (damageAggregation.normalDamage || 0) +
+                attack?.damage?.totalDamage;
+            }
+
+            if (attack?.damage?.avgDamage !== undefined) {
+              damageAggregation.avgDamage =
+                (damageAggregation.avgDamage || 0) + attack?.damage?.avgDamage;
+            }
+
+            if (attack?.damage?.critDamage !== undefined) {
+              damageAggregation.critDamage =
+                (damageAggregation.critDamage || 0) +
+                attack?.damage?.critDamage;
+            }
+
+            if (
+              attack.type === "Healing" &&
+              attack?.damage?.healAmount !== undefined
+            ) {
+              damageAggregation.healing =
+                (damageAggregation.healing || 0) + attack?.damage?.healAmount;
+            }
+
+            if (
+              attack.type === "Shield" &&
+              attack?.damage?.shieldAmount !== undefined
+            ) {
+              damageAggregation.shield =
+                (damageAggregation.shield || 0) + attack?.damage?.shieldAmount;
+            }
+          });
+          rotationInfo.attacks = attacks;
+          rotationInfo.damageAggregation = damageAggregation;
+          //
+          targetValue =
+            rotationInfo.damageAggregation?.[damageTargetReference] ?? 0;
+          context.attacks = rotationInfo;
+          // console.log(rotationInfo);
         }
         processedCombos.value++;
 
@@ -2717,6 +2877,8 @@ export default defineComponent({
 
       return heap.sort((a, b) => b.targetValue - a.targetValue); // descending
     }
+
+    function getRotationData(character, rotationId) {}
 
     return {
       allDamages,
