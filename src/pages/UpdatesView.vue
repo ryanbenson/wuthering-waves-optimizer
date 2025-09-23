@@ -10,7 +10,12 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>September 2, 2025</h3>
+    <h3>September 23, 2025</h3>
+    <ul>
+      <li>Adds 2 rotation presets for Iuno.</li>
+      <li>Adds a new rotation preset for Rover (Havoc).</li>
+    </ul>
+    <h3>September 22, 2025</h3>
     <ul>
       <li>
         Fixes a bug in the optimizer where it would sometimes use multiple
