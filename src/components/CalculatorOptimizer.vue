@@ -301,7 +301,7 @@ export default {
     },
     optimizerResults: {
       type: Array,
-      default: () => [],
+      default: null,
     },
     characterElement: {
       type: String,
