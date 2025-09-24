@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 24, 2025</h3>
+    <ul>
+      <li>Adds some missing text for Moongazer's Sigil.</li>
+    </ul>
     <h3>September 23, 2025</h3>
     <ul>
       <li>Adds 2 rotation presets for Iuno.</li>
