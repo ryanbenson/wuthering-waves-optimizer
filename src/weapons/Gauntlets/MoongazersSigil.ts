@@ -7,7 +7,7 @@ const weaponInfo: WeaponInfo = {
   type: "Gauntlets",
   rarity: 5,
   passiveName: "Plenilune Radiance",
-  passiveValue: `<span class="skilldescription">Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>. Casting Intro Skill or Resonance Liberation increases Resonance Liberation DMG by <span class="param">20%/25%/30%/35%/40%</span> for <span class="param">15</span>s. Obtaining Shield allows Resonance Liberation DMG to ignore <span class="param">7.2%/8.4%/9.6%/10.8%/12%</span> of the target's DEF for <span class="param">7</span>s, stacking up to <span class="param">5</span> times. This effect is triggered once every 0.5s</span>`,
+  passiveValue: `<span class="skilldescription">Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>. Casting Intro Skill or Resonance Liberation increases Resonance Liberation DMG by <span class="param">20%/25%/30%/35%/40%</span> for <span class="param">15</span>s. Obtaining Shield allows Resonance Liberation DMG to ignore <span class="param">7.2%/8.4%/9.6%/10.8%/12%</span> of the target's DEF for <span class="param">7</span>s, stacking up to <span class="param">5</span> times. This effect is triggered once every 0.5s. Upon casting Intro Skill, this effect reaches max stacks immediately, lasting for 3s.</span>`,
   passiveData: [
     {
       key: "PleniluneRadianceATK",
@@ -54,7 +54,7 @@ const weaponInfo: WeaponInfo = {
       },
       minStacks: 0,
       maxStacks: 5,
-      details: `Obtaining Shield allows Resonance Liberation DMG to ignore <span class="param">7.2%/8.4%/9.6%/10.8%/12%</span> of the target's DEF for <span class="param">7</span>s, stacking up to <span class="param">5</span> times. This effect is triggered once every 0.5s</span>`,
+      details: `Obtaining Shield allows Resonance Liberation DMG to ignore <span class="param">7.2%/8.4%/9.6%/10.8%/12%</span> of the target's DEF for <span class="param">7</span>s, stacking up to <span class="param">5</span> times. This effect is triggered once every 0.5s. Upon casting Intro Skill, this effect reaches max stacks immediately, lasting for 3s.</span>`,
       alwaysEnabled: false,
     },
   ],
