@@ -18,6 +18,7 @@
           :attack-label="attackLabel" />
       </div>
       <div v-if="targetType === 'Rotation'">
+        <h3 class="my-2 text-center">{{ rotationName }}</h3>
         <pre>{{ context.attacks.damageAggregation }}</pre>
       </div>
     </div>
@@ -99,6 +100,9 @@ export default {
     },
     loadoutData() {
       return JSON.parse(JSON.stringify(this.loadout));
+    },
+    rotationName() {
+      return this.context?.attacks?.name ?? null;
     },
   },
   methods: {
