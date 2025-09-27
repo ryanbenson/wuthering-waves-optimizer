@@ -374,6 +374,11 @@ export default defineComponent({
         chosenChar?.value?.basic?.aeroErosion ?? false;
       // hold onto the character's main element
       characterElement.value = chosenChar.value?.basic?.element;
+      // reset any optimizer data
+
+      totalCombos.value = 0;
+      processedCombos.value = 0;
+      optimizerResults.value = [];
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
@@ -2258,109 +2263,6 @@ export default defineComponent({
       mainEchoRank.value = chosenEchoRank;
       calcAllDamages();
     };
-
-    /* TODO:
-     * Update calcCharStats - change return ALL to include all stats, including various bonuses including healing, etc
-     * Figure out the final stats of the echos, including echo set bonuses
-     * Ask the user to fill out any echo set bonus options (stacks, etc)
-     * Use injectStats when calcCharStats and likely need to divide by 100
-     * That should be final stats
-     *
-     * For DMG:
-     * - Ask the user to choose: stat (e.g. HP, CD), a single attack (choose one), or rotation (choose one), and for any attack: if they want to look at normal / average / crit
-     * - For stat, bypass the calculateDamage, and just look for the highest stat given
-     * - For single attack: use calculateAttackDamage (will likely need to pull that out so its usable, it's inside another function)
-     * - For rotation, look at: rotationsList.value.forEach((rotation) => { ... }
-     */
-
-    // const stats = calculateStats(loadout);
-    // const dmg = calculateDamage(stats);
-
-    // keeping because it works
-    // const handleOptimize = (setFilters = [], mainEchoes = []) => {
-    //   console.log("NOT USING THIS RIGHT NOW", mainEchoes)
-    //   const echoes = inventoryStore.echoes;
-    //   const allowedSets = new Set(setFilters);
-    //   const topN = 5;
-    //   totalCombos.value = 0;
-    //   processedCombos.value = 0;
-    //   optimizerResults.value = null;
-
-    //   // 1. Filter upfront
-    //   let filteredEchoes = echoes;
-    //   if (allowedSets.size) {
-    //     filteredEchoes = echoes.filter(e => allowedSets.has(e.echoSet));
-    //   }
-    //   totalCombos.value = estimateCombos(filteredEchoes);
-    //   const results = optimize(filteredEchoes, allowedSets, topN);
-    //   processedCombos.value = totalCombos.value;
-    //   optimizerResults.value = results;
-    //   console.log(results);
-    // };
-
-    // function estimateCombos(echoes: {cost: number}[]) {
-    //   // dp[size][cost] = # of combos of this size and total cost
-    //   const dp: number[][] = Array.from({length: 6}, () => Array(13).fill(0));
-    //   dp[0][0] = 1; // empty combo
-
-    //   for (const echo of echoes) {
-    //     for (let size = 4; size >= 0; size--) {
-    //       for (let cost = 12 - echo.type; cost >= 0; cost--) {
-    //         if (dp[size][cost] > 0) {
-    //           dp[size + 1][cost + echo.type] += dp[size][cost];
-    //         }
-    //       }
-    //     }
-    //   }
-
-    //   // Sum all non-empty valid combos (size 1-5, cost <= 12)
-    //   let total = 0;
-    //   for (let size = 1; size <= 5; size++) {
-    //     for (let cost = 0; cost <= 12; cost++) {
-    //       total += dp[size][cost];
-    //     }
-    //   }
-
-    //   return total;
-    // }
-
-    // function* generateLoadouts(echoes, start = 0, combo = [], cost = 0) {
-    //   // Valid combination? Yield it (ignore empty set)
-    //   if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
-    //     yield combo;
-    //   }
-
-    //   // Stop exploring if combo already too big
-    //   if (combo.length === 5 || cost >= 12) return;
-
-    //   for (let i = start; i < echoes.length; i++) {
-    //     const next = echoes[i];
-    //     const nextCost = cost + next.type; // echo.type === echo.cost
-    //     if (nextCost <= 12) {
-    //       yield* generateLoadouts(echoes, i + 1, [...combo, next], nextCost);
-    //     }
-    //   }
-    // }
-
-    // function optimize(echoes, allowedSets = [], topN = 5) {
-    //   // 2. Min-heap for topN results
-    //   const heap = [];
-
-    //   for (const loadout of generateLoadouts(echoes)) {
-    //     const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
-    //     processedCombos.value++;
-
-    //     if (heap.length < topN) {
-    //       heap.push({ loadout, dmg });
-    //       heap.sort((a, b) => a.dmg - b.dmg); // min at index 0
-    //     } else if (dmg > heap[0].dmg) {
-    //       heap[0] = { loadout, dmg };
-    //       heap.sort((a, b) => a.dmg - b.dmg);
-    //     }
-    //   }
-
-    //   return heap.sort((a, b) => b.dmg - a.dmg); // descending
-    // }
 
     const handleOptimize = (
       setFilters = [],

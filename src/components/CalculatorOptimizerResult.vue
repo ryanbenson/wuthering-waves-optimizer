@@ -19,7 +19,9 @@
       </div>
       <div v-if="targetType === 'Rotation'">
         <h3 class="my-2 text-center">{{ rotationName }}</h3>
-        <pre>{{ context.attacks.damageAggregation }}</pre>
+        <CalculatorOptimizerResultRotationDamage
+          :character="character"
+          :rotation="context.attacks" />
       </div>
     </div>
     <div class="optimizer_result_stats">
@@ -36,6 +38,7 @@ import { displayPercentage, displayInt, displayDamage } from "../utils/numbers";
 import CalculatorOptimizerResultStats from "./CalculatorOptimizerResultStats.vue";
 import CalculatorOptimizerResultDamage from "./CalculatorOptimizerResultDamage.vue";
 import CalculatorOptimizerResultLoadout from "./CalculatorOptimizerResultLoadout.vue";
+import CalculatorOptimizerResultRotationDamage from "./CalculatorOptimizerResultRotationDamage.vue";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
@@ -75,6 +78,7 @@ export default {
     CalculatorOptimizerResultStats,
     CalculatorOptimizerResultDamage,
     CalculatorOptimizerResultLoadout,
+    CalculatorOptimizerResultRotationDamage,
   },
   computed: {
     targetType() {
@@ -131,7 +135,6 @@ export default {
         // when we assign the echo from inventory, clear out all data except echoId
         const echo = this.loadout[i];
         const id = echo?.echoId;
-        // console.log(i, this.loadout[i], id);
         const echoData = {
           echo: null,
           type: null,
