@@ -25,7 +25,6 @@
               <strong>following features are still in development</strong>
               :
               <ul>
-                <li>Supporting rotations as a target</li>
                 <li>
                   Showing the percentage difference of a loadout compared to
                   your current build.
@@ -36,7 +35,8 @@
                 </li>
                 <li>
                   Performance enhancements, especially when looking through a
-                  very large amount of possible loadouts.
+                  very large amount of possible loadouts, and when using a
+                  rotation.
                 </li>
                 <li>More to come as well!</li>
               </ul>
@@ -64,6 +64,13 @@
               You'll need to enable those, otherwise you may see a difference in
               the loadout versus what the right panel says after you equip the
               loadout.
+            </li>
+
+            <li>
+              When you're processing many loadouts, and/or using rotations, you
+              may notice a performance hit as your screen may lag. This is
+              expected as it's using your browser and system resources pretty
+              heavily. This will be resolved in an upcoming update.
             </li>
           </ul>
         </div>
