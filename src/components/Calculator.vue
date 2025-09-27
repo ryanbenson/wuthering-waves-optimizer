@@ -374,6 +374,11 @@ export default defineComponent({
         chosenChar?.value?.basic?.aeroErosion ?? false;
       // hold onto the character's main element
       characterElement.value = chosenChar.value?.basic?.element;
+      // reset any optimizer data
+
+      totalCombos.value = 0;
+      processedCombos.value = 0;
+      optimizerResults.value = [];
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
@@ -2259,109 +2264,6 @@ export default defineComponent({
       calcAllDamages();
     };
 
-    /* TODO:
-     * Update calcCharStats - change return ALL to include all stats, including various bonuses including healing, etc
-     * Figure out the final stats of the echos, including echo set bonuses
-     * Ask the user to fill out any echo set bonus options (stacks, etc)
-     * Use injectStats when calcCharStats and likely need to divide by 100
-     * That should be final stats
-     *
-     * For DMG:
-     * - Ask the user to choose: stat (e.g. HP, CD), a single attack (choose one), or rotation (choose one), and for any attack: if they want to look at normal / average / crit
-     * - For stat, bypass the calculateDamage, and just look for the highest stat given
-     * - For single attack: use calculateAttackDamage (will likely need to pull that out so its usable, it's inside another function)
-     * - For rotation, look at: rotationsList.value.forEach((rotation) => { ... }
-     */
-
-    // const stats = calculateStats(loadout);
-    // const dmg = calculateDamage(stats);
-
-    // keeping because it works
-    // const handleOptimize = (setFilters = [], mainEchoes = []) => {
-    //   console.log("NOT USING THIS RIGHT NOW", mainEchoes)
-    //   const echoes = inventoryStore.echoes;
-    //   const allowedSets = new Set(setFilters);
-    //   const topN = 5;
-    //   totalCombos.value = 0;
-    //   processedCombos.value = 0;
-    //   optimizerResults.value = null;
-
-    //   // 1. Filter upfront
-    //   let filteredEchoes = echoes;
-    //   if (allowedSets.size) {
-    //     filteredEchoes = echoes.filter(e => allowedSets.has(e.echoSet));
-    //   }
-    //   totalCombos.value = estimateCombos(filteredEchoes);
-    //   const results = optimize(filteredEchoes, allowedSets, topN);
-    //   processedCombos.value = totalCombos.value;
-    //   optimizerResults.value = results;
-    //   console.log(results);
-    // };
-
-    // function estimateCombos(echoes: {cost: number}[]) {
-    //   // dp[size][cost] = # of combos of this size and total cost
-    //   const dp: number[][] = Array.from({length: 6}, () => Array(13).fill(0));
-    //   dp[0][0] = 1; // empty combo
-
-    //   for (const echo of echoes) {
-    //     for (let size = 4; size >= 0; size--) {
-    //       for (let cost = 12 - echo.type; cost >= 0; cost--) {
-    //         if (dp[size][cost] > 0) {
-    //           dp[size + 1][cost + echo.type] += dp[size][cost];
-    //         }
-    //       }
-    //     }
-    //   }
-
-    //   // Sum all non-empty valid combos (size 1-5, cost <= 12)
-    //   let total = 0;
-    //   for (let size = 1; size <= 5; size++) {
-    //     for (let cost = 0; cost <= 12; cost++) {
-    //       total += dp[size][cost];
-    //     }
-    //   }
-
-    //   return total;
-    // }
-
-    // function* generateLoadouts(echoes, start = 0, combo = [], cost = 0) {
-    //   // Valid combination? Yield it (ignore empty set)
-    //   if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
-    //     yield combo;
-    //   }
-
-    //   // Stop exploring if combo already too big
-    //   if (combo.length === 5 || cost >= 12) return;
-
-    //   for (let i = start; i < echoes.length; i++) {
-    //     const next = echoes[i];
-    //     const nextCost = cost + next.type; // echo.type === echo.cost
-    //     if (nextCost <= 12) {
-    //       yield* generateLoadouts(echoes, i + 1, [...combo, next], nextCost);
-    //     }
-    //   }
-    // }
-
-    // function optimize(echoes, allowedSets = [], topN = 5) {
-    //   // 2. Min-heap for topN results
-    //   const heap = [];
-
-    //   for (const loadout of generateLoadouts(echoes)) {
-    //     const dmg = Math.floor(Math.random() * (100000 - 100 + 1)) + 100;
-    //     processedCombos.value++;
-
-    //     if (heap.length < topN) {
-    //       heap.push({ loadout, dmg });
-    //       heap.sort((a, b) => a.dmg - b.dmg); // min at index 0
-    //     } else if (dmg > heap[0].dmg) {
-    //       heap[0] = { loadout, dmg };
-    //       heap.sort((a, b) => a.dmg - b.dmg);
-    //     }
-    //   }
-
-    //   return heap.sort((a, b) => b.dmg - a.dmg); // descending
-    // }
-
     const handleOptimize = (
       setFilters = [],
       mainEchoes = [],
@@ -2550,20 +2452,111 @@ export default defineComponent({
         }
       }
 
+      let rotationData;
+      if (targetType === "Rotation") {
+        const rotationId = targetObject;
+        const rotation = characterStore.getRotationById(
+          character.value,
+          rotationId,
+        );
+        // TODO: this is also copy and pasted to build the rotation data
+        // Refactor this out
+        // console.log(rotationId, rotation, targetObject);
+        const rotationInfo = {
+          id: rotationId,
+          name: rotation.name,
+          description: rotation.description,
+          duration: rotation.duration ?? null,
+        };
+        const rotationActionInfo = [];
+        rotation.actions.forEach((action) => {
+          const actionKey = action.key;
+          const actionType = action.type;
+          const actionBuffs = action.buffs;
+          const actionCount = action.count;
+          const actionId = action.id;
+          const actionDisabled = action?.isDisabled ?? false;
+          // if the action is disabled, just skip it
+          if (actionDisabled) {
+            return;
+          }
+          const attacksList =
+            chosenChar.value?.[`${actionType}Attacks`]?.attacks ?? [];
+          let foundAction;
+          if (actionType === "echoSetAttacks") {
+            foundAction = echoSetAttacks.find((attack) => {
+              return attack.key === actionKey;
+            });
+          } else if (actionType === "utilityAttacks") {
+            foundAction = utilityAttacks.find((attack) => {
+              return attack.key === actionKey;
+            });
+          } else {
+            foundAction = attacksList.find((attack) => {
+              return attack.key === actionKey;
+            });
+          }
+          if (foundAction) {
+            const actionData = {
+              ...foundAction,
+              buffs: null,
+              actionType,
+              count: actionCount,
+              id: actionId,
+              excludeSelfBuffs: action.excludeSelfBuffs ?? false,
+              excludeTeamBuffs: action.excludeTeamBuffs ?? false,
+              excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
+            };
+            // if there are buffs, turn it into a hashmap
+            if (action?.buffs?.length) {
+              const buffsData = {};
+              // keys are unique, there should not be duplicates
+              action.buffs.forEach((buff) => {
+                // buffs are in human readable, convert to decimal except flat values
+                let buffValue;
+                if (
+                  ["ATK_FLAT", "HP_FLAT", "DEF_FLAT"].includes(buff.modifier)
+                ) {
+                  buffValue = Number(buff.modifierValue);
+                } else {
+                  buffValue = Number(buff.modifierValue) / 100;
+                }
+                buffsData[buff.modifier] = buffValue;
+              });
+              actionData.buffs = buffsData;
+            }
+            rotationActionInfo.push(actionData);
+          }
+        });
+        rotationInfo.attacks = rotationActionInfo;
+        rotationData = rotationInfo;
+      }
+
       // get the mapping of the damage target
       // we'll use this to get the damage out of the damage calculation (Normal/Avg/Crit)
       // default to average if we didn't match anything
-      const damageTargetMap = {
-        Normal: "totalDamage",
-        Average: "avgDamage",
-        Crit: "critDamage",
-      };
-      let damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
-      if (attackData.type === "Shield") {
-        damageTargetReference = "shieldAmount";
+      let damageTargetReference;
+      if (targetType === "Attack") {
+        const damageTargetMap = {
+          Normal: "totalDamage",
+          Average: "avgDamage",
+          Crit: "critDamage",
+        };
+        damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
+        if (targetType === "Attack" && attackData.type === "Shield") {
+          damageTargetReference = "shieldAmount";
+        }
+        if (targetType === "Attack" && attackData.type === "Healing") {
+          damageTargetReference = "healAmount";
+        }
       }
-      if (attackData.type === "Healing") {
-        damageTargetReference = "healAmount";
+      if (targetType === "Rotation") {
+        const damageTargetMap = {
+          Normal: "normalDamage",
+          Average: "avgDamage",
+          Crit: "critDamage",
+        };
+        damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
       }
 
       for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
@@ -2692,7 +2685,76 @@ export default defineComponent({
           // );
           // console.log("==============================");
         } else if (targetType === "Rotation") {
-          console.log("process rotation");
+          // TODO: This is a copy and paste of the original rotations processing
+          // We should abstract this out
+
+          const rotationInfo = {
+            id: rotationData.id,
+            name: rotationData.name,
+            description: rotationData.description,
+            duration: rotationData.duration ?? null,
+          };
+          const attacks = processAttacks(
+            rotationData.attacks, // process all attacks in this rotations
+            null, // talentType = null since it will be figured out dynamically
+            false, // hasNoTalentType = no, unless it's outro (TODO)
+            true, // dynamicTalentType = yes, this will figure out the talent data for us
+            false, // excludeDisabledAttacks = no, unless we need to (TODO)
+            finalStats, // give our stats, it will use this instead of the global state
+          );
+          // capture all damages
+          const damageAggregation = {
+            normalDamage: null,
+            avgDamage: null,
+            critDamage: null,
+            healing: null,
+            shield: null,
+          };
+          // go through all attacks and update our aggregation
+          attacks.forEach((attack) => {
+            if (attack?.originalIsEnabled === false) {
+              return;
+            }
+            if (attack?.damage?.totalDamage !== undefined) {
+              damageAggregation.normalDamage =
+                (damageAggregation.normalDamage || 0) +
+                attack?.damage?.totalDamage;
+            }
+
+            if (attack?.damage?.avgDamage !== undefined) {
+              damageAggregation.avgDamage =
+                (damageAggregation.avgDamage || 0) + attack?.damage?.avgDamage;
+            }
+
+            if (attack?.damage?.critDamage !== undefined) {
+              damageAggregation.critDamage =
+                (damageAggregation.critDamage || 0) +
+                attack?.damage?.critDamage;
+            }
+
+            if (
+              attack.type === "Healing" &&
+              attack?.damage?.healAmount !== undefined
+            ) {
+              damageAggregation.healing =
+                (damageAggregation.healing || 0) + attack?.damage?.healAmount;
+            }
+
+            if (
+              attack.type === "Shield" &&
+              attack?.damage?.shieldAmount !== undefined
+            ) {
+              damageAggregation.shield =
+                (damageAggregation.shield || 0) + attack?.damage?.shieldAmount;
+            }
+          });
+          rotationInfo.attacks = attacks;
+          rotationInfo.damageAggregation = damageAggregation;
+          //
+          targetValue =
+            rotationInfo.damageAggregation?.[damageTargetReference] ?? 0;
+          context.attacks = rotationInfo;
+          // console.log(rotationInfo);
         }
         processedCombos.value++;
 
@@ -2717,6 +2779,8 @@ export default defineComponent({
 
       return heap.sort((a, b) => b.targetValue - a.targetValue); // descending
     }
+
+    function getRotationData(character, rotationId) {}
 
     return {
       allDamages,

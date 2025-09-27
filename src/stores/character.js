@@ -6,6 +6,14 @@ export const useCharacterStore = defineStore("character", {
     characters: {},
     activeCharacter: "",
   }),
+  getters: {
+    getRotationById: (state) => {
+      return (characterName, rotationId) => {
+        const rotations = state.characters?.[characterName]?.rotations ?? [];
+        return rotations.find((rotation) => rotation.id === rotationId);
+      };
+    },
+  },
   actions: {
     setActiveCharacter(characterId) {
       this.activeCharacter = characterId;

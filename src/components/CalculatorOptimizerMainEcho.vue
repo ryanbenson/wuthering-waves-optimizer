@@ -166,17 +166,17 @@ export default {
     isEnabled: {
       get() {
         return (
-          this.currentCharacter?.optimizer?.mainEchoes?.[this.echoKey]
+          this.currentCharacter?.optimizer?.mainEchoBuffs?.[this.echoKey]
             ?.isEnabled ?? false
         );
       },
       async set(value) {
         const data = {
           optimizer: {
-            mainEchoes: {},
+            mainEchoBuffs: {},
           },
         };
-        data.optimizer.mainEchoes[this.echoKey] = {
+        data.optimizer.mainEchoBuffs[this.echoKey] = {
           isEnabled: value,
         };
         await this.setCharacterData(this.character, data);
@@ -190,17 +190,17 @@ export default {
     stacks: {
       get() {
         return (
-          this.currentCharacter?.optimizer?.mainEchoes?.[this.echoKey]
+          this.currentCharacter?.optimizer?.mainEchoBuffs?.[this.echoKey]
             ?.stacks ?? 0
         );
       },
       async set(value) {
         const data = {
           optimizer: {
-            mainEchoes: {},
+            mainEchoBuffs: {},
           },
         };
-        data.optimizer.mainEchoes[this.echoKey] = {
+        data.optimizer.mainEchoBuffs[this.echoKey] = {
           stacks: value,
         };
         await this.setCharacterData(this.character, data);
