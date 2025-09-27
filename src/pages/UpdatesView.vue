@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>September 27, 2025</h3>
+    <ul>
+      <li>
+        Adds support for using rotations as a target in the optimizer lab beta
+        feature.
+      </li>
+    </ul>
     <h3>September 24, 2025</h3>
     <ul>
       <li>Adds some missing text for Moongazer's Sigil.</li>
