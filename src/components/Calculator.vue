@@ -97,6 +97,14 @@
           :processed-combos="processedCombos"
           :optimizer-results="optimizerResults"
           :character-element="characterElement"
+          :all-damages="allDamages"
+          :rotations-list="rotationsList"
+          :total-atk="totalAtk"
+          :total-hp="totalHp"
+          :total-def="totalDef"
+          :total-crit-rate="totalCritRate"
+          :total-crit-dmg="totalCritDMG"
+          :energy-regen="energyRegen"
           @optimizer:optimize="handleOptimize"></CalculatorOptimizer>
       </div>
       <div class="screen--rotations" v-show="curScreen === 'rotations'">
