@@ -609,7 +609,7 @@ export default {
       return echoData;
     },
     targetType() {
-      if (!this.optimizationTarget) {
+      if (!this.optimizationTarget || !this.optimizationTarget.length) {
         return null;
       }
       const target = this.optimizationTarget;
@@ -618,7 +618,7 @@ export default {
       return targetType;
     },
     targetValue() {
-      if (!this.optimizationTarget) {
+      if (!this.optimizationTarget || !this.optimizationTarget.length) {
         return null;
       }
       const target = this.optimizationTarget;

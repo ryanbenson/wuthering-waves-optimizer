@@ -25,6 +25,14 @@
               html: true,
             }">
             {{ displayDamage(attackInfo.damage.healAmount) }}
+            <span
+              :class="{
+                'text-success': healingDiffPercentage >= 0,
+                'text-error': healingDiffPercentage < 0,
+              }">
+              ({{ healingDiffPercentage >= 0 ? "+" : ""
+              }}{{ displayPercentage(healingDiffPercentage) }})
+            </span>
           </td>
         </template>
         <template v-else-if="attackInfo.type === 'Shield'">
@@ -35,6 +43,14 @@
               html: true,
             }">
             {{ displayDamage(attackInfo.damage.shieldAmount) }}
+            <span
+              :class="{
+                'text-success': shieldDiffPercentage >= 0,
+                'text-error': shieldDiffPercentage < 0,
+              }">
+              ({{ shieldDiffPercentage >= 0 ? "+" : ""
+              }}{{ displayPercentage(shieldDiffPercentage) }})
+            </span>
           </td>
         </template>
         <template v-else-if="attackInfo.type === 'ElementalEffect'">
@@ -45,6 +61,14 @@
               html: true,
             }">
             {{ displayDamage(attackInfo.damage) }}
+            <span
+              :class="{
+                'text-success': elementalEffectDiffPercentage >= 0,
+                'text-error': elementalEffectDiffPercentage < 0,
+              }">
+              ({{ elementalEffectDiffPercentage >= 0 ? "+" : ""
+              }}{{ displayPercentage(elementalEffectDiffPercentage) }})
+            </span>
           </td>
         </template>
         <template v-else>
@@ -153,6 +177,24 @@ export default {
       const newDamage = this.attackInfo.damage.critDamage;
       return ((newDamage - baseDamage) / baseDamage) * 100;
     },
+    healingDiffPercentage() {
+      if (!this.matchedDamageFromAllDamages) return 0;
+      const baseHeal = this.matchedDamageFromAllDamages.damage.healAmount;
+      const newHeal = this.attackInfo.damage.healAmount;
+      return ((newHeal - baseHeal) / baseHeal) * 100;
+    },
+    shieldDiffPercentage() {
+      if (!this.matchedDamageFromAllDamages) return 0;
+      const baseShield = this.matchedDamageFromAllDamages.damage.shieldAmount;
+      const newShield = this.attackInfo.damage.shieldAmount;
+      return ((newShield - baseShield) / baseShield) * 100;
+    },
+    elementalEffectDiffPercentage() {
+      if (!this.matchedDamageFromAllDamages) return 0;
+      const baseDamage = this.matchedDamageFromAllDamages.damage;
+      const newDamage = this.attackInfo.damage;
+      return ((newDamage - baseDamage) / baseDamage) * 100;
+    },
     matchedDamageFromAllDamages() {
       const loadoutAttackKey = this.attackInfo.key;
       const foundAttack = this.forteTypeAttacksListFromAllAttacks.find(
@@ -163,6 +205,7 @@ export default {
       return foundAttack;
     },
     forteTypeOfAttackChosen() {
+      if (!this.targetValue) return null;
       const [type, unusedSkillKey] = this.targetValue.split("|");
       return type;
     },
