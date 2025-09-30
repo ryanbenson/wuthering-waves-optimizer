@@ -56,6 +56,14 @@
             }">
             <template v-if="!alwaysCrit">
               {{ displayDamage(attackInfo.damage.totalDamage) }}
+              <span
+                :class="{
+                  'text-success': normalDiffPercentage >= 0,
+                  'text-error': normalDiffPercentage < 0,
+                }">
+                ({{ normalDiffPercentage >= 0 ? "+" : ""
+                }}{{ displayPercentage(normalDiffPercentage) }})
+              </span>
             </template>
           </td>
           <td
@@ -65,6 +73,14 @@
             }">
             <template v-if="!alwaysCrit">
               {{ displayDamage(attackInfo.damage.avgDamage) }}
+              <span
+                :class="{
+                  'text-success': avgDiffPercentage >= 0,
+                  'text-error': avgDiffPercentage < 0,
+                }">
+                ({{ avgDiffPercentage >= 0 ? "+" : ""
+                }}{{ displayPercentage(avgDiffPercentage) }})
+              </span>
             </template>
           </td>
           <td
@@ -73,6 +89,14 @@
               html: true,
             }">
             {{ displayDamage(attackInfo.damage.critDamage) }}
+            <span
+              :class="{
+                'text-success': critDiffPercentage >= 0,
+                'text-error': critDiffPercentage < 0,
+              }">
+              ({{ critDiffPercentage >= 0 ? "+" : ""
+              }}{{ displayPercentage(critDiffPercentage) }})
+            </span>
           </td>
         </template>
       </tr>
@@ -81,7 +105,7 @@
 </template>
 
 <script>
-import { displayDamage } from "../utils/numbers";
+import { displayDamage, displayPercentage } from "../utils/numbers";
 export default {
   name: "CalculatorOptimizerResultDamage",
   props: {
@@ -93,9 +117,58 @@ export default {
       type: String,
       default: null,
     },
+    targetType: {
+      type: String,
+      required: true,
+    },
+    targetValue: {
+      type: String,
+      required: true,
+    },
+    allDamages: {
+      type: Array,
+      default: () => [],
+    },
   },
   methods: {
     displayDamage,
+    displayPercentage,
+  },
+  computed: {
+    normalDiffPercentage() {
+      if (!this.matchedDamageFromAllDamages) return 0;
+      const baseDamage = this.matchedDamageFromAllDamages.damage.totalDamage;
+      const newDamage = this.attackInfo.damage.totalDamage;
+      return ((newDamage - baseDamage) / baseDamage) * 100;
+    },
+    avgDiffPercentage() {
+      if (!this.matchedDamageFromAllDamages) return 0;
+      const baseDamage = this.matchedDamageFromAllDamages.damage.avgDamage;
+      const newDamage = this.attackInfo.damage.avgDamage;
+      return ((newDamage - baseDamage) / baseDamage) * 100;
+    },
+    critDiffPercentage() {
+      if (!this.matchedDamageFromAllDamages) return 0;
+      const baseDamage = this.matchedDamageFromAllDamages.damage.critDamage;
+      const newDamage = this.attackInfo.damage.critDamage;
+      return ((newDamage - baseDamage) / baseDamage) * 100;
+    },
+    matchedDamageFromAllDamages() {
+      const loadoutAttackKey = this.attackInfo.key;
+      const foundAttack = this.forteTypeAttacksListFromAllAttacks.find(
+        (attack) => {
+          return attack.key === loadoutAttackKey;
+        },
+      );
+      return foundAttack;
+    },
+    forteTypeOfAttackChosen() {
+      const [type, unusedSkillKey] = this.targetValue.split("|");
+      return type;
+    },
+    forteTypeAttacksListFromAllAttacks() {
+      return this.allDamages?.value?.[this.forteTypeOfAttackChosen] || [];
+    },
   },
 };
 </script>

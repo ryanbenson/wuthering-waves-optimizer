@@ -16,7 +16,9 @@
         <CalculatorOptimizerResultDamage
           :attack-info="attackInfo"
           :attack-label="attackLabel"
-          :all-damages="allDamages" />
+          :all-damages="allDamages"
+          :target-type="targetType"
+          :target-value="targetValue" />
       </div>
       <div v-if="targetType === 'Rotation'">
         <h3 class="my-2 text-center">{{ rotationName }}</h3>
