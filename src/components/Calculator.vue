@@ -98,7 +98,6 @@
           :optimizer-results="optimizerResults"
           :character-element="characterElement"
           :all-damages="allDamages"
-          :rotations-list="rotationsList"
           :total-atk="totalAtk"
           :total-hp="totalHp"
           :total-def="totalDef"

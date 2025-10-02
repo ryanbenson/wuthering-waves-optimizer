@@ -4,7 +4,7 @@
       {{ isDamagesListShown ? "Hide Details" : "Show Details" }}
     </button>
   </div>
-  <table class="calculator__damages table table-zebra table-sm">
+  <table class="calculator-optimizer__damages table table-zebra table-xs">
     <thead>
       <tr>
         <th>&nbsp;</th>
@@ -15,16 +15,22 @@
     </thead>
     <tbody>
       <template v-if="isDamagesListShown">
-        <CalculatorDamage
+        <CalculatorOptimizerResultRotationDamageItem
           v-for="damageInstance in rotation.attacks"
           :key="damageInstance.id"
+          :attack-id="damageInstance.id"
           :character="character"
           :type="damageInstance.type"
           :label="damageInstance.label"
           :damage="damageInstance.damage"
           :is-enabled="damageInstance.isEnabled"
           :original-is-enabled="damageInstance.originalIsEnabled"
-          :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
+          :matched-rotation-from-current-damages="
+            matchedRotationFromCurrentDamages
+          "
+          :always-crit="
+            damageInstance.alwaysCrit
+          "></CalculatorOptimizerResultRotationDamageItem>
       </template>
     </tbody>
     <tfoot>
@@ -34,17 +40,53 @@
         <td>Total Damage</td>
         <td>
           {{ displayDamage(rotation.damageAggregation.normalDamage) }}
+          <span
+            :class="{
+              'text-success': normalDiffPercentage >= 0,
+              'text-error': normalDiffPercentage < 0,
+            }">
+            ({{ normalDiffPercentage >= 0 ? "+" : ""
+            }}{{ displayPercentage(normalDiffPercentage) }})
+          </span>
         </td>
-        <td>{{ displayDamage(rotation.damageAggregation.avgDamage) }}</td>
+        <td>
+          {{ displayDamage(rotation.damageAggregation.avgDamage) }}
+          <span
+            :class="{
+              'text-success': avgDiffPercentage >= 0,
+              'text-error': avgDiffPercentage < 0,
+            }">
+            ({{ avgDiffPercentage >= 0 ? "+" : ""
+            }}{{ displayPercentage(avgDiffPercentage) }})
+          </span>
+        </td>
         <td>
           {{ displayDamage(rotation.damageAggregation.critDamage) }}
+          <span
+            :class="{
+              'text-success': critDiffPercentage >= 0,
+              'text-error': critDiffPercentage < 0,
+            }">
+            ({{ critDiffPercentage >= 0 ? "+" : ""
+            }}{{ displayPercentage(critDiffPercentage) }})
+          </span>
         </td>
       </tr>
       <tr
         v-if="rotation.damageAggregation.healing"
         class="calculation__damage__item--healing">
         <td>Total Healing</td>
-        <td>{{ displayDamage(rotation.damageAggregation.healing) }}</td>
+        <td>
+          {{ displayDamage(rotation.damageAggregation.healing) }}
+          <span
+            :class="{
+              'text-success': healingDiffPercentage >= 0,
+              'text-error': healingDiffPercentage < 0,
+            }">
+            ({{ healingDiffPercentage >= 0 ? "+" : ""
+            }}{{ displayPercentage(healingDiffPercentage) }})
+          </span>
+        </td>
         <td></td>
         <td></td>
       </tr>
@@ -52,7 +94,17 @@
         v-if="rotation.damageAggregation.shield"
         class="calculation__damage__item--shield">
         <td>Total Shield</td>
-        <td>{{ displayDamage(rotation.damageAggregation.shield) }}</td>
+        <td>
+          {{ displayDamage(rotation.damageAggregation.shield) }}
+          <span
+            :class="{
+              'text-success': shieldDiffPercentage >= 0,
+              'text-error': shieldDiffPercentage < 0,
+            }">
+            ({{ shieldDiffPercentage >= 0 ? "+" : ""
+            }}{{ displayPercentage(shieldDiffPercentage) }})
+          </span>
+        </td>
         <td></td>
         <td></td>
       </tr>
@@ -61,8 +113,8 @@
 </template>
 
 <script>
-import { displayDamage } from "../utils/numbers";
-import CalculatorDamage from "./CalculatorDamage.vue";
+import { displayDamage, displayPercentage } from "../utils/numbers";
+import CalculatorOptimizerResultRotationDamageItem from "./CalculatorOptimizerResultRotationDamageItem.vue";
 export default {
   name: "CalculatorOptimizerResultRotationDamage",
   props: {
@@ -74,9 +126,17 @@ export default {
       type: Array,
       required: true,
     },
+    allDamages: {
+      type: Array,
+      default: () => [],
+    },
+    rotationId: {
+      type: String,
+      required: true,
+    },
   },
   components: {
-    CalculatorDamage,
+    CalculatorOptimizerResultRotationDamageItem,
   },
   data() {
     return {
@@ -85,8 +145,52 @@ export default {
   },
   methods: {
     displayDamage,
+    displayPercentage,
     toggleIsDamagesListShown() {
       this.isDamagesListShown = !this.isDamagesListShown;
+    },
+  },
+  computed: {
+    rotationsList() {
+      return this.allDamages?.value?.rotations ?? [];
+    },
+    matchedRotationFromCurrentDamages() {
+      return this.rotationsList.find(
+        (rotation) => rotation.id === this.rotationId,
+      );
+    },
+    normalDiffPercentage() {
+      const newDamage = this.rotation.damageAggregation.normalDamage ?? 0;
+      const baseDamage =
+        this.matchedRotationFromCurrentDamages?.damageAggregation
+          .normalDamage ?? 0;
+      return ((newDamage - baseDamage) / baseDamage) * 100;
+    },
+    avgDiffPercentage() {
+      const newDamage = this.rotation.damageAggregation.avgDamage ?? 0;
+      const baseDamage =
+        this.matchedRotationFromCurrentDamages?.damageAggregation.avgDamage ??
+        0;
+      return ((newDamage - baseDamage) / baseDamage) * 100;
+    },
+    critDiffPercentage() {
+      const newDamage = this.rotation.damageAggregation.critDamage ?? 0;
+      const baseDamage =
+        this.matchedRotationFromCurrentDamages?.damageAggregation.critDamage ??
+        0;
+      return ((newDamage - baseDamage) / baseDamage) * 100;
+    },
+    shieldDiffPercentage() {
+      const newDamage = this.rotation.damageAggregation.shield ?? 0;
+      const baseDamage =
+        this.matchedRotationFromCurrentDamages?.damageAggregation.shield ?? 0;
+      return ((newDamage - baseDamage) / baseDamage) * 100;
+    },
+    healingDiffPercentage() {
+      const newDamage = this.rotation.damageAggregation.healing ?? 0;
+      const baseDamage =
+        this.matchedRotationFromCurrentDamages?.damageAggregation.healing ?? 0;
+      return ((newDamage - baseDamage) / baseDamage) * 100;
     },
   },
 };

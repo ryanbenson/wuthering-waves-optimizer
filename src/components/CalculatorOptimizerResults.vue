@@ -9,7 +9,6 @@
     :context="result.context"
     :character-element="characterElement"
     :all-damages="allDamages"
-    :rotations-list="rotationsList"
     :total-atk="totalAtk"
     :total-hp="totalHp"
     :total-def="totalDef"
@@ -47,10 +46,6 @@ export default {
     },
     // props for comparison
     allDamages: {
-      type: Array,
-      default: () => [],
-    },
-    rotationsList: {
       type: Array,
       default: () => [],
     },

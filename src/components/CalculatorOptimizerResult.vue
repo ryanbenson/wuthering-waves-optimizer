@@ -25,7 +25,8 @@
         <CalculatorOptimizerResultRotationDamage
           :character="character"
           :rotation="context.attacks"
-          :rotations-list="rotationsList" />
+          :all-damages="allDamages"
+          :rotation-id="rotationId" />
       </div>
     </div>
     <div class="optimizer_result_stats">
@@ -94,10 +95,6 @@ export default {
       type: Array,
       default: () => [],
     },
-    rotationsList: {
-      type: Array,
-      default: () => [],
-    },
     totalAtk: {
       type: Number,
       required: true,
@@ -156,6 +153,9 @@ export default {
     },
     rotationName() {
       return this.context?.attacks?.name ?? null;
+    },
+    rotationId() {
+      return this.context?.attacks?.id ?? null;
     },
   },
   methods: {
