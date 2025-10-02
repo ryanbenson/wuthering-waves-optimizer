@@ -259,7 +259,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "SequenceNode4RainySeasonDwellinMyEyes",
-      label: "Waxing Ascent",
+      label: "Absolute Fullness Shield",
       talents: {
         "1": "160%",
         "2": "160%",
