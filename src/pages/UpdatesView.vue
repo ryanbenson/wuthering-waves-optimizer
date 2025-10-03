@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 3, 2025</h3>
+    <ul>
+      <li>
+        Adds showing the difference between each loadout against your current
+        build in the optimizer.
+      </li>
+    </ul>
     <h3>September 27, 2025</h3>
     <ul>
       <li>
