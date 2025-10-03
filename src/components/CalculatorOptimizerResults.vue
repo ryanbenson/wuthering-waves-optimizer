@@ -6,9 +6,17 @@
     :index="i"
     :character="character"
     :loadout="result.loadout"
-    :target-value="result.targetValue"
     :context="result.context"
-    :character-element="characterElement" />
+    :character-element="characterElement"
+    :all-damages="allDamages"
+    :total-atk="totalAtk"
+    :total-hp="totalHp"
+    :total-def="totalDef"
+    :total-crit-rate="totalCritRate"
+    :total-crit-dmg="totalCritDMG"
+    :energy-regen="energyRegen"
+    :target-type="targetType"
+    :target-value="targetValue" />
 </template>
 
 <script>
@@ -26,6 +34,43 @@ export default {
     },
     characterElement: {
       type: String,
+      required: true,
+    },
+    targetType: {
+      type: String,
+      required: true,
+    },
+    targetValue: {
+      type: String,
+      required: true,
+    },
+    // props for comparison
+    allDamages: {
+      type: Array,
+      default: () => [],
+    },
+    totalAtk: {
+      type: Number,
+      required: true,
+    },
+    totalHp: {
+      type: Number,
+      required: true,
+    },
+    totalDef: {
+      type: Number,
+      required: true,
+    },
+    totalCritRate: {
+      type: Number,
+      required: true,
+    },
+    totalCritDMG: {
+      type: Number,
+      required: true,
+    },
+    energyRegen: {
+      type: Number,
       required: true,
     },
   },

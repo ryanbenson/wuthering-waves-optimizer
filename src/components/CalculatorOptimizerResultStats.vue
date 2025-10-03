@@ -5,8 +5,7 @@
         <tr
           class="stat-atk"
           :class="{
-            'bg-primary text-white':
-              targetType === 'Stat' && targetObject === 'totalAtk',
+            'border border-primary': targetValue === 'totalAtk',
           }">
           <td class="w-10">
             <img
@@ -20,13 +19,22 @@
               html: true,
             }">
             {{ displayInt(finalStats.totalAtk) }}
+            <template v-if="targetValue === 'totalAtk'">
+              <span
+                :class="{
+                  'text-success': atkDiffPercent >= 0,
+                  'text-error': atkDiffPercent < 0,
+                }">
+                ({{ atkDiffPercent >= 0 ? "+" : ""
+                }}{{ displayPercentage(atkDiffPercent) }})
+              </span>
+            </template>
           </td>
         </tr>
         <tr
           class="stat-hp"
           :class="{
-            'bg-primary text-white':
-              targetType === 'Stat' && targetObject === 'totalHp',
+            'border border-primary': targetValue === 'totalHp',
           }">
           <td>
             <img
@@ -40,13 +48,22 @@
               html: true,
             }">
             {{ displayInt(finalStats.totalHp) }}
+            <template v-if="targetValue === 'totalHp'">
+              <span
+                :class="{
+                  'text-success': atkDiffPercent >= 0,
+                  'text-error': atkDiffPercent < 0,
+                }">
+                ({{ atkDiffPercent >= 0 ? "+" : ""
+                }}{{ displayPercentage(atkDiffPercent) }})
+              </span>
+            </template>
           </td>
         </tr>
         <tr
           class="stat-def"
           :class="{
-            'bg-primary text-white':
-              targetType === 'Stat' && targetObject === 'totalDef',
+            'border border-primary': targetValue === 'totalDef',
           }">
           <td>
             <img
@@ -60,13 +77,22 @@
               html: true,
             }">
             {{ displayInt(finalStats.totalDef) }}
+            <template v-if="targetValue === 'totalDef'">
+              <span
+                :class="{
+                  'text-success': atkDiffPercent >= 0,
+                  'text-error': atkDiffPercent < 0,
+                }">
+                ({{ atkDiffPercent >= 0 ? "+" : ""
+                }}{{ displayPercentage(atkDiffPercent) }})
+              </span>
+            </template>
           </td>
         </tr>
         <tr
           class="stat-cr"
           :class="{
-            'bg-primary text-white':
-              targetType === 'Stat' && targetObject === 'totalCritRate',
+            'border border-primary': targetValue === 'totalCritRate',
           }">
           <td>
             <img
@@ -75,13 +101,22 @@
           <td>Crit Rate</td>
           <td class="text-right">
             {{ displayPercentage(finalStats.totalCritRate * 100) }}
+            <template v-if="targetValue === 'totalCritRate'">
+              <span
+                :class="{
+                  'text-success': atkDiffPercent >= 0,
+                  'text-error': atkDiffPercent < 0,
+                }">
+                ({{ atkDiffPercent >= 0 ? "+" : ""
+                }}{{ displayPercentage(atkDiffPercent) }})
+              </span>
+            </template>
           </td>
         </tr>
         <tr
           class="stat-cd"
           :class="{
-            'bg-primary text-white':
-              targetType === 'Stat' && targetObject === 'totalCritDMG',
+            'border border-primary': targetValue === 'totalCritDMG',
           }">
           <td>
             <img
@@ -90,13 +125,22 @@
           <td>Crit DMG</td>
           <td class="text-right">
             {{ displayPercentage(finalStats.totalCritDMG * 100) }}
+            <template v-if="targetValue === 'totalCritDMG'">
+              <span
+                :class="{
+                  'text-success': atkDiffPercent >= 0,
+                  'text-error': atkDiffPercent < 0,
+                }">
+                ({{ atkDiffPercent >= 0 ? "+" : ""
+                }}{{ displayPercentage(atkDiffPercent) }})
+              </span>
+            </template>
           </td>
         </tr>
         <tr
           class="stat-er"
           :class="{
-            'bg-primary text-white':
-              targetType === 'Stat' && targetObject === 'energyRegen',
+            'border border-primary': targetValue === 'energyRegen',
           }">
           <td>
             <img
@@ -105,6 +149,16 @@
           <td>Energy Regen</td>
           <td class="text-right">
             {{ displayPercentage(finalStats.energyRegen * 100) }}
+            <template v-if="targetValue === 'energyRegen'">
+              <span
+                :class="{
+                  'text-success': atkDiffPercent >= 0,
+                  'text-error': atkDiffPercent < 0,
+                }">
+                ({{ atkDiffPercent >= 0 ? "+" : ""
+                }}{{ displayPercentage(atkDiffPercent) }})
+              </span>
+            </template>
           </td>
         </tr>
       </tbody>
@@ -238,6 +292,38 @@ export default {
       type: String,
       required: true,
     },
+    targetType: {
+      type: String,
+      required: true,
+    },
+    targetValue: {
+      type: String,
+      required: true,
+    },
+    totalAtk: {
+      type: Number,
+      required: true,
+    },
+    totalHp: {
+      type: Number,
+      required: true,
+    },
+    totalDef: {
+      type: Number,
+      required: true,
+    },
+    totalCritRate: {
+      type: Number,
+      required: true,
+    },
+    totalCritDMG: {
+      type: Number,
+      required: true,
+    },
+    energyRegen: {
+      type: Number,
+      required: true,
+    },
   },
   methods: {
     displayInt,
@@ -252,6 +338,30 @@ export default {
     },
     defTooltipContent() {
       return null;
+    },
+    hpDiffPercent() {
+      const diffNumber = this.finalStats.totalHp - this.totalHp;
+      return (diffNumber / this.totalHp) * 100;
+    },
+    defDiffPercent() {
+      const diffNumber = this.finalStats.totalDef - this.totalDef;
+      return (diffNumber / this.totalDef) * 100;
+    },
+    atkDiffPercent() {
+      const diffNumber = this.finalStats.totalAtk - this.totalAtk;
+      return (diffNumber / this.totalAtk) * 100;
+    },
+    critRateDiffPercent() {
+      const diffNumber = this.finalStats.totalCritRate - this.totalCritRate;
+      return (diffNumber / this.totalCritRate) * 100;
+    },
+    critDmgDiffPercent() {
+      const diffNumber = this.finalStats.totalCritDMG - this.totalCritDMG;
+      return (diffNumber / this.totalCritDMG) * 100;
+    },
+    energyRegenDiffPercent() {
+      const diffNumber = this.finalStats.energyRegen - this.energyRegen;
+      return (diffNumber / this.energyRegen) * 100;
     },
     // TODO: Implement, but need to collect base and weapon info
     // hpTooltipContent() {

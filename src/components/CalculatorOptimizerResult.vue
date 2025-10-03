@@ -15,20 +15,33 @@
         <h3 class="my-2 text-center">Attack Result</h3>
         <CalculatorOptimizerResultDamage
           :attack-info="attackInfo"
-          :attack-label="attackLabel" />
+          :attack-label="attackLabel"
+          :all-damages="allDamages"
+          :target-type="targetType"
+          :target-value="targetValue" />
       </div>
       <div v-if="targetType === 'Rotation'">
         <h3 class="my-2 text-center">{{ rotationName }}</h3>
         <CalculatorOptimizerResultRotationDamage
           :character="character"
-          :rotation="context.attacks" />
+          :rotation="context.attacks"
+          :all-damages="allDamages"
+          :rotation-id="rotationId" />
       </div>
     </div>
     <div class="optimizer_result_stats">
       <h3 class="mb-2 mt-4 text-center">Basic Stats</h3>
       <CalculatorOptimizerResultStats
         :character-element="characterElement"
-        :final-stats="context.finalStats" />
+        :final-stats="context.finalStats"
+        :total-atk="totalAtk"
+        :total-hp="totalHp"
+        :total-def="totalDef"
+        :total-crit-rate="totalCritRate"
+        :total-crit-dmg="totalCritDMG"
+        :energy-regen="energyRegen"
+        :target-type="targetType"
+        :target-value="targetValue" />
     </div>
   </div>
 </template>
@@ -43,7 +56,7 @@ import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 export default {
-  name: "CalculatorOptimizerResults",
+  name: "CalculatorOptimizerResult",
   props: {
     character: {
       type: String,
@@ -57,8 +70,12 @@ export default {
       type: Number,
       required: true,
     },
+    targetType: {
+      type: String,
+      required: true,
+    },
     targetValue: {
-      type: Number,
+      type: String,
       required: true,
     },
     loadout: {
@@ -71,6 +88,35 @@ export default {
     },
     characterElement: {
       type: String,
+      required: true,
+    },
+    // props for comparison
+    allDamages: {
+      type: Array,
+      default: () => [],
+    },
+    totalAtk: {
+      type: Number,
+      required: true,
+    },
+    totalHp: {
+      type: Number,
+      required: true,
+    },
+    totalDef: {
+      type: Number,
+      required: true,
+    },
+    totalCritRate: {
+      type: Number,
+      required: true,
+    },
+    totalCritDMG: {
+      type: Number,
+      required: true,
+    },
+    energyRegen: {
+      type: Number,
       required: true,
     },
   },
@@ -107,6 +153,9 @@ export default {
     },
     rotationName() {
       return this.context?.attacks?.name ?? null;
+    },
+    rotationId() {
+      return this.context?.attacks?.id ?? null;
     },
   },
   methods: {

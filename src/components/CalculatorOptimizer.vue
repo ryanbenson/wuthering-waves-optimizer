@@ -265,7 +265,16 @@
       v-if="optimizerResults"
       :character="character"
       :character-element="characterElement"
-      :results="optimizerResults" />
+      :results="optimizerResults"
+      :all-damages="allDamages"
+      :total-atk="totalAtk"
+      :total-hp="totalHp"
+      :total-def="totalDef"
+      :total-crit-rate="totalCritRate"
+      :total-crit-dmg="totalCritDMG"
+      :energy-regen="energyRegen"
+      :target-type="optimizationTargetType"
+      :target-value="optimizationTargetObject" />
   </div>
 </template>
 
@@ -304,6 +313,45 @@ export default {
       default: null,
     },
     characterElement: {
+      type: String,
+      required: true,
+    },
+    // props for comparison
+    allDamages: {
+      type: Array,
+      default: () => [],
+    },
+    totalAtk: {
+      type: Number,
+      required: true,
+    },
+    totalHp: {
+      type: Number,
+      required: true,
+    },
+    totalDef: {
+      type: Number,
+      required: true,
+    },
+    totalCritRate: {
+      type: Number,
+      required: true,
+    },
+    totalCritDMG: {
+      type: Number,
+      required: true,
+    },
+    energyRegen: {
+      type: Number,
+      required: true,
+    },
+    // this is passed back because if the user changes it in the UI
+    // we don't want to lose the value of what they originally optimized for
+    optimizationTargetType: {
+      type: String,
+      required: true,
+    },
+    optimizationTargetObject: {
       type: String,
       required: true,
     },
