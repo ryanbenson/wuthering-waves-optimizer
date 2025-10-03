@@ -104,6 +104,8 @@
           :total-crit-rate="totalCritRate"
           :total-crit-dmg="totalCritDMG"
           :energy-regen="energyRegen"
+          :optimization-target-type="optimizationTargetType"
+          :optimization-target-object="optimizationTargetObject"
           @optimizer:optimize="handleOptimize"></CalculatorOptimizer>
       </div>
       <div class="screen--rotations" v-show="curScreen === 'rotations'">
@@ -355,6 +357,8 @@ export default defineComponent({
     const totalCombos = ref(0);
     const processedCombos = ref(0);
     const optimizerResults = ref([]);
+    const optimizationTargetType = ref("");
+    const optimizationTargetObject = ref("");
 
     charactersList.value = getCharactersAvailable();
 
@@ -2407,6 +2411,8 @@ export default defineComponent({
       // get info on our target
       const targetElements = target.split(":");
       const [targetType, targetObject] = targetElements;
+      optimizationTargetType.value = targetType;
+      optimizationTargetObject.value = targetObject;
       // if it's an attack, get the attack info, the targetObject is Type|skillkey
       let attackData;
       if (targetType === "Attack") {
@@ -2862,6 +2868,8 @@ export default defineComponent({
       totalCombos,
       processedCombos,
       optimizerResults,
+      optimizationTargetType,
+      optimizationTargetObject,
     };
   },
 });

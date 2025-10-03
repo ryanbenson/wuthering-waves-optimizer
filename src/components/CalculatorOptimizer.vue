@@ -273,8 +273,8 @@
       :total-crit-rate="totalCritRate"
       :total-crit-dmg="totalCritDMG"
       :energy-regen="energyRegen"
-      :target-type="targetType"
-      :target-value="targetValue" />
+      :target-type="optimizationTargetType"
+      :target-value="optimizationTargetObject" />
   </div>
 </template>
 
@@ -343,6 +343,16 @@ export default {
     },
     energyRegen: {
       type: Number,
+      required: true,
+    },
+    // this is passed back because if the user changes it in the UI
+    // we don't want to lose the value of what they originally optimized for
+    optimizationTargetType: {
+      type: String,
+      required: true,
+    },
+    optimizationTargetObject: {
+      type: String,
       required: true,
     },
   },
@@ -602,24 +612,6 @@ export default {
         }
       });
       return echoData;
-    },
-    targetType() {
-      if (!this.optimizationTarget || !this.optimizationTarget.length) {
-        return null;
-      }
-      const target = this.optimizationTarget;
-      const targetElements = target.split(":");
-      const [targetType, _] = targetElements;
-      return targetType;
-    },
-    targetValue() {
-      if (!this.optimizationTarget || !this.optimizationTarget.length) {
-        return null;
-      }
-      const target = this.optimizationTarget;
-      const targetElements = target.split(":");
-      const [_, targetValue] = targetElements;
-      return targetValue;
     },
   },
   mounted() {

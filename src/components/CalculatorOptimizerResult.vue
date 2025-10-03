@@ -56,7 +56,7 @@ import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 export default {
-  name: "CalculatorOptimizerResults",
+  name: "CalculatorOptimizerResult",
   props: {
     character: {
       type: String,
