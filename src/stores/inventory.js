@@ -9,6 +9,20 @@ export const useInventoryStore = defineStore("inventory", {
     equippedPresets: {},
   }),
   getters: {
+    // look through all echoes in state.echoes and look at all echo.echoId, find any duplicates
+    duplicateEchoIds: (state) => {
+      const echoIdCount = {};
+      state.echoes.forEach((echo) => {
+        if (echoIdCount[echo.echoId]) {
+          echoIdCount[echo.echoId] += 1;
+        } else {
+          echoIdCount[echo.echoId] = 1;
+        }
+      });
+      return Object.entries(echoIdCount)
+        .filter(([echoId, count]) => count > 1)
+        .map(([echoId, count]) => echoId);
+    },
     getEquippedEchoData: (state) => {
       return (echoId) => state.equipped?.[echoId] ?? {};
     },
@@ -43,7 +57,7 @@ export const useInventoryStore = defineStore("inventory", {
         });
     },
     echoById: (state) => {
-      return (echoId) => state.echoes.find((echo) => echo.echoId === echoId);
+      return (echoId) => state.echoes.filter((echo) => echo.echoId === echoId);
     },
     /**
      * look through state.equipped, which is {echoId: {character: index, character2: index2}, echoId2: {...}}

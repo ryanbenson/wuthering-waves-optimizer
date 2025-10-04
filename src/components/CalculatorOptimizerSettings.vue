@@ -8,7 +8,7 @@
           class="toggle toggle-primary toggle-sm"
           checked="checked" />
         <span class="label-text">
-          Ignore echoes equipped by other resonantors
+          Ignore echoes equipped by other resonators
         </span>
       </label>
     </div>
