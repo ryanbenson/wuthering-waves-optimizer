@@ -235,6 +235,17 @@
           "></CalculatorOptimizerDamageType>
       </div>
     </div>
+    <div class="optimizer-target">
+      <h3 class="mt-6 mb-2">Settings</h3>
+      <div class="optimizer-target-options flex gap-2">
+        <CalculatorOptimizerSettings
+          :character="character"
+          :current-ignore-other-resonantor-echoes="ignoreOtherResonantorEchoes"
+          @optimizer:settings-updated="
+            handleUpdatedSettings
+          "></CalculatorOptimizerSettings>
+      </div>
+    </div>
     <div class="optimizer-actions mt-6 flex gap-4 items-center">
       <button
         class="btn btn-primary"
@@ -294,6 +305,7 @@ import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorOptimizerResults from "./CalculatorOptimizerResults.vue";
 import CalculatorOptimizerGuide from "./CalculatorOptimizerGuide.vue";
+import CalculatorOptimizerSettings from "./CalculatorOptimizerSettings.vue";
 import { character } from "../characters/Aalto/character";
 export default {
   name: "CalculatorOptimizer",
@@ -364,6 +376,7 @@ export default {
     CalculatorOptimizerDamageType,
     CalculatorOptimizerResults,
     CalculatorOptimizerGuide,
+    CalculatorOptimizerSettings,
   },
   data() {
     return {
@@ -384,6 +397,8 @@ export default {
       // passive stats list
       echoSetPassiveStats: {},
       mainEchoStats: {},
+      // settings
+      ignoreOtherResonantorEchoes: false,
     };
   },
   methods: {
@@ -402,6 +417,7 @@ export default {
         this.mainEchoStats,
         this.optimizationTarget,
         this.damageType,
+        this.ignoreOtherResonantorEchoes,
       );
     },
     chooseMainEcho(echoKey) {
@@ -436,6 +452,7 @@ export default {
           minStats: JSON.parse(JSON.stringify(this.minStats)),
           optimizationTarget: this.optimizationTarget,
           damageType: this.damageType,
+          ignoreOtherResonantorEchoes: this.ignoreOtherResonantorEchoes,
         },
       };
       await this.setCharacterData(this.character, data);
@@ -515,6 +532,11 @@ export default {
     },
     handleOpenOptimizerGuide() {
       this.$refs.optimizerGuide.triggerOpenModal();
+    },
+    handleUpdatedSettings(settings) {
+      this.ignoreOtherResonantorEchoes =
+        settings.ignoreOtherResonantorEchoes ?? false;
+      this.syncOptimizerConfig();
     },
   },
   computed: {
@@ -621,6 +643,8 @@ export default {
     this.minStats = this.currentCharacter?.optimizer?.minStats ?? [];
     this.optimizationTarget =
       this.currentCharacter?.optimizer?.optimizationTarget ?? [];
+    this.ignoreOtherResonantorEchoes =
+      this.currentCharacter?.optimizer?.ignoreOtherResonantorEchoes ?? false;
     this.isLoading = false;
   },
 };

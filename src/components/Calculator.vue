@@ -97,7 +97,7 @@
           :processed-combos="processedCombos"
           :optimizer-results="optimizerResults"
           :character-element="characterElement"
-          :all-damages="allDamages"
+          :all-damages="JSON.parse(JSON.stringify(allDamages))"
           :total-atk="totalAtk"
           :total-hp="totalHp"
           :total-def="totalDef"
@@ -2283,6 +2283,7 @@ export default defineComponent({
       mainEchoStats = {},
       target = "ATK",
       damageType = "Average",
+      ignoreOtherResonantorEchoes = false,
     ) => {
       const echoes = inventoryStore.echoes;
       const allowedSets = new Set(setFilters);
@@ -2294,6 +2295,13 @@ export default defineComponent({
       let filteredEchoes = echoes;
       if (allowedSets.size) {
         filteredEchoes = echoes.filter((e) => allowedSets.has(e.echoSet));
+      }
+      if (ignoreOtherResonantorEchoes) {
+        const echoIdsEquippedByOtherChars =
+          inventoryStore.echoIdsEquippedByOtherChars(character.value);
+        filteredEchoes = filteredEchoes.filter(
+          (e) => !echoIdsEquippedByOtherChars.includes(e.echoId),
+        );
       }
 
       const results = optimize(

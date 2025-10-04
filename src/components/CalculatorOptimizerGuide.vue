@@ -26,10 +26,6 @@
               :
               <ul>
                 <li>
-                  Showing the percentage difference of a loadout compared to
-                  your current build.
-                </li>
-                <li>
                   Automatically enable echo buffs on your character profile when
                   equipping a loadout.
                 </li>
