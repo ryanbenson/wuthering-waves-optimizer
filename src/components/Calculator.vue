@@ -1051,6 +1051,7 @@ export default defineComponent({
       dynamicTalentType = false,
       excludeDisabledAttacks = true, // e.g. ones that are unlocked through chains should be hidden by default
       providedStats = null, // use this set of base stats instead of the global stats
+      providedEchoStats = null, // use this set of echo stats instead of the global echo stats
     ) => {
       return (
         (attacks ?? [])
@@ -1141,6 +1142,7 @@ export default defineComponent({
                 dynamicTalentType,
                 hitCount,
                 providedStats, // pass along the provided stats, if we have them
+                providedEchoStats, // pass along the provided echo stats, if we have them
               ),
               isEnabled,
               originalIsEnabled,
@@ -1162,14 +1164,21 @@ export default defineComponent({
       hasDynamicTalent = false,
       count = 1,
       providedFullStats = null, // use this as our stats data, otherwise default to the global stats, this should exclude personal buffs, weapon buffs, chain buffs, custom buffs, team buffs. The only things to use are attack-level buffs
+      providedEchoStats = null, // use this as our echo buffs instead of the global echo buffs
     ) => {
-      const { excludeTeamBuffs, excludeWeaponBuffs } = attack;
+      const { excludeTeamBuffs, excludeWeaponBuffs, excludeEchoes } = attack;
       let statsWithoutTeamBuffs = null;
-      if (excludeTeamBuffs || excludeWeaponBuffs) {
-        statsWithoutTeamBuffs = calcCharStats("All", null, {
-          ignoreTeamBuffs: excludeTeamBuffs,
-          ignoreWeaponBuffs: excludeWeaponBuffs,
-        });
+      if (excludeTeamBuffs || excludeWeaponBuffs || excludeEchoes) {
+        statsWithoutTeamBuffs = calcCharStats(
+          "All",
+          null,
+          {
+            ignoreTeamBuffs: excludeTeamBuffs,
+            ignoreWeaponBuffs: excludeWeaponBuffs,
+            ignoreEchoes: excludeEchoes,
+          },
+          providedEchoStats,
+        );
       }
       let attackType = attack.type;
       const selfBuffs = JSON.parse(JSON.stringify(charBuffsData.value ?? {}));
@@ -1597,9 +1606,10 @@ export default defineComponent({
           {
             ignoreTeamBuffs: excludeTeamBuffs,
             ignoreWeaponBuffs: excludeWeaponBuffs,
+            ignoreEchoes: excludeEchoes,
           },
-          null,
-          providedFullStats,
+          providedEchoStats,
+          excludeEchoes ? null : providedFullStats,
         );
       }
       // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
@@ -1613,9 +1623,10 @@ export default defineComponent({
           {
             ignoreTeamBuffs: excludeTeamBuffs,
             ignoreWeaponBuffs: excludeWeaponBuffs,
+            ignoreEchoes: excludeEchoes,
           },
-          null,
-          providedFullStats,
+          providedEchoStats,
+          excludeEchoes ? null : providedFullStats,
         );
       }
       // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
@@ -1629,9 +1640,10 @@ export default defineComponent({
           {
             ignoreTeamBuffs: excludeTeamBuffs,
             ignoreWeaponBuffs: excludeWeaponBuffs,
+            ignoreEchoes: excludeEchoes,
           },
-          null,
-          providedFullStats,
+          providedEchoStats,
+          excludeEchoes ? null : providedFullStats,
         );
       }
 
@@ -2527,6 +2539,12 @@ export default defineComponent({
               excludeSelfBuffs: action.excludeSelfBuffs ?? false,
               excludeTeamBuffs: action.excludeTeamBuffs ?? false,
               excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
+              // only exclude echoes if we excluded self, team, or weapon buffs
+              excludeEchoes:
+                action.excludeSelfBuffs ||
+                action.excludeTeamBuffs ||
+                action.excludeWeaponBuffs ||
+                false,
             };
             // if there are buffs, turn it into a hashmap
             if (action?.buffs?.length) {
@@ -2626,7 +2644,7 @@ export default defineComponent({
             }
           });
         });
-        const finalStats = calcCharStats(
+        let finalStats = calcCharStats(
           "All",
           null,
           {
@@ -2722,6 +2740,7 @@ export default defineComponent({
             true, // dynamicTalentType = yes, this will figure out the talent data for us
             false, // excludeDisabledAttacks = no, unless we need to (TODO)
             finalStats, // give our stats, it will use this instead of the global state
+            combinedEchoBuffs, // provide the echoes so we can exclude them if needed
           );
           // capture all damages
           const damageAggregation = {
