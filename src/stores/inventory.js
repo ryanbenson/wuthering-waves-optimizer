@@ -9,6 +9,20 @@ export const useInventoryStore = defineStore("inventory", {
     equippedPresets: {},
   }),
   getters: {
+    // look through all echoes in state.echoes and look at all echo.echoId, find any duplicates
+    duplicateEchoIds: (state) => {
+      const echoIdCount = {};
+      state.echoes.forEach((echo) => {
+        if (echoIdCount[echo.echoId]) {
+          echoIdCount[echo.echoId] += 1;
+        } else {
+          echoIdCount[echo.echoId] = 1;
+        }
+      });
+      return Object.entries(echoIdCount)
+        .filter(([echoId, count]) => count > 1)
+        .map(([echoId, count]) => echoId);
+    },
     getEquippedEchoData: (state) => {
       return (echoId) => state.equipped?.[echoId] ?? {};
     },
@@ -43,7 +57,29 @@ export const useInventoryStore = defineStore("inventory", {
         });
     },
     echoById: (state) => {
-      return (echoId) => state.echoes.find((echo) => echo.echoId === echoId);
+      return (echoId) => state.echoes.filter((echo) => echo.echoId === echoId);
+    },
+    /**
+     * look through state.equipped, which is {echoId: {character: index, character2: index2}, echoId2: {...}}
+     * if the character is found in the inner obect, skip it
+     * otherwise, add the echoId to the list
+     */
+    echoIdsEquippedByOtherChars: (state) => {
+      return (character) => {
+        const echoIds = [];
+        Object.entries(state.equipped).forEach(([echoId, charMap]) => {
+          // if the charMap is empty, don't add the echoId since no one has equipped it
+          const characterUsingEcho = Object.keys(charMap);
+          if (characterUsingEcho.length === 0) {
+            return;
+          }
+          if (characterUsingEcho.includes(character)) {
+            return;
+          }
+          echoIds.push(echoId);
+        });
+        return echoIds;
+      };
     },
   },
   actions: {
@@ -139,7 +175,9 @@ export const useInventoryStore = defineStore("inventory", {
     },
     deleteEchoEquippedMappingCharacter(echoId, character) {
       if (!this.equipped[echoId]) return;
-      if (!this.equipped[echoId][character]) return;
+      // check if character exists in this.equipped[echoId],
+      // but look at the keys, because the value can be 0 which would fail the check
+      if (!Object.keys(this.equipped[echoId]).includes(character)) return;
       delete this.equipped[echoId][character];
     },
     removeCharacterFromAllEquipped(character) {

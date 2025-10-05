@@ -1109,15 +1109,13 @@ export default {
     },
     // reset everything
     async reset() {
-      if (this.echoId) {
-        await this.deleteEchoEquippedMappingCharacter(
-          this.echoId,
-          this.character,
-        );
-        this.$emit("on-echo-removed");
-      }
+      await this.deleteEchoEquippedMappingCharacter(
+        this.echoId,
+        this.character,
+      );
       // clear the echo before changing the data to avoid data merge issues
       await this.removeCharacterEcho(this.character, this.index);
+      this.$emit("on-echo-removed");
     },
     toggleSubStat(e) {
       const mainStat = e.target.value;

@@ -247,6 +247,8 @@ export default {
       "getEchoPresetById",
       "deleteEquippedPreset",
       "setEquippedPresetData",
+      "removeCharacterFromAllEquipped",
+      "setEquippedData",
     ]),
     updateTotalStats() {
       const stats = {};
@@ -563,8 +565,34 @@ export default {
       await this.deleteEquippedPreset(this.character);
       this.echoPresetId = null;
     },
-    handleChosenEchoInventory() {
+    async handleChosenEchoInventory() {
       this.handleEchoRemoved();
+      await this.removeCharacterFromAllEquipped(this.character);
+
+      const equippedData0 = {};
+      equippedData0[this.character] = 0;
+      const echo0Id = this.currentCharacter?.echoes?.[0]?.echoId ?? null;
+      await this.setEquippedData(echo0Id, equippedData0);
+
+      const equippedData1 = {};
+      equippedData1[this.character] = 1;
+      const echo1Id = this.currentCharacter?.echoes?.[1]?.echoId ?? null;
+      await this.setEquippedData(echo1Id, equippedData1);
+
+      const equippedData2 = {};
+      equippedData2[this.character] = 2;
+      const echo2Id = this.currentCharacter?.echoes?.[2]?.echoId ?? null;
+      await this.setEquippedData(echo2Id, equippedData2);
+
+      const equippedData3 = {};
+      equippedData3[this.character] = 3;
+      const echo3Id = this.currentCharacter?.echoes?.[3]?.echoId ?? null;
+      await this.setEquippedData(echo3Id, equippedData3);
+
+      const equippedData4 = {};
+      equippedData4[this.character] = 4;
+      const echo4Id = this.currentCharacter?.echoes?.[4]?.echoId ?? null;
+      await this.setEquippedData(echo4Id, equippedData4);
     },
   },
   computed: {
