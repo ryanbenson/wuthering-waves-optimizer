@@ -17,6 +17,9 @@
         Updates some "Attack", and "Defense" labels to use "ATK", and "DEF" for
         consistency.
       </li>
+      <li>
+        Fixes Verina's team buff text, it still said Deepen instead of Amplify.
+      </li>
     </ul>
     <h3>October 3, 2025</h3>
     <ul>
