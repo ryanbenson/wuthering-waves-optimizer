@@ -22,6 +22,7 @@ export const twoSetBonuses: string[] = [
 export const threeSetBonuses: string[] = [
   "Crown of Valor 3 Set",
   "Dream of the Lost 3 Set",
+  "Flamewing's Shadow 3 Set",
   "Law of Harmony 3 Set",
 ];
 export const fiveSetBonuses: string[] = [
@@ -1081,6 +1082,46 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         minStacks: 0,
         maxStacks: 4,
         details: `Additionally, all Resonators in the team gain 4% Echo Skill DMG Bonus for 30s, stacking up to 4 times. Echoes of the same name can only trigger this effect once. The record of Echo triggering this effect is cleared along with this effect. At 4 stacks, casting Echo Skill again resets the duration of this effect.`,
+      },
+    ],
+  },
+  "Flamewing's Shadow 3 Set": {
+    name: "Flamewing's Shadow",
+    key: "FlamewingsShadow",
+    details: `Dealing Echo Skill DMG increases Heavy Attack Crit. Rate by 20% for 6s. Dealing Heavy Attack DMG increases Echo Skill Crit. Rate by 20% for 6s. While both effects are active, gain 16% Fusion DMG Bonus.`,
+    passives: [
+      {
+        key: "FlamewingsShadowCritRateHeavy",
+        modifiers: [
+          {
+            modifier: "CritRate:Heavy",
+            modifierValue: 20,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Dealing Echo Skill DMG increases Heavy Attack Crit. Rate by 20% for 6s.`,
+      },
+      {
+        key: "FlamewingsShadowCritRateEcho",
+        modifiers: [
+          {
+            modifier: "CritRate:Echo",
+            modifierValue: 4,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Dealing Heavy Attack DMG increases Echo Skill Crit. Rate by 20% for 6s.`,
+      },
+      {
+        key: "FlamewingsShadowFusion",
+        modifiers: [
+          {
+            modifier: "Fusion",
+            modifierValue: 16,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `While both effects are active, gain 16% Fusion DMG Bonus.`,
       },
     ],
   },
