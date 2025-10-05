@@ -73,7 +73,6 @@ export const useInventoryStore = defineStore("inventory", {
           if (characterUsingEcho.length === 0) {
             return;
           }
-          console.log("charMap", charMap, character, echoId);
           if (characterUsingEcho.includes(character)) {
             return;
           }
@@ -176,7 +175,9 @@ export const useInventoryStore = defineStore("inventory", {
     },
     deleteEchoEquippedMappingCharacter(echoId, character) {
       if (!this.equipped[echoId]) return;
-      if (!this.equipped[echoId][character]) return;
+      // check if character exists in this.equipped[echoId],
+      // but look at the keys, because the value can be 0 which would fail the check
+      if (!Object.keys(this.equipped[echoId]).includes(character)) return;
       delete this.equipped[echoId][character];
     },
     removeCharacterFromAllEquipped(character) {
