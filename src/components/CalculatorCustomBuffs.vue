@@ -14,7 +14,7 @@
           <span class="label-text mr-2 flex items-center gap-1">
             <img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
-            Attack %
+            ATK %
           </span>
         </div>
         <input
@@ -32,7 +32,7 @@
           <span class="label-text mr-2 flex items-center gap-1">
             <img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
-            Flat Attack
+            Flat ATK
           </span>
         </div>
         <input
@@ -86,7 +86,7 @@
           <span class="label-text mr-2 flex items-center gap-1">
             <img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />
-            Defense %
+            DEF %
           </span>
         </div>
         <input
@@ -104,7 +104,7 @@
           <span class="label-text mr-2 flex items-center gap-1">
             <img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />
-            Flat Defense
+            Flat DEF
           </span>
         </div>
         <input

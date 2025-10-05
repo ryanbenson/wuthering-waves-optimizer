@@ -16,8 +16,15 @@
     </p>
     <h3>CV and RV</h3>
     <ul>
-      <li>CV = Crit value. That's the amount of Crit you have on your echo. It's Crit Rate * 2 + Crit DMG</li>
-      <li>RV = Roll value. That's how lucky your substat rolls were. It isn't unique per creator (at least right now). The higher the value your rolls, the higher the RV</li>
+      <li>
+        CV = Crit value. That's the amount of Crit you have on your echo. It's
+        Crit Rate * 2 + Crit DMG
+      </li>
+      <li>
+        RV = Roll value. That's how lucky your substat rolls were. It isn't
+        unique per creator (at least right now). The higher the value your
+        rolls, the higher the RV
+      </li>
     </ul>
     <h3>Formulas</h3>
     <p>
@@ -31,7 +38,7 @@
       defenseMultiplier * resistMultiplier
     </code>
     <p>We can break it down into chunks:</p>
-    <h4>Attack (or HP/DEF)</h4>
+    <h4>ATK (or HP/DEF)</h4>
     <code>
       (characterAttack + weaponAttack) * (1 + allAtkPercent) + allFlatAttack
     </code>

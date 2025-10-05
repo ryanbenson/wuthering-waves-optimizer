@@ -13,6 +13,10 @@
     <h3>October 5, 2025</h3>
     <ul>
       <li>Adds ability to exclude equipped echoes when optimizing.</li>
+      <li>
+        Updates some "Attack", and "Defense" labels to use "ATK", and "DEF" for
+        consistency.
+      </li>
     </ul>
     <h3>October 3, 2025</h3>
     <ul>

@@ -2,13 +2,16 @@
   <div class="data-input">
     <div class="weapon__basic-info">
       <div class="weapon__left flex flex-col gap-2">
-        <div class="weapon__selection__image" :style="weaponImageStyles" :class="{
-              'border-amber-300': weaponRarity === '5' || weaponRarity === 5,
-              'border-violet-600': weaponRarity === '4' || weaponRarity === 4,
-              'border-blue-500': weaponRarity === '3' || weaponRarity === 3,
-              'border-green-500': weaponRarity === '2' || weaponRarity === 2,
-              'border-gray-500': weaponRarity === '1' || weaponRarity === 1,
-            }"></div>
+        <div
+          class="weapon__selection__image"
+          :style="weaponImageStyles"
+          :class="{
+            'border-amber-300': weaponRarity === '5' || weaponRarity === 5,
+            'border-violet-600': weaponRarity === '4' || weaponRarity === 4,
+            'border-blue-500': weaponRarity === '3' || weaponRarity === 3,
+            'border-green-500': weaponRarity === '2' || weaponRarity === 2,
+            'border-gray-500': weaponRarity === '1' || weaponRarity === 1,
+          }"></div>
         <button
           @click="openWeaponBrowser"
           class="btn btn-sm btn--weapon--find"
@@ -112,7 +115,7 @@
                 <img
                   src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
               </span>
-              <span class="font-bold">Attack:</span>
+              <span class="font-bold">ATK:</span>
               <span>{{ weaponAttack }}</span>
             </div>
             <div
@@ -131,7 +134,11 @@
             v-html="weaponDescription"></div>
         </div>
       </div>
-      <div v-if="hasWeaponPassive" class="weapon__passives" :key="weapon"  data-test-weapon-passives>
+      <div
+        v-if="hasWeaponPassive"
+        class="weapon__passives"
+        :key="weapon"
+        data-test-weapon-passives>
         <CalculatorWeaponsPassive
           v-for="(weaponPassive, i) in weaponPassives"
           class="weapon__passive"
@@ -157,8 +164,7 @@
     :character="character"
     :weapons-list="weaponsList"
     ref="weaponBrowser"
-    @weapon-browser:chosen-weapon="handleChosenWeapon"
-  />
+    @weapon-browser:chosen-weapon="handleChosenWeapon" />
 </template>
 
 <script>
@@ -596,7 +602,7 @@ export default {
     },
     handleChosenWeapon(weapon) {
       this.weapon = weapon;
-    }
+    },
   },
   beforeUnmount() {
     this.weaponPassiveData = [];

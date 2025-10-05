@@ -11,7 +11,7 @@
             <img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
           </td>
-          <td>Attack</td>
+          <td>ATK</td>
           <td
             class="text-right"
             v-tooltip="{
@@ -69,7 +69,7 @@
             <img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />
           </td>
-          <td>Defense</td>
+          <td>DEF</td>
           <td
             class="text-right"
             v-tooltip="{

@@ -6,7 +6,7 @@
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
         </td>
-        <td>Attack</td>
+        <td>ATK</td>
         <td
           class="text-right"
           v-tooltip="{
@@ -36,7 +36,7 @@
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />
         </td>
-        <td>Defense</td>
+        <td>DEF</td>
         <td
           class="text-right"
           v-tooltip="{
@@ -92,7 +92,9 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" />
         </td>
         <td>Resonance Skill DMG Bonus</td>
-        <td class="text-right">{{ displayPercentage(resonanceSkillDmgBonus) }}</td>
+        <td class="text-right">
+          {{ displayPercentage(resonanceSkillDmgBonus) }}
+        </td>
       </tr>
       <tr class="stat-liberation">
         <td>
@@ -100,7 +102,9 @@
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" />
         </td>
         <td>Resonance Liberation DMG Bonus</td>
-        <td class="text-right">{{ displayPercentage(resonanceLiberationDmgBonus) }}</td>
+        <td class="text-right">
+          {{ displayPercentage(resonanceLiberationDmgBonus) }}
+        </td>
       </tr>
       <tr class="stat-glacio">
         <td>
@@ -304,7 +308,7 @@ export default {
     const chosenChar = await getCharByName(this.character);
     if (chosenChar) {
       const { hp, attack, defense } = chosenChar.getCharacterStatsByLevel(
-        this.characterLevel
+        this.characterLevel,
       );
       this.baseHp = hp;
       this.baseAtk = attack;
