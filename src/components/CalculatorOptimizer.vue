@@ -82,14 +82,16 @@
     <div class="optimizer-filters">
       <div class="optimizer-filters__sets">
         <h3 class="mb-2">Choose echo sets</h3>
-        <div class="optimizer-filters__sets--two flex gap-2 flex-wrap">
+        <div
+          class="optimizer-filters__sets flex gap-1 flex-wrap"
+          :class="{ 'optimizer-filters__sets--active': setFilters.length }">
           <button
             v-for="set in echoSets"
             :key="set"
             @click="toggleSetFilter(set)"
-            class="size-8 rounded p-[.15rem]"
+            class="rounded p-[.3rem]"
             :class="{ 'btn-active': isSetFilterActive(set) }">
-            <img :src="getSetIcon(set)" :alt="set" />
+            <img :src="getSetIcon(set)" :alt="set" class="size-7" />
           </button>
         </div>
         <h3 class="mt-6 mb-2">Choose main echoes</h3>
@@ -649,3 +651,14 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.optimizer-filters__sets--active {
+  button {
+    opacity: 0.6;
+  }
+  button.btn-active {
+    opacity: 1;
+  }
+}
+</style>
