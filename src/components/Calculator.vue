@@ -1386,13 +1386,18 @@ export default defineComponent({
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:CritRate`
         ] ?? 0;
+      const echoSpecificAttackTypeCritRate =
+        echoStats.value?.[`CritRate:${attack.type}`] ?? 0;
       const specificSkillExtraCritDMG =
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:CritDMG`
         ] ?? 0;
       const baseCritRate =
         providedFullStats?.totalCritRate || totalCritRate.value;
-      let instanceDmgCritRate = baseCritRate + specificSkillExtraCritRate;
+      let instanceDmgCritRate =
+        baseCritRate +
+        specificSkillExtraCritRate +
+        echoSpecificAttackTypeCritRate;
       if (excludeTeamBuffs) {
         instanceDmgCritRate = statsWithoutTeamBuffs?.totalCritRate ?? 0;
         instanceDmgCritRate += specificSkillExtraCritRate;
