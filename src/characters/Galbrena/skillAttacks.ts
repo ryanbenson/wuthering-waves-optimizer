@@ -1,0 +1,40 @@
+export const skillAttacks = {
+  name: "Resonance Skill: Edge Transcended",
+  description: `<div></div>`,
+  attacks: [
+    {
+      key: "ResonanceSkillEncroachDMG",
+      label: "Resonance Skill - Encroach DMG",
+      type: "Heavy",
+      talents: {
+        "1": "5.40%+12.60%",
+        "2": "5.85%+13.63%",
+        "3": "6.29%+14.66%",
+        "4": "6.91%+16.11%",
+        "5": "7.35%+17.14%",
+        "6": "7.86%+18.33%",
+        "7": "8.57%+19.98%",
+        "8": "9.28%+21.64%",
+        "9": "9.28%+21.64%",
+        "10": "10.74%+25.04%",
+      },
+    },
+    {
+      key: "ResonanceSkillAscentofMaliceDMG",
+      label: "Resonance Skill - Ascent of Malice DMG",
+      type: "Heavy",
+      talents: {
+        "1": "25.94%+25.94%",
+        "2": "28.07%+28.07%",
+        "3": "30.20%+30.20%",
+        "4": "33.17%+33.17%",
+        "5": "35.30%+35.30%",
+        "6": "37.75%+37.75%",
+        "7": "41.15%+41.15%",
+        "8": "44.55%+44.55%",
+        "9": "44.55%+44.55%",
+        "10": "51.57%+51.57%",
+      },
+    },
+  ],
+};

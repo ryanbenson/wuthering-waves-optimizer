@@ -352,6 +352,24 @@ export function calcDamage(
   };
 }
 
+export function calcFixedDamage(talent: string, count: number = 1): any {
+  const finalDamage = Number(talent) * count;
+  const instanceDamage = { talent: Number(talent) };
+  let detailedCalculation = buildDetailedCalculationStringFixedDamage(
+    talent,
+    count,
+  );
+  return {
+    instanceDamage,
+    totalDamage: finalDamage,
+    critDamage: finalDamage,
+    avgDamage: finalDamage,
+    detailedCalculation,
+    detailedCalculationCrit: detailedCalculation,
+    detailedCalculationAvg: detailedCalculation,
+  };
+}
+
 function calcCritDamage(damage: number, critDamage: number): number {
   return damage * critDamage;
 }
@@ -389,6 +407,19 @@ function parseTalentString(talent: string) {
     }
   });
   return talents;
+}
+
+function buildDetailedCalculationStringFixedDamage(
+  talent: string,
+  count: number = 1,
+): string {
+  let countPrefix = "";
+  if (count > 1) {
+    countPrefix = `${count} x `;
+  }
+  const calcString = `<strong>${Number(talent)}</strong>`;
+  const finalCalcString = `${countPrefix}${calcString}`;
+  return finalCalcString;
 }
 
 // Helper function to build the detailed calculation string

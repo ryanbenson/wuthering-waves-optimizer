@@ -231,6 +231,7 @@ import {
   getAeroErosionDamage,
   getAeroErosionModifierByLevelByStacks,
   calcMidnightVeilDMG,
+  calcFixedDamage,
 } from "../calculator/calculator";
 import {
   getCharByName,
@@ -1283,6 +1284,15 @@ export default defineComponent({
         }
       } else {
         talent = talentTree[talentType];
+      }
+      console.log(attack.isFixed ? talent : null);
+      /**
+       * If the attack is fixed (attack.isFixed === true)
+       * return the value we got from the talent directly
+       * this is used for attacks that do a fixed amount of damage
+       */
+      if (attack.isFixed) {
+        return calcFixedDamage(talent, count);
       }
       const talentModifierAdd = selfBuffs?.[attack.key] ?? 0;
       // TODO: Is this used anywhere?
