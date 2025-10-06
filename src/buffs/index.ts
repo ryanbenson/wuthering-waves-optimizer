@@ -1631,6 +1631,27 @@ export const allWeaponTeamBuffs = [
     details: `Each successful extension gives <span class="param">24%/30%/36%/42%/48%</span> Fusion DMG Bonus to all Resonators in the team for <span class="param">30</span>s. Effects of the same name cannot be stacked.`,
     alwaysEnabled: false,
   },
+  {
+    name: "Emerald Sentence",
+    key: "EmeraldSentenceEchoDMGBonus",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "EchoDMGBonus",
+        modifierByRefinement: {
+          "1": 0.2,
+          "2": 0.25,
+          "3": 0.3,
+          "4": 0.35,
+          "5": 0.4,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `Casting Intro Skill grants <span class="param">20%/25%/30%/35%/40%</span> Echo Skill DMG Bonus to all Resonators in the team for 30s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allCharacters: string[] = [

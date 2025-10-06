@@ -4,6 +4,7 @@ export const swordsList = {
     { key: "BloodpactsPledge", name: "Bloodpact's Pledge" },
     { key: "DefiersThorn", name: "Defier's Thorn" },
     { key: "EmeraldOfGenesis", name: "Emerald Of Genesis" },
+    { key: "EmeraldSentence", name: "Emerald Sentence" },
     { key: "RedSpring", name: "Red Spring" },
     { key: "UnflickeringValor", name: "Unflickering Valor" },
   ],
@@ -91,6 +92,7 @@ const rectifiersList = {
 
 const pistolsList = {
   five: [
+    { key: "LuxUmbra", name: "Lux & Umbra" },
     { key: "StaticMist", name: "Static Mist" },
     { key: "TheLastDance", name: "The Last Dance" },
     { key: "WoodlandAria", name: "Woodland Aria" },
