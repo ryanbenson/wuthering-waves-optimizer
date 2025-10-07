@@ -1293,7 +1293,6 @@ export default defineComponent({
       if (attack.isFixed) {
         return calcFixedDamage(talent, count);
       }
-      console.log(selfBuffs);
       const talentModifierAdd = selfBuffs?.[attack.key] ?? 0;
       // TODO: Is this used anywhere?
       const talentModifierAddFromResonanceChains =

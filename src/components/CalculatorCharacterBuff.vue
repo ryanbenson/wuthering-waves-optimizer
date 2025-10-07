@@ -277,7 +277,7 @@ export default {
         }
       }
 
-      // this only applies to CrownofWills on Augusta
+      // this only applies to Afterflame on Galbrena
       if (this.character === "Galbrena" && this.uniqueKey === "Afterflame") {
         // Check if resonance chain buffs are enabled and apply their effects
         const sequenceNode1 =
@@ -322,7 +322,6 @@ export default {
             (mod) => mod.modifier === "DMGDeepen",
           );
           if (!DMGDeepen) {
-            console.error("NOT DONE");
             effectiveModifiers.push({
               modifier: "DMGDeepen",
               modifySpecificTalents: [
@@ -343,7 +342,29 @@ export default {
             });
           }
         }
-        console.log(effectiveModifiers, this.currentCharacter?.resonanceChains);
+      }
+
+      // this only applies to BurningDrive on Galbrena
+      if (this.character === "Galbrena" && this.uniqueKey === "BurningDrive") {
+        const sequenceNode2 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode2HellboundDiveofFireandAbyss;
+
+        // Apply SequenceNode1 effects if enabled
+        if (sequenceNode2?.isEnabled) {
+          // Add CritDMG modifier if not already present
+          const hasAtk = effectiveModifiers.some(
+            (mod) => mod.modifier === "ATK",
+          );
+          // it should replace the existing buff, so we check if it does exist
+          if (hasAtk) {
+            effectiveModifiers.push({
+              modifier: "ATK",
+              // 3.5 from res chain + 0.2 from original buff
+              modifierValue: 3.7,
+            });
+          }
+        }
       }
 
       // If both are enabled, SequenceNode6 takes precedence (4 max stacks)
