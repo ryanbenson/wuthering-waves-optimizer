@@ -1,6 +1,6 @@
 export const skillAttacks = {
   name: "Resonance Skill: Edge Transcended",
-  description: `<div></div>`,
+  description: `<div><span class="ww-wiki-font-bold"><span class="ingame-Title">Resonance Skill - Encroach</span></span><br>Dash forward and leap into the air. Flip backward upon hitting the target, dealing <span class="ingame-Fire">Fusion DMG</span>, considered <span class="ingame-Highlight">Heavy Attack DMG</span>.<br><span class="ww-wiki-font-bold"></span><br><span class="ww-wiki-font-bold"><span class="ingame-Title">Resonance Skill - Ascent of Malice</span></span><br>Upon reaching 100 points of <span class="ingame-Highlight"><te href="120802">Sinflame</te></span>, <span class="ingame-Highlight">Resonance Skill</span> is replaced with <span class="ingame-Highlight">Resonance Skill - Ascent of Malice</span>.<br>Slash at enemies with her wings, dealing <span class="ingame-Fire">Fusion DMG</span>, considered <span class="ingame-Highlight">Heavy Attack DMG</span>. Upon casting this skill:<br>- Galbrena enters <span class="ingame-Highlight"><te href="120805">Demon Hypostasis</te></span>.<br>- <span class="ingame-Highlight"><te href="120802">Sinflame</te></span> is converted into an equivalent amount of <span class="ingame-Highlight"><te href="120803">Purging Flame</te></span>.<br>- Can be followed by <span class="ingame-Highlight">Basic Attack - Seraphic Execution Stage 2</span>.</div>`,
   attacks: [
     {
       key: "ResonanceSkillEncroachDMG",

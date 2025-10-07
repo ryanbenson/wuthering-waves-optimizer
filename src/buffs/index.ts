@@ -1344,6 +1344,43 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Galbrena: [
+    {
+      key: "SequenceNode4CarryForthThisFadingSpark",
+      name: "Sequence Node 4: Carry Forth This Fading Spark",
+      details: `<div>When Resonators in the team cast Echo Skill, all Resonators in the team gain 20% all-Attribute DMG Bonus for 20s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Glacio",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Electro",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Aero",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Havoc",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Spectro",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

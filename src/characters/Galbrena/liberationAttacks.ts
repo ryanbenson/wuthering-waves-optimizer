@@ -1,6 +1,6 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Hellfire Absolution",
-  description: `<div></div>`,
+  description: `<div>Attack the target and deal <span class="ingame-Fire">Fusion DMG</span>, considered <span class="ingame-Highlight">Echo Skill DMG</span>. Gain 85% DMG Multiplier increase for <span class="ingame-Highlight">Basic Attack - Seraphic Execution</span>, <span class="ingame-Highlight">Heavy Attack - Flamewing Verdict</span>, <span class="ingame-Highlight">Mid-air Attack - Hellsent Barrage</span>, and <span class="ingame-Highlight">Dodge Counter - Purgatory Scourge</span> for 14s while in <span class="ingame-Highlight"><te href="120805">Demon Hypostasis</te></span>.<br>Press Normal Attack after casting Resonance Liberation to cast <span class="ingame-Highlight">Basic Atttack Stage 2</span>. While in <span class="ingame-Highlight"><te href="120805">Demon Hypostasis</te></span>, cast <span class="ingame-Highlight">Basic Attack - Seraphic Execution Stage 2</span> instead.<br>Can be cast in mid-air close to the ground.</div>`,
   attacks: [
     {
       key: "HellfireAbsolutionDMG",

@@ -1285,7 +1285,6 @@ export default defineComponent({
       } else {
         talent = talentTree[talentType];
       }
-      console.log(attack.isFixed ? talent : null);
       /**
        * If the attack is fixed (attack.isFixed === true)
        * return the value we got from the talent directly
@@ -1294,6 +1293,7 @@ export default defineComponent({
       if (attack.isFixed) {
         return calcFixedDamage(talent, count);
       }
+      console.log(selfBuffs);
       const talentModifierAdd = selfBuffs?.[attack.key] ?? 0;
       // TODO: Is this used anywhere?
       const talentModifierAddFromResonanceChains =
@@ -1402,6 +1402,8 @@ export default defineComponent({
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:CritDMG`
         ] ?? 0;
+      const selfBuffsSpecificSkillExtraCritDMG =
+        selfBuffs.specificTalentBuffs?.[`${attack.key}:CritDMG`] ?? 0;
       const baseCritRate =
         providedFullStats?.totalCritRate || totalCritRate.value;
       let instanceDmgCritRate =
@@ -1414,7 +1416,10 @@ export default defineComponent({
       }
       const baseCritDamage =
         providedFullStats?.totalCritDMG || totalCritDMG.value;
-      let instanceDmgCritDMG = baseCritDamage + specificSkillExtraCritDMG;
+      let instanceDmgCritDMG =
+        baseCritDamage +
+        specificSkillExtraCritDMG +
+        selfBuffsSpecificSkillExtraCritDMG;
       if (excludeTeamBuffs) {
         instanceDmgCritDMG = statsWithoutTeamBuffs?.totalCritDMG ?? 0;
         instanceDmgCritDMG += specificSkillExtraCritDMG;
@@ -1881,7 +1886,12 @@ export default defineComponent({
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:specialMultiplier`
         ] ?? 0;
-      totalSpecialMultiplier += resonanceChainAttackSpecialMultiplier;
+      let selfBuffAttackSpecialMultiplier =
+        charBuffsData.value?.specificTalentBuffs?.[
+          `${attack.key}:specialMultiplier`
+        ] ?? 0;
+      totalSpecialMultiplier +=
+        resonanceChainAttackSpecialMultiplier + selfBuffAttackSpecialMultiplier;
       // console.table({
       //   attack: attack.key,
       //   attackType,
