@@ -1381,6 +1381,43 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Qiuyuan: [
+    {
+      key: "SunderingStrike",
+      name: `Sundering Strike`,
+      details: `For every 1% of Qiuyuan's Crit. Rate over 50%, this skill increases the Crit. DMG of all nearby active Resonators in the team by 2% for 30s, up to 30%.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "CritDMG",
+          modifierValue: 0.02,
+          maximumValue: 0.3,
+          modifierStep: 0.01,
+          minStatValue: 50,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+      inputBase: true,
+      modifierBasedOn: "Crit Rate",
+    },
+    {
+      key: "OutroSkillStrikeBeforeReady",
+      name: `Outro Skill: Strike Before Ready`,
+      details: `Grant 50% Echo Skill DMG Amplification to the incoming Resonator, lasting for 14s or until the Resonator is switched out.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Echo",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
