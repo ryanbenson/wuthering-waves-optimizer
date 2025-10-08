@@ -1,6 +1,6 @@
 export const introAttacks = {
   name: "Intro Skill: Hellflare Overload",
-  description: `<div class="skilldescription"></div>`,
+  description: `<div>Attack the target and deal <span class="ingame-Fire">Fusion DMG</span>.<br>Hold Normal Attack after casting this skill to cast <span class="ingame-Highlight">Heavy Attack - Volley of Death Stage 2</span>. While in <span class="ingame-Highlight"><te href="120805">Demon Hypostasis</te></span>, cast <span class="ingame-Highlight">Heavy Attack - Flamewing Verdict Stage 2</span> instead.<br>Press Normal Attack right after casting this skill to perform <span class="ingame-Highlight">Basic Attack Stage 2</span>, which is replaced with <span class="ingame-Highlight"> Basic Attack - Seraphic Execution Stage 2</span> if Galbrena is in <span class="ingame-Highlight"><te href="120805">Demon Hypostasis</te></span>.</div>`,
   attacks: [
     {
       key: "HellflareOverloadDMG",
