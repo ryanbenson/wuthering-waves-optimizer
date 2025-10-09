@@ -61,7 +61,7 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifySpecificTalents: "ATK",
+        modifier: "ATK",
         modifierValue: 0.1,
       },
     ],

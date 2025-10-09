@@ -36,5 +36,23 @@ export const skillAttacks = {
         "10": "32.33%+32.33%*3+86.21%",
       },
     },
+    {
+      key: "SequenceNode3OBladeIWhoSaveNoMore",
+      label: "S3 Quietude Within DMG",
+      talents: {
+        "1": "500%",
+        "2": "500%",
+        "3": "500%",
+        "4": "500%",
+        "5": "500%",
+        "6": "500%",
+        "7": "500%",
+        "8": "500%",
+        "9": "500%",
+        "10": "500%",
+      },
+      type: "Echo",
+      requiresResonanceChain: "SequenceNode3OBladeIWhoSaveNoMore",
+    },
   ],
 };

@@ -15,10 +15,8 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div
-            v-if="false"
-            class="alert alert-success mb-6 text-white p-2 px-4">
-            All 2.6 content is now available!
+          <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
+            All 2.7 content is now available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
@@ -1510,6 +1508,8 @@ export default defineComponent({
       // self subtype dmg deepen
       let selfBuffDmgDeepenForSubType =
         charBuffsData.value?.[`DMGDeepen:${attack.subType}`] ?? 0;
+      let selfBuffDmgDeepenForType =
+        charBuffsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
       let selfBuffDmgDeepenForElement =
         charBuffsData.value?.[`DMGDeepen:${attackElement}`] ?? 0;
       let teamBuffDmgDeepenForCharElement =
@@ -1572,6 +1572,7 @@ export default defineComponent({
         weaponBuffDmgDeepenSubType +
         customDamageDeepen +
         selfBuffDmgDeepenForSubType +
+        selfBuffDmgDeepenForType +
         weaponBuffDmgDeepenType +
         selfBuffDmgDeepenForElement;
       let totalTalentModifierMultiply =

@@ -8,5 +8,12 @@ export const outroAttacks = {
       talent: "100.00%",
       type: "Echo",
     },
+    {
+      key: "SequenceNode3OBladeIWhoSaveNoMore2",
+      label: "S3 Sheath Fallen, New Shoots Revealed DMG",
+      talent: "500.00%",
+      type: "Echo",
+      requiresResonanceChain: "SequenceNode3OBladeIWhoSaveNoMore2",
+    },
   ],
 };

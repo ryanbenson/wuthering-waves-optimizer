@@ -1417,6 +1417,21 @@ export const buffsByCharacter = {
       maxStacks: 0,
       alwaysEnabled: false,
     },
+    {
+      key: "SequenceNode2OBladeIWhoTeachNoMore",
+      name: "Sequence Node 2: O Blade, I, Who Teach No More",
+      details: `<span class="skilldescription">Bamboo's Shade now grants an additional 30% Echo Skill DMG Amplification to all nearby active Resonators in the team.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Echo",
+          modifierValue: 0.3,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
   ],
 };
 

@@ -367,6 +367,26 @@ export default {
         }
       }
 
+      // this only applies to BamboosShade on Qiuyuan
+      if (this.character === "Qiuyuan" && this.uniqueKey === "BamboosShade") {
+        const sequenceNode2 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode2OBladeIWhoTeachNoMore;
+
+        // Apply SequenceNode2 effects if enabled
+        if (sequenceNode2?.isEnabled) {
+          const hasEchoAmplify = effectiveModifiers.some(
+            (mod) => mod.modifier === "DMGDeepen:Echo",
+          );
+          if (!hasEchoAmplify) {
+            effectiveModifiers.push({
+              modifier: "DMGDeepen:Echo",
+              modifierValue: 0.3,
+            });
+          }
+        }
+      }
+
       // If both are enabled, SequenceNode6 takes precedence (4 max stacks)
       // If neither is enabled, revert to base configuration (1 max stack, original modifiers)
 
@@ -465,8 +485,6 @@ export default {
           }
         });
       }
-
-      console.log(JSON.parse(JSON.stringify(data)));
       return data;
     },
   },
