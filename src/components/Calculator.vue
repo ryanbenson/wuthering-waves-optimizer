@@ -16,7 +16,7 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
-            Galbrena, her sig, and new echoes are now available!
+            2.7 content is now available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
