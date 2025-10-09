@@ -31,7 +31,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
+        modifier: "talentModifierMultiplyAdd",
         modifySpecificTalents: ["SunderingStrikeDMG"],
         modifierValue: 5,
       },
@@ -54,7 +54,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
+        modifier: "talentModifierMultiplyAdd",
         modifySpecificTalents: [
           "ThusSpoketheBladeToTeachDMG",
           "ThusSpoketheBladeToSaveDMG",
