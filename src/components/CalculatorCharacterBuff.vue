@@ -360,8 +360,10 @@ export default {
           if (hasAtk) {
             effectiveModifiers.push({
               modifier: "ATK",
-              // 3.5 from res chain + 0.2 from original buff
-              modifierValue: 3.7,
+              // .5 from res chain + 0.2 from original buff
+              // wording says 350%, but it's a multiplier against 20%, so 20%*350%
+              // not additive
+              modifierValue: .7,
             });
           }
         }
