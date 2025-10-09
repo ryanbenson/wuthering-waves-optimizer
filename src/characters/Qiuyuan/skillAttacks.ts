@@ -38,7 +38,7 @@ export const skillAttacks = {
     },
     {
       key: "SequenceNode3OBladeIWhoSaveNoMore",
-      label: "S3 Quietude Within DMG",
+      label: "S3 Straw Cape in Drizzly Rain DMG",
       talents: {
         "1": "500%",
         "2": "500%",
