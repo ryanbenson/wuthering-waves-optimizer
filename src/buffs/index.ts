@@ -1344,6 +1344,95 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Galbrena: [
+    {
+      key: "SequenceNode4CarryForthThisFadingSpark",
+      name: "Sequence Node 4: Carry Forth This Fading Spark",
+      details: `<div>When Resonators in the team cast Echo Skill, all Resonators in the team gain 20% all-Attribute DMG Bonus for 20s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Glacio",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Electro",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Aero",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Havoc",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Spectro",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Qiuyuan: [
+    {
+      key: "SunderingStrike",
+      name: `Sundering Strike`,
+      details: `For every 1% of Qiuyuan's Crit. Rate over 50%, this skill increases the Crit. DMG of all nearby active Resonators in the team by 2% for 30s, up to 30%.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "CritDMG",
+          modifierValue: 0.02,
+          maximumValue: 0.3,
+          modifierStep: 0.01,
+          minStatValue: 50,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+      inputBase: true,
+      modifierBasedOn: "Crit Rate",
+    },
+    {
+      key: "OutroSkillStrikeBeforeReady",
+      name: `Outro Skill: Strike Before Ready`,
+      details: `Grant 50% Echo Skill DMG Amplification to the incoming Resonator, lasting for 14s or until the Resonator is switched out.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Echo",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2OBladeIWhoTeachNoMore",
+      name: "Sequence Node 2: O Blade, I, Who Teach No More",
+      details: `<span class="skilldescription">Bamboo's Shade now grants an additional 30% Echo Skill DMG Amplification to all nearby active Resonators in the team.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Echo",
+          modifierValue: 0.3,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -1629,6 +1718,27 @@ export const allWeaponTeamBuffs = [
     minStacks: 0,
     maxStacks: 0,
     details: `Each successful extension gives <span class="param">24%/30%/36%/42%/48%</span> Fusion DMG Bonus to all Resonators in the team for <span class="param">30</span>s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
+  {
+    name: "Emerald Sentence",
+    key: "EmeraldSentenceEchoDMGBonus",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "EchoDMGBonus",
+        modifierByRefinement: {
+          "1": 0.2,
+          "2": 0.25,
+          "3": 0.3,
+          "4": 0.35,
+          "5": 0.4,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `Casting Intro Skill grants <span class="param">20%/25%/30%/35%/40%</span> Echo Skill DMG Bonus to all Resonators in the team for 30s. Effects of the same name cannot be stacked.`,
     alwaysEnabled: false,
   },
 ];

@@ -1,0 +1,121 @@
+export const resonanceChains = [
+  {
+    key: "SequenceNode1HeartofDefianceEverAblaze",
+    name: "Sequence Node 1: Heart of Defiance Ever Ablaze",
+    details: `<div>When casting <span class="ingame-Highlight">Resonance Skill - Ascent of Malice</span>, each point of <span class="ingame-Highlight"><te href="120801">Afterflame</te></span> additionally grants 2% Crit. DMG to <span class="ingame-Highlight">Basic Attack - Seraphic Execution</span>, <span class="ingame-Highlight">Heavy Attack - Flamewing Verdict</span>, <span class="ingame-Highlight">Mid-air Attack - Hellsent Barrage</span>,  <span class="ingame-Highlight">Resonance Skill - Ravage</span>, and <span class="ingame-Highlight">Dodge Counter  - Purgatory Scourge</span>, up to 80%. This effect is removed upon exiting <span class="ingame-Highlight"><te href="120805">Demon Hypostasis</te></span>.<br>While in <span class="ingame-Highlight"><te href="120805">Demon Hypostasis</te></span>, <span class="ingame-Highlight">Basic Attack - Seraphic Execution Stage 5</span>, <span class="ingame-Highlight">Heavy Attack - Flamewing Verdict Stage 3</span>, and <span class="ingame-Highlight">Mid-air Attack - Hellsent Barrage</span> are immune to interruption.</div>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode2HellboundDiveofFireandAbyss",
+    name: "Sequence Node 2: Hellbound Dive of Fire and Abyss",
+    details: `<div><span class="ingame-Highlight"><te href="120807">Burning Drive</te></span> grants 350% more ATK Bonus.</div>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode3HuntersBloodOathRekindled",
+    name: "Sequence Node 3: Hunter's Blood Oath Rekindled",
+    details: `<div>Resonance Liberation DMG Multiplier is increased by 130%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["HellfireAbsolutionDMG"],
+        modifierValue: 1.3,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode4CarryForthThisFadingSpark",
+    name: "Sequence Node 4: Carry Forth This Fading Spark",
+    details: `<div>When Resonators in the team cast Echo Skill, all Resonators in the team gain 20% all-Attribute DMG Bonus for 20s.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Glacio",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Electro",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Aero",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Havoc",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Spectro",
+        modifierValue: 0.2,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode5ThoughLightFadesTormentConsumes",
+    name: "Sequence Node 5: Though Light Fades, Torment Consumes",
+    details: `<div>The DMG Multipliers of <span class="ingame-Highlight">Resonance Skill - Encroach</span>, <span class="ingame-Highlight">Resonance Skill - Ascent of Malice</span>, and <span class="ingame-Highlight">Resonance Skill - Ravage</span> are increased by 150%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "ResonanceSkillEncroachDMG",
+          "ResonanceSkillAscentofMaliceDMG",
+          "ResonanceSkillRavageDMG",
+        ],
+        modifierValue: 1.5,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode6IRemainWhoIamEternalMyFlame",
+    name: "Sequence Node 6: I Remain Who I am, Eternal My Flame",
+    details: `<div><span class="ingame-Highlight"><te href="120805">Demon Hypostasis</te></span> becomes <span class="ingame-Highlight"><te href="120806">Eternal Hypostasis</te></span>. <span class="ingame-Highlight"><te href="120806">Eternal Hypostasis</te></span> retains all effects of <span class="ingame-Highlight"><te href="120805">Demon Hypostasis</te></span>.<br>Additionally, <span class="ingame-Highlight"><te href="120806">Eternal Hypostasis</te></span> lasts, the DMG Multipliers of <span class="ingame-Highlight">Basic Attack - Seraphic Execution</span>, <span class="ingame-Highlight">Heavy Attack - Flamewing Verdict</span>,  <span class="ingame-Highlight">Mid-air Attack - Hellsent Barrage</span>, and <span class="ingame-Highlight">Dodge Counter -Purgatory Scourge</span> are additionally increased by 60%.<br><span class="ww-wiki-font-bold"></span><br>When casting <span class="ingame-Highlight">Resonance Skill - Ascent of Malice</span>, for every 1 point of <span class="ingame-Highlight"><te href="120801">Afterflame</te></span> consumed, Galbrena's <span class="ingame-Highlight">Basic Attack - Seraphic Execution</span>, <span class="ingame-Highlight">Heavy Attack - Flamewing Verdict</span>, <span class="ingame-Highlight">Mid-air Attack - Hellsent Barrage</span>, <span class="ingame-Highlight">Resonance Skill - Ravage</span>, and <span class="ingame-Highlight">Dodge Counter -Purgatory Scourge</span> gain 0.875% Fusion DMG Amplification, up to 35%, which is removed upon exiting <span class="ingame-Highlight"><te href="120806">Eternal Hypostasis</te></span>.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "BasicAttackSeraphicExecutionStage1DMG",
+          "BasicAttackSeraphicExecutionStage2DMG",
+          "BasicAttackSeraphicExecutionStage3DMG",
+          "BasicAttackSeraphicExecutionStage4DMG",
+          "BasicAttackSeraphicExecutionStage5DMG",
+          "HeavyAttackFlamewingVerdictStage1DMG",
+          "HeavyAttackFlamewingVerdictStage2DMG",
+          "HeavyAttackFlamewingVerdictStage3DMG",
+          "MidairAttackHellsentBarragePlungingAttackDMG",
+          "MidairAttackHellsentBarrageSustainedFireDMG",
+          "DodgeCounterPurgatoryScourgeDMG",
+        ],
+        modifierValue: 0.6,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+];
