@@ -13,6 +13,12 @@
     <h3>October 10, 2025</h3>
     <ul>
       <li>Adds missing Bamboo's Shade team buff.</li>
+      <li>
+        Fixed Qiuyuan's tooltip when his s3 is active. Note, that i just put the
+        whole additive multiplier at the end. i don't know if/how the additive
+        multiplier bonus is spread, and we may have to wait until his release to
+        get the tooltip accurate. the row's damage is accurate regardless
+      </li>
     </ul>
     <h3>October 9, 2025</h3>
     <ul>
