@@ -10,9 +10,15 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>October 8, 2025</h3>
+    <h3>October 10, 2025</h3>
     <ul>
-      <li>Adds content for 2.7.</li>
+      <li>Adds missing Bamboo's Shade team buff.</li>
+    </ul>
+    <h3>October 9, 2025</h3>
+    <ul>
+      <li>Adds Qiuyuan.</li>
+      <li>Fixes Galbrena S2.</li>
+      <li>Updated custom buffs to allow the input arrows to go negative</li>
     </ul>
     <h3>October 5, 2025</h3>
     <ul>

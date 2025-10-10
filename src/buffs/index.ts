@@ -1383,6 +1383,21 @@ export const buffsByCharacter = {
   ],
   Qiuyuan: [
     {
+      key: "BamboosShade",
+      name: `Bamboo's Shade`,
+      details: `<span class="ingame-Title">Bamboo's Shade</span></span><br>When Qiuyuan reaches 400 points of <te href="141101">Swordster's Soliloquy</te>, he gains the <span class="ingame-Highlight">Bamboo's Shade</span> effect, granting all nearby active Resonators in the team 30% Echo Skill DMG Bonus for 30s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "EchoDMGBonus",
+          modifierValue: 0.3,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
       key: "SunderingStrike",
       name: `Sundering Strike`,
       details: `For every 1% of Qiuyuan's Crit. Rate over 50%, this skill increases the Crit. DMG of all nearby active Resonators in the team by 2% for 30s, up to 30%.`,
