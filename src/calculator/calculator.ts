@@ -1,18 +1,18 @@
 /**
   // 707 * (.2678 * (1+0+0)) * (1+.1) * (1+0) * 0.5136986301369864 * (1-.1 + 0) => 97 => same as in-game
   // attack * (talent * (1 + bonusTotalSkillDmg + bonusSpecificSkillDmg)) * (1 + bonusElementDmg) * (1 + totalDeepenEffect) * DEFModifier * (1- EnemyResistence + ResistenceReduction)
- * @param charLevel 
- * @param enemyLevel 
- * @param enemyResist 
- * @param talent 
- * @param attack 
- * @param defIgnore 
- * @param bonusTotalSkillDmg 
- * @param bonusSpecificSkillDmg 
- * @param bonusElementDmg 
- * @param totalDeepenEffect 
- * @param resistenceReduction 
- * @returns 
+ * @param charLevel
+ * @param enemyLevel
+ * @param enemyResist
+ * @param talent
+ * @param attack
+ * @param defIgnore
+ * @param bonusTotalSkillDmg
+ * @param bonusSpecificSkillDmg
+ * @param bonusElementDmg
+ * @param totalDeepenEffect
+ * @param resistenceReduction
+ * @returns
  */
 export function calcHitDamage(
   charLevel: string,
@@ -145,6 +145,12 @@ function getNightfallStacksPerHit(stacks: number): number[] {
 interface InstanceDamage {
   [instanceDamage: string]: number;
 }
+
+interface InstanceDamageEntry {
+  percentage: string;
+  damage: number;
+  count: number;
+}
 export function calcDamage(
   charLevel: string,
   enemyLevel: number,
@@ -176,7 +182,9 @@ export function calcDamage(
 
   // Calculate individual instance damages
   let instanceDamage: InstanceDamage = {};
+  let instanceDamageEntries: InstanceDamageEntry[] = [];
   const talentsLen = talents.length;
+
   talents.forEach((t, index) => {
     // we may modify this, but we need the original values for instanceDamage struct
     let originalTalent = t;
@@ -273,23 +281,37 @@ export function calcDamage(
     }
     // update total talent value after any talent modifier adjustments
     totalTalentValue += t;
-    // use the original talent as that's what is in the struct
+
+    // Calculate damage for this specific instance
+    const damage = calcHitDamage(
+      charLevel,
+      enemyLevel,
+      enemyResist,
+      t, // the talent value that's been modified
+      attack,
+      defIgnore,
+      bonusTotalSkillDmg,
+      bonusSpecificSkillDmg,
+      bonusElementDmg,
+      totalDeepenEffect,
+      resistenceReduction,
+      specialMultiplier,
+    );
+
+    // Store the original percentage for grouping
     let percentageString = (originalTalent * 100).toFixed(2).toString() + "%";
+
+    // Add to instance damage entries for detailed breakdown
+    instanceDamageEntries.push({
+      percentage: percentageString,
+      damage: damage,
+      count: 1,
+    });
+
+    // Keep the old instanceDamage structure for backward compatibility
+    // But now we'll handle grouping properly in buildDetailedCalculationString
     if (!instanceDamage[percentageString]) {
-      instanceDamage[percentageString] = calcHitDamage(
-        charLevel,
-        enemyLevel,
-        enemyResist,
-        t, // the talent value that's been modified
-        attack,
-        defIgnore,
-        bonusTotalSkillDmg,
-        bonusSpecificSkillDmg,
-        bonusElementDmg,
-        totalDeepenEffect,
-        resistenceReduction,
-        specialMultiplier,
-      );
+      instanceDamage[percentageString] = damage;
     }
   });
 
@@ -314,7 +336,7 @@ export function calcDamage(
   // Build the detailed damage calculation string
   let detailedCalculation = buildDetailedCalculationString(
     talent,
-    instanceDamage,
+    instanceDamageEntries,
     critRate,
     critDamage,
     null,
@@ -322,7 +344,7 @@ export function calcDamage(
   );
   let detailedCalculationCrit = buildDetailedCalculationString(
     talent,
-    instanceDamage,
+    instanceDamageEntries,
     critRate,
     critDamage,
     "crit",
@@ -330,7 +352,7 @@ export function calcDamage(
   );
   let detailedCalculationAvg = buildDetailedCalculationString(
     talent,
-    instanceDamage,
+    instanceDamageEntries,
     critRate,
     critDamage,
     "average",
@@ -343,6 +365,7 @@ export function calcDamage(
   // Return detailed damage information
   return {
     instanceDamage,
+    instanceDamageEntries,
     totalDamage: finalDamage,
     critDamage: totalCritDmg,
     avgDamage: totalAvgDmg,
@@ -425,7 +448,7 @@ function buildDetailedCalculationStringFixedDamage(
 // Helper function to build the detailed calculation string
 function buildDetailedCalculationString(
   talent: string,
-  instanceDamage: any,
+  instanceDamageEntries: InstanceDamageEntry[],
   critRate: number,
   critDamage: number,
   adjustDamage: string | null = null,
@@ -436,30 +459,75 @@ function buildDetailedCalculationString(
   if (count > 1) {
     countPrefix = `${count} x `;
   }
-  let detailedParts = talentParts.map((part) => {
+
+  let detailedParts: string[] = [];
+  let entryIndex = 0;
+
+  talentParts.forEach((part) => {
     if (part.includes("*")) {
       let [percentage, times] = part.split("*").map((str) => str.trim());
       let percentageValue = parseFloat(percentage.replace("%", ""));
-      let percentageString = percentageValue.toFixed(2) + "%";
-      let damage = instanceDamage[percentageString].toFixed(2);
-      if (adjustDamage === "average") {
-        damage = calcAvgDamage(Number(damage), critRate, critDamage);
+      let timesNum = parseInt(times);
+
+      // Group consecutive entries with the same percentage
+      let groupedDamage = 0;
+      let groupedCount = 0;
+
+      while (
+        entryIndex < instanceDamageEntries.length &&
+        groupedCount < timesNum
+      ) {
+        const entry = instanceDamageEntries[entryIndex];
+        let entryPercentageValue = parseFloat(
+          entry.percentage.replace("%", ""),
+        );
+
+        // Check if this entry matches the current part's percentage (with small tolerance for floating point)
+        if (Math.abs(entryPercentageValue - percentageValue) < 0.01) {
+          let damage = entry.damage;
+          if (adjustDamage === "average") {
+            damage = calcAvgDamage(damage, critRate, critDamage);
+          }
+          if (adjustDamage === "crit") {
+            damage = calcCritDamage(damage, critDamage);
+          }
+          groupedDamage += damage;
+          groupedCount++;
+          entryIndex++;
+        } else {
+          break;
+        }
       }
-      if (adjustDamage === "crit") {
-        damage = calcCritDamage(damage, critDamage);
+
+      if (groupedCount > 0) {
+        const avgDamage = groupedDamage / groupedCount;
+        detailedParts.push(
+          `<strong>${Math.ceil(avgDamage)}</strong> * ${times}`,
+        );
       }
-      return `<strong>${Math.ceil(damage)}</strong> * ${times}`;
     } else {
       let percentageValue = parseFloat(part.replace("%", ""));
-      let percentageString = percentageValue.toFixed(2) + "%";
-      let damage = instanceDamage[percentageString].toFixed(2);
-      if (adjustDamage === "average") {
-        damage = calcAvgDamage(Number(damage), critRate, critDamage);
+
+      // Get the next entry
+      if (entryIndex < instanceDamageEntries.length) {
+        const entry = instanceDamageEntries[entryIndex];
+        let entryPercentageValue = parseFloat(
+          entry.percentage.replace("%", ""),
+        );
+
+        // Check if this entry matches the current part's percentage (with small tolerance for floating point)
+        if (Math.abs(entryPercentageValue - percentageValue) < 0.01) {
+          let damage = entry.damage;
+          if (adjustDamage === "average") {
+            damage = calcAvgDamage(damage, critRate, critDamage);
+          }
+          if (adjustDamage === "crit") {
+            damage = calcCritDamage(damage, critDamage);
+          }
+          detailedParts.push(`<strong>${Math.ceil(damage)}</strong>`);
+          entryIndex++;
+        }
       }
-      if (adjustDamage === "crit") {
-        damage = calcCritDamage(damage, critDamage);
-      }
-      return `<strong>${Math.ceil(damage)}</strong>`;
     }
   });
 
