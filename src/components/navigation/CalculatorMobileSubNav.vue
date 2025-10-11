@@ -67,7 +67,7 @@
         Team Buffs
       </a>
     </li>
-    <li v-if="isFeatureOptimizerEnabled" class="mb-2">
+    <li class="mb-2">
       <a
         @click="changeScreen('optimizer')"
         :class="{ active: curScreen === 'optimizer' }"
@@ -171,9 +171,6 @@ export default {
   },
   computed: {
     ...mapState(useSettingsStore, ["labs"]),
-    isFeatureOptimizerEnabled() {
-      return this.labs?.optimizer?.isEnabled ?? false;
-    },
   },
   mounted() {
     this.curScreen = this.screen;

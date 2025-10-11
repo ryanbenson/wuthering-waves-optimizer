@@ -11,35 +11,6 @@
       </form>
       <div class="py-4">
         <h1 class="text-2xl">Optimizer Guide</h1>
-        <div
-          class="card bg-base-100 w-full card-compact shadow-xl border border-primary my-4">
-          <div class="card-body">
-            <h2 class="card-title">🧪 This is a Lab feature</h2>
-            <p class="mt-2">
-              Since this is in beta, you may find bugs or inaccuracies. If so,
-              please report them in the Discord, and provide as much information
-              as possible as well as your export.
-            </p>
-            <div class="mt-2">
-              Also, the
-              <strong>following features are still in development</strong>
-              :
-              <ul>
-                <li>
-                  Automatically enable echo buffs on your character profile when
-                  equipping a loadout.
-                </li>
-                <li>
-                  Performance enhancements, especially when looking through a
-                  very large amount of possible loadouts, and when using a
-                  rotation.
-                </li>
-                <li>More to come as well!</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
         <p class="mt-2">
           This is a quick guide to help you understand how the optimizer works
           and to get the most out of it!
@@ -48,10 +19,8 @@
           <strong>Important to know:</strong>
           <ul>
             <li>
-              The optimizer works off of your inventory of echoes. Ideally you
-              pull in all of your echoes from the game into your inventory. This
-              will make the optimizer more effective at giving you the best
-              build.
+              The optimizer works off of your inventory of echoes. So you'll
+              need to pull in your echoes for this to work.
             </li>
 
             <li>
@@ -60,13 +29,23 @@
               You'll need to enable those, otherwise you may see a difference in
               the loadout versus what the right panel says after you equip the
               loadout.
+              <strong>This will be supported soon.</strong>
             </li>
 
             <li>
               When you're processing many loadouts, and/or using rotations, you
-              may notice a performance hit as your screen may lag. This is
-              expected as it's using your browser and system resources pretty
-              heavily. This will be resolved in an upcoming update.
+              may notice a performance hit as your screen may lag, or you may
+              run into your browser saying "this page has stopped working". This
+              can happen when it's trying to process a large amount of loadouts
+              as it's using your browser pretty heavily. This will be resolved
+              in an upcoming update.
+              <strong>If you run into this</strong>
+              try reducing how many loadoats it would process by reducing the
+              sets selected, etc.
+              <strong>
+                This is being actively worked on to support millions of loadout
+                combinations.
+              </strong>
             </li>
           </ul>
         </div>
@@ -101,10 +80,12 @@
         <div class="optimizer-images divide">
           <h3 class="text-lg mt-4">Example:</h3>
           <img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/wt-info/optimizer-001.png"
+            src="https://ryanbenson.github.io/wuthering-waves-assets/wt-info/optimizer-guide-setup.png"
+            alt="Configuration of optimizer"
             class="shadow rounded my-4 block info-image" />
           <img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/wt-info/optimizer-002.png"
+            src="https://ryanbenson.github.io/wuthering-waves-assets/wt-info/optimizer-guide-results.png"
+            alt="Results from optimization"
             class="shadow rounded my-4 block info-image" />
         </div>
         <p class="mt-2">
@@ -118,6 +99,20 @@
           feature to pull those into your inventory. You could just repeat this
           process multiple times. Or you can manually add echoes one by one.
         </p>
+      </div>
+      <div class="mt-2">
+        <strong>Upcoming improvements</strong>
+        <ul>
+          <li>
+            Performance and scaling improvements to support hundreds of
+            thousands to millions of loadout combinations without affecting the
+            browser.
+          </li>
+          <li>
+            Ability to update character echo set / main echo buffs to match your
+            optimizer settings.
+          </li>
+        </ul>
       </div>
     </div>
   </dialog>

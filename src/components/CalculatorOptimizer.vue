@@ -77,7 +77,7 @@
     <button
       class="btn btn-sm w-full btn-primary btn-outline mb-4"
       @click="handleOpenOptimizerGuide">
-      🧪 Optimizer Lab! See guide.
+      🧪 Optimizer guide
     </button>
     <div class="optimizer-filters">
       <div class="optimizer-filters__sets">
@@ -551,17 +551,13 @@ export default {
     isValid() {
       const echoSetsCount = this.setFilters.length;
       const mainEchoesCount = this.mainEchoes.length;
-      const hasValidTarget = this.optimizationTarget !== null;
-      return (
-        !this.isTargetUnavailable &&
-        hasValidTarget &&
-        echoSetsCount > 0 &&
-        mainEchoesCount > 0
-      );
-    },
-    isTargetUnavailable() {
-      return false;
-      return this.optimizationTarget.includes("Rotation");
+      let hasValidTarget = false;
+      if (Array.isArray(this.optimizationTarget)) {
+        hasValidTarget = this.optimizationTarget.length > 0;
+      } else {
+        hasValidTarget = !!this.optimizationTarget;
+      }
+      return hasValidTarget && echoSetsCount > 0 && mainEchoesCount > 0;
     },
     echoSets() {
       return Object.keys(this.echoSetLabelMap);

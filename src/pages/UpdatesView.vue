@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 11, 2025</h3>
+    <ul>
+      <li>Releases optimizer.</li>
+    </ul>
     <h3>October 10, 2025</h3>
     <ul>
       <li>Adds missing Bamboo's Shade team buff.</li>

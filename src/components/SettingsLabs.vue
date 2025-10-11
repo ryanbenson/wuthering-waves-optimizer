@@ -47,14 +47,7 @@ export default defineComponent({
   name: "SettingsLabs",
   data() {
     return {
-      labsFeatures: [
-        {
-          key: "optimizer",
-          label: "Optimizer",
-          details:
-            "Automatically find the best build from your inventory of echoes!",
-        },
-      ],
+      labsFeatures: [],
     };
   },
   components: { SettingsLab },
