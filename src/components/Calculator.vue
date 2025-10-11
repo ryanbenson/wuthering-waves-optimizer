@@ -1393,8 +1393,11 @@ export default defineComponent({
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:CritRate`
         ] ?? 0;
-      const echoSpecificAttackTypeCritRate =
+      let echoSpecificAttackTypeCritRate =
         echoStats.value?.[`CritRate:${attack.type}`] ?? 0;
+      // need to divide by 100 since the echo data is flul numbers
+      // but we're injecting it to the calcs which is decimal based
+      echoSpecificAttackTypeCritRate = echoSpecificAttackTypeCritRate / 100;
       const specificSkillExtraCritDMG =
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:CritDMG`

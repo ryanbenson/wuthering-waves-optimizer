@@ -19,6 +19,7 @@
         multiplier bonus is spread, and we may have to wait until his release to
         get the tooltip accurate. the row's damage is accurate regardless
       </li>
+      <li>Fixes CR buff on Flamewing's Shadow set.</li>
     </ul>
     <h3>October 9, 2025</h3>
     <ul>

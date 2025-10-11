@@ -1106,7 +1106,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         modifiers: [
           {
             modifier: "CritRate:Echo",
-            modifierValue: 4,
+            modifierValue: 20,
           },
         ],
         alwaysEnabled: false,
