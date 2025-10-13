@@ -10,6 +10,14 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 13, 2025</h3>
+    <ul>
+      <li>Fixed Flamewing's Shadow in the optimizer.</li>
+      <li>
+        Adds set icon to loadout echoes so you can quickly see the set of what
+        it is.
+      </li>
+    </ul>
     <h3>October 11, 2025</h3>
     <ul>
       <li>Releases optimizer.</li>

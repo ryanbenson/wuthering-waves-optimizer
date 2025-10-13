@@ -15,7 +15,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
+          <div
+            v-if="false"
+            class="alert alert-success mb-6 text-white p-2 px-4">
             ✨ Optimizer is now available!
           </div>
           <CalculatorCharacterSelect
@@ -1393,8 +1395,14 @@ export default defineComponent({
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:CritRate`
         ] ?? 0;
-      let echoSpecificAttackTypeCritRate =
-        echoStats.value?.[`CritRate:${attack.type}`] ?? 0;
+      let echoSpecificAttackTypeCritRate = 0;
+      if (providedEchoStats) {
+        echoSpecificAttackTypeCritRate =
+          providedEchoStats?.[`CritRate:${attack.type}`] ?? 0;
+      } else {
+        echoSpecificAttackTypeCritRate =
+          echoStats.value?.[`CritRate:${attack.type}`] ?? 0;
+      }
       // need to divide by 100 since the echo data is flul numbers
       // but we're injecting it to the calcs which is decimal based
       echoSpecificAttackTypeCritRate = echoSpecificAttackTypeCritRate / 100;
@@ -2741,6 +2749,7 @@ export default defineComponent({
             true, // dynamicTalentType = yes, this will figure out the talent data for us
             false, // excludeDisabledAttacks = no, unless we need to (TODO)
             finalStats, // give our stats, it will use this instead of the global state
+            combinedEchoBuffs, // provide the echoes so we can exclude them if needed
           );
           targetValue = attacks?.[0]?.damage?.[damageTargetReference] ?? 0;
           context.attacks = attacks;
