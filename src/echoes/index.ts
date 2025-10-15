@@ -3419,7 +3419,7 @@ CD: 20s.`,
   },
   YoungRoseshroom: {
     key: "YoungRoseshroom",
-    name: "Young Roseshroom",
+    name: "Baby Roseshroom",
     class: "Common",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/YoungRoseshroom.png",

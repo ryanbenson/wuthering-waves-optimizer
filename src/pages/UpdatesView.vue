@@ -10,6 +10,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 15, 2025</h3>
+    <ul>
+      <li>Fixed RV and CV when looking at the list of echo presets.</li>
+      <li>Fixes Baby Roseshroom name.</li>
+    </ul>
     <h3>October 13, 2025</h3>
     <ul>
       <li>Fixed Flamewing's Shadow in the optimizer.</li>
