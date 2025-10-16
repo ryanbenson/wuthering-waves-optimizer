@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 16, 2025</h3>
+    <ul>
+      <li>Adds rotations for Lupa and Galbrena.</li>
+    </ul>
     <h3>October 15, 2025</h3>
     <ul>
       <li>Fixed RV and CV when looking at the list of echo presets.</li>
