@@ -42,7 +42,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode4BenevolentGrace",
     name: "Sequence Node 4: Benevolent Grace",
-    details: `<span class="skilldescription">Jinhsi gains one stack of <span class="Highlight">Immortal's Descendancy</span> after casting Intro Skill <span class="Highlight">Loong's Halo</span>. Each stack of <span class="Highlight">Immortal's Descendancy</span> increases Jinhsi's ATK by 25%, stacking up to 2 time(s) and lasting for 20s.</span>`,
+    details: `<span class="skilldescription">When Jinhsi casts Resonance Liberation <span class="Highlight">Purge of Light</span> or Resonance Skill <span class="Highlight">Illuminous Epiphany</span>, all nearby Resonators on the team gain 20% Attribute DMG Bonus for 20s.</span>`,
     hasStacks: false,
     modifiers: [
       {

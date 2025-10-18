@@ -18,7 +18,7 @@
           <div
             v-if="false"
             class="alert alert-success mb-6 text-white p-2 px-4">
-            All 2.6 content is now available!
+            ✨ Optimizer is now available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
@@ -231,6 +231,7 @@ import {
   getAeroErosionDamage,
   getAeroErosionModifierByLevelByStacks,
   calcMidnightVeilDMG,
+  calcFixedDamage,
 } from "../calculator/calculator";
 import {
   getCharByName,
@@ -1284,6 +1285,14 @@ export default defineComponent({
       } else {
         talent = talentTree[talentType];
       }
+      /**
+       * If the attack is fixed (attack.isFixed === true)
+       * return the value we got from the talent directly
+       * this is used for attacks that do a fixed amount of damage
+       */
+      if (attack.isFixed) {
+        return calcFixedDamage(talent, count);
+      }
       const talentModifierAdd = selfBuffs?.[attack.key] ?? 0;
       // TODO: Is this used anywhere?
       const talentModifierAddFromResonanceChains =
@@ -1386,20 +1395,39 @@ export default defineComponent({
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:CritRate`
         ] ?? 0;
+      let echoSpecificAttackTypeCritRate = 0;
+      if (providedEchoStats) {
+        echoSpecificAttackTypeCritRate =
+          providedEchoStats?.[`CritRate:${attack.type}`] ?? 0;
+      } else {
+        echoSpecificAttackTypeCritRate =
+          echoStats.value?.[`CritRate:${attack.type}`] ?? 0;
+      }
+      // need to divide by 100 since the echo data is flul numbers
+      // but we're injecting it to the calcs which is decimal based
+      echoSpecificAttackTypeCritRate = echoSpecificAttackTypeCritRate / 100;
       const specificSkillExtraCritDMG =
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:CritDMG`
         ] ?? 0;
+      const selfBuffsSpecificSkillExtraCritDMG =
+        selfBuffs.specificTalentBuffs?.[`${attack.key}:CritDMG`] ?? 0;
       const baseCritRate =
         providedFullStats?.totalCritRate || totalCritRate.value;
-      let instanceDmgCritRate = baseCritRate + specificSkillExtraCritRate;
+      let instanceDmgCritRate =
+        baseCritRate +
+        specificSkillExtraCritRate +
+        echoSpecificAttackTypeCritRate;
       if (excludeTeamBuffs) {
         instanceDmgCritRate = statsWithoutTeamBuffs?.totalCritRate ?? 0;
         instanceDmgCritRate += specificSkillExtraCritRate;
       }
       const baseCritDamage =
         providedFullStats?.totalCritDMG || totalCritDMG.value;
-      let instanceDmgCritDMG = baseCritDamage + specificSkillExtraCritDMG;
+      let instanceDmgCritDMG =
+        baseCritDamage +
+        specificSkillExtraCritDMG +
+        selfBuffsSpecificSkillExtraCritDMG;
       if (excludeTeamBuffs) {
         instanceDmgCritDMG = statsWithoutTeamBuffs?.totalCritDMG ?? 0;
         instanceDmgCritDMG += specificSkillExtraCritDMG;
@@ -1491,6 +1519,8 @@ export default defineComponent({
       // self subtype dmg deepen
       let selfBuffDmgDeepenForSubType =
         charBuffsData.value?.[`DMGDeepen:${attack.subType}`] ?? 0;
+      let selfBuffDmgDeepenForType =
+        charBuffsData.value?.[`DMGDeepen:${attackType}`] ?? 0;
       let selfBuffDmgDeepenForElement =
         charBuffsData.value?.[`DMGDeepen:${attackElement}`] ?? 0;
       let teamBuffDmgDeepenForCharElement =
@@ -1553,6 +1583,7 @@ export default defineComponent({
         weaponBuffDmgDeepenSubType +
         customDamageDeepen +
         selfBuffDmgDeepenForSubType +
+        selfBuffDmgDeepenForType +
         weaponBuffDmgDeepenType +
         selfBuffDmgDeepenForElement;
       let totalTalentModifierMultiply =
@@ -1866,7 +1897,12 @@ export default defineComponent({
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:specialMultiplier`
         ] ?? 0;
-      totalSpecialMultiplier += resonanceChainAttackSpecialMultiplier;
+      let selfBuffAttackSpecialMultiplier =
+        charBuffsData.value?.specificTalentBuffs?.[
+          `${attack.key}:specialMultiplier`
+        ] ?? 0;
+      totalSpecialMultiplier +=
+        resonanceChainAttackSpecialMultiplier + selfBuffAttackSpecialMultiplier;
       // console.table({
       //   attack: attack.key,
       //   attackType,
@@ -2713,6 +2749,7 @@ export default defineComponent({
             true, // dynamicTalentType = yes, this will figure out the talent data for us
             false, // excludeDisabledAttacks = no, unless we need to (TODO)
             finalStats, // give our stats, it will use this instead of the global state
+            combinedEchoBuffs, // provide the echoes so we can exclude them if needed
           );
           targetValue = attacks?.[0]?.damage?.[damageTargetReference] ?? 0;
           context.attacks = attacks;

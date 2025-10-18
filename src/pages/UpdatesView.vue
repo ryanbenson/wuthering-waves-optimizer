@@ -10,6 +10,48 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 18, 2025</h3>
+    <ul>
+      <li>Fixes Jinhsi's s4 text.</li>
+    </ul>
+    <h3>October 16, 2025</h3>
+    <ul>
+      <li>Adds rotations for Lupa and Galbrena.</li>
+    </ul>
+    <h3>October 15, 2025</h3>
+    <ul>
+      <li>Fixed RV and CV when looking at the list of echo presets.</li>
+      <li>Fixes Baby Roseshroom name.</li>
+    </ul>
+    <h3>October 13, 2025</h3>
+    <ul>
+      <li>Fixed Flamewing's Shadow in the optimizer.</li>
+      <li>
+        Adds set icon to loadout echoes so you can quickly see the set of what
+        it is.
+      </li>
+    </ul>
+    <h3>October 11, 2025</h3>
+    <ul>
+      <li>Releases optimizer.</li>
+    </ul>
+    <h3>October 10, 2025</h3>
+    <ul>
+      <li>Adds missing Bamboo's Shade team buff.</li>
+      <li>
+        Fixed Qiuyuan's tooltip when his s3 is active. Note, that i just put the
+        whole additive multiplier at the end. i don't know if/how the additive
+        multiplier bonus is spread, and we may have to wait until his release to
+        get the tooltip accurate. the row's damage is accurate regardless
+      </li>
+      <li>Fixes CR buff on Flamewing's Shadow set.</li>
+    </ul>
+    <h3>October 9, 2025</h3>
+    <ul>
+      <li>Adds Qiuyuan.</li>
+      <li>Fixes Galbrena S2.</li>
+      <li>Updated custom buffs to allow the input arrows to go negative</li>
+    </ul>
     <h3>October 5, 2025</h3>
     <ul>
       <li>Adds ability to exclude equipped echoes when optimizing.</li>

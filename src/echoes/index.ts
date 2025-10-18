@@ -479,7 +479,7 @@ CD: <span class="param">20</span>s</span>`,
         element: "Fusion",
       },
     ],
-    sets: ["FlamingClawprint"],
+    sets: ["FlamingClawprint", "FlamewingsShadow"],
   },
   Crownless: {
     key: "Crownless",
@@ -1560,7 +1560,7 @@ CD: <span class="param">20</span>s.</span>`,
         element: "Aero",
       },
     ],
-    sets: ["WindwardPilgrimage", "FlamingClawprint"],
+    sets: ["WindwardPilgrimage", "FlamingClawprint", "FlamewingsShadow"],
   },
   LadyoftheSea: {
     key: "LadyoftheSea",
@@ -1983,7 +1983,7 @@ CD: <span class="param">25</span>s.</span>`,
     details: `Once a remnant creature in Nimbus Sanctum, it decayed into a Tacet Discord as its frequency wanes, leaving it wandering in perpetual sorrow.`,
     modifiers: [],
     actions: [],
-    sets: ["EmpyreanAnthem", "MidnightVeil"],
+    sets: ["EmpyreanAnthem", "MidnightVeil", "FlamewingsShadow"],
   },
   NightmareAeroPredator: {
     key: "NightmareAeroPredator",
@@ -2011,6 +2011,28 @@ CD: <span class="param">8</span>s</span>`,
       },
     ],
     sets: ["CrownofValor"],
+  },
+  NightmareBabyRoseshroom: {
+    key: "NightmareBabyRoseshroom",
+    name: "Nightmare: Baby Roseshroom",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareBabyRoseshroom.png",
+    details: `<span class="description">Summon a Baby Roseshroom that fires a laser, dealing 32.00%+64 Havoc DMG.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["FlamewingsShadow"],
+  },
+  NightmareBabyViridblazeSaurian: {
+    key: "NightmareBabyViridblazeSaurian",
+    name: "Nightmare: Baby Viridblaze Saurian",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareBabyViridblazeSaurian.png",
+    details: `<span class="description">Transform into Baby Viridblaze Saurian to rest in place, and slowly restore HP.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["FlamewingsShadow"],
   },
   NightmareChirpuff: {
     key: "NightmareChirpuff",
@@ -2573,6 +2595,17 @@ CD: <span class="param">15</span>s</span>`,
     ],
     sets: ["CrownofValor"],
   },
+  NightmareViridblazeSaurian: {
+    key: "NightmareViridblazeSaurian",
+    name: "Nightmare: Viridblaze Saurian",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareViridblazeSaurian.png",
+    details: `<span class="description">Summon a Viridblaze Saurian to continuously spit fire, dealing 17.12% Fusion DMG 10 times.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["FlamewingsShadow"],
+  },
   NocturnusKnight: {
     key: "NocturnusKnight",
     name: "Nocturnus Knight",
@@ -2736,6 +2769,61 @@ CD: 20s.`,
       },
     ],
     sets: ["GustsofWelkin", "WindwardPilgrimage"],
+  },
+  ReminiscenceThrenodianLeviathan: {
+    key: "ReminiscenceThrenodianLeviathan",
+    name: "Reminiscence: Threnodian - Leviathan",
+    class: "Calamity",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReminiscenceThrenodianLeviathan.webp",
+    details: `Summon a Collapsing Horizon, dealing two instances of 87.36%/101.92%/116.48%/131.04% Havoc DMG to the nearby enemies and obtaining the Core of Collapse for 15s.
+<br><br>
+While it lasts, Core of Collapse deals 24.57% Havoc DMG when the active Resonator in the team deals damage. This effect can be triggered once every 0.5s, up to 8 times. Enemies with Havoc Bane take 100% more DMG from this effect.
+<br><br>
+The Resonator with this Echo equipped in the main slot gains 12.00% Havoc DMG Bonus and 12.00% Resonance Liberation DMG Bonus.
+<br><br>
+CD: 25s`,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "CollapsingHorizonDMG",
+        label: "Collapsing Horizon DMG",
+        description: `Summon a Collapsing Horizon, dealing two instances of 87.36%/101.92%/116.48%/131.04% Havoc DMG to the nearby enemies and obtaining the Core of Collapse for 15s.`,
+        talents: {
+          "1": "87.36%*2",
+          "2": "87.36%*2",
+          "3": "101.92%*2",
+          "4": "116.48%*2",
+          "5": "131.04%*2",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+      {
+        key: "CollapsingHorizonDMG",
+        label: "Collapsing Horizon DMG",
+        description: `While it lasts, Core of Collapse deals 24.57% Havoc DMG when the active Resonator in the team deals damage. This effect can be triggered once every 0.5s, up to 8 times.`,
+        talents: {
+          "1": "24.57%*8",
+          "2": "24.57%*8",
+          "3": "24.57%*8",
+          "4": "24.57%*8",
+          "5": "24.57%*8",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["FlamewingsShadow"],
   },
   RocksteadyGuardian: {
     key: "RocksteadyGuardian",
@@ -3331,7 +3419,7 @@ CD: 20s.`,
   },
   YoungRoseshroom: {
     key: "YoungRoseshroom",
-    name: "Young Roseshroom",
+    name: "Baby Roseshroom",
     class: "Common",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/YoungRoseshroom.png",

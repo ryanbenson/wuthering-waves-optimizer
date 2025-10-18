@@ -19,6 +19,9 @@
           class="echo__item__cost badge badge-primary text-nowrap absolute right-0 top-0">
           {{ type }}
         </span>
+        <span v-if="echoSet" class="absolute top-6 right-0 rounded-full">
+          <img :src="getEchoSetIcon(echoSet)" :class="echoSet" class="size-6" />
+        </span>
         <template v-if="hasSubStats">
           <span
             class="echo__item__cost badge text-nowrap text-sm"
@@ -49,9 +52,6 @@
                 class="echo__item__set size-6 rounded-full">
                 <img
                   src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png" />
-              </span>
-              <span v-if="echoSet" class="echo__item__set size-6 rounded-full">
-                <img :src="getEchoSetIcon(echoSet)" :class="echoSet" />
               </span>
             </div>
           </h2>
