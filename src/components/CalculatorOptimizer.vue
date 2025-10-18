@@ -12,17 +12,18 @@
       </form>
       <div class="py-4">
         <div
-          class="echoes__filters flex align-center gap-2 mb-6 items-center flex-wrap">
+          class="echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
+          :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
           <span class="mr-2">Filter</span>
           <button
             v-for="echoSet in echoSets"
             :key="echoSet"
             @click="toggleEchoSetFilter(echoSet)"
-            class="rounded"
+            class="rounded p-[.3rem]"
             :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
             <img
               :src="getEchoSetImage(echoSet)"
-              class="size-8 m-width-8 p-[.15rem]"
+              class="size-7 m-width-7"
               :class="echoSet" />
           </button>
           <button @click="resetFilters" class="btn btn-sm btn-ghost">
@@ -83,8 +84,8 @@
       <div class="optimizer-filters__sets">
         <h3 class="mb-2">Choose echo sets</h3>
         <div
-          class="optimizer-filters__sets flex gap-1 flex-wrap"
-          :class="{ 'optimizer-filters__sets--active': setFilters.length }">
+          class="echo-filters__sets flex gap-1 flex-wrap"
+          :class="{ 'echo-filters__sets--active': setFilters.length }">
           <button
             v-for="set in echoSets"
             :key="set"
@@ -649,7 +650,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.optimizer-filters__sets--active {
+.echo-filters__sets--active {
   button {
     opacity: 0.6;
   }
