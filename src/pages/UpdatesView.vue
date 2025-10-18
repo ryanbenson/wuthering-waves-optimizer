@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 18, 2025</h3>
+    <ul>
+      <li>Fixes Jinhsi's s4 text.</li>
+    </ul>
     <h3>October 16, 2025</h3>
     <ul>
       <li>Adds rotations for Lupa and Galbrena.</li>
