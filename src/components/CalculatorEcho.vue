@@ -559,17 +559,18 @@
       </form>
       <div class="py-4">
         <div
-          class="echoes__filters flex align-center gap-2 mb-6 items-center flex-wrap">
+          class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
+          :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
           <span class="mr-2">Filter</span>
           <button
             v-for="echoSet in echoSetsList"
             :key="echoSet"
             @click="toggleEchoSetFilter(echoSet)"
-            class="rounded"
+            class="rounded p-[.3rem]"
             :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
             <img
               :src="getEchoSetImage(echoSet)"
-              class="size-8 m-width-8 p-[.15rem]"
+              class="size-7 m-width-7"
               :class="echoSet" />
           </button>
           <button @click="resetFilters" class="btn btn-sm btn-ghost">
@@ -2515,6 +2516,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.echo-filters__sets--active {
+  button {
+    opacity: 0.6;
+  }
+  button.btn-active {
+    opacity: 1;
+  }
+}
 .echo-selector {
   margin-bottom: 20px;
 }

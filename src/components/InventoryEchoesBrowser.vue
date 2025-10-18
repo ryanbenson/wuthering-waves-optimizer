@@ -61,16 +61,18 @@
           </option>
         </optgroup>
       </select>
-      <div class="echoes__filters__sets">
+      <div
+        class="echoes__filters__sets echo-filters__sets"
+        :class="{ 'echo-filters__sets--active': echoSet !== null }">
         <button
           v-for="echoSet in echoSetsList"
           :key="echoSet"
           @click="toggleEchoSetFilter(echoSet)"
-          class="rounded mr-1"
+          class="rounded mr-1 p-[.3rem]"
           :class="{ 'btn-active': isEchoSetFilterActive(echoSet), echoSet }">
           <img
             :src="getEchoSetImage(echoSet)"
-            class="size-8 p-[.15rem]"
+            class="size-7"
             :class="echoSet" />
         </button>
       </div>
@@ -388,6 +390,14 @@ export default {
 html[data-theme="light"] {
   .modal-backdrop {
     opacity: 0.5;
+  }
+}
+.echo-filters__sets--active {
+  button {
+    opacity: 0.6;
+  }
+  button.btn-active {
+    opacity: 1;
   }
 }
 </style>

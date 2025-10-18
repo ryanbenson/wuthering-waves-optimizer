@@ -70,19 +70,21 @@
               </option>
             </optgroup>
           </select>
-          <div class="echoes__filters__sets">
+          <div
+            class="echoes__filters__sets echo-filters__sets"
+            :class="{ 'echo-filters__sets--active': echoSet !== null }">
             <button
               v-for="echoSet in echoSetsList"
               :key="echoSet"
               @click="toggleEchoSetFilter(echoSet)"
-              class="rounded mr-1"
+              class="rounded mr-1 p-[.3rem]"
               :class="{
                 'btn-active': isEchoSetFilterActive(echoSet),
                 echoSet,
               }">
               <img
                 :src="getEchoSetImage(echoSet)"
-                class="size-8"
+                class="size-7"
                 :class="echoSet" />
             </button>
           </div>
@@ -412,6 +414,14 @@ html[data-theme="light"] {
   }
   .MoonlitClouds {
     filter: contrast(0);
+  }
+}
+.echo-filters__sets--active {
+  button {
+    opacity: 0.6;
+  }
+  button.btn-active {
+    opacity: 1;
   }
 }
 </style>

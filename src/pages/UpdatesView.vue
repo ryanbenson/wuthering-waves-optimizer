@@ -13,6 +13,10 @@
     <h3>October 18, 2025</h3>
     <ul>
       <li>Fixes Jinhsi's s4 text.</li>
+      <li>
+        Updates the selected state for when you select an echo set to make it
+        more clear.
+      </li>
     </ul>
     <h3>October 16, 2025</h3>
     <ul>
