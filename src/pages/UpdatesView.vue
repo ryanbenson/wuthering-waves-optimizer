@@ -10,6 +10,13 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 20, 2025</h3>
+    <ul>
+      <li>
+        Loadouts from the optimizer are now sorted by cost, and will also equip
+        sorted by cost when you equip a loadout from the optimizer.
+      </li>
+    </ul>
     <h3>October 18, 2025</h3>
     <ul>
       <li>Fixes Jinhsi's s4 text.</li>
