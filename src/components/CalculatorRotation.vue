@@ -142,11 +142,17 @@
                 <span class="rotation__echo-echo--name">
                   {{ currentEchoData?.name }}
                 </span>
-                <div
+                <button
                   class="btn btn-sm btn-outline btn-primary"
                   @click="openEchoChooser">
                   Choose echo
-                </div>
+                </button>
+                <button
+                  class="btn btn-sm btn-outline btn-secondary"
+                  @click="chooseCurrentMainEcho"
+                  :disabled="!hasCurrentMainEcho">
+                  Use current echo
+                </button>
               </div>
             </div>
             <div class="rotation__duration flex flex-col gap-2">
@@ -218,6 +224,8 @@
 import { randomString } from "../utils/strings";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import { getEchoSetIconByType, echoSetLabelMap } from "../echoes/stats";
+import { mapActions, mapState } from "pinia";
+import { useCharacterStore } from "../stores/character";
 import {
   mainEchoesData,
   getEchoData,
@@ -496,8 +504,24 @@ export default {
     getEchoSetIcon(type) {
       return getEchoSetIconByType(type);
     },
+    chooseCurrentMainEcho() {
+      if (!this.hasCurrentMainEcho) {
+        return;
+      }
+      const currentEchoKey = this.currentCharacterMainEcho;
+      this.echoValue = currentEchoKey;
+      this.onEchoChange();
+    },
   },
   computed: {
+    ...mapState(useCharacterStore, ["characters"]),
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacter() {
+      return this.characters[this.character] ?? {};
+    },
     actionsCount() {
       return this.actionsList?.length || 0;
     },
@@ -545,6 +569,16 @@ export default {
         return null;
       }
       return getEchoData(this.echoValue);
+    },
+    /**
+     * The current character data
+     * @returns {Object}
+     */
+    currentCharacterMainEcho() {
+      return this.characters[this.character]?.mainEcho?.echo ?? null;
+    },
+    hasCurrentMainEcho() {
+      return !!this.currentCharacterMainEcho;
     },
   },
   mounted() {
