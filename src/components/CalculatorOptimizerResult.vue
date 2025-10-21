@@ -151,9 +151,20 @@ export default {
     loadoutData() {
       return JSON.parse(JSON.stringify(this.loadout));
     },
-    // Sort the loadout by echo type DESCENDING
+    // sort the loadoutData by .type DESC
+    // but leave the first echo where it is (main echo)
     sortedLoadoutData() {
-      return this.loadoutData.slice().sort((a, b) => b.type - a.type);
+      if (this.loadoutLen <= 1) {
+        return this.loadoutData;
+      }
+      const mainEcho = this.loadoutData[0];
+      const subEchos = this.loadoutData.slice(1);
+      subEchos.sort((a, b) => {
+        if (a.type < b.type) return 1;
+        if (a.type > b.type) return -1;
+        return 0;
+      });
+      return [mainEcho, ...subEchos];
     },
     rotationName() {
       return this.context?.attacks?.name ?? null;
