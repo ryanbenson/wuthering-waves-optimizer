@@ -475,7 +475,7 @@ export default {
       };
       // hold onto the echo that was used
       if (skill === "echoAttacks") {
-        action.mainEcho = this.mainEcho;
+        action.mainEcho = this.rotationMainEcho;
       }
 
       this.$emit("action-update", action);
