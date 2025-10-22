@@ -185,6 +185,8 @@
               :ignore-self-buffs="action.excludeSelfBuffs"
               :ignore-team-buffs="action.excludeTeamBuffs"
               :ignore-weapon-buffs="action.excludeWeaponBuffs"
+              :action-main-echo="action.mainEcho"
+              :rotation-main-echo="echoValue"
               @action-update="handleActionUpdate"
               @action-update:sequence="handleSequenceUpdate"
               @remove-action="handleRemoveAction"

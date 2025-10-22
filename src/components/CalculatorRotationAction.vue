@@ -7,7 +7,13 @@
       <div class="name">
         <div class="order badge">#{{ sequence }}</div>
         <div class="count badge">x{{ hits }}</div>
-        <span>{{ attackLabel }}</span>
+        <span class="flex gap-2 items-center">
+          <img
+            v-if="echoAttackImage"
+            :src="echoAttackImage"
+            class="size-8 rounded-full border border-solid neutral-content bg-cover" />
+          {{ attackLabel }}
+        </span>
       </div>
       <div class="rotation__action__end">
         <div class="rotation__action__types flex flex-col items-end gap-2">
@@ -143,6 +149,17 @@
                   {{ attack.label }}
                 </option>
               </optgroup>
+              <optgroup
+                label="Echo Attacks"
+                data-skill="echoAttacks"
+                v-if="mainEchoDataActions.length">
+                <option
+                  v-for="attack in mainEchoDataActions"
+                  :value="attack.key"
+                  :disabled="isAttackDisabled(attack)">
+                  {{ attack.label }}
+                </option>
+              </optgroup>
             </select>
           </div>
           <button class="rotation__action--remove" @click="removeAction">
@@ -225,6 +242,7 @@ import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
 import { echoSetAttacks } from "../echoes/stats";
 import { utilityAttacks } from "../buffs";
+import { mainEchoesData, getEchoData } from "../echoes/index.ts";
 export default {
   props: {
     characterData: {
@@ -279,6 +297,14 @@ export default {
         return [];
       },
     },
+    rotationMainEcho: {
+      type: String,
+      default: null,
+    },
+    actionMainEcho: {
+      type: String,
+      default: null,
+    },
   },
   components: {
     CalculatorRotationActionBuff,
@@ -305,6 +331,7 @@ export default {
         outro: "outroAttacks",
         echoSetAttacks: "echoSetAttacks",
         utilityAttacks: "utilityAttacks",
+        echoAttacks: "echoAttacks",
       },
       skillKeyLabelMap: {
         basic: "Basic",
@@ -315,6 +342,7 @@ export default {
         outro: "Outro",
         echoSetAttacks: "Echo Set",
         utilityAttacks: "Utility",
+        echoAttacks: "Echo Attacks",
       },
     };
   },
@@ -346,6 +374,14 @@ export default {
       // if the attack is a utility, find the data from the utility list
       if (this.skillType === "utilityAttacks") {
         return this.utilityAttacksList.find((attack) => {
+          return attack.key === this.actionKeyValue;
+        });
+      }
+      if (this.skillType === "echoAttacks") {
+        // use the main echo from the action, not the prop just in case it was changed
+        const echoData = getEchoData(this.actionMainEcho);
+        const echoAttacks = echoData?.actions ?? [];
+        return echoAttacks.find((attack) => {
           return attack.key === this.actionKeyValue;
         });
       }
@@ -389,6 +425,25 @@ export default {
     utilityAttacksList() {
       return utilityAttacks;
     },
+    mainEchoData() {
+      if (!this.rotationMainEcho) {
+        return null;
+      }
+      return getEchoData(this.rotationMainEcho);
+    },
+    mainEchoDataActions() {
+      if (!this.mainEchoData) {
+        return [];
+      }
+      return this.mainEchoData.actions ?? [];
+    },
+    echoAttackImage() {
+      if (!this.actionMainEcho) {
+        return null;
+      }
+      const echoData = getEchoData(this.actionMainEcho);
+      return echoData?.image ?? null;
+    },
   },
   methods: {
     toggleEdit() {
@@ -406,8 +461,7 @@ export default {
       const skill = optgroup.getAttribute("data-skill");
       // update our skill
       this.actionSkillType = skill;
-
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -418,7 +472,13 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (skill === "echoAttacks") {
+        action.mainEcho = this.mainEcho;
+      }
+
+      this.$emit("action-update", action);
     },
     addBuff() {
       this.buffData.push({
