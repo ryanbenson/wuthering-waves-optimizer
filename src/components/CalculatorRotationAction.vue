@@ -493,7 +493,7 @@ export default {
       });
       this.buffData = updatedBuffsList;
 
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -504,7 +504,12 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.rotationMainEcho;
+      }
+      this.$emit("action-update", action);
     },
     handleUpdatedBuff(buffData) {
       const buffs = JSON.parse(JSON.stringify(this.buffData));
@@ -517,7 +522,7 @@ export default {
       buffs[foundIndex] = buffData;
       this.buffData = buffs;
 
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -528,7 +533,12 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.rotationMainEcho;
+      }
+      this.$emit("action-update", action);
     },
     removeAction() {
       this.$emit("remove-action", {
@@ -536,7 +546,7 @@ export default {
       });
     },
     onSequenceChange(e) {
-      this.$emit("action-update:sequence", {
+      const action = {
         id: this.id,
         order: e.target.value,
         key: this.actionKeyValue,
@@ -547,7 +557,12 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.rotationMainEcho;
+      }
+      this.$emit("action-update:sequence", action);
     },
     onHitsChange(e) {
       let hitsVal = e.target.value;
@@ -555,7 +570,7 @@ export default {
         hitsVal = 1;
         this.hits = 1;
       }
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -566,10 +581,15 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.rotationMainEcho;
+      }
+      this.$emit("action-update", action);
     },
     onExcludeSelfBuffsChange() {
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -580,10 +600,15 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.rotationMainEcho;
+      }
+      this.$emit("action-update", action);
     },
     onExcludeTeamBuffsChange() {
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -594,10 +619,15 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.rotationMainEcho;
+      }
+      this.$emit("action-update", action);
     },
     onExcludeWeaponBuffsChange() {
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -608,10 +638,15 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.rotationMainEcho;
+      }
+      this.$emit("action-update", action);
     },
     onChangeDisabled() {
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -622,7 +657,12 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.rotationMainEcho;
+      }
+      this.$emit("action-update", action);
     },
     isAttackDisabled(attack) {
       if (!attack?.requiresResonanceChain) {
