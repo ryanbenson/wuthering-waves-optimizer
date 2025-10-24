@@ -2241,6 +2241,7 @@ export default defineComponent({
           name: rotation.name,
           description: rotation.description,
           duration: rotation.duration ?? null,
+          echo: rotation.echo ?? null,
         };
         const rotationActionInfo = [];
         rotation.actions.forEach((action) => {
@@ -2250,6 +2251,7 @@ export default defineComponent({
           const actionCount = action.count;
           const actionId = action.id;
           const actionDisabled = action?.isDisabled ?? false;
+          const actionMainEcho = action?.mainEcho ?? null;
           // if the action is disabled, just skip it
           if (actionDisabled) {
             return;
@@ -2263,6 +2265,12 @@ export default defineComponent({
             });
           } else if (actionType === "utilityAttacks") {
             foundAction = utilityAttacks.find((attack) => {
+              return attack.key === actionKey;
+            });
+          } else if (actionType === "echoAttacks") {
+            const echoData = getEchoData(actionMainEcho);
+            const echoAttacks = echoData?.actions ?? [];
+            foundAction = echoAttacks.find((attack) => {
               return attack.key === actionKey;
             });
           } else {
@@ -2280,6 +2288,7 @@ export default defineComponent({
               excludeSelfBuffs: action.excludeSelfBuffs ?? false,
               excludeTeamBuffs: action.excludeTeamBuffs ?? false,
               excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
+              actionMainEcho,
             };
             // if there are buffs, turn it into a hashmap
             if (action?.buffs?.length) {
@@ -2536,6 +2545,7 @@ export default defineComponent({
           name: rotation.name,
           description: rotation.description,
           duration: rotation.duration ?? null,
+          echo: rotation.echo ?? null,
         };
         const rotationActionInfo = [];
         rotation.actions.forEach((action) => {
@@ -2545,6 +2555,7 @@ export default defineComponent({
           const actionCount = action.count;
           const actionId = action.id;
           const actionDisabled = action?.isDisabled ?? false;
+          const actionMainEcho = action?.mainEcho ?? null;
           // if the action is disabled, just skip it
           if (actionDisabled) {
             return;
@@ -2558,6 +2569,12 @@ export default defineComponent({
             });
           } else if (actionType === "utilityAttacks") {
             foundAction = utilityAttacks.find((attack) => {
+              return attack.key === actionKey;
+            });
+          } else if (actionType === "echoAttacks") {
+            const echoData = getEchoData(actionMainEcho);
+            const echoAttacks = echoData?.actions ?? [];
+            foundAction = echoAttacks.find((attack) => {
               return attack.key === actionKey;
             });
           } else {
@@ -2575,6 +2592,7 @@ export default defineComponent({
               excludeSelfBuffs: action.excludeSelfBuffs ?? false,
               excludeTeamBuffs: action.excludeTeamBuffs ?? false,
               excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
+              mainEcho: action?.mainEcho ?? null,
               // only exclude echoes if we excluded self, team, or weapon buffs
               excludeEchoes:
                 action.excludeSelfBuffs ||
@@ -2769,6 +2787,7 @@ export default defineComponent({
             name: rotationData.name,
             description: rotationData.description,
             duration: rotationData.duration ?? null,
+            echo: rotationData.echo ?? null,
           };
           const attacks = processAttacks(
             rotationData.attacks, // process all attacks in this rotations
