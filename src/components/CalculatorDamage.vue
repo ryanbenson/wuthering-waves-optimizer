@@ -15,7 +15,10 @@
           : '',
     }">
     <template v-if="type === 'Healing'">
-      <td>{{ label }}</td>
+      <td class="flex items-center gap-2">
+        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content" />
+        <span>{{ label }}</span>
+      </td>
       <td
         v-tooltip="{
           content: damage.detailedCalculation,
@@ -25,7 +28,10 @@
       </td>
     </template>
     <template v-else-if="type === 'Shield'">
-      <td>{{ label }}</td>
+      <td class="flex items-center gap-2">
+        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content" />
+        <span>{{ label }}</span>
+      </td>
       <td
         v-tooltip="{
           content: damage.detailedCalculation,
@@ -35,7 +41,10 @@
       </td>
     </template>
     <template v-else-if="type === 'ElementalEffect'">
-      <td>{{ label }}</td>
+      <td class="flex items-center gap-2">
+        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content" />
+        <span>{{ label }}</span>
+      </td>
       <td
         v-tooltip="{
           content: displayDamage(damage),
@@ -45,7 +54,10 @@
       </td>
     </template>
     <template v-else>
-      <td>{{ label }}</td>
+      <td class="flex items-center gap-2">
+        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content" />
+        <span>{{ label }}</span>
+      </td>
       <td
         v-tooltip="{
           content: normalDmgTooltipText,
@@ -78,6 +90,7 @@
 <script>
 import { displayDamage } from "../utils/numbers";
 import { slugify } from "../utils/strings";
+import { getEchoData } from "../echoes";
 export default {
   props: {
     character: {
@@ -99,6 +112,10 @@ export default {
     isEnabled: {
       type: Boolean,
       default: true,
+    },
+    mainEcho: {
+      type: String,
+      default: null,
     },
     originalIsEnabled: {
       type: Boolean,
@@ -128,6 +145,12 @@ export default {
         return null;
       }
       return this.damage.detailedCalculationAvg;
+    },
+    mainEchoData() {
+      return getEchoData(this.mainEcho);
+    },
+    mainEchoImage() {
+      return this.mainEchoData?.image ?? null;
     },
   },
 };

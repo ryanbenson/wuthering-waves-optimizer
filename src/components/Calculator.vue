@@ -1110,6 +1110,10 @@ export default defineComponent({
                   // outro has no talent tree. it only has 1 value (e.g. 20.00%)
                   talent = attack.talent;
                   break;
+                case "echoAttacks":
+                  // TODO: Get the correct talent level for echo attacks
+                  talent = attack.talents["5"];
+                  break;
               }
             } else {
               talent = attack.talents[talentType];
@@ -1151,6 +1155,7 @@ export default defineComponent({
               type: attackType,
               count: attack.count,
               alwaysCrit: attack.alwaysCrit ?? false,
+              mainEcho: attack.actionMainEcho ?? null,
             };
           })
           // remove any attacks that are not enabled
@@ -1280,6 +1285,10 @@ export default defineComponent({
           case "echoSetAttacks":
             // echo set attacks have no talent tree, just a single value
             talent = attack.talent;
+            break;
+          case "echoAttacks":
+            // TODO: Get the correct talent level for echo attacks
+            talent = attack.talents["5"];
             break;
         }
       } else {
@@ -2101,6 +2110,7 @@ export default defineComponent({
             name: rotation.name,
             description: rotation.description,
             duration: rotation.duration ?? null,
+            mainEcho: rotation.echo ?? null,
           };
           const attacks = processAttacks(
             rotation.attacks,
@@ -2156,6 +2166,7 @@ export default defineComponent({
             }
           });
           rotationInfo.attacks = attacks;
+          rotationInfo.mainEcho = rotation.mainEcho ?? null;
           rotationInfo.damageAggregation = damageAggregation;
           rotationData.push(rotationInfo);
         });
@@ -2242,6 +2253,7 @@ export default defineComponent({
           description: rotation.description,
           duration: rotation.duration ?? null,
           echo: rotation.echo ?? null,
+          mainEcho: rotation.mainEcho ?? null,
         };
         const rotationActionInfo = [];
         rotation.actions.forEach((action) => {
@@ -2592,7 +2604,7 @@ export default defineComponent({
               excludeSelfBuffs: action.excludeSelfBuffs ?? false,
               excludeTeamBuffs: action.excludeTeamBuffs ?? false,
               excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
-              mainEcho: action?.mainEcho ?? null,
+              actionMainEcho: action?.mainEcho ?? null,
               // only exclude echoes if we excluded self, team, or weapon buffs
               excludeEchoes:
                 action.excludeSelfBuffs ||

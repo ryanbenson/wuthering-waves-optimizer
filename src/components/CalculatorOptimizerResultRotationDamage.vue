@@ -24,6 +24,7 @@
           :label="damageInstance.label"
           :damage="damageInstance.damage"
           :is-enabled="damageInstance.isEnabled"
+          :main-echo="damageInstance.mainEcho"
           :original-is-enabled="damageInstance.originalIsEnabled"
           :matched-rotation-from-current-damages="
             matchedRotationFromCurrentDamages
