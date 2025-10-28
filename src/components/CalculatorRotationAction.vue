@@ -9,7 +9,7 @@
         <div class="count badge">x{{ hits }}</div>
         <span class="flex gap-2 items-center">
           <img
-            v-if="echoAttackImage"
+            v-if="skillType === 'echoAttacks' && echoAttackImage"
             :src="echoAttackImage"
             class="size-8 rounded-full border border-solid neutral-content bg-cover" />
           {{ attackLabel }}
@@ -301,8 +301,16 @@ export default {
       type: String,
       default: null,
     },
+    rotationMainEchoRank: {
+      type: String,
+      default: null,
+    },
     actionMainEcho: {
       type: String,
+      default: null,
+    },
+    actionMainEchoRank: {
+      type: Number,
       default: null,
     },
   },
@@ -426,10 +434,13 @@ export default {
       return utilityAttacks;
     },
     mainEchoData() {
-      if (!this.rotationMainEcho) {
-        return null;
+      if (this.actionMainEcho) {
+        return getEchoData(this.actionMainEcho);
       }
-      return getEchoData(this.rotationMainEcho);
+      if (this.rotationMainEcho) {
+        return getEchoData(this.rotationMainEcho);
+      }
+      return null;
     },
     mainEchoDataActions() {
       if (!this.mainEchoData) {
@@ -438,11 +449,7 @@ export default {
       return this.mainEchoData.actions ?? [];
     },
     echoAttackImage() {
-      if (!this.actionMainEcho) {
-        return null;
-      }
-      const echoData = getEchoData(this.actionMainEcho);
-      return echoData?.image ?? null;
+      return this.mainEchoData?.image ?? null;
     },
   },
   methods: {
@@ -475,7 +482,8 @@ export default {
       };
       // hold onto the echo that was used
       if (skill === "echoAttacks") {
-        action.mainEcho = this.rotationMainEcho;
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
       }
 
       this.$emit("action-update", action);
@@ -507,7 +515,8 @@ export default {
       };
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.rotationMainEcho;
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },
@@ -536,7 +545,8 @@ export default {
       };
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.rotationMainEcho;
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },
@@ -560,7 +570,8 @@ export default {
       };
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.rotationMainEcho;
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update:sequence", action);
     },
@@ -584,7 +595,8 @@ export default {
       };
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.rotationMainEcho;
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },
@@ -603,7 +615,8 @@ export default {
       };
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.rotationMainEcho;
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },
@@ -622,7 +635,8 @@ export default {
       };
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.rotationMainEcho;
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },
@@ -641,7 +655,8 @@ export default {
       };
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.rotationMainEcho;
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },
@@ -660,7 +675,8 @@ export default {
       };
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.rotationMainEcho;
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },

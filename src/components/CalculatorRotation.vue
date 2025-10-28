@@ -147,6 +147,7 @@
                   @click="openEchoChooser">
                   Choose echo
                 </button>
+                <input v-model="mainEchoRank" type="number" min="1" max="5" @input="onMainEchoRankChange"></input>
                 <button
                   class="btn btn-sm btn-outline btn-secondary"
                   @click="chooseCurrentMainEcho"
@@ -186,7 +187,9 @@
               :ignore-team-buffs="action.excludeTeamBuffs"
               :ignore-weapon-buffs="action.excludeWeaponBuffs"
               :action-main-echo="action.mainEcho"
+              :action-main-echo-rank="action.mainEchoRank"
               :rotation-main-echo="echoValue"
+              :rotation-main-echo-rank="mainEchoRank"
               @action-update="handleActionUpdate"
               @action-update:sequence="handleSequenceUpdate"
               @remove-action="handleRemoveAction"
@@ -282,6 +285,7 @@ export default {
       descriptionValue: null,
       durationValue: null,
       echoValue: null,
+      mainEchoRank: 1,
       actionsList: [],
       // modal
       modalIdPicker: `echo-chooser-modal-${randomString()}`,
@@ -347,6 +351,7 @@ export default {
         description: this.descriptionValue,
         duration: this.durationValue,
         echo: this.echoValue,
+        echoRank: this.mainEchoRank,
         actions: this.actionsList,
       });
     },
@@ -357,6 +362,7 @@ export default {
         description: e.target.value,
         duration: this.durationValue,
         echo: this.echoValue,
+        echoRank: this.mainEchoRank,
         actions: this.actionsList,
       });
     },
@@ -367,6 +373,7 @@ export default {
         description: this.descriptionValue,
         duration: e.target.value,
         echo: this.echoValue,
+        echoRank: this.mainEchoRank,
         actions: this.actionsList,
       });
     },
@@ -377,6 +384,7 @@ export default {
         description: this.descriptionValue,
         duration: this.durationValue,
         echo: this.echoValue,
+        echoRank: this.mainEchoRank,
         actions: this.actionsList,
       });
     },
@@ -397,6 +405,7 @@ export default {
         description: this.descriptionValue,
         duration: this.durationValue,
         echo: this.echoValue,
+        echoRank: this.mainEchoRank,
         actions: this.actionsList,
       });
     },
@@ -451,6 +460,7 @@ export default {
         description: this.descriptionValue,
         duration: this.durationValue,
         echo: this.echoValue,
+        echoRank: this.mainEchoRank,
         actions: this.actionsList,
       });
     },
@@ -467,6 +477,7 @@ export default {
         description: this.descriptionValue,
         duration: this.durationValue,
         echo: this.echoValue,
+        echoRank: this.mainEchoRank,
         actions: this.actionsList,
       });
     },
@@ -514,6 +525,17 @@ export default {
       this.echoValue = currentEchoKey;
       this.onEchoChange();
     },
+    onMainEchoRankChange(e) {
+      this.$emit("updated-rotation", {
+        id: this.id,
+        name: this.nameValue,
+        description: this.descriptionValue,
+        duration: this.durationValue,
+        echo: this.echoValue,
+        echoRank: e.target.value,
+        actions: this.actionsList,
+      });
+    }
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
