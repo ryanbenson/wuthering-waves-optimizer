@@ -1112,7 +1112,8 @@ export default defineComponent({
                   break;
                 case "echoAttacks":
                   // TODO: Get the correct talent level for echo attacks
-                  talent = attack.talents["5"];
+                  console.log(attack?.actionMainEchoRank, attack.talents[attack?.actionMainEchoRank ?? "5"]);
+                  talent = attack.talents[attack?.actionMainEchoRank ?? "5"];
                   break;
               }
             } else {
@@ -1156,6 +1157,7 @@ export default defineComponent({
               count: attack.count,
               alwaysCrit: attack.alwaysCrit ?? false,
               mainEcho: attack.actionMainEcho ?? null,
+              mainEchoRank: attack.actionMainEchoRank ?? null,
             };
           })
           // remove any attacks that are not enabled
@@ -2111,6 +2113,7 @@ export default defineComponent({
             description: rotation.description,
             duration: rotation.duration ?? null,
             mainEcho: rotation.echo ?? null,
+            mainEchoRank: rotation.echoRank ?? null,
           };
           const attacks = processAttacks(
             rotation.attacks,
@@ -2167,6 +2170,7 @@ export default defineComponent({
           });
           rotationInfo.attacks = attacks;
           rotationInfo.mainEcho = rotation.mainEcho ?? null;
+          rotationInfo.mainEchoRank = rotation.mainEchoRank ?? null;
           rotationInfo.damageAggregation = damageAggregation;
           rotationData.push(rotationInfo);
         });
@@ -2254,6 +2258,7 @@ export default defineComponent({
           duration: rotation.duration ?? null,
           echo: rotation.echo ?? null,
           mainEcho: rotation.mainEcho ?? null,
+          mainEchoRank: rotation.actionMainEchoRank ?? null,
         };
         const rotationActionInfo = [];
         rotation.actions.forEach((action) => {
@@ -2264,6 +2269,7 @@ export default defineComponent({
           const actionId = action.id;
           const actionDisabled = action?.isDisabled ?? false;
           const actionMainEcho = action?.mainEcho ?? null;
+          const actionMainEchoRank = action?.mainEchoRank ?? null;
           // if the action is disabled, just skip it
           if (actionDisabled) {
             return;
@@ -2301,6 +2307,7 @@ export default defineComponent({
               excludeTeamBuffs: action.excludeTeamBuffs ?? false,
               excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
               actionMainEcho,
+              actionMainEchoRank,
             };
             // if there are buffs, turn it into a hashmap
             if (action?.buffs?.length) {
@@ -2568,6 +2575,7 @@ export default defineComponent({
           const actionId = action.id;
           const actionDisabled = action?.isDisabled ?? false;
           const actionMainEcho = action?.mainEcho ?? null;
+          const actionMainEchoRank = action?.mainEchoRank ?? null;
           // if the action is disabled, just skip it
           if (actionDisabled) {
             return;
@@ -2605,6 +2613,7 @@ export default defineComponent({
               excludeTeamBuffs: action.excludeTeamBuffs ?? false,
               excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
               actionMainEcho: action?.mainEcho ?? null,
+              actionMainEchoRank: action?.mainEchoRank ?? null,
               // only exclude echoes if we excluded self, team, or weapon buffs
               excludeEchoes:
                 action.excludeSelfBuffs ||

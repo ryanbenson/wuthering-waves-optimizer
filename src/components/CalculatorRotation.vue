@@ -614,6 +614,7 @@ export default {
     this.descriptionValue = this.description;
     this.durationValue = this.duration || null;
     this.echoValue = this.echo || null;
+    this.mainEchoRank = this.echoRank || null;
   },
 };
 </script>

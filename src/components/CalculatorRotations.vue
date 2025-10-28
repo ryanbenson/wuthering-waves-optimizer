@@ -74,6 +74,7 @@
       :description="rotation.description"
       :duration="rotation.duration"
       :echo="rotation.echo"
+      :echo-rank="rotation.echoRank"
       :actions="rotation.actions"
       @updated-rotation="handleUpdatedRotation"
       @rotation-delete="handleDeleteRotation"
@@ -141,6 +142,7 @@ export default {
         description: "",
         duration: null,
         echo: null,
+        echoRank: null,
         actions: [],
       };
       this.rotations.push(newRotationData);
