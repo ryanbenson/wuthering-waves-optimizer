@@ -1082,6 +1082,7 @@ export default defineComponent({
               isEnabled = true;
             }
             let talent;
+            let providedTalent;
             if (hasNoTalentLevel) {
               talent = attack.talent;
             } else if (dynamicTalentType) {
@@ -1112,8 +1113,8 @@ export default defineComponent({
                   break;
                 case "echoAttacks":
                   // TODO: Get the correct talent level for echo attacks
-                  console.log(attack?.actionMainEchoRank, attack.talents[attack?.actionMainEchoRank ?? "5"]);
                   talent = attack.talents[attack?.actionMainEchoRank ?? "5"];
+                  providedTalent = talent;
                   break;
               }
             } else {
@@ -1149,6 +1150,7 @@ export default defineComponent({
                 hitCount,
                 providedStats, // pass along the provided stats, if we have them
                 providedEchoStats, // pass along the provided echo stats, if we have them
+                providedTalent, // pass in a specific talent string
               ),
               isEnabled,
               originalIsEnabled,
@@ -1173,6 +1175,7 @@ export default defineComponent({
       count = 1,
       providedFullStats = null, // use this as our stats data, otherwise default to the global stats, this should exclude personal buffs, weapon buffs, chain buffs, custom buffs, team buffs. The only things to use are attack-level buffs
       providedEchoStats = null, // use this as our echo buffs instead of the global echo buffs
+      providedTalent = null, // use this talent string if provided, mostly used for echo attacks in rotations
     ) => {
       const { excludeTeamBuffs, excludeWeaponBuffs, excludeEchoes } = attack;
       let statsWithoutTeamBuffs = null;
@@ -1258,6 +1261,8 @@ export default defineComponent({
 
       if (hasNoTalentLevel) {
         talent = attack.talent;
+      } else if (providedTalent) {
+        talent = providedTalent;
       } else if (hasDynamicTalent) {
         switch (attack.actionType) {
           case "basic":
