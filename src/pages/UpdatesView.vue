@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>October 31, 2025</h3>
+    <ul>
+      <li>Fixes Nightmare Kelpie Outro DMG, it is now properly doing Aero DMG.</li>
+    </ul>
     <h3>October 20, 2025</h3>
     <ul>
       <li>
