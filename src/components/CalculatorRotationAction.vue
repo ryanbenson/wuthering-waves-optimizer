@@ -573,9 +573,13 @@ export default {
       const isResonanceChainEnabled =
         this.currentCharacter?.resonanceChains?.[requiredKey]?.isEnabled ??
         false;
+      // TODO: Remove this hack
+      const isResonanceChainEnabled2 =
+        this.currentCharacter?.resonanceChains?.[`${requiredKey}2`]?.isEnabled ??
+        false;
       const isSelfBuffEnabled =
         this.currentCharacter?.buffs?.[requiredKey]?.isEnabled ?? false;
-      if (isResonanceChainEnabled || isSelfBuffEnabled) {
+      if (isResonanceChainEnabled || isResonanceChainEnabled2 || isSelfBuffEnabled) {
         return false;
       }
       return true;
