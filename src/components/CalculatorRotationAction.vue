@@ -568,18 +568,18 @@ export default {
       if (!attack?.requiresResonanceChain) {
         return false;
       }
-      const requiredKey = attack.requiresResonanceChain;
+      let requiredKey = attack.requiresResonanceChain;
+      // TODO: Remove this hack
+      if (requiredKey === "SequenceNode3OBladeIWhoSaveNoMore2") {
+        requiredKey = "SequenceNode3OBladeIWhoSaveNoMore";
+      }
       // if there is a requirement, check it. it can be a self buff or resonance chain to activate an attack
       const isResonanceChainEnabled =
         this.currentCharacter?.resonanceChains?.[requiredKey]?.isEnabled ??
         false;
-      // TODO: Remove this hack
-      const isResonanceChainEnabled2 =
-        this.currentCharacter?.resonanceChains?.[`${requiredKey}2`]?.isEnabled ??
-        false;
       const isSelfBuffEnabled =
         this.currentCharacter?.buffs?.[requiredKey]?.isEnabled ?? false;
-      if (isResonanceChainEnabled || isResonanceChainEnabled2 || isSelfBuffEnabled) {
+      if (isResonanceChainEnabled || isSelfBuffEnabled) {
         return false;
       }
       return true;
