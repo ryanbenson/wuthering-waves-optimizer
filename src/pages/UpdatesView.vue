@@ -13,6 +13,7 @@
     <h3>October 31, 2025</h3>
     <ul>
       <li>Fixes Nightmare Kelpie Outro DMG, it is now properly doing Aero DMG.</li>
+      <li>Fixes a bug where you couldn't add Qiuyuan's S3 Outro to a rotation.</li>
     </ul>
     <h3>October 20, 2025</h3>
     <ul>
