@@ -9,7 +9,7 @@
         Equip Loadout
       </button>
     </div>
-    <CalculatorOptimizerResultLoadout :loadout="sortedLoadoutData" />
+    <CalculatorOptimizerResultLoadout :loadout="loadout" />
     <div class="optimizer_result_target">
       <div v-if="targetType === 'Attack'">
         <h3 class="my-2 text-center">Attack Result</h3>
@@ -197,7 +197,7 @@ export default {
       for (let i = 0; i < this.loadoutLen; i++) {
         // update the character to reference the inventory
         // when we assign the echo from inventory, clear out all data except echoId
-        const echo = this.sortedLoadoutData[i];
+        const echo = this.loadout[i];
         const id = echo?.echoId;
         const echoData = {
           echo: null,

@@ -7,7 +7,16 @@
       <div class="name">
         <div class="order badge">#{{ sequence }}</div>
         <div class="count badge">x{{ hits }}</div>
-        <span>{{ attackLabel }}</span>
+        <span class="flex gap-2 items-center">
+          <img
+            v-if="skillType === 'echoAttacks' && echoAttackImage"
+            :src="echoAttackImage"
+            class="size-8 rounded-full border border-solid neutral-content bg-cover" />
+          {{ attackLabel }}
+          <span v-if="rotationMainEcho !== actionMainEcho && actionMainEcho !== null" class="mismatch-echo" v-tooltip="'Rotation echo does not match this one'">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="size-4"><path d="M320 64C334.7 64 348.2 72.1 355.2 85L571.2 485C577.9 497.4 577.6 512.4 570.4 524.5C563.2 536.6 550.1 544 536 544L104 544C89.9 544 76.8 536.6 69.6 524.5C62.4 512.4 62.1 497.4 68.8 485L284.8 85C291.8 72.1 305.3 64 320 64zM320 416C302.3 416 288 430.3 288 448C288 465.7 302.3 480 320 480C337.7 480 352 465.7 352 448C352 430.3 337.7 416 320 416zM320 224C301.8 224 287.3 239.5 288.6 257.7L296 361.7C296.9 374.2 307.4 384 319.9 384C332.5 384 342.9 374.3 343.8 361.7L351.2 257.7C352.5 239.5 338.1 224 319.8 224z"/></svg>
+          </span>
+        </span>
       </div>
       <div class="rotation__action__end">
         <div class="rotation__action__types flex flex-col items-end gap-2">
@@ -143,6 +152,17 @@
                   {{ attack.label }}
                 </option>
               </optgroup>
+              <optgroup
+                label="Echo Attacks"
+                data-skill="echoAttacks"
+                v-if="mainEchoDataActions.length">
+                <option
+                  v-for="attack in mainEchoDataActions"
+                  :value="attack.key"
+                  :disabled="isAttackDisabled(attack)">
+                  {{ attack.label }}
+                </option>
+              </optgroup>
             </select>
           </div>
           <button class="rotation__action--remove" @click="removeAction">
@@ -225,6 +245,7 @@ import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
 import { echoSetAttacks } from "../echoes/stats";
 import { utilityAttacks } from "../buffs";
+import { mainEchoesData, getEchoData } from "../echoes/index.ts";
 export default {
   props: {
     characterData: {
@@ -279,6 +300,22 @@ export default {
         return [];
       },
     },
+    rotationMainEcho: {
+      type: String,
+      default: null,
+    },
+    rotationMainEchoRank: {
+      type: String,
+      default: null,
+    },
+    actionMainEcho: {
+      type: String,
+      default: null,
+    },
+    actionMainEchoRank: {
+      type: Number,
+      default: null,
+    },
   },
   components: {
     CalculatorRotationActionBuff,
@@ -305,6 +342,7 @@ export default {
         outro: "outroAttacks",
         echoSetAttacks: "echoSetAttacks",
         utilityAttacks: "utilityAttacks",
+        echoAttacks: "echoAttacks",
       },
       skillKeyLabelMap: {
         basic: "Basic",
@@ -315,6 +353,7 @@ export default {
         outro: "Outro",
         echoSetAttacks: "Echo Set",
         utilityAttacks: "Utility",
+        echoAttacks: "Echo Attacks",
       },
     };
   },
@@ -346,6 +385,14 @@ export default {
       // if the attack is a utility, find the data from the utility list
       if (this.skillType === "utilityAttacks") {
         return this.utilityAttacksList.find((attack) => {
+          return attack.key === this.actionKeyValue;
+        });
+      }
+      if (this.skillType === "echoAttacks") {
+        // use the main echo from the action, not the prop just in case it was changed
+        const echoData = getEchoData(this.actionMainEcho);
+        const echoAttacks = echoData?.actions ?? [];
+        return echoAttacks.find((attack) => {
           return attack.key === this.actionKeyValue;
         });
       }
@@ -389,6 +436,24 @@ export default {
     utilityAttacksList() {
       return utilityAttacks;
     },
+    mainEchoData() {
+      if (this.actionMainEcho) {
+        return getEchoData(this.actionMainEcho);
+      }
+      if (this.rotationMainEcho) {
+        return getEchoData(this.rotationMainEcho);
+      }
+      return null;
+    },
+    mainEchoDataActions() {
+      if (!this.mainEchoData) {
+        return [];
+      }
+      return this.mainEchoData.actions ?? [];
+    },
+    echoAttackImage() {
+      return this.mainEchoData?.image ?? null;
+    },
   },
   methods: {
     toggleEdit() {
@@ -406,8 +471,7 @@ export default {
       const skill = optgroup.getAttribute("data-skill");
       // update our skill
       this.actionSkillType = skill;
-
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -418,7 +482,14 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (skill === "echoAttacks") {
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+      }
+
+      this.$emit("action-update", action);
     },
     addBuff() {
       this.buffData.push({
@@ -433,7 +504,7 @@ export default {
       });
       this.buffData = updatedBuffsList;
 
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -444,7 +515,13 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+      }
+      this.$emit("action-update", action);
     },
     handleUpdatedBuff(buffData) {
       const buffs = JSON.parse(JSON.stringify(this.buffData));
@@ -457,7 +534,7 @@ export default {
       buffs[foundIndex] = buffData;
       this.buffData = buffs;
 
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -468,7 +545,13 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+      }
+      this.$emit("action-update", action);
     },
     removeAction() {
       this.$emit("remove-action", {
@@ -476,7 +559,7 @@ export default {
       });
     },
     onSequenceChange(e) {
-      this.$emit("action-update:sequence", {
+      const action = {
         id: this.id,
         order: e.target.value,
         key: this.actionKeyValue,
@@ -487,7 +570,13 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+      }
+      this.$emit("action-update:sequence", action);
     },
     onHitsChange(e) {
       let hitsVal = e.target.value;
@@ -495,7 +584,7 @@ export default {
         hitsVal = 1;
         this.hits = 1;
       }
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -506,10 +595,16 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+      }
+      this.$emit("action-update", action);
     },
     onExcludeSelfBuffsChange() {
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -520,10 +615,16 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+      }
+      this.$emit("action-update", action);
     },
     onExcludeTeamBuffsChange() {
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -534,10 +635,16 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+      }
+      this.$emit("action-update", action);
     },
     onExcludeWeaponBuffsChange() {
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -548,10 +655,16 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+      }
+      this.$emit("action-update", action);
     },
     onChangeDisabled() {
-      this.$emit("action-update", {
+      const action = {
         id: this.id,
         order: this.order,
         key: this.actionKeyValue,
@@ -562,7 +675,13 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
-      });
+      };
+      // hold onto the echo that was used
+      if (this.actionSkillType === "echoAttacks") {
+        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
+        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+      }
+      this.$emit("action-update", action);
     },
     isAttackDisabled(attack) {
       if (!attack?.requiresResonanceChain) {
@@ -600,6 +719,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.mismatch-echo {
+  path {
+    fill: oklch(var(--wa));
+  }
+}
 .rotation__action__edit {
   cursor: default;
 }
@@ -688,6 +812,24 @@ html[data-theme="light"] {
     svg {
       filter: invert(100%);
     }
+  }
+}
+@media (max-width: 1088px) {
+  .rotation__action__info {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+@media (max-width: 768px) {
+  .rotation__action__info {
+    flex-direction: row;
+    gap: 1rem;
+  }
+}
+@media (max-width: 550px) {
+  .rotation__action__info {
+    flex-direction: column;
+    gap: 1rem;
   }
 }
 </style>

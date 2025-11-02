@@ -16,9 +16,9 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div
-            v-if="false"
+            v-if="true"
             class="alert alert-success mb-6 text-white p-2 px-4">
-            ✨ Optimizer is now available!
+            Echo attacks are now supported in rotations!
           </div>
           <CalculatorCharacterSelect
             :key="character"
@@ -1082,6 +1082,7 @@ export default defineComponent({
               isEnabled = true;
             }
             let talent;
+            let providedTalent;
             if (hasNoTalentLevel) {
               talent = attack.talent;
             } else if (dynamicTalentType) {
@@ -1109,6 +1110,11 @@ export default defineComponent({
                 case "utilityAttacks":
                   // outro has no talent tree. it only has 1 value (e.g. 20.00%)
                   talent = attack.talent;
+                  break;
+                case "echoAttacks":
+                  // TODO: Get the correct talent level for echo attacks
+                  talent = attack.talents[attack?.actionMainEchoRank ?? "5"];
+                  providedTalent = talent;
                   break;
               }
             } else {
@@ -1144,6 +1150,7 @@ export default defineComponent({
                 hitCount,
                 providedStats, // pass along the provided stats, if we have them
                 providedEchoStats, // pass along the provided echo stats, if we have them
+                providedTalent, // pass in a specific talent string
               ),
               isEnabled,
               originalIsEnabled,
@@ -1151,6 +1158,8 @@ export default defineComponent({
               type: attackType,
               count: attack.count,
               alwaysCrit: attack.alwaysCrit ?? false,
+              mainEcho: attack.actionMainEcho ?? null,
+              mainEchoRank: attack.actionMainEchoRank ?? null,
             };
           })
           // remove any attacks that are not enabled
@@ -1166,6 +1175,7 @@ export default defineComponent({
       count = 1,
       providedFullStats = null, // use this as our stats data, otherwise default to the global stats, this should exclude personal buffs, weapon buffs, chain buffs, custom buffs, team buffs. The only things to use are attack-level buffs
       providedEchoStats = null, // use this as our echo buffs instead of the global echo buffs
+      providedTalent = null, // use this talent string if provided, mostly used for echo attacks in rotations
     ) => {
       const { excludeTeamBuffs, excludeWeaponBuffs, excludeEchoes } = attack;
       let statsWithoutTeamBuffs = null;
@@ -1251,6 +1261,8 @@ export default defineComponent({
 
       if (hasNoTalentLevel) {
         talent = attack.talent;
+      } else if (providedTalent) {
+        talent = providedTalent;
       } else if (hasDynamicTalent) {
         switch (attack.actionType) {
           case "basic":
@@ -1280,6 +1292,10 @@ export default defineComponent({
           case "echoSetAttacks":
             // echo set attacks have no talent tree, just a single value
             talent = attack.talent;
+            break;
+          case "echoAttacks":
+            // TODO: Get the correct talent level for echo attacks
+            talent = attack.talents["5"];
             break;
         }
       } else {
@@ -2101,6 +2117,8 @@ export default defineComponent({
             name: rotation.name,
             description: rotation.description,
             duration: rotation.duration ?? null,
+            mainEcho: rotation.echo ?? null,
+            mainEchoRank: rotation.echoRank ?? null,
           };
           const attacks = processAttacks(
             rotation.attacks,
@@ -2156,6 +2174,8 @@ export default defineComponent({
             }
           });
           rotationInfo.attacks = attacks;
+          rotationInfo.mainEcho = rotation.mainEcho ?? null;
+          rotationInfo.mainEchoRank = rotation.mainEchoRank ?? null;
           rotationInfo.damageAggregation = damageAggregation;
           rotationData.push(rotationInfo);
         });
@@ -2241,6 +2261,9 @@ export default defineComponent({
           name: rotation.name,
           description: rotation.description,
           duration: rotation.duration ?? null,
+          echo: rotation.echo ?? null,
+          mainEcho: rotation.mainEcho ?? null,
+          mainEchoRank: rotation.actionMainEchoRank ?? null,
         };
         const rotationActionInfo = [];
         rotation.actions.forEach((action) => {
@@ -2250,6 +2273,8 @@ export default defineComponent({
           const actionCount = action.count;
           const actionId = action.id;
           const actionDisabled = action?.isDisabled ?? false;
+          const actionMainEcho = action?.mainEcho ?? null;
+          const actionMainEchoRank = action?.mainEchoRank ?? null;
           // if the action is disabled, just skip it
           if (actionDisabled) {
             return;
@@ -2263,6 +2288,12 @@ export default defineComponent({
             });
           } else if (actionType === "utilityAttacks") {
             foundAction = utilityAttacks.find((attack) => {
+              return attack.key === actionKey;
+            });
+          } else if (actionType === "echoAttacks") {
+            const echoData = getEchoData(actionMainEcho);
+            const echoAttacks = echoData?.actions ?? [];
+            foundAction = echoAttacks.find((attack) => {
               return attack.key === actionKey;
             });
           } else {
@@ -2280,6 +2311,8 @@ export default defineComponent({
               excludeSelfBuffs: action.excludeSelfBuffs ?? false,
               excludeTeamBuffs: action.excludeTeamBuffs ?? false,
               excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
+              actionMainEcho,
+              actionMainEchoRank,
             };
             // if there are buffs, turn it into a hashmap
             if (action?.buffs?.length) {
@@ -2536,6 +2569,7 @@ export default defineComponent({
           name: rotation.name,
           description: rotation.description,
           duration: rotation.duration ?? null,
+          echo: rotation.echo ?? null,
         };
         const rotationActionInfo = [];
         rotation.actions.forEach((action) => {
@@ -2545,6 +2579,8 @@ export default defineComponent({
           const actionCount = action.count;
           const actionId = action.id;
           const actionDisabled = action?.isDisabled ?? false;
+          const actionMainEcho = action?.mainEcho ?? null;
+          const actionMainEchoRank = action?.mainEchoRank ?? null;
           // if the action is disabled, just skip it
           if (actionDisabled) {
             return;
@@ -2558,6 +2594,12 @@ export default defineComponent({
             });
           } else if (actionType === "utilityAttacks") {
             foundAction = utilityAttacks.find((attack) => {
+              return attack.key === actionKey;
+            });
+          } else if (actionType === "echoAttacks") {
+            const echoData = getEchoData(actionMainEcho);
+            const echoAttacks = echoData?.actions ?? [];
+            foundAction = echoAttacks.find((attack) => {
               return attack.key === actionKey;
             });
           } else {
@@ -2575,6 +2617,8 @@ export default defineComponent({
               excludeSelfBuffs: action.excludeSelfBuffs ?? false,
               excludeTeamBuffs: action.excludeTeamBuffs ?? false,
               excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
+              actionMainEcho: action?.mainEcho ?? null,
+              actionMainEchoRank: action?.mainEchoRank ?? null,
               // only exclude echoes if we excluded self, team, or weapon buffs
               excludeEchoes:
                 action.excludeSelfBuffs ||
@@ -2769,6 +2813,7 @@ export default defineComponent({
             name: rotationData.name,
             description: rotationData.description,
             duration: rotationData.duration ?? null,
+            echo: rotationData.echo ?? null,
           };
           const attacks = processAttacks(
             rotationData.attacks, // process all attacks in this rotations
