@@ -77,6 +77,8 @@
   </dialog>
   <div
     class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
+    :data-test-rotation-item="id"
+    :data-test-rotation-item-by-name="name"
     @click="toggleOpen">
     <div class="rotation__head">
       <div class="card-body">

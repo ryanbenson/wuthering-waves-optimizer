@@ -77,9 +77,7 @@
       :echo-rank="rotation.echoRank"
       :actions="rotation.actions"
       @updated-rotation="handleUpdatedRotation"
-      @rotation-delete="handleDeleteRotation"
-      :data-test-rotation-item="rotation.id"
-      :data-test-rotation-item-by-name="rotation.name"></CalculatorRotation>
+      @rotation-delete="handleDeleteRotation"></CalculatorRotation>
   </div>
 </template>
 
