@@ -814,4 +814,22 @@ html[data-theme="light"] {
     }
   }
 }
+@media (max-width: 1088px) {
+  .rotation__action__info {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+@media (max-width: 768px) {
+  .rotation__action__info {
+    flex-direction: row;
+    gap: 1rem;
+  }
+}
+@media (max-width: 550px) {
+  .rotation__action__info {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
 </style>

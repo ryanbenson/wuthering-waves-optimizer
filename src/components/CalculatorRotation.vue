@@ -243,7 +243,7 @@
 <script>
 import { randomString } from "../utils/strings";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
-import Range from "./Input/Range.vue";
+import Range from "./input/Range.vue";
 import { getEchoSetIconByType, echoSetLabelMap } from "../echoes/stats";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
