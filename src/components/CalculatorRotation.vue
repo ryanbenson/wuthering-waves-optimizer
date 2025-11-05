@@ -167,8 +167,6 @@
                   id="Rank"
                   :values="[1, 2, 3, 4, 5]"
                   :default-value="5"
-                  :min="1"
-                  :max="5"
                   size="xs"
                   class="w-full"
                   @update-value="(val) => onMainEchoRankChange(val)"
