@@ -108,10 +108,10 @@
                 "
                 class="size-8 rounded-full border border-solid neutral-content bg-cover"
                 :class="{
-                  'border-amber-300': rank === '5' || mainEchoRank === 5,
-                  'border-violet-600': rank === '4' || mainEchoRank === 4,
-                  'border-blue-500': rank === '3' || mainEchoRank === 3,
-                  'border-green-500': rank === '2' || mainEchoRank === 2,
+                  'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+                  'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+                  'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+                  'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
                 }"
                 :alt="currentEchoData?.name" />
             </div>
@@ -152,10 +152,10 @@
                   "
                   class="size-12 rounded-full border border-solid neutral-content bg-cover"
                   :class="{
-                    'border-amber-300': rank === '5' || mainEchoRank === 5,
-                    'border-violet-600': rank === '4' || mainEchoRank === 4,
-                    'border-blue-500': rank === '3' || mainEchoRank === 3,
-                    'border-green-500': rank === '2' || mainEchoRank === 2,
+                    'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+                    'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+                    'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+                    'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
                   }"
                   :alt="currentEchoData?.name" />
                 <span class="rotation__echo-echo--name">
