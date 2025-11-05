@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 3, 2025</h3>
+    <ul>
+      <li>Adds visual clarity on rotation main echo rank and action echo rank. Will add this to the damages list soon.</li>
+    </ul>
     <h3>November 2, 2025</h3>
     <ul>
       <li>Releases echo attacks in rotations support.</li>
