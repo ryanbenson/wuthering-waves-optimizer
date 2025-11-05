@@ -4,8 +4,8 @@
     class="range"
     :class="classes"
     :id="id"
-    :min="min ?? 0"
-    :max="max ?? maxIndex"
+    :min="0"
+    :max="maxIndex"
     v-model="rangeIndex"
     @input="updateValue" />
 </template>
@@ -35,14 +35,6 @@ export default {
       validator(value) {
         return ["xs", "sm", "md", "lg"].includes(value);
       },
-    },
-    min: {
-      type: [Number, String],
-      default: null,
-    },
-    max: {
-      type: [Number, String],
-      default: null,
     },
   },
   data() {
