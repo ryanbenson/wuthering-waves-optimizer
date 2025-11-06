@@ -10,7 +10,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
-    <h3>November 3, 2025</h3>
+    <h3>November 6, 2025</h3>
+    <ul>
+      <li>Adds visual clarity on rotation main echo rank and action echo rank in the damages list and optimizer damages list.</li>
+    </ul>
+    <h3>November 5, 2025</h3>
     <ul>
       <li>Adds visual clarity on rotation main echo rank and action echo rank. Will add this to the damages list soon.</li>
     </ul>
