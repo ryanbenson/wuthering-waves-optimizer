@@ -16,7 +16,14 @@
     }">
     <template v-if="type === 'Healing'">
       <td class="flex items-center gap-2">
-        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content" />
+        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
+          :class="{
+            'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+            'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+            'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+            'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
+          }"
+        />
         <span>{{ label }}</span>
       </td>
       <td
@@ -37,7 +44,14 @@
     </template>
     <template v-else-if="type === 'Shield'">
       <td class="flex items-center gap-2">
-        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content" />
+        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
+          :class="{
+            'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+            'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+            'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+            'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
+          }"
+        />
         <span>{{ label }}</span>
       </td>
       <td
@@ -58,7 +72,14 @@
     </template>
     <template v-else-if="type === 'ElementalEffect'">
       <td class="flex items-center gap-2">
-        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content" />
+        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
+          :class="{
+            'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+            'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+            'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+            'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
+          }"
+        />
         <span>{{ label }}</span>
       </td>
       <td
@@ -71,7 +92,14 @@
     </template>
     <template v-else>
       <td class="flex items-center gap-2">
-        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content" />
+        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
+          :class="{
+            'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
+            'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
+            'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
+            'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
+          }"
+        />
         <span>{{ label }}</span>
       </td>
       <td
@@ -167,6 +195,10 @@ export default {
     },
     mainEcho: {
       type: String,
+      default: null,
+    },
+    mainEchoRank: {
+      type: [Number, String],
       default: null,
     },
     matchedRotationFromCurrentDamages: {

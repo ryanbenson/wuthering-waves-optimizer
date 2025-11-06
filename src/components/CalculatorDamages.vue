@@ -563,6 +563,7 @@
               :damage="damageInstance.damage"
               :is-enabled="damageInstance.isEnabled"
               :main-echo="damageInstance.mainEcho"
+              :main-echo-rank="damageInstance.mainEchoRank"
               :original-is-enabled="damageInstance.originalIsEnabled"
               :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
           </tbody>
