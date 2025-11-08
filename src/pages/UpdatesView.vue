@@ -10,6 +10,11 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 8, 2025</h3>
+    <ul>
+      <li>Fixes Rocksteady Guardian shield action.</li>
+      <li>Adds healing action for Cruisewing echo.</li>
+    </ul>
     <h3>November 6, 2025</h3>
     <ul>
       <li>Adds visual clarity on rotation main echo rank and action echo rank in the damages list and optimizer damages list.</li>
