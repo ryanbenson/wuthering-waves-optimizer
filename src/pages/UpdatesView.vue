@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 11, 2025</h3>
+    <ul>
+      <li>Fixes Danjin's Forte Circuit label</li>
+    </ul>
     <h3>November 10, 2025</h3>
     <ul>
       <li>Adds echo presets for Galbrena and Qiuyuan.</li>

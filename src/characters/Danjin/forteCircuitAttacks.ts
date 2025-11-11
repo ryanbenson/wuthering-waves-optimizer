@@ -1,5 +1,5 @@
 export const forteCircuitAttacks = {
-  name: "Forte Circuit: Qingloong at War",
+  name: "Forte Circuit: Serene Vigil",
   description: `
     <div class="skilldescription">
       <span class="Title">Heavy Attack: Chasocleave</span>
