@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 10, 2025</h3>
+    <ul>
+      <li>Adds echo presets for Galbrena and Qiuyuan.</li>
+    </ul>
     <h3>November 9, 2025</h3>
     <ul>
       <li>Adds ability to import a list of echoes so they can be generated externally (e.g. scanner) and imported into your inventory..</li>

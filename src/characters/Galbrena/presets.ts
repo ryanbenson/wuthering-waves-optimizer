@@ -210,4 +210,20 @@ export const rotations: RotationPreset[] = [
   },
 ];
 
-export const echoes = [];
+export const echoes = [
+  {
+    name: `Standard Build (CR)`,
+    description: `43311 CR Flamewing's Shadow + Molten Rift. 40.5% CR, 81% CD, 17.2% ATK, 17.2% Heavy, 100 ATK, 27.6% ER`,
+    author: `lavasnake`,
+    data: {"echoes":{"0":{"type":3,"echo":"Corrosaurus","echoSet":"FlamewingsShadow","stat":"Fusion","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"ATK","echoSubStatsValue3":8.6,"echoSubStatsType4":"ATK_FLAT","echoSubStatsValue4":50,"echoSubStatsType5":"HeavyAttackDMGBonus","echoSubStatsValue5":8.6},"1":{"type":4,"echo":"ReminiscenceThrenodianLeviathan","echoSet":"FlamewingsShadow","stat":"CritRate","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"ATK","echoSubStatsValue3":8.6,"echoSubStatsType4":"ATK_FLAT","echoSubStatsValue4":50,"echoSubStatsType5":"HeavyAttackDMGBonus","echoSubStatsValue5":8.6},"2":{"type":1,"echo":"NimbusWraith","echoSet":"FlamewingsShadow","stat":"ATK","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"EnergyRegen","echoSubStatsValue3":9.2,"echoSubStatsType4":"HP","echoSubStatsValue4":8.6,"echoSubStatsType5":"DEF","echoSubStatsValue5":10.9},"3":{"type":3,"echo":"VioletFeatheredHeron","echoSet":"MoltenRift","stat":"Fusion","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"EnergyRegen","echoSubStatsValue3":9.2,"echoSubStatsType4":"HP","echoSubStatsValue4":8.6,"echoSubStatsType5":"DEF","echoSubStatsValue5":10.9},"4":{"type":1,"echo":"SnipSnap","echoSet":"MoltenRift","stat":"ATK","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"EnergyRegen","echoSubStatsValue3":9.2,"echoSubStatsType4":"HP","echoSubStatsValue4":8.6,"echoSubStatsType5":"DEF","echoSubStatsValue5":10.9}}
+    },
+  },
+  {
+    name: `Standard Build (CD)`,
+    description: `43311 CD Flamewing's Shadow + Molten Rift. 40.5% CR, 81% CD, 17.2% ATK, 17.2% Heavy, 100 ATK, 27.6% ER`,
+    author: `lavasnake`,
+    data: {"echoes":{"0":{"type":3,"echo":"Corrosaurus","echoSet":"FlamewingsShadow","stat":"Fusion","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"ATK","echoSubStatsValue3":8.6,"echoSubStatsType4":"ATK_FLAT","echoSubStatsValue4":50,"echoSubStatsType5":"HeavyAttackDMGBonus","echoSubStatsValue5":8.6},"1":{"type":4,"echo":"ReminiscenceThrenodianLeviathan","echoSet":"FlamewingsShadow","stat":"CritDMG","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"ATK","echoSubStatsValue3":8.6,"echoSubStatsType4":"ATK_FLAT","echoSubStatsValue4":50,"echoSubStatsType5":"HeavyAttackDMGBonus","echoSubStatsValue5":8.6},"2":{"type":1,"echo":"NimbusWraith","echoSet":"FlamewingsShadow","stat":"ATK","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"EnergyRegen","echoSubStatsValue3":9.2,"echoSubStatsType4":"HP","echoSubStatsValue4":8.6,"echoSubStatsType5":"DEF","echoSubStatsValue5":10.9},"3":{"type":3,"echo":"VioletFeatheredHeron","echoSet":"MoltenRift","stat":"Fusion","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"EnergyRegen","echoSubStatsValue3":9.2,"echoSubStatsType4":"HP","echoSubStatsValue4":8.6,"echoSubStatsType5":"DEF","echoSubStatsValue5":10.9},"4":{"type":1,"echo":"SnipSnap","echoSet":"MoltenRift","stat":"ATK","echoSubStatsType1":"CritRate","echoSubStatsValue1":8.1,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"EnergyRegen","echoSubStatsValue3":9.2,"echoSubStatsType4":"HP","echoSubStatsValue4":8.6,"echoSubStatsType5":"DEF","echoSubStatsValue5":10.9}}
+    },
+  },
+];
+
