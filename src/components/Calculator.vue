@@ -1917,9 +1917,14 @@ export default defineComponent({
         charBuffsData.value?.specificTalentBuffs?.[
           `${attack.key}:specialMultiplier`
         ] ?? 0;
+      let customBuffAttackSpecialMultiplier = customBuffs.value?.SpecialMultiplier ?? 0;
+      let actionBuffAttackSpecialMultiplier = attack?.buffs?.SpecialMultiplier ?? 0;
       totalSpecialMultiplier +=
-        resonanceChainAttackSpecialMultiplier + selfBuffAttackSpecialMultiplier;
-      // console.table({
+        resonanceChainAttackSpecialMultiplier +
+        selfBuffAttackSpecialMultiplier +
+        actionBuffAttackSpecialMultiplier +
+        customBuffAttackSpecialMultiplier;
+        // console.table({
       //   attack: attack.key,
       //   attackType,
       //   attackElement,

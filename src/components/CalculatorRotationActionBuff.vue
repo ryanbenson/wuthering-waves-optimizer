@@ -72,6 +72,7 @@ export default {
       // also add in multipliers too
       allModifiers.push(["talentModifierMultiply", "DMG Multiplier"]);
       allModifiers.push(["talentModifierAdd", "DMG Multiplier Additive"]);
+      allModifiers.push(["SpecialMultiplier", "Special Multiplier (Vulnerability)"]);
       allModifiers.forEach((modifier) => {
         const [key, label] = modifier;
         // find if this key is anywhere in the full list. if so, mark it as disabled

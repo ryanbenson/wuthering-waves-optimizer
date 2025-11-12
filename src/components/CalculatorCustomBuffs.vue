@@ -429,6 +429,21 @@
           class="input input-md input-bordered"
           data-test-custom-buff-def-ignore />
       </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Special Multiplier (Vulnerability)
+          </span>
+        </div>
+        <input
+          type="number"
+          v-model="SpecialMultiplier"
+          
+          name="specialMultiplier"
+          id="specialMultiplier"
+          class="input input-md input-bordered"
+          data-test-custom-buff-special-multiplier />
+      </label>
     </div>
   </div>
 </template>
@@ -484,6 +499,7 @@ export default {
       this.ResistShred = 0;
       this.DefIgnore = 0;
       this.CoordinatedDMGBonus = 0;
+      this.SpecialMultiplier = 0;
     },
   },
   computed: {
@@ -535,6 +551,7 @@ export default {
       const CoordinatedDMGBonus = this.CoordinatedDMGBonus
         ? this.CoordinatedDMGBonus / 100
         : 0;
+      const SpecialMultiplier = this.SpecialMultiplier ? this.SpecialMultiplier / 100 : 0;
       return {
         ATK,
         ATK_FLAT,
@@ -561,6 +578,7 @@ export default {
         ResistShred,
         DefIgnore,
         CoordinatedDMGBonus,
+        SpecialMultiplier,
       };
     },
     /**
@@ -960,6 +978,19 @@ export default {
         const data = {
           customBuffs: {
             CoordinatedDMGBonus: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    SpecialMultiplier: {
+      get() {
+        return this.currentCharacter?.customBuffs?.SpecialMultiplier ?? 0;
+      },
+      async set(value) {
+        const data = {
+          customBuffs: {
+            SpecialMultiplier: value,
           },
         };
         await this.setCharacterData(this.character, data);
