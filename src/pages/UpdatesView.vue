@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 13, 2025</h3>
+    <ul>
+      <li>Adds ability to delete a preset from the preset choosing window.</li>
+    </ul>
     <h3>November 12, 2025</h3>
     <ul>
       <li>Adds Special Multiplier (Vulnerability) as custom and rotation action level buff.</li>

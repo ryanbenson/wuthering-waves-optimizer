@@ -22,11 +22,18 @@
         <EchoCustomPresetEcho v-if="echo4Id" key="echo4" :echo-id="echo4Id" />
         <EchoCustomPresetEcho v-if="echo5Id" key="echo5" :echo-id="echo5Id" />
       </div>
-      <button
-        v-if="!disableAction"
-        class="btn btn-sm btn-primary max-w-40 mt-2">
-        Apply preset
-      </button>
+      <div class="actions flex gap-2">
+        <button
+          v-if="!disableAction"
+          class="btn btn-sm btn-primary max-w-40 mt-2">
+          Apply preset
+        </button>
+        <button
+          @click.stop="deletePreset"
+          class="btn btn-sm btn-error max-w-40 mt-2">
+          Delete preset
+        </button>
+      </div>
       <slot></slot>
     </div>
   </div>
@@ -35,8 +42,9 @@
 <script>
 import EchoCustomPresetEcho from "./EchoCustomPresetEcho.vue";
 import { getRollValue } from "../echoes/stats";
-import { mapState } from "pinia";
+import { mapState, mapActions } from "pinia";
 import { useInventoryStore } from "../stores/inventory";
+import { useCharacterStore } from "../stores/character";
 
 export default {
   name: "EchoCustomPreset",
@@ -252,6 +260,8 @@ export default {
     },
   },
   methods: {
+    ...mapActions(useInventoryStore, ["deleteEchoPreset", "deleteEquippedPreset", "getEchoPresetCharacters"]),
+    ...mapActions(useCharacterStore, ["getCharsEquipped", "setCharacterData"]),
     // Helper method to calculate crit value from echo data
     calculateCritValue(echoData) {
       let cv = 0;
@@ -283,6 +293,21 @@ export default {
 
       return echoData;
     },
+    getCharsEquipped(echo) {
+      return this.getEchoPresetCharacters(this.presetId);
+    },
+
+    async deletePreset() {
+      // delete all of the character references for this preset first before we clear up the preset itself
+      const allCharacters = this.getCharsEquipped(this.presetId);
+      for (const character of allCharacters) {
+        await this.deleteEquippedPreset(character);
+        // also remove the presetId reference in the character data
+        const data = { echoPresetId: null };
+        await this.setCharacterData(character, data);
+      }
+      await this.deleteEchoPreset(this.presetId);
+    }
   },
 };
 </script>
