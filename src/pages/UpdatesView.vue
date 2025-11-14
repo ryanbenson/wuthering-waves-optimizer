@@ -10,6 +10,10 @@
       <li>More!</li>
     </ul>
     <h1>Updates</h1>
+    <h3>November 14, 2025</h3>
+    <ul>
+      <li>Fixes Aalto S6 to only apply to his liberation.</li>
+    </ul>
     <h3>November 13, 2025</h3>
     <ul>
       <li>Adds ability to delete a preset from the preset choosing window.</li>
