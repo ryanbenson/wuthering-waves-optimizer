@@ -1,14 +1,6 @@
 <template>
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
-    <h1>Upcoming Updates</h1>
-    <ul>
-      <li>Optimizer</li>
-      <li>Team rotations</li>
-      <li>Translations</li>
-      <li>Food</li>
-      <li>More!</li>
-    </ul>
     <h1>Updates</h1>
     <h3>November 14, 2025</h3>
     <ul>
