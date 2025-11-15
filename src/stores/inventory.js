@@ -79,7 +79,44 @@ export const useInventoryStore = defineStore("inventory", {
           echoIds.push(echoId);
         });
         return echoIds;
-      };
+      }
+    },
+    /**
+     * look through state.equipped, which is {echoId: {character: index, character2: index2}, echoId2: {...}}
+     * if the character is found in the inner obect, skip it
+     * otherwise, add the echoId to the list
+     */
+    echoIdsEquippedByChar: (state) => {
+      return (character) => {
+        const echoIds = [];
+        Object.entries(state.equipped).forEach(([echoId, charMap]) => {
+          // if the charMap is empty, don't add the echoId since no one has equipped it
+          const characterUsingEcho = Object.keys(charMap);
+          if (characterUsingEcho.length === 0) {
+            return;
+          }
+          if (characterUsingEcho.includes(character)) {
+            echoIds.push(echoId)
+          };
+        });
+        return echoIds;
+      }
+    },
+    /**
+     * look through state.equipped, which is {echoId: {character: index, character2: index2}, echoId2: {...}}
+     * if the character is found in the inner obect, skip it
+     * otherwise, add the echoId to the list
+     */
+    echoIdsEquippedByAnyChars: (state) => {
+      const echoIds = [];
+      Object.entries(state.equipped).forEach(([echoId, charMap]) => {
+        // if the charMap is empty, don't add the echoId since no one has equipped it
+        const characterUsingEcho = Object.keys(charMap);
+        if (characterUsingEcho.length > 0) {
+          echoIds.push(echoId);
+        }
+      });
+      return echoIds;
     },
   },
   actions: {

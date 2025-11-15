@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>November 15, 2025</h3>
+    <ul>
+      <li>Adds new filters in echo browser for filtering out echoes equipped by the current character, or echoes equipped by any character.</li>
+    </ul>
     <h3>November 14, 2025</h3>
     <ul>
       <li>Fixes Aalto S6 to only apply to his liberation.</li>

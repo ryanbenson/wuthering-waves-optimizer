@@ -35,7 +35,7 @@
           <select
             v-model="echo"
             name="mainEcho"
-            class="select select-bordered select select-sm mr-4">
+            class="select select-bordered select select-sm">
             <option :value="null">Select an echo</option>
             <optgroup label="Calamity">
               <option
@@ -69,6 +69,14 @@
                 {{ option.name }}
               </option>
             </optgroup>
+          </select>
+          <select
+            v-model="equippedFilter"
+            name="equippedFilter"
+            class="select select-bordered select select-sm mr-4">
+            <option :value="null">Show all</option>
+            <option value="self">Hide equipped by {{ character }}</option>
+            <option value="any">Hide equipped by anyone</option>
           </select>
           <div
             class="echoes__filters__sets echo-filters__sets"
@@ -178,6 +186,7 @@ export default {
       costFilter: null,
       echoSet: null,
       echo: null,
+      equippedFilter: null,
       mainStatFilter: null,
       page: 1,
       perPage: 20,
@@ -199,7 +208,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(useInventoryStore, ["echoes"]),
+    ...mapState(useInventoryStore, ["echoes", "echoIdsEquippedByAnyChars"]),
     ...mapState(useCharacterStore, ["characters"]),
     /**
      * The current character data
@@ -237,6 +246,19 @@ export default {
         allEchoes = allEchoes.filter(
           (echo) => echo.stat === this.mainStatFilter,
         );
+      }
+      // filter by equipped if set
+      if (this.equippedFilter) {
+        // remove any echoes that the current character has equipped
+        if (this.equippedFilter === "self") {
+          const equippedEchoIds = this.echoIdsEquippedByChar(this.character);
+          allEchoes = allEchoes.filter((echo) => !equippedEchoIds.includes(echo.echoId));
+        }
+        // remove any echoes that any character has equipped
+        if (this.equippedFilter === "any") {
+          const equippedEchoIds = this.echoIdsEquippedByAnyChars;
+          allEchoes = allEchoes.filter((echo) => !equippedEchoIds.includes(echo.echoId));
+        }
       }
 
       return allEchoes;
@@ -282,7 +304,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useInventoryStore, ["getEchoById", "setEquippedData"]),
+    ...mapActions(useInventoryStore, ["getEchoById", "setEquippedData", "echoIdsEquippedByChar"]),
     ...mapActions(useCharacterStore, [
       "setCharacterData",
       "removeCharacterEcho",
