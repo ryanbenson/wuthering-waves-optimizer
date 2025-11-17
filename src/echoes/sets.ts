@@ -24,6 +24,7 @@ export const threeSetBonuses: string[] = [
   "Dream of the Lost 3 Set",
   "Flamewing's Shadow 3 Set",
   "Law of Harmony 3 Set",
+  "Thread of Severed Fate 3 Set",
 ];
 export const fiveSetBonuses: string[] = [
   "Freezing Frost 5 Set",
@@ -1122,6 +1123,28 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         ],
         alwaysEnabled: false,
         details: `While both effects are active, gain 16% Fusion DMG Bonus.`,
+      },
+    ],
+  },
+  "Thread of Severed Fate 3 Set": {
+    name: "Thread of Severed Fate",
+    key: "ThreadofSeveredFate",
+    details: `Inflicting Havoc Bane increases the Resonator's ATK by 20% and grants 30% Resonance Liberation DMG Bonus for 5s.`,
+    passives: [
+      {
+        key: "ThreadofSeveredFateATKLiberation",
+        modifiers: [
+          {
+            modifier: "ATK",
+            modifierValue: 20,
+          },
+          {
+            modifier: "ResonanceLiberationDMGBonus",
+            modifierValue: 30,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Inflicting Havoc Bane increases the Resonator's ATK by 20% and grants 30% Resonance Liberation DMG Bonus for 5s.`,
       },
     ],
   },
