@@ -39,7 +39,7 @@ export const basicAttacks = {
   {
     key: "DeathSnipDMG",
     label: "Death Snip DMG",
-    type: "Basic",
+    type: "Liberation",
     talents: {
       "1": "15.00%+7.50%+52.48%",
       "2": "16.23%+8.12%+56.79%",
@@ -56,7 +56,7 @@ export const basicAttacks = {
   {
     key: "DeathSnipAdditionalDMG",
     label: "Death Snip Additional DMG",
-    type: "Basic",
+    type: "Liberation",
     talents: {
       "1": "24.03%",
       "2": "26.01%",
@@ -73,7 +73,7 @@ export const basicAttacks = {
   {
     key: "DeathSnipHealing",
     label: "Death Snip Healing",
-    type: "Basic",
+    type: "Healing",
     talents: {
       "1": "600+24.00% ATK",
       "2": "672+24.96% ATK",
@@ -124,7 +124,7 @@ export const basicAttacks = {
   {
     key: "HeavyAttackDMG",
     label: "Heavy Attack DMG",
-    type: "Basic",
+    type: "Heavy",
     talents: {
       "1": "18.00%*2",
       "2": "19.48%*2",
@@ -158,7 +158,7 @@ export const basicAttacks = {
   {
     key: "SeveredFacetDMG",
     label: "Severed Facet DMG",
-    type: "Basic",
+    type: "Heavy",
     talents: {
       "1": "22.50%*2",
       "2": "24.35%*2",
