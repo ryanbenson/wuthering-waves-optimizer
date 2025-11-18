@@ -1,19 +1,5 @@
 export const outroAttacks = {
-  name: "Outro Skill: Strike Before Ready",
-  description: `<div>Attack the target, dealing <span class="ingame-Wind">Aero DMG</span> equal to 100% of Qiuyuan's ATK, considered as Echo Skill DMG.<br>Grant 50% Echo Skill DMG Amplification to the incoming Resonator, lasting for 14s or until the Resonator is switched out.</div>`,
-  attacks: [
-    {
-      key: "StrikeBeforeReadyDMG",
-      label: "Strike Before Ready DMG",
-      talent: "100.00%",
-      type: "Echo",
-    },
-    {
-      key: "SequenceNode3OBladeIWhoSaveNoMore2",
-      label: "S3 Sheath Fallen, New Shoots Revealed DMG",
-      talent: "500.00%",
-      type: "Echo",
-      requiresResonanceChain: "SequenceNode3OBladeIWhoSaveNoMore2",
-    },
-  ],
+  name: "Outro Skill: Unraveling - Law Zero",
+  description: `<div><div class="text-sm font-normal">Grant <span class="Highlight"><strong>Resonant Thread of Closure</strong></span> to all nearby Resonators in the team for 20s.<br>While in <span class="Highlight"><strong>Resonant Thread of Closure</strong></span>:<br>- When an attack hits, increase the max stacks of <span class="Highlight"><strong>Negative Status DMG</strong></span> grants <span class="Highlight"><strong>Thread of Bane</strong></span> for 15s.</div></div>`,
+  attacks: [],
 };
