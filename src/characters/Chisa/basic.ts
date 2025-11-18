@@ -1,10 +1,11 @@
 export function getCharacterBasicInfo(): CharacterBasicInfo {
   return {
-    name: "Qiuyuan",
+    name: "Chisa",
     rarity: 5,
-    weapon: "Swords",
-    avatarUrl: "Qiuyuan.png",
-    gender: "male",
-    element: "Aero",
+    weapon: "Broadblades",
+    avatarUrl: "Chisa.png",
+    gender: "female",
+    element: "Havoc",
+    havocBane: true,
   };
 }
