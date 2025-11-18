@@ -388,7 +388,7 @@ export default defineComponent({
       isAeroErosionEnabled.value =
         chosenChar?.value?.basic?.aeroErosion ?? false;
       isHavocBaneEnabled.value =
-        chosenChar?.value?.basic?.aeroErosion ?? false;
+        chosenChar?.value?.basic?.havocBane ?? false;
       // hold onto the character's main element
       characterElement.value = chosenChar.value?.basic?.element;
       // reset any optimizer data
