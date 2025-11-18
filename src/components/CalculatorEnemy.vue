@@ -51,7 +51,6 @@
     </div>
   </div>
 
-  <template v-if="hasElementEffects">
     <h3
       class="text-4xl font-bold mb-4 text-primary"
       data-test-enemy-elemental-effects-title>
@@ -108,7 +107,6 @@
       </div>
     </div>
     <div
-      v-if="isHavocBaneEnabled"
       class="data-input--talents mt-8"
       data-test-enemy-havoc-bane>
       <div class="flex flex-col pb-7 relative">
@@ -132,7 +130,6 @@
           data-test-enemy-havoc-bane-input />
       </div>
     </div>
-  </template>
 </template>
 
 <script>
@@ -357,13 +354,6 @@ export default {
         };
         await this.setCharacterData(this.character, data);
       },
-    },
-    /**
-     * Determines if there are any element effects
-     * @returns {Boolean}
-     */
-    hasElementEffects() {
-      return this.isSpectroFrazzleEnabled || this.isAeroErosionEnabled || this.isHavocBaneEnabled;
     },
   },
 };
