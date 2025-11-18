@@ -51,8 +51,6 @@
     </div>
   </div>
 
-  {{ isHavocBaneEnabled }} | {{ hasElementEffects }}
-
   <template v-if="hasElementEffects">
     <h3
       class="text-4xl font-bold mb-4 text-primary"
