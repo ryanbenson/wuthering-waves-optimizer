@@ -352,6 +352,7 @@ export default defineComponent({
     const isMissingSpectroData = ref(false);
     const isAeroErosionEnabled = ref(false);
     const isHavocBaneEnabled = ref(false);
+    const havocBaneStacks = ref(0);
     const aeroErosionStacks = ref(0);
     const isMissingAeroErosionData = ref(false);
     // component refs
@@ -1464,13 +1465,17 @@ export default defineComponent({
         attack?.buffs?.talentModifierMultiply ?? 0;
       const currentDefIgnore =
         providedFullStats?.DefIgnore || DefIgnore.value || 0;
+      // Havoc bane reduces def for stack * 2%
+      const havocBaneStacksNum = havocBaneStacks.value ?? 0;
+      const havocBaneDefIgnore = havocBaneStacksNum * .02;
       const totalDefIgnore =
         currentDefIgnore +
         extraDefIgnoreResonanceChain +
         extraDefIgnoreCharBuff +
         extraDefIgnoreCustomBuffs +
         attackBuffsDefIgnore +
-        weaponDefIgnoreSpecificDmgType;
+        weaponDefIgnoreSpecificDmgType + 
+        havocBaneDefIgnore;
       let specificSkillDmg =
         specificSkillDmgFromResonanceChains +
         specificSkillDmgFromCharBuffs +
@@ -2251,6 +2256,7 @@ export default defineComponent({
       enemyResist.value = data.enemyResist;
       spectroFrazzleStacks.value = data.spectroFrazzleStacks;
       aeroErosionStacks.value = data.aeroErosionStacks;
+      havocBaneStacks.value = data.havocBaneStacks;
       calcAllDamages();
     };
 
