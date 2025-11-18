@@ -2986,6 +2986,7 @@ export default defineComponent({
       isMissingSpectroData,
       isAeroErosionEnabled,
       isMissingAeroErosionData,
+      isHavocBaneEnabled,
       // component refs
       characterBuffsRef,
       // optimizer stuff
