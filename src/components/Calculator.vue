@@ -126,7 +126,8 @@
           :character="character"
           @updated-enemy-data="handleUpdatedEnemy"
           :is-spectro-frazzle-enabled="isSpectroFrazzleEnabled"
-          :is-aero-erosion-enabled="isAeroErosionEnabled"></CalculatorEnemy>
+          :is-aero-erosion-enabled="isAeroErosionEnabled"
+          :is-havoc-bane-enabled="isHavocBaneEnabled"></CalculatorEnemy>
       </div>
       <div class="screen--results" v-show="curScreen === 'results'">
         <CalculatorStats
@@ -350,6 +351,7 @@ export default defineComponent({
     const spectroFrazzleStacks = ref(0);
     const isMissingSpectroData = ref(false);
     const isAeroErosionEnabled = ref(false);
+    const isHavocBaneEnabled = ref(false);
     const aeroErosionStacks = ref(0);
     const isMissingAeroErosionData = ref(false);
     // component refs
@@ -383,6 +385,8 @@ export default defineComponent({
       isSpectroFrazzleEnabled.value =
         chosenChar?.value?.basic?.spectroFrazzle ?? false;
       isAeroErosionEnabled.value =
+        chosenChar?.value?.basic?.aeroErosion ?? false;
+      isHavocBaneEnabled.value =
         chosenChar?.value?.basic?.aeroErosion ?? false;
       // hold onto the character's main element
       characterElement.value = chosenChar.value?.basic?.element;
