@@ -51,6 +51,8 @@
     </div>
   </div>
 
+  {{ isHavocBaneEnabled }} | {{ hasElementEffects }}
+
   <template v-if="hasElementEffects">
     <h3
       class="text-4xl font-bold mb-4 text-primary"
@@ -116,7 +118,7 @@
           for="havocBane"
           class="talent__label"
           data-test-enemy-havoc-bane-label>
-          Aero Erosion Stacks
+          Havoc Bane Stacks
           <span class="text-primary">{{ havocBaneStacks }}</span>
         </label>
         <input
