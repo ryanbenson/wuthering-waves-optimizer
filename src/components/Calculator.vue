@@ -1918,10 +1918,12 @@ export default defineComponent({
         }
       }
       let totalSpecialMultiplier = 0;
-      let resonanceChainAttackSpecialMultiplier =
+      let resonanceChainAttackSpecialMultiplierAttack =
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:specialMultiplier`
         ] ?? 0;
+      let resonanceChainAttackSpecialMultiplier =
+        charResonanceChainsData.value?.specialMultiplier ?? 0;
       let selfBuffAttackSpecialMultiplier =
         charBuffsData.value?.specificTalentBuffs?.[
           `${attack.key}:specialMultiplier`
@@ -1930,6 +1932,7 @@ export default defineComponent({
       let actionBuffAttackSpecialMultiplier = attack?.buffs?.SpecialMultiplier ?? 0;
       totalSpecialMultiplier +=
         resonanceChainAttackSpecialMultiplier +
+        resonanceChainAttackSpecialMultiplierAttack +
         selfBuffAttackSpecialMultiplier +
         actionBuffAttackSpecialMultiplier +
         customBuffAttackSpecialMultiplier;
