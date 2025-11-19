@@ -1,17 +1,30 @@
 export const buffs = [
   {
-    key: `BamboosShade`,
-    name: `Bamboo's Shade`,
-    details: `<span class="ingame-Title">Bamboo's Shade</span></span><br>When Qiuyuan reaches 400 points of <te href="141101">Swordster's Soliloquy</te>, he gains the <span class="ingame-Highlight">Bamboo's Shade</span> effect, granting all nearby active Resonators in the team 30% Echo Skill DMG Bonus for 30s.`,
-    hasStacks: false,
+    key: `RingofChainsaw`,
+    name: `Ring of Chainsaw`,
+    details: `<div>Every 1 point of <span class="Highlight"><strong>Ring of Chainsaw</strong></span> consumed by <span class="Highlight"><strong>Sawring - Blitz</strong></span> and <span class="Highlight"><strong>Chainsaw Mode - Dodge Counter</strong></span> increases the DMG Multiplier of the next <span class="Highlight"><strong>Sawring - Eradication</strong></span>. Up to 100 points will be counted toward this effect.</ddiv>`,
+    hasStacks: true,
     modifiers: [
       {
-        modifier: "EchoDMGBonus",
-        modifierValue: 0.3,
+        modifier: "Talent",
+        modifierTalentKey: "SawringEradicationDMG",
+        modifierValue: {
+          "1": 0.013,
+          "2": 0.0142,
+          "3": 0.0152,
+          "4": 0.0167,
+          "5": 0.0178,
+          "6": 0.0189,
+          "7": 0.0207,
+          "8": 0.0224,
+          "9": 0.0240,
+          "10": 0.0259,
+        },
+        modifierValueTalentRef: "forte",
       },
     ],
     minStacks: 0,
-    maxStacks: 0,
+    maxStacks: 100,
     alwaysEnabled: false,
   },
   {
