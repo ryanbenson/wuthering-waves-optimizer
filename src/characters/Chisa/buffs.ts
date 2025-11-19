@@ -2,7 +2,7 @@ export const buffs = [
   {
     key: `RingofChainsaw`,
     name: `Ring of Chainsaw`,
-    details: `<div>Every 1 point of <span class="Highlight"><strong>Ring of Chainsaw</strong></span> consumed by <span class="Highlight"><strong>Sawring - Blitz</strong></span> and <span class="Highlight"><strong>Chainsaw Mode - Dodge Counter</strong></span> increases the DMG Multiplier of the next <span class="Highlight"><strong>Sawring - Eradication</strong></span>. Up to 100 points will be counted toward this effect.</ddiv>`,
+    details: `<div>Every 1 point of <span class="Highlight">Ring of Chainsaw</span> consumed by <span class="Highlight">Sawring - Blitz</span> and <span class="Highlight">Chainsaw Mode - Dodge Counter</span> increases the DMG Multiplier of the next <span class="Highlight">Sawring - Eradication</span>. Up to 100 points will be counted toward this effect.</ddiv>`,
     hasStacks: true,
     modifiers: [
       {
@@ -30,7 +30,7 @@ export const buffs = [
   {
     key: `WovenMyriadConvergence`,
     name: `Woven Myriad - Convergence`,
-    details: `<span class="Title"><strong>Woven Myriad - Convergence</strong></span><br>The DMG Multipliers of <span class="Highlight"><strong>Sawring - Blitz</strong></span>, <span class="Highlight"><strong>Chainsaw Mode - Dodge Counter</strong></span>, and <span class="Highlight"><strong>Sawring - Eradication</strong></span> are increased by 120%. <br>The bonus DMG Multiplier for <span class="Highlight"><strong>Sawring - Eradication</strong></span> granted by <span class="Highlight"><strong>Sawring- Blitz</strong></span> and <span class="Highlight"><strong>Chainsaw Mode - Dodge Counter</strong></span> when <span class="Highlight"><strong>Ring of Chainsaw</strong></span> is consumed additionally increases by 120%.`,
+    details: `<span class="Title">Woven Myriad - Convergence</span><br>The DMG Multipliers of <span class="Highlight">Sawring - Blitz</span>, <span class="Highlight">Chainsaw Mode - Dodge Counter</span>, and <span class="Highlight">Sawring - Eradication</span> are increased by 120%. <br>The bonus DMG Multiplier for <span class="Highlight">Sawring - Eradication</span> granted by <span class="Highlight">Sawring- Blitz</span> and <span class="Highlight">Chainsaw Mode - Dodge Counter</span> when <span class="Highlight">Ring of Chainsaw</span> is consumed additionally increases by 120%.`,
     hasStacks: false,
     modifiers: [
       {
@@ -57,7 +57,7 @@ export const buffs = [
   {
     key: `ThreadofBane`,
     name: `Thread of Bane`,
-    details: `<span class="Title"><strong>Thread of Bane</strong></span><br>When dealing damage to targets affected by <span class="Highlight">Unseen Snare</span>, ingore 18% of their DEF.`,
+    details: `<span class="Title">Thread of Bane</span><br>When dealing damage to targets affected by <span class="Highlight">Unseen Snare</span>, ingore 18% of their DEF.`,
     hasStacks: false,
     modifiers: [
       {
@@ -72,7 +72,7 @@ export const buffs = [
   {
     key: `InherentSkillInescapableFate`,
     name: `Inherent Skill: Inescapable Fate`,
-    details: `<div>When a Resonator in the team defeats a target marked by <span class="Highlight"><strong>Unseen Snare</strong></span>, the Cooldown of Chisa's Resonance Skill <span class="Highlight"><strong>Eye of Unraveling</strong></span> is reset, triggered up to once every 3s.</div>`,
+    details: `<div>When a Resonator in the team defeats a target marked by <span class="Highlight">Unseen Snare</span>, the Cooldown of Chisa's Resonance Skill <span class="Highlight">Eye of Unraveling</span> is reset, triggered up to once every 3s.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -82,7 +82,7 @@ export const buffs = [
   {
     key: `InherentSkillAllEndsHere`,
     name: `Inherent Skill: All Ends Here`,
-    details: `<div>Casting Intro Skill <span class="Highlight"><strong>Reverberance - Return</strong></span> or Resonance Liberation <span class="Highlight"><strong>Moment of Nihility</strong></span> grants 20% Havoc DMG Bonus and 20% Healing Bonus for 12s.<br>When Resonators in the team with <span class="Highlight""><strong>Unseen Snare</strong></span>, Chisa gains Sight of Unraveling, lasting 3s.<br>While in Sight of Unraveling, Chisa inflicts <span  class="Highlight"><strong>Thread of Bane</strong></span> that lasts for 30s on the targets damaged by Resonators in the team with Thread of Bane.</div>`,
+    details: `<div>Casting Intro Skill <span class="Highlight">Reverberance - Return</span> or Resonance Liberation <span class="Highlight">Moment of Nihility</span> grants 20% Havoc DMG Bonus and 20% Healing Bonus for 12s.<br>When Resonators in the team with <span class="Highlight"">Unseen Snare</span>, Chisa gains Sight of Unraveling, lasting 3s.<br>While in Sight of Unraveling, Chisa inflicts <span  class="Highlight">Thread of Bane</span> that lasts for 30s on the targets damaged by Resonators in the team with Thread of Bane.</div>`,
     hasStacks: false,
     modifiers: [
       {
