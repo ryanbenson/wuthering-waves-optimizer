@@ -102,7 +102,7 @@ export const buffs = [
   {
     key: `InherentSkillAllEndsHere`,
     name: `Inherent Skill: All Ends Here`,
-    details: `<div>Casting Intro Skill <span class="Highlight"><strong>Reverberance - Return</strong></span> or Resonance Liberation <span class="Highlight"><strong>Moment of Nihility</strong></span> grants 20% Havoc DMG Bonus and 20% Healing Bonus for 12s.<br>When Resonators in the team with <span class="Highlight""><strong>Unseen Snare</strong></span>, Chisa gains Sight of Unraveling, lasting 3s.<br>While in Sight of Unraveling, Chisa inflicts <span  class="Highlight"><strong>Thread of Bane</strong></span>.</div>`,
+    details: `<div>Casting Intro Skill <span class="Highlight"><strong>Reverberance - Return</strong></span> or Resonance Liberation <span class="Highlight"><strong>Moment of Nihility</strong></span> grants 20% Havoc DMG Bonus and 20% Healing Bonus for 12s.<br>When Resonators in the team with <span class="Highlight""><strong>Unseen Snare</strong></span>, Chisa gains Sight of Unraveling, lasting 3s.<br>While in Sight of Unraveling, Chisa inflicts <span  class="Highlight"><strong>Thread of Bane</strong></span> that lasts for 30s on the targets damaged by Resonators in the team with Thread of Bane.</div>`,
     hasStacks: false,
     modifiers: [
       {
