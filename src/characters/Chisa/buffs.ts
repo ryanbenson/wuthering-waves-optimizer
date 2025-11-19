@@ -57,7 +57,7 @@ export const buffs = [
   {
     key: `ThreadofBane`,
     name: `Thread of Bane`,
-    details: `<span class="Title">Thread of Bane</span><br>When dealing damage to targets affected by <span class="Highlight">Unseen Snare</span>, ingore 18% of their DEF.`,
+    details: `<div>When dealing damage to targets affected by <span class="Highlight">Unseen Snare</span>, ingore 18% of their DEF.</div>`,
     hasStacks: false,
     modifiers: [
       {
