@@ -1756,6 +1756,27 @@ export const allWeaponTeamBuffs = [
     details: `Casting Intro Skill grants <span class="param">20%/25%/30%/35%/40%</span> Echo Skill DMG Bonus to all Resonators in the team for 30s. Effects of the same name cannot be stacked.`,
     alwaysEnabled: false,
   },
+  {
+    name: "Kumokiri",
+    key: "ThreadofFateAllAttribute",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "AllElementAttributeBonus",
+        modifierByRefinement: {
+        "1": 0.24,
+        "2": 0.3,
+        "3": 0.36,
+        "4": 0.42,
+        "5": 0.48,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `At max stacks, when Resonators in the team inflict Negative Status, grants <span class="Highlight">24%/30%/36%/42%/48%</span> All-Attribute DMG Bonus for 15s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allCharacters: string[] = [
