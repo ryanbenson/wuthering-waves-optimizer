@@ -188,6 +188,26 @@ export const forteCircuitAttacks = {
       "9": "3700+144.00%",
       "10": "3800+168.00%"
     }
-  }
+  },
+    
+    {
+      key: "SequenceNode1WanderingThroughtheDesolateCorridors",
+      label: "S1 Wandering Through the Desolate Corridors DMG",
+      talents: {
+        "1": "61803",
+        "2": "61803",
+        "3": "61803",
+        "4": "61803",
+        "5": "61803",
+        "6": "61803",
+        "7": "61803",
+        "8": "61803",
+        "9": "61803",
+        "10": "61803",
+      },
+      type: "Liberation",
+      isFixed: true,
+      requiresResonanceChain: "SequenceNode1WanderingThroughtheDesolateCorridors",
+    },
 ],
 };
