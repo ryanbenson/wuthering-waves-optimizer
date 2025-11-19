@@ -1,6 +1,6 @@
 export const introAttacks = {
   name: "Intro Skill: Reverberance - Return",
-  description: `<div>Attack the target, dealing <span class="Dark"><strong>Havoc DMG</strong></span>.<br>While not in <span class="Highlight"><strong>Chainsaw Mode</strong></span>, press <span class="Highlight"><strong>Normal Attack</strong></span> shortly after casting this skill to cast <span class="Highlight"><strong>Basic Attack Stage 2</strong></span>.<br>While in <span class="Highlight"><strong>Chainsaw Mode</strong></span>, use <span class="Highlight"><strong>Normal Attack</strong></span> shortly after casting this skill to cast <span class="Highlight"><strong>Sawring - Blitz Stage 2</strong></span>.</div>`,
+  description: `<div>Attack the target, dealing <span class="Dark">Havoc DMG</span>.<br>While not in <span class="Highlight">Chainsaw Mode</span>, press <span class="Highlight">Normal Attack</span> shortly after casting this skill to cast <span class="Highlight">Basic Attack Stage 2</span>.<br>While in <span class="Highlight">Chainsaw Mode</span>, use <span class="Highlight">Normal Attack</span> shortly after casting this skill to cast <span class="Highlight">Sawring - Blitz Stage 2</span>.</div>`,
   attacks: [
     {
       key: "ReverberanceReturnDMG",
