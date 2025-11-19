@@ -413,7 +413,7 @@ export const allCharacters: string[] = [
   "Augusta",
   "Baizhi",
   "Brant",
-  "Buling",
+  // "Buling",
   "Calcharo",
   "Camellya",
   "Cantarella",
