@@ -30,7 +30,7 @@ export const buffs = [
   {
     key: `WovenMyriadConvergence`,
     name: `Woven Myriad - Convergence`,
-    details: `<span class="Title"><strong>Woven Myriad - Convergence</strong></span><br>The DMG Multipliers of <span class="Highlight"><strong>Sawring - Blitz</strong></span>, <span class="Highlight"><strong>Chainsaw Mode - Dodge Counter</strong></span>, and <span class="Highlight"><strong>Sawring - Eradication</strong></span> are increased by 120%.`,
+    details: `<span class="Title"><strong>Woven Myriad - Convergence</strong></span><br>The DMG Multipliers of <span class="Highlight"><strong>Sawring - Blitz</strong></span>, <span class="Highlight"><strong>Chainsaw Mode - Dodge Counter</strong></span>, and <span class="Highlight"><strong>Sawring - Eradication</strong></span> are increased by 120%. <br>The bonus DMG Multiplier for <span class="Highlight"><strong>Sawring - Eradication</strong></span> granted by <span class="Highlight"><strong>Sawring- Blitz</strong></span> and <span class="Highlight"><strong>Chainsaw Mode - Dodge Counter</strong></span> when <span class="Highlight"><strong>Ring of Chainsaw</strong></span> is consumed additionally increases by 120%.`,
     hasStacks: false,
     modifiers: [
       {
@@ -43,26 +43,6 @@ export const buffs = [
           "SawringBlitzStage3DMG",
           "SawringBlitzStage3HoldDMG",
           "SawringBlitzStage3FalltoneDMG",
-          "SawringEradicationDMG",
-          "ChainsawModeDodgeCounterDMG",
-          "ChainsawModeDodgeCounterHoldDMG",
-        ],
-        modifierValue: 1.2,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: `WovenMyriadConvergenceRingofChainsawConsumed`,
-    name: `Woven Myriad - Convergence - Ring of Chainsaw Consumed`,
-    details: `<span class="Title"><strong>Woven Myriad - Convergence</strong></span><br>The bonus DMG Multiplier for <span class="Highlight"><strong>Sawring - Eradication</strong></span> granted by <span class="Highlight"><strong>Sawring- Blitz</strong></span> and <span class="Highlight"><strong>Chainsaw Mode - Dodge Counter</strong></span> when <span class="Highlight"><strong>Ring of Chainsaw</strong></span> is consumed additionally increases by 120%.`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
           "SawringEradicationDMG",
           "ChainsawModeDodgeCounterDMG",
           "ChainsawModeDodgeCounterHoldDMG",
