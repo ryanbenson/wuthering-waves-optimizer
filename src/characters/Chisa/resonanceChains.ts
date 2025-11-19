@@ -79,7 +79,7 @@ When targets marked by <span class="Highlight">Unseen Snare</span> take direct d
   {
     key: "SequenceNode5ThousandsofLightstoGuidetheWayHome",
     name: "Sequence Node 5: Thousands of Lights to Guide the Way Home",
-    details: `<span class="skilldescription">Resonance Liberation Moment of <span class="Hightlight">Nihility</span> gains 100% DMG Bonus.<br>
+    details: `<span class="skilldescription">Resonance Liberation Moment of <span class="Highlight">Nihility</span> gains 100% DMG Bonus.<br>
 <span class="Highlight">Lifethread - Glide</span> costs 50% less <span class="Highlight">Lifethread - Jetstream</span>.</span>`,
     hasStacks: false,
     modifiers: [
@@ -95,7 +95,7 @@ When targets marked by <span class="Highlight">Unseen Snare</span> take direct d
   {
     key: "SequenceNode6ThusHopeisRekindledwiththeRisingDawn",
     name: "Sequence Node 6: Thus, Hope is Rekindled with the Rising Dawn",
-    details: `<div>When Chisa takes a fatal blow during <span class="Hightlight">Sawring - Blitz</span>, <span  class="Hightlight">Sawring - Eradication</span>, and <span class="Hightlight">Chainsaw Mode - Dodge Counter</span>, she will remain standing with at least 1 HP.<br><br><span class="Hightlight">Unseen Snare</span> becomes <span class="Hightlight">Unseen Snare - Finality</span>, which has the following effects:<br>- <span class="Hightlight">Unseen Snare - Finality</span> has all the effects of <span class="Hightlight">Unseen Snare</span>.<br>- Targets affected by <span class="Hightlight"">Unseen Snare - Finality</span> takes 30% Amplified DMG from Negative Statuses.<br>- Targets affected by <span class="Hightlight">Unseen Snare - Finality</span> takes 40% increased DMG from Chisa.</div>`,
+    details: `<div>When Chisa takes a fatal blow during <span class="Highlight">Sawring - Blitz</span>, <span  class="Highlight">Sawring - Eradication</span>, and <span class="Highlight">Chainsaw Mode - Dodge Counter</span>, she will remain standing with at least 1 HP.<br><br><span class="Highlight">Unseen Snare</span> becomes <span class="Highlight">Unseen Snare - Finality</span>, which has the following effects:<br>- <span class="Highlight">Unseen Snare - Finality</span> has all the effects of <span class="Highlight">Unseen Snare</span>.<br>- Targets affected by <span class="Highlight"">Unseen Snare - Finality</span> takes 30% Amplified DMG from Negative Statuses.<br>- Targets affected by <span class="Highlight">Unseen Snare - Finality</span> takes 40% increased DMG from Chisa.</div>`,
     hasStacks: false,
     modifiers: [
       {
