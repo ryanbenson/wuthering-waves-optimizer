@@ -1448,6 +1448,93 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Chisa: [
+    {
+      key: "ThreadofBane",
+      name: "Thread of Bane",
+      details: `<div>When dealing damage to targets affected by <span class="Highlight">Unseen Snare</span>, ingore 18% of their DEF.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DEFIgnore",
+          modifierValue: 0.18,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2IntotheWebofEndlessBonds",
+      name: "Sequence Node 2: Into the Web of Endless Bonds",
+      details: `<span class="skilldescription">Nearby Resonators in the team with <span class="Highlight">Thread of Bane</span> gain 50% All-Attribute DMG Bonus.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.5,
+        },
+        {
+          modifier: "Glacio",
+          modifierValue: 0.5,
+        },
+        {
+          modifier: "Electro",
+          modifierValue: 0.5,
+        },
+        {
+          modifier: "Aero",
+          modifierValue: 0.5,
+        },
+        {
+          modifier: "Havoc",
+          modifierValue: 0.5,
+        },
+        {
+          modifier: "Spectro",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode6ThusHopeisRekindledwiththeRisingDawn",
+      name: "Sequence Node 6: Thus, Hope is Rekindled with the Rising Dawn",
+      details: `<span class="skilldescription">Targets affected by Unseen Snare - Finality takes 30% Amplified DMG from Negative Statuses.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "specialMultiplier",
+          modifierValue: 0.4,
+        },
+        {
+          modifier: "DMGDeepen:SpectroFrazzle",
+          modifierValue: 0.3,
+        },
+        {
+          modifier: "DMGDeepen:AeroErosion",
+          modifierValue: 0.3,
+        },
+        {
+          modifier: "DMGDeepen:ElectroFlare",
+          modifierValue: 0.3,
+        },
+        {
+          modifier: "DMGDeepen:FusionBurst",
+          modifierValue: 0.3,
+        },
+        {
+          modifier: "DMGDeepen:GlacioChafe",
+          modifierValue: 0.3,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
