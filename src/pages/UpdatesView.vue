@@ -2,6 +2,9 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <ul>
+      <li>Adds Chisa, sig, and new echoes</li>
+    </ul>
     <h3>November 15, 2025</h3>
     <ul>
       <li>Adds new filters in echo browser for filtering out echoes equipped by the current character, or echoes equipped by any character.</li>
