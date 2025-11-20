@@ -16,9 +16,9 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div
-            v-if="false"
+            v-if="true"
             class="alert alert-success mb-6 text-white p-2 px-4">
-            Echo attacks are now supported in rotations!
+            Chisa, her sig, and new echoes are available
           </div>
           <CalculatorCharacterSelect
             :key="character"
