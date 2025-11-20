@@ -5,7 +5,7 @@ export const forteCircuitAttacks = {
   {
     key: "SawringBlitzStage1DMG",
     label: "Sawring - Blitz Stage 1 DMG",
-    type: "Libertion",
+    type: "Liberation",
     talents: {
       "1": "5.78%*6",
       "2": "6.25%*6",
@@ -22,7 +22,7 @@ export const forteCircuitAttacks = {
   {
     key: "SawringBlitzStage2DMG",
     label: "Sawring - Blitz Stage 2 DMG",
-    type: "Libertion",
+    type: "Liberation",
     talents: {
       "1": "5.35%*8",
       "2": "5.79%*8",
@@ -39,7 +39,7 @@ export const forteCircuitAttacks = {
   {
     key: "SawringBlitzStage2HoldDMG",
     label: "Sawring - Blitz Stage 2 Hold DMG",
-    type: "Libertion",
+    type: "Liberation",
     talents: {
       "1": "5.35%*10",
       "2": "5.79%*10",
@@ -56,7 +56,7 @@ export const forteCircuitAttacks = {
   {
     key: "SawringBlitzStage2DiscordanceDMG",
     label: "Sawring - Blitz Stage 2: Discordance DMG",
-    type: "Libertion",
+    type: "Liberation",
     talents: {
       "1": "1.80%*3",
       "2": "1.95%*3",
@@ -73,7 +73,7 @@ export const forteCircuitAttacks = {
   {
     key: "SawringBlitzStage3DMG",
     label: "Sawring - Blitz Stage 3 DMG",
-    type: "Libertion",
+    type: "Liberation",
     talents: {
       "1": "8.04%*8",
       "2": "8.70%*8",
@@ -90,7 +90,7 @@ export const forteCircuitAttacks = {
   {
     key: "SawringBlitzStage3HoldDMG",
     label: "Sawring - Blitz Stage 3 Hold DMG",
-    type: "Libertion",
+    type: "Liberation",
     talents: {
       "1": "8.04%*6",
       "2": "8.70%*6",
@@ -107,7 +107,7 @@ export const forteCircuitAttacks = {
   {
     key: "SawringBlitzStage3FalltoneDMG",
     label: "Sawring - Blitz Stage 3: Falltone DMG",
-    type: "Libertion",
+    type: "Liberation",
     talents: {
       "1": "1.80%*3",
       "2": "1.95%*3",
@@ -124,7 +124,7 @@ export const forteCircuitAttacks = {
   {
     key: "ChainsawModeDodgeCounterDMG",
     label: "Chainsaw Mode - Dodge Counter DMG",
-    type: "Libertion",
+    type: "Liberation",
     talents: {
       "1": "5.35%*8",
       "2": "5.79%*8",
@@ -141,7 +141,7 @@ export const forteCircuitAttacks = {
   {
     key: "ChainsawModeDodgeCounterHoldDMG",
     label: "Chainsaw Mode - Dodge Counter Hold DMG",
-    type: "Libertion",
+    type: "Liberation",
     talents: {
       "1": "5.35%*10",
       "2": "5.79%*10",
@@ -158,7 +158,7 @@ export const forteCircuitAttacks = {
   {
     key: "SawringEradicationDMG",
     label: "Sawring - Eradication DMG",
-    type: "Libertion",
+    type: "Liberation",
     talents: {
       "1": "25.92%+103.68%",
       "2": "28.05%+112.19%",
