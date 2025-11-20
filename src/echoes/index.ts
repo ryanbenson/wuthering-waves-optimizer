@@ -2841,8 +2841,8 @@ CD: 25s`,
         element: "Havoc",
       },
       {
-        key: "CollapsingHorizonDMG",
-        label: "Collapsing Horizon DMG",
+        key: "CoreofCollapseDMG",
+        label: "Core of Collapse DMG",
         description: `While it lasts, Core of Collapse deals 24.57% Havoc DMG when the active Resonator in the team deals damage. This effect can be triggered once every 0.5s, up to 8 times.`,
         talents: {
           "1": "24.57%*8",
