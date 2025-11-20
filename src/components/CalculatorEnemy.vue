@@ -51,11 +51,10 @@
     </div>
   </div>
 
-  <template v-if="hasElementEffects">
     <h3
       class="text-4xl font-bold mb-4 text-primary"
       data-test-enemy-elemental-effects-title>
-      Elemental Effects
+      Negative Status Effects
     </h3>
     <div
       v-if="isSpectroFrazzleEnabled"
@@ -107,7 +106,30 @@
           data-test-enemy-aero-erosion-input />
       </div>
     </div>
-  </template>
+    <div
+      class="data-input--talents mt-8"
+      data-test-enemy-havoc-bane>
+      <div class="flex flex-col pb-7 relative">
+        <label
+          for="havocBane"
+          class="talent__label"
+          data-test-enemy-havoc-bane-label>
+          Havoc Bane Stacks
+          <span class="text-primary">{{ havocBaneStacks }}</span>
+        </label>
+        <input
+          v-model="havocBaneStacks"
+          name="havocBaneStacks"
+          id="havocBaneStacks"
+          type="range"
+          min="0"
+          max="6"
+          step="1"
+          class="range range-xs"
+          :class="rangeClasses"
+          data-test-enemy-havoc-bane-input />
+      </div>
+    </div>
 </template>
 
 <script>
@@ -128,6 +150,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isHavocBaneEnabled: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
@@ -158,6 +184,7 @@ export default {
           enemyResist: this.enemyResist,
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
+          havocBaneStacks: this.havocBaneStacks,
         });
       },
       immediate: true,
@@ -173,6 +200,7 @@ export default {
           enemyResist: this.enemyResist,
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
+          havocBaneStacks: this.havocBaneStacks,
         });
       },
       immediate: true,
@@ -188,6 +216,7 @@ export default {
           enemyResist: this.enemyResist,
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
+          havocBaneStacks: this.havocBaneStacks,
         });
       },
       immediate: true,
@@ -203,6 +232,23 @@ export default {
           enemyResist: this.enemyResist,
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
+          havocBaneStacks: this.havocBaneStacks,
+        });
+      },
+      immediate: true,
+    },
+    havocBaneStacks: {
+      /**
+       * Emits the buff data in its proper format
+       * @emits updated-enemy
+       */
+      handler: async function () {
+        this.$emit("updated-enemy-data", {
+          enemyLevel: this.enemyLevel,
+          enemyResist: this.enemyResist,
+          spectroFrazzleStacks: this.spectroFrazzleStacks,
+          aeroErosionStacks: this.aeroErosionStacks,
+          havocBaneStacks: this.havocBaneStacks,
         });
       },
       immediate: true,
@@ -295,11 +341,19 @@ export default {
       },
     },
     /**
-     * Determines if there are any element effects
-     * @returns {Boolean}
+     * Getter/setter used in the form for the number of havoc bane stacks
+     * Data is persisted in the store. Avoids needing a local data + store data
      */
-    hasElementEffects() {
-      return this.isSpectroFrazzleEnabled || this.isAeroErosionEnabled;
+    havocBaneStacks: {
+      get() {
+        return this.currentCharacter?.havocBaneStacks ?? 0;
+      },
+      async set(value) {
+        const data = {
+          havocBaneStacks: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
     },
   },
 };

@@ -32,6 +32,7 @@ export const swordsList = {
 const broadbladesList = {
   five: [
     { key: "AgesOfHarvest", name: "Ages Of Harvest" },
+    { key: "Kumokiri", name: "Kumokiri" },
     { key: "LustrousRazor", name: "Lustrous Razor" },
     { key: "ThunderflareDominion", name: "Thunderflare Dominion" },
     { key: "WildfireMark", name: "Wildfire Mark" },

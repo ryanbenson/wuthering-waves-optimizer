@@ -1,0 +1,40 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Moment of Nihility",
+  description: `<div>Deal <span class="Dark">Havoc DMG</span> and recover HP for all nearby Resonators in the team. <br>Casting this skill sends Chisa into <span class="Highlight">Woven Myriad - Convergence</span> for 15s.<br>While not in <span class="Highlight">Chainsaw Mode</span>, press <span class="Highlight">Normal Attack</span> shortly after casting this skill to cast <span class="Highlight">Basic Attack Stage 2</span>.<br>Can be cast in mid-air close to the ground.<br><size=10><br><size=40><span class="Title">Woven Myriad - Convergence</span><br>The DMG Multipliers of <span class="Highlight">Sawring - Blitz</span>, <span class="Highlight">Chainsaw Mode - Dodge Counter</span>, and <span class="Highlight">Sawring - Eradication</span> are increased by 120%.<br>The bonus DMG Multiplier for <span class="Highlight">Sawring - Eradication</span> granted by <span class="Highlight">Sawring- Blitz</span> and <span class="Highlight">Chainsaw Mode - Dodge Counter</span> when <span class="Highlight">Ring of Chainsaw</span> is consumed additionally increases by 120%.<br>Casting <span class="Highlight">Sawring - Eradication</span> ends <span class="Highlight">Woven Myriad - Convergence</span>.</size=40></size=10></div>`,
+  attacks: [
+    {
+      key: "MomentofNihilityDMG",
+      label: "Moment of Nihility DMG",
+      type: "Liberation",
+      talents: {
+        "1": "480.00%",
+        "2": "519.36%",
+        "3": "558.72%",
+        "4": "613.83%",
+        "5": "653.19%",
+        "6": "698.45%",
+        "7": "761.43%",
+        "8": "824.40%",
+        "9": "887.38%",
+        "10": "954.29%",
+      },
+    },
+    {
+      key: "MomentofNihilityHealing",
+      label: "Moment of Nihility Healing",
+      type: "Healing",
+      talents: {
+        "1": "1400+56.00%",
+        "2": "1568+58.24%",
+        "3": "1750+60.48%",
+        "4": "1960+63.84%",
+        "5": "2212+68.32%",
+        "6": "2450+72.80%",
+        "7": "2492+81.20%",
+        "8": "2548+90.72%",
+        "9": "2590+100.80%",
+        "10": "2660+117.60%",
+      },
+    },
+  ],
+};

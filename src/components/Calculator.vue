@@ -126,7 +126,8 @@
           :character="character"
           @updated-enemy-data="handleUpdatedEnemy"
           :is-spectro-frazzle-enabled="isSpectroFrazzleEnabled"
-          :is-aero-erosion-enabled="isAeroErosionEnabled"></CalculatorEnemy>
+          :is-aero-erosion-enabled="isAeroErosionEnabled"
+          :is-havoc-bane-enabled="isHavocBaneEnabled"></CalculatorEnemy>
       </div>
       <div class="screen--results" v-show="curScreen === 'results'">
         <CalculatorStats
@@ -350,6 +351,8 @@ export default defineComponent({
     const spectroFrazzleStacks = ref(0);
     const isMissingSpectroData = ref(false);
     const isAeroErosionEnabled = ref(false);
+    const isHavocBaneEnabled = ref(false);
+    const havocBaneStacks = ref(0);
     const aeroErosionStacks = ref(0);
     const isMissingAeroErosionData = ref(false);
     // component refs
@@ -384,6 +387,8 @@ export default defineComponent({
         chosenChar?.value?.basic?.spectroFrazzle ?? false;
       isAeroErosionEnabled.value =
         chosenChar?.value?.basic?.aeroErosion ?? false;
+      isHavocBaneEnabled.value =
+        chosenChar?.value?.basic?.havocBane ?? false;
       // hold onto the character's main element
       characterElement.value = chosenChar.value?.basic?.element;
       // reset any optimizer data
@@ -1460,13 +1465,17 @@ export default defineComponent({
         attack?.buffs?.talentModifierMultiply ?? 0;
       const currentDefIgnore =
         providedFullStats?.DefIgnore || DefIgnore.value || 0;
+      // Havoc bane reduces def for stack * 2%
+      const havocBaneStacksNum = havocBaneStacks.value ?? 0;
+      const havocBaneDefIgnore = havocBaneStacksNum * .02;
       const totalDefIgnore =
         currentDefIgnore +
         extraDefIgnoreResonanceChain +
         extraDefIgnoreCharBuff +
         extraDefIgnoreCustomBuffs +
         attackBuffsDefIgnore +
-        weaponDefIgnoreSpecificDmgType;
+        weaponDefIgnoreSpecificDmgType + 
+        havocBaneDefIgnore;
       let specificSkillDmg =
         specificSkillDmgFromResonanceChains +
         specificSkillDmgFromCharBuffs +
@@ -1909,10 +1918,12 @@ export default defineComponent({
         }
       }
       let totalSpecialMultiplier = 0;
-      let resonanceChainAttackSpecialMultiplier =
+      let resonanceChainAttackSpecialMultiplierAttack =
         charResonanceChainsData.value?.specificTalentBuffs?.[
           `${attack.key}:specialMultiplier`
         ] ?? 0;
+      let resonanceChainAttackSpecialMultiplier =
+        charResonanceChainsData.value?.specialMultiplier ?? 0;
       let selfBuffAttackSpecialMultiplier =
         charBuffsData.value?.specificTalentBuffs?.[
           `${attack.key}:specialMultiplier`
@@ -1921,6 +1932,7 @@ export default defineComponent({
       let actionBuffAttackSpecialMultiplier = attack?.buffs?.SpecialMultiplier ?? 0;
       totalSpecialMultiplier +=
         resonanceChainAttackSpecialMultiplier +
+        resonanceChainAttackSpecialMultiplierAttack +
         selfBuffAttackSpecialMultiplier +
         actionBuffAttackSpecialMultiplier +
         customBuffAttackSpecialMultiplier;
@@ -2247,6 +2259,7 @@ export default defineComponent({
       enemyResist.value = data.enemyResist;
       spectroFrazzleStacks.value = data.spectroFrazzleStacks;
       aeroErosionStacks.value = data.aeroErosionStacks;
+      havocBaneStacks.value = data.havocBaneStacks;
       calcAllDamages();
     };
 
@@ -2976,6 +2989,7 @@ export default defineComponent({
       isMissingSpectroData,
       isAeroErosionEnabled,
       isMissingAeroErosionData,
+      isHavocBaneEnabled,
       // component refs
       characterBuffsRef,
       // optimizer stuff
