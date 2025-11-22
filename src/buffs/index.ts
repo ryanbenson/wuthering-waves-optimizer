@@ -1535,6 +1535,68 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Buling: [
+    {
+      key: `ExorcismSpell`,
+      name: `Exorcism Spell`,
+      details: `<span>All nearby Resonators in the team have their DMG Amplified by 15% for 30s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `ThunderSpellYinandYang`,
+      name: `Thunder Spell - Yin and Yang`,
+      details: `<div><span class="Highlight">Thunder Spell - Yin and Yang</span> grants 10% <span class="Highlight">Resonance Skill</span> DMG Bonus to all active Resonators in the team.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResonanceSkillDMGBonus",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `ThunderSpellHeavenEarthMind`,
+      name: `Thunder Spell - Heaven, Earth, Mind`,
+      details: `<div><span class="Highlight">Thunder Spell - Heaven, Earth, Mind</span> grants 25% <span class="Highlight">Resonance Skill</span> DMG Bonus to all active Resonators in the team.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResonanceSkillDMGBonus",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode6AlmightyForumLordofThunderSpell",
+      name: `Sequence Node 6: "Almighty Forum Lord of Thunder Spell"`,
+      details: `<div>The <span class="Highlight">Thunder Spell - Heaven, Earth, Mind</span> state now grants 50% <span class="Highlight">Resonance Skill</span> DMG Bonus to the active Resonator in the team.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResonanceSkillDMGBonus",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

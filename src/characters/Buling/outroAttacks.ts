@@ -1,19 +1,12 @@
 export const outroAttacks = {
-  name: "Outro Skill: Strike Before Ready",
-  description: `<div>Attack the target, dealing <span class="ingame-Wind">Aero DMG</span> equal to 100% of Qiuyuan's ATK, considered as Echo Skill DMG.<br>Grant 50% Echo Skill DMG Amplification to the incoming Resonator, lasting for 14s or until the Resonator is switched out.</div>`,
+  name: "Outro Skill: Exorcism Spell",
+  description: `<div>Heal the active Resonator in the team by 18% of Buling's ATK per second for 16s. All nearby Resonators in the team have their DMG Amplified by 15% for 30s.</div>`,
   attacks: [
     {
-      key: "StrikeBeforeReadyDMG",
-      label: "Strike Before Ready DMG",
-      talent: "100.00%",
-      type: "Echo",
-    },
-    {
-      key: "SequenceNode3OBladeIWhoSaveNoMore2",
-      label: "S3 Sheath Fallen, New Shoots Revealed DMG",
-      talent: "500.00%",
-      type: "Echo",
-      requiresResonanceChain: "SequenceNode3OBladeIWhoSaveNoMore2",
+      key: "ExorcismSpellHealing",
+      label: "Exorcism Spell Healing",
+      talent: "18.00%*16",
+      type: "Healing",
     },
   ],
 };
