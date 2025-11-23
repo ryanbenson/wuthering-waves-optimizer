@@ -1930,12 +1930,20 @@ export default defineComponent({
         ] ?? 0;
       let customBuffAttackSpecialMultiplier = customBuffs.value?.SpecialMultiplier ?? 0;
       let actionBuffAttackSpecialMultiplier = attack?.buffs?.SpecialMultiplier ?? 0;
+      // special case for CoreofCollapseDMG (requires 1+ havoc bane stacks) to get 100% specialMultiplier
+      let coreofCollapseDMGSpecialMultiplier = 0;
+      if (attack.key === "CoreofCollapseDMG") {
+        if (Number(havocBaneStacks.value) > 0) {
+          coreofCollapseDMGSpecialMultiplier = 1;
+        }
+      }
       totalSpecialMultiplier +=
         resonanceChainAttackSpecialMultiplier +
         resonanceChainAttackSpecialMultiplierAttack +
         selfBuffAttackSpecialMultiplier +
         actionBuffAttackSpecialMultiplier +
-        customBuffAttackSpecialMultiplier;
+        customBuffAttackSpecialMultiplier +
+        coreofCollapseDMGSpecialMultiplier;
         // console.table({
       //   attack: attack.key,
       //   attackType,

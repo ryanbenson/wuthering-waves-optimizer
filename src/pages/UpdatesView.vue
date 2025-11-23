@@ -5,6 +5,7 @@
     <h3>November 23, 2025</h3>
     <ul>
       <li>Fixes reordering issue when you change an order number on a rotation action. It now properly updates the other actions.</li>
+      <li>Implements the special multiplier/vulnerability effect for Core of Collapse for Reminiscence: Threnodian - Leviathan.</li>
     </ul>
     <h3>November 20, 2025</h3>
     <ul>
