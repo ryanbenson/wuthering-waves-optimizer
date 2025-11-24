@@ -2,6 +2,11 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>November 24, 2025</h3>
+    <ul>
+      <li>Fixed the bug I introduced yesterday for the rotation actions. it was auto-closing your action panel whenever you made a change. it has been fixed.</li>
+      <li>Updated how Chisa uses the additive multiplier bonus for Eradication. it now splits the additive bonus by 20%/80% since it's a 2 hit MV</li>
+    </ul>
     <h3>November 23, 2025</h3>
     <ul>
       <li>Fixes reordering issue when you change an order number on a rotation action. It now properly updates the other actions.</li>
