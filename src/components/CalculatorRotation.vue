@@ -201,7 +201,7 @@
           <div class="rotations__list">
             <CalculatorRotationAction
               v-for="action in actionsList"
-              :key="action.id + ':' + randomKey"
+              :key="action.id"
               :id="action.id"
               :ref="action.id"
               :character="character"
@@ -325,7 +325,6 @@ export default {
       getEchoData,
       getCostByClass,
       echoSetLabelMap,
-      randomKey: null,
     };
   },
   methods: {
@@ -430,7 +429,6 @@ export default {
       }
       actions[foundIndex] = actionData;
       this.actionsList = actions;
-      this.randomKey = randomString();
 
       this.$emit("updated-rotation", {
         id: this.id,
@@ -486,7 +484,6 @@ export default {
       actions.sort((a, b) => a.order - b.order);
       // update our list and notify up
       this.actionsList = actions;
-      this.randomKey = randomString();
 
       this.$emit("updated-rotation", {
         id: this.id,
@@ -504,7 +501,6 @@ export default {
         return action.id !== actionData.id;
       });
       this.actionsList = updatedActions;
-      this.randomKey = randomString();
 
       this.$emit("updated-rotation", {
         id: this.id,
@@ -651,7 +647,6 @@ export default {
     const actions = JSON.parse(JSON.stringify(this.actions));
     // make sure they're in the proper order
     actions.sort((a, b) => a.order - b.order);
-    this.randomKey = randomString();
     this.actionsList = actions;
     this.nameValue = this.name;
     this.descriptionValue = this.description;
