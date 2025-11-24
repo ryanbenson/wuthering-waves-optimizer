@@ -364,6 +364,12 @@ export default {
       },
     };
   },
+  watch: {
+    // watch for when this changes via the prop and update our sequence
+    order() {
+      this.sequence = this.order;
+    },
+  },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
     /**
