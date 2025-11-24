@@ -196,10 +196,22 @@ export function calcDamage(
     if (talentModifierAdd) {
       if (
         skillKey !== "HeavySlashNightfallDMG" &&
-        skillKey !== "ScarletCodaDMG"
+        skillKey !== "ScarletCodaDMG" &&
+        skillKey !== "SawringEradicationDMG"
       ) {
         if (index === talentsLen - 1) {
           t += talentModifierAdd;
+        }
+      } else if (skillKey === "SawringEradicationDMG") {
+        /**
+         * Eradication does 2 hits
+         * 1st hit gets 20% of the additive bonus
+         * 2nd hit gets 80% of the additive bonus
+         */
+        if (index === 0) {
+          t += talentModifierAdd * 0.2; // 20% for first hit
+        } else if (index === 1) {
+          t += talentModifierAdd * 0.8; // 80% for the second hit
         }
       } else if (skillKey === "ScarletCodaDMG") {
         /**
