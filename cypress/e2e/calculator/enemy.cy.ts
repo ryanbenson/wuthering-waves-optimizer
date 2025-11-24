@@ -15,8 +15,9 @@ describe("Calculator Enemy", () => {
     cy.get("[data-test-enemy-level]").should("be.visible");
     cy.get("[data-test-enemy-resist]").should("be.visible");
     cy.get("[data-test-enemy-resist]").should("be.visible");
-    cy.get("[data-test-enemy-elemental-effects-title]").should("not.exist");
+    cy.get("[data-test-enemy-elemental-effects-title]").should("exist");
     cy.get("[data-test-enemy-spectro-frazzle]").should("not.exist");
+    cy.get("[data-test-enemy-havoc-bane]").should("exist");
 
     // alter the enemy level and resist
     cy.get("[data-test-enemy-level-input]")
