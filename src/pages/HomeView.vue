@@ -1,11 +1,12 @@
 <template>
   <div class="drawer drawer-end z-50">
-    <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
+    <input 
+      id="my-drawer-4" 
+      ref="drawerCheckbox"
+      type="checkbox" 
+      class="drawer-toggle" />
     <div class="drawer-content">
       <!-- Page content here -->
-      <label for="my-drawer-4" class="drawer-button btn btn-primary">
-        Open drawer
-      </label>
     </div>
     <div class="drawer-side">
       <label
@@ -17,7 +18,10 @@
   </div>
   <div class="calculator__content">
     <div class="calculator__el">
-      <Calculator class="calculator" :key="key"></Calculator>
+      <Calculator 
+        class="calculator" 
+        :key="key"
+        @stat-selected="openDrawer"></Calculator>
     </div>
   </div>
 </template>
@@ -33,6 +37,13 @@ export default defineComponent({
     return {
       key: self.crypto.randomUUID(),
     };
+  },
+  methods: {
+    openDrawer() {
+      if (this.$refs.drawerCheckbox) {
+        this.$refs.drawerCheckbox.checked = true;
+      }
+    },
   },
   mounted() {
     /**

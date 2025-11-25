@@ -1,7 +1,7 @@
 <template>
   <table class="calculator__stats table table-zebra">
     <tbody>
-      <tr class="stat-atk">
+      <tr class="stat-atk" @click="$emit('stat-selected', 'ATK')" style="cursor: pointer;">
         <td class="w-10">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
@@ -16,7 +16,7 @@
           {{ displayInt(totalAtk) }}
         </td>
       </tr>
-      <tr class="stat-hp">
+      <tr class="stat-hp" @click="$emit('stat-selected', 'HP')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" />
@@ -31,7 +31,7 @@
           {{ displayInt(totalHp) }}
         </td>
       </tr>
-      <tr class="stat-def">
+      <tr class="stat-def" @click="$emit('stat-selected', 'DEF')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />
@@ -46,7 +46,7 @@
           {{ displayInt(totalDef) }}
         </td>
       </tr>
-      <tr class="stat-cr">
+      <tr class="stat-cr" @click="$emit('stat-selected', 'Crit Rate')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" />
@@ -54,7 +54,7 @@
         <td>Crit Rate</td>
         <td class="text-right">{{ displayPercentage(totalCritRate * 100) }}</td>
       </tr>
-      <tr class="stat-cd">
+      <tr class="stat-cd" @click="$emit('stat-selected', 'Crit DMG')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" />
@@ -62,7 +62,7 @@
         <td>Crit DMG</td>
         <td class="text-right">{{ displayPercentage(totalCritDmg * 100) }}</td>
       </tr>
-      <tr class="stat-er">
+      <tr class="stat-er" @click="$emit('stat-selected', 'Energy Regen')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" />
@@ -70,7 +70,7 @@
         <td>Energy Regen</td>
         <td class="text-right">{{ displayPercentage(energyRegen * 100) }}</td>
       </tr>
-      <tr class="stat-basic">
+      <tr class="stat-basic" @click="$emit('stat-selected', 'Basic Attack DMG Bonus')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/basicatkdmgbonus.png" />
@@ -78,7 +78,7 @@
         <td>Basic Attack DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(basicAttackDmgBonus) }}</td>
       </tr>
-      <tr class="stat-heavy">
+      <tr class="stat-heavy" @click="$emit('stat-selected', 'Heavy Attack DMG Bonus')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/heavyatkdmgbonus.png" />
@@ -86,7 +86,7 @@
         <td>Heavy Attack DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(heavyAttackDmgBonus) }}</td>
       </tr>
-      <tr class="stat-skill">
+      <tr class="stat-skill" @click="$emit('stat-selected', 'Resonance Skill DMG Bonus')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/skilldmgbonus.png" />
@@ -96,7 +96,7 @@
           {{ displayPercentage(resonanceSkillDmgBonus) }}
         </td>
       </tr>
-      <tr class="stat-liberation">
+      <tr class="stat-liberation" @click="$emit('stat-selected', 'Resonance Liberation DMG Bonus')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/liberationdmgbonus.png" />
@@ -106,7 +106,7 @@
           {{ displayPercentage(resonanceLiberationDmgBonus) }}
         </td>
       </tr>
-      <tr class="stat-glacio">
+      <tr class="stat-glacio" @click="$emit('stat-selected', 'Glacio DMG Bonus')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/glaciodmgbonus.png"
@@ -115,7 +115,7 @@
         <td>Glacio DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(glacio) }}</td>
       </tr>
-      <tr class="stat-fusion">
+      <tr class="stat-fusion" @click="$emit('stat-selected', 'Fusion DMG Bonus')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/fusiondmgbonus.png"
@@ -124,7 +124,7 @@
         <td>Fusion DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(fusion) }}</td>
       </tr>
-      <tr class="stat-electro">
+      <tr class="stat-electro" @click="$emit('stat-selected', 'Electro DMG Bonus')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/electrodmgbonus.png"
@@ -133,7 +133,7 @@
         <td>Electro DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(electro) }}</td>
       </tr>
-      <tr class="stat-aero">
+      <tr class="stat-aero" @click="$emit('stat-selected', 'Aero DMG Bonus')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/aerodmgbonus.png"
@@ -142,7 +142,7 @@
         <td>Aero DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(aero) }}</td>
       </tr>
-      <tr class="stat-spectro">
+      <tr class="stat-spectro" @click="$emit('stat-selected', 'Spectro DMG Bonus')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/spectrodmgbonus.png"
@@ -151,7 +151,7 @@
         <td>Spectro DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(spectro) }}</td>
       </tr>
-      <tr class="stat-havoc">
+      <tr class="stat-havoc" @click="$emit('stat-selected', 'Havoc DMG Bonus')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/havocdmgbonus.png"
@@ -160,7 +160,7 @@
         <td>Havoc DMG Bonus</td>
         <td class="text-right">{{ displayPercentage(havoc) }}</td>
       </tr>
-      <tr class="stat-healing">
+      <tr class="stat-healing" @click="$emit('stat-selected', 'Healing Bonus')" style="cursor: pointer;">
         <td>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/healingbonus.png" />

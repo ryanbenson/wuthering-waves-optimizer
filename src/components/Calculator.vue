@@ -157,7 +157,8 @@
           :aero="Aero"
           :spectro="Spectro"
           :havoc="Havoc"
-          :healing-bonus="healingBonus"></CalculatorStats>
+          :healing-bonus="healingBonus"
+          @stat-selected="handleStatSelected"></CalculatorStats>
         <CalculatorDamages
           :key="character"
           :character="character"
@@ -201,7 +202,8 @@
         :aero="Aero"
         :spectro="Spectro"
         :havoc="Havoc"
-        :healing-bonus="healingBonus"></CalculatorStats>
+        :healing-bonus="healingBonus"
+        @stat-selected="handleStatSelected"></CalculatorStats>
       <CalculatorDamages
         :key="character"
         :character="character"
@@ -218,28 +220,44 @@
     </div>
   </div>
   <Teleport to="#sidebar">
-    <div>Total HP: {{ displayInt(totalHp) }}</div>
-    <div>Base HP: {{ displayInt(baseHp) }}</div>
-    <div>Total HP %: {{ displayPercentage(totalHpPercent) }}</div>
-    <div>Total HP Flat: {{ displayInt(totalHpFlat) }}</div>
-    <div class="Title mt-2">Weapon</div>
-    <div>Weapon HP Modifier Buffs: {{ weaponData?.value?.modifier === "HP" ? displayPercentage(weaponData?.value?.modifierValue * 100) : 0 }}</div>
-    <div>Weapon ATK Buffs: {{ weaponAtk }}</div>
-    <div class="Title mt-2">Custom Buffs</div>
-    <div>HP% Buffs: {{ customBuffs?.value?.HP ? displayPercentage(customBuffs?.value?.HP * 100) : 0 }}</div>
-    <div>HP Flat Buffs: {{ customBuffs?.value?.HP_FLAT ? displayInt(customBuffs?.value?.HP_FLAT) : 0 }}</div>
-    <div class="Title mt-2">Team Buffs</div>
-    <div>HP% Buffs: {{ teamBuffsData?.value?.HP ? displayPercentage(teamBuffsData?.value?.HP * 100) : 0 }}</div>
-    <div>HP Flat Buffs: {{ teamBuffsData?.value?.HP_FLAT ? displayInt(teamBuffsData?.value?.HP_FLAT) : 0 }}</div>
-    <div class="Title mt-2">Character Buffs</div>
-    <div>HP% Buffs: {{ charBuffsData?.value?.HP ? displayPercentage(charBuffsData?.value?.HP * 100) : 0 }}</div>
-    <div>HP Flat Buffs: {{ charBuffsData?.value?.HP_FLAT ? displayInt(charBuffsData?.value?.HP_FLAT) : 0 }}</div>
-    <div class="Title mt-2">Character Resonance Chains</div>
-    <div>HP% Buffs: {{ charResonanceChainsData?.value?.HP ? displayPercentage(charResonanceChainsData?.value?.HP * 100) : 0 }}</div>
-    <div>HP Flat Buffs: {{ charResonanceChainsData?.value?.HP_FLAT ? displayInt(charResonanceChainsData?.value?.HP_FLAT) : 0 }}</div>
-    <div class="Title mt-2">Echoes</div>
-    <div>HP% Buffs: {{ echoStats?.value?.HP ? displayPercentage(echoStats?.value?.HP) : 0 }}</div>
-    <div>HP Flat Buffs: {{ echoStats?.value?.HP_FLAT ? displayInt(echoStats?.value?.HP_FLAT) : 0 }}</div>
+    <CalculatorStatsBreakdown
+      v-if="selectedStat"
+      :character="character"
+      :stat="selectedStat"
+      :character-level="characterLevel"
+      :weapon-atk="weaponAtk"
+      :total-atk="totalAtk"
+      :total-atk-percent="totalAtkPercent"
+      :total-atk-flat="totalAtkFlat"
+      :total-hp="totalHp"
+      :total-hp-percent="totalHpPercent"
+      :total-hp-flat="totalHpFlat"
+      :total-def="totalDef"
+      :total-def-percent="totalDefPercent"
+      :total-def-flat="totalDefFlat"
+      :total-crit-rate="totalCritRate"
+      :total-crit-dmg="totalCritDMG"
+      :energy-regen="energyRegen"
+      :basic-attack-dmg-bonus="BasicAttackDMGBonus"
+      :heavy-attack-dmg-bonus="HeavyAttackDMGBonus"
+      :resonance-skill-dmg-bonus="ResonanceSkillDMGBonus"
+      :resonance-liberation-dmg-bonus="ResonanceLiberationDMGBonus"
+      :glacio="Glacio"
+      :fusion="Fusion"
+      :electro="Electro"
+      :aero="Aero"
+      :spectro="Spectro"
+      :havoc="Havoc"
+      :healing-bonus="healingBonus"
+      :base-hp="baseHp"
+      :base-atk="baseAtk"
+      :base-def="baseDef"
+      :weapon-data="weaponData"
+      :custom-buffs="customBuffs"
+      :team-buffs-data="teamBuffsData"
+      :char-buffs-data="charBuffsData"
+      :char-resonance-chains-data="charResonanceChainsData"
+      :echo-stats="echoStats"></CalculatorStatsBreakdown>
   </Teleport>
 </template>
 
@@ -290,6 +308,7 @@ import { useRoute } from "vue-router";
 import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
+import CalculatorStatsBreakdown from "./CalculatorStatsBreakdown.vue";
 import { randomString } from "../utils/strings";
 import { displayPercentage, displayInt } from "../utils/numbers";
 
@@ -312,8 +331,10 @@ export default defineComponent({
     CalculatorMobileSubNav,
     CalculatorSubNav,
     Nav,
+    CalculatorStatsBreakdown,
   },
-  setup() {
+  emits: ["stat-selected"],
+  setup(props, { emit }) {
     const characterStore = useCharacterStore();
     const inventoryStore = useInventoryStore();
     const { characters, activeCharacter } = storeToRefs(characterStore);
@@ -333,6 +354,7 @@ export default defineComponent({
     const curScreen = ref("character");
     const mainEcho = ref("");
     const mainEchoRank = ref(5);
+    const selectedStat = ref(null);
     const damage = ref(0);
     const rotationsList = ref([]);
     const character = ref("");
@@ -2405,6 +2427,12 @@ export default defineComponent({
       character.value = chosenCharacter;
     };
 
+    const handleStatSelected = (statName) => {
+      selectedStat.value = statName;
+      // Emit to parent (HomeView) to open the drawer
+      emit("stat-selected", statName);
+    };
+
     const handleUpdatedMainEcho = (chosenEcho) => {
       mainEcho.value = chosenEcho;
       calcAllDamages();
@@ -3052,6 +3080,8 @@ export default defineComponent({
       charBuffsData,
       charResonanceChainsData,
       echoStats,
+      selectedStat,
+      handleStatSelected,
     };
   },
 });
