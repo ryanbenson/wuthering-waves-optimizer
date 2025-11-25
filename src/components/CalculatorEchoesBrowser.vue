@@ -35,7 +35,7 @@
           <select
             v-model="echo"
             name="mainEcho"
-            class="select select-bordered select select-sm mr-4">
+            class="select select-bordered select select-sm">
             <option :value="null">Select an echo</option>
             <optgroup label="Calamity">
               <option
@@ -70,19 +70,29 @@
               </option>
             </optgroup>
           </select>
-          <div class="echoes__filters__sets">
+          <select
+            v-model="equippedFilter"
+            name="equippedFilter"
+            class="select select-bordered select select-sm mr-4">
+            <option :value="null">Show all</option>
+            <option value="self">Hide equipped by {{ character }}</option>
+            <option value="any">Hide equipped by anyone</option>
+          </select>
+          <div
+            class="echoes__filters__sets echo-filters__sets"
+            :class="{ 'echo-filters__sets--active': echoSet !== null }">
             <button
               v-for="echoSet in echoSetsList"
               :key="echoSet"
               @click="toggleEchoSetFilter(echoSet)"
-              class="rounded mr-1"
+              class="rounded mr-1 p-[.3rem]"
               :class="{
                 'btn-active': isEchoSetFilterActive(echoSet),
                 echoSet,
               }">
               <img
                 :src="getEchoSetImage(echoSet)"
-                class="size-8"
+                class="size-7"
                 :class="echoSet" />
             </button>
           </div>
@@ -176,6 +186,7 @@ export default {
       costFilter: null,
       echoSet: null,
       echo: null,
+      equippedFilter: null,
       mainStatFilter: null,
       page: 1,
       perPage: 20,
@@ -197,7 +208,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(useInventoryStore, ["echoes"]),
+    ...mapState(useInventoryStore, ["echoes", "echoIdsEquippedByAnyChars"]),
     ...mapState(useCharacterStore, ["characters"]),
     /**
      * The current character data
@@ -235,6 +246,19 @@ export default {
         allEchoes = allEchoes.filter(
           (echo) => echo.stat === this.mainStatFilter,
         );
+      }
+      // filter by equipped if set
+      if (this.equippedFilter) {
+        // remove any echoes that the current character has equipped
+        if (this.equippedFilter === "self") {
+          const equippedEchoIds = this.echoIdsEquippedByChar(this.character);
+          allEchoes = allEchoes.filter((echo) => !equippedEchoIds.includes(echo.echoId));
+        }
+        // remove any echoes that any character has equipped
+        if (this.equippedFilter === "any") {
+          const equippedEchoIds = this.echoIdsEquippedByAnyChars;
+          allEchoes = allEchoes.filter((echo) => !equippedEchoIds.includes(echo.echoId));
+        }
       }
 
       return allEchoes;
@@ -280,8 +304,11 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useInventoryStore, ["getEchoById", "setEquippedData"]),
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
+    ...mapActions(useInventoryStore, ["getEchoById", "setEquippedData", "echoIdsEquippedByChar"]),
+    ...mapActions(useCharacterStore, [
+      "setCharacterData",
+      "removeCharacterEcho",
+    ]),
     getReadableSubStatLabel,
     triggerOpenModal(echoIndex) {
       this.echoIndex = echoIndex;
@@ -327,6 +354,8 @@ export default {
         console.error("Could not find echo", echoId);
         return;
       }
+      // clear the original echo before changing the data to avoid data merge issues
+      await this.removeCharacterEcho(this.character, this.echoIndex);
       // when we assign the echo from inventory, clear out all data except echoId
       // the stats will come from the inventory to have one source of truth for its stats
       const echoData = {
@@ -347,6 +376,7 @@ export default {
         echoSubStatsType5: null,
         echoSubStatsValue5: null,
       };
+      // assign the new echo to the right spot
       const data = { echoes: {} };
       data.echoes[this.echoIndex] = echoData;
       await this.setCharacterData(this.character, data);
@@ -357,6 +387,7 @@ export default {
       // wrap up the modal
       this.reset();
       this.triggerCloseModal();
+      this.$emit("chosen-echo-inventory");
     },
     resetFilters() {
       this.echoSet = null;
@@ -405,6 +436,14 @@ html[data-theme="light"] {
   }
   .MoonlitClouds {
     filter: contrast(0);
+  }
+}
+.echo-filters__sets--active {
+  button {
+    opacity: 0.6;
+  }
+  button.btn-active {
+    opacity: 1;
   }
 }
 </style>

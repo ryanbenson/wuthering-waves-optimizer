@@ -8,6 +8,7 @@ interface CharacterListItem {
 export function getCharactersAvailable(): CharacterList {
   return {
     five: [
+      { key: "Augusta", name: "Augusta" },
       { key: "Brant", name: "Brant" },
       { key: "Calcharo", name: "Calcharo" },
       { key: "Camellya", name: "Camellya" },
@@ -15,8 +16,11 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Carlotta", name: "Carlotta" },
       { key: "Cartethyia", name: "Cartethyia" },
       { key: "Changli", name: "Changli" },
+      { key: "Chisa", name: "Chisa" },
       { key: "Ciaccona", name: "Ciaccona" },
       { key: "Encore", name: "Encore" },
+      { key: "Galbrena", name: "Galbrena" },
+      { key: "Iuno", name: "Iuno" },
       { key: "Jianxin", name: "Jianxin" },
       { key: "Jinhsi", name: "Jinhsi" },
       { key: "Jiyan", name: "Jiyan" },
@@ -24,6 +28,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Lupa", name: "Lupa" },
       { key: "Phoebe", name: "Phoebe" },
       { key: "Phrolova", name: "Phrolova" },
+      { key: "Qiuyuan", name: "Qiuyuan" },
       { key: "Roccia", name: "Roccia" },
       { key: "RoverAeroFemale", name: "Rover Aero (Female)" },
       { key: "RoverAeroMale", name: "Rover Aero (Male)" },
@@ -41,6 +46,7 @@ export function getCharactersAvailable(): CharacterList {
     four: [
       { key: "Aalto", name: "Aalto" },
       { key: "Baizhi", name: "Baizhi" },
+      // { key: "Buling", name: "Buling" },
       { key: "Chixia", name: "Chixia" },
       { key: "Danjin", name: "Danjin" },
       { key: "Lumi", name: "Lumi" },
@@ -56,6 +62,13 @@ export function getCharactersAvailable(): CharacterList {
 
 export const allCharactersList = [
   // rarity 5
+  {
+    key: "Augusta",
+    name: "Augusta",
+    element: "Electro",
+    rarity: 5,
+    weapon: "Broadblade",
+  },
   {
     key: "Brant",
     name: "Brant",
@@ -106,6 +119,13 @@ export const allCharactersList = [
     weapon: "Sword",
   },
   {
+    key: "Chisa",
+    name: "Chisa",
+    element: "Havoc",
+    rarity: 5,
+    weapon: "Broadblade",
+  },
+  {
     key: "Ciaccona",
     name: "Ciaccona",
     element: "Aero",
@@ -118,6 +138,20 @@ export const allCharactersList = [
     element: "Fusion",
     rarity: 5,
     weapon: "Rectifier",
+  },
+  {
+    key: "Galbrena",
+    name: "Galbrena",
+    element: "Fusion",
+    rarity: 5,
+    weapon: "Pistol",
+  },
+  {
+    key: "Iuno",
+    name: "Iuno",
+    element: "Aero",
+    rarity: 5,
+    weapon: "Gauntlet",
   },
   {
     key: "Jianxin",
@@ -167,6 +201,13 @@ export const allCharactersList = [
     element: "Havoc",
     rarity: 5,
     weapon: "Rectifier",
+  },
+  {
+    key: "Qiuyuan",
+    name: "Qiuyuan",
+    element: "Aero",
+    rarity: 5,
+    weapon: "Sword",
   },
   {
     key: "Roccia",
@@ -268,6 +309,13 @@ export const allCharactersList = [
     rarity: 4,
     weapon: "Rectifier",
   },
+  // {
+  //   key: "Buling",
+  //   name: "Buling",
+  //   element: "Electro",
+  //   rarity: 4,
+  //   weapon: "Rectifier",
+  // },
   {
     key: "Chixia",
     name: "Chixia",
@@ -362,18 +410,23 @@ export const weaponTypesImageMap: Record<string, string> = {
 
 export const allCharacters: string[] = [
   "Aalto",
+  "Augusta",
   "Baizhi",
   "Brant",
+  // "Buling",
   "Calcharo",
   "Camellya",
   "Cantarella",
   "Carlotta",
   "Cartethyia",
   "Changli",
+  "Chisa",
   "Chixia",
   "Ciaccona",
   "Danjin",
   "Encore",
+  "Galbrena",
+  "Iuno",
   "Jianxin",
   "Jinhsi",
   "Jiyan",
@@ -383,6 +436,7 @@ export const allCharacters: string[] = [
   "Mortefi",
   "Phoebe",
   "Phrolova",
+  "Qiuyuan",
   "Roccia",
   "RoverAeroFemale",
   "RoverAeroMale",
@@ -415,4 +469,13 @@ export async function getCharByName(charName: string) {
   const charModule = await loadModule(charName);
   const data = charModule.getData();
   return data;
+}
+
+export function getAttackData(
+  charData: any,
+  forteType: string,
+  attackKey: string,
+): any {
+  const charAttacks = charData?.[forteType]?.attacks ?? [];
+  return charAttacks.find((attack: any) => attack.key === attackKey);
 }

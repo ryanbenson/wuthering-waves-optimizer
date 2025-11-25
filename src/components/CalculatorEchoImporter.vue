@@ -36,10 +36,15 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useCharacterStore, ["setCharacterEchoes"]),
+    ...mapActions(useCharacterStore, [
+      "setCharacterEchoes",
+      "setCharacterData",
+    ]),
     ...mapActions(useInventoryStore, [
       "saveEcho",
       "setEquippedData",
+      "deleteEquippedPreset",
+      "removeCharacterFromAllEquipped",
     ]),
     triggerOpenModal() {
       const modalEl = document.getElementById("modal-echoes-importer");
@@ -99,6 +104,11 @@ export default {
       // update store
       await this.setCharacterEchoes(this.character, {}); // flush first
       await this.setCharacterEchoes(this.character, echoes);
+      // flush the echo preset Id too
+      await this.setCharacterData(this.character, { echoPresetId: null });
+      await this.deleteEquippedPreset(this.character);
+      // flush out the character's equip references
+      await this.removeCharacterFromAllEquipped(this.character);
 
       // if we're saving to the inventory, save each echo,
       // then add it to the char

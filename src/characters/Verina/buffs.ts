@@ -2,7 +2,7 @@ export const buffs = [
   {
     key: "OutroSkillBlossom",
     name: "Outro Skill: Blossom",
-    details: `<div class="skilldescription">Verina heals the next character by 19% of her ATK per second for 6s. All characters on nearby teams gain 15% All-Type DMG Deepen for 30s.</div>`,
+    details: `<div class="skilldescription">All Resonators on nearby teams have their DMG Amplified by 15% for 30s.</div>`,
     hasStacks: false,
     modifiers: [
       {

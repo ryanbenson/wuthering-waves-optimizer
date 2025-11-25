@@ -27,11 +27,26 @@
               type="number"
               class="input input-bordered input-xs"
               :min="minStacks"
-              :max="maxStacks"
+              :max="effectiveBuffData.effectiveMaxStacks"
               @input="ensureMaxStacks" />
             <span class="label-text ml-2">Stacks</span>
-            <span class="ml-1 text-sm italic">(Max {{ maxStacks }})</span>
+            <span class="ml-1 text-sm italic">
+              (Max {{ effectiveBuffData.effectiveMaxStacks }})
+            </span>
           </label>
+        </div>
+      </div>
+      <!-- Debug info to show effective values -->
+      <div
+        v-if="false && hasStacks && isEnabled"
+        class="text-xs text-gray-500 mt-2">
+        <div>Base stacks: {{ stacks }}</div>
+        <div>Base max stacks: {{ maxStacks }}</div>
+        <div>
+          Effective max stacks: {{ effectiveBuffData.effectiveMaxStacks }}
+        </div>
+        <div>
+          Effective modifiers: {{ effectiveBuffData.effectiveModifiers.length }}
         </div>
       </div>
     </div>
@@ -41,6 +56,7 @@
 <script>
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+
 export default {
   props: {
     character: {
@@ -97,11 +113,36 @@ export default {
       immediate: true,
     },
     stacks: {
-      handler: async function () {
-        this.updatedStats();
+      handler: function () {
+        // Use nextTick to ensure the DOM has updated before recalculating
+        this.$nextTick(() => {
+          this.updatedStats();
+        });
       },
       immediate: true,
     },
+    // Watch for changes in resonance chains to recalculate buff stats
+    "currentCharacter.resonanceChains.SequenceNode1StainedinScorchedEarth.isEnabled":
+      {
+        handler: function () {
+          this.updatedStats();
+        },
+        immediate: true,
+      },
+    "currentCharacter.resonanceChains.SequenceNode2CleansedinCrimsonWar.isEnabled":
+      {
+        handler: function () {
+          this.updatedStats();
+        },
+        immediate: true,
+      },
+    "currentCharacter.resonanceChains.SequenceNode6EngravedinRadiantLight.isEnabled":
+      {
+        handler: function () {
+          this.updatedStats();
+        },
+        immediate: true,
+      },
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
@@ -116,11 +157,11 @@ export default {
       });
     },
     /**
-     * Ensures a user can't exceed the max stacks
+     * Ensures a user can't exceed the effective max stacks
      */
     ensureMaxStacks() {
-      if (this.stacks > this.maxStacks) {
-        this.stacks = this.maxStacks;
+      if (this.stacks > this.effectiveBuffData.effectiveMaxStacks) {
+        this.stacks = this.effectiveBuffData.effectiveMaxStacks;
       }
     },
     toggleEnabled() {
@@ -164,7 +205,9 @@ export default {
      */
     stacks: {
       get() {
-        return this.currentCharacter?.buffs?.[this.uniqueKey]?.stacks ?? 0;
+        const stacks =
+          this.currentCharacter?.buffs?.[this.uniqueKey]?.stacks ?? 0;
+        return stacks;
       },
       async set(value) {
         const data = {
@@ -177,6 +220,186 @@ export default {
       },
     },
     /**
+     * Calculates the effective max stacks and modifiers based on resonance chain interactions
+     * @returns {Object} Object containing effectiveMaxStacks, effectiveModifiers, and effectiveStacks
+     */
+    effectiveBuffData() {
+      // Start with the base configuration from props
+      let effectiveMaxStacks = this.maxStacks || 1; // Default to 1 if no maxStacks set
+      let effectiveModifiers = [...this.modifiers];
+      let effectiveStacks = this.stacks || 0; // Use the actual user input stacks
+
+      // this only applies to CrownofWills on Augusta
+      if (this.character === "Augusta" && this.uniqueKey === "CrownofWills") {
+        // Check if resonance chain buffs are enabled and apply their effects
+        const sequenceNode1 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode1StainedinScorchedEarth;
+        const sequenceNode2 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode2CleansedinCrimsonWar;
+        const sequenceNode6 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode6EngravedinRadiantLight;
+
+        // Apply SequenceNode1 effects if enabled
+        if (sequenceNode1?.isEnabled) {
+          effectiveMaxStacks = 2;
+          // Add CritDMG modifier if not already present
+          const hasCritDMG = effectiveModifiers.some(
+            (mod) => mod.modifier === "CritDMG",
+          );
+          if (!hasCritDMG) {
+            effectiveModifiers.push({
+              modifier: "CritDMG",
+              modifierValue: 0.15,
+            });
+          }
+        }
+
+        // Apply SequenceNode2 effects if enabled
+        if (sequenceNode2?.isEnabled) {
+          // Add CritDMG modifier if not already present
+          const hasCritDMG = effectiveModifiers.some(
+            (mod) => mod.modifier === "CritRate",
+          );
+          if (!hasCritDMG) {
+            effectiveModifiers.push({
+              modifier: "CritRate",
+              modifierValue: 0.2,
+            });
+          }
+        }
+
+        // Apply SequenceNode6 effects if enabled
+        if (sequenceNode6?.isEnabled) {
+          effectiveMaxStacks = 4;
+        }
+      }
+
+      // this only applies to Afterflame on Galbrena
+      if (this.character === "Galbrena" && this.uniqueKey === "Afterflame") {
+        // Check if resonance chain buffs are enabled and apply their effects
+        const sequenceNode1 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode1HeartofDefianceEverAblaze;
+        const sequenceNode6 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode6IRemainWhoIamEternalMyFlame;
+
+        // Apply SequenceNode1 effects if enabled
+        if (sequenceNode1?.isEnabled) {
+          // Add CritDMG modifier if not already present
+          const hasCritDMG = effectiveModifiers.some(
+            (mod) => mod.modifier === "CritDMG",
+          );
+          if (!hasCritDMG) {
+            effectiveModifiers.push({
+              modifier: "CritDMG",
+              modifySpecificTalents: [
+                "BasicAttackSeraphicExecutionStage1DMG",
+                "BasicAttackSeraphicExecutionStage2DMG",
+                "BasicAttackSeraphicExecutionStage3DMG",
+                "BasicAttackSeraphicExecutionStage4DMG",
+                "BasicAttackSeraphicExecutionStage5DMG",
+                "HeavyAttackFlamewingVerdictStage1DMG",
+                "HeavyAttackFlamewingVerdictStage2DMG",
+                "HeavyAttackFlamewingVerdictStage3DMG",
+                "MidairAttackHellsentBarragePlungingAttackDMG",
+                "MidairAttackHellsentBarrageSustainedFireDMG",
+                "ResonanceSkillRavageDMG",
+                "DodgeCounterPurgatoryScourgeDMG",
+              ],
+              modifierValue: 0.02,
+            });
+          }
+        }
+
+        // Apply sequenceNode6 effects if enabled
+        if (sequenceNode6?.isEnabled) {
+          // Add CritDMG modifier if not already present
+          const DMGDeepen = effectiveModifiers.some(
+            (mod) => mod.modifier === "DMGDeepen",
+          );
+          if (!DMGDeepen) {
+            effectiveModifiers.push({
+              modifier: "DMGDeepen",
+              modifySpecificTalents: [
+                "BasicAttackSeraphicExecutionStage1DMG",
+                "BasicAttackSeraphicExecutionStage2DMG",
+                "BasicAttackSeraphicExecutionStage3DMG",
+                "BasicAttackSeraphicExecutionStage4DMG",
+                "BasicAttackSeraphicExecutionStage5DMG",
+                "HeavyAttackFlamewingVerdictStage1DMG",
+                "HeavyAttackFlamewingVerdictStage2DMG",
+                "HeavyAttackFlamewingVerdictStage3DMG",
+                "MidairAttackHellsentBarragePlungingAttackDMG",
+                "MidairAttackHellsentBarrageSustainedFireDMG",
+                "ResonanceSkillRavageDMG",
+                "DodgeCounterPurgatoryScourgeDMG",
+              ],
+              modifierValue: 0.00875,
+            });
+          }
+        }
+      }
+
+      // this only applies to BurningDrive on Galbrena
+      if (this.character === "Galbrena" && this.uniqueKey === "BurningDrive") {
+        const sequenceNode2 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode2HellboundDiveofFireandAbyss;
+
+        // Apply SequenceNode1 effects if enabled
+        if (sequenceNode2?.isEnabled) {
+          // Add CritDMG modifier if not already present
+          const hasAtk = effectiveModifiers.some(
+            (mod) => mod.modifier === "ATK",
+          );
+          // it should replace the existing buff, so we check if it does exist
+          if (hasAtk) {
+            effectiveModifiers.push({
+              modifier: "ATK",
+              // .7 from res chain + 0.2 from original buff
+              // wording says 350%, but it's a multiplier against 20%, so 20%*350%
+              // not additive
+              modifierValue: .9,
+            });
+          }
+        }
+      }
+
+      // this only applies to BamboosShade on Qiuyuan
+      if (this.character === "Qiuyuan" && this.uniqueKey === "BamboosShade") {
+        const sequenceNode2 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode2OBladeIWhoTeachNoMore;
+
+        // Apply SequenceNode2 effects if enabled
+        if (sequenceNode2?.isEnabled) {
+          const hasEchoAmplify = effectiveModifiers.some(
+            (mod) => mod.modifier === "DMGDeepen:Echo",
+          );
+          if (!hasEchoAmplify) {
+            effectiveModifiers.push({
+              modifier: "DMGDeepen:Echo",
+              modifierValue: 0.3,
+            });
+          }
+        }
+      }
+
+      // If both are enabled, SequenceNode6 takes precedence (4 max stacks)
+      // If neither is enabled, revert to base configuration (1 max stack, original modifiers)
+
+      const result = {
+        effectiveMaxStacks,
+        effectiveModifiers,
+        effectiveStacks,
+      };
+      return result;
+    },
+    /**
      * Transforms the buffs data into a hashmap of buffModifider : buffValue
      * That gets sent throughout the calculator to reflect in the stats and damages
      * @returns {Object}
@@ -186,7 +409,8 @@ export default {
       if (!this.isEnabled) {
         return data;
       }
-      // if this buff got overridden by another buff, we don't want to apply it
+
+      // Check if this buff got overridden by another buff
       // TODO: Implement the replaces and replacedBy logic
       // it needs to check both character buffs and resonance chains
       if (
@@ -201,8 +425,13 @@ export default {
           return data;
         }
       }
+
+      // Get the effective modifiers based on resonance chain interactions
+      const effectiveData = this.effectiveBuffData;
+      const { effectiveModifiers, effectiveStacks } = effectiveData;
+
       if (!this.hasStacks) {
-        this.modifiers.forEach((modifierItem) => {
+        effectiveModifiers.forEach((modifierItem) => {
           if (modifierItem?.modifySpecificTalents) {
             if (!data.modifySpecificTalents) {
               data.modifySpecificTalents = [];
@@ -231,18 +460,19 @@ export default {
         });
         return data;
       }
+
       if (this.hasStacks) {
-        if (this.stacks === 0) {
+        if (effectiveStacks === 0) {
           return data;
         }
-        this.modifiers.forEach((modifierItem) => {
+        effectiveModifiers.forEach((modifierItem) => {
           if (modifierItem?.modifySpecificTalents) {
             if (!data.modifySpecificTalents) {
               data.modifySpecificTalents = [];
             }
-            // updadate modifer value with the value * stacks
+            // update modifier value with the value * stacks
             modifierItem.modifierValueCalculated =
-              modifierItem.modifierValue * this.stacks;
+              modifierItem.modifierValue * effectiveStacks;
             data.modifySpecificTalents.push(modifierItem);
           } else if (modifierItem.modifier === "Talent") {
             const talentRef =
@@ -250,14 +480,13 @@ export default {
             const talentVal = modifierItem.modifierValue[talentRef];
             data[
               `${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`
-            ] = talentVal * this.stacks;
+            ] = talentVal * effectiveStacks;
           } else {
-            const totalValue = modifierItem.modifierValue * this.stacks;
+            const totalValue = modifierItem.modifierValue * effectiveStacks;
             data[modifierItem.modifier] = totalValue;
           }
         });
       }
-      // shouldn't get here
       return data;
     },
   },

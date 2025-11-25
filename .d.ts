@@ -7,6 +7,8 @@ interface CharacterBasicInfo {
   element: string;
   spectroFrazzle?: boolean;
   aeroErosion?: boolean;
+  havocBane?: boolean;
+  electroFlare?: boolean;
 }
 interface WeaponInfo {
   key?: string;

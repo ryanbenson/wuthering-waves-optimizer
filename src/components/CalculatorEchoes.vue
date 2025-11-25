@@ -5,25 +5,47 @@
       :character="character"></CalculatorEchoImporter>
     <CalculatorEchoesBrowser
       ref="echoesBrowser"
-      :character="character"></CalculatorEchoesBrowser>
+      :character="character"
+      @chosen-echo-inventory="
+        handleChosenEchoInventory
+      "></CalculatorEchoesBrowser>
     <CalculatorEchoesPresets
       ref="echoesPresets"
       :character="character"></CalculatorEchoesPresets>
+    <CalculatorSaveEchoesPreset
+      ref="echoesSavePreset"
+      @on-save-echo-preset="
+        handleOnSaveEchoPreset
+      "></CalculatorSaveEchoesPreset>
+    <CalculatorEchoesPresetsGuide
+      ref="echoesPresetsGuide"></CalculatorEchoesPresetsGuide>
     <div v-if="isTotalCostOverCap" class="alert alert--error">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </div>
-    <div class="actions mb-4 flex gap-2">
-      <button class="btn btn-primary" @click="handleOpenEchoesImporter">
+    <div class="actions mb-4 flex gap-2 flex-wrap">
+      <button class="btn btn-sm btn-primary" @click="handleOpenEchoesImporter">
         Import Echoes
       </button>
-      <button class="btn btn-primary" @click="handleOpenEchoesPreset">
-        Use Preset Echoes
+      <button class="btn btn-sm btn-primary" @click="handleOpenEchoesPreset">
+        Use Presets
       </button>
+      <button class="btn btn-sm btn-primary" @click="handleOpenSaveEchoPreset">
+        Save Preset
+      </button>
+      <button
+        class="btn btn-sm btn-primary btn-outline"
+        @click="handleOpenPresetsGuide">
+        Presets Guide
+      </button>
+    </div>
+    <div v-if="echoPresetName" class="badge badge-primary badge-outline mb-4">
+      Preset: {{ echoPresetName }}
     </div>
     <div class="echo__list">
       <CalculatorEcho
         v-for="(n, index) in 5"
         :key="character + '-' + index"
+        :ref="'echo' + index"
         :index="index"
         :character="character"
         class="echo-selector"
@@ -32,7 +54,8 @@
         @echo:set-chosen="handleEchoSetChosen"
         @main-echo:updated="handleMainEchoUpdated"
         @main-echo-rank:updated="handleMainEchoRankUpdated"
-        @open-echoes-browser="handleOpenEchoesBrowser"></CalculatorEcho>
+        @open-echoes-browser="handleOpenEchoesBrowser"
+        @on-echo-removed="handleEchoRemoved"></CalculatorEcho>
     </div>
     <div class="set-bonus-selector mt-6 mb-2">
       <div class="set-bonus-selector__header flex justify-between items-center">
@@ -132,8 +155,12 @@ import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
 import CalculatorEchoesBrowser from "./CalculatorEchoesBrowser.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import CalculatorEchoesPresets from "./CalculatorEchoesPresets.vue";
+import CalculatorSaveEchoesPreset from "./CalculatorSaveEchoesPreset.vue";
+import CalculatorEchoesPresetsGuide from "./CalculatorEchoesPresetsGuide.vue";
 import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
+import { randomString } from "../utils/strings.ts";
 const MAX_ECHO_COST = 12;
 
 export default {
@@ -150,6 +177,8 @@ export default {
     CalculatorEchoesSetBonusOne,
     CalculatorEchoesSetBonusTwo,
     CalculatorEchoImporter,
+    CalculatorSaveEchoesPreset,
+    CalculatorEchoesPresetsGuide,
   },
   data() {
     return {
@@ -207,10 +236,20 @@ export default {
       if (newValue === false) {
         this.updateEchoSets();
       }
-    }
+    },
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
+    ...mapActions(useInventoryStore, [
+      "saveEchoPreset",
+      "patchEchoPreset",
+      "deleteEchoPreset",
+      "getEchoPresetById",
+      "deleteEquippedPreset",
+      "setEquippedPresetData",
+      "removeCharacterFromAllEquipped",
+      "setEquippedData",
+    ]),
     updateTotalStats() {
       const stats = {};
       // process all of the echo data
@@ -321,7 +360,7 @@ export default {
     async updateEchoSets() {
       // Filter out nulls and create a count map for each value
       const counts = this.echoSetsChosen
-        .filter(v => v !== null)
+        .filter((v) => v !== null)
         .reduce((acc, val) => {
           acc[val] = (acc[val] || 0) + 1;
           return acc;
@@ -329,54 +368,82 @@ export default {
 
       // Create lookup sets from your constants for which bonuses exist
       const has2SetBonus = new Set(
-        this.twoSetBonuses.map(bonus => {
-          const match = bonus.match(/^(.+) 2 Set$/);
-          return match ? Object.keys(echoSetLabelMap).find(key => 
-            getEchoSetLabelByType(key) === match[1]
-          ) : null;
-        }).filter(Boolean)
+        this.twoSetBonuses
+          .map((bonus) => {
+            const match = bonus.match(/^(.+) 2 Set$/);
+            return match
+              ? Object.keys(echoSetLabelMap).find(
+                  (key) => getEchoSetLabelByType(key) === match[1],
+                )
+              : null;
+          })
+          .filter(Boolean),
       );
 
       const has3SetBonus = new Set(
-        this.threeSetBonuses.map(bonus => {
-          const match = bonus.match(/^(.+) 3 Set$/);
-          return match ? Object.keys(echoSetLabelMap).find(key => 
-            getEchoSetLabelByType(key) === match[1]
-          ) : null;
-        }).filter(Boolean)
+        this.threeSetBonuses
+          .map((bonus) => {
+            const match = bonus.match(/^(.+) 3 Set$/);
+            return match
+              ? Object.keys(echoSetLabelMap).find(
+                  (key) => getEchoSetLabelByType(key) === match[1],
+                )
+              : null;
+          })
+          .filter(Boolean),
       );
 
       const has5SetBonus = new Set(
-        this.fiveSetBonuses.map(bonus => {
-          const match = bonus.match(/^(.+) 5 Set$/);
-          return match ? Object.keys(echoSetLabelMap).find(key => 
-            getEchoSetLabelByType(key) === match[1]
-          ) : null;
-        }).filter(Boolean)
+        this.fiveSetBonuses
+          .map((bonus) => {
+            const match = bonus.match(/^(.+) 5 Set$/);
+            return match
+              ? Object.keys(echoSetLabelMap).find(
+                  (key) => getEchoSetLabelByType(key) === match[1],
+                )
+              : null;
+          })
+          .filter(Boolean),
       );
 
       // Get all possible bonuses for each set
       const availableBonuses = [];
-      
+
       for (const [setType, count] of Object.entries(counts)) {
         const setLabel = getEchoSetLabelByType(setType);
-        
+
         // Add bonuses based on count and what bonuses exist for this set
         if (count >= 5 && has5SetBonus.has(setType)) {
-          availableBonuses.push({ bonus: `${setLabel} 5 Set`, priority: 3, setType });
+          availableBonuses.push({
+            bonus: `${setLabel} 5 Set`,
+            priority: 3,
+            setType,
+          });
         }
         if (count >= 3 && has3SetBonus.has(setType)) {
-          availableBonuses.push({ bonus: `${setLabel} 3 Set`, priority: 2, setType });
+          availableBonuses.push({
+            bonus: `${setLabel} 3 Set`,
+            priority: 2,
+            setType,
+          });
         }
         if (count >= 2 && has2SetBonus.has(setType)) {
-          availableBonuses.push({ bonus: `${setLabel} 2 Set`, priority: 1, setType });
+          availableBonuses.push({
+            bonus: `${setLabel} 2 Set`,
+            priority: 1,
+            setType,
+          });
         }
       }
 
       // Separate 2-set bonuses from higher-tier bonuses
-      const twoSetBonuses = availableBonuses.filter(b => b.bonus.includes('2 Set'));
-      const higherTierBonuses = availableBonuses.filter(b => b.bonus.includes('3 Set') || b.bonus.includes('5 Set'));
-      
+      const twoSetBonuses = availableBonuses.filter((b) =>
+        b.bonus.includes("2 Set"),
+      );
+      const higherTierBonuses = availableBonuses.filter(
+        (b) => b.bonus.includes("3 Set") || b.bonus.includes("5 Set"),
+      );
+
       // Sort each group by set type for consistency
       twoSetBonuses.sort((a, b) => a.setType.localeCompare(b.setType));
       higherTierBonuses.sort((a, b) => {
@@ -398,16 +465,21 @@ export default {
 
       // setBonusTwo: Can be 2-set, 3-set, or 5-set
       // Priority: higher-tier bonuses first, then remaining 2-set bonuses
-      const usedSetTypes = setBonusOneVal ? new Set([twoSetBonuses[0].setType]) : new Set();
-      
+      const usedSetTypes = setBonusOneVal
+        ? new Set([twoSetBonuses[0].setType])
+        : new Set();
+
       // First try higher-tier bonuses
       for (const { bonus, setType } of higherTierBonuses) {
-        if (!usedSetTypes.has(setType) || setBonusOneVal?.includes(getEchoSetLabelByType(setType))) {
+        if (
+          !usedSetTypes.has(setType) ||
+          setBonusOneVal?.includes(getEchoSetLabelByType(setType))
+        ) {
           setBonusTwoVal = bonus;
           break;
         }
       }
-      
+
       // If no higher-tier bonus found, try remaining 2-set bonuses
       if (!setBonusTwoVal) {
         for (const { bonus, setType } of twoSetBonuses.slice(1)) {
@@ -448,9 +520,84 @@ export default {
     handleOpenEchoesPreset() {
       this.$refs.echoesPresets.triggerOpenModal();
     },
+    handleOpenPresetsGuide() {
+      this.$refs.echoesPresetsGuide.triggerOpenModal();
+    },
+    handleOpenSaveEchoPreset() {
+      if (this.echoPresetId) {
+        this.$refs.echoesSavePreset.setPresetId(this.echoPresetId);
+      }
+      this.$refs.echoesSavePreset.triggerOpenModal();
+    },
+    /**
+     * Only support new echo presets when you save
+     * You can only edit a name later in the listing screen
+     */
+    async handleOnSaveEchoPreset(data) {
+      // TODO: If we want to support edit later
+      // let id;
+      // if (this.echoPresetId) {
+      //   id = this.echoPresetId;
+      // } else {
+      //   id = randomString();
+      // }
+      // make sure all echoes are saved
+      const id = randomString();
+      await this.$refs.echo0[0].saveEchoItem();
+      await this.$refs.echo1[0].saveEchoItem();
+      await this.$refs.echo2[0].saveEchoItem();
+      await this.$refs.echo3[0].saveEchoItem();
+      await this.$refs.echo4[0].saveEchoItem();
+      const presetData = {
+        presetId: id,
+        name: data.name,
+        echo1Id: this.currentCharacter?.echoes?.[0]?.echoId ?? null,
+        echo2Id: this.currentCharacter?.echoes?.[1]?.echoId ?? null,
+        echo3Id: this.currentCharacter?.echoes?.[2]?.echoId ?? null,
+        echo4Id: this.currentCharacter?.echoes?.[3]?.echoId ?? null,
+        echo5Id: this.currentCharacter?.echoes?.[4]?.echoId ?? null,
+      };
+      await this.saveEchoPreset(presetData);
+      this.echoPresetId = id;
+      await this.setEquippedPresetData(this.character, id);
+    },
+    async handleEchoRemoved() {
+      await this.deleteEquippedPreset(this.character);
+      this.echoPresetId = null;
+    },
+    async handleChosenEchoInventory() {
+      this.handleEchoRemoved();
+      await this.removeCharacterFromAllEquipped(this.character);
+
+      const equippedData0 = {};
+      equippedData0[this.character] = 0;
+      const echo0Id = this.currentCharacter?.echoes?.[0]?.echoId ?? null;
+      await this.setEquippedData(echo0Id, equippedData0);
+
+      const equippedData1 = {};
+      equippedData1[this.character] = 1;
+      const echo1Id = this.currentCharacter?.echoes?.[1]?.echoId ?? null;
+      await this.setEquippedData(echo1Id, equippedData1);
+
+      const equippedData2 = {};
+      equippedData2[this.character] = 2;
+      const echo2Id = this.currentCharacter?.echoes?.[2]?.echoId ?? null;
+      await this.setEquippedData(echo2Id, equippedData2);
+
+      const equippedData3 = {};
+      equippedData3[this.character] = 3;
+      const echo3Id = this.currentCharacter?.echoes?.[3]?.echoId ?? null;
+      await this.setEquippedData(echo3Id, equippedData3);
+
+      const equippedData4 = {};
+      equippedData4[this.character] = 4;
+      const echo4Id = this.currentCharacter?.echoes?.[4]?.echoId ?? null;
+      await this.setEquippedData(echo4Id, equippedData4);
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
+    ...mapState(useInventoryStore, ["getEchoPresetData"]),
     /**
      * The current character data
      * @returns {Object}
@@ -472,6 +619,22 @@ export default {
           mainEcho: {
             echo: value,
           },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the the main echo
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    echoPresetId: {
+      get() {
+        return this.currentCharacter?.echoPresetId ?? null;
+      },
+      async set(value) {
+        const data = {
+          echoPresetId: value,
         };
         await this.setCharacterData(this.character, data);
       },
@@ -608,6 +771,12 @@ export default {
       }
       const echoData = getEchoData(this.mainEcho);
       return echoData?.name ?? null;
+    },
+    echoPresetData() {
+      return this.getEchoPresetData(this.echoPresetId);
+    },
+    echoPresetName() {
+      return this.echoPresetData?.name ?? null;
     },
   },
 };

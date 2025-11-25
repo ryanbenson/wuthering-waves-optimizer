@@ -556,12 +556,14 @@
           <tbody>
             <CalculatorDamage
               v-for="damageInstance in rotation.attacks"
-              :key="damageInstance.key"
+              :key="damageInstance.id"
               :character="character"
               :type="damageInstance.type"
               :label="damageInstance.label"
               :damage="damageInstance.damage"
               :is-enabled="damageInstance.isEnabled"
+              :main-echo="damageInstance.mainEcho"
+              :main-echo-rank="damageInstance.mainEchoRank"
               :original-is-enabled="damageInstance.originalIsEnabled"
               :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
           </tbody>

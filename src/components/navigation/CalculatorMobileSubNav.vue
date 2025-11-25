@@ -67,6 +67,19 @@
         Team Buffs
       </a>
     </li>
+    <li class="mb-2">
+      <a
+        @click="changeScreen('optimizer')"
+        :class="{ active: curScreen === 'optimizer' }"
+        class="text-white hover:text-primary"
+        data-test-calculator-mobile-nav="optimizer">
+        <img
+          src="https://ryanbenson.github.io/wuthering-waves-assets/images/sparkles.png"
+          class="size-7"
+          alt="Optimizer" />
+        Optimizer
+      </a>
+    </li>
     <li class="h-9 my-0.5 mb-2">
       <a
         @click="changeScreen('rotations')"
@@ -131,6 +144,8 @@
 </template>
 
 <script>
+import { mapState } from "pinia";
+import { useSettingsStore } from "../../stores/settings";
 export default {
   name: "CalculatorMobileSubNav",
   props: {
@@ -153,6 +168,9 @@ export default {
         mainMenuEl.removeAttribute("open");
       }
     },
+  },
+  computed: {
+    ...mapState(useSettingsStore, ["labs"]),
   },
   mounted() {
     this.curScreen = this.screen;

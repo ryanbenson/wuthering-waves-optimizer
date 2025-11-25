@@ -1,3 +1,5 @@
+import { EchoObject, echoSetLabelMap, getEchoSetLabelByType } from "./stats";
+
 export const twoSetBonuses: string[] = [
   "Freezing Frost 2 Set",
   "Molten Rift 2 Set",
@@ -18,7 +20,11 @@ export const twoSetBonuses: string[] = [
   "Flaming Clawprint 2 Set",
 ];
 export const threeSetBonuses: string[] = [
+  "Crown of Valor 3 Set",
   "Dream of the Lost 3 Set",
+  "Flamewing's Shadow 3 Set",
+  "Law of Harmony 3 Set",
+  "Thread of Severed Fate 3 Set",
 ];
 export const fiveSetBonuses: string[] = [
   "Freezing Frost 5 Set",
@@ -39,6 +45,205 @@ export const fiveSetBonuses: string[] = [
   "Windward Pilgrimage 5 Set",
   "Flaming Clawprint 5 Set",
 ];
+
+// Function to convert a list of echo set keys (e.g. MidnightVeil)
+// to their corresponding set bonus effects
+// may need to use getEchoSetLabelByType to convert keys to labels
+// it should provide the matching data from setBonusEffectsTwo
+// it can match the top level property which will match the name of the set bonus (e.g. Midnight Veil 2 Set)
+export function getSetBonusEffectsFromListOfSetKeys(
+  echoSetKeys: (string | null)[],
+): EchoSetBonus[] {
+  const echoSets = echoSetKeys.map((key) =>
+    key ? getEchoSetLabelByType(key) : null,
+  );
+  // go through each echoSets,
+  // look at setBonusEffectsTwo keys
+  // do a match (ignore the 2 Set, 3 Set, 5 Set part)
+  // if found, add it to the list and return the full list
+  const setBonuses: EchoSetBonus[] = [];
+  echoSets.forEach((set) => {
+    if (set) {
+      const matchingBonus = Object.keys(setBonusEffectsTwo).filter((bonus) =>
+        bonus.startsWith(set),
+      );
+      if (matchingBonus.length > 0) {
+        // for each matching bonus, get the full object value from setBonusEffectsTwo
+        // and add that to the setBonuses array
+        matchingBonus.forEach((bonus) => {
+          setBonuses.push(setBonusEffectsTwo[bonus]);
+        });
+      }
+    }
+  });
+  return setBonuses;
+}
+
+export function getSetLabelByKey(setKey: string): string | null {
+  const entries = Object.entries(setBonusEffectsTwo);
+  for (const [setLabel, setData] of entries) {
+    if (setData.key === setKey) {
+      return setLabel;
+    }
+  }
+  return null;
+}
+
+export function getSetsFromEchoes(echoes: EchoObject[]): string[] {
+  const sets: string[] = [];
+  echoes.forEach((echo) => {
+    if (echo) {
+      sets.push(echo.echoSet);
+    }
+  });
+  return sets;
+}
+
+type SetBonusEffects = {
+  setBonusOne: string | null;
+  setBonusTwo: string | null;
+};
+export const getSetBonusEffects = (
+  echoSets: (string | null)[],
+): SetBonusEffects => {
+  // Filter out nulls and create a count map for each value
+  const counts: Record<string, number> = echoSets
+    .filter((v) => v !== null)
+    .reduce((acc: Record<string, number>, val) => {
+      acc[val] = (acc[val] || 0) + 1;
+      return acc;
+    }, {});
+
+  // Create lookup sets from your constants for which bonuses exist
+  const has2SetBonus = new Set(
+    twoSetBonuses
+      .map((bonus) => {
+        const match = bonus.match(/^(.+) 2 Set$/);
+        return match
+          ? Object.keys(echoSetLabelMap).find(
+              (key) => getEchoSetLabelByType(key) === match[1],
+            )
+          : null;
+      })
+      .filter(Boolean),
+  );
+
+  const has3SetBonus = new Set(
+    threeSetBonuses
+      .map((bonus) => {
+        const match = bonus.match(/^(.+) 3 Set$/);
+        return match
+          ? Object.keys(echoSetLabelMap).find(
+              (key) => getEchoSetLabelByType(key) === match[1],
+            )
+          : null;
+      })
+      .filter(Boolean),
+  );
+
+  const has5SetBonus = new Set(
+    fiveSetBonuses
+      .map((bonus) => {
+        const match = bonus.match(/^(.+) 5 Set$/);
+        return match
+          ? Object.keys(echoSetLabelMap).find(
+              (key) => getEchoSetLabelByType(key) === match[1],
+            )
+          : null;
+      })
+      .filter(Boolean),
+  );
+
+  // Get all possible bonuses for each set
+  const availableBonuses = [];
+
+  for (const [setType, count] of Object.entries(counts)) {
+    const setLabel = getEchoSetLabelByType(setType);
+
+    // Add bonuses based on count and what bonuses exist for this set
+    if (count >= 5 && has5SetBonus.has(setType)) {
+      availableBonuses.push({
+        bonus: `${setLabel} 5 Set`,
+        priority: 3,
+        setType,
+      });
+    }
+    if (count >= 3 && has3SetBonus.has(setType)) {
+      availableBonuses.push({
+        bonus: `${setLabel} 3 Set`,
+        priority: 2,
+        setType,
+      });
+    }
+    if (count >= 2 && has2SetBonus.has(setType)) {
+      availableBonuses.push({
+        bonus: `${setLabel} 2 Set`,
+        priority: 1,
+        setType,
+      });
+    }
+  }
+
+  // Separate 2-set bonuses from higher-tier bonuses
+  const twoSetBonusesFound = availableBonuses.filter((b) =>
+    b.bonus.includes("2 Set"),
+  );
+  const higherTierBonuses = availableBonuses.filter(
+    (b) => b.bonus.includes("3 Set") || b.bonus.includes("5 Set"),
+  );
+
+  // Sort each group by set type for consistency
+  twoSetBonusesFound.sort((a, b) => a.setType.localeCompare(b.setType));
+  higherTierBonuses.sort((a, b) => {
+    // Priority: 5-set > 3-set, then by set type
+    if (a.priority !== b.priority) {
+      return b.priority - a.priority;
+    }
+    return a.setType.localeCompare(b.setType);
+  });
+
+  // Select bonuses following game rules
+  let setBonusOneVal = null;
+  let setBonusTwoVal = null;
+
+  // setBonusOne: Always a 2-set bonus (pick the first available)
+  if (twoSetBonusesFound.length > 0) {
+    setBonusOneVal = twoSetBonusesFound[0].bonus;
+  }
+
+  // setBonusTwo: Can be 2-set, 3-set, or 5-set
+  // Priority: higher-tier bonuses first, then remaining 2-set bonuses
+  const usedSetTypes = setBonusOneVal
+    ? new Set([twoSetBonusesFound[0].setType])
+    : new Set();
+
+  // First try higher-tier bonuses
+  for (const { bonus, setType } of higherTierBonuses) {
+    if (
+      !usedSetTypes.has(setType) ||
+      setBonusOneVal?.includes(getEchoSetLabelByType(setType))
+    ) {
+      setBonusTwoVal = bonus;
+      break;
+    }
+  }
+
+  // If no higher-tier bonus found, try remaining 2-set bonuses
+  if (!setBonusTwoVal) {
+    for (const { bonus, setType } of twoSetBonusesFound.slice(1)) {
+      if (!usedSetTypes.has(setType)) {
+        setBonusTwoVal = bonus;
+        break;
+      }
+    }
+  }
+
+  // Update the store
+  return {
+    setBonusOne: setBonusOneVal,
+    setBonusTwo: setBonusTwoVal,
+  };
+};
 
 type EchoSetBonus = {
   name: string;
@@ -821,6 +1026,125 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         ],
         alwaysEnabled: false,
         details: `Holding 0 Resonance Energy increases Crit. Rate by 20% and grants 35% Echo Skill DMG Bonus.`,
+      },
+    ],
+  },
+  "Crown of Valor 3 Set": {
+    name: "Crown of Valor",
+    key: "CrownofValor",
+    details: `Upon gaining a Shield, increase the Resonator's ATK by 6% and Crit. DMG by 4% for 4s. This effect can be triggered once every 0.5s and stacks up to 5 times.`,
+    passives: [
+      {
+        key: "CrownofValorATKCD",
+        modifiers: [
+          {
+            modifier: "ATK",
+            modifierValue: 6,
+          },
+          {
+            modifier: "CritDMG",
+            modifierValue: 4,
+          },
+        ],
+        alwaysEnabled: false,
+        hasStacks: true,
+        minStacks: 0,
+        maxStacks: 5,
+        details: `Upon gaining a Shield, increase the Resonator's ATK by 6% and Crit. DMG by 4% for 4s. This effect can be triggered once every 0.5s and stacks up to 5 times.`,
+      },
+    ],
+  },
+  "Law of Harmony 3 Set": {
+    name: "Law of Harmony",
+    key: "LawofHarmony",
+    details: `Casting Echo Skill grants 30% Heavy Attack DMG Bonus to the caster for 4s.</br>Additionally, all Resonators in the team gain 4% Echo Skill DMG Bonus for 30s, stacking up to 4 times. Echoes of the same name can only trigger this effect once. The record of Echo triggering this effect is cleared along with this effect. At 4 stacks, casting Echo Skill again resets the duration of this effect.`,
+    passives: [
+      {
+        key: "LawofHarmonyHeavy",
+        modifiers: [
+          {
+            modifier: "HeavyAttackDMGBonus",
+            modifierValue: 30,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Casting Echo Skill grants 30% Heavy Attack DMG Bonus to the caster for 4s.`,
+      },
+      {
+        key: "LawofHarmonyEchoSkill",
+        modifiers: [
+          {
+            modifier: "EchoDMGBonus",
+            modifierValue: 4,
+          },
+        ],
+        alwaysEnabled: false,
+        hasStacks: true,
+        minStacks: 0,
+        maxStacks: 4,
+        details: `Additionally, all Resonators in the team gain 4% Echo Skill DMG Bonus for 30s, stacking up to 4 times. Echoes of the same name can only trigger this effect once. The record of Echo triggering this effect is cleared along with this effect. At 4 stacks, casting Echo Skill again resets the duration of this effect.`,
+      },
+    ],
+  },
+  "Flamewing's Shadow 3 Set": {
+    name: "Flamewing's Shadow",
+    key: "FlamewingsShadow",
+    details: `Dealing Echo Skill DMG increases Heavy Attack Crit. Rate by 20% for 6s. Dealing Heavy Attack DMG increases Echo Skill Crit. Rate by 20% for 6s. While both effects are active, gain 16% Fusion DMG Bonus.`,
+    passives: [
+      {
+        key: "FlamewingsShadowCritRateHeavy",
+        modifiers: [
+          {
+            modifier: "CritRate:Heavy",
+            modifierValue: 20,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Dealing Echo Skill DMG increases Heavy Attack Crit. Rate by 20% for 6s.`,
+      },
+      {
+        key: "FlamewingsShadowCritRateEcho",
+        modifiers: [
+          {
+            modifier: "CritRate:Echo",
+            modifierValue: 20,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Dealing Heavy Attack DMG increases Echo Skill Crit. Rate by 20% for 6s.`,
+      },
+      {
+        key: "FlamewingsShadowFusion",
+        modifiers: [
+          {
+            modifier: "Fusion",
+            modifierValue: 16,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `While both effects are active, gain 16% Fusion DMG Bonus.`,
+      },
+    ],
+  },
+  "Thread of Severed Fate 3 Set": {
+    name: "Thread of Severed Fate",
+    key: "ThreadofSeveredFate",
+    details: `Inflicting Havoc Bane increases the Resonator's ATK by 20% and grants 30% Resonance Liberation DMG Bonus for 5s.`,
+    passives: [
+      {
+        key: "ThreadofSeveredFateATKLiberation",
+        modifiers: [
+          {
+            modifier: "ATK",
+            modifierValue: 20,
+          },
+          {
+            modifier: "ResonanceLiberationDMGBonus",
+            modifierValue: 30,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Inflicting Havoc Bane increases the Resonator's ATK by 20% and grants 30% Resonance Liberation DMG Bonus for 5s.`,
       },
     ],
   },

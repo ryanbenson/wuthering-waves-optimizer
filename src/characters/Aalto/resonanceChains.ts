@@ -84,6 +84,9 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "CritRate",
+        modifySpecificTalents: [
+          "FlowerintheMistDamage",
+        ],
         modifierValue: 0.08,
       },
       {

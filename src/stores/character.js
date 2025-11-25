@@ -6,6 +6,14 @@ export const useCharacterStore = defineStore("character", {
     characters: {},
     activeCharacter: "",
   }),
+  getters: {
+    getRotationById: (state) => {
+      return (characterName, rotationId) => {
+        const rotations = state.characters?.[characterName]?.rotations ?? [];
+        return rotations.find((rotation) => rotation.id === rotationId);
+      };
+    },
+  },
   actions: {
     setActiveCharacter(characterId) {
       this.activeCharacter = characterId;
@@ -26,6 +34,14 @@ export const useCharacterStore = defineStore("character", {
     setCharacterRotations(characterId, rotationData) {
       if (this.characters[characterId]) {
         this.characters[characterId].rotations = rotationData;
+      }
+    },
+    setCharacterOptimizerMinStats(characterId, data) {
+      if (this.characters[characterId]) {
+        if (!this.characters[characterId].optimizer) {
+          this.characters[characterId].optimizer = {};
+        }
+        this.characters[characterId].optimizer.minStats = data;
       }
     },
     setCharacterEchoes(characterId, echoes) {

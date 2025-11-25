@@ -46,6 +46,24 @@
       </button>
     </div>
   </div>
+
+  <h3 class="text-2xl font-bold mb-4">Import echoes</h3>
+
+  <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
+    <div class="card-body">
+      <h3 class="card-title">Import from text</h3>
+      <p>
+        This will import a list of echoes and <strong>add</strong> them to your inventory. It will not replace your inventory. It should be in JSON format, and an array of echo objects.
+      </p>
+      <textarea
+        v-model="importEchoesAddRawText"
+        class="textarea textarea-bordered"
+        data-test-import-raw-text-echoes></textarea>
+      <button @click="importEchoesAddRaw" class="btn btn-primary" data-test-import-raw-echoes-button>
+        Confirm Import Echoes
+      </button>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -57,11 +75,14 @@
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { defineComponent } from "vue";
+import { mapActions, mapState } from "pinia";
+import { randomString } from "../utils/strings";
 export default defineComponent({
   name: "SettingsImportExport",
   data() {
     return {
       importedRawCharacterData: "",
+      importEchoesAddRawText: "",
       message: "",
       isNotificationShown: false,
       notificationError: false,
@@ -69,6 +90,7 @@ export default defineComponent({
     };
   },
   methods: {
+    ...mapActions(useInventoryStore, ["echoById", "saveEcho"]),
     /**
      * Provides the data to import based on changes to the structures
      * If there's a meta tag, then that got introduced in v2
@@ -205,6 +227,29 @@ export default defineComponent({
         this.notificationError = false;
       }, 5000);
     },
+    async importEchoesAddRaw() {
+      try {
+        const data = JSON.parse(this.importEchoesAddRawText);
+        let amount = 0;
+        for (const echo of data) {
+          let id = randomString();
+          const anyCollisions = this.echoById(id);
+          if (anyCollisions.length > 0) {
+            // try again
+            id = randomString();
+          }
+          const echoItem = {
+            echoId: id,
+            ...echo,
+          };
+          await this.saveEcho(echoItem);
+          amount++;
+        }
+        this.triggerNotification(`Imported ${amount} echoes.`);
+      } catch (e) {
+        this.triggerNotification(`Failed to import echoes: ${e}`, true);
+      }
+    }
   },
 });
 </script>

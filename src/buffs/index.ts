@@ -586,7 +586,7 @@ export const buffsByCharacter = {
     {
       key: "SophisticatedStellarealmCritRate",
       name: "Sophisticated Stellarealm",
-      details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Elementary Stellarealm</span>, it evolves into <span class="Highlight">Sophisticated Stellarealm</span>. In <span class="Highlight">Sophisticated Stellarealm</span>, for every 0.2% of Shorekeeper's Energy Regen, all party members gain 0.01% bonus Crit. Rate, up to 12.5%</div>`,
+      details: `<div class="skilldescription">When a party member uses <span class="Highlight">Intro Skill</span> within the <span class="Highlight">Outer Stellarealm</span>, it evolves into the <span class="Highlight">Inner Stellarealm</span>. Within the effective range of the <span class="Highlight">Inner Stellarealm</span>, for every 0.2% of Shorekeeper's Energy Regen, all party members gain a 0.01% increase of Crit. Rate, up to 12.5%.</div>`,
       hasStacks: false,
       modifiers: [
         {
@@ -604,8 +604,8 @@ export const buffsByCharacter = {
     },
     {
       key: "ReleasedStellarealmCritDMG",
-      name: "Released Stellarealm",
-      details: `<div class="skilldescription">When nearby team members use <span class="Highlight">Intro Skill</span> within <span class="Highlight">Sophisticated Stellarealm</span>, it evolves into <span class="Highlight">Released Stellarealm</span>. In <span class="Highlight">Released Stellarealm</span>, for every 0.1% of Shorekeeper's Energy Regen, all party members gain a 0.01% increase of Crit. DMG, up to 25%.</div>`,
+      name: "Supernal Stellarealm",
+      details: `<div class="skilldescription">When a party member uses <span class="Highlight">Intro Skill</span> within the <span class="Highlight">Inner Stellarealm</span>, it evolves into the <span class="Highlight">Supernal Stellarealm</span>. Within the effective range of the <span class="Highlight">Supernal Stellarealm</span>, for every 0.1% of Shorekeeper's Energy Regen, all party members gain a 0.01% increase of Crit. DMG, up to 25%.</div>`,
       hasStacks: false,
       modifiers: [
         {
@@ -624,7 +624,7 @@ export const buffsByCharacter = {
     {
       key: "OutroSkillBinaryButterfly",
       name: "Outro Skill: Binary Butterfly",
-      details: `<div class="skilldescription">When the <span class="Highlight">Dim Star Butterfly</span> is present, all nearby team members' DMG is amplified by 15%.</div>`,
+      details: `<div class="skilldescription">All nearby party members' DMG is Amplified by 15%.</div>`,
       hasStacks: false,
       modifiers: [
         {
@@ -639,7 +639,7 @@ export const buffsByCharacter = {
     {
       key: "InherentSkillSelfGravitation",
       name: "Inherent Skill: Self Gravitation",
-      details: `<div class="skilldescription">When the Shorekeeper is in the team or when <span class="Highlight">Stellarealm</span> is active, or if the team is within the Black Shores area, the Shorekeeper's Energy Regen increases by 10%. If Rover is in the same team, their Energy Regen also increases by 10%.</div>`,
+      details: `<div class="skilldescription">When the on-field Resonator is within range of a <span class="Highlight">Stellarealm</span>, Shorekeeper's Energy Regen is increased by 10%, and Rover's Energy Regen is also increased by 10% if Rover is on the team.</div>`,
       hasStacks: false,
       modifiers: [
         {
@@ -1264,6 +1264,277 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Augusta: [
+    {
+      key: "OutroSkillBattlesongoftheUnyielding",
+      name: "Outro Skill: Battlesong of the Unyielding",
+      details: `The next Resonator switched onto the field gains the following effects for 14s, which end immediately if they are switched out:<br>
+- Gain 15% DMG Amplification for all Attributes.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4AscentinSunandGlory",
+      name: "Sequence Node 4: Ascent in Sun and Glory",
+      details: `<div>Casting <span class="ingame-Highlight">Intro Skill - Stride of Goldenflare</span> increases the ATK of all Resonators in the team by 20% for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Iuno: [
+    {
+      key: "OutroSkillFromGloomtoGleam",
+      name: "Outro Skill: From Gloom to Gleam",
+      details: `<div>The incoming Resonator gains 50% Heavy Attack DMG Amplification for 14s. This effect ends early if they are switched off the field.<br>Casting <span class="ingame-Highlight">Outro Skill</span> won't interrupt <span class="ingame-Highlight">Heavy Attack - Absolute Fullness</span>, and the Outro Skill effect still applies.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Heavy",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "BlessingoftheWanLight",
+      name: "Blessing of the Wan Light",
+      details: `<div class="skilldescription">Gaining a Shield inside the <span class="Highlight">Full Moon Domain</span> domain grants 1 stack of <span class="Highlight">Blessing of the Wan Light</span>. This effect can be triggered once every 0.5s.<br><br>The receiving Resonator gains 4% all DMG Amplification for 10s, stacking up to 10 times. Gaining new stacks resets the duration. This effect ends early if the receiving Resonator is switched off the field.</div>`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.04,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 10,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2DayorNightLetThisBeEternal",
+      name: "Sequence Node 2: Day or Night, Let This Be Eternal",
+      details: `<div>Resonators in the team with 10 stacks of <span class="ingame-Highlight"><a onclick="showTermExplan(141002)" class="ingame-term-desc">Blessing of the Wan Light</a></span> gain an additional 40% all DMG Amplification.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.4,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Galbrena: [
+    {
+      key: "SequenceNode4CarryForthThisFadingSpark",
+      name: "Sequence Node 4: Carry Forth This Fading Spark",
+      details: `<div>When Resonators in the team cast Echo Skill, all Resonators in the team gain 20% all-Attribute DMG Bonus for 20s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Glacio",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Electro",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Aero",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Havoc",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Spectro",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Qiuyuan: [
+    {
+      key: "BamboosShade",
+      name: `Bamboo's Shade`,
+      details: `<span class="ingame-Title">Bamboo's Shade</span></span><br>When Qiuyuan reaches 400 points of <te href="141101">Swordster's Soliloquy</te>, he gains the <span class="ingame-Highlight">Bamboo's Shade</span> effect, granting all nearby active Resonators in the team 30% Echo Skill DMG Bonus for 30s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "EchoDMGBonus",
+          modifierValue: 0.3,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SunderingStrike",
+      name: `Sundering Strike`,
+      details: `For every 1% of Qiuyuan's Crit. Rate over 50%, this skill increases the Crit. DMG of all nearby active Resonators in the team by 2% for 30s, up to 30%.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "CritDMG",
+          modifierValue: 0.02,
+          maximumValue: 0.3,
+          modifierStep: 0.01,
+          minStatValue: 50,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+      inputBase: true,
+      modifierBasedOn: "Crit Rate",
+    },
+    {
+      key: "OutroSkillStrikeBeforeReady",
+      name: `Outro Skill: Strike Before Ready`,
+      details: `Grant 50% Echo Skill DMG Amplification to the incoming Resonator, lasting for 14s or until the Resonator is switched out.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Echo",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2OBladeIWhoTeachNoMore",
+      name: "Sequence Node 2: O Blade, I, Who Teach No More",
+      details: `<span class="skilldescription">Bamboo's Shade now grants an additional 30% Echo Skill DMG Amplification to all nearby active Resonators in the team.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Echo",
+          modifierValue: 0.3,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Chisa: [
+    {
+      key: "ThreadofBane",
+      name: "Thread of Bane",
+      details: `<div>When dealing damage to targets affected by <span class="Highlight">Unseen Snare</span>, ingore 18% of their DEF.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DEFIgnore",
+          modifierValue: 0.18,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2IntotheWebofEndlessBonds",
+      name: "Sequence Node 2: Into the Web of Endless Bonds",
+      details: `<span class="skilldescription">Nearby Resonators in the team with <span class="Highlight">Thread of Bane</span> gain 50% All-Attribute DMG Bonus.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.5,
+        },
+        {
+          modifier: "Glacio",
+          modifierValue: 0.5,
+        },
+        {
+          modifier: "Electro",
+          modifierValue: 0.5,
+        },
+        {
+          modifier: "Aero",
+          modifierValue: 0.5,
+        },
+        {
+          modifier: "Havoc",
+          modifierValue: 0.5,
+        },
+        {
+          modifier: "Spectro",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode6ThusHopeisRekindledwiththeRisingDawn",
+      name: "Sequence Node 6: Thus, Hope is Rekindled with the Rising Dawn",
+      details: `<span class="skilldescription">Targets affected by Unseen Snare - Finality takes 30% Amplified DMG from Negative Statuses.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "specialMultiplier",
+          modifierValue: 0.4,
+        },
+        {
+          modifier: "DMGDeepen:SpectroFrazzle",
+          modifierValue: 0.3,
+        },
+        {
+          modifier: "DMGDeepen:AeroErosion",
+          modifierValue: 0.3,
+        },
+        {
+          modifier: "DMGDeepen:ElectroFlare",
+          modifierValue: 0.3,
+        },
+        {
+          modifier: "DMGDeepen:FusionBurst",
+          modifierValue: 0.3,
+        },
+        {
+          modifier: "DMGDeepen:GlacioChafe",
+          modifierValue: 0.3,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -1406,6 +1677,21 @@ CD: <span class="param">20</span>s</span>`,
     maxStacks: 0,
     alwaysEnabled: false,
   },
+  {
+    key: "LawofHarmony",
+    name: "Law of Harmony",
+    details: `Casting Echo Skill grants 30% Heavy Attack DMG Bonus to the caster for 4s.</br>Additionally, all Resonators in the team gain 4% Echo Skill DMG Bonus for 30s, stacking up to 4 times. Echoes of the same name can only trigger this effect once. The record of Echo triggering this effect is cleared along with this effect. At 4 stacks, casting Echo Skill again resets the duration of this effect.`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "EchoDMGBonus",
+        modifierValue: 0.04,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 4,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allWeaponTeamBuffs = [
@@ -1534,6 +1820,48 @@ export const allWeaponTeamBuffs = [
     minStacks: 0,
     maxStacks: 0,
     details: `Each successful extension gives <span class="param">24%/30%/36%/42%/48%</span> Fusion DMG Bonus to all Resonators in the team for <span class="param">30</span>s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
+  {
+    name: "Emerald Sentence",
+    key: "EmeraldSentenceEchoDMGBonus",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "EchoDMGBonus",
+        modifierByRefinement: {
+          "1": 0.2,
+          "2": 0.25,
+          "3": 0.3,
+          "4": 0.35,
+          "5": 0.4,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `Casting Intro Skill grants <span class="param">20%/25%/30%/35%/40%</span> Echo Skill DMG Bonus to all Resonators in the team for 30s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
+  {
+    name: "Kumokiri",
+    key: "ThreadofFateAllAttribute",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "AllElementAttributeBonus",
+        modifierByRefinement: {
+        "1": 0.24,
+        "2": 0.3,
+        "3": 0.36,
+        "4": 0.42,
+        "5": 0.48,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `At max stacks, when Resonators in the team inflict Negative Status, grants <span class="Highlight">24%/30%/36%/42%/48%</span> All-Attribute DMG Bonus for 15s. Effects of the same name cannot be stacked.`,
     alwaysEnabled: false,
   },
 ];

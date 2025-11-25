@@ -57,7 +57,7 @@ export const mainEchoesData: MainEchoes = {
     details: `A humanoid Tacet Discord born from the abyssal sea that assumes the semblance of an aristocratic knight, a fully differentiated form of Primordia Bloom.`,
     modifiers: [],
     actions: [],
-    sets: ["MidnightVeil", "TidebreakingCourage"],
+    sets: ["MidnightVeil", "TidebreakingCourage", "ThreadofSeveredFate"],
   },
   AbyssalPatricius: {
     key: "AbyssalPatricius",
@@ -257,7 +257,7 @@ CD: <span class="param">20</span>s</span>`,
 CD: <span class="param">15</span>s</span>`,
     modifiers: [],
     actions: [],
-    sets: ["EmpyreanAnthem", "TidebreakingCourage"],
+    sets: ["EmpyreanAnthem", "TidebreakingCourage", "CrownofValor"],
   },
   Capitaneus: {
     key: "Capitaneus",
@@ -444,6 +444,43 @@ CD: 20s.`,
     actions: [],
     sets: ["FreezingFrost", "CelestialLight"],
   },
+  Corrosaurus: {
+    key: "Corrosaurus",
+    name: "Corrosaurus",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Corrosaurus.png",
+    details: `<span class="description">Summon a Corrosaurus to attack enemies, dealing <span class="param">152.00%/182.40%/212.80%/243.20%/273.60%</span> Fusion DMG.<br><br>
+The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Fusion DMG Bonus and <span class="param">20.00%</span> Echo Skill DMG Bonus.<br><br>
+CD: <span class="param">20</span>s</span>`,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "EchoDMGBonus",
+        modifierValue: 0.2,
+      },
+    ],
+    actions: [
+      {
+        key: "CorrosaurusAttack",
+        label: "Attacks DMG",
+        description: `Summon a Corrosaurus to attack enemies, dealing <span class="param">152.00%/182.40%/212.80%/243.20%/273.60%</span> Fusion DMG.`,
+        talents: {
+          "1": "152.00%",
+          "2": "182.40%",
+          "3": "212.80%",
+          "4": "243.20%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["FlamingClawprint", "FlamewingsShadow"],
+  },
   Crownless: {
     key: "Crownless",
     name: "Crownless",
@@ -493,22 +530,21 @@ CD: 20s.`,
     CD: <span class="param">8</span>s</span>`,
     modifiers: [],
     actions: [
-      // TODO: Need the healing to support the * 4 part
-      // {
-      //   key: "CruisewingHeal",
-      //   label: "Healing",
-      //   description: `Summon a Cruisewing that restores HP for all current team characters by <span class="param">1%/1.20%/1.40%/1.60%/1.80%</span> of their Max HPs plus an additional <span class="param">80</span> points of HP, up to 4 times.`,
-      //   talents: {
-      //     "1": "80 + 1%*4",
-      //     "2": "80 + 1.20%*4",
-      //     "3": "80 + 1.40%*4",
-      //     "4": "80 + 1.60%*4",
-      //     "5": "80 + 1.80%*4",
-      //   },
-      //   type: "Healing",
-      //   element: "Healing",
-      //   attribute: "hp",
-      // },
+      {
+        key: "CruisewingHeal",
+        label: "Healing",
+        description: `Summon a Cruisewing that restores HP for all current team characters by <span class="param">1%/1.20%/1.40%/1.60%/1.80%</span> of their Max HPs plus an additional <span class="param">80</span> points of HP, up to 4 times.`,
+        talents: {
+          "1": "80 + 1%*4",
+          "2": "80 + 1.20%*4",
+          "3": "80 + 1.40%*4",
+          "4": "80 + 1.60%*4",
+          "5": "80 + 1.80%*4",
+        },
+        type: "Healing",
+        element: "Healing",
+        attribute: "hp",
+      },
     ],
     sets: ["CelestialLight", "RejuvenatingGlow", "MoonlitClouds"],
   },
@@ -749,9 +785,9 @@ CD: <span class="param">25</span>s.</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FallacyOfNoReturn.png",
-    details: `<span class="description">Use the Sound Corpse skill to summon a portion of the power of the Fallacy of No Return, causing 1 diffraction damage based on <span class="Highlight">9.91%/11.40%/12.88%/14.37%/15.86%</span> of the player's upper limit of health to surrounding enemies, increasing the player's <span class="Highlight">Energy Regen</span> by <span class="Highlight">10%</span> and the attack of all team characters by <span class="Highlight">10%</span>, lasting for 20 seconds. Long-press the Sound Corpse skill to consume stamina to continue attacking after the shock ends, causing <span class="Highlight">0.99%/1.14%/1.29%/1.44%/1.58%</span> of the upper limit of health each time; when the long-press ends, the final blow is triggered, causing <span class="Highlight">12.39%/14.25%/16.11%/17.97%/19.82%</span> of the upper limit of health.
-    
-    CD: <span class="param">20</span>s</span>`,
+    details: `<span class="description">Activate the Echo Skill to summon a fraction of the Fallacy of No Return's power and deal a blast to the surrounding area, inflicting Spectro DMG equal to <span class="param">9.91%/11.40%/12.88%/14.37%/15.86%</span> of max HP, after which the Resonator gains 10% bonus Energy Regen and all team members 10% bonus ATK for 20s.<br><br>
+Hold Echo Skill to unleash a series of flurry assaults at the cost of STA, each dealing Spectro DMG equal to <span class="param">0.99%/1.14%/1.29%/1.44%/1.58%</span> of max HP; Release to end the assail in a powerful blow, dealing Spectro DMG equal to <span class="param">12.39%/14.25%/16.11%/17.97%/19.82%</span> of max HP.<br><br>
+CD: <span class="param">20</span>s</span>`,
     modifiers: [
       {
         modifier: "EnergyRegen",
@@ -765,8 +801,8 @@ CD: <span class="param">25</span>s.</span>`,
     actions: [
       {
         key: "FallacyOfNoReturnDiffraction",
-        label: "Diffraction DMG",
-        description: `Use the Sound Corpse skill to summon a portion of the power of the Fallacy of No Return, causing 1 diffraction damage based on <span class="Highlight">9.91%/11.40%/12.88%/14.37%/15.86%</span> of the player's upper limit of health to surrounding enemies`,
+        label: "Blast DMG",
+        description: `Activate the Echo Skill to summon a fraction of the Fallacy of No Return's power and deal a blast to the surrounding area, inflicting Spectro DMG equal to <span class="param">9.91%/11.40%/12.88%/14.37%/15.86%</span> of max HP`,
         talents: {
           "1": "9.91%",
           "2": "11.40%",
@@ -775,13 +811,13 @@ CD: <span class="param">25</span>s.</span>`,
           "5": "15.86%",
         },
         type: "Echo",
-        element: "Glacio",
+        element: "Spectro",
         attribute: "hp",
       },
       {
         key: "FallacyOfNoReturnSoundCorpseDoT",
-        label: "Sound Corpse DoT DMG",
-        description: `Long-press the Sound Corpse skill to consume stamina to continue attacking after the shock ends, causing <span class="Highlight">0.99%/1.14%/1.29%/1.44%/1.58%</span> of the upper limit of health each time.`,
+        label: "Flurry Assault DMG",
+        description: `Hold Echo Skill to unleash a series of flurry assaults at the cost of STA, each dealing Spectro DMG equal to <span class="param">0.99%/1.14%/1.29%/1.44%/1.58%</span> of max HP`,
         talents: {
           "1": "0.99%",
           "2": "1.14%",
@@ -790,13 +826,13 @@ CD: <span class="param">25</span>s.</span>`,
           "5": "1.58%",
         },
         type: "Echo",
-        element: "Glacio",
+        element: "Spectro",
         attribute: "hp",
       },
       {
         key: "FallacyOfNoReturnFinalBlow",
         label: "Final Blow DMG",
-        description: `When the long-press ends, the final blow is triggered, causing <span class="Highlight">12.39%/14.25%/16.11%/17.97%/19.82%</span> of the upper limit of health.`,
+        description: `Release to end the assail in a powerful blow, dealing Spectro DMG equal to <span class="param">12.39%/14.25%/16.11%/17.97%/19.82%</span> of max HP`,
         talents: {
           "1": "12.39%",
           "2": "14.25%",
@@ -805,7 +841,7 @@ CD: <span class="param">25</span>s.</span>`,
           "5": "19.82%",
         },
         type: "Echo",
-        element: "Glacio",
+        element: "Spectro",
         attribute: "hp",
       },
     ],
@@ -1100,7 +1136,7 @@ CD: <span class="param">8</span>s`,
         element: "Sepctro",
       },
     ],
-    sets: ["FrostyResolve", "EternalRadiance"],
+    sets: ["FrostyResolve", "EternalRadiance", "LawofHarmony"],
   },
   Gulpuff: {
     key: "Gulpuff",
@@ -1136,7 +1172,7 @@ CD: <span class="param">8</span>s`,
     details: `Summon a Havoc Drake to attack enemies, dealing 129.60% Havoc DMG 3 times.<br>CD: 8s`,
     modifiers: [],
     actions: [],
-    sets: ["WindwardPilgrimage", "FlamingClawprint"],
+    sets: ["WindwardPilgrimage", "FlamingClawprint", "ThreadofSeveredFate"],
   },
   HavocPrism: {
     key: "HavocPrism",
@@ -1294,7 +1330,7 @@ CD: <span class="param">20</span>s.</span>`,
         element: "Aero",
       },
     ],
-    sets: ["TidebreakingCourage", "GustsofWelkin"],
+    sets: ["TidebreakingCourage", "GustsofWelkin", "CrownofValor"],
   },
   ImpermanenceHeron: {
     key: "ImpermanenceHeron",
@@ -1523,7 +1559,44 @@ CD: <span class="param">20</span>s.</span>`,
         element: "Aero",
       },
     ],
-    sets: ["WindwardPilgrimage", "FlamingClawprint"],
+    sets: ["WindwardPilgrimage", "FlamingClawprint", "FlamewingsShadow"],
+  },
+  LadyoftheSea: {
+    key: "LadyoftheSea",
+    name: "Lady of the Sea",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/LadyoftheSea.png",
+    details: `<span class="description">Summon a Tidestorm to deal <span class="param">9.12%/12.16%/13.68%</span> Aero DMG ten times and <span class="param">109.44%/127.68%/145.92%/164.16%</span> Aero DMG one time to enemies.<br><br>
+The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Aero DMG Bonus and <span class="param">12%.00</span> Resonance Liberation DMG Bonus.
+CD: 20s</span>`,
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "LadyoftheSeaTidestorm",
+        label: "Tidestorm DMG",
+        description: `Summon a Tidestorm to deal 9.12%/12.16%/13.68% Aero DMG ten times and 109.44%/127.68%/145.92%/164.16% Aero DMG one time to enemies.`,
+        talents: {
+          "1": "9.12%*10 + 109.44%",
+          "2": "9.12%*10 + 109.44%",
+          "3": "10.64%*10 + 127.68%",
+          "4": "12.16%*10 + 145.92%",
+          "5": "13.68%*10 + 164.16%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["CrownofValor"],
   },
   LaGuardia: {
     key: "LaGuardia",
@@ -1909,7 +1982,68 @@ CD: <span class="param">25</span>s.</span>`,
     details: `Once a remnant creature in Nimbus Sanctum, it decayed into a Tacet Discord as its frequency wanes, leaving it wandering in perpetual sorrow.`,
     modifiers: [],
     actions: [],
-    sets: ["EmpyreanAnthem", "MidnightVeil"],
+    sets: ["EmpyreanAnthem", "MidnightVeil", "FlamewingsShadow"],
+  },
+  NightmareAeroPredator: {
+    key: "NightmareAeroPredator",
+    name: "Nightmare: Aero Predator",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareAeroPredator.png",
+    details: `<span class="description">Summon an Aero Predator that throws a dart forward. The dart will bounce between enemies up to three times, dealing <span class="param">18.00%/20.70%/23.40%/26.10%/28.80%</span> Aero DMG each time it hits.<br><br>
+CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "NightmareAeroPredatorDart",
+        label: "Dart DMG",
+        description: `Summon an Aero Predator that throws a dart forward. The dart will bounce between enemies up to three times, dealing <span class="param">18.00%/20.70%/23.40%/26.10%/28.80%</span> Aero DMG each time it hits.`,
+        talents: {
+          "1": "18.00%*3",
+          "2": "20.70%*3",
+          "3": "23.40%*3",
+          "4": "26.10%*3",
+          "5": "28.80%*3",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["CrownofValor"],
+  },
+  NightmareBabyRoseshroom: {
+    key: "NightmareBabyRoseshroom",
+    name: "Nightmare: Baby Roseshroom",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareBabyRoseshroom.png",
+    details: `<span class="description">Summon a Baby Roseshroom that fires a laser, dealing 32.00%+64 Havoc DMG.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["FlamewingsShadow"],
+  },
+  NightmareBabyViridblazeSaurian: {
+    key: "NightmareBabyViridblazeSaurian",
+    name: "Nightmare: Baby Viridblaze Saurian",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareBabyViridblazeSaurian.png",
+    details: `<span class="description">Transform into Baby Viridblaze Saurian to rest in place, and slowly restore HP.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["FlamewingsShadow"],
+  },
+  NightmareChirpuff: {
+    key: "NightmareChirpuff",
+    name: "Nightmare: Chirpuff",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareChirpuff.png",
+    details: `<span class="description">Summon a Chirpuff that self-inflates and blasts a powerful gust of wind forward <span class="param">3</span> times. Each blast inflicts <span class="param">24.00%/27.60%/31.20%/34.80%/38.40%</span> Aero DMG and pushes enemies backwards.<br>
+CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["LawofHarmony"],
   },
   NightmareCrownless: {
     key: "NightmareCrownless",
@@ -1947,6 +2081,71 @@ CD: <span class="param">12</span>s.</span>`,
       },
     ],
     sets: ["SunSinkingEclipse"],
+  },
+  NightmareCyanFeatheredHeron: {
+    key: "NightmareCyanFeatheredHeron",
+    name: "Nightmare: Cyan-Feathered Heron",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareCyanFeatheredHeron.png",
+    details: `<span class="description">Transform into Cyan-Feathered Heron and charge at the enemies, dealing <span class="param">148.00%/170.20%/192.40%/214.60%/236.80%</span> Aero DMG; This Echo Skill interrupts enemy Special Skills upon dealing damage.<br><br>
+CD: <span class="param">15</span>s</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "NightmareCyanFeatheredHeronCharge",
+        label: "Charge DMG",
+        description: `Transform into Cyan-Feathered Heron and charge at the enemies, dealing <span class="param">148.00%/170.20%/192.40%/214.60%/236.80%</span> Aero DMG`,
+        talents: {
+          "1": "148.00%",
+          "2": "170.20%",
+          "3": "192.40%",
+          "4": "214.60%",
+          "5": "236.80%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["LawofHarmony"],
+  },
+  NightmareDwarfCassowary: {
+    key: "NightmareDwarfCassowary",
+    name: "Nightmare: Dwarf Cassowary",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareDwarfCassowary.webp",
+    details: `<span class="description">Summon a Dwarf Cassowary that tracks and attacks the enemy, dealing 38.40% Physical DMG 3 time(s).</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["ThreadofSeveredFate"],
+  },
+  NightmareElectroPredator: {
+    key: "NightmareElectroPredator",
+    name: "Nightmare: Electro Predator",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareElectroPredator.png",
+    details: `<span class="description">Summon an Electro Predator to shoot the enemy 5 times. The first 4 shots deals <span class="param">10.80%/12.42%/14.04%/15.66%/17.28%</span> Electro DMG, and the last deals <span class="param">28.80%/33.12%/37.44%/41.76%/46.08%</span> Electro DMG.<br><br>
+CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "NightmareElectroPredatorShoot",
+        label: "Shoot DMG",
+        description: `Summon an Electro Predator to shoot the enemy 5 times. The first 4 shots deals <span class="param">10.80%/12.42%/14.04%/15.66%/17.28%</span> Electro DMG, and the last deals <span class="param">28.80%/33.12%/37.44%/41.76%/46.08%</span> Electro DMG.`,
+        talents: {
+          "1": "10.80%*4 + 28.80%",
+          "2": "12.42%*4 + 33.12%",
+          "3": "14.04%*4 + 37.44%",
+          "4": "15.66%*4 + 41.76%",
+          "5": "17.28%*4 + 46.08%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["CrownofValor"],
   },
   NightmareFeilianBeringal: {
     key: "NightmareFeilianBeringal",
@@ -2009,6 +2208,18 @@ CD: <span class="param">20</span>s.</span>`,
     modifiers: [],
     actions: [],
     sets: ["DreamoftheLost"],
+  },
+  NightmareGulpuff: {
+    key: "NightmareGulpuff",
+    name: "Nightmare: Gulpuff",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareGulpuff.png",
+    details: `<span class="description">Summon a Gulpuff that blows bubbles <span class="param">5</span> times, each time dealing <span class="param">14.40%/16.56%/18.72%/20.88%/23.04%</span> Glacio DMG.<br>
+CD: <span class="param">8</span>s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["LawofHarmony"],
   },
   NightmareHavocWarrior: {
     key: "NightmareHavocWarrior",
@@ -2183,7 +2394,7 @@ CD: <span class="param">25</span>s.</span>`,
       {
         key: "NightmareKelpieOutroDMG",
         label: "Outro DMG",
-        description: `Transform into Nightmare: Kelpie to attack nearby targets, dealing 270.00%/315.00%/360.00%/405.00% Glacio DMG.`,
+        description: `Switching out the Resonator with Outro Skill summons Nightmares: Kelpie to deal 270.00%/315.00%/360.00%/405.00% Aero DMG.`,
         talents: {
           "1": "270.00%",
           "2": "270.00%",
@@ -2191,8 +2402,8 @@ CD: <span class="param">25</span>s.</span>`,
           "4": "360.00%",
           "5": "405.00%",
         },
-        type: "Outro",
-        element: "Glacio",
+        type: "Echo",
+        element: "Aero",
       },
     ],
     sets: ["WindwardPilgrimage", "GustsofWelkin"],
@@ -2281,6 +2492,17 @@ CD: <span class="param">20</span>s.</span>`,
     ],
     sets: ["EternalRadiance"],
   },
+  NightmareRoseshroom: {
+    key: "NightmareRoseshroom",
+    name: "Nightmare: Roseshroom",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareRoseshroom.webp",
+    details: `<span class="description">Summon a Roseshroom that fires a laser, dealing 57.07% Havoc DMG up to 3 times.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["ThreadofSeveredFate"],
+  },
   NightmareTambourinist: {
     key: "NightmareTambourinist",
     name: "Nightmare: Tambourinist",
@@ -2366,6 +2588,55 @@ CD: <span class="param">25</span>s.</span>`,
       },
     ],
     sets: ["VoidThunder"],
+  },
+  NightmareTickTack: {
+    key: "NightmareTickTack",
+    name: "Nightmare: Tick Tack",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareTickTack.webp",
+    details: `<span class="description">Summon a Tick Tack that charges and bites the enemy. The charge from Tick Tack will deal 68.48% Havoc DMG to the enemy, and the bite will deal 102.72% Havoc DMG to the enemy. Reduces enemy Vibration Strength by up to 5.00% during 5s. </span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["ThreadofSeveredFate"],
+  },
+  NightmareVioletFeatheredHeron: {
+    key: "NightmareVioletFeatheredHeron",
+    name: "Nightmare: Violet-Feathered Heron",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareVioletFeatheredHeron.png",
+    details: `<span class="description">Transform into Violet-Feathered Heron and enter a Parry Stance. Counterattack when the Parry stance is over, dealing <span class="param">180.00%/207.00%/234.00%/261.00%/288.00%</span> Electro DMG. If attacked during Parry Stance, you can counterattack in advance and additionally recover <span class="param">5</span> Concerto Energy.<br><br>
+CD: <span class="param">15</span>s</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "NightmareVioletFeatheredHeronParry",
+        label: "Parry DMG",
+        description: `Transform into Violet-Feathered Heron and enter a Parry Stance. Counterattack when the Parry stance is over, dealing <span class="param">180.00%/207.00%/234.00%/261.00%/288.00%</span> Electro DMG.`,
+        talents: {
+          "1": "180.00%",
+          "2": "207.00%",
+          "3": "234.00%",
+          "4": "261.00%",
+          "5": "288.00%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["CrownofValor"],
+  },
+  NightmareViridblazeSaurian: {
+    key: "NightmareViridblazeSaurian",
+    name: "Nightmare: Viridblaze Saurian",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NightmareViridblazeSaurian.png",
+    details: `<span class="description">Summon a Viridblaze Saurian to continuously spit fire, dealing 17.12% Fusion DMG 10 times.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["FlamewingsShadow"],
   },
   NocturnusKnight: {
     key: "NocturnusKnight",
@@ -2454,7 +2725,7 @@ CD: <span class="param">20</span>s.</span>`,
         element: "Spectro",
       },
     ],
-    sets: ["EternalRadiance", "GustsofWelkin"],
+    sets: ["EternalRadiance", "GustsofWelkin", "LawofHarmony"],
   },
   ReminiscenceFenrico: {
     key: "ReminiscenceFenrico",
@@ -2491,7 +2762,7 @@ CD: 20s.`,
         element: "Aero",
       },
     ],
-    sets: ["DreamoftheLost"],
+    sets: ["DreamoftheLost", "LawofHarmony"],
   },
   ReminiscenceFleurdelys: {
     key: "ReminiscenceFleurdelys",
@@ -2530,6 +2801,61 @@ CD: 20s.`,
       },
     ],
     sets: ["GustsofWelkin", "WindwardPilgrimage"],
+  },
+  ReminiscenceThrenodianLeviathan: {
+    key: "ReminiscenceThrenodianLeviathan",
+    name: "Reminiscence: Threnodian - Leviathan",
+    class: "Calamity",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReminiscenceThrenodianLeviathan.webp",
+    details: `Summon a Collapsing Horizon, dealing two instances of 87.36%/101.92%/116.48%/131.04% Havoc DMG to the nearby enemies and obtaining the Core of Collapse for 15s.
+<br><br>
+While it lasts, Core of Collapse deals 24.57% Havoc DMG when the active Resonator in the team deals damage. This effect can be triggered once every 0.5s, up to 8 times. Enemies with Havoc Bane take 100% more DMG from this effect.
+<br><br>
+The Resonator with this Echo equipped in the main slot gains 12.00% Havoc DMG Bonus and 12.00% Resonance Liberation DMG Bonus.
+<br><br>
+CD: 25s`,
+    modifiers: [
+      {
+        modifier: "Havoc",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "CollapsingHorizonDMG",
+        label: "Collapsing Horizon DMG",
+        description: `Summon a Collapsing Horizon, dealing two instances of 87.36%/101.92%/116.48%/131.04% Havoc DMG to the nearby enemies and obtaining the Core of Collapse for 15s.`,
+        talents: {
+          "1": "87.36%*2",
+          "2": "87.36%*2",
+          "3": "101.92%*2",
+          "4": "116.48%*2",
+          "5": "131.04%*2",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+      {
+        key: "CoreofCollapseDMG",
+        label: "Core of Collapse DMG",
+        description: `While it lasts, Core of Collapse deals 24.57% Havoc DMG when the active Resonator in the team deals damage. This effect can be triggered once every 0.5s, up to 8 times.  Enemies with Havoc Bane take 100% more DMG from this effect.`,
+        talents: {
+          "1": "24.57%*8",
+          "2": "24.57%*8",
+          "3": "24.57%*8",
+          "4": "24.57%*8",
+          "5": "24.57%*8",
+        },
+        type: "Echo",
+        element: "Havoc",
+      },
+    ],
+    sets: ["FlamewingsShadow", "ThreadofSeveredFate"],
   },
   RocksteadyGuardian: {
     key: "RocksteadyGuardian",
@@ -2577,7 +2903,7 @@ CD: 20s.`,
         attribute: "hp",
       },
       {
-        key: "RocksteadyGuardianSpecialParry",
+        key: "RocksteadyGuardianSpecialShield",
         label: "Special Attack Shield",
         description: `If the attack received is a <color=highlight>Special Skill attack, interrupt the enemy's <color=highlight>Special Skill, gain a Shield equal to 30% Max HP.`,
         talents: {
@@ -2896,6 +3222,59 @@ CD: <span class="param">25</span>s.</span>`,
     ],
     sets: ["VoidThunder"],
   },
+  TheFalseSovereign: {
+    key: "TheFalseSovereign",
+    name: "The False Sovereign",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/TheFalseSovereign.png",
+    details: `<span class="description">Transform into the False Sovereign and dash forward in a spinning strike, dealing <span class="param">36.90%/43.05%/49.20%/55.35%K</span> Electro DMG 4 times.
+The Resonator with this Echo equipped in the main slot gains <span class="param">12.00%</span> Electro DMG Bonus and <span class="param">12.00%</span> Heavy Attack DMG Bonus. Upon casting Intro Skill, the False Sovereign is also summoned to deal <span class="param">270.00%/315.00%/360.00%/405.00%</span> Electro DMG.
+Start with 2 charges. Gain 1 charge every 8s, up to 2 charges.
+CD: 8s</span>`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "HeavyAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "TheFalseSovereignSpinning",
+        label: "Spinning DMG",
+        description: `Transform into the False Sovereign and dash forward in a spinning strike, dealing <span class="param">36.90%/43.05%/49.20%/55.35%</span> Electro DMG 4 times.`,
+        talents: {
+          "1": "36.90%*4",
+          "2": "36.90%*4",
+          "3": "43.05%*4",
+          "4": "49.20%*4",
+          "5": "55.35%*4",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+      {
+        key: "TheFalseSovereignSummon",
+        label: "Summon DMG",
+        description: `Upon casting Intro Skill, the False Sovereign is also summoned to deal <span class="param">270.00%/315.00%/360.00%/405.00%</span> Electro DMG.
+Start with 2 charges. Gain 1 charge every 8s, up to 2 charges.`,
+        talents: {
+          "1": "225.00%",
+          "2": "270.00%",
+          "3": "315.00%",
+          "4": "360.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["CrownofValor"],
+  },
   ThunderingMephis: {
     key: "ThunderingMephis",
     name: "Thundering Mephis",
@@ -3072,7 +3451,7 @@ CD: 20s.`,
   },
   YoungRoseshroom: {
     key: "YoungRoseshroom",
-    name: "Young Roseshroom",
+    name: "Baby Roseshroom",
     class: "Common",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/YoungRoseshroom.png",

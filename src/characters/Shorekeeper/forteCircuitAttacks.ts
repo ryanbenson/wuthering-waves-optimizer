@@ -21,7 +21,7 @@ export const forteCircuitAttacks = {
     },
     {
       key: "DeductionDMG",
-      label: "Deduction DMG",
+      label: "Illation DMG",
       talents: {
         "1": "9.54%*5",
         "2": "10.33%*5",

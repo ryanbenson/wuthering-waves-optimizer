@@ -14,13 +14,13 @@
           <span class="label-text mr-2 flex items-center gap-1">
             <img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
-            Attack %
+            ATK %
           </span>
         </div>
         <input
           type="number"
           v-model="ATK"
-          min="0"
+          
           name="ATK"
           id="ATK"
           class="input input-md input-bordered"
@@ -32,13 +32,13 @@
           <span class="label-text mr-2 flex items-center gap-1">
             <img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
-            Flat Attack
+            Flat ATK
           </span>
         </div>
         <input
           type="number"
           v-model="ATK_FLAT"
-          min="0"
+          
           name="ATK_FLAT"
           id="ATK_FLAT"
           class="input input-md input-bordered"
@@ -56,7 +56,7 @@
         <input
           type="number"
           v-model="HP"
-          min="0"
+          
           name="HP"
           id="HP"
           class="input input-md input-bordered"
@@ -74,7 +74,7 @@
         <input
           type="number"
           v-model="HP_FLAT"
-          min="0"
+          
           name="HP_FLAT"
           id="HP_FLAT"
           class="input input-md input-bordered"
@@ -86,13 +86,13 @@
           <span class="label-text mr-2 flex items-center gap-1">
             <img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />
-            Defense %
+            DEF %
           </span>
         </div>
         <input
           type="number"
           v-model="DEF"
-          min="0"
+          
           name="DEF"
           id="DEF"
           class="input input-md input-bordered"
@@ -104,13 +104,13 @@
           <span class="label-text mr-2 flex items-center gap-1">
             <img
               src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" />
-            Flat Defense
+            Flat DEF
           </span>
         </div>
         <input
           type="number"
           v-model="DEF_FLAT"
-          min="0"
+          
           name="DEF_FLAT"
           id="DEF_FLAT"
           class="input input-md input-bordered"
@@ -128,7 +128,7 @@
         <input
           type="number"
           v-model="CritRate"
-          min="0"
+          
           name="CritRate"
           id="CritRate"
           class="input input-md input-bordered"
@@ -146,7 +146,7 @@
         <input
           type="number"
           v-model="CritDMG"
-          min="0"
+          
           name="CritDMG"
           id="CritDMG"
           class="input input-md input-bordered"
@@ -163,7 +163,7 @@
         <input
           type="number"
           v-model="EnergyRegen"
-          min="0"
+          
           name="EnergyRegen"
           id="EnergyRegen"
           class="input input-md input-bordered"
@@ -180,7 +180,7 @@
         <input
           type="number"
           v-model="BasicAttackDMGBonus"
-          min="0"
+          
           name="BasicAttackDMGBonus"
           id="BasicAttackDMGBonus"
           class="input input-md input-bordered"
@@ -197,7 +197,7 @@
         <input
           type="number"
           v-model="HeavyAttackDMGBonus"
-          min="0"
+          
           name="HeavyAttackDMGBonus"
           id="HeavyAttackDMGBonus"
           class="input input-md input-bordered"
@@ -214,7 +214,7 @@
         <input
           type="number"
           v-model="ResonanceSkillDMGBonus"
-          min="0"
+          
           name="ResonanceSkillDMGBonus"
           id="ResonanceSkillDMGBonus"
           class="input input-md input-bordered"
@@ -231,7 +231,7 @@
         <input
           type="number"
           v-model="ResonanceLiberationDMGBonus"
-          min="0"
+          
           name="ResonanceLiberationDMGBonus"
           id="ResonanceLiberationDMGBonus"
           class="input input-md input-bordered"
@@ -249,7 +249,7 @@
         <input
           type="number"
           v-model="Glacio"
-          min="0"
+          
           name="Glacio"
           id="Glacio"
           class="input input-md input-bordered"
@@ -267,7 +267,7 @@
         <input
           type="number"
           v-model="Fusion"
-          min="0"
+          
           name="Fusion"
           id="Fusion"
           class="input input-md input-bordered"
@@ -285,7 +285,7 @@
         <input
           type="number"
           v-model="Electro"
-          min="0"
+          
           name="Electro"
           id="Electro"
           class="input input-md input-bordered"
@@ -303,7 +303,7 @@
         <input
           type="number"
           v-model="Aero"
-          min="0"
+          
           name="Aero"
           id="Aero"
           class="input input-md input-bordered"
@@ -321,7 +321,7 @@
         <input
           type="number"
           v-model="Spectro"
-          min="0"
+          
           name="Spectro"
           id="Spectro"
           class="input input-md input-bordered"
@@ -339,7 +339,7 @@
         <input
           type="number"
           v-model="Havoc"
-          min="0"
+          
           name="Havoc"
           id="Havoc"
           class="input input-md input-bordered"
@@ -356,7 +356,7 @@
         <input
           type="number"
           v-model="HealingBonus"
-          min="0"
+          
           name="HealingBonus"
           id="HealingBonus"
           class="input input-md input-bordered"
@@ -367,7 +367,7 @@
         <input
           type="number"
           v-model="CoordinatedDMGBonus"
-          min="0"
+          
           name="CoordinatedDMGBonus"
           id="CoordinatedDMGBonus"
           class="input input-md input-bordered"
@@ -378,7 +378,7 @@
         <input
           type="number"
           v-model="EchoDMGBonus"
-          min="0"
+          
           name="EchoDMGBonus"
           id="EchoDMGBonus"
           class="input input-md input-bordered"
@@ -387,13 +387,13 @@
       <label class="form-control mb-4">
         <div class="label">
           <span class="label-text mr-2 flex items-center gap-1">
-            Damage Amplify
+            DMG Amplify
           </span>
         </div>
         <input
           type="number"
           v-model="DamageAmplify"
-          min="0"
+          
           name="DamageAmplify"
           id="DamageAmplify"
           class="input input-md input-bordered"
@@ -408,7 +408,7 @@
         <input
           type="number"
           v-model="ResistShred"
-          min="0"
+          
           name="ResistShred"
           id="ResistShred"
           class="input input-md input-bordered"
@@ -417,17 +417,32 @@
       <label class="form-control mb-4">
         <div class="label">
           <span class="label-text mr-2 flex items-center gap-1">
-            Defense Ignore
+            DEF Ignore
           </span>
         </div>
         <input
           type="number"
           v-model="DefIgnore"
-          min="0"
+          
           name="DefIgnore"
           id="DefIgnore"
           class="input input-md input-bordered"
           data-test-custom-buff-def-ignore />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Special Multiplier (Vulnerability)
+          </span>
+        </div>
+        <input
+          type="number"
+          v-model="SpecialMultiplier"
+          
+          name="specialMultiplier"
+          id="specialMultiplier"
+          class="input input-md input-bordered"
+          data-test-custom-buff-special-multiplier />
       </label>
     </div>
   </div>
@@ -484,6 +499,7 @@ export default {
       this.ResistShred = 0;
       this.DefIgnore = 0;
       this.CoordinatedDMGBonus = 0;
+      this.SpecialMultiplier = 0;
     },
   },
   computed: {
@@ -521,9 +537,7 @@ export default {
       const ResonanceLiberationDMGBonus = this.ResonanceLiberationDMGBonus
         ? this.ResonanceLiberationDMGBonus / 100
         : 0;
-      const EchoDMGBonus = this.EchoDMGBonus
-        ? this.EchoDMGBonus / 100
-        : 0;
+      const EchoDMGBonus = this.EchoDMGBonus ? this.EchoDMGBonus / 100 : 0;
       const Glacio = this.Glacio ? this.Glacio / 100 : 0;
       const Fusion = this.Fusion ? this.Fusion / 100 : 0;
       const Electro = this.Electro ? this.Electro / 100 : 0;
@@ -537,6 +551,7 @@ export default {
       const CoordinatedDMGBonus = this.CoordinatedDMGBonus
         ? this.CoordinatedDMGBonus / 100
         : 0;
+      const SpecialMultiplier = this.SpecialMultiplier ? this.SpecialMultiplier / 100 : 0;
       return {
         ATK,
         ATK_FLAT,
@@ -563,6 +578,7 @@ export default {
         ResistShred,
         DefIgnore,
         CoordinatedDMGBonus,
+        SpecialMultiplier,
       };
     },
     /**
@@ -780,9 +796,7 @@ export default {
      */
     EchoDMGBonus: {
       get() {
-        return (
-          this.currentCharacter?.customBuffs?.EchoDMGBonus ?? 0
-        );
+        return this.currentCharacter?.customBuffs?.EchoDMGBonus ?? 0;
       },
       async set(value) {
         const data = {
@@ -964,6 +978,19 @@ export default {
         const data = {
           customBuffs: {
             CoordinatedDMGBonus: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    SpecialMultiplier: {
+      get() {
+        return this.currentCharacter?.customBuffs?.SpecialMultiplier ?? 0;
+      },
+      async set(value) {
+        const data = {
+          customBuffs: {
+            SpecialMultiplier: value,
           },
         };
         await this.setCharacterData(this.character, data);

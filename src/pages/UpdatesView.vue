@@ -1,15 +1,260 @@
 <template>
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
-    <h1>Upcoming Updates</h1>
-    <ul>
-      <li>Optimizer</li>
-      <li>Team rotations</li>
-      <li>Translations</li>
-      <li>Food</li>
-      <li>More!</li>
-    </ul>
     <h1>Updates</h1>
+    <h3>November 24, 2025</h3>
+    <ul>
+      <li>Fixed the bug I introduced yesterday for the rotation actions. it was auto-closing your action panel whenever you made a change. it has been fixed.</li>
+      <li>Updated how Chisa uses the additive multiplier bonus for Eradication. it now splits the additive bonus by 20%/80% since it's a 2 hit MV</li>
+    </ul>
+    <h3>November 23, 2025</h3>
+    <ul>
+      <li>Fixes reordering issue when you change an order number on a rotation action. It now properly updates the other actions.</li>
+      <li>Implements the special multiplier/vulnerability effect for Core of Collapse for Reminiscence: Threnodian - Leviathan.</li>
+    </ul>
+    <h3>November 20, 2025</h3>
+    <ul>
+      <li>Fixes Chisa's forte circuit to properly get Liberation DMG Bonus</li>
+      <li>Fixes Reminiscence: Threnodian - Leviathan second damage name</li>
+    </ul>
+    <h3>November 19, 2025</h3>
+    <ul>
+      <li>Adds Chisa, sig, and new echoes</li>
+    </ul>
+    <h3>November 15, 2025</h3>
+    <ul>
+      <li>Adds new filters in echo browser for filtering out echoes equipped by the current character, or echoes equipped by any character.</li>
+    </ul>
+    <h3>November 14, 2025</h3>
+    <ul>
+      <li>Fixes Aalto S6 to only apply to his liberation.</li>
+    </ul>
+    <h3>November 13, 2025</h3>
+    <ul>
+      <li>Adds ability to delete a preset from the preset choosing window.</li>
+    </ul>
+    <h3>November 12, 2025</h3>
+    <ul>
+      <li>Adds Special Multiplier (Vulnerability) as custom and rotation action level buff.</li>
+    </ul>
+    <h3>November 11, 2025</h3>
+    <ul>
+      <li>Fixes Danjin's Forte Circuit label</li>
+    </ul>
+    <h3>November 10, 2025</h3>
+    <ul>
+      <li>Adds echo presets for Galbrena and Qiuyuan.</li>
+    </ul>
+    <h3>November 9, 2025</h3>
+    <ul>
+      <li>Adds ability to import a list of echoes so they can be generated externally (e.g. scanner) and imported into your inventory..</li>
+    </ul>
+    <h3>November 8, 2025</h3>
+    <ul>
+      <li>Fixes Rocksteady Guardian shield action.</li>
+      <li>Adds healing action for Cruisewing echo.</li>
+    </ul>
+    <h3>November 6, 2025</h3>
+    <ul>
+      <li>Adds visual clarity on rotation main echo rank and action echo rank in the damages list and optimizer damages list.</li>
+    </ul>
+    <h3>November 5, 2025</h3>
+    <ul>
+      <li>Adds visual clarity on rotation main echo rank and action echo rank. Will add this to the damages list soon.</li>
+    </ul>
+    <h3>November 2, 2025</h3>
+    <ul>
+      <li>Releases echo attacks in rotations support.</li>
+    </ul>
+    <h3>November 1, 2025</h3>
+    <ul>
+      <li>Fixes Qiuyuan's s2.</li>
+    </ul>
+    <h3>October 31, 2025</h3>
+    <ul>
+      <li>Fixes Nightmare Kelpie Outro DMG, it is now properly doing Aero DMG.</li>
+      <li>Fixes a bug where you couldn't add Qiuyuan's S3 Outro to a rotation.</li>
+    </ul>
+    <h3>October 20, 2025</h3>
+    <ul>
+      <li>
+        Loadouts from the optimizer are now sorted by cost, and will also equip
+        sorted by cost when you equip a loadout from the optimizer.
+      </li>
+    </ul>
+    <h3>October 18, 2025</h3>
+    <ul>
+      <li>Fixes Jinhsi's s4 text.</li>
+      <li>
+        Updates the selected state for when you select an echo set to make it
+        more clear.
+      </li>
+    </ul>
+    <h3>October 16, 2025</h3>
+    <ul>
+      <li>Adds rotations for Lupa and Galbrena.</li>
+    </ul>
+    <h3>October 15, 2025</h3>
+    <ul>
+      <li>Fixed RV and CV when looking at the list of echo presets.</li>
+      <li>Fixes Baby Roseshroom name.</li>
+    </ul>
+    <h3>October 13, 2025</h3>
+    <ul>
+      <li>Fixed Flamewing's Shadow in the optimizer.</li>
+      <li>
+        Adds set icon to loadout echoes so you can quickly see the set of what
+        it is.
+      </li>
+    </ul>
+    <h3>October 11, 2025</h3>
+    <ul>
+      <li>Releases optimizer.</li>
+    </ul>
+    <h3>October 10, 2025</h3>
+    <ul>
+      <li>Adds missing Bamboo's Shade team buff.</li>
+      <li>
+        Fixed Qiuyuan's tooltip when his s3 is active. Note, that i just put the
+        whole additive multiplier at the end. i don't know if/how the additive
+        multiplier bonus is spread, and we may have to wait until his release to
+        get the tooltip accurate. the row's damage is accurate regardless
+      </li>
+      <li>Fixes CR buff on Flamewing's Shadow set.</li>
+    </ul>
+    <h3>October 9, 2025</h3>
+    <ul>
+      <li>Adds Qiuyuan.</li>
+      <li>Fixes Galbrena S2.</li>
+      <li>Updated custom buffs to allow the input arrows to go negative</li>
+    </ul>
+    <h3>October 5, 2025</h3>
+    <ul>
+      <li>Adds ability to exclude equipped echoes when optimizing.</li>
+      <li>
+        Updates some "Attack", and "Defense" labels to use "ATK", and "DEF" for
+        consistency.
+      </li>
+      <li>
+        Fixes Verina's team buff text, it still said Deepen instead of Amplify.
+      </li>
+    </ul>
+    <h3>October 3, 2025</h3>
+    <ul>
+      <li>
+        Adds showing the difference between each loadout against your current
+        build in the optimizer.
+      </li>
+    </ul>
+    <h3>September 27, 2025</h3>
+    <ul>
+      <li>
+        Adds support for using rotations as a target in the optimizer lab beta
+        feature.
+      </li>
+    </ul>
+    <h3>September 24, 2025</h3>
+    <ul>
+      <li>Adds some missing text for Moongazer's Sigil.</li>
+    </ul>
+    <h3>September 23, 2025</h3>
+    <ul>
+      <li>Adds 2 rotation presets for Iuno.</li>
+      <li>Adds a new rotation preset for Rover (Havoc).</li>
+    </ul>
+    <h3>September 22, 2025</h3>
+    <ul>
+      <li>
+        Fixes a bug in the optimizer where it would sometimes use multiple
+        copies of the same main echo.
+      </li>
+      <li>Fixes The False Sovereign summon damage modifiers and type.</li>
+    </ul>
+    <h3>September 21, 2025</h3>
+    <ul>
+      <li>Releases Optimizer as a Lab beta feature.</li>
+    </ul>
+    <h3>September 18, 2025</h3>
+    <ul>
+      <li>
+        Fixes equipment references where it would not always clear them out when
+        you changed your echoes.
+      </li>
+    </ul>
+    <h3>September 17, 2025</h3>
+    <ul>
+      <li>Fixes Lady of the Sea text, and some custom buff labels.</li>
+    </ul>
+    <h3>September 11, 2025</h3>
+    <ul>
+      <li>Updates Jinhsi's text.</li>
+    </ul>
+    <h3>September 8, 2025</h3>
+    <ul>
+      <li>Updates Shorekeeper's text.</li>
+    </ul>
+    <h3>September 7, 2025</h3>
+    <ul>
+      <li>Fixes Fallacy's echo damage element.</li>
+    </ul>
+    <h3>September 3, 2025</h3>
+    <ul>
+      <li>
+        Fixed an issue when you change rotation action ordering, it causes the
+        damages list for the rotation to duplicate rows, though the totals were
+        correct.
+      </li>
+    </ul>
+    <h3>August 31, 2025</h3>
+    <ul>
+      <li>Fixed an issue with Danjin's Forte, two labels were mixed up.</li>
+    </ul>
+    <h3>August 30, 2025</h3>
+    <ul>
+      <li>Adds Iuno and her signature weapon.</li>
+      <li>Fixes Augusta's S6 attacks, they're considered Heavy DMG now.</li>
+    </ul>
+    <h3>August 29, 2025</h3>
+    <ul>
+      <li>Reverts the change to the echo window to make it smaller again.</li>
+      <li>
+        Fixes Thunderflare Dominion DEF Ignore, it now properly only applies to
+        Heavy attacks.
+      </li>
+      <li>
+        Fixes RV and CV reactivity bug with custom presets, they were not always
+        updating these when you changed echo stats.
+      </li>
+    </ul>
+    <h3>August 28, 2025</h3>
+    <ul>
+      <li>
+        Added an echo presets guide to explain the feature and things to avoid.
+      </li>
+      <li>
+        Added notice when saving a preset to let you know if you already have a
+        preset with those echoes.
+      </li>
+      <li>
+        Adds note in editing an echo to notify you if it's used in presets, so
+        you know it'll affect those.
+      </li>
+      <li>Adds rotation for Augusta.</li>
+    </ul>
+    <h3>August 27, 2025</h3>
+    <ul>
+      <li>
+        Augusta, her signature weapon, the new 4* BP weapones, echoes, and echo
+        sets are now available!
+      </li>
+    </ul>
+    <h3>August 17, 2025</h3>
+    <ul>
+      <li>
+        You can now define and manage custom echo loadouts as presets and share
+        them among characters.
+      </li>
+    </ul>
     <h3>July 31, 2025</h3>
     <ul>
       <li>

@@ -104,6 +104,12 @@
             </div>
           </div>
         </div>
+        <div
+          v-if="echoPresetsFoundWithEcho.length"
+          class="echo__in-preset alert alert-info my-2 flex items-center p-2">
+          This echo is found in {{ echoPresetsFoundWithEcho.length }} presets.
+          Any changes will affect those too.
+        </div>
         <div class="echo__selection__input w-full mt-8">
           <div class="echo__selection__rank flex flex-col pb-7 relative">
             <label for="rank" class="rank__label">
@@ -504,17 +510,18 @@
       </form>
       <div class="py-4">
         <div
-          class="echoes__filters flex align-center gap-2 mb-6 items-center flex-wrap">
+          class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
+          :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
           <span class="mr-2">Filter</span>
           <button
             v-for="echoSet in echoSetsList"
             :key="echoSet"
             @click="toggleEchoSetFilter(echoSet)"
-            class="rounded"
+            class="rounded p-[.3rem]"
             :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
             <img
               :src="getEchoSetImage(echoSet)"
-              class="size-8 m-width-8 p-[.15rem]"
+              class="size-7 m-width-7"
               :class="echoSet" />
           </button>
           <button @click="resetFilters" class="btn btn-sm btn-ghost">
@@ -891,8 +898,11 @@ export default {
     },
   },
   computed: {
-    ...mapState(useInventoryStore, ["echoes"]),
+    ...mapState(useInventoryStore, ["echoes", "getEchoPresetsByEchoId"]),
     ...mapState(useSettingsStore, ["config"]),
+    echoPresetsFoundWithEcho() {
+      return this.getEchoPresetsByEchoId(this.echoId);
+    },
     settingsTheme() {
       const settingsTheme = this.config?.theme ?? null;
       return settingsTheme;
@@ -1689,7 +1699,15 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
+.echo-filters__sets--active {
+  button {
+    opacity: 0.6;
+  }
+  button.btn-active {
+    opacity: 1;
+  }
+}
 .echo-selector {
   margin-bottom: 20px;
 }

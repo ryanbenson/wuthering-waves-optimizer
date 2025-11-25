@@ -4,6 +4,7 @@ export const swordsList = {
     { key: "BloodpactsPledge", name: "Bloodpact's Pledge" },
     { key: "DefiersThorn", name: "Defier's Thorn" },
     { key: "EmeraldOfGenesis", name: "Emerald Of Genesis" },
+    { key: "EmeraldSentence", name: "Emerald Sentence" },
     { key: "RedSpring", name: "Red Spring" },
     { key: "UnflickeringValor", name: "Unflickering Valor" },
   ],
@@ -11,6 +12,7 @@ export const swordsList = {
     { key: "CommandoOfConviction", name: "Commando Of Conviction" },
     { key: "EndlessCollapse", name: "Endless Collapse" },
     { key: "FablesofWisdom", name: "Fables of Wisdom" },
+    { key: "FeatherEdge", name: "Feather Edge" },
     { key: "Lumingloss", name: "Lumingloss" },
     { key: "LunarCutter", name: "Lunar Cutter" },
     { key: "Overture", name: "Overture" },
@@ -30,12 +32,15 @@ export const swordsList = {
 const broadbladesList = {
   five: [
     { key: "AgesOfHarvest", name: "Ages Of Harvest" },
+    { key: "Kumokiri", name: "Kumokiri" },
     { key: "LustrousRazor", name: "Lustrous Razor" },
+    { key: "ThunderflareDominion", name: "Thunderflare Dominion" },
     { key: "WildfireMark", name: "Wildfire Mark" },
     { key: "VerdantSummit", name: "Verdant Summit" },
   ],
   four: [
     { key: "Autumntrace", name: "Autumntrace" },
+    { key: "AureateZenith", name: "Aureate Zenith" },
     { key: "Broadblade41", name: "Broadblade #41" },
     { key: "DauntlessEvernight", name: "Dauntless Evernight" },
     { key: "Discord", name: "Discord" },
@@ -71,6 +76,7 @@ const rectifiersList = {
     { key: "FusionAccretion", name: "Fusion Accretion" },
     { key: "JinzhouKeeper", name: "Jinzhou Keeper" },
     { key: "OceansGift", name: "Ocean's Gift" },
+    { key: "RadiantDawn", name: "Radiant Dawn" },
     { key: "WaltzinMasquerade", name: "Waltz in Masquerade" },
     { key: "Variation", name: "Variation" },
   ],
@@ -87,6 +93,7 @@ const rectifiersList = {
 
 const pistolsList = {
   five: [
+    { key: "LuxUmbra", name: "Lux & Umbra" },
     { key: "StaticMist", name: "Static Mist" },
     { key: "TheLastDance", name: "The Last Dance" },
     { key: "WoodlandAria", name: "Woodland Aria" },
@@ -96,6 +103,7 @@ const pistolsList = {
     { key: "Novaburst", name: "Novaburst" },
     { key: "Pistols26", name: "Pistols #26" },
     { key: "RomanceinFarewell", name: "Romance in Farewell" },
+    { key: "SolarFlame", name: "Solar Flame" },
     { key: "Thunderbolt", name: "Thunderbolt" },
     { key: "UndyingFlame", name: "Undying Flame" },
     { key: "RelativisticJet", name: "Relativistic Jet" },
@@ -114,10 +122,12 @@ const gauntletsList = {
   five: [
     { key: "AbyssSurges", name: "Abyss Surges" },
     { key: "BlazingJustice", name: "Blazing Justice" },
+    { key: "MoongazersSigil", name: "Moongazer's Sigil" },
     { key: "Tragicomedy", name: "Tragicomedy" },
     { key: "VeritysHandle", name: "Verity's Handle" },
   ],
   four: [
+    { key: "AetherStrike", name: "Aether Strike" },
     { key: "AmityAccord", name: "Amity Accord" },
     { key: "CelestialSpiral", name: "Celestial Spiral" },
     { key: "Gauntlets21D", name: "Gauntlets #21D" },
