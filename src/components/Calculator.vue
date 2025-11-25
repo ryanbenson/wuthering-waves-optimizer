@@ -217,6 +217,30 @@
         "></CalculatorDamages>
     </div>
   </div>
+  <Teleport to="#sidebar">
+    <div>Total HP: {{ displayInt(totalHp) }}</div>
+    <div>Base HP: {{ displayInt(baseHp) }}</div>
+    <div>Total HP %: {{ displayPercentage(totalHpPercent) }}</div>
+    <div>Total HP Flat: {{ displayInt(totalHpFlat) }}</div>
+    <div class="Title mt-2">Weapon</div>
+    <div>Weapon HP Modifier Buffs: {{ weaponData?.value?.modifier === "HP" ? displayPercentage(weaponData?.value?.modifierValue * 100) : 0 }}</div>
+    <div>Weapon ATK Buffs: {{ weaponAtk }}</div>
+    <div class="Title mt-2">Custom Buffs</div>
+    <div>HP% Buffs: {{ customBuffs?.value?.HP ? displayPercentage(customBuffs?.value?.HP * 100) : 0 }}</div>
+    <div>HP Flat Buffs: {{ customBuffs?.value?.HP_FLAT ? displayInt(customBuffs?.value?.HP_FLAT) : 0 }}</div>
+    <div class="Title mt-2">Team Buffs</div>
+    <div>HP% Buffs: {{ teamBuffsData?.value?.HP ? displayPercentage(teamBuffsData?.value?.HP * 100) : 0 }}</div>
+    <div>HP Flat Buffs: {{ teamBuffsData?.value?.HP_FLAT ? displayInt(teamBuffsData?.value?.HP_FLAT) : 0 }}</div>
+    <div class="Title mt-2">Character Buffs</div>
+    <div>HP% Buffs: {{ charBuffsData?.value?.HP ? displayPercentage(charBuffsData?.value?.HP * 100) : 0 }}</div>
+    <div>HP Flat Buffs: {{ charBuffsData?.value?.HP_FLAT ? displayInt(charBuffsData?.value?.HP_FLAT) : 0 }}</div>
+    <div class="Title mt-2">Character Resonance Chains</div>
+    <div>HP% Buffs: {{ charResonanceChainsData?.value?.HP ? displayPercentage(charResonanceChainsData?.value?.HP * 100) : 0 }}</div>
+    <div>HP Flat Buffs: {{ charResonanceChainsData?.value?.HP_FLAT ? displayInt(charResonanceChainsData?.value?.HP_FLAT) : 0 }}</div>
+    <div class="Title mt-2">Echoes</div>
+    <div>HP% Buffs: {{ echoStats?.value?.HP ? displayPercentage(echoStats?.value?.HP) : 0 }}</div>
+    <div>HP Flat Buffs: {{ echoStats?.value?.HP_FLAT ? displayInt(echoStats?.value?.HP_FLAT) : 0 }}</div>
+  </Teleport>
 </template>
 
 <script lang="ts">
@@ -267,6 +291,7 @@ import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
 import { randomString } from "../utils/strings";
+import { displayPercentage, displayInt } from "../utils/numbers";
 
 export default defineComponent({
   name: "Calculator",
@@ -363,6 +388,10 @@ export default defineComponent({
     const optimizerResults = ref([]);
     const optimizationTargetType = ref("");
     const optimizationTargetObject = ref("");
+    // base stats
+    const baseHp = ref(0);
+    const baseAtk = ref(0);
+    const baseDef = ref(0);
 
     charactersList.value = getCharactersAvailable();
 
@@ -391,6 +420,10 @@ export default defineComponent({
         chosenChar?.value?.basic?.havocBane ?? false;
       // hold onto the character's main element
       characterElement.value = chosenChar.value?.basic?.element;
+      // update the base stats
+      baseHp.value = chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)?.hp ?? 0;
+      baseAtk.value = chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)?.attack ?? 0;
+      baseDef.value = chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)?.defense ?? 0;
       // reset any optimizer data
 
       totalCombos.value = 0;
@@ -3006,6 +3039,19 @@ export default defineComponent({
       optimizerResults,
       optimizationTargetType,
       optimizationTargetObject,
+      // data for the sidebar
+      weaponData,
+      weaponAtk,
+      displayPercentage,
+      displayInt,
+      baseHp,
+      baseAtk,
+      baseDef,
+      customBuffs,
+      teamBuffsData,
+      charBuffsData,
+      charResonanceChainsData,
+      echoStats,
     };
   },
 });
