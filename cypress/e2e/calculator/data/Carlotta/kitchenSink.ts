@@ -1,95 +1,99 @@
 export const carlottaKitchenSinkDamages: AttackTests = [
   {
     selector: ".basic-attack-stage-1-dmg",
-    values: ["Basic Attack Stage 1 DMG", "3135", "9877", "10346"],
+    values: ["Basic Attack Stage 1 DMG", "3198", "10074", "10552"],
   },
   {
     selector: ".basic-attack-stage-2-dmg",
-    values: ["Basic Attack Stage 2 DMG", "7642", "24076", "25218"],
+    values: ["Basic Attack Stage 2 DMG", "7795", "24557", "25723"],
   },
   {
     selector: ".necessary-measures-stage-1-dmg",
-    values: ["Necessary Measures Stage 1 DMG", "3821", "12037", "12608"],
+    values: ["Necessary Measures Stage 1 DMG", "3898", "12278", "12861"],
   },
   {
     selector: ".necessary-measures-stage-2-dmg",
-    values: ["Necessary Measures Stage 2 DMG", "7740", "24383", "25540"],
+    values: ["Necessary Measures Stage 2 DMG", "7894", "24870", "26051"],
   },
   {
     selector: ".necessary-measures-stage-3-dmg",
-    values: ["Necessary Measures Stage 3 DMG", "13521", "42598", "44619"],
+    values: ["Necessary Measures Stage 3 DMG", "13792", "43450", "45512"],
   },
   {
     selector: ".heavy-attack-dmg",
-    values: ["Heavy Attack DMG", "8818", "27781", "29100"],
+    values: ["Heavy Attack DMG", "8995", "28337", "29682"],
   },
   {
     selector: ".containment-tactics-dmg",
-    values: ["Containment Tactics DMG", "13227", "41672", "43649"],
+    values: ["Containment Tactics DMG", "13492", "42505", "44522"],
   },
   {
     selector: ".mid-air-attack-dmg",
-    values: ["Mid-air Attack DMG", "6074", "19136", "20044"],
+    values: ["Mid-air Attack DMG", "6196", "19519", "20445"],
   },
   {
     selector: ".customary-greetings-dmg",
-    values: ["Customary Greetings DMG", "13911", "43827", "45907"],
+    values: ["Customary Greetings DMG", "14190", "44703", "46825"],
   },
   {
     selector: ".dodge-counter-dmg",
-    values: ["Dodge Counter DMG", "13989", "44072", "46163"],
+    values: ["Dodge Counter DMG", "14269", "44953", "47086"],
   },
   {
     selector: ".art-of-violence-dmg",
-    values: ["Art of Violence DMG", "70552", "222274", "232821"],
+    values: ["Art of Violence DMG", "71963", "226719", "237478"],
   },
   {
     selector: ".chromatic-splendor-dmg",
-    values: ["Chromatic Splendor DMG", "137971", "434676", "455303"],
+    values: ["Chromatic Splendor DMG", "140730", "443370", "464409"],
   },
   {
     selector: ".era-of-new-wave-dmg",
-    values: ["Era of New Wave DMG", "91938", "289649", "303394"],
+    values: ["Era of New Wave DMG", "93777", "295442", "309461"],
   },
   {
     selector: ".death-knell-dmg",
-    values: ["Death Knell DMG", "158121", "498159", "521798"],
+    values: ["Death Knell DMG", "161283", "508122", "532234"],
   },
   {
     selector: ".fatal-finale-dmg",
-    values: ["Fatal Finale DMG", "332439", "1047348", "1097048"],
+    values: ["Fatal Finale DMG", "339088", "1068295", "1118988"],
   },
   {
     selector: ".imminent-oblivion-dmg",
-    values: ["Imminent Oblivion DMG", "155747", "490679", "513963"],
+    values: ["Imminent Oblivion DMG", "158862", "500493", "524243"],
   },
   {
     selector: ".wintertime-aria-dmg",
-    values: ["Wintertime Aria DMG", "17131", "53971", "56532"],
+    values: ["Wintertime Aria DMG", "17474", "55050", "57662"],
   },
   {
     selector: ".closing-remark-dmg",
-    values: ["Closing Remark DMG", "38960", "122744", "128568"],
+    values: ["Closing Remark DMG", "39740", "125199", "131140"],
+  },
+  {
+    selector: ".s3-step-forward-elegance-in-progression-dmg",
+    values: ["S3 Step Forward, Elegance in Progression DMG", "51647", "162714", "170435"]
   },
   {
     selector: ".attack-dmg",
-    values: ["Attack DMG", "23477", "73964", "77473"],
+    values: ["Attack DMG", "23947", "75443", "79023"],
   },
   {
     selector: ".upgraded-attack-dmg",
-    values: ["Upgraded Attack DMG", "23477", "73964", "77473"],
+    values: ["Upgraded Attack DMG", "23947", "75443", "79023"],
   },
   {
     selector: `[data-test-damages-list-rotation="Test001"] .basic-attack-stage-1-dmg`,
-    values: ["Basic Attack Stage 1 DMG", "159878", "503695", "527597"],
+    values: ["Basic Attack Stage 1 DMG", "163076", "513769", "538148"],
   },
   {
     selector: `[data-test-damages-list-rotation="Test001"] .fatal-finale-dmg`,
-    values: ["Fatal Finale DMG", "332439", "1202763", "1263267"],
+    values: ["Fatal Finale DMG", "339088", "1226818", "1288532"],
   },
   {
     selector: `[data-test-damages-list-rotation="Test001"] .rotation-total-damage`,
-    values: ["Total Damage", "492317", "1706457", "1790863"],
+    values: ["Total Damage", "502163", "1740586", "1826680"],
   },
 ];
 

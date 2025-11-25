@@ -9,7 +9,7 @@ import { configureEcho } from "./utils/echoesUtils";
 describe("Calculator Kitchen Sink", () => {
   beforeEach(() => {
     cy.visit("/");
-    cy.viewport(1536, 1024)
+    cy.viewport(1536, 1024);
   });
 
   it("should enable everything and validate all calculations", () => {
