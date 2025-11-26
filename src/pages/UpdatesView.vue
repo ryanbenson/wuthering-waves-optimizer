@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>November 26, 2025</h3>
+    <ul>
+      <li>Adds breakdown of stats from the stats table.</li>
+    </ul>
     <h3>November 24, 2025</h3>
     <ul>
       <li>Fixed the bug I introduced yesterday for the rotation actions. it was auto-closing your action panel whenever you made a change. it has been fixed.</li>
