@@ -13,7 +13,7 @@
         for="my-drawer-4"
         aria-label="close sidebar"
         class="drawer-overlay"></label>
-      <div id="sidebar" class="bg-base-100 text-base-content min-h-full w-[480px] p-4"></div>
+      <div id="sidebar" class="bg-base-100 text-base-content min-h-full max-w-[480px] w-full p-4"></div>
     </div>
   </div>
   <div class="calculator__content">
