@@ -13,7 +13,7 @@
     <tbody>
       <tr>
         <td class="text-base">Weapon</td>
-        <td class="text-base text-right">{{ weaponModifierValue }}</td>
+        <td class="text-base text-right">{{ weaponBuffsPercent }}</td>
       </tr>
       <tr>
         <td class="text-base">Self Buffs</td>
@@ -442,7 +442,10 @@ export default {
       return this.displayPercentage(0);
     },
     weaponBuffsPercent() {
-      // Weapon bonuses are stored in weaponPassiveStats
+      // Weapon bonuses are stored in weaponPassiveStats, support using weaponModifierValue as well if it's available, but need to make sure the stat matches the weaponModifierValue stat
+      if (this.weaponData?.value?.modifier === this.statKey) {
+        return this.weaponModifierValue;
+      }
       const weaponPassiveStats = this.weaponData?.value?.weaponPassiveStats || {};
       let value = weaponPassiveStats[this.statKey] || 0;
       
