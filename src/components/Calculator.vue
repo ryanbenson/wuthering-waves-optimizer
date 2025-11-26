@@ -3068,8 +3068,6 @@ export default defineComponent({
       optimizationTargetType,
       optimizationTargetObject,
       // data for the sidebar
-      weaponData,
-      weaponAtk,
       displayPercentage,
       displayInt,
       baseHp,
@@ -3077,8 +3075,6 @@ export default defineComponent({
       baseDef,
       customBuffs,
       teamBuffsData,
-      charBuffsData,
-      charResonanceChainsData,
       echoStats,
       selectedStat,
       handleStatSelected,
