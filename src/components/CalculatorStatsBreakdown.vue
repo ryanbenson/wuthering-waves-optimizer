@@ -95,10 +95,10 @@
   <h3 class="text-base font-bold mt-2 text-primary">Formula:</h3>
   <div class="stat-formula bg-base-200 p-2 rounded-md font-mono">
     <div v-if="stat === 'ATK'">
-      <div><span class="font-bold text-secondary">{{ displayTotal }}</span> = (<span class="font-bold text-primary">{{ baseAtk }}</span> + <span class="font-bold text-primary">{{ weaponAtk }}</span>) * (1 + <span class="font-bold text-primary">{{ totalAtkPercent }}%</span>) + <span class="font-bold text-primary">{{ totalAtkFlat }}</span></div>
+      <div><span class="font-bold text-secondary">{{ displayTotal }}</span> = (<span class="font-bold text-primary">{{ baseAtk }}</span> + <span class="font-bold text-primary">{{ weaponAtk }}</span>) × (1 + <span class="font-bold text-primary">{{ totalAtkPercent }}%</span>) + <span class="font-bold text-primary">{{ totalAtkFlat }}</span></div>
     </div>
     <div v-else-if="stat === 'HP' || stat === 'DEF'">
-      <div><span class="font-bold text-secondary">{{ displayTotal }}</span> = <span class="font-bold text-primary">{{ baseValue }}</span> * (1 + <span class="font-bold text-primary">{{ totalPercent }}%</span>) + <span class="font-bold text-primary">{{ totalFlat }}</span></div>
+      <div><span class="font-bold text-secondary">{{ displayTotal }}</span> = <span class="font-bold text-primary">{{ baseValue }}</span> × (1 + <span class="font-bold text-primary">{{ totalPercent }}%</span>) + <span class="font-bold text-primary">{{ totalFlat }}</span></div>
     </div>
   </div>
   </template>
