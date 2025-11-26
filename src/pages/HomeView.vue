@@ -1,7 +1,28 @@
 <template>
+  <div class="drawer drawer-end z-50">
+    <input 
+      id="my-drawer-4" 
+      ref="drawerCheckbox"
+      type="checkbox" 
+      class="drawer-toggle" />
+    <div class="drawer-content">
+      <!-- Page content here -->
+    </div>
+    <div class="drawer-side">
+      <label
+        for="my-drawer-4"
+        aria-label="close sidebar"
+        class="drawer-overlay"></label>
+      <div id="sidebar" class="bg-base-100 text-base-content min-h-full max-w-[480px] w-full p-4"></div>
+    </div>
+  </div>
   <div class="calculator__content">
     <div class="calculator__el">
-      <Calculator class="calculator" :key="key"></Calculator>
+      <Calculator 
+        class="calculator" 
+        :key="key"
+        @stat-selected="openDrawer"
+        @stat-closed="closeDrawer"></Calculator>
     </div>
   </div>
 </template>
@@ -17,6 +38,18 @@ export default defineComponent({
     return {
       key: self.crypto.randomUUID(),
     };
+  },
+  methods: {
+    openDrawer() {
+      if (this.$refs.drawerCheckbox) {
+        this.$refs.drawerCheckbox.checked = true;
+      }
+    },
+    closeDrawer() {
+      if (this.$refs.drawerCheckbox) {
+        this.$refs.drawerCheckbox.checked = false;
+      }
+    },
   },
   mounted() {
     /**

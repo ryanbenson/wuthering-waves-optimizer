@@ -157,7 +157,8 @@
           :aero="Aero"
           :spectro="Spectro"
           :havoc="Havoc"
-          :healing-bonus="healingBonus"></CalculatorStats>
+          :healing-bonus="healingBonus"
+          @stat-selected="handleStatSelected"></CalculatorStats>
         <CalculatorDamages
           :key="character"
           :character="character"
@@ -201,7 +202,8 @@
         :aero="Aero"
         :spectro="Spectro"
         :havoc="Havoc"
-        :healing-bonus="healingBonus"></CalculatorStats>
+        :healing-bonus="healingBonus"
+        @stat-selected="handleStatSelected"></CalculatorStats>
       <CalculatorDamages
         :key="character"
         :character="character"
@@ -217,6 +219,47 @@
         "></CalculatorDamages>
     </div>
   </div>
+  <Teleport to="#sidebar">
+    <CalculatorStatsBreakdown
+      v-if="selectedStat"
+      :character="character"
+      :stat="selectedStat"
+      :character-level="characterLevel"
+      :weapon-atk="weaponAtk"
+      :total-atk="totalAtk"
+      :total-atk-percent="totalAtkPercent"
+      :total-atk-flat="totalAtkFlat"
+      :total-hp="totalHp"
+      :total-hp-percent="totalHpPercent"
+      :total-hp-flat="totalHpFlat"
+      :total-def="totalDef"
+      :total-def-percent="totalDefPercent"
+      :total-def-flat="totalDefFlat"
+      :total-crit-rate="totalCritRate"
+      :total-crit-dmg="totalCritDMG"
+      :energy-regen="energyRegen"
+      :basic-attack-dmg-bonus="BasicAttackDMGBonus"
+      :heavy-attack-dmg-bonus="HeavyAttackDMGBonus"
+      :resonance-skill-dmg-bonus="ResonanceSkillDMGBonus"
+      :resonance-liberation-dmg-bonus="ResonanceLiberationDMGBonus"
+      :glacio="Glacio"
+      :fusion="Fusion"
+      :electro="Electro"
+      :aero="Aero"
+      :spectro="Spectro"
+      :havoc="Havoc"
+      :healing-bonus="healingBonus"
+      :base-hp="baseHp"
+      :base-atk="baseAtk"
+      :base-def="baseDef"
+      :weapon-data="weaponData"
+      :custom-buffs="customBuffs"
+      :team-buffs-data="teamBuffsData"
+      :char-buffs-data="charBuffsData"
+      :char-resonance-chains-data="charResonanceChainsData"
+      :echo-stats="echoStats"
+      @stats-breakdown-close="handleStatsBreakdownClose"></CalculatorStatsBreakdown>
+  </Teleport>
 </template>
 
 <script lang="ts">
@@ -266,7 +309,9 @@ import { useRoute } from "vue-router";
 import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
+import CalculatorStatsBreakdown from "./CalculatorStatsBreakdown.vue";
 import { randomString } from "../utils/strings";
+import { displayPercentage, displayInt } from "../utils/numbers";
 
 export default defineComponent({
   name: "Calculator",
@@ -287,8 +332,10 @@ export default defineComponent({
     CalculatorMobileSubNav,
     CalculatorSubNav,
     Nav,
+    CalculatorStatsBreakdown,
   },
-  setup() {
+  emits: ["stat-selected", "stat-closed"],
+  setup(props, { emit }) {
     const characterStore = useCharacterStore();
     const inventoryStore = useInventoryStore();
     const { characters, activeCharacter } = storeToRefs(characterStore);
@@ -308,6 +355,7 @@ export default defineComponent({
     const curScreen = ref("character");
     const mainEcho = ref("");
     const mainEchoRank = ref(5);
+    const selectedStat = ref(null);
     const damage = ref(0);
     const rotationsList = ref([]);
     const character = ref("");
@@ -363,6 +411,10 @@ export default defineComponent({
     const optimizerResults = ref([]);
     const optimizationTargetType = ref("");
     const optimizationTargetObject = ref("");
+    // base stats
+    const baseHp = ref(0);
+    const baseAtk = ref(0);
+    const baseDef = ref(0);
 
     charactersList.value = getCharactersAvailable();
 
@@ -391,6 +443,10 @@ export default defineComponent({
         chosenChar?.value?.basic?.havocBane ?? false;
       // hold onto the character's main element
       characterElement.value = chosenChar.value?.basic?.element;
+      // update the base stats
+      baseHp.value = chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)?.hp ?? 0;
+      baseAtk.value = chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)?.attack ?? 0;
+      baseDef.value = chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)?.defense ?? 0;
       // reset any optimizer data
 
       totalCombos.value = 0;
@@ -2372,6 +2428,18 @@ export default defineComponent({
       character.value = chosenCharacter;
     };
 
+    const handleStatSelected = (statName) => {
+      selectedStat.value = statName;
+      // Emit to parent (HomeView) to open the drawer
+      emit("stat-selected", statName);
+    };
+
+    const handleStatsBreakdownClose = () => {
+      selectedStat.value = null;
+      // Emit to parent (HomeView) to close the drawer
+      emit("stat-closed");
+    };
+
     const handleUpdatedMainEcho = (chosenEcho) => {
       mainEcho.value = chosenEcho;
       calcAllDamages();
@@ -3006,6 +3074,18 @@ export default defineComponent({
       optimizerResults,
       optimizationTargetType,
       optimizationTargetObject,
+      // data for the sidebar
+      displayPercentage,
+      displayInt,
+      baseHp,
+      baseAtk,
+      baseDef,
+      customBuffs,
+      teamBuffsData,
+      echoStats,
+      selectedStat,
+      handleStatSelected,
+      handleStatsBreakdownClose,
     };
   },
 });
