@@ -257,7 +257,8 @@
       :team-buffs-data="teamBuffsData"
       :char-buffs-data="charBuffsData"
       :char-resonance-chains-data="charResonanceChainsData"
-      :echo-stats="echoStats"></CalculatorStatsBreakdown>
+      :echo-stats="echoStats"
+      @stats-breakdown-close="handleStatsBreakdownClose"></CalculatorStatsBreakdown>
   </Teleport>
 </template>
 
@@ -333,7 +334,7 @@ export default defineComponent({
     Nav,
     CalculatorStatsBreakdown,
   },
-  emits: ["stat-selected"],
+  emits: ["stat-selected", "stat-closed"],
   setup(props, { emit }) {
     const characterStore = useCharacterStore();
     const inventoryStore = useInventoryStore();
@@ -2433,6 +2434,12 @@ export default defineComponent({
       emit("stat-selected", statName);
     };
 
+    const handleStatsBreakdownClose = () => {
+      selectedStat.value = null;
+      // Emit to parent (HomeView) to close the drawer
+      emit("stat-closed");
+    };
+
     const handleUpdatedMainEcho = (chosenEcho) => {
       mainEcho.value = chosenEcho;
       calcAllDamages();
@@ -3078,6 +3085,7 @@ export default defineComponent({
       echoStats,
       selectedStat,
       handleStatSelected,
+      handleStatsBreakdownClose,
     };
   },
 });

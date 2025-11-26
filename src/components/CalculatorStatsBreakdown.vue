@@ -1,31 +1,107 @@
 <template>
 <div class="stats-breakdown">
-  <div>Total {{ statLabel }}: {{ displayTotal }}</div>
-  <template v-if="hasBaseStat">
-    <div>Base {{ statLabel }}: {{ displayInt(baseValue) }}</div>
-    <div>Total {{ statLabel }} %: {{ displayPercentage(totalPercent) }}</div>
-    <div>Total {{ statLabel }} Flat: {{ displayInt(totalFlat) }}</div>
+  <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" @click="handleClose">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+  <div class="font-bold mt-2 text-lg">Total {{ statLabel }}: <span class="font-bold text-secondary">{{ displayTotal }}</span></div>
+  <div>Base {{ statLabel }}: <span class="font-bold text-primary">{{ baseValue }}<template v-if="!hasBaseStat && stat !== 'Crit Rate' && stat !== 'Crit DMG'">%</template></span></div>
+  <div v-if="stat === 'ATK'">Weapon ATK: <span class="font-bold text-primary">{{ displayInt(weaponAtk) }}</span></div>
+  <h3 class="text-base font-bold mt-2 text-primary">{{ statLabel }}<template v-if="hasBaseStat">%</template>:</h3>
+  <table class="table table-zebra table-xs p-0 m-0">
+    <tbody>
+      <tr>
+        <td class="text-base">Weapon</td>
+        <td class="text-base text-right">{{ weaponModifierValue }}</td>
+      </tr>
+      <tr>
+        <td class="text-base">Self Buffs</td>
+        <td class="text-base text-right">{{ charBuffsPercent }}</td>
+      </tr>
+      <tr>
+        <td class="text-base">Resonance Chains</td>
+        <td class="text-base text-right">{{ charResonanceChainsPercent }}</td>
+      </tr>
+      <tr>
+        <td class="text-base">Echoes</td>
+        <td class="text-base text-right">{{ echoStatsPercent }}</td>
+      </tr>
+      <tr>
+        <td class="text-base">Custom Buffs</td>
+        <td class="text-base text-right">{{ customBuffsPercent }}</td>
+      </tr>
+      <tr>
+        <td class="text-base">Team Buffs</td>
+        <td class="text-base text-right">{{ teamBuffsPercent }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td class="text-base">Total</td>
+        <td class="text-base text-right">
+          <span v-if="stat === 'Crit Rate'">
+            {{ displayPercentage((totalValue - .05) * 100) }}
+          </span>
+          <span v-else-if="stat === 'Crit DMG'">
+            {{ displayPercentage((totalValue - 1.5) * 100) }}
+          </span>
+          <span v-else-if="!hasBaseStat">
+            {{ displayTotal }}
+          </span>
+          <span v-else>
+            {{ displayPercentage(totalPercent) }}
+          </span>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+  <template v-if="hasFlatStat">
+  <h3 class="text-base font-bold mt-2 text-primary">{{ statLabel }} Flat:</h3>
+    <table class="table table-zebra table-xs p-0 m-0">
+      <tbody>
+        <tr>
+          <td class="text-base">Self Buffs</td>
+          <td class="text-base text-right">{{ charBuffsFlat }}</td>
+        </tr>
+        <tr>
+          <td class="text-base">Resonance Chains</td>
+          <td class="text-base text-right">{{ charResonanceChainsFlat }}</td>
+        </tr>
+        <tr>
+          <td class="text-base">Echoes</td>
+          <td class="text-base text-right">{{ echoStatsFlat }}</td>
+        </tr>
+        <tr>
+          <td class="text-base">Custom Buffs</td>
+          <td class="text-base text-right">{{ customBuffsFlat }}</td>
+        </tr>
+        <tr>
+          <td class="text-base">Team Buffs</td>
+          <td class="text-base text-right">{{ teamBuffsFlat }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td class="text-base">Total</td>
+          <td class="text-base text-right">{{ displayInt(totalFlat) }}</td>
+        </tr>
+      </tfoot>
+    </table>
   </template>
-  <div class="Title mt-2">Weapon</div>
-  <div v-if="hasWeaponModifier">Weapon {{ statLabel }} Modifier Buffs: {{ weaponModifierValue }}</div>
-  <div v-if="stat === 'ATK'">Weapon ATK Buffs: {{ displayInt(weaponAtk) }}</div>
-  <div v-if="!hasBaseStat && hasPercentStat">Weapon {{ statLabel }}% Buffs: {{ weaponBuffsPercent }}</div>
-  <div class="Title mt-2">Custom Buffs</div>
-  <div v-if="hasPercentStat">{{ statLabel }}% Buffs: {{ customBuffsPercent }}</div>
-  <div v-if="hasFlatStat">{{ statLabel }} Flat Buffs: {{ customBuffsFlat }}</div>
-  <div class="Title mt-2">Team Buffs</div>
-  <div v-if="hasPercentStat">{{ statLabel }}% Buffs: {{ teamBuffsPercent }}</div>
-  <div v-if="hasFlatStat">{{ statLabel }} Flat Buffs: {{ teamBuffsFlat }}</div>
-  <div class="Title mt-2">Character Buffs</div>
-  <div v-if="hasPercentStat">{{ statLabel }}% Buffs: {{ charBuffsPercent }}</div>
-  <div v-if="hasFlatStat">{{ statLabel }} Flat Buffs: {{ charBuffsFlat }}</div>
-  <div class="Title mt-2">Character Resonance Chains</div>
-  <div v-if="hasPercentStat">{{ statLabel }}% Buffs: {{ charResonanceChainsPercent }}</div>
-  <div v-if="hasFlatStat">{{ statLabel }} Flat Buffs: {{ charResonanceChainsFlat }}</div>
-  <div class="Title mt-2">Echoes</div>
-  <div v-if="hasPercentStat">{{ statLabel }}% Buffs: {{ echoStatsPercent }}</div>
-  <div v-if="hasFlatStat">{{ statLabel }} Flat Buffs: {{ echoStatsFlat }}</div>
 </div>
+<template v-if="stat === 'ATK' || stat === 'HP' || stat === 'DEF'">
+  <div class="divider mt-2"></div>
+  <h3 class="text-base font-bold mt-2 text-primary">Formula:</h3>
+  <div class="stat-formula bg-base-200 p-2 rounded-md font-mono">
+    <div v-if="stat === 'ATK'">
+      <div><span class="font-bold text-secondary">{{ displayTotal }}</span> = (<span class="font-bold text-primary">{{ baseAtk }}</span> + <span class="font-bold text-primary">{{ weaponAtk }}</span>) * (1 + <span class="font-bold text-primary">{{ totalAtkPercent }}%</span>) + <span class="font-bold text-primary">{{ totalAtkFlat }}</span></div>
+    </div>
+    <div v-else-if="stat === 'HP' || stat === 'DEF'">
+      <div><span class="font-bold text-secondary">{{ displayTotal }}</span> = <span class="font-bold text-primary">{{ baseValue }}</span> * (1 + <span class="font-bold text-primary">{{ totalPercent }}%</span>) + <span class="font-bold text-primary">{{ totalFlat }}</span></div>
+    </div>
+  </div>
+  </template>
 </template>
 
 <script>
@@ -223,6 +299,9 @@ export default {
       }
       return null;
     },
+    handleClose() {
+      this.$emit('statsBreakdownClose');
+    },
   },
   computed: {
     statLabel() {
@@ -319,13 +398,17 @@ export default {
     baseValue() {
       switch (this.statKey) {
         case "HP":
-          return this.baseHp;
+          return displayInt(this.baseHp);
         case "ATK":
-          return this.baseAtk;
+          return displayInt(this.baseAtk);
         case "DEF":
-          return this.baseDef;
+          return displayInt(this.baseDef);
+        case "CritRate":
+          return displayPercentage(5);
+        case "CritDMG":
+          return displayPercentage(150);
         default:
-          return 0;
+          return displayInt(0);
       }
     },
     totalPercent() {

@@ -13,7 +13,7 @@
         for="my-drawer-4"
         aria-label="close sidebar"
         class="drawer-overlay"></label>
-      <div id="sidebar" class="bg-base-200 text-base-content min-h-full w-80 p-4"></div>
+      <div id="sidebar" class="bg-base-100 text-base-content min-h-full w-[480px] p-4"></div>
     </div>
   </div>
   <div class="calculator__content">
@@ -21,7 +21,8 @@
       <Calculator 
         class="calculator" 
         :key="key"
-        @stat-selected="openDrawer"></Calculator>
+        @stat-selected="openDrawer"
+        @stat-closed="closeDrawer"></Calculator>
     </div>
   </div>
 </template>
@@ -42,6 +43,11 @@ export default defineComponent({
     openDrawer() {
       if (this.$refs.drawerCheckbox) {
         this.$refs.drawerCheckbox.checked = true;
+      }
+    },
+    closeDrawer() {
+      if (this.$refs.drawerCheckbox) {
+        this.$refs.drawerCheckbox.checked = false;
       }
     },
   },
