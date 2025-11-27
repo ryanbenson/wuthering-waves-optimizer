@@ -373,6 +373,21 @@ export function calcDamage(
 
   let totalCritDmg = calcCritDamage(finalDamage, critDamage);
   let totalAvgDmg = calcAvgDamage(finalDamage, critRate, critDamage);
+  const totalDamageContext = {
+    defenseModifier: getDefenseModifier(charLevel, enemyLevel, defIgnore),
+    resistValue: getEnemyResistValue(enemyResist, resistenceReduction),
+    specialMultiplier: specialMultiplier,
+    totalDeepenEffect,
+    resistenceReduction,
+    bonusTotalSkillDmg,
+    bonusSpecificSkillDmg,
+    bonusElementDmg,
+    totalTalentValue,
+    totalDmgBonus: bonusTotalSkillDmg + bonusSpecificSkillDmg + bonusElementDmg,
+    talentModifierAdd,
+    talentModifierMultiply,
+    totalTalentModifierSpecialMultiply,
+  };
 
   // Return detailed damage information
   return {
@@ -384,6 +399,7 @@ export function calcDamage(
     detailedCalculation,
     detailedCalculationCrit,
     detailedCalculationAvg,
+    totalDamageContext,
   };
 }
 

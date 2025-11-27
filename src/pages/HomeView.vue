@@ -22,7 +22,8 @@
         class="calculator" 
         :key="key"
         @stat-selected="openDrawer"
-        @stat-closed="closeDrawer"></Calculator>
+        @attack-selected="openDrawer"
+        @breakdown-closed="closeDrawer"></Calculator>
     </div>
   </div>
 </template>

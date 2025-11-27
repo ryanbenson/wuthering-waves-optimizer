@@ -171,7 +171,8 @@
           :char-buffs-data="charBuffsData"
           :char-resonance-chains-data="
             charResonanceChainsData
-          "></CalculatorDamages>
+          "
+          @selected-attack="handleSelectedAttack"></CalculatorDamages>
       </div>
     </div>
     <div class="results">
@@ -216,12 +217,13 @@
         :char-buffs-data="charBuffsData"
         :char-resonance-chains-data="
           charResonanceChainsData
-        "></CalculatorDamages>
+        "
+        @selected-attack="handleSelectedAttack"></CalculatorDamages>
     </div>
   </div>
   <Teleport to="#sidebar">
-    <CalculatorStatsBreakdown
-      v-if="selectedStat"
+    <CalculatorBreakdown
+      v-if="selectedStat || selectedAttackKey"
       :character="character"
       :stat="selectedStat"
       :character-level="characterLevel"
@@ -258,7 +260,9 @@
       :char-buffs-data="charBuffsData"
       :char-resonance-chains-data="charResonanceChainsData"
       :echo-stats="echoStats"
-      @stats-breakdown-close="handleStatsBreakdownClose"></CalculatorStatsBreakdown>
+      :attack-key="selectedAttackKey"
+      :damage="selectedAttackDamage"
+      @close="handleBreakdownClose"></CalculatorBreakdown>
   </Teleport>
 </template>
 
@@ -309,7 +313,7 @@ import { useRoute } from "vue-router";
 import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
-import CalculatorStatsBreakdown from "./CalculatorStatsBreakdown.vue";
+import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import { randomString } from "../utils/strings";
 import { displayPercentage, displayInt } from "../utils/numbers";
 
@@ -332,9 +336,9 @@ export default defineComponent({
     CalculatorMobileSubNav,
     CalculatorSubNav,
     Nav,
-    CalculatorStatsBreakdown,
+    CalculatorBreakdown,
   },
-  emits: ["stat-selected", "stat-closed"],
+  emits: ["stat-selected", "attack-selected", "breakdown-closed"],
   setup(props, { emit }) {
     const characterStore = useCharacterStore();
     const inventoryStore = useInventoryStore();
@@ -357,6 +361,8 @@ export default defineComponent({
     const mainEchoRank = ref(5);
     const selectedStat = ref(null);
     const damage = ref(0);
+    const selectedAttackKey = ref(null);
+    const selectedAttackDamage = ref(0);
     const rotationsList = ref([]);
     const character = ref("");
     const totalAtk = ref(0);
@@ -2430,14 +2436,18 @@ export default defineComponent({
 
     const handleStatSelected = (statName) => {
       selectedStat.value = statName;
+      selectedAttackKey.value = null;
+      selectedAttackDamage.value = null;
       // Emit to parent (HomeView) to open the drawer
       emit("stat-selected", statName);
     };
 
-    const handleStatsBreakdownClose = () => {
+    const handleBreakdownClose = () => {
+      selectedAttackKey.value = null;
+      selectedAttackDamage.value = null;
       selectedStat.value = null;
       // Emit to parent (HomeView) to close the drawer
-      emit("stat-closed");
+      emit("breakdown-closed");
     };
 
     const handleUpdatedMainEcho = (chosenEcho) => {
@@ -2996,6 +3006,14 @@ export default defineComponent({
       return heap.sort((a, b) => b.targetValue - a.targetValue); // descending
     }
 
+    function handleSelectedAttack(attackKey, damage) {
+      selectedStat.value = null;
+      selectedAttackKey.value = attackKey;
+      selectedAttackDamage.value = damage;
+      // Emit to parent (HomeView) to open the drawer
+      emit("attack-selected", attackKey);
+    }
+
     function getRotationData(character, rotationId) {}
 
     return {
@@ -3039,6 +3057,7 @@ export default defineComponent({
       handleUpdatedMainEchoRank,
       handleUpdatedRotations,
       handleUpdatedTeamBuffs,
+      handleSelectedAttack,
       BasicAttackDMGBonus,
       HeavyAttackDMGBonus,
       ResonanceSkillDMGBonus,
@@ -3085,7 +3104,9 @@ export default defineComponent({
       echoStats,
       selectedStat,
       handleStatSelected,
-      handleStatsBreakdownClose,
+      handleBreakdownClose,
+      selectedAttackKey,
+      selectedAttackDamage,
     };
   },
 });

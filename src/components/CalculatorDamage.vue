@@ -1,5 +1,6 @@
 <template>
   <tr
+    @click="handleClick"
     :class="[
       slugifiedLabel,
       {
@@ -144,6 +145,10 @@ export default {
       type: Object,
       required: true,
     },
+    attackKey: {
+      type: String,
+      required: true,
+    },
     isEnabled: {
       type: Boolean,
       default: true,
@@ -168,6 +173,9 @@ export default {
   methods: {
     displayDamage,
     slugify,
+    handleClick() {
+      this.$emit('selected-attack', this.attackKey, this.damage);
+    },
   },
   computed: {
     ...mapState(useCharacterStore, ["characters"]),
