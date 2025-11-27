@@ -387,6 +387,7 @@ export function calcDamage(
     talentModifierAdd,
     talentModifierMultiply,
     totalTalentModifierSpecialMultiply,
+    attack,
   };
 
   // Return detailed damage information
