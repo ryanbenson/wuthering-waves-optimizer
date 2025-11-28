@@ -48,6 +48,7 @@
         v-else-if="attackKey"
         :character="character"
         :attack-key="attackKey"
+        :attack-label="attackLabel"
         :damage="damage"></CalculatorDamageBreakdown>
   </div>
 </template>
@@ -207,6 +208,10 @@ export default {
       required: true,
     },
     attackKey: {
+      type: String,
+      required: true,
+    },
+    attackLabel: {
       type: String,
       required: true,
     },

@@ -184,10 +184,12 @@ export function calcDamage(
   let instanceDamage: InstanceDamage = {};
   let instanceDamageEntries: InstanceDamageEntry[] = [];
   const talentsLen = talents.length;
+  let rawTotalTalent = 0;
 
   talents.forEach((t, index) => {
     // we may modify this, but we need the original values for instanceDamage struct
     let originalTalent = t;
+    rawTotalTalent += t;
     // add any flat talent modifiers (e.g. Jinshi Incandescence)
     // only add it to the LAST instance
     // TODO: Change this if this is altered later. Jinhsi only hits once
@@ -379,15 +381,21 @@ export function calcDamage(
     specialMultiplier: specialMultiplier,
     totalDeepenEffect,
     resistenceReduction,
+    enemyResist,
     bonusTotalSkillDmg,
     bonusSpecificSkillDmg,
     bonusElementDmg,
     totalTalentValue,
+    rawTotalTalent,
     totalDmgBonus: bonusTotalSkillDmg + bonusSpecificSkillDmg + bonusElementDmg,
     talentModifierAdd,
     talentModifierMultiply,
     totalTalentModifierSpecialMultiply,
     attack,
+    charLevel,
+    enemyLevel,
+    defIgnore,
+    type: "attack",
   };
 
   // Return detailed damage information

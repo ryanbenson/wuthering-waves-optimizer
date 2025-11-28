@@ -683,8 +683,8 @@ export default {
   },
   methods: {
     displayDamage,
-    handleSelectedAttack(attackKey, damage) {
-      this.$emit('selected-attack', attackKey, damage);
+    handleSelectedAttack(attackKey, damage, label) {
+      this.$emit('selected-attack', attackKey, damage, label);
     },
     toggleBasicDetails() {
       this.isBasicDetailsShown = !this.isBasicDetailsShown;

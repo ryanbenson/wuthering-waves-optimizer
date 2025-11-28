@@ -174,7 +174,7 @@ export default {
     displayDamage,
     slugify,
     handleClick() {
-      this.$emit('selected-attack', this.attackKey, this.damage);
+      this.$emit('selected-attack', this.attackKey, this.damage, this.label);
     },
   },
   computed: {

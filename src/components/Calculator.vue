@@ -262,6 +262,7 @@
       :echo-stats="echoStats"
       :attack-key="selectedAttackKey"
       :damage="selectedAttackDamage"
+      :attack-label="selectedAttackLabel"
       @close="handleBreakdownClose"></CalculatorBreakdown>
   </Teleport>
 </template>
@@ -363,6 +364,7 @@ export default defineComponent({
     const damage = ref(0);
     const selectedAttackKey = ref(null);
     const selectedAttackDamage = ref(0);
+    const selectedAttackLabel = ref(null);
     const rotationsList = ref([]);
     const character = ref("");
     const totalAtk = ref(0);
@@ -2438,6 +2440,7 @@ export default defineComponent({
       selectedStat.value = statName;
       selectedAttackKey.value = null;
       selectedAttackDamage.value = null;
+      selectedAttackLabel = null;
       // Emit to parent (HomeView) to open the drawer
       emit("stat-selected", statName);
     };
@@ -2446,6 +2449,7 @@ export default defineComponent({
       selectedAttackKey.value = null;
       selectedAttackDamage.value = null;
       selectedStat.value = null;
+      selectedAttackLabel = null;
       // Emit to parent (HomeView) to close the drawer
       emit("breakdown-closed");
     };
@@ -3006,10 +3010,11 @@ export default defineComponent({
       return heap.sort((a, b) => b.targetValue - a.targetValue); // descending
     }
 
-    function handleSelectedAttack(attackKey, damage) {
+    function handleSelectedAttack(attackKey, damage, label) {
       selectedStat.value = null;
       selectedAttackKey.value = attackKey;
       selectedAttackDamage.value = damage;
+      selectedAttackLabel.value = label;
       // Emit to parent (HomeView) to open the drawer
       emit("attack-selected", attackKey);
     }
@@ -3107,6 +3112,7 @@ export default defineComponent({
       handleBreakdownClose,
       selectedAttackKey,
       selectedAttackDamage,
+      selectedAttackLabel,
     };
   },
 });
