@@ -2440,7 +2440,7 @@ export default defineComponent({
       selectedStat.value = statName;
       selectedAttackKey.value = null;
       selectedAttackDamage.value = null;
-      selectedAttackLabel = null;
+      selectedAttackLabel.value = null;
       // Emit to parent (HomeView) to open the drawer
       emit("stat-selected", statName);
     };
@@ -2449,7 +2449,7 @@ export default defineComponent({
       selectedAttackKey.value = null;
       selectedAttackDamage.value = null;
       selectedStat.value = null;
-      selectedAttackLabel = null;
+      selectedAttackLabel.value = null;
       // Emit to parent (HomeView) to close the drawer
       emit("breakdown-closed");
     };
