@@ -15,7 +15,16 @@ const numberFormatter = new Intl.NumberFormat("en", {
   roundingMode: "floor",
 });
 
-export function displayPercentage(number: number): string {
+export function displayPercentage(number: number, decimalPlaces: number = 1): string {
+  if (decimalPlaces > 1) {
+    const decimalFormatter = new Intl.NumberFormat("en", {
+      style: "decimal",
+      maximumFractionDigits: decimalPlaces,
+      minimumFractionDigits: decimalPlaces,
+      roundingMode: "floor",
+    });
+    return decimalFormatter.format(number) + "%";
+  }
   return decimalFormatter.format(number) + "%";
 }
 

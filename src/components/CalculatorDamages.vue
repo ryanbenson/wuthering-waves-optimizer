@@ -38,11 +38,13 @@
       <CalculatorDamage
         v-for="damageInstance in allDamages?.value?.basicAttacks"
         :key="damageInstance.key"
+        :attack-key="damageInstance.key"
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
         :damage="damageInstance.damage"
-        :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
+        :always-crit="damageInstance.alwaysCrit"
+        @selected-attack="handleSelectedAttack"></CalculatorDamage>
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
@@ -77,11 +79,13 @@
       <CalculatorDamage
         v-for="damageInstance in allDamages?.value?.skillAttacks"
         :key="damageInstance.key"
+        :attack-key="damageInstance.key"
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
         :damage="damageInstance.damage"
-        :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
+        :always-crit="damageInstance.alwaysCrit"
+        @selected-attack="handleSelectedAttack"></CalculatorDamage>
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
@@ -116,11 +120,13 @@
       <CalculatorDamage
         v-for="damageInstance in allDamages?.value?.liberationAttacks"
         :key="damageInstance.key"
+        :attack-key="damageInstance.key"
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
         :damage="damageInstance.damage"
-        :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
+        :always-crit="damageInstance.alwaysCrit"
+        @selected-attack="handleSelectedAttack"></CalculatorDamage>
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
@@ -157,11 +163,13 @@
       <CalculatorDamage
         v-for="damageInstance in allDamages?.value?.forteCircuitAttacks"
         :key="damageInstance.key"
+        :attack-key="damageInstance.key"
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
         :damage="damageInstance.damage"
-        :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
+        :always-crit="damageInstance.alwaysCrit"
+        @selected-attack="handleSelectedAttack"></CalculatorDamage>
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
@@ -196,11 +204,13 @@
       <CalculatorDamage
         v-for="damageInstance in allDamages?.value?.introAttacks"
         :key="damageInstance.key"
+        :attack-key="damageInstance.key"
         :character="character"
         :type="damageInstance.type"
         :label="damageInstance.label"
         :damage="damageInstance.damage"
-        :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
+        :always-crit="damageInstance.alwaysCrit"
+        @selected-attack="handleSelectedAttack"></CalculatorDamage>
     </tbody>
   </table>
 
@@ -249,7 +259,8 @@
           :type="damageInstance.type"
           :label="damageInstance.label"
           :damage="damageInstance.damage"
-          :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
+          :always-crit="damageInstance.alwaysCrit"
+          @selected-attack="handleSelectedAttack"></CalculatorDamage>
       </template>
     </tbody>
   </table>
@@ -299,11 +310,13 @@
           <CalculatorDamage
             v-for="damageInstance in allDamages?.value?.echoSetAttacks"
             :key="damageInstance.key"
+            :attack-key="damageInstance.key"
             :character="character"
             :type="damageInstance.type"
             :label="damageInstance.label"
             :damage="damageInstance.damage"
-            :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
+            :always-crit="damageInstance.alwaysCrit"
+            @selected-attack="handleSelectedAttack"></CalculatorDamage>
         </template>
       </tbody>
     </table>
@@ -358,7 +371,8 @@
             :type="damageInstance.type"
             :label="damageInstance.label"
             :damage="damageInstance.damage"
-            :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
+            :always-crit="damageInstance.alwaysCrit"
+            @selected-attack="handleSelectedAttack"></CalculatorDamage>
         </template>
       </tbody>
     </table>
@@ -434,7 +448,8 @@
             :type="damageInstance.type"
             :label="damageInstance.label"
             :damage="damageInstance.damage"
-            :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
+            :always-crit="damageInstance.alwaysCrit"
+            @selected-attack="handleSelectedAttack"></CalculatorDamage>
         </template>
       </tbody>
     </table>
@@ -474,11 +489,13 @@
         <CalculatorDamage
           v-for="damageInstance in allDamages?.value?.echoAttacks"
           :key="damageInstance.key"
+          :attack-key="damageInstance.key"
           :character="character"
           :type="damageInstance.type"
           :label="damageInstance.label"
           :damage="damageInstance.damage"
-          :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
+          :always-crit="damageInstance.alwaysCrit"
+          @selected-attack="handleSelectedAttack"></CalculatorDamage>
       </tbody>
     </table>
   </template>
@@ -557,6 +574,7 @@
             <CalculatorDamage
               v-for="damageInstance in rotation.attacks"
               :key="damageInstance.id"
+              :attack-key="damageInstance.key"
               :character="character"
               :type="damageInstance.type"
               :label="damageInstance.label"
@@ -565,7 +583,8 @@
               :main-echo="damageInstance.mainEcho"
               :main-echo-rank="damageInstance.mainEchoRank"
               :original-is-enabled="damageInstance.originalIsEnabled"
-              :always-crit="damageInstance.alwaysCrit"></CalculatorDamage>
+              :always-crit="damageInstance.alwaysCrit"
+              @selected-attack="handleSelectedAttack"></CalculatorDamage>
           </tbody>
           <tfoot>
             <tr
@@ -664,6 +683,9 @@ export default {
   },
   methods: {
     displayDamage,
+    handleSelectedAttack(attackKey, damage, label) {
+      this.$emit('selected-attack', attackKey, damage, label);
+    },
     toggleBasicDetails() {
       this.isBasicDetailsShown = !this.isBasicDetailsShown;
     },

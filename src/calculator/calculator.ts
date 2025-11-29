@@ -184,10 +184,12 @@ export function calcDamage(
   let instanceDamage: InstanceDamage = {};
   let instanceDamageEntries: InstanceDamageEntry[] = [];
   const talentsLen = talents.length;
+  let rawTotalTalent = 0;
 
   talents.forEach((t, index) => {
     // we may modify this, but we need the original values for instanceDamage struct
     let originalTalent = t;
+    rawTotalTalent += t;
     // add any flat talent modifiers (e.g. Jinshi Incandescence)
     // only add it to the LAST instance
     // TODO: Change this if this is altered later. Jinhsi only hits once
@@ -373,6 +375,31 @@ export function calcDamage(
 
   let totalCritDmg = calcCritDamage(finalDamage, critDamage);
   let totalAvgDmg = calcAvgDamage(finalDamage, critRate, critDamage);
+  const totalDamageContext = {
+    defenseModifier: getDefenseModifier(charLevel, enemyLevel, defIgnore),
+    resistValue: getEnemyResistValue(enemyResist, resistenceReduction),
+    specialMultiplier: specialMultiplier,
+    totalDeepenEffect,
+    resistenceReduction,
+    enemyResist,
+    bonusTotalSkillDmg,
+    bonusSpecificSkillDmg,
+    bonusElementDmg,
+    totalTalentValue,
+    rawTotalTalent,
+    totalDmgBonus: bonusTotalSkillDmg + bonusSpecificSkillDmg + bonusElementDmg,
+    talentModifierAdd,
+    talentModifierMultiply,
+    totalTalentModifierSpecialMultiply,
+    attack,
+    charLevel,
+    enemyLevel,
+    defIgnore,
+    critDamage,
+    critRate,
+    type: "attack",
+    isFixed: false,
+  };
 
   // Return detailed damage information
   return {
@@ -384,6 +411,7 @@ export function calcDamage(
     detailedCalculation,
     detailedCalculationCrit,
     detailedCalculationAvg,
+    totalDamageContext,
   };
 }
 
@@ -402,6 +430,10 @@ export function calcFixedDamage(talent: string, count: number = 1): any {
     detailedCalculation,
     detailedCalculationCrit: detailedCalculation,
     detailedCalculationAvg: detailedCalculation,
+    totalDamageContext: {
+      type: "attack",
+      isFixed: true,
+    }
   };
 }
 
@@ -596,6 +628,13 @@ export function calcHeal(
   return {
     healAmount: finalHealAmount,
     detailedCalculation,
+    totalDamageContext: {
+      talentVal,
+      flatBase,
+      finalAtkDefHpVal,
+      totalHealBonus,
+      type: "healing",
+    }
   };
 }
 
@@ -673,6 +712,13 @@ export function calcShield(
   return {
     shieldAmount: finalShieldAmount,
     detailedCalculation,
+    totalDamageContext: {
+      talentVal,
+      flatBase,
+      finalAtkDefHpVal,
+      totalShieldBonus,
+      type: "shield",
+    }
   };
 }
 
