@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>November 29, 2025</h3>
+    <ul>
+      <li>Adds breakdown of damages from the stats table.</li>
+    </ul>
     <h3>November 26, 2025</h3>
     <ul>
       <li>Adds breakdown of stats from the stats table.</li>

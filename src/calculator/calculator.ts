@@ -395,7 +395,10 @@ export function calcDamage(
     charLevel,
     enemyLevel,
     defIgnore,
+    critDamage,
+    critRate,
     type: "attack",
+    isFixed: false,
   };
 
   // Return detailed damage information
@@ -427,6 +430,10 @@ export function calcFixedDamage(talent: string, count: number = 1): any {
     detailedCalculation,
     detailedCalculationCrit: detailedCalculation,
     detailedCalculationAvg: detailedCalculation,
+    totalDamageContext: {
+      type: "attack",
+      isFixed: true,
+    }
   };
 }
 
@@ -621,6 +628,13 @@ export function calcHeal(
   return {
     healAmount: finalHealAmount,
     detailedCalculation,
+    totalDamageContext: {
+      talentVal,
+      flatBase,
+      finalAtkDefHpVal,
+      totalHealBonus,
+      type: "healing",
+    }
   };
 }
 
@@ -698,6 +712,13 @@ export function calcShield(
   return {
     shieldAmount: finalShieldAmount,
     detailedCalculation,
+    totalDamageContext: {
+      talentVal,
+      flatBase,
+      finalAtkDefHpVal,
+      totalShieldBonus,
+      type: "shield",
+    }
   };
 }
 
