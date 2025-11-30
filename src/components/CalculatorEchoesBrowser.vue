@@ -320,7 +320,7 @@ export default {
       modalEl.close();
     },
     handleClose() {
-      this.reset();
+      // this.reset();
     },
     reset() {
       this.echoIndex = null;
@@ -385,14 +385,16 @@ export default {
       await this.setEquippedData(echoId, equippedData);
 
       // wrap up the modal
-      this.reset();
+      // this.reset();
       this.triggerCloseModal();
       this.$emit("chosen-echo-inventory");
     },
     resetFilters() {
       this.echoSet = null;
       this.echo = null;
+      this.mainStatFilter = null;
       this.costFilter = null;
+      this.equippedFilter = null;
     },
     prevPage() {
       if (this.page <= 1) {

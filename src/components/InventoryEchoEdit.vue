@@ -889,11 +889,17 @@ export default {
     },
     chooseMainEcho(echoKey) {
       this.echo = echoKey;
+      // set the echo set if it isn't set already
+      if (!this.echoSet) {
+        this.echoSet = this.echoSetFilter;
+      }
       this.closeEchoChooser();
     },
     closeEchoChooser() {
       this.echoSetFilter = null;
       const modalEl = document.getElementById(this.modalIdPicker);
+      // reset scroll position
+      document.querySelector(`#${this.modalIdPicker} .modal-box`).scrollTop = 0;
       modalEl.close();
     },
   },
