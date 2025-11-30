@@ -904,7 +904,7 @@ export function getSpectroFrazzleDamage(
   resistenceReduction: number,
   defIgnore: number = 0,
   DMGDeepen: number = 0,
-): number {
+): any {
   const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
   const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
   // 1000*res*def*stack number*MV%
@@ -913,7 +913,7 @@ export function getSpectroFrazzleDamage(
   //   charLevel,
   //   stacks,
   // );
-  return (
+  const damage = (
     baseModifier *
     resistModifier *
     defModifier *
@@ -921,6 +921,22 @@ export function getSpectroFrazzleDamage(
     motionValue *
     (1 + DMGDeepen)
   );
+  return {
+    damage,
+    totalDamageContext: {
+      motionValue,
+      stacks,
+      resistModifier,
+      defModifier,
+      charLevel,
+      enemyLevel,
+      enemyResist,
+      resistenceReduction,
+      defIgnore,
+      DMGDeepen,
+      type: "spectroFrazzle",
+    }
+  };
 }
 
 export function getAeroErosionDamage(
@@ -932,12 +948,12 @@ export function getAeroErosionDamage(
   resistenceReduction: number,
   defIgnore: number = 0,
   DMGDeepen: number = 0,
-): number {
+): any {
   const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
   const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
   // 1000*res*def*stack number*MV%
   const baseModifier = 1000;
-  return (
+  const damage = (
     baseModifier *
     resistModifier *
     defModifier *
@@ -945,6 +961,22 @@ export function getAeroErosionDamage(
     motionValue *
     (1 + DMGDeepen)
   );
+  return {
+    damage,
+    totalDamageContext: {
+      motionValue,
+      stacks,
+      resistModifier,
+      defModifier,
+      charLevel,
+      enemyLevel,
+      enemyResist,
+      resistenceReduction,
+      defIgnore,
+      DMGDeepen,
+      type: "aeroErosion",
+    }
+  };
 }
 
 /**

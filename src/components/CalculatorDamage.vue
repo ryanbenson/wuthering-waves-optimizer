@@ -69,10 +69,10 @@
       </td>
       <td
         v-tooltip="{
-          content: displayDamage(damage),
+          content: displayDamage(damage.damage),
           html: true,
         }">
-        {{ displayDamage(damage) }}
+        {{ displayDamage(damage.damage) }}
       </td>
     </template>
     <template v-else>
@@ -174,7 +174,7 @@ export default {
     displayDamage,
     slugify,
     handleClick() {
-      this.$emit('selected-attack', this.attackKey, this.damage, this.label);
+      this.$emit('selected-attack', this.attackKey ?? this.label, this.damage, this.label);
     },
   },
   computed: {

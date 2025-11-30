@@ -4,6 +4,7 @@
     <h1>Updates</h1>
     <h3>November 30, 2025</h3>
     <ul>
+      <li>Adds Aero Erosion and Spectro Frazzle to damage breakdown</li>
       <li>In the inventory section, it now pre-selects echo set for a new echo when you're creating echoes to make it easier. It also reset the modal used to find the echo scrollbar position when you choose an echo.</li>
       <li>When browsing for echoes in the echoes screen, it now remembers your filters when you re-open it. And the reset button now properly resets all filters.</li>
     </ul>
