@@ -16,8 +16,7 @@
           ×
           <span class="text-primary">{{ displayPercentage(damage.totalDamageContext.motionValue * 100, 5) }}</span>
           ×
-          (1 + <span class="text-primary">{{ displayPercentage(damage.totalDamageContext.DMGDeepen * 100, 2) }}</span>)
-        )
+          (1 + <span class="text-primary">{{ displayPercentage(damage.totalDamageContext.DMGDeepen * 100, 2) }}</span>))
       </div>
       <div class="font-bold mt-2 text-lg text-primary"> Defense modifier </div>
         <div class="formula bg-base-200 p-2 rounded-md font-mono">
@@ -79,8 +78,7 @@
           ×
           <span class="text-primary">{{ displayPercentage(damage.totalDamageContext.motionValue * 100, 5) }}</span>
           ×
-          (1 + <span class="text-primary">{{ displayPercentage(damage.totalDamageContext.DMGDeepen * 100, 2) }}</span>)
-        )
+          (1 + <span class="text-primary">{{ displayPercentage(damage.totalDamageContext.DMGDeepen * 100, 2) }}</span>))
       </div>
       <div class="font-bold mt-2 text-lg text-primary"> Defense modifier </div>
         <div class="formula bg-base-200 p-2 rounded-md font-mono">
