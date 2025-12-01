@@ -16,7 +16,7 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div
-            v-if="true"
+            v-if="false"
             class="alert alert-success mb-6 text-white p-2 px-4">
             Stats and damages breakdowns are now available!
           </div>
@@ -1943,6 +1943,7 @@ export default defineComponent({
           case "Liberation":
             attackTypeAttackBuff =
               attack.buffs?.ResonanceLiberationDMGBonus ?? 0;
+            break;
           case "Echo":
             attackTypeAttackBuff = attack.buffs?.EchoDMGBonus ?? 0;
             break;

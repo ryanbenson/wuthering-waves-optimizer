@@ -2,6 +2,11 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>December 1, 2025</h3>
+    <ul>
+      <li>Fixes a spelling issue on Chisa.</li>
+      <li>Fixes rotation action buff liberation dmg bonus, as it wasn't getting applied.</li>
+    </ul>
     <h3>November 30, 2025</h3>
     <ul>
       <li>Adds Aero Erosion and Spectro Frazzle to damage breakdown</li>
@@ -1870,7 +1875,7 @@
       </li>
       <li>Fixed bonus damage modifers, it as over-buffing</li>
       <li>
-        Fixed weapon passive, and display for Def Ingore (it was calculating
+        Fixed weapon passive, and display for Def Ignore (it was calculating
         correctly, it was just a visual issue)
       </li>
       <li>Update to the echo selection UI</li>
