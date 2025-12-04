@@ -432,6 +432,21 @@
       <label class="form-control mb-4">
         <div class="label">
           <span class="label-text mr-2 flex items-center gap-1">
+            DEF Reduction
+          </span>
+        </div>
+        <input
+          type="number"
+          v-model="DefReduction"
+          
+          name="DefReduction"
+          id="DefReduction"
+          class="input input-md input-bordered"
+          data-test-custom-buff-def-reduction />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
             Special Multiplier (Vulnerability)
           </span>
         </div>
@@ -498,6 +513,7 @@ export default {
       this.DamageAmplify = 0;
       this.ResistShred = 0;
       this.DefIgnore = 0;
+      this.DefReduction = 0;
       this.CoordinatedDMGBonus = 0;
       this.SpecialMultiplier = 0;
     },
@@ -548,6 +564,7 @@ export default {
       const DamageAmplify = this.DamageAmplify ? this.DamageAmplify / 100 : 0;
       const ResistShred = this.ResistShred ? this.ResistShred / 100 : 0;
       const DefIgnore = this.DefIgnore ? this.DefIgnore / 100 : 0;
+      const DefReduction = this.DefReduction ? this.DefReduction / 100 : 0;
       const CoordinatedDMGBonus = this.CoordinatedDMGBonus
         ? this.CoordinatedDMGBonus / 100
         : 0;
@@ -577,6 +594,7 @@ export default {
         DamageAmplify,
         ResistShred,
         DefIgnore,
+        DefReduction,
         CoordinatedDMGBonus,
         SpecialMultiplier,
       };
@@ -962,6 +980,22 @@ export default {
         const data = {
           customBuffs: {
             DefIgnore: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for DefReduction
+     */
+    DefReduction: {
+      get() {
+        return this.currentCharacter?.customBuffs?.DefReduction ?? 0;
+      },
+      async set(value) {
+        const data = {
+          customBuffs: {
+            DefReduction: value,
           },
         };
         await this.setCharacterData(this.character, data);
