@@ -1542,10 +1542,8 @@ export default defineComponent({
       const havocBaneStacksNum = havocBaneStacks.value ?? 0;
       const havocBaneDefReduction = havocBaneStacksNum * .02;
       const attackDefReduction = attack?.buffs?.DefReduction ?? 0;
-      console.log(attackDefReduction, attack?.buffs?.DefReduction, attack?.buffs);
       const customBuffDefReduction = customBuffs?.value?.DefReduction ?? 0;
       const totalDefReduction = havocBaneDefReduction + attackDefReduction + customBuffDefReduction;
-      console.log(totalDefReduction);
       let specificSkillDmg =
         specificSkillDmgFromResonanceChains +
         specificSkillDmgFromCharBuffs +
@@ -2035,7 +2033,6 @@ export default defineComponent({
       //   totalTalentModifierSpecialMultiply,
       //   count,
       // });
-      console.log(attack.key, totalDefReduction);
       return calcDamage(
         characterLevel.value,
         enemyLevel.value,
