@@ -395,6 +395,7 @@ export default defineComponent({
     const Spectro = ref(0);
     const Havoc = ref(0);
     const DefIgnore = ref(0);
+    const DefReduction = ref(0);
     const BonusSpecificSkillDMGBonus = ref(0);
     const TotalDeepenEffect = ref(0);
     const ResistReduction = ref(0);
@@ -1529,9 +1530,6 @@ export default defineComponent({
         attack?.buffs?.talentModifierMultiply ?? 0;
       const currentDefIgnore =
         providedFullStats?.DefIgnore || DefIgnore.value || 0;
-      // Havoc bane reduces def for stack * 2%
-      const havocBaneStacksNum = havocBaneStacks.value ?? 0;
-      const havocBaneDefIgnore = havocBaneStacksNum * .02;
       const totalDefIgnore =
         currentDefIgnore +
         extraDefIgnoreResonanceChain +
@@ -1540,6 +1538,13 @@ export default defineComponent({
         attackBuffsDefIgnore +
         weaponDefIgnoreSpecificDmgType + 
         havocBaneDefIgnore;
+      // Def Reduction
+      // Havoc bane reduces def for stack * 2%
+      const havocBaneStacksNum = havocBaneStacks.value ?? 0;
+      const havocBaneDefReduction = havocBaneStacksNum * .02;
+      const attackDefReduction = attack?.buffs?.DefReduction ?? 0;
+      const customBuffDefReduction = customBuffs?.value?.DefReduction ?? 0;
+      const totalDefReduction = havocBaneDefReduction + attackDefReduction + customBuffDefReduction;
       let specificSkillDmg =
         specificSkillDmgFromResonanceChains +
         specificSkillDmgFromCharBuffs +
@@ -2051,6 +2056,7 @@ export default defineComponent({
         additiveMultiplierStacks,
         additiveMultiplierPercent,
         totalSpecialMultiplier,
+        totalDefReduction,
       );
     };
 
