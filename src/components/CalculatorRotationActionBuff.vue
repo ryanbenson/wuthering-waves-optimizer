@@ -67,8 +67,9 @@ export default {
       allModifiers.push(["DMGDeepen", "DMG Amplify"]);
       // also add in resist shred
       allModifiers.push(["ResistShred", "Resist Reduction"]);
-      // also add in def shred
+      // also add in def shred & reduction
       allModifiers.push(["DefIgnore", "DEF Ignore"]);
+      allModifiers.push(["DefReduction", "DEF Reduction"]);
       // also add in multipliers too
       allModifiers.push(["talentModifierMultiply", "DMG Multiplier"]);
       allModifiers.push(["talentModifierAdd", "DMG Multiplier Additive"]);

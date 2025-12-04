@@ -62,7 +62,7 @@
     <h4>Defense Multiplier</h4>
     <code>
       (800 + 8 * charLevel) / (800 + 8 * charLevel + (8 * enemyLevel + 792) * (1
-      - defIgnore))
+      - defIgnore) * (1 - defReduction))
     </code>
     <h4>Resist Multiplier</h4>
     <p>
