@@ -313,6 +313,7 @@ export function calcDamage(
       totalDeepenEffect,
       resistenceReduction,
       specialMultiplier,
+      defReduction,
     );
 
     // Store the original percentage for grouping
@@ -346,6 +347,7 @@ export function calcDamage(
     totalDeepenEffect,
     resistenceReduction,
     specialMultiplier,
+    defReduction,
   );
   // multiply the final damage by the number of hits, usually 1,
   // but can be > 1 in rotations
@@ -402,6 +404,7 @@ export function calcDamage(
     critRate,
     type: "attack",
     isFixed: false,
+    defReduction,
   };
 
   // Return detailed damage information
