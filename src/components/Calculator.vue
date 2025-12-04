@@ -2035,6 +2035,7 @@ export default defineComponent({
       //   totalTalentModifierSpecialMultiply,
       //   count,
       // });
+      console.log(attack.key, totalDefReduction);
       return calcDamage(
         characterLevel.value,
         enemyLevel.value,
