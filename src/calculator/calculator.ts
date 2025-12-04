@@ -27,6 +27,7 @@ export function calcHitDamage(
   totalDeepenEffect: number = 0,
   resistenceReduction: number = 0,
   specialMultiplier: number = 0,
+  defReduction: number = 0,
   // critRate: number,
   // critDamage: number,
 ): number {
@@ -36,7 +37,7 @@ export function calcHitDamage(
     bonusElementDmg,
     totalDeepenEffect,
   );
-  const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
+  const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore, defReduction);
   const resistValue = getEnemyResistValue(enemyResist, resistenceReduction);
   const baseDamage = getBaseDamage(
     talent,
@@ -77,13 +78,14 @@ export function getDefenseModifier(
   charLevelSpec: string,
   enemyLevel: number,
   defIgnore: number,
+  defReduction: number = 0,
 ): number {
   const charLevel = Number.parseInt(
     charLevelSpec.slice(-1) == "+" ? charLevelSpec.slice(0, -1) : charLevelSpec,
   );
   const enemyDef = getEnemyDefense(enemyLevel);
   return (
-    (800 + 8 * charLevel) / (800 + 8 * charLevel + enemyDef * (1 - defIgnore))
+    (800 + 8 * charLevel) / (800 + 8 * charLevel + enemyDef * (1 - defIgnore) * (1 - defReduction))
   );
 }
 
@@ -173,6 +175,7 @@ export function calcDamage(
   additiveMultiplierStacks: number = 0,
   additiveMultiplierPercent: number = 0,
   specialMultiplier: number = 0,
+  defReduction: number = 0,
 ) {
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
@@ -376,7 +379,7 @@ export function calcDamage(
   let totalCritDmg = calcCritDamage(finalDamage, critDamage);
   let totalAvgDmg = calcAvgDamage(finalDamage, critRate, critDamage);
   const totalDamageContext = {
-    defenseModifier: getDefenseModifier(charLevel, enemyLevel, defIgnore),
+    defenseModifier: getDefenseModifier(charLevel, enemyLevel, defIgnore, defReduction),
     resistValue: getEnemyResistValue(enemyResist, resistenceReduction),
     specialMultiplier: specialMultiplier,
     totalDeepenEffect,
