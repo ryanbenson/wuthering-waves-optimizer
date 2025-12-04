@@ -1536,8 +1536,7 @@ export default defineComponent({
         extraDefIgnoreCharBuff +
         extraDefIgnoreCustomBuffs +
         attackBuffsDefIgnore +
-        weaponDefIgnoreSpecificDmgType + 
-        havocBaneDefIgnore;
+        weaponDefIgnoreSpecificDmgType;
       // Def Reduction
       // Havoc bane reduces def for stack * 2%
       const havocBaneStacksNum = havocBaneStacks.value ?? 0;
