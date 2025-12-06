@@ -98,6 +98,14 @@ export default {
       type: Object,
       default: () => {},
     },
+    energyRegen: {
+      type: Number,
+      default: 0,
+    },
+    critRate: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {};
@@ -138,6 +146,20 @@ export default {
       },
     "currentCharacter.resonanceChains.SequenceNode6EngravedinRadiantLight.isEnabled":
       {
+        handler: function () {
+          this.updatedStats();
+        },
+        immediate: true,
+      },
+      // watch for Brant changes in his buffs
+      "currentCharacter.buffs.MyMoment.isEnabled": {
+        handler: function () {
+          this.updatedStats();
+        },
+        immediate: true,
+      },
+      // watch for Brant changes in his buffs
+      "currentCharacter.buffs.TheatricalMoment.isEnabled": {
         handler: function () {
           this.updatedStats();
         },
@@ -429,7 +451,6 @@ export default {
       // Get the effective modifiers based on resonance chain interactions
       const effectiveData = this.effectiveBuffData;
       const { effectiveModifiers, effectiveStacks } = effectiveData;
-
       if (!this.hasStacks) {
         effectiveModifiers.forEach((modifierItem) => {
           if (modifierItem?.modifySpecificTalents) {
@@ -454,6 +475,55 @@ export default {
               data.talentModifierMultiply = [];
             }
             data.talentModifierMultiply.push(modifierItem);
+          } else if (modifierItem.modifier.includes("AdditionalBase")) {
+            // we need to calculate the buff based on the stats of another stat
+            let base = 0;
+            let currentAmount = 0;
+            switch (modifierItem.modifierBasedOn) {
+              // if there's a minStatValue, use that or use the default base
+              // some characters use full base (e.g. SK), some use a minimum amount (Roccia)
+              case "EnergyRegen":
+                base = modifierItem?.minStatValue ?? 0;
+                currentAmount = this.energyRegen;
+                break;
+              case "CritRate":
+                base = modifierItem?.minStatValue ?? 0.05;
+                currentAmount = this.critRate;
+                break;
+              default:
+                base = modifierItem?.minStatValue ?? 0;
+                break;
+            }
+            // use full numbers instead of decimals for this, to workaround JS math issues
+            // e.g. 0.7 - 0.5 = 0.19999996, so instead 7 - 5 = 2
+            const additionalAmount = (currentAmount * 100) - (base * 100);
+            const steps = Math.floor(
+              additionalAmount / modifierItem.modifierStep,
+            );
+            let buffValue = steps * modifierItem.modifierValue;
+            if (buffValue > modifierItem.maximumValue) {
+              buffValue = modifierItem.maximumValue;
+            }
+            // don't allow the buff to go negative and reduce your stats
+            if (buffValue < 0) {
+              buffValue = 0;
+            }
+            // now apply the buff
+            switch (modifierItem.modifierTargetAttr) {
+              case "CritRate":
+                data["CritRate"] = buffValue;
+                break;
+              case "CritDMG":
+                data["CritDMG"] = buffValue;
+                break;
+              case "ATK":
+                data["ATK"] = buffValue;
+                break;
+              case "ATK_FLAT":
+                console.log(buffValue);
+                data["ATK_FLAT"] = buffValue;
+                break;
+            }
           } else {
             data[modifierItem.modifier] = modifierItem.modifierValue;
           }

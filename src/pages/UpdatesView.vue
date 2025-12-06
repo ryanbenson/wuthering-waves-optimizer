@@ -5,6 +5,7 @@
     <h3>December 6, 2025</h3>
     <ul>
       <li>Fixes Crit DMG in the stats breakdown</li>
+      <li>Updates Brant, Qiuyuan, Roccia, and Shorekeeper to have their buffs based on other stats properly reflect in the stats breakdown.</li>
     </ul>
     <h3>December 4, 2025</h3>
     <ul>

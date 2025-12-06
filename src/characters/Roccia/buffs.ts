@@ -12,7 +12,7 @@ export const buffs = [
         modifierStep: 0.1,
         modifierBasedOn: "CritRate",
         modifierTargetAttr: "ATK_FLAT",
-        minStatValue: 50,
+        minStatValue: 0.5,
       },
     ],
     minStacks: 0,

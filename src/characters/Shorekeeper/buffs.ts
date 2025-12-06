@@ -7,11 +7,12 @@ export const buffs = [
     modifiers: [
       {
         modifier: "CritRate:AdditionalBase",
-        modifierValue: 0.0001,
+        modifierValue: 0.00001,
         maximumValue: 0.125,
-        modifierStep: 0.002,
+        modifierStep: 0.02,
         modifierBasedOn: "EnergyRegen",
         modifierTargetAttr: "CritRate",
+        minStatValue: 0,
       },
     ],
     minStacks: 0,
@@ -26,11 +27,12 @@ export const buffs = [
     modifiers: [
       {
         modifier: "CritDMG:AdditionalBase",
-        modifierValue: 0.0001,
+        modifierValue: 0.00001,
         maximumValue: 0.25,
-        modifierStep: 0.001,
+        modifierStep: 0.01,
         modifierBasedOn: "EnergyRegen",
         modifierTargetAttr: "CritDMG",
+        minStatValue: 0,
       },
     ],
     minStacks: 0,

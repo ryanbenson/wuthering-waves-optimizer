@@ -38,6 +38,8 @@
               :character="character"
               :buffs="chosenChar?.value?.buffs"
               :talent-data="characters?.[character]?.talents"
+              :energy-regen="energyRegen"
+              :crit-rate="totalCritRate"
               class="character__self-buffs"
               ref="characterBuffsRef"
               @updated-character-buffs="
@@ -813,96 +815,6 @@ export default defineComponent({
           stats.spectro += allElementAttributeBonus;
           stats.havoc += allElementAttributeBonus;
         }
-      }
-
-      // add any buffs that are based on total / additional stats
-      // TODO: Keeping it calculating even if you provide full stats
-      // need to verify if this is correct or not
-      if (charBuffsData.value) {
-        const charBuffKeys = Object.keys(charBuffsData.value);
-        const charBuffDetails = chosenChar.value?.buffs ?? [];
-        // find any with "Additional" in it
-        const additionalBasedBuffs = charBuffKeys.filter(
-          (buff, index, allBuffKeys) => {
-            // TODO: Implement the replacedBy logic
-            // Temporary: Brant has two flat buffs. The first one
-            // replaces the second one. This is a temporary fix.
-            if (character.value === "Brant") {
-              if (
-                buff === "ATK_FLAT2:AdditionalBase" &&
-                allBuffKeys.includes("ATK_FLAT:AdditionalBase")
-              ) {
-                return false;
-              }
-            }
-            return buff.includes("AdditionalBase");
-          },
-        );
-
-        additionalBasedBuffs.forEach((buff) => {
-          // find the buff data, it has more data we need
-          let buffParams;
-          for (const charBuffDetail of charBuffDetails) {
-            const foundModifier = charBuffDetail.modifiers.find((modifier) => {
-              return modifier.modifier === buff;
-            });
-            if (foundModifier) {
-              buffParams = foundModifier;
-              break;
-            }
-          }
-          if (buffParams) {
-            // now calc the amount we get
-            let base = 0;
-            let currentAmount = 0;
-            switch (buffParams.modifierBasedOn) {
-              // if there's a minStatValue, use that or use the default base
-              // some characters use full base (e.g. SK), some use a minimum amount (Roccia)
-              case "EnergyRegen":
-                base = buffParams?.minStatValue ?? 0;
-                currentAmount = stats.energyRegen;
-                break;
-              case "CritRate":
-                base = buffParams?.minStatValue ?? 0.05;
-                currentAmount = stats.critRate;
-                break;
-              case "CritDMG":
-                base = buffParams?.minStatValue ?? 1.5;
-                currentAmount = stats.critDMG;
-                break;
-              default:
-                base = buffParams?.minStatValue ?? 0;
-                break;
-            }
-            const additionalAmount = currentAmount - base;
-            const steps = Math.floor(
-              additionalAmount / buffParams.modifierStep,
-            );
-            let buffValue = steps * buffParams.modifierValue;
-            if (buffValue > buffParams.maximumValue) {
-              buffValue = buffParams.maximumValue;
-            }
-            // don't allow the buff to go negative and reduce your stats
-            if (buffValue < 0) {
-              buffValue = 0;
-            }
-            // now apply the buff
-            switch (buffParams.modifierTargetAttr) {
-              case "CritRate":
-                stats.critRate += buffValue * 100;
-                break;
-              case "CritDMG":
-                stats.critDMG += buffValue * 100;
-                break;
-              case "ATK":
-                stats.attackPercent += buffValue * 100;
-                break;
-              case "ATK_FLAT":
-                stats.attackFlat += buffValue;
-                break;
-            }
-          }
-        });
       }
 
       // check for CritOverflow

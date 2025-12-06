@@ -13,6 +13,8 @@
         :min-stacks="buff.minStacks"
         :max-stacks="buff.maxStacks"
         :modifiers="buff.modifiers"
+        :energy-regen="energyRegen"
+        :crit-rate="critRate"
         @updated-character-buff="handleUpdatedCharacterBuff"
         :talent-data="talentData"></CalculatorCharacterBuff>
     </div>
@@ -36,6 +38,14 @@ export default {
     talentData: {
       type: Object,
       default: () => {},
+    },
+    energyRegen: {
+      type: Number,
+      default: 0,
+    },
+    critRate: {
+      type: Number,
+      default: 0,
     },
   },
   components: { CalculatorCharacterBuff },
@@ -116,6 +126,18 @@ export default {
             }
           }
         }
+        
+
+      if (this.character === "Brant") {
+        // if this is TheatricalMoment, check if MyMoment, if so, ignore this buff
+        if (buffInstance.key === "TheatricalMoment") {
+          const hasMyMomentBuffEnabled = this.buffsData.find((buff) => buff.key === "MyMoment");
+          // if the data object is empty, then it's not enabled. but if it has data, hen we skip this buff
+          if (hasMyMomentBuffEnabled && Object.keys(hasMyMomentBuffEnabled.data).length > 0) {
+            return;
+          }
+        }
+      }
         const stat = buffInstance.key;
         const buffDataArr = Object.entries(buffInstance.data);
         buffDataArr.forEach(([stat, value]) => {

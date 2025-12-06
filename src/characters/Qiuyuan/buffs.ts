@@ -22,12 +22,12 @@ export const buffs = [
     modifiers: [
       {
         modifier: "CritDMG:AdditionalBase",
-        modifierValue: 0.0002,
+        modifierValue: 0.002,
         maximumValue: 0.3,
-        modifierStep: 0.01,
+        modifierStep: 0.1,
         modifierBasedOn: "CritRate",
         modifierTargetAttr: "CritDMG",
-        minStatValue: 50,
+        minStatValue: 0.5,
       },
     ],
     minStacks: 0,
