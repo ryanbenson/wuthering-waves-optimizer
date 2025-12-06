@@ -21,7 +21,7 @@
       :total-def-percent="totalDefPercent"
       :total-def-flat="totalDefFlat"
       :total-crit-rate="totalCritRate"
-      :total-crit-dmg="totalCritDMG"
+      :total-crit-dmg="totalCritDmg"
       :energy-regen="energyRegen"
       :basic-attack-dmg-bonus="BasicAttackDMGBonus"
       :heavy-attack-dmg-bonus="HeavyAttackDMGBonus"

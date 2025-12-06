@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>December 6, 2025</h3>
+    <ul>
+      <li>Fixes Crit DMG in the stats breakdown</li>
+    </ul>
     <h3>December 4, 2025</h3>
     <ul>
       <li>Implements Defense Reduction into formula and various places to buff (custom, action, etc.).</li>
