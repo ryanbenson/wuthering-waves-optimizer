@@ -40,6 +40,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    critRate: {
+      type: Number,
+      default: 0,
+    },
   },
   components: { CalculatorResonanceChainsItem },
   data() {
@@ -69,6 +73,22 @@ export default {
   },
   computed: {
     buffsFormatted() {
+      // process any buffs that need to be ignored
+      /**
+       * Augusta s6 CritOverflow overwrites s2 buff
+       * SequenceNode2CleansedinCrimsonWar
+       * SequenceNode6EngravedinRadiantLight
+       */
+      if (this.character === "Augusta") {
+        // if this is SequenceNode2CleansedinCrimsonWar, check if SequenceNode6EngravedinRadiantLight is enabled, if so, ignore this buff
+        if (buffInstance.key === "SequenceNode2CleansedinCrimsonWar") {
+          const SequenceNode6EngravedinRadiantLight = this.buffsData.find((buff) => buff.key === "SequenceNode6EngravedinRadiantLight");
+          // if the data object is empty, then it's not enabled. but if it has data, hen we skip this buff
+          if (SequenceNode6EngravedinRadiantLight && Object.keys(SequenceNode6EngravedinRadiantLight.data).length > 0) {
+            return;
+          }
+        }
+      }
       const finalBuffData = {};
       let modifySpecificTalents = [];
       this.buffsData.forEach((buffInstance) => {
@@ -79,6 +99,24 @@ export default {
             const updatedSpecificTalentList =
               modifySpecificTalents.concat(value);
             modifySpecificTalents = updatedSpecificTalentList;
+          } else if (stat === "CritOverflow") {
+            const currentCritRate = this.critRate;
+            console.log(currentCritRate, value);
+            if (currentCritRate > value.overflowMin) {
+              const { modifierValue, overflowStep, overflowMin, overflowMax } =
+                overflowConfigs;
+              // Calculate how much Crit Rate is overflowing (above 100%)
+              const overflowAmount = Math.max(0, currentCritRate - overflowMin);
+              // Calculate how many overflow steps we have
+              const overflowSteps = Math.floor(overflowAmount / overflowStep);
+              // Calculate the Crit DMG bonus from overflow (capped by overflowMax)
+              const overflowBonus = Math.min(
+                overflowSteps * modifierValue,
+                overflowMax,
+              );
+              // Apply the overflow bonus to Crit DMG
+              finalBuffData["critDMG"] = (finalBuffData["critDMG"] || 0) + overflowBonus;
+            }
           } else if (stat === "EnableAttack") {
             if (Array.isArray(finalBuffData[stat])) {
               finalBuffData[stat].push(...value);
