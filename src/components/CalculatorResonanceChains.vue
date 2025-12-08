@@ -100,25 +100,6 @@ export default {
             const updatedSpecificTalentList =
               modifySpecificTalents.concat(value);
             modifySpecificTalents = updatedSpecificTalentList;
-          } else if (stat === "CritOverflow") {
-            const currentCritRate = this.critRate;
-            console.log(currentCritRate, value, buffDataArr);
-            if (currentCritRate > value.overflowMin) {
-              const { modifierValue, overflowStep, overflowMin, overflowMax } =
-                overflowConfigs;
-              // Calculate how much Crit Rate is overflowing (above 100%)
-              const overflowAmount = Math.max(0, currentCritRate - overflowMin);
-              // Calculate how many overflow steps we have
-              const overflowSteps = Math.floor(overflowAmount / overflowStep);
-              // Calculate the Crit DMG bonus from overflow (capped by overflowMax)
-              const overflowBonus = Math.min(
-                overflowSteps * modifierValue,
-                overflowMax,
-              );
-              console.log(currentCritRate, overflowAmount, overflowSteps, overflowBonus);
-              // Apply the overflow bonus to Crit DMG
-              finalBuffData["critDMG"] = (finalBuffData["critDMG"] || 0) + overflowBonus;
-            }
           } else if (stat === "EnableAttack") {
             if (Array.isArray(finalBuffData[stat])) {
               finalBuffData[stat].push(...value);
