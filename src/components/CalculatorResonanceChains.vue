@@ -102,7 +102,7 @@ export default {
             modifySpecificTalents = updatedSpecificTalentList;
           } else if (stat === "CritOverflow") {
             const currentCritRate = this.critRate;
-            console.log(currentCritRate, value);
+            console.log(currentCritRate, value, buffDataArr);
             if (currentCritRate > value.overflowMin) {
               const { modifierValue, overflowStep, overflowMin, overflowMax } =
                 overflowConfigs;
@@ -115,6 +115,7 @@ export default {
                 overflowSteps * modifierValue,
                 overflowMax,
               );
+              console.log(currentCritRate, overflowAmount, overflowSteps, overflowBonus);
               // Apply the overflow bonus to Crit DMG
               finalBuffData["critDMG"] = (finalBuffData["critDMG"] || 0) + overflowBonus;
             }
