@@ -236,7 +236,6 @@ export default {
                 overflowSteps * modifierValue,
                 overflowMax,
               );
-              console.log(currentCritRate, overflowAmount, overflowSteps, overflowBonus);
               // Apply the overflow bonus to Crit DMG
               data["CritDMG"] = overflowBonus;
             }
