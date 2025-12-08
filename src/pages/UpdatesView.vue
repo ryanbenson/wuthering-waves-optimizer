@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>December 8, 2025</h3>
+    <ul>
+      <li>Updates Augusta so that her Crit Rate Overflow into Crit DMG in her resonance chains properly appears in the stats breakdown</li>
+    </ul>
     <h3>December 6, 2025</h3>
     <ul>
       <li>Fixes Crit DMG in the stats breakdown</li>
