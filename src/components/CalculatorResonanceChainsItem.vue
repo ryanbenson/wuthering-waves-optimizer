@@ -224,7 +224,7 @@ export default {
             data.talentModifierMultiplySetValue.push(modifierItem);
           } else if (stat === "CritOverflow") {
             const currentCritRate = this.critRate;
-            console.log(currentCritRate, modifierItem;
+            console.log(currentCritRate, modifierItem);
             if (currentCritRate > value.overflowMin) {
               const { modifierValue, overflowStep, overflowMin, overflowMax } =
                 modifierItem;
