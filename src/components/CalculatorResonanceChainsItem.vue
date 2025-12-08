@@ -238,7 +238,7 @@ export default {
               );
               console.log(currentCritRate, overflowAmount, overflowSteps, overflowBonus);
               // Apply the overflow bonus to Crit DMG
-              data["critDMG"] = overflowBonus;
+              data["CritDMG"] = overflowBonus;
             }
           } else {
             data[modifierItem.modifier] = modifierItem.modifierValue;
