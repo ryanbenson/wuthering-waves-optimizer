@@ -222,7 +222,7 @@ export default {
               data.talentModifierMultiplySetValue = [];
             }
             data.talentModifierMultiplySetValue.push(modifierItem);
-          } else if (stat === "CritOverflow") {
+          } else if (modifierItem.modifier === "CritOverflow") {
             const currentCritRate = this.critRate;
             console.log(currentCritRate, modifierItem);
             if (currentCritRate > value.overflowMin) {
