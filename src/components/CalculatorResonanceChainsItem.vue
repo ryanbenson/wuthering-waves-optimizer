@@ -224,8 +224,7 @@ export default {
             data.talentModifierMultiplySetValue.push(modifierItem);
           } else if (modifierItem.modifier === "CritOverflow") {
             const currentCritRate = this.critRate;
-            console.log(currentCritRate, modifierItem);
-            if (currentCritRate > value.overflowMin) {
+            if (currentCritRate > modifierItem.overflowMin) {
               const { modifierValue, overflowStep, overflowMin, overflowMax } =
                 modifierItem;
               // Calculate how much Crit Rate is overflowing (above 100%)
