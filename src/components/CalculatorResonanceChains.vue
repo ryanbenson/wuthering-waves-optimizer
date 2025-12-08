@@ -18,6 +18,7 @@
         :modifiers="buff.modifiers"
         @updated-character-buff="handleUpdatedCharacterBuff"
         :talent-data="talentData"
+        :crit-rate="critRate"
         class="character__buff character__resonance-chain"
         :data-test-resonance-chain="buff.key"></CalculatorResonanceChainsItem>
     </div>
