@@ -80,6 +80,10 @@ export default {
       type: Object,
       default: () => {},
     },
+    critRate: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {};
@@ -218,6 +222,25 @@ export default {
               data.talentModifierMultiplySetValue = [];
             }
             data.talentModifierMultiplySetValue.push(modifierItem);
+          } else if (stat === "CritOverflow") {
+            const currentCritRate = this.critRate;
+            console.log(currentCritRate, modifierItem;
+            if (currentCritRate > value.overflowMin) {
+              const { modifierValue, overflowStep, overflowMin, overflowMax } =
+                modifierItem;
+              // Calculate how much Crit Rate is overflowing (above 100%)
+              const overflowAmount = Math.max(0, currentCritRate - overflowMin);
+              // Calculate how many overflow steps we have
+              const overflowSteps = Math.floor(overflowAmount / overflowStep);
+              // Calculate the Crit DMG bonus from overflow (capped by overflowMax)
+              const overflowBonus = Math.min(
+                overflowSteps * modifierValue,
+                overflowMax,
+              );
+              console.log(currentCritRate, overflowAmount, overflowSteps, overflowBonus);
+              // Apply the overflow bonus to Crit DMG
+              data["critDMG"] = overflowBonus;
+            }
           } else {
             data[modifierItem.modifier] = modifierItem.modifierValue;
           }
