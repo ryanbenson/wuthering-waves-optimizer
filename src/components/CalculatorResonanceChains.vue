@@ -73,25 +73,26 @@ export default {
   },
   computed: {
     buffsFormatted() {
-      // process any buffs that need to be ignored
-      /**
-       * Augusta s6 CritOverflow overwrites s2 buff
-       * SequenceNode2CleansedinCrimsonWar
-       * SequenceNode6EngravedinRadiantLight
-       */
-      if (this.character === "Augusta") {
-        // if this is SequenceNode2CleansedinCrimsonWar, check if SequenceNode6EngravedinRadiantLight is enabled, if so, ignore this buff
-        if (buffInstance.key === "SequenceNode2CleansedinCrimsonWar") {
-          const SequenceNode6EngravedinRadiantLight = this.buffsData.find((buff) => buff.key === "SequenceNode6EngravedinRadiantLight");
-          // if the data object is empty, then it's not enabled. but if it has data, hen we skip this buff
-          if (SequenceNode6EngravedinRadiantLight && Object.keys(SequenceNode6EngravedinRadiantLight.data).length > 0) {
-            return;
-          }
-        }
-      }
       const finalBuffData = {};
       let modifySpecificTalents = [];
       this.buffsData.forEach((buffInstance) => {
+        // process any buffs that need to be ignored
+        /**
+         * Augusta s6 CritOverflow overwrites s2 buff
+         * SequenceNode2CleansedinCrimsonWar
+         * SequenceNode6EngravedinRadiantLight
+         */
+        if (this.character === "Augusta") {
+          // if this is SequenceNode2CleansedinCrimsonWar, check if SequenceNode6EngravedinRadiantLight is enabled, if so, ignore this buff
+          if (buffInstance.key === "SequenceNode2CleansedinCrimsonWar") {
+            const SequenceNode6EngravedinRadiantLight = this.buffsData.find((buff) => buff.key === "SequenceNode6EngravedinRadiantLight");
+            // if the data object is empty, then it's not enabled. but if it has data, hen we skip this buff
+            if (SequenceNode6EngravedinRadiantLight && Object.keys(SequenceNode6EngravedinRadiantLight.data).length > 0) {
+              return;
+            }
+          }
+        }
+        
         const stat = buffInstance.key;
         const buffDataArr = Object.entries(buffInstance.data);
         buffDataArr.forEach(([stat, value]) => {
