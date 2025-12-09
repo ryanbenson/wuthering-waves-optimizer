@@ -309,6 +309,13 @@ import {
   getEchoStats,
   getCombinedEchoStats,
 } from "../echoes/stats";
+import {
+  addBuffs,
+  addEchoBuffs,
+  getElementDmgBonusByType,
+  getDamageValByAttr,
+  getDamageTypeBonusByType,
+} from "../calculator/stats";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs, utilityAttacks } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -494,141 +501,6 @@ export default defineComponent({
         characters.value?.[character.value]?.talents?.liberation ?? 10,
       intro: characters.value?.[character.value]?.talents?.intro ?? 10,
     });
-
-    const addBuffs = (source, target) => {
-      if (source) {
-        target.attackPercent += source?.ATK ? source.ATK * 100 : 0;
-        target.hpPercent += source?.HP ? source.HP * 100 : 0;
-        target.defPercent += source?.DEF ? source.DEF * 100 : 0;
-        target.attackFlat += source?.ATK_FLAT ?? 0;
-        target.hpFlat += source?.HP_FLAT ?? 0;
-        target.defFlat += source?.DEF_FLAT ?? 0;
-        target.critRate += source?.CritRate ? source.CritRate * 100 : 0;
-        target.critDMG += source?.CritDMG ? source.CritDMG * 100 : 0;
-        target.energyRegen += source?.EnergyRegen ? source.EnergyRegen : 0;
-        target.healingBonus += source?.HealingBonus ? source.HealingBonus : 0;
-        target.shieldBonus += source?.ShieldBonus ? source.ShieldBonus : 0;
-        target.basicAttackDMGBonus += source?.BasicAttackDMGBonus
-          ? source.BasicAttackDMGBonus * 100
-          : 0;
-        target.heavyAttackDMGBonus += source?.HeavyAttackDMGBonus
-          ? source.HeavyAttackDMGBonus * 100
-          : 0;
-        target.resonanceSkillDMGBonus += source?.ResonanceSkillDMGBonus
-          ? source.ResonanceSkillDMGBonus * 100
-          : 0;
-        target.introSkillDMGBonus += source?.IntroSkillDMGBonus
-          ? source.IntroSkillDMGBonus * 100
-          : 0;
-        target.outroSkillDMGBonus += source?.OutroSkillDMGBonus
-          ? source.OutroSkillDMGBonus * 100
-          : 0;
-        target.resonanceLiberationDMGBonus +=
-          source?.ResonanceLiberationDMGBonus
-            ? source.ResonanceLiberationDMGBonus * 100
-            : 0;
-        target.echoDMGBonus += source?.EchoDMGBonus
-          ? source.EchoDMGBonus * 100
-          : 0;
-        target.glacio += source?.Glacio ? source.Glacio * 100 : 0;
-        target.fusion += source?.Fusion ? source.Fusion * 100 : 0;
-        target.electro += source?.Electro ? source.Electro * 100 : 0;
-        target.aero += source?.Aero ? source.Aero * 100 : 0;
-        target.spectro += source?.Spectro ? source.Spectro * 100 : 0;
-        target.havoc += source?.Havoc ? source.Havoc * 100 : 0;
-        target.defIgnore += source?.DEFIgnore ? source.DEFIgnore * 100 : 0;
-        target.bonusSpecificSkillDMGBonus += source?.BonusSpecificSkillDMGBonus
-          ? source.BonusSpecificSkillDMGBonus * 100
-          : 0;
-        target.totalDeepenEffect += source?.DMGDeepen ? source.DMGDeepen : 0;
-        target.resistReduction += source?.ResistReduction
-          ? source.ResistReduction * 100
-          : 0;
-      }
-    };
-    const addEchoBuffs = (source, target, returnCopy = false) => {
-      // we make a clone to make sure we don't mutate the original
-      // mostly used in the optimizer so we can have a constant base, and then layer on the echo buffs
-      // without messing up the original state of stats
-      if (returnCopy) {
-        target = JSON.parse(JSON.stringify(target));
-      }
-      if (source) {
-        target.attackPercent += source?.ATK ? source.ATK : 0;
-        target.hpPercent += source?.HP ? source.HP : 0;
-        target.defPercent += source?.DEF ? source.DEF : 0;
-        target.attackFlat += source?.ATK_FLAT ?? 0;
-        target.hpFlat += source?.HP_FLAT ?? 0;
-        target.defFlat += source?.DEF_FLAT ?? 0;
-        target.critRate += source?.CritRate ? source.CritRate : 0;
-        target.critDMG += source?.CritDMG ? source.CritDMG : 0;
-        target.energyRegen += source?.EnergyRegen
-          ? source.EnergyRegen / 100
-          : 0;
-        target.healingBonus += source?.HealingBonus
-          ? source.HealingBonus / 100
-          : 0;
-        target.basicAttackDMGBonus += source?.BasicAttackDMGBonus
-          ? source.BasicAttackDMGBonus
-          : 0;
-        target.heavyAttackDMGBonus += source?.HeavyAttackDMGBonus
-          ? source.HeavyAttackDMGBonus
-          : 0;
-        target.resonanceSkillDMGBonus += source?.ResonanceSkillDMGBonus
-          ? source.ResonanceSkillDMGBonus
-          : 0;
-        target.resonanceLiberationDMGBonus +=
-          source?.ResonanceLiberationDMGBonus
-            ? source.ResonanceLiberationDMGBonus
-            : 0;
-        target.echoDMGBonus += source?.EchoDMGBonus ? source.EchoDMGBonus : 0;
-        target.outroSkillDMGBonus += source?.OutroSkillDMGBonus
-          ? source.OutroSkillDMGBonus
-          : 0;
-        target.glacio += source?.Glacio ? source.Glacio : 0;
-        target.fusion += source?.Fusion ? source.Fusion : 0;
-        target.electro += source?.Electro ? source.Electro : 0;
-        target.aero += source?.Aero ? source.Aero : 0;
-        target.spectro += source?.Spectro ? source.Spectro : 0;
-        target.havoc += source?.Havoc ? source.Havoc : 0;
-        target.defIgnore += source?.DEFIgnore ? source.DEFIgnor : 0;
-        target.bonusSpecificSkillDMGBonus += source?.BonusSpecificSkillDMGBonus
-          ? source.BonusSpecificSkillDMGBonus
-          : 0;
-        target.totalDeepenEffect += source?.TotalDeepenEffect
-          ? source.TotalDeepenEffect
-          : 0;
-        target.resistReduction += source?.ResistReduction
-          ? source.ResistReduction
-          : 0;
-        target.coordinatedDmgBonus += source?.CoordinatedDMGBonus
-          ? source.CoordinatedDMGBonus
-          : 0;
-        target.dmgBonus += source?.DMGBonus ? source.DMGBonus : 0;
-
-        if (source?.AllAttributeBonus) {
-          const allAttributeBonus = source.AllAttributeBonus;
-          target.basicAttackDMGBonus += allAttributeBonus;
-          target.heavyAttackDMGBonus += allAttributeBonus;
-          target.resonanceSkillDMGBonus += allAttributeBonus;
-          target.resonanceLiberationDMGBonus += allAttributeBonus;
-          target.introSkillDMGBonus += allAttributeBonus;
-          target.outroSkillDMGBonus += allAttributeBonus;
-        }
-        if (source?.AllElementAttributeBonus) {
-          const allElementAttributeBonus = source.AllElementAttributeBonus;
-          target.glacio += allElementAttributeBonus;
-          target.fusion += allElementAttributeBonus;
-          target.electro += allElementAttributeBonus;
-          target.aero += allElementAttributeBonus;
-          target.spectro += allElementAttributeBonus;
-          target.havoc += allElementAttributeBonus;
-        }
-      }
-      if (returnCopy) {
-        return target;
-      }
-    };
 
     const calcCharStats = (
       returnValue = false,
@@ -883,88 +755,6 @@ export default defineComponent({
       calcAllDamages();
     };
 
-    const getElementDmgBonusByType = (element, providedStats) => {
-      let val = 0;
-      switch (element) {
-        case "Glacio":
-          val = providedStats?.glacio ?? Glacio.value;
-          break;
-        case "Fusion":
-          val = providedStats?.fusion ?? Fusion.value;
-          break;
-        case "Electro":
-          val = providedStats?.electro ?? Electro.value;
-          break;
-        case "Aero":
-          val = providedStats?.aero ?? Aero.value;
-          break;
-        case "Spectro":
-          val = providedStats?.spectro ?? Spectro.value;
-          break;
-        case "Havoc":
-          val = providedStats?.havoc ?? Havoc.value;
-          break;
-      }
-
-      return val / 100;
-    };
-
-    const getDamageTypeBonusByType = (type, providedStats) => {
-      let val = 0;
-      switch (type) {
-        case "Basic":
-          val = providedStats?.basicAttackDMGBonus ?? BasicAttackDMGBonus.value;
-          break;
-        case "Heavy":
-          val = providedStats?.heavyAttackDMGBonus ?? HeavyAttackDMGBonus.value;
-          break;
-        case "Skill":
-          val =
-            providedStats?.resonanceSkillDMGBonus ??
-            ResonanceSkillDMGBonus.value;
-          break;
-        case "Intro":
-          val = providedStats?.introSkillDMGBonus ?? IntroSkillDMGBonus.value;
-          break;
-        case "Outro":
-          val = providedStats?.outroSkillDMGBonus ?? OutroSkillDMGBonus.value;
-          break;
-        case "Liberation":
-          val =
-            providedStats?.resonanceLiberationDMGBonus ??
-            ResonanceLiberationDMGBonus.value;
-          break;
-        case "Echo":
-          val = providedStats?.echoDmgBonus ?? EchoDMGBonus.value;
-          break;
-        // do not divide this by 100
-        case "Healing":
-          return providedStats?.healingBonus ?? healingBonus.value;
-        case "Shield":
-          return providedStats?.shieldBonus ?? shieldBonus.value;
-      }
-
-      return val / 100;
-    };
-
-    const getDamageValByAttr = (attribute = "attack", providedStats) => {
-      switch (attribute) {
-        case "defense":
-          return providedStats?.totalDef ?? totalDef.value;
-        case "hp":
-          return providedStats?.totalHp ?? totalHp.value;
-        case "EnergyRegen":
-          // we store the ER in decimal form, but for calculating damages based on ER
-          // it uses the full amount (1.5 => 150%)
-          const decimalEnergy = providedStats?.energyRegen ?? energyRegen.value;
-          const intEnergy = decimalEnergy * 100;
-          return intEnergy;
-        case "attack":
-        default:
-          return providedStats?.totalAtk ?? totalAtk.value;
-      }
-    };
-
     const processAttacks = (
       attacks,
       talentType,
@@ -1158,14 +948,39 @@ export default defineComponent({
       let elementalDmgBonusDecimal = getElementDmgBonusByType(
         attackElement,
         statsWithoutTeamBuffs ?? providedFullStats,
+        {
+          Glacio: Glacio.value,
+          Fusion: Fusion.value,
+          Electro: Electro.value,
+          Aero: Aero.value,
+          Spectro: Spectro.value,
+          Havoc: Havoc.value
+        }
       );
       const atkDefHpVal = getDamageValByAttr(
         attack?.attribute,
         statsWithoutTeamBuffs ?? providedFullStats,
+        {
+          totalDef: totalDef.value,
+          totalHp: totalHp.value,
+          energyRegen: energyRegen.value,
+          totalAtk: totalAtk.value,
+        }
       );
       let totalSkillDmgBonus = getDamageTypeBonusByType(
         attackType,
         statsWithoutTeamBuffs ?? providedFullStats,
+        {
+          BasicAttackDMGBonus: BasicAttackDMGBonus.value,
+          HeavyAttackDMGBonus: HeavyAttackDMGBonus.value,
+          ResonanceSkillDMGBonus: ResonanceSkillDMGBonus.value,
+          IntroSkillDMGBonus: IntroSkillDMGBonus.value,
+          OutroSkillDMGBonus: OutroSkillDMGBonus.value,
+          ResonanceLiberationDMGBonus: ResonanceLiberationDMGBonus.value,
+          EchoDMGBonus: EchoDMGBonus.value,
+          healingBonus: healingBonus.value,
+          shieldBonus: shieldBonus.value,
+        }
       );
       let talent;
       let talentTree = attack?.talents;
