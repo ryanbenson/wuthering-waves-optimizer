@@ -172,9 +172,7 @@
           :is-missing-spectro-data="isMissingSpectroData"
           :is-missing-aero-erosion-data="isMissingAeroErosionData"
           :char-buffs-data="charBuffsData"
-          :char-resonance-chains-data="
-            charResonanceChainsData
-          "
+          :char-resonance-chains-data="charResonanceChainsData"
           @selected-attack="handleSelectedAttack"></CalculatorDamages>
       </div>
     </div>
@@ -218,9 +216,7 @@
         :is-missing-spectro-data="isMissingSpectroData"
         :is-missing-aero-erosion-data="isMissingAeroErosionData"
         :char-buffs-data="charBuffsData"
-        :char-resonance-chains-data="
-          charResonanceChainsData
-        "
+        :char-resonance-chains-data="charResonanceChainsData"
         @selected-attack="handleSelectedAttack"></CalculatorDamages>
     </div>
   </div>
@@ -315,6 +311,8 @@ import {
   getElementDmgBonusByType,
   getDamageValByAttr,
   getDamageTypeBonusByType,
+  getInitStats,
+  calcCharStats,
 } from "../calculator/stats";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs, utilityAttacks } from "../buffs";
@@ -458,14 +456,19 @@ export default defineComponent({
         chosenChar?.value?.basic?.spectroFrazzle ?? false;
       isAeroErosionEnabled.value =
         chosenChar?.value?.basic?.aeroErosion ?? false;
-      isHavocBaneEnabled.value =
-        chosenChar?.value?.basic?.havocBane ?? false;
+      isHavocBaneEnabled.value = chosenChar?.value?.basic?.havocBane ?? false;
       // hold onto the character's main element
       characterElement.value = chosenChar.value?.basic?.element;
       // update the base stats
-      baseHp.value = chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)?.hp ?? 0;
-      baseAtk.value = chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)?.attack ?? 0;
-      baseDef.value = chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)?.defense ?? 0;
+      baseHp.value =
+        chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)?.hp ??
+        0;
+      baseAtk.value =
+        chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)
+          ?.attack ?? 0;
+      baseDef.value =
+        chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)
+          ?.defense ?? 0;
       // reset any optimizer data
 
       totalCombos.value = 0;
@@ -474,7 +477,31 @@ export default defineComponent({
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
-      calcCharStats();
+      const stats = calcCharStats(
+        false, // return value
+        null, // inject stats
+        {}, // ignore anything
+        null, // injectEchoStats
+        null, // providedFullStats
+        {
+          baseHp: baseHp.value,
+          baseAtk: baseAtk.value,
+          baseDef: baseDef.value,
+        },
+        {
+          weaponAtk: weaponData?.value?.attack,
+          weaponModifier: weaponData?.value?.modifier,
+          weaponModifierValue: weaponData?.value?.modifierValue,
+          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+        },
+        charBuffsData.value,
+        charResonanceChainsData.value,
+        echoStats.value,
+        customBuffs.value,
+        teamBuffsData.value,
+      );
+      updateStats(stats);
+      calcAllDamages();
     });
 
     // set the character to display, default to the first
@@ -502,233 +529,16 @@ export default defineComponent({
       intro: characters.value?.[character.value]?.talents?.intro ?? 10,
     });
 
-    const calcCharStats = (
-      returnValue = false,
-      injectStats = null,
-      ignoreBuffs = {}, // e.g. {ignoreTeamBuffs: true}
-      injectEchoStats = null,
-      providedFullStats = null,
-    ) => {
-      const { ignoreTeamBuffs, ignoreWeaponBuffs, ignoreEchoes } = ignoreBuffs;
-      let stats = {
-        attackPercent: 0,
-        hpPercent: 0,
-        defPercent: 0,
-        attackFlat: 0,
-        hpFlat: 0,
-        defFlat: 0,
-        critRate: 5,
-        critDMG: 150,
-        dmgBonus: 0,
-        energyRegen: 1,
-        healingBonus: 0,
-        shieldBonus: 0,
-        basicAttackDMGBonus: 0,
-        heavyAttackDMGBonus: 0,
-        resonanceSkillDMGBonus: 0,
-        introSkillDMGBonus: 0,
-        outroSkillDMGBonus: 0,
-        resonanceLiberationDMGBonus: 0,
-        echoDMGBonus: 0,
-        glacio: 0,
-        fusion: 0,
-        electro: 0,
-        aero: 0,
-        spectro: 0,
-        havoc: 0,
-        defIgnore: 0,
-        bonusSpecificSkillDMGBonus: 0,
-        totalDeepenEffect: 0,
-        resistReduction: 0,
-        coordinatedDmgBonus: 0,
-      };
-      if (providedFullStats) {
-        stats = { ...stats, ...providedFullStats };
-      }
-      let charHp = 0;
-      let charAtk = 0;
-      let charDef = 0;
-      let weaponAtk = 0;
-
-      let weaponModifer = null;
-      let weaponModifierValue = 0;
-      let weaponPassiveData = {};
-      let resonanceChainsData = {};
-      if (chosenChar.value) {
-        const { hp, attack, defense } =
-          chosenChar.value.getCharacterStatsByLevel(characterLevel.value);
-        charHp = hp;
-        charAtk = attack;
-        charDef = defense;
-      }
-
-      if (charBuffsData.value && !providedFullStats) {
-        addBuffs(charBuffsData.value, stats);
-      }
-
-      if (injectStats) {
-        addBuffs(injectStats, stats);
-      }
-
-      if (charResonanceChainsData.value && !providedFullStats) {
-        addBuffs(charResonanceChainsData.value, stats);
-
-        resonanceChainsData = charResonanceChainsData.value ?? {};
-        if (resonanceChainsData?.AllAttributeBonus) {
-          const allAttributeBonus = resonanceChainsData.AllAttributeBonus * 100;
-          stats.basicAttackDMGBonus += allAttributeBonus;
-          stats.heavyAttackDMGBonus += allAttributeBonus;
-          stats.resonanceSkillDMGBonus += allAttributeBonus;
-          stats.resonanceLiberationDMGBonus += allAttributeBonus;
-          stats.introSkillDMGBonus += allAttributeBonus;
-          stats.outroSkillDMGBonus += allAttributeBonus;
-        }
-        if (resonanceChainsData?.AllElementAttributeBonus) {
-          const allElementAttributeBonus =
-            resonanceChainsData.AllElementAttributeBonus * 100;
-          stats.glacio += allElementAttributeBonus;
-          stats.fusion += allElementAttributeBonus;
-          stats.electro += allElementAttributeBonus;
-          stats.aero += allElementAttributeBonus;
-          stats.spectro += allElementAttributeBonus;
-          stats.havoc += allElementAttributeBonus;
-        }
-      }
-
-      if (weaponData.value) {
-        weaponAtk = weaponData.value?.attack;
-        weaponModifer = weaponData.value?.modifier;
-        weaponModifierValue = weaponData.value?.modifierValue;
-        weaponPassiveData = weaponData.value?.weaponPassiveStats ?? {};
-
-        weaponPassiveData = Object.fromEntries(
-          Object.entries(weaponPassiveData).filter(([_, v]) => v != null),
-        );
-
-        if (!ignoreWeaponBuffs && !providedFullStats) {
-          addBuffs(weaponPassiveData, stats);
-
-          if (weaponPassiveData?.AllElementAttributeBonus) {
-            const allElementAttributeBonus =
-              weaponPassiveData.AllElementAttributeBonus * 100;
-            stats.glacio += allElementAttributeBonus;
-            stats.fusion += allElementAttributeBonus;
-            stats.electro += allElementAttributeBonus;
-            stats.aero += allElementAttributeBonus;
-            stats.spectro += allElementAttributeBonus;
-            stats.havoc += allElementAttributeBonus;
-          }
-
-          if (weaponPassiveData?.AllResonanceDMG) {
-            const allResonanceDMG = weaponPassiveData.AllResonanceDMG * 100;
-            stats.resonanceSkillDMGBonus += allResonanceDMG;
-            stats.resonanceLiberationDMGBonus += allResonanceDMG;
-          }
-        }
-
-        if (!providedFullStats) {
-          switch (weaponModifer) {
-            case "ATK":
-              stats.attackPercent += weaponModifierValue * 100;
-              break;
-            case "HP":
-              stats.hpPercent += weaponModifierValue * 100;
-              break;
-            case "DEF":
-              stats.defPercent += weaponModifierValue * 100;
-              break;
-            case "CritRate":
-              stats.critRate += weaponModifierValue * 100;
-              break;
-            case "CritDMG":
-              stats.critDMG += weaponModifierValue * 100;
-              break;
-            case "EnergyRegen":
-              stats.energyRegen += weaponModifierValue;
-              break;
-            case "HealingBonus":
-              stats.healingBonus += weaponModifierValue;
-              break;
-          }
-        }
-      }
-
-      if (echoStats && !ignoreEchoes && !providedFullStats) {
-        addEchoBuffs(echoStats?.value, stats);
-      }
-
-      if (injectEchoStats && !providedFullStats) {
-        addEchoBuffs(injectEchoStats, stats);
-      }
-
-      if (customBuffs.value && !providedFullStats) {
-        addBuffs(customBuffs?.value, stats);
-      }
-
-      if (teamBuffsData.value && !ignoreTeamBuffs && !providedFullStats) {
-        addBuffs(teamBuffsData.value, stats);
-
-        if (teamBuffsData?.value?.AllAttributeBonus) {
-          const allAttributeBonus =
-            teamBuffsData?.value?.AllAttributeBonus * 100;
-          stats.basicAttackDMGBonus += allAttributeBonus;
-          stats.heavyAttackDMGBonus += allAttributeBonus;
-          stats.resonanceSkillDMGBonus += allAttributeBonus;
-          stats.resonanceLiberationDMGBonus += allAttributeBonus;
-          stats.introSkillDMGBonus += allAttributeBonus;
-          stats.outroSkillDMGBonus += allAttributeBonus;
-        }
-        if (teamBuffsData?.value?.AllElementAttributeBonus) {
-          const allElementAttributeBonus =
-            teamBuffsData?.value.AllElementAttributeBonus * 100;
-          stats.glacio += allElementAttributeBonus;
-          stats.fusion += allElementAttributeBonus;
-          stats.electro += allElementAttributeBonus;
-          stats.aero += allElementAttributeBonus;
-          stats.spectro += allElementAttributeBonus;
-          stats.havoc += allElementAttributeBonus;
-        }
-      }
-
-      if (returnValue) {
-        switch (returnValue) {
-          case "All":
-            const returnedStats = { ...stats };
-            returnedStats.totalAtk =
-              (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
-              stats.attackFlat;
-            returnedStats.totalHp =
-              charHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
-            returnedStats.totalDef =
-              charDef * (1 + stats.defPercent / 100) + stats.defFlat;
-            returnedStats.totalCritRate = stats.critRate / 100;
-            returnedStats.totalCritDMG = stats.critDMG / 100;
-            returnedStats.DefIgnore = stats.defIgnore / 100;
-            return returnedStats;
-          case "HP":
-            return charHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
-          case "DEF":
-            return charDef * (1 + stats.defPercent / 100) + stats.defFlat;
-          case "ATK":
-          default:
-            return (
-              (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
-              stats.attackFlat
-            );
-        }
-      }
-
+    const updateStats = (stats) => {
       totalAtkPercent.value = stats.attackPercent;
       totalAtkFlat.value = stats.attackFlat;
       totalHpPercent.value = stats.hpPercent;
       totalHpFlat.value = stats.hpFlat;
       totalDefPercent.value = stats.defPercent;
       totalDefFlat.value = stats.defFlat;
-      totalAtk.value =
-        (charAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
-        stats.attackFlat;
-      totalHp.value = charHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
-      totalDef.value = charDef * (1 + stats.defPercent / 100) + stats.defFlat;
+      totalAtk.value = stats.totalAtk;
+      totalHp.value = stats.totalHp;
+      totalDef.value = stats.totalDef;
       totalCritRate.value = stats.critRate / 100;
       totalCritDMG.value = stats.critDMG / 100;
       energyRegen.value = stats.energyRegen;
@@ -751,8 +561,6 @@ export default defineComponent({
       BonusSpecificSkillDMGBonus.value = stats.bonusSpecificSkillDMGBonus;
       TotalDeepenEffect.value = stats.totalDeepenEffect;
       ResistReduction.value = stats.resistReduction;
-
-      calcAllDamages();
     };
 
     const processAttacks = (
@@ -899,6 +707,23 @@ export default defineComponent({
             ignoreEchoes: excludeEchoes,
           },
           providedEchoStats,
+          null,
+          {
+            baseHp: baseHp.value,
+            baseAtk: baseAtk.value,
+            baseDef: baseDef.value,
+          },
+          {
+            weaponAtk: weaponData?.value?.attack,
+            weaponModifier: weaponData?.value?.modifier,
+            weaponModifierValue: weaponData?.value?.modifierValue,
+            weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+          },
+          charBuffsData.value,
+          charResonanceChainsData.value,
+          echoStats.value,
+          customBuffs.value,
+          teamBuffsData.value,
         );
       }
       let attackType = attack.type;
@@ -954,8 +779,8 @@ export default defineComponent({
           Electro: Electro.value,
           Aero: Aero.value,
           Spectro: Spectro.value,
-          Havoc: Havoc.value
-        }
+          Havoc: Havoc.value,
+        },
       );
       const atkDefHpVal = getDamageValByAttr(
         attack?.attribute,
@@ -965,7 +790,7 @@ export default defineComponent({
           totalHp: totalHp.value,
           energyRegen: energyRegen.value,
           totalAtk: totalAtk.value,
-        }
+        },
       );
       let totalSkillDmgBonus = getDamageTypeBonusByType(
         attackType,
@@ -980,7 +805,7 @@ export default defineComponent({
           EchoDMGBonus: EchoDMGBonus.value,
           healingBonus: healingBonus.value,
           shieldBonus: shieldBonus.value,
-        }
+        },
       );
       let talent;
       let talentTree = attack?.talents;
@@ -1205,10 +1030,11 @@ export default defineComponent({
       // Def Reduction
       // Havoc bane reduces def for stack * 2%
       const havocBaneStacksNum = havocBaneStacks.value ?? 0;
-      const havocBaneDefReduction = havocBaneStacksNum * .02;
+      const havocBaneDefReduction = havocBaneStacksNum * 0.02;
       const attackDefReduction = attack?.buffs?.DefReduction ?? 0;
       const customBuffDefReduction = customBuffs?.value?.DefReduction ?? 0;
-      const totalDefReduction = havocBaneDefReduction + attackDefReduction + customBuffDefReduction;
+      const totalDefReduction =
+        havocBaneDefReduction + attackDefReduction + customBuffDefReduction;
       let specificSkillDmg =
         specificSkillDmgFromResonanceChains +
         specificSkillDmgFromCharBuffs +
@@ -1399,6 +1225,22 @@ export default defineComponent({
           },
           providedEchoStats,
           excludeEchoes ? null : providedFullStats,
+          {
+            baseHp: baseHp.value,
+            baseAtk: baseAtk.value,
+            baseDef: baseDef.value,
+          },
+          {
+            weaponAtk: weaponData?.value?.attack,
+            weaponModifier: weaponData?.value?.modifier,
+            weaponModifierValue: weaponData?.value?.modifierValue,
+            weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+          },
+          charBuffsData.value,
+          charResonanceChainsData.value,
+          echoStats.value,
+          customBuffs.value,
+          teamBuffsData.value,
         );
       }
       // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
@@ -1416,6 +1258,22 @@ export default defineComponent({
           },
           providedEchoStats,
           excludeEchoes ? null : providedFullStats,
+          {
+            baseHp: baseHp.value,
+            baseAtk: baseAtk.value,
+            baseDef: baseDef.value,
+          },
+          {
+            weaponAtk: weaponData?.value?.attack,
+            weaponModifier: weaponData?.value?.modifier,
+            weaponModifierValue: weaponData?.value?.modifierValue,
+            weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+          },
+          charBuffsData.value,
+          charResonanceChainsData.value,
+          echoStats.value,
+          customBuffs.value,
+          teamBuffsData.value,
         );
       }
       // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
@@ -1433,6 +1291,22 @@ export default defineComponent({
           },
           providedEchoStats,
           excludeEchoes ? null : providedFullStats,
+          {
+            baseHp: baseHp.value,
+            baseAtk: baseAtk.value,
+            baseDef: baseDef.value,
+          },
+          {
+            weaponAtk: weaponData?.value?.attack,
+            weaponModifier: weaponData?.value?.modifier,
+            weaponModifierValue: weaponData?.value?.modifierValue,
+            weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+          },
+          charBuffsData.value,
+          charResonanceChainsData.value,
+          echoStats.value,
+          customBuffs.value,
+          teamBuffsData.value,
         );
       }
 
@@ -1662,8 +1536,10 @@ export default defineComponent({
         charBuffsData.value?.specificTalentBuffs?.[
           `${attack.key}:specialMultiplier`
         ] ?? 0;
-      let customBuffAttackSpecialMultiplier = customBuffs.value?.SpecialMultiplier ?? 0;
-      let actionBuffAttackSpecialMultiplier = attack?.buffs?.SpecialMultiplier ?? 0;
+      let customBuffAttackSpecialMultiplier =
+        customBuffs.value?.SpecialMultiplier ?? 0;
+      let actionBuffAttackSpecialMultiplier =
+        attack?.buffs?.SpecialMultiplier ?? 0;
       // special case for CoreofCollapseDMG (requires 1+ havoc bane stacks) to get 100% specialMultiplier
       let coreofCollapseDMGSpecialMultiplier = 0;
       if (attack.key === "CoreofCollapseDMG") {
@@ -1678,7 +1554,7 @@ export default defineComponent({
         actionBuffAttackSpecialMultiplier +
         customBuffAttackSpecialMultiplier +
         coreofCollapseDMGSpecialMultiplier;
-        // console.table({
+      // console.table({
       //   attack: attack.key,
       //   attackType,
       //   attackElement,
@@ -1952,17 +1828,89 @@ export default defineComponent({
     const handleWeaponUpdated = (givenWeaponData) => {
       weaponData.value = givenWeaponData;
       weaponAtk.value = givenWeaponData.attack;
-      calcCharStats();
+      const stats = calcCharStats(
+        false, // return value
+        null, // inject stats
+        {}, // ignore anything
+        null, // injectEchoStats
+        null, // providedFullStats
+        {
+          baseHp: baseHp.value,
+          baseAtk: baseAtk.value,
+          baseDef: baseDef.value,
+        },
+        {
+          weaponAtk: weaponData?.value?.attack,
+          weaponModifier: weaponData?.value?.modifier,
+          weaponModifierValue: weaponData?.value?.modifierValue,
+          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+        },
+        charBuffsData.value,
+        charResonanceChainsData.value,
+        echoStats.value,
+        customBuffs.value,
+        teamBuffsData.value,
+      );
+      updateStats(stats);
+      calcAllDamages();
     };
 
     const handleUpdatedCharacterBuffs = (givenCharBuffsData) => {
       charBuffsData.value = givenCharBuffsData;
-      calcCharStats();
+      const stats = calcCharStats(
+        false, // return value
+        null, // inject stats
+        {}, // ignore anything
+        null, // injectEchoStats
+        null, // providedFullStats
+        {
+          baseHp: baseHp.value,
+          baseAtk: baseAtk.value,
+          baseDef: baseDef.value,
+        },
+        {
+          weaponAtk: weaponData?.value?.attack,
+          weaponModifier: weaponData?.value?.modifier,
+          weaponModifierValue: weaponData?.value?.modifierValue,
+          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+        },
+        charBuffsData.value,
+        charResonanceChainsData.value,
+        echoStats.value,
+        customBuffs.value,
+        teamBuffsData.value,
+      );
+      updateStats(stats);
+      calcAllDamages();
     };
 
     const handleUpdatedTeamBuffs = (givenTeamBuffs) => {
       teamBuffsData.value = givenTeamBuffs;
-      calcCharStats();
+      const stats = calcCharStats(
+        false, // return value
+        null, // inject stats
+        {}, // ignore anything
+        null, // injectEchoStats
+        null, // providedFullStats
+        {
+          baseHp: baseHp.value,
+          baseAtk: baseAtk.value,
+          baseDef: baseDef.value,
+        },
+        {
+          weaponAtk: weaponData?.value?.attack,
+          weaponModifier: weaponData?.value?.modifier,
+          weaponModifierValue: weaponData?.value?.modifierValue,
+          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+        },
+        charBuffsData.value,
+        charResonanceChainsData.value,
+        echoStats.value,
+        customBuffs.value,
+        teamBuffsData.value,
+      );
+      updateStats(stats);
+      calcAllDamages();
     };
 
     const handleUpdatedCharacterResonanceChains = async (
@@ -1974,12 +1922,60 @@ export default defineComponent({
       }
 
       charResonanceChainsData.value = givenResonanceChainsData;
-      calcCharStats();
+      const stats = calcCharStats(
+        false, // return value
+        null, // inject stats
+        {}, // ignore anything
+        null, // injectEchoStats
+        null, // providedFullStats
+        {
+          baseHp: baseHp.value,
+          baseAtk: baseAtk.value,
+          baseDef: baseDef.value,
+        },
+        {
+          weaponAtk: weaponData?.value?.attack,
+          weaponModifier: weaponData?.value?.modifier,
+          weaponModifierValue: weaponData?.value?.modifierValue,
+          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+        },
+        charBuffsData.value,
+        charResonanceChainsData.value,
+        echoStats.value,
+        customBuffs.value,
+        teamBuffsData.value,
+      );
+      updateStats(stats);
+      calcAllDamages();
     };
 
     const updateStatsEchoes = (echoStatsGiven) => {
       echoStats.value = echoStatsGiven;
-      calcCharStats();
+      const stats = calcCharStats(
+        false, // return value
+        null, // inject stats
+        {}, // ignore anything
+        null, // injectEchoStats
+        null, // providedFullStats
+        {
+          baseHp: baseHp.value,
+          baseAtk: baseAtk.value,
+          baseDef: baseDef.value,
+        },
+        {
+          weaponAtk: weaponData?.value?.attack,
+          weaponModifier: weaponData?.value?.modifier,
+          weaponModifierValue: weaponData?.value?.modifierValue,
+          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+        },
+        charBuffsData.value,
+        charResonanceChainsData.value,
+        echoStats.value,
+        customBuffs.value,
+        teamBuffsData.value,
+      );
+      updateStats(stats);
+      calcAllDamages();
     };
 
     const changeScreen = (screen: string) => {
@@ -1988,13 +1984,71 @@ export default defineComponent({
 
     const handleCharacterTalentUpdated = (data) => {
       talentData[data.type] = data.value;
+      const stats = calcCharStats(
+        false, // return value
+        null, // inject stats
+        {}, // ignore anything
+        null, // injectEchoStats
+        null, // providedFullStats
+        {
+          baseHp: baseHp.value,
+          baseAtk: baseAtk.value,
+          baseDef: baseDef.value,
+        },
+        {
+          weaponAtk: weaponData?.value?.attack,
+          weaponModifier: weaponData?.value?.modifier,
+          weaponModifierValue: weaponData?.value?.modifierValue,
+          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+        },
+        charBuffsData.value,
+        charResonanceChainsData.value,
+        echoStats.value,
+        customBuffs.value,
+        teamBuffsData.value,
+      );
+      updateStats(stats);
       calcAllDamages();
     };
 
     const handleCharacterLevelUpdated = (level) => {
       // set the character level in the store
       characterLevel.value = level;
-      calcCharStats();
+      // update the base stats
+      baseHp.value =
+        chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)?.hp ??
+        0;
+      baseAtk.value =
+        chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)
+          ?.attack ?? 0;
+      baseDef.value =
+        chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)
+          ?.defense ?? 0;
+      const stats = calcCharStats(
+        false, // return value
+        null, // inject stats
+        {}, // ignore anything
+        null, // injectEchoStats
+        null, // providedFullStats
+        {
+          baseHp: baseHp.value,
+          baseAtk: baseAtk.value,
+          baseDef: baseDef.value,
+        },
+        {
+          weaponAtk: weaponData?.value?.attack,
+          weaponModifier: weaponData?.value?.modifier,
+          weaponModifierValue: weaponData?.value?.modifierValue,
+          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+        },
+        charBuffsData.value,
+        charResonanceChainsData.value,
+        echoStats.value,
+        customBuffs.value,
+        teamBuffsData.value,
+      );
+      updateStats(stats);
+      calcAllDamages();
     };
 
     const handleUpdatedEnemy = (data) => {
@@ -2008,7 +2062,31 @@ export default defineComponent({
 
     const handleCustomBuffs = (data) => {
       customBuffs.value = data;
-      calcCharStats();
+      const stats = calcCharStats(
+        false, // return value
+        null, // inject stats
+        {}, // ignore anything
+        null, // injectEchoStats
+        null, // providedFullStats
+        {
+          baseHp: baseHp.value,
+          baseAtk: baseAtk.value,
+          baseDef: baseDef.value,
+        },
+        {
+          weaponAtk: weaponData?.value?.attack,
+          weaponModifier: weaponData?.value?.modifier,
+          weaponModifierValue: weaponData?.value?.modifierValue,
+          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+        },
+        charBuffsData.value,
+        charResonanceChainsData.value,
+        echoStats.value,
+        customBuffs.value,
+        teamBuffsData.value,
+      );
+      updateStats(stats);
+      calcAllDamages();
     };
 
     const handleUpdatedRotations = async (data) => {
@@ -2504,29 +2582,43 @@ export default defineComponent({
           });
         });
         let finalStats = calcCharStats(
-          "All",
-          null,
+          "All", // return value
+          null, // inject stats
+          // ignores
           {
             ignoreEchoes: true,
           },
-          combinedEchoBuffs,
+          combinedEchoBuffs, // echo stats
+          null, // full stats
+          // base stats
+          {
+            baseHp: baseHp.value,
+            baseAtk: baseAtk.value,
+            baseDef: baseDef.value,
+          },
+          {
+            weaponAtk: weaponData?.value?.attack,
+            weaponModifier: weaponData?.value?.modifier,
+            weaponModifierValue: weaponData?.value?.modifierValue,
+            weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+          },
+          charBuffsData.value,
+          charResonanceChainsData.value,
+          echoStats.value,
+          customBuffs.value,
+          teamBuffsData.value,
         );
 
         // re-calculate the "total" stats
-        // TODO: Make this better
-        const { hp, attack, defense } =
-          chosenChar.value.getCharacterStatsByLevel(characterLevel.value);
-        const charHp = hp;
-        const charAtk = attack;
-        const charDef = defense;
         const weaponAtk = weaponData.value?.attack;
         finalStats.totalAtk =
-          (charAtk + weaponAtk) * (1 + finalStats.attackPercent / 100) +
+          (baseAtk.value + weaponAtk) * (1 + finalStats.attackPercent / 100) +
           finalStats.attackFlat;
         finalStats.totalHp =
-          charHp * (1 + finalStats.hpPercent / 100) + finalStats.hpFlat;
+          baseHp.value * (1 + finalStats.hpPercent / 100) + finalStats.hpFlat;
         finalStats.totalDef =
-          charDef * (1 + finalStats.defPercent / 100) + finalStats.defFlat;
+          baseDef.value * (1 + finalStats.defPercent / 100) +
+          finalStats.defFlat;
         finalStats.totalCritRate = finalStats.critRate / 100;
         finalStats.totalCritDMG = finalStats.critDMG / 100;
         finalStats.DefIgnore = finalStats.defIgnore / 100;
