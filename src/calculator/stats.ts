@@ -288,11 +288,11 @@ export const getDamageTypeBonusByType = (
 };
 
 export const calcCharStats = (
-  returnValue = false,
-  injectStats = null,
+  returnValue: any = false,
+  injectStats: any = null,
   ignoreBuffs: any = {}, // e.g. {ignoreTeamBuffs: true}
-  injectEchoStats = null,
-  providedFullStats = null,
+  injectEchoStats: any = null,
+  providedFullStats: any = null,
   characterStats: any = {},
   weaponData: any = {},
   charBuffsData: any = {},
@@ -309,7 +309,6 @@ export const calcCharStats = (
   let weaponModifier = null;
   let weaponModifierValue = 0;
   let weaponPassiveData = {};
-  let resonanceChainsData = {};
 
   if (charBuffsData && !providedFullStats) {
     addBuffs(charBuffsData, stats);
