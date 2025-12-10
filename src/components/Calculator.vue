@@ -2014,6 +2014,16 @@ export default defineComponent({
     const handleCharacterLevelUpdated = (level) => {
       // set the character level in the store
       characterLevel.value = level;
+      // update the base stats
+      baseHp.value =
+        chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)?.hp ??
+        0;
+      baseAtk.value =
+        chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)
+          ?.attack ?? 0;
+      baseDef.value =
+        chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)
+          ?.defense ?? 0;
       const stats = calcCharStats(
         false, // return value
         null, // inject stats
