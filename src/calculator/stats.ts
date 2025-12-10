@@ -300,7 +300,7 @@ export const calcCharStats = (
   echoStats: any = {},
   customBuffs: any = {},
   teamBuffsData: any = {},
-) => {
+): any => {
   const { ignoreTeamBuffs, ignoreWeaponBuffs, ignoreEchoes } = ignoreBuffs;
   let stats = getInitStats(providedFullStats);
   let { baseHp = 0, baseAtk = 0, baseDef = 0 } = characterStats;
@@ -382,7 +382,7 @@ export const calcCharStats = (
   if (returnValue) {
     switch (returnValue) {
       case "All":
-        const returnedStats = { ...stats };
+        const returnedStats: any = { ...stats };
         returnedStats.totalAtk =
           (baseAtk + weaponAtk) * (1 + stats.attackPercent / 100) +
           stats.attackFlat;
@@ -406,7 +406,7 @@ export const calcCharStats = (
         );
     }
   }
-  const returnedStats = { ...stats };
+  const returnedStats: any = { ...stats };
   returnedStats.totalAtk =
     (baseAtk + weaponAtk) * (1 + stats.attackPercent / 100) + stats.attackFlat;
   returnedStats.totalHp = baseHp * (1 + stats.hpPercent / 100) + stats.hpFlat;
