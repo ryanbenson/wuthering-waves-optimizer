@@ -46,7 +46,7 @@ export function getCharactersAvailable(): CharacterList {
     four: [
       { key: "Aalto", name: "Aalto" },
       { key: "Baizhi", name: "Baizhi" },
-      // { key: "Buling", name: "Buling" },
+      { key: "Buling", name: "Buling" },
       { key: "Chixia", name: "Chixia" },
       { key: "Danjin", name: "Danjin" },
       { key: "Lumi", name: "Lumi" },
@@ -309,13 +309,13 @@ export const allCharactersList = [
     rarity: 4,
     weapon: "Rectifier",
   },
-  // {
-  //   key: "Buling",
-  //   name: "Buling",
-  //   element: "Electro",
-  //   rarity: 4,
-  //   weapon: "Rectifier",
-  // },
+  {
+    key: "Buling",
+    name: "Buling",
+    element: "Electro",
+    rarity: 4,
+    weapon: "Rectifier",
+  },
   {
     key: "Chixia",
     name: "Chixia",
@@ -413,7 +413,7 @@ export const allCharacters: string[] = [
   "Augusta",
   "Baizhi",
   "Brant",
-  // "Buling",
+  "Buling",
   "Calcharo",
   "Camellya",
   "Cantarella",
