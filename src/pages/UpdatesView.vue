@@ -2,29 +2,53 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>December 11, 2025</h3>
+    <ul>
+      <li>Releases Buling</li>
+    </ul>
     <h3>December 8, 2025</h3>
     <ul>
-      <li>Updates Augusta so that her Crit Rate Overflow into Crit DMG in her resonance chains properly appears in the stats breakdown</li>
+      <li>
+        Updates Augusta so that her Crit Rate Overflow into Crit DMG in her
+        resonance chains properly appears in the stats breakdown
+      </li>
     </ul>
     <h3>December 6, 2025</h3>
     <ul>
       <li>Fixes Crit DMG in the stats breakdown</li>
-      <li>Updates Brant, Qiuyuan, Roccia, and Shorekeeper to have their buffs based on other stats properly reflect in the stats breakdown.</li>
+      <li>
+        Updates Brant, Qiuyuan, Roccia, and Shorekeeper to have their buffs
+        based on other stats properly reflect in the stats breakdown.
+      </li>
     </ul>
     <h3>December 4, 2025</h3>
     <ul>
-      <li>Implements Defense Reduction into formula and various places to buff (custom, action, etc.).</li>
+      <li>
+        Implements Defense Reduction into formula and various places to buff
+        (custom, action, etc.).
+      </li>
     </ul>
     <h3>December 1, 2025</h3>
     <ul>
       <li>Fixes a spelling issue on Chisa.</li>
-      <li>Fixes rotation action buff liberation dmg bonus, as it wasn't getting applied.</li>
+      <li>
+        Fixes rotation action buff liberation dmg bonus, as it wasn't getting
+        applied.
+      </li>
     </ul>
     <h3>November 30, 2025</h3>
     <ul>
       <li>Adds Aero Erosion and Spectro Frazzle to damage breakdown</li>
-      <li>In the inventory section, it now pre-selects echo set for a new echo when you're creating echoes to make it easier. It also reset the modal used to find the echo scrollbar position when you choose an echo.</li>
-      <li>When browsing for echoes in the echoes screen, it now remembers your filters when you re-open it. And the reset button now properly resets all filters.</li>
+      <li>
+        In the inventory section, it now pre-selects echo set for a new echo
+        when you're creating echoes to make it easier. It also reset the modal
+        used to find the echo scrollbar position when you choose an echo.
+      </li>
+      <li>
+        When browsing for echoes in the echoes screen, it now remembers your
+        filters when you re-open it. And the reset button now properly resets
+        all filters.
+      </li>
     </ul>
     <h3>November 29, 2025</h3>
     <ul>
@@ -36,13 +60,26 @@
     </ul>
     <h3>November 24, 2025</h3>
     <ul>
-      <li>Fixed the bug I introduced yesterday for the rotation actions. it was auto-closing your action panel whenever you made a change. it has been fixed.</li>
-      <li>Updated how Chisa uses the additive multiplier bonus for Eradication. it now splits the additive bonus by 20%/80% since it's a 2 hit MV</li>
+      <li>
+        Fixed the bug I introduced yesterday for the rotation actions. it was
+        auto-closing your action panel whenever you made a change. it has been
+        fixed.
+      </li>
+      <li>
+        Updated how Chisa uses the additive multiplier bonus for Eradication. it
+        now splits the additive bonus by 20%/80% since it's a 2 hit MV
+      </li>
     </ul>
     <h3>November 23, 2025</h3>
     <ul>
-      <li>Fixes reordering issue when you change an order number on a rotation action. It now properly updates the other actions.</li>
-      <li>Implements the special multiplier/vulnerability effect for Core of Collapse for Reminiscence: Threnodian - Leviathan.</li>
+      <li>
+        Fixes reordering issue when you change an order number on a rotation
+        action. It now properly updates the other actions.
+      </li>
+      <li>
+        Implements the special multiplier/vulnerability effect for Core of
+        Collapse for Reminiscence: Threnodian - Leviathan.
+      </li>
     </ul>
     <h3>November 20, 2025</h3>
     <ul>
@@ -55,7 +92,10 @@
     </ul>
     <h3>November 15, 2025</h3>
     <ul>
-      <li>Adds new filters in echo browser for filtering out echoes equipped by the current character, or echoes equipped by any character.</li>
+      <li>
+        Adds new filters in echo browser for filtering out echoes equipped by
+        the current character, or echoes equipped by any character.
+      </li>
     </ul>
     <h3>November 14, 2025</h3>
     <ul>
@@ -67,7 +107,10 @@
     </ul>
     <h3>November 12, 2025</h3>
     <ul>
-      <li>Adds Special Multiplier (Vulnerability) as custom and rotation action level buff.</li>
+      <li>
+        Adds Special Multiplier (Vulnerability) as custom and rotation action
+        level buff.
+      </li>
     </ul>
     <h3>November 11, 2025</h3>
     <ul>
@@ -79,7 +122,10 @@
     </ul>
     <h3>November 9, 2025</h3>
     <ul>
-      <li>Adds ability to import a list of echoes so they can be generated externally (e.g. scanner) and imported into your inventory..</li>
+      <li>
+        Adds ability to import a list of echoes so they can be generated
+        externally (e.g. scanner) and imported into your inventory..
+      </li>
     </ul>
     <h3>November 8, 2025</h3>
     <ul>
@@ -88,11 +134,17 @@
     </ul>
     <h3>November 6, 2025</h3>
     <ul>
-      <li>Adds visual clarity on rotation main echo rank and action echo rank in the damages list and optimizer damages list.</li>
+      <li>
+        Adds visual clarity on rotation main echo rank and action echo rank in
+        the damages list and optimizer damages list.
+      </li>
     </ul>
     <h3>November 5, 2025</h3>
     <ul>
-      <li>Adds visual clarity on rotation main echo rank and action echo rank. Will add this to the damages list soon.</li>
+      <li>
+        Adds visual clarity on rotation main echo rank and action echo rank.
+        Will add this to the damages list soon.
+      </li>
     </ul>
     <h3>November 2, 2025</h3>
     <ul>
@@ -104,8 +156,12 @@
     </ul>
     <h3>October 31, 2025</h3>
     <ul>
-      <li>Fixes Nightmare Kelpie Outro DMG, it is now properly doing Aero DMG.</li>
-      <li>Fixes a bug where you couldn't add Qiuyuan's S3 Outro to a rotation.</li>
+      <li>
+        Fixes Nightmare Kelpie Outro DMG, it is now properly doing Aero DMG.
+      </li>
+      <li>
+        Fixes a bug where you couldn't add Qiuyuan's S3 Outro to a rotation.
+      </li>
     </ul>
     <h3>October 20, 2025</h3>
     <ul>

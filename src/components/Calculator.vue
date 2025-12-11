@@ -15,10 +15,8 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div
-            v-if="false"
-            class="alert alert-success mb-6 text-white p-2 px-4">
-            Stats and damages breakdowns are now available!
+          <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
+            Buling is now available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
