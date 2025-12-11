@@ -33,9 +33,7 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "EnableAttack",
-        modifierValue: [
-          "SequenceNode3SummonerofSpiritsSeekerofFate",
-        ],
+        modifierValue: ["SequenceNode3SummonerofSpiritsSeekerofFate"],
       },
     ],
     minStacks: 0,
@@ -73,10 +71,11 @@ export const resonanceChains = [
     details: `<div>The <span class="Highlight">Thunder Spell - Heaven, Earth, Mind</span> state now grants 50% <span class="Highlight">Resonance Skill</span> DMG Bonus to the active Resonator in the team.</div>`,
     hasStacks: false,
     modifiers: [
-      {
-        modifier: "ResonanceSkillDMGBonus",
-        modifierValue: 0.5,
-      },
+      // {
+      // this is handled in the buff itself
+      // modifier: "ResonanceSkillDMGBonus",
+      // modifierValue: 0.5,
+      // },
     ],
     minStacks: 0,
     maxStacks: 0,

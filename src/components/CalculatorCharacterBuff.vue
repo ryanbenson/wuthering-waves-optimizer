@@ -151,20 +151,20 @@ export default {
         },
         immediate: true,
       },
-      // watch for Brant changes in his buffs
-      "currentCharacter.buffs.MyMoment.isEnabled": {
-        handler: function () {
-          this.updatedStats();
-        },
-        immediate: true,
+    // watch for Brant changes in his buffs
+    "currentCharacter.buffs.MyMoment.isEnabled": {
+      handler: function () {
+        this.updatedStats();
       },
-      // watch for Brant changes in his buffs
-      "currentCharacter.buffs.TheatricalMoment.isEnabled": {
-        handler: function () {
-          this.updatedStats();
-        },
-        immediate: true,
+      immediate: true,
+    },
+    // watch for Brant changes in his buffs
+    "currentCharacter.buffs.TheatricalMoment.isEnabled": {
+      handler: function () {
+        this.updatedStats();
       },
+      immediate: true,
+    },
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
@@ -385,7 +385,7 @@ export default {
               // .7 from res chain + 0.2 from original buff
               // wording says 350%, but it's a multiplier against 20%, so 20%*350%
               // not additive
-              modifierValue: .9,
+              modifierValue: 0.9,
             });
           }
         }
@@ -408,6 +408,24 @@ export default {
               modifierValue: 0.3,
             });
           }
+        }
+      }
+      // Buling SequenceNode6AlmightyForumLordofThunderSpell replaces ThunderSpellHeavenEarthMind
+      if (
+        this.character === "Buling" &&
+        this.uniqueKey === "ThunderSpellHeavenEarthMind"
+      ) {
+        if (
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode6AlmightyForumLordofThunderSpell?.isEnabled
+        ) {
+          // overwrite the modifiers
+          effectiveModifiers = [
+            {
+              modifier: "ResonanceSkillDMGBonus",
+              modifierValue: 0.5,
+            },
+          ];
         }
       }
 
@@ -496,7 +514,7 @@ export default {
             }
             // use full numbers instead of decimals for this, to workaround JS math issues
             // e.g. 0.7 - 0.5 = 0.19999996, so instead 7 - 5 = 2
-            const additionalAmount = (currentAmount * 100) - (base * 100);
+            const additionalAmount = currentAmount * 100 - base * 100;
             const steps = Math.floor(
               additionalAmount / modifierItem.modifierStep,
             );
@@ -570,6 +588,8 @@ export default {
 
 <style scoped lang="scss">
 .shadow {
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 </style>

@@ -298,6 +298,15 @@ export default {
           return data;
         }
       }
+      // Buling: s6 SequenceNode6AlmightyForumLordofThunderSpell replaces ThunderSpellHeavenEarthMind
+      if (this.uniqueKey === "ThunderSpellHeavenEarthMind") {
+        if (
+          this.currentCharacter?.teamBuffs?.buffs
+            ?.SequenceNode6AlmightyForumLordofThunderSpell?.isEnabled
+        ) {
+          return data;
+        }
+      }
       if (!this.hasStacks) {
         this.modifiers.forEach((modifierItem) => {
           // if this buff only applies to specific characters, check the cur character
