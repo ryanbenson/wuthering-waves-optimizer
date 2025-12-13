@@ -1,75 +1,75 @@
 export const carlottaOnlyCustomBuffsDamages: AttackTests = [
   {
     selector: ".basic-attack-stage-1-dmg",
-    values: ["Basic Attack Stage 1 DMG", "1450", "2247", "2899"],
+    values: ["Basic Attack Stage 1 DMG", "1738", "2694", "3476"],
   },
   {
     selector: ".basic-attack-stage-2-dmg",
-    values: ["Basic Attack Stage 2 DMG", "3533", "5476", "7065"],
+    values: ["Basic Attack Stage 2 DMG", "4236", "6566", "8472"],
   },
   {
     selector: ".necessary-measures-stage-1-dmg",
-    values: ["Necessary Measures Stage 1 DMG", "1767", "2738", "3533"],
+    values: ["Necessary Measures Stage 1 DMG", "2118", "3283", "4236"],
   },
   {
     selector: ".necessary-measures-stage-2-dmg",
-    values: ["Necessary Measures Stage 2 DMG", "3578", "5545", "7155"],
+    values: ["Necessary Measures Stage 2 DMG", "4290", "6650", "8580"],
   },
   {
     selector: ".necessary-measures-stage-3-dmg",
-    values: ["Necessary Measures Stage 3 DMG", "6250", "9688", "12500"],
+    values: ["Necessary Measures Stage 3 DMG", "7495", "11617", "14990"],
   },
   {
     selector: ".heavy-attack-dmg",
-    values: ["Heavy Attack DMG", "4077", "6318", "8153"],
+    values: ["Heavy Attack DMG", "4888", "7577", "9776"],
   },
   {
     selector: ".containment-tactics-dmg",
-    values: ["Containment Tactics DMG", "6115", "9477", "12229"],
+    values: ["Containment Tactics DMG", "7332", "11365", "14664"],
   },
   {
     selector: ".mid-air-attack-dmg",
-    values: ["Mid-air Attack DMG", "2808", "4352", "5616"],
+    values: ["Mid-air Attack DMG", "3367", "5219", "6734"],
   },
   {
     selector: ".customary-greetings-dmg",
-    values: ["Customary Greetings DMG", "6431", "9967", "12861"],
+    values: ["Customary Greetings DMG", "7711", "11952", "15422"],
   },
   {
     selector: ".dodge-counter-dmg",
-    values: ["Dodge Counter DMG", "6467", "10023", "12933"],
+    values: ["Dodge Counter DMG", "7754", "12019", "15508"],
   },
   {
     selector: ".art-of-violence-dmg",
-    values: ["Art of Violence DMG", "7723", "11971", "15446"],
+    values: ["Art of Violence DMG", "9261", "14355", "18522"],
   },
   {
     selector: ".chromatic-splendor-dmg",
-    values: ["Chromatic Splendor DMG", "15103", "23410", "30206"],
+    values: ["Chromatic Splendor DMG", "18111", "28072", "36222"],
   },
   {
     selector: ".era-of-new-wave-dmg",
-    values: ["Era of New Wave DMG", "10791", "16726", "21582"],
+    values: ["Era of New Wave DMG", "12940", "20057", "25880"],
   },
   {
     selector: ".death-knell-dmg",
-    values: ["Death Knell DMG", "6475", "10036", "12950"],
+    values: ["Death Knell DMG", "7765", "12035", "15529"],
   },
   {
     selector: ".fatal-finale-dmg",
-    values: ["Fatal Finale DMG", "17265", "26761", "34530"],
+    values: ["Fatal Finale DMG", "20704", "32091", "41407"],
   },
   {
     selector: ".imminent-oblivion-dmg",
-    values: ["Imminent Oblivion DMG", "22384", "34695", "44767"],
+    values: ["Imminent Oblivion DMG", "26842", "41605", "53683"],
   },
   {
     selector: ".wintertime-aria-dmg",
-    values: ["Wintertime Aria DMG", "5994", "9290", "11987"],
+    values: ["Wintertime Aria DMG", "7187", "11140", "14374"],
   },
   {
     selector: ".closing-remark-dmg",
-    values: ["Closing Remark DMG", "15961", "24739", "31921"],
+    values: ["Closing Remark DMG", "19140", "29666", "38279"],
   },
 ];
 
