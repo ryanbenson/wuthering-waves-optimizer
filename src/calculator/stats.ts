@@ -417,3 +417,360 @@ export const calcCharStats = (
   returnedStats.DefIgnore = stats.defIgnore / 100;
   return returnedStats;
 };
+
+export const computeSelfBuffs = (
+  buffsConfig: any = null,
+  buffsCharInfo: any = null,
+  resonanceChainsConfig: any = null,
+  talentData: any = {},
+  character: string = "",
+  energyRegen: number = 0,
+  critRate: number = 0,
+): any => {
+  // console.log(character, buffsConfig, buffsCharInfo, resonanceChainsConfig);
+  const data: any = {
+    EnableAttack: [],
+    specificTalentBuffs: {},
+  };
+
+  const modifySpecificTalents: any = [];
+  // go through each buffsConfig, make sure it's enabled, then compute the buff
+  const entries = Object.entries(buffsConfig) as [string, any][];
+  for (const [key, buffData] of entries) {
+    // skip if it's not enabled
+    if (!buffData?.isEnabled) {
+      continue;
+    }
+    // find the buff in our char data
+    const buffFromCharacter = buffsCharInfo.find(
+      (buffItem: any) => buffItem.key === key,
+    );
+    const buff = JSON.parse(JSON.stringify(buffFromCharacter));
+    if (!buff) {
+      continue;
+    }
+
+    const modifiersData = buff?.modifiers ?? [];
+    let modifiers = JSON.parse(JSON.stringify(modifiersData));
+    // character specifics modifications
+    // If Lupa has s3 enabled, the ResistShred:Fusion buffs from InherentSkillApplauseofVictory & InherentSkillApplauseofVictoryFullFusionTeam are already taken care of
+    if (
+      character === "Lupa" &&
+      (key === "InherentSkillApplauseofVictory" ||
+        key === "InherentSkillApplauseofVictoryFullFusionTeam")
+    ) {
+      if (
+        resonanceChainsConfig?.SequenceNode3WolflameHowlsinHerWakeIgnoreFusion
+          ?.isEnabled
+      ) {
+        continue;
+      }
+    }
+    // if Jiyan has ForteCircuitQingloongatWar2 enabled, ignore ForteCircuitQingloongatWar1
+    // they're both self buffs, no resonance chains
+    if (character === "Jiyan" && key === "ForteCircuitQingloongatWar1") {
+      if (buffsConfig?.ForteCircuitQingloongatWar2?.isEnabled) {
+        continue;
+      }
+    }
+    // on Brant, if this is TheatricalMoment, check if MyMoment, if so, ignore this buff
+    if (character === "Brant" && key === "TheatricalMoment") {
+      if (buffsConfig?.MyMoment?.isEnabled) {
+        continue;
+      }
+    }
+    // on Augusta, we change modifiers
+    // this only applies to CrownofWills on Augusta
+    if (character === "Augusta" && key === "CrownofWills") {
+      // Check if resonance chain buffs are enabled and apply their effects
+      const sequenceNode1 =
+        resonanceChainsConfig?.SequenceNode1StainedinScorchedEarth;
+      const sequenceNode2 =
+        resonanceChainsConfig?.SequenceNode2CleansedinCrimsonWar;
+
+      // Apply SequenceNode1 effects if enabled
+      if (sequenceNode1?.isEnabled) {
+        // Add CritDMG modifier if not already present
+        const hasCritDMG = modifiers.some(
+          (mod: any) => mod.modifier === "CritDMG",
+        );
+        if (!hasCritDMG) {
+          modifiers.push({
+            modifier: "CritDMG",
+            modifierValue: 0.15,
+          });
+        }
+      }
+
+      // Apply SequenceNode2 effects if enabled
+      if (sequenceNode2?.isEnabled) {
+        // Add CritDMG modifier if not already present
+        const hasCritDMG = modifiers.some(
+          (mod: any) => mod.modifier === "CritRate",
+        );
+        if (!hasCritDMG) {
+          modifiers.push({
+            modifier: "CritRate",
+            modifierValue: 0.2,
+          });
+        }
+      }
+    }
+
+    // this only applies to Afterflame on Galbrena
+    if (character === "Galbrena" && key === "Afterflame") {
+      // Check if resonance chain buffs are enabled and apply their effects
+      const sequenceNode1 =
+        resonanceChainsConfig?.SequenceNode1HeartofDefianceEverAblaze;
+      const sequenceNode6 =
+        resonanceChainsConfig?.SequenceNode6IRemainWhoIamEternalMyFlame;
+
+      // Apply SequenceNode1 effects if enabled
+      if (sequenceNode1?.isEnabled) {
+        // Add CritDMG modifier if not already present
+        const hasCritDMG = modifiers.some(
+          (mod: any) => mod.modifier === "CritDMG",
+        );
+        if (!hasCritDMG) {
+          modifiers.push({
+            modifier: "CritDMG",
+            modifySpecificTalents: [
+              "BasicAttackSeraphicExecutionStage1DMG",
+              "BasicAttackSeraphicExecutionStage2DMG",
+              "BasicAttackSeraphicExecutionStage3DMG",
+              "BasicAttackSeraphicExecutionStage4DMG",
+              "BasicAttackSeraphicExecutionStage5DMG",
+              "HeavyAttackFlamewingVerdictStage1DMG",
+              "HeavyAttackFlamewingVerdictStage2DMG",
+              "HeavyAttackFlamewingVerdictStage3DMG",
+              "MidairAttackHellsentBarragePlungingAttackDMG",
+              "MidairAttackHellsentBarrageSustainedFireDMG",
+              "ResonanceSkillRavageDMG",
+              "DodgeCounterPurgatoryScourgeDMG",
+            ],
+            modifierValue: 0.02,
+          });
+        }
+      }
+
+      // Apply sequenceNode6 effects if enabled
+      if (sequenceNode6?.isEnabled) {
+        // Add CritDMG modifier if not already present
+        const DMGDeepen = modifiers.some(
+          (mod: any) => mod.modifier === "DMGDeepen",
+        );
+        if (!DMGDeepen) {
+          modifiers.push({
+            modifier: "DMGDeepen",
+            modifySpecificTalents: [
+              "BasicAttackSeraphicExecutionStage1DMG",
+              "BasicAttackSeraphicExecutionStage2DMG",
+              "BasicAttackSeraphicExecutionStage3DMG",
+              "BasicAttackSeraphicExecutionStage4DMG",
+              "BasicAttackSeraphicExecutionStage5DMG",
+              "HeavyAttackFlamewingVerdictStage1DMG",
+              "HeavyAttackFlamewingVerdictStage2DMG",
+              "HeavyAttackFlamewingVerdictStage3DMG",
+              "MidairAttackHellsentBarragePlungingAttackDMG",
+              "MidairAttackHellsentBarrageSustainedFireDMG",
+              "ResonanceSkillRavageDMG",
+              "DodgeCounterPurgatoryScourgeDMG",
+            ],
+            modifierValue: 0.00875,
+          });
+        }
+      }
+    }
+
+    // this only applies to BurningDrive on Galbrena
+    if (character === "Galbrena" && key === "BurningDrive") {
+      const sequenceNode2 =
+        resonanceChainsConfig?.SequenceNode2HellboundDiveofFireandAbyss;
+
+      // Apply SequenceNode1 effects if enabled
+      if (sequenceNode2?.isEnabled) {
+        // Add CritDMG modifier if not already present
+        const hasAtk = modifiers.some((mod: any) => mod.modifier === "ATK");
+        // it should replace the existing buff, so we check if it does exist
+        if (hasAtk) {
+          modifiers.push({
+            modifier: "ATK",
+            // .7 from res chain + 0.2 from original buff
+            // wording says 350%, but it's a multiplier against 20%, so 20%*350%
+            // not additive
+            modifierValue: 0.9,
+          });
+        }
+      }
+    }
+
+    // this only applies to BamboosShade on Qiuyuan
+    if (character === "Qiuyuan" && key === "BamboosShade") {
+      const sequenceNode2 =
+        resonanceChainsConfig?.SequenceNode2OBladeIWhoTeachNoMore;
+
+      // Apply SequenceNode2 effects if enabled
+      if (sequenceNode2?.isEnabled) {
+        const hasEchoAmplify = modifiers.some(
+          (mod: any) => mod.modifier === "DMGDeepen:Echo",
+        );
+        if (!hasEchoAmplify) {
+          modifiers.push({
+            modifier: "DMGDeepen:Echo",
+            modifierValue: 0.3,
+          });
+        }
+      }
+    }
+    // Buling SequenceNode6AlmightyForumLordofThunderSpell replaces ThunderSpellHeavenEarthMind
+    if (character === "Buling" && key === "ThunderSpellHeavenEarthMind") {
+      if (
+        resonanceChainsConfig?.SequenceNode6AlmightyForumLordofThunderSpell
+          ?.isEnabled
+      ) {
+        // overwrite the modifiers
+        modifiers = [
+          {
+            modifier: "ResonanceSkillDMGBonus",
+            modifierValue: 0.5,
+          },
+        ];
+      }
+    }
+    if (buff.hasStacks) {
+      if (buffData?.stacks <= 0) {
+        continue;
+      }
+      const stacks = buffData?.stacks ?? 0;
+      modifiers.forEach((modifierItem: any) => {
+        if (modifierItem?.modifySpecificTalents) {
+          // update modifier value with the value * stacks
+          modifierItem.modifierValueCalculated =
+            modifierItem.modifierValue * stacks;
+          modifySpecificTalents.push(modifierItem);
+        } else if (modifierItem.modifier === "Talent") {
+          const talentRef =
+            talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+          const talentVal = modifierItem.modifierValue[talentRef];
+          data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
+            talentVal * stacks;
+        } else if (modifierItem.modifier === "EnableAttack") {
+          data.EnableAttack.push(modifierItem.modifierValue);
+        } else {
+          const totalValue = modifierItem.modifierValue * stacks;
+          data[modifierItem.modifier] =
+            (data[modifierItem.modifier] || 0) + totalValue;
+        }
+      });
+    } else {
+      modifiers.forEach((modifierItem: any) => {
+        if (modifierItem?.modifySpecificTalents) {
+          // add our calculated value
+          modifierItem.modifierValueCalculated = modifierItem.modifierValue;
+          modifySpecificTalents.push(modifierItem);
+        } else if (modifierItem.modifier === "Talent") {
+          // this is the rare case where the modifier value needs a reference to another talent level
+          // specifically Jinhsi incandescence buff scales off of her forte talent
+          const talentRef =
+            talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+          const talentVal = modifierItem.modifierValue[talentRef];
+          data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
+            talentVal;
+        } else if (modifierItem.modifier === "talentModifierMultiply") {
+          // for buffs that apply talentModifierMultiply to the calcs
+          if (!data.talentModifierMultiply) {
+            data.talentModifierMultiply = [];
+          }
+          data.talentModifierMultiply.push(modifierItem);
+        } else if (modifierItem.modifier.includes("AdditionalBase")) {
+          // we need to calculate the buff based on the stats of another stat
+          let base = 0;
+          let currentAmount = 0;
+          switch (modifierItem.modifierBasedOn) {
+            // if there's a minStatValue, use that or use the default base
+            // some characters use full base (e.g. SK), some use a minimum amount (Roccia)
+            case "EnergyRegen":
+              base = modifierItem?.minStatValue ?? 0;
+              currentAmount = energyRegen;
+              break;
+            case "CritRate":
+              base = modifierItem?.minStatValue ?? 0.05;
+              currentAmount = critRate;
+              break;
+            default:
+              base = modifierItem?.minStatValue ?? 0;
+              break;
+          }
+          // use full numbers instead of decimals for this, to workaround JS math issues
+          // e.g. 0.7 - 0.5 = 0.19999996, so instead 7 - 5 = 2
+          const additionalAmount = currentAmount * 100 - base * 100;
+          const steps = Math.floor(
+            additionalAmount / modifierItem.modifierStep,
+          );
+          let buffValue = steps * modifierItem.modifierValue;
+          if (buffValue > modifierItem.maximumValue) {
+            buffValue = modifierItem.maximumValue;
+          }
+          // don't allow the buff to go negative and reduce your stats
+          if (buffValue < 0) {
+            buffValue = 0;
+          }
+          // now apply the buff
+          switch (modifierItem.modifierTargetAttr) {
+            case "CritRate":
+              data["CritRate"] = (data["CritRate"] || 0) + buffValue;
+              break;
+            case "CritDMG":
+              data["CritDMG"] = (data["CritDMG"] || 0) + buffValue;
+              break;
+            case "ATK":
+              data["ATK"] = (data["ATK"] || 0) + buffValue;
+              break;
+            case "ATK_FLAT":
+              data["ATK_FLAT"] = (data["ATK_FLAT"] || 0) + buffValue;
+              break;
+          }
+        } else if (modifierItem.modifier === "EnableAttack") {
+          data.EnableAttack.push(modifierItem.modifierValue);
+        } else {
+          data[modifierItem.modifier] =
+            (data[modifierItem.modifier] || 0) + modifierItem.modifierValue;
+        }
+      });
+    }
+  }
+  modifySpecificTalents.forEach((item: any) => {
+    const talents = item?.modifySpecificTalents ?? [];
+    const { modifier, modifierValue, modifierValueCalculated } = item;
+    talents.forEach((talent: string) => {
+      data.specificTalentBuffs[`${talent}:${modifier || "DMGBonus"}`] =
+        (data.specificTalentBuffs[`${talent}:${modifier || "DMGBonus"}`] || 0) +
+        (modifierValueCalculated || modifierValue);
+    });
+  });
+  // final adjustments where needed before surfacing this up
+
+  // if (this.character === "Lupa" && finalBuffData.specificTalentBuffs) {
+  //   if (
+  //     this.currentCharacter?.resonanceChains
+  //       ?.SequenceNode6TotheBrightestFlamingStar?.isEnabled
+  //   ) {
+  //     // copy the same buffs for NowheretoRunDMG from the other intro
+  //     const atk =
+  //       finalBuffData.specificTalentBuffs?.[`TryFocusingEhDMG:ATK`];
+  //     const fusion =
+  //       finalBuffData?.specificTalentBuffs?.[`TryFocusingEhDMG:Fusion`];
+  //     const resistReduction =
+  //       finalBuffData?.specificTalentBuffs?.[
+  //         `TryFocusingEhDMG:ResistShred:Fusion`
+  //       ];
+  //     finalBuffData.specificTalentBuffs["NowheretoRunDMG:ATK"] = atk || 0;
+  //     finalBuffData.specificTalentBuffs["NowheretoRunDMG:Fusion"] =
+  //       fusion || 0;
+  //     finalBuffData.specificTalentBuffs[
+  //       "NowheretoRunDMG:ResistShred:Fusion"
+  //     ] = resistReduction || 0;
+  //   }
+  // }
+  return data;
+};

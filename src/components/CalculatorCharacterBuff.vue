@@ -538,7 +538,6 @@ export default {
                 data["ATK"] = buffValue;
                 break;
               case "ATK_FLAT":
-                console.log(buffValue);
                 data["ATK_FLAT"] = buffValue;
                 break;
             }

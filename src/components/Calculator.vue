@@ -311,6 +311,7 @@ import {
   getDamageTypeBonusByType,
   getInitStats,
   calcCharStats,
+  computeSelfBuffs,
 } from "../calculator/stats";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs, utilityAttacks } from "../buffs";
@@ -930,6 +931,8 @@ export default defineComponent({
       // end max buff handlers
       const specificSkillDmgFromCharBuffs =
         selfBuffs?.specificTalentBuffs?.[attack.key] ?? 0;
+      const specificSkillDmgFromCharBuffsDmgBonus =
+        selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGBonus`] ?? 0;
       const specificSkillDmgFromCharBuffsWithElement =
         selfBuffs?.specificTalentBuffs?.[`${attack.key}:${attackElement}`] ?? 0;
       const specificSkillDmgFromEchoes =
@@ -1036,6 +1039,7 @@ export default defineComponent({
       let specificSkillDmg =
         specificSkillDmgFromResonanceChains +
         specificSkillDmgFromCharBuffs +
+        specificSkillDmgFromCharBuffsDmgBonus +
         specificSkillDmgFromCharBuffsWithElement +
         genericSkillDmgBonusResChain +
         genericSkillDmgBonusSelfBuff +
@@ -1854,7 +1858,19 @@ export default defineComponent({
     };
 
     const handleUpdatedCharacterBuffs = (givenCharBuffsData) => {
-      charBuffsData.value = givenCharBuffsData;
+      // charBuffsData.value = givenCharBuffsData;
+      console.log(givenCharBuffsData);
+      const buffsData = computeSelfBuffs(
+        characterStore.getActiveCharacter?.buffs ?? {},
+        chosenChar.value?.buffs ?? {},
+        characterStore.getActiveCharacter?.resonanceChains ?? {},
+        talentData.value ?? {},
+        character?.value ?? null,
+        energyRegen.value,
+        totalCritRate.value,
+      );
+      console.log(buffsData);
+      charBuffsData.value = buffsData;
       const stats = calcCharStats(
         false, // return value
         null, // inject stats
@@ -1920,6 +1936,19 @@ export default defineComponent({
       }
 
       charResonanceChainsData.value = givenResonanceChainsData;
+      // also re-trigger the self buffs as they can be tied together
+
+      const buffsData = computeSelfBuffs(
+        characterStore.getActiveCharacter?.buffs ?? {},
+        chosenChar.value?.buffs ?? {},
+        characterStore.getActiveCharacter?.resonanceChains ?? {},
+        talentData.value ?? {},
+        character?.value ?? null,
+        energyRegen.value,
+        totalCritRate.value,
+      );
+      console.log(buffsData);
+      charBuffsData.value = buffsData;
       const stats = calcCharStats(
         false, // return value
         null, // inject stats
