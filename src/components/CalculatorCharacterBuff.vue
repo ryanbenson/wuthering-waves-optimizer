@@ -111,9 +111,9 @@ export default {
     return {};
   },
   watch: {
-    buffStats: function () {
-      this.updatedStats();
-    },
+    // buffStats: function () {
+    //   this.updatedStats();
+    // },
     isEnabled: {
       handler: async function () {
         this.updatedStats();
@@ -137,13 +137,6 @@ export default {
         },
         immediate: true,
       },
-    "currentCharacter.resonanceChains.SequenceNode2CleansedinCrimsonWar.isEnabled":
-      {
-        handler: function () {
-          this.updatedStats();
-        },
-        immediate: true,
-      },
     "currentCharacter.resonanceChains.SequenceNode6EngravedinRadiantLight.isEnabled":
       {
         handler: function () {
@@ -151,20 +144,6 @@ export default {
         },
         immediate: true,
       },
-    // watch for Brant changes in his buffs
-    "currentCharacter.buffs.MyMoment.isEnabled": {
-      handler: function () {
-        this.updatedStats();
-      },
-      immediate: true,
-    },
-    // watch for Brant changes in his buffs
-    "currentCharacter.buffs.TheatricalMoment.isEnabled": {
-      handler: function () {
-        this.updatedStats();
-      },
-      immediate: true,
-    },
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
@@ -175,7 +154,7 @@ export default {
     updatedStats() {
       this.$emit("updated-character-buff", {
         key: this.uniqueKey,
-        data: this.buffStats,
+        // data: this.buffStats,
       });
     },
     /**
@@ -257,9 +236,6 @@ export default {
         const sequenceNode1 =
           this.currentCharacter?.resonanceChains
             ?.SequenceNode1StainedinScorchedEarth;
-        const sequenceNode2 =
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode2CleansedinCrimsonWar;
         const sequenceNode6 =
           this.currentCharacter?.resonanceChains
             ?.SequenceNode6EngravedinRadiantLight;
@@ -267,30 +243,6 @@ export default {
         // Apply SequenceNode1 effects if enabled
         if (sequenceNode1?.isEnabled) {
           effectiveMaxStacks = 2;
-          // Add CritDMG modifier if not already present
-          const hasCritDMG = effectiveModifiers.some(
-            (mod) => mod.modifier === "CritDMG",
-          );
-          if (!hasCritDMG) {
-            effectiveModifiers.push({
-              modifier: "CritDMG",
-              modifierValue: 0.15,
-            });
-          }
-        }
-
-        // Apply SequenceNode2 effects if enabled
-        if (sequenceNode2?.isEnabled) {
-          // Add CritDMG modifier if not already present
-          const hasCritDMG = effectiveModifiers.some(
-            (mod) => mod.modifier === "CritRate",
-          );
-          if (!hasCritDMG) {
-            effectiveModifiers.push({
-              modifier: "CritRate",
-              modifierValue: 0.2,
-            });
-          }
         }
 
         // Apply SequenceNode6 effects if enabled
@@ -299,283 +251,12 @@ export default {
         }
       }
 
-      // this only applies to Afterflame on Galbrena
-      if (this.character === "Galbrena" && this.uniqueKey === "Afterflame") {
-        // Check if resonance chain buffs are enabled and apply their effects
-        const sequenceNode1 =
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode1HeartofDefianceEverAblaze;
-        const sequenceNode6 =
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode6IRemainWhoIamEternalMyFlame;
-
-        // Apply SequenceNode1 effects if enabled
-        if (sequenceNode1?.isEnabled) {
-          // Add CritDMG modifier if not already present
-          const hasCritDMG = effectiveModifiers.some(
-            (mod) => mod.modifier === "CritDMG",
-          );
-          if (!hasCritDMG) {
-            effectiveModifiers.push({
-              modifier: "CritDMG",
-              modifySpecificTalents: [
-                "BasicAttackSeraphicExecutionStage1DMG",
-                "BasicAttackSeraphicExecutionStage2DMG",
-                "BasicAttackSeraphicExecutionStage3DMG",
-                "BasicAttackSeraphicExecutionStage4DMG",
-                "BasicAttackSeraphicExecutionStage5DMG",
-                "HeavyAttackFlamewingVerdictStage1DMG",
-                "HeavyAttackFlamewingVerdictStage2DMG",
-                "HeavyAttackFlamewingVerdictStage3DMG",
-                "MidairAttackHellsentBarragePlungingAttackDMG",
-                "MidairAttackHellsentBarrageSustainedFireDMG",
-                "ResonanceSkillRavageDMG",
-                "DodgeCounterPurgatoryScourgeDMG",
-              ],
-              modifierValue: 0.02,
-            });
-          }
-        }
-
-        // Apply sequenceNode6 effects if enabled
-        if (sequenceNode6?.isEnabled) {
-          // Add CritDMG modifier if not already present
-          const DMGDeepen = effectiveModifiers.some(
-            (mod) => mod.modifier === "DMGDeepen",
-          );
-          if (!DMGDeepen) {
-            effectiveModifiers.push({
-              modifier: "DMGDeepen",
-              modifySpecificTalents: [
-                "BasicAttackSeraphicExecutionStage1DMG",
-                "BasicAttackSeraphicExecutionStage2DMG",
-                "BasicAttackSeraphicExecutionStage3DMG",
-                "BasicAttackSeraphicExecutionStage4DMG",
-                "BasicAttackSeraphicExecutionStage5DMG",
-                "HeavyAttackFlamewingVerdictStage1DMG",
-                "HeavyAttackFlamewingVerdictStage2DMG",
-                "HeavyAttackFlamewingVerdictStage3DMG",
-                "MidairAttackHellsentBarragePlungingAttackDMG",
-                "MidairAttackHellsentBarrageSustainedFireDMG",
-                "ResonanceSkillRavageDMG",
-                "DodgeCounterPurgatoryScourgeDMG",
-              ],
-              modifierValue: 0.00875,
-            });
-          }
-        }
-      }
-
-      // this only applies to BurningDrive on Galbrena
-      if (this.character === "Galbrena" && this.uniqueKey === "BurningDrive") {
-        const sequenceNode2 =
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode2HellboundDiveofFireandAbyss;
-
-        // Apply SequenceNode1 effects if enabled
-        if (sequenceNode2?.isEnabled) {
-          // Add CritDMG modifier if not already present
-          const hasAtk = effectiveModifiers.some(
-            (mod) => mod.modifier === "ATK",
-          );
-          // it should replace the existing buff, so we check if it does exist
-          if (hasAtk) {
-            effectiveModifiers.push({
-              modifier: "ATK",
-              // .7 from res chain + 0.2 from original buff
-              // wording says 350%, but it's a multiplier against 20%, so 20%*350%
-              // not additive
-              modifierValue: 0.9,
-            });
-          }
-        }
-      }
-
-      // this only applies to BamboosShade on Qiuyuan
-      if (this.character === "Qiuyuan" && this.uniqueKey === "BamboosShade") {
-        const sequenceNode2 =
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode2OBladeIWhoTeachNoMore;
-
-        // Apply SequenceNode2 effects if enabled
-        if (sequenceNode2?.isEnabled) {
-          const hasEchoAmplify = effectiveModifiers.some(
-            (mod) => mod.modifier === "DMGDeepen:Echo",
-          );
-          if (!hasEchoAmplify) {
-            effectiveModifiers.push({
-              modifier: "DMGDeepen:Echo",
-              modifierValue: 0.3,
-            });
-          }
-        }
-      }
-      // Buling SequenceNode6AlmightyForumLordofThunderSpell replaces ThunderSpellHeavenEarthMind
-      if (
-        this.character === "Buling" &&
-        this.uniqueKey === "ThunderSpellHeavenEarthMind"
-      ) {
-        if (
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode6AlmightyForumLordofThunderSpell?.isEnabled
-        ) {
-          // overwrite the modifiers
-          effectiveModifiers = [
-            {
-              modifier: "ResonanceSkillDMGBonus",
-              modifierValue: 0.5,
-            },
-          ];
-        }
-      }
-
-      // If both are enabled, SequenceNode6 takes precedence (4 max stacks)
-      // If neither is enabled, revert to base configuration (1 max stack, original modifiers)
-
       const result = {
         effectiveMaxStacks,
         effectiveModifiers,
         effectiveStacks,
       };
       return result;
-    },
-    /**
-     * Transforms the buffs data into a hashmap of buffModifider : buffValue
-     * That gets sent throughout the calculator to reflect in the stats and damages
-     * @returns {Object}
-     */
-    buffStats() {
-      const data = {};
-      if (!this.isEnabled) {
-        return data;
-      }
-
-      // Check if this buff got overridden by another buff
-      // TODO: Implement the replaces and replacedBy logic
-      // it needs to check both character buffs and resonance chains
-      if (
-        this.character === "Lupa" &&
-        (this.uniqueKey === "InherentSkillApplauseofVictory" ||
-          this.uniqueKey === "InherentSkillApplauseofVictoryFullFusionTeam")
-      ) {
-        if (
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode3WolflameHowlsinHerWakeIgnoreFusion?.isEnabled
-        ) {
-          return data;
-        }
-      }
-
-      // Get the effective modifiers based on resonance chain interactions
-      const effectiveData = this.effectiveBuffData;
-      const { effectiveModifiers, effectiveStacks } = effectiveData;
-      if (!this.hasStacks) {
-        effectiveModifiers.forEach((modifierItem) => {
-          if (modifierItem?.modifySpecificTalents) {
-            if (!data.modifySpecificTalents) {
-              data.modifySpecificTalents = [];
-            }
-            // add our calculated value
-            modifierItem.modifierValueCalculated = modifierItem.modifierValue;
-            data.modifySpecificTalents.push(modifierItem);
-          } else if (modifierItem.modifier === "Talent") {
-            // this is the rare case where the modifier value needs a reference to another talent level
-            // specifically Jinhsi incandescence buff scales off of her forte talent
-            const talentRef =
-              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
-            const talentVal = modifierItem.modifierValue[talentRef];
-            data[
-              `${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`
-            ] = talentVal;
-          } else if (modifierItem.modifier === "talentModifierMultiply") {
-            // for buffs that apply talentModifierMultiply to the calcs
-            if (!data.talentModifierMultiply) {
-              data.talentModifierMultiply = [];
-            }
-            data.talentModifierMultiply.push(modifierItem);
-          } else if (modifierItem.modifier.includes("AdditionalBase")) {
-            // we need to calculate the buff based on the stats of another stat
-            let base = 0;
-            let currentAmount = 0;
-            switch (modifierItem.modifierBasedOn) {
-              // if there's a minStatValue, use that or use the default base
-              // some characters use full base (e.g. SK), some use a minimum amount (Roccia)
-              case "EnergyRegen":
-                base = modifierItem?.minStatValue ?? 0;
-                currentAmount = this.energyRegen;
-                break;
-              case "CritRate":
-                base = modifierItem?.minStatValue ?? 0.05;
-                currentAmount = this.critRate;
-                break;
-              default:
-                base = modifierItem?.minStatValue ?? 0;
-                break;
-            }
-            // use full numbers instead of decimals for this, to workaround JS math issues
-            // e.g. 0.7 - 0.5 = 0.19999996, so instead 7 - 5 = 2
-            const additionalAmount = currentAmount * 100 - base * 100;
-            const steps = Math.floor(
-              additionalAmount / modifierItem.modifierStep,
-            );
-            let buffValue = steps * modifierItem.modifierValue;
-            if (buffValue > modifierItem.maximumValue) {
-              buffValue = modifierItem.maximumValue;
-            }
-            // don't allow the buff to go negative and reduce your stats
-            if (buffValue < 0) {
-              buffValue = 0;
-            }
-            // now apply the buff
-            switch (modifierItem.modifierTargetAttr) {
-              case "CritRate":
-                data["CritRate"] = buffValue;
-                break;
-              case "CritDMG":
-                data["CritDMG"] = buffValue;
-                break;
-              case "ATK":
-                data["ATK"] = buffValue;
-                break;
-              case "ATK_FLAT":
-                console.log(buffValue);
-                data["ATK_FLAT"] = buffValue;
-                break;
-            }
-          } else {
-            data[modifierItem.modifier] = modifierItem.modifierValue;
-          }
-        });
-        return data;
-      }
-
-      if (this.hasStacks) {
-        if (effectiveStacks === 0) {
-          return data;
-        }
-        effectiveModifiers.forEach((modifierItem) => {
-          if (modifierItem?.modifySpecificTalents) {
-            if (!data.modifySpecificTalents) {
-              data.modifySpecificTalents = [];
-            }
-            // update modifier value with the value * stacks
-            modifierItem.modifierValueCalculated =
-              modifierItem.modifierValue * effectiveStacks;
-            data.modifySpecificTalents.push(modifierItem);
-          } else if (modifierItem.modifier === "Talent") {
-            const talentRef =
-              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
-            const talentVal = modifierItem.modifierValue[talentRef];
-            data[
-              `${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`
-            ] = talentVal * effectiveStacks;
-          } else {
-            const totalValue = modifierItem.modifierValue * effectiveStacks;
-            data[modifierItem.modifier] = totalValue;
-          }
-        });
-      }
-      return data;
     },
   },
   mounted() {
