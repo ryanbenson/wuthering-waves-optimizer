@@ -15,7 +15,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert alert-success mb-6 text-white p-2 px-4">
+          <div
+            v-if="false"
+            class="alert alert-success mb-6 text-white p-2 px-4">
             Buling is now available!
           </div>
           <CalculatorCharacterSelect
@@ -1830,6 +1832,16 @@ export default defineComponent({
     const handleWeaponUpdated = (givenWeaponData) => {
       weaponData.value = givenWeaponData;
       weaponAtk.value = givenWeaponData.attack;
+      const buffsData = computeSelfBuffs(
+        characterStore.getActiveCharacter?.buffs ?? {},
+        chosenChar.value?.buffs ?? [],
+        characterStore.getActiveCharacter?.resonanceChains ?? {},
+        talentData.value ?? {},
+        character?.value ?? null,
+        energyRegen.value,
+        totalCritRate.value,
+      );
+      charBuffsData.value = buffsData;
       const stats = calcCharStats(
         false, // return value
         null, // inject stats
@@ -1859,17 +1871,15 @@ export default defineComponent({
 
     const handleUpdatedCharacterBuffs = (givenCharBuffsData) => {
       // charBuffsData.value = givenCharBuffsData;
-      console.log(givenCharBuffsData);
       const buffsData = computeSelfBuffs(
         characterStore.getActiveCharacter?.buffs ?? {},
-        chosenChar.value?.buffs ?? {},
+        chosenChar.value?.buffs ?? [],
         characterStore.getActiveCharacter?.resonanceChains ?? {},
         talentData.value ?? {},
         character?.value ?? null,
         energyRegen.value,
         totalCritRate.value,
       );
-      console.log(buffsData);
       charBuffsData.value = buffsData;
       const stats = calcCharStats(
         false, // return value
@@ -1900,6 +1910,16 @@ export default defineComponent({
 
     const handleUpdatedTeamBuffs = (givenTeamBuffs) => {
       teamBuffsData.value = givenTeamBuffs;
+      const buffsData = computeSelfBuffs(
+        characterStore.getActiveCharacter?.buffs ?? {},
+        chosenChar.value?.buffs ?? [],
+        characterStore.getActiveCharacter?.resonanceChains ?? {},
+        talentData.value ?? {},
+        character?.value ?? null,
+        energyRegen.value,
+        totalCritRate.value,
+      );
+      charBuffsData.value = buffsData;
       const stats = calcCharStats(
         false, // return value
         null, // inject stats
@@ -1940,14 +1960,13 @@ export default defineComponent({
 
       const buffsData = computeSelfBuffs(
         characterStore.getActiveCharacter?.buffs ?? {},
-        chosenChar.value?.buffs ?? {},
+        chosenChar.value?.buffs ?? [],
         characterStore.getActiveCharacter?.resonanceChains ?? {},
         talentData.value ?? {},
         character?.value ?? null,
         energyRegen.value,
         totalCritRate.value,
       );
-      console.log(buffsData);
       charBuffsData.value = buffsData;
       const stats = calcCharStats(
         false, // return value
@@ -1978,6 +1997,16 @@ export default defineComponent({
 
     const updateStatsEchoes = (echoStatsGiven) => {
       echoStats.value = echoStatsGiven;
+      const buffsData = computeSelfBuffs(
+        characterStore.getActiveCharacter?.buffs ?? {},
+        chosenChar.value?.buffs ?? [],
+        characterStore.getActiveCharacter?.resonanceChains ?? {},
+        talentData.value ?? {},
+        character?.value ?? null,
+        energyRegen.value,
+        totalCritRate.value,
+      );
+      charBuffsData.value = buffsData;
       const stats = calcCharStats(
         false, // return value
         null, // inject stats
@@ -2011,6 +2040,16 @@ export default defineComponent({
 
     const handleCharacterTalentUpdated = (data) => {
       talentData[data.type] = data.value;
+      const buffsData = computeSelfBuffs(
+        characterStore.getActiveCharacter?.buffs ?? {},
+        chosenChar.value?.buffs ?? [],
+        characterStore.getActiveCharacter?.resonanceChains ?? {},
+        talentData.value ?? {},
+        character?.value ?? null,
+        energyRegen.value,
+        totalCritRate.value,
+      );
+      charBuffsData.value = buffsData;
       const stats = calcCharStats(
         false, // return value
         null, // inject stats
@@ -2608,6 +2647,7 @@ export default defineComponent({
             }
           });
         });
+        // first compute the stats without self buffs
         let finalStats = calcCharStats(
           "All", // return value
           null, // inject stats
@@ -2629,7 +2669,46 @@ export default defineComponent({
             weaponModifierValue: weaponData?.value?.modifierValue,
             weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
           },
-          charBuffsData.value,
+          {}, // NO SELF BUFFS
+          charResonanceChainsData.value,
+          echoStats.value,
+          customBuffs.value,
+          teamBuffsData.value,
+        );
+
+        // compute the self buffs for the loadout, not global
+        const buffsData = computeSelfBuffs(
+          characterStore.getActiveCharacter?.buffs ?? {},
+          chosenChar.value?.buffs ?? [],
+          characterStore.getActiveCharacter?.resonanceChains ?? {},
+          talentData.value ?? {},
+          character?.value ?? null,
+          finalStats.energyRegen, // use the current loadout stats
+          finalStats.totalCritRate, // use the current loadout stats
+        );
+        // compute the final stats
+        finalStats = calcCharStats(
+          "All", // return value
+          null, // inject stats
+          // ignores
+          {
+            ignoreEchoes: true,
+          },
+          combinedEchoBuffs, // echo stats
+          null, // full stats
+          // base stats
+          {
+            baseHp: baseHp.value,
+            baseAtk: baseAtk.value,
+            baseDef: baseDef.value,
+          },
+          {
+            weaponAtk: weaponData?.value?.attack,
+            weaponModifier: weaponData?.value?.modifier,
+            weaponModifierValue: weaponData?.value?.modifierValue,
+            weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+          },
+          buffsData, // use the recently computed self buffs
           charResonanceChainsData.value,
           echoStats.value,
           customBuffs.value,

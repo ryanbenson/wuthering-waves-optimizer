@@ -427,7 +427,10 @@ export const computeSelfBuffs = (
   energyRegen: number = 0,
   critRate: number = 0,
 ): any => {
-  // console.log(character, buffsConfig, buffsCharInfo, resonanceChainsConfig);
+  // find the buff in our char data
+  if (!buffsCharInfo || buffsCharInfo.length <= 0) {
+    return;
+  }
   const data: any = {
     EnableAttack: [],
     specificTalentBuffs: {},
@@ -441,7 +444,6 @@ export const computeSelfBuffs = (
     if (!buffData?.isEnabled) {
       continue;
     }
-    // find the buff in our char data
     const buffFromCharacter = buffsCharInfo.find(
       (buffItem: any) => buffItem.key === key,
     );
@@ -655,7 +657,7 @@ export const computeSelfBuffs = (
           data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
             talentVal * stacks;
         } else if (modifierItem.modifier === "EnableAttack") {
-          data.EnableAttack.push(modifierItem.modifierValue);
+          data.EnableAttack.push(...modifierItem.modifierValue);
         } else {
           const totalValue = modifierItem.modifierValue * stacks;
           data[modifierItem.modifier] =
@@ -731,7 +733,7 @@ export const computeSelfBuffs = (
               break;
           }
         } else if (modifierItem.modifier === "EnableAttack") {
-          data.EnableAttack.push(modifierItem.modifierValue);
+          data.EnableAttack.push(...modifierItem.modifierValue);
         } else {
           data[modifierItem.modifier] =
             (data[modifierItem.modifier] || 0) + modifierItem.modifierValue;
@@ -743,8 +745,13 @@ export const computeSelfBuffs = (
     const talents = item?.modifySpecificTalents ?? [];
     const { modifier, modifierValue, modifierValueCalculated } = item;
     talents.forEach((talent: string) => {
-      data.specificTalentBuffs[`${talent}:${modifier || "DMGBonus"}`] =
-        (data.specificTalentBuffs[`${talent}:${modifier || "DMGBonus"}`] || 0) +
+      let modifierStr = "";
+      // not everything will have a modifier, so append the : and modifier if we have it
+      if (modifier) {
+        modifierStr = `:${modifier}`;
+      }
+      data.specificTalentBuffs[`${talent}${modifierStr}`] =
+        (data.specificTalentBuffs[`${talent}${modifierStr}`] || 0) +
         (modifierValueCalculated || modifierValue);
     });
   });
