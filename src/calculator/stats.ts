@@ -750,27 +750,20 @@ export const computeSelfBuffs = (
   });
   // final adjustments where needed before surfacing this up
 
-  // if (this.character === "Lupa" && finalBuffData.specificTalentBuffs) {
-  //   if (
-  //     this.currentCharacter?.resonanceChains
-  //       ?.SequenceNode6TotheBrightestFlamingStar?.isEnabled
-  //   ) {
-  //     // copy the same buffs for NowheretoRunDMG from the other intro
-  //     const atk =
-  //       finalBuffData.specificTalentBuffs?.[`TryFocusingEhDMG:ATK`];
-  //     const fusion =
-  //       finalBuffData?.specificTalentBuffs?.[`TryFocusingEhDMG:Fusion`];
-  //     const resistReduction =
-  //       finalBuffData?.specificTalentBuffs?.[
-  //         `TryFocusingEhDMG:ResistShred:Fusion`
-  //       ];
-  //     finalBuffData.specificTalentBuffs["NowheretoRunDMG:ATK"] = atk || 0;
-  //     finalBuffData.specificTalentBuffs["NowheretoRunDMG:Fusion"] =
-  //       fusion || 0;
-  //     finalBuffData.specificTalentBuffs[
-  //       "NowheretoRunDMG:ResistShred:Fusion"
-  //     ] = resistReduction || 0;
-  //   }
-  // }
+  if (character === "Lupa" && data.specificTalentBuffs) {
+    if (
+      resonanceChainsConfig?.SequenceNode6TotheBrightestFlamingStar?.isEnabled
+    ) {
+      // copy the same buffs for NowheretoRunDMG from the other intro
+      const atk = data.specificTalentBuffs?.[`TryFocusingEhDMG:ATK`];
+      const fusion = data?.specificTalentBuffs?.[`TryFocusingEhDMG:Fusion`];
+      const resistReduction =
+        data?.specificTalentBuffs?.[`TryFocusingEhDMG:ResistShred:Fusion`];
+      data.specificTalentBuffs["NowheretoRunDMG:ATK"] = atk || 0;
+      data.specificTalentBuffs["NowheretoRunDMG:Fusion"] = fusion || 0;
+      data.specificTalentBuffs["NowheretoRunDMG:ResistShred:Fusion"] =
+        resistReduction || 0;
+    }
+  }
   return data;
 };
