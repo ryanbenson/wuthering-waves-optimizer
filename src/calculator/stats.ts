@@ -774,3 +774,174 @@ export const computeSelfBuffs = (
   }
   return data;
 };
+
+export const computeResonanceChainsBuffs = (
+  buffsConfig: any = null,
+  buffsCharInfo: any = null,
+  talentData: any = {},
+  energyRegen: number = 0,
+  critRate: number = 0,
+): any => {
+  // find the buff in our char data
+  if (!buffsCharInfo || buffsCharInfo.length <= 0) {
+    return;
+  }
+  const data: any = {
+    EnableAttack: [],
+    specificTalentBuffs: {},
+  };
+
+  const modifySpecificTalents: any = [];
+  // go through each buffsConfig, make sure it's enabled, then compute the buff
+  const entries = Object.entries(buffsConfig) as [string, any][];
+  for (const [key, buffData] of entries) {
+    // skip if it's not enabled
+    if (!buffData?.isEnabled) {
+      continue;
+    }
+    const buffFromCharacter = buffsCharInfo.find(
+      (buffItem: any) => buffItem.key === key,
+    );
+    const buff = JSON.parse(JSON.stringify(buffFromCharacter));
+    if (!buff) {
+      continue;
+    }
+
+    const modifiersData = buff?.modifiers ?? [];
+    let modifiers = JSON.parse(JSON.stringify(modifiersData));
+
+    if (buff.hasStacks) {
+      if (buffData?.stacks <= 0) {
+        continue;
+      }
+      const stacks = buffData?.stacks ?? 0;
+      modifiers.forEach((modifierItem: any) => {
+        if (modifierItem?.modifySpecificTalents) {
+          // update modifier value with the value * stacks
+          modifierItem.modifierValueCalculated =
+            modifierItem.modifierValue * stacks;
+          modifySpecificTalents.push(modifierItem);
+        } else if (modifierItem.modifier === "Talent") {
+          const talentRef =
+            talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+          const talentVal = modifierItem.modifierValue[talentRef];
+          data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
+            talentVal * stacks;
+        } else if (modifierItem.modifier === "EnableAttack") {
+          data.EnableAttack.push(...modifierItem.modifierValue);
+        } else {
+          const totalValue = modifierItem.modifierValue * stacks;
+          data[modifierItem.modifier] =
+            (data[modifierItem.modifier] || 0) + totalValue;
+        }
+      });
+    } else {
+      modifiers.forEach((modifierItem: any) => {
+        if (modifierItem?.modifySpecificTalents) {
+          // add our calculated value
+          modifierItem.modifierValueCalculated = modifierItem.modifierValue;
+          modifySpecificTalents.push(modifierItem);
+        } else if (modifierItem.modifier === "Talent") {
+          // this is the rare case where the modifier value needs a reference to another talent level
+          // specifically Jinhsi incandescence buff scales off of her forte talent
+          const talentRef =
+            talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+          const talentVal = modifierItem.modifierValue[talentRef];
+          data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
+            talentVal;
+        } else if (modifierItem.modifier === "talentModifierMultiply") {
+          // for buffs that apply talentModifierMultiply to the calcs
+          if (!data.talentModifierMultiply) {
+            data.talentModifierMultiply = [];
+          }
+          data.talentModifierMultiply.push(modifierItem);
+        } else if (modifierItem.modifier.includes("AdditionalBase")) {
+          // we need to calculate the buff based on the stats of another stat
+          let base = 0;
+          let currentAmount = 0;
+          switch (modifierItem.modifierBasedOn) {
+            // if there's a minStatValue, use that or use the default base
+            // some characters use full base (e.g. SK), some use a minimum amount (Roccia)
+            case "EnergyRegen":
+              base = modifierItem?.minStatValue ?? 0;
+              currentAmount = energyRegen;
+              break;
+            case "CritRate":
+              base = modifierItem?.minStatValue ?? 0.05;
+              currentAmount = critRate;
+              break;
+            default:
+              base = modifierItem?.minStatValue ?? 0;
+              break;
+          }
+          // use full numbers instead of decimals for this, to workaround JS math issues
+          // e.g. 0.7 - 0.5 = 0.19999996, so instead 7 - 5 = 2
+          const additionalAmount = currentAmount * 100 - base * 100;
+          const steps = Math.floor(
+            additionalAmount / modifierItem.modifierStep,
+          );
+          let buffValue = steps * modifierItem.modifierValue;
+          if (buffValue > modifierItem.maximumValue) {
+            buffValue = modifierItem.maximumValue;
+          }
+          // don't allow the buff to go negative and reduce your stats
+          if (buffValue < 0) {
+            buffValue = 0;
+          }
+          // now apply the buff
+          switch (modifierItem.modifierTargetAttr) {
+            case "CritRate":
+              data["CritRate"] = (data["CritRate"] || 0) + buffValue;
+              break;
+            case "CritDMG":
+              data["CritDMG"] = (data["CritDMG"] || 0) + buffValue;
+              break;
+            case "ATK":
+              data["ATK"] = (data["ATK"] || 0) + buffValue;
+              break;
+            case "ATK_FLAT":
+              data["ATK_FLAT"] = (data["ATK_FLAT"] || 0) + buffValue;
+              break;
+          }
+        } else if (modifierItem.modifier === "CritOverflow") {
+          const currentCritRate = critRate;
+          if (currentCritRate > modifierItem.overflowMin) {
+            const { modifierValue, overflowStep, overflowMin, overflowMax } =
+              modifierItem;
+            // Calculate how much Crit Rate is overflowing (above 100%)
+            const overflowAmount = Math.max(0, currentCritRate - overflowMin);
+            // Calculate how many overflow steps we have
+            const overflowSteps = Math.floor(overflowAmount / overflowStep);
+            // Calculate the Crit DMG bonus from overflow (capped by overflowMax)
+            const overflowBonus = Math.min(
+              overflowSteps * modifierValue,
+              overflowMax,
+            );
+            // Apply the overflow bonus to Crit DMG
+            data["CritDMG"] = (data["CritDMG"] || 0) + overflowBonus;
+          }
+        } else if (modifierItem.modifier === "EnableAttack") {
+          data.EnableAttack.push(...modifierItem.modifierValue);
+        } else {
+          data[modifierItem.modifier] =
+            (data[modifierItem.modifier] || 0) + modifierItem.modifierValue;
+        }
+      });
+    }
+  }
+  modifySpecificTalents.forEach((item: any) => {
+    const talents = item?.modifySpecificTalents ?? [];
+    const { modifier, modifierValue, modifierValueCalculated } = item;
+    talents.forEach((talent: string) => {
+      let modifierStr = "";
+      // not everything will have a modifier, so append the : and modifier if we have it
+      if (modifier) {
+        modifierStr = `:${modifier}`;
+      }
+      data.specificTalentBuffs[`${talent}${modifierStr}`] =
+        (data.specificTalentBuffs[`${talent}${modifierStr}`] || 0) +
+        (modifierValueCalculated || modifierValue);
+    });
+  });
+  return data;
+};

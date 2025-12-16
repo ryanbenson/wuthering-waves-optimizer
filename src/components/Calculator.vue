@@ -314,6 +314,7 @@ import {
   getInitStats,
   calcCharStats,
   computeSelfBuffs,
+  computeResonanceChainsBuffs,
 } from "../calculator/stats";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs, utilityAttacks } from "../buffs";
@@ -2670,7 +2671,7 @@ export default defineComponent({
             weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
           },
           {}, // NO SELF BUFFS
-          charResonanceChainsData.value,
+          {}, // no resonance chains
           echoStats.value,
           customBuffs.value,
           teamBuffsData.value,
@@ -2709,7 +2710,42 @@ export default defineComponent({
             weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
           },
           buffsData, // use the recently computed self buffs
-          charResonanceChainsData.value,
+          {}, // still no resonance chains
+          echoStats.value,
+          customBuffs.value,
+          teamBuffsData.value,
+        );
+        const resonanceChainsBuffsData = computeResonanceChainsBuffs(
+          characterStore.getActiveCharacter?.resonanceChains ?? {},
+          chosenChar.value?.resonanceChains ?? [],
+          talentData.value ?? {},
+          finalStats.energyRegen, // use the current loadout stats
+          finalStats.totalCritRate, // use the current loadout stats
+        );
+        // compute the final stats
+        finalStats = calcCharStats(
+          "All", // return value
+          null, // inject stats
+          // ignores
+          {
+            ignoreEchoes: true,
+          },
+          combinedEchoBuffs, // echo stats
+          null, // full stats
+          // base stats
+          {
+            baseHp: baseHp.value,
+            baseAtk: baseAtk.value,
+            baseDef: baseDef.value,
+          },
+          {
+            weaponAtk: weaponData?.value?.attack,
+            weaponModifier: weaponData?.value?.modifier,
+            weaponModifierValue: weaponData?.value?.modifierValue,
+            weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+          },
+          buffsData, // use the recently computed self buffs
+          resonanceChainsBuffsData,
           echoStats.value,
           customBuffs.value,
           teamBuffsData.value,
