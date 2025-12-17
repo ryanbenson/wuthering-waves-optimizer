@@ -1146,28 +1146,7 @@ export const calculateAllStats = (context: {
     ignoreBuffs = {},
   } = context;
 
-  // Step 0: Calculate base stats (without self buffs, resonance chains, AdditionalBase, CritOverflow)
-  const baseStats = calcCharStats(
-    "All",
-    null,
-    ignoreBuffs,
-    null,
-    null,
-    { baseHp, baseAtk, baseDef },
-    {
-      weaponAtk,
-      weaponModifier,
-      weaponModifierValue,
-      weaponPassiveData,
-    },
-    {}, // no self buffs
-    {}, // no resonance chains
-    echoStats,
-    customBuffs,
-    teamBuffsData,
-  );
-
-  // Step 1: Compute resonance chains buffs using base stats
+  // Step 1: Compute resonance chains buffs (no longer needs base stats)
   const resonanceChainsBuffsData =
     computeResonanceChainsBuffs(
       resonanceChainsConfig ?? {},
@@ -1175,7 +1154,7 @@ export const calculateAllStats = (context: {
       talentData ?? {},
     ) || {};
 
-  // Step 2: Compute self buffs using base stats
+  // Step 2: Compute self buffs (no longer needs base stats)
   const selfBuffsData =
     computeSelfBuffs(
       buffsConfig ?? {},
@@ -1186,6 +1165,7 @@ export const calculateAllStats = (context: {
     ) || {};
 
   // Step 3: Calculate intermediate stats with resonance chains and self buffs
+  // This internally calculates base stats, then applies resonance chains and self buffs
   const intermediateStats = calcCharStats(
     "All",
     null,
