@@ -17,8 +17,6 @@
         :max-stacks="buff.maxStacks"
         :modifiers="buff.modifiers"
         @updated-character-buff="handleUpdatedCharacterBuff"
-        :talent-data="talentData"
-        :crit-rate="critRate"
         class="character__buff character__resonance-chain"
         :data-test-resonance-chain="buff.key"></CalculatorResonanceChainsItem>
     </div>
@@ -37,99 +35,28 @@ export default {
       type: Array,
       default: () => [],
     },
-    talentData: {
-      type: Object,
-      default: () => {},
-    },
-    critRate: {
-      type: Number,
-      default: 0,
-    },
   },
   components: { CalculatorResonanceChainsItem },
-  data() {
-    return {
-      buffsData: [],
-    };
-  },
-  watch: {
-    buffsFormatted: function () {
-      this.updatedStats();
-    },
-  },
   methods: {
+    /**
+     * Emits when resonance chains are updated - stats.ts will handle the calculation
+     * @emits updated-character-resonance-chains
+     */
     updatedStats() {
-      this.$emit("updated-character-resonance-chains", this.buffsFormatted);
+      this.$emit("updated-character-resonance-chains");
     },
-    handleUpdatedCharacterBuff(buffInfo) {
-      const buffIndex = this.buffsData.findIndex((buff) => {
-        return buff.key === buffInfo.key;
-      });
-      if (buffIndex === -1) {
-        this.buffsData.push(buffInfo);
-      } else {
-        this.buffsData[buffIndex] = buffInfo;
-      }
-    },
-  },
-  computed: {
-    buffsFormatted() {
-      const finalBuffData = {};
-      let modifySpecificTalents = [];
-      this.buffsData.forEach((buffInstance) => {
-        const stat = buffInstance.key;
-        const buffDataArr = Object.entries(buffInstance.data);
-        buffDataArr.forEach(([stat, value]) => {
-          if (stat === "modifySpecificTalents") {
-            const updatedSpecificTalentList =
-              modifySpecificTalents.concat(value);
-            modifySpecificTalents = updatedSpecificTalentList;
-          } else if (stat === "EnableAttack") {
-            if (Array.isArray(finalBuffData[stat])) {
-              finalBuffData[stat].push(...value);
-            } else {
-              finalBuffData[stat] = [...value];
-            }
-          } else {
-            finalBuffData[stat] = (finalBuffData[stat] || 0) + value;
-          }
-        });
-      });
-      // format any specific talents
-      if (modifySpecificTalents.length > 0) {
-        const specificTalentBuffs = {};
-        // make it { talentKey: value }, if it has a modifier (e.g. DefIgnore), attach it to the talent
-        // so it won't auto buff, and we can grab it later
-        modifySpecificTalents.forEach((buffInstance) => {
-          const talentKeys = buffInstance?.modifySpecificTalents ?? [];
-          talentKeys.forEach((talent) => {
-            let talentName = talent;
-            if (buffInstance?.modifier) {
-              talentName = `${talentName}:${buffInstance.modifier}`;
-            }
-            if (buffInstance.modifier === "talentTypeOverride") {
-              specificTalentBuffs[talentName] =
-                (specificTalentBuffs[talentName] || "") +
-                buffInstance.modifierValueCalculated;
-            } else if (buffInstance.modifier === "talentReplace") {
-              specificTalentBuffs[talentName] = buffInstance.modifierValue;
-            } else {
-              specificTalentBuffs[talentName] =
-                (specificTalentBuffs[talentName] || 0) +
-                buffInstance.modifierValueCalculated;
-            }
-          });
-        });
-        finalBuffData.specificTalentBuffs = specificTalentBuffs;
-      }
-      return finalBuffData;
+    /**
+     * Handler for when child components emit updates
+     */
+    handleUpdatedCharacterBuff() {
+      this.updatedStats();
     },
   },
   mounted() {
     this.updatedStats();
   },
   beforeUnmount() {
-    this.$emit("updated-character-buffs", {});
+    this.$emit("updated-character-resonance-chains");
   },
 };
 </script>

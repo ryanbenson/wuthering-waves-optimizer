@@ -306,8 +306,8 @@ export const calcCharStats = (
   let { baseHp = 0, baseAtk = 0, baseDef = 0 } = characterStats;
   let weaponAtk = 0;
 
-  let weaponModifier = null;
-  let weaponModifierValue = 0;
+  let weaponModifier: string | null = null;
+  let weaponModifierValue: number = 0;
   let weaponPassiveData = {};
 
   if (charBuffsData && !providedFullStats) {
@@ -424,8 +424,6 @@ export const computeSelfBuffs = (
   resonanceChainsConfig: any = null,
   talentData: any = {},
   character: string = "",
-  energyRegen: number = 0,
-  critRate: number = 0,
 ): any => {
   // find the buff in our char data
   if (!buffsCharInfo || buffsCharInfo.length <= 0) {
@@ -472,12 +470,6 @@ export const computeSelfBuffs = (
     // they're both self buffs, no resonance chains
     if (character === "Jiyan" && key === "ForteCircuitQingloongatWar1") {
       if (buffsConfig?.ForteCircuitQingloongatWar2?.isEnabled) {
-        continue;
-      }
-    }
-    // on Brant, if this is TheatricalMoment, check if MyMoment, if so, ignore this buff
-    if (character === "Brant" && key === "TheatricalMoment") {
-      if (buffsConfig?.MyMoment?.isEnabled) {
         continue;
       }
     }
@@ -684,54 +676,6 @@ export const computeSelfBuffs = (
             data.talentModifierMultiply = [];
           }
           data.talentModifierMultiply.push(modifierItem);
-        } else if (modifierItem.modifier.includes("AdditionalBase")) {
-          // we need to calculate the buff based on the stats of another stat
-          let base = 0;
-          let currentAmount = 0;
-          switch (modifierItem.modifierBasedOn) {
-            // if there's a minStatValue, use that or use the default base
-            // some characters use full base (e.g. SK), some use a minimum amount (Roccia)
-            case "EnergyRegen":
-              base = modifierItem?.minStatValue ?? 0;
-              currentAmount = energyRegen;
-              break;
-            case "CritRate":
-              base = modifierItem?.minStatValue ?? 0.05;
-              currentAmount = critRate;
-              break;
-            default:
-              base = modifierItem?.minStatValue ?? 0;
-              break;
-          }
-          // use full numbers instead of decimals for this, to workaround JS math issues
-          // e.g. 0.7 - 0.5 = 0.19999996, so instead 7 - 5 = 2
-          const additionalAmount = currentAmount * 100 - base * 100;
-          const steps = Math.floor(
-            additionalAmount / modifierItem.modifierStep,
-          );
-          let buffValue = steps * modifierItem.modifierValue;
-          if (buffValue > modifierItem.maximumValue) {
-            buffValue = modifierItem.maximumValue;
-          }
-          // don't allow the buff to go negative and reduce your stats
-          if (buffValue < 0) {
-            buffValue = 0;
-          }
-          // now apply the buff
-          switch (modifierItem.modifierTargetAttr) {
-            case "CritRate":
-              data["CritRate"] = (data["CritRate"] || 0) + buffValue;
-              break;
-            case "CritDMG":
-              data["CritDMG"] = (data["CritDMG"] || 0) + buffValue;
-              break;
-            case "ATK":
-              data["ATK"] = (data["ATK"] || 0) + buffValue;
-              break;
-            case "ATK_FLAT":
-              data["ATK_FLAT"] = (data["ATK_FLAT"] || 0) + buffValue;
-              break;
-          }
         } else if (modifierItem.modifier === "EnableAttack") {
           data.EnableAttack.push(...modifierItem.modifierValue);
         } else {
@@ -773,4 +717,550 @@ export const computeSelfBuffs = (
     }
   }
   return data;
+};
+
+// Separate function to calculate ONLY AdditionalBase modifiers
+// These modifiers depend on final stats (like CritRate), so they need to be calculated
+// after resonance chains and self buffs have been applied
+export const computeAdditionalBaseBuffs = (
+  buffsConfig: any = null,
+  buffsCharInfo: any = null,
+  resonanceChainsConfig: any = null,
+  character: string = "",
+  energyRegen: number = 0,
+  critRate: number = 0,
+): any => {
+  if (!buffsCharInfo || buffsCharInfo.length <= 0) {
+    return {};
+  }
+  const data: any = {};
+
+  const entries = Object.entries(buffsConfig) as [string, any][];
+  for (const [key, buffData] of entries) {
+    if (!buffData?.isEnabled) {
+      continue;
+    }
+    const buffFromCharacter = buffsCharInfo.find(
+      (buffItem: any) => buffItem.key === key,
+    );
+    const buff = JSON.parse(JSON.stringify(buffFromCharacter));
+    if (!buff) {
+      continue;
+    }
+    // on Brant, if this is TheatricalMoment, check if MyMoment, if so, ignore this buff
+    if (character === "Brant" && key === "TheatricalMoment") {
+      if (buffsConfig?.MyMoment?.isEnabled) {
+        continue;
+      }
+    }
+
+    const modifiersData = buff?.modifiers ?? [];
+    let modifiers = JSON.parse(JSON.stringify(modifiersData));
+
+    // Calculate adjusted CritRate that includes non-AdditionalBase modifiers (like SequenceNode2)
+    // This is needed because AdditionalBase modifiers depend on the final CritRate including these buffs
+    let adjustedCritRate = critRate;
+    let adjustedEnergyRegen = energyRegen;
+
+    // Apply character-specific modifications (like Augusta's SequenceNode2 adding CritRate)
+    if (character === "Augusta" && key === "CrownofWills") {
+      const sequenceNode2 =
+        resonanceChainsConfig?.SequenceNode2CleansedinCrimsonWar;
+
+      if (sequenceNode2?.isEnabled) {
+        // SequenceNode2 adds 20% CritRate per stack
+        const stacks = buff.hasStacks ? (buffData?.stacks ?? 1) : 1;
+        adjustedCritRate = critRate + 0.2 * stacks;
+      }
+    }
+
+    // Process only AdditionalBase modifiers
+    if (buff.hasStacks) {
+      if (buffData?.stacks <= 0) {
+        continue;
+      }
+      const stacks = buffData?.stacks ?? 0;
+      modifiers.forEach((modifierItem: any) => {
+        if (modifierItem?.modifier?.includes("AdditionalBase")) {
+          let base = 0;
+          let currentAmount = 0;
+          switch (modifierItem.modifierBasedOn) {
+            case "EnergyRegen":
+              base = modifierItem?.minStatValue ?? 0;
+              currentAmount = adjustedEnergyRegen;
+              break;
+            case "CritRate":
+              base = modifierItem?.minStatValue ?? 0.05;
+              currentAmount = adjustedCritRate;
+              break;
+            default:
+              base = modifierItem?.minStatValue ?? 0;
+              break;
+          }
+          const additionalAmount = currentAmount * 100 - base * 100;
+          const steps = Math.floor(
+            additionalAmount / modifierItem.modifierStep,
+          );
+          let buffValue = steps * modifierItem.modifierValue * stacks;
+          if (buffValue > modifierItem.maximumValue) {
+            buffValue = modifierItem.maximumValue;
+          }
+          if (buffValue < 0) {
+            buffValue = 0;
+          }
+          switch (modifierItem.modifierTargetAttr) {
+            case "CritRate":
+              data["CritRate"] = (data["CritRate"] || 0) + buffValue;
+              break;
+            case "CritDMG":
+              data["CritDMG"] = (data["CritDMG"] || 0) + buffValue;
+              break;
+            case "ATK":
+              data["ATK"] = (data["ATK"] || 0) + buffValue;
+              break;
+            case "ATK_FLAT":
+              data["ATK_FLAT"] = (data["ATK_FLAT"] || 0) + buffValue;
+              break;
+          }
+        }
+      });
+    } else {
+      modifiers.forEach((modifierItem: any) => {
+        if (modifierItem?.modifier?.includes("AdditionalBase")) {
+          let base = 0;
+          let currentAmount = 0;
+          switch (modifierItem.modifierBasedOn) {
+            case "EnergyRegen":
+              base = modifierItem?.minStatValue ?? 0;
+              currentAmount = adjustedEnergyRegen;
+              break;
+            case "CritRate":
+              base = modifierItem?.minStatValue ?? 0.05;
+              currentAmount = adjustedCritRate;
+              break;
+            default:
+              base = modifierItem?.minStatValue ?? 0;
+              break;
+          }
+          const additionalAmount = currentAmount * 100 - base * 100;
+          const steps = Math.floor(
+            additionalAmount / modifierItem.modifierStep,
+          );
+          let buffValue = steps * modifierItem.modifierValue;
+          if (buffValue > modifierItem.maximumValue) {
+            buffValue = modifierItem.maximumValue;
+          }
+          if (buffValue < 0) {
+            buffValue = 0;
+          }
+          switch (modifierItem.modifierTargetAttr) {
+            case "CritRate":
+              data["CritRate"] = (data["CritRate"] || 0) + buffValue;
+              break;
+            case "CritDMG":
+              data["CritDMG"] = (data["CritDMG"] || 0) + buffValue;
+              break;
+            case "ATK":
+              data["ATK"] = (data["ATK"] || 0) + buffValue;
+              break;
+            case "ATK_FLAT":
+              data["ATK_FLAT"] = (data["ATK_FLAT"] || 0) + buffValue;
+              break;
+          }
+        }
+      });
+    }
+  }
+  return data;
+};
+
+// Separate function to calculate ONLY CritOverflow modifiers
+// These modifiers convert excess CritRate into CritDMG
+export const computeCritOverflowBuffs = (
+  buffsConfig: any = null,
+  buffsCharInfo: any = null,
+  resonanceChainsConfig: any = null,
+  resonanceChainsCharInfo: any = null,
+  critRate: number = 0,
+): any => {
+  const data: any = {};
+
+  // Helper function to process CritOverflow modifiers from a buff
+  const processCritOverflowModifiers = (
+    modifiers: any[],
+    hasStacks: boolean,
+    stacks: number = 0,
+  ) => {
+    modifiers.forEach((modifierItem: any) => {
+      if (modifierItem.modifier === "CritOverflow") {
+        if (critRate > modifierItem.overflowMin) {
+          const { modifierValue, overflowStep, overflowMin, overflowMax } =
+            modifierItem;
+          const overflowAmount = Math.max(0, critRate - overflowMin);
+          const overflowSteps = Math.floor(overflowAmount / overflowStep);
+          const overflowBonus = Math.min(
+            overflowSteps * modifierValue * (hasStacks ? stacks : 1),
+            overflowMax,
+          );
+          data["CritDMG"] = (data["CritDMG"] || 0) + overflowBonus;
+        }
+      }
+    });
+  };
+
+  // Check regular buffs
+  if (
+    buffsConfig &&
+    buffsCharInfo &&
+    Array.isArray(buffsCharInfo) &&
+    buffsCharInfo.length > 0
+  ) {
+    const entries = Object.entries(buffsConfig) as [string, any][];
+    for (const [key, buffData] of entries) {
+      if (!buffData?.isEnabled) {
+        continue;
+      }
+      const buffFromCharacter = buffsCharInfo.find(
+        (buffItem: any) => buffItem.key === key,
+      );
+      const buff = JSON.parse(JSON.stringify(buffFromCharacter));
+      if (!buff) {
+        continue;
+      }
+
+      const modifiersData = buff?.modifiers ?? [];
+      const modifiers = JSON.parse(JSON.stringify(modifiersData));
+
+      if (buff.hasStacks) {
+        if (buffData?.stacks <= 0) {
+          continue;
+        }
+        processCritOverflowModifiers(modifiers, true, buffData?.stacks ?? 0);
+      } else {
+        processCritOverflowModifiers(modifiers, false);
+      }
+    }
+  }
+
+  // Check resonance chains
+  if (
+    resonanceChainsConfig &&
+    resonanceChainsCharInfo &&
+    Array.isArray(resonanceChainsCharInfo) &&
+    resonanceChainsCharInfo.length > 0
+  ) {
+    const entries = Object.entries(resonanceChainsConfig) as [string, any][];
+    for (const [key, chainData] of entries) {
+      if (!chainData?.isEnabled) {
+        continue;
+      }
+      const chainFromCharacter = resonanceChainsCharInfo.find(
+        (chainItem: any) => chainItem.key === key,
+      );
+      const chain = JSON.parse(JSON.stringify(chainFromCharacter));
+      if (!chain) {
+        continue;
+      }
+
+      const modifiersData = chain?.modifiers ?? [];
+      const modifiers = JSON.parse(JSON.stringify(modifiersData));
+
+      if (chain.hasStacks) {
+        if (chainData?.stacks <= 0) {
+          continue;
+        }
+        processCritOverflowModifiers(modifiers, true, chainData?.stacks ?? 0);
+      } else {
+        processCritOverflowModifiers(modifiers, false);
+      }
+    }
+  }
+
+  return data;
+};
+
+export const computeResonanceChainsBuffs = (
+  buffsConfig: any = null,
+  buffsCharInfo: any = null,
+  talentData: any = {},
+): any => {
+  // find the buff in our char data
+  if (!buffsCharInfo || buffsCharInfo.length <= 0) {
+    return;
+  }
+  const data: any = {
+    EnableAttack: [],
+    specificTalentBuffs: {},
+  };
+
+  const modifySpecificTalents: any = [];
+  // go through each buffsConfig, make sure it's enabled, then compute the buff
+  const entries = Object.entries(buffsConfig) as [string, any][];
+  for (const [key, buffData] of entries) {
+    // skip if it's not enabled
+    if (!buffData?.isEnabled) {
+      continue;
+    }
+    const buffFromCharacter = buffsCharInfo.find(
+      (buffItem: any) => buffItem.key === key,
+    );
+    const buff = JSON.parse(JSON.stringify(buffFromCharacter));
+    if (!buff) {
+      continue;
+    }
+
+    const modifiersData = buff?.modifiers ?? [];
+    let modifiers = JSON.parse(JSON.stringify(modifiersData));
+
+    if (buff.hasStacks) {
+      if (buffData?.stacks <= 0) {
+        continue;
+      }
+      const stacks = buffData?.stacks ?? 0;
+      modifiers.forEach((modifierItem: any) => {
+        if (modifierItem?.modifySpecificTalents) {
+          // update modifier value with the value * stacks
+          modifierItem.modifierValueCalculated =
+            modifierItem.modifierValue * stacks;
+          modifySpecificTalents.push(modifierItem);
+        } else if (modifierItem.modifier === "Talent") {
+          const talentRef =
+            talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+          const talentVal = modifierItem.modifierValue[talentRef];
+          data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
+            talentVal * stacks;
+        } else if (modifierItem.modifier === "EnableAttack") {
+          data.EnableAttack.push(...modifierItem.modifierValue);
+        } else if (modifierItem.modifier === "TalentReplace") {
+          modifySpecificTalents.push(modifierItem);
+        } else {
+          const totalValue = modifierItem.modifierValue * stacks;
+          data[modifierItem.modifier] =
+            (data[modifierItem.modifier] || 0) + totalValue;
+        }
+      });
+    } else {
+      modifiers.forEach((modifierItem: any) => {
+        if (modifierItem?.modifySpecificTalents) {
+          // add our calculated value
+          modifierItem.modifierValueCalculated = modifierItem.modifierValue;
+          modifySpecificTalents.push(modifierItem);
+        } else if (modifierItem.modifier === "Talent") {
+          // this is the rare case where the modifier value needs a reference to another talent level
+          // specifically Jinhsi incandescence buff scales off of her forte talent
+          const talentRef =
+            talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
+          const talentVal = modifierItem.modifierValue[talentRef];
+          data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
+            talentVal;
+        } else if (modifierItem.modifier === "talentModifierMultiply") {
+          // for buffs that apply talentModifierMultiply to the calcs
+          if (!data.talentModifierMultiply) {
+            data.talentModifierMultiply = [];
+          }
+          data.talentModifierMultiply.push(modifierItem);
+        } else if (modifierItem.modifier === "EnableAttack") {
+          data.EnableAttack.push(...modifierItem.modifierValue);
+        } else {
+          data[modifierItem.modifier] =
+            (data[modifierItem.modifier] || 0) + modifierItem.modifierValue;
+        }
+      });
+    }
+  }
+  modifySpecificTalents.forEach((item: any) => {
+    const talents = item?.modifySpecificTalents ?? [];
+    const { modifier, modifierValue, modifierValueCalculated } = item;
+    talents.forEach((talent: string) => {
+      if (modifier === "talentReplace") {
+        data.specificTalentBuffs[`${talent}:${modifier}`] = modifierValue;
+      } else {
+        let modifierStr = "";
+        // not everything will have a modifier, so append the : and modifier if we have it
+        if (modifier) {
+          modifierStr = `:${modifier}`;
+        }
+        data.specificTalentBuffs[`${talent}${modifierStr}`] =
+          (data.specificTalentBuffs[`${talent}${modifierStr}`] || 0) +
+          (modifierValueCalculated || modifierValue);
+      }
+    });
+  });
+  return data;
+};
+
+// Pure function to calculate all stats with full context
+// This function is designed to work in web workers - no Vue dependencies, all state passed as parameters
+// Returns both final stats and breakdown data for UI
+export const calculateAllStats = (context: {
+  // Character base stats
+  baseHp: number;
+  baseAtk: number;
+  baseDef: number;
+
+  // Weapon data
+  weaponAtk: number;
+  weaponModifier: string | null;
+  weaponModifierValue: number;
+  weaponPassiveData: any;
+
+  // Buff configurations (enabled state)
+  buffsConfig: any;
+  resonanceChainsConfig: any;
+  customBuffs: any;
+  teamBuffsData: any;
+  echoStats: any;
+
+  // Character data (definitions)
+  buffsCharInfo: any[];
+  resonanceChainsCharInfo: any[];
+
+  // Character metadata
+  character: string;
+  talentData: any;
+
+  // Options
+  ignoreBuffs?: {
+    ignoreTeamBuffs?: boolean;
+    ignoreWeaponBuffs?: boolean;
+    ignoreEchoes?: boolean;
+  };
+}): {
+  finalStats: any;
+  selfBuffsData: any;
+  resonanceChainsBuffsData: any;
+  additionalBaseBuffsData: any;
+  critOverflowBuffsData: any;
+} => {
+  const {
+    baseHp,
+    baseAtk,
+    baseDef,
+    weaponAtk,
+    weaponModifier,
+    weaponModifierValue,
+    weaponPassiveData,
+    buffsConfig,
+    resonanceChainsConfig,
+    customBuffs,
+    teamBuffsData,
+    echoStats,
+    buffsCharInfo,
+    resonanceChainsCharInfo,
+    character,
+    talentData,
+    ignoreBuffs = {},
+  } = context;
+
+  // Step 1: Compute resonance chains buffs (no longer needs base stats)
+  const resonanceChainsBuffsData =
+    computeResonanceChainsBuffs(
+      resonanceChainsConfig ?? {},
+      resonanceChainsCharInfo ?? [],
+      talentData ?? {},
+    ) || {};
+
+  // Step 2: Compute self buffs (no longer needs base stats)
+  const selfBuffsData =
+    computeSelfBuffs(
+      buffsConfig ?? {},
+      buffsCharInfo ?? [],
+      resonanceChainsConfig ?? {},
+      talentData ?? {},
+      character ?? "",
+    ) || {};
+
+  // Step 3: Calculate intermediate stats with resonance chains and self buffs
+  // This internally calculates base stats, then applies resonance chains and self buffs
+  const intermediateStats = calcCharStats(
+    "All",
+    null,
+    ignoreBuffs,
+    null,
+    null,
+    { baseHp, baseAtk, baseDef },
+    {
+      weaponAtk,
+      weaponModifier,
+      weaponModifierValue,
+      weaponPassiveData,
+    },
+    selfBuffsData,
+    resonanceChainsBuffsData,
+    echoStats,
+    customBuffs,
+    teamBuffsData,
+  );
+
+  // Step 4: Compute AdditionalBase buffs using intermediate stats
+  const additionalBaseBuffsData = computeAdditionalBaseBuffs(
+    buffsConfig ?? {},
+    buffsCharInfo ?? [],
+    resonanceChainsConfig ?? {},
+    character ?? "",
+    intermediateStats.energyRegen,
+    intermediateStats.totalCritRate,
+  );
+
+  // Step 5: Compute CritOverflow buffs using intermediate stats
+  const critOverflowBuffsData = computeCritOverflowBuffs(
+    buffsConfig ?? {},
+    buffsCharInfo ?? [],
+    resonanceChainsConfig ?? {},
+    resonanceChainsCharInfo ?? [],
+    intermediateStats.totalCritRate,
+  );
+
+  // Step 6: Merge AdditionalBase and CritOverflow into self buffs
+  const mergedSelfBuffs = {
+    ...selfBuffsData,
+    CritRate:
+      (selfBuffsData?.CritRate || 0) + (additionalBaseBuffsData?.CritRate || 0),
+    CritDMG:
+      (selfBuffsData?.CritDMG || 0) +
+      (additionalBaseBuffsData?.CritDMG || 0) +
+      (critOverflowBuffsData?.CritDMG || 0),
+    ATK: (selfBuffsData?.ATK || 0) + (additionalBaseBuffsData?.ATK || 0),
+    ATK_FLAT:
+      (selfBuffsData?.ATK_FLAT || 0) + (additionalBaseBuffsData?.ATK_FLAT || 0),
+  };
+
+  // Step 7: Calculate final stats with all buffs
+  const finalStats = calcCharStats(
+    "All",
+    null,
+    ignoreBuffs,
+    null,
+    null,
+    { baseHp, baseAtk, baseDef },
+    {
+      weaponAtk,
+      weaponModifier,
+      weaponModifierValue,
+      weaponPassiveData,
+    },
+    mergedSelfBuffs,
+    resonanceChainsBuffsData,
+    echoStats,
+    customBuffs,
+    teamBuffsData,
+  );
+
+  // Merge AdditionalBase and CritOverflow into breakdown for UI
+  const mergedSelfBuffsForBreakdown = {
+    ...selfBuffsData,
+    ...additionalBaseBuffsData,
+    CritDMG:
+      (selfBuffsData?.CritDMG || 0) +
+      (additionalBaseBuffsData?.CritDMG || 0) +
+      (critOverflowBuffsData?.CritDMG || 0),
+  };
+
+  return {
+    finalStats,
+    selfBuffsData: mergedSelfBuffsForBreakdown,
+    resonanceChainsBuffsData,
+    additionalBaseBuffsData,
+    critOverflowBuffsData,
+  };
 };

@@ -78,8 +78,6 @@
             :key="character"
             :character="character"
             :buffs="chosenChar?.value?.resonanceChains"
-            :talent-data="characters?.[character]?.talents"
-            :crit-rate="totalCritRate"
             @updated-character-resonance-chains="
               handleUpdatedCharacterResonanceChains
             "></CalculatorResonanceChains>
@@ -314,6 +312,10 @@ import {
   getInitStats,
   calcCharStats,
   computeSelfBuffs,
+  computeResonanceChainsBuffs,
+  computeAdditionalBaseBuffs,
+  computeCritOverflowBuffs,
+  calculateAllStats,
 } from "../calculator/stats";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs, utilityAttacks } from "../buffs";
@@ -478,30 +480,11 @@ export default defineComponent({
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
-      const stats = calcCharStats(
-        false, // return value
-        null, // inject stats
-        {}, // ignore anything
-        null, // injectEchoStats
-        null, // providedFullStats
-        {
-          baseHp: baseHp.value,
-          baseAtk: baseAtk.value,
-          baseDef: baseDef.value,
-        },
-        {
-          weaponAtk: weaponData?.value?.attack,
-          weaponModifier: weaponData?.value?.modifier,
-          weaponModifierValue: weaponData?.value?.modifierValue,
-          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        },
-        charBuffsData.value,
-        charResonanceChainsData.value,
-        echoStats.value,
-        customBuffs.value,
-        teamBuffsData.value,
-      );
-      updateStats(stats);
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     });
 
@@ -1832,118 +1815,55 @@ export default defineComponent({
     const handleWeaponUpdated = (givenWeaponData) => {
       weaponData.value = givenWeaponData;
       weaponAtk.value = givenWeaponData.attack;
-      const buffsData = computeSelfBuffs(
-        characterStore.getActiveCharacter?.buffs ?? {},
-        chosenChar.value?.buffs ?? [],
-        characterStore.getActiveCharacter?.resonanceChains ?? {},
-        talentData.value ?? {},
-        character?.value ?? null,
-        energyRegen.value,
-        totalCritRate.value,
-      );
-      charBuffsData.value = buffsData;
-      const stats = calcCharStats(
-        false, // return value
-        null, // inject stats
-        {}, // ignore anything
-        null, // injectEchoStats
-        null, // providedFullStats
-        {
-          baseHp: baseHp.value,
-          baseAtk: baseAtk.value,
-          baseDef: baseDef.value,
-        },
-        {
-          weaponAtk: weaponData?.value?.attack,
-          weaponModifier: weaponData?.value?.modifier,
-          weaponModifierValue: weaponData?.value?.modifierValue,
-          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        },
-        charBuffsData.value,
-        charResonanceChainsData.value,
-        echoStats.value,
-        customBuffs.value,
-        teamBuffsData.value,
-      );
-      updateStats(stats);
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     };
 
+    // Helper function to compute all buffs in the correct order and return breakdown data
+    // Uses the pure calculateAllStats function which is web worker compatible
+    const computeAllBuffsWithBreakdown = () => {
+      return calculateAllStats({
+        baseHp: baseHp.value,
+        baseAtk: baseAtk.value,
+        baseDef: baseDef.value,
+        weaponAtk: weaponData?.value?.attack ?? 0,
+        weaponModifier: weaponData?.value?.modifier ?? null,
+        weaponModifierValue: weaponData?.value?.modifierValue ?? 0,
+        weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+        buffsConfig: characterStore.getActiveCharacter?.buffs ?? {},
+        resonanceChainsConfig:
+          characterStore.getActiveCharacter?.resonanceChains ?? {},
+        customBuffs: customBuffs.value,
+        teamBuffsData: teamBuffsData.value,
+        echoStats: echoStats.value,
+        buffsCharInfo: chosenChar.value?.buffs ?? [],
+        resonanceChainsCharInfo: chosenChar.value?.resonanceChains ?? [],
+        character: character?.value ?? "",
+        talentData: talentData.value ?? {},
+        ignoreBuffs: {},
+      });
+    };
+
     const handleUpdatedCharacterBuffs = (givenCharBuffsData) => {
-      // charBuffsData.value = givenCharBuffsData;
-      const buffsData = computeSelfBuffs(
-        characterStore.getActiveCharacter?.buffs ?? {},
-        chosenChar.value?.buffs ?? [],
-        characterStore.getActiveCharacter?.resonanceChains ?? {},
-        talentData.value ?? {},
-        character?.value ?? null,
-        energyRegen.value,
-        totalCritRate.value,
-      );
-      charBuffsData.value = buffsData;
-      const stats = calcCharStats(
-        false, // return value
-        null, // inject stats
-        {}, // ignore anything
-        null, // injectEchoStats
-        null, // providedFullStats
-        {
-          baseHp: baseHp.value,
-          baseAtk: baseAtk.value,
-          baseDef: baseDef.value,
-        },
-        {
-          weaponAtk: weaponData?.value?.attack,
-          weaponModifier: weaponData?.value?.modifier,
-          weaponModifierValue: weaponData?.value?.modifierValue,
-          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        },
-        charBuffsData.value,
-        charResonanceChainsData.value,
-        echoStats.value,
-        customBuffs.value,
-        teamBuffsData.value,
-      );
-      updateStats(stats);
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     };
 
     const handleUpdatedTeamBuffs = (givenTeamBuffs) => {
       teamBuffsData.value = givenTeamBuffs;
-      const buffsData = computeSelfBuffs(
-        characterStore.getActiveCharacter?.buffs ?? {},
-        chosenChar.value?.buffs ?? [],
-        characterStore.getActiveCharacter?.resonanceChains ?? {},
-        talentData.value ?? {},
-        character?.value ?? null,
-        energyRegen.value,
-        totalCritRate.value,
-      );
-      charBuffsData.value = buffsData;
-      const stats = calcCharStats(
-        false, // return value
-        null, // inject stats
-        {}, // ignore anything
-        null, // injectEchoStats
-        null, // providedFullStats
-        {
-          baseHp: baseHp.value,
-          baseAtk: baseAtk.value,
-          baseDef: baseDef.value,
-        },
-        {
-          weaponAtk: weaponData?.value?.attack,
-          weaponModifier: weaponData?.value?.modifier,
-          weaponModifierValue: weaponData?.value?.modifierValue,
-          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        },
-        charBuffsData.value,
-        charResonanceChainsData.value,
-        echoStats.value,
-        customBuffs.value,
-        teamBuffsData.value,
-      );
-      updateStats(stats);
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     };
 
@@ -1957,80 +1877,21 @@ export default defineComponent({
 
       charResonanceChainsData.value = givenResonanceChainsData;
       // also re-trigger the self buffs as they can be tied together
-
-      const buffsData = computeSelfBuffs(
-        characterStore.getActiveCharacter?.buffs ?? {},
-        chosenChar.value?.buffs ?? [],
-        characterStore.getActiveCharacter?.resonanceChains ?? {},
-        talentData.value ?? {},
-        character?.value ?? null,
-        energyRegen.value,
-        totalCritRate.value,
-      );
-      charBuffsData.value = buffsData;
-      const stats = calcCharStats(
-        false, // return value
-        null, // inject stats
-        {}, // ignore anything
-        null, // injectEchoStats
-        null, // providedFullStats
-        {
-          baseHp: baseHp.value,
-          baseAtk: baseAtk.value,
-          baseDef: baseDef.value,
-        },
-        {
-          weaponAtk: weaponData?.value?.attack,
-          weaponModifier: weaponData?.value?.modifier,
-          weaponModifierValue: weaponData?.value?.modifierValue,
-          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        },
-        charBuffsData.value,
-        charResonanceChainsData.value,
-        echoStats.value,
-        customBuffs.value,
-        teamBuffsData.value,
-      );
-      updateStats(stats);
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     };
 
     const updateStatsEchoes = (echoStatsGiven) => {
       echoStats.value = echoStatsGiven;
-      const buffsData = computeSelfBuffs(
-        characterStore.getActiveCharacter?.buffs ?? {},
-        chosenChar.value?.buffs ?? [],
-        characterStore.getActiveCharacter?.resonanceChains ?? {},
-        talentData.value ?? {},
-        character?.value ?? null,
-        energyRegen.value,
-        totalCritRate.value,
-      );
-      charBuffsData.value = buffsData;
-      const stats = calcCharStats(
-        false, // return value
-        null, // inject stats
-        {}, // ignore anything
-        null, // injectEchoStats
-        null, // providedFullStats
-        {
-          baseHp: baseHp.value,
-          baseAtk: baseAtk.value,
-          baseDef: baseDef.value,
-        },
-        {
-          weaponAtk: weaponData?.value?.attack,
-          weaponModifier: weaponData?.value?.modifier,
-          weaponModifierValue: weaponData?.value?.modifierValue,
-          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        },
-        charBuffsData.value,
-        charResonanceChainsData.value,
-        echoStats.value,
-        customBuffs.value,
-        teamBuffsData.value,
-      );
-      updateStats(stats);
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     };
 
@@ -2040,40 +1901,11 @@ export default defineComponent({
 
     const handleCharacterTalentUpdated = (data) => {
       talentData[data.type] = data.value;
-      const buffsData = computeSelfBuffs(
-        characterStore.getActiveCharacter?.buffs ?? {},
-        chosenChar.value?.buffs ?? [],
-        characterStore.getActiveCharacter?.resonanceChains ?? {},
-        talentData.value ?? {},
-        character?.value ?? null,
-        energyRegen.value,
-        totalCritRate.value,
-      );
-      charBuffsData.value = buffsData;
-      const stats = calcCharStats(
-        false, // return value
-        null, // inject stats
-        {}, // ignore anything
-        null, // injectEchoStats
-        null, // providedFullStats
-        {
-          baseHp: baseHp.value,
-          baseAtk: baseAtk.value,
-          baseDef: baseDef.value,
-        },
-        {
-          weaponAtk: weaponData?.value?.attack,
-          weaponModifier: weaponData?.value?.modifier,
-          weaponModifierValue: weaponData?.value?.modifierValue,
-          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        },
-        charBuffsData.value,
-        charResonanceChainsData.value,
-        echoStats.value,
-        customBuffs.value,
-        teamBuffsData.value,
-      );
-      updateStats(stats);
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     };
 
@@ -2090,30 +1922,11 @@ export default defineComponent({
       baseDef.value =
         chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)
           ?.defense ?? 0;
-      const stats = calcCharStats(
-        false, // return value
-        null, // inject stats
-        {}, // ignore anything
-        null, // injectEchoStats
-        null, // providedFullStats
-        {
-          baseHp: baseHp.value,
-          baseAtk: baseAtk.value,
-          baseDef: baseDef.value,
-        },
-        {
-          weaponAtk: weaponData?.value?.attack,
-          weaponModifier: weaponData?.value?.modifier,
-          weaponModifierValue: weaponData?.value?.modifierValue,
-          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        },
-        charBuffsData.value,
-        charResonanceChainsData.value,
-        echoStats.value,
-        customBuffs.value,
-        teamBuffsData.value,
-      );
-      updateStats(stats);
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     };
 
@@ -2128,30 +1941,11 @@ export default defineComponent({
 
     const handleCustomBuffs = (data) => {
       customBuffs.value = data;
-      const stats = calcCharStats(
-        false, // return value
-        null, // inject stats
-        {}, // ignore anything
-        null, // injectEchoStats
-        null, // providedFullStats
-        {
-          baseHp: baseHp.value,
-          baseAtk: baseAtk.value,
-          baseDef: baseDef.value,
-        },
-        {
-          weaponAtk: weaponData?.value?.attack,
-          weaponModifier: weaponData?.value?.modifier,
-          weaponModifierValue: weaponData?.value?.modifierValue,
-          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        },
-        charBuffsData.value,
-        charResonanceChainsData.value,
-        echoStats.value,
-        customBuffs.value,
-        teamBuffsData.value,
-      );
-      updateStats(stats);
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     };
 
@@ -2670,33 +2464,38 @@ export default defineComponent({
             weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
           },
           {}, // NO SELF BUFFS
-          charResonanceChainsData.value,
+          {}, // no resonance chains
           echoStats.value,
           customBuffs.value,
           teamBuffsData.value,
         );
 
-        // compute the self buffs for the loadout, not global
-        const buffsData = computeSelfBuffs(
+        // Compute all buffs in the correct order for this loadout
+        // Step 1: Compute resonance chains buffs using base stats
+        const resonanceChainsBuffsData = computeResonanceChainsBuffs(
+          characterStore.getActiveCharacter?.resonanceChains ?? {},
+          chosenChar.value?.resonanceChains ?? [],
+          talentData.value ?? {},
+        );
+
+        // Step 2: Compute self buffs using base stats
+        const selfBuffsData = computeSelfBuffs(
           characterStore.getActiveCharacter?.buffs ?? {},
           chosenChar.value?.buffs ?? [],
           characterStore.getActiveCharacter?.resonanceChains ?? {},
           talentData.value ?? {},
           character?.value ?? null,
-          finalStats.energyRegen, // use the current loadout stats
-          finalStats.totalCritRate, // use the current loadout stats
         );
-        // compute the final stats
-        finalStats = calcCharStats(
-          "All", // return value
-          null, // inject stats
-          // ignores
+
+        // Step 3: Calculate intermediate stats with resonance chains and self buffs
+        let intermediateStats = calcCharStats(
+          "All",
+          null,
           {
             ignoreEchoes: true,
           },
-          combinedEchoBuffs, // echo stats
-          null, // full stats
-          // base stats
+          combinedEchoBuffs,
+          null,
           {
             baseHp: baseHp.value,
             baseAtk: baseAtk.value,
@@ -2708,8 +2507,70 @@ export default defineComponent({
             weaponModifierValue: weaponData?.value?.modifierValue,
             weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
           },
-          buffsData, // use the recently computed self buffs
-          charResonanceChainsData.value,
+          selfBuffsData,
+          resonanceChainsBuffsData,
+          echoStats.value,
+          customBuffs.value,
+          teamBuffsData.value,
+        );
+
+        // Step 4: Compute AdditionalBase buffs using intermediate stats
+        const additionalBaseBuffsData = computeAdditionalBaseBuffs(
+          characterStore.getActiveCharacter?.buffs ?? {},
+          chosenChar.value?.buffs ?? [],
+          characterStore.getActiveCharacter?.resonanceChains ?? {},
+          character?.value ?? null,
+          intermediateStats.energyRegen,
+          intermediateStats.totalCritRate,
+        );
+
+        // Step 5: Compute CritOverflow buffs using intermediate stats
+        const critOverflowBuffsData = computeCritOverflowBuffs(
+          characterStore.getActiveCharacter?.buffs ?? {},
+          chosenChar.value?.buffs ?? [],
+          characterStore.getActiveCharacter?.resonanceChains ?? {},
+          chosenChar.value?.resonanceChains ?? [],
+          intermediateStats.totalCritRate,
+        );
+
+        // Step 6: Merge AdditionalBase and CritOverflow into self buffs
+        const mergedSelfBuffs = {
+          ...selfBuffsData,
+          CritRate:
+            (selfBuffsData?.CritRate || 0) +
+            (additionalBaseBuffsData?.CritRate || 0),
+          CritDMG:
+            (selfBuffsData?.CritDMG || 0) +
+            (additionalBaseBuffsData?.CritDMG || 0) +
+            (critOverflowBuffsData?.CritDMG || 0),
+          ATK: (selfBuffsData?.ATK || 0) + (additionalBaseBuffsData?.ATK || 0),
+          ATK_FLAT:
+            (selfBuffsData?.ATK_FLAT || 0) +
+            (additionalBaseBuffsData?.ATK_FLAT || 0),
+        };
+
+        // Step 7: Compute final stats with all buffs
+        finalStats = calcCharStats(
+          "All",
+          null,
+          {
+            ignoreEchoes: true,
+          },
+          combinedEchoBuffs,
+          null,
+          {
+            baseHp: baseHp.value,
+            baseAtk: baseAtk.value,
+            baseDef: baseDef.value,
+          },
+          {
+            weaponAtk: weaponData?.value?.attack,
+            weaponModifier: weaponData?.value?.modifier,
+            weaponModifierValue: weaponData?.value?.modifierValue,
+            weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
+          },
+          mergedSelfBuffs,
+          resonanceChainsBuffsData,
           echoStats.value,
           customBuffs.value,
           teamBuffsData.value,
