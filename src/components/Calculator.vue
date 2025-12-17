@@ -480,30 +480,11 @@ export default defineComponent({
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
-      const stats = calcCharStats(
-        false, // return value
-        null, // inject stats
-        {}, // ignore anything
-        null, // injectEchoStats
-        null, // providedFullStats
-        {
-          baseHp: baseHp.value,
-          baseAtk: baseAtk.value,
-          baseDef: baseDef.value,
-        },
-        {
-          weaponAtk: weaponData?.value?.attack,
-          weaponModifier: weaponData?.value?.modifier,
-          weaponModifierValue: weaponData?.value?.modifierValue,
-          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        },
-        charBuffsData.value,
-        charResonanceChainsData.value,
-        echoStats.value,
-        customBuffs.value,
-        teamBuffsData.value,
-      );
-      updateStats(stats);
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     });
 
@@ -1941,30 +1922,11 @@ export default defineComponent({
       baseDef.value =
         chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)
           ?.defense ?? 0;
-      const stats = calcCharStats(
-        false, // return value
-        null, // inject stats
-        {}, // ignore anything
-        null, // injectEchoStats
-        null, // providedFullStats
-        {
-          baseHp: baseHp.value,
-          baseAtk: baseAtk.value,
-          baseDef: baseDef.value,
-        },
-        {
-          weaponAtk: weaponData?.value?.attack,
-          weaponModifier: weaponData?.value?.modifier,
-          weaponModifierValue: weaponData?.value?.modifierValue,
-          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        },
-        charBuffsData.value,
-        charResonanceChainsData.value,
-        echoStats.value,
-        customBuffs.value,
-        teamBuffsData.value,
-      );
-      updateStats(stats);
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     };
 
@@ -1979,30 +1941,11 @@ export default defineComponent({
 
     const handleCustomBuffs = (data) => {
       customBuffs.value = data;
-      const stats = calcCharStats(
-        false, // return value
-        null, // inject stats
-        {}, // ignore anything
-        null, // injectEchoStats
-        null, // providedFullStats
-        {
-          baseHp: baseHp.value,
-          baseAtk: baseAtk.value,
-          baseDef: baseDef.value,
-        },
-        {
-          weaponAtk: weaponData?.value?.attack,
-          weaponModifier: weaponData?.value?.modifier,
-          weaponModifierValue: weaponData?.value?.modifierValue,
-          weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        },
-        charBuffsData.value,
-        charResonanceChainsData.value,
-        echoStats.value,
-        customBuffs.value,
-        teamBuffsData.value,
-      );
-      updateStats(stats);
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     };
 

@@ -473,12 +473,6 @@ export const computeSelfBuffs = (
         continue;
       }
     }
-    // on Brant, if this is TheatricalMoment, check if MyMoment, if so, ignore this buff
-    if (character === "Brant" && key === "TheatricalMoment") {
-      if (buffsConfig?.MyMoment?.isEnabled) {
-        continue;
-      }
-    }
     // on Augusta, we change modifiers
     // this only applies to CrownofWills on Augusta
     if (character === "Augusta" && key === "CrownofWills") {
@@ -752,6 +746,14 @@ export const computeAdditionalBaseBuffs = (
     const buff = JSON.parse(JSON.stringify(buffFromCharacter));
     if (!buff) {
       continue;
+    }
+    // on Brant, if this is TheatricalMoment, check if MyMoment, if so, ignore this buff
+    if (character === "Brant" && key === "TheatricalMoment") {
+      console.log(character, key, buffsConfig?.MyMoment?.isEnabled);
+      if (buffsConfig?.MyMoment?.isEnabled) {
+        console.log("continue?");
+        continue;
+      }
     }
 
     const modifiersData = buff?.modifiers ?? [];
