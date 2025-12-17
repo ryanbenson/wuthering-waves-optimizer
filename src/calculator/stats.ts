@@ -983,8 +983,6 @@ export const computeResonanceChainsBuffs = (
   buffsConfig: any = null,
   buffsCharInfo: any = null,
   talentData: any = {},
-  energyRegen: number = 0,
-  critRate: number = 0,
 ): any => {
   // find the buff in our char data
   if (!buffsCharInfo || buffsCharInfo.length <= 0) {
@@ -1175,8 +1173,6 @@ export const calculateAllStats = (context: {
       resonanceChainsConfig ?? {},
       resonanceChainsCharInfo ?? [],
       talentData ?? {},
-      baseStats.energyRegen,
-      baseStats.totalCritRate,
     ) || {};
 
   // Step 2: Compute self buffs using base stats

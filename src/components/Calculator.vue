@@ -2533,8 +2533,6 @@ export default defineComponent({
           characterStore.getActiveCharacter?.resonanceChains ?? {},
           chosenChar.value?.resonanceChains ?? [],
           talentData.value ?? {},
-          finalStats.energyRegen, // use the current loadout stats (base, no buffs)
-          finalStats.totalCritRate, // use the current loadout stats (base, no buffs)
         );
 
         // Step 2: Compute self buffs using base stats
