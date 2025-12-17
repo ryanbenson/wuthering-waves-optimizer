@@ -2544,8 +2544,6 @@ export default defineComponent({
           characterStore.getActiveCharacter?.resonanceChains ?? {},
           talentData.value ?? {},
           character?.value ?? null,
-          finalStats.energyRegen, // use the current loadout stats (base, no buffs)
-          finalStats.totalCritRate, // use the current loadout stats (base, no buffs)
         );
 
         // Step 3: Calculate intermediate stats with resonance chains and self buffs
@@ -2580,7 +2578,6 @@ export default defineComponent({
           characterStore.getActiveCharacter?.buffs ?? {},
           chosenChar.value?.buffs ?? [],
           characterStore.getActiveCharacter?.resonanceChains ?? {},
-          talentData.value ?? {},
           character?.value ?? null,
           intermediateStats.energyRegen,
           intermediateStats.totalCritRate,

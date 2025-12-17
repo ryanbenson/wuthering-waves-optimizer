@@ -306,8 +306,8 @@ export const calcCharStats = (
   let { baseHp = 0, baseAtk = 0, baseDef = 0 } = characterStats;
   let weaponAtk = 0;
 
-  let weaponModifier = null;
-  let weaponModifierValue = 0;
+  let weaponModifier: string | null = null;
+  let weaponModifierValue: number = 0;
   let weaponPassiveData = {};
 
   if (charBuffsData && !providedFullStats) {
@@ -424,8 +424,6 @@ export const computeSelfBuffs = (
   resonanceChainsConfig: any = null,
   talentData: any = {},
   character: string = "",
-  energyRegen: number = 0,
-  critRate: number = 0,
 ): any => {
   // find the buff in our char data
   if (!buffsCharInfo || buffsCharInfo.length <= 0) {
@@ -734,7 +732,6 @@ export const computeAdditionalBaseBuffs = (
   buffsConfig: any = null,
   buffsCharInfo: any = null,
   resonanceChainsConfig: any = null,
-  talentData: any = {},
   character: string = "",
   energyRegen: number = 0,
   critRate: number = 0,
@@ -1190,8 +1187,6 @@ export const calculateAllStats = (context: {
       resonanceChainsConfig ?? {},
       talentData ?? {},
       character ?? "",
-      baseStats.energyRegen,
-      baseStats.totalCritRate,
     ) || {};
 
   // Step 3: Calculate intermediate stats with resonance chains and self buffs
@@ -1220,7 +1215,6 @@ export const calculateAllStats = (context: {
     buffsConfig ?? {},
     buffsCharInfo ?? [],
     resonanceChainsConfig ?? {},
-    talentData ?? {},
     character ?? "",
     intermediateStats.energyRegen,
     intermediateStats.totalCritRate,
