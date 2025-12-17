@@ -76,22 +76,11 @@ export default {
       type: Array,
       default: () => [],
     },
-    talentData: {
-      type: Object,
-      default: () => {},
-    },
-    critRate: {
-      type: Number,
-      default: 0,
-    },
   },
   data() {
     return {};
   },
   watch: {
-    buffStats: function () {
-      this.updatedStats();
-    },
     isEnabled: {
       handler: async function () {
         this.updatedStats();
@@ -108,10 +97,8 @@ export default {
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
     updatedStats() {
-      this.$emit("updated-character-buff", {
-        key: this.uniqueKey,
-        data: this.buffStats,
-      });
+      // Just emit that the enabled state changed - stats.ts will handle the calculation
+      this.$emit("updated-character-buff");
     },
     ensureMaxStacks() {
       if (this.stacks > this.maxStacks) {
@@ -174,103 +161,6 @@ export default {
         await this.setCharacterData(this.character, data);
       },
     },
-    buffStats() {
-      const data = {};
-      if (!this.isEnabled) {
-        return data;
-      }
-      if (!this.hasStacks) {
-        this.modifiers.forEach((modifierItem) => {
-          if (modifierItem?.modifySpecificTalents) {
-            if (!data.modifySpecificTalents) {
-              data.modifySpecificTalents = [];
-            }
-            // add our calculated value
-            modifierItem.modifierValueCalculated = modifierItem.modifierValue;
-            data.modifySpecificTalents.push(modifierItem);
-          } else if (modifierItem.modifier === "Talent") {
-            // this is the rare case where the modifier value needs a reference to another talent level
-            // specifically Jinhsi incandescence buff scales off of her forte talent
-            const talentRef =
-              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
-            const talentVal = modifierItem.modifierValue[talentRef];
-            data[modifierItem.modifierTalentKey] = talentVal;
-          } else if (modifierItem.modifier === "talentModifierMultiply") {
-            // for buffs that apply talentModifierMultiply to the calcs
-            if (!data.talentModifierMultiply) {
-              data.talentModifierMultiply = [];
-            }
-            data.talentModifierMultiply.push(modifierItem);
-          } else if (modifierItem.modifier === "talentReplace") {
-            if (!data.talentReplace) {
-              data.talentReplace = [];
-            }
-            data.talentReplace.push(modifierItem);
-          } else if (
-            modifierItem.modifier === "talentModifierSpecialMultiply"
-          ) {
-            // for buffs that apply talentModifierMultiply to the calcs
-            if (!data.talentModifierSpecialMultiply) {
-              data.talentModifierSpecialMultiply = [];
-            }
-            data.talentModifierSpecialMultiply.push(modifierItem);
-          } else if (
-            modifierItem.modifier === "talentModifierMultiplySetValue"
-          ) {
-            // for buffs that apply talentModifierMultiply to the calcs
-            if (!data.talentModifierMultiplySetValue) {
-              data.talentModifierMultiplySetValue = [];
-            }
-            data.talentModifierMultiplySetValue.push(modifierItem);
-          } else if (modifierItem.modifier === "CritOverflow") {
-            const currentCritRate = this.critRate;
-            if (currentCritRate > modifierItem.overflowMin) {
-              const { modifierValue, overflowStep, overflowMin, overflowMax } =
-                modifierItem;
-              // Calculate how much Crit Rate is overflowing (above 100%)
-              const overflowAmount = Math.max(0, currentCritRate - overflowMin);
-              // Calculate how many overflow steps we have
-              const overflowSteps = Math.floor(overflowAmount / overflowStep);
-              // Calculate the Crit DMG bonus from overflow (capped by overflowMax)
-              const overflowBonus = Math.min(
-                overflowSteps * modifierValue,
-                overflowMax,
-              );
-              // Apply the overflow bonus to Crit DMG
-              data["CritDMG"] = overflowBonus;
-            }
-          } else {
-            data[modifierItem.modifier] = modifierItem.modifierValue;
-          }
-        });
-        return data;
-      }
-      if (this.hasStacks) {
-        if (this.stacks === 0) {
-          return data;
-        }
-        this.modifiers.forEach((modifierItem) => {
-          if (modifierItem?.modifySpecificTalents) {
-            if (!data.modifySpecificTalents) {
-              data.modifySpecificTalents = [];
-            }
-            // updadate modifer value with the value * stacks
-            modifierItem.modifierValueCalculated =
-              modifierItem.modifierValue * this.stacks;
-            data.modifySpecificTalents.push(modifierItem);
-          } else if (modifierItem.modifier === "Talent") {
-            const talentRef =
-              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
-            const talentVal = modifierItem.modifierValue[talentRef];
-            data[modifierItem.modifierTalentKey] = talentVal * this.stacks;
-          } else {
-            const totalValue = modifierItem.modifierValue * this.stacks;
-            data[modifierItem.modifier] = totalValue;
-          }
-        });
-      }
-      return data;
-    },
   },
   mounted() {
     if (this.alwaysEnabled === true) {
@@ -285,6 +175,8 @@ export default {
   cursor: pointer;
 }
 .shadow {
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 </style>

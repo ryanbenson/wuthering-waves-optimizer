@@ -78,8 +78,6 @@
             :key="character"
             :character="character"
             :buffs="chosenChar?.value?.resonanceChains"
-            :talent-data="characters?.[character]?.talents"
-            :crit-rate="totalCritRate"
             @updated-character-resonance-chains="
               handleUpdatedCharacterResonanceChains
             "></CalculatorResonanceChains>
