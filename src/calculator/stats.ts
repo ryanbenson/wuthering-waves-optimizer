@@ -781,7 +781,7 @@ export const computeAdditionalBaseBuffs = (
       }
       const stacks = buffData?.stacks ?? 0;
       modifiers.forEach((modifierItem: any) => {
-        if (modifierItem.modifier.includes("AdditionalBase")) {
+        if (modifierItem?.modifier?.includes("AdditionalBase")) {
           let base = 0;
           let currentAmount = 0;
           switch (modifierItem.modifierBasedOn) {
@@ -826,7 +826,7 @@ export const computeAdditionalBaseBuffs = (
       });
     } else {
       modifiers.forEach((modifierItem: any) => {
-        if (modifierItem.modifier.includes("AdditionalBase")) {
+        if (modifierItem?.modifier?.includes("AdditionalBase")) {
           let base = 0;
           let currentAmount = 0;
           switch (modifierItem.modifierBasedOn) {
