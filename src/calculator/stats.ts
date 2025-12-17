@@ -749,9 +749,7 @@ export const computeAdditionalBaseBuffs = (
     }
     // on Brant, if this is TheatricalMoment, check if MyMoment, if so, ignore this buff
     if (character === "Brant" && key === "TheatricalMoment") {
-      console.log(character, key, buffsConfig?.MyMoment?.isEnabled);
       if (buffsConfig?.MyMoment?.isEnabled) {
-        console.log("continue?");
         continue;
       }
     }
@@ -1033,6 +1031,8 @@ export const computeResonanceChainsBuffs = (
             talentVal * stacks;
         } else if (modifierItem.modifier === "EnableAttack") {
           data.EnableAttack.push(...modifierItem.modifierValue);
+        } else if (modifierItem.modifier === "TalentReplace") {
+          modifySpecificTalents.push(modifierItem);
         } else {
           const totalValue = modifierItem.modifierValue * stacks;
           data[modifierItem.modifier] =
@@ -1072,14 +1072,18 @@ export const computeResonanceChainsBuffs = (
     const talents = item?.modifySpecificTalents ?? [];
     const { modifier, modifierValue, modifierValueCalculated } = item;
     talents.forEach((talent: string) => {
-      let modifierStr = "";
-      // not everything will have a modifier, so append the : and modifier if we have it
-      if (modifier) {
-        modifierStr = `:${modifier}`;
+      if (modifier === "talentReplace") {
+        data.specificTalentBuffs[`${talent}:${modifier}`] = modifierValue;
+      } else {
+        let modifierStr = "";
+        // not everything will have a modifier, so append the : and modifier if we have it
+        if (modifier) {
+          modifierStr = `:${modifier}`;
+        }
+        data.specificTalentBuffs[`${talent}${modifierStr}`] =
+          (data.specificTalentBuffs[`${talent}${modifierStr}`] || 0) +
+          (modifierValueCalculated || modifierValue);
       }
-      data.specificTalentBuffs[`${talent}${modifierStr}`] =
-        (data.specificTalentBuffs[`${talent}${modifierStr}`] || 0) +
-        (modifierValueCalculated || modifierValue);
     });
   });
   return data;
