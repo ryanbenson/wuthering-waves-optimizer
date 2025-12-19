@@ -1,12 +1,15 @@
 <template>
   <div
-    :class="{ 'weapon-passive': !alwaysEnabled }"
+    :class="{
+      'weapon-passive': !alwaysEnabled,
+    }"
     @click="toggleEnabled"
     :data-test-echo-set-passive="passiveKey">
     <div v-html="details"></div>
     <div class="flex gap-2 items-center">
       <div class="form-control" @click.stop>
         <label
+          v-if="modifiers && modifiers.length"
           class="label inline-flex justify-start pl-0"
           :class="{ 'cursor-pointer': !alwaysEnabled }">
           <input

@@ -419,6 +419,12 @@ export const echoSetImageMap: Record<string, string> = {
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FlamewingsShadow.webp",
   ThreadofSeveredFate:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/ThreadofSeveredFate.webp",
+  PactofNeonlightLeap:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/PactofNeonlightLeap.webp",
+  RiteofGildedRevelation:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/RiteofGildedRevelation.webp",
+  HaloofStarryRadiance:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/HaloofStarryRadiance.webp",
 };
 
 export function getEchoSetIconByType(type: string): string {
@@ -448,6 +454,9 @@ export const echoSetLabelMap: Record<string, string> = {
   LawofHarmony: "Law of Harmony",
   FlamewingsShadow: "Flamewing's Shadow",
   ThreadofSeveredFate: "Thread of Severed Fate",
+  PactofNeonlightLeap: "Pact of Neonlight Leap",
+  RiteofGildedRevelation: "Rite of Gilded Revelation",
+  HaloofStarryRadiance: "Halo of Starry Radiance",
 };
 
 export function getEchoSetLabelByType(type: string): string {
