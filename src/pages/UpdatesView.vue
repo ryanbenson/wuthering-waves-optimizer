@@ -2,6 +2,23 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>December 21, 2025</h3>
+    <ul>
+      <li>
+        Fixes race condition in calculating stats, causing it to fail sometimes.
+      </li>
+    </ul>
+    <h3>December 17, 2025</h3>
+    <ul>
+      <li>Fixes Augusta s2/s6 in the optimizer.</li>
+    </ul>
+    <h3>December 14, 2025</h3>
+    <ul>
+      <li>
+        Fixes stats calculation in the optimizer for some unique buffs, notably
+        affecting buffs based on stats.
+      </li>
+    </ul>
     <h3>December 11, 2025</h3>
     <ul>
       <li>Releases Buling</li>
