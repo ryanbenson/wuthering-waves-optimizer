@@ -307,6 +307,10 @@ export default {
           return data;
         }
       }
+      // PactofNeonlightLeap has a base of 15% atk, stacks give an extra 0.3 per stack
+      if (this.uniqueKey === "PactofNeonlightLeap") {
+        data["ATK"] = 0.15;
+      }
       if (!this.hasStacks) {
         this.modifiers.forEach((modifierItem) => {
           // if this buff only applies to specific characters, check the cur character
@@ -392,7 +396,8 @@ export default {
             } else {
               modifierValue = modifierItem.modifierValue;
             }
-            data[modifierItem.modifier] = modifierValue;
+            data[modifierItem.modifier] =
+              (data[modifierItem.modifier] || 0) + modifierValue;
           }
         });
         return data;
@@ -430,7 +435,8 @@ export default {
               modifierValue = modifierItem.modifierValue;
             }
             const totalValue = modifierValue * this.stacks;
-            data[modifierItem.modifier] = totalValue;
+            data[modifierItem.modifier] =
+              (data[modifierItem.modifier] || 0) + totalValue;
           }
         });
       }

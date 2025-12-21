@@ -1667,11 +1667,26 @@ CD: <span class="param">20</span>s</span>`,
   {
     key: "FallacyOfNoReturn",
     name: "Fallacy of No Return",
-    details: `<span class="description">Increases attack of all team characters by <span class="Highlight">10%</span>, lasting for 20 seconds.`,
+    details: `<span class="description">Increases attack of all team characters by <span class="Highlight">10%</span>, lasting for 20 seconds.</span>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "ATK",
+        modifierValue: 0.1,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "Hyvatia",
+    name: "Hyvatia",
+    details: `<span class="description">Casting Outro Skill within 15s after summoning Hyvatia grants 10.00% All-Attribute DMG Bonus to the Intro Skill of the incoming Resonator for 15s.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "AllElementAttributeBonus",
         modifierValue: 0.1,
       },
     ],
@@ -1752,6 +1767,21 @@ CD: <span class="param">20</span>s</span>`,
     ],
     minStacks: 0,
     maxStacks: 4,
+    alwaysEnabled: false,
+  },
+  {
+    key: "PactofNeonlightLeap",
+    name: "Pact of Neonlight Leap",
+    details: `Casting Outro Skill increases the ATK of the incoming Resonator by 15%, with each point of Tune Break Boost additionally increasing ATK by 0.3%, up to 15%. This effect lasts for 15s, or until the Resonator is switched out.`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.003,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 50,
     alwaysEnabled: false,
   },
 ];
@@ -1913,11 +1943,11 @@ export const allWeaponTeamBuffs = [
       {
         modifier: "AllElementAttributeBonus",
         modifierByRefinement: {
-        "1": 0.24,
-        "2": 0.3,
-        "3": 0.36,
-        "4": 0.42,
-        "5": 0.48,
+          "1": 0.24,
+          "2": 0.3,
+          "3": 0.36,
+          "4": 0.42,
+          "5": 0.48,
         },
       },
     ],
