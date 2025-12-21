@@ -942,7 +942,7 @@ CD: <span class="param">20</span>s</span>`,
   },
   FloraDrone: {
     key: "FloraDrone",
-    name: "Flora Droner",
+    name: "Flora Drone",
     class: "Common",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FloraDrone.webp",
