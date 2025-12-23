@@ -445,10 +445,10 @@ export const computeSelfBuffs = (
     const buffFromCharacter = buffsCharInfo.find(
       (buffItem: any) => buffItem.key === key,
     );
-    const buff = JSON.parse(JSON.stringify(buffFromCharacter));
-    if (!buff) {
+    if (!buffFromCharacter) {
       continue;
     }
+    const buff = JSON.parse(JSON.stringify(buffFromCharacter));
 
     const modifiersData = buff?.modifiers ?? [];
     let modifiers = JSON.parse(JSON.stringify(modifiersData));
@@ -743,10 +743,10 @@ export const computeAdditionalBaseBuffs = (
     const buffFromCharacter = buffsCharInfo.find(
       (buffItem: any) => buffItem.key === key,
     );
-    const buff = JSON.parse(JSON.stringify(buffFromCharacter));
-    if (!buff) {
+    if (!buffFromCharacter) {
       continue;
     }
+    const buff = JSON.parse(JSON.stringify(buffFromCharacter));
     // on Brant, if this is TheatricalMoment, check if MyMoment, if so, ignore this buff
     if (character === "Brant" && key === "TheatricalMoment") {
       if (buffsConfig?.MyMoment?.isEnabled) {
@@ -923,10 +923,10 @@ export const computeCritOverflowBuffs = (
       const buffFromCharacter = buffsCharInfo.find(
         (buffItem: any) => buffItem.key === key,
       );
-      const buff = JSON.parse(JSON.stringify(buffFromCharacter));
-      if (!buff) {
+      if (!buffFromCharacter) {
         continue;
       }
+      const buff = JSON.parse(JSON.stringify(buffFromCharacter));
 
       const modifiersData = buff?.modifiers ?? [];
       const modifiers = JSON.parse(JSON.stringify(modifiersData));
