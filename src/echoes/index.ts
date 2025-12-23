@@ -956,7 +956,7 @@ CD: <span class="param">20</span>s</span>`,
     name: "Flora Reindeer",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FloraReindeer.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FloraReindeer.webp",
     details: `Summon a Flora Reindeer to attack enemies within a large range, dealing <span class="Highlight">128.40%/149.80%/171.20%/192.60%</span> Aero DMG.<br><br>CD: 15s.`,
     modifiers: [],
     actions: [
@@ -993,7 +993,7 @@ CD: <span class="param">20</span>s</span>`,
     name: "Frostbite Coleoid",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FrostbiteColeoid.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FrostbiteColeoid.webp",
     details: `Summon a Frostbite Coleoid to punch enemies, dealing <span class="Highlight">128.40%/149.80%/171.20%/192.60%</span> Glacio DMG.<br><br>CD: 15s.`,
     modifiers: [],
     actions: [
@@ -1411,7 +1411,7 @@ CD: <span class="param">20</span>s.</span>`,
     name: "Hyvatia",
     class: "Overlord",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Hyvatia.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Hyvatia.webp",
     details: `<span class="description">Summon Hyvatia in mid-air to fire lasers at enemies, dealing <span class="Highlight">18.24%/21.28%/24.32%/27.36%</span> Spectro DMG 10 times.<br><br>
 Casting Outro Skill within 15s after summoning Hyvatia grants <span class="Highlight">10.00%</span> All-Attribute DMG Bonus to the Intro Skill of the incoming Resonator for 15s.<br><br>
 CD: 20s.</span>`,
@@ -1540,7 +1540,7 @@ CD: 20s.</span>`,
     name: "Ironhoof",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Ironhoof.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Ironhoof.webp",
     details: `Transform into an Ironhoof to charge at enemies, dealing <span class="Highlight">35.76%/41.72%/47.68%/53.64%</span> Fusion DMG. At the end of the charge, unleash a goring attack that deals <span class="Highlight">8.94%/10.43%/11.92%/13.41%</span> Fusion DMG 3 times and <span class="Highlight">116.22%/135.59%/154.96%/174.33%</span> Fusion DMG once.<br><br>CD: 15s.`,
     modifiers: [],
     actions: [
@@ -2078,7 +2078,7 @@ CD: <span class="param">25</span>s.</span>`,
     name: "Mining Reindeer",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/MiningReindeer.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/MiningReindeer.webp",
     details: `Summon a Mining Reindeer to launch a charged attack at enemies, dealing <span class="Highlight">158.40%/184.80%/211.20%/237.60%</span> Electro DMG.<br><br>CD: 20s.`,
     modifiers: [],
     actions: [
@@ -2897,7 +2897,7 @@ CD: <span class="param">20</span>s.</span>`,
     name: "Reactor Husk",
     class: "Overlord",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReactorHusk.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReactorHusk.webp",
     details: `<span class="description">Transform into Reactor Husk, jumping into the air and unleashing a heavy slash that deals <span class="Highlight">234.00%/273.00%/312.00%/351.00%</span> Fusion DMG to enemies.
 <br><br>
 The Resonator with this Echo equipped in their main slot gain 10.00% Energy Regen.
@@ -3153,7 +3153,7 @@ CD: 25s`,
     name: "Sabercat Prowler",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/SabercatProwler.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/SabercatProwler.webp",
     details: `Summon a Sabercat Prowler to attack enemies, dealing 128.40%/149.80%/171.20%/192.60% Fusion DMG.<br><Br>CD: 15s.`,
     modifiers: [],
     actions: [
@@ -3179,7 +3179,7 @@ CD: 25s`,
     name: "Sabercat Reaver",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/SabercatReaver.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/SabercatReaver.webp",
     details: `Summon a Sabercat Reaver to attack enemies, dealing 128.40%/149.80%/171.20%/192.60% Fusion DMG.<br><Br>CD: 15s.`,
     modifiers: [],
     actions: [
@@ -3305,7 +3305,7 @@ CD: <span class="param">25</span>s.</span>`,
     name: "Spacetrek Explorer",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/SpacetrekExplorer.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/SpacetrekExplorer.webp",
     details: `Summon a Spacetrek Explorer to grant nearby active Resonators in the team a Shield equal to <span class="Highlight">10%</span> of the summoner's Max HP for 4s.<br><br>CD: 20s.`,
     modifiers: [],
     actions: [
@@ -3635,7 +3635,7 @@ Start with 2 charges. Gain 1 charge every 8s, up to 2 charges.`,
     name: "Twin Nova: Collapsar Blade",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/TwinNovaCollapsarBlade.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/TwinNovaCollapsarBlade.webp",
     details: `<span class="skilldescription">Transform into Twin Nova: Collapsar Blade to rapidly fire at enemies for 5s, with each attack dealing <span class="Highlight">1.34%/1.56%/1.79%/2.01%</span> Electro DMG.<br><br>
 The Resonator with this Echo equipped in the main slot gains 12.00% Electro DMG Bonus and 12.00% Basic Attack DMG Bonus.<br><br>
 CD: 8s.<br><br>
@@ -3677,7 +3677,7 @@ If Twin Nova: Nebulous Cannon is equipped in another slot on the Resonator:<br>
     name: "Twin Nova: Nebulous Cannon",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/TwinNovaNebulousCannon.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/TwinNovaNebulousCannon.webp",
     details: `<span class="skilldescription">Transform into a Twin Nova: Nebulous Cannon to slash enemies twice, with each attack dealing <span class="Highlight">53.67%/62.62%/71.56%/80.51%</span> Spectro DMG.<br><br>
 The Resonator with this Echo equipped in the main slot gains <span class="Highlight">12.00%</span> Spectro DMG Bonus and <span class="Highlight">12.00%</span> Basic Attack DMG Bonus.<br><br>
 CD: 8s.<br><br>
@@ -3817,14 +3817,14 @@ CD: 20s.`,
     name: "Windlash Coleoid",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/WindlashColeoid.png",
-    details: `Summon a Frostbite Coleoid to punch enemies, dealing <span class="Highlight">178.80%/208.60%/238.40%/268.20%</span> Glacio DMG.<br><br>CD: 15s.`,
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/WindlashColeoid.webp",
+    details: `Transform into a Windlash Coleoid to kick enemies, dealing <span class="Highlight">178.80%/208.60%/238.40%/268.20%</span> Aero DMG.`,
     modifiers: [],
     actions: [
       {
-        key: "FrostbiteColeoidPunchDMG",
-        label: "Punch DMG",
-        description: `Summon a Frostbite Coleoid to punch enemies, dealing <span class="Highlight">178.80%/208.60%/238.40%/268.20%</span> Glacio DMG.`,
+        key: "WindlashColeoidKickDMG",
+        label: "Kick DMG",
+        description: `Transform into a Windlash Coleoid to kick enemies, dealing <span class="Highlight">178.80%/208.60%/238.40%/268.20%</span> Aero DMG.`,
         talents: {
           "1": "178.80%",
           "2": "178.80%",
