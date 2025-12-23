@@ -26,6 +26,7 @@ export function getCharactersAvailable(): CharacterList {
       { key: "Jiyan", name: "Jiyan" },
       { key: "Lingyang", name: "Lingyang" },
       { key: "Lupa", name: "Lupa" },
+      { key: "Lynae", name: "Lynae" },
       { key: "Phoebe", name: "Phoebe" },
       { key: "Phrolova", name: "Phrolova" },
       { key: "Qiuyuan", name: "Qiuyuan" },
@@ -187,6 +188,13 @@ export const allCharactersList = [
     element: "Fusion",
     rarity: 5,
     weapon: "Broadblade",
+  },
+  {
+    key: "Lynae",
+    name: "Lynae",
+    element: "Spectro",
+    rarity: 5,
+    weapon: "Pistol",
   },
   {
     key: "Phoebe",

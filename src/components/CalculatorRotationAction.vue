@@ -17,11 +17,21 @@
               'border-violet-600': echoRank === '4' || echoRank === 4,
               'border-blue-500': echoRank === '3' || echoRank === 3,
               'border-green-500': echoRank === '2' || echoRank === 2,
-            }"
-          />
+            }" />
           {{ attackLabel }}
-          <span v-if="rotationMainEcho !== actionMainEcho && actionMainEcho !== null" class="mismatch-echo" v-tooltip="'Rotation echo does not match this one'">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="size-4"><path d="M320 64C334.7 64 348.2 72.1 355.2 85L571.2 485C577.9 497.4 577.6 512.4 570.4 524.5C563.2 536.6 550.1 544 536 544L104 544C89.9 544 76.8 536.6 69.6 524.5C62.4 512.4 62.1 497.4 68.8 485L284.8 85C291.8 72.1 305.3 64 320 64zM320 416C302.3 416 288 430.3 288 448C288 465.7 302.3 480 320 480C337.7 480 352 465.7 352 448C352 430.3 337.7 416 320 416zM320 224C301.8 224 287.3 239.5 288.6 257.7L296 361.7C296.9 374.2 307.4 384 319.9 384C332.5 384 342.9 374.3 343.8 361.7L351.2 257.7C352.5 239.5 338.1 224 319.8 224z"/></svg>
+          <span
+            v-if="
+              rotationMainEcho !== actionMainEcho && actionMainEcho !== null
+            "
+            class="mismatch-echo"
+            v-tooltip="'Rotation echo does not match this one'">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 640 640"
+              class="size-4">
+              <path
+                d="M320 64C334.7 64 348.2 72.1 355.2 85L571.2 485C577.9 497.4 577.6 512.4 570.4 524.5C563.2 536.6 550.1 544 536 544L104 544C89.9 544 76.8 536.6 69.6 524.5C62.4 512.4 62.1 497.4 68.8 485L284.8 85C291.8 72.1 305.3 64 320 64zM320 416C302.3 416 288 430.3 288 448C288 465.7 302.3 480 320 480C337.7 480 352 465.7 352 448C352 430.3 337.7 416 320 416zM320 224C301.8 224 287.3 239.5 288.6 257.7L296 361.7C296.9 374.2 307.4 384 319.9 384C332.5 384 342.9 374.3 343.8 361.7L351.2 257.7C352.5 239.5 338.1 224 319.8 224z" />
+            </svg>
           </span>
         </span>
       </div>
@@ -132,6 +142,17 @@
                 v-if="outroAttacksList.length">
                 <option
                   v-for="attack in outroAttacksList"
+                  :value="attack.key"
+                  :disabled="isAttackDisabled(attack)">
+                  {{ attack.label }}
+                </option>
+              </optgroup>
+              <optgroup
+                label="TuneBreak"
+                data-skill="tuneBreak"
+                v-if="tuneBreakAttacksList.length">
+                <option
+                  v-for="attack in tuneBreakAttacksList"
                   :value="attack.key"
                   :disabled="isAttackDisabled(attack)">
                   {{ attack.label }}
@@ -347,6 +368,7 @@ export default {
         liberation: "liberationAttacks",
         intro: "introAttacks",
         outro: "outroAttacks",
+        tuneBreak: "tuneBreakAttacks",
         echoSetAttacks: "echoSetAttacks",
         utilityAttacks: "utilityAttacks",
         echoAttacks: "echoAttacks",
@@ -358,6 +380,7 @@ export default {
         liberation: "Liberation",
         intro: "Intro",
         outro: "Outro",
+        tuneBreak: "Tune Break",
         echoSetAttacks: "Echo Set",
         utilityAttacks: "Utility",
         echoAttacks: "Echo Attacks",
@@ -414,7 +437,14 @@ export default {
       });
     },
     damageType() {
-      return this.attackData?.type ?? null;
+      const attackType = this.attackData?.type ?? null;
+      if (!attackType) {
+        return null;
+      }
+      if (attackType === "tuneBreak") {
+        return this.skillKeyLabelMap[attackType];
+      }
+      return attackType;
     },
     damageSubType() {
       return this.attackData?.subType ?? null;
@@ -443,6 +473,9 @@ export default {
     outroAttacksList() {
       return this.characterData.outroAttacks.attacks ?? [];
     },
+    tuneBreakAttacksList() {
+      return this.characterData.tuneBreakAttacks.attacks ?? [];
+    },
     echoSetAttacksList() {
       return echoSetAttacks;
     },
@@ -469,7 +502,7 @@ export default {
     },
     echoRank() {
       return this.actionMainEchoRank ?? this.rotationMainEchoRank;
-    }
+    },
   },
   methods: {
     toggleEdit() {
@@ -502,7 +535,8 @@ export default {
       // hold onto the echo that was used
       if (skill === "echoAttacks") {
         action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+        action.mainEchoRank =
+          this.actionMainEchoRank || this.rotationMainEchoRank;
       }
 
       this.$emit("action-update", action);
@@ -535,7 +569,8 @@ export default {
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
         action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+        action.mainEchoRank =
+          this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },
@@ -565,7 +600,8 @@ export default {
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
         action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+        action.mainEchoRank =
+          this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },
@@ -590,7 +626,8 @@ export default {
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
         action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+        action.mainEchoRank =
+          this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update:sequence", action);
     },
@@ -615,7 +652,8 @@ export default {
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
         action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+        action.mainEchoRank =
+          this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },
@@ -635,7 +673,8 @@ export default {
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
         action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+        action.mainEchoRank =
+          this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },
@@ -655,7 +694,8 @@ export default {
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
         action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+        action.mainEchoRank =
+          this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },
@@ -675,7 +715,8 @@ export default {
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
         action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+        action.mainEchoRank =
+          this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },
@@ -695,7 +736,8 @@ export default {
       // hold onto the echo that was used
       if (this.actionSkillType === "echoAttacks") {
         action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank = this.actionMainEchoRank || this.rotationMainEchoRank;
+        action.mainEchoRank =
+          this.actionMainEchoRank || this.rotationMainEchoRank;
       }
       this.$emit("action-update", action);
     },

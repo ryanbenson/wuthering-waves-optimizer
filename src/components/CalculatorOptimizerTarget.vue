@@ -53,6 +53,16 @@
         {{ attack.label }}
       </option>
     </optgroup>
+    <optgroup
+      label="TuneBreak"
+      data-skill="tuneBreak"
+      v-if="tuneBreakAttacksList.length">
+      <option
+        v-for="attack in tuneBreakAttacksList"
+        :value="`Attack:tuneBreakAttacks|${attack.key}`">
+        {{ attack.label }}
+      </option>
+    </optgroup>
     <optgroup label="Rotations" v-if="rotations.length > 0">
       <option
         v-for="rotation in rotations"
@@ -129,6 +139,9 @@ export default {
     },
     outroAttacksList() {
       return this.characterData?.outroAttacks?.attacks ?? [];
+    },
+    tuneBreakAttacksList() {
+      return this.characterData?.tuneBreakAttacks?.attacks ?? [];
     },
     rotations() {
       return this.currentCharacter?.rotations ?? [];

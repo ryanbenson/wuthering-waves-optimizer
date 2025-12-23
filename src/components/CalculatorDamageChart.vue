@@ -65,6 +65,7 @@ export default {
         Shield: 0,
         Healing: 0,
         Echo: 0,
+        TuneBreak: 0,
       };
       attacks.forEach((attack) => {
         // if this attack requires a resonance chain to be unlocked, verify it's enabled
@@ -121,6 +122,7 @@ export default {
         Shield: "rgb(0, 173, 255)", // Blue
         Healing: "rgb(59, 234, 59)", // Green
         Echo: "rgb(255, 99, 255)", // Magenta
+        TuneBreak: "rgb(72, 61, 139)", // Muted Indigo
       };
     },
   },
