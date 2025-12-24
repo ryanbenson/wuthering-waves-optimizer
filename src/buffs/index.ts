@@ -1597,6 +1597,72 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Lynae: [
+    {
+      key: "TuneBreakBoost",
+      name: `Tune Break Boost`,
+      details: `<div><span class="Highlight">Basic Attack - Visual Impact</span> consumes 3 points of <span class="Highlight">True Color</span> and grants all nearby Resonators in the team <span class="Param">40</span> points of <span class="Highlight">Tune Break Boost</span> for 30s. Responding to <span class="Highlight">Tune Strain - Interfered</span>: For each stack of <span class="Highlight">Tune Strain - Interfered</span> on the target, each point of Lynae's <span class="Highlight">Tune Break Boost</span> increases total DMG against that target by 0.12%</div>`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "tuneBreakDMGBonus",
+          modifierValue: 0.0012,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 40,
+      alwaysEnabled: false,
+    },
+    {
+      key: "LetsHittheRoad",
+      name: `Outro Skill: Let's Hit the Road!`,
+      details: `The next incoming Resonator gain 15% All DMG Amplification and 25% Resonance Liberation DMG Amplification for 14s or until they are switched out.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+        {
+          modifier: "DMGDeepen:Liberation",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "PrismaticOverblast",
+      name: `Prismatic Overblast`,
+      details: `Casting this skill grants all nearby Resonators in the team 24% All DMG Bonus that lasts for 30s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "AllElementAttributeBonus",
+          modifierValue: 0.24,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2IntoLightsVanishingPoint",
+      name: "Sequence Node 2: Into Lights' Vanishing Point",
+      details: `<span class="skilldescription">Casting Outro Skill grants the incoming Resonator 25% All-DMG Amplification for 14s or until the Resonator is switched out.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

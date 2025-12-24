@@ -923,6 +923,15 @@ export default defineComponent({
       // end max buff handlers
       const specificSkillDmgFromCharBuffs =
         selfBuffs?.specificTalentBuffs?.[attack.key] ?? 0;
+      let tuneBreakSkillDmgFromCharBuffs = 0;
+      let tuneBreakSkillDmgFromTeamBuffs = 0;
+      if (attack.type === "TuneBreak") {
+        tuneBreakSkillDmgFromCharBuffs = selfBuffs?.tuneBreakDMGBonus ?? 0;
+        tuneBreakSkillDmgFromTeamBuffs =
+          teamBuffsData.value?.tuneBreakDMGBonus ?? 0;
+      }
+      const totalTuneBreakDmgBonus =
+        tuneBreakSkillDmgFromCharBuffs + tuneBreakSkillDmgFromTeamBuffs;
       const specificSkillDmgFromCharBuffsDmgBonus =
         selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGBonus`] ?? 0;
       const specificSkillDmgFromCharBuffsWithElement =
@@ -1045,7 +1054,8 @@ export default defineComponent({
         // TODO: when refactoring echoes, move to decimals
         coordinatedEchoDmgBonus / 100 +
         genericSkillDmgBonusEchoBuff / 100 +
-        coordinatedDmgBonusCustomBuffs;
+        coordinatedDmgBonusCustomBuffs +
+        totalTuneBreakDmgBonus;
 
       // Resist Shred:
       let teamBuffResistShredForCharElement =
@@ -2239,7 +2249,6 @@ export default defineComponent({
           attackType,
           attackKey,
         );
-        console.log(attackType, attackKey);
         let actionTypeForAttackData;
         switch (attackType) {
           case "basicAttacks":

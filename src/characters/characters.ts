@@ -441,6 +441,7 @@ export const allCharacters: string[] = [
   "Lingyang",
   "Lupa",
   "Lumi",
+  "Lynae",
   "Mortefi",
   "Phoebe",
   "Phrolova",

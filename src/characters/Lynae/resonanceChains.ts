@@ -1,62 +1,16 @@
 export const resonanceChains = [
   {
-    key: "SequenceNode1WanderingThroughtheDesolateCorridors",
-    name: "Sequence Node 1: Wandering Through the Desolate Corridors",
-    details: `<div>Chisa is immune to interruption during <span class="Highlight">Sawring - Blitz</span>,  <span class="Highlight">Sawring - Eradication</span>, and <span class="Highlight">Chainsaw Mode - Dodge Counter</span><br><br>Inflicting <span class="Highlight">Unseen Snare</span> grants the following additional effects:<br>- Chisa's ATK is increased by 30% for 15s.<br>- Deal fixed 61803 points of <span class="Dark">Havoc DMG</span>. The target's HP can be reduced to 61.80% at most and each target can take this damage only once. This instance of damage is considered Basic Attack DMG that does not bear any effect from damage bonuses.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "ATK",
-        modifierValue: 0.3,
-      },
-      {
-        modifier: "EnableAttack",
-        modifierValue: ["SequenceNode1WanderingThroughtheDesolateCorridors"],
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode2IntotheWebofEndlessBonds",
-    name: "Sequence Node 2: Into the Web of Endless Bonds",
-    details: `<span class="skilldescription">Ignore 10% of the target's Havoc RES when dealing damage.<br>
-Nearby Resonators in the team with <span class="Highlight">Thread of Bane</span> gain 50% All-Attribute DMG Bonus.</span>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "ResistShred:Havoc",
-        modifierValue: 0.1,
-      },
-      {
-        modifier: "AllElementAttributeBonus",
-        modifierValue: 0.5,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode3Across the Confusion of the Long Night",
-    name: "Sequence Node 3: O Blade, I, Who Save No More",
-    details: `<div>The DMG Multipliers of <span class="Highlight">Sawring - Blitz</span>, <span class="Highlight">Chainsaw Mode - Dodge Counter</span> and <span class="Highlight">Sawring - Eradication</span> are increased by 120%. This effect is mutually stackable with that of <span class="Highlight">Woven Myriad - Convergence</span>.<br>The bonus DMG Multiplier for <span class="Highlight">Sawring - Eradication</span> granted by <span class="Highlight">Sawring- Blitz</span> and <span class="Highlight">Chainsaw Mode - Dodge Counter</span> when <span class="Highlight">Ring of Chainsaw</span> is consumed is increased by 120%. This effect is mutually stackable with that of <span class="Highlight">Woven Myriad - Convergence</span>.<br>The Vibration Strength Reduction Rate of <span class="Highlight">Sawring - Blitz</span>, <span class="Highlight">Chainsaw Mode - Dodge Counter</span> and <span class="Highlight">Sawring - Eradication</span> is increased by 50%.</div>`,
+    key: "SequenceNode1DaystobePaintedLikeaCanvas",
+    name: "Sequence Node 1: Days to be Painted Like a Canvas",
+    details: `<div>The DMG Multiplier of <span class="Highlight"><strong>Basic Attack - Polychrome Leap</strong></span> is increased by 120%.<br>The duration of <span class="Highlight"><strong>Spray Paint</strong></span> is increased by 100%. Targets within the range of <span class="Highlight"><strong>Spray Paint</strong></span> are pulled in towards the center every 6s.<br>Lynae is now immune to interruptions during <span class="Highlight"><strong>Basic Attack - Polychrome Leap</strong></span> and <span class="Highlight"><strong>Basic Attack - Visual Impact</strong></span>.<br>During <span class="Highlight"><strong>Optical Sampling Stage</strong></span>, after staying out of combat for 2s, restore 120 points of <span class="Highlight"><strong>Overflow</strong></span>.</div>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "talentModifierMultiply",
         modifySpecificTalents: [
-          "SawringBlitzStage1DMG",
-          "SawringBlitzStage2DMG",
-          "SawringBlitzStage2HoldDMG",
-          "SawringBlitzStage2DiscordanceDMG",
-          "SawringBlitzStage3DMG",
-          "SawringBlitzStage3HoldDMG",
-          "SawringBlitzStage3FalltoneDMG",
-          "SawringEradicationDMG",
-          "ChainsawModeDodgeCounterDMG",
-          "ChainsawModeDodgeCounterHoldDMG",
+          "BasicAttackPolychromeLeap1",
+          "BasicAttackPolychromeLeap2",
+          "BasicAttackPolychromeLeap3",
         ],
         modifierValue: 1.2,
       },
@@ -66,26 +20,16 @@ Nearby Resonators in the team with <span class="Highlight">Thread of Bane</span>
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode4SeveringtheEndlessCycleofTragicFate",
-    name: "Sequence Node 4: Severing the Endless Cycle of Tragic Fate",
-    details: `<span class="skilldescription">The effect of <span class="Highlight">Unseen Snare</span> becomes:<br>
-When targets marked by <span class="Highlight">Unseen Snare</span> take direct damage from Resonators, Chisa inflicts 1 stack of <span class="Highlight">Havoc Bane</span> on them. This effect is triggered up to once every 1s.</span>`,
-    hasStacks: false,
-    modifiers: [],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode5ThousandsofLightstoGuidetheWayHome",
-    name: "Sequence Node 5: Thousands of Lights to Guide the Way Home",
-    details: `<span class="skilldescription">Resonance Liberation Moment of <span class="Highlight">Nihility</span> gains 100% DMG Bonus.<br>
-<span class="Highlight">Lifethread - Glide</span> costs 50% less <span class="Highlight">Lifethread - Jetstream</span>.</span>`,
+    key: "SequenceNode2IntoLightsVanishingPoint",
+    name: "Sequence Node 2: Into Lights' Vanishing Point",
+    details: `<span class="skilldescription">Gain 25% All-DMG Amplification.<br>
+Outro Skill gains the following effect:<br>
+Casting Outro Skill grants the incoming Resonator 25% All-DMG Amplification for 14s or until the Resonator is switched out.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifySpecificTalents: ["MomentofNihilityDMG"],
-        modifierValue: 1,
+        modifier: "DMGDeepen",
+        modifierValue: 0.25,
       },
     ],
     minStacks: 0,
@@ -93,38 +37,89 @@ When targets marked by <span class="Highlight">Unseen Snare</span> take direct d
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode6ThusHopeisRekindledwiththeRisingDawn",
-    name: "Sequence Node 6: Thus, Hope is Rekindled with the Rising Dawn",
-    details: `<div>When Chisa takes a fatal blow during <span class="Highlight">Sawring - Blitz</span>, <span  class="Highlight">Sawring - Eradication</span>, and <span class="Highlight">Chainsaw Mode - Dodge Counter</span>, she will remain standing with at least 1 HP.<br><br><span class="Highlight">Unseen Snare</span> becomes <span class="Highlight">Unseen Snare - Finality</span>, which has the following effects:<br>- <span class="Highlight">Unseen Snare - Finality</span> has all the effects of <span class="Highlight">Unseen Snare</span>.<br>- Targets affected by <span class="Highlight"">Unseen Snare - Finality</span> takes 30% Amplified DMG from Negative Statuses.<br>- Targets affected by <span class="Highlight">Unseen Snare - Finality</span> takes 40% increased DMG from Chisa.</div>`,
+    key: "SequenceNode3ForOneBrilliantMoment",
+    name: "Sequence Node 3: For One Brilliant Moment",
+    details: `<div>The DMG Multiplier of <span class="Highlight"><strong>Basc Attack - Visual Impact</strong></span> and <span class="Highlight"><strong>Basic Attack - Iridescent Splash</strong></span> is increased by 90%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "specialMultiplier",
-        modifierValue: 0.4,
-      },
-      {
-        modifier: "DMGDeepen:SpectroFrazzle",
-        modifierValue: 0.3,
-      },
-      {
-        modifier: "DMGDeepen:AeroErosion",
-        modifierValue: 0.3,
-      },
-      {
-        modifier: "DMGDeepen:ElectroFlare",
-        modifierValue: 0.3,
-      },
-      {
-        modifier: "DMGDeepen:FusionBurst",
-        modifierValue: 0.3,
-      },
-      {
-        modifier: "DMGDeepen:GlacioChafe",
-        modifierValue: 0.3,
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "BasicAttackVisualImpactDMG",
+          "BasicAttackIridescentSplashDMG",
+        ],
+        modifierValue: 0.9,
       },
     ],
     minStacks: 0,
     maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode3ForOneBrilliantMomentAdditiveColor",
+    name: "Sequence Node 3: For One Brilliant Moment (Additive Color)",
+    details: `<div>With <span class="Highlight"><strong>Lumiflow</strong></span> ≥ 120 points. Lynae gains 1 stack of <span class="Highlight"><strong>Premixed Hue</strong></span> every 1s, up to 25 stacks. Each stack of <span class="Highlight"><strong>Premixed Hue</strong></span> increases the Spectro DMG dealt through <span class="Highlight"><strong>Additive Color</strong></span> by 55%. No <span class="Highlight"><strong>Premixed Hue</strong></span> is gained while casting <span class="Highlight"><strong>Additive Color</strong></span>. When <span class="Highlight"><strong>Additive Color</strong></span> ends, remove all stacks of <span class="Highlight"><strong>Premixed Hue</strong></span>. Lynae loses a stack of <span class="Highlight"><strong>Premixed Hue</strong></span> every 0.5s once <span class="Highlight"><strong>Lumiflow</strong></span> is below 120 points.<br>While Lynae is out of combat, Premixed Hue regenerates twice as fast and depletes half as fast.</div>`,
+    hasStacks: true,
+    modifiers: [
+      {
+        // Note: buff says spectro buff, but we're setting it to generic dmg bonus, same thing
+        modifySpecificTalents: ["AdditiveColorDMG"],
+        modifierValue: 0.55,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 25,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode4ShadowsofaWindRacer",
+    name: "Sequence Node 4: Shadows of a Wind Racer",
+    details: `<span class="skilldescription">ATK is increased by 20%.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.2,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode5VisionsofaFutureUnbound",
+    name: "Sequence Node 5: Visions of a Future Unbound",
+    details: `<span class="skilldescription">The DMG Multiplier of <span class="Highlight">Resonance Liberation - Prismatic Overblast</span> is increased by 70%.</span>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["PrismaticOverblastDMG"],
+        modifierValue: 0.7,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode6PaintedinMyTrueColor",
+    name: "Sequence Node 6: Painted in My True Color",
+    details: `<div>Each time <span class="Highlight"><strong>Kaleidoscopic Parade - Graffiti Blast</strong></span> or <span class="Highlight"><strong>Kaleidoscopic Parade - Mid-air Heavy Attack</strong></span> is cast, Lynae gains 1 stack of <span class="Highlight"><strong>Color of Soul</strong></span>, up to 3 stacks. Each stack of <span class="Highlight"><strong>Color of Soul</strong></span> increases the DMG dealt through <span class="Highlight"><strong>Basic Attack - Polychrome Leap</strong></span> and <span class="Highlight"><strong>Basic Attack - Visual Impact</strong></span> by 30%. After casting <span class="Highlight"><strong>Basic Attack - Polychrome Leap</strong></span> or <span class="Highlight"><strong>Basic Attack - Visual Impact</strong></span>, all stacks of <span class="Highlight"><strong>Color of Soul</strong></span> are removed.<br>Casting <span class="Highlight"><strong>Basic Attack - Polychrome Leap</strong></span> resets the charges of <span class="Highlight"><strong>Kaleidoscopic Parade - Mid-air Heavy Attack</strong></span>.<br>Lynae is immune to interruptions and all DMG taken is reduced by 30% during <span class="Highlight"><strong>Kaleidoscopic Parade - Mid-air Heavy Attack</strong></span>.<br>Lynae now stays in <span class="Highlight"><strong>Kaleidoscopic Parade</strong></span> after casting <span class="Highlight"><strong>Outro Skill - Let's Hit the Road!</strong></span>.<br>The <span class="Highlight"><strong>Lumiflow</strong></span> upper limit is increased from 120 to 360. At the max limit, Lynae's roller skating speed further increases.<br>If Intro Skill is cast during <span class="Highlight"><strong>Kaleidoscopic Parade</strong></span>, restore 120 <span class="Highlight"><strong>Lumiflow</strong></span>.</div>`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifySpecificTalents: [
+          "BasicAttackPolychromeLeap1",
+          "BasicAttackPolychromeLeap2",
+          "BasicAttackPolychromeLeap3",
+          "BasicAttackVisualImpactDMG",
+        ],
+        modifierValue: 0.3,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 3,
     alwaysEnabled: false,
   },
 ];

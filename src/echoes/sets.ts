@@ -1096,7 +1096,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         modifiers: [
           {
             modifier: "Spectro",
-            modifierValue: 15,
+            modifierValue: 10,
           },
         ],
         alwaysEnabled: false,

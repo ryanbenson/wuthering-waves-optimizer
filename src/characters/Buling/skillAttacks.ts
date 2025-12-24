@@ -1,40 +1,40 @@
 export const skillAttacks = {
   name: "Resonance Skill: In Shadow Thunder Stirs",
-  description: `<div class="text-sm font-normal">Attack the target, dealing <span class="Thunder">Electro DMG</span> and continuously pulling in nearby targets.<br>- Right after casting <span class="Highlight">Resonance Skill</span>, <span class="Highlight">press Normal Attack</span> to perform <span class="Highlight">Basic Attack Stage 4</span>.</div>`,
+  description: `<div>Attack the target, dealing <span class="Thunder">Electro DMG</span> and continuously pulling in nearby targets.<br>- Right after casting <span class="Highlight">Resonance Skill</span>, <span class="Highlight">press Normal Attack</span> to perform <span class="Highlight">Basic Attack Stage 4</span>.</div>`,
   attacks: [
-  {
-    key: "ThunderTalismanDMG",
-    label: "Thunder Talisman DMG",
-    type: "Skill",
-    talents: {
-      "1": "29.37%",
-      "2": "31.78%",
-      "3": "34.19%",
-      "4": "37.56%",
-      "5": "39.97%",
-      "6": "42.74%",
-      "7": "46.59%",
-      "8": "50.45%",
-      "9": "54.30%",
-      "10": "58.40%"
-    }
-  },
-  {
-    key: "PullinEffectContinuousDMG",
-    label: "Pull-in Effect Continuous DMG",
-    type: "Skill",
-    talents: {
-      "1": "2.94%*10",
-      "2": "3.18%*10",
-      "3": "3.42%*10",
-      "4": "3.76%*10",
-      "5": "4.00%*10",
-      "6": "4.28%*10",
-      "7": "4.66%*10",
-      "8": "5.05%*10",
-      "9": "5.43%*10",
-      "10": "5.84%*10"
-    }
-  }
-],
+    {
+      key: "ThunderTalismanDMG",
+      label: "Thunder Talisman DMG",
+      type: "Skill",
+      talents: {
+        "1": "29.37%",
+        "2": "31.78%",
+        "3": "34.19%",
+        "4": "37.56%",
+        "5": "39.97%",
+        "6": "42.74%",
+        "7": "46.59%",
+        "8": "50.45%",
+        "9": "54.30%",
+        "10": "58.40%",
+      },
+    },
+    {
+      key: "PullinEffectContinuousDMG",
+      label: "Pull-in Effect Continuous DMG",
+      type: "Skill",
+      talents: {
+        "1": "2.94%*10",
+        "2": "3.18%*10",
+        "3": "3.42%*10",
+        "4": "3.76%*10",
+        "5": "4.00%*10",
+        "6": "4.28%*10",
+        "7": "4.66%*10",
+        "8": "5.05%*10",
+        "9": "5.43%*10",
+        "10": "5.84%*10",
+      },
+    },
+  ],
 };
