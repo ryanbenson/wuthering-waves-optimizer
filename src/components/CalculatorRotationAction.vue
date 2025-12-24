@@ -474,7 +474,7 @@ export default {
       return this.characterData.outroAttacks.attacks ?? [];
     },
     tuneBreakAttacksList() {
-      return this.characterData.tuneBreakAttacks.attacks ?? [];
+      return this.characterData?.tuneBreakAttacks?.attacks ?? [];
     },
     echoSetAttacksList() {
       return echoSetAttacks;
