@@ -80,6 +80,22 @@
         :class="classes"
         @input="(e) => talentUpdated('intro', e)" />
     </div>
+    <div class="flex flex-col pb-7 relative">
+      <label for="talentTuneBreak" class="talent__label">
+        Tune Break
+        <span class="text-primary">{{ tuneBreak }}</span>
+      </label>
+      <input
+        v-model="tuneBreak"
+        name="talentTuneBreak"
+        type="range"
+        min="1"
+        max="10"
+        step="1"
+        class="range range-xs"
+        :class="classes"
+        @input="(e) => talentUpdated('tuneBreak', e)" />
+    </div>
   </div>
 </template>
 <script>
@@ -208,6 +224,24 @@ export default {
         const data = {
           talents: {
             intro: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the intro talent state
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Number}
+     */
+    tuneBreak: {
+      get() {
+        return this.currentCharacter?.talents?.tuneBreak ?? 10;
+      },
+      async set(value) {
+        const data = {
+          talents: {
+            tuneBreak: value,
           },
         };
         await this.setCharacterData(this.character, data);

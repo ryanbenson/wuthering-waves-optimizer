@@ -5,6 +5,7 @@ export const swordsList = {
     { key: "DefiersThorn", name: "Defier's Thorn" },
     { key: "EmeraldOfGenesis", name: "Emerald Of Genesis" },
     { key: "EmeraldSentence", name: "Emerald Sentence" },
+    { key: "LaserShearer", name: "Laser Shearer" },
     { key: "RedSpring", name: "Red Spring" },
     { key: "UnflickeringValor", name: "Unflickering Valor" },
   ],
@@ -61,6 +62,7 @@ const broadbladesList = {
 
 const rectifiersList = {
   five: [
+    { key: "BosonAstrolabe", name: "Boson Astrolabe" },
     { key: "CosmicRipples", name: "Cosmic Ripples" },
     { key: "LetheanElegy", name: "Lethean Elegy" },
     { key: "LuminousHymn", name: "Luminous Hymn" },
@@ -94,6 +96,8 @@ const rectifiersList = {
 const pistolsList = {
   five: [
     { key: "LuxUmbra", name: "Lux & Umbra" },
+    { key: "PhasicHomogenizer", name: "Phasic Homogenizer" },
+    { key: "SpectrumBlaster", name: "Spectrum Blaster" },
     { key: "StaticMist", name: "Static Mist" },
     { key: "TheLastDance", name: "The Last Dance" },
     { key: "WoodlandAria", name: "Woodland Aria" },
@@ -123,6 +127,7 @@ const gauntletsList = {
     { key: "AbyssSurges", name: "Abyss Surges" },
     { key: "BlazingJustice", name: "Blazing Justice" },
     { key: "MoongazersSigil", name: "Moongazer's Sigil" },
+    { key: "PulsationBracer", name: "Pulsation Bracer" },
     { key: "Tragicomedy", name: "Tragicomedy" },
     { key: "VeritysHandle", name: "Verity's Handle" },
   ],

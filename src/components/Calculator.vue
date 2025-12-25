@@ -511,6 +511,7 @@ export default defineComponent({
       liberation:
         characters.value?.[character.value]?.talents?.liberation ?? 10,
       intro: characters.value?.[character.value]?.talents?.intro ?? 10,
+      tuneBreak: characters.value?.[character.value]?.talents?.tuneBreak ?? 10,
     });
 
     const updateStats = (stats) => {
@@ -604,6 +605,9 @@ export default defineComponent({
                   break;
                 case "intro":
                   talent = attack.talents[talentData.intro];
+                  break;
+                case "tuneBreak":
+                  talent = attack.talents[talentData.tuneBreak];
                   break;
                 case "outro":
                   // outro has no talent tree. it only has 1 value (e.g. 20.00%)
@@ -825,6 +829,9 @@ export default defineComponent({
           case "intro":
             talent = talentTree[talentData.intro];
             break;
+          case "tuneBreak":
+            talent = talentTree[talentData.tuneBreak];
+            break;
           case "outro":
             // outros have no talent tree, just a single value
             talent = attack.talent;
@@ -916,6 +923,15 @@ export default defineComponent({
       // end max buff handlers
       const specificSkillDmgFromCharBuffs =
         selfBuffs?.specificTalentBuffs?.[attack.key] ?? 0;
+      let tuneBreakSkillDmgFromCharBuffs = 0;
+      let tuneBreakSkillDmgFromTeamBuffs = 0;
+      if (attack.type === "TuneBreak") {
+        tuneBreakSkillDmgFromCharBuffs = selfBuffs?.tuneBreakDMGBonus ?? 0;
+        tuneBreakSkillDmgFromTeamBuffs =
+          teamBuffsData.value?.tuneBreakDMGBonus ?? 0;
+      }
+      const totalTuneBreakDmgBonus =
+        tuneBreakSkillDmgFromCharBuffs + tuneBreakSkillDmgFromTeamBuffs;
       const specificSkillDmgFromCharBuffsDmgBonus =
         selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGBonus`] ?? 0;
       const specificSkillDmgFromCharBuffsWithElement =
@@ -1038,7 +1054,8 @@ export default defineComponent({
         // TODO: when refactoring echoes, move to decimals
         coordinatedEchoDmgBonus / 100 +
         genericSkillDmgBonusEchoBuff / 100 +
-        coordinatedDmgBonusCustomBuffs;
+        coordinatedDmgBonusCustomBuffs +
+        totalTuneBreakDmgBonus;
 
       // Resist Shred:
       let teamBuffResistShredForCharElement =
@@ -1658,6 +1675,10 @@ export default defineComponent({
           talentData.intro, // TODO: What is this?
           true, // has no talent level
         ),
+        tuneBreakAttacks: processAttacks(
+          chosenChar.value.tuneBreakAttacks?.attacks,
+          talentData.tuneBreak,
+        ),
         echoSetAttacks: processAttacks(
           echoSetAttacks,
           talentData.intro, // TODO: What is this?
@@ -2244,6 +2265,9 @@ export default defineComponent({
             break;
           case "introAttacks":
             actionTypeForAttackData = "intro";
+            break;
+          case "tuneBreakAttacks":
+            actionTypeForAttackData = "tuneBreak";
             break;
           case "outroAttacks":
             actionTypeForAttackData = "outro";

@@ -1,0 +1,40 @@
+export const skillAttacks = {
+  name: "Resonance Skill: Lynae-Style Palettes",
+  description: `<div><size=40><span class="Title"><strong>Lynae-Style Palettes</strong></span><br>Press Resonance Skill to deal <span class="Light"><strong>Spectro DMG</strong></span>. <br>While in <span class="Highlight"><strong>Kaleidoscopic Parade</strong></span>, hold Resonance Skill to attack the target, dealing <span class="Light"><strong>Spectro DMG</strong></span> and exiting the <span class="Highlight"><strong>Kaleidoscopic Parade</strong></span>. <br>Press Normal Attack within a certain time after this skill to cast <span class="Highlight"><strong>Basic Attack Stage 2</strong></span>.<br>Lynae-Style Palettes and Additive Color <span class="Highlight"><strong>share a cooldown</strong></span>.<br><size=10><br><size=40><span class="Title"><strong>Additive Color</strong></span><br>During <span class="Highlight"><strong>Kaleidoscopic Parade</strong></span>, press Resonance Skill on the ground to attack the target, dealing <span class="Light"><strong>Spectro DMG</strong></span>.<br>Within a certain time after this skill is cast, press Normal Attack to cast <span class="Highlight"><strong>Kaleidoscopic Parade - Basic Attack Stage 2</strong></span>.<br>Lynae-Style Palettes and Additive Color <span class="Highlight"><strong>share a cooldown</strong></span>.</size=40></size=10></size=40></div>`,
+  attacks: [
+    {
+      key: "LynaeStylePalettesDMG",
+      label: "Lynae-Style Palettes DMG",
+      type: "Skill",
+      talents: {
+        "1": "70.08%+23.36%*3",
+        "2": "75.82%+25.28%*3",
+        "3": "81.57%+27.19%*3",
+        "4": "89.61%+29.87%*3",
+        "5": "95.36%+31.79%*3",
+        "6": "101.97%+33.99%*3",
+        "7": "111.16%+37.06%*3",
+        "8": "120.35%+40.12%*3",
+        "9": "129.55%+43.19%*3",
+        "10": "139.31%+46.44%*3",
+      },
+    },
+    {
+      key: "AdditiveColorDMG",
+      label: "Additive Color DMG",
+      type: "Skill",
+      talents: {
+        "1": "58.50%*2",
+        "2": "63.30%*2",
+        "3": "68.10%*2",
+        "4": "74.81%*2",
+        "5": "79.61%*2",
+        "6": "85.13%*2",
+        "7": "92.80%*2",
+        "8": "100.48%*2",
+        "9": "108.15%*2",
+        "10": "116.31%*2",
+      },
+    },
+  ],
+};

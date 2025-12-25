@@ -1,0 +1,40 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Prismatic Overblast",
+  description: `<div>Deal <span class="Light"><strong>Spectro DMG</strong></span>. Casting this skill grants all nearby Resonators in the team 24% All DMG Bonus that lasts for 30s.<br><size=10><br><size=40><span class="Title"><strong>Basic Attack - To a Vivid Tomorrow!</strong></span><br>Press Normal Attack within a certain time after casting <span class="Highlight"><strong>Resonance Liberation - Prismatic Overblast</strong></span> to cast <span class="Highlight"><strong>Basic Attack - To a Vivid Tomorrow!</strong></span>, dealing <span class="Light"><strong>Spectro DMG</strong></span>.</size=40></size=10></div>`,
+  attacks: [
+    {
+      key: "PrismaticOverblastDMG",
+      label: "Prismatic Overblast DMG",
+      type: "Liberation",
+      talents: {
+        "1": "44.00%*10",
+        "2": "47.61%*10",
+        "3": "51.22%*10",
+        "4": "56.27%*10",
+        "5": "59.88%*10",
+        "6": "64.03%*10",
+        "7": "69.80%*10",
+        "8": "75.57%*10",
+        "9": "81.35%*10",
+        "10": "87.48%*10",
+      },
+    },
+    {
+      key: "BasicAttackToaVividTomorrowDMG",
+      label: "Basic Attack - To a Vivid Tomorrow! DMG",
+      type: "Liberation",
+      talents: {
+        "1": "4.22%*12+5.06%*10",
+        "2": "4.56%*12+5.47%*10",
+        "3": "4.91%*12+5.89%*10",
+        "4": "5.39%*12+6.47%*10",
+        "5": "5.73%*12+6.88%*10",
+        "6": "6.13%*12+7.36%*10",
+        "7": "6.68%*12+8.02%*10",
+        "8": "7.24%*12+8.68%*10",
+        "9": "7.79%*12+9.35%*10",
+        "10": "8.38%*12+10.05%*10",
+      },
+    },
+  ],
+};

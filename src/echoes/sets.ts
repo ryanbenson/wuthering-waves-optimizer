@@ -18,6 +18,9 @@ export const twoSetBonuses: string[] = [
   "Gusts of Welkin 2 Set",
   "Windward Pilgrimage 2 Set",
   "Flaming Clawprint 2 Set",
+  "Pact of Neonlight Leap 2 Set",
+  "Rite of Gilded Revelation 2 Set",
+  "Halo of Starry Radiance 2 Set",
 ];
 export const threeSetBonuses: string[] = [
   "Crown of Valor 3 Set",
@@ -44,6 +47,9 @@ export const fiveSetBonuses: string[] = [
   "Gusts of Welkin 5 Set",
   "Windward Pilgrimage 5 Set",
   "Flaming Clawprint 5 Set",
+  "Pact of Neonlight Leap 5 Set",
+  "Rite of Gilded Revelation 5 Set",
+  "Halo of Starry Radiance 5 Set",
 ];
 
 // Function to convert a list of echo set keys (e.g. MidnightVeil)
@@ -606,6 +612,66 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     ],
     details: `Fusion DMG + 10%`,
   },
+  "Pact of Neonlight Leap 2 Set": {
+    name: "Pact of Neonlight Leap",
+    key: "PactofNeonlightLeap2Set",
+    passives: [
+      {
+        key: "PactofNeonlightLeap2Set",
+        details: `Spectro DMG + 10%`,
+        modifiers: [
+          {
+            modifier: "Spectro",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Spectro DMG + 10%`,
+  },
+  "Rite of Gilded Revelation 2 Set": {
+    name: "Rite of Gilded Revelation",
+    key: "RiteofGildedRevelation2Set",
+    passives: [
+      {
+        key: "RiteofGildedRevelation2Set",
+        details: `Spectro DMG + 10%`,
+        modifiers: [
+          {
+            modifier: "Spectro",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Spectro DMG + 10%`,
+  },
+  "Halo of Starry Radiance 2 Set": {
+    name: "Halo of Starry Radiance",
+    key: "HaloofStarryRadiance2Set",
+    passives: [
+      {
+        key: "HaloofStarryRadiance2Set",
+        details: `Healing Bonus + 10%`,
+        modifiers: [
+          {
+            modifier: "HealingBonus",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Healing Bonus + 10%`,
+  },
 };
 
 export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
@@ -1004,6 +1070,72 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         ],
         alwaysEnabled: false,
         details: `Casting Resonance Liberation increases the caster's Resonance Liberation DMG by 20%, lasting for 35s.`,
+      },
+    ],
+  },
+  "Pact of Neonlight Leap 5 Set": {
+    name: "Pact of Neonlight Leap",
+    key: "PactofNeonlightLeap",
+    details: `Casting Outro Skill increases the ATK of the incoming Resonator by 15%, with each point of Tune Break Boost additionally increasing ATK by 0.3%, up to 15%. This effect lasts for 15s, or until the Resonator is switched out.`,
+    passives: [
+      {
+        key: "PactofNeonlightLeap",
+        modifiers: [],
+        alwaysEnabled: false,
+        details: `Casting Outro Skill increases the ATK of the incoming Resonator by 15%, with each point of Tune Break Boost additionally increasing ATK by 0.3%, up to 15%. This effect lasts for 15s, or until the Resonator is switched out.`,
+      },
+    ],
+  },
+  "Rite of Gilded Revelation 5 Set": {
+    name: "Rite of Gilded Revelation",
+    key: "RiteofGildedRevelation",
+    details: `Dealing Basic Attack DMG increases Spectro DMG by 10% for 5s, stacking up to 3 times.`,
+    passives: [
+      {
+        key: "RiteofGildedRevelationSpectro",
+        modifiers: [
+          {
+            modifier: "Spectro",
+            modifierValue: 10,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `Dealing Basic Attack DMG increases Spectro DMG by 10% for 5s, stacking up to 3 times.`,
+        hasStacks: true,
+        minStacks: 0,
+        maxStacks: 3,
+      },
+      {
+        key: "RiteofGildedRevelationLiberation",
+        modifiers: [
+          {
+            modifier: "BasicAttackDMGBonus",
+            modifierValue: 40,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `With 3 stacks, casting Resonance Liberation grants 40% Basic Attack DMG Bonus.`,
+      },
+    ],
+  },
+  "Halo of Starry Radiance 5 Set": {
+    name: "Halo of Starry Radiance",
+    key: "HaloofStarryRadiance",
+    details: `When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%. Effects of the same name cannot be stacked.`,
+    passives: [
+      {
+        key: "HaloofStarryRadianceATK",
+        modifiers: [
+          {
+            modifier: "ATK",
+            modifierValue: 0.2,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%. Effects of the same name cannot be stacked.`,
+        hasStacks: true,
+        minStacks: 0,
+        maxStacks: 125,
       },
     ],
   },

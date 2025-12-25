@@ -940,6 +940,43 @@ CD: <span class="param">20</span>s</span>`,
     ],
     sets: ["VoidThunder", "LingeringTunes"],
   },
+  FloraDrone: {
+    key: "FloraDrone",
+    name: "Flora Drone",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FloraDrone.webp",
+    details: `<span class="description">Summon a Flora Drone, dealing 43.20%/50.40%/57.60%/64.80% Aero DMG to enemies and healing Resonators within range by 2.40%/2.80%/3.20%/3.60% of their Max HP plus an additional 160 HP.</span>.`,
+    modifiers: [],
+    actions: [],
+    sets: ["PactofNeonlightLeap", "RiteofGildedRevelation"],
+  },
+  FloraReindeer: {
+    key: "FloraReindeer",
+    name: "Flora Reindeer",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FloraReindeer.webp",
+    details: `Summon a Flora Reindeer to attack enemies within a large range, dealing <span class="Highlight">128.40%/149.80%/171.20%/192.60%</span> Aero DMG.<br><br>CD: 15s.`,
+    modifiers: [],
+    actions: [
+      {
+        key: "FloraReindeerSummonDMG",
+        label: "Summon DMG",
+        description: `Summon a Flora Reindeer to attack enemies within a large range, dealing <span class="Highlight">128.40%/149.80%/171.20%/192.60%</span> Aero DMG.`,
+        talents: {
+          "1": "128.40%",
+          "2": "128.40%",
+          "3": "149.80%",
+          "4": "171.20%",
+          "5": "192.60%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["RiteofGildedRevelation"],
+  },
   FractsidusThruster: {
     key: "FractsidusThruster",
     name: "Fractsidus Thruster",
@@ -950,6 +987,32 @@ CD: <span class="param">20</span>s</span>`,
     modifiers: [],
     actions: [],
     sets: ["EternalRadiance", "EmpyreanAnthem"],
+  },
+  FrostbiteColeoid: {
+    key: "FrostbiteColeoid",
+    name: "Frostbite Coleoid",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FrostbiteColeoid.webp",
+    details: `Summon a Frostbite Coleoid to punch enemies, dealing <span class="Highlight">128.40%/149.80%/171.20%/192.60%</span> Glacio DMG.<br><br>CD: 15s.`,
+    modifiers: [],
+    actions: [
+      {
+        key: "FrostbiteColeoidPunchDMG",
+        label: "Punch DMG",
+        description: `Summon a Frostbite Coleoid to punch enemies, dealing 128.40%/149.80%/171.20%/192.60% Glacio DMG.`,
+        talents: {
+          "1": "128.40%",
+          "2": "128.40%",
+          "3": "149.80%",
+          "4": "171.20%",
+          "5": "192.60%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
+    sets: ["HaloofStarryRadiance"],
   },
   FrostscourgeStalker: {
     key: "FrostscourgeStalker",
@@ -1020,6 +1083,17 @@ CD: <span class="param">20</span>s</span>`,
     modifiers: [],
     actions: [],
     sets: ["FrostyResolve", "EmpyreanAnthem"],
+  },
+  GeospiderS4: {
+    key: "GeospiderS4",
+    name: "Geospider S4",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/GeospiderS4.webp",
+    details: `<span class="description">Summon a Geospider S4 to attack enemies, dealing an instance of <span class="Highlight">34.56%/40.32%/46.08%/51.84%</span> Spectro DMG and an instance of <span class="Highlight">51.84%/60.48%/69.12%/77.76%</span> Spectro DMG.<br><br>CD: 8s.</span>.`,
+    modifiers: [],
+    actions: [],
+    sets: ["PactofNeonlightLeap", "HaloofStarryRadiance"],
   },
   GlacioDrake: {
     key: "GlacioDrake",
@@ -1332,6 +1406,34 @@ CD: <span class="param">20</span>s.</span>`,
     ],
     sets: ["TidebreakingCourage", "GustsofWelkin", "CrownofValor"],
   },
+  Hyvatia: {
+    key: "Hyvatia",
+    name: "Hyvatia",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Hyvatia.webp",
+    details: `<span class="description">Summon Hyvatia in mid-air to fire lasers at enemies, dealing <span class="Highlight">18.24%/21.28%/24.32%/27.36%</span> Spectro DMG 10 times.<br><br>
+Casting Outro Skill within 15s after summoning Hyvatia grants <span class="Highlight">10.00%</span> All-Attribute DMG Bonus to the Intro Skill of the incoming Resonator for 15s.<br><br>
+CD: 20s.</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "HyvatiaLasersDMG",
+        label: "Lasers DMG",
+        description: `Summon Hyvatia in mid-air to fire lasers at enemies, dealing <span class="Highlight">18.24%/21.28%/24.32%/27.36%</span> Spectro DMG 10 times.`,
+        talents: {
+          "1": "18.24%*10",
+          "2": "18.24%*10",
+          "3": "21.28%*10",
+          "4": "24.32%*10",
+          "5": "27.36%*10",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+    ],
+    sets: ["PactofNeonlightLeap", "RiteofGildedRevelation"],
+  },
   ImpermanenceHeron: {
     key: "ImpermanenceHeron",
     name: "Impermanence Heron",
@@ -1432,6 +1534,32 @@ CD: <span class="param">20</span>s.</span>`,
       },
     ],
     sets: ["MoltenRift"],
+  },
+  Ironhoof: {
+    key: "Ironhoof",
+    name: "Ironhoof",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Ironhoof.webp",
+    details: `Transform into an Ironhoof to charge at enemies, dealing <span class="Highlight">35.76%/41.72%/47.68%/53.64%</span> Fusion DMG. At the end of the charge, unleash a goring attack that deals <span class="Highlight">8.94%/10.43%/11.92%/13.41%</span> Fusion DMG 3 times and <span class="Highlight">116.22%/135.59%/154.96%/174.33%</span> Fusion DMG once.<br><br>CD: 15s.`,
+    modifiers: [],
+    actions: [
+      {
+        key: "IronhoofChargeGoringDMG",
+        label: "Charge & Goring DMG",
+        description: `Transform into an Ironhoof to charge at enemies, dealing <span class="Highlight">35.76%/41.72%/47.68%/53.64%</span> Fusion DMG. At the end of the charge, unleash a goring attack that deals <span class="Highlight">8.94%/10.43%/11.92%/13.41%</span> Fusion DMG 3 times and <span class="Highlight">116.22%/135.59%/154.96%/174.33%</span> Fusion DMG once.<br><br>CD: 15s.`,
+        talents: {
+          "1": "35.76%+8.94%*3+116.22%",
+          "2": "35.76%+8.94%*3+116.22%",
+          "3": "41.72%+10.43%*3+135.59%",
+          "4": "47.68%+11.92%*3+154.96%",
+          "5": "53.64%+13.41%*3+174.33%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["PactofNeonlightLeap"],
   },
   Jué: {
     key: "Jué",
@@ -1933,6 +2061,43 @@ CD: <span class="param">25</span>s.</span>`,
       },
     ],
     sets: ["LingeringTunes"],
+  },
+  MiningDrone: {
+    key: "MiningDrone",
+    name: "Mining Drone",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/MiningDrone.webp",
+    details: `<span class="description">Transform into a Mining Drone to attack enemies, dealing 68.40%/79.80%/91.20%/102.60% Havoc DMG twice.<br><br>CD: 8s.</span>.`,
+    modifiers: [],
+    actions: [],
+    sets: ["HaloofStarryRadiance", "RiteofGildedRevelation"],
+  },
+  MiningReindeer: {
+    key: "MiningReindeer",
+    name: "Mining Reindeer",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/MiningReindeer.webp",
+    details: `Summon a Mining Reindeer to launch a charged attack at enemies, dealing <span class="Highlight">158.40%/184.80%/211.20%/237.60%</span> Electro DMG.<br><br>CD: 20s.`,
+    modifiers: [],
+    actions: [
+      {
+        key: "FloraReindeerSummonDMG",
+        label: "Summon DMG",
+        description: `Summon a Mining Reindeer to launch a charged attack at enemies, dealing <span class="Highlight">158.40%/184.80%/211.20%/237.60%</span> Electro DMG.`,
+        talents: {
+          "1": "158.40%",
+          "2": "158.40%",
+          "3": "184.80%",
+          "4": "211.20%",
+          "5": "237.60%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["PactofNeonlightLeap"],
   },
   MourningAix: {
     key: "MourningAix",
@@ -2727,6 +2892,41 @@ CD: <span class="param">20</span>s.</span>`,
     ],
     sets: ["EternalRadiance", "GustsofWelkin", "LawofHarmony"],
   },
+  ReactorHusk: {
+    key: "ReactorHusk",
+    name: "Reactor Husk",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReactorHusk.webp",
+    details: `<span class="description">Transform into Reactor Husk, jumping into the air and unleashing a heavy slash that deals <span class="Highlight">234.00%/273.00%/312.00%/351.00%</span> Fusion DMG to enemies.
+<br><br>
+The Resonator with this Echo equipped in their main slot gain 10.00% Energy Regen.
+<br><br>
+CD: 20s./span>`,
+    modifiers: [
+      {
+        modifier: "EnergyRegen",
+        modifierValue: 0.1,
+      },
+    ],
+    actions: [
+      {
+        key: "HyvatiaLasersDMG",
+        label: "Lasers DMG",
+        description: `Transform into Reactor Husk, jumping into the air and unleashing a heavy slash that deals <span class="Highlight">234.00%/273.00%/312.00%/351.00%</span> Fusion DMG to enemies.`,
+        talents: {
+          "1": "234.00%",
+          "2": "234.00%",
+          "3": "273.00%",
+          "4": "312.00%",
+          "5": "351.00%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["HaloofStarryRadiance"],
+  },
   ReminiscenceFenrico: {
     key: "ReminiscenceFenrico",
     name: "Reminiscence: Fenrico",
@@ -2948,6 +3148,58 @@ CD: 25s`,
     ],
     sets: ["FreezingFrost", "SunSinkingEclipse"],
   },
+  SabercatProwler: {
+    key: "SabercatProwler",
+    name: "Sabercat Prowler",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/SabercatProwler.webp",
+    details: `Summon a Sabercat Prowler to attack enemies, dealing 128.40%/149.80%/171.20%/192.60% Fusion DMG.<br><Br>CD: 15s.`,
+    modifiers: [],
+    actions: [
+      {
+        key: "SabercatProwlerSummonDMG",
+        label: "Summon Shield",
+        description: `Summon a Sabercat Prowler to attack enemies, dealing 128.40%/149.80%/171.20%/192.60% Fusion DMG.<br><Br>CD: 15s.`,
+        talents: {
+          "1": "128.40%",
+          "2": "128.40%",
+          "3": "149.80%",
+          "4": "171.20%",
+          "5": "192.60%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["PactofNeonlightLeap", "HaloofStarryRadiance"],
+  },
+  SabercatReaver: {
+    key: "SabercatReaver",
+    name: "Sabercat Reaver",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/SabercatReaver.webp",
+    details: `Summon a Sabercat Reaver to attack enemies, dealing 128.40%/149.80%/171.20%/192.60% Fusion DMG.<br><Br>CD: 15s.`,
+    modifiers: [],
+    actions: [
+      {
+        key: "SabercatReaverSummonDMG",
+        label: "Summon Shield",
+        description: `Summon a Sabercat Reaver to attack enemies, dealing 128.40%/149.80%/171.20%/192.60% Fusion DMG.<br><Br>CD: 15s.`,
+        talents: {
+          "1": "128.40%",
+          "2": "128.40%",
+          "3": "149.80%",
+          "4": "171.20%",
+          "5": "192.60%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["PactofNeonlightLeap", "HaloofStarryRadiance"],
+  },
   SabyrBoar: {
     key: "SabyrBoar",
     name: "Sabyr Boar",
@@ -3047,6 +3299,33 @@ CD: <span class="param">25</span>s.</span>`,
     modifiers: [],
     actions: [],
     sets: ["MoltenRift", "RejuvenatingGlow", "LingeringTunes"],
+  },
+  SpacetrekExplorer: {
+    key: "SpacetrekExplorer",
+    name: "Spacetrek Explorer",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/SpacetrekExplorer.webp",
+    details: `Summon a Spacetrek Explorer to grant nearby active Resonators in the team a Shield equal to <span class="Highlight">10%</span> of the summoner's Max HP for 4s.<br><br>CD: 20s.`,
+    modifiers: [],
+    actions: [
+      {
+        key: "SpacetrekExplorerShield",
+        label: "Spacetrek Explorer Shield",
+        description: `Summon a Spacetrek Explorer to grant nearby active Resonators in the team a Shield equal to <span class="Highlight">10%</span> of the summoner's Max HP for 4s.<br><br>CD: 20s.`,
+        talents: {
+          "1": "10%",
+          "2": "10%",
+          "3": "10%",
+          "4": "10%",
+          "5": "10%",
+        },
+        type: "Shield",
+        element: "Fusion",
+        attribute: "hp",
+      },
+    ],
+    sets: ["HaloofStarryRadiance"],
   },
   Spearback: {
     key: "Spearback",
@@ -3340,6 +3619,101 @@ Start with 2 charges. Gain 1 charge every 8s, up to 2 charges.`,
     actions: [],
     sets: ["MoltenRift", "VoidThunder", "SierraGale"],
   },
+  TremorWarrior: {
+    key: "TremorWarrior",
+    name: "Tremor Warrior",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/TremorWarrior.webp",
+    details: `<span class="description">Transform into a Tremor Warrior and viciously attack enemies in the front, dealing <span class="Highlight">136.80%/159.60%/182.40%/205.20%</span> Electro DMG.<br><br>CD 8s.</span>.`,
+    modifiers: [],
+    actions: [],
+    sets: ["HaloofStarryRadiance"],
+  },
+  TwinNovaCollapsarBlade: {
+    key: "TwinNovaCollapsarBlade",
+    name: "Twin Nova: Collapsar Blade",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/TwinNovaCollapsarBlade.webp",
+    details: `<span class="skilldescription">Transform into Twin Nova: Collapsar Blade to rapidly fire at enemies for 5s, with each attack dealing <span class="Highlight">1.34%/1.56%/1.79%/2.01%</span> Electro DMG.<br><br>
+The Resonator with this Echo equipped in the main slot gains 12.00% Electro DMG Bonus and 12.00% Basic Attack DMG Bonus.<br><br>
+CD: 8s.<br><br>
+If Twin Nova: Nebulous Cannon is equipped in another slot on the Resonator:<br>
+- Casting Echo Skill unleashes both Nebulous Cannon and Collapsar Blade skills in quick succession, but is still considered performing the same Echo Skill.<br>
+- DMG dealt by Twin Nova: Collapsar Blade becomes Spectro DMG. The Electro DMG Bonus gained from equipping it in the main slot is turned into Spectro DMG Bonus.<br>
+- Casting Basic Attacks grants 1 stack of Dyad Origins. Casting Resonance Skill grants 3 stacks of Dyad Origins. Dyad Origins can stack up to 6 times and lasts for 8s. Each stack increases Echo Skill DMG by 10%, and all stacks are cleared after this Echo Skill ends.<br>
+- This skill is capped at 2 uses. Initially, this skill can be used 2 times, with 1 use added every 8s.</span>`,
+    modifiers: [
+      {
+        modifier: "Electro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "BasicAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "TwinNovaCollapsarBladeRapidFireDMG",
+        label: "Rapid Fire DMG",
+        description: `Transform into Twin Nova: Collapsar Blade to rapidly fire at enemies for 5s, with each attack dealing 1.34%/1.56%/1.79%/2.01% Electro DMG.`,
+        talents: {
+          "1": "1.34%",
+          "2": "1.34%",
+          "3": "1.56%",
+          "4": "1.79%",
+          "5": "2.01%",
+        },
+        type: "Echo",
+        element: "Electro",
+      },
+    ],
+    sets: ["RiteofGildedRevelation"],
+  },
+  TwinNovaNebulousCannon: {
+    key: "TwinNovaNebulousCannon",
+    name: "Twin Nova: Nebulous Cannon",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/TwinNovaNebulousCannon.webp",
+    details: `<span class="skilldescription">Transform into a Twin Nova: Nebulous Cannon to slash enemies twice, with each attack dealing <span class="Highlight">53.67%/62.62%/71.56%/80.51%</span> Spectro DMG.<br><br>
+The Resonator with this Echo equipped in the main slot gains <span class="Highlight">12.00%</span> Spectro DMG Bonus and <span class="Highlight">12.00%</span> Basic Attack DMG Bonus.<br><br>
+CD: 8s.<br><br>
+If Twin Nova: Collapsar Blade is equipped in another slot on the Resonator:<br>
+- Casting Echo Skill unleashes both Nebulous Cannon and Collapsar Blade skills in quick succession, but the DMG Bonus from the Echo in the main slot remains unchanged.<br>
+- DMG dealt by Twin Nova: Collapsar Blade becomes Spectro DMG.<br>
+- Casting Basic Attacks grants 1 stack of Dyad Origins. Casting Resonance Skill grants 3 stacks of Dyad Origins. Dyad Origins can stack up to 6 times and lasts for 8s. Each stack increases Echo Skill DMG by 10%, and all stacks are cleared after this Echo Skill ends.<br>
+-This skill is capped at 2 uses. Initially, this skill can be used 2 times, with 1 use added every 8s.</span>`,
+    modifiers: [
+      {
+        modifier: "Spectro",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "BasicAttackDMGBonus",
+        modifierValue: 0.12,
+      },
+    ],
+    actions: [
+      {
+        key: "TwinNovaNebulousCannonSlashDMG",
+        label: "Slash DMG",
+        description: `Transform into a Twin Nova: Nebulous Cannon to slash enemies twice, with each attack dealing <span class="Highlight">53.67%/62.62%/71.56%/80.51%</span> Spectro DMG.`,
+        talents: {
+          "1": "53.67%*2",
+          "2": "53.67%*2",
+          "3": "62.62%*2",
+          "4": "71.56%*2",
+          "5": "80.51%*2",
+        },
+        type: "Echo",
+        element: "Spectro",
+      },
+    ],
+    sets: ["RiteofGildedRevelation"],
+  },
   VanguardJunrock: {
     key: "VanguardJunrock",
     name: "Vanguard Junrock",
@@ -3438,6 +3812,32 @@ CD: 20s.`,
     actions: [],
     sets: ["SierraGale", "RejuvenatingGlow", "MoonlitClouds"],
   },
+  WindlashColeoid: {
+    key: "WindlashColeoid",
+    name: "Windlash Coleoid",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/WindlashColeoid.webp",
+    details: `Transform into a Windlash Coleoid to kick enemies, dealing <span class="Highlight">178.80%/208.60%/238.40%/268.20%</span> Aero DMG.`,
+    modifiers: [],
+    actions: [
+      {
+        key: "WindlashColeoidKickDMG",
+        label: "Kick DMG",
+        description: `Transform into a Windlash Coleoid to kick enemies, dealing <span class="Highlight">178.80%/208.60%/238.40%/268.20%</span> Aero DMG.`,
+        talents: {
+          "1": "178.80%",
+          "2": "178.80%",
+          "3": "208.60%",
+          "4": "238.40%",
+          "5": "268.20%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["RiteofGildedRevelation"],
+  },
   ViridblazeSaurian: {
     key: "ViridblazeSaurian",
     name: "Viridblaze Saurian",
@@ -3474,5 +3874,16 @@ CD: 20s.`,
     modifiers: [],
     actions: [],
     sets: ["CelestialLight", "MoonlitClouds", "LingeringTunes"],
+  },
+  ZipZap: {
+    key: "ZipZap",
+    name: "Zip Zap",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ZipZap.webp",
+    details: `<span class="description">Summon a Zip Zap to launch spinning attacks at enemies, dealing <span class="Highlight">17.28%/20.16%/23.04%/25.92%</span> Electro DMG 5 times.<br><br>CD: 8s.</span>.`,
+    modifiers: [],
+    actions: [],
+    sets: ["PactofNeonlightLeap", "RiteofGildedRevelation"],
   },
 };
