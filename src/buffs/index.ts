@@ -2022,6 +2022,27 @@ export const allWeaponTeamBuffs = [
     details: `At max stacks, when Resonators in the team inflict Negative Status, grants <span class="Highlight">24%/30%/36%/42%/48%</span> All-Attribute DMG Bonus for 15s. Effects of the same name cannot be stacked.`,
     alwaysEnabled: false,
   },
+  {
+    name: "Spectrum Blaster",
+    key: "SpectrumBlasterAllDMG",
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "AllElementAttributeBonus",
+        modifierByRefinement: {
+          "1": 0.08,
+          "2": 0.1,
+          "3": 0.12,
+          "4": 0.14,
+          "5": 0.16,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 3,
+    details: `Each time the wielder inflicts <span class="highlight">Tune Rupture - Shifting</span> or <span class="highlight">Tune Strain - Shifting</span> during Basic Attacks, all DMG dealt by Resonators in the team is increased by <span class="highlight">8%/10%/12%/14%/16%</span> for 30s, up to 3 stacks. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allCharacters: string[] = [

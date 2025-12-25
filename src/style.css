@@ -79,11 +79,13 @@ html[data-theme="black"] .btn-active {
   font-weight: bold;
 }
 .Highlight,
+.highlight,
 .ingame-Highlight {
   font-style: italic;
   color: oklch(var(--wa));
 }
-.param {
+.param,
+.Param {
   color: oklch(var(--wa));
 }
 .Light,

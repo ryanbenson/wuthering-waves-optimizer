@@ -5,6 +5,7 @@
     <h3>December 25, 2025</h3>
     <ul>
       <li>Adds missing new standard broadblade.</li>
+      <li>Adds missing Spectrum Blaster team buff.</li>
     </ul>
     <h3>December 24, 2025</h3>
     <ul>
