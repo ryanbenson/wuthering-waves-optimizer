@@ -267,7 +267,7 @@
 
   <h4 class="damage__title pt-8">
     <span class="text-lg font-bold">
-      {{ chosenChar.value?.tuneBreakAttacks?.name ?? "Tyne Break Attacks" }}
+      {{ chosenChar.value?.tuneBreakAttacks?.name ?? "Tune Break Attacks" }}
     </span>
     <span class="damage__title__button" @click="toggleTuneBreakDetails">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
