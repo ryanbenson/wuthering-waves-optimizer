@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>December 25, 2025</h3>
+    <ul>
+      <li>Adds missing new standard broadblade.</li>
+    </ul>
     <h3>December 24, 2025</h3>
     <ul>
       <li>
