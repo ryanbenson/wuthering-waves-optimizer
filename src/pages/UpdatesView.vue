@@ -2,6 +2,13 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>December 27, 2025</h3>
+    <ul>
+      <li>
+        Changes Lynae's Prismatic Overblast (self and team buff) to be hidden
+        DMG bonus. The calculation is still the same.
+      </li>
+    </ul>
     <h3>December 25, 2025</h3>
     <ul>
       <li>Adds missing new standard broadblade.</li>

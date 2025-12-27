@@ -1639,7 +1639,7 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "AllElementAttributeBonus",
+          modifier: "DMGBonus",
           modifierValue: 0.24,
         },
       ],
