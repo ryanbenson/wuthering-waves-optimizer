@@ -1098,6 +1098,8 @@ export const calcAllDamages = (
   mainEcho: any = {},
   mainEchoRank: any = 5,
   rotationsList: any = [],
+  charResonanceChainsData: any = {},
+  charBuffsData: any = {},
 ) => {
   if (!chosenChar) return;
 
@@ -1146,41 +1148,110 @@ export const calcAllDamages = (
     basicAttacks: processAttacks(
       chosenChar.basicAttacks?.attacks,
       talentData.basic,
+      false,
+      false,
+      true,
+      {},
+      {},
+      charResonanceChainsData.value,
+      charBuffsData.value,
+      talentData.value,
     ),
     skillAttacks: processAttacks(
       chosenChar.skillAttacks?.attacks,
       talentData.skill,
+      false,
+      false,
+      true,
+      {},
+      {},
+      charResonanceChainsData.value,
+      charBuffsData.value,
+      talentData.value,
     ),
     liberationAttacks: processAttacks(
       chosenChar.liberationAttacks?.attacks,
       talentData.liberation,
+      false,
+      false,
+      true,
+      {},
+      {},
+      charResonanceChainsData.value,
+      charBuffsData.value,
+      talentData.value,
     ),
     forteCircuitAttacks: processAttacks(
       chosenChar.forteCircuitAttacks?.attacks,
       talentData.forte,
+      false,
+      false,
+      true,
+      {},
+      {},
+      charResonanceChainsData.value,
+      charBuffsData.value,
+      talentData.value,
     ),
     introAttacks: processAttacks(
       chosenChar.introAttacks?.attacks,
       talentData.intro,
+      false,
+      false,
+      true,
+      {},
+      {},
+      charResonanceChainsData.value,
+      charBuffsData.value,
+      talentData.value,
     ),
     outroAttacks: processAttacks(
       chosenChar.outroAttacks?.attacks,
       talentData.intro, // TODO: What is this?
       true, // has no talent level
+      false,
+      true,
+      {},
+      {},
+      charResonanceChainsData.value,
+      charBuffsData.value,
+      talentData.value,
     ),
     tuneBreakAttacks: processAttacks(
       chosenChar.tuneBreakAttacks?.attacks,
       talentData.tuneBreak,
+      false,
+      false,
+      true,
+      {},
+      {},
+      charResonanceChainsData.value,
+      charBuffsData.value,
+      talentData.value,
     ),
     echoSetAttacks: processAttacks(
       echoSetAttacks,
       talentData.intro, // TODO: What is this?
       true, // has no talent level
+      false,
+      true,
+      {},
+      {},
+      charResonanceChainsData.value,
+      charBuffsData.value,
+      talentData.value,
     ),
     utilityAttacks: processAttacks(
       utilityAttacks,
       talentData.intro, // TODO: What is this?
       true, // has no talent level
+      false,
+      true,
+      {},
+      {},
+      charResonanceChainsData.value,
+      charBuffsData.value,
+      talentData.value,
     ),
   };
 
@@ -1239,12 +1310,30 @@ export const calcAllDamages = (
       elementalReactionsAttacks,
       talentData.intro,
       true, // has no talent level
+      false,
+      true,
+      {},
+      {},
+      charResonanceChainsData.value,
+      charBuffsData.value,
+      talentData.value,
     );
   }
   let chosenEcho;
   if (mainEcho) {
     chosenEcho = getEchoData(mainEcho);
-    const echoDmg = processAttacks(chosenEcho.actions, mainEchoRank);
+    const echoDmg = processAttacks(
+      chosenEcho?.actions,
+      mainEchoRank,
+      false,
+      false,
+      true,
+      {},
+      {},
+      charResonanceChainsData.value,
+      charBuffsData.value,
+      talentData.value,
+    );
     allDamagesData.echoAttacks = echoDmg;
   }
 
@@ -1265,6 +1354,11 @@ export const calcAllDamages = (
         false,
         true,
         false,
+        {},
+        {},
+        charResonanceChainsData.value,
+        charBuffsData.value,
+        talentData.value,
       );
       // capture all damages
       const damageAggregation = {
