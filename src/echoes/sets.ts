@@ -1109,7 +1109,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         key: "RiteofGildedRevelationLiberation",
         modifiers: [
           {
-            modifier: "BasicAttackDMGBonus",
+            modifier: "ForteBased:Liberation:Basic",
             modifierValue: 40,
           },
         ],

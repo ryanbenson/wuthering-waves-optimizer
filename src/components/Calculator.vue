@@ -15,7 +15,9 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div v-if="false" class="alert alert-success mb-6 text-white p-2 px-4">
+          <div
+            v-if="false"
+            class="alert alert-success mb-6 text-white p-2 px-4">
             Lynae, her sig, new standard weapons, echoes, & echo set are up!
           </div>
           <CalculatorCharacterSelect
@@ -281,6 +283,7 @@ import {
   getCharByName,
   getCharactersAvailable,
   getAttackData,
+  getOriginalForteFromAttackKey,
 } from "../characters/characters";
 import CalculatorEchoes from "./CalculatorEchoes.vue";
 import CalculatorWeapons from "./CalculatorWeapons.vue";
@@ -1035,6 +1038,14 @@ export default defineComponent({
       const customBuffDefReduction = customBuffs?.value?.DefReduction ?? 0;
       const totalDefReduction =
         havocBaneDefReduction + attackDefReduction + customBuffDefReduction;
+      // apply specific ForteBased buff
+      const originalForte = getOriginalForteFromAttackKey(
+        chosenChar.value,
+        attack.key,
+      );
+      let totalForteBasedDmgBuff =
+        echoStats?.value?.[`ForteBased:${originalForte}:${attack.type}`] ?? 0;
+      totalForteBasedDmgBuff = totalForteBasedDmgBuff / 100;
       let specificSkillDmg =
         specificSkillDmgFromResonanceChains +
         specificSkillDmgFromCharBuffs +
@@ -1053,7 +1064,8 @@ export default defineComponent({
         coordinatedEchoDmgBonus / 100 +
         genericSkillDmgBonusEchoBuff / 100 +
         coordinatedDmgBonusCustomBuffs +
-        totalTuneBreakDmgBonus;
+        totalTuneBreakDmgBonus +
+        totalForteBasedDmgBuff;
 
       // Resist Shred:
       let teamBuffResistShredForCharElement =

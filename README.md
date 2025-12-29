@@ -204,3 +204,21 @@ When you need to add a speceial dmg multiplier to the base talent value (e.g. Ca
     alwaysEnabled: false,
   },
 ```
+
+### Buffs based on forte, and sub type
+
+This looks up the original dmg, it has to match Liberation, and a attackType of Basic. Weird, but specific to this buff
+
+```
+      {
+        key: "RiteofGildedRevelationLiberation",
+        modifiers: [
+          {
+            modifier: "ForteBased:Liberation:Basic",
+            modifierValue: 40,
+          },
+        ],
+        alwaysEnabled: false,
+        details: `With 3 stacks, casting Resonance Liberation grants 40% Basic Attack DMG Bonus.`,
+      },
+```

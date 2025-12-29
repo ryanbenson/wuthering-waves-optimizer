@@ -22,7 +22,7 @@ export const liberationAttacks = {
     {
       key: "BasicAttackToaVividTomorrowDMG",
       label: "Basic Attack - To a Vivid Tomorrow! DMG",
-      type: "Liberation",
+      type: "Basic",
       talents: {
         "1": "4.22%*12+5.06%*10",
         "2": "4.56%*12+5.47%*10",

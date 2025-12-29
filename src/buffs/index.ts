@@ -1850,6 +1850,21 @@ CD: <span class="param">20</span>s</span>`,
     maxStacks: 50,
     alwaysEnabled: false,
   },
+  {
+    key: "HaloofStarryRadiance",
+    name: "Halo of Starry Radiance",
+    details: `When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%. Effects of the same name cannot be stacked.`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.002,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 125,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allWeaponTeamBuffs = [

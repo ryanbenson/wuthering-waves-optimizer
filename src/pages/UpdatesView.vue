@@ -2,6 +2,15 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>December 29, 2025</h3>
+    <ul>
+      <li>Adds missing Halo of Starry Radiance to team buffs.</li>
+      <li>
+        Fixes Rite of Gilded Revelation 5pc effect for the Basic DMG Bonus, it
+        now properly buffs attacks that are from the character's Liberation but
+        does Basic DMG.
+      </li>
+    </ul>
     <h3>December 27, 2025</h3>
     <ul>
       <li>
