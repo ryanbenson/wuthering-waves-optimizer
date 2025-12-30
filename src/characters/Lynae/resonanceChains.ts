@@ -111,9 +111,7 @@ Casting Outro Skill grants the incoming Resonator 25% All-DMG Amplification for 
       {
         modifier: "specialMultiplier",
         modifySpecificTalents: [
-          "BasicAttackPolychromeLeap1",
-          "BasicAttackPolychromeLeap2",
-          "BasicAttackPolychromeLeap3",
+          "BasicAttackIridescentSplashDMG",
           "BasicAttackVisualImpactDMG",
         ],
         modifierValue: 0.3,
