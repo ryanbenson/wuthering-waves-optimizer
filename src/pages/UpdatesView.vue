@@ -4,6 +4,7 @@
     <h1>Updates</h1>
     <h3>December 30, 2025</h3>
     <ul>
+      <li>Implements Tune Break & Lynae's Tune Rupture Response formula.</li>
       <li>
         Updates Lynae s6 text and modifier, it is now Vulnerability due to the
         text changes made.
