@@ -37,7 +37,12 @@ export function calcHitDamage(
     bonusElementDmg,
     totalDeepenEffect,
   );
-  const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore, defReduction);
+  const defModifier = getDefenseModifier(
+    charLevel,
+    enemyLevel,
+    defIgnore,
+    defReduction,
+  );
   const resistValue = getEnemyResistValue(enemyResist, resistenceReduction);
   const baseDamage = getBaseDamage(
     talent,
@@ -85,7 +90,8 @@ export function getDefenseModifier(
   );
   const enemyDef = getEnemyDefense(enemyLevel);
   return (
-    (800 + 8 * charLevel) / (800 + 8 * charLevel + enemyDef * (1 - defIgnore) * (1 - defReduction))
+    (800 + 8 * charLevel) /
+    (800 + 8 * charLevel + enemyDef * (1 - defIgnore) * (1 - defReduction))
   );
 }
 
@@ -381,7 +387,12 @@ export function calcDamage(
   let totalCritDmg = calcCritDamage(finalDamage, critDamage);
   let totalAvgDmg = calcAvgDamage(finalDamage, critRate, critDamage);
   const totalDamageContext = {
-    defenseModifier: getDefenseModifier(charLevel, enemyLevel, defIgnore, defReduction),
+    defenseModifier: getDefenseModifier(
+      charLevel,
+      enemyLevel,
+      defIgnore,
+      defReduction,
+    ),
     resistValue: getEnemyResistValue(enemyResist, resistenceReduction),
     specialMultiplier: specialMultiplier,
     totalDeepenEffect,
@@ -439,7 +450,7 @@ export function calcFixedDamage(talent: string, count: number = 1): any {
     totalDamageContext: {
       type: "attack",
       isFixed: true,
-    }
+    },
   };
 }
 
@@ -640,7 +651,7 @@ export function calcHeal(
       finalAtkDefHpVal,
       totalHealBonus,
       type: "healing",
-    }
+    },
   };
 }
 
@@ -724,7 +735,7 @@ export function calcShield(
       finalAtkDefHpVal,
       totalShieldBonus,
       type: "shield",
-    }
+    },
   };
 }
 
@@ -919,14 +930,13 @@ export function getSpectroFrazzleDamage(
   //   charLevel,
   //   stacks,
   // );
-  const damage = (
+  const damage =
     baseModifier *
     resistModifier *
     defModifier *
     stacks *
     motionValue *
-    (1 + DMGDeepen)
-  );
+    (1 + DMGDeepen);
   return {
     damage,
     totalDamageContext: {
@@ -941,7 +951,7 @@ export function getSpectroFrazzleDamage(
       defIgnore,
       DMGDeepen,
       type: "spectroFrazzle",
-    }
+    },
   };
 }
 
@@ -959,14 +969,13 @@ export function getAeroErosionDamage(
   const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
   // 1000*res*def*stack number*MV%
   const baseModifier = 1000;
-  const damage = (
+  const damage =
     baseModifier *
     resistModifier *
     defModifier *
     stacks *
     motionValue *
-    (1 + DMGDeepen)
-  );
+    (1 + DMGDeepen);
   return {
     damage,
     totalDamageContext: {
@@ -981,7 +990,7 @@ export function getAeroErosionDamage(
       defIgnore,
       DMGDeepen,
       type: "aeroErosion",
-    }
+    },
   };
 }
 
@@ -999,4 +1008,87 @@ export function calcMidnightVeilDMG() {
     detailedCalculationCrit: "<strong>5</strong> * 20",
     detailedCalculationAvg: "<strong>5</strong> * 20",
   };
+}
+
+export function calcTuneBreak(
+  customTuneAmp: string | null = null,
+  charLevel: string,
+  weaponType: string,
+  enemyLevel: number,
+  enemyResist: number,
+  enemyType: string,
+  resistenceReduction: number,
+  defIgnore: number = 0,
+  tuneBreakBonus: number = 0,
+  bonusDmg: number = 0,
+): any {
+  const levelModifier = getTuneBreakLevelModifier(charLevel);
+  const defenseModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
+  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
+  const enemyTypeMultiplier = getTuneBreakEnemyTypeMultiplier(enemyType);
+  const defaultTuneAmp = getTuneBreakAmpByCharWeapon(weaponType);
+  let tuneAmp = defaultTuneAmp;
+  if (customTuneAmp) {
+    tuneAmp = customTuneAmp;
+  }
+  const instanceDamage =
+    levelModifier *
+    tuneAmp *
+    defenseModifier *
+    resistModifier *
+    (1 + bonusDmg) *
+    enemyTypeMultiplier *
+    (1 + tuneBreakBonus);
+
+  const detailedCalculation = instanceDamage;
+  return {
+    instanceDamage,
+    totalDamage: instanceDamage,
+    critDamage: instanceDamage,
+    avgDamage: instanceDamage,
+    detailedCalculation,
+    detailedCalculationCrit: detailedCalculation,
+    detailedCalculationAvg: detailedCalculation,
+    totalDamageContext: {
+      type: "attack",
+      isFixed: false,
+    },
+  };
+}
+
+export function getTuneBreakLevelModifier(charLevel: string): number {
+  // remove any + since ascension doesn't affect the data
+  const characterLevel = charLevel.replace("+", "");
+  const tuneBreakLevelModifiersByLevel: Record<string, number> = {
+    "1": 2.215,
+    "20": 5.932,
+    "40": 29.357,
+    "50": 60.934,
+    "60": 130.868,
+    "70": 249.715,
+    "80": 437.085,
+    "90": 716.22,
+  };
+  return tuneBreakLevelModifiersByLevel?.[characterLevel] ?? 716.22;
+}
+
+export function getTuneBreakEnemyTypeMultiplier(enemyType: string): number {
+  const enemyTypeMultiplier: Record<string, number> = {
+    Common: 1,
+    Elite: 3,
+    Overlord: 14,
+    Calamity: 14,
+  };
+  return enemyTypeMultiplier?.[enemyType] ?? 14;
+}
+
+export function getTuneBreakAmpByCharWeapon(weaponType: string): string {
+  const enemyTypeMultiplier: Record<string, string> = {
+    Broadblades: "204.048% + 156.096% + 1080.00%",
+    Gauntlets: "1440.00%",
+    Pistols: "1440.00%",
+    Rectifiers: "1440.00%",
+    Swords: "90.00%*4 + 1080.00%",
+  };
+  return enemyTypeMultiplier?.[weaponType] ?? "1440.00%";
 }

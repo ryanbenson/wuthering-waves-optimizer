@@ -414,6 +414,7 @@ export default defineComponent({
     const isLoading = ref(false);
     const enemyLevel = ref(90);
     const enemyResist = ref(0.1);
+    const enemyType = ref("Calamity");
     const characterElement = ref("");
     // elemental effects
     const isSpectroFrazzleEnabled = ref(false);
@@ -512,7 +513,6 @@ export default defineComponent({
       liberation:
         characters.value?.[character.value]?.talents?.liberation ?? 10,
       intro: characters.value?.[character.value]?.talents?.intro ?? 10,
-      tuneBreak: characters.value?.[character.value]?.talents?.tuneBreak ?? 10,
     });
 
     const updateStats = (stats) => {
@@ -606,9 +606,6 @@ export default defineComponent({
                   break;
                 case "intro":
                   talent = attack.talents[talentData.intro];
-                  break;
-                case "tuneBreak":
-                  talent = attack.talents[talentData.tuneBreak];
                   break;
                 case "outro":
                   // outro has no talent tree. it only has 1 value (e.g. 20.00%)
@@ -829,9 +826,6 @@ export default defineComponent({
             break;
           case "intro":
             talent = talentTree[talentData.intro];
-            break;
-          case "tuneBreak":
-            talent = talentTree[talentData.tuneBreak];
             break;
           case "outro":
             // outros have no talent tree, just a single value
@@ -1329,6 +1323,12 @@ export default defineComponent({
         return calcMidnightVeilDMG();
       }
 
+      // special calc for MidnightVeilDMG
+      if (attack.key === "TuneBreakDMG") {
+        console.log(chosenChar.value?.basic?.weapon);
+        return calcMidnightVeilDMG();
+      }
+
       // set the multiplier hard set here
       // talentModifierMultiplySetValue
       const talentModifierMultiplySet =
@@ -1688,6 +1688,7 @@ export default defineComponent({
         tuneBreakAttacks: processAttacks(
           chosenChar.value.tuneBreakAttacks?.attacks,
           talentData.tuneBreak,
+          true, // no talent level
         ),
         echoSetAttacks: processAttacks(
           echoSetAttacks,
@@ -1964,6 +1965,7 @@ export default defineComponent({
     const handleUpdatedEnemy = (data) => {
       enemyLevel.value = data.enemyLevel;
       enemyResist.value = data.enemyResist;
+      enemyType.value = data.enemyType;
       spectroFrazzleStacks.value = data.spectroFrazzleStacks;
       aeroErosionStacks.value = data.aeroErosionStacks;
       havocBaneStacks.value = data.havocBaneStacks;

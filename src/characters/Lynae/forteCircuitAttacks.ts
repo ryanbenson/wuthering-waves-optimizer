@@ -90,8 +90,8 @@ export const forteCircuitAttacks = {
     {
       key: "TuneRuptureResponseSpectralAnalysisDMG",
       label: "Tune Rupture Response - Spectral Analysis DMG",
-      type: "Basic",
-      // TODO: Figure out the "Tune AMP" part of this 
+      type: "TuneBreak",
+      // TODO: Figure out the "Tune AMP" part of this
       // for example, all talents = "1880.75% Tune AMP"
       talents: {
         "1": "946.00%",
