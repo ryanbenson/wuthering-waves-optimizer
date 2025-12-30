@@ -1033,6 +1033,7 @@ export function calcTuneBreak(
   let instanceDamage: InstanceDamage = {};
   let instanceDamageEntries: InstanceDamageEntry[] = [];
   let totalDamage = 0;
+  let totalTalent = 0;
   talents.forEach((talent) => {
     const damage = calcTuneBreakHit(
       levelModifier,
@@ -1044,6 +1045,7 @@ export function calcTuneBreak(
       tuneBreakBoost,
     );
     totalDamage += damage;
+    totalTalent += talent;
 
     // Store the original percentage for grouping
     let percentageString = (talent * 100).toFixed(2).toString() + "%";
@@ -1084,6 +1086,7 @@ export function calcTuneBreak(
     totalDamageContext: {
       type: "tuneBreak",
       talent,
+      totalTalent,
       charLevel,
       enemyLevel,
       enemyResist,

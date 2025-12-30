@@ -571,7 +571,9 @@
         </span>
         ×
         <span class="text-primary">
-          {{ damage.totalDamageContext.talent }}
+          {{
+            displayPercentage(damage.totalDamageContext.totalTalent * 100, 2)
+          }}
         </span>
         ×
         <span class="text-primary">
