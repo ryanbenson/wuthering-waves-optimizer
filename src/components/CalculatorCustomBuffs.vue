@@ -20,7 +20,6 @@
         <input
           type="number"
           v-model="ATK"
-          
           name="ATK"
           id="ATK"
           class="input input-md input-bordered"
@@ -38,7 +37,6 @@
         <input
           type="number"
           v-model="ATK_FLAT"
-          
           name="ATK_FLAT"
           id="ATK_FLAT"
           class="input input-md input-bordered"
@@ -56,7 +54,6 @@
         <input
           type="number"
           v-model="HP"
-          
           name="HP"
           id="HP"
           class="input input-md input-bordered"
@@ -74,7 +71,6 @@
         <input
           type="number"
           v-model="HP_FLAT"
-          
           name="HP_FLAT"
           id="HP_FLAT"
           class="input input-md input-bordered"
@@ -92,7 +88,6 @@
         <input
           type="number"
           v-model="DEF"
-          
           name="DEF"
           id="DEF"
           class="input input-md input-bordered"
@@ -110,7 +105,6 @@
         <input
           type="number"
           v-model="DEF_FLAT"
-          
           name="DEF_FLAT"
           id="DEF_FLAT"
           class="input input-md input-bordered"
@@ -128,7 +122,6 @@
         <input
           type="number"
           v-model="CritRate"
-          
           name="CritRate"
           id="CritRate"
           class="input input-md input-bordered"
@@ -146,7 +139,6 @@
         <input
           type="number"
           v-model="CritDMG"
-          
           name="CritDMG"
           id="CritDMG"
           class="input input-md input-bordered"
@@ -163,7 +155,6 @@
         <input
           type="number"
           v-model="EnergyRegen"
-          
           name="EnergyRegen"
           id="EnergyRegen"
           class="input input-md input-bordered"
@@ -180,7 +171,6 @@
         <input
           type="number"
           v-model="BasicAttackDMGBonus"
-          
           name="BasicAttackDMGBonus"
           id="BasicAttackDMGBonus"
           class="input input-md input-bordered"
@@ -197,7 +187,6 @@
         <input
           type="number"
           v-model="HeavyAttackDMGBonus"
-          
           name="HeavyAttackDMGBonus"
           id="HeavyAttackDMGBonus"
           class="input input-md input-bordered"
@@ -214,7 +203,6 @@
         <input
           type="number"
           v-model="ResonanceSkillDMGBonus"
-          
           name="ResonanceSkillDMGBonus"
           id="ResonanceSkillDMGBonus"
           class="input input-md input-bordered"
@@ -231,7 +219,6 @@
         <input
           type="number"
           v-model="ResonanceLiberationDMGBonus"
-          
           name="ResonanceLiberationDMGBonus"
           id="ResonanceLiberationDMGBonus"
           class="input input-md input-bordered"
@@ -249,7 +236,6 @@
         <input
           type="number"
           v-model="Glacio"
-          
           name="Glacio"
           id="Glacio"
           class="input input-md input-bordered"
@@ -267,7 +253,6 @@
         <input
           type="number"
           v-model="Fusion"
-          
           name="Fusion"
           id="Fusion"
           class="input input-md input-bordered"
@@ -285,7 +270,6 @@
         <input
           type="number"
           v-model="Electro"
-          
           name="Electro"
           id="Electro"
           class="input input-md input-bordered"
@@ -303,7 +287,6 @@
         <input
           type="number"
           v-model="Aero"
-          
           name="Aero"
           id="Aero"
           class="input input-md input-bordered"
@@ -321,7 +304,6 @@
         <input
           type="number"
           v-model="Spectro"
-          
           name="Spectro"
           id="Spectro"
           class="input input-md input-bordered"
@@ -339,7 +321,6 @@
         <input
           type="number"
           v-model="Havoc"
-          
           name="Havoc"
           id="Havoc"
           class="input input-md input-bordered"
@@ -356,7 +337,6 @@
         <input
           type="number"
           v-model="HealingBonus"
-          
           name="HealingBonus"
           id="HealingBonus"
           class="input input-md input-bordered"
@@ -367,7 +347,6 @@
         <input
           type="number"
           v-model="CoordinatedDMGBonus"
-          
           name="CoordinatedDMGBonus"
           id="CoordinatedDMGBonus"
           class="input input-md input-bordered"
@@ -378,11 +357,20 @@
         <input
           type="number"
           v-model="EchoDMGBonus"
-          
           name="EchoDMGBonus"
           id="EchoDMGBonus"
           class="input input-md input-bordered"
           data-test-custom-buff-echo />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">Tune Break DMG Bonus</div>
+        <input
+          type="number"
+          v-model="TuneBreakDMGBonus"
+          name="TuneBreakDMGBonus"
+          id="TuneBreakDMGBonus"
+          class="input input-md input-bordered"
+          data-test-custom-buff-tune-break />
       </label>
       <label class="form-control mb-4">
         <div class="label">
@@ -393,7 +381,6 @@
         <input
           type="number"
           v-model="DamageAmplify"
-          
           name="DamageAmplify"
           id="DamageAmplify"
           class="input input-md input-bordered"
@@ -408,7 +395,6 @@
         <input
           type="number"
           v-model="ResistShred"
-          
           name="ResistShred"
           id="ResistShred"
           class="input input-md input-bordered"
@@ -423,7 +409,6 @@
         <input
           type="number"
           v-model="DefIgnore"
-          
           name="DefIgnore"
           id="DefIgnore"
           class="input input-md input-bordered"
@@ -438,7 +423,6 @@
         <input
           type="number"
           v-model="DefReduction"
-          
           name="DefReduction"
           id="DefReduction"
           class="input input-md input-bordered"
@@ -453,7 +437,6 @@
         <input
           type="number"
           v-model="SpecialMultiplier"
-          
           name="specialMultiplier"
           id="specialMultiplier"
           class="input input-md input-bordered"
@@ -515,6 +498,7 @@ export default {
       this.DefIgnore = 0;
       this.DefReduction = 0;
       this.CoordinatedDMGBonus = 0;
+      this.TuneBreakDMGBonus = 0;
       this.SpecialMultiplier = 0;
     },
   },
@@ -568,7 +552,12 @@ export default {
       const CoordinatedDMGBonus = this.CoordinatedDMGBonus
         ? this.CoordinatedDMGBonus / 100
         : 0;
-      const SpecialMultiplier = this.SpecialMultiplier ? this.SpecialMultiplier / 100 : 0;
+      const TuneBreakDMGBonus = this.TuneBreakDMGBonus
+        ? this.TuneBreakDMGBonus / 100
+        : 0;
+      const SpecialMultiplier = this.SpecialMultiplier
+        ? this.SpecialMultiplier / 100
+        : 0;
       return {
         ATK,
         ATK_FLAT,
@@ -596,6 +585,7 @@ export default {
         DefIgnore,
         DefReduction,
         CoordinatedDMGBonus,
+        TuneBreakDMGBonus,
         SpecialMultiplier,
       };
     },
@@ -1012,6 +1002,22 @@ export default {
         const data = {
           customBuffs: {
             CoordinatedDMGBonus: value,
+          },
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for TuneBreakDMGBonus
+     */
+    TuneBreakDMGBonus: {
+      get() {
+        return this.currentCharacter?.customBuffs?.TuneBreakDMGBonus ?? 0;
+      },
+      async set(value) {
+        const data = {
+          customBuffs: {
+            TuneBreakDMGBonus: value,
           },
         };
         await this.setCharacterData(this.character, data);

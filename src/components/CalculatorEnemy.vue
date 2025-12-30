@@ -11,7 +11,7 @@
   <div class="data-input--talents mt-8" data-test-enemy-level>
     <div class="flex flex-col pb-7 relative">
       <label for="enemyLevel" class="talent__label" data-test-enemy-level-label>
-        Enemy level
+        Enemy Level
         <span class="text-primary">{{ enemyLevel }}</span>
       </label>
       <input
@@ -50,86 +50,133 @@
         data-test-enemy-resist-input />
     </div>
   </div>
+  <div class="data-input--talents mt-8" data-test-enemy-resist>
+    <div class="flex flex-col pb-7 relative">
+      <label
+        for="enemyResist"
+        class="talent__label"
+        data-test-enemy-resist-label>
+        Enemy Type
+        <span class="text-primary">{{ enemyType }}</span>
+      </label>
+      <div class="flex gap-4 mt-4">
+        <label class="label cursor-pointer gap-2">
+          <input
+            v-model="enemyType"
+            type="radio"
+            name="radio-10"
+            class="radio checked:bg-primary"
+            value="Common" />
+          <span class="label-text">Common</span>
+        </label>
+        <label class="label cursor-pointer gap-2">
+          <input
+            v-model="enemyType"
+            type="radio"
+            name="radio-10"
+            class="radio checked:bg-primary"
+            value="Elite" />
+          <span class="label-text">Elite</span>
+        </label>
+        <label class="label cursor-pointer gap-2">
+          <input
+            v-model="enemyType"
+            type="radio"
+            name="radio-10"
+            class="radio checked:bg-primary"
+            value="Overlord" />
+          <span class="label-text">Overlord</span>
+        </label>
+        <label class="label cursor-pointer gap-2">
+          <input
+            v-model="enemyType"
+            type="radio"
+            name="radio-10"
+            class="radio checked:bg-primary"
+            value="Calamity" />
+          <span class="label-text">Calamity</span>
+        </label>
+      </div>
+    </div>
+  </div>
 
-    <h3
-      class="text-4xl font-bold mb-4 text-primary"
-      data-test-enemy-elemental-effects-title>
-      Negative Status Effects
-    </h3>
-    <div
-      v-if="isSpectroFrazzleEnabled"
-      class="data-input--talents mt-8"
-      data-test-enemy-spectro-frazzle>
-      <div class="flex flex-col pb-7 relative">
-        <label
-          for="enemyResist"
-          class="talent__label"
-          data-test-enemy-spectro-frazzle-label>
-          Spectro Frazzle Stacks
-          <span class="text-primary">{{ spectroFrazzleStacks }}</span>
-        </label>
-        <input
-          v-model="spectroFrazzleStacks"
-          name="spectroFrazzleStacks"
-          id="spectroFrazzleStacks"
-          type="range"
-          min="0"
-          max="10"
-          step="1"
-          class="range range-xs"
-          :class="rangeClasses"
-          data-test-enemy-spectro-frazzle-input />
-      </div>
+  <h3
+    class="text-4xl font-bold mb-4 text-primary"
+    data-test-enemy-elemental-effects-title>
+    Negative Status Effects
+  </h3>
+  <div
+    v-if="isSpectroFrazzleEnabled"
+    class="data-input--talents mt-8"
+    data-test-enemy-spectro-frazzle>
+    <div class="flex flex-col pb-7 relative">
+      <label
+        for="enemyResist"
+        class="talent__label"
+        data-test-enemy-spectro-frazzle-label>
+        Spectro Frazzle Stacks
+        <span class="text-primary">{{ spectroFrazzleStacks }}</span>
+      </label>
+      <input
+        v-model="spectroFrazzleStacks"
+        name="spectroFrazzleStacks"
+        id="spectroFrazzleStacks"
+        type="range"
+        min="0"
+        max="10"
+        step="1"
+        class="range range-xs"
+        :class="rangeClasses"
+        data-test-enemy-spectro-frazzle-input />
     </div>
-    <div
-      v-if="isAeroErosionEnabled"
-      class="data-input--talents mt-8"
-      data-test-enemy-aero-erosion>
-      <div class="flex flex-col pb-7 relative">
-        <label
-          for="enemyResist"
-          class="talent__label"
-          data-test-enemy-aero-erosion-label>
-          Aero Erosion Stacks
-          <span class="text-primary">{{ aeroErosionStacks }}</span>
-        </label>
-        <input
-          v-model="aeroErosionStacks"
-          name="aeroErosionStacks"
-          id="aeroErosionStacks"
-          type="range"
-          min="0"
-          max="10"
-          step="1"
-          class="range range-xs"
-          :class="rangeClasses"
-          data-test-enemy-aero-erosion-input />
-      </div>
+  </div>
+  <div
+    v-if="isAeroErosionEnabled"
+    class="data-input--talents mt-8"
+    data-test-enemy-aero-erosion>
+    <div class="flex flex-col pb-7 relative">
+      <label
+        for="enemyResist"
+        class="talent__label"
+        data-test-enemy-aero-erosion-label>
+        Aero Erosion Stacks
+        <span class="text-primary">{{ aeroErosionStacks }}</span>
+      </label>
+      <input
+        v-model="aeroErosionStacks"
+        name="aeroErosionStacks"
+        id="aeroErosionStacks"
+        type="range"
+        min="0"
+        max="10"
+        step="1"
+        class="range range-xs"
+        :class="rangeClasses"
+        data-test-enemy-aero-erosion-input />
     </div>
-    <div
-      class="data-input--talents mt-8"
-      data-test-enemy-havoc-bane>
-      <div class="flex flex-col pb-7 relative">
-        <label
-          for="havocBane"
-          class="talent__label"
-          data-test-enemy-havoc-bane-label>
-          Havoc Bane Stacks
-          <span class="text-primary">{{ havocBaneStacks }}</span>
-        </label>
-        <input
-          v-model="havocBaneStacks"
-          name="havocBaneStacks"
-          id="havocBaneStacks"
-          type="range"
-          min="0"
-          max="6"
-          step="1"
-          class="range range-xs"
-          :class="rangeClasses"
-          data-test-enemy-havoc-bane-input />
-      </div>
+  </div>
+  <div class="data-input--talents mt-8" data-test-enemy-havoc-bane>
+    <div class="flex flex-col pb-7 relative">
+      <label
+        for="havocBane"
+        class="talent__label"
+        data-test-enemy-havoc-bane-label>
+        Havoc Bane Stacks
+        <span class="text-primary">{{ havocBaneStacks }}</span>
+      </label>
+      <input
+        v-model="havocBaneStacks"
+        name="havocBaneStacks"
+        id="havocBaneStacks"
+        type="range"
+        min="0"
+        max="6"
+        step="1"
+        class="range range-xs"
+        :class="rangeClasses"
+        data-test-enemy-havoc-bane-input />
     </div>
+  </div>
 </template>
 
 <script>
@@ -153,7 +200,7 @@ export default {
     isHavocBaneEnabled: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   data() {
     return {
@@ -182,6 +229,7 @@ export default {
         this.$emit("updated-enemy-data", {
           enemyLevel: this.enemyLevel,
           enemyResist: this.enemyResist,
+          enemyType: this.enemyType,
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
@@ -198,6 +246,24 @@ export default {
         this.$emit("updated-enemy-data", {
           enemyLevel: this.enemyLevel,
           enemyResist: this.enemyResist,
+          enemyType: this.enemyType,
+          spectroFrazzleStacks: this.spectroFrazzleStacks,
+          aeroErosionStacks: this.aeroErosionStacks,
+          havocBaneStacks: this.havocBaneStacks,
+        });
+      },
+      immediate: true,
+    },
+    enemyType: {
+      /**
+       * Emits the buff data in its proper format
+       * @emits updated-enemy
+       */
+      handler: async function () {
+        this.$emit("updated-enemy-data", {
+          enemyLevel: this.enemyLevel,
+          enemyResist: this.enemyResist,
+          enemyType: this.enemyType,
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
@@ -214,6 +280,7 @@ export default {
         this.$emit("updated-enemy-data", {
           enemyLevel: this.enemyLevel,
           enemyResist: this.enemyResist,
+          enemyType: this.enemyType,
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
@@ -230,6 +297,7 @@ export default {
         this.$emit("updated-enemy-data", {
           enemyLevel: this.enemyLevel,
           enemyResist: this.enemyResist,
+          enemyType: this.enemyType,
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
@@ -246,6 +314,7 @@ export default {
         this.$emit("updated-enemy-data", {
           enemyLevel: this.enemyLevel,
           enemyResist: this.enemyResist,
+          enemyType: this.enemyType,
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
@@ -306,6 +375,22 @@ export default {
       async set(value) {
         const data = {
           enemyResist: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the enemy type
+     * Data is persisted in the store. Avoids needing a local data + store data
+     * @returns {Boolean}
+     */
+    enemyType: {
+      get() {
+        return this.currentCharacter?.enemyType ?? "Calamity";
+      },
+      async set(value) {
+        const data = {
+          enemyType: value,
         };
         await this.setCharacterData(this.character, data);
       },

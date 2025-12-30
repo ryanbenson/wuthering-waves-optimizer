@@ -9,6 +9,7 @@ interface CharacterBasicInfo {
   aeroErosion?: boolean;
   havocBane?: boolean;
   electroFlare?: boolean;
+  tuneBreakBoost?: number;
 }
 interface WeaponInfo {
   key?: string;

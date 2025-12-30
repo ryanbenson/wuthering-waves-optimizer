@@ -278,6 +278,7 @@ import {
   getAeroErosionModifierByLevelByStacks,
   calcMidnightVeilDMG,
   calcFixedDamage,
+  calcTuneBreak,
 } from "../calculator/calculator";
 import {
   getCharByName,
@@ -414,6 +415,7 @@ export default defineComponent({
     const isLoading = ref(false);
     const enemyLevel = ref(90);
     const enemyResist = ref(0.1);
+    const enemyType = ref("Calamity");
     const characterElement = ref("");
     // elemental effects
     const isSpectroFrazzleEnabled = ref(false);
@@ -512,7 +514,6 @@ export default defineComponent({
       liberation:
         characters.value?.[character.value]?.talents?.liberation ?? 10,
       intro: characters.value?.[character.value]?.talents?.intro ?? 10,
-      tuneBreak: characters.value?.[character.value]?.talents?.tuneBreak ?? 10,
     });
 
     const updateStats = (stats) => {
@@ -607,10 +608,11 @@ export default defineComponent({
                 case "intro":
                   talent = attack.talents[talentData.intro];
                   break;
-                case "tuneBreak":
-                  talent = attack.talents[talentData.tuneBreak];
-                  break;
                 case "outro":
+                  // tune break has no talent tree. it only has 1 value (e.g. 20.00%)
+                  talent = attack.talent;
+                  break;
+                case "tuneBreak":
                   // outro has no talent tree. it only has 1 value (e.g. 20.00%)
                   talent = attack.talent;
                   break;
@@ -830,11 +832,12 @@ export default defineComponent({
           case "intro":
             talent = talentTree[talentData.intro];
             break;
-          case "tuneBreak":
-            talent = talentTree[talentData.tuneBreak];
-            break;
           case "outro":
             // outros have no talent tree, just a single value
+            talent = attack.talent;
+            break;
+          case "tuneBreak":
+            // tune break have no talent tree, just a single value
             talent = attack.talent;
             break;
           case "utilityAttacks":
@@ -924,15 +927,6 @@ export default defineComponent({
       // end max buff handlers
       const specificSkillDmgFromCharBuffs =
         selfBuffs?.specificTalentBuffs?.[attack.key] ?? 0;
-      let tuneBreakSkillDmgFromCharBuffs = 0;
-      let tuneBreakSkillDmgFromTeamBuffs = 0;
-      if (attack.type === "TuneBreak") {
-        tuneBreakSkillDmgFromCharBuffs = selfBuffs?.tuneBreakDMGBonus ?? 0;
-        tuneBreakSkillDmgFromTeamBuffs =
-          teamBuffsData.value?.tuneBreakDMGBonus ?? 0;
-      }
-      const totalTuneBreakDmgBonus =
-        tuneBreakSkillDmgFromCharBuffs + tuneBreakSkillDmgFromTeamBuffs;
       const specificSkillDmgFromCharBuffsDmgBonus =
         selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGBonus`] ?? 0;
       const specificSkillDmgFromCharBuffsWithElement =
@@ -1064,7 +1058,6 @@ export default defineComponent({
         coordinatedEchoDmgBonus / 100 +
         genericSkillDmgBonusEchoBuff / 100 +
         coordinatedDmgBonusCustomBuffs +
-        totalTuneBreakDmgBonus +
         totalForteBasedDmgBuff;
 
       // Resist Shred:
@@ -1327,6 +1320,41 @@ export default defineComponent({
       // special calc for MidnightVeilDMG
       if (attack.key === "InherentSkillSuperAttractiveMagicBox") {
         return calcMidnightVeilDMG();
+      }
+
+      // special calc for MidnightVeilDMG
+      if (attack.type === "TuneBreak") {
+        let talent = attack.talent;
+        let enemyResistVal = 0;
+        let resistReduction = 0;
+        let baseTuneBreakBoost = 0;
+        // Lynae, and others, have special Tune Break type attacks that have talents leveled off of their forte
+        // also, normal tune break doesn't get affected by resist or resist reduction
+        // but the special attacks do element based dmg, so they do
+        if (attack.key === "TuneRuptureResponseSpectralAnalysisDMG") {
+          talent = attack.talents[talentData?.forte];
+          enemyResistVal = enemyResist.value;
+          resistReduction = totalResistReduction;
+        }
+        // get any custom base character tune break boost
+        baseTuneBreakBoost = chosenChar.value?.basic?.tuneBreakBoost ?? 0;
+        const tuneBreakBoostSelf = selfBuffs?.tuneBreakBoost ?? 0;
+        const tuneBreakBoostTeam = teamBuffsData.value?.tuneBreakBoost ?? 0;
+        const totalTuneBreakBoost =
+          baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam;
+        const tuneBreakDmgBonus = customBuffs.value?.TuneBreakDMGBonus ?? 0;
+        return calcTuneBreak(
+          talent,
+          characterLevel.value,
+          enemyLevel.value,
+          enemyResistVal,
+          enemyType.value,
+          resistReduction,
+          totalDefIgnore,
+          totalTuneBreakBoost, // tuneBreakBoost
+          tuneBreakDmgBonus, // tune break bonusDmg (e.g. Hyvatia's 100% bonus)
+          count,
+        );
       }
 
       // set the multiplier hard set here
@@ -1688,6 +1716,7 @@ export default defineComponent({
         tuneBreakAttacks: processAttacks(
           chosenChar.value.tuneBreakAttacks?.attacks,
           talentData.tuneBreak,
+          true, // no talent level
         ),
         echoSetAttacks: processAttacks(
           echoSetAttacks,
@@ -1964,6 +1993,7 @@ export default defineComponent({
     const handleUpdatedEnemy = (data) => {
       enemyLevel.value = data.enemyLevel;
       enemyResist.value = data.enemyResist;
+      enemyType.value = data.enemyType;
       spectroFrazzleStacks.value = data.spectroFrazzleStacks;
       aeroErosionStacks.value = data.aeroErosionStacks;
       havocBaneStacks.value = data.havocBaneStacks;
