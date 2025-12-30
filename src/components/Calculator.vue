@@ -16,7 +16,7 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div v-if="true" class="alert alert-success mb-6 text-white p-2 px-4">
-            Tune Break & Lynae's Tune Rupture Response is implemented!
+            Tune Break & Lynae's Tune Rupture Response are implemented!
           </div>
           <CalculatorCharacterSelect
             :key="character"
