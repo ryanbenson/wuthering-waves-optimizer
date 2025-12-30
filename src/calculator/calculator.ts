@@ -1011,49 +1011,114 @@ export function calcMidnightVeilDMG() {
 }
 
 export function calcTuneBreak(
-  customTuneAmp: string | null = null,
+  talent: string,
   charLevel: string,
-  weaponType: string,
   enemyLevel: number,
   enemyResist: number,
   enemyType: string,
   resistenceReduction: number,
   defIgnore: number = 0,
-  tuneBreakBonus: number = 0,
+  tuneBreakBoost: number = 0,
   bonusDmg: number = 0,
+  count: number = 1,
 ): any {
   const levelModifier = getTuneBreakLevelModifier(charLevel);
   const defenseModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
   const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
   const enemyTypeMultiplier = getTuneBreakEnemyTypeMultiplier(enemyType);
-  const defaultTuneAmp = getTuneBreakAmpByCharWeapon(weaponType);
-  let tuneAmp = defaultTuneAmp;
-  if (customTuneAmp) {
-    tuneAmp = customTuneAmp;
-  }
-  const instanceDamage =
+
+  // Parse the talent string to get individual percentage values
+  let talents = parseTalentString(talent);
+  // Calculate individual instance damages
+  let instanceDamage: InstanceDamage = {};
+  let instanceDamageEntries: InstanceDamageEntry[] = [];
+  let totalDamage = 0;
+  talents.forEach((talent) => {
+    const damage = calcTuneBreakHit(
+      levelModifier,
+      talent,
+      defenseModifier,
+      resistModifier,
+      bonusDmg,
+      enemyTypeMultiplier,
+      tuneBreakBoost,
+    );
+    totalDamage += damage;
+
+    // Store the original percentage for grouping
+    let percentageString = (talent * 100).toFixed(2).toString() + "%";
+
+    // Add to instance damage entries for detailed breakdown
+    instanceDamageEntries.push({
+      percentage: percentageString,
+      damage: damage,
+      count: 1,
+    });
+
+    // Keep the old instanceDamage structure for backward compatibility
+    // But now we'll handle grouping properly in buildDetailedCalculationString
+    if (!instanceDamage[percentageString]) {
+      instanceDamage[percentageString] = damage;
+    }
+  });
+  const finalDamage = totalDamage * count;
+  let detailedCalculation = buildDetailedCalculationString(
+    talent,
+    instanceDamageEntries,
+    0, // don't pass in Crit
+    0, // don't pass in Crit
+    null,
+    count,
+  );
+
+  // const detailedCalculation = instanceDamage;
+  return {
+    instanceDamage,
+    instanceDamageEntries,
+    totalDamage: finalDamage,
+    critDamage: finalDamage,
+    avgDamage: finalDamage,
+    detailedCalculation,
+    detailedCalculationCrit: detailedCalculation,
+    detailedCalculationAvg: detailedCalculation,
+    totalDamageContext: {
+      type: "tuneBreak",
+      talent,
+      charLevel,
+      enemyLevel,
+      enemyResist,
+      enemyType,
+      resistenceReduction,
+      defIgnore,
+      tuneBreakBoost,
+      bonusDmg,
+      count,
+      levelModifier,
+      defenseModifier,
+      resistModifier,
+      enemyTypeMultiplier,
+    },
+  };
+}
+
+export function calcTuneBreakHit(
+  levelModifier: number,
+  tuneAmp: number,
+  defenseModifier: number,
+  resistModifier: number,
+  bonusDmg: number,
+  enemyTypeMultiplier: number,
+  tuneBreakBoost: number,
+): number {
+  return (
     levelModifier *
     tuneAmp *
     defenseModifier *
     resistModifier *
     (1 + bonusDmg) *
     enemyTypeMultiplier *
-    (1 + tuneBreakBonus);
-
-  const detailedCalculation = instanceDamage;
-  return {
-    instanceDamage,
-    totalDamage: instanceDamage,
-    critDamage: instanceDamage,
-    avgDamage: instanceDamage,
-    detailedCalculation,
-    detailedCalculationCrit: detailedCalculation,
-    detailedCalculationAvg: detailedCalculation,
-    totalDamageContext: {
-      type: "attack",
-      isFixed: false,
-    },
-  };
+    (1 + tuneBreakBoost)
+  );
 }
 
 export function getTuneBreakLevelModifier(charLevel: string): number {
@@ -1082,13 +1147,13 @@ export function getTuneBreakEnemyTypeMultiplier(enemyType: string): number {
   return enemyTypeMultiplier?.[enemyType] ?? 14;
 }
 
-export function getTuneBreakAmpByCharWeapon(weaponType: string): string {
-  const enemyTypeMultiplier: Record<string, string> = {
-    Broadblades: "204.048% + 156.096% + 1080.00%",
-    Gauntlets: "1440.00%",
-    Pistols: "1440.00%",
-    Rectifiers: "1440.00%",
-    Swords: "90.00%*4 + 1080.00%",
-  };
-  return enemyTypeMultiplier?.[weaponType] ?? "1440.00%";
-}
+// export function getTuneBreakAmpByCharWeapon(weaponType: string): string {
+//   const enemyTypeMultiplier: Record<string, string> = {
+//     Broadblades: "204.048% + 156.096% + 1080.00%",
+//     Gauntlets: "1440.00%",
+//     Pistols: "1440.00%",
+//     Rectifiers: "1440.00%",
+//     Swords: "90.00%*4 + 1080.00%",
+//   };
+//   return enemyTypeMultiplier?.[weaponType] ?? "1440.00%";
+// }

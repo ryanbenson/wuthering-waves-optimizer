@@ -2,12 +2,12 @@ export const buffs = [
   {
     key: `TuneBreakBoost`,
     name: `Tune Break Boost`,
-    details: `<div><span class="Highlight">Basic Attack - Visual Impact</span> consumes 3 points of <span class="Highlight">True Color</span> and grants all nearby Resonators in the team <span class="Param">40</span> points of <span class="Highlight">Tune Break Boost</span> for 30s. Responding to <span class="Highlight">Tune Strain - Interfered</span>: For each stack of <span class="Highlight">Tune Strain - Interfered</span> on the target, each point of Lynae's <span class="Highlight">Tune Break Boost</span> increases her total DMG against that target by 0.12%</div>`,
+    details: `<div><span class="Highlight">Basic Attack - Visual Impact</span> consumes 3 points of True Color and grants all nearby Resonators in the team 40 points of Tune Break Boost for 30s.</div>`,
     hasStacks: true,
     modifiers: [
       {
-        modifier: "tuneBreakDMGBonus",
-        modifierValue: 0.0012,
+        modifier: "tuneBreakBoost",
+        modifierValue: 0.01,
       },
     ],
     minStacks: 0,
