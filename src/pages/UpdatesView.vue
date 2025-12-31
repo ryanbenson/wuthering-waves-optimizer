@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>December 31, 2025</h3>
+    <ul>
+      <li>Updates Cartethyia text.</li>
+    </ul>
     <h3>December 30, 2025</h3>
     <ul>
       <li>Implements Tune Break & Lynae's Tune Rupture Response formula.</li>
