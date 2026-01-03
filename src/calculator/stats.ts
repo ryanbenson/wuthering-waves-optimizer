@@ -1004,10 +1004,10 @@ export const computeResonanceChainsBuffs = (
     const buffFromCharacter = buffsCharInfo.find(
       (buffItem: any) => buffItem.key === key,
     );
-    const buff = JSON.parse(JSON.stringify(buffFromCharacter));
-    if (!buff) {
+    if (!buffFromCharacter) {
       continue;
     }
+    const buff = JSON.parse(JSON.stringify(buffFromCharacter));
 
     const modifiersData = buff?.modifiers ?? [];
     let modifiers = JSON.parse(JSON.stringify(modifiersData));
