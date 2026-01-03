@@ -957,10 +957,10 @@ export const computeCritOverflowBuffs = (
       const chainFromCharacter = resonanceChainsCharInfo.find(
         (chainItem: any) => chainItem.key === key,
       );
-      const chain = JSON.parse(JSON.stringify(chainFromCharacter));
-      if (!chain) {
+      if (!chainFromCharacter) {
         continue;
       }
+      const chain = JSON.parse(JSON.stringify(chainFromCharacter));
 
       const modifiersData = chain?.modifiers ?? [];
       const modifiers = JSON.parse(JSON.stringify(modifiersData));
