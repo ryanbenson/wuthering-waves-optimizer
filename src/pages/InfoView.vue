@@ -97,6 +97,9 @@
         formula!
       </li>
       <li>noyaosu for your help in data gathering for Aero Erosion!</li>
+      <li>
+        F.I.S.H. and invidia.exe for your help in figuring out Tune Break!
+      </li>
     </ul>
     <h3>Privacy</h3>
     <p>

@@ -18,7 +18,7 @@
           <div
             v-if="false"
             class="alert alert-success mb-6 text-white p-2 px-4">
-            Lynae, her sig, new standard weapons, echoes, & echo set are up!
+            Tune Break & Lynae's Tune Rupture Response are implemented!
           </div>
           <CalculatorCharacterSelect
             :key="character"
@@ -278,11 +278,13 @@ import {
   getAeroErosionModifierByLevelByStacks,
   calcMidnightVeilDMG,
   calcFixedDamage,
+  calcTuneBreak,
 } from "../calculator/calculator";
 import {
   getCharByName,
   getCharactersAvailable,
   getAttackData,
+  getOriginalForteFromAttackKey,
 } from "../characters/characters";
 import CalculatorEchoes from "./CalculatorEchoes.vue";
 import CalculatorWeapons from "./CalculatorWeapons.vue";
@@ -414,6 +416,7 @@ export default defineComponent({
     const isLoading = ref(false);
     const enemyLevel = ref(90);
     const enemyResist = ref(0.1);
+    const enemyType = ref("Calamity");
     const characterElement = ref("");
     // elemental effects
     const isSpectroFrazzleEnabled = ref(false);
@@ -512,7 +515,6 @@ export default defineComponent({
       liberation:
         characters.value?.[character.value]?.talents?.liberation ?? 10,
       intro: characters.value?.[character.value]?.talents?.intro ?? 10,
-      tuneBreak: characters.value?.[character.value]?.talents?.tuneBreak ?? 10,
     });
 
     const updateStats = (stats) => {
@@ -674,6 +676,7 @@ export default defineComponent({
     const handleUpdatedEnemy = (data) => {
       enemyLevel.value = data.enemyLevel;
       enemyResist.value = data.enemyResist;
+      enemyType.value = data.enemyType;
       spectroFrazzleStacks.value = data.spectroFrazzleStacks;
       aeroErosionStacks.value = data.aeroErosionStacks;
       havocBaneStacks.value = data.havocBaneStacks;

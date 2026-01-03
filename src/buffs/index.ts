@@ -1601,12 +1601,12 @@ export const buffsByCharacter = {
     {
       key: "TuneBreakBoost",
       name: `Tune Break Boost`,
-      details: `<div><span class="Highlight">Basic Attack - Visual Impact</span> consumes 3 points of <span class="Highlight">True Color</span> and grants all nearby Resonators in the team <span class="Param">40</span> points of <span class="Highlight">Tune Break Boost</span> for 30s. Responding to <span class="Highlight">Tune Strain - Interfered</span>: For each stack of <span class="Highlight">Tune Strain - Interfered</span> on the target, each point of Lynae's <span class="Highlight">Tune Break Boost</span> increases total DMG against that target by 0.12%</div>`,
+      details: `<div><span class="Highlight">Basic Attack - Visual Impact</span> consumes 3 points of True Color and grants all nearby Resonators in the team 40 points of Tune Break Boost for 30s.</div>`,
       hasStacks: true,
       modifiers: [
         {
-          modifier: "tuneBreakDMGBonus",
-          modifierValue: 0.0012,
+          modifier: "tuneBreakBoost",
+          modifierValue: 0.01,
         },
       ],
       minStacks: 0,
@@ -1848,6 +1848,21 @@ CD: <span class="param">20</span>s</span>`,
     ],
     minStacks: 0,
     maxStacks: 50,
+    alwaysEnabled: false,
+  },
+  {
+    key: "HaloofStarryRadiance",
+    name: "Halo of Starry Radiance",
+    details: `When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%. Effects of the same name cannot be stacked.`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.002,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 125,
     alwaysEnabled: false,
   },
 ];

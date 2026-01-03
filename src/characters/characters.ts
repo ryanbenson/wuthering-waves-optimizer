@@ -488,3 +488,36 @@ export function getAttackData(
   const charAttacks = charData?.[forteType]?.attacks ?? [];
   return charAttacks.find((attack: any) => attack.key === attackKey);
 }
+
+export function getOriginalForteFromAttackKey(
+  charData: any,
+  attackKey: string,
+): string | undefined {
+  let originalForte;
+  const forteTypes = [
+    "basicAttacks",
+    "skillAttacks",
+    "liberationAttacks",
+    "forteCircuitAttacks",
+    "introAttacks",
+    "outroAttacks",
+    "tuneBreakAttacks",
+  ];
+  forteTypes.forEach((forte) => {
+    const result = getAttackData(charData, forte, attackKey);
+    if (result) {
+      originalForte = forte;
+    }
+  });
+  const forteMap = {
+    basicAttacks: "Basic",
+    skillAttacks: "Skill",
+    liberationAttacks: "Liberation",
+    forteCircuitAttacks: "ForteCircuit",
+    introAttacks: "Intro",
+    outroAttacks: "Outro",
+    tuneBreakAttacks: "TuneBreak",
+  };
+  // @ts-ignore
+  return forteMap && forteMap[originalForte];
+}

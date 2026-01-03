@@ -15,7 +15,10 @@ import {
   calcShield,
   getSpectroFrazzleModifierByLevelByStacks,
   getAeroErosionModifierByLevelByStacks,
+  calcTuneBreak,
 } from "./calculator.ts";
+
+import { getOriginalForteFromAttackKey } from "../characters/characters.ts";
 
 import { getEchoData } from "../echoes";
 
@@ -80,7 +83,8 @@ export const processAttacks = (
               talent = attack.talents[talentData.intro];
               break;
             case "tuneBreak":
-              talent = attack.talents[talentData.tuneBreak];
+              // outro has no talent tree. it only has 1 value (e.g. 20.00%)
+              talent = attack.talent;
               break;
             case "outro":
               // outro has no talent tree. it only has 1 value (e.g. 20.00%)
@@ -197,6 +201,7 @@ export const calculateAttackDamage = (
   enemyResist: any = 0,
   characters: any = {},
   character: any = "",
+  enemyType: string = "",
 ) => {
   const { excludeTeamBuffs, excludeWeaponBuffs, excludeEchoes } = attack;
   let statsWithoutTeamBuffs = null;
@@ -344,7 +349,8 @@ export const calculateAttackDamage = (
         talent = talentTree[talentData.intro];
         break;
       case "tuneBreak":
-        talent = talentTree[talentData.tuneBreak];
+        // tune break have no talent tree, just a single value
+        talent = attack.talent;
         break;
       case "outro":
         // outros have no talent tree, just a single value
@@ -433,14 +439,6 @@ export const calculateAttackDamage = (
   // end max buff handlers
   const specificSkillDmgFromCharBuffs =
     selfBuffs?.specificTalentBuffs?.[attack.key] ?? 0;
-  let tuneBreakSkillDmgFromCharBuffs = 0;
-  let tuneBreakSkillDmgFromTeamBuffs = 0;
-  if (attack.type === "TuneBreak") {
-    tuneBreakSkillDmgFromCharBuffs = selfBuffs?.tuneBreakDMGBonus ?? 0;
-    tuneBreakSkillDmgFromTeamBuffs = teamBuffsData?.tuneBreakDMGBonus ?? 0;
-  }
-  const totalTuneBreakDmgBonus =
-    tuneBreakSkillDmgFromCharBuffs + tuneBreakSkillDmgFromTeamBuffs;
   const specificSkillDmgFromCharBuffsDmgBonus =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGBonus`] ?? 0;
   const specificSkillDmgFromCharBuffsWithElement =
@@ -535,6 +533,13 @@ export const calculateAttackDamage = (
   const customBuffDefReduction = customBuffs?.DefReduction ?? 0;
   const totalDefReduction =
     havocBaneDefReduction + attackDefReduction + customBuffDefReduction;
+  // apply specific ForteBased buff
+  const originalForte = getOriginalForteFromAttackKey(
+    chosenChar.value,
+    attack.key,
+  );
+  let totalForteBasedDmgBuff =
+    echoStats?.value?.[`ForteBased:${originalForte}:${attack.type}`] ?? 0;
   let specificSkillDmg =
     specificSkillDmgFromResonanceChains +
     specificSkillDmgFromCharBuffs +
@@ -553,7 +558,7 @@ export const calculateAttackDamage = (
     coordinatedEchoDmgBonus / 100 +
     genericSkillDmgBonusEchoBuff / 100 +
     coordinatedDmgBonusCustomBuffs +
-    totalTuneBreakDmgBonus;
+    totalForteBasedDmgBuff;
 
   // Resist Shred:
   let teamBuffResistShredForCharElement =
@@ -807,6 +812,41 @@ export const calculateAttackDamage = (
   // special calc for MidnightVeilDMG
   if (attack.key === "InherentSkillSuperAttractiveMagicBox") {
     return calcMidnightVeilDMG();
+  }
+
+  // special calc for MidnightVeilDMG
+  if (attack.type === "TuneBreak") {
+    let talent = attack.talent;
+    let enemyResistVal = 0;
+    let resistReduction = 0;
+    let baseTuneBreakBoost = 0;
+    // Lynae, and others, have special Tune Break type attacks that have talents leveled off of their forte
+    // also, normal tune break doesn't get affected by resist or resist reduction
+    // but the special attacks do element based dmg, so they do
+    if (attack.key === "TuneRuptureResponseSpectralAnalysisDMG") {
+      talent = attack.talents[talentData?.forte];
+      enemyResistVal = enemyResist.value;
+      resistReduction = totalResistReduction;
+    }
+    // get any custom base character tune break boost
+    baseTuneBreakBoost = chosenChar.value?.basic?.tuneBreakBoost ?? 0;
+    const tuneBreakBoostSelf = selfBuffs?.tuneBreakBoost ?? 0;
+    const tuneBreakBoostTeam = teamBuffsData.value?.tuneBreakBoost ?? 0;
+    const totalTuneBreakBoost =
+      baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam;
+    const tuneBreakDmgBonus = customBuffs.value?.TuneBreakDMGBonus ?? 0;
+    return calcTuneBreak(
+      talent,
+      characterLevel.value,
+      enemyLevel.value,
+      enemyResistVal,
+      enemyType.value,
+      resistReduction,
+      totalDefIgnore,
+      totalTuneBreakBoost, // tuneBreakBoost
+      tuneBreakDmgBonus, // tune break bonusDmg (e.g. Hyvatia's 100% bonus)
+      count,
+    );
   }
 
   // set the multiplier hard set here
@@ -1220,7 +1260,7 @@ export const calcAllDamages = (
     tuneBreakAttacks: processAttacks(
       chosenChar.tuneBreakAttacks?.attacks,
       talentData.tuneBreak,
-      false,
+      true,
       false,
       true,
       {},

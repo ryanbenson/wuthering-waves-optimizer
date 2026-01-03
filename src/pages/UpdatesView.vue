@@ -2,6 +2,34 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>January 2, 2026</h3>
+    <ul>
+      <li>
+        Fixed an edge case stats processing bug that was happening with
+        Camellya.
+      </li>
+    </ul>
+    <h3>December 31, 2025</h3>
+    <ul>
+      <li>Updates Cartethyia text.</li>
+    </ul>
+    <h3>December 30, 2025</h3>
+    <ul>
+      <li>Implements Tune Break & Lynae's Tune Rupture Response formula.</li>
+      <li>
+        Updates Lynae s6 text and modifier, it is now Vulnerability due to the
+        text changes made.
+      </li>
+    </ul>
+    <h3>December 29, 2025</h3>
+    <ul>
+      <li>Adds missing Halo of Starry Radiance to team buffs.</li>
+      <li>
+        Fixes Rite of Gilded Revelation 5pc effect for the Basic DMG Bonus, it
+        now properly buffs attacks that are from the character's Liberation but
+        does Basic DMG.
+      </li>
+    </ul>
     <h3>December 27, 2025</h3>
     <ul>
       <li>
