@@ -319,7 +319,7 @@ import {
   computeCritOverflowBuffs,
   calculateAllStats,
 } from "../calculator/stats";
-import { processAttacks, calcAllDamages } from "../calculator/attacks";
+import { processAttacks, calcDamages } from "../calculator/attacks";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs, utilityAttacks } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -492,6 +492,11 @@ export default defineComponent({
       calcAllDamages();
     });
 
+    const calcAllDamages = () => {
+      const damageData = calcDamages();
+      allDamages.value = damageData;
+    };
+
     // set the character to display, default to the first
     let initialCharacter = activeCharacter?.value;
     // it can be a blank string, if so, set it to the first item
@@ -549,10 +554,6 @@ export default defineComponent({
       BonusSpecificSkillDMGBonus.value = stats.bonusSpecificSkillDMGBonus;
       TotalDeepenEffect.value = stats.totalDeepenEffect;
       ResistReduction.value = stats.resistReduction;
-    };
-
-    const handleCalculation = () => {
-      calcAllDamages();
     };
 
     const handleWeaponUpdated = (givenWeaponData) => {

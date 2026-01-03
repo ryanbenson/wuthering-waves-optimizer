@@ -1123,7 +1123,7 @@ export const calculateAttackDamage = (
   );
 };
 
-export const calcAllDamages = (
+export const calcDamages = (
   chosenChar: any = {},
   echoStats: any = {},
   teamBuffsData: any = {},
