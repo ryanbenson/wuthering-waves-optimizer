@@ -2,6 +2,14 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>January 4, 2026</h3>
+    <ul>
+      <li>Adds rotation for Lynae.</li>
+    </ul>
+    <h3>January 3, 2026</h3>
+    <ul>
+      <li>Fixes weapon affect on stats when you un-equip a weapon.</li>
+    </ul>
     <h3>January 2, 2026</h3>
     <ul>
       <li>
