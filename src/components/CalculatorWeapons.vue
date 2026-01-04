@@ -529,7 +529,7 @@ export default {
      * @emtis update-weapon
      */
     async updateWeaponStats() {
-      if (this.chosenWeapon) {
+      if (this.weapon && this.chosenWeapon) {
         const { attack, modifier, modifierValue } =
           this.chosenWeapon.getWeaponDataByLevel(this.weaponLevel);
         const weaponData = {
