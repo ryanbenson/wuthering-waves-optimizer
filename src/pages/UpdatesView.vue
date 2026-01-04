@@ -5,6 +5,7 @@
     <h3>January 4, 2026</h3>
     <ul>
       <li>Adds rotation for Lynae.</li>
+      <li>Updates the max stacks on NS on enemy page. you dont need to activate chisa, etc to get the max possible stacks. i dont have the dmg for them yet. ill try to figure that soon</li>
     </ul>
     <h3>January 3, 2026</h3>
     <ul>
