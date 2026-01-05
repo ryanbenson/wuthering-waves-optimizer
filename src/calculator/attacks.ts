@@ -31,7 +31,6 @@ export const processAttacks = (
   excludeDisabledAttacks: boolean = true, // e.g. ones that are unlocked through chains should be hidden by default
   providedStats: any = null, // use this set of base stats instead of the global stats
   providedEchoStats: any = null, // use this set of echo stats instead of the global echo stats
-  providedTalent: any = null, // use this talent string if provided
 ) => {
   return (
     (attacks ?? [])
@@ -828,7 +827,7 @@ export const calculateAttackDamage = (
     const tuneBreakDmgBonus = context.buffs.customBuffs?.TuneBreakDMGBonus ?? 0;
     return calcTuneBreak(
       talent,
-      context.character.characterLevel,
+      String(context.character.characterLevel),
       context.enemy.enemyLevel,
       enemyResistVal,
       context.enemy.enemyType,
@@ -882,7 +881,7 @@ export const calculateAttackDamage = (
       const elementalEffectDmg = getSpectroFrazzleDamage(
         attack.talent,
         attack?.stacks ?? 0,
-        context.character.characterLevel,
+        String(context.character.characterLevel),
         context.enemy.enemyLevel,
         context.enemy.enemyResist,
         totalResistReduction,
@@ -924,7 +923,7 @@ export const calculateAttackDamage = (
     const elementalEffectDmg = getAeroErosionDamage(
       attack.talent,
       attack?.stacks ?? 0,
-      context.character.characterLevel,
+      String(context.character.characterLevel),
       context.enemy.enemyLevel,
       context.enemy.enemyResist,
       totalResistReduction,
@@ -1097,7 +1096,7 @@ export const calculateAttackDamage = (
   //   count,
   // });
   return calcDamage(
-    context.character.characterLevel,
+    String(context.character.characterLevel),
     context.enemy.enemyLevel,
     context.enemy.enemyResist,
     talent,
@@ -1251,7 +1250,7 @@ export const calcDamages = (context: CalculationContext) => {
   ) {
     // get the MV based on stacks and character level
     const spectroFrazzleMv = getSpectroFrazzleModifierByLevelByStacks(
-      context.character.characterLevel,
+      String(context.character.characterLevel),
       context.enemy.spectroFrazzle.spectroFrazzleStacks,
     );
     if (spectroFrazzleMv) {
@@ -1274,7 +1273,7 @@ export const calcDamages = (context: CalculationContext) => {
   ) {
     // get the MV based on stacks and character level
     const aeroErosionMv = getAeroErosionModifierByLevelByStacks(
-      context.character.characterLevel,
+      String(context.character.characterLevel),
       context.enemy.aeroErosion.aeroErosionStacks,
     );
     if (aeroErosionMv) {
