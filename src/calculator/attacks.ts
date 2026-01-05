@@ -24,56 +24,14 @@ import { getEchoData } from "../echoes";
 
 export const processAttacks = (
   attacks: any,
-  talentType: any,
+  context: CalculationContext,
+  talentType: any = null,
   hasNoTalentLevel: boolean = false,
   dynamicTalentType: boolean = false,
   excludeDisabledAttacks: boolean = true, // e.g. ones that are unlocked through chains should be hidden by default
   providedStats: any = null, // use this set of base stats instead of the global stats
   providedEchoStats: any = null, // use this set of echo stats instead of the global echo stats
-  // all of the "state" data
-  charResonanceChainsData: any = {},
-  charBuffsData: any = {},
-  talentData: any = {},
-  // additional state data needed for calculateAttackDamage
-  baseHp: any = 0,
-  baseAtk: any = 0,
-  baseDef: any = 0,
-  weaponData: any = {},
-  echoStats: any = {},
-  customBuffs: any = {},
-  teamBuffsData: any = {},
-  chosenChar: any = {},
-  Glacio: any = 0,
-  Fusion: any = 0,
-  Electro: any = 0,
-  Aero: any = 0,
-  Spectro: any = 0,
-  Havoc: any = 0,
-  totalDef: any = 0,
-  totalHp: any = 0,
-  energyRegen: any = 0,
-  totalAtk: any = 0,
-  BasicAttackDMGBonus: any = 0,
-  HeavyAttackDMGBonus: any = 0,
-  ResonanceSkillDMGBonus: any = 0,
-  IntroSkillDMGBonus: any = 0,
-  OutroSkillDMGBonus: any = 0,
-  ResonanceLiberationDMGBonus: any = 0,
-  EchoDMGBonus: any = 0,
-  healingBonus: any = 0,
-  shieldBonus: any = 0,
-  totalCritRate: any = 0,
-  totalCritDMG: any = 0,
-  DefIgnore: any = 0,
-  havocBaneStacks: any = 0,
-  ResistReduction: any = 0,
-  TotalDeepenEffect: any = 0,
-  characterLevel: any = 0,
-  enemyLevel: any = 0,
-  enemyResist: any = 0,
-  characters: any = {},
-  character: any = "",
-  enemyType: string = "",
+  providedTalent: any = null, // use this talent string if provided
 ) => {
   return (
     (attacks ?? [])
@@ -84,8 +42,9 @@ export const processAttacks = (
         const requiresResonanceChain = attack?.requiresResonanceChain ?? false;
         if (requiresResonanceChain) {
           const resonanceChainsEnabledAttacks =
-            charResonanceChainsData?.EnableAttack ?? [];
-          const charBuffsEnabledAttacks = charBuffsData?.EnableAttack ?? [];
+            context.buffs.charResonanceChainsData?.EnableAttack ?? [];
+          const charBuffsEnabledAttacks =
+            context.buffs.charBuffsData?.EnableAttack ?? [];
           // merge all possible enabled attack arrays together
           const enabledAttacks: any[] = []
             .concat(resonanceChainsEnabledAttacks)
@@ -108,19 +67,19 @@ export const processAttacks = (
           let talent;
           switch (attack.actionType) {
             case "basic":
-              talent = attack.talents[talentData.basic];
+              talent = attack.talents[context.character.talentData.basic];
               break;
             case "skill":
-              talent = attack.talents[talentData.skill];
+              talent = attack.talents[context.character.talentData.skill];
               break;
             case "forteCircuit":
-              talent = attack.talents[talentData.forte];
+              talent = attack.talents[context.character.talentData.forte];
               break;
             case "liberation":
-              talent = attack.talents[talentData.liberation];
+              talent = attack.talents[context.character.talentData.liberation];
               break;
             case "intro":
-              talent = attack.talents[talentData.intro];
+              talent = attack.talents[context.character.talentData.intro];
               break;
             case "tuneBreak":
               // outro has no talent tree. it only has 1 value (e.g. 20.00%)
@@ -143,16 +102,15 @@ export const processAttacks = (
         } else {
           talent = attack.talents[talentType];
         }
-        console.log(talent, attack, talentData);
         const hitCount = attack?.count ?? 1;
         let attackType = attack.type;
         // is there an attack type override? if so, update it
         const attackTypeOverrideResChain =
-          charResonanceChainsData?.specificTalentBuffs?.[
+          context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
             `${attack.key}:talentTypeOverride`
           ] ?? null;
         const attackTypeOverrideSelfBuff =
-          charBuffsData?.specificTalentBuffs?.[
+          context.buffs.charBuffsData?.specificTalentBuffs?.[
             `${attack.key}:talentTypeOverride`
           ] ?? null;
         if (attackTypeOverrideResChain) {
@@ -168,6 +126,7 @@ export const processAttacks = (
           talent,
           damage: calculateAttackDamage(
             attack,
+            context,
             talentType,
             hasNoTalentLevel,
             dynamicTalentType,
@@ -175,48 +134,6 @@ export const processAttacks = (
             providedStats, // pass along the provided stats, if we have them
             providedEchoStats, // pass along the provided echo stats, if we have them
             providedTalent, // pass in a specific talent string
-            baseHp,
-            baseAtk,
-            baseDef,
-            weaponData,
-            charBuffsData,
-            charResonanceChainsData,
-            echoStats,
-            customBuffs,
-            teamBuffsData,
-            chosenChar,
-            Glacio,
-            Fusion,
-            Electro,
-            Aero,
-            Spectro,
-            Havoc,
-            totalDef,
-            totalHp,
-            energyRegen,
-            totalAtk,
-            BasicAttackDMGBonus,
-            HeavyAttackDMGBonus,
-            ResonanceSkillDMGBonus,
-            IntroSkillDMGBonus,
-            OutroSkillDMGBonus,
-            ResonanceLiberationDMGBonus,
-            EchoDMGBonus,
-            healingBonus,
-            shieldBonus,
-            talentData,
-            totalCritRate,
-            totalCritDMG,
-            DefIgnore,
-            havocBaneStacks,
-            ResistReduction,
-            TotalDeepenEffect,
-            characterLevel,
-            enemyLevel,
-            enemyResist,
-            characters,
-            character,
-            enemyType,
           ),
           isEnabled,
           originalIsEnabled,
@@ -235,56 +152,14 @@ export const processAttacks = (
 
 export const calculateAttackDamage = (
   attack: any,
-  talentType: any,
+  context: CalculationContext,
+  talentType: any = null,
   hasNoTalentLevel: boolean = false,
   hasDynamicTalent: boolean = false,
   count: number = 1,
   providedFullStats: any = null, // use this as our stats data, otherwise default to the global stats, this should exclude personal buffs, weapon buffs, chain buffs, custom buffs, team buffs. The only things to use are attack-level buffs
   providedEchoStats: any = null, // use this as our echo buffs instead of the global echo buffs
   providedTalent: any = null, // use this talent string if provided, mostly used for echo attacks in, rotations
-  // state data
-  baseHp: any = 0,
-  baseAtk: any = 0,
-  baseDef: any = 0,
-  weaponData: any = {},
-  charBuffsData: any = {},
-  charResonanceChainsData: any = {},
-  echoStats: any = {},
-  customBuffs: any = {},
-  teamBuffsData: any = {},
-  chosenChar: any = {},
-  Glacio: any = 0,
-  Fusion: any = 0,
-  Electro: any = 0,
-  Aero: any = 0,
-  Spectro: any = 0,
-  Havoc: any = 0,
-  totalDef: any = 0,
-  totalHp: any = 0,
-  energyRegen: any = 0,
-  totalAtk: any = 0,
-  BasicAttackDMGBonus: any = 0,
-  HeavyAttackDMGBonus: any = 0,
-  ResonanceSkillDMGBonus: any = 0,
-  IntroSkillDMGBonus: any = 0,
-  OutroSkillDMGBonus: any = 0,
-  ResonanceLiberationDMGBonus: any = 0,
-  EchoDMGBonus: any = 0,
-  healingBonus: any = 0,
-  shieldBonus: any = 0,
-  talentData: any = {},
-  totalCritRate: any = 0,
-  totalCritDMG: any = 0,
-  DefIgnore: any = 0,
-  havocBaneStacks: any = 0,
-  ResistReduction: any = 0,
-  TotalDeepenEffect: any = 0,
-  characterLevel: any = 0,
-  enemyLevel: any = 0,
-  enemyResist: any = 0,
-  characters: any = {},
-  character: any = "",
-  enemyType: string = "",
 ) => {
   const { excludeTeamBuffs, excludeWeaponBuffs, excludeEchoes } = attack;
   let statsWithoutTeamBuffs = null;
@@ -297,28 +172,30 @@ export const calculateAttackDamage = (
         ignoreWeaponBuffs: excludeWeaponBuffs,
         ignoreEchoes: excludeEchoes,
       },
-      providedEchoStats,
+      providedEchoStats ?? context.equipment.echoStats,
       null,
       {
-        baseHp: baseHp,
-        baseAtk: baseAtk,
-        baseDef: baseDef,
+        baseHp: context.character.baseStats.baseHp,
+        baseAtk: context.character.baseStats.baseAtk,
+        baseDef: context.character.baseStats.baseDef,
       },
       {
-        weaponAtk: weaponData?.attack,
-        weaponModifier: weaponData?.modifier,
-        weaponModifierValue: weaponData?.modifierValue,
-        weaponPassiveData: weaponData?.weaponPassiveStats ?? {},
+        weaponAtk: context.equipment.weapon.attack,
+        weaponModifier: context.equipment.weapon.modifier,
+        weaponModifierValue: context.equipment.weapon.modifierValue,
+        weaponPassiveData: context.equipment.weapon.weaponPassiveStats ?? {},
       },
-      charBuffsData,
-      charResonanceChainsData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
+      context.buffs.charBuffsData,
+      context.buffs.charResonanceChainsData,
+      context.equipment.echoStats,
+      context.buffs.customBuffs,
+      context.buffs.teamBuffsData,
     );
   }
   let attackType = attack.type;
-  const selfBuffs = JSON.parse(JSON.stringify(charBuffsData ?? {}));
+  const selfBuffs = JSON.parse(
+    JSON.stringify(context.buffs.charBuffsData ?? {}),
+  );
   /**
    * check if there are any buffs that buff another buff
    * look through the object of charResonanceChainsData for any ${attack.key}:MultiplySelfBuffs
@@ -326,14 +203,15 @@ export const calculateAttackDamage = (
    * { specificTalentBuffs: { PoeticEssenceSkillDMG:MultiplySelfBuff: 2 } }
    */
   const resonanceChainsKeys = Object.keys(
-    charResonanceChainsData?.specificTalentBuffs ?? {},
+    context.buffs.charResonanceChainsData?.specificTalentBuffs ?? {},
   );
   const resonanceChainsKeysWithMultiply = resonanceChainsKeys.filter(
     (key: string) => key.includes("MultiplySelfBuff"),
   );
   if (resonanceChainsKeysWithMultiply.length > 0) {
     resonanceChainsKeysWithMultiply.forEach((key: string) => {
-      const buffValue = charResonanceChainsData?.specificTalentBuffs?.[key];
+      const buffValue =
+        context.buffs.charResonanceChainsData?.specificTalentBuffs?.[key];
       const buffReferenceKey = key.split(":")[0]; // e.g. PoeticEssenceSkillDMG
       // // check if the buffReferenceKey is in the selfBuffs object
       if (selfBuffs?.specificTalentBuffs?.[buffReferenceKey]) {
@@ -346,7 +224,7 @@ export const calculateAttackDamage = (
   // apply any buff changes
   // is there an attack type override? if so, update it
   const attackTypeOverrideResChain =
-    charResonanceChainsData?.specificTalentBuffs?.[
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentTypeOverride`
     ] ?? null;
   const attackTypeOverrideSelfBuff =
@@ -359,50 +237,44 @@ export const calculateAttackDamage = (
     attackType = attackTypeOverrideSelfBuff;
   }
   // an attack can have its own element override
-  const attackElement = attack?.element ?? chosenChar?.basic?.element;
+  const attackElement =
+    attack?.element ?? context.character.chosenChar?.basic?.element;
+  const stats = statsWithoutTeamBuffs ?? providedFullStats ?? context.stats;
   let elementalDmgBonusDecimal = getElementDmgBonusByType(
     attackElement,
-    statsWithoutTeamBuffs ?? providedFullStats,
+    stats,
     {
-      Glacio: Glacio,
-      Fusion: Fusion,
-      Electro: Electro,
-      Aero: Aero,
-      Spectro: Spectro,
-      Havoc: Havoc,
+      Glacio: context.stats.Glacio,
+      Fusion: context.stats.Fusion,
+      Electro: context.stats.Electro,
+      Aero: context.stats.Aero,
+      Spectro: context.stats.Spectro,
+      Havoc: context.stats.Havoc,
     },
   );
-  const atkDefHpVal = getDamageValByAttr(
-    attack?.attribute,
-    statsWithoutTeamBuffs ?? providedFullStats,
-    {
-      totalDef: totalDef,
-      totalHp: totalHp,
-      energyRegen: energyRegen,
-      totalAtk: totalAtk,
-    },
-  );
-  let totalSkillDmgBonus = getDamageTypeBonusByType(
-    attackType,
-    statsWithoutTeamBuffs ?? providedFullStats,
-    {
-      BasicAttackDMGBonus: BasicAttackDMGBonus,
-      HeavyAttackDMGBonus: HeavyAttackDMGBonus,
-      ResonanceSkillDMGBonus: ResonanceSkillDMGBonus,
-      IntroSkillDMGBonus: IntroSkillDMGBonus,
-      OutroSkillDMGBonus: OutroSkillDMGBonus,
-      ResonanceLiberationDMGBonus: ResonanceLiberationDMGBonus,
-      EchoDMGBonus: EchoDMGBonus,
-      healingBonus: healingBonus,
-      shieldBonus: shieldBonus,
-    },
-  );
+  const atkDefHpVal = getDamageValByAttr(attack?.attribute, stats, {
+    totalDef: context.stats.totalDef,
+    totalHp: context.stats.totalHp,
+    energyRegen: context.stats.energyRegen,
+    totalAtk: context.stats.totalAtk,
+  });
+  let totalSkillDmgBonus = getDamageTypeBonusByType(attackType, stats, {
+    BasicAttackDMGBonus: context.stats.BasicAttackDMGBonus,
+    HeavyAttackDMGBonus: context.stats.HeavyAttackDMGBonus,
+    ResonanceSkillDMGBonus: context.stats.ResonanceSkillDMGBonus,
+    IntroSkillDMGBonus: context.stats.IntroSkillDMGBonus,
+    OutroSkillDMGBonus: context.stats.OutroSkillDMGBonus,
+    ResonanceLiberationDMGBonus: context.stats.ResonanceLiberationDMGBonus,
+    EchoDMGBonus: context.stats.EchoDMGBonus,
+    healingBonus: context.stats.healingBonus,
+    shieldBonus: context.stats.shieldBonus,
+  });
   let talent;
   let talentTree = attack?.talents;
 
   // see if we have a talent modifier replacement to override the talent value
   const talentModifierReplace =
-    charResonanceChainsData?.specificTalentBuffs?.[
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentReplace`
     ] ?? null;
   if (talentModifierReplace) {
@@ -416,20 +288,20 @@ export const calculateAttackDamage = (
   } else if (hasDynamicTalent) {
     switch (attack.actionType) {
       case "basic":
-        talent = talentTree[talentData.basic];
+        talent = talentTree[context.character.talentData.basic];
         break;
       case "skill":
-        talent = talentTree[talentData.skill];
+        talent = talentTree[context.character.talentData.skill];
         break;
       case "forteCircuit":
       case "forte":
-        talent = talentTree[talentData.forte];
+        talent = talentTree[context.character.talentData.forte];
         break;
       case "liberation":
-        talent = talentTree[talentData.liberation];
+        talent = talentTree[context.character.talentData.liberation];
         break;
       case "intro":
-        talent = talentTree[talentData.intro];
+        talent = talentTree[context.character.talentData.intro];
         break;
       case "tuneBreak":
         // tune break have no talent tree, just a single value
@@ -466,10 +338,10 @@ export const calculateAttackDamage = (
   const talentModifierAdd = selfBuffs?.[attack.key] ?? 0;
   // TODO: Is this used anywhere?
   const talentModifierAddFromResonanceChains =
-    charResonanceChainsData?.[attack.key] ?? 0;
+    context.buffs.charResonanceChainsData?.[attack.key] ?? 0;
   // flat adding to the base multiplier for a specific attack
   const talentModifierAddFromResonanceChainsAdd =
-    charResonanceChainsData?.specificTalentBuffs?.[
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentModifierMultiplyAdd`
     ] ?? 0;
   const talentModifierAddFromSelfBuffs =
@@ -483,7 +355,8 @@ export const calculateAttackDamage = (
     attackBuffsTalentModifierAdd;
 
   const specificSkillDmgFromResonanceChains =
-    charResonanceChainsData?.specificTalentBuffs?.[attack.key] ?? 0;
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[attack.key] ??
+    0;
   // apply echo based coordianted dmg bonus (both echo set and main echo)
   // as well as custom buffs for coordinated attacks
   let coordinatedEchoDmgBonus = 0;
@@ -493,32 +366,38 @@ export const calculateAttackDamage = (
   if (attack?.subType === "Coordinated") {
     coordinatedEchoDmgBonus =
       providedFullStats?.coordinatedDmgBonus ||
-      echoStats?.CoordinatedDMGBonus ||
+      (providedEchoStats ?? context.equipment.echoStats)?.CoordinatedDMGBonus ||
       0;
     if (!providedFullStats) {
-      coordinatedDmgBonusCustomBuffs = customBuffs?.CoordinatedDMGBonus ?? 0;
+      coordinatedDmgBonusCustomBuffs =
+        context.buffs.customBuffs?.CoordinatedDMGBonus ?? 0;
     }
   }
   // there are bonuses that are based on Max HP, Max ATK, Max DEF
   // we end up with DMG Bonus %, so we also / 100 in the end
   const specificSkillDmgFromResonanceChainsBasedOnMaxHp =
-    charResonanceChainsData?.specificTalentBuffs?.[
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:DMGBonus:MaxHP`
     ] ?? 0;
   const specificSkillDmgFromResonanceChainsBasedOnMaxAtk =
-    charResonanceChainsData?.specificTalentBuffs?.[
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:DMGBonus:MaxAtk`
     ] ?? 0;
   const specificSkillDmgFromResonanceChainsBasedOnMaxDef =
-    charResonanceChainsData?.specificTalentBuffs?.[
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:DMGBonus:MaxDef`
     ] ?? 0;
   const specificSkillDmgFromResonanceChainsBasedOnMaxHpVal =
-    (totalHp * specificSkillDmgFromResonanceChainsBasedOnMaxHp) / 100;
+    (context.stats.totalHp * specificSkillDmgFromResonanceChainsBasedOnMaxHp) /
+    100;
   const specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal =
-    (totalAtk * specificSkillDmgFromResonanceChainsBasedOnMaxAtk) / 100;
+    (context.stats.totalAtk *
+      specificSkillDmgFromResonanceChainsBasedOnMaxAtk) /
+    100;
   const specificSkillDmgFromResonanceChainsBasedOnMaxDefVal =
-    (totalDef * specificSkillDmgFromResonanceChainsBasedOnMaxDef) / 100;
+    (context.stats.totalDef *
+      specificSkillDmgFromResonanceChainsBasedOnMaxDef) /
+    100;
   // end max buff handlers
   const specificSkillDmgFromCharBuffs =
     selfBuffs?.specificTalentBuffs?.[attack.key] ?? 0;
@@ -527,62 +406,74 @@ export const calculateAttackDamage = (
   const specificSkillDmgFromCharBuffsWithElement =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:${attackElement}`] ?? 0;
   const specificSkillDmgFromEchoes =
-    echoStats?.specificTalentBuffs?.[attack.key] ?? 0;
-  const genericSkillDmgBonusResChain = charResonanceChainsData?.DMGBonus ?? 0;
+    (providedEchoStats ?? context.equipment.echoStats)?.specificTalentBuffs?.[
+      attack.key
+    ] ?? 0;
+  const genericSkillDmgBonusResChain =
+    context.buffs.charResonanceChainsData?.DMGBonus ?? 0;
   const genericSkillDmgBonusSelfBuff = selfBuffs?.DMGBonus ?? 0;
   let genericSkillDmgBonusWeaponBuff =
-    weaponData?.weaponPassiveStats?.DMGBonus ?? 0;
+    context.equipment.weapon.weaponPassiveStats?.DMGBonus ?? 0;
   if (excludeWeaponBuffs) {
     genericSkillDmgBonusWeaponBuff = 0;
   }
   let genericSkillDmgBonusEchoBuff =
-    providedFullStats?.dmgBonus || echoStats?.DMGBonus || 0;
-  let genericSkillDmgBonusTeamEchoBuff = teamBuffsData?.DMGBonus ?? 0;
+    providedFullStats?.dmgBonus ||
+    (providedEchoStats ?? context.equipment.echoStats)?.DMGBonus ||
+    0;
+  let genericSkillDmgBonusTeamEchoBuff =
+    context.buffs.teamBuffsData?.DMGBonus ?? 0;
   if (excludeTeamBuffs) {
     genericSkillDmgBonusTeamEchoBuff = 0;
   }
   const extraDefIgnoreResonanceChain =
-    charResonanceChainsData?.specificTalentBuffs?.[`${attack.key}:DEFIgnore`] ??
-    0;
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      `${attack.key}:DEFIgnore`
+    ] ?? 0;
   const extraDefIgnoreCharBuff =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEFIgnore`] ?? 0;
-  let extraDefIgnoreCustomBuffs = customBuffs?.DefIgnore ?? 0;
+  let extraDefIgnoreCustomBuffs = context.buffs.customBuffs?.DefIgnore ?? 0;
   if (providedFullStats) {
     extraDefIgnoreCustomBuffs = 0;
   }
   const attackBuffsDefIgnore = attack?.buffs?.DefIgnore ?? 0;
   let weaponDefIgnoreSpecificDmgType =
-    weaponData?.weaponPassiveStats?.[`DEFIgnore:${attack.type}`] ?? 0;
+    context.equipment.weapon.weaponPassiveStats?.[`DEFIgnore:${attack.type}`] ??
+    0;
   if (excludeWeaponBuffs) {
     weaponDefIgnoreSpecificDmgType = 0;
   }
   const specificSkillExtraCritRate =
-    charResonanceChainsData?.specificTalentBuffs?.[`${attack.key}:CritRate`] ??
-    0;
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      `${attack.key}:CritRate`
+    ] ?? 0;
   let echoSpecificAttackTypeCritRate = 0;
   if (providedEchoStats) {
     echoSpecificAttackTypeCritRate =
       providedEchoStats?.[`CritRate:${attack.type}`] ?? 0;
   } else {
     echoSpecificAttackTypeCritRate =
-      echoStats?.[`CritRate:${attack.type}`] ?? 0;
+      context.equipment.echoStats?.[`CritRate:${attack.type}`] ?? 0;
   }
   // need to divide by 100 since the echo data is flul numbers
   // but we're injecting it to the calcs which is decimal based
   echoSpecificAttackTypeCritRate = echoSpecificAttackTypeCritRate / 100;
   const specificSkillExtraCritDMG =
-    charResonanceChainsData?.specificTalentBuffs?.[`${attack.key}:CritDMG`] ??
-    0;
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      `${attack.key}:CritDMG`
+    ] ?? 0;
   const selfBuffsSpecificSkillExtraCritDMG =
     selfBuffs.specificTalentBuffs?.[`${attack.key}:CritDMG`] ?? 0;
-  const baseCritRate = providedFullStats?.totalCritRate || totalCritRate;
+  const baseCritRate =
+    providedFullStats?.totalCritRate || context.stats.totalCritRate;
   let instanceDmgCritRate =
     baseCritRate + specificSkillExtraCritRate + echoSpecificAttackTypeCritRate;
   if (excludeTeamBuffs) {
     instanceDmgCritRate = statsWithoutTeamBuffs?.totalCritRate ?? 0;
     instanceDmgCritRate += specificSkillExtraCritRate;
   }
-  const baseCritDamage = providedFullStats?.totalCritDMG || totalCritDMG;
+  const baseCritDamage =
+    providedFullStats?.totalCritDMG || context.stats.totalCritDMG;
   let instanceDmgCritDMG =
     baseCritDamage +
     specificSkillExtraCritDMG +
@@ -592,7 +483,7 @@ export const calculateAttackDamage = (
     instanceDmgCritDMG += specificSkillExtraCritDMG;
   }
   const talentModifierMultiply =
-    charResonanceChainsData?.specificTalentBuffs?.[
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentModifierMultiply`
     ] ?? 0;
   const talentModifierMultiplySelfBuff =
@@ -600,7 +491,8 @@ export const calculateAttackDamage = (
     0;
   const talentModifierMultiplyAttackBuff =
     attack?.buffs?.talentModifierMultiply ?? 0;
-  const currentDefIgnore = providedFullStats?.DefIgnore || DefIgnore || 0;
+  const currentDefIgnore =
+    providedFullStats?.DefIgnore || context.stats.DefIgnore || 0;
   const totalDefIgnore =
     currentDefIgnore +
     extraDefIgnoreResonanceChain +
@@ -610,16 +502,21 @@ export const calculateAttackDamage = (
     weaponDefIgnoreSpecificDmgType;
   // Def Reduction
   // Havoc bane reduces def for stack * 2%
-  const havocBaneStacksNum = havocBaneStacks ?? 0;
+  const havocBaneStacksNum = context.enemy.havocBane.havocBaneStacks ?? 0;
   const havocBaneDefReduction = havocBaneStacksNum * 0.02;
   const attackDefReduction = attack?.buffs?.DefReduction ?? 0;
-  const customBuffDefReduction = customBuffs?.DefReduction ?? 0;
+  const customBuffDefReduction = context.buffs.customBuffs?.DefReduction ?? 0;
   const totalDefReduction =
     havocBaneDefReduction + attackDefReduction + customBuffDefReduction;
   // apply specific ForteBased buff
-  const originalForte = getOriginalForteFromAttackKey(chosenChar, attack.key);
+  const originalForte = getOriginalForteFromAttackKey(
+    context.character.chosenChar,
+    attack.key,
+  );
   let totalForteBasedDmgBuff =
-    echoStats?.[`ForteBased:${originalForte}:${attack.type}`] ?? 0;
+    (providedEchoStats ?? context.equipment.echoStats)?.[
+      `ForteBased:${originalForte}:${attack.type}`
+    ] ?? 0;
   let specificSkillDmg =
     specificSkillDmgFromResonanceChains +
     specificSkillDmgFromCharBuffs +
@@ -642,7 +539,7 @@ export const calculateAttackDamage = (
 
   // Resist Shred:
   let teamBuffResistShredForCharElement =
-    teamBuffsData?.[`ResistShred:${attackElement}`] ?? 0;
+    context.buffs.teamBuffsData?.[`ResistShred:${attackElement}`] ?? 0;
   let selfBuffResistShredForCharElement =
     selfBuffs?.[`ResistShred:${attackElement}`] ?? 0;
   let selfBuffResistShredForCharElementSpecificAttack =
@@ -650,7 +547,9 @@ export const calculateAttackDamage = (
       `${attack.key}:ResistShred:${attackElement}`
     ] ?? 0;
   let weaponBuffResistShredForCharElement =
-    weaponData?.weaponPassiveStats?.[`ResistShred:${attackElement}`] ?? 0;
+    context.equipment.weapon.weaponPassiveStats?.[
+      `ResistShred:${attackElement}`
+    ] ?? 0;
   if (excludeWeaponBuffs) {
     weaponBuffResistShredForCharElement = 0;
   }
@@ -659,10 +558,11 @@ export const calculateAttackDamage = (
   }
 
   const resonanceChainResistShredForCharElement =
-    charResonanceChainsData?.[`ResistShred:${attackElement}`] ?? 0;
+    context.buffs.charResonanceChainsData?.[`ResistShred:${attackElement}`] ??
+    0;
   const baseResistReduction =
-    providedFullStats?.resistReduction || ResistReduction || 0;
-  let customResistReduction = customBuffs?.ResistShred ?? 0;
+    providedFullStats?.resistReduction || context.stats.ResistReduction || 0;
+  let customResistReduction = context.buffs.customBuffs?.ResistShred ?? 0;
   if (providedFullStats) {
     customResistReduction = 0;
   }
@@ -679,7 +579,9 @@ export const calculateAttackDamage = (
 
   // damage deepen:
   let baseTotalDeepenEffect =
-    providedFullStats?.totalDeepenEffect || TotalDeepenEffect || 0;
+    providedFullStats?.totalDeepenEffect ||
+    context.stats.TotalDeepenEffect ||
+    0;
   // so far damage deepen is from team buffs, add more later if needed
   // get element first, then any skill specific ones next, then add together
   // NOTE: all outro attacks cannot use the DMGDeepen:element|attackType
@@ -687,22 +589,23 @@ export const calculateAttackDamage = (
   // for outro attacks
   // self subtype dmg deepen
   let selfBuffDmgDeepenForSubType =
-    charBuffsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
+    context.buffs.charBuffsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
   let selfBuffDmgDeepenForType =
-    charBuffsData?.[`DMGDeepen:${attackType}`] ?? 0;
+    context.buffs.charBuffsData?.[`DMGDeepen:${attackType}`] ?? 0;
   let selfBuffDmgDeepenForElement =
-    charBuffsData?.[`DMGDeepen:${attackElement}`] ?? 0;
+    context.buffs.charBuffsData?.[`DMGDeepen:${attackElement}`] ?? 0;
   let teamBuffDmgDeepenForCharElement =
-    teamBuffsData?.[`DMGDeepen:${attackElement}`] ?? 0;
+    context.buffs.teamBuffsData?.[`DMGDeepen:${attackElement}`] ?? 0;
   let teamBuffDmgDeepenForAttackType =
-    teamBuffsData?.[`DMGDeepen:${attackType}`] ?? 0;
+    context.buffs.teamBuffsData?.[`DMGDeepen:${attackType}`] ?? 0;
   let teamBuffDmgDeepenForSubType =
-    teamBuffsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
+    context.buffs.teamBuffsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
   const selfBuffSpecificAttackGenericDmgDeepen =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGDeepen`] ?? 0;
   const resonanceChainBuffSpecificAttackGenericDmgDeepen =
-    charResonanceChainsData?.specificTalentBuffs?.[`${attack.key}:DMGDeepen`] ??
-    0;
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      `${attack.key}:DMGDeepen`
+    ] ?? 0;
   if (excludeTeamBuffs) {
     baseTotalDeepenEffect = statsWithoutTeamBuffs?.totalDeepenEffect ?? 0;
     teamBuffDmgDeepenForCharElement = 0;
@@ -719,17 +622,22 @@ export const calculateAttackDamage = (
   // DO NOT RESET THIS WITH providedStats, it's not properly handled in calcCharStats yet
   // it's because this is DamageAmplify, not DMGDeepen
   // TODO: Fix this.
-  const customDamageDeepen = customBuffs?.DamageAmplify ?? 0;
+  const customDamageDeepen = context.buffs.customBuffs?.DamageAmplify ?? 0;
   let resonanceChainDmgDeepenForAttackType =
-    charResonanceChainsData?.[`DMGDeepen:${attackType}`] ?? 0;
+    context.buffs.charResonanceChainsData?.[`DMGDeepen:${attackType}`] ?? 0;
   let resonanceChainDmgDeepenForAttackSubType =
-    charResonanceChainsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
+    context.buffs.charResonanceChainsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
   let weaponBuffDmgDeepenElement =
-    weaponData?.weaponPassiveStats?.[`DMGDeepen:${attackElement}`] ?? 0;
+    context.equipment.weapon.weaponPassiveStats?.[
+      `DMGDeepen:${attackElement}`
+    ] ?? 0;
   let weaponBuffDmgDeepenSubType =
-    weaponData?.weaponPassiveStats?.[`DMGDeepen:${attack.subType}`] ?? 0;
+    context.equipment.weapon.weaponPassiveStats?.[
+      `DMGDeepen:${attack.subType}`
+    ] ?? 0;
   let weaponBuffDmgDeepenType =
-    weaponData?.weaponPassiveStats?.[`DMGDeepen:${attackType}`] ?? 0;
+    context.equipment.weapon.weaponPassiveStats?.[`DMGDeepen:${attackType}`] ??
+    0;
   if (excludeWeaponBuffs) {
     weaponBuffDmgDeepenElement = 0;
     weaponBuffDmgDeepenSubType = 0;
@@ -758,7 +666,7 @@ export const calculateAttackDamage = (
     talentModifierMultiplyAttackBuff;
   // grab any special multipliers, and then multiply the previous total by that
   const talentModifierSpecialMultiplyResChains =
-    charResonanceChainsData?.specificTalentBuffs?.[
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentModifierSpecialMultiply`
     ] ?? 0;
   let totalTalentModifierSpecialMultiply =
@@ -768,7 +676,9 @@ export const calculateAttackDamage = (
   let modifyBaseAtk =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:ATK`] ?? 0;
   let modifyBaseAtkResChain =
-    charResonanceChainsData?.specificTalentBuffs?.[`${attack.key}:ATK`] ?? 0;
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      `${attack.key}:ATK`
+    ] ?? 0;
   modifyBaseAtk += modifyBaseAtkResChain;
   let modifyBaseHp = selfBuffs?.specificTalentBuffs?.[`${attack.key}:HP`] ?? 0;
   let modifyBaseDef =
@@ -802,24 +712,24 @@ export const calculateAttackDamage = (
         ignoreWeaponBuffs: excludeWeaponBuffs,
         ignoreEchoes: excludeEchoes,
       },
-      providedEchoStats,
+      providedEchoStats ?? context.equipment.echoStats,
       excludeEchoes ? null : providedFullStats,
       {
-        baseHp: baseHp,
-        baseAtk: baseAtk,
-        baseDef: baseDef,
+        baseHp: context.character.baseStats.baseHp,
+        baseAtk: context.character.baseStats.baseAtk,
+        baseDef: context.character.baseStats.baseDef,
       },
       {
-        weaponAtk: weaponData?.attack,
-        weaponModifier: weaponData?.modifier,
-        weaponModifierValue: weaponData?.modifierValue,
-        weaponPassiveData: weaponData?.weaponPassiveStats ?? {},
+        weaponAtk: context.equipment.weapon.attack,
+        weaponModifier: context.equipment.weapon.modifier,
+        weaponModifierValue: context.equipment.weapon.modifierValue,
+        weaponPassiveData: context.equipment.weapon.weaponPassiveStats ?? {},
       },
-      charBuffsData,
-      charResonanceChainsData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
+      context.buffs.charBuffsData,
+      context.buffs.charResonanceChainsData,
+      context.equipment.echoStats,
+      context.buffs.customBuffs,
+      context.buffs.teamBuffsData,
     );
   }
   // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
@@ -835,24 +745,24 @@ export const calculateAttackDamage = (
         ignoreWeaponBuffs: excludeWeaponBuffs,
         ignoreEchoes: excludeEchoes,
       },
-      providedEchoStats,
+      providedEchoStats ?? context.equipment.echoStats,
       excludeEchoes ? null : providedFullStats,
       {
-        baseHp: baseHp,
-        baseAtk: baseAtk,
-        baseDef: baseDef,
+        baseHp: context.character.baseStats.baseHp,
+        baseAtk: context.character.baseStats.baseAtk,
+        baseDef: context.character.baseStats.baseDef,
       },
       {
-        weaponAtk: weaponData?.attack,
-        weaponModifier: weaponData?.modifier,
-        weaponModifierValue: weaponData?.modifierValue,
-        weaponPassiveData: weaponData?.weaponPassiveStats ?? {},
+        weaponAtk: context.equipment.weapon.attack,
+        weaponModifier: context.equipment.weapon.modifier,
+        weaponModifierValue: context.equipment.weapon.modifierValue,
+        weaponPassiveData: context.equipment.weapon.weaponPassiveStats ?? {},
       },
-      charBuffsData,
-      charResonanceChainsData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
+      context.buffs.charBuffsData,
+      context.buffs.charResonanceChainsData,
+      context.equipment.echoStats,
+      context.buffs.customBuffs,
+      context.buffs.teamBuffsData,
     );
   }
   // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
@@ -868,24 +778,24 @@ export const calculateAttackDamage = (
         ignoreWeaponBuffs: excludeWeaponBuffs,
         ignoreEchoes: excludeEchoes,
       },
-      providedEchoStats,
+      providedEchoStats ?? context.equipment.echoStats,
       excludeEchoes ? null : providedFullStats,
       {
-        baseHp: baseHp,
-        baseAtk: baseAtk,
-        baseDef: baseDef,
+        baseHp: context.character.baseStats.baseHp,
+        baseAtk: context.character.baseStats.baseAtk,
+        baseDef: context.character.baseStats.baseDef,
       },
       {
-        weaponAtk: weaponData?.attack,
-        weaponModifier: weaponData?.modifier,
-        weaponModifierValue: weaponData?.modifierValue,
-        weaponPassiveData: weaponData?.weaponPassiveStats ?? {},
+        weaponAtk: context.equipment.weapon.attack,
+        weaponModifier: context.equipment.weapon.modifier,
+        weaponModifierValue: context.equipment.weapon.modifierValue,
+        weaponPassiveData: context.equipment.weapon.weaponPassiveStats ?? {},
       },
-      charBuffsData,
-      charResonanceChainsData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
+      context.buffs.charBuffsData,
+      context.buffs.charResonanceChainsData,
+      context.equipment.echoStats,
+      context.buffs.customBuffs,
+      context.buffs.teamBuffsData,
     );
   }
 
@@ -904,23 +814,24 @@ export const calculateAttackDamage = (
     // also, normal tune break doesn't get affected by resist or resist reduction
     // but the special attacks do element based dmg, so they do
     if (attack.key === "TuneRuptureResponseSpectralAnalysisDMG") {
-      talent = attack.talents[talentData?.forte];
-      enemyResistVal = enemyResist;
+      talent = attack.talents[context.character.talentData?.forte];
+      enemyResistVal = context.enemy.enemyResist;
       resistReduction = totalResistReduction;
     }
     // get any custom base character tune break boost
-    baseTuneBreakBoost = chosenChar?.basic?.tuneBreakBoost ?? 0;
+    baseTuneBreakBoost =
+      context.character.chosenChar?.basic?.tuneBreakBoost ?? 0;
     const tuneBreakBoostSelf = selfBuffs?.tuneBreakBoost ?? 0;
-    const tuneBreakBoostTeam = teamBuffsData?.tuneBreakBoost ?? 0;
+    const tuneBreakBoostTeam = context.buffs.teamBuffsData?.tuneBreakBoost ?? 0;
     const totalTuneBreakBoost =
       baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam;
-    const tuneBreakDmgBonus = customBuffs?.TuneBreakDMGBonus ?? 0;
+    const tuneBreakDmgBonus = context.buffs.customBuffs?.TuneBreakDMGBonus ?? 0;
     return calcTuneBreak(
       talent,
-      characterLevel,
-      enemyLevel,
+      context.character.characterLevel,
+      context.enemy.enemyLevel,
       enemyResistVal,
-      enemyType,
+      context.enemy.enemyType,
       resistReduction,
       totalDefIgnore,
       totalTuneBreakBoost, // tuneBreakBoost
@@ -932,7 +843,7 @@ export const calculateAttackDamage = (
   // set the multiplier hard set here
   // talentModifierMultiplySetValue
   const talentModifierMultiplySet =
-    charResonanceChainsData?.specificTalentBuffs?.[
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentModifierMultiplySetValue`
     ] ?? null;
   if (talentModifierMultiplySet) {
@@ -947,19 +858,21 @@ export const calculateAttackDamage = (
     // get any SpectroFrazzle dmg deepen/amplify
     // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
     let spectroFrazzleDeepenWeaponBuffs =
-      weaponData?.weaponPassiveStats?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+      context.equipment.weapon.weaponPassiveStats?.[
+        "DMGDeepen:SpectroFrazzle"
+      ] ?? 0;
     if (excludeWeaponBuffs) {
       spectroFrazzleDeepenWeaponBuffs = 0;
     }
     let spectroFrazzleDeepenTeamBuffs =
-      teamBuffsData?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+      context.buffs.teamBuffsData?.["DMGDeepen:SpectroFrazzle"] ?? 0;
     if (excludeTeamBuffs) {
       spectroFrazzleDeepenTeamBuffs = 0;
     }
     const spectroFrazzleDeepenSelfBuffs =
       selfBuffs?.["DMGDeepen:SpectroFrazzle"] ?? 0;
     const spectroFrazzleDeepenResonanceChains =
-      charResonanceChainsData?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+      context.buffs.charResonanceChainsData?.["DMGDeepen:SpectroFrazzle"] ?? 0;
     totalSpectroFrazzleDeepen =
       spectroFrazzleDeepenWeaponBuffs +
       spectroFrazzleDeepenTeamBuffs +
@@ -969,9 +882,9 @@ export const calculateAttackDamage = (
       const elementalEffectDmg = getSpectroFrazzleDamage(
         attack.talent,
         attack?.stacks ?? 0,
-        characterLevel,
-        enemyLevel,
-        enemyResist,
+        context.character.characterLevel,
+        context.enemy.enemyLevel,
+        context.enemy.enemyResist,
         totalResistReduction,
         totalDefIgnore,
         totalSpectroFrazzleDeepen,
@@ -985,12 +898,13 @@ export const calculateAttackDamage = (
     // get any SpectroFrazzle dmg deepen/amplify
     // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
     let aeroErosionDeepenWeaponBuffs =
-      weaponData?.weaponPassiveStats?.["DMGDeepen:AeroErosion"] ?? 0;
+      context.equipment.weapon.weaponPassiveStats?.["DMGDeepen:AeroErosion"] ??
+      0;
     if (excludeWeaponBuffs) {
       aeroErosionDeepenWeaponBuffs = 0;
     }
     let aeroErosionDeepenTeamBuffs =
-      teamBuffsData?.["DMGDeepen:AeroErosion"] ?? 0;
+      context.buffs.teamBuffsData?.["DMGDeepen:AeroErosion"] ?? 0;
     if (excludeTeamBuffs) {
       aeroErosionDeepenTeamBuffs = 0;
     }
@@ -1000,7 +914,7 @@ export const calculateAttackDamage = (
       selfBuffs?.specificTalentBuffs?.["AeroErosion:DMGDeepen:AeroErosion"] ??
       0;
     const aeroErosionDeepenResonanceChains =
-      charResonanceChainsData?.["DMGDeepen:AeroErosion"] ?? 0;
+      context.buffs.charResonanceChainsData?.["DMGDeepen:AeroErosion"] ?? 0;
     totalAeroErosionDeepen =
       aeroErosionDeepenWeaponBuffs +
       aeroErosionDeepenTeamBuffs +
@@ -1010,9 +924,9 @@ export const calculateAttackDamage = (
     const elementalEffectDmg = getAeroErosionDamage(
       attack.talent,
       attack?.stacks ?? 0,
-      characterLevel,
-      enemyLevel,
-      enemyResist,
+      context.character.characterLevel,
+      context.enemy.enemyLevel,
+      context.enemy.enemyResist,
       totalResistReduction,
       0, // TODO: AeroErosion does not use DefIgnore?
       totalAeroErosionDeepen,
@@ -1026,7 +940,7 @@ export const calculateAttackDamage = (
       totalSkillDmgBonus += attack.buffs?.HealingBonus ?? 0;
     }
     const specificSkillHealingBonus =
-      charResonanceChainsData?.specificTalentBuffs?.[
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
         `${attack.key}:HealingBonus`
       ] ?? 0;
     const specificSkillHealingBonusSelfBuff =
@@ -1114,15 +1028,18 @@ export const calculateAttackDamage = (
   // special additive handler for HeavySlashNightfallDMG
   if (attack.key === "HeavySlashNightfallDMG") {
     let { isEnabled, stacks } =
-      characters?.[character]?.buffs?.HeavySlashNightfallBlazeStacks ?? {};
+      context.global.characters?.[context.character.characterKey]?.buffs
+        ?.HeavySlashNightfallBlazeStacks ?? {};
     // only apply these if it's enabled
     if (isEnabled) {
       if (!stacks) {
         stacks = 0;
       }
       additiveMultiplierStacks = stacks;
-      const forteLevel = characters?.[character]?.talents?.forte ?? 10;
-      const buffsList = chosenChar?.buffs ?? [];
+      const forteLevel =
+        context.global.characters?.[context.character.characterKey]?.talents
+          ?.forte ?? 10;
+      const buffsList = context.character.chosenChar?.buffs ?? [];
       const foundBuff = buffsList.find(
         (buff: any) => buff.key === "HeavySlashNightfallBlazeStacks",
       );
@@ -1133,20 +1050,22 @@ export const calculateAttackDamage = (
   }
   let totalSpecialMultiplier = 0;
   let resonanceChainAttackSpecialMultiplierAttack =
-    charResonanceChainsData?.specificTalentBuffs?.[
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:specialMultiplier`
     ] ?? 0;
   let resonanceChainAttackSpecialMultiplier =
-    charResonanceChainsData?.specialMultiplier ?? 0;
+    context.buffs.charResonanceChainsData?.specialMultiplier ?? 0;
   let selfBuffAttackSpecialMultiplier =
-    charBuffsData?.specificTalentBuffs?.[`${attack.key}:specialMultiplier`] ??
-    0;
-  let customBuffAttackSpecialMultiplier = customBuffs?.SpecialMultiplier ?? 0;
+    context.buffs.charBuffsData?.specificTalentBuffs?.[
+      `${attack.key}:specialMultiplier`
+    ] ?? 0;
+  let customBuffAttackSpecialMultiplier =
+    context.buffs.customBuffs?.SpecialMultiplier ?? 0;
   let actionBuffAttackSpecialMultiplier = attack?.buffs?.SpecialMultiplier ?? 0;
   // special case for CoreofCollapseDMG (requires 1+ havoc bane stacks) to get 100% specialMultiplier
   let coreofCollapseDMGSpecialMultiplier = 0;
   if (attack.key === "CoreofCollapseDMG") {
-    if (Number(havocBaneStacks) > 0) {
+    if (Number(context.enemy.havocBane.havocBaneStacks) > 0) {
       coreofCollapseDMGSpecialMultiplier = 1;
     }
   }
@@ -1178,9 +1097,9 @@ export const calculateAttackDamage = (
   //   count,
   // });
   return calcDamage(
-    characterLevel,
-    enemyLevel,
-    enemyResist,
+    context.character.characterLevel,
+    context.enemy.enemyLevel,
+    context.enemy.enemyResist,
     talent,
     finalAtkDefHpVal,
     totalDefIgnore,
@@ -1203,61 +1122,8 @@ export const calculateAttackDamage = (
   );
 };
 
-export const calcDamages = (
-  chosenChar: any = {},
-  echoStats: any = {},
-  teamBuffsData: any = {},
-  talentData: any = {},
-  isSpectroFrazzleEnabled: any = false,
-  spectroFrazzleStacks: any = 0,
-  isMissingSpectroData: any = false,
-  isAeroErosionEnabled: any = false,
-  aeroErosionStacks: any = 0,
-  isMissingAeroErosionData: any = false,
-  characterLevel: any = 0,
-  mainEcho: any = {},
-  mainEchoRank: any = 5,
-  rotationsList: any = [],
-  charResonanceChainsData: any = {},
-  charBuffsData: any = {},
-  // additional state data needed for processAttacks
-  baseHp: any = 0,
-  baseAtk: any = 0,
-  baseDef: any = 0,
-  weaponData: any = {},
-  customBuffs: any = {},
-  Glacio: any = 0,
-  Fusion: any = 0,
-  Electro: any = 0,
-  Aero: any = 0,
-  Spectro: any = 0,
-  Havoc: any = 0,
-  totalDef: any = 0,
-  totalHp: any = 0,
-  energyRegen: any = 0,
-  totalAtk: any = 0,
-  BasicAttackDMGBonus: any = 0,
-  HeavyAttackDMGBonus: any = 0,
-  ResonanceSkillDMGBonus: any = 0,
-  IntroSkillDMGBonus: any = 0,
-  OutroSkillDMGBonus: any = 0,
-  ResonanceLiberationDMGBonus: any = 0,
-  EchoDMGBonus: any = 0,
-  healingBonus: any = 0,
-  shieldBonus: any = 0,
-  totalCritRate: any = 0,
-  totalCritDMG: any = 0,
-  DefIgnore: any = 0,
-  havocBaneStacks: any = 0,
-  ResistReduction: any = 0,
-  TotalDeepenEffect: any = 0,
-  enemyLevel: any = 0,
-  enemyResist: any = 0,
-  characters: any = {},
-  character: any = "",
-  enemyType: string = "",
-) => {
-  if (!chosenChar) return;
+export const calcDamages = (context: CalculationContext) => {
+  if (!context.character.chosenChar) return;
 
   // clone the list of attacks so it doesn't mutate the base character data
   // this makes it where we dont have to manage the list of attacks,
@@ -1265,7 +1131,8 @@ export const calcDamages = (
   const echoSetAttacks: any[] = [];
   // TODO: Makes this scalable and more maintainable
   // can wait for another echo set attack, so okay for now
-  const hasEchoOutroAttack = echoStats?.EnableAttack === "MidnightVeil";
+  const hasEchoOutroAttack =
+    context.equipment.echoStats?.EnableAttack === "MidnightVeil";
   const echoOutroAttackSetIndex = echoSetAttacks.findIndex(
     (attack) => attack.key === "MidnightVeilDMG",
   );
@@ -1282,7 +1149,8 @@ export const calcDamages = (
   // similar principle applies to utility attacks (e.g. Roccia passive)
   const utilityAttacks: any[] = [];
   // TODO: Makes this scalable and more maintainable
-  let utilityAttacksFromTeamBuffs = teamBuffsData?.EnableAttack ?? [];
+  let utilityAttacksFromTeamBuffs =
+    context.buffs.teamBuffsData?.EnableAttack ?? [];
   // TODO: Exclude the attack if using exclude from team buffs
   const hasUtilityAttack = utilityAttacksFromTeamBuffs.includes(
     "InherentSkillSuperAttractiveMagicBox",
@@ -1302,479 +1170,90 @@ export const calcDamages = (
 
   const allDamagesData: any = {
     basicAttacks: processAttacks(
-      chosenChar.basicAttacks?.attacks,
-      talentData.basic,
+      context.character.chosenChar.basicAttacks?.attacks,
+      context,
+      context.character.talentData.basic,
       false,
       false,
       true,
-      {},
-      {},
-      charResonanceChainsData,
-      charBuffsData,
-      talentData,
-      baseHp,
-      baseAtk,
-      baseDef,
-      weaponData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
-      chosenChar,
-      Glacio,
-      Fusion,
-      Electro,
-      Aero,
-      Spectro,
-      Havoc,
-      totalDef,
-      totalHp,
-      energyRegen,
-      totalAtk,
-      BasicAttackDMGBonus,
-      HeavyAttackDMGBonus,
-      ResonanceSkillDMGBonus,
-      IntroSkillDMGBonus,
-      OutroSkillDMGBonus,
-      ResonanceLiberationDMGBonus,
-      EchoDMGBonus,
-      healingBonus,
-      shieldBonus,
-      totalCritRate,
-      totalCritDMG,
-      DefIgnore,
-      havocBaneStacks,
-      ResistReduction,
-      TotalDeepenEffect,
-      characterLevel,
-      enemyLevel,
-      enemyResist,
-      characters,
-      character,
-      enemyType,
     ),
     skillAttacks: processAttacks(
-      chosenChar.skillAttacks?.attacks,
-      talentData.skill,
+      context.character.chosenChar.skillAttacks?.attacks,
+      context,
+      context.character.talentData.skill,
       false,
       false,
       true,
-      {},
-      {},
-      charResonanceChainsData,
-      charBuffsData,
-      talentData,
-      baseHp,
-      baseAtk,
-      baseDef,
-      weaponData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
-      chosenChar,
-      Glacio,
-      Fusion,
-      Electro,
-      Aero,
-      Spectro,
-      Havoc,
-      totalDef,
-      totalHp,
-      energyRegen,
-      totalAtk,
-      BasicAttackDMGBonus,
-      HeavyAttackDMGBonus,
-      ResonanceSkillDMGBonus,
-      IntroSkillDMGBonus,
-      OutroSkillDMGBonus,
-      ResonanceLiberationDMGBonus,
-      EchoDMGBonus,
-      healingBonus,
-      shieldBonus,
-      totalCritRate,
-      totalCritDMG,
-      DefIgnore,
-      havocBaneStacks,
-      ResistReduction,
-      TotalDeepenEffect,
-      characterLevel,
-      enemyLevel,
-      enemyResist,
-      characters,
-      character,
-      enemyType,
     ),
     liberationAttacks: processAttacks(
-      chosenChar.liberationAttacks?.attacks,
-      talentData.liberation,
+      context.character.chosenChar.liberationAttacks?.attacks,
+      context,
+      context.character.talentData.liberation,
       false,
       false,
       true,
-      {},
-      {},
-      charResonanceChainsData,
-      charBuffsData,
-      talentData,
-      baseHp,
-      baseAtk,
-      baseDef,
-      weaponData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
-      chosenChar,
-      Glacio,
-      Fusion,
-      Electro,
-      Aero,
-      Spectro,
-      Havoc,
-      totalDef,
-      totalHp,
-      energyRegen,
-      totalAtk,
-      BasicAttackDMGBonus,
-      HeavyAttackDMGBonus,
-      ResonanceSkillDMGBonus,
-      IntroSkillDMGBonus,
-      OutroSkillDMGBonus,
-      ResonanceLiberationDMGBonus,
-      EchoDMGBonus,
-      healingBonus,
-      shieldBonus,
-      totalCritRate,
-      totalCritDMG,
-      DefIgnore,
-      havocBaneStacks,
-      ResistReduction,
-      TotalDeepenEffect,
-      characterLevel,
-      enemyLevel,
-      enemyResist,
-      characters,
-      character,
-      enemyType,
     ),
     forteCircuitAttacks: processAttacks(
-      chosenChar.forteCircuitAttacks?.attacks,
-      talentData.forte,
+      context.character.chosenChar.forteCircuitAttacks?.attacks,
+      context,
+      context.character.talentData.forte,
       false,
       false,
       true,
-      {},
-      {},
-      charResonanceChainsData,
-      charBuffsData,
-      talentData,
-      baseHp,
-      baseAtk,
-      baseDef,
-      weaponData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
-      chosenChar,
-      Glacio,
-      Fusion,
-      Electro,
-      Aero,
-      Spectro,
-      Havoc,
-      totalDef,
-      totalHp,
-      energyRegen,
-      totalAtk,
-      BasicAttackDMGBonus,
-      HeavyAttackDMGBonus,
-      ResonanceSkillDMGBonus,
-      IntroSkillDMGBonus,
-      OutroSkillDMGBonus,
-      ResonanceLiberationDMGBonus,
-      EchoDMGBonus,
-      healingBonus,
-      shieldBonus,
-      totalCritRate,
-      totalCritDMG,
-      DefIgnore,
-      havocBaneStacks,
-      ResistReduction,
-      TotalDeepenEffect,
-      characterLevel,
-      enemyLevel,
-      enemyResist,
-      characters,
-      character,
-      enemyType,
     ),
     introAttacks: processAttacks(
-      chosenChar.introAttacks?.attacks,
-      talentData.intro,
+      context.character.chosenChar.introAttacks?.attacks,
+      context,
+      context.character.talentData.intro,
       false,
       false,
       true,
-      {},
-      {},
-      charResonanceChainsData,
-      charBuffsData,
-      talentData,
-      baseHp,
-      baseAtk,
-      baseDef,
-      weaponData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
-      chosenChar,
-      Glacio,
-      Fusion,
-      Electro,
-      Aero,
-      Spectro,
-      Havoc,
-      totalDef,
-      totalHp,
-      energyRegen,
-      totalAtk,
-      BasicAttackDMGBonus,
-      HeavyAttackDMGBonus,
-      ResonanceSkillDMGBonus,
-      IntroSkillDMGBonus,
-      OutroSkillDMGBonus,
-      ResonanceLiberationDMGBonus,
-      EchoDMGBonus,
-      healingBonus,
-      shieldBonus,
-      totalCritRate,
-      totalCritDMG,
-      DefIgnore,
-      havocBaneStacks,
-      ResistReduction,
-      TotalDeepenEffect,
-      characterLevel,
-      enemyLevel,
-      enemyResist,
-      characters,
-      character,
-      enemyType,
     ),
     outroAttacks: processAttacks(
-      chosenChar.outroAttacks?.attacks,
-      talentData.intro, // TODO: What is this?
+      context.character.chosenChar.outroAttacks?.attacks,
+      context,
+      context.character.talentData.intro, // TODO: What is this?
       true, // has no talent level
       false,
       true,
-      {},
-      {},
-      charResonanceChainsData,
-      charBuffsData,
-      talentData,
-      baseHp,
-      baseAtk,
-      baseDef,
-      weaponData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
-      chosenChar,
-      Glacio,
-      Fusion,
-      Electro,
-      Aero,
-      Spectro,
-      Havoc,
-      totalDef,
-      totalHp,
-      energyRegen,
-      totalAtk,
-      BasicAttackDMGBonus,
-      HeavyAttackDMGBonus,
-      ResonanceSkillDMGBonus,
-      IntroSkillDMGBonus,
-      OutroSkillDMGBonus,
-      ResonanceLiberationDMGBonus,
-      EchoDMGBonus,
-      healingBonus,
-      shieldBonus,
-      totalCritRate,
-      totalCritDMG,
-      DefIgnore,
-      havocBaneStacks,
-      ResistReduction,
-      TotalDeepenEffect,
-      characterLevel,
-      enemyLevel,
-      enemyResist,
-      characters,
-      character,
-      enemyType,
     ),
     tuneBreakAttacks: processAttacks(
-      chosenChar.tuneBreakAttacks?.attacks,
-      talentData.tuneBreak,
+      context.character.chosenChar.tuneBreakAttacks?.attacks,
+      context,
+      null, // tuneBreak doesn't use talentType
       true,
       false,
       true,
-      {},
-      {},
-      charResonanceChainsData,
-      charBuffsData,
-      talentData,
-      baseHp,
-      baseAtk,
-      baseDef,
-      weaponData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
-      chosenChar,
-      Glacio,
-      Fusion,
-      Electro,
-      Aero,
-      Spectro,
-      Havoc,
-      totalDef,
-      totalHp,
-      energyRegen,
-      totalAtk,
-      BasicAttackDMGBonus,
-      HeavyAttackDMGBonus,
-      ResonanceSkillDMGBonus,
-      IntroSkillDMGBonus,
-      OutroSkillDMGBonus,
-      ResonanceLiberationDMGBonus,
-      EchoDMGBonus,
-      healingBonus,
-      shieldBonus,
-      totalCritRate,
-      totalCritDMG,
-      DefIgnore,
-      havocBaneStacks,
-      ResistReduction,
-      TotalDeepenEffect,
-      characterLevel,
-      enemyLevel,
-      enemyResist,
-      characters,
-      character,
-      enemyType,
     ),
     echoSetAttacks: processAttacks(
       echoSetAttacks,
-      talentData.intro, // TODO: What is this?
+      context,
+      context.character.talentData.intro, // TODO: What is this?
       true, // has no talent level
       false,
       true,
-      {},
-      {},
-      charResonanceChainsData,
-      charBuffsData,
-      talentData,
-      baseHp,
-      baseAtk,
-      baseDef,
-      weaponData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
-      chosenChar,
-      Glacio,
-      Fusion,
-      Electro,
-      Aero,
-      Spectro,
-      Havoc,
-      totalDef,
-      totalHp,
-      energyRegen,
-      totalAtk,
-      BasicAttackDMGBonus,
-      HeavyAttackDMGBonus,
-      ResonanceSkillDMGBonus,
-      IntroSkillDMGBonus,
-      OutroSkillDMGBonus,
-      ResonanceLiberationDMGBonus,
-      EchoDMGBonus,
-      healingBonus,
-      shieldBonus,
-      totalCritRate,
-      totalCritDMG,
-      DefIgnore,
-      havocBaneStacks,
-      ResistReduction,
-      TotalDeepenEffect,
-      characterLevel,
-      enemyLevel,
-      enemyResist,
-      characters,
-      character,
-      enemyType,
     ),
     utilityAttacks: processAttacks(
       utilityAttacks,
-      talentData.intro, // TODO: What is this?
+      context,
+      context.character.talentData.intro, // TODO: What is this?
       true, // has no talent level
       false,
       true,
-      {},
-      {},
-      charResonanceChainsData,
-      charBuffsData,
-      talentData,
-      baseHp,
-      baseAtk,
-      baseDef,
-      weaponData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
-      chosenChar,
-      Glacio,
-      Fusion,
-      Electro,
-      Aero,
-      Spectro,
-      Havoc,
-      totalDef,
-      totalHp,
-      energyRegen,
-      totalAtk,
-      BasicAttackDMGBonus,
-      HeavyAttackDMGBonus,
-      ResonanceSkillDMGBonus,
-      IntroSkillDMGBonus,
-      OutroSkillDMGBonus,
-      ResonanceLiberationDMGBonus,
-      EchoDMGBonus,
-      healingBonus,
-      shieldBonus,
-      totalCritRate,
-      totalCritDMG,
-      DefIgnore,
-      havocBaneStacks,
-      ResistReduction,
-      TotalDeepenEffect,
-      characterLevel,
-      enemyLevel,
-      enemyResist,
-      characters,
-      character,
-      enemyType,
     ),
   };
 
-  const elementalReactionsAttacks = [];
+  const elementalReactionsAttacks: any[] = [];
   // add any elemental effects
-  if (isSpectroFrazzleEnabled && spectroFrazzleStacks > 0) {
-    isMissingSpectroData = false;
+  if (
+    context.enemy.spectroFrazzle.isSpectroFrazzleEnabled &&
+    context.enemy.spectroFrazzle.spectroFrazzleStacks > 0
+  ) {
     // get the MV based on stacks and character level
     const spectroFrazzleMv = getSpectroFrazzleModifierByLevelByStacks(
-      characterLevel,
-      spectroFrazzleStacks,
+      context.character.characterLevel,
+      context.enemy.spectroFrazzle.spectroFrazzleStacks,
     );
-    // TODO: this needs to surface to the app
-    if (!spectroFrazzleMv) {
-      isMissingSpectroData = true;
-    }
     if (spectroFrazzleMv) {
       const spectroFrazzleAttack = {
         key: "ElementalEffectSpectroFrazzle",
@@ -1783,23 +1262,23 @@ export const calcDamages = (
         type: "ElementalEffect",
         element: "Spectro",
         subType: "SpectroFrazzle",
-        stacks: spectroFrazzleStacks,
+        stacks: context.enemy.spectroFrazzle.spectroFrazzleStacks,
       };
+      // @ts-ignore
       elementalReactionsAttacks.push(spectroFrazzleAttack);
     }
   }
-  if (isAeroErosionEnabled && aeroErosionStacks > 0) {
-    isMissingAeroErosionData = false;
+  if (
+    context.enemy.aeroErosion.isAeroErosionEnabled &&
+    context.enemy.aeroErosion.aeroErosionStacks > 0
+  ) {
     // get the MV based on stacks and character level
     const aeroErosionMv = getAeroErosionModifierByLevelByStacks(
-      characterLevel,
-      aeroErosionStacks,
+      context.character.characterLevel,
+      context.enemy.aeroErosion.aeroErosionStacks,
     );
-    // TODO: this needs to surface to the app
-    if (!aeroErosionMv) {
-      isMissingAeroErosionData = true;
-    }
     if (aeroErosionMv) {
+      // @ts-ignore
       const aeroErosionAttack = {
         key: "ElementalEffectAeroErosion",
         label: "Aero Erosion",
@@ -1807,124 +1286,39 @@ export const calcDamages = (
         type: "ElementalEffect",
         element: "Aero",
         subType: "AeroErosion",
-        stacks: aeroErosionStacks,
+        stacks: context.enemy.aeroErosion.aeroErosionStacks,
       };
+      // @ts-ignore
       elementalReactionsAttacks.push(aeroErosionAttack);
     }
   }
   if (elementalReactionsAttacks.length > 0) {
     allDamagesData.elementalReactions = processAttacks(
       elementalReactionsAttacks,
-      talentData.intro,
+      context,
+      context.character.talentData.intro,
       true, // has no talent level
       false,
       true,
-      {},
-      {},
-      charResonanceChainsData,
-      charBuffsData,
-      talentData,
-      baseHp,
-      baseAtk,
-      baseDef,
-      weaponData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
-      chosenChar,
-      Glacio,
-      Fusion,
-      Electro,
-      Aero,
-      Spectro,
-      Havoc,
-      totalDef,
-      totalHp,
-      energyRegen,
-      totalAtk,
-      BasicAttackDMGBonus,
-      HeavyAttackDMGBonus,
-      ResonanceSkillDMGBonus,
-      IntroSkillDMGBonus,
-      OutroSkillDMGBonus,
-      ResonanceLiberationDMGBonus,
-      EchoDMGBonus,
-      healingBonus,
-      shieldBonus,
-      totalCritRate,
-      totalCritDMG,
-      DefIgnore,
-      havocBaneStacks,
-      ResistReduction,
-      TotalDeepenEffect,
-      characterLevel,
-      enemyLevel,
-      enemyResist,
-      characters,
-      character,
-      enemyType,
     );
   }
   let chosenEcho;
-  if (mainEcho) {
-    chosenEcho = getEchoData(mainEcho);
+  if (context.equipment.mainEcho) {
+    chosenEcho = getEchoData(context.equipment.mainEcho);
     const echoDmg = processAttacks(
       chosenEcho?.actions,
-      mainEchoRank,
+      context,
+      context.equipment.mainEchoRank,
       false,
       false,
       true,
-      {},
-      {},
-      charResonanceChainsData,
-      charBuffsData,
-      talentData,
-      baseHp,
-      baseAtk,
-      baseDef,
-      weaponData,
-      echoStats,
-      customBuffs,
-      teamBuffsData,
-      chosenChar,
-      Glacio,
-      Fusion,
-      Electro,
-      Aero,
-      Spectro,
-      Havoc,
-      totalDef,
-      totalHp,
-      energyRegen,
-      totalAtk,
-      BasicAttackDMGBonus,
-      HeavyAttackDMGBonus,
-      ResonanceSkillDMGBonus,
-      IntroSkillDMGBonus,
-      OutroSkillDMGBonus,
-      ResonanceLiberationDMGBonus,
-      EchoDMGBonus,
-      healingBonus,
-      shieldBonus,
-      totalCritRate,
-      totalCritDMG,
-      DefIgnore,
-      havocBaneStacks,
-      ResistReduction,
-      TotalDeepenEffect,
-      characterLevel,
-      enemyLevel,
-      enemyResist,
-      characters,
-      character,
-      enemyType,
     );
     allDamagesData.echoAttacks = echoDmg;
   }
 
-  if (rotationsList?.length) {
+  if (context.rotationsList?.length) {
     const rotationData: any = [];
-    rotationsList.forEach((rotation: any) => {
+    context.rotationsList.forEach((rotation: any) => {
       const rotationInfo: any = {
         id: rotation.id,
         name: rotation.name,
@@ -1935,54 +1329,11 @@ export const calcDamages = (
       };
       const attacks = processAttacks(
         rotation.attacks,
+        context,
         null,
         false,
         true,
         false,
-        {},
-        {},
-        charResonanceChainsData,
-        charBuffsData,
-        talentData,
-        baseHp,
-        baseAtk,
-        baseDef,
-        weaponData,
-        echoStats,
-        customBuffs,
-        teamBuffsData,
-        chosenChar,
-        Glacio,
-        Fusion,
-        Electro,
-        Aero,
-        Spectro,
-        Havoc,
-        totalDef,
-        totalHp,
-        energyRegen,
-        totalAtk,
-        BasicAttackDMGBonus,
-        HeavyAttackDMGBonus,
-        ResonanceSkillDMGBonus,
-        IntroSkillDMGBonus,
-        OutroSkillDMGBonus,
-        ResonanceLiberationDMGBonus,
-        EchoDMGBonus,
-        healingBonus,
-        shieldBonus,
-        totalCritRate,
-        totalCritDMG,
-        DefIgnore,
-        havocBaneStacks,
-        ResistReduction,
-        TotalDeepenEffect,
-        characterLevel,
-        enemyLevel,
-        enemyResist,
-        characters,
-        character,
-        enemyType,
       );
       // capture all damages
       const damageAggregation = {
@@ -2038,4 +1389,249 @@ export const calcDamages = (
   }
 
   return allDamagesData;
+};
+
+// In a new file: calculator/context.ts
+
+interface CalculationContext {
+  // Character base data
+  character: {
+    chosenChar: any;
+    characterKey: string;
+    characterLevel: string | number;
+    baseStats: {
+      baseHp: number;
+      baseAtk: number;
+      baseDef: number;
+    };
+    talentData: {
+      basic: number;
+      skill: number;
+      forte: number;
+      liberation: number;
+      intro: number;
+    };
+  };
+
+  // Equipment & Echoes
+  equipment: {
+    weapon: {
+      attack: number;
+      modifier: string | null;
+      modifierValue: number;
+      weaponPassiveStats: Record<string, any>;
+    };
+    echoStats: Record<string, any>;
+    mainEcho: string;
+    mainEchoRank: number;
+  };
+
+  // Buffs (grouped by source)
+  buffs: {
+    charBuffsData: Record<string, any>; // charBuffsData
+    charResonanceChainsData: Record<string, any>; // charResonanceChainsData
+    teamBuffsData: Record<string, any>; // teamBuffsData
+    customBuffs: Record<string, any>; // customBuffs
+  };
+
+  // Computed stats (from calculateAllStats)
+  stats: {
+    totalAtk: number;
+    totalHp: number;
+    totalDef: number;
+    totalCritRate: number;
+    totalCritDMG: number;
+    energyRegen: number;
+    Glacio: number;
+    Fusion: number;
+    Electro: number;
+    Aero: number;
+    Spectro: number;
+    Havoc: number;
+    BasicAttackDMGBonus: number;
+    HeavyAttackDMGBonus: number;
+    ResonanceSkillDMGBonus: number;
+    IntroSkillDMGBonus: number;
+    OutroSkillDMGBonus: number;
+    ResonanceLiberationDMGBonus: number;
+    EchoDMGBonus: number;
+    healingBonus: number;
+    shieldBonus: number;
+    DefIgnore: number;
+    ResistReduction: number;
+    TotalDeepenEffect: number;
+  };
+
+  // Enemy data
+  enemy: {
+    enemyLevel: number;
+    enemyResist: number;
+    enemyType: string;
+    spectroFrazzle: {
+      isSpectroFrazzleEnabled: boolean;
+      spectroFrazzleStacks: number;
+    };
+    aeroErosion: {
+      isAeroErosionEnabled: boolean;
+      aeroErosionStacks: number;
+    };
+    havocBane: {
+      havocBaneStacks: number;
+    };
+  };
+
+  // Rotations
+  rotationsList: any[];
+
+  // Global data (for special cases)
+  global: {
+    characters: Record<string, any>;
+  };
+}
+export const getCalculationContext = (
+  chosenChar: any = {},
+  echoStats: any = {},
+  teamBuffsData: any = {},
+  talentData: any = {},
+  isSpectroFrazzleEnabled: any = false,
+  spectroFrazzleStacks: any = 0,
+  isAeroErosionEnabled: any = false,
+  aeroErosionStacks: any = 0,
+  characterLevel: any = 0,
+  mainEcho: any = {},
+  mainEchoRank: any = 5,
+  rotationsList: any = [],
+  charResonanceChainsData: any = {},
+  charBuffsData: any = {},
+  // additional state data needed for processAttacks
+  baseHp: any = 0,
+  baseAtk: any = 0,
+  baseDef: any = 0,
+  weaponData: any = {},
+  customBuffs: any = {},
+  Glacio: any = 0,
+  Fusion: any = 0,
+  Electro: any = 0,
+  Aero: any = 0,
+  Spectro: any = 0,
+  Havoc: any = 0,
+  totalDef: any = 0,
+  totalHp: any = 0,
+  energyRegen: any = 0,
+  totalAtk: any = 0,
+  BasicAttackDMGBonus: any = 0,
+  HeavyAttackDMGBonus: any = 0,
+  ResonanceSkillDMGBonus: any = 0,
+  IntroSkillDMGBonus: any = 0,
+  OutroSkillDMGBonus: any = 0,
+  ResonanceLiberationDMGBonus: any = 0,
+  EchoDMGBonus: any = 0,
+  healingBonus: any = 0,
+  shieldBonus: any = 0,
+  totalCritRate: any = 0,
+  totalCritDMG: any = 0,
+  DefIgnore: any = 0,
+  havocBaneStacks: any = 0,
+  ResistReduction: any = 0,
+  TotalDeepenEffect: any = 0,
+  enemyLevel: any = 0,
+  enemyResist: any = 0,
+  characters: any = {},
+  character: any = "",
+  enemyType: string = "",
+): CalculationContext => {
+  return {
+    character: {
+      chosenChar,
+      characterKey: character,
+      characterLevel,
+      baseStats: {
+        baseHp,
+        baseAtk,
+        baseDef,
+      },
+      talentData: {
+        basic: talentData.basic,
+        skill: talentData.skill,
+        forte: talentData.forte,
+        liberation: talentData.liberation,
+        intro: talentData.intro,
+      },
+    },
+
+    // Equipment & Echoes
+    equipment: {
+      weapon: {
+        attack: weaponData?.attack,
+        modifier: weaponData?.modifier ?? null,
+        modifierValue: weaponData?.modifierValue,
+        weaponPassiveStats: weaponData?.weaponPassiveStats ?? {},
+      },
+      echoStats,
+      mainEcho,
+      mainEchoRank,
+    },
+
+    // Buffs (grouped by source)
+    buffs: {
+      charBuffsData, // charBuffsData
+      charResonanceChainsData, // charResonanceChainsData
+      teamBuffsData, // teamBuffsData
+      customBuffs, // customBuffs
+    },
+
+    // Computed stats (from calculateAllStats)
+    stats: {
+      totalAtk,
+      totalHp,
+      totalDef,
+      totalCritRate,
+      totalCritDMG,
+      energyRegen,
+      Glacio,
+      Fusion,
+      Electro,
+      Aero,
+      Spectro,
+      Havoc,
+      BasicAttackDMGBonus,
+      HeavyAttackDMGBonus,
+      ResonanceSkillDMGBonus,
+      IntroSkillDMGBonus,
+      OutroSkillDMGBonus,
+      ResonanceLiberationDMGBonus,
+      EchoDMGBonus,
+      healingBonus,
+      shieldBonus,
+      DefIgnore,
+      ResistReduction,
+      TotalDeepenEffect,
+    },
+
+    // Enemy data
+    enemy: {
+      enemyLevel,
+      enemyResist,
+      enemyType,
+      spectroFrazzle: {
+        isSpectroFrazzleEnabled,
+        spectroFrazzleStacks,
+      },
+      aeroErosion: {
+        isAeroErosionEnabled,
+        aeroErosionStacks,
+      },
+      havocBane: {
+        havocBaneStacks,
+      },
+    },
+
+    // Rotations
+    rotationsList,
+
+    // Global data (for special cases)
+    global: {
+      characters,
+    },
+  };
 };

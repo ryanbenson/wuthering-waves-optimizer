@@ -319,7 +319,11 @@ import {
   computeCritOverflowBuffs,
   calculateAllStats,
 } from "../calculator/stats";
-import { processAttacks, calcDamages } from "../calculator/attacks";
+import {
+  processAttacks,
+  calcDamages,
+  getCalculationContext,
+} from "../calculator/attacks";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs, utilityAttacks } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -493,17 +497,15 @@ export default defineComponent({
     });
 
     const calcAllDamages = () => {
-      const damageData = calcDamages(
+      const context = getCalculationContext(
         chosenChar.value,
         echoStats.value,
         teamBuffsData.value,
         talentData,
         isSpectroFrazzleEnabled.value,
         spectroFrazzleStacks.value,
-        isMissingSpectroData.value,
         isAeroErosionEnabled.value,
         aeroErosionStacks.value,
-        isMissingAeroErosionData.value,
         characterLevel.value,
         mainEcho.value,
         mainEchoRank.value,
@@ -546,6 +548,7 @@ export default defineComponent({
         character.value,
         enemyType.value,
       );
+      const damageData = calcDamages(context);
       allDamages.value = damageData;
     };
 
@@ -1424,31 +1427,33 @@ export default defineComponent({
           // TODO: We need to pass in the stats we have on-hand from the loadout
           // and not use the stats that the current user has
           // INFO: It works as it is right now, and the damages match, which is good
-          const attacks = processAttacks(
-            [attackData], // attacks list, just the one since we're just doing 1 attack to optimize
-            null, // talentType = null since it will be figured out dynamically
-            false, // hasNoTalentType = no, unless it's outro (TODO)
-            true, // dynamicTalentType = yes, this will figure out the talent data for us
-            false, // excludeDisabledAttacks = no, unless we need to (TODO)
-            finalStats, // give our stats, it will use this instead of the global state
-            combinedEchoBuffs, // provide the echoes so we can exclude them if needed
+          // Build context from optimizer's finalStats
+          const optimizerContext = getCalculationContext(
+            chosenChar.value,
+            combinedEchoBuffs, // use combinedEchoBuffs instead of echoStats.value
+            teamBuffsData.value,
+            talentData,
+            isSpectroFrazzleEnabled.value,
+            spectroFrazzleStacks.value,
+            isAeroErosionEnabled.value,
+            aeroErosionStacks.value,
+            characterLevel.value,
+            mainEcho.value,
+            mainEchoRank.value,
+            rotationsList.value,
             charResonanceChainsData.value,
             charBuffsData.value,
-            talentData,
             baseHp.value,
             baseAtk.value,
             baseDef.value,
             weaponData.value,
-            echoStats.value,
             customBuffs.value,
-            teamBuffsData.value,
-            chosenChar.value,
-            Glacio.value,
-            Fusion.value,
-            Electro.value,
-            Aero.value,
-            Spectro.value,
-            Havoc.value,
+            finalStats.glacio ?? Glacio.value,
+            finalStats.fusion ?? Fusion.value,
+            finalStats.electro ?? Electro.value,
+            finalStats.aero ?? Aero.value,
+            finalStats.spectro ?? Spectro.value,
+            finalStats.havoc ?? Havoc.value,
             finalStats.totalDef,
             finalStats.totalHp,
             finalStats.energyRegen,
@@ -1468,12 +1473,21 @@ export default defineComponent({
             havocBaneStacks.value,
             finalStats.resistReduction,
             finalStats.totalDeepenEffect,
-            characterLevel.value,
             enemyLevel.value,
             enemyResist.value,
             characters.value,
             character.value,
             enemyType.value,
+          );
+          const attacks = processAttacks(
+            [attackData], // attacks list, just the one since we're just doing 1 attack to optimize
+            optimizerContext,
+            null, // talentType = null since it will be figured out dynamically
+            false, // hasNoTalentType = no, unless it's outro (TODO)
+            true, // dynamicTalentType = yes, this will figure out the talent data for us
+            false, // excludeDisabledAttacks = no, unless we need to (TODO)
+            finalStats, // give our stats, it will use this instead of the global state
+            combinedEchoBuffs, // provide the echoes so we can exclude them if needed
           );
           targetValue = attacks?.[0]?.damage?.[damageTargetReference] ?? 0;
           context.attacks = attacks;
@@ -1496,31 +1510,33 @@ export default defineComponent({
             echo: rotationData.echo ?? null,
           };
           console.log("optimize:", rotationData.attacks, talentData);
-          const attacks = processAttacks(
-            rotationData.attacks, // process all attacks in this rotations
-            null, // talentType = null since it will be figured out dynamically
-            false, // hasNoTalentType = no, unless it's outro (TODO)
-            true, // dynamicTalentType = yes, this will figure out the talent data for us
-            false, // excludeDisabledAttacks = no, unless we need to (TODO)
-            finalStats, // give our stats, it will use this instead of the global state
-            combinedEchoBuffs, // provide the echoes so we can exclude them if needed
+          // Build context from optimizer's finalStats
+          const optimizerContext = getCalculationContext(
+            chosenChar.value,
+            combinedEchoBuffs, // use combinedEchoBuffs instead of echoStats.value
+            teamBuffsData.value,
+            talentData,
+            isSpectroFrazzleEnabled.value,
+            spectroFrazzleStacks.value,
+            isAeroErosionEnabled.value,
+            aeroErosionStacks.value,
+            characterLevel.value,
+            mainEcho.value,
+            mainEchoRank.value,
+            rotationsList.value,
             charResonanceChainsData.value,
             charBuffsData.value,
-            talentData,
             baseHp.value,
             baseAtk.value,
             baseDef.value,
             weaponData.value,
-            echoStats.value,
             customBuffs.value,
-            teamBuffsData.value,
-            chosenChar.value,
-            Glacio.value,
-            Fusion.value,
-            Electro.value,
-            Aero.value,
-            Spectro.value,
-            Havoc.value,
+            finalStats.glacio ?? Glacio.value,
+            finalStats.fusion ?? Fusion.value,
+            finalStats.electro ?? Electro.value,
+            finalStats.aero ?? Aero.value,
+            finalStats.spectro ?? Spectro.value,
+            finalStats.havoc ?? Havoc.value,
             finalStats.totalDef,
             finalStats.totalHp,
             finalStats.energyRegen,
@@ -1540,12 +1556,21 @@ export default defineComponent({
             havocBaneStacks.value,
             finalStats.resistReduction,
             finalStats.totalDeepenEffect,
-            characterLevel.value,
             enemyLevel.value,
             enemyResist.value,
             characters.value,
             character.value,
             enemyType.value,
+          );
+          const attacks = processAttacks(
+            rotationData.attacks, // process all attacks in this rotations
+            optimizerContext,
+            null, // talentType = null since it will be figured out dynamically
+            false, // hasNoTalentType = no, unless it's outro (TODO)
+            true, // dynamicTalentType = yes, this will figure out the talent data for us
+            false, // excludeDisabledAttacks = no, unless we need to (TODO)
+            finalStats, // give our stats, it will use this instead of the global state
+            combinedEchoBuffs, // provide the echoes so we can exclude them if needed
           );
           // capture all damages
           const damageAggregation = {
