@@ -711,7 +711,7 @@ export const calculateAttackDamage = (
         ignoreWeaponBuffs: excludeWeaponBuffs,
         ignoreEchoes: excludeEchoes,
       },
-      providedEchoStats ?? context.equipment.echoStats,
+      providedEchoStats,
       excludeEchoes ? null : providedFullStats,
       {
         baseHp: context.character.baseStats.baseHp,
@@ -744,7 +744,7 @@ export const calculateAttackDamage = (
         ignoreWeaponBuffs: excludeWeaponBuffs,
         ignoreEchoes: excludeEchoes,
       },
-      providedEchoStats ?? context.equipment.echoStats,
+      providedEchoStats,
       excludeEchoes ? null : providedFullStats,
       {
         baseHp: context.character.baseStats.baseHp,
@@ -777,7 +777,7 @@ export const calculateAttackDamage = (
         ignoreWeaponBuffs: excludeWeaponBuffs,
         ignoreEchoes: excludeEchoes,
       },
-      providedEchoStats ?? context.equipment.echoStats,
+      providedEchoStats,
       excludeEchoes ? null : providedFullStats,
       {
         baseHp: context.character.baseStats.baseHp,
