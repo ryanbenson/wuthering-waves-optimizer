@@ -1,5 +1,7 @@
 <template>
-  <div class="optimizer-rotation-actions flex justify-center items-center">
+  <div
+    class="optimizer-rotation-actions flex justify-center items-center"
+    data-test-optimizer-result-rotation-info>
     <button class="btn btn-xs btn-outline" @click="toggleIsDamagesListShown">
       {{ isDamagesListShown ? "Hide Details" : "Show Details" }}
     </button>
@@ -40,35 +42,38 @@
         v-if="rotation.damageAggregation.normalDamage"
         class="rotation-total-damage">
         <td>Total Damage</td>
-        <td>
+        <td data-test-optimizer-result-rotation-total-dmg>
           {{ displayDamage(rotation.damageAggregation.normalDamage) }}
           <span
             :class="{
               'text-success': normalDiffPercentage >= 0,
               'text-error': normalDiffPercentage < 0,
-            }">
+            }"
+            data-test-optimizer-result-rotation-total-dmg-diff>
             ({{ normalDiffPercentage >= 0 ? "+" : ""
             }}{{ displayPercentage(normalDiffPercentage) }})
           </span>
         </td>
-        <td>
+        <td data-test-optimizer-result-rotation-total-avg-dmg>
           {{ displayDamage(rotation.damageAggregation.avgDamage) }}
           <span
             :class="{
               'text-success': avgDiffPercentage >= 0,
               'text-error': avgDiffPercentage < 0,
-            }">
+            }"
+            data-test-optimizer-result-rotation-total-avg-dmg-diff>
             ({{ avgDiffPercentage >= 0 ? "+" : ""
             }}{{ displayPercentage(avgDiffPercentage) }})
           </span>
         </td>
-        <td>
+        <td data-test-optimizer-result-rotation-total-crit-dmg>
           {{ displayDamage(rotation.damageAggregation.critDamage) }}
           <span
             :class="{
               'text-success': critDiffPercentage >= 0,
               'text-error': critDiffPercentage < 0,
-            }">
+            }"
+            data-test-optimizer-result-rotation-total-crit-dmg-diff>
             ({{ critDiffPercentage >= 0 ? "+" : ""
             }}{{ displayPercentage(critDiffPercentage) }})
           </span>
@@ -78,13 +83,14 @@
         v-if="rotation.damageAggregation.healing"
         class="calculation__damage__item--healing">
         <td>Total Healing</td>
-        <td>
+        <td data-test-optimizer-result-rotation-total-healing>
           {{ displayDamage(rotation.damageAggregation.healing) }}
           <span
             :class="{
               'text-success': healingDiffPercentage >= 0,
               'text-error': healingDiffPercentage < 0,
-            }">
+            }"
+            data-test-optimizer-result-rotation-total-healing-diff>
             ({{ healingDiffPercentage >= 0 ? "+" : ""
             }}{{ displayPercentage(healingDiffPercentage) }})
           </span>
@@ -96,13 +102,14 @@
         v-if="rotation.damageAggregation.shield"
         class="calculation__damage__item--shield">
         <td>Total Shield</td>
-        <td>
+        <td data-test-optimizer-result-rotation-total-shield>
           {{ displayDamage(rotation.damageAggregation.shield) }}
           <span
             :class="{
               'text-success': shieldDiffPercentage >= 0,
               'text-error': shieldDiffPercentage < 0,
-            }">
+            }"
+            data-test-optimizer-result-rotation-total-shield-diff>
             ({{ shieldDiffPercentage >= 0 ? "+" : ""
             }}{{ displayPercentage(shieldDiffPercentage) }})
           </span>

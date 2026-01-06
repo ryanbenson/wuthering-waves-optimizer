@@ -253,7 +253,8 @@
       <button
         class="btn btn-primary"
         @click="handleOptimize"
-        :disabled="!isValid">
+        :disabled="!isValid"
+        data-test-optimize-btn>
         Optimize
       </button>
       <p v-if="!isValid" class="text-warning">

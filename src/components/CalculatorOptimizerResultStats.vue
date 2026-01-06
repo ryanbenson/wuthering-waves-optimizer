@@ -1,5 +1,5 @@
 <template>
-  <div class="flex gap-2">
+  <div class="flex gap-2" data-test-optimizer-result-stats>
     <table class="calculator__stats table table-xs table-zebra">
       <tbody>
         <tr
