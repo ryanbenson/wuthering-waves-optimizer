@@ -58,23 +58,23 @@ export default {
       const echoes = echoData.map((echo) => {
         const echoSubStatsType1 = this.getSubstatType(echo.substats[0]);
         const echoSubStatsValue1 = this.getSubstatValue(
-          echo.substats[0].subStatValue,
+          echo.substats[0]?.subStatValue,
         );
         const echoSubStatsType2 = this.getSubstatType(echo.substats[1]);
         const echoSubStatsValue2 = this.getSubstatValue(
-          echo.substats[1].subStatValue,
+          echo.substats[1]?.subStatValue,
         );
         const echoSubStatsType3 = this.getSubstatType(echo.substats[2]);
         const echoSubStatsValue3 = this.getSubstatValue(
-          echo.substats[2].subStatValue,
+          echo.substats[2]?.subStatValue,
         );
         const echoSubStatsType4 = this.getSubstatType(echo.substats[3]);
         const echoSubStatsValue4 = this.getSubstatValue(
-          echo.substats[3].subStatValue,
+          echo.substats[3]?.subStatValue,
         );
         const echoSubStatsType5 = this.getSubstatType(echo.substats[4]);
         const echoSubStatsValue5 = this.getSubstatValue(
-          echo.substats[4].subStatValue,
+          echo.substats[4]?.subStatValue,
         );
         let echoId = null;
         if (isSavingToInventory) {
@@ -124,12 +124,18 @@ export default {
       this.triggerCloseModal();
     },
     getSubstatValue(subStatValue) {
+      if (!subStatValue) {
+        return null;
+      }
       const valueWithoutPercent = subStatValue.replace("%", "");
       return Number(valueWithoutPercent);
     },
     getSubstatType(subStatData) {
-      let type = subStatData.subStat;
-      const value = subStatData.subStatValue;
+      let type = subStatData?.subStat;
+      const value = subStatData?.subStatValue;
+      if (!type || !value) {
+        return null;
+      }
       if (type === "DEF Y") {
         return "DEF";
       }
