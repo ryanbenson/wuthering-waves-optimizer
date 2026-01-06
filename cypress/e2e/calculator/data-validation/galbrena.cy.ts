@@ -2,7 +2,7 @@ import { config, dataAttacks, dataStats } from "../data/Galbrena/data";
 import { testAttacks } from "../utils/attackUtils";
 import { testStats } from "../utils/statUtils";
 
-describe("Calculator Data Verification: Zani", () => {
+describe("Calculator Data Verification: Galbrena", () => {
   beforeEach(() => {
     cy.visit("/");
   });

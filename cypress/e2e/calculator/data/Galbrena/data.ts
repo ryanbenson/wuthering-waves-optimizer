@@ -217,7 +217,7 @@ export const dataAttacks: AttackTests = [
 ];
 export const dataStats: StatTests = [
   { selector: ".stat-atk", value: "4,104" },
-  { selector: ".stat-hp", value: "17.725" },
+  { selector: ".stat-hp", value: "17,725" },
   { selector: ".stat-def", value: "1,499" },
   { selector: ".stat-cr", value: "82.0%" },
   { selector: ".stat-cd", value: "352.6%" },
