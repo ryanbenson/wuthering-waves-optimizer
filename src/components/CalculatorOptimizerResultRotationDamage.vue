@@ -42,7 +42,7 @@
         v-if="rotation.damageAggregation.normalDamage"
         class="rotation-total-damage">
         <td>Total Damage</td>
-        <td data-test-optimizer-result-rotation-total-dmg>
+        <td data-test-optimizer-rotation-damage-total>
           {{ displayDamage(rotation.damageAggregation.normalDamage) }}
           <span
             :class="{
@@ -54,7 +54,7 @@
             }}{{ displayPercentage(normalDiffPercentage) }})
           </span>
         </td>
-        <td data-test-optimizer-result-rotation-total-avg-dmg>
+        <td data-test-optimizer-rotation-damage-total-avg>
           {{ displayDamage(rotation.damageAggregation.avgDamage) }}
           <span
             :class="{
@@ -66,7 +66,7 @@
             }}{{ displayPercentage(avgDiffPercentage) }})
           </span>
         </td>
-        <td data-test-optimizer-result-rotation-total-crit-dmg>
+        <td data-test-optimizer-rotation-damage-total-crit>
           {{ displayDamage(rotation.damageAggregation.critDamage) }}
           <span
             :class="{

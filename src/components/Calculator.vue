@@ -1062,6 +1062,7 @@ export default defineComponent({
           key: attackKey,
           label: attackInfo.label,
           talents: attackInfo.talents,
+          talent: attackInfo?.talent,
           type: attackInfo.type,
           subType: attackInfo.subType,
           element: attackInfo.element,

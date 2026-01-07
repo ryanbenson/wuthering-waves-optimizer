@@ -5,6 +5,7 @@
     <h3>January 6, 2026</h3>
     <ul>
       <li>Echo importer now supports echoes that have missing substats.</li>
+      <li>Fixes the importer where it would sometimes interpret a 7 as a 1.</li>
     </ul>
     <h3>January 4, 2026</h3>
     <ul>
