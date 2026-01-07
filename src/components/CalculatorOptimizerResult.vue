@@ -1,11 +1,15 @@
 <template>
   <div
     class="optimizer-result bg-neutral rounded-xl p-4 mt-4"
-    :data-test-optimizer-result-id="id">
+    :data-test-optimizer-result-id="id"
+    :data-test-optimizer-results-index="index">
     <div
       class="optimizer-result__header flex justify-between mb-2 items-center">
       <span class="badge">Loadout #{{ index + 1 }}</span>
-      <button class="btn btn-primary btn-sm" @click="equipLoadout">
+      <button
+        class="btn btn-primary btn-sm"
+        @click="equipLoadout"
+        data-test-optimizer-results-equip-btn>
         Equip Loadout
       </button>
     </div>

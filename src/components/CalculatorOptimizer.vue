@@ -77,6 +77,7 @@
   <div class="optimizer" v-if="!isLoading">
     <button
       class="btn btn-sm w-full btn-primary btn-outline mb-4"
+      data-test-optimizer-guide-btn
       @click="handleOpenOptimizerGuide">
       🧪 Optimizer guide
     </button>
@@ -253,7 +254,8 @@
       <button
         class="btn btn-primary"
         @click="handleOptimize"
-        :disabled="!isValid">
+        :disabled="!isValid"
+        data-test-optimizer-optimize-btn>
         Optimize
       </button>
       <p v-if="!isValid" class="text-warning">

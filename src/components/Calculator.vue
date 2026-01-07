@@ -2323,6 +2323,7 @@ export default defineComponent({
           key: attackKey,
           label: attackInfo.label,
           talents: attackInfo.talents,
+          talent: attackInfo?.talent,
           type: attackInfo.type,
           subType: attackInfo.subType,
           element: attackInfo.element,
@@ -2688,6 +2689,7 @@ export default defineComponent({
           // TODO: We need to pass in the stats we have on-hand from the loadout
           // and not use the stats that the current user has
           // INFO: It works as it is right now, and the damages match, which is good
+          console.log(attackData);
           const attacks = processAttacks(
             [attackData], // attacks list, just the one since we're just doing 1 attack to optimize
             null, // talentType = null since it will be figured out dynamically
