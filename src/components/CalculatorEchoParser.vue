@@ -51,8 +51,7 @@
     </ul>
     <div class="flex gap-2 items-center justify-center">
       <div class="form-control mb-2" @click.stop>
-        <label
-          class="label inline-flex justify-start">
+        <label class="label inline-flex justify-start">
           <input
             type="checkbox"
             class="checkbox checkbox-sm"
@@ -281,6 +280,9 @@ export default {
 
     ensureValidSubStatValue(mainStat, value) {
       if (mainStat === "Crit. Rate" && value === "17.5%") {
+        return "7.5%";
+      }
+      if (mainStat === "Crit. Rate" && value === "1.5%") {
         return "7.5%";
       }
       return value;
