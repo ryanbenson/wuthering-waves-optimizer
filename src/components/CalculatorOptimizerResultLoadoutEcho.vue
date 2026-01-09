@@ -1,6 +1,7 @@
 <template>
   <div
-    class="echo__item card card-bordered card-compact bg-base-100 shadow mb-2 grow">
+    class="echo__item card card-bordered card-compact bg-base-100 shadow mb-2 grow"
+    :data-test-optimizer-result-echo-id="echoId">
     <div class="card-body">
       <div
         class="echo__content flex flex-col gap-2 relative items-center justify-center">

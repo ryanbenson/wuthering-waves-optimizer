@@ -25,7 +25,9 @@
           :target-value="targetValue" />
       </div>
       <div v-if="targetType === 'Rotation'">
-        <h3 class="my-2 text-center">{{ rotationName }}</h3>
+        <h3 class="my-2 text-center" data-test-optimizer-result-rotation-name>
+          {{ rotationName }}
+        </h3>
         <CalculatorOptimizerResultRotationDamage
           :character="character"
           :rotation="context.attacks"

@@ -1,5 +1,7 @@
 <template>
-  <div class="optimizer_result_loadout flex gap-2 flex-wrap">
+  <div
+    class="optimizer_result_loadout flex gap-2 flex-wrap"
+    data-test-optimizer-result-loadout>
     <CalculatorOptimizerResultLoadoutEcho
       v-for="echo in loadout"
       :key="echo.echoId"
