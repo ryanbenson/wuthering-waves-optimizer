@@ -2,6 +2,23 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>January 9, 2026</h3>
+    <ul>
+      <li>Rewrote the code for the attacks and damages handling.</li>
+      <li>
+        Fixes Def Ignore and Resist Reduction custom buffs in the optimizer, it
+        was being left out.
+      </li>
+    </ul>
+    <h3>January 7, 2026</h3>
+    <ul>
+      <li>
+        Fixed a small edge case issue on the optimizer. if you chose the Tune
+        Break skill as your target, it wouldn't process, mostly because it's
+        built in a unique way. not surprised it wasn't reported until now, why
+        would you optimize for tune break? xD but i fixed it
+      </li>
+    </ul>
     <h3>January 6, 2026</h3>
     <ul>
       <li>Echo importer now supports echoes that have missing substats.</li>
