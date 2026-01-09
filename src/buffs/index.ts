@@ -1506,10 +1506,6 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "specialMultiplier",
-          modifierValue: 0.4,
-        },
-        {
           modifier: "DMGDeepen:SpectroFrazzle",
           modifierValue: 0.3,
         },
