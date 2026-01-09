@@ -954,9 +954,6 @@ export default defineComponent({
       const extraDefIgnoreCharBuff =
         selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEFIgnore`] ?? 0;
       let extraDefIgnoreCustomBuffs = customBuffs.value?.DefIgnore ?? 0;
-      if (providedFullStats) {
-        extraDefIgnoreCustomBuffs = 0;
-      }
       const attackBuffsDefIgnore = attack?.buffs?.DefIgnore ?? 0;
       let weaponDefIgnoreSpecificDmgType =
         weaponData?.value?.weaponPassiveStats?.[`DEFIgnore:${attack.type}`] ??
@@ -1085,9 +1082,6 @@ export default defineComponent({
       const baseResistReduction =
         providedFullStats?.resistReduction || ResistReduction.value || 0;
       let customResistReduction = customBuffs.value?.ResistShred ?? 0;
-      if (providedFullStats) {
-        customResistReduction = 0;
-      }
       const actionBuffResistReduction = attack.buffs?.ResistShred ?? 0;
       const totalResistReduction =
         baseResistReduction +
