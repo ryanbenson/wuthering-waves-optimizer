@@ -82,7 +82,7 @@ export const addEchoBuffs = (
     target.aero += source?.Aero ? source.Aero : 0;
     target.spectro += source?.Spectro ? source.Spectro : 0;
     target.havoc += source?.Havoc ? source.Havoc : 0;
-    target.defIgnore += source?.DEFIgnore ? source.DEFIgnor : 0;
+    target.defIgnore += source?.DEFIgnore ? source.DEFIgnore : 0;
     target.bonusSpecificSkillDMGBonus += source?.BonusSpecificSkillDMGBonus
       ? source.BonusSpecificSkillDMGBonus
       : 0;

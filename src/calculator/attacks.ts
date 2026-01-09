@@ -432,9 +432,6 @@ export const calculateAttackDamage = (
   const extraDefIgnoreCharBuff =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEFIgnore`] ?? 0;
   let extraDefIgnoreCustomBuffs = context.buffs.customBuffs?.DefIgnore ?? 0;
-  if (providedFullStats) {
-    extraDefIgnoreCustomBuffs = 0;
-  }
   const attackBuffsDefIgnore = attack?.buffs?.DefIgnore ?? 0;
   let weaponDefIgnoreSpecificDmgType =
     context.equipment.weapon.weaponPassiveStats?.[`DEFIgnore:${attack.type}`] ??
@@ -562,9 +559,6 @@ export const calculateAttackDamage = (
   const baseResistReduction =
     providedFullStats?.resistReduction || context.stats.ResistReduction || 0;
   let customResistReduction = context.buffs.customBuffs?.ResistShred ?? 0;
-  if (providedFullStats) {
-    customResistReduction = 0;
-  }
   const actionBuffResistReduction = attack.buffs?.ResistShred ?? 0;
   const totalResistReduction =
     baseResistReduction +
