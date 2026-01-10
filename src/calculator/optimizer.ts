@@ -293,7 +293,7 @@ export function optimize(
           return attack.key === actionKey;
         });
       } else {
-        foundAction = attacksList.find((attack) => {
+        foundAction = attacksList.find((attack: any) => {
           return attack.key === actionKey;
         });
       }
@@ -320,7 +320,7 @@ export function optimize(
         if (action?.buffs?.length) {
           const buffsData = {};
           // keys are unique, there should not be duplicates
-          action.buffs.forEach((buff) => {
+          action.buffs.forEach((buff: any) => {
             // buffs are in human readable, convert to decimal except flat values
             let buffValue;
             if (["ATK_FLAT", "HP_FLAT", "DEF_FLAT"].includes(buff.modifier)) {
