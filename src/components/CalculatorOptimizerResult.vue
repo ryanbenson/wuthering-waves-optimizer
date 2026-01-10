@@ -30,7 +30,7 @@
         </h3>
         <CalculatorOptimizerResultRotationDamage
           :character="character"
-          :rotation="context.attacks"
+          :rotation="context.rotation"
           :all-damages="allDamages"
           :rotation-id="rotationId" />
       </div>
@@ -173,10 +173,12 @@ export default {
       return [mainEcho, ...subEchos];
     },
     rotationName() {
-      return this.context?.attacks?.name ?? null;
+      return (
+        this.context?.rotation?.name ?? this.context?.attacks?.name ?? null
+      );
     },
     rotationId() {
-      return this.context?.attacks?.id ?? null;
+      return this.context?.rotation?.id ?? this.context?.attacks?.id ?? null;
     },
   },
   methods: {
