@@ -324,7 +324,7 @@ import {
   calcDamages,
   getCalculationContext,
 } from "../calculator/attacks";
-import { optimize, type OptimizerContext } from "../calculator/optimizer";
+import type { OptimizerContext } from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs, utilityAttacks } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -335,6 +335,7 @@ import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import { randomString } from "../utils/strings";
+// Note: Workers are imported dynamically via new Worker() calls
 import { displayPercentage, displayInt } from "../utils/numbers";
 
 export default defineComponent({
@@ -888,7 +889,8 @@ export default defineComponent({
       const allowedSets = new Set(setFilters);
       const topN = 5;
       processedCombos.value = 0;
-      optimizerResults.value = null;
+      totalCombos.value = 0;
+      optimizerResults.value = []; // Initialize as empty array instead of null
       optimizationTargetType.value = target.split(":")[0];
       optimizationTargetObject.value = target.split(":")[1] || "";
 
@@ -978,14 +980,119 @@ export default defineComponent({
         getRotationById: (char: string, rotationId: string) => {
           return characterStore.getRotationById(char, rotationId);
         },
-
-        // Progress callback
-        onProgress: (processed: number) => {
-          processedCombos.value = processed;
-        },
       };
 
-      const results = optimize(
+      // Pre-process rotation data if needed (since we can't pass functions to workers)
+      let rotationData = null;
+      const targetElements = target.split(":");
+      const targetType = targetElements[0];
+      if (targetType === "Rotation") {
+        const rotationId = targetElements[1];
+        const rotation = characterStore.getRotationById(
+          character.value,
+          rotationId,
+        );
+        if (rotation) {
+          // Pre-process rotation data - convert actions to attacks (like in optimizer.ts)
+          const rotationInfo = {
+            id: rotationId,
+            name: rotation.name,
+            description: rotation.description,
+            duration: rotation.duration ?? null,
+            echo: rotation.echo ?? null,
+          };
+
+          // Use already imported functions (getEchoData, utilityAttacks, echoSetAttacks are imported at top)
+
+          const rotationActionInfo: any[] = [];
+          rotation.actions.forEach((action: any) => {
+            const actionKey = action.key;
+            const actionType = action.type;
+            const actionBuffs = action.buffs;
+            const actionCount = action.count;
+            const actionId = action.id;
+            const actionDisabled = action?.isDisabled ?? false;
+            const actionMainEcho = action?.mainEcho ?? null;
+            const actionMainEchoRank = action?.mainEchoRank ?? null;
+
+            // Skip disabled actions
+            if (actionDisabled) {
+              return;
+            }
+
+            const attacksList =
+              chosenChar.value?.[`${actionType}Attacks`]?.attacks ?? [];
+            let foundAction;
+
+            if (actionType === "echoSetAttacks") {
+              foundAction = echoSetAttacks.find(
+                (attack: any) => attack.key === actionKey,
+              );
+            } else if (actionType === "utilityAttacks") {
+              foundAction = utilityAttacks.find(
+                (attack: any) => attack.key === actionKey,
+              );
+            } else if (actionType === "echoAttacks") {
+              const echoData = getEchoData(actionMainEcho);
+              const echoAttacks = echoData?.actions ?? [];
+              foundAction = echoAttacks.find(
+                (attack: any) => attack.key === actionKey,
+              );
+            } else {
+              foundAction = attacksList.find(
+                (attack: any) => attack.key === actionKey,
+              );
+            }
+
+            if (foundAction) {
+              const actionData: any = {
+                ...foundAction,
+                buffs: null,
+                actionType,
+                count: actionCount,
+                id: actionId,
+                excludeSelfBuffs: action.excludeSelfBuffs ?? false,
+                excludeTeamBuffs: action.excludeTeamBuffs ?? false,
+                excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
+                actionMainEcho: action?.mainEcho ?? null,
+                actionMainEchoRank: action?.mainEchoRank ?? null,
+                excludeEchoes:
+                  action.excludeSelfBuffs ||
+                  action.excludeTeamBuffs ||
+                  action.excludeWeaponBuffs ||
+                  false,
+              };
+
+              // Convert buffs array to object if present
+              if (action?.buffs?.length) {
+                const buffsData: any = {};
+                action.buffs.forEach((buff: any) => {
+                  let buffValue;
+                  if (
+                    ["ATK_FLAT", "HP_FLAT", "DEF_FLAT"].includes(buff.modifier)
+                  ) {
+                    buffValue = Number(buff.modifierValue);
+                  } else {
+                    buffValue = Number(buff.modifierValue) / 100;
+                  }
+                  buffsData[buff.modifier] = buffValue;
+                });
+                actionData.buffs = buffsData;
+              }
+
+              rotationActionInfo.push(actionData);
+            }
+          });
+
+          rotationInfo.attacks = rotationActionInfo;
+          rotationData = rotationInfo;
+        } else {
+          console.error("Could not find rotation:", rotationId);
+        }
+      }
+
+      // Use web workers for optimization
+      optimizeWithWorkers(
         filteredEchoes,
         optimizerContext,
         Array.from(allowedSets),
@@ -996,10 +1103,439 @@ export default defineComponent({
         mainEchoStats,
         target,
         damageType,
+        rotationData,
       );
-      optimizerResults.value = results;
-      totalCombos.value = processedCombos.value;
-      // console.log(results);
+    };
+
+    // Helper function to serialize echoes array (only include needed properties)
+    const serializeEchoes = (echoes: any[]): any[] => {
+      if (!Array.isArray(echoes)) {
+        return [];
+      }
+      return echoes
+        .filter((echo) => echo && typeof echo === "object")
+        .map((echo) => {
+          // Only include the properties we actually need for optimization
+          // Use null/undefined checks to ensure we don't pass non-serializable values
+          return {
+            echoId: echo.echoId ?? null,
+            echo: echo.echo ?? null,
+            echoSet: echo.echoSet ?? null,
+            echoSubStatsType1: echo.echoSubStatsType1 ?? null,
+            echoSubStatsType2: echo.echoSubStatsType2 ?? null,
+            echoSubStatsType3: echo.echoSubStatsType3 ?? null,
+            echoSubStatsType4: echo.echoSubStatsType4 ?? null,
+            echoSubStatsType5: echo.echoSubStatsType5 ?? null,
+            echoSubStatsValue1:
+              typeof echo.echoSubStatsValue1 === "number"
+                ? echo.echoSubStatsValue1
+                : null,
+            echoSubStatsValue2:
+              typeof echo.echoSubStatsValue2 === "number"
+                ? echo.echoSubStatsValue2
+                : null,
+            echoSubStatsValue3:
+              typeof echo.echoSubStatsValue3 === "number"
+                ? echo.echoSubStatsValue3
+                : null,
+            echoSubStatsValue4:
+              typeof echo.echoSubStatsValue4 === "number"
+                ? echo.echoSubStatsValue4
+                : null,
+            echoSubStatsValue5:
+              typeof echo.echoSubStatsValue5 === "number"
+                ? echo.echoSubStatsValue5
+                : null,
+            rank: typeof echo.rank === "number" ? echo.rank : null,
+            stat: echo.stat ?? null,
+            type:
+              typeof echo.type === "number" || typeof echo.type === "string"
+                ? echo.type
+                : null,
+          };
+        });
+    };
+
+    // Helper function to create a serializable context (removes functions and ensures all data is plain)
+    const createSerializableContext = (context: any): any => {
+      try {
+        // Deep clone using JSON to ensure everything is serializable
+        // This will remove functions, Vue reactive proxies, circular references, etc.
+        const serializable = JSON.parse(
+          JSON.stringify(context, (key, value) => {
+            // Skip functions
+            if (typeof value === "function") {
+              return undefined;
+            }
+            // Ensure we're not passing Vue reactive proxies or other non-serializable objects
+            return value;
+          }),
+        );
+        return serializable;
+      } catch (error) {
+        console.error("Error serializing context:", error);
+        // Fallback: manually create a plain object
+        return {
+          chosenChar: JSON.parse(JSON.stringify(context.chosenChar)),
+          character: context.character,
+          characterLevel: context.characterLevel,
+          talentData: { ...context.talentData },
+          baseHp: context.baseHp,
+          baseAtk: context.baseAtk,
+          baseDef: context.baseDef,
+          weaponData: JSON.parse(JSON.stringify(context.weaponData)),
+          charBuffsData: JSON.parse(JSON.stringify(context.charBuffsData)),
+          charResonanceChainsData: JSON.parse(
+            JSON.stringify(context.charResonanceChainsData),
+          ),
+          teamBuffsData: JSON.parse(JSON.stringify(context.teamBuffsData)),
+          customBuffs: JSON.parse(JSON.stringify(context.customBuffs)),
+          echoStats: JSON.parse(JSON.stringify(context.echoStats)),
+          enemyLevel: context.enemyLevel,
+          enemyResist: context.enemyResist,
+          enemyType: context.enemyType,
+          isSpectroFrazzleEnabled: context.isSpectroFrazzleEnabled,
+          spectroFrazzleStacks: context.spectroFrazzleStacks,
+          isAeroErosionEnabled: context.isAeroErosionEnabled,
+          aeroErosionStacks: context.aeroErosionStacks,
+          havocBaneStacks: context.havocBaneStacks,
+          mainEcho: context.mainEcho,
+          mainEchoRank: context.mainEchoRank,
+          rotationsList: JSON.parse(JSON.stringify(context.rotationsList)),
+          Glacio: context.Glacio,
+          Fusion: context.Fusion,
+          Electro: context.Electro,
+          Aero: context.Aero,
+          Spectro: context.Spectro,
+          Havoc: context.Havoc,
+          characters: JSON.parse(JSON.stringify(context.characters)),
+          activeCharacterBuffs: JSON.parse(
+            JSON.stringify(context.activeCharacterBuffs),
+          ),
+          activeCharacterResonanceChains: JSON.parse(
+            JSON.stringify(context.activeCharacterResonanceChains),
+          ),
+        };
+      }
+    };
+
+    // Web worker-based optimization
+    const optimizeWithWorkers = async (
+      echoes: any[],
+      context: any,
+      allowedSets: string[],
+      topN: number,
+      mainEchoKeys: string[],
+      minStats: any[],
+      echoSetPassiveBuffs: Record<string, any>,
+      mainEchoStats: Record<string, any>,
+      target: string,
+      damageType: string,
+      rotationData: any = null,
+    ) => {
+      // Detect device capabilities
+      const workerCount = Math.min(
+        5,
+        Math.max(2, (navigator.hardwareConcurrency || 4) - 1),
+      );
+      const batchSize =
+        navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 8
+          ? 5000
+          : 2000; // Larger batches on powerful devices
+
+      // Create workers
+      const generatorWorker = new Worker(
+        new URL("../workers/generator.worker.ts", import.meta.url),
+        { type: "module" },
+      );
+
+      const processorWorkers: Worker[] = [];
+      for (let i = 0; i < workerCount; i++) {
+        const worker = new Worker(
+          new URL("../workers/processor.worker.ts", import.meta.url),
+          { type: "module" },
+        );
+        processorWorkers.push(worker);
+      }
+
+      // State management
+      const heap: any[] = [];
+      const workQueue: Array<{ batch: any[]; batchId: number }> = [];
+      let batchIdCounter = 0;
+      let totalGenerated = 0;
+      let totalProcessed = 0;
+      const workerBusy = new Map<Worker, boolean>();
+      let generatorDone = false;
+      const seenCombinations = new Set<string>();
+      let readyWorkers = 0;
+
+      // Initialize processor workers
+      processorWorkers.forEach((worker, index) => {
+        workerBusy.set(worker, false);
+        worker.postMessage({ type: "init" });
+        worker.onmessage = (e) => {
+          if (e.data.type === "ready") {
+            readyWorkers++;
+            if (readyWorkers === processorWorkers.length) {
+              distributeWork();
+            }
+          } else if (e.data.type === "result") {
+            workerBusy.set(worker, false);
+            totalProcessed += e.data.processed || 0;
+            processedCombos.value = totalProcessed;
+
+            // Workers no longer send newCombinations - we filter duplicates here in main thread
+            // Update heap with results
+            if (e.data.results && e.data.results.length > 0) {
+              for (const result of e.data.results) {
+                if (
+                  !result ||
+                  !result.loadout ||
+                  !Array.isArray(result.loadout)
+                ) {
+                  continue;
+                }
+                // Create key exactly like generator does
+                const echoIds: string[] = [];
+                for (const e of result.loadout) {
+                  if (e && e.echoId) {
+                    echoIds.push(String(e.echoId));
+                  }
+                }
+                if (echoIds.length === 0) {
+                  continue;
+                }
+                echoIds.sort();
+                const key = echoIds.join("|");
+                if (seenCombinations.has(key)) {
+                  continue;
+                }
+                seenCombinations.add(key);
+
+                // Ensure targetValue is a number
+                const targetValue =
+                  typeof result.targetValue === "number"
+                    ? result.targetValue
+                    : Number(result.targetValue);
+
+                if (heap.length < topN) {
+                  heap.push({
+                    ...result,
+                    targetValue,
+                    id: randomString(),
+                  });
+                  // Only sort when heap is full or near full (small heap, so sorting is fast)
+                  if (heap.length === topN) {
+                    heap.sort((a, b) => a.targetValue - b.targetValue);
+                  }
+                } else {
+                  // Heap is full, check if this result is better than the minimum
+                  const heapMinValue = heap[0].targetValue;
+
+                  if (targetValue > heapMinValue) {
+                    // Replace minimum and bubble down (more efficient than full sort for small heaps)
+                    heap[0] = {
+                      ...result,
+                      targetValue,
+                      id: randomString(),
+                    };
+                    // Bubble down: swap with smaller child until heap property is restored
+                    let idx = 0;
+                    while (true) {
+                      const left = 2 * idx + 1;
+                      const right = 2 * idx + 2;
+                      let smallest = idx;
+
+                      if (
+                        left < heap.length &&
+                        heap[left].targetValue < heap[smallest].targetValue
+                      ) {
+                        smallest = left;
+                      }
+                      if (
+                        right < heap.length &&
+                        heap[right].targetValue < heap[smallest].targetValue
+                      ) {
+                        smallest = right;
+                      }
+
+                      if (smallest === idx) break;
+
+                      [heap[idx], heap[smallest]] = [heap[smallest], heap[idx]];
+                      idx = smallest;
+                    }
+                  }
+                }
+              }
+            }
+
+            // Request more work
+            distributeWork();
+          } else if (e.data.type === "error") {
+            console.error(
+              `Processor worker error (batch ${e.data.batchId}):`,
+              e.data.error,
+            );
+            workerBusy.set(worker, false);
+            totalProcessed += e.data.processed || 0;
+            processedCombos.value = totalProcessed;
+            distributeWork();
+          } else {
+            console.warn("Unknown message type from worker:", e.data);
+          }
+        };
+      });
+
+      // Distribute work to available workers
+      const distributeWork = () => {
+        // Don't distribute work if workers aren't ready yet
+        if (readyWorkers < processorWorkers.length) {
+          return;
+        }
+
+        while (workQueue.length > 0) {
+          const work = workQueue.shift();
+          if (!work) break;
+
+          const availableWorker = processorWorkers.find(
+            (w) => !workerBusy.get(w),
+          );
+          if (!availableWorker) {
+            // No available workers, put work back at front
+            workQueue.unshift(work);
+            break;
+          }
+
+          workerBusy.set(availableWorker, true);
+
+          try {
+            // Create serializable context (remove functions, ensure all data is plain objects)
+            const serializableContext = createSerializableContext(context);
+
+            // Convert any Vue reactive arrays/objects to plain arrays/objects
+            // Vue reactive proxies cannot be cloned, so we need to convert them first
+            const plainAllowedSets = Array.isArray(allowedSets)
+              ? [...allowedSets]
+              : allowedSets;
+            const plainMainEchoKeys = Array.isArray(mainEchoKeys)
+              ? [...mainEchoKeys]
+              : mainEchoKeys;
+            const plainMinStats = Array.isArray(minStats)
+              ? minStats.map((s: any) =>
+                  s && typeof s === "object" ? { ...s } : s,
+                )
+              : minStats;
+
+            availableWorker.postMessage({
+              type: "process",
+              data: {
+                batch: work.batch,
+                batchId: work.batchId,
+                context: serializableContext,
+                allowedSets: plainAllowedSets,
+                topN,
+                mainEchoKeys: plainMainEchoKeys,
+                minStats: plainMinStats,
+                echoSetPassiveBuffs: JSON.parse(
+                  JSON.stringify(echoSetPassiveBuffs),
+                ),
+                mainEchoStats: JSON.parse(JSON.stringify(mainEchoStats)),
+                target,
+                damageType,
+                rotationData: rotationData
+                  ? JSON.parse(JSON.stringify(rotationData))
+                  : null,
+              },
+            });
+          } catch (error: any) {
+            console.error(
+              `Error sending batch ${work.batchId} to worker:`,
+              error,
+            );
+            workerBusy.set(availableWorker, false);
+            // Put work back in queue to retry
+            workQueue.unshift(work);
+          }
+        }
+
+        // Check if we're done
+        const allWorkersIdle = processorWorkers.every(
+          (w) => !workerBusy.get(w),
+        );
+        if (generatorDone && workQueue.length === 0 && allWorkersIdle) {
+          // Set final results (sorted descending)
+          const finalResults = heap
+            .slice()
+            .sort((a, b) => b.targetValue - a.targetValue);
+          optimizerResults.value = finalResults;
+
+          // Cleanup
+          generatorWorker.terminate();
+          processorWorkers.forEach((w) => w.terminate());
+          totalCombos.value = totalProcessed;
+        }
+      };
+
+      // Generator worker handler
+      generatorWorker.onmessage = (e) => {
+        if (e.data.type === "ready") {
+          // Start generation - ensure echoes are serializable
+          try {
+            // Serialize echoes by only including needed properties
+            const serializedEchoes = serializeEchoes(echoes);
+
+            // Convert Vue reactive arrays/objects to plain arrays/objects
+            // Vue reactive proxies cannot be cloned, so we need to convert them first
+            const plainMainEchoKeys = Array.isArray(mainEchoKeys)
+              ? [...mainEchoKeys] // Convert Proxy array to plain array
+              : mainEchoKeys;
+
+            const messageData = {
+              type: "start",
+              data: {
+                echoes: serializedEchoes,
+                mainEchoKeys: plainMainEchoKeys,
+                batchSize,
+              },
+            };
+
+            generatorWorker.postMessage(messageData);
+            if (process.env.NODE_ENV === "development") {
+              console.log("Successfully sent data to generator worker");
+            }
+          } catch (error) {
+            console.error("Error sending data to generator worker:", error);
+            generatorWorker.terminate();
+            processorWorkers.forEach((w) => w.terminate());
+          }
+        } else if (e.data.type === "batch") {
+          totalGenerated = e.data.totalGenerated || 0;
+          totalCombos.value = totalGenerated;
+
+          // Add batch to work queue
+          if (e.data.batch && e.data.batch.length > 0) {
+            workQueue.push({
+              batch: e.data.batch,
+              batchId: batchIdCounter++,
+            });
+
+            // Distribute work if workers are ready
+            if (readyWorkers === processorWorkers.length) {
+              distributeWork();
+            }
+          }
+        } else if (e.data.type === "done") {
+          generatorDone = true;
+          totalCombos.value = e.data.totalGenerated || totalGenerated;
+          distributeWork(); // Process remaining work
+        } else if (e.data.type === "error") {
+          console.error("Generator worker error:", e.data.error);
+          generatorDone = true;
+        }
+      };
+
+      // Initialize generator
+      generatorWorker.postMessage({ type: "init" });
     };
 
     function handleSelectedAttack(attackKey, damage, label) {

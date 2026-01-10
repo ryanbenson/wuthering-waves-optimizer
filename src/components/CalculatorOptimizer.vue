@@ -268,14 +268,16 @@
     </div>
     <div class="optimizer-progress my-6" v-if="hasTriggeredOptimizer">
       <div>
-        Generated and processed
-        <span class="font-bold">{{ totalCombos }}</span>
+        Processed
+        <span class="font-bold">{{ processedCombos }}</span>
+        of
+        <span class="font-bold">{{ totalCombos || "..." }}</span>
         loadouts
       </div>
       <progress
         class="progress progress-primary"
         :value="processedCombos"
-        :max="totalCombos"></progress>
+        :max="totalCombos || 1"></progress>
     </div>
     <CalculatorOptimizerResults
       v-if="optimizerResults"
