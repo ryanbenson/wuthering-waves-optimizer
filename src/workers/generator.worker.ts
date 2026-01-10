@@ -1,21 +1,51 @@
-// Generator Worker - Generates loadouts in batches
+/**
+ * Generator Worker
+ *
+ * This web worker is responsible for generating echo loadout combinations in batches.
+ * It uses the `generateLoadouts` generator function to create all possible combinations
+ * of echoes, filters duplicates, and sends batches to the main thread for processing.
+ *
+ * Architecture:
+ * - Runs in a separate thread to avoid blocking the UI
+ * - Generates loadouts incrementally using a generator function
+ * - Deduplicates loadouts using a Set of combination keys
+ * - Sends batches of loadouts to the main thread for distribution to processor workers
+ *
+ * Message Flow:
+ * 1. Main thread sends "init" -> Worker responds with "ready"
+ * 2. Main thread sends "start" with echoes, mainEchoKeys, batchSize
+ * 3. Worker generates loadouts and sends "batch" messages as batches fill up
+ * 4. Worker sends "done" when all loadouts are generated
+ * 5. Worker sends "error" if any errors occur
+ *
+ * Performance Notes:
+ * - Each loadout is cloned before adding to batch (critical: generateLoadouts mutates arrays)
+ * - Batches are sent directly without additional cloning (already cloned)
+ * - Deduplication happens in the worker to reduce main thread overhead
+ */
+
 import { generateLoadouts } from "../calculator/optimizer";
 
-// Message types
+/**
+ * Message sent from main thread to generator worker
+ */
 interface GeneratorMessage {
   type: "init" | "start" | "stop";
   data?: {
-    echoes: any[];
-    mainEchoKeys: string[];
-    batchSize: number;
+    echoes: any[]; // Array of available echoes to combine
+    mainEchoKeys: string[]; // Array of main echo keys (for filtering)
+    batchSize: number; // Number of loadouts per batch
   };
 }
 
+/**
+ * Message sent from generator worker to main thread
+ */
 interface GeneratorResponse {
   type: "batch" | "done" | "error";
-  batch?: any[];
-  totalGenerated?: number;
-  error?: string;
+  batch?: any[]; // Array of loadout combinations (only for "batch" type)
+  totalGenerated?: number; // Total number of unique loadouts generated so far
+  error?: string; // Error message (only for "error" type)
 }
 
 self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
@@ -35,14 +65,11 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
     try {
       // Track seen combinations to ensure uniqueness
       const seenCombinations = new Set<string>();
-      let generatorDuplicates = 0;
 
       // Generate loadouts in batches
       // @ts-ignore - generateLoadouts returns a generator with any[] items
-      let rawGenerated = 0;
       // @ts-ignore
       for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
-        rawGenerated++;
         // Create a unique key for this combination
         const echoIds: string[] = [];
         const loadoutArray = loadout as any[];
@@ -56,7 +83,6 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
 
         // Skip if we've already seen this combination
         if (seenCombinations.has(key)) {
-          generatorDuplicates++;
           continue;
         }
         seenCombinations.add(key);
@@ -69,30 +95,10 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
 
         // Send batch when it reaches the target size
         if (batch.length >= batchSize) {
-          // Deep clone and verify echoIds are preserved
-          const clonedBatch = JSON.parse(JSON.stringify(batch));
-          // Log first loadout's structure to verify it's correct
-          if (clonedBatch.length > 0 && totalGenerated === batchSize) {
-            const firstLoadout = clonedBatch[0];
-            const firstEchoIds = firstLoadout
-              ?.map((e: any) => e?.echoId)
-              .filter((id: any) => id != null);
-            console.log(`Generator: First loadout in first batch:`, {
-              isArray: Array.isArray(firstLoadout),
-              length: Array.isArray(firstLoadout) ? firstLoadout.length : "N/A",
-              echoIds: firstEchoIds,
-              firstEcho: firstLoadout?.[0]
-                ? {
-                    echoId: firstLoadout[0].echoId,
-                    echo: firstLoadout[0].echo,
-                    type: firstLoadout[0].type,
-                  }
-                : "N/A",
-            });
-          }
+          // Batch already contains cloned loadouts, so we can send directly
           self.postMessage({
             type: "batch",
-            batch: clonedBatch,
+            batch: batch, // Already cloned, no need to clone again
             totalGenerated,
           } as GeneratorResponse);
           batch = [];
@@ -109,9 +115,6 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
       }
 
       // Signal completion
-      console.log(
-        `Generator complete: ${rawGenerated} raw loadouts from generator, ${totalGenerated} unique after deduplication, ${generatorDuplicates} duplicates filtered`,
-      );
       self.postMessage({
         type: "done",
         totalGenerated,

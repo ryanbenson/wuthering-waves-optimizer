@@ -1,9 +1,45 @@
-// Processor Worker - Processes batches of loadouts
+/**
+ * Processor Worker
+ *
+ * This web worker processes batches of echo loadouts, calculating stats and damage
+ * for each loadout to determine optimization target values (ATK, damage, rotations, etc.).
+ * Multiple processor workers run in parallel to maximize throughput.
+ *
+ * Architecture:
+ * - Runs in separate threads to parallelize computation
+ * - Receives batches of loadouts from the main thread
+ * - Calculates stats, buffs, and damage for each loadout
+ * - Returns results back to main thread for heap management
+ * - Does NOT filter duplicates (main thread handles that)
+ *
+ * Message Flow:
+ * 1. Main thread sends "init" -> Worker responds with "ready"
+ * 2. Main thread sends "process" with batch, context, and optimization parameters
+ * 3. Worker processes all loadouts in batch and sends "result" with array of results
+ * 4. Worker sends "error" if batch processing fails
+ *
+ * Processing Steps (for each loadout):
+ * 1. Extract echo IDs and create combination key
+ * 2. Calculate echo stats and set bonuses
+ * 3. Compute character stats with echo buffs
+ * 4. Calculate buffs (self, resonance chains, additional base, crit overflow)
+ * 5. Calculate final stats
+ * 6. Check minimum stat requirements (if any)
+ * 7. Calculate target value based on target type:
+ *    - Stat: Direct stat value
+ *    - Attack: Single attack damage (Normal/Average/Crit)
+ *    - Rotation: Aggregated damage from rotation sequence
+ * 8. Return result object with loadout, targetValue, and context
+ *
+ * Performance Notes:
+ * - All loadouts in a batch are processed sequentially (no async/await)
+ * - Errors in individual loadouts don't stop batch processing
+ * - Results are only sent for valid loadouts (null results are filtered)
+ * - Context is pre-serialized by main thread (no functions, plain objects)
+ */
+
 import { OptimizerContext } from "../calculator/optimizer";
 import { getAttackData } from "../characters/characters";
-import { getEchoData } from "../echoes";
-import { echoSetAttacks } from "../echoes/stats";
-import { utilityAttacks } from "../buffs";
 import { getCombinedEchoStats } from "../echoes/stats";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import {
@@ -15,55 +51,71 @@ import {
 } from "../calculator/stats";
 import { processAttacks, getCalculationContext } from "../calculator/attacks";
 
-// Message types
+/**
+ * Message sent from main thread to processor worker
+ */
 interface ProcessorMessage {
   type: "init" | "process" | "stop";
   data?: {
-    batch: any[];
-    batchId: number;
-    context: Omit<OptimizerContext, "getRotationById" | "onProgress">; // Remove functions
-    allowedSets: string[];
-    topN: number;
-    mainEchoKeys: string[];
-    minStats: any[];
-    echoSetPassiveBuffs: Record<string, any>;
-    mainEchoStats: Record<string, any>;
-    target: string;
-    damageType: string;
-    rotationData?: any; // Pre-processed rotation data
+    batch: any[]; // Array of loadout combinations to process
+    batchId: number; // Unique ID for this batch
+    context: Omit<OptimizerContext, "getRotationById" | "onProgress">; // Serialized context (no functions)
+    minStats: any[]; // Minimum stat requirements
+    echoSetPassiveBuffs: Record<string, any>; // Set bonus passive buffs
+    mainEchoStats: Record<string, any>; // Main echo stats
+    target: string; // Optimization target (e.g., "Stat:ATK", "Attack:basicAttacks|attack1", "Rotation:rotationId")
+    damageType: string; // Damage type for attack/rotation targets ("Normal", "Average", "Crit")
+    rotationData?: any; // Pre-processed rotation data (for Rotation target type)
   };
 }
 
+/**
+ * Message sent from processor worker to main thread
+ */
 interface ProcessorResponse {
   type: "result" | "error" | "ready";
-  batchId?: number;
-  results?: any[];
-  processed?: number;
-  error?: string;
-  newCombinations?: string[]; // Array of new combination keys seen in this batch
+  batchId?: number; // Batch ID this response corresponds to
+  results?: any[]; // Array of processed results (only for "result" type)
+  processed?: number; // Number of loadouts processed in this batch
+  error?: string; // Error message (only for "error" type)
 }
 
-// Helper function to process a single loadout (extracted from optimize function)
+/**
+ * Processes a single loadout and calculates its optimization target value.
+ *
+ * This function is extracted from the original optimize function to enable
+ * parallel processing in web workers. It performs the full stat calculation
+ * and damage computation pipeline for a single loadout.
+ *
+ * @param loadout - Array of echo objects representing the loadout combination
+ * @param context - Serialized optimizer context (character, stats, buffs, etc.)
+ * @param allowedSets - Allowed echo sets (currently unused)
+ * @param topN - Number of top results to keep (for filtering)
+ * @param mainEchoKeys - Main echo keys for validation
+ * @param minStats - Minimum stat requirements array
+ * @param echoSetPassiveBuffs - Set bonus passive buffs object
+ * @param mainEchoStats - Main echo stats object
+ * @param target - Optimization target string (format: "Type:Object")
+ * @param damageType - Damage type for attack/rotation targets ("Normal", "Average", "Crit")
+ * @param rotationData - Pre-processed rotation data (for Rotation target type)
+ * @returns Result object with loadout, targetValue, and context, or null if loadout doesn't meet requirements
+ *
+ * @throws Error if processing fails (caught by batch processor)
+ */
 function processLoadout(
   loadout: any[],
   context: any, // Using any to match the serialized context type
-  allowedSets: string[],
-  topN: number,
-  mainEchoKeys: string[],
   minStats: any[],
   echoSetPassiveBuffs: Record<string, any>,
   mainEchoStats: Record<string, any>,
   target: string,
   damageType: string,
-  seenCombinations: Set<string>, // Not used for filtering, just for tracking
-  newSeenCombinations?: Set<string>, // Optional: track new combinations for this batch
   rotationData?: any, // Pre-processed rotation data for Rotation target type
 ): any | null {
   try {
     // Create a unique key for this combination
     const echoIds = loadout.map((echo) => echo.echoId);
     echoIds.sort();
-    const combinationKey = echoIds.join("|");
 
     // Don't filter duplicates here - the main thread will handle that
     // We still track it for reporting purposes
@@ -247,13 +299,6 @@ function processLoadout(
           return null; // Doesn't meet requirements
         }
       }
-    }
-
-    // Note: We don't add to seenCombinations here since it's shared across workers
-    // The main thread will handle adding to the global seenCombinations Set
-    // But we track it in newSeenCombinations if provided
-    if (newSeenCombinations) {
-      newSeenCombinations.add(combinationKey);
     }
 
     // Calculate target value
@@ -533,6 +578,7 @@ function processLoadout(
         damageTargetMap[damageType as keyof typeof damageTargetMap] ??
         "avgDamage";
 
+      // @ts-ignore
       targetValue = damageAggregation[damageTargetReference] ?? 0;
 
       // Ensure targetValue is a number
@@ -572,7 +618,6 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
     const { type, data } = e.data;
 
     if (type === "init") {
-      console.log("Processor worker initialized");
       self.postMessage({ type: "ready" } as ProcessorResponse);
       return;
     }
@@ -582,17 +627,13 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
         batch,
         batchId,
         context,
-        allowedSets,
-        topN,
-        mainEchoKeys,
         minStats,
         echoSetPassiveBuffs,
         mainEchoStats,
         target,
         damageType,
         rotationData,
-        seenCombinations: seenCombinationsArray, // Array of already-seen combination keys
-      } = data as any; // Use any to allow seenCombinations which is added dynamically
+      } = data;
 
       if (!batch || !Array.isArray(batch) || batch.length === 0) {
         console.error("Processor worker: Invalid batch received", {
@@ -626,42 +667,17 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
         let errorCount = 0;
         let nullCount = 0;
 
-        // Debug: Log first loadout structure
-        if (batch.length > 0 && batchId === 0) {
-          const firstLoadout = batch[0];
-          console.log(
-            `Processor worker batch ${batchId}: First loadout structure:`,
-            {
-              isArray: Array.isArray(firstLoadout),
-              length: Array.isArray(firstLoadout) ? firstLoadout.length : "N/A",
-              firstEcho:
-                Array.isArray(firstLoadout) && firstLoadout.length > 0
-                  ? {
-                      echoId: firstLoadout[0]?.echoId,
-                      echo: firstLoadout[0]?.echo,
-                      type: firstLoadout[0]?.type,
-                    }
-                  : "N/A",
-            },
-          );
-        }
-
         for (let i = 0; i < batch.length; i++) {
           const loadout = batch[i];
           try {
             const result = processLoadout(
               loadout,
               context,
-              allowedSets,
-              topN,
-              mainEchoKeys,
               minStats,
               echoSetPassiveBuffs,
               mainEchoStats,
               target,
               damageType,
-              new Set<string>(), // Not used for filtering
-              undefined, // Don't track new combinations in worker
               rotationData, // Pass rotation data for Rotation target type
             );
 
@@ -669,13 +685,6 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
               results.push(result);
             } else {
               nullCount++;
-            }
-
-            // Log progress every 5000 loadouts to reduce noise
-            if ((i + 1) % 5000 === 0) {
-              console.log(
-                `Processor worker: Processed ${i + 1}/${batch.length} loadouts in batch ${batchId}, ${results.length} results so far`,
-              );
             }
           } catch (loadoutError: any) {
             errorCount++;
@@ -688,53 +697,11 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
           }
         }
 
-        // Only log if there are errors or all results are null
+        // Only log errors
         if (errorCount > 0) {
           console.error(
             `Processor worker: Batch ${batchId} had ${errorCount} errors out of ${batch.length} loadouts`,
           );
-        }
-
-        if (nullCount === batch.length && batch.length > 0) {
-          // Log first loadout to see why it's being filtered
-          const firstLoadout = batch[0];
-          console.log(
-            "First loadout in batch:",
-            JSON.stringify(firstLoadout, null, 2),
-          );
-          console.log("Context for first loadout:", {
-            chosenChar: context.chosenChar,
-            target,
-            damageType,
-            minStats,
-            mainEchoKeys,
-            allowedSets,
-          });
-          try {
-            const testResult = processLoadout(
-              firstLoadout,
-              context,
-              allowedSets,
-              topN,
-              mainEchoKeys,
-              minStats,
-              echoSetPassiveBuffs,
-              mainEchoStats,
-              target,
-              damageType,
-              new Set<string>(), // Fresh set for testing
-              undefined, // No newSeenCombinations for test
-              rotationData, // Pass rotation data for test
-            );
-            console.log("Test result for first loadout:", testResult);
-            if (!testResult) {
-              console.log(
-                "First loadout returned null - check logs above for reason",
-              );
-            }
-          } catch (testError: any) {
-            console.error("Error in test processing:", testError);
-          }
         }
 
         self.postMessage({

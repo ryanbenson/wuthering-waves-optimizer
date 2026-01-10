@@ -1086,12 +1086,6 @@ export default defineComponent({
 
           rotationInfo.attacks = rotationActionInfo;
           rotationData = rotationInfo;
-
-          console.log("Pre-processed rotation data:", {
-            id: rotationData.id,
-            name: rotationData.name,
-            attacksCount: rotationData.attacks?.length || 0,
-          });
         } else {
           console.error("Could not find rotation:", rotationId);
         }
@@ -1282,11 +1276,7 @@ export default defineComponent({
         worker.onmessage = (e) => {
           if (e.data.type === "ready") {
             readyWorkers++;
-            console.log(
-              `Worker ${index} ready. Total ready: ${readyWorkers}/${processorWorkers.length}`,
-            );
             if (readyWorkers === processorWorkers.length) {
-              console.log("All workers ready, starting work distribution");
               distributeWork();
             }
           } else if (e.data.type === "result") {
@@ -1297,21 +1287,12 @@ export default defineComponent({
             // Workers no longer send newCombinations - we filter duplicates here in main thread
             // Update heap with results
             if (e.data.results && e.data.results.length > 0) {
-              let addedToHeap = 0;
-              let skippedDuplicate = 0;
-              let skippedTooLow = 0;
-
-              // Log the current state before processing this batch
-              const seenBeforeBatch = seenCombinations.size;
-
               for (const result of e.data.results) {
-                // Skip duplicates (double-check, though workers should have already filtered)
                 if (
                   !result ||
                   !result.loadout ||
                   !Array.isArray(result.loadout)
                 ) {
-                  console.warn("Invalid result in batch:", result);
                   continue;
                 }
                 // Create key exactly like generator does
@@ -1322,13 +1303,11 @@ export default defineComponent({
                   }
                 }
                 if (echoIds.length === 0) {
-                  console.warn("Result has no echoIds:", result);
                   continue;
                 }
                 echoIds.sort();
                 const key = echoIds.join("|");
                 if (seenCombinations.has(key)) {
-                  skippedDuplicate++;
                   continue;
                 }
                 seenCombinations.add(key);
@@ -1340,90 +1319,52 @@ export default defineComponent({
                     : Number(result.targetValue);
 
                 if (heap.length < topN) {
-                  const resultWithId = {
+                  heap.push({
                     ...result,
                     targetValue,
                     id: randomString(),
-                  };
-                  heap.push(resultWithId);
-                  heap.sort((a, b) => a.targetValue - b.targetValue);
-                  addedToHeap++;
+                  });
+                  // Only sort when heap is full or near full (small heap, so sorting is fast)
+                  if (heap.length === topN) {
+                    heap.sort((a, b) => a.targetValue - b.targetValue);
+                  }
                 } else {
-                  // Ensure heap[0].targetValue is also a number for comparison
-                  const heapMinValue =
-                    typeof heap[0].targetValue === "number"
-                      ? heap[0].targetValue
-                      : Number(heap[0].targetValue) || 0;
+                  // Heap is full, check if this result is better than the minimum
+                  const heapMinValue = heap[0].targetValue;
 
                   if (targetValue > heapMinValue) {
-                    const oldValue = heapMinValue;
+                    // Replace minimum and bubble down (more efficient than full sort for small heaps)
                     heap[0] = {
                       ...result,
                       targetValue,
                       id: randomString(),
                     };
-                    heap.sort((a, b) => {
-                      const aVal =
-                        typeof a.targetValue === "number"
-                          ? a.targetValue
-                          : Number(a.targetValue) || 0;
-                      const bVal =
-                        typeof b.targetValue === "number"
-                          ? b.targetValue
-                          : Number(b.targetValue) || 0;
-                      return aVal - bVal;
-                    });
-                    addedToHeap++;
-                    // Only log significant improvements (more than 1% better)
-                    if (targetValue > oldValue * 1.01) {
-                      console.log(
-                        `Replaced heap[0]: ${oldValue.toFixed(0)} -> ${targetValue.toFixed(0)} (+${((targetValue / oldValue - 1) * 100).toFixed(1)}%)`,
-                      );
-                    }
-                  } else {
-                    skippedTooLow++;
-                  }
-                }
-              }
+                    // Bubble down: swap with smaller child until heap property is restored
+                    let idx = 0;
+                    while (true) {
+                      const left = 2 * idx + 1;
+                      const right = 2 * idx + 2;
+                      let smallest = idx;
 
-              // Log summary for this batch (only if there are many results)
-              if (e.data.results.length > 100) {
-                const seenAfterBatch = seenCombinations.size;
-                const newUnique = seenAfterBatch - seenBeforeBatch;
-                console.log(
-                  `Batch ${e.data.batchId}: ${e.data.results.length} results -> ${addedToHeap} added, ${skippedDuplicate} duplicates (${newUnique} new unique), ${skippedTooLow} too low. Total unique: ${seenAfterBatch}`,
-                );
-
-                // Debug: Log sample keys and loadout details from first few results
-                if (e.data.batchId <= 1 && e.data.results.length > 0) {
-                  const sampleKeys: string[] = [];
-                  const sampleLoadouts: any[] = [];
-                  for (let i = 0; i < Math.min(5, e.data.results.length); i++) {
-                    const result = e.data.results[i];
-                    if (!result || !result.loadout) continue;
-                    const echoIds: string[] = [];
-                    for (const e of result.loadout) {
-                      if (e && e.echoId) {
-                        echoIds.push(String(e.echoId));
+                      if (
+                        left < heap.length &&
+                        heap[left].targetValue < heap[smallest].targetValue
+                      ) {
+                        smallest = left;
                       }
+                      if (
+                        right < heap.length &&
+                        heap[right].targetValue < heap[smallest].targetValue
+                      ) {
+                        smallest = right;
+                      }
+
+                      if (smallest === idx) break;
+
+                      [heap[idx], heap[smallest]] = [heap[smallest], heap[idx]];
+                      idx = smallest;
                     }
-                    echoIds.sort();
-                    const key = echoIds.join("|");
-                    sampleKeys.push(key);
-                    sampleLoadouts.push({
-                      loadoutLength: result.loadout.length,
-                      echoIds: echoIds.slice(0, 5),
-                      hasEchoId: result.loadout[0]?.echoId != null,
-                    });
                   }
-                  console.log(
-                    `Sample keys from batch ${e.data.batchId} (first 5):`,
-                    sampleKeys,
-                  );
-                  console.log(
-                    `Sample loadout details from batch ${e.data.batchId}:`,
-                    sampleLoadouts,
-                  );
                 }
               }
             }
@@ -1449,15 +1390,8 @@ export default defineComponent({
       const distributeWork = () => {
         // Don't distribute work if workers aren't ready yet
         if (readyWorkers < processorWorkers.length) {
-          console.log(
-            `Workers not all ready yet (${readyWorkers}/${processorWorkers.length}), skipping work distribution`,
-          );
           return;
         }
-
-        console.log(
-          `distributeWork called. Queue: ${workQueue.length}, Ready: ${readyWorkers}/${processorWorkers.length}, Busy: ${processorWorkers.filter((w) => workerBusy.get(w)).length}`,
-        );
 
         while (workQueue.length > 0) {
           const work = workQueue.shift();
@@ -1469,13 +1403,9 @@ export default defineComponent({
           if (!availableWorker) {
             // No available workers, put work back at front
             workQueue.unshift(work);
-            console.log("No available workers, work queued");
             break;
           }
 
-          console.log(
-            `Distributing batch ${work.batchId} with ${work.batch.length} loadouts to worker`,
-          );
           workerBusy.set(availableWorker, true);
 
           try {
@@ -1496,10 +1426,6 @@ export default defineComponent({
                 )
               : minStats;
 
-            // Don't send seenCombinations to workers - they'll process everything
-            // and we'll filter duplicates in the main thread (single source of truth)
-            const seenCombinationsArray: string[] = [];
-
             availableWorker.postMessage({
               type: "process",
               data: {
@@ -1519,7 +1445,6 @@ export default defineComponent({
                 rotationData: rotationData
                   ? JSON.parse(JSON.stringify(rotationData))
                   : null,
-                seenCombinations: seenCombinationsArray, // Send current seen combinations
               },
             });
           } catch (error: any) {
@@ -1544,115 +1469,10 @@ export default defineComponent({
             .sort((a, b) => b.targetValue - a.targetValue);
           optimizerResults.value = finalResults;
 
-          console.log("Optimization complete!", {
-            totalProcessed,
-            heapSize: heap.length,
-            resultsCount: finalResults.length,
-            topValue: finalResults[0]?.targetValue,
-            topValueType: typeof finalResults[0]?.targetValue,
-            damageType,
-            target,
-            seenCombinationsCount: seenCombinations.size,
-            results: finalResults.map((r: any, idx: number) => ({
-              rank: idx + 1,
-              targetValue: r.targetValue,
-              avgDamage: r.context?.rotation?.damageAggregation?.avgDamage,
-              normalDamage:
-                r.context?.rotation?.damageAggregation?.normalDamage,
-              critDamage: r.context?.rotation?.damageAggregation?.critDamage,
-            })),
-          });
-
           // Cleanup
           generatorWorker.terminate();
           processorWorkers.forEach((w) => w.terminate());
           totalCombos.value = totalProcessed;
-        }
-      };
-
-      // Helper function to test if data can be cloned and identify problematic items
-      const testClone = (data: any, name: string): boolean => {
-        try {
-          // Try structuredClone first (more accurate, available in modern browsers)
-          if (typeof structuredClone !== "undefined") {
-            structuredClone(data);
-            return true;
-          }
-          // Fallback: try JSON serialization (catches most issues)
-          const jsonStr = JSON.stringify(data);
-          JSON.parse(jsonStr);
-          return true;
-        } catch (error: any) {
-          console.error(`❌ Cannot clone ${name}:`, error.message);
-          console.error(
-            `${name} type:`,
-            typeof data,
-            Array.isArray(data) ? "Array" : "",
-          );
-          console.error(`${name} value:`, data);
-
-          // If it's an array, test each item
-          if (Array.isArray(data) && data.length > 0) {
-            console.error(`Testing ${data.length} items in ${name}...`);
-            data.forEach((item: any, index: number) => {
-              try {
-                if (typeof structuredClone !== "undefined") {
-                  structuredClone(item);
-                } else {
-                  JSON.stringify(item);
-                }
-              } catch (itemError: any) {
-                console.error(
-                  `❌ Cannot clone ${name}[${index}]:`,
-                  itemError.message,
-                );
-                console.error(`${name}[${index}] value:`, item);
-                console.error(
-                  `${name}[${index}] keys:`,
-                  Object.keys(item || {}),
-                );
-                // Check each property of the problematic item
-                if (item && typeof item === "object") {
-                  Object.keys(item).forEach((key) => {
-                    try {
-                      if (typeof structuredClone !== "undefined") {
-                        structuredClone(item[key]);
-                      } else {
-                        JSON.stringify(item[key]);
-                      }
-                    } catch (propError: any) {
-                      console.error(
-                        `❌ Property ${name}[${index}].${key} cannot be cloned:`,
-                        propError.message,
-                      );
-                      console.error(`Property value:`, item[key]);
-                      console.error(`Property type:`, typeof item[key]);
-                    }
-                  });
-                }
-              }
-            });
-          } else if (data && typeof data === "object") {
-            // If it's an object, test each property
-            console.error(`Testing properties of ${name}...`);
-            Object.keys(data).forEach((key) => {
-              try {
-                if (typeof structuredClone !== "undefined") {
-                  structuredClone(data[key]);
-                } else {
-                  JSON.stringify(data[key]);
-                }
-              } catch (propError: any) {
-                console.error(
-                  `❌ Property ${name}.${key} cannot be cloned:`,
-                  propError.message,
-                );
-                console.error(`Property value:`, data[key]);
-                console.error(`Property type:`, typeof data[key]);
-              }
-            });
-          }
-          return false;
         }
       };
 
@@ -1669,20 +1489,6 @@ export default defineComponent({
             const plainMainEchoKeys = Array.isArray(mainEchoKeys)
               ? [...mainEchoKeys] // Convert Proxy array to plain array
               : mainEchoKeys;
-
-            // Debug: Test each property individually (only in development)
-            if (process.env.NODE_ENV === "development") {
-              console.log("Testing serialization...");
-              if (!testClone(serializedEchoes, "echoes")) {
-                throw new Error("Echoes array cannot be cloned");
-              }
-              if (!testClone(plainMainEchoKeys, "mainEchoKeys")) {
-                throw new Error("mainEchoKeys cannot be cloned");
-              }
-              if (!testClone(batchSize, "batchSize")) {
-                throw new Error("batchSize cannot be cloned");
-              }
-            }
 
             const messageData = {
               type: "start",
@@ -1706,28 +1512,17 @@ export default defineComponent({
           totalGenerated = e.data.totalGenerated || 0;
           totalCombos.value = totalGenerated;
 
-          console.log(
-            `Received batch with ${e.data.batch?.length || 0} loadouts, total generated: ${totalGenerated}`,
-          );
-
           // Add batch to work queue
           if (e.data.batch && e.data.batch.length > 0) {
             workQueue.push({
               batch: e.data.batch,
               batchId: batchIdCounter++,
             });
-            console.log(
-              `Added batch to queue. Queue size: ${workQueue.length}, Ready workers: ${readyWorkers}/${processorWorkers.length}`,
-            );
 
             // Distribute work if workers are ready
             if (readyWorkers === processorWorkers.length) {
               distributeWork();
-            } else {
-              console.log("Workers not ready yet, waiting...");
             }
-          } else {
-            console.warn("Received empty batch from generator");
           }
         } else if (e.data.type === "done") {
           generatorDone = true;
