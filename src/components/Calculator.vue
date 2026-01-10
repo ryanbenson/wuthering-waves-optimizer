@@ -324,6 +324,7 @@ import {
   calcDamages,
   getCalculationContext,
 } from "../calculator/attacks";
+import { optimize, type OptimizerContext } from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs, utilityAttacks } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -888,6 +889,8 @@ export default defineComponent({
       const topN = 5;
       processedCombos.value = 0;
       optimizerResults.value = null;
+      optimizationTargetType.value = target.split(":")[0];
+      optimizationTargetObject.value = target.split(":")[1] || "";
 
       // 1. Filter upfront
       let filteredEchoes = echoes;
@@ -902,9 +905,90 @@ export default defineComponent({
         );
       }
 
+      // Build optimizer context with all necessary data
+      const optimizerContext = {
+        // Character data
+        chosenChar: chosenChar.value,
+        character: character.value,
+        characterLevel: characterLevel.value,
+        talentData: {
+          basic: talentData.basic,
+          skill: talentData.skill,
+          forte: talentData.forte,
+          liberation: talentData.liberation,
+          intro: talentData.intro,
+        },
+
+        // Base stats
+        baseHp: baseHp.value,
+        baseAtk: baseAtk.value,
+        baseDef: baseDef.value,
+
+        // Weapon data
+        weaponData: {
+          attack: weaponData.value?.attack ?? 0,
+          modifier: weaponData.value?.modifier ?? null,
+          modifierValue: weaponData.value?.modifierValue ?? 0,
+          weaponPassiveStats: weaponData.value?.weaponPassiveStats ?? {},
+        },
+
+        // Buffs
+        charBuffsData: charBuffsData.value,
+        charResonanceChainsData: charResonanceChainsData.value,
+        teamBuffsData: teamBuffsData.value,
+        customBuffs: customBuffs.value,
+
+        // Echo data
+        echoStats: echoStats.value,
+
+        // Enemy data
+        enemyLevel: enemyLevel.value,
+        enemyResist: enemyResist.value,
+        enemyType: enemyType.value,
+        isSpectroFrazzleEnabled: isSpectroFrazzleEnabled.value,
+        spectroFrazzleStacks: spectroFrazzleStacks.value,
+        isAeroErosionEnabled: isAeroErosionEnabled.value,
+        aeroErosionStacks: aeroErosionStacks.value,
+        havocBaneStacks: havocBaneStacks.value,
+
+        // Main echo
+        mainEcho: mainEcho.value,
+        mainEchoRank: mainEchoRank.value,
+
+        // Rotations
+        rotationsList: rotationsList.value,
+
+        // Computed stats (for fallback values)
+        Glacio: Glacio.value,
+        Fusion: Fusion.value,
+        Electro: Electro.value,
+        Aero: Aero.value,
+        Spectro: Spectro.value,
+        Havoc: Havoc.value,
+
+        // Global data
+        characters: characters.value,
+
+        // Character store data
+        activeCharacterBuffs: characterStore.getActiveCharacter?.buffs ?? {},
+        activeCharacterResonanceChains:
+          characterStore.getActiveCharacter?.resonanceChains ?? {},
+
+        // Helper function to get rotation by ID
+        getRotationById: (char: string, rotationId: string) => {
+          return characterStore.getRotationById(char, rotationId);
+        },
+
+        // Progress callback
+        onProgress: (processed: number) => {
+          processedCombos.value = processed;
+        },
+      };
+
       const results = optimize(
         filteredEchoes,
-        allowedSets,
+        optimizerContext,
+        Array.from(allowedSets),
         topN,
         mainEchoes,
         minStats,
@@ -917,739 +1001,6 @@ export default defineComponent({
       totalCombos.value = processedCombos.value;
       // console.log(results);
     };
-
-    function* generateLoadouts(
-      echoes,
-      mainEchoKeys = [],
-      start = 0,
-      combo = [],
-      cost = 0,
-      usedEchoIds = new Set(),
-      usedEchoes = new Set(),
-    ) {
-      // If we have main echo keys and combo is empty, we need to start with one of those
-      if (mainEchoKeys.length > 0 && combo.length === 0) {
-        // Find all echoes that match the main echo keys
-        const mainEchoCopies = echoes.filter((e) =>
-          mainEchoKeys.includes(e.echo),
-        );
-
-        // For each copy of the main echo, start a new combination
-        for (const mainEcho of mainEchoCopies) {
-          // the main echo isn't guaranteed to be 4, sometimes it's an elite, so 3
-          const nextCost = cost + mainEcho.type;
-          if (nextCost <= 12) {
-            // Create a fresh usedEchoIds Set for each main echo group
-            const groupUsedEchoIds = new Set([mainEcho.echoId]);
-            // add the main echo to the list of echoes already used so we dont try to use
-            // another copy of the same echo
-            const groupUsedEchoes = new Set([mainEcho.echo]);
-            yield* generateLoadouts(
-              echoes,
-              mainEchoKeys,
-              0,
-              [mainEcho],
-              nextCost,
-              groupUsedEchoIds,
-              groupUsedEchoes,
-            );
-          }
-        }
-        return;
-      }
-
-      // Valid combination? Yield it (ignore empty set)
-      if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
-        yield combo;
-      }
-
-      // Stop exploring if combo already too big
-      if (combo.length === 5 || cost >= 12) return;
-
-      // If we have main echo keys and combo is empty, we've already handled the first slot
-      if (mainEchoKeys.length > 0 && combo.length === 0) return;
-
-      for (let i = start; i < echoes.length; i++) {
-        const next = echoes[i];
-        // Skip if already used
-        if (usedEchoIds.has(next.echoId)) continue;
-        // Skip if the echo has
-        if (usedEchoes.has(next.echo)) continue;
-
-        const nextCost = cost + next.type;
-        if (nextCost <= 12) {
-          // Add to used set instead of filtering
-          usedEchoIds.add(next.echoId);
-          // Add the echo key instead of filtering
-          usedEchoes.add(next.echo);
-          combo.push(next); // Mutate instead of creating new array
-          yield* generateLoadouts(
-            echoes,
-            mainEchoKeys,
-            i + 1, // Can keep original index since we're not filtering
-            combo,
-            nextCost,
-            usedEchoIds,
-            usedEchoes,
-          );
-          combo.pop(); // Backtrack
-          usedEchoIds.delete(next.echoId); // Backtrack
-          usedEchoes.delete(next.echo);
-        }
-      }
-    }
-
-    function optimize(
-      echoes,
-      allowedSets = [],
-      topN = 5,
-      mainEchoKeys = [],
-      minStats = [],
-      echoSetPassiveBuffs = {},
-      mainEchoStats = {},
-      target = "ATK",
-      damageType = "Average",
-    ) {
-      // Min-heap for topN results
-      const heap = [];
-      const seenCombinations = new Set(); // Track unique combinations
-
-      // get info on our target
-      const targetElements = target.split(":");
-      const [targetType, targetObject] = targetElements;
-      optimizationTargetType.value = targetType;
-      optimizationTargetObject.value = targetObject;
-      // if it's an attack, get the attack info, the targetObject is Type|skillkey
-      let attackData;
-      if (targetType === "Attack") {
-        const [attackType, attackKey] = targetObject.split("|");
-        const attackInfo = getAttackData(
-          chosenChar.value,
-          attackType,
-          attackKey,
-        );
-        let actionTypeForAttackData;
-        switch (attackType) {
-          case "basicAttacks":
-            actionTypeForAttackData = "basic";
-            break;
-          case "skillAttacks":
-            actionTypeForAttackData = "skill";
-            break;
-          case "forteCircuitAttacks":
-            actionTypeForAttackData = "forte";
-            break;
-          case "liberationAttacks":
-            actionTypeForAttackData = "liberation";
-            break;
-          case "introAttacks":
-            actionTypeForAttackData = "intro";
-            break;
-          case "tuneBreakAttacks":
-            actionTypeForAttackData = "tuneBreak";
-            break;
-          case "outroAttacks":
-            actionTypeForAttackData = "outro";
-            break;
-        }
-        attackData = {
-          actionType: actionTypeForAttackData,
-          buffs: null,
-          count: 1,
-          excludeSelfBuffs: false,
-          excludeTeamBuffs: false,
-          excludeWeaponBuffs: false,
-          key: attackKey,
-          label: attackInfo.label,
-          talents: attackInfo.talents,
-          talent: attackInfo?.talent,
-          type: attackInfo.type,
-          subType: attackInfo.subType,
-          element: attackInfo.element,
-          attribute: attackInfo?.attribute ?? null,
-          alwaysCrit: attackInfo?.alwaysCrit ?? false,
-        };
-        if (!attackData) {
-          console.error("Could not find the attack data chosen");
-          return;
-        }
-      }
-
-      let rotationData;
-      if (targetType === "Rotation") {
-        const rotationId = targetObject;
-        const rotation = characterStore.getRotationById(
-          character.value,
-          rotationId,
-        );
-        // TODO: this is also copy and pasted to build the rotation data
-        // Refactor this out
-        // console.log(rotationId, rotation, targetObject);
-        const rotationInfo = {
-          id: rotationId,
-          name: rotation.name,
-          description: rotation.description,
-          duration: rotation.duration ?? null,
-          echo: rotation.echo ?? null,
-        };
-        const rotationActionInfo = [];
-        rotation.actions.forEach((action) => {
-          const actionKey = action.key;
-          const actionType = action.type;
-          const actionBuffs = action.buffs;
-          const actionCount = action.count;
-          const actionId = action.id;
-          const actionDisabled = action?.isDisabled ?? false;
-          const actionMainEcho = action?.mainEcho ?? null;
-          const actionMainEchoRank = action?.mainEchoRank ?? null;
-          // if the action is disabled, just skip it
-          if (actionDisabled) {
-            return;
-          }
-          const attacksList =
-            chosenChar.value?.[`${actionType}Attacks`]?.attacks ?? [];
-          let foundAction;
-          if (actionType === "echoSetAttacks") {
-            foundAction = echoSetAttacks.find((attack) => {
-              return attack.key === actionKey;
-            });
-          } else if (actionType === "utilityAttacks") {
-            foundAction = utilityAttacks.find((attack) => {
-              return attack.key === actionKey;
-            });
-          } else if (actionType === "echoAttacks") {
-            const echoData = getEchoData(actionMainEcho);
-            const echoAttacks = echoData?.actions ?? [];
-            foundAction = echoAttacks.find((attack) => {
-              return attack.key === actionKey;
-            });
-          } else {
-            foundAction = attacksList.find((attack) => {
-              return attack.key === actionKey;
-            });
-          }
-          if (foundAction) {
-            const actionData = {
-              ...foundAction,
-              buffs: null,
-              actionType,
-              count: actionCount,
-              id: actionId,
-              excludeSelfBuffs: action.excludeSelfBuffs ?? false,
-              excludeTeamBuffs: action.excludeTeamBuffs ?? false,
-              excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
-              actionMainEcho: action?.mainEcho ?? null,
-              actionMainEchoRank: action?.mainEchoRank ?? null,
-              // only exclude echoes if we excluded self, team, or weapon buffs
-              excludeEchoes:
-                action.excludeSelfBuffs ||
-                action.excludeTeamBuffs ||
-                action.excludeWeaponBuffs ||
-                false,
-            };
-            // if there are buffs, turn it into a hashmap
-            if (action?.buffs?.length) {
-              const buffsData = {};
-              // keys are unique, there should not be duplicates
-              action.buffs.forEach((buff) => {
-                // buffs are in human readable, convert to decimal except flat values
-                let buffValue;
-                if (
-                  ["ATK_FLAT", "HP_FLAT", "DEF_FLAT"].includes(buff.modifier)
-                ) {
-                  buffValue = Number(buff.modifierValue);
-                } else {
-                  buffValue = Number(buff.modifierValue) / 100;
-                }
-                buffsData[buff.modifier] = buffValue;
-              });
-              actionData.buffs = buffsData;
-            }
-            rotationActionInfo.push(actionData);
-          }
-        });
-        rotationInfo.attacks = rotationActionInfo;
-        rotationData = rotationInfo;
-      }
-
-      // get the mapping of the damage target
-      // we'll use this to get the damage out of the damage calculation (Normal/Avg/Crit)
-      // default to average if we didn't match anything
-      let damageTargetReference;
-      if (targetType === "Attack") {
-        const damageTargetMap = {
-          Normal: "totalDamage",
-          Average: "avgDamage",
-          Crit: "critDamage",
-        };
-        damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
-        if (targetType === "Attack" && attackData.type === "Shield") {
-          damageTargetReference = "shieldAmount";
-        }
-        if (targetType === "Attack" && attackData.type === "Healing") {
-          damageTargetReference = "healAmount";
-        }
-      }
-      if (targetType === "Rotation") {
-        const damageTargetMap = {
-          Normal: "normalDamage",
-          Average: "avgDamage",
-          Crit: "critDamage",
-        };
-        damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
-      }
-
-      for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
-        // Create a unique key for this combination based on echo keys, sorted
-        // Using echo.echoId to ensure we dont use the same specific echo, but we can use the same echoes
-        const echoIds = loadout.map((echo) => echo.echoId);
-        echoIds.sort(); // Sort in place for better performance
-        const combinationKey = echoIds.join("|");
-
-        // Skip if we've already seen this combination
-        if (seenCombinations.has(combinationKey)) {
-          continue;
-        }
-
-        // TODO: implement the stats and damage/desire stat
-        // calculate the total buffs from the echoes + set bonuses + main echo bonuses
-        // TODO: We have the echo stats, need to add in set bonuses and main echo bonuses
-        const echoStats = getCombinedEchoStats(loadout);
-        // get the echo sets list
-        const echoSets = getSetsFromEchoes(loadout);
-        const echoSetBonuses = getSetBonusEffects(echoSets);
-        const setBonusOne = echoSetBonuses?.setBonusOne ?? null;
-        const setBonusTwo = echoSetBonuses?.setBonusTwo ?? null;
-        //add in the main echo buff, if we have some
-        const mainEchoKey = loadout[0]?.echo;
-        const mainEchoBuff = mainEchoStats?.[mainEchoKey] ?? {};
-
-        // go through these buffs, and overlap them to get a final set of buffs in one object
-        // the keys will the stat keys, and the values will be the total buff value
-        // and we need to add them up
-        const setBonusOneBuffs = echoSetPassiveBuffs?.[setBonusOne] ?? {};
-        const setBonusTwoBuffs = echoSetPassiveBuffs?.[setBonusTwo] ?? {};
-        const allBuffsToAdd = [
-          echoStats,
-          mainEchoBuff,
-          setBonusOneBuffs,
-          setBonusTwoBuffs,
-        ];
-        const combinedEchoBuffs = {};
-        allBuffsToAdd.forEach((buffs) => {
-          Object.keys(buffs).forEach((key) => {
-            if (combinedEchoBuffs[key]) {
-              combinedEchoBuffs[key] += buffs[key];
-            } else {
-              combinedEchoBuffs[key] = buffs[key];
-            }
-          });
-        });
-        // first compute the stats without self buffs
-        let finalStats = calcCharStats(
-          "All", // return value
-          null, // inject stats
-          // ignores
-          {
-            ignoreEchoes: true,
-          },
-          combinedEchoBuffs, // echo stats
-          null, // full stats
-          // base stats
-          {
-            baseHp: baseHp.value,
-            baseAtk: baseAtk.value,
-            baseDef: baseDef.value,
-          },
-          {
-            weaponAtk: weaponData?.value?.attack,
-            weaponModifier: weaponData?.value?.modifier,
-            weaponModifierValue: weaponData?.value?.modifierValue,
-            weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-          },
-          {}, // NO SELF BUFFS
-          {}, // no resonance chains
-          echoStats.value,
-          customBuffs.value,
-          teamBuffsData.value,
-        );
-
-        // Compute all buffs in the correct order for this loadout
-        // Step 1: Compute resonance chains buffs using base stats
-        const resonanceChainsBuffsData = computeResonanceChainsBuffs(
-          characterStore.getActiveCharacter?.resonanceChains ?? {},
-          chosenChar.value?.resonanceChains ?? [],
-          talentData ?? {},
-        );
-
-        // Step 2: Compute self buffs using base stats
-        const selfBuffsData = computeSelfBuffs(
-          characterStore.getActiveCharacter?.buffs ?? {},
-          chosenChar.value?.buffs ?? [],
-          characterStore.getActiveCharacter?.resonanceChains ?? {},
-          talentData ?? {},
-          character?.value ?? null,
-        );
-
-        // Step 3: Calculate intermediate stats with resonance chains and self buffs
-        let intermediateStats = calcCharStats(
-          "All",
-          null,
-          {
-            ignoreEchoes: true,
-          },
-          combinedEchoBuffs,
-          null,
-          {
-            baseHp: baseHp.value,
-            baseAtk: baseAtk.value,
-            baseDef: baseDef.value,
-          },
-          {
-            weaponAtk: weaponData?.value?.attack,
-            weaponModifier: weaponData?.value?.modifier,
-            weaponModifierValue: weaponData?.value?.modifierValue,
-            weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-          },
-          selfBuffsData,
-          resonanceChainsBuffsData,
-          echoStats.value,
-          customBuffs.value,
-          teamBuffsData.value,
-        );
-
-        // Step 4: Compute AdditionalBase buffs using intermediate stats
-        const additionalBaseBuffsData = computeAdditionalBaseBuffs(
-          characterStore.getActiveCharacter?.buffs ?? {},
-          chosenChar.value?.buffs ?? [],
-          characterStore.getActiveCharacter?.resonanceChains ?? {},
-          character?.value ?? null,
-          intermediateStats.energyRegen,
-          intermediateStats.totalCritRate,
-        );
-
-        // Step 5: Compute CritOverflow buffs using intermediate stats
-        const critOverflowBuffsData = computeCritOverflowBuffs(
-          characterStore.getActiveCharacter?.buffs ?? {},
-          chosenChar.value?.buffs ?? [],
-          characterStore.getActiveCharacter?.resonanceChains ?? {},
-          chosenChar.value?.resonanceChains ?? [],
-          intermediateStats.totalCritRate,
-        );
-
-        // Step 6: Merge AdditionalBase and CritOverflow into self buffs
-        const mergedSelfBuffs = {
-          ...selfBuffsData,
-          CritRate:
-            (selfBuffsData?.CritRate || 0) +
-            (additionalBaseBuffsData?.CritRate || 0),
-          CritDMG:
-            (selfBuffsData?.CritDMG || 0) +
-            (additionalBaseBuffsData?.CritDMG || 0) +
-            (critOverflowBuffsData?.CritDMG || 0),
-          ATK: (selfBuffsData?.ATK || 0) + (additionalBaseBuffsData?.ATK || 0),
-          ATK_FLAT:
-            (selfBuffsData?.ATK_FLAT || 0) +
-            (additionalBaseBuffsData?.ATK_FLAT || 0),
-        };
-
-        // Step 7: Compute final stats with all buffs
-        finalStats = calcCharStats(
-          "All",
-          null,
-          {
-            ignoreEchoes: true,
-          },
-          combinedEchoBuffs,
-          null,
-          {
-            baseHp: baseHp.value,
-            baseAtk: baseAtk.value,
-            baseDef: baseDef.value,
-          },
-          {
-            weaponAtk: weaponData?.value?.attack,
-            weaponModifier: weaponData?.value?.modifier,
-            weaponModifierValue: weaponData?.value?.modifierValue,
-            weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-          },
-          mergedSelfBuffs,
-          resonanceChainsBuffsData,
-          echoStats.value,
-          customBuffs.value,
-          teamBuffsData.value,
-        );
-
-        // re-calculate the "total" stats
-        const weaponAtk = weaponData.value?.attack;
-        finalStats.totalAtk =
-          (baseAtk.value + weaponAtk) * (1 + finalStats.attackPercent / 100) +
-          finalStats.attackFlat;
-        finalStats.totalHp =
-          baseHp.value * (1 + finalStats.hpPercent / 100) + finalStats.hpFlat;
-        finalStats.totalDef =
-          baseDef.value * (1 + finalStats.defPercent / 100) +
-          finalStats.defFlat;
-        finalStats.totalCritRate = finalStats.critRate / 100;
-        finalStats.totalCritDMG = finalStats.critDMG / 100;
-        finalStats.DefIgnore = finalStats.defIgnore / 100;
-
-        // if we have some min stats, check them before we add them to the list of usable loadouts
-        let isMeetingMinRequirements = true;
-        if (minStats.length > 0) {
-          for (const minStat of minStats) {
-            const statValue = finalStats?.[minStat.stat];
-            const desiredValue = Number(minStat.minValue) / 100; // we need to divide as we're getting full int, but the stats calculated are decimals
-            // if any of the min stats aren't good enough, then don't use the loadout
-            if (statValue < desiredValue) {
-              isMeetingMinRequirements = false;
-              break;
-            }
-          }
-        }
-        // drop this loadout if it didnt meet the min requirements
-        if (!isMeetingMinRequirements) {
-          continue;
-        }
-
-        seenCombinations.add(combinationKey);
-
-        let targetValue = 0;
-        let context = {
-          finalStats,
-          targetType,
-          targetObject,
-        };
-        const loadoutArr = JSON.parse(JSON.stringify(loadout));
-        if (targetType === "Stat") {
-          // get the stat wer'e looking for from our final stats
-          targetValue = finalStats?.[targetObject] ?? 0;
-        } else if (targetType === "Attack") {
-          // TODO: We need to pass in the stats we have on-hand from the loadout
-          // and not use the stats that the current user has
-          // INFO: It works as it is right now, and the damages match, which is good
-          // Build context from optimizer's finalStats
-          const optimizerContext = getCalculationContext(
-            chosenChar.value,
-            combinedEchoBuffs, // use combinedEchoBuffs instead of echoStats.value
-            teamBuffsData.value,
-            talentData,
-            isSpectroFrazzleEnabled.value,
-            spectroFrazzleStacks.value,
-            isAeroErosionEnabled.value,
-            aeroErosionStacks.value,
-            characterLevel.value,
-            mainEcho.value,
-            mainEchoRank.value,
-            rotationsList.value,
-            charResonanceChainsData.value,
-            charBuffsData.value,
-            baseHp.value,
-            baseAtk.value,
-            baseDef.value,
-            weaponData.value,
-            customBuffs.value,
-            finalStats.glacio ?? Glacio.value,
-            finalStats.fusion ?? Fusion.value,
-            finalStats.electro ?? Electro.value,
-            finalStats.aero ?? Aero.value,
-            finalStats.spectro ?? Spectro.value,
-            finalStats.havoc ?? Havoc.value,
-            finalStats.totalDef,
-            finalStats.totalHp,
-            finalStats.energyRegen,
-            finalStats.totalAtk,
-            finalStats.basicAttackDMGBonus,
-            finalStats.heavyAttackDMGBonus,
-            finalStats.resonanceSkillDMGBonus,
-            finalStats.introSkillDMGBonus,
-            finalStats.outroSkillDMGBonus,
-            finalStats.resonanceLiberationDMGBonus,
-            finalStats.echoDMGBonus,
-            finalStats.healingBonus,
-            finalStats.shieldBonus,
-            finalStats.totalCritRate,
-            finalStats.totalCritDMG,
-            finalStats.DefIgnore,
-            havocBaneStacks.value,
-            finalStats.resistReduction,
-            finalStats.totalDeepenEffect,
-            enemyLevel.value,
-            enemyResist.value,
-            characters.value,
-            character.value,
-            enemyType.value,
-          );
-          const attacks = processAttacks(
-            [attackData], // attacks list, just the one since we're just doing 1 attack to optimize
-            optimizerContext,
-            null, // talentType = null since it will be figured out dynamically
-            false, // hasNoTalentType = no, unless it's outro (TODO)
-            true, // dynamicTalentType = yes, this will figure out the talent data for us
-            false, // excludeDisabledAttacks = no, unless we need to (TODO)
-            finalStats, // give our stats, it will use this instead of the global state
-            combinedEchoBuffs, // provide the echoes so we can exclude them if needed
-          );
-          targetValue = attacks?.[0]?.damage?.[damageTargetReference] ?? 0;
-          context.attacks = attacks;
-          // console.log(
-          //   targetValue,
-          //   attacks,
-          //   JSON.parse(JSON.stringify(loadout)),
-          //   finalStats,
-          // );
-          // console.log("==============================");
-        } else if (targetType === "Rotation") {
-          // TODO: This is a copy and paste of the original rotations processing
-          // We should abstract this out
-
-          const rotationInfo = {
-            id: rotationData.id,
-            name: rotationData.name,
-            description: rotationData.description,
-            duration: rotationData.duration ?? null,
-            echo: rotationData.echo ?? null,
-          };
-          console.log("optimize:", rotationData.attacks, talentData);
-          // Build context from optimizer's finalStats
-          const optimizerContext = getCalculationContext(
-            chosenChar.value,
-            combinedEchoBuffs, // use combinedEchoBuffs instead of echoStats.value
-            teamBuffsData.value,
-            talentData,
-            isSpectroFrazzleEnabled.value,
-            spectroFrazzleStacks.value,
-            isAeroErosionEnabled.value,
-            aeroErosionStacks.value,
-            characterLevel.value,
-            mainEcho.value,
-            mainEchoRank.value,
-            rotationsList.value,
-            charResonanceChainsData.value,
-            charBuffsData.value,
-            baseHp.value,
-            baseAtk.value,
-            baseDef.value,
-            weaponData.value,
-            customBuffs.value,
-            finalStats.glacio ?? Glacio.value,
-            finalStats.fusion ?? Fusion.value,
-            finalStats.electro ?? Electro.value,
-            finalStats.aero ?? Aero.value,
-            finalStats.spectro ?? Spectro.value,
-            finalStats.havoc ?? Havoc.value,
-            finalStats.totalDef,
-            finalStats.totalHp,
-            finalStats.energyRegen,
-            finalStats.totalAtk,
-            finalStats.basicAttackDMGBonus,
-            finalStats.heavyAttackDMGBonus,
-            finalStats.resonanceSkillDMGBonus,
-            finalStats.introSkillDMGBonus,
-            finalStats.outroSkillDMGBonus,
-            finalStats.resonanceLiberationDMGBonus,
-            finalStats.echoDMGBonus,
-            finalStats.healingBonus,
-            finalStats.shieldBonus,
-            finalStats.totalCritRate,
-            finalStats.totalCritDMG,
-            finalStats.DefIgnore,
-            havocBaneStacks.value,
-            finalStats.resistReduction,
-            finalStats.totalDeepenEffect,
-            enemyLevel.value,
-            enemyResist.value,
-            characters.value,
-            character.value,
-            enemyType.value,
-          );
-          const attacks = processAttacks(
-            rotationData.attacks, // process all attacks in this rotations
-            optimizerContext,
-            null, // talentType = null since it will be figured out dynamically
-            false, // hasNoTalentType = no, unless it's outro (TODO)
-            true, // dynamicTalentType = yes, this will figure out the talent data for us
-            false, // excludeDisabledAttacks = no, unless we need to (TODO)
-            finalStats, // give our stats, it will use this instead of the global state
-            combinedEchoBuffs, // provide the echoes so we can exclude them if needed
-          );
-          // capture all damages
-          const damageAggregation = {
-            normalDamage: null,
-            avgDamage: null,
-            critDamage: null,
-            healing: null,
-            shield: null,
-          };
-          // go through all attacks and update our aggregation
-          attacks.forEach((attack) => {
-            if (attack?.originalIsEnabled === false) {
-              return;
-            }
-            if (attack?.damage?.totalDamage !== undefined) {
-              damageAggregation.normalDamage =
-                (damageAggregation.normalDamage || 0) +
-                attack?.damage?.totalDamage;
-            }
-
-            if (attack?.damage?.avgDamage !== undefined) {
-              damageAggregation.avgDamage =
-                (damageAggregation.avgDamage || 0) + attack?.damage?.avgDamage;
-            }
-
-            if (attack?.damage?.critDamage !== undefined) {
-              damageAggregation.critDamage =
-                (damageAggregation.critDamage || 0) +
-                attack?.damage?.critDamage;
-            }
-
-            if (
-              attack.type === "Healing" &&
-              attack?.damage?.healAmount !== undefined
-            ) {
-              damageAggregation.healing =
-                (damageAggregation.healing || 0) + attack?.damage?.healAmount;
-            }
-
-            if (
-              attack.type === "Shield" &&
-              attack?.damage?.shieldAmount !== undefined
-            ) {
-              damageAggregation.shield =
-                (damageAggregation.shield || 0) + attack?.damage?.shieldAmount;
-            }
-          });
-          rotationInfo.attacks = attacks;
-          rotationInfo.damageAggregation = damageAggregation;
-          //
-          targetValue =
-            rotationInfo.damageAggregation?.[damageTargetReference] ?? 0;
-          context.attacks = rotationInfo;
-          // console.log(rotationInfo);
-        }
-        processedCombos.value++;
-
-        if (heap.length < topN) {
-          heap.push({
-            loadout: loadoutArr,
-            targetValue,
-            context,
-            id: randomString(),
-          });
-          heap.sort((a, b) => a.targetValue - b.targetValue); // min at index 0
-        } else if (targetValue > heap[0].targetValue) {
-          heap[0] = {
-            loadout: loadoutArr,
-            targetValue,
-            context,
-            id: randomString(),
-          };
-          heap.sort((a, b) => a.targetValue - b.targetValue);
-        }
-      }
-
-      return heap.sort((a, b) => b.targetValue - a.targetValue); // descending
-    }
 
     function handleSelectedAttack(attackKey, damage, label) {
       selectedStat.value = null;
