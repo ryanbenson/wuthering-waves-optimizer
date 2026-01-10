@@ -2,6 +2,14 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>January 10, 2026</h3>
+    <ul>
+      <li>
+        Enhances the optimizer to use web workers to make it support
+        significantly more loadouts without causing issues and process large
+        amounts of loadouts faster.
+      </li>
+    </ul>
     <h3>January 9, 2026</h3>
     <ul>
       <li>Rewrote the code for the attacks and damages handling.</li>
