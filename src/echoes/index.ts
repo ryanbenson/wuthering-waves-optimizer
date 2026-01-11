@@ -1412,8 +1412,8 @@ CD: <span class="param">20</span>s.</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Hyvatia.webp",
-    details: `<span class="description">Summon Hyvatia in mid-air to fire lasers at enemies, dealing <span class="Highlight">18.24%/21.28%/24.32%/27.36%</span> Spectro DMG 10 times.<br><br>
-Casting Outro Skill within 15s after summoning Hyvatia grants <span class="Highlight">10.00%</span> All-Attribute DMG Bonus to the Intro Skill of the incoming Resonator for 15s.<br><br>
+    details: `<span class="description">Summon Hyvatia to fire lasers at enemies from mid-air, dealing <span class="Highlight">18.24%/21.28%/24.32%/27.36%</span> Spectro DMG 10 times.<br><br>
+Casting Outro Skill within 15s after summoning Hyvatia grants <span class="Highlight">10.00%</span> All-Attribute DMG Bonus to the next Resonator using Intro Skill for 15s.<br><br>
 CD: 20s.</span>`,
     modifiers: [],
     actions: [

@@ -1744,7 +1744,7 @@ CD: <span class="param">20</span>s</span>`,
   {
     key: "Hyvatia",
     name: "Hyvatia",
-    details: `<span class="description">Casting Outro Skill within 15s after summoning Hyvatia grants 10.00% All-Attribute DMG Bonus to the Intro Skill of the incoming Resonator for 15s.</span>`,
+    details: `<span class="description">Casting Outro Skill within 15s after summoning Hyvatia grants 10.00% All-Attribute DMG Bonus to the next Resonator using Intro Skill for 15s.</span>`,
     hasStacks: false,
     modifiers: [
       {
