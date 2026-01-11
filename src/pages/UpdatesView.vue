@@ -9,6 +9,7 @@
         significantly more loadouts without causing issues and process large
         amounts of loadouts faster.
       </li>
+      <li>Fixed a bug where Rite of Gilded Revelation 5pc 40% effect was overbuffing</li>
     </ul>
     <h3>January 9, 2026</h3>
     <ul>
