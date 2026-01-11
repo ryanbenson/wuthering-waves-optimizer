@@ -513,6 +513,7 @@ export const calculateAttackDamage = (
     (providedEchoStats ?? context.equipment.echoStats)?.[
       `ForteBased:${originalForte}:${attack.type}`
     ] ?? 0;
+  console.log(selfBuffs);
   let specificSkillDmg =
     specificSkillDmgFromResonanceChains +
     specificSkillDmgFromCharBuffs +
@@ -806,7 +807,10 @@ export const calculateAttackDamage = (
     // Lynae, and others, have special Tune Break type attacks that have talents leveled off of their forte
     // also, normal tune break doesn't get affected by resist or resist reduction
     // but the special attacks do element based dmg, so they do
-    if (attack.key === "TuneRuptureResponseSpectralAnalysisDMG") {
+    if (
+      attack.key === "TuneRuptureResponseSpectralAnalysisDMG" ||
+      attack.key === "TuneRuptureResponseParticleJetDMG"
+    ) {
       talent = attack.talents[context.character.talentData?.forte];
       enemyResistVal = context.enemy.enemyResist;
       resistReduction = totalResistReduction;

@@ -2054,6 +2054,27 @@ export const allWeaponTeamBuffs = [
     details: `Each time the wielder inflicts <span class="highlight">Tune Rupture - Shifting</span> or <span class="highlight">Tune Strain - Shifting</span> during Basic Attacks, all DMG dealt by Resonators in the team is increased by <span class="highlight">8%/10%/12%/14%/16%</span> for 30s, up to 3 stacks. Effects of the same name cannot be stacked.`,
     alwaysEnabled: false,
   },
+  {
+    name: "Starfield Calibrator",
+    key: "StarfieldCalibratorCritDMG",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifierByRefinement: {
+          "1": 0.2,
+          "2": 0.25,
+          "3": 0.3,
+          "4": 0.35,
+          "5": 0.4,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by <span class="Param">20%/25%/30%/35%/40%</span> for 4s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
 ];
 
 export const allCharacters: string[] = [

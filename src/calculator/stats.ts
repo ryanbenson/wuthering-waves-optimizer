@@ -866,6 +866,9 @@ export const computeAdditionalBaseBuffs = (
             case "ATK_FLAT":
               data["ATK_FLAT"] = (data["ATK_FLAT"] || 0) + buffValue;
               break;
+            case "DMGBonus":
+              data["DMGBonus"] = (data["DMGBonus"] || 0) + buffValue;
+              break;
           }
         }
       });
