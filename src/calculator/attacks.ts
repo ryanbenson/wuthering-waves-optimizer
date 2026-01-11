@@ -513,7 +513,6 @@ export const calculateAttackDamage = (
     (providedEchoStats ?? context.equipment.echoStats)?.[
       `ForteBased:${originalForte}:${attack.type}`
     ] ?? 0;
-  console.log(selfBuffs);
   let specificSkillDmg =
     specificSkillDmgFromResonanceChains +
     specificSkillDmgFromCharBuffs +
@@ -832,6 +831,7 @@ export const calculateAttackDamage = (
       resistReduction,
       totalDefIgnore,
       totalTuneBreakBoost, // tuneBreakBoost
+      totalTalentModifierMultiply,
       tuneBreakDmgBonus, // tune break bonusDmg (e.g. Hyvatia's 100% bonus)
       count,
     );

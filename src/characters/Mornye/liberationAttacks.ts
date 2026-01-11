@@ -6,7 +6,7 @@ export const liberationAttacks = {
       key: "CriticalProtocolDMG",
       label: "Critical Protocol DMG",
       type: "Liberation",
-      attribute: "def",
+      attribute: "defense",
       talents: {
         "1": "262.73%",
         "2": "284.27%",

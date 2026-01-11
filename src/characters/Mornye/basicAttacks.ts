@@ -193,7 +193,7 @@ export const basicAttacks = {
       key: "InherentSkillBoundedness",
       label: "Boundedness Healing",
       type: "Healing",
-      attribute: "def",
+      attribute: "defense",
       talents: {
         "1": "150%",
         "2": "150%",

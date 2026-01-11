@@ -569,7 +569,17 @@
         <span class="text-primary">
           {{ damage.totalDamageContext.levelModifier }}
         </span>
-        ×
+        × (
+        <span class="text-primary">
+          1 +
+          {{
+            displayPercentage(
+              damage.totalDamageContext.talentModifierMultiply * 100,
+              2,
+            )
+          }}
+        </span>
+        ) ×
         <span class="text-primary">
           {{
             displayPercentage(damage.totalDamageContext.totalTalent * 100, 2)
@@ -612,6 +622,17 @@
       <div class="formula bg-base-200 p-2 rounded-md font-mono">
         <span class="text-secondary font-bold">
           {{ damage.totalDamageContext.levelModifier }}
+        </span>
+      </div>
+      <div class="font-bold mt-2 text-lg text-primary">DMG Multiplier</div>
+      <div class="formula bg-base-200 p-2 rounded-md font-mono">
+        <span class="text-secondary font-bold">
+          {{
+            displayPercentage(
+              damage.totalDamageContext.talentModifierMultiply * 100,
+              2,
+            )
+          }}
         </span>
       </div>
       <div class="font-bold mt-2 text-lg text-primary">Tune AMP</div>

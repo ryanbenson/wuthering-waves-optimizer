@@ -1,6 +1,6 @@
 function processHTML(html) {
-  // Remove all <a> tags and their contents
-  html = html.replace(/<a[^>]*>.*?<\/a>/gi, "");
+  // Remove <a> tags but keep their contents
+  html = html.replace(/<a[^>]*>(.*?)<\/a>/gi, "$1");
 
   // Remove all <size> tags (e.g., <size=10>, <size=40>)
   html = html.replace(/<\/?size[^>]*>/gi, "");

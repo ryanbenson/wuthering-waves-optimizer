@@ -1,18 +1,28 @@
 export const resonanceChains = [
   {
-    key: "SequenceNode1DaystobePaintedLikeaCanvas",
-    name: "Sequence Node 1: Days to be Painted Like a Canvas",
-    details: `<div>The DMG Multiplier of <span class="Highlight"><strong>Basic Attack - Polychrome Leap</strong></span> is increased by 120%.<br>The duration of <span class="Highlight"><strong>Spray Paint</strong></span> is increased by 100%. Targets within the range of <span class="Highlight"><strong>Spray Paint</strong></span> are pulled in towards the center every 6s.<br>Lynae is now immune to interruptions during <span class="Highlight"><strong>Basic Attack - Polychrome Leap</strong></span> and <span class="Highlight"><strong>Basic Attack - Visual Impact</strong></span>.<br>During <span class="Highlight"><strong>Optical Sampling Stage</strong></span>, after staying out of combat for 2s, restore 120 points of <span class="Highlight"><strong>Overflow</strong></span>.</div>`,
+    key: "SequenceNode1TheSilentObserver",
+    name: "Sequence Node 1: The Silent Observer",
+    details: `<div><span class="Highlight"><strong>Basic Attack – Wide Field Observation Mode</strong></span> becomes immune to interruption.<br>The duration of <span class="Highlight"><strong></strong></span> is extended by 150%. <span class="Highlight"><strong></strong></span> now grants DMG increase even when the target is not affected by <span class="Highlight"><strong></strong></span> or <span class="Highlight"><strong></strong></span>. When Mornye applies <span class="Highlight"><strong></strong></span> on a target, she also inflicts <span class="Highlight"><strong></strong></span>.</div>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode2MorningStarofEntropy",
+    name: "Sequence Node 2: Morning Star of Entropy",
+    details: `<div>All nearby Resonators in the team gain Crit. DMG increase against targets with <span class="Highlight"><strong></strong></span>: Every 1% of Mornye's Energy Regen over 100% grants 0.2% Crit. DMG increase, up to 32%.<br><span class="Highlight"><strong></strong></span> and <span class="Highlight"><strong></strong></span> further increase the <span class="Highlight"><strong>Off-Tune Buildup Rate</strong></span> of all nearby Resonators in the team by 20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "BasicAttackPolychromeLeap1",
-          "BasicAttackPolychromeLeap2",
-          "BasicAttackPolychromeLeap3",
-        ],
-        modifierValue: 1.2,
+        modifier: "CritDMG:AdditionalBase",
+        modifierValue: 0.002,
+        maximumValue: 0.32,
+        modifierStep: 1,
+        modifierBasedOn: "EnergyRegen",
+        modifierTargetAttr: "CritDMG",
+        minStatValue: 1,
       },
     ],
     minStacks: 0,
@@ -20,105 +30,65 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode2IntoLightsVanishingPoint",
-    name: "Sequence Node 2: Into Lights' Vanishing Point",
-    details: `<span class="skilldescription">Gain 25% All-DMG Amplification.<br>
-Outro Skill gains the following effect:<br>
-Casting Outro Skill grants the incoming Resonator 25% All-DMG Amplification for 14s or until the Resonator is switched out.</span>`,
+    key: "SequenceNode3BlueprintofRecursion",
+    name: "Sequence Node 3: Blueprint of Recursion",
+    details: `<div>Casting <span class="Highlight"><strong>Resonance Skill - Distributed Array</strong></span> additionally restores 25 points of Concerto Energy and 100 <span class="Highlight"><strong></strong></span>, triggered once every 25s.</div>`,
     hasStacks: false,
-    modifiers: [
-      {
-        modifier: "DMGDeepen",
-        modifierValue: 0.25,
-      },
-    ],
+    modifiers: [],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode3ForOneBrilliantMoment",
-    name: "Sequence Node 3: For One Brilliant Moment",
-    details: `<div>The DMG Multiplier of <span class="Highlight"><strong>Basc Attack - Visual Impact</strong></span> and <span class="Highlight"><strong>Basic Attack - Iridescent Splash</strong></span> is increased by 90%.</div>`,
+    key: "SequenceNode4LatentVariablesoftheCosmos",
+    name: "Sequence Node 4: Latent Variables of the Cosmos",
+    details: `<span class="skilldescription">The healing of <span class="Highlight">High Syntony Field</span> is increased by 30%.</span>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "BasicAttackVisualImpactDMG",
-          "BasicAttackIridescentSplashDMG",
-        ],
-        modifierValue: 0.9,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode3ForOneBrilliantMomentAdditiveColor",
-    name: "Sequence Node 3: For One Brilliant Moment (Additive Color)",
-    details: `<div>With <span class="Highlight"><strong>Lumiflow</strong></span> ≥ 120 points. Lynae gains 1 stack of <span class="Highlight"><strong>Premixed Hue</strong></span> every 1s, up to 25 stacks. Each stack of <span class="Highlight"><strong>Premixed Hue</strong></span> increases the Spectro DMG dealt through <span class="Highlight"><strong>Additive Color</strong></span> by 55%. No <span class="Highlight"><strong>Premixed Hue</strong></span> is gained while casting <span class="Highlight"><strong>Additive Color</strong></span>. When <span class="Highlight"><strong>Additive Color</strong></span> ends, remove all stacks of <span class="Highlight"><strong>Premixed Hue</strong></span>. Lynae loses a stack of <span class="Highlight"><strong>Premixed Hue</strong></span> every 0.5s once <span class="Highlight"><strong>Lumiflow</strong></span> is below 120 points.<br>While Lynae is out of combat, Premixed Hue regenerates twice as fast and depletes half as fast.</div>`,
-    hasStacks: true,
-    modifiers: [
-      {
-        // Note: buff says spectro buff, but we're setting it to generic dmg bonus, same thing
-        modifySpecificTalents: ["AdditiveColorDMG"],
-        modifierValue: 0.55,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 25,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode4ShadowsofaWindRacer",
-    name: "Sequence Node 4: Shadows of a Wind Racer",
-    details: `<span class="skilldescription">ATK is increased by 20%.</span>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "ATK",
-        modifierValue: 0.2,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode5VisionsofaFutureUnbound",
-    name: "Sequence Node 5: Visions of a Future Unbound",
-    details: `<span class="skilldescription">The DMG Multiplier of <span class="Highlight">Resonance Liberation - Prismatic Overblast</span> is increased by 70%.</span>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["PrismaticOverblastDMG"],
-        modifierValue: 0.7,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "SequenceNode6PaintedinMyTrueColor",
-    name: "Sequence Node 6: Painted in My True Color",
-    details: `<div>Each time <span class="Highlight"><strong>Kaleidoscopic Parade - Graffiti Blast</strong></span> or <span class="Highlight"><strong>Kaleidoscopic Parade - Mid-air Heavy Attack</strong></span> is cast, Lynae gains 1 stack of <span class="Highlight"><strong>Color of Soul</strong></span>, up to 3 stacks. Each stack of <span class="Highlight"><strong>Color of Soul</strong></span> increases the DMG the target takes from <span class="Highlight"><strong>Basic Attack - Iridescent Splash</strong></span> and <span class="Highlight"><strong>Basic Attack - Visual Impact</strong></span> by 30%. After casting <span class="Highlight"><strong>Basic Attack - Iridescent Splash</strong></span> or <span class="Highlight"><strong>Basic Attack - Visual Impact</strong></span>, all stacks of <span class="Highlight"><strong>Color of Soul</strong></span> are removed.<br>Casting <span class="Highlight"><strong>Basic Attack - Polychrome Leap</strong></span> resets the charges of <span class="Highlight"><strong>Kaleidoscopic Parade - Mid-air Heavy Attack</strong></span>.<br>Lynae is immune to interruptions, and DMG taken is reduced by 30% during <span class="Highlight"><strong>Kaleidoscopic Parade - Mid-air Heavy Attack</strong></span>.<br>Lynae now stays in <span class="Highlight"><strong>Kaleidoscopic Parade</strong></span> after casting <span class="Highlight"><strong>Outro Skill - Let's Hit the Road!</strong></span>.<br>The <span class="Highlight"><strong>Lumiflow</strong></span> upper limit is increased from 120 to 360. At the max limit, Lynae's roller skating speed further increases.<br>If Intro Skill is cast during <span class="Highlight"><strong>Lumiflow</strong></span>.</div>`,
-    hasStacks: true,
-    modifiers: [
-      {
-        modifier: "specialMultiplier",
-        modifySpecificTalents: [
-          "BasicAttackIridescentSplashDMG",
-          "BasicAttackVisualImpactDMG",
-        ],
+        modifier: "HealingBonus",
+        modifySpecificTalents: ["SyntonyFieldHealing"],
         modifierValue: 0.3,
       },
     ],
     minStacks: 0,
-    maxStacks: 3,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode5TimeDilationEffect",
+    name: "Sequence Node 5: Time Dilation Effect",
+    details: `<div>The DMG Multiplier of <span class="Highlight"><strong>Resonance Liberation - Critical Protocol</strong></span> is increased by 40%.<br>The DMG Multiplier of <span class="Highlight"><strong>Tune Rupture Response - Particle Jet</strong></span> is increased by 160%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["CriticalProtocolDMG"],
+        modifierValue: 0.4,
+      },
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["TuneRuptureResponseParticleJetDMG"],
+        modifierValue: 1.6,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode6TotheFarShoresoftheStars",
+    name: "Sequence Node 6: To the Far Shores of the Stars",
+    details: `<div><span class="Highlight">Resonance Liberation - Critical Protocol</span> deals 400% more DMG. If Mornye has not engaged in combat for over 4s, she restores Resonance Energy equal to 10% of her Max Resonance Energy every 0.2s.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifySpecificTalents: ["CriticalProtocolDMG"],
+        modifierValue: 4,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
     alwaysEnabled: false,
   },
 ];

@@ -6,7 +6,7 @@ export const forteCircuitAttacks = {
       key: "SyntonyFieldHealing",
       label: "Syntony Field Healing",
       type: "Healing",
-      attribute: "def",
+      attribute: "defense",
       talents: {
         "1": "40+9.63%",
         "2": "44+10.02%",

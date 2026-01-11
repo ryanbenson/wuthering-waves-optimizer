@@ -853,22 +853,39 @@ export const computeAdditionalBaseBuffs = (
           if (buffValue < 0) {
             buffValue = 0;
           }
-          switch (modifierItem.modifierTargetAttr) {
-            case "CritRate":
-              data["CritRate"] = (data["CritRate"] || 0) + buffValue;
-              break;
-            case "CritDMG":
-              data["CritDMG"] = (data["CritDMG"] || 0) + buffValue;
-              break;
-            case "ATK":
-              data["ATK"] = (data["ATK"] || 0) + buffValue;
-              break;
-            case "ATK_FLAT":
-              data["ATK_FLAT"] = (data["ATK_FLAT"] || 0) + buffValue;
-              break;
-            case "DMGBonus":
-              data["DMGBonus"] = (data["DMGBonus"] || 0) + buffValue;
-              break;
+          const modifiesSpecificTalents =
+            modifierItem?.modifySpecificTalents ?? [];
+          if (modifiesSpecificTalents.length <= 0) {
+            switch (modifierItem.modifierTargetAttr) {
+              case "CritRate":
+                data["CritRate"] = (data["CritRate"] || 0) + buffValue;
+                break;
+              case "CritDMG":
+                data["CritDMG"] = (data["CritDMG"] || 0) + buffValue;
+                break;
+              case "ATK":
+                data["ATK"] = (data["ATK"] || 0) + buffValue;
+                break;
+              case "ATK_FLAT":
+                data["ATK_FLAT"] = (data["ATK_FLAT"] || 0) + buffValue;
+                break;
+              case "DMGBonus":
+                data["DMGBonus"] = (data["DMGBonus"] || 0) + buffValue;
+                break;
+            }
+          } else {
+            // put the additional based on the specific multiplier
+            const specificTalentBuffs: Record<string, number> = {};
+            modifierItem.modifySpecificTalents.forEach((talent: string) => {
+              const talentModifierKey = `${talent}:${modifierItem.modifierTargetAttr}`;
+              specificTalentBuffs[talentModifierKey] =
+                (specificTalentBuffs[talentModifierKey] || 0) + buffValue;
+            });
+            data.specificTalentBuffs = Object.assign(
+              {},
+              data.specificTalentBuffs,
+              specificTalentBuffs,
+            );
           }
         }
       });
@@ -1195,10 +1212,20 @@ export const calculateAllStats = (context: {
     teamBuffsData,
   );
 
-  // Step 4: Compute AdditionalBase buffs using intermediate stats
+  // Step 4a: Compute AdditionalBase buffs using intermediate stats (self buffs)
   const additionalBaseBuffsData = computeAdditionalBaseBuffs(
     buffsConfig ?? {},
     buffsCharInfo ?? [],
+    resonanceChainsConfig ?? {},
+    character ?? "",
+    intermediateStats.energyRegen,
+    intermediateStats.totalCritRate,
+  );
+
+  // Step 4b: Compute AdditionalBase buffs using intermediate stats (resonance chains)
+  const additionalBaseBuffsDataFromResonanceChains = computeAdditionalBaseBuffs(
+    resonanceChainsConfig ?? {},
+    resonanceChainsCharInfo ?? [],
     resonanceChainsConfig ?? {},
     character ?? "",
     intermediateStats.energyRegen,
@@ -1214,8 +1241,8 @@ export const calculateAllStats = (context: {
     intermediateStats.totalCritRate,
   );
 
-  // Step 6: Merge AdditionalBase and CritOverflow into self buffs
-  const mergedSelfBuffs = {
+  // Step 6a: Merge AdditionalBase and CritOverflow into self buffs (self buffs)
+  let mergedSelfBuffs = {
     ...selfBuffsData,
     CritRate:
       (selfBuffsData?.CritRate || 0) + (additionalBaseBuffsData?.CritRate || 0),
@@ -1227,6 +1254,30 @@ export const calculateAllStats = (context: {
     ATK_FLAT:
       (selfBuffsData?.ATK_FLAT || 0) + (additionalBaseBuffsData?.ATK_FLAT || 0),
   };
+  // Step 6b: Merge AdditionalBase and CritOverflow into self buffs (self buffs)
+  let mergedResonanceChainsBuffsData = {
+    ...resonanceChainsBuffsData,
+    CritRate:
+      (resonanceChainsBuffsData?.CritRate || 0) +
+      (additionalBaseBuffsDataFromResonanceChains?.CritRate || 0),
+    CritDMG:
+      (resonanceChainsBuffsData?.CritDMG || 0) +
+      (additionalBaseBuffsDataFromResonanceChains?.CritDMG || 0) +
+      (critOverflowBuffsData?.CritDMG || 0),
+    ATK:
+      (resonanceChainsBuffsData?.ATK || 0) +
+      (additionalBaseBuffsDataFromResonanceChains?.ATK || 0),
+    ATK_FLAT:
+      (resonanceChainsBuffsData?.ATK_FLAT || 0) +
+      (additionalBaseBuffsDataFromResonanceChains?.ATK_FLAT || 0),
+  };
+
+  // merge the specificTalentBuffs together
+  mergedSelfBuffs.specificTalentBuffs = Object.assign(
+    {},
+    selfBuffsData?.specificTalentBuffs ?? {},
+    additionalBaseBuffsData?.specificTalentBuffs ?? {},
+  );
 
   // Step 7: Calculate final stats with all buffs
   const finalStats = calcCharStats(
@@ -1243,7 +1294,7 @@ export const calculateAllStats = (context: {
       weaponPassiveData,
     },
     mergedSelfBuffs,
-    resonanceChainsBuffsData,
+    mergedResonanceChainsBuffsData,
     echoStats,
     customBuffs,
     teamBuffsData,
@@ -1262,7 +1313,7 @@ export const calculateAllStats = (context: {
   return {
     finalStats,
     selfBuffsData: mergedSelfBuffsForBreakdown,
-    resonanceChainsBuffsData,
+    resonanceChainsBuffsData: mergedResonanceChainsBuffsData,
     additionalBaseBuffsData,
     critOverflowBuffsData,
   };

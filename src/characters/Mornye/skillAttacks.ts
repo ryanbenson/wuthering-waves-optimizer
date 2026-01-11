@@ -6,7 +6,7 @@ export const skillAttacks = {
       key: "DistributedArrayHealing",
       label: "Distributed Array Healing",
       type: "Healing",
-      attribute: "def",
+      attribute: "defense",
       talents: {
         "1": "225+54.00%",
         "2": "252+56.16%",
@@ -24,7 +24,7 @@ export const skillAttacks = {
       key: "ExpectationErrorHealing",
       label: "Expectation Error Healing",
       type: "Healing",
-      attribute: "def",
+      attribute: "defense",
       talents: {
         "1": "49+11.88%",
         "2": "55+12.35%",
