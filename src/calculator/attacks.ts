@@ -531,7 +531,7 @@ export const calculateAttackDamage = (
     coordinatedEchoDmgBonus / 100 +
     genericSkillDmgBonusEchoBuff / 100 +
     coordinatedDmgBonusCustomBuffs +
-    totalForteBasedDmgBuff;
+    totalForteBasedDmgBuff / 100;
 
   // Resist Shred:
   let teamBuffResistShredForCharElement =
