@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>January 11, 2026</h3>
+    <ul>
+      <li>Updates Hyvatia description.</li>
+    </ul>
     <h3>January 10, 2026</h3>
     <ul>
       <li>
@@ -9,7 +13,10 @@
         significantly more loadouts without causing issues and process large
         amounts of loadouts faster.
       </li>
-      <li>Fixed a bug where Rite of Gilded Revelation 5pc 40% effect was overbuffing</li>
+      <li>
+        Fixed a bug where Rite of Gilded Revelation 5pc 40% effect was
+        overbuffing
+      </li>
     </ul>
     <h3>January 9, 2026</h3>
     <ul>
