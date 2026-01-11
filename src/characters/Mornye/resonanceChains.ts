@@ -83,6 +83,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
+        modifier: "specialMultiplier",
         modifySpecificTalents: ["CriticalProtocolDMG"],
         modifierValue: 4,
       },
