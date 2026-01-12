@@ -2,7 +2,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode1TheSilentObserver",
     name: "Sequence Node 1: The Silent Observer",
-    details: `<div><span class="Highlight"><strong>Basic Attack – Wide Field Observation Mode</strong></span> becomes immune to interruption.<br>The duration of <span class="Highlight"><strong>Interfered Marker</strong></span> is extended by 150%. <span class="Highlight"><strong>Interfered Marker</strong></span> now grants DMG increase even when the target is not affected by <span class="Highlight"><strong>Tune Rupture - Interfered</strong></span> or <span class="Highlight"><strong>Tune Strain - Interfered</strong></span>. When Mornye applies <span class="Highlight"><strong>Observation Marker</strong></span> on a target, she also inflicts <span class="Highlight"><strong>Interfered Marker</strong></span>.</div>>`,
+    details: `<div><span class="Highlight"><strong>Basic Attack – Wide Field Observation Mode</strong></span> becomes immune to interruption.<br>The duration of <span class="Highlight"><strong>Interfered Marker</strong></span> is extended by 150%. <span class="Highlight"><strong>Interfered Marker</strong></span> now grants DMG increase even when the target is not affected by <span class="Highlight"><strong>Tune Rupture - Interfered</strong></span> or <span class="Highlight"><strong>Tune Strain - Interfered</strong></span>. When Mornye applies <span class="Highlight"><strong>Observation Marker</strong></span> on a target, she also inflicts <span class="Highlight"><strong>Interfered Marker</strong></span>.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,

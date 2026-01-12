@@ -2902,7 +2902,7 @@ CD: <span class="param">20</span>s.</span>`,
 <br><br>
 The Resonator with this Echo equipped in their main slot gain 10.00% Energy Regen.
 <br><br>
-CD: 20s./span>`,
+CD: 20s.</span>`,
     modifiers: [
       {
         modifier: "EnergyRegen",
