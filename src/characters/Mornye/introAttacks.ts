@@ -1,6 +1,6 @@
 export const introAttacks = {
   name: "Intro Skill: Convergence",
-  description: `<div>Attack the target to deal <span class="Fusion"><strong>Fusion DMG</strong></span>, then jump into mid-air, clearing all <span class="Highlight"><strong></strong></span> and entering <span class="Highlight"><strong></strong></span>.</div>`,
+  description: `<div>Attack the target to deal <span class="Fusion"><strong>Fusion DMG</strong></span>, then jump into mid-air, clearing all <span class="Highlight"><strong>Rest Mass Energy</strong></span> and entering <span class="Highlight"><strong>Wide Field Observation Mode</strong></span>.</div>`,
   attacks: [
     {
       key: "ConvergenceDMG",

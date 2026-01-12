@@ -2,7 +2,7 @@ export const buffs = [
   {
     key: `InterferedMarker`,
     name: `Interfered Marker`,
-    details: `<div>Targets affected by <span class="Highlight">Tune Rupture - Interfered</span> or <span class="Highlight">Tune Strain - Interfered</span> take increased DMG from all nearby Resonators in the team. For every 1% of Mornye's Energy Regen exceeding 100%, their DMG is increased by 0.25%, up to 40%.</div>`,
+    details: `<div>Targets affected by <span class="Highlight"><strong>Tune Rupture - Interfered</strong></span> or <span class="Highlight"><strong>Tune Strain - Interfered</strong></span> take increased DMG from all nearby Resonators in the team. For every 1% of Mornye's Energy Regen exceeding 100%, their DMG is increased by 0.25%, up to 40%.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -22,10 +22,10 @@ export const buffs = [
   {
     key: `HighSyntonyField`,
     name: `High Syntony Field`,
-    details: `<div><span class="Highlight">High Syntony Field</span> lasts for 25s.<br>
-- Increases the DEF of all nearby Resonators in the team within the <span class="Highlight">High Syntony Field</span> by 20%.<br>
-- Inherits the <span class="Highlight">Syntony Field</span>'s boost to resistance to interruption and <span class="Highlight">Off-Tune Buildup Rate</span>.<br>
-- Inherits the <span class="Highlight">Syntony Field</span>'s healing effect and increases the Healing Multiplier by 40%.</div>`,
+    details: `<div><span class="Highlight"><strong>High Syntony Field</strong></span> lasts for 25s.<br>
+- Increases the DEF of all nearby Resonators in the team within the <span class="Highlight"><strong>High Syntony Field</strong></span> by 20%.<br>
+- Inherits the <span class="Highlight"><strong>Syntony Field</strong></span>'s boost to resistance to interruption and <span class="Highlight">Off-Tune Buildup Rate</span>.<br>
+- Inherits the <span class="Highlight"><strong>Syntony Field</strong></span>'s healing effect and increases the Healing Multiplier by 40%.</div>`,
     hasStacks: false,
     modifiers: [
       {
