@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>January 14, 2026</h3>
+    <ul>
+      <li>Adds rotations for Ciaccona, Phrolova, Lynae, and Qiuyuan.</li>
+    </ul>
     <h3>January 11, 2026</h3>
     <ul>
       <li>Updates Hyvatia description.</li>
