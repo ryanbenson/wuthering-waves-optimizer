@@ -439,7 +439,9 @@ export const calculateAttackDamage = (
   if (excludeWeaponBuffs) {
     weaponDefIgnoreSpecificDmgType = 0;
   }
-  const specificSkillExtraCritRate =
+  const specificSkillExtraCritRateResonanceChains =
+    selfBuffs?.specificTalentBuffs?.[`${attack.key}:CritRate`] ?? 0;
+  const specificSkillExtraCritRateTeamBuffs =
     context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:CritRate`
     ] ?? 0;
@@ -463,10 +465,13 @@ export const calculateAttackDamage = (
   const baseCritRate =
     providedFullStats?.totalCritRate || context.stats.totalCritRate;
   let instanceDmgCritRate =
-    baseCritRate + specificSkillExtraCritRate + echoSpecificAttackTypeCritRate;
+    baseCritRate +
+    specificSkillExtraCritRateResonanceChains +
+    echoSpecificAttackTypeCritRate +
+    specificSkillExtraCritRateTeamBuffs;
   if (excludeTeamBuffs) {
     instanceDmgCritRate = statsWithoutTeamBuffs?.totalCritRate ?? 0;
-    instanceDmgCritRate += specificSkillExtraCritRate;
+    instanceDmgCritRate += specificSkillExtraCritRateResonanceChains;
   }
   const baseCritDamage =
     providedFullStats?.totalCritDMG || context.stats.totalCritDMG;

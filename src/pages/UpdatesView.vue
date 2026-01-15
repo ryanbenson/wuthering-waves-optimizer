@@ -4,6 +4,10 @@
     <h1>Updates</h1>
     <h3>January 14, 2026</h3>
     <ul>
+      <li>Fixes Mornye Critical Protocol crit rate buff.</li>
+    </ul>
+    <h3>January 14, 2026</h3>
+    <ul>
       <li>Mornye and her sig are now available.</li>
       <li>Adds rotations for Ciaccona, Phrolova, Lynae, and Qiuyuan.</li>
     </ul>
