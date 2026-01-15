@@ -222,3 +222,41 @@ This looks up the original dmg, it has to match Liberation, and a attackType of 
         details: `With 3 stacks, casting Resonance Liberation grants 40% Basic Attack DMG Bonus.`,
       },
 ```
+
+### Additional based buffs of a specific stat
+
+There are some characters that can buff themselves, or team buffs, where it's based off of a specific state (e.g. SK CR and CD buff based on her ER). You can also target specific talents, at least in self buffs right now.
+
+```
+{
+  key: `CriticalProtocol`,
+  name: `Critical Protocol`,
+  details: `<div>For every 1% of Mornye's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate (up to 80%) and 1% Crit. DMG (up to 160%).</div>`,
+  hasStacks: false,
+  modifiers: [
+    {
+      modifier: "CritRate:AdditionalBase",
+      modifierValue: 0.005,
+      maximumValue: 0.8,
+      modifierStep: 1,
+      modifierBasedOn: "EnergyRegen",
+      modifierTargetAttr: "CritRate",
+      minStatValue: 1,
+      modifySpecificTalents: ["CriticalProtocolDMG"],
+    },
+    {
+      modifier: "CritDMG:AdditionalBase",
+      modifierValue: 0.01,
+      maximumValue: 1.6,
+      modifierStep: 1,
+      modifierBasedOn: "EnergyRegen",
+      modifierTargetAttr: "CritDMG",
+      minStatValue: 1,
+      modifySpecificTalents: ["CriticalProtocolDMG"],
+    },
+  ],
+  minStacks: 0,
+  maxStacks: 0,
+  alwaysEnabled: false,
+},
+```

@@ -36,6 +36,7 @@ const broadbladesList = {
     { key: "Kumokiri", name: "Kumokiri" },
     { key: "LustrousRazor", name: "Lustrous Razor" },
     { key: "RadianceCleaver", name: "Radiance Cleaver" },
+    { key: "StarfieldCalibrator", name: "Starfield Calibrator" },
     { key: "ThunderflareDominion", name: "Thunderflare Dominion" },
     { key: "WildfireMark", name: "Wildfire Mark" },
     { key: "VerdantSummit", name: "Verdant Summit" },

@@ -1659,6 +1659,80 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Mornye: [
+    {
+      key: "InterferedMarker",
+      name: `Interfered Marker`,
+      details: `<div>Targets affected by <span class="Highlight">Tune Rupture - Interfered</span> or <span class="Highlight">Tune Strain - Interfered</span> take increased DMG from all nearby Resonators in the team. For every 1% of Mornye's Energy Regen exceeding 100%, their DMG is increased by 0.25%, up to 40%.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGBonus",
+          modifierValue: 0.0025,
+          maximumValue: 0.4,
+          modifierStep: 0.01,
+          minStatValue: 100,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+      inputBase: true,
+      modifierBasedOn: "Energy Regen",
+    },
+    {
+      key: "HighSyntonyField",
+      name: `High Syntony Field`,
+      details: `<div><span class="Highlight">High Syntony Field</span> lasts for 25s.<br>
+- Increases the DEF of all nearby Resonators in the team within the <span class="Highlight">High Syntony Field</span> by 20%.<br>
+- Inherits the <span class="Highlight">Syntony Field</span>'s boost to resistance to interruption and <span class="Highlight">Off-Tune Buildup Rate</span>.<br></div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DEF",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "Recursion",
+      name: `Outro Skill: Recursion`,
+      details: `Resonators in the team gain 25% All DMG Amplification for 30s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2MorningStarofEntropy",
+      name: `Sequence Node 2: Morning Star of Entropy`,
+      details: `<div>All nearby Resonators in the team gain Crit. DMG increase against targets with <span class="Highlight">Interfered Marker</span>: Every 1% of Mornye's Energy Regen over 100% grants 0.2% Crit. DMG increase, up to 32%.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "CritDMG",
+          modifierValue: 0.002,
+          maximumValue: 0.32,
+          modifierStep: 0.01,
+          minStatValue: 100,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+      inputBase: true,
+      modifierBasedOn: "Energy Regen",
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -2052,6 +2126,27 @@ export const allWeaponTeamBuffs = [
     minStacks: 0,
     maxStacks: 3,
     details: `Each time the wielder inflicts <span class="highlight">Tune Rupture - Shifting</span> or <span class="highlight">Tune Strain - Shifting</span> during Basic Attacks, all DMG dealt by Resonators in the team is increased by <span class="highlight">8%/10%/12%/14%/16%</span> for 30s, up to 3 stacks. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
+  {
+    name: "Starfield Calibrator",
+    key: "StarfieldCalibratorCritDMG",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifierByRefinement: {
+          "1": 0.2,
+          "2": 0.25,
+          "3": 0.3,
+          "4": 0.35,
+          "5": 0.4,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by <span class="Param">20%/25%/30%/35%/40%</span> for 4s. Effects of the same name cannot be stacked.`,
     alwaysEnabled: false,
   },
 ];

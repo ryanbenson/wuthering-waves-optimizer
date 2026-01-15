@@ -1019,6 +1019,7 @@ export function calcTuneBreak(
   resistenceReduction: number,
   defIgnore: number = 0,
   tuneBreakBoost: number = 0,
+  talentModifierMultiply: number = 0,
   bonusDmg: number = 0,
   count: number = 1,
 ): any {
@@ -1043,6 +1044,7 @@ export function calcTuneBreak(
       bonusDmg,
       enemyTypeMultiplier,
       tuneBreakBoost,
+      talentModifierMultiply,
     );
     totalDamage += damage;
     totalTalent += talent;
@@ -1100,6 +1102,7 @@ export function calcTuneBreak(
       defenseModifier,
       resistModifier,
       enemyTypeMultiplier,
+      talentModifierMultiply,
     },
   };
 }
@@ -1112,9 +1115,11 @@ export function calcTuneBreakHit(
   bonusDmg: number,
   enemyTypeMultiplier: number,
   tuneBreakBoost: number,
+  talentModifierMultiply: number = 0,
 ): number {
   return (
     levelModifier *
+    (1 + talentModifierMultiply) *
     tuneAmp *
     defenseModifier *
     resistModifier *
