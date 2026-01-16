@@ -9,6 +9,7 @@
         Updates Tune Break formula (physical damage one, not Tune Break as it
         was working) to support enemy resist (physical).
       </li>
+      <li>Adds Def Reduction support to Tune Break DMG.</li>
     </ul>
     <h3>January 15, 2026</h3>
     <ul>
