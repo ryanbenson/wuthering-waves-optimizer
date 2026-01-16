@@ -1101,6 +1101,7 @@ export function calcTuneBreak(
       enemyType,
       resistenceReduction,
       defIgnore,
+      defReduction,
       tuneBreakBoost,
       bonusDmg,
       count,

@@ -667,6 +667,10 @@
         <span class="text-primary">
           {{ displayPercentage(damage.totalDamageContext.defIgnore * 100) }}
         </span>
+        ) × (1 -
+        <span class="text-primary">
+          {{ displayPercentage(damage.totalDamageContext.defReduction * 100) }}
+        </span>
         ))
       </div>
       <div class="font-bold mt-2 text-lg text-primary">Resistance modifier</div>
