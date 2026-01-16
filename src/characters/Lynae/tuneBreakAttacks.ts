@@ -6,7 +6,7 @@ export const tuneBreakAttacks = {
       key: "TuneBreakDMG",
       label: "Tune Break DMG",
       type: "TuneBreak",
-      talent: "1440.00%",
+      talent: "1600.00%",
     },
   ],
 };
