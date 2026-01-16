@@ -1223,14 +1223,21 @@ export const calculateAllStats = (context: {
   );
 
   // Step 4b: Compute AdditionalBase buffs using intermediate stats (resonance chains)
-  const additionalBaseBuffsDataFromResonanceChains = computeAdditionalBaseBuffs(
-    resonanceChainsConfig ?? {},
-    resonanceChainsCharInfo ?? [],
-    resonanceChainsConfig ?? {},
-    character ?? "",
-    intermediateStats.energyRegen,
-    intermediateStats.totalCritRate,
-  );
+  let additionalBaseBuffsDataFromResonanceChains = {};
+  // ignore Augusta, as her additional based buffs for resonance chains are handled in self buffs
+  // applying this for her will double the buffs
+  console.log(character);
+  if (character !== "Augusta") {
+    additionalBaseBuffsDataFromResonanceChains = computeAdditionalBaseBuffs(
+      resonanceChainsConfig ?? {},
+      resonanceChainsCharInfo ?? [],
+      resonanceChainsConfig ?? {},
+      character ?? "",
+      intermediateStats.energyRegen,
+      intermediateStats.totalCritRate,
+    );
+  }
+  console.log(additionalBaseBuffsDataFromResonanceChains);
 
   // Step 5: Compute CritOverflow buffs using intermediate stats
   const critOverflowBuffsData = computeCritOverflowBuffs(
@@ -1255,22 +1262,26 @@ export const calculateAllStats = (context: {
       (selfBuffsData?.ATK_FLAT || 0) + (additionalBaseBuffsData?.ATK_FLAT || 0),
   };
   // Step 6b: Merge AdditionalBase and CritOverflow into self buffs (self buffs)
-  let mergedResonanceChainsBuffsData = {
-    ...resonanceChainsBuffsData,
-    CritRate:
-      (resonanceChainsBuffsData?.CritRate || 0) +
-      (additionalBaseBuffsDataFromResonanceChains?.CritRate || 0),
-    CritDMG:
-      (resonanceChainsBuffsData?.CritDMG || 0) +
-      (additionalBaseBuffsDataFromResonanceChains?.CritDMG || 0) +
-      (critOverflowBuffsData?.CritDMG || 0),
-    ATK:
-      (resonanceChainsBuffsData?.ATK || 0) +
-      (additionalBaseBuffsDataFromResonanceChains?.ATK || 0),
-    ATK_FLAT:
-      (resonanceChainsBuffsData?.ATK_FLAT || 0) +
-      (additionalBaseBuffsDataFromResonanceChains?.ATK_FLAT || 0),
-  };
+  // ignore augusta though, otherwise it doubles up her buffs
+  let mergedResonanceChainsBuffsData = { ...resonanceChainsBuffsData };
+  if (character !== "Augusta") {
+    mergedResonanceChainsBuffsData = {
+      ...resonanceChainsBuffsData,
+      CritRate:
+        (resonanceChainsBuffsData?.CritRate || 0) +
+        (additionalBaseBuffsDataFromResonanceChains?.CritRate || 0),
+      CritDMG:
+        (resonanceChainsBuffsData?.CritDMG || 0) +
+        (additionalBaseBuffsDataFromResonanceChains?.CritDMG || 0) +
+        (critOverflowBuffsData?.CritDMG || 0),
+      ATK:
+        (resonanceChainsBuffsData?.ATK || 0) +
+        (additionalBaseBuffsDataFromResonanceChains?.ATK || 0),
+      ATK_FLAT:
+        (resonanceChainsBuffsData?.ATK_FLAT || 0) +
+        (additionalBaseBuffsDataFromResonanceChains?.ATK_FLAT || 0),
+    };
+  }
 
   // merge the specificTalentBuffs together
   mergedSelfBuffs.specificTalentBuffs = Object.assign(
