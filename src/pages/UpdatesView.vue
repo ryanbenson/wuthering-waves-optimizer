@@ -5,6 +5,10 @@
     <h3>January 16, 2026</h3>
     <ul>
       <li>Fixes Augusta s6, it was overbuffing.</li>
+      <li>
+        Updates Tune Break formula (physical damage one, not Tune Break as it
+        was working) to support enemy resist (physical).
+      </li>
     </ul>
     <h3>January 15, 2026</h3>
     <ul>
