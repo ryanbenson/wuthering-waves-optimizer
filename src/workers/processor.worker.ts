@@ -227,6 +227,26 @@ function processLoadout(
       intermediateStats.totalCritRate,
     );
 
+    // Step 4b: Compute AdditionalBase buffs using intermediate stats (resonance chains)
+    let additionalBaseBuffsDataFromResonanceChains = {
+      CritRate: 0,
+      CritDMG: 0,
+      ATK: 0,
+      ATK_FLAT: 0,
+    };
+    // ignore Augusta, as her additional based buffs for resonance chains are handled in self buffs
+    // applying this for her will double the buffs
+    if (context.character !== "Augusta") {
+      additionalBaseBuffsDataFromResonanceChains = computeAdditionalBaseBuffs(
+        context.activeCharacterResonanceChains ?? {},
+        context.chosenChar.resonanceChains ?? [],
+        context.activeCharacterResonanceChains ?? {},
+        context.character ?? "",
+        intermediateStats.energyRegen,
+        intermediateStats.totalCritRate,
+      );
+    }
+
     const critOverflowBuffsData = computeCritOverflowBuffs(
       context.activeCharacterBuffs ?? {},
       context.chosenChar?.buffs ?? [],
@@ -250,6 +270,34 @@ function processLoadout(
         (additionalBaseBuffsData?.ATK_FLAT || 0),
     };
 
+    // merge the specificTalentBuffs together
+    mergedSelfBuffs.specificTalentBuffs = Object.assign(
+      {},
+      selfBuffsData?.specificTalentBuffs ?? {},
+      additionalBaseBuffsData?.specificTalentBuffs ?? {},
+    );
+    // Step 6b: Merge AdditionalBase and CritOverflow into self buffs (self buffs)
+    // ignore augusta though, otherwise it doubles up her buffs
+    let mergedResonanceChainsBuffsData = { ...resonanceChainsBuffsData };
+    if (context.character !== "Augusta") {
+      mergedResonanceChainsBuffsData = {
+        ...resonanceChainsBuffsData,
+        CritRate:
+          (resonanceChainsBuffsData?.CritRate || 0) +
+          (additionalBaseBuffsDataFromResonanceChains?.CritRate || 0),
+        CritDMG:
+          (resonanceChainsBuffsData?.CritDMG || 0) +
+          (additionalBaseBuffsDataFromResonanceChains?.CritDMG || 0) +
+          (critOverflowBuffsData?.CritDMG || 0),
+        ATK:
+          (resonanceChainsBuffsData?.ATK || 0) +
+          (additionalBaseBuffsDataFromResonanceChains?.ATK || 0),
+        ATK_FLAT:
+          (resonanceChainsBuffsData?.ATK_FLAT || 0) +
+          (additionalBaseBuffsDataFromResonanceChains?.ATK_FLAT || 0),
+      };
+    }
+
     finalStats = calcCharStats(
       "All",
       null,
@@ -268,7 +316,7 @@ function processLoadout(
         weaponPassiveData: context.weaponData?.weaponPassiveStats ?? {},
       },
       mergedSelfBuffs,
-      resonanceChainsBuffsData,
+      mergedResonanceChainsBuffsData,
       context.echoStats,
       context.customBuffs,
       context.teamBuffsData,
