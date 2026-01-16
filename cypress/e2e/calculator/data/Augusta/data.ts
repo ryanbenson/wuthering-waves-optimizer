@@ -1,4 +1,11 @@
-export const config = {};
+export const config = {
+  meta: { version: "2", source: "WutheringTools" },
+  data: {
+    character:
+      '{"characters":{"Augusta":{"echoes":[{"echo":"TheFalseSovereign","type":4,"rank":5,"stat":"CritRate","echoId":null,"echoSet":"CrownofValor","echoSubStatsType1":"HeavyAttackDMGBonus","echoSubStatsValue1":7.9,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":16.2,"echoSubStatsType3":"BasicAttackDMGBonus","echoSubStatsValue3":7.9,"echoSubStatsType4":"EnergyRegen","echoSubStatsValue4":10,"echoSubStatsType5":"CritRate","echoSubStatsValue5":8.7},{"echo":"LumiscaleConstruct","type":3,"rank":5,"stat":"Electro","echoId":null,"echoSet":"VoidThunder","echoSubStatsType1":"HP","echoSubStatsValue1":8.6,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":18.6,"echoSubStatsType3":"ATK_FLAT","echoSubStatsValue3":50,"echoSubStatsType4":"HP_FLAT","echoSubStatsValue4":430,"echoSubStatsType5":"CritRate","echoSubStatsValue5":8.7},{"echo":"Flautist","type":3,"rank":5,"stat":"Electro","echoId":null,"echoSet":"VoidThunder","echoSubStatsType1":"ATK_FLAT","echoSubStatsValue1":50,"echoSubStatsType2":"CritDMG","echoSubStatsValue2":21,"echoSubStatsType3":"ATK","echoSubStatsValue3":7.9,"echoSubStatsType4":"CritRate","echoSubStatsValue4":7.5,"echoSubStatsType5":"BasicAttackDMGBonus","echoSubStatsValue5":1.9},{"echo":"NightmareAeroPredator","type":1,"rank":5,"stat":"ATK","echoId":null,"echoSet":"CrownofValor","echoSubStatsType1":"CritRate","echoSubStatsValue1":9.9,"echoSubStatsType2":"BasicAttackDMGBonus","echoSubStatsValue2":8.6,"echoSubStatsType3":"HeavyAttackDMGBonus","echoSubStatsValue3":7.9,"echoSubStatsType4":"CritDMG","echoSubStatsValue4":19.8,"echoSubStatsType5":"EnergyRegen","echoSubStatsValue5":10},{"echo":"NightmareElectroPredator","type":1,"rank":5,"stat":"ATK","echoId":null,"echoSet":"CrownofValor","echoSubStatsType1":"ATK_FLAT","echoSubStatsValue1":50,"echoSubStatsType2":"ATK","echoSubStatsValue2":9.4,"echoSubStatsType3":"HeavyAttackDMGBonus","echoSubStatsValue3":10.9,"echoSubStatsType4":"CritRate","echoSubStatsValue4":6.9,"echoSubStatsType5":"CritDMG","echoSubStatsValue5":15}],"mainEcho":{"echo":"TheFalseSovereign","rank":5,"isEnabled":true},"optimizer":{"mainEchoes":[],"echoSets":[],"minStats":[],"optimizationTarget":[],"damageType":"Average","ignoreOtherResonantorEchoes":false},"echoSetBonus":{"setBonusOne":"Void Thunder 2 Set","setBonusTwo":"Crown of Valor 3 Set"},"echoSetPassives":{"VoidThunder2SetElectro":{"isEnabled":true},"CrownofValorATKCD":{"isEnabled":false,"stacks":5}},"echoPresetId":null,"resonanceChains":{"SequenceNode1StainedinScorchedEarth":{"isEnabled":true},"SequenceNode2CleansedinCrimsonWar":{"isEnabled":true},"SequenceNode3ForgedinRotandRuin":{"isEnabled":true},"SequenceNode4AscentinSunandGlory":{"isEnabled":true},"SequenceNode5UnshakeninWrathfulTides":{"isEnabled":true},"SequenceNode6EngravedinRadiantLight":{"isEnabled":true}},"weapon":"ThunderflareDominion","weaponPassives":{"ThunderblazeEminenceATK":{"isEnabled":true},"ThunderblazeEminenceDefIgnore":{"isEnabled":true,"stacks":5},"ThunderblazeEminenceHeavy":{"isEnabled":true}},"buffs":{"RulersRealm":{"isEnabled":true},"CrownofWills":{"isEnabled":true,"stacks":4},"InherentSkillGlorysFavor":{"isEnabled":true},"InherentSkillBlazingValor":{"isEnabled":true},"StatBonusCritRate1":{"isEnabled":true},"StatBonusCritRate2":{"isEnabled":true},"StatBonusCritRate3":{"isEnabled":true},"StatBonusCritRate4":{"isEnabled":true},"StatBonusATK1":{"isEnabled":true},"StatBonusATK2":{"isEnabled":true},"StatBonusATK3":{"isEnabled":true},"StatBonusATK4":{"isEnabled":true}}}},"activeCharacter":"Augusta"}',
+    inventory: null,
+  },
+};
 
 export const configOptimizer = {
   meta: { version: "2", source: "WutheringTools" },
@@ -12,232 +19,187 @@ export const configOptimizer = {
 
 export const dataAttacks: AttackTests = [
   {
-    selector: ".basic-attack-stage-1-dmg",
-    values: ["Basic Attack Stage 1 DMG", "8154", "22426", "24136"],
+    selector: ".stage-1-dmg",
+    values: ["Stage 1 DMG", "1852", "8086", "8086"],
   },
   {
-    selector: ".basic-attack-stage-2-dmg",
-    values: ["Basic Attack Stage 2 DMG", "14870", "40894", "44013"],
+    selector: ".stage-2-dmg",
+    values: ["Stage 2 DMG", "4319", "18857", "18857"],
   },
   {
-    selector: ".basic-attack-stage-3-dmg",
-    values: ["Basic Attack Stage 3 DMG", "11672", "32100", "34548"],
+    selector: ".stage-3-dmg",
+    values: ["Stage 3 DMG", "6344", "27698", "27698"],
   },
   {
-    selector: ".dodge-counter-dmg",
-    values: ["Dodge Counter DMG", "22703", "62438", "67199"],
+    selector: ".stage-4-dmg",
+    values: ["Stage 4 DMG", "6250", "27285", "27285"],
+  },
+  {
+    selector: ".heavy-attack-steelclash-dmg",
+    values: ["Heavy Attack: Steelclash DMG", "6314", "27564", "27564"],
   },
   {
     selector: ".mid-air-attack-dmg",
-    values: ["Mid-air Attack DMG", "13590", "37377", "40227"],
+    values: ["Mid-air Attack DMG", "3846", "16788", "16788"],
   },
   {
-    selector: ".basic-attack-spark-collision-lv-1-dmg",
+    selector: ".dodge-counter-dmg",
+    values: ["Dodge Counter DMG", "4319", "18857", "18857"],
+  },
+  {
+    selector: ".mid-air-dodge-counter-dmg",
+    values: ["Mid-air Dodge Counter DMG", "3846", "16788", "16788"],
+  },
+  {
+    selector: ".heavy-attack-thunderoar-backstep-dmg",
     values: [
-      "Basic Attack - Spark Collision Lv. 1 DMG",
-      "10513",
-      "28913",
-      "31117",
+      "Heavy Attack - Thunderoar: Backstep DMG",
+      "3044",
+      "13290",
+      "13290",
     ],
   },
   {
-    selector: ".basic-attack-spark-collision-lv-2-dmg",
+    selector: ".heavy-attack-thunderoar-spinslash-dmg",
     values: [
-      "Basic Attack - Spark Collision Lv. 2 DMG",
-      "31536",
-      "86732",
-      "93346",
+      "Heavy Attack - Thunderoar: Spinslash DMG",
+      "24108",
+      "105256",
+      "105256",
     ],
   },
   {
-    selector: ".basic-attack-spark-collision-lv-3-dmg",
+    selector: ".heavy-attack-thunderoar-uppercut-dmg",
     values: [
-      "Basic Attack - Spark Collision Lv. 3 DMG",
-      "52559",
-      "144551",
-      "155574",
+      "Heavy Attack - Thunderoar: Uppercut DMG",
+      "20292",
+      "88595",
+      "88595",
     ],
   },
   {
-    selector: ".kaleidoscopic-parade-basic-attack-stage-1-dmg",
+    selector: ".dodge-counter-heavy-attack-steelclash-dmg",
     values: [
-      "Kaleidoscopic Parade - Basic Attack Stage 1 DMG",
-      "7835",
-      "21547",
-      "23190",
+      "Dodge Counter - Heavy Attack: Steelclash DMG",
+      "6314",
+      "27564",
+      "27564",
     ],
   },
   {
-    selector: ".kaleidoscopic-parade-basic-attack-stage-2-dmg",
+    selector: ".dodge-counter-thunderoar-backstep-dmg",
     values: [
-      "Kaleidoscopic Parade - Basic Attack Stage 2 DMG",
-      "7355",
-      "20228",
-      "21770",
+      "Dodge Counter - Thunderoar: Backstep DMG",
+      "3044",
+      "13290",
+      "13290",
     ],
   },
   {
-    selector: ".kaleidoscopic-parade-basic-attack-stage-3-dmg",
+    selector: ".glory-s-favor",
+    values: ["Glory's Favor", "1132"],
+  },
+  {
+    selector: ".s6-engraved-in-radiant-light-dmg",
+    values: ["S6 Engraved in Radiant Light DMG", "9073", "39611", "39611"],
+  },
+  {
+    selector: ".warrior-s-blade-dmg",
+    values: ["Warrior's Blade DMG", "19653", "85803", "85803"],
+  },
+  {
+    selector: ".sword-of-eternal-oath-dmg",
+    values: ["Sword of Eternal Oath DMG", "49876", "217756", "217756"],
+  },
+  {
+    selector: ".sublime-is-the-sun-sunborne-dmg",
+    values: ["Sublime is the Sun - Sunborne DMG", "6765", "29533", "29533"],
+  },
+  {
+    selector: ".sublime-is-the-sun-everbright-protector-dmg",
     values: [
-      "Kaleidoscopic Parade - Basic Attack Stage 3 DMG",
-      "10714",
-      "29467",
-      "31714",
+      "Sublime is the Sun - Everbright Protector DMG",
+      "67644",
+      "295330",
+      "295330",
     ],
   },
   {
-    selector: ".kaleidoscopic-parade-basic-attack-stage-4-dmg",
+    selector: ".resonance-skill-undying-sunlight-strike-dmg",
     values: [
-      "Kaleidoscopic Parade - Basic Attack Stage 4 DMG",
-      "14072",
-      "38701",
-      "41652",
+      "Resonance Skill - Undying Sunlight: Strike DMG",
+      "8338",
+      "36401",
+      "36401",
     ],
   },
   {
-    selector: ".kaleidoscopic-parade-basic-attack-stage-5-dmg",
+    selector: ".resonance-skill-undying-sunlight-leap-dmg",
     values: [
-      "Kaleidoscopic Parade - Basic Attack Stage 5 DMG",
-      "23823",
-      "65519",
-      "70515",
+      "Resonance Skill - Undying Sunlight: Leap DMG",
+      "8338",
+      "36402",
+      "36402",
     ],
   },
   {
-    selector: ".kaleidoscopic-parade-dodge-counter",
-    values: ["Kaleidoscopic Parade - Dodge Counter", "17427", "47927", "51582"],
-  },
-  {
-    selector: ".kaleidoscopic-parade-ground-heavy-attack-dmg",
+    selector: ".resonance-skill-undying-sunlight-plunge-dmg",
     values: [
-      "Kaleidoscopic Parade - Ground Heavy Attack DMG",
-      "11676",
-      "32110",
-      "34559",
+      "Resonance Skill - Undying Sunlight: Plunge DMG",
+      "49096",
+      "214351",
+      "214351",
     ],
   },
   {
-    selector: ".kaleidoscopic-parade-graffiti-blast-dmg",
+    selector: ".mid-air-dodge-counter-undying-sunlight-strike-dmg",
     values: [
-      "Kaleidoscopic Parade - Graffiti Blast DMG",
-      "9913",
-      "27263",
-      "29342",
+      "Mid-air Dodge Counter - Undying Sunlight: Strike DMG",
+      "8338",
+      "36401",
+      "36401",
     ],
   },
   {
-    selector: ".kaleidoscopic-parade-mid-air-attack-dmg",
-    values: [
-      "Kaleidoscopic Parade - Mid-Air Attack DMG",
-      "13590",
-      "37377",
-      "40227",
-    ],
+    selector: ".rulers-realm",
+    values: ["Rulers Realm", "1459"],
   },
   {
-    selector: ".kaleidoscopic-parade-mid-air-heavy-attack-dmg",
-    values: [
-      "Kaleidoscopic Parade - Mid-air Heavy Attack DMG",
-      "23026",
-      "63328",
-      "68157",
-    ],
-  },
-  {
-    selector: ".lynae-style-palettes-dmg",
-    values: ["Lynae-Style Palettes DMG", "17330", "47660", "51295"],
-  },
-  {
-    selector: ".additive-color-dmg",
-    values: ["Additive Color DMG", "91274", "251029", "270171"],
-  },
-  {
-    selector: ".prismatic-overblast-dmg",
-    values: ["Prismatic Overblast DMG", "92493", "254380", "273777"],
-  },
-  {
-    selector: ".basic-attack-to-a-vivid-tomorrow-dmg",
-    values: [
-      "Basic Attack - To a Vivid Tomorrow! DMG",
-      "19022",
-      "52314",
-      "56303",
-    ],
-  },
-  {
-    selector: ".basic-attack-iridescent-splash-dmg",
-    values: [
-      "Basic Attack - Iridescent Splash DMG",
-      "102920",
-      "283058",
-      "304643",
-    ],
-  },
-  {
-    selector: ".basic-attack-visual-impact-dmg",
-    values: [
-      "Basic Attack - Visual Impact DMG",
-      "411679",
-      "1132231",
-      "1218569",
-    ],
-  },
-  {
-    selector: ".basic-attack-polychrome-leap-1",
-    values: ["Basic Attack - Polychrome Leap 1", "21105", "58044", "62470"],
-  },
-  {
-    selector: ".basic-attack-polychrome-leap-2",
-    values: ["Basic Attack - Polychrome Leap 2", "21105", "58044", "62470"],
-  },
-  {
-    selector: ".basic-attack-polychrome-leap-3",
-    values: ["Basic Attack - Polychrome Leap 3", "21813", "59990", "64564"],
-  },
-  {
-    selector: ".tune-rupture-response-spectral-analysis-dmg",
-    values: [
-      "Tune Rupture Response - Spectral Analysis DMG",
-      "134417",
-      "134417",
-      "134417",
-    ],
-  },
-  {
-    selector: ".time-to-show-some-colors-dmg",
-    values: ["Time to Show Some Colors! DMG", "13874", "38156", "41065"],
-  },
-  {
-    selector: ".let-s-hit-the-road-dmg",
-    values: ["Let's Hit the Road! DMG", "6172", "16973", "18268"],
+    selector: ".stride-of-goldenflare-dmg",
+    values: ["Stride of Goldenflare DMG", "5956", "26001", "26001"],
   },
   {
     selector: ".tune-break-dmg",
-    values: ["Tune Break DMG", "111866", "111866", "111866"],
+    values: ["Tune Break DMG", "72393", "72393", "72393"],
   },
   {
-    selector: ".lasers-dmg",
-    values: ["Lasers DMG", "17017", "46800", "50369"],
+    selector: ".spinning-dmg",
+    values: ["Spinning DMG", "6632", "28954", "28954"],
+  },
+  {
+    selector: ".summon-dmg",
+    values: ["Summon DMG", "12132", "52965", "52965"],
   },
 ];
+
 export const dataStats: StatTests = [
-  { selector: ".stat-atk", value: "3,523" },
-  { selector: ".stat-hp", value: "19,943" },
-  { selector: ".stat-def", value: "1,632" },
-  { selector: ".stat-cr", value: "89.3%" },
-  { selector: ".stat-cd", value: "296.0%" },
-  { selector: ".stat-er", value: "118.8%" },
-  { selector: ".stat-basic", value: "53.8%" },
-  { selector: ".stat-heavy", value: "2.0%" },
-  { selector: ".stat-skill", value: "2.0%" },
-  { selector: ".stat-liberation", value: "2.0%" },
-  { selector: ".stat-glacio", value: "26.0%" },
-  { selector: ".stat-fusion", value: "26.0%" },
-  { selector: ".stat-electro", value: "26.0%" },
-  { selector: ".stat-aero", value: "26.0%" },
-  { selector: ".stat-spectro", value: "121.0%" },
-  { selector: ".stat-havoc", value: "26.0%" },
-  { selector: ".stat-healing", value: "2.0%" },
+  { selector: ".stat-atk", value: "2,743" },
+  { selector: ".stat-hp", value: "16,175" },
+  { selector: ".stat-def", value: "1,112" },
+  { selector: ".stat-cr", value: "168.8%" },
+  { selector: ".stat-cd", value: "436.6%" },
+  { selector: ".stat-er", value: "120.0%" },
+  { selector: ".stat-basic", value: "18.4%" },
+  { selector: ".stat-heavy", value: "58.7%" },
+  { selector: ".stat-skill", value: "0.0%" },
+  { selector: ".stat-liberation", value: "0.0%" },
+  { selector: ".stat-glacio", value: "0.0%" },
+  { selector: ".stat-fusion", value: "0.0%" },
+  { selector: ".stat-electro", value: "142.0%" },
+  { selector: ".stat-aero", value: "0.0%" },
+  { selector: ".stat-spectro", value: "0.0%" },
+  { selector: ".stat-havoc", value: "0.0%" },
+  { selector: ".stat-healing", value: "0.0%" },
 ];
 
 export const optimizerResults: Record<string, string> = {
@@ -254,5 +216,3 @@ export const optimizerResults: Record<string, string> = {
   percentAvgAfterEquip: `(+0.0%)`,
   percentCritAfterEquip: `(+0.0%)`,
 };
-
-// def ignore, resist shred
