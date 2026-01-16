@@ -2,7 +2,11 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
-    <h3>January 14, 2026</h3>
+    <h3>January 16, 2026</h3>
+    <ul>
+      <li>Fixes Augusta s6, it was overbuffing.</li>
+    </ul>
+    <h3>January 15, 2026</h3>
     <ul>
       <li>Fixes Mornye Critical Protocol crit rate buff.</li>
     </ul>
