@@ -1223,10 +1223,14 @@ export const calculateAllStats = (context: {
   );
 
   // Step 4b: Compute AdditionalBase buffs using intermediate stats (resonance chains)
-  let additionalBaseBuffsDataFromResonanceChains = {};
+  let additionalBaseBuffsDataFromResonanceChains = {
+    CritRate: 0,
+    CritDMG: 0,
+    ATK: 0,
+    ATK_FLAT: 0,
+  };
   // ignore Augusta, as her additional based buffs for resonance chains are handled in self buffs
   // applying this for her will double the buffs
-  console.log(character);
   if (character !== "Augusta") {
     additionalBaseBuffsDataFromResonanceChains = computeAdditionalBaseBuffs(
       resonanceChainsConfig ?? {},
@@ -1237,7 +1241,6 @@ export const calculateAllStats = (context: {
       intermediateStats.totalCritRate,
     );
   }
-  console.log(additionalBaseBuffsDataFromResonanceChains);
 
   // Step 5: Compute CritOverflow buffs using intermediate stats
   const critOverflowBuffsData = computeCritOverflowBuffs(
