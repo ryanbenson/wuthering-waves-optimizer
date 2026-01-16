@@ -805,8 +805,8 @@ export const calculateAttackDamage = (
   // special calc for MidnightVeilDMG
   if (attack.type === "TuneBreak") {
     let talent = attack.talent;
-    let enemyResistVal = 0;
-    let resistReduction = 0;
+    let enemyResistVal = context.enemy.enemyResist;
+    let resistReduction = 0; // default to 0 for Tune Break, then the special ones get reduction
     let baseTuneBreakBoost = 0;
     // Lynae, and others, have special Tune Break type attacks that have talents leveled off of their forte
     // also, normal tune break doesn't get affected by resist or resist reduction
@@ -816,7 +816,6 @@ export const calculateAttackDamage = (
       attack.key === "TuneRuptureResponseParticleJetDMG"
     ) {
       talent = attack.talents[context.character.talentData?.forte];
-      enemyResistVal = context.enemy.enemyResist;
       resistReduction = totalResistReduction;
     }
     // get any custom base character tune break boost
@@ -827,6 +826,7 @@ export const calculateAttackDamage = (
     const totalTuneBreakBoost =
       baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam;
     const tuneBreakDmgBonus = context.buffs.customBuffs?.TuneBreakDMGBonus ?? 0;
+    console.log(enemyResistVal);
     return calcTuneBreak(
       talent,
       String(context.character.characterLevel),
