@@ -835,6 +835,7 @@ export const calculateAttackDamage = (
       context.enemy.enemyType,
       resistReduction,
       totalDefIgnore,
+      totalDefReduction,
       totalTuneBreakBoost, // tuneBreakBoost
       totalTalentModifierMultiply,
       tuneBreakDmgBonus, // tune break bonusDmg (e.g. Hyvatia's 100% bonus)

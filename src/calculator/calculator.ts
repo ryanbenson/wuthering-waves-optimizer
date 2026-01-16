@@ -1018,13 +1018,19 @@ export function calcTuneBreak(
   enemyType: string,
   resistenceReduction: number,
   defIgnore: number = 0,
+  defReduction: number = 0,
   tuneBreakBoost: number = 0,
   talentModifierMultiply: number = 0,
   bonusDmg: number = 0,
   count: number = 1,
 ): any {
   const levelModifier = getTuneBreakLevelModifier(charLevel);
-  const defenseModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
+  const defenseModifier = getDefenseModifier(
+    charLevel,
+    enemyLevel,
+    defIgnore,
+    defReduction,
+  );
   const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
   const enemyTypeMultiplier = getTuneBreakEnemyTypeMultiplier(enemyType);
 
