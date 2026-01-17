@@ -1286,13 +1286,6 @@ export const calculateAllStats = (context: {
     };
   }
 
-  // merge the specificTalentBuffs together
-  mergedSelfBuffs.specificTalentBuffs = Object.assign(
-    {},
-    selfBuffsData?.specificTalentBuffs ?? {},
-    additionalBaseBuffsData?.specificTalentBuffs ?? {},
-  );
-
   // Step 7: Calculate final stats with all buffs
   const finalStats = calcCharStats(
     "All",
@@ -1323,6 +1316,12 @@ export const calculateAllStats = (context: {
       (additionalBaseBuffsData?.CritDMG || 0) +
       (critOverflowBuffsData?.CritDMG || 0),
   };
+  // merge the specificTalentBuffs together
+  mergedSelfBuffsForBreakdown.specificTalentBuffs = Object.assign(
+    {},
+    selfBuffsData?.specificTalentBuffs ?? {},
+    additionalBaseBuffsData?.specificTalentBuffs ?? {},
+  );
 
   return {
     finalStats,

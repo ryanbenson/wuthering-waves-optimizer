@@ -695,7 +695,7 @@ export function optimize(
         echo: rotationData.echo ?? null,
       };
       // @ts-ignore
-      console.log("optimize:", rotationData.attacks, context.talentData);
+      // console.log("optimize:", rotationData.attacks, context.talentData);
       // Build context from optimizer's finalStats
       const optimizerContext = getCalculationContext(
         context.chosenChar,
