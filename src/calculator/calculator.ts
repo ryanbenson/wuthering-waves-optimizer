@@ -604,6 +604,7 @@ export function calcHeal(
   specificSkillDmg: number = 0, // any buffs for the skill
   talentModifierAdd: number = 0,
   talentModifierMultiply: number = 0,
+  talentModifierSpecialMultiply: number = 0,
   count: number = 1,
 ): any {
   // Parse the talent string to get individual percentage values
@@ -619,6 +620,15 @@ export function calcHeal(
     let updatedTalentAfterMultiply = talentVal * (1 + talentModifierMultiply);
     talentVal = updatedTalentAfterMultiply;
     let updatedFlatbase = flatBase * (1 + talentModifierMultiply);
+    flatBase = updatedFlatbase;
+  }
+  // if we have a special talent multiplier, do it first before adding it to the total
+  // make sure to add 1 to it (e.g. 100% * (1 + 1.2)
+  if (talentModifierSpecialMultiply) {
+    let updatedTalentAfterMultiply =
+      talentVal * (1 + talentModifierSpecialMultiply);
+    talentVal = updatedTalentAfterMultiply;
+    let updatedFlatbase = flatBase * (1 + talentModifierSpecialMultiply);
     flatBase = updatedFlatbase;
   }
 

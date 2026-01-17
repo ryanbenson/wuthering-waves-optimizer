@@ -965,6 +965,7 @@ export const calculateAttackDamage = (
       specificSkillDmg, // any buffs for the skill
       totalTalentModifierAdd,
       totalTalentModifierMultiply,
+      totalTalentModifierSpecialMultiply,
       count,
     );
     return h;

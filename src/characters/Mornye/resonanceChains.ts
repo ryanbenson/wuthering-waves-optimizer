@@ -46,7 +46,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
+        modifier: "talentModifierSpecialMultiply",
         modifySpecificTalents: ["SyntonyFieldHealing"],
         modifierValue: 0.3,
       },
