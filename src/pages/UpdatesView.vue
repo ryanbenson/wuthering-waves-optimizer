@@ -2,6 +2,14 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>January 17, 2026</h3>
+    <ul>
+      <li>
+        Fixes issue where Mornye's High Syntony healing buff wouldn't always
+        apply.
+      </li>
+      <li>Change Mornye s4 to affect her healing multiplier.</li>
+    </ul>
     <h3>January 16, 2026</h3>
     <ul>
       <li>Fixes Augusta s6, it was overbuffing.</li>
