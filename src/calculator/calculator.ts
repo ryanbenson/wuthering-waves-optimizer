@@ -618,6 +618,8 @@ export function calcHeal(
   if (talentModifierMultiply) {
     let updatedTalentAfterMultiply = talentVal * (1 + talentModifierMultiply);
     talentVal = updatedTalentAfterMultiply;
+    let updatedFlatbase = flatBase * (1 + talentModifierMultiply);
+    flatBase = updatedFlatbase;
   }
 
   const totalHealBonus = totalSkillDmgBonus + specificSkillDmg;
