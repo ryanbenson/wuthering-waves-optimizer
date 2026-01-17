@@ -105,7 +105,8 @@ export default {
   data() {
     return {
       echoes: [],
-      imageElement: null,
+      imageElement: null, // Original color image
+      grayscaleImageElement: null, // Grayscale version for OCR
       imageSrc: null,
       imageDimensions: { width: 1, height: 1 },
       debug: false,
@@ -154,14 +155,23 @@ export default {
       img.onload = async () => {
         this.isLoading = true;
         console.time("Parse");
-        this.imageElement = img;
-        this.imageSrc = img.src;
         // validate that the image is 1920x1080
         if (img.naturalWidth !== 1920 || img.naturalHeight !== 1080) {
           this.errorImageSize = true;
           this.reset();
           return;
         }
+        // Store original color image
+        this.imageElement = img;
+        this.imageSrc = img.src;
+        // Create grayscale version for OCR only
+        const grayscaleCanvas = this.convertImageToGrayscale(img);
+        const grayscaleImg = new Image();
+        grayscaleImg.src = grayscaleCanvas.toDataURL();
+        await new Promise((resolve) => {
+          grayscaleImg.onload = resolve;
+        });
+        this.grayscaleImageElement = grayscaleImg;
         this.worker = await createWorker("eng");
         const whitelist =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.%+ ";
@@ -182,6 +192,7 @@ export default {
 
     reset() {
       this.imageElement = null;
+      this.grayscaleImageElement = null;
       this.imageSrc = null;
       this.echoes = [];
       this.isLoading = false;
@@ -293,8 +304,9 @@ export default {
       canvas.width = coords.width;
       canvas.height = coords.height;
       const ctx = canvas.getContext("2d");
+      // Use grayscale image for OCR
       ctx.drawImage(
-        this.imageElement,
+        this.grayscaleImageElement,
         coords.x,
         coords.y,
         coords.width,
@@ -304,6 +316,8 @@ export default {
         coords.width,
         coords.height,
       );
+      // Increase contrast for better text recognition
+      this.increaseContrast(ctx, coords.width, coords.height);
       return this.worker.recognize(canvas.toDataURL()).then((result) => {
         const text = result.data.text.trim();
         return text;
@@ -379,6 +393,7 @@ export default {
       return bestMatch;
     },
     async matchSetRegion(coords, echoSets) {
+      // Extract region without grayscale conversion for better color matching
       const regionCanvas = await this.extractImageRegion(coords);
       const regionCtx = regionCanvas.getContext("2d");
       // need to resize the echo set extracted icon to 32 to compare
@@ -393,9 +408,9 @@ export default {
       let images = [];
       for (const set of echoSets) {
         const setImageSrc = getEchoSetIconByType(set);
-        // convert the icon/avatar into a canvas context
+        // convert the icon/avatar into a canvas context without grayscale
         const iconImgObj = await this.loadImage(setImageSrc);
-        const iconCtx = this.imageToCanvasCtx(iconImgObj, 32, 32);
+        const iconCtx = this.imageToCanvasCtx(iconImgObj, 32, 32, true);
         const diff = this.compareImages(resizedCtx, iconCtx, 32, 32);
         if (diff < lowestDiff) {
           lowestDiff = diff;
@@ -413,6 +428,55 @@ export default {
         img.onerror = (err) => reject(err);
         img.src = src;
       });
+    },
+    convertImageToGrayscale(img) {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      this.convertCanvasToGrayscale(ctx, canvas.width, canvas.height);
+      return canvas;
+    },
+    convertCanvasToGrayscale(ctx, width, height) {
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const data = imageData.data;
+
+      // Convert each pixel to grayscale using luminance formula
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        // Use standard luminance formula: 0.299*R + 0.587*G + 0.114*B
+        const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+        data[i] = gray; // R
+        data[i + 1] = gray; // G
+        data[i + 2] = gray; // B
+        // Alpha channel (data[i + 3]) remains unchanged
+      }
+
+      ctx.putImageData(imageData, 0, 0);
+    },
+    increaseContrast(ctx, width, height, factor = 1.5) {
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const data = imageData.data;
+
+      // Increase contrast by pushing values away from midpoint (128)
+      // Formula: newValue = ((value - 128) * factor) + 128
+      for (let i = 0; i < data.length; i += 4) {
+        // Apply to all RGB channels (they're all the same after grayscale conversion)
+        const gray = data[i];
+        const adjusted = Math.max(
+          0,
+          Math.min(255, (gray - 128) * factor + 128),
+        );
+        data[i] = adjusted; // R
+        data[i + 1] = adjusted; // G
+        data[i + 2] = adjusted; // B
+        // Alpha channel (data[i + 3]) remains unchanged
+      }
+
+      ctx.putImageData(imageData, 0, 0);
     },
     onPaste(event) {
       const items = event.clipboardData?.items;

@@ -9,6 +9,7 @@
         apply.
       </li>
       <li>Change Mornye s4 to affect her healing multiplier.</li>
+      <li>Improves echo importer accuracy for text finding for substats.</li>
     </ul>
     <h3>January 16, 2026</h3>
     <ul>
