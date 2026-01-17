@@ -826,7 +826,7 @@ export const calculateAttackDamage = (
     const totalTuneBreakBoost =
       baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam;
     const tuneBreakDmgBonus = context.buffs.customBuffs?.TuneBreakDMGBonus ?? 0;
-    console.log(enemyResistVal);
+
     return calcTuneBreak(
       talent,
       String(context.character.characterLevel),
