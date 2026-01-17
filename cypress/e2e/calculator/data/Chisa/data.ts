@@ -150,7 +150,7 @@ export const dataAttacks: AttackTests = [
   },
   {
     selector: ".tune-break-dmg",
-    values: ["Tune Break DMG", "82022", "82022", "82022"],
+    values: ["Tune Break DMG", "87447", "87447", "87447"],
   },
   {
     selector: ".collapsing-horizon-dmg",
