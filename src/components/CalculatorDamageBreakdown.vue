@@ -241,7 +241,7 @@
         <div class="total-mv">
           <div class="font-bold mt-2 text-lg text-primary">Total MV</div>
           <div class="formula bg-base-200 p-2 rounded-md font-mono">
-            = (
+            (
             <span class="text-primary">
               {{
                 displayPercentage(
@@ -297,6 +297,21 @@
             )
           </div>
         </div>
+        <div class="total-mv">
+          <div class="font-bold mt-2 text-lg text-primary">
+            Total Healing Bonus
+          </div>
+          <div class="formula bg-base-200 p-2 rounded-md font-mono">
+            <span class="text-secondary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.totalHealBonus * 100,
+                  2,
+                )
+              }}
+            </span>
+          </div>
+        </div>
       </div>
     </div>
     <div
@@ -331,7 +346,7 @@
         <div class="total-mv">
           <div class="font-bold mt-2 text-lg text-primary">Total MV</div>
           <div class="formula bg-base-200 p-2 rounded-md font-mono">
-            = (
+            (
             <span class="text-primary">
               {{
                 displayPercentage(
@@ -367,6 +382,21 @@
               }}
             </span>
             )
+          </div>
+        </div>
+        <div class="total-mv">
+          <div class="font-bold mt-2 text-lg text-primary">
+            Total Shield Bonus
+          </div>
+          <div class="formula bg-base-200 p-2 rounded-md font-mono">
+            <span class="text-secondary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.totalShieldBonus * 100,
+                  2,
+                )
+              }}
+            </span>
           </div>
         </div>
       </div>
