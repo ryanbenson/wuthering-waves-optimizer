@@ -609,7 +609,8 @@ export function calcHeal(
 ): any {
   // Parse the talent string to get individual percentage values
   let { flatBase, talentVal } = parseHealTalentString(talent);
-
+  const originalFlatBase = flatBase;
+  const originalTalentVal = talentVal;
   // add any flat talent modifiers (e.g. Jinshi Incandescence)
   if (talentModifierAdd) {
     talentVal += talentModifierAdd;
@@ -660,7 +661,12 @@ export function calcHeal(
     totalDamageContext: {
       talentVal,
       flatBase,
+      originalFlatBase,
+      originalTalentVal,
       finalAtkDefHpVal,
+      talentModifierMultiply,
+      talentModifierSpecialMultiply,
+      talentModifierAdd,
       totalHealBonus,
       type: "healing",
     },
@@ -705,7 +711,8 @@ export function calcShield(
 ): any {
   // Parse the talent string to get individual percentage values
   let { flatBase, talentVal } = parseShieldTalentString(talent);
-
+  const originalFlatBase = flatBase;
+  const originalTalentVal = talentVal;
   // add any flat talent modifiers (e.g. Jinshi Incandescence)
   if (talentModifierAdd) {
     talentVal += talentModifierAdd;
@@ -744,8 +751,12 @@ export function calcShield(
     totalDamageContext: {
       talentVal,
       flatBase,
+      originalFlatBase,
+      originalTalentVal,
       finalAtkDefHpVal,
       totalShieldBonus,
+      talentModifierAdd,
+      talentModifierMultiply,
       type: "shield",
     },
   };

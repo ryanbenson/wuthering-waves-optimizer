@@ -236,6 +236,68 @@
         </span>
         )
       </div>
+      <div class="divider mt-2"></div>
+      <div class="mv-breakdown">
+        <div class="total-mv">
+          <div class="font-bold mt-2 text-lg text-primary">Total MV</div>
+          <div class="formula bg-base-200 p-2 rounded-md font-mono">
+            = (
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.originalTalentVal * 100,
+                  2,
+                )
+              }}
+            </span>
+            +
+            <span class="text-primary">
+              {{ damage.totalDamageContext.talentModifierAdd }}
+            </span>
+            × ( 1 +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.talentModifierMultiply * 100,
+                  2,
+                )
+              }}
+            </span>
+            ) × ( 1 +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.talentModifierSpecialMultiply * 100,
+                  2,
+                )
+              }}
+            </span>
+            ) ) +
+            <span class="text-primary">
+              {{ damage.totalDamageContext.originalFlatBase }}
+            </span>
+            × ( 1 +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.talentModifierMultiply * 100,
+                  2,
+                )
+              }}
+            </span>
+            ) × ( 1 +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.talentModifierSpecialMultiply * 100,
+                  2,
+                )
+              }}
+            </span>
+            )
+          </div>
+        </div>
+      </div>
     </div>
     <div
       v-if="damage.totalDamageContext.type === 'shield'"
@@ -263,6 +325,50 @@
           }}
         </span>
         )
+      </div>
+      <div class="divider mt-2"></div>
+      <div class="mv-breakdown">
+        <div class="total-mv">
+          <div class="font-bold mt-2 text-lg text-primary">Total MV</div>
+          <div class="formula bg-base-200 p-2 rounded-md font-mono">
+            = (
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.originalTalentVal * 100,
+                  2,
+                )
+              }}
+            </span>
+            +
+            <span class="text-primary">
+              {{ damage.totalDamageContext.talentModifierAdd }}
+            </span>
+            × ( 1 +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.talentModifierMultiply * 100,
+                  2,
+                )
+              }}
+            </span>
+            ) ) +
+            <span class="text-primary">
+              {{ damage.totalDamageContext.originalFlatBase }}
+            </span>
+            × ( 1 +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.talentModifierMultiply * 100,
+                  2,
+                )
+              }}
+            </span>
+            )
+          </div>
+        </div>
       </div>
     </div>
     <div
@@ -339,7 +445,7 @@
         </div>
       </div>
       <div class="divider mt-2"></div>
-      <div class="resistance-breakdown">
+      <div class="mv-breakdown">
         <div class="total-mv">
           <div class="font-bold mt-2 text-lg text-primary">Total MV</div>
           <div class="formula bg-base-200 p-2 rounded-md font-mono">

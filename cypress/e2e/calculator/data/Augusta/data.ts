@@ -97,7 +97,7 @@ export const dataAttacks: AttackTests = [
   },
   {
     selector: ".glory-s-favor",
-    values: ["Glory's Favor", "1132"],
+    values: ["Glory's Favor", "957"],
   },
   {
     selector: ".s6-engraved-in-radiant-light-dmg",

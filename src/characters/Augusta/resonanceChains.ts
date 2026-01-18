@@ -18,7 +18,7 @@ export const resonanceChains = [
       {
         modifier: "CritOverflow",
         modifierValue: 0.02,
-        overflowStep: .01, // for every 1% CR
+        overflowStep: 0.01, // for every 1% CR
         overflowMin: 1, // must be 100% CR
         overflowMax: 1, // can only get 100% CD from this
       },
@@ -73,6 +73,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
+        modifier: "talentModifierMultiply",
         modifySpecificTalents: ["InherentSkillGlorysFavor"],
         modifierValue: 0.5,
       },
@@ -90,7 +91,7 @@ export const resonanceChains = [
       {
         modifier: "CritOverflow",
         modifierValue: 0.02,
-        overflowStep: .01, // for every 1% CR
+        overflowStep: 0.01, // for every 1% CR
         overflowMin: 1.5, // must be 100% CR
         overflowMax: 0.5, // can only get 100% CD from this
       },
