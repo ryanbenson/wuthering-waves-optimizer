@@ -5,6 +5,7 @@
     <h3>January 20, 2026</h3>
     <ul>
       <li>Adds missing self buff for Mornye.</li>
+      <li>Fixes Dreamless buff for Havoc Rover.</li>
     </ul>
     <h3>January 18, 2026</h3>
     <ul>

@@ -685,6 +685,7 @@ CD: <span class="param">25</span>s.</span>`,
           "DreamlessFinalStrike",
         ],
         modifierValue: 0.5,
+        specificCharacters: ["RoverHavocFemale", "RoverHavocMale"],
       },
     ],
     actions: [
