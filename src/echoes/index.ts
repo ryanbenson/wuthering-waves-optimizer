@@ -557,7 +557,7 @@ CD: <span class="param">20</span>s</span>`,
     details: `An incorporeal Tacet Discord inhabiting the body of a large, ragged plushie.`,
     modifiers: [],
     actions: [],
-    sets: ["FrostyResolve", "MidnightVeil", "MoltenRift", "VoidThunder"],
+    sets: ["FrostyResolve", "MidnightVeil"],
   },
   CyanFeatheredHeron: {
     key: "CyanFeatheredHeron",
@@ -1936,11 +1936,7 @@ CD: <span class="param">25</span>s.</span>`,
     modifiers: [],
     actions: [],
     sets: [
-      "FrostyResolve",
-      "TidebreakingCourage",
-      "CelestialLight",
-      "MoonlitClouds",
-      "LingeringTunes",
+      "FrostyResolve", "TidebreakingCourage"
     ],
   },
   LumiscaleConstruct: {
