@@ -74,6 +74,21 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
+    key: "OutroSkillRecursion",
+    name: "Outro Skill: Recursion",
+    details: `<div class="skilldescription">Resonators in the team gain 25% All DMG Amplification for 30s.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DMGDeepen",
+        modifierValue: 0.25,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: `InherentSkillBlueprint`,
     name: `Inherent Skill: Blueprint`,
     details: `<div>Mornye's Energy Regen is increased by 10%.<br>Casting <span class="Highlight"><strong>Intro Skill - Convergence</strong></span> restores 20 points of Concerto Energy, triggered once every 20s.<br>Casting <span class="Highlight"><strong>Basic Attack - Wide Field Observation Mode Stage 3</strong></span> restores 20 points of Concerto Energy, triggered once every 20s.</div>`,

@@ -2,6 +2,17 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>January 20, 2026</h3>
+    <ul>
+      <li>Adds missing self buff for Mornye.</li>
+    </ul>
+    <h3>January 18, 2026</h3>
+    <ul>
+      <li>
+        In the breakdown panel, healing and shield now has the MV breakdown and
+        the total bonus.
+      </li>
+    </ul>
     <h3>January 17, 2026</h3>
     <ul>
       <li>
