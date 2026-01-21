@@ -404,10 +404,13 @@ export const calculateAttackDamage = (
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGBonus`] ?? 0;
   const specificSkillDmgFromCharBuffsWithElement =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:${attackElement}`] ?? 0;
-  const specificSkillDmgFromEchoes =
-    (providedEchoStats ?? context.equipment.echoStats)?.specificTalentBuffs?.[
-      attack.key
-    ] ?? 0;
+  let specificSkillDmgFromEchoes;
+  specificSkillDmgFromEchoes =
+    context.equipment.echoStats?.specificTalentBuffs?.[attack.key] ?? 0;
+  // if we provided the full echo stats through the optimizer, overwrite the previous value
+  if (providedEchoStats) {
+    providedEchoStats?.specificTalentBuffs?.[attack.key] ?? 0;
+  }
   const genericSkillDmgBonusResChain =
     context.buffs.charResonanceChainsData?.DMGBonus ?? 0;
   const genericSkillDmgBonusSelfBuff = selfBuffs?.DMGBonus ?? 0;

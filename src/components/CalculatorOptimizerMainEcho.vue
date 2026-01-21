@@ -260,9 +260,7 @@ export default {
             }
           }
         });
-        return data;
-      }
-      if (this.hasStacks) {
+      } else if (this.hasStacks) {
         if (this.stacks === 0) {
           return data;
         }
@@ -286,6 +284,20 @@ export default {
           }
         });
       }
+      let modifySpecificTalentsData = {};
+      // process the modifySpecificTalents
+      data.modifySpecificTalents.forEach((talentModifier) => {
+        const talentList = talentModifier?.modifySpecificTalents ?? [];
+        talentList.forEach((talent) => {
+          let key = `${talent}`;
+          if (talent.modifier) {
+            key = `${key}:${talent.modifier}`;
+          }
+          modifySpecificTalentsData[key] =
+            talentModifier.modifierValueCalculated;
+        });
+      });
+      data.specificTalentBuffs = modifySpecificTalentsData;
       return data;
     },
   },

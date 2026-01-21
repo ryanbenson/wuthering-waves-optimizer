@@ -5,6 +5,9 @@
     <h3>January 21, 2026</h3>
     <ul>
       <li>Removed duplicate delete button for presets in inventory screen.</li>
+      <li>
+        Fixes Crownless buff in the optimizer, so it works properly with HRover.
+      </li>
     </ul>
     <h3>January 20, 2026</h3>
     <ul>
