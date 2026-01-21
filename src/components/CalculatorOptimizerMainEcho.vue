@@ -286,7 +286,7 @@ export default {
       }
       let modifySpecificTalentsData = {};
       // process the modifySpecificTalents
-      data.modifySpecificTalents.forEach((talentModifier) => {
+      data.modifySpecificTalents?.forEach((talentModifier) => {
         const talentList = talentModifier?.modifySpecificTalents ?? [];
         talentList.forEach((talent) => {
           let key = `${talent}`;
