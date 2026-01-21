@@ -22,10 +22,8 @@
         <EchoCustomPresetEcho v-if="echo4Id" key="echo4" :echo-id="echo4Id" />
         <EchoCustomPresetEcho v-if="echo5Id" key="echo5" :echo-id="echo5Id" />
       </div>
-      <div class="actions flex gap-2">
-        <button
-          v-if="!disableAction"
-          class="btn btn-sm btn-primary max-w-40 mt-2">
+      <div v-if="!disableAction" class="actions flex gap-2">
+        <button class="btn btn-sm btn-primary max-w-40 mt-2">
           Apply preset
         </button>
         <button
@@ -260,7 +258,11 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useInventoryStore, ["deleteEchoPreset", "deleteEquippedPreset", "getEchoPresetCharacters"]),
+    ...mapActions(useInventoryStore, [
+      "deleteEchoPreset",
+      "deleteEquippedPreset",
+      "getEchoPresetCharacters",
+    ]),
     ...mapActions(useCharacterStore, ["getCharsEquipped", "setCharacterData"]),
     // Helper method to calculate crit value from echo data
     calculateCritValue(echoData) {
@@ -307,7 +309,7 @@ export default {
         await this.setCharacterData(character, data);
       }
       await this.deleteEchoPreset(this.presetId);
-    }
+    },
   },
 };
 </script>
