@@ -1,7 +1,7 @@
 <template>
 <div class="stats-breakdown">
   <div class="font-bold mt-2 text-lg">Total {{ statLabel }}: <span class="font-bold text-secondary">{{ displayTotal }}</span></div>
-  <div>Base {{ statLabel }}: <span class="font-bold text-primary">{{ baseValue }}<template v-if="!hasBaseStat && stat !== 'Crit Rate' && stat !== 'Crit DMG'">%</template></span></div>
+  <div>Base {{ statLabel }}: <span class="font-bold text-primary">{{ baseValue }}<template v-if="!hasBaseStat && stat !== 'Crit Rate' && stat !== 'Crit DMG' && stat !== 'Tune Break Boost'"><template v-if="stat === 'Tune Break Boost'"></template>%</template></span></div>
   <div v-if="stat === 'ATK'">Weapon ATK: <span class="font-bold text-primary">{{ displayInt(weaponAtk) }}</span></div>
   <h3 class="text-base font-bold mt-2 text-primary">{{ statLabel }}<template v-if="hasBaseStat">%</template>:</h3>
   <table class="table table-zebra table-xs p-0 m-0">
@@ -40,6 +40,9 @@
           </span>
           <span v-else-if="stat === 'Crit DMG'">
             {{ displayPercentage((totalValue - 1.5) * 100) }}
+          </span>
+          <span v-else-if="stat === 'Tune Break Boost'">
+            {{ displayInt(totalValue * 100) }}
           </span>
           <span v-else-if="!hasBaseStat">
             {{ displayTotal }}
@@ -101,6 +104,7 @@
 
 <script>
 import { displayPercentage, displayInt } from "../utils/numbers";
+import { getCharByName } from "../characters/characters";
 export default {
   name: "CalculatorStatsBreakdown",
   props: {
@@ -201,6 +205,10 @@ export default {
       type: Number,
       default: 0,
     },
+    tuneBreakBoost: {
+      type: Number,
+      default: 0,
+    },
     basicAttackDmgBonus: {
       type: Number,
       default: 0,
@@ -245,6 +253,22 @@ export default {
       type: Object,
       required: true,
     },
+    character: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      characterBaseTuneBreakBoost: 0,
+    };
+  },
+  async mounted() {
+    // Get character's base tuneBreakBoost value
+    const chosenChar = await getCharByName(this.character);
+    if (chosenChar) {
+      this.characterBaseTuneBreakBoost = chosenChar.basic?.tuneBreakBoost ?? 0;
+    }
   },
   methods: {
     displayPercentage,
@@ -279,6 +303,7 @@ export default {
         "Spectro DMG Bonus": "Spectro",
         "Havoc DMG Bonus": "Havoc",
         "Healing Bonus": "HealingBonus",
+        "Tune Break Boost": "tuneBreakBoost",
         "Basic Attack DMG Bonus": "BasicAttackDMGBonus",
         "Heavy Attack DMG Bonus": "HeavyAttackDMGBonus",
         "Resonance Skill DMG Bonus": "ResonanceSkillDMGBonus",
@@ -367,6 +392,12 @@ export default {
           return this.havoc;
         case "HealingBonus":
           return this.healingBonus;
+        case "tuneBreakBoost":
+          // Calculate total: base + self buffs + team buffs
+          const base = this.characterBaseTuneBreakBoost || 0;
+          const self = this.charBuffsData?.value?.tuneBreakBoost ?? this.charBuffsData?.tuneBreakBoost ?? 0;
+          const team = this.teamBuffsData?.value?.tuneBreakBoost ?? this.teamBuffsData?.tuneBreakBoost ?? 0;
+          return base + self + team;
         case "BasicAttackDMGBonus":
           return this.basicAttackDmgBonus;
         case "HeavyAttackDMGBonus":
@@ -387,6 +418,10 @@ export default {
       if (["CritRate", "CritDMG", "EnergyRegen", "HealingBonus"].includes(this.statKey)) {
         return this.displayPercentage(this.totalValue * 100);
       }
+      // For Tune Break Boost, display as integer
+      if (this.statKey === "tuneBreakBoost") {
+        return this.displayInt(this.totalValue * 100);
+      }
       // For DMG bonus stats, they're already in percentage form
       return this.displayPercentage(this.totalValue);
     },
@@ -402,6 +437,9 @@ export default {
           return displayPercentage(5);
         case "CritDMG":
           return displayPercentage(150);
+        case "tuneBreakBoost":
+          // Base value comes from character's basic.tuneBreakBoost (display as integer)
+          return displayInt(this.characterBaseTuneBreakBoost * 100);
         default:
           return displayInt(0);
       }
@@ -456,6 +494,10 @@ export default {
         value += allElementAttributeBonus;
       }
       
+      // For tuneBreakBoost, display as integer (even if 0)
+      if (this.statKey === "tuneBreakBoost") {
+        return this.displayInt(value * 100);
+      }
       if (value === 0) return this.displayPercentage(0);
       // Weapon passive stats are stored as decimals (0.12 = 12%)
       return this.displayPercentage(value * 100);
@@ -475,6 +517,10 @@ export default {
         value += allElementAttributeBonus;
       }
       
+      // For tuneBreakBoost, display as integer (even if 0)
+      if (this.statKey === "tuneBreakBoost") {
+        return this.displayInt(value * 100);
+      }
       if (value === 0) return this.displayPercentage(0);
       // Some stats are stored as decimals, some as percentages
       if (["CritRate", "CritDMG", "EnergyRegen", "HealingBonus"].includes(this.statKey)) {
@@ -488,7 +534,10 @@ export default {
       return this.displayInt(value || 0);
     },
     teamBuffsPercent() {
-      let value = this.teamBuffsData?.value?.[this.statKey] || 0;
+      // For tuneBreakBoost, access directly from teamBuffsData (it's stored as lowercase)
+      let value = this.statKey === "tuneBreakBoost"
+        ? (this.teamBuffsData?.value?.tuneBreakBoost ?? this.teamBuffsData?.tuneBreakBoost ?? 0)
+        : (this.teamBuffsData?.value?.[this.statKey] || 0);
       
       // Add AllAttributeBonus if this stat is affected by it
       if (this.hasAllAttributeBonus) {
@@ -502,6 +551,10 @@ export default {
         value += allElementAttributeBonus;
       }
       
+      // For tuneBreakBoost, display as integer (even if 0)
+      if (this.statKey === "tuneBreakBoost") {
+        return this.displayInt(value * 100);
+      }
       if (value === 0) return this.displayPercentage(0);
       if (["CritRate", "CritDMG", "EnergyRegen", "HealingBonus"].includes(this.statKey)) {
         return this.displayPercentage(value * 100);
@@ -514,7 +567,10 @@ export default {
       return this.displayInt(value || 0);
     },
     charBuffsPercent() {
-      let value = this.charBuffsData?.value?.[this.statKey] || 0;
+      // For tuneBreakBoost, access directly from charBuffsData (it's stored as lowercase)
+      let value = this.statKey === "tuneBreakBoost" 
+        ? (this.charBuffsData?.value?.tuneBreakBoost ?? this.charBuffsData?.tuneBreakBoost ?? 0)
+        : (this.charBuffsData?.value?.[this.statKey] || 0);
       
       // Add AllAttributeBonus if this stat is affected by it
       if (this.hasAllAttributeBonus) {
@@ -528,6 +584,10 @@ export default {
         value += allElementAttributeBonus;
       }
       
+      // For tuneBreakBoost, display as integer (even if 0)
+      if (this.statKey === "tuneBreakBoost") {
+        return this.displayInt(value * 100);
+      }
       if (value === 0) return this.displayPercentage(0);
       if (["CritRate", "CritDMG", "EnergyRegen", "HealingBonus"].includes(this.statKey)) {
         return this.displayPercentage(value * 100);
@@ -554,6 +614,10 @@ export default {
         value += allElementAttributeBonus;
       }
       
+      // For tuneBreakBoost, display as integer (even if 0)
+      if (this.statKey === "tuneBreakBoost") {
+        return this.displayInt(value * 100);
+      }
       if (value === 0) return this.displayPercentage(0);
       if (["CritRate", "CritDMG", "EnergyRegen", "HealingBonus"].includes(this.statKey)) {
         return this.displayPercentage(value * 100);
@@ -586,6 +650,12 @@ export default {
         value += bonusValue;
       }
       
+      // For tuneBreakBoost, display as integer (even if 0)
+      if (this.statKey === "tuneBreakBoost") {
+        // Echo stats might be in decimal or percentage form, so handle both
+        const decimalValue = value < 1 ? value : value / 100;
+        return this.displayInt(decimalValue * 100);
+      }
       if (value === 0) return this.displayPercentage(0);
       // Echo stats for percentages are already in percentage form (0-100)
       return this.displayPercentage(value);
