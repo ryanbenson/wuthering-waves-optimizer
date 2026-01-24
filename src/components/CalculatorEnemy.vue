@@ -50,6 +50,28 @@
         data-test-enemy-resist-input />
     </div>
   </div>
+  <div class="data-input--talents mt-8" data-test-enemy-strain>
+    <div class="flex flex-col pb-7 relative">
+      <label
+        for="havocBane"
+        class="talent__label"
+        data-test-enemy-strain-label>
+        Tune Strain - Interfered Stacks
+        <span class="text-primary">{{ strainStacks }}</span>
+      </label>
+      <input
+        v-model="strainStacks"
+        name="strainStacks"
+        id="strainStacks"
+        type="range"
+        min="0"
+        max="4"
+        step="1"
+        class="range range-xs"
+        :class="rangeClasses"
+        data-test-enemy-strain-input />
+    </div>
+  </div>
   <div class="data-input--talents mt-8" data-test-enemy-resist>
     <div class="flex flex-col pb-7 relative">
       <label
@@ -233,6 +255,7 @@ export default {
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
+          strainStacks: this.strainStacks,
         });
       },
       immediate: true,
@@ -250,6 +273,7 @@ export default {
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
+          strainStacks: this.strainStacks,
         });
       },
       immediate: true,
@@ -267,6 +291,7 @@ export default {
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
+          strainStacks: this.strainStacks,
         });
       },
       immediate: true,
@@ -284,6 +309,7 @@ export default {
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
+          strainStacks: this.strainStacks,
         });
       },
       immediate: true,
@@ -301,6 +327,7 @@ export default {
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
+          strainStacks: this.strainStacks,
         });
       },
       immediate: true,
@@ -318,6 +345,25 @@ export default {
           spectroFrazzleStacks: this.spectroFrazzleStacks,
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
+          strainStacks: this.strainStacks,
+        });
+      },
+      immediate: true,
+    },
+    strainStacks: {
+      /**
+       * Emits the buff data in its proper format
+       * @emits updated-enemy
+       */
+      handler: async function () {
+        this.$emit("updated-enemy-data", {
+          enemyLevel: this.enemyLevel,
+          enemyResist: this.enemyResist,
+          enemyType: this.enemyType,
+          spectroFrazzleStacks: this.spectroFrazzleStacks,
+          aeroErosionStacks: this.aeroErosionStacks,
+          havocBaneStacks: this.havocBaneStacks,
+          strainStacks: this.strainStacks,
         });
       },
       immediate: true,
@@ -436,6 +482,21 @@ export default {
       async set(value) {
         const data = {
           havocBaneStacks: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the number of strain stacks
+     * Data is persisted in the store. Avoids needing a local data + store data
+     */
+    strainStacks: {
+      get() {
+        return this.currentCharacter?.strainStacks ?? 0;
+      },
+      async set(value) {
+        const data = {
+          strainStacks: value,
         };
         await this.setCharacterData(this.character, data);
       },
