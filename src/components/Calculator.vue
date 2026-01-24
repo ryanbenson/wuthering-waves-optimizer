@@ -436,6 +436,7 @@ export default defineComponent({
     const isHavocBaneEnabled = ref(false);
     const havocBaneStacks = ref(0);
     const aeroErosionStacks = ref(0);
+    const strainStacks = ref(0);
     const isMissingAeroErosionData = ref(false);
     // component refs
     const characterBuffsRef = ref(null);
@@ -553,6 +554,7 @@ export default defineComponent({
         characters.value,
         character.value,
         enemyType.value,
+        strainStacks.value,
       );
       const damageData = calcDamages(context);
       allDamages.value = damageData;
@@ -758,6 +760,7 @@ export default defineComponent({
       spectroFrazzleStacks.value = data.spectroFrazzleStacks;
       aeroErosionStacks.value = data.aeroErosionStacks;
       havocBaneStacks.value = data.havocBaneStacks;
+      strainStacks.value = data.strainStacks;
       calcAllDamages();
     };
 
@@ -972,6 +975,7 @@ export default defineComponent({
         isAeroErosionEnabled: isAeroErosionEnabled.value,
         aeroErosionStacks: aeroErosionStacks.value,
         havocBaneStacks: havocBaneStacks.value,
+        strainStacks: strainStacks.value,
 
         // Main echo
         mainEcho: mainEcho.value,
@@ -1214,6 +1218,7 @@ export default defineComponent({
           enemyLevel: context.enemyLevel,
           enemyResist: context.enemyResist,
           enemyType: context.enemyType,
+          strainStacks: context.strainStacks,
           isSpectroFrazzleEnabled: context.isSpectroFrazzleEnabled,
           spectroFrazzleStacks: context.spectroFrazzleStacks,
           isAeroErosionEnabled: context.isAeroErosionEnabled,
@@ -1662,6 +1667,7 @@ export default defineComponent({
       selectedAttackDamage,
       selectedAttackLabel,
       tuneBreakBoost,
+      strainStacks,
     };
   },
 });

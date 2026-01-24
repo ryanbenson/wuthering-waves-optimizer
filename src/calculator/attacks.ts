@@ -805,12 +805,19 @@ export const calculateAttackDamage = (
     return calcMidnightVeilDMG();
   }
 
-  // special calc for MidnightVeilDMG
+  // special calc for tune break
+    let baseTuneBreakBoost = 0;
+    // get any custom base character tune break boost
+    baseTuneBreakBoost =
+      context.character.chosenChar?.basic?.tuneBreakBoost ?? 0;
+    const tuneBreakBoostSelf = selfBuffs?.tuneBreakBoost ?? 0;
+    const tuneBreakBoostTeam = context.buffs.teamBuffsData?.tuneBreakBoost ?? 0;
+    const totalTuneBreakBoost =
+      baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam;
   if (attack.type === "TuneBreak") {
     let talent = attack.talent;
     let enemyResistVal = context.enemy.enemyResist;
     let resistReduction = 0; // default to 0 for Tune Break, then the special ones get reduction
-    let baseTuneBreakBoost = 0;
     // Lynae, and others, have special Tune Break type attacks that have talents leveled off of their forte
     // also, normal tune break doesn't get affected by resist or resist reduction
     // but the special attacks do element based dmg, so they do
@@ -821,13 +828,6 @@ export const calculateAttackDamage = (
       talent = attack.talents[context.character.talentData?.forte];
       resistReduction = totalResistReduction;
     }
-    // get any custom base character tune break boost
-    baseTuneBreakBoost =
-      context.character.chosenChar?.basic?.tuneBreakBoost ?? 0;
-    const tuneBreakBoostSelf = selfBuffs?.tuneBreakBoost ?? 0;
-    const tuneBreakBoostTeam = context.buffs.teamBuffsData?.tuneBreakBoost ?? 0;
-    const totalTuneBreakBoost =
-      baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam;
     const tuneBreakDmgBonus = context.buffs.customBuffs?.TuneBreakDMGBonus ?? 0;
 
     return calcTuneBreak(
@@ -1076,13 +1076,16 @@ export const calculateAttackDamage = (
       coreofCollapseDMGSpecialMultiplier = 1;
     }
   }
+  // Strain "Total DMG" / Vuln = strainStacks (0-4) * TuneBreakBoost (0-50) * 12%
+  let strainSpecialMultiplier = context.enemy.strainStacks * totalTuneBreakBoost * 0.12;
   totalSpecialMultiplier +=
     resonanceChainAttackSpecialMultiplier +
     resonanceChainAttackSpecialMultiplierAttack +
     selfBuffAttackSpecialMultiplier +
     actionBuffAttackSpecialMultiplier +
     customBuffAttackSpecialMultiplier +
-    coreofCollapseDMGSpecialMultiplier;
+    coreofCollapseDMGSpecialMultiplier +
+    strainSpecialMultiplier;
   // console.table({
   //   attack: attack.key,
   //   attackType,
@@ -1485,6 +1488,7 @@ interface CalculationContext {
     havocBane: {
       havocBaneStacks: number;
     };
+    strainStacks: number;
   };
 
   // Rotations
@@ -1546,6 +1550,7 @@ export const getCalculationContext = (
   characters: any = {},
   character: any = "",
   enemyType: string = "",
+  strainStacks: number = 0,
 ): CalculationContext => {
   return {
     character: {
@@ -1631,6 +1636,7 @@ export const getCalculationContext = (
       havocBane: {
         havocBaneStacks,
       },
+      strainStacks,
     },
 
     // Rotations

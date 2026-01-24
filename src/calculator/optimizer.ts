@@ -141,6 +141,7 @@ export interface OptimizerContext {
   isAeroErosionEnabled: boolean;
   aeroErosionStacks: number;
   havocBaneStacks: number;
+  strainStacks: number;
 
   // Main echo
   mainEcho: string;
@@ -658,6 +659,7 @@ export function optimize(
         context.characters,
         context.character,
         context.enemyType,
+        context.strainStacks,
       );
       const attacks = processAttacks(
         [attackData], // attacks list, just the one since we're just doing 1 attack to optimize
@@ -747,6 +749,7 @@ export function optimize(
         context.characters,
         context.character,
         context.enemyType,
+        context.strainStacks,
       );
       const attacks = processAttacks(
         // @ts-ignore

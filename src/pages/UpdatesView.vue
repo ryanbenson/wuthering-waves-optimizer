@@ -5,6 +5,7 @@
     <h3>January 24, 2026</h3>
     <ul>
       <li>Adds Tune Break Boost to the list of stats on the stats panel, and enables the stats breakdown on it.</li>
+      <li>Adds Tune Strain - Interfered Stacks support.</li>
     </ul>
     <h3>January 21, 2026</h3>
     <ul>
