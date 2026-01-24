@@ -159,6 +159,7 @@
           :spectro="Spectro"
           :havoc="Havoc"
           :healing-bonus="healingBonus"
+          :tune-break-boost="tuneBreakBoost"
           @stat-selected="handleStatSelected"></CalculatorStats>
         <CalculatorDamages
           :key="character"
@@ -203,6 +204,7 @@
         :spectro="Spectro"
         :havoc="Havoc"
         :healing-bonus="healingBonus"
+        :tune-break-boost="tuneBreakBoost"
         @stat-selected="handleStatSelected"></CalculatorStats>
       <CalculatorDamages
         :key="character"
@@ -248,6 +250,7 @@
       :spectro="Spectro"
       :havoc="Havoc"
       :healing-bonus="healingBonus"
+      :tune-break-boost="tuneBreakBoost"
       :base-hp="baseHp"
       :base-atk="baseAtk"
       :base-def="baseDef"
@@ -419,6 +422,7 @@ export default defineComponent({
     const BonusSpecificSkillDMGBonus = ref(0);
     const TotalDeepenEffect = ref(0);
     const ResistReduction = ref(0);
+    const tuneBreakBoost = ref(0);
     const isLoading = ref(false);
     const enemyLevel = ref(90);
     const enemyResist = ref(0.1);
@@ -611,6 +615,22 @@ export default defineComponent({
       BonusSpecificSkillDMGBonus.value = stats.bonusSpecificSkillDMGBonus;
       TotalDeepenEffect.value = stats.totalDeepenEffect;
       ResistReduction.value = stats.resistReduction;
+      // Calculate tuneBreakBoost: base from character + self buffs + team buffs
+      const baseTuneBreakBoost = chosenChar?.value?.basic?.tuneBreakBoost ?? 0;
+      // charBuffsData is reactive, so access .value property (which contains the buffs data)
+      const tuneBreakBoostSelf =
+        charBuffsData?.value?.tuneBreakBoost ??
+        charBuffsData?.tuneBreakBoost ??
+        0;
+      // teamBuffsData is reactive, so access .value property (which contains the buffs data)
+      const tuneBreakBoostTeam =
+        teamBuffsData?.value?.tuneBreakBoost ??
+        teamBuffsData?.tuneBreakBoost ??
+        0;
+      tuneBreakBoost.value =
+        (baseTuneBreakBoost || 0) +
+        (tuneBreakBoostSelf || 0) +
+        (tuneBreakBoostTeam || 0);
     };
 
     const handleWeaponUpdated = (givenWeaponData) => {
@@ -1641,6 +1661,7 @@ export default defineComponent({
       selectedAttackKey,
       selectedAttackDamage,
       selectedAttackLabel,
+      tuneBreakBoost,
     };
   },
 });

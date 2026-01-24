@@ -34,6 +34,7 @@
       :spectro="Spectro"
       :havoc="Havoc"
       :healing-bonus="healingBonus"
+      :tune-break-boost="tuneBreakBoost"
       :base-hp="baseHp"
       :base-atk="baseAtk"
       :base-def="baseDef"
@@ -156,6 +157,10 @@ export default {
       default: 0,
     },
     healingBonus: {
+      type: Number,
+      default: 0,
+    },
+    tuneBreakBoost: {
       type: Number,
       default: 0,
     },
