@@ -1076,8 +1076,8 @@ export const calculateAttackDamage = (
       coreofCollapseDMGSpecialMultiplier = 1;
     }
   }
-  // Strain "Total DMG" / Vuln = strainStacks (0-4) * TuneBreakBoost (0-50) * 12%
-  let strainSpecialMultiplier = context.enemy.strainStacks * totalTuneBreakBoost * 0.12;
+  // Strain "Total DMG" / Vuln = strainStacks (0-4) * TuneBreakBoost (0-50) * 0.12%
+  let strainSpecialMultiplier = context.enemy.strainStacks * totalTuneBreakBoost * 0.0012;
   totalSpecialMultiplier +=
     resonanceChainAttackSpecialMultiplier +
     resonanceChainAttackSpecialMultiplierAttack +
