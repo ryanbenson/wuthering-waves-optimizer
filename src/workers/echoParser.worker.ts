@@ -110,33 +110,6 @@ function extractImageRegion(
 }
 
 /**
- * Convert image to grayscale (helps with color variations)
- */
-function convertToGrayscale(
-  ctx: OffscreenCanvasRenderingContext2D,
-  width: number,
-  height: number,
-): void {
-  const imageData = ctx.getImageData(0, 0, width, height);
-  const data = imageData.data;
-
-  // Convert each pixel to grayscale using luminance formula
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    // Use standard luminance formula: 0.299*R + 0.587*G + 0.114*B
-    const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-    data[i] = gray; // R
-    data[i + 1] = gray; // G
-    data[i + 2] = gray; // B
-    // Alpha channel (data[i + 3]) remains unchanged
-  }
-
-  ctx.putImageData(imageData, 0, 0);
-}
-
-/**
  * Normalize brightness to reduce lighting differences (preserves color ratios)
  */
 function normalizeBrightness(
@@ -225,106 +198,6 @@ function increaseContrast(
 }
 
 /**
- * Extract edges from an image using Sobel edge detection
- * Returns a binary edge map (0 or 255) with higher threshold to focus on major edges
- */
-function extractEdges(
-  ctx: OffscreenCanvasRenderingContext2D,
-  width: number,
-  height: number,
-): Uint8Array {
-  const imageData = ctx.getImageData(0, 0, width, height);
-  const data = imageData.data;
-  const edges = new Uint8Array(width * height);
-  
-  // Sobel kernels
-  const sobelX = [
-    -1, 0, 1,
-    -2, 0, 2,
-    -1, 0, 1
-  ];
-  const sobelY = [
-    -1, -2, -1,
-     0,  0,  0,
-     1,  2,  1
-  ];
-  
-  for (let y = 1; y < height - 1; y++) {
-    for (let x = 1; x < width - 1; x++) {
-      const idx = (y * width + x) * 4;
-      const alpha = data[idx + 3];
-      const r = data[idx];
-      const g = data[idx + 1];
-      const b = data[idx + 2];
-      
-      // Skip background pixels
-      if (alpha < 10 || (r < 30 && g < 30 && b < 30)) {
-        edges[y * width + x] = 0;
-        continue;
-      }
-      
-      // Convert to grayscale for edge detection
-      const gray = 0.299 * r + 0.587 * g + 0.114 * b;
-      
-      // Apply Sobel operators
-      let gx = 0, gy = 0;
-      for (let ky = -1; ky <= 1; ky++) {
-        for (let kx = -1; kx <= 1; kx++) {
-          const kidx = ((ky + 1) * 3) + (kx + 1);
-          const pixelIdx = ((y + ky) * width + (x + kx)) * 4;
-          const pixelGray = 0.299 * data[pixelIdx] + 0.587 * data[pixelIdx + 1] + 0.114 * data[pixelIdx + 2];
-          gx += pixelGray * sobelX[kidx];
-          gy += pixelGray * sobelY[kidx];
-        }
-      }
-      
-      // Calculate edge magnitude - higher threshold to focus on major structural edges
-      const magnitude = Math.sqrt(gx * gx + gy * gy);
-      edges[y * width + x] = magnitude > 50 ? 255 : 0; // Increased threshold from 30 to 50
-    }
-  }
-  
-  return edges;
-}
-
-/**
- * Compare edge maps to detect major structural differences
- * Returns normalized difference (0-1 scale) with emphasis on mismatches
- */
-function compareEdges(
-  edgesA: Uint8Array,
-  edgesB: Uint8Array,
-  width: number,
-  height: number,
-): number {
-  let matches = 0;
-  let mismatches = 0;
-  
-  for (let i = 0; i < width * height; i++) {
-    // Skip if both are background (edge value 0)
-    if (edgesA[i] === 0 && edgesB[i] === 0) {
-      continue;
-    }
-    
-    // If one has an edge and the other doesn't, that's a mismatch
-    if (edgesA[i] !== edgesB[i]) {
-      mismatches++;
-    } else {
-      matches++;
-    }
-  }
-  
-  const total = matches + mismatches;
-  if (total === 0) {
-    return 0; // No edges to compare
-  }
-  
-  // Return normalized mismatch ratio, but square it to emphasize differences
-  const mismatchRatio = mismatches / total;
-  return mismatchRatio * mismatchRatio; // Square to penalize mismatches more
-}
-
-/**
  * Calculate shape/silhouette metrics to catch major structural differences
  * Returns difference score based on object shape characteristics
  * Enhanced to better distinguish characters from creatures
@@ -399,12 +272,6 @@ function compareShape(
   const heightB = maxYB - minYB + 1;
   const aspectB = widthB / heightB;
   
-  // Calculate center positions
-  const centerXA = (minXA + maxXA) / 2;
-  const centerYA = (minYA + maxYA) / 2;
-  const centerXB = (minXB + maxXB) / 2;
-  const centerYB = (minYB + maxYB) / 2;
-  
   // Calculate centroid (center of mass) - more accurate than bounding box center
   const centroidXA = sumXA / countA;
   const centroidYA = sumYA / countA;
@@ -450,8 +317,6 @@ function compareShape(
   
   // Calculate normalized differences
   const aspectDiff = Math.abs(aspectA - aspectB) / Math.max(aspectA, aspectB, 0.1);
-  const centerXDiff = Math.abs(centerXA - centerXB) / width;
-  const centerYDiff = Math.abs(centerYA - centerYB) / height;
   const centroidXDiff = Math.abs(centroidXA - centroidXB) / width;
   const centroidYDiff = Math.abs(centroidYA - centroidYB) / height;
   const sizeDiff = Math.abs(countA - countB) / Math.max(countA, countB);
@@ -471,73 +336,6 @@ function compareShape(
   // Square the result to heavily penalize larger differences
   // This makes it exponentially worse as shapes become more different
   return shapeDiff * shapeDiff;
-}
-
-/**
- * Calculate Structural Similarity Index (SSIM) - better than pixel diff
- * Returns a similarity score (higher is more similar, 0-1 range)
- */
-function calculateSSIM(
-  ctxA: OffscreenCanvasRenderingContext2D,
-  ctxB: OffscreenCanvasRenderingContext2D,
-  width: number,
-  height: number,
-): number {
-  const dataA = ctxA.getImageData(0, 0, width, height).data;
-  const dataB = ctxB.getImageData(0, 0, width, height).data;
-  
-  let sumA = 0, sumB = 0, sumAA = 0, sumBB = 0, sumAB = 0;
-  let validPixels = 0;
-  
-  for (let i = 0; i < dataA.length; i += 4) {
-    const alphaA = dataA[i + 3];
-    const alphaB = dataB[i + 3];
-    const rA = dataA[i];
-    const gA = dataA[i + 1];
-    const bA = dataA[i + 2];
-    const rB = dataB[i];
-    const gB = dataB[i + 1];
-    const bB = dataB[i + 2];
-    
-    const isBackgroundA = alphaA < 10 || (rA < 30 && gA < 30 && bA < 30);
-    const isBackgroundB = alphaB < 10 || (rB < 30 && gB < 30 && bB < 30);
-    
-    if (isBackgroundA && isBackgroundB) {
-      continue;
-    }
-    
-    if (isBackgroundA !== isBackgroundB) {
-      return 0; // Completely different if backgrounds don't match
-    }
-    
-    validPixels++;
-    const luminanceA = 0.299 * rA + 0.587 * gA + 0.114 * bA;
-    const luminanceB = 0.299 * rB + 0.587 * gB + 0.114 * bB;
-    
-    sumA += luminanceA;
-    sumB += luminanceB;
-    sumAA += luminanceA * luminanceA;
-    sumBB += luminanceB * luminanceB;
-    sumAB += luminanceA * luminanceB;
-  }
-  
-  if (validPixels === 0) {
-    return 0;
-  }
-  
-  const meanA = sumA / validPixels;
-  const meanB = sumB / validPixels;
-  const varA = (sumAA / validPixels) - (meanA * meanA);
-  const varB = (sumBB / validPixels) - (meanB * meanB);
-  const covAB = (sumAB / validPixels) - (meanA * meanB);
-  
-  const c1 = 0.01 * 255 * 0.01 * 255; // Stability constants
-  const c2 = 0.03 * 255 * 0.03 * 255;
-  
-  const numerator = (2 * meanA * meanB + c1) * (2 * covAB + c2);
-  const denominator = (meanA * meanA + meanB * meanB + c1) * (varA + varB + c2);
-  
-  return numerator / denominator;
 }
 
 /**
@@ -1267,200 +1065,6 @@ function detectShapes(
 }
 
 /**
- * Check if an image has a specific color range (e.g., green vs yellow)
- */
-function hasColorRange(
-  ctx: OffscreenCanvasRenderingContext2D,
-  width: number,
-  height: number,
-  targetColor: { rMin: number; rMax: number; gMin: number; gMax: number; bMin: number; bMax: number },
-): number {
-  const imageData = ctx.getImageData(0, 0, width, height);
-  const data = imageData.data;
-  let matchingPixels = 0;
-  let totalPixels = 0;
-  
-  for (let i = 0; i < data.length; i += 4) {
-    const alpha = data[i + 3];
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    
-    // Skip background
-    if (alpha < 10 || (r < 30 && g < 30 && b < 30)) {
-      continue;
-    }
-    
-    totalPixels++;
-    
-    // Check if pixel is in target color range
-    if (
-      r >= targetColor.rMin && r <= targetColor.rMax &&
-      g >= targetColor.gMin && g <= targetColor.gMax &&
-      b >= targetColor.bMin && b <= targetColor.bMax
-    ) {
-      matchingPixels++;
-    }
-  }
-  
-  if (totalPixels === 0) {
-    return 0;
-  }
-  
-  return matchingPixels / totalPixels; // Return ratio of matching pixels
-}
-
-/**
- * Check border color specifically (set icons often differ by border color)
- */
-function checkBorderColor(
-  ctx: OffscreenCanvasRenderingContext2D,
-  width: number,
-  height: number,
-  targetColor: { rMin: number; rMax: number; gMin: number; gMax: number; bMin: number; bMax: number },
-): number {
-  const imageData = ctx.getImageData(0, 0, width, height);
-  const data = imageData.data;
-  let matchingPixels = 0;
-  let borderPixels = 0;
-  
-  // Check border pixels (outer 2-3 pixels)
-  const borderWidth = 3;
-  
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      // Check if pixel is on border
-      const isBorder = 
-        x < borderWidth || x >= width - borderWidth ||
-        y < borderWidth || y >= height - borderWidth;
-      
-      if (!isBorder) {
-        continue;
-      }
-      
-      const idx = (y * width + x) * 4;
-      const alpha = data[idx + 3];
-      const r = data[idx];
-      const g = data[idx + 1];
-      const b = data[idx + 2];
-      
-      // Skip background
-      if (alpha < 10 || (r < 30 && g < 30 && b < 30)) {
-        continue;
-      }
-      
-      borderPixels++;
-      
-      // Check if pixel is in target color range
-      if (
-        r >= targetColor.rMin && r <= targetColor.rMax &&
-        g >= targetColor.gMin && g <= targetColor.gMax &&
-        b >= targetColor.bMin && b <= targetColor.bMax
-      ) {
-        matchingPixels++;
-      }
-    }
-  }
-  
-  if (borderPixels === 0) {
-    return 0;
-  }
-  
-  return matchingPixels / borderPixels; // Return ratio of matching border pixels
-}
-
-/**
- * Compare dominant colors between two images with color presence checks
- */
-function compareDominantColors(
-  colorsA: Array<{ r: number; g: number; b: number; count: number }>,
-  colorsB: Array<{ r: number; g: number; b: number; count: number }>,
-  ctxA?: OffscreenCanvasRenderingContext2D,
-  ctxB?: OffscreenCanvasRenderingContext2D,
-  width?: number,
-  height?: number,
-): number {
-  let diff = 0;
-  const maxColors = Math.max(colorsA.length, colorsB.length);
-  
-  // Check for specific color presence if contexts provided
-  if (ctxA && ctxB && width && height) {
-    // Green color range (lime green, vibrant green) - expanded range
-    const greenRange = { rMin: 0, rMax: 180, gMin: 120, gMax: 255, bMin: 0, bMax: 180 };
-    const greenA = hasColorRange(ctxA, width, height, greenRange);
-    const greenB = hasColorRange(ctxB, width, height, greenRange);
-    const greenDiff = Math.abs(greenA - greenB);
-    
-    // Yellow color range (yellow, gold) - expanded range
-    const yellowRange = { rMin: 180, rMax: 255, gMin: 180, gMax: 255, bMin: 0, bMax: 150 };
-    const yellowA = hasColorRange(ctxA, width, height, yellowRange);
-    const yellowB = hasColorRange(ctxB, width, height, yellowRange);
-    const yellowDiff = Math.abs(yellowA - yellowB);
-    
-    // Pink/Purple color range (light pink, purple, mauve, lilac)
-    const pinkPurpleRange = { rMin: 150, rMax: 255, gMin: 100, gMax: 200, bMin: 150, bMax: 255 };
-    const pinkPurpleA = hasColorRange(ctxA, width, height, pinkPurpleRange);
-    const pinkPurpleB = hasColorRange(ctxB, width, height, pinkPurpleRange);
-    const pinkPurpleDiff = Math.abs(pinkPurpleA - pinkPurpleB);
-    
-    // Check border colors specifically (edges of the icon)
-    // Set icons often differ by border color
-    const borderGreenA = checkBorderColor(ctxA, width, height, greenRange);
-    const borderGreenB = checkBorderColor(ctxB, width, height, greenRange);
-    const borderYellowA = checkBorderColor(ctxA, width, height, yellowRange);
-    const borderYellowB = checkBorderColor(ctxB, width, height, yellowRange);
-    const borderPinkPurpleA = checkBorderColor(ctxA, width, height, pinkPurpleRange);
-    const borderPinkPurpleB = checkBorderColor(ctxB, width, height, pinkPurpleRange);
-    
-    // If one has green border and other has yellow border, huge penalty
-    if ((borderGreenA > 0.3 && borderYellowB > 0.3) || (borderYellowA > 0.3 && borderGreenB > 0.3)) {
-      diff += 200000; // Even larger penalty for border color mismatch
-    }
-    
-    // If one has green border and other has pink/purple border, huge penalty
-    if ((borderGreenA > 0.3 && borderPinkPurpleB > 0.3) || (borderPinkPurpleA > 0.3 && borderGreenB > 0.3)) {
-      diff += 200000; // Massive penalty for green vs pink/purple border mismatch
-    }
-    
-    // If one has green and other has yellow (overall), that's a huge difference
-    if ((greenA > 0.15 && yellowB > 0.15) || (yellowA > 0.15 && greenB > 0.15)) {
-      diff += 150000; // Massive penalty for green vs yellow mismatch
-    }
-    
-    // If one has green and other has pink/purple (overall), that's a huge difference
-    if ((greenA > 0.15 && pinkPurpleB > 0.15) || (pinkPurpleA > 0.15 && greenB > 0.15)) {
-      diff += 150000; // Massive penalty for green vs pink/purple mismatch
-    }
-    
-    // Penalize based on how different the color presence is
-    diff += (greenDiff + yellowDiff + pinkPurpleDiff) * 80000;
-    // Also penalize border color differences
-    const borderGreenDiff = Math.abs(borderGreenA - borderGreenB);
-    const borderYellowDiff = Math.abs(borderYellowA - borderYellowB);
-    const borderPinkPurpleDiff = Math.abs(borderPinkPurpleA - borderPinkPurpleB);
-    diff += (borderGreenDiff + borderYellowDiff + borderPinkPurpleDiff) * 100000;
-  }
-  
-  // Compare dominant colors
-  for (let i = 0; i < maxColors; i++) {
-    const colorA = colorsA[i] || { r: 0, g: 0, b: 0, count: 0 };
-    const colorB = colorsB[i] || { r: 0, g: 0, b: 0, count: 0 };
-    
-    // Calculate color distance
-    const rDiff = colorA.r - colorB.r;
-    const gDiff = colorA.g - colorB.g;
-    const bDiff = colorA.b - colorB.b;
-    const colorDistance = Math.sqrt(rDiff * rDiff + gDiff * gDiff + bDiff * bDiff);
-    
-    // Weight by how common the color is
-    const weight = (colorA.count + colorB.count) / 2;
-    diff += colorDistance * weight;
-  }
-  
-  return diff;
-}
-
-/**
  * Match echo set from image region (matches against ALL sets first)
  * This is simpler since set icons are simpler (circular, limited colors)
  */
@@ -1496,7 +1100,6 @@ async function matchSetFirst(
     const r = data[i];
     const g = data[i + 1];
     const b = data[i + 2];
-    const alpha = data[i + 3];
     
     // If pixel is very dark (likely black background), make it transparent
     // Threshold: if all RGB values are below 50, consider it background
@@ -1718,24 +1321,6 @@ async function matchSet(
     setKey: bestMatch,
     diff: lowestDiff,
   };
-}
-
-// Cleanup function
-function cleanup() {
-  if (sourceImageBitmap) {
-    sourceImageBitmap.close();
-    sourceImageBitmap = null;
-  }
-  echoReferences.forEach((ref) => {
-    if (ref.imageBitmap) {
-      ref.imageBitmap.close();
-    }
-  });
-  echoReferences = [];
-  setImageBitmaps.forEach((bitmap) => {
-    bitmap.close();
-  });
-  setImageBitmaps.clear();
 }
 
 // Handle messages from main thread
