@@ -98,7 +98,7 @@
 <script>
 import { createWorker } from "tesseract.js";
 import { mainEchoesData, getEchoData, getCostByClass } from "../echoes/index";
-import { getEchoSetIconByType } from "../echoes/stats";
+import { getEchoSetIconByType, echoSetImageMap } from "../echoes/stats";
 import EchoParserWorker from "../workers/echoParser.worker?worker";
 
 export default {
@@ -244,6 +244,20 @@ export default {
         let cost = await this.extractTextFromRegion(echo.cost, true);
         if (cost === "<B>") {
           cost = 4;
+        } else if (cost) {
+          // Ensure cost is a number, not a string
+          const costNum = parseInt(cost, 10);
+          if (!isNaN(costNum)) {
+            cost = costNum;
+          } else {
+            // If parsing fails, try to extract number from string
+            const match = String(cost).match(/\d+/);
+            if (match) {
+              cost = parseInt(match[0], 10);
+            } else {
+              cost = null; // Can't determine cost
+            }
+          }
         }
         const mainStatLabel = await this.extractTextFromRegion(
           echo.mainStatLabel,
@@ -272,21 +286,53 @@ export default {
           }
         }
 
-        // NEW LOGIC: Match echo first (all echoes, not filtered by cost)
-        const matchedEcho = await this.matchEchoRegion(echo.echoImage);
-        let set = null;
-        if (matchedEcho) {
-          const echoData = getEchoData(matchedEcho);
-          // Set cost from echo class if not already determined
-          if (!cost) {
-            cost = getCostByClass(echoData.class);
+        // NEW LOGIC: Match echo set first, then filter echoes by that set AND cost
+        // This reduces search space from 100+ to just 1-5 echoes per set+cost combination
+        const matchedSet = await this.matchSetRegionFirst(echo.set);
+        let matchedEcho = null;
+        let set = matchedSet;
+        
+        if (matchedSet) {
+          // Get all echoes that belong to this set
+          let filteredEchoKeys = Object.values(mainEchoesData ?? {})
+            .filter((echoData) => echoData.sets?.includes(matchedSet))
+            .map((echoData) => echoData.key);
+          
+          // CRITICAL: Also filter by cost if we have it
+          // This reduces from 5-10 echoes to just 1-5 echoes per set+cost
+          if (cost) {
+            filteredEchoKeys = filteredEchoKeys.filter((echoKey) => {
+              const echoData = getEchoData(echoKey);
+              const echoCost = getCostByClass(echoData.class);
+              return echoCost === cost;
+            });
           }
-          // Then match set from the matched echo's possible sets
-          const echoSets = echoData.sets ?? [];
-          if (echoSets.length === 1) {
-            set = echoSets[0];
-          } else {
-            set = await this.matchSetRegion(echo.set, echoSets);
+          
+          // Match echo from filtered list (only 1-5 echoes instead of 100+)
+          matchedEcho = await this.matchEchoRegion(echo.echoImage, filteredEchoKeys);
+          
+          if (matchedEcho) {
+            const echoData = getEchoData(matchedEcho);
+            // Set cost from echo class if not already determined
+            if (!cost) {
+              cost = getCostByClass(echoData.class);
+            }
+          }
+        } else {
+          // Fallback: if set matching fails, try matching echo without filter
+          matchedEcho = await this.matchEchoRegion(echo.echoImage);
+          if (matchedEcho) {
+            const echoData = getEchoData(matchedEcho);
+            if (!cost) {
+              cost = getCostByClass(echoData.class);
+            }
+            // Try to match set from the matched echo's possible sets
+            const echoSets = echoData.sets ?? [];
+            if (echoSets.length === 1) {
+              set = echoSets[0];
+            } else {
+              set = await this.matchSetRegion(echo.set, echoSets);
+            }
           }
         }
 
@@ -393,7 +439,7 @@ export default {
       });
     },
 
-    async matchEchoRegion(coords) {
+    async matchEchoRegion(coords, filteredEchoKeys = null) {
       if (!this.echoParserWorker) {
         return null;
       }
@@ -412,11 +458,48 @@ export default {
 
         this.echoParserWorker.addEventListener("message", handler);
 
-        // Just send coordinates, worker already has the source image
+        // Send coordinates and filtered echo keys if provided
         this.echoParserWorker.postMessage({
           type: "parseEcho",
           data: {
             echoCoords: coords,
+            filteredEchoKeys: filteredEchoKeys,
+          },
+        });
+      });
+    },
+
+    async matchSetRegionFirst(coords) {
+      if (!this.echoParserWorker) {
+        return null;
+      }
+
+      // Build all set image URLs map
+      const allSetImageUrls = {};
+      for (const [setKey, imageUrl] of Object.entries(echoSetImageMap)) {
+        allSetImageUrls[setKey] = imageUrl;
+      }
+
+      return new Promise((resolve, reject) => {
+        const handler = (e) => {
+          if (e.data.type === "setMatch") {
+            this.echoParserWorker.removeEventListener("message", handler);
+            resolve(e.data.setMatch.setKey);
+          } else if (e.data.type === "error") {
+            this.echoParserWorker.removeEventListener("message", handler);
+            console.error("Set match error:", e.data.error);
+            resolve(null);
+          }
+        };
+
+        this.echoParserWorker.addEventListener("message", handler);
+
+        // Match against ALL sets first
+        this.echoParserWorker.postMessage({
+          type: "matchSetFirst",
+          data: {
+            setCoords: coords,
+            allSetImageUrls,
           },
         });
       });
