@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>January 25, 2026</h3>
+    <ul>
+      <li>Improves the echo importer. It is now 2-3x faster and much more accurate in finding the right echo and set.</li>
+    </ul>
     <h3>January 24, 2026</h3>
     <ul>
       <li>Adds Tune Break Boost to the list of stats on the stats panel, and enables the stats breakdown on it.</li>
