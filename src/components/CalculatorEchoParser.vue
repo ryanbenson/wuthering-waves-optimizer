@@ -98,7 +98,8 @@
 <script>
 import { createWorker } from "tesseract.js";
 import { mainEchoesData, getEchoData, getCostByClass } from "../echoes/index";
-import { getEchoSetIconByType } from "../echoes/stats";
+import { getEchoSetIconByType, echoSetImageMap } from "../echoes/stats";
+import EchoParserWorker from "../workers/echoParser.worker?worker";
 
 export default {
   name: "EchoParser",
@@ -113,6 +114,8 @@ export default {
       isDragging: false,
       dragCounter: 0,
       worker: null,
+      echoParserWorker: null,
+      imageBitmap: null,
       errorImageSize: false,
       isSavingToInventory: false,
     };
@@ -162,6 +165,11 @@ export default {
           this.reset();
           return;
         }
+
+        // Create ImageBitmap for worker
+        this.imageBitmap = await createImageBitmap(img);
+
+        // Initialize OCR worker
         this.worker = await createWorker("eng");
         const whitelist =
           "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.%+ ";
@@ -169,11 +177,23 @@ export default {
           tessedit_char_whitelist: whitelist,
           tessedit_pageseg_mode: 7,
         });
+
+        // Initialize echo parser worker
+        await this.initEchoParserWorker();
+        // Set the source image in the worker
+        await this.setSourceImageInWorker();
+
         this.echoes = await this.parseEchoes();
         console.timeEnd("Parse");
-        this.isLoading = true;
+        this.isLoading = false;
         this.worker.terminate();
         this.worker = null;
+        if (this.echoParserWorker) {
+          this.echoParserWorker.terminate();
+          this.echoParserWorker = null;
+        }
+        // Note: imageBitmap is transferred to worker, so it's detached and can't be closed here
+        this.imageBitmap = null;
         this.sendToParent();
         this.reset();
       };
@@ -185,6 +205,8 @@ export default {
       this.imageSrc = null;
       this.echoes = [];
       this.isLoading = false;
+      // imageBitmap is transferred to worker, so it's detached and handled by worker cleanup
+      this.imageBitmap = null;
       this.$refs.fileUpload.value = null;
       this.isSavingToInventory = false;
     },
@@ -222,6 +244,20 @@ export default {
         let cost = await this.extractTextFromRegion(echo.cost, true);
         if (cost === "<B>") {
           cost = 4;
+        } else if (cost) {
+          // Ensure cost is a number, not a string
+          const costNum = parseInt(cost, 10);
+          if (!isNaN(costNum)) {
+            cost = costNum;
+          } else {
+            // If parsing fails, try to extract number from string
+            const match = String(cost).match(/\d+/);
+            if (match) {
+              cost = parseInt(match[0], 10);
+            } else {
+              cost = null; // Can't determine cost
+            }
+          }
         }
         const mainStatLabel = await this.extractTextFromRegion(
           echo.mainStatLabel,
@@ -250,19 +286,53 @@ export default {
           }
         }
 
-        // get the echo reference
-        const matchedEcho = await this.matchEchoRegion(echo.echoImage, cost);
-        let set = null;
-        if (matchedEcho) {
-          const echoData = getEchoData(matchedEcho);
-          if (!cost) {
-            cost = getCostByClass(echoData.class);
+        // NEW LOGIC: Match echo set first, then filter echoes by that set AND cost
+        // This reduces search space from 100+ to just 1-5 echoes per set+cost combination
+        const matchedSet = await this.matchSetRegionFirst(echo.set);
+        let matchedEcho = null;
+        let set = matchedSet;
+        
+        if (matchedSet) {
+          // Get all echoes that belong to this set
+          let filteredEchoKeys = Object.values(mainEchoesData ?? {})
+            .filter((echoData) => echoData.sets?.includes(matchedSet))
+            .map((echoData) => echoData.key);
+          
+          // CRITICAL: Also filter by cost if we have it
+          // This reduces from 5-10 echoes to just 1-5 echoes per set+cost
+          if (cost) {
+            filteredEchoKeys = filteredEchoKeys.filter((echoKey) => {
+              const echoData = getEchoData(echoKey);
+              const echoCost = getCostByClass(echoData.class);
+              return echoCost === cost;
+            });
           }
-          const echoSets = echoData.sets ?? [];
-          if (echoSets.length === 1) {
-            set = echoSets[0];
-          } else {
-            set = await this.matchSetRegion(echo.set, echoSets);
+          
+          // Match echo from filtered list (only 1-5 echoes instead of 100+)
+          matchedEcho = await this.matchEchoRegion(echo.echoImage, filteredEchoKeys);
+          
+          if (matchedEcho) {
+            const echoData = getEchoData(matchedEcho);
+            // Set cost from echo class if not already determined
+            if (!cost) {
+              cost = getCostByClass(echoData.class);
+            }
+          }
+        } else {
+          // Fallback: if set matching fails, try matching echo without filter
+          matchedEcho = await this.matchEchoRegion(echo.echoImage);
+          if (matchedEcho) {
+            const echoData = getEchoData(matchedEcho);
+            if (!cost) {
+              cost = getCostByClass(echoData.class);
+            }
+            // Try to match set from the matched echo's possible sets
+            const echoSets = echoData.sets ?? [];
+            if (echoSets.length === 1) {
+              set = echoSets[0];
+            } else {
+              set = await this.matchSetRegion(echo.set, echoSets);
+            }
           }
         }
 
@@ -312,111 +382,165 @@ export default {
         return text;
       });
     },
-    extractImageRegion(coords) {
-      const canvas = document.createElement("canvas");
-      canvas.width = coords.width;
-      canvas.height = coords.height;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(
-        this.imageElement,
-        coords.x,
-        coords.y,
-        coords.width,
-        coords.height,
-        0,
-        0,
-        coords.width,
-        coords.height,
-      );
-      return canvas; // 👈 return the canvas here
-    },
-    compareImages(ctxA, ctxB, width = 192, height = 182) {
-      const dataA = ctxA.getImageData(0, 0, width, height).data;
-      const dataB = ctxB.getImageData(0, 0, width, height).data;
-
-      let diff = 0;
-      for (let i = 0; i < dataA.length; i += 4) {
-        const rDiff = dataA[i] - dataB[i];
-        const gDiff = dataA[i + 1] - dataB[i + 1];
-        const bDiff = dataA[i + 2] - dataB[i + 2];
-        diff += rDiff * rDiff + gDiff * gDiff + bDiff * bDiff;
-      }
-
-      return diff;
-    },
-    imageToCanvasCtx(img, width = 192, height = 182) {
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, width, height);
-      return ctx;
-    },
-    async matchEchoRegion(coords, cost) {
-      const regionCanvas = await this.extractImageRegion(coords);
-      const regionCtx = regionCanvas.getContext("2d");
-
-      let bestMatch = null;
-      let lowestDiff = Infinity;
-      let images = [];
-      if (Number(cost) === 4) {
-        images = this.allFourCostEchoesKeyImageMap;
-      } else if (Number(cost) === 3) {
-        images = this.allThreeCostEchoesKeyImageMap;
-      } else if (Number(cost) === 1) {
-        images = this.allOneCostEchoesKeyImageMap;
-      } else {
-        images = this.allCostEchoesImageMap;
-      }
-      for (const [name, iconImgUrl] of Object.entries(images)) {
-        // convert the icon/avatar into a canvas context
-        const iconImgObj = await this.loadImage(iconImgUrl);
-        const iconCtx = this.imageToCanvasCtx(iconImgObj);
-        const diff = this.compareImages(regionCtx, iconCtx);
-        if (diff < lowestDiff) {
-          lowestDiff = diff;
-          bestMatch = name;
-        }
-      }
-
-      return bestMatch;
-    },
-    async matchSetRegion(coords, echoSets) {
-      const regionCanvas = await this.extractImageRegion(coords);
-      const regionCtx = regionCanvas.getContext("2d");
-      // need to resize the echo set extracted icon to 32 to compare
-      const resizedCanvas = document.createElement("canvas");
-      resizedCanvas.width = 32;
-      resizedCanvas.height = 32;
-      const resizedCtx = resizedCanvas.getContext("2d");
-      resizedCtx.drawImage(regionCanvas, 0, 0, 32, 32);
-
-      let bestMatch = null;
-      let lowestDiff = Infinity;
-      let images = [];
-      for (const set of echoSets) {
-        const setImageSrc = getEchoSetIconByType(set);
-        // convert the icon/avatar into a canvas context
-        const iconImgObj = await this.loadImage(setImageSrc);
-        const iconCtx = this.imageToCanvasCtx(iconImgObj, 32, 32);
-        const diff = this.compareImages(resizedCtx, iconCtx, 32, 32);
-        if (diff < lowestDiff) {
-          lowestDiff = diff;
-          bestMatch = set;
-        }
-      }
-
-      return bestMatch;
-    },
-    async loadImage(src) {
+    // Removed extractImageRegion, compareImages, and imageToCanvasCtx as they're now in the worker
+    async initEchoParserWorker() {
       return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.crossOrigin = "Anonymous"; // needed if loading from other domains'
-        img.onload = () => resolve(img);
-        img.onerror = (err) => reject(err);
-        img.src = src;
+        this.echoParserWorker = new EchoParserWorker();
+
+        // Wait for worker to be ready
+        const readyHandler = (e) => {
+          if (e.data.type === "ready") {
+            this.echoParserWorker.removeEventListener("message", readyHandler);
+            resolve();
+          }
+        };
+        this.echoParserWorker.addEventListener("message", readyHandler);
+
+        // Initialize worker with all echo references
+        const echoReferences = Object.values(mainEchoesData ?? {}).map(
+          (echo) => ({
+            key: echo.key,
+            imageUrl: echo.image,
+          }),
+        );
+
+        this.echoParserWorker.postMessage({
+          type: "init",
+          data: { echoReferences },
+        });
       });
     },
+
+    async setSourceImageInWorker() {
+      if (!this.echoParserWorker || !this.imageBitmap) {
+        return;
+      }
+
+      return new Promise((resolve, reject) => {
+        const handler = (e) => {
+          if (e.data.type === "ready") {
+            this.echoParserWorker.removeEventListener("message", handler);
+            resolve();
+          }
+        };
+
+        this.echoParserWorker.addEventListener("message", handler);
+
+        // Transfer the image bitmap to the worker (can only transfer once)
+        this.echoParserWorker.postMessage(
+          {
+            type: "setSourceImage",
+            data: {
+              sourceImageBitmap: this.imageBitmap,
+            },
+          },
+          [this.imageBitmap],
+        );
+      });
+    },
+
+    async matchEchoRegion(coords, filteredEchoKeys = null) {
+      if (!this.echoParserWorker) {
+        return null;
+      }
+
+      return new Promise((resolve, reject) => {
+        const handler = (e) => {
+          if (e.data.type === "echoMatch") {
+            this.echoParserWorker.removeEventListener("message", handler);
+            resolve(e.data.echoMatch.echoKey);
+          } else if (e.data.type === "error") {
+            this.echoParserWorker.removeEventListener("message", handler);
+            console.error("Echo match error:", e.data.error);
+            resolve(null);
+          }
+        };
+
+        this.echoParserWorker.addEventListener("message", handler);
+
+        // Send coordinates and filtered echo keys if provided
+        this.echoParserWorker.postMessage({
+          type: "parseEcho",
+          data: {
+            echoCoords: coords,
+            filteredEchoKeys: filteredEchoKeys,
+          },
+        });
+      });
+    },
+
+    async matchSetRegionFirst(coords) {
+      if (!this.echoParserWorker) {
+        return null;
+      }
+
+      // Build all set image URLs map
+      const allSetImageUrls = {};
+      for (const [setKey, imageUrl] of Object.entries(echoSetImageMap)) {
+        allSetImageUrls[setKey] = imageUrl;
+      }
+
+      return new Promise((resolve, reject) => {
+        const handler = (e) => {
+          if (e.data.type === "setMatch") {
+            this.echoParserWorker.removeEventListener("message", handler);
+            resolve(e.data.setMatch.setKey);
+          } else if (e.data.type === "error") {
+            this.echoParserWorker.removeEventListener("message", handler);
+            console.error("Set match error:", e.data.error);
+            resolve(null);
+          }
+        };
+
+        this.echoParserWorker.addEventListener("message", handler);
+
+        // Match against ALL sets first
+        this.echoParserWorker.postMessage({
+          type: "matchSetFirst",
+          data: {
+            setCoords: coords,
+            allSetImageUrls,
+          },
+        });
+      });
+    },
+    async matchSetRegion(coords, echoSets) {
+      if (!this.echoParserWorker) {
+        return null;
+      }
+
+      // Build set image URLs map
+      const setImageUrls = {};
+      for (const set of echoSets) {
+        setImageUrls[set] = getEchoSetIconByType(set);
+      }
+
+      return new Promise((resolve, reject) => {
+        const handler = (e) => {
+          if (e.data.type === "setMatch") {
+            this.echoParserWorker.removeEventListener("message", handler);
+            resolve(e.data.setMatch.setKey);
+          } else if (e.data.type === "error") {
+            this.echoParserWorker.removeEventListener("message", handler);
+            console.error("Set match error:", e.data.error);
+            resolve(null);
+          }
+        };
+
+        this.echoParserWorker.addEventListener("message", handler);
+
+        // Just send coordinates, worker already has the source image
+        this.echoParserWorker.postMessage({
+          type: "matchSet",
+          data: {
+            setCoords: coords,
+            possibleSets: echoSets,
+            setImageUrls,
+          },
+        });
+      });
+    },
+    // Removed loadImage as it's now handled in the worker
     convertCanvasToGrayscale(ctx, width, height) {
       const imageData = ctx.getImageData(0, 0, width, height);
       const data = imageData.data;
@@ -577,6 +701,12 @@ export default {
   },
   beforeUnmount() {
     document.removeEventListener("paste", this.onPaste);
+    if (this.echoParserWorker) {
+      this.echoParserWorker.terminate();
+      this.echoParserWorker = null;
+    }
+    // imageBitmap is transferred to worker, so it's detached and handled by worker cleanup
+    this.imageBitmap = null;
   },
 };
 </script>
