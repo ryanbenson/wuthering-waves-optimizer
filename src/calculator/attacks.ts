@@ -554,8 +554,13 @@ export const calculateAttackDamage = (
     context.equipment.weapon.weaponPassiveStats?.[
       `ResistShred:${attackElement}`
     ] ?? 0;
+  let weaponBuffResistShredForCharElementSpecificActionType =
+    context.equipment.weapon.weaponPassiveStats?.[
+      `ResistShred:${attackElement}:${attack.type}`
+    ] ?? 0;
   if (excludeWeaponBuffs) {
     weaponBuffResistShredForCharElement = 0;
+    weaponBuffResistShredForCharElementSpecificActionType = 0;
   }
   if (excludeTeamBuffs) {
     teamBuffResistShredForCharElement = 0;
@@ -575,6 +580,7 @@ export const calculateAttackDamage = (
     selfBuffResistShredForCharElement +
     selfBuffResistShredForCharElementSpecificAttack +
     weaponBuffResistShredForCharElement +
+    weaponBuffResistShredForCharElementSpecificActionType +
     actionBuffResistReduction +
     customResistReduction;
 
