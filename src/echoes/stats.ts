@@ -425,6 +425,12 @@ export const echoSetImageMap: Record<string, string> = {
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/RiteofGildedRevelation.webp",
   HaloofStarryRadiance:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/HaloofStarryRadiance.webp",
+  TrailblazingStar:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/TrailblazingStar.webp",
+  SoundofTrueName:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/SoundofTrueName.webp",
+  ChromaticFoam:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/ChromaticFoam.webp",
 };
 
 export function getEchoSetIconByType(type: string): string {
@@ -457,6 +463,9 @@ export const echoSetLabelMap: Record<string, string> = {
   PactofNeonlightLeap: "Pact of Neonlight Leap",
   RiteofGildedRevelation: "Rite of Gilded Revelation",
   HaloofStarryRadiance: "Halo of Starry Radiance",
+  TrailblazingStar: "Trailblazing Star",
+  SoundofTrueName: "Sound of True Name",
+  ChromaticFoam: "Chromatic Foam",
 };
 
 export function getEchoSetLabelByType(type: string): string {

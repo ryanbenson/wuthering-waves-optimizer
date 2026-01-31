@@ -1935,6 +1935,33 @@ CD: <span class="param">20</span>s</span>`,
     maxStacks: 125,
     alwaysEnabled: false,
   },
+  {
+    key: "ChromaticFoam",
+    name: "Chromatic Foam",
+    details: `When the Resonator inflicts Fusion Burst on the enemies, they gain the following effects: Gain 10% Fusion DMG Bonus for 15 s. While this effect is active, casting an Outro Skill grants the incoming Resonator 25% Fusion DMG Bonus for 15s.`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.25,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "Glommoth",
+    name: "Glommoth",
+    details: `Casting Outro Skill within 15s after summoning Glommoth grants 12.00% Glacio DMG Bonus to the incoming Resonator for 15s.
+CD: 20s.`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Glacio",
+        modifierValue: 0.12,
+      },
+    ],
+    alwaysEnabled: false,
+  },
 ];
 
 export const allWeaponTeamBuffs = [
