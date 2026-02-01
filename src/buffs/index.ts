@@ -1733,6 +1733,83 @@ export const buffsByCharacter = {
       modifierBasedOn: "Energy Regen",
     },
   ],
+  Aemeath: [
+    {
+      key: "SilentProtectionTuneRupture",
+      name: `Silent Protection - Tune Rupture`,
+      details: `<div>- In Resonance Mode - Tune Rupture: all Resonators in the team except Aemeath gain 10% All DMG Amplification for 20s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SilentProtectionTuneRupture",
+      name: `Silent Protection - Tune Rupture Shifting`,
+      details: `<div>The All DMG Amplification effect is increased to 20% for Resonators who inflict Tune Rupture - Shifting.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SilentProtectionFusionBurst",
+      name: `Silent Protection - Fusion Burst`,
+      details: `<div>- In Resonance Mode - Fusion Burst: all Resonators in the team except Aemeath gain 10% All DMG Amplification for 20s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SilentProtectionFusionBurst",
+      name: `Silent Protection - Fusion Burst Appliers`,
+      details: `<div>The All DMG Amplification effect is increased to 20% for Resonators who inflict Fusion Burst.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4EtherealWaltzonBinaryTides",
+      name: `Sequence Node 4: Ethereal Waltz on Binary Tides`,
+      details: `<div></div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "AllElementAttributeBonus",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

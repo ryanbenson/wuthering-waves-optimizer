@@ -1,67 +1,59 @@
 export const buffs = [
   {
-    key: `HighSyntonyField`,
-    name: `High Syntony Field`,
-    details: `<div><span class="Highlight"><strong>High Syntony Field</strong></span> lasts for 25s.<br>
-- Increases the DEF of all nearby Resonators in the team within the <span class="Highlight"><strong>High Syntony Field</strong></span> by 20%.<br>
-- Inherits the <span class="Highlight"><strong>Syntony Field</strong></span>'s boost to resistance to interruption and <span class="Highlight">Off-Tune Buildup Rate</span>.<br>
-- Inherits the <span class="Highlight"><strong>Syntony Field</strong></span>'s healing effect and increases the Healing Multiplier by 40%.</div>`,
-    hasStacks: false,
+    key: `SeraphicDuetTuneRupture`,
+    name: `Seraphic Duet - Tune Rupture Mode`,
+    details: `<div>- In Resonance Mode - Tune Rupture, casting Resonance Skill Seraphic Duet additionally deals 5 instances of Tune Rupture DMG, each time on a random target within the range. The target's Off-Tune Level does not affect these instances of Tune Rupture DMG. When Seraphic Duet deals damage, remove the target's Rupturous Trail and increases the DMG Multiplier of Tune Rupture based on the number of stacks removed, each stack increasing the DMG Multiplier by 4% for 2.5s.</div>`,
+    hasStacks: true,
     modifiers: [
-      {
-        modifier: "DEF",
-        modifierValue: 0.2,
-      },
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["SyntonyFieldHealing"],
-        modifierValue: 0.4,
+        modifySpecificTalents: ["TuneBreakDMG", "TuneRuptureResponseStarburstDMG", "SeraphicDuetBonusDMGPerInstance"],
+        modifierValue: 0.04,
       },
     ],
     minStacks: 0,
-    maxStacks: 0,
+    maxStacks: 30,
     alwaysEnabled: false,
   },
   {
-    key: `CriticalProtocol`,
-    name: `Critical Protocol`,
-    details: `<div>For every 1% of Mornye's Energy Regen exceeding 100%, this skill gains an additional 0.5% Crit. Rate (up to 80%) and 1% Crit. DMG (up to 160%).</div>`,
-    hasStacks: false,
+    key: `SeraphicDuetFusionBurst`,
+    name: `Seraphic Duet - Fusion Burst`,
+    details: `<div>- In Resonance Mode - Fusion Burst, when Resonance Skill Seraphic Duet hits the target, if they are inflicted with Fusion Trail, remove the Fusion Trail stacks, and trigger the Fusion Burst on the target based on its max stack limit without removing its stacks. Each stack of Fusion Trail removed increases the DMG Multiplier of Fusion Burst on the main target by 10%.</div>`,
+    hasStacks: true,
     modifiers: [
-      {
-        modifier: "CritRate:AdditionalBase",
-        modifierValue: 0.005,
-        maximumValue: 0.8,
-        modifierStep: 1,
-        modifierBasedOn: "EnergyRegen",
-        modifierTargetAttr: "CritRate",
-        minStatValue: 1,
-        modifySpecificTalents: ["CriticalProtocolDMG"],
-      },
-      {
-        modifier: "CritDMG:AdditionalBase",
-        modifierValue: 0.01,
-        maximumValue: 1.6,
-        modifierStep: 1,
-        modifierBasedOn: "EnergyRegen",
-        modifierTargetAttr: "CritDMG",
-        minStatValue: 1,
-        modifySpecificTalents: ["CriticalProtocolDMG"],
-      },
+      // TODO: Implement when we add Fusion Burst
     ],
     minStacks: 0,
-    maxStacks: 0,
+    maxStacks: 30,
     alwaysEnabled: false,
   },
   {
-    key: "OutroSkillRecursion",
-    name: "Outro Skill: Recursion",
-    details: `<div class="skilldescription">Resonators in the team gain 25% All DMG Amplification for 30s.</div>`,
+    key: `StardustResonance`,
+    name: `Stardust Resonance`,
+    details: `<div>- In Resonance Mode - Fusion Burst, the DMG Multiplier of Fusion Burst triggered by Resonance Skill Seraphic Duet on the main target is additionally increased by 200%. The DMG Multiplier increase effect is stackable with that provided by Fusion Trail.</div>`,
+    hasStacks: true,
+    modifiers: [
+      // TODO: Implement when we add Fusion Burst
+    ],
+    minStacks: 0,
+    maxStacks: 30,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillBeforeAllSounds`,
+    name: `Inherent Skill: Before All Sounds`,
+    details: `<div>In Instant Response, Heavy Attack - Aemeath and Heavy Attack - Mech gain 200% DMG Amplification.</div>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "DMGDeepen",
-        modifierValue: 0.25,
+        modifySpecificTalents: [
+          "HeavyAttackAemeathChargedIDMG",
+          "HeavyAttackAemeathChargedIIDMG",
+          "HeavyAttackMechChargedIDMG",
+          "HeavyAttackMechChargedIIDMG",
+        ],
+        modifierValue: 2,
       },
     ],
     minStacks: 0,
@@ -69,33 +61,37 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: `InherentSkillBlueprint`,
-    name: `Inherent Skill: Blueprint`,
-    details: `<div>Mornye's Energy Regen is increased by 10%.<br>Casting <span class="Highlight"><strong>Intro Skill - Convergence</strong></span> restores 20 points of Concerto Energy, triggered once every 20s.<br>Casting <span class="Highlight"><strong>Basic Attack - Wide Field Observation Mode Stage 3</strong></span> restores 20 points of Concerto Energy, triggered once every 20s.</div>`,
-    hasStacks: false,
+    key: `InherentSkillBetweentheStarsTuneRupture`,
+    name: `Inherent Skill: Between the Stars - Tune Rupture`,
+    details: `<div>In Resonance Mode - Tune Rupture, when Resonators in the team inflict Tune Rupture - Shifting or deal Tune Rupture DMG, Aemeath's Crit. DMG increases by 20%, up to 3 times. Each Resonator can only trigger this effect once.
+With 3 stacks, Resonance Liberation Heavenfall Edict: Finale DMG is Amplified by 25%.
+Resonators joining the team or switching Resonance Mode resets this effect.</div>`,
+    hasStacks: true,
     modifiers: [
       {
-        modifier: "EnergyRegen",
-        modifierValue: 0.1,
+        modifier: "CritDMG",
+        modifierValue: 0.2,
       },
     ],
     minStacks: 0,
-    maxStacks: 0,
+    maxStacks: 3,
     alwaysEnabled: false,
   },
   {
-    key: `InherentSkillBoundedness`,
-    name: `Inherent Skill: Boundedness`,
-    details: `<div>Casting <span class="Highlight"><strong>Resonance Skill - Expectation Error</strong></span> or <span class="Highlight"><strong>Resonance Skill - Distributed Array</strong></span> grants <span class="Highlight"><strong>Proof of Boundedness</strong></span> to all Resonators in the team:<br>- <span class="Highlight"><strong>Proof of Boundedness</strong></span> lasts for 60s and can be gained once every 5 min.<br>- When the active Resonator takes DMG greater than 30% of their Max HP, they instead take DMG equal to 30% of their Max HP. This effect can trigger up to 3 times. <span class="Highlight"><strong>Proof of Boundedness</strong></span> is removed after triggering it 3 times.<br>- When the active Resonator takes a fatal blow, they are not downed by this instance of damage. This effect can trigger up to 1 time. <span class="Highlight"><strong>Proof of Boundedness</strong></span> is removed after triggering it 1 time.<br>- When <span class="Highlight"><strong>Proof of Boundedness</strong></span> is removed, the active Resonator restores HP equal to 150% of Mornye's DEF.</div>`,
-    hasStacks: false,
+    key: `InherentSkillBetweentheStarsFusionBurst`,
+    name: `Inherent Skill: Between the Stars - FusionBurst`,
+    details: `<div>In Resonance Mode - Fusion Burst, when Resonators in the team inflict Fusion Burst, Aemeath's Crit. DMG increases by 30%, up to 2 times. Each Resonator can only trigger this effect once.
+With 2 stacks, Resonance Liberation Heavenfall Edict: Finale DMG is Amplified by 25%.
+Resonators joining the team or switching Resonance Mode resets this effect.</div>`,
+    hasStacks: true,
     modifiers: [
       {
-        modifier: "EnableAttack",
-        modifierValue: ["InherentSkillBoundedness"],
+        modifier: "CritDMG",
+        modifierValue: 0.3,
       },
     ],
     minStacks: 0,
-    maxStacks: 0,
+    maxStacks: 2,
     alwaysEnabled: false,
   },
   {

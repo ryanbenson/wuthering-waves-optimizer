@@ -684,7 +684,6 @@ export const computeSelfBuffs = (
         }
       });
     }
-  }
   modifySpecificTalents.forEach((item: any) => {
     const talents = item?.modifySpecificTalents ?? [];
     const { modifier, modifierValue, modifierValueCalculated } = item;
@@ -714,6 +713,25 @@ export const computeSelfBuffs = (
       data.specificTalentBuffs["NowheretoRunDMG:Fusion"] = fusion || 0;
       data.specificTalentBuffs["NowheretoRunDMG:ResistShred:Fusion"] =
         resistReduction || 0;
+    }
+  }
+
+    /**
+     * Aemeath:
+     * Note doing it here as these modifiers should NOT be affected by stacks
+     * if InherentSkillBetweentheStarsTuneRupture -> has 3 stacks = add Resonance Liberation Heavenfall Edict: Finale DMG is Amplified by 25%.
+     * if InherentSkillBetweentheStarsFusionBurst -> has 2 stacks = add Resonance Liberation Heavenfall Edict: Finale DMG is Amplified by 25%.
+     * (same buff)
+     */
+    if (character === "Aemeath" && key === "InherentSkillBetweentheStarsTuneRupture") {
+      if (buffData?.stacks >= 3) {
+        data.specificTalentBuffs["HeavenfallEdictFinaleDMG:DMGDeepen"] = 0.25;
+      }
+    }
+    if (character === "Aemeath" && key === "InherentSkillBetweentheStarsFusionBurst") {
+      if (buffData?.stacks >= 2) {
+        data.specificTalentBuffs["HeavenfallEdictFinaleDMG:DMGDeepen"] = 0.25;
+      }
     }
   }
   return data;

@@ -436,6 +436,7 @@ export const weaponTypesImageMap: Record<string, string> = {
 
 export const allCharacters: string[] = [
   "Aalto",
+  "Aemeath",
   "Augusta",
   "Baizhi",
   "Brant",
