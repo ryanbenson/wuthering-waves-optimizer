@@ -1,0 +1,40 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Towards the Daybreak",
+  description: `<div></div>`,
+  attacks: [
+    {
+      key: "HeavenfallEdictOverdriveDMG",
+      label: "Heavenfall Edict: Overdrive DMG",
+      type: "Liberation",
+      talents: {
+        "1": "101.00%+134.67%*3",
+        "2": "109.29%+145.71%*3",
+        "3": "117.57%+156.76%*3",
+        "4": "129.16%+172.22%*3",
+        "5": "137.45%+183.26%*3",
+        "6": "146.97%+195.96%*3",
+        "7": "160.22%+213.63%*3",
+        "8": "173.47%+231.29%*3",
+        "9": "186.72%+248.96%*3",
+        "10": "200.80%+267.74%*3",
+      },
+    },
+    {
+      key: "HeavenfallEdictFinaleDMG",
+      label: "Heavenfall Edict: Finale DMG",
+      type: "Liberation",
+      talents: {
+        "1": "900.00%",
+        "2": "973.80%",
+        "3": "1047.60%",
+        "4": "1150.92%",
+        "5": "1224.72%",
+        "6": "1309.59%",
+        "7": "1427.67%",
+        "8": "1545.75%",
+        "9": "1663.83%",
+        "10": "1789.29%",
+      },
+    },
+  ],
+};

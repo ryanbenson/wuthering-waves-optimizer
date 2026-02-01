@@ -1,0 +1,40 @@
+export const introAttacks = {
+  name: "Intro Skill: Overture of Departure",
+  description: `<div></div>`,
+  attacks: [
+    {
+      key: "SongsAcrosstheUniverseDMG",
+      label: "Songs Across the Universe DMG",
+      talents: {
+        "1": "6.77%*2+54.16%",
+        "2": "7.33%*2+58.60%",
+        "3": "7.88%*2+63.04%",
+        "4": "8.66%*2+69.25%",
+        "5": "9.22%*2+73.70%",
+        "6": "9.85%*2+78.80%",
+        "7": "10.74%*2+85.91%",
+        "8": "11.63%*2+93.01%",
+        "9": "12.52%*2+100.12%",
+        "10": "13.46%*2+107.66%",
+      },
+      type: "Intro",
+    },
+    {
+      key: "DebutofMeteoricRadianceDMG",
+      label: "Debut of Meteoric Radiance DMG",
+      talents: {
+        "1": "32.85%+49.27%",
+        "2": "35.54%+53.31%",
+        "3": "38.24%+57.35%",
+        "4": "42.01%+63.01%",
+        "5": "44.70%+67.05%",
+        "6": "47.80%+71.69%",
+        "7": "52.11%+78.16%",
+        "8": "56.41%+84.62%",
+        "9": "60.72%+91.08%",
+        "10": "65.30%+97.95%",
+      },
+      type: "Intro",
+    },
+  ],
+};

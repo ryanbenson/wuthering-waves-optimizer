@@ -1,3 +1,5 @@
+import { elements } from "chart.js";
+
 interface CharacterList {
   [rating: string]: CharacterListItem[];
 }
@@ -8,6 +10,7 @@ interface CharacterListItem {
 export function getCharactersAvailable(): CharacterList {
   return {
     five: [
+      { key: "Aemeath", name: "Aemeath" },
       { key: "Augusta", name: "Augusta" },
       { key: "Brant", name: "Brant" },
       { key: "Calcharo", name: "Calcharo" },
@@ -64,6 +67,13 @@ export function getCharactersAvailable(): CharacterList {
 
 export const allCharactersList = [
   // rarity 5
+  {
+    key: "Aemeath",
+    name: "Aemeath",
+    element: "Fusion",
+    rarity: 5,
+    weapon: "Sword",
+  },
   {
     key: "Augusta",
     name: "Augusta",

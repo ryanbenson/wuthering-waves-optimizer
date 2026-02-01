@@ -829,7 +829,9 @@ export const calculateAttackDamage = (
     // but the special attacks do element based dmg, so they do
     if (
       attack.key === "TuneRuptureResponseSpectralAnalysisDMG" ||
-      attack.key === "TuneRuptureResponseParticleJetDMG"
+      attack.key === "TuneRuptureResponseParticleJetDMG" ||
+      attack.key === "TuneRuptureResponseStarburstDMG" ||
+      attack.key === "SeraphicDuetBonusDMGPerInstance"
     ) {
       talent = attack.talents[context.character.talentData?.forte];
       resistReduction = totalResistReduction;
