@@ -837,6 +837,27 @@ export const calculateAttackDamage = (
       resistReduction = totalResistReduction;
     }
     const tuneBreakDmgBonus = context.buffs.customBuffs?.TuneBreakDMGBonus ?? 0;
+    // typically Tune Break cannot crit, but some buffs exist to make it crit
+    let baseCritRate = 1;
+    let baseCritDmg = 1;
+    let totalCritRate;
+    let totalCritDmg;
+    // so far it's resonance chains that affect Tune Break CR/CD
+    const tuneBreakCritRateResoanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritRate`
+      ] ?? 0;
+    const tuneBreakCritDmgResoanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritDMG`
+      ] ?? 0;
+    totalCritRate = baseCritRate + tuneBreakCritRateResoanceChains;
+    totalCritDmg = baseCritDmg + tuneBreakCritDmgResoanceChains;
+    console.log(
+    talentModifierMultiply,
+    talentModifierMultiplySelfBuff,
+    talentModifierMultiplyAttackBuff);
+    console.log(selfBuffs?.specificTalentBuffs?.[`${attack.key}:talentModifierMultiply`])
 
     return calcTuneBreak(
       talent,
@@ -850,6 +871,8 @@ export const calculateAttackDamage = (
       totalTuneBreakBoost, // tuneBreakBoost
       totalTalentModifierMultiply,
       tuneBreakDmgBonus, // tune break bonusDmg (e.g. Hyvatia's 100% bonus)
+      totalCritRate,
+      totalCritDmg,
       count,
     );
   }

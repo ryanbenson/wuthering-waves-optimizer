@@ -631,6 +631,52 @@ export const computeSelfBuffs = (
         ];
       }
     }
+    /**
+     * Aemeath: if s3 is enabled, we can just overwrite the existing modifiers
+     * her s3 removes the need for stacks to get the max buffs
+     */
+    // if (character === "Aemeath" && key === "InherentSkillBetweentheStarsTuneRupture") {
+    //   if (
+    //     resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew
+    //       ?.isEnabled
+    //   ) {
+    //     // need to turn off hasStacks, will not affect things upstream, we've copied the buff data
+    //     buff.hasStacks = false;
+    //     // overwrite the modifiers
+    //     modifiers = [
+    //       {
+    //         modifier: "CritDMG",
+    //         modifierValue: 0.6,
+    //       },
+    //       {
+    //         modifier: "DMGDeepen",
+    //         modifySpecificTalents: ["HeavenfallEdictFinaleDMG"],
+    //         modifierValue: 0.25,
+    //       },
+    //     ];
+    //   }
+    // }
+    // if (character === "Aemeath" && key === "InherentSkillBetweentheStarsFusionBurst") {
+    //   if (
+    //     resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew
+    //       ?.isEnabled
+    //   ) {
+    //     // need to turn off hasStacks, will not affect things upstream, we've copied the buff data
+    //     buff.hasStacks = false;
+    //     // overwrite the modifiers
+    //     modifiers = [
+    //       {
+    //         modifier: "CritDMG",
+    //         modifierValue: 0.6,
+    //       },
+    //       {
+    //         modifier: "DMGDeepen",
+    //         modifySpecificTalents: ["HeavenfallEdictFinaleDMG"],
+    //         modifierValue: 0.25,
+    //       },
+    //     ];
+    //   }
+    // }
     if (buff.hasStacks) {
       if (buffData?.stacks <= 0) {
         continue;
@@ -684,6 +730,7 @@ export const computeSelfBuffs = (
         }
       });
     }
+  const talentBuffs: any = {};
   modifySpecificTalents.forEach((item: any) => {
     const talents = item?.modifySpecificTalents ?? [];
     const { modifier, modifierValue, modifierValueCalculated } = item;
@@ -693,11 +740,14 @@ export const computeSelfBuffs = (
       if (modifier) {
         modifierStr = `:${modifier}`;
       }
-      data.specificTalentBuffs[`${talent}${modifierStr}`] =
+      console.log('existing value', modifier, modifierStr, talent, `${talent}${modifierStr}`, data.specificTalentBuffs[`${talent}${modifierStr}`]);
+      talentBuffs[`${talent}${modifierStr}`] =
         (data.specificTalentBuffs[`${talent}${modifierStr}`] || 0) +
         (modifierValueCalculated || modifierValue);
     });
   });
+  data.specificTalentBuffs = talentBuffs;
+  console.log(modifySpecificTalents, data.specificTalentBuffs)
   // final adjustments where needed before surfacing this up
 
   if (character === "Lupa" && data.specificTalentBuffs) {
@@ -722,17 +772,22 @@ export const computeSelfBuffs = (
      * if InherentSkillBetweentheStarsTuneRupture -> has 3 stacks = add Resonance Liberation Heavenfall Edict: Finale DMG is Amplified by 25%.
      * if InherentSkillBetweentheStarsFusionBurst -> has 2 stacks = add Resonance Liberation Heavenfall Edict: Finale DMG is Amplified by 25%.
      * (same buff)
+     * This will get bypassed if her s3 is enabled and that's handled above
      */
-    if (character === "Aemeath" && key === "InherentSkillBetweentheStarsTuneRupture") {
-      if (buffData?.stacks >= 3) {
-        data.specificTalentBuffs["HeavenfallEdictFinaleDMG:DMGDeepen"] = 0.25;
-      }
-    }
-    if (character === "Aemeath" && key === "InherentSkillBetweentheStarsFusionBurst") {
-      if (buffData?.stacks >= 2) {
-        data.specificTalentBuffs["HeavenfallEdictFinaleDMG:DMGDeepen"] = 0.25;
-      }
-    }
+    // if (character === "Aemeath" && key === "InherentSkillBetweentheStarsTuneRupture") {
+    //   if (!resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew?.isEnabled) {
+    //     if (buffData?.stacks >= 3) {
+    //       data.specificTalentBuffs["HeavenfallEdictFinaleDMG:DMGDeepen"] = 0.25;
+    //     }
+    //   }
+    // }
+    // if (character === "Aemeath" && key === "InherentSkillBetweentheStarsFusionBurst") {
+    //   if (!resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew?.isEnabled) {
+    //     if (buffData?.stacks >= 2) {
+    //       data.specificTalentBuffs["HeavenfallEdictFinaleDMG:DMGDeepen"] = 0.25;
+    //     }
+    //   }
+    // }
   }
   return data;
 };

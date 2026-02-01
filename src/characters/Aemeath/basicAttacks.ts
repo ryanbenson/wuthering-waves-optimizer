@@ -138,5 +138,23 @@ export const basicAttacks = {
         "10": "26.02%*3+52.03%+130.06%",
       },
     },
+    {
+      key: "SequenceNode5VoyagetotheAstralShore",
+      label: "S3 Hazey Transition Stage 1 DMG",
+      talents: {
+        "1": "360.00%",
+        "2": "360.00%",
+        "3": "360.00%",
+        "4": "360.00%",
+        "5": "360.00%",
+        "6": "360.00%",
+        "7": "360.00%",
+        "8": "360.00%",
+        "9": "360.00%",
+        "10": "360.00%",
+      },
+      type: "Shield",
+      requiresResonanceChain: "SequenceNode5VoyagetotheAstralShore",
+    },
   ],
 };
