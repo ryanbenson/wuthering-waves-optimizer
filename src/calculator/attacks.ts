@@ -853,11 +853,6 @@ export const calculateAttackDamage = (
       ] ?? 0;
     totalCritRate = baseCritRate + tuneBreakCritRateResoanceChains;
     totalCritDmg = baseCritDmg + tuneBreakCritDmgResoanceChains;
-    console.log(
-    talentModifierMultiply,
-    talentModifierMultiplySelfBuff,
-    talentModifierMultiplyAttackBuff);
-    console.log(selfBuffs?.specificTalentBuffs?.[`${attack.key}:talentModifierMultiply`])
 
     return calcTuneBreak(
       talent,

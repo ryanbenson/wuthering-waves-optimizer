@@ -635,48 +635,48 @@ export const computeSelfBuffs = (
      * Aemeath: if s3 is enabled, we can just overwrite the existing modifiers
      * her s3 removes the need for stacks to get the max buffs
      */
-    // if (character === "Aemeath" && key === "InherentSkillBetweentheStarsTuneRupture") {
-    //   if (
-    //     resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew
-    //       ?.isEnabled
-    //   ) {
-    //     // need to turn off hasStacks, will not affect things upstream, we've copied the buff data
-    //     buff.hasStacks = false;
-    //     // overwrite the modifiers
-    //     modifiers = [
-    //       {
-    //         modifier: "CritDMG",
-    //         modifierValue: 0.6,
-    //       },
-    //       {
-    //         modifier: "DMGDeepen",
-    //         modifySpecificTalents: ["HeavenfallEdictFinaleDMG"],
-    //         modifierValue: 0.25,
-    //       },
-    //     ];
-    //   }
-    // }
-    // if (character === "Aemeath" && key === "InherentSkillBetweentheStarsFusionBurst") {
-    //   if (
-    //     resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew
-    //       ?.isEnabled
-    //   ) {
-    //     // need to turn off hasStacks, will not affect things upstream, we've copied the buff data
-    //     buff.hasStacks = false;
-    //     // overwrite the modifiers
-    //     modifiers = [
-    //       {
-    //         modifier: "CritDMG",
-    //         modifierValue: 0.6,
-    //       },
-    //       {
-    //         modifier: "DMGDeepen",
-    //         modifySpecificTalents: ["HeavenfallEdictFinaleDMG"],
-    //         modifierValue: 0.25,
-    //       },
-    //     ];
-    //   }
-    // }
+    if (character === "Aemeath" && key === "InherentSkillBetweentheStarsTuneRupture") {
+      if (
+        resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew
+          ?.isEnabled
+      ) {
+        // need to turn off hasStacks, will not affect things upstream, we've copied the buff data
+        buff.hasStacks = false;
+        // overwrite the modifiers
+        modifiers = [
+          {
+            modifier: "CritDMG",
+            modifierValue: 0.6,
+          },
+          {
+            modifier: "DMGDeepen",
+            modifySpecificTalents: ["HeavenfallEdictFinaleDMG"],
+            modifierValue: 0.25,
+          },
+        ];
+      }
+    }
+    if (character === "Aemeath" && key === "InherentSkillBetweentheStarsFusionBurst") {
+      if (
+        resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew
+          ?.isEnabled
+      ) {
+        // need to turn off hasStacks, will not affect things upstream, we've copied the buff data
+        buff.hasStacks = false;
+        // overwrite the modifiers
+        modifiers = [
+          {
+            modifier: "CritDMG",
+            modifierValue: 0.6,
+          },
+          {
+            modifier: "DMGDeepen",
+            modifySpecificTalents: ["HeavenfallEdictFinaleDMG"],
+            modifierValue: 0.25,
+          },
+        ];
+      }
+    }
     if (buff.hasStacks) {
       if (buffData?.stacks <= 0) {
         continue;
@@ -730,41 +730,23 @@ export const computeSelfBuffs = (
         }
       });
     }
-  const talentBuffs: any = {};
-  modifySpecificTalents.forEach((item: any) => {
-    const talents = item?.modifySpecificTalents ?? [];
-    const { modifier, modifierValue, modifierValueCalculated } = item;
-    talents.forEach((talent: string) => {
-      let modifierStr = "";
-      // not everything will have a modifier, so append the : and modifier if we have it
-      if (modifier) {
-        modifierStr = `:${modifier}`;
-      }
-      console.log('existing value', modifier, modifierStr, talent, `${talent}${modifierStr}`, data.specificTalentBuffs[`${talent}${modifierStr}`]);
-      talentBuffs[`${talent}${modifierStr}`] =
-        (data.specificTalentBuffs[`${talent}${modifierStr}`] || 0) +
-        (modifierValueCalculated || modifierValue);
-    });
-  });
-  data.specificTalentBuffs = talentBuffs;
-  console.log(modifySpecificTalents, data.specificTalentBuffs)
-  // final adjustments where needed before surfacing this up
+    // final adjustments where needed before surfacing this up
 
-  if (character === "Lupa" && data.specificTalentBuffs) {
-    if (
-      resonanceChainsConfig?.SequenceNode6TotheBrightestFlamingStar?.isEnabled
-    ) {
-      // copy the same buffs for NowheretoRunDMG from the other intro
-      const atk = data.specificTalentBuffs?.[`TryFocusingEhDMG:ATK`];
-      const fusion = data?.specificTalentBuffs?.[`TryFocusingEhDMG:Fusion`];
-      const resistReduction =
-        data?.specificTalentBuffs?.[`TryFocusingEhDMG:ResistShred:Fusion`];
-      data.specificTalentBuffs["NowheretoRunDMG:ATK"] = atk || 0;
-      data.specificTalentBuffs["NowheretoRunDMG:Fusion"] = fusion || 0;
-      data.specificTalentBuffs["NowheretoRunDMG:ResistShred:Fusion"] =
-        resistReduction || 0;
+    if (character === "Lupa" && data.specificTalentBuffs) {
+      if (
+        resonanceChainsConfig?.SequenceNode6TotheBrightestFlamingStar?.isEnabled
+      ) {
+        // copy the same buffs for NowheretoRunDMG from the other intro
+        const atk = data.specificTalentBuffs?.[`TryFocusingEhDMG:ATK`];
+        const fusion = data?.specificTalentBuffs?.[`TryFocusingEhDMG:Fusion`];
+        const resistReduction =
+          data?.specificTalentBuffs?.[`TryFocusingEhDMG:ResistShred:Fusion`];
+        data.specificTalentBuffs["NowheretoRunDMG:ATK"] = atk || 0;
+        data.specificTalentBuffs["NowheretoRunDMG:Fusion"] = fusion || 0;
+        data.specificTalentBuffs["NowheretoRunDMG:ResistShred:Fusion"] =
+          resistReduction || 0;
+      }
     }
-  }
 
     /**
      * Aemeath:
@@ -774,21 +756,36 @@ export const computeSelfBuffs = (
      * (same buff)
      * This will get bypassed if her s3 is enabled and that's handled above
      */
-    // if (character === "Aemeath" && key === "InherentSkillBetweentheStarsTuneRupture") {
-    //   if (!resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew?.isEnabled) {
-    //     if (buffData?.stacks >= 3) {
-    //       data.specificTalentBuffs["HeavenfallEdictFinaleDMG:DMGDeepen"] = 0.25;
-    //     }
-    //   }
-    // }
-    // if (character === "Aemeath" && key === "InherentSkillBetweentheStarsFusionBurst") {
-    //   if (!resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew?.isEnabled) {
-    //     if (buffData?.stacks >= 2) {
-    //       data.specificTalentBuffs["HeavenfallEdictFinaleDMG:DMGDeepen"] = 0.25;
-    //     }
-    //   }
-    // }
+    if (character === "Aemeath" && key === "InherentSkillBetweentheStarsTuneRupture") {
+      if (!resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew?.isEnabled) {
+        if (buffData?.stacks >= 3) {
+          data.specificTalentBuffs["HeavenfallEdictFinaleDMG:DMGDeepen"] = 0.25;
+        }
+      }
+    }
+    if (character === "Aemeath" && key === "InherentSkillBetweentheStarsFusionBurst") {
+      if (!resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew?.isEnabled) {
+        if (buffData?.stacks >= 2) {
+          data.specificTalentBuffs["HeavenfallEdictFinaleDMG:DMGDeepen"] = 0.25;
+        }
+      }
+    }
   }
+  // this needs to go last, otherwise it will run every time a buff is set and way over-buff by applying itself too many times
+  modifySpecificTalents.forEach((item: any) => {
+    const talents = item?.modifySpecificTalents ?? [];
+    const { modifier, modifierValue, modifierValueCalculated } = item;
+    talents.forEach((talent: string) => {
+      let modifierStr = "";
+      // not everything will have a modifier, so append the : and modifier if we have it
+      if (modifier) {
+        modifierStr = `:${modifier}`;
+      }
+      data.specificTalentBuffs[`${talent}${modifierStr}`] = 
+        (data.specificTalentBuffs[`${talent}${modifierStr}`] || 0) +
+        (modifierValueCalculated || modifierValue);
+    });
+  });
   return data;
 };
 
