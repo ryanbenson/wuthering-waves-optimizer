@@ -187,7 +187,7 @@ In Resonance Mode - Tune Rupture or Resonance Mode - Fusion Burst and out of com
       {
         modifier: "CritDMG",
         modifySpecificTalents: ["TuneBreakDMG", "TuneRuptureResponseStarburstDMG", "SeraphicDuetBonusDMGPerInstance"],
-        modifierValue: 2.75,
+        modifierValue: 1.75, // you get 275% from the buff, but it's SET to 275%, but we have 100% base to help with the normal calc, so making it BUFF 175 to make it total 275%
       },
     ],
     minStacks: 0,

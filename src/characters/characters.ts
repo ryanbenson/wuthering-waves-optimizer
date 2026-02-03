@@ -1,5 +1,3 @@
-import { elements } from "chart.js";
-
 interface CharacterList {
   [rating: string]: CharacterListItem[];
 }
