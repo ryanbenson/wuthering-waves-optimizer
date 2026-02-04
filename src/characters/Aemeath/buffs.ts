@@ -2,7 +2,7 @@ export const buffs = [
   {
     key: `SeraphicDuetTuneRupture`,
     name: `Seraphic Duet - Tune Rupture Mode`,
-    details: `<div>- In Resonance Mode - Tune Rupture, casting Resonance Skill Seraphic Duet additionally deals 5 instances of Tune Rupture DMG, each time on a random target within the range. The target's Off-Tune Level does not affect these instances of Tune Rupture DMG. When Seraphic Duet deals damage, remove the target's Rupturous Trail and increases the DMG Multiplier of Tune Rupture based on the number of stacks removed, each stack increasing the DMG Multiplier by 4% for 2.5s.</div>`,
+    details: `<div> In <span class="Highlight">Resonance Mode - Tune Rupture</span>, casting Resonance Skill <span class="Highlight">Seraphic Duet</span> additionally deals 5 instances of <span class="Highlight">Tune Rupture DMG</span>, with each instance dealt to a random target within range. The target's <span class="Highlight">Off-Tune Level</span> does not affect these instances of <span class="Highlight">Tune Rupture DMG</span>. When <span class="Highlight">Seraphic Duet</span> deals damage, remove the target's <span class="Highlight">Rupturous Trail</span> and increase the DMG Multiplier of Tune Rupture based on the number of stacks removed, each stack increasing the DMG Multiplier by 4% for 2.5s.</div>`,
     hasStacks: true,
     modifiers: [
       {
@@ -18,7 +18,7 @@ export const buffs = [
   {
     key: `SeraphicDuetFusionBurst`,
     name: `Seraphic Duet - Fusion Burst`,
-    details: `<div>- In Resonance Mode - Fusion Burst, when Resonance Skill Seraphic Duet hits the target, if they are inflicted with Fusion Trail, remove the Fusion Trail stacks, and trigger the Fusion Burst on the target based on its max stack limit without removing its stacks. Each stack of Fusion Trail removed increases the DMG Multiplier of Fusion Burst on the main target by 10%.</div>`,
+    details: `<div>In <span class="Highlight">Resonance Mode - Fusion Burst</span>, when Resonance Skill <span class="Highlight">Seraphic Duet</span> hits the target, if they are inflicted with <span class="Highlight">Fusion Trail</span>, remove the <span class="Highlight">Fusion Trail</span> stacks, and trigger the <span class="Highlight">Fusion Burst</span> on the target based on its max stack limit without removing its stacks. Each stack of <span class="Highlight">Fusion Trail</span> removed increases the DMG Multiplier of <span class="Highlight">Fusion Burst</span> on the main target by 10%.</div>`,
     hasStacks: true,
     modifiers: [
       // TODO: Implement when we add Fusion Burst
@@ -30,7 +30,7 @@ export const buffs = [
   {
     key: `StardustResonance`,
     name: `Stardust Resonance`,
-    details: `<div>- In Resonance Mode - Fusion Burst, the DMG Multiplier of Fusion Burst triggered by Resonance Skill Seraphic Duet on the main target is additionally increased by 200%. The DMG Multiplier increase effect is stackable with that provided by Fusion Trail.</div>`,
+    details: `<div>- In <span class="Highlight">Resonance Mode - Fusion Burst</span>, the DMG Multiplier of <span class="Highlight">Fusion Burst</span> triggered by Resonance Skill <span class="Highlight">Seraphic Duet</span> on the main target is additionally increased by 200%. The DMG Multiplier increase effect is stackable with that provided by <span class="Highlight">Fusion Trail</span>.</div>`,
     hasStacks: true,
     modifiers: [
       // TODO: Implement when we add Fusion Burst
@@ -42,7 +42,7 @@ export const buffs = [
   {
     key: `InherentSkillBeforeAllSounds`,
     name: `Inherent Skill: Before All Sounds`,
-    details: `<div>In Instant Response, Heavy Attack - Aemeath and Heavy Attack - Mech gain 200% DMG Amplification.</div>`,
+    details: `<div>In <span class="Highlight">Instant Response</span>, <span class="Highlight">Heavy Attack - Aemeath</span> and <span class="Highlight">Heavy Attack - Mech</span> gain 200% DMG Amplification.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -63,8 +63,8 @@ export const buffs = [
   {
     key: `InherentSkillBetweentheStarsTuneRupture`,
     name: `Inherent Skill: Between the Stars - Tune Rupture`,
-    details: `<div>In Resonance Mode - Tune Rupture, when Resonators in the team inflict Tune Rupture - Shifting or deal Tune Rupture DMG, Aemeath's Crit. DMG increases by 20%, up to 3 times. Each Resonator can only trigger this effect once.
-With 3 stacks, Resonance Liberation Heavenfall Edict: Finale DMG is Amplified by 25%.
+    details: `<div>In <span class="Highlight">Resonance Mode - Tune Rupture</span>, when Resonators in the team inflict  <span class="Highlight">Tune Rupture - Shifting</span> or deal  <span class="Highlight">Tune Rupture DMG</span>, Aemeath's Crit. DMG increases by 20%, up to 3 times. Each Resonator can only trigger this effect once.
+With 3 stacks, Resonance Liberation  <span class="Highlight">Heavenfall Edict: Finale</span> DMG is Amplified by 25%.
 Resonators joining the team or switching Resonance Mode resets this effect.</div>`,
     hasStacks: true,
     modifiers: [
@@ -79,9 +79,9 @@ Resonators joining the team or switching Resonance Mode resets this effect.</div
   },
   {
     key: `InherentSkillBetweentheStarsFusionBurst`,
-    name: `Inherent Skill: Between the Stars - FusionBurst`,
-    details: `<div>In Resonance Mode - Fusion Burst, when Resonators in the team inflict Fusion Burst, Aemeath's Crit. DMG increases by 30%, up to 2 times. Each Resonator can only trigger this effect once.
-With 2 stacks, Resonance Liberation Heavenfall Edict: Finale DMG is Amplified by 25%.
+    name: `Inherent Skill: Between the Stars - Fusion Burst`,
+    details: `<div>In <span class="Highlight">Resonance Mode - Fusion Burst</span>, when Resonators in the team inflict <span class="Highlight">Fusion Burst</span>, Aemeath's Crit. DMG increases by 30%, up to 2 times. Each Resonator can only trigger this effect once.
+With 2 stacks, Resonance Liberation <span class="Highlight">Heavenfall Edict: Finale</span> DMG is Amplified by 25%.
 Resonators joining the team or switching Resonance Mode resets this effect.</div>`,
     hasStacks: true,
     modifiers: [

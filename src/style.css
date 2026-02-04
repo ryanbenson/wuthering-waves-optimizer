@@ -82,6 +82,7 @@ html[data-theme="black"] .btn-active {
 .highlight,
 .ingame-Highlight {
   font-style: italic;
+  font-weight: bold;
   color: oklch(var(--wa));
 }
 .param,
@@ -105,6 +106,7 @@ html[data-theme="light"] .ingame-Light {
   color: #b46bff;
 }
 .Fire,
+.Fusion,
 .ingame-Fire {
   color: #f0744e;
 }

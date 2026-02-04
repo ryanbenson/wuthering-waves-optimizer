@@ -1190,7 +1190,7 @@ CD: <span class="param">20</span>s</span>`,
     name: "Glommoth",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Glommoth.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Glommoth.webp",
     details: `<span class="description">Summon a Glommoth to stomp enemies, dealing 212.80%/212.80%/243.20%/273.60% Glacio DMG.
 Casting Outro Skill within 15s after summoning Glommoth grants 12.00% Glacio DMG Bonus to the incoming Resonator for 15s.
 CD: 20s.</span>`,
@@ -1468,7 +1468,7 @@ CD: 20s.</span>`,
     name: "Iceglint Dancer",
     class: "Common",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/IceglintDancer.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/IceglintDancer.webp",
     details: `<span class="description">Transform into an Iceglint Dancer to attack enemies, dealing 205.20% Glacio DMG.
 CD: 8s.</span>`,
     modifiers: [],
@@ -1735,21 +1735,9 @@ CD: 8s.</span>`,
     name: "Kronablight",
     class: "Elite",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Kronablight.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Kronablight.webp",
     details: `<span class="description">Transform into a Kronablight, soar into the air, and dive to deal 67.05% Electro DMG to the enemies.
 CD: 134.10%s</span>`,
-    modifiers: [],
-    actions: [],
-    sets: ["TrailblazingStar", "ChromaticFoam"],
-  },
-  Kronaclaw: {
-    key: "Kronaclaw",
-    name: "Kronaclaw",
-    class: "Elite",
-    image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Kronaclaw.png",
-    details: `<span class="description">Transform into a Kronaclaw and soar into the air to deal 8.04% Aero DMG up to 8 times and 24.13% Aero DMG 2 times, then dive to deal 131.41% Aero DMG 1 time.
-CD: 15s</span>`,
     modifiers: [],
     actions: [],
     sets: ["TrailblazingStar", "ChromaticFoam"],
@@ -2204,7 +2192,7 @@ CD: <span class="param">25</span>s.</span>`,
     name: "Nameless Explorer",
     class: "Overlord",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NamelessExplorer.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NamelessExplorer.webp",
     details: `<span class="description">Summon Nameless Explorer to attack enemies along its path, dealing 182.40%/212.80%/243.20%/273.60% Aero DMG.
 The Resonator with this Echo equipped in their main slot gains 12.00% Aero DMG Bonus and 20.00% Echo Skill DMG Bonus.
 CD: 20s.</span>`,
@@ -3100,6 +3088,18 @@ CD: 20s.`,
     ],
     sets: ["GustsofWelkin", "WindwardPilgrimage"],
   },
+  ReminiscenceKronaclaw: {
+    key: "ReminiscenceKronaclaw",
+    name: "Reminiscence: Kronaclaw",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReminiscenceKronaclaw.webp",
+    details: `<span class="description">Transform into a Kronaclaw and soar into the air to deal 8.04% Aero DMG up to 8 times and 24.13% Aero DMG 2 times, then dive to deal 131.41% Aero DMG 1 time.
+CD: 15s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TrailblazingStar", "ChromaticFoam"],
+  },
   ReminiscenceThrenodianLeviathan: {
     key: "ReminiscenceThrenodianLeviathan",
     name: "Reminiscence: Threnodian - Leviathan",
@@ -3390,7 +3390,7 @@ CD: <span class="param">25</span>s.</span>`,
     name: "Shadow Stepper",
     class: "Common",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ShadowStepper.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ShadowStepper.webp",
     details: `<span class="description">Summon a Shadow Stepper to attack enemies, dealing 129.60% Havoc DMG.
 CD: 8s.</span>`,
     modifiers: [],
@@ -3402,7 +3402,7 @@ CD: 8s.</span>`,
     name: "Sigillum",
     class: "Calamity",
     image:
-      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Sigillum.png",
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Sigillum.webp",
     details: `<span class="description">Summon Sigillum to unleash two attacks, dealing 45.60%/53.20%/60.80%/68.40% and 136.80%/159.60%/182.40%/205.20% Fusion DMG respectively.
 When equipped in the main slot by Aemeath, it grants 25.00% Resonance Liberation DMG Bonus.
 CD: 20s</span>`,
