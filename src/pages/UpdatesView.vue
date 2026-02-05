@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>February 4, 2026</h3>
+    <ul>
+      <li>Aemeath, her sig, 3.1 echoes and sets are available.</li>
+    </ul>
     <h3>January 25, 2026</h3>
     <ul>
       <li>Improves the echo importer. It is now 2-3x faster and much more accurate in finding the right echo and set.</li>

@@ -1737,7 +1737,7 @@ export const buffsByCharacter = {
     {
       key: "SilentProtectionTuneRupture",
       name: `Silent Protection - Tune Rupture`,
-      details: `<div>- In Resonance Mode - Tune Rupture: all Resonators in the team except Aemeath gain 10% All DMG Amplification for 20s.</div>`,
+      details: `<div>- In <span class="Highlight">Resonance Mode - Tune Rupture</span>: all Resonators in the team except Aemeath gain 10% All DMG Amplification for 20s.</div>`,
       hasStacks: false,
       modifiers: [
         {
@@ -1752,7 +1752,7 @@ export const buffsByCharacter = {
     {
       key: "SilentProtectionTuneRupture",
       name: `Silent Protection - Tune Rupture Shifting`,
-      details: `<div>The All DMG Amplification effect is increased to 20% for Resonators who inflict Tune Rupture - Shifting.</div>`,
+      details: `<div>The All DMG Amplification effect is increased to 20% for Resonators who inflict <span class="Highlight">Tune Rupture - Shifting</span>.</div>`,
       hasStacks: false,
       modifiers: [
         {
@@ -1767,7 +1767,7 @@ export const buffsByCharacter = {
     {
       key: "SilentProtectionFusionBurst",
       name: `Silent Protection - Fusion Burst`,
-      details: `<div>- In Resonance Mode - Fusion Burst: all Resonators in the team except Aemeath gain 10% All DMG Amplification for 20s.</div>`,
+      details: `<div>- In <span class="Highlight">Resonance Mode - Fusion Burst</span>: all Resonators in the team except Aemeath gain 10% All DMG Amplification for 20s.</div>`,
       hasStacks: false,
       modifiers: [
         {
@@ -1782,7 +1782,7 @@ export const buffsByCharacter = {
     {
       key: "SilentProtectionFusionBurst",
       name: `Silent Protection - Fusion Burst Appliers`,
-      details: `<div>The All DMG Amplification effect is increased to 20% for Resonators who inflict Fusion Burst.</div>`,
+      details: `<div>The All DMG Amplification effect is increased to 20% for Resonators who inflict <span class="Highlight">Fusion Burst</span>.</div>`,
       hasStacks: false,
       modifiers: [
         {
@@ -1797,7 +1797,7 @@ export const buffsByCharacter = {
     {
       key: "SequenceNode4EtherealWaltzonBinaryTides",
       name: `Sequence Node 4: Ethereal Waltz on Binary Tides`,
-      details: `<div></div>`,
+      details: `<div>When casting Intro Skill <span class="Highlight"><strong>Songs Across the Universe</strong></span>, Intro Skill <span class="Highlight"><strong>Debut of Meteoric Radiance</strong></span>, Resonance Skill <span class="Highlight"><strong>Sync Strike</strong></span> and Resonance Skill <span class="Highlight"><strong>Seraphic Duet</strong></span>, Resonators in the team gain 20% All-Attribute DMG Bonus for 30s.</div>`,
       hasStacks: false,
       modifiers: [
         {
