@@ -1045,6 +1045,8 @@ export function calcTuneBreak(
   tuneBreakBoost: number = 0,
   talentModifierMultiply: number = 0,
   bonusDmg: number = 0,
+  critRate: number = 1,
+  critDamage: number = 1,
   count: number = 1,
 ): any {
   const levelModifier = getTuneBreakLevelModifier(charLevel);
@@ -1095,12 +1097,30 @@ export function calcTuneBreak(
     }
   });
   const finalDamage = totalDamage * count;
+  const finalDamageCrit = calcCritDamage(finalDamage, critDamage);
+  const finalDamageAverage = calcAvgDamage(finalDamage, critRate, critDamage);
   let detailedCalculation = buildDetailedCalculationString(
     talent,
     instanceDamageEntries,
-    0, // don't pass in Crit
-    0, // don't pass in Crit
+    critRate, // don't pass in Crit
+    critDamage, // don't pass in Crit
     null,
+    count,
+  );
+  let detailedCalculationCrit = buildDetailedCalculationString(
+    talent,
+    instanceDamageEntries,
+    critRate, // don't pass in Crit
+    critDamage, // don't pass in Crit
+    "crit",
+    count,
+  );
+  let detailedCalculationAverage = buildDetailedCalculationString(
+    talent,
+    instanceDamageEntries,
+    critRate, // don't pass in Crit
+    critDamage, // don't pass in Crit
+    "average",
     count,
   );
 
@@ -1109,11 +1129,11 @@ export function calcTuneBreak(
     instanceDamage,
     instanceDamageEntries,
     totalDamage: finalDamage,
-    critDamage: finalDamage,
-    avgDamage: finalDamage,
+    critDamage: finalDamageCrit,
+    avgDamage: finalDamageAverage,
     detailedCalculation,
-    detailedCalculationCrit: detailedCalculation,
-    detailedCalculationAvg: detailedCalculation,
+    detailedCalculationCrit: detailedCalculationCrit,
+    detailedCalculationAvg: detailedCalculationAverage,
     totalDamageContext: {
       type: "tuneBreak",
       talent,
@@ -1133,6 +1153,8 @@ export function calcTuneBreak(
       resistModifier,
       enemyTypeMultiplier,
       talentModifierMultiply,
+      critRate,
+      critDamage,
     },
   };
 }

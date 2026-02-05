@@ -21,6 +21,9 @@ export const twoSetBonuses: string[] = [
   "Pact of Neonlight Leap 2 Set",
   "Rite of Gilded Revelation 2 Set",
   "Halo of Starry Radiance 2 Set",
+  "Trailblazing Star 2 Set",
+  "Sound of True Name 2 Set",
+  "Chromatic Foam 2 Set",
 ];
 export const threeSetBonuses: string[] = [
   "Crown of Valor 3 Set",
@@ -50,6 +53,9 @@ export const fiveSetBonuses: string[] = [
   "Pact of Neonlight Leap 5 Set",
   "Rite of Gilded Revelation 5 Set",
   "Halo of Starry Radiance 5 Set",
+  "Trailblazing Star 5 Set",
+  "Sound of True Name 5 Set",
+  "Chromatic Foam 5 Set",
 ];
 
 // Function to convert a list of echo set keys (e.g. MidnightVeil)
@@ -672,6 +678,66 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     ],
     details: `Healing Bonus + 10%`,
   },
+  "Trailblazing Star 2 Set": {
+    name: "Trailblazing Star",
+    key: "TrailblazingStar2Set",
+    passives: [
+      {
+        key: "TrailblazingStar2Set",
+        details: `Fusion DMG + 10%`,
+        modifiers: [
+          {
+            modifier: "Fusion",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Fusion DMG + 10%%`,
+  },
+  "Sound of True Name 2 Set": {
+    name: "Sound of True Name",
+    key: "SoundofTrueName2Set",
+    passives: [
+      {
+        key: "SoundofTrueName2Set",
+        details: `Aero DMG + 10%`,
+        modifiers: [
+          {
+            modifier: "Aero",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Aero DMG + 10%`,
+  },
+  "Chromatic Foam 2 Set": {
+    name: "Chromatic Foam",
+    key: "ChromaticFoam2Set",
+    passives: [
+      {
+        key: "ChromaticFoam2Set",
+        details: `Fusion DMG + 10%`,
+        modifiers: [
+          {
+            modifier: "Fusion",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Fusion DMG + 10%`,
+  },
 };
 
 export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
@@ -1279,5 +1345,73 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         details: `Inflicting Havoc Bane increases the Resonator's ATK by 20% and grants 30% Resonance Liberation DMG Bonus for 5s.`,
       },
     ],
+  },
+  "Trailblazing Star 5 Set": {
+    name: "Trailblazing Star",
+    key: "TrailblazingStar5Set",
+    passives: [
+      {
+        key: "TrailblazingStar5Set",
+        details: `Inflicting Fusion Burst or Tune Rupture - Shifting increases the Resonator's Crit. Rate by 20% and grants 20% Fusion DMG Bonus for 8s.`,
+        modifiers: [
+          {
+            modifier: "CritRate",
+            modifierValue: 20,
+          },
+          {
+            modifier: "Fusion",
+            modifierValue: 20,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Inflicting Fusion Burst or Tune Rupture - Shifting increases the Resonator's Crit. Rate by 20% and grants 20% Fusion DMG Bonus for 8s.`,
+  },
+  "Sound of True Name 5 Set": {
+    name: "Sound of True Name",
+    key: "SoundofTrueName5Set",
+    passives: [
+      {
+        key: "SoundofTrueName2Set",
+        details: `Dealing Echo Skill DMG to enemies increases the Resonator's Echo Skill Crit. Rate by 20%, and grants 15% Aero DMG Bonus for 5s.`,
+        modifiers: [
+          {
+            modifier: "CritRate",
+            modifierValue: 20,
+          },
+          {
+            modifier: "Aero",
+            modifierValue: 15,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Dealing Echo Skill DMG to enemies increases the Resonator's Echo Skill Crit. Rate by 20%, and grants 15% Aero DMG Bonus for 5s.`,
+  },
+  "Chromatic Foam 5 Set": {
+    name: "Chromatic Foam",
+    key: "ChromaticFoam5Set",
+    passives: [
+      {
+        key: "ChromaticFoam5SetFusion",
+        details: `When the Resonator inflicts Fusion Burst on the enemies, they gain the following effects: Gain 10% Fusion DMG Bonus for 15s.`,
+        modifiers: [
+          {
+            modifier: "Fusion",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `When the Resonator inflicts Fusion Burst on the enemies, they gain the following effects: Gain 10% Fusion DMG Bonus for 15s. While this effect is active, casting an Outro Skill grants the incoming Resonator 25% Fusion DMG Bonus for 15s.`,
   },
 };

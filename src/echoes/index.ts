@@ -950,7 +950,7 @@ CD: <span class="param">20</span>s</span>`,
     details: `<span class="description">Summon a Flora Drone, dealing 43.20%/50.40%/57.60%/64.80% Aero DMG to enemies and healing Resonators within range by 2.40%/2.80%/3.20%/3.60% of their Max HP plus an additional 160 HP.</span>.`,
     modifiers: [],
     actions: [],
-    sets: ["PactofNeonlightLeap", "RiteofGildedRevelation"],
+    sets: ["PactofNeonlightLeap", "RiteofGildedRevelation", "SoundofTrueName"],
   },
   FloraReindeer: {
     key: "FloraReindeer",
@@ -1094,7 +1094,7 @@ CD: <span class="param">20</span>s</span>`,
     details: `<span class="description">Summon a Geospider S4 to attack enemies, dealing an instance of <span class="Highlight">34.56%/40.32%/46.08%/51.84%</span> Spectro DMG and an instance of <span class="Highlight">51.84%/60.48%/69.12%/77.76%</span> Spectro DMG.<br><br>CD: 8s.</span>.`,
     modifiers: [],
     actions: [],
-    sets: ["PactofNeonlightLeap", "HaloofStarryRadiance"],
+    sets: ["PactofNeonlightLeap", "HaloofStarryRadiance", "TrailblazingStar"],
   },
   GlacioDrake: {
     key: "GlacioDrake",
@@ -1184,6 +1184,34 @@ CD: <span class="param">20</span>s</span>`,
     modifiers: [],
     actions: [],
     sets: ["FreezingFrost", "SunSinkingEclipse", "MoonlitClouds"],
+  },
+  Glommoth: {
+    key: "Glommoth",
+    name: "Glommoth",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Glommoth.webp",
+    details: `<span class="description">Summon a Glommoth to stomp enemies, dealing 212.80%/212.80%/243.20%/273.60% Glacio DMG.
+Casting Outro Skill within 15s after summoning Glommoth grants 12.00% Glacio DMG Bonus to the incoming Resonator for 15s.
+CD: 20s.</span>`,
+    modifiers: [],
+    actions: [
+      {
+        key: "GlommothStomp",
+        label: "Stomp DMG",
+        description: `Summon a Glommoth to stomp enemies, dealing 212.80%/212.80%/243.20%/273.60% Glacio DMG.`,
+        talents: {
+          "1": "212.80%",
+          "2": "212.80%",
+          "3": "212.80%",
+          "4": "243.20%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Glacio",
+      },
+    ],
+    sets: ["TrailblazingStar"],
   },
   GoldenJunrock: {
     key: "GoldenJunrock",
@@ -1434,6 +1462,18 @@ CD: 20s.</span>`,
       },
     ],
     sets: ["PactofNeonlightLeap", "RiteofGildedRevelation"],
+  },
+  IceglintDancer: {
+    key: "IceglintDancer",
+    name: "Iceglint Dancer",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/IceglintDancer.webp",
+    details: `<span class="description">Transform into an Iceglint Dancer to attack enemies, dealing 205.20% Glacio DMG.
+CD: 8s.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TrailblazingStar"],
   },
   ImpermanenceHeron: {
     key: "ImpermanenceHeron",
@@ -1689,6 +1729,18 @@ CD: 20s.</span>`,
       },
     ],
     sets: ["WindwardPilgrimage", "FlamingClawprint", "FlamewingsShadow"],
+  },
+  Kronablight: {
+    key: "Kronablight",
+    name: "Kronablight",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Kronablight.webp",
+    details: `<span class="description">Transform into a Kronablight, soar into the air, and dive to deal 67.05% Electro DMG to the enemies.
+CD: 134.10%s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TrailblazingStar", "ChromaticFoam"],
   },
   LadyoftheSea: {
     key: "LadyoftheSea",
@@ -2068,7 +2120,7 @@ CD: <span class="param">25</span>s.</span>`,
     details: `<span class="description">Transform into a Mining Drone to attack enemies, dealing 68.40%/79.80%/91.20%/102.60% Havoc DMG twice.<br><br>CD: 8s.</span>.`,
     modifiers: [],
     actions: [],
-    sets: ["HaloofStarryRadiance", "RiteofGildedRevelation"],
+    sets: ["HaloofStarryRadiance", "RiteofGildedRevelation", "SoundofTrueName"],
   },
   MiningReindeer: {
     key: "MiningReindeer",
@@ -2134,6 +2186,43 @@ CD: <span class="param">25</span>s.</span>`,
       },
     ],
     sets: ["CelestialLight"],
+  },
+  NamelessExplorer: {
+    key: "NamelessExplorer",
+    name: "Nameless Explorer",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/NamelessExplorer.webp",
+    details: `<span class="description">Summon Nameless Explorer to attack enemies along its path, dealing 182.40%/212.80%/243.20%/273.60% Aero DMG.
+The Resonator with this Echo equipped in their main slot gains 12.00% Aero DMG Bonus and 20.00% Echo Skill DMG Bonus.
+CD: 20s.</span>`,
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.12,
+      },
+      {
+        modifier: "EchoDMGBonus",
+        modifierValue: 0.2,
+      },
+    ],
+    actions: [
+      {
+        key: "NamelessExplorerAttacksDMG",
+        label: "Attack DMG",
+        description: `Summon Nameless Explorer to attack enemies along its path, dealing 182.40%/212.80%/243.20%/273.60% Aero DMG.`,
+        talents: {
+          "1": "182.40%",
+          "2": "182.40%",
+          "3": "212.80%",
+          "4": "243.20%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["SoundofTrueName"],
   },
   NimbusWraith: {
     key: "NimbusWraith",
@@ -2922,7 +3011,7 @@ CD: 20s.</span>`,
         element: "Fusion",
       },
     ],
-    sets: ["HaloofStarryRadiance"],
+    sets: ["HaloofStarryRadiance", "ChromaticFoam"],
   },
   ReminiscenceFenrico: {
     key: "ReminiscenceFenrico",
@@ -2998,6 +3087,18 @@ CD: 20s.`,
       },
     ],
     sets: ["GustsofWelkin", "WindwardPilgrimage"],
+  },
+  ReminiscenceKronaclaw: {
+    key: "ReminiscenceKronaclaw",
+    name: "Reminiscence: Kronaclaw",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReminiscenceKronaclaw.webp",
+    details: `<span class="description">Transform into a Kronaclaw and soar into the air to deal 8.04% Aero DMG up to 8 times and 24.13% Aero DMG 2 times, then dive to deal 131.41% Aero DMG 1 time.
+CD: 15s</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TrailblazingStar", "ChromaticFoam"],
   },
   ReminiscenceThrenodianLeviathan: {
     key: "ReminiscenceThrenodianLeviathan",
@@ -3169,7 +3270,7 @@ CD: 25s`,
         element: "Fusion",
       },
     ],
-    sets: ["PactofNeonlightLeap", "HaloofStarryRadiance"],
+    sets: ["PactofNeonlightLeap", "HaloofStarryRadiance", "SoundofTrueName"],
   },
   SabercatReaver: {
     key: "SabercatReaver",
@@ -3195,7 +3296,7 @@ CD: 25s`,
         element: "Fusion",
       },
     ],
-    sets: ["PactofNeonlightLeap", "HaloofStarryRadiance"],
+    sets: ["PactofNeonlightLeap", "HaloofStarryRadiance", "SoundofTrueName"],
   },
   SabyrBoar: {
     key: "SabyrBoar",
@@ -3284,6 +3385,52 @@ CD: <span class="param">25</span>s.</span>`,
     ],
     sets: ["FrostyResolve"],
   },
+  ShadowStepper: {
+    key: "ShadowStepper",
+    name: "Shadow Stepper",
+    class: "Common",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ShadowStepper.webp",
+    details: `<span class="description">Summon a Shadow Stepper to attack enemies, dealing 129.60% Havoc DMG.
+CD: 8s.</span>`,
+    modifiers: [],
+    actions: [],
+    sets: ["TrailblazingStar", "ChromaticFoam"],
+  },
+  Sigillum: {
+    key: "Sigillum",
+    name: "Sigillum",
+    class: "Calamity",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Sigillum.webp",
+    details: `<span class="description">Summon Sigillum to unleash two attacks, dealing 45.60%/53.20%/60.80%/68.40% and 136.80%/159.60%/182.40%/205.20% Fusion DMG respectively.
+When equipped in the main slot by Aemeath, it grants 25.00% Resonance Liberation DMG Bonus.
+CD: 20s</span>`,
+    modifiers: [
+      {
+        modifier: "ResonanceLiberationDMGBonus",
+        modifierValue: 0.25,
+        specificCharacters: ["Aemeath"],
+      },
+    ],
+    actions: [
+      {
+        key: "SigillumAttacksDMG",
+        label: "Attack DMG",
+        description: `Summon Sigillum to unleash two attacks, dealing 45.60%/53.20%/60.80%/68.40% and 136.80%/159.60%/182.40%/205.20% Fusion DMG respectively.`,
+        talents: {
+          "1": "45.60%+136.80%",
+          "2": "45.60%+136.80%",
+          "3": "53.20%+159.60%",
+          "4": "60.80%+182.40%",
+          "5": "68.40%+205.20%",
+        },
+        type: "Echo",
+        element: "Fusion",
+      },
+    ],
+    sets: ["TrailblazingStar"],
+  },
   SnipSnap: {
     key: "SnipSnap",
     name: "Snip Snap",
@@ -3322,7 +3469,7 @@ CD: <span class="param">25</span>s.</span>`,
         attribute: "hp",
       },
     ],
-    sets: ["HaloofStarryRadiance"],
+    sets: ["HaloofStarryRadiance", "ChromaticFoam", "SoundofTrueName"],
   },
   Spearback: {
     key: "Spearback",
@@ -3625,7 +3772,7 @@ Start with 2 charges. Gain 1 charge every 8s, up to 2 charges.`,
     details: `<span class="description">Transform into a Tremor Warrior and viciously attack enemies in the front, dealing <span class="Highlight">136.80%/159.60%/182.40%/205.20%</span> Electro DMG.<br><br>CD 8s.</span>.`,
     modifiers: [],
     actions: [],
-    sets: ["HaloofStarryRadiance"],
+    sets: ["HaloofStarryRadiance", "ChromaticFoam"],
   },
   TwinNovaCollapsarBlade: {
     key: "TwinNovaCollapsarBlade",
@@ -3667,7 +3814,7 @@ If Twin Nova: Nebulous Cannon is equipped in another slot on the Resonator:<br>
         element: "Electro",
       },
     ],
-    sets: ["RiteofGildedRevelation"],
+    sets: ["RiteofGildedRevelation", "TrailblazingStar", "SoundofTrueName"],
   },
   TwinNovaNebulousCannon: {
     key: "TwinNovaNebulousCannon",
@@ -3709,7 +3856,7 @@ If Twin Nova: Collapsar Blade is equipped in another slot on the Resonator:<br>
         element: "Spectro",
       },
     ],
-    sets: ["RiteofGildedRevelation"],
+    sets: ["RiteofGildedRevelation", "ChromaticFoam"],
   },
   VanguardJunrock: {
     key: "VanguardJunrock",
@@ -3881,6 +4028,6 @@ CD: 20s.`,
     details: `<span class="description">Summon a Zip Zap to launch spinning attacks at enemies, dealing <span class="Highlight">17.28%/20.16%/23.04%/25.92%</span> Electro DMG 5 times.<br><br>CD: 8s.</span>.`,
     modifiers: [],
     actions: [],
-    sets: ["PactofNeonlightLeap", "RiteofGildedRevelation"],
+    sets: ["PactofNeonlightLeap", "RiteofGildedRevelation", "ChromaticFoam", "SoundofTrueName"],
   },
 };

@@ -18,7 +18,7 @@
             <span class="label-text ml-2">Enabled?</span>
           </label>
         </div>
-        <div v-if="hasStacks" class="form-control" @click.stop>
+        <div v-if="hasStacks && effectiveBuffData.effectiveMaxStacks > 0" class="form-control" @click.stop>
           <label
             class="label cursor-pointer inline-flex justify-start"
             v-if="!alwaysEnabled">
@@ -144,6 +144,13 @@ export default {
         },
         immediate: true,
       },
+    "currentCharacter.resonanceChains.SequenceNode3FervorSightlyBurnsBrightasNew.isEnabled":
+      {
+        handler: function () {
+          this.updatedStats();
+        },
+        immediate: true,
+      },
   },
   methods: {
     ...mapActions(useCharacterStore, ["setCharacterData"]),
@@ -248,6 +255,56 @@ export default {
         // Apply SequenceNode6 effects if enabled
         if (sequenceNode6?.isEnabled) {
           effectiveMaxStacks = 4;
+        }
+      }
+      // this only applies to InherentSkillBetweentheStarsTuneRupture & InherentSkillBetweentheStarsFusionBurst on Aemeath
+      // it essentially just removes stacks requirement
+      if (this.character === "Aemeath" && this.uniqueKey === "InherentSkillBetweentheStarsTuneRupture") {
+        // Check if resonance chain buffs are enabled and apply their effects
+        const sequenceNode3 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode3FervorSightlyBurnsBrightasNew;
+        // Apply SequenceNode1 effects if enabled
+        if (sequenceNode3?.isEnabled) {
+          effectiveMaxStacks = 0;
+          effectiveStacks = 0;
+          // clear out the value
+          this.stacks = 0;
+        }
+      }
+      if (this.character === "Aemeath" && this.uniqueKey === "InherentSkillBetweentheStarsFusionBurst") {
+        // Check if resonance chain buffs are enabled and apply their effects
+        const sequenceNode3 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode3FervorSightlyBurnsBrightasNew;
+        // Apply SequenceNode1 effects if enabled
+        if (sequenceNode3?.isEnabled) {
+          effectiveMaxStacks = 0;
+          effectiveStacks = 0;
+          // clear out the value
+          this.stacks = 0;
+        }
+      }
+      // Aemeath s6 makes these 60
+      if (this.character === "Aemeath" && this.uniqueKey === "SeraphicDuetTuneRupture") {
+        // Check if resonance chain buffs are enabled and apply their effects
+        const sequenceNode6 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode6AZephyrKissedJourneytoYou;
+        // Apply SequenceNode6 effects if enabled
+        if (sequenceNode6?.isEnabled) {
+          effectiveMaxStacks = 60;
+        }
+      }
+      // Aemeath s6 makes these 60
+      if (this.character === "Aemeath" && this.uniqueKey === "SeraphicDuetFusionBurst") {
+        // Check if resonance chain buffs are enabled and apply their effects
+        const sequenceNode6 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode6AZephyrKissedJourneytoYou;
+        // Apply SequenceNode6 effects if enabled
+        if (sequenceNode6?.isEnabled) {
+          effectiveMaxStacks = 60;
         }
       }
 

@@ -554,8 +554,13 @@ export const calculateAttackDamage = (
     context.equipment.weapon.weaponPassiveStats?.[
       `ResistShred:${attackElement}`
     ] ?? 0;
+  let weaponBuffResistShredForCharElementSpecificActionType =
+    context.equipment.weapon.weaponPassiveStats?.[
+      `ResistShred:${attackElement}:${attack.type}`
+    ] ?? 0;
   if (excludeWeaponBuffs) {
     weaponBuffResistShredForCharElement = 0;
+    weaponBuffResistShredForCharElementSpecificActionType = 0;
   }
   if (excludeTeamBuffs) {
     teamBuffResistShredForCharElement = 0;
@@ -575,6 +580,7 @@ export const calculateAttackDamage = (
     selfBuffResistShredForCharElement +
     selfBuffResistShredForCharElementSpecificAttack +
     weaponBuffResistShredForCharElement +
+    weaponBuffResistShredForCharElementSpecificActionType +
     actionBuffResistReduction +
     customResistReduction;
 
@@ -823,12 +829,30 @@ export const calculateAttackDamage = (
     // but the special attacks do element based dmg, so they do
     if (
       attack.key === "TuneRuptureResponseSpectralAnalysisDMG" ||
-      attack.key === "TuneRuptureResponseParticleJetDMG"
+      attack.key === "TuneRuptureResponseParticleJetDMG" ||
+      attack.key === "TuneRuptureResponseStarburstDMG" ||
+      attack.key === "SeraphicDuetBonusDMGPerInstance"
     ) {
       talent = attack.talents[context.character.talentData?.forte];
       resistReduction = totalResistReduction;
     }
     const tuneBreakDmgBonus = context.buffs.customBuffs?.TuneBreakDMGBonus ?? 0;
+    // typically Tune Break cannot crit, but some buffs exist to make it crit
+    let baseCritRate = 1;
+    let baseCritDmg = 1;
+    let totalCritRate;
+    let totalCritDmg;
+    // so far it's resonance chains that affect Tune Break CR/CD
+    const tuneBreakCritRateResoanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritRate`
+      ] ?? 0;
+    const tuneBreakCritDmgResoanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritDMG`
+      ] ?? 0;
+    totalCritRate = baseCritRate + tuneBreakCritRateResoanceChains;
+    totalCritDmg = baseCritDmg + tuneBreakCritDmgResoanceChains;
 
     return calcTuneBreak(
       talent,
@@ -842,6 +866,8 @@ export const calculateAttackDamage = (
       totalTuneBreakBoost, // tuneBreakBoost
       totalTalentModifierMultiply,
       tuneBreakDmgBonus, // tune break bonusDmg (e.g. Hyvatia's 100% bonus)
+      totalCritRate,
+      totalCritDmg,
       count,
     );
   }

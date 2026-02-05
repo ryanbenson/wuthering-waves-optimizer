@@ -875,6 +875,61 @@
           }}
         </span>
       </div>
+      <div class="divider"></div>
+      <div class="crit-dmg">
+        <div class="font-bold mt-2 text-lg text-primary">Crit Damage</div>
+        <div class="formula bg-base-200 p-2 rounded-md font-mono">
+          <span class="font-bold text-secondary">
+            {{ displayDamage(damage.critDamage) }}
+          </span>
+          =
+          <span class="text-primary">
+            {{ displayDamage(damage.totalDamage) }}
+          </span>
+          ×
+          <span class="text-primary">
+            {{ displayPercentage(damage.totalDamageContext.critDamage * 100) }}
+          </span>
+        </div>
+      </div>
+      <div class="avg-dmg">
+        <div class="font-bold mt-2 text-lg text-primary">Average Damage</div>
+        <div class="formula bg-base-200 p-2 rounded-md font-mono">
+          <span class="font-bold text-secondary">
+            {{ displayDamage(damage.avgDamage) }}
+          </span>
+          =
+          <span class="text-primary">
+            {{ displayDamage(damage.totalDamage) }}
+          </span>
+          × (1 +
+          <template v-if="damage.totalDamageContext.critRate > 1">
+            (
+            <span class="text-primary">
+              {{ displayPercentage(damage.totalDamageContext.critRate * 100) }}
+            </span>
+            -
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  (damage.totalDamageContext.critRate - 1) * 100,
+                )
+              }}
+            </span>
+            )
+          </template>
+          <template v-else>
+            <span class="text-primary">
+              {{ displayPercentage(damage.totalDamageContext.critRate * 100) }}
+            </span>
+          </template>
+          × (
+          <span class="text-primary">
+            {{ displayPercentage(damage.totalDamageContext.critDamage * 100) }}
+          </span>
+          - 1))
+        </div>
+      </div>
     </div>
   </div>
 </template>

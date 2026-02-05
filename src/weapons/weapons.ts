@@ -5,6 +5,7 @@ export const swordsList = {
     { key: "DefiersThorn", name: "Defier's Thorn" },
     { key: "EmeraldOfGenesis", name: "Emerald Of Genesis" },
     { key: "EmeraldSentence", name: "Emerald Sentence" },
+    { key: "EverbrightPolestar", name: "Everbright Polestar" },
     { key: "LaserShearer", name: "Laser Shearer" },
     { key: "RedSpring", name: "Red Spring" },
     { key: "UnflickeringValor", name: "Unflickering Valor" },

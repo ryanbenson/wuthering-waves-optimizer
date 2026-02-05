@@ -1,0 +1,40 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Towards the Daybreak",
+  description: `<div><span class="Title"><strong>Heavenfall Edict - Overdrive</strong></span><br>Deal <span class="Fusion"><strong>Fusion DMG</strong></span>. Switch into Mech form after casting this skill.<br>Can be cast in mid-air close to the ground.<br>Casting this skill grants the following effects:<br>- Enter <span class="Highlight"><strong>Stardust Resonance</strong></span> for 30s.<br>- Enter <span class="Highlight"><strong>Heavenfall Edict: Unbound</strong></span> for 60s.<br>Press <span class="Highlight"><strong>Normal Attack</strong></span> shortly after casting this skill to cast <span class="Highlight"><strong>Basic Attack - Mech Stage 2</strong></span>.<br>Press <span class="Highlight"><strong>Resonance Skill</strong></span> to perform Resonance Skill <span class="Highlight"><strong>Form Switch</strong></span> shortly after casting this skill to cast <span class="Highlight"><strong>Basic Attack - Aemeath Stage 2</strong></span>.<br>The next <span class="Highlight"><strong>Seraphic Duet</strong></span> cast within 30s after casting this skill doesn't consume <span class="Highlight"><strong>Rupturous Trail</strong></span>/<span class="Highlight"><strong>Fusion Trail</strong></span>.<br><br><span class="Title"><strong>Stardust Resonance</strong></span><br>Enhance the effect of Resonance Skill <span class="Highlight"><strong>Seraphic Duet</strong></span>.<br>This effect ends after the 2th time <span class="Highlight"><strong>Seraphic Duet</strong></span> is cast.<br><br><span class="Title"><strong>Heavenfall Edict - Unbound</strong></span><br><span class="Highlight"><strong>Heavenfall Edict - Overdrive</strong></span> is replaced with <span class="Highlight"><strong>Heavenfall Edict - Finale</strong></span>.<br>When in <span class="Highlight"><strong>Heavenfall Edict - Unbound</strong></span> and <span class="Highlight"><strong>Resonance Rate</strong></span> reaches the limit, enter <span class="Highlight"><strong>Instant Response</strong></span>. <span class="Highlight"><strong>Instant Response</strong></span> is removed when the <span class="Highlight"><strong>Heavenfall Edict - Unbound</strong></span> state ends.<br><br><span class="Title"><strong>Heavenfall Edict - Finale</strong></span><br>Press <span class="Highlight"><strong>Resonance Skill</strong></span> or <span class="Highlight"><strong>Resonance Liberation</strong></span> to cast <span class="Highlight"><strong>Heavenfall Edict: Finale</strong></span> when the following conditions are met:<br>- Be in the <span class="Highlight"><strong>Heavenfall Edict: Unbound</strong></span> state.<br>- <span class="Highlight"><strong>Synchronization Rate</strong></span> reaches the limit.<br>- <span class="Highlight"><strong>Resonance Rate</strong></span> reaches the limit.<br>Casting this skill depletes all <span class="Highlight"><strong>Synchronization Rate</strong></span> and <span class="Highlight"><strong>Resonance Rate</strong></span>, dealing <span class="Fusion"><strong>Fusion DMG</strong></span> and ends the <span class="Highlight"><strong>Heavenfall Edict: Unbound</strong></span> state.<br>Switch back to Aemeath after casting this skill.<br>Can be cast in mid-air close to the ground.</div>`,
+  attacks: [
+    {
+      key: "HeavenfallEdictOverdriveDMG",
+      label: "Heavenfall Edict: Overdrive DMG",
+      type: "Liberation",
+      talents: {
+        "1": "101.00%+134.67%*3",
+        "2": "109.29%+145.71%*3",
+        "3": "117.57%+156.76%*3",
+        "4": "129.16%+172.22%*3",
+        "5": "137.45%+183.26%*3",
+        "6": "146.97%+195.96%*3",
+        "7": "160.22%+213.63%*3",
+        "8": "173.47%+231.29%*3",
+        "9": "186.72%+248.96%*3",
+        "10": "200.80%+267.74%*3",
+      },
+    },
+    {
+      key: "HeavenfallEdictFinaleDMG",
+      label: "Heavenfall Edict: Finale DMG",
+      type: "Liberation",
+      talents: {
+        "1": "900.00%",
+        "2": "973.80%",
+        "3": "1047.60%",
+        "4": "1150.92%",
+        "5": "1224.72%",
+        "6": "1309.59%",
+        "7": "1427.67%",
+        "8": "1545.75%",
+        "9": "1663.83%",
+        "10": "1789.29%",
+      },
+    },
+  ],
+};
