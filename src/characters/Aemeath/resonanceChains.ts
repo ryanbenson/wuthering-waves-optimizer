@@ -160,7 +160,7 @@ In <span class="Highlight">Resonance Mode - Tune Rupture</span> or <span class="
       },
       {
         modifier: "CritDMG",
-        modifySpecificTalents: ["TuneBreakDMG", "TuneRuptureResponseStarburstDMG", "SeraphicDuetBonusDMGPerInstance"],
+        modifySpecificTalents: [ "TuneRuptureResponseStarburstDMG", "SeraphicDuetBonusDMGPerInstance"],
         modifierValue: 1.75, // you get 275% from the buff, but it's SET to 275%, but we have 100% base to help with the normal calc, so making it BUFF 175 to make it total 275%
       },
     ],
