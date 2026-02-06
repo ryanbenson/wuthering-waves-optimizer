@@ -45,7 +45,7 @@ The DMG Multiplier of Resonance Skill <span class="Highlight">Seraphic Duet: Enc
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["TuneBreakDMG", "TuneRuptureResponseStarburstDMG", "SeraphicDuetBonusDMGPerInstance"],
+        modifySpecificTalents: [ "TuneRuptureResponseStarburstDMG", "SeraphicDuetBonusDMGPerInstance"],
         modifierValue: 0.2,
       },
     ],
@@ -155,7 +155,7 @@ In <span class="Highlight">Resonance Mode - Tune Rupture</span> or <span class="
     modifiers: [
       {
         modifier: "CritRate",
-        modifySpecificTalents: ["TuneBreakDMG", "TuneRuptureResponseStarburstDMG", "SeraphicDuetBonusDMGPerInstance"],
+        modifySpecificTalents: [ "TuneRuptureResponseStarburstDMG", "SeraphicDuetBonusDMGPerInstance"],
         modifierValue: 0.8,
       },
       {
