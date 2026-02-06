@@ -7,7 +7,7 @@ export const buffs = [
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["TuneBreakDMG", "TuneRuptureResponseStarburstDMG", "SeraphicDuetBonusDMGPerInstance"],
+        modifySpecificTalents: [ "TuneRuptureResponseStarburstDMG", "SeraphicDuetBonusDMGPerInstance"],
         modifierValue: 0.04,
       },
     ],
