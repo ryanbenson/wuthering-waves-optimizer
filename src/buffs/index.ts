@@ -1750,7 +1750,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
     {
-      key: "SilentProtectionTuneRupture",
+      key: "SilentProtectionTuneRuptureShifting",
       name: `Silent Protection - Tune Rupture Shifting`,
       details: `<div>The All DMG Amplification effect is increased to 20% for Resonators who inflict <span class="Highlight">Tune Rupture - Shifting</span>.</div>`,
       hasStacks: false,
@@ -1780,7 +1780,7 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
     {
-      key: "SilentProtectionFusionBurst",
+      key: "SilentProtectionFusionBurstAppliers",
       name: `Silent Protection - Fusion Burst Appliers`,
       details: `<div>The All DMG Amplification effect is increased to 20% for Resonators who inflict <span class="Highlight">Fusion Burst</span>.</div>`,
       hasStacks: false,
