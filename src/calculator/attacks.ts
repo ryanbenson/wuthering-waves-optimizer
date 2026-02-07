@@ -820,6 +820,39 @@ export const calculateAttackDamage = (
     const tuneBreakBoostTeam = context.buffs.teamBuffsData?.tuneBreakBoost ?? 0;
     const totalTuneBreakBoost =
       baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam;
+
+  let totalSpecialMultiplier = 0;
+  let resonanceChainAttackSpecialMultiplierAttack =
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      `${attack.key}:specialMultiplier`
+    ] ?? 0;
+  let resonanceChainAttackSpecialMultiplier =
+    context.buffs.charResonanceChainsData?.specialMultiplier ?? 0;
+  let selfBuffAttackSpecialMultiplier =
+    context.buffs.charBuffsData?.specificTalentBuffs?.[
+      `${attack.key}:specialMultiplier`
+    ] ?? 0;
+  let customBuffAttackSpecialMultiplier =
+    context.buffs.customBuffs?.SpecialMultiplier ?? 0;
+  let actionBuffAttackSpecialMultiplier = attack?.buffs?.SpecialMultiplier ?? 0;
+  // special case for CoreofCollapseDMG (requires 1+ havoc bane stacks) to get 100% specialMultiplier
+  let coreofCollapseDMGSpecialMultiplier = 0;
+  if (attack.key === "CoreofCollapseDMG") {
+    if (Number(context.enemy.havocBane.havocBaneStacks) > 0) {
+      coreofCollapseDMGSpecialMultiplier = 1;
+    }
+  }
+  // Strain "Total DMG" / Vuln = strainStacks (0-4) * TuneBreakBoost (0-50) * 0.12%
+  let strainSpecialMultiplier = context.enemy.strainStacks * totalTuneBreakBoost * 0.12;
+  totalSpecialMultiplier +=
+    resonanceChainAttackSpecialMultiplier +
+    resonanceChainAttackSpecialMultiplierAttack +
+    selfBuffAttackSpecialMultiplier +
+    actionBuffAttackSpecialMultiplier +
+    customBuffAttackSpecialMultiplier +
+    coreofCollapseDMGSpecialMultiplier +
+    strainSpecialMultiplier;
+
   if (attack.type === "TuneBreak") {
     let talent = attack.talent;
     let enemyResistVal = context.enemy.enemyResist;
@@ -865,6 +898,7 @@ export const calculateAttackDamage = (
       totalDefReduction,
       totalTuneBreakBoost, // tuneBreakBoost
       totalTalentModifierMultiply,
+      totalSpecialMultiplier,
       tuneBreakDmgBonus, // tune break bonusDmg (e.g. Hyvatia's 100% bonus)
       totalCritRate,
       totalCritDmg,
@@ -1081,37 +1115,6 @@ export const calculateAttackDamage = (
       additiveMultiplierPercent = modifierPercent;
     }
   }
-  let totalSpecialMultiplier = 0;
-  let resonanceChainAttackSpecialMultiplierAttack =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
-      `${attack.key}:specialMultiplier`
-    ] ?? 0;
-  let resonanceChainAttackSpecialMultiplier =
-    context.buffs.charResonanceChainsData?.specialMultiplier ?? 0;
-  let selfBuffAttackSpecialMultiplier =
-    context.buffs.charBuffsData?.specificTalentBuffs?.[
-      `${attack.key}:specialMultiplier`
-    ] ?? 0;
-  let customBuffAttackSpecialMultiplier =
-    context.buffs.customBuffs?.SpecialMultiplier ?? 0;
-  let actionBuffAttackSpecialMultiplier = attack?.buffs?.SpecialMultiplier ?? 0;
-  // special case for CoreofCollapseDMG (requires 1+ havoc bane stacks) to get 100% specialMultiplier
-  let coreofCollapseDMGSpecialMultiplier = 0;
-  if (attack.key === "CoreofCollapseDMG") {
-    if (Number(context.enemy.havocBane.havocBaneStacks) > 0) {
-      coreofCollapseDMGSpecialMultiplier = 1;
-    }
-  }
-  // Strain "Total DMG" / Vuln = strainStacks (0-4) * TuneBreakBoost (0-50) * 0.12%
-  let strainSpecialMultiplier = context.enemy.strainStacks * totalTuneBreakBoost * 0.12;
-  totalSpecialMultiplier +=
-    resonanceChainAttackSpecialMultiplier +
-    resonanceChainAttackSpecialMultiplierAttack +
-    selfBuffAttackSpecialMultiplier +
-    actionBuffAttackSpecialMultiplier +
-    customBuffAttackSpecialMultiplier +
-    coreofCollapseDMGSpecialMultiplier +
-    strainSpecialMultiplier;
   // console.table({
   //   attack: attack.key,
   //   attackType,
