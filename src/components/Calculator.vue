@@ -16,7 +16,7 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div
-            v-if="true"
+            v-if="false"
             class="alert alert-success mb-6 text-white p-2 px-4">
             Aemeath, her sig, and 3.1 echos and sets are now available
           </div>

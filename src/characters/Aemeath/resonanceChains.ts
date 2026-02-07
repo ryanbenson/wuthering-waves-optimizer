@@ -44,8 +44,8 @@ The DMG Multiplier of Resonance Skill <span class="Highlight">Seraphic Duet: Enc
     hasStacks: true,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: [ "TuneRuptureResponseStarburstDMG", "SeraphicDuetBonusDMGPerInstance"],
+        modifier: "specialMultiplier",
+        modifySpecificTalents: [ "SeraphicDuetBonusDMGPerInstance"],
         modifierValue: 0.2,
       },
     ],

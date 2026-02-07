@@ -2,6 +2,14 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>February 6, 2026</h3>
+    <ul>
+      <li>Fixed Amy's S2 to be a special multiplier, and fixes Seraphic Duet buffs.</li>
+    </ul>
+    <h3>February 5, 2026</h3>
+    <ul>
+      <li>Fixed Amy's team buff selection bug and her buffs and resonance chains for tune rupture, it was incorrectly applying to tune break too</li>
+    </ul>
     <h3>February 4, 2026</h3>
     <ul>
       <li>Aemeath, her sig, 3.1 echoes and sets are available.</li>
