@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>February 8, 2026</h3>
+    <ul>
+      <li>Fixed Camellya's self buff that overwrites Heavy attack to Basic.</li>
+    </ul>
     <h3>February 6, 2026</h3>
     <ul>
       <li>Fixed Amy's S2 to be a special multiplier, and fixes Seraphic Duet buffs.</li>

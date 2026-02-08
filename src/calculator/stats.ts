@@ -764,9 +764,13 @@ export const computeSelfBuffs = (
       if (modifier) {
         modifierStr = `:${modifier}`;
       }
-      data.specificTalentBuffs[`${talent}${modifierStr}`] = 
-        (data.specificTalentBuffs[`${talent}${modifierStr}`] || 0) +
-        (modifierValueCalculated || modifierValue);
+      if (modifier === "talentTypeOverride") {
+        data.specificTalentBuffs[`${talent}${modifierStr}`] = (modifierValueCalculated || modifierValue);
+      } else {
+        data.specificTalentBuffs[`${talent}${modifierStr}`] = 
+          (data.specificTalentBuffs[`${talent}${modifierStr}`] || 0) +
+          (modifierValueCalculated || modifierValue);
+      }
     });
   });
   // final adjustments where needed before surfacing this up
