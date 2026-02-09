@@ -1046,7 +1046,7 @@ export function calcTuneBreak(
   talentModifierMultiply: number = 0,
   specialMultiplier: number = 0,
   bonusDmg: number = 0,
-  critRate: number = 1,
+  critRate: number = 0,
   critDamage: number = 1,
   count: number = 1,
 ): any {
