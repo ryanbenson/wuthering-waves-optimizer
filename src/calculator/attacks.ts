@@ -871,7 +871,7 @@ export const calculateAttackDamage = (
     }
     const tuneBreakDmgBonus = context.buffs.customBuffs?.TuneBreakDMGBonus ?? 0;
     // typically Tune Break cannot crit, but some buffs exist to make it crit
-    let baseCritRate = 1;
+    let baseCritRate = 0;
     let baseCritDmg = 1;
     let totalCritRate;
     let totalCritDmg;
