@@ -60,7 +60,7 @@ Let it knock open every door of denial.`,
       alwaysEnabled: false,
     },
     {
-      key: "DaybreakersSpineBasicDeepen",
+      key: "DaybreakersSpineDefIgnore",
       hasStacks: true,
       modifier: "DEFIgnore:Basic",
       modifierByRefinement: {
