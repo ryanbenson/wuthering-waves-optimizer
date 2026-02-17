@@ -1365,7 +1365,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         ],
         minStacks: 0,
         maxStacks: 0,
-        alwaysEnabled: true,
+        alwaysEnabled: false,
       },
     ],
     details: `Inflicting Fusion Burst or Tune Rupture - Shifting increases the Resonator's Crit. Rate by 20% and grants 20% Fusion DMG Bonus for 8s.`,

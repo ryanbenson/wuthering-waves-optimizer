@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>February 16, 2026</h3>
+    <ul>
+      <li>Fixed Trailblazing Star 5pc set effect, it was always enabled.</li>
+    </ul>
     <h3>February 8, 2026</h3>
     <ul>
       <li>Fixed Camellya's self buff that overwrites Heavy attack to Basic.</li>
