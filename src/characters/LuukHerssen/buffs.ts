@@ -1,70 +1,14 @@
 export const buffs = [
   {
-    key: `Afterflame`,
-    name: `Afterflame`,
-    details: `<div class="skilldescription">While in <span class="ingame-Highlight"><te href="120805">Demon Hypostasis</te></span>, every point of <span class="ingame-Highlight"><te href="120801">Afterflame</te></span> increases the DMG of <span class="ingame-Highlight">Basic Attack - Seraphic Execution</span>, <span class="ingame-Highlight">Heavy Attack - Flamewing Verdict</span>, <span class="ingame-Highlight">Mid-air Attack - Hellsent Barrage</span>, <span class="ingame-Highlight">Resonance Skill - Ravage</span>, and <span class="ingame-Highlight">Dodge Counter - Purgatory Scourge</span> by 1.5%, up to 60%, which is removed upon exiting <span class="ingame-Highlight"><te href="120805">Demon Hypostasis</te></span></div>`,
-    hasStacks: true,
-    modifiers: [
-      {
-        modifier: "specialMultiplier",
-        modifySpecificTalents: [
-          "BasicAttackSeraphicExecutionStage1DMG",
-          "BasicAttackSeraphicExecutionStage2DMG",
-          "BasicAttackSeraphicExecutionStage3DMG",
-          "BasicAttackSeraphicExecutionStage4DMG",
-          "BasicAttackSeraphicExecutionStage5DMG",
-          "HeavyAttackFlamewingVerdictStage1DMG",
-          "HeavyAttackFlamewingVerdictStage2DMG",
-          "HeavyAttackFlamewingVerdictStage3DMG",
-          "MidairAttackHellsentBarragePlungingAttackDMG",
-          "MidairAttackHellsentBarrageSustainedFireDMG",
-          "ResonanceSkillRavageDMG",
-          "DodgeCounterPurgatoryScourgeDMG",
-        ],
-        modifierValue: 0.015,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 40,
-    alwaysEnabled: false,
-  },
-  {
-    key: `BurningDrive`,
-    name: `Burning Drive`,
-    details: `<div class="skilldescription"><span class="ingame-Title">Burning Drive</span></span><br>Casting <span class="ingame-Highlight">Intro Skill</span>, <span class="ingame-Highlight">Hellstride</span>, <span class="ingame-Highlight">Normal Attack - Seraphic Execution Basic Attack Stage 4</span>, <span class="ingame-Highlight">Resonance Skill - Encroach</span>, <span class="ingame-Highlight">Resonance Skill - Ascent of Malice</span>, and <span class="ingame-Highlight">Resonance Skill - Ravage</span> increases Galbrena's resistance to interruptions and ATK by 20% for 4s.</div>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "ATK",
-        modifierValue: 0.2,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: `HellfireAbsolution`,
-    name: `Hellfire Absolution`,
-    details: `<div class="skilldescription">Attack the target and deal <span class="ingame-Fire">Fusion DMG</span>, considered <span class="ingame-Highlight">Echo Skill DMG</span>. Gain 85% DMG Multiplier increase for <span class="ingame-Highlight">Basic Attack - Seraphic Execution</span>, <span class="ingame-Highlight">Heavy Attack - Flamewing Verdict</span>, <span class="ingame-Highlight">Mid-air Attack - Hellsent Barrage</span>, and <span class="ingame-Highlight">Dodge Counter - Purgatory Scourge</span> for 14s while in <span class="ingame-Highlight"><te href="120805">Demon Hypostasis</te></span>.</div>`,
+    key: `AureateJudge`,
+    name: `Aureate Judge`,
+    details: `<div>With full <span class="Highlight" class="font-bold">Ichor Flow</span>, enter the <span class="Highlight" class="font-bold">Aureate Judge</span> state. In this state, Luuk Herssen gains the following effects:<br>- <span class="Highlight" class="font-bold">Ichor Flow</span> does not restore. The DMG Multipliers of all forms of Resonance Skill <span class="Highlight" class="font-bold">Aureole of Execution</span> increase by 110%.</div>`,
     hasStacks: false,
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "BasicAttackSeraphicExecutionStage1DMG",
-          "BasicAttackSeraphicExecutionStage2DMG",
-          "BasicAttackSeraphicExecutionStage3DMG",
-          "BasicAttackSeraphicExecutionStage4DMG",
-          "BasicAttackSeraphicExecutionStage5DMG",
-          "HeavyAttackFlamewingVerdictStage1DMG",
-          "HeavyAttackFlamewingVerdictStage2DMG",
-          "HeavyAttackFlamewingVerdictStage3DMG",
-          "MidairAttackHellsentBarragePlungingAttackDMG",
-          "MidairAttackHellsentBarrageSustainedFireDMG",
-          "DodgeCounterPurgatoryScourgeDMG",
-        ],
-        modifierValue: 0.85,
+        modifySpecificTalents: ["AureoleofExecutionRingDMG", "AureoleofExecutionBreachDMG", "AureoleofExecutionGlareDMG"],
+        modifierValue: 1.1,
       },
     ],
     minStacks: 0,
@@ -72,25 +16,46 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: `InherentSkillOathboundHunt`,
-    name: `Inherent Skill: Oathbound Hunt`,
-    details: `<div>1 stack of <span class="ingame-Highlight">Fated End</span> is inflicted on the target when the following skills hit: <span class="ingame-Highlight">Intro Skill</span>, <span class="ingame-Highlight">Basic Attack</span>, <span class="ingame-Highlight">Basic Attack - Seraphic Execution</span>, <span class="ingame-Highlight">Dodge Counter</span>, <span class="ingame-Highlight">Heavy Attack - Volley of Death</span>, <span class="ingame-Highlight">Heavy Attack - Flamewing Verdict</span>, <span class="ingame-Highlight">Mid-air Attack</span>, <span class="ingame-Highlight">Hellstride</span>, <span class="ingame-Highlight">Resonance Skill - Encroach</span>, <span class="ingame-Highlight">Resonance Skill - Ascent of Malice</span>, <span class="ingame-Highlight">Resonance Skill - Ravage</span> and <span class="ingame-Highlight">Resonance Liberation</span>, up to 4 stacks. Each stack Amplifies the DMG directly dealt by Galbrena's <span class="ingame-Highlight">Normal Attack</span>, <span class="ingame-Highlight">Resonance Skill</span>, <span class="ingame-Highlight">Forte Circuit</span>, <span class="ingame-Highlight">Resonance Liberation</span>, <span class="ingame-Highlight">Intro Skill</span>, and <span class="ingame-Highlight">Outro Skill</span> by 5% for 5.5s. The same type of skill can trigger this effect on the same target once every 5s.<br><span class="ingame-Highlight">Resonance Skill - Encroach</span> and <span class="ingame-Highlight">Resonance Skill - Ravage</span> are considered the same type of skill.</div>`,
-    hasStacks: true,
+    key: `AureateJudgeGavelofEarthshaker`,
+    name: `Aureate Judge - Gavel of Earthshaker`,
+    details: `<div>Casting <span class="Highlight" class="font-bold">Aureole of Execution: Glare</span> increases the DMG Multiplier of the next <span class="Highlight" class="font-bold">Mid-air Attack - Gavel of Earthshaker</span> and <span class="Highlight" class="font-bold">Ichor Deposit</span> DMG by 110%.<br>- 100 points of <span class="Highlight" class="font-bold">Ichor Flow</span> is consumed each time Resonance Skill <span class="Highlight" class="font-bold">Aureole of Execution</span> is cast.<br>- <span class="Highlight" class="font-bold">Aureate Judge</span> ends when <span class="Highlight" class="font-bold">Ichor Flow</span> depletes.</div>`,
+    hasStacks: false,
     modifiers: [
       {
-        // this affects every attack she has, no use listing them all
-        modifier: "DMGDeepen",
-        modifierValue: 0.05,
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["GavelofEarthshakerDMG"],
+        modifierValue: 1.1,
       },
     ],
     minStacks: 0,
-    maxStacks: 4,
+    maxStacks: 0,
     alwaysEnabled: false,
   },
   {
-    key: `InherentSkillSinFeaster`,
-    name: `Inherent Skill: Sin Feaster`,
-    details: `<div>Casting <span class="ingame-Highlight">Basic Attack Stage 4</span>, <span class="ingame-Highlight">Basic Attack - Seraphic Execution Stage 5</span>, <span class="ingame-Highlight">Heavy Attack - Volley of Death Stage 3</span>, and <span class="ingame-Highlight">Heavy Attack - Flamewing Verdict Stage 3</span> recovers 10 points of STA.</div>`,
+    key: `EndnotesontheEndgame`,
+    name: `Endnotes on the Endgame`,
+    details: `<div>Increase the DMG Multiplier of Resonance Liberation <span class="Highlight">Rewritten in Winter's Margins</span> by 25%, stacking up to 3 times. Casting <span class="Highlight">Rewritten in Winter's Margins</span> or switching to another Resonator removes all stacks.</div>`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["RewritteninWintersMargins"],
+        modifierValue: 0.25,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 3,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillPulsesUndertheSnow`,
+    name: `Inherent Skill: Pulses Under the Snow`,
+    details: `<div>When Resonators in the team directly damage and defeat targets, if the targets are affected by Tune Strain - Interfered:<br>
+- If Luuk Herssen has no Perpetuating Daytime, gain stacks of Perpetuating Daytime equal to the stacks of Tune Strain - Interfered.<br>
+- If Luuk Herssen already has Perpetuating Daytime, and the target's stacks of Tune Strain - Interfered exceed the current stacks of Perpetuating Daytime, increase Perpetuating Daytime's stacks to match the target's Tune Strain - Interfered stacks.<br><br><span class="Title">Perpetuating Daytime</span><br>
+- When Resonators in the team casts Tune Break, if the target is affected by Tune Strain - Shifting, Luuk Herssen loses all stacks of Perpetuating Daytime, then apply equal stacks of Tune Strain - Interfered on the target, up to the target's current Tune Strain - Interfered stack cap. Cooldown: 1s.<br>
+Luuk Herssen loses all stacks of Perpetuating Daytime and will not be able to obtain any new stacks when knocked out.<br>
+- Perpetuating Daytime stacks up to 2 times.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -98,14 +63,29 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusCritDMG1",
-    name: "Stat Bonus: Crit. DMG+",
-    details: `<div class="skilldescription">Crit. DMG increased by 2.40%.</div>`,
+    key: `InherentSkillUncausedDiagnosis`,
+    name: `Inherent Skill: Uncaused Diagnosis`,
+    details: `<div>When Luuk Herssen's skills directly damage targets affected by Tune Strain - Interfered, every 10 points of Tune Break Boost he has Amplifies this instance of damage by 5%, up to 30%.</div>`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "DMGDeepen",
+        modifierValue: 0.05,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 6,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillUncausedDiagnosisATK`,
+    name: `Inherent Skill: Uncaused Diagnosis`,
+    details: `<div>After any nearby Resonator in the team inflicts Tune Strain - Shifting on the enemies or deals Tune Break DMG, Luuk Herssen's ATK increases by 25% for 20s.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritDMG",
-        modifierValue: 0.024,
+        modifier: "ATK",
+        modifierValue: 0.25,
       },
     ],
     minStacks: 0,
@@ -113,14 +93,14 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusCritDMG2",
-    name: "Stat Bonus: Crit. DMG+",
-    details: `<div class="skilldescription">Crit. DMG increased by 2.40%.</div>`,
+    key: "StatBonusCritRate1",
+    name: "Stat Bonus: Crit. Rate+",
+    details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritDMG",
-        modifierValue: 0.024,
+        modifier: "CritRate",
+        modifierValue: 0.012,
       },
     ],
     minStacks: 0,
@@ -128,14 +108,14 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusCritDMG3",
-    name: "Stat Bonus: Crit. DMG+",
-    details: `<div class="skilldescription">Crit. DMG increased by 5.60%.</div>`,
+    key: "StatBonusCritRate2",
+    name: "Stat Bonus: Crit. Rate+",
+    details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritDMG",
-        modifierValue: 0.056,
+        modifier: "CritRate",
+        modifierValue: 0.012,
       },
     ],
     minStacks: 0,
@@ -143,14 +123,29 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: "StatBonusCritDMG4",
-    name: "Stat Bonus: Crit. DMG+",
-    details: `<div class="skilldescription">Crit. DMG increased by 5.60%.</div>`,
+    key: "StatBonusCritRate3",
+    name: "Stat Bonus: Crit. Rate+",
+    details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritDMG",
-        modifierValue: 0.056,
+        modifier: "CritRate",
+        modifierValue: 0.028,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritRate4",
+    name: "Stat Bonus: Crit. Rate+",
+    details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.028,
       },
     ],
     minStacks: 0,
