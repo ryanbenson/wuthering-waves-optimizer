@@ -16,9 +16,9 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div
-            v-if="false"
+            v-if="true"
             class="alert alert-success mb-6 text-white p-2 px-4">
-            Aemeath, her sig, and 3.1 echos and sets are now available
+            Luuk and his sig are available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
