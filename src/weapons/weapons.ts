@@ -129,6 +129,7 @@ const gauntletsList = {
   five: [
     { key: "AbyssSurges", name: "Abyss Surges" },
     { key: "BlazingJustice", name: "Blazing Justice" },
+    { key: "DaybreakersSpine", name: "Daybreaker's Spine" },
     { key: "MoongazersSigil", name: "Moongazer's Sigil" },
     { key: "PulsationBracer", name: "Pulsation Bracer" },
     { key: "Tragicomedy", name: "Tragicomedy" },

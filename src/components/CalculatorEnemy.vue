@@ -65,7 +65,7 @@
         id="strainStacks"
         type="range"
         min="0"
-        max="4"
+        max="6"
         step="1"
         class="range range-xs"
         :class="rangeClasses"

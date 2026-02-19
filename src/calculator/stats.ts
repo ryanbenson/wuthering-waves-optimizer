@@ -677,6 +677,37 @@ export const computeSelfBuffs = (
         ];
       }
     }
+    if (character === "LuukHerssen" && key === "InherentSkillUncausedDiagnosis") {
+      if (
+        resonanceChainsConfig?.SequenceNode2AvalancheRoaringinEyes
+          ?.isEnabled
+      ) {
+        modifiers = [
+          {
+            modifier: "DMGDeepen",
+            modifierValue: 0.1,
+          },
+        ];
+      }
+    }
+    if (character === "LuukHerssen" && key === "EndnotesontheEndgame") {
+      if (
+        resonanceChainsConfig?.SequenceNode6DawnUnfurlingoverFrostlands
+          ?.isEnabled
+      ) {
+        modifiers = [
+          {
+            modifier: "talentModifierMultiply",
+            modifySpecificTalents: ["RewritteninWintersMargins"],
+            modifierValue: 0.25,
+          },
+          {
+            modifySpecificTalents: ["RewritteninWintersMargins"],
+            modifierValue: 0.4,
+          },
+        ];
+      }
+    }
     if (buff.hasStacks) {
       if (buffData?.stacks <= 0) {
         continue;
