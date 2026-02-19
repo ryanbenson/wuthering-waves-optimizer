@@ -6,5 +6,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     avatarUrl: "LuukHerrsen.png",
     gender: "male",
     element: "Spectro",
+    tuneBreakBoost: 0.1, // use decimal since this rolls into buff calc
   };
 }

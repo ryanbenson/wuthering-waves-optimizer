@@ -1810,6 +1810,23 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  LuukHerssen: [
+    {
+      key: "SequenceNode4PulseThrummingUnderRime",
+      name: "Sequence Node 4: Pulse Thrumming Under Rime",
+      details: `<div>After a Resonator in the team deals Tune Break DMG, all Resonators in the team deal 20% more DMG for 20s. This effect is unstackable.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGBonus",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
