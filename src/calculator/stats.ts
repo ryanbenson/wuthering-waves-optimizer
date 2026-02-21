@@ -632,6 +632,42 @@ export const computeSelfBuffs = (
       }
     }
     /**
+     * Aemeath: if s2 is enabled, we can just overwrite the existing modifiers
+     */
+    if (character === "Aemeath" && key === "StardustResonance") {
+      if (
+        resonanceChainsConfig?.SequenceNode2DownyNotesofSnowfluffFusionBurst
+          ?.isEnabled
+      ) {
+        // overwrite the modifiers
+        modifiers = [
+          {
+            modifier: "talentModifierMultiply",
+            modifySpecificTalents: ["ElementalEffectFusionBurst"],
+            modifierValue: 4,
+          },
+        ];
+      }
+    }
+    /**
+     * Aemeath: if s2 is enabled, we can just overwrite the existing modifiers
+     */
+    if (character === "Aemeath" && key === "SeraphicDuetFusionBurst") {
+      if (
+        resonanceChainsConfig?.SequenceNode2DownyNotesofSnowfluffFusionBurst
+          ?.isEnabled
+      ) {
+        // overwrite the modifiers
+        modifiers = [
+          {
+            modifier: "talentModifierMultiply",
+            modifySpecificTalents: ["ElementalEffectFusionBurst"],
+            modifierValue: 0.15,
+          },
+        ];
+      }
+    }
+    /**
      * Aemeath: if s3 is enabled, we can just overwrite the existing modifiers
      * her s3 removes the need for stacks to get the max buffs
      */

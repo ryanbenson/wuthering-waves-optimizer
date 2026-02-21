@@ -199,6 +199,31 @@
         data-test-enemy-havoc-bane-input />
     </div>
   </div>
+  <div 
+    v-if="isFusionBurstEnabled"
+    class="data-input--talents mt-8" data-test-enemy-fusion-burst
+  >
+    <div class="flex flex-col pb-7 relative">
+      <label
+        for="havocBane"
+        class="talent__label"
+        data-test-enemy-fusion-burst-label>
+        Fusion Burst Stacks
+        <span class="text-primary">{{ fusionBurstStacks }}</span>
+      </label>
+      <input
+        v-model="fusionBurstStacks"
+        name="fusionBurstStacks"
+        id="fusionBurstStacks"
+        type="range"
+        min="0"
+        max="13"
+        step="1"
+        class="range range-xs"
+        :class="rangeClasses"
+        data-test-enemy-fusion-burst-input />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -220,6 +245,10 @@ export default {
       default: false,
     },
     isHavocBaneEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    isFusionBurstEnabled: {
       type: Boolean,
       default: false,
     },
@@ -256,6 +285,7 @@ export default {
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
           strainStacks: this.strainStacks,
+          fusionBurstStacks: this.fusionBurstStacks,
         });
       },
       immediate: true,
@@ -274,6 +304,7 @@ export default {
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
           strainStacks: this.strainStacks,
+          fusionBurstStacks: this.fusionBurstStacks,
         });
       },
       immediate: true,
@@ -292,6 +323,7 @@ export default {
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
           strainStacks: this.strainStacks,
+          fusionBurstStacks: this.fusionBurstStacks,
         });
       },
       immediate: true,
@@ -310,6 +342,7 @@ export default {
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
           strainStacks: this.strainStacks,
+          fusionBurstStacks: this.fusionBurstStacks,
         });
       },
       immediate: true,
@@ -328,6 +361,7 @@ export default {
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
           strainStacks: this.strainStacks,
+          fusionBurstStacks: this.fusionBurstStacks,
         });
       },
       immediate: true,
@@ -346,6 +380,26 @@ export default {
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
           strainStacks: this.strainStacks,
+          fusionBurstStacks: this.fusionBurstStacks,
+        });
+      },
+      immediate: true,
+    },
+    fusionBurstStacks: {
+      /**
+       * Emits the buff data in its proper format
+       * @emits updated-enemy
+       */
+      handler: async function () {
+        this.$emit("updated-enemy-data", {
+          enemyLevel: this.enemyLevel,
+          enemyResist: this.enemyResist,
+          enemyType: this.enemyType,
+          spectroFrazzleStacks: this.spectroFrazzleStacks,
+          aeroErosionStacks: this.aeroErosionStacks,
+          havocBaneStacks: this.havocBaneStacks,
+          strainStacks: this.strainStacks,
+          fusionBurstStacks: this.fusionBurstStacks,
         });
       },
       immediate: true,
@@ -364,6 +418,7 @@ export default {
           aeroErosionStacks: this.aeroErosionStacks,
           havocBaneStacks: this.havocBaneStacks,
           strainStacks: this.strainStacks,
+          fusionBurstStacks: this.fusionBurstStacks,
         });
       },
       immediate: true,
@@ -482,6 +537,21 @@ export default {
       async set(value) {
         const data = {
           havocBaneStacks: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the number of fusion burst stacks
+     * Data is persisted in the store. Avoids needing a local data + store data
+     */
+    fusionBurstStacks: {
+      get() {
+        return this.currentCharacter?.fusionBurstStacks ?? 0;
+      },
+      async set(value) {
+        const data = {
+          fusionBurstStacks: value,
         };
         await this.setCharacterData(this.character, data);
       },

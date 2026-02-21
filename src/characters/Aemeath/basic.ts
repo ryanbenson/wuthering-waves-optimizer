@@ -7,5 +7,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     gender: "female",
     element: "Fusion",
     tuneBreakBoost: 0.1, // use decimal since this rolls into buff calc
+    fusionBurst: true,
   };
 }

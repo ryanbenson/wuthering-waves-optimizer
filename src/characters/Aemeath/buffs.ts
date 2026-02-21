@@ -21,7 +21,11 @@ export const buffs = [
     details: `<div>In <span class="Highlight">Resonance Mode - Fusion Burst</span>, when Resonance Skill <span class="Highlight">Seraphic Duet</span> hits the target, if they are inflicted with <span class="Highlight">Fusion Trail</span>, remove the <span class="Highlight">Fusion Trail</span> stacks, and trigger the <span class="Highlight">Fusion Burst</span> on the target based on its max stack limit without removing its stacks. Each stack of <span class="Highlight">Fusion Trail</span> removed increases the DMG Multiplier of <span class="Highlight">Fusion Burst</span> on the main target by 10%.</div>`,
     hasStacks: true,
     modifiers: [
-      // TODO: Implement when we add Fusion Burst
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["ElementalEffectFusionBurst"],
+        modifierValue: 0.1,
+      },
     ],
     minStacks: 0,
     maxStacks: 30,
@@ -31,12 +35,16 @@ export const buffs = [
     key: `StardustResonance`,
     name: `Stardust Resonance`,
     details: `<div>- In <span class="Highlight">Resonance Mode - Fusion Burst</span>, the DMG Multiplier of <span class="Highlight">Fusion Burst</span> triggered by Resonance Skill <span class="Highlight">Seraphic Duet</span> on the main target is additionally increased by 200%. The DMG Multiplier increase effect is stackable with that provided by <span class="Highlight">Fusion Trail</span>.</div>`,
-    hasStacks: true,
+    hasStacks: false,
     modifiers: [
-      // TODO: Implement when we add Fusion Burst
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: ["ElementalEffectFusionBurst"],
+        modifierValue: 2,
+      },
     ],
     minStacks: 0,
-    maxStacks: 30,
+    maxStacks: 0,
     alwaysEnabled: false,
   },
   {

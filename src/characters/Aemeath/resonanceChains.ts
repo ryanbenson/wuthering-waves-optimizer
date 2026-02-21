@@ -60,12 +60,12 @@ The DMG Multiplier of Resonance Skill <span class="Highlight">Seraphic Duet: Enc
 - In the <span class="Highlight">Stardust Resonance</span> state, the DMG Multiplier of <span class="Highlight">Fusion Burst</span> triggered by Resonance Skill <span class="Highlight">Seraphic Duet</span> is further increased to 400% against the main target of the <span class="Highlight">Fusion Burst</span>.
 - When <span class="Highlight">Fusion Trail</span> is removed, the DMG Multiplier of <span class="Highlight">Fusion Burst</span> triggered by Resonance Skill <span class="Highlight">Seraphic Duet</span> is further increased to 15% against the main target of the <span class="Highlight">Fusion Burst</span> per <span class="Highlight">Fusion Trail</span> stack.
 - In combat state, when a target near the active Resonator in the team is defeated, immediately trigger the <span class="Highlight">Fusion Burst</span> based on the current stack limit of <span class="Highlight">Fusion Burst</span> on the target.</div>`,
-    hasStacks: true,
+    hasStacks: false,
     modifiers: [
       // TODO: Implement when fusion burst is implemented
     ],
     minStacks: 0,
-    maxStacks: 10,
+    maxStacks: 0,
     alwaysEnabled: false,
   },
   {
@@ -174,7 +174,16 @@ In <span class="Highlight">Resonance Mode - Tune Rupture</span> or <span class="
     details: `<div>When in <span class="Highlight">Resonance Mode - Fusion Burst</span> and in combat state, <span class="Highlight">Fusion Burst DMG</span> triggered on targets near the active Resonator in the team can critically hit, with a fixed Crit. Rate of 80%, and fixed Crit. DMG of 275%.</div>`,
     hasStacks: false,
     modifiers: [
-      // TODO: Implement when we add fusion burst
+      {
+        modifier: "CritRate",
+        modifySpecificTalents: ["ElementalEffectFusionBurst"],
+        modifierValue: 0.8,
+      },
+      {
+        modifier: "CritDMG",
+        modifySpecificTalents: ["ElementalEffectFusionBurst"],
+        modifierValue: 1.75, // you get 275% from the buff, but it's SET to 275%, but we have 100% base to help with the normal calc, so making it BUFF 175 to make it total 275%
+      },
     ],
     minStacks: 0,
     maxStacks: 0,
