@@ -1047,7 +1047,7 @@ export const calculateAttackDamage = (
     totalCritDmg = baseCritDmg + critDmgResoanceChains;
     if (attack?.subType === "FusionBurst") {
       const elementalEffectDmg = getFusionBurstDamage(
-        String(context.enemy.enemyLevel),
+        String(context.character.characterLevel),
         context.enemy.enemyLevel,
         context.enemy.enemyResist,
         totalResistReduction,
