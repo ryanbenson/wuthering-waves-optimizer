@@ -10,6 +10,7 @@ import {
   calcMidnightVeilDMG,
   getSpectroFrazzleDamage,
   getAeroErosionDamage,
+  getFusionBurstDamage,
   calcHeal,
   calcDamage,
   calcShield,
@@ -1000,6 +1001,69 @@ export const calculateAttackDamage = (
     return elementalEffectDmg;
   }
 
+  if (
+    attackType === "ElementalEffect" &&
+    attack?.subType === "FusionBurst"
+  ) {
+    let totalDeepen = 0;
+    // get any SpectroFrazzle dmg deepen/amplify
+    // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
+    let deepenWeaponBuffs =
+      context.equipment.weapon.weaponPassiveStats?.[
+        "DMGDeepen:FusionBurst"
+      ] ?? 0;
+    if (excludeWeaponBuffs) {
+      deepenWeaponBuffs = 0;
+    }
+    let deepenTeamBuffs =
+      context.buffs.teamBuffsData?.["DMGDeepen:FusionBurst"] ?? 0;
+    if (excludeTeamBuffs) {
+      deepenTeamBuffs = 0;
+    }
+    const deepenSelfBuffs =
+      selfBuffs?.["DMGDeepen:FusionBurst"] ?? 0;
+    const deepenResonanceChains =
+      context.buffs.charResonanceChainsData?.["DMGDeepen:FusionBurst"] ?? 0;
+    totalDeepen =
+      deepenWeaponBuffs +
+      deepenTeamBuffs +
+      deepenSelfBuffs +
+      deepenResonanceChains;
+    // typically Tune Break cannot crit, but some buffs exist to make it crit
+    let baseCritRate = 0;
+    let baseCritDmg = 1;
+    let totalCritRate;
+    let totalCritDmg;
+    // so far it's resonance chains that affect Tune Break CR/CD
+    const critRateResoanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritRate`
+      ] ?? 0;
+    const critDmgResoanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritDMG`
+      ] ?? 0;
+    totalCritRate = baseCritRate + critRateResoanceChains;
+    totalCritDmg = baseCritDmg + critDmgResoanceChains;
+    if (attack?.subType === "FusionBurst") {
+      const elementalEffectDmg = getFusionBurstDamage(
+        String(context.enemy.enemyLevel),
+        context.enemy.enemyLevel,
+        context.enemy.enemyResist,
+        totalResistReduction,
+        totalDefIgnore,
+        totalDefReduction,
+        totalTalentModifierMultiply,
+        totalDeepen,
+        totalCritRate,
+        totalCritDmg,
+        attack?.count ?? 1,
+        attack?.stacks ?? 0,
+      );
+      return elementalEffectDmg;
+    }
+  }
+
   if (attackType === "Healing") {
     // apply any attack-level healing bonuses
     if (attack?.buffs) {
@@ -1331,6 +1395,23 @@ export const calcDamages = (context: CalculationContext) => {
       elementalReactionsAttacks.push(aeroErosionAttack);
     }
   }
+  if (
+    context.enemy.fusionBurst.isFusionBurstEnabled &&
+    context.enemy.fusionBurst.fusionBurstStacks > 0
+  ) {
+      // @ts-ignore
+    const fusionBurstAttack = {
+      key: "ElementalEffectFusionBurst",
+      label: "Fusion Burst",
+      talent: "",
+      type: "ElementalEffect",
+      element: "Fusion",
+      subType: "FusionBurst",
+      stacks: context.enemy.fusionBurst.fusionBurstStacks,
+    };
+    // @ts-ignore
+    elementalReactionsAttacks.push(fusionBurstAttack);
+  }
   if (elementalReactionsAttacks.length > 0) {
     allDamagesData.elementalReactions = processAttacks(
       elementalReactionsAttacks,
@@ -1514,6 +1595,10 @@ interface CalculationContext {
       isAeroErosionEnabled: boolean;
       aeroErosionStacks: number;
     };
+    fusionBurst: {
+      isFusionBurstEnabled: boolean;
+      fusionBurstStacks: number;
+    };
     havocBane: {
       havocBaneStacks: number;
     };
@@ -1537,6 +1622,8 @@ export const getCalculationContext = (
   spectroFrazzleStacks: any = 0,
   isAeroErosionEnabled: any = false,
   aeroErosionStacks: any = 0,
+  isFusionBurstEnabled: any = false,
+  fusionBurstStacks: any = 0,
   characterLevel: any = 0,
   mainEcho: any = {},
   mainEchoRank: any = 5,
@@ -1661,6 +1748,10 @@ export const getCalculationContext = (
       aeroErosion: {
         isAeroErosionEnabled,
         aeroErosionStacks,
+      },
+      fusionBurst: {
+        isFusionBurstEnabled,
+        fusionBurstStacks,
       },
       havocBane: {
         havocBaneStacks,

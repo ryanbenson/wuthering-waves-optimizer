@@ -1212,13 +1212,107 @@ export function getTuneBreakEnemyTypeMultiplier(enemyType: string): number {
   return enemyTypeMultiplier?.[enemyType] ?? 14;
 }
 
-// export function getTuneBreakAmpByCharWeapon(weaponType: string): string {
-//   const enemyTypeMultiplier: Record<string, string> = {
-//     Broadblades: "204.048% + 156.096% + 1080.00%",
-//     Gauntlets: "1440.00%",
-//     Pistols: "1440.00%",
-//     Rectifiers: "1440.00%",
-//     Swords: "90.00%*4 + 1080.00%",
-//   };
-//   return enemyTypeMultiplier?.[weaponType] ?? "1440.00%";
-// }
+export function getFusionBurstDamage(
+  charLevel: string,
+  enemyLevel: number,
+  enemyResist: number,
+  resistenceReduction: number,
+  defIgnore: number = 0,
+  defReduction: number = 0,
+  talentModifierMultiply: number = 0,
+  totalDeepenEffect: number = 0,
+  critRate: number = 0,
+  critDamage: number = 1,
+  count: number = 1,
+  stacks: number = 1,
+): any {
+  const characterLevel = parseInt(charLevel.replace("+", ""), 10);
+  const defenseModifier = getDefenseModifier(
+    charLevel,
+    enemyLevel,
+    defIgnore,
+    defReduction,
+  );
+  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
+  const levelConstant = getNegativeStatusLevelConstant(characterLevel);
+  const motionValue = getFusionBurstMotionValueByStacks(stacks);
+  // LVLconstant x (MV ÷ 10000) × DEFmul × RESmul × (1 + amp%)
+  const baseDamage =
+    levelConstant *
+    (motionValue / 10000) *
+    (1 + talentModifierMultiply) *
+    defenseModifier *
+    resistModifier *
+    (1 + totalDeepenEffect);
+  const finalDamage = baseDamage * count;
+  const finalDamageCrit = calcCritDamage(finalDamage, critDamage);
+  const finalDamageAverage = calcAvgDamage(finalDamage, critRate, critDamage);
+  const breakdownCountStr = count > 1 ? `${count} x ` : '';
+  let detailedCalculation = `${breakdownCountStr}${baseDamage}`;
+  let detailedCalculationCrit = `${breakdownCountStr}${baseDamage}`;
+  let detailedCalculationAverage = `${breakdownCountStr}${baseDamage}`;
+
+  return {
+    totalDamage: finalDamage,
+    critDamage: finalDamageCrit,
+    avgDamage: finalDamageAverage,
+    detailedCalculation,
+    detailedCalculationCrit: detailedCalculationCrit,
+    detailedCalculationAvg: detailedCalculationAverage,
+    totalDamageContext: {
+      type: "fusionBurst",
+      charLevel,
+      enemyLevel,
+      enemyResist,
+      resistenceReduction,
+      defIgnore,
+      defReduction,
+      count,
+      defenseModifier,
+      resistModifier,
+      talentModifierMultiply,
+      totalDeepenEffect,
+      critRate,
+      critDamage,
+      baseDamage,
+      finalDamage,
+      levelConstant,
+      motionValue,
+      stacks,
+    },
+  };
+}
+
+export function getNegativeStatusLevelConstant(charLevel: number): number {
+  const levelConstantMap: Record<string, number> = {
+    "1": 11,
+    "20": 24,
+    "40": 85,
+    "50": 229,
+    "60": 380,
+    "70": 1005,
+    "80": 2005,
+    "90": 3674,
+    "100": 4082,
+  };
+  return levelConstantMap?.[charLevel] ?? levelConstantMap["90"];
+}
+
+export function getFusionBurstMotionValueByStacks(stacks: number): number {
+  const motionValueByStacksMap: Record<string, number> = {
+    "1": 8400,
+    "2": 15229,
+    "3": 22058,
+    "4": 28888, 
+    "5": 35717,
+    "6": 42546,
+    "7": 49375,
+    "8": 56204,
+    "9": 63034,
+    "10": 69863,
+    "11": 93150,
+    "12": 116438,
+    "13": 139726,
+  }
+  return motionValueByStacksMap?.[stacks] ?? motionValueByStacksMap["13"];
+}

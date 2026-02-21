@@ -140,6 +140,8 @@ export interface OptimizerContext {
   spectroFrazzleStacks: number;
   isAeroErosionEnabled: boolean;
   aeroErosionStacks: number;
+  isFusionBurstEnabled: boolean;
+  fusionBurstStacks: number;
   havocBaneStacks: number;
   strainStacks: number;
 
@@ -618,6 +620,8 @@ export function optimize(
         context.spectroFrazzleStacks,
         context.isAeroErosionEnabled,
         context.aeroErosionStacks,
+        context.isFusionBurstEnabled,
+        context.fusionBurstStacks,
         context.characterLevel,
         context.mainEcho,
         context.mainEchoRank,
@@ -708,6 +712,8 @@ export function optimize(
         context.spectroFrazzleStacks,
         context.isAeroErosionEnabled,
         context.aeroErosionStacks,
+        context.isFusionBurstEnabled,
+        context.fusionBurstStacks,
         context.characterLevel,
         context.mainEcho,
         context.mainEchoRank,
