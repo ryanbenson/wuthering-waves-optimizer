@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>February 21, 2026</h3>
+    <ul>
+      <li>Adds Fusion Burst damages with breakdown.</li>
+    </ul>
     <h3>February 18, 2026</h3>
     <ul>
       <li>Luuk and his sig are now available.</li>
