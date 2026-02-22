@@ -129,7 +129,8 @@
           :is-spectro-frazzle-enabled="isSpectroFrazzleEnabled"
           :is-aero-erosion-enabled="isAeroErosionEnabled"
           :is-havoc-bane-enabled="isHavocBaneEnabled"
-          :is-fusion-burst-enabled="isFusionBurstEnabled"></CalculatorEnemy>
+          :is-fusion-burst-enabled="isFusionBurstEnabled"
+          :is-electro-flare-enabled="isElectroFlareEnabled"></CalculatorEnemy>
       </div>
       <div class="screen--results" v-show="curScreen === 'results'">
         <CalculatorStats
@@ -436,9 +437,11 @@ export default defineComponent({
     const isAeroErosionEnabled = ref(false);
     const isHavocBaneEnabled = ref(false);
     const isFusionBurstEnabled = ref(false);
+    const isElectroFlareEnabled = ref(false);
     const havocBaneStacks = ref(0);
     const aeroErosionStacks = ref(0);
     const fusionBurstStacks = ref(0);
+    const electroFlareStacks = ref(0);
     const strainStacks = ref(0);
     const isMissingAeroErosionData = ref(false);
     // component refs
@@ -479,6 +482,7 @@ export default defineComponent({
         chosenChar?.value?.basic?.aeroErosion ?? false;
       isHavocBaneEnabled.value = chosenChar?.value?.basic?.havocBane ?? false;
       isFusionBurstEnabled.value = chosenChar?.value?.basic?.fusionBurst ?? false;
+      isElectroFlareEnabled.value = chosenChar?.value?.basic?.electroFlare ?? false;
       // hold onto the character's main element
       characterElement.value = chosenChar.value?.basic?.element;
       // update the base stats
@@ -519,6 +523,8 @@ export default defineComponent({
         aeroErosionStacks.value,
         isFusionBurstEnabled.value,
         fusionBurstStacks.value,
+        isElectroFlareEnabled.value,
+        electroFlareStacks.value,
         characterLevel.value,
         mainEcho.value,
         mainEchoRank.value,
@@ -767,6 +773,7 @@ export default defineComponent({
       aeroErosionStacks.value = data.aeroErosionStacks;
       havocBaneStacks.value = data.havocBaneStacks;
       fusionBurstStacks.value = data.fusionBurstStacks;
+      electroFlareStacks.value = data.electroFlareStacks;
       strainStacks.value = data.strainStacks;
       calcAllDamages();
     };
@@ -984,6 +991,8 @@ export default defineComponent({
         havocBaneStacks: havocBaneStacks.value,
         isFusionBurstEnabled: isFusionBurstEnabled.value,
         fusionBurstStacks: fusionBurstStacks.value,
+        isElectroFlareEnabled: isElectroFlareEnabled.value,
+        electroFlareStacks: electroFlareStacks.value,
         strainStacks: strainStacks.value,
 
         // Main echo
@@ -1235,6 +1244,8 @@ export default defineComponent({
           havocBaneStacks: context.havocBaneStacks,
           isFusionBurstEnabled: context.isFusionBurstEnabled,
           fusionBurstStacks: context.fusionBurstStacks,
+          isElectroFlareEnabled: context.isElectroFlareEnabled,
+          electroFlareStacks: context.electroFlareStacks,
           mainEcho: context.mainEcho,
           mainEchoRank: context.mainEchoRank,
           rotationsList: JSON.parse(JSON.stringify(context.rotationsList)),
@@ -1655,6 +1666,7 @@ export default defineComponent({
       isMissingAeroErosionData,
       isHavocBaneEnabled,
       isFusionBurstEnabled,
+      isElectroFlareEnabled,
       // component refs
       characterBuffsRef,
       // optimizer stuff

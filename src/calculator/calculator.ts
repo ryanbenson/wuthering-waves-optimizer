@@ -1248,9 +1248,9 @@ export function getFusionBurstDamage(
   const finalDamageCrit = calcCritDamage(finalDamage, critDamage);
   const finalDamageAverage = calcAvgDamage(finalDamage, critRate, critDamage);
   const breakdownCountStr = count > 1 ? `${count} x ` : '';
-  let detailedCalculation = `${breakdownCountStr}${baseDamage}`;
-  let detailedCalculationCrit = `${breakdownCountStr}${baseDamage}`;
-  let detailedCalculationAverage = `${breakdownCountStr}${baseDamage}`;
+  let detailedCalculation = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
+  let detailedCalculationCrit = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
+  let detailedCalculationAverage = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
 
   return {
     totalDamage: finalDamage,
@@ -1261,6 +1261,77 @@ export function getFusionBurstDamage(
     detailedCalculationAvg: detailedCalculationAverage,
     totalDamageContext: {
       type: "fusionBurst",
+      charLevel,
+      enemyLevel,
+      enemyResist,
+      resistenceReduction,
+      defIgnore,
+      defReduction,
+      count,
+      defenseModifier,
+      resistModifier,
+      talentModifierMultiply,
+      totalDeepenEffect,
+      critRate,
+      critDamage,
+      baseDamage,
+      finalDamage,
+      levelConstant,
+      motionValue,
+      stacks,
+    },
+  };
+}
+
+export function getElectroFlareDamage(
+  charLevel: string,
+  enemyLevel: number,
+  enemyResist: number,
+  resistenceReduction: number,
+  defIgnore: number = 0,
+  defReduction: number = 0,
+  talentModifierMultiply: number = 0,
+  totalDeepenEffect: number = 0,
+  critRate: number = 0,
+  critDamage: number = 1,
+  count: number = 1,
+  stacks: number = 1,
+): any {
+  const characterLevel = parseInt(charLevel.replace("+", ""), 10);
+  const defenseModifier = getDefenseModifier(
+    charLevel,
+    enemyLevel,
+    defIgnore,
+    defReduction,
+  );
+  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
+  const levelConstant = getNegativeStatusLevelConstant(characterLevel);
+  const motionValue = getElectroFlareMotionValueByStacks(stacks);
+  // LVLconstant x (MV ÷ 10000) × DEFmul × RESmul × (1 + amp%)
+  const baseDamage =
+    levelConstant *
+    (motionValue / 10000) *
+    (1 + talentModifierMultiply) *
+    defenseModifier *
+    resistModifier *
+    (1 + totalDeepenEffect);
+  const finalDamage = baseDamage * count;
+  const finalDamageCrit = calcCritDamage(finalDamage, critDamage);
+  const finalDamageAverage = calcAvgDamage(finalDamage, critRate, critDamage);
+  const breakdownCountStr = count > 1 ? `${count} x ` : '';
+  let detailedCalculation = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
+  let detailedCalculationCrit = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
+  let detailedCalculationAverage = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
+
+  return {
+    totalDamage: finalDamage,
+    critDamage: finalDamageCrit,
+    avgDamage: finalDamageAverage,
+    detailedCalculation,
+    detailedCalculationCrit: detailedCalculationCrit,
+    detailedCalculationAvg: detailedCalculationAverage,
+    totalDamageContext: {
+      type: "electroFlare",
       charLevel,
       enemyLevel,
       enemyResist,
@@ -1313,6 +1384,25 @@ export function getFusionBurstMotionValueByStacks(stacks: number): number {
     "11": 93150,
     "12": 116438,
     "13": 139726,
+  }
+  return motionValueByStacksMap?.[stacks] ?? motionValueByStacksMap["13"];
+}
+
+export function getElectroFlareMotionValueByStacks(stacks: number): number {
+  const motionValueByStacksMap: Record<string, number> = {
+    "1": 5000,
+    "2": 9065,
+    "3": 13130,
+    "4": 17195, 
+    "5": 21260,
+    "6": 25325,
+    "7": 29390,
+    "8": 33455,
+    "9": 37520,
+    "10": 41585,
+    "11": 55447,
+    "12": 69308,
+    "13": 83170,
   }
   return motionValueByStacksMap?.[stacks] ?? motionValueByStacksMap["13"];
 }

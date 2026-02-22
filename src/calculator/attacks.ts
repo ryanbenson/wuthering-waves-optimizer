@@ -11,6 +11,7 @@ import {
   getSpectroFrazzleDamage,
   getAeroErosionDamage,
   getFusionBurstDamage,
+  getElectroFlareDamage,
   calcHeal,
   calcDamage,
   calcShield,
@@ -1003,6 +1004,69 @@ export const calculateAttackDamage = (
 
   if (
     attackType === "ElementalEffect" &&
+    attack?.subType === "ElectroFlare"
+  ) {
+    let totalDeepen = 0;
+    // get any SpectroFrazzle dmg deepen/amplify
+    // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
+    let deepenWeaponBuffs =
+      context.equipment.weapon.weaponPassiveStats?.[
+        "DMGDeepen:ElectroFlare"
+      ] ?? 0;
+    if (excludeWeaponBuffs) {
+      deepenWeaponBuffs = 0;
+    }
+    let deepenTeamBuffs =
+      context.buffs.teamBuffsData?.["DMGDeepen:ElectroFlare"] ?? 0;
+    if (excludeTeamBuffs) {
+      deepenTeamBuffs = 0;
+    }
+    const deepenSelfBuffs =
+      selfBuffs?.["DMGDeepen:ElectroFlare"] ?? 0;
+    const deepenResonanceChains =
+      context.buffs.charResonanceChainsData?.["DMGDeepen:ElectroFlare"] ?? 0;
+    totalDeepen =
+      deepenWeaponBuffs +
+      deepenTeamBuffs +
+      deepenSelfBuffs +
+      deepenResonanceChains;
+    // typically Tune Break cannot crit, but some buffs exist to make it crit
+    let baseCritRate = 0;
+    let baseCritDmg = 1;
+    let totalCritRate;
+    let totalCritDmg;
+    // so far it's resonance chains that affect Tune Break CR/CD
+    const critRateResoanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritRate`
+      ] ?? 0;
+    const critDmgResoanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritDMG`
+      ] ?? 0;
+    totalCritRate = baseCritRate + critRateResoanceChains;
+    totalCritDmg = baseCritDmg + critDmgResoanceChains;
+    if (attack?.subType === "ElectroFlare") {
+      const elementalEffectDmg = getElectroFlareDamage(
+        String(context.character.characterLevel),
+        context.enemy.enemyLevel,
+        context.enemy.enemyResist,
+        totalResistReduction,
+        totalDefIgnore,
+        totalDefReduction,
+        totalTalentModifierMultiply,
+        totalDeepen,
+        totalCritRate,
+        totalCritDmg,
+        attack?.count ?? 1,
+        attack?.stacks ?? 0,
+      );
+      return elementalEffectDmg;
+    }
+  }
+
+  if (
+    attackType === "ElementalEffect" &&
     attack?.subType === "FusionBurst"
   ) {
     let totalDeepen = 0;
@@ -1412,6 +1476,23 @@ export const calcDamages = (context: CalculationContext) => {
     // @ts-ignore
     elementalReactionsAttacks.push(fusionBurstAttack);
   }
+  if (
+    context.enemy.electroFlare.isElectroFlareEnabled &&
+    context.enemy.electroFlare.electroFlareStacks > 0
+  ) {
+      // @ts-ignore
+    const attack = {
+      key: "ElementalEffectElectroFlare",
+      label: "Electro Flare",
+      talent: "",
+      type: "ElementalEffect",
+      element: "Electro",
+      subType: "ElectroFlare",
+      stacks: context.enemy.electroFlare.electroFlareStacks,
+    };
+    // @ts-ignore
+    elementalReactionsAttacks.push(attack);
+  }
   if (elementalReactionsAttacks.length > 0) {
     allDamagesData.elementalReactions = processAttacks(
       elementalReactionsAttacks,
@@ -1599,6 +1680,10 @@ interface CalculationContext {
       isFusionBurstEnabled: boolean;
       fusionBurstStacks: number;
     };
+    electroFlare: {
+      isElectroFlareEnabled: boolean;
+      electroFlareStacks: number;
+    };
     havocBane: {
       havocBaneStacks: number;
     };
@@ -1624,6 +1709,8 @@ export const getCalculationContext = (
   aeroErosionStacks: any = 0,
   isFusionBurstEnabled: any = false,
   fusionBurstStacks: any = 0,
+  isElectroFlareEnabled: any = false,
+  electroFlareStacks: any = 0,
   characterLevel: any = 0,
   mainEcho: any = {},
   mainEchoRank: any = 5,
@@ -1752,6 +1839,10 @@ export const getCalculationContext = (
       fusionBurst: {
         isFusionBurstEnabled,
         fusionBurstStacks,
+      },
+      electroFlare: {
+        isElectroFlareEnabled,
+        electroFlareStacks,
       },
       havocBane: {
         havocBaneStacks,

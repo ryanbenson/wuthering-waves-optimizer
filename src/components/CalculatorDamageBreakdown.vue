@@ -1191,7 +1191,7 @@
       </div>
     </div>
     <div
-      v-if="damage.totalDamageContext.type === 'fusionBurst'"
+      v-if="damage.totalDamageContext.type === 'fusionBurst' || damage.totalDamageContext.type === 'electroFlare'"
       class="damage-breakdown--fusionBurst">
       <div class="formula bg-base-200 p-2 rounded-md font-mono">
         <span class="font-bold text-secondary">

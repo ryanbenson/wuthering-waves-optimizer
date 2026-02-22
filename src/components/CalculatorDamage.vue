@@ -55,7 +55,7 @@
         {{ displayDamage(damage.shieldAmount) }}
       </td>
     </template>
-    <template v-else-if="type === 'ElementalEffect' && label !== 'Fusion Burst'">
+    <template v-else-if="type === 'ElementalEffect' && label !== 'Fusion Burst' && label !== 'Electro Flare'">
       <td class="flex items-center gap-2">
         <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
           :class="{
