@@ -1,5 +1,6 @@
 import {
   calcCharStats,
+  calculateAllStats,
   getElementDmgBonusByType,
   getDamageValByAttr,
   getDamageTypeBonusByType,
@@ -164,6 +165,11 @@ export const calculateAttackDamage = (
   const { excludeTeamBuffs, excludeWeaponBuffs, excludeEchoes } = attack;
   let statsWithoutTeamBuffs = null;
   if (excludeTeamBuffs || excludeWeaponBuffs || excludeEchoes) {
+    console.log('we need to exclude', excludeTeamBuffs, {
+        ignoreTeamBuffs: excludeTeamBuffs,
+        ignoreWeaponBuffs: excludeWeaponBuffs,
+        ignoreEchoes: excludeEchoes,
+      })
     statsWithoutTeamBuffs = calcCharStats(
       "All",
       null,
@@ -191,6 +197,7 @@ export const calculateAttackDamage = (
       context.buffs.customBuffs,
       context.buffs.teamBuffsData,
     );
+    console.log(statsWithoutTeamBuffs, calculateAllStats(context))
   }
   let attackType = attack.type;
   const selfBuffs = JSON.parse(

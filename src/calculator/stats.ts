@@ -377,6 +377,8 @@ export const calcCharStats = (
 
   if (teamBuffsData && !ignoreTeamBuffs && !providedFullStats) {
     addBuffs(teamBuffsData, stats);
+  } else {
+    console.log('ARE WE ADDING TEAM BUFFS', ignoreTeamBuffs, ignoreBuffs);
   }
 
   if (returnValue) {
