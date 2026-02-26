@@ -221,7 +221,7 @@ export const dataAttacks: AttackTests = [
   },
   {
     selector: ".tune-break-dmg",
-    values: ["Tune Break DMG", "112981", "112981", "112981"],
+    values: ["Tune Break DMG", "115241", "115241", "115241"],
   },
   {
     selector: ".lasers-dmg",
@@ -249,12 +249,12 @@ export const dataStats: StatTests = [
 ];
 
 export const optimizerResults: Record<string, string> = {
-  totalNormal: `835302`,
-  totalAverage: `2050472`,
-  totalCrit: `2151846`,
-  totalNormalAfterEquip: `835302`,
-  totalAverageAfterEquip: `2050472`,
-  totalCritAfterEquip: `2151846`,
+  totalNormal: `838017`,
+  totalAverage: `2053187`,
+  totalCrit: `2154561`,
+  totalNormalAfterEquip: `838017`,
+  totalAverageAfterEquip: `2053187`,
+  totalCritAfterEquip: `2154561`,
   percentNormal: `(+1.4%)`,
   percentAvg: `(+13.2%)`,
   percentCrit: `(+5.9%)`,
