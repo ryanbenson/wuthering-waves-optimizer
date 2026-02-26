@@ -9,6 +9,7 @@ See the project for more information on where things are at, and where things ar
 - [Daisy UI](https://v4.daisyui.com/)
 - [Tailwind](https://tailwindcss.com/)
 - [Vue](https://vuejs.org/)
+- [Vercel](https://vercel.com)
 
 # Content Guidelines
 
@@ -17,6 +18,12 @@ This app will not support unreleased content (characters, echoes, weapons, echo 
 We can prep ahead of a release using leaked data, but it cannot be accessible in the app at all. 
 
 Also, do not reference websites or sources that include links (e.g. do not link or reference encore.moe).
+
+# Deployments
+
+Every commit and branch gets auto-deployed to https://vercel.com. So to deploy to production, any new update to `master` will auto-deploy.
+
+The e2e tests don't currently block any release. I don't have teams setup for Vercel right now, so contributors won't be able to see the staging environments in Vercel.
 
 # Contributing
 
