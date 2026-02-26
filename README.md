@@ -4,10 +4,11 @@
 
 See the project for more information on where things are at, and where things are going: https://github.com/users/ryanbenson/projects/2
 
-## UI
+## UI & Tools
 
 - [Daisy UI](https://v4.daisyui.com/)
 - [Tailwind](https://tailwindcss.com/)
+- [Vue](https://vuejs.org/)
 
 # Content Guidelines
 
@@ -17,9 +18,9 @@ We can prep ahead of a release using leaked data, but it cannot be accessible in
 
 Also, do not reference websites or sources that include links (e.g. do not link or reference encore.moe).
 
-## Contributing
+# Contributing
 
-### Workflow
+## Workflow
 
 - **Use pull requests (PRs).** All changes should go through a PR. Do not push directly to the master/protected branch.
 - **Feature branches** are fine. You can also setup a feature flag if you want as well.
@@ -28,14 +29,14 @@ Also, do not reference websites or sources that include links (e.g. do not link 
 - **Add tests where possible.** When you add or change behavior, add or update tests (unit tests for logic, E2E for critical flows). See [docs/architecture.md](docs/architecture.md) for testing expectations.
 - **One logical change per PR.** Mixing unrelated fixes or features in a single PR makes review and history harder. Split them when it makes sense.
 
-### Guidelines
+## Guidelines
 
 - **Don’t force-push** to shared branches (e.g. `master`). Rewriting history after others may have pulled causes confusion and broken clones.
 - **Respond to review.** Address comments, ask for clarification if needed, and keep the conversation constructive.
 - **Update docs if behavior or setup changes.** The [docs/](docs/) folder is the reference for new contributors; keep it in sync with how the app and contribution flow work.
 - **Follow project conventions.** See [docs/architecture.md](docs/architecture.md) for technical conventions (Vue, types, performance, no classes, workers, DaisyUI, etc.).
 
-### Before you submit
+## Before you submit
 
 - [ ] Tests pass locally (and in CI if applicable).
 - [ ] New or changed behavior is covered by tests where practical.
