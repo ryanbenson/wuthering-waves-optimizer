@@ -208,7 +208,7 @@ export const dataAttacks: AttackTests = [
   },
   {
     selector: ".tune-break-dmg",
-    values: ["Tune Break DMG", "83212", "83212", "83212"],
+    values: ["Tune Break DMG", "84876", "84876", "84876"],
   },
   {
     selector: ".attacks-dmg",

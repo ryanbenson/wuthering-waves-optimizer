@@ -206,9 +206,9 @@ export const dataAttacks: AttackTests = [
     selector: ".tune-rupture-response-spectral-analysis-dmg",
     values: [
       "Tune Rupture Response - Spectral Analysis DMG",
-      "135757",
-      "135757",
-      "135757",
+      "138472",
+      "138472",
+      "138472",
     ],
   },
   {
