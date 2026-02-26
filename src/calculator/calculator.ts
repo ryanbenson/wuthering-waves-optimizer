@@ -1296,6 +1296,7 @@ export function getElectroFlareDamage(
   critDamage: number = 1,
   count: number = 1,
   stacks: number = 1,
+  electroRageStacks: number = 0,
 ): any {
   const characterLevel = parseInt(charLevel.replace("+", ""), 10);
   const defenseModifier = getDefenseModifier(
@@ -1307,10 +1308,13 @@ export function getElectroFlareDamage(
   const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
   const levelConstant = getNegativeStatusLevelConstant(characterLevel);
   const motionValue = getElectroFlareMotionValueByStacks(stacks);
+  // if there's electro rage, you get the MV as if it was electro flare stack
+  // then it becomes additive to the electro flare MV
+  const motionValueRage = getElectroFlareMotionValueByStacks(electroRageStacks);
   // LVLconstant x (MV ÷ 10000) × DEFmul × RESmul × (1 + amp%)
   const baseDamage =
     levelConstant *
-    (motionValue / 10000) *
+    ((motionValue + motionValueRage) / 10000) *
     (1 + talentModifierMultiply) *
     defenseModifier *
     resistModifier *
@@ -1350,6 +1354,7 @@ export function getElectroFlareDamage(
       levelConstant,
       motionValue,
       stacks,
+      motionValueRage,
     },
   };
 }
@@ -1404,5 +1409,5 @@ export function getElectroFlareMotionValueByStacks(stacks: number): number {
     "12": 69308,
     "13": 83170,
   }
-  return motionValueByStacksMap?.[stacks] ?? motionValueByStacksMap["13"];
+  return motionValueByStacksMap?.[stacks] ?? 0;
 }

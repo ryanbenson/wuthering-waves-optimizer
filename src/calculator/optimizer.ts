@@ -144,6 +144,7 @@ export interface OptimizerContext {
   fusionBurstStacks: number;
   isElectroFlareEnabled: boolean;
   electroFlareStacks: number;
+  electroRageStacks: number;
   havocBaneStacks: number;
   strainStacks: number;
 
@@ -626,6 +627,7 @@ export function optimize(
         context.fusionBurstStacks,
         context.isElectroFlareEnabled,
         context.electroFlareStacks,
+        context.electroRageStacks,
         context.characterLevel,
         context.mainEcho,
         context.mainEchoRank,
@@ -720,6 +722,7 @@ export function optimize(
         context.fusionBurstStacks,
         context.isElectroFlareEnabled,
         context.electroFlareStacks,
+        context.electroRageStacks,
         context.characterLevel,
         context.mainEcho,
         context.mainEchoRank,

@@ -249,6 +249,31 @@
         data-test-enemy-electro-flare-input />
     </div>
   </div>
+  <div 
+    v-if="isElectroFlareEnabled"
+    class="data-input--talents mt-8" data-test-enemy-electro-rage
+  >
+    <div class="flex flex-col pb-7 relative">
+      <label
+        for="havocBane"
+        class="talent__label"
+        data-test-enemy-electro-rage-label>
+        Electro Rage Stacks
+        <span class="text-primary">{{ electroRageStacks }}</span>
+      </label>
+      <input
+        v-model="electroRageStacks"
+        name="electroRageStacks"
+        id="electroRageStacks"
+        type="range"
+        min="0"
+        max="13"
+        step="1"
+        class="range range-xs"
+        :class="rangeClasses"
+        data-test-enemy-electro-rage-input />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -316,6 +341,7 @@ export default {
           strainStacks: this.strainStacks,
           fusionBurstStacks: this.fusionBurstStacks,
           electroFlareStacks: this.electroFlareStacks,
+          electroRageStacks: this.electroRageStacks,
         });
       },
       immediate: true,
@@ -336,6 +362,7 @@ export default {
           strainStacks: this.strainStacks,
           fusionBurstStacks: this.fusionBurstStacks,
           electroFlareStacks: this.electroFlareStacks,
+          electroRageStacks: this.electroRageStacks,
         });
       },
       immediate: true,
@@ -356,6 +383,7 @@ export default {
           strainStacks: this.strainStacks,
           fusionBurstStacks: this.fusionBurstStacks,
           electroFlareStacks: this.electroFlareStacks,
+          electroRageStacks: this.electroRageStacks,
         });
       },
       immediate: true,
@@ -376,6 +404,7 @@ export default {
           strainStacks: this.strainStacks,
           fusionBurstStacks: this.fusionBurstStacks,
           electroFlareStacks: this.electroFlareStacks,
+          electroRageStacks: this.electroRageStacks,
         });
       },
       immediate: true,
@@ -396,6 +425,7 @@ export default {
           strainStacks: this.strainStacks,
           fusionBurstStacks: this.fusionBurstStacks,
           electroFlareStacks: this.electroFlareStacks,
+          electroRageStacks: this.electroRageStacks,
         });
       },
       immediate: true,
@@ -416,6 +446,7 @@ export default {
           strainStacks: this.strainStacks,
           fusionBurstStacks: this.fusionBurstStacks,
           electroFlareStacks: this.electroFlareStacks,
+          electroRageStacks: this.electroRageStacks,
         });
       },
       immediate: true,
@@ -436,6 +467,7 @@ export default {
           strainStacks: this.strainStacks,
           fusionBurstStacks: this.fusionBurstStacks,
           electroFlareStacks: this.electroFlareStacks,
+          electroRageStacks: this.electroRageStacks,
         });
       },
       immediate: true,
@@ -456,6 +488,28 @@ export default {
           strainStacks: this.strainStacks,
           fusionBurstStacks: this.fusionBurstStacks,
           electroFlareStacks: this.electroFlareStacks,
+          electroRageStacks: this.electroRageStacks,
+        });
+      },
+      immediate: true,
+    },
+    electroRageStacks: {
+      /**
+       * Emits the buff data in its proper format
+       * @emits updated-enemy
+       */
+      handler: async function () {
+        this.$emit("updated-enemy-data", {
+          enemyLevel: this.enemyLevel,
+          enemyResist: this.enemyResist,
+          enemyType: this.enemyType,
+          spectroFrazzleStacks: this.spectroFrazzleStacks,
+          aeroErosionStacks: this.aeroErosionStacks,
+          havocBaneStacks: this.havocBaneStacks,
+          strainStacks: this.strainStacks,
+          fusionBurstStacks: this.fusionBurstStacks,
+          electroFlareStacks: this.electroFlareStacks,
+          electroRageStacks: this.electroRageStacks,
         });
       },
       immediate: true,
@@ -476,6 +530,7 @@ export default {
           strainStacks: this.strainStacks,
           fusionBurstStacks: this.fusionBurstStacks,
           electroFlareStacks: this.electroFlareStacks,
+          electroRageStacks: this.electroRageStacks,
         });
       },
       immediate: true,
@@ -624,6 +679,21 @@ export default {
       async set(value) {
         const data = {
           electroFlareStacks: value,
+        };
+        await this.setCharacterData(this.character, data);
+      },
+    },
+    /**
+     * Getter/setter used in the form for the number of fusion rage stacks
+     * Data is persisted in the store. Avoids needing a local data + store data
+     */
+    electroRageStacks: {
+      get() {
+        return this.currentCharacter?.electroRageStacks ?? 0;
+      },
+      async set(value) {
+        const data = {
+          electroRageStacks: value,
         };
         await this.setCharacterData(this.character, data);
       },

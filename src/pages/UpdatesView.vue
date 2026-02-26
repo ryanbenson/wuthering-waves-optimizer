@@ -2,6 +2,11 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>February 25, 2026</h3>
+    <ul>
+      <li>Adds Electro Rage damages with breakdown.</li>
+      <li>Adds Aemeath rotation.</li>
+    </ul>
     <h3>February 22, 2026</h3>
     <ul>
       <li>Adds Electro Flare damages with breakdown.</li>

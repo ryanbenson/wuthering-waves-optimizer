@@ -1214,7 +1214,7 @@
         ) × (
         <span class="text-primary">
           {{
-            displayInt(damage.totalDamageContext.motionValue)
+            displayInt(damage.totalDamageContext.motionValue + damage.totalDamageContext.motionValueRage)
           }}
         </span> ÷ 10000 )
         ×
@@ -1259,8 +1259,8 @@
       <div class="font-bold mt-2 text-lg text-primary">Motion Value</div>
       <div class="formula bg-base-200 p-2 rounded-md font-mono">
         <span class="text-secondary font-bold">
-          {{ damage.totalDamageContext.motionValue }}
-        </span>
+          {{ damage.totalDamageContext.motionValue + damage.totalDamageContext.motionValueRage }}
+        </span> = {{ damage.totalDamageContext.motionValue }} + {{ damage.totalDamageContext.motionValueRage }}
       </div>
       <div class="font-bold mt-2 text-lg text-primary">Defense modifier</div>
       <div class="formula bg-base-200 p-2 rounded-md font-mono">

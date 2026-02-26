@@ -442,6 +442,7 @@ export default defineComponent({
     const aeroErosionStacks = ref(0);
     const fusionBurstStacks = ref(0);
     const electroFlareStacks = ref(0);
+    const electroRageStacks = ref(0);
     const strainStacks = ref(0);
     const isMissingAeroErosionData = ref(false);
     // component refs
@@ -525,6 +526,7 @@ export default defineComponent({
         fusionBurstStacks.value,
         isElectroFlareEnabled.value,
         electroFlareStacks.value,
+        electroRageStacks.value,
         characterLevel.value,
         mainEcho.value,
         mainEchoRank.value,
@@ -774,6 +776,7 @@ export default defineComponent({
       havocBaneStacks.value = data.havocBaneStacks;
       fusionBurstStacks.value = data.fusionBurstStacks;
       electroFlareStacks.value = data.electroFlareStacks;
+      electroRageStacks.value = data.electroRageStacks;
       strainStacks.value = data.strainStacks;
       calcAllDamages();
     };
@@ -993,6 +996,7 @@ export default defineComponent({
         fusionBurstStacks: fusionBurstStacks.value,
         isElectroFlareEnabled: isElectroFlareEnabled.value,
         electroFlareStacks: electroFlareStacks.value,
+        electroRageStacks: electroRageStacks.value,
         strainStacks: strainStacks.value,
 
         // Main echo
@@ -1246,6 +1250,7 @@ export default defineComponent({
           fusionBurstStacks: context.fusionBurstStacks,
           isElectroFlareEnabled: context.isElectroFlareEnabled,
           electroFlareStacks: context.electroFlareStacks,
+          electroRageStacks: context.electroRageStacks,
           mainEcho: context.mainEcho,
           mainEchoRank: context.mainEchoRank,
           rotationsList: JSON.parse(JSON.stringify(context.rotationsList)),

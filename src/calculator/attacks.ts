@@ -1060,6 +1060,7 @@ export const calculateAttackDamage = (
         totalCritDmg,
         attack?.count ?? 1,
         attack?.stacks ?? 0,
+        attack?.electroRageStacks ?? 0,
       );
       return elementalEffectDmg;
     }
@@ -1489,6 +1490,7 @@ export const calcDamages = (context: CalculationContext) => {
       element: "Electro",
       subType: "ElectroFlare",
       stacks: context.enemy.electroFlare.electroFlareStacks,
+      electroRageStacks: context.enemy.electroFlare.electroRageStacks,
     };
     // @ts-ignore
     elementalReactionsAttacks.push(attack);
@@ -1683,6 +1685,7 @@ interface CalculationContext {
     electroFlare: {
       isElectroFlareEnabled: boolean;
       electroFlareStacks: number;
+      electroRageStacks: number;
     };
     havocBane: {
       havocBaneStacks: number;
@@ -1711,6 +1714,7 @@ export const getCalculationContext = (
   fusionBurstStacks: any = 0,
   isElectroFlareEnabled: any = false,
   electroFlareStacks: any = 0,
+  electroRageStacks: any = 0,
   characterLevel: any = 0,
   mainEcho: any = {},
   mainEchoRank: any = 5,
@@ -1843,6 +1847,7 @@ export const getCalculationContext = (
       electroFlare: {
         isElectroFlareEnabled,
         electroFlareStacks,
+        electroRageStacks,
       },
       havocBane: {
         havocBaneStacks,
