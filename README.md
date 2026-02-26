@@ -6,14 +6,23 @@ See the project for more information on where things are at, and where things ar
 
 ## UI
 
-- [Daisy UI](https://daisyui.com/)
+- [Daisy UI](https://v4.daisyui.com/)
 - [Tailwind](https://tailwindcss.com/)
+
+# Content Guidelines
+
+This app will not support unreleased content (characters, echoes, weapons, echo sets, etc.) We will only release content to production if Kuro has released the content officially (in-game, news article on the official website)
+
+We can prep ahead of a release using leaked data, but it cannot be accessible in the app at all. 
+
+Also, do not reference websites or sources that include links (e.g. do not link or reference encore.moe).
 
 ## Contributing
 
 ### Workflow
 
 - **Use pull requests (PRs).** All changes should go through a PR. Do not push directly to the master/protected branch.
+- **Feature branches** are fine. You can also setup a feature flag if you want as well.
 - **Keep PRs small.** Prefer several focused PRs over one large one. Smaller PRs are easier to review and reduce the risk of regressions.
 - **Tests must pass.** CI (if configured) must be green before merge. Run tests locally before opening or updating a PR.
 - **Add tests where possible.** When you add or change behavior, add or update tests (unit tests for logic, E2E for critical flows). See [docs/architecture.md](docs/architecture.md) for testing expectations.
