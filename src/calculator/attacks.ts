@@ -846,6 +846,10 @@ export const calculateAttackDamage = (
   }
   // Strain "Total DMG" / Vuln = strainStacks (0-4) * TuneBreakBoost (0-50) * 0.12%
   let strainSpecialMultiplier = context.enemy.strainStacks * totalTuneBreakBoost * 0.12;
+  // this does not apply to TuneBreak
+  if (attack.type === "TuneBreak") {
+    strainSpecialMultiplier = 0;
+  }
   totalSpecialMultiplier +=
     resonanceChainAttackSpecialMultiplier +
     resonanceChainAttackSpecialMultiplierAttack +
