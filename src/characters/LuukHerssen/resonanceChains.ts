@@ -17,11 +17,6 @@ When in the <span class="Highlight">Aureate Judge</span> state, casting Resonanc
           "MidairAttackStage3ScytheResctionDMG",
           "MidairAttackStage4DMG",
           "GavelofEarthshakerDMG",
-          "RewritteninWintersMargins",
-          "AureoleofExecutionRingDMG",
-          "AureoleofExecutionBreachDMG",
-          "AureoleofExecutionGlareDMG",
-          "GoldenRefluxDMG",
         ],
         modifierValue: 1.5,
       }

@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>March 7, 2026</h3>
+    <ul>
+      <li>Fixes Luuk's S1, it was buffing too many attacks.</li>
+    </ul>
     <h3>February 26, 2026</h3>
     <ul>
       <li>Stops Tune Strain Interfered from buffing Tune Break damage.</li>
