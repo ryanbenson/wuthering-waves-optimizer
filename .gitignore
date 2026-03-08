@@ -160,3 +160,6 @@ dist
 # Cypress
 cypress/screenshots
 cypress/downloads
+
+# AI
+.serena
