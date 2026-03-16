@@ -82,28 +82,32 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: `InherentSkillQuickResponse`,
-    name: `Inherent Skill: Quick Response`,
-    details: `Casting Intro Skill <span class="Highlight">Immediate Execution</span> gives 12% Spectro DMG Bonus for 14s.`,
+    key: `InherentSkillTrueNamesInvoked`,
+    name: `Inherent Skill: True Names Invoked`,
+    details: `test`,
     hasStacks: false,
-    modifiers: [
-      {
-        modifier: "Spectro",
-        modifierValue: 0.12,
-      },
-    ],
+    modifiers: [],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
   },
   {
-    key: `InherentSkillFearNoPain`,
-    name: `Inherent Skill: Fear No Pain`,
-    details: `When in <span class="Highlight">Ready Stance</span>, all DMG taken is reduced by 40%.`,
+    key: `InherentSkillTrueNamesAligned`,
+    name: `Inherent Skill: True Names Aligned`,
+    details: `test`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.03,
+      },
+      {
+        modifier: "EchoDMGBonus",
+        modifierValue: 0.03,
+      },
+    ],
     minStacks: 0,
-    maxStacks: 0,
+    maxStacks: 6,
     alwaysEnabled: false,
   },
   {
