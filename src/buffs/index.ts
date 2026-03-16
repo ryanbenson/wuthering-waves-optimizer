@@ -1827,6 +1827,23 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Sigrika: [
+    {
+      key: "SequenceNode4ILoseYetIGain",
+      name: "Sequence Node 4: I Lose, Yet I Gain",
+      details: `<span class="skilldescription">When Resonators in the team cast Echo Skill, Resonators in the team gain an 20% ATK increase for 20s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

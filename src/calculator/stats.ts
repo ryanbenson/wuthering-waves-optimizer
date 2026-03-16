@@ -744,11 +744,59 @@ export const computeSelfBuffs = (
         ];
       }
     }
+    if (character === "Sigrika" && key === "InnateGift") {
+      if (
+        resonanceChainsConfig?.SequenceNode6TrueNamesResurfacedRisinginLight
+          ?.isEnabled
+      ) {
+        modifiers = [
+          {
+            modifier: "DMGDeepen",
+            modifySpecificTalents: [
+              "RunicOutburstDMG",
+              "RunicChainWhipDMG",
+              "RunicSoliskinDMG",
+              "ForteCircuitLearnMyTrueNameDMG",
+            ],
+            modifierValue: .3,
+          },
+          {
+            modifier: "specialMultiplier",
+            modifySpecificTalents: [
+              "RunicOutburstDMG",
+              "RunicChainWhipDMG",
+              "RunicSoliskinDMG",
+              "ForteCircuitLearnMyTrueNameDMG",
+            ],
+            modifierValue: .15,
+          },
+          {
+            modifier: "DEFIgnore",
+            modifySpecificTalents: [
+              "RunicOutburstDMG",
+              "RunicChainWhipDMG",
+              "RunicSoliskinDMG",
+              "ForteCircuitLearnMyTrueNameDMG",
+            ],
+            modifierValue: 0.075,
+          },
+        ];
+      }
+    }
     if (buff.hasStacks) {
       if (buffData?.stacks <= 0) {
         continue;
       }
-      const stacks = buffData?.stacks ?? 0;
+      let stacks = buffData?.stacks ?? 0;
+      // if the buff wants a number of stacks, but the buff has appliesOnEveryStep
+      // so it applies the buff in the modifier every N step, so we'll just update the "stacks"
+      // based on the number already against this appliesOnEveryStep (int)
+      if (buff?.appliesOnEveryStep) {
+        stacks = Math.floor((buffData?.stacks ?? 0) / buff?.appliesOnEveryStep);
+      }
+      if (stacks <= 0) {
+        continue;
+      }
       modifiers.forEach((modifierItem: any) => {
         if (modifierItem?.modifySpecificTalents) {
           // update modifier value with the value * stacks
@@ -818,6 +866,12 @@ export const computeSelfBuffs = (
         if (buffData?.stacks >= 2) {
           data.specificTalentBuffs["HeavenfallEdictFinaleDMG:DMGDeepen"] = 0.25;
         }
+      }
+    }
+    if (character === "Sigrika" && key === "InherentSkillTrueNamesAligned") {
+      if (buffData?.stacks >= 6) {
+        data["Aero"] += 0.3;
+        data["EchoDMGBonus"] += 0.3;
       }
     }
   }
@@ -1012,6 +1066,9 @@ export const computeAdditionalBaseBuffs = (
                 break;
               case "DMGBonus":
                 data["DMGBonus"] = (data["DMGBonus"] || 0) + buffValue;
+                break;
+              case "EchoDMGBonus":
+                data["EchoDMGBonus"] = (data["EchoDMGBonus"] || 0) + buffValue;
                 break;
             }
           } else {

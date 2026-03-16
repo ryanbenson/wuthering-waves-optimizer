@@ -307,6 +307,16 @@ export default {
           effectiveMaxStacks = 60;
         }
       }
+      // Aemeath s6 makes these 60
+      if (this.character === "Sigrika" && this.uniqueKey === "InnateGift") {
+        const sequenceNode3 =
+          this.currentCharacter?.resonanceChains
+            ?.SequenceNode3IFleeYetISeek;
+        // Apply SequenceNode6 effects if enabled
+        if (sequenceNode3?.isEnabled) {
+          effectiveMaxStacks = 4;
+        }
+      }
 
       const result = {
         effectiveMaxStacks,
