@@ -2,7 +2,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode1TheGleamMeantforRadiance",
     name: "Sequence Node 1: The Gleam Meant for Radiance",
-    details: `<div>The DMG Multipliers of Basic Attack - Elucidated, Dodge Counter - Decipher, Resonance Skill - BIG BOOMY BOOM!, and Resonance Skill - Soliskin to the Aid are increased by 70%.</div>`,
+    details: `<div>The DMG Multipliers of <span class="Highlight">Basic Attack - Elucidated</span>, <span class="Highlight">Dodge Counter - Decipher</span>, <span class="Highlight">Resonance Skill - BIG BOOMY BOOM!</span>, and <span class="Highlight">Resonance Skill - Soliskin to the Aid</span> are increased by 70%.<br>Sigrika becomes immune to interruptions while casting <span class="Highlight">Basic Attack - Elucidated</span>, <span class="Highlight">Resonance Skill - BIG BOOMY BOOM!</span>, and <span class="Highlight">Resonance Skill - Soliskin to the Aid</span>.<br><span class="Highlight">Encapsulated</span> now stacks up to 3 times. After casting Outro Skill <span class="Highlight">In This Very Moment</span>, Sigrika obtains 1 additional stacks.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -23,7 +23,8 @@ export const resonanceChains = [
   {
     key: "SequenceNode2TheBitternessSteepedinHope",
     name: "Sequence Node 2: The Bitterness Steeped in Hope",
-    details: `<div>The DMG Multiplier of Forte Circuit - Learn My True Name is increased by 120%.</div>`,
+    details: `<div>The DMG Multiplier of <span class="Highlight">Forte Circuit - Learn My True Name</span> is increased by 120%.<br>
+When not in combat for over 4s, Sigrika gains <span class="Highlight">Divergent</span>. This effect is active for up to 1 time every 4s.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -41,7 +42,8 @@ export const resonanceChains = [
   {
     key: "SequenceNode3IFleeYetISeek",
     name: "Sequence Node 3: I Flee, Yet I Seek",
-    details: `<div>Innate Gift? now stacks up to 4 times</div>`,
+    details: `<div><span class="Highlight">Innate Gift?</span> now stacks up to 4 times and is no longer removed after Sigrika casts <span class="Highlight">Forte Circuit - Learn My True Name</span> or is switched off the field.<br>
+All <span class="Highlight">Innate Gift?</span> stacks are removed every 30s that Sigrika stays out of combat.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -66,7 +68,7 @@ export const resonanceChains = [
   {
     key: "SequenceNode5UntilSubmergedbytheDark",
     name: "Sequence Node 5: Until Submerged by the Dark",
-    details: `<div>The DMG Multiplier of Resonance Liberation Where Trust Leads Me! is increased by 30%.</div>`,
+    details: `<div>The DMG Multiplier of Resonance Liberation <span class="Highlight">Where Trust Leads Me!</span> is increased by 30%.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -82,10 +84,10 @@ export const resonanceChains = [
   {
     key: "SequenceNode6TrueNamesResurfacedRisinginLight",
     name: "Sequence Node 6: True Names Resurfaced, Rising in Light",
-    details: `<div>Targets take 30% more DMG from Sigrika.
-Innate Gift? gains following effects:
-- Each stack grants Runic Outburst, Runic Chain Whip, Runic Soliskin, and Forte Circuit - Learn My True Name 15% DMG Amplification, up to 60%.
-- Each stack causes Runic Outburst, Runic Chain Whip, Runic Soliskin, and Forte Circuit - Learn My True Name to ignore 7.5% of the target's DEF when dealing damage, up to 30%.</div>`,
+    details: `<div>Targets take 30% more DMG from Sigrika.<br>
+<span class="Highlight">Innate Gift?</span> gains following effects:<br>
+- Each stack grants <span class="Highlight">Runic Outburst</span>, <span class="Highlight">Runic Chain Whip</span>, <span class="Highlight">Runic Soliskin</span>, and <span class="Highlight">Forte Circuit - Learn My True Name</span> 15% DMG Amplification, up to 60%.<br>
+- Each stack causes <span class="Highlight">Runic Outburst</span>, <span class="Highlight">Runic Chain Whip</span>, <span class="Highlight">Runic Soliskin</span>, and <span class="Highlight">Forte Circuit - Learn My True Name</span> to ignore 7.5% of the target's DEF when dealing damage, up to 30%.</div>`,
     hasStacks: false,
     modifiers: [
       {

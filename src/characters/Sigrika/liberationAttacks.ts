@@ -1,6 +1,10 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Where Trust Leads Me!",
-  description: `<div class="skilldescription"></div>`,
+  description: `<div class="skilldescription">Deal <span class="Wind">Aero</span> DMG (considered Echo Skill DMG). Gain <span class="Highlight">Divergent</span> for 20s.<br><br>
+  <span class="Title">Divergent</span><br>
+The next time Sigrika obtains a <span class="Highlight">Rune</span>, she additionally obtains a <span class="Highlight">Rune</span> of the opposite type and removes <span class="Highlight">Divergent</span>.
+When Sigrika holds <span class="Highlight">Divergent</span> and <span class="Highlight">Convergent</span> at the same time, <span class="Highlight">Convergent</span> takes priority.
+When Sigrika holds 100 points of <span class="Highlight">Full Stop</span>, <span class="Highlight">Divergent</span> doesn't take effect.</div>`,
   attacks: [
     {
       key: "WhereTrustLeadsMeDMG",

@@ -3,13 +3,13 @@ const weaponInfo: WeaponInfo = {
   image:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/SolswornCiphers.png",
   description:
-    `Sunlight gathers. The answer is made plain.
-What must be done awaits. The Rein is in your hand.
+    `Sunlight gathers. The answer is made plain.<br>
+What must be done awaits. The Rein is in your hand.<br>
 Step forward, toward the sunlit end.`,
   type: "Gauntlets",
   rarity: 5,
   passiveName: "Sunward",
-  passiveValue: `<span class="skilldescription">Increases ATK by 12%/15%/18%/21%/24%. Casting Intro Skill or Echo Skill grants 32%/40%/48%/56%/64% Echo Skill DMG Amplification for 15/15/15/15/15s. When dealing Echo Skill DMG, Aero DMG ignores 10%/12.5%/15%/17.5%/20% of the target's DEF for 6/6/6/6/6s.</span>`,
+  passiveValue: `<div>Increases ATK by <span class="Highlight">12%/15%/18%/21%/24%</span>. Casting Intro Skill or Echo Skill grants <span class="Highlight">32%/40%/48%/56%/64%</span> Echo Skill DMG Amplification for <span" class="Highlight">15</span>s. When dealing Echo Skill DMG, Aero DMG ignores <span class="Highlight">10%/12.5%/15%/17.5%/20%</span> of the target's DEF for <span class="Highlight">6</span>s.</div>`,
   passiveData: [
     {
       key: "SolswornCiphersATK",
@@ -24,7 +24,7 @@ Step forward, toward the sunlit end.`,
       },
       minStacks: 0,
       maxStacks: 0,
-      details: `Increases ATK by <span class="param">12%/15%/18%/21%/24%</span>.`,
+      details: `Increases ATK by <span class="Highlight">12%/15%/18%/21%/24%</span>.`,
       alwaysEnabled: true,
     },
     {
@@ -40,7 +40,7 @@ Step forward, toward the sunlit end.`,
       },
       minStacks: 0,
       maxStacks: 0,
-      details: `Casting Intro Skill or Echo Skill grants 32%/40%/48%/56%/64% Echo Skill DMG Amplification for 15/15/15/15/15s.`,
+      details: `Casting Intro Skill or Echo Skill grants <span class="Highlight">32%/40%/48%/56%/64%</span> Echo Skill DMG Amplification for <span" class="Highlight">15</span>s.`,
       alwaysEnabled: false,
     },
     {
@@ -56,7 +56,7 @@ Step forward, toward the sunlit end.`,
       },
       minStacks: 0,
       maxStacks: 0,
-      details: `When dealing Echo Skill DMG, Aero DMG ignores 10%/12.5%/15%/17.5%/20% of the target's DEF for 6/6/6/6/6s.`,
+      details: `When dealing Echo Skill DMG, Aero DMG ignores <span class="Highlight">10%/12.5%/15%/17.5%/20%</span> of the target's DEF for <span class="Highlight">6</span>s.`,
       alwaysEnabled: false,
     },
   ],

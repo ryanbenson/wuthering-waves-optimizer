@@ -1,7 +1,6 @@
 export const skillAttacks = {
   name: "Resonance Skill: Royan Close Quarters Combat",
-  description: `<div class="skilldescription"></div>
-`,
+  description: `<div><span class="Title">BOOMY BOOM!</span><br>Attack the target, dealing <span class="Wind">Aero DMG</span>.<br><span class="Highlight">Press Normal Attack</span> shortly after casting <span class="Highlight">BOOMY BOOM!</span> to cast <span class="Highlight">Basic Attack Stage 3</span>.<br><br><span class="Title">BIG BOOMY BOOM!</span><br>While in the <span class="Highlight">Decipher</span> state, <span class="Highlight">press Resonance Skill</span> on the ground to cast <span class="Highlight">BIG BOOMY BOOM!</span>, dealing <span class="Wind">Aero DMG</span> (considered Echo Skill DMG).<br>Leave the <span class="Highlight">Decipher</span> state upon casting this skill.<br><br><span class="Title">Soliskin to the Aid</span><br>While in the <span class="Highlight">Decipher</span> state, with at least 50 points of <span class="Highlight">Full Stop</span>, <span class="Highlight">press Resonance Skill</span> on the ground to cast <span class="Highlight">Soliskin to the Aid</span>, dealing <span class="Wind">Aero DMG</span> (considered Echo Skill DMG).<br>Leave the <span class="Highlight">Decipher</span> state upon casting this skill.</div>`,
   attacks: [
     {
       key: "BoomyBoomDMG",

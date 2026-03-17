@@ -761,7 +761,7 @@ export const computeSelfBuffs = (
             modifierValue: .3,
           },
           {
-            modifier: "specialMultiplier",
+            modifier: "talentModifierMultiply",
             modifySpecificTalents: [
               "RunicOutburstDMG",
               "RunicChainWhipDMG",

@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Solsworn Etymology",
-  description: `<div class="skilldescription"></div>`,
+  description: `<div class="skilldescription">Deal <span class="Wind">Aero</span> DMG.<br>
+Press <span class="Highlight">Normal Attack</span> shortly after casting <span class="Highlight">Intro Skill</span> to cast <span class="Highlight">Basic Attack Stage 2</span>.</div>`,
   attacks: [
     {
       key: "SolswornEtymologyDMG",
