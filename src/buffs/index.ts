@@ -1843,6 +1843,25 @@ export const buffsByCharacter = {
       maxStacks: 0,
       alwaysEnabled: false,
     },
+    {
+      key: `InherentSkillTrueNamesAligned`,
+      name: `Inherent Skill: True Names Aligned`,
+      details: `<div>When any nearby Resonators in the team cast Echo Skill, Sigrika gains a stack of <span class="Highlight">Blessing of Runes</span>, up to 6 stacks. Echoes with the same name can only trigger this effect once. <br>This effect resets upon a lineup change.<br><br><span class="Title">Blessing of Runes</span><br>Each stack of <span class="Highlight">Blessing of Runes</span> grants the active Resonator in the team 3% Aero DMG Bonus and 3% Echo Skill DMG Bonus.</div>`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "Aero",
+          modifierValue: 0.03,
+        },
+        {
+          modifier: "EchoDMGBonus",
+          modifierValue: 0.03,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 6,
+      alwaysEnabled: false,
+    },
   ],
 };
 

@@ -87,7 +87,7 @@ This effect ends after Sigrika casts Forte Circuit - Learn My True Name or is sw
   {
     key: `InherentSkillTrueNamesAligned`,
     name: `Inherent Skill: True Names Aligned`,
-    details: `<div>When any nearby Resonators in the team cast Echo Skill, Sigrika gains a stack of <span class="Highlight">Blessing of Runes</span>, up to 6 stacks. Echoes with the same name can only trigger this effect once. <br>This effect resets upon a lineup change.<br><br><br><span class="Title">Blessing of Runes</span><br><br>Each stack of <span class="Highlight">Blessing of Runes</span> grants the active Resonator in the team 3% Aero DMG Bonus and 3% Echo Skill DMG Bonus.<br>When <span class="Highlight">Blessing of Runes</span> reaches 6 stacks. Sigrika gains an additional 30% increase in Aero DMG Bonus and Echo Skill DMG Bonus.</div>`,
+    details: `<div>When any nearby Resonators in the team cast Echo Skill, Sigrika gains a stack of <span class="Highlight">Blessing of Runes</span>, up to 6 stacks. Echoes with the same name can only trigger this effect once. <br>This effect resets upon a lineup change.<br><br><span class="Title">Blessing of Runes</span><br>Each stack of <span class="Highlight">Blessing of Runes</span> grants the active Resonator in the team 3% Aero DMG Bonus and 3% Echo Skill DMG Bonus.<br>When <span class="Highlight">Blessing of Runes</span> reaches 6 stacks. Sigrika gains an additional 30% increase in Aero DMG Bonus and Echo Skill DMG Bonus.</div>`,
     hasStacks: true,
     modifiers: [
       {

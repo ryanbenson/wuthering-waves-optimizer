@@ -5,6 +5,7 @@
     <h3>March 19, 2026</h3>
     <ul>
       <li>Fixes Sigrika self echo dmg bonus based on Energy Regen</li>
+      <li>Add missing Sigrika team buff</li>
     </ul>
     <h3>March 18, 2026</h3>
     <ul>
