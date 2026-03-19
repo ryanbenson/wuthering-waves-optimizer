@@ -1461,6 +1461,8 @@ export const calculateAllStats = (context: {
     ATK: (selfBuffsData?.ATK || 0) + (additionalBaseBuffsData?.ATK || 0),
     ATK_FLAT:
       (selfBuffsData?.ATK_FLAT || 0) + (additionalBaseBuffsData?.ATK_FLAT || 0),
+    EchoDMGBonus:
+      (selfBuffsData?.EchoDMGBonus || 0) + (additionalBaseBuffsData?.EchoDMGBonus || 0),
   };
   // Step 6b: Merge AdditionalBase and CritOverflow into self buffs (self buffs)
   // ignore augusta though, otherwise it doubles up her buffs
