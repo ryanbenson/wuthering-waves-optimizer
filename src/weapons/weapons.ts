@@ -132,6 +132,7 @@ const gauntletsList = {
     { key: "DaybreakersSpine", name: "Daybreaker's Spine" },
     { key: "MoongazersSigil", name: "Moongazer's Sigil" },
     { key: "PulsationBracer", name: "Pulsation Bracer" },
+    { key: "SolswornCiphers", name: "Solsworn Ciphers" },
     { key: "Tragicomedy", name: "Tragicomedy" },
     { key: "VeritysHandle", name: "Verity's Handle" },
   ],
