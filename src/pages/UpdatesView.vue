@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>March 18, 2026</h3>
+    <ul>
+      <li>3.2 content is available</li>
+    </ul>
     <h3>March 7, 2026</h3>
     <ul>
       <li>Fixes Luuk's S1, it was buffing too many attacks.</li>
