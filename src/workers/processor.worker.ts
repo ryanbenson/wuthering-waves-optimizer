@@ -601,6 +601,20 @@ function processLoadout(
         if (attack?.originalIsEnabled === false) {
           return;
         }
+        if (
+          attack.type === "ElementalEffect" &&
+          attack?.damage?.damage !== undefined &&
+          attack?.damage?.totalDamage === undefined
+        ) {
+          const v = attack.damage.damage;
+          damageAggregation.normalDamage =
+            (damageAggregation.normalDamage || 0) + v;
+          damageAggregation.avgDamage =
+            (damageAggregation.avgDamage || 0) + v;
+          damageAggregation.critDamage =
+            (damageAggregation.critDamage || 0) + v;
+          return;
+        }
         if (attack?.damage?.totalDamage !== undefined) {
           damageAggregation.normalDamage =
             (damageAggregation.normalDamage || 0) + attack?.damage?.totalDamage;

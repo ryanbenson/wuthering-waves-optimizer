@@ -226,7 +226,9 @@
               :data-test-rotation-action-by-attack-key="action.key ?? 'none'"
               :data-test-rotation-action-by-id="
                 action.id
-              "></CalculatorRotationAction>
+              "
+              :negative-status-stacks="action.negativeStatusStacks ?? 1"
+              :electro-rage-stacks="action.electroRageStacks ?? 0"></CalculatorRotationAction>
           </div>
           <button
             class="rotation__action--add btn btn-primary my-4 btn-xs w-full"
@@ -340,6 +342,8 @@ export default {
         order: newSequence,
         count: 1,
         buffs: [],
+        negativeStatusStacks: 1,
+        electroRageStacks: 0,
       });
       this.$nextTick(() => {
         // open the new action for editing

@@ -66,6 +66,7 @@ export default {
         Healing: 0,
         Echo: 0,
         TuneBreak: 0,
+        NegativeStatus: 0,
       };
       attacks.forEach((attack) => {
         // if this attack requires a resonance chain to be unlocked, verify it's enabled
@@ -90,6 +91,14 @@ export default {
           attackDamagesByType[attack.type] += attack.damage.shieldAmount;
         } else if (attack.type === "Healing") {
           attackDamagesByType[attack.type] += attack.damage.healAmount;
+        } else if (attack.type === "ElementalEffect") {
+          let val = 0;
+          if (attack.damage?.avgDamage !== undefined) {
+            val = attack.damage.avgDamage;
+          } else if (attack.damage?.damage !== undefined) {
+            val = attack.damage.damage;
+          }
+          attackDamagesByType.NegativeStatus += val;
         } else {
           attackDamagesByType[attack.type] += attack.damage.avgDamage;
         }
@@ -123,6 +132,7 @@ export default {
         Healing: "rgb(59, 234, 59)", // Green
         Echo: "rgb(255, 99, 255)", // Magenta
         TuneBreak: "rgb(72, 61, 139)", // Muted Indigo
+        NegativeStatus: "rgb(186, 104, 200)", // Muted Magenta (distinct from Echo)
       };
     },
   },

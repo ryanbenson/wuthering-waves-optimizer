@@ -304,9 +304,7 @@ import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
 import CalculatorStats from "./CalculatorStats.vue";
 import CalculatorDamages from "./CalculatorDamages.vue";
 import CalculatorOptimizer from "./CalculatorOptimizer.vue";
-import { mainEchoesData, getEchoData } from "../echoes";
 import {
-  echoSetAttacks,
   getEchoStats,
   getCombinedEchoStats,
 } from "../echoes/stats";
@@ -329,9 +327,10 @@ import {
   calcDamages,
   getCalculationContext,
 } from "../calculator/attacks";
+import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
 import type { OptimizerContext } from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
-import { allEchoBuffs, utilityAttacks } from "../buffs";
+import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useRoute } from "vue-router";
@@ -808,71 +807,12 @@ export default defineComponent({
         };
         const rotationActionInfo = [];
         rotation.actions.forEach((action) => {
-          const actionKey = action.key;
-          const actionType = action.type;
-          const actionBuffs = action.buffs;
-          const actionCount = action.count;
-          const actionId = action.id;
-          const actionDisabled = action?.isDisabled ?? false;
-          const actionMainEcho = action?.mainEcho ?? null;
-          const actionMainEchoRank = action?.mainEchoRank ?? null;
-          // if the action is disabled, just skip it
-          if (actionDisabled) {
-            return;
-          }
-          const attacksList =
-            chosenChar?.[`${actionType}Attacks`]?.attacks ?? [];
-          let foundAction;
-          if (actionType === "echoSetAttacks") {
-            foundAction = echoSetAttacks.find((attack) => {
-              return attack.key === actionKey;
-            });
-          } else if (actionType === "utilityAttacks") {
-            foundAction = utilityAttacks.find((attack) => {
-              return attack.key === actionKey;
-            });
-          } else if (actionType === "echoAttacks") {
-            const echoData = getEchoData(actionMainEcho);
-            const echoAttacks = echoData?.actions ?? [];
-            foundAction = echoAttacks.find((attack) => {
-              return attack.key === actionKey;
-            });
-          } else {
-            foundAction = attacksList.find((attack) => {
-              return attack.key === actionKey;
-            });
-          }
-          if (foundAction) {
-            const actionData = {
-              ...foundAction,
-              buffs: null,
-              actionType,
-              count: actionCount,
-              id: actionId,
-              excludeSelfBuffs: action.excludeSelfBuffs ?? false,
-              excludeTeamBuffs: action.excludeTeamBuffs ?? false,
-              excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
-              actionMainEcho,
-              actionMainEchoRank,
-            };
-            // if there are buffs, turn it into a hashmap
-            if (action?.buffs?.length) {
-              const buffsData = {};
-              // keys are unique, there should not be duplicates
-              action.buffs.forEach((buff) => {
-                // buffs are in human readable, convert to decimal except flat values
-                let buffValue;
-                if (
-                  ["ATK_FLAT", "HP_FLAT", "DEF_FLAT"].includes(buff.modifier)
-                ) {
-                  buffValue = Number(buff.modifierValue);
-                } else {
-                  buffValue = Number(buff.modifierValue) / 100;
-                }
-                buffsData[buff.modifier] = buffValue;
-              });
-              actionData.buffs = buffsData;
-            }
+          const actionData = resolveRotationActionToAttackData(
+            action,
+            chosenChar,
+            characterLevel.value,
+          );
+          if (actionData) {
             rotationActionInfo.push(actionData);
           }
         });
@@ -1048,84 +988,14 @@ export default defineComponent({
             echo: rotation.echo ?? null,
           };
 
-          // Use already imported functions (getEchoData, utilityAttacks, echoSetAttacks are imported at top)
-
           const rotationActionInfo: any[] = [];
           rotation.actions.forEach((action: any) => {
-            const actionKey = action.key;
-            const actionType = action.type;
-            const actionBuffs = action.buffs;
-            const actionCount = action.count;
-            const actionId = action.id;
-            const actionDisabled = action?.isDisabled ?? false;
-            const actionMainEcho = action?.mainEcho ?? null;
-            const actionMainEchoRank = action?.mainEchoRank ?? null;
-
-            // Skip disabled actions
-            if (actionDisabled) {
-              return;
-            }
-
-            const attacksList =
-              chosenChar.value?.[`${actionType}Attacks`]?.attacks ?? [];
-            let foundAction;
-
-            if (actionType === "echoSetAttacks") {
-              foundAction = echoSetAttacks.find(
-                (attack: any) => attack.key === actionKey,
-              );
-            } else if (actionType === "utilityAttacks") {
-              foundAction = utilityAttacks.find(
-                (attack: any) => attack.key === actionKey,
-              );
-            } else if (actionType === "echoAttacks") {
-              const echoData = getEchoData(actionMainEcho);
-              const echoAttacks = echoData?.actions ?? [];
-              foundAction = echoAttacks.find(
-                (attack: any) => attack.key === actionKey,
-              );
-            } else {
-              foundAction = attacksList.find(
-                (attack: any) => attack.key === actionKey,
-              );
-            }
-
-            if (foundAction) {
-              const actionData: any = {
-                ...foundAction,
-                buffs: null,
-                actionType,
-                count: actionCount,
-                id: actionId,
-                excludeSelfBuffs: action.excludeSelfBuffs ?? false,
-                excludeTeamBuffs: action.excludeTeamBuffs ?? false,
-                excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
-                actionMainEcho: action?.mainEcho ?? null,
-                actionMainEchoRank: action?.mainEchoRank ?? null,
-                excludeEchoes:
-                  action.excludeSelfBuffs ||
-                  action.excludeTeamBuffs ||
-                  action.excludeWeaponBuffs ||
-                  false,
-              };
-
-              // Convert buffs array to object if present
-              if (action?.buffs?.length) {
-                const buffsData: any = {};
-                action.buffs.forEach((buff: any) => {
-                  let buffValue;
-                  if (
-                    ["ATK_FLAT", "HP_FLAT", "DEF_FLAT"].includes(buff.modifier)
-                  ) {
-                    buffValue = Number(buff.modifierValue);
-                  } else {
-                    buffValue = Number(buff.modifierValue) / 100;
-                  }
-                  buffsData[buff.modifier] = buffValue;
-                });
-                actionData.buffs = buffsData;
-              }
-
+            const actionData = resolveRotationActionToAttackData(
+              action,
+              chosenChar.value,
+              characterLevel.value,
+            );
+            if (actionData) {
               rotationActionInfo.push(actionData);
             }
           });

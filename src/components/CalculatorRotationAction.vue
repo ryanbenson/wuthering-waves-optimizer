@@ -37,7 +37,9 @@
       </div>
       <div class="rotation__action__end">
         <div class="rotation__action__types flex flex-col items-end gap-2">
-          <div class="type badge badge-primary size-max" v-if="skillTypeLabel">
+          <div
+            class="type badge badge-primary size-max"
+            v-if="skillTypeLabel && actionSkillType !== 'negativeStatus'">
             Forte: {{ skillTypeLabel }}
           </div>
           <div v-if="damageType" class="type badge badge-secondary size-max">
@@ -191,6 +193,16 @@
                   {{ attack.label }}
                 </option>
               </optgroup>
+              <optgroup
+                label="Negative Status"
+                data-skill="negativeStatus">
+                <option
+                  v-for="attack in negativeStatusAttacksList"
+                  :key="attack.key"
+                  :value="attack.key">
+                  {{ attack.label }}
+                </option>
+              </optgroup>
             </select>
           </div>
           <button class="rotation__action--remove" @click="removeAction">
@@ -200,6 +212,50 @@
                 fill="#FFFFFF" />
             </svg>
           </button>
+        </div>
+        <div
+          v-if="isNegativeStatusSkill"
+          class="edit__negative-status flex flex-wrap gap-4 w-full mt-2 mb-5">
+          <div class="flex flex-col gap-2 flex-1 min-w-[140px]">
+            <label
+              class="text-base font-medium opacity-90"
+              for="negativeStatusStacksInput">
+              Stacks
+              <span class="text-xl font-bold text-primary">{{
+                negativeStatusStacksLocal
+              }}</span>
+            </label>
+            <input
+              id="negativeStatusStacksInput"
+              v-model.number="negativeStatusStacksLocal"
+              type="range"
+              :min="0"
+              :max="negativeStatusStackMax"
+              step="1"
+              class="range range-xs"
+              @input="onNegativeStatusStacksInput" />
+          </div>
+          <div
+            v-if="isElectroFlareNegativeStatus"
+            class="flex flex-col gap-2 flex-1 min-w-[140px]">
+            <label
+              class="text-base font-medium opacity-90"
+              for="electroRageStacksInput">
+              Electro Rage stacks
+              <span class="text-xl font-bold text-primary">{{
+                electroRageStacksLocal
+              }}</span>
+            </label>
+            <input
+              id="electroRageStacksInput"
+              v-model.number="electroRageStacksLocal"
+              type="range"
+              min="0"
+              max="13"
+              step="1"
+              class="range range-xs"
+              @input="onElectroRageStacksInput" />
+          </div>
         </div>
       </div>
       <div class="edit__buffs">
@@ -274,6 +330,7 @@ import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
 import { echoSetAttacks } from "../echoes/stats";
 import { utilityAttacks } from "../buffs";
 import { mainEchoesData, getEchoData } from "../echoes/index.ts";
+import { negativeStatusAttacks } from "../calculator/negativeStatusAttacks";
 export default {
   props: {
     characterData: {
@@ -344,6 +401,14 @@ export default {
       type: Number,
       default: null,
     },
+    negativeStatusStacks: {
+      type: Number,
+      default: 1,
+    },
+    electroRageStacks: {
+      type: Number,
+      default: 0,
+    },
   },
   components: {
     CalculatorRotationActionBuff,
@@ -361,6 +426,8 @@ export default {
       excludeWeaponBuffs: false,
       disabled: false,
       buffData: [],
+      negativeStatusStacksLocal: 1,
+      electroRageStacksLocal: 0,
       skillKeyMap: {
         basic: "basicAttacks",
         skill: "skillAttacks",
@@ -384,6 +451,7 @@ export default {
         echoSetAttacks: "Echo Set",
         utilityAttacks: "Utility",
         echoAttacks: "Echo Attacks",
+        negativeStatus: "Negative Status",
       },
     };
   },
@@ -411,7 +479,30 @@ export default {
     skillAttacks() {
       return this.characterData?.[this.skillType]?.attacks ?? [];
     },
+    negativeStatusAttacksList() {
+      return negativeStatusAttacks;
+    },
+    isNegativeStatusSkill() {
+      return this.actionSkillType === "negativeStatus";
+    },
+    isElectroFlareNegativeStatus() {
+      return (
+        this.isNegativeStatusSkill &&
+        this.actionKeyValue === "ElementalEffectElectroFlare"
+      );
+    },
+    negativeStatusStackMax() {
+      if (this.actionKeyValue === "ElementalEffectAeroErosion") {
+        return 9;
+      }
+      return 13;
+    },
     attackData() {
+      if (this.actionSkillType === "negativeStatus") {
+        return negativeStatusAttacks.find((attack) => {
+          return attack.key === this.actionKeyValue;
+        });
+      }
       // if the attack is an echo, find the data from the echo list
       if (this.skillType === "echoSetAttacks") {
         return this.echoSetAttacksList.find((attack) => {
@@ -437,6 +528,9 @@ export default {
       });
     },
     damageType() {
+      if (this.actionSkillType === "negativeStatus") {
+        return "Negative Status";
+      }
       const attackType = this.attackData?.type ?? null;
       if (!attackType) {
         return null;
@@ -508,21 +602,13 @@ export default {
     toggleEdit() {
       this.isEditing = !this.isEditing;
     },
-    onSkillChange(e) {
-      // need to get the type of attack, which we can get from the optgroup
-      // 1. Get the selected index
-      const index = event.target.selectedIndex;
-      // 2. Find the selected option
-      const option = event.target.options[index];
-      // 3. Select the parent element (optgroup) for the selected option
-      const optgroup = option.parentElement;
-      // 4. Finally, get the data attr that has the skill
-      const skill = optgroup.getAttribute("data-skill");
-      // update our skill
-      this.actionSkillType = skill;
+    buildActionPayload(orderOverride = null) {
       const action = {
         id: this.id,
-        order: this.order,
+        order:
+          orderOverride !== null && orderOverride !== undefined
+            ? orderOverride
+            : this.order,
         key: this.actionKeyValue,
         type: this.actionSkillType,
         count: this.hits,
@@ -531,15 +617,57 @@ export default {
         excludeTeamBuffs: this.excludeTeamBuffs,
         excludeWeaponBuffs: this.excludeWeaponBuffs,
         isDisabled: this.disabled,
+        negativeStatusStacks: this.negativeStatusStacksLocal,
+        electroRageStacks: this.electroRageStacksLocal,
       };
-      // hold onto the echo that was used
-      if (skill === "echoAttacks") {
+      if (this.actionSkillType === "echoAttacks") {
         action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
         action.mainEchoRank =
           this.actionMainEchoRank || this.rotationMainEchoRank;
       }
-
-      this.$emit("action-update", action);
+      return action;
+    },
+    onSkillChange(e) {
+      const index = e.target.selectedIndex;
+      const option = e.target.options[index];
+      const optgroup = option.parentElement;
+      const skill = optgroup.getAttribute("data-skill");
+      this.actionSkillType = skill;
+      this.$nextTick(() => {
+        if (this.actionSkillType === "negativeStatus") {
+          let v = Number(this.negativeStatusStacksLocal);
+          if (Number.isNaN(v) || v < 0) {
+            v = 0;
+          }
+          if (v > this.negativeStatusStackMax) {
+            v = this.negativeStatusStackMax;
+          }
+          this.negativeStatusStacksLocal = v;
+        }
+        this.$emit("action-update", this.buildActionPayload());
+      });
+    },
+    onNegativeStatusStacksInput() {
+      let v = Number(this.negativeStatusStacksLocal);
+      if (Number.isNaN(v) || v < 0) {
+        v = 0;
+      }
+      if (v > this.negativeStatusStackMax) {
+        v = this.negativeStatusStackMax;
+      }
+      this.negativeStatusStacksLocal = v;
+      this.$emit("action-update", this.buildActionPayload());
+    },
+    onElectroRageStacksInput() {
+      let v = Number(this.electroRageStacksLocal);
+      if (Number.isNaN(v) || v < 0) {
+        v = 0;
+      }
+      if (v > 13) {
+        v = 13;
+      }
+      this.electroRageStacksLocal = v;
+      this.$emit("action-update", this.buildActionPayload());
     },
     addBuff() {
       this.buffData.push({
@@ -554,25 +682,7 @@ export default {
       });
       this.buffData = updatedBuffsList;
 
-      const action = {
-        id: this.id,
-        order: this.order,
-        key: this.actionKeyValue,
-        type: this.actionSkillType,
-        count: this.hits,
-        buffs: this.buffData,
-        excludeSelfBuffs: this.excludeSelfBuffs,
-        excludeTeamBuffs: this.excludeTeamBuffs,
-        excludeWeaponBuffs: this.excludeWeaponBuffs,
-        isDisabled: this.disabled,
-      };
-      // hold onto the echo that was used
-      if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank =
-          this.actionMainEchoRank || this.rotationMainEchoRank;
-      }
-      this.$emit("action-update", action);
+      this.$emit("action-update", this.buildActionPayload());
     },
     handleUpdatedBuff(buffData) {
       const buffs = JSON.parse(JSON.stringify(this.buffData));
@@ -585,25 +695,7 @@ export default {
       buffs[foundIndex] = buffData;
       this.buffData = buffs;
 
-      const action = {
-        id: this.id,
-        order: this.order,
-        key: this.actionKeyValue,
-        type: this.actionSkillType,
-        count: this.hits,
-        buffs: this.buffData,
-        excludeSelfBuffs: this.excludeSelfBuffs,
-        excludeTeamBuffs: this.excludeTeamBuffs,
-        excludeWeaponBuffs: this.excludeWeaponBuffs,
-        isDisabled: this.disabled,
-      };
-      // hold onto the echo that was used
-      if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank =
-          this.actionMainEchoRank || this.rotationMainEchoRank;
-      }
-      this.$emit("action-update", action);
+      this.$emit("action-update", this.buildActionPayload());
     },
     removeAction() {
       this.$emit("remove-action", {
@@ -611,135 +703,32 @@ export default {
       });
     },
     onSequenceChange(e) {
-      const action = {
-        id: this.id,
-        order: e.target.value,
-        key: this.actionKeyValue,
-        type: this.actionSkillType,
-        count: this.hits,
-        buffs: this.buffData,
-        excludeSelfBuffs: this.excludeSelfBuffs,
-        excludeTeamBuffs: this.excludeTeamBuffs,
-        excludeWeaponBuffs: this.excludeWeaponBuffs,
-        isDisabled: this.disabled,
-      };
-      // hold onto the echo that was used
-      if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank =
-          this.actionMainEchoRank || this.rotationMainEchoRank;
-      }
-      this.$emit("action-update:sequence", action);
+      this.$emit(
+        "action-update:sequence",
+        this.buildActionPayload(e.target.value),
+      );
     },
     onHitsChange(e) {
-      let hitsVal = e.target.value;
-      if (hitsVal <= 0) {
+      let hitsVal = Number(e.target.value);
+      if (Number.isNaN(hitsVal) || hitsVal <= 0) {
         hitsVal = 1;
         this.hits = 1;
+      } else {
+        this.hits = hitsVal;
       }
-      const action = {
-        id: this.id,
-        order: this.order,
-        key: this.actionKeyValue,
-        type: this.actionSkillType,
-        count: hitsVal,
-        buffs: this.buffData,
-        excludeSelfBuffs: this.excludeSelfBuffs,
-        excludeTeamBuffs: this.excludeTeamBuffs,
-        excludeWeaponBuffs: this.excludeWeaponBuffs,
-        isDisabled: this.disabled,
-      };
-      // hold onto the echo that was used
-      if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank =
-          this.actionMainEchoRank || this.rotationMainEchoRank;
-      }
-      this.$emit("action-update", action);
+      this.$emit("action-update", this.buildActionPayload());
     },
     onExcludeSelfBuffsChange() {
-      const action = {
-        id: this.id,
-        order: this.order,
-        key: this.actionKeyValue,
-        type: this.actionSkillType,
-        count: this.hits,
-        buffs: this.buffData,
-        excludeSelfBuffs: this.excludeSelfBuffs,
-        excludeTeamBuffs: this.excludeTeamBuffs,
-        excludeWeaponBuffs: this.excludeWeaponBuffs,
-        isDisabled: this.disabled,
-      };
-      // hold onto the echo that was used
-      if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank =
-          this.actionMainEchoRank || this.rotationMainEchoRank;
-      }
-      this.$emit("action-update", action);
+      this.$emit("action-update", this.buildActionPayload());
     },
     onExcludeTeamBuffsChange() {
-      const action = {
-        id: this.id,
-        order: this.order,
-        key: this.actionKeyValue,
-        type: this.actionSkillType,
-        count: this.hits,
-        buffs: this.buffData,
-        excludeSelfBuffs: this.excludeSelfBuffs,
-        excludeTeamBuffs: this.excludeTeamBuffs,
-        excludeWeaponBuffs: this.excludeWeaponBuffs,
-        isDisabled: this.disabled,
-      };
-      // hold onto the echo that was used
-      if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank =
-          this.actionMainEchoRank || this.rotationMainEchoRank;
-      }
-      this.$emit("action-update", action);
+      this.$emit("action-update", this.buildActionPayload());
     },
     onExcludeWeaponBuffsChange() {
-      const action = {
-        id: this.id,
-        order: this.order,
-        key: this.actionKeyValue,
-        type: this.actionSkillType,
-        count: this.hits,
-        buffs: this.buffData,
-        excludeSelfBuffs: this.excludeSelfBuffs,
-        excludeTeamBuffs: this.excludeTeamBuffs,
-        excludeWeaponBuffs: this.excludeWeaponBuffs,
-        isDisabled: this.disabled,
-      };
-      // hold onto the echo that was used
-      if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank =
-          this.actionMainEchoRank || this.rotationMainEchoRank;
-      }
-      this.$emit("action-update", action);
+      this.$emit("action-update", this.buildActionPayload());
     },
     onChangeDisabled() {
-      const action = {
-        id: this.id,
-        order: this.order,
-        key: this.actionKeyValue,
-        type: this.actionSkillType,
-        count: this.hits,
-        buffs: this.buffData,
-        excludeSelfBuffs: this.excludeSelfBuffs,
-        excludeTeamBuffs: this.excludeTeamBuffs,
-        excludeWeaponBuffs: this.excludeWeaponBuffs,
-        isDisabled: this.disabled,
-      };
-      // hold onto the echo that was used
-      if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank =
-          this.actionMainEchoRank || this.rotationMainEchoRank;
-      }
-      this.$emit("action-update", action);
+      this.$emit("action-update", this.buildActionPayload());
     },
     isAttackDisabled(attack) {
       if (!attack?.requiresResonanceChain) {
@@ -772,6 +761,15 @@ export default {
     this.excludeWeaponBuffs = this.ignoreWeaponBuffs;
     this.disabled = this.isDisabled;
     this.buffData = JSON.parse(JSON.stringify(this.buffs));
+    this.negativeStatusStacksLocal =
+      this.negativeStatusStacks !== undefined &&
+      this.negativeStatusStacks !== null
+        ? this.negativeStatusStacks
+        : 1;
+    this.electroRageStacksLocal =
+      this.electroRageStacks !== undefined && this.electroRageStacks !== null
+        ? this.electroRageStacks
+        : 0;
   },
 };
 </script>
