@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>March 20, 2026</h3>
+    <ul>
+      <li>Fixed damage breakdown for Fusion Burst, a couple of numbers weren't appearing correctly</li>
+    </ul>
     <h3>March 19, 2026</h3>
     <ul>
       <li>Fixes Sigrika self echo dmg bonus based on Energy Regen</li>
