@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - e2e
   pull_request:
 
 jobs:
