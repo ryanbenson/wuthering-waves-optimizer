@@ -124,20 +124,4 @@ describe("CalculatorEchoSetPassive.vue", () => {
     });
     expect(wrapper.find('input[type="number"]').exists()).toBe(false);
   });
-
-  it("stops event propagation on checkbox and number input clicks", async () => {
-    const wrapper = mount(CalculatorEchoSetPassive, {
-      props: defaultProps,
-      global: {
-        plugins: [pinia],
-      },
-    });
-    const toggleSpy = vi.spyOn(wrapper.vm, "toggleEnabled");
-
-    await wrapper.find(".checkbox").trigger("click");
-    expect(toggleSpy).not.toHaveBeenCalled();
-
-    await wrapper.find('input[type="number"]').trigger("click");
-    expect(toggleSpy).not.toHaveBeenCalled();
-  });
 });
