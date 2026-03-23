@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>March 23, 2026</h3>
+    <ul>
+      <li>Fixed Sigrika's Blessing of Runes buff in the optimizer</li>
+    </ul>
     <h3>March 21, 2026</h3>
     <ul>
       <li>Fixed Sigrika's Blessing of Runes buff in the optimizer</li>
