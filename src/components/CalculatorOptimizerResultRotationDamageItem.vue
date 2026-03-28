@@ -70,7 +70,7 @@
         </span>
       </td>
     </template>
-    <template v-else-if="type === 'ElementalEffect'">
+    <template v-else-if="type === 'ElementalEffect' && label !== 'Fusion Burst' && label !== 'Electro Flare'">
       <td class="flex items-center gap-2">
         <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
           :class="{
@@ -84,10 +84,19 @@
       </td>
       <td
         v-tooltip="{
-          content: displayDamage(damage),
+          content: displayDamage(damage?.damage ?? damage),
           html: true,
-        }">
-        {{ displayDamage(damage) }}
+        }"
+        colspan="3">
+        {{ displayDamage(damage?.damage ?? damage) }}
+          <span
+            :class="{
+              'text-success': normalDiffPercentage >= 0,
+              'text-error': normalDiffPercentage < 0,
+            }">
+            ({{ normalDiffPercentage >= 0 ? "+" : ""
+            }}{{ displayPercentage(normalDiffPercentage) }})
+          </span>
       </td>
     </template>
     <template v-else>
@@ -239,8 +248,8 @@ export default {
       );
     },
     normalDiffPercentage() {
-      const newDamage = this.damage.totalDamage ?? 0;
-      const baseDamage = this.originalDamageInstance?.damage.totalDamage ?? 0;
+      const newDamage = this.damage.totalDamage ?? this.damage?.damage ?? 0;
+      const baseDamage = this.originalDamageInstance?.damage.totalDamage ?? this.originalDamageInstance?.damage?.damage ?? 0;
       return ((newDamage - baseDamage) / baseDamage) * 100;
     },
     avgDiffPercentage() {

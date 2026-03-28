@@ -31,7 +31,8 @@
         v-tooltip="{
           content: damage.detailedCalculation,
           html: true,
-        }">
+        }"
+        colspan="3">
         {{ displayDamage(damage.healAmount) }}
       </td>
     </template>
@@ -51,7 +52,8 @@
         v-tooltip="{
           content: damage.detailedCalculation,
           html: true,
-        }">
+        }"
+        colspan="3">
         {{ displayDamage(damage.shieldAmount) }}
       </td>
     </template>
@@ -71,7 +73,8 @@
         v-tooltip="{
           content: displayDamage(damage.damage),
           html: true,
-        }">
+        }"
+        colspan="3">
         {{ displayDamage(damage.damage) }}
       </td>
     </template>
