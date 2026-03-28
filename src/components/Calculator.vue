@@ -1192,11 +1192,20 @@ export default defineComponent({
               typeof echo.echoSubStatsValue5 === "number"
                 ? echo.echoSubStatsValue5
                 : null,
-            rank: typeof echo.rank === "number" ? echo.rank : null,
+            rank:
+              echo.rank != null && echo.rank !== ""
+                ? (() => {
+                    const n = Number(echo.rank);
+                    return Number.isFinite(n) ? n : null;
+                  })()
+                : null,
             stat: echo.stat ?? null,
             type:
-              typeof echo.type === "number" || typeof echo.type === "string"
-                ? echo.type
+              echo.type != null && echo.type !== ""
+                ? (() => {
+                    const n = Number(echo.type);
+                    return Number.isFinite(n) ? n : null;
+                  })()
                 : null,
           };
         });
