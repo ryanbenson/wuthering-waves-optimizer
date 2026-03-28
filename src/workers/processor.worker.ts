@@ -268,6 +268,8 @@ function processLoadout(
       ATK_FLAT:
         (selfBuffsData?.ATK_FLAT || 0) +
         (additionalBaseBuffsData?.ATK_FLAT || 0),
+      EchoDMGBonus:
+        (selfBuffsData?.EchoDMGBonus || 0) + (additionalBaseBuffsData?.EchoDMGBonus || 0),
     };
 
     // merge the specificTalentBuffs together

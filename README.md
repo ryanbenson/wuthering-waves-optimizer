@@ -11,6 +11,20 @@ See the project for more information on where things are at, and where things ar
 - [Vue](https://vuejs.org/)
 - [Vercel](https://vercel.com)
 
+# Running locally
+
+- You need [NodeJS](https://nodejs.org/) installed.
+- Then clone the repo
+- Install the depdencies: `npm i`
+- Start the local server: `npm run dev`
+- It should kick up and be available at [http://localhost:5173/](http://localhost:5173/)
+
+## Running Tests
+
+* Run `npm run test` to run the Vitests
+* Use `npm run cypress:open` to open Cypress for the UI for e2e tests
+* You can also just run the e2e tests with `npm run cypress:run` and it will run them in your terminal
+
 # Content Guidelines
 
 This app will not support unreleased content (characters, echoes, weapons, echo sets, etc.) We will only release content to production if Kuro has released the content officially (in-game, news article on the official website)

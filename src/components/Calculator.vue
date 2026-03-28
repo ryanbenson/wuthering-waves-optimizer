@@ -16,7 +16,7 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div
-            v-if="true"
+            v-if="false"
             class="alert alert-success mb-6 text-white p-2 px-4">
             Sigrika and her sig are available!
           </div>
@@ -1062,11 +1062,20 @@ export default defineComponent({
               typeof echo.echoSubStatsValue5 === "number"
                 ? echo.echoSubStatsValue5
                 : null,
-            rank: typeof echo.rank === "number" ? echo.rank : null,
+            rank:
+              echo.rank != null && echo.rank !== ""
+                ? (() => {
+                    const n = Number(echo.rank);
+                    return Number.isFinite(n) ? n : null;
+                  })()
+                : null,
             stat: echo.stat ?? null,
             type:
-              typeof echo.type === "number" || typeof echo.type === "string"
-                ? echo.type
+              echo.type != null && echo.type !== ""
+                ? (() => {
+                    const n = Number(echo.type);
+                    return Number.isFinite(n) ? n : null;
+                  })()
                 : null,
           };
         });
