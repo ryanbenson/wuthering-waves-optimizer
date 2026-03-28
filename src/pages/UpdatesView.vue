@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>March 28, 2026</h3>
+    <ul>
+      <li>Adds support for negative statuses in rotations and optimizer.</li>
+    </ul>
     <h3>March 27, 2026</h3>
     <ul>
       <li>Fixed a bug in the optimizer that was causing it to miss some echoes.</li>
