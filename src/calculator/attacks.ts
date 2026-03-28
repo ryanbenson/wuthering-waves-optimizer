@@ -99,6 +99,9 @@ export const processAttacks = (
               talent = attack.talents[attack?.actionMainEchoRank ?? "5"];
               providedTalent = talent;
               break;
+            case "negativeStatus":
+              talent = attack.talent;
+              break;
           }
         } else {
           talent = attack.talents[talentType];
@@ -323,6 +326,9 @@ export const calculateAttackDamage = (
       case "echoAttacks":
         // TODO: Get the correct talent level for echo attacks
         talent = attack.talents["5"];
+        break;
+      case "negativeStatus":
+        talent = attack.talent;
         break;
     }
   } else {
@@ -1553,6 +1559,21 @@ export const calcDamages = (context: CalculationContext) => {
       // go through all attacks and update our aggregation
       attacks.forEach((attack: any) => {
         if (attack?.originalIsEnabled === false) {
+          return;
+        }
+        // Spectro Frazzle / Aero Erosion: single scalar on damage.damage
+        if (
+          attack.type === "ElementalEffect" &&
+          attack?.damage?.damage !== undefined &&
+          attack?.damage?.totalDamage === undefined
+        ) {
+          const v = attack.damage.damage;
+          damageAggregation.normalDamage =
+            (damageAggregation.normalDamage || 0) + v;
+          damageAggregation.avgDamage =
+            (damageAggregation.avgDamage || 0) + v;
+          damageAggregation.critDamage =
+            (damageAggregation.critDamage || 0) + v;
           return;
         }
         if (attack?.damage?.totalDamage !== undefined) {

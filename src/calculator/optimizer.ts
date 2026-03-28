@@ -1,8 +1,6 @@
 // Import necessary functions and types
 import { getAttackData } from "../characters/characters";
-import { getEchoData } from "../echoes";
-import { utilityAttacks } from "../buffs";
-import { getCombinedEchoStats, echoSetAttacks } from "../echoes/stats";
+import { getCombinedEchoStats } from "../echoes/stats";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import {
   calcCharStats,
@@ -12,6 +10,7 @@ import {
   computeCritOverflowBuffs,
 } from "../calculator/stats";
 import { processAttacks, getCalculationContext } from "../calculator/attacks";
+import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
 import { randomString } from "../utils/strings";
 
 /** Echo cost as a number (coerced). Non-numeric types must not participate in `+` with numbers (string concat bugs). */
@@ -274,78 +273,12 @@ export function optimize(
     // @ts-ignore
     const rotationActionInfo = [];
     rotation.actions.forEach((action: any) => {
-      const actionKey = action.key;
-      const actionType = action.type;
-      // @ts-ignore
-      const actionBuffs = action.buffs;
-      const actionCount = action.count;
-      const actionId = action.id;
-      const actionDisabled = action?.isDisabled ?? false;
-      const actionMainEcho = action?.mainEcho ?? null;
-      // @ts-ignore
-      const actionMainEchoRank = action?.mainEchoRank ?? null;
-      // if the action is disabled, just skip it
-      if (actionDisabled) {
-        return;
-      }
-      const attacksList =
-        context.chosenChar?.[`${actionType}Attacks`]?.attacks ?? [];
-      let foundAction;
-      if (actionType === "echoSetAttacks") {
-        foundAction = echoSetAttacks.find((attack) => {
-          return attack.key === actionKey;
-        });
-      } else if (actionType === "utilityAttacks") {
-        foundAction = utilityAttacks.find((attack) => {
-          return attack.key === actionKey;
-        });
-      } else if (actionType === "echoAttacks") {
-        const echoData = getEchoData(actionMainEcho);
-        const echoAttacks = echoData?.actions ?? [];
-        foundAction = echoAttacks.find((attack) => {
-          return attack.key === actionKey;
-        });
-      } else {
-        foundAction = attacksList.find((attack: any) => {
-          return attack.key === actionKey;
-        });
-      }
-      if (foundAction) {
-        const actionData = {
-          ...foundAction,
-          buffs: null,
-          actionType,
-          count: actionCount,
-          id: actionId,
-          excludeSelfBuffs: action.excludeSelfBuffs ?? false,
-          excludeTeamBuffs: action.excludeTeamBuffs ?? false,
-          excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
-          actionMainEcho: action?.mainEcho ?? null,
-          actionMainEchoRank: action?.mainEchoRank ?? null,
-          // only exclude echoes if we excluded self, team, or weapon buffs
-          excludeEchoes:
-            action.excludeSelfBuffs ||
-            action.excludeTeamBuffs ||
-            action.excludeWeaponBuffs ||
-            false,
-        };
-        // if there are buffs, turn it into a hashmap
-        if (action?.buffs?.length) {
-          const buffsData = {};
-          // keys are unique, there should not be duplicates
-          action.buffs.forEach((buff: any) => {
-            // buffs are in human readable, convert to decimal except flat values
-            let buffValue;
-            if (["ATK_FLAT", "HP_FLAT", "DEF_FLAT"].includes(buff.modifier)) {
-              buffValue = Number(buff.modifierValue);
-            } else {
-              buffValue = Number(buff.modifierValue) / 100;
-            }
-            // @ts-ignore
-            buffsData[buff.modifier] = buffValue;
-          });
-          actionData.buffs = buffsData;
-        }
+      const actionData = resolveRotationActionToAttackData(
+        action,
+        context.chosenChar,
+        context.characterLevel,
+      );
+      if (actionData) {
         rotationActionInfo.push(actionData);
       }
     });
@@ -795,6 +728,20 @@ export function optimize(
       // go through all attacks and update our aggregation
       attacks.forEach((attack: any) => {
         if (attack?.originalIsEnabled === false) {
+          return;
+        }
+        if (
+          attack.type === "ElementalEffect" &&
+          attack?.damage?.damage !== undefined &&
+          attack?.damage?.totalDamage === undefined
+        ) {
+          const v = attack.damage.damage;
+          damageAggregation.normalDamage =
+            (damageAggregation.normalDamage || 0) + v;
+          damageAggregation.avgDamage =
+            (damageAggregation.avgDamage || 0) + v;
+          damageAggregation.critDamage =
+            (damageAggregation.critDamage || 0) + v;
           return;
         }
         if (attack?.damage?.totalDamage !== undefined) {
