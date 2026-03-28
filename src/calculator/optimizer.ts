@@ -60,10 +60,9 @@ export function* generateLoadouts(
     return;
   }
 
-  // Only full legal loadouts: 5 echoes and exactly 12 cost (WW uses 5 slots, 12 cost budget).
-  // Yielding partial or 5-echo / cost≠12 combos lets illegal builds (e.g. 3+3+3+1+1=11) compete and
-  // can beat real 4+3+3+1+1 builds for Crit / high crit-rate Average.
-  if (combo.length === 5 && cost === 12) {
+  // Any non-empty loadout with ≤5 echoes and total cost ≤12 is valid (cost may be under 12 even with
+  // all five slots filled; it only must not exceed the 12 budget).
+  if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
     yield combo;
   }
 
