@@ -14,6 +14,12 @@ import {
 import { processAttacks, getCalculationContext } from "../calculator/attacks";
 import { randomString } from "../utils/strings";
 
+/** Echo cost as a number (coerced). Non-numeric types must not participate in `+` with numbers (string concat bugs). */
+function echoCost(echo: { type?: unknown }): number {
+  const n = Number(echo?.type);
+  return Number.isFinite(n) ? n : 0;
+}
+
 export function* generateLoadouts(
   echoes: any,
   mainEchoKeys = [],
@@ -32,7 +38,7 @@ export function* generateLoadouts(
     // For each copy of the main echo, start a new combination
     for (const mainEcho of mainEchoCopies) {
       // the main echo isn't guaranteed to be 4, sometimes it's an elite, so 3
-      const nextCost = cost + mainEcho.type;
+      const nextCost = cost + echoCost(mainEcho);
       if (nextCost <= 12) {
         // Create a fresh usedEchoIds Set for each main echo group
         const groupUsedEchoIds = new Set([mainEcho.echoId]);
@@ -54,7 +60,8 @@ export function* generateLoadouts(
     return;
   }
 
-  // Valid combination? Yield it (ignore empty set)
+  // Any non-empty loadout with ≤5 echoes and total cost ≤12 is valid (cost may be under 12 even with
+  // all five slots filled; it only must not exceed the 12 budget).
   if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
     yield combo;
   }
@@ -72,7 +79,7 @@ export function* generateLoadouts(
     // Skip if the echo has
     if (usedEchoes.has(next.echo)) continue;
 
-    const nextCost = cost + next.type;
+    const nextCost = cost + echoCost(next);
     if (nextCost <= 12) {
       // Add to used set instead of filtering
       usedEchoIds.add(next.echoId);
