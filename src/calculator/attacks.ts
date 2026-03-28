@@ -244,6 +244,13 @@ export const calculateAttackDamage = (
   const attackElement =
     attack?.element ?? context.character.chosenChar?.basic?.element;
   const stats = statsWithoutTeamBuffs ?? providedFullStats ?? context.stats;
+  // When `stats` omits totals (e.g. partial providedFullStats), fall back to context.
+  const statTotalsFallback = {
+    totalDef: stats.totalDef ?? context.stats.totalDef,
+    totalHp: stats.totalHp ?? context.stats.totalHp,
+    totalAtk: stats.totalAtk ?? context.stats.totalAtk,
+    energyRegen: stats.energyRegen ?? context.stats.energyRegen,
+  };
   let elementalDmgBonusDecimal = getElementDmgBonusByType(
     attackElement,
     stats,
@@ -256,12 +263,11 @@ export const calculateAttackDamage = (
       Havoc: context.stats.Havoc,
     },
   );
-  const atkDefHpVal = getDamageValByAttr(attack?.attribute, stats, {
-    totalDef: context.stats.totalDef,
-    totalHp: context.stats.totalHp,
-    energyRegen: context.stats.energyRegen,
-    totalAtk: context.stats.totalAtk,
-  });
+  const atkDefHpVal = getDamageValByAttr(
+    attack?.attribute,
+    stats,
+    statTotalsFallback,
+  );
   let totalSkillDmgBonus = getDamageTypeBonusByType(attackType, stats, {
     BasicAttackDMGBonus: context.stats.BasicAttackDMGBonus,
     HeavyAttackDMGBonus: context.stats.HeavyAttackDMGBonus,
@@ -395,14 +401,14 @@ export const calculateAttackDamage = (
       `${attack.key}:DMGBonus:MaxDef`
     ] ?? 0;
   const specificSkillDmgFromResonanceChainsBasedOnMaxHpVal =
-    (context.stats.totalHp * specificSkillDmgFromResonanceChainsBasedOnMaxHp) /
+    (statTotalsFallback.totalHp * specificSkillDmgFromResonanceChainsBasedOnMaxHp) /
     100;
   const specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal =
-    (context.stats.totalAtk *
+    (statTotalsFallback.totalAtk *
       specificSkillDmgFromResonanceChainsBasedOnMaxAtk) /
     100;
   const specificSkillDmgFromResonanceChainsBasedOnMaxDefVal =
-    (context.stats.totalDef *
+    (statTotalsFallback.totalDef *
       specificSkillDmgFromResonanceChainsBasedOnMaxDef) /
     100;
   // end max buff handlers
@@ -480,8 +486,8 @@ export const calculateAttackDamage = (
     specificSkillExtraCritRateResonanceChains +
     echoSpecificAttackTypeCritRate +
     specificSkillExtraCritRateTeamBuffs;
-  if (excludeTeamBuffs) {
-    instanceDmgCritRate = statsWithoutTeamBuffs?.totalCritRate ?? 0;
+  if (statsWithoutTeamBuffs != null) {
+    instanceDmgCritRate = statsWithoutTeamBuffs.totalCritRate ?? 0;
     instanceDmgCritRate += specificSkillExtraCritRateResonanceChains;
   }
   const baseCritDamage =
@@ -490,8 +496,8 @@ export const calculateAttackDamage = (
     baseCritDamage +
     specificSkillExtraCritDMG +
     selfBuffsSpecificSkillExtraCritDMG;
-  if (excludeTeamBuffs) {
-    instanceDmgCritDMG = statsWithoutTeamBuffs?.totalCritDMG ?? 0;
+  if (statsWithoutTeamBuffs != null) {
+    instanceDmgCritDMG = statsWithoutTeamBuffs.totalCritDMG ?? 0;
     instanceDmgCritDMG += specificSkillExtraCritDMG;
   }
   const talentModifierMultiply =
@@ -504,7 +510,11 @@ export const calculateAttackDamage = (
   const talentModifierMultiplyAttackBuff =
     attack?.buffs?.talentModifierMultiply ?? 0;
   const currentDefIgnore =
-    providedFullStats?.DefIgnore || context.stats.DefIgnore || 0;
+    providedFullStats?.DefIgnore ||
+    (statsWithoutTeamBuffs != null
+      ? statsWithoutTeamBuffs.DefIgnore
+      : context.stats.DefIgnore) ||
+    0;
   const totalDefIgnore =
     currentDefIgnore +
     extraDefIgnoreResonanceChain +
@@ -578,7 +588,12 @@ export const calculateAttackDamage = (
     context.buffs.charResonanceChainsData?.[`ResistShred:${attackElement}`] ??
     0;
   const baseResistReduction =
-    providedFullStats?.resistReduction || context.stats.ResistReduction || 0;
+    providedFullStats?.resistReduction ??
+    (statsWithoutTeamBuffs != null
+      ? statsWithoutTeamBuffs.resistReduction ?? 0
+      : undefined) ??
+    context.stats.ResistReduction ??
+    0;
   let customResistReduction = context.buffs.customBuffs?.ResistShred ?? 0;
   const actionBuffResistReduction = attack.buffs?.ResistShred ?? 0;
   const totalResistReduction =
@@ -594,8 +609,11 @@ export const calculateAttackDamage = (
 
   // damage deepen:
   let baseTotalDeepenEffect =
-    providedFullStats?.totalDeepenEffect ||
-    context.stats.TotalDeepenEffect ||
+    providedFullStats?.totalDeepenEffect ??
+    (statsWithoutTeamBuffs != null
+      ? statsWithoutTeamBuffs.totalDeepenEffect ?? 0
+      : undefined) ??
+    context.stats.TotalDeepenEffect ??
     0;
   // so far damage deepen is from team buffs, add more later if needed
   // get element first, then any skill specific ones next, then add together
@@ -622,7 +640,6 @@ export const calculateAttackDamage = (
       `${attack.key}:DMGDeepen`
     ] ?? 0;
   if (excludeTeamBuffs) {
-    baseTotalDeepenEffect = statsWithoutTeamBuffs?.totalDeepenEffect ?? 0;
     teamBuffDmgDeepenForCharElement = 0;
     teamBuffDmgDeepenForAttackType = 0;
     teamBuffDmgDeepenForSubType = 0;
