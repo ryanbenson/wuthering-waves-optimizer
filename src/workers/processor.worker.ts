@@ -488,6 +488,7 @@ function processLoadout(
         context.character,
         context.enemyType,
         context.strainStacks,
+        mergedSelfBuffs,
       );
 
       const attacks = processAttacks(
@@ -577,6 +578,7 @@ function processLoadout(
         context.character,
         context.enemyType,
         context.strainStacks,
+        mergedSelfBuffs,
       );
 
       const attacks = processAttacks(

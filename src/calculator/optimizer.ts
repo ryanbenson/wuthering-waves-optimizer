@@ -131,6 +131,8 @@ export interface OptimizerContext {
 
   // Buffs
   charBuffsData: Record<string, any>;
+  /** Mirrors `calculateAllStats` merged self buffs; optional (worker recomputes per loadout). */
+  charBuffsMergedForStats?: Record<string, any> | null;
   charResonanceChainsData: Record<string, any>;
   teamBuffsData: Record<string, any>;
   customBuffs: Record<string, any>;
@@ -610,6 +612,7 @@ export function optimize(
         context.character,
         context.enemyType,
         context.strainStacks,
+        mergedSelfBuffs,
       );
       const attacks = processAttacks(
         [attackData], // attacks list, just the one since we're just doing 1 attack to optimize
@@ -705,6 +708,7 @@ export function optimize(
         context.character,
         context.enemyType,
         context.strainStacks,
+        mergedSelfBuffs,
       );
       const attacks = processAttacks(
         // @ts-ignore
