@@ -96,6 +96,7 @@
           :character="character"
           :total-combos="totalCombos"
           :processed-combos="processedCombos"
+          :optimizer-no-possible-loadouts="optimizerNoPossibleLoadouts"
           :optimizer-results="optimizerResults"
           :character-element="characterElement"
           :all-damages="JSON.parse(JSON.stringify(allDamages))"
@@ -449,6 +450,7 @@ export default defineComponent({
     // optimizer
     const totalCombos = ref(0);
     const processedCombos = ref(0);
+    const optimizerNoPossibleLoadouts = ref(false);
     const optimizerResults = ref([]);
     const optimizationTargetType = ref("");
     const optimizationTargetObject = ref("");
@@ -499,6 +501,7 @@ export default defineComponent({
 
       totalCombos.value = 0;
       processedCombos.value = 0;
+      optimizerNoPossibleLoadouts.value = false;
       optimizerResults.value = [];
       setTimeout(() => {
         isLoading.value = false;
@@ -870,6 +873,7 @@ export default defineComponent({
       const topN = 5;
       processedCombos.value = 0;
       totalCombos.value = 0;
+      optimizerNoPossibleLoadouts.value = false;
       optimizerResults.value = []; // Initialize as empty array instead of null
       optimizationTargetType.value = target.split(":")[0];
       optimizationTargetObject.value = target.split(":")[1] || "";
@@ -1458,6 +1462,8 @@ export default defineComponent({
         } else if (e.data.type === "done") {
           generatorDone = true;
           totalCombos.value = e.data.totalGenerated || totalGenerated;
+          optimizerNoPossibleLoadouts.value =
+            e.data.noPossibleLoadouts === true;
           distributeWork(); // Process remaining work
         } else if (e.data.type === "error") {
           console.error("Generator worker error:", e.data.error);
@@ -1556,6 +1562,7 @@ export default defineComponent({
       // optimizer stuff
       totalCombos,
       processedCombos,
+      optimizerNoPossibleLoadouts,
       optimizerResults,
       optimizationTargetType,
       optimizationTargetObject,

@@ -12,6 +12,7 @@ import {
 import { processAttacks, getCalculationContext } from "../calculator/attacks";
 import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
 import { randomString } from "../utils/strings";
+import { meetsMinStatThreshold } from "./meetsMinStatThreshold";
 
 /** Echo cost as a number (coerced). Non-numeric types must not participate in `+` with numbers (string concat bugs). */
 function echoCost(echo: { type?: unknown }): number {
@@ -524,9 +525,7 @@ export function optimize(
     if (minStats.length > 0) {
       for (const minStat of minStats) {
         const statValue = finalStats?.[minStat.stat];
-        const desiredValue = Number(minStat.minValue) / 100; // we need to divide as we're getting full int, but the stats calculated are decimals
-        // if any of the min stats aren't good enough, then don't use the loadout
-        if (statValue < desiredValue) {
+        if (!meetsMinStatThreshold(statValue, minStat.minValue)) {
           isMeetingMinRequirements = false;
           break;
         }

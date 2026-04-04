@@ -50,6 +50,7 @@ import {
   computeCritOverflowBuffs,
 } from "../calculator/stats";
 import { processAttacks, getCalculationContext } from "../calculator/attacks";
+import { meetsMinStatThreshold } from "../calculator/meetsMinStatThreshold";
 
 /**
  * Message sent from main thread to processor worker
@@ -340,12 +341,7 @@ function processLoadout(
     if (minStats.length > 0) {
       for (const minStat of minStats) {
         const statValue = finalStats?.[minStat.stat];
-        const desiredValue = Number(minStat.minValue) / 100;
-        if (
-          statValue === undefined ||
-          statValue === null ||
-          statValue < desiredValue
-        ) {
+        if (!meetsMinStatThreshold(statValue, minStat.minValue)) {
           return null; // Doesn't meet requirements
         }
       }

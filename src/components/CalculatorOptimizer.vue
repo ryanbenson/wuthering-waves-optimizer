@@ -267,17 +267,27 @@
       </p>
     </div>
     <div class="optimizer-progress my-6" v-if="hasTriggeredOptimizer">
-      <div>
-        Processed
-        <span class="font-bold">{{ processedCombos }}</span>
-        of
-        <span class="font-bold">{{ totalCombos || "..." }}</span>
-        loadouts
-      </div>
-      <progress
-        class="progress progress-primary"
-        :value="processedCombos"
-        :max="totalCombos || 1"></progress>
+      <p
+        v-if="optimizerNoPossibleLoadouts"
+        class="text-warning text-center my-2">
+        There are no possible loadouts based on your settings. Please adjust your
+        settings or add more echoes.
+      </p>
+      <template v-else>
+        <div>
+          Processed
+          <span class="font-bold">{{ processedCombos }}</span>
+          of
+          <span class="font-bold">{{
+            totalCombos === 0 ? "…" : totalCombos
+          }}</span>
+          loadouts
+        </div>
+        <progress
+          class="progress progress-primary"
+          :value="processedCombos"
+          :max="Math.max(totalCombos, 1)"></progress>
+      </template>
     </div>
     <CalculatorOptimizerResults
       v-if="optimizerResults"
@@ -326,6 +336,10 @@ export default {
     },
     processedCombos: {
       type: Number,
+    },
+    optimizerNoPossibleLoadouts: {
+      type: Boolean,
+      default: false,
     },
     optimizerResults: {
       type: Array,
