@@ -45,6 +45,8 @@ interface GeneratorResponse {
   type: "batch" | "done" | "error";
   batch?: any[]; // Array of loadout combinations (only for "batch" type)
   totalGenerated?: number; // Total number of unique loadouts generated so far
+  /** True when totalGenerated is 0 (no combinations from current echoes / filters) */
+  noPossibleLoadouts?: boolean;
   error?: string; // Error message (only for "error" type)
 }
 
@@ -63,6 +65,15 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
     let totalGenerated = 0;
 
     try {
+      if (!Array.isArray(echoes) || echoes.length === 0) {
+        self.postMessage({
+          type: "done",
+          totalGenerated: 0,
+          noPossibleLoadouts: true,
+        } as GeneratorResponse);
+        return;
+      }
+
       // Track seen combinations to ensure uniqueness
       const seenCombinations = new Set<string>();
 
@@ -118,6 +129,7 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
       self.postMessage({
         type: "done",
         totalGenerated,
+        noPossibleLoadouts: totalGenerated === 0,
       } as GeneratorResponse);
     } catch (error: any) {
       self.postMessage({
