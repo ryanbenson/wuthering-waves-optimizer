@@ -2,6 +2,11 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>April 4, 2026</h3>
+    <ul>
+      <li>Adds message in optimizer when there are no loadouts based on your inventory and config.</li>
+      <li>Fixes a bug where the optimizer minimum stat requirements were filtering out builds that exactly matched the requirements.</li>
+    </ul>
     <h3>March 28, 2026</h3>
     <ul>
       <li>Adds support for negative statuses in rotations and optimizer.</li>
