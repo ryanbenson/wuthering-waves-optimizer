@@ -493,7 +493,7 @@ export default {
     },
     negativeStatusStackMax() {
       if (this.actionKeyValue === "ElementalEffectAeroErosion") {
-        return 9;
+        return 12;
       }
       return 13;
     },

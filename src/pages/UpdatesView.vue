@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>April 5, 2026</h3>
+    <ul>
+      <li>Updates formula for Spectro Frazzle and Aero Erosion to use the updated formula.</li>
+    </ul>
     <h3>April 4, 2026</h3>
     <ul>
       <li>Adds message in optimizer when there are no loadouts based on your inventory and config.</li>

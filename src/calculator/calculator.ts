@@ -789,6 +789,79 @@ function parseShieldTalentString(talent: string): any {
   };
 }
 
+/** Shared formula: levelConstant × (MV ÷ 10000) × DEF × RES × (1 + amp), same as Fusion Burst. */
+function calcNegativeStatusStackDamage(
+  contextType: "fusionBurst" | "spectroFrazzle" | "aeroErosion",
+  charLevel: string,
+  enemyLevel: number,
+  enemyResist: number,
+  resistenceReduction: number,
+  defIgnore: number,
+  defReduction: number,
+  talentModifierMultiply: number,
+  totalDeepenEffect: number,
+  critRate: number,
+  critDamage: number,
+  count: number,
+  stacks: number,
+  getMotionValueByStacks: (stacks: number) => number,
+): any {
+  const characterLevel = parseInt(charLevel.replace("+", ""), 10);
+  const defenseModifier = getDefenseModifier(
+    charLevel,
+    enemyLevel,
+    defIgnore,
+    defReduction,
+  );
+  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
+  const levelConstant = getNegativeStatusLevelConstant(characterLevel);
+  const motionValue = getMotionValueByStacks(stacks);
+  const baseDamage =
+    levelConstant *
+    (motionValue / 10000) *
+    (1 + talentModifierMultiply) *
+    defenseModifier *
+    resistModifier *
+    (1 + totalDeepenEffect);
+  const finalDamage = baseDamage * count;
+  const finalDamageCrit = calcCritDamage(finalDamage, critDamage);
+  const finalDamageAverage = calcAvgDamage(finalDamage, critRate, critDamage);
+  const breakdownCountStr = count > 1 ? `${count} x ` : "";
+  const detailedCalculation = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
+  const detailedCalculationCrit = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
+  const detailedCalculationAverage = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
+
+  return {
+    totalDamage: finalDamage,
+    critDamage: finalDamageCrit,
+    avgDamage: finalDamageAverage,
+    detailedCalculation,
+    detailedCalculationCrit,
+    detailedCalculationAvg: detailedCalculationAverage,
+    totalDamageContext: {
+      type: contextType,
+      charLevel,
+      enemyLevel,
+      enemyResist,
+      resistenceReduction,
+      defIgnore,
+      defReduction,
+      count,
+      defenseModifier,
+      resistModifier,
+      talentModifierMultiply,
+      totalDeepenEffect,
+      critRate,
+      critDamage,
+      baseDamage,
+      finalDamage,
+      levelConstant,
+      motionValue,
+      stacks,
+    },
+  };
+}
+
 export function getSpectroFrazzleModifierByLevelByStacks(
   charLevel: string,
   stacks: number,
@@ -936,85 +1009,67 @@ export function getAeroErosionModifierByLevelByStacks(
 }
 
 export function getSpectroFrazzleDamage(
-  motionValue: number,
-  stacks: number,
   charLevel: string,
   enemyLevel: number,
   enemyResist: number,
   resistenceReduction: number,
   defIgnore: number = 0,
-  DMGDeepen: number = 0,
+  defReduction: number = 0,
+  talentModifierMultiply: number = 0,
+  totalDeepenEffect: number = 0,
+  critRate: number = 0,
+  critDamage: number = 1,
+  count: number = 1,
+  stacks: number = 1,
 ): any {
-  const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
-  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
-  // 1000*res*def*stack number*MV%
-  const baseModifier = 1000;
-  // const modifierByLevelAndStacks = getSpectroFrazzleModifierByLevelByStacks(
-  //   charLevel,
-  //   stacks,
-  // );
-  const damage =
-    baseModifier *
-    resistModifier *
-    defModifier *
-    stacks *
-    motionValue *
-    (1 + DMGDeepen);
-  return {
-    damage,
-    totalDamageContext: {
-      motionValue,
-      stacks,
-      resistModifier,
-      defModifier,
-      charLevel,
-      enemyLevel,
-      enemyResist,
-      resistenceReduction,
-      defIgnore,
-      DMGDeepen,
-      type: "spectroFrazzle",
-    },
-  };
+  return calcNegativeStatusStackDamage(
+    "spectroFrazzle",
+    charLevel,
+    enemyLevel,
+    enemyResist,
+    resistenceReduction,
+    defIgnore,
+    defReduction,
+    talentModifierMultiply,
+    totalDeepenEffect,
+    critRate,
+    critDamage,
+    count,
+    stacks,
+    getSpectroFrazzleMotionValueByStacks,
+  );
 }
 
 export function getAeroErosionDamage(
-  motionValue: number,
-  stacks: number,
   charLevel: string,
   enemyLevel: number,
   enemyResist: number,
   resistenceReduction: number,
   defIgnore: number = 0,
-  DMGDeepen: number = 0,
+  defReduction: number = 0,
+  talentModifierMultiply: number = 0,
+  totalDeepenEffect: number = 0,
+  critRate: number = 0,
+  critDamage: number = 1,
+  count: number = 1,
+  stacks: number = 1,
 ): any {
-  const defModifier = getDefenseModifier(charLevel, enemyLevel, defIgnore);
-  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
-  // 1000*res*def*stack number*MV%
-  const baseModifier = 1000;
-  const damage =
-    baseModifier *
-    resistModifier *
-    defModifier *
-    stacks *
-    motionValue *
-    (1 + DMGDeepen);
-  return {
-    damage,
-    totalDamageContext: {
-      motionValue,
-      stacks,
-      resistModifier,
-      defModifier,
-      charLevel,
-      enemyLevel,
-      enemyResist,
-      resistenceReduction,
-      defIgnore,
-      DMGDeepen,
-      type: "aeroErosion",
-    },
-  };
+  return calcNegativeStatusStackDamage(
+    "aeroErosion",
+    charLevel,
+    enemyLevel,
+    enemyResist,
+    resistenceReduction,
+    defIgnore,
+    defReduction,
+    talentModifierMultiply,
+    totalDeepenEffect,
+    critRate,
+    critDamage,
+    count,
+    stacks,
+    getAeroErosionMotionValueByStacks,
+  );
 }
 
 /**
@@ -1226,61 +1281,22 @@ export function getFusionBurstDamage(
   count: number = 1,
   stacks: number = 1,
 ): any {
-  const characterLevel = parseInt(charLevel.replace("+", ""), 10);
-  const defenseModifier = getDefenseModifier(
+  return calcNegativeStatusStackDamage(
+    "fusionBurst",
     charLevel,
     enemyLevel,
+    enemyResist,
+    resistenceReduction,
     defIgnore,
     defReduction,
+    talentModifierMultiply,
+    totalDeepenEffect,
+    critRate,
+    critDamage,
+    count,
+    stacks,
+    getFusionBurstMotionValueByStacks,
   );
-  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
-  const levelConstant = getNegativeStatusLevelConstant(characterLevel);
-  const motionValue = getFusionBurstMotionValueByStacks(stacks);
-  // LVLconstant x (MV ÷ 10000) × DEFmul × RESmul × (1 + amp%)
-  const baseDamage =
-    levelConstant *
-    (motionValue / 10000) *
-    (1 + talentModifierMultiply) *
-    defenseModifier *
-    resistModifier *
-    (1 + totalDeepenEffect);
-  const finalDamage = baseDamage * count;
-  const finalDamageCrit = calcCritDamage(finalDamage, critDamage);
-  const finalDamageAverage = calcAvgDamage(finalDamage, critRate, critDamage);
-  const breakdownCountStr = count > 1 ? `${count} x ` : '';
-  let detailedCalculation = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
-  let detailedCalculationCrit = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
-  let detailedCalculationAverage = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
-
-  return {
-    totalDamage: finalDamage,
-    critDamage: finalDamageCrit,
-    avgDamage: finalDamageAverage,
-    detailedCalculation,
-    detailedCalculationCrit: detailedCalculationCrit,
-    detailedCalculationAvg: detailedCalculationAverage,
-    totalDamageContext: {
-      type: "fusionBurst",
-      charLevel,
-      enemyLevel,
-      enemyResist,
-      resistenceReduction,
-      defIgnore,
-      defReduction,
-      count,
-      defenseModifier,
-      resistModifier,
-      talentModifierMultiply,
-      totalDeepenEffect,
-      critRate,
-      critDamage,
-      baseDamage,
-      finalDamage,
-      levelConstant,
-      motionValue,
-      stacks,
-    },
-  };
 }
 
 export function getElectroFlareDamage(
@@ -1391,6 +1407,45 @@ export function getFusionBurstMotionValueByStacks(stacks: number): number {
     "13": 139726,
   }
   return motionValueByStacksMap?.[stacks] ?? motionValueByStacksMap["13"];
+}
+
+/** "1#3000 | 2#5439 | 3#7878 | 4#10317 | 5#12756 | 6#15195 | 7#17634 | 8#20073 | 9#22512 | 10#24951 | 11#33268 | 12#41585 | 13#49902" */
+export function getSpectroFrazzleMotionValueByStacks(stacks: number): number {
+  const motionValueByStacksMap: Record<string, number> = {
+    "1": 3000,
+    "2": 5439,
+    "3": 7878,
+    "4": 10317,
+    "5": 12756,
+    "6": 15195,
+    "7": 17634,
+    "8": 20073,
+    "9": 22512,
+    "10": 24951,
+    "11": 33268,
+    "12": 41585,
+    "13": 49902,
+  };
+  return motionValueByStacksMap?.[stacks] ?? motionValueByStacksMap["13"];
+}
+
+/** "1#4500 | 2#11250 | 3#22500 | 4#33750 | 5#45000 | 6#56250 | 7#67500 | 8#78750 | 9#90000 | 10#101250 | 11#112500 | 12#123750". */
+export function getAeroErosionMotionValueByStacks(stacks: number): number {
+  const motionValueByStacksMap: Record<string, number> = {
+    "1": 4500,
+    "2": 11250,
+    "3": 22500,
+    "4": 33750,
+    "5": 45000,
+    "6": 56250,
+    "7": 67500,
+    "8": 78750,
+    "9": 90000,
+    "10": 101250,
+    "11": 112500,
+    "12": 123750,
+  };
+  return motionValueByStacksMap?.[stacks] ?? motionValueByStacksMap["12"];
 }
 
 export function getElectroFlareMotionValueByStacks(stacks: number): number {
