@@ -2,18 +2,13 @@ import { getEchoData } from "../echoes";
 import { utilityAttacks } from "../buffs";
 import { echoSetAttacks } from "../echoes/stats";
 import { negativeStatusAttacks } from "./negativeStatusAttacks";
-import {
-  getAeroErosionModifierByLevelByStacks,
-  getSpectroFrazzleModifierByLevelByStacks,
-} from "./calculator.ts";
-
 /**
  * Maps a persisted rotation action to a full attack object for processAttacks.
  */
 export function resolveRotationActionToAttackData(
   action: any,
   chosenChar: any,
-  characterLevel: string | number,
+  _characterLevel: string | number,
 ): any | null {
   if (action?.isDisabled) {
     return null;
@@ -87,23 +82,7 @@ export function resolveRotationActionToAttackData(
       foundAction.subType === "ElectroFlare"
         ? Number(action.electroRageStacks ?? 0)
         : 0;
-    let talent: number | string = "";
-    if (foundAction.subType === "SpectroFrazzle") {
-      const mv = getSpectroFrazzleModifierByLevelByStacks(
-        String(characterLevel),
-        stacks,
-      );
-      talent = mv ?? 0;
-    } else if (foundAction.subType === "AeroErosion") {
-      const mv = getAeroErosionModifierByLevelByStacks(
-        String(characterLevel),
-        stacks,
-      );
-      talent = mv ?? 0;
-    } else {
-      talent = "";
-    }
-    actionData.talent = talent;
+    actionData.talent = "";
     actionData.stacks = stacks;
     actionData.electroRageStacks = electroRageStacks;
   }

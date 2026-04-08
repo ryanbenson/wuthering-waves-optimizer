@@ -15,8 +15,6 @@ import {
   calcHeal,
   calcDamage,
   calcShield,
-  getSpectroFrazzleModifierByLevelByStacks,
-  getAeroErosionModifierByLevelByStacks,
   calcTuneBreak,
 } from "./calculator.ts";
 
@@ -957,15 +955,31 @@ export const calculateAttackDamage = (
       spectroFrazzleDeepenSelfBuffs +
       spectroFrazzleDeepenResonanceChains;
     if (attack?.subType === "SpectroFrazzle") {
+      let baseCritRate = 0;
+      let baseCritDmg = 1;
+      const critRateResoanceChains =
+        context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+          `${attack.key}:CritRate`
+        ] ?? 0;
+      const critDmgResoanceChains =
+        context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+          `${attack.key}:CritDMG`
+        ] ?? 0;
+      const totalCritRate = baseCritRate + critRateResoanceChains;
+      const totalCritDmg = baseCritDmg + critDmgResoanceChains;
       const elementalEffectDmg = getSpectroFrazzleDamage(
-        attack.talent,
-        attack?.stacks ?? 0,
         String(context.character.characterLevel),
         context.enemy.enemyLevel,
         context.enemy.enemyResist,
         totalResistReduction,
         totalDefIgnore,
+        totalDefReduction,
+        totalTalentModifierMultiply,
         totalSpectroFrazzleDeepen,
+        totalCritRate,
+        totalCritDmg,
+        attack?.count ?? 1,
+        attack?.stacks ?? 0,
       );
       return elementalEffectDmg;
     }
@@ -999,15 +1013,31 @@ export const calculateAttackDamage = (
       aeroErosionDeepenSelfBuffs +
       aeroErosionDeepenResonanceChains +
       specificAeroErosionDeepenSelfBuffs;
+    let baseCritRate = 0;
+    let baseCritDmg = 1;
+    const critRateResoanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritRate`
+      ] ?? 0;
+    const critDmgResoanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritDMG`
+      ] ?? 0;
+    const totalCritRate = baseCritRate + critRateResoanceChains;
+    const totalCritDmg = baseCritDmg + critDmgResoanceChains;
     const elementalEffectDmg = getAeroErosionDamage(
-      attack.talent,
-      attack?.stacks ?? 0,
       String(context.character.characterLevel),
       context.enemy.enemyLevel,
       context.enemy.enemyResist,
       totalResistReduction,
-      0, // TODO: AeroErosion does not use DefIgnore?
+      totalDefIgnore,
+      totalDefReduction,
+      totalTalentModifierMultiply,
       totalAeroErosionDeepen,
+      totalCritRate,
+      totalCritDmg,
+      attack?.count ?? 1,
+      attack?.stacks ?? 0,
     );
     return elementalEffectDmg;
   }
@@ -1427,48 +1457,34 @@ export const calcDamages = (context: CalculationContext) => {
     context.enemy.spectroFrazzle.isSpectroFrazzleEnabled &&
     context.enemy.spectroFrazzle.spectroFrazzleStacks > 0
   ) {
-    // get the MV based on stacks and character level
-    const spectroFrazzleMv = getSpectroFrazzleModifierByLevelByStacks(
-      String(context.character.characterLevel),
-      context.enemy.spectroFrazzle.spectroFrazzleStacks,
-    );
-    if (spectroFrazzleMv) {
-      const spectroFrazzleAttack = {
-        key: "ElementalEffectSpectroFrazzle",
-        label: "Spectro Frazzle",
-        talent: spectroFrazzleMv,
-        type: "ElementalEffect",
-        element: "Spectro",
-        subType: "SpectroFrazzle",
-        stacks: context.enemy.spectroFrazzle.spectroFrazzleStacks,
-      };
-      // @ts-ignore
-      elementalReactionsAttacks.push(spectroFrazzleAttack);
-    }
+    const spectroFrazzleAttack = {
+      key: "ElementalEffectSpectroFrazzle",
+      label: "Spectro Frazzle",
+      talent: "",
+      type: "ElementalEffect",
+      element: "Spectro",
+      subType: "SpectroFrazzle",
+      stacks: context.enemy.spectroFrazzle.spectroFrazzleStacks,
+    };
+    // @ts-ignore
+    elementalReactionsAttacks.push(spectroFrazzleAttack);
   }
   if (
     context.enemy.aeroErosion.isAeroErosionEnabled &&
     context.enemy.aeroErosion.aeroErosionStacks > 0
   ) {
-    // get the MV based on stacks and character level
-    const aeroErosionMv = getAeroErosionModifierByLevelByStacks(
-      String(context.character.characterLevel),
-      context.enemy.aeroErosion.aeroErosionStacks,
-    );
-    if (aeroErosionMv) {
-      // @ts-ignore
-      const aeroErosionAttack = {
-        key: "ElementalEffectAeroErosion",
-        label: "Aero Erosion",
-        talent: aeroErosionMv,
-        type: "ElementalEffect",
-        element: "Aero",
-        subType: "AeroErosion",
-        stacks: context.enemy.aeroErosion.aeroErosionStacks,
-      };
-      // @ts-ignore
-      elementalReactionsAttacks.push(aeroErosionAttack);
-    }
+    // @ts-ignore
+    const aeroErosionAttack = {
+      key: "ElementalEffectAeroErosion",
+      label: "Aero Erosion",
+      talent: "",
+      type: "ElementalEffect",
+      element: "Aero",
+      subType: "AeroErosion",
+      stacks: context.enemy.aeroErosion.aeroErosionStacks,
+    };
+    // @ts-ignore
+    elementalReactionsAttacks.push(aeroErosionAttack);
   }
   if (
     context.enemy.fusionBurst.isFusionBurstEnabled &&
@@ -1561,7 +1577,7 @@ export const calcDamages = (context: CalculationContext) => {
         if (attack?.originalIsEnabled === false) {
           return;
         }
-        // Spectro Frazzle / Aero Erosion: single scalar on damage.damage
+        // Legacy ElementalEffect objects that only expose damage.damage (no totalDamage)
         if (
           attack.type === "ElementalEffect" &&
           attack?.damage?.damage !== undefined &&
