@@ -17,6 +17,7 @@ import PrivacyView from "./pages/PrivacyView.vue";
 import SettingsView from "./pages/SettingsView.vue";
 import LegalView from "./pages/LegalView.vue";
 import InventoryView from "./pages/InventoryView.vue";
+import ConveneView from "./pages/ConveneView.vue";
 
 const routes = [
   { path: "/", component: HomeView, name: "HomeView" },
@@ -28,6 +29,7 @@ const routes = [
   { path: "/settings", component: SettingsView, name: "SettingsView" },
   { path: "/legal", component: LegalView, name: "LegalView" },
   { path: "/inventory", component: InventoryView, name: "InventoryView" },
+  { path: "/convene", component: ConveneView, name: "ConveneView" },
 ];
 
 const router = createRouter({

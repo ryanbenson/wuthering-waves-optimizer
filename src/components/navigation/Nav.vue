@@ -38,11 +38,22 @@
         </RouterLink>
         <RouterLink
           to="/inventory"
-          class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px]"
+          class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2"
           :class="{ 'btn-active': curPage === 'inventory' }">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png"
             class="size-8" />
+        </RouterLink>
+        <RouterLink
+          to="/convene"
+          class="btn btn-ghost size-5 p-2 flex justify-center basis-[48px] mr-2 relative"
+          :class="{ 'btn-active': curPage === 'convene' }"
+          title="Convene odds"
+          data-test-nav-convene>
+          <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/Icon_Convene.webp" class="size-8" />
+          <div class="badge badge-primary absolute top-[-0.5rem] right-[-2rem] text-xs">
+            New
+          </div>
         </RouterLink>
       </div>
       <div class="navbar-center hidden lg:flex">
