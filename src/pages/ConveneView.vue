@@ -1,0 +1,448 @@
+<template>
+  <Nav cur-page="convene" :disable-mobile-nav="true"></Nav>
+  <div class="page-convene px-4 py-6 md:px-8 max-w-5xl mx-auto text-base-content">
+    <header class="mb-8">
+      <h1 class="text-2xl md:text-3xl font-semibold mb-2">Convene odds</h1>
+      <p class="text-base-content/80 text-sm md:text-base max-w-3xl space-y-3">
+        <span class="block">
+          Estimate the chance of pulling enough promotional 5★ copies with your Astrite, Lunite
+          (1:1 with Astrite in the shop), and wishes.
+        </span>
+        <span class="block">
+          <strong class="text-base-content">Character</strong>
+          (featured resonator): 50/50 on the rate-up 5★, with the next 5★ guaranteed rate-up if you
+          miss. The 5★ pity curve below comes from a large-sample analysis of player convenes (not
+          Kuro’s server code): ~1.848% of pulls are 5★ (~54.1 pulls expected to any 5★), ~81.15
+          pulls expected to a featured 5★; published banner rates are ~1.8% for 5★ and ~12% for 4★.
+        </span>
+        <span class="block">
+          <strong class="text-base-content">Weapon</strong>
+          (featured weapon): same 5★ curve as other non-beginner banners; every 5★ is the
+          promotional weapon (100%). Featured 4★ weapon rules are not modeled here.
+        </span>
+        <span class="block text-xs opacity-70">
+          5★ curve: 0.8% flat pulls 1–65; +4% per pull 66–70; +8% per pull 71–75; +10% per pull
+          76–78; 100% on pull 79 (counting from the last 5★). The 4★ floor after nine consecutive
+          3★ pulls (counter resets on any 4★ or 5★) is omitted: 5★ is resolved first, so it does not
+          change how many 5★s you get.
+        </span>
+      </p>
+    </header>
+
+    <div class="grid gap-6 md:grid-cols-2">
+      <div class="card bg-base-200 shadow-lg">
+        <div class="card-body gap-4">
+          <h2 class="card-title text-lg">Your resources</h2>
+          <label class="form-control w-full">
+            <span class="label-text">Astrite</span>
+            <input
+              v-model.number="astrite"
+              type="number"
+              min="0"
+              step="160"
+              class="input input-bordered w-full"
+              data-test-convene-astrite />
+          </label>
+          <label class="form-control w-full">
+            <span class="label-text">Lunite (same value as Astrite for wishes)</span>
+            <input
+              v-model.number="lunite"
+              type="number"
+              min="0"
+              step="160"
+              class="input input-bordered w-full"
+              data-test-convene-lunite />
+          </label>
+          <label class="form-control w-full">
+            <span class="label-text">Wishes (in addition to Astrite + Lunite)</span>
+            <input
+              v-model.number="extraWishes"
+              type="number"
+              min="0"
+              class="input input-bordered w-full"
+              data-test-convene-wishes />
+          </label>
+          <p class="text-sm opacity-80">
+            Total wishes:
+            <strong>{{ totalWishes }}</strong>
+            ({{ astrite }} Astrite + {{ lunite }} Lunite → {{ wishesFromCurrency }} wishes at
+            160 each, plus {{ extraWishes }} wishes)
+          </p>
+
+          <div class="divider my-0">Banner</div>
+          <div class="btn-group w-full">
+            <button
+              type="button"
+              class="btn flex-1"
+              :class="mode === 'character' ? 'btn-active' : ''"
+              @click="mode = 'character'">
+              Character
+            </button>
+            <button
+              type="button"
+              class="btn flex-1"
+              :class="mode === 'weapon' ? 'btn-active' : ''"
+              @click="mode = 'weapon'">
+              Weapon
+            </button>
+          </div>
+
+          <label class="form-control w-full">
+            <span class="label-text">
+              {{ mode === "character" ? "Target resonance (copies)" : "Target refinement (copies)" }}
+            </span>
+            <select v-model.number="targetIndex" class="select select-bordered w-full">
+              <option v-for="opt in targetOptions" :key="opt.value" :value="opt.value">
+                {{ opt.label }}
+              </option>
+            </select>
+          </label>
+          <p class="text-xs opacity-70">
+            {{ mode === "character" ? "S0 is your first copy; S6 needs 7 featured pulls." : "R0 is your first copy; each refinement needs one more featured weapon." }}
+          </p>
+
+          <details class="collapse collapse-arrow bg-base-300 rounded-lg">
+            <summary class="collapse-title font-medium text-sm">Advanced (optional)</summary>
+            <div class="collapse-content flex flex-col gap-3 pt-2">
+              <label class="form-control w-full">
+                <span class="label-text">
+                  {{
+                    mode === "character"
+                      ? "Already have this resonator (current resonance)"
+                      : "Already have this weapon (current refinement)"
+                  }}
+                </span>
+                <select v-model.number="currentOwnedIndex" class="select select-bordered w-full">
+                  <option v-for="opt in currentOwnershipOptions" :key="opt.value" :value="opt.value">
+                    {{ opt.label }}
+                  </option>
+                </select>
+              </label>
+              <p v-if="additionalCopiesNeeded > 0" class="text-xs opacity-70">
+                Need
+                <strong>{{ additionalCopiesNeeded }}</strong>
+                more promotional 5★ pull{{ additionalCopiesNeeded > 1 ? "s" : "" }} to reach
+                {{ goalLabel }}.
+              </p>
+              <label class="form-control w-full">
+                <span class="label-text">
+                  5★ pity (pulls since last 5★, 0–{{ maxFiveStarPityInput }})
+                </span>
+                <input
+                  v-model.number="startingPity"
+                  type="number"
+                  min="0"
+                  :max="maxFiveStarPityInput"
+                  class="input input-bordered w-full" />
+              </label>
+              <label v-if="mode === 'character'" class="label cursor-pointer justify-start gap-3">
+                <input v-model="guaranteedNextFeatured" type="checkbox" class="checkbox" />
+                <span class="label-text">Next 5★ is guaranteed featured (lost last 50/50)</span>
+              </label>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="card bg-base-200 shadow-lg">
+        <div class="card-body gap-4">
+          <h2 class="card-title text-lg">Results</h2>
+          <div class="results-content">
+            <p
+              v-if="additionalCopiesNeeded > 0 && totalWishes <= 0"
+              class="text-warning">
+              Add Astrite, Lunite, or wishes to simulate.
+            </p>
+            <template v-else-if="additionalCopiesNeeded <= 0">
+              <p class="text-lg text-success">
+                You already meet {{ goalLabel }} (or higher) with your current progress.
+              </p>
+              <p v-if="totalWishes > 0" class="text-sm opacity-80">
+                Average promotional 5★
+                {{ mode === "character" ? "resonators" : "weapons" }} in {{ totalWishes }} wishes:
+                <strong>{{ result.meanFeatured.toFixed(2) }}</strong>
+              </p>
+              <p class="text-xs opacity-60">
+                Based on {{ iterations.toLocaleString() }} simulated banners. Not official; RNG and
+                banner details can differ.
+              </p>
+            </template>
+            <template v-else>
+              <p class="text-lg">
+                Chance to reach your goal:
+                <strong class="text-primary">{{ formatPct(result.targetMetRate) }}</strong>
+              </p>
+              <p class="text-sm opacity-80">
+                Average promotional 5★
+                {{ mode === "character" ? "resonators" : "weapons" }} in {{ totalWishes }} wishes:
+                <strong>{{ result.meanFeatured.toFixed(2) }}</strong>
+              </p>
+              <p class="text-xs opacity-60">
+                Based on {{ iterations.toLocaleString() }} simulated banners. Not official; RNG and
+                banner details can differ.
+              </p>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="totalWishes > 0 && result.stepProbabilities.length" class="mt-8 card bg-base-200 shadow-lg">
+      <div class="card-body">
+        <h2 class="card-title text-lg mb-2">Chance for each milestone</h2>
+        <p class="text-sm opacity-70 mb-4">
+          Probability of pulling <em>at least</em> that many <em>additional</em> promotional 5★
+          copies within your wish budget (only 5★ pity is simulated).
+        </p>
+        <div class="w-full overflow-x-auto flex justify-center min-h-[320px]">
+          <canvas ref="chartCanvas" class="max-w-full" style="max-height: 400px"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import Chart from "chart.js/auto";
+import Nav from "../components/navigation/Nav.vue";
+import {
+  ASTRITE_PER_WISH,
+  MAX_PULLS_SINCE_LAST_FIVE,
+  runMonteCarlo,
+  type ConveneMode,
+  type ConveneSimulationResult,
+} from "../convene/simulateConvene";
+
+const EMPTY_RESULT: ConveneSimulationResult = {
+  targetMetRate: 0,
+  meanFeatured: 0,
+  stepProbabilities: [],
+};
+
+export default defineComponent({
+  name: "ConveneView",
+  components: { Nav },
+  data() {
+    return {
+      astrite: 0,
+      lunite: 0,
+      extraWishes: 0,
+      mode: "character" as ConveneMode,
+      /** S0 => 0, S6 => 6 (copies = index + 1). -1 = no copy yet. */
+      currentOwnedIndex: -1,
+      /** S0 => 0, S6 => 6 (copies = index + 1) */
+      targetIndex: 0,
+      startingPity: 0,
+      guaranteedNextFeatured: false,
+      result: EMPTY_RESULT,
+      iterations: 20_000,
+      debounceId: null as ReturnType<typeof setTimeout> | null,
+      maxFiveStarPityInput: MAX_PULLS_SINCE_LAST_FIVE,
+    };
+  },
+  computed: {
+    wishesFromCurrency(): number {
+      const a = Math.max(0, Math.floor(Number(this.astrite) || 0));
+      const l = Math.max(0, Math.floor(Number(this.lunite) || 0));
+      return Math.floor((a + l) / ASTRITE_PER_WISH);
+    },
+    totalWishes(): number {
+      return (
+        this.wishesFromCurrency + Math.max(0, Math.floor(Number(this.extraWishes) || 0))
+      );
+    },
+    /** Promotional copies already owned (0 if you do not have the unit yet). */
+    copiesOwnedBefore(): number {
+      if (this.currentOwnedIndex < 0) return 0;
+      return this.currentOwnedIndex + 1;
+    },
+    additionalCopiesNeeded(): number {
+      const targetCopies = this.targetIndex + 1;
+      return Math.max(0, targetCopies - this.copiesOwnedBefore);
+    },
+    goalLabel(): string {
+      return this.mode === "character" ? `S${this.targetIndex}` : `R${this.targetIndex}`;
+    },
+    currentOwnershipOptions(): { value: number; label: string }[] {
+      const out: { value: number; label: string }[] = [
+        {
+          value: -1,
+          label:
+            this.mode === "character"
+              ? "No copy yet (0 promotional pulls on this resonator)"
+              : "No copy yet (0 promotional pulls on this weapon)",
+        },
+      ];
+      const max = this.mode === "character" ? 6 : 5;
+      for (let i = 0; i <= max; i++) {
+        if (this.mode === "character") {
+          out.push({
+            value: i,
+            label: `S${i} (${i + 1} featured pull${i > 0 ? "s" : ""} so far)`,
+          });
+        } else {
+          out.push({
+            value: i,
+            label: `R${i} (${i + 1} featured pull${i > 0 ? "s" : ""} so far)`,
+          });
+        }
+      }
+      return out;
+    },
+    targetOptions(): { value: number; label: string }[] {
+      const n = this.mode === "character" ? 7 : 6;
+      const out: { value: number; label: string }[] = [];
+      for (let i = 0; i < n; i++) {
+        if (this.mode === "character") {
+          out.push({ value: i, label: `S${i} (${i + 1} featured pull${i > 0 ? "s" : ""})` });
+        } else {
+          out.push({ value: i, label: `R${i} (${i + 1} featured pull${i > 0 ? "s" : ""})` });
+        }
+      }
+      return out;
+    },
+  },
+  watch: {
+    astrite: "scheduleSim",
+    lunite: "scheduleSim",
+    extraWishes: "scheduleSim",
+    mode() {
+      if (this.targetIndex >= this.targetOptions.length) {
+        this.targetIndex = Math.max(0, this.targetOptions.length - 1);
+      }
+      const maxOwned = this.mode === "character" ? 6 : 5;
+      if (this.currentOwnedIndex > maxOwned) {
+        this.currentOwnedIndex = maxOwned;
+      }
+      this.scheduleSim();
+    },
+    currentOwnedIndex: "scheduleSim",
+    targetIndex: "scheduleSim",
+    startingPity: "scheduleSim",
+    guaranteedNextFeatured: "scheduleSim",
+    result() {
+      this.$nextTick(() => this.renderChart());
+    },
+  },
+  mounted() {
+    this.runSim();
+  },
+  beforeUnmount() {
+    if (this.debounceId) clearTimeout(this.debounceId);
+    this.destroyChart();
+  },
+  methods: {
+    formatPct(x: number): string {
+      return `${(100 * x).toFixed(1)}%`;
+    },
+    scheduleSim() {
+      if (this.debounceId) clearTimeout(this.debounceId);
+      this.debounceId = setTimeout(() => {
+        this.debounceId = null;
+        this.runSim();
+      }, 280);
+    },
+    runSim() {
+      const pity = Math.min(
+        MAX_PULLS_SINCE_LAST_FIVE,
+        Math.max(0, Math.floor(Number(this.startingPity) || 0)),
+      );
+      const baseParams = {
+        wishes: Math.max(0, this.totalWishes),
+        mode: this.mode,
+        startingPity: pity,
+        guaranteedNextFeatured: this.mode === "character" && this.guaranteedNextFeatured,
+        copiesOwnedBefore: this.copiesOwnedBefore,
+      };
+
+      if (this.additionalCopiesNeeded <= 0) {
+        this.result = runMonteCarlo(
+          { ...baseParams, maxCopies: 0 },
+          this.iterations,
+        );
+        this.$nextTick(() => this.renderChart());
+        return;
+      }
+
+      if (this.totalWishes <= 0) {
+        this.result = EMPTY_RESULT;
+        this.$nextTick(() => this.renderChart());
+        return;
+      }
+
+      this.result = runMonteCarlo(
+        { ...baseParams, maxCopies: this.additionalCopiesNeeded },
+        this.iterations,
+      );
+    },
+    destroyChart() {
+      const canvas = this.$refs.chartCanvas as HTMLCanvasElement | undefined;
+      if (canvas) {
+        const existing = Chart.getChart(canvas);
+        if (existing) existing.destroy();
+      }
+    },
+    renderChart() {
+      const canvas = this.$refs.chartCanvas as HTMLCanvasElement | undefined;
+      if (!canvas || !this.result.stepProbabilities.length) {
+        this.destroyChart();
+        return;
+      }
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+
+      this.destroyChart();
+
+      const labels = this.result.stepProbabilities.map((s) => s.label);
+      const values = this.result.stepProbabilities.map((s) => Math.round(s.probability * 1000) / 10);
+
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [
+            {
+              label: "Chance (%)",
+              data: values,
+              backgroundColor: "rgba(56, 189, 248, 0.55)",
+              borderColor: "rgba(56, 189, 248, 1)",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              title: { display: true, text: "Probability (%)" },
+            },
+            x: {
+              ticks: { maxRotation: 45, minRotation: 0 },
+            },
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label(ctx) {
+                  return ` ${ctx.parsed.y}%`;
+                },
+              },
+            },
+          },
+        },
+      });
+    },
+  },
+});
+</script>
+
+<style scoped lang="scss">
+.page-convene {
+  padding-bottom: 3rem;
+}
+</style>
