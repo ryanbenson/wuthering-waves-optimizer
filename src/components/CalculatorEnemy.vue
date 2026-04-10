@@ -170,7 +170,7 @@
         id="aeroErosionStacks"
         type="range"
         min="0"
-        max="9"
+        max="12"
         step="1"
         class="range range-xs"
         :class="rangeClasses"
