@@ -62,11 +62,97 @@
               class="input input-bordered w-full"
               data-test-convene-wishes />
           </label>
+
+          <div class="divider my-0">Days until you pull</div>
+          <p class="text-xs opacity-70">
+            Daily dailies grant {{ DAILY_ASTRITE_BASE }} Astrite; the Lunite subscription adds
+            {{ DAILY_ASTRITE_SUBSCRIPTION_EXTRA }} Astrite/day on top of that ({{ dailyAstriteIfSubscribed }}/day
+            total).
+          </p>
+          <label class="form-control w-full">
+            <span class="label-text">Days until you wish on this banner</span>
+            <input
+              v-model.number="daysUntilPull"
+              type="number"
+              min="0"
+              step="1"
+              class="input input-bordered w-full"
+              data-test-convene-days />
+          </label>
+          <label class="label cursor-pointer justify-start gap-3">
+            <input v-model="dailiesLuniteSubscription" type="checkbox" class="checkbox" />
+            <span class="label-text">Lunite subscription on dailies (+{{ DAILY_ASTRITE_SUBSCRIPTION_EXTRA }} Astrite/day)</span>
+          </label>
+
+          <div class="divider my-0">Planned Lunite top-ups</div>
+          <p class="text-xs opacity-70">
+            Add one row per bundle line. “Initial top-up” applies only to the
+            <em>first</em> purchase in that row; further copies in the same row use normal totals.
+            If you already used a tier’s bonus, leave the box unchecked (or use another row without
+            bonus). Same tier can appear on multiple rows (e.g. 1× with bonus, 2× without).
+          </p>
+          <div class="flex flex-col gap-3">
+            <div
+              v-for="(row, idx) in topUpLines"
+              :key="row.id"
+              class="flex flex-col gap-3 p-3 rounded-lg bg-base-300/50">
+              <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-end">
+                <label class="form-control flex-1 min-w-0">
+                  <span class="label-text text-xs">Bundle</span>
+                  <select v-model.number="row.tierIndex" class="select select-bordered select-sm w-full">
+                    <option v-for="(t, ti) in LUNITE_TOPUP_TIERS" :key="ti" :value="ti">
+                      ${{ t.priceUsd.toFixed(2) }} — {{ t.totalNormal }} / {{ t.totalFirstBonus }} Lunite
+                    </option>
+                  </select>
+                </label>
+                <label class="form-control w-full sm:w-28 shrink-0">
+                  <span class="label-text text-xs">Qty</span>
+                  <input
+                    v-model.number="row.quantity"
+                    type="number"
+                    min="0"
+                    step="1"
+                    class="input input-bordered input-sm w-full" />
+                </label>
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-sm text-error sm:self-end shrink-0"
+                  @click="removeTopUpLine(idx)">
+                  Remove
+                </button>
+              </div>
+              <label class="label cursor-pointer justify-start gap-3 py-0 min-h-0">
+                <input v-model="row.firstPurchaseBonus" type="checkbox" class="checkbox checkbox-sm mt-0.5 shrink-0" />
+                <span class="label-text text-xs leading-snug whitespace-normal text-left">
+                  First purchase in row uses initial top-up bonus
+                </span>
+              </label>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm w-fit" @click="addTopUpLine">
+              Add top-up row
+            </button>
+          </div>
+          <p v-if="topUpLines.length > 0" class="text-xs opacity-80">
+            Top-ups: <strong>{{ luniteFromTopUps }}</strong> Lunite,
+            <strong>${{ topUpUsdTotal.toFixed(2) }}</strong> USD
+          </p>
+
           <p class="text-sm opacity-80">
             Total wishes:
             <strong>{{ totalWishes }}</strong>
-            ({{ astrite }} Astrite + {{ lunite }} Lunite → {{ wishesFromCurrency }} wishes at
-            160 each, plus {{ extraWishes }} wishes)
+            <br />
+            <span class="text-xs">
+              Astrite for wishes: <strong>{{ totalAstriteForWishes }}</strong>
+              ({{ astriteOnHand }} on hand + {{ astriteFromDailies }} from dailies over
+              {{ daysUntilPullRounded }} day{{ daysUntilPullRounded === 1 ? "" : "s" }} at
+              {{ dailyAstriteRate }}/day)
+              <br />
+              Lunite for wishes: <strong>{{ totalLuniteForWishes }}</strong>
+              ({{ luniteOnHand }} on hand + {{ luniteFromTopUps }} from top-ups)
+              <br />
+              → {{ wishesFromCurrency }} wishes at 160 Astrite+Lunite each, plus
+              {{ extraWishes }} direct wishes
+            </span>
           </p>
 
           <div class="divider my-0">Banner</div>
@@ -213,6 +299,20 @@ import {
   type ConveneMode,
   type ConveneSimulationResult,
 } from "../convene/simulateConvene";
+import {
+  DAILY_ASTRITE_BASE,
+  DAILY_ASTRITE_SUBSCRIPTION_EXTRA,
+  LUNITE_TOPUP_TIERS,
+  luniteFromTopUpLine,
+  usdFromTopUpLine,
+} from "../convene/luniteTopUps";
+
+interface TopUpLineRow {
+  id: number;
+  tierIndex: number;
+  quantity: number;
+  firstPurchaseBonus: boolean;
+}
 
 const EMPTY_RESULT: ConveneSimulationResult = {
   targetMetRate: 0,
@@ -239,13 +339,78 @@ export default defineComponent({
       iterations: 20_000,
       debounceId: null as ReturnType<typeof setTimeout> | null,
       maxFiveStarPityInput: MAX_PULLS_SINCE_LAST_FIVE,
+      daysUntilPull: 0,
+      dailiesLuniteSubscription: false,
+      topUpLines: [] as TopUpLineRow[],
+      nextTopUpLineId: 1,
+      DAILY_ASTRITE_BASE,
+      DAILY_ASTRITE_SUBSCRIPTION_EXTRA,
+      LUNITE_TOPUP_TIERS,
     };
   },
   computed: {
+    daysUntilPullRounded(): number {
+      return Math.max(0, Math.floor(Number(this.daysUntilPull) || 0));
+    },
+    dailyAstriteRate(): number {
+      return (
+        DAILY_ASTRITE_BASE +
+        (this.dailiesLuniteSubscription ? DAILY_ASTRITE_SUBSCRIPTION_EXTRA : 0)
+      );
+    },
+    dailyAstriteIfSubscribed(): number {
+      return DAILY_ASTRITE_BASE + DAILY_ASTRITE_SUBSCRIPTION_EXTRA;
+    },
+    astriteOnHand(): number {
+      return Math.max(0, Math.floor(Number(this.astrite) || 0));
+    },
+    luniteOnHand(): number {
+      return Math.max(0, Math.floor(Number(this.lunite) || 0));
+    },
+    astriteFromDailies(): number {
+      return this.daysUntilPullRounded * this.dailyAstriteRate;
+    },
+    totalAstriteForWishes(): number {
+      return this.astriteOnHand + this.astriteFromDailies;
+    },
+    luniteFromTopUps(): number {
+      let sum = 0;
+      for (const row of this.topUpLines) {
+        const ti = Math.min(
+          LUNITE_TOPUP_TIERS.length - 1,
+          Math.max(0, Math.floor(row.tierIndex)),
+        );
+        const tier = LUNITE_TOPUP_TIERS[ti];
+        if (!tier) continue;
+        sum += luniteFromTopUpLine(
+          tier,
+          row.quantity,
+          row.firstPurchaseBonus,
+        );
+      }
+      return sum;
+    },
+    topUpUsdTotal(): number {
+      let sum = 0;
+      for (const row of this.topUpLines) {
+        const ti = Math.min(
+          LUNITE_TOPUP_TIERS.length - 1,
+          Math.max(0, Math.floor(row.tierIndex)),
+        );
+        const tier = LUNITE_TOPUP_TIERS[ti];
+        if (!tier) continue;
+        sum += usdFromTopUpLine(tier, row.quantity);
+      }
+      return sum;
+    },
+    totalLuniteForWishes(): number {
+      return this.luniteOnHand + this.luniteFromTopUps;
+    },
     wishesFromCurrency(): number {
-      const a = Math.max(0, Math.floor(Number(this.astrite) || 0));
-      const l = Math.max(0, Math.floor(Number(this.lunite) || 0));
-      return Math.floor((a + l) / ASTRITE_PER_WISH);
+      return Math.floor(
+        (this.totalAstriteForWishes + this.totalLuniteForWishes) /
+          ASTRITE_PER_WISH,
+      );
     },
     totalWishes(): number {
       return (
@@ -307,6 +472,12 @@ export default defineComponent({
     astrite: "scheduleSim",
     lunite: "scheduleSim",
     extraWishes: "scheduleSim",
+    daysUntilPull: "scheduleSim",
+    dailiesLuniteSubscription: "scheduleSim",
+    topUpLines: {
+      deep: true,
+      handler: "scheduleSim",
+    },
     mode() {
       if (this.targetIndex >= this.targetOptions.length) {
         this.targetIndex = Math.max(0, this.targetOptions.length - 1);
@@ -333,6 +504,17 @@ export default defineComponent({
     this.destroyChart();
   },
   methods: {
+    addTopUpLine() {
+      this.topUpLines.push({
+        id: this.nextTopUpLineId++,
+        tierIndex: LUNITE_TOPUP_TIERS.length - 1,
+        quantity: 1,
+        firstPurchaseBonus: false,
+      });
+    },
+    removeTopUpLine(index: number) {
+      this.topUpLines.splice(index, 1);
+    },
     formatPct(x: number): string {
       return `${(100 * x).toFixed(1)}%`;
     },
