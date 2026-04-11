@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>April 10, 2026</h3>
+    <ul>
+      <li>Adds top-up, daily asterites, and initial bonuses to convene calculator.</li>
+    </ul>
     <h3>April 9, 2026</h3>
     <ul>
       <li>Adds Convene odds calculator.</li>
