@@ -84,6 +84,89 @@
             <span class="label-text">Lunite subscription on dailies (+{{ DAILY_ASTRITE_SUBSCRIPTION_EXTRA }} Astrite/day)</span>
           </label>
 
+          <div class="divider my-0">Weekly &amp; monthly Astrite</div>
+          <p class="text-xs opacity-70">
+            How many times you expect to clear this content before you pull (e.g. weeks or resets
+            left on the banner). Reward amounts are fixed per run/period.
+          </p>
+          <label class="form-control w-full">
+            <span class="label-text text-xs">
+              Fantasies of the Thousand Gateways ({{ ASTRITE_FANTASIES_THOUSAND_GATEWAYS }} Astrite each)
+            </span>
+            <input
+              v-model.number="runsFantasiesThousandGateways"
+              type="number"
+              min="0"
+              step="1"
+              class="input input-bordered input-sm w-full"
+              data-test-convene-runs-fantasies />
+          </label>
+          <label class="form-control w-full">
+            <span class="label-text text-xs">
+              Tower of Adversity ({{ ASTRITE_TOWER_OF_ADVERSITY }} Astrite each)
+            </span>
+            <input
+              v-model.number="runsTowerOfAdversity"
+              type="number"
+              min="0"
+              step="1"
+              class="input input-bordered input-sm w-full"
+              data-test-convene-runs-tower />
+          </label>
+          <label class="form-control w-full">
+            <span class="label-text text-xs">
+              Whimpering Wastes ({{ ASTRITE_WHIMPERING_WASTES }} Astrite each)
+            </span>
+            <input
+              v-model.number="runsWhimperingWastes"
+              type="number"
+              min="0"
+              step="1"
+              class="input input-bordered input-sm w-full"
+              data-test-convene-runs-wastes />
+          </label>
+
+          <div class="divider my-0">Events &amp; other Astrite</div>
+          <p class="text-xs opacity-70">
+            Add any in-game events, mail, codes, or other Astrite you expect before you wish. Name
+            is free-form; amount is added to your Astrite pool.
+          </p>
+          <div class="flex flex-col gap-2">
+            <div
+              v-for="(ev, evIdx) in eventAstriteRows"
+              :key="ev.id"
+              class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-end p-3 rounded-lg bg-base-300/50">
+              <label class="form-control flex-1 min-w-0">
+                <span class="label-text text-xs">Event / source</span>
+                <input
+                  v-model="ev.name"
+                  type="text"
+                  class="input input-bordered input-sm w-full"
+                  placeholder="e.g. Version livestream codes"
+                  data-test-convene-event-name />
+              </label>
+              <label class="form-control w-full sm:w-36 shrink-0">
+                <span class="label-text text-xs">Astrite</span>
+                <input
+                  v-model.number="ev.astrite"
+                  type="number"
+                  min="0"
+                  step="1"
+                  class="input input-bordered input-sm w-full"
+                  data-test-convene-event-astrite />
+              </label>
+              <button
+                type="button"
+                class="btn btn-ghost btn-sm text-error sm:self-end shrink-0"
+                @click="removeEventAstriteRow(evIdx)">
+                Remove
+              </button>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm w-fit" @click="addEventAstriteRow">
+              Add event row
+            </button>
+          </div>
+
           <div class="divider my-0">Planned Lunite top-ups</div>
           <p class="text-xs opacity-70">
             Add one row per bundle line. “Initial top-up” applies only to the
@@ -145,7 +228,9 @@
               Astrite for wishes: <strong>{{ totalAstriteForWishes }}</strong>
               ({{ astriteOnHand }} on hand + {{ astriteFromDailies }} from dailies over
               {{ daysUntilPullRounded }} day{{ daysUntilPullRounded === 1 ? "" : "s" }} at
-              {{ dailyAstriteRate }}/day)
+              {{ dailyAstriteRate }}/day<template v-if="astriteFromStaticContent > 0">
+                + {{ astriteFromStaticContent }} from Tower / Gateways / Wastes</template><template v-if="astriteFromCustomEvents > 0">
+                + {{ astriteFromCustomEvents }} from events</template>)
               <br />
               Lunite for wishes: <strong>{{ totalLuniteForWishes }}</strong>
               ({{ luniteOnHand }} on hand + {{ luniteFromTopUps }} from top-ups)
@@ -306,12 +391,24 @@ import {
   luniteFromTopUpLine,
   usdFromTopUpLine,
 } from "../convene/luniteTopUps";
+import {
+  ASTRITE_FANTASIES_THOUSAND_GATEWAYS,
+  ASTRITE_TOWER_OF_ADVERSITY,
+  ASTRITE_WHIMPERING_WASTES,
+  astriteFromStaticContentRuns,
+} from "../convene/contentAstrite";
 
 interface TopUpLineRow {
   id: number;
   tierIndex: number;
   quantity: number;
   firstPurchaseBonus: boolean;
+}
+
+interface EventAstriteRow {
+  id: number;
+  name: string;
+  astrite: number;
 }
 
 const EMPTY_RESULT: ConveneSimulationResult = {
@@ -343,9 +440,17 @@ export default defineComponent({
       dailiesLuniteSubscription: false,
       topUpLines: [] as TopUpLineRow[],
       nextTopUpLineId: 1,
+      runsFantasiesThousandGateways: 0,
+      runsTowerOfAdversity: 0,
+      runsWhimperingWastes: 0,
+      eventAstriteRows: [] as EventAstriteRow[],
+      nextEventAstriteRowId: 1,
       DAILY_ASTRITE_BASE,
       DAILY_ASTRITE_SUBSCRIPTION_EXTRA,
       LUNITE_TOPUP_TIERS,
+      ASTRITE_FANTASIES_THOUSAND_GATEWAYS,
+      ASTRITE_TOWER_OF_ADVERSITY,
+      ASTRITE_WHIMPERING_WASTES,
     };
   },
   computed: {
@@ -370,8 +475,27 @@ export default defineComponent({
     astriteFromDailies(): number {
       return this.daysUntilPullRounded * this.dailyAstriteRate;
     },
+    astriteFromStaticContent(): number {
+      return astriteFromStaticContentRuns(
+        this.runsFantasiesThousandGateways,
+        this.runsTowerOfAdversity,
+        this.runsWhimperingWastes,
+      );
+    },
+    astriteFromCustomEvents(): number {
+      let sum = 0;
+      for (const row of this.eventAstriteRows) {
+        sum += Math.max(0, Math.floor(Number(row.astrite) || 0));
+      }
+      return sum;
+    },
     totalAstriteForWishes(): number {
-      return this.astriteOnHand + this.astriteFromDailies;
+      return (
+        this.astriteOnHand +
+        this.astriteFromDailies +
+        this.astriteFromStaticContent +
+        this.astriteFromCustomEvents
+      );
     },
     luniteFromTopUps(): number {
       let sum = 0;
@@ -478,6 +602,13 @@ export default defineComponent({
       deep: true,
       handler: "scheduleSim",
     },
+    runsFantasiesThousandGateways: "scheduleSim",
+    runsTowerOfAdversity: "scheduleSim",
+    runsWhimperingWastes: "scheduleSim",
+    eventAstriteRows: {
+      deep: true,
+      handler: "scheduleSim",
+    },
     mode() {
       if (this.targetIndex >= this.targetOptions.length) {
         this.targetIndex = Math.max(0, this.targetOptions.length - 1);
@@ -514,6 +645,16 @@ export default defineComponent({
     },
     removeTopUpLine(index: number) {
       this.topUpLines.splice(index, 1);
+    },
+    addEventAstriteRow() {
+      this.eventAstriteRows.push({
+        id: this.nextEventAstriteRowId++,
+        name: "",
+        astrite: 0,
+      });
+    },
+    removeEventAstriteRow(index: number) {
+      this.eventAstriteRows.splice(index, 1);
     },
     formatPct(x: number): string {
       return `${(100 * x).toFixed(1)}%`;
