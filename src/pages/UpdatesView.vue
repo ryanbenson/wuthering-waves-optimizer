@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>April 12, 2026</h3>
+    <ul>
+      <li>Improves UI layout for convene calculator.</li>
+    </ul>
     <h3>April 11, 2026</h3>
     <ul>
       <li>Adds events and weekly/monthly Astrite to convene calculator.</li>
