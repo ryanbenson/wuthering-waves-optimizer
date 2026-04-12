@@ -1,9 +1,9 @@
 <template>
   <Nav cur-page="convene" :disable-mobile-nav="true"></Nav>
-  <div class="page-convene px-4 py-6 md:px-8 max-w-5xl mx-auto text-base-content">
-    <header class="mb-8">
+  <div class="page-convene w-full px-4 py-6 md:px-6 lg:px-10 text-base-content">
+    <header class="mb-8 max-w-4xl">
       <h1 class="text-2xl md:text-3xl font-semibold mb-2">Convene odds</h1>
-      <p class="text-base-content/80 text-sm md:text-base max-w-3xl space-y-3">
+      <p class="text-base-content/80 text-sm md:text-base space-y-3">
         <span class="block">
           Estimate the chance of pulling enough promotional 5★ copies with your Astrite, Lunite
           (1:1 with Astrite in the shop), and wishes.
@@ -29,8 +29,9 @@
       </p>
     </header>
 
-    <div class="grid gap-6 md:grid-cols-2">
-      <div class="card bg-base-200 shadow-lg">
+    <div
+      class="convene-layout grid gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[1fr_min(34rem,44vw)] xl:grid-cols-[1fr_min(36rem,38vw)] 2xl:grid-cols-[1fr_40rem] items-start">
+      <div class="card bg-base-200 shadow-lg min-w-0">
         <div class="card-body gap-4">
           <h2 class="card-title text-lg">Your resources</h2>
           <label class="form-control w-full">
@@ -315,10 +316,11 @@
         </div>
       </div>
 
-      <div class="card bg-base-200 shadow-lg">
-        <div class="card-body gap-4">
-          <h2 class="card-title text-lg">Results</h2>
-          <div class="results-content">
+      <aside
+        class="card bg-base-200 shadow-lg min-w-0 lg:sticky lg:top-24 lg:max-h-[calc(100vh-5.5rem)] lg:overflow-y-auto">
+        <div class="card-body gap-4 flex flex-col">
+          <h2 class="card-title text-lg shrink-0">Results</h2>
+          <div class="results-content shrink-0">
             <p
               v-if="additionalCopiesNeeded > 0 && totalWishes <= 0"
               class="text-warning">
@@ -354,21 +356,23 @@
               </p>
             </template>
           </div>
-        </div>
-      </div>
-    </div>
 
-    <div v-if="totalWishes > 0 && result.stepProbabilities.length" class="mt-8 card bg-base-200 shadow-lg">
-      <div class="card-body">
-        <h2 class="card-title text-lg mb-2">Chance for each milestone</h2>
-        <p class="text-sm opacity-70 mb-4">
-          Probability of pulling <em>at least</em> that many <em>additional</em> promotional 5★
-          copies within your wish budget (only 5★ pity is simulated).
-        </p>
-        <div class="w-full overflow-x-auto flex justify-center min-h-[320px]">
-          <canvas ref="chartCanvas" class="max-w-full" style="max-height: 400px"></canvas>
+          <div class="divider my-0 shrink-0"></div>
+          <h3 class="font-semibold text-base shrink-0">Chance for each milestone</h3>
+          <p class="text-sm opacity-70 shrink-0">
+            Probability of pulling <em>at least</em> that many <em>additional</em> promotional 5★
+            copies within your wish budget (only 5★ pity is simulated).
+          </p>
+          <div
+            v-if="totalWishes > 0 && result.stepProbabilities.length"
+            class="convene-chart-wrap w-full flex-1 min-h-[280px] max-h-[min(52vh,520px)]">
+            <canvas ref="chartCanvas" class="block w-full h-full"></canvas>
+          </div>
+          <p v-else class="text-sm opacity-50 italic py-8 text-center border border-dashed border-base-content/20 rounded-lg">
+            Add wishes and a goal that still needs pulls to see the milestone chart here.
+          </p>
         </div>
-      </div>
+      </aside>
     </div>
   </div>
 </template>
@@ -767,5 +771,11 @@ export default defineComponent({
 <style scoped lang="scss">
 .page-convene {
   padding-bottom: 3rem;
+}
+
+/* Fixed height so Chart.js (maintainAspectRatio: false) can size the canvas in the sidebar. */
+.convene-chart-wrap {
+  min-height: 280px;
+  height: min(52vh, 520px);
 }
 </style>
