@@ -3,7 +3,7 @@
     <select
       name="characterLevel"
       v-model="characterLevel"
-      @input="levelUpdated"
+      @change="levelUpdated"
       class="select select-bordered select-sm">
       <option v-for="lvl in characterLevelOptions" :key="lvl" :value="lvl">
         {{ lvl }}
@@ -11,69 +11,62 @@
     </select>
   </div>
 </template>
-<script>
-import { mapActions, mapState } from "pinia";
+
+<script setup lang="ts">
+import { computed } from "vue";
+import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
+
+interface Props {
+  character: string;
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  "character-level-updated": [level: string];
+}>();
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+
+const characterLevelOptions: readonly string[] = [
+  "1",
+  "20",
+  "20+",
+  "40",
+  "40+",
+  "50",
+  "50+",
+  "60",
+  "60+",
+  "70",
+  "70+",
+  "80",
+  "80+",
+  "90",
+];
+
+const currentCharacter = computed(
+  () => characters.value[props.character] ?? {},
+);
+
+const characterLevel = computed({
+  get(): string {
+    return (currentCharacter.value as { characterLevel?: string })
+      ?.characterLevel ?? "90";
   },
-  data() {
-    return {
-      characterLevelOptions: [
-        "1",
-        "20",
-        "20+",
-        "40",
-        "40+",
-        "50",
-        "50+",
-        "60",
-        "60+",
-        "70",
-        "70+",
-        "80",
-        "80+",
-        "90",
-      ],
-    };
+  async set(value: string) {
+    await characterStore.setCharacterData(props.character, {
+      characterLevel: value,
+    });
   },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    levelUpdated(e) {
-      this.$emit("character-level-updated", e.target.value);
-    },
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Getter/setter used in the form for the basic talent state
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Number}
-     */
-    characterLevel: {
-      get() {
-        return this.currentCharacter?.characterLevel ?? "90";
-      },
-      async set(value) {
-        const data = {
-          characterLevel: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-  },
-};
+});
+
+function levelUpdated(e: Event) {
+  const target = e.target as HTMLSelectElement;
+  emit("character-level-updated", target.value);
+}
 </script>
 
 <style lang="scss" scoped></style>

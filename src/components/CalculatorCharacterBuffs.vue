@@ -21,81 +21,71 @@
   </div>
 </template>
 
-<script>
-import { mapState } from "pinia";
+<script setup lang="ts">
+import { onBeforeUnmount, onMounted, watch } from "vue";
 import CalculatorCharacterBuff from "./CalculatorCharacterBuff.vue";
-import { useCharacterStore } from "../stores/character";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    buffs: {
-      type: Array,
-      default: () => [],
-    },
-    talentData: {
-      type: Object,
-      default: () => {},
-    },
-    energyRegen: {
-      type: Number,
-      default: 0,
-    },
-    critRate: {
-      type: Number,
-      default: 0,
-    },
+
+interface CharacterBuffListItem {
+  key: string;
+  name: string;
+  details: string;
+  alwaysEnabled?: boolean;
+  hasStacks?: boolean;
+  minStacks?: number;
+  maxStacks?: number;
+  modifiers?: unknown[];
+}
+
+interface Props {
+  character: string;
+  buffs?: CharacterBuffListItem[];
+  talentData?: Record<string, unknown>;
+  energyRegen?: number;
+  critRate?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  buffs: () => [],
+  talentData: () => ({}),
+  energyRegen: 0,
+  critRate: 0,
+});
+
+const emit = defineEmits<{
+  "updated-character-buffs": [];
+}>();
+
+function updatedStats() {
+  emit("updated-character-buffs");
+}
+
+function handleUpdatedCharacterBuff() {
+  emit("updated-character-buffs");
+}
+
+function retriggerBuffCalculations() {
+  emit("updated-character-buffs");
+}
+
+watch(
+  () => props.buffs,
+  () => {
+    updatedStats();
   },
-  components: { CalculatorCharacterBuff },
-  data() {
-    return {
-      buffsData: [],
-      triggerBuffUpdate: 0, // used to force reactivity
-    };
-  },
-  watch: {
-    buffsFormatted: function () {
-      this.updatedStats();
-    },
-  },
-  methods: {
-    /**
-     * Emits the buff data in its proper format
-     * @emits updated-character-buffs
-     */
-    updatedStats() {
-      this.$emit("updated-character-buffs");
-    },
-    /**
-     * Handler for when the child components has buff data for us to consume
-     * @param {Object} buffInfo
-     */
-    handleUpdatedCharacterBuff(buffInfo) {
-      this.$emit("updated-character-buffs");
-    },
-    retriggerBuffCalculations() {
-      this.triggerBuffUpdate++; // increment to force reactivity
-    },
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-  },
-  mounted() {
-    this.updatedStats();
-  },
-  beforeUnmount() {
-    this.$emit("updated-character-buffs");
-  },
-};
+  { deep: true },
+);
+
+onMounted(() => {
+  updatedStats();
+});
+
+onBeforeUnmount(() => {
+  emit("updated-character-buffs");
+});
+
+defineExpose({
+  retriggerBuffCalculations,
+});
 </script>
 
 <style scoped lang="scss">

@@ -2,7 +2,6 @@ import { mount } from "@vue/test-utils";
 import { describe, it, expect, vi, afterEach } from "vitest";
 import CalculatorEchoSetPassive from "../../src/components/CalculatorEchoSetPassive.vue";
 import { setActivePinia, createPinia } from "pinia";
-// @ts-expect-error: TO DO: Fix the missing module definition for the store
 import { useCharacterStore } from "../stores/character";
 
 describe("CalculatorEchoSetPassive.vue", () => {

@@ -36,7 +36,6 @@
           </label>
         </div>
       </div>
-      <!-- Debug info to show effective values -->
       <div
         v-if="false && hasStacks && isEnabled"
         class="text-xs text-gray-500 mt-2">
@@ -53,285 +52,242 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed, nextTick, onMounted, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-    },
-    uniqueKey: {
-      type: String,
-    },
-    details: {
-      type: String,
-    },
-    alwaysEnabled: {
-      type: Boolean,
-      default: false,
-    },
-    hasStacks: {
-      type: Boolean,
-      default: false,
-    },
-    minStacks: {
-      type: Number,
-      default: 0,
-    },
-    maxStacks: {
-      type: Number,
-      default: 0,
-    },
-    modifiers: {
-      type: Array,
-      default: () => [],
-    },
-    // used in rare buffs that are based on a talent level
-    // e.g. Incandescence for Jinhsi
-    talentData: {
-      type: Object,
-      default: () => {},
-    },
-    energyRegen: {
-      type: Number,
-      default: 0,
-    },
-    critRate: {
-      type: Number,
-      default: 0,
-    },
-  },
-  data() {
-    return {};
-  },
-  watch: {
-    // buffStats: function () {
-    //   this.updatedStats();
-    // },
-    isEnabled: {
-      handler: async function () {
-        this.updatedStats();
-      },
-      immediate: true,
-    },
-    stacks: {
-      handler: function () {
-        // Use nextTick to ensure the DOM has updated before recalculating
-        this.$nextTick(() => {
-          this.updatedStats();
-        });
-      },
-      immediate: true,
-    },
-    // Watch for changes in resonance chains to recalculate buff stats
-    "currentCharacter.resonanceChains.SequenceNode1StainedinScorchedEarth.isEnabled":
-      {
-        handler: function () {
-          this.updatedStats();
-        },
-        immediate: true,
-      },
-    "currentCharacter.resonanceChains.SequenceNode6EngravedinRadiantLight.isEnabled":
-      {
-        handler: function () {
-          this.updatedStats();
-        },
-        immediate: true,
-      },
-    "currentCharacter.resonanceChains.SequenceNode3FervorSightlyBurnsBrightasNew.isEnabled":
-      {
-        handler: function () {
-          this.updatedStats();
-        },
-        immediate: true,
-      },
-  },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    /**
-     * Updates the parent with the buff data
-     * @emits updated-character-buff
-     */
-    updatedStats() {
-      this.$emit("updated-character-buff", {
-        key: this.uniqueKey,
-        // data: this.buffStats,
-      });
-    },
-    /**
-     * Ensures a user can't exceed the effective max stacks
-     */
-    ensureMaxStacks() {
-      if (this.stacks > this.effectiveBuffData.effectiveMaxStacks) {
-        this.stacks = this.effectiveBuffData.effectiveMaxStacks;
-      }
-    },
-    toggleEnabled() {
-      this.isEnabled = !this.isEnabled;
-    },
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Getter/setter used in the form for the isEnabled state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    isEnabled: {
-      get() {
-        return (
-          this.currentCharacter?.buffs?.[this.uniqueKey]?.isEnabled ?? false
-        );
-      },
-      async set(value) {
-        const data = {
-          buffs: {},
-        };
-        data.buffs[this.uniqueKey] = {
-          isEnabled: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the stacks count state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    stacks: {
-      get() {
-        const stacks =
-          this.currentCharacter?.buffs?.[this.uniqueKey]?.stacks ?? 0;
-        return stacks;
-      },
-      async set(value) {
-        const data = {
-          buffs: {},
-        };
-        data.buffs[this.uniqueKey] = {
-          stacks: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Calculates the effective max stacks and modifiers based on resonance chain interactions
-     * @returns {Object} Object containing effectiveMaxStacks, effectiveModifiers, and effectiveStacks
-     */
-    effectiveBuffData() {
-      // Start with the base configuration from props
-      let effectiveMaxStacks = this.maxStacks || 1; // Default to 1 if no maxStacks set
-      let effectiveModifiers = [...this.modifiers];
-      let effectiveStacks = this.stacks || 0; // Use the actual user input stacks
+interface StoreCharBuffEntry {
+  isEnabled?: boolean;
+  stacks?: number;
+}
 
-      // this only applies to CrownofWills on Augusta
-      if (this.character === "Augusta" && this.uniqueKey === "CrownofWills") {
-        // Check if resonance chain buffs are enabled and apply their effects
-        const sequenceNode1 =
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode1StainedinScorchedEarth;
-        const sequenceNode6 =
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode6EngravedinRadiantLight;
+interface StoreCharacterSlice {
+  buffs?: Record<string, StoreCharBuffEntry>;
+  resonanceChains?: Record<string, { isEnabled?: boolean }>;
+}
 
-        // Apply SequenceNode1 effects if enabled
-        if (sequenceNode1?.isEnabled) {
-          effectiveMaxStacks = 2;
-        }
+interface EffectiveBuffData {
+  effectiveMaxStacks: number;
+  effectiveModifiers: unknown[];
+  effectiveStacks: number;
+}
 
-        // Apply SequenceNode6 effects if enabled
-        if (sequenceNode6?.isEnabled) {
-          effectiveMaxStacks = 4;
-        }
-      }
-      // this only applies to InherentSkillBetweentheStarsTuneRupture & InherentSkillBetweentheStarsFusionBurst on Aemeath
-      // it essentially just removes stacks requirement
-      if (this.character === "Aemeath" && this.uniqueKey === "InherentSkillBetweentheStarsTuneRupture") {
-        // Check if resonance chain buffs are enabled and apply their effects
-        const sequenceNode3 =
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode3FervorSightlyBurnsBrightasNew;
-        // Apply SequenceNode1 effects if enabled
-        if (sequenceNode3?.isEnabled) {
-          effectiveMaxStacks = 0;
-          effectiveStacks = 0;
-          // clear out the value
-          this.stacks = 0;
-        }
-      }
-      if (this.character === "Aemeath" && this.uniqueKey === "InherentSkillBetweentheStarsFusionBurst") {
-        // Check if resonance chain buffs are enabled and apply their effects
-        const sequenceNode3 =
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode3FervorSightlyBurnsBrightasNew;
-        // Apply SequenceNode1 effects if enabled
-        if (sequenceNode3?.isEnabled) {
-          effectiveMaxStacks = 0;
-          effectiveStacks = 0;
-          // clear out the value
-          this.stacks = 0;
-        }
-      }
-      // Aemeath s6 makes these 60
-      if (this.character === "Aemeath" && this.uniqueKey === "SeraphicDuetTuneRupture") {
-        // Check if resonance chain buffs are enabled and apply their effects
-        const sequenceNode6 =
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode6AZephyrKissedJourneytoYou;
-        // Apply SequenceNode6 effects if enabled
-        if (sequenceNode6?.isEnabled) {
-          effectiveMaxStacks = 60;
-        }
-      }
-      // Aemeath s6 makes these 60
-      if (this.character === "Aemeath" && this.uniqueKey === "SeraphicDuetFusionBurst") {
-        // Check if resonance chain buffs are enabled and apply their effects
-        const sequenceNode6 =
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode6AZephyrKissedJourneytoYou;
-        // Apply SequenceNode6 effects if enabled
-        if (sequenceNode6?.isEnabled) {
-          effectiveMaxStacks = 60;
-        }
-      }
-      // Aemeath s6 makes these 60
-      if (this.character === "Sigrika" && this.uniqueKey === "InnateGift") {
-        const sequenceNode3 =
-          this.currentCharacter?.resonanceChains
-            ?.SequenceNode3IFleeYetISeek;
-        // Apply SequenceNode6 effects if enabled
-        if (sequenceNode3?.isEnabled) {
-          effectiveMaxStacks = 4;
-        }
-      }
+interface Props {
+  character: string;
+  uniqueKey: string;
+  name?: string;
+  details?: string;
+  alwaysEnabled?: boolean;
+  hasStacks?: boolean;
+  minStacks?: number;
+  maxStacks?: number;
+  modifiers?: unknown[];
+  talentData?: Record<string, unknown>;
+  energyRegen?: number;
+  critRate?: number;
+}
 
-      const result = {
-        effectiveMaxStacks,
-        effectiveModifiers,
-        effectiveStacks,
-      };
-      return result;
-    },
+const props = withDefaults(defineProps<Props>(), {
+  alwaysEnabled: false,
+  hasStacks: false,
+  minStacks: 0,
+  maxStacks: 0,
+  modifiers: () => [],
+  talentData: () => ({}),
+  energyRegen: 0,
+  critRate: 0,
+});
+
+const emit = defineEmits<{
+  "updated-character-buff": [payload: { key: string }];
+}>();
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+
+const currentCharacter = computed((): StoreCharacterSlice => {
+  const raw = characters.value[props.character];
+  return (raw as StoreCharacterSlice | undefined) ?? {};
+});
+
+const isEnabled = computed({
+  get(): boolean {
+    return (
+      currentCharacter.value?.buffs?.[props.uniqueKey]?.isEnabled ?? false
+    );
   },
-  mounted() {
-    if (this.alwaysEnabled === true) {
-      this.isEnabled = true;
+  async set(value: boolean) {
+    await characterStore.setCharacterData(props.character, {
+      buffs: {
+        [props.uniqueKey]: { isEnabled: value },
+      },
+    });
+  },
+});
+
+const stacks = computed({
+  get(): number {
+    return currentCharacter.value?.buffs?.[props.uniqueKey]?.stacks ?? 0;
+  },
+  async set(value: number) {
+    await characterStore.setCharacterData(props.character, {
+      buffs: {
+        [props.uniqueKey]: { stacks: value },
+      },
+    });
+  },
+});
+
+const effectiveBuffData = computed((): EffectiveBuffData => {
+  let effectiveMaxStacks = props.maxStacks || 1;
+  let effectiveModifiers = [...props.modifiers];
+  let effectiveStacks = stacks.value || 0;
+
+  if (props.character === "Augusta" && props.uniqueKey === "CrownofWills") {
+    const sequenceNode1 =
+      currentCharacter.value?.resonanceChains
+        ?.SequenceNode1StainedinScorchedEarth;
+    const sequenceNode6 =
+      currentCharacter.value?.resonanceChains
+        ?.SequenceNode6EngravedinRadiantLight;
+
+    if (sequenceNode1?.isEnabled) {
+      effectiveMaxStacks = 2;
     }
+
+    if (sequenceNode6?.isEnabled) {
+      effectiveMaxStacks = 4;
+    }
+  }
+  if (
+    props.character === "Aemeath" &&
+    props.uniqueKey === "InherentSkillBetweentheStarsTuneRupture"
+  ) {
+    const sequenceNode3 =
+      currentCharacter.value?.resonanceChains
+        ?.SequenceNode3FervorSightlyBurnsBrightasNew;
+    if (sequenceNode3?.isEnabled) {
+      effectiveMaxStacks = 0;
+      effectiveStacks = 0;
+      stacks.value = 0;
+    }
+  }
+  if (
+    props.character === "Aemeath" &&
+    props.uniqueKey === "InherentSkillBetweentheStarsFusionBurst"
+  ) {
+    const sequenceNode3 =
+      currentCharacter.value?.resonanceChains
+        ?.SequenceNode3FervorSightlyBurnsBrightasNew;
+    if (sequenceNode3?.isEnabled) {
+      effectiveMaxStacks = 0;
+      effectiveStacks = 0;
+      stacks.value = 0;
+    }
+  }
+  if (
+    props.character === "Aemeath" &&
+    props.uniqueKey === "SeraphicDuetTuneRupture"
+  ) {
+    const sequenceNode6 =
+      currentCharacter.value?.resonanceChains
+        ?.SequenceNode6AZephyrKissedJourneytoYou;
+    if (sequenceNode6?.isEnabled) {
+      effectiveMaxStacks = 60;
+    }
+  }
+  if (
+    props.character === "Aemeath" &&
+    props.uniqueKey === "SeraphicDuetFusionBurst"
+  ) {
+    const sequenceNode6 =
+      currentCharacter.value?.resonanceChains
+        ?.SequenceNode6AZephyrKissedJourneytoYou;
+    if (sequenceNode6?.isEnabled) {
+      effectiveMaxStacks = 60;
+    }
+  }
+  if (props.character === "Sigrika" && props.uniqueKey === "InnateGift") {
+    const sequenceNode3 =
+      currentCharacter.value?.resonanceChains?.SequenceNode3IFleeYetISeek;
+    if (sequenceNode3?.isEnabled) {
+      effectiveMaxStacks = 4;
+    }
+  }
+
+  return {
+    effectiveMaxStacks,
+    effectiveModifiers,
+    effectiveStacks,
+  };
+});
+
+function updatedStats() {
+  emit("updated-character-buff", {
+    key: props.uniqueKey,
+  });
+}
+
+function ensureMaxStacks() {
+  if (stacks.value > effectiveBuffData.value.effectiveMaxStacks) {
+    stacks.value = effectiveBuffData.value.effectiveMaxStacks;
+  }
+}
+
+function toggleEnabled() {
+  isEnabled.value = !isEnabled.value;
+}
+
+watch(
+  isEnabled,
+  () => {
+    updatedStats();
   },
-};
+  { immediate: true },
+);
+
+watch(stacks, () => {
+  nextTick(() => {
+    updatedStats();
+  });
+}, { immediate: true });
+
+watch(
+  () =>
+    currentCharacter.value?.resonanceChains
+      ?.SequenceNode1StainedinScorchedEarth?.isEnabled,
+  () => {
+    updatedStats();
+  },
+  { immediate: true },
+);
+
+watch(
+  () =>
+    currentCharacter.value?.resonanceChains
+      ?.SequenceNode6EngravedinRadiantLight?.isEnabled,
+  () => {
+    updatedStats();
+  },
+  { immediate: true },
+);
+
+watch(
+  () =>
+    currentCharacter.value?.resonanceChains
+      ?.SequenceNode3FervorSightlyBurnsBrightasNew?.isEnabled,
+  () => {
+    updatedStats();
+  },
+  { immediate: true },
+);
+
+onMounted(() => {
+  if (props.alwaysEnabled === true) {
+    isEnabled.value = true;
+  }
+});
 </script>
 
 <style scoped lang="scss">

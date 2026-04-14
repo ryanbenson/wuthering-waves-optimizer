@@ -446,598 +446,263 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import type { WritableComputedRef } from "vue";
+import { computed, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
-export default {
-  name: "CalculatorCustomBuffs",
-  props: {
-    character: {
-      type: String,
-      required: true,
+
+type CustomBuffKey =
+  | "ATK"
+  | "ATK_FLAT"
+  | "HP"
+  | "HP_FLAT"
+  | "DEF"
+  | "DEF_FLAT"
+  | "CritRate"
+  | "CritDMG"
+  | "EnergyRegen"
+  | "BasicAttackDMGBonus"
+  | "HeavyAttackDMGBonus"
+  | "ResonanceSkillDMGBonus"
+  | "ResonanceLiberationDMGBonus"
+  | "EchoDMGBonus"
+  | "Glacio"
+  | "Fusion"
+  | "Electro"
+  | "Aero"
+  | "Spectro"
+  | "Havoc"
+  | "HealingBonus"
+  | "DamageAmplify"
+  | "ResistShred"
+  | "DefIgnore"
+  | "DefReduction"
+  | "CoordinatedDMGBonus"
+  | "TuneBreakDMGBonus"
+  | "SpecialMultiplier";
+
+interface StoreCharacterSlice {
+  customBuffs?: Partial<Record<CustomBuffKey, number>>;
+}
+
+interface ProcessedCustomBuffs {
+  ATK: number;
+  ATK_FLAT: number;
+  HP: number;
+  HP_FLAT: number;
+  DEF: number;
+  DEF_FLAT: number;
+  CritRate: number;
+  CritDMG: number;
+  EnergyRegen: number;
+  BasicAttackDMGBonus: number;
+  HeavyAttackDMGBonus: number;
+  ResonanceSkillDMGBonus: number;
+  ResonanceLiberationDMGBonus: number;
+  EchoDMGBonus: number;
+  Glacio: number;
+  Fusion: number;
+  Electro: number;
+  Aero: number;
+  Spectro: number;
+  Havoc: number;
+  HealingBonus: number;
+  DamageAmplify: number;
+  ResistShred: number;
+  DefIgnore: number;
+  DefReduction: number;
+  CoordinatedDMGBonus: number;
+  TuneBreakDMGBonus: number;
+  SpecialMultiplier: number;
+}
+
+interface Props {
+  character: string;
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  "custom-buffs-updated": [data: ProcessedCustomBuffs];
+}>();
+
+const characterStore = useCharacterStore();
+
+const currentCharacter = computed((): StoreCharacterSlice => {
+  const raw = characterStore.characters[props.character];
+  return (raw as StoreCharacterSlice | undefined) ?? {};
+});
+
+function makeCustomBuffField(key: CustomBuffKey): WritableComputedRef<number> {
+  return computed({
+    get(): number {
+      return currentCharacter.value.customBuffs?.[key] ?? 0;
     },
+    async set(value: number) {
+      await characterStore.setCharacterData(props.character, {
+        customBuffs: { [key]: value },
+      });
+    },
+  });
+}
+
+const ATK = makeCustomBuffField("ATK");
+const ATK_FLAT = makeCustomBuffField("ATK_FLAT");
+const HP = makeCustomBuffField("HP");
+const HP_FLAT = makeCustomBuffField("HP_FLAT");
+const DEF = makeCustomBuffField("DEF");
+const DEF_FLAT = makeCustomBuffField("DEF_FLAT");
+const CritRate = makeCustomBuffField("CritRate");
+const CritDMG = makeCustomBuffField("CritDMG");
+const EnergyRegen = makeCustomBuffField("EnergyRegen");
+const BasicAttackDMGBonus = makeCustomBuffField("BasicAttackDMGBonus");
+const HeavyAttackDMGBonus = makeCustomBuffField("HeavyAttackDMGBonus");
+const ResonanceSkillDMGBonus = makeCustomBuffField("ResonanceSkillDMGBonus");
+const ResonanceLiberationDMGBonus = makeCustomBuffField(
+  "ResonanceLiberationDMGBonus",
+);
+const EchoDMGBonus = makeCustomBuffField("EchoDMGBonus");
+const Glacio = makeCustomBuffField("Glacio");
+const Fusion = makeCustomBuffField("Fusion");
+const Electro = makeCustomBuffField("Electro");
+const Aero = makeCustomBuffField("Aero");
+const Spectro = makeCustomBuffField("Spectro");
+const Havoc = makeCustomBuffField("Havoc");
+const HealingBonus = makeCustomBuffField("HealingBonus");
+const DamageAmplify = makeCustomBuffField("DamageAmplify");
+const ResistShred = makeCustomBuffField("ResistShred");
+const DefIgnore = makeCustomBuffField("DefIgnore");
+const DefReduction = makeCustomBuffField("DefReduction");
+const CoordinatedDMGBonus = makeCustomBuffField("CoordinatedDMGBonus");
+const TuneBreakDMGBonus = makeCustomBuffField("TuneBreakDMGBonus");
+const SpecialMultiplier = makeCustomBuffField("SpecialMultiplier");
+
+const customBuffFieldRefs: WritableComputedRef<number>[] = [
+  ATK,
+  ATK_FLAT,
+  HP,
+  HP_FLAT,
+  DEF,
+  DEF_FLAT,
+  CritRate,
+  CritDMG,
+  EnergyRegen,
+  BasicAttackDMGBonus,
+  HeavyAttackDMGBonus,
+  ResonanceSkillDMGBonus,
+  ResonanceLiberationDMGBonus,
+  EchoDMGBonus,
+  Glacio,
+  Fusion,
+  Electro,
+  Aero,
+  Spectro,
+  Havoc,
+  HealingBonus,
+  DamageAmplify,
+  ResistShred,
+  DefIgnore,
+  DefReduction,
+  CoordinatedDMGBonus,
+  TuneBreakDMGBonus,
+  SpecialMultiplier,
+];
+
+const buffsData = computed((): ProcessedCustomBuffs => {
+  const ATK_ = ATK.value ? ATK.value / 100 : 0;
+  const HP_ = HP.value ? HP.value / 100 : 0;
+  const DEF_ = DEF.value ? DEF.value / 100 : 0;
+  const ATK_FLAT_ = ATK_FLAT.value ? ATK_FLAT.value : 0;
+  const HP_FLAT_ = HP_FLAT.value ? HP_FLAT.value : 0;
+  const DEF_FLAT_ = DEF_FLAT.value ? DEF_FLAT.value : 0;
+  const CritRate_ = CritRate.value ? CritRate.value / 100 : 0;
+  const CritDMG_ = CritDMG.value ? CritDMG.value / 100 : 0;
+  const EnergyRegen_ = EnergyRegen.value ? EnergyRegen.value / 100 : 0;
+  const BasicAttackDMGBonus_ = BasicAttackDMGBonus.value
+    ? BasicAttackDMGBonus.value / 100
+    : 0;
+  const HeavyAttackDMGBonus_ = HeavyAttackDMGBonus.value
+    ? HeavyAttackDMGBonus.value / 100
+    : 0;
+  const ResonanceSkillDMGBonus_ = ResonanceSkillDMGBonus.value
+    ? ResonanceSkillDMGBonus.value / 100
+    : 0;
+  const ResonanceLiberationDMGBonus_ = ResonanceLiberationDMGBonus.value
+    ? ResonanceLiberationDMGBonus.value / 100
+    : 0;
+  const EchoDMGBonus_ = EchoDMGBonus.value ? EchoDMGBonus.value / 100 : 0;
+  const Glacio_ = Glacio.value ? Glacio.value / 100 : 0;
+  const Fusion_ = Fusion.value ? Fusion.value / 100 : 0;
+  const Electro_ = Electro.value ? Electro.value / 100 : 0;
+  const Aero_ = Aero.value ? Aero.value / 100 : 0;
+  const Spectro_ = Spectro.value ? Spectro.value / 100 : 0;
+  const Havoc_ = Havoc.value ? Havoc.value / 100 : 0;
+  const HealingBonus_ = HealingBonus.value ? HealingBonus.value / 100 : 0;
+  const DamageAmplify_ = DamageAmplify.value ? DamageAmplify.value / 100 : 0;
+  const ResistShred_ = ResistShred.value ? ResistShred.value / 100 : 0;
+  const DefIgnore_ = DefIgnore.value ? DefIgnore.value / 100 : 0;
+  const DefReduction_ = DefReduction.value ? DefReduction.value / 100 : 0;
+  const CoordinatedDMGBonus_ = CoordinatedDMGBonus.value
+    ? CoordinatedDMGBonus.value / 100
+    : 0;
+  const TuneBreakDMGBonus_ = TuneBreakDMGBonus.value
+    ? TuneBreakDMGBonus.value / 100
+    : 0;
+  const SpecialMultiplier_ = SpecialMultiplier.value
+    ? SpecialMultiplier.value / 100
+    : 0;
+  return {
+    ATK: ATK_,
+    ATK_FLAT: ATK_FLAT_,
+    HP: HP_,
+    HP_FLAT: HP_FLAT_,
+    DEF: DEF_,
+    DEF_FLAT: DEF_FLAT_,
+    CritRate: CritRate_,
+    CritDMG: CritDMG_,
+    EnergyRegen: EnergyRegen_,
+    BasicAttackDMGBonus: BasicAttackDMGBonus_,
+    HeavyAttackDMGBonus: HeavyAttackDMGBonus_,
+    ResonanceSkillDMGBonus: ResonanceSkillDMGBonus_,
+    ResonanceLiberationDMGBonus: ResonanceLiberationDMGBonus_,
+    EchoDMGBonus: EchoDMGBonus_,
+    Glacio: Glacio_,
+    Fusion: Fusion_,
+    Electro: Electro_,
+    Aero: Aero_,
+    Spectro: Spectro_,
+    Havoc: Havoc_,
+    HealingBonus: HealingBonus_,
+    DamageAmplify: DamageAmplify_,
+    ResistShred: ResistShred_,
+    DefIgnore: DefIgnore_,
+    DefReduction: DefReduction_,
+    CoordinatedDMGBonus: CoordinatedDMGBonus_,
+    TuneBreakDMGBonus: TuneBreakDMGBonus_,
+    SpecialMultiplier: SpecialMultiplier_,
+  };
+});
+
+function updatedStats() {
+  const data = JSON.parse(
+    JSON.stringify(buffsData.value),
+  ) as ProcessedCustomBuffs;
+  emit("custom-buffs-updated", data);
+}
+
+watch(
+  buffsData,
+  () => {
+    updatedStats();
   },
-  watch: {
-    buffsData: {
-      handler: function () {
-        this.updatedStats();
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    updatedStats() {
-      const data = JSON.parse(JSON.stringify(this.buffsData));
-      this.$emit("custom-buffs-updated", data);
-    },
-    handleResetCustomBuffs() {
-      this.ATK = 0;
-      this.ATK_FLAT = 0;
-      this.HP = 0;
-      this.HP_FLAT = 0;
-      this.DEF = 0;
-      this.DEF_FLAT = 0;
-      this.CritRate = 0;
-      this.CritDMG = 0;
-      this.EnergyRegen = 0;
-      this.BasicAttackDMGBonus = 0;
-      this.HeavyAttackDMGBonus = 0;
-      this.ResonanceSkillDMGBonus = 0;
-      this.ResonanceLiberationDMGBonus = 0;
-      this.EchoDMGBonus = 0;
-      this.Glacio = 0;
-      this.Fusion = 0;
-      this.Electro = 0;
-      this.Aero = 0;
-      this.Spectro = 0;
-      this.Havoc = 0;
-      this.HealingBonus = 0;
-      this.DamageAmplify = 0;
-      this.ResistShred = 0;
-      this.DefIgnore = 0;
-      this.DefReduction = 0;
-      this.CoordinatedDMGBonus = 0;
-      this.TuneBreakDMGBonus = 0;
-      this.SpecialMultiplier = 0;
-    },
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Provides an object of all data
-     * All % based values need to be divided by 100 for processing
-     */
-    buffsData() {
-      const ATK = this.ATK ? this.ATK / 100 : 0;
-      const HP = this.HP ? this.HP / 100 : 0;
-      const DEF = this.DEF ? this.DEF / 100 : 0;
-      const ATK_FLAT = this.ATK_FLAT ? this.ATK_FLAT : 0;
-      const HP_FLAT = this.HP_FLAT ? this.HP_FLAT : 0;
-      const DEF_FLAT = this.DEF_FLAT ? this.DEF_FLAT : 0;
-      const CritRate = this.CritRate ? this.CritRate / 100 : 0;
-      const CritDMG = this.CritDMG ? this.CritDMG / 100 : 0;
-      const EnergyRegen = this.EnergyRegen ? this.EnergyRegen / 100 : 0;
-      const BasicAttackDMGBonus = this.BasicAttackDMGBonus
-        ? this.BasicAttackDMGBonus / 100
-        : 0;
-      const HeavyAttackDMGBonus = this.HeavyAttackDMGBonus
-        ? this.HeavyAttackDMGBonus / 100
-        : 0;
-      const ResonanceSkillDMGBonus = this.ResonanceSkillDMGBonus
-        ? this.ResonanceSkillDMGBonus / 100
-        : 0;
-      const ResonanceLiberationDMGBonus = this.ResonanceLiberationDMGBonus
-        ? this.ResonanceLiberationDMGBonus / 100
-        : 0;
-      const EchoDMGBonus = this.EchoDMGBonus ? this.EchoDMGBonus / 100 : 0;
-      const Glacio = this.Glacio ? this.Glacio / 100 : 0;
-      const Fusion = this.Fusion ? this.Fusion / 100 : 0;
-      const Electro = this.Electro ? this.Electro / 100 : 0;
-      const Aero = this.Aero ? this.Aero / 100 : 0;
-      const Spectro = this.Spectro ? this.Spectro / 100 : 0;
-      const Havoc = this.Havoc ? this.Havoc / 100 : 0;
-      const HealingBonus = this.HealingBonus ? this.HealingBonus / 100 : 0;
-      const DamageAmplify = this.DamageAmplify ? this.DamageAmplify / 100 : 0;
-      const ResistShred = this.ResistShred ? this.ResistShred / 100 : 0;
-      const DefIgnore = this.DefIgnore ? this.DefIgnore / 100 : 0;
-      const DefReduction = this.DefReduction ? this.DefReduction / 100 : 0;
-      const CoordinatedDMGBonus = this.CoordinatedDMGBonus
-        ? this.CoordinatedDMGBonus / 100
-        : 0;
-      const TuneBreakDMGBonus = this.TuneBreakDMGBonus
-        ? this.TuneBreakDMGBonus / 100
-        : 0;
-      const SpecialMultiplier = this.SpecialMultiplier
-        ? this.SpecialMultiplier / 100
-        : 0;
-      return {
-        ATK,
-        ATK_FLAT,
-        HP,
-        HP_FLAT,
-        DEF,
-        DEF_FLAT,
-        CritRate,
-        CritDMG,
-        EnergyRegen,
-        BasicAttackDMGBonus,
-        HeavyAttackDMGBonus,
-        ResonanceSkillDMGBonus,
-        ResonanceLiberationDMGBonus,
-        EchoDMGBonus,
-        Glacio,
-        Fusion,
-        Electro,
-        Aero,
-        Spectro,
-        Havoc,
-        HealingBonus,
-        DamageAmplify,
-        ResistShred,
-        DefIgnore,
-        DefReduction,
-        CoordinatedDMGBonus,
-        TuneBreakDMGBonus,
-        SpecialMultiplier,
-      };
-    },
-    /**
-     * Getter/setter used in the form for the attack %
-     */
-    ATK: {
-      get() {
-        return this.currentCharacter?.customBuffs?.ATK ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            ATK: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the attack flat
-     */
-    ATK_FLAT: {
-      get() {
-        return this.currentCharacter?.customBuffs?.ATK_FLAT ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            ATK_FLAT: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the hp %
-     */
-    HP: {
-      get() {
-        return this.currentCharacter?.customBuffs?.HP ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            HP: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the hp flat
-     */
-    HP_FLAT: {
-      get() {
-        return this.currentCharacter?.customBuffs?.HP_FLAT ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            HP_FLAT: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the def %
-     */
-    DEF: {
-      get() {
-        return this.currentCharacter?.customBuffs?.DEF ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            DEF: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the def flat
-     */
-    DEF_FLAT: {
-      get() {
-        return this.currentCharacter?.customBuffs?.DEF_FLAT ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            DEF_FLAT: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the crit rate
-     */
-    CritRate: {
-      get() {
-        return this.currentCharacter?.customBuffs?.CritRate ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            CritRate: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the crit damage
-     */
-    CritDMG: {
-      get() {
-        return this.currentCharacter?.customBuffs?.CritDMG ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            CritDMG: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the energy regen
-     */
-    EnergyRegen: {
-      get() {
-        return this.currentCharacter?.customBuffs?.EnergyRegen ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            EnergyRegen: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the basic dmg bonus
-     */
-    BasicAttackDMGBonus: {
-      get() {
-        return this.currentCharacter?.customBuffs?.BasicAttackDMGBonus ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            BasicAttackDMGBonus: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the heavy dmg bonus
-     */
-    HeavyAttackDMGBonus: {
-      get() {
-        return this.currentCharacter?.customBuffs?.HeavyAttackDMGBonus ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            HeavyAttackDMGBonus: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the skill dmg bonus
-     */
-    ResonanceSkillDMGBonus: {
-      get() {
-        return this.currentCharacter?.customBuffs?.ResonanceSkillDMGBonus ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            ResonanceSkillDMGBonus: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the liberation dmg bonus
-     */
-    ResonanceLiberationDMGBonus: {
-      get() {
-        return (
-          this.currentCharacter?.customBuffs?.ResonanceLiberationDMGBonus ?? 0
-        );
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            ResonanceLiberationDMGBonus: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the echo dmg bonus
-     */
-    EchoDMGBonus: {
-      get() {
-        return this.currentCharacter?.customBuffs?.EchoDMGBonus ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            EchoDMGBonus: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for glacio
-     */
-    Glacio: {
-      get() {
-        return this.currentCharacter?.customBuffs?.Glacio ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            Glacio: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for fusion
-     */
-    Fusion: {
-      get() {
-        return this.currentCharacter?.customBuffs?.Fusion ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            Fusion: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for electro
-     */
-    Electro: {
-      get() {
-        return this.currentCharacter?.customBuffs?.Electro ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            Electro: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for aero
-     */
-    Aero: {
-      get() {
-        return this.currentCharacter?.customBuffs?.Aero ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            Aero: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for spectro
-     */
-    Spectro: {
-      get() {
-        return this.currentCharacter?.customBuffs?.Spectro ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            Spectro: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for havoc
-     */
-    Havoc: {
-      get() {
-        return this.currentCharacter?.customBuffs?.Havoc ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            Havoc: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for HealingBonus
-     */
-    HealingBonus: {
-      get() {
-        return this.currentCharacter?.customBuffs?.HealingBonus ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            HealingBonus: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for DamageAmplify
-     */
-    DamageAmplify: {
-      get() {
-        return this.currentCharacter?.customBuffs?.DamageAmplify ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            DamageAmplify: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for ResistShred
-     */
-    ResistShred: {
-      get() {
-        return this.currentCharacter?.customBuffs?.ResistShred ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            ResistShred: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for DefIgnore
-     */
-    DefIgnore: {
-      get() {
-        return this.currentCharacter?.customBuffs?.DefIgnore ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            DefIgnore: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for DefReduction
-     */
-    DefReduction: {
-      get() {
-        return this.currentCharacter?.customBuffs?.DefReduction ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            DefReduction: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for CoordinatedDMGBonus
-     */
-    CoordinatedDMGBonus: {
-      get() {
-        return this.currentCharacter?.customBuffs?.CoordinatedDMGBonus ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            CoordinatedDMGBonus: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for TuneBreakDMGBonus
-     */
-    TuneBreakDMGBonus: {
-      get() {
-        return this.currentCharacter?.customBuffs?.TuneBreakDMGBonus ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            TuneBreakDMGBonus: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    SpecialMultiplier: {
-      get() {
-        return this.currentCharacter?.customBuffs?.SpecialMultiplier ?? 0;
-      },
-      async set(value) {
-        const data = {
-          customBuffs: {
-            SpecialMultiplier: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-  },
-};
+  { immediate: true },
+);
+
+function handleResetCustomBuffs() {
+  for (const field of customBuffFieldRefs) {
+    field.value = 0;
+  }
+}
 </script>
 
 <style lang="scss" scoped>

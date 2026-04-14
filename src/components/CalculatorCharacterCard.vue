@@ -7,8 +7,8 @@
           <div
             class="character__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
             :class="{
-              'border-amber-300': rarity === '5' || rarity === 5,
-              'border-violet-600': rarity === '4' || rarity === 4,
+              'border-amber-300': rarity === 5,
+              'border-violet-600': rarity === 4,
             }"
             :style="{
               backgroundImage:`url(https://ryanbenson.github.io/wuthering-waves-assets/images/${nameKey}.png)`,
@@ -18,15 +18,15 @@
           <h2 class="card-title flex items-center">
             <span
               :class="{
-                'text-amber-300': rarity === '5' || rarity === 5,
-                'text-violet-600': rarity === '4' || rarity === 4,
+                'text-amber-300': rarity === 5,
+                'text-violet-600': rarity === 4,
               }">
               {{ name }}
             </span>
           </h2>
           <div class="character__item__meta flex gap-2 items-center">
             <span class="character__item__set size-6 rounded-full">
-              <img :src="elementImage" :class="getElementClass" />
+              <img :src="elementImage" :class="elementClass" />
             </span>
             <span class="character__weapon size-6 rounded-full">
               <img
@@ -41,53 +41,35 @@
   </div>
 </template>
 
-<script>
-import { characterElementsSetImageMap, weaponTypesImageMap } from "../characters/characters";
-export default {
-  name: "CalculatorCharacterCard",
-  props: {
-    name: {
-        type: String,
-        required: true
-    },
-    nameKey: {
-        type: String,
-        required: true
-    },
-    rarity: {
-        type: Number,
-        required: true
-    },
-    element: {
-        type: String,
-        required: true
-    },
-    weapon: {
-        type: String,
-        required: true
-    },
-    isActive: {
-        type: Boolean,
-        default: false
-    }
-  },
-  data() {
-    return {};
-  },
-  computed: {
-    elementImage() {
-        return characterElementsSetImageMap[this.element] ?? null;
-    },
-    weaponImage() {
-      return weaponTypesImageMap[this.weapon] ?? null; 
-    },
-    getElementClass() {
-      return `${this.element.toLowerCase()}--active`;
-    }
-  },
-  methods: {
-  },
-};
+<script setup lang="ts">
+import { computed } from "vue";
+import {
+  characterElementsSetImageMap,
+  weaponTypesImageMap,
+} from "../characters/characters";
+
+interface Props {
+  name: string;
+  nameKey: string;
+  rarity: number;
+  element: string;
+  weapon: string;
+  isActive?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  isActive: false,
+});
+
+const elementImage = computed(
+  () => characterElementsSetImageMap[props.element] ?? null,
+);
+const weaponImage = computed(
+  () => weaponTypesImageMap[props.weapon] ?? null,
+);
+const elementClass = computed(
+  () => `${props.element.toLowerCase()}--active`,
+);
 </script>
 
 <style lang="scss" scoped>
