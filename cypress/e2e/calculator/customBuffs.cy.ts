@@ -6,26 +6,30 @@ import { testAttacks } from "./utils/attackUtils";
 import { testStats } from "./utils/statUtils";
 
 describe("Calculator Custom Buffs", () => {
+  const customBuffNav = '[data-test-calculator-nav="customBuffs"]';
+  const customBuffList = ".custom__buffs-list";
+  const customBuffInputs = `${customBuffList} .form-control input[type=number]`;
+
   beforeEach(() => {
     cy.visit("/");
   });
 
-  it("should verify that by default no values are 0", () => {
-    cy.get('[data-test-calculator-nav="customBuffs"]').click();
-    cy.get(".custom__buffs-list").should("be.visible");
-    cy.get(".custom__buffs-list .form-control").each(($input) => {
-      cy.wrap($input).find("input[type=number]").should("have.value", "0");
+  it("shows all custom buffs defaulting to zero", () => {
+    cy.get(customBuffNav).click();
+    cy.get(customBuffList).should("be.visible");
+    cy.get(customBuffInputs).each(($input) => {
+      cy.wrap($input).should("have.value", "0");
     });
   });
 
-  it("should ensure all resonance chains are able to be chosen and affect your results", () => {
+  it("applies custom buffs and updates expected stats/damage", () => {
     cy.get(".character__selection__form--character select").select("Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Carlotta").should("be.visible");
-    cy.get('[data-test-calculator-nav="customBuffs"]').click();
+    cy.get(customBuffNav).click();
 
-    cy.get(".custom__buffs-list .form-control").each(($input) => {
-      cy.wrap($input).find("input[type=number]").clear().type("50");
+    cy.get(customBuffInputs).each(($input) => {
+      cy.wrap($input).clear().type("50");
     });
     // validate the stats and damages after
     testStats(carlottaOnlyCustomBuffsStats, cy);

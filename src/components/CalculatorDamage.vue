@@ -103,106 +103,74 @@
   </tr>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed } from "vue";
+import { storeToRefs } from "pinia";
 import { displayDamage } from "../utils/numbers";
 import { slugify } from "../utils/strings";
 import { getEchoData } from "../echoes";
-import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      required: true,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    damage: {
-      type: Object,
-      required: true,
-    },
-    attackKey: {
-      type: String,
-      required: true,
-    },
-    isEnabled: {
-      type: Boolean,
-      default: true,
-    },
-    mainEcho: {
-      type: String,
-      default: null,
-    },
-    mainEchoRank: {
-      type: [Number, String],
-      default: null,
-    },
-    originalIsEnabled: {
-      type: Boolean,
-      default: true,
-    },
-    alwaysCrit: {
-      type: Boolean,
-      default: false,
-    },
+
+type DamageData = Record<string, any>;
+
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    type: string;
+    label: string;
+    damage: DamageData;
+    attackKey?: string;
+    isEnabled?: boolean;
+    mainEcho?: string | null;
+    mainEchoRank?: number | string | null;
+    originalIsEnabled?: boolean;
+    alwaysCrit?: boolean;
+  }>(),
+  {
+    isEnabled: true,
+    mainEcho: null,
+    mainEchoRank: null,
+    originalIsEnabled: true,
+    alwaysCrit: false,
   },
-  methods: {
-    displayDamage,
-    slugify,
-    handleClick() {
-      this.$emit('selected-attack', this.attackKey ?? this.label, this.damage, this.label);
-    },
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    currentCharacterMainEcho() {
-      return this.characters[this.character]?.mainEcho?.echo ?? null;
-    },
-    slugifiedLabel() {
-      return slugify(this.label) ?? "";
-    },
-    normalDmgTooltipText() {
-      if (this.alwaysCrit) {
-        return null;
-      }
-      return this.damage.detailedCalculation;
-    },
-    avgDmgTooltipText() {
-      if (this.alwaysCrit) {
-        return null;
-      }
-      return this.damage.detailedCalculationAvg;
-    },
-    mainEchoData() {
-      return getEchoData(this.mainEcho);
-    },
-    mainEchoImage() {
-      return this.mainEchoData?.image ?? null;
-    },
-    isEchoAttack() {
-      return this.mainEcho !== null;
-    },
-    isEquippedEchoSameAsActionEcho() {
-      if (!this.currentCharacterMainEcho || !this.mainEcho) {
-        return true;
-      }
-      return this.currentCharacterMainEcho === this.mainEcho;
-    },
-  },
-};
+);
+
+const emit = defineEmits<{
+  "selected-attack": [attackKey: string, damage: DamageData, label: string];
+}>();
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+
+const currentCharacter = computed(
+  () => (characters.value?.[props.character] as Record<string, any>) ?? {},
+);
+const currentCharacterMainEcho = computed(
+  () => currentCharacter.value?.mainEcho?.echo ?? null,
+);
+const slugifiedLabel = computed(() => slugify(props.label) ?? "");
+const normalDmgTooltipText = computed(() =>
+  props.alwaysCrit ? null : props.damage.detailedCalculation,
+);
+const avgDmgTooltipText = computed(() =>
+  props.alwaysCrit ? null : props.damage.detailedCalculationAvg,
+);
+const mainEchoData = computed(() => {
+  if (!props.mainEcho) return null;
+  return getEchoData(props.mainEcho);
+});
+const mainEchoImage = computed(() => mainEchoData.value?.image ?? null);
+const isEchoAttack = computed(() => props.mainEcho !== null);
+const isEquippedEchoSameAsActionEcho = computed(() => {
+  if (!currentCharacterMainEcho.value || !props.mainEcho) {
+    return true;
+  }
+  return currentCharacterMainEcho.value === props.mainEcho;
+});
+
+function handleClick() {
+  emit("selected-attack", props.attackKey ?? props.label, props.damage, props.label);
+}
 </script>
 
 <style lang="scss" scoped>

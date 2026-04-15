@@ -18,7 +18,7 @@
             role="tab"
             class="tab whitespace-nowrap"
             aria-label="My Presets"
-            checked="checked" />
+            :checked="true" />
           <div role="tabpanel" class="tab-content mt-6">
             <p v-if="!hasEchoPresets">No echo presets available</p>
             <div v-else class="echoes-presets-list">
@@ -70,140 +70,97 @@
   </dialog>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
+import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { getCharByName } from "../characters/characters.ts";
 import EchoCustomPreset from "./EchoCustomPreset.vue";
-import { character } from "../characters/Aalto/character.ts";
-export default {
-  name: "CalculatorEchoImporter",
-  components: {
-    EchoCustomPreset,
-  },
-  props: {
-    character: {
-      type: String,
-      default: false,
-    },
-  },
-  data() {
-    return {
-      defaultEchoPresets: [],
-    };
-  },
-  methods: {
-    ...mapActions(useCharacterStore, [
-      "setCharacterEchoes",
-      "setCharacterData",
-    ]),
-    ...mapActions(useInventoryStore, [
-      "saveEcho",
-      "setEquippedData",
-      "getEchoById",
-      "setEquippedPresetData",
-      "setEquippedData",
-      "removeCharacterFromAllEquipped",
-    ]),
-    triggerOpenModal() {
-      const modalEl = document.getElementById("modal-echoes-presets");
-      modalEl.showModal();
-    },
-    triggerCloseModal() {
-      const modalEl = document.getElementById("modal-echoes-presets");
-      modalEl.close();
-    },
-    async applyPreset(presetData) {
+const props = defineProps<{ character: string }>();
+
+const characterStore = useCharacterStore();
+const inventoryStore = useInventoryStore();
+const { echoPresets } = storeToRefs(inventoryStore);
+
+const defaultEchoPresets = ref<any[]>([]);
+
+function triggerOpenModal() {
+  const modalEl = document.getElementById("modal-echoes-presets");
+  (modalEl as HTMLDialogElement | null)?.showModal();
+}
+function triggerCloseModal() {
+  const modalEl = document.getElementById("modal-echoes-presets");
+  (modalEl as HTMLDialogElement | null)?.close();
+}
+function handleClose() {
+  triggerCloseModal();
+}
+async function applyPreset(presetData: any) {
       const data = JSON.parse(JSON.stringify(presetData)); // clone so we don't use the raw data
-      await this.setCharacterEchoes(this.character, {}); // flush first
-      await this.setCharacterEchoes(this.character, data.data.echoes);
-      // flush out any equip references. This is a TCer preset,
-      // so we don't assign the equipments, but we reset
-      await this.removeCharacterFromAllEquipped(this.character);
-      this.triggerCloseModal();
-    },
-    async applyCustomPreset(presetData) {
+      await characterStore.setCharacterEchoes(props.character, {}); // flush first
+      await characterStore.setCharacterEchoes(props.character, data.data.echoes);
+      await inventoryStore.removeCharacterFromAllEquipped(props.character);
+      triggerCloseModal();
+    }
+async function applyCustomPreset(presetData: any) {
       const data = JSON.parse(JSON.stringify(presetData)); // clone so we don't use the raw data
-      // set the preset id
-      await this.setCharacterData(this.character, {
+      await characterStore.setCharacterData(props.character, {
         echoPresetId: presetData.presetId,
       });
-      // set the preset equipped
-      await this.setEquippedPresetData(this.character, presetData.presetId);
-      // flush current echo data
-      await this.setCharacterEchoes(this.character, {});
-      // also flush any equip references
-      await this.removeCharacterFromAllEquipped(this.character);
-      // need to setup the echo data to apply {0: echoData..., 1: echoData...}
+      await inventoryStore.setEquippedPresetData(props.character, presetData.presetId);
+      await characterStore.setCharacterEchoes(props.character, {});
+      await inventoryStore.removeCharacterFromAllEquipped(props.character);
       const echoData = {};
       if (data.echo1Id) {
-        const echo1Data = await this.getEchoById(data.echo1Id);
-        echoData[0] = echo1Data;
-        // update our equipped echoes list
+        const echo1Data = await inventoryStore.getEchoById(data.echo1Id);
+        (echoData as any)[0] = echo1Data;
         const equippedData = {};
-        equippedData[this.character] = 0;
-        await this.setEquippedData(data.echo1Id, equippedData);
+        (equippedData as any)[props.character] = 0;
+        await inventoryStore.setEquippedData(data.echo1Id, equippedData);
       }
       if (data.echo2Id) {
-        const echo2Data = await this.getEchoById(data.echo2Id);
-        echoData[1] = echo2Data;
-        // update our equipped echoes list
+        const echo2Data = await inventoryStore.getEchoById(data.echo2Id);
+        (echoData as any)[1] = echo2Data;
         const equippedData = {};
-        equippedData[this.character] = 1;
-        await this.setEquippedData(data.echo2Id, equippedData);
+        (equippedData as any)[props.character] = 1;
+        await inventoryStore.setEquippedData(data.echo2Id, equippedData);
       }
       if (data.echo3Id) {
-        const echo3Data = await this.getEchoById(data.echo3Id);
-        echoData[2] = echo3Data;
-        // update our equipped echoes list
+        const echo3Data = await inventoryStore.getEchoById(data.echo3Id);
+        (echoData as any)[2] = echo3Data;
         const equippedData = {};
-        equippedData[this.character] = 2;
-        await this.setEquippedData(data.echo3Id, equippedData);
+        (equippedData as any)[props.character] = 2;
+        await inventoryStore.setEquippedData(data.echo3Id, equippedData);
       }
       if (data.echo4Id) {
-        const echo4Data = await this.getEchoById(data.echo4Id);
-        echoData[3] = echo4Data;
-        // update our equipped echoes list
+        const echo4Data = await inventoryStore.getEchoById(data.echo4Id);
+        (echoData as any)[3] = echo4Data;
         const equippedData = {};
-        equippedData[this.character] = 3;
-        await this.setEquippedData(data.echo4Id, equippedData);
+        (equippedData as any)[props.character] = 3;
+        await inventoryStore.setEquippedData(data.echo4Id, equippedData);
       }
       if (data.echo5Id) {
-        const echo5Data = await this.getEchoById(data.echo5Id);
-        echoData[4] = echo5Data;
-        // update our equipped echoes list
+        const echo5Data = await inventoryStore.getEchoById(data.echo5Id);
+        (echoData as any)[4] = echo5Data;
         const equippedData = {};
-        equippedData[this.character] = 4;
-        await this.setEquippedData(data.echo5Id, equippedData);
+        (equippedData as any)[props.character] = 4;
+        await inventoryStore.setEquippedData(data.echo5Id, equippedData);
       }
-      // set the echo data now
-      await this.setCharacterEchoes(this.character, echoData);
+      await characterStore.setCharacterEchoes(props.character, echoData);
+      triggerCloseModal();
+    }
 
-      this.triggerCloseModal();
-    },
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    ...mapState(useInventoryStore, ["echoPresets"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    hasDefaultEchoPresets() {
-      return this.defaultEchoPresets.length > 0;
-    },
-    hasEchoPresets() {
-      return this.echoPresets.length > 0;
-    },
-  },
-  async mounted() {
-    this.characterData = await getCharByName(this.character);
-    const echoes = this.characterData?.echoes ?? [];
-    this.defaultEchoPresets = echoes;
-  },
-};
+const hasDefaultEchoPresets = computed(() => defaultEchoPresets.value.length > 0);
+const hasEchoPresets = computed(() => (echoPresets.value?.length ?? 0) > 0);
+
+onMounted(async () => {
+  const characterData = await getCharByName(props.character);
+  defaultEchoPresets.value = characterData?.echoes ?? [];
+});
+
+defineExpose({
+  triggerOpenModal,
+  triggerCloseModal,
+});
 </script>

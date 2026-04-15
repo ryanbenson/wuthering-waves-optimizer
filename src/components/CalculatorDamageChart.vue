@@ -6,55 +6,48 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import Chart from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 Chart.register(ChartDataLabels);
 
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    rotation: {
-      type: Object,
-      required: true,
-    },
-    uniqueKey: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    charBuffsData: {
-      type: Object,
-      required: true,
-    },
-    charResonanceChainsData: {
-      type: Object,
-      required: true,
-    },
-  },
-  watch: {
-    rotation: {
-      handler: function (updatedRotation) {
-        this.initChart(updatedRotation);
-      },
-      deep: true,
-    },
-  },
-  data() {
-    return {
-      chartObj: null,
-    };
-  },
-  computed: {
-    chartData() {
-      const attacks = this.rotation?.attacks ?? [];
-      const attackDamagesByType = {
+type ChartAttack = {
+  type: string;
+  requiresResonanceChain?: string | false;
+  damage: Record<string, number>;
+};
+
+const props = defineProps<{
+  character: string;
+  rotation: { attacks?: ChartAttack[] } | null;
+  uniqueKey: string;
+  name: string;
+  charBuffsData: Record<string, any>;
+  charResonanceChainsData: Record<string, any>;
+}>();
+
+const chartCanvas = ref<HTMLCanvasElement | null>(null);
+const chartObj = ref<Chart | null>(null);
+
+const colorByType: Record<string, string> = {
+  Basic: "rgb(255, 99, 132)",
+  Skill: "rgb(255, 159, 64)",
+  Liberation: "rgb(255, 205, 125)",
+  Intro: "rgb(153, 102, 255)",
+  Heavy: "rgb(75, 192, 192)",
+  Outro: "rgb(201, 203, 207)",
+  Utility: "rgb(120, 120, 120)",
+  Shield: "rgb(0, 173, 255)",
+  Healing: "rgb(59, 234, 59)",
+  Echo: "rgb(255, 99, 255)",
+  TuneBreak: "rgb(72, 61, 139)",
+  NegativeStatus: "rgb(186, 104, 200)",
+};
+
+const chartData = computed(() => {
+      const attacks = props.rotation?.attacks ?? [];
+      const attackDamagesByType: Record<string, number> = {
         Basic: 0,
         Skill: 0,
         Liberation: 0,
@@ -69,19 +62,17 @@ export default {
         NegativeStatus: 0,
       };
       attacks.forEach((attack) => {
-        // if this attack requires a resonance chain to be unlocked, verify it's enabled
         const requiresResonanceChain = attack?.requiresResonanceChain ?? false;
         if (requiresResonanceChain) {
           const resonanceChainsEnabledAttacks =
-            this.charResonanceChainsData?.value?.EnableAttack ?? [];
+            props.charResonanceChainsData?.value?.EnableAttack ?? [];
           const charBuffsEnabledAttacks =
-            this.charBuffsData?.value?.EnableAttack ?? [];
-          // merge all possible enabled attack arrays together
-          const enabledAttacks = []
+            props.charBuffsData?.value?.EnableAttack ?? [];
+          const enabledAttacks: string[] = []
             .concat(resonanceChainsEnabledAttacks)
             .concat(charBuffsEnabledAttacks);
           const isAttackEnabled = enabledAttacks.includes(
-            attack.requiresResonanceChain,
+            attack.requiresResonanceChain as string,
           );
           if (!isAttackEnabled) {
             return;
@@ -105,54 +96,31 @@ export default {
       });
       // remove any keys that are 0
       Object.keys(attackDamagesByType).forEach((key) => {
-        if (attackDamagesByType[key] === 0) {
-          delete attackDamagesByType[key];
+        if (attackDamagesByType[key as keyof typeof attackDamagesByType] === 0) {
+          delete attackDamagesByType[key as keyof typeof attackDamagesByType];
         }
       });
-      // convert to array of objects
       const data = Object.keys(attackDamagesByType).map((key) => ({
         label: key,
-        value: attackDamagesByType[key],
-        color: this.colorByType[key],
+        value: attackDamagesByType[key as keyof typeof attackDamagesByType],
+        color: colorByType[key],
       }));
-      // sort the data so it shows highest -> lowest damages
       data.sort((a, b) => b.value - a.value);
       return data;
-    },
-    colorByType() {
-      return {
-        Basic: "rgb(255, 99, 132)", // Muted Red
-        Skill: "rgb(255, 159, 64)", // Muted Orange
-        Liberation: "rgb(255, 205, 125)", // Muted Yellow
-        Intro: "rgb(153, 102, 255)", // Muted Purple
-        Heavy: "rgb(75, 192, 192)", // Teal
-        Outro: "rgb(201, 203, 207)", // Soft Gray
-        Utility: "rgb(120, 120, 120)", // Dark Gray
-        Shield: "rgb(0, 173, 255)", // Blue
-        Healing: "rgb(59, 234, 59)", // Green
-        Echo: "rgb(255, 99, 255)", // Magenta
-        TuneBreak: "rgb(72, 61, 139)", // Muted Indigo
-        NegativeStatus: "rgb(186, 104, 200)", // Muted Magenta (distinct from Echo)
-      };
-    },
-  },
-  methods: {
-    initChart(rotationData) {
-      if (!this.$refs.chartCanvas) return;
-      const ctx = this.$refs.chartCanvas.getContext("2d");
+    });
 
-      // Destroy existing chart instance if it exists
-      let chartStatus = Chart.getChart(this.$refs.chartCanvas);
-      if (chartStatus) {
-        chartStatus.destroy();
-      }
+function initChart() {
+      if (!chartCanvas.value) return;
+      const ctx = chartCanvas.value.getContext("2d");
+      if (!ctx) return;
+      Chart.getChart(chartCanvas.value)?.destroy();
 
-      const labels = this.chartData.map((data) => data.label);
-      const values = this.chartData.map((data) => Math.round(data.value));
+      const labels = chartData.value.map((data) => data.label);
+      const values = chartData.value.map((data) => Math.round(data.value));
       const total = values.reduce((a, b) => a + b, 0);
-      const colors = this.chartData.map((data) => data.color);
+      const colors = chartData.value.map((data) => data.color);
 
-      this.chartObj = new Chart(ctx, {
+      chartObj.value = new Chart(ctx, {
         type: "pie",
         data: {
           labels,
@@ -169,17 +137,17 @@ export default {
             datalabels: {
               color: "#fff",
               font: {
-                weight: "bold",
+                weight: "bold" as const,
               },
-              formatter: (value, context) => {
+              formatter: (value) => {
                 const percentage = (value / total) * 100;
                 return percentage >= 8 ? `${percentage.toFixed(1)}%` : null;
               },
             },
             tooltip: {
               callbacks: {
-                label: (context) => {
-                  const value = context.parsed;
+                label: (context: any) => {
+                  const value = context.parsed as number;
                   const percentage = ((value / total) * 100).toFixed(1);
                   const label = context.label || "";
                   return `${label}: ${value} (${percentage}%)`;
@@ -195,16 +163,18 @@ export default {
         },
         plugins: [ChartDataLabels],
       });
-    },
-  },
-  mounted() {
-    this.initChart(this.rotation);
-  },
-  beforeUnmount() {
-    let chartStatus = Chart.getChart(this.$refs.chartCanvas);
-    if (chartStatus) {
-      chartStatus.destroy();
-    }
-  },
-};
+}
+
+watch(
+  () => props.rotation,
+  () => initChart(),
+  { deep: true },
+);
+
+onMounted(() => initChart());
+onBeforeUnmount(() => {
+  if (chartCanvas.value) {
+    Chart.getChart(chartCanvas.value)?.destroy();
+  }
+});
 </script>

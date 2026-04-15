@@ -43,9 +43,9 @@
     </div>
     <div class="echo__list">
       <CalculatorEcho
-        v-for="(n, index) in 5"
+        v-for="(_, index) in 5"
         :key="character + '-' + index"
-        :ref="'echo' + index"
+        :ref="getEchoRefSetter(index)"
         :index="index"
         :character="character"
         class="echo-selector"
@@ -141,14 +141,11 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
 import { mainEchoesData, getEchoData } from "../echoes/index.ts";
 import { getEchoSetLabelByType, echoSetLabelMap } from "../echoes/stats.ts";
-import {
-  twoSetBonuses,
-  threeSetBonuses,
-  fiveSetBonuses,
-} from "../echoes/sets.ts";
+import { twoSetBonuses, threeSetBonuses, fiveSetBonuses } from "../echoes/sets.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
@@ -157,629 +154,318 @@ import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import CalculatorEchoesPresets from "./CalculatorEchoesPresets.vue";
 import CalculatorSaveEchoesPreset from "./CalculatorSaveEchoesPreset.vue";
 import CalculatorEchoesPresetsGuide from "./CalculatorEchoesPresetsGuide.vue";
-import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { randomString } from "../utils/strings.ts";
+
 const MAX_ECHO_COST = 12;
 
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
+const props = defineProps<{ character: string }>();
+const emit = defineEmits<{
+  "update-stats": [stats: Record<string, any>];
+  "updated-main-echo": [echo: string | null];
+  "updated-main-echo-rank": [rank: number | string];
+}>();
+
+const characterStore = useCharacterStore() as any;
+const inventoryStore = useInventoryStore() as any;
+
+const echoesImporter = ref<any>(null);
+const echoesBrowser = ref<any>(null);
+const echoesPresets = ref<any>(null);
+const echoesSavePreset = ref<any>(null);
+const echoesPresetsGuide = ref<any>(null);
+const echoRefs = ref<Record<number, any>>({});
+
+const setBonusOne = ref<Record<string, any>>({});
+const setBonusTwo = ref<Record<string, any>>({});
+const echoData = ref<Record<number, Record<string, any>>>({});
+const echoCosts = ref<number[]>([]);
+const echoSetsChosen = ref<(string | null)[]>([]);
+
+const currentCharacter = computed(
+  () => (characterStore.characters?.[props.character] as Record<string, any>) ?? {},
+);
+
+const mainEcho = computed({
+  get: () => currentCharacter.value?.mainEcho?.echo ?? null,
+  set: async (value: string | null) => {
+    await characterStore.setCharacterData(props.character, { mainEcho: { echo: value } });
   },
-  components: {
-    CalculatorEcho,
-    CalculatorEchoesBrowser,
-    CalculatorEchoesPresets,
-    CalculatorEchoesSetBonusOne,
-    CalculatorEchoesSetBonusTwo,
-    CalculatorEchoImporter,
-    CalculatorSaveEchoesPreset,
-    CalculatorEchoesPresetsGuide,
+});
+
+const echoPresetId = computed({
+  get: () => currentCharacter.value?.echoPresetId ?? null,
+  set: async (value: string | null) => {
+    await characterStore.setCharacterData(props.character, { echoPresetId: value });
   },
-  data() {
-    return {
-      totalCost: 0,
-      setBonusOne: {},
-      setBonusTwo: {},
-      echoData: {},
-      setBonuses: [
-        { type: "", stacks: 0 },
-        { type: "", stacks: 0 },
-      ],
-      echoCosts: [],
-      echoSetsChosen: [],
-      // needed data
-      twoSetBonuses,
-      threeSetBonuses,
-      fiveSetBonuses,
-    };
+});
+
+const setOverride = computed({
+  get: () => currentCharacter.value?.setOverride ?? null,
+  set: async (value: boolean | null) => {
+    await characterStore.setCharacterData(props.character, { setOverride: value });
   },
-  watch: {
-    mainEcho: {
-      handler: async function () {
-        this.handleMainEchoChange();
-        // prevent stacks from exceeding max stacks
-        if (this.mainEchoStacks > this.mainEchoMaxStacks) {
-          this.mainEchoStacks = this.mainEchoMaxStacks;
-        }
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-    mainEchoRank: {
-      handler: async function () {
-        this.handleMainEchoRank();
-      },
-      immediate: true,
-    },
-    mainEchoBuffEnabled: {
-      handler: async function () {
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-    mainEchoStacks: {
-      handler: async function (stacksVal) {
-        // prevent stacks from exceeding max stacks
-        if (stacksVal > this.mainEchoMaxStacks) {
-          this.mainEchoStacks = this.mainEchoMaxStacks;
-        }
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-    setOverride(newValue) {
-      if (newValue === false) {
-        this.updateEchoSets();
-      }
-    },
+});
+
+const mainEchoRank = computed({
+  get: () => currentCharacter.value?.mainEcho?.rank ?? 5,
+  set: async (value: number | string) => {
+    await characterStore.setCharacterData(props.character, { mainEcho: { rank: value } });
   },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    ...mapActions(useInventoryStore, [
-      "saveEchoPreset",
-      "patchEchoPreset",
-      "deleteEchoPreset",
-      "getEchoPresetById",
-      "deleteEquippedPreset",
-      "setEquippedPresetData",
-      "removeCharacterFromAllEquipped",
-      "setEquippedData",
-    ]),
-    updateTotalStats() {
-      const stats = {};
-      // process all of the echo data
-      if (this.echoData) {
-        const echoItemsData = Object.values(
-          JSON.parse(JSON.stringify(this.echoData)),
-        );
-        // go through each echo data and merge each stat
-        for (const echo of echoItemsData) {
-          for (const [stat, value] of Object.entries(echo)) {
-            stats[stat] = (stats[stat] || 0) + value;
-          }
-        }
-      }
-      // process the first set bonus
-      if (this.setBonusOne) {
-        for (const [stat, value] of Object.entries(
-          JSON.parse(JSON.stringify(this.setBonusOne)),
-        )) {
-          stats[stat] = (stats[stat] || 0) + value;
-        }
-      }
-      // process the second set bonus
-      if (this.setBonusTwo) {
-        for (const [stat, value] of Object.entries(
-          JSON.parse(JSON.stringify(this.setBonusTwo)),
-        )) {
-          if (stat === "EnableAttack") {
-            stats[stat] = value;
-          } else {
-            stats[stat] = (stats[stat] || 0) + value;
-          }
-        }
-      }
+});
 
-      let modifySpecificTalents = [];
-      // process the main echo buffs, only if enabled
-      if (this.mainEchoBuffEnabled) {
-        for (const mainEchoBuff of this.chosenMainEchoBuffs) {
-          // if it has buffs for specific characters, validate that first
-          const specificCharacters = mainEchoBuff?.specificCharacters ?? [];
-          if (specificCharacters.length > 0) {
-            // check if the current character key is in the list
-            const isValidCharacter = specificCharacters.includes(
-              this.character,
-            );
-            if (!isValidCharacter) {
-              continue;
-            }
-          }
-          if (mainEchoBuff?.modifySpecificTalents) {
-            stats.specificTalentBuffs = {};
-            mainEchoBuff?.modifySpecificTalents.forEach((buffTalentName) => {
-              stats.specificTalentBuffs[buffTalentName] =
-                mainEchoBuff.modifierValue;
-            });
-          } else {
-            // we're dealing with full numbers right now, not decimals,
-            // so multiply * 100
-            // TODO: Remove this when we refactor this whole thing to use decimals
-            if (this.mainEchoHasStacks) {
-              const buffVal = mainEchoBuff.modifierValue * 100;
-              stats[mainEchoBuff.modifier] =
-                (stats[mainEchoBuff.modifier] || 0) +
-                buffVal * this.mainEchoStacks;
-            } else {
-              const buffVal = mainEchoBuff.modifierValue * 100;
-              stats[mainEchoBuff.modifier] =
-                (stats[mainEchoBuff.modifier] || 0) + buffVal;
-            }
-          }
-        }
-      }
-
-      this.$emit("update-stats", stats);
-    },
-    handleSetBonusOneData(data) {
-      const stats = JSON.parse(JSON.stringify(data));
-      this.setBonusOne = stats;
-      this.updateTotalStats();
-    },
-    handleSetBonusTwoData(data) {
-      const stats = JSON.parse(JSON.stringify(data));
-      this.setBonusTwo = stats;
-      this.updateTotalStats();
-    },
-    handleEchoStats({ index, stats }) {
-      const statData = JSON.parse(JSON.stringify(stats));
-      this.echoData[index] = stats;
-      this.updateTotalStats();
-    },
-    handleUpdatedEchoCost({ index, cost }) {
-      this.echoCosts[index] = cost;
-    },
-    toggleMainEchoBuffEnabled() {
-      this.mainEchoBuffEnabled = !this.mainEchoBuffEnabled;
-    },
-    handleMainEchoChange() {
-      this.$emit("updated-main-echo", this.mainEcho);
-    },
-    handleMainEchoRank() {
-      this.$emit("updated-main-echo-rank", this.mainEchoRank);
-    },
-    async handleEchoSetChosen({ set, index }) {
-      this.echoSetsChosen[index] = set;
-      await this.updateEchoSets();
-    },
-    async updateEchoSets() {
-      // Filter out nulls and create a count map for each value
-      const counts = this.echoSetsChosen
-        .filter((v) => v !== null)
-        .reduce((acc, val) => {
-          acc[val] = (acc[val] || 0) + 1;
-          return acc;
-        }, {});
-
-      // Create lookup sets from your constants for which bonuses exist
-      const has2SetBonus = new Set(
-        this.twoSetBonuses
-          .map((bonus) => {
-            const match = bonus.match(/^(.+) 2 Set$/);
-            return match
-              ? Object.keys(echoSetLabelMap).find(
-                  (key) => getEchoSetLabelByType(key) === match[1],
-                )
-              : null;
-          })
-          .filter(Boolean),
-      );
-
-      const has3SetBonus = new Set(
-        this.threeSetBonuses
-          .map((bonus) => {
-            const match = bonus.match(/^(.+) 3 Set$/);
-            return match
-              ? Object.keys(echoSetLabelMap).find(
-                  (key) => getEchoSetLabelByType(key) === match[1],
-                )
-              : null;
-          })
-          .filter(Boolean),
-      );
-
-      const has5SetBonus = new Set(
-        this.fiveSetBonuses
-          .map((bonus) => {
-            const match = bonus.match(/^(.+) 5 Set$/);
-            return match
-              ? Object.keys(echoSetLabelMap).find(
-                  (key) => getEchoSetLabelByType(key) === match[1],
-                )
-              : null;
-          })
-          .filter(Boolean),
-      );
-
-      // Get all possible bonuses for each set
-      const availableBonuses = [];
-
-      for (const [setType, count] of Object.entries(counts)) {
-        const setLabel = getEchoSetLabelByType(setType);
-
-        // Add bonuses based on count and what bonuses exist for this set
-        if (count >= 5 && has5SetBonus.has(setType)) {
-          availableBonuses.push({
-            bonus: `${setLabel} 5 Set`,
-            priority: 3,
-            setType,
-          });
-        }
-        if (count >= 3 && has3SetBonus.has(setType)) {
-          availableBonuses.push({
-            bonus: `${setLabel} 3 Set`,
-            priority: 2,
-            setType,
-          });
-        }
-        if (count >= 2 && has2SetBonus.has(setType)) {
-          availableBonuses.push({
-            bonus: `${setLabel} 2 Set`,
-            priority: 1,
-            setType,
-          });
-        }
-      }
-
-      // Separate 2-set bonuses from higher-tier bonuses
-      const twoSetBonuses = availableBonuses.filter((b) =>
-        b.bonus.includes("2 Set"),
-      );
-      const higherTierBonuses = availableBonuses.filter(
-        (b) => b.bonus.includes("3 Set") || b.bonus.includes("5 Set"),
-      );
-
-      // Sort each group by set type for consistency
-      twoSetBonuses.sort((a, b) => a.setType.localeCompare(b.setType));
-      higherTierBonuses.sort((a, b) => {
-        // Priority: 5-set > 3-set, then by set type
-        if (a.priority !== b.priority) {
-          return b.priority - a.priority;
-        }
-        return a.setType.localeCompare(b.setType);
-      });
-
-      // Select bonuses following game rules
-      let setBonusOneVal = null;
-      let setBonusTwoVal = null;
-
-      // setBonusOne: Always a 2-set bonus (pick the first available)
-      if (twoSetBonuses.length > 0) {
-        setBonusOneVal = twoSetBonuses[0].bonus;
-      }
-
-      // setBonusTwo: Can be 2-set, 3-set, or 5-set
-      // Priority: higher-tier bonuses first, then remaining 2-set bonuses
-      const usedSetTypes = setBonusOneVal
-        ? new Set([twoSetBonuses[0].setType])
-        : new Set();
-
-      // First try higher-tier bonuses
-      for (const { bonus, setType } of higherTierBonuses) {
-        if (
-          !usedSetTypes.has(setType) ||
-          setBonusOneVal?.includes(getEchoSetLabelByType(setType))
-        ) {
-          setBonusTwoVal = bonus;
-          break;
-        }
-      }
-
-      // If no higher-tier bonus found, try remaining 2-set bonuses
-      if (!setBonusTwoVal) {
-        for (const { bonus, setType } of twoSetBonuses.slice(1)) {
-          if (!usedSetTypes.has(setType)) {
-            setBonusTwoVal = bonus;
-            break;
-          }
-        }
-      }
-
-      // If the user wants to manually manage the sets, don't automatically set them
-      if (this.setOverride) {
-        return;
-      }
-
-      // Update the store
-      const data = {
-        echoSetBonus: {
-          setBonusOne: setBonusOneVal,
-          setBonusTwo: setBonusTwoVal,
-        },
-      };
-
-      await this.setCharacterData(this.character, data);
-    },
-    handleMainEchoUpdated(echo) {
-      this.mainEcho = echo;
-    },
-    handleMainEchoRankUpdated(rank) {
-      this.mainEchoRank = rank;
-    },
-    handleOpenEchoesBrowser(echoIndex) {
-      this.$refs.echoesBrowser.triggerOpenModal(echoIndex);
-    },
-    handleOpenEchoesImporter() {
-      this.$refs.echoesImporter.triggerOpenModal();
-    },
-    handleOpenEchoesPreset() {
-      this.$refs.echoesPresets.triggerOpenModal();
-    },
-    handleOpenPresetsGuide() {
-      this.$refs.echoesPresetsGuide.triggerOpenModal();
-    },
-    handleOpenSaveEchoPreset() {
-      if (this.echoPresetId) {
-        this.$refs.echoesSavePreset.setPresetId(this.echoPresetId);
-      }
-      this.$refs.echoesSavePreset.triggerOpenModal();
-    },
-    /**
-     * Only support new echo presets when you save
-     * You can only edit a name later in the listing screen
-     */
-    async handleOnSaveEchoPreset(data) {
-      // TODO: If we want to support edit later
-      // let id;
-      // if (this.echoPresetId) {
-      //   id = this.echoPresetId;
-      // } else {
-      //   id = randomString();
-      // }
-      // make sure all echoes are saved
-      const id = randomString();
-      await this.$refs.echo0[0].saveEchoItem();
-      await this.$refs.echo1[0].saveEchoItem();
-      await this.$refs.echo2[0].saveEchoItem();
-      await this.$refs.echo3[0].saveEchoItem();
-      await this.$refs.echo4[0].saveEchoItem();
-      const presetData = {
-        presetId: id,
-        name: data.name,
-        echo1Id: this.currentCharacter?.echoes?.[0]?.echoId ?? null,
-        echo2Id: this.currentCharacter?.echoes?.[1]?.echoId ?? null,
-        echo3Id: this.currentCharacter?.echoes?.[2]?.echoId ?? null,
-        echo4Id: this.currentCharacter?.echoes?.[3]?.echoId ?? null,
-        echo5Id: this.currentCharacter?.echoes?.[4]?.echoId ?? null,
-      };
-      await this.saveEchoPreset(presetData);
-      this.echoPresetId = id;
-      await this.setEquippedPresetData(this.character, id);
-    },
-    async handleEchoRemoved() {
-      await this.deleteEquippedPreset(this.character);
-      this.echoPresetId = null;
-    },
-    async handleChosenEchoInventory() {
-      this.handleEchoRemoved();
-      await this.removeCharacterFromAllEquipped(this.character);
-
-      const equippedData0 = {};
-      equippedData0[this.character] = 0;
-      const echo0Id = this.currentCharacter?.echoes?.[0]?.echoId ?? null;
-      await this.setEquippedData(echo0Id, equippedData0);
-
-      const equippedData1 = {};
-      equippedData1[this.character] = 1;
-      const echo1Id = this.currentCharacter?.echoes?.[1]?.echoId ?? null;
-      await this.setEquippedData(echo1Id, equippedData1);
-
-      const equippedData2 = {};
-      equippedData2[this.character] = 2;
-      const echo2Id = this.currentCharacter?.echoes?.[2]?.echoId ?? null;
-      await this.setEquippedData(echo2Id, equippedData2);
-
-      const equippedData3 = {};
-      equippedData3[this.character] = 3;
-      const echo3Id = this.currentCharacter?.echoes?.[3]?.echoId ?? null;
-      await this.setEquippedData(echo3Id, equippedData3);
-
-      const equippedData4 = {};
-      equippedData4[this.character] = 4;
-      const echo4Id = this.currentCharacter?.echoes?.[4]?.echoId ?? null;
-      await this.setEquippedData(echo4Id, equippedData4);
-    },
+const mainEchoBuffEnabled = computed({
+  get: () => currentCharacter.value?.mainEcho?.isEnabled ?? false,
+  set: async (value: boolean) => {
+    await characterStore.setCharacterData(props.character, { mainEcho: { isEnabled: value } });
   },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    ...mapState(useInventoryStore, ["getEchoPresetData"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Getter/setter used in the form for the the main echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    mainEcho: {
-      get() {
-        return this.currentCharacter?.mainEcho?.echo ?? null;
-      },
-      async set(value) {
-        const data = {
-          mainEcho: {
-            echo: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the the main echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    echoPresetId: {
-      get() {
-        return this.currentCharacter?.echoPresetId ?? null;
-      },
-      async set(value) {
-        const data = {
-          echoPresetId: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used to determine if the user can manually change the echo sets
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    setOverride: {
-      get() {
-        return this.currentCharacter?.setOverride ?? null;
-      },
-      async set(value) {
-        const data = {
-          setOverride: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the the main echo rarity
-     * @returns {Boolean}
-     */
-    mainEchoRank: {
-      get() {
-        return this.currentCharacter?.mainEcho?.rank ?? 5;
-      },
-      async set(value) {
-        const data = {
-          mainEcho: {
-            rank: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the isEnabled state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    mainEchoBuffEnabled: {
-      get() {
-        return this.currentCharacter?.mainEcho?.isEnabled ?? false;
-      },
-      async set(value) {
-        const data = {
-          mainEcho: {
-            isEnabled: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the stacks count state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    mainEchoStacks: {
-      get() {
-        return this.currentCharacter?.mainEcho?.stacks ?? 0;
-      },
-      async set(value) {
-        const data = {
-          mainEcho: {
-            stacks: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    mainEchoesData() {
-      return { ...mainEchoesData };
-    },
-    chosenMainEchoData() {
-      if (!this.mainEcho) {
-        return null;
-      }
-      return this.mainEchoesData?.[this.mainEcho];
-    },
-    chosenMainEchoBuffs() {
-      if (!this.chosenMainEchoData) {
-        return [];
-      }
-      return this.chosenMainEchoData?.modifiers ?? [];
-    },
-    chosenMainEchoHasBuffs() {
-      return this.chosenMainEchoBuffs?.length > 0;
-    },
-    mainEchoOptions() {
-      const echoes = {
-        Calamity: [],
-        Overlord: [],
-        Elite: [],
-        Common: [],
-      };
-      const mainEchoValues = Object.values(this.mainEchoesData);
-      mainEchoValues.forEach((echo) => {
-        if (echo?.class && echoes?.[echo.class]) {
-          echoes[echo.class].push(echo);
-        }
-      });
-      return echoes;
-    },
-    chosenMainEchoImage() {
-      return (
-        this.chosenMainEchoData?.image ??
-        "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png"
-      );
-    },
-    mainEchoHasStacks() {
-      return this.chosenMainEchoData?.hasStacks ?? false;
-    },
-    mainEchoMinStacks() {
-      return this.chosenMainEchoData?.minStacks ?? 0;
-    },
-    mainEchoMaxStacks() {
-      return this.chosenMainEchoData?.maxStacks ?? 0;
-    },
-    totalEchoCost() {
-      const totalCost = this.echoCosts.reduce((totalCost, cost) => {
-        return (totalCost += cost);
-      }, 0);
-      return totalCost;
-    },
-    isTotalCostOverCap() {
-      return this.totalEchoCost > MAX_ECHO_COST;
-    },
-    echoName() {
-      if (!this.mainEcho) {
-        return null;
-      }
-      const echoData = getEchoData(this.mainEcho);
-      return echoData?.name ?? null;
-    },
-    echoPresetData() {
-      return this.getEchoPresetData(this.echoPresetId);
-    },
-    echoPresetName() {
-      return this.echoPresetData?.name ?? null;
-    },
+});
+
+const mainEchoStacks = computed({
+  get: () => currentCharacter.value?.mainEcho?.stacks ?? 0,
+  set: async (value: number) => {
+    await characterStore.setCharacterData(props.character, { mainEcho: { stacks: value } });
   },
-};
+});
+
+const chosenMainEchoData = computed(() =>
+  mainEcho.value ? (mainEchoesData as any)?.[mainEcho.value] ?? null : null,
+);
+const chosenMainEchoBuffs = computed(() => chosenMainEchoData.value?.modifiers ?? []);
+const mainEchoHasStacks = computed(() => chosenMainEchoData.value?.hasStacks ?? false);
+const mainEchoMaxStacks = computed(() => chosenMainEchoData.value?.maxStacks ?? 0);
+const echoName = computed(() => (mainEcho.value ? getEchoData(mainEcho.value)?.name ?? null : null));
+
+
+const totalEchoCost = computed(() => echoCosts.value.reduce((total, cost) => total + cost, 0));
+const isTotalCostOverCap = computed(() => totalEchoCost.value > MAX_ECHO_COST);
+const echoPresetData = computed(() => inventoryStore.getEchoPresetData?.(echoPresetId.value));
+const echoPresetName = computed(() => echoPresetData.value?.name ?? null);
+
+function setEchoRef(index: number, el: any) {
+  if (el) echoRefs.value[index] = el;
+}
+function getEchoRefSetter(index: number) {
+  return (el: any) => setEchoRef(index, el);
+}
+
+const setAlwaysEnabled = computed(() => chosenMainEchoData.value?.alwaysEnabled === true);
+
+function updateTotalStats() {
+  const stats: Record<string, any> = {};
+
+  Object.values(JSON.parse(JSON.stringify(echoData.value || {}))).forEach((echo: any) => {
+    Object.entries(echo).forEach(([stat, value]) => {
+      stats[stat] = (stats[stat] || 0) + (value as number);
+    });
+  });
+  Object.entries(JSON.parse(JSON.stringify(setBonusOne.value || {}))).forEach(([stat, value]) => {
+    stats[stat] = (stats[stat] || 0) + (value as number);
+  });
+  Object.entries(JSON.parse(JSON.stringify(setBonusTwo.value || {}))).forEach(([stat, value]) => {
+    if (stat === "EnableAttack") stats[stat] = value;
+    else stats[stat] = (stats[stat] || 0) + (value as number);
+  });
+
+  if (mainEchoBuffEnabled.value) {
+    for (const mainEchoBuff of chosenMainEchoBuffs.value as any[]) {
+      const specificCharacters = mainEchoBuff?.specificCharacters ?? [];
+      if (specificCharacters.length > 0 && !specificCharacters.includes(props.character)) continue;
+      if (mainEchoBuff?.modifySpecificTalents) {
+        stats.specificTalentBuffs = {};
+        mainEchoBuff.modifySpecificTalents.forEach((buffTalentName: string) => {
+          stats.specificTalentBuffs[buffTalentName] = mainEchoBuff.modifierValue;
+        });
+      } else {
+        const buffVal = mainEchoBuff.modifierValue * 100;
+        const appliedVal = mainEchoHasStacks.value ? buffVal * mainEchoStacks.value : buffVal;
+        stats[mainEchoBuff.modifier] = (stats[mainEchoBuff.modifier] || 0) + appliedVal;
+      }
+    }
+  }
+
+  emit("update-stats", stats);
+}
+
+function handleSetBonusOneData(data: Record<string, any>) {
+  setBonusOne.value = JSON.parse(JSON.stringify(data));
+  updateTotalStats();
+}
+function handleSetBonusTwoData(data: Record<string, any>) {
+  setBonusTwo.value = JSON.parse(JSON.stringify(data));
+  updateTotalStats();
+}
+function handleEchoStats({ index, stats }: { index: number; stats: Record<string, any> }) {
+  echoData.value[index] = stats;
+  updateTotalStats();
+}
+function handleUpdatedEchoCost({ index, cost }: { index: number; cost: number }) {
+  echoCosts.value[index] = cost;
+}
+function toggleMainEchoBuffEnabled() {
+  mainEchoBuffEnabled.value = !mainEchoBuffEnabled.value;
+}
+function handleMainEchoChange() {
+  emit("updated-main-echo", mainEcho.value);
+}
+function handleMainEchoRank() {
+  emit("updated-main-echo-rank", mainEchoRank.value);
+}
+async function handleEchoSetChosen({ set, index }: { set: string | null; index: number }) {
+  echoSetsChosen.value[index] = set;
+  await updateEchoSets();
+}
+
+async function updateEchoSets() {
+  const counts = echoSetsChosen.value
+    .filter((v) => v !== null)
+    .reduce((acc: Record<string, number>, val) => {
+      const key = val as string;
+      acc[key] = (acc[key] || 0) + 1;
+      return acc;
+    }, {});
+
+  const buildBonusSet = (source: string[], targetCountLabel: string) =>
+    new Set(
+      source
+        .map((bonus) => {
+          const match = bonus.match(new RegExp(`^(.+) ${targetCountLabel}$`));
+          return match
+            ? Object.keys(echoSetLabelMap).find((key) => getEchoSetLabelByType(key) === match[1])
+            : null;
+        })
+        .filter(Boolean),
+    );
+
+  const has2SetBonus = buildBonusSet(twoSetBonuses, "2 Set");
+  const has3SetBonus = buildBonusSet(threeSetBonuses, "3 Set");
+  const has5SetBonus = buildBonusSet(fiveSetBonuses, "5 Set");
+
+  const availableBonuses: Array<{ bonus: string; priority: number; setType: string }> = [];
+  for (const [setType, count] of Object.entries(counts)) {
+    const setLabel = getEchoSetLabelByType(setType);
+    if (count >= 5 && has5SetBonus.has(setType)) availableBonuses.push({ bonus: `${setLabel} 5 Set`, priority: 3, setType });
+    if (count >= 3 && has3SetBonus.has(setType)) availableBonuses.push({ bonus: `${setLabel} 3 Set`, priority: 2, setType });
+    if (count >= 2 && has2SetBonus.has(setType)) availableBonuses.push({ bonus: `${setLabel} 2 Set`, priority: 1, setType });
+  }
+
+  const twoSetOptions = availableBonuses.filter((b) => b.bonus.includes("2 Set"));
+  const higherTierBonuses = availableBonuses.filter((b) => b.bonus.includes("3 Set") || b.bonus.includes("5 Set"));
+  twoSetOptions.sort((a, b) => a.setType.localeCompare(b.setType));
+  higherTierBonuses.sort((a, b) => (a.priority !== b.priority ? b.priority - a.priority : a.setType.localeCompare(b.setType)));
+
+  let setBonusOneVal: string | null = twoSetOptions.length > 0 ? twoSetOptions[0].bonus : null;
+  let setBonusTwoVal: string | null = null;
+  const usedSetTypes = setBonusOneVal ? new Set([twoSetOptions[0].setType]) : new Set<string>();
+
+  for (const { bonus, setType } of higherTierBonuses) {
+    if (!usedSetTypes.has(setType) || setBonusOneVal?.includes(getEchoSetLabelByType(setType))) {
+      setBonusTwoVal = bonus;
+      break;
+    }
+  }
+  if (!setBonusTwoVal) {
+    for (const { bonus, setType } of twoSetOptions.slice(1)) {
+      if (!usedSetTypes.has(setType)) {
+        setBonusTwoVal = bonus;
+        break;
+      }
+    }
+  }
+
+  if (setOverride.value) return;
+  await characterStore.setCharacterData(props.character, {
+    echoSetBonus: { setBonusOne: setBonusOneVal, setBonusTwo: setBonusTwoVal },
+  });
+}
+
+function handleMainEchoUpdated(echo: string | null) {
+  mainEcho.value = echo;
+}
+function handleMainEchoRankUpdated(rank: number | string) {
+  mainEchoRank.value = rank;
+}
+function handleOpenEchoesBrowser(echoIndex: number) {
+  echoesBrowser.value?.triggerOpenModal?.(echoIndex);
+}
+function handleOpenEchoesImporter() {
+  echoesImporter.value?.triggerOpenModal?.();
+}
+function handleOpenEchoesPreset() {
+  echoesPresets.value?.triggerOpenModal?.();
+}
+function handleOpenPresetsGuide() {
+  echoesPresetsGuide.value?.triggerOpenModal?.();
+}
+function handleOpenSaveEchoPreset() {
+  if (echoPresetId.value) echoesSavePreset.value?.setPresetId?.(echoPresetId.value);
+  echoesSavePreset.value?.triggerOpenModal?.();
+}
+
+async function handleOnSaveEchoPreset(data: { name: string }) {
+  const id = randomString();
+  for (let i = 0; i < 5; i += 1) {
+    await echoRefs.value[i]?.saveEchoItem?.();
+  }
+  const presetData = {
+    presetId: id,
+    name: data.name,
+    echo1Id: currentCharacter.value?.echoes?.[0]?.echoId ?? null,
+    echo2Id: currentCharacter.value?.echoes?.[1]?.echoId ?? null,
+    echo3Id: currentCharacter.value?.echoes?.[2]?.echoId ?? null,
+    echo4Id: currentCharacter.value?.echoes?.[3]?.echoId ?? null,
+    echo5Id: currentCharacter.value?.echoes?.[4]?.echoId ?? null,
+  };
+  await inventoryStore.saveEchoPreset(presetData);
+  echoPresetId.value = id;
+  await inventoryStore.setEquippedPresetData(props.character, id);
+}
+
+async function handleEchoRemoved() {
+  await inventoryStore.deleteEquippedPreset(props.character);
+  echoPresetId.value = null;
+}
+
+async function handleChosenEchoInventory() {
+  await handleEchoRemoved();
+  await inventoryStore.removeCharacterFromAllEquipped(props.character);
+  for (let i = 0; i < 5; i += 1) {
+    const echoId = currentCharacter.value?.echoes?.[i]?.echoId ?? null;
+    const equippedData: Record<string, number> = {};
+    equippedData[props.character] = i;
+    await inventoryStore.setEquippedData(echoId, equippedData);
+  }
+}
+
+watch(
+  mainEcho,
+  () => {
+    handleMainEchoChange();
+    if (mainEchoStacks.value > mainEchoMaxStacks.value) {
+      mainEchoStacks.value = mainEchoMaxStacks.value;
+    }
+    updateTotalStats();
+  },
+  { immediate: true },
+);
+watch(mainEchoRank, () => handleMainEchoRank(), { immediate: true });
+watch(mainEchoBuffEnabled, () => updateTotalStats(), { immediate: true });
+watch(
+  mainEchoStacks,
+  (stacksVal) => {
+    if (stacksVal > mainEchoMaxStacks.value) {
+      mainEchoStacks.value = mainEchoMaxStacks.value;
+    }
+    updateTotalStats();
+  },
+  { immediate: true },
+);
+watch(setOverride, (newValue) => {
+  if (newValue === false) {
+    updateEchoSets();
+  }
+});
 </script>
 
 <style scoped>

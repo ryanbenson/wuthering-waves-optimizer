@@ -49,8 +49,8 @@
         v-else-if="attackKey"
         :character="character"
         :attack-key="attackKey"
-        :attack-label="attackLabel"
-        :damage="damage"></CalculatorDamageBreakdown>
+        :attack-label="attackLabel ?? ''"
+        :damage="(damage ?? {}) as any"></CalculatorDamageBreakdown>
   </div>
 </template>
 

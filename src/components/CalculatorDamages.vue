@@ -664,123 +664,82 @@
   </template>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed, ref } from "vue";
 import { displayDamage } from "../utils/numbers";
 import { getEchoData } from "../echoes";
 import CalculatorDamage from "./CalculatorDamage.vue";
 import CalculatorDamageChart from "./CalculatorDamageChart.vue";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    allDamages: {
-      type: Object,
-      required: true,
-    },
-    rotationsList: {
-      type: Array,
-      required: true,
-    },
-    chosenChar: {
-      type: Object,
-      required: true,
-    },
-    chosenEchoName: {
-      type: String,
-      default: null,
-    },
-    isMissingSpectroData: {
-      type: Boolean,
-      default: false,
-    },
-    isMissingAeroErosionData: {
-      type: Boolean,
-      default: false,
-    },
-    charBuffsData: {
-      type: Object,
-      required: true,
-    },
-    charResonanceChainsData: {
-      type: Object,
-      required: true,
-    },
+
+type DamageMap = Record<string, any>;
+
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    allDamages: DamageMap;
+    rotationsList: any[];
+    chosenChar: Record<string, any>;
+    chosenEchoName?: string | null;
+    isMissingSpectroData?: boolean;
+    isMissingAeroErosionData?: boolean;
+    charBuffsData: Record<string, any>;
+    charResonanceChainsData: Record<string, any>;
+  }>(),
+  {
+    chosenEchoName: null,
+    isMissingSpectroData: false,
+    isMissingAeroErosionData: false,
   },
-  components: {
-    CalculatorDamage,
-    CalculatorDamageChart,
-  },
-  data() {
-    return {
-      isBasicDetailsShown: false,
-      isSkillDetailsShown: false,
-      isLiberationDetailsShown: false,
-      isForteCircuitDetailsShown: false,
-      isIntroDetailsShown: false,
-      isOutroDetailsShown: false,
-      isTuneBreakDetailsShown: false,
-      isEchoDetailsShown: false,
-    };
-  },
-  methods: {
-    displayDamage,
-    handleSelectedAttack(attackKey, damage, label) {
-      this.$emit("selected-attack", attackKey, damage, label);
-    },
-    toggleBasicDetails() {
-      this.isBasicDetailsShown = !this.isBasicDetailsShown;
-    },
-    toggleSkillDetails() {
-      this.isSkillDetailsShown = !this.isSkillDetailsShown;
-    },
-    toggleLiberationDetails() {
-      this.isLiberationDetailsShown = !this.isLiberationDetailsShown;
-    },
-    toggleForteCircuitDetails() {
-      this.isForteCircuitDetailsShown = !this.isForteCircuitDetailsShown;
-    },
-    toggleIntroDetails() {
-      this.isIntroDetailsShown = !this.isIntroDetailsShown;
-    },
-    toggleOutroDetails() {
-      this.isOutroDetailsShown = !this.isOutroDetailsShown;
-    },
-    toggleTuneBreakDetails() {
-      this.isTuneBreakDetailsShown = !this.isTuneBreakDetailsShown;
-    },
-    toggleEchoDetails() {
-      this.isEchoDetailsShown = !this.isEchoDetailsShown;
-    },
-  },
-  computed: {
-    echoData() {
-      if (!this.chosenEchoName) {
-        return null;
-      }
-      return getEchoData(this.chosenEchoName);
-    },
-    echoName() {
-      if (!this.chosenEchoName) {
-        return null;
-      }
-      return this.echoData?.name ?? null;
-    },
-    echoDetails() {
-      if (!this.chosenEchoName) {
-        return null;
-      }
-      return this.echoData?.details ?? null;
-    },
-    charName() {
-      if (!this.chosenChar) {
-        return null;
-      }
-      return this.chosenChar?.value?.basic?.name ?? null;
-    },
-  },
-};
+);
+
+const emit = defineEmits<{
+  "selected-attack": [attackKey: string, damage: Record<string, any>, label: string];
+}>();
+
+const isBasicDetailsShown = ref(false);
+const isSkillDetailsShown = ref(false);
+const isLiberationDetailsShown = ref(false);
+const isForteCircuitDetailsShown = ref(false);
+const isIntroDetailsShown = ref(false);
+const isOutroDetailsShown = ref(false);
+const isTuneBreakDetailsShown = ref(false);
+const isEchoDetailsShown = ref(false);
+
+const echoData = computed(() => {
+  if (!props.chosenEchoName) return null;
+  return getEchoData(props.chosenEchoName);
+});
+const echoName = computed(() => echoData.value?.name ?? null);
+const echoDetails = computed(() => echoData.value?.details ?? null);
+const charName = computed(() => props.chosenChar?.value?.basic?.name ?? null);
+
+function handleSelectedAttack(attackKey: string, damage: Record<string, any>, label: string) {
+  emit("selected-attack", attackKey, damage, label);
+}
+function toggleBasicDetails() {
+  isBasicDetailsShown.value = !isBasicDetailsShown.value;
+}
+function toggleSkillDetails() {
+  isSkillDetailsShown.value = !isSkillDetailsShown.value;
+}
+function toggleLiberationDetails() {
+  isLiberationDetailsShown.value = !isLiberationDetailsShown.value;
+}
+function toggleForteCircuitDetails() {
+  isForteCircuitDetailsShown.value = !isForteCircuitDetailsShown.value;
+}
+function toggleIntroDetails() {
+  isIntroDetailsShown.value = !isIntroDetailsShown.value;
+}
+function toggleOutroDetails() {
+  isOutroDetailsShown.value = !isOutroDetailsShown.value;
+}
+function toggleTuneBreakDetails() {
+  isTuneBreakDetailsShown.value = !isTuneBreakDetailsShown.value;
+}
+function toggleEchoDetails() {
+  isEchoDetailsShown.value = !isEchoDetailsShown.value;
+}
 </script>
 
 <style lang="scss" scoped>
