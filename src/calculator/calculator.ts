@@ -789,14 +789,13 @@ function parseShieldTalentString(talent: string): any {
   };
 }
 
-/** Shared formula: levelConstant × (MV ÷ 10000) × DEF × RES × (1 + amp), same as Fusion Burst. */
+/** Shared formula: levelConstant × (MV ÷ 10000) × DEF × RES × (1 + amp), same as Fusion Burst. DEF ignore does not apply to this damage type in-game. */
 function calcNegativeStatusStackDamage(
   contextType: "fusionBurst" | "spectroFrazzle" | "aeroErosion",
   charLevel: string,
   enemyLevel: number,
   enemyResist: number,
   resistenceReduction: number,
-  defIgnore: number,
   defReduction: number,
   talentModifierMultiply: number,
   totalDeepenEffect: number,
@@ -810,7 +809,7 @@ function calcNegativeStatusStackDamage(
   const defenseModifier = getDefenseModifier(
     charLevel,
     enemyLevel,
-    defIgnore,
+    0,
     defReduction,
   );
   const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
@@ -844,7 +843,6 @@ function calcNegativeStatusStackDamage(
       enemyLevel,
       enemyResist,
       resistenceReduction,
-      defIgnore,
       defReduction,
       count,
       defenseModifier,
@@ -1013,7 +1011,6 @@ export function getSpectroFrazzleDamage(
   enemyLevel: number,
   enemyResist: number,
   resistenceReduction: number,
-  defIgnore: number = 0,
   defReduction: number = 0,
   talentModifierMultiply: number = 0,
   totalDeepenEffect: number = 0,
@@ -1028,7 +1025,6 @@ export function getSpectroFrazzleDamage(
     enemyLevel,
     enemyResist,
     resistenceReduction,
-    defIgnore,
     defReduction,
     talentModifierMultiply,
     totalDeepenEffect,
@@ -1045,7 +1041,6 @@ export function getAeroErosionDamage(
   enemyLevel: number,
   enemyResist: number,
   resistenceReduction: number,
-  defIgnore: number = 0,
   defReduction: number = 0,
   talentModifierMultiply: number = 0,
   totalDeepenEffect: number = 0,
@@ -1060,7 +1055,6 @@ export function getAeroErosionDamage(
     enemyLevel,
     enemyResist,
     resistenceReduction,
-    defIgnore,
     defReduction,
     talentModifierMultiply,
     totalDeepenEffect,
@@ -1272,7 +1266,6 @@ export function getFusionBurstDamage(
   enemyLevel: number,
   enemyResist: number,
   resistenceReduction: number,
-  defIgnore: number = 0,
   defReduction: number = 0,
   talentModifierMultiply: number = 0,
   totalDeepenEffect: number = 0,
@@ -1287,7 +1280,6 @@ export function getFusionBurstDamage(
     enemyLevel,
     enemyResist,
     resistenceReduction,
-    defIgnore,
     defReduction,
     talentModifierMultiply,
     totalDeepenEffect,
@@ -1304,7 +1296,6 @@ export function getElectroFlareDamage(
   enemyLevel: number,
   enemyResist: number,
   resistenceReduction: number,
-  defIgnore: number = 0,
   defReduction: number = 0,
   talentModifierMultiply: number = 0,
   totalDeepenEffect: number = 0,
@@ -1318,7 +1309,7 @@ export function getElectroFlareDamage(
   const defenseModifier = getDefenseModifier(
     charLevel,
     enemyLevel,
-    defIgnore,
+    0,
     defReduction,
   );
   const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
@@ -1356,7 +1347,6 @@ export function getElectroFlareDamage(
       enemyLevel,
       enemyResist,
       resistenceReduction,
-      defIgnore,
       defReduction,
       count,
       defenseModifier,

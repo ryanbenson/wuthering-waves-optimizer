@@ -2,6 +2,11 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>April 15, 2026</h3>
+    <ul>
+      <li>Fixed Windcleaver DMG echo damage.</li>
+      <li>Fixes Def Ignore being applied to negative statuses damage as it should not be applied.</li>
+    </ul>
     <h3>April 12, 2026</h3>
     <ul>
       <li>Improves UI layout for convene calculator.</li>
