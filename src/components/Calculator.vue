@@ -368,6 +368,7 @@ export default defineComponent({
     const weaponData = reactive({});
     const weaponAtk = ref(0);
     const charBuffsData = reactive({});
+    const charBuffsMergedForStats = ref(null);
     const teamBuffsData = reactive({});
     const charResonanceChainsData = reactive({});
     const charactersList = ref([]);
@@ -502,9 +503,14 @@ export default defineComponent({
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
-      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
-        computeAllBuffsWithBreakdown();
+      const {
+        finalStats,
+        selfBuffsData,
+        resonanceChainsBuffsData,
+        charBuffsMergedForStats: mergedForStats,
+      } = computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
+      charBuffsMergedForStats.value = mergedForStats;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
       calcAllDamages();
@@ -567,6 +573,7 @@ export default defineComponent({
         character.value,
         enemyType.value,
         strainStacks.value,
+        charBuffsMergedForStats.value,
       );
       const damageData = calcDamages(context);
       allDamages.value = damageData;
@@ -650,9 +657,14 @@ export default defineComponent({
     const handleWeaponUpdated = (givenWeaponData) => {
       weaponData.value = givenWeaponData;
       weaponAtk.value = givenWeaponData.attack;
-      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
-        computeAllBuffsWithBreakdown();
+      const {
+        finalStats,
+        selfBuffsData,
+        resonanceChainsBuffsData,
+        charBuffsMergedForStats: mergedForStats,
+      } = computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
+      charBuffsMergedForStats.value = mergedForStats;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
       calcAllDamages();
@@ -684,9 +696,14 @@ export default defineComponent({
     };
 
     const handleUpdatedCharacterBuffs = (givenCharBuffsData) => {
-      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
-        computeAllBuffsWithBreakdown();
+      const {
+        finalStats,
+        selfBuffsData,
+        resonanceChainsBuffsData,
+        charBuffsMergedForStats: mergedForStats,
+      } = computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
+      charBuffsMergedForStats.value = mergedForStats;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
       calcAllDamages();
@@ -694,9 +711,14 @@ export default defineComponent({
 
     const handleUpdatedTeamBuffs = (givenTeamBuffs) => {
       teamBuffsData.value = givenTeamBuffs;
-      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
-        computeAllBuffsWithBreakdown();
+      const {
+        finalStats,
+        selfBuffsData,
+        resonanceChainsBuffsData,
+        charBuffsMergedForStats: mergedForStats,
+      } = computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
+      charBuffsMergedForStats.value = mergedForStats;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
       calcAllDamages();
@@ -712,9 +734,14 @@ export default defineComponent({
 
       charResonanceChainsData.value = givenResonanceChainsData;
       // also re-trigger the self buffs as they can be tied together
-      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
-        computeAllBuffsWithBreakdown();
+      const {
+        finalStats,
+        selfBuffsData,
+        resonanceChainsBuffsData,
+        charBuffsMergedForStats: mergedForStats,
+      } = computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
+      charBuffsMergedForStats.value = mergedForStats;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
       calcAllDamages();
@@ -722,9 +749,14 @@ export default defineComponent({
 
     const updateStatsEchoes = (echoStatsGiven) => {
       echoStats.value = echoStatsGiven;
-      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
-        computeAllBuffsWithBreakdown();
+      const {
+        finalStats,
+        selfBuffsData,
+        resonanceChainsBuffsData,
+        charBuffsMergedForStats: mergedForStats,
+      } = computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
+      charBuffsMergedForStats.value = mergedForStats;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
       calcAllDamages();
@@ -736,9 +768,14 @@ export default defineComponent({
 
     const handleCharacterTalentUpdated = (data) => {
       talentData[data.type] = data.value;
-      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
-        computeAllBuffsWithBreakdown();
+      const {
+        finalStats,
+        selfBuffsData,
+        resonanceChainsBuffsData,
+        charBuffsMergedForStats: mergedForStats,
+      } = computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
+      charBuffsMergedForStats.value = mergedForStats;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
       calcAllDamages();
@@ -757,9 +794,14 @@ export default defineComponent({
       baseDef.value =
         chosenChar.value?.getCharacterStatsByLevel(characterLevel.value)
           ?.defense ?? 0;
-      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
-        computeAllBuffsWithBreakdown();
+      const {
+        finalStats,
+        selfBuffsData,
+        resonanceChainsBuffsData,
+        charBuffsMergedForStats: mergedForStats,
+      } = computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
+      charBuffsMergedForStats.value = mergedForStats;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
       calcAllDamages();
@@ -781,9 +823,14 @@ export default defineComponent({
 
     const handleCustomBuffs = (data) => {
       customBuffs.value = data;
-      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
-        computeAllBuffsWithBreakdown();
+      const {
+        finalStats,
+        selfBuffsData,
+        resonanceChainsBuffsData,
+        charBuffsMergedForStats: mergedForStats,
+      } = computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
+      charBuffsMergedForStats.value = mergedForStats;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
       calcAllDamages();
@@ -916,6 +963,7 @@ export default defineComponent({
 
         // Buffs
         charBuffsData: charBuffsData.value,
+        charBuffsMergedForStats: charBuffsMergedForStats.value,
         charResonanceChainsData: charResonanceChainsData.value,
         teamBuffsData: teamBuffsData.value,
         customBuffs: customBuffs.value,
@@ -1110,6 +1158,9 @@ export default defineComponent({
           baseDef: context.baseDef,
           weaponData: JSON.parse(JSON.stringify(context.weaponData)),
           charBuffsData: JSON.parse(JSON.stringify(context.charBuffsData)),
+          charBuffsMergedForStats: context.charBuffsMergedForStats
+            ? JSON.parse(JSON.stringify(context.charBuffsMergedForStats))
+            : null,
           charResonanceChainsData: JSON.parse(
             JSON.stringify(context.charResonanceChainsData),
           ),

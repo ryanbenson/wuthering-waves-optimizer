@@ -275,7 +275,10 @@ export const getDamageTypeBonusByType = (
         stats.ResonanceLiberationDMGBonus;
       break;
     case "Echo":
-      val = providedStats?.echoDmgBonus ?? stats.EchoDMGBonus;
+      val =
+        providedStats?.echoDMGBonus ??
+        providedStats?.echoDmgBonus ??
+        stats.EchoDMGBonus;
       break;
     // do not divide this by 100
     case "Healing":
@@ -336,7 +339,8 @@ export const calcCharStats = (
       addBuffs(weaponPassiveData, stats);
     }
 
-    if (!providedFullStats) {
+    // Weapon main-stat line on the equipped weapon (ATK%/HP%/etc.) — part of "weapon" totals
+    if (!providedFullStats && !ignoreWeaponBuffs) {
       switch (weaponModifier) {
         case "ATK":
           stats.attackPercent += weaponModifierValue * 100;
@@ -1346,6 +1350,7 @@ export const calculateAllStats = (context: {
 }): {
   finalStats: any;
   selfBuffsData: any;
+  charBuffsMergedForStats: any;
   resonanceChainsBuffsData: any;
   additionalBaseBuffsData: any;
   critOverflowBuffsData: any;
@@ -1526,6 +1531,7 @@ export const calculateAllStats = (context: {
   return {
     finalStats,
     selfBuffsData: mergedSelfBuffsForBreakdown,
+    charBuffsMergedForStats: mergedSelfBuffs,
     resonanceChainsBuffsData: mergedResonanceChainsBuffsData,
     additionalBaseBuffsData,
     critOverflowBuffsData,
