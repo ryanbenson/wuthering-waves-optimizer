@@ -139,10 +139,10 @@ export const dataAttacks: AttackTests = [
     selector: ".sword-to-call-for-freedom-dmg",
     values: ["Sword to Call for Freedom DMG", "20916", "73916", "79480"],
   },
-  { selector: ".aero-erosion", values: ["Aero Erosion", "25682"] },
+  { selector: ".aero-erosion", values: ["Aero Erosion", "23974"] },
   {
     selector: ".windcleaver-dmg",
-    values: ["Windcleaver DMG", "9720", "25554", "27216"],
+    values: ["Windcleaver DMG", "10002", "26293", "28004"],
   },
   {
     selector: ".sword-to-mark-tide-s-trace-dmg",
