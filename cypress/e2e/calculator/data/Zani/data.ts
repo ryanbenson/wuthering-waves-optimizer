@@ -97,7 +97,7 @@ export const dataAttacks: AttackTests = [
   },
   {
     selector: ".spectro-frazzle",
-    values: ["Spectro Frazzle", "24145"],
+    values: ["Spectro Frazzle", "20686"],
   },
   {
     selector: ".capitaneus-dmg",
