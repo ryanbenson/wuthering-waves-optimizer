@@ -48,7 +48,7 @@
                 :style="{
                   backgroundImage: `url(${echoesToChoose.image})`,
                 }"
-                @click="handleOpenModal"></div>
+                @click.stop></div>
               <h2 class="card-title text-center text-lg">
                 {{ echoesToChoose.name }}
               </h2>
@@ -181,7 +181,7 @@
                   :default-value="5"
                   size="xs"
                   class="w-full"
-                  @update-value="(val) => onMainEchoRankChange(val)"
+                  @update-value="(val: string | number) => onMainEchoRankChange(val)"
                   data-test-rotation-main-echo-rank="CritRate" />
               </div>
             </div>
@@ -203,20 +203,20 @@
               v-for="action in actionsList"
               :key="action.id"
               :id="action.id"
-              :ref="action.id"
+              :ref="(el) => setActionRef(action.id, el)"
               :character="character"
               :character-data="characterData"
-              :action-key="action.key"
-              :type="action.type"
-              :order="action.order"
-              :count="action.count"
-              :buffs="action.buffs"
-              :is-disabled="action.isDisabled"
-              :ignore-self-buffs="action.excludeSelfBuffs"
-              :ignore-team-buffs="action.excludeTeamBuffs"
-              :ignore-weapon-buffs="action.excludeWeaponBuffs"
-              :action-main-echo="action.mainEcho"
-              :action-main-echo-rank="action.mainEchoRank"
+              :action-key="rotationActionStr(action.key)"
+              :type="rotationActionStr(action.type)"
+              :order="rotationActionOrderCount(action.order)"
+              :count="rotationActionOrderCount(action.count)"
+              :buffs="rotationActionBuffs(action.buffs)"
+              :is-disabled="rotationActionBool(action.isDisabled)"
+              :ignore-self-buffs="rotationActionBool(action.excludeSelfBuffs)"
+              :ignore-team-buffs="rotationActionBool(action.excludeTeamBuffs)"
+              :ignore-weapon-buffs="rotationActionBool(action.excludeWeaponBuffs)"
+              :action-main-echo="rotationActionStr(action.mainEcho)"
+              :action-main-echo-rank="rotationActionEchoRank(action.mainEchoRank)"
               :rotation-main-echo="echoValue"
               :rotation-main-echo-rank="mainEchoRank"
               @action-update="handleActionUpdate"
@@ -227,8 +227,8 @@
               :data-test-rotation-action-by-id="
                 action.id
               "
-              :negative-status-stacks="action.negativeStatusStacks ?? 1"
-              :electro-rage-stacks="action.electroRageStacks ?? 0"></CalculatorRotationAction>
+              :negative-status-stacks="Number(action.negativeStatusStacks ?? 1)"
+              :electro-rage-stacks="Number(action.electroRageStacks ?? 0)"></CalculatorRotationAction>
           </div>
           <button
             class="rotation__action--add btn btn-primary my-4 btn-xs w-full"
@@ -256,409 +256,377 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed, defineExpose, nextTick, onMounted, ref } from "vue";
+import { storeToRefs } from "pinia";
 import { randomString } from "../utils/strings";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import Range from "./input/Range.vue";
 import { getEchoSetIconByType, echoSetLabelMap } from "../echoes/stats";
-import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import {
   mainEchoesData,
   getEchoData,
-  getCostByClass,
 } from "../echoes/index.ts";
-export default {
-  props: {
-    characterData: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-    character: {
-      type: String,
-      required: true,
-    },
-    id: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-    duration: {
-      type: [String, Number],
-      default: null,
-    },
-    echo: {
-      type: String,
-      default: null,
-    },
-    actions: {
-      type: Array,
-      default() {
-        return [];
-      },
-    },
-  },
-  components: {
-    CalculatorRotationAction,
-    Range,
-  },
-  data() {
-    return {
-      isOpen: false,
-      nameValue: null,
-      descriptionValue: null,
-      durationValue: null,
-      echoValue: null,
-      mainEchoRank: 5,
-      actionsList: [],
-      // modal
-      modalIdPicker: `echo-chooser-modal-${randomString()}`,
-      echoSetFilter: null,
-      mainEchoesData,
-      getEchoData,
-      getCostByClass,
-      echoSetLabelMap,
-    };
-  },
-  methods: {
-    toggleOpen() {
-      this.isOpen = !this.isOpen;
-    },
-    addAction() {
-      const newSequence = this.actionsCount + 1;
-      const id = randomString();
-      this.actionsList.push({
-        id,
-        type: null,
-        order: newSequence,
-        count: 1,
-        buffs: [],
-        negativeStatusStacks: 1,
-        electroRageStacks: 0,
-      });
-      this.$nextTick(() => {
-        // open the new action for editing
-        this.$refs[id][0].toggleEdit();
-      });
-    },
-    handleRotationExport() {
-      const rotationData = {
-        id: this.id,
-        name: this.name,
-        description: this.description,
-        actions: this.actionsList,
-        echo: this.echoValue,
-      };
-      const cleanRotationJson = this.removeIdsFromExport(rotationData);
-      const cleanRotationJsonString = JSON.stringify(cleanRotationJson);
-      navigator.clipboard.writeText(cleanRotationJsonString);
-      alert("Rotation copied to clipboard!");
-    },
-    // remove any IDs from the export, they don't need to be shared
-    removeIdsFromExport(rotationData) {
-      // deep clone just in case
-      const rotation = JSON.parse(JSON.stringify(rotationData));
-      // remove main ID
-      delete rotation.id;
-      // remove all IDs in actions, and any IDs in attack buffs per action
-      rotation.actions.forEach((action) => {
-        delete action.id;
-        // go throuth the buffs now
-        action.buffs.forEach((buff) => {
-          delete buff.id;
-        });
-      });
-      return rotation;
-    },
-    onNameChange(e) {
-      this.$emit("updated-rotation", {
-        id: this.id,
-        name: e.target.value,
-        description: this.descriptionValue,
-        duration: this.durationValue,
-        echo: this.echoValue,
-        echoRank: this.mainEchoRank,
-        actions: this.actionsList,
-      });
-    },
-    onDescriptionChange(e) {
-      this.$emit("updated-rotation", {
-        id: this.id,
-        name: this.nameValue,
-        description: e.target.value,
-        duration: this.durationValue,
-        echo: this.echoValue,
-        echoRank: this.mainEchoRank,
-        actions: this.actionsList,
-      });
-    },
-    onDurationChange(e) {
-      this.$emit("updated-rotation", {
-        id: this.id,
-        name: this.nameValue,
-        description: this.descriptionValue,
-        duration: e.target.value,
-        echo: this.echoValue,
-        echoRank: this.mainEchoRank,
-        actions: this.actionsList,
-      });
-    },
-    onEchoChange(e) {
-      this.$emit("updated-rotation", {
-        id: this.id,
-        name: this.nameValue,
-        description: this.descriptionValue,
-        duration: this.durationValue,
-        echo: this.echoValue,
-        echoRank: this.mainEchoRank,
-        actions: this.actionsList,
-      });
-    },
-    handleActionUpdate(actionData) {
-      const actions = JSON.parse(JSON.stringify(this.actionsList));
-      const foundIndex = actions.findIndex((action) => {
-        return action.id === actionData.id;
-      });
-      if (foundIndex === -1) {
-        return;
-      }
-      actions[foundIndex] = actionData;
-      this.actionsList = actions;
 
-      this.$emit("updated-rotation", {
-        id: this.id,
-        name: this.nameValue,
-        description: this.descriptionValue,
-        duration: this.durationValue,
-        echo: this.echoValue,
-        echoRank: this.mainEchoRank,
-        actions: this.actionsList,
-      });
-    },
-    handleSequenceUpdate(actionData) {
-      const actions = JSON.parse(JSON.stringify(this.actionsList));
-      const { id, order: newOrder } = actionData;
-      const maxOrder = actions.length;
+type RotationActionRow = Record<string, unknown> & { id: string };
 
-      // Ensure the new order is within the valid range
-      let validatedOrder = Math.max(1, Math.min(newOrder, maxOrder));
-
-      // Find the action to be updated and remove it from the array temporarily
-      const actionIndex = actions.findIndex((action) => action.id === id);
-      const [updatedAction] = actions.splice(actionIndex, 1);
-
-      // Store the original order before updating
-      const originalOrder = updatedAction.order;
-
-      // Update the order of the action
-      updatedAction.order = validatedOrder;
-
-      // Adjust the orders of the remaining actions
-      actions.forEach((action) => {
-        if (
-          originalOrder < validatedOrder &&
-          action.order > originalOrder &&
-          action.order <= validatedOrder
-        ) {
-          // Shift down actions between the original and new order
-          action.order -= 1;
-        } else if (
-          originalOrder > validatedOrder &&
-          action.order < originalOrder &&
-          action.order >= validatedOrder
-        ) {
-          // Shift up actions between the new and original order
-          action.order += 1;
-        }
-      });
-
-      // Insert the updated action back into the array
-      actions.splice(validatedOrder - 1, 0, updatedAction);
-
-      // Reorder the actions array to ensure the correct order
-      actions.sort((a, b) => a.order - b.order);
-      // update our list and notify up
-      this.actionsList = actions;
-
-      this.$emit("updated-rotation", {
-        id: this.id,
-        name: this.nameValue,
-        description: this.descriptionValue,
-        duration: this.durationValue,
-        echo: this.echoValue,
-        echoRank: this.mainEchoRank,
-        actions: this.actionsList,
-      });
-    },
-    handleRemoveAction(actionData) {
-      const actions = JSON.parse(JSON.stringify(this.actionsList));
-      const updatedActions = actions.filter((action) => {
-        return action.id !== actionData.id;
-      });
-      this.actionsList = updatedActions;
-
-      this.$emit("updated-rotation", {
-        id: this.id,
-        name: this.nameValue,
-        description: this.descriptionValue,
-        duration: this.durationValue,
-        echo: this.echoValue,
-        echoRank: this.mainEchoRank,
-        actions: this.actionsList,
-      });
-    },
-    handleRotationDelete() {
-      this.$emit("rotation-delete", this.id);
-    },
-    async chooseMainEcho(echoKey) {
-      this.echoValue = echoKey;
-      this.closeEchoChooser();
-      this.onEchoChange();
-    },
-    closeEchoChooser() {
-      this.echoSetFilter = null;
-      const modalEl = document.getElementById(this.modalIdPicker);
-      modalEl.close();
-    },
-    openEchoChooser() {
-      const modalEl = document.getElementById(this.modalIdPicker);
-      modalEl.showModal();
-    },
-    getEchoSetImage(echoSet) {
-      return getEchoSetIconByType(echoSet);
-    },
-    toggleEchoSetFilter(echoSet) {
-      if (this.echoSetFilter === echoSet) {
-        this.echoSetFilter = null;
-      } else {
-        this.echoSetFilter = echoSet;
-      }
-    },
-    isEchoSetFilterActive(echoSet) {
-      return this.echoSetFilter === echoSet;
-    },
-    resetFilters() {
-      this.echoSetFilter = null;
-    },
-    getEchoSetIcon(type) {
-      return getEchoSetIconByType(type);
-    },
-    chooseCurrentMainEcho() {
-      if (!this.hasCurrentMainEcho) {
-        return;
-      }
-      const currentEchoKey = this.currentCharacterMainEcho;
-      this.echoValue = currentEchoKey;
-      this.onEchoChange();
-    },
-    onMainEchoRankChange(val) {
-      this.mainEchoRank = val;
-      this.$emit("updated-rotation", {
-        id: this.id,
-        name: this.nameValue,
-        description: this.descriptionValue,
-        duration: this.durationValue,
-        echo: this.echoValue,
-        echoRank: val,
-        actions: this.actionsList,
-      });
-    }
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    actionsCount() {
-      return this.actionsList?.length || 0;
-    },
-    echoSets() {
-      if (!this.echo) {
-        return [];
-      }
-      const echoData = getEchoData(this.echo);
-      return echoData?.sets ?? [];
-    },
-    echoSetsList() {
-      return Object.keys(this.echoSetLabelMap);
-    },
-    allEchoesListFiltered() {
-      let allEchoes = Object.values(this.mainEchoesData);
-      if (this.echoSetFilter) {
-        allEchoes = allEchoes.filter((echo) =>
-          echo.sets.includes(this.echoSetFilter),
-        );
-      }
-      // now sort by class then by name
-      const classOrder = {
-        Calamity: 0,
-        Overlord: 1,
-        Elite: 2,
-        Common: 3,
-      };
-
-      // Sort by class first (using classOrder), then by name alphabetically
-      const sortedEchoes = allEchoes.sort((a, b) => {
-        // First, compare by class based on the classOrder
-        const classComparison = classOrder[a.class] - classOrder[b.class];
-
-        // If classes are the same, sort by name alphabetically
-        if (classComparison === 0) {
-          return a.name.localeCompare(b.name);
-        }
-
-        return classComparison;
-      });
-      return sortedEchoes;
-    },
-    currentEchoData() {
-      if (!this.echoValue) {
-        return null;
-      }
-      return getEchoData(this.echoValue);
-    },
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacterMainEcho() {
-      return this.characters[this.character]?.mainEcho?.echo ?? null;
-    },
-    hasCurrentMainEcho() {
-      return !!this.currentCharacterMainEcho;
-    },
-    isEquippedEchoSameAsRotationEcho() {
-      if (!this.currentCharacterMainEcho || !this.echoValue) {
-        return true;
-      }
-      return this.currentCharacterMainEcho === this.echoValue;
-    },
-  },
-  mounted() {
-    const actions = JSON.parse(JSON.stringify(this.actions));
-    // make sure they're in the proper order
-    actions.sort((a, b) => a.order - b.order);
-    this.actionsList = actions;
-    this.nameValue = this.name;
-    this.descriptionValue = this.description;
-    this.durationValue = this.duration || null;
-    this.echoValue = this.echo || null;
-    this.mainEchoRank = this.echoRank || 5;
-  },
+type EchoGridRow = {
+  key: string;
+  name: string;
+  class: string;
+  sets: string[];
+  image?: string;
 };
+
+const props = withDefaults(
+  defineProps<{
+    characterData?: Record<string, unknown>;
+    character: string;
+    id: string;
+    name: string;
+    description: string;
+    duration?: string | number | null;
+    echo?: string | null;
+    echoRank?: string | number | null;
+    actions?: RotationActionRow[];
+  }>(),
+  {
+    characterData: () => ({}),
+    duration: null,
+    echo: null,
+    echoRank: null,
+    actions: () => [],
+  },
+);
+
+const emit = defineEmits<{
+  "updated-rotation": [payload: Record<string, unknown>];
+  "rotation-delete": [id: string];
+}>();
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+
+const isOpen = ref(false);
+const nameValue = ref<string | null>(null);
+const descriptionValue = ref<string | null>(null);
+const durationValue = ref<string | number | null>(null);
+const echoValue = ref<string | null>(null);
+const mainEchoRank = ref<string | number>(5);
+const actionsList = ref<RotationActionRow[]>([]);
+const modalIdPicker = `echo-chooser-modal-${randomString()}`;
+const echoSetFilter = ref<string | null>(null);
+
+const actionRefs = new Map<string, { toggleEdit: () => void }>();
+
+function setActionRef(id: string, el: unknown) {
+  if (
+    el &&
+    typeof el === "object" &&
+    "toggleEdit" in el &&
+    typeof (el as { toggleEdit: unknown }).toggleEdit === "function"
+  ) {
+    actionRefs.set(id, el as { toggleEdit: () => void });
+  } else {
+    actionRefs.delete(id);
+  }
+}
+
+type RotationBuffRow = {
+  id: string;
+  modifier?: string | null;
+  modifierValue?: unknown;
+};
+
+function rotationActionStr(v: unknown): string | null {
+  if (v === null || v === undefined) {
+    return null;
+  }
+  return String(v);
+}
+
+function rotationActionOrderCount(v: unknown): string | number {
+  if (typeof v === "number" || typeof v === "string") {
+    return v;
+  }
+  const n = Number(v);
+  return Number.isNaN(n) ? 1 : n;
+}
+
+function rotationActionBuffs(v: unknown): RotationBuffRow[] {
+  return Array.isArray(v) ? (v as RotationBuffRow[]) : [];
+}
+
+function rotationActionBool(v: unknown): boolean {
+  return Boolean(v);
+}
+
+function rotationActionEchoRank(v: unknown): number | null {
+  if (v === null || v === undefined || v === "") {
+    return null;
+  }
+  if (typeof v === "number") {
+    return v;
+  }
+  const n = Number(v);
+  return Number.isNaN(n) ? null : n;
+}
+
+function emitRotation(partial?: Partial<Record<string, unknown>>) {
+  emit("updated-rotation", {
+    id: props.id,
+    name: nameValue.value,
+    description: descriptionValue.value,
+    duration: durationValue.value,
+    echo: echoValue.value,
+    echoRank: mainEchoRank.value,
+    actions: actionsList.value,
+    ...partial,
+  });
+}
+
+function toggleOpen() {
+  isOpen.value = !isOpen.value;
+}
+
+defineExpose({ toggleOpen });
+
+const actionsCount = computed(() => actionsList.value?.length || 0);
+
+const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
+
+const allEchoesListFiltered = computed(() => {
+  let allEchoes = Object.values(mainEchoesData) as unknown as EchoGridRow[];
+  if (echoSetFilter.value) {
+    allEchoes = allEchoes.filter((echo) =>
+      echo.sets.includes(echoSetFilter.value!),
+    );
+  }
+  const classOrder: Record<string, number> = {
+    Calamity: 0,
+    Overlord: 1,
+    Elite: 2,
+    Common: 3,
+  };
+  return [...allEchoes].sort((a, b) => {
+    const classComparison =
+      (classOrder[a.class] ?? 99) - (classOrder[b.class] ?? 99);
+    if (classComparison === 0) {
+      return a.name.localeCompare(b.name);
+    }
+    return classComparison;
+  });
+});
+
+const currentEchoData = computed(() => {
+  if (!echoValue.value) {
+    return null;
+  }
+  return getEchoData(echoValue.value);
+});
+
+const currentCharacterMainEcho = computed(() => {
+  return (
+    (characters.value[props.character] as { mainEcho?: { echo?: string } } | undefined)
+      ?.mainEcho?.echo ?? null
+  );
+});
+
+const hasCurrentMainEcho = computed(() => !!currentCharacterMainEcho.value);
+
+const isEquippedEchoSameAsRotationEcho = computed(() => {
+  if (!currentCharacterMainEcho.value || !echoValue.value) {
+    return true;
+  }
+  return currentCharacterMainEcho.value === echoValue.value;
+});
+
+function addAction() {
+  const newSequence = actionsCount.value + 1;
+  const id = randomString();
+  actionsList.value.push({
+    id,
+    type: null,
+    order: newSequence,
+    count: 1,
+    buffs: [],
+    negativeStatusStacks: 1,
+    electroRageStacks: 0,
+  });
+  void nextTick(() => {
+    actionRefs.get(id)?.toggleEdit();
+  });
+}
+
+function removeIdsFromExport(rotationData: Record<string, unknown>) {
+  const rotation = JSON.parse(JSON.stringify(rotationData)) as {
+    id?: string;
+    actions: Array<{
+      id?: string;
+      buffs?: Array<{ id?: string }>;
+    }>;
+  };
+  delete rotation.id;
+  rotation.actions.forEach((action) => {
+    delete action.id;
+    action.buffs?.forEach((buff) => {
+      delete buff.id;
+    });
+  });
+  return rotation;
+}
+
+function handleRotationExport() {
+  const rotationData = {
+    id: props.id,
+    name: nameValue.value ?? props.name,
+    description: descriptionValue.value ?? props.description,
+    actions: actionsList.value,
+    echo: echoValue.value,
+  };
+  const cleanRotationJson = removeIdsFromExport(rotationData);
+  void navigator.clipboard.writeText(JSON.stringify(cleanRotationJson));
+  alert("Rotation copied to clipboard!");
+}
+
+function onNameChange(e: Event) {
+  const target = e.target as HTMLInputElement;
+  emitRotation({
+    name: target.value,
+  });
+}
+
+function onDescriptionChange(e: Event) {
+  const target = e.target as HTMLTextAreaElement;
+  emitRotation({
+    description: target.value,
+  });
+}
+
+function onDurationChange(e: Event) {
+  const target = e.target as HTMLInputElement;
+  emitRotation({
+    duration: target.value,
+  });
+}
+
+function onEchoChange() {
+  emitRotation();
+}
+
+function handleActionUpdate(actionData: Record<string, unknown>) {
+  const actions = JSON.parse(JSON.stringify(actionsList.value)) as RotationActionRow[];
+  const foundIndex = actions.findIndex((action) => action.id === actionData.id);
+  if (foundIndex === -1) {
+    return;
+  }
+  actions[foundIndex] = actionData as RotationActionRow;
+  actionsList.value = actions;
+  emitRotation();
+}
+
+function handleSequenceUpdate(actionData: Record<string, unknown>) {
+  const actions = JSON.parse(JSON.stringify(actionsList.value)) as RotationActionRow[];
+  const id = actionData.id as string;
+  const newOrder = actionData.order as number | string;
+  const maxOrder = actions.length;
+  const validatedOrder = Math.max(1, Math.min(Number(newOrder), maxOrder));
+  const actionIndex = actions.findIndex((action) => action.id === id);
+  const [updatedAction] = actions.splice(actionIndex, 1);
+  const originalOrder = Number(updatedAction.order);
+  updatedAction.order = validatedOrder;
+  actions.forEach((action) => {
+    const ord = Number(action.order);
+    if (
+      originalOrder < validatedOrder &&
+      ord > originalOrder &&
+      ord <= validatedOrder
+    ) {
+      action.order = ord - 1;
+    } else if (
+      originalOrder > validatedOrder &&
+      ord < originalOrder &&
+      ord >= validatedOrder
+    ) {
+      action.order = ord + 1;
+    }
+  });
+  actions.splice(validatedOrder - 1, 0, updatedAction);
+  actions.sort((a, b) => Number(a.order) - Number(b.order));
+  actionsList.value = actions;
+  emitRotation();
+}
+
+function handleRemoveAction(actionData: { id: string }) {
+  actionsList.value = actionsList.value.filter((action) => action.id !== actionData.id);
+  emitRotation();
+}
+
+function handleRotationDelete() {
+  emit("rotation-delete", props.id);
+}
+
+function chooseMainEcho(echoKey: string) {
+  echoValue.value = echoKey;
+  closeEchoChooser();
+  onEchoChange();
+}
+
+function closeEchoChooser() {
+  echoSetFilter.value = null;
+  const modalEl = document.getElementById(modalIdPicker) as HTMLDialogElement | null;
+  modalEl?.close();
+}
+
+function openEchoChooser() {
+  const modalEl = document.getElementById(modalIdPicker) as HTMLDialogElement | null;
+  modalEl?.showModal();
+}
+
+function getEchoSetImage(echoSet: string) {
+  return getEchoSetIconByType(echoSet);
+}
+
+function toggleEchoSetFilter(echoSet: string) {
+  echoSetFilter.value = echoSetFilter.value === echoSet ? null : echoSet;
+}
+
+function isEchoSetFilterActive(echoSet: string) {
+  return echoSetFilter.value === echoSet;
+}
+
+function resetFilters() {
+  echoSetFilter.value = null;
+}
+
+function getEchoSetIcon(type: string) {
+  return getEchoSetIconByType(type);
+}
+
+function chooseCurrentMainEcho() {
+  if (!hasCurrentMainEcho.value) {
+    return;
+  }
+  echoValue.value = currentCharacterMainEcho.value;
+  onEchoChange();
+}
+
+function onMainEchoRankChange(val: string | number) {
+  mainEchoRank.value = val;
+  emitRotation({ echoRank: val });
+}
+
+onMounted(() => {
+  const actions = JSON.parse(JSON.stringify(props.actions)) as RotationActionRow[];
+  actions.sort((a, b) => Number(a.order) - Number(b.order));
+  actionsList.value = actions;
+  nameValue.value = props.name;
+  descriptionValue.value = props.description;
+  durationValue.value = props.duration ?? null;
+  echoValue.value = props.echo ?? null;
+  mainEchoRank.value = props.echoRank ?? 5;
+});
 </script>
 
 <style scoped lang="scss">

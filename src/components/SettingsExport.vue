@@ -28,121 +28,109 @@
   </div>
 </template>
 
-<script lang="ts">
-// @ts-nocheck
+<script setup lang="ts">
 /**
  * Version 1 (which has no meta) only includes character data as a root property
  * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
  */
-import { useCharacterStore } from "../stores/character";
-import { useInventoryStore } from "../stores/inventory";
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "SettingsImportExport",
-  data() {
-    return {
-      importedRawCharacterData: "",
-      message: "",
-      isNotificationShown: false,
-      notificationError: false,
-      fileData: null,
-    };
-  },
-  methods: {
-    /**
-     * Gets all of the data to save
-     */
-    getData() {
-      const meta = {
-        version: "2",
-        source: "WutheringTools",
-      };
-      const data = {
-        character: localStorage.getItem("character"),
-        inventory: localStorage.getItem("inventory"),
-      };
-      const d = {
-        meta,
-        data,
-      };
-      return d;
-    },
-    /**
-     * Handler to copy the contents of the character data into the user's clipboard
-     */
-    copyCharacterData() {
-      const data = this.getData();
-      navigator.clipboard.writeText(JSON.stringify(data));
-      this.triggerNotification(
-        "Character data has been copied to your clipboard",
-      );
-    },
-    /**
-     * Handler to download the character data as a JSON file
-     */
-    downloadCharacterData() {
-      const data = this.getData();
-      const blob = new Blob([JSON.stringify(data)], {
-        type: "application/json",
-      });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = this.generateFilename();
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      this.triggerNotification("Character data has been downloaded");
-    },
-    /**
-     * Gets a filename for the JSON file
-     */
-    generateFilename() {
-      const date = new Date();
-      const dateFormatter = new Intl.DateTimeFormat('en-US', {
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-      });
+import { ref } from "vue";
 
-      const parts = dateFormatter.formatToParts(date);
-      const partsValues = {
-        month: '',
-        day: '',
-        year: ''
-      };
-      parts.forEach(({type, value}) => {
-        if (type === 'month') {
-          partsValues.month = value;
-        }
-        if (type === 'day') {
-          partsValues.day = value;
-        }
-        if (type === 'year') {
-          partsValues.year = value;
-        }
-      });
-      const dateStr = `${partsValues.year}-${partsValues.month}-${partsValues.day}`;
-      return `character_data_${dateStr}.json`;
-    },
-    /**
-     * Shows the notification message and hides it after a duration
-     * @param {String} message
-     */
-    triggerNotification(message, error = false) {
-      this.message = message;
-      this.isNotificationShown = true;
-      this.notificationError = error;
-      setTimeout(() => {
-        this.isNotificationShown = false;
-        this.message = "";
-        this.notificationError = false;
-      }, 5000);
-    },
-  },
-});
+const message = ref("");
+const isNotificationShown = ref(false);
+const notificationError = ref(false);
+
+/**
+ * Gets all of the data to save
+ */
+function getData() {
+  const meta = {
+    version: "2",
+    source: "WutheringTools",
+  };
+  const data = {
+    character: localStorage.getItem("character"),
+    inventory: localStorage.getItem("inventory"),
+  };
+  return {
+    meta,
+    data,
+  };
+}
+
+/**
+ * Handler to copy the contents of the character data into the user's clipboard
+ */
+function copyCharacterData() {
+  const data = getData();
+  navigator.clipboard.writeText(JSON.stringify(data));
+  triggerNotification("Character data has been copied to your clipboard");
+}
+
+/**
+ * Handler to download the character data as a JSON file
+ */
+function downloadCharacterData() {
+  const data = getData();
+  const blob = new Blob([JSON.stringify(data)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = generateFilename();
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  triggerNotification("Character data has been downloaded");
+}
+
+/**
+ * Gets a filename for the JSON file
+ */
+function generateFilename() {
+  const date = new Date();
+  const dateFormatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  });
+
+  const parts = dateFormatter.formatToParts(date);
+  const partsValues = {
+    month: "",
+    day: "",
+    year: "",
+  };
+  parts.forEach(({ type, value }) => {
+    if (type === "month") {
+      partsValues.month = value;
+    }
+    if (type === "day") {
+      partsValues.day = value;
+    }
+    if (type === "year") {
+      partsValues.year = value;
+    }
+  });
+  const dateStr = `${partsValues.year}-${partsValues.month}-${partsValues.day}`;
+  return `character_data_${dateStr}.json`;
+}
+
+/**
+ * Shows the notification message and hides it after a duration
+ */
+function triggerNotification(msg: string, error = false) {
+  message.value = msg;
+  isNotificationShown.value = true;
+  notificationError.value = error;
+  setTimeout(() => {
+    isNotificationShown.value = false;
+    message.value = "";
+    notificationError.value = false;
+  }, 5000);
+}
 </script>
 
 <style scoped lang="scss">

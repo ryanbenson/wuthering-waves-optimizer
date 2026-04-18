@@ -140,7 +140,7 @@
         :key="weapon"
         data-test-weapon-passives>
         <CalculatorWeaponsPassive
-          v-for="(weaponPassive, i) in weaponPassives"
+          v-for="weaponPassive in weaponPassives"
           class="weapon__passive"
           :key="weaponPassive.key"
           :character="character"
@@ -163,452 +163,460 @@
     :key="character"
     :character="character"
     :weapons-list="weaponsList"
-    ref="weaponBrowser"
+    ref="weaponBrowserRef"
     @weapon-browser:chosen-weapon="handleChosenWeapon" />
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
 import CalculatorWeaponsPassive from "./CalculatorWeaponsPassive.vue";
 import CalculatorWeaponBrowser from "./CalculatorWeaponBrowser.vue";
 import { useCharacterStore } from "../stores/character";
-import { mapActions, mapState } from "pinia";
 import { subStatLabelMap } from "../echoes/stats";
 
-export default {
-  props: {
-    character: { type: String, required: true },
-    weaponType: { type: String, default: "" },
-  },
-  components: { CalculatorWeaponsPassive, CalculatorWeaponBrowser },
-  data() {
-    return {
-      // this data we do not want in the store
-      chosenWeapon: null,
-      weaponPassiveData: [],
-      weaponsList: [],
-    };
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data from the store
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Getter/setter used in the form for the weapon choice
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {String|null}
-     */
-    weapon: {
-      get() {
-        return this.currentCharacter?.weapon ?? null;
-      },
-      async set(value) {
-        await this.setCharacterData(this.character, { weapon: value });
-      },
-    },
-    /**
-     * Getter/setter used in the form for the weapon level
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {String|null}
-     */
-    weaponLevel: {
-      get() {
-        let defaultMaxLevel = "90";
-        if (this.chosenWeapon?.info?.maxLevel) {
-          defaultMaxLevel = this.chosenWeapon?.info?.maxLevel;
-        }
-        return (
-          this.currentCharacter?.weapons?.[this.weapon]?.weaponLevel ??
-          defaultMaxLevel
-        );
-      },
-      async set(value) {
-        await this.setCharacterData(this.character, {
-          weapons: {
-            [this.weapon]: {
-              weaponLevel: value,
-            },
-          },
-        });
-      },
-    },
-    /**
-     * Getter/setter used in the form for the refinement choice
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {String|null}
-     */
-    refinement: {
-      get() {
-        return this.currentCharacter?.weapons?.[this.weapon]?.refinement ?? "1";
-      },
-      async set(value) {
-        await this.setCharacterData(this.character, {
-          weapons: {
-            [this.weapon]: {
-              refinement: value,
-            },
-          },
-        });
-      },
-    },
-    /**
-     * List of options for the weapon level
-     * @returns {Array}
-     */
-    weaponLevelOptions() {
-      const defaultOption = [
-        "1",
-        "20",
-        "20+",
-        "40",
-        "40+",
-        "50",
-        "50+",
-        "60",
-        "60+",
-        "70",
-        "70+",
-        "80",
-        "80+",
-        "90",
-      ];
-      if (this.chosenWeapon?.info?.weaponLevelOverride) {
-        return this.chosenWeapon?.info?.weaponLevelOverride;
-      }
-      return defaultOption;
-    },
-    /**
-     * List of options for the refinements options
-     * @returns {Array}
-     */
-    weaponRefinementLevels() {
-      return ["1", "2", "3", "4", "5"];
-    },
-    /**
-     * Determines if there are any weapon passives or not
-     * @returns {Boolean}
-     */
-    hasWeaponPassive() {
-      return this.weaponPassives && this.weaponPassives.length > 0;
-    },
-    /**
-     * The weapon description, typically in HTML
-     * @returns {String|null}
-     */
-    weaponDescription() {
-      return this.chosenWeapon?.info?.description ?? null;
-    },
-    /**
-     * The weapon description, typically in HTML
-     * @returns {String|null}
-     */
-    weaponRarity() {
-      return this.chosenWeapon?.info?.rarity ?? 5;
-    },
-    /**
-     * The weapon passives data
-     * @returns {Array}
-     */
-    weaponPassives() {
-      const passives = this.chosenWeapon?.info?.passiveData ?? [];
-      return JSON.parse(JSON.stringify(passives));
-    },
-    /**
-     * Returns the buffs data formatted to send to the stats collector
-     * @returns {Object}
-     */
-    buffsFormatted() {
-      const finalBuffData = {};
-      let modifySpecificTalents = [];
-      const allBuffs = [...this.weaponPassiveData];
-      // handle special case for Stringmaster, everything else uses normal handler
-      // 1. the second passive does not work without the first
-      // 2. the second passive adds itself to the raw/un-stacked value
-      if (this.weapon === "Stringmaster") {
-        const allElementPassive = allBuffs.find(
-          (passive) => passive.key === "StringmasterAllElementAttributeBonus",
-        );
-        const stringmasterBuffs = {};
-        stringmasterBuffs[allElementPassive.stat] = allElementPassive.value;
-        const firstStringmasterPassive = this.weaponPassiveData.find(
-          (passive) => passive.key === "StringmasterATK1",
-        );
-        const secondStringmasterPassive = this.weaponPassiveData.find(
-          (passive) => passive.key === "StringmasterATK2",
-        );
-        // first, if there is no first passive, then
-        if (!firstStringmasterPassive) {
-          return stringmasterBuffs;
-        }
-        // we do have the first passive, so if there's a second passive
-        // add it to the first, then re-multiply the stacks
-        const firstPassiveValuePreStacks =
-          firstStringmasterPassive.valueBeforeStacks;
-        const firstPassiveStacks = firstStringmasterPassive.stacks;
-        const secondPassiveValue = secondStringmasterPassive?.value ?? 0;
-        const finalStringmasterPassiveValue =
-          (firstPassiveValuePreStacks + secondPassiveValue) *
-          firstPassiveStacks;
-        stringmasterBuffs[firstStringmasterPassive.stat] =
-          finalStringmasterPassiveValue;
-        return stringmasterBuffs;
-      }
-      // all other weapons use the normal handler
-      allBuffs.forEach((buffInstance) => {
-        const { key, stat, value } = buffInstance;
-        if (stat === "modifySpecificTalents") {
-          const updatedSpecificTalentList = modifySpecificTalents.concat(value);
-          modifySpecificTalents = updatedSpecificTalentList;
-        } else {
-          finalBuffData[stat] = (finalBuffData[stat] || 0) + value;
-        }
-      });
-      // format any specific talents
-      if (modifySpecificTalents.length > 0) {
-        const specificTalentBuffs = {};
-        // make it { talentKey: value }, if it has a modifier (e.g. DefIgnore), attach it to the talent
-        // so it won't auto buff, and we can grab it later
-        modifySpecificTalents.forEach((buffInstance) => {
-          const talentKeys = buffInstance?.modifySpecificTalents ?? [];
-          talentKeys.forEach((talent) => {
-            let talentName = talent;
-            if (buffInstance?.modifier) {
-              talentName = `${talentName}:${buffInstance.modifier}`;
-            }
-            specificTalentBuffs[talentName] =
-              (specificTalentBuffs[talentName] || 0) +
-              buffInstance.modifierValueCalculated;
-          });
-        });
-        finalBuffData.specificTalentBuffs = specificTalentBuffs;
-      }
-      return finalBuffData;
-    },
-    /**
-     * Gets the stats for the weapon chosen
-     * @returns {Object|null}
-     */
-    weaponStatsData() {
-      if (!this.weapon || !this.weaponLevel || !this.chosenWeapon) {
-        return null;
-      }
-      return this.chosenWeapon?.data?.[this.weaponLevel] ?? null;
-    },
-    /**
-     * Gets the attack value for the weapon
-     * @returns {number|null}
-     */
-    weaponAttack() {
-      if (!this.weaponStatsData) {
-        return null;
-      }
-      return this.weaponStatsData?.attack ?? null;
-    },
-    /**
-     * Gets the modifier (abbreviation) for the weapon
-     * @returns {string|null}
-     */
-    weaponModifier() {
-      if (!this.weaponStatsData) {
-        return null;
-      }
-      return this.weaponStatsData?.modifier ?? null;
-    },
-    /**
-     * Gets the modifier (human readable) for the weapon
-     * @returns {string|null}
-     */
-    weaponModifierLabel() {
-      if (!this.weaponModifier) {
-        return null;
-      }
-      return subStatLabelMap?.[this.weaponModifier] ?? null;
-    },
-    /**
-     * Gets the right modifier image src
-     * @returns {string|null}
-     */
-    weaponModifierImage() {
-      if (!this.weaponModifier) {
-        return null;
-      }
-      switch (this.weaponModifier) {
-        case "ATK":
-          return "https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png";
-        case "DEF":
-          return "https://ryanbenson.github.io/wuthering-waves-assets/images/def.png";
-        case "HP":
-          return "https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png";
-        case "CritRate":
-          return "https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png";
-        case "CritDMG":
-          return "https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png";
-        case "EnergyRegen":
-          return "https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png";
-        default:
-          return null;
-      }
-    },
-    /**
-     * Gets the modifier value (human readable) for the weapon
-     * @returns {string|null}
-     */
-    weaponModifierValue() {
-      if (!this.weaponStatsData) {
-        return null;
-      }
-      const modifierValue = this.weaponStatsData?.modifierValue ?? null;
-      if (!modifierValue) {
-        return null;
-      }
-      const decimalFormatter = new Intl.NumberFormat("en", {
-        style: "decimal",
-        maximumFractionDigits: 1,
-        minimumFractionDigits: 1,
-        // disabling for now. it's rounding oddly (1.8% is showing as 1.7%)
-        // TODO: More testing for this
-        // roundingMode: "floor",
-      });
-      return decimalFormatter.format(modifierValue * 100) + "%";
-    },
-    /**
-     * Provides the weapon image URL
-     * @returns {String|null}
-     */
-    weaponImageStyles() {
-      if (!this.weapon || !this.chosenWeapon) {
-        return null;
-      }
-      return {
-        backgroundImage: `url(${this.chosenWeapon?.info?.image})`,
-      };
-    },
-  },
-  watch: {
-    // we're using immediate so it'll react when we get data from the store
-    weaponLevel: {
-      handler: async function (weaponLevel) {
-        if (weaponLevel) {
-          this.updateWeaponStats();
-        }
-      },
-      immediate: true,
-    },
-    refinement: {
-      handler: async function (refinement) {
-        if (refinement) {
-          this.updateWeaponStats();
-        }
-      },
-      immediate: true,
-    },
-    weaponType: {
-      handler: async function () {
-        await this.updateWeapons();
-        await this.weaponChanged();
-      },
-      immediate: true,
-    },
-    weapon: {
-      handler: async function () {
-        await this.weaponChanged();
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    /**
-     * Updates the weapon stats and send that off to the parent
-     * so we can update the stats and calcs
-     * @emtis update-weapon
-     */
-    async updateWeaponStats() {
-      if (this.weapon && this.chosenWeapon) {
-        const { attack, modifier, modifierValue } =
-          this.chosenWeapon.getWeaponDataByLevel(this.weaponLevel);
-        const weaponData = {
-          attack,
-          modifier,
-          modifierValue,
-          weaponPassiveStats: { ...this.buffsFormatted },
-        };
-        this.$emit("update-weapon", weaponData);
-      } else {
-        const weaponData = {
-          attack: 0,
-          modifier: null,
-          modifierValue: null,
-          weaponPassiveStats: {},
-        };
-        this.$emit("update-weapon", weaponData);
-      }
-    },
-    /**
-     * Updates the list of weapons to choose from
-     * It resets any weapon local state since the list changes
-     */
-    async updateWeapons() {
-      this.weaponsList = getWeaponsByType(this.weaponType);
-      this.weaponPassiveData = [];
-      this.chosenWeapon = null;
-      this.updateWeaponStats();
-    },
-    /**
-     * Update our passive data and trigger other function to emit out
-     */
-    async handleUpdatedWeaponStats(data) {
-      const buffIndex = this.weaponPassiveData.findIndex((buff) => {
-        return buff.key === data.key;
-      });
-      if (buffIndex === -1) {
-        this.weaponPassiveData.push(data);
-      } else {
-        this.weaponPassiveData[buffIndex] = data;
-      }
-      await this.updateWeaponStats();
-    },
-    /**
-     * Handler for when you change the weapon choice
-     * fetches the new weapon data and resets
-     */
-    async weaponChanged() {
-      this.weaponPassiveData = [];
-      if (!this.weaponType) {
-        return;
-      }
-      try {
-        if (!this.weapon) {
-          await this.updateWeaponStats();
-          return null;
-        }
-        const weaponChosen = await getWeaponByName(
-          this.weaponType,
-          this.weapon,
-        );
-        this.chosenWeapon = weaponChosen;
-        await this.updateWeaponStats();
-      } catch (error) {
-        // console.log("Failed to find weapon");
-      }
-    },
-    openWeaponBrowser() {
-      this.$refs.weaponBrowser.triggerOpenModal();
-    },
-    handleChosenWeapon(weapon) {
-      this.weapon = weapon;
-    },
-  },
-  beforeUnmount() {
-    this.weaponPassiveData = [];
-    this.chosenWeapon = null;
-  },
+type WeaponListBuckets = {
+  five: Array<{ key: string; name: string; [k: string]: unknown }>;
+  four: Array<{ key: string; name: string; [k: string]: unknown }>;
+  three: Array<{ key: string; name: string; [k: string]: unknown }>;
+  two: Array<{ key: string; name: string; [k: string]: unknown }>;
+  one: Array<{ key: string; name: string; [k: string]: unknown }>;
 };
+
+type WeaponPassiveEmit = Record<string, unknown> & {
+  key?: string;
+  stat?: string;
+  value: number;
+  stacks?: number;
+  valueBeforeStacks?: number;
+  modifier?: string;
+  modifySpecificTalents?: string[];
+  modifierValueCalculated?: number;
+};
+
+type ChosenWeapon = {
+  info?: {
+    maxLevel?: string;
+    weaponLevelOverride?: string[];
+    passiveData?: unknown[];
+    description?: string;
+    rarity?: string | number;
+    image?: string;
+  };
+  data?: Record<string, { attack?: number; modifier?: string; modifierValue?: number }>;
+  getWeaponDataByLevel: (level: string) => {
+    attack: number;
+    modifier: string | null;
+    modifierValue: number | null;
+  };
+};
+
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    weaponType?: string;
+  }>(),
+  { weaponType: "" },
+);
+
+const emit = defineEmits<{
+  "update-weapon": [
+    payload: {
+      attack: number;
+      modifier: string | null;
+      modifierValue: number | null;
+      weaponPassiveStats: Record<string, unknown>;
+    },
+  ];
+}>();
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+const { setCharacterData } = characterStore;
+
+const chosenWeapon = ref<ChosenWeapon | null>(null);
+const weaponPassiveData = ref<WeaponPassiveEmit[]>([]);
+function normalizeWeaponsList(raw: unknown): WeaponListBuckets {
+  if (raw && typeof raw === "object" && "five" in (raw as object)) {
+    return raw as WeaponListBuckets;
+  }
+  return { five: [], four: [], three: [], two: [], one: [] };
+}
+
+const weaponsList = ref<WeaponListBuckets>(normalizeWeaponsList([]));
+
+const weaponBrowserRef = ref<InstanceType<typeof CalculatorWeaponBrowser> | null>(
+  null,
+);
+
+const currentCharacter = computed(
+  () => characters.value[props.character] ?? ({} as Record<string, unknown>),
+);
+
+const weapon = computed({
+  get() {
+    return (currentCharacter.value as { weapon?: string | null }).weapon ?? null;
+  },
+  set(value: string | null) {
+    void setCharacterData(props.character, { weapon: value });
+  },
+});
+
+const weaponLevel = computed({
+  get() {
+    let defaultMaxLevel = "90";
+    const cw = chosenWeapon.value;
+    if (cw?.info?.maxLevel) {
+      defaultMaxLevel = cw.info.maxLevel;
+    }
+    const w = weapon.value;
+    if (!w) {
+      return defaultMaxLevel;
+    }
+    const wl = (
+      currentCharacter.value as {
+        weapons?: Record<string, { weaponLevel?: string }>;
+      }
+    )?.weapons?.[w]?.weaponLevel;
+    return wl ?? defaultMaxLevel;
+  },
+  set(value: string) {
+    const w = weapon.value;
+    if (!w) {
+      return;
+    }
+    void setCharacterData(props.character, {
+      weapons: {
+        [w]: { weaponLevel: value },
+      },
+    });
+  },
+});
+
+const refinement = computed({
+  get() {
+    const w = weapon.value;
+    if (!w) {
+      return "1";
+    }
+    return (
+      (
+        currentCharacter.value as {
+          weapons?: Record<string, { refinement?: string }>;
+        }
+      )?.weapons?.[w]?.refinement ?? "1"
+    );
+  },
+  set(value: string) {
+    const w = weapon.value;
+    if (!w) {
+      return;
+    }
+    void setCharacterData(props.character, {
+      weapons: {
+        [w]: { refinement: value },
+      },
+    });
+  },
+});
+
+const weaponLevelOptions = computed(() => {
+  const defaultOption = [
+    "1",
+    "20",
+    "20+",
+    "40",
+    "40+",
+    "50",
+    "50+",
+    "60",
+    "60+",
+    "70",
+    "70+",
+    "80",
+    "80+",
+    "90",
+  ];
+  if (chosenWeapon.value?.info?.weaponLevelOverride) {
+    return chosenWeapon.value.info.weaponLevelOverride;
+  }
+  return defaultOption;
+});
+
+const weaponRefinementLevels = ["1", "2", "3", "4", "5"] as const;
+
+const weaponPassives = computed(() => {
+  const passives = chosenWeapon.value?.info?.passiveData ?? [];
+  return JSON.parse(JSON.stringify(passives)) as Array<{
+    key: string;
+    hasStacks?: boolean;
+    modifier?: string;
+    modifierByRefinement?: Record<string, number>;
+    minStacks?: number;
+    maxStacks?: number;
+    alwaysEnabled?: boolean;
+    details?: string;
+    [k: string]: unknown;
+  }>;
+});
+
+const hasWeaponPassive = computed(
+  () => weaponPassives.value && weaponPassives.value.length > 0,
+);
+
+const weaponDescription = computed(
+  () => chosenWeapon.value?.info?.description ?? null,
+);
+
+const weaponRarity = computed(
+  () => chosenWeapon.value?.info?.rarity ?? 5,
+);
+
+const buffsFormatted = computed(() => {
+  const finalBuffData: Record<string, unknown> = {};
+  let modifySpecificTalents: WeaponPassiveEmit[] = [];
+  const allBuffs = [...weaponPassiveData.value];
+  if (weapon.value === "Stringmaster") {
+    const allElementPassive = allBuffs.find(
+      (passive) => passive.key === "StringmasterAllElementAttributeBonus",
+    );
+    const stringmasterBuffs: Record<string, unknown> = {};
+    if (allElementPassive?.stat !== undefined) {
+      stringmasterBuffs[allElementPassive.stat as string] = allElementPassive.value;
+    }
+    const firstStringmasterPassive = weaponPassiveData.value.find(
+      (passive) => passive.key === "StringmasterATK1",
+    );
+    const secondStringmasterPassive = weaponPassiveData.value.find(
+      (passive) => passive.key === "StringmasterATK2",
+    );
+    if (!firstStringmasterPassive) {
+      return stringmasterBuffs;
+    }
+    const firstPassiveValuePreStacks = firstStringmasterPassive.valueBeforeStacks ?? 0;
+    const firstPassiveStacks = firstStringmasterPassive.stacks ?? 0;
+    const secondPassiveValue = secondStringmasterPassive?.value ?? 0;
+    const finalStringmasterPassiveValue =
+      (firstPassiveValuePreStacks + secondPassiveValue) * firstPassiveStacks;
+    const atkStat = firstStringmasterPassive.stat as string;
+    stringmasterBuffs[atkStat] = finalStringmasterPassiveValue;
+    return stringmasterBuffs;
+  }
+  allBuffs.forEach((buffInstance) => {
+    const stat = buffInstance.stat;
+    const value = buffInstance.value;
+    if (stat === "modifySpecificTalents") {
+      modifySpecificTalents = modifySpecificTalents.concat(
+        value as unknown as WeaponPassiveEmit[],
+      );
+    } else if (stat) {
+      finalBuffData[stat] =
+        ((finalBuffData[stat] as number) || 0) + (value as number);
+    }
+  });
+  if (modifySpecificTalents.length > 0) {
+    const specificTalentBuffs: Record<string, number> = {};
+    modifySpecificTalents.forEach((buffInstance) => {
+      const talentKeys = buffInstance?.modifySpecificTalents ?? [];
+      talentKeys.forEach((talent) => {
+        let talentName = talent;
+        if (buffInstance?.modifier) {
+          talentName = `${talentName}:${buffInstance.modifier}`;
+        }
+        specificTalentBuffs[talentName] =
+          (specificTalentBuffs[talentName] || 0) +
+          (buffInstance.modifierValueCalculated ?? 0);
+      });
+    });
+    finalBuffData.specificTalentBuffs = specificTalentBuffs;
+  }
+  return finalBuffData;
+});
+
+const weaponStatsData = computed(() => {
+  if (!weapon.value || !weaponLevel.value || !chosenWeapon.value) {
+    return null;
+  }
+  return chosenWeapon.value.data?.[weaponLevel.value] ?? null;
+});
+
+const weaponAttack = computed(() => {
+  if (!weaponStatsData.value) {
+    return null;
+  }
+  return weaponStatsData.value?.attack ?? null;
+});
+
+const weaponModifier = computed(() => {
+  if (!weaponStatsData.value) {
+    return null;
+  }
+  return weaponStatsData.value?.modifier ?? null;
+});
+
+const weaponModifierLabel = computed(() => {
+  if (!weaponModifier.value) {
+    return null;
+  }
+  return (
+    (subStatLabelMap as Record<string, string | undefined>)[weaponModifier.value] ??
+    null
+  );
+});
+
+const weaponModifierImage = computed(() => {
+  if (!weaponModifier.value) {
+    return null;
+  }
+  switch (weaponModifier.value) {
+    case "ATK":
+      return "https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png";
+    case "DEF":
+      return "https://ryanbenson.github.io/wuthering-waves-assets/images/def.png";
+    case "HP":
+      return "https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png";
+    case "CritRate":
+      return "https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png";
+    case "CritDMG":
+      return "https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png";
+    case "EnergyRegen":
+      return "https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png";
+    default:
+      return null;
+  }
+});
+
+const weaponModifierValue = computed(() => {
+  if (!weaponStatsData.value) {
+    return null;
+  }
+  const modifierValue = weaponStatsData.value?.modifierValue ?? null;
+  if (!modifierValue) {
+    return null;
+  }
+  const decimalFormatter = new Intl.NumberFormat("en", {
+    style: "decimal",
+    maximumFractionDigits: 1,
+    minimumFractionDigits: 1,
+  });
+  return decimalFormatter.format(modifierValue * 100) + "%";
+});
+
+const weaponImageStyles = computed(() => {
+  if (!weapon.value || !chosenWeapon.value) {
+    return null;
+  }
+  return {
+    backgroundImage: `url(${chosenWeapon.value?.info?.image})`,
+  };
+});
+
+async function updateWeaponStats() {
+  if (weapon.value && chosenWeapon.value) {
+    const { attack, modifier, modifierValue } =
+      chosenWeapon.value.getWeaponDataByLevel(weaponLevel.value);
+    const weaponData = {
+      attack,
+      modifier,
+      modifierValue,
+      weaponPassiveStats: { ...buffsFormatted.value },
+    };
+    emit("update-weapon", weaponData);
+  } else {
+    emit("update-weapon", {
+      attack: 0,
+      modifier: null,
+      modifierValue: null,
+      weaponPassiveStats: {},
+    });
+  }
+}
+
+async function updateWeapons() {
+  weaponsList.value = normalizeWeaponsList(getWeaponsByType(props.weaponType));
+  weaponPassiveData.value = [];
+  chosenWeapon.value = null;
+  await updateWeaponStats();
+}
+
+async function handleUpdatedWeaponStats(data: Record<string, unknown>) {
+  const row = data as WeaponPassiveEmit;
+  const buffIndex = weaponPassiveData.value.findIndex((buff) => buff.key === row.key);
+  if (buffIndex === -1) {
+    weaponPassiveData.value.push(row);
+  } else {
+    weaponPassiveData.value[buffIndex] = row;
+  }
+  await updateWeaponStats();
+}
+
+async function weaponChanged() {
+  weaponPassiveData.value = [];
+  if (!props.weaponType) {
+    return;
+  }
+  try {
+    if (!weapon.value) {
+      await updateWeaponStats();
+      return;
+    }
+    const weaponChosen = (await getWeaponByName(
+      props.weaponType,
+      weapon.value,
+    )) as ChosenWeapon;
+    chosenWeapon.value = weaponChosen;
+    await updateWeaponStats();
+  } catch {
+    // Failed to find weapon
+  }
+}
+
+function openWeaponBrowser() {
+  weaponBrowserRef.value?.triggerOpenModal();
+}
+
+function handleChosenWeapon(key: string) {
+  weapon.value = key;
+}
+
+watch(
+  weaponLevel,
+  async (wl) => {
+    if (wl) {
+      await updateWeaponStats();
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  refinement,
+  async (r) => {
+    if (r) {
+      await updateWeaponStats();
+    }
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.weaponType,
+  async () => {
+    await updateWeapons();
+    await weaponChanged();
+  },
+  { immediate: true },
+);
+
+watch(weapon, async () => {
+  await weaponChanged();
+}, { immediate: true });
+
+onBeforeUnmount(() => {
+  weaponPassiveData.value = [];
+  chosenWeapon.value = null;
+});
 </script>
 
 <style scoped lang="scss">

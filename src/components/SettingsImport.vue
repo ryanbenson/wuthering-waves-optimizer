@@ -66,192 +66,176 @@
   </div>
 </template>
 
-<script lang="ts">
-// @ts-nocheck
+<script setup lang="ts">
 /**
  * Version 1 (which has no meta) only includes character data as a root property
  * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
  */
+import { ref } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
-import { defineComponent } from "vue";
-import { mapActions, mapState } from "pinia";
 import { randomString } from "../utils/strings";
-export default defineComponent({
-  name: "SettingsImportExport",
-  data() {
-    return {
-      importedRawCharacterData: "",
-      importEchoesAddRawText: "",
-      message: "",
-      isNotificationShown: false,
-      notificationError: false,
-      fileData: null,
+
+const importedRawCharacterData = ref("");
+const importEchoesAddRawText = ref("");
+const message = ref("");
+const isNotificationShown = ref(false);
+const notificationError = ref(false);
+const fileData = ref<string | null>(null);
+
+const inventoryStore = useInventoryStore();
+
+/**
+ * Provides the data to import based on changes to the structures
+ */
+function getImportData(data: string | object, toParse = false) {
+  let parsedData: unknown = data;
+  if (toParse) {
+    parsedData = JSON.parse(data as string);
+  }
+  const returnData: {
+    character: unknown;
+    inventory: unknown;
+  } = { character: undefined, inventory: undefined };
+  const pd = parsedData as {
+    meta?: { version?: string };
+    data?: { character?: unknown; inventory?: unknown };
+  };
+  if (pd?.meta && pd?.meta.version === "2") {
+    returnData.character = pd?.data?.character;
+    returnData.inventory = pd?.data?.inventory;
+  } else {
+    returnData.character = parsedData;
+    returnData.inventory = { echoes: [], equipped: {} };
+  }
+  return returnData;
+}
+
+/**
+ * Imports the raw character data through a given string in the input
+ */
+function importRawCharacterData() {
+  if (!importedRawCharacterData.value) {
+    return triggerNotification("No character data given", true);
+  }
+  if (isJsonString(importedRawCharacterData.value) === false) {
+    return triggerNotification("Character data given is invalid", true);
+  }
+  const importData = getImportData(importedRawCharacterData.value, true);
+  const characterStore = useCharacterStore();
+  let charData = importData.character;
+  if (typeof charData === "string") {
+    charData = JSON.parse(charData);
+  }
+  characterStore.hardSetState(charData as never);
+  const inventoryStoreLocal = useInventoryStore();
+  let inventoryData = importData.inventory;
+  if (typeof inventoryData === "string") {
+    inventoryData = JSON.parse(inventoryData);
+  }
+  inventoryStoreLocal.hardSetState(inventoryData as never);
+  alert("Your data has been overwritten!");
+  importedRawCharacterData.value = "";
+  location.reload();
+}
+
+/**
+ * Process the file and store the data
+ */
+function handleFileUpload(event: Event) {
+  const input = event.target as HTMLInputElement;
+  const file = input.files?.[0];
+  if (file && file.type === "application/json") {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = e.target?.result;
+        fileData.value = typeof data === "string" ? data : null;
+      } catch {
+        triggerNotification("Error parsing JSON file", true);
+        fileData.value = null;
+      }
     };
-  },
-  methods: {
-    ...mapActions(useInventoryStore, ["echoById", "saveEcho"]),
-    /**
-     * Provides the data to import based on changes to the structures
-     * If there's a meta tag, then that got introduced in v2
-     * v2 also introduces inventory data
-     * If there's no meta, then that's v1, which is just the character data itself
-     *   and has nothing else
-     * @returns {Object}
-     */
-    getImportData(data, toParse = false) {
-      let parsedData = data;
-      if (toParse) {
-        parsedData = JSON.parse(data);
+    reader.readAsText(file);
+  } else {
+    triggerNotification("Please upload a valid JSON file.", true);
+    fileData.value = null;
+  }
+}
+
+/**
+ * Confirms the file upload and overwrite the data
+ */
+function confirmUpload() {
+  if (!fileData.value) {
+    triggerNotification("No character data given", true);
+    return;
+  }
+  if (isJsonString(fileData.value) === false) {
+    triggerNotification("Character data given is invalid", true);
+    return;
+  }
+  const importData = getImportData(fileData.value, true);
+  const characterStore = useCharacterStore();
+  let charData = importData.character;
+  if (typeof charData === "string") {
+    charData = JSON.parse(charData);
+  }
+  characterStore.hardSetState(charData as never);
+  const inventoryStoreLocal = useInventoryStore();
+  let inventoryData = importData.inventory;
+  if (typeof inventoryData === "string") {
+    inventoryData = JSON.parse(inventoryData);
+  }
+  inventoryStoreLocal.hardSetState(inventoryData as never);
+  alert("Your data has been overwritten!");
+  fileData.value = null;
+  location.reload();
+}
+
+function isJsonString(str: string | null) {
+  if (str == null) return false;
+  try {
+    JSON.parse(str);
+  } catch {
+    return false;
+  }
+  return true;
+}
+
+function triggerNotification(msg: string, error = false) {
+  message.value = msg;
+  isNotificationShown.value = true;
+  notificationError.value = error;
+  setTimeout(() => {
+    isNotificationShown.value = false;
+    message.value = "";
+    notificationError.value = false;
+  }, 5000);
+}
+
+async function importEchoesAddRaw() {
+  try {
+    const data = JSON.parse(importEchoesAddRawText.value) as unknown[];
+    let amount = 0;
+    for (const echo of data) {
+      let id = randomString();
+      const anyCollisions = inventoryStore.echoById(id);
+      if (anyCollisions.length > 0) {
+        id = randomString();
       }
-      const returnData = {};
-      if (parsedData?.meta && parsedData?.meta.version === "2") {
-        returnData.character = parsedData?.data?.character;
-        returnData.inventory = parsedData?.data?.inventory;
-      } else {
-        returnData.character = parsedData;
-        returnData.inventory = { echoes: [], equipped: {} };
-      }
-      return returnData;
-    },
-    /**
-     * Imports the raw character data through a given string in the input
-     */
-    importRawCharacterData() {
-      if (!this.importedRawCharacterData) {
-        return this.triggerNotification("No character data given", true);
-      }
-      if (this.isJsonString(this.importedRawCharacterData) === false) {
-        return this.triggerNotification("Character data given is invalid", true);
-      }
-      // overwrite the local storage then rehydrate
-      const importData = this.getImportData(
-        this.importedRawCharacterData,
-        true,
-      );
-      // import char data
-      const characterStore = useCharacterStore();
-      let charData = importData.character;
-      if (typeof charData === "string") {
-        charData = JSON.parse(charData);
-      }
-      characterStore.hardSetState(charData);
-      // import inventory data
-      const inventoryStore = useInventoryStore();
-      let inventoryData = importData.inventory;
-      if (typeof inventoryData === "string") {
-        inventoryData = JSON.parse(inventoryData);
-      }
-      inventoryStore.hardSetState(inventoryData);
-      // notify user and refresh
-      alert("Your data has been overwritten!");
-      this.importedRawCharacterData = null;
-      location.reload();
-    },
-    /**
-     * Process the file and store the data
-     * @param {Object} event
-     */
-    handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (file && file.type === "application/json") {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          try {
-            const data = e.target.result;
-            this.fileData = data;
-          } catch (error) {
-            this.triggerNotification("Error parsing JSON file", true);
-            this.fileData = null;
-          }
-        };
-        reader.readAsText(file);
-      } else {
-        this.triggerNotification("Please upload a valid JSON file.", true);
-        this.fileData = null;
-      }
-    },
-    /**
-     * Confirms the file upload and overwrite the data
-     */
-    confirmUpload() {
-      if (!this.fileData) {
-        this.triggerNotification("No character data given", true);
-      }
-      if (this.isJsonString(this.fileData) === false) {
-        this.triggerNotification("Character data given is invalid", true);
-      }
-      const importData = this.getImportData(this.fileData, true);
-      // import char data
-      const characterStore = useCharacterStore();
-      let charData = importData.character;
-      if (typeof charData === "string") {
-        charData = JSON.parse(charData);
-      }
-      characterStore.hardSetState(charData);
-      // import inventory data
-      const inventoryStore = useInventoryStore();
-      let inventoryData = importData.inventory;
-      if (typeof inventoryData === "string") {
-        inventoryData = JSON.parse(inventoryData);
-      }
-      inventoryStore.hardSetState(inventoryData);
-      // notify user and refresh
-      alert("Your data has been overwritten!");
-      this.fileData = null;
-      location.reload();
-    },
-    /**
-     * Determines if the given JSON is valid or not
-     * @param {String} str
-     */
-    isJsonString(str) {
-      try {
-        JSON.parse(str);
-      } catch (e) {
-        return false;
-      }
-      return true;
-    },
-    /**
-     * Shows the notification message and hides it after a duration
-     * @param {String} message
-     */
-    triggerNotification(message, error = false) {
-      this.message = message;
-      this.isNotificationShown = true;
-      this.notificationError = error;
-      setTimeout(() => {
-        this.isNotificationShown = false;
-        this.message = "";
-        this.notificationError = false;
-      }, 5000);
-    },
-    async importEchoesAddRaw() {
-      try {
-        const data = JSON.parse(this.importEchoesAddRawText);
-        let amount = 0;
-        for (const echo of data) {
-          let id = randomString();
-          const anyCollisions = this.echoById(id);
-          if (anyCollisions.length > 0) {
-            // try again
-            id = randomString();
-          }
-          const echoItem = {
-            echoId: id,
-            ...echo,
-          };
-          await this.saveEcho(echoItem);
-          amount++;
-        }
-        this.triggerNotification(`Imported ${amount} echoes.`);
-      } catch (e) {
-        this.triggerNotification(`Failed to import echoes: ${e}`, true);
-      }
+      const echoItem = {
+        echoId: id,
+        ...(echo as object),
+      };
+      await inventoryStore.saveEcho(echoItem as never);
+      amount++;
     }
-  },
-});
+    triggerNotification(`Imported ${amount} echoes.`);
+  } catch (e) {
+    triggerNotification(`Failed to import echoes: ${e}`, true);
+  }
+}
 </script>
 
 <style scoped lang="scss">

@@ -7,6 +7,7 @@
       :data-test-action-buff-input="modifier ?? 'none'">
       <option
         v-for="option in modifierOptions"
+        :key="option.key"
         :value="option.key"
         :disabled="option.disabled">
         {{ option.label }}
@@ -30,86 +31,87 @@
   </div>
 </template>
 
-<script>
-import { subStatLabelMap, getReadableSubStatLabel } from "../echoes/stats";
-export default {
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-    modifier: {
-      type: String,
-      default: null,
-    },
-    modifierValue: {
-      type: [Number, String],
-      default: null,
-    },
-    allBuffs: {
-      type: Array,
-      default() {
-        return [];
-      },
-    },
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
+import { subStatLabelMap } from "../echoes/stats";
+
+type BuffRow = { modifier?: string | null };
+
+const props = withDefaults(
+  defineProps<{
+    id: string;
+    modifier?: string | null;
+    modifierValue?: number | string | null | unknown;
+    allBuffs?: BuffRow[];
+  }>(),
+  {
+    allBuffs: () => [],
   },
-  data() {
-    return {
-      modifierType: null,
-      modifierValueInput: null,
-    };
-  },
-  computed: {
-    modifierOptions() {
-      const modifierOptionsList = [];
-      const allModifiers = Object.entries(subStatLabelMap);
-      // add in Damage Deepen. It's a buff we want, but not from echo substats
-      allModifiers.push(["DMGDeepen", "DMG Amplify"]);
-      // also add in resist shred
-      allModifiers.push(["ResistShred", "Resist Reduction"]);
-      // also add in def shred & reduction
-      allModifiers.push(["DefIgnore", "DEF Ignore"]);
-      allModifiers.push(["DefReduction", "DEF Reduction"]);
-      // also add in multipliers too
-      allModifiers.push(["talentModifierMultiply", "DMG Multiplier"]);
-      allModifiers.push(["talentModifierAdd", "DMG Multiplier Additive"]);
-      allModifiers.push(["SpecialMultiplier", "Special Multiplier (Vulnerability)"]);
-      allModifiers.forEach((modifier) => {
-        const [key, label] = modifier;
-        // find if this key is anywhere in the full list. if so, mark it as disabled
-        // Array.some will return a Boolean
-        const isFound = this.allBuffs.some((allBuffItem) => {
-          return allBuffItem.modifier === key;
-        });
-        modifierOptionsList.push({ key, label, disabled: isFound });
-      });
-      return modifierOptionsList;
-    },
-  },
-  methods: {
-    removeBuff() {
-      this.$emit("remove-buff", this.id);
-    },
-    onModifierUpdate(e) {
-      this.$emit("updated-buff", {
-        id: this.id,
-        modifier: e.target.value,
-        modifierValue: this.modifierValueInput,
-      });
-    },
-    onModifierValueUpdate(e) {
-      this.$emit("updated-buff", {
-        id: this.id,
-        modifier: this.modifierType,
-        modifierValue: e.target.value,
-      });
-    },
-  },
-  mounted() {
-    this.modifierType = this.modifier;
-    this.modifierValueInput = this.modifierValue;
-  },
-};
+);
+
+const emit = defineEmits<{
+  "remove-buff": [id: string];
+  "updated-buff": [
+    payload: { id: string; modifier: string | null; modifierValue: unknown },
+  ];
+}>();
+
+const modifierType = ref<string | null>(null);
+const modifierValueInput = ref<string | number | null>(null);
+
+const modifierOptions = computed(() => {
+  const modifierOptionsList: Array<{ key: string; label: string; disabled: boolean }> = [];
+  const allModifiers = Object.entries(subStatLabelMap) as [string, string][];
+  allModifiers.push(["DMGDeepen", "DMG Amplify"]);
+  allModifiers.push(["ResistShred", "Resist Reduction"]);
+  allModifiers.push(["DefIgnore", "DEF Ignore"]);
+  allModifiers.push(["DefReduction", "DEF Reduction"]);
+  allModifiers.push(["talentModifierMultiply", "DMG Multiplier"]);
+  allModifiers.push(["talentModifierAdd", "DMG Multiplier Additive"]);
+  allModifiers.push([
+    "SpecialMultiplier",
+    "Special Multiplier (Vulnerability)",
+  ]);
+  allModifiers.forEach(([key, label]) => {
+    const isFound = props.allBuffs.some((allBuffItem) => allBuffItem.modifier === key);
+    modifierOptionsList.push({ key, label, disabled: isFound });
+  });
+  return modifierOptionsList;
+});
+
+function removeBuff() {
+  emit("remove-buff", props.id);
+}
+
+function onModifierUpdate(e: Event) {
+  const target = e.target as HTMLSelectElement;
+  emit("updated-buff", {
+    id: props.id,
+    modifier: target.value,
+    modifierValue: modifierValueInput.value,
+  });
+}
+
+function onModifierValueUpdate(e: Event) {
+  const target = e.target as HTMLInputElement;
+  emit("updated-buff", {
+    id: props.id,
+    modifier: modifierType.value,
+    modifierValue: target.value,
+  });
+}
+
+onMounted(() => {
+  modifierType.value = props.modifier ?? null;
+  const mv = props.modifierValue;
+  if (mv === null || mv === undefined) {
+    modifierValueInput.value = null;
+  } else if (typeof mv === "number" || typeof mv === "string") {
+    modifierValueInput.value = mv;
+  } else {
+    modifierValueInput.value = null;
+  }
+});
 </script>
 
 <style scoped lang="scss">

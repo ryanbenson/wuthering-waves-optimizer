@@ -89,105 +89,106 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed, ref } from "vue";
+import { storeToRefs } from "pinia";
 import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
 import EchoCustomPreset from "./EchoCustomPreset.vue";
-export default {
-  name: "InventoryPresetsBrowser",
-  props: {},
-  data() {
-    return {
-      page: 1,
-      perPage: 10,
-      modalId: "inventoryPresetEditName",
-      echoPresetName: null,
-      echoPresetId: null,
-    };
-  },
-  components: {
-    EchoCustomPreset,
-  },
-  computed: {
-    ...mapState(useInventoryStore, ["echoPresets", "getEchoPresetData", "getEchoPresetCharacters"]),
-    presetsList() {
-      const copyOfList = JSON.parse(JSON.stringify(this.echoPresets));
-      return copyOfList;
-    },
-    paginatedPresetsList() {
-      const start = (this.page - 1) * this.perPage;
-      const end = this.page * this.perPage;
-      const slicedList = this.presetsList.slice(start, end);
-      return slicedList;
-    },
-    totalPages() {
-      return Math.ceil(this.presetsList.length / this.perPage);
-    },
-    echoPresetData() {
-      return this.getEchoPresetData(this.echoPresetId);
-    },
-  },
-  methods: {
-    ...mapActions(useInventoryStore, ["patchEchoPreset", "deleteEchoPreset", "deleteEquippedPreset"]),
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    prevPage() {
-      if (this.page <= 1) {
-        this.page = 1;
-      } else {
-        this.page--;
-      }
-    },
-    nextPage() {
-      if (this.page >= this.totalPages) {
-        this.page = this.totalPages;
-      } else {
-        this.page++;
-      }
-    },
-    editEchoPresetName(presetId, presetName) {
-      this.echoPresetId = presetId;
-      this.echoPresetName = presetName;
-      this.handleOpenModal();
-    },
-    handleOpenModal() {
-      const modalEl = document.getElementById(this.modalId);
-      modalEl.showModal();
-    },
-    handleCloseModal() {
-      const modalEl = document.getElementById(this.modalId);
-      modalEl.close();
-    },
-    async handleSavePreset() {
-      const presetData = JSON.parse(JSON.stringify(this.echoPresetData));
-      const data = Object.assign({}, presetData, { name: this.echoPresetName });
-      await this.patchEchoPreset(presetData.presetId, data);
-      this.resetForm();
-      this.handleCloseModal();
-    },
-    resetForm() {
-      this.echoPresetId = null;
-      this.echoPresetName = null;
-    },
-    getCharsEquipped(presetId) {
-      return this.getEchoPresetCharacters(presetId);
-    },
-    getCharImg(character) {
-      return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
-    },
-    // we'll delete the references to it in the equipped list, and the preset
-    // but we won't clear out the echo configs on the characters themselves, we'll leave those
-    async handleDeleteEchoPreset(presetId) {
-      // delete all of the character references for this preset first before we clear up the preset itself
-      const allCharacters = this.getCharsEquipped(presetId);
-      for (const character of allCharacters) {
-        await this.deleteEquippedPreset(character);
-        // also remove the presetId reference in the character data
-        const data = { echoPresetId: null };
-        await this.setCharacterData(character, data);
-      }
-      await this.deleteEchoPreset(presetId);
-    }
-  },
-};
+
+const page = ref(1);
+const perPage = 10;
+const modalId = "inventoryPresetEditName";
+const echoPresetName = ref<string | null>(null);
+const echoPresetId = ref<string | null>(null);
+
+const inventoryStore = useInventoryStore();
+const characterStore = useCharacterStore();
+const { echoPresets } = storeToRefs(inventoryStore);
+const { getEchoPresetData, getEchoPresetCharacters } = inventoryStore;
+const { patchEchoPreset, deleteEchoPreset, deleteEquippedPreset } =
+  inventoryStore;
+const { setCharacterData } = characterStore;
+
+const presetsList = computed(() => {
+  const copyOfList = JSON.parse(JSON.stringify(echoPresets.value));
+  return copyOfList;
+});
+
+const paginatedPresetsList = computed(() => {
+  const start = (page.value - 1) * perPage;
+  const end = page.value * perPage;
+  return presetsList.value.slice(start, end);
+});
+
+const totalPages = computed(() =>
+  Math.ceil(presetsList.value.length / perPage),
+);
+
+const echoPresetData = computed(() =>
+  echoPresetId.value ? getEchoPresetData(echoPresetId.value) : undefined,
+);
+
+function prevPage() {
+  if (page.value <= 1) {
+    page.value = 1;
+  } else {
+    page.value--;
+  }
+}
+
+function nextPage() {
+  if (page.value >= totalPages.value) {
+    page.value = totalPages.value;
+  } else {
+    page.value++;
+  }
+}
+
+function editEchoPresetName(presetId: string, presetName: string) {
+  echoPresetId.value = presetId;
+  echoPresetName.value = presetName;
+  handleOpenModal();
+}
+
+function handleOpenModal() {
+  const modalEl = document.getElementById(modalId) as HTMLDialogElement | null;
+  modalEl?.showModal();
+}
+
+function handleCloseModal() {
+  const modalEl = document.getElementById(modalId) as HTMLDialogElement | null;
+  modalEl?.close();
+}
+
+async function handleSavePreset() {
+  const presetData = JSON.parse(JSON.stringify(echoPresetData.value));
+  const data = Object.assign({}, presetData, { name: echoPresetName.value });
+  await patchEchoPreset(presetData.presetId, data);
+  resetForm();
+  handleCloseModal();
+}
+
+function resetForm() {
+  echoPresetId.value = null;
+  echoPresetName.value = null;
+}
+
+function getCharsEquipped(presetId: string) {
+  return getEchoPresetCharacters(presetId);
+}
+
+function getCharImg(character: string) {
+  return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
+}
+
+async function handleDeleteEchoPreset(presetId: string) {
+  const allCharacters = getCharsEquipped(presetId);
+  for (const character of allCharacters) {
+    await deleteEquippedPreset(character);
+    const data = { echoPresetId: null };
+    await setCharacterData(character, data);
+  }
+  await deleteEchoPreset(presetId);
+}
 </script>

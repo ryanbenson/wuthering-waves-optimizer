@@ -23,7 +23,7 @@
     v-if="isImportOpen"
     class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
     <div class="card-body">
-      <h2 class="card-title">{{ name }}</h2>
+      <h2 class="card-title">Import rotation</h2>
       <p>Import a rotation in JSON form below.</p>
       <textarea
         v-model="importRotationData"
@@ -66,7 +66,7 @@
     <CalculatorRotation
       v-for="rotation in rotations"
       :key="rotation.id"
-      :ref="rotation.id"
+      :ref="(el) => setRotationRef(rotation.id, el)"
       :character="character"
       :character-data="characterData"
       :id="rotation.id"
@@ -81,193 +81,187 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed, nextTick, onMounted, ref } from "vue";
+import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { getCharByName } from "../characters/characters.ts";
 import { randomString } from "../utils/strings.ts";
 import CalculatorRotation from "./CalculatorRotation.vue";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-  },
-  components: {
-    CalculatorRotation,
-  },
-  data() {
-    return {
-      importRotationData: null,
-      isImportOpen: false,
-      isPresetRotationsOpen: false,
-      rotations: [],
-      characterData: {},
-      presets: [],
-    };
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Determines if there are rotation presets for this char or not
-     * @returns {Boolean}
-     */
-    hasRotations() {
-      return this.presets.length > 0;
-    },
-  },
-  methods: {
-    ...mapActions(useCharacterStore, [
-      "setCharacterData",
-      "setCharacterRotations",
-    ]),
-    /**
-     * Handles creating a new rotation
-     */
-    async handleCreateRotation() {
-      const id = randomString();
-      const newRotationData = {
-        id,
-        name: "Untitled Rotation",
-        description: "",
-        duration: null,
-        echo: null,
-        echoRank: null,
-        actions: [],
-      };
-      this.rotations.push(newRotationData);
-      // open the new rotation
-      this.$nextTick(() => {
-        this.$refs[id][0].toggleOpen();
-      });
-      // update our store
-      const data = {
-        rotations: JSON.parse(JSON.stringify(this.rotations)),
-      };
-      await this.setCharacterData(this.character, data);
-      this.$emit(
-        "updated-rotations",
-        JSON.parse(JSON.stringify(this.rotations)),
-      );
-    },
-    /**
-     * TODO: Add validation for the data
-     */
-    async handleImportRotation() {
-      try {
-        const rotationData = JSON.parse(this.importRotationData);
-        const processedImportedRotation =
-          this.addIdsToImportedRotation(rotationData);
-        this.rotations.push(processedImportedRotation);
-        this.importRotationData = null;
-        this.isImportOpen = false;
-        // update our store
-        const data = {
-          rotations: JSON.parse(JSON.stringify(this.rotations)),
-        };
-        await this.setCharacterData(this.character, data);
-        this.$emit(
-          "updated-rotations",
-          JSON.parse(JSON.stringify(this.rotations)),
-        );
-      } catch (error) {
-        alert("Rotation data is not valid");
-      }
-    },
-    async handleImportPreset(preset) {
-      try {
-        const rotationData = JSON.parse(JSON.stringify(preset.data)); // clone just to be safe
-        const processedImportedRotation =
-          this.addIdsToImportedRotation(rotationData);
-        this.rotations.push(processedImportedRotation);
-        this.importRotationData = null;
-        this.isImportOpen = false;
-        // update our store
-        const data = {
-          rotations: JSON.parse(JSON.stringify(this.rotations)),
-        };
-        await this.setCharacterData(this.character, data);
-        this.$emit(
-          "updated-rotations",
-          JSON.parse(JSON.stringify(this.rotations)),
-        );
-      } catch (error) {
-        alert("Rotation data is not valid");
-      }
-    },
-    addIdsToImportedRotation(rotationData) {
-      // clone the data
-      const rotation = JSON.parse(JSON.stringify(rotationData));
-      // add root id
-      rotation.id = randomString();
-      // add ID to all actions
-      rotation.actions.forEach((action) => {
-        action.id = randomString();
-        // for all buffs, add an ID
-        if (action?.buffs) {
-          action.buffs.forEach((buff) => {
-            buff.id = randomString();
-          });
-        }
-      });
-      return rotation;
-    },
-    handleToggleImport() {
-      this.isImportOpen = !this.isImportOpen;
-    },
-    async handleUpdatedRotation(rotationData) {
-      const rotations = JSON.parse(JSON.stringify(this.rotations));
-      const foundIndex = rotations.findIndex((rotation) => {
-        return rotation.id === rotationData.id;
-      });
-      if (foundIndex === -1) {
-        return;
-      }
-      rotations[foundIndex] = rotationData;
-      this.rotations = rotations;
-      // update our store
-      await this.setCharacterRotations(
-        this.character,
-        JSON.parse(JSON.stringify(this.rotations)),
-      );
-      this.$emit(
-        "updated-rotations",
-        JSON.parse(JSON.stringify(this.rotations)),
-      );
-    },
-    async handleDeleteRotation(rotationId) {
-      const rotations = JSON.parse(JSON.stringify(this.rotations));
-      const updatedRotations = rotations.filter((rotation) => {
-        return rotation.id !== rotationId;
-      });
-      this.rotations = updatedRotations;
-      // update our store
-      await this.setCharacterRotations(this.character, updatedRotations);
-      this.$emit(
-        "updated-rotations",
-        JSON.parse(JSON.stringify(this.rotations)),
-      );
-    },
-    togglePresetRotations() {
-      this.isPresetRotationsOpen = !this.isPresetRotationsOpen;
-    },
-  },
-  async mounted() {
-    this.rotations = this.currentCharacter?.rotations ?? [];
-    this.$emit("updated-rotations", JSON.parse(JSON.stringify(this.rotations)));
-    this.characterData = await getCharByName(this.character);
-    const rotations = this.characterData?.rotations ?? [];
-    this.presets = rotations;
-  },
+
+type RotationAction = Record<string, unknown> & {
+  id: string;
+  buffs?: Array<Record<string, unknown> & { id: string }>;
 };
+
+type RotationRow = {
+  id: string;
+  name: string;
+  description: string;
+  duration: string | number | null;
+  echo: string | null;
+  echoRank: string | number | null;
+  actions: RotationAction[];
+};
+
+type RotationPreset = {
+  name: string;
+  description?: string;
+  author?: string;
+  data: RotationRow;
+};
+
+const props = defineProps<{
+  character: string;
+}>();
+
+const emit = defineEmits<{
+  "updated-rotations": [payload: RotationRow[]];
+}>();
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+const { setCharacterData, setCharacterRotations } = characterStore;
+
+const importRotationData = ref<string | null>(null);
+const isImportOpen = ref(false);
+const isPresetRotationsOpen = ref(false);
+const rotations = ref<RotationRow[]>([]);
+const characterData = ref<Record<string, unknown>>({});
+const presets = ref<RotationPreset[]>([]);
+
+const rotationRefs = new Map<string, { toggleOpen: () => void }>();
+
+function setRotationRef(id: string, el: unknown) {
+  if (
+    el &&
+    typeof el === "object" &&
+    "toggleOpen" in el &&
+    typeof (el as { toggleOpen: unknown }).toggleOpen === "function"
+  ) {
+    rotationRefs.set(id, el as { toggleOpen: () => void });
+  } else {
+    rotationRefs.delete(id);
+  }
+}
+
+const currentCharacter = computed(
+  () => characters.value[props.character] ?? ({} as Record<string, unknown>),
+);
+
+const hasRotations = computed(() => presets.value.length > 0);
+
+function addIdsToImportedRotation(rotationData: RotationRow): RotationRow {
+  const rotation = JSON.parse(JSON.stringify(rotationData)) as RotationRow;
+  rotation.id = randomString();
+  rotation.actions.forEach((action) => {
+    action.id = randomString();
+    if (action?.buffs) {
+      action.buffs.forEach((buff) => {
+        buff.id = randomString();
+      });
+    }
+  });
+  return rotation;
+}
+
+async function handleCreateRotation() {
+  const id = randomString();
+  const newRotationData: RotationRow = {
+    id,
+    name: "Untitled Rotation",
+    description: "",
+    duration: null,
+    echo: null,
+    echoRank: null,
+    actions: [],
+  };
+  rotations.value.push(newRotationData);
+  await nextTick();
+  rotationRefs.get(id)?.toggleOpen();
+  await setCharacterData(props.character, {
+    rotations: JSON.parse(JSON.stringify(rotations.value)),
+  });
+  emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
+}
+
+async function handleImportRotation() {
+  try {
+    const rotationData = JSON.parse(
+      importRotationData.value ?? "",
+    ) as RotationRow;
+    const processedImportedRotation = addIdsToImportedRotation(rotationData);
+    rotations.value.push(processedImportedRotation);
+    importRotationData.value = null;
+    isImportOpen.value = false;
+    await setCharacterData(props.character, {
+      rotations: JSON.parse(JSON.stringify(rotations.value)),
+    });
+    emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
+  } catch {
+    alert("Rotation data is not valid");
+  }
+}
+
+async function handleImportPreset(preset: RotationPreset) {
+  try {
+    const rotationData = JSON.parse(JSON.stringify(preset.data)) as RotationRow;
+    const processedImportedRotation = addIdsToImportedRotation(rotationData);
+    rotations.value.push(processedImportedRotation);
+    importRotationData.value = null;
+    isImportOpen.value = false;
+    await setCharacterData(props.character, {
+      rotations: JSON.parse(JSON.stringify(rotations.value)),
+    });
+    emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
+  } catch {
+    alert("Rotation data is not valid");
+  }
+}
+
+function handleToggleImport() {
+  isImportOpen.value = !isImportOpen.value;
+}
+
+async function handleUpdatedRotation(rotationData: Record<string, unknown>) {
+  const next = JSON.parse(JSON.stringify(rotations.value)) as RotationRow[];
+  const rid = rotationData.id as string;
+  const foundIndex = next.findIndex((rotation) => rotation.id === rid);
+  if (foundIndex === -1) {
+    return;
+  }
+  next[foundIndex] = rotationData as RotationRow;
+  rotations.value = next;
+  await setCharacterRotations(
+    props.character,
+    JSON.parse(JSON.stringify(rotations.value)),
+  );
+  emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
+}
+
+async function handleDeleteRotation(rotationId: string) {
+  const next = rotations.value.filter((rotation) => rotation.id !== rotationId);
+  rotations.value = next;
+  await setCharacterRotations(props.character, next);
+  emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
+}
+
+function togglePresetRotations() {
+  isPresetRotationsOpen.value = !isPresetRotationsOpen.value;
+}
+
+onMounted(async () => {
+  rotations.value =
+    ((currentCharacter.value as { rotations?: RotationRow[] }).rotations ??
+      []) as RotationRow[];
+  emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
+  characterData.value = (await getCharByName(props.character)) as Record<
+    string,
+    unknown
+  >;
+  const presetList = (characterData.value?.rotations ?? []) as RotationPreset[];
+  presets.value = presetList;
+});
 </script>
 
 <style scoped lang="scss"></style>

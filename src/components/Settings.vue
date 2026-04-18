@@ -53,28 +53,24 @@
   </div>
 </template>
 
-<script lang="ts">
-// @ts-nocheck
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref } from "vue";
 import SettingsDelete from "./SettingsDelete.vue";
 import SettingsExport from "./SettingsExport.vue";
 import SettingsImport from "./SettingsImport.vue";
 import SettingsLabs from "./SettingsLabs.vue";
-export default defineComponent({
-  name: "Settings",
-  components: { SettingsDelete, SettingsExport, SettingsImport, SettingsLabs },
-  data() {
-    return {
-      tab: "export",
-    };
-  },
-  methods: {
-    setTab(tab) {
-      this.tab = tab;
-    },
-    getActiveClasses(tab: string) {
-      if (this.tab === tab) {
-        return `
+
+type SettingsTab = "export" | "import" | "advanced" | "labs";
+
+const tab = ref<SettingsTab>("export");
+
+function setTab(next: SettingsTab) {
+  tab.value = next;
+}
+
+function getActiveClasses(t: SettingsTab) {
+  if (tab.value === t) {
+    return `
           relative 
           before:content-[''] 
           before:absolute 
@@ -92,10 +88,7 @@ export default defineComponent({
           sm:before:h-full 
           sm:before:bg-primary 
         `;
-      } else {
-        return "";
-      }
-    },
-  },
-});
+  }
+  return "";
+}
 </script>

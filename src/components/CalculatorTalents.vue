@@ -82,139 +82,104 @@
     </div>
   </div>
 </template>
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed } from "vue";
+import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
+
+const props = defineProps<{
+  character: string;
+}>();
+
+const emit = defineEmits<{
+  "character-talent-updated": [payload: { type: string; value: string }];
+}>();
+
+const characterStore = useCharacterStore();
+const settingsStore = useSettingsStore();
+const { characters } = storeToRefs(characterStore);
+const { config } = storeToRefs(settingsStore);
+const { setCharacterData } = characterStore;
+
+const currentCharacter = computed(
+  () => characters.value[props.character] ?? ({} as Record<string, unknown>),
+);
+
+const settingsTheme = computed(() => config.value?.theme ?? null);
+
+const classes = computed(() => {
+  const list: string[] = [];
+  if (settingsTheme.value === "black") {
+    list.push("[--range-shdw:gray]");
+  }
+  return list;
+});
+
+function talentUpdated(type: string, e: Event) {
+  const target = e.target as HTMLInputElement;
+  emit("character-talent-updated", { type, value: target.value });
+}
+
+const basic = computed({
+  get() {
+    return (
+      (currentCharacter.value as { talents?: { basic?: number } }).talents
+        ?.basic ?? 10
+    );
   },
-  data() {
-    return {};
+  set(value: number) {
+    void setCharacterData(props.character, { talents: { basic: value } });
   },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    talentUpdated(type, e) {
-      this.$emit("character-talent-updated", { type, value: e.target.value });
-    },
+});
+
+const skill = computed({
+  get() {
+    return (
+      (currentCharacter.value as { talents?: { skill?: number } }).talents
+        ?.skill ?? 10
+    );
   },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    ...mapState(useSettingsStore, ["config"]),
-    settingsTheme() {
-      const settingsTheme = this.config?.theme ?? null;
-      return settingsTheme;
-    },
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    classes() {
-      const classes = [];
-      if (this.settingsTheme === "black") {
-        classes.push("[--range-shdw:gray]");
-      }
-      return classes;
-    },
-    /**
-     * Getter/setter used in the form for the basic talent state
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Number}
-     */
-    basic: {
-      get() {
-        return this.currentCharacter?.talents?.basic ?? 10;
-      },
-      async set(value) {
-        const data = {
-          talents: {
-            basic: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the skill talent state
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Number}
-     */
-    skill: {
-      get() {
-        return this.currentCharacter?.talents?.skill ?? 10;
-      },
-      async set(value) {
-        const data = {
-          talents: {
-            skill: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the forte talent state
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Number}
-     */
-    forte: {
-      get() {
-        return this.currentCharacter?.talents?.forte ?? 10;
-      },
-      async set(value) {
-        const data = {
-          talents: {
-            forte: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the liberation talent state
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Number}
-     */
-    liberation: {
-      get() {
-        return this.currentCharacter?.talents?.liberation ?? 10;
-      },
-      async set(value) {
-        const data = {
-          talents: {
-            liberation: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the intro talent state
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Number}
-     */
-    intro: {
-      get() {
-        return this.currentCharacter?.talents?.intro ?? 10;
-      },
-      async set(value) {
-        const data = {
-          talents: {
-            intro: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
+  set(value: number) {
+    void setCharacterData(props.character, { talents: { skill: value } });
   },
-};
+});
+
+const forte = computed({
+  get() {
+    return (
+      (currentCharacter.value as { talents?: { forte?: number } }).talents
+        ?.forte ?? 10
+    );
+  },
+  set(value: number) {
+    void setCharacterData(props.character, { talents: { forte: value } });
+  },
+});
+
+const liberation = computed({
+  get() {
+    return (
+      (currentCharacter.value as { talents?: { liberation?: number } }).talents
+        ?.liberation ?? 10
+    );
+  },
+  set(value: number) {
+    void setCharacterData(props.character, { talents: { liberation: value } });
+  },
+});
+
+const intro = computed({
+  get() {
+    return (
+      (currentCharacter.value as { talents?: { intro?: number } }).talents
+        ?.intro ?? 10
+    );
+  },
+  set(value: number) {
+    void setCharacterData(props.character, { talents: { intro: value } });
+  },
+});
 </script>
 
 <style lang="scss" scoped>

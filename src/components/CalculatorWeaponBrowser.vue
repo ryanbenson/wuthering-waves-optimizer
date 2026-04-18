@@ -77,7 +77,7 @@
                 :key="weapon.key"
                 :name="weapon.name"
                 :name-key="weapon.key"
-                :rarity="weapon.rarity"
+                :rarity="weapon.rarity ?? 1"
                 :is-active="false"
                 @click="chooseWeapon(weapon)"
                 class="cursor-pointer"
@@ -98,117 +98,99 @@
   </dialog>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed, defineExpose, ref } from "vue";
 import CalculatorWeaponCard from "./CalculatorWeaponCard.vue";
-export default {
-  name: "CalculatorEchoesBrowser",
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    weaponsList: {
-        type: Object,
-        required: true
-    }
-  },
-  data() {
-    return {
-      filterRarity: null,
-    };
-  },
-  components: {
-    CalculatorWeaponCard,
-  },
-  computed: {
-    weaponsListFormatted() {
-        let weapons = [];
-        const fiveStar = this.weaponsList?.five ?? [];
-        const fourStar = this.weaponsList?.four ?? [];
-        const threeStar = this.weaponsList?.three ?? [];
-        const twoStar = this.weaponsList?.two ?? [];
-        const oneStar = this.weaponsList?.one ?? [];
-        fiveStar.forEach((weapon) => {
-            const weaponData = { ...weapon };
-            weaponData.rarity = 5;
-            weapons.push(weaponData);
-        });
-        fourStar.forEach((weapon) => {
-            const weaponData = { ...weapon };
-            weaponData.rarity = 4;
-            weapons.push(weaponData);
-        });
-        threeStar.forEach((weapon) => {
-            const weaponData = { ...weapon };
-            weaponData.rarity = 3;
-            weapons.push(weaponData);
-        });
-        twoStar.forEach((weapon) => {
-            const weaponData = { ...weapon };
-            weaponData.rarity = 2;
-            weapons.push(weaponData);
-        });
-        oneStar.forEach((weapon) => {
-            const weaponData = { ...weapon };
-            weaponData.rarity = 1;
-            weapons.push(weaponData);
-        });
-        return weapons;
-    },
-    weaponsListed() {
-      let weapons = JSON.parse(JSON.stringify(this.weaponsListFormatted));
-      if (this.filterRarity) {
-        weapons = weapons.filter((weapon) => {
-          return weapon.rarity === this.filterRarity;
-        });
-      }
-      return weapons;
-    },
-  },
-  methods: {
-    triggerOpenModal() {
-      const modalEl = document.getElementById("modal-weapon-browser");
-      modalEl.showModal();
-    },
-    triggerCloseModal() {
-      const modalEl = document.getElementById("modal-weapon-browser");
-      modalEl.close();
-    },
-    handleClose() {
-      this.reset();
-    },
-    reset() {
-      this.filterRarity = null;
-    },
-    getEchoSetImage(echoSet) {
-      return getEchoSetIconByType(echoSet);
-    },
-    toggleRarityFilter(rarity) {
-      if (this.filterRarity === rarity) {
-        this.filterRarity = null;
-      } else {
-        this.filterRarity = rarity;
-      }
-    },
-    isRarityFilterActive(rarity) {
-      return this.filterRarity === rarity;
-    },
-    resetFilters() {
-      this.filterRarity = null;
-    },
-    getElementClass(element) {
-      return `${element.toLowerCase()}--active`;
-    },
-    /**
-     * Emits: weapon-browser:chosen-weapon
-     */
-    chooseWeapon(weapon) {
-      this.$emit("weapon-browser:chosen-weapon", weapon.key);
-      this.handleClose();
-      this.triggerCloseModal();
-    },
-  },
-};
+
+type WeaponRow = { key: string; name: string; rarity?: number; [k: string]: unknown };
+
+const props = defineProps<{
+  character: string;
+  weaponsList: {
+    five?: WeaponRow[];
+    four?: WeaponRow[];
+    three?: WeaponRow[];
+    two?: WeaponRow[];
+    one?: WeaponRow[];
+  };
+}>();
+
+const emit = defineEmits<{
+  "weapon-browser:chosen-weapon": [key: string];
+}>();
+
+const filterRarity = ref<number | null>(null);
+
+const weaponsListFormatted = computed(() => {
+  const weapons: WeaponRow[] = [];
+  const fiveStar = props.weaponsList?.five ?? [];
+  const fourStar = props.weaponsList?.four ?? [];
+  const threeStar = props.weaponsList?.three ?? [];
+  const twoStar = props.weaponsList?.two ?? [];
+  const oneStar = props.weaponsList?.one ?? [];
+  fiveStar.forEach((weapon) => {
+    weapons.push({ ...weapon, rarity: 5 });
+  });
+  fourStar.forEach((weapon) => {
+    weapons.push({ ...weapon, rarity: 4 });
+  });
+  threeStar.forEach((weapon) => {
+    weapons.push({ ...weapon, rarity: 3 });
+  });
+  twoStar.forEach((weapon) => {
+    weapons.push({ ...weapon, rarity: 2 });
+  });
+  oneStar.forEach((weapon) => {
+    weapons.push({ ...weapon, rarity: 1 });
+  });
+  return weapons;
+});
+
+const weaponsListed = computed(() => {
+  let weapons = JSON.parse(JSON.stringify(weaponsListFormatted.value)) as WeaponRow[];
+  if (filterRarity.value !== null && filterRarity.value !== undefined) {
+    weapons = weapons.filter((weapon) => weapon.rarity === filterRarity.value);
+  }
+  return weapons;
+});
+
+function triggerOpenModal() {
+  const modalEl = document.getElementById("modal-weapon-browser") as HTMLDialogElement | null;
+  modalEl?.showModal();
+}
+
+function triggerCloseModal() {
+  const modalEl = document.getElementById("modal-weapon-browser") as HTMLDialogElement | null;
+  modalEl?.close();
+}
+
+defineExpose({ triggerOpenModal, triggerCloseModal });
+
+function reset() {
+  filterRarity.value = null;
+}
+
+function handleClose() {
+  reset();
+}
+
+function toggleRarityFilter(rarity: number) {
+  filterRarity.value = filterRarity.value === rarity ? null : rarity;
+}
+
+function isRarityFilterActive(rarity: number) {
+  return filterRarity.value === rarity;
+}
+
+function resetFilters() {
+  filterRarity.value = null;
+}
+
+function chooseWeapon(weapon: WeaponRow) {
+  emit("weapon-browser:chosen-weapon", weapon.key);
+  handleClose();
+  triggerCloseModal();
+}
 </script>
 
 <style lang="scss" scoped>

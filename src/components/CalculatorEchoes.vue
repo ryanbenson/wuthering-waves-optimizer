@@ -403,14 +403,14 @@ function handleOpenSaveEchoPreset() {
   echoesSavePreset.value?.triggerOpenModal?.();
 }
 
-async function handleOnSaveEchoPreset(data: { name: string }) {
+async function handleOnSaveEchoPreset(data: { name: string | null }) {
   const id = randomString();
   for (let i = 0; i < 5; i += 1) {
     await echoRefs.value[i]?.saveEchoItem?.();
   }
   const presetData = {
     presetId: id,
-    name: data.name,
+    name: data.name ?? "",
     echo1Id: currentCharacter.value?.echoes?.[0]?.echoId ?? null,
     echo2Id: currentCharacter.value?.echoes?.[1]?.echoId ?? null,
     echo3Id: currentCharacter.value?.echoes?.[2]?.echoId ?? null,

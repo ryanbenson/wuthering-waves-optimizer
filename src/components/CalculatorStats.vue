@@ -3,7 +3,7 @@
     <tbody>
       <tr
         class="stat-atk"
-        @click="$emit('stat-selected', 'ATK')"
+        @click="emit('stat-selected', 'ATK')"
         style="cursor: pointer">
         <td class="w-10">
           <img
@@ -21,7 +21,7 @@
       </tr>
       <tr
         class="stat-hp"
-        @click="$emit('stat-selected', 'HP')"
+        @click="emit('stat-selected', 'HP')"
         style="cursor: pointer">
         <td>
           <img
@@ -39,7 +39,7 @@
       </tr>
       <tr
         class="stat-def"
-        @click="$emit('stat-selected', 'DEF')"
+        @click="emit('stat-selected', 'DEF')"
         style="cursor: pointer">
         <td>
           <img
@@ -57,7 +57,7 @@
       </tr>
       <tr
         class="stat-cr"
-        @click="$emit('stat-selected', 'Crit Rate')"
+        @click="emit('stat-selected', 'Crit Rate')"
         style="cursor: pointer">
         <td>
           <img
@@ -68,7 +68,7 @@
       </tr>
       <tr
         class="stat-cd"
-        @click="$emit('stat-selected', 'Crit DMG')"
+        @click="emit('stat-selected', 'Crit DMG')"
         style="cursor: pointer">
         <td>
           <img
@@ -79,7 +79,7 @@
       </tr>
       <tr
         class="stat-er"
-        @click="$emit('stat-selected', 'Energy Regen')"
+        @click="emit('stat-selected', 'Energy Regen')"
         style="cursor: pointer">
         <td>
           <img
@@ -90,7 +90,7 @@
       </tr>
       <tr
         class="stat-basic"
-        @click="$emit('stat-selected', 'Basic Attack DMG Bonus')"
+        @click="emit('stat-selected', 'Basic Attack DMG Bonus')"
         style="cursor: pointer">
         <td>
           <img
@@ -101,7 +101,7 @@
       </tr>
       <tr
         class="stat-heavy"
-        @click="$emit('stat-selected', 'Heavy Attack DMG Bonus')"
+        @click="emit('stat-selected', 'Heavy Attack DMG Bonus')"
         style="cursor: pointer">
         <td>
           <img
@@ -112,7 +112,7 @@
       </tr>
       <tr
         class="stat-skill"
-        @click="$emit('stat-selected', 'Resonance Skill DMG Bonus')"
+        @click="emit('stat-selected', 'Resonance Skill DMG Bonus')"
         style="cursor: pointer">
         <td>
           <img
@@ -125,7 +125,7 @@
       </tr>
       <tr
         class="stat-liberation"
-        @click="$emit('stat-selected', 'Resonance Liberation DMG Bonus')"
+        @click="emit('stat-selected', 'Resonance Liberation DMG Bonus')"
         style="cursor: pointer">
         <td>
           <img
@@ -138,7 +138,7 @@
       </tr>
       <tr
         class="stat-glacio"
-        @click="$emit('stat-selected', 'Glacio DMG Bonus')"
+        @click="emit('stat-selected', 'Glacio DMG Bonus')"
         style="cursor: pointer">
         <td>
           <img
@@ -150,7 +150,7 @@
       </tr>
       <tr
         class="stat-fusion"
-        @click="$emit('stat-selected', 'Fusion DMG Bonus')"
+        @click="emit('stat-selected', 'Fusion DMG Bonus')"
         style="cursor: pointer">
         <td>
           <img
@@ -162,7 +162,7 @@
       </tr>
       <tr
         class="stat-electro"
-        @click="$emit('stat-selected', 'Electro DMG Bonus')"
+        @click="emit('stat-selected', 'Electro DMG Bonus')"
         style="cursor: pointer">
         <td>
           <img
@@ -174,7 +174,7 @@
       </tr>
       <tr
         class="stat-aero"
-        @click="$emit('stat-selected', 'Aero DMG Bonus')"
+        @click="emit('stat-selected', 'Aero DMG Bonus')"
         style="cursor: pointer">
         <td>
           <img
@@ -186,7 +186,7 @@
       </tr>
       <tr
         class="stat-spectro"
-        @click="$emit('stat-selected', 'Spectro DMG Bonus')"
+        @click="emit('stat-selected', 'Spectro DMG Bonus')"
         style="cursor: pointer">
         <td>
           <img
@@ -198,7 +198,7 @@
       </tr>
       <tr
         class="stat-havoc"
-        @click="$emit('stat-selected', 'Havoc DMG Bonus')"
+        @click="emit('stat-selected', 'Havoc DMG Bonus')"
         style="cursor: pointer">
         <td>
           <img
@@ -210,7 +210,7 @@
       </tr>
       <tr
         class="stat-healing"
-        @click="$emit('stat-selected', 'Healing Bonus')"
+        @click="emit('stat-selected', 'Healing Bonus')"
         style="cursor: pointer">
         <td>
           <img
@@ -221,7 +221,7 @@
       </tr>
       <tr
         class="stat-tune-break-boost"
-        @click="$emit('stat-selected', 'Tune Break Boost')"
+        @click="emit('stat-selected', 'Tune Break Boost')"
         style="cursor: pointer">
         <td>
           <img
@@ -236,154 +236,75 @@
   </table>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
 import { displayPercentage, displayInt } from "../utils/numbers";
 import { getCharByName } from "../characters/characters";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    characterLevel: {
-      type: String,
-      required: true,
-    },
-    weaponAtk: {
-      type: Number,
-      required: true,
-    },
-    totalAtk: {
-      type: Number,
-      required: true,
-    },
-    totalAtkPercent: {
-      type: Number,
-      required: true,
-    },
-    totalAtkFlat: {
-      type: Number,
-      required: true,
-    },
-    totalHp: {
-      type: Number,
-      required: true,
-    },
-    totalHpPercent: {
-      type: Number,
-      required: true,
-    },
-    totalHpFlat: {
-      type: Number,
-      required: true,
-    },
-    totalDef: {
-      type: Number,
-      required: true,
-    },
-    totalDefPercent: {
-      type: Number,
-      required: true,
-    },
-    totalDefFlat: {
-      type: Number,
-      required: true,
-    },
-    totalCritRate: {
-      type: Number,
-      required: true,
-    },
-    totalCritDmg: {
-      type: Number,
-      required: true,
-    },
-    energyRegen: {
-      type: Number,
-      required: true,
-    },
-    basicAttackDmgBonus: {
-      type: Number,
-      required: true,
-    },
-    heavyAttackDmgBonus: {
-      type: Number,
-      required: true,
-    },
-    resonanceSkillDmgBonus: {
-      type: Number,
-      required: true,
-    },
-    resonanceLiberationDmgBonus: {
-      type: Number,
-      required: true,
-    },
-    glacio: {
-      type: Number,
-      required: true,
-    },
-    fusion: {
-      type: Number,
-      required: true,
-    },
-    electro: {
-      type: Number,
-      required: true,
-    },
-    aero: {
-      type: Number,
-      required: true,
-    },
-    spectro: {
-      type: Number,
-      required: true,
-    },
-    havoc: {
-      type: Number,
-      required: true,
-    },
-    healingBonus: {
-      type: Number,
-      required: true,
-    },
-    tuneBreakBoost: {
-      type: Number,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      baseHp: 0,
-      baseAtk: 0,
-      baseDef: 0,
-    };
-  },
-  methods: {
-    displayPercentage,
-    displayInt,
-  },
-  computed: {
-    hpTooltipContent() {
-      return `<span class="Highlight">${this.baseHp}</span> * (1 + <span class="Highlight">${this.totalHpPercent}%</span>) + <span class="Highlight">${this.totalHpFlat}</span>`;
-    },
-    atkTooltipContent() {
-      return `(<span class="Highlight">${this.baseAtk}</span> + <span class="Highlight">${this.weaponAtk}</span>) * (1 + <span class="Highlight">${this.totalAtkPercent}%</span>) + <span class="Highlight">${this.totalAtkFlat}</span>`;
-    },
-    defTooltipContent() {
-      return `<span class="Highlight">${this.baseDef}</span> * (1 + <span class="Highlight">${this.totalDefPercent}%</span>) + <span class="Highlight">${this.totalDefFlat}</span>`;
-    },
-  },
-  async mounted() {
-    const chosenChar = await getCharByName(this.character);
-    if (chosenChar) {
-      const { hp, attack, defense } = chosenChar.getCharacterStatsByLevel(
-        this.characterLevel,
-      );
-      this.baseHp = hp;
-      this.baseAtk = attack;
-      this.baseDef = defense;
-    }
-  },
-};
+
+const props = defineProps<{
+  character: string;
+  characterLevel: string;
+  weaponAtk: number;
+  totalAtk: number;
+  totalAtkPercent: number;
+  totalAtkFlat: number;
+  totalHp: number;
+  totalHpPercent: number;
+  totalHpFlat: number;
+  totalDef: number;
+  totalDefPercent: number;
+  totalDefFlat: number;
+  totalCritRate: number;
+  totalCritDmg: number;
+  energyRegen: number;
+  basicAttackDmgBonus: number;
+  heavyAttackDmgBonus: number;
+  resonanceSkillDmgBonus: number;
+  resonanceLiberationDmgBonus: number;
+  glacio: number;
+  fusion: number;
+  electro: number;
+  aero: number;
+  spectro: number;
+  havoc: number;
+  healingBonus: number;
+  tuneBreakBoost: number;
+}>();
+
+const emit = defineEmits<{
+  "stat-selected": [stat: string];
+}>();
+
+const baseHp = ref(0);
+const baseAtk = ref(0);
+const baseDef = ref(0);
+
+const hpTooltipContent = computed(
+  () =>
+    `<span class="Highlight">${baseHp.value}</span> * (1 + <span class="Highlight">${props.totalHpPercent}%</span>) + <span class="Highlight">${props.totalHpFlat}</span>`,
+);
+
+const atkTooltipContent = computed(
+  () =>
+    `(<span class="Highlight">${baseAtk.value}</span> + <span class="Highlight">${props.weaponAtk}</span>) * (1 + <span class="Highlight">${props.totalAtkPercent}%</span>) + <span class="Highlight">${props.totalAtkFlat}</span>`,
+);
+
+const defTooltipContent = computed(
+  () =>
+    `<span class="Highlight">${baseDef.value}</span> * (1 + <span class="Highlight">${props.totalDefPercent}%</span>) + <span class="Highlight">${props.totalDefFlat}</span>`,
+);
+
+onMounted(async () => {
+  const chosenChar = await getCharByName(props.character);
+  if (chosenChar) {
+    const { hp, attack, defense } = chosenChar.getCharacterStatsByLevel(
+      props.characterLevel,
+    );
+    baseHp.value = hp;
+    baseAtk.value = attack;
+    baseDef.value = defense;
+  }
+});
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,7 @@
 <template>
-  <div class="weapon-passive-item card card-bordered card-compact bg-base-100 shadow mb-2" :data-test-weapon-passive="passiveKey">
+  <div
+    class="weapon-passive-item card card-bordered card-compact bg-base-100 shadow mb-2"
+    :data-test-weapon-passive="passiveKey">
     <div class="card-body">
       <div :class="{ 'weapon-passive': !alwaysEnabled }" @click="toggleEnabled">
         <div v-html="details"></div>
@@ -7,12 +9,12 @@
           <div class="form-control" @click.stop>
             <label
               class="label inline-flex justify-start pl-0"
-              :class="{'cursor-pointer': !alwaysEnabled}">
+              :class="{ 'cursor-pointer': !alwaysEnabled }">
               <input
                 type="checkbox"
                 class="checkbox checkbox-sm"
                 v-model="isEnabled"
-                @change="updatedStats"
+                @change="updateStats"
                 :disabled="alwaysEnabled" />
               <span class="label-text ml-2">Enabled?</span>
             </label>
@@ -28,7 +30,7 @@
                 :min="minStacks"
                 :max="maxStacks"
                 @input="ensureMaxStacks"
-                @change="updatedStats" />
+                @change="updateStats" />
               <span class="label-text ml-2">Stacks</span>
               <span class="ml-1 text-sm italic">(Max {{ maxStacks }})</span>
             </label>
@@ -39,208 +41,166 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed, onBeforeUnmount, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    hasStacks: {
-      type: Boolean,
-      default: false,
-    },
-    modifier: {
-      type: String,
-    },
-    modifierByRefinement: {
-      type: Object,
-      default: () => ({}),
-    },
-    minStacks: {
-      type: Number,
-      default: 0,
-    },
-    maxStacks: {
-      type: Number,
-      default: 0,
-    },
-    details: {
-      type: String,
-    },
-    alwaysEnabled: {
-      type: Boolean,
-      default: false,
-    },
-    refinement: {
-      type: String,
-    },
-    passiveKey: {
-      type: String,
-    },
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    hasStacks?: boolean;
+    modifier?: string;
+    modifierByRefinement?: Record<string, number>;
+    minStacks?: number;
+    maxStacks?: number;
+    details?: string;
+    alwaysEnabled?: boolean;
+    refinement?: string;
+    passiveKey?: string;
+  }>(),
+  {
+    hasStacks: false,
+    modifierByRefinement: () => ({}),
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
   },
-  data() {
-    return {};
+);
+
+const emit = defineEmits<{
+  "updated-weapon-stats": [
+    payload: {
+      stat?: string;
+      value: number;
+      key?: string;
+      stacks: number;
+      valueBeforeStacks: number;
+    },
+  ];
+}>();
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+const { setCharacterData } = characterStore;
+
+const currentCharacter = computed(
+  () => characters.value[props.character] ?? ({} as Record<string, unknown>),
+);
+
+const passiveEntry = computed(
+  () =>
+    (
+      currentCharacter.value as {
+        weaponPassives?: Record<string, { isEnabled?: boolean; stacks?: number }>;
+      }
+    )?.weaponPassives?.[props.passiveKey ?? ""] ?? {},
+);
+
+const isEnabled = computed({
+  get() {
+    return passiveEntry.value?.isEnabled ?? false;
   },
-  watch: {
-    // we're using immediate so it'll react when we get data from the store
-    refinement: {
-      handler: async function () {
-        await this.updateStats();
+  set(value: boolean) {
+    void setCharacterData(props.character, {
+      weaponPassives: {
+        [props.passiveKey ?? ""]: { isEnabled: value },
       },
-      immediate: true,
-    },
-    isEnabled: {
-      handler: async function (val) {
-        await this.updateStats();
-      },
-      immediate: true,
-    },
-    stacks: {
-      handler: async function () {
-        await this.updateStats();
-      },
-      immediate: true,
-    },
-    alwaysEnabled: {
-      handler: async function (val) {
-        if (val === true) {
-          this.isEnabled = true;
-        }
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    /**
-     * Updates the stats for the passive and emits up to the parent
-     * @emits updated-weapon-stats
-     */
-    async updateStats() {
-      // TODO: Determine if this is really needed. Not sure why this is here
-      // await this.setCharacterData(this.character, {
-      //   weaponPassiveStats: {
-      //     ...this.weaponPassiveStats,
-      //     [this.passiveKey]: this.weaponPassiveStats,
-      //   },
-      // });
-      this.$emit("updated-weapon-stats", this.weaponPassiveStats);
-    },
-    /**
-     * Prevents the user from exceeding the max stacks
-     */
-    ensureMaxStacks() {
-      if (this.stacks > this.maxStacks) {
-        this.stacks = this.maxStacks;
-      }
-    },
-    toggleEnabled() {
-      if (this.alwaysEnabled) {
-        return;
-      }
-      this.isEnabled = !this.isEnabled;
-    },
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Getter/setter used in the form for the isEnabled state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    isEnabled: {
-      get() {
-        return (
-          this.currentCharacter?.weaponPassives?.[this.passiveKey]?.isEnabled ??
-          false
-        );
-      },
-      async set(value) {
-        const data = {
-          weaponPassives: {},
-        };
-        data.weaponPassives[this.passiveKey] = {
-          isEnabled: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the stacks count state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    stacks: {
-      get() {
-        return (
-          this.currentCharacter?.weaponPassives?.[this.passiveKey]?.stacks ?? 0
-        );
-      },
-      async set(value) {
-        const data = {
-          weaponPassives: {},
-        };
-        data.weaponPassives[this.passiveKey] = {
-          stacks: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Compiles the stats for this passive
-     * @returns {Object}
-     */
-    weaponPassiveStats() {
-      const data = {
-        stat: this.modifier,
-        value: 0,
-        key: this.passiveKey,
-        stacks: 0,
-        valueBeforeStacks: 0,
-      };
-      if (!this.isEnabled) {
-        return data;
-      }
-      if (!this.hasStacks) {
-        data.stat = this.modifier;
-        data.value = this.modifierByRefinement[this.refinement];
-        return data;
-      }
-      if (this.hasStacks) {
-        if (this.stacks === 0) {
-          return data;
-        }
-        data.stat = this.modifier;
-        data.stacks = this.stacks;
-        data.valueBeforeStacks = this.modifierByRefinement[this.refinement];
-        const totalValue =
-          this.modifierByRefinement[this.refinement] * this.stacks;
-        data.value = totalValue;
-      }
-      return data;
-    },
-  },
-  beforeUnmount() {
-    this.$emit("updated-weapon-stats", {
-      stat: this.modifier,
-      value: 0,
-      key: this.passiveKey,
-      stacks: 0,
-      valueBeforeStacks: 0,
     });
   },
-};
+});
+
+const stacks = computed({
+  get() {
+    return passiveEntry.value?.stacks ?? 0;
+  },
+  set(value: number) {
+    void setCharacterData(props.character, {
+      weaponPassives: {
+        [props.passiveKey ?? ""]: { stacks: value },
+      },
+    });
+  },
+});
+
+const weaponPassiveStats = computed(() => {
+  const data = {
+    stat: props.modifier,
+    value: 0,
+    key: props.passiveKey,
+    stacks: 0,
+    valueBeforeStacks: 0,
+  };
+  if (!isEnabled.value) {
+    return data;
+  }
+  const refKey = props.refinement ?? "1";
+  const byRef = props.modifierByRefinement ?? {};
+  if (!props.hasStacks) {
+    data.stat = props.modifier;
+    data.value = byRef[refKey] ?? 0;
+    return data;
+  }
+  if (props.hasStacks) {
+    if (stacks.value === 0) {
+      return data;
+    }
+    data.stat = props.modifier;
+    data.stacks = stacks.value;
+    data.valueBeforeStacks = byRef[refKey] ?? 0;
+    data.value = (byRef[refKey] ?? 0) * stacks.value;
+  }
+  return data;
+});
+
+function updateStats() {
+  emit("updated-weapon-stats", weaponPassiveStats.value);
+}
+
+function ensureMaxStacks() {
+  if (stacks.value > props.maxStacks) {
+    stacks.value = props.maxStacks;
+  }
+}
+
+function toggleEnabled() {
+  if (props.alwaysEnabled) {
+    return;
+  }
+  isEnabled.value = !isEnabled.value;
+}
+
+watch(
+  () => props.refinement,
+  () => {
+    void updateStats();
+  },
+  { immediate: true },
+);
+
+watch(isEnabled, () => void updateStats(), { immediate: true });
+
+watch(stacks, () => void updateStats(), { immediate: true });
+
+watch(
+  () => props.alwaysEnabled,
+  (val) => {
+    if (val === true) {
+      isEnabled.value = true;
+    }
+  },
+  { immediate: true },
+);
+
+onBeforeUnmount(() => {
+  emit("updated-weapon-stats", {
+    stat: props.modifier,
+    value: 0,
+    key: props.passiveKey,
+    stacks: 0,
+    valueBeforeStacks: 0,
+  });
+});
 </script>
 
 <style scoped lang="scss">

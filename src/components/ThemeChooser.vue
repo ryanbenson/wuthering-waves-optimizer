@@ -114,65 +114,48 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed, onMounted, ref } from "vue";
+import { storeToRefs } from "pinia";
 import { useSettingsStore } from "../stores/settings";
-export default {
-  name: "ThemeChooser",
-  data() {
-    return {
-      theme: "dark",
-    };
-  },
-  methods: {
-    ...mapActions(useSettingsStore, ["addToConfig"]),
-    chooseTheme(theme) {
-      this.theme = theme;
-      this.setTheme();
-    },
-    swapTheme() {
-      if (this.theme === "dark") {
-        this.theme = "light";
-      } else {
-        this.theme = "dark";
-      }
-      this.setTheme();
-    },
-    setTheme() {
-      const element = document.querySelector("html");
-      element.setAttribute("data-theme", this.theme);
-      this.addToConfig({ theme: this.theme });
-    },
-    init() {
-      let theme = null;
-      if (this.settingsTheme) {
-        theme = this.settingsTheme;
-      }
-      if (!this.settingsTheme) {
-        if (this.isDarkSchemePreferred) {
-          theme = "dark";
-        } else {
-          theme = "light";
-        }
-      }
-      this.theme = theme;
-      this.setTheme();
-    },
-  },
-  computed: {
-    ...mapState(useSettingsStore, ["config"]),
-    settingsTheme() {
-      const settingsTheme = this.config?.theme ?? null;
-      return settingsTheme;
-    },
-    isDarkSchemePreferred() {
-      return (
-        window?.matchMedia?.("(prefers-color-scheme:dark)")?.matches ?? false
-      );
-    },
-  },
-  mounted() {
-    this.init();
-  },
-};
+
+defineOptions({ name: "ThemeChooser" });
+
+const settingsStore = useSettingsStore();
+const { config } = storeToRefs(settingsStore);
+
+const theme = ref("dark");
+
+const settingsTheme = computed(() => config.value?.theme ?? null);
+
+const isDarkSchemePreferred = computed(
+  () => window?.matchMedia?.("(prefers-color-scheme:dark)")?.matches ?? false,
+);
+
+function setTheme() {
+  const element = document.querySelector("html");
+  element?.setAttribute("data-theme", theme.value);
+  void settingsStore.addToConfig({ theme: theme.value });
+}
+
+function chooseTheme(next: string) {
+  theme.value = next;
+  setTheme();
+}
+
+function init() {
+  let next: string | null = null;
+  if (settingsTheme.value) {
+    next = settingsTheme.value;
+  }
+  if (!settingsTheme.value) {
+    next = isDarkSchemePreferred.value ? "dark" : "light";
+  }
+  theme.value = next ?? "dark";
+  setTheme();
+}
+
+onMounted(() => {
+  init();
+});
 </script>

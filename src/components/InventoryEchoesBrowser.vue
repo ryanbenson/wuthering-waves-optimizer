@@ -1,5 +1,5 @@
 <template>
-  <InventoryEchoEdit ref="inventoryEchoEdit"></InventoryEchoEdit>
+  <InventoryEchoEdit ref="inventoryEchoEditRef"></InventoryEchoEdit>
   <div class="py-4">
     <div class="echoes__filters flex flex-wrap align-center gap-2 mb-6">
       <select
@@ -99,31 +99,16 @@
         </div>
         <div class="echoes__list__items grid grid-cols-1 md:grid-cols-2 gap-4">
           <CalculatorEchoCard
-            v-for="echo in paginatedEchoesList"
+            v-for="echoRow in paginatedEchoesList"
             class="echo__item"
-            :key="echo.echoId"
-            :rank="echo.rank"
-            :type="echo.type"
-            :echo-id="echo.echoId"
-            :echo-set="echo.echoSet"
-            :stat="echo.stat"
-            :echo="echo.echo"
-            :echo-sub-stats-type-1="echo.echoSubStatsType1"
-            :echo-sub-stats-value-1="echo.echoSubStatsValue1"
-            :echo-sub-stats-type-2="echo.echoSubStatsType2"
-            :echo-sub-stats-value-2="echo.echoSubStatsValue2"
-            :echo-sub-stats-type-3="echo.echoSubStatsType3"
-            :echo-sub-stats-value-3="echo.echoSubStatsValue3"
-            :echo-sub-stats-type-4="echo.echoSubStatsType4"
-            :echo-sub-stats-value-4="echo.echoSubStatsValue4"
-            :echo-sub-stats-type-5="echo.echoSubStatsType5"
-            :echo-sub-stats-value-5="echo.echoSubStatsValue5"
+            :key="echoRow.echoId"
+            v-bind="echoCardBinder(echoRow)"
             :hide-inventory="true">
             <div
               class="echoes__item__foot flex gap-2 justify-between items-center">
               <div class="echoes__items__foot__equipped">
                 <div class="avatar-group -space-x-6 rtl:space-x-reverse">
-                  <div class="avatar" v-for="char in getCharsEquipped(echo)">
+                  <div class="avatar" v-for="char in getCharsEquipped(echoRow)">
                     <div class="w-12 bg-accent-content">
                       <img :src="getCharImg(char)" />
                     </div>
@@ -132,12 +117,12 @@
               </div>
               <div class="echoes__item__foot__actions flex gap-2">
                 <button
-                  @click="handleEditEcho(echo.echoId)"
+                  @click="handleEditEcho(echoRow.echoId)"
                   class="btn btn-primary btn-sm min-w-16">
                   Edit
                 </button>
                 <button
-                  @click="removeEcho(echo.echoId)"
+                  @click="removeEcho(echoRow.echoId)"
                   class="btn btn-error btn-sm min-w-16">
                   Delete
                 </button>
@@ -157,233 +142,243 @@
   </div>
 </template>
 
-<script>
-import { mainEchoesData, getEchoData } from "../echoes/index.ts";
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
+import { mainEchoesData } from "../echoes/index.ts";
+
+type MainEchoRow = (typeof mainEchoesData)[keyof typeof mainEchoesData];
+type InventoryEchoRow = {
+  echoId: string;
+  rank?: number;
+  type?: string | number | null;
+  echoSet?: string | null;
+  stat?: string | null;
+  echo?: string | null;
+  echoSubStatsType1?: string | null;
+  echoSubStatsValue1?: unknown;
+  echoSubStatsType2?: string | null;
+  echoSubStatsValue2?: unknown;
+  echoSubStatsType3?: string | null;
+  echoSubStatsValue3?: unknown;
+  echoSubStatsType4?: string | null;
+  echoSubStatsValue4?: unknown;
+  echoSubStatsType5?: string | null;
+  echoSubStatsValue5?: unknown;
+};
 import {
   echoSetLabelMap,
   getEchoSetIconByType,
   getReadableSubStatLabel,
   statsTable,
 } from "../echoes/stats";
-import { mapActions, mapState } from "pinia";
 import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
 import { randomString } from "../utils/strings";
-export default {
-  name: "InventoryEchoesBrowser",
-  props: {},
-  data() {
-    return {
-      echoIndex: null,
-      echoSetLabelMap,
-      statsTable,
-      echoSet: null,
-      echo: null,
-      costFilter: null,
-      mainStatFilter: null,
-      page: 1,
-      perPage: 20,
-    };
-  },
-  components: {
-    CalculatorEchoCard,
-    InventoryEchoEdit,
-  },
-  watch: {
-    // when any filter changes, reset the page number
-    mainStatFilter() {
-      this.page = 1;
-    },
-    echoSet() {
-      this.page = 1;
-    },
-    echo() {
-      this.page = 1;
-    },
-  },
-  computed: {
-    ...mapState(useInventoryStore, ["echoes", "getEquippedEchoData"]),
-    echoSetsList() {
-      return Object.keys(echoSetLabelMap);
-    },
-    echoesList() {
-      let allEchoes = this.echoes ?? [];
-      // don't bother filtering if there are none
-      if (allEchoes.length <= 0) {
-        return allEchoes;
-      }
-      // filter by type if set
-      if (this.echoSet) {
-        allEchoes = allEchoes.filter((echo) => echo.echoSet === this.echoSet);
-      }
-      // filter by main echo if set
-      if (this.echo) {
-        allEchoes = allEchoes.filter((echo) => echo.echo === this.echo);
-      }
-      // filter by main echo if set
-      if (this.costFilter) {
-        allEchoes = allEchoes.filter((echo) => echo.type === this.costFilter);
-      }
-      // filter by main stat if set
-      if (this.mainStatFilter) {
-        allEchoes = allEchoes.filter(
-          (echo) => echo.stat === this.mainStatFilter,
-        );
-      }
 
-      return allEchoes;
-    },
-    paginatedEchoesList() {
-      const start = (this.page - 1) * this.perPage;
-      const end = this.page * this.perPage;
-      const slicedEchoes = this.echoesList.slice(start, end);
-      return slicedEchoes;
-    },
-    totalPages() {
-      return Math.ceil(this.echoesList.length / this.perPage);
-    },
-    mainEchoesData() {
-      return { ...mainEchoesData };
-    },
-    mainEchoOptions() {
-      const echoes = {
-        Calamity: [],
-        Overlord: [],
-        Elite: [],
-        Common: [],
-      };
-      const mainEchoValues = Object.values(this.mainEchoesData);
-      mainEchoValues.forEach((echo) => {
-        if (echo?.class && echoes?.[echo.class]) {
-          echoes[echo.class].push(echo);
-        }
-      });
-      return echoes;
-    },
-    allMainStats() {
-      const fourSlotOptions = Object.keys(this.statsTable["4"]);
-      const threeSlotOptions = Object.keys(this.statsTable["3"]);
-      const oneSlotOptions = Object.keys(this.statsTable["1"]);
-      const allOptions = [
-        ...fourSlotOptions,
-        ...threeSlotOptions,
-        ...oneSlotOptions,
-      ];
-      // filter out any dupes
-      return [...new Set(allOptions)];
-    },
-  },
-  methods: {
-    ...mapActions(useInventoryStore, [
-      "getEchoById",
-      "getEchoEquippedChars",
-      "deleteEcho",
-      "deleteEchoEquippedMapping",
-      "saveEcho",
-    ]),
-    ...mapActions(useCharacterStore, ["removeCharacterEcho"]),
-    getReadableSubStatLabel,
-    triggerOpenModal(echoIndex) {
-      this.echoIndex = echoIndex;
-      const modalEl = document.getElementById("modal-echoes-browser");
-      modalEl.showModal();
-    },
-    triggerCloseModal() {
-      const modalEl = document.getElementById("modal-echoes-browser");
-      modalEl.close();
-    },
-    handleClose() {
-      this.reset();
-    },
-    handleEditEcho(echoId) {
-      this.$refs.inventoryEchoEdit.setEchoId(echoId);
-      this.$refs.inventoryEchoEdit.handleOpenModal();
-    },
-    reset() {
-      this.echoIndex = null;
-      this.echoSet = null;
-      this.echo = null;
-      this.mainStatFilter = null;
-      this.costFilter = null;
-    },
-    getEchoSetImage(echoSet) {
-      return getEchoSetIconByType(echoSet);
-    },
-    toggleEchoSetFilter(echoSet) {
-      if (this.echoSet === echoSet) {
-        this.echoSet = null;
-      } else {
-        this.echoSet = echoSet;
-      }
-    },
-    isEchoSetFilterActive(echoSet) {
-      return this.echoSet === echoSet;
-    },
-    resetFilters() {
-      this.echoSet = null;
-      this.echo = null;
-      this.mainStatFilter = null;
-      this.costFilter = null;
-    },
-    prevPage() {
-      if (this.page <= 1) {
-        this.page = 1;
-      } else {
-        this.page--;
-      }
-    },
-    nextPage() {
-      if (this.page >= this.totalPages) {
-        this.page = this.totalPages;
-      } else {
-        this.page++;
-      }
-    },
-    getCharsEquipped(echo) {
-      return this.getEchoEquippedChars(echo.echoId);
-    },
-    getCharImg(character) {
-      return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
-    },
-    async removeEcho(echoId) {
-      if (window.confirm("Do you really want to delete this echo?")) {
-        await this.deleteEcho(echoId);
-        await this.deleteEchoEquippedMapping(echoId);
-        const equippedCharsData = this.getEquippedEchoData(echoId);
-        const equippedChars = Object.entries(equippedCharsData);
-        for (const equippedChar of equippedChars) {
-          const [character, index] = equippedChar;
-          await this.removeCharacterEcho(character, index);
-        }
-      }
-    },
-    async createEcho() {
-      const echoId = randomString();
-      const echoData = {
-        echo: null,
-        type: null,
-        rank: 5,
-        stat: null,
-        echoId,
-        echoSet: null,
-        echoSubStatsType1: null,
-        echoSubStatsValue1: null,
-        echoSubStatsType2: null,
-        echoSubStatsValue2: null,
-        echoSubStatsType3: null,
-        echoSubStatsValue3: null,
-        echoSubStatsType4: null,
-        echoSubStatsValue4: null,
-        echoSubStatsType5: null,
-        echoSubStatsValue5: null,
-      };
-      await this.saveEcho(echoData);
-      this.handleEditEcho(echoId);
-    },
-  },
-};
+const inventoryEchoEditRef = ref<InstanceType<typeof InventoryEchoEdit> | null>(
+  null,
+);
+
+const echoSet = ref<string | null>(null);
+const echo = ref<string | null>(null);
+const costFilter = ref<number | null>(null);
+const mainStatFilter = ref<string | null>(null);
+const page = ref(1);
+const perPage = 20;
+
+const inventoryStore = useInventoryStore();
+const characterStore = useCharacterStore();
+const { echoes } = storeToRefs(inventoryStore);
+const {
+  getEchoEquippedChars,
+  deleteEcho,
+  deleteEchoEquippedMapping,
+  saveEcho,
+  getEquippedEchoData,
+} = inventoryStore;
+const { removeCharacterEcho } = characterStore;
+
+watch([mainStatFilter, echoSet, echo], () => {
+  page.value = 1;
+});
+
+const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
+
+const echoesList = computed(() => {
+  let allEchoes = (echoes.value ?? []) as InventoryEchoRow[];
+  if (allEchoes.length <= 0) {
+    return allEchoes;
+  }
+  if (echoSet.value) {
+    allEchoes = allEchoes.filter((e) => e.echoSet === echoSet.value);
+  }
+  if (echo.value) {
+    allEchoes = allEchoes.filter((e) => e.echo === echo.value);
+  }
+  if (costFilter.value) {
+    allEchoes = allEchoes.filter((e) => e.type === costFilter.value);
+  }
+  if (mainStatFilter.value) {
+    allEchoes = allEchoes.filter((e) => e.stat === mainStatFilter.value);
+  }
+  return allEchoes;
+});
+
+const paginatedEchoesList = computed(() => {
+  const start = (page.value - 1) * perPage;
+  const end = page.value * perPage;
+  return echoesList.value.slice(start, end);
+});
+
+const totalPages = computed(() =>
+  Math.ceil(echoesList.value.length / perPage),
+);
+
+const mainEchoesDataComputed = computed(() => ({ ...mainEchoesData }));
+
+const mainEchoOptions = computed(() => {
+  const buckets: Record<MainEchoRow["class"], MainEchoRow[]> = {
+    Calamity: [],
+    Overlord: [],
+    Elite: [],
+    Common: [],
+  };
+  const mainEchoValues = Object.values(mainEchoesDataComputed.value);
+  mainEchoValues.forEach((e) => {
+    if (e?.class && buckets[e.class]) {
+      buckets[e.class].push(e);
+    }
+  });
+  return buckets;
+});
+
+const allMainStats = computed(() => {
+  const fourSlotOptions = Object.keys(statsTable["4"]);
+  const threeSlotOptions = Object.keys(statsTable["3"]);
+  const oneSlotOptions = Object.keys(statsTable["1"]);
+  const allOptions = [
+    ...fourSlotOptions,
+    ...threeSlotOptions,
+    ...oneSlotOptions,
+  ];
+  return [...new Set(allOptions)];
+});
+
+function echoCardBinder(e: InventoryEchoRow) {
+  const str = (v: unknown) => (v == null ? "" : String(v));
+  const numish = (v: unknown): number | string =>
+    v == null ? 0 : (v as number | string);
+  return {
+    rank: e.rank ?? 5,
+    type: str(e.type),
+    echoId: e.echoId,
+    echoSet: str(e.echoSet),
+    stat: str(e.stat),
+    echo: str(e.echo),
+    echoSubStatsType1: str(e.echoSubStatsType1),
+    echoSubStatsValue1: numish(e.echoSubStatsValue1),
+    echoSubStatsType2: str(e.echoSubStatsType2),
+    echoSubStatsValue2: numish(e.echoSubStatsValue2),
+    echoSubStatsType3: str(e.echoSubStatsType3),
+    echoSubStatsValue3: numish(e.echoSubStatsValue3),
+    echoSubStatsType4: str(e.echoSubStatsType4),
+    echoSubStatsValue4: numish(e.echoSubStatsValue4),
+    echoSubStatsType5: str(e.echoSubStatsType5),
+    echoSubStatsValue5: numish(e.echoSubStatsValue5),
+  };
+}
+
+function handleEditEcho(echoId: string) {
+  inventoryEchoEditRef.value?.setEchoId(echoId);
+  inventoryEchoEditRef.value?.handleOpenModal();
+}
+
+function getEchoSetImage(set: string) {
+  return getEchoSetIconByType(set);
+}
+
+function toggleEchoSetFilter(set: string) {
+  if (echoSet.value === set) {
+    echoSet.value = null;
+  } else {
+    echoSet.value = set;
+  }
+}
+
+function isEchoSetFilterActive(set: string) {
+  return echoSet.value === set;
+}
+
+function resetFilters() {
+  echoSet.value = null;
+  echo.value = null;
+  mainStatFilter.value = null;
+  costFilter.value = null;
+}
+
+function prevPage() {
+  if (page.value <= 1) {
+    page.value = 1;
+  } else {
+    page.value--;
+  }
+}
+
+function nextPage() {
+  if (page.value >= totalPages.value) {
+    page.value = totalPages.value;
+  } else {
+    page.value++;
+  }
+}
+
+function getCharsEquipped(e: { echoId: string }) {
+  return getEchoEquippedChars(e.echoId);
+}
+
+function getCharImg(character: string) {
+  return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
+}
+
+async function removeEcho(echoId: string) {
+  if (window.confirm("Do you really want to delete this echo?")) {
+    await deleteEcho(echoId);
+    await deleteEchoEquippedMapping(echoId);
+    const equippedCharsData = getEquippedEchoData(echoId);
+    const equippedChars = Object.entries(equippedCharsData);
+    for (const equippedChar of equippedChars) {
+      const [character, index] = equippedChar;
+      await removeCharacterEcho(character, Number(index));
+    }
+  }
+}
+
+async function createEcho() {
+  const echoId = randomString();
+  const echoData = {
+    echo: null,
+    type: null,
+    rank: 5,
+    stat: null,
+    echoId,
+    echoSet: null,
+    echoSubStatsType1: null,
+    echoSubStatsValue1: null,
+    echoSubStatsType2: null,
+    echoSubStatsValue2: null,
+    echoSubStatsType3: null,
+    echoSubStatsValue3: null,
+    echoSubStatsType4: null,
+    echoSubStatsValue4: null,
+    echoSubStatsType5: null,
+    echoSubStatsValue5: null,
+  };
+  await saveEcho(echoData);
+  handleEditEcho(echoId);
+}
 </script>
 
 <style lang="scss" scoped>

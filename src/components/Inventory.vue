@@ -19,32 +19,17 @@
   </div>
 </template>
 
-<script lang="ts">
-// @ts-nocheck
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref } from "vue";
 import InventoryEchoesBrowser from "./InventoryEchoesBrowser.vue";
 import InventoryPresetsBrowser from "./InventoryPresetsBrowser.vue";
 import Nav from "./navigation/Nav.vue";
 import InventorySubNav from "./navigation/InventorySubNav.vue";
 import InventoryMobileSubNav from "./navigation/InventoryMobileSubNav.vue";
-export default defineComponent({
-  name: "Inventory",
-  components: {
-    InventoryEchoesBrowser,
-    InventoryPresetsBrowser,
-    InventoryMobileSubNav,
-    InventorySubNav,
-    Nav,
-  },
-  data() {
-    return {
-      curScreen: 'echoes',
-    };
-  },
-  methods: {
-    changeScreen(screen) {
-      this.curScreen = screen;
-    }
-  }
-});
+
+const curScreen = ref<"echoes" | "presets">("echoes");
+
+function changeScreen(screen: "echoes" | "presets") {
+  curScreen.value = screen;
+}
 </script>

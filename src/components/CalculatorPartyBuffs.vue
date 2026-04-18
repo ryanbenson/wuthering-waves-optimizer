@@ -51,7 +51,7 @@
       </h3>
       <div class="collapse-content">
         <CalculatorPartyBuff
-          v-for="buff in buffsByCharacter[selectedCharacter1]"
+          v-for="buff in buffsByCharacterIndex[selectedCharacter1] ?? []"
           :key="buff.key"
           :character="character"
           :unique-key="buff.key"
@@ -80,7 +80,7 @@
       </h3>
       <div class="collapse-content">
         <CalculatorPartyBuff
-          v-for="buff in buffsByCharacter[selectedCharacter2]"
+          v-for="buff in buffsByCharacterIndex[selectedCharacter2] ?? []"
           :key="buff.key"
           :character="character"
           :unique-key="buff.key"
@@ -150,7 +150,9 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import {
   buffsByCharacter,
   allEchoBuffs,
@@ -158,198 +160,185 @@ import {
 } from "../buffs/index.ts";
 import { allCharacters } from "../characters/characters.ts";
 import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
-import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import type { PartyBuffModifier } from "./CalculatorPartyBuff.vue";
 
-export default {
-  name: "BuffSelector",
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-  },
-  components: { CalculatorPartyBuff },
-  data() {
-    return {
-      allEchoBuffs,
-      buffsByCharacter,
-      allWeaponTeamBuffs,
-      allCharacters,
-      buffsDataChar1: [],
-      buffsDataChar2: [],
-      buffsDataEcho: [],
-      // fake this for now, we don't seem to need it
-      talentData: {},
-    };
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Getter/setter used in the form for the first teammate state
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    selectedCharacter1: {
-      get() {
-        return this.currentCharacter?.teamBuffs?.selectedCharacter1 ?? null;
-      },
-      async set(value) {
-        const data = {
-          teamBuffs: {
-            selectedCharacter1: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the first teammate state
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    selectedCharacter2: {
-      get() {
-        return this.currentCharacter?.teamBuffs?.selectedCharacter2 ?? null;
-      },
-      async set(value) {
-        const data = {
-          teamBuffs: {
-            selectedCharacter2: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    availableCharacters() {
-      return this.allCharacters;
-    },
-    buffsFormatted() {
-      const finalBuffData = {};
-      let modifySpecificTalents = [];
-      const allBuffs = [
-        ...this.buffsDataChar1,
-        ...this.buffsDataChar2,
-        ...this.buffsDataEcho,
-      ];
-      allBuffs.forEach((buffInstance) => {
-        const stat = buffInstance.key;
-        const buffDataArr = Object.entries(buffInstance.data);
-        buffDataArr.forEach(([stat, value]) => {
-          if (stat === "modifySpecificTalents") {
-            const updatedSpecificTalentList =
-              modifySpecificTalents.concat(value);
-            modifySpecificTalents = updatedSpecificTalentList;
-          } else if (stat === "EnableAttack") {
-            finalBuffData[stat] = value;
-          } else {
-            finalBuffData[stat] = (finalBuffData[stat] || 0) + value;
-          }
-        });
-      });
-      // format any specific talents
-      if (modifySpecificTalents.length > 0) {
-        const specificTalentBuffs = {};
-        // make it { talentKey: value }, if it has a modifier (e.g. DefIgnore), attach it to the talent
-        // so it won't auto buff, and we can grab it later
-        modifySpecificTalents.forEach((buffInstance) => {
-          const talentKeys = buffInstance?.modifySpecificTalents ?? [];
-          talentKeys.forEach((talent) => {
-            let talentName = talent;
-            if (buffInstance?.modifier) {
-              talentName = `${talentName}:${buffInstance.modifier}`;
-            }
-            specificTalentBuffs[talentName] =
-              (specificTalentBuffs[talentName] || 0) +
-              buffInstance.modifierValueCalculated;
-          });
-        });
-        finalBuffData.specificTalentBuffs = specificTalentBuffs;
-      }
-      return finalBuffData;
-    },
-  },
-  watch: {
-    selectedCharacter1: {
-      handler: async function (newVal) {
-        this.buffsDataChar1 = [];
-        this.updatedStats();
-      },
-      immediate: true,
-    },
-    selectedCharacter2: {
-      handler: async function (newVal) {
-        this.buffsDataChar2 = [];
-        this.updatedStats();
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    getCharacterImage(character) {
-      if (!character) {
-        return `https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png`;
-      }
-      return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
-    },
-    updatedStats() {
-      this.$emit("updated-team-buffs", this.buffsFormatted);
-    },
-    handleUpdatedPartyBuff1(buffInfo) {
-      const buffIndex = this.buffsDataChar1.findIndex((buff) => {
-        return buff.key === buffInfo.key;
-      });
-      if (buffIndex === -1) {
-        this.buffsDataChar1.push(buffInfo);
-      } else {
-        this.buffsDataChar1[buffIndex] = buffInfo;
-      }
-      this.updatedStats();
-    },
-    handleUpdatedPartyBuff2(buffInfo) {
-      const buffIndex = this.buffsDataChar2.findIndex((buff) => {
-        return buff.key === buffInfo.key;
-      });
-      if (buffIndex === -1) {
-        this.buffsDataChar2.push(buffInfo);
-      } else {
-        this.buffsDataChar2[buffIndex] = buffInfo;
-      }
-      this.updatedStats();
-    },
-    handleUpdatedPartyBuffEcho(buffInfo) {
-      const buffIndex = this.buffsDataEcho.findIndex((buff) => {
-        return buff.key === buffInfo.key;
-      });
-      if (buffIndex === -1) {
-        this.buffsDataEcho.push(buffInfo);
-      } else {
-        this.buffsDataEcho[buffIndex] = buffInfo;
-      }
-      this.updatedStats();
-    },
-    clearCharacter1() {
-      this.selectedCharacter1 = null;
-    },
-    clearCharacter2() {
-      this.selectedCharacter2 = null;
-    },
-  },
-  mounted() {
-    this.updatedStats();
-  },
-  beforeUnmount() {
-    this.$emit("updated-team-buffs", {});
-  },
+type PartyBuffEmit = { key: string; data: Record<string, unknown> };
+
+const props = defineProps<{
+  character: string;
+}>();
+
+const emit = defineEmits<{
+  "updated-team-buffs": [payload: Record<string, unknown>];
+}>();
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+const { setCharacterData } = characterStore;
+
+const buffsDataChar1 = ref<PartyBuffEmit[]>([]);
+const buffsDataChar2 = ref<PartyBuffEmit[]>([]);
+const buffsDataEcho = ref<PartyBuffEmit[]>([]);
+const talentData = ref<Record<string, string>>({});
+
+type BuffDefEntry = (typeof buffsByCharacter)[keyof typeof buffsByCharacter][number] & {
+  inputBase?: boolean;
+  modifierBasedOn?: string | null;
+  hasRefinements?: boolean;
 };
+const buffsByCharacterIndex = buffsByCharacter as Record<string, BuffDefEntry[]>;
+
+const currentCharacter = computed(
+  () => characters.value[props.character] ?? ({} as Record<string, unknown>),
+);
+
+const selectedCharacter1 = computed({
+  get() {
+    return (
+      (currentCharacter.value as { teamBuffs?: { selectedCharacter1?: string | null } })
+        ?.teamBuffs?.selectedCharacter1 ?? null
+    );
+  },
+  set(value: string | null) {
+    void setCharacterData(props.character, {
+      teamBuffs: { selectedCharacter1: value },
+    });
+  },
+});
+
+const selectedCharacter2 = computed({
+  get() {
+    return (
+      (currentCharacter.value as { teamBuffs?: { selectedCharacter2?: string | null } })
+        ?.teamBuffs?.selectedCharacter2 ?? null
+    );
+  },
+  set(value: string | null) {
+    void setCharacterData(props.character, {
+      teamBuffs: { selectedCharacter2: value },
+    });
+  },
+});
+
+const availableCharacters = allCharacters;
+
+const buffsFormatted = computed(() => {
+  const finalBuffData: Record<string, unknown> = {};
+  let modifySpecificTalents: PartyBuffModifier[] = [];
+  const allBuffs = [
+    ...buffsDataChar1.value,
+    ...buffsDataChar2.value,
+    ...buffsDataEcho.value,
+  ];
+  allBuffs.forEach((buffInstance) => {
+    const buffDataArr = Object.entries(buffInstance.data);
+    buffDataArr.forEach(([stat, value]) => {
+      if (stat === "modifySpecificTalents") {
+        modifySpecificTalents = modifySpecificTalents.concat(
+          value as PartyBuffModifier[],
+        );
+      } else if (stat === "EnableAttack") {
+        finalBuffData[stat] = value;
+      } else {
+        finalBuffData[stat] =
+          ((finalBuffData[stat] as number) || 0) + (value as number);
+      }
+    });
+  });
+  if (modifySpecificTalents.length > 0) {
+    const specificTalentBuffs: Record<string, number> = {};
+    modifySpecificTalents.forEach((buffInstance) => {
+      const talentKeys = buffInstance?.modifySpecificTalents ?? [];
+      talentKeys.forEach((talent) => {
+        let talentName = talent;
+        if (buffInstance?.modifier) {
+          talentName = `${talentName}:${buffInstance.modifier}`;
+        }
+        specificTalentBuffs[talentName] =
+          (specificTalentBuffs[talentName] || 0) +
+          (buffInstance.modifierValueCalculated ?? 0);
+      });
+    });
+    finalBuffData.specificTalentBuffs = specificTalentBuffs;
+  }
+  return finalBuffData;
+});
+
+function updatedStats() {
+  emit("updated-team-buffs", buffsFormatted.value);
+}
+
+watch(
+  selectedCharacter1,
+  () => {
+    buffsDataChar1.value = [];
+    updatedStats();
+  },
+  { immediate: true },
+);
+
+watch(
+  selectedCharacter2,
+  () => {
+    buffsDataChar2.value = [];
+    updatedStats();
+  },
+  { immediate: true },
+);
+
+function getCharacterImage(character: string | null) {
+  if (!character) {
+    return `https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_002.png`;
+  }
+  return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
+}
+
+function handleUpdatedPartyBuff1(buffInfo: PartyBuffEmit) {
+  const buffIndex = buffsDataChar1.value.findIndex((buff) => buff.key === buffInfo.key);
+  if (buffIndex === -1) {
+    buffsDataChar1.value.push(buffInfo);
+  } else {
+    buffsDataChar1.value[buffIndex] = buffInfo;
+  }
+  updatedStats();
+}
+
+function handleUpdatedPartyBuff2(buffInfo: PartyBuffEmit) {
+  const buffIndex = buffsDataChar2.value.findIndex((buff) => buff.key === buffInfo.key);
+  if (buffIndex === -1) {
+    buffsDataChar2.value.push(buffInfo);
+  } else {
+    buffsDataChar2.value[buffIndex] = buffInfo;
+  }
+  updatedStats();
+}
+
+function handleUpdatedPartyBuffEcho(buffInfo: PartyBuffEmit) {
+  const buffIndex = buffsDataEcho.value.findIndex((buff) => buff.key === buffInfo.key);
+  if (buffIndex === -1) {
+    buffsDataEcho.value.push(buffInfo);
+  } else {
+    buffsDataEcho.value[buffIndex] = buffInfo;
+  }
+  updatedStats();
+}
+
+function clearCharacter1() {
+  selectedCharacter1.value = null;
+}
+
+function clearCharacter2() {
+  selectedCharacter2.value = null;
+}
+
+onMounted(() => {
+  updatedStats();
+});
+
+onBeforeUnmount(() => {
+  emit("updated-team-buffs", {});
+});
 </script>
 
 <style scoped lang="scss">
