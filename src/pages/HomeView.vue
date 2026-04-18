@@ -1,8 +1,8 @@
 <template>
   <div class="drawer drawer-end z-50">
-    <input 
-      id="my-drawer-4" 
-      ref="drawerCheckbox"
+    <input
+      id="my-drawer-4"
+      ref="drawerCheckboxRef"
       type="checkbox" 
       class="drawer-toggle" />
     <div class="drawer-content">
@@ -18,9 +18,9 @@
   </div>
   <div class="calculator__content">
     <div class="calculator__el">
-      <Calculator 
-        class="calculator" 
-        :key="key"
+      <Calculator
+        class="calculator"
+        :key="calculatorKey"
         @stat-selected="openDrawer"
         @attack-selected="openDrawer"
         @breakdown-closed="closeDrawer"></Calculator>
@@ -28,52 +28,39 @@
   </div>
 </template>
 
-<script lang="ts">
-// @ts-nocheck
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { onMounted, ref } from "vue";
 import Calculator from "../components/Calculator.vue";
-export default defineComponent({
-  name: "HomeView",
-  components: { Calculator },
-  data() {
-    return {
-      key: self.crypto.randomUUID(),
-    };
-  },
-  methods: {
-    openDrawer() {
-      if (this.$refs.drawerCheckbox) {
-        this.$refs.drawerCheckbox.checked = true;
-      }
-    },
-    closeDrawer() {
-      if (this.$refs.drawerCheckbox) {
-        this.$refs.drawerCheckbox.checked = false;
-      }
-    },
-  },
-  mounted() {
-    /**
-     * This catches if the user closes their browser and re-opens, which
-     * triggers a back_forward event type for the browser. This causes data conflicts.
-     * The browser will try to use its own cached data in the app, which overrides
-     * the data from the store and localstorage and causes UI and calc issues.
-     * If we find the back_forward event, we trash the initially mounted instance
-     * and make a new one by regenerating the key, which recycles the data
-     * to use the correct data.
-     */
-    const navigationEntries = performance.getEntriesByType("navigation");
-    const navigationActions = navigationEntries.map((nav) => nav.type);
-    if (navigationActions.includes("back_forward")) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const debug = urlParams.get("debug");
-      if (debug == "true") {
-        alert("welcome back");
-      }
-      setTimeout(() => {
-        this.key = self.crypto.randomUUID();
-      }, 10);
+
+const calculatorKey = ref(self.crypto.randomUUID());
+const drawerCheckboxRef = ref<HTMLInputElement | null>(null);
+
+function openDrawer() {
+  if (drawerCheckboxRef.value) {
+    drawerCheckboxRef.value.checked = true;
+  }
+}
+
+function closeDrawer() {
+  if (drawerCheckboxRef.value) {
+    drawerCheckboxRef.value.checked = false;
+  }
+}
+
+onMounted(() => {
+  const navigationEntries = performance.getEntriesByType(
+    "navigation",
+  ) as PerformanceNavigationTiming[];
+  const navigationActions = navigationEntries.map((nav) => nav.type);
+  if (navigationActions.includes("back_forward")) {
+    const urlParams = new URLSearchParams(window.location.search);
+    const debug = urlParams.get("debug");
+    if (debug == "true") {
+      alert("welcome back");
     }
-  },
+    setTimeout(() => {
+      calculatorKey.value = self.crypto.randomUUID();
+    }, 10);
+  }
 });
 </script>

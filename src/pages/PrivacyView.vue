@@ -18,13 +18,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import Nav from "../components/navigation/Nav.vue";
-export default defineComponent({
-  name: "PrivacyView",
-  components: { Nav },
-});
 </script>
 
 <style scoped>

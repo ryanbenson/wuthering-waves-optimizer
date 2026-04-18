@@ -6,12 +6,6 @@
 </div>
 </template>
 
-<script lang="ts">
-// @ts-nocheck
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import Inventory from "../components/Inventory.vue";
-export default defineComponent({
-  name: "InventoryView",
-  components: { Inventory },
-});
 </script>
