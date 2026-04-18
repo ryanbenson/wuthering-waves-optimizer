@@ -5,8 +5,7 @@
         <input
           v-model="ignoreOtherResonantorEchoes"
           type="checkbox"
-          class="toggle toggle-primary toggle-sm"
-          checked="checked" />
+          class="toggle toggle-primary toggle-sm" />
         <span class="label-text">
           Ignore echoes equipped by other resonators
         </span>
@@ -15,42 +14,36 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "CalculatorOptimizerSettings",
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    currentIgnoreOtherResonantorEchoes: {
-      type: [Boolean, String],
-      default: false,
-    },
-  },
-  data() {
-    return {
-      ignoreOtherResonantorEchoes: false,
-    };
-  },
-  watch: {
-    ignoreOtherResonantorEchoes() {
-      this.updatedSettings();
-    },
-  },
-  methods: {
-    /**
-     * Update the target in the store when changed
-     */
-    async updatedSettings() {
-      this.$emit("optimizer:settings-updated", {
-        ignoreOtherResonantorEchoes: this.ignoreOtherResonantorEchoes,
-      });
-    },
-  },
-  async mounted() {
-    this.ignoreOtherResonantorEchoes =
-      this.currentIgnoreOtherResonantorEchoes ?? "Average";
-  },
-};
+<script setup lang="ts">
+import { ref, watch, onMounted } from "vue";
+
+defineOptions({ name: "CalculatorOptimizerSettings" });
+
+const props = defineProps<{
+  character: string;
+  currentIgnoreOtherResonantorEchoes?: boolean | string;
+}>();
+
+const emit = defineEmits<{
+  "optimizer:settings-updated": [
+    payload: { ignoreOtherResonantorEchoes: boolean },
+  ];
+}>();
+
+const ignoreOtherResonantorEchoes = ref(false);
+
+function updatedSettings() {
+  emit("optimizer:settings-updated", {
+    ignoreOtherResonantorEchoes: ignoreOtherResonantorEchoes.value,
+  });
+}
+
+watch(ignoreOtherResonantorEchoes, () => {
+  updatedSettings();
+});
+
+onMounted(() => {
+  const v = props.currentIgnoreOtherResonantorEchoes;
+  ignoreOtherResonantorEchoes.value = typeof v === "boolean" ? v : false;
+});
 </script>

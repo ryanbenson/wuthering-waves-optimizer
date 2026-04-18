@@ -105,399 +105,301 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed } from "vue";
 import {
-  rankColors,
   statsTable,
-  flatBonusesByRankByType,
-  subStats,
-  subStatRanges,
-  subStatLabelMap,
-  getReadableSubStatLabel,
   getSubStatIconByType,
   getEchoSetIconByType,
   getRollValue,
 } from "../echoes/stats";
-import {
-  mainEchoesData,
-  getEchoData,
-  getCostByClass,
-} from "../echoes/index.ts";
-import { template } from "lodash";
-export default {
-  name: "CalculatorOptimizerResultLoadoutEcho",
-  props: {
-    rank: {
-      type: [Number, String],
-      required: true,
-    },
-    type: {
-      type: String,
-      required: true,
-    },
-    echo: {
-      type: String,
-      required: true,
-    },
-    echoId: {
-      type: String,
-      required: true,
-    },
-    echoSet: {
-      type: String,
-      required: true,
-    },
-    stat: {
-      type: String,
-      required: true,
-    },
-    echoSubStatsType1: {
-      type: String,
-      required: true,
-    },
-    echoSubStatsValue1: {
-      type: [Number, String],
-      required: true,
-    },
-    echoSubStatsType2: {
-      type: String,
-      required: true,
-    },
-    echoSubStatsValue2: {
-      type: [Number, String],
-      required: true,
-    },
-    echoSubStatsType3: {
-      type: String,
-      required: true,
-    },
-    echoSubStatsValue3: {
-      type: [Number, String],
-      required: true,
-    },
-    echoSubStatsType4: {
-      type: String,
-      required: true,
-    },
-    echoSubStatsValue4: {
-      type: [Number, String],
-      required: true,
-    },
-    echoSubStatsType5: {
-      type: String,
-      required: true,
-    },
-    echoSubStatsValue5: {
-      type: [Number, String],
-      required: true,
-    },
-    hideInventory: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  data() {
-    return {
-      statsTable,
-      flatBonusesByRankByType,
-    };
-  },
-  computed: {
-    echoFreeSubStatIcon() {
-      if (!this.echoFreeSubStatType) {
-        return null;
-      }
-      return getSubStatIconByType(this.echoFreeSubStatType);
-    },
-    mainStatValue() {
-      if (this.type && this.stat && this.stat !== "none" && this.rank) {
-        return this.statsTable?.[this.type]?.[this.stat]?.[this.rank];
-      }
-      return null;
-    },
-    echoFreeSubStatValue() {
-      if (this.type && this.rank) {
-        let statValue = this.flatBonusesByRankByType[this.type][this.rank];
-        return statValue;
-      }
-      return null;
-    },
-    echoFreeSubStatType() {
-      if (this.type && this.rank) {
-        let stat = this.type == "1" ? "HP_FLAT" : "ATK_FLAT";
-        return stat;
-      }
-      return null;
-    },
-    echoName() {
-      if (!this.echo) {
-        return null;
-      }
-      const echoData = getEchoData(this.echo);
-      return echoData?.name ?? null;
-    },
-    echoImage() {
-      const defaultImageUrl =
-        "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png";
-      if (!this.echo) {
-        return defaultImageUrl;
-      }
-      const echoData = getEchoData(this.echo);
-      return echoData?.image ?? defaultImageUrl;
-    },
-    hasSubStats() {
-      let updatedSubStats = [];
-      if (this.echoSubStatsType1 && this.echoSubStatsType1 !== "none") {
-        updatedSubStats.push(this.echoSubStatsType1);
-      }
-      if (this.echoSubStatsType2 && this.echoSubStatsType2 !== "none") {
-        updatedSubStats.push(this.echoSubStatsType2);
-      }
-      if (this.echoSubStatsType3 && this.echoSubStatsType3 !== "none") {
-        updatedSubStats.push(this.echoSubStatsType3);
-      }
-      if (this.echoSubStatsType4 && this.echoSubStatsType4 !== "none") {
-        updatedSubStats.push(this.echoSubStatsType4);
-      }
-      if (this.echoSubStatsType5 && this.echoSubStatsType5 !== "none") {
-        updatedSubStats.push(this.echoSubStatsType5);
-      }
-      return updatedSubStats.length > 0;
-    },
-    echoSubStatsValue1Display() {
-      if (!this.echoSubStatsValue1) {
-        return null;
-      }
-      if (this.echoSubStatsType1.includes("FLAT")) {
-        return this.echoSubStatsValue1;
-      }
-      return `${this.echoSubStatsValue1}%`;
-    },
-    echoSubStatsValue2Display() {
-      if (!this.echoSubStatsValue2) {
-        return null;
-      }
-      if (this.echoSubStatsType2.includes("FLAT")) {
-        return this.echoSubStatsValue2;
-      }
-      return `${this.echoSubStatsValue2}%`;
-    },
-    echoSubStatsValue3Display() {
-      if (!this.echoSubStatsValue3) {
-        return null;
-      }
-      if (this.echoSubStatsType3.includes("FLAT")) {
-        return this.echoSubStatsValue3;
-      }
-      return `${this.echoSubStatsValue3}%`;
-    },
-    echoSubStatsValue4Display() {
-      if (!this.echoSubStatsValue4) {
-        return null;
-      }
-      if (this.echoSubStatsType4.includes("FLAT")) {
-        return this.echoSubStatsValue4;
-      }
-      return `${this.echoSubStatsValue4}%`;
-    },
-    echoSubStatsValue5Display() {
-      if (!this.echoSubStatsValue5) {
-        return null;
-      }
-      if (this.echoSubStatsType5.includes("FLAT")) {
-        return this.echoSubStatsValue5;
-      }
-      return `${this.echoSubStatsValue5}%`;
-    },
-    echoSubStat1Icon() {
-      if (!this.echoSubStatsType1) {
-        return null;
-      }
-      return getSubStatIconByType(this.echoSubStatsType1);
-    },
-    echoSubStat2Icon() {
-      if (!this.echoSubStatsType2) {
-        return null;
-      }
-      return getSubStatIconByType(this.echoSubStatsType2);
-    },
-    echoSubStat3Icon() {
-      if (!this.echoSubStatsType3) {
-        return null;
-      }
-      return getSubStatIconByType(this.echoSubStatsType3);
-    },
-    echoSubStat4Icon() {
-      if (!this.echoSubStatsType4) {
-        return null;
-      }
-      return getSubStatIconByType(this.echoSubStatsType4);
-    },
-    echoSubStat5Icon() {
-      if (!this.echoSubStatsType5) {
-        return null;
-      }
-      return getSubStatIconByType(this.echoSubStatsType5);
-    },
-    critValue() {
-      let cv = 0;
-      for (let i = 1; i <= 5; i++) {
-        const typeKey = `echoSubStatsType${i}`;
-        const valueKey = `echoSubStatsValue${i}`;
+import { getEchoData } from "../echoes/index.ts";
 
-        if (this[typeKey] === "CritRate") {
-          cv += this[valueKey] * 2; // Double the value for CritRate
-        } else if (this[typeKey] === "CritDMG") {
-          cv += this[valueKey]; // Add the value for CritDMG
-        }
-      }
-      return cv;
-    },
-    formattedCritValue() {
-      const num = this.critValue;
-      if (Number.isInteger(num)) {
-        return num; // If it's an integer, return it as is
-      } else {
-        const rounded = num.toFixed(1); // Round to 1 decimal place
-        return rounded.endsWith(".0") ? parseInt(rounded) : parseFloat(rounded); // Remove the '.0' if it's a whole number
-      }
-    },
-    critValueBadgeClass() {
-      const cv = this.critValue ?? 0;
+defineOptions({ name: "CalculatorOptimizerResultLoadoutEcho" });
 
-      // Ensure cv is within the valid range
-      const percentage = Math.min(Math.max(cv, 0), 42);
+const props = withDefaults(
+  defineProps<{
+    rank: number | string;
+    type: string;
+    echo: string;
+    echoId: string;
+    echoSet: string;
+    stat: string;
+    echoSubStatsType1: string;
+    echoSubStatsValue1: number | string;
+    echoSubStatsType2: string;
+    echoSubStatsValue2: number | string;
+    echoSubStatsType3: string;
+    echoSubStatsValue3: number | string;
+    echoSubStatsType4: string;
+    echoSubStatsValue4: number | string;
+    echoSubStatsType5: string;
+    echoSubStatsValue5: number | string;
+    hideInventory?: boolean;
+  }>(),
+  { hideInventory: false },
+);
 
-      let bgColor;
-      let color = "text-white";
-      let boxShadow;
-      let borderColor;
+const echoName = computed(() => {
+  if (!props.echo) {
+    return "";
+  }
+  return getEchoData(props.echo)?.name ?? "";
+});
 
-      if (percentage <= 7) {
-        bgColor = "bg-emerald-800"; // Dark Green
-        borderColor = "border-emerald-800";
-      } else if (percentage <= 14) {
-        bgColor = "bg-green-500"; // Lighter Green
-        borderColor = "border-green-500";
-      } else if (percentage <= 21) {
-        bgColor = "bg-blue-600"; // Blue
-        borderColor = "border-blue-600";
-        color = "text-black";
-      } else if (percentage <= 28) {
-        bgColor = "bg-purple-600"; // Purple
-        borderColor = "border-purple-600";
-        color = "text-black";
-      } else if (percentage <= 35) {
-        bgColor = "bg-purple-400"; // Lighter Purple
-        borderColor = "border-purple-400";
-        color = "text-black";
-      } else {
-        bgColor = "bg-yellow-500"; // Gold or Red (depending on preference)
-        borderColor = "border-yellow-500";
-        color = "text-black";
-      }
-      if (percentage >= 40) {
-        boxShadow = "shadow-md shadow-yellow-500/50";
-      }
+const mainStatValue = computed(() => {
+  if (props.type && props.stat && props.stat !== "none" && props.rank) {
+    const table = statsTable as Record<
+      string,
+      Record<string, Record<string | number, number>>
+    >;
+    return table?.[props.type]?.[props.stat]?.[props.rank];
+  }
+  return null;
+});
 
-      return [
-        bgColor, // Dynamically return the class based on the cv
-        color,
-        borderColor,
-        boxShadow,
-      ];
-    },
-    echoStatsFormatted() {
-      const substatType1 = this.echoSubStatsType1;
-      const substatType2 = this.echoSubStatsType2;
-      const substatType3 = this.echoSubStatsType3;
-      const substatType4 = this.echoSubStatsType4;
-      const substatType5 = this.echoSubStatsType5;
-      const echoData = {};
-      if (substatType1) {
-        echoData[substatType1.toString()] = this.echoSubStatsValue1 ?? 0;
-      }
-      if (substatType2) {
-        echoData[substatType2.toString()] = this.echoSubStatsValue2 ?? 0;
-      }
-      if (substatType3) {
-        echoData[substatType3.toString()] = this.echoSubStatsValue3 ?? 0;
-      }
-      if (substatType4) {
-        echoData[substatType4.toString()] = this.echoSubStatsValue4 ?? 0;
-      }
-      if (substatType5) {
-        echoData[substatType5.toString()] = this.echoSubStatsValue5 ?? 0;
-      }
-      return echoData;
-    },
-    echoRollValue() {
-      return getRollValue(this.echoStatsFormatted);
-    },
-    rollValueBadgeClass() {
-      const rv = this.echoRollValue ?? 0;
+const echoImage = computed(() => {
+  const defaultImageUrl =
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png";
+  if (!props.echo) {
+    return defaultImageUrl;
+  }
+  const echoData = getEchoData(props.echo);
+  return echoData?.image ?? defaultImageUrl;
+});
 
-      // Ensure cv is within the valid range
-      const percentage = Math.min(Math.max(rv, 0), 600);
+const hasSubStats = computed(() => {
+  const updatedSubStats: string[] = [];
+  if (props.echoSubStatsType1 && props.echoSubStatsType1 !== "none") {
+    updatedSubStats.push(props.echoSubStatsType1);
+  }
+  if (props.echoSubStatsType2 && props.echoSubStatsType2 !== "none") {
+    updatedSubStats.push(props.echoSubStatsType2);
+  }
+  if (props.echoSubStatsType3 && props.echoSubStatsType3 !== "none") {
+    updatedSubStats.push(props.echoSubStatsType3);
+  }
+  if (props.echoSubStatsType4 && props.echoSubStatsType4 !== "none") {
+    updatedSubStats.push(props.echoSubStatsType4);
+  }
+  if (props.echoSubStatsType5 && props.echoSubStatsType5 !== "none") {
+    updatedSubStats.push(props.echoSubStatsType5);
+  }
+  return updatedSubStats.length > 0;
+});
 
-      let bgColor;
-      let color = "text-white";
-      let boxShadow;
-      let borderColor;
+function formatSubStatDisplay(
+  type: string | undefined,
+  value: number | string | undefined,
+) {
+  if (value === undefined || value === null || value === "") {
+    return null;
+  }
+  if (type?.includes("FLAT")) {
+    return String(value);
+  }
+  return `${value}%`;
+}
 
-      if (percentage <= 180) {
-        bgColor = "bg-emerald-800"; // Dark Green
-        borderColor = "border-emerald-800";
-      } else if (percentage <= 220) {
-        bgColor = "bg-green-500"; // Lighter Green
-        borderColor = "border-green-500";
-      } else if (percentage <= 300) {
-        bgColor = "bg-blue-600"; // Blue
-        borderColor = "border-blue-600";
-        color = "text-black";
-      } else if (percentage < 400) {
-        bgColor = "bg-purple-600"; // Purple
-        borderColor = "border-purple-600";
-        color = "text-black";
-      } else {
-        bgColor = "bg-yellow-500"; // Gold or Red (depending on preference)
-        borderColor = "border-yellow-500";
-        color = "text-black";
-      }
-      if (percentage >= 450) {
-        boxShadow = "shadow-md shadow-yellow-500/50";
-      }
+const echoSubStatsValue1Display = computed(() =>
+  formatSubStatDisplay(props.echoSubStatsType1, props.echoSubStatsValue1),
+);
+const echoSubStatsValue2Display = computed(() =>
+  formatSubStatDisplay(props.echoSubStatsType2, props.echoSubStatsValue2),
+);
+const echoSubStatsValue3Display = computed(() =>
+  formatSubStatDisplay(props.echoSubStatsType3, props.echoSubStatsValue3),
+);
+const echoSubStatsValue4Display = computed(() =>
+  formatSubStatDisplay(props.echoSubStatsType4, props.echoSubStatsValue4),
+);
+const echoSubStatsValue5Display = computed(() =>
+  formatSubStatDisplay(props.echoSubStatsType5, props.echoSubStatsValue5),
+);
 
-      return [
-        bgColor, // Dynamically return the class based on the cv
-        color,
-        borderColor,
-        boxShadow,
-      ];
-    },
-    getMainStatColorClass() {
-      const elementsList = [
-        "Glaco",
-        "Fusion",
-        "Electro",
-        "Aero",
-        "Spectro",
-        "Havoc",
-      ];
-      if (!elementsList.includes(this.stat)) {
-        return null;
-      }
-      return `${this.stat.toLowerCase()}--active`;
-    },
-  },
-  methods: {
-    getReadableSubStatLabel,
-    getSubStatIconByType,
-    getEchoSetIcon(type) {
-      return getEchoSetIconByType(type);
-    },
-  },
-};
+const echoSubStat1Icon = computed(() =>
+  props.echoSubStatsType1
+    ? getSubStatIconByType(props.echoSubStatsType1)
+    : undefined,
+);
+const echoSubStat2Icon = computed(() =>
+  props.echoSubStatsType2
+    ? getSubStatIconByType(props.echoSubStatsType2)
+    : undefined,
+);
+const echoSubStat3Icon = computed(() =>
+  props.echoSubStatsType3
+    ? getSubStatIconByType(props.echoSubStatsType3)
+    : undefined,
+);
+const echoSubStat4Icon = computed(() =>
+  props.echoSubStatsType4
+    ? getSubStatIconByType(props.echoSubStatsType4)
+    : undefined,
+);
+const echoSubStat5Icon = computed(() =>
+  props.echoSubStatsType5
+    ? getSubStatIconByType(props.echoSubStatsType5)
+    : undefined,
+);
+
+const critValue = computed(() => {
+  let cv = 0;
+  const pairs: [string | undefined, number][] = [
+    [props.echoSubStatsType1, Number(props.echoSubStatsValue1)],
+    [props.echoSubStatsType2, Number(props.echoSubStatsValue2)],
+    [props.echoSubStatsType3, Number(props.echoSubStatsValue3)],
+    [props.echoSubStatsType4, Number(props.echoSubStatsValue4)],
+    [props.echoSubStatsType5, Number(props.echoSubStatsValue5)],
+  ];
+  for (const [typeKey, val] of pairs) {
+    if (typeKey === "CritRate") {
+      cv += val * 2;
+    } else if (typeKey === "CritDMG") {
+      cv += val;
+    }
+  }
+  return cv;
+});
+
+const formattedCritValue = computed(() => {
+  const num = critValue.value;
+  if (Number.isInteger(num)) {
+    return num;
+  }
+  const rounded = num.toFixed(1);
+  return rounded.endsWith(".0") ? parseInt(rounded, 10) : parseFloat(rounded);
+});
+
+const critValueBadgeClass = computed(() => {
+  const cv = critValue.value ?? 0;
+  const percentage = Math.min(Math.max(cv, 0), 42);
+
+  let bgColor: string;
+  let color = "text-white";
+  let boxShadow: string | undefined;
+  let borderColor: string;
+
+  if (percentage <= 7) {
+    bgColor = "bg-emerald-800";
+    borderColor = "border-emerald-800";
+  } else if (percentage <= 14) {
+    bgColor = "bg-green-500";
+    borderColor = "border-green-500";
+  } else if (percentage <= 21) {
+    bgColor = "bg-blue-600";
+    borderColor = "border-blue-600";
+    color = "text-black";
+  } else if (percentage <= 28) {
+    bgColor = "bg-purple-600";
+    borderColor = "border-purple-600";
+    color = "text-black";
+  } else if (percentage <= 35) {
+    bgColor = "bg-purple-400";
+    borderColor = "border-purple-400";
+    color = "text-black";
+  } else {
+    bgColor = "bg-yellow-500";
+    borderColor = "border-yellow-500";
+    color = "text-black";
+  }
+  if (percentage >= 40) {
+    boxShadow = "shadow-md shadow-yellow-500/50";
+  }
+
+  return [bgColor, color, borderColor, boxShadow].filter(Boolean) as string[];
+});
+
+const echoStatsFormatted = computed(() => {
+  const echoData: Record<string, number> = {};
+  if (props.echoSubStatsType1) {
+    echoData[props.echoSubStatsType1.toString()] =
+      Number(props.echoSubStatsValue1) || 0;
+  }
+  if (props.echoSubStatsType2) {
+    echoData[props.echoSubStatsType2.toString()] =
+      Number(props.echoSubStatsValue2) || 0;
+  }
+  if (props.echoSubStatsType3) {
+    echoData[props.echoSubStatsType3.toString()] =
+      Number(props.echoSubStatsValue3) || 0;
+  }
+  if (props.echoSubStatsType4) {
+    echoData[props.echoSubStatsType4.toString()] =
+      Number(props.echoSubStatsValue4) || 0;
+  }
+  if (props.echoSubStatsType5) {
+    echoData[props.echoSubStatsType5.toString()] =
+      Number(props.echoSubStatsValue5) || 0;
+  }
+  return echoData;
+});
+
+const echoStatsFormattedForRoll = computed(() => {
+  const out: Record<string, string> = {};
+  for (const [k, v] of Object.entries(echoStatsFormatted.value)) {
+    out[k] = String(v);
+  }
+  return out;
+});
+
+const echoRollValue = computed(() =>
+  getRollValue(echoStatsFormattedForRoll.value),
+);
+
+const rollValueBadgeClass = computed(() => {
+  const rv = echoRollValue.value ?? 0;
+  const percentage = Math.min(Math.max(rv, 0), 600);
+
+  let bgColor: string;
+  let color = "text-white";
+  let boxShadow: string | undefined;
+  let borderColor: string;
+
+  if (percentage <= 180) {
+    bgColor = "bg-emerald-800";
+    borderColor = "border-emerald-800";
+  } else if (percentage <= 220) {
+    bgColor = "bg-green-500";
+    borderColor = "border-green-500";
+  } else if (percentage <= 300) {
+    bgColor = "bg-blue-600";
+    borderColor = "border-blue-600";
+    color = "text-black";
+  } else if (percentage < 400) {
+    bgColor = "bg-purple-600";
+    borderColor = "border-purple-600";
+    color = "text-black";
+  } else {
+    bgColor = "bg-yellow-500";
+    borderColor = "border-yellow-500";
+    color = "text-black";
+  }
+  if (percentage >= 450) {
+    boxShadow = "shadow-md shadow-yellow-500/50";
+  }
+
+  return [bgColor, color, borderColor, boxShadow].filter(Boolean) as string[];
+});
+
+const getMainStatColorClass = computed(() => {
+  const elementsList = [
+    "Glacio",
+    "Fusion",
+    "Electro",
+    "Aero",
+    "Spectro",
+    "Havoc",
+  ];
+  if (!elementsList.includes(props.stat)) {
+    return null;
+  }
+  return `${props.stat.toLowerCase()}--active`;
+});
+
+function getEchoSetIcon(type: string) {
+  return getEchoSetIconByType(type);
+}
 </script>
 
 <style lang="scss" scoped>

@@ -21,10 +21,10 @@
           <td>{{ attackLabel }}</td>
           <td
             v-tooltip="{
-              content: attackInfo.damage.detailedCalculation,
+              content: damageBlock.detailedCalculation,
               html: true,
             }">
-            {{ displayDamage(attackInfo.damage.healAmount) }}
+            {{ displayDamage(damageBlock.healAmount ?? 0) }}
             <span
               :class="{
                 'text-success': healingDiffPercentage >= 0,
@@ -39,10 +39,10 @@
           <td>{{ attackLabel }}</td>
           <td
             v-tooltip="{
-              content: attackInfo.damage.detailedCalculation,
+              content: damageBlock.detailedCalculation,
               html: true,
             }">
-            {{ displayDamage(attackInfo.damage.shieldAmount) }}
+            {{ displayDamage(damageBlock.shieldAmount ?? 0) }}
             <span
               :class="{
                 'text-success': shieldDiffPercentage >= 0,
@@ -57,10 +57,10 @@
           <td>{{ attackLabel }}</td>
           <td
             v-tooltip="{
-              content: displayDamage(attackInfo.damage),
+              content: displayDamage(elementalDamageNumber),
               html: true,
             }">
-            {{ displayDamage(attackInfo.damage) }}
+            {{ displayDamage(elementalDamageNumber) }}
             <span
               :class="{
                 'text-success': elementalEffectDiffPercentage >= 0,
@@ -75,11 +75,11 @@
           <td>{{ attackLabel }}</td>
           <td
             v-tooltip="{
-              content: attackInfo.damage.detailedCalculation,
+              content: damageBlock.detailedCalculation,
               html: true,
             }">
             <template v-if="!alwaysCrit">
-              {{ displayDamage(attackInfo.damage.totalDamage) }}
+              {{ displayDamage(damageBlock.totalDamage ?? 0) }}
               <span
                 :class="{
                   'text-success': normalDiffPercentage >= 0,
@@ -92,11 +92,11 @@
           </td>
           <td
             v-tooltip="{
-              content: attackInfo.damage.detailedCalculationAvg,
+              content: damageBlock.detailedCalculationAvg,
               html: true,
             }">
             <template v-if="!alwaysCrit">
-              {{ displayDamage(attackInfo.damage.avgDamage) }}
+              {{ displayDamage(damageBlock.avgDamage ?? 0) }}
               <span
                 :class="{
                   'text-success': avgDiffPercentage >= 0,
@@ -109,10 +109,10 @@
           </td>
           <td
             v-tooltip="{
-              content: attackInfo.damage.detailedCalculationCrit,
+              content: damageBlock.detailedCalculationCrit,
               html: true,
             }">
-            {{ displayDamage(attackInfo.damage.critDamage) }}
+            {{ displayDamage(damageBlock.critDamage ?? 0) }}
             <span
               :class="{
                 'text-success': critDiffPercentage >= 0,
@@ -128,92 +128,158 @@
   </table>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed } from "vue";
 import { displayDamage, displayPercentage } from "../utils/numbers";
-export default {
-  name: "CalculatorOptimizerResultDamage",
-  props: {
-    attackInfo: {
-      type: Object,
-      required: true,
-    },
-    attackLabel: {
-      type: String,
-      default: null,
-    },
-    targetType: {
-      type: String,
-      required: true,
-    },
-    targetValue: {
-      type: String,
-      required: true,
-    },
-    allDamages: {
-      type: Array,
-      default: () => [],
-    },
-  },
-  methods: {
-    displayDamage,
-    displayPercentage,
-  },
-  computed: {
-    normalDiffPercentage() {
-      if (!this.matchedDamageFromAllDamages) return 0;
-      const baseDamage = this.matchedDamageFromAllDamages.damage.totalDamage;
-      const newDamage = this.attackInfo.damage.totalDamage;
-      return ((newDamage - baseDamage) / baseDamage) * 100;
-    },
-    avgDiffPercentage() {
-      if (!this.matchedDamageFromAllDamages) return 0;
-      const baseDamage = this.matchedDamageFromAllDamages.damage.avgDamage;
-      const newDamage = this.attackInfo.damage.avgDamage;
-      return ((newDamage - baseDamage) / baseDamage) * 100;
-    },
-    critDiffPercentage() {
-      if (!this.matchedDamageFromAllDamages) return 0;
-      const baseDamage = this.matchedDamageFromAllDamages.damage.critDamage;
-      const newDamage = this.attackInfo.damage.critDamage;
-      return ((newDamage - baseDamage) / baseDamage) * 100;
-    },
-    healingDiffPercentage() {
-      if (!this.matchedDamageFromAllDamages) return 0;
-      const baseHeal = this.matchedDamageFromAllDamages.damage.healAmount;
-      const newHeal = this.attackInfo.damage.healAmount;
-      return ((newHeal - baseHeal) / baseHeal) * 100;
-    },
-    shieldDiffPercentage() {
-      if (!this.matchedDamageFromAllDamages) return 0;
-      const baseShield = this.matchedDamageFromAllDamages.damage.shieldAmount;
-      const newShield = this.attackInfo.damage.shieldAmount;
-      return ((newShield - baseShield) / baseShield) * 100;
-    },
-    elementalEffectDiffPercentage() {
-      if (!this.matchedDamageFromAllDamages) return 0;
-      const baseDamage = this.matchedDamageFromAllDamages.damage;
-      const newDamage = this.attackInfo.damage;
-      return ((newDamage - baseDamage) / baseDamage) * 100;
-    },
-    matchedDamageFromAllDamages() {
-      const loadoutAttackKey = this.attackInfo.key;
-      const foundAttack = this.forteTypeAttacksListFromAllAttacks.find(
-        (attack) => {
-          return attack.key === loadoutAttackKey;
-        },
-      );
-      return foundAttack;
-    },
-    forteTypeOfAttackChosen() {
-      if (!this.targetValue) return null;
-      const [type, unusedSkillKey] = this.targetValue.split("|");
-      return type;
-    },
-    forteTypeAttacksListFromAllAttacks() {
-      return this.allDamages?.value?.[this.forteTypeOfAttackChosen] || [];
-    },
-  },
+
+defineOptions({ name: "CalculatorOptimizerResultDamage" });
+
+type DamageBlock = {
+  detailedCalculation?: string;
+  detailedCalculationAvg?: string;
+  detailedCalculationCrit?: string;
+  totalDamage?: number;
+  avgDamage?: number;
+  critDamage?: number;
+  healAmount?: number;
+  shieldAmount?: number;
 };
+
+export type AttackDamageInfo = {
+  type?: string;
+  key?: string;
+  isEnabled?: boolean;
+  originalIsEnabled?: boolean;
+  damage: DamageBlock | number | Record<string, unknown>;
+};
+
+function damagesRoot(all: unknown): Record<string, unknown> | undefined {
+  if (all && typeof all === "object" && "value" in (all as object)) {
+    return (all as { value: Record<string, unknown> }).value;
+  }
+  if (all && typeof all === "object") {
+    return all as Record<string, unknown>;
+  }
+  return undefined;
+}
+
+const props = withDefaults(
+  defineProps<{
+    attackInfo: AttackDamageInfo;
+    attackLabel?: string | null;
+    targetValue: string;
+    allDamages?: unknown;
+    alwaysCrit?: boolean;
+  }>(),
+  {
+    attackLabel: null,
+    alwaysCrit: false,
+  },
+);
+
+const damageBlock = computed((): DamageBlock => {
+  const d = props.attackInfo.damage;
+  if (typeof d === "number") {
+    return {};
+  }
+  return (d ?? {}) as DamageBlock;
+});
+
+const elementalDamageNumber = computed(() =>
+  typeof props.attackInfo.damage === "number" ? props.attackInfo.damage : 0,
+);
+
+const forteTypeOfAttackChosen = computed(() => {
+  if (!props.targetValue) return null;
+  const [type] = props.targetValue.split("|");
+  return type;
+});
+
+const forteTypeAttacksListFromAllAttacks = computed(() => {
+  const root = damagesRoot(props.allDamages);
+  const key = forteTypeOfAttackChosen.value;
+  if (!root || !key) return [];
+  const list = root[key];
+  return Array.isArray(list) ? (list as AttackDamageInfo[]) : [];
+});
+
+const matchedDamageFromAllDamages = computed(() => {
+  const loadoutAttackKey = props.attackInfo.key;
+  return forteTypeAttacksListFromAllAttacks.value.find(
+    (attack) => attack.key === loadoutAttackKey,
+  );
+});
+
+const normalDiffPercentage = computed(() => {
+  if (!matchedDamageFromAllDamages.value) return 0;
+  const baseDamage =
+    matchedDamageFromAllDamages.value.damage &&
+    typeof matchedDamageFromAllDamages.value.damage === "object"
+      ? (matchedDamageFromAllDamages.value.damage as DamageBlock).totalDamage
+      : 0;
+  const newDamage = damageBlock.value.totalDamage ?? 0;
+  if (!baseDamage) return 0;
+  return ((newDamage - baseDamage) / baseDamage) * 100;
+});
+
+const avgDiffPercentage = computed(() => {
+  if (!matchedDamageFromAllDamages.value) return 0;
+  const base =
+    matchedDamageFromAllDamages.value.damage &&
+    typeof matchedDamageFromAllDamages.value.damage === "object"
+      ? (matchedDamageFromAllDamages.value.damage as DamageBlock).avgDamage ?? 0
+      : 0;
+  const next = damageBlock.value.avgDamage ?? 0;
+  if (!base) return 0;
+  return ((next - base) / base) * 100;
+});
+
+const critDiffPercentage = computed(() => {
+  if (!matchedDamageFromAllDamages.value) return 0;
+  const base =
+    matchedDamageFromAllDamages.value.damage &&
+    typeof matchedDamageFromAllDamages.value.damage === "object"
+      ? (matchedDamageFromAllDamages.value.damage as DamageBlock).critDamage ?? 0
+      : 0;
+  const next = damageBlock.value.critDamage ?? 0;
+  if (!base) return 0;
+  return ((next - base) / base) * 100;
+});
+
+const healingDiffPercentage = computed(() => {
+  if (!matchedDamageFromAllDamages.value) return 0;
+  const base =
+    matchedDamageFromAllDamages.value.damage &&
+    typeof matchedDamageFromAllDamages.value.damage === "object"
+      ? (matchedDamageFromAllDamages.value.damage as DamageBlock).healAmount ?? 0
+      : 0;
+  const next = damageBlock.value.healAmount ?? 0;
+  if (!base) return 0;
+  return ((next - base) / base) * 100;
+});
+
+const shieldDiffPercentage = computed(() => {
+  if (!matchedDamageFromAllDamages.value) return 0;
+  const base =
+    matchedDamageFromAllDamages.value.damage &&
+    typeof matchedDamageFromAllDamages.value.damage === "object"
+      ? (matchedDamageFromAllDamages.value.damage as DamageBlock).shieldAmount ?? 0
+      : 0;
+  const next = damageBlock.value.shieldAmount ?? 0;
+  if (!base) return 0;
+  return ((next - base) / base) * 100;
+});
+
+const elementalEffectDiffPercentage = computed(() => {
+  if (!matchedDamageFromAllDamages.value) return 0;
+  const base =
+    typeof matchedDamageFromAllDamages.value.damage === "number"
+      ? matchedDamageFromAllDamages.value.damage
+      : 0;
+  const next = elementalDamageNumber.value;
+  if (!base) return 0;
+  return ((next - base) / base) * 100;
+});
 </script>
 
 <style lang="scss" scoped>

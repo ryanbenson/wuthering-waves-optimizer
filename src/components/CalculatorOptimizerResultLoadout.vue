@@ -3,8 +3,8 @@
     class="optimizer_result_loadout flex gap-2 flex-wrap"
     data-test-optimizer-result-loadout>
     <CalculatorOptimizerResultLoadoutEcho
-      v-for="echo in loadout"
-      :key="echo.echoId"
+      v-for="echo in normalizedLoadout"
+      :key="String(echo.echoId)"
       :rank="echo.rank"
       :type="echo.type"
       :echo-id="echo.echoId"
@@ -25,18 +25,36 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed } from "vue";
 import CalculatorOptimizerResultLoadoutEcho from "./CalculatorOptimizerResultLoadoutEcho.vue";
-export default {
-  name: "CalculatorOptimizerResultLoadout",
-  props: {
-    loadout: {
-      type: Array,
-      required: true,
-    },
-  },
-  components: {
-    CalculatorOptimizerResultLoadoutEcho,
-  },
+
+defineOptions({ name: "CalculatorOptimizerResultLoadout" });
+
+export type OptimizerLoadoutEcho = {
+  echoId: string;
+  rank: number | string;
+  type: string;
+  echoSet: string;
+  stat: string;
+  echo: string;
+  echoSubStatsType1: string;
+  echoSubStatsValue1: number | string;
+  echoSubStatsType2: string;
+  echoSubStatsValue2: number | string;
+  echoSubStatsType3: string;
+  echoSubStatsValue3: number | string;
+  echoSubStatsType4: string;
+  echoSubStatsValue4: number | string;
+  echoSubStatsType5: string;
+  echoSubStatsValue5: number | string;
 };
+
+const props = defineProps<{
+  loadout: unknown[];
+}>();
+
+const normalizedLoadout = computed(
+  () => props.loadout as OptimizerLoadoutEcho[],
+);
 </script>

@@ -5,8 +5,8 @@
       <h3 class="card-title text-lg">{{ name }}</h3>
       <div class="echo-set-passives">
         <CalculatorOptimizerEchoSetPassive
-          v-for="(passive, index) in passives"
-          :key="passive.passiveKey"
+          v-for="passive in passives"
+          :key="passive.key"
           :character="character"
           :has-stacks="passive.hasStacks"
           :modifier="passive.modifier"
@@ -16,7 +16,7 @@
           :details="passive.details"
           :always-enabled="passive.alwaysEnabled"
           :passive-key="passive.key"
-          :modifiers="passive.modifiers"
+          :modifiers="passive.modifiers ?? []"
           @updated-optimizer-echo-passive-stats="
             handlePassiveStatsUpdate
           "></CalculatorOptimizerEchoSetPassive>
@@ -25,43 +25,43 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
 import CalculatorOptimizerEchoSetPassive from "./CalculatorOptimizerEchoSetPassive.vue";
-export default {
-  name: "CalculatorOptimizerEchoSet",
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    passives: {
-      type: Array,
-      required: true,
-    },
-    details: {
-      type: String,
-      required: true,
-    },
-    setKey: {
-      type: String,
-      required: true,
-    },
-  },
-  components: {
-    CalculatorOptimizerEchoSetPassive,
-  },
-  methods: {
-    handlePassiveStatsUpdate({ stats, key }) {
-      this.$emit("updated-optimizer-echo-set-stats", {
-        setKey: this.setKey,
-        stats,
-        key,
-      });
-    },
-  },
+
+type OptimizerEchoPassive = {
+  key: string;
+  hasStacks?: boolean;
+  modifier?: string;
+  modifierValue?: number;
+  minStacks?: number;
+  maxStacks?: number;
+  details?: string;
+  alwaysEnabled?: boolean;
+  modifiers?: unknown[];
 };
+
+const props = defineProps<{
+  character: string;
+  name: string;
+  passives: OptimizerEchoPassive[];
+  details: string;
+  setKey: string;
+}>();
+
+const emit = defineEmits<{
+  "updated-optimizer-echo-set-stats": [
+    payload: { setKey: string; stats: Record<string, unknown>; key: string },
+  ];
+}>();
+
+function handlePassiveStatsUpdate(payload: {
+  stats: Record<string, unknown>;
+  key: string;
+}) {
+  emit("updated-optimizer-echo-set-stats", {
+    setKey: props.setKey,
+    stats: payload.stats,
+    key: payload.key,
+  });
+}
 </script>

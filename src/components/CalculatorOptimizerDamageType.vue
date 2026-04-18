@@ -27,39 +27,35 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "CalculatorOptimizerTarget",
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    currentDamageType: {
-      type: String,
-      default: null,
-    },
+<script setup lang="ts">
+import { onMounted, ref, watch } from "vue";
+
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    currentDamageType?: string | null;
+  }>(),
+  { currentDamageType: null },
+);
+
+const emit = defineEmits<{
+  "optimizer:damage-type-updated": [damageType: string];
+}>();
+
+const damageType = ref("Average");
+
+watch(damageType, () => {
+  emit("optimizer:damage-type-updated", damageType.value);
+});
+
+onMounted(() => {
+  damageType.value = props.currentDamageType ?? "Average";
+});
+
+watch(
+  () => props.currentDamageType,
+  (v) => {
+    damageType.value = v ?? "Average";
   },
-  data() {
-    return {
-      damageType: "Average",
-    };
-  },
-  watch: {
-    damageType() {
-      this.updatedDamageType();
-    },
-  },
-  methods: {
-    /**
-     * Update the target in the store when changed
-     */
-    async updatedDamageType() {
-      this.$emit("optimizer:damage-type-updated", this.damageType);
-    },
-  },
-  async mounted() {
-    this.damageType = this.currentDamageType ?? "Average";
-  },
-};
+);
 </script>

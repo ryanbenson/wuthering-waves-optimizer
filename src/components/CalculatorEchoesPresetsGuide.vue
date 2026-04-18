@@ -73,18 +73,22 @@
   </dialog>
 </template>
 
-<script>
-export default {
-  name: "CalculatorEchoesPresetsGuide",
-  methods: {
-    triggerOpenModal() {
-      const modalEl = document.getElementById("modal-echoes-presets-guide");
-      modalEl.showModal();
-    },
-    triggerCloseModal() {
-      const modalEl = document.getElementById("modal-echoes-presets-guide");
-      modalEl.close();
-    },
-  },
-};
+<script setup lang="ts">
+const MODAL_ID = "modal-echoes-presets-guide";
+
+function triggerOpenModal() {
+  const modalEl = document.getElementById(MODAL_ID);
+  (modalEl as HTMLDialogElement | null)?.showModal();
+}
+
+function triggerCloseModal() {
+  const modalEl = document.getElementById(MODAL_ID);
+  (modalEl as HTMLDialogElement | null)?.close();
+}
+
+function handleClose() {
+  triggerCloseModal();
+}
+
+defineExpose({ triggerOpenModal, triggerCloseModal });
 </script>

@@ -44,268 +44,257 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed, onBeforeUnmount, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
-import { character } from "../characters/Aalto/character";
-export default {
-  name: "CalculatorOptimizerMainEcho",
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    echoKey: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    echoClass: {
-      type: String,
-      required: true,
-    },
-    image: {
-      type: String,
-      required: true,
-    },
-    details: {
-      type: String,
-      required: true,
-    },
-    modifiers: {
-      type: Array,
-      required: true,
-    },
-    sets: {
-      type: Array,
-      required: true,
-    },
-    actions: {
-      type: Array,
-      default: () => [],
-    },
-    hasStacks: {
-      type: Boolean,
-      default: false,
-    },
-    minStacks: {
-      type: Number,
-      default: 0,
-    },
-    maxStacks: {
-      type: Number,
-      default: 0,
-    },
+
+type TalentLevels = Record<string, string | number | undefined>;
+
+type ModifierItem = {
+  modifier?: string;
+  modifierValue?: unknown;
+  modifierValueTalentRef?: string;
+  modifierTalentKey?: string;
+  modifierValueCalculated?: number;
+  modifySpecificTalents?: unknown[];
+  specificCharacters?: string[];
+};
+
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    echoKey: string;
+    name: string;
+    echoClass: string;
+    image: string;
+    details: string;
+    modifiers: unknown[];
+    sets: unknown[];
+    actions?: unknown[];
+    hasStacks?: boolean;
+    minStacks?: number;
+    maxStacks?: number;
+    alwaysEnabled?: boolean;
+  }>(),
+  {
+    actions: () => [],
+    hasStacks: false,
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
   },
-  watch: {
-    isEnabled: {
-      handler: async function (val) {
-        await this.updateStats();
-      },
-      immediate: true,
-    },
-    stacks: {
-      handler: async function () {
-        await this.updateStats();
-      },
-      immediate: true,
-    },
-    alwaysEnabled: {
-      handler: async function (val) {
-        if (val === true) {
-          this.isEnabled = true;
-        }
-      },
-      immediate: true,
-    },
+);
+
+const emit = defineEmits<{
+  "updated-main-echo-buffs": [
+    payload: { stats: Record<string, unknown>; key: string },
+  ];
+}>();
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+
+const currentCharacter = computed(
+  () => (characters.value[props.character] ?? {}) as Record<string, unknown>,
+);
+
+const talentData = computed(
+  () => (currentCharacter.value.talents ?? {}) as TalentLevels,
+);
+
+const optimizer = computed(
+  () => (currentCharacter.value.optimizer ?? {}) as Record<string, unknown>,
+);
+
+const isEnabled = computed({
+  get() {
+    const buffs = optimizer.value.mainEchoBuffs as
+      | Record<string, { isEnabled?: boolean }>
+      | undefined;
+    return buffs?.[props.echoKey]?.isEnabled ?? false;
   },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    /**
-     * Updates the stats for the passive and emits up to the parent
-     * @emits updated-main-echo-buffs
-     */
-    async updateStats() {
-      this.$emit("updated-main-echo-buffs", {
-        stats: this.buffStats,
-        key: this.echoKey,
-      });
-    },
-    /**
-     * Prevents the user from exceeding the max stacks
-     */
-    ensureMaxStacks() {
-      if (this.stacks > this.maxStacks) {
-        this.stacks = this.maxStacks;
-      }
-    },
-    toggleEnabled() {
-      if (this.alwaysEnabled) {
-        return;
-      }
-      this.isEnabled = !this.isEnabled;
-    },
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Getter/setter used in the form for the isEnabled state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    isEnabled: {
-      get() {
-        return (
-          this.currentCharacter?.optimizer?.mainEchoBuffs?.[this.echoKey]
-            ?.isEnabled ?? false
-        );
+  async set(value: boolean) {
+    await characterStore.setCharacterData(props.character, {
+      optimizer: {
+        mainEchoBuffs: {
+          [props.echoKey]: { isEnabled: value },
+        },
       },
-      async set(value) {
-        const data = {
-          optimizer: {
-            mainEchoBuffs: {},
-          },
-        };
-        data.optimizer.mainEchoBuffs[this.echoKey] = {
-          isEnabled: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the stacks count state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    stacks: {
-      get() {
-        return (
-          this.currentCharacter?.optimizer?.mainEchoBuffs?.[this.echoKey]
-            ?.stacks ?? 0
-        );
-      },
-      async set(value) {
-        const data = {
-          optimizer: {
-            mainEchoBuffs: {},
-          },
-        };
-        data.optimizer.mainEchoBuffs[this.echoKey] = {
-          stacks: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Transforms the buffs data into a hashmap of buffModifider : buffValue
-     * That gets sent throughout the calculator to reflect in the stats and damages
-     * @returns {Object}
-     */
-    buffStats() {
-      const data = {};
-      if (!this.isEnabled) {
-        return data;
-      }
-      if (!this.hasStacks) {
-        this.modifiers.forEach((modifierItem) => {
-          // if it has buffs for specific characters, validate that first
-          const specificCharacters = modifierItem?.specificCharacters ?? [];
-          if (specificCharacters.length > 0) {
-            // check if the current character key is in the list
-            const isValidCharacter = specificCharacters.includes(
-              this.character,
-            );
-            if (!isValidCharacter) {
-              return; // skip this modifier
-            }
-          }
-          if (modifierItem?.modifySpecificTalents) {
-            if (!data.modifySpecificTalents) {
-              data.modifySpecificTalents = [];
-            }
-            // add our calculated value
-            modifierItem.modifierValueCalculated = modifierItem.modifierValue;
-            data.modifySpecificTalents.push(modifierItem);
-          } else if (modifierItem.modifier === "Talent") {
-            // this is the rare case where the modifier value needs a reference to another talent level
-            // specifically Jinhsi incandescence buff scales off of her forte talent
-            const talentRef =
-              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
-            const talentVal = modifierItem.modifierValue[talentRef];
-            data[modifierItem.modifierTalentKey] = talentVal;
-          } else if (modifierItem.modifier === "EnableAttack") {
-            data[modifierItem.modifier] = modifierItem.modifierValue;
-          } else if (modifierItem.modifier === "talentModifierMultiply") {
-            // for buffs that apply talentModifierMultiply to the calcs
-            if (!data.talentModifierMultiply) {
-              data.talentModifierMultiply = [];
-            }
-            data.talentModifierMultiply.push(modifierItem);
-          } else {
-            // if the same modifier appears multiple times, they should add up
-            if (data[modifierItem.modifier]) {
-              data[modifierItem.modifier] += modifierItem.modifierValue * 100;
-            } else {
-              data[modifierItem.modifier] = modifierItem.modifierValue * 100;
-            }
-          }
-        });
-      } else if (this.hasStacks) {
-        if (this.stacks === 0) {
-          return data;
-        }
-        this.modifiers.forEach((modifierItem) => {
-          if (modifierItem?.modifySpecificTalents) {
-            if (!data.modifySpecificTalents) {
-              data.modifySpecificTalents = [];
-            }
-            // updadate modifer value with the value * stacks
-            modifierItem.modifierValueCalculated =
-              modifierItem.modifierValue * this.stacks;
-            data.modifySpecificTalents.push(modifierItem);
-          } else if (modifierItem.modifier === "Talent") {
-            const talentRef =
-              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
-            const talentVal = modifierItem.modifierValue[talentRef];
-            data[modifierItem.modifierTalentKey] = talentVal * this.stacks;
-          } else {
-            const totalValue = modifierItem.modifierValue * this.stacks;
-            data[modifierItem.modifier] = totalValue * 100;
-          }
-        });
-      }
-      let modifySpecificTalentsData = {};
-      // process the modifySpecificTalents
-      data.modifySpecificTalents?.forEach((talentModifier) => {
-        const talentList = talentModifier?.modifySpecificTalents ?? [];
-        talentList.forEach((talent) => {
-          let key = `${talent}`;
-          if (talent.modifier) {
-            key = `${key}:${talent.modifier}`;
-          }
-          modifySpecificTalentsData[key] =
-            talentModifier.modifierValueCalculated;
-        });
-      });
-      data.specificTalentBuffs = modifySpecificTalentsData;
-      return data;
-    },
-  },
-  beforeUnmount() {
-    this.$emit("updated-main-echo-buffs", {
-      stats: {},
-      key: this.echoKey,
     });
   },
-};
+});
+
+const stacks = computed({
+  get() {
+    const buffs = optimizer.value.mainEchoBuffs as
+      | Record<string, { stacks?: number }>
+      | undefined;
+    return buffs?.[props.echoKey]?.stacks ?? 0;
+  },
+  async set(value: number) {
+    await characterStore.setCharacterData(props.character, {
+      optimizer: {
+        mainEchoBuffs: {
+          [props.echoKey]: { stacks: value },
+        },
+      },
+    });
+  },
+});
+
+function talentModifierValue(
+  modifierItem: ModifierItem,
+  talentRefRaw: string | number | undefined,
+): number | undefined {
+  const map = modifierItem.modifierValue as Record<string, number> | undefined;
+  if (!map) return undefined;
+  const talentRef = String(talentRefRaw ?? "10");
+  return map[talentRef];
+}
+
+const buffStats = computed(() => {
+  const data: Record<string, unknown> = {};
+  if (!isEnabled.value) {
+    return data;
+  }
+  if (!props.hasStacks) {
+    (props.modifiers as ModifierItem[]).forEach((modifierItem) => {
+      const specificCharacters = modifierItem?.specificCharacters ?? [];
+      if (specificCharacters.length > 0) {
+        const isValidCharacter = specificCharacters.includes(props.character);
+        if (!isValidCharacter) {
+          return;
+        }
+      }
+      if (modifierItem?.modifySpecificTalents) {
+        if (!data.modifySpecificTalents) {
+          data.modifySpecificTalents = [];
+        }
+        modifierItem.modifierValueCalculated = modifierItem.modifierValue as number;
+        (data.modifySpecificTalents as ModifierItem[]).push(modifierItem);
+      } else if (modifierItem.modifier === "Talent") {
+        const talentRef =
+          talentData.value?.[modifierItem.modifierValueTalentRef ?? ""] ?? "10";
+        const talentVal = talentModifierValue(modifierItem, talentRef);
+        if (modifierItem.modifierTalentKey != null && talentVal != null) {
+          data[modifierItem.modifierTalentKey] = talentVal;
+        }
+      } else if (modifierItem.modifier === "EnableAttack") {
+        data[modifierItem.modifier] = modifierItem.modifierValue;
+      } else if (modifierItem.modifier === "talentModifierMultiply") {
+        if (!data.talentModifierMultiply) {
+          data.talentModifierMultiply = [];
+        }
+        (data.talentModifierMultiply as ModifierItem[]).push(modifierItem);
+      } else if (modifierItem.modifier) {
+        const modVal = Number(modifierItem.modifierValue);
+        if (data[modifierItem.modifier]) {
+          data[modifierItem.modifier] =
+            Number(data[modifierItem.modifier]) + modVal * 100;
+        } else {
+          data[modifierItem.modifier] = modVal * 100;
+        }
+      }
+    });
+  } else if (props.hasStacks) {
+    if (stacks.value === 0) {
+      return data;
+    }
+    (props.modifiers as ModifierItem[]).forEach((modifierItem) => {
+      if (modifierItem?.modifySpecificTalents) {
+        if (!data.modifySpecificTalents) {
+          data.modifySpecificTalents = [];
+        }
+        modifierItem.modifierValueCalculated =
+          Number(modifierItem.modifierValue) * stacks.value;
+        (data.modifySpecificTalents as ModifierItem[]).push(modifierItem);
+      } else if (modifierItem.modifier === "Talent") {
+        const talentRef =
+          talentData.value?.[modifierItem.modifierValueTalentRef ?? ""] ?? "10";
+        const talentVal = talentModifierValue(modifierItem, talentRef);
+        if (modifierItem.modifierTalentKey != null && talentVal != null) {
+          data[modifierItem.modifierTalentKey] = talentVal * stacks.value;
+        }
+      } else if (modifierItem.modifier) {
+        const totalValue = Number(modifierItem.modifierValue) * stacks.value;
+        data[modifierItem.modifier] = totalValue * 100;
+      }
+    });
+  }
+
+  const modifySpecificTalentsData: Record<string, unknown> = {};
+  const list = data.modifySpecificTalents as ModifierItem[] | undefined;
+  list?.forEach((talentModifier) => {
+    const talentList = (talentModifier?.modifySpecificTalents ?? []) as Array<
+      string | { modifier?: string }
+    >;
+    talentList.forEach((talent) => {
+      let key = `${talent}`;
+      if (typeof talent === "object" && talent?.modifier) {
+        key = `${key}:${talent.modifier}`;
+      }
+      modifySpecificTalentsData[key] = talentModifier.modifierValueCalculated;
+    });
+  });
+  data.specificTalentBuffs = modifySpecificTalentsData;
+  return data;
+});
+
+async function updateStats() {
+  emit("updated-main-echo-buffs", {
+    stats: buffStats.value,
+    key: props.echoKey,
+  });
+}
+
+function ensureMaxStacks() {
+  if (stacks.value > props.maxStacks) {
+    stacks.value = props.maxStacks;
+  }
+}
+
+function toggleEnabled() {
+  if (props.alwaysEnabled) {
+    return;
+  }
+  isEnabled.value = !isEnabled.value;
+}
+
+function updatedStats() {
+  void updateStats();
+}
+
+watch(
+  isEnabled,
+  () => {
+    void updateStats();
+  },
+  { immediate: true },
+);
+
+watch(
+  stacks,
+  () => {
+    void updateStats();
+  },
+  { immediate: true },
+);
+
+watch(
+  () => props.alwaysEnabled,
+  (val) => {
+    if (val === true) {
+      isEnabled.value = true;
+    }
+  },
+  { immediate: true },
+);
+
+onBeforeUnmount(() => {
+  emit("updated-main-echo-buffs", {
+    stats: {},
+    key: props.echoKey,
+  });
+});
 </script>

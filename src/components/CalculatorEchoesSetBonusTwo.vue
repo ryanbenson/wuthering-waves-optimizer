@@ -23,17 +23,17 @@
       <template v-if="setName">
         <CalculatorEchoSetPassive
           v-for="passive in setPassives"
-          :key="passive.key"
+          :key="String(passive.key)"
           :character="character"
-          :has-stacks="passive.hasStacks"
-          :modifier="passive.modifier"
-          :modifier-value="passive.modifierValue"
-          :min-stacks="passive.minStacks"
-          :max-stacks="passive.maxStacks"
-          :details="passive.details"
-          :always-enabled="passive.alwaysEnabled"
-          :modifiers="passive.modifiers"
-          :passive-key="passive.key"
+          :has-stacks="Boolean(passive.hasStacks)"
+          :modifier="passive.modifier as string | undefined"
+          :modifier-value="Number(passive.modifierValue) || 0"
+          :min-stacks="Number(passive.minStacks) || 0"
+          :max-stacks="Number(passive.maxStacks) || 0"
+          :details="String(passive.details ?? '')"
+          :always-enabled="Boolean(passive.alwaysEnabled)"
+          :modifiers="(passive.modifiers ?? []) as unknown[]"
+          :passive-key="String(passive.key ?? '')"
           @updated-echo-passive-stats="
             handleUpdatedEchoPassiveStats
           "></CalculatorEchoSetPassive>
@@ -42,8 +42,8 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
 import CalculatorEchoSetPassive from "./CalculatorEchoSetPassive.vue";
 import {
@@ -52,199 +52,179 @@ import {
   fiveSetBonuses,
   setBonusEffectsTwo,
 } from "../echoes/sets";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    isOverrideEnabled: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  components: {
-    CalculatorEchoSetPassive,
-  },
-  emits: ["update-stats"],
-  data() {
-    return {
-      twoSetBonuses,
-      threeSetBonuses,
-      fiveSetBonuses,
-      setBonusEffects: setBonusEffectsTwo,
-      passiveData: [],
-      setManual: null,
-    };
-  },
-  watch: {
-    type: {
-      handler: async function () {
-        // if we change echo set bonus, ensure the stacks don't exceed the max
-        if (this.stacks > this.getMaxStacks) {
-          this.stacks = this.getMaxStacks;
-        }
-        if (this.setAlwaysEnabled) {
-          this.isEnabled = true;
-        }
-        this.updatedStats();
-      },
-      immediate: true,
-    },
-    stacks: {
-      handler: async function (stacksVal) {
-        if (stacksVal > this.getMaxStacks) {
-          this.stacks = this.getMaxStacks;
-        }
-        this.updatedStats();
-      },
-      immediate: true,
-    },
-    isEnabled: {
-      handler: async function () {
-        this.updatedStats();
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    /**
-     * Updates the stats and emits
-     * @emits update-stats
-     */
-    updatedStats() {
-      this.$emit("update-stats", this.buffsFormatted);
-    },
-    handleUpdatedEchoPassiveStats(data) {
-      const buffIndex = this.passiveData.findIndex((buff) => {
-        return buff.key === data.key;
-      });
-      if (buffIndex === -1) {
-        this.passiveData.push(data);
-      } else {
-        this.passiveData[buffIndex] = data;
-      }
-      this.updatedStats();
-    },
-    onSetManualChange(e) {
-      const value = e.target.value;
-      this.type = value;
-    }
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Getter/setter used in the form for isEnabled
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    isEnabled: {
-      get() {
-        return this.currentCharacter?.echoSetBonus?.setBonusTwoEnabled ?? false;
-      },
-      async set(value) {
-        const data = {
-          echoSetBonus: {
-            setBonusTwoEnabled: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the type
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    type: {
-      get() {
-        return this.currentCharacter?.echoSetBonus?.setBonusTwo ?? "";
-      },
-      async set(value) {
-        const data = {
-          echoSetBonus: {
-            setBonusTwo: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the stacks count
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    stacks: {
-      get() {
-        return this.currentCharacter?.echoSetBonus?.setBonusTwoStacks ?? 0;
-      },
-      async set(value) {
-        const data = {
-          echoSetBonus: {
-            setBonusTwoStacks: value,
-          },
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    setName() {
-      if (!this.type) {
-        return false;
-      }
-      return this.setBonusEffects[this.type]?.name ?? "";
-    },
-    setPassives() {
-      if (!this.type) {
-        return false;
-      }
-      return this.setBonusEffects[this.type]?.passives ?? [];
-    },
-    /**
-     * Returns the buffs data formatted to send to the stats collector
-     * @returns {Object}
-     */
-    buffsFormatted() {
-      const finalBuffData = {};
-      const allBuffs = [...this.passiveData];
-      allBuffs.forEach((buffInstance) => {
-        const { stats } = buffInstance;
-        Object.entries(stats).forEach(([stat, value]) => {
-          if (stat === "EnableAttack") {
-            finalBuffData[stat] = value;
-          } else {
-            finalBuffData[stat] = (finalBuffData[stat] || 0) + value;
-          }
-        });
-      });
-      return finalBuffData;
-    },
-    /**
-     * Provides the list of options from the set list
-     * @returns {Array}
-     */
-    optionsList() {
-      const twoSetList = JSON.parse(JSON.stringify(twoSetBonuses));
-      const threeSetList = JSON.parse(JSON.stringify(threeSetBonuses));
-      const fiveSetList = JSON.parse(JSON.stringify(fiveSetBonuses));
-      const list = [...twoSetBonuses, ...threeSetList, ...fiveSetBonuses];
-      return list.sort();
-    }
-  },
-  mounted() {
-    this.setManual = this.type;
-  },
-  beforeUnmount() {
-    this.passiveData = [];
-  },
+
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    isOverrideEnabled?: boolean;
+  }>(),
+  { isOverrideEnabled: false },
+);
+
+const emit = defineEmits<{
+  "update-stats": [stats: Record<string, number | string>];
+}>();
+
+const characterStore = useCharacterStore();
+
+type SetBonusEntry = {
+  name?: string;
+  passives?: Array<
+    Record<string, unknown> & { key: string; alwaysEnabled?: boolean; maxStacks?: number }
+  >;
 };
+
+const setBonusEffects = setBonusEffectsTwo as Record<string, SetBonusEntry>;
+
+type PassiveBuffPayload = {
+  key: string;
+  stats: Record<string, unknown>;
+};
+
+const passiveData = ref<PassiveBuffPayload[]>([]);
+const setManual = ref<string | null>(null);
+
+const currentCharacter = computed(
+  () => characterStore.characters?.[props.character] ?? {},
+);
+
+const isEnabled = computed({
+  get() {
+    const ch = currentCharacter.value as {
+      echoSetBonus?: { setBonusTwoEnabled?: boolean };
+    };
+    return ch.echoSetBonus?.setBonusTwoEnabled ?? false;
+  },
+  set(value: boolean) {
+    void characterStore.setCharacterData(props.character, {
+      echoSetBonus: { setBonusTwoEnabled: value },
+    });
+  },
+});
+
+const type = computed({
+  get() {
+    const ch = currentCharacter.value as {
+      echoSetBonus?: { setBonusTwo?: string };
+    };
+    return ch.echoSetBonus?.setBonusTwo ?? "";
+  },
+  set(value: string) {
+    void characterStore.setCharacterData(props.character, {
+      echoSetBonus: { setBonusTwo: value },
+    });
+  },
+});
+
+const stacks = computed({
+  get() {
+    const ch = currentCharacter.value as {
+      echoSetBonus?: { setBonusTwoStacks?: number };
+    };
+    return ch.echoSetBonus?.setBonusTwoStacks ?? 0;
+  },
+  set(value: number) {
+    void characterStore.setCharacterData(props.character, {
+      echoSetBonus: { setBonusTwoStacks: value },
+    });
+  },
+});
+
+const setPassivesList = computed(() => {
+  const t = type.value;
+  if (!t) return [];
+  return setBonusEffects[t]?.passives ?? [];
+});
+
+const getMaxStacks = computed(() =>
+  setPassivesList.value.reduce(
+    (m, passive) => Math.max(m, passive.maxStacks ?? 0),
+    0,
+  ),
+);
+
+const setAlwaysEnabled = computed(() =>
+  setPassivesList.value.some((p) => p.alwaysEnabled),
+);
+
+const setName = computed(() => {
+  const t = type.value;
+  if (!t) return "";
+  return setBonusEffects[t]?.name ?? "";
+});
+
+const setPassives = computed(() => setPassivesList.value);
+
+const buffsFormatted = computed(() => {
+  const finalBuffData: Record<string, number | string> = {};
+  for (const buffInstance of passiveData.value) {
+    const { stats } = buffInstance;
+    Object.entries(stats).forEach(([stat, value]) => {
+      if (stat === "EnableAttack") {
+        finalBuffData[stat] = value as string | number;
+      } else {
+        const prev = finalBuffData[stat];
+        const num = typeof value === "number" ? value : Number(value) || 0;
+        finalBuffData[stat] =
+          (typeof prev === "number" ? prev : 0) + num;
+      }
+    });
+  }
+  return finalBuffData;
+});
+
+const optionsList = computed(() => {
+  const threeSetList = JSON.parse(JSON.stringify(threeSetBonuses)) as string[];
+  const list = [...twoSetBonuses, ...threeSetList, ...fiveSetBonuses];
+  return list.sort();
+});
+
+function updatedStats() {
+  emit("update-stats", buffsFormatted.value);
+}
+
+function handleUpdatedEchoPassiveStats(data: PassiveBuffPayload) {
+  const buffIndex = passiveData.value.findIndex((buff) => buff.key === data.key);
+  if (buffIndex === -1) {
+    passiveData.value.push(data);
+  } else {
+    passiveData.value[buffIndex] = data;
+  }
+  updatedStats();
+}
+
+function onSetManualChange(e: Event) {
+  type.value = (e.target as HTMLSelectElement).value;
+}
+
+watch(type, () => {
+  if (stacks.value > getMaxStacks.value) {
+    stacks.value = getMaxStacks.value;
+  }
+  if (setAlwaysEnabled.value) {
+    isEnabled.value = true;
+  }
+  updatedStats();
+}, { immediate: true });
+
+watch(stacks, (stacksVal) => {
+  if (stacksVal > getMaxStacks.value) {
+    stacks.value = getMaxStacks.value;
+  }
+  updatedStats();
+}, { immediate: true });
+
+watch(isEnabled, () => {
+  updatedStats();
+}, { immediate: true });
+
+onMounted(() => {
+  setManual.value = type.value;
+});
+
+onBeforeUnmount(() => {
+  passiveData.value = [];
+});
 </script>
 
 <style lang="scss" scoped></style>

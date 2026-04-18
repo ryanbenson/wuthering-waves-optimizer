@@ -118,20 +118,27 @@
   </dialog>
 </template>
 
-<script>
-export default {
-  name: "CalculatorOptimizerGuide",
-  methods: {
-    triggerOpenModal() {
-      const modalEl = document.getElementById("modal-optimizer-guide");
-      modalEl.showModal();
-    },
-    triggerCloseModal() {
-      const modalEl = document.getElementById("modal-optimizer-guide");
-      modalEl.close();
-    },
-  },
-};
+<script setup lang="ts">
+defineOptions({ name: "CalculatorOptimizerGuide" });
+
+function triggerOpenModal() {
+  const modalEl = document.getElementById(
+    "modal-optimizer-guide",
+  ) as HTMLDialogElement | null;
+  modalEl?.showModal();
+}
+
+function triggerCloseModal() {
+  const modalEl = document.getElementById(
+    "modal-optimizer-guide",
+  ) as HTMLDialogElement | null;
+  modalEl?.close();
+}
+
+defineExpose({
+  triggerOpenModal,
+  triggerCloseModal,
+});
 </script>
 
 <style lang="scss" scoped>

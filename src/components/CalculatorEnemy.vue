@@ -15,7 +15,7 @@
         <span class="text-primary">{{ enemyLevel }}</span>
       </label>
       <input
-        v-model="enemyLevel"
+        v-model.number="enemyLevel"
         name="enemyLevel"
         id="enemyLevel"
         type="range"
@@ -38,7 +38,7 @@
         <span class="text-primary">{{ enemyResist * 100 }}%</span>
       </label>
       <input
-        v-model="enemyResist"
+        v-model.number="enemyResist"
         name="enemyResist"
         id="enemyResist"
         type="range"
@@ -60,7 +60,7 @@
         <span class="text-primary">{{ strainStacks }}</span>
       </label>
       <input
-        v-model="strainStacks"
+        v-model.number="strainStacks"
         name="strainStacks"
         id="strainStacks"
         type="range"
@@ -140,7 +140,7 @@
         <span class="text-primary">{{ spectroFrazzleStacks }}</span>
       </label>
       <input
-        v-model="spectroFrazzleStacks"
+        v-model.number="spectroFrazzleStacks"
         name="spectroFrazzleStacks"
         id="spectroFrazzleStacks"
         type="range"
@@ -165,7 +165,7 @@
         <span class="text-primary">{{ aeroErosionStacks }}</span>
       </label>
       <input
-        v-model="aeroErosionStacks"
+        v-model.number="aeroErosionStacks"
         name="aeroErosionStacks"
         id="aeroErosionStacks"
         type="range"
@@ -187,7 +187,7 @@
         <span class="text-primary">{{ havocBaneStacks }}</span>
       </label>
       <input
-        v-model="havocBaneStacks"
+        v-model.number="havocBaneStacks"
         name="havocBaneStacks"
         id="havocBaneStacks"
         type="range"
@@ -199,10 +199,10 @@
         data-test-enemy-havoc-bane-input />
     </div>
   </div>
-  <div 
+  <div
     v-if="isFusionBurstEnabled"
-    class="data-input--talents mt-8" data-test-enemy-fusion-burst
-  >
+    class="data-input--talents mt-8"
+    data-test-enemy-fusion-burst>
     <div class="flex flex-col pb-7 relative">
       <label
         for="havocBane"
@@ -212,7 +212,7 @@
         <span class="text-primary">{{ fusionBurstStacks }}</span>
       </label>
       <input
-        v-model="fusionBurstStacks"
+        v-model.number="fusionBurstStacks"
         name="fusionBurstStacks"
         id="fusionBurstStacks"
         type="range"
@@ -224,10 +224,10 @@
         data-test-enemy-fusion-burst-input />
     </div>
   </div>
-  <div 
+  <div
     v-if="isElectroFlareEnabled"
-    class="data-input--talents mt-8" data-test-enemy-electro-flare
-  >
+    class="data-input--talents mt-8"
+    data-test-enemy-electro-flare>
     <div class="flex flex-col pb-7 relative">
       <label
         for="havocBane"
@@ -237,7 +237,7 @@
         <span class="text-primary">{{ electroFlareStacks }}</span>
       </label>
       <input
-        v-model="electroFlareStacks"
+        v-model.number="electroFlareStacks"
         name="electroFlareStacks"
         id="electroFlareStacks"
         type="range"
@@ -249,10 +249,10 @@
         data-test-enemy-electro-flare-input />
     </div>
   </div>
-  <div 
+  <div
     v-if="isElectroFlareEnabled"
-    class="data-input--talents mt-8" data-test-enemy-electro-rage
-  >
+    class="data-input--talents mt-8"
+    data-test-enemy-electro-rage>
     <div class="flex flex-col pb-7 relative">
       <label
         for="havocBane"
@@ -262,7 +262,7 @@
         <span class="text-primary">{{ electroRageStacks }}</span>
       </label>
       <input
-        v-model="electroRageStacks"
+        v-model.number="electroRageStacks"
         name="electroRageStacks"
         id="electroRageStacks"
         type="range"
@@ -276,445 +276,178 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed, watchEffect } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    isSpectroFrazzleEnabled: {
-      type: Boolean,
-      default: false,
-    },
-    isAeroErosionEnabled: {
-      type: Boolean,
-      default: false,
-    },
-    isHavocBaneEnabled: {
-      type: Boolean,
-      default: false,
-    },
-    isFusionBurstEnabled: {
-      type: Boolean,
-      default: false,
-    },
-    isElectroFlareEnabled: {
-      type: Boolean,
-      default: false,
-    },
+
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    isSpectroFrazzleEnabled?: boolean;
+    isAeroErosionEnabled?: boolean;
+    isHavocBaneEnabled?: boolean;
+    isFusionBurstEnabled?: boolean;
+    isElectroFlareEnabled?: boolean;
+  }>(),
+  {
+    isSpectroFrazzleEnabled: false,
+    isAeroErosionEnabled: false,
+    isHavocBaneEnabled: false,
+    isFusionBurstEnabled: false,
+    isElectroFlareEnabled: false,
   },
-  data() {
-    return {
-      enemyResistOptions: [
-        { key: 0, label: "0%" },
-        { key: 0.1, label: "10%" },
-        { key: 0.2, label: "20%" },
-        { key: 0.3, label: "30%" },
-        { key: 0.4, label: "40%" },
-        { key: 0.5, label: "50%" },
-        { key: 0.6, label: "60%" },
-        { key: 0.7, label: "70%" },
-        { key: 0.8, label: "80%" },
-        { key: 0.9, label: "90%" },
-        { key: 1, label: "100%" },
-      ],
-    };
+);
+
+const emit = defineEmits<{
+  "updated-enemy-data": [payload: Record<string, unknown>];
+}>();
+
+const characterStore = useCharacterStore();
+const settingsStore = useSettingsStore();
+
+const currentCharacter = computed(
+  () => characterStore.characters?.[props.character] ?? {},
+);
+
+const settingsTheme = computed(
+  () => settingsStore.config?.theme ?? null,
+);
+
+const rangeClasses = computed(() => {
+  const classes: string[] = [];
+  if (settingsTheme.value === "black") {
+    classes.push("[--range-shdw:gray]");
+  }
+  return classes;
+});
+
+const enemyLevel = computed({
+  get() {
+    const ch = currentCharacter.value as { enemyLevel?: number };
+    return ch.enemyLevel ?? 90;
   },
-  watch: {
-    enemyLevel: {
-      /**
-       * Emits the buff data in its proper format
-       * @emits updated-enemy
-       */
-      handler: async function () {
-        this.$emit("updated-enemy-data", {
-          enemyLevel: this.enemyLevel,
-          enemyResist: this.enemyResist,
-          enemyType: this.enemyType,
-          spectroFrazzleStacks: this.spectroFrazzleStacks,
-          aeroErosionStacks: this.aeroErosionStacks,
-          havocBaneStacks: this.havocBaneStacks,
-          strainStacks: this.strainStacks,
-          fusionBurstStacks: this.fusionBurstStacks,
-          electroFlareStacks: this.electroFlareStacks,
-          electroRageStacks: this.electroRageStacks,
-        });
-      },
-      immediate: true,
-    },
-    enemyResist: {
-      /**
-       * Emits the buff data in its proper format
-       * @emits updated-enemy
-       */
-      handler: async function () {
-        this.$emit("updated-enemy-data", {
-          enemyLevel: this.enemyLevel,
-          enemyResist: this.enemyResist,
-          enemyType: this.enemyType,
-          spectroFrazzleStacks: this.spectroFrazzleStacks,
-          aeroErosionStacks: this.aeroErosionStacks,
-          havocBaneStacks: this.havocBaneStacks,
-          strainStacks: this.strainStacks,
-          fusionBurstStacks: this.fusionBurstStacks,
-          electroFlareStacks: this.electroFlareStacks,
-          electroRageStacks: this.electroRageStacks,
-        });
-      },
-      immediate: true,
-    },
-    enemyType: {
-      /**
-       * Emits the buff data in its proper format
-       * @emits updated-enemy
-       */
-      handler: async function () {
-        this.$emit("updated-enemy-data", {
-          enemyLevel: this.enemyLevel,
-          enemyResist: this.enemyResist,
-          enemyType: this.enemyType,
-          spectroFrazzleStacks: this.spectroFrazzleStacks,
-          aeroErosionStacks: this.aeroErosionStacks,
-          havocBaneStacks: this.havocBaneStacks,
-          strainStacks: this.strainStacks,
-          fusionBurstStacks: this.fusionBurstStacks,
-          electroFlareStacks: this.electroFlareStacks,
-          electroRageStacks: this.electroRageStacks,
-        });
-      },
-      immediate: true,
-    },
-    spectroFrazzleStacks: {
-      /**
-       * Emits the buff data in its proper format
-       * @emits updated-enemy
-       */
-      handler: async function () {
-        this.$emit("updated-enemy-data", {
-          enemyLevel: this.enemyLevel,
-          enemyResist: this.enemyResist,
-          enemyType: this.enemyType,
-          spectroFrazzleStacks: this.spectroFrazzleStacks,
-          aeroErosionStacks: this.aeroErosionStacks,
-          havocBaneStacks: this.havocBaneStacks,
-          strainStacks: this.strainStacks,
-          fusionBurstStacks: this.fusionBurstStacks,
-          electroFlareStacks: this.electroFlareStacks,
-          electroRageStacks: this.electroRageStacks,
-        });
-      },
-      immediate: true,
-    },
-    aeroErosionStacks: {
-      /**
-       * Emits the buff data in its proper format
-       * @emits updated-enemy
-       */
-      handler: async function () {
-        this.$emit("updated-enemy-data", {
-          enemyLevel: this.enemyLevel,
-          enemyResist: this.enemyResist,
-          enemyType: this.enemyType,
-          spectroFrazzleStacks: this.spectroFrazzleStacks,
-          aeroErosionStacks: this.aeroErosionStacks,
-          havocBaneStacks: this.havocBaneStacks,
-          strainStacks: this.strainStacks,
-          fusionBurstStacks: this.fusionBurstStacks,
-          electroFlareStacks: this.electroFlareStacks,
-          electroRageStacks: this.electroRageStacks,
-        });
-      },
-      immediate: true,
-    },
-    havocBaneStacks: {
-      /**
-       * Emits the buff data in its proper format
-       * @emits updated-enemy
-       */
-      handler: async function () {
-        this.$emit("updated-enemy-data", {
-          enemyLevel: this.enemyLevel,
-          enemyResist: this.enemyResist,
-          enemyType: this.enemyType,
-          spectroFrazzleStacks: this.spectroFrazzleStacks,
-          aeroErosionStacks: this.aeroErosionStacks,
-          havocBaneStacks: this.havocBaneStacks,
-          strainStacks: this.strainStacks,
-          fusionBurstStacks: this.fusionBurstStacks,
-          electroFlareStacks: this.electroFlareStacks,
-          electroRageStacks: this.electroRageStacks,
-        });
-      },
-      immediate: true,
-    },
-    fusionBurstStacks: {
-      /**
-       * Emits the buff data in its proper format
-       * @emits updated-enemy
-       */
-      handler: async function () {
-        this.$emit("updated-enemy-data", {
-          enemyLevel: this.enemyLevel,
-          enemyResist: this.enemyResist,
-          enemyType: this.enemyType,
-          spectroFrazzleStacks: this.spectroFrazzleStacks,
-          aeroErosionStacks: this.aeroErosionStacks,
-          havocBaneStacks: this.havocBaneStacks,
-          strainStacks: this.strainStacks,
-          fusionBurstStacks: this.fusionBurstStacks,
-          electroFlareStacks: this.electroFlareStacks,
-          electroRageStacks: this.electroRageStacks,
-        });
-      },
-      immediate: true,
-    },
-    electroFlareStacks: {
-      /**
-       * Emits the buff data in its proper format
-       * @emits updated-enemy
-       */
-      handler: async function () {
-        this.$emit("updated-enemy-data", {
-          enemyLevel: this.enemyLevel,
-          enemyResist: this.enemyResist,
-          enemyType: this.enemyType,
-          spectroFrazzleStacks: this.spectroFrazzleStacks,
-          aeroErosionStacks: this.aeroErosionStacks,
-          havocBaneStacks: this.havocBaneStacks,
-          strainStacks: this.strainStacks,
-          fusionBurstStacks: this.fusionBurstStacks,
-          electroFlareStacks: this.electroFlareStacks,
-          electroRageStacks: this.electroRageStacks,
-        });
-      },
-      immediate: true,
-    },
-    electroRageStacks: {
-      /**
-       * Emits the buff data in its proper format
-       * @emits updated-enemy
-       */
-      handler: async function () {
-        this.$emit("updated-enemy-data", {
-          enemyLevel: this.enemyLevel,
-          enemyResist: this.enemyResist,
-          enemyType: this.enemyType,
-          spectroFrazzleStacks: this.spectroFrazzleStacks,
-          aeroErosionStacks: this.aeroErosionStacks,
-          havocBaneStacks: this.havocBaneStacks,
-          strainStacks: this.strainStacks,
-          fusionBurstStacks: this.fusionBurstStacks,
-          electroFlareStacks: this.electroFlareStacks,
-          electroRageStacks: this.electroRageStacks,
-        });
-      },
-      immediate: true,
-    },
-    strainStacks: {
-      /**
-       * Emits the buff data in its proper format
-       * @emits updated-enemy
-       */
-      handler: async function () {
-        this.$emit("updated-enemy-data", {
-          enemyLevel: this.enemyLevel,
-          enemyResist: this.enemyResist,
-          enemyType: this.enemyType,
-          spectroFrazzleStacks: this.spectroFrazzleStacks,
-          aeroErosionStacks: this.aeroErosionStacks,
-          havocBaneStacks: this.havocBaneStacks,
-          strainStacks: this.strainStacks,
-          fusionBurstStacks: this.fusionBurstStacks,
-          electroFlareStacks: this.electroFlareStacks,
-          electroRageStacks: this.electroRageStacks,
-        });
-      },
-      immediate: true,
-    },
+  set(value: number) {
+    void characterStore.setCharacterData(props.character, { enemyLevel: value });
   },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
+});
+
+const enemyResist = computed({
+  get() {
+    const ch = currentCharacter.value as { enemyResist?: number };
+    return ch.enemyResist ?? 0.1;
   },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    ...mapState(useSettingsStore, ["config"]),
-    settingsTheme() {
-      const settingsTheme = this.config?.theme ?? null;
-      return settingsTheme;
-    },
-    rangeClasses() {
-      const classes = [];
-      if (this.settingsTheme === "black") {
-        classes.push("[--range-shdw:gray]");
-      }
-      return classes;
-    },
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Getter/setter used in the form for the enemy level
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    enemyLevel: {
-      get() {
-        return this.currentCharacter?.enemyLevel ?? 90;
-      },
-      async set(value) {
-        const data = {
-          enemyLevel: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the enemy level
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    enemyResist: {
-      get() {
-        return this.currentCharacter?.enemyResist ?? 0.1;
-      },
-      async set(value) {
-        const data = {
-          enemyResist: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the enemy type
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    enemyType: {
-      get() {
-        return this.currentCharacter?.enemyType ?? "Calamity";
-      },
-      async set(value) {
-        const data = {
-          enemyType: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the number of spectro frazzle stacks
-     * Data is persisted in the store. Avoids needing a local data + store data
-     */
-    spectroFrazzleStacks: {
-      get() {
-        return this.currentCharacter?.spectroFrazzleStacks ?? 0;
-      },
-      async set(value) {
-        const data = {
-          spectroFrazzleStacks: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the number of spectro frazzle stacks
-     * Data is persisted in the store. Avoids needing a local data + store data
-     */
-    aeroErosionStacks: {
-      get() {
-        return this.currentCharacter?.aeroErosionStacks ?? 0;
-      },
-      async set(value) {
-        const data = {
-          aeroErosionStacks: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the number of havoc bane stacks
-     * Data is persisted in the store. Avoids needing a local data + store data
-     */
-    havocBaneStacks: {
-      get() {
-        return this.currentCharacter?.havocBaneStacks ?? 0;
-      },
-      async set(value) {
-        const data = {
-          havocBaneStacks: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the number of fusion burst stacks
-     * Data is persisted in the store. Avoids needing a local data + store data
-     */
-    fusionBurstStacks: {
-      get() {
-        return this.currentCharacter?.fusionBurstStacks ?? 0;
-      },
-      async set(value) {
-        const data = {
-          fusionBurstStacks: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the number of fusion burst stacks
-     * Data is persisted in the store. Avoids needing a local data + store data
-     */
-    electroFlareStacks: {
-      get() {
-        return this.currentCharacter?.electroFlareStacks ?? 0;
-      },
-      async set(value) {
-        const data = {
-          electroFlareStacks: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the number of fusion rage stacks
-     * Data is persisted in the store. Avoids needing a local data + store data
-     */
-    electroRageStacks: {
-      get() {
-        return this.currentCharacter?.electroRageStacks ?? 0;
-      },
-      async set(value) {
-        const data = {
-          electroRageStacks: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the number of strain stacks
-     * Data is persisted in the store. Avoids needing a local data + store data
-     */
-    strainStacks: {
-      get() {
-        return this.currentCharacter?.strainStacks ?? 0;
-      },
-      async set(value) {
-        const data = {
-          strainStacks: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
+  set(value: number) {
+    void characterStore.setCharacterData(props.character, { enemyResist: value });
   },
-};
+});
+
+const enemyType = computed({
+  get() {
+    const ch = currentCharacter.value as { enemyType?: string };
+    return ch.enemyType ?? "Calamity";
+  },
+  set(value: string) {
+    void characterStore.setCharacterData(props.character, { enemyType: value });
+  },
+});
+
+const spectroFrazzleStacks = computed({
+  get() {
+    const ch = currentCharacter.value as { spectroFrazzleStacks?: number };
+    return ch.spectroFrazzleStacks ?? 0;
+  },
+  set(value: number) {
+    void characterStore.setCharacterData(props.character, {
+      spectroFrazzleStacks: value,
+    });
+  },
+});
+
+const aeroErosionStacks = computed({
+  get() {
+    const ch = currentCharacter.value as { aeroErosionStacks?: number };
+    return ch.aeroErosionStacks ?? 0;
+  },
+  set(value: number) {
+    void characterStore.setCharacterData(props.character, {
+      aeroErosionStacks: value,
+    });
+  },
+});
+
+const havocBaneStacks = computed({
+  get() {
+    const ch = currentCharacter.value as { havocBaneStacks?: number };
+    return ch.havocBaneStacks ?? 0;
+  },
+  set(value: number) {
+    void characterStore.setCharacterData(props.character, {
+      havocBaneStacks: value,
+    });
+  },
+});
+
+const fusionBurstStacks = computed({
+  get() {
+    const ch = currentCharacter.value as { fusionBurstStacks?: number };
+    return ch.fusionBurstStacks ?? 0;
+  },
+  set(value: number) {
+    void characterStore.setCharacterData(props.character, {
+      fusionBurstStacks: value,
+    });
+  },
+});
+
+const electroFlareStacks = computed({
+  get() {
+    const ch = currentCharacter.value as { electroFlareStacks?: number };
+    return ch.electroFlareStacks ?? 0;
+  },
+  set(value: number) {
+    void characterStore.setCharacterData(props.character, {
+      electroFlareStacks: value,
+    });
+  },
+});
+
+const electroRageStacks = computed({
+  get() {
+    const ch = currentCharacter.value as { electroRageStacks?: number };
+    return ch.electroRageStacks ?? 0;
+  },
+  set(value: number) {
+    void characterStore.setCharacterData(props.character, {
+      electroRageStacks: value,
+    });
+  },
+});
+
+const strainStacks = computed({
+  get() {
+    const ch = currentCharacter.value as { strainStacks?: number };
+    return ch.strainStacks ?? 0;
+  },
+  set(value: number) {
+    void characterStore.setCharacterData(props.character, { strainStacks: value });
+  },
+});
+
+watchEffect(() => {
+  emit("updated-enemy-data", {
+    enemyLevel: enemyLevel.value,
+    enemyResist: enemyResist.value,
+    enemyType: enemyType.value,
+    spectroFrazzleStacks: spectroFrazzleStacks.value,
+    aeroErosionStacks: aeroErosionStacks.value,
+    havocBaneStacks: havocBaneStacks.value,
+    strainStacks: strainStacks.value,
+    fusionBurstStacks: fusionBurstStacks.value,
+    electroFlareStacks: electroFlareStacks.value,
+    electroRageStacks: electroRageStacks.value,
+  });
+});
 </script>
 
 <style lang="scss" scoped>
