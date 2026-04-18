@@ -377,8 +377,15 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 import Chart from "chart.js/auto";
 import Nav from "../components/navigation/Nav.vue";
 import {
@@ -421,350 +428,361 @@ const EMPTY_RESULT: ConveneSimulationResult = {
   stepProbabilities: [],
 };
 
-export default defineComponent({
-  name: "ConveneView",
-  components: { Nav },
-  data() {
-    return {
-      astrite: 0,
-      lunite: 0,
-      extraWishes: 0,
-      mode: "character" as ConveneMode,
-      /** S0 => 0, S6 => 6 (copies = index + 1). -1 = no copy yet. */
-      currentOwnedIndex: -1,
-      /** S0 => 0, S6 => 6 (copies = index + 1) */
-      targetIndex: 0,
-      startingPity: 0,
-      guaranteedNextFeatured: false,
-      result: EMPTY_RESULT,
-      iterations: 20_000,
-      debounceId: null as ReturnType<typeof setTimeout> | null,
-      maxFiveStarPityInput: MAX_PULLS_SINCE_LAST_FIVE,
-      daysUntilPull: 0,
-      dailiesLuniteSubscription: false,
-      topUpLines: [] as TopUpLineRow[],
-      nextTopUpLineId: 1,
-      runsFantasiesThousandGateways: 0,
-      runsTowerOfAdversity: 0,
-      runsWhimperingWastes: 0,
-      eventAstriteRows: [] as EventAstriteRow[],
-      nextEventAstriteRowId: 1,
-      DAILY_ASTRITE_BASE,
-      DAILY_ASTRITE_SUBSCRIPTION_EXTRA,
-      LUNITE_TOPUP_TIERS,
-      ASTRITE_FANTASIES_THOUSAND_GATEWAYS,
-      ASTRITE_TOWER_OF_ADVERSITY,
-      ASTRITE_WHIMPERING_WASTES,
-    };
-  },
-  computed: {
-    daysUntilPullRounded(): number {
-      return Math.max(0, Math.floor(Number(this.daysUntilPull) || 0));
+const astrite = ref(0);
+const lunite = ref(0);
+const extraWishes = ref(0);
+const mode = ref<ConveneMode>("character");
+/** S0 => 0, S6 => 6 (copies = index + 1). -1 = no copy yet. */
+const currentOwnedIndex = ref(-1);
+/** S0 => 0, S6 => 6 (copies = index + 1) */
+const targetIndex = ref(0);
+const startingPity = ref(0);
+const guaranteedNextFeatured = ref(false);
+const result = ref<ConveneSimulationResult>({ ...EMPTY_RESULT });
+const iterations = ref(20_000);
+const debounceId = ref<ReturnType<typeof setTimeout> | null>(null);
+const maxFiveStarPityInput = ref(MAX_PULLS_SINCE_LAST_FIVE);
+const daysUntilPull = ref(0);
+const dailiesLuniteSubscription = ref(false);
+const topUpLines = ref<TopUpLineRow[]>([]);
+const nextTopUpLineId = ref(1);
+const runsFantasiesThousandGateways = ref(0);
+const runsTowerOfAdversity = ref(0);
+const runsWhimperingWastes = ref(0);
+const eventAstriteRows = ref<EventAstriteRow[]>([]);
+const nextEventAstriteRowId = ref(1);
+const chartCanvas = ref<HTMLCanvasElement | null>(null);
+
+const daysUntilPullRounded = computed(() =>
+  Math.max(0, Math.floor(Number(daysUntilPull.value) || 0)),
+);
+
+const dailyAstriteRate = computed(
+  () =>
+    DAILY_ASTRITE_BASE +
+    (dailiesLuniteSubscription.value ? DAILY_ASTRITE_SUBSCRIPTION_EXTRA : 0),
+);
+
+const dailyAstriteIfSubscribed = computed(
+  () => DAILY_ASTRITE_BASE + DAILY_ASTRITE_SUBSCRIPTION_EXTRA,
+);
+
+const astriteOnHand = computed(() =>
+  Math.max(0, Math.floor(Number(astrite.value) || 0)),
+);
+
+const luniteOnHand = computed(() =>
+  Math.max(0, Math.floor(Number(lunite.value) || 0)),
+);
+
+const astriteFromDailies = computed(
+  () => daysUntilPullRounded.value * dailyAstriteRate.value,
+);
+
+const astriteFromStaticContent = computed(() =>
+  astriteFromStaticContentRuns(
+    runsFantasiesThousandGateways.value,
+    runsTowerOfAdversity.value,
+    runsWhimperingWastes.value,
+  ),
+);
+
+const astriteFromCustomEvents = computed(() => {
+  let sum = 0;
+  for (const row of eventAstriteRows.value) {
+    sum += Math.max(0, Math.floor(Number(row.astrite) || 0));
+  }
+  return sum;
+});
+
+const totalAstriteForWishes = computed(
+  () =>
+    astriteOnHand.value +
+    astriteFromDailies.value +
+    astriteFromStaticContent.value +
+    astriteFromCustomEvents.value,
+);
+
+const luniteFromTopUps = computed(() => {
+  let sum = 0;
+  for (const row of topUpLines.value) {
+    const ti = Math.min(
+      LUNITE_TOPUP_TIERS.length - 1,
+      Math.max(0, Math.floor(row.tierIndex)),
+    );
+    const tier = LUNITE_TOPUP_TIERS[ti];
+    if (!tier) continue;
+    sum += luniteFromTopUpLine(tier, row.quantity, row.firstPurchaseBonus);
+  }
+  return sum;
+});
+
+const topUpUsdTotal = computed(() => {
+  let sum = 0;
+  for (const row of topUpLines.value) {
+    const ti = Math.min(
+      LUNITE_TOPUP_TIERS.length - 1,
+      Math.max(0, Math.floor(row.tierIndex)),
+    );
+    const tier = LUNITE_TOPUP_TIERS[ti];
+    if (!tier) continue;
+    sum += usdFromTopUpLine(tier, row.quantity);
+  }
+  return sum;
+});
+
+const totalLuniteForWishes = computed(
+  () => luniteOnHand.value + luniteFromTopUps.value,
+);
+
+const wishesFromCurrency = computed(() =>
+  Math.floor(
+    (totalAstriteForWishes.value + totalLuniteForWishes.value) /
+      ASTRITE_PER_WISH,
+  ),
+);
+
+const totalWishes = computed(
+  () =>
+    wishesFromCurrency.value +
+    Math.max(0, Math.floor(Number(extraWishes.value) || 0)),
+);
+
+/** Promotional copies already owned (0 if you do not have the unit yet). */
+const copiesOwnedBefore = computed(() => {
+  if (currentOwnedIndex.value < 0) return 0;
+  return currentOwnedIndex.value + 1;
+});
+
+const additionalCopiesNeeded = computed(() => {
+  const targetCopies = targetIndex.value + 1;
+  return Math.max(0, targetCopies - copiesOwnedBefore.value);
+});
+
+const goalLabel = computed(() =>
+  mode.value === "character"
+    ? `S${targetIndex.value}`
+    : `R${targetIndex.value}`,
+);
+
+const currentOwnershipOptions = computed((): { value: number; label: string }[] => {
+  const out: { value: number; label: string }[] = [
+    {
+      value: -1,
+      label:
+        mode.value === "character"
+          ? "No copy yet (0 promotional pulls on this resonator)"
+          : "No copy yet (0 promotional pulls on this weapon)",
     },
-    dailyAstriteRate(): number {
-      return (
-        DAILY_ASTRITE_BASE +
-        (this.dailiesLuniteSubscription ? DAILY_ASTRITE_SUBSCRIPTION_EXTRA : 0)
-      );
-    },
-    dailyAstriteIfSubscribed(): number {
-      return DAILY_ASTRITE_BASE + DAILY_ASTRITE_SUBSCRIPTION_EXTRA;
-    },
-    astriteOnHand(): number {
-      return Math.max(0, Math.floor(Number(this.astrite) || 0));
-    },
-    luniteOnHand(): number {
-      return Math.max(0, Math.floor(Number(this.lunite) || 0));
-    },
-    astriteFromDailies(): number {
-      return this.daysUntilPullRounded * this.dailyAstriteRate;
-    },
-    astriteFromStaticContent(): number {
-      return astriteFromStaticContentRuns(
-        this.runsFantasiesThousandGateways,
-        this.runsTowerOfAdversity,
-        this.runsWhimperingWastes,
-      );
-    },
-    astriteFromCustomEvents(): number {
-      let sum = 0;
-      for (const row of this.eventAstriteRows) {
-        sum += Math.max(0, Math.floor(Number(row.astrite) || 0));
-      }
-      return sum;
-    },
-    totalAstriteForWishes(): number {
-      return (
-        this.astriteOnHand +
-        this.astriteFromDailies +
-        this.astriteFromStaticContent +
-        this.astriteFromCustomEvents
-      );
-    },
-    luniteFromTopUps(): number {
-      let sum = 0;
-      for (const row of this.topUpLines) {
-        const ti = Math.min(
-          LUNITE_TOPUP_TIERS.length - 1,
-          Math.max(0, Math.floor(row.tierIndex)),
-        );
-        const tier = LUNITE_TOPUP_TIERS[ti];
-        if (!tier) continue;
-        sum += luniteFromTopUpLine(
-          tier,
-          row.quantity,
-          row.firstPurchaseBonus,
-        );
-      }
-      return sum;
-    },
-    topUpUsdTotal(): number {
-      let sum = 0;
-      for (const row of this.topUpLines) {
-        const ti = Math.min(
-          LUNITE_TOPUP_TIERS.length - 1,
-          Math.max(0, Math.floor(row.tierIndex)),
-        );
-        const tier = LUNITE_TOPUP_TIERS[ti];
-        if (!tier) continue;
-        sum += usdFromTopUpLine(tier, row.quantity);
-      }
-      return sum;
-    },
-    totalLuniteForWishes(): number {
-      return this.luniteOnHand + this.luniteFromTopUps;
-    },
-    wishesFromCurrency(): number {
-      return Math.floor(
-        (this.totalAstriteForWishes + this.totalLuniteForWishes) /
-          ASTRITE_PER_WISH,
-      );
-    },
-    totalWishes(): number {
-      return (
-        this.wishesFromCurrency + Math.max(0, Math.floor(Number(this.extraWishes) || 0))
-      );
-    },
-    /** Promotional copies already owned (0 if you do not have the unit yet). */
-    copiesOwnedBefore(): number {
-      if (this.currentOwnedIndex < 0) return 0;
-      return this.currentOwnedIndex + 1;
-    },
-    additionalCopiesNeeded(): number {
-      const targetCopies = this.targetIndex + 1;
-      return Math.max(0, targetCopies - this.copiesOwnedBefore);
-    },
-    goalLabel(): string {
-      return this.mode === "character" ? `S${this.targetIndex}` : `R${this.targetIndex}`;
-    },
-    currentOwnershipOptions(): { value: number; label: string }[] {
-      const out: { value: number; label: string }[] = [
+  ];
+  const max = mode.value === "character" ? 6 : 5;
+  for (let i = 0; i <= max; i++) {
+    if (mode.value === "character") {
+      out.push({
+        value: i,
+        label: `S${i} (${i + 1} featured pull${i > 0 ? "s" : ""} so far)`,
+      });
+    } else {
+      out.push({
+        value: i,
+        label: `R${i} (${i + 1} featured pull${i > 0 ? "s" : ""} so far)`,
+      });
+    }
+  }
+  return out;
+});
+
+const targetOptions = computed((): { value: number; label: string }[] => {
+  const n = mode.value === "character" ? 7 : 6;
+  const out: { value: number; label: string }[] = [];
+  for (let i = 0; i < n; i++) {
+    if (mode.value === "character") {
+      out.push({
+        value: i,
+        label: `S${i} (${i + 1} featured pull${i > 0 ? "s" : ""})`,
+      });
+    } else {
+      out.push({
+        value: i,
+        label: `R${i} (${i + 1} featured pull${i > 0 ? "s" : ""})`,
+      });
+    }
+  }
+  return out;
+});
+
+function formatPct(x: number): string {
+  return `${(100 * x).toFixed(1)}%`;
+}
+
+function destroyChart() {
+  const canvas = chartCanvas.value;
+  if (canvas) {
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
+  }
+}
+
+function renderChart() {
+  const canvas = chartCanvas.value;
+  if (!canvas || !result.value.stepProbabilities.length) {
+    destroyChart();
+    return;
+  }
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  destroyChart();
+
+  const labels = result.value.stepProbabilities.map((s) => s.label);
+  const values = result.value.stepProbabilities.map(
+    (s) => Math.round(s.probability * 1000) / 10,
+  );
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [
         {
-          value: -1,
-          label:
-            this.mode === "character"
-              ? "No copy yet (0 promotional pulls on this resonator)"
-              : "No copy yet (0 promotional pulls on this weapon)",
+          label: "Chance (%)",
+          data: values,
+          backgroundColor: "rgba(56, 189, 248, 0.55)",
+          borderColor: "rgba(56, 189, 248, 1)",
+          borderWidth: 1,
         },
-      ];
-      const max = this.mode === "character" ? 6 : 5;
-      for (let i = 0; i <= max; i++) {
-        if (this.mode === "character") {
-          out.push({
-            value: i,
-            label: `S${i} (${i + 1} featured pull${i > 0 ? "s" : ""} so far)`,
-          });
-        } else {
-          out.push({
-            value: i,
-            label: `R${i} (${i + 1} featured pull${i > 0 ? "s" : ""} so far)`,
-          });
-        }
-      }
-      return out;
+      ],
     },
-    targetOptions(): { value: number; label: string }[] {
-      const n = this.mode === "character" ? 7 : 6;
-      const out: { value: number; label: string }[] = [];
-      for (let i = 0; i < n; i++) {
-        if (this.mode === "character") {
-          out.push({ value: i, label: `S${i} (${i + 1} featured pull${i > 0 ? "s" : ""})` });
-        } else {
-          out.push({ value: i, label: `R${i} (${i + 1} featured pull${i > 0 ? "s" : ""})` });
-        }
-      }
-      return out;
-    },
-  },
-  watch: {
-    astrite: "scheduleSim",
-    lunite: "scheduleSim",
-    extraWishes: "scheduleSim",
-    daysUntilPull: "scheduleSim",
-    dailiesLuniteSubscription: "scheduleSim",
-    topUpLines: {
-      deep: true,
-      handler: "scheduleSim",
-    },
-    runsFantasiesThousandGateways: "scheduleSim",
-    runsTowerOfAdversity: "scheduleSim",
-    runsWhimperingWastes: "scheduleSim",
-    eventAstriteRows: {
-      deep: true,
-      handler: "scheduleSim",
-    },
-    mode() {
-      if (this.targetIndex >= this.targetOptions.length) {
-        this.targetIndex = Math.max(0, this.targetOptions.length - 1);
-      }
-      const maxOwned = this.mode === "character" ? 6 : 5;
-      if (this.currentOwnedIndex > maxOwned) {
-        this.currentOwnedIndex = maxOwned;
-      }
-      this.scheduleSim();
-    },
-    currentOwnedIndex: "scheduleSim",
-    targetIndex: "scheduleSim",
-    startingPity: "scheduleSim",
-    guaranteedNextFeatured: "scheduleSim",
-    result() {
-      this.$nextTick(() => this.renderChart());
-    },
-  },
-  mounted() {
-    this.runSim();
-  },
-  beforeUnmount() {
-    if (this.debounceId) clearTimeout(this.debounceId);
-    this.destroyChart();
-  },
-  methods: {
-    addTopUpLine() {
-      this.topUpLines.push({
-        id: this.nextTopUpLineId++,
-        tierIndex: LUNITE_TOPUP_TIERS.length - 1,
-        quantity: 1,
-        firstPurchaseBonus: false,
-      });
-    },
-    removeTopUpLine(index: number) {
-      this.topUpLines.splice(index, 1);
-    },
-    addEventAstriteRow() {
-      this.eventAstriteRows.push({
-        id: this.nextEventAstriteRowId++,
-        name: "",
-        astrite: 0,
-      });
-    },
-    removeEventAstriteRow(index: number) {
-      this.eventAstriteRows.splice(index, 1);
-    },
-    formatPct(x: number): string {
-      return `${(100 * x).toFixed(1)}%`;
-    },
-    scheduleSim() {
-      if (this.debounceId) clearTimeout(this.debounceId);
-      this.debounceId = setTimeout(() => {
-        this.debounceId = null;
-        this.runSim();
-      }, 280);
-    },
-    runSim() {
-      const pity = Math.min(
-        MAX_PULLS_SINCE_LAST_FIVE,
-        Math.max(0, Math.floor(Number(this.startingPity) || 0)),
-      );
-      const baseParams = {
-        wishes: Math.max(0, this.totalWishes),
-        mode: this.mode,
-        startingPity: pity,
-        guaranteedNextFeatured: this.mode === "character" && this.guaranteedNextFeatured,
-        copiesOwnedBefore: this.copiesOwnedBefore,
-      };
-
-      if (this.additionalCopiesNeeded <= 0) {
-        this.result = runMonteCarlo(
-          { ...baseParams, maxCopies: 0 },
-          this.iterations,
-        );
-        this.$nextTick(() => this.renderChart());
-        return;
-      }
-
-      if (this.totalWishes <= 0) {
-        this.result = EMPTY_RESULT;
-        this.$nextTick(() => this.renderChart());
-        return;
-      }
-
-      this.result = runMonteCarlo(
-        { ...baseParams, maxCopies: this.additionalCopiesNeeded },
-        this.iterations,
-      );
-    },
-    destroyChart() {
-      const canvas = this.$refs.chartCanvas as HTMLCanvasElement | undefined;
-      if (canvas) {
-        const existing = Chart.getChart(canvas);
-        if (existing) existing.destroy();
-      }
-    },
-    renderChart() {
-      const canvas = this.$refs.chartCanvas as HTMLCanvasElement | undefined;
-      if (!canvas || !this.result.stepProbabilities.length) {
-        this.destroyChart();
-        return;
-      }
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      this.destroyChart();
-
-      const labels = this.result.stepProbabilities.map((s) => s.label);
-      const values = this.result.stepProbabilities.map((s) => Math.round(s.probability * 1000) / 10);
-
-      new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels,
-          datasets: [
-            {
-              label: "Chance (%)",
-              data: values,
-              backgroundColor: "rgba(56, 189, 248, 0.55)",
-              borderColor: "rgba(56, 189, 248, 1)",
-              borderWidth: 1,
-            },
-          ],
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          title: { display: true, text: "Probability (%)" },
         },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 100,
-              title: { display: true, text: "Probability (%)" },
-            },
-            x: {
-              ticks: { maxRotation: 45, minRotation: 0 },
-            },
-          },
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label(ctx) {
-                  return ` ${ctx.parsed.y}%`;
-                },
-              },
+        x: {
+          ticks: { maxRotation: 45, minRotation: 0 },
+        },
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label(ctx) {
+              return ` ${ctx.parsed.y}%`;
             },
           },
         },
-      });
+      },
     },
-  },
+  });
+}
+
+function runSim() {
+  const pity = Math.min(
+    MAX_PULLS_SINCE_LAST_FIVE,
+    Math.max(0, Math.floor(Number(startingPity.value) || 0)),
+  );
+  const baseParams = {
+    wishes: Math.max(0, totalWishes.value),
+    mode: mode.value,
+    startingPity: pity,
+    guaranteedNextFeatured:
+      mode.value === "character" && guaranteedNextFeatured.value,
+    copiesOwnedBefore: copiesOwnedBefore.value,
+  };
+
+  if (additionalCopiesNeeded.value <= 0) {
+    result.value = runMonteCarlo(
+      { ...baseParams, maxCopies: 0 },
+      iterations.value,
+    );
+    void nextTick(() => renderChart());
+    return;
+  }
+
+  if (totalWishes.value <= 0) {
+    result.value = { ...EMPTY_RESULT };
+    void nextTick(() => renderChart());
+    return;
+  }
+
+  result.value = runMonteCarlo(
+    { ...baseParams, maxCopies: additionalCopiesNeeded.value },
+    iterations.value,
+  );
+}
+
+function scheduleSim() {
+  if (debounceId.value) clearTimeout(debounceId.value);
+  debounceId.value = setTimeout(() => {
+    debounceId.value = null;
+    runSim();
+  }, 280);
+}
+
+function addTopUpLine() {
+  topUpLines.value.push({
+    id: nextTopUpLineId.value++,
+    tierIndex: LUNITE_TOPUP_TIERS.length - 1,
+    quantity: 1,
+    firstPurchaseBonus: false,
+  });
+}
+
+function removeTopUpLine(index: number) {
+  topUpLines.value.splice(index, 1);
+}
+
+function addEventAstriteRow() {
+  eventAstriteRows.value.push({
+    id: nextEventAstriteRowId.value++,
+    name: "",
+    astrite: 0,
+  });
+}
+
+function removeEventAstriteRow(index: number) {
+  eventAstriteRows.value.splice(index, 1);
+}
+
+watch(astrite, scheduleSim);
+watch(lunite, scheduleSim);
+watch(extraWishes, scheduleSim);
+watch(daysUntilPull, scheduleSim);
+watch(dailiesLuniteSubscription, scheduleSim);
+watch(topUpLines, scheduleSim, { deep: true });
+watch(runsFantasiesThousandGateways, scheduleSim);
+watch(runsTowerOfAdversity, scheduleSim);
+watch(runsWhimperingWastes, scheduleSim);
+watch(eventAstriteRows, scheduleSim, { deep: true });
+watch(mode, () => {
+  if (targetIndex.value >= targetOptions.value.length) {
+    targetIndex.value = Math.max(0, targetOptions.value.length - 1);
+  }
+  const maxOwned = mode.value === "character" ? 6 : 5;
+  if (currentOwnedIndex.value > maxOwned) {
+    currentOwnedIndex.value = maxOwned;
+  }
+  scheduleSim();
+});
+watch(currentOwnedIndex, scheduleSim);
+watch(targetIndex, scheduleSim);
+watch(startingPity, scheduleSim);
+watch(guaranteedNextFeatured, scheduleSim);
+watch(result, () => {
+  void nextTick(() => renderChart());
+});
+
+onMounted(() => {
+  runSim();
+});
+
+onBeforeUnmount(() => {
+  if (debounceId.value) clearTimeout(debounceId.value);
+  destroyChart();
 });
 </script>
 

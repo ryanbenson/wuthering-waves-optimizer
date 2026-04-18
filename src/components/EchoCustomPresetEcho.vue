@@ -14,43 +14,30 @@
             </div>
 </template>
 
-<script>
-import {
-  mainEchoesData,
-  getEchoData,
-  getCostByClass,
-} from "../echoes/index.ts";
-import { mapActions } from "pinia";
+<script setup lang="ts">
+import { computed } from "vue";
+import { getEchoData } from "../echoes/index.ts";
 import { useInventoryStore } from "../stores/inventory";
-export default {
-    name: 'EchoCustomPresetEcho',
-    props: {
-        echoId: {
-            type: String,
-            required: true,
-        }
-    },
-    methods: {
-        ...mapActions(useInventoryStore, [
-            "getEchoById",
-        ]),
-    },
-    computed: {
-        echoData() {
-            return this.getEchoById(this.echoId);
-        },
-        echoImage() {
-            const defaultImageUrl =
-                "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png";
-            if (!this.echoData?.echo) {
-                return defaultImageUrl;
-            }
-            const echoData = getEchoData(this.echoData.echo);
-            return echoData?.image ?? defaultImageUrl;
-        },
-        rank() {
-            return this.echoData?.rank ?? 5;
-        }
-    }
-}
+
+const props = defineProps<{
+  echoId: string;
+}>();
+
+const inventoryStore = useInventoryStore();
+
+const echoData = computed(() => inventoryStore.getEchoById(props.echoId));
+
+const echoImage = computed(() => {
+  const defaultImageUrl =
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png";
+  if (!(echoData.value as { echo?: string } | undefined)?.echo) {
+    return defaultImageUrl;
+  }
+  const meta = getEchoData((echoData.value as { echo: string }).echo);
+  return (meta as { image?: string } | null)?.image ?? defaultImageUrl;
+});
+
+const rank = computed(
+  () => (echoData.value as { rank?: string | number } | undefined)?.rank ?? 5,
+);
 </script>

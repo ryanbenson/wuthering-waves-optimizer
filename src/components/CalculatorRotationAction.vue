@@ -322,456 +322,444 @@
   </div>
 </template>
 
-<script>
-import { mapState } from "pinia";
+<script setup lang="ts">
+import { computed, defineExpose, nextTick, onMounted, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
 import { echoSetAttacks } from "../echoes/stats";
 import { utilityAttacks } from "../buffs";
-import { mainEchoesData, getEchoData } from "../echoes/index.ts";
+import { getEchoData } from "../echoes/index.ts";
 import { negativeStatusAttacks } from "../calculator/negativeStatusAttacks";
-export default {
-  props: {
-    characterData: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-    character: {
-      type: String,
-      required: true,
-    },
-    id: {
-      type: String,
-      required: true,
-    },
-    actionKey: {
-      type: String,
-      default: null,
-    },
-    type: {
-      type: String,
-      default: null,
-    },
-    order: {
-      type: [Number, String],
-      required: true,
-    },
-    count: {
-      type: [Number, String],
-      required: true,
-    },
-    ignoreSelfBuffs: {
-      type: Boolean,
-      default: false,
-    },
-    ignoreTeamBuffs: {
-      type: Boolean,
-      default: false,
-    },
-    ignoreWeaponBuffs: {
-      type: Boolean,
-      default: false,
-    },
-    isDisabled: {
-      type: Boolean,
-      default: false,
-    },
-    buffs: {
-      type: Array,
-      default() {
-        return [];
-      },
-    },
-    rotationMainEcho: {
-      type: String,
-      default: null,
-    },
-    rotationMainEchoRank: {
-      type: String,
-      default: null,
-    },
-    actionMainEcho: {
-      type: String,
-      default: null,
-    },
-    actionMainEchoRank: {
-      type: Number,
-      default: null,
-    },
-    negativeStatusStacks: {
-      type: Number,
-      default: 1,
-    },
-    electroRageStacks: {
-      type: Number,
-      default: 0,
-    },
-  },
-  components: {
-    CalculatorRotationActionBuff,
-  },
-  data() {
-    return {
-      isEditing: false,
-      countData: 0,
-      actionKeyValue: null,
-      actionSkillType: null,
-      sequence: 0,
-      hits: 0,
-      excludeSelfBuffs: false,
-      excludeTeamBuffs: false,
-      excludeWeaponBuffs: false,
-      disabled: false,
-      buffData: [],
-      negativeStatusStacksLocal: 1,
-      electroRageStacksLocal: 0,
-      skillKeyMap: {
-        basic: "basicAttacks",
-        skill: "skillAttacks",
-        forteCircuit: "forteCircuitAttacks",
-        liberation: "liberationAttacks",
-        intro: "introAttacks",
-        outro: "outroAttacks",
-        tuneBreak: "tuneBreakAttacks",
-        echoSetAttacks: "echoSetAttacks",
-        utilityAttacks: "utilityAttacks",
-        echoAttacks: "echoAttacks",
-      },
-      skillKeyLabelMap: {
-        basic: "Basic",
-        skill: "Skill",
-        forteCircuit: "Forte Circuit",
-        liberation: "Liberation",
-        intro: "Intro",
-        outro: "Outro",
-        tuneBreak: "Tune Break",
-        echoSetAttacks: "Echo Set",
-        utilityAttacks: "Utility",
-        echoAttacks: "Echo Attacks",
-        negativeStatus: "Negative Status",
-      },
-    };
-  },
-  watch: {
-    // watch for when this changes via the prop and update our sequence
-    order() {
-      this.sequence = this.order;
-    },
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    skillType() {
-      return this.skillKeyMap[this.actionSkillType] ?? null;
-    },
-    skillTypeLabel() {
-      return this.skillKeyLabelMap[this.actionSkillType] ?? null;
-    },
-    skillAttacks() {
-      return this.characterData?.[this.skillType]?.attacks ?? [];
-    },
-    negativeStatusAttacksList() {
-      return negativeStatusAttacks;
-    },
-    isNegativeStatusSkill() {
-      return this.actionSkillType === "negativeStatus";
-    },
-    isElectroFlareNegativeStatus() {
-      return (
-        this.isNegativeStatusSkill &&
-        this.actionKeyValue === "ElementalEffectElectroFlare"
-      );
-    },
-    negativeStatusStackMax() {
-      if (this.actionKeyValue === "ElementalEffectAeroErosion") {
-        return 12;
-      }
-      return 13;
-    },
-    attackData() {
-      if (this.actionSkillType === "negativeStatus") {
-        return negativeStatusAttacks.find((attack) => {
-          return attack.key === this.actionKeyValue;
-        });
-      }
-      // if the attack is an echo, find the data from the echo list
-      if (this.skillType === "echoSetAttacks") {
-        return this.echoSetAttacksList.find((attack) => {
-          return attack.key === this.actionKeyValue;
-        });
-      }
-      // if the attack is a utility, find the data from the utility list
-      if (this.skillType === "utilityAttacks") {
-        return this.utilityAttacksList.find((attack) => {
-          return attack.key === this.actionKeyValue;
-        });
-      }
-      if (this.skillType === "echoAttacks") {
-        // use the main echo from the action, not the prop just in case it was changed
-        const echoData = getEchoData(this.actionMainEcho);
-        const echoAttacks = echoData?.actions ?? [];
-        return echoAttacks.find((attack) => {
-          return attack.key === this.actionKeyValue;
-        });
-      }
-      return this.skillAttacks.find((attack) => {
-        return attack.key === this.actionKeyValue;
-      });
-    },
-    damageType() {
-      if (this.actionSkillType === "negativeStatus") {
-        return "Negative Status";
-      }
-      const attackType = this.attackData?.type ?? null;
-      if (!attackType) {
-        return null;
-      }
-      if (attackType === "tuneBreak") {
-        return this.skillKeyLabelMap[attackType];
-      }
-      return attackType;
-    },
-    damageSubType() {
-      return this.attackData?.subType ?? null;
-    },
-    attackLabel() {
-      return this.attackData?.label ?? null;
-    },
-    buffsCount() {
-      return this.buffData.length;
-    },
-    basicAttacksList() {
-      return this.characterData.basicAttacks.attacks ?? [];
-    },
-    skillAttacksList() {
-      return this.characterData.skillAttacks.attacks ?? [];
-    },
-    forteCircuitAttacksList() {
-      return this.characterData.forteCircuitAttacks.attacks ?? [];
-    },
-    liberationAttacksList() {
-      return this.characterData.liberationAttacks.attacks ?? [];
-    },
-    introAttacksList() {
-      return this.characterData.introAttacks.attacks ?? [];
-    },
-    outroAttacksList() {
-      return this.characterData.outroAttacks.attacks ?? [];
-    },
-    tuneBreakAttacksList() {
-      return this.characterData?.tuneBreakAttacks?.attacks ?? [];
-    },
-    echoSetAttacksList() {
-      return echoSetAttacks;
-    },
-    utilityAttacksList() {
-      return utilityAttacks;
-    },
-    mainEchoData() {
-      if (this.actionMainEcho) {
-        return getEchoData(this.actionMainEcho);
-      }
-      if (this.rotationMainEcho) {
-        return getEchoData(this.rotationMainEcho);
-      }
-      return null;
-    },
-    mainEchoDataActions() {
-      if (!this.mainEchoData) {
-        return [];
-      }
-      return this.mainEchoData.actions ?? [];
-    },
-    echoAttackImage() {
-      return this.mainEchoData?.image ?? null;
-    },
-    echoRank() {
-      return this.actionMainEchoRank ?? this.rotationMainEchoRank;
-    },
-  },
-  methods: {
-    toggleEdit() {
-      this.isEditing = !this.isEditing;
-    },
-    buildActionPayload(orderOverride = null) {
-      const action = {
-        id: this.id,
-        order:
-          orderOverride !== null && orderOverride !== undefined
-            ? orderOverride
-            : this.order,
-        key: this.actionKeyValue,
-        type: this.actionSkillType,
-        count: this.hits,
-        buffs: this.buffData,
-        excludeSelfBuffs: this.excludeSelfBuffs,
-        excludeTeamBuffs: this.excludeTeamBuffs,
-        excludeWeaponBuffs: this.excludeWeaponBuffs,
-        isDisabled: this.disabled,
-        negativeStatusStacks: this.negativeStatusStacksLocal,
-        electroRageStacks: this.electroRageStacksLocal,
-      };
-      if (this.actionSkillType === "echoAttacks") {
-        action.mainEcho = this.actionMainEcho || this.rotationMainEcho;
-        action.mainEchoRank =
-          this.actionMainEchoRank || this.rotationMainEchoRank;
-      }
-      return action;
-    },
-    onSkillChange(e) {
-      const index = e.target.selectedIndex;
-      const option = e.target.options[index];
-      const optgroup = option.parentElement;
-      const skill = optgroup.getAttribute("data-skill");
-      this.actionSkillType = skill;
-      this.$nextTick(() => {
-        if (this.actionSkillType === "negativeStatus") {
-          let v = Number(this.negativeStatusStacksLocal);
-          if (Number.isNaN(v) || v < 0) {
-            v = 0;
-          }
-          if (v > this.negativeStatusStackMax) {
-            v = this.negativeStatusStackMax;
-          }
-          this.negativeStatusStacksLocal = v;
-        }
-        this.$emit("action-update", this.buildActionPayload());
-      });
-    },
-    onNegativeStatusStacksInput() {
-      let v = Number(this.negativeStatusStacksLocal);
-      if (Number.isNaN(v) || v < 0) {
-        v = 0;
-      }
-      if (v > this.negativeStatusStackMax) {
-        v = this.negativeStatusStackMax;
-      }
-      this.negativeStatusStacksLocal = v;
-      this.$emit("action-update", this.buildActionPayload());
-    },
-    onElectroRageStacksInput() {
-      let v = Number(this.electroRageStacksLocal);
-      if (Number.isNaN(v) || v < 0) {
-        v = 0;
-      }
-      if (v > 13) {
-        v = 13;
-      }
-      this.electroRageStacksLocal = v;
-      this.$emit("action-update", this.buildActionPayload());
-    },
-    addBuff() {
-      this.buffData.push({
-        id: randomString(),
-        modifier: null,
-        modifierValue: null,
-      });
-    },
-    handleRemoveBuff(removedBuffId) {
-      const updatedBuffsList = this.buffData.filter((buff) => {
-        return buff.id !== removedBuffId;
-      });
-      this.buffData = updatedBuffsList;
 
-      this.$emit("action-update", this.buildActionPayload());
-    },
-    handleUpdatedBuff(buffData) {
-      const buffs = JSON.parse(JSON.stringify(this.buffData));
-      const foundIndex = buffs.findIndex((buff) => {
-        return buff.id === buffData.id;
-      });
-      if (foundIndex === -1) {
-        return;
-      }
-      buffs[foundIndex] = buffData;
-      this.buffData = buffs;
-
-      this.$emit("action-update", this.buildActionPayload());
-    },
-    removeAction() {
-      this.$emit("remove-action", {
-        id: this.id,
-      });
-    },
-    onSequenceChange(e) {
-      this.$emit(
-        "action-update:sequence",
-        this.buildActionPayload(e.target.value),
-      );
-    },
-    onHitsChange(e) {
-      let hitsVal = Number(e.target.value);
-      if (Number.isNaN(hitsVal) || hitsVal <= 0) {
-        hitsVal = 1;
-        this.hits = 1;
-      } else {
-        this.hits = hitsVal;
-      }
-      this.$emit("action-update", this.buildActionPayload());
-    },
-    onExcludeSelfBuffsChange() {
-      this.$emit("action-update", this.buildActionPayload());
-    },
-    onExcludeTeamBuffsChange() {
-      this.$emit("action-update", this.buildActionPayload());
-    },
-    onExcludeWeaponBuffsChange() {
-      this.$emit("action-update", this.buildActionPayload());
-    },
-    onChangeDisabled() {
-      this.$emit("action-update", this.buildActionPayload());
-    },
-    isAttackDisabled(attack) {
-      if (!attack?.requiresResonanceChain) {
-        return false;
-      }
-      let requiredKey = attack.requiresResonanceChain;
-      // TODO: Remove this hack
-      if (requiredKey === "SequenceNode3OBladeIWhoSaveNoMore2") {
-        requiredKey = "SequenceNode3OBladeIWhoSaveNoMore";
-      }
-      // if there is a requirement, check it. it can be a self buff or resonance chain to activate an attack
-      const isResonanceChainEnabled =
-        this.currentCharacter?.resonanceChains?.[requiredKey]?.isEnabled ??
-        false;
-      const isSelfBuffEnabled =
-        this.currentCharacter?.buffs?.[requiredKey]?.isEnabled ?? false;
-      if (isResonanceChainEnabled || isSelfBuffEnabled) {
-        return false;
-      }
-      return true;
-    },
-  },
-  mounted() {
-    this.actionKeyValue = this.actionKey;
-    this.actionSkillType = this.type;
-    this.sequence = this.order;
-    this.hits = this.count;
-    this.excludeSelfBuffs = this.ignoreSelfBuffs;
-    this.excludeTeamBuffs = this.ignoreTeamBuffs;
-    this.excludeWeaponBuffs = this.ignoreWeaponBuffs;
-    this.disabled = this.isDisabled;
-    this.buffData = JSON.parse(JSON.stringify(this.buffs));
-    this.negativeStatusStacksLocal =
-      this.negativeStatusStacks !== undefined &&
-      this.negativeStatusStacks !== null
-        ? this.negativeStatusStacks
-        : 1;
-    this.electroRageStacksLocal =
-      this.electroRageStacks !== undefined && this.electroRageStacks !== null
-        ? this.electroRageStacks
-        : 0;
-  },
+type AttackRow = {
+  key: string;
+  label?: string;
+  type?: string;
+  subType?: string | null;
+  requiresResonanceChain?: string;
+  [key: string]: unknown;
 };
+
+type BuffRow = {
+  id: string;
+  modifier?: string | null;
+  modifierValue?: unknown;
+};
+
+const skillKeyMap = {
+  basic: "basicAttacks",
+  skill: "skillAttacks",
+  forteCircuit: "forteCircuitAttacks",
+  liberation: "liberationAttacks",
+  intro: "introAttacks",
+  outro: "outroAttacks",
+  tuneBreak: "tuneBreakAttacks",
+  echoSetAttacks: "echoSetAttacks",
+  utilityAttacks: "utilityAttacks",
+  echoAttacks: "echoAttacks",
+} as const;
+
+const skillKeyLabelMap: Record<string, string> = {
+  basic: "Basic",
+  skill: "Skill",
+  forteCircuit: "Forte Circuit",
+  liberation: "Liberation",
+  intro: "Intro",
+  outro: "Outro",
+  tuneBreak: "Tune Break",
+  echoSetAttacks: "Echo Set",
+  utilityAttacks: "Utility",
+  echoAttacks: "Echo Attacks",
+  negativeStatus: "Negative Status",
+};
+
+const props = withDefaults(
+  defineProps<{
+    characterData?: Record<string, unknown>;
+    character: string;
+    id: string;
+    actionKey?: string | null;
+    type?: string | null;
+    order: number | string;
+    count: number | string;
+    ignoreSelfBuffs?: boolean;
+    ignoreTeamBuffs?: boolean;
+    ignoreWeaponBuffs?: boolean;
+    isDisabled?: boolean;
+    buffs?: BuffRow[];
+    rotationMainEcho?: string | null;
+    rotationMainEchoRank?: string | number | null;
+    actionMainEcho?: string | null;
+    actionMainEchoRank?: number | null;
+    negativeStatusStacks?: number;
+    electroRageStacks?: number;
+  }>(),
+  {
+    characterData: () => ({}),
+    actionKey: null,
+    type: null,
+    ignoreSelfBuffs: false,
+    ignoreTeamBuffs: false,
+    ignoreWeaponBuffs: false,
+    isDisabled: false,
+    buffs: () => [],
+    rotationMainEcho: null,
+    rotationMainEchoRank: null,
+    actionMainEcho: null,
+    actionMainEchoRank: null,
+    negativeStatusStacks: 1,
+    electroRageStacks: 0,
+  },
+);
+
+const emit = defineEmits<{
+  "action-update": [payload: Record<string, unknown>];
+  "action-update:sequence": [payload: Record<string, unknown>];
+  "remove-action": [payload: { id: string }];
+}>();
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+
+const isEditing = ref(false);
+const actionKeyValue = ref<string | null>(null);
+const actionSkillType = ref<string | null>(null);
+const sequence = ref(0);
+const hits = ref(0);
+const excludeSelfBuffs = ref(false);
+const excludeTeamBuffs = ref(false);
+const excludeWeaponBuffs = ref(false);
+const disabled = ref(false);
+const buffData = ref<BuffRow[]>([]);
+const negativeStatusStacksLocal = ref(1);
+const electroRageStacksLocal = ref(0);
+
+const currentCharacter = computed(
+  () =>
+    (characters.value[props.character] ?? {}) as {
+      resonanceChains?: Record<string, { isEnabled?: boolean }>;
+      buffs?: Record<string, { isEnabled?: boolean }>;
+    },
+);
+
+const skillType = computed(() => {
+  if (!actionSkillType.value) return null;
+  return (
+    skillKeyMap[actionSkillType.value as keyof typeof skillKeyMap] ?? null
+  );
+});
+
+const skillTypeLabel = computed(() => {
+  if (!actionSkillType.value) return null;
+  return skillKeyLabelMap[actionSkillType.value] ?? null;
+});
+
+const skillAttacks = computed(() => {
+  if (!skillType.value) return [];
+  const group = props.characterData?.[skillType.value] as
+    | { attacks?: AttackRow[] }
+    | undefined;
+  return group?.attacks ?? [];
+});
+
+const negativeStatusAttacksList = computed(() => negativeStatusAttacks);
+
+const isNegativeStatusSkill = computed(
+  () => actionSkillType.value === "negativeStatus",
+);
+
+const isElectroFlareNegativeStatus = computed(
+  () =>
+    isNegativeStatusSkill.value &&
+    actionKeyValue.value === "ElementalEffectElectroFlare",
+);
+
+const negativeStatusStackMax = computed(() => {
+  if (actionKeyValue.value === "ElementalEffectAeroErosion") {
+    return 12;
+  }
+  return 13;
+});
+
+const echoSetAttacksList = echoSetAttacks;
+const utilityAttacksList = utilityAttacks;
+
+const mainEchoData = computed(() => {
+  if (props.actionMainEcho) {
+    return getEchoData(props.actionMainEcho);
+  }
+  if (props.rotationMainEcho) {
+    return getEchoData(props.rotationMainEcho);
+  }
+  return null;
+});
+
+const mainEchoDataActions = computed(() => {
+  if (!mainEchoData.value) {
+    return [];
+  }
+  return (mainEchoData.value as { actions?: AttackRow[] }).actions ?? [];
+});
+
+const echoAttackImage = computed(
+  () => (mainEchoData.value as { image?: string } | null)?.image ?? null,
+);
+
+const echoRank = computed(
+  () => props.actionMainEchoRank ?? props.rotationMainEchoRank,
+);
+
+const attackData = computed(() => {
+  if (actionSkillType.value === "negativeStatus") {
+    return negativeStatusAttacks.find((attack) => attack.key === actionKeyValue.value);
+  }
+  if (skillType.value === "echoSetAttacks") {
+    return echoSetAttacksList.find((attack) => attack.key === actionKeyValue.value);
+  }
+  if (skillType.value === "utilityAttacks") {
+    return utilityAttacksList.find((attack) => attack.key === actionKeyValue.value);
+  }
+  if (skillType.value === "echoAttacks") {
+    const echoData = getEchoData(props.actionMainEcho as string);
+    const echoAttacks = echoData?.actions ?? [];
+    return echoAttacks.find((attack) => attack.key === actionKeyValue.value);
+  }
+  return skillAttacks.value.find((attack) => attack.key === actionKeyValue.value);
+});
+
+const damageType = computed(() => {
+  if (actionSkillType.value === "negativeStatus") {
+    return "Negative Status";
+  }
+  const attackType = attackData.value?.type ?? null;
+  if (!attackType) {
+    return null;
+  }
+  if (attackType === "tuneBreak") {
+    return skillKeyLabelMap[attackType];
+  }
+  return attackType as string;
+});
+
+const damageSubType = computed(() => {
+  const ad = attackData.value as { subType?: string | null } | undefined;
+  return ad?.subType ?? null;
+});
+
+const attackLabel = computed(() => attackData.value?.label ?? null);
+
+const buffsCount = computed(() => buffData.value.length);
+
+function attacksFor(
+  key:
+    | "basicAttacks"
+    | "skillAttacks"
+    | "forteCircuitAttacks"
+    | "liberationAttacks"
+    | "introAttacks"
+    | "outroAttacks"
+    | "tuneBreakAttacks",
+): AttackRow[] {
+  const g = props.characterData?.[key] as { attacks?: AttackRow[] } | undefined;
+  return g?.attacks ?? [];
+}
+
+const basicAttacksList = computed(() => attacksFor("basicAttacks"));
+const skillAttacksList = computed(() => attacksFor("skillAttacks"));
+const forteCircuitAttacksList = computed(() => attacksFor("forteCircuitAttacks"));
+const liberationAttacksList = computed(() => attacksFor("liberationAttacks"));
+const introAttacksList = computed(() => attacksFor("introAttacks"));
+const outroAttacksList = computed(() => attacksFor("outroAttacks"));
+const tuneBreakAttacksList = computed(() => attacksFor("tuneBreakAttacks"));
+
+function toggleEdit() {
+  isEditing.value = !isEditing.value;
+}
+
+defineExpose({ toggleEdit });
+
+function buildActionPayload(orderOverride: number | string | null = null) {
+  const action: Record<string, unknown> = {
+    id: props.id,
+    order:
+      orderOverride !== null && orderOverride !== undefined
+        ? orderOverride
+        : props.order,
+    key: actionKeyValue.value,
+    type: actionSkillType.value,
+    count: hits.value,
+    buffs: buffData.value,
+    excludeSelfBuffs: excludeSelfBuffs.value,
+    excludeTeamBuffs: excludeTeamBuffs.value,
+    excludeWeaponBuffs: excludeWeaponBuffs.value,
+    isDisabled: disabled.value,
+    negativeStatusStacks: negativeStatusStacksLocal.value,
+    electroRageStacks: electroRageStacksLocal.value,
+  };
+  if (actionSkillType.value === "echoAttacks") {
+    action.mainEcho = props.actionMainEcho || props.rotationMainEcho;
+    action.mainEchoRank =
+      props.actionMainEchoRank || props.rotationMainEchoRank;
+  }
+  return action;
+}
+
+function onSkillChange(e: Event) {
+  const target = e.target as HTMLSelectElement;
+  const index = target.selectedIndex;
+  const option = target.options[index];
+  const optgroup = option.parentElement;
+  const skill = optgroup?.getAttribute("data-skill") ?? null;
+  actionSkillType.value = skill;
+  void nextTick(() => {
+    if (actionSkillType.value === "negativeStatus") {
+      let v = Number(negativeStatusStacksLocal.value);
+      if (Number.isNaN(v) || v < 0) {
+        v = 0;
+      }
+      if (v > negativeStatusStackMax.value) {
+        v = negativeStatusStackMax.value;
+      }
+      negativeStatusStacksLocal.value = v;
+    }
+    emit("action-update", buildActionPayload());
+  });
+}
+
+function onNegativeStatusStacksInput() {
+  let v = Number(negativeStatusStacksLocal.value);
+  if (Number.isNaN(v) || v < 0) {
+    v = 0;
+  }
+  if (v > negativeStatusStackMax.value) {
+    v = negativeStatusStackMax.value;
+  }
+  negativeStatusStacksLocal.value = v;
+  emit("action-update", buildActionPayload());
+}
+
+function onElectroRageStacksInput() {
+  let v = Number(electroRageStacksLocal.value);
+  if (Number.isNaN(v) || v < 0) {
+    v = 0;
+  }
+  if (v > 13) {
+    v = 13;
+  }
+  electroRageStacksLocal.value = v;
+  emit("action-update", buildActionPayload());
+}
+
+function addBuff() {
+  buffData.value.push({
+    id: randomString(),
+    modifier: null,
+    modifierValue: null,
+  });
+}
+
+function handleRemoveBuff(removedBuffId: string) {
+  buffData.value = buffData.value.filter((buff) => buff.id !== removedBuffId);
+  emit("action-update", buildActionPayload());
+}
+
+function handleUpdatedBuff(buffRow: BuffRow & Record<string, unknown>) {
+  const buffs = JSON.parse(JSON.stringify(buffData.value)) as BuffRow[];
+  const foundIndex = buffs.findIndex((buff) => buff.id === buffRow.id);
+  if (foundIndex === -1) {
+    return;
+  }
+  buffs[foundIndex] = buffRow as BuffRow;
+  buffData.value = buffs;
+  emit("action-update", buildActionPayload());
+}
+
+function removeAction() {
+  emit("remove-action", { id: props.id });
+}
+
+function onSequenceChange(e: Event) {
+  const target = e.target as HTMLInputElement;
+  emit("action-update:sequence", buildActionPayload(target.value));
+}
+
+function onHitsChange(e: Event) {
+  const target = e.target as HTMLInputElement;
+  let hitsVal = Number(target.value);
+  if (Number.isNaN(hitsVal) || hitsVal <= 0) {
+    hitsVal = 1;
+    hits.value = 1;
+  } else {
+    hits.value = hitsVal;
+  }
+  emit("action-update", buildActionPayload());
+}
+
+function onExcludeSelfBuffsChange() {
+  emit("action-update", buildActionPayload());
+}
+
+function onExcludeTeamBuffsChange() {
+  emit("action-update", buildActionPayload());
+}
+
+function onExcludeWeaponBuffsChange() {
+  emit("action-update", buildActionPayload());
+}
+
+function onChangeDisabled() {
+  emit("action-update", buildActionPayload());
+}
+
+function isAttackDisabled(attack: AttackRow) {
+  if (!attack?.requiresResonanceChain) {
+    return false;
+  }
+  let requiredKey = attack.requiresResonanceChain;
+  if (requiredKey === "SequenceNode3OBladeIWhoSaveNoMore2") {
+    requiredKey = "SequenceNode3OBladeIWhoSaveNoMore";
+  }
+  const isResonanceChainEnabled =
+    currentCharacter.value?.resonanceChains?.[requiredKey]?.isEnabled ?? false;
+  const isSelfBuffEnabled =
+    currentCharacter.value?.buffs?.[requiredKey]?.isEnabled ?? false;
+  if (isResonanceChainEnabled || isSelfBuffEnabled) {
+    return false;
+  }
+  return true;
+}
+
+watch(
+  () => props.order,
+  (o) => {
+    sequence.value = Number(o);
+  },
+);
+
+onMounted(() => {
+  actionKeyValue.value =
+    props.actionKey === undefined || props.actionKey === null
+      ? null
+      : String(props.actionKey);
+  actionSkillType.value = props.type;
+  sequence.value = Number(props.order);
+  hits.value = Number(props.count);
+  excludeSelfBuffs.value = props.ignoreSelfBuffs;
+  excludeTeamBuffs.value = props.ignoreTeamBuffs;
+  excludeWeaponBuffs.value = props.ignoreWeaponBuffs;
+  disabled.value = props.isDisabled;
+  buffData.value = JSON.parse(JSON.stringify(props.buffs)) as BuffRow[];
+  negativeStatusStacksLocal.value =
+    props.negativeStatusStacks !== undefined && props.negativeStatusStacks !== null
+      ? props.negativeStatusStacks
+      : 1;
+  electroRageStacksLocal.value =
+    props.electroRageStacks !== undefined && props.electroRageStacks !== null
+      ? props.electroRageStacks
+      : 0;
+});
 </script>
 
 <style scoped lang="scss">

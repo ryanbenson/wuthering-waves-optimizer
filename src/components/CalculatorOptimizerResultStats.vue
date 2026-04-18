@@ -18,7 +18,7 @@
               content: atkTooltipContent,
               html: true,
             }">
-            {{ displayInt(finalStats.totalAtk) }}
+            {{ displayInt(finalStats.totalAtk ?? 0) }}
             <template v-if="targetValue === 'totalAtk'">
               <span
                 :class="{
@@ -47,7 +47,7 @@
               content: hpTooltipContent,
               html: true,
             }">
-            {{ displayInt(finalStats.totalHp) }}
+            {{ displayInt(finalStats.totalHp ?? 0) }}
             <template v-if="targetValue === 'totalHp'">
               <span
                 :class="{
@@ -76,7 +76,7 @@
               content: defTooltipContent,
               html: true,
             }">
-            {{ displayInt(finalStats.totalDef) }}
+            {{ displayInt(finalStats.totalDef ?? 0) }}
             <template v-if="targetValue === 'totalDef'">
               <span
                 :class="{
@@ -100,7 +100,7 @@
           </td>
           <td>Crit Rate</td>
           <td class="text-right">
-            {{ displayPercentage(finalStats.totalCritRate * 100) }}
+            {{ displayPercentage((finalStats.totalCritRate ?? 0) * 100) }}
             <template v-if="targetValue === 'totalCritRate'">
               <span
                 :class="{
@@ -124,7 +124,7 @@
           </td>
           <td>Crit DMG</td>
           <td class="text-right">
-            {{ displayPercentage(finalStats.totalCritDMG * 100) }}
+            {{ displayPercentage((finalStats.totalCritDMG ?? 0) * 100) }}
             <template v-if="targetValue === 'totalCritDMG'">
               <span
                 :class="{
@@ -148,7 +148,7 @@
           </td>
           <td>Energy Regen</td>
           <td class="text-right">
-            {{ displayPercentage(finalStats.energyRegen * 100) }}
+            {{ displayPercentage((finalStats.energyRegen ?? 0) * 100) }}
             <template v-if="targetValue === 'energyRegen'">
               <span
                 :class="{
@@ -173,7 +173,7 @@
           </td>
           <td>Basic Attack DMG Bonus</td>
           <td class="text-right">
-            {{ displayPercentage(finalStats.basicAttackDMGBonus) }}
+            {{ displayPercentage(finalStats.basicAttackDMGBonus ?? 0) }}
           </td>
         </tr>
         <tr class="stat-heavy">
@@ -183,7 +183,7 @@
           </td>
           <td>Heavy Attack DMG Bonus</td>
           <td class="text-right">
-            {{ displayPercentage(finalStats.heavyAttackDMGBonus) }}
+            {{ displayPercentage(finalStats.heavyAttackDMGBonus ?? 0) }}
           </td>
         </tr>
         <tr class="stat-skill">
@@ -193,7 +193,7 @@
           </td>
           <td>Resonance Skill DMG Bonus</td>
           <td class="text-right">
-            {{ displayPercentage(finalStats.resonanceSkillDMGBonus) }}
+            {{ displayPercentage(finalStats.resonanceSkillDMGBonus ?? 0) }}
           </td>
         </tr>
         <tr class="stat-liberation">
@@ -203,7 +203,7 @@
           </td>
           <td>Resonance Liberation DMG Bonus</td>
           <td class="text-right">
-            {{ displayPercentage(finalStats.resonanceLiberationDMGBonus) }}
+            {{ displayPercentage(finalStats.resonanceLiberationDMGBonus ?? 0) }}
           </td>
         </tr>
         <tr class="stat-glacio" v-if="characterElement === 'Glacio'">
@@ -213,7 +213,7 @@
               class="glacio--active" />
           </td>
           <td>Glacio DMG Bonus</td>
-          <td class="text-right">{{ displayPercentage(finalStats.glacio) }}</td>
+          <td class="text-right">{{ displayPercentage(finalStats.glacio ?? 0) }}</td>
         </tr>
         <tr class="stat-fusion" v-if="characterElement === 'Fusion'">
           <td>
@@ -222,7 +222,7 @@
               class="fusion--active" />
           </td>
           <td>Fusion DMG Bonus</td>
-          <td class="text-right">{{ displayPercentage(finalStats.fusion) }}</td>
+          <td class="text-right">{{ displayPercentage(finalStats.fusion ?? 0) }}</td>
         </tr>
         <tr class="stat-electro" v-if="characterElement === 'Electro'">
           <td>
@@ -232,7 +232,7 @@
           </td>
           <td>Electro DMG Bonus</td>
           <td class="text-right">
-            {{ displayPercentage(finalStats.electro) }}
+            {{ displayPercentage(finalStats.electro ?? 0) }}
           </td>
         </tr>
         <tr class="stat-aero" v-if="characterElement === 'Aero'">
@@ -242,7 +242,7 @@
               class="aero--active" />
           </td>
           <td>Aero DMG Bonus</td>
-          <td class="text-right">{{ displayPercentage(finalStats.aero) }}</td>
+          <td class="text-right">{{ displayPercentage(finalStats.aero ?? 0) }}</td>
         </tr>
         <tr class="stat-spectro" v-if="characterElement === 'Spectro'">
           <td>
@@ -252,7 +252,7 @@
           </td>
           <td>Spectro DMG Bonus</td>
           <td class="text-right">
-            {{ displayPercentage(finalStats.spectro) }}
+            {{ displayPercentage(finalStats.spectro ?? 0) }}
           </td>
         </tr>
         <tr class="stat-havoc" v-if="characterElement === 'Havoc'">
@@ -262,7 +262,7 @@
               class="havoc--active" />
           </td>
           <td>Havoc DMG Bonus</td>
-          <td class="text-right">{{ displayPercentage(finalStats.havoc) }}</td>
+          <td class="text-right">{{ displayPercentage(finalStats.havoc ?? 0) }}</td>
         </tr>
         <tr class="stat-healing">
           <td>
@@ -271,7 +271,7 @@
           </td>
           <td>Healing Bonus</td>
           <td class="text-right">
-            {{ displayPercentage(finalStats.healingBonus * 100) }}
+            {{ displayPercentage((finalStats.healingBonus ?? 0) * 100) }}
           </td>
         </tr>
       </tbody>
@@ -279,101 +279,30 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed } from "vue";
 import { displayPercentage, displayInt } from "../utils/numbers";
-export default {
-  name: "CalculatorOptimizerResultStats",
-  props: {
-    finalStats: {
-      type: Object,
-      required: true,
-    },
-    characterElement: {
-      type: String,
-      required: true,
-    },
-    targetType: {
-      type: String,
-      required: true,
-    },
-    targetValue: {
-      type: String,
-      required: true,
-    },
-    totalAtk: {
-      type: Number,
-      required: true,
-    },
-    totalHp: {
-      type: Number,
-      required: true,
-    },
-    totalDef: {
-      type: Number,
-      required: true,
-    },
-    totalCritRate: {
-      type: Number,
-      required: true,
-    },
-    totalCritDMG: {
-      type: Number,
-      required: true,
-    },
-    energyRegen: {
-      type: Number,
-      required: true,
-    },
-  },
-  methods: {
-    displayInt,
-    displayPercentage,
-  },
-  computed: {
-    hpTooltipContent() {
-      return null;
-    },
-    atkTooltipContent() {
-      return null;
-    },
-    defTooltipContent() {
-      return null;
-    },
-    hpDiffPercent() {
-      const diffNumber = this.finalStats.totalHp - this.totalHp;
-      return (diffNumber / this.totalHp) * 100;
-    },
-    defDiffPercent() {
-      const diffNumber = this.finalStats.totalDef - this.totalDef;
-      return (diffNumber / this.totalDef) * 100;
-    },
-    atkDiffPercent() {
-      const diffNumber = this.finalStats.totalAtk - this.totalAtk;
-      return (diffNumber / this.totalAtk) * 100;
-    },
-    critRateDiffPercent() {
-      const diffNumber = this.finalStats.totalCritRate - this.totalCritRate;
-      return (diffNumber / this.totalCritRate) * 100;
-    },
-    critDmgDiffPercent() {
-      const diffNumber = this.finalStats.totalCritDMG - this.totalCritDMG;
-      return (diffNumber / this.totalCritDMG) * 100;
-    },
-    energyRegenDiffPercent() {
-      const diffNumber = this.finalStats.energyRegen - this.energyRegen;
-      return (diffNumber / this.energyRegen) * 100;
-    },
-    // TODO: Implement, but need to collect base and weapon info
-    // hpTooltipContent() {
-    //     console.log(this.context.finalStats)
-    //   return `<span class="Highlight">${this.context.finalStats.baseHp}</span> * (1 + <span class="Highlight">${this.context.finalStats.totalHpPercent}%</span>) + <span class="Highlight">${this.context.finalStats.totalHpFlat}</span>`;
-    // },
-    // atkTooltipContent() {
-    //   return `(<span class="Highlight">${this.context.finalStats.baseAtk}</span> + <span class="Highlight">${this.context.finalStats.weaponAtk}</span>) * (1 + <span class="Highlight">${this.totalAtkPercent}%</span>) + <span class="Highlight">${this.context.finalStats.totalAtkFlat}</span>`;
-    // },
-    // defTooltipContent() {
-    //   return `<span class="Highlight">${this.context.finalStats.baseDef}</span> * (1 + <span class="Highlight">${this.context.finalStats.totalDefPercent}%</span>) + <span class="Highlight">${this.context.finalStats.totalDefFlat}</span>`;
-    // },
-  },
-};
+
+defineOptions({ name: "CalculatorOptimizerResultStats" });
+
+const props = defineProps<{
+  finalStats: Record<string, number> & { totalCritDMG?: number };
+  characterElement: string;
+  targetValue: string;
+  totalAtk: number;
+  totalHp: number;
+  totalDef: number;
+  totalCritRate: number;
+  totalCritDmg: number;
+  energyRegen: number;
+}>();
+
+const hpTooltipContent = computed(() => null);
+const atkTooltipContent = computed(() => null);
+const defTooltipContent = computed(() => null);
+
+const atkDiffPercent = computed(() => {
+  const diffNumber = (props.finalStats.totalAtk ?? 0) - props.totalAtk;
+  return (diffNumber / props.totalAtk) * 100;
+});
 </script>

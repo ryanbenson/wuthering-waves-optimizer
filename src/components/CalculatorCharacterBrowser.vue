@@ -97,124 +97,121 @@
   </dialog>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed, ref } from "vue";
 import {
   allCharactersList,
   characterElementsSetImageMap,
   weaponTypesImageMap,
 } from "../characters/characters";
 import CalculatorCharacterCard from "./CalculatorCharacterCard.vue";
-export default {
-  name: "CalculatorEchoesBrowser",
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      characterElementsSetImageMap,
-      weaponTypesImageMap,
-      allCharactersList,
-      filterElement: null,
-      filterRarity: null,
-      filterWeapon: null,
-    };
-  },
-  components: {
-    CalculatorCharacterCard,
-  },
-  computed: {
-    charactersList() {
-      let characterList = JSON.parse(JSON.stringify(this.allCharactersList));
-      if (this.filterElement) {
-        characterList = characterList.filter((character) => {
-          return character.element === this.filterElement;
-        });
-      }
-      if (this.filterRarity) {
-        characterList = characterList.filter((character) => {
-          return character.rarity === this.filterRarity;
-        });
-      }
-      if (this.filterWeapon) {
-        characterList = characterList.filter((character) => {
-          return character.weapon === this.filterWeapon;
-        });
-      }
-      return characterList;
-    },
-  },
-  methods: {
-    triggerOpenModal(echoIndex) {
-      this.echoIndex = echoIndex;
-      const modalEl = document.getElementById("modal-character-browser");
-      modalEl.showModal();
-    },
-    triggerCloseModal() {
-      const modalEl = document.getElementById("modal-character-browser");
-      modalEl.close();
-    },
-    handleClose() {
-      this.reset();
-    },
-    reset() {
-      this.filterElement = null;
-      this.filterRarity = null;
-      this.filterWeapon = null;
-    },
-    getEchoSetImage(echoSet) {
-      return getEchoSetIconByType(echoSet);
-    },
-    toggleElementFilter(element) {
-      if (this.filterElement === element) {
-        this.filterElement = null;
-      } else {
-        this.filterElement = element;
-      }
-    },
-    isElementFilterActive(element) {
-      return this.filterElement === element;
-    },
-    toggleRarityFilter(rarity) {
-      if (this.filterRarity === rarity) {
-        this.filterRarity = null;
-      } else {
-        this.filterRarity = rarity;
-      }
-    },
-    isRarityFilterActive(rarity) {
-      return this.filterRarity === rarity;
-    },
-    toggleWeaponFilter(weapon) {
-      if (this.filterWeapon === weapon) {
-        this.filterWeapon = null;
-      } else {
-        this.filterWeapon = weapon;
-      }
-    },
-    isWeaponFilterActive(weapon) {
-      return this.filterWeapon === weapon;
-    },
-    resetFilters() {
-      this.filterElement = null;
-      this.filterRarity = null;
-      this.filterWeapon = null;
-    },
-    getElementClass(element) {
-      return `${element.toLowerCase()}--active`;
-    },
-    /**
-     * Emits: character-browser:chosen-character
-     */
-    chooseCharacter(character) {
-      this.$emit("character-browser:chosen-character", character.key);
-      this.handleClose();
-      this.triggerCloseModal();
-    },
-  },
-};
+
+type ListedCharacter = (typeof allCharactersList)[number];
+
+interface Props {
+  character: string;
+}
+
+defineProps<Props>();
+
+const emit = defineEmits<{
+  "character-browser:chosen-character": [key: string];
+}>();
+
+const filterElement = ref<string | null>(null);
+const filterRarity = ref<number | null>(null);
+const filterWeapon = ref<string | null>(null);
+
+const charactersList = computed((): ListedCharacter[] => {
+  let characterList: ListedCharacter[] = JSON.parse(
+    JSON.stringify(allCharactersList),
+  );
+  if (filterElement.value) {
+    characterList = characterList.filter(
+      (c) => c.element === filterElement.value,
+    );
+  }
+  if (filterRarity.value != null) {
+    characterList = characterList.filter(
+      (c) => c.rarity === filterRarity.value,
+    );
+  }
+  if (filterWeapon.value) {
+    characterList = characterList.filter(
+      (c) => c.weapon === filterWeapon.value,
+    );
+  }
+  return characterList;
+});
+
+function triggerOpenModal() {
+  const modalEl = document.getElementById(
+    "modal-character-browser",
+  ) as HTMLDialogElement | null;
+  modalEl?.showModal();
+}
+
+function triggerCloseModal() {
+  const modalEl = document.getElementById(
+    "modal-character-browser",
+  ) as HTMLDialogElement | null;
+  modalEl?.close();
+}
+
+function reset() {
+  filterElement.value = null;
+  filterRarity.value = null;
+  filterWeapon.value = null;
+}
+
+function handleClose() {
+  reset();
+}
+
+function toggleElementFilter(element: string) {
+  filterElement.value = filterElement.value === element ? null : element;
+}
+
+function isElementFilterActive(element: string) {
+  return filterElement.value === element;
+}
+
+function toggleRarityFilter(rarity: number) {
+  filterRarity.value = filterRarity.value === rarity ? null : rarity;
+}
+
+function isRarityFilterActive(rarity: number) {
+  return filterRarity.value === rarity;
+}
+
+function toggleWeaponFilter(weapon: string) {
+  filterWeapon.value = filterWeapon.value === weapon ? null : weapon;
+}
+
+function isWeaponFilterActive(weapon: string) {
+  return filterWeapon.value === weapon;
+}
+
+function resetFilters() {
+  filterElement.value = null;
+  filterRarity.value = null;
+  filterWeapon.value = null;
+}
+
+function getElementClass(element: string) {
+  return `${element.toLowerCase()}--active`;
+}
+
+function chooseCharacter(character: ListedCharacter) {
+  emit("character-browser:chosen-character", character.key);
+  handleClose();
+  triggerCloseModal();
+}
+
+defineExpose({
+  triggerOpenModal,
+  triggerCloseModal,
+});
 </script>
 
 <style lang="scss" scoped>

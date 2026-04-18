@@ -3,14 +3,9 @@
   <div class="page-settings"><Settings></Settings></div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import Settings from "../components/Settings.vue";
 import Nav from "../components/navigation/Nav.vue";
-export default defineComponent({
-  name: "SettingsView",
-  components: { Settings, Nav },
-});
 </script>
 
 <style scoped lang="scss">

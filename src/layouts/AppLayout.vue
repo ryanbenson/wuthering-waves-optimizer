@@ -7,35 +7,30 @@
   </div>
 </template>
 
-<script>
-// @ts-nocheck
-import { defineComponent } from "vue";
-export default defineComponent({
-  // only on the home/calculator view should the body have overflow hidden
-  // the other pages should use it
-  created() {
-    this.updateBodyOverflow(this.$route.name);
+<script setup lang="ts">
+import { onBeforeUnmount, watch } from "vue";
+import { useRoute } from "vue-router";
 
-    this.unwatchRoute = this.$watch(
-      () => this.$route.name,
-      (newRouteName) => {
-        this.updateBodyOverflow(newRouteName);
-      },
-      { immediate: true },
-    );
+const route = useRoute();
+
+function updateBodyOverflow(routeName: string | symbol | undefined | null) {
+  if (routeName === "HomeView") {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+}
+
+const stopRouteWatch = watch(
+  () => route.name,
+  (newRouteName) => {
+    updateBodyOverflow(newRouteName);
   },
-  beforeUnmount() {
-    if (this.unwatchRoute) this.unwatchRoute(); // Cleanup the watcher when the component is destroyed
-  },
-  methods: {
-    updateBodyOverflow(routeName) {
-      if (routeName === "HomeView") {
-        document.body.style.overflow = "hidden";
-      } else {
-        document.body.style.overflow = "auto";
-      }
-    },
-  },
+  { immediate: true },
+);
+
+onBeforeUnmount(() => {
+  stopRouteWatch();
 });
 </script>
 

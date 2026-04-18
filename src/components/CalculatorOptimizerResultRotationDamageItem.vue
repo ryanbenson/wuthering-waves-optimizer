@@ -16,14 +16,16 @@
     }">
     <template v-if="type === 'Healing'">
       <td class="flex items-center gap-2">
-        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
+        <img
+          v-if="mainEchoImage"
+          :src="mainEchoImage"
+          class="size-6 rounded-full border border-solid neutral-content"
           :class="{
             'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
             'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
             'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
             'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
-          }"
-        />
+          }" />
         <span>{{ label }}</span>
       </td>
       <td
@@ -31,7 +33,7 @@
           content: damage.detailedCalculation,
           html: true,
         }">
-        {{ displayDamage(damage.healAmount) }}
+        {{ displayDamage(damage.healAmount ?? 0) }}
         <span
           :class="{
             'text-success': healingDiffPercentage >= 0,
@@ -44,14 +46,16 @@
     </template>
     <template v-else-if="type === 'Shield'">
       <td class="flex items-center gap-2">
-        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
+        <img
+          v-if="mainEchoImage"
+          :src="mainEchoImage"
+          class="size-6 rounded-full border border-solid neutral-content"
           :class="{
             'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
             'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
             'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
             'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
-          }"
-        />
+          }" />
         <span>{{ label }}</span>
       </td>
       <td
@@ -59,7 +63,7 @@
           content: damage.detailedCalculation,
           html: true,
         }">
-        {{ displayDamage(damage.shieldAmount) }}
+        {{ displayDamage(damage.shieldAmount ?? 0) }}
         <span
           :class="{
             'text-success': shieldDiffPercentage >= 0,
@@ -72,14 +76,16 @@
     </template>
     <template v-else>
       <td class="flex items-center gap-2">
-        <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
+        <img
+          v-if="mainEchoImage"
+          :src="mainEchoImage"
+          class="size-6 rounded-full border border-solid neutral-content"
           :class="{
             'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
             'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
             'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
             'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
-          }"
-        />
+          }" />
         <span>{{ label }}</span>
       </td>
       <td
@@ -88,7 +94,7 @@
           html: true,
         }">
         <template v-if="!alwaysCrit">
-          {{ displayDamage(damage.totalDamage) }}
+          {{ displayDamage(damage.totalDamage ?? 0) }}
           <span
             :class="{
               'text-success': normalDiffPercentage >= 0,
@@ -105,7 +111,7 @@
           html: true,
         }">
         <template v-if="!alwaysCrit">
-          {{ displayDamage(damage.avgDamage) }}
+          {{ displayDamage(damage.avgDamage ?? 0) }}
           <span
             :class="{
               'text-success': avgDiffPercentage >= 0,
@@ -121,7 +127,7 @@
           content: damage.detailedCalculationCrit,
           html: true,
         }">
-        {{ displayDamage(damage.critDamage) }}
+        {{ displayDamage(damage.critDamage ?? 0) }}
         <span
           :class="{
             'text-success': critDiffPercentage >= 0,
@@ -135,116 +141,120 @@
   </tr>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed } from "vue";
 import { displayDamage, displayPercentage } from "../utils/numbers";
 import { slugify } from "../utils/strings";
 import { getEchoData } from "../echoes";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    attackId: {
-      type: String,
-      required: true,
-    },
-    type: {
-      type: String,
-      required: true,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    damage: {
-      type: Object,
-      required: true,
-    },
-    isEnabled: {
-      type: Boolean,
-      default: true,
-    },
-    originalIsEnabled: {
-      type: Boolean,
-      default: true,
-    },
-    alwaysCrit: {
-      type: Boolean,
-      default: false,
-    },
-    mainEcho: {
-      type: String,
-      default: null,
-    },
-    mainEchoRank: {
-      type: [Number, String],
-      default: null,
-    },
-    matchedRotationFromCurrentDamages: {
-      type: Object,
-      default: () => {},
-    },
-  },
-  methods: {
-    displayDamage,
-    displayPercentage,
-    slugify,
-  },
-  computed: {
-    slugifiedLabel() {
-      return slugify(this.label) ?? "";
-    },
-    mainEchoData() {
-      return getEchoData(this.mainEcho);
-    },
-    mainEchoImage() {
-      return this.mainEchoData?.image ?? null;
-    },
-    normalDmgTooltipText() {
-      if (this.alwaysCrit) {
-        return null;
-      }
-      return this.damage.detailedCalculation;
-    },
-    avgDmgTooltipText() {
-      if (this.alwaysCrit) {
-        return null;
-      }
-      return this.damage.detailedCalculationAvg;
-    },
-    originalDamageInstance() {
-      return this.matchedRotationFromCurrentDamages?.attacks?.find(
-        (attack) => attack.id === this.attackId,
-      );
-    },
-    normalDiffPercentage() {
-      const newDamage = this.damage.totalDamage ?? this.damage?.damage ?? 0;
-      const baseDamage = this.originalDamageInstance?.damage.totalDamage ?? this.originalDamageInstance?.damage?.damage ?? 0;
-      return ((newDamage - baseDamage) / baseDamage) * 100;
-    },
-    avgDiffPercentage() {
-      const newDamage = this.damage.avgDamage ?? 0;
-      const baseDamage = this.originalDamageInstance?.damage.avgDamage ?? 0;
-      return ((newDamage - baseDamage) / baseDamage) * 100;
-    },
-    critDiffPercentage() {
-      const newDamage = this.damage.critDamage ?? 0;
-      const baseDamage = this.originalDamageInstance?.damage.critDamage ?? 0;
-      return ((newDamage - baseDamage) / baseDamage) * 100;
-    },
-    shieldDiffPercentage() {
-      const newDamage = this.damage.shieldAmount ?? 0;
-      const baseDamage = this.originalDamageInstance?.damage.shieldAmount ?? 0;
-      return ((newDamage - baseDamage) / baseDamage) * 100;
-    },
-    healingDiffPercentage() {
-      const newDamage = this.damage.healAmount ?? 0;
-      const baseDamage = this.originalDamageInstance?.damage.healAmount ?? 0;
-      return ((newDamage - baseDamage) / baseDamage) * 100;
-    },
-  },
+
+defineOptions({ name: "CalculatorOptimizerResultRotationDamageItem" });
+
+type DamageRow = {
+  detailedCalculation?: string;
+  detailedCalculationAvg?: string;
+  detailedCalculationCrit?: string;
+  totalDamage?: number;
+  damage?: number;
+  avgDamage?: number;
+  critDamage?: number;
+  shieldAmount?: number;
+  healAmount?: number;
 };
+
+type RotationMatch = {
+  attacks?: Array<{ id?: string; damage?: DamageRow }>;
+};
+
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    attackId: string;
+    type: string;
+    label: string;
+    damage: DamageRow;
+    isEnabled?: boolean;
+    originalIsEnabled?: boolean;
+    alwaysCrit?: boolean;
+    mainEcho?: string | null;
+    mainEchoRank?: number | string | null;
+    matchedRotationFromCurrentDamages?: RotationMatch;
+  }>(),
+  {
+    isEnabled: true,
+    originalIsEnabled: true,
+    alwaysCrit: false,
+    mainEcho: null,
+    mainEchoRank: null,
+    matchedRotationFromCurrentDamages: () => ({}),
+  },
+);
+
+const slugifiedLabel = computed(() => slugify(props.label) ?? "");
+
+const mainEchoData = computed(() =>
+  props.mainEcho ? getEchoData(props.mainEcho) : null,
+);
+
+const mainEchoImage = computed(() => mainEchoData.value?.image ?? null);
+
+const normalDmgTooltipText = computed(() => {
+  if (props.alwaysCrit) {
+    return undefined;
+  }
+  return props.damage.detailedCalculation;
+});
+
+const avgDmgTooltipText = computed(() => {
+  if (props.alwaysCrit) {
+    return undefined;
+  }
+  return props.damage.detailedCalculationAvg;
+});
+
+const originalDamageInstance = computed(() =>
+  props.matchedRotationFromCurrentDamages?.attacks?.find(
+    (attack) => attack.id === props.attackId,
+  ),
+);
+
+const normalDiffPercentage = computed(() => {
+  const newDamage =
+    props.damage.totalDamage ?? props.damage?.damage ?? 0;
+  const baseDamage =
+    originalDamageInstance.value?.damage?.totalDamage ??
+    originalDamageInstance.value?.damage?.damage ??
+    0;
+  if (!baseDamage) return 0;
+  return ((newDamage - baseDamage) / baseDamage) * 100;
+});
+
+const avgDiffPercentage = computed(() => {
+  const newDamage = props.damage.avgDamage ?? 0;
+  const baseDamage = originalDamageInstance.value?.damage?.avgDamage ?? 0;
+  if (!baseDamage) return 0;
+  return ((newDamage - baseDamage) / baseDamage) * 100;
+});
+
+const critDiffPercentage = computed(() => {
+  const newDamage = props.damage.critDamage ?? 0;
+  const baseDamage = originalDamageInstance.value?.damage?.critDamage ?? 0;
+  if (!baseDamage) return 0;
+  return ((newDamage - baseDamage) / baseDamage) * 100;
+});
+
+const shieldDiffPercentage = computed(() => {
+  const newDamage = props.damage.shieldAmount ?? 0;
+  const baseDamage = originalDamageInstance.value?.damage?.shieldAmount ?? 0;
+  if (!baseDamage) return 0;
+  return ((newDamage - baseDamage) / baseDamage) * 100;
+});
+
+const healingDiffPercentage = computed(() => {
+  const newDamage = props.damage.healAmount ?? 0;
+  const baseDamage = originalDamageInstance.value?.damage?.healAmount ?? 0;
+  if (!baseDamage) return 0;
+  return ((newDamage - baseDamage) / baseDamage) * 100;
+});
 </script>
 
 <style lang="scss" scoped>

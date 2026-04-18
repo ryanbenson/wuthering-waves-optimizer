@@ -1200,33 +1200,13 @@
   </div>
 </template>
 
-<script>
-import { displayDamage, displayInt } from "../utils/numbers";
-import { displayPercentage } from "../utils/numbers";
-export default {
-  name: "CalculatorDamageBreakdown",
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    attackKey: {
-      type: String,
-      required: true,
-    },
-    attackLabel: {
-      type: String,
-      required: true,
-    },
-    damage: {
-      type: Object,
-      required: true,
-    },
-  },
-  methods: {
-    displayDamage,
-    displayPercentage,
-    displayInt,
-  },
-};
+<script setup lang="ts">
+import { displayDamage, displayInt, displayPercentage } from "../utils/numbers";
+
+defineProps<{
+  character: string;
+  attackKey: string;
+  attackLabel: string;
+  damage: Record<string, any>;
+}>();
 </script>

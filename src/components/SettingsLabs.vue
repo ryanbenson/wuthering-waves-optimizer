@@ -37,21 +37,13 @@
   </template>
 </template>
 
-<script lang="ts">
-// @ts-nocheck
-import { useCharacterStore } from "../stores/character";
-import { useInventoryStore } from "../stores/inventory";
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { ref } from "vue";
 import SettingsLab from "./SettingsLab.vue";
-export default defineComponent({
-  name: "SettingsLabs",
-  data() {
-    return {
-      labsFeatures: [],
-    };
-  },
-  components: { SettingsLab },
-});
+
+type LabFeature = { key: string; label: string; details: string };
+
+const labsFeatures = ref<LabFeature[]>([]);
 </script>
 
 <style scoped lang="scss">

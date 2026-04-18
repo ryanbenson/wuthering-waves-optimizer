@@ -167,7 +167,7 @@
                   :default-value="getDefaultValue('CritRate')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('CritRate', val)"
+                  @update-value="onSubStatValueUpdate('CritRate', $event)"
                   data-test-substat-range="CritRate" />
               </div>
 
@@ -197,7 +197,7 @@
                   :default-value="getDefaultValue('CritDMG')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('CritDMG', val)"
+                  @update-value="onSubStatValueUpdate('CritDMG', $event)"
                   data-test-substat-range="CritDMG" />
               </div>
 
@@ -227,7 +227,7 @@
                   :default-value="getDefaultValue('ATK')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('ATK', val)"
+                  @update-value="onSubStatValueUpdate('ATK', $event)"
                   data-test-substat-range="ATK" />
               </div>
 
@@ -257,7 +257,7 @@
                   :default-value="getDefaultValue('ATK_FLAT')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('ATK_FLAT', val)"
+                  @update-value="onSubStatValueUpdate('ATK_FLAT', $event)"
                   data-test-substat-range="ATK_FLAT" />
               </div>
 
@@ -287,7 +287,7 @@
                   :default-value="getDefaultValue('HP')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('HP', val)"
+                  @update-value="onSubStatValueUpdate('HP', $event)"
                   data-test-substat-range="HP" />
               </div>
 
@@ -317,7 +317,7 @@
                   :default-value="getDefaultValue('HP_FLAT')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('HP_FLAT', val)"
+                  @update-value="onSubStatValueUpdate('HP_FLAT', $event)"
                   data-test-substat-range="HP_FLAT" />
               </div>
 
@@ -347,7 +347,7 @@
                   :default-value="getDefaultValue('DEF')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('DEF', val)"
+                  @update-value="onSubStatValueUpdate('DEF', $event)"
                   data-test-substat-range="DEF" />
               </div>
 
@@ -377,7 +377,7 @@
                   :default-value="getDefaultValue('DEF_FLAT')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('DEF_FLAT', val)"
+                  @update-value="onSubStatValueUpdate('DEF_FLAT', $event)"
                   data-test-substat-range="DEF_FLAT" />
               </div>
 
@@ -407,9 +407,7 @@
                   :default-value="getDefaultValue('BasicAttackDMGBonus')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="
-                    (val) => subStatUpdated('BasicAttackDMGBonus', val)
-                  "
+                  @update-value="onSubStatValueUpdate('BasicAttackDMGBonus', $event)"
                   data-test-substat-range="BasicAttackDMGBonus" />
               </div>
 
@@ -439,9 +437,7 @@
                   :default-value="getDefaultValue('HeavyAttackDMGBonus')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="
-                    (val) => subStatUpdated('HeavyAttackDMGBonus', val)
-                  "
+                  @update-value="onSubStatValueUpdate('HeavyAttackDMGBonus', $event)"
                   data-test-substat-range="HeavyAttackDMGBonus" />
               </div>
 
@@ -471,9 +467,7 @@
                   :default-value="getDefaultValue('ResonanceSkillDMGBonus')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="
-                    (val) => subStatUpdated('ResonanceSkillDMGBonus', val)
-                  "
+                  @update-value="onSubStatValueUpdate('ResonanceSkillDMGBonus', $event)"
                   data-test-substat-range="ResonanceSkillDMGBonus" />
               </div>
 
@@ -505,9 +499,7 @@
                   "
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="
-                    (val) => subStatUpdated('ResonanceLiberationDMGBonus', val)
-                  "
+                  @update-value="onSubStatValueUpdate('ResonanceLiberationDMGBonus', $event)"
                   data-test-substat-range="ResonanceLiberationDMGBonus" />
               </div>
 
@@ -537,7 +529,7 @@
                   :default-value="getDefaultValue('EnergyRegen')"
                   size="xs"
                   class="echo__selection__rank__input w-full"
-                  @update-value="(val) => subStatUpdated('EnergyRegen', val)"
+                  @update-value="onSubStatValueUpdate('EnergyRegen', $event)"
                   data-test-substat-checkbox="EnergyRegen" />
               </div>
             </div>
@@ -764,7 +756,7 @@
               <tr v-if="mainStatValue">
                 <td class="flex gap-2 items-center">
                   <img :src="echoFreeSubStatIcon" />
-                  {{ getReadableSubStatLabel(echoFreeSubStatType) }}
+                  {{ subStatLabel(echoFreeSubStatType) }}
                 </td>
                 <td class="text-right">{{ echoFreeSubStatValue }}</td>
               </tr>
@@ -776,35 +768,35 @@
                   <img
                     v-if="echoSubStatsType1 && echoSubStatsType1 !== 'none'"
                     :src="echoSubStat1Icon" />
-                  {{ getReadableSubStatLabel(echoSubStatsType1) }}
+                  {{ subStatLabel(echoSubStatsType1) }}
                 </td>
                 <td class="text-right">{{ echoSubStatsValue1Display }}</td>
               </tr>
               <tr v-if="echoSubStatsType2 && echoSubStatsType2 !== 'none'">
                 <td class="flex gap-2 items-center">
                   <img :src="echoSubStat2Icon" />
-                  {{ getReadableSubStatLabel(echoSubStatsType2) }}
+                  {{ subStatLabel(echoSubStatsType2) }}
                 </td>
                 <td class="text-right">{{ echoSubStatsValue2Display }}</td>
               </tr>
               <tr v-if="echoSubStatsType3 && echoSubStatsType3 !== 'none'">
                 <td class="flex gap-2 items-center">
                   <img v-if="echoSubStatsType3" :src="echoSubStat3Icon" />
-                  {{ getReadableSubStatLabel(echoSubStatsType3) }}
+                  {{ subStatLabel(echoSubStatsType3) }}
                 </td>
                 <td class="text-right">{{ echoSubStatsValue3Display }}</td>
               </tr>
               <tr v-if="echoSubStatsType4 && echoSubStatsType4 !== 'none'">
                 <td class="flex gap-2 items-center">
                   <img :src="echoSubStat4Icon" />
-                  {{ getReadableSubStatLabel(echoSubStatsType4) }}
+                  {{ subStatLabel(echoSubStatsType4) }}
                 </td>
                 <td class="text-right">{{ echoSubStatsValue4Display }}</td>
               </tr>
               <tr v-if="echoSubStatsType5 && echoSubStatsType5 !== 'none'">
                 <td class="flex gap-2 items-center">
                   <img :src="echoSubStat5Icon" />
-                  {{ getReadableSubStatLabel(echoSubStatsType5) }}
+                  {{ subStatLabel(echoSubStatsType5) }}
                 </td>
                 <td class="text-right">{{ echoSubStatsValue5Display }}</td>
               </tr>
@@ -816,18 +808,14 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import {
-  rankColors,
   statsTable,
   flatBonusesByRankByType,
-  subStats,
-  subStatRanges,
-  subStatLabelMap,
   getReadableSubStatLabel,
   getSubStatIconByType,
   getEchoSetIconByType,
@@ -842,1678 +830,1028 @@ import {
 import { subStatsTable } from "../echoes/stats.ts";
 import Range from "./input/Range.vue";
 import { randomString } from "../utils/strings.ts";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    index: {
-      type: Number,
-      required: true,
-    },
+
+const props = defineProps<{
+  character: string;
+  index: number;
+}>();
+
+const emit = defineEmits<{
+  "update-stats": [payload: { index: number; stats: Record<string, number> }];
+  "echo:set-chosen": [payload: { set: string | null; index: number }];
+  "updated-echo-cost": [payload: { index: number; cost: number }];
+  "main-echo-rank:updated": [rank: string | number];
+  "main-echo:updated": [echoKey: string | null];
+  "on-echo-removed": [];
+  "open-echoes-browser": [index: number];
+}>();
+
+const characterStore = useCharacterStore();
+const inventoryStore = useInventoryStore();
+const settingsStore = useSettingsStore();
+
+const allSubStatsEnabled = ref({
+  echoSubStatsType1: false,
+  echoSubStatsType2: false,
+  echoSubStatsType3: false,
+  echoSubStatsType4: false,
+  echoSubStatsType5: false,
+});
+const allSubStats = ref<string[]>([]);
+const echoSetFilter = ref<string | null>(null);
+
+const currentCharacter = computed(
+  () => characterStore.characters?.[props.character] ?? {},
+);
+
+const echoId = computed({
+  get() {
+    const ch = currentCharacter.value as { echoes?: Record<number, { echoId?: string | null }> };
+    return ch.echoes?.[props.index]?.echoId ?? null;
   },
-  components: {
-    Range,
+  set(value: string | null) {
+    void characterStore.setCharacterData(props.character, {
+      echoes: { [props.index]: { echoId: value } },
+    });
   },
-  data() {
-    return {
-      rankColors,
-      statsTable,
-      flatBonusesByRankByType,
-      echoSetLabelMap,
-      subStats,
-      subStatRanges,
-      totalCost: 0,
-      allSubStatsEnabled: {
-        echoSubStatsType1: false,
-        echoSubStatsType2: false,
-        echoSubStatsType3: false,
-        echoSubStatsType4: false,
-        echoSubStatsType5: false,
-      },
-      allSubStats: [],
-      echoSetFilter: null,
+});
+
+const currentEcho = computed(() => {
+  const id = echoId.value;
+  if (!id) return null;
+  return inventoryStore.getEchoById(id) ?? null;
+});
+
+const type = computed({
+  get() {
+    if (currentEcho.value) {
+      return (currentEcho.value as { type?: string | number | null }).type;
+    }
+    const ch = currentCharacter.value as {
+      echoes?: Record<number, { type?: string | number | null }>;
     };
+    return ch.echoes?.[props.index]?.type ?? null;
   },
-  watch: {
-    echo: {
-      handler: async function (val, previousVal) {
-        this.updateEchoChoice(val, previousVal);
-      },
-      immediate: true,
-    },
-    echoSet: {
-      handler: function (val, previousVal) {
-        if (val === null && previousVal === undefined) {
-          return;
-        }
-        this.$emit("echo:set-chosen", { set: val, index: this.index });
-      },
-      immediate: true,
-    },
-    type: {
-      handler: async function () {
-        this.$emit("updated-echo-cost", { index: this.index, cost: this.type });
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-    rank: {
-      handler: async function (rank) {
-        // update the main echo rank if it's the first one
-        if (this.index === 0) {
-          this.$emit("main-echo-rank:updated", rank);
-        }
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-    stat: {
-      handler: async function () {
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsType1: {
-      handler: async function () {
-        this.updateTotalStats();
-        this.syncMainStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsValue1: {
-      handler: async function () {
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsType2: {
-      handler: async function () {
-        this.updateTotalStats();
-        this.syncMainStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsValue2: {
-      handler: async function () {
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsType3: {
-      handler: async function () {
-        this.updateTotalStats();
-        this.syncMainStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsValue3: {
-      handler: async function () {
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsType4: {
-      handler: async function () {
-        this.updateTotalStats();
-        this.syncMainStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsValue4: {
-      handler: async function () {
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsType5: {
-      handler: async function () {
-        this.updateTotalStats();
-        this.syncMainStats();
-      },
-      immediate: true,
-    },
-    echoSubStatsValue5: {
-      handler: async function () {
-        this.updateTotalStats();
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    ...mapActions(useCharacterStore, [
-      "setCharacterData",
-      "removeCharacterEcho",
-    ]),
-    ...mapActions(useInventoryStore, [
-      "saveEcho",
-      "patchEcho",
-      "deleteEcho",
-      "getEchoById",
-      "setEquippedData",
-      "deleteEchoEquippedMappingCharacter",
-    ]),
-    getSubStatIconByType,
-    updateEchoChoice(echo, previousEcho) {
-      const echoData = getEchoData(echo);
-      const echoClass = echoData?.class;
-      const echoCost = getCostByClass(echoClass);
-      this.selectCost(echoCost);
-      // update the main echo if it's the first one
-      if (this.index === 0) {
-        this.$emit("main-echo:updated", echo);
-      }
-      // get the cost of the previous echo, if they are different then
-      // reset the main stat type and value
-      let prevEchoCost = null;
-      if (previousEcho) {
-        const prevEchoData = getEchoData(previousEcho);
-        const prevEchoClass = prevEchoData?.class;
-        prevEchoCost = getCostByClass(prevEchoClass);
-      }
-      // only reset if there was a previous one,
-      // otherwise it will reset on load
-      if (previousEcho && echoCost !== prevEchoCost) {
-        this.stat = "none";
-      }
-    },
-    selectCost(cost) {
-      this.type = cost;
-      this.updateTotalStats();
-    },
-    selectRank(rank) {
-      this.rank = rank;
-      this.updateTotalStats();
-    },
-    getReadableSubStatLabel,
-    getStats(cost) {
-      return Object.keys(this.statsTable[cost] || {});
-    },
-    // getSubStatRange(type) {
-    //   return this.subStatRanges[type] || { min: 0, max: 0 };
-    // },
-    getMaxStacks(type) {
-      return this.setBonusEffects[type]?.maxStacks || 0;
-    },
-    needsStacks(type) {
-      return !!this.setBonusEffects[type]?.maxStacks;
-    },
-    syncMainStats() {
-      this.allSubStats = [];
-      this.allSubStatsEnabled = {
-        echoSubStatsType1: false,
-        echoSubStatsType2: false,
-        echoSubStatsType3: false,
-        echoSubStatsType4: false,
-        echoSubStatsType5: false,
-      };
-      let updatedSubStats = [];
-      if (this.echoSubStatsType1 && this.echoSubStatsType1 !== "none") {
-        this.allSubStatsEnabled["echoSubStatsType1"] = true;
-        updatedSubStats.push(this.echoSubStatsType1);
-      }
-      if (this.echoSubStatsType2 && this.echoSubStatsType2 !== "none") {
-        this.allSubStatsEnabled["echoSubStatsType2"] = true;
-        updatedSubStats.push(this.echoSubStatsType2);
-      }
-      if (this.echoSubStatsType3 && this.echoSubStatsType3 !== "none") {
-        this.allSubStatsEnabled["echoSubStatsType3"] = true;
-        updatedSubStats.push(this.echoSubStatsType3);
-      }
-      if (this.echoSubStatsType4 && this.echoSubStatsType4 !== "none") {
-        this.allSubStatsEnabled["echoSubStatsType4"] = true;
-        updatedSubStats.push(this.echoSubStatsType4);
-      }
-      if (this.echoSubStatsType5 && this.echoSubStatsType5 !== "none") {
-        this.allSubStatsEnabled["echoSubStatsType5"] = true;
-        updatedSubStats.push(this.echoSubStatsType5);
-      }
-      this.allSubStats = updatedSubStats;
-    },
-    updateTotalStats() {
-      const stats = {};
-      // add in the base stats (flat HP and flat ATK) that's guaranteed
-      if (this.type && this.rank) {
-        let stat = this.type == "1" ? "HP_FLAT" : "ATK_FLAT";
-        let statValue = this.flatBonusesByRankByType[this.type][this.rank];
-        stats[stat] = (stats[stat] || 0) + statValue;
-      }
-      if (this.type && this.rank && this.stat) {
-        const max = this.statsTable?.[this.type]?.[this.stat]?.[this.rank];
-        if (max) {
-          stats[this.stat] = (stats[this.stat] || 0) + max;
-        }
-      }
-      if (this.echoSubStatsType1 && this.echoSubStatsValue1) {
-        stats[this.echoSubStatsType1] =
-          (stats[this.echoSubStatsType1] || 0) + this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 && this.echoSubStatsValue2) {
-        stats[this.echoSubStatsType2] =
-          (stats[this.echoSubStatsType2] || 0) + this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 && this.echoSubStatsValue3) {
-        stats[this.echoSubStatsType3] =
-          (stats[this.echoSubStatsType3] || 0) + this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 && this.echoSubStatsValue4) {
-        stats[this.echoSubStatsType4] =
-          (stats[this.echoSubStatsType4] || 0) + this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 && this.echoSubStatsValue5) {
-        stats[this.echoSubStatsType5] =
-          (stats[this.echoSubStatsType5] || 0) + this.echoSubStatsValue5;
-      }
-
-      this.$emit("update-stats", { index: this.index, stats });
-    },
-    // reset everything
-    async reset() {
-      await this.deleteEchoEquippedMappingCharacter(
-        this.echoId,
-        this.character,
-      );
-      // clear the echo before changing the data to avoid data merge issues
-      await this.removeCharacterEcho(this.character, this.index);
-      this.$emit("on-echo-removed");
-    },
-    toggleSubStat(e) {
-      const mainStat = e.target.value;
-      const isChecked = e.target.checked;
-      // if the checked is now false, find the main stat and disable it
-      if (!isChecked) {
-        this.deleteSubStatData(mainStat);
-        this.syncMainStats();
-        return;
-      }
-      const range = this.getSubStatRange(mainStat);
-      // get the first option as the initial val
-      const initialSubStatValue = range[0];
-      // find the first item that's null or "none" and fill it in
-      if (!this.echoSubStatsType1 || this.echoSubStatsType1 === "none") {
-        this.echoSubStatsType1 = mainStat;
-        this.echoSubStatsValue1 = initialSubStatValue;
-        return;
-      }
-      if (!this.echoSubStatsType2 || this.echoSubStatsType2 === "none") {
-        this.echoSubStatsType2 = mainStat;
-        this.echoSubStatsValue2 = initialSubStatValue;
-        return;
-      }
-      if (!this.echoSubStatsType3 || this.echoSubStatsType3 === "none") {
-        this.echoSubStatsType3 = mainStat;
-        this.echoSubStatsValue3 = initialSubStatValue;
-        return;
-      }
-      if (!this.echoSubStatsType4 || this.echoSubStatsType4 === "none") {
-        this.echoSubStatsType4 = mainStat;
-        this.echoSubStatsValue4 = initialSubStatValue;
-        return;
-      }
-      if (!this.echoSubStatsType5 || this.echoSubStatsType5 === "none") {
-        this.echoSubStatsType5 = mainStat;
-        this.echoSubStatsValue5 = initialSubStatValue;
-        return;
-      }
-    },
-    deleteSubStatData(mainStat) {
-      if (this.echoSubStatsType1 === mainStat) {
-        this.echoSubStatsType1 = null;
-        this.echoSubStatsValue1 = null;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        this.echoSubStatsType2 = null;
-        this.echoSubStatsValue2 = null;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        this.echoSubStatsType3 = null;
-        this.echoSubStatsValue3 = null;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        this.echoSubStatsType4 = null;
-        this.echoSubStatsValue4 = null;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        this.echoSubStatsType5 = null;
-        this.echoSubStatsValue5 = null;
-      }
-    },
-    handleOpenModal() {
-      const modalEl = document.getElementById(this.modalId);
-      modalEl.showModal();
-    },
-    openEchoPicker() {
-      const modalEl = document.getElementById(this.modalIdPicker);
-      modalEl.showModal();
-    },
-    subStatUpdated(mainStat, val) {
-      if (this.echoSubStatsType1 === mainStat) {
-        this.echoSubStatsValue1 = val;
-        return;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        this.echoSubStatsValue2 = val;
-        return;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        this.echoSubStatsValue3 = val;
-        return;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        this.echoSubStatsValue4 = val;
-        return;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        this.echoSubStatsValue5 = val;
-        return;
-      }
-    },
-    getSubStatRange(mainStat) {
-      return subStatsTable[mainStat] ?? [];
-    },
-    getDefaultValue(mainStat) {
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-      const range = this.getSubStatRange(mainStat);
-      const middleVal = range[Math.floor(range.length / 2)];
-      return middleVal;
-    },
-    getEchoSetIcon(type) {
-      return getEchoSetIconByType(type);
-    },
-    handleChooseEchoSet(set) {
-      this.echoSet = set;
-    },
-    isSetSelected(set) {
-      return this.echoSet === set;
-    },
-    async saveEchoItem() {
-      let id = null;
-      if (this.echoId) {
-        id = this.echoId;
-      } else {
-        id = randomString();
-      }
-      const data = {
-        echoId: id,
-        echo: this.echo,
-        echoSet: this.echoSet,
-        echoSubStatsType1: this.echoSubStatsType1,
-        echoSubStatsType2: this.echoSubStatsType2,
-        echoSubStatsType3: this.echoSubStatsType3,
-        echoSubStatsType4: this.echoSubStatsType4,
-        echoSubStatsType5: this.echoSubStatsType5,
-        echoSubStatsValue1: this.echoSubStatsValue1,
-        echoSubStatsValue2: this.echoSubStatsValue2,
-        echoSubStatsValue3: this.echoSubStatsValue3,
-        echoSubStatsValue4: this.echoSubStatsValue4,
-        echoSubStatsValue5: this.echoSubStatsValue5,
-        rank: this.rank,
-        stat: this.stat,
-        type: this.type,
-      };
-
-      await this.saveEcho(data);
-      // update the character to reference the inventory
-      // when we assign the echo from inventory, clear out all data except echoId
-      // the stats will come from the inventory to have one source of truth for its stats
-      const echoData = {
-        echo: null,
-        type: null,
-        rank: null,
-        stat: null,
-        echoId: id,
-        echoSet: null,
-        echoSubStatsType1: null,
-        echoSubStatsValue1: null,
-        echoSubStatsType2: null,
-        echoSubStatsValue2: null,
-        echoSubStatsType3: null,
-        echoSubStatsValue3: null,
-        echoSubStatsType4: null,
-        echoSubStatsValue4: null,
-        echoSubStatsType5: null,
-        echoSubStatsValue5: null,
-      };
-      const charData = { echoes: {} };
-      charData.echoes[this.index] = echoData;
-      await this.setCharacterData(this.character, charData);
-      // add to our equipped list
-      const equippedData = {};
-      equippedData[this.character] = this.index;
-      await this.setEquippedData(id, equippedData);
-    },
-    openEchoBrowser() {
-      this.$emit("open-echoes-browser", this.index);
-    },
-    getEchoSetImage(echoSet) {
-      return getEchoSetIconByType(echoSet);
-    },
-    toggleEchoSetFilter(echoSet) {
-      if (this.echoSetFilter === echoSet) {
-        this.echoSetFilter = null;
-      } else {
-        this.echoSetFilter = echoSet;
-      }
-    },
-    isEchoSetFilterActive(echoSet) {
-      return this.echoSetFilter === echoSet;
-    },
-    resetFilters() {
-      this.echoSetFilter = null;
-    },
-    async chooseMainEcho(echoKey) {
-      this.echo = echoKey;
-      // if we chose a filter for echo set, assume that's what they want
-      if (this.echoSetFilter) {
-        this.echoSet = this.echoSetFilter;
-      }
-      this.closeEchoChooser();
-    },
-    closeEchoChooser() {
-      this.echoSetFilter = null;
-      const modalEl = document.getElementById(this.modalIdPicker);
-      modalEl.close();
-    },
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    ...mapState(useInventoryStore, ["echoes", "getEchoPresetsByEchoId"]),
-    ...mapState(useSettingsStore, ["config"]),
-    settingsTheme() {
-      const settingsTheme = this.config?.theme ?? null;
-      return settingsTheme;
-    },
-    echoPresetsFoundWithEcho() {
-      return this.getEchoPresetsByEchoId(this.echoId);
-    },
-    rangeClasses() {
-      const classes = [];
-      if (this.settingsTheme === "black") {
-        classes.push("[--range-shdw:gray]");
-      }
-      return classes;
-    },
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Returns the current echo from the inventory
-     * @returns {Object|null}
-     */
-    currentEcho() {
-      if (!this.echoId) {
-        return null;
-      }
-      return this.getEchoById(this.echoId);
-    },
-    /**
-     * Getter/setter used in the form for the type for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    echoId: {
-      get() {
-        return this.currentCharacter?.echoes?.[this.index]?.echoId ?? null;
-      },
-      async set(value) {
-        const data = {
-          echoes: {},
-        };
-        data.echoes[this.index] = {
-          echoId: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the type for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    type: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.type;
-        }
-        return this.currentCharacter?.echoes?.[this.index]?.type ?? null;
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          this.patchEcho(this.echoId, { type: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            type: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-    /**
-     * Getter/setter used in the form for the type for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    echo: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echo ?? null;
-        }
-        return this.currentCharacter?.echoes?.[this.index]?.echo ?? null;
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echo: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echo: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-    /**
-     * Getter/setter used in the form for the type for this echo set
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    echoSet: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSet ?? null;
-        }
-        return this.currentCharacter?.echoes?.[this.index]?.echoSet ?? null;
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSet: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSet: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-    /**
-     * Getter/setter used in the form for the rank for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    rank: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.rank ?? 5;
-        }
-        return this.currentCharacter?.echoes?.[this.index]?.rank ?? 5;
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { rank: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            rank: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-    /**
-     * Getter/setter used in the form for the stat for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    stat: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.stat ?? "none";
-        }
-        return this.currentCharacter?.echoes?.[this.index]?.stat ?? "none";
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { stat: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            stat: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-    /**
-     * Getter/setter used in the form for the sub stat for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    echoSubStatsType1: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsType1 ?? "none";
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType1 ??
-          "none"
-        );
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsType1: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsType1: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-    /**
-     * Getter/setter used in the form for the sub stat value for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {String|null}
-     */
-    echoSubStatsValue1: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsValue1 ?? 0;
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue1 ?? 0
-        );
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsValue1: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsValue1: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-
-    /**
-     * Getter/setter used in the form for the sub stat for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    echoSubStatsType2: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsType2 ?? "none";
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType2 ??
-          "none"
-        );
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsType2: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsType2: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-    /**
-     * Getter/setter used in the form for the sub stat value for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {String|null}
-     */
-    echoSubStatsValue2: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsValue2 ?? 0;
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue2 ?? 0
-        );
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsValue2: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsValue2: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-
-    /**
-     * Getter/setter used in the form for the sub stat for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    echoSubStatsType3: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsType3 ?? "none";
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType3 ??
-          "none"
-        );
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsType3: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsType3: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-    /**
-     * Getter/setter used in the form for the sub stat value for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {String|null}
-     */
-    echoSubStatsValue3: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsValue3 ?? 0;
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue3 ?? 0
-        );
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsValue3: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsValue3: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-
-    /**
-     * Getter/setter used in the form for the sub stat for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    echoSubStatsType4: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsType4 ?? "none";
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType4 ??
-          "none"
-        );
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsType4: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsType4: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-    /**
-     * Getter/setter used in the form for the sub stat value for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {String|null}
-     */
-    echoSubStatsValue4: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsValue4 ?? 0;
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue4 ?? 0
-        );
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsValue4: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsValue4: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-    /**
-     * Getter/setter used in the form for the sub stat for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    echoSubStatsType5: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsType5 ?? "none";
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsType5 ??
-          "none"
-        );
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsType5: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsType5: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-    /**
-     * Getter/setter used in the form for the sub stat value for this echo
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {String|null}
-     */
-    echoSubStatsValue5: {
-      get() {
-        if (this.currentEcho) {
-          return this.currentEcho.echoSubStatsValue5 ?? 0;
-        }
-        return (
-          this.currentCharacter?.echoes?.[this.index]?.echoSubStatsValue5 ?? 0
-        );
-      },
-      async set(value) {
-        if (this.currentEcho) {
-          await this.patchEcho(this.echoId, { echoSubStatsValue5: value });
-        } else {
-          const data = {
-            echoes: {},
-          };
-          data.echoes[this.index] = {
-            echoSubStatsValue5: value,
-          };
-          await this.setCharacterData(this.character, data);
-        }
-      },
-    },
-    mainEchoesData() {
-      return { ...mainEchoesData };
-    },
-    chosenMainEchoData() {
-      if (!this.mainEcho) {
-        return null;
-      }
-      return this.mainEchoesData?.[this.mainEcho];
-    },
-    chosenMainEchoBuffs() {
-      if (!this.chosenMainEchoData) {
-        return [];
-      }
-      return this.chosenMainEchoData?.modifiers ?? [];
-    },
-    chosenMainEchoHasBuffs() {
-      return this.chosenMainEchoBuffs?.length > 0;
-    },
-    mainEchoOptions() {
-      const echoes = {
-        Calamity: [],
-        Overlord: [],
-        Elite: [],
-        Common: [],
-      };
-      const mainEchoValues = Object.values(this.mainEchoesData);
-      mainEchoValues.forEach((echo) => {
-        if (echo?.class && echoes?.[echo.class]) {
-          echoes[echo.class].push(echo);
-        }
+  set(value: string | number | null) {
+    if (currentEcho.value) {
+      inventoryStore.patchEcho(echoId.value!, { type: value });
+    } else {
+      void characterStore.setCharacterData(props.character, {
+        echoes: { [props.index]: { type: value } },
       });
-      return echoes;
-    },
-    mainEchoHasStacks() {
-      return this.chosenMainEchoData?.hasStacks ?? false;
-    },
-    mainEchoMinStacks() {
-      return this.chosenMainEchoData?.minStacks ?? 0;
-    },
-    mainEchoMaxStacks() {
-      return this.chosenMainEchoData?.maxStacks ?? 0;
-    },
-    modalId() {
-      return `echoModal${this.index}`;
-    },
-    modalIdPicker() {
-      return `echoModal${this.index}Picker`;
-    },
-    totalSubStatsEnabled() {
-      const allValues = Object.values(this.allSubStatsEnabled);
-      const allTrueValues = allValues.filter((val) => val === true);
-      return allTrueValues.length;
-    },
-    isMaxSubstats() {
-      return this.totalSubStatsEnabled >= 5;
-    },
-    hasSubStats() {
-      return this.totalSubStatsEnabled > 0;
-    },
-    isCritRateDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("CritRate");
-    },
-    isCritDMGDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("CritDMG");
-    },
-    isAtkDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("ATK");
-    },
-    isFlatAtkDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("ATK_FLAT");
-    },
-    isHpDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("HP");
-    },
-    isFlatHpDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("HP_FLAT");
-    },
-    isDefDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("DEF");
-    },
-    isFlatDefDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("DEF_FLAT");
-    },
-    isBasicDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("BasicAttackDMGBonus");
-    },
-    isHeavyDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("HeavyAttackDMGBonus");
-    },
-    isSkillDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("ResonanceSkillDMGBonus");
-    },
-    isLiberationDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("ResonanceLiberationDMGBonus");
-    },
-    isEnergyRechargeDisabled() {
-      if (!this.isMaxSubstats) {
-        return false;
-      }
-      return !this.allSubStats.includes("EnergyRegen");
-    },
-    isCritRateChecked() {
-      return this.allSubStats.includes("CritRate");
-    },
-    isCritDMGChecked() {
-      return this.allSubStats.includes("CritDMG");
-    },
-    isAtkChecked() {
-      return this.allSubStats.includes("ATK");
-    },
-    isFlatAtkChecked() {
-      return this.allSubStats.includes("ATK_FLAT");
-    },
-    isHpChecked() {
-      return this.allSubStats.includes("HP");
-    },
-    isFlatHpChecked() {
-      return this.allSubStats.includes("HP_FLAT");
-    },
-    isDefChecked() {
-      return this.allSubStats.includes("DEF");
-    },
-    isFlatDefChecked() {
-      return this.allSubStats.includes("DEF_FLAT");
-    },
-    isBasicChecked() {
-      return this.allSubStats.includes("BasicAttackDMGBonus");
-    },
-    isHeavyChecked() {
-      return this.allSubStats.includes("HeavyAttackDMGBonus");
-    },
-    isSkillChecked() {
-      return this.allSubStats.includes("ResonanceSkillDMGBonus");
-    },
-    isLiberationChecked() {
-      return this.allSubStats.includes("ResonanceLiberationDMGBonus");
-    },
-    isEnergyRechargeChecked() {
-      return this.allSubStats.includes("EnergyRegen");
-    },
-    critDmgValue() {
-      const mainStat = "CritDMG";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    critRateValue() {
-      const mainStat = "CritRate";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    atkValue() {
-      const mainStat = "ATK";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    atkFlatValue() {
-      const mainStat = "ATK_FLAT";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    hpValue() {
-      const mainStat = "HP";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    hpFlatValue() {
-      const mainStat = "HP_FLAT";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    defValue() {
-      const mainStat = "DEF";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    defFlatValue() {
-      const mainStat = "DEF_FLAT";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    basicValue() {
-      const mainStat = "BasicAttackDMGBonus";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    heavyValue() {
-      const mainStat = "HeavyAttackDMGBonus";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    skillValue() {
-      const mainStat = "ResonanceSkillDMGBonus";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    liberationValue() {
-      const mainStat = "ResonanceLiberationDMGBonus";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    energyRegenValue() {
-      const mainStat = "EnergyRegen";
-      if (this.echoSubStatsType1 === mainStat) {
-        return this.echoSubStatsValue1;
-      }
-      if (this.echoSubStatsType2 === mainStat) {
-        return this.echoSubStatsValue2;
-      }
-      if (this.echoSubStatsType3 === mainStat) {
-        return this.echoSubStatsValue3;
-      }
-      if (this.echoSubStatsType4 === mainStat) {
-        return this.echoSubStatsValue4;
-      }
-      if (this.echoSubStatsType5 === mainStat) {
-        return this.echoSubStatsValue5;
-      }
-    },
-    echoImage() {
-      const defaultImageUrl =
-        "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png";
-      if (!this.echo) {
-        return defaultImageUrl;
-      }
-      const echoData = getEchoData(this.echo);
-      return echoData?.image ?? defaultImageUrl;
-    },
-    echoSubStatsValue1Display() {
-      if (!this.echoSubStatsValue1) {
-        return null;
-      }
-      if (this.echoSubStatsType1.includes("FLAT")) {
-        return this.echoSubStatsValue1;
-      }
-      return `${this.echoSubStatsValue1}%`;
-    },
-    echoSubStatsValue2Display() {
-      if (!this.echoSubStatsValue2) {
-        return null;
-      }
-      if (this.echoSubStatsType2.includes("FLAT")) {
-        return this.echoSubStatsValue2;
-      }
-      return `${this.echoSubStatsValue2}%`;
-    },
-    echoSubStatsValue3Display() {
-      if (!this.echoSubStatsValue3) {
-        return null;
-      }
-      if (this.echoSubStatsType3.includes("FLAT")) {
-        return this.echoSubStatsValue3;
-      }
-      return `${this.echoSubStatsValue3}%`;
-    },
-    echoSubStatsValue4Display() {
-      if (!this.echoSubStatsValue4) {
-        return null;
-      }
-      if (this.echoSubStatsType4.includes("FLAT")) {
-        return this.echoSubStatsValue4;
-      }
-      return `${this.echoSubStatsValue4}%`;
-    },
-    echoSubStatsValue5Display() {
-      if (!this.echoSubStatsValue5) {
-        return null;
-      }
-      if (this.echoSubStatsType5.includes("FLAT")) {
-        return this.echoSubStatsValue5;
-      }
-      return `${this.echoSubStatsValue5}%`;
-    },
-    echoSubStat1Icon() {
-      if (!this.echoSubStatsType1) {
-        return null;
-      }
-      return getSubStatIconByType(this.echoSubStatsType1);
-    },
-    echoSubStat2Icon() {
-      if (!this.echoSubStatsType2) {
-        return null;
-      }
-      return getSubStatIconByType(this.echoSubStatsType2);
-    },
-    echoSubStat3Icon() {
-      if (!this.echoSubStatsType3) {
-        return null;
-      }
-      return getSubStatIconByType(this.echoSubStatsType3);
-    },
-    echoSubStat4Icon() {
-      if (!this.echoSubStatsType4) {
-        return null;
-      }
-      return getSubStatIconByType(this.echoSubStatsType4);
-    },
-    echoSubStat5Icon() {
-      if (!this.echoSubStatsType5) {
-        return null;
-      }
-      return getSubStatIconByType(this.echoSubStatsType5);
-    },
-    mainStatValue() {
-      if (this.type && this.stat && this.stat !== "none" && this.rank) {
-        return this.statsTable?.[this.type]?.[this.stat]?.[this.rank];
-      }
-      return null;
-    },
-    echoName() {
-      if (!this.echo) {
-        return null;
-      }
-      const echoData = getEchoData(this.echo);
-      return echoData?.name ?? null;
-    },
-    echoFreeSubStatType() {
-      if (this.type && this.rank) {
-        let stat = this.type == "1" ? "HP_FLAT" : "ATK_FLAT";
-        return stat;
-      }
-      return null;
-    },
-    echoFreeSubStatValue() {
-      if (this.type && this.rank) {
-        let statValue = this.flatBonusesByRankByType[this.type][this.rank];
-        return statValue;
-      }
-      return null;
-    },
-    echoFreeSubStatIcon() {
-      if (!this.echoFreeSubStatType) {
-        return null;
-      }
-      return getSubStatIconByType(this.echoFreeSubStatType);
-    },
-    echoSets() {
-      if (!this.echo) {
-        return [];
-      }
-      const echoData = getEchoData(this.echo);
-      return echoData?.sets ?? [];
-    },
-    echoSetsList() {
-      return Object.keys(this.echoSetLabelMap);
-    },
-    allEchoesListFiltered() {
-      let allEchoes = Object.values(this.mainEchoesData);
-      if (this.echoSetFilter) {
-        allEchoes = allEchoes.filter((echo) =>
-          echo.sets.includes(this.echoSetFilter),
-        );
-      }
-      // now sort by class then by name
-      const classOrder = {
-        Calamity: 0,
-        Overlord: 1,
-        Elite: 2,
-        Common: 3,
-      };
-
-      // Sort by class first (using classOrder), then by name alphabetically
-      const sortedEchoes = allEchoes.sort((a, b) => {
-        // First, compare by class based on the classOrder
-        const classComparison = classOrder[a.class] - classOrder[b.class];
-
-        // If classes are the same, sort by name alphabetically
-        if (classComparison === 0) {
-          return a.name.localeCompare(b.name);
-        }
-
-        return classComparison;
-      });
-      return sortedEchoes;
-    },
-    /**
-     * Determines if the echo is in your inventory or not
-     * @returns {Boolean}
-     */
-    isInInventory() {
-      return !!this.echoId;
-    },
-    critValue() {
-      let cv = 0;
-      for (let i = 1; i <= 5; i++) {
-        const typeKey = `echoSubStatsType${i}`;
-        const valueKey = `echoSubStatsValue${i}`;
-
-        if (this[typeKey] === "CritRate") {
-          cv += this[valueKey] * 2; // Double the value for CritRate
-        } else if (this[typeKey] === "CritDMG") {
-          cv += this[valueKey]; // Add the value for CritDMG
-        }
-      }
-      return cv;
-    },
-    critValueBadgeClass() {
-      const cv = this.critValue ?? 0;
-
-      // Ensure cv is within the valid range
-      const percentage = Math.min(Math.max(cv, 0), 42);
-
-      let bgColor;
-      let color = "text-white";
-      let boxShadow;
-      let borderColor;
-
-      if (percentage <= 7) {
-        bgColor = "bg-emerald-800"; // Dark Green
-        borderColor = "border-emerald-800";
-      } else if (percentage <= 14) {
-        bgColor = "bg-green-500"; // Lighter Green
-        borderColor = "border-green-500";
-      } else if (percentage <= 21) {
-        bgColor = "bg-blue-600"; // Blue
-        borderColor = "border-blue-600";
-        color = "text-black";
-      } else if (percentage <= 28) {
-        bgColor = "bg-purple-600"; // Purple
-        borderColor = "border-purple-600";
-        color = "text-black";
-      } else if (percentage <= 35) {
-        bgColor = "bg-purple-400"; // Lighter Purple
-        borderColor = "border-purple-400";
-        color = "text-black";
-      } else {
-        bgColor = "bg-yellow-500"; // Gold or Red (depending on preference)
-        borderColor = "border-yellow-500";
-        color = "text-black";
-      }
-      if (percentage >= 40) {
-        boxShadow = "shadow-md shadow-yellow-500/50";
-      }
-
-      return [
-        bgColor, // Dynamically return the class based on the cv
-        color,
-        borderColor,
-        boxShadow,
-      ];
-    },
-    formattedCritValue() {
-      const num = this.critValue;
-      if (Number.isInteger(num)) {
-        return num; // If it's an integer, return it as is
-      } else {
-        const rounded = num.toFixed(1); // Round to 1 decimal place
-        return rounded.endsWith(".0") ? parseInt(rounded) : parseFloat(rounded); // Remove the '.0' if it's a whole number
-      }
-    },
-    echoStatsFormatted() {
-      const substatType1 = this.echoSubStatsType1;
-      const substatType2 = this.echoSubStatsType2;
-      const substatType3 = this.echoSubStatsType3;
-      const substatType4 = this.echoSubStatsType4;
-      const substatType5 = this.echoSubStatsType5;
-      const echoData = {};
-      if (substatType1) {
-        echoData[substatType1.toString()] = this.echoSubStatsValue1 ?? 0;
-      }
-      if (substatType2) {
-        echoData[substatType2.toString()] = this.echoSubStatsValue2 ?? 0;
-      }
-      if (substatType3) {
-        echoData[substatType3.toString()] = this.echoSubStatsValue3 ?? 0;
-      }
-      if (substatType4) {
-        echoData[substatType4.toString()] = this.echoSubStatsValue4 ?? 0;
-      }
-      if (substatType5) {
-        echoData[substatType5.toString()] = this.echoSubStatsValue5 ?? 0;
-      }
-      return echoData;
-    },
-    echoRollValue() {
-      return getRollValue(this.echoStatsFormatted);
-    },
-    rollValueBadgeClass() {
-      const rv = this.echoRollValue ?? 0;
-
-      // Ensure cv is within the valid range
-      const percentage = Math.min(Math.max(rv, 0), 600);
-
-      let bgColor;
-      let color = "text-white";
-      let boxShadow;
-      let borderColor;
-
-      if (percentage <= 180) {
-        bgColor = "bg-emerald-800"; // Dark Green
-        borderColor = "border-emerald-800";
-      } else if (percentage <= 220) {
-        bgColor = "bg-green-500"; // Lighter Green
-        borderColor = "border-green-500";
-      } else if (percentage <= 300) {
-        bgColor = "bg-blue-600"; // Blue
-        borderColor = "border-blue-600";
-        color = "text-black";
-      } else if (percentage < 400) {
-        bgColor = "bg-purple-600"; // Purple
-        borderColor = "border-purple-600";
-        color = "text-black";
-      } else {
-        bgColor = "bg-yellow-500"; // Gold or Red (depending on preference)
-        borderColor = "border-yellow-500";
-        color = "text-black";
-      }
-      if (percentage >= 450) {
-        boxShadow = "shadow-md shadow-yellow-500/50";
-      }
-
-      return [
-        bgColor, // Dynamically return the class based on the cv
-        color,
-        borderColor,
-        boxShadow,
-      ];
-    },
+    }
   },
+});
+
+const echo = computed({
+  get() {
+    if (currentEcho.value) {
+      return (currentEcho.value as { echo?: string | null }).echo ?? null;
+    }
+    const ch = currentCharacter.value as {
+      echoes?: Record<number, { echo?: string | null }>;
+    };
+    return ch.echoes?.[props.index]?.echo ?? null;
+  },
+  set(value: string | null) {
+    if (currentEcho.value) {
+      void inventoryStore.patchEcho(echoId.value!, { echo: value });
+    } else {
+      void characterStore.setCharacterData(props.character, {
+        echoes: { [props.index]: { echo: value } },
+      });
+    }
+  },
+});
+
+const echoSet = computed({
+  get() {
+    if (currentEcho.value) {
+      return (currentEcho.value as { echoSet?: string | null }).echoSet ?? null;
+    }
+    const ch = currentCharacter.value as {
+      echoes?: Record<number, { echoSet?: string | null }>;
+    };
+    return ch.echoes?.[props.index]?.echoSet ?? null;
+  },
+  set(value: string | null) {
+    if (currentEcho.value) {
+      void inventoryStore.patchEcho(echoId.value!, { echoSet: value });
+    } else {
+      void characterStore.setCharacterData(props.character, {
+        echoes: { [props.index]: { echoSet: value } },
+      });
+    }
+  },
+});
+
+const rank = computed({
+  get() {
+    if (currentEcho.value) {
+      return (currentEcho.value as { rank?: string | number | null }).rank ?? 5;
+    }
+    const ch = currentCharacter.value as {
+      echoes?: Record<number, { rank?: string | number | null }>;
+    };
+    return ch.echoes?.[props.index]?.rank ?? 5;
+  },
+  set(value: string | number) {
+    if (currentEcho.value) {
+      void inventoryStore.patchEcho(echoId.value!, { rank: value });
+    } else {
+      void characterStore.setCharacterData(props.character, {
+        echoes: { [props.index]: { rank: value } },
+      });
+    }
+  },
+});
+
+const stat = computed({
+  get() {
+    if (currentEcho.value) {
+      return (currentEcho.value as { stat?: string | null }).stat ?? "none";
+    }
+    const ch = currentCharacter.value as {
+      echoes?: Record<number, { stat?: string | null }>;
+    };
+    return ch.echoes?.[props.index]?.stat ?? "none";
+  },
+  set(value: string) {
+    if (currentEcho.value) {
+      void inventoryStore.patchEcho(echoId.value!, { stat: value });
+    } else {
+      void characterStore.setCharacterData(props.character, {
+        echoes: { [props.index]: { stat: value } },
+      });
+    }
+  },
+});
+
+function subStatTypeSlot(slot: 1 | 2 | 3 | 4 | 5) {
+  const key = `echoSubStatsType${slot}` as const;
+  return computed({
+    get(): string | null {
+      if (currentEcho.value) {
+        const v = (currentEcho.value as Record<string, unknown>)[key];
+        return (v ?? "none") as string;
+      }
+      const ch = currentCharacter.value as {
+        echoes?: Record<number, Record<string, unknown>>;
+      };
+      const v = ch.echoes?.[props.index]?.[key];
+      return (v ?? "none") as string;
+    },
+    set(value: string | null) {
+      if (currentEcho.value) {
+        void inventoryStore.patchEcho(echoId.value!, { [key]: value });
+      } else {
+        void characterStore.setCharacterData(props.character, {
+          echoes: { [props.index]: { [key]: value } },
+        });
+      }
+    },
+  });
+}
+
+function subStatValueSlot(slot: 1 | 2 | 3 | 4 | 5) {
+  const key = `echoSubStatsValue${slot}` as const;
+  return computed({
+    get(): number {
+      if (currentEcho.value) {
+        const v = (currentEcho.value as Record<string, unknown>)[key];
+        return (v ?? 0) as number;
+      }
+      const ch = currentCharacter.value as {
+        echoes?: Record<number, Record<string, unknown>>;
+      };
+      const v = ch.echoes?.[props.index]?.[key];
+      return (v ?? 0) as number;
+    },
+    set(value: number | null) {
+      if (currentEcho.value) {
+        void inventoryStore.patchEcho(echoId.value!, { [key]: value });
+      } else {
+        void characterStore.setCharacterData(props.character, {
+          echoes: { [props.index]: { [key]: value } },
+        });
+      }
+    },
+  });
+}
+
+const echoSubStatsType1 = subStatTypeSlot(1);
+const echoSubStatsType2 = subStatTypeSlot(2);
+const echoSubStatsType3 = subStatTypeSlot(3);
+const echoSubStatsType4 = subStatTypeSlot(4);
+const echoSubStatsType5 = subStatTypeSlot(5);
+const echoSubStatsValue1 = subStatValueSlot(1);
+const echoSubStatsValue2 = subStatValueSlot(2);
+const echoSubStatsValue3 = subStatValueSlot(3);
+const echoSubStatsValue4 = subStatValueSlot(4);
+const echoSubStatsValue5 = subStatValueSlot(5);
+
+const config = computed(() => settingsStore.config);
+const settingsTheme = computed(() => config.value?.theme ?? null);
+
+const echoPresetsFoundWithEcho = computed(() =>
+  (inventoryStore as { getEchoPresetsByEchoId?: (id: string | null) => unknown[] })
+    .getEchoPresetsByEchoId?.(echoId.value) ?? [],
+);
+
+const rangeClasses = computed(() => {
+  const classes: string[] = [];
+  if (settingsTheme.value === "black") {
+    classes.push("[--range-shdw:gray]");
+  }
+  return classes;
+});
+
+const mainEchoesDataComputed = computed(() => ({ ...mainEchoesData }));
+
+const mainEchoOptions = computed(() => {
+  const echoes: Record<string, { key: string; name: string; class: string }[]> =
+    {
+      Calamity: [],
+      Overlord: [],
+      Elite: [],
+      Common: [],
+    };
+  const mainEchoValues = Object.values(
+    mainEchoesDataComputed.value,
+  ) as { class?: keyof typeof echoes; key: string; name: string }[];
+  mainEchoValues.forEach((e) => {
+    if (e?.class && echoes[e.class]) {
+      echoes[e.class].push(e as { key: string; name: string; class: string });
+    }
+  });
+  return echoes;
+});
+
+const modalId = computed(() => `echoModal${props.index}`);
+const modalIdPicker = computed(() => `echoModal${props.index}Picker`);
+
+const totalSubStatsEnabled = computed(() => {
+  const allValues = Object.values(allSubStatsEnabled.value);
+  return allValues.filter((val) => val === true).length;
+});
+
+const isMaxSubstats = computed(() => totalSubStatsEnabled.value >= 5);
+const hasSubStats = computed(() => totalSubStatsEnabled.value > 0);
+
+function statDisabled(statName: string) {
+  if (!isMaxSubstats.value) return false;
+  return !allSubStats.value.includes(statName);
+}
+
+const isCritRateDisabled = computed(() => statDisabled("CritRate"));
+const isCritDMGDisabled = computed(() => statDisabled("CritDMG"));
+const isAtkDisabled = computed(() => statDisabled("ATK"));
+const isFlatAtkDisabled = computed(() => statDisabled("ATK_FLAT"));
+const isHpDisabled = computed(() => statDisabled("HP"));
+const isFlatHpDisabled = computed(() => statDisabled("HP_FLAT"));
+const isDefDisabled = computed(() => statDisabled("DEF"));
+const isFlatDefDisabled = computed(() => statDisabled("DEF_FLAT"));
+const isBasicDisabled = computed(() => statDisabled("BasicAttackDMGBonus"));
+const isHeavyDisabled = computed(() => statDisabled("HeavyAttackDMGBonus"));
+const isSkillDisabled = computed(() => statDisabled("ResonanceSkillDMGBonus"));
+const isLiberationDisabled = computed(() =>
+  statDisabled("ResonanceLiberationDMGBonus"),
+);
+const isEnergyRechargeDisabled = computed(() => statDisabled("EnergyRegen"));
+
+const isCritRateChecked = computed(() => allSubStats.value.includes("CritRate"));
+const isCritDMGChecked = computed(() => allSubStats.value.includes("CritDMG"));
+const isAtkChecked = computed(() => allSubStats.value.includes("ATK"));
+const isFlatAtkChecked = computed(() => allSubStats.value.includes("ATK_FLAT"));
+const isHpChecked = computed(() => allSubStats.value.includes("HP"));
+const isFlatHpChecked = computed(() => allSubStats.value.includes("HP_FLAT"));
+const isDefChecked = computed(() => allSubStats.value.includes("DEF"));
+const isFlatDefChecked = computed(() => allSubStats.value.includes("DEF_FLAT"));
+const isBasicChecked = computed(() =>
+  allSubStats.value.includes("BasicAttackDMGBonus"),
+);
+const isHeavyChecked = computed(() =>
+  allSubStats.value.includes("HeavyAttackDMGBonus"),
+);
+const isSkillChecked = computed(() =>
+  allSubStats.value.includes("ResonanceSkillDMGBonus"),
+);
+const isLiberationChecked = computed(() =>
+  allSubStats.value.includes("ResonanceLiberationDMGBonus"),
+);
+const isEnergyRechargeChecked = computed(() =>
+  allSubStats.value.includes("EnergyRegen"),
+);
+
+function valueForSubStat(mainStat: string): number | undefined {
+  if (echoSubStatsType1.value === mainStat) return echoSubStatsValue1.value;
+  if (echoSubStatsType2.value === mainStat) return echoSubStatsValue2.value;
+  if (echoSubStatsType3.value === mainStat) return echoSubStatsValue3.value;
+  if (echoSubStatsType4.value === mainStat) return echoSubStatsValue4.value;
+  if (echoSubStatsType5.value === mainStat) return echoSubStatsValue5.value;
+  return undefined;
+}
+
+const critDmgValue = computed(() => valueForSubStat("CritDMG"));
+const critRateValue = computed(() => valueForSubStat("CritRate"));
+const atkValue = computed(() => valueForSubStat("ATK"));
+const atkFlatValue = computed(() => valueForSubStat("ATK_FLAT"));
+const hpValue = computed(() => valueForSubStat("HP"));
+const hpFlatValue = computed(() => valueForSubStat("HP_FLAT"));
+const defValue = computed(() => valueForSubStat("DEF"));
+const defFlatValue = computed(() => valueForSubStat("DEF_FLAT"));
+const basicValue = computed(() => valueForSubStat("BasicAttackDMGBonus"));
+const heavyValue = computed(() => valueForSubStat("HeavyAttackDMGBonus"));
+const skillValue = computed(() => valueForSubStat("ResonanceSkillDMGBonus"));
+const liberationValue = computed(() =>
+  valueForSubStat("ResonanceLiberationDMGBonus"),
+);
+const energyRegenValue = computed(() => valueForSubStat("EnergyRegen"));
+
+const echoImage = computed(() => {
+  const defaultImageUrl =
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png";
+  if (!echo.value) return defaultImageUrl;
+  const echoData = getEchoData(echo.value);
+  return echoData?.image ?? defaultImageUrl;
+});
+
+function formatSubStatDisplay(
+  typeVal: string | null,
+  numVal: number,
+): string | number | null {
+  if (!numVal) return null;
+  if (typeVal?.includes("FLAT")) return numVal;
+  return `${numVal}%`;
+}
+
+const echoSubStatsValue1Display = computed(() =>
+  formatSubStatDisplay(echoSubStatsType1.value, echoSubStatsValue1.value),
+);
+const echoSubStatsValue2Display = computed(() =>
+  formatSubStatDisplay(echoSubStatsType2.value, echoSubStatsValue2.value),
+);
+const echoSubStatsValue3Display = computed(() =>
+  formatSubStatDisplay(echoSubStatsType3.value, echoSubStatsValue3.value),
+);
+const echoSubStatsValue4Display = computed(() =>
+  formatSubStatDisplay(echoSubStatsType4.value, echoSubStatsValue4.value),
+);
+const echoSubStatsValue5Display = computed(() =>
+  formatSubStatDisplay(echoSubStatsType5.value, echoSubStatsValue5.value),
+);
+
+const echoSubStat1Icon = computed(() =>
+  echoSubStatsType1.value
+    ? getSubStatIconByType(echoSubStatsType1.value)
+    : undefined,
+);
+const echoSubStat2Icon = computed(() =>
+  echoSubStatsType2.value
+    ? getSubStatIconByType(echoSubStatsType2.value)
+    : undefined,
+);
+const echoSubStat3Icon = computed(() =>
+  echoSubStatsType3.value
+    ? getSubStatIconByType(echoSubStatsType3.value)
+    : undefined,
+);
+const echoSubStat4Icon = computed(() =>
+  echoSubStatsType4.value
+    ? getSubStatIconByType(echoSubStatsType4.value)
+    : undefined,
+);
+const echoSubStat5Icon = computed(() =>
+  echoSubStatsType5.value
+    ? getSubStatIconByType(echoSubStatsType5.value)
+    : undefined,
+);
+
+const mainStatValue = computed(() => {
+  const t = type.value;
+  const s = stat.value;
+  const r = rank.value;
+  if (t && s && s !== "none" && r) {
+    return (statsTable as Record<string, Record<string, Record<string, number>>>)[
+      String(t)
+    ]?.[s]?.[String(r)];
+  }
+  return null;
+});
+
+const echoName = computed(() => {
+  if (!echo.value) return null;
+  const echoData = getEchoData(echo.value);
+  return echoData?.name ?? null;
+});
+
+const echoFreeSubStatType = computed(() => {
+  const t = type.value;
+  const r = rank.value;
+  if (t && r) {
+    return t == "1" ? "HP_FLAT" : "ATK_FLAT";
+  }
+  return null;
+});
+
+const echoFreeSubStatValue = computed(() => {
+  const t = type.value;
+  const r = rank.value;
+  if (t && r) {
+    return (flatBonusesByRankByType as Record<string, Record<string, number>>)[
+      String(t)
+    ]?.[String(r)];
+  }
+  return null;
+});
+
+const echoFreeSubStatIcon = computed(() =>
+  echoFreeSubStatType.value
+    ? getSubStatIconByType(echoFreeSubStatType.value)
+    : undefined,
+);
+
+const echoSets = computed(() => {
+  if (!echo.value) return [];
+  const echoData = getEchoData(echo.value);
+  return echoData?.sets ?? [];
+});
+
+const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
+
+type EchoListEntry = {
+  key: string;
+  name: string;
+  class: string;
+  sets: string[];
+  image?: string;
 };
+
+const allEchoesListFiltered = computed((): EchoListEntry[] => {
+  let allEchoes = Object.values(mainEchoesDataComputed.value) as EchoListEntry[];
+  if (echoSetFilter.value) {
+    allEchoes = allEchoes.filter((e) =>
+      e.sets.includes(echoSetFilter.value!),
+    );
+  }
+  const classOrder: Record<string, number> = {
+    Calamity: 0,
+    Overlord: 1,
+    Elite: 2,
+    Common: 3,
+  };
+  return [...allEchoes].sort((a, b) => {
+    const classComparison = classOrder[a.class] - classOrder[b.class];
+    if (classComparison === 0) {
+      return a.name.localeCompare(b.name);
+    }
+    return classComparison;
+  });
+});
+
+const isInInventory = computed(() => !!echoId.value);
+
+const critValue = computed(() => {
+  let cv = 0;
+  const types = [
+    echoSubStatsType1.value,
+    echoSubStatsType2.value,
+    echoSubStatsType3.value,
+    echoSubStatsType4.value,
+    echoSubStatsType5.value,
+  ];
+  const values = [
+    echoSubStatsValue1.value,
+    echoSubStatsValue2.value,
+    echoSubStatsValue3.value,
+    echoSubStatsValue4.value,
+    echoSubStatsValue5.value,
+  ];
+  for (let i = 0; i < 5; i++) {
+    if (types[i] === "CritRate") {
+      cv += Number(values[i]) * 2;
+    } else if (types[i] === "CritDMG") {
+      cv += Number(values[i]);
+    }
+  }
+  return cv;
+});
+
+const critValueBadgeClass = computed(() => {
+  const cv = critValue.value ?? 0;
+  const percentage = Math.min(Math.max(cv, 0), 42);
+  let bgColor: string;
+  let color = "text-white";
+  let boxShadow: string | undefined;
+  let borderColor: string;
+  if (percentage <= 7) {
+    bgColor = "bg-emerald-800";
+    borderColor = "border-emerald-800";
+  } else if (percentage <= 14) {
+    bgColor = "bg-green-500";
+    borderColor = "border-green-500";
+  } else if (percentage <= 21) {
+    bgColor = "bg-blue-600";
+    borderColor = "border-blue-600";
+    color = "text-black";
+  } else if (percentage <= 28) {
+    bgColor = "bg-purple-600";
+    borderColor = "border-purple-600";
+    color = "text-black";
+  } else if (percentage <= 35) {
+    bgColor = "bg-purple-400";
+    borderColor = "border-purple-400";
+    color = "text-black";
+  } else {
+    bgColor = "bg-yellow-500";
+    borderColor = "border-yellow-500";
+    color = "text-black";
+  }
+  if (percentage >= 40) {
+    boxShadow = "shadow-md shadow-yellow-500/50";
+  }
+  return [bgColor, color, borderColor, boxShadow].filter(Boolean) as string[];
+});
+
+const formattedCritValue = computed(() => {
+  const num = critValue.value;
+  if (Number.isInteger(num)) {
+    return num;
+  }
+  const rounded = num.toFixed(1);
+  return rounded.endsWith(".0")
+    ? parseInt(rounded, 10)
+    : parseFloat(rounded);
+});
+
+const echoStatsFormatted = computed(() => {
+  const echoData: Record<string, number> = {};
+  const t1 = echoSubStatsType1.value;
+  const t2 = echoSubStatsType2.value;
+  const t3 = echoSubStatsType3.value;
+  const t4 = echoSubStatsType4.value;
+  const t5 = echoSubStatsType5.value;
+  if (t1) echoData[t1.toString()] = echoSubStatsValue1.value ?? 0;
+  if (t2) echoData[t2.toString()] = echoSubStatsValue2.value ?? 0;
+  if (t3) echoData[t3.toString()] = echoSubStatsValue3.value ?? 0;
+  if (t4) echoData[t4.toString()] = echoSubStatsValue4.value ?? 0;
+  if (t5) echoData[t5.toString()] = echoSubStatsValue5.value ?? 0;
+  return echoData;
+});
+
+const echoRollValue = computed(() =>
+  getRollValue(
+    Object.fromEntries(
+      Object.entries(echoStatsFormatted.value).map(([k, v]) => [k, String(v)]),
+    ) as Record<string, string>,
+  ),
+);
+
+const rollValueBadgeClass = computed(() => {
+  const rv = echoRollValue.value ?? 0;
+  const percentage = Math.min(Math.max(rv, 0), 600);
+  let bgColor: string;
+  let color = "text-white";
+  let boxShadow: string | undefined;
+  let borderColor: string;
+  if (percentage <= 180) {
+    bgColor = "bg-emerald-800";
+    borderColor = "border-emerald-800";
+  } else if (percentage <= 220) {
+    bgColor = "bg-green-500";
+    borderColor = "border-green-500";
+  } else if (percentage <= 300) {
+    bgColor = "bg-blue-600";
+    borderColor = "border-blue-600";
+    color = "text-black";
+  } else if (percentage < 400) {
+    bgColor = "bg-purple-600";
+    borderColor = "border-purple-600";
+    color = "text-black";
+  } else {
+    bgColor = "bg-yellow-500";
+    borderColor = "border-yellow-500";
+    color = "text-black";
+  }
+  if (percentage >= 450) {
+    boxShadow = "shadow-md shadow-yellow-500/50";
+  }
+  return [bgColor, color, borderColor, boxShadow].filter(Boolean) as string[];
+});
+
+function updateEchoChoice(
+  val: string | null,
+  previousVal: string | null | undefined,
+) {
+  const echoData = val ? getEchoData(val) : null;
+  const echoClass = echoData?.class;
+  const echoCost =
+    echoClass != null ? getCostByClass(echoClass) : null;
+  selectCost(echoCost);
+  if (props.index === 0) {
+    emit("main-echo:updated", val);
+  }
+  let prevEchoCost: string | number | null = null;
+  if (previousVal) {
+    const prevEchoData = getEchoData(previousVal);
+    const prevEchoClass = prevEchoData?.class;
+    prevEchoCost =
+      prevEchoClass != null ? getCostByClass(prevEchoClass) : null;
+  }
+  if (previousVal && echoCost !== prevEchoCost) {
+    stat.value = "none";
+  }
+}
+
+function selectCost(cost: string | number | null | undefined) {
+  type.value = cost ?? null;
+  updateTotalStats();
+}
+
+function getStats(cost: string | number | null | undefined) {
+  if (cost == null) return [];
+  return Object.keys(
+    (statsTable as Record<string, Record<string, unknown>>)[String(cost)] || {},
+  );
+}
+
+function onSubStatValueUpdate(statName: string, val: number) {
+  subStatUpdated(statName, val);
+}
+
+function subStatLabel(t: string | null) {
+  if (!t || t === "none") return "";
+  return getReadableSubStatLabel(t);
+}
+
+function syncMainStats() {
+  allSubStatsEnabled.value = {
+    echoSubStatsType1: false,
+    echoSubStatsType2: false,
+    echoSubStatsType3: false,
+    echoSubStatsType4: false,
+    echoSubStatsType5: false,
+  };
+  const updatedSubStats: string[] = [];
+  if (echoSubStatsType1.value && echoSubStatsType1.value !== "none") {
+    allSubStatsEnabled.value.echoSubStatsType1 = true;
+    updatedSubStats.push(echoSubStatsType1.value);
+  }
+  if (echoSubStatsType2.value && echoSubStatsType2.value !== "none") {
+    allSubStatsEnabled.value.echoSubStatsType2 = true;
+    updatedSubStats.push(echoSubStatsType2.value);
+  }
+  if (echoSubStatsType3.value && echoSubStatsType3.value !== "none") {
+    allSubStatsEnabled.value.echoSubStatsType3 = true;
+    updatedSubStats.push(echoSubStatsType3.value);
+  }
+  if (echoSubStatsType4.value && echoSubStatsType4.value !== "none") {
+    allSubStatsEnabled.value.echoSubStatsType4 = true;
+    updatedSubStats.push(echoSubStatsType4.value);
+  }
+  if (echoSubStatsType5.value && echoSubStatsType5.value !== "none") {
+    allSubStatsEnabled.value.echoSubStatsType5 = true;
+    updatedSubStats.push(echoSubStatsType5.value);
+  }
+  allSubStats.value = updatedSubStats;
+}
+
+function updateTotalStats() {
+  const statsOut: Record<string, number> = {};
+  const t = type.value;
+  const r = rank.value;
+  if (t && r) {
+    const flatKey = t == "1" ? "HP_FLAT" : "ATK_FLAT";
+    const flatVal = (flatBonusesByRankByType as Record<string, Record<string, number>>)[
+      String(t)
+    ]?.[String(r)];
+    if (flatVal != null) {
+      statsOut[flatKey] = (statsOut[flatKey] || 0) + flatVal;
+    }
+  }
+  if (t && r && stat.value) {
+    const max = (statsTable as Record<string, Record<string, Record<string, number>>>)[
+      String(t)
+    ]?.[stat.value]?.[String(r)];
+    if (max) {
+      statsOut[stat.value] = (statsOut[stat.value] || 0) + max;
+    }
+  }
+  if (echoSubStatsType1.value && echoSubStatsValue1.value) {
+    statsOut[echoSubStatsType1.value] =
+      (statsOut[echoSubStatsType1.value] || 0) + echoSubStatsValue1.value;
+  }
+  if (echoSubStatsType2.value && echoSubStatsValue2.value) {
+    statsOut[echoSubStatsType2.value] =
+      (statsOut[echoSubStatsType2.value] || 0) + echoSubStatsValue2.value;
+  }
+  if (echoSubStatsType3.value && echoSubStatsValue3.value) {
+    statsOut[echoSubStatsType3.value] =
+      (statsOut[echoSubStatsType3.value] || 0) + echoSubStatsValue3.value;
+  }
+  if (echoSubStatsType4.value && echoSubStatsValue4.value) {
+    statsOut[echoSubStatsType4.value] =
+      (statsOut[echoSubStatsType4.value] || 0) + echoSubStatsValue4.value;
+  }
+  if (echoSubStatsType5.value && echoSubStatsValue5.value) {
+    statsOut[echoSubStatsType5.value] =
+      (statsOut[echoSubStatsType5.value] || 0) + echoSubStatsValue5.value;
+  }
+  emit("update-stats", { index: props.index, stats: statsOut });
+}
+
+async function reset() {
+  await inventoryStore.deleteEchoEquippedMappingCharacter(
+    echoId.value,
+    props.character,
+  );
+  await characterStore.removeCharacterEcho(props.character, props.index);
+  emit("on-echo-removed");
+}
+
+function toggleSubStat(e: Event) {
+  const target = e.target as HTMLInputElement;
+  const mainStat = target.value;
+  const isChecked = target.checked;
+  if (!isChecked) {
+    deleteSubStatData(mainStat);
+    syncMainStats();
+    return;
+  }
+  const range = getSubStatRange(mainStat);
+  const initialSubStatValue = range[0];
+  if (!echoSubStatsType1.value || echoSubStatsType1.value === "none") {
+    echoSubStatsType1.value = mainStat;
+    echoSubStatsValue1.value = initialSubStatValue;
+    return;
+  }
+  if (!echoSubStatsType2.value || echoSubStatsType2.value === "none") {
+    echoSubStatsType2.value = mainStat;
+    echoSubStatsValue2.value = initialSubStatValue;
+    return;
+  }
+  if (!echoSubStatsType3.value || echoSubStatsType3.value === "none") {
+    echoSubStatsType3.value = mainStat;
+    echoSubStatsValue3.value = initialSubStatValue;
+    return;
+  }
+  if (!echoSubStatsType4.value || echoSubStatsType4.value === "none") {
+    echoSubStatsType4.value = mainStat;
+    echoSubStatsValue4.value = initialSubStatValue;
+    return;
+  }
+  if (!echoSubStatsType5.value || echoSubStatsType5.value === "none") {
+    echoSubStatsType5.value = mainStat;
+    echoSubStatsValue5.value = initialSubStatValue;
+    return;
+  }
+}
+
+function deleteSubStatData(mainStat: string) {
+  if (echoSubStatsType1.value === mainStat) {
+    echoSubStatsType1.value = null;
+    echoSubStatsValue1.value = null;
+  }
+  if (echoSubStatsType2.value === mainStat) {
+    echoSubStatsType2.value = null;
+    echoSubStatsValue2.value = null;
+  }
+  if (echoSubStatsType3.value === mainStat) {
+    echoSubStatsType3.value = null;
+    echoSubStatsValue3.value = null;
+  }
+  if (echoSubStatsType4.value === mainStat) {
+    echoSubStatsType4.value = null;
+    echoSubStatsValue4.value = null;
+  }
+  if (echoSubStatsType5.value === mainStat) {
+    echoSubStatsType5.value = null;
+    echoSubStatsValue5.value = null;
+  }
+}
+
+function handleOpenModal() {
+  const modalEl = document.getElementById(modalId.value);
+  (modalEl as HTMLDialogElement | null)?.showModal();
+}
+
+function openEchoPicker() {
+  const modalEl = document.getElementById(modalIdPicker.value);
+  (modalEl as HTMLDialogElement | null)?.showModal();
+}
+
+function subStatUpdated(mainStat: string, val: number) {
+  if (echoSubStatsType1.value === mainStat) {
+    echoSubStatsValue1.value = val;
+    return;
+  }
+  if (echoSubStatsType2.value === mainStat) {
+    echoSubStatsValue2.value = val;
+    return;
+  }
+  if (echoSubStatsType3.value === mainStat) {
+    echoSubStatsValue3.value = val;
+    return;
+  }
+  if (echoSubStatsType4.value === mainStat) {
+    echoSubStatsValue4.value = val;
+    return;
+  }
+  if (echoSubStatsType5.value === mainStat) {
+    echoSubStatsValue5.value = val;
+    return;
+  }
+}
+
+function getSubStatRange(mainStat: string) {
+  return (subStatsTable as Record<string, number[]>)[mainStat] ?? [];
+}
+
+function getDefaultValue(mainStat: string) {
+  if (echoSubStatsType1.value === mainStat) return echoSubStatsValue1.value;
+  if (echoSubStatsType2.value === mainStat) return echoSubStatsValue2.value;
+  if (echoSubStatsType3.value === mainStat) return echoSubStatsValue3.value;
+  if (echoSubStatsType4.value === mainStat) return echoSubStatsValue4.value;
+  if (echoSubStatsType5.value === mainStat) return echoSubStatsValue5.value;
+  const range = getSubStatRange(mainStat);
+  return range[Math.floor(range.length / 2)];
+}
+
+function getEchoSetIcon(setType: string) {
+  return getEchoSetIconByType(setType);
+}
+
+function handleChooseEchoSet(set: string) {
+  echoSet.value = set;
+}
+
+function isSetSelected(set: string) {
+  return echoSet.value === set;
+}
+
+async function saveEchoItem() {
+  let id: string | null = null;
+  if (echoId.value) {
+    id = echoId.value;
+  } else {
+    id = randomString();
+  }
+  const data = {
+    echoId: id,
+    echo: echo.value,
+    echoSet: echoSet.value,
+    echoSubStatsType1: echoSubStatsType1.value,
+    echoSubStatsType2: echoSubStatsType2.value,
+    echoSubStatsType3: echoSubStatsType3.value,
+    echoSubStatsType4: echoSubStatsType4.value,
+    echoSubStatsType5: echoSubStatsType5.value,
+    echoSubStatsValue1: echoSubStatsValue1.value,
+    echoSubStatsValue2: echoSubStatsValue2.value,
+    echoSubStatsValue3: echoSubStatsValue3.value,
+    echoSubStatsValue4: echoSubStatsValue4.value,
+    echoSubStatsValue5: echoSubStatsValue5.value,
+    rank: rank.value,
+    stat: stat.value,
+    type: type.value,
+  };
+  await inventoryStore.saveEcho(data);
+  const echoData = {
+    echo: null,
+    type: null,
+    rank: null,
+    stat: null,
+    echoId: id,
+    echoSet: null,
+    echoSubStatsType1: null,
+    echoSubStatsValue1: null,
+    echoSubStatsType2: null,
+    echoSubStatsValue2: null,
+    echoSubStatsType3: null,
+    echoSubStatsValue3: null,
+    echoSubStatsType4: null,
+    echoSubStatsValue4: null,
+    echoSubStatsType5: null,
+    echoSubStatsValue5: null,
+  };
+  const charData: { echoes: Record<number, typeof echoData> } = { echoes: {} };
+  charData.echoes[props.index] = echoData;
+  await characterStore.setCharacterData(props.character, charData);
+  const equippedData: Record<string, number> = {};
+  equippedData[props.character] = props.index;
+  await inventoryStore.setEquippedData(id, equippedData);
+}
+
+function openEchoBrowser() {
+  emit("open-echoes-browser", props.index);
+}
+
+function getEchoSetImage(echoSetKey: string) {
+  return getEchoSetIconByType(echoSetKey);
+}
+
+function toggleEchoSetFilter(echoSetKey: string) {
+  if (echoSetFilter.value === echoSetKey) {
+    echoSetFilter.value = null;
+  } else {
+    echoSetFilter.value = echoSetKey;
+  }
+}
+
+function isEchoSetFilterActive(echoSetKey: string) {
+  return echoSetFilter.value === echoSetKey;
+}
+
+function resetFilters() {
+  echoSetFilter.value = null;
+}
+
+async function chooseMainEcho(echoKey: string) {
+  echo.value = echoKey;
+  if (echoSetFilter.value) {
+    echoSet.value = echoSetFilter.value;
+  }
+  closeEchoChooser();
+}
+
+function closeEchoChooser() {
+  echoSetFilter.value = null;
+  const modalEl = document.getElementById(modalIdPicker.value);
+  (modalEl as HTMLDialogElement | null)?.close();
+}
+
+watch(
+  echo,
+  (val, previousVal) => {
+    updateEchoChoice(val, previousVal);
+  },
+  { immediate: true },
+);
+
+watch(echoSet, (val, previousVal) => {
+  if (val === null && previousVal === undefined) return;
+  emit("echo:set-chosen", { set: val, index: props.index });
+}, { immediate: true });
+
+watch(type, () => {
+  const raw = type.value;
+  const costNum = raw == null || raw === "" ? 0 : Number(raw);
+  emit("updated-echo-cost", {
+    index: props.index,
+    cost: Number.isFinite(costNum) ? costNum : 0,
+  });
+  updateTotalStats();
+}, { immediate: true });
+
+watch(rank, (r) => {
+  if (props.index === 0) {
+    emit("main-echo-rank:updated", r);
+  }
+  updateTotalStats();
+}, { immediate: true });
+
+watch(stat, () => {
+  updateTotalStats();
+}, { immediate: true });
+
+watch(echoSubStatsType1, () => {
+  updateTotalStats();
+  syncMainStats();
+}, { immediate: true });
+watch(echoSubStatsValue1, () => {
+  updateTotalStats();
+}, { immediate: true });
+watch(echoSubStatsType2, () => {
+  updateTotalStats();
+  syncMainStats();
+}, { immediate: true });
+watch(echoSubStatsValue2, () => {
+  updateTotalStats();
+}, { immediate: true });
+watch(echoSubStatsType3, () => {
+  updateTotalStats();
+  syncMainStats();
+}, { immediate: true });
+watch(echoSubStatsValue3, () => {
+  updateTotalStats();
+}, { immediate: true });
+watch(echoSubStatsType4, () => {
+  updateTotalStats();
+  syncMainStats();
+}, { immediate: true });
+watch(echoSubStatsValue4, () => {
+  updateTotalStats();
+}, { immediate: true });
+watch(echoSubStatsType5, () => {
+  updateTotalStats();
+  syncMainStats();
+}, { immediate: true });
+watch(echoSubStatsValue5, () => {
+  updateTotalStats();
+}, { immediate: true });
+
+defineExpose({ saveEchoItem });
 </script>
+
 
 <style scoped lang="scss">
 .echo-filters__sets--active {

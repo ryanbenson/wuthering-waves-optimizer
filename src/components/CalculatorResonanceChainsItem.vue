@@ -38,136 +38,114 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed, onMounted, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-    },
-    uniqueKey: {
-      type: String,
-    },
-    details: {
-      type: String,
-    },
-    alwaysEnabled: {
-      type: Boolean,
-      default: false,
-    },
-    hasStacks: {
-      type: Boolean,
-      default: false,
-    },
-    minStacks: {
-      type: Number,
-      default: 0,
-    },
-    maxStacks: {
-      type: Number,
-      default: 0,
-    },
-    modifiers: {
-      type: Array,
-      default: () => [],
-    },
+
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    name?: string;
+    uniqueKey?: string;
+    details?: string;
+    alwaysEnabled?: boolean;
+    hasStacks?: boolean;
+    minStacks?: number;
+    maxStacks?: number;
+    modifiers?: unknown[];
+  }>(),
+  {
+    alwaysEnabled: false,
+    hasStacks: false,
+    minStacks: 0,
+    maxStacks: 0,
+    modifiers: () => [],
+    uniqueKey: "",
   },
-  data() {
-    return {};
+);
+
+const emit = defineEmits<{
+  "updated-character-buff": [];
+}>();
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+
+const currentCharacter = computed(
+  () => (characters.value[props.character] ?? {}) as Record<string, unknown>,
+);
+
+const isEnabled = computed({
+  get() {
+    const chains = currentCharacter.value.resonanceChains as
+      | Record<string, { isEnabled?: boolean }>
+      | undefined;
+    return chains?.[props.uniqueKey]?.isEnabled ?? false;
   },
-  watch: {
-    isEnabled: {
-      handler: async function () {
-        this.updatedStats();
+  async set(value: boolean) {
+    await characterStore.setCharacterData(props.character, {
+      resonanceChains: {
+        [props.uniqueKey]: { isEnabled: value },
       },
-      immediate: true,
-    },
-    stacks: {
-      handler: async function () {
-        this.updatedStats();
-      },
-      immediate: true,
-    },
+    });
   },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    updatedStats() {
-      // Just emit that the enabled state changed - stats.ts will handle the calculation
-      this.$emit("updated-character-buff");
-    },
-    ensureMaxStacks() {
-      if (this.stacks > this.maxStacks) {
-        this.stacks = this.maxStacks;
-      }
-    },
-    toggleEnabled() {
-      this.isEnabled = !this.isEnabled;
-    },
+});
+
+const stacks = computed({
+  get() {
+    const chains = currentCharacter.value.resonanceChains as
+      | Record<string, { stacks?: number }>
+      | undefined;
+    return chains?.[props.uniqueKey]?.stacks ?? 0;
   },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Getter/setter used in the form for the isEnabled state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    isEnabled: {
-      get() {
-        return (
-          this.currentCharacter?.resonanceChains?.[this.uniqueKey]?.isEnabled ??
-          false
-        );
+  async set(value: number) {
+    await characterStore.setCharacterData(props.character, {
+      resonanceChains: {
+        [props.uniqueKey]: { stacks: value },
       },
-      async set(value) {
-        const data = {
-          resonanceChains: {},
-        };
-        data.resonanceChains[this.uniqueKey] = {
-          isEnabled: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the stacks count state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    stacks: {
-      get() {
-        return (
-          this.currentCharacter?.resonanceChains?.[this.uniqueKey]?.stacks ?? 0
-        );
-      },
-      async set(value) {
-        const data = {
-          resonanceChains: {},
-        };
-        data.resonanceChains[this.uniqueKey] = {
-          stacks: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
+    });
   },
-  mounted() {
-    if (this.alwaysEnabled === true) {
-      this.isEnabled = true;
-    }
+});
+
+function updatedStats() {
+  emit("updated-character-buff");
+}
+
+function ensureMaxStacks() {
+  if (stacks.value > props.maxStacks) {
+    stacks.value = props.maxStacks;
+  }
+}
+
+function toggleEnabled() {
+  if (props.alwaysEnabled) {
+    return;
+  }
+  isEnabled.value = !isEnabled.value;
+}
+
+watch(
+  isEnabled,
+  () => {
+    updatedStats();
   },
-};
+  { immediate: true },
+);
+
+watch(
+  stacks,
+  () => {
+    updatedStats();
+  },
+  { immediate: true },
+);
+
+onMounted(() => {
+  if (props.alwaysEnabled === true) {
+    isEnabled.value = true;
+  }
+});
 </script>
 
 <style scoped lang="scss">

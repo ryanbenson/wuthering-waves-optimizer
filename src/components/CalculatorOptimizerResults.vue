@@ -13,74 +13,45 @@
     :total-hp="totalHp"
     :total-def="totalDef"
     :total-crit-rate="totalCritRate"
-    :total-crit-dmg="totalCritDMG"
+    :total-crit-dmg="totalCritDmg"
     :energy-regen="energyRegen"
     :target-type="targetType"
     :target-value="targetValue" />
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed } from "vue";
 import CalculatorOptimizerResult from "./CalculatorOptimizerResult.vue";
-export default {
-  name: "CalculatorOptimizerResults",
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    results: {
-      type: Array,
-      default: () => [],
-    },
-    characterElement: {
-      type: String,
-      required: true,
-    },
-    targetType: {
-      type: String,
-      required: true,
-    },
-    targetValue: {
-      type: String,
-      required: true,
-    },
-    // props for comparison
-    allDamages: {
-      type: Array,
-      default: () => [],
-    },
-    totalAtk: {
-      type: Number,
-      required: true,
-    },
-    totalHp: {
-      type: Number,
-      required: true,
-    },
-    totalDef: {
-      type: Number,
-      required: true,
-    },
-    totalCritRate: {
-      type: Number,
-      required: true,
-    },
-    totalCritDMG: {
-      type: Number,
-      required: true,
-    },
-    energyRegen: {
-      type: Number,
-      required: true,
-    },
+
+defineOptions({ name: "CalculatorOptimizerResults" });
+
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    results?: unknown[];
+    characterElement: string;
+    targetType: string;
+    targetValue: string;
+    allDamages?: unknown;
+    totalAtk: number;
+    totalHp: number;
+    totalDef: number;
+    totalCritRate: number;
+    totalCritDmg: number;
+    energyRegen: number;
+  }>(),
+  {
+    results: () => [],
   },
-  components: {
-    CalculatorOptimizerResult,
-  },
-  computed: {
-    resultList() {
-      return JSON.parse(JSON.stringify(this.results));
-    },
-  },
+);
+
+type OptimizerResultRow = {
+  id: string;
+  loadout: unknown[];
+  context: Record<string, unknown>;
 };
+
+const resultList = computed(
+  () => JSON.parse(JSON.stringify(props.results)) as OptimizerResultRow[],
+);
 </script>

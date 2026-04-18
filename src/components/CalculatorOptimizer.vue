@@ -160,7 +160,7 @@
             </div>
             <template v-else>
               <CalculatorOptimizerEchoSet
-                v-for="(setBonus, index) in currentSetBonuses"
+                v-for="setBonus in currentSetBonuses"
                 :key="setBonus.key"
                 :set-key="setBonus.key"
                 :character="character"
@@ -227,7 +227,7 @@
       <div class="optimizer-target-options flex gap-2">
         <CalculatorOptimizerTarget
           :character="character"
-          :current-optimization-target="optimizationTarget"
+          :current-optimization-target="(optimizationTarget as string | null)"
           @optimizer:target-updated="
             handleUpdatedTarget
           "></CalculatorOptimizerTarget>
@@ -286,7 +286,7 @@
         <progress
           class="progress progress-primary"
           :value="processedCombos"
-          :max="Math.max(totalCombos, 1)"></progress>
+          :max="Math.max(totalCombos ?? 0, 1)"></progress>
       </template>
     </div>
     <CalculatorOptimizerResults
@@ -306,16 +306,17 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed, onMounted, reactive, ref } from "vue";
 import { echoSetLabelMap, getEchoSetIconByType } from "../echoes/stats";
 import {
   getSetBonusEffectsFromListOfSetKeys,
   getSetLabelByKey,
 } from "../echoes/sets";
 import { mainEchoesData, getEchoData } from "../echoes/index";
-import { mapActions, mapState } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import CalculatorOptimizerMinStats from "./CalculatorOptimizerMinStats.vue";
+import type { OptimizerMinStatRow } from "./CalculatorOptimizerMinStats.vue";
 import CalculatorOptimizerEchoSet from "./CalculatorOptimizerEchoSet.vue";
 import CalculatorOptimizerMainEcho from "./CalculatorOptimizerMainEcho.vue";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
@@ -323,348 +324,314 @@ import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorOptimizerResults from "./CalculatorOptimizerResults.vue";
 import CalculatorOptimizerGuide from "./CalculatorOptimizerGuide.vue";
 import CalculatorOptimizerSettings from "./CalculatorOptimizerSettings.vue";
-import { character } from "../characters/Aalto/character";
-export default {
-  name: "CalculatorOptimizer",
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    totalCombos: {
-      type: Number,
-    },
-    processedCombos: {
-      type: Number,
-    },
-    optimizerNoPossibleLoadouts: {
-      type: Boolean,
-      default: false,
-    },
-    optimizerResults: {
-      type: Array,
-      default: null,
-    },
-    characterElement: {
-      type: String,
-      required: true,
-    },
-    // props for comparison
-    allDamages: {
-      type: Array,
-      default: () => [],
-    },
-    totalAtk: {
-      type: Number,
-      required: true,
-    },
-    totalHp: {
-      type: Number,
-      required: true,
-    },
-    totalDef: {
-      type: Number,
-      required: true,
-    },
-    totalCritRate: {
-      type: Number,
-      required: true,
-    },
-    totalCritDMG: {
-      type: Number,
-      required: true,
-    },
-    energyRegen: {
-      type: Number,
-      required: true,
-    },
-    // this is passed back because if the user changes it in the UI
-    // we don't want to lose the value of what they originally optimized for
-    optimizationTargetType: {
-      type: String,
-      required: true,
-    },
-    optimizationTargetObject: {
-      type: String,
-      required: true,
-    },
-  },
-  components: {
-    CalculatorOptimizerMinStats,
-    CalculatorOptimizerEchoSet,
-    CalculatorOptimizerMainEcho,
-    CalculatorOptimizerTarget,
-    CalculatorOptimizerDamageType,
-    CalculatorOptimizerResults,
-    CalculatorOptimizerGuide,
-    CalculatorOptimizerSettings,
-  },
-  data() {
-    return {
-      echoSetLabelMap,
-      mainEchoesData,
-      // echo chooser modal
-      modalIdPicker: "optimizerEchoPicker",
-      echoSetFilter: null,
-      // filters
-      setFilters: [],
-      mainEchoes: [],
-      minStats: [],
-      optimizationTarget: null,
-      damageType: "Average",
-      // state
-      isLoading: true,
-      hasTriggeredOptimizer: false,
-      // passive stats list
-      echoSetPassiveStats: {},
-      mainEchoStats: {},
-      // settings
-      ignoreOtherResonantorEchoes: false,
-    };
-  },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    echoSetLabelMap,
-    getEchoSetIconByType,
-    getSetBonusEffectsFromListOfSetKeys,
-    handleOptimize() {
-      this.hasTriggeredOptimizer = true;
-      this.$emit(
-        "optimizer:optimize",
-        this.setFilters,
-        this.mainEchoes,
-        this.minStats,
-        this.echoSetDataByLabel,
-        this.mainEchoStats,
-        this.optimizationTarget,
-        this.damageType,
-        this.ignoreOtherResonantorEchoes,
-      );
-    },
-    chooseMainEcho(echoKey) {
-      this.mainEchoes.push(echoKey);
-      this.syncOptimizerConfig();
-      this.closeEchoChooser();
-    },
-    toggleSetFilter(set) {
-      const index = this.setFilters.findIndex((setFilter) => {
-        return setFilter === set;
-      });
-      if (index >= 0) {
-        this.setFilters.splice(index, 1);
-      } else {
-        this.setFilters.push(set);
-      }
-      this.syncOptimizerConfig();
-    },
-    handleUpdatedTarget(target) {
-      this.optimizationTarget = target;
-      this.syncOptimizerConfig();
-    },
-    handleUpdatedDamageType(damageType) {
-      this.damageType = damageType;
-      this.syncOptimizerConfig();
-    },
-    async syncOptimizerConfig() {
-      const data = {
-        optimizer: {
-          mainEchoes: JSON.parse(JSON.stringify(this.mainEchoes)),
-          echoSets: JSON.parse(JSON.stringify(this.setFilters)),
-          minStats: JSON.parse(JSON.stringify(this.minStats)),
-          optimizationTarget: this.optimizationTarget,
-          damageType: this.damageType,
-          ignoreOtherResonantorEchoes: this.ignoreOtherResonantorEchoes,
-        },
-      };
-      await this.setCharacterData(this.character, data);
-    },
-    isSetFilterActive(set) {
-      return this.setFilters.find((setFilter) => {
-        return setFilter === set;
-      });
-    },
-    isMainEchoActive(echoKey) {
-      return this.mainEchoes.find((echo) => {
-        return echo === echoKey;
-      });
-    },
-    getSetIcon(set) {
-      return this.getEchoSetIconByType(set);
-    },
-    openEchoChooser() {
-      const modalEl = document.getElementById(this.modalIdPicker);
-      modalEl.showModal();
-    },
-    closeEchoChooser() {
-      this.echoSetFilter = null;
-      const modalEl = document.getElementById(this.modalIdPicker);
-      modalEl.close();
-    },
-    toggleEchoSetFilter(echoSet) {
-      if (this.echoSetFilter === echoSet) {
-        this.echoSetFilter = null;
-      } else {
-        this.echoSetFilter = echoSet;
-      }
-    },
-    isEchoSetFilterActive(echoSet) {
-      return this.echoSetFilter === echoSet;
-    },
-    resetFilters() {
-      this.echoSetFilter = null;
-    },
-    getEchoSetImage(echoSet) {
-      return getEchoSetIconByType(echoSet);
-    },
-    getEchoSetIcon(type) {
-      return getEchoSetIconByType(type);
-    },
-    handleUpdatedMinStats(stats) {
-      const minStats = JSON.parse(JSON.stringify(stats));
-      this.minStats = minStats;
-      this.syncOptimizerConfig();
-    },
-    removeMainEcho(echoKey) {
-      const index = this.mainEchoes.findIndex((echo) => echo === echoKey);
-      if (index >= 0) {
-        this.mainEchoes.splice(index, 1);
-        this.syncOptimizerConfig();
-      }
-    },
-    handleUpdatedSetStats({ setKey, stats, key }) {
-      const hasSetAlready = Object.prototype.hasOwnProperty.call(
-        this.echoSetPassiveStats,
-        setKey,
-      );
-      if (!hasSetAlready) {
-        this.echoSetPassiveStats[setKey] = {};
-      }
-      this.echoSetPassiveStats[setKey][key] = stats;
-    },
-    handleUpdatedMainEchoBuffs({ key, stats }) {
-      const hasEchoAlready = Object.prototype.hasOwnProperty.call(
-        this.mainEchoStats,
-        key,
-      );
-      if (!hasEchoAlready) {
-        this.mainEchoStats[key] = {};
-      }
-      this.mainEchoStats[key] = stats;
-    },
-    handleOpenOptimizerGuide() {
-      this.$refs.optimizerGuide.triggerOpenModal();
-    },
-    handleUpdatedSettings(settings) {
-      this.ignoreOtherResonantorEchoes =
-        settings.ignoreOtherResonantorEchoes ?? false;
-      this.syncOptimizerConfig();
-    },
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    isValid() {
-      const echoSetsCount = this.setFilters.length;
-      const mainEchoesCount = this.mainEchoes.length;
-      let hasValidTarget = false;
-      if (Array.isArray(this.optimizationTarget)) {
-        hasValidTarget = this.optimizationTarget.length > 0;
-      } else {
-        hasValidTarget = !!this.optimizationTarget;
-      }
-      return hasValidTarget && echoSetsCount > 0 && mainEchoesCount > 0;
-    },
-    echoSets() {
-      return Object.keys(this.echoSetLabelMap);
-    },
-    allEchoesListFiltered() {
-      let allEchoes = Object.values(this.mainEchoesData);
-      if (this.echoSetFilter) {
-        allEchoes = allEchoes.filter((echo) =>
-          echo.sets.includes(this.echoSetFilter),
-        );
-      }
-      // now sort by class then by name
-      const classOrder = {
-        Calamity: 0,
-        Overlord: 1,
-        Elite: 2,
-        Common: 3,
-      };
 
-      // Sort by class first (using classOrder), then by name alphabetically
-      const sortedEchoes = allEchoes.sort((a, b) => {
-        // First, compare by class based on the classOrder
-        const classComparison = classOrder[a.class] - classOrder[b.class];
+const props = defineProps<{
+  character: string;
+  totalCombos?: number;
+  processedCombos?: number;
+  optimizerNoPossibleLoadouts?: boolean;
+  optimizerResults?: unknown[] | null;
+  characterElement: string;
+  allDamages?: unknown[];
+  totalAtk: number;
+  totalHp: number;
+  totalDef: number;
+  totalCritRate: number;
+  totalCritDMG: number;
+  energyRegen: number;
+  optimizationTargetType: string;
+  optimizationTargetObject: string;
+}>();
 
-        // If classes are the same, sort by name alphabetically
-        if (classComparison === 0) {
-          return a.name.localeCompare(b.name);
-        }
+const emit = defineEmits<{
+  "optimizer:optimize": [
+    setFilters: string[],
+    mainEchoes: string[],
+    minStats: unknown[],
+    echoSetDataByLabel: Record<string, Record<string, number>>,
+    mainEchoStats: Record<string, Record<string, number>>,
+    optimizationTarget: unknown,
+    damageType: string,
+    ignoreOtherResonantorEchoes: boolean,
+  ];
+}>();
 
-        return classComparison;
-      });
-      return sortedEchoes;
-    },
-    currentSetBonuses() {
-      return this.getSetBonusEffectsFromListOfSetKeys(this.setFilters);
-    },
-    echoSetPassiveStatsByLabel() {
-      const result = {};
-      Object.keys(this.echoSetPassiveStats).forEach((setKey) => {
-        const label = getSetLabelByKey(setKey);
-        result[label] = this.echoSetPassiveStats[setKey];
-      });
-      return result;
-    },
-    echoSetDataByLabel() {
-      const result = {};
-      Object.entries(this.echoSetPassiveStatsByLabel).forEach(
-        ([label, passives]) => {
-          // loop through all passves and merge the stats, put merged stats into the result object
-          // keyed by the current label
-          const mergedStats = {};
-          Object.values(passives).forEach((passiveStats) => {
-            Object.entries(passiveStats).forEach(([stat, value]) => {
-              if (!mergedStats[stat]) {
-                mergedStats[stat] = 0;
-              }
-              mergedStats[stat] += value;
-            });
-          });
-          result[label] = mergedStats;
-        },
-      );
-      return result;
-    },
-    allMainEchoesData() {
-      const echoData = [];
-      this.mainEchoes.forEach((echoKey) => {
-        if (this.mainEchoesData[echoKey]) {
-          echoData.push(getEchoData([echoKey]));
-        }
-      });
-      return echoData;
-    },
-  },
-  mounted() {
-    this.isLoading = true;
-    this.mainEchoes = this.currentCharacter?.optimizer?.mainEchoes ?? [];
-    this.setFilters = this.currentCharacter?.optimizer?.echoSets ?? [];
-    this.minStats = this.currentCharacter?.optimizer?.minStats ?? [];
-    this.optimizationTarget =
-      this.currentCharacter?.optimizer?.optimizationTarget ?? [];
-    this.ignoreOtherResonantorEchoes =
-      this.currentCharacter?.optimizer?.ignoreOtherResonantorEchoes ?? false;
-    this.isLoading = false;
-  },
+const characterStore = useCharacterStore();
+
+const modalIdPicker = "optimizerEchoPicker";
+const echoSetFilter = ref<string | null>(null);
+const setFilters = ref<string[]>([]);
+const mainEchoes = ref<string[]>([]);
+const minStats = ref<OptimizerMinStatRow[]>([]);
+const optimizationTarget = ref<unknown>(null);
+const damageType = ref("Average");
+const isLoading = ref(true);
+const hasTriggeredOptimizer = ref(false);
+const echoSetPassiveStats = reactive<
+  Record<string, Record<string, Record<string, number>>>
+>({});
+const mainEchoStats = reactive<Record<string, Record<string, number>>>({});
+const ignoreOtherResonantorEchoes = ref(false);
+
+const optimizerGuide = ref<{ triggerOpenModal: () => void } | null>(null);
+
+const currentCharacter = computed(
+  () => characterStore.characters?.[props.character] ?? {},
+);
+
+const isTargetUnavailable = computed(() => false);
+
+const isValid = computed(() => {
+  const echoSetsCount = setFilters.value.length;
+  const mainEchoesCount = mainEchoes.value.length;
+  let hasValidTarget = false;
+  if (Array.isArray(optimizationTarget.value)) {
+    hasValidTarget = optimizationTarget.value.length > 0;
+  } else {
+    hasValidTarget = !!optimizationTarget.value;
+  }
+  return hasValidTarget && echoSetsCount > 0 && mainEchoesCount > 0;
+});
+
+const echoSets = computed(() => Object.keys(echoSetLabelMap));
+
+type EchoListEntry = {
+  key: string;
+  name: string;
+  class: string;
+  sets: string[];
+  image?: string;
 };
+
+const allEchoesListFiltered = computed((): EchoListEntry[] => {
+  let allEchoes = Object.values(mainEchoesData) as EchoListEntry[];
+  if (echoSetFilter.value) {
+    allEchoes = allEchoes.filter((echo) =>
+      echo.sets.includes(echoSetFilter.value!),
+    );
+  }
+  const classOrder: Record<string, number> = {
+    Calamity: 0,
+    Overlord: 1,
+    Elite: 2,
+    Common: 3,
+  };
+  return [...allEchoes].sort((a, b) => {
+    const classComparison = classOrder[a.class] - classOrder[b.class];
+    if (classComparison === 0) {
+      return a.name.localeCompare(b.name);
+    }
+    return classComparison;
+  });
+});
+
+const currentSetBonuses = computed(() =>
+  getSetBonusEffectsFromListOfSetKeys(setFilters.value),
+);
+
+const echoSetPassiveStatsByLabel = computed(() => {
+  const result: Record<string, Record<string, Record<string, number>>> = {};
+  Object.keys(echoSetPassiveStats).forEach((setKey) => {
+    const label = getSetLabelByKey(setKey);
+    result[label ?? setKey] = echoSetPassiveStats[setKey];
+  });
+  return result;
+});
+
+const echoSetDataByLabel = computed(() => {
+  const result: Record<string, Record<string, number>> = {};
+  Object.entries(echoSetPassiveStatsByLabel.value).forEach(
+    ([label, passives]) => {
+      const mergedStats: Record<string, number> = {};
+      Object.values(passives).forEach((passiveStats) => {
+        Object.entries(passiveStats).forEach(([stat, value]) => {
+          if (!mergedStats[stat]) {
+            mergedStats[stat] = 0;
+          }
+          mergedStats[stat] += value;
+        });
+      });
+      result[label] = mergedStats;
+    },
+  );
+  return result;
+});
+
+const allMainEchoesData = computed(() => {
+  const echoData: ReturnType<typeof getEchoData>[] = [];
+  mainEchoes.value.forEach((echoKey) => {
+    if (mainEchoesData[echoKey as keyof typeof mainEchoesData]) {
+      echoData.push(getEchoData(echoKey));
+    }
+  });
+  return echoData;
+});
+
+function handleOptimize() {
+  hasTriggeredOptimizer.value = true;
+  emit(
+    "optimizer:optimize",
+    setFilters.value,
+    mainEchoes.value,
+    minStats.value,
+    echoSetDataByLabel.value,
+    { ...mainEchoStats },
+    optimizationTarget.value,
+    damageType.value,
+    ignoreOtherResonantorEchoes.value,
+  );
+}
+
+function chooseMainEcho(echoKey: string) {
+  mainEchoes.value.push(echoKey);
+  void syncOptimizerConfig();
+  closeEchoChooser();
+}
+
+function toggleSetFilter(set: string) {
+  const index = setFilters.value.findIndex((setFilter) => setFilter === set);
+  if (index >= 0) {
+    setFilters.value.splice(index, 1);
+  } else {
+    setFilters.value.push(set);
+  }
+  void syncOptimizerConfig();
+}
+
+function handleUpdatedTarget(target: unknown) {
+  optimizationTarget.value = target;
+  void syncOptimizerConfig();
+}
+
+function handleUpdatedDamageType(dt: string) {
+  damageType.value = dt;
+  void syncOptimizerConfig();
+}
+
+async function syncOptimizerConfig() {
+  await characterStore.setCharacterData(props.character, {
+    optimizer: {
+      mainEchoes: JSON.parse(JSON.stringify(mainEchoes.value)),
+      echoSets: JSON.parse(JSON.stringify(setFilters.value)),
+      minStats: JSON.parse(JSON.stringify(minStats.value)),
+      optimizationTarget: optimizationTarget.value,
+      damageType: damageType.value,
+      ignoreOtherResonantorEchoes: ignoreOtherResonantorEchoes.value,
+    },
+  });
+}
+
+function isSetFilterActive(set: string) {
+  return !!setFilters.value.find((setFilter) => setFilter === set);
+}
+
+function getSetIcon(set: string) {
+  return getEchoSetIconByType(set);
+}
+
+function openEchoChooser() {
+  const modalEl = document.getElementById(modalIdPicker);
+  (modalEl as HTMLDialogElement | null)?.showModal();
+}
+
+function closeEchoChooser() {
+  echoSetFilter.value = null;
+  const modalEl = document.getElementById(modalIdPicker);
+  (modalEl as HTMLDialogElement | null)?.close();
+}
+
+function toggleEchoSetFilter(echoSet: string) {
+  if (echoSetFilter.value === echoSet) {
+    echoSetFilter.value = null;
+  } else {
+    echoSetFilter.value = echoSet;
+  }
+}
+
+function isEchoSetFilterActive(echoSet: string) {
+  return echoSetFilter.value === echoSet;
+}
+
+function resetFilters() {
+  echoSetFilter.value = null;
+}
+
+function getEchoSetImage(echoSet: string) {
+  return getEchoSetIconByType(echoSet);
+}
+
+function getEchoSetIcon(type: string) {
+  return getEchoSetIconByType(type);
+}
+
+function handleUpdatedMinStats(stats: OptimizerMinStatRow[]) {
+  minStats.value = JSON.parse(JSON.stringify(stats)) as OptimizerMinStatRow[];
+  void syncOptimizerConfig();
+}
+
+function removeMainEcho(echoKey: string) {
+  const index = mainEchoes.value.findIndex((echo) => echo === echoKey);
+  if (index >= 0) {
+    mainEchoes.value.splice(index, 1);
+    void syncOptimizerConfig();
+  }
+}
+
+function handleUpdatedSetStats(payload: {
+  setKey: string;
+  stats: Record<string, unknown>;
+  key: string;
+}) {
+  const { setKey, stats, key } = payload;
+  if (!Object.prototype.hasOwnProperty.call(echoSetPassiveStats, setKey)) {
+    echoSetPassiveStats[setKey] = {};
+  }
+  echoSetPassiveStats[setKey][key] = stats as Record<string, number>;
+}
+
+function handleUpdatedMainEchoBuffs(payload: {
+  key: string;
+  stats: Record<string, unknown>;
+}) {
+  const { key, stats } = payload;
+  mainEchoStats[key] = stats as Record<string, number>;
+}
+
+function handleOpenOptimizerGuide() {
+  optimizerGuide.value?.triggerOpenModal();
+}
+
+function handleUpdatedSettings(settings: {
+  ignoreOtherResonantorEchoes?: boolean;
+}) {
+  ignoreOtherResonantorEchoes.value =
+    settings.ignoreOtherResonantorEchoes ?? false;
+  void syncOptimizerConfig();
+}
+
+onMounted(() => {
+  isLoading.value = true;
+  const ch = currentCharacter.value as {
+    optimizer?: {
+      mainEchoes?: string[];
+      echoSets?: string[];
+      minStats?: unknown[];
+      optimizationTarget?: unknown;
+      ignoreOtherResonantorEchoes?: boolean;
+      damageType?: string;
+    };
+  };
+  mainEchoes.value = ch.optimizer?.mainEchoes ?? [];
+  setFilters.value = ch.optimizer?.echoSets ?? [];
+  minStats.value = (ch.optimizer?.minStats ?? []) as OptimizerMinStatRow[];
+  optimizationTarget.value = ch.optimizer?.optimizationTarget ?? null;
+  ignoreOtherResonantorEchoes.value =
+    ch.optimizer?.ignoreOtherResonantorEchoes ?? false;
+  if (ch.optimizer?.damageType) {
+    damageType.value = ch.optimizer.damageType;
+  }
+  isLoading.value = false;
+});
 </script>
 
 <style lang="scss" scoped>

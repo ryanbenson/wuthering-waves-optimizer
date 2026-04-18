@@ -52,13 +52,8 @@
   </article>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import Nav from "../components/navigation/Nav.vue";
-export default defineComponent({
-  name: "LegalView",
-  components: { Nav },
-});
 </script>
 
 <style scoped lang="scss">

@@ -78,385 +78,310 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
+<script setup lang="ts">
+import { computed, onMounted, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-    name: {
-      type: String,
-    },
-    uniqueKey: {
-      type: String,
-    },
-    details: {
-      type: String,
-    },
-    alwaysEnabled: {
-      type: Boolean,
-      default: false,
-    },
-    hasStacks: {
-      type: Boolean,
-      default: false,
-    },
-    minStacks: {
-      type: Number,
-      default: 0,
-    },
-    maxStacks: {
-      type: Number,
-      default: 0,
-    },
-    modifiers: {
-      type: Array,
-      default: () => [],
-    },
-    talentData: {
-      type: Object,
-      default: () => {},
-    },
-    hasRefinements: {
-      type: Boolean,
-      default: false,
-    },
-    inputBase: {
-      type: Boolean,
-      default: false,
-    },
-    modifierBasedOn: {
-      type: String,
-      default: null,
-    },
-  },
-  data() {
-    return {};
-  },
-  watch: {
-    buffStats: function () {
-      this.updatedStats();
-    },
-    isEnabled: {
-      handler: async function () {
-        this.updatedStats();
-      },
-      immediate: true,
-    },
-    stacks: {
-      handler: async function () {
-        this.updatedStats();
-      },
-      immediate: true,
-    },
-    refinement: {
-      handler: async function () {
-        this.updatedStats();
-      },
-      immediate: true,
-    },
-  },
-  methods: {
-    ...mapActions(useCharacterStore, ["setCharacterData"]),
-    updatedStats() {
-      this.$emit("updated-party-buff", {
-        key: this.uniqueKey,
-        data: this.buffStats,
-      });
-    },
-    ensureMaxStacks() {
-      if (this.stacks > this.maxStacks) {
-        this.stacks = this.maxStacks;
-      }
-    },
-    toggleEnabled() {
-      this.isEnabled = !this.isEnabled;
-    },
-  },
-  computed: {
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    /**
-     * Getter/setter used in the form for the isEnabled state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    isEnabled: {
-      get() {
-        return (
-          this.currentCharacter?.teamBuffs?.buffs?.[this.uniqueKey]
-            ?.isEnabled ?? false
-        );
-      },
-      async set(value) {
-        const data = {
-          teamBuffs: {
-            buffs: {},
-          },
-        };
-        data.teamBuffs.buffs[this.uniqueKey] = {
-          isEnabled: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the refinement state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    refinement: {
-      get() {
-        return (
-          this.currentCharacter?.teamBuffs?.buffs?.[this.uniqueKey]
-            ?.refinement ?? 1
-        );
-      },
-      async set(value) {
-        const data = {
-          teamBuffs: {
-            buffs: {},
-          },
-        };
-        data.teamBuffs.buffs[this.uniqueKey] = {
-          refinement: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the stacks count state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    stacks: {
-      get() {
-        return (
-          this.currentCharacter?.teamBuffs?.buffs?.[this.uniqueKey]?.stacks ?? 0
-        );
-      },
-      async set(value) {
-        const data = {
-          teamBuffs: {
-            buffs: {},
-          },
-        };
-        data.teamBuffs.buffs[this.uniqueKey] = {
-          stacks: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    /**
-     * Getter/setter used in the form for the refinement state for this passive
-     * Data is persisted in the store. Avoids needing a local data + store data
-     * @returns {Boolean}
-     */
-    baseAttrValue: {
-      get() {
-        return (
-          this.currentCharacter?.teamBuffs?.buffs?.[this.uniqueKey]
-            ?.baseAttrValue ?? 0
-        );
-      },
-      async set(value) {
-        const data = {
-          teamBuffs: {
-            buffs: {},
-          },
-        };
-        data.teamBuffs.buffs[this.uniqueKey] = {
-          baseAttrValue: value,
-        };
-        await this.setCharacterData(this.character, data);
-      },
-    },
-    buffStats() {
-      const data = {};
-      if (!this.isEnabled) {
-        return data;
-      }
-      // TODO: Implement the replaces and replacedBy logic
-      // SequenceNode3WolflameHowlsinHerWake replaces both InherentSkillApplauseofVictory and InherentSkillApplauseofVictoryFullFusionTeam
-      if (
-        this.uniqueKey === "InherentSkillApplauseofVictory" ||
-        this.uniqueKey === "InherentSkillApplauseofVictoryFullFusionTeam"
-      ) {
-        if (
-          this.currentCharacter?.teamBuffs?.buffs
-            ?.SequenceNode3WolflameHowlsinHerWake?.isEnabled
-        ) {
-          return data;
-        }
-      }
-      // Buling: s6 SequenceNode6AlmightyForumLordofThunderSpell replaces ThunderSpellHeavenEarthMind
-      if (this.uniqueKey === "ThunderSpellHeavenEarthMind") {
-        if (
-          this.currentCharacter?.teamBuffs?.buffs
-            ?.SequenceNode6AlmightyForumLordofThunderSpell?.isEnabled
-        ) {
-          return data;
-        }
-      }
-      // PactofNeonlightLeap has a base of 15% atk, stacks give an extra 0.3 per stack
-      if (this.uniqueKey === "PactofNeonlightLeap") {
-        data["ATK"] = 0.15;
-      }
-      if (!this.hasStacks) {
-        this.modifiers.forEach((modifierItem) => {
-          // if this buff only applies to specific characters, check the cur character
-          if (modifierItem?.specificCharacters?.length) {
-            if (!modifierItem.specificCharacters.includes(this.character)) {
-              return;
-            }
-          }
-          if (modifierItem?.modifySpecificTalents) {
-            if (!data.modifySpecificTalents) {
-              data.modifySpecificTalents = [];
-            }
-            // add our calculated value
-            let modifierValue;
-            if (this.hasRefinements) {
-              modifierValue =
-                modifierItem.modifierByRefinement[this.refinement];
-            } else {
-              modifierValue = modifierItem.modifierValue;
-            }
-            modifierItem.modifierValueCalculated = modifierValue;
-            data.modifySpecificTalents.push(modifierItem);
-          } else if (modifierItem.modifier === "EnableAttack") {
-            if (Array.isArray(data[modifierItem.modifier])) {
-              data[modifierItem.modifier].push(...modifierItem.modifierValue);
-            } else {
-              data[modifierItem.modifier] = [...modifierItem.modifierValue];
-            }
-          } else if (modifierItem.modifier === "Talent") {
-            // this is the rare case where the modifier value needs a reference to another talent level
-            // specifically Jinhsi incandescence buff scales off of her forte talent
-            const talentRef =
-              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
-            const talentVal = modifierItem.modifierValue[talentRef];
-            data[modifierItem.modifierTalentKey] = talentVal;
-          } else if (modifierItem.modifier === "talentModifierMultiply") {
-            // for buffs that apply talentModifierMultiply to the calcs
-            if (!data.talentModifierMultiply) {
-              data.talentModifierMultiply = [];
-            }
-            data.talentModifierMultiply.push(modifierItem);
-          } else if (this.inputBase === true) {
-            let base = 0;
-            switch (this.modifierBasedOn) {
-              case "Energy Regen":
-                // TODO: Verify this. Latest is that it is all ER, not added ER
-                base = modifierItem?.minStatValue ?? 0;
-                break;
-              case "CritRate":
-                base = modifierItem?.minStatValue ?? 0.05;
-                break;
-              case "CritDMG":
-                base = modifierItem?.minStatValue ?? 1.5;
-                break;
-              default:
-                base = modifierItem?.minStatValue ?? 0;
-                break;
-            }
-            const currentAmount = this.baseAttrValue ?? 0;
-            let additionalAmount = (currentAmount - base) / 100;
 
-            // Step 2: Calculate the number of steps of 0.2
-            let steps = Math.floor(
-              additionalAmount / modifierItem.modifierStep,
-            );
-
-            // Step 3: Calculate the CritRate buff
-            let buffValue = steps * modifierItem.modifierValue;
-
-            // Step 4: Ensure the CritRate buff doesn't exceed the maximum value
-            if (buffValue > modifierItem.maximumValue) {
-              buffValue = modifierItem.maximumValue;
-            }
-            if (buffValue < 0) {
-              buffValue = 0;
-            }
-            data[modifierItem.modifier] = buffValue;
-          } else {
-            let modifierValue;
-            if (this.hasRefinements) {
-              modifierValue =
-                modifierItem.modifierByRefinement[this.refinement];
-            } else {
-              modifierValue = modifierItem.modifierValue;
-            }
-            data[modifierItem.modifier] =
-              (data[modifierItem.modifier] || 0) + modifierValue;
-          }
-        });
-        return data;
-      }
-      if (this.hasStacks) {
-        if (this.stacks === 0) {
-          return data;
-        }
-        this.modifiers.forEach((modifierItem) => {
-          if (modifierItem?.modifySpecificTalents) {
-            if (!data.modifySpecificTalents) {
-              data.modifySpecificTalents = [];
-            }
-            // updadate modifer value with the value * stacks
-            let modifierValue;
-            if (this.hasRefinements) {
-              modifierValue =
-                modifierItem.modifierByRefinement[this.refinement];
-            } else {
-              modifierValue = modifierItem.modifierValue;
-            }
-            modifierItem.modifierValueCalculated = modifierValue * this.stacks;
-            data.modifySpecificTalents.push(modifierItem);
-          } else if (modifierItem.modifier === "Talent") {
-            const talentRef =
-              this.talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
-            const talentVal = modifierItem.modifierValue[talentRef];
-            data[modifierItem.modifierTalentKey] = talentVal * this.stacks;
-          } else {
-            let modifierValue;
-            if (this.hasRefinements) {
-              modifierValue =
-                modifierItem.modifierByRefinement[this.refinement];
-            } else {
-              modifierValue = modifierItem.modifierValue;
-            }
-            const totalValue = modifierValue * this.stacks;
-            data[modifierItem.modifier] =
-              (data[modifierItem.modifier] || 0) + totalValue;
-          }
-        });
-      }
-      // shouldn't get here
-      return data;
-    },
-    /**
-     * List of options for the refinements options
-     * @returns {Array}
-     */
-    weaponRefinementLevels() {
-      return ["1", "2", "3", "4", "5"];
-    },
-  },
-  mounted() {
-    if (this.alwaysEnabled === true) {
-      this.isEnabled = true;
-    }
-  },
+export type PartyBuffModifier = {
+  modifier?: string;
+  modifierValue?: unknown;
+  modifierByRefinement?: Record<string, number>;
+  specificCharacters?: string[];
+  modifySpecificTalents?: string[];
+  modifierValueTalentRef?: string;
+  modifierTalentKey?: string;
+  modifierStep?: number;
+  maximumValue?: number;
+  minStatValue?: number;
+  modifierValueCalculated?: number;
 };
+
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    name?: string;
+    uniqueKey: string;
+    details?: string;
+    alwaysEnabled?: boolean;
+    hasStacks?: boolean;
+    minStacks?: number;
+    maxStacks?: number;
+    modifiers?: PartyBuffModifier[];
+    talentData?: Record<string, string>;
+    hasRefinements?: boolean;
+    inputBase?: boolean;
+    modifierBasedOn?: string | null;
+  }>(),
+  {
+    alwaysEnabled: false,
+    hasStacks: false,
+    minStacks: 0,
+    maxStacks: 0,
+    modifiers: () => [],
+    talentData: () => ({}),
+    hasRefinements: false,
+    inputBase: false,
+    modifierBasedOn: null,
+  },
+);
+
+const emit = defineEmits<{
+  "updated-party-buff": [payload: { key: string; data: Record<string, unknown> }];
+}>();
+
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+const { setCharacterData } = characterStore;
+
+const currentCharacter = computed(
+  () => characters.value[props.character] ?? ({} as Record<string, unknown>),
+);
+
+const teamBuffs = computed(
+  () =>
+    (currentCharacter.value as { teamBuffs?: { buffs?: Record<string, unknown> } })
+      ?.teamBuffs,
+);
+
+const buffEntry = computed(
+  () =>
+    (teamBuffs.value?.buffs?.[props.uniqueKey] ?? {}) as Record<string, unknown>,
+);
+
+const isEnabled = computed({
+  get() {
+    return (buffEntry.value?.isEnabled as boolean | undefined) ?? false;
+  },
+  set(value: boolean) {
+    void setCharacterData(props.character, {
+      teamBuffs: {
+        buffs: {
+          [props.uniqueKey]: { isEnabled: value },
+        },
+      },
+    });
+  },
+});
+
+const refinement = computed({
+  get() {
+    const r = buffEntry.value?.refinement;
+    return r !== undefined && r !== null ? r : 1;
+  },
+  set(value: string | number) {
+    void setCharacterData(props.character, {
+      teamBuffs: {
+        buffs: {
+          [props.uniqueKey]: { refinement: value },
+        },
+      },
+    });
+  },
+});
+
+const stacks = computed({
+  get() {
+    return (buffEntry.value?.stacks as number | undefined) ?? 0;
+  },
+  set(value: number) {
+    void setCharacterData(props.character, {
+      teamBuffs: {
+        buffs: {
+          [props.uniqueKey]: { stacks: value },
+        },
+      },
+    });
+  },
+});
+
+const baseAttrValue = computed({
+  get() {
+    return (buffEntry.value?.baseAttrValue as number | undefined) ?? 0;
+  },
+  set(value: number) {
+    void setCharacterData(props.character, {
+      teamBuffs: {
+        buffs: {
+          [props.uniqueKey]: { baseAttrValue: value },
+        },
+      },
+    });
+  },
+});
+
+const buffStats = computed(() => {
+  const data: Record<string, unknown> = {};
+  if (!isEnabled.value) {
+    return data;
+  }
+  const buffsMap = teamBuffs.value?.buffs as
+    | Record<string, { isEnabled?: boolean }>
+    | undefined;
+  if (
+    props.uniqueKey === "InherentSkillApplauseofVictory" ||
+    props.uniqueKey === "InherentSkillApplauseofVictoryFullFusionTeam"
+  ) {
+    if (buffsMap?.SequenceNode3WolflameHowlsinHerWake?.isEnabled) {
+      return data;
+    }
+  }
+  if (props.uniqueKey === "ThunderSpellHeavenEarthMind") {
+    if (buffsMap?.SequenceNode6AlmightyForumLordofThunderSpell?.isEnabled) {
+      return data;
+    }
+  }
+  if (props.uniqueKey === "PactofNeonlightLeap") {
+    data["ATK"] = 0.15;
+  }
+  if (!props.hasStacks) {
+    props.modifiers.forEach((modifierItem) => {
+      if (modifierItem?.specificCharacters?.length) {
+        if (!modifierItem.specificCharacters.includes(props.character)) {
+          return;
+        }
+      }
+      if (modifierItem?.modifySpecificTalents) {
+        if (!data.modifySpecificTalents) {
+          data.modifySpecificTalents = [];
+        }
+        let modifierValue: number;
+        if (props.hasRefinements && modifierItem.modifierByRefinement) {
+          modifierValue =
+            modifierItem.modifierByRefinement[String(refinement.value)];
+        } else {
+          modifierValue = modifierItem.modifierValue as number;
+        }
+        modifierItem.modifierValueCalculated = modifierValue;
+        (data.modifySpecificTalents as PartyBuffModifier[]).push(modifierItem);
+      } else if (modifierItem.modifier === "EnableAttack") {
+        const mv = modifierItem.modifierValue as unknown[];
+        if (Array.isArray(data[modifierItem.modifier!])) {
+          (data[modifierItem.modifier!] as unknown[]).push(...mv);
+        } else {
+          data[modifierItem.modifier!] = [...mv];
+        }
+      } else if (modifierItem.modifier === "Talent") {
+        const talentRef =
+          props.talentData?.[modifierItem.modifierValueTalentRef!] ?? "10";
+        const modVal = modifierItem.modifierValue as Record<string, number>;
+        const talentVal = modVal[talentRef];
+        data[modifierItem.modifierTalentKey!] = talentVal;
+      } else if (modifierItem.modifier === "talentModifierMultiply") {
+        if (!data.talentModifierMultiply) {
+          data.talentModifierMultiply = [];
+        }
+        (data.talentModifierMultiply as PartyBuffModifier[]).push(modifierItem);
+      } else if (props.inputBase === true) {
+        let base = 0;
+        switch (props.modifierBasedOn) {
+          case "Energy Regen":
+            base = modifierItem?.minStatValue ?? 0;
+            break;
+          case "CritRate":
+            base = modifierItem?.minStatValue ?? 0.05;
+            break;
+          case "CritDMG":
+            base = modifierItem?.minStatValue ?? 1.5;
+            break;
+          default:
+            base = modifierItem?.minStatValue ?? 0;
+            break;
+        }
+        const currentAmount = baseAttrValue.value ?? 0;
+        const additionalAmount = (currentAmount - base) / 100;
+        const steps = Math.floor(
+          additionalAmount / (modifierItem.modifierStep as number),
+        );
+        let buffValue = steps * (modifierItem.modifierValue as number);
+        if (buffValue > (modifierItem.maximumValue as number)) {
+          buffValue = modifierItem.maximumValue as number;
+        }
+        if (buffValue < 0) {
+          buffValue = 0;
+        }
+        data[modifierItem.modifier!] = buffValue;
+      } else {
+        let modifierValue: number;
+        if (props.hasRefinements && modifierItem.modifierByRefinement) {
+          modifierValue =
+            modifierItem.modifierByRefinement[String(refinement.value)];
+        } else {
+          modifierValue = modifierItem.modifierValue as number;
+        }
+        const key = modifierItem.modifier!;
+        data[key] = ((data[key] as number) || 0) + modifierValue;
+      }
+    });
+    return data;
+  }
+  if (props.hasStacks) {
+    if (stacks.value === 0) {
+      return data;
+    }
+    props.modifiers.forEach((modifierItem) => {
+      if (modifierItem?.modifySpecificTalents) {
+        if (!data.modifySpecificTalents) {
+          data.modifySpecificTalents = [];
+        }
+        let modifierValue: number;
+        if (props.hasRefinements && modifierItem.modifierByRefinement) {
+          modifierValue =
+            modifierItem.modifierByRefinement[String(refinement.value)];
+        } else {
+          modifierValue = modifierItem.modifierValue as number;
+        }
+        modifierItem.modifierValueCalculated = modifierValue * stacks.value;
+        (data.modifySpecificTalents as PartyBuffModifier[]).push(modifierItem);
+      } else if (modifierItem.modifier === "Talent") {
+        const talentRef =
+          props.talentData?.[modifierItem.modifierValueTalentRef!] ?? "10";
+        const modVal = modifierItem.modifierValue as Record<string, number>;
+        const talentVal = modVal[talentRef];
+        data[modifierItem.modifierTalentKey!] = talentVal * stacks.value;
+      } else {
+        let modifierValue: number;
+        if (props.hasRefinements && modifierItem.modifierByRefinement) {
+          modifierValue =
+            modifierItem.modifierByRefinement[String(refinement.value)];
+        } else {
+          modifierValue = modifierItem.modifierValue as number;
+        }
+        const totalValue = modifierValue * stacks.value;
+        const key = modifierItem.modifier!;
+        data[key] = ((data[key] as number) || 0) + totalValue;
+      }
+    });
+  }
+  return data;
+});
+
+const weaponRefinementLevels = ["1", "2", "3", "4", "5"] as const;
+
+function updatedStats() {
+  emit("updated-party-buff", {
+    key: props.uniqueKey,
+    data: buffStats.value,
+  });
+}
+
+function ensureMaxStacks() {
+  if (stacks.value > props.maxStacks) {
+    stacks.value = props.maxStacks;
+  }
+}
+
+function toggleEnabled() {
+  isEnabled.value = !isEnabled.value;
+}
+
+watch(buffStats, updatedStats, { immediate: true });
+
+onMounted(() => {
+  if (props.alwaysEnabled === true) {
+    isEnabled.value = true;
+  }
+});
 </script>
 
 <style scoped lang="scss"></style>

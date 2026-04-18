@@ -37,34 +37,16 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "CalculatorWeaponCard",
-  props: {
-    name: {
-        type: String,
-        required: true
-    },
-    nameKey: {
-        type: String,
-        required: true
-    },
-    rarity: {
-        type: Number,
-        required: true
-    },
-    isActive: {
-        type: Boolean,
-        default: false
-    }
-  },
-  data() {
-    return {};
-  },
-  computed: {},
-  methods: {
-  },
-};
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    name: string;
+    nameKey: string;
+    rarity: number | string;
+    isActive?: boolean;
+  }>(),
+  { isActive: false },
+);
 </script>
 
 <style lang="scss" scoped>

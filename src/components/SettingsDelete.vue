@@ -20,60 +20,34 @@
   </div>
 </template>
 
-<script lang="ts">
-// @ts-nocheck
+<script setup lang="ts">
 /**
  * Version 1 (which has no meta) only includes character data as a root property
  * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
  */
+import { ref } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
-import { defineComponent } from "vue";
-export default defineComponent({
-  name: "SettingsImportExport",
-  data() {
-    return {
-      importedRawCharacterData: "",
-      message: "",
-      isNotificationShown: false,
-      notificationError: false,
-      fileData: null,
-    };
-  },
-  methods: {
-    /**
-     * Confirms the deletion of user data
-     */
-    confirmDelete() {
-      if (window.confirm("Do you really want to delete everything?")) {
-        // empty character data
-        localStorage.setItem("character", "");
-        const characterStore = useCharacterStore();
-        characterStore.$hydrate({ runHooks: false });
-        // empty the inventory
-        localStorage.setItem("inventory", "");
-        const inventoryStore = useInventoryStore();
-        inventoryStore.$hydrate({ runHooks: false });
-        alert("Your data has been deleted!");
-        location.reload();
-      }
-    },
-    /**
-     * Shows the notification message and hides it after a duration
-     * @param {String} message
-     */
-    triggerNotification(message, error = false) {
-      this.message = message;
-      this.isNotificationShown = true;
-      this.notificationError = error;
-      setTimeout(() => {
-        this.isNotificationShown = false;
-        this.message = "";
-        this.notificationError = false;
-      }, 5000);
-    },
-  },
-});
+
+const message = ref("");
+const isNotificationShown = ref(false);
+const notificationError = ref(false);
+
+/**
+ * Confirms the deletion of user data
+ */
+function confirmDelete() {
+  if (window.confirm("Do you really want to delete everything?")) {
+    localStorage.setItem("character", "");
+    const characterStore = useCharacterStore();
+    characterStore.$hydrate({ runHooks: false });
+    localStorage.setItem("inventory", "");
+    const inventoryStore = useInventoryStore();
+    inventoryStore.$hydrate({ runHooks: false });
+    alert("Your data has been deleted!");
+    location.reload();
+  }
+}
 </script>
 
 <style scoped lang="scss">

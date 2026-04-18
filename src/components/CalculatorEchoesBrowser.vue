@@ -158,212 +158,157 @@
   </dialog>
 </template>
 
-<script>
-import { mainEchoesData, getEchoData } from "../echoes/index.ts";
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
+import { mainEchoesData } from "../echoes/index.ts";
 import {
   echoSetLabelMap,
   getEchoSetIconByType,
   getReadableSubStatLabel,
   statsTable,
 } from "../echoes/stats";
-import { mapActions, mapState } from "pinia";
 import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
-export default {
-  name: "CalculatorEchoesBrowser",
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
-  },
-  data() {
-    return {
-      echoIndex: null,
-      echoSetLabelMap,
-      statsTable,
-      costFilter: null,
-      echoSet: null,
-      echo: null,
-      equippedFilter: null,
-      mainStatFilter: null,
-      page: 1,
-      perPage: 20,
-    };
-  },
-  components: {
-    CalculatorEchoCard,
-  },
-  watch: {
-    // when any filter changes, reset the page number
-    mainStatFilter() {
-      this.page = 1;
-    },
-    echoSet() {
-      this.page = 1;
-    },
-    echo() {
-      this.page = 1;
-    },
-  },
-  computed: {
-    ...mapState(useInventoryStore, ["echoes", "echoIdsEquippedByAnyChars"]),
-    ...mapState(useCharacterStore, ["characters"]),
-    /**
-     * The current character data
-     * @returns {Object}
-     */
-    currentCharacter() {
-      return this.characters[this.character] ?? {};
-    },
-    currentCharacterEchoes() {
-      return this.currentCharacter?.echoes ?? {};
-    },
-    echoSetsList() {
-      return Object.keys(echoSetLabelMap);
-    },
-    echoesList() {
-      let allEchoes = this.echoes ?? [];
+const props = defineProps<{ character: string }>();
+const emit = defineEmits<{ "chosen-echo-inventory": [] }>();
+
+const inventoryStore = useInventoryStore();
+const characterStore = useCharacterStore();
+const { echoes, echoIdsEquippedByAnyChars } = storeToRefs(inventoryStore);
+const { characters } = storeToRefs(characterStore);
+
+const echoIndex = ref<number | null>(null);
+const costFilter = ref<number | null>(null);
+const echoSet = ref<string | null>(null);
+const echo = ref<string | null>(null);
+const equippedFilter = ref<"self" | "any" | null>(null);
+const mainStatFilter = ref<string | null>(null);
+const page = ref(1);
+const perPage = 20;
+
+watch([mainStatFilter, echoSet, echo], () => {
+  page.value = 1;
+});
+
+const currentCharacter = computed(
+  () => (characters.value?.[props.character] as Record<string, any>) ?? {},
+);
+const currentCharacterEchoes = computed(() => currentCharacter.value?.echoes ?? {});
+const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
+const echoesList = computed(() => {
+      let allEchoes = echoes.value ?? [];
       // don't bother filtering if there are none
       if (allEchoes.length <= 0) {
         return allEchoes;
       }
       // filter by type if set
-      if (this.echoSet) {
-        allEchoes = allEchoes.filter((echo) => echo.echoSet === this.echoSet);
+      if (echoSet.value) {
+        allEchoes = allEchoes.filter((item: any) => item.echoSet === echoSet.value);
       }
       // filter by main echo if set
-      if (this.echo) {
-        allEchoes = allEchoes.filter((echo) => echo.echo === this.echo);
+      if (echo.value) {
+        allEchoes = allEchoes.filter((item: any) => item.echo === echo.value);
       }
-      // filter by main echo if set
-      if (this.costFilter) {
-        allEchoes = allEchoes.filter((echo) => echo.type === this.costFilter);
+      if (costFilter.value) {
+        allEchoes = allEchoes.filter((item: any) => item.type === costFilter.value);
       }
-      // filter by main stat if set
-      if (this.mainStatFilter) {
+      if (mainStatFilter.value) {
         allEchoes = allEchoes.filter(
-          (echo) => echo.stat === this.mainStatFilter,
+          (item: any) => item.stat === mainStatFilter.value,
         );
       }
-      // filter by equipped if set
-      if (this.equippedFilter) {
-        // remove any echoes that the current character has equipped
-        if (this.equippedFilter === "self") {
-          const equippedEchoIds = this.echoIdsEquippedByChar(this.character);
-          allEchoes = allEchoes.filter((echo) => !equippedEchoIds.includes(echo.echoId));
+      if (equippedFilter.value) {
+        if (equippedFilter.value === "self") {
+          const equippedEchoIds = inventoryStore.echoIdsEquippedByChar(props.character);
+          allEchoes = allEchoes.filter((item: any) => !equippedEchoIds.includes(item.echoId));
         }
-        // remove any echoes that any character has equipped
-        if (this.equippedFilter === "any") {
-          const equippedEchoIds = this.echoIdsEquippedByAnyChars;
-          allEchoes = allEchoes.filter((echo) => !equippedEchoIds.includes(echo.echoId));
+        if (equippedFilter.value === "any") {
+          const equippedEchoIds = echoIdsEquippedByAnyChars.value;
+          allEchoes = allEchoes.filter((item: any) => !equippedEchoIds.includes(item.echoId));
         }
       }
 
       return allEchoes;
-    },
-    paginatedEchoesList() {
-      const start = (this.page - 1) * this.perPage;
-      const end = this.page * this.perPage;
-      const slicedEchoes = this.echoesList.slice(start, end);
-      return slicedEchoes;
-    },
-    totalPages() {
-      return Math.ceil(this.echoesList.length / this.perPage);
-    },
-    mainEchoesData() {
-      return { ...mainEchoesData };
-    },
-    mainEchoOptions() {
+    });
+const paginatedEchoesList = computed(() => {
+  const start = (page.value - 1) * perPage;
+  const end = page.value * perPage;
+  return echoesList.value.slice(start, end);
+});
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(echoesList.value.length / perPage)),
+);
+const mainEchoOptions = computed(() => {
       const echoes = {
-        Calamity: [],
-        Overlord: [],
-        Elite: [],
-        Common: [],
+        Calamity: [] as any[],
+        Overlord: [] as any[],
+        Elite: [] as any[],
+        Common: [] as any[],
       };
-      const mainEchoValues = Object.values(this.mainEchoesData);
+      const mainEchoValues = Object.values(mainEchoesData);
       mainEchoValues.forEach((echo) => {
-        if (echo?.class && echoes?.[echo.class]) {
-          echoes[echo.class].push(echo);
+        const echoClass = (echo as any)?.class as keyof typeof echoes | undefined;
+        if (echoClass && echoes[echoClass]) {
+          echoes[echoClass].push(echo);
         }
       });
       return echoes;
-    },
-    allMainStats() {
-      const fourSlotOptions = Object.keys(this.statsTable["4"]);
-      const threeSlotOptions = Object.keys(this.statsTable["3"]);
-      const oneSlotOptions = Object.keys(this.statsTable["1"]);
+    });
+const allMainStats = computed(() => {
+      const fourSlotOptions = Object.keys((statsTable as any)["4"]);
+      const threeSlotOptions = Object.keys((statsTable as any)["3"]);
+      const oneSlotOptions = Object.keys((statsTable as any)["1"]);
       const allOptions = [
         ...fourSlotOptions,
         ...threeSlotOptions,
         ...oneSlotOptions,
       ];
-      // filter out any dupes
       return [...new Set(allOptions)];
-    },
-  },
-  methods: {
-    ...mapActions(useInventoryStore, ["getEchoById", "setEquippedData", "echoIdsEquippedByChar"]),
-    ...mapActions(useCharacterStore, [
-      "setCharacterData",
-      "removeCharacterEcho",
-    ]),
-    getReadableSubStatLabel,
-    triggerOpenModal(echoIndex) {
-      this.echoIndex = echoIndex;
+    });
+
+function triggerOpenModal(index: number) {
+      echoIndex.value = index;
       const modalEl = document.getElementById("modal-echoes-browser");
-      modalEl.showModal();
-    },
-    triggerCloseModal() {
+      (modalEl as HTMLDialogElement | null)?.showModal();
+    }
+function triggerCloseModal() {
       const modalEl = document.getElementById("modal-echoes-browser");
-      modalEl.close();
-    },
-    handleClose() {
-      // this.reset();
-    },
-    reset() {
-      this.echoIndex = null;
-      this.echoSet = null;
-      this.echo = null;
-      this.mainStatFilter = null;
-      this.costFilter = null;
-    },
-    getEchoSetImage(echoSet) {
-      return getEchoSetIconByType(echoSet);
-    },
-    toggleEchoSetFilter(echoSet) {
-      if (this.echoSet === echoSet) {
-        this.echoSet = null;
+      (modalEl as HTMLDialogElement | null)?.close();
+    }
+function handleClose() {}
+function getEchoSetImage(type: string) {
+      return getEchoSetIconByType(type);
+    }
+function toggleEchoSetFilter(type: string) {
+      if (echoSet.value === type) {
+        echoSet.value = null;
       } else {
-        this.echoSet = echoSet;
+        echoSet.value = type;
       }
-    },
-    isEchoSetFilterActive(echoSet) {
-      return this.echoSet === echoSet;
-    },
-    async assignEcho(echoId) {
-      // is the echo already being used? if so, then reject
-      const isUsed = this.isEchoUsedByChar(echoId);
+    }
+function isEchoSetFilterActive(type: string) {
+      return echoSet.value === type;
+    }
+async function assignEcho(echoId: string) {
+      const isUsed = isEchoUsedByChar(echoId);
       if (isUsed) {
         alert("Echo is already being used.");
         return;
       }
-      const echo = this.getEchoById(echoId);
-      if (!echo) {
+      const chosenEcho = inventoryStore.getEchoById(echoId);
+      if (!chosenEcho) {
         console.error("Could not find echo", echoId);
         return;
       }
-      // clear the original echo before changing the data to avoid data merge issues
-      await this.removeCharacterEcho(this.character, this.echoIndex);
-      // when we assign the echo from inventory, clear out all data except echoId
-      // the stats will come from the inventory to have one source of truth for its stats
+      await characterStore.removeCharacterEcho(props.character, echoIndex.value);
       const echoData = {
         echo: null,
         type: null,
         rank: null,
         stat: null,
-        echoId: echo.echoId,
+        echoId: chosenEcho.echoId,
         echoSet: null,
         echoSubStatsType1: null,
         echoSubStatsValue1: null,
@@ -376,59 +321,59 @@ export default {
         echoSubStatsType5: null,
         echoSubStatsValue5: null,
       };
-      // assign the new echo to the right spot
       const data = { echoes: {} };
-      data.echoes[this.echoIndex] = echoData;
-      await this.setCharacterData(this.character, data);
+      (data.echoes as any)[echoIndex.value as number] = echoData;
+      await characterStore.setCharacterData(props.character, data);
       const equippedData = {};
-      equippedData[this.character] = this.echoIndex;
-      await this.setEquippedData(echoId, equippedData);
+      (equippedData as any)[props.character] = echoIndex.value;
+      await inventoryStore.setEquippedData(echoId, equippedData);
+      triggerCloseModal();
+      emit("chosen-echo-inventory");
+    }
+function resetFilters() {
+      echoSet.value = null;
+      echo.value = null;
+      mainStatFilter.value = null;
+      costFilter.value = null;
+      equippedFilter.value = null;
+    }
+function prevPage() {
+      if (page.value <= 1) {
+        page.value = 1;
+      } else {
+        page.value--;
+      }
+    }
+function nextPage() {
+      if (page.value >= totalPages.value) {
+        page.value = totalPages.value;
+      } else {
+        page.value++;
+      }
+    }
+function isEchoUsedByChar(echoId: string) {
+      if (currentCharacterEchoes.value?.[0]?.echoId === echoId) {
+        return true;
+      }
+      if (currentCharacterEchoes.value?.[1]?.echoId === echoId) {
+        return true;
+      }
+      if (currentCharacterEchoes.value?.[2]?.echoId === echoId) {
+        return true;
+      }
+      if (currentCharacterEchoes.value?.[3]?.echoId === echoId) {
+        return true;
+      }
+      if (currentCharacterEchoes.value?.[4]?.echoId === echoId) {
+        return true;
+      }
+      return false;
+    }
 
-      // wrap up the modal
-      // this.reset();
-      this.triggerCloseModal();
-      this.$emit("chosen-echo-inventory");
-    },
-    resetFilters() {
-      this.echoSet = null;
-      this.echo = null;
-      this.mainStatFilter = null;
-      this.costFilter = null;
-      this.equippedFilter = null;
-    },
-    prevPage() {
-      if (this.page <= 1) {
-        this.page = 1;
-      } else {
-        this.page--;
-      }
-    },
-    nextPage() {
-      if (this.page >= this.totalPages) {
-        this.page = this.totalPages;
-      } else {
-        this.page++;
-      }
-    },
-    isEchoUsedByChar(echoId) {
-      if (this.currentCharacterEchoes?.[0]?.echoId === echoId) {
-        return true;
-      }
-      if (this.currentCharacterEchoes?.[1]?.echoId === echoId) {
-        return true;
-      }
-      if (this.currentCharacterEchoes?.[2]?.echoId === echoId) {
-        return true;
-      }
-      if (this.currentCharacterEchoes?.[3]?.echoId === echoId) {
-        return true;
-      }
-      if (this.currentCharacterEchoes?.[4]?.echoId === echoId) {
-        return true;
-      }
-    },
-  },
-};
+defineExpose({
+  triggerOpenModal,
+  triggerCloseModal,
+});
 </script>
 
 <style lang="scss" scoped>

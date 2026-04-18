@@ -33,7 +33,7 @@
           name="character"
           v-model="characterChosen"
           class="select select-bordered select-sm"
-          @input="handleUpdatedCharacter">
+          @change="handleUpdatedCharacter">
           <optgroup label="5 Star">
             <option
               v-for="char in charactersList.five"
@@ -54,90 +54,87 @@
       </div>
       <CalculatorCharacterLevel
         :character="character"
-        @character-level-updated="
-          handleCharacterLevelUpdated
-        "></CalculatorCharacterLevel>
+        @character-level-updated="handleCharacterLevelUpdated"></CalculatorCharacterLevel>
     </div>
     <CalculatorCharacterBrowser
       :character="character"
-      ref="characterBrowser"
+      ref="characterBrowserRef"
       @character-browser:chosen-character="handleChosenCharacter" />
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "pinia";
-import { useCharacterStore } from "../stores/character";
+<script setup lang="ts">
+import { computed, onMounted, ref, watch } from "vue";
 import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import {
-  getCharactersAvailable,
-  getCharByName,
   allCharactersList,
+  getCharactersAvailable,
 } from "../characters/characters";
-import { character } from "../characters/Aalto/character";
-export default {
-  props: {
-    character: {
-      type: String,
-      required: true,
-    },
+
+type ListedCharacter = (typeof allCharactersList)[number];
+type CharacterPickerList = ReturnType<typeof getCharactersAvailable>;
+
+interface Props {
+  character: string;
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+  "updated-chosen-character": [key: string];
+  "character-level-updated": [level: string];
+}>();
+
+const characterBrowserRef = ref<{
+  triggerOpenModal: () => void;
+  triggerCloseModal: () => void;
+} | null>(null);
+
+const charactersList = ref<CharacterPickerList>({ five: [], four: [] });
+const characterChosen = ref<string>("");
+
+const basicCharacterData = computed((): ListedCharacter | undefined =>
+  allCharactersList.find((char) => char.key === characterChosen.value),
+);
+
+const characterRarity = computed((): number | string => {
+  if (basicCharacterData.value) {
+    return basicCharacterData.value.rarity;
+  }
+  return 5;
+});
+
+function handleUpdatedCharacter(e: Event) {
+  const target = e.target as HTMLSelectElement;
+  const next = target.value;
+  emit("updated-chosen-character", next);
+}
+
+function handleChosenCharacter(nextCharacter: string) {
+  characterChosen.value = nextCharacter;
+  emit("updated-chosen-character", nextCharacter);
+}
+
+function openCharacterBrowser() {
+  characterBrowserRef.value?.triggerOpenModal();
+}
+
+function handleCharacterLevelUpdated(charLevel: string) {
+  emit("character-level-updated", charLevel);
+}
+
+watch(
+  () => props.character,
+  (next) => {
+    characterChosen.value = next;
   },
-  components: {
-    CalculatorCharacterBrowser,
-    CalculatorCharacterLevel,
-  },
-  data() {
-    return {
-      allCharactersList,
-      charactersList: [],
-      characterChosen: "",
-    };
-  },
-  methods: {
-    /**
-     * @emits updated-chosen-character
-     */
-    handleUpdatedCharacter(e) {
-      const character = e.target.value;
-      this.$emit("updated-chosen-character", character);
-    },
-    handleChosenCharacter(character) {
-      this.characterChosen = character;
-      this.$emit("updated-chosen-character", character);
-    },
-    /**
-     * Tells the character browser to open
-     */
-    openCharacterBrowser() {
-      this.$refs.characterBrowser.triggerOpenModal();
-    },
-    /**
-     * Bubble out the level
-     * emits: character-level-updated
-     */
-    handleCharacterLevelUpdated(charLevel) {
-      this.$emit("character-level-updated", charLevel);
-    },
-  },
-  computed: {
-    basicCharacterData() {
-      return this.allCharactersList.find((char) => {
-        return char.key === this.characterChosen;
-      });
-    },
-    characterRarity() {
-      if (this.basicCharacterData) {
-        return this.basicCharacterData?.rarity;
-      }
-      return 5;
-    }
-  },
-  mounted() {
-    this.charactersList = getCharactersAvailable();
-    this.characterChosen = this.character;
-  },
-};
+);
+
+onMounted(() => {
+  charactersList.value = getCharactersAvailable();
+  characterChosen.value = props.character;
+});
 </script>
 
 <style lang="scss" scoped>
