@@ -1867,39 +1867,10 @@ export const buffsByCharacter = {
 
 export const allEchoBuffs = [
   {
-    key: "RejuvenatingGlow",
-    name: "Rejuvenating Glow",
-    details: `<span class="skilldescription">Upon healing allies, increase ATK of the entire team by <span class="Highlight">15%</span> , lasting <span class="Highlight">30s</span>.</span>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "ATK",
-        modifierValue: 0.15,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    key: "MoonlitClouds",
-    name: "Moonlit Clouds",
-    details: `<span class="skilldescription">Upon using Outro Skill, ATK of the next Resonator increases by <span class="Highlight">22.5%</span> , for <span class="Highlight">15s</span>.</span>`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "ATK",
-        modifierValue: 0.225,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
     key: "ImpermanenceHeron",
     name: "Impermanence Heron",
     details: `<span class="skilldescription">If the current character uses their Outro Skill within the next <span class="Highlight">15s</span>, the next character’s damage dealt will be boosted by <span class="Highlight">12%</span> for 15s.</span>`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ImpermanenceHeron.png",
     hasStacks: false,
     modifiers: [
       {
@@ -1919,6 +1890,7 @@ export const allEchoBuffs = [
 The Bell-Borne Shield provides <span class="param">50.00%</span> DMG Reduction and <span class="param">10.00%</span> DMG Boost for the current team members, and disappears after the current character is hit for <span class="param">3</span> times.
 
 CD: <span class="param">20</span>s</span>`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/BellBorneGeochelone.png",
     hasStacks: false,
     modifiers: [
       {
@@ -1934,6 +1906,7 @@ CD: <span class="param">20</span>s</span>`,
     key: "FallacyOfNoReturn",
     name: "Fallacy of No Return",
     details: `<span class="description">Increases attack of all team characters by <span class="Highlight">10%</span>, lasting for 20 seconds.</span>`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/FallacyOfNoReturn.png",
     hasStacks: false,
     modifiers: [
       {
@@ -1949,6 +1922,7 @@ CD: <span class="param">20</span>s</span>`,
     key: "Hyvatia",
     name: "Hyvatia",
     details: `<span class="description">Casting Outro Skill within 15s after summoning Hyvatia grants 10.00% All-Attribute DMG Bonus to the next Resonator using Intro Skill for 15s.</span>`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Hyvatia.webp",
     hasStacks: false,
     modifiers: [
       {
@@ -1961,9 +1935,56 @@ CD: <span class="param">20</span>s</span>`,
     alwaysEnabled: false,
   },
   {
+    key: "Glommoth",
+    name: "Glommoth",
+    details: `Casting Outro Skill within 15s after summoning Glommoth grants 12.00% Glacio DMG Bonus to the incoming Resonator for 15s.
+CD: 20s.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Glommoth.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Glacio",
+        modifierValue: 0.12,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "RejuvenatingGlow",
+    name: "Rejuvenating Glow",
+    details: `<span class="skilldescription">Upon healing allies, increase ATK of the entire team by <span class="Highlight">15%</span> , lasting <span class="Highlight">30s</span>.</span>`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/RejuvenatingGlow.webp",
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.15,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "MoonlitClouds",
+    name: "Moonlit Clouds",
+    details: `<span class="skilldescription">Upon using Outro Skill, ATK of the next Resonator increases by <span class="Highlight">22.5%</span> , for <span class="Highlight">15s</span>.</span>`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/MoonlitClouds.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.225,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: "MidnightVeil",
     name: "Midnight Veil",
     details: `<span class="description">Increases the next character's <span class="Dark">Havoc</span> DMG by <span class="Highlight">15%</span> for <span class="Highlight">15</span> seconds</span>`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/MidnightVeil.webp",
     hasStacks: false,
     modifiers: [
       {
@@ -1979,6 +2000,7 @@ CD: <span class="param">20</span>s</span>`,
     key: "EmpyreanAnthem",
     name: "Empyrean Anthem",
     details: `<span class="description">Upon a critical hit of Coordinated Attack, increase the active Resonator's ATK by 20% for 4s.</span>`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/EmpyreanAnthem.webp",
     hasStacks: false,
     modifiers: [
       {
@@ -1994,6 +2016,7 @@ CD: <span class="param">20</span>s</span>`,
     key: "GustsofWelkin",
     name: "Gusts of Welkin",
     details: `Inflicting Aero Erosion upon enemies increases <span class="Wind">Aero</span> DMG for all Resonators in the team by 15%.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/GustsofWelkin.webp",
     hasStacks: false,
     modifiers: [
       {
@@ -2009,6 +2032,7 @@ CD: <span class="param">20</span>s</span>`,
     key: "FlamingClawprint",
     name: "Flaming Clawprint",
     details: `Casting Resonance Liberation increases Fusion DMG of Resonators in the team by 15%, lasting for 35s.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/FlamingClawprint.webp",
     hasStacks: false,
     modifiers: [
       {
@@ -2024,6 +2048,7 @@ CD: <span class="param">20</span>s</span>`,
     key: "LawofHarmony",
     name: "Law of Harmony",
     details: `Casting Echo Skill grants 30% Heavy Attack DMG Bonus to the caster for 4s.</br>Additionally, all Resonators in the team gain 4% Echo Skill DMG Bonus for 30s, stacking up to 4 times. Echoes of the same name can only trigger this effect once. The record of Echo triggering this effect is cleared along with this effect. At 4 stacks, casting Echo Skill again resets the duration of this effect.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/LawofHarmony.webp",
     hasStacks: true,
     modifiers: [
       {
@@ -2039,6 +2064,7 @@ CD: <span class="param">20</span>s</span>`,
     key: "PactofNeonlightLeap",
     name: "Pact of Neonlight Leap",
     details: `Casting Outro Skill increases the ATK of the incoming Resonator by 15%, with each point of Tune Break Boost additionally increasing ATK by 0.3%, up to 15%. This effect lasts for 15s, or until the Resonator is switched out.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/PactofNeonlightLeap.webp",
     hasStacks: true,
     modifiers: [
       {
@@ -2054,6 +2080,7 @@ CD: <span class="param">20</span>s</span>`,
     key: "HaloofStarryRadiance",
     name: "Halo of Starry Radiance",
     details: `When healing a Resonator in the team, every 1% of Off-Tune Buildup Rate grants a 0.2% ATK increase to all Resonators in the team for 4s, up to 25%. Effects of the same name cannot be stacked.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/HaloofStarryRadiance.webp",
     hasStacks: true,
     modifiers: [
       {
@@ -2069,25 +2096,12 @@ CD: <span class="param">20</span>s</span>`,
     key: "ChromaticFoam",
     name: "Chromatic Foam",
     details: `When the Resonator inflicts Fusion Burst on the enemies, they gain the following effects: Gain 10% Fusion DMG Bonus for 15 s. While this effect is active, casting an Outro Skill grants the incoming Resonator 25% Fusion DMG Bonus for 15s.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/ChromaticFoam.webp",
     hasStacks: false,
     modifiers: [
       {
         modifier: "Fusion",
         modifierValue: 0.25,
-      },
-    ],
-    alwaysEnabled: false,
-  },
-  {
-    key: "Glommoth",
-    name: "Glommoth",
-    details: `Casting Outro Skill within 15s after summoning Glommoth grants 12.00% Glacio DMG Bonus to the incoming Resonator for 15s.
-CD: 20s.`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "Glacio",
-        modifierValue: 0.12,
       },
     ],
     alwaysEnabled: false,
@@ -2099,6 +2113,7 @@ export const allWeaponTeamBuffs = [
     name: "Static Mist",
     key: "StaticMistATK",
     hasStacks: true,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/StaticMist.png",
     modifiers: [
       {
         modifier: "ATK",
@@ -2121,6 +2136,7 @@ export const allWeaponTeamBuffs = [
     name: "Stellar Symphony",
     key: "StellarSymphonyATK",
     hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/StellarSymphony.png",
     modifiers: [
       {
         modifier: "ATK",
@@ -2142,6 +2158,7 @@ export const allWeaponTeamBuffs = [
     name: "Luminous Hymn Spectro Frazzle Amplify",
     key: "LuminousHymnSpectroFrazzle",
     hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/LuminousHymn.png",
     modifiers: [
       {
         modifier: "DMGDeepen:SpectroFrazzle",
@@ -2163,6 +2180,7 @@ export const allWeaponTeamBuffs = [
     name: "Bloodpact's Pledge Aero Amplify",
     key: "BloodpactsPledgeAeroDeepen",
     hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/BloodpactsPledge.webp",
     modifiers: [
       {
         modifier: "DMGDeepen:Aero",
@@ -2184,6 +2202,7 @@ export const allWeaponTeamBuffs = [
     name: "Woodland Aria Aero RES Reduction",
     key: "WoodlandAriaAeroShred",
     hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/WoodlandAria.webp",
     modifiers: [
       {
         modifier: "ResistShred:Aero",
@@ -2205,6 +2224,7 @@ export const allWeaponTeamBuffs = [
     name: "Wildfire Mark",
     key: "WildfireMarkDMGBonus",
     hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/WildfireMark.png",
     modifiers: [
       {
         modifier: "Fusion",
@@ -2226,6 +2246,7 @@ export const allWeaponTeamBuffs = [
     name: "Emerald Sentence",
     key: "EmeraldSentenceEchoDMGBonus",
     hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/EmeraldSentence.png",
     modifiers: [
       {
         modifier: "EchoDMGBonus",
@@ -2247,6 +2268,7 @@ export const allWeaponTeamBuffs = [
     name: "Kumokiri",
     key: "ThreadofFateAllAttribute",
     hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/Kumokiri.png",
     modifiers: [
       {
         modifier: "AllElementAttributeBonus",
@@ -2268,6 +2290,7 @@ export const allWeaponTeamBuffs = [
     name: "Spectrum Blaster",
     key: "SpectrumBlasterAllDMG",
     hasStacks: true,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/SpectrumBlaster.png",
     modifiers: [
       {
         modifier: "AllElementAttributeBonus",
@@ -2289,6 +2312,7 @@ export const allWeaponTeamBuffs = [
     name: "Starfield Calibrator",
     key: "StarfieldCalibratorCritDMG",
     hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/StarfieldCalibrator.png",
     modifiers: [
       {
         modifier: "CritDMG",

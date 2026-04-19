@@ -5,7 +5,8 @@
     :data-test-party-buff="uniqueKey">
     <div class="">
       <div class="character__buff">
-        <h2 class="text-lg" :data-test-party-buff-title="uniqueKey">
+        <h2 class="text-lg flex items-center gap-2" :data-test-party-buff-title="uniqueKey">
+          <img v-if="buffImageUrl" :src="buffImageUrl" :alt="name" class="w-6 h-6 object-contain rounded-full" />
           {{ name }}
         </h2>
         <div v-html="details"></div>
@@ -112,6 +113,7 @@ const props = withDefaults(
     hasRefinements?: boolean;
     inputBase?: boolean;
     modifierBasedOn?: string | null;
+    buffImageUrl?: string;
   }>(),
   {
     alwaysEnabled: false,
@@ -123,6 +125,7 @@ const props = withDefaults(
     hasRefinements: false,
     inputBase: false,
     modifierBasedOn: null,
+    buffImageUrl: "",
   },
 );
 

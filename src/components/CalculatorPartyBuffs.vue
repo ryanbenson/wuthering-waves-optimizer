@@ -117,6 +117,7 @@
           :min-stacks="buff.minStacks"
           :max-stacks="buff.maxStacks"
           :modifiers="buff.modifiers"
+          :buff-image-url="buff.imageUrl"
           @updated-party-buff="handleUpdatedPartyBuffEcho"
           :talent-data="talentData"
           class="character__buff character__buffs__echoes"></CalculatorPartyBuff>
@@ -141,6 +142,7 @@
           :min-stacks="buff.minStacks"
           :max-stacks="buff.maxStacks"
           :modifiers="buff.modifiers"
+          :buff-image-url="buff.imageUrl"
           @updated-party-buff="handleUpdatedPartyBuffEcho"
           :talent-data="talentData"
           :has-refinements="true"
