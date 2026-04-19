@@ -2,6 +2,12 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>April 19, 2026</h3>
+    <ul>
+      <li>Adds icons to party buffs.</li>
+      <li>Organized party echo buffs so echoes and sets are together</li>
+      <li>Added empty state for party buffs when there are no buffs.</li>
+    </ul>
     <h3>April 15, 2026</h3>
     <ul>
       <li>Fixed Windcleaver DMG echo damage.</li>
