@@ -7,7 +7,7 @@
       <div class="character__buff">
         <h2 class="text-lg flex items-center gap-2" :data-test-party-buff-title="uniqueKey">
           <img v-if="buffImageUrl" :src="buffImageUrl" :alt="name" class="w-6 h-6 object-contain rounded-full" />
-          {{ name }}
+          {{ displayBuffName }}
         </h2>
         <div v-html="details"></div>
         <div class="flex gap-2 items-center">
@@ -63,7 +63,7 @@
 
           <div v-if="inputBase" class="form-control" @click.stop>
             <label class="label cursor-pointer inline-flex justify-start">
-              <span class="label-text mr-2">{{ modifierBasedOn }}</span>
+              <span class="label-text mr-2">{{ displayModifierBasedOn }}</span>
               <input
                 type="number"
                 id="baseAttrValue"
@@ -82,6 +82,7 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
+import { getCharacterRosterDisplayName } from "../characters/characters";
 import { useCharacterStore } from "../stores/character";
 
 export type PartyBuffModifier = {
@@ -136,6 +137,17 @@ const emit = defineEmits<{
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 const { setCharacterData } = characterStore;
+
+const displayBuffName = computed(() =>
+  getCharacterRosterDisplayName(props.name ?? ""),
+);
+
+const displayModifierBasedOn = computed(() => {
+  if (props.modifierBasedOn == null) {
+    return "";
+  }
+  return getCharacterRosterDisplayName(props.modifierBasedOn);
+});
 
 const currentCharacter = computed(
   () => characters.value[props.character] ?? ({} as Record<string, unknown>),

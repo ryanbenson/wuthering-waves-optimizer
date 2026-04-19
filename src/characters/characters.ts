@@ -5,64 +5,68 @@ interface CharacterListItem {
   key: string;
   name: string;
 }
+
+/** Single roster source for character `<select>`s and the character browser. */
+export const characterPickerRoster: CharacterList = {
+  five: [
+    { key: "Aemeath", name: "Aemeath" },
+    { key: "Augusta", name: "Augusta" },
+    { key: "Brant", name: "Brant" },
+    { key: "Calcharo", name: "Calcharo" },
+    { key: "Camellya", name: "Camellya" },
+    { key: "Cantarella", name: "Cantarella" },
+    { key: "Carlotta", name: "Carlotta" },
+    { key: "Cartethyia", name: "Cartethyia" },
+    { key: "Changli", name: "Changli" },
+    { key: "Chisa", name: "Chisa" },
+    { key: "Ciaccona", name: "Ciaccona" },
+    { key: "Encore", name: "Encore" },
+    { key: "Galbrena", name: "Galbrena" },
+    { key: "Iuno", name: "Iuno" },
+    { key: "Jianxin", name: "Jianxin" },
+    { key: "Jinhsi", name: "Jinhsi" },
+    { key: "Jiyan", name: "Jiyan" },
+    { key: "Lingyang", name: "Lingyang" },
+    { key: "Lupa", name: "Lupa" },
+    { key: "LuukHerssen", name: "Luuk Herssen" },
+    { key: "Lynae", name: "Lynae" },
+    { key: "Mornye", name: "Mornye" },
+    { key: "Phoebe", name: "Phoebe" },
+    { key: "Phrolova", name: "Phrolova" },
+    { key: "Qiuyuan", name: "Qiuyuan" },
+    { key: "Roccia", name: "Roccia" },
+    { key: "RoverAeroFemale", name: "Rover Aero (Female)" },
+    { key: "RoverAeroMale", name: "Rover Aero (Male)" },
+    { key: "RoverHavocFemale", name: "Rover Havoc (Female)" },
+    { key: "RoverHavocMale", name: "Rover Havoc (Male)" },
+    { key: "RoverSpectroFemale", name: "Rover Spectro (Female)" },
+    { key: "RoverSpectroMale", name: "Rover Spectro (Male)" },
+    { key: "Shorekeeper", name: "Shorekeeper" },
+    { key: "Sigrika", name: "Sigrika" },
+    { key: "Verina", name: "Verina" },
+    { key: "XiangliYao", name: "Xiangli Yao" },
+    { key: "Yinlin", name: "Yinlin" },
+    { key: "Zani", name: "Zani" },
+    { key: "Zhezhi", name: "Zhezhi" },
+  ],
+  four: [
+    { key: "Aalto", name: "Aalto" },
+    { key: "Baizhi", name: "Baizhi" },
+    { key: "Buling", name: "Buling" },
+    { key: "Chixia", name: "Chixia" },
+    { key: "Danjin", name: "Danjin" },
+    { key: "Lumi", name: "Lumi" },
+    { key: "Mortefi", name: "Mortefi" },
+    { key: "Sanhua", name: "Sanhua" },
+    { key: "Taoqi", name: "Taoqi" },
+    { key: "Yangyang", name: "Yangyang" },
+    { key: "Youhu", name: "Youhu" },
+    { key: "Yuanwu", name: "Yuanwu" },
+  ],
+};
+
 export function getCharactersAvailable(): CharacterList {
-  return {
-    five: [
-      { key: "Aemeath", name: "Aemeath" },
-      { key: "Augusta", name: "Augusta" },
-      { key: "Brant", name: "Brant" },
-      { key: "Calcharo", name: "Calcharo" },
-      { key: "Camellya", name: "Camellya" },
-      { key: "Cantarella", name: "Cantarella" },
-      { key: "Carlotta", name: "Carlotta" },
-      { key: "Cartethyia", name: "Cartethyia" },
-      { key: "Changli", name: "Changli" },
-      { key: "Chisa", name: "Chisa" },
-      { key: "Ciaccona", name: "Ciaccona" },
-      { key: "Encore", name: "Encore" },
-      { key: "Galbrena", name: "Galbrena" },
-      { key: "Iuno", name: "Iuno" },
-      { key: "Jianxin", name: "Jianxin" },
-      { key: "Jinhsi", name: "Jinhsi" },
-      { key: "Jiyan", name: "Jiyan" },
-      { key: "Lingyang", name: "Lingyang" },
-      { key: "Lupa", name: "Lupa" },
-      { key: "LuukHerssen", name: "Luuk Herssen" },
-      { key: "Lynae", name: "Lynae" },
-      { key: "Mornye", name: "Mornye" },
-      { key: "Phoebe", name: "Phoebe" },
-      { key: "Phrolova", name: "Phrolova" },
-      { key: "Qiuyuan", name: "Qiuyuan" },
-      { key: "Roccia", name: "Roccia" },
-      { key: "RoverAeroFemale", name: "Rover Aero (Female)" },
-      { key: "RoverAeroMale", name: "Rover Aero (Male)" },
-      { key: "RoverHavocFemale", name: "Rover Havoc (Female)" },
-      { key: "RoverHavocMale", name: "Rover Havoc (Male)" },
-      { key: "RoverSpectroFemale", name: "Rover Spectro (Female)" },
-      { key: "RoverSpectroMale", name: "Rover Spectro (Male)" },
-      { key: "Shorekeeper", name: "Shorekeeper" },
-      { key: "Sigrika", name: "Sigrika" },
-      { key: "Verina", name: "Verina" },
-      { key: "XiangliYao", name: "Xiangli Yao" },
-      { key: "Yinlin", name: "Yinlin" },
-      { key: "Zani", name: "Zani" },
-      { key: "Zhezhi", name: "Zhezhi" },
-    ],
-    four: [
-      { key: "Aalto", name: "Aalto" },
-      { key: "Baizhi", name: "Baizhi" },
-      { key: "Buling", name: "Buling" },
-      { key: "Chixia", name: "Chixia" },
-      { key: "Danjin", name: "Danjin" },
-      { key: "Lumi", name: "Lumi" },
-      { key: "Mortefi", name: "Mortefi" },
-      { key: "Sanhua", name: "Sanhua" },
-      { key: "Taoqi", name: "Taoqi" },
-      { key: "Yangyang", name: "Yangyang" },
-      { key: "Youhu", name: "Youhu" },
-      { key: "Yuanwu", name: "Yuanwu" },
-    ],
-  };
+  return characterPickerRoster;
 }
 
 export const allCharactersList = [
@@ -421,6 +425,22 @@ export const allCharactersList = [
   },
 ];
 
+/** Display label: prefers picker roster names, then `allCharactersList`, then the key. */
+export function getCharacterRosterDisplayName(characterKey: string): string {
+  const rosterEntry = [
+    ...characterPickerRoster.five,
+    ...characterPickerRoster.four,
+  ].find((c) => c.key === characterKey);
+  if (rosterEntry) {
+    return rosterEntry.name;
+  }
+  const meta = allCharactersList.find((c) => c.key === characterKey);
+  if (meta) {
+    return meta.name;
+  }
+  return characterKey;
+}
+
 export const characterElementsSetImageMap: Record<string, string> = {
   Glacio:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/FreezingFrost.webp",
@@ -447,59 +467,6 @@ export const weaponTypesImageMap: Record<string, string> = {
   Rectifier:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/rectifier.webp",
 };
-
-export const allCharacters: string[] = [
-  "Aalto",
-  "Aemeath",
-  "Augusta",
-  "Baizhi",
-  "Brant",
-  "Buling",
-  "Calcharo",
-  "Camellya",
-  "Cantarella",
-  "Carlotta",
-  "Cartethyia",
-  "Changli",
-  "Chisa",
-  "Chixia",
-  "Ciaccona",
-  "Danjin",
-  "Encore",
-  "Galbrena",
-  "Iuno",
-  "Jianxin",
-  "Jinhsi",
-  "Jiyan",
-  "Lingyang",
-  "Lupa",
-  "Lumi",
-  "LuukHerssen",
-  "Lynae",
-  "Mortefi",
-  "Mornye",
-  "Phoebe",
-  "Phrolova",
-  "Qiuyuan",
-  "Roccia",
-  "RoverAeroFemale",
-  "RoverAeroMale",
-  "RoverHavocFemale",
-  "RoverHavocMale",
-  "Rover-Spectro",
-  "Sanhua",
-  "Shorekeeper",
-  "Sigrika",
-  "Taoqi",
-  "Verina",
-  "XiangliYao",
-  "Yangyang",
-  "Yinlin",
-  "Youhu",
-  "Yuanwu",
-  "Zani",
-  "Zhezhi",
-];
 
 async function loadModule(charName: string) {
   try {

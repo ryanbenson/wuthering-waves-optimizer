@@ -1,5 +1,5 @@
 <template>
-  <dialog id="modal-character-browser" class="modal">
+  <dialog ref="modalElementRef" class="modal">
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
@@ -144,18 +144,14 @@ const charactersList = computed((): ListedCharacter[] => {
   return characterList;
 });
 
+const modalElementRef = ref<HTMLDialogElement | null>(null);
+
 function triggerOpenModal() {
-  const modalEl = document.getElementById(
-    "modal-character-browser",
-  ) as HTMLDialogElement | null;
-  modalEl?.showModal();
+  modalElementRef.value?.showModal();
 }
 
 function triggerCloseModal() {
-  const modalEl = document.getElementById(
-    "modal-character-browser",
-  ) as HTMLDialogElement | null;
-  modalEl?.close();
+  modalElementRef.value?.close();
 }
 
 function reset() {

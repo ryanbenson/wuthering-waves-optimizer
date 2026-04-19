@@ -7,6 +7,8 @@
       <li>Adds icons to party buffs.</li>
       <li>Organized party echo buffs so echoes and sets are together</li>
       <li>Added empty state for party buffs when there are no buffs.</li>
+      <li>Added visual way to choose teammates in team/party settings.</li>
+      <li>Fixed character name labels in party buffs to show their friendly name instead of the key.</li>
     </ul>
     <h3>April 15, 2026</h3>
     <ul>
