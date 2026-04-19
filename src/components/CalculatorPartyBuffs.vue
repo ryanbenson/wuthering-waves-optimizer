@@ -2,42 +2,140 @@
   <div>
     <div class="teammate_selects flex justify-center">
       <div class="teammate__select">
-        <div
-          class="character__selection__avatar"
-          :style="{
-            backgroundImage: `url(${getCharacterImage(selectedCharacter1)})`,
-          }"></div>
-        <select
-          v-model="selectedCharacter1"
-          class="select select-bordered select-sm"
-          data-test-party-member-1-input>
-          <option
-            v-for="character in availableCharacters"
-            :key="character"
-            :value="character">
-            {{ character }}
-          </option>
-        </select>
-        <div class="btn btn-xs btn-primary" @click="clearCharacter1">Clear</div>
+        <div class="character__selection party-member__selection">
+          <div class="character__selection__left flex flex-col gap-2">
+            <div
+              class="character__selection__avatar cursor-pointer"
+              :class="{
+                'border-amber-300': partyMember1Rarity === 5,
+                'border-violet-600': partyMember1Rarity === 4,
+              }"
+              :style="{
+                backgroundImage: `url(${getCharacterImage(selectedCharacter1)})`,
+              }"
+              data-test-party-member-1-avatar
+              @click="openPartyMember1Browser"></div>
+            <button
+              type="button"
+              class="btn btn-sm btn--character--find"
+              @click="openPartyMember1Browser">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                class="size-4">
+                <path
+                  d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+                  fill="#FFFFFF" />
+              </svg>
+              Find
+            </button>
+          </div>
+          <div class="character__selection__form">
+            <select
+              v-model="selectedCharacter1"
+              class="select select-bordered select-sm w-full max-w-xs"
+              data-test-party-member-1-input>
+              <option :value="null">None</option>
+              <optgroup label="5 Star">
+                <option
+                  v-for="char in charactersList.five"
+                  :key="char.key"
+                  :value="char.key">
+                  {{ char.name }}
+                </option>
+              </optgroup>
+              <optgroup label="4 Star">
+                <option
+                  v-for="char in charactersList.four"
+                  :key="char.key"
+                  :value="char.key">
+                  {{ char.name }}
+                </option>
+              </optgroup>
+              <optgroup v-if="partyMember1NotOnRoster" label="Other">
+                <option
+                  :value="partyMember1NotOnRoster.key">
+                  {{ partyMember1NotOnRoster.name }}
+                </option>
+              </optgroup>
+            </select>
+            <div class="btn btn-xs btn-primary mt-2" @click="clearCharacter1">
+              Clear
+            </div>
+          </div>
+        </div>
+        <CalculatorCharacterBrowser
+          :character="character"
+          ref="partyMemberBrowser1Ref"
+          @character-browser:chosen-character="handlePartyMember1Chosen" />
       </div>
       <div class="teammate__select">
-        <div
-          class="character__selection__avatar"
-          :style="{
-            backgroundImage: `url(${getCharacterImage(selectedCharacter2)})`,
-          }"></div>
-        <select
-          v-model="selectedCharacter2"
-          class="select select-bordered select-sm"
-          data-test-party-member-2-input>
-          <option
-            v-for="character in availableCharacters"
-            :key="character"
-            :value="character">
-            {{ character }}
-          </option>
-        </select>
-        <div class="btn btn-xs btn-primary" @click="clearCharacter2">Clear</div>
+        <div class="character__selection party-member__selection">
+          <div class="character__selection__left flex flex-col gap-2">
+            <div
+              class="character__selection__avatar cursor-pointer"
+              :class="{
+                'border-amber-300': partyMember2Rarity === 5,
+                'border-violet-600': partyMember2Rarity === 4,
+              }"
+              :style="{
+                backgroundImage: `url(${getCharacterImage(selectedCharacter2)})`,
+              }"
+              data-test-party-member-2-avatar
+              @click="openPartyMember2Browser"></div>
+            <button
+              type="button"
+              class="btn btn-sm btn--character--find"
+              @click="openPartyMember2Browser">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 512 512"
+                class="size-4">
+                <path
+                  d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+                  fill="#FFFFFF" />
+              </svg>
+              Find
+            </button>
+          </div>
+          <div class="character__selection__form">
+            <select
+              v-model="selectedCharacter2"
+              class="select select-bordered select-sm w-full max-w-xs"
+              data-test-party-member-2-input>
+              <option :value="null">None</option>
+              <optgroup label="5 Star">
+                <option
+                  v-for="char in charactersList.five"
+                  :key="char.key"
+                  :value="char.key">
+                  {{ char.name }}
+                </option>
+              </optgroup>
+              <optgroup label="4 Star">
+                <option
+                  v-for="char in charactersList.four"
+                  :key="char.key"
+                  :value="char.key">
+                  {{ char.name }}
+                </option>
+              </optgroup>
+              <optgroup v-if="partyMember2NotOnRoster" label="Other">
+                <option
+                  :value="partyMember2NotOnRoster.key">
+                  {{ partyMember2NotOnRoster.name }}
+                </option>
+              </optgroup>
+            </select>
+            <div class="btn btn-xs btn-primary mt-2" @click="clearCharacter2">
+              Clear
+            </div>
+          </div>
+        </div>
+        <CalculatorCharacterBrowser
+          :character="character"
+          ref="partyMemberBrowser2Ref"
+          @character-browser:chosen-character="handlePartyMember2Chosen" />
       </div>
     </div>
 
@@ -47,11 +145,11 @@
       data-test-party-buff-char-1-collapse-bar>
       <input type="checkbox" />
       <h3 class="collapse-title text-xl" data-test-party-member-1-name>
-        Buffs for {{ selectedCharacter1 }}
+        Buffs for {{ partyMember1DisplayName }}
       </h3>
       <div class="collapse-content">
         <template v-if="!buffsByCharacterIndex[selectedCharacter1]">
-          <p>No buffs found for {{ selectedCharacter1 }}</p>
+          <p>No buffs found for {{ partyMember1DisplayName }}</p>
         </template>
         <template v-else>
           <CalculatorPartyBuff
@@ -81,11 +179,11 @@
       data-test-party-buff-char-2-collapse-bar>
       <input type="checkbox" />
       <h3 class="collapse-title text-xl" data-test-party-member-2-name>
-        Buffs for {{ selectedCharacter2 }}
+        Buffs for {{ partyMember2DisplayName }}
       </h3>
       <div class="collapse-content">
         <template v-if="!buffsByCharacterIndex[selectedCharacter2]">
-          <p>No buffs found for {{ selectedCharacter2 }}</p>
+          <p>No buffs found for {{ partyMember2DisplayName }}</p>
         </template>
         <template v-else>
           <CalculatorPartyBuff
@@ -170,7 +268,13 @@ import {
   allEchoBuffs,
   allWeaponTeamBuffs,
 } from "../buffs/index.ts";
-import { allCharacters } from "../characters/characters.ts";
+import {
+  allCharactersList,
+  characterPickerRoster,
+  getCharacterRosterDisplayName,
+  getCharactersAvailable,
+} from "../characters/characters.ts";
+import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
 import { useCharacterStore } from "../stores/character";
 import type { PartyBuffModifier } from "./CalculatorPartyBuff.vue";
@@ -233,7 +337,87 @@ const selectedCharacter2 = computed({
   },
 });
 
-const availableCharacters = allCharacters;
+const partyMemberBrowser1Ref = ref<{
+  triggerOpenModal: () => void;
+  triggerCloseModal: () => void;
+} | null>(null);
+
+const partyMemberBrowser2Ref = ref<{
+  triggerOpenModal: () => void;
+  triggerCloseModal: () => void;
+} | null>(null);
+
+type CharacterPickerList = ReturnType<typeof getCharactersAvailable>;
+
+const charactersList = ref<CharacterPickerList>({ five: [], four: [] });
+
+const rosterKeySet = computed(
+  () =>
+    new Set([
+      ...characterPickerRoster.five.map((c) => c.key),
+      ...characterPickerRoster.four.map((c) => c.key),
+    ]),
+);
+
+const partyMember1NotOnRoster = computed(() => {
+  const k = selectedCharacter1.value;
+  if (!k || rosterKeySet.value.has(k)) {
+    return null;
+  }
+  return { key: k, name: getCharacterRosterDisplayName(k) };
+});
+
+const partyMember2NotOnRoster = computed(() => {
+  const k = selectedCharacter2.value;
+  if (!k || rosterKeySet.value.has(k)) {
+    return null;
+  }
+  return { key: k, name: getCharacterRosterDisplayName(k) };
+});
+
+const partyMember1DisplayName = computed(() =>
+  selectedCharacter1.value
+    ? getCharacterRosterDisplayName(selectedCharacter1.value)
+    : "",
+);
+
+const partyMember2DisplayName = computed(() =>
+  selectedCharacter2.value
+    ? getCharacterRosterDisplayName(selectedCharacter2.value)
+    : "",
+);
+
+const partyMember1Rarity = computed(() => {
+  const key = selectedCharacter1.value;
+  if (!key) {
+    return null;
+  }
+  return allCharactersList.find((c) => c.key === key)?.rarity ?? null;
+});
+
+const partyMember2Rarity = computed(() => {
+  const key = selectedCharacter2.value;
+  if (!key) {
+    return null;
+  }
+  return allCharactersList.find((c) => c.key === key)?.rarity ?? null;
+});
+
+function openPartyMember1Browser() {
+  partyMemberBrowser1Ref.value?.triggerOpenModal();
+}
+
+function openPartyMember2Browser() {
+  partyMemberBrowser2Ref.value?.triggerOpenModal();
+}
+
+function handlePartyMember1Chosen(nextCharacter: string) {
+  selectedCharacter1.value = nextCharacter;
+}
+
+function handlePartyMember2Chosen(nextCharacter: string) {
+  selectedCharacter2.value = nextCharacter;
+}
 
 const buffsFormatted = computed(() => {
   const finalBuffData: Record<string, unknown> = {};
@@ -345,6 +529,7 @@ function clearCharacter2() {
 }
 
 onMounted(() => {
+  charactersList.value = getCharactersAvailable();
   updatedStats();
 });
 
@@ -385,6 +570,17 @@ onBeforeUnmount(() => {
     display: none;
   }
 }
+.party-member__selection.character__selection {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: center;
+  grid-gap: 2rem;
+  width: 100%;
+  max-width: 28rem;
+}
+.character__selection__form {
+  min-width: 0;
+}
 .character__selection__avatar {
   width: 100px;
   height: 100px;
@@ -392,11 +588,18 @@ onBeforeUnmount(() => {
   display: block;
   background-size: contain;
   border-radius: 100%;
-  border: 1px solid white;
+  border-width: 1px;
+  border-style: solid;
+  border-color: white;
 }
 html[data-theme="light"] {
   .character__selection__avatar {
     border-color: oklch(var(--bc));
+  }
+  .btn--character--find {
+    svg {
+      filter: invert(100%);
+    }
   }
 }
 </style>

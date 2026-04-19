@@ -3,7 +3,7 @@
     class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
     @click="toggleEnabled">
     <div class="card-body">
-      <h2 class="card-title">{{ name }}</h2>
+      <h2 class="card-title">{{ displayBuffName }}</h2>
       <div v-html="details"></div>
       <div class="flex gap-2 items-center">
         <div class="form-control" @click.stop>
@@ -55,6 +55,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
+import { getCharacterRosterDisplayName } from "../characters/characters";
 import { useCharacterStore } from "../stores/character";
 
 interface StoreCharBuffEntry {
@@ -105,6 +106,10 @@ const emit = defineEmits<{
 
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
+
+const displayBuffName = computed(() =>
+  getCharacterRosterDisplayName(props.name ?? ""),
+);
 
 const currentCharacter = computed((): StoreCharacterSlice => {
   const raw = characters.value[props.character];
