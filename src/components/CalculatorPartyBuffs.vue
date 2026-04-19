@@ -50,23 +50,28 @@
         Buffs for {{ selectedCharacter1 }}
       </h3>
       <div class="collapse-content">
-        <CalculatorPartyBuff
-          v-for="buff in buffsByCharacterIndex[selectedCharacter1] ?? []"
-          :key="buff.key"
-          :character="character"
-          :unique-key="buff.key"
-          :name="buff.name"
-          :details="buff.details"
-          :always-enabled="buff.alwaysEnabled"
-          :has-stacks="buff.hasStacks"
-          :min-stacks="buff.minStacks"
-          :max-stacks="buff.maxStacks"
-          :modifiers="buff.modifiers"
-          :input-base="buff.inputBase"
-          :modifier-based-on="buff.modifierBasedOn"
-          @updated-party-buff="handleUpdatedPartyBuff1"
-          :talent-data="talentData"
-          class="character__buff character__buffs__one"></CalculatorPartyBuff>
+        <template v-if="!buffsByCharacterIndex[selectedCharacter1]">
+          <p>No buffs found for {{ selectedCharacter1 }}</p>
+        </template>
+        <template v-else>
+          <CalculatorPartyBuff
+            v-for="buff in buffsByCharacterIndex[selectedCharacter1] ?? []"
+            :key="buff.key"
+            :character="character"
+            :unique-key="buff.key"
+            :name="buff.name"
+            :details="buff.details"
+            :always-enabled="buff.alwaysEnabled"
+            :has-stacks="buff.hasStacks"
+            :min-stacks="buff.minStacks"
+            :max-stacks="buff.maxStacks"
+            :modifiers="buff.modifiers"
+            :input-base="buff.inputBase"
+            :modifier-based-on="buff.modifierBasedOn"
+            @updated-party-buff="handleUpdatedPartyBuff1"
+            :talent-data="talentData"
+            class="character__buff character__buffs__one"></CalculatorPartyBuff>
+        </template>
       </div>
     </div>
 
@@ -79,23 +84,28 @@
         Buffs for {{ selectedCharacter2 }}
       </h3>
       <div class="collapse-content">
-        <CalculatorPartyBuff
-          v-for="buff in buffsByCharacterIndex[selectedCharacter2] ?? []"
-          :key="buff.key"
-          :character="character"
-          :unique-key="buff.key"
-          :name="buff.name"
-          :details="buff.details"
-          :always-enabled="buff.alwaysEnabled"
-          :has-stacks="buff.hasStacks"
-          :min-stacks="buff.minStacks"
-          :max-stacks="buff.maxStacks"
-          :modifiers="buff.modifiers"
-          :input-base="buff.inputBase"
-          :modifier-based-on="buff.modifierBasedOn"
-          @updated-party-buff="handleUpdatedPartyBuff2"
-          :talent-data="talentData"
-          class="character__buff character__buffs__two"></CalculatorPartyBuff>
+        <template v-if="!buffsByCharacterIndex[selectedCharacter2]">
+          <p>No buffs found for {{ selectedCharacter2 }}</p>
+        </template>
+        <template v-else>
+          <CalculatorPartyBuff
+            v-for="buff in buffsByCharacterIndex[selectedCharacter2] ?? []"
+            :key="buff.key"
+            :character="character"
+            :unique-key="buff.key"
+            :name="buff.name"
+            :details="buff.details"
+            :always-enabled="buff.alwaysEnabled"
+            :has-stacks="buff.hasStacks"
+            :min-stacks="buff.minStacks"
+            :max-stacks="buff.maxStacks"
+            :modifiers="buff.modifiers"
+            :input-base="buff.inputBase"
+            :modifier-based-on="buff.modifierBasedOn"
+            @updated-party-buff="handleUpdatedPartyBuff2"
+            :talent-data="talentData"
+            class="character__buff character__buffs__two"></CalculatorPartyBuff>
+        </template>
       </div>
     </div>
 
