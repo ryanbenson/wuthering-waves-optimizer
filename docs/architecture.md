@@ -2,10 +2,11 @@
 
 High-level technical choices and conventions for the app. Follow these when adding or changing code.
 
-## Vue 3 and Options API
+## Vue 3 and Composition API
 
 - **Vue 3** is used throughout.
-- **Prefer the Options API** over the Composition API. New components and logic should use `defineComponent` with `data`, `computed`, `methods`, and optionally `setup()` only where needed (e.g. for `watch` or store refs). The main Calculator and many components use a hybrid: Options-style structure with a `setup()` that returns state and handlers.
+- **Prefer the Composition API** over the Options API.
+- **Prefer to use TypeScript** and types.
 
 ## TypeScript and types
 
