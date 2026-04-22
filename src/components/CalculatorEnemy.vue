@@ -8,6 +8,51 @@
     </div>
   </div>
 
+  <div
+    v-if="selectedEnemyEntry"
+    class="card card-bordered shadow mb-8 overflow-hidden"
+    data-test-enemy-preset-card>
+    <div class="card-body flex flex-row gap-4 p-4 items-center">
+      <figure class="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-base-300">
+        <img
+          :src="selectedEnemyEntry.imageUrl"
+          :alt="selectedEnemyEntry.name"
+          class="w-full h-full object-cover" />
+      </figure>
+      <div class="min-w-0 flex-1">
+        <h3 class="font-bold text-lg text-primary truncate">
+          {{ selectedEnemyEntry.name }}
+        </h3>
+        <p class="text-sm opacity-80">
+          Type: {{ mapEnemyTypeToBrowserCategory(selectedEnemyEntry.type) }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap gap-2 mb-8">
+    <button
+      type="button"
+      class="btn btn-sm btn-primary"
+      data-test-enemy-browse-open
+      @click="openEnemyBrowser">
+      Browse enemies
+    </button>
+    <button
+      v-if="selectedEnemyKey"
+      type="button"
+      class="btn btn-sm btn-ghost"
+      data-test-enemy-browse-clear
+      @click="clearEnemyPreset">
+      Clear enemy preset
+    </button>
+  </div>
+
+  <CalculatorEnemyBrowser
+    ref="enemyBrowserRef"
+    :character-element="characterElement"
+    @enemy-browser:chosen-enemy="onEnemyChosenFromBrowser" />
+
   <div class="data-input--talents mt-8" data-test-enemy-level>
     <div class="flex flex-col pb-7 relative">
       <label for="enemyLevel" class="talent__label" data-test-enemy-level-label>
@@ -277,13 +322,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watchEffect } from "vue";
+import { computed, ref, watch, watchEffect } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";
+import enemiesCatalog, {
+  getEnemyResistFractionForElement,
+  mapEnemyTypeToBrowserCategory,
+  type Enemy,
+} from "../enemies/index";
+import CalculatorEnemyBrowser from "./CalculatorEnemyBrowser.vue";
 
 const props = withDefaults(
   defineProps<{
     character: string;
+    characterElement?: string;
     isSpectroFrazzleEnabled?: boolean;
     isAeroErosionEnabled?: boolean;
     isHavocBaneEnabled?: boolean;
@@ -291,6 +343,7 @@ const props = withDefaults(
     isElectroFlareEnabled?: boolean;
   }>(),
   {
+    characterElement: "",
     isSpectroFrazzleEnabled: false,
     isAeroErosionEnabled: false,
     isHavocBaneEnabled: false,
@@ -308,6 +361,59 @@ const settingsStore = useSettingsStore();
 
 const currentCharacter = computed(
   () => characterStore.characters?.[props.character] ?? {},
+);
+
+const enemyBrowserRef = ref<{
+  triggerOpenModal: () => void;
+  triggerCloseModal: () => void;
+} | null>(null);
+
+const selectedEnemyKey = computed(() => {
+  const raw = (currentCharacter.value as { enemyBrowserKey?: string | null })
+    .enemyBrowserKey;
+  return raw && typeof raw === "string" ? raw : "";
+});
+
+const selectedEnemyEntry = computed((): Enemy | null => {
+  const k = selectedEnemyKey.value;
+  if (!k) return null;
+  return enemiesCatalog[k] ?? null;
+});
+
+function openEnemyBrowser() {
+  enemyBrowserRef.value?.triggerOpenModal();
+}
+
+function clearEnemyPreset() {
+  void characterStore.setCharacterData(props.character, {
+    enemyBrowserKey: null,
+  });
+}
+
+function onEnemyChosenFromBrowser(key: string) {
+  const entry = enemiesCatalog[key];
+  if (!entry) return;
+  const resist = props.characterElement
+    ? getEnemyResistFractionForElement(entry.resist, props.characterElement)
+    : 0.1;
+  void characterStore.setCharacterData(props.character, {
+    enemyBrowserKey: key,
+    enemyType: mapEnemyTypeToBrowserCategory(entry.type),
+    enemyResist: resist,
+  });
+}
+
+watch(
+  () => props.characterElement,
+  (element) => {
+    const key = selectedEnemyKey.value;
+    if (!key || !element) return;
+    const entry = enemiesCatalog[key];
+    if (!entry) return;
+    void characterStore.setCharacterData(props.character, {
+      enemyResist: getEnemyResistFractionForElement(entry.resist, element),
+    });
+  },
 );
 
 const settingsTheme = computed(

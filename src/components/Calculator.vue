@@ -126,6 +126,7 @@
         <CalculatorEnemy
           :key="character"
           :character="character"
+          :character-element="characterElement"
           @updated-enemy-data="handleUpdatedEnemy"
           :is-spectro-frazzle-enabled="isSpectroFrazzleEnabled"
           :is-aero-erosion-enabled="isAeroErosionEnabled"
