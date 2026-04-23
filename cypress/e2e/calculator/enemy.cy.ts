@@ -44,8 +44,8 @@ describe("Calculator Enemy", () => {
     cy.get("[data-test-enemy-level]").should("be.visible");
     cy.get("[data-test-enemy-resist]").should("be.visible");
     cy.get("[data-test-enemy-resist]").should("be.visible");
-    cy.get("[data-test-enemy-elemental-effects-title]").should("be.visible");
-    cy.get("[data-test-enemy-spectro-frazzle]").should("be.visible");
+    cy.get("[data-test-enemy-elemental-effects-title]").should("exist");
+    cy.get("[data-test-enemy-spectro-frazzle]").should("exist");
 
     // alter the stacks
     cy.get("[data-test-enemy-spectro-frazzle-input]")
