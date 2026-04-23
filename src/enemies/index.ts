@@ -72,20 +72,6 @@ const enemies: Record<string, Enemy> = {
       Spectro: 40,
     },
   },
-  phantomDreamless: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000090.webp",
-    name: "Phantom: Dreamless",
-    type: "Calamity",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 10,
-      Glacio: 10,
-      Havoc: 40,
-      Physical: 10,
-      Spectro: 10,
-    },
-  },
   hecate: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/340000100.webp",
     name: "Hecate",
@@ -184,13 +170,6 @@ const enemies: Record<string, Enemy> = {
       Spectro: 10,
     },
   },
-  phantomSigillum: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000360.webp",
-    name: "Phantom: Sigillum",
-    type: "Calamity",
-    resist: {
-    },
-  },
   sigillum: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/340000250.webp",
     name: "Sigillum",
@@ -233,34 +212,34 @@ const enemies: Record<string, Enemy> = {
       Spectro: 10,
     },
   },
-  stayTuned: {
-    imageUrl: "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34027_UI.webp",
-    name: "Stay tuned",
-    type: "Calamity",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 40,
-      Glacio: 10,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 10,
-    },
-  },
-  stayTuned2: {
-    imageUrl: "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34028_UI.webp",
-    name: "Stay tuned",
-    type: "Calamity",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 40,
-      Glacio: 10,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 10,
-    },
-  },
+  // stayTuned: {
+  //   imageUrl: "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34027_UI.webp",
+  //   name: "Stay tuned",
+  //   type: "Calamity",
+  //   resist: {
+  //     Aero: 10,
+  //     Electro: 10,
+  //     Fusion: 40,
+  //     Glacio: 10,
+  //     Havoc: 10,
+  //     Physical: 10,
+  //     Spectro: 10,
+  //   },
+  // },
+  // stayTuned2: {
+  //   imageUrl: "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34028_UI.webp",
+  //   name: "Stay tuned",
+  //   type: "Calamity",
+  //   resist: {
+  //     Aero: 10,
+  //     Electro: 10,
+  //     Fusion: 40,
+  //     Glacio: 10,
+  //     Havoc: 10,
+  //     Physical: 10,
+  //     Spectro: 10,
+  //   },
+  // },
   tempestMephis: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/330000010.webp",
     name: "Tempest Mephis",
@@ -387,41 +366,6 @@ const enemies: Record<string, Enemy> = {
       Spectro: 10,
     },
   },
-  phantomMourningAix: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000010.webp",
-    name: "Phantom: Mourning Aix",
-    type: "Overlord",
-    resist: {
-    },
-  },
-  phantomThunderingMephis: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000040.webp",
-    name: "Phantom: Thundering Mephis",
-    type: "Overlord",
-    resist: {
-    },
-  },
-  phantomFeilianBeringal: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000050.webp",
-    name: "Phantom: Feilian Beringal",
-    type: "Overlord",
-    resist: {
-    },
-  },
-  phantomImpermanenceHeron: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000060.webp",
-    name: "Phantom: Impermanence Heron",
-    type: "Overlord",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 10,
-      Glacio: 10,
-      Havoc: 40,
-      Physical: 10,
-      Spectro: 10,
-    },
-  },
   fallacyOfNoReturn: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/330000070.webp",
     name: "Fallacy of No Return",
@@ -434,20 +378,6 @@ const enemies: Record<string, Enemy> = {
       Havoc: 10,
       Physical: 10,
       Spectro: 40,
-    },
-  },
-  phantomInfernoRider: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000120.webp",
-    name: "Phantom: Inferno Rider",
-    type: "Overlord",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 40,
-      Glacio: 10,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 10,
     },
   },
   scarLightbaneReversal: {
@@ -506,41 +436,6 @@ const enemies: Record<string, Enemy> = {
       Spectro: 10,
     },
   },
-  phantomSentryConstruct: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000160.webp",
-    name: "Phantom: Sentry Construct",
-    type: "Overlord",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 40,
-      Glacio: 10,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 10,
-    },
-  },
-  phantomLorelei: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000170.webp",
-    name: "Phantom: Lorelei",
-    type: "Overlord",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 10,
-      Glacio: 10,
-      Havoc: 40,
-      Physical: 10,
-      Spectro: 10,
-    },
-  },
-  phantomCrownless: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000200.webp",
-    name: "Phantom: Crownless",
-    type: "Overlord",
-    resist: {
-    },
-  },
   lionessOfGlory: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/340000140.webp",
     name: "Lioness of Glory",
@@ -567,13 +462,6 @@ const enemies: Record<string, Enemy> = {
       Havoc: 10,
       Physical: 10,
       Spectro: 10,
-    },
-  },
-  phantomNightmareInfernoRider: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000250.webp",
-    name: "Phantom: Nightmare Inferno Rider",
-    type: "Overlord",
-    resist: {
     },
   },
   theFalseSovereign: {
@@ -630,34 +518,6 @@ const enemies: Record<string, Enemy> = {
       Havoc: 10,
       Physical: 10,
       Spectro: 10,
-    },
-  },
-  phantomNightmareMourningAix: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000260.webp",
-    name: "Phantom: Nightmare Mourning Aix",
-    type: "Overlord",
-    resist: {
-    },
-  },
-  phantomFallacyOfNoReturn: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000270.webp",
-    name: "Phantom: Fallacy of No Return",
-    type: "Overlord",
-    resist: {
-    },
-  },
-  phantomLionessOfGlory: {
-    imageUrl: "https://api-v2.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_SG_33022_UI.webp",
-    name: "Phantom: Lioness of Glory",
-    type: "Overlord",
-    resist: {
-    },
-  },
-  phantomTheFalseSovereign: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000310.webp",
-    name: "Phantom: The False Sovereign",
-    type: "Overlord",
-    resist: {
     },
   },
   fallacyOfNoReturn2: {
@@ -742,13 +602,6 @@ const enemies: Record<string, Enemy> = {
       Havoc: 10,
       Physical: 10,
       Spectro: 10,
-    },
-  },
-  phantomReactorHusk: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000380.webp",
-    name: "Phantom: Reactor Husk",
-    type: "Overlord",
-    resist: {
     },
   },
   stonewallBracer: {
@@ -1003,20 +856,6 @@ const enemies: Record<string, Enemy> = {
       Spectro: 10,
     },
   },
-  phantomRocksteadyGuardian: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000020.webp",
-    name: "Phantom: Rocksteady Guardian",
-    type: "Elite",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 10,
-      Glacio: 40,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 10,
-    },
-  },
   GlacioDreadmane: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/320000190.webp",
     name: "Glacio Dreadmane",
@@ -1057,34 +896,6 @@ const enemies: Record<string, Enemy> = {
       Havoc: 10,
       Physical: 10,
       Spectro: 40,
-    },
-  },
-  phantomLightcrusher: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000080.webp",
-    name: "Phantom: Lightcrusher",
-    type: "Elite",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 10,
-      Glacio: 10,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 40,
-    },
-  },
-  phantomLumiscaleConstruct: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000110.webp",
-    name: "Phantom: Lumiscale Construct",
-    type: "Elite",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 10,
-      Glacio: 40,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 10,
     },
   },
   questlessKnight: {
@@ -1311,34 +1122,6 @@ const enemies: Record<string, Enemy> = {
       Spectro: 40,
     },
   },
-  phantomVitreumDancer: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000140.webp",
-    name: "Phantom: Vitreum Dancer",
-    type: "Elite",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 40,
-      Glacio: 10,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 10,
-    },
-  },
-  phantomQuestlessKnight: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000150.webp",
-    name: "Phantom: Questless Knight",
-    type: "Elite",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 40,
-      Glacio: 10,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 10,
-    },
-  },
   rageAgainstTheStatue: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/320000310.webp",
     name: "Rage Against the Statue",
@@ -1381,13 +1164,6 @@ const enemies: Record<string, Enemy> = {
       Spectro: 40,
     },
   },
-  phantomCapitaneus: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000180.webp",
-    name: "Phantom: Capitaneus",
-    type: "Elite",
-    resist: {
-    },
-  },
   nightmareLampylumenMyriad: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/340000130.webp",
     name: "Nightmare: Lampylumen Myriad",
@@ -1400,13 +1176,6 @@ const enemies: Record<string, Enemy> = {
       Havoc: 10,
       Physical: 10,
       Spectro: 10,
-    },
-  },
-  phantomNightmareCrownless: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000210.webp",
-    name: "Phantom: Nightmare Crownless",
-    type: "Elite",
-    resist: {
     },
   },
   kerasaur: {
@@ -1449,13 +1218,6 @@ const enemies: Record<string, Enemy> = {
       Havoc: 10,
       Physical: 10,
       Spectro: 10,
-    },
-  },
-  phantomCuddleWuddle: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000240.webp",
-    name: "Phantom: Cuddle Wuddle",
-    type: "Elite",
-    resist: {
     },
   },
   flamecrestGladiator: {
@@ -1582,13 +1344,6 @@ const enemies: Record<string, Enemy> = {
       Havoc: 10,
       Physical: 10,
       Spectro: 10,
-    },
-  },
-  phantomKerasaur: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000280.webp",
-    name: "Phantom: Kerasaur",
-    type: "Elite",
-    resist: {
     },
   },
   nightmareVioletFeatheredHeron: {
@@ -1787,27 +1542,6 @@ const enemies: Record<string, Enemy> = {
       Spectro: 10,
     },
   },
-  phantomTwinNovaNebulousCannon: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000340.webp",
-    name: "Phantom: Twin Nova - Nebulous Cannon",
-    type: "Elite",
-    resist: {
-    },
-  },
-  phantomTwinNovaCollapsarBlade: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000350.webp",
-    name: "Phantom: Twin Nova - Collapsar Blade",
-    type: "Elite",
-    resist: {
-    },
-  },
-  phantomChopChop: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000300.webp",
-    name: "Phantom: Chop Chop",
-    type: "Elite",
-    resist: {
-    },
-  },
   kronablight: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/320000590.webp",
     name: "Kronablight",
@@ -1918,13 +1652,6 @@ const enemies: Record<string, Enemy> = {
       Havoc: 10,
       Physical: 10,
       Spectro: 40,
-    },
-  },
-  phantomKronaclaw: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000390.webp",
-    name: "Phantom: Kronaclaw",
-    type: "Elite",
-    resist: {
     },
   },
   vanguardJunrock: {
@@ -2403,20 +2130,6 @@ const enemies: Record<string, Enemy> = {
       Spectro: 10,
     },
   },
-  phantomHoartoise: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000030.webp",
-    name: "Phantom: Hoartoise",
-    type: "Standard",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 10,
-      Glacio: 10,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 40,
-    },
-  },
   lavaLarva: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/310000350.webp",
     name: "Lava Larva",
@@ -2440,34 +2153,6 @@ const enemies: Record<string, Enemy> = {
       Electro: 10,
       Fusion: 10,
       Glacio: 10,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 10,
-    },
-  },
-  phantomClangBang: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000070.webp",
-    name: "Phantom: Clang Bang",
-    type: "Standard",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 10,
-      Glacio: 40,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 10,
-    },
-  },
-  phantomGulpuff: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000100.webp",
-    name: "Phantom: Gulpuff",
-    type: "Standard",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 10,
-      Glacio: 40,
       Havoc: 10,
       Physical: 10,
       Spectro: 10,
@@ -2641,20 +2326,6 @@ const enemies: Record<string, Enemy> = {
       Spectro: 40,
     },
   },
-  phantomDiggyDuggy: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000130.webp",
-    name: "Phantom: Diggy Duggy",
-    type: "Standard",
-    resist: {
-      Aero: 10,
-      Electro: 10,
-      Fusion: 40,
-      Glacio: 10,
-      Havoc: 10,
-      Physical: 10,
-      Spectro: 10,
-    },
-  },
   goldenJunrock: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/310000490.webp",
     name: "Golden Junrock",
@@ -2781,20 +2452,6 @@ const enemies: Record<string, Enemy> = {
       Spectro: 10,
     },
   },
-  phantomNimbusWraith: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000190.webp",
-    name: "Phantom: Nimbus Wraith",
-    type: "Standard",
-    resist: {
-    },
-  },
-  phantomChestMimic: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000220.webp",
-    name: "Phantom: Chest Mimic",
-    type: "Standard",
-    resist: {
-    },
-  },
   FusionDrake: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/310000580.webp",
     name: "Fusion Drake",
@@ -2849,13 +2506,6 @@ const enemies: Record<string, Enemy> = {
       Havoc: 10,
       Physical: 10,
       Spectro: 10,
-    },
-  },
-  phantomFaeIgnis: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000230.webp",
-    name: "Phantom: Fae Ignis",
-    type: "Standard",
-    resist: {
     },
   },
   abyssalGunmaster: {
@@ -3152,13 +2802,6 @@ const enemies: Record<string, Enemy> = {
       Spectro: 10,
     },
   },
-  phantomIceglintDancer: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000370.webp",
-    name: "Phantom: Iceglint Dancer",
-    type: "Standard",
-    resist: {
-    },
-  },
   iceglintDancer: {
     imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/310000830.webp",
     name: "Iceglint Dancer",
@@ -3213,13 +2856,6 @@ const enemies: Record<string, Enemy> = {
       Havoc: 10,
       Physical: 10,
       Spectro: 10,
-    },
-  },
-  phantomZipZap: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/350000330.webp",
-    name: "Phantom: Zip Zap",
-    type: "Standard",
-    resist: {
     },
   },
 };

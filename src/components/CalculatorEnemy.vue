@@ -9,43 +9,41 @@
   </div>
 
   <div
-    v-if="selectedEnemyEntry"
-    class="card card-bordered shadow mb-8 overflow-hidden"
+    class="card card-bordered shadow mb-12 overflow-hidden"
     data-test-enemy-preset-card>
     <div class="card-body flex flex-row gap-4 p-4 items-center">
-      <figure class="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-base-300">
+      <figure class="w-24 h-24 shrink-0 rounded-lg overflow-hidden bg-base-300">
         <img
-          :src="selectedEnemyEntry.imageUrl"
-          :alt="selectedEnemyEntry.name"
+          :src="selectedEnemyEntry?.imageUrl ?? 'https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png'"
+          :alt="selectedEnemyEntry?.name"
           class="w-full h-full object-cover" />
       </figure>
-      <div class="min-w-0 flex-1">
-        <h3 class="font-bold text-lg text-primary truncate">
-          {{ selectedEnemyEntry.name }}
+      <div class="min-w-0 flex items-left w-full min-h-[4rem] flex-col justify-center">
+        <h3 v-if="selectedEnemyEntry?.name" class="font-bold text-xl text-primary my-0 py-0">
+          {{ selectedEnemyEntry?.name }}
         </h3>
-        <p class="text-sm opacity-80">
-          Type: {{ mapEnemyTypeToBrowserCategory(selectedEnemyEntry.type) }}
+        <p v-if="selectedEnemyEntry?.type" class="text-sm opacity-80 mt-[-0.25rem] mb-2">
+          Type: {{ mapEnemyTypeToBrowserCategory(selectedEnemyEntry?.type) }}
         </p>
+        <div class="flex flex-wrap gap-2">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            data-test-enemy-browse-open
+            @click="openEnemyBrowser">
+            Browse enemies
+          </button>
+          <button
+            v-if="enemyBrowserKey"
+            type="button"
+            class="btn btn-sm btn-ghost"
+            data-test-enemy-browse-clear
+            @click="clearEnemyPreset">
+            Clear enemy preset
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-
-  <div class="flex flex-wrap gap-2 mb-8">
-    <button
-      type="button"
-      class="btn btn-sm btn-primary"
-      data-test-enemy-browse-open
-      @click="openEnemyBrowser">
-      Browse enemies
-    </button>
-    <button
-      v-if="selectedEnemyKey"
-      type="button"
-      class="btn btn-sm btn-ghost"
-      data-test-enemy-browse-clear
-      @click="clearEnemyPreset">
-      Clear enemy preset
-    </button>
   </div>
 
   <CalculatorEnemyBrowser
@@ -368,53 +366,24 @@ const enemyBrowserRef = ref<{
   triggerCloseModal: () => void;
 } | null>(null);
 
-const selectedEnemyKey = computed(() => {
-  const raw = (currentCharacter.value as { enemyBrowserKey?: string | null })
-    .enemyBrowserKey;
-  return raw && typeof raw === "string" ? raw : "";
+const enemyBrowserKey = computed({
+  get() {
+    const ch = currentCharacter.value as { enemyBrowserKey?: string | null };
+    const raw = ch.enemyBrowserKey;
+    return raw && typeof raw === "string" ? raw : "";
+  },
+  set(value: string) {
+    void characterStore.setCharacterData(props.character, {
+      enemyBrowserKey: value === "" ? null : value,
+    });
+  },
 });
 
 const selectedEnemyEntry = computed((): Enemy | null => {
-  const k = selectedEnemyKey.value;
+  const k = enemyBrowserKey.value;
   if (!k) return null;
   return enemiesCatalog[k] ?? null;
 });
-
-function openEnemyBrowser() {
-  enemyBrowserRef.value?.triggerOpenModal();
-}
-
-function clearEnemyPreset() {
-  void characterStore.setCharacterData(props.character, {
-    enemyBrowserKey: null,
-  });
-}
-
-function onEnemyChosenFromBrowser(key: string) {
-  const entry = enemiesCatalog[key];
-  if (!entry) return;
-  const resist = props.characterElement
-    ? getEnemyResistFractionForElement(entry.resist, props.characterElement)
-    : 0.1;
-  void characterStore.setCharacterData(props.character, {
-    enemyBrowserKey: key,
-    enemyType: mapEnemyTypeToBrowserCategory(entry.type),
-    enemyResist: resist,
-  });
-}
-
-watch(
-  () => props.characterElement,
-  (element) => {
-    const key = selectedEnemyKey.value;
-    if (!key || !element) return;
-    const entry = enemiesCatalog[key];
-    if (!entry) return;
-    void characterStore.setCharacterData(props.character, {
-      enemyResist: getEnemyResistFractionForElement(entry.resist, element),
-    });
-  },
-);
 
 const settingsTheme = computed(
   () => settingsStore.config?.theme ?? null,
@@ -457,6 +426,35 @@ const enemyType = computed({
     void characterStore.setCharacterData(props.character, { enemyType: value });
   },
 });
+
+function openEnemyBrowser() {
+  enemyBrowserRef.value?.triggerOpenModal();
+}
+
+function clearEnemyPreset() {
+  enemyBrowserKey.value = "";
+}
+
+function onEnemyChosenFromBrowser(key: string) {
+  const entry = enemiesCatalog[key];
+  if (!entry) return;
+  enemyBrowserKey.value = key;
+  enemyType.value = mapEnemyTypeToBrowserCategory(entry.type);
+  enemyResist.value = props.characterElement
+    ? getEnemyResistFractionForElement(entry.resist, props.characterElement)
+    : 0.1;
+}
+
+watch(
+  () => props.characterElement,
+  (element) => {
+    const key = enemyBrowserKey.value;
+    if (!key || !element) return;
+    const entry = enemiesCatalog[key];
+    if (!entry) return;
+    enemyResist.value = getEnemyResistFractionForElement(entry.resist, element);
+  },
+);
 
 const spectroFrazzleStacks = computed({
   get() {
