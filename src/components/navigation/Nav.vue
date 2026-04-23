@@ -51,7 +51,7 @@
           title="Convene odds"
           data-test-nav-convene>
           <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/Icon_Convene.webp" class="size-8" />
-          <div class="badge badge-primary absolute top-[-0.5rem] right-[-2rem] text-xs">
+          <div v-if="false" class="badge badge-primary absolute top-[-0.5rem] right-[-2rem] text-xs">
             New
           </div>
         </RouterLink>
