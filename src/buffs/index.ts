@@ -367,7 +367,24 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
-  "Rover-Spectro": [
+  RoverSpectroMale: [
+    {
+      key: "SequenceNode6EchoesofWanderlust",
+      name: "Sequence Node 6: Echoes of Wanderlust",
+      details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Resonating Slashes</span> and Resonance Skill <span class="Highlight">Resonating Spin</span> reduces the target's Spectro DMG RES by 10% on hit for 20s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ResistShred:Spectro",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  RoverSpectroFemale: [
     {
       key: "SequenceNode6EchoesofWanderlust",
       name: "Sequence Node 6: Echoes of Wanderlust",

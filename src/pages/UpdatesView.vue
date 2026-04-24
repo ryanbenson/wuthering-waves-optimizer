@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>April 24, 2026</h3>
+    <ul>
+      <li>Fixes Spectro Rover team buffs.</li>
+    </ul>
     <h3>April 23, 2026</h3>
     <ul>
       <li>Adds enemy browser so you can choose enemies in the enemy settings.</li>
