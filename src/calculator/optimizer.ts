@@ -152,6 +152,8 @@ export interface OptimizerContext {
   isElectroFlareEnabled: boolean;
   electroFlareStacks: number;
   electroRageStacks: number;
+  isGlacioChafeEnabled: boolean;
+  glacioChafeStacks: number;
   havocBaneStacks: number;
   strainStacks: number;
 
@@ -567,6 +569,8 @@ export function optimize(
         context.isElectroFlareEnabled,
         context.electroFlareStacks,
         context.electroRageStacks,
+        context.isGlacioChafeEnabled,
+        context.glacioChafeStacks,
         context.characterLevel,
         context.mainEcho,
         context.mainEchoRank,
@@ -662,6 +666,8 @@ export function optimize(
         context.isElectroFlareEnabled,
         context.electroFlareStacks,
         context.electroRageStacks,
+        context.isGlacioChafeEnabled,
+        context.glacioChafeStacks,
         context.characterLevel,
         context.mainEcho,
         context.mainEchoRank,

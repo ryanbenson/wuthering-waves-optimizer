@@ -989,7 +989,8 @@
         damage.totalDamageContext.type === 'fusionBurst' ||
         damage.totalDamageContext.type === 'spectroFrazzle' ||
         damage.totalDamageContext.type === 'aeroErosion' ||
-        damage.totalDamageContext.type === 'electroFlare'
+        damage.totalDamageContext.type === 'electroFlare' ||
+        damage.totalDamageContext.type === 'glacioChafe'
       "
       class="damage-breakdown--fusionBurst">
       <div class="formula bg-base-200 p-2 rounded-md font-mono">

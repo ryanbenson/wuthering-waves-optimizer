@@ -791,7 +791,11 @@ function parseShieldTalentString(talent: string): any {
 
 /** Shared formula: levelConstant × (MV ÷ 10000) × DEF × RES × (1 + amp), same as Fusion Burst. DEF ignore does not apply to this damage type in-game. */
 function calcNegativeStatusStackDamage(
-  contextType: "fusionBurst" | "spectroFrazzle" | "aeroErosion",
+  contextType:
+    | "fusionBurst"
+    | "spectroFrazzle"
+    | "aeroErosion"
+    | "glacioChafe",
   charLevel: string,
   enemyLevel: number,
   enemyResist: number,
@@ -1291,6 +1295,36 @@ export function getFusionBurstDamage(
   );
 }
 
+export function getGlacioChafeDamage(
+  charLevel: string,
+  enemyLevel: number,
+  enemyResist: number,
+  resistenceReduction: number,
+  defReduction: number = 0,
+  talentModifierMultiply: number = 0,
+  totalDeepenEffect: number = 0,
+  critRate: number = 0,
+  critDamage: number = 1,
+  count: number = 1,
+  stacks: number = 1,
+): any {
+  return calcNegativeStatusStackDamage(
+    "glacioChafe",
+    charLevel,
+    enemyLevel,
+    enemyResist,
+    resistenceReduction,
+    defReduction,
+    talentModifierMultiply,
+    totalDeepenEffect,
+    critRate,
+    critDamage,
+    count,
+    stacks,
+    getGlacioChafeMotionValueByStacks,
+  );
+}
+
 export function getElectroFlareDamage(
   charLevel: string,
   enemyLevel: number,
@@ -1385,7 +1419,7 @@ export function getFusionBurstMotionValueByStacks(stacks: number): number {
     "1": 8400,
     "2": 15229,
     "3": 22058,
-    "4": 28888, 
+    "4": 28888,
     "5": 35717,
     "6": 42546,
     "7": 49375,
@@ -1395,7 +1429,29 @@ export function getFusionBurstMotionValueByStacks(stacks: number): number {
     "11": 93150,
     "12": 116438,
     "13": 139726,
-  }
+  };
+  return motionValueByStacksMap?.[stacks] ?? motionValueByStacksMap["13"];
+}
+
+/**
+ * 1#2450 | 2#4442 | 3#6434 | 4#8426 | 5#10417 | 6#12409 | 7#14401 | 8#16393 | 9#18385 | 10#20377 | 11#27169 | 12#33961 | 13#40753
+ */
+export function getGlacioChafeMotionValueByStacks(stacks: number): number {
+  const motionValueByStacksMap: Record<string, number> = {
+    "1": 2450,
+    "2": 4442,
+    "3": 6434,
+    "4": 8426,
+    "5": 10417,
+    "6": 12409,
+    "7": 14401,
+    "8": 16393,
+    "9": 18385,
+    "10": 20377,
+    "11": 27169,
+    "12": 33961,
+    "13": 40753,
+  };
   return motionValueByStacksMap?.[stacks] ?? motionValueByStacksMap["13"];
 }
 
