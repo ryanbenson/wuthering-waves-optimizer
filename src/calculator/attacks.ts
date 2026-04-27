@@ -824,8 +824,9 @@ export const calculateAttackDamage = (
       context.character.chosenChar?.basic?.tuneBreakBoost ?? 0;
     const tuneBreakBoostSelf = selfBuffs?.tuneBreakBoost ?? 0;
     const tuneBreakBoostTeam = context.buffs.teamBuffsData?.tuneBreakBoost ?? 0;
+    const tuneBreakBoostEchoes = context.equipment.echoStats?.tuneBreakBoost ?? 0;
     const totalTuneBreakBoost =
-      baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam;
+      baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam + (tuneBreakBoostEchoes / 100);
 
   let totalSpecialMultiplier = 0;
   let resonanceChainAttackSpecialMultiplierAttack =

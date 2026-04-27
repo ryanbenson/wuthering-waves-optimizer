@@ -642,10 +642,12 @@ export default defineComponent({
         teamBuffsData?.value?.tuneBreakBoost ??
         teamBuffsData?.tuneBreakBoost ??
         0;
+      const tuneBreakBoostEchoes = echoStats?.value?.tuneBreakBoost ?? 0;
       tuneBreakBoost.value =
         (baseTuneBreakBoost || 0) +
         (tuneBreakBoostSelf || 0) +
-        (tuneBreakBoostTeam || 0);
+        (tuneBreakBoostTeam || 0) +
+        (tuneBreakBoostEchoes / 100);
     };
 
     const handleWeaponUpdated = (givenWeaponData) => {

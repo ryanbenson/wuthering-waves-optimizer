@@ -2123,6 +2123,34 @@ CD: 20s.`,
     ],
     alwaysEnabled: false,
   },
+  {
+    key: "WishesofQuietSnowfall",
+    name: "Wishes of Quiet Snowfall",
+    details: `Casting Outro Skill removes Snowfall and grants 25% Glacio DMG Bonus to the incoming Resonator for 15s.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/WishesofQuietSnowfall.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Glacio",
+        modifierValue: 0.25,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "ReelofSplicedMemories",
+    name: "Reel of Spliced Memories",
+    details: `Inflicting Tune Rupture - Shifting or Tune Strain - Shifting on enemies increases the Tune Break Boost of Resonators in the team by 20 for 30s. Effects of the same name do not stack.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/ReelofSplicedMemories.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "tuneBreakBoost",
+        modifierValue: 0.2,
+      },
+    ],
+    alwaysEnabled: false,
+  },
 ];
 
 export const allWeaponTeamBuffs = [
