@@ -1880,6 +1880,23 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Hiyuki: [
+    {
+      key: "OutroSkillSnowlightBlessing",
+      name: "Outro Skill: Snowlight Blessing",
+      details: `<span class="skilldescription">Glacio DMG dealt by nearby Resonators other than Hiyuki in the team is Amplified by 20% against targets affected by <span class="Highlight">Glacio Chafe</span> for 20s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Glacio",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

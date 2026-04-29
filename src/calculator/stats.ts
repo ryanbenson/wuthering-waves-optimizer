@@ -1,3 +1,5 @@
+import { isArray } from "chart.js/helpers";
+
 export const getInitStats = (providedFullStats: any = {}) => {
   let stats = {
     attackPercent: 0,
@@ -872,6 +874,17 @@ export const computeSelfBuffs = (
       if (buffData?.stacks >= 6) {
         data["Aero"] += 0.3;
         data["EchoDMGBonus"] += 0.3;
+      }
+    }
+    if (character === "Hiyuki" && key === "InherentSkillFineSnow") {
+      if (buffData?.stacks >= 1) {
+        data["DMGDeepen:GlacioChafe"] = (data["DMGDeepen:GlacioChafe"] || 0) + 0.3;
+      }
+      if (buffData?.stacks >= 2) {
+        data["EnableAttack"].push("InherentSkillFineSnow");
+      }
+      if (buffData?.stacks >= 3) {
+        data["DMGDeepen:GlacioChafe"] = (data["DMGDeepen:GlacioChafe"] || 0) + 0.3;
       }
     }
   }
