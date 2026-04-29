@@ -2858,6 +2858,62 @@ const enemies: Record<string, Enemy> = {
       Spectro: 10,
     },
   },
+  VoidwingMoth: {
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/VoidwingMoth.webp",
+    name: "Voidwing Moth",
+    type: "Elite",
+    resist: {
+      Aero: 10,
+      Electro: 10,
+      Fusion: 10,
+      Glacio: 10,
+      Havoc: 10,
+      Physical: 10,
+      Spectro: 40,
+    },
+  },
+  Aleph1sCreation: {
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/Aleph1sCreation.webp",
+    name: "Aleph-1's Creation",
+    type: "Calamity",
+    resist: {
+      Aero: 10,
+      Electro: 10,
+      Fusion: 40,
+      Glacio: 10,
+      Havoc: 10,
+      Physical: 10,
+      Spectro: 10,
+    },
+  },
+  Denia: {
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/Denia.webp",
+    name: "Denia",
+    type: "Calamity",
+    resist: {
+      Aero: 10,
+      Electro: 10,
+      Fusion: 40,
+      Glacio: 10,
+      Havoc: 10,
+      Physical: 10,
+      Spectro: 10,
+    },
+  },
+  ReminiscenceDenia: {
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/ReminiscenceDenia.webp",
+    name: "Reminiscence: Denia",
+    type: "Calamity",
+    resist: {
+      Aero: 10,
+      Electro: 10,
+      Fusion: 40,
+      Glacio: 10,
+      Havoc: 10,
+      Physical: 10,
+      Spectro: 10,
+    },
+  },
 };
 
 /** UI / tune-break categories (database uses `Standard` for common mobs). */

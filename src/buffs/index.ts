@@ -1967,6 +1967,35 @@ CD: 20s.`,
     alwaysEnabled: false,
   },
   {
+    key: "VoidwingMoth",
+    name: "Voidwing Moth",
+    details: `Within 15s after using this Echo skill, casting Outro Skill increases the incoming Resonator's ATK by 12.00% for 15s.</br>CD: 25s.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/VoidwingMoth.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.12,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "ReminiscenceDenia",
+    name: "Reminiscence: Denia",
+    details: `Within the next 15s, casting Outro Skill grants the incoming Resonator 12.00% Fusion DMG Bonus for 15s.<br>
+CD: 20s`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReminiscenceDenia.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.12,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
     key: "RejuvenatingGlow",
     name: "Rejuvenating Glow",
     details: `<span class="skilldescription">Upon healing allies, increase ATK of the entire team by <span class="Highlight">15%</span> , lasting <span class="Highlight">30s</span>.</span>`,

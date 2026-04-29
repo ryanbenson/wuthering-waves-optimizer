@@ -431,7 +431,7 @@ export const echoSetImageMap: Record<string, string> = {
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/SoundofTrueName.webp",
   ChromaticFoam:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/ChromaticFoam.webp",
-  WishesofQuietSnowfall: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/WishesOfQuietSnowfall.webp",
+  WishesofQuietSnowfall: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/WishesofQuietSnowfall.webp",
   ReelofSplicedMemories: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/ReelofSplicedMemories.webp",
 };
 
@@ -468,7 +468,7 @@ export const echoSetLabelMap: Record<string, string> = {
   TrailblazingStar: "Trailblazing Star",
   SoundofTrueName: "Sound of True Name",
   ChromaticFoam: "Chromatic Foam",
-  WishesOfQuietSnowfall: "Wishes of Quiet Snowfall",
+  WishesofQuietSnowfall: "Wishes of Quiet Snowfall",
   ReelofSplicedMemories: "Reel of Spliced Memories",
 };
 
