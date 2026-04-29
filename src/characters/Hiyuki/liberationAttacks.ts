@@ -36,22 +36,5 @@ export const liberationAttacks = {
       },
       type: "Liberation",
     },
-    {
-      key: "TotalForeclaimingBladeLiberationDMGIncreaseperSnowforgedBlade",
-      label: "Total Foreclaiming: Blade Liberation DMG Increase per Snowforged Blade",
-      talents: {
-        "1": "400.00%",
-        "2": "432.80%",
-        "3": "465.60%",
-        "4": "511.52%",
-        "5": "544.32%",
-        "6": "582.04%",
-        "7": "634.52%",
-        "8": "687.00%",
-        "9": "739.48%",
-        "10": "795.24%",
-      },
-      type: "Liberation",
-    },
   ],
 };
