@@ -1,10 +1,8 @@
 export const resonanceChains = [
   {
-    key: "SequenceNode1GoldKindledinAsh",
-    name: "Sequence Node 1: Gold Kindled in Ash",
-    details: `<div>Luuk Herssen gains 150% <span class="Highlight">Mid-air Attack</span> DMG Bonus.<br>
-The max stack limit of <span class="Highlight">Dawnlit Keep</span> is increased by 1.<br>
-When in the <span class="Highlight">Aureate Judge</span> state, casting Resonance Skill Aureole of Execution grants 1 stacks of Dawnlit Keep.</div>`,
+    key: "SequenceNode1Springless",
+    name: "Sequence Node 1: Springless",
+    details: `<div>The DMG Multipliers of <span style="color:#f7ca2f"><strong>Basic Attack - Foreclaimed Self</strong></span>, <span style="color:#f7ca2f"><strong>Heavy Attack - Foreclaimed Self</strong></span>, <span style="color:#f7ca2f"><strong>Mid-air Attack - Foreclaimed Self</strong></span>, <span style="color:#f7ca2f"><strong>Mid-air Plunging Attack - Foreclaimed Self</strong></span>, <span style="color:#f7ca2f"><strong>Dodge Counter - Foreclaimed Self</strong></span> are increased by 120%.<br><br><span style="color:#f7ca2f"><strong>Basic Attack - Foreclaimed Self Stage 3</strong></span> now has an increased range and pulls enemies within range toward the center. Hiyuki is immune to interruptions while casting  <span style="color:#f7ca2f"><strong>Basic Attack - Foreclaimed Self Stage 4 &amp; 5</strong></span>.<br><br>Casting <span style="color:#f7ca2f"><strong>Foreclaiming: Inward Vision</strong></span> enhances the next <span style="color:#f7ca2f"><strong>Basic Attack - Foreclaimed Self Stage 1 &amp; 2</strong></span>, which now inflict 1 stack of <span style="color:#f7ca2f"><strong><a href="#WwLink850010" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="850010">Glacio Chafe</a></strong></span> on hit.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -26,11 +24,9 @@ When in the <span class="Highlight">Aureate Judge</span> state, casting Resonanc
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode2AvalancheRoaringinEyes",
-    name: "Sequence Node 2: Avalanche Roaring in Eyes",
-    details: `<div>The DMG Multiplier of Resonance Liberation <span class="Highlight">Rewritten in Winter's Margins</span> is increased by 60%. This DMG Multiplier increase effect is stackable with that of Endnotes on the Endgame.<br>
-Inherent Skill <span class="Highlight">Uncaused Diagnosis</span> is enhanced:<br>
-When Luuk Herssen deals damage to targets inflicted with Tune Strain - Interfered, every 10 points of Tune Break Boost he has now Amplify this instance of damage by 10%. This effect now increases the DMG Amplification up to 60% instead of 30%.</div>`,
+    key: "SequenceNode2ToBurnColdinSilence",
+    name: "Sequence Node 2: To Burn Cold in Silence",
+    details: `<div><span style="color:#f7ca2f"><strong>Basic Attack - Iai</strong></span>'s DMG Multiplier is increased by 125%.<br><br>Inherent Skill <span style="color:#f7ca2f"><strong>Ephemeral Realm</strong></span>'s effect becomes the following one:<br>Once Hiyuki leaves the combat state or recovers from being knocked out, after staying out of combat for 4s, restore 3 points of <span style="color:#f7ca2f"><strong><a href="#WwLink110805" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110805">Snowforged Blade</a></strong></span>.<br><br>Once Hiyuki leaves the combat state or recovers from being knocked out, after staying out of combat for 4s, the following effects are triggered once:<br>- Restore 3 points points of <span style="color:#f7ca2f"><strong><a href="#WwLink110803" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110803">Frostharden Iai</a></strong></span>.<br>- Reset the Cooldown of 2 charges of <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span>.<br>- Restore an additional 50 points of <span style="color:#f7ca2f"><strong><a href="#WwLink110802" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110802">Frostheart</a></strong></span> for the next 2 casts of <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span> or <span style="color:#f7ca2f"><strong>Frostblight: Petalfall</strong></span>.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -44,11 +40,9 @@ When Luuk Herssen deals damage to targets inflicted with Tune Strain - Interfere
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode3SpineTemperedbyGoldenRain",
-    name: "Sequence Node 3: Spine Tempered by Golden Rain",
-    details: `<div>The DMG Multipliers of all forms of Resonance Skill <span class="Highlight">Aureole of Execution</span> are increased by 136% in the Aureate Judge state. Casting <span class="Highlight">Aureole of Execution: Glare</span> increases the DMG Multipliers of the next <span class="Highlight">Mid-Attack - Gavel of Earthshaker</span> and <span class="Highlight">Ichor Deposit</span> by 136%.<br>
-Inherent Skill Pulses Under the Snow is enhanced:<br>
-Perpetuating Daytime now stacks up to 4 times.</div>`,
+    key: "SequenceNode3NoSelfNoBound",
+    name: "Sequence Node 3: No Self, No Bound",
+    details: `<div>Inherent Skill <span style="color:#f7ca2f"><strong>Fine Snow</strong></span> gains the following effect:<br>Every 2s after a Resonator joins the team or Hiyuki is revived, Hiyuki gains 1 stack of <span style="color:#f7ca2f"><strong>Snow Rust</strong></span>. Hiyuki can obtain up to 1 stack of <span style="color:#f7ca2f"><strong>Snow Rust</strong></span> in this way.<br><br>The DMG Multipliers of <span style="color:#f7ca2f"><strong>Heavy Attack - Frost Splinter: Present Self</strong></span> and <span style="color:#f7ca2f"><strong>Heavy Attack - Bitterfrost: Foreclaimed Self</strong></span> are increased by 160%.<br><br>At 2 stacks of <span style="color:#f7ca2f"><strong>Snow Rust</strong></span>, while Hiyuki is the active Resonator in the team, the DMG Multiplier of the additionally applied Glacio Bite DMG each time she inflicts <span style="color:#f7ca2f"><strong><a href="#WwLink850010" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="850010">Glacio Chafe</a></strong></span> is increased by 488%.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -74,9 +68,9 @@ Perpetuating Daytime now stacks up to 4 times.</div>`,
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode4PulseThrummingUnderRime",
-    name: "Sequence Node 4: Pulse Thrumming Under Rime",
-    details: `<div>After a Resonator in the team deals Tune Break DMG, all Resonators in the team deal 20% more DMG for 20s. This effect is unstackable.</div>`,
+    key: "SequenceNode4LikeReedsonTides",
+    name: "Sequence Node 4: Like Reeds on Tides",
+    details: `<div>Casting <span style="color:#f7ca2f"><strong>Resonance Skill: Present Self</strong></span>, <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span>, or <span style="color:#f7ca2f"><strong>Frostblight: Petalfall</strong></span> increases the damage dealt by all nearby Resonators in the team by 20% for 30s.<br><br>Restore 18% of Max HP while casting <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span> or <span style="color:#f7ca2f"><strong>Frostblight: Petalfall</strong></span>.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -89,10 +83,9 @@ Perpetuating Daytime now stacks up to 4 times.</div>`,
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode5ThroughtheStillnessofSnowstorm",
-    name: "Sequence Node 5: Through the Stillness of Snowstorm",
-    details: `<div>Intro Skill <span class="Highlight">Before Injection of Dawn</span> and Outro Skill <span class="Highlight">Bow to the Last Light</span> gain 80% DMG Bonus.<br>
-Resonance Skill <span class="Highlight">Golden Reflux</span> has its DMG Multiplier increased by 50% and Cooldown reduced by 2s, and gains 1 more charge.</div>`,
+    key: "SequenceNode5VesselofThousandWishes",
+    name: "Sequence Node 5: Vessel of Thousand Wishes",
+    details: `<div>The DMG Multipliers of <span style="color:#f7ca2f"><strong>Resonance Skill - Present Self</strong></span>, <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span>, and <span style="color:#f7ca2f"><strong>Frostblight: Petalfall</strong></span> are increased by 80%.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -115,11 +108,9 @@ Resonance Skill <span class="Highlight">Golden Reflux</span> has its DMG Multipl
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode6DawnUnfurlingoverFrostlands",
-    name: "Sequence Node 6: Dawn Unfurling over Frostlands",
-    details: `<div>When nearby Resonators in the team deal Tune Break DMG, all forms of Resonance Skill <span class="Highlight">Aureole of Execution</span>, <span class="Highlight">Ichor Deposit</span>, and <span class="Highlight">Mid-air Attack - Gavel of Earthshaker</span> deal 30% more DMG to the target for 25s.<br>
-Each stack of <span class="Highlight">Endnotes on the Endgame</span> additionally grants Resonance Liberation <span class="Highlight">Rewritten in Winter's Margins</span> 40% DMG Bonus, up to 120%.<br>
-When Luuk Herssen deals damage to targets inflicted with <span class="Highlight">Tune Strain - Interfered</span>, the stack count of <span class="Highlight">Tune Strain - Interfered</span> on the target is increased by 2. This effect ignores the max stack limit.</div>`,
+    key: "SequenceNode6IntoaNightWithoutEnd",
+    name: "Sequence Node 6: Into a Night Without End",
+    details: `<div>The Crit. DMG of <span style="color:#f7ca2f"><strong>Foreclaiming: Inward Vision</strong></span> and <span style="color:#f7ca2f"><strong>Foreclaiming: Blade Liberation</strong></span> are increased by 500%.<br><br>At 2 stacks of <span style="color:#f7ca2f"><strong>Snow Rust</strong></span>, the effect "While Hiyuki is the active Resonator in the team, each time she applies <span style="color:#f7ca2f"><strong><a href="#WwLink850010" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="850010">Glacio Chafe</a></strong></span>, she additionally deals an instance of Glacio Bite DMG with a fixed DMG Multiplier" changes to "While Hiyuki is the active Resonator in the team, each time a Resonator in the team applies <span style="color:#f7ca2f"><strong><a href="#WwLink850010" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="850010">Glacio Chafe</a></strong></span>, she additionally deals an instance of Glacio Bite DMG with a fixed DMG Multiplier."<br>At 2 stacks of <span style="color:#f7ca2f"><strong>Snow Rust</strong></span>, Hiyuki's Crit. DMG is increased by 40%.<br>At 3 stacks of <span style="color:#f7ca2f"><strong>Snow Rust</strong></span>, the total <span style="color:#f7ca2f"><strong><a href="#WwLink110809" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110809">Glacio Bite</a> DMG</strong></span> taken by targets within a certain range of the active Resonator in the team is increased by 25%.</div>`,
     hasStacks: false,
     modifiers: [
       {

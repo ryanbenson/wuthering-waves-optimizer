@@ -1896,6 +1896,21 @@ export const buffsByCharacter = {
       maxStacks: 0,
       alwaysEnabled: false,
     },
+    {
+      key: "SequenceNode4LikeReedsonTides",
+      name: "Sequence Node 4: Like Reeds on Tides",
+      details: `<div>Casting <span style="color:#f7ca2f"><strong>Resonance Skill: Present Self</strong></span>, <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span>, or <span style="color:#f7ca2f"><strong>Frostblight: Petalfall</strong></span> increases the damage dealt by all nearby Resonators in the team by 20% for 30s.<br><br>Restore 18% of Max HP while casting <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span> or <span style="color:#f7ca2f"><strong>Frostblight: Petalfall</strong></span>.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGBonus",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
   ],
 };
 

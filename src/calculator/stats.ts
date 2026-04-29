@@ -1,5 +1,3 @@
-import { isArray } from "chart.js/helpers";
-
 export const getInitStats = (providedFullStats: any = {}) => {
   let stats = {
     attackPercent: 0,
