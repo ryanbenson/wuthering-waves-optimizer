@@ -1,6 +1,6 @@
 export const skillAttacks = {
   name: "Resonance Skill: Frostblight",
-  description: `<div><span style="color:#a89969"><strong>Resonance Skill - Present Self</strong></span><br>Deal <span style="color:#41aefb"><strong>Glacio DMG</strong></span>.<br>Casting this skill enhances the next <span style="color:#f7ca2f"><strong>Basic Attack - Present Self Stage 3</strong></span>, which now restores 100 points of <span style="color:#f7ca2f"><strong><a href="#WwLink110801" data-ww-link-id="110801">Dedication</a></strong></span> when cast. Switching to another Resonator ends this effect.<br>Press <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> within a certain period after casting this skill to perform <span style="color:#f7ca2f"><strong>Basic Attack - Present Self Stage 3</strong></span>.<br>If <span style="color:#f7ca2f"><strong><a href="#WwLink110801" data-ww-link-id="110801">Dedication</a></strong></span> is below 300 points, hold <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> within a certain period after casting this skill to perform  <span style="color:#f7ca2f"><strong>Basic Attack - Present Self Stage 3</strong></span>.<br><br>While in <span style="color:#f7ca2f"><strong>Foreclaimed Self</strong></span>, <span style="color:#f7ca2f"><strong>Resonance Skill - Present Self</strong></span> is replaced by <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span> and <span style="color:#f7ca2f"><strong>Frostblight: Petalfall</strong></span>:<br><br><span style="color:#a89969"><strong>Frostblight: Jade Cleave</strong></span><br>While on the ground, press <span style="color:#f7ca2f"><strong>Resonance Skill</strong></span> to pull in nearby targets and deal <span style="color:#41aefb"><strong>Glacio DMG</strong></span>, removing the targets' <span style="color:#f7ca2f"><strong><a href="#WwLink110808" data-ww-link-id="110808">Frostbind</a></strong></span>.<br>This skill shares a Cooldown with <span style="color:#f7ca2f"><strong>Frostblight: Petalfall</strong></span>.<br><br><span style="color:#a89969"><strong>Frostblight: Petalfall</strong></span><br>While in mid-air, press <span style="color:#f7ca2f"><strong>Resonance Skill</strong></span> to pull in nearby targets and deal <span style="color:#41aefb"><strong>Glacio DMG</strong></span>, removing the targets' <span style="color:#f7ca2f"><strong><a href="#WwLink110808" data-ww-link-id="110808">Frostbind</a></strong></span>.<br>This skill shares a Cooldown with <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span>.</div>`,
+  description: `<div><span style="color:#a89969"><strong>Resonance Skill - Present Self</strong></span><br>Deal <span style="color:#41aefb"><strong>Glacio DMG</strong></span>.<br>Casting this skill enhances the next <span style="color:#f7ca2f"><strong>Basic Attack - Present Self Stage 3</strong></span>, which now restores 100 points of <span style="color:#f7ca2f"><strong><span class="Highlight">Dedication</span></strong></span> when cast. Switching to another Resonator ends this effect.<br>Press <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> within a certain period after casting this skill to perform <span style="color:#f7ca2f"><strong>Basic Attack - Present Self Stage 3</strong></span>.<br>If <span style="color:#f7ca2f"><strong><span class="Highlight">Dedication</span></strong></span> is below 300 points, hold <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> within a certain period after casting this skill to perform  <span style="color:#f7ca2f"><strong>Basic Attack - Present Self Stage 3</strong></span>.<br><br>While in <span style="color:#f7ca2f"><strong>Foreclaimed Self</strong></span>, <span style="color:#f7ca2f"><strong>Resonance Skill - Present Self</strong></span> is replaced by <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span> and <span style="color:#f7ca2f"><strong>Frostblight: Petalfall</strong></span>:<br><br><span style="color:#a89969"><strong>Frostblight: Jade Cleave</strong></span><br>While on the ground, press <span style="color:#f7ca2f"><strong>Resonance Skill</strong></span> to pull in nearby targets and deal <span style="color:#41aefb"><strong>Glacio DMG</strong></span>, removing the targets' <span style="color:#f7ca2f"><strong><span class="Highlight">Frostbind</span></strong></span>.<br>This skill shares a Cooldown with <span style="color:#f7ca2f"><strong>Frostblight: Petalfall</strong></span>.<br><br><span style="color:#a89969"><strong>Frostblight: Petalfall</strong></span><br>While in mid-air, press <span style="color:#f7ca2f"><strong>Resonance Skill</strong></span> to pull in nearby targets and deal <span style="color:#41aefb"><strong>Glacio DMG</strong></span>, removing the targets' <span style="color:#f7ca2f"><strong><span class="Highlight">Frostbind</span></strong></span>.<br>This skill shares a Cooldown with <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span>.</div>`,
   attacks: [
     {
       key: "ResonanceSkillPresentSelfDMG",
@@ -52,6 +52,24 @@ export const skillAttacks = {
         "10": "64.02%*4+64.02%",
       },
       type: "Skill",
+    },
+    {
+      key: "SequenceNode4LikeReedsonTides",
+      label: "S4: Frostblight: Healing",
+      talents: {
+        "1": "18%",
+        "2": "18%",
+        "3": "18%",
+        "4": "18%",
+        "5": "18%",
+        "6": "18%",
+        "7": "18%",
+        "8": "18%",
+        "9": "18%",
+        "10": "18%",
+      },
+      type: "Healing",
+      requiresResonanceChain: "SequenceNode4LikeReedsonTides",
     },
   ],
 };

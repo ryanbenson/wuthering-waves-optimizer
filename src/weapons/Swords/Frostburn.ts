@@ -24,7 +24,7 @@ const weaponInfo: WeaponInfo = {
       alwaysEnabled: true,
     },
     {
-      key: "FrostburnGlacioChafeDMGBonus",
+      key: "FrostburnGlacioDMGBonus",
       hasStacks: false,
       modifier: "DMGDeepen:Glacio",
       modifierByRefinement: {
@@ -37,7 +37,24 @@ const weaponInfo: WeaponInfo = {
       minStacks: 0,
       maxStacks: 0,
       details:
-        "When the wielder applies Glacio Chafe, Glacio DMG is Amplified by 28%/35%/42%/49%/56%",
+        "When the wielder applies Glacio DMG is Amplified by 28%/35%/42%/49%/56%",
+      alwaysEnabled: false,
+    },
+    {
+      key: "FrostburnGlacioChafeDMGBonus",
+      hasStacks: false,
+      modifier: "DMGDeepen:GlacioChafe",
+      modifierByRefinement: {
+        "1": 0.28,
+        "2": 0.35,
+        "3": 0.42,
+        "4": 0.49,
+        "5": 0.56,
+      },
+      minStacks: 0,
+      maxStacks: 0,
+      details:
+        "When the wielder applies Glacio Chafe is Amplified by 28%/35%/42%/49%/56%",
       alwaysEnabled: false,
     },
     {
