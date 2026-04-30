@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>April 29, 2026</h3>
+    <ul>
+      <li>Versions 3.3 phase 1 content is available!</li>
+    </ul>
     <h3>April 24, 2026</h3>
     <ul>
       <li>Fixes Spectro Rover team buffs.</li>
