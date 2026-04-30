@@ -1880,6 +1880,38 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Hiyuki: [
+    {
+      key: "OutroSkillSnowlightBlessing",
+      name: "Outro Skill: Snowlight Blessing",
+      details: `<span class="skilldescription">Glacio DMG dealt by nearby Resonators other than Hiyuki in the team is Amplified by 20% against targets affected by <span class="Highlight">Glacio Chafe</span> for 20s.</span>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Glacio",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4LikeReedsonTides",
+      name: "Sequence Node 4: Like Reeds on Tides",
+      details: `<div>Casting <span style="color:#f7ca2f"><strong>Resonance Skill: Present Self</strong></span>, <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span>, or <span style="color:#f7ca2f"><strong>Frostblight: Petalfall</strong></span> increases the damage dealt by all nearby Resonators in the team by 20% for 30s.<br><br>Restore 18% of Max HP while casting <span style="color:#f7ca2f"><strong>Frostblight: Jade Cleave</strong></span> or <span style="color:#f7ca2f"><strong>Frostblight: Petalfall</strong></span>.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGBonus",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -1961,6 +1993,35 @@ CD: 20s.`,
     modifiers: [
       {
         modifier: "Glacio",
+        modifierValue: 0.12,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "VoidwingMoth",
+    name: "Voidwing Moth",
+    details: `Within 15s after using this Echo skill, casting Outro Skill increases the incoming Resonator's ATK by 12.00% for 15s.</br>CD: 25s.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/VoidwingMoth.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.12,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "ReminiscenceDenia",
+    name: "Reminiscence: Denia",
+    details: `Within the next 15s, casting Outro Skill grants the incoming Resonator 12.00% Fusion DMG Bonus for 15s.<br>
+CD: 20s`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReminiscenceDenia.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Fusion",
         modifierValue: 0.12,
       },
     ],
@@ -2119,6 +2180,34 @@ CD: 20s.`,
       {
         modifier: "Fusion",
         modifierValue: 0.25,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "WishesofQuietSnowfall",
+    name: "Wishes of Quiet Snowfall",
+    details: `Casting Outro Skill removes Snowfall and grants 25% Glacio DMG Bonus to the incoming Resonator for 15s.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/WishesofQuietSnowfall.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Glacio",
+        modifierValue: 0.25,
+      },
+    ],
+    alwaysEnabled: false,
+  },
+  {
+    key: "ReelofSplicedMemories",
+    name: "Reel of Spliced Memories",
+    details: `Inflicting Tune Rupture - Shifting or Tune Strain - Shifting on enemies increases the Tune Break Boost of Resonators in the team by 20 for 30s. Effects of the same name do not stack.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/ReelofSplicedMemories.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "tuneBreakBoost",
+        modifierValue: 0.2,
       },
     ],
     alwaysEnabled: false,

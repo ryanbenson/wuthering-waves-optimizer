@@ -22,6 +22,7 @@ export const characterPickerRoster: CharacterList = {
     { key: "Ciaccona", name: "Ciaccona" },
     { key: "Encore", name: "Encore" },
     { key: "Galbrena", name: "Galbrena" },
+    { key: "Hiyuki", name: "Hiyuki" },
     { key: "Iuno", name: "Iuno" },
     { key: "Jianxin", name: "Jianxin" },
     { key: "Jinhsi", name: "Jinhsi" },
@@ -161,6 +162,13 @@ export const allCharactersList = [
     element: "Fusion",
     rarity: 5,
     weapon: "Pistol",
+  },
+  {
+    key: "Hiyuki",
+    name: "Hiyuki",
+    element: "Glacio",
+    rarity: 5,
+    weapon: "Sword",
   },
   {
     key: "Iuno",

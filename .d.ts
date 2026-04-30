@@ -9,6 +9,7 @@ interface CharacterBasicInfo {
   aeroErosion?: boolean;
   havocBane?: boolean;
   electroFlare?: boolean;
+  glacioChafe?: boolean;
   fusionBurst?: boolean;
   tuneBreakBoost?: number;
 }

@@ -24,6 +24,8 @@ export const twoSetBonuses: string[] = [
   "Trailblazing Star 2 Set",
   "Sound of True Name 2 Set",
   "Chromatic Foam 2 Set",
+  "Wishes of Quiet Snowfall 2 Set",
+  "Reel of Spliced Memories 2 Set",
 ];
 export const threeSetBonuses: string[] = [
   "Crown of Valor 3 Set",
@@ -56,6 +58,8 @@ export const fiveSetBonuses: string[] = [
   "Trailblazing Star 5 Set",
   "Sound of True Name 5 Set",
   "Chromatic Foam 5 Set",
+  "Wishes of Quiet Snowfall 5 Set",
+  "Reel of Spliced Memories 5 Set",
 ];
 
 // Function to convert a list of echo set keys (e.g. MidnightVeil)
@@ -738,6 +742,46 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     ],
     details: `Fusion DMG + 10%`,
   },
+  "Wishes of Quiet Snowfall 2 Set": {
+    name: "Wishes of Quiet Snowfall",
+    key: "WishesofQuietSnowfall2Set",
+    passives: [
+      {
+        key: "WishesofQuietSnowfall2Set",
+        details: `Glacio DMG + 10%`,
+        modifiers: [
+          {
+            modifier: "Glacio",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Glacio DMG + 10%`,
+  },
+  "Reel of Spliced Memories 2 Set": {
+    name: "Reel of Spliced Memories",
+    key: "ReelofSplicedMemories2Set",
+    passives: [
+      {
+        key: "ReelofSplicedMemories2Set",
+        details: `ATK + 10%`,
+        modifiers: [
+          {
+            modifier: "ATK",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `ATK + 10%`,
+  },
 };
 
 export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
@@ -1389,7 +1433,7 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         ],
         minStacks: 0,
         maxStacks: 0,
-        alwaysEnabled: true,
+        alwaysEnabled: false,
       },
     ],
     details: `Dealing Echo Skill DMG to enemies increases the Resonator's Echo Skill Crit. Rate by 20%, and grants 15% Aero DMG Bonus for 5s.`,
@@ -1409,9 +1453,65 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         ],
         minStacks: 0,
         maxStacks: 0,
-        alwaysEnabled: true,
+        alwaysEnabled: false,
       },
     ],
     details: `When the Resonator inflicts Fusion Burst on the enemies, they gain the following effects: Gain 10% Fusion DMG Bonus for 15s. While this effect is active, casting an Outro Skill grants the incoming Resonator 25% Fusion DMG Bonus for 15s.`,
+  },
+  "Wishes of Quiet Snowfall 5 Set": {
+    name: "Wishes of Quiet Snowfall",
+    key: "WishesofQuietSnowfall5Set",
+    passives: [
+      {
+        key: "WishesofQuietSnowfall5SetGlacio",
+        details: `Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s. The Resonator gains the Snowfall effect for 15s, which can be triggered once every 25s.`,
+        modifiers: [
+          {
+            modifier: "Glacio",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: false,
+      },
+      {
+        key: "WishesofQuietSnowfall5SetCritRate",
+        details: `Dealing Resonance Liberation DMG removes Snowfall and increases the Resonator's Crit. Rate by 25% for 6s. While the effect is active, dealing Resonance Liberation DMG extends its duration by 4s, triggered once every 0.5s, up to 6 times.`,
+        modifiers: [
+          {
+            modifier: "CritRate",
+            modifierValue: 25,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: false,
+      },
+    ],
+    details: `Inflicting Glacio Chafe on enemies increases Glacio DMG dealt by 10% for 15s. The Resonator gains the Snowfall effect for 15s, which can be triggered once every 25s. While Snowfall is active:<br>
+- Dealing Resonance Liberation DMG removes Snowfall and increases the Resonator's Crit. Rate by 25% for 6s. While the effect is active, dealing Resonance Liberation DMG extends its duration by 4s, triggered once every 0.5s, up to 6 times.<br>
+- Casting Outro Skill removes Snowfall and grants 25% Glacio DMG Bonus to the incoming Resonator for 15s.<br>
+When Snowfall is removed, only one of the effects above can be triggered.`,
+  },
+  "Reel of Spliced Memories 5 Set": {
+    name: "Reel of Spliced Memories",
+    key: "ReelofSplicedMemories5Set",
+    passives: [
+      {
+        key: "ReelofSplicedMemories5Set",
+        details: `Inflicting Tune Rupture - Shifting or Tune Strain - Shifting on enemies increases the Tune Break Boost of Resonators in the team by 20 for 30s. Effects of the same name do not stack.`,
+        modifiers: [
+          {
+            modifier: "tuneBreakBoost",
+            modifierValue: 20,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: false,
+      },
+    ],
+    details: `Inflicting Tune Rupture - Shifting or Tune Strain - Shifting on enemies increases the Tune Break Boost of Resonators in the team by 20 for 30s. Effects of the same name do not stack.`,
   },
 };

@@ -293,6 +293,31 @@
     </div>
   </div>
   <div
+    v-if="isGlacioChafeEnabled"
+    class="data-input--talents mt-8"
+    data-test-enemy-glacio-chafe>
+    <div class="flex flex-col pb-7 relative">
+      <label
+        for="havocBane"
+        class="talent__label"
+        data-test-enemy-glacio-chafe-label>
+        Glacio Chafe Stacks
+        <span class="text-primary">{{ glacioChafeStacks }}</span>
+      </label>
+      <input
+        v-model.number="glacioChafeStacks"
+        name="glacioChafeStacks"
+        id="glacioChafeStacks"
+        type="range"
+        min="0"
+        max="13"
+        step="1"
+        class="range range-xs"
+        :class="rangeClasses"
+        data-test-enemy-glacio-chafe-input />
+    </div>
+  </div>
+  <div
     v-if="isElectroFlareEnabled"
     class="data-input--talents mt-8"
     data-test-enemy-electro-rage>
@@ -339,6 +364,7 @@ const props = withDefaults(
     isHavocBaneEnabled?: boolean;
     isFusionBurstEnabled?: boolean;
     isElectroFlareEnabled?: boolean;
+    isGlacioChafeEnabled?: boolean;
   }>(),
   {
     characterElement: "",
@@ -347,6 +373,7 @@ const props = withDefaults(
     isHavocBaneEnabled: false,
     isFusionBurstEnabled: false,
     isElectroFlareEnabled: false,
+    isGlacioChafeEnabled: false,
   },
 );
 
@@ -528,6 +555,18 @@ const electroRageStacks = computed({
   },
 });
 
+const glacioChafeStacks = computed({
+  get() {
+    const ch = currentCharacter.value as { glacioChafeStacks?: number };
+    return ch.glacioChafeStacks ?? 0;
+  },
+  set(value: number) {
+    void characterStore.setCharacterData(props.character, {
+      glacioChafeStacks: value,
+    });
+  },
+});
+
 const strainStacks = computed({
   get() {
     const ch = currentCharacter.value as { strainStacks?: number };
@@ -550,6 +589,7 @@ watchEffect(() => {
     fusionBurstStacks: fusionBurstStacks.value,
     electroFlareStacks: electroFlareStacks.value,
     electroRageStacks: electroRageStacks.value,
+    glacioChafeStacks: glacioChafeStacks.value,
   });
 });
 </script>

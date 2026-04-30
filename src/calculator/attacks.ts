@@ -11,6 +11,7 @@ import {
   getSpectroFrazzleDamage,
   getAeroErosionDamage,
   getFusionBurstDamage,
+  getGlacioChafeDamage,
   getElectroFlareDamage,
   calcHeal,
   calcDamage,
@@ -824,8 +825,9 @@ export const calculateAttackDamage = (
       context.character.chosenChar?.basic?.tuneBreakBoost ?? 0;
     const tuneBreakBoostSelf = selfBuffs?.tuneBreakBoost ?? 0;
     const tuneBreakBoostTeam = context.buffs.teamBuffsData?.tuneBreakBoost ?? 0;
+    const tuneBreakBoostEchoes = context.equipment.echoStats?.tuneBreakBoost ?? 0;
     const totalTuneBreakBoost =
-      baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam;
+      baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam + (tuneBreakBoostEchoes / 100);
 
   let totalSpecialMultiplier = 0;
   let resonanceChainAttackSpecialMultiplierAttack =
@@ -1149,6 +1151,64 @@ export const calculateAttackDamage = (
     totalCritDmg = baseCritDmg + critDmgResoanceChains;
     if (attack?.subType === "FusionBurst") {
       const elementalEffectDmg = getFusionBurstDamage(
+        String(context.character.characterLevel),
+        context.enemy.enemyLevel,
+        context.enemy.enemyResist,
+        totalResistReduction,
+        totalDefReduction,
+        totalTalentModifierMultiply,
+        totalDeepen,
+        totalCritRate,
+        totalCritDmg,
+        attack?.count ?? 1,
+        attack?.stacks ?? 0,
+      );
+      return elementalEffectDmg;
+    }
+  }
+
+  if (
+    attackType === "ElementalEffect" &&
+    attack?.subType === "GlacioChafe"
+  ) {
+    let totalDeepen = 0;
+    let deepenWeaponBuffs =
+      context.equipment.weapon.weaponPassiveStats?.[
+        "DMGDeepen:GlacioChafe"
+      ] ?? 0;
+    if (excludeWeaponBuffs) {
+      deepenWeaponBuffs = 0;
+    }
+    let deepenTeamBuffs =
+      context.buffs.teamBuffsData?.["DMGDeepen:GlacioChafe"] ?? 0;
+    if (excludeTeamBuffs) {
+      deepenTeamBuffs = 0;
+    }
+    const deepenSelfBuffs =
+      selfBuffs?.["DMGDeepen:GlacioChafe"] ?? 0;
+    const deepenResonanceChains =
+      context.buffs.charResonanceChainsData?.["DMGDeepen:GlacioChafe"] ?? 0;
+    totalDeepen =
+      deepenWeaponBuffs +
+      deepenTeamBuffs +
+      deepenSelfBuffs +
+      deepenResonanceChains;
+    let baseCritRate = 0;
+    let baseCritDmg = 1;
+    let totalCritRate;
+    let totalCritDmg;
+    const critRateResoanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritRate`
+      ] ?? 0;
+    const critDmgResoanceChains =
+      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        `${attack.key}:CritDMG`
+      ] ?? 0;
+    totalCritRate = baseCritRate + critRateResoanceChains;
+    totalCritDmg = baseCritDmg + critDmgResoanceChains;
+    if (attack?.subType === "GlacioChafe") {
+      const elementalEffectDmg = getGlacioChafeDamage(
         String(context.character.characterLevel),
         context.enemy.enemyLevel,
         context.enemy.enemyResist,
@@ -1517,6 +1577,22 @@ export const calcDamages = (context: CalculationContext) => {
     // @ts-ignore
     elementalReactionsAttacks.push(attack);
   }
+  if (
+    context.enemy.glacioChafe.isGlacioChafeEnabled &&
+    context.enemy.glacioChafe.glacioChafeStacks > 0
+  ) {
+    const glacioChafeAttack = {
+      key: "ElementalEffectGlacioChafe",
+      label: "Glacio Chafe",
+      talent: "",
+      type: "ElementalEffect",
+      element: "Glacio",
+      subType: "GlacioChafe",
+      stacks: context.enemy.glacioChafe.glacioChafeStacks,
+    };
+    // @ts-ignore
+    elementalReactionsAttacks.push(glacioChafeAttack);
+  }
   if (elementalReactionsAttacks.length > 0) {
     allDamagesData.elementalReactions = processAttacks(
       elementalReactionsAttacks,
@@ -1724,6 +1800,10 @@ interface CalculationContext {
       electroFlareStacks: number;
       electroRageStacks: number;
     };
+    glacioChafe: {
+      isGlacioChafeEnabled: boolean;
+      glacioChafeStacks: number;
+    };
     havocBane: {
       havocBaneStacks: number;
     };
@@ -1752,6 +1832,8 @@ export const getCalculationContext = (
   isElectroFlareEnabled: any = false,
   electroFlareStacks: any = 0,
   electroRageStacks: any = 0,
+  isGlacioChafeEnabled: any = false,
+  glacioChafeStacks: any = 0,
   characterLevel: any = 0,
   mainEcho: any = {},
   mainEchoRank: any = 5,
@@ -1885,6 +1967,10 @@ export const getCalculationContext = (
         isElectroFlareEnabled,
         electroFlareStacks,
         electroRageStacks,
+      },
+      glacioChafe: {
+        isGlacioChafeEnabled,
+        glacioChafeStacks,
       },
       havocBane: {
         havocBaneStacks,

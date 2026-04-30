@@ -874,6 +874,32 @@ export const computeSelfBuffs = (
         data["EchoDMGBonus"] += 0.3;
       }
     }
+    if (character === "Hiyuki" && key === "InherentSkillFineSnow") {
+      // SequenceNode6IntoaNightWithoutEnd
+      if (resonanceChainsConfig?.SequenceNode6IntoaNightWithoutEnd?.isEnabled) {
+        if (buffData?.stacks >= 1) {
+          data["CritDMG"] = (data["CritDMG"] || 0) + 0.4;
+        }
+        if (buffData?.stacks >= 2) {
+          data["EnableAttack"].push("InherentSkillFineSnow");
+          data["CritDMG"] = (data["CritDMG"] || 0) + 0.4;
+        }
+        if (buffData?.stacks >= 3) {
+          data.specificTalentBuffs["GlacioBiteDMG:specialMultiplier"] = 0.25;
+        }
+      } else {
+        if (buffData?.stacks >= 1) {
+          data["DMGDeepen:GlacioChafe"] = (data["DMGDeepen:GlacioChafe"] || 0) + 0.3;
+          data["CritDMG"] = (data["CritDMG"] || 0) + 0.4;
+        }
+        if (buffData?.stacks >= 2) {
+          data["EnableAttack"].push("InherentSkillFineSnow");
+        }
+        if (buffData?.stacks >= 3) {
+          data["DMGDeepen:GlacioChafe"] = (data["DMGDeepen:GlacioChafe"] || 0) + 0.3;
+        }
+      }
+    }
   }
   // this needs to go last, otherwise it will run every time a buff is set and way over-buff by applying itself too many times
   modifySpecificTalents.forEach((item: any) => {

@@ -28,4 +28,11 @@ export const negativeStatusAttacks = [
     element: "Electro",
     subType: "ElectroFlare",
   },
+  {
+    key: "ElementalEffectGlacioChafe",
+    label: "Glacio Chafe",
+    type: "ElementalEffect",
+    element: "Glacio",
+    subType: "GlacioChafe",
+  },
 ];

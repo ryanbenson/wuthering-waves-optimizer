@@ -3,7 +3,7 @@
     <form method="dialog" class="modal-backdrop">
       <button>close</button>
     </form>
-    <div class="modal-box max-w-xl">
+    <div class="modal-box max-w-2xl">
       <form method="dialog">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕

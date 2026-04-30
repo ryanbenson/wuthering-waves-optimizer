@@ -132,7 +132,8 @@
           :is-aero-erosion-enabled="isAeroErosionEnabled"
           :is-havoc-bane-enabled="isHavocBaneEnabled"
           :is-fusion-burst-enabled="isFusionBurstEnabled"
-          :is-electro-flare-enabled="isElectroFlareEnabled"></CalculatorEnemy>
+          :is-electro-flare-enabled="isElectroFlareEnabled"
+          :is-glacio-chafe-enabled="isGlacioChafeEnabled"></CalculatorEnemy>
       </div>
       <div class="screen--results" v-show="curScreen === 'results'">
         <CalculatorStats
@@ -435,11 +436,13 @@ export default defineComponent({
     const isHavocBaneEnabled = ref(false);
     const isFusionBurstEnabled = ref(false);
     const isElectroFlareEnabled = ref(false);
+    const isGlacioChafeEnabled = ref(false);
     const havocBaneStacks = ref(0);
     const aeroErosionStacks = ref(0);
     const fusionBurstStacks = ref(0);
     const electroFlareStacks = ref(0);
     const electroRageStacks = ref(0);
+    const glacioChafeStacks = ref(0);
     const strainStacks = ref(0);
     const isMissingAeroErosionData = ref(false);
     // component refs
@@ -482,6 +485,8 @@ export default defineComponent({
       isHavocBaneEnabled.value = chosenChar?.value?.basic?.havocBane ?? false;
       isFusionBurstEnabled.value = chosenChar?.value?.basic?.fusionBurst ?? false;
       isElectroFlareEnabled.value = chosenChar?.value?.basic?.electroFlare ?? false;
+      isGlacioChafeEnabled.value =
+        chosenChar?.value?.basic?.glacioChafe ?? false;
       // hold onto the character's main element
       characterElement.value = chosenChar.value?.basic?.element;
       // update the base stats
@@ -526,6 +531,8 @@ export default defineComponent({
         isElectroFlareEnabled.value,
         electroFlareStacks.value,
         electroRageStacks.value,
+        isGlacioChafeEnabled.value,
+        glacioChafeStacks.value,
         characterLevel.value,
         mainEcho.value,
         mainEchoRank.value,
@@ -642,10 +649,12 @@ export default defineComponent({
         teamBuffsData?.value?.tuneBreakBoost ??
         teamBuffsData?.tuneBreakBoost ??
         0;
+      const tuneBreakBoostEchoes = echoStats?.value?.tuneBreakBoost ?? 0;
       tuneBreakBoost.value =
         (baseTuneBreakBoost || 0) +
         (tuneBreakBoostSelf || 0) +
-        (tuneBreakBoostTeam || 0);
+        (tuneBreakBoostTeam || 0) +
+        (tuneBreakBoostEchoes / 100);
     };
 
     const handleWeaponUpdated = (givenWeaponData) => {
@@ -776,6 +785,7 @@ export default defineComponent({
       fusionBurstStacks.value = data.fusionBurstStacks;
       electroFlareStacks.value = data.electroFlareStacks;
       electroRageStacks.value = data.electroRageStacks;
+      glacioChafeStacks.value = data.glacioChafeStacks;
       strainStacks.value = data.strainStacks;
       calcAllDamages();
     };
@@ -938,6 +948,8 @@ export default defineComponent({
         isElectroFlareEnabled: isElectroFlareEnabled.value,
         electroFlareStacks: electroFlareStacks.value,
         electroRageStacks: electroRageStacks.value,
+        isGlacioChafeEnabled: isGlacioChafeEnabled.value,
+        glacioChafeStacks: glacioChafeStacks.value,
         strainStacks: strainStacks.value,
 
         // Main echo
@@ -1131,6 +1143,8 @@ export default defineComponent({
           isElectroFlareEnabled: context.isElectroFlareEnabled,
           electroFlareStacks: context.electroFlareStacks,
           electroRageStacks: context.electroRageStacks,
+          isGlacioChafeEnabled: context.isGlacioChafeEnabled,
+          glacioChafeStacks: context.glacioChafeStacks,
           mainEcho: context.mainEcho,
           mainEchoRank: context.mainEchoRank,
           rotationsList: JSON.parse(JSON.stringify(context.rotationsList)),
@@ -1554,6 +1568,7 @@ export default defineComponent({
       isHavocBaneEnabled,
       isFusionBurstEnabled,
       isElectroFlareEnabled,
+      isGlacioChafeEnabled,
       // component refs
       characterBuffsRef,
       // optimizer stuff
