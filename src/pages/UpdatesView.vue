@@ -5,6 +5,7 @@
     <h3>May 1, 2026</h3>
     <ul>
       <li>Fixes Hiyuki forte 1 on her Iai attack.</li>
+      <li>Fixes Denia image in the team buffs.</li>
     </ul>
     <h3>April 30, 2026</h3>
     <ul>

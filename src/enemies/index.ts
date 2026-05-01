@@ -2901,7 +2901,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   ReminiscenceDenia: {
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/ReminiscenceDenia.webp",
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/enemies/ReminiscenseDenia.webp",
     name: "Reminiscence: Denia",
     type: "Calamity",
     resist: {
