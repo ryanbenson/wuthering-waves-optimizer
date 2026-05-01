@@ -6,6 +6,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
+        modifier: "talentModifierMultiply",
         modifySpecificTalents: [
           "BasicAttackForeclaimedSelfStage1DMG",
           "BasicAttackForeclaimedSelfStage2DMG",
@@ -33,6 +34,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
+        modifier: "talentModifierMultiply",
         modifySpecificTalents: [
           "BasicAttackIaiDMG",
         ],
@@ -95,6 +97,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
+        modifier: "talentModifierMultiply",
         modifySpecificTalents: [
           "ResonanceSkillPresentSelfDMG",
           "FrostblightJadeCleaveDMG",
