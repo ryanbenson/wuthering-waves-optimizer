@@ -5,6 +5,7 @@
     <h3>April 30, 2026</h3>
     <ul>
       <li>Fixes text issue on Hiyuki intro skill.</li>
+      <li>Fixes s1, s2, and s5 Hiyuki resonance chains.</li>
     </ul>
     <h3>April 29, 2026</h3>
     <ul>
