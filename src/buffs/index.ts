@@ -2017,7 +2017,7 @@ CD: 20s.`,
     name: "Reminiscence: Denia",
     details: `Within the next 15s, casting Outro Skill grants the incoming Resonator 12.00% Fusion DMG Bonus for 15s.<br>
 CD: 20s`,
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReminiscenceDenia.webp",
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReminiscenseDenia.webp",
     hasStacks: false,
     modifiers: [
       {
