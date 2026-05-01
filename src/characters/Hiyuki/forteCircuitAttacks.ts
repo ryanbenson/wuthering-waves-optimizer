@@ -7,7 +7,7 @@ export const forteCircuitAttacks = {
       label: "Basic Attack - Iai DMG",
       type: "Liberation",
       talents: {
-        "1": "1142.76%+23.80%*4",
+        "1": "142.76%+23.80%*4",
         "2": "154.47%+25.75%*4",
         "3": "166.18%+27.70%*4",
         "4": "182.56%+30.43%*4",
