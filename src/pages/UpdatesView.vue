@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>May 2, 2026</h3>
+    <ul>
+      <li>Updates Glacio Bite DMG damage formula for Hiyuki.</li>
+    </ul>
     <h3>May 1, 2026</h3>
     <ul>
       <li>Fixes Hiyuki forte 1 on her Iai attack.</li>
