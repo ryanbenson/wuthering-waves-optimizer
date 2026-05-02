@@ -990,7 +990,8 @@
         damage.totalDamageContext.type === 'spectroFrazzle' ||
         damage.totalDamageContext.type === 'aeroErosion' ||
         damage.totalDamageContext.type === 'electroFlare' ||
-        damage.totalDamageContext.type === 'glacioChafe'
+        damage.totalDamageContext.type === 'glacioChafe' ||
+        damage.totalDamageContext.type === 'glacioBiteForte'
       "
       class="damage-breakdown--fusionBurst">
       <div class="formula bg-base-200 p-2 rounded-md font-mono">
@@ -1038,6 +1039,23 @@
           {{ displayPercentage(damage.totalDamageContext.totalDeepenEffect * 100) }}
         </span>
         )
+        <template
+          v-if="
+            damage.totalDamageContext.specialMultiplier != null &&
+            damage.totalDamageContext.specialMultiplier !== 0
+          ">
+          × (
+          <span class="text-primary">
+            1 +
+            {{
+              displayPercentage(
+                damage.totalDamageContext.specialMultiplier * 100,
+                2,
+              )
+            }}
+          </span>
+          )
+        </template>
       </div>
       <div class="font-bold mt-2 text-lg text-primary">Level Modifier</div>
       <div class="formula bg-base-200 p-2 rounded-md font-mono">

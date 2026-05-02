@@ -12,6 +12,7 @@ import {
   getAeroErosionDamage,
   getFusionBurstDamage,
   getGlacioChafeDamage,
+  getGlacioBiteForteDamage,
   getElectroFlareDamage,
   calcHeal,
   calcDamage,
@@ -926,6 +927,43 @@ export const calculateAttackDamage = (
     ] ?? null;
   if (talentModifierMultiplySet) {
     totalTalentModifierMultiply = talentModifierMultiplySet;
+  }
+
+  if (attack.key === "GlacioBiteDMG") {
+    let totalGlacioChafeDeepenForBite = 0;
+    let glacioChafeDeepenWeaponBuffs =
+      context.equipment.weapon.weaponPassiveStats?.[
+        "DMGDeepen:GlacioChafe"
+      ] ?? 0;
+    if (excludeWeaponBuffs) {
+      glacioChafeDeepenWeaponBuffs = 0;
+    }
+    let glacioChafeDeepenTeamBuffs =
+      context.buffs.teamBuffsData?.["DMGDeepen:GlacioChafe"] ?? 0;
+    if (excludeTeamBuffs) {
+      glacioChafeDeepenTeamBuffs = 0;
+    }
+    const glacioChafeDeepenSelfBuffs =
+      selfBuffs?.["DMGDeepen:GlacioChafe"] ?? 0;
+    const glacioChafeDeepenResonanceChains =
+      context.buffs.charResonanceChainsData?.["DMGDeepen:GlacioChafe"] ?? 0;
+    totalGlacioChafeDeepenForBite =
+      glacioChafeDeepenWeaponBuffs +
+      glacioChafeDeepenTeamBuffs +
+      glacioChafeDeepenSelfBuffs +
+      glacioChafeDeepenResonanceChains;
+    return getGlacioBiteForteDamage(
+      String(context.character.characterLevel),
+      context.enemy.enemyLevel,
+      context.enemy.enemyResist,
+      totalResistReduction,
+      totalDefReduction,
+      totalTalentModifierMultiply,
+      totalGlacioChafeDeepenForBite,
+      totalSpecialMultiplier,
+      count,
+      talent,
+    );
   }
 
   if (

@@ -1325,6 +1325,96 @@ export function getGlacioChafeDamage(
   );
 }
 
+/** Forte MV percent (e.g. 102%) as NS-style basis points (10200) for ÷10000 in the formula. */
+export function parseGlacioBiteForteMotionValueBasisPoints(
+  forteTalentString: string,
+): number {
+  const firstSegment = forteTalentString.split("+")[0].trim();
+  const pct = parseFloat(firstSegment.replace("%", ""));
+  if (Number.isNaN(pct)) {
+    return 0;
+  }
+  return Math.round(pct * 100);
+}
+
+/**
+ * Hiyuki Glacio Bite DMG: same level constant as negative status effects, forte MV as multiplier (÷10000),
+ * (1 + talentModifierMultiply) for MV buffs, normal DEF and RES (no def ignore), (1 + deepen), (1 + specialMultiplier).
+ * Does not crit.
+ */
+export function getGlacioBiteForteDamage(
+  charLevel: string,
+  enemyLevel: number,
+  enemyResist: number,
+  resistenceReduction: number,
+  defReduction: number = 0,
+  talentModifierMultiply: number = 0,
+  totalDeepenEffect: number = 0,
+  specialMultiplier: number = 0,
+  count: number = 1,
+  forteTalentString: string,
+): any {
+  const characterLevel = parseInt(charLevel.replace("+", ""), 10);
+  const defenseModifier = getDefenseModifier(
+    charLevel,
+    enemyLevel,
+    0,
+    defReduction,
+  );
+  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
+  const levelConstant = getNegativeStatusLevelConstant(characterLevel);
+  const motionValue = parseGlacioBiteForteMotionValueBasisPoints(
+    forteTalentString,
+  );
+  const baseDamage =
+    levelConstant *
+    (motionValue / 10000) *
+    (1 + talentModifierMultiply) *
+    defenseModifier *
+    resistModifier *
+    (1 + totalDeepenEffect) *
+    (1 + specialMultiplier);
+  const finalDamage = baseDamage * count;
+  const critRate = 0;
+  const critDamage = 1;
+  const finalDamageCrit = calcCritDamage(finalDamage, critDamage);
+  const finalDamageAverage = calcAvgDamage(finalDamage, critRate, critDamage);
+  const breakdownCountStr = count > 1 ? `${count} x ` : "";
+  const detailedCalculation = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
+  const detailedCalculationCrit = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
+  const detailedCalculationAverage = `${breakdownCountStr}${Math.ceil(baseDamage)}`;
+
+  return {
+    totalDamage: finalDamage,
+    critDamage: finalDamageCrit,
+    avgDamage: finalDamageAverage,
+    detailedCalculation,
+    detailedCalculationCrit,
+    detailedCalculationAvg: detailedCalculationAverage,
+    totalDamageContext: {
+      type: "glacioBiteForte",
+      charLevel,
+      enemyLevel,
+      enemyResist,
+      resistenceReduction,
+      defReduction,
+      count,
+      defenseModifier,
+      resistModifier,
+      talentModifierMultiply,
+      totalDeepenEffect,
+      specialMultiplier,
+      critRate,
+      critDamage,
+      baseDamage,
+      finalDamage,
+      levelConstant,
+      motionValue,
+      stacks: 0,
+    },
+  };
+}
+
 export function getElectroFlareDamage(
   charLevel: string,
   enemyLevel: number,
