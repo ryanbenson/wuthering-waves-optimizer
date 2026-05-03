@@ -5,6 +5,7 @@
     <h3>May 2, 2026</h3>
     <ul>
       <li>Updates Glacio Bite DMG damage formula for Hiyuki.</li>
+      <li>Makes Hiyuki's s6 special multiplier additive with the existing buffs.</li>
     </ul>
     <h3>May 1, 2026</h3>
     <ul>
