@@ -2,7 +2,7 @@
   <div class="drawer drawer-end z-50">
     <input
       id="my-drawer-4"
-      ref="drawerCheckboxRef"
+      v-model="isDrawerOpen"
       type="checkbox" 
       class="drawer-toggle" />
     <div class="drawer-content">
@@ -21,6 +21,7 @@
       <Calculator
         class="calculator"
         :key="calculatorKey"
+        :is-breakdown-open="isDrawerOpen"
         @stat-selected="openDrawer"
         @attack-selected="openDrawer"
         @breakdown-closed="closeDrawer"></Calculator>
@@ -33,18 +34,14 @@ import { onMounted, ref } from "vue";
 import Calculator from "../components/Calculator.vue";
 
 const calculatorKey = ref(self.crypto.randomUUID());
-const drawerCheckboxRef = ref<HTMLInputElement | null>(null);
+const isDrawerOpen = ref(false);
 
 function openDrawer() {
-  if (drawerCheckboxRef.value) {
-    drawerCheckboxRef.value.checked = true;
-  }
+  isDrawerOpen.value = true;
 }
 
 function closeDrawer() {
-  if (drawerCheckboxRef.value) {
-    drawerCheckboxRef.value.checked = false;
-  }
+  isDrawerOpen.value = false;
 }
 
 onMounted(() => {

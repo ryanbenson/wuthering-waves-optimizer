@@ -343,6 +343,12 @@ import { displayPercentage, displayInt } from "../utils/numbers";
 
 export default defineComponent({
   name: "Calculator",
+  props: {
+    isBreakdownOpen: {
+      type: Boolean,
+      default: false,
+    },
+  },
   components: {
     CalculatorCharacterSelect,
     CalculatorDamages,
@@ -837,23 +843,35 @@ export default defineComponent({
       character.value = chosenCharacter;
     };
 
-    const handleStatSelected = (statName) => {
-      selectedStat.value = statName;
+    const clearBreakdownSelection = () => {
       selectedAttackKey.value = null;
       selectedAttackDamage.value = null;
+      selectedStat.value = null;
       selectedAttackLabel.value = null;
+    };
+
+    const handleStatSelected = async (statName) => {
+      clearBreakdownSelection();
+      await nextTick(); // wait for the next tick to ensure the breakdown is actually closed/unmounted
+      selectedStat.value = statName;
       // Emit to parent (HomeView) to open the drawer
       emit("stat-selected", statName);
     };
 
     const handleBreakdownClose = () => {
-      selectedAttackKey.value = null;
-      selectedAttackDamage.value = null;
-      selectedStat.value = null;
-      selectedAttackLabel.value = null;
+      clearBreakdownSelection();
       // Emit to parent (HomeView) to close the drawer
       emit("breakdown-closed");
     };
+
+    watch(
+      () => props.isBreakdownOpen,
+      (isOpen) => {
+        if (!isOpen) {
+          clearBreakdownSelection();
+        }
+      },
+    );
 
     const handleUpdatedMainEcho = (chosenEcho) => {
       mainEcho.value = chosenEcho;
@@ -1486,8 +1504,9 @@ export default defineComponent({
       generatorWorker.postMessage({ type: "init" });
     };
 
-    function handleSelectedAttack(attackKey, damage, label) {
-      selectedStat.value = null;
+    async function handleSelectedAttack(attackKey, damage, label) {
+      clearBreakdownSelection();
+      await nextTick();
       selectedAttackKey.value = attackKey;
       selectedAttackDamage.value = damage;
       selectedAttackLabel.value = label;
