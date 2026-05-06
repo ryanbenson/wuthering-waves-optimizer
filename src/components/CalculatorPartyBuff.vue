@@ -93,6 +93,7 @@ export type PartyBuffModifier = {
   modifySpecificTalents?: string[];
   modifierValueTalentRef?: string;
   modifierTalentKey?: string;
+  modifierTalentTarget?: "talentModifierMultiplyAdd" | "talentModifierMultiply";
   modifierStep?: number;
   maximumValue?: number;
   minStatValue?: number;

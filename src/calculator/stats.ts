@@ -807,8 +807,20 @@ export const computeSelfBuffs = (
           const talentRef =
             talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
           const talentVal = modifierItem.modifierValue[talentRef];
-          data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
-            talentVal * stacks;
+          const target: string =
+            modifierItem.modifierTalentTarget ?? "talentModifierMultiplyAdd";
+          if (target === "talentModifierMultiply") {
+            data.specificTalentBuffs[
+              `${modifierItem.modifierTalentKey}:talentModifierMultiply`
+            ] =
+              (data.specificTalentBuffs[
+                `${modifierItem.modifierTalentKey}:talentModifierMultiply`
+              ] || 0) +
+              talentVal * stacks;
+          } else {
+            data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
+              talentVal * stacks;
+          }
         } else if (modifierItem.modifier === "EnableAttack") {
           data.EnableAttack.push(...modifierItem.modifierValue);
         } else {
@@ -829,8 +841,19 @@ export const computeSelfBuffs = (
           const talentRef =
             talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
           const talentVal = modifierItem.modifierValue[talentRef];
-          data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
-            talentVal;
+          const target: string =
+            modifierItem.modifierTalentTarget ?? "talentModifierMultiplyAdd";
+          if (target === "talentModifierMultiply") {
+            data.specificTalentBuffs[
+              `${modifierItem.modifierTalentKey}:talentModifierMultiply`
+            ] =
+              (data.specificTalentBuffs[
+                `${modifierItem.modifierTalentKey}:talentModifierMultiply`
+              ] || 0) + talentVal;
+          } else {
+            data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
+              talentVal;
+          }
         } else if (modifierItem.modifier === "talentModifierMultiply") {
           // for buffs that apply talentModifierMultiply to the calcs
           if (!data.talentModifierMultiply) {
@@ -1266,8 +1289,20 @@ export const computeResonanceChainsBuffs = (
           const talentRef =
             talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
           const talentVal = modifierItem.modifierValue[talentRef];
-          data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
-            talentVal * stacks;
+          const target: string =
+            modifierItem.modifierTalentTarget ?? "talentModifierMultiplyAdd";
+          if (target === "talentModifierMultiply") {
+            data.specificTalentBuffs[
+              `${modifierItem.modifierTalentKey}:talentModifierMultiply`
+            ] =
+              (data.specificTalentBuffs[
+                `${modifierItem.modifierTalentKey}:talentModifierMultiply`
+              ] || 0) +
+              talentVal * stacks;
+          } else {
+            data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
+              talentVal * stacks;
+          }
         } else if (modifierItem.modifier === "EnableAttack") {
           data.EnableAttack.push(...modifierItem.modifierValue);
         } else if (modifierItem.modifier === "TalentReplace") {
@@ -1290,8 +1325,19 @@ export const computeResonanceChainsBuffs = (
           const talentRef =
             talentData?.[modifierItem.modifierValueTalentRef] ?? "10";
           const talentVal = modifierItem.modifierValue[talentRef];
-          data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
-            talentVal;
+          const target: string =
+            modifierItem.modifierTalentTarget ?? "talentModifierMultiplyAdd";
+          if (target === "talentModifierMultiply") {
+            data.specificTalentBuffs[
+              `${modifierItem.modifierTalentKey}:talentModifierMultiply`
+            ] =
+              (data.specificTalentBuffs[
+                `${modifierItem.modifierTalentKey}:talentModifierMultiply`
+              ] || 0) + talentVal;
+          } else {
+            data[`${modifierItem.modifierTalentKey}:talentModifierMultiplyAdd`] =
+              talentVal;
+          }
         } else if (modifierItem.modifier === "talentModifierMultiply") {
           // for buffs that apply talentModifierMultiply to the calcs
           if (!data.talentModifierMultiply) {
