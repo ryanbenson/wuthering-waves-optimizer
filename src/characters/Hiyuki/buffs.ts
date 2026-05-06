@@ -9,7 +9,7 @@ export const buffs = [
       {
         modifier: "Talent",
         modifierTalentKey: "ForeclaimingBladeLiberationBaseDMG",
-        modifierTalentTarget: "talentModifierMultiply",
+        // modifierTalentTarget: "talentModifierMultiply",
         modifierValue: {
           "1": 4,
           "2": 4.328,
