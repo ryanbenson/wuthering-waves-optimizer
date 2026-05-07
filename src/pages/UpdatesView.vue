@@ -2,6 +2,14 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>May 7, 2026</h3>
+    <ul>
+      <li>Fixes Hiyuki's S4 healing to be HP based.</li>
+    </ul>
+    <h3>May 6, 2026</h3>
+    <ul>
+      <li>Updates Hiyuki liberation additive buff to distribute the bonus, but the total damage is the same.</li>
+    </ul>
     <h3>May 4, 2026</h3>
     <ul>
       <li>Removes the extra Frostburn Glacio Chafe DMG amplify.</li>

@@ -69,6 +69,7 @@ export const skillAttacks = {
         "10": "18%",
       },
       type: "Healing",
+      attribute: "hp",
       requiresResonanceChain: "SequenceNode4LikeReedsonTides",
     },
   ],
