@@ -44,12 +44,6 @@ const colorByType: Record<string, string> = {
   Echo: "rgb(255, 99, 255)",
   TuneBreak: "rgb(72, 61, 139)",
   NegativeStatus: "rgb(186, 104, 200)",
-  // Forte Glacio Bite (type GlacioChafe); separate from rotation negative-status Glacio Chafe
-  GlacioBite: "rgb(156, 84, 180)",
-};
-
-const bucketChartLabel: Record<string, string> = {
-  GlacioBite: "Glacio Bite",
 };
 
 const chartData = computed(() => {
@@ -67,7 +61,6 @@ const chartData = computed(() => {
         Echo: 0,
         TuneBreak: 0,
         NegativeStatus: 0,
-        GlacioBite: 0,
       };
       attacks.forEach((attack) => {
         const requiresResonanceChain = attack?.requiresResonanceChain ?? false;
@@ -91,7 +84,6 @@ const chartData = computed(() => {
         } else if (attack.type === "Healing") {
           attackDamagesByType[attack.type] += attack.damage.healAmount;
         } else if (attack.type === "ElementalEffect") {
-          // Rotation negative status (Frazzle, Chafe, etc.) — not kit forte "GlacioChafe" type
           let val = 0;
           if (attack.damage?.avgDamage !== undefined) {
             val = attack.damage.avgDamage;
@@ -99,15 +91,6 @@ const chartData = computed(() => {
             val = attack.damage.damage;
           }
           attackDamagesByType.NegativeStatus += val;
-        } else if (attack.type === "GlacioChafe") {
-          // e.g. Hiyuki Glacio Bite DMG (forte); same bucket name would double-count with rotation Chafe
-          let val = 0;
-          if (attack.damage?.avgDamage !== undefined) {
-            val = attack.damage.avgDamage;
-          } else if (attack.damage?.damage !== undefined) {
-            val = attack.damage.damage;
-          }
-          attackDamagesByType.GlacioBite += val;
         } else {
           attackDamagesByType[attack.type] += attack.damage.avgDamage;
         }
@@ -119,7 +102,7 @@ const chartData = computed(() => {
         }
       });
       const data = Object.keys(attackDamagesByType).map((key) => ({
-        label: bucketChartLabel[key] ?? key,
+        label: key,
         value: attackDamagesByType[key as keyof typeof attackDamagesByType],
         color: colorByType[key],
       }));
