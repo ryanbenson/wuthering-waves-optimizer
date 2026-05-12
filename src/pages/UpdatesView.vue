@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>May 12, 2026</h3>
+    <ul>
+      <li>Fixes chart display issue for Glacio Chafe.</li>
+    </ul>
     <h3>May 7, 2026</h3>
     <ul>
       <li>Fixes Hiyuki's S4 healing to be HP based.</li>

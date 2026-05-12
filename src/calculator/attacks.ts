@@ -947,7 +947,6 @@ export const calculateAttackDamage = (
       selfBuffs?.["DMGDeepen:GlacioChafe"] ?? 0;
     const glacioChafeDeepenResonanceChains =
       context.buffs.charResonanceChainsData?.["DMGDeepen:GlacioChafe"] ?? 0;
-    console.log(context.buffs);
     totalGlacioChafeDeepenForBite =
       glacioChafeDeepenWeaponBuffs +
       glacioChafeDeepenTeamBuffs +
