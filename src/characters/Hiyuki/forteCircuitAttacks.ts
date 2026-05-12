@@ -22,7 +22,9 @@ export const forteCircuitAttacks = {
     {
       key: "GlacioBiteDMG",
       label: "Glacio Bite DMG",
-      type: "GlacioChafe",
+      type: "ElementalEffect",
+      element: "Glacio",
+      subType: "GlacioChafe",
       talents: {
         "1": "102%",
         "2": "102%",

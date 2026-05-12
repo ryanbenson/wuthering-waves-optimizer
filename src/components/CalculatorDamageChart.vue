@@ -14,6 +14,7 @@ Chart.register(ChartDataLabels);
 
 type ChartAttack = {
   type: string;
+  key?: string;
   requiresResonanceChain?: string | false;
   damage: Record<string, number>;
 };

@@ -929,6 +929,7 @@ export const calculateAttackDamage = (
     totalTalentModifierMultiply = talentModifierMultiplySet;
   }
 
+  // Forte MV + bite formula; must stay before ElementalEffect + GlacioChafe (rotation uses stacks MV).
   if (attack.key === "GlacioBiteDMG") {
     let totalGlacioChafeDeepenForBite = 0;
     let glacioChafeDeepenWeaponBuffs =
@@ -947,7 +948,6 @@ export const calculateAttackDamage = (
       selfBuffs?.["DMGDeepen:GlacioChafe"] ?? 0;
     const glacioChafeDeepenResonanceChains =
       context.buffs.charResonanceChainsData?.["DMGDeepen:GlacioChafe"] ?? 0;
-    console.log(context.buffs);
     totalGlacioChafeDeepenForBite =
       glacioChafeDeepenWeaponBuffs +
       glacioChafeDeepenTeamBuffs +
