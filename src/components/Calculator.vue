@@ -328,6 +328,7 @@ import {
 } from "../calculator/attacks";
 import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
 import type { OptimizerContext } from "../calculator/optimizer";
+import { getOptimizerLoadoutKey } from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -1259,18 +1260,10 @@ export default defineComponent({
                 ) {
                   continue;
                 }
-                // Create key exactly like generator does
-                const echoIds: string[] = [];
-                for (const e of result.loadout) {
-                  if (e && e.echoId) {
-                    echoIds.push(String(e.echoId));
-                  }
-                }
-                if (echoIds.length === 0) {
+                if (result.loadout.length === 0) {
                   continue;
                 }
-                echoIds.sort();
-                const key = echoIds.join("|");
+                const key = getOptimizerLoadoutKey(result.loadout);
                 if (seenCombinations.has(key)) {
                   continue;
                 }

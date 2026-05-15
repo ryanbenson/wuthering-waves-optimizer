@@ -20,6 +20,51 @@ function echoCost(echo: { type?: unknown }): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+function echoOptimizerSignature(echo: any): string {
+  if (!echo) return "";
+
+  return [
+    echo.echo ?? "",
+    echo.echoSet ?? "",
+    echo.type ?? "",
+    echo.rank ?? "",
+    echo.stat ?? "",
+    echo.echoSubStatsType1 ?? "",
+    echo.echoSubStatsValue1 ?? "",
+    echo.echoSubStatsType2 ?? "",
+    echo.echoSubStatsValue2 ?? "",
+    echo.echoSubStatsType3 ?? "",
+    echo.echoSubStatsValue3 ?? "",
+    echo.echoSubStatsType4 ?? "",
+    echo.echoSubStatsValue4 ?? "",
+    echo.echoSubStatsType5 ?? "",
+    echo.echoSubStatsValue5 ?? "",
+  ]
+    .map(String)
+    .join(":");
+}
+
+export function normalizeOptimizerLoadout(loadout: any[]): any[] {
+  if (!Array.isArray(loadout) || loadout.length <= 1) {
+    return loadout;
+  }
+
+  const [mainEcho, ...otherEchoes] = loadout;
+  return [
+    mainEcho,
+    ...otherEchoes
+      .slice()
+      .sort((a, b) =>
+        echoOptimizerSignature(a).localeCompare(echoOptimizerSignature(b)),
+      ),
+  ];
+}
+
+export function getOptimizerLoadoutKey(loadout: any[]): string {
+  const normalizedLoadout = normalizeOptimizerLoadout(loadout);
+  return normalizedLoadout.map(echoOptimizerSignature).join("|");
+}
+
 export function* generateLoadouts(
   echoes: any,
   mainEchoKeys = [],
@@ -323,12 +368,7 @@ export function optimize(
 
   // @ts-ignore
   for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
-    // Create a unique key for this combination based on echo keys, sorted
-    // Using echo.echoId to ensure we dont use the same specific echo, but we can use the same echoes
-    // @ts-ignore
-    const echoIds = loadout.map((echo) => echo.echoId);
-    echoIds.sort(); // Sort in place for better performance
-    const combinationKey = echoIds.join("|");
+    const combinationKey = getOptimizerLoadoutKey(loadout);
 
     // Skip if we've already seen this combination
     if (seenCombinations.has(combinationKey)) {
@@ -546,7 +586,9 @@ export function optimize(
       targetType,
       targetObject,
     };
-    const loadoutArr = JSON.parse(JSON.stringify(loadout));
+    const loadoutArr = JSON.parse(
+      JSON.stringify(normalizeOptimizerLoadout(loadout)),
+    );
     if (targetType === "Stat") {
       // get the stat wer'e looking for from our final stats
       targetValue = finalStats?.[targetObject] ?? 0;
