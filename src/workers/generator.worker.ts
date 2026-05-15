@@ -24,7 +24,11 @@
  * - Deduplication happens in the worker to reduce main thread overhead
  */
 
-import { generateLoadouts } from "../calculator/optimizer";
+import {
+  generateLoadouts,
+  getOptimizerLoadoutKey,
+  normalizeOptimizerLoadout,
+} from "../calculator/optimizer";
 
 /**
  * Message sent from main thread to generator worker
@@ -81,16 +85,8 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
       // @ts-ignore - generateLoadouts returns a generator with any[] items
       // @ts-ignore
       for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
-        // Create a unique key for this combination
-        const echoIds: string[] = [];
-        const loadoutArray = loadout as any[];
-        for (const e of loadoutArray) {
-          if (e && e.echoId) {
-            echoIds.push(String(e.echoId));
-          }
-        }
-        echoIds.sort();
-        const key = echoIds.join("|");
+        const normalizedLoadout = normalizeOptimizerLoadout(loadout as any[]);
+        const key = getOptimizerLoadoutKey(normalizedLoadout);
 
         // Skip if we've already seen this combination
         if (seenCombinations.has(key)) {
@@ -100,7 +96,7 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
 
         // CRITICAL: Clone the loadout array because generateLoadouts mutates the combo array
         // If we push the reference directly, all loadouts will be the same (the last mutated value)
-        const clonedLoadout = JSON.parse(JSON.stringify(loadout));
+        const clonedLoadout = JSON.parse(JSON.stringify(normalizedLoadout));
         batch.push(clonedLoadout);
         totalGenerated++;
 

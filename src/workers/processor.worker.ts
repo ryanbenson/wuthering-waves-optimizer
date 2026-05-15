@@ -19,7 +19,7 @@
  * 4. Worker sends "error" if batch processing fails
  *
  * Processing Steps (for each loadout):
- * 1. Extract echo IDs and create combination key
+ * 1. Normalize non-main echo ordering
  * 2. Calculate echo stats and set bonuses
  * 3. Compute character stats with echo buffs
  * 4. Calculate buffs (self, resonance chains, additional base, crit overflow)
@@ -38,7 +38,8 @@
  * - Context is pre-serialized by main thread (no functions, plain objects)
  */
 
-import { OptimizerContext } from "../calculator/optimizer";
+import type { OptimizerContext } from "../calculator/optimizer";
+import { normalizeOptimizerLoadout } from "../calculator/optimizer";
 import { getAttackData } from "../characters/characters";
 import { getCombinedEchoStats } from "../echoes/stats";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
@@ -114,20 +115,15 @@ function processLoadout(
   rotationData?: any, // Pre-processed rotation data for Rotation target type
 ): any | null {
   try {
-    // Create a unique key for this combination
-    const echoIds = loadout.map((echo) => echo.echoId);
-    echoIds.sort();
-
-    // Don't filter duplicates here - the main thread will handle that
-    // We still track it for reporting purposes
+    const normalizedLoadout = normalizeOptimizerLoadout(loadout);
 
     // Calculate echo stats and set bonuses
-    const echoStats = getCombinedEchoStats(loadout);
-    const echoSets = getSetsFromEchoes(loadout);
+    const echoStats = getCombinedEchoStats(normalizedLoadout);
+    const echoSets = getSetsFromEchoes(normalizedLoadout);
     const echoSetBonuses = getSetBonusEffects(echoSets);
     const setBonusOne = echoSetBonuses?.setBonusOne ?? null;
     const setBonusTwo = echoSetBonuses?.setBonusTwo ?? null;
-    const mainEchoKey = loadout[0]?.echo;
+    const mainEchoKey = normalizedLoadout[0]?.echo;
     const mainEchoBuff = mainEchoStats?.[mainEchoKey] ?? {};
 
     const setBonusOneBuffs =
@@ -357,7 +353,7 @@ function processLoadout(
       targetType,
       targetObject,
     };
-    const loadoutArr = JSON.parse(JSON.stringify(loadout));
+    const loadoutArr = JSON.parse(JSON.stringify(normalizedLoadout));
 
     if (targetType === "Stat") {
       targetValue = finalStats?.[targetObject] ?? 0;
