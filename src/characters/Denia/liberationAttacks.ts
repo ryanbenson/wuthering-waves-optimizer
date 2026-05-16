@@ -1,0 +1,40 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Foreclaiming",
+  description: `<div><span style="color:#a89969"><strong>Foreclaiming: Inward Vision</strong></span><br><span style="color:#f7ca2f"><strong>Heavy Attack - Foreclaiming: Inward Vision</strong></span> becomes available after casting <span style="color:#f7ca2f"><strong>Frost Splinter: Present Self</strong></span>.<br>While in <span style="color:#f7ca2f"><strong><span class="Highlight">Present Self</span></strong></span>, press <span style="color:#f7ca2f"><strong>Resonance Liberation</strong></span> to cast this skill, dealing <span style="color:#41aefb"><strong>Glacio DMG</strong></span>. Upon casting this skill, gain 3 points of <span style="color:#f7ca2f"><strong><span class="Highlight">Frostharden Iai</span></strong></span>, remove 300 points of <span style="color:#f7ca2f"><strong><span class="Highlight">Dedication</span></strong></span> and <span style="color:#f7ca2f"><strong><span class="Highlight">Frostheart</span></strong></span>. Then, enter <span style="color:#f7ca2f"><strong><span class="Highlight">Foreclaimed Self</span></strong></span> and restore 50 points of <span style="color:#f7ca2f"><strong><span class="Highlight">Frostheart</span></strong></span>.<br><span style="color:#f7ca2f"><strong>Foreclaiming: Inward Vision</strong></span> applies 4 stacks of <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Chafe</span></strong></span> on hit.<br>Casting <span style="color:#f7ca2f"><strong>Foreclaiming: Inward Vision</strong></span> does not consume Resonance Energy, and restores 50 points of <span style="color:#f7ca2f"><strong><span class="Highlight">Frostheart</span></strong></span>.<br><br><span style="color:#a89969"><strong>Foreclaiming: Blade Liberation</strong></span><br>While in <span style="color:#f7ca2f"><strong><span class="Highlight">Foreclaimed Self</span></strong></span>, <span style="color:#f7ca2f"><strong>Foreclaiming: Blade Liberation</strong></span> can be cast via the following ways:<br>- Press <span style="color:#f7ca2f"><strong>Resonance Liberation</strong></span> and release to cast <span style="color:#f7ca2f"><strong>Foreclaiming: Blade Liberation</strong></span>. If Hiyuki has 3 points of <span style="color:#f7ca2f"><strong><span class="Highlight">Snowforged Blade</span></strong></span>, consume all <span style="color:#f7ca2f"><strong><span class="Highlight">Snowforged Blade</span></strong></span>. Otherwise, this cast does not consume <span style="color:#f7ca2f"><strong><span class="Highlight">Snowforged Blade</span></strong></span>.<br>- Hold <span style="color:#f7ca2f"><strong>Resonance Liberation</strong></span> to enter a charging state. During this state, consume 1 point of <span style="color:#f7ca2f"><strong><span class="Highlight">Snowforged Blade</span></strong></span> periodically. Release <span style="color:#f7ca2f"><strong>Resonance Liberation</strong></span> to cast <span style="color:#f7ca2f"><strong>Foreclaiming: Blade Liberation</strong></span>. If no <span style="color:#f7ca2f"><strong><span class="Highlight">Snowforged Blade</span></strong></span> is consumed when <span style="color:#f7ca2f"><strong>Resonance Liberation</strong></span> is released, Hiyuki will continue to charge the attack and cast the skill automatically after certain time. <span style="color:#f7ca2f"><strong>Foreclaiming: Blade Liberation</strong></span> will also be cast automatically when <span style="color:#f7ca2f"><strong><span class="Highlight">Snowforged Blade</span></strong></span> depletes. <br>Hiyuki deals <span style="color:#41aefb"><strong>Glacio DMG</strong></span>. Each point of <span style="color:#f7ca2f"><strong><span class="Highlight">Snowforged Blade</span></strong></span> consumed increases the DMG Multiplier of this attack.<br>Casting the skill consumes 300 points of <span style="color:#f7ca2f"><strong><span class="Highlight">Dedication</span></strong></span> and <span style="color:#f7ca2f"><strong><span class="Highlight">Frostheart</span></strong></span>, and ends <span style="color:#f7ca2f"><strong><span class="Highlight">Foreclaimed Self</span></strong></span>.</div>`,
+  attacks: [
+    {
+      key: "ForeclaimingInwardVisionDMG",
+      label: "Foreclaiming: Inward Vision DMG",
+      talents: {
+        "1": "200.00%",
+        "2": "216.40%",
+        "3": "232.80%",
+        "4": "255.76%",
+        "5": "272.16%",
+        "6": "291.02%",
+        "7": "317.26%",
+        "8": "343.50%",
+        "9": "369.74%",
+        "10": "397.62%",
+      },
+      type: "Liberation",
+    },
+    {
+      key: "ForeclaimingBladeLiberationBaseDMG",
+      label: "Foreclaiming: Blade Liberation Base DMG",
+      talents: {
+        "1": "100.00%+400.00%",
+        "2": "108.20%+432.80%",
+        "3": "116.40%+465.60%",
+        "4": "127.88%+511.52%",
+        "5": "136.08%+544.32%",
+        "6": "145.51%+582.04%",
+        "7": "158.63%+634.52%",
+        "8": "171.75%+687.00%",
+        "9": "184.87%+739.48%",
+        "10": "198.81%+795.24%",
+      },
+      type: "Liberation",
+    },
+  ],
+};
