@@ -389,6 +389,76 @@
       <label class="form-control mb-4">
         <div class="label">
           <span class="label-text mr-2 flex items-center gap-1">
+            Glacio Chafe DMG Amplify
+          </span>
+        </div>
+        <input
+          type="number"
+          v-model="DamageAmplifyGlacioChafe"
+          name="DamageAmplifyGlacioChafe"
+          id="DamageAmplifyGlacioChafe"
+          class="input input-md input-bordered"
+          data-test-custom-buff-amplify-glacio-chafe />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Aero Erosion DMG Amplify
+          </span>
+        </div>
+        <input
+          type="number"
+          v-model="DamageAmplifyAeroErosion"
+          name="DamageAmplifyAeroErosion"
+          id="DamageAmplifyAeroErosion"
+          class="input input-md input-bordered"
+          data-test-custom-buff-amplify-aero-erosion />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Spectro Frazzle DMG Amplify
+          </span>
+        </div>
+        <input
+          type="number"
+          v-model="DamageAmplifySpectroFrazzle"
+          name="DamageAmplifySpectroFrazzle"
+          id="DamageAmplifySpectroFrazzle"
+          class="input input-md input-bordered"
+          data-test-custom-buff-amplify-spectro-frazzle />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Electro Flare DMG Amplify
+          </span>
+        </div>
+        <input
+          type="number"
+          v-model="DamageAmplifyElectroFlare"
+          name="DamageAmplifyElectroFlare"
+          id="DamageAmplifyElectroFlare"
+          class="input input-md input-bordered"
+          data-test-custom-buff-amplify-electro-flare />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Fusion Burst DMG Amplify
+          </span>
+        </div>
+        <input
+          type="number"
+          v-model="DamageAmplifyFusionBurst"
+          name="DamageAmplifyFusionBurst"
+          id="DamageAmplifyFusionBurst"
+          class="input input-md input-bordered"
+          data-test-custom-buff-amplify-fusion-burst />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
             Resist Shred
           </span>
         </div>
@@ -474,6 +544,11 @@ type CustomBuffKey =
   | "Havoc"
   | "HealingBonus"
   | "DamageAmplify"
+  | "DamageAmplifyGlacioChafe"
+  | "DamageAmplifyAeroErosion"
+  | "DamageAmplifySpectroFrazzle"
+  | "DamageAmplifyElectroFlare"
+  | "DamageAmplifyFusionBurst"
   | "ResistShred"
   | "DefIgnore"
   | "DefReduction"
@@ -508,6 +583,11 @@ interface ProcessedCustomBuffs {
   Havoc: number;
   HealingBonus: number;
   DamageAmplify: number;
+  DamageAmplifyGlacioChafe: number;
+  DamageAmplifyAeroErosion: number;
+  DamageAmplifySpectroFrazzle: number;
+  DamageAmplifyElectroFlare: number;
+  DamageAmplifyFusionBurst: number;
   ResistShred: number;
   DefIgnore: number;
   DefReduction: number;
@@ -570,6 +650,13 @@ const Spectro = makeCustomBuffField("Spectro");
 const Havoc = makeCustomBuffField("Havoc");
 const HealingBonus = makeCustomBuffField("HealingBonus");
 const DamageAmplify = makeCustomBuffField("DamageAmplify");
+const DamageAmplifyGlacioChafe = makeCustomBuffField("DamageAmplifyGlacioChafe");
+const DamageAmplifyAeroErosion = makeCustomBuffField("DamageAmplifyAeroErosion");
+const DamageAmplifySpectroFrazzle = makeCustomBuffField(
+  "DamageAmplifySpectroFrazzle",
+);
+const DamageAmplifyElectroFlare = makeCustomBuffField("DamageAmplifyElectroFlare");
+const DamageAmplifyFusionBurst = makeCustomBuffField("DamageAmplifyFusionBurst");
 const ResistShred = makeCustomBuffField("ResistShred");
 const DefIgnore = makeCustomBuffField("DefIgnore");
 const DefReduction = makeCustomBuffField("DefReduction");
@@ -600,6 +687,11 @@ const customBuffFieldRefs: WritableComputedRef<number>[] = [
   Havoc,
   HealingBonus,
   DamageAmplify,
+  DamageAmplifyGlacioChafe,
+  DamageAmplifyAeroErosion,
+  DamageAmplifySpectroFrazzle,
+  DamageAmplifyElectroFlare,
+  DamageAmplifyFusionBurst,
   ResistShred,
   DefIgnore,
   DefReduction,
@@ -639,6 +731,21 @@ const buffsData = computed((): ProcessedCustomBuffs => {
   const Havoc_ = Havoc.value ? Havoc.value / 100 : 0;
   const HealingBonus_ = HealingBonus.value ? HealingBonus.value / 100 : 0;
   const DamageAmplify_ = DamageAmplify.value ? DamageAmplify.value / 100 : 0;
+  const DamageAmplifyGlacioChafe_ = DamageAmplifyGlacioChafe.value
+    ? DamageAmplifyGlacioChafe.value / 100
+    : 0;
+  const DamageAmplifyAeroErosion_ = DamageAmplifyAeroErosion.value
+    ? DamageAmplifyAeroErosion.value / 100
+    : 0;
+  const DamageAmplifySpectroFrazzle_ = DamageAmplifySpectroFrazzle.value
+    ? DamageAmplifySpectroFrazzle.value / 100
+    : 0;
+  const DamageAmplifyElectroFlare_ = DamageAmplifyElectroFlare.value
+    ? DamageAmplifyElectroFlare.value / 100
+    : 0;
+  const DamageAmplifyFusionBurst_ = DamageAmplifyFusionBurst.value
+    ? DamageAmplifyFusionBurst.value / 100
+    : 0;
   const ResistShred_ = ResistShred.value ? ResistShred.value / 100 : 0;
   const DefIgnore_ = DefIgnore.value ? DefIgnore.value / 100 : 0;
   const DefReduction_ = DefReduction.value ? DefReduction.value / 100 : 0;
@@ -674,6 +781,11 @@ const buffsData = computed((): ProcessedCustomBuffs => {
     Havoc: Havoc_,
     HealingBonus: HealingBonus_,
     DamageAmplify: DamageAmplify_,
+    DamageAmplifyGlacioChafe: DamageAmplifyGlacioChafe_,
+    DamageAmplifyAeroErosion: DamageAmplifyAeroErosion_,
+    DamageAmplifySpectroFrazzle: DamageAmplifySpectroFrazzle_,
+    DamageAmplifyElectroFlare: DamageAmplifyElectroFlare_,
+    DamageAmplifyFusionBurst: DamageAmplifyFusionBurst_,
     ResistShred: ResistShred_,
     DefIgnore: DefIgnore_,
     DefReduction: DefReduction_,
