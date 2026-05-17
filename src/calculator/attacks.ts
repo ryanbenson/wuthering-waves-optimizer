@@ -24,6 +24,20 @@ import { getOriginalForteFromAttackKey } from "../characters/characters.ts";
 
 import { getEchoData } from "../echoes";
 
+type NegativeStatusSubType =
+  | "GlacioChafe"
+  | "SpectroFrazzle"
+  | "AeroErosion"
+  | "ElectroFlare"
+  | "FusionBurst";
+
+function getCustomNegativeStatusAmplify(
+  customBuffs: Record<string, unknown> | undefined,
+  subType: NegativeStatusSubType,
+): number {
+  return (customBuffs?.[`DamageAmplify${subType}`] as number) ?? 0;
+}
+
 export const processAttacks = (
   attacks: any,
   context: CalculationContext,
@@ -952,7 +966,11 @@ export const calculateAttackDamage = (
       glacioChafeDeepenWeaponBuffs +
       glacioChafeDeepenTeamBuffs +
       glacioChafeDeepenSelfBuffs +
-      glacioChafeDeepenResonanceChains;
+      glacioChafeDeepenResonanceChains +
+      getCustomNegativeStatusAmplify(
+        context.buffs.customBuffs,
+        "GlacioChafe",
+      );
     return getGlacioBiteForteDamage(
       String(context.character.characterLevel),
       context.enemy.enemyLevel,
@@ -994,7 +1012,11 @@ export const calculateAttackDamage = (
       spectroFrazzleDeepenWeaponBuffs +
       spectroFrazzleDeepenTeamBuffs +
       spectroFrazzleDeepenSelfBuffs +
-      spectroFrazzleDeepenResonanceChains;
+      spectroFrazzleDeepenResonanceChains +
+      getCustomNegativeStatusAmplify(
+        context.buffs.customBuffs,
+        "SpectroFrazzle",
+      );
     if (attack?.subType === "SpectroFrazzle") {
       let baseCritRate = 0;
       let baseCritDmg = 1;
@@ -1052,7 +1074,8 @@ export const calculateAttackDamage = (
       aeroErosionDeepenTeamBuffs +
       aeroErosionDeepenSelfBuffs +
       aeroErosionDeepenResonanceChains +
-      specificAeroErosionDeepenSelfBuffs;
+      specificAeroErosionDeepenSelfBuffs +
+      getCustomNegativeStatusAmplify(context.buffs.customBuffs, "AeroErosion");
     let baseCritRate = 0;
     let baseCritDmg = 1;
     const critRateResoanceChains =
@@ -1108,7 +1131,8 @@ export const calculateAttackDamage = (
       deepenWeaponBuffs +
       deepenTeamBuffs +
       deepenSelfBuffs +
-      deepenResonanceChains;
+      deepenResonanceChains +
+      getCustomNegativeStatusAmplify(context.buffs.customBuffs, "ElectroFlare");
     // typically Tune Break cannot crit, but some buffs exist to make it crit
     let baseCritRate = 0;
     let baseCritDmg = 1;
@@ -1171,7 +1195,8 @@ export const calculateAttackDamage = (
       deepenWeaponBuffs +
       deepenTeamBuffs +
       deepenSelfBuffs +
-      deepenResonanceChains;
+      deepenResonanceChains +
+      getCustomNegativeStatusAmplify(context.buffs.customBuffs, "FusionBurst");
     // typically Tune Break cannot crit, but some buffs exist to make it crit
     let baseCritRate = 0;
     let baseCritDmg = 1;
@@ -1231,7 +1256,8 @@ export const calculateAttackDamage = (
       deepenWeaponBuffs +
       deepenTeamBuffs +
       deepenSelfBuffs +
-      deepenResonanceChains;
+      deepenResonanceChains +
+      getCustomNegativeStatusAmplify(context.buffs.customBuffs, "GlacioChafe");
     let baseCritRate = 0;
     let baseCritDmg = 1;
     let totalCritRate;
