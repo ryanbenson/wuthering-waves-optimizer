@@ -20,6 +20,7 @@ export const characterPickerRoster: CharacterList = {
     { key: "Changli", name: "Changli" },
     { key: "Chisa", name: "Chisa" },
     { key: "Ciaccona", name: "Ciaccona" },
+    { key: "Denia", name: "Denia" },
     { key: "Encore", name: "Encore" },
     { key: "Galbrena", name: "Galbrena" },
     { key: "Hiyuki", name: "Hiyuki" },
@@ -148,6 +149,13 @@ export const allCharactersList = [
     element: "Aero",
     rarity: 5,
     weapon: "Pistol",
+  },
+  {
+    key: "Denia",
+    name: "Denia",
+    element: "Fusion",
+    rarity: 5,
+    weapon: "Rectifier",
   },
   {
     key: "Encore",
