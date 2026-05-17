@@ -2,6 +2,14 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>May 17, 2026</h3>
+    <ul>
+      <li>Adds negative status amplify as custom buffs and action-level buffs in rotations.</li>
+    </ul>
+    <h3>May 16, 2026</h3>
+    <ul>
+      <li>Fixes an issue where the optimizer would give the same build recommendation, just having the echoes in a different order.</li>
+    </ul>
     <h3>May 12, 2026</h3>
     <ul>
       <li>Fixes chart display issue for Glacio Chafe.</li>

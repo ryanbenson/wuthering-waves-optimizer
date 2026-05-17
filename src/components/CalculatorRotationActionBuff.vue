@@ -63,6 +63,11 @@ const modifierOptions = computed(() => {
   const modifierOptionsList: Array<{ key: string; label: string; disabled: boolean }> = [];
   const allModifiers = Object.entries(subStatLabelMap) as [string, string][];
   allModifiers.push(["DMGDeepen", "DMG Amplify"]);
+  allModifiers.push(["DMGDeepen:GlacioChafe", "Glacio Chafe DMG Amplify"]);
+  allModifiers.push(["DMGDeepen:AeroErosion", "Aero Erosion DMG Amplify"]);
+  allModifiers.push(["DMGDeepen:SpectroFrazzle", "Spectro Frazzle DMG Amplify"]);
+  allModifiers.push(["DMGDeepen:ElectroFlare", "Electro Flare DMG Amplify"]);
+  allModifiers.push(["DMGDeepen:FusionBurst", "Fusion Burst DMG Amplify"]);
   allModifiers.push(["ResistShred", "Resist Reduction"]);
   allModifiers.push(["DefIgnore", "DEF Ignore"]);
   allModifiers.push(["DefReduction", "DEF Reduction"]);
