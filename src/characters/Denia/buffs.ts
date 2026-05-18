@@ -3,7 +3,7 @@ export const buffs = [
     key: "DarkCore",
     name: "Dark Core",
     details:
-      `<div>- Denia can hold up to 3 <span style="color:#f7ca2f"><strong>Dark Cores</strong></span>.<br>
+      `<div>- Denia can hold <span style="color:#f7ca2f"><strong>Dark Cores</strong></span>.<br>
 - While in the Entropy Shift states, Denia obtains 1 <span style="color:#f7ca2f"><strong>Dark Core</strong></span> every 12s.<br>
 - Denia obtains 1 <span style="color:#f7ca2f"><strong>Dark Core</strong></span> upon casting Intro Skill It's Been A While! and Intro Skill Knock Knock.<br>
 - <span style="color:#f7ca2f"><strong>Banish - Breakdown Form Stage 2</strong></span> consumes all <span style="color:#f7ca2f"><strong>Dark Cores</strong></span>, dealing <span style="color:#f0744e"><strong>Fusion DMG</strong></span>. For each <span style="color:#f7ca2f"><strong>Dark Core</strong></span> consumed, the DMG Multiplier of the attack is increased by 150%.</div>`,

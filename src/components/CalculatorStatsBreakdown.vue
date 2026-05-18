@@ -105,6 +105,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { displayPercentage, displayInt } from "../utils/numbers";
+import { computeTotalTuneBreakBoost } from "../calculator/stats";
 import { getCharByName } from "../characters/characters";
 
 export type StatsBreakdownBuffBundle = {
@@ -309,18 +310,17 @@ const totalValue = computed(() => {
       return props.havoc;
     case "HealingBonus":
       return props.healingBonus;
-    case "tuneBreakBoost": {
-      const base = characterBaseTuneBreakBoost.value || 0;
-      const self =
-        props.charBuffsData?.value?.tuneBreakBoost ??
-        props.charBuffsData?.tuneBreakBoost ??
-        0;
-      const team =
-        props.teamBuffsData?.value?.tuneBreakBoost ??
-        props.teamBuffsData?.tuneBreakBoost ??
-        0;
-      return base + self + team;
-    }
+    case "tuneBreakBoost":
+      return computeTotalTuneBreakBoost({
+        baseTuneBreakBoost: characterBaseTuneBreakBoost.value || 0,
+        selfBuffs: props.charBuffsData?.value ?? props.charBuffsData ?? {},
+        resonanceChainsBuffs:
+          props.charResonanceChainsData?.value ??
+          props.charResonanceChainsData ??
+          {},
+        teamBuffs: props.teamBuffsData?.value ?? props.teamBuffsData ?? {},
+        echoStats: props.echoStats?.value ?? props.echoStats ?? {},
+      });
     case "BasicAttackDMGBonus":
       return props.basicAttackDmgBonus;
     case "HeavyAttackDMGBonus":

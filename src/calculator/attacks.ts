@@ -1,5 +1,6 @@
 import {
   calcCharStats,
+  computeTotalTuneBreakBoost,
   getElementDmgBonusByType,
   getDamageValByAttr,
   getDamageTypeBonusByType,
@@ -819,16 +820,13 @@ export const calculateAttackDamage = (
     return calcMidnightVeilDMG();
   }
 
-  // special calc for tune break
-    let baseTuneBreakBoost = 0;
-    // get any custom base character tune break boost
-    baseTuneBreakBoost =
-      context.character.chosenChar?.basic?.tuneBreakBoost ?? 0;
-    const tuneBreakBoostSelf = selfBuffs?.tuneBreakBoost ?? 0;
-    const tuneBreakBoostTeam = context.buffs.teamBuffsData?.tuneBreakBoost ?? 0;
-    const tuneBreakBoostEchoes = context.equipment.echoStats?.tuneBreakBoost ?? 0;
-    const totalTuneBreakBoost =
-      baseTuneBreakBoost + tuneBreakBoostSelf + tuneBreakBoostTeam + (tuneBreakBoostEchoes / 100);
+  const totalTuneBreakBoost = computeTotalTuneBreakBoost({
+    baseTuneBreakBoost: context.character.chosenChar?.basic?.tuneBreakBoost ?? 0,
+    selfBuffs,
+    resonanceChainsBuffs: context.buffs.charResonanceChainsData,
+    teamBuffs: context.buffs.teamBuffsData,
+    echoStats: context.equipment.echoStats,
+  });
 
   let totalSpecialMultiplier = 0;
   let resonanceChainAttackSpecialMultiplierAttack =

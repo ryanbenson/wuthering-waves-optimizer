@@ -418,6 +418,43 @@ export const calcCharStats = (
   return returnedStats;
 };
 
+/** Denia Etched Colors: bonus Tune Break Boost from Off-Tune Buildup Rate over 100%. */
+export const computeDeniaOffTuneBuildupTuneBreakBoost = (
+  offTuneBuildupRate: number,
+): number => {
+  if (offTuneBuildupRate < 100) {
+    return 0;
+  }
+  return Math.min((offTuneBuildupRate - 100) * 0.008, 0.4);
+};
+
+export const computeTotalTuneBreakBoost = ({
+  baseTuneBreakBoost = 0,
+  selfBuffs = {},
+  resonanceChainsBuffs = {},
+  teamBuffs = {},
+  echoStats = {},
+}: {
+  baseTuneBreakBoost?: number;
+  selfBuffs?: { tuneBreakBoost?: number };
+  resonanceChainsBuffs?: { tuneBreakBoost?: number };
+  teamBuffs?: { tuneBreakBoost?: number };
+  echoStats?: { tuneBreakBoost?: number };
+} = {}): number => {
+  const tuneBreakBoostSelf = selfBuffs?.tuneBreakBoost ?? 0;
+  const tuneBreakBoostResonanceChains =
+    resonanceChainsBuffs?.tuneBreakBoost ?? 0;
+  const tuneBreakBoostTeam = teamBuffs?.tuneBreakBoost ?? 0;
+  const tuneBreakBoostEchoes = echoStats?.tuneBreakBoost ?? 0;
+  return (
+    baseTuneBreakBoost +
+    tuneBreakBoostSelf +
+    tuneBreakBoostResonanceChains +
+    tuneBreakBoostTeam +
+    tuneBreakBoostEchoes / 100
+  );
+};
+
 export const computeSelfBuffs = (
   buffsConfig: any = null,
   buffsCharInfo: any = null,
@@ -919,17 +956,13 @@ export const computeSelfBuffs = (
       }
     }
     if (character === "Denia" && key === "InherentSkillEtchedColorsOffTuneBuildupRate") {
-      console.log("InherentSkillEtchedColorsOffTuneBuildupRate", buffData?.stacks);
       if (buffData?.stacks >= 1) {
-        // When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.
-        // the stacks will denote the Off-Tune Buildup Rate, which can be 0-150
-        // important, it must not apply until the number is >= 100%
-        const offTuneBuildupRate = buffData?.stacks ?? 0;
-        if (offTuneBuildupRate < 100) {
-          continue;
+        const tuneBreakBoost = computeDeniaOffTuneBuildupTuneBreakBoost(
+          buffData?.stacks ?? 0,
+        );
+        if (tuneBreakBoost > 0) {
+          data["tuneBreakBoost"] = (data["tuneBreakBoost"] || 0) + tuneBreakBoost;
         }
-        const tuneBreakBoost = Math.min((offTuneBuildupRate - 100) * 0.008, 0.4);
-        data["tuneBreakBoost"] = (data["tuneBreakBoost"] || 0) + tuneBreakBoost;
       }
     }
   }
