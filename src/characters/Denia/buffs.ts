@@ -1,28 +1,20 @@
 export const buffs = [
   {
-    key: "SnowforgedBlade",
-    name: "Snowforged Blade",
+    key: "DarkCore",
+    name: "Dark Core",
     details:
-      `<div><span class="Title">Foreclaiming: Blade Liberation</span><br>Each point of Snowforged Blade consumed increases the DMG Multiplier of this attack.</div>`,
+      `<div>- Denia can hold up to 3 <span style="color:#f7ca2f"><strong>Dark Cores</strong></span>.<br>
+- While in the Entropy Shift states, Denia obtains 1 <span style="color:#f7ca2f"><strong>Dark Core</strong></span> every 12s.<br>
+- Denia obtains 1 <span style="color:#f7ca2f"><strong>Dark Core</strong></span> upon casting Intro Skill It's Been A While! and Intro Skill Knock Knock.<br>
+- <span style="color:#f7ca2f"><strong>Banish - Breakdown Form Stage 2</strong></span> consumes all <span style="color:#f7ca2f"><strong>Dark Cores</strong></span>, dealing <span style="color:#f0744e"><strong>Fusion DMG</strong></span>. For each <span style="color:#f7ca2f"><strong>Dark Core</strong></span> consumed, the DMG Multiplier of the attack is increased by 150%.</div>`,
     hasStacks: true,
     modifiers: [
       {
-        modifier: "Talent",
-        modifierTalentKey: "ForeclaimingBladeLiberationBaseDMG",
-        // modifierTalentTarget: "talentModifierMultiply",
-        modifierValue: {
-          "1": 4,
-          "2": 4.328,
-          "3": 4.656,
-          "4": 5.1152,
-          "5": 5.4432,
-          "6": 5.8204,
-          "7": 6.3452,
-          "8": 6.87,
-          "9": 7.3948,
-          "10": 7.9524,
-        },
-        modifierValueTalentRef: "liberation",
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "BanishBreakdownFormStage2DMG",
+        ],
+        modifierValue: 1.5,
       },
     ],
     minStacks: 0,
@@ -30,24 +22,89 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: `InherentSkillFineSnow`,
-    name: `Inherent Skil: Fine Snow`,
-    details: `<div>When a Resonator in the team applies <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Chafe</span></strong></span> or <span style="color:#f7ca2f"><strong><span class="Highlight">Havoc Bane</span></strong></span>, Hiyuki gains 1 stack of <span style="color:#f7ca2f"><strong>Snow Rust</strong></span>. <span style="color:#f7ca2f"><strong>Snow Rust</strong></span> stacks up to 3 times. Each Resonator can trigger this effect only once in this way.<br>Based on Hiyuki's current stacks of <span style="color:#f7ca2f"><strong>Snow Rust</strong></span>, the following bonuses are unlocked:<br>1 stack of <span style="color:#f7ca2f"><strong>Snow Rust</strong></span>: When Hiyuki is the active Resonator in the team, <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Bite</span> DMG</strong></span> is Amplified by 30% against targets within a certain range. Hiyuki's Crit. DMG is increased by 40%.<br>2 stacks of <span style="color:#f7ca2f"><strong>Snow Rust</strong></span>: When Hiyuki is the active Resonator in the team, each time she applies <span class="Highlight">Glacio Chafe</span>, she additionally deals an instance of <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Bite</span> DMG</strong></span> with a fixed DMG Multiplier of 102%.
-    <br>3 stacks of <span style="color:#f7ca2f"><strong>Snow Rust</strong></span>: When Hiyuki is the active Resonator in the team,<span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Bite</span> DMG</strong></span> is additionally Amplified by 30% against targets within a certain range.<br>This effect resets when new Resonators are added to the team.</div>`,
-    hasStacks: true,
-    modifiers: [],
+    key: "EntropyShiftBreakdownForm",
+    name: "Entropy Shift: Breakdown Form",
+    details:
+      `<div>Increases ATK by 30%.<br>
+Obtaining this effect removes the <span style="color:#f7ca2f"><strong>Entropy Shift: Stagecraft Form</strong></span> effect.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.3,
+      },
+    ],
     minStacks: 0,
-    maxStacks: 3,
+    maxStacks: 0,
     alwaysEnabled: false,
   },
   {
-    key: `InherentSkillEphemeralRealm`,
-    name: `Inherent Skill: Ephemeral Realm`,
-    details: `<div>Once Hiyuki leaves the combat state or recovers after being knocked out, when she stays out of combat for 4s with has fewer than 1 point of <span style="color:#f7ca2f"><strong><span class="Highlight">Snowforged Blade</span></strong></span>, restore 1 point.</div>`,
+    key: "VoidParticle",
+    name: "Void Particle",
+    details:
+      `<div>When in the <span style="color:#f7ca2f"><strong>Breakdown Form</strong></span> while holding <span style="color:#f7ca2f"><strong>Void Particle</strong></span>, <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> consumes <span style="color:#f7ca2f"><strong>Void Particle</strong></span> on hit and grants the following effects:<br>- The skill DMG is considered <span style="color:#f7ca2f"><strong>Resonance Liberation DMG</strong></span> and the DMG Multiplier is increased by 50%.<br>- <span style="color:#f7ca2f"><strong>Conformal Charge</strong></span> regenerates 100% faster.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "ErosionFieldDMGPerTick",
+        ],
+        modifierValue: 0.5,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillVestigesOfFalsehood`,
+    name: `Inherent Skil: Vestiges of Falsehood`,
+    details: `<div>When Denia engages in combat in <span style="color:#ffd12f;" class="font-bold">Stagecraft Form</span>: restore <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121101">Dark Cores</span></span> to 2 if she has fewer than 2; restore <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121102">Void Particle</span></span> to 20 points if she has fewer than 20. This effect can be triggered once every 12s.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
     maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillEtchedColorsFusionBurst`,
+    name: `Inherent Skill: Etched Colors - Fusion Burst Mode`,
+    details: `<div>While in the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121106">Entropy Shift</span></span> states, Denia obtains the following effects based on her current <span style="color:#ffd12f;" class="font-bold">Resonance Mode</span>:<br>- <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Fusion Burst</span>: All Resonators in the team gain 30% Fusion DMG Bonus.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.3,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillEtchedColorsTuneStrain`,
+    name: `Inherent Skill: Etched Colors - Tune Strain Mode`,
+    details: `<div>While in the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121106">Entropy Shift</span></span> states, Denia obtains the following effects based on her current <span style="color:#ffd12f;" class="font-bold">Resonance Mode</span>:<br>- <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Tune Strain</span>: All Resonators in the team gain 10 Tune Break Boost. When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "tuneBreakBoost",
+        modifierValue: 0.1,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillEtchedColorsOffTuneBuildupRate`,
+    name: `Inherent Skill: Etched Colors - Off-Tune Buildup Rate`,
+    details: `<div>While in the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121106">Entropy Shift</span></span> states, Denia obtains the following effects based on her current <span style="color:#ffd12f;" class="font-bold">Resonance Mode</span>:<br>- <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Tune Strain</span>: All Resonators in the team gain 10 Tune Break Boost. When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.</div>`,
+    hasStacks: true,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 150,
     alwaysEnabled: false,
   },
   {

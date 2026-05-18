@@ -918,6 +918,20 @@ export const computeSelfBuffs = (
         }
       }
     }
+    if (character === "Denia" && key === "InherentSkillEtchedColorsOffTuneBuildupRate") {
+      console.log("InherentSkillEtchedColorsOffTuneBuildupRate", buffData?.stacks);
+      if (buffData?.stacks >= 1) {
+        // When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.
+        // the stacks will denote the Off-Tune Buildup Rate, which can be 0-150
+        // important, it must not apply until the number is >= 100%
+        const offTuneBuildupRate = buffData?.stacks ?? 0;
+        if (offTuneBuildupRate < 100) {
+          continue;
+        }
+        const tuneBreakBoost = Math.min((offTuneBuildupRate - 100) * 0.008, 0.4);
+        data["tuneBreakBoost"] = (data["tuneBreakBoost"] || 0) + tuneBreakBoost;
+      }
+    }
   }
   // this needs to go last, otherwise it will run every time a buff is set and way over-buff by applying itself too many times
   modifySpecificTalents.forEach((item: any) => {
