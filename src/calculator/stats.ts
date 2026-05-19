@@ -965,6 +965,17 @@ export const computeSelfBuffs = (
         }
       }
     }
+    if (character === "Denia" && key === "DarkCore") {
+      // SequenceNode3ThroughDarkandWindtheErlkingFollows
+      if (resonanceChainsConfig?.SequenceNode3ThroughDarkandWindtheErlkingFollows?.isEnabled) {
+        if (buffData?.stacks >= 5) {
+          data.specificTalentBuffs["PhantomBubbleStagecraftFormDMG:talentModifierMultiply"] = 12;
+          data.specificTalentBuffs["BasicAttackStagecraftFormStage4DMG:talentModifierMultiply"] = 12;
+        }
+        data.specificTalentBuffs["PhantomBubbleStagecraftFormDMG:talentTypeOverride"] = "Liberation";
+        data.specificTalentBuffs["BasicAttackStagecraftFormStage4DMG:talentTypeOverride"] = "Liberation";
+      }
+    }
   }
   // this needs to go last, otherwise it will run every time a buff is set and way over-buff by applying itself too many times
   modifySpecificTalents.forEach((item: any) => {
