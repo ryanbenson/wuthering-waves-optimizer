@@ -6,6 +6,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     avatarUrl: "Phoebe.png",
     gender: "female",
     element: "Spectro",
+    stances: ["Absolution", "Confession"],
     spectroFrazzle: true,
   };
 }

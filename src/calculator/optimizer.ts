@@ -223,6 +223,7 @@ export interface OptimizerContext {
   // Character store data (for resonance chains and buffs config)
   activeCharacterBuffs: Record<string, any>;
   activeCharacterResonanceChains: Record<string, any>;
+  activeStance?: string | null;
 
   // Helper function to get rotation by ID
   getRotationById: (character: string, rotationId: string) => any;
@@ -449,6 +450,7 @@ export function optimize(
       context.activeCharacterResonanceChains ?? {},
       context.chosenChar?.resonanceChains ?? [],
       context.talentData ?? {},
+      context.activeStance ?? null,
     );
 
     // Step 2: Compute self buffs using base stats
@@ -458,6 +460,7 @@ export function optimize(
       context.activeCharacterResonanceChains ?? {},
       context.talentData ?? {},
       context.character ?? null,
+      context.activeStance ?? null,
     );
 
     // Step 3: Calculate intermediate stats with resonance chains and self buffs
@@ -495,6 +498,7 @@ export function optimize(
       context.character ?? null,
       intermediateStats.energyRegen,
       intermediateStats.totalCritRate,
+      context.activeStance ?? null,
     );
 
     // Step 5: Compute CritOverflow buffs using intermediate stats
@@ -504,6 +508,7 @@ export function optimize(
       context.activeCharacterResonanceChains ?? {},
       context.chosenChar?.resonanceChains ?? [],
       intermediateStats.totalCritRate,
+      context.activeStance ?? null,
     );
 
     // Step 6: Merge AdditionalBase and CritOverflow into self buffs

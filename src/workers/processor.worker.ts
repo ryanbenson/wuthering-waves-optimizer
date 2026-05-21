@@ -181,6 +181,7 @@ function processLoadout(
       context.activeCharacterResonanceChains ?? {},
       context.chosenChar?.resonanceChains ?? [],
       context.talentData ?? {},
+      context.activeStance ?? null,
     );
 
     const selfBuffsData = computeSelfBuffs(
@@ -189,6 +190,7 @@ function processLoadout(
       context.activeCharacterResonanceChains ?? {},
       context.talentData ?? {},
       context.character ?? null,
+      context.activeStance ?? null,
     );
 
     let intermediateStats = calcCharStats(
@@ -222,6 +224,7 @@ function processLoadout(
       context.character ?? null,
       intermediateStats.energyRegen,
       intermediateStats.totalCritRate,
+      context.activeStance ?? null,
     );
 
     // Step 4b: Compute AdditionalBase buffs using intermediate stats (resonance chains)
@@ -241,6 +244,7 @@ function processLoadout(
         context.character ?? "",
         intermediateStats.energyRegen,
         intermediateStats.totalCritRate,
+        context.activeStance ?? null,
       );
     }
 
@@ -250,6 +254,7 @@ function processLoadout(
       context.activeCharacterResonanceChains ?? {},
       context.chosenChar?.resonanceChains ?? [],
       intermediateStats.totalCritRate,
+      context.activeStance ?? null,
     );
 
     const mergedSelfBuffs = {

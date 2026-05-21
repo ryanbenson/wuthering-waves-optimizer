@@ -5,6 +5,8 @@ interface CharacterBasicInfo {
   avatarUrl: string;
   gender: string;
   element: string;
+  /** Stance names for characters that toggle between exclusive buff sets. */
+  stances?: string[];
   spectroFrazzle?: boolean;
   aeroErosion?: boolean;
   havocBane?: boolean;
@@ -86,6 +88,19 @@ enum Modifier {
 interface ActionBuff {
   modifier: Modifier;
   modifierValue: number; // full value (e.g. 10 for 10% CritRate)
+}
+
+/** Shared shape for character buffs, resonance chains, and similar modifiers. */
+interface CharacterModifierDefinition {
+  key: string;
+  name?: string;
+  details?: string;
+  stance?: string;
+  hasStacks?: boolean;
+  minStacks?: number;
+  maxStacks?: number;
+  alwaysEnabled?: boolean;
+  modifiers?: unknown[];
 }
 
 interface Action {
