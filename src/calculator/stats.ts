@@ -418,6 +418,43 @@ export const calcCharStats = (
   return returnedStats;
 };
 
+/** Denia Etched Colors: bonus Tune Break Boost from Off-Tune Buildup Rate over 100%. */
+export const computeDeniaOffTuneBuildupTuneBreakBoost = (
+  offTuneBuildupRate: number,
+): number => {
+  if (offTuneBuildupRate < 100) {
+    return 0;
+  }
+  return Math.min((offTuneBuildupRate - 100) * 0.008, 0.4);
+};
+
+export const computeTotalTuneBreakBoost = ({
+  baseTuneBreakBoost = 0,
+  selfBuffs = {},
+  resonanceChainsBuffs = {},
+  teamBuffs = {},
+  echoStats = {},
+}: {
+  baseTuneBreakBoost?: number;
+  selfBuffs?: { tuneBreakBoost?: number };
+  resonanceChainsBuffs?: { tuneBreakBoost?: number };
+  teamBuffs?: { tuneBreakBoost?: number };
+  echoStats?: { tuneBreakBoost?: number };
+} = {}): number => {
+  const tuneBreakBoostSelf = selfBuffs?.tuneBreakBoost ?? 0;
+  const tuneBreakBoostResonanceChains =
+    resonanceChainsBuffs?.tuneBreakBoost ?? 0;
+  const tuneBreakBoostTeam = teamBuffs?.tuneBreakBoost ?? 0;
+  const tuneBreakBoostEchoes = echoStats?.tuneBreakBoost ?? 0;
+  return (
+    baseTuneBreakBoost +
+    tuneBreakBoostSelf +
+    tuneBreakBoostResonanceChains +
+    tuneBreakBoostTeam +
+    tuneBreakBoostEchoes / 100
+  );
+};
+
 export const computeSelfBuffs = (
   buffsConfig: any = null,
   buffsCharInfo: any = null,
@@ -916,6 +953,27 @@ export const computeSelfBuffs = (
         if (buffData?.stacks >= 3) {
           data.specificTalentBuffs["GlacioBiteDMG:specialMultiplier"] = 0.25;
         }
+      }
+    }
+    if (character === "Denia" && key === "InherentSkillEtchedColorsOffTuneBuildupRate") {
+      if (buffData?.stacks >= 1) {
+        const tuneBreakBoost = computeDeniaOffTuneBuildupTuneBreakBoost(
+          buffData?.stacks ?? 0,
+        );
+        if (tuneBreakBoost > 0) {
+          data["tuneBreakBoost"] = (data["tuneBreakBoost"] || 0) + tuneBreakBoost;
+        }
+      }
+    }
+    if (character === "Denia" && key === "DarkCore") {
+      // SequenceNode3ThroughDarkandWindtheErlkingFollows
+      if (resonanceChainsConfig?.SequenceNode3ThroughDarkandWindtheErlkingFollows?.isEnabled) {
+        if (buffData?.stacks >= 5) {
+          data.specificTalentBuffs["PhantomBubbleStagecraftFormDMG:talentModifierMultiply"] = 12;
+          data.specificTalentBuffs["BasicAttackStagecraftFormStage4DMG:talentModifierMultiply"] = 12;
+        }
+        data.specificTalentBuffs["PhantomBubbleStagecraftFormDMG:talentTypeOverride"] = "Liberation";
+        data.specificTalentBuffs["BasicAttackStagecraftFormStage4DMG:talentTypeOverride"] = "Liberation";
       }
     }
   }

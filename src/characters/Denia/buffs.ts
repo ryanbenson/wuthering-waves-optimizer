@@ -1,0 +1,230 @@
+export const buffs = [
+  {
+    key: "DarkCore",
+    name: "Dark Core",
+    details:
+      `<div>- Denia can hold <span style="color:#f7ca2f"><strong>Dark Cores</strong></span>.<br>
+- While in the Entropy Shift states, Denia obtains 1 <span style="color:#f7ca2f"><strong>Dark Core</strong></span> every 12s.<br>
+- Denia obtains 1 <span style="color:#f7ca2f"><strong>Dark Core</strong></span> upon casting Intro Skill It's Been A While! and Intro Skill Knock Knock.<br>
+- <span style="color:#f7ca2f"><strong>Banish - Breakdown Form Stage 2</strong></span> consumes all <span style="color:#f7ca2f"><strong>Dark Cores</strong></span>, dealing <span style="color:#f0744e"><strong>Fusion DMG</strong></span>. For each <span style="color:#f7ca2f"><strong>Dark Core</strong></span> consumed, the DMG Multiplier of the attack is increased by 150%.</div>`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "BanishBreakdownFormStage2DMG",
+        ],
+        modifierValue: 1.5,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 3,
+    alwaysEnabled: false,
+  },
+  {
+    key: "EntropyShiftBreakdownForm",
+    name: "Entropy Shift: Breakdown Form",
+    details:
+      `<div>Increases ATK by 30%.<br>
+Obtaining this effect removes the <span style="color:#f7ca2f"><strong>Entropy Shift: Stagecraft Form</strong></span> effect.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.3,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "VoidParticle",
+    name: "Void Particle",
+    details:
+      `<div>When in the <span style="color:#f7ca2f"><strong>Breakdown Form</strong></span> while holding <span style="color:#f7ca2f"><strong>Void Particle</strong></span>, <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> consumes <span style="color:#f7ca2f"><strong>Void Particle</strong></span> on hit and grants the following effects:<br>- The skill DMG is considered <span style="color:#f7ca2f"><strong>Resonance Liberation DMG</strong></span> and the DMG Multiplier is increased by 50%.<br>- <span style="color:#f7ca2f"><strong>Conformal Charge</strong></span> regenerates 100% faster.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "ErosionFieldDMGPerTick",
+        ],
+        modifierValue: 0.5,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillVestigesOfFalsehood`,
+    name: `Inherent Skil: Vestiges of Falsehood`,
+    details: `<div>When Denia engages in combat in <span style="color:#ffd12f;" class="font-bold">Stagecraft Form</span>: restore <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121101">Dark Cores</span></span> to 2 if she has fewer than 2; restore <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121102">Void Particle</span></span> to 20 points if she has fewer than 20. This effect can be triggered once every 12s.</div>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillEtchedColorsFusionBurst`,
+    name: `Inherent Skill: Etched Colors - Fusion Burst Mode`,
+    details: `<div>While in the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121106">Entropy Shift</span></span> states, Denia obtains the following effects based on her current <span style="color:#ffd12f;" class="font-bold">Resonance Mode</span>:<br>- <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Fusion Burst</span>: All Resonators in the team gain 30% Fusion DMG Bonus.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.3,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillEtchedColorsTuneStrain`,
+    name: `Inherent Skill: Etched Colors - Tune Strain Mode`,
+    details: `<div>While in the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121106">Entropy Shift</span></span> states, Denia obtains the following effects based on her current <span style="color:#ffd12f;" class="font-bold">Resonance Mode</span>:<br>- <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Tune Strain</span>: All Resonators in the team gain 10 Tune Break Boost. When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "tuneBreakBoost",
+        modifierValue: 0.1,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillEtchedColorsOffTuneBuildupRate`,
+    name: `Inherent Skill: Etched Colors - Off-Tune Buildup Rate`,
+    details: `<div>While in the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121106">Entropy Shift</span></span> states, Denia obtains the following effects based on her current <span style="color:#ffd12f;" class="font-bold">Resonance Mode</span>:<br>- <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Tune Strain</span>: All Resonators in the team gain 10 Tune Break Boost. When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.</div>`,
+    hasStacks: true,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 150,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritDMG1",
+    name: "Stat Bonus: Crit. DMG+",
+    details: `<div class="skilldescription">Crit. DMG increased by 2.40%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifierValue: 0.024,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritDMG2",
+    name: "Stat Bonus: Crit. DMG+",
+    details: `<div class="skilldescription">Crit. DMG increased by 2.40%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifierValue: 0.024,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritDMG3",
+    name: "Stat Bonus: Crit. DMG+",
+    details: `<div class="skilldescription">Crit. DMG increased by 5.60%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifierValue: 0.056,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritDMG4",
+    name: "Stat Bonus: Crit. DMG+",
+    details: `<div class="skilldescription">Crit. DMG increased by 5.60%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifierValue: 0.056,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK1",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 1.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.018,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK2",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 1.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.018,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK3",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 4.20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.042,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK4",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 4.20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.042,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+];

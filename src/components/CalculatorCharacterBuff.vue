@@ -220,6 +220,13 @@ const effectiveBuffData = computed((): EffectiveBuffData => {
       effectiveMaxStacks = 4;
     }
   }
+  if (props.character === "Denia" && props.uniqueKey === "DarkCore") {
+    const sequenceNode2 =
+      currentCharacter.value?.resonanceChains?.SequenceNode3ThroughDarkandWindtheErlkingFollows;
+    if (sequenceNode2?.isEnabled) {
+      effectiveMaxStacks = 5;
+    }
+  }
 
   return {
     effectiveMaxStacks,

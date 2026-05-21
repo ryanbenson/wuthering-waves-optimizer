@@ -1,0 +1,40 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Final Act",
+  description: `<div><span style="color:#a89969"><strong>Final Act - Stagecraft Form</strong></span><br>Deal <span style="color:#f0744e"><strong>Fusion DMG</strong></span>.<br>After performing this skill, obtain <span style="color:#f7ca2f"><strong><span class="Highlight">Entropy Shift: Breakdown Form</span></strong></span> for 12s, then switch to <span style="color:#f7ca2f"><strong>Breakdown Form</strong></span>.<br><br><span style="color:#a89969"><strong>Final Act - Breakdown Form</strong></span><br>When <span style="color:#f7ca2f"><strong><span class="Highlight">Conformal Charge</span></strong></span> is full, consume all <span style="color:#f7ca2f"><strong><span class="Highlight">Conformal Charge</span></strong></span> and <span style="color:#f7ca2f"><strong><span class="Highlight">Void Particle</span></strong></span> to perform this skill.<br>Deal <span style="color:#f0744e"><strong>Fusion DMG</strong></span>. <br>After casting this skill, obtain <span style="color:#f7ca2f"><strong><span class="Highlight">Entropy Shift: Stagecraft Form</span></strong></span>, which lasts for 30s, and then switch to <span style="color:#f7ca2f"><strong>Stagecraft Form</strong></span>.<br>Can be performed in mid-air.<br><br><span style="color:#a89969"><strong>Entropy Shift: Breakdown Form</strong></span><br>Increases ATK by 30%.<br>Obtaining this effect removes the <span style="color:#f7ca2f"><strong><span class="Highlight">Entropy Shift: Stagecraft Form</span></strong></span> effect.<br><br><span style="color:#a89969"><strong>Entropy Shift: Stagecraft Form</strong></span><br>Grants 1 point of <span style="color:#f7ca2f"><strong><span class="Highlight">Void Particle</span></strong></span> per second.<br>Obtaining this effect removes the <span style="color:#f7ca2f"><strong><span class="Highlight">Entropy Shift: Breakdown Form</span></strong></span> effect.</div>`,
+  attacks: [
+    {
+      key: "FinalActStagecraftFormDMG",
+      label: "Final Act - Stagecraft Form DMG",
+      talents: {
+        "1": "200.00%",
+        "2": "216.40%",
+        "3": "232.80%",
+        "4": "255.76%",
+        "5": "272.16%",
+        "6": "291.02%",
+        "7": "317.26%",
+        "8": "343.50%",
+        "9": "369.74%",
+        "10": "397.62%",
+      },
+      type: "Liberation",
+    },
+    {
+      key: "FinalActBreakdownFormDMG",
+      label: "Final Act - Breakdown Form DMG",
+      talents: {
+        "1": "100.00%*4",
+        "2": "108.20%*4",
+        "3": "116.40%*4",
+        "4": "127.88%*4",
+        "5": "136.08%*4",
+        "6": "145.51%*4",
+        "7": "158.63%*4",
+        "8": "171.75%*4",
+        "9": "184.87%*4",
+        "10": "198.81%*4",
+      },
+      type: "Liberation",
+    },
+  ],
+};

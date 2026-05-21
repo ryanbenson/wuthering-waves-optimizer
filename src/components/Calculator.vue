@@ -320,6 +320,7 @@ import {
   computeAdditionalBaseBuffs,
   computeCritOverflowBuffs,
   calculateAllStats,
+  computeTotalTuneBreakBoost,
 } from "../calculator/stats";
 import {
   processAttacks,
@@ -644,24 +645,14 @@ export default defineComponent({
       BonusSpecificSkillDMGBonus.value = stats.bonusSpecificSkillDMGBonus;
       TotalDeepenEffect.value = stats.totalDeepenEffect;
       ResistReduction.value = stats.resistReduction;
-      // Calculate tuneBreakBoost: base from character + self buffs + team buffs
-      const baseTuneBreakBoost = chosenChar?.value?.basic?.tuneBreakBoost ?? 0;
-      // charBuffsData is reactive, so access .value property (which contains the buffs data)
-      const tuneBreakBoostSelf =
-        charBuffsData?.value?.tuneBreakBoost ??
-        charBuffsData?.tuneBreakBoost ??
-        0;
-      // teamBuffsData is reactive, so access .value property (which contains the buffs data)
-      const tuneBreakBoostTeam =
-        teamBuffsData?.value?.tuneBreakBoost ??
-        teamBuffsData?.tuneBreakBoost ??
-        0;
-      const tuneBreakBoostEchoes = echoStats?.value?.tuneBreakBoost ?? 0;
-      tuneBreakBoost.value =
-        (baseTuneBreakBoost || 0) +
-        (tuneBreakBoostSelf || 0) +
-        (tuneBreakBoostTeam || 0) +
-        (tuneBreakBoostEchoes / 100);
+      tuneBreakBoost.value = computeTotalTuneBreakBoost({
+        baseTuneBreakBoost: chosenChar?.value?.basic?.tuneBreakBoost ?? 0,
+        selfBuffs: charBuffsData?.value ?? charBuffsData ?? {},
+        resonanceChainsBuffs:
+          charResonanceChainsData?.value ?? charResonanceChainsData ?? {},
+        teamBuffs: teamBuffsData?.value ?? teamBuffsData ?? {},
+        echoStats: echoStats?.value ?? echoStats ?? {},
+      });
     };
 
     const handleWeaponUpdated = (givenWeaponData) => {

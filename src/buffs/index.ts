@@ -1912,6 +1912,93 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Denia: [
+    {
+      key: `InherentSkillEtchedColorsFusionBurst`,
+      name: `Inherent Skill: Etched Colors - Fusion Burst Mode`,
+      details: `<div><span style="color:#ffd12f;" class="font-bold">Resonance Mode - Fusion Burst</span>: All Resonators in the team gain 30% Fusion DMG Bonus.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.3,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `InherentSkillEtchedColorsTuneStrain`,
+      name: `Inherent Skill: Etched Colors - Tune Strain Mode`,
+      details: `<div><span style="color:#ffd12f;" class="font-bold">Resonance Mode - Tune Strain</span>: All Resonators in the team gain 10 Tune Break Boost. When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "tuneBreakBoost",
+          modifierValue: 0.1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `InherentSkillEtchedColorsOffTuneBuildupRate`,
+      name: `Inherent Skill: Etched Colors - Off-Tune Buildup Rate`,
+      details: `<div><span style="color:#ffd12f;" class="font-bold">Resonance Mode - Tune Strain</span>: All Resonators in the team gain 10 Tune Break Boost. When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.</div>`,
+      hasStacks: true,
+      modifiers: [],
+      minStacks: 0,
+      maxStacks: 150,
+      alwaysEnabled: false,
+    },
+    {
+      key: `OutroSkillUnfinishedLiesFusionBurst`,
+      name: "Outro Skill: Unfinished Lies - Resonance Mode - Fusion Burst",
+      details: `<div>When in <span style="color:#f7ca2f"><strong>Resonance Mode - Fusion Burst</strong></span>, Fusion Burst DMG against targets near the active Resonator in the team is Amplified by 60% for 30s.<br>This effect ends early when Denia switches modes.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:FusionBurst",
+          modifierValue: 0.6,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `OutroSkillUnfinishedLiesTuneStrain`,
+      name: "Outro Skill: Unfinished Lies - Resonance Mode - Tune Strain",
+      details: `<div>When in <span style="color:#f7ca2f"><strong>Resonance Mode - Tune Strain</strong></span>, the incoming Resonator has their All DMG Amplified by 15% for 16s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `OutroSkillUnfinishedLiesTuneStrain2`,
+      name: "Outro Skill: Unfinished Lies - Resonance Mode - Tune Strain Inflicted",
+      details: `<div>When in <span style="color:#f7ca2f"><strong>Resonance Mode - Tune Strain</strong></span>, the incoming Resonator has their All DMG Amplified by 15% for 16s.<br>After this Resonator under this effect inflicts <span style="color:#f7ca2f"><strong>Tune Strain - Shifting</strong></span>, they gain 40% DMG Amplification instead.<br>This effect ends early when this Resonator is switched out or when Denia switches modes.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.4,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -2434,6 +2521,28 @@ export const allWeaponTeamBuffs = [
     minStacks: 0,
     maxStacks: 0,
     details: `When the wielder heals Resonators, increases Crit. DMG of all nearby Resonators in the team by <span class="Param">20%/25%/30%/35%/40%</span> for 4s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
+  {
+    name: "Forged Dwarf Star",
+    key: "ForgedDwarfStarATKBonus",
+    hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/ForgedDwarfStar.png",
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierByRefinement: {
+          "1": 0.24,
+          "2": 0.3,
+          "3": 0.36,
+          "4": 0.42,
+          "5": 0.48,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `After the wielder inflicts Fusion Burst or Tune Strain - Shifting on the target, their Resonance Liberation DMG Bonus is increased by <span class="param">36%/45%/54%/63%/72%</span> for 5s. While this effect lasts, after Resonators in the team inflict Fusion Burst or Tune Strain - Shifting, their ATK is increased by <span class="param">24%/30%/36%/42%/48%</span> for 15s. Effects of the same name cannot be stacked.`,
     alwaysEnabled: false,
   },
 ];

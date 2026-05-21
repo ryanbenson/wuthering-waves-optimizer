@@ -82,6 +82,7 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
+import { computeDeniaOffTuneBuildupTuneBreakBoost } from "../calculator/stats";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import { useCharacterStore } from "../stores/character";
 
@@ -247,8 +248,24 @@ const buffStats = computed(() => {
       return data;
     }
   }
+  if (props.uniqueKey === "OutroSkillUnfinishedLiesTuneStrain") {
+    if (buffsMap?.OutroSkillUnfinishedLiesTuneStrain2?.isEnabled) {
+      return data;
+    }
+  }
   if (props.uniqueKey === "PactofNeonlightLeap") {
     data["ATK"] = 0.15;
+  }
+  if (props.uniqueKey === "InherentSkillEtchedColorsOffTuneBuildupRate") {
+    if (stacks.value >= 1) {
+      const tuneBreakBoost = computeDeniaOffTuneBuildupTuneBreakBoost(
+        stacks.value,
+      );
+      if (tuneBreakBoost > 0) {
+        data["tuneBreakBoost"] = tuneBreakBoost;
+      }
+    }
+    return data;
   }
   if (!props.hasStacks) {
     props.modifiers.forEach((modifierItem) => {
