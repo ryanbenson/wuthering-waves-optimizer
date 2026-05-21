@@ -1931,7 +1931,7 @@ export const buffsByCharacter = {
     {
       key: `InherentSkillEtchedColorsTuneStrain`,
       name: `Inherent Skill: Etched Colors - Tune Strain Mode`,
-      details: `<div><span style="color:#ffd12f;" class="font-bold">Resonance Mode - Tune Strain</span>: All Resonators in the team gain 10 Tune Break Boost. When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.</div>`,
+      details: `<div><span style="color:#ffd12f;" class="font-bold">Resonance Mode - Tune Strain</span>: All Resonators in the team gain 10 Tune Break Boost.</div>`,
       hasStacks: false,
       modifiers: [
         {
@@ -1993,6 +1993,36 @@ export const buffsByCharacter = {
           modifier: "DMGDeepen",
           modifierValue: 0.4,
         },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2TossedintheTidesofRealityFusionBurst",
+      name: "Sequence Node 2: Tossed in the Tides of Reality - Fusion Burst",
+      details: `<div>When Denia is in <span style="color:#f7ca2f"><strong>Resonance Mode - Fusion Burst</strong></span>, after a Resonator in the team inflicts <span style="color:#f7ca2f"><strong><span class="Highlight">Fusion Burst</span></strong></span> on the target, they gain 50% Fusion DMG Bonus for 15s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.5,
+        }
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2TossedintheTidesofRealityTuneStrain",
+      name: "Sequence Node 2: Tossed in the Tides of Reality - Tune Strain",
+      details: `<div>When Denia is in <span style="color:#f7ca2f"><strong>Resonance Mode - Tune Strain</strong></span>, her <span style="color:#f7ca2f"><strong>Forte Circuit</strong></span> effect is enhanced: After a Resonator in the team inflicts <span style="color:#f7ca2f"><strong><span class="Highlight">Tune Strain - Shifting</span></strong></span> on the target, their Tune Break Boost is increased by 20 for 15s, and the target's <span style="color:#f7ca2f"><strong>Off-Tune Level</strong></span> is increased by 100% of the max. This effect can only be triggered once per 300s on the same target.<br>This effect ends when Denia switches forms.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "tuneBreakBoost",
+          modifierValue: 0.2,
+        }
       ],
       minStacks: 0,
       maxStacks: 0,
