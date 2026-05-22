@@ -55,6 +55,21 @@ export function resolveActiveStance(
         return stance;
       }
     }
+    const stanceKeySuffixes: Record<string, string> = {
+      FusionBurst: "Fusion Burst",
+      TuneStrain: "Tune Strain",
+      TuneRupture: "Tune Rupture",
+    };
+    for (const [key, buffData] of Object.entries(buffsConfig)) {
+      if (!buffData?.isEnabled) {
+        continue;
+      }
+      for (const [suffix, stanceName] of Object.entries(stanceKeySuffixes)) {
+        if (key.endsWith(suffix) && stances.includes(stanceName)) {
+          return stanceName;
+        }
+      }
+    }
   }
   return stances[0];
 }

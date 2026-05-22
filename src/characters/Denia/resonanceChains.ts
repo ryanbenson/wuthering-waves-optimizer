@@ -35,7 +35,8 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode2TossedintheTidesofRealityFusionBurst",
-    name: "Sequence Node 2: Tossed in the Tides of Reality - Fusion Burst",
+    name: "Sequence Node 2: Tossed in the Tides of Reality",
+    stance: "Fusion Burst",
     details: `<div>When Denia is in <span style="color:#f7ca2f"><strong>Resonance Mode - Fusion Burst</strong></span>, after a Resonator in the team inflicts <span style="color:#f7ca2f"><strong><span class="Highlight">Fusion Burst</span></strong></span> on the target, they gain 50% Fusion DMG Bonus for 15s.</div>`,
     hasStacks: false,
     modifiers: [
@@ -50,7 +51,8 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode2TossedintheTidesofRealityFusionBurstRes",
-    name: "Sequence Node 2: Tossed in the Tides of Reality - Fusion Burst Resist Ignore",
+    name: "Sequence Node 2: Tossed in the Tides of Reality (Resist Ignore)",
+    stance: "Fusion Burst",
     details: `<div>After <span style="color:#f7ca2f"><strong><span class="Highlight">Fusion Burst</span></strong></span> is triggered on enemies near the active Resonator in the team, Denia gains 1 stack of <span style="color:#f7ca2f"><strong>Degenerate Voidmatter</strong></span> for 15s, up to 10 stacks. Each stack of <span style="color:#f7ca2f"><strong>Degenerate Voidmatter</strong></span> causes Denia to ignore 1% of the target's Fusion RES.<br>This effect ends when Denia switches modes.</div>`,
     hasStacks: true,
     modifiers: [
@@ -65,7 +67,8 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode2TossedintheTidesofRealityTuneStrain",
-    name: "Sequence Node 2: Tossed in the Tides of Reality - Tune Strain",
+    name: "Sequence Node 2: Tossed in the Tides of Reality",
+    stance: "Tune Strain",
     details: `<div>When Denia is in <span style="color:#f7ca2f"><strong>Resonance Mode - Tune Strain</strong></span>, her <span style="color:#f7ca2f"><strong>Forte Circuit</strong></span> effect is enhanced: After a Resonator in the team inflicts <span style="color:#f7ca2f"><strong><span class="Highlight">Tune Strain - Shifting</span></strong></span> on the target, their Tune Break Boost is increased by 20 for 15s, and the target's <span style="color:#f7ca2f"><strong>Off-Tune Level</strong></span> is increased by 100% of the max. This effect can only be triggered once per 300s on the same target.<br>This effect ends when Denia switches forms.</div>`,
     hasStacks: false,
     modifiers: [
@@ -146,7 +149,8 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode6MayYouFindYourSunintheSilenceFusionBurst",
-    name: "Sequence Node 6: May You Find Your Sun in the Silence - Fusion Burst",
+    name: "Sequence Node 6: May You Find Your Sun in the Silence",
+    stance: "Fusion Burst",
     details: `<div>While Denia is in <span style="color:#f7ca2f"><strong>Resonance Mode - Fusion Burst</strong></span>,  after <span style="color:#f7ca2f"><strong>Erosion Field</strong></span> deals damage, trigger <span style="color:#f7ca2f"><strong><span class="Highlight">Fusion Burst</span></strong></span> on the target based on its max limit. The <span style="color:#f7ca2f"><strong><span class="Highlight">Fusion Burst</span></strong></span> DMG triggered gains a 200% DMG Multiplier increase against the main target and does not remove the <span style="color:#f7ca2f"><strong><span class="Highlight">Fusion Burst</span></strong></span> stacks on the targets hit. The effect can be triggered on the same target up to 1 time. When the target is damaged by Resonance Liberation <span style="color:#f7ca2f"><strong>Final Act: Breakdown Form</strong></span>, the effect's trigger count is reset. The trigger count can be reset for the same target once every 2s.</div>`,
     hasStacks: false,
     modifiers: [
@@ -164,7 +168,8 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode6MayYouFindYourSunintheSilenceTuneStrain",
-    name: "Sequence Node 6: May You Find Your Sun in the Silence - Tune Strain",
+    name: "Sequence Node 6: May You Find Your Sun in the Silence",
+    stance: "Tune Strain",
     details: `<div>While Denia is in <span style="color:#f7ca2f"><strong>Resonance Mode - Tune Strain</strong></span>, when Resonators in the team deal <span style="color:#f7ca2f"><strong>Tune Break DMG</strong></span> to <span style="color:#f7ca2f"><strong>Mistuned</strong></span> enemies in <span style="color:#f7ca2f"><strong><span class="Highlight">Tune Strain - Shifting</span></strong></span>, they additionally inflict 1 stack of <span style="color:#f7ca2f"><strong><span class="Highlight">Tune Strain - Interfered</span></strong></span> on the target. This effect can only be triggered on the same target once every 3s.</div>`,
     hasStacks: false,
     modifiers: [],

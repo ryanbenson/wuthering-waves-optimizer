@@ -39,7 +39,8 @@ The DMG Multiplier of Resonance Skill <span class="Highlight">Seraphic Duet: Enc
   },
   {
     key: "SequenceNode2DownyNotesofSnowfluffTuneRupture",
-    name: "Sequence Node 2: Downy Notes of Snowfluff - Tune Rupture",
+    name: "Sequence Node 2: Downy Notes of Snowfluff",
+    stance: "Tune Rupture",
     details: `<div>While in <span class="Highlight">Resonance Mode - Tune Rupture</span>, when <span class="Highlight">Tune Rupture DMG</span> triggered by Resonance Skill <span class="Highlight">Seraphic Duet</span> hits the same target, the DMG Multiplier of <span class="Highlight">Tune Rupture DMG</span> trigger by Resonance Skill <span class="Highlight">Seraphic Duet</span> is increased by 20% for 1s, stacking up to 5 times.</div>`,
     hasStacks: true,
     modifiers: [
@@ -55,7 +56,8 @@ The DMG Multiplier of Resonance Skill <span class="Highlight">Seraphic Duet: Enc
   },
   {
     key: "SequenceNode2DownyNotesofSnowfluffFusionBurst",
-    name: "Sequence Node 2: Downy Notes of Snowfluff - Fusion Burst",
+    name: "Sequence Node 2: Downy Notes of Snowfluff",
+    stance: "Fusion Burst",
     details: `<div>While in <span class="Highlight">Resonance Mode - Fusion Burst</span>, gain the following effects:
 - In the <span class="Highlight">Stardust Resonance</span> state, the DMG Multiplier of <span class="Highlight">Fusion Burst</span> triggered by Resonance Skill <span class="Highlight">Seraphic Duet</span> is further increased to 400% against the main target of the <span class="Highlight">Fusion Burst</span>.
 - When <span class="Highlight">Fusion Trail</span> is removed, the DMG Multiplier of <span class="Highlight">Fusion Burst</span> triggered by Resonance Skill <span class="Highlight">Seraphic Duet</span> is further increased to 15% against the main target of the <span class="Highlight">Fusion Burst</span> per <span class="Highlight">Fusion Trail</span> stack.
@@ -71,8 +73,7 @@ The DMG Multiplier of Resonance Skill <span class="Highlight">Seraphic Duet: Enc
   {
     key: "SequenceNode3FervorSightlyBurnsBrightasNew",
     name: "Sequence Node 3: Fervor Sightly Burns Bright as New",
-    details: `"<div>Resonance Liberation <span class="Highlight"><strong>Heavenfall Edict: Finale</strong></span>'s DMG Multiplier is increased by 100%.<br>Resonance Liberation <span class="Highlight"><strong>Heavenfall Edict: Overdrive</strong></span>'s DMG Multiplier is increased by 40%.<br><br>In <span class="Highlight"><strong>Instant Response</strong></span>, Aemeath now inflicts <span class="Highlight"><strong>Tune Rupture - Shifting</strong></span> or <span class="Highlight"><strong>Fusion Burst</strong></span> while casting <span class="Highlight"><strong>Heavy Attack - Aemeath Charged II</strong></span> or <span class="Highlight"><strong>Heavy Attack - Mech Charged II</strong></span>, based on her current Resonance Mode.<br><br>Inherent Skill <span class="Highlight"><strong>Between the Stars</strong></span> is replaced with the following effects:<br><br>- In <span class="Highlight"><strong>Resonance Mode - Tune Rupture</strong></span>, when Resonators in the team inflict <span class="Highlight"><strong>Tune Rupture - Shifting</strong></span> or deal <span class="Highlight"><strong>Tune Rupture DMG</strong></span>, Aemeath's Crit. DMG is increased by 60%, and Resonance Liberation <span class="Highlight"><strong>Heavenfall Edict: Finale</strong></span> DMG is now Amplified by 25%.<br>Resonators joining the team or switching Resonance Mode resets this effect.<br><br>- In <span class="Highlight"><strong>Resonance Mode - Fusion Burst</strong></span>, when Resonators in the team inflict <span class="Highlight"><strong>Fusion Burst</strong></span>, Aemeath's Crit. DMG is increased by 60%, and Resonance Liberation <span class="Highlight"><strong>Heavenfall Edict: Finale</strong></span> DMG is now Amplified by 25%.<br>Resonators joining the team or switching Resonance Mode resets this effect.</div>"
-`,
+    details: `<div>Resonance Liberation <span class="Highlight"><strong>Heavenfall Edict: Finale</strong></span>'s DMG Multiplier is increased by 100%.<br>Resonance Liberation <span class="Highlight"><strong>Heavenfall Edict: Overdrive</strong></span>'s DMG Multiplier is increased by 40%.<br><br>In <span class="Highlight"><strong>Instant Response</strong></span>, Aemeath now inflicts <span class="Highlight"><strong>Tune Rupture - Shifting</strong></span> or <span class="Highlight"><strong>Fusion Burst</strong></span> while casting <span class="Highlight"><strong>Heavy Attack - Aemeath Charged II</strong></span> or <span class="Highlight"><strong>Heavy Attack - Mech Charged II</strong></span>, based on her current Resonance Mode.<br><br>Inherent Skill <span class="Highlight"><strong>Between the Stars</strong></span> is replaced with the following effects:<br><br>- In <span class="Highlight"><strong>Resonance Mode - Tune Rupture</strong></span>, when Resonators in the team inflict <span class="Highlight"><strong>Tune Rupture - Shifting</strong></span> or deal <span class="Highlight"><strong>Tune Rupture DMG</strong></span>, Aemeath's Crit. DMG is increased by 60%, and Resonance Liberation <span class="Highlight"><strong>Heavenfall Edict: Finale</strong></span> DMG is now Amplified by 25%.<br>Resonators joining the team or switching Resonance Mode resets this effect.<br><br>- In <span class="Highlight"><strong>Resonance Mode - Fusion Burst</strong></span>, when Resonators in the team inflict <span class="Highlight"><strong>Fusion Burst</strong></span>, Aemeath's Crit. DMG is increased by 60%, and Resonance Liberation <span class="Highlight"><strong>Heavenfall Edict: Finale</strong></span> DMG is now Amplified by 25%.<br>Resonators joining the team or switching Resonance Mode resets this effect.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -149,7 +150,8 @@ In <span class="Highlight">Resonance Mode - Tune Rupture</span> or <span class="
   },
   {
     key: "SequenceNode6AZephyrKissedJourneytoYouTuneRupture",
-    name: "Sequence Node 6: A Zephyr-Kissed Journey to You - Tune Rupture",
+    name: "Sequence Node 6: A Zephyr-Kissed Journey to You",
+    stance: "Tune Rupture",
     details: `<div>When in <span class="Highlight">Resonance Mode - Tune Rupture</span>, Aemeath's <span class="Highlight">Tune Rupture DMG</span> can critically hit, with a fixed Crit. Rate of 80%, and fixed Crit. DMG of 275%.</div>`,
     hasStacks: false,
     modifiers: [
@@ -170,7 +172,8 @@ In <span class="Highlight">Resonance Mode - Tune Rupture</span> or <span class="
   },
   {
     key: "SequenceNode6AZephyrKissedJourneytoYouFusionBurst",
-    name: "Sequence Node 6: A Zephyr-Kissed Journey to You - Fusion Burst",
+    name: "Sequence Node 6: A Zephyr-Kissed Journey to You",
+    stance: "Fusion Burst",
     details: `<div>When in <span class="Highlight">Resonance Mode - Fusion Burst</span> and in combat state, <span class="Highlight">Fusion Burst DMG</span> triggered on targets near the active Resonator in the team can critically hit, with a fixed Crit. Rate of 80%, and fixed Crit. DMG of 275%.</div>`,
     hasStacks: false,
     modifiers: [
