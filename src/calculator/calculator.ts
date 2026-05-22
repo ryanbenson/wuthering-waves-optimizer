@@ -1,6 +1,6 @@
 /**
   // 707 * (.2678 * (1+0+0)) * (1+.1) * (1+0) * 0.5136986301369864 * (1-.1 + 0) => 97 => same as in-game
-  // attack * (talent * (1 + bonusTotalSkillDmg + bonusSpecificSkillDmg)) * (1 + bonusElementDmg) * (1 + totalDeepenEffect) * DEFModifier * (1- EnemyResistence + ResistenceReduction)
+  // attack * (talent * (1 + bonusTotalSkillDmg + bonusSpecificSkillDmg)) * (1 + bonusElementDmg) * (1 + totalDeepenEffect) * DEFModifier * (1- EnemyResistance + ResistanceReduction)
  * @param charLevel
  * @param enemyLevel
  * @param enemyResist
@@ -11,7 +11,7 @@
  * @param bonusSpecificSkillDmg
  * @param bonusElementDmg
  * @param totalDeepenEffect
- * @param resistenceReduction
+ * @param resistanceReduction
  * @returns
  */
 export function calcHitDamage(
@@ -25,7 +25,7 @@ export function calcHitDamage(
   bonusSpecificSkillDmg: number = 0,
   bonusElementDmg: number = 0,
   totalDeepenEffect: number = 0,
-  resistenceReduction: number = 0,
+  resistanceReduction: number = 0,
   specialMultiplier: number = 0,
   defReduction: number = 0,
   // critRate: number,
@@ -43,7 +43,7 @@ export function calcHitDamage(
     defIgnore,
     defReduction,
   );
-  const resistValue = getEnemyResistValue(enemyResist, resistenceReduction);
+  const resistValue = getEnemyResistValue(enemyResist, resistanceReduction);
   const baseDamage = getBaseDamage(
     talent,
     attack,
@@ -111,7 +111,7 @@ export function getBonusDamageValue(
   );
 }
 
-// we need to half the reduction if the resist goes under 0
+// we need to halve the reduction if the resist goes under 0
 export function getEnemyResistValue(
   baseResist: number,
   reduction: number,
@@ -170,7 +170,7 @@ export function calcDamage(
   bonusSpecificSkillDmg: number = 0,
   bonusElementDmg: number = 0,
   totalDeepenEffect: number = 0,
-  resistenceReduction: number = 0,
+  resistanceReduction: number = 0,
   critRate: number = 0,
   critDamage: number = 0,
   talentModifierAdd: number = 0,
@@ -329,7 +329,7 @@ export function calcDamage(
       bonusSpecificSkillDmg,
       bonusElementDmg,
       totalDeepenEffect,
-      resistenceReduction,
+      resistanceReduction,
       specialMultiplier,
       defReduction,
     );
@@ -363,7 +363,7 @@ export function calcDamage(
     bonusSpecificSkillDmg,
     bonusElementDmg,
     totalDeepenEffect,
-    resistenceReduction,
+    resistanceReduction,
     specialMultiplier,
     defReduction,
   );
@@ -405,10 +405,10 @@ export function calcDamage(
       defIgnore,
       defReduction,
     ),
-    resistValue: getEnemyResistValue(enemyResist, resistenceReduction),
+    resistValue: getEnemyResistValue(enemyResist, resistanceReduction),
     specialMultiplier: specialMultiplier,
     totalDeepenEffect,
-    resistenceReduction,
+    resistanceReduction,
     enemyResist,
     bonusTotalSkillDmg,
     bonusSpecificSkillDmg,
@@ -811,7 +811,7 @@ function calcNegativeStatusStackDamage(
   charLevel: string,
   enemyLevel: number,
   enemyResist: number,
-  resistenceReduction: number,
+  resistanceReduction: number,
   defReduction: number,
   talentModifierMultiply: number,
   totalDeepenEffect: number,
@@ -828,7 +828,7 @@ function calcNegativeStatusStackDamage(
     0,
     defReduction,
   );
-  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
+  const resistModifier = getEnemyResistValue(enemyResist, resistanceReduction);
   const levelConstant = getNegativeStatusLevelConstant(characterLevel);
   const motionValue = getMotionValueByStacks(stacks);
   const baseDamage =
@@ -858,7 +858,7 @@ function calcNegativeStatusStackDamage(
       charLevel,
       enemyLevel,
       enemyResist,
-      resistenceReduction,
+      resistanceReduction,
       defReduction,
       count,
       defenseModifier,
@@ -1026,7 +1026,7 @@ export function getSpectroFrazzleDamage(
   charLevel: string,
   enemyLevel: number,
   enemyResist: number,
-  resistenceReduction: number,
+  resistanceReduction: number,
   defReduction: number = 0,
   talentModifierMultiply: number = 0,
   totalDeepenEffect: number = 0,
@@ -1040,7 +1040,7 @@ export function getSpectroFrazzleDamage(
     charLevel,
     enemyLevel,
     enemyResist,
-    resistenceReduction,
+    resistanceReduction,
     defReduction,
     talentModifierMultiply,
     totalDeepenEffect,
@@ -1056,7 +1056,7 @@ export function getAeroErosionDamage(
   charLevel: string,
   enemyLevel: number,
   enemyResist: number,
-  resistenceReduction: number,
+  resistanceReduction: number,
   defReduction: number = 0,
   talentModifierMultiply: number = 0,
   totalDeepenEffect: number = 0,
@@ -1070,7 +1070,7 @@ export function getAeroErosionDamage(
     charLevel,
     enemyLevel,
     enemyResist,
-    resistenceReduction,
+    resistanceReduction,
     defReduction,
     talentModifierMultiply,
     totalDeepenEffect,
@@ -1104,7 +1104,7 @@ export function calcTuneBreak(
   enemyLevel: number,
   enemyResist: number,
   enemyType: string,
-  resistenceReduction: number,
+  resistanceReduction: number,
   defIgnore: number = 0,
   defReduction: number = 0,
   tuneBreakBoost: number = 0,
@@ -1122,7 +1122,7 @@ export function calcTuneBreak(
     defIgnore,
     defReduction,
   );
-  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
+  const resistModifier = getEnemyResistValue(enemyResist, resistanceReduction);
   const enemyTypeMultiplier = getTuneBreakEnemyTypeMultiplier(enemyType);
 
   // Parse the talent string to get individual percentage values
@@ -1209,7 +1209,7 @@ export function calcTuneBreak(
       enemyLevel,
       enemyResist,
       enemyType,
-      resistenceReduction,
+      resistanceReduction,
       defIgnore,
       defReduction,
       tuneBreakBoost,
@@ -1281,7 +1281,7 @@ export function getFusionBurstDamage(
   charLevel: string,
   enemyLevel: number,
   enemyResist: number,
-  resistenceReduction: number,
+  resistanceReduction: number,
   defReduction: number = 0,
   talentModifierMultiply: number = 0,
   totalDeepenEffect: number = 0,
@@ -1295,7 +1295,7 @@ export function getFusionBurstDamage(
     charLevel,
     enemyLevel,
     enemyResist,
-    resistenceReduction,
+    resistanceReduction,
     defReduction,
     talentModifierMultiply,
     totalDeepenEffect,
@@ -1311,7 +1311,7 @@ export function getGlacioChafeDamage(
   charLevel: string,
   enemyLevel: number,
   enemyResist: number,
-  resistenceReduction: number,
+  resistanceReduction: number,
   defReduction: number = 0,
   talentModifierMultiply: number = 0,
   totalDeepenEffect: number = 0,
@@ -1325,7 +1325,7 @@ export function getGlacioChafeDamage(
     charLevel,
     enemyLevel,
     enemyResist,
-    resistenceReduction,
+    resistanceReduction,
     defReduction,
     talentModifierMultiply,
     totalDeepenEffect,
@@ -1358,7 +1358,7 @@ export function getGlacioBiteForteDamage(
   charLevel: string,
   enemyLevel: number,
   enemyResist: number,
-  resistenceReduction: number,
+  resistanceReduction: number,
   defReduction: number = 0,
   talentModifierMultiply: number = 0,
   totalDeepenEffect: number = 0,
@@ -1373,7 +1373,7 @@ export function getGlacioBiteForteDamage(
     0,
     defReduction,
   );
-  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
+  const resistModifier = getEnemyResistValue(enemyResist, resistanceReduction);
   const levelConstant = getNegativeStatusLevelConstant(characterLevel);
   const motionValue = parseGlacioBiteForteMotionValueBasisPoints(
     forteTalentString,
@@ -1408,7 +1408,7 @@ export function getGlacioBiteForteDamage(
       charLevel,
       enemyLevel,
       enemyResist,
-      resistenceReduction,
+      resistanceReduction,
       defReduction,
       count,
       defenseModifier,
@@ -1431,7 +1431,7 @@ export function getElectroFlareDamage(
   charLevel: string,
   enemyLevel: number,
   enemyResist: number,
-  resistenceReduction: number,
+  resistanceReduction: number,
   defReduction: number = 0,
   talentModifierMultiply: number = 0,
   totalDeepenEffect: number = 0,
@@ -1448,7 +1448,7 @@ export function getElectroFlareDamage(
     0,
     defReduction,
   );
-  const resistModifier = getEnemyResistValue(enemyResist, resistenceReduction);
+  const resistModifier = getEnemyResistValue(enemyResist, resistanceReduction);
   const levelConstant = getNegativeStatusLevelConstant(characterLevel);
   const motionValue = getElectroFlareMotionValueByStacks(stacks);
   // if there's electro rage, you get the MV as if it was electro flare stack
@@ -1482,7 +1482,7 @@ export function getElectroFlareDamage(
       charLevel,
       enemyLevel,
       enemyResist,
-      resistenceReduction,
+      resistanceReduction,
       defReduction,
       count,
       defenseModifier,
