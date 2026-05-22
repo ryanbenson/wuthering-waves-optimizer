@@ -64,10 +64,10 @@
       (800 + 8 * charLevel) / (800 + 8 * charLevel + (8 * enemyLevel + 792) * (1
       - defIgnore) * (1 - defReduction))
     </code>
-    <h4>Resist Multiplier</h4>
+    <h4>Resistance Multiplier</h4>
     <p>
-      Note: if the resistenceReduction makes the total resist go under 0, then
-      you half the remainder
+      Note: if the resistenceReduction makes the total resistance go under 0,
+      then you halve the remainder
     </p>
     <code>(1 - resistance + resistenceReduction)</code>
     <h3>Shields and Healing</h3>
