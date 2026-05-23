@@ -26,18 +26,18 @@
             @updated-chosen-character="handleUpdatedCharacter"
             @character-level-updated="handleCharacterLevelUpdated"
             class="pb-4" />
-          <CalculatorCharacterStance
-            v-if="characterStances.length > 1 && isLoading === false"
-            :key="`${character}-stance`"
-            :character="character"
-            :stances="characterStances"
-            @updated-character-stance="handleUpdatedCharacterStance" />
           <CalculatorTalents
             :character="character"
             :key="character"
             @character-talent-updated="
               handleCharacterTalentUpdated
             "></CalculatorTalents>
+          <CalculatorCharacterStance
+            v-if="characterStances.length > 1 && isLoading === false"
+            :key="`${character}-stance`"
+            :character="character"
+            :stances="characterStances"
+            @updated-character-stance="handleUpdatedCharacterStance" />
           <template v-if="chosenChar?.value?.buffs && isLoading === false">
             <CalculatorCharacterBuffs
               :key="character"

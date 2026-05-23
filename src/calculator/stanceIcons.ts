@@ -7,10 +7,8 @@ export interface StanceIconConfig {
   cssFilter?: string;
 }
 
-const NANOKA_ROLE_LABEL_BASE =
-  "https://static.nanoka.cc/assets/ww/UIResources/Common/Atlas/RoleLabel";
-const NANOKA_SKILL_ICON_FEIBI_BASE =
-  "https://static.nanoka.cc/assets/ww/UIResources/Common/Atlas/SkillIcon/SkillIconFeibi";
+const ICON_BASE =
+  "https://ryanbenson.github.io/wuthering-waves-assets/images/icons";
 
 /** Gold tint for Phoebe Absolution (SP_IconFeibiB1). */
 const ABSOLUTION_ICON_FILTER =
@@ -22,20 +20,20 @@ const CONFESSION_ICON_FILTER =
 
 export const STANCE_ICONS: Record<string, StanceIconConfig> = {
   "Fusion Burst": {
-    imageUrl: `${NANOKA_ROLE_LABEL_BASE}/SP_RoleLabelE5.webp`,
+    imageUrl: `${ICON_BASE}/SP_RoleLabelE5.webp`,
   },
   "Tune Rupture": {
-    imageUrl: `${NANOKA_ROLE_LABEL_BASE}/SP_RoleLabelI2.webp`,
+    imageUrl: `${ICON_BASE}/SP_RoleLabelI2.webp`,
   },
   "Tune Strain": {
-    imageUrl: `${NANOKA_ROLE_LABEL_BASE}/SP_RoleLabelH1.webp`,
+    imageUrl: `${ICON_BASE}/SP_RoleLabelH1.webp`,
   },
   Absolution: {
-    imageUrl: `${NANOKA_SKILL_ICON_FEIBI_BASE}/SP_IconFeibiB1.webp`,
+    imageUrl: `${ICON_BASE}/SP_IconFeibiB1.webp`,
     cssFilter: ABSOLUTION_ICON_FILTER,
   },
   Confession: {
-    imageUrl: `${NANOKA_SKILL_ICON_FEIBI_BASE}/SP_IconFeibiB1.webp`,
+    imageUrl: `${ICON_BASE}/SP_IconFeibiB1.webp`,
     cssFilter: CONFESSION_ICON_FILTER,
   },
 };
