@@ -234,37 +234,37 @@ describe("#getBonusDamageValue", () => {
 describe("#getEnemyResistValue", () => {
   it("when the enemy resist is normal and no shred", () => {
     const enemyResist = 0.2;
-    const resistenceReduction = 0;
+    const resistanceReduction = 0;
     const expected = 0.8;
-    const result = getEnemyResistValue(enemyResist, resistenceReduction);
+    const result = getEnemyResistValue(enemyResist, resistanceReduction);
     expect(result).toEqual(expected);
   });
   it("when the enemy resist is normal and shred that stays above 0", () => {
     const enemyResist = 0.2;
-    const resistenceReduction = 0.15;
+    const resistanceReduction = 0.15;
     const expected = 0.95;
-    const result = getEnemyResistValue(enemyResist, resistenceReduction);
+    const result = getEnemyResistValue(enemyResist, resistanceReduction);
     expect(result).toEqual(expected);
   });
   it("when the enemy resist is normal and shred that dips below 0", () => {
     const enemyResist = 0.2;
-    const resistenceReduction = 0.3;
+    const resistanceReduction = 0.3;
     const expected = 1.05;
-    const result = getEnemyResistValue(enemyResist, resistenceReduction);
+    const result = getEnemyResistValue(enemyResist, resistanceReduction);
     expect(result).toEqual(expected);
   });
   it("when the enemy resist is starts below 0 with shred", () => {
     const enemyResist = -0.2;
-    const resistenceReduction = 0.3;
+    const resistanceReduction = 0.3;
     const expected = 1.35;
-    const result = getEnemyResistValue(enemyResist, resistenceReduction);
+    const result = getEnemyResistValue(enemyResist, resistanceReduction);
     expect(result).toEqual(expected);
   });
   it("when the enemy resist is maxed", () => {
     const enemyResist = 1;
-    const resistenceReduction = 0;
+    const resistanceReduction = 0;
     const expected = 0;
-    const result = getEnemyResistValue(enemyResist, resistenceReduction);
+    const result = getEnemyResistValue(enemyResist, resistanceReduction);
     expect(result).toEqual(expected);
   });
 });

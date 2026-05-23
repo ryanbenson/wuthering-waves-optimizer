@@ -66,10 +66,10 @@
     </code>
     <h4>Resistance Multiplier</h4>
     <p>
-      Note: if the resistenceReduction makes the total resistance go under 0,
+      Note: if the resistanceReduction makes the total resistance go under 0,
       then you halve the remainder
     </p>
-    <code>(1 - resistance + resistenceReduction)</code>
+    <code>(1 - resistance + resistanceReduction)</code>
     <h3>Shields and Healing</h3>
     <p>Calculating shield and healing is simple.</p>
     <code>(MV% * finalAtkDefHpVal + flatBase) * (1 + totalHealBonus)</code>

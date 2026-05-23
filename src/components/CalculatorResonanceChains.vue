@@ -16,6 +16,7 @@
         :min-stacks="Number(buff.minStacks) || 0"
         :max-stacks="Number(buff.maxStacks) || 0"
         :modifiers="(buff.modifiers ?? []) as unknown[]"
+        :buff-attack-target-selection="buff.buffAttackTargetSelection"
         @updated-character-buff="handleUpdatedCharacterBuff"
         class="character__buff character__resonance-chain"
         :data-test-resonance-chain="buff.key"></CalculatorResonanceChainsItem>
@@ -27,6 +28,18 @@
 import { computed, onBeforeUnmount, onMounted } from "vue";
 import CalculatorResonanceChainsItem from "./CalculatorResonanceChainsItem.vue";
 
+export type ResonanceChainBuffAttackTargetOption = {
+  value: string;
+  label: string;
+};
+
+export type ResonanceChainBuffAttackTargetSelection = {
+  configKey: string;
+  defaultValue?: string;
+  label?: string;
+  options: ResonanceChainBuffAttackTargetOption[];
+};
+
 export type ResonanceChainBuffRow = {
   key: string;
   name?: string;
@@ -36,6 +49,7 @@ export type ResonanceChainBuffRow = {
   minStacks?: number;
   maxStacks?: number;
   modifiers?: unknown[];
+  buffAttackTargetSelection?: ResonanceChainBuffAttackTargetSelection;
 };
 
 const props = withDefaults(

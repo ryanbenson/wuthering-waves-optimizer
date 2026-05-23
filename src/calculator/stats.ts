@@ -455,6 +455,23 @@ export const computeTotalTuneBreakBoost = ({
   );
 };
 
+export const getResonanceChainBuffAttackTargets = (
+  chainConfig: { [key: string]: unknown } | null | undefined,
+  talentKeys: string[],
+  configKey: string,
+  defaultValue: string = "all",
+): string[] => {
+  const selectedTarget =
+    (chainConfig?.[configKey] as string | undefined) ?? defaultValue;
+  if (selectedTarget === "all") {
+    return talentKeys;
+  }
+  if (talentKeys.includes(selectedTarget)) {
+    return [selectedTarget];
+  }
+  return talentKeys;
+};
+
 export const computeSelfBuffs = (
   buffsConfig: any = null,
   buffsCharInfo: any = null,
@@ -967,13 +984,24 @@ export const computeSelfBuffs = (
     }
     if (character === "Denia" && key === "DarkCore") {
       // SequenceNode3ThroughDarkandWindtheErlkingFollows
-      if (resonanceChainsConfig?.SequenceNode3ThroughDarkandWindtheErlkingFollows?.isEnabled) {
-        if (buffData?.stacks >= 5) {
-          data.specificTalentBuffs["PhantomBubbleStagecraftFormDMG:talentModifierMultiply"] = 12;
-          data.specificTalentBuffs["BasicAttackStagecraftFormStage4DMG:talentModifierMultiply"] = 12;
-        }
-        data.specificTalentBuffs["PhantomBubbleStagecraftFormDMG:talentTypeOverride"] = "Liberation";
-        data.specificTalentBuffs["BasicAttackStagecraftFormStage4DMG:talentTypeOverride"] = "Liberation";
+      const sequenceNode3Config =
+        resonanceChainsConfig?.SequenceNode3ThroughDarkandWindtheErlkingFollows;
+      if (sequenceNode3Config?.isEnabled) {
+        const darkCoreBuffTargets = getResonanceChainBuffAttackTargets(
+          sequenceNode3Config,
+          [
+            "PhantomBubbleStagecraftFormDMG",
+            "BasicAttackStagecraftFormStage4DMG",
+          ],
+          "darkCoreConsumeBuffTarget",
+        );
+        darkCoreBuffTargets.forEach((talentKey: string) => {
+          if (buffData?.stacks >= 5) {
+            data.specificTalentBuffs[`${talentKey}:talentModifierMultiply`] = 12;
+          }
+          data.specificTalentBuffs[`${talentKey}:talentTypeOverride`] =
+            "Liberation";
+        });
       }
     }
   }

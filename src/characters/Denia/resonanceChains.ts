@@ -95,6 +95,22 @@ export const resonanceChains = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    buffAttackTargetSelection: {
+      configKey: "darkCoreConsumeBuffTarget",
+      defaultValue: "all",
+      label: "Dark Core consume buff applies to",
+      options: [
+        { value: "all", label: "All attacks" },
+        {
+          value: "PhantomBubbleStagecraftFormDMG",
+          label: "Phantom Bubble - Stagecraft Form",
+        },
+        {
+          value: "BasicAttackStagecraftFormStage4DMG",
+          label: "Basic Attack - Stagecraft Form Stage 4",
+        },
+      ],
+    },
   },
   {
     key: "SequenceNode4FromtheFarBeyondtoFarBeyond",
