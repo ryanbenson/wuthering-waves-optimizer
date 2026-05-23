@@ -34,6 +34,28 @@
           </label>
         </div>
       </div>
+      <div
+        v-if="buffAttackTargetSelection">
+        <div
+          class="form-control w-full max-w-md"
+          @click.stop>
+          <label class="label py-1">
+            <span class="label-text">{{
+              buffAttackTargetSelection.label ?? "Buff applies to"
+            }}</span>
+          </label>
+          <select
+            v-model="buffAttackTarget"
+            class="select select-bordered select-xs w-full">
+            <option
+              v-for="option in buffAttackTargetSelection.options"
+              :key="option.value"
+              :value="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -42,6 +64,18 @@
 import { computed, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
+
+type ResonanceChainBuffAttackTargetOption = {
+  value: string;
+  label: string;
+};
+
+type ResonanceChainBuffAttackTargetSelection = {
+  configKey: string;
+  defaultValue?: string;
+  label?: string;
+  options: ResonanceChainBuffAttackTargetOption[];
+};
 
 const props = withDefaults(
   defineProps<{
@@ -54,6 +88,7 @@ const props = withDefaults(
     minStacks?: number;
     maxStacks?: number;
     modifiers?: unknown[];
+    buffAttackTargetSelection?: ResonanceChainBuffAttackTargetSelection;
   }>(),
   {
     alwaysEnabled: false,
@@ -62,6 +97,7 @@ const props = withDefaults(
     maxStacks: 0,
     modifiers: () => [],
     uniqueKey: "",
+    buffAttackTargetSelection: undefined,
   },
 );
 
@@ -108,6 +144,40 @@ const stacks = computed({
   },
 });
 
+const buffAttackTargetConfigKey = computed(
+  () => props.buffAttackTargetSelection?.configKey ?? "",
+);
+
+const buffAttackTarget = computed({
+  get() {
+    if (!buffAttackTargetConfigKey.value) {
+      return "";
+    }
+    const chains = currentCharacter.value.resonanceChains as
+      | Record<string, Record<string, string>>
+      | undefined;
+    const chainConfig = chains?.[props.uniqueKey];
+    return (
+      chainConfig?.[buffAttackTargetConfigKey.value] ??
+      props.buffAttackTargetSelection?.defaultValue ??
+      props.buffAttackTargetSelection?.options?.[0]?.value ??
+      "all"
+    );
+  },
+  async set(value: string) {
+    if (!buffAttackTargetConfigKey.value) {
+      return;
+    }
+    await characterStore.setCharacterData(props.character, {
+      resonanceChains: {
+        [props.uniqueKey]: {
+          [buffAttackTargetConfigKey.value]: value,
+        },
+      },
+    });
+  },
+});
+
 function updatedStats() {
   emit("updated-character-buff");
 }
@@ -135,6 +205,14 @@ watch(
 
 watch(
   stacks,
+  () => {
+    updatedStats();
+  },
+  { immediate: true },
+);
+
+watch(
+  buffAttackTarget,
   () => {
     updatedStats();
   },
