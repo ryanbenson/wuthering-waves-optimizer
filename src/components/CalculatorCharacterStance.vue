@@ -10,7 +10,7 @@
         :key="stance"
         type="button"
         class="btn flex-1 mr-2 character__stance-btn"
-        :class="{ 'btn-default': stance === activeStance, 'btn-ghost': stance !== activeStance }"
+        :class="{ 'btn-default': stance === activeStance, 'btn-ghost opacity-50': stance !== activeStance }"
         :data-test-stance="stance"
         :title="stance"
         @click="selectStance(stance)">
