@@ -461,17 +461,21 @@ export const getResonanceChainBuffAttackTargets = (
   chainConfig: { [key: string]: unknown } | null | undefined,
   talentKeys: string[],
   configKey: string,
-  defaultValue: string = "all",
+  defaultValue: string = "none",
 ): string[] => {
   const selectedTarget =
     (chainConfig?.[configKey] as string | undefined) ?? defaultValue;
+  if (selectedTarget === "none") {
+    return [];
+  }
+  // Legacy: "all" was removed in favor of per-attack / none selection
   if (selectedTarget === "all") {
     return talentKeys;
   }
   if (talentKeys.includes(selectedTarget)) {
     return [selectedTarget];
   }
-  return talentKeys;
+  return [];
 };
 
 export const computeSelfBuffs = (

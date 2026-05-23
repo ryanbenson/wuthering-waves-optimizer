@@ -161,7 +161,7 @@ const buffAttackTarget = computed({
       chainConfig?.[buffAttackTargetConfigKey.value] ??
       props.buffAttackTargetSelection?.defaultValue ??
       props.buffAttackTargetSelection?.options?.[0]?.value ??
-      "all"
+      "none"
     );
   },
   async set(value: string) {
