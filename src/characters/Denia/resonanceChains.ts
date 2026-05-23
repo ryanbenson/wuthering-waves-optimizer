@@ -100,10 +100,10 @@ export const resonanceChains = [
     alwaysEnabled: false,
     buffAttackTargetSelection: {
       configKey: "darkCoreConsumeBuffTarget",
-      defaultValue: "all",
+      defaultValue: "none",
       label: "Dark Core consume buff applies to",
       options: [
-        { value: "all", label: "All attacks" },
+        { value: "none", label: "None" },
         {
           value: "PhantomBubbleStagecraftFormDMG",
           label: "Phantom Bubble - Stagecraft Form",

@@ -64,7 +64,6 @@ Obtaining this effect removes the <span style="color:#f7ca2f"><strong>Entropy Sh
       {
         modifier: "talentModifierMultiply",
         modifySpecificTalents: [
-          "FinalActBreakdownFormDMG",
           "BasicAttackBreakdownFormStage1DMG",
           "BasicAttackBreakdownFormStage2DMG",
           "BasicAttackBreakdownFormStage3DMG",
@@ -76,8 +75,6 @@ Obtaining this effect removes the <span style="color:#f7ca2f"><strong>Entropy Sh
           "MidAirAttackBreakdownFormStage2DMG",
           "MidAirAttackBreakdownFormStage3DMG",
           "MidAirAttackBreakdownFormStage4DMG",
-          "BanishBreakdownFormStage1DMG",
-          "BanishBreakdownFormStage2DMG",
         ],
         modifierValue: 0.5,
       },
