@@ -1,7 +1,8 @@
 export const buffs = [
   {
     key: `SeraphicDuetTuneRupture`,
-    name: `Seraphic Duet - Tune Rupture Mode`,
+    name: `Seraphic Duet`,
+    stance: "Tune Rupture",
     details: `<div> In <span class="Highlight">Resonance Mode - Tune Rupture</span>, casting Resonance Skill <span class="Highlight">Seraphic Duet</span> additionally deals 5 instances of <span class="Highlight">Tune Rupture DMG</span>, with each instance dealt to a random target within range. The target's <span class="Highlight">Off-Tune Level</span> does not affect these instances of <span class="Highlight">Tune Rupture DMG</span>. When <span class="Highlight">Seraphic Duet</span> deals damage, remove the target's <span class="Highlight">Rupturous Trail</span> and increase the DMG Multiplier of Tune Rupture based on the number of stacks removed, each stack increasing the DMG Multiplier by 4% for 2.5s.</div>`,
     hasStacks: true,
     modifiers: [
@@ -17,7 +18,8 @@ export const buffs = [
   },
   {
     key: `SeraphicDuetFusionBurst`,
-    name: `Seraphic Duet - Fusion Burst`,
+    name: `Seraphic Duet`,
+    stance: "Fusion Burst",
     details: `<div>In <span class="Highlight">Resonance Mode - Fusion Burst</span>, when Resonance Skill <span class="Highlight">Seraphic Duet</span> hits the target, if they are inflicted with <span class="Highlight">Fusion Trail</span>, remove the <span class="Highlight">Fusion Trail</span> stacks, and trigger the <span class="Highlight">Fusion Burst</span> on the target based on its max stack limit without removing its stacks. Each stack of <span class="Highlight">Fusion Trail</span> removed increases the DMG Multiplier of <span class="Highlight">Fusion Burst</span> on the main target by 10%.</div>`,
     hasStacks: true,
     modifiers: [
@@ -34,6 +36,7 @@ export const buffs = [
   {
     key: `StardustResonance`,
     name: `Stardust Resonance`,
+    stance: "Fusion Burst",
     details: `<div>- In <span class="Highlight">Resonance Mode - Fusion Burst</span>, the DMG Multiplier of <span class="Highlight">Fusion Burst</span> triggered by Resonance Skill <span class="Highlight">Seraphic Duet</span> on the main target is additionally increased by 200%. The DMG Multiplier increase effect is stackable with that provided by <span class="Highlight">Fusion Trail</span>.</div>`,
     hasStacks: false,
     modifiers: [
@@ -70,7 +73,8 @@ export const buffs = [
   },
   {
     key: `InherentSkillBetweentheStarsTuneRupture`,
-    name: `Inherent Skill: Between the Stars - Tune Rupture`,
+    name: `Inherent Skill: Between the Stars`,
+    stance: "Tune Rupture",
     details: `<div>In <span class="Highlight">Resonance Mode - Tune Rupture</span>, when Resonators in the team inflict  <span class="Highlight">Tune Rupture - Shifting</span> or deal  <span class="Highlight">Tune Rupture DMG</span>, Aemeath's Crit. DMG increases by 20%, up to 3 times. Each Resonator can only trigger this effect once.
 With 3 stacks, Resonance Liberation  <span class="Highlight">Heavenfall Edict: Finale</span> DMG is Amplified by 25%.
 Resonators joining the team or switching Resonance Mode resets this effect.</div>`,
@@ -87,7 +91,8 @@ Resonators joining the team or switching Resonance Mode resets this effect.</div
   },
   {
     key: `InherentSkillBetweentheStarsFusionBurst`,
-    name: `Inherent Skill: Between the Stars - Fusion Burst`,
+    name: `Inherent Skill: Between the Stars`,
+    stance: "Fusion Burst",
     details: `<div>In <span class="Highlight">Resonance Mode - Fusion Burst</span>, when Resonators in the team inflict <span class="Highlight">Fusion Burst</span>, Aemeath's Crit. DMG increases by 30%, up to 2 times. Each Resonator can only trigger this effect once.
 With 2 stacks, Resonance Liberation <span class="Highlight">Heavenfall Edict: Finale</span> DMG is Amplified by 25%.
 Resonators joining the team or switching Resonance Mode resets this effect.</div>`,

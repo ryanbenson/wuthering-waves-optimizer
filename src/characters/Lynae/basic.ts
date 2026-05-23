@@ -6,6 +6,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     avatarUrl: "Lynae.png",
     gender: "female",
     element: "Spectro",
+    stances: ["Tune Rupture", "Tune Strain"],
     tuneBreakBoost: 0.1, // use decimal since this rolls into buff calc
   };
 }

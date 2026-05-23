@@ -58,6 +58,7 @@ Casting Outro Skill grants the incoming Resonator 25% All-DMG Amplification for 
   {
     key: "SequenceNode3ForOneBrilliantMomentAdditiveColor",
     name: "Sequence Node 3: For One Brilliant Moment (Additive Color)",
+    stance: "Tune Rupture",
     details: `<div>With <span class="Highlight"><strong>Lumiflow</strong></span> ≥ 120 points. Lynae gains 1 stack of <span class="Highlight"><strong>Premixed Hue</strong></span> every 1s, up to 25 stacks. Each stack of <span class="Highlight"><strong>Premixed Hue</strong></span> increases the Spectro DMG dealt through <span class="Highlight"><strong>Additive Color</strong></span> by 55%. No <span class="Highlight"><strong>Premixed Hue</strong></span> is gained while casting <span class="Highlight"><strong>Additive Color</strong></span>. When <span class="Highlight"><strong>Additive Color</strong></span> ends, remove all stacks of <span class="Highlight"><strong>Premixed Hue</strong></span>. Lynae loses a stack of <span class="Highlight"><strong>Premixed Hue</strong></span> every 0.5s once <span class="Highlight"><strong>Lumiflow</strong></span> is below 120 points.<br>While Lynae is out of combat, Premixed Hue regenerates twice as fast and depletes half as fast.</div>`,
     hasStacks: true,
     modifiers: [

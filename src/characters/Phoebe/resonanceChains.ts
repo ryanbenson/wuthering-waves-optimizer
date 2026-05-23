@@ -1,7 +1,8 @@
 export const resonanceChains = [
   {
     key: "SequenceNode1WarmLightandBedsideWishesAbsolution",
-    name: "Sequence Node 1: Warm Light and Bedside Wishes - Absolution",
+    name: "Sequence Node 1: Warm Light and Bedside Wishes",
+    stance: "Absolution",
     details: `<span class="skilldescription">When in <span class="Highlight">Absolution</span>, Resonance Liberation <span class="Highlight">Dawn of Enlightenment</span> now increases DMG Multiplier by 480% instead of 255%.</span>`,
     hasStacks: false,
     modifiers: [
@@ -17,7 +18,8 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode1WarmLightandBedsideWishesConfession",
-    name: "Sequence Node 1: Warm Light and Bedside Wishes - Confession",
+    name: "Sequence Node 1: Warm Light and Bedside Wishes",
+    stance: "Confession",
     details: `<span class="skilldescription">When in <span class="Highlight">Confession</span>, Resonance Liberation <span class="Highlight">Dawn of Enlightenment </span> increases DMG Multiplier by 90% and applies <span class="Highlight">Spectro Frazzle</span> to the targets with the maximum stack the targets can receive.</span>`,
     hasStacks: false,
     modifiers: [
@@ -33,7 +35,8 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode2ABoatAdriftinTearsAbsolution",
-    name: "Sequence Node 2: A Boat Adrift in Tears - Absolution",
+    name: "Sequence Node 2: A Boat Adrift in Tears",
+    stance: "Absolution",
     details: `<span class="skilldescription">When in <span class="Highlight">Absolution</span>, DMG dealt by Outro Skills to targets with <span class="Highlight">Spectro Frazzle</span> is Amplified by 120%.</span>`,
     hasStacks: false,
     modifiers: [
@@ -48,7 +51,8 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode2ABoatAdriftinTearsConfession",
-    name: "Sequence Node 2: A Boat Adrift in Tears - Confession",
+    name: "Sequence Node 2: A Boat Adrift in Tears",
+    stance: "Confession",
     details: `<span class="skilldescription">When in <span class="Highlight">Confession</span>, <span class="Highlight">Silent Prayer</span> grants 120% more DMG Amplification for <span class="Highlight">Spectro Frazzle</span>.</span>`,
     hasStacks: false,
     modifiers: [
@@ -63,7 +67,8 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode3DaisyWreathsandDreamsAbsolution",
-    name: "Sequence Node 3: Daisy Wreaths and Dreams - Absolution",
+    name: "Sequence Node 3: Daisy Wreaths and Dreams",
+    stance: "Absolution",
     details: `<span class="skilldescription">When in <span class="Highlight">Absolution</span>, the DMG Multiplier of Heavy Attack <span class="Highlight">Starflash</span> is increased by 91%.</span>`,
     hasStacks: false,
     modifiers: [
@@ -79,7 +84,8 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode3DaisyWreathsandDreamsConfession",
-    name: "Sequence Node 3: Daisy Wreaths and Dreams - Confession",
+    name: "Sequence Node 3: Daisy Wreaths and Dreams",
+    stance: "Confession",
     details: `<span class="skilldescription">When in <span class="Highlight">Confession</span>, the DMG Multiplier of Heavy Attack <span class="Highlight">Starflash</span> is increased by 249%.</span>`,
     hasStacks: false,
     modifiers: [

@@ -118,7 +118,8 @@ Obtaining this effect removes the <span style="color:#f7ca2f"><strong>Entropy Sh
   },
   {
     key: `InherentSkillEtchedColorsFusionBurst`,
-    name: `Inherent Skill: Etched Colors - Fusion Burst Mode`,
+    name: `Inherent Skill: Etched Colors`,
+    stance: "Fusion Burst",
     details: `<div>While in the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121106">Entropy Shift</span></span> states, Denia obtains the following effects based on her current <span style="color:#ffd12f;" class="font-bold">Resonance Mode</span>:<br>- <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Fusion Burst</span>: All Resonators in the team gain 30% Fusion DMG Bonus.</div>`,
     hasStacks: false,
     modifiers: [
@@ -133,7 +134,8 @@ Obtaining this effect removes the <span style="color:#f7ca2f"><strong>Entropy Sh
   },
   {
     key: `InherentSkillEtchedColorsTuneStrain`,
-    name: `Inherent Skill: Etched Colors - Tune Strain Mode`,
+    name: `Inherent Skill: Etched Colors`,
+    stance: "Tune Strain",
     details: `<div>While in the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121106">Entropy Shift</span></span> states, Denia obtains the following effects based on her current <span style="color:#ffd12f;" class="font-bold">Resonance Mode</span>:<br>- <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Tune Strain</span>: All Resonators in the team gain 10 Tune Break Boost. When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.</div>`,
     hasStacks: false,
     modifiers: [
@@ -149,6 +151,7 @@ Obtaining this effect removes the <span style="color:#f7ca2f"><strong>Entropy Sh
   {
     key: `InherentSkillEtchedColorsOffTuneBuildupRate`,
     name: `Inherent Skill: Etched Colors - Off-Tune Buildup Rate`,
+    stance: "Tune Strain",
     details: `<div>While in the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121106">Entropy Shift</span></span> states, Denia obtains the following effects based on her current <span style="color:#ffd12f;" class="font-bold">Resonance Mode</span>:<br>- <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Tune Strain</span>: All Resonators in the team gain 10 Tune Break Boost. When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.</div>`,
     hasStacks: true,
     modifiers: [],

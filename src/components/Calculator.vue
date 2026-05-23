@@ -32,11 +32,17 @@
             @character-talent-updated="
               handleCharacterTalentUpdated
             "></CalculatorTalents>
+          <CalculatorCharacterStance
+            v-if="characterStances.length > 1 && isLoading === false"
+            :key="`${character}-stance`"
+            :character="character"
+            :stances="characterStances"
+            @updated-character-stance="handleUpdatedCharacterStance" />
           <template v-if="chosenChar?.value?.buffs && isLoading === false">
             <CalculatorCharacterBuffs
               :key="character"
               :character="character"
-              :buffs="chosenChar?.value?.buffs"
+              :buffs="filteredCharacterBuffs"
               :talent-data="characters?.[character]?.talents"
               :energy-regen="energyRegen"
               :crit-rate="totalCritRate"
@@ -77,7 +83,7 @@
           <CalculatorResonanceChains
             :key="character"
             :character="character"
-            :buffs="chosenChar?.value?.resonanceChains"
+            :buffs="filteredResonanceChains"
             @updated-character-resonance-chains="
               handleUpdatedCharacterResonanceChains
             "></CalculatorResonanceChains>
@@ -274,7 +280,7 @@
 
 <script lang="ts">
 // @ts-nocheck
-import { defineComponent, reactive, ref, watch, nextTick } from "vue";
+import { defineComponent, reactive, ref, watch, nextTick, computed } from "vue";
 import { storeToRefs } from "pinia";
 import {
   calcDamage,
@@ -296,7 +302,12 @@ import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
 import CalculatorCharacterSelect from "./CalculatorCharacterSelect.vue";
+import CalculatorCharacterStance from "./CalculatorCharacterStance.vue";
 import CalculatorTalents from "./CalculatorTalents.vue";
+import {
+  filterBuffsForStance,
+  resolveActiveStance,
+} from "../calculator/stances";
 import CalculatorEnemy from "./CalculatorEnemy.vue";
 import CalculatorRotations from "./CalculatorRotations.vue";
 import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
@@ -353,6 +364,7 @@ export default defineComponent({
   },
   components: {
     CalculatorCharacterSelect,
+    CalculatorCharacterStance,
     CalculatorDamages,
     CalculatorEchoes,
     CalculatorEnemy,
@@ -384,6 +396,25 @@ export default defineComponent({
     const allDamages = reactive({});
     const chosenWeapon = reactive({});
     const chosenChar = reactive({});
+    const characterStances = computed(
+      () => chosenChar.value?.basic?.stances ?? [],
+    );
+    const activeStance = computed(() =>
+      resolveActiveStance(
+        characterStances.value,
+        characters.value[character.value]?.activeStance,
+        characters.value[character.value]?.buffs,
+      ),
+    );
+    const filteredCharacterBuffs = computed(() =>
+      filterBuffsForStance(chosenChar.value?.buffs ?? [], activeStance.value),
+    );
+    const filteredResonanceChains = computed(() =>
+      filterBuffsForStance(
+        chosenChar.value?.resonanceChains ?? [],
+        activeStance.value,
+      ),
+    );
     const echoStats = reactive({});
     const customBuffs = reactive({});
     const characterLevel = ref("90");
@@ -475,6 +506,17 @@ export default defineComponent({
       chosenChar.value = chosen;
       // set the character in the store
       characterStore.setActiveCharacter(charName);
+      const stances = chosen?.basic?.stances;
+      if (stances?.length && !characters.value?.[charName]?.activeStance) {
+        const resolved = resolveActiveStance(
+          stances,
+          undefined,
+          characters.value?.[charName]?.buffs,
+        );
+        if (resolved) {
+          characterStore.setCharacterData(charName, { activeStance: resolved });
+        }
+      }
       // update the character level
       characterLevel.value =
         characters.value?.[charName]?.characterLevel ?? "90";
@@ -687,8 +729,18 @@ export default defineComponent({
         resonanceChainsCharInfo: chosenChar.value?.resonanceChains ?? [],
         character: character?.value ?? "",
         talentData: talentData ?? {},
+        activeStance: activeStance.value,
         ignoreBuffs: {},
       });
+    };
+
+    const handleUpdatedCharacterStance = () => {
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
+      calcAllDamages();
     };
 
     const handleUpdatedCharacterBuffs = (givenCharBuffsData) => {
@@ -984,6 +1036,7 @@ export default defineComponent({
         activeCharacterBuffs: characterStore.getActiveCharacter?.buffs ?? {},
         activeCharacterResonanceChains:
           characterStore.getActiveCharacter?.resonanceChains ?? {},
+        activeStance: activeStance.value,
 
         // Helper function to get rotation by ID
         getRotationById: (char: string, rotationId: string) => {
@@ -1506,6 +1559,10 @@ export default defineComponent({
       characters,
       characterLevel,
       chosenChar,
+      characterStances,
+      activeStance,
+      filteredCharacterBuffs,
+      filteredResonanceChains,
       charBuffsData,
       charResonanceChainsData,
       chosenWeapon,
@@ -1534,6 +1591,7 @@ export default defineComponent({
       handleWeaponUpdated,
       handleOptimize,
       handleUpdatedCharacter,
+      handleUpdatedCharacterStance,
       handleUpdatedCharacterBuffs,
       handleUpdatedCharacterResonanceChains,
       handleUpdatedEnemy,

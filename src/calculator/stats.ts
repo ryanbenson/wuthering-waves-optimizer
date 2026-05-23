@@ -1,3 +1,5 @@
+import { isBuffActiveForStance } from "./stances";
+
 export const getInitStats = (providedFullStats: any = {}) => {
   let stats = {
     attackPercent: 0,
@@ -478,6 +480,7 @@ export const computeSelfBuffs = (
   resonanceChainsConfig: any = null,
   talentData: any = {},
   character: string = "",
+  activeStance: string | null = null,
 ): any => {
   // find the buff in our char data
   if (!buffsCharInfo || buffsCharInfo.length <= 0) {
@@ -500,6 +503,9 @@ export const computeSelfBuffs = (
       (buffItem: any) => buffItem.key === key,
     );
     if (!buffFromCharacter) {
+      continue;
+    }
+    if (!isBuffActiveForStance(buffFromCharacter, activeStance)) {
       continue;
     }
     const buff = JSON.parse(JSON.stringify(buffFromCharacter));
@@ -1054,6 +1060,7 @@ export const computeAdditionalBaseBuffs = (
   character: string = "",
   energyRegen: number = 0,
   critRate: number = 0,
+  activeStance: string | null = null,
 ): any => {
   if (!buffsCharInfo || buffsCharInfo.length <= 0) {
     return {};
@@ -1069,6 +1076,9 @@ export const computeAdditionalBaseBuffs = (
       (buffItem: any) => buffItem.key === key,
     );
     if (!buffFromCharacter) {
+      continue;
+    }
+    if (!isBuffActiveForStance(buffFromCharacter, activeStance)) {
       continue;
     }
     const buff = JSON.parse(JSON.stringify(buffFromCharacter));
@@ -1230,6 +1240,7 @@ export const computeCritOverflowBuffs = (
   resonanceChainsConfig: any = null,
   resonanceChainsCharInfo: any = null,
   critRate: number = 0,
+  activeStance: string | null = null,
 ): any => {
   const data: any = {};
 
@@ -1274,6 +1285,9 @@ export const computeCritOverflowBuffs = (
       if (!buffFromCharacter) {
         continue;
       }
+      if (!isBuffActiveForStance(buffFromCharacter, activeStance)) {
+        continue;
+      }
       const buff = JSON.parse(JSON.stringify(buffFromCharacter));
 
       const modifiersData = buff?.modifiers ?? [];
@@ -1308,6 +1322,9 @@ export const computeCritOverflowBuffs = (
       if (!chainFromCharacter) {
         continue;
       }
+      if (!isBuffActiveForStance(chainFromCharacter, activeStance)) {
+        continue;
+      }
       const chain = JSON.parse(JSON.stringify(chainFromCharacter));
 
       const modifiersData = chain?.modifiers ?? [];
@@ -1331,6 +1348,7 @@ export const computeResonanceChainsBuffs = (
   buffsConfig: any = null,
   buffsCharInfo: any = null,
   talentData: any = {},
+  activeStance: string | null = null,
 ): any => {
   // find the buff in our char data
   if (!buffsCharInfo || buffsCharInfo.length <= 0) {
@@ -1353,6 +1371,9 @@ export const computeResonanceChainsBuffs = (
       (buffItem: any) => buffItem.key === key,
     );
     if (!buffFromCharacter) {
+      continue;
+    }
+    if (!isBuffActiveForStance(buffFromCharacter, activeStance)) {
       continue;
     }
     const buff = JSON.parse(JSON.stringify(buffFromCharacter));
@@ -1489,6 +1510,7 @@ export const calculateAllStats = (context: {
   // Character metadata
   character: string;
   talentData: any;
+  activeStance?: string | null;
 
   // Options
   ignoreBuffs?: {
@@ -1520,6 +1542,7 @@ export const calculateAllStats = (context: {
     resonanceChainsCharInfo,
     character,
     talentData,
+    activeStance = null,
     ignoreBuffs = {},
   } = context;
 
@@ -1529,6 +1552,7 @@ export const calculateAllStats = (context: {
       resonanceChainsConfig ?? {},
       resonanceChainsCharInfo ?? [],
       talentData ?? {},
+      activeStance,
     ) || {};
 
   // Step 2: Compute self buffs (no longer needs base stats)
@@ -1539,6 +1563,7 @@ export const calculateAllStats = (context: {
       resonanceChainsConfig ?? {},
       talentData ?? {},
       character ?? "",
+      activeStance,
     ) || {};
 
   // Step 3: Calculate intermediate stats with resonance chains and self buffs
@@ -1571,6 +1596,7 @@ export const calculateAllStats = (context: {
     character ?? "",
     intermediateStats.energyRegen,
     intermediateStats.totalCritRate,
+    activeStance,
   );
 
   // Step 4b: Compute AdditionalBase buffs using intermediate stats (resonance chains)
@@ -1590,6 +1616,7 @@ export const calculateAllStats = (context: {
       character ?? "",
       intermediateStats.energyRegen,
       intermediateStats.totalCritRate,
+      activeStance,
     );
   }
 
@@ -1600,6 +1627,7 @@ export const calculateAllStats = (context: {
     resonanceChainsConfig ?? {},
     resonanceChainsCharInfo ?? [],
     intermediateStats.totalCritRate,
+    activeStance,
   );
 
   // Step 6a: Merge AdditionalBase and CritOverflow into self buffs (self buffs)

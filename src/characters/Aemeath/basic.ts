@@ -6,6 +6,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     avatarUrl: "Aemeath.png",
     gender: "female",
     element: "Fusion",
+    stances: ["Fusion Burst", "Tune Rupture"],
     tuneBreakBoost: 0.1, // use decimal since this rolls into buff calc
     fusionBurst: true,
   };

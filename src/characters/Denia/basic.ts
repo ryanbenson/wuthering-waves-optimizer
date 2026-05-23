@@ -6,6 +6,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     avatarUrl: "Denia.png",
     gender: "female",
     element: "Fusion",
+    stances: ["Fusion Burst", "Tune Strain"],
     fusionBurst: true,
     tuneBreakBoost: 0.1,
   };
