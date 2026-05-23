@@ -358,7 +358,7 @@
             v-if="
               damage.totalDamageContext.enemyResist > 0 ||
               damage.totalDamageContext.enemyResist -
-                damage.totalDamageContext.resistenceReduction >=
+                damage.totalDamageContext.resistanceReduction >=
                 0
             ">
             = 1 - (
@@ -371,7 +371,7 @@
             <span class="text-primary">
               {{
                 displayPercentage(
-                  damage.totalDamageContext.resistenceReduction * 100,
+                  damage.totalDamageContext.resistanceReduction * 100,
                 )
               }}
             </span>
@@ -382,7 +382,7 @@
             <span class="text-primary">
               {{
                 displayPercentage(
-                  damage.totalDamageContext.resistenceReduction * 100,
+                  damage.totalDamageContext.resistanceReduction * 100,
                 )
               }}
             </span>
@@ -625,7 +625,7 @@
           v-if="
             damage.totalDamageContext.enemyResist > 0 ||
             damage.totalDamageContext.enemyResist -
-              damage.totalDamageContext.resistenceReduction >=
+              damage.totalDamageContext.resistanceReduction >=
               0
           ">
           = 1 - (
@@ -636,7 +636,7 @@
           <span class="text-primary">
             {{
               displayPercentage(
-                damage.totalDamageContext.resistenceReduction * 100,
+                damage.totalDamageContext.resistanceReduction * 100,
               )
             }}
           </span>
@@ -647,7 +647,7 @@
           <span class="text-primary">
             {{
               displayPercentage(
-                damage.totalDamageContext.resistenceReduction * 100,
+                damage.totalDamageContext.resistanceReduction * 100,
               )
             }}
           </span>
@@ -873,7 +873,7 @@
           v-if="
             damage.totalDamageContext.enemyResist > 0 ||
             damage.totalDamageContext.enemyResist -
-              damage.totalDamageContext.resistenceReduction >=
+              damage.totalDamageContext.resistanceReduction >=
               0
           ">
           = 1 - (
@@ -884,7 +884,7 @@
           <span class="text-primary">
             {{
               displayPercentage(
-                damage.totalDamageContext.resistenceReduction * 100,
+                damage.totalDamageContext.resistanceReduction * 100,
               )
             }}
           </span>
@@ -895,7 +895,7 @@
           <span class="text-primary">
             {{
               displayPercentage(
-                damage.totalDamageContext.resistenceReduction * 100,
+                damage.totalDamageContext.resistanceReduction * 100,
               )
             }}
           </span>
@@ -1119,7 +1119,7 @@
           v-if="
             damage.totalDamageContext.enemyResist > 0 ||
             damage.totalDamageContext.enemyResist -
-              damage.totalDamageContext.resistenceReduction >=
+              damage.totalDamageContext.resistanceReduction >=
               0
           ">
           = 1 - (
@@ -1130,7 +1130,7 @@
           <span class="text-primary">
             {{
               displayPercentage(
-                damage.totalDamageContext.resistenceReduction * 100,
+                damage.totalDamageContext.resistanceReduction * 100,
               )
             }}
           </span>
@@ -1141,7 +1141,7 @@
           <span class="text-primary">
             {{
               displayPercentage(
-                damage.totalDamageContext.resistenceReduction * 100,
+                damage.totalDamageContext.resistanceReduction * 100,
               )
             }}
           </span>
