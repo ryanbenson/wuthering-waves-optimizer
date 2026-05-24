@@ -17,6 +17,11 @@
     }">
     <template v-if="type === 'Healing'">
       <td class="flex items-center gap-2">
+        <img
+          v-if="performerImageUrl"
+          :src="performerImageUrl"
+          class="size-6 rounded-full border border-solid neutral-content bg-cover"
+          v-tooltip="performerDisplayName" />
         <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
           :class="{
             'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
@@ -38,6 +43,11 @@
     </template>
     <template v-else-if="type === 'Shield'">
       <td class="flex items-center gap-2">
+        <img
+          v-if="performerImageUrl"
+          :src="performerImageUrl"
+          class="size-6 rounded-full border border-solid neutral-content bg-cover"
+          v-tooltip="performerDisplayName" />
         <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
           :class="{
             'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
@@ -59,6 +69,11 @@
     </template>
     <template v-else>
       <td class="flex items-center gap-2">
+        <img
+          v-if="performerImageUrl"
+          :src="performerImageUrl"
+          class="size-6 rounded-full border border-solid neutral-content bg-cover"
+          v-tooltip="performerDisplayName" />
         <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
           :class="{
             'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
@@ -110,6 +125,8 @@ import { displayDamage } from "../utils/numbers";
 import { slugify } from "../utils/strings";
 import { getEchoData } from "../echoes";
 import { useCharacterStore } from "../stores/character";
+import { getCharacterImageUrl } from "../calculator/rotationPerformer";
+import { getCharacterRosterDisplayName } from "../characters/characters";
 
 type DamageData = Record<string, any>;
 
@@ -125,6 +142,7 @@ const props = withDefaults(
     mainEchoRank?: number | string | null;
     originalIsEnabled?: boolean;
     alwaysCrit?: boolean;
+    performerCharacterKey?: string | null;
   }>(),
   {
     isEnabled: true,
@@ -132,7 +150,20 @@ const props = withDefaults(
     mainEchoRank: null,
     originalIsEnabled: true,
     alwaysCrit: false,
+    performerCharacterKey: null,
   },
+);
+
+const resolvedPerformerKey = computed(
+  () => props.performerCharacterKey || props.character,
+);
+
+const performerDisplayName = computed(() =>
+  getCharacterRosterDisplayName(resolvedPerformerKey.value),
+);
+
+const performerImageUrl = computed(() =>
+  getCharacterImageUrl(resolvedPerformerKey.value),
 );
 
 const emit = defineEmits<{
@@ -160,7 +191,9 @@ const mainEchoData = computed(() => {
   return getEchoData(props.mainEcho);
 });
 const mainEchoImage = computed(() => mainEchoData.value?.image ?? null);
-const isEchoAttack = computed(() => props.mainEcho !== null);
+const isEchoAttack = computed(
+  () => props.type === "Echo" && props.mainEcho !== null,
+);
 const isEquippedEchoSameAsActionEcho = computed(() => {
   if (!currentCharacterMainEcho.value || !props.mainEcho) {
     return true;

@@ -626,6 +626,9 @@
               :main-echo-rank="damageInstance.mainEchoRank"
               :original-is-enabled="damageInstance.originalIsEnabled"
               :always-crit="damageInstance.alwaysCrit"
+              :performer-character-key="
+                damageInstance.performerCharacterKey ?? character
+              "
               @selected-attack="handleSelectedAttack"></CalculatorDamage>
           </tbody>
           <tfoot>

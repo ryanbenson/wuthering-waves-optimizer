@@ -94,7 +94,8 @@
         <CalculatorPartyBuffs
           :key="character"
           :character="character"
-          @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
+          @updated-team-buffs="handleUpdatedTeamBuffs"
+          @rotation-performer-updated="handleRotationPerformerUpdated"></CalculatorPartyBuffs>
       </div>
       <div class="screen--optimizer" v-show="curScreen === 'optimizer'">
         <CalculatorOptimizer
@@ -338,7 +339,7 @@ import {
   calcDamages,
   getCalculationContext,
 } from "../calculator/attacks";
-import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
+import { buildRotationAttacksList } from "../calculator/buildRotationAttacks";
 import type { OptimizerContext } from "../calculator/optimizer";
 import { getOptimizerLoadoutKey } from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
@@ -851,36 +852,42 @@ export default defineComponent({
     };
 
     const handleUpdatedRotations = async (data) => {
-      // go through each rotation and each action and use the full talent data
-      // which will make the rotation system work
       const chosenChar = await getCharByName(character.value);
       const rotationData = [];
-      data.forEach((rotation) => {
+      for (const rotation of data) {
         const rotationInfo = {
           id: rotation.id,
           name: rotation.name,
           description: rotation.description,
           duration: rotation.duration ?? null,
           echo: rotation.echo ?? null,
-          mainEcho: rotation.mainEcho ?? null,
-          mainEchoRank: rotation.actionMainEchoRank ?? null,
+          echoRank: rotation.echoRank ?? null,
+          mainEcho: rotation.echo ?? rotation.mainEcho ?? null,
+          mainEchoRank: rotation.echoRank ?? rotation.mainEchoRank ?? null,
         };
-        const rotationActionInfo = [];
-        rotation.actions.forEach((action) => {
-          const actionData = resolveRotationActionToAttackData(
-            action,
-            chosenChar,
-            characterLevel.value,
-          );
-          if (actionData) {
-            rotationActionInfo.push(actionData);
-          }
-        });
-        rotationInfo.attacks = rotationActionInfo;
+        rotationInfo.attacks = await buildRotationAttacksList(
+          rotation,
+          character.value,
+          chosenChar,
+          characterLevel.value,
+          characters.value,
+          teamBuffsData.value,
+          customBuffs.value,
+        );
         rotationData.push(rotationInfo);
-      });
+      }
       rotationsList.value = rotationData;
       calcAllDamages();
+    };
+
+    const handleRotationPerformerUpdated = async () => {
+      const storedRotations =
+        characterStore.getActiveCharacter?.rotations ?? [];
+      if (storedRotations.length) {
+        await handleUpdatedRotations(storedRotations);
+      } else {
+        calcAllDamages();
+      }
     };
 
     const handleUpdatedCharacter = (chosenCharacter) => {
@@ -927,7 +934,7 @@ export default defineComponent({
       calcAllDamages();
     };
 
-    const handleOptimize = (
+    const handleOptimize = async (
       setFilters = [],
       mainEchoes = [],
       minStats = [],
@@ -1065,16 +1072,17 @@ export default defineComponent({
           };
 
           const rotationActionInfo: any[] = [];
-          rotation.actions.forEach((action: any) => {
-            const actionData = resolveRotationActionToAttackData(
-              action,
+          rotationActionInfo.push(
+            ...(await buildRotationAttacksList(
+              rotation,
+              character.value,
               chosenChar.value,
               characterLevel.value,
-            );
-            if (actionData) {
-              rotationActionInfo.push(actionData);
-            }
-          });
+              characters.value,
+              teamBuffsData.value,
+              customBuffs.value,
+            )),
+          );
 
           rotationInfo.attacks = rotationActionInfo;
           rotationData = rotationInfo;
@@ -1598,6 +1606,7 @@ export default defineComponent({
       handleUpdatedMainEcho,
       handleUpdatedMainEchoRank,
       handleUpdatedRotations,
+      handleRotationPerformerUpdated,
       handleUpdatedTeamBuffs,
       handleSelectedAttack,
       BasicAttackDMGBonus,

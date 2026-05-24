@@ -2,6 +2,9 @@ import { getEchoData } from "../echoes";
 import { utilityAttacks } from "../buffs";
 import { echoSetAttacks } from "../echoes/stats";
 import { negativeStatusAttacks } from "./negativeStatusAttacks";
+import type { PerformerAttackContext } from "./rotationPerformer";
+import { getPerformerMainEchoForEchoAttacks } from "./rotationPerformer";
+
 /**
  * Maps a persisted rotation action to a full attack object for processAttacks.
  */
@@ -9,6 +12,9 @@ export function resolveRotationActionToAttackData(
   action: any,
   chosenChar: any,
   _characterLevel: string | number,
+  performerContext: PerformerAttackContext | null = null,
+  rotationMainEcho: string | null = null,
+  rotationMainEchoRank: number | string | null = null,
 ): any | null {
   if (action?.isDisabled) {
     return null;
@@ -28,7 +34,15 @@ export function resolveRotationActionToAttackData(
   } else if (actionType === "utilityAttacks") {
     foundAction = utilityAttacks.find((attack) => attack.key === actionKey);
   } else if (actionType === "echoAttacks") {
-    const echoData = getEchoData(actionMainEcho);
+    const echoKey =
+      getPerformerMainEchoForEchoAttacks(
+        performerContext,
+        rotationMainEcho,
+        rotationMainEchoRank,
+        actionMainEcho,
+        actionMainEchoRank,
+      ).mainEcho ?? actionMainEcho;
+    const echoData = getEchoData(echoKey);
     const echoAttacks = echoData?.actions ?? [];
     foundAction = echoAttacks.find((attack) => attack.key === actionKey);
   } else if (actionType === "negativeStatus") {
@@ -64,11 +78,26 @@ export function resolveRotationActionToAttackData(
     excludeSelfBuffs: action.excludeSelfBuffs ?? false,
     excludeTeamBuffs: action.excludeTeamBuffs ?? false,
     excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
-    actionMainEcho,
-    actionMainEchoRank,
   };
 
+  if (performerContext) {
+    actionData.performerCharacterKey = performerContext.performerCharacterKey;
+    actionData.performerStats = performerContext.performerStats;
+    actionData.performerTalentData = performerContext.performerTalentData;
+    actionData.performerBuffs = performerContext.performerBuffs;
+    actionData.performerChosenChar = performerContext.performerChosenChar;
+  }
+
   if (actionType === "echoAttacks") {
+    const resolvedEcho = getPerformerMainEchoForEchoAttacks(
+      performerContext,
+      rotationMainEcho,
+      rotationMainEchoRank,
+      actionMainEcho,
+      actionMainEchoRank,
+    );
+    actionData.actionMainEcho = resolvedEcho.mainEcho;
+    actionData.actionMainEchoRank = resolvedEcho.mainEchoRank;
     actionData.excludeEchoes =
       action.excludeSelfBuffs ||
       action.excludeTeamBuffs ||

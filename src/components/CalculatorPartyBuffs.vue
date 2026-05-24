@@ -170,6 +170,10 @@
             :talent-data="talentData"
             class="character__buff character__buffs__one"></CalculatorPartyBuff>
         </template>
+        <CalculatorPartyRotationStats
+          :active-character="character"
+          :teammate-character-key="selectedCharacter1"
+          @rotation-performer-updated="handleRotationPerformerUpdated" />
       </div>
     </div>
 
@@ -204,6 +208,10 @@
             :talent-data="talentData"
             class="character__buff character__buffs__two"></CalculatorPartyBuff>
         </template>
+        <CalculatorPartyRotationStats
+          :active-character="character"
+          :teammate-character-key="selectedCharacter2"
+          @rotation-performer-updated="handleRotationPerformerUpdated" />
       </div>
     </div>
 
@@ -276,6 +284,7 @@ import {
 } from "../characters/characters.ts";
 import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
+import CalculatorPartyRotationStats from "./CalculatorPartyRotationStats.vue";
 import { useCharacterStore } from "../stores/character";
 import type { PartyBuffModifier } from "./CalculatorPartyBuff.vue";
 
@@ -287,6 +296,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   "updated-team-buffs": [payload: Record<string, unknown>];
+  "rotation-performer-updated": [];
 }>();
 
 const characterStore = useCharacterStore();
@@ -508,6 +518,10 @@ function handleUpdatedPartyBuff2(buffInfo: PartyBuffEmit) {
     buffsDataChar2.value[buffIndex] = buffInfo;
   }
   updatedStats();
+}
+
+function handleRotationPerformerUpdated() {
+  emit("rotation-performer-updated");
 }
 
 function handleUpdatedPartyBuffEcho(buffInfo: PartyBuffEmit) {

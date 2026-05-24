@@ -64,10 +64,15 @@ export const processAttacks = (
         // if this attack requires a resonance chain to be unlocked, verify it's enabled
         const requiresResonanceChain = attack?.requiresResonanceChain ?? false;
         if (requiresResonanceChain) {
+          const rotationPerformerBuffs = attack.performerBuffs ?? null;
           const resonanceChainsEnabledAttacks =
-            context.buffs.charResonanceChainsData?.EnableAttack ?? [];
+            rotationPerformerBuffs?.charResonanceChainsData?.EnableAttack ??
+            context.buffs.charResonanceChainsData?.EnableAttack ??
+            [];
           const charBuffsEnabledAttacks =
-            context.buffs.charBuffsData?.EnableAttack ?? [];
+            rotationPerformerBuffs?.charBuffsData?.EnableAttack ??
+            context.buffs.charBuffsData?.EnableAttack ??
+            [];
           // merge all possible enabled attack arrays together
           const enabledAttacks: any[] = []
             .concat(resonanceChainsEnabledAttacks)
@@ -87,22 +92,24 @@ export const processAttacks = (
         if (hasNoTalentLevel) {
           talent = attack.talent;
         } else if (dynamicTalentType) {
+          const rotationTalentData =
+            attack.performerTalentData ?? context.character.talentData;
           let talent;
           switch (attack.actionType) {
             case "basic":
-              talent = attack.talents[context.character.talentData.basic];
+              talent = attack.talents[rotationTalentData.basic];
               break;
             case "skill":
-              talent = attack.talents[context.character.talentData.skill];
+              talent = attack.talents[rotationTalentData.skill];
               break;
             case "forteCircuit":
-              talent = attack.talents[context.character.talentData.forte];
+              talent = attack.talents[rotationTalentData.forte];
               break;
             case "liberation":
-              talent = attack.talents[context.character.talentData.liberation];
+              talent = attack.talents[rotationTalentData.liberation];
               break;
             case "intro":
-              talent = attack.talents[context.character.talentData.intro];
+              talent = attack.talents[rotationTalentData.intro];
               break;
             case "tuneBreak":
               // outro has no talent tree. it only has 1 value (e.g. 20.00%)
@@ -130,13 +137,22 @@ export const processAttacks = (
         }
         const hitCount = attack?.count ?? 1;
         let attackType = attack.type;
+        const processPerformerBuffs = attack.performerBuffs ?? null;
+        const processCharBuffsData =
+          processPerformerBuffs?.charBuffsData ??
+          context.buffs.charBuffsData ??
+          {};
+        const processCharResonanceChainsData =
+          processPerformerBuffs?.charResonanceChainsData ??
+          context.buffs.charResonanceChainsData ??
+          {};
         // is there an attack type override? if so, update it
         const attackTypeOverrideResChain =
-          context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+          processCharResonanceChainsData?.specificTalentBuffs?.[
             `${attack.key}:talentTypeOverride`
           ] ?? null;
         const attackTypeOverrideSelfBuff =
-          context.buffs.charBuffsData?.specificTalentBuffs?.[
+          processCharBuffsData?.specificTalentBuffs?.[
             `${attack.key}:talentTypeOverride`
           ] ?? null;
         if (attackTypeOverrideResChain) {
@@ -145,6 +161,8 @@ export const processAttacks = (
         if (attackTypeOverrideSelfBuff) {
           attackType = attackTypeOverrideSelfBuff;
         }
+        const attackProvidedStats =
+          attack.performerStats ?? providedStats ?? null;
         return {
           id: attack.id ?? attack.key,
           key: attack.key,
@@ -157,9 +175,9 @@ export const processAttacks = (
             hasNoTalentLevel,
             dynamicTalentType,
             hitCount,
-            providedStats, // pass along the provided stats, if we have them
-            providedEchoStats, // pass along the provided echo stats, if we have them
-            providedTalent, // pass in a specific talent string
+            attackProvidedStats,
+            providedEchoStats,
+            providedTalent,
           ),
           isEnabled,
           originalIsEnabled,
@@ -169,6 +187,7 @@ export const processAttacks = (
           alwaysCrit: attack.alwaysCrit ?? false,
           mainEcho: attack.actionMainEcho ?? null,
           mainEchoRank: attack.actionMainEchoRank ?? null,
+          performerCharacterKey: attack.performerCharacterKey ?? null,
         };
       })
       // remove any attacks that are not enabled
@@ -219,9 +238,14 @@ export const calculateAttackDamage = (
     );
   }
   let attackType = attack.type;
-  const selfBuffs = JSON.parse(
-    JSON.stringify(context.buffs.charBuffsData ?? {}),
-  );
+  const performerBuffs = attack.performerBuffs ?? null;
+  const rotationCharBuffsData =
+    performerBuffs?.charBuffsData ?? context.buffs.charBuffsData ?? {};
+  const rotationCharResonanceChainsData =
+    performerBuffs?.charResonanceChainsData ??
+    context.buffs.charResonanceChainsData ??
+    {};
+  const selfBuffs = JSON.parse(JSON.stringify(rotationCharBuffsData));
   /**
    * check if there are any buffs that buff another buff
    * look through the object of charResonanceChainsData for any ${attack.key}:MultiplySelfBuffs
@@ -229,7 +253,7 @@ export const calculateAttackDamage = (
    * { specificTalentBuffs: { PoeticEssenceSkillDMG:MultiplySelfBuff: 2 } }
    */
   const resonanceChainsKeys = Object.keys(
-    context.buffs.charResonanceChainsData?.specificTalentBuffs ?? {},
+    rotationCharResonanceChainsData?.specificTalentBuffs ?? {},
   );
   const resonanceChainsKeysWithMultiply = resonanceChainsKeys.filter(
     (key: string) => key.includes("MultiplySelfBuff"),
@@ -237,7 +261,7 @@ export const calculateAttackDamage = (
   if (resonanceChainsKeysWithMultiply.length > 0) {
     resonanceChainsKeysWithMultiply.forEach((key: string) => {
       const buffValue =
-        context.buffs.charResonanceChainsData?.specificTalentBuffs?.[key];
+        rotationCharResonanceChainsData?.specificTalentBuffs?.[key];
       const buffReferenceKey = key.split(":")[0]; // e.g. PoeticEssenceSkillDMG
       // // check if the buffReferenceKey is in the selfBuffs object
       if (selfBuffs?.specificTalentBuffs?.[buffReferenceKey]) {
@@ -250,7 +274,7 @@ export const calculateAttackDamage = (
   // apply any buff changes
   // is there an attack type override? if so, update it
   const attackTypeOverrideResChain =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    rotationCharResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentTypeOverride`
     ] ?? null;
   const attackTypeOverrideSelfBuff =
@@ -264,43 +288,57 @@ export const calculateAttackDamage = (
   }
   // an attack can have its own element override
   const attackElement =
-    attack?.element ?? context.character.chosenChar?.basic?.element;
+    attack?.element ??
+    attack.performerChosenChar?.basic?.element ??
+    context.character.chosenChar?.basic?.element;
   const stats = statsWithoutTeamBuffs ?? providedFullStats ?? context.stats;
+  const statsForFallback = providedFullStats ?? context.stats;
   let elementalDmgBonusDecimal = getElementDmgBonusByType(
     attackElement,
     stats,
     {
-      Glacio: context.stats.Glacio,
-      Fusion: context.stats.Fusion,
-      Electro: context.stats.Electro,
-      Aero: context.stats.Aero,
-      Spectro: context.stats.Spectro,
-      Havoc: context.stats.Havoc,
+      Glacio: statsForFallback.Glacio ?? statsForFallback.glacio,
+      Fusion: statsForFallback.Fusion ?? statsForFallback.fusion,
+      Electro: statsForFallback.Electro ?? statsForFallback.electro,
+      Aero: statsForFallback.Aero ?? statsForFallback.aero,
+      Spectro: statsForFallback.Spectro ?? statsForFallback.spectro,
+      Havoc: statsForFallback.Havoc ?? statsForFallback.havoc,
     },
   );
   const atkDefHpVal = getDamageValByAttr(attack?.attribute, stats, {
-    totalDef: context.stats.totalDef,
-    totalHp: context.stats.totalHp,
-    energyRegen: context.stats.energyRegen,
-    totalAtk: context.stats.totalAtk,
+    totalDef: statsForFallback.totalDef,
+    totalHp: statsForFallback.totalHp,
+    energyRegen: statsForFallback.energyRegen,
+    totalAtk: statsForFallback.totalAtk,
   });
   let totalSkillDmgBonus = getDamageTypeBonusByType(attackType, stats, {
-    BasicAttackDMGBonus: context.stats.BasicAttackDMGBonus,
-    HeavyAttackDMGBonus: context.stats.HeavyAttackDMGBonus,
-    ResonanceSkillDMGBonus: context.stats.ResonanceSkillDMGBonus,
-    IntroSkillDMGBonus: context.stats.IntroSkillDMGBonus,
-    OutroSkillDMGBonus: context.stats.OutroSkillDMGBonus,
-    ResonanceLiberationDMGBonus: context.stats.ResonanceLiberationDMGBonus,
-    EchoDMGBonus: context.stats.EchoDMGBonus,
-    healingBonus: context.stats.healingBonus,
-    shieldBonus: context.stats.shieldBonus,
+    BasicAttackDMGBonus:
+      statsForFallback.BasicAttackDMGBonus ??
+      statsForFallback.basicAttackDMGBonus,
+    HeavyAttackDMGBonus:
+      statsForFallback.HeavyAttackDMGBonus ??
+      statsForFallback.heavyAttackDMGBonus,
+    ResonanceSkillDMGBonus:
+      statsForFallback.ResonanceSkillDMGBonus ??
+      statsForFallback.resonanceSkillDMGBonus,
+    IntroSkillDMGBonus:
+      statsForFallback.IntroSkillDMGBonus ?? statsForFallback.introSkillDMGBonus,
+    OutroSkillDMGBonus:
+      statsForFallback.OutroSkillDMGBonus ?? statsForFallback.outroSkillDMGBonus,
+    ResonanceLiberationDMGBonus:
+      statsForFallback.ResonanceLiberationDMGBonus ??
+      statsForFallback.resonanceLiberationDMGBonus,
+    EchoDMGBonus:
+      statsForFallback.EchoDMGBonus ?? statsForFallback.echoDmgBonus,
+    healingBonus: statsForFallback.healingBonus,
+    shieldBonus: statsForFallback.shieldBonus,
   });
   let talent;
   let talentTree = attack?.talents;
 
   // see if we have a talent modifier replacement to override the talent value
   const talentModifierReplace =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    rotationCharResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentReplace`
     ] ?? null;
   if (talentModifierReplace) {
@@ -312,22 +350,24 @@ export const calculateAttackDamage = (
   } else if (providedTalent) {
     talent = providedTalent;
   } else if (hasDynamicTalent) {
+    const rotationTalentData =
+      attack.performerTalentData ?? context.character.talentData;
     switch (attack.actionType) {
       case "basic":
-        talent = talentTree[context.character.talentData.basic];
+        talent = talentTree[rotationTalentData.basic];
         break;
       case "skill":
-        talent = talentTree[context.character.talentData.skill];
+        talent = talentTree[rotationTalentData.skill];
         break;
       case "forteCircuit":
       case "forte":
-        talent = talentTree[context.character.talentData.forte];
+        talent = talentTree[rotationTalentData.forte];
         break;
       case "liberation":
-        talent = talentTree[context.character.talentData.liberation];
+        talent = talentTree[rotationTalentData.liberation];
         break;
       case "intro":
-        talent = talentTree[context.character.talentData.intro];
+        talent = talentTree[rotationTalentData.intro];
         break;
       case "tuneBreak":
         // tune break have no talent tree, just a single value
@@ -367,10 +407,10 @@ export const calculateAttackDamage = (
   const talentModifierAdd = selfBuffs?.[attack.key] ?? 0;
   // TODO: Is this used anywhere?
   const talentModifierAddFromResonanceChains =
-    context.buffs.charResonanceChainsData?.[attack.key] ?? 0;
+    rotationCharResonanceChainsData?.[attack.key] ?? 0;
   // flat adding to the base multiplier for a specific attack
   const talentModifierAddFromResonanceChainsAdd =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    rotationCharResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentModifierMultiplyAdd`
     ] ?? 0;
   const talentModifierAddFromSelfBuffs =
@@ -417,14 +457,15 @@ export const calculateAttackDamage = (
       `${attack.key}:DMGBonus:MaxDef`
     ] ?? 0;
   const specificSkillDmgFromResonanceChainsBasedOnMaxHpVal =
-    (context.stats.totalHp * specificSkillDmgFromResonanceChainsBasedOnMaxHp) /
+    ((statsForFallback.totalHp ?? context.stats.totalHp) *
+      specificSkillDmgFromResonanceChainsBasedOnMaxHp) /
     100;
   const specificSkillDmgFromResonanceChainsBasedOnMaxAtkVal =
-    (context.stats.totalAtk *
+    ((statsForFallback.totalAtk ?? context.stats.totalAtk) *
       specificSkillDmgFromResonanceChainsBasedOnMaxAtk) /
     100;
   const specificSkillDmgFromResonanceChainsBasedOnMaxDefVal =
-    (context.stats.totalDef *
+    ((statsForFallback.totalDef ?? context.stats.totalDef) *
       specificSkillDmgFromResonanceChainsBasedOnMaxDef) /
     100;
   // end max buff handlers
@@ -544,7 +585,7 @@ export const calculateAttackDamage = (
     havocBaneDefReduction + attackDefReduction + customBuffDefReduction;
   // apply specific ForteBased buff
   const originalForte = getOriginalForteFromAttackKey(
-    context.character.chosenChar,
+    attack.performerChosenChar ?? context.character.chosenChar,
     attack.key,
   );
   let totalForteBasedDmgBuff =

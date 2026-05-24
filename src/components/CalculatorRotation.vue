@@ -228,7 +228,8 @@
                 action.id
               "
               :negative-status-stacks="Number(action.negativeStatusStacks ?? 1)"
-              :electro-rage-stacks="Number(action.electroRageStacks ?? 0)"></CalculatorRotationAction>
+              :electro-rage-stacks="Number(action.electroRageStacks ?? 0)"
+              :performer="(action.performer as string) ?? 'active'"></CalculatorRotationAction>
           </div>
           <button
             class="rotation__action--add btn btn-primary my-4 btn-xs w-full"
@@ -453,6 +454,7 @@ function addAction() {
     buffs: [],
     negativeStatusStacks: 1,
     electroRageStacks: 0,
+    performer: "active",
   });
   void nextTick(() => {
     actionRefs.get(id)?.toggleEdit();

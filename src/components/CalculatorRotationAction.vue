@@ -9,6 +9,11 @@
         <div class="count badge">x{{ hits }}</div>
         <span class="flex gap-2 items-center">
           <img
+            v-if="performerCharacterKey"
+            :src="performerImageUrl"
+            class="size-6 rounded-full border border-solid neutral-content bg-cover"
+            v-tooltip="performerDisplayName" />
+          <img
             v-if="skillType === 'echoAttacks' && echoAttackImage"
             :src="echoAttackImage"
             class="size-8 rounded-full border border-solid neutral-content bg-cover"
@@ -84,6 +89,23 @@
               :data-test-rotation-action-hits-input="
                 actionKeyValue ?? 'none'
               " />
+          </div>
+          <div class="edit__performer flex flex-col gap-1 min-w-[10rem]">
+            <label for="performerSelect">Character</label>
+            <select
+              id="performerSelect"
+              v-model="performerValue"
+              class="select select-bordered select-xs w-full"
+              @change="onPerformerChange"
+              :data-test-rotation-action-performer="performerValue">
+              <option value="active">Active</option>
+              <option v-if="teammate1Key" value="teammate1">
+                {{ teammate1Label }}
+              </option>
+              <option v-if="teammate2Key" value="teammate2">
+                {{ teammate2Label }}
+              </option>
+            </select>
           </div>
           <div class="edit__skill">
             <label for="actionKeyValue">Attack:</label>
@@ -332,6 +354,17 @@ import { echoSetAttacks } from "../echoes/stats";
 import { utilityAttacks } from "../buffs";
 import { getEchoData } from "../echoes/index.ts";
 import { negativeStatusAttacks } from "../calculator/negativeStatusAttacks";
+import {
+  getCharByName,
+  getCharacterRosterDisplayName,
+} from "../characters/characters.ts";
+import {
+  getCharacterImageUrl,
+  getRotationPerformerConfig,
+  resolvePerformerCharacterKey,
+  type RotationPerformerId,
+  type TeamBuffsState,
+} from "../calculator/rotationPerformer";
 
 type AttackRow = {
   key: string;
@@ -395,9 +428,11 @@ const props = withDefaults(
     actionMainEchoRank?: number | null;
     negativeStatusStacks?: number;
     electroRageStacks?: number;
+    performer?: RotationPerformerId | string | null;
   }>(),
   {
     characterData: () => ({}),
+    performer: "active",
     actionKey: null,
     type: null,
     ignoreSelfBuffs: false,
@@ -435,13 +470,92 @@ const disabled = ref(false);
 const buffData = ref<BuffRow[]>([]);
 const negativeStatusStacksLocal = ref(1);
 const electroRageStacksLocal = ref(0);
+const performerValue = ref<RotationPerformerId>("active");
+const actionCharacterData = ref<Record<string, unknown>>({});
 
 const currentCharacter = computed(
   () =>
     (characters.value[props.character] ?? {}) as {
+      teamBuffs?: {
+        selectedCharacter1?: string | null;
+        selectedCharacter2?: string | null;
+        rotationPerformers?: Record<string, unknown>;
+      };
       resonanceChains?: Record<string, { isEnabled?: boolean }>;
       buffs?: Record<string, { isEnabled?: boolean }>;
     },
+);
+
+const teamBuffs = computed(
+  () => (currentCharacter.value.teamBuffs ?? {}) as TeamBuffsState,
+);
+
+const teammate1Key = computed(() => teamBuffs.value.selectedCharacter1 ?? null);
+const teammate2Key = computed(() => teamBuffs.value.selectedCharacter2 ?? null);
+
+const teammate1Label = computed(() =>
+  teammate1Key.value
+    ? getCharacterRosterDisplayName(teammate1Key.value)
+    : "",
+);
+const teammate2Label = computed(() =>
+  teammate2Key.value
+    ? getCharacterRosterDisplayName(teammate2Key.value)
+    : "",
+);
+
+const performerCharacterKey = computed(() =>
+  resolvePerformerCharacterKey(
+    performerValue.value,
+    props.character,
+    teamBuffs.value,
+  ),
+);
+
+const performerDisplayName = computed(() => {
+  if (performerValue.value === "active") {
+    return getCharacterRosterDisplayName(props.character);
+  }
+  if (performerValue.value === "teammate1" && teammate1Key.value) {
+    return teammate1Label.value;
+  }
+  if (performerValue.value === "teammate2" && teammate2Key.value) {
+    return teammate2Label.value;
+  }
+  return getCharacterRosterDisplayName(props.character);
+});
+
+const performerImageUrl = computed(() =>
+  getCharacterImageUrl(performerCharacterKey.value),
+);
+
+const actionCharacterStore = computed(
+  () =>
+    (characters.value[performerCharacterKey.value] ?? {}) as {
+      resonanceChains?: Record<string, { isEnabled?: boolean }>;
+      buffs?: Record<string, { isEnabled?: boolean }>;
+      mainEcho?: { echo?: string; rank?: number };
+    },
+);
+
+async function loadActionCharacterData() {
+  const key = performerCharacterKey.value;
+  if (key === props.character) {
+    actionCharacterData.value = props.characterData ?? {};
+    return;
+  }
+  actionCharacterData.value = (await getCharByName(key)) as Record<
+    string,
+    unknown
+  >;
+}
+
+const effectiveCharacterData = computed(
+  () =>
+    actionCharacterData.value &&
+    Object.keys(actionCharacterData.value).length > 0
+      ? actionCharacterData.value
+      : props.characterData,
 );
 
 const skillType = computed(() => {
@@ -458,7 +572,7 @@ const skillTypeLabel = computed(() => {
 
 const skillAttacks = computed(() => {
   if (!skillType.value) return [];
-  const group = props.characterData?.[skillType.value] as
+  const group = effectiveCharacterData.value?.[skillType.value] as
     | { attacks?: AttackRow[] }
     | undefined;
   return group?.attacks ?? [];
@@ -486,12 +600,29 @@ const negativeStatusStackMax = computed(() => {
 const echoSetAttacksList = echoSetAttacks;
 const utilityAttacksList = utilityAttacks;
 
-const mainEchoData = computed(() => {
+const performerEchoForAttacks = computed(() => {
   if (props.actionMainEcho) {
-    return getEchoData(props.actionMainEcho);
+    return props.actionMainEcho;
+  }
+  if (performerValue.value !== "active") {
+    const performerConfig = getRotationPerformerConfig(
+      performerCharacterKey.value,
+      teamBuffs.value,
+    );
+    if (performerConfig.mainEcho) {
+      return performerConfig.mainEcho;
+    }
+    return actionCharacterStore.value.mainEcho?.echo ?? null;
   }
   if (props.rotationMainEcho) {
-    return getEchoData(props.rotationMainEcho);
+    return props.rotationMainEcho;
+  }
+  return null;
+});
+
+const mainEchoData = computed(() => {
+  if (performerEchoForAttacks.value) {
+    return getEchoData(performerEchoForAttacks.value);
   }
   return null;
 });
@@ -522,7 +653,7 @@ const attackData = computed(() => {
     return utilityAttacksList.find((attack) => attack.key === actionKeyValue.value);
   }
   if (skillType.value === "echoAttacks") {
-    const echoData = getEchoData(props.actionMainEcho as string);
+    const echoData = getEchoData(performerEchoForAttacks.value as string);
     const echoAttacks = echoData?.actions ?? [];
     return echoAttacks.find((attack) => attack.key === actionKeyValue.value);
   }
@@ -562,7 +693,9 @@ function attacksFor(
     | "outroAttacks"
     | "tuneBreakAttacks",
 ): AttackRow[] {
-  const g = props.characterData?.[key] as { attacks?: AttackRow[] } | undefined;
+  const g = effectiveCharacterData.value?.[key] as
+    | { attacks?: AttackRow[] }
+    | undefined;
   return g?.attacks ?? [];
 }
 
@@ -597,13 +730,29 @@ function buildActionPayload(orderOverride: number | string | null = null) {
     isDisabled: disabled.value,
     negativeStatusStacks: negativeStatusStacksLocal.value,
     electroRageStacks: electroRageStacksLocal.value,
+    performer: performerValue.value,
   };
   if (actionSkillType.value === "echoAttacks") {
-    action.mainEcho = props.actionMainEcho || props.rotationMainEcho;
+    action.mainEcho = performerEchoForAttacks.value;
+    const performerConfig = getRotationPerformerConfig(
+      performerCharacterKey.value,
+      teamBuffs.value,
+    );
     action.mainEchoRank =
-      props.actionMainEchoRank || props.rotationMainEchoRank;
+      props.actionMainEchoRank ||
+      performerConfig.mainEchoRank ||
+      actionCharacterStore.value.mainEcho?.rank ||
+      props.rotationMainEchoRank;
   }
   return action;
+}
+
+function onPerformerChange() {
+  actionKeyValue.value = null;
+  actionSkillType.value = null;
+  void loadActionCharacterData().then(() => {
+    emit("action-update", buildActionPayload());
+  });
 }
 
 function onSkillChange(e: Event) {
@@ -722,9 +871,10 @@ function isAttackDisabled(attack: AttackRow) {
     requiredKey = "SequenceNode3OBladeIWhoSaveNoMore";
   }
   const isResonanceChainEnabled =
-    currentCharacter.value?.resonanceChains?.[requiredKey]?.isEnabled ?? false;
+    actionCharacterStore.value?.resonanceChains?.[requiredKey]?.isEnabled ??
+    false;
   const isSelfBuffEnabled =
-    currentCharacter.value?.buffs?.[requiredKey]?.isEnabled ?? false;
+    actionCharacterStore.value?.buffs?.[requiredKey]?.isEnabled ?? false;
   if (isResonanceChainEnabled || isSelfBuffEnabled) {
     return false;
   }
@@ -738,7 +888,13 @@ watch(
   },
 );
 
+watch(performerCharacterKey, () => {
+  void loadActionCharacterData();
+});
+
 onMounted(() => {
+  performerValue.value = (props.performer as RotationPerformerId) ?? "active";
+  void loadActionCharacterData();
   actionKeyValue.value =
     props.actionKey === undefined || props.actionKey === null
       ? null
