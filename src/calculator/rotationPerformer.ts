@@ -230,6 +230,80 @@ function buildEquippedEchoStats(
   return stats;
 }
 
+export type EchoSetPassiveDefinition = {
+  key: string;
+  name: string;
+  setLabel: string;
+  alwaysEnabled?: boolean;
+  hasStacks?: boolean;
+  minStacks?: number;
+  maxStacks?: number;
+};
+
+/** Passive rows for the character's resolved 2pc / 5pc set bonuses (for rotation override UI). */
+export function getResolvedEchoSetPassiveDefinitions(
+  charStore: CharacterStoreEntry,
+  getEchoById?: (echoId: string) => EchoObject | null | undefined,
+): EchoSetPassiveDefinition[] {
+  const echoes = getEchoSlotsFromCharacterStore(charStore);
+  const resolvedEchoes: EchoObject[] = [];
+  for (const echoSlot of echoes) {
+    const resolved = resolveEchoSlotForStats(echoSlot, getEchoById);
+    if (resolved) {
+      resolvedEchoes.push(resolved);
+    }
+  }
+  const computedSetBonuses = getSetBonusEffects(getSetsFromEchoes(resolvedEchoes));
+  const storedSetBonus = (charStore.echoSetBonus ?? {}) as {
+    setBonusOne?: string | null;
+    setBonusTwo?: string | null;
+  };
+  const setBonusOne =
+    storedSetBonus.setBonusOne ?? computedSetBonuses.setBonusOne ?? null;
+  const setBonusTwo =
+    storedSetBonus.setBonusTwo ?? computedSetBonuses.setBonusTwo ?? null;
+
+  const definitions: EchoSetPassiveDefinition[] = [];
+  const seenKeys = new Set<string>();
+
+  const appendFromSet = (
+    setKey: string | null,
+    effectsMap: Record<
+      string,
+      { name?: string; passives?: Array<Record<string, unknown>> }
+    >,
+  ) => {
+    if (!setKey) {
+      return;
+    }
+    const setData = effectsMap[setKey];
+    if (!setData?.passives) {
+      return;
+    }
+    const setLabel = setData.name ?? setKey;
+    setData.passives.forEach((passive) => {
+      const key = String(passive.key ?? "");
+      if (!key || seenKeys.has(key)) {
+        return;
+      }
+      seenKeys.add(key);
+      definitions.push({
+        key,
+        name: key,
+        setLabel,
+        alwaysEnabled: Boolean(passive.alwaysEnabled),
+        hasStacks: Boolean(passive.hasStacks),
+        minStacks: Number(passive.minStacks) || 0,
+        maxStacks: Number(passive.maxStacks) || 0,
+      });
+    });
+  };
+
+  appendFromSet(setBonusOne, setBonusEffectsOne);
+  appendFromSet(setBonusTwo, setBonusEffectsTwo);
+  return definitions;
+}
+
 export function buildEchoStatsFromCharacterStore(
   characterKey: string,
   charStore: CharacterStoreEntry,
@@ -323,7 +397,66 @@ export function buildEchoStatsFromCharacterStore(
   return stats;
 }
 
-async function buildWeaponDataFromCharacterStore(
+export type ResolvedEquippedWeapon = {
+  weaponType: string;
+  weaponName: string;
+  weaponLevel: string;
+  refinement: string;
+};
+
+/** Reads equipped weapon from character store (weapon key + weapons[weaponKey] metadata). */
+export function resolveEquippedWeaponFromStore(
+  charStore: CharacterStoreEntry,
+  chosenChar: Record<string, unknown>,
+): ResolvedEquippedWeapon | null {
+  const weaponType = String(
+    (chosenChar?.info as { weaponType?: string } | undefined)?.weaponType ?? "",
+  );
+  if (!weaponType) {
+    return null;
+  }
+  const weapons = (charStore.weapons ?? {}) as Record<
+    string,
+    { weapon?: string; weaponLevel?: string; refinement?: string }
+  >;
+
+  const equippedWeaponKey = String((charStore.weapon as string) ?? "").trim();
+  if (equippedWeaponKey) {
+    const meta = weapons[equippedWeaponKey];
+    if (meta?.weaponLevel) {
+      return {
+        weaponType,
+        weaponName: equippedWeaponKey,
+        weaponLevel: meta.weaponLevel,
+        refinement: meta.refinement ?? "1",
+      };
+    }
+  }
+
+  const legacyEntry = weapons[weaponType];
+  if (legacyEntry?.weapon && legacyEntry.weaponLevel) {
+    return {
+      weaponType,
+      weaponName: legacyEntry.weapon,
+      weaponLevel: legacyEntry.weaponLevel,
+      refinement: legacyEntry.refinement ?? "1",
+    };
+  }
+
+  return null;
+}
+
+function weaponPassiveDefinitionsFromChosenWeapon(
+  chosenWeapon: Record<string, unknown>,
+): Array<Record<string, unknown>> {
+  const info = chosenWeapon.info as { passiveData?: Array<Record<string, unknown>> };
+  if (info?.passiveData?.length) {
+    return info.passiveData;
+  }
+  return (chosenWeapon.passives as Array<Record<string, unknown>>) ?? [];
+}
+
+export async function buildWeaponDataFromCharacterStore(
   _characterKey: string,
   charStore: CharacterStoreEntry,
   chosenChar: Record<string, unknown>,
@@ -333,16 +466,8 @@ async function buildWeaponDataFromCharacterStore(
   modifierValue: number;
   weaponPassiveStats: Record<string, unknown>;
 }> {
-  const weapons = (charStore.weapons ?? {}) as Record<
-    string,
-    { weapon?: string; weaponLevel?: string; refinement?: string }
-  >;
-  const weaponType = String(
-    (chosenChar?.info as { weaponType?: string } | undefined)?.weaponType ?? "",
-  );
-  const weaponEntry = weapons[weaponType];
-  const weaponName = weaponEntry?.weapon;
-  if (!weaponName || !weaponEntry?.weaponLevel) {
+  const resolved = resolveEquippedWeaponFromStore(charStore, chosenChar);
+  if (!resolved) {
     return {
       attack: 0,
       modifier: null,
@@ -350,24 +475,34 @@ async function buildWeaponDataFromCharacterStore(
       weaponPassiveStats: {},
     };
   }
+  const { weaponType, weaponName, weaponLevel, refinement } = resolved;
   const chosenWeapon = (await getWeaponByName(weaponType, weaponName)) as {
     getWeaponDataByLevel: (level: string) => {
       attack: number;
       modifier: string | null;
       modifierValue: number;
     };
+    info?: { passiveData?: Array<Record<string, unknown>> };
     passives?: Array<Record<string, unknown>>;
   };
-  const { attack, modifier, modifierValue } = chosenWeapon.getWeaponDataByLevel(
-    weaponEntry.weaponLevel,
-  );
+  if (!chosenWeapon?.getWeaponDataByLevel) {
+    return {
+      attack: 0,
+      modifier: null,
+      modifierValue: 0,
+      weaponPassiveStats: {},
+    };
+  }
+  const { attack, modifier, modifierValue } =
+    chosenWeapon.getWeaponDataByLevel(weaponLevel);
   const weaponPassivesState = (charStore.weaponPassives ?? {}) as Record<
     string,
     { isEnabled?: boolean; stacks?: number }
   >;
-  const refinement = weaponEntry.refinement ?? "1";
   const weaponPassiveStats: Record<string, unknown> = {};
-  (chosenWeapon.passives ?? []).forEach((passive) => {
+  weaponPassiveDefinitionsFromChosenWeapon(
+    chosenWeapon as Record<string, unknown>,
+  ).forEach((passive) => {
     const passiveKey = String(passive.key ?? "");
     const passiveState = weaponPassivesState[passiveKey] ?? {};
     const isEnabled = passive.alwaysEnabled || passiveState.isEnabled;

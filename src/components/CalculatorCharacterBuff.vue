@@ -56,6 +56,10 @@
 import { computed, nextTick, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { getCharacterRosterDisplayName } from "../characters/characters";
+import {
+  getEffectiveSelfBuffStackLimits,
+  getResonanceChainKeysAffectingSelfBuffStacks,
+} from "../calculator/effectiveSelfBuffStacks";
 import { useCharacterStore } from "../stores/character";
 
 interface StoreCharBuffEntry {
@@ -144,96 +148,22 @@ const stacks = computed({
   },
 });
 
-const effectiveBuffData = computed((): EffectiveBuffData => {
-  let effectiveMaxStacks = props.maxStacks || 1;
-  let effectiveModifiers = [...props.modifiers];
-  let effectiveStacks = stacks.value || 0;
+const stackLimits = computed(() =>
+  getEffectiveSelfBuffStackLimits({
+    character: props.character,
+    buffKey: props.uniqueKey,
+    baseMaxStacks: props.maxStacks,
+    baseMinStacks: props.minStacks,
+    buffsConfig: currentCharacter.value?.buffs,
+    resonanceChainsConfig: currentCharacter.value?.resonanceChains,
+  }),
+);
 
-  if (props.character === "Augusta" && props.uniqueKey === "CrownofWills") {
-    const sequenceNode1 =
-      currentCharacter.value?.resonanceChains
-        ?.SequenceNode1StainedinScorchedEarth;
-    const sequenceNode6 =
-      currentCharacter.value?.resonanceChains
-        ?.SequenceNode6EngravedinRadiantLight;
-
-    if (sequenceNode1?.isEnabled) {
-      effectiveMaxStacks = 2;
-    }
-
-    if (sequenceNode6?.isEnabled) {
-      effectiveMaxStacks = 4;
-    }
-  }
-  if (
-    props.character === "Aemeath" &&
-    props.uniqueKey === "InherentSkillBetweentheStarsTuneRupture"
-  ) {
-    const sequenceNode3 =
-      currentCharacter.value?.resonanceChains
-        ?.SequenceNode3FervorSightlyBurnsBrightasNew;
-    if (sequenceNode3?.isEnabled) {
-      effectiveMaxStacks = 0;
-      effectiveStacks = 0;
-      stacks.value = 0;
-    }
-  }
-  if (
-    props.character === "Aemeath" &&
-    props.uniqueKey === "InherentSkillBetweentheStarsFusionBurst"
-  ) {
-    const sequenceNode3 =
-      currentCharacter.value?.resonanceChains
-        ?.SequenceNode3FervorSightlyBurnsBrightasNew;
-    if (sequenceNode3?.isEnabled) {
-      effectiveMaxStacks = 0;
-      effectiveStacks = 0;
-      stacks.value = 0;
-    }
-  }
-  if (
-    props.character === "Aemeath" &&
-    props.uniqueKey === "SeraphicDuetTuneRupture"
-  ) {
-    const sequenceNode6 =
-      currentCharacter.value?.resonanceChains
-        ?.SequenceNode6AZephyrKissedJourneytoYou;
-    if (sequenceNode6?.isEnabled) {
-      effectiveMaxStacks = 60;
-    }
-  }
-  if (
-    props.character === "Aemeath" &&
-    props.uniqueKey === "SeraphicDuetFusionBurst"
-  ) {
-    const sequenceNode6 =
-      currentCharacter.value?.resonanceChains
-        ?.SequenceNode6AZephyrKissedJourneytoYou;
-    if (sequenceNode6?.isEnabled) {
-      effectiveMaxStacks = 60;
-    }
-  }
-  if (props.character === "Sigrika" && props.uniqueKey === "InnateGift") {
-    const sequenceNode3 =
-      currentCharacter.value?.resonanceChains?.SequenceNode3IFleeYetISeek;
-    if (sequenceNode3?.isEnabled) {
-      effectiveMaxStacks = 4;
-    }
-  }
-  if (props.character === "Denia" && props.uniqueKey === "DarkCore") {
-    const sequenceNode2 =
-      currentCharacter.value?.resonanceChains?.SequenceNode3ThroughDarkandWindtheErlkingFollows;
-    if (sequenceNode2?.isEnabled) {
-      effectiveMaxStacks = 5;
-    }
-  }
-
-  return {
-    effectiveMaxStacks,
-    effectiveModifiers,
-    effectiveStacks,
-  };
-});
+const effectiveBuffData = computed((): EffectiveBuffData => ({
+  effectiveMaxStacks: stackLimits.value.effectiveMaxStacks,
+  effectiveModifiers: [...props.modifiers],
+  effectiveStacks: stackLimits.value.stacksDisabled ? 0 : stacks.value || 0,
+}));
 
 function updatedStats() {
   emit("updated-character-buff", {
@@ -265,30 +195,23 @@ watch(stacks, () => {
   });
 }, { immediate: true });
 
-watch(
-  () =>
-    currentCharacter.value?.resonanceChains
-      ?.SequenceNode1StainedinScorchedEarth?.isEnabled,
-  () => {
-    updatedStats();
-  },
-  { immediate: true },
-);
+watch(stackLimits, (limits) => {
+  if (limits.stacksDisabled && stacks.value !== 0) {
+    stacks.value = 0;
+  } else if (stacks.value > limits.effectiveMaxStacks) {
+    stacks.value = limits.effectiveMaxStacks;
+  }
+  updatedStats();
+});
 
 watch(
   () =>
-    currentCharacter.value?.resonanceChains
-      ?.SequenceNode6EngravedinRadiantLight?.isEnabled,
-  () => {
-    updatedStats();
-  },
-  { immediate: true },
-);
-
-watch(
-  () =>
-    currentCharacter.value?.resonanceChains
-      ?.SequenceNode3FervorSightlyBurnsBrightasNew?.isEnabled,
+    getResonanceChainKeysAffectingSelfBuffStacks(
+      props.character,
+      props.uniqueKey,
+    ).map(
+      (key) => currentCharacter.value?.resonanceChains?.[key]?.isEnabled,
+    ),
   () => {
     updatedStats();
   },

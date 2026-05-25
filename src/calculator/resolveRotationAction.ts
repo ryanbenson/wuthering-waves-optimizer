@@ -2,6 +2,7 @@ import { getEchoData } from "../echoes";
 import { utilityAttacks } from "../buffs";
 import { echoSetAttacks } from "../echoes/stats";
 import { negativeStatusAttacks } from "./negativeStatusAttacks";
+import { actionNeedsCustomBuild } from "./rotationBuffOverrides";
 import type { PerformerAttackContext } from "./rotationPerformer";
 import { getPerformerMainEchoForEchoAttacks } from "./rotationPerformer";
 
@@ -69,15 +70,20 @@ export function resolveRotationActionToAttackData(
     });
   }
 
+  const usesActionBuildOverrides = actionNeedsCustomBuild(action);
   const actionData: any = {
     ...foundAction,
     buffs: buffsData,
     actionType: actionType === "negativeStatus" ? "negativeStatus" : actionType,
     count: actionCount,
     id: actionId,
-    excludeSelfBuffs: action.excludeSelfBuffs ?? false,
+    excludeSelfBuffs: usesActionBuildOverrides
+      ? false
+      : (action.excludeSelfBuffs ?? false),
     excludeTeamBuffs: action.excludeTeamBuffs ?? false,
-    excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
+    excludeWeaponBuffs: usesActionBuildOverrides
+      ? false
+      : (action.excludeWeaponBuffs ?? false),
   };
 
   if (performerContext) {
@@ -98,11 +104,13 @@ export function resolveRotationActionToAttackData(
     );
     actionData.actionMainEcho = resolvedEcho.mainEcho;
     actionData.actionMainEchoRank = resolvedEcho.mainEchoRank;
-    actionData.excludeEchoes =
-      action.excludeSelfBuffs ||
-      action.excludeTeamBuffs ||
-      action.excludeWeaponBuffs ||
-      false;
+    actionData.excludeEchoes = usesActionBuildOverrides
+      ? (action.excludeTeamBuffs ?? false)
+      : Boolean(
+          action.excludeSelfBuffs ||
+            action.excludeTeamBuffs ||
+            action.excludeWeaponBuffs,
+        );
   }
 
   if (actionType === "negativeStatus") {

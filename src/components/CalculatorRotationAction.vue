@@ -25,6 +25,12 @@
             }" />
           {{ attackLabel }}
           <span
+            v-if="hasBuildOverridesActive"
+            class="badge badge-xs badge-warning"
+            v-tooltip="buildOverridesTooltip">
+            {{ buildOverridesBadgeLabel }}
+          </span>
+          <span
             v-if="
               rotationMainEcho !== actionMainEcho && actionMainEcho !== null
             "
@@ -304,16 +310,13 @@
           Add Buff
         </button>
       </div>
+      <CalculatorRotationActionBuffOverrides
+        :performer-character-key="performerCharacterKey"
+        :active-character-key="character"
+        :buff-overrides="buffOverridesLocal"
+        @update:buff-overrides="onBuffOverridesUpdate" />
       <div class="ignore__buffs mt-2">
         <div class="form-control flex flex-wrap flex-row gap-2">
-          <label v-if="false" class="label cursor-pointer flex gap-2">
-            <input
-              v-model="excludeSelfBuffs"
-              type="checkbox"
-              class="checkbox checkbox-xs"
-              @change="onExcludeSelfBuffsChange" />
-            <span class="label-text">Exclude self buffs</span>
-          </label>
           <label class="label cursor-pointer flex gap-2">
             <input
               v-model="excludeTeamBuffs"
@@ -321,14 +324,6 @@
               class="checkbox checkbox-xs"
               @change="onExcludeTeamBuffsChange" />
             <span class="label-text">Exclude team buffs</span>
-          </label>
-          <label class="label cursor-pointer flex gap-2">
-            <input
-              v-model="excludeWeaponBuffs"
-              type="checkbox"
-              class="checkbox checkbox-xs"
-              @change="onExcludeWeaponBuffsChange" />
-            <span class="label-text">Exclude weapon buffs</span>
           </label>
           <label class="label cursor-pointer flex gap-2">
             <input
@@ -350,6 +345,12 @@ import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
+import CalculatorRotationActionBuffOverrides from "./CalculatorRotationActionBuffOverrides.vue";
+import {
+  countBuildOverrideEntries,
+  hasActiveBuildOverrides,
+  type RotationActionBuffOverrides,
+} from "../calculator/rotationBuffOverrides";
 import { echoSetAttacks } from "../echoes/stats";
 import { utilityAttacks } from "../buffs";
 import { getEchoData } from "../echoes/index.ts";
@@ -429,6 +430,7 @@ const props = withDefaults(
     negativeStatusStacks?: number;
     electroRageStacks?: number;
     performer?: RotationPerformerId | string | null;
+    buffOverrides?: RotationActionBuffOverrides | null;
   }>(),
   {
     characterData: () => ({}),
@@ -472,6 +474,7 @@ const negativeStatusStacksLocal = ref(1);
 const electroRageStacksLocal = ref(0);
 const performerValue = ref<RotationPerformerId>("active");
 const actionCharacterData = ref<Record<string, unknown>>({});
+const buffOverridesLocal = ref<RotationActionBuffOverrides | null>(null);
 
 const currentCharacter = computed(
   () =>
@@ -683,6 +686,33 @@ const attackLabel = computed(() => attackData.value?.label ?? null);
 
 const buffsCount = computed(() => buffData.value.length);
 
+const hasBuildOverridesActive = computed(() => {
+  const actionSnapshot: Record<string, unknown> = {
+    excludeSelfBuffs: excludeSelfBuffs.value,
+    excludeWeaponBuffs: excludeWeaponBuffs.value,
+    buffOverrides: buffOverridesLocal.value,
+  };
+  return hasActiveBuildOverrides(actionSnapshot);
+});
+
+const buildOverridesBadgeLabel = computed(() => {
+  let count = buffOverridesLocal.value
+    ? countBuildOverrideEntries(buffOverridesLocal.value)
+    : 0;
+  if (excludeSelfBuffs.value) {
+    count += 1;
+  }
+  if (excludeWeaponBuffs.value) {
+    count += 1;
+  }
+  return count > 0 ? `Overrides (${count})` : "Overrides";
+});
+
+const buildOverridesTooltip = computed(
+  () =>
+    "Per-action build buff overrides are active (self buffs, chains, weapon, echo set, or main echo)",
+);
+
 function attacksFor(
   key:
     | "basicAttacks"
@@ -732,6 +762,11 @@ function buildActionPayload(orderOverride: number | string | null = null) {
     electroRageStacks: electroRageStacksLocal.value,
     performer: performerValue.value,
   };
+  if (buffOverridesLocal.value) {
+    action.buffOverrides = JSON.parse(
+      JSON.stringify(buffOverridesLocal.value),
+    );
+  }
   if (actionSkillType.value === "echoAttacks") {
     action.mainEcho = performerEchoForAttacks.value;
     const performerConfig = getRotationPerformerConfig(
@@ -846,15 +881,16 @@ function onHitsChange(e: Event) {
   emit("action-update", buildActionPayload());
 }
 
-function onExcludeSelfBuffsChange() {
-  emit("action-update", buildActionPayload());
-}
-
 function onExcludeTeamBuffsChange() {
   emit("action-update", buildActionPayload());
 }
 
-function onExcludeWeaponBuffsChange() {
+function onBuffOverridesUpdate(value: RotationActionBuffOverrides | null) {
+  buffOverridesLocal.value = value;
+  if (value) {
+    excludeSelfBuffs.value = false;
+    excludeWeaponBuffs.value = false;
+  }
   emit("action-update", buildActionPayload());
 }
 
@@ -915,6 +951,9 @@ onMounted(() => {
     props.electroRageStacks !== undefined && props.electroRageStacks !== null
       ? props.electroRageStacks
       : 0;
+  buffOverridesLocal.value = props.buffOverrides
+    ? JSON.parse(JSON.stringify(props.buffOverrides))
+    : null;
 });
 </script>
 

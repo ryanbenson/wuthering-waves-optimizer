@@ -1,7 +1,12 @@
 import { getCharByName } from "../characters/characters";
 import { resolveRotationActionToAttackData } from "./resolveRotationAction";
 import {
+  actionNeedsCustomBuild,
+  computeRotationActionBuildContext,
+} from "./rotationBuffOverrides";
+import {
   getPerformerAttackContext,
+  getRotationPerformerConfig,
   resolvePerformerCharacterKey,
   type RotationPerformerId,
   type TeamBuffsState,
@@ -37,6 +42,54 @@ function getPerformerContextCached(
     );
   }
   return performerContextCache.get(cacheKey)!;
+}
+
+async function resolvePerformerContextForAction(
+  action: Record<string, unknown>,
+  performerCharacterKey: string,
+  activeCharacterKey: string,
+  charactersStore: Record<string, Record<string, unknown>>,
+  teamBuffsData: Record<string, unknown>,
+  customBuffs: Record<string, unknown>,
+): Promise<PerformerAttackContext | null> {
+  if (actionNeedsCustomBuild(action)) {
+    const charStore = charactersStore[performerCharacterKey] ?? {};
+    if (performerCharacterKey !== activeCharacterKey) {
+      const teamBuffs = (charactersStore[activeCharacterKey]?.teamBuffs ??
+        {}) as TeamBuffsState;
+      const performerConfig = getRotationPerformerConfig(
+        performerCharacterKey,
+        teamBuffs,
+      );
+      if (performerConfig.useSavedBuild === false) {
+        return getPerformerContextCached(
+          performerCharacterKey,
+          activeCharacterKey,
+          charactersStore,
+          teamBuffsData,
+          customBuffs,
+        );
+      }
+    }
+    return computeRotationActionBuildContext(
+      performerCharacterKey,
+      charStore,
+      teamBuffsData,
+      customBuffs,
+      (action.buffOverrides as never) ?? null,
+      action,
+    );
+  }
+  if (!performerCharacterKey || performerCharacterKey === activeCharacterKey) {
+    return null;
+  }
+  return getPerformerContextCached(
+    performerCharacterKey,
+    activeCharacterKey,
+    charactersStore,
+    teamBuffsData,
+    customBuffs,
+  );
 }
 
 export function clearPerformerContextCache() {
@@ -82,6 +135,21 @@ export async function buildRotationAttacksList(
       level = String(
         charactersStore[performerCharacterKey]?.characterLevel ?? "90",
       );
+    }
+
+    performerContext = await resolvePerformerContextForAction(
+      action,
+      performerCharacterKey,
+      activeCharacterKey,
+      charactersStore,
+      teamBuffsData,
+      customBuffs,
+    );
+
+    if (
+      performerCharacterKey !== activeCharacterKey &&
+      !performerContext
+    ) {
       performerContext = await getPerformerContextCached(
         performerCharacterKey,
         activeCharacterKey,

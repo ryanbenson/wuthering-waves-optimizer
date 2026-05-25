@@ -229,7 +229,8 @@
               "
               :negative-status-stacks="Number(action.negativeStatusStacks ?? 1)"
               :electro-rage-stacks="Number(action.electroRageStacks ?? 0)"
-              :performer="(action.performer as string) ?? 'active'"></CalculatorRotationAction>
+              :performer="(action.performer as string) ?? 'active'"
+              :buff-overrides="action.buffOverrides ?? null"></CalculatorRotationAction>
           </div>
           <button
             class="rotation__action--add btn btn-primary my-4 btn-xs w-full"
