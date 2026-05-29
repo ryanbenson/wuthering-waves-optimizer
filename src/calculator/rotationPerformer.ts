@@ -234,6 +234,7 @@ export type EchoSetPassiveDefinition = {
   key: string;
   name: string;
   setLabel: string;
+  details?: string;
   alwaysEnabled?: boolean;
   hasStacks?: boolean;
   minStacks?: number;
@@ -291,6 +292,7 @@ export function getResolvedEchoSetPassiveDefinitions(
         key,
         name: key,
         setLabel,
+        details: String(passive.details ?? ""),
         alwaysEnabled: Boolean(passive.alwaysEnabled),
         hasStacks: Boolean(passive.hasStacks),
         minStacks: Number(passive.minStacks) || 0,
@@ -404,14 +406,25 @@ export type ResolvedEquippedWeapon = {
   refinement: string;
 };
 
+export function getCharacterWeaponType(
+  chosenChar: Record<string, unknown>,
+): string {
+  const basic = chosenChar?.basic as { weapon?: string } | undefined;
+  if (basic?.weapon) {
+    return basic.weapon;
+  }
+  const info = chosenChar?.info as
+    | { weaponType?: string; weapon?: string }
+    | undefined;
+  return info?.weaponType ?? info?.weapon ?? "";
+}
+
 /** Reads equipped weapon from character store (weapon key + weapons[weaponKey] metadata). */
 export function resolveEquippedWeaponFromStore(
   charStore: CharacterStoreEntry,
   chosenChar: Record<string, unknown>,
 ): ResolvedEquippedWeapon | null {
-  const weaponType = String(
-    (chosenChar?.info as { weaponType?: string } | undefined)?.weaponType ?? "",
-  );
+  const weaponType = getCharacterWeaponType(chosenChar);
   if (!weaponType) {
     return null;
   }
@@ -423,14 +436,12 @@ export function resolveEquippedWeaponFromStore(
   const equippedWeaponKey = String((charStore.weapon as string) ?? "").trim();
   if (equippedWeaponKey) {
     const meta = weapons[equippedWeaponKey];
-    if (meta?.weaponLevel) {
-      return {
-        weaponType,
-        weaponName: equippedWeaponKey,
-        weaponLevel: meta.weaponLevel,
-        refinement: meta.refinement ?? "1",
-      };
-    }
+    return {
+      weaponType,
+      weaponName: equippedWeaponKey,
+      weaponLevel: meta?.weaponLevel ?? "90",
+      refinement: meta?.refinement ?? "1",
+    };
   }
 
   const legacyEntry = weapons[weaponType];
@@ -524,8 +535,10 @@ export async function buildWeaponDataFromCharacterStore(
           (Number(weaponPassiveStats[passive.modifier as string]) || 0) + value;
       }
     } else if (passive.modifier) {
-      weaponPassiveStats[passive.modifier as string] =
-        modifierByRefinement[refinement] ?? 0;
+      const modifierKey = passive.modifier as string;
+      weaponPassiveStats[modifierKey] =
+        (Number(weaponPassiveStats[modifierKey]) || 0) +
+        (modifierByRefinement[refinement] ?? 0);
     }
   });
   return { attack, modifier, modifierValue, weaponPassiveStats };

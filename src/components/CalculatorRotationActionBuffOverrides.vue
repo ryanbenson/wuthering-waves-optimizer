@@ -45,7 +45,10 @@
               @change="
                 onToggle('selfBuffs', buff.key, buff, ($event.target as HTMLInputElement).checked)
               " />
-            <span class="label-text">{{ buff.name }}</span>
+            <span
+              class="label-text"
+              :class="{ 'cursor-help underline decoration-dotted decoration-base-content/40': buff.details }"
+              v-tooltip="buffTooltip(buff)">{{ buff.name }}</span>
           </label>
           <div
             v-if="showSelfBuffStacks(buff)"
@@ -110,7 +113,10 @@
                   ($event.target as HTMLInputElement).checked,
                 )
               " />
-            <span class="label-text">{{ chain.name }}</span>
+            <span
+              class="label-text"
+              :class="{ 'cursor-help underline decoration-dotted decoration-base-content/40': chain.details }"
+              v-tooltip="buffTooltip(chain)">{{ chain.name }}</span>
           </label>
           <div
             v-if="
@@ -177,7 +183,10 @@
                   ($event.target as HTMLInputElement).checked,
                 )
               " />
-            <span class="label-text">{{ passive.label }}</span>
+            <span
+              class="label-text"
+              :class="{ 'cursor-help underline decoration-dotted decoration-base-content/40': passive.details }"
+              v-tooltip="buffTooltip(passive)">{{ passive.label }}</span>
           </label>
           <div
             v-if="
@@ -244,7 +253,10 @@
                   ($event.target as HTMLInputElement).checked,
                 )
               " />
-            <span class="label-text">
+            <span
+              class="label-text"
+              :class="{ 'cursor-help underline decoration-dotted decoration-base-content/40': passive.details }"
+              v-tooltip="buffTooltip(passive)">
               <span class="opacity-70 text-xs">{{ passive.setLabel }}</span>
               {{ passive.name }}
             </span>
@@ -296,7 +308,10 @@
             @change="
               onMainEchoToggle(($event.target as HTMLInputElement).checked)
             " />
-          <span class="label-text">{{ mainEchoDefinition.name }}</span>
+          <span
+            class="label-text"
+            :class="{ 'cursor-help underline decoration-dotted decoration-base-content/40': mainEchoDefinition.details }"
+            v-tooltip="buffTooltip(mainEchoDefinition)">{{ mainEchoDefinition.name }}</span>
         </label>
         <div
           v-if="mainEchoDefinition.hasStacks && mainEchoEffectiveEnabled"
@@ -350,11 +365,20 @@ type BuffDef = {
   name?: string;
   label?: string;
   setLabel?: string;
+  details?: string;
   alwaysEnabled?: boolean;
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
 };
+
+function buffTooltip(entry: { details?: string } | null | undefined) {
+  const details = entry?.details?.trim();
+  if (!details) {
+    return undefined;
+  }
+  return { content: details, html: true };
+}
 
 type OverrideCategory =
   | "selfBuffs"
@@ -451,6 +475,7 @@ const mainEchoDefinition = computed(() => {
   }
   return {
     name: data.name,
+    details: data.details,
     hasStacks: data.hasStacks,
     minStacks: data.minStacks ?? 0,
     maxStacks: data.maxStacks ?? 0,
@@ -772,35 +797,24 @@ function clearOverrides() {
   emit("update:buff-overrides", null);
 }
 
-async function loadDefinitions() {
-  characterDefinitions.value = (await getCharByName(
-    props.performerCharacterKey,
-  )) as Record<string, unknown>;
-
-  const chosenChar = characterDefinitions.value;
+async function loadWeaponPassives() {
   const charStore = characters.value[props.performerCharacterKey] ?? {};
-  const resolvedWeapon = resolveEquippedWeaponFromStore(
-    charStore,
-    chosenChar,
-  );
+  const chosenChar = characterDefinitions.value;
   weaponPassiveDefinitions.value = [];
-  if (resolvedWeapon) {
-    const chosenWeapon = (await getWeaponByName(
-      resolvedWeapon.weaponType,
-      resolvedWeapon.weaponName,
-    )) as {
-      info?: {
-        passiveData?: Array<{
-          key?: string;
-          hasStacks?: boolean;
-          minStacks?: number;
-          maxStacks?: number;
-          alwaysEnabled?: boolean;
-          modifier?: string;
-          details?: string;
-        }>;
-      };
-      passives?: Array<{
+  if (!chosenChar || !Object.keys(chosenChar).length) {
+    return;
+  }
+  const resolvedWeapon = resolveEquippedWeaponFromStore(charStore, chosenChar);
+  if (!resolvedWeapon) {
+    return;
+  }
+  const chosenWeapon = (await getWeaponByName(
+    resolvedWeapon.weaponType,
+    resolvedWeapon.weaponName,
+  )) as {
+    info?: {
+      passiveName?: string;
+      passiveData?: Array<{
         key?: string;
         hasStacks?: boolean;
         minStacks?: number;
@@ -810,18 +824,40 @@ async function loadDefinitions() {
         details?: string;
       }>;
     };
-    const passives =
-      chosenWeapon?.info?.passiveData ?? chosenWeapon?.passives ?? [];
-    weaponPassiveDefinitions.value = passives.map((p) => ({
-      key: String(p.key ?? ""),
-      label: String(p.modifier ?? p.key ?? "Passive"),
-      name: String(p.key ?? p.modifier ?? "Passive"),
-      alwaysEnabled: p.alwaysEnabled,
-      hasStacks: p.hasStacks,
-      minStacks: p.minStacks ?? 0,
-      maxStacks: p.maxStacks ?? 0,
-    }));
-  }
+    passives?: Array<{
+      key?: string;
+      hasStacks?: boolean;
+      minStacks?: number;
+      maxStacks?: number;
+      alwaysEnabled?: boolean;
+      modifier?: string;
+      details?: string;
+    }>;
+  };
+  const passives =
+    chosenWeapon?.info?.passiveData ?? chosenWeapon?.passives ?? [];
+  weaponPassiveDefinitions.value = passives.map((p) => ({
+    key: String(p.key ?? ""),
+    label: String(
+      chosenWeapon?.info?.passiveName && passives.length === 1
+        ? chosenWeapon.info.passiveName
+        : (p.modifier ?? p.key ?? "Passive"),
+    ),
+    name: String(p.key ?? p.modifier ?? "Passive"),
+    details: String(p.details ?? ""),
+    alwaysEnabled: p.alwaysEnabled,
+    hasStacks: p.hasStacks,
+    minStacks: p.minStacks ?? 0,
+    maxStacks: p.maxStacks ?? 0,
+  }));
+}
+
+async function loadDefinitions() {
+  characterDefinitions.value = (await getCharByName(
+    props.performerCharacterKey,
+  )) as Record<string, unknown>;
+
+  await loadWeaponPassives();
 
   const inventoryStore = useInventoryStore();
   const getEchoById = (echoId: string) =>
@@ -833,6 +869,7 @@ async function loadDefinitions() {
     key: p.key,
     name: p.name,
     setLabel: p.setLabel,
+    details: p.details,
     alwaysEnabled: p.alwaysEnabled,
     hasStacks: p.hasStacks,
     minStacks: p.minStacks,
@@ -856,6 +893,21 @@ watch(
     void loadDefinitions();
   },
   { immediate: true },
+);
+
+watch(
+  () => characters.value[props.performerCharacterKey]?.weapon,
+  () => {
+    void loadWeaponPassives();
+  },
+);
+
+watch(
+  () => characters.value[props.performerCharacterKey]?.weapons,
+  () => {
+    void loadWeaponPassives();
+  },
+  { deep: true },
 );
 
 watch(

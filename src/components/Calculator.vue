@@ -735,6 +735,20 @@ export default defineComponent({
       });
     };
 
+    const getActiveCharacterBuildBaseline = () => ({
+      characterKey: character.value,
+      baseHp: baseHp.value,
+      baseAtk: baseAtk.value,
+      baseDef: baseDef.value,
+      echoStats: JSON.parse(JSON.stringify(echoStats.value ?? {})),
+      weaponAtk: weaponData.value?.attack ?? 0,
+      weaponModifier: weaponData.value?.modifier ?? null,
+      weaponModifierValue: weaponData.value?.modifierValue ?? 0,
+      activeStance: activeStance.value,
+      buffsCharInfo: chosenChar.value?.buffs ?? [],
+      resonanceChainsCharInfo: chosenChar.value?.resonanceChains ?? [],
+    });
+
     const handleUpdatedCharacterStance = () => {
       const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
         computeAllBuffsWithBreakdown();
@@ -873,6 +887,7 @@ export default defineComponent({
           characters.value,
           teamBuffsData.value,
           customBuffs.value,
+          getActiveCharacterBuildBaseline(),
         );
         rotationData.push(rotationInfo);
       }
@@ -1081,6 +1096,7 @@ export default defineComponent({
               characters.value,
               teamBuffsData.value,
               customBuffs.value,
+              getActiveCharacterBuildBaseline(),
             )),
           );
 
