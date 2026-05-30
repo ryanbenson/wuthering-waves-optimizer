@@ -5,6 +5,7 @@ import {
   buildEchoStatsFromCharacterStore,
   buildWeaponDataFromCharacterStore,
   finalStatsToPerformerStats,
+  readCharacterComputedBuild,
   type PerformerAttackContext,
 } from "./rotationPerformer";
 import type { EchoObject } from "../echoes/stats";
@@ -13,6 +14,7 @@ import {
   clampSelfBuffStacks,
   type BuffConfigSlice,
 } from "./effectiveSelfBuffStacks";
+import { computeTeamBuffsDataFromStore } from "./teamBuffsFromStore";
 
 export type BuffOverrideEntry = {
   isEnabled?: boolean;
@@ -285,11 +287,12 @@ function hasEchoRelatedOverrides(
 export async function computeRotationActionBuildContext(
   characterKey: string,
   charStore: Record<string, unknown>,
-  teamBuffsData: Record<string, unknown>,
-  customBuffs: Record<string, unknown>,
+  _teamBuffsData: Record<string, unknown>,
+  _customBuffs: Record<string, unknown>,
   buffOverrides?: RotationActionBuffOverrides | null,
   legacyAction?: Record<string, unknown>,
   activeBaseline?: ActiveCharacterBuildBaseline | null,
+  charactersStore?: Record<string, Record<string, unknown>>,
 ): Promise<PerformerAttackContext> {
   const chosenChar = (await getCharByName(characterKey)) as Record<
     string,
@@ -386,29 +389,59 @@ export async function computeRotationActionBuildContext(
     inventoryStore.getEchoById(echoId) as EchoObject | undefined;
 
   const mainEchoState = resolveMainEchoForBuild(charStore, effectiveOverrides);
+  const computedBuild = readCharacterComputedBuild(charStore);
   const echoStats =
     useActiveBaseline && !hasEchoRelatedOverrides(effectiveOverrides)
       ? (JSON.parse(JSON.stringify(activeBaseline.echoStats)) as Record<
           string,
           number
         >)
-      : buildEchoStatsWithBuildOverrides(
-          characterKey,
-          charStore,
-          getEchoById,
-          mainEchoState,
-          echoSetPassivesConfig,
-        );
+      : computedBuild?.echoStats &&
+          !hasEchoRelatedOverrides(effectiveOverrides)
+        ? (JSON.parse(JSON.stringify(computedBuild.echoStats)) as Record<
+            string,
+            number
+          >)
+        : buildEchoStatsWithBuildOverrides(
+            characterKey,
+            charStore,
+            getEchoById,
+            mainEchoState,
+            echoSetPassivesConfig,
+          );
 
   const charStoreWithWeaponPassives = {
     ...charStore,
     weaponPassives: weaponPassivesConfig,
   };
-  const weaponData = await buildWeaponDataFromCharacterStore(
-    characterKey,
-    charStoreWithWeaponPassives,
-    chosenChar,
-  );
+  const weaponData =
+    !useActiveBaseline && computedBuild?.weaponData != null
+      ? {
+          attack: computedBuild.weaponData.attack,
+          modifier: computedBuild.weaponData.modifier,
+          modifierValue: computedBuild.weaponData.modifierValue,
+          weaponPassiveStats: JSON.parse(
+            JSON.stringify(computedBuild.weaponData.weaponPassiveStats ?? {}),
+          ),
+        }
+      : await buildWeaponDataFromCharacterStore(
+          characterKey,
+          charStoreWithWeaponPassives,
+          chosenChar,
+        );
+  const performerTeamBuffsData =
+    !useActiveBaseline && computedBuild?.teamBuffsData != null
+      ? (JSON.parse(JSON.stringify(computedBuild.teamBuffsData)) as Record<
+          string,
+          unknown
+        >)
+      : charactersStore
+        ? computeTeamBuffsDataFromStore(characterKey, charactersStore)
+        : {};
+  const performerCustomBuffs = (charStore.customBuffs ?? {}) as Record<
+    string,
+    unknown
+  >;
 
   const buffsCharInfo =
     useActiveBaseline
@@ -441,8 +474,8 @@ export async function computeRotationActionBuildContext(
     weaponPassiveData: weaponData.weaponPassiveStats,
     buffsConfig,
     resonanceChainsConfig,
-    customBuffs: charStore.customBuffs ?? customBuffs ?? {},
-    teamBuffsData,
+    customBuffs: performerCustomBuffs,
+    teamBuffsData: performerTeamBuffsData,
     echoStats,
     buffsCharInfo,
     resonanceChainsCharInfo,
@@ -463,5 +496,9 @@ export async function computeRotationActionBuildContext(
     performerMainEcho: mainEchoState.echo ?? null,
     performerMainEchoRank:
       (charStore.mainEcho as { rank?: number })?.rank ?? 5,
+    performerTeamBuffsData,
+    performerCustomBuffs,
+    performerEchoStats: echoStats,
+    performerWeaponPassiveStats: weaponData.weaponPassiveStats ?? {},
   };
 }

@@ -92,6 +92,12 @@ export function resolveRotationActionToAttackData(
     actionData.performerTalentData = performerContext.performerTalentData;
     actionData.performerBuffs = performerContext.performerBuffs;
     actionData.performerChosenChar = performerContext.performerChosenChar;
+    actionData.performerTeamBuffsData =
+      performerContext.performerTeamBuffsData;
+    actionData.performerCustomBuffs = performerContext.performerCustomBuffs;
+    actionData.performerEchoStats = performerContext.performerEchoStats;
+    actionData.performerWeaponPassiveStats =
+      performerContext.performerWeaponPassiveStats;
   }
 
   if (actionType === "echoAttacks") {

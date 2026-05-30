@@ -207,6 +207,36 @@ export const calculateAttackDamage = (
   providedTalent: any = null, // use this talent string if provided, mostly used for echo attacks in, rotations
 ) => {
   const { excludeTeamBuffs, excludeWeaponBuffs, excludeEchoes } = attack;
+  const performerBuffs = attack.performerBuffs ?? null;
+  const rotationCharBuffsData =
+    performerBuffs?.charBuffsData ?? context.buffs.charBuffsData ?? {};
+  const rotationCharResonanceChainsData =
+    performerBuffs?.charResonanceChainsData ??
+    context.buffs.charResonanceChainsData ??
+    {};
+  const usingPerformerBuild = Boolean(attack.performerCharacterKey);
+  const attackResonanceChainsData = usingPerformerBuild
+    ? rotationCharResonanceChainsData
+    : (context.buffs.charResonanceChainsData ??
+      rotationCharResonanceChainsData);
+  const attackCharBuffsData = usingPerformerBuild
+    ? rotationCharBuffsData
+    : (context.buffs.charBuffsData ?? rotationCharBuffsData);
+  const attackTeamBuffsData =
+    (usingPerformerBuild ? attack.performerTeamBuffsData : null) ??
+    context.buffs.teamBuffsData;
+  const attackCustomBuffs =
+    (usingPerformerBuild ? attack.performerCustomBuffs : null) ??
+    context.buffs.customBuffs;
+  const attackEchoStats =
+    (usingPerformerBuild ? attack.performerEchoStats : null) ??
+    providedEchoStats ??
+    context.equipment.echoStats;
+  const attackWeaponPassiveStats =
+    (usingPerformerBuild ? attack.performerWeaponPassiveStats : null) ??
+    context.equipment.weapon.weaponPassiveStats ??
+    {};
+
   let statsWithoutTeamBuffs = null;
   if (excludeTeamBuffs || excludeWeaponBuffs || excludeEchoes) {
     statsWithoutTeamBuffs = calcCharStats(
@@ -217,7 +247,7 @@ export const calculateAttackDamage = (
         ignoreWeaponBuffs: excludeWeaponBuffs,
         ignoreEchoes: excludeEchoes,
       },
-      providedEchoStats ?? context.equipment.echoStats,
+      providedEchoStats ?? attackEchoStats,
       null,
       {
         baseHp: context.character.baseStats.baseHp,
@@ -228,23 +258,16 @@ export const calculateAttackDamage = (
         weaponAtk: context.equipment.weapon.attack,
         weaponModifier: context.equipment.weapon.modifier,
         weaponModifierValue: context.equipment.weapon.modifierValue,
-        weaponPassiveData: context.equipment.weapon.weaponPassiveStats ?? {},
+        weaponPassiveData: attackWeaponPassiveStats ?? {},
       },
-      context.buffs.charBuffsData,
-      context.buffs.charResonanceChainsData,
-      context.equipment.echoStats,
-      context.buffs.customBuffs,
-      context.buffs.teamBuffsData,
+      attackCharBuffsData,
+      attackResonanceChainsData,
+      attackEchoStats,
+      attackCustomBuffs,
+      attackTeamBuffsData,
     );
   }
   let attackType = attack.type;
-  const performerBuffs = attack.performerBuffs ?? null;
-  const rotationCharBuffsData =
-    performerBuffs?.charBuffsData ?? context.buffs.charBuffsData ?? {};
-  const rotationCharResonanceChainsData =
-    performerBuffs?.charResonanceChainsData ??
-    context.buffs.charResonanceChainsData ??
-    {};
   const selfBuffs = JSON.parse(JSON.stringify(rotationCharBuffsData));
   /**
    * check if there are any buffs that buff another buff
@@ -424,7 +447,7 @@ export const calculateAttackDamage = (
     attackBuffsTalentModifierAdd;
 
   const specificSkillDmgFromResonanceChains =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[attack.key] ??
+    attackResonanceChainsData?.specificTalentBuffs?.[attack.key] ??
     0;
   // apply echo based coordianted dmg bonus (both echo set and main echo)
   // as well as custom buffs for coordinated attacks
@@ -435,25 +458,25 @@ export const calculateAttackDamage = (
   if (attack?.subType === "Coordinated") {
     coordinatedEchoDmgBonus =
       providedFullStats?.coordinatedDmgBonus ||
-      (providedEchoStats ?? context.equipment.echoStats)?.CoordinatedDMGBonus ||
+      (providedEchoStats ?? attackEchoStats)?.CoordinatedDMGBonus ||
       0;
     if (!providedFullStats) {
       coordinatedDmgBonusCustomBuffs =
-        context.buffs.customBuffs?.CoordinatedDMGBonus ?? 0;
+        attackCustomBuffs?.CoordinatedDMGBonus ?? 0;
     }
   }
   // there are bonuses that are based on Max HP, Max ATK, Max DEF
   // we end up with DMG Bonus %, so we also / 100 in the end
   const specificSkillDmgFromResonanceChainsBasedOnMaxHp =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    attackResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:DMGBonus:MaxHP`
     ] ?? 0;
   const specificSkillDmgFromResonanceChainsBasedOnMaxAtk =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    attackResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:DMGBonus:MaxAtk`
     ] ?? 0;
   const specificSkillDmgFromResonanceChainsBasedOnMaxDef =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    attackResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:DMGBonus:MaxDef`
     ] ?? 0;
   const specificSkillDmgFromResonanceChainsBasedOnMaxHpVal =
@@ -477,38 +500,38 @@ export const calculateAttackDamage = (
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:${attackElement}`] ?? 0;
   let specificSkillDmgFromEchoes;
   specificSkillDmgFromEchoes =
-    context.equipment.echoStats?.specificTalentBuffs?.[attack.key] ?? 0;
+    attackEchoStats?.specificTalentBuffs?.[attack.key] ?? 0;
   // if we provided the full echo stats through the optimizer, overwrite the previous value
   if (providedEchoStats) {
     providedEchoStats?.specificTalentBuffs?.[attack.key] ?? 0;
   }
   const genericSkillDmgBonusResChain =
-    context.buffs.charResonanceChainsData?.DMGBonus ?? 0;
+    attackResonanceChainsData?.DMGBonus ?? 0;
   const genericSkillDmgBonusSelfBuff = selfBuffs?.DMGBonus ?? 0;
   let genericSkillDmgBonusWeaponBuff =
-    context.equipment.weapon.weaponPassiveStats?.DMGBonus ?? 0;
+    attackWeaponPassiveStats?.DMGBonus ?? 0;
   if (excludeWeaponBuffs) {
     genericSkillDmgBonusWeaponBuff = 0;
   }
   let genericSkillDmgBonusEchoBuff =
     providedFullStats?.dmgBonus ||
-    (providedEchoStats ?? context.equipment.echoStats)?.DMGBonus ||
+    (providedEchoStats ?? attackEchoStats)?.DMGBonus ||
     0;
   let genericSkillDmgBonusTeamEchoBuff =
-    context.buffs.teamBuffsData?.DMGBonus ?? 0;
+    attackTeamBuffsData?.DMGBonus ?? 0;
   if (excludeTeamBuffs) {
     genericSkillDmgBonusTeamEchoBuff = 0;
   }
   const extraDefIgnoreResonanceChain =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    attackResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:DEFIgnore`
     ] ?? 0;
   const extraDefIgnoreCharBuff =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEFIgnore`] ?? 0;
-  let extraDefIgnoreCustomBuffs = context.buffs.customBuffs?.DefIgnore ?? 0;
+  let extraDefIgnoreCustomBuffs = attackCustomBuffs?.DefIgnore ?? 0;
   const attackBuffsDefIgnore = attack?.buffs?.DefIgnore ?? 0;
   let weaponDefIgnoreSpecificDmgType =
-    context.equipment.weapon.weaponPassiveStats?.[`DEFIgnore:${attack.type}`] ??
+    attackWeaponPassiveStats?.[`DEFIgnore:${attack.type}`] ??
     0;
   if (excludeWeaponBuffs) {
     weaponDefIgnoreSpecificDmgType = 0;
@@ -516,7 +539,7 @@ export const calculateAttackDamage = (
   const specificSkillExtraCritRateResonanceChains =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:CritRate`] ?? 0;
   const specificSkillExtraCritRateTeamBuffs =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    attackResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:CritRate`
     ] ?? 0;
   let echoSpecificAttackTypeCritRate = 0;
@@ -525,13 +548,13 @@ export const calculateAttackDamage = (
       providedEchoStats?.[`CritRate:${attack.type}`] ?? 0;
   } else {
     echoSpecificAttackTypeCritRate =
-      context.equipment.echoStats?.[`CritRate:${attack.type}`] ?? 0;
+      attackEchoStats?.[`CritRate:${attack.type}`] ?? 0;
   }
   // need to divide by 100 since the echo data is flul numbers
   // but we're injecting it to the calcs which is decimal based
   echoSpecificAttackTypeCritRate = echoSpecificAttackTypeCritRate / 100;
   const specificSkillExtraCritDMG =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    attackResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:CritDMG`
     ] ?? 0;
   const selfBuffsSpecificSkillExtraCritDMG =
@@ -558,7 +581,7 @@ export const calculateAttackDamage = (
     instanceDmgCritDMG += specificSkillExtraCritDMG;
   }
   const talentModifierMultiply =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    attackResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentModifierMultiply`
     ] ?? 0;
   const talentModifierMultiplySelfBuff =
@@ -580,7 +603,7 @@ export const calculateAttackDamage = (
   const havocBaneStacksNum = context.enemy.havocBane.havocBaneStacks ?? 0;
   const havocBaneDefReduction = havocBaneStacksNum * 0.02;
   const attackDefReduction = attack?.buffs?.DefReduction ?? 0;
-  const customBuffDefReduction = context.buffs.customBuffs?.DefReduction ?? 0;
+  const customBuffDefReduction = attackCustomBuffs?.DefReduction ?? 0;
   const totalDefReduction =
     havocBaneDefReduction + attackDefReduction + customBuffDefReduction;
   // apply specific ForteBased buff
@@ -589,7 +612,7 @@ export const calculateAttackDamage = (
     attack.key,
   );
   let totalForteBasedDmgBuff =
-    (providedEchoStats ?? context.equipment.echoStats)?.[
+    (providedEchoStats ?? attackEchoStats)?.[
       `ForteBased:${originalForte}:${attack.type}`
     ] ?? 0;
   let specificSkillDmg =
@@ -614,7 +637,7 @@ export const calculateAttackDamage = (
 
   // Resist Shred:
   let teamBuffResistShredForCharElement =
-    context.buffs.teamBuffsData?.[`ResistShred:${attackElement}`] ?? 0;
+    attackTeamBuffsData?.[`ResistShred:${attackElement}`] ?? 0;
   let selfBuffResistShredForCharElement =
     selfBuffs?.[`ResistShred:${attackElement}`] ?? 0;
   let selfBuffResistShredForCharElementSpecificAttack =
@@ -622,11 +645,11 @@ export const calculateAttackDamage = (
       `${attack.key}:ResistShred:${attackElement}`
     ] ?? 0;
   let weaponBuffResistShredForCharElement =
-    context.equipment.weapon.weaponPassiveStats?.[
+    attackWeaponPassiveStats?.[
       `ResistShred:${attackElement}`
     ] ?? 0;
   let weaponBuffResistShredForCharElementSpecificActionType =
-    context.equipment.weapon.weaponPassiveStats?.[
+    attackWeaponPassiveStats?.[
       `ResistShred:${attackElement}:${attack.type}`
     ] ?? 0;
   if (excludeWeaponBuffs) {
@@ -638,11 +661,11 @@ export const calculateAttackDamage = (
   }
 
   const resonanceChainResistShredForCharElement =
-    context.buffs.charResonanceChainsData?.[`ResistShred:${attackElement}`] ??
+    attackResonanceChainsData?.[`ResistShred:${attackElement}`] ??
     0;
   const baseResistReduction =
     providedFullStats?.resistReduction || context.stats.ResistReduction || 0;
-  let customResistReduction = context.buffs.customBuffs?.ResistShred ?? 0;
+  let customResistReduction = attackCustomBuffs?.ResistShred ?? 0;
   const actionBuffResistReduction = attack.buffs?.ResistShred ?? 0;
   const totalResistReduction =
     baseResistReduction +
@@ -667,21 +690,21 @@ export const calculateAttackDamage = (
   // for outro attacks
   // self subtype dmg deepen
   let selfBuffDmgDeepenForSubType =
-    context.buffs.charBuffsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
+    attackCharBuffsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
   let selfBuffDmgDeepenForType =
-    context.buffs.charBuffsData?.[`DMGDeepen:${attackType}`] ?? 0;
+    attackCharBuffsData?.[`DMGDeepen:${attackType}`] ?? 0;
   let selfBuffDmgDeepenForElement =
-    context.buffs.charBuffsData?.[`DMGDeepen:${attackElement}`] ?? 0;
+    attackCharBuffsData?.[`DMGDeepen:${attackElement}`] ?? 0;
   let teamBuffDmgDeepenForCharElement =
-    context.buffs.teamBuffsData?.[`DMGDeepen:${attackElement}`] ?? 0;
+    attackTeamBuffsData?.[`DMGDeepen:${attackElement}`] ?? 0;
   let teamBuffDmgDeepenForAttackType =
-    context.buffs.teamBuffsData?.[`DMGDeepen:${attackType}`] ?? 0;
+    attackTeamBuffsData?.[`DMGDeepen:${attackType}`] ?? 0;
   let teamBuffDmgDeepenForSubType =
-    context.buffs.teamBuffsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
+    attackTeamBuffsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
   const selfBuffSpecificAttackGenericDmgDeepen =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGDeepen`] ?? 0;
   const resonanceChainBuffSpecificAttackGenericDmgDeepen =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    attackResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:DMGDeepen`
     ] ?? 0;
   if (excludeTeamBuffs) {
@@ -700,21 +723,21 @@ export const calculateAttackDamage = (
   // DO NOT RESET THIS WITH providedStats, it's not properly handled in calcCharStats yet
   // it's because this is DamageAmplify, not DMGDeepen
   // TODO: Fix this.
-  const customDamageDeepen = context.buffs.customBuffs?.DamageAmplify ?? 0;
+  const customDamageDeepen = attackCustomBuffs?.DamageAmplify ?? 0;
   let resonanceChainDmgDeepenForAttackType =
-    context.buffs.charResonanceChainsData?.[`DMGDeepen:${attackType}`] ?? 0;
+    attackResonanceChainsData?.[`DMGDeepen:${attackType}`] ?? 0;
   let resonanceChainDmgDeepenForAttackSubType =
-    context.buffs.charResonanceChainsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
+    attackResonanceChainsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
   let weaponBuffDmgDeepenElement =
-    context.equipment.weapon.weaponPassiveStats?.[
+    attackWeaponPassiveStats?.[
       `DMGDeepen:${attackElement}`
     ] ?? 0;
   let weaponBuffDmgDeepenSubType =
-    context.equipment.weapon.weaponPassiveStats?.[
+    attackWeaponPassiveStats?.[
       `DMGDeepen:${attack.subType}`
     ] ?? 0;
   let weaponBuffDmgDeepenType =
-    context.equipment.weapon.weaponPassiveStats?.[`DMGDeepen:${attackType}`] ??
+    attackWeaponPassiveStats?.[`DMGDeepen:${attackType}`] ??
     0;
   if (excludeWeaponBuffs) {
     weaponBuffDmgDeepenElement = 0;
@@ -744,7 +767,7 @@ export const calculateAttackDamage = (
     talentModifierMultiplyAttackBuff;
   // grab any special multipliers, and then multiply the previous total by that
   const talentModifierSpecialMultiplyResChains =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    attackResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentModifierSpecialMultiply`
     ] ?? 0;
   let totalTalentModifierSpecialMultiply =
@@ -754,7 +777,7 @@ export const calculateAttackDamage = (
   let modifyBaseAtk =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:ATK`] ?? 0;
   let modifyBaseAtkResChain =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    attackResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:ATK`
     ] ?? 0;
   modifyBaseAtk += modifyBaseAtkResChain;
@@ -801,13 +824,13 @@ export const calculateAttackDamage = (
         weaponAtk: context.equipment.weapon.attack,
         weaponModifier: context.equipment.weapon.modifier,
         weaponModifierValue: context.equipment.weapon.modifierValue,
-        weaponPassiveData: context.equipment.weapon.weaponPassiveStats ?? {},
+        weaponPassiveData: attackWeaponPassiveStats ?? {},
       },
-      context.buffs.charBuffsData,
-      context.buffs.charResonanceChainsData,
-      context.equipment.echoStats,
-      context.buffs.customBuffs,
-      context.buffs.teamBuffsData,
+      attackCharBuffsData,
+      attackResonanceChainsData,
+      attackEchoStats,
+      attackCustomBuffs,
+      attackTeamBuffsData,
     );
   }
   // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
@@ -834,13 +857,13 @@ export const calculateAttackDamage = (
         weaponAtk: context.equipment.weapon.attack,
         weaponModifier: context.equipment.weapon.modifier,
         weaponModifierValue: context.equipment.weapon.modifierValue,
-        weaponPassiveData: context.equipment.weapon.weaponPassiveStats ?? {},
+        weaponPassiveData: attackWeaponPassiveStats ?? {},
       },
-      context.buffs.charBuffsData,
-      context.buffs.charResonanceChainsData,
-      context.equipment.echoStats,
-      context.buffs.customBuffs,
-      context.buffs.teamBuffsData,
+      attackCharBuffsData,
+      attackResonanceChainsData,
+      attackEchoStats,
+      attackCustomBuffs,
+      attackTeamBuffsData,
     );
   }
   // TODO: NEED TO VERIFY THIS WORKS, AND WHO THIS APPLIES TO
@@ -867,13 +890,13 @@ export const calculateAttackDamage = (
         weaponAtk: context.equipment.weapon.attack,
         weaponModifier: context.equipment.weapon.modifier,
         weaponModifierValue: context.equipment.weapon.modifierValue,
-        weaponPassiveData: context.equipment.weapon.weaponPassiveStats ?? {},
+        weaponPassiveData: attackWeaponPassiveStats ?? {},
       },
-      context.buffs.charBuffsData,
-      context.buffs.charResonanceChainsData,
-      context.equipment.echoStats,
-      context.buffs.customBuffs,
-      context.buffs.teamBuffsData,
+      attackCharBuffsData,
+      attackResonanceChainsData,
+      attackEchoStats,
+      attackCustomBuffs,
+      attackTeamBuffsData,
     );
   }
 
@@ -885,24 +908,22 @@ export const calculateAttackDamage = (
   const totalTuneBreakBoost = computeTotalTuneBreakBoost({
     baseTuneBreakBoost: context.character.chosenChar?.basic?.tuneBreakBoost ?? 0,
     selfBuffs,
-    resonanceChainsBuffs: context.buffs.charResonanceChainsData,
-    teamBuffs: context.buffs.teamBuffsData,
-    echoStats: context.equipment.echoStats,
+    resonanceChainsBuffs: attackResonanceChainsData,
+    teamBuffs: attackTeamBuffsData,
+    echoStats: attackEchoStats,
   });
 
   let totalSpecialMultiplier = 0;
   let resonanceChainAttackSpecialMultiplierAttack =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    attackResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:specialMultiplier`
     ] ?? 0;
   let resonanceChainAttackSpecialMultiplier =
-    context.buffs.charResonanceChainsData?.specialMultiplier ?? 0;
+    attackResonanceChainsData?.specialMultiplier ?? 0;
   let selfBuffAttackSpecialMultiplier =
-    context.buffs.charBuffsData?.specificTalentBuffs?.[
-      `${attack.key}:specialMultiplier`
-    ] ?? 0;
+    selfBuffs?.specificTalentBuffs?.[`${attack.key}:specialMultiplier`] ?? 0;
   let customBuffAttackSpecialMultiplier =
-    context.buffs.customBuffs?.SpecialMultiplier ?? 0;
+    attackCustomBuffs?.SpecialMultiplier ?? 0;
   let actionBuffAttackSpecialMultiplier = attack?.buffs?.SpecialMultiplier ?? 0;
   // special case for CoreofCollapseDMG (requires 1+ havoc bane stacks) to get 100% specialMultiplier
   let coreofCollapseDMGSpecialMultiplier = 0;
@@ -942,7 +963,7 @@ export const calculateAttackDamage = (
       talent = attack.talents[context.character.talentData?.forte];
       resistReduction = totalResistReduction;
     }
-    const tuneBreakDmgBonus = context.buffs.customBuffs?.TuneBreakDMGBonus ?? 0;
+    const tuneBreakDmgBonus = attackCustomBuffs?.TuneBreakDMGBonus ?? 0;
     // typically Tune Break cannot crit, but some buffs exist to make it crit
     let baseCritRate = 0;
     let baseCritDmg = 1;
@@ -950,11 +971,11 @@ export const calculateAttackDamage = (
     let totalCritDmg;
     // so far it's resonance chains that affect Tune Break CR/CD
     const tuneBreakCritRateResoanceChains =
-      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      attackResonanceChainsData?.specificTalentBuffs?.[
         `${attack.key}:CritRate`
       ] ?? 0;
     const tuneBreakCritDmgResoanceChains =
-      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      attackResonanceChainsData?.specificTalentBuffs?.[
         `${attack.key}:CritDMG`
       ] ?? 0;
     totalCritRate = baseCritRate + tuneBreakCritRateResoanceChains;
@@ -982,7 +1003,7 @@ export const calculateAttackDamage = (
   // set the multiplier hard set here
   // talentModifierMultiplySetValue
   const talentModifierMultiplySet =
-    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+    attackResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentModifierMultiplySetValue`
     ] ?? null;
   if (talentModifierMultiplySet) {
@@ -993,28 +1014,28 @@ export const calculateAttackDamage = (
   if (attack.key === "GlacioBiteDMG") {
     let totalGlacioChafeDeepenForBite = 0;
     let glacioChafeDeepenWeaponBuffs =
-      context.equipment.weapon.weaponPassiveStats?.[
+      attackWeaponPassiveStats?.[
         "DMGDeepen:GlacioChafe"
       ] ?? 0;
     if (excludeWeaponBuffs) {
       glacioChafeDeepenWeaponBuffs = 0;
     }
     let glacioChafeDeepenTeamBuffs =
-      context.buffs.teamBuffsData?.["DMGDeepen:GlacioChafe"] ?? 0;
+      attackTeamBuffsData?.["DMGDeepen:GlacioChafe"] ?? 0;
     if (excludeTeamBuffs) {
       glacioChafeDeepenTeamBuffs = 0;
     }
     const glacioChafeDeepenSelfBuffs =
       selfBuffs?.["DMGDeepen:GlacioChafe"] ?? 0;
     const glacioChafeDeepenResonanceChains =
-      context.buffs.charResonanceChainsData?.["DMGDeepen:GlacioChafe"] ?? 0;
+      attackResonanceChainsData?.["DMGDeepen:GlacioChafe"] ?? 0;
     totalGlacioChafeDeepenForBite =
       glacioChafeDeepenWeaponBuffs +
       glacioChafeDeepenTeamBuffs +
       glacioChafeDeepenSelfBuffs +
       glacioChafeDeepenResonanceChains +
       getCustomNegativeStatusAmplify(
-        context.buffs.customBuffs,
+        attackCustomBuffs,
         "GlacioChafe",
       ) +
       getAttackBuffNegativeStatusDeepen(attack.buffs, "GlacioChafe");
@@ -1040,28 +1061,28 @@ export const calculateAttackDamage = (
     // get any SpectroFrazzle dmg deepen/amplify
     // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
     let spectroFrazzleDeepenWeaponBuffs =
-      context.equipment.weapon.weaponPassiveStats?.[
+      attackWeaponPassiveStats?.[
         "DMGDeepen:SpectroFrazzle"
       ] ?? 0;
     if (excludeWeaponBuffs) {
       spectroFrazzleDeepenWeaponBuffs = 0;
     }
     let spectroFrazzleDeepenTeamBuffs =
-      context.buffs.teamBuffsData?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+      attackTeamBuffsData?.["DMGDeepen:SpectroFrazzle"] ?? 0;
     if (excludeTeamBuffs) {
       spectroFrazzleDeepenTeamBuffs = 0;
     }
     const spectroFrazzleDeepenSelfBuffs =
       selfBuffs?.["DMGDeepen:SpectroFrazzle"] ?? 0;
     const spectroFrazzleDeepenResonanceChains =
-      context.buffs.charResonanceChainsData?.["DMGDeepen:SpectroFrazzle"] ?? 0;
+      attackResonanceChainsData?.["DMGDeepen:SpectroFrazzle"] ?? 0;
     totalSpectroFrazzleDeepen =
       spectroFrazzleDeepenWeaponBuffs +
       spectroFrazzleDeepenTeamBuffs +
       spectroFrazzleDeepenSelfBuffs +
       spectroFrazzleDeepenResonanceChains +
       getCustomNegativeStatusAmplify(
-        context.buffs.customBuffs,
+        attackCustomBuffs,
         "SpectroFrazzle",
       ) +
       getAttackBuffNegativeStatusDeepen(attack.buffs, "SpectroFrazzle");
@@ -1069,11 +1090,11 @@ export const calculateAttackDamage = (
       let baseCritRate = 0;
       let baseCritDmg = 1;
       const critRateResoanceChains =
-        context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        attackResonanceChainsData?.specificTalentBuffs?.[
           `${attack.key}:CritRate`
         ] ?? 0;
       const critDmgResoanceChains =
-        context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+        attackResonanceChainsData?.specificTalentBuffs?.[
           `${attack.key}:CritDMG`
         ] ?? 0;
       const totalCritRate = baseCritRate + critRateResoanceChains;
@@ -1100,13 +1121,13 @@ export const calculateAttackDamage = (
     // get any SpectroFrazzle dmg deepen/amplify
     // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
     let aeroErosionDeepenWeaponBuffs =
-      context.equipment.weapon.weaponPassiveStats?.["DMGDeepen:AeroErosion"] ??
+      attackWeaponPassiveStats?.["DMGDeepen:AeroErosion"] ??
       0;
     if (excludeWeaponBuffs) {
       aeroErosionDeepenWeaponBuffs = 0;
     }
     let aeroErosionDeepenTeamBuffs =
-      context.buffs.teamBuffsData?.["DMGDeepen:AeroErosion"] ?? 0;
+      attackTeamBuffsData?.["DMGDeepen:AeroErosion"] ?? 0;
     if (excludeTeamBuffs) {
       aeroErosionDeepenTeamBuffs = 0;
     }
@@ -1116,23 +1137,23 @@ export const calculateAttackDamage = (
       selfBuffs?.specificTalentBuffs?.["AeroErosion:DMGDeepen:AeroErosion"] ??
       0;
     const aeroErosionDeepenResonanceChains =
-      context.buffs.charResonanceChainsData?.["DMGDeepen:AeroErosion"] ?? 0;
+      attackResonanceChainsData?.["DMGDeepen:AeroErosion"] ?? 0;
     totalAeroErosionDeepen =
       aeroErosionDeepenWeaponBuffs +
       aeroErosionDeepenTeamBuffs +
       aeroErosionDeepenSelfBuffs +
       aeroErosionDeepenResonanceChains +
       specificAeroErosionDeepenSelfBuffs +
-      getCustomNegativeStatusAmplify(context.buffs.customBuffs, "AeroErosion") +
+      getCustomNegativeStatusAmplify(attackCustomBuffs, "AeroErosion") +
       getAttackBuffNegativeStatusDeepen(attack.buffs, "AeroErosion");
     let baseCritRate = 0;
     let baseCritDmg = 1;
     const critRateResoanceChains =
-      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      attackResonanceChainsData?.specificTalentBuffs?.[
         `${attack.key}:CritRate`
       ] ?? 0;
     const critDmgResoanceChains =
-      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      attackResonanceChainsData?.specificTalentBuffs?.[
         `${attack.key}:CritDMG`
       ] ?? 0;
     const totalCritRate = baseCritRate + critRateResoanceChains;
@@ -1161,27 +1182,27 @@ export const calculateAttackDamage = (
     // get any SpectroFrazzle dmg deepen/amplify
     // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
     let deepenWeaponBuffs =
-      context.equipment.weapon.weaponPassiveStats?.[
+      attackWeaponPassiveStats?.[
         "DMGDeepen:ElectroFlare"
       ] ?? 0;
     if (excludeWeaponBuffs) {
       deepenWeaponBuffs = 0;
     }
     let deepenTeamBuffs =
-      context.buffs.teamBuffsData?.["DMGDeepen:ElectroFlare"] ?? 0;
+      attackTeamBuffsData?.["DMGDeepen:ElectroFlare"] ?? 0;
     if (excludeTeamBuffs) {
       deepenTeamBuffs = 0;
     }
     const deepenSelfBuffs =
       selfBuffs?.["DMGDeepen:ElectroFlare"] ?? 0;
     const deepenResonanceChains =
-      context.buffs.charResonanceChainsData?.["DMGDeepen:ElectroFlare"] ?? 0;
+      attackResonanceChainsData?.["DMGDeepen:ElectroFlare"] ?? 0;
     totalDeepen =
       deepenWeaponBuffs +
       deepenTeamBuffs +
       deepenSelfBuffs +
       deepenResonanceChains +
-      getCustomNegativeStatusAmplify(context.buffs.customBuffs, "ElectroFlare") +
+      getCustomNegativeStatusAmplify(attackCustomBuffs, "ElectroFlare") +
       getAttackBuffNegativeStatusDeepen(attack.buffs, "ElectroFlare");
     // typically Tune Break cannot crit, but some buffs exist to make it crit
     let baseCritRate = 0;
@@ -1190,11 +1211,11 @@ export const calculateAttackDamage = (
     let totalCritDmg;
     // so far it's resonance chains that affect Tune Break CR/CD
     const critRateResoanceChains =
-      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      attackResonanceChainsData?.specificTalentBuffs?.[
         `${attack.key}:CritRate`
       ] ?? 0;
     const critDmgResoanceChains =
-      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      attackResonanceChainsData?.specificTalentBuffs?.[
         `${attack.key}:CritDMG`
       ] ?? 0;
     totalCritRate = baseCritRate + critRateResoanceChains;
@@ -1226,27 +1247,27 @@ export const calculateAttackDamage = (
     // get any SpectroFrazzle dmg deepen/amplify
     // comes from weapon buffs, team buffs, and personal buffs (e.g. Phoebe)
     let deepenWeaponBuffs =
-      context.equipment.weapon.weaponPassiveStats?.[
+      attackWeaponPassiveStats?.[
         "DMGDeepen:FusionBurst"
       ] ?? 0;
     if (excludeWeaponBuffs) {
       deepenWeaponBuffs = 0;
     }
     let deepenTeamBuffs =
-      context.buffs.teamBuffsData?.["DMGDeepen:FusionBurst"] ?? 0;
+      attackTeamBuffsData?.["DMGDeepen:FusionBurst"] ?? 0;
     if (excludeTeamBuffs) {
       deepenTeamBuffs = 0;
     }
     const deepenSelfBuffs =
       selfBuffs?.["DMGDeepen:FusionBurst"] ?? 0;
     const deepenResonanceChains =
-      context.buffs.charResonanceChainsData?.["DMGDeepen:FusionBurst"] ?? 0;
+      attackResonanceChainsData?.["DMGDeepen:FusionBurst"] ?? 0;
     totalDeepen =
       deepenWeaponBuffs +
       deepenTeamBuffs +
       deepenSelfBuffs +
       deepenResonanceChains +
-      getCustomNegativeStatusAmplify(context.buffs.customBuffs, "FusionBurst") +
+      getCustomNegativeStatusAmplify(attackCustomBuffs, "FusionBurst") +
       getAttackBuffNegativeStatusDeepen(attack.buffs, "FusionBurst");
     // typically Tune Break cannot crit, but some buffs exist to make it crit
     let baseCritRate = 0;
@@ -1255,11 +1276,11 @@ export const calculateAttackDamage = (
     let totalCritDmg;
     // so far it's resonance chains that affect Tune Break CR/CD
     const critRateResoanceChains =
-      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      attackResonanceChainsData?.specificTalentBuffs?.[
         `${attack.key}:CritRate`
       ] ?? 0;
     const critDmgResoanceChains =
-      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      attackResonanceChainsData?.specificTalentBuffs?.[
         `${attack.key}:CritDMG`
       ] ?? 0;
     totalCritRate = baseCritRate + critRateResoanceChains;
@@ -1288,38 +1309,38 @@ export const calculateAttackDamage = (
   ) {
     let totalDeepen = 0;
     let deepenWeaponBuffs =
-      context.equipment.weapon.weaponPassiveStats?.[
+      attackWeaponPassiveStats?.[
         "DMGDeepen:GlacioChafe"
       ] ?? 0;
     if (excludeWeaponBuffs) {
       deepenWeaponBuffs = 0;
     }
     let deepenTeamBuffs =
-      context.buffs.teamBuffsData?.["DMGDeepen:GlacioChafe"] ?? 0;
+      attackTeamBuffsData?.["DMGDeepen:GlacioChafe"] ?? 0;
     if (excludeTeamBuffs) {
       deepenTeamBuffs = 0;
     }
     const deepenSelfBuffs =
       selfBuffs?.["DMGDeepen:GlacioChafe"] ?? 0;
     const deepenResonanceChains =
-      context.buffs.charResonanceChainsData?.["DMGDeepen:GlacioChafe"] ?? 0;
+      attackResonanceChainsData?.["DMGDeepen:GlacioChafe"] ?? 0;
     totalDeepen =
       deepenWeaponBuffs +
       deepenTeamBuffs +
       deepenSelfBuffs +
       deepenResonanceChains +
-      getCustomNegativeStatusAmplify(context.buffs.customBuffs, "GlacioChafe") +
+      getCustomNegativeStatusAmplify(attackCustomBuffs, "GlacioChafe") +
       getAttackBuffNegativeStatusDeepen(attack.buffs, "GlacioChafe");
     let baseCritRate = 0;
     let baseCritDmg = 1;
     let totalCritRate;
     let totalCritDmg;
     const critRateResoanceChains =
-      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      attackResonanceChainsData?.specificTalentBuffs?.[
         `${attack.key}:CritRate`
       ] ?? 0;
     const critDmgResoanceChains =
-      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      attackResonanceChainsData?.specificTalentBuffs?.[
         `${attack.key}:CritDMG`
       ] ?? 0;
     totalCritRate = baseCritRate + critRateResoanceChains;
@@ -1348,7 +1369,7 @@ export const calculateAttackDamage = (
       totalSkillDmgBonus += attack.buffs?.HealingBonus ?? 0;
     }
     const specificSkillHealingBonus =
-      context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      attackResonanceChainsData?.specificTalentBuffs?.[
         `${attack.key}:HealingBonus`
       ] ?? 0;
     const specificSkillHealingBonusSelfBuff =

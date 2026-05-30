@@ -5,6 +5,7 @@ import {
   computeRotationActionBuildContext,
   type ActiveCharacterBuildBaseline,
 } from "./rotationBuffOverrides";
+import { refreshPartyComputedBuildsFromStore } from "./refreshComputedBuild";
 import {
   getPerformerAttackContext,
   getRotationPerformerConfig,
@@ -81,6 +82,7 @@ async function resolvePerformerContextForAction(
       (action.buffOverrides as never) ?? null,
       action,
       performerCharacterKey === activeCharacterKey ? activeBaseline : null,
+      charactersStore,
     );
   }
   if (!performerCharacterKey || performerCharacterKey === activeCharacterKey) {
@@ -113,6 +115,11 @@ export async function buildRotationAttacksList(
   customBuffs: Record<string, unknown>,
   activeBaseline?: ActiveCharacterBuildBaseline | null,
 ): Promise<any[]> {
+  await refreshPartyComputedBuildsFromStore(
+    activeCharacterKey,
+    charactersStore,
+    { rotations: [rotation] },
+  );
   clearPerformerContextCache();
   const teamBuffs = (charactersStore[activeCharacterKey]?.teamBuffs ??
     {}) as TeamBuffsState;

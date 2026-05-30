@@ -10,6 +10,7 @@ import { getEchoData, mainEchoesData } from "../echoes";
 import { getCharByName } from "../characters/characters";
 import { getWeaponByName } from "../weapons/weapons";
 import { filterBuffsForStance, resolveActiveStance } from "./stances";
+import { computeTeamBuffsDataFromStore } from "./teamBuffsFromStore";
 import { useInventoryStore } from "../stores/inventory";
 
 export type RotationPerformerId = "active" | "teammate1" | "teammate2";
@@ -45,6 +46,28 @@ export type RotationPerformerConfig = {
 
 export type RotationPerformersMap = Record<string, RotationPerformerConfig>;
 
+/** Snapshot from the character's calculator tabs (echoes / party / weapon), used for rotation teammates. */
+export type CharacterComputedBuildCache = {
+  echoStats?: Record<string, unknown>;
+  teamBuffsData?: Record<string, unknown>;
+  weaponData?: {
+    attack: number;
+    modifier: string | null;
+    modifierValue: number;
+    weaponPassiveStats: Record<string, unknown>;
+  };
+};
+
+export function readCharacterComputedBuild(
+  charStore: CharacterStoreEntry,
+): CharacterComputedBuildCache | undefined {
+  const raw = charStore.computedBuild;
+  if (!raw || typeof raw !== "object") {
+    return undefined;
+  }
+  return raw as CharacterComputedBuildCache;
+}
+
 export type PerformerAttackContext = {
   performerCharacterKey: string;
   performerStats: Record<string, unknown>;
@@ -62,6 +85,10 @@ export type PerformerAttackContext = {
   performerChosenChar: Record<string, unknown>;
   performerMainEcho: string | null;
   performerMainEchoRank: number | string;
+  performerTeamBuffsData?: Record<string, unknown>;
+  performerCustomBuffs?: Record<string, unknown>;
+  performerEchoStats?: Record<string, unknown>;
+  performerWeaponPassiveStats?: Record<string, unknown>;
 };
 
 type CharacterStoreEntry = Record<string, unknown>;
@@ -571,6 +598,7 @@ export function finalStatsToPerformerStats(
     shieldBonus: finalStats.shieldBonus,
     DefIgnore: finalStats.DefIgnore,
     ResistReduction: finalStats.resistReduction,
+    resistReduction: finalStats.resistReduction,
     TotalDeepenEffect: finalStats.totalDeepenEffect,
   };
 }
@@ -629,8 +657,8 @@ export async function getPerformerAttackContext(
   performerCharacterKey: string,
   activeCharacterKey: string,
   charactersStore: Record<string, CharacterStoreEntry>,
-  teamBuffsData: Record<string, unknown>,
-  customBuffs: Record<string, unknown>,
+  _teamBuffsData: Record<string, unknown>,
+  _customBuffs: Record<string, unknown>,
 ): Promise<PerformerAttackContext | null> {
   if (!performerCharacterKey || performerCharacterKey === activeCharacterKey) {
     return null;
@@ -680,21 +708,58 @@ export async function getPerformerAttackContext(
   let performerStats: Record<string, unknown>;
   let charBuffsData: Record<string, unknown> = {};
   let charResonanceChainsData: Record<string, unknown> = {};
+  let performerTeamBuffsData: Record<string, unknown> = {};
+  let performerCustomBuffs: Record<string, unknown> = {};
+  let performerEchoStats: Record<string, unknown> = {};
+  let performerWeaponPassiveStats: Record<string, unknown> = {};
 
   if (performerConfig.useSavedBuild !== false) {
     const inventoryStore = useInventoryStore();
     const getEchoById = (echoId: string) =>
       inventoryStore.getEchoById(echoId) as EchoObject | undefined;
-    const echoStats = buildEchoStatsFromCharacterStore(
-      performerCharacterKey,
-      charStore,
-      getEchoById,
-    );
-    const weaponData = await buildWeaponDataFromCharacterStore(
-      performerCharacterKey,
-      charStore,
-      chosenChar,
-    );
+    const computedBuild = readCharacterComputedBuild(charStore);
+    const echoStats =
+      computedBuild?.echoStats != null
+        ? (JSON.parse(JSON.stringify(computedBuild.echoStats)) as Record<
+            string,
+            number
+          >)
+        : buildEchoStatsFromCharacterStore(
+            performerCharacterKey,
+            charStore,
+            getEchoById,
+          );
+    const weaponData =
+      computedBuild?.weaponData != null
+        ? {
+            attack: computedBuild.weaponData.attack,
+            modifier: computedBuild.weaponData.modifier,
+            modifierValue: computedBuild.weaponData.modifierValue,
+            weaponPassiveStats: JSON.parse(
+              JSON.stringify(computedBuild.weaponData.weaponPassiveStats ?? {}),
+            ),
+          }
+        : await buildWeaponDataFromCharacterStore(
+            performerCharacterKey,
+            charStore,
+            chosenChar,
+          );
+    performerTeamBuffsData =
+      computedBuild?.teamBuffsData != null
+        ? (JSON.parse(JSON.stringify(computedBuild.teamBuffsData)) as Record<
+            string,
+            unknown
+          >)
+        : computeTeamBuffsDataFromStore(
+            performerCharacterKey,
+            charactersStore,
+          );
+    performerCustomBuffs = (charStore.customBuffs ?? {}) as Record<
+      string,
+      unknown
+    >;
+    performerEchoStats = echoStats;
+    performerWeaponPassiveStats = weaponData.weaponPassiveStats ?? {};
     const buffsCharInfo = filterBuffsForStance(
       (chosenChar.buffs ?? []) as never,
       activeStance,
@@ -713,8 +778,8 @@ export async function getPerformerAttackContext(
       weaponPassiveData: weaponData.weaponPassiveStats,
       buffsConfig: charStore.buffs ?? {},
       resonanceChainsConfig: charStore.resonanceChains ?? {},
-      customBuffs: charStore.customBuffs ?? customBuffs ?? {},
-      teamBuffsData,
+      customBuffs: performerCustomBuffs,
+      teamBuffsData: performerTeamBuffsData,
       echoStats,
       buffsCharInfo,
       resonanceChainsCharInfo,
@@ -750,6 +815,10 @@ export async function getPerformerAttackContext(
     performerChosenChar: chosenChar,
     performerMainEcho,
     performerMainEchoRank,
+    performerTeamBuffsData,
+    performerCustomBuffs,
+    performerEchoStats,
+    performerWeaponPassiveStats,
   };
 }
 
