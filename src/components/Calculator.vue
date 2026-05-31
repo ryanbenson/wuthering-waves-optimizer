@@ -121,6 +121,7 @@
         <CalculatorRotations
           :key="character"
           :character="character"
+          :is-processing="rotationsProcessing"
           @updated-rotations="handleUpdatedRotations"></CalculatorRotations>
       </div>
       <div class="screen--custom-buffs" v-show="curScreen === 'custom-buffs'">
@@ -178,6 +179,7 @@
           :character="character"
           :all-damages="allDamages"
           :rotations-list="rotationsList"
+          :rotations-processing="rotationsProcessing"
           :chosen-char="chosenChar"
           :chosen-echo-name="mainEcho"
           :is-missing-spectro-data="isMissingSpectroData"
@@ -223,6 +225,7 @@
         :character="character"
         :all-damages="allDamages"
         :rotations-list="rotationsList"
+        :rotations-processing="rotationsProcessing"
         :chosen-char="chosenChar"
         :chosen-echo-name="mainEcho"
         :is-missing-spectro-data="isMissingSpectroData"
@@ -340,7 +343,6 @@ import {
   getCalculationContext,
 } from "../calculator/attacks";
 import { buildRotationAttacksList } from "../calculator/buildRotationAttacks";
-import { ensurePerformerBuildCaches } from "../calculator/ensurePerformerBuildCaches";
 import type { OptimizerContext } from "../calculator/optimizer";
 import { getOptimizerLoadoutKey } from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
@@ -430,6 +432,7 @@ export default defineComponent({
     const selectedAttackDamage = ref(0);
     const selectedAttackLabel = ref(null);
     const rotationsList = ref([]);
+    const rotationsProcessing = ref(false);
     const character = ref("");
     const totalAtk = ref(0);
     const totalAtkPercent = ref(0);
@@ -702,9 +705,6 @@ export default defineComponent({
     const handleWeaponUpdated = async (givenWeaponData) => {
       weaponData.value = givenWeaponData;
       weaponAtk.value = givenWeaponData.attack;
-      await characterStore.setCharacterData(character.value, {
-        cachedWeaponStats: JSON.parse(JSON.stringify(givenWeaponData)),
-      });
       const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
         computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
@@ -738,20 +738,6 @@ export default defineComponent({
         ignoreBuffs: {},
       });
     };
-
-    const getActiveCharacterBuildBaseline = () => ({
-      characterKey: character.value,
-      baseHp: baseHp.value,
-      baseAtk: baseAtk.value,
-      baseDef: baseDef.value,
-      echoStats: JSON.parse(JSON.stringify(echoStats.value ?? {})),
-      weaponAtk: weaponData.value?.attack ?? 0,
-      weaponModifier: weaponData.value?.modifier ?? null,
-      weaponModifierValue: weaponData.value?.modifierValue ?? 0,
-      activeStance: activeStance.value,
-      buffsCharInfo: chosenChar.value?.buffs ?? [],
-      resonanceChainsCharInfo: chosenChar.value?.resonanceChains ?? [],
-    });
 
     const handleUpdatedCharacterStance = () => {
       const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
@@ -801,9 +787,6 @@ export default defineComponent({
 
     const updateStatsEchoes = async (echoStatsGiven) => {
       echoStats.value = echoStatsGiven;
-      await characterStore.setCharacterData(character.value, {
-        cachedEchoStats: JSON.parse(JSON.stringify(echoStatsGiven)),
-      });
       const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
         computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
@@ -873,45 +856,38 @@ export default defineComponent({
     };
 
     const handleUpdatedRotations = async (data) => {
-      const chosenChar = await getCharByName(character.value);
-      const rotationData = [];
-      const getEchoById = (echoId) => inventoryStore.getEchoById(echoId);
-      let charactersSnapshot = characters.value;
-      for (const rotation of data) {
-        charactersSnapshot = await ensurePerformerBuildCaches(
-          rotation,
-          character.value,
-          charactersSnapshot,
-          getEchoById,
-          async (performerKey, patch) => {
-            await characterStore.setCharacterData(performerKey, patch);
-          },
-        );
-        const rotationInfo = {
-          id: rotation.id,
-          name: rotation.name,
-          description: rotation.description,
-          duration: rotation.duration ?? null,
-          echo: rotation.echo ?? null,
-          echoRank: rotation.echoRank ?? null,
-          mainEcho: rotation.echo ?? rotation.mainEcho ?? null,
-          mainEchoRank: rotation.echoRank ?? rotation.mainEchoRank ?? null,
-        };
-        rotationInfo.attacks = await buildRotationAttacksList(
-          rotation,
-          character.value,
-          chosenChar,
-          characterLevel.value,
-          charactersSnapshot,
-          teamBuffsData.value,
-          customBuffs.value,
-          getActiveCharacterBuildBaseline(),
-          inventoryStore.echoes ?? [],
-        );
-        rotationData.push(rotationInfo);
+      rotationsProcessing.value = true;
+      try {
+        const chosenChar = await getCharByName(character.value);
+        const rotationData = [];
+        for (const rotation of data) {
+          const rotationInfo = {
+            id: rotation.id,
+            name: rotation.name,
+            description: rotation.description,
+            duration: rotation.duration ?? null,
+            echo: rotation.echo ?? null,
+            echoRank: rotation.echoRank ?? null,
+            mainEcho: rotation.echo ?? rotation.mainEcho ?? null,
+            mainEchoRank: rotation.echoRank ?? rotation.mainEchoRank ?? null,
+          };
+          rotationInfo.attacks = await buildRotationAttacksList(
+            rotation,
+            character.value,
+            chosenChar,
+            characterLevel.value,
+            characters.value,
+            teamBuffsData.value,
+            customBuffs.value,
+            inventoryStore.echoes ?? [],
+          );
+          rotationData.push(rotationInfo);
+        }
+        rotationsList.value = rotationData;
+        calcAllDamages();
+      } finally {
+        rotationsProcessing.value = false;
       }
-      rotationsList.value = rotationData;
-      calcAllDamages();
     };
 
     const handleRotationPerformerUpdated = async () => {
@@ -1115,7 +1091,6 @@ export default defineComponent({
               characters.value,
               teamBuffsData.value,
               customBuffs.value,
-              getActiveCharacterBuildBaseline(),
               inventoryStore.echoes ?? [],
             )),
           );
@@ -1611,6 +1586,7 @@ export default defineComponent({
       charResonanceChainsData,
       chosenWeapon,
       rotationsList,
+      rotationsProcessing,
       curScreen,
       changeScreen,
       damage,

@@ -542,7 +542,16 @@
     </table>
   </template>
 
-  <template v-if="rotationsList.length && allDamages.value?.rotations">
+  <template v-if="rotationsList.length">
+    <div
+      v-if="rotationsProcessing && false"
+      class="alert alert-info shadow-sm my-4"
+      role="status"
+      aria-live="polite">
+      <span class="loading loading-spinner loading-sm"></span>
+      <span>Recalculating rotation damage…</span>
+    </div>
+    <template v-if="allDamages.value?.rotations">
     <div
       v-for="rotation in allDamages.value.rotations"
       class="rotation__item pt-8"
@@ -664,6 +673,7 @@
         </table>
       </template>
     </div>
+    </template>
   </template>
 </template>
 
@@ -681,6 +691,7 @@ const props = withDefaults(
     character: string;
     allDamages: DamageMap;
     rotationsList: any[];
+    rotationsProcessing?: boolean;
     chosenChar: Record<string, any>;
     chosenEchoName?: string | null;
     isMissingSpectroData?: boolean;
@@ -692,6 +703,7 @@ const props = withDefaults(
     chosenEchoName: null,
     isMissingSpectroData: false,
     isMissingAeroErosionData: false,
+    rotationsProcessing: false,
   },
 );
 

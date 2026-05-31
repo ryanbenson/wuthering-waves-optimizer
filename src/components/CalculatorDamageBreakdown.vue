@@ -439,8 +439,9 @@
           Teammate build debug ({{ damage.totalDamageContext.performerCharacterKey }})
         </div>
         <p class="text-sm opacity-80 mb-2">
-          Compare these values to the same character when active. Echo/weapon
-          sources show whether cached UI stats or store recomputation was used.
+          Compare these values to the same character when active. Stats are
+          always computed fresh from the character store for each rotation
+          action.
         </p>
         <div class="formula bg-base-200 p-2 rounded-md font-mono text-sm space-y-1">
           <div>
@@ -482,13 +483,13 @@
           </div>
           <p
             v-if="
-              damage.totalDamageContext.performerBuildDebug.echoStatsSource ===
-              'computed'
+              damage.totalDamageContext.performerBuildDebug.resolvedEchoSlotCount <
+                5
             "
             class="text-warning text-xs mt-2">
-            Echo stats were recomputed from store/inventory, not cached from the
-            echoes tab. Switch to this character once so their echo totals are
-            saved, or verify inventory echoes match equipped slots.
+            Fewer than 5 echo slots resolved from character store. Equipped
+            echoes need echo, main stat, and cost (rank defaults to 5 if
+            missing). Inventory is only required when slots use echoId.
           </p>
         </div>
       </div>

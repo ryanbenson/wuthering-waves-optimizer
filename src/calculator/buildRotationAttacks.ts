@@ -1,14 +1,11 @@
 import { getCharByName } from "../characters/characters";
 import { resolveRotationActionToAttackData } from "./resolveRotationAction";
 import {
-  actionNeedsCustomBuild,
   computeRotationActionBuildContext,
   createGetEchoByIdFromInventory,
-  type ActiveCharacterBuildBaseline,
 } from "./rotationBuffOverrides";
-import { computePerformerContextsFromStore } from "./performerBuildClient";
+import { buildManualPerformerContextFromStore } from "./performerContextFromStore";
 import {
-  getPerformerAttackContext,
   getRotationPerformerConfig,
   resolvePerformerCharacterKey,
   type RotationPerformerId,
@@ -16,47 +13,46 @@ import {
   type PerformerAttackContext,
 } from "./rotationPerformer";
 
-async function resolvePerformerContextForAction(
+async function buildPerformerContextForRotationAction(
   action: Record<string, unknown>,
   performerCharacterKey: string,
   activeCharacterKey: string,
   charactersStore: Record<string, Record<string, unknown>>,
   teamBuffsData: Record<string, unknown>,
   customBuffs: Record<string, unknown>,
-  activeBaseline?: ActiveCharacterBuildBaseline | null,
-  precomputedContexts?: Record<string, PerformerAttackContext | null>,
-  inventoryEchoes: Array<{ echoId?: string | null } & Record<string, unknown>> = [],
-): Promise<PerformerAttackContext | null> {
-  if (actionNeedsCustomBuild(action)) {
-    const charStore = charactersStore[performerCharacterKey] ?? {};
-    if (performerCharacterKey !== activeCharacterKey) {
-      const teamBuffs = (charactersStore[activeCharacterKey]?.teamBuffs ??
-        {}) as TeamBuffsState;
-      const performerConfig = getRotationPerformerConfig(
+  teamBuffs: TeamBuffsState,
+  getEchoById: (echoId: string) => import("../echoes/stats").EchoObject | undefined,
+): Promise<PerformerAttackContext> {
+  const charStore = charactersStore[performerCharacterKey] ?? {};
+
+  if (performerCharacterKey !== activeCharacterKey) {
+    const performerConfig = getRotationPerformerConfig(
+      performerCharacterKey,
+      teamBuffs,
+    );
+    if (performerConfig.useSavedBuild === false) {
+      const manual = await buildManualPerformerContextFromStore(
         performerCharacterKey,
-        teamBuffs,
+        charStore,
+        performerConfig,
       );
-      if (performerConfig.useSavedBuild === false) {
-        return precomputedContexts?.[performerCharacterKey] ?? null;
+      if (manual) {
+        return manual;
       }
     }
-    return computeRotationActionBuildContext(
-      performerCharacterKey,
-      charStore,
-      teamBuffsData,
-      customBuffs,
-      (action.buffOverrides as never) ?? null,
-      action,
-      performerCharacterKey === activeCharacterKey ? activeBaseline : null,
-      charactersStore,
-      activeCharacterKey,
-      createGetEchoByIdFromInventory(inventoryEchoes),
-    );
   }
-  if (!performerCharacterKey || performerCharacterKey === activeCharacterKey) {
-    return null;
-  }
-  return precomputedContexts?.[performerCharacterKey] ?? null;
+
+  return computeRotationActionBuildContext(
+    performerCharacterKey,
+    charStore,
+    teamBuffsData,
+    customBuffs,
+    (action.buffOverrides as never) ?? null,
+    action,
+    charactersStore,
+    activeCharacterKey,
+    getEchoById,
+  );
 }
 
 export async function buildRotationAttacksList(
@@ -71,16 +67,15 @@ export async function buildRotationAttacksList(
   charactersStore: Record<string, Record<string, unknown>>,
   teamBuffsData: Record<string, unknown>,
   customBuffs: Record<string, unknown>,
-  activeBaseline?: ActiveCharacterBuildBaseline | null,
   inventoryEchoes: Array<{ echoId?: string | null } & Record<string, unknown>> = [],
 ): Promise<any[]> {
   const teamBuffs = (charactersStore[activeCharacterKey]?.teamBuffs ??
     {}) as TeamBuffsState;
   const rotationMainEcho = (rotation.echo as string | null) ?? null;
   const rotationMainEchoRank = rotation.echoRank ?? null;
+  const getEchoById = createGetEchoByIdFromInventory(inventoryEchoes);
   const rotationActionInfo: any[] = [];
 
-  const performerKeys = new Set<string>();
   for (const action of rotation.actions) {
     const performerId = (action.performer as RotationPerformerId) ?? "active";
     const performerCharacterKey = resolvePerformerCharacterKey(
@@ -88,33 +83,6 @@ export async function buildRotationAttacksList(
       activeCharacterKey,
       teamBuffs,
     );
-    if (
-      performerCharacterKey &&
-      performerCharacterKey !== activeCharacterKey
-    ) {
-      performerKeys.add(performerCharacterKey);
-    }
-  }
-
-  const precomputedContexts = await computePerformerContextsFromStore(
-    [...performerKeys].map((performerCharacterKey) => ({
-      performerCharacterKey,
-      activeCharacterKey,
-      activeTeamBuffsData: teamBuffsData,
-    })),
-    charactersStore,
-    inventoryEchoes,
-    teamBuffsData,
-  );
-
-  for (const action of rotation.actions) {
-    const performerId = (action.performer as RotationPerformerId) ?? "active";
-    const performerCharacterKey = resolvePerformerCharacterKey(
-      performerId,
-      activeCharacterKey,
-      teamBuffs,
-    );
-    let performerContext: PerformerAttackContext | null = null;
     let chosenChar = activeChosenChar;
     let level = characterLevel;
 
@@ -128,32 +96,16 @@ export async function buildRotationAttacksList(
       );
     }
 
-    performerContext = await resolvePerformerContextForAction(
+    const performerContext = await buildPerformerContextForRotationAction(
       action,
       performerCharacterKey,
       activeCharacterKey,
       charactersStore,
       teamBuffsData,
       customBuffs,
-      activeBaseline,
-      precomputedContexts,
-      inventoryEchoes,
+      teamBuffs,
+      getEchoById,
     );
-
-    if (
-      performerCharacterKey !== activeCharacterKey &&
-      !performerContext
-    ) {
-      performerContext =
-        precomputedContexts[performerCharacterKey] ??
-        (await getPerformerAttackContext(
-          performerCharacterKey,
-          activeCharacterKey,
-          charactersStore,
-          teamBuffsData,
-          customBuffs,
-        ));
-    }
 
     const actionData = resolveRotationActionToAttackData(
       action,
@@ -165,7 +117,7 @@ export async function buildRotationAttacksList(
     );
     if (actionData) {
       if (!actionData.performerCharacterKey) {
-        actionData.performerCharacterKey = activeCharacterKey;
+        actionData.performerCharacterKey = performerCharacterKey;
       }
       rotationActionInfo.push(actionData);
     }

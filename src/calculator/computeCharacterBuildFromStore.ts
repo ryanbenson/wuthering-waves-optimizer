@@ -14,8 +14,6 @@ import {
 import {
   buildPerformerBuildDebug,
   countResolvedEchoSlots,
-  readCachedEchoStats,
-  readCachedWeaponStats,
   type PerformerBuildDebug,
 } from "./performerBuildDebug";
 
@@ -28,14 +26,14 @@ export type CharacterBuildFromStoreOptions = TeamBuffsFromStoreOptions & {
 
 export type CharacterBuildFromStore = {
   echoStats: Record<string, number>;
-  echoStatsSource: "cached" | "computed";
+  echoStatsSource: "computed";
   weaponData: {
     attack: number;
     modifier: string | null;
     modifierValue: number;
     weaponPassiveStats: Record<string, unknown>;
   };
-  weaponStatsSource: "cached" | "computed";
+  weaponStatsSource: "computed";
   teamBuffsData: Record<string, unknown>;
   calculated: ReturnType<typeof calculateAllStats>;
   buildDebug: PerformerBuildDebug;
@@ -56,10 +54,6 @@ export async function computeCharacterBuildFromStore(
     string,
     unknown
   >;
-  const echoStatsSource = readCachedEchoStats(charStore) ? "cached" : "computed";
-  const weaponStatsSource = readCachedWeaponStats(charStore)
-    ? "cached"
-    : "computed";
   const echoStats = buildEchoStatsFromCharacterStore(
     characterKey,
     charStore,
@@ -141,15 +135,15 @@ export async function computeCharacterBuildFromStore(
 
   return {
     echoStats,
-    echoStatsSource,
+    echoStatsSource: "computed",
     weaponData,
-    weaponStatsSource,
+    weaponStatsSource: "computed",
     teamBuffsData,
     calculated,
     buildDebug: buildPerformerBuildDebug({
       performerCharacterKey: characterKey,
-      echoStatsSource,
-      weaponStatsSource,
+      echoStatsSource: "computed",
+      weaponStatsSource: "computed",
       resolvedEchoSlotCount,
       inventoryEchoLookups,
       finalStats: calculated.finalStats as Record<string, unknown>,

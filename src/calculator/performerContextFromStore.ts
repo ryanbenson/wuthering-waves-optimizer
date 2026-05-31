@@ -48,11 +48,60 @@ export type PerformerAttackContext = {
 
 type CharacterStoreEntry = Record<string, unknown>;
 
-function getRotationPerformerConfig(
+export function getRotationPerformerConfig(
   characterKey: string,
   teamBuffs: TeamBuffsState,
 ): RotationPerformerConfig {
   return teamBuffs.rotationPerformers?.[characterKey] ?? {};
+}
+
+/** Manual rotation performer stats (party tab override). */
+export async function buildManualPerformerContextFromStore(
+  performerCharacterKey: string,
+  charStore: CharacterStoreEntry,
+  performerConfig: RotationPerformerConfig,
+): Promise<PerformerAttackContext | null> {
+  if (performerConfig.useSavedBuild !== false) {
+    return null;
+  }
+  const chosenChar = (await getCharByName(performerCharacterKey)) as Record<
+    string,
+    unknown
+  >;
+  const storeTalents = (charStore.talents ?? {}) as Record<string, string | number>;
+  const talentData = {
+    basic: storeTalents.basic ?? 10,
+    skill: storeTalents.skill ?? 10,
+    forte: storeTalents.forte ?? 10,
+    liberation: storeTalents.liberation ?? 10,
+    intro: storeTalents.intro ?? 10,
+  };
+  const performerMainEcho =
+    performerConfig.mainEcho ??
+    ((charStore.mainEcho as { echo?: string })?.echo ?? null);
+  const performerMainEchoRank =
+    performerConfig.mainEchoRank ??
+    (charStore.mainEcho as { rank?: number })?.rank ??
+    5;
+
+  return {
+    performerCharacterKey,
+    performerStats: manualStatsToPerformerStats(
+      performerConfig.manualStats ?? {},
+    ),
+    performerTalentData: talentData,
+    performerBuffs: {
+      charBuffsData: {},
+      charResonanceChainsData: {},
+    },
+    performerChosenChar: chosenChar,
+    performerMainEcho,
+    performerMainEchoRank,
+    performerTeamBuffsData: {},
+    performerCustomBuffs: {},
+    performerEchoStats: {},
+    performerWeaponPassiveStats: {},
+  };
 }
 
 /** Store-only performer context (no Pinia / Vue). Safe for web workers. */
@@ -77,6 +126,26 @@ export async function buildPerformerAttackContextFromStore(
     performerCharacterKey,
     teamBuffs,
   );
+  if (performerConfig.useSavedBuild === false) {
+    const manual = await buildManualPerformerContextFromStore(
+      performerCharacterKey,
+      charStore,
+      performerConfig,
+    );
+    if (manual) {
+      return manual;
+    }
+  }
+
+  const build = await computeCharacterBuildFromStore(
+    performerCharacterKey,
+    charStore,
+    charactersStore,
+    getEchoById,
+    activeTeamBuffsData !== undefined
+      ? { teamBuffsDataOverride: activeTeamBuffsData }
+      : undefined,
+  );
   const storeTalents = (charStore.talents ?? {}) as Record<string, string | number>;
   const talentData = {
     basic: storeTalents.basic ?? 10,
@@ -86,42 +155,17 @@ export async function buildPerformerAttackContextFromStore(
     intro: storeTalents.intro ?? 10,
   };
 
-  let performerStats: Record<string, unknown>;
-  let charBuffsData: Record<string, unknown> = {};
-  let charResonanceChainsData: Record<string, unknown> = {};
-  let performerTeamBuffsData: Record<string, unknown> = {};
-  let performerCustomBuffs: Record<string, unknown> = {};
-  let performerEchoStats: Record<string, unknown> = {};
-  let performerWeaponPassiveStats: Record<string, unknown> = {};
-
-  let performerBuildDebug: PerformerBuildDebug | undefined;
-
-  if (performerConfig.useSavedBuild !== false) {
-    const build = await computeCharacterBuildFromStore(
-      performerCharacterKey,
-      charStore,
-      charactersStore,
-      getEchoById,
-      activeTeamBuffsData !== undefined
-        ? { teamBuffsDataOverride: activeTeamBuffsData }
-        : undefined,
-    );
-    performerTeamBuffsData = build.teamBuffsData;
-    performerCustomBuffs = processCustomBuffsFromStore(
-      charStore.customBuffs as Record<string, unknown> | undefined,
-    );
-    performerEchoStats = build.echoStats;
-    performerWeaponPassiveStats = build.weaponData.weaponPassiveStats ?? {};
-    performerStats = finalStatsToPerformerStats(build.calculated.finalStats);
-    charBuffsData = build.calculated.selfBuffsData ?? {};
-    charResonanceChainsData =
-      build.calculated.resonanceChainsBuffsData ?? {};
-    performerBuildDebug = build.buildDebug;
-  } else {
-    performerStats = manualStatsToPerformerStats(
-      performerConfig.manualStats ?? {},
-    );
-  }
+  const performerTeamBuffsData = build.teamBuffsData;
+  const performerCustomBuffs = processCustomBuffsFromStore(
+    charStore.customBuffs as Record<string, unknown> | undefined,
+  );
+  const performerEchoStats = build.echoStats;
+  const performerWeaponPassiveStats = build.weaponData.weaponPassiveStats ?? {};
+  const performerStats = finalStatsToPerformerStats(build.calculated.finalStats);
+  const charBuffsData = build.calculated.selfBuffsData ?? {};
+  const charResonanceChainsData =
+    build.calculated.resonanceChainsBuffsData ?? {};
+  const performerBuildDebug = build.buildDebug;
 
   const performerMainEcho =
     performerConfig.mainEcho ??

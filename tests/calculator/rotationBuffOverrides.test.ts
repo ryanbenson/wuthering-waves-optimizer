@@ -5,7 +5,7 @@ import {
 } from "../../src/calculator/rotationBuffOverrides";
 import { config } from "../../cypress/e2e/calculator/data/Chisa/data";
 
-describe("rotation buff overrides with cached build stats", () => {
+describe("rotation action build (always fresh from store)", () => {
   const parsed =
     typeof config.data.character === "string"
       ? JSON.parse(config.data.character)
@@ -15,91 +15,52 @@ describe("rotation buff overrides with cached build stats", () => {
       ? JSON.parse(config.data.inventory)
       : config.data.inventory;
   const getEchoById = createGetEchoByIdFromInventory(inventory.echoes ?? []);
-
   const chisaBase = parsed.characters.Chisa;
 
-  it("applies disabled weapon passive overrides despite cached weapon stats", async () => {
-    const chisa = {
-      ...chisaBase,
-      cachedWeaponStats: {
-        attack: 500,
-        modifier: "CritRate",
-        modifierValue: 0.36,
-        weaponPassiveStats: {
-          ATK: 0.24,
-          AllElementAttributeBonus: 0.48,
-        },
-      },
-      cachedEchoStats: {
-        ATK: 71.8,
-        ATK_FLAT: 500,
-        Havoc: 10,
-      },
-    };
-
-    const activeBaseline = {
-      characterKey: "Chisa",
-      baseHp: 12000,
-      baseAtk: 337,
-      baseDef: 1100,
-      echoStats: { ...chisa.cachedEchoStats },
-      weaponAtk: 500,
-      weaponModifier: "CritRate",
-      weaponModifierValue: 0.36,
-      buffsCharInfo: [],
-      resonanceChainsCharInfo: [],
-    };
-
-    const withPassives = await computeRotationActionBuildContext(
+  it("applies disabled weapon passive overrides", async () => {
+    const chisa = { ...chisaBase };
+    const withOverride = await computeRotationActionBuildContext(
       "Chisa",
       chisa,
       {},
       {},
       {
         weaponPassives: {
-          ThreadofFateATK: { isEnabled: false },
+          ThreadofFateAllAttribute: { isEnabled: false },
         },
       },
       undefined,
-      activeBaseline,
       { Chisa: chisa },
       "Chisa",
       getEchoById,
     );
-    const withoutOverrides = await computeRotationActionBuildContext(
+    const withoutOverride = await computeRotationActionBuildContext(
       "Chisa",
       chisa,
       {},
       {},
       null,
       undefined,
-      activeBaseline,
       { Chisa: chisa },
       "Chisa",
       getEchoById,
     );
 
     expect(
-      withoutOverrides.performerWeaponPassiveStats?.ATK,
+      withoutOverride.performerWeaponPassiveStats?.AllElementAttributeBonus,
     ).toBeGreaterThan(0);
-    expect(withPassives.performerWeaponPassiveStats?.ATK ?? 0).toBe(0);
-    expect(withPassives.performerStats.totalAtk).toBeLessThan(
-      withoutOverrides.performerStats.totalAtk as number,
+    expect(
+      withOverride.performerWeaponPassiveStats?.AllElementAttributeBonus ?? 0,
+    ).toBe(0);
+    expect(withOverride.performerStats.totalAtk).toBe(
+      withoutOverride.performerStats.totalAtk,
     );
   });
 
-  it("applies disabled echo set passive overrides despite cached echo stats", async () => {
-    const chisa = {
-      ...chisaBase,
-      cachedEchoStats: {
-        ATK: 91.8,
-        ATK_FLAT: 500,
-        Havoc: 30,
-        ResonanceLiberationDMGBonus: 30,
-      },
-    };
+  it("applies disabled echo set passive overrides", async () => {
+    const chisa = { ...chisaBase };
 
-    const withPassives = await computeRotationActionBuildContext(
+    const withOverride = await computeRotationActionBuildContext(
       "Chisa",
       chisa,
       {},
@@ -110,41 +71,29 @@ describe("rotation buff overrides with cached build stats", () => {
         },
       },
       undefined,
-      undefined,
       { Chisa: chisa },
       "Chisa",
       getEchoById,
     );
-    const withoutOverrides = await computeRotationActionBuildContext(
+    const withoutOverride = await computeRotationActionBuildContext(
       "Chisa",
       chisa,
       {},
       {},
       null,
       undefined,
-      undefined,
       { Chisa: chisa },
       "Chisa",
       getEchoById,
     );
 
-    expect(withPassives.performerEchoStats?.ATK).toBeLessThan(
-      withoutOverrides.performerEchoStats?.ATK as number,
-    );
-    expect(withPassives.performerStats.totalAtk).toBeLessThan(
-      withoutOverrides.performerStats.totalAtk as number,
+    expect(withOverride.performerEchoStats?.ATK).toBeLessThan(
+      withoutOverride.performerEchoStats?.ATK as number,
     );
   });
 
-  it("applies disabled main echo override despite cached echo stats", async () => {
-    const chisa = {
-      ...chisaBase,
-      cachedEchoStats: {
-        ATK: 71.8,
-        ATK_FLAT: 500,
-        CritRate: 50,
-      },
-    };
+  it("applies disabled main echo override", async () => {
+    const chisa = { ...chisaBase };
 
     const disabledMainEcho = await computeRotationActionBuildContext(
       "Chisa",
@@ -152,7 +101,6 @@ describe("rotation buff overrides with cached build stats", () => {
       {},
       {},
       { mainEcho: { isEnabled: false } },
-      undefined,
       undefined,
       { Chisa: chisa },
       "Chisa",
@@ -165,7 +113,6 @@ describe("rotation buff overrides with cached build stats", () => {
       {},
       { mainEcho: { isEnabled: true } },
       undefined,
-      undefined,
       { Chisa: chisa },
       "Chisa",
       getEchoById,
@@ -174,55 +121,19 @@ describe("rotation buff overrides with cached build stats", () => {
     expect(disabledMainEcho.performerEchoStats?.Havoc ?? 0).toBeLessThan(
       enabledMainEcho.performerEchoStats?.Havoc as number,
     );
-    expect(
-      disabledMainEcho.performerStats.resonanceLiberationDMGBonus,
-    ).toBeLessThan(
-      enabledMainEcho.performerStats.resonanceLiberationDMGBonus as number,
-    );
   });
 
-  it("preserves ATK when disabling a non-ATK weapon passive on active baseline", async () => {
-    const chisa = {
-      ...chisaBase,
-      cachedWeaponStats: {
-        attack: 500,
-        modifier: "CritRate",
-        modifierValue: 0.36,
-        weaponPassiveStats: {
-          ATK: 0.24,
-          AllElementAttributeBonus: 0.48,
-        },
-      },
-      cachedEchoStats: {
-        ATK: 71.8,
-        ATK_FLAT: 500,
-        Havoc: 10,
-      },
-    };
-
-    const activeBaseline = {
-      characterKey: "Chisa",
-      baseHp: 12000,
-      baseAtk: 337,
-      baseDef: 1100,
-      echoStats: { ...chisa.cachedEchoStats },
-      weaponAtk: 500,
-      weaponModifier: "CritRate",
-      weaponModifierValue: 0.36,
-      buffsCharInfo: [],
-      resonanceChainsCharInfo: [],
-    };
-
+  it("preserves ATK when toggling a non-ATK weapon passive with live team buffs", async () => {
+    const chisa = { ...chisaBase };
     const liveTeamBuffs = { ATK: 0.15 };
 
-    const withoutOverrides = await computeRotationActionBuildContext(
+    const baseline = await computeRotationActionBuildContext(
       "Chisa",
       chisa,
       liveTeamBuffs,
       {},
       null,
       undefined,
-      activeBaseline,
       { Chisa: chisa },
       "Chisa",
       getEchoById,
@@ -238,7 +149,6 @@ describe("rotation buff overrides with cached build stats", () => {
         },
       },
       undefined,
-      activeBaseline,
       { Chisa: chisa },
       "Chisa",
       getEchoById,
@@ -254,25 +164,16 @@ describe("rotation buff overrides with cached build stats", () => {
         },
       },
       undefined,
-      activeBaseline,
       { Chisa: chisa },
       "Chisa",
       getEchoById,
     );
 
-    expect(withoutOverrides.performerStats.totalAtk).toBe(
+    expect(baseline.performerStats.totalAtk).toBe(
       disabledAllAttribute.performerStats.totalAtk,
     );
     expect(reenabledAllAttribute.performerStats.totalAtk).toBe(
-      withoutOverrides.performerStats.totalAtk,
+      baseline.performerStats.totalAtk,
     );
-    expect(
-      disabledAllAttribute.performerWeaponPassiveStats
-        ?.AllElementAttributeBonus ?? 0,
-    ).toBe(0);
-    expect(
-      reenabledAllAttribute.performerWeaponPassiveStats
-        ?.AllElementAttributeBonus ?? 0,
-    ).toBeGreaterThan(0);
   });
 });

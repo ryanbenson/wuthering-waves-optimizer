@@ -7,36 +7,30 @@ import { getSetBonusEffects, getSetsFromEchoes } from "../echoes/sets";
 import { setBonusEffectsOne, setBonusEffectsTwo } from "../echoes/sets";
 import { getEchoData, mainEchoesData } from "../echoes";
 import { getWeaponByName } from "../weapons/weapons";
-import { readCachedEchoStats, readCachedWeaponStats } from "./performerBuildDebug";
 import {
   buildPerformerAttackContextFromStore,
   type PerformerAttackContext,
+  type TeamBuffsState,
 } from "./performerContextFromStore";
-import type { RotationPerformerManualStats } from "./performerStatsMapping";
 import { useInventoryStore } from "../stores/inventory";
 
 export type RotationPerformerId = "active" | "teammate1" | "teammate2";
 
 export type { RotationPerformerManualStats } from "./performerStatsMapping";
 export { finalStatsToPerformerStats, manualStatsToPerformerStats } from "./performerStatsMapping";
-export type { PerformerAttackContext } from "./performerContextFromStore";
+export type {
+  PerformerAttackContext,
+  RotationPerformerConfig,
+  TeamBuffsState,
+} from "./performerContextFromStore";
+export { getRotationPerformerConfig } from "./performerContextFromStore";
 
-export type RotationPerformerConfig = {
-  useSavedBuild?: boolean;
-  mainEcho?: string | null;
-  mainEchoRank?: number | string | null;
-  manualStats?: RotationPerformerManualStats | null;
-};
-
-export type RotationPerformersMap = Record<string, RotationPerformerConfig>;
+export type RotationPerformersMap = Record<
+  string,
+  import("./performerContextFromStore").RotationPerformerConfig
+>;
 
 type CharacterStoreEntry = Record<string, unknown>;
-
-export type TeamBuffsState = {
-  selectedCharacter1?: string | null;
-  selectedCharacter2?: string | null;
-  rotationPerformers?: RotationPerformersMap;
-};
 
 function mergeStats(
   target: Record<string, number>,
@@ -130,8 +124,42 @@ function computeEchoSetPassiveStats(
 
 type EchoSlotRow = Record<string, unknown> & { echoId?: string | null };
 
+const DEFAULT_ECHO_SLOT_RANK = 5;
+
+/** Inline echo rows saved on the character store (no inventory echoId). */
+export function echoSlotHasInlineBuildData(slot: EchoSlotRow): boolean {
+  return (
+    Boolean(slot.echo) &&
+    slot.stat != null &&
+    slot.stat !== "" &&
+    slot.type != null &&
+    slot.type !== ""
+  );
+}
+
+function echoSlotRankForStats(slot: EchoSlotRow): number {
+  const rank = slot.rank;
+  if (rank != null && rank !== "") {
+    const numeric = Number(rank);
+    if (Number.isFinite(numeric) && numeric > 0) {
+      return numeric;
+    }
+  }
+  return DEFAULT_ECHO_SLOT_RANK;
+}
+
+function normalizeEchoSlotForStats(slot: EchoSlotRow): EchoObject | null {
+  if (!echoSlotHasInlineBuildData(slot)) {
+    return null;
+  }
+  return {
+    ...(slot as EchoObject),
+    rank: echoSlotRankForStats(slot),
+  };
+}
+
 /** Character echoes may be an array or a {0..4} object after partial store merges. */
-function getEchoSlotsFromCharacterStore(
+export function getEchoSlotsFromCharacterStore(
   charStore: CharacterStoreEntry,
 ): EchoSlotRow[] {
   const raw = charStore.echoes;
@@ -171,43 +199,38 @@ function resolveEchoSlotForStats(
   if (echoSlot.echoId && getEchoById) {
     resolved = getEchoById(echoSlot.echoId) ?? null;
   }
-  if (
-    echoSlot.echo &&
-    echoSlot.stat &&
-    echoSlot.type &&
-    echoSlot.rank
-  ) {
-    const slotEcho = echoSlot as EchoObject;
+  const inlineEcho = normalizeEchoSlotForStats(echoSlot);
+  if (inlineEcho) {
     if (resolved) {
       return {
         ...resolved,
-        echo: slotEcho.echo ?? resolved.echo,
-        type: slotEcho.type ?? resolved.type,
-        rank: slotEcho.rank ?? resolved.rank,
-        stat: slotEcho.stat ?? resolved.stat,
+        echo: inlineEcho.echo ?? resolved.echo,
+        type: inlineEcho.type ?? resolved.type,
+        rank: inlineEcho.rank ?? resolved.rank,
+        stat: inlineEcho.stat ?? resolved.stat,
         echoSubStatsType1:
-          slotEcho.echoSubStatsType1 ?? resolved.echoSubStatsType1,
+          inlineEcho.echoSubStatsType1 ?? resolved.echoSubStatsType1,
         echoSubStatsValue1:
-          slotEcho.echoSubStatsValue1 ?? resolved.echoSubStatsValue1,
+          inlineEcho.echoSubStatsValue1 ?? resolved.echoSubStatsValue1,
         echoSubStatsType2:
-          slotEcho.echoSubStatsType2 ?? resolved.echoSubStatsType2,
+          inlineEcho.echoSubStatsType2 ?? resolved.echoSubStatsType2,
         echoSubStatsValue2:
-          slotEcho.echoSubStatsValue2 ?? resolved.echoSubStatsValue2,
+          inlineEcho.echoSubStatsValue2 ?? resolved.echoSubStatsValue2,
         echoSubStatsType3:
-          slotEcho.echoSubStatsType3 ?? resolved.echoSubStatsType3,
+          inlineEcho.echoSubStatsType3 ?? resolved.echoSubStatsType3,
         echoSubStatsValue3:
-          slotEcho.echoSubStatsValue3 ?? resolved.echoSubStatsValue3,
+          inlineEcho.echoSubStatsValue3 ?? resolved.echoSubStatsValue3,
         echoSubStatsType4:
-          slotEcho.echoSubStatsType4 ?? resolved.echoSubStatsType4,
+          inlineEcho.echoSubStatsType4 ?? resolved.echoSubStatsType4,
         echoSubStatsValue4:
-          slotEcho.echoSubStatsValue4 ?? resolved.echoSubStatsValue4,
+          inlineEcho.echoSubStatsValue4 ?? resolved.echoSubStatsValue4,
         echoSubStatsType5:
-          slotEcho.echoSubStatsType5 ?? resolved.echoSubStatsType5,
+          inlineEcho.echoSubStatsType5 ?? resolved.echoSubStatsType5,
         echoSubStatsValue5:
-          slotEcho.echoSubStatsValue5 ?? resolved.echoSubStatsValue5,
+          inlineEcho.echoSubStatsValue5 ?? resolved.echoSubStatsValue5,
       };
     }
-    return slotEcho;
+    return inlineEcho;
   }
   return resolved;
 }
@@ -308,24 +331,11 @@ export function getResolvedEchoSetPassiveDefinitions(
   return definitions;
 }
 
-export type BuildStatsFromStoreOptions = {
-  /** When true, recompute from store instead of using cached UI snapshots. */
-  skipCache?: boolean;
-};
-
 export function buildEchoStatsFromCharacterStore(
   characterKey: string,
   charStore: CharacterStoreEntry,
   getEchoById?: (echoId: string) => EchoObject | null | undefined,
-  options?: BuildStatsFromStoreOptions,
 ): Record<string, number> {
-  if (!options?.skipCache) {
-    const cachedEchoStats = readCachedEchoStats(charStore);
-    if (cachedEchoStats) {
-      return { ...cachedEchoStats };
-    }
-  }
-
   const stats: Record<string, number> = {};
   const echoes = getEchoSlotsFromCharacterStore(charStore);
   const resolvedEchoes: EchoObject[] = [];
@@ -486,20 +496,12 @@ export async function buildWeaponDataFromCharacterStore(
   _characterKey: string,
   charStore: CharacterStoreEntry,
   chosenChar: Record<string, unknown>,
-  options?: BuildStatsFromStoreOptions,
 ): Promise<{
   attack: number;
   modifier: string | null;
   modifierValue: number;
   weaponPassiveStats: Record<string, unknown>;
 }> {
-  if (!options?.skipCache) {
-    const cachedWeapon = readCachedWeaponStats(charStore);
-    if (cachedWeapon) {
-      return cachedWeapon;
-    }
-  }
-
   const resolved = resolveEquippedWeaponFromStore(charStore, chosenChar);
   if (!resolved) {
     return {
@@ -585,13 +587,6 @@ export function resolvePerformerCharacterKey(
     return teamBuffs.selectedCharacter2 ?? activeCharacterKey;
   }
   return String(performer);
-}
-
-export function getRotationPerformerConfig(
-  characterKey: string,
-  teamBuffs: TeamBuffsState,
-): RotationPerformerConfig {
-  return teamBuffs.rotationPerformers?.[characterKey] ?? {};
 }
 
 export async function getPerformerAttackContext(

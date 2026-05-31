@@ -62,7 +62,16 @@
       </div>
     </template>
   </div>
-  <div class="flex flex-col gap-4">
+  <div class="relative flex flex-col gap-4 min-h-[12rem]">
+    <div
+      v-if="isProcessing"
+      class="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 rounded-lg bg-base-100/80 backdrop-blur-sm"
+      role="status"
+      aria-live="polite"
+      aria-busy="true">
+      <span class="loading loading-spinner loading-lg text-primary"></span>
+      <p class="text-sm font-medium">Calculating rotation damage…</p>
+    </div>
     <CalculatorRotation
       v-for="rotation in rotations"
       :key="rotation.id"
@@ -113,6 +122,7 @@ type RotationPreset = {
 
 const props = defineProps<{
   character: string;
+  isProcessing?: boolean;
 }>();
 
 const emit = defineEmits<{
