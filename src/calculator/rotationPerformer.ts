@@ -1,4 +1,3 @@
-import { calculateAllStats } from "./stats";
 import {
   getCombinedEchoStats,
   getEchoStats,
@@ -7,35 +6,19 @@ import {
 import { getSetBonusEffects, getSetsFromEchoes } from "../echoes/sets";
 import { setBonusEffectsOne, setBonusEffectsTwo } from "../echoes/sets";
 import { getEchoData, mainEchoesData } from "../echoes";
-import { getCharByName } from "../characters/characters";
 import { getWeaponByName } from "../weapons/weapons";
-import { filterBuffsForStance, resolveActiveStance } from "./stances";
-import { computeTeamBuffsDataFromStore } from "./teamBuffsFromStore";
+import {
+  buildPerformerAttackContextFromStore,
+  type PerformerAttackContext,
+} from "./performerContextFromStore";
+import type { RotationPerformerManualStats } from "./performerStatsMapping";
 import { useInventoryStore } from "../stores/inventory";
 
 export type RotationPerformerId = "active" | "teammate1" | "teammate2";
 
-export type RotationPerformerManualStats = {
-  totalAtk?: number | null;
-  totalHp?: number | null;
-  totalDef?: number | null;
-  critRate?: number | null;
-  critDMG?: number | null;
-  energyRegen?: number | null;
-  glacio?: number | null;
-  fusion?: number | null;
-  electro?: number | null;
-  aero?: number | null;
-  spectro?: number | null;
-  havoc?: number | null;
-  basicAttackDMGBonus?: number | null;
-  heavyAttackDMGBonus?: number | null;
-  resonanceSkillDMGBonus?: number | null;
-  introSkillDMGBonus?: number | null;
-  outroSkillDMGBonus?: number | null;
-  resonanceLiberationDMGBonus?: number | null;
-  echoDMGBonus?: number | null;
-};
+export type { RotationPerformerManualStats } from "./performerStatsMapping";
+export { finalStatsToPerformerStats, manualStatsToPerformerStats } from "./performerStatsMapping";
+export type { PerformerAttackContext } from "./performerContextFromStore";
 
 export type RotationPerformerConfig = {
   useSavedBuild?: boolean;
@@ -45,51 +28,6 @@ export type RotationPerformerConfig = {
 };
 
 export type RotationPerformersMap = Record<string, RotationPerformerConfig>;
-
-/** Snapshot from the character's calculator tabs (echoes / party / weapon), used for rotation teammates. */
-export type CharacterComputedBuildCache = {
-  echoStats?: Record<string, unknown>;
-  teamBuffsData?: Record<string, unknown>;
-  weaponData?: {
-    attack: number;
-    modifier: string | null;
-    modifierValue: number;
-    weaponPassiveStats: Record<string, unknown>;
-  };
-};
-
-export function readCharacterComputedBuild(
-  charStore: CharacterStoreEntry,
-): CharacterComputedBuildCache | undefined {
-  const raw = charStore.computedBuild;
-  if (!raw || typeof raw !== "object") {
-    return undefined;
-  }
-  return raw as CharacterComputedBuildCache;
-}
-
-export type PerformerAttackContext = {
-  performerCharacterKey: string;
-  performerStats: Record<string, unknown>;
-  performerTalentData: {
-    basic: string | number;
-    skill: string | number;
-    forte: string | number;
-    liberation: string | number;
-    intro: string | number;
-  };
-  performerBuffs: {
-    charBuffsData: Record<string, unknown>;
-    charResonanceChainsData: Record<string, unknown>;
-  };
-  performerChosenChar: Record<string, unknown>;
-  performerMainEcho: string | null;
-  performerMainEchoRank: number | string;
-  performerTeamBuffsData?: Record<string, unknown>;
-  performerCustomBuffs?: Record<string, unknown>;
-  performerEchoStats?: Record<string, unknown>;
-  performerWeaponPassiveStats?: Record<string, unknown>;
-};
 
 type CharacterStoreEntry = Record<string, unknown>;
 
@@ -225,16 +163,49 @@ function resolveEchoSlotForStats(
   if (!echoSlot) {
     return null;
   }
+  let resolved: EchoObject | null = null;
   if (echoSlot.echoId && getEchoById) {
-    const fromInventory = getEchoById(echoSlot.echoId);
-    if (fromInventory) {
-      return fromInventory;
+    resolved = getEchoById(echoSlot.echoId) ?? null;
+  }
+  if (
+    echoSlot.echo &&
+    echoSlot.stat &&
+    echoSlot.type &&
+    echoSlot.rank
+  ) {
+    const slotEcho = echoSlot as EchoObject;
+    if (resolved) {
+      return {
+        ...resolved,
+        echo: slotEcho.echo ?? resolved.echo,
+        type: slotEcho.type ?? resolved.type,
+        rank: slotEcho.rank ?? resolved.rank,
+        stat: slotEcho.stat ?? resolved.stat,
+        echoSubStatsType1:
+          slotEcho.echoSubStatsType1 ?? resolved.echoSubStatsType1,
+        echoSubStatsValue1:
+          slotEcho.echoSubStatsValue1 ?? resolved.echoSubStatsValue1,
+        echoSubStatsType2:
+          slotEcho.echoSubStatsType2 ?? resolved.echoSubStatsType2,
+        echoSubStatsValue2:
+          slotEcho.echoSubStatsValue2 ?? resolved.echoSubStatsValue2,
+        echoSubStatsType3:
+          slotEcho.echoSubStatsType3 ?? resolved.echoSubStatsType3,
+        echoSubStatsValue3:
+          slotEcho.echoSubStatsValue3 ?? resolved.echoSubStatsValue3,
+        echoSubStatsType4:
+          slotEcho.echoSubStatsType4 ?? resolved.echoSubStatsType4,
+        echoSubStatsValue4:
+          slotEcho.echoSubStatsValue4 ?? resolved.echoSubStatsValue4,
+        echoSubStatsType5:
+          slotEcho.echoSubStatsType5 ?? resolved.echoSubStatsType5,
+        echoSubStatsValue5:
+          slotEcho.echoSubStatsValue5 ?? resolved.echoSubStatsValue5,
+      };
     }
+    return slotEcho;
   }
-  if (echoSlot.echo && echoSlot.stat && echoSlot.type && echoSlot.rank) {
-    return echoSlot as EchoObject;
-  }
-  return null;
+  return resolved;
 }
 
 function buildEquippedEchoStats(
@@ -571,64 +542,6 @@ export async function buildWeaponDataFromCharacterStore(
   return { attack, modifier, modifierValue, weaponPassiveStats };
 }
 
-export function finalStatsToPerformerStats(
-  finalStats: Record<string, unknown>,
-): Record<string, unknown> {
-  return {
-    totalAtk: finalStats.totalAtk,
-    totalHp: finalStats.totalHp,
-    totalDef: finalStats.totalDef,
-    totalCritRate: finalStats.totalCritRate,
-    totalCritDMG: finalStats.totalCritDMG,
-    energyRegen: finalStats.energyRegen,
-    glacio: finalStats.glacio,
-    fusion: finalStats.fusion,
-    electro: finalStats.electro,
-    aero: finalStats.aero,
-    spectro: finalStats.spectro,
-    havoc: finalStats.havoc,
-    basicAttackDMGBonus: finalStats.basicAttackDMGBonus,
-    heavyAttackDMGBonus: finalStats.heavyAttackDMGBonus,
-    resonanceSkillDMGBonus: finalStats.resonanceSkillDMGBonus,
-    introSkillDMGBonus: finalStats.introSkillDMGBonus,
-    outroSkillDMGBonus: finalStats.outroSkillDMGBonus,
-    resonanceLiberationDMGBonus: finalStats.resonanceLiberationDMGBonus,
-    echoDmgBonus: finalStats.echoDMGBonus,
-    healingBonus: finalStats.healingBonus,
-    shieldBonus: finalStats.shieldBonus,
-    DefIgnore: finalStats.DefIgnore,
-    ResistReduction: finalStats.resistReduction,
-    resistReduction: finalStats.resistReduction,
-    TotalDeepenEffect: finalStats.totalDeepenEffect,
-  };
-}
-
-export function manualStatsToPerformerStats(
-  manual: RotationPerformerManualStats,
-): Record<string, unknown> {
-  return {
-    totalAtk: Number(manual.totalAtk ?? 0),
-    totalHp: Number(manual.totalHp ?? 0),
-    totalDef: Number(manual.totalDef ?? 0),
-    totalCritRate: Number(manual.critRate ?? 0) / 100,
-    totalCritDMG: Number(manual.critDMG ?? 0) / 100,
-    energyRegen: Number(manual.energyRegen ?? 100) / 100,
-    glacio: Number(manual.glacio ?? 0),
-    fusion: Number(manual.fusion ?? 0),
-    electro: Number(manual.electro ?? 0),
-    aero: Number(manual.aero ?? 0),
-    spectro: Number(manual.spectro ?? 0),
-    havoc: Number(manual.havoc ?? 0),
-    basicAttackDMGBonus: Number(manual.basicAttackDMGBonus ?? 0),
-    heavyAttackDMGBonus: Number(manual.heavyAttackDMGBonus ?? 0),
-    resonanceSkillDMGBonus: Number(manual.resonanceSkillDMGBonus ?? 0),
-    introSkillDMGBonus: Number(manual.introSkillDMGBonus ?? 0),
-    outroSkillDMGBonus: Number(manual.outroSkillDMGBonus ?? 0),
-    resonanceLiberationDMGBonus: Number(manual.resonanceLiberationDMGBonus ?? 0),
-    echoDmgBonus: Number(manual.echoDMGBonus ?? 0),
-  };
-}
-
 export function resolvePerformerCharacterKey(
   performer: RotationPerformerId | string | null | undefined,
   activeCharacterKey: string,
@@ -659,167 +572,22 @@ export async function getPerformerAttackContext(
   charactersStore: Record<string, CharacterStoreEntry>,
   _teamBuffsData: Record<string, unknown>,
   _customBuffs: Record<string, unknown>,
+  options?: {
+    getEchoById?: (echoId: string) => EchoObject | undefined;
+  },
 ): Promise<PerformerAttackContext | null> {
-  if (!performerCharacterKey || performerCharacterKey === activeCharacterKey) {
-    return null;
-  }
-  const charStore = charactersStore[performerCharacterKey] ?? {};
-  const chosenChar = (await getCharByName(performerCharacterKey)) as Record<
-    string,
-    unknown
-  >;
-  const teamBuffs = (charactersStore[activeCharacterKey]?.teamBuffs ??
-    {}) as TeamBuffsState;
-  const performerConfig = getRotationPerformerConfig(
-    performerCharacterKey,
-    teamBuffs,
-  );
-  const characterLevel = String(charStore.characterLevel ?? "90");
-  const storeTalents = (charStore.talents ?? {}) as Record<string, string | number>;
-  const talentData = {
-    basic: storeTalents.basic ?? 10,
-    skill: storeTalents.skill ?? 10,
-    forte: storeTalents.forte ?? 10,
-    liberation: storeTalents.liberation ?? 10,
-    intro: storeTalents.intro ?? 10,
-  };
-  const stances = (chosenChar?.basic as { stances?: unknown })?.stances ?? [];
-  const activeStance =
-    resolveActiveStance(
-      stances as never,
-      (charStore.activeStance as string | undefined) ?? undefined,
-      charStore.buffs as Record<string, { isEnabled?: boolean }> | undefined,
-    ) ?? undefined;
-  const baseLevelStats =
-  (
-    chosenChar as {
-      getCharacterStatsByLevel?: (level: string) => {
-        hp: number;
-        attack: number;
-        defense: number;
-      };
-    }
-  )?.getCharacterStatsByLevel?.(characterLevel) ?? {
-    hp: 0,
-    attack: 0,
-    defense: 0,
-  };
-
-  let performerStats: Record<string, unknown>;
-  let charBuffsData: Record<string, unknown> = {};
-  let charResonanceChainsData: Record<string, unknown> = {};
-  let performerTeamBuffsData: Record<string, unknown> = {};
-  let performerCustomBuffs: Record<string, unknown> = {};
-  let performerEchoStats: Record<string, unknown> = {};
-  let performerWeaponPassiveStats: Record<string, unknown> = {};
-
-  if (performerConfig.useSavedBuild !== false) {
-    const inventoryStore = useInventoryStore();
-    const getEchoById = (echoId: string) =>
-      inventoryStore.getEchoById(echoId) as EchoObject | undefined;
-    const computedBuild = readCharacterComputedBuild(charStore);
-    const echoStats =
-      computedBuild?.echoStats != null
-        ? (JSON.parse(JSON.stringify(computedBuild.echoStats)) as Record<
-            string,
-            number
-          >)
-        : buildEchoStatsFromCharacterStore(
-            performerCharacterKey,
-            charStore,
-            getEchoById,
-          );
-    const weaponData =
-      computedBuild?.weaponData != null
-        ? {
-            attack: computedBuild.weaponData.attack,
-            modifier: computedBuild.weaponData.modifier,
-            modifierValue: computedBuild.weaponData.modifierValue,
-            weaponPassiveStats: JSON.parse(
-              JSON.stringify(computedBuild.weaponData.weaponPassiveStats ?? {}),
-            ),
-          }
-        : await buildWeaponDataFromCharacterStore(
-            performerCharacterKey,
-            charStore,
-            chosenChar,
-          );
-    performerTeamBuffsData =
-      computedBuild?.teamBuffsData != null
-        ? (JSON.parse(JSON.stringify(computedBuild.teamBuffsData)) as Record<
-            string,
-            unknown
-          >)
-        : computeTeamBuffsDataFromStore(
-            performerCharacterKey,
-            charactersStore,
-          );
-    performerCustomBuffs = (charStore.customBuffs ?? {}) as Record<
-      string,
-      unknown
-    >;
-    performerEchoStats = echoStats;
-    performerWeaponPassiveStats = weaponData.weaponPassiveStats ?? {};
-    const buffsCharInfo = filterBuffsForStance(
-      (chosenChar.buffs ?? []) as never,
-      activeStance,
-    );
-    const resonanceChainsCharInfo = filterBuffsForStance(
-      (chosenChar.resonanceChains ?? []) as never,
-      activeStance,
-    );
-    const calculated = calculateAllStats({
-      baseHp: baseLevelStats.hp,
-      baseAtk: baseLevelStats.attack,
-      baseDef: baseLevelStats.defense,
-      weaponAtk: weaponData.attack,
-      weaponModifier: weaponData.modifier,
-      weaponModifierValue: weaponData.modifierValue,
-      weaponPassiveData: weaponData.weaponPassiveStats,
-      buffsConfig: charStore.buffs ?? {},
-      resonanceChainsConfig: charStore.resonanceChains ?? {},
-      customBuffs: performerCustomBuffs,
-      teamBuffsData: performerTeamBuffsData,
-      echoStats,
-      buffsCharInfo,
-      resonanceChainsCharInfo,
-      character: performerCharacterKey,
-      talentData,
-      activeStance,
+  const getEchoById =
+    options?.getEchoById ??
+    ((echoId: string) => {
+      const inventoryStore = useInventoryStore();
+      return inventoryStore.getEchoById(echoId) as EchoObject | undefined;
     });
-    performerStats = finalStatsToPerformerStats(calculated.finalStats);
-    charBuffsData = calculated.selfBuffsData ?? {};
-    charResonanceChainsData = calculated.resonanceChainsBuffsData ?? {};
-  } else {
-    performerStats = manualStatsToPerformerStats(
-      performerConfig.manualStats ?? {},
-    );
-  }
-
-  const performerMainEcho =
-    performerConfig.mainEcho ??
-    ((charStore.mainEcho as { echo?: string })?.echo ?? null);
-  const performerMainEchoRank =
-    performerConfig.mainEchoRank ??
-    (charStore.mainEcho as { rank?: number })?.rank ??
-    5;
-
-  return {
+  return buildPerformerAttackContextFromStore(
     performerCharacterKey,
-    performerStats,
-    performerTalentData: talentData,
-    performerBuffs: {
-      charBuffsData,
-      charResonanceChainsData,
-    },
-    performerChosenChar: chosenChar,
-    performerMainEcho,
-    performerMainEchoRank,
-    performerTeamBuffsData,
-    performerCustomBuffs,
-    performerEchoStats,
-    performerWeaponPassiveStats,
-  };
+    activeCharacterKey,
+    charactersStore,
+    getEchoById,
+  );
 }
 
 export function getPerformerMainEchoForEchoAttacks(

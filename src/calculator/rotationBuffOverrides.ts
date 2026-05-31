@@ -5,7 +5,6 @@ import {
   buildEchoStatsFromCharacterStore,
   buildWeaponDataFromCharacterStore,
   finalStatsToPerformerStats,
-  readCharacterComputedBuild,
   type PerformerAttackContext,
 } from "./rotationPerformer";
 import type { EchoObject } from "../echoes/stats";
@@ -389,55 +388,40 @@ export async function computeRotationActionBuildContext(
     inventoryStore.getEchoById(echoId) as EchoObject | undefined;
 
   const mainEchoState = resolveMainEchoForBuild(charStore, effectiveOverrides);
-  const computedBuild = readCharacterComputedBuild(charStore);
   const echoStats =
     useActiveBaseline && !hasEchoRelatedOverrides(effectiveOverrides)
       ? (JSON.parse(JSON.stringify(activeBaseline.echoStats)) as Record<
           string,
           number
         >)
-      : computedBuild?.echoStats &&
-          !hasEchoRelatedOverrides(effectiveOverrides)
-        ? (JSON.parse(JSON.stringify(computedBuild.echoStats)) as Record<
-            string,
-            number
-          >)
-        : buildEchoStatsWithBuildOverrides(
-            characterKey,
-            charStore,
-            getEchoById,
-            mainEchoState,
-            echoSetPassivesConfig,
-          );
+      : buildEchoStatsWithBuildOverrides(
+          characterKey,
+          charStore,
+          getEchoById,
+          mainEchoState,
+          echoSetPassivesConfig,
+        );
 
   const charStoreWithWeaponPassives = {
     ...charStore,
     weaponPassives: weaponPassivesConfig,
   };
-  const weaponData =
-    !useActiveBaseline && computedBuild?.weaponData != null
-      ? {
-          attack: computedBuild.weaponData.attack,
-          modifier: computedBuild.weaponData.modifier,
-          modifierValue: computedBuild.weaponData.modifierValue,
-          weaponPassiveStats: JSON.parse(
-            JSON.stringify(computedBuild.weaponData.weaponPassiveStats ?? {}),
-          ),
-        }
-      : await buildWeaponDataFromCharacterStore(
-          characterKey,
-          charStoreWithWeaponPassives,
-          chosenChar,
-        );
-  const performerTeamBuffsData =
-    !useActiveBaseline && computedBuild?.teamBuffsData != null
-      ? (JSON.parse(JSON.stringify(computedBuild.teamBuffsData)) as Record<
-          string,
-          unknown
-        >)
-      : charactersStore
-        ? computeTeamBuffsDataFromStore(characterKey, charactersStore)
-        : {};
+  const builtWeaponData = await buildWeaponDataFromCharacterStore(
+    characterKey,
+    charStoreWithWeaponPassives,
+    chosenChar,
+  );
+  const weaponData = useActiveBaseline
+    ? {
+        attack: activeBaseline.weaponAtk,
+        modifier: activeBaseline.weaponModifier,
+        modifierValue: activeBaseline.weaponModifierValue,
+        weaponPassiveStats: builtWeaponData.weaponPassiveStats,
+      }
+    : builtWeaponData;
+  const performerTeamBuffsData = charactersStore
+    ? computeTeamBuffsDataFromStore(characterKey, charactersStore)
+    : {};
   const performerCustomBuffs = (charStore.customBuffs ?? {}) as Record<
     string,
     unknown

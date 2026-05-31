@@ -340,7 +340,6 @@ import {
   getCalculationContext,
 } from "../calculator/attacks";
 import { buildRotationAttacksList } from "../calculator/buildRotationAttacks";
-import { refreshPartyComputedBuildsFromStore } from "../calculator/refreshComputedBuild";
 import type { OptimizerContext } from "../calculator/optimizer";
 import { getOptimizerLoadoutKey } from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
@@ -565,9 +564,6 @@ export default defineComponent({
       charBuffsData.value = selfBuffsData;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
-      await refreshPartyComputedBuildsFromStore(charName, characters.value, {
-        rotations: characters.value?.[charName]?.rotations,
-      });
       calcAllDamages();
     });
 
@@ -633,7 +629,6 @@ export default defineComponent({
       );
       const damageData = calcDamages(context);
       allDamages.value = damageData;
-      syncComputedBuildCache();
     };
 
     // set the character to display, default to the first
@@ -754,35 +749,6 @@ export default defineComponent({
       resonanceChainsCharInfo: chosenChar.value?.resonanceChains ?? [],
     });
 
-    const syncComputedBuildCache = () => {
-      if (!character.value) {
-        return;
-      }
-      const existing =
-        (characters.value[character.value]?.computedBuild as Record<
-          string,
-          unknown
-        >) ?? {};
-      const nextWeapon = weaponData.value
-        ? {
-            attack: weaponData.value.attack ?? 0,
-            modifier: weaponData.value.modifier ?? null,
-            modifierValue: weaponData.value.modifierValue ?? 0,
-            weaponPassiveStats: JSON.parse(
-              JSON.stringify(weaponData.value.weaponPassiveStats ?? {}),
-            ),
-          }
-        : existing.weaponData;
-      void characterStore.setCharacterData(character.value, {
-        computedBuild: {
-          ...existing,
-          echoStats: JSON.parse(JSON.stringify(echoStats.value ?? {})),
-          teamBuffsData: JSON.parse(JSON.stringify(teamBuffsData.value ?? {})),
-          weaponData: nextWeapon,
-        },
-      });
-    };
-
     const handleUpdatedCharacterStance = () => {
       const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
         computeAllBuffsWithBreakdown();
@@ -801,15 +767,8 @@ export default defineComponent({
       calcAllDamages();
     };
 
-    const handleUpdatedTeamBuffs = async (givenTeamBuffs) => {
+    const handleUpdatedTeamBuffs = (givenTeamBuffs) => {
       teamBuffsData.value = givenTeamBuffs;
-      await refreshPartyComputedBuildsFromStore(
-        character.value,
-        characters.value,
-        {
-          rotations: characterStore.getActiveCharacter?.rotations,
-        },
-      );
       const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
         computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
@@ -929,6 +888,7 @@ export default defineComponent({
           teamBuffsData.value,
           customBuffs.value,
           getActiveCharacterBuildBaseline(),
+          inventoryStore.echoes ?? [],
         );
         rotationData.push(rotationInfo);
       }
@@ -1138,6 +1098,7 @@ export default defineComponent({
               teamBuffsData.value,
               customBuffs.value,
               getActiveCharacterBuildBaseline(),
+              inventoryStore.echoes ?? [],
             )),
           );
 
