@@ -1,3 +1,4 @@
+import { processCustomBuffsFromStore } from "./customBuffsFromStore";
 import { calculateAllStats } from "./stats";
 import { filterBuffsForStance, resolveActiveStance } from "./stances";
 import { getCharByName } from "../characters/characters";
@@ -7,13 +8,25 @@ import {
   finalStatsToPerformerStats,
   type PerformerAttackContext,
 } from "./rotationPerformer";
+import { computeTeamBuffsDataFromStore } from "./teamBuffsFromStore";
 import type { EchoObject } from "../echoes/stats";
-import { useInventoryStore } from "../stores/inventory";
+
+export function createGetEchoByIdFromInventory(
+  inventoryEchoes: Array<{ echoId?: string | null } & Record<string, unknown>>,
+): (echoId: string) => EchoObject | undefined {
+  const byId = new Map<string, EchoObject>();
+  for (const echo of inventoryEchoes) {
+    const echoId = echo?.echoId;
+    if (echoId) {
+      byId.set(String(echoId), echo as EchoObject);
+    }
+  }
+  return (echoId: string) => byId.get(echoId);
+}
 import {
   clampSelfBuffStacks,
   type BuffConfigSlice,
 } from "./effectiveSelfBuffStacks";
-import { computeTeamBuffsDataFromStore } from "./teamBuffsFromStore";
 
 export type BuffOverrideEntry = {
   isEnabled?: boolean;
@@ -217,6 +230,7 @@ function buildEchoStatsWithBuildOverrides(
     characterKey,
     storeWithOverrides,
     getEchoById,
+    { skipCache: true },
   );
 }
 
@@ -292,6 +306,8 @@ export async function computeRotationActionBuildContext(
   legacyAction?: Record<string, unknown>,
   activeBaseline?: ActiveCharacterBuildBaseline | null,
   charactersStore?: Record<string, Record<string, unknown>>,
+  activeCharacterKey?: string,
+  getEchoById?: (echoId: string) => EchoObject | undefined,
 ): Promise<PerformerAttackContext> {
   const chosenChar = (await getCharByName(characterKey)) as Record<
     string,
@@ -383,9 +399,7 @@ export async function computeRotationActionBuildContext(
         defense: 0,
       });
 
-  const inventoryStore = useInventoryStore();
-  const getEchoById = (echoId: string) =>
-    inventoryStore.getEchoById(echoId) as EchoObject | undefined;
+  const resolveEchoById = getEchoById ?? (() => undefined);
 
   const mainEchoState = resolveMainEchoForBuild(charStore, effectiveOverrides);
   const echoStats =
@@ -397,7 +411,7 @@ export async function computeRotationActionBuildContext(
       : buildEchoStatsWithBuildOverrides(
           characterKey,
           charStore,
-          getEchoById,
+          resolveEchoById,
           mainEchoState,
           echoSetPassivesConfig,
         );
@@ -406,10 +420,13 @@ export async function computeRotationActionBuildContext(
     ...charStore,
     weaponPassives: weaponPassivesConfig,
   };
+  // Custom builds always recompute weapon passives from merged config — cached
+  // UI snapshots ignore per-action weaponPassives overrides.
   const builtWeaponData = await buildWeaponDataFromCharacterStore(
     characterKey,
     charStoreWithWeaponPassives,
     chosenChar,
+    { skipCache: true },
   );
   const weaponData = useActiveBaseline
     ? {
@@ -419,13 +436,21 @@ export async function computeRotationActionBuildContext(
         weaponPassiveStats: builtWeaponData.weaponPassiveStats,
       }
     : builtWeaponData;
-  const performerTeamBuffsData = charactersStore
-    ? computeTeamBuffsDataFromStore(characterKey, charactersStore)
-    : {};
-  const performerCustomBuffs = (charStore.customBuffs ?? {}) as Record<
-    string,
-    unknown
-  >;
+  const performerTeamBuffsData = useActiveBaseline
+    ? _teamBuffsData
+    : charactersStore
+      ? computeTeamBuffsDataFromStore(characterKey, charactersStore, {
+          partyConfigCharacterKey:
+            activeCharacterKey && activeCharacterKey !== characterKey
+              ? activeCharacterKey
+              : characterKey,
+        })
+      : {};
+  const performerCustomBuffs = useActiveBaseline
+    ? _customBuffs
+    : processCustomBuffsFromStore(
+        charStore.customBuffs as Record<string, unknown> | undefined,
+      );
 
   const buffsCharInfo =
     useActiveBaseline

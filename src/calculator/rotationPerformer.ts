@@ -7,6 +7,7 @@ import { getSetBonusEffects, getSetsFromEchoes } from "../echoes/sets";
 import { setBonusEffectsOne, setBonusEffectsTwo } from "../echoes/sets";
 import { getEchoData, mainEchoesData } from "../echoes";
 import { getWeaponByName } from "../weapons/weapons";
+import { readCachedEchoStats, readCachedWeaponStats } from "./performerBuildDebug";
 import {
   buildPerformerAttackContextFromStore,
   type PerformerAttackContext,
@@ -81,7 +82,10 @@ function computeEchoSetPassiveStats(
   setData.passives.forEach((passive) => {
     const passiveKey = String(passive.key ?? "");
     const passiveState = echoSetPassives[passiveKey] ?? {};
-    const isEnabled = passive.alwaysEnabled || passiveState.isEnabled;
+    const isEnabled =
+      passiveState.isEnabled === false
+        ? false
+        : Boolean(passive.alwaysEnabled || passiveState.isEnabled);
     if (!isEnabled) {
       return;
     }
@@ -304,11 +308,24 @@ export function getResolvedEchoSetPassiveDefinitions(
   return definitions;
 }
 
+export type BuildStatsFromStoreOptions = {
+  /** When true, recompute from store instead of using cached UI snapshots. */
+  skipCache?: boolean;
+};
+
 export function buildEchoStatsFromCharacterStore(
   characterKey: string,
   charStore: CharacterStoreEntry,
   getEchoById?: (echoId: string) => EchoObject | null | undefined,
+  options?: BuildStatsFromStoreOptions,
 ): Record<string, number> {
+  if (!options?.skipCache) {
+    const cachedEchoStats = readCachedEchoStats(charStore);
+    if (cachedEchoStats) {
+      return { ...cachedEchoStats };
+    }
+  }
+
   const stats: Record<string, number> = {};
   const echoes = getEchoSlotsFromCharacterStore(charStore);
   const resolvedEchoes: EchoObject[] = [];
@@ -469,12 +486,20 @@ export async function buildWeaponDataFromCharacterStore(
   _characterKey: string,
   charStore: CharacterStoreEntry,
   chosenChar: Record<string, unknown>,
+  options?: BuildStatsFromStoreOptions,
 ): Promise<{
   attack: number;
   modifier: string | null;
   modifierValue: number;
   weaponPassiveStats: Record<string, unknown>;
 }> {
+  if (!options?.skipCache) {
+    const cachedWeapon = readCachedWeaponStats(charStore);
+    if (cachedWeapon) {
+      return cachedWeapon;
+    }
+  }
+
   const resolved = resolveEquippedWeaponFromStore(charStore, chosenChar);
   if (!resolved) {
     return {
@@ -514,7 +539,10 @@ export async function buildWeaponDataFromCharacterStore(
   ).forEach((passive) => {
     const passiveKey = String(passive.key ?? "");
     const passiveState = weaponPassivesState[passiveKey] ?? {};
-    const isEnabled = passive.alwaysEnabled || passiveState.isEnabled;
+    const isEnabled =
+      passiveState.isEnabled === false
+        ? false
+        : Boolean(passive.alwaysEnabled || passiveState.isEnabled);
     if (!isEnabled) {
       return;
     }
@@ -587,6 +615,7 @@ export async function getPerformerAttackContext(
     activeCharacterKey,
     charactersStore,
     getEchoById,
+    _teamBuffsData,
   );
 }
 

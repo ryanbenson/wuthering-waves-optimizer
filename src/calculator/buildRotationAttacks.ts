@@ -3,6 +3,7 @@ import { resolveRotationActionToAttackData } from "./resolveRotationAction";
 import {
   actionNeedsCustomBuild,
   computeRotationActionBuildContext,
+  createGetEchoByIdFromInventory,
   type ActiveCharacterBuildBaseline,
 } from "./rotationBuffOverrides";
 import { computePerformerContextsFromStore } from "./performerBuildClient";
@@ -24,6 +25,7 @@ async function resolvePerformerContextForAction(
   customBuffs: Record<string, unknown>,
   activeBaseline?: ActiveCharacterBuildBaseline | null,
   precomputedContexts?: Record<string, PerformerAttackContext | null>,
+  inventoryEchoes: Array<{ echoId?: string | null } & Record<string, unknown>> = [],
 ): Promise<PerformerAttackContext | null> {
   if (actionNeedsCustomBuild(action)) {
     const charStore = charactersStore[performerCharacterKey] ?? {};
@@ -47,6 +49,8 @@ async function resolvePerformerContextForAction(
       action,
       performerCharacterKey === activeCharacterKey ? activeBaseline : null,
       charactersStore,
+      activeCharacterKey,
+      createGetEchoByIdFromInventory(inventoryEchoes),
     );
   }
   if (!performerCharacterKey || performerCharacterKey === activeCharacterKey) {
@@ -96,9 +100,11 @@ export async function buildRotationAttacksList(
     [...performerKeys].map((performerCharacterKey) => ({
       performerCharacterKey,
       activeCharacterKey,
+      activeTeamBuffsData: teamBuffsData,
     })),
     charactersStore,
     inventoryEchoes,
+    teamBuffsData,
   );
 
   for (const action of rotation.actions) {
@@ -131,6 +137,7 @@ export async function buildRotationAttacksList(
       customBuffs,
       activeBaseline,
       precomputedContexts,
+      inventoryEchoes,
     );
 
     if (

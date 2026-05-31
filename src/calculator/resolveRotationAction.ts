@@ -98,6 +98,7 @@ export function resolveRotationActionToAttackData(
     actionData.performerEchoStats = performerContext.performerEchoStats;
     actionData.performerWeaponPassiveStats =
       performerContext.performerWeaponPassiveStats;
+    actionData.performerBuildDebug = performerContext.performerBuildDebug;
   }
 
   if (actionType === "echoAttacks") {

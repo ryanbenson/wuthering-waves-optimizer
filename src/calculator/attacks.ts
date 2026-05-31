@@ -1498,7 +1498,7 @@ export const calculateAttackDamage = (
   //   totalTalentModifierSpecialMultiply,
   //   count,
   // });
-  return calcDamage(
+  const damage = calcDamage(
     String(context.character.characterLevel),
     context.enemy.enemyLevel,
     context.enemy.enemyResist,
@@ -1522,6 +1522,14 @@ export const calculateAttackDamage = (
     totalSpecialMultiplier,
     totalDefReduction,
   );
+  if (attack.performerBuildDebug) {
+    damage.totalDamageContext = {
+      ...damage.totalDamageContext,
+      performerBuildDebug: attack.performerBuildDebug,
+      performerCharacterKey: attack.performerCharacterKey,
+    } as typeof damage.totalDamageContext;
+  }
+  return damage;
 };
 
 export const calcDamages = (context: CalculationContext) => {

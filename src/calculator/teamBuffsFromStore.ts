@@ -244,20 +244,32 @@ export function computePartyBuffDataFromStore(
   return data;
 }
 
+export type TeamBuffsFromStoreOptions = {
+  /** When set, read teammate selections / toggles from this character's party tab. */
+  partyConfigCharacterKey?: string;
+};
+
 /**
- * Builds team buff totals for a character from their saved party tab configuration
+ * Builds team buff totals for a character from saved party tab configuration
  * (teammate buffs, echo buffs, weapon buffs), matching CalculatorPartyBuffs output.
  */
 export function computeTeamBuffsDataFromStore(
   recipientCharacterKey: string,
   charactersStore: Record<string, Record<string, unknown>>,
+  options?: TeamBuffsFromStoreOptions,
 ): Record<string, unknown> {
-  const charStore = charactersStore[recipientCharacterKey] ?? {};
-  const teamBuffsState = (charStore.teamBuffs ?? {}) as TeamBuffsState & {
+  const partyConfigCharacterKey =
+    options?.partyConfigCharacterKey ?? recipientCharacterKey;
+  const configStore = charactersStore[partyConfigCharacterKey] ?? {};
+  const recipientStore = charactersStore[recipientCharacterKey] ?? {};
+  const teamBuffsState = (configStore.teamBuffs ?? {}) as TeamBuffsState & {
     buffs?: Record<string, BuffConfigEntry>;
   };
   const buffsConfig = teamBuffsState.buffs ?? {};
-  const storeTalents = (charStore.talents ?? {}) as Record<string, string | number>;
+  const storeTalents = (recipientStore.talents ?? {}) as Record<
+    string,
+    string | number
+  >;
   const talentData: Record<string, string | number> = {
     basic: storeTalents.basic ?? "10",
     skill: storeTalents.skill ?? "10",

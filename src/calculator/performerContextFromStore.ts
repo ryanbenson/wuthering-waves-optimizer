@@ -1,6 +1,8 @@
 import { getCharByName } from "../characters/characters";
 import type { EchoObject } from "../echoes/stats";
 import { computeCharacterBuildFromStore } from "./computeCharacterBuildFromStore";
+import { processCustomBuffsFromStore } from "./customBuffsFromStore";
+import type { PerformerBuildDebug } from "./performerBuildDebug";
 import {
   finalStatsToPerformerStats,
   manualStatsToPerformerStats,
@@ -41,6 +43,7 @@ export type PerformerAttackContext = {
   performerCustomBuffs?: Record<string, unknown>;
   performerEchoStats?: Record<string, unknown>;
   performerWeaponPassiveStats?: Record<string, unknown>;
+  performerBuildDebug?: PerformerBuildDebug;
 };
 
 type CharacterStoreEntry = Record<string, unknown>;
@@ -58,6 +61,7 @@ export async function buildPerformerAttackContextFromStore(
   activeCharacterKey: string,
   charactersStore: Record<string, CharacterStoreEntry>,
   getEchoById: (echoId: string) => EchoObject | undefined,
+  activeTeamBuffsData?: Record<string, unknown>,
 ): Promise<PerformerAttackContext | null> {
   if (!performerCharacterKey || performerCharacterKey === activeCharacterKey) {
     return null;
@@ -90,24 +94,29 @@ export async function buildPerformerAttackContextFromStore(
   let performerEchoStats: Record<string, unknown> = {};
   let performerWeaponPassiveStats: Record<string, unknown> = {};
 
+  let performerBuildDebug: PerformerBuildDebug | undefined;
+
   if (performerConfig.useSavedBuild !== false) {
     const build = await computeCharacterBuildFromStore(
       performerCharacterKey,
       charStore,
       charactersStore,
       getEchoById,
+      activeTeamBuffsData !== undefined
+        ? { teamBuffsDataOverride: activeTeamBuffsData }
+        : undefined,
     );
     performerTeamBuffsData = build.teamBuffsData;
-    performerCustomBuffs = (charStore.customBuffs ?? {}) as Record<
-      string,
-      unknown
-    >;
+    performerCustomBuffs = processCustomBuffsFromStore(
+      charStore.customBuffs as Record<string, unknown> | undefined,
+    );
     performerEchoStats = build.echoStats;
     performerWeaponPassiveStats = build.weaponData.weaponPassiveStats ?? {};
     performerStats = finalStatsToPerformerStats(build.calculated.finalStats);
     charBuffsData = build.calculated.selfBuffsData ?? {};
     charResonanceChainsData =
       build.calculated.resonanceChainsBuffsData ?? {};
+    performerBuildDebug = build.buildDebug;
   } else {
     performerStats = manualStatsToPerformerStats(
       performerConfig.manualStats ?? {},
@@ -137,5 +146,6 @@ export async function buildPerformerAttackContextFromStore(
     performerCustomBuffs,
     performerEchoStats,
     performerWeaponPassiveStats,
+    performerBuildDebug,
   };
 }

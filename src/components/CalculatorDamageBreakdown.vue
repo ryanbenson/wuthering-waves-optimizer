@@ -432,6 +432,66 @@
           </div>
         </div>
       </div>
+      <div
+        v-if="damage.totalDamageContext.performerBuildDebug"
+        class="performer-build-debug mt-2">
+        <div class="font-bold mt-2 text-lg text-primary">
+          Teammate build debug ({{ damage.totalDamageContext.performerCharacterKey }})
+        </div>
+        <p class="text-sm opacity-80 mb-2">
+          Compare these values to the same character when active. Echo/weapon
+          sources show whether cached UI stats or store recomputation was used.
+        </p>
+        <div class="formula bg-base-200 p-2 rounded-md font-mono text-sm space-y-1">
+          <div>
+            Total ATK:
+            <span class="text-primary font-bold">
+              {{ damage.totalDamageContext.performerBuildDebug.totalAtk }}
+            </span>
+          </div>
+          <div>
+            Echo stats:
+            <span class="text-primary">
+              {{ damage.totalDamageContext.performerBuildDebug.echoStatsSource }}
+            </span>
+            · ATK% {{ damage.totalDamageContext.performerBuildDebug.echoStatsATK }} ·
+            ATK flat {{ damage.totalDamageContext.performerBuildDebug.echoStatsATKFlat }}
+            · slots resolved
+            {{ damage.totalDamageContext.performerBuildDebug.resolvedEchoSlotCount }}
+            · inventory hits
+            {{ damage.totalDamageContext.performerBuildDebug.inventoryEchoLookups }}
+          </div>
+          <div>
+            Weapon:
+            <span class="text-primary">
+              {{ damage.totalDamageContext.performerBuildDebug.weaponStatsSource }}
+            </span>
+            · base ATK {{ damage.totalDamageContext.performerBuildDebug.weaponBaseAtk }}
+            · passive ATK% {{ damage.totalDamageContext.performerBuildDebug.weaponPassiveATK }}
+            · All-Element% {{ damage.totalDamageContext.performerBuildDebug.weaponAllElementBonus }}
+          </div>
+          <div>
+            Self buff ATK% {{ damage.totalDamageContext.performerBuildDebug.selfBuffATK }}
+            · Res. chain ATK% {{ damage.totalDamageContext.performerBuildDebug.resonanceChainATK }}
+            · Team buff ATK% {{ damage.totalDamageContext.performerBuildDebug.teamBuffATK }}
+            · Havoc% {{ damage.totalDamageContext.performerBuildDebug.havocBonus }}
+          </div>
+          <div>
+            Crit rate {{ displayPercentage(damage.totalDamageContext.performerBuildDebug.totalCritRate * 100) }}
+            · Crit DMG {{ displayPercentage(damage.totalDamageContext.performerBuildDebug.totalCritDMG * 100) }}
+          </div>
+          <p
+            v-if="
+              damage.totalDamageContext.performerBuildDebug.echoStatsSource ===
+              'computed'
+            "
+            class="text-warning text-xs mt-2">
+            Echo stats were recomputed from store/inventory, not cached from the
+            echoes tab. Switch to this character once so their echo totals are
+            saved, or verify inventory echoes match equipped slots.
+          </p>
+        </div>
+      </div>
       <div class="divider"></div>
       <div class="crit-dmg">
         <div class="font-bold mt-2 text-lg text-primary">Crit Damage</div>

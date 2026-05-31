@@ -4,6 +4,7 @@ import type { PerformerAttackContext } from "./performerContextFromStore";
 type PerformerBuildRequest = {
   performerCharacterKey: string;
   activeCharacterKey: string;
+  activeTeamBuffsData?: Record<string, unknown>;
 };
 
 let worker: Worker | null = null;
@@ -49,6 +50,7 @@ async function computePerformerContextsOnMainThread(
   requests: PerformerBuildRequest[],
   charactersStore: Record<string, Record<string, unknown>>,
   inventoryEchoes: Array<{ echoId?: string | null } & Record<string, unknown>>,
+  activeTeamBuffsData?: Record<string, unknown>,
 ): Promise<Record<string, PerformerAttackContext | null>> {
   const inventoryEchoesById = serializeInventoryEchoes(inventoryEchoes);
   const getEchoById = (echoId: string) =>
@@ -68,6 +70,7 @@ async function computePerformerContextsOnMainThread(
         activeCharacterKey,
         charactersStore,
         getEchoById,
+        request.activeTeamBuffsData ?? activeTeamBuffsData,
       );
   }
   return contexts;
@@ -77,12 +80,17 @@ export async function computePerformerContextsFromStore(
   requests: PerformerBuildRequest[],
   charactersStore: Record<string, Record<string, unknown>>,
   inventoryEchoes: Array<{ echoId?: string | null } & Record<string, unknown>>,
+  activeTeamBuffsData?: Record<string, unknown>,
 ): Promise<Record<string, PerformerAttackContext | null>> {
   const uniqueRequests = [
     ...new Map(
       requests.map((request) => [
         `${request.activeCharacterKey}:${request.performerCharacterKey}`,
-        request,
+        {
+          ...request,
+          activeTeamBuffsData:
+            request.activeTeamBuffsData ?? activeTeamBuffsData,
+        },
       ]),
     ).values(),
   ];
@@ -96,6 +104,7 @@ export async function computePerformerContextsFromStore(
       uniqueRequests,
       charactersStore,
       inventoryEchoes,
+      activeTeamBuffsData,
     );
   }
 
@@ -129,6 +138,7 @@ export async function computePerformerContextsFromStore(
           requests: uniqueRequests,
           charactersStore: charactersStorePlain,
           inventoryEchoesById,
+          activeTeamBuffsData,
         },
       });
     });
@@ -137,6 +147,7 @@ export async function computePerformerContextsFromStore(
       uniqueRequests,
       charactersStore,
       inventoryEchoes,
+      activeTeamBuffsData,
     );
   }
 }

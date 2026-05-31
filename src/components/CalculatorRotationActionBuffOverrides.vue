@@ -174,7 +174,6 @@
               :checked="
                 getEffectiveEnabled('weaponPassives', passive.key, passive)
               "
-              :disabled="passive.alwaysEnabled"
               @change="
                 onToggle(
                   'weaponPassives',
@@ -244,7 +243,6 @@
               :checked="
                 getEffectiveEnabled('echoSetPassives', passive.key, passive)
               "
-              :disabled="passive.alwaysEnabled"
               @change="
                 onToggle(
                   'echoSetPassives',
@@ -589,9 +587,6 @@ function getEffectiveEnabled(
   key: string,
   def: BuffDef,
 ): boolean {
-  if (def.alwaysEnabled) {
-    return true;
-  }
   const cat = localOverrides.value[category];
   if (cat?.__disableAll) {
     return false;
@@ -599,6 +594,9 @@ function getEffectiveEnabled(
   const override = cat?.[key];
   if (override?.isEnabled !== undefined) {
     return override.isEnabled;
+  }
+  if (def.alwaysEnabled) {
+    return true;
   }
   return getStoreEntry(category, key).isEnabled ?? false;
 }

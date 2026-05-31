@@ -6,20 +6,39 @@ import {
   buildEchoStatsFromCharacterStore,
   buildWeaponDataFromCharacterStore,
 } from "./rotationPerformer";
-import { computeTeamBuffsDataFromStore } from "./teamBuffsFromStore";
+import { processCustomBuffsFromStore } from "./customBuffsFromStore";
+import {
+  computeTeamBuffsDataFromStore,
+  type TeamBuffsFromStoreOptions,
+} from "./teamBuffsFromStore";
+import {
+  buildPerformerBuildDebug,
+  countResolvedEchoSlots,
+  readCachedEchoStats,
+  readCachedWeaponStats,
+  type PerformerBuildDebug,
+} from "./performerBuildDebug";
 
 type CharacterStoreEntry = Record<string, unknown>;
 
+export type CharacterBuildFromStoreOptions = TeamBuffsFromStoreOptions & {
+  /** Live party buff totals from the active character's calculator (preferred). */
+  teamBuffsDataOverride?: Record<string, unknown>;
+};
+
 export type CharacterBuildFromStore = {
   echoStats: Record<string, number>;
+  echoStatsSource: "cached" | "computed";
   weaponData: {
     attack: number;
     modifier: string | null;
     modifierValue: number;
     weaponPassiveStats: Record<string, unknown>;
   };
+  weaponStatsSource: "cached" | "computed";
   teamBuffsData: Record<string, unknown>;
   calculated: ReturnType<typeof calculateAllStats>;
+  buildDebug: PerformerBuildDebug;
 };
 
 /**
@@ -31,11 +50,16 @@ export async function computeCharacterBuildFromStore(
   charStore: CharacterStoreEntry,
   charactersStore: Record<string, CharacterStoreEntry>,
   getEchoById?: (echoId: string) => EchoObject | undefined,
+  buildOptions?: CharacterBuildFromStoreOptions,
 ): Promise<CharacterBuildFromStore> {
   const chosenChar = (await getCharByName(characterKey)) as Record<
     string,
     unknown
   >;
+  const echoStatsSource = readCachedEchoStats(charStore) ? "cached" : "computed";
+  const weaponStatsSource = readCachedWeaponStats(charStore)
+    ? "cached"
+    : "computed";
   const echoStats = buildEchoStatsFromCharacterStore(
     characterKey,
     charStore,
@@ -46,9 +70,16 @@ export async function computeCharacterBuildFromStore(
     charStore,
     chosenChar,
   );
-  const teamBuffsData = computeTeamBuffsDataFromStore(
-    characterKey,
-    charactersStore,
+  const teamBuffsData =
+    buildOptions?.teamBuffsDataOverride ??
+    computeTeamBuffsDataFromStore(
+      characterKey,
+      charactersStore,
+      buildOptions,
+    );
+  const { resolvedEchoSlotCount, inventoryEchoLookups } = countResolvedEchoSlots(
+    charStore,
+    getEchoById,
   );
   const storeTalents = (charStore.talents ?? {}) as Record<string, string | number>;
   const talentData = {
@@ -90,7 +121,9 @@ export async function computeCharacterBuildFromStore(
     weaponPassiveData: weaponData.weaponPassiveStats,
     buffsConfig: charStore.buffs ?? {},
     resonanceChainsConfig: charStore.resonanceChains ?? {},
-    customBuffs: (charStore.customBuffs ?? {}) as Record<string, unknown>,
+    customBuffs: processCustomBuffsFromStore(
+      charStore.customBuffs as Record<string, unknown> | undefined,
+    ),
     teamBuffsData,
     echoStats,
     buffsCharInfo: filterBuffsForStance(
@@ -108,8 +141,24 @@ export async function computeCharacterBuildFromStore(
 
   return {
     echoStats,
+    echoStatsSource,
     weaponData,
+    weaponStatsSource,
     teamBuffsData,
     calculated,
+    buildDebug: buildPerformerBuildDebug({
+      performerCharacterKey: characterKey,
+      echoStatsSource,
+      weaponStatsSource,
+      resolvedEchoSlotCount,
+      inventoryEchoLookups,
+      finalStats: calculated.finalStats as Record<string, unknown>,
+      echoStats,
+      weaponData,
+      selfBuffsData: (calculated.selfBuffsData ?? {}) as Record<string, unknown>,
+      resonanceChainsBuffsData: (calculated.resonanceChainsBuffsData ??
+        {}) as Record<string, unknown>,
+      teamBuffsData,
+    }),
   };
 }

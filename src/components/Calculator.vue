@@ -340,6 +340,7 @@ import {
   getCalculationContext,
 } from "../calculator/attacks";
 import { buildRotationAttacksList } from "../calculator/buildRotationAttacks";
+import { ensurePerformerBuildCaches } from "../calculator/ensurePerformerBuildCaches";
 import type { OptimizerContext } from "../calculator/optimizer";
 import { getOptimizerLoadoutKey } from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
@@ -698,15 +699,18 @@ export default defineComponent({
       });
     };
 
-    const handleWeaponUpdated = (givenWeaponData) => {
+    const handleWeaponUpdated = async (givenWeaponData) => {
       weaponData.value = givenWeaponData;
       weaponAtk.value = givenWeaponData.attack;
+      await characterStore.setCharacterData(character.value, {
+        cachedWeaponStats: JSON.parse(JSON.stringify(givenWeaponData)),
+      });
       const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
         computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
-      calcAllDamages();
+      await handleRotationPerformerUpdated();
     };
 
     // Helper function to compute all buffs in the correct order and return breakdown data
@@ -767,14 +771,14 @@ export default defineComponent({
       calcAllDamages();
     };
 
-    const handleUpdatedTeamBuffs = (givenTeamBuffs) => {
+    const handleUpdatedTeamBuffs = async (givenTeamBuffs) => {
       teamBuffsData.value = givenTeamBuffs;
       const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
         computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
-      calcAllDamages();
+      await handleRotationPerformerUpdated();
     };
 
     const handleUpdatedCharacterResonanceChains = async (
@@ -795,14 +799,17 @@ export default defineComponent({
       calcAllDamages();
     };
 
-    const updateStatsEchoes = (echoStatsGiven) => {
+    const updateStatsEchoes = async (echoStatsGiven) => {
       echoStats.value = echoStatsGiven;
+      await characterStore.setCharacterData(character.value, {
+        cachedEchoStats: JSON.parse(JSON.stringify(echoStatsGiven)),
+      });
       const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
         computeAllBuffsWithBreakdown();
       charBuffsData.value = selfBuffsData;
       charResonanceChainsData.value = resonanceChainsBuffsData;
       updateStats(finalStats);
-      calcAllDamages();
+      await handleRotationPerformerUpdated();
     };
 
     const changeScreen = (screen: string) => {
@@ -868,7 +875,18 @@ export default defineComponent({
     const handleUpdatedRotations = async (data) => {
       const chosenChar = await getCharByName(character.value);
       const rotationData = [];
+      const getEchoById = (echoId) => inventoryStore.getEchoById(echoId);
+      let charactersSnapshot = characters.value;
       for (const rotation of data) {
+        charactersSnapshot = await ensurePerformerBuildCaches(
+          rotation,
+          character.value,
+          charactersSnapshot,
+          getEchoById,
+          async (performerKey, patch) => {
+            await characterStore.setCharacterData(performerKey, patch);
+          },
+        );
         const rotationInfo = {
           id: rotation.id,
           name: rotation.name,
@@ -884,7 +902,7 @@ export default defineComponent({
           character.value,
           chosenChar,
           characterLevel.value,
-          characters.value,
+          charactersSnapshot,
           teamBuffsData.value,
           customBuffs.value,
           getActiveCharacterBuildBaseline(),

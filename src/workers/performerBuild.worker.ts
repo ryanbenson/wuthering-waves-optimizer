@@ -12,6 +12,7 @@ import type { PerformerAttackContext } from "../calculator/performerContextFromS
 type PerformerBuildRequest = {
   performerCharacterKey: string;
   activeCharacterKey: string;
+  activeTeamBuffsData?: Record<string, unknown>;
 };
 
 type ComputeMessage = {
@@ -21,6 +22,7 @@ type ComputeMessage = {
     requests: PerformerBuildRequest[];
     charactersStore: Record<string, Record<string, unknown>>;
     inventoryEchoesById: Record<string, EchoObject>;
+    activeTeamBuffsData?: Record<string, unknown>;
   };
 };
 
@@ -67,6 +69,7 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
           activeCharacterKey,
           data.charactersStore,
           getEchoById,
+          request.activeTeamBuffsData ?? data.activeTeamBuffsData,
         );
     }
 
