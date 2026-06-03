@@ -436,12 +436,17 @@
         v-if="damage.totalDamageContext.performerBuildDebug"
         class="performer-build-debug mt-2">
         <div class="font-bold mt-2 text-lg text-primary">
-          Teammate build debug ({{ damage.totalDamageContext.performerCharacterKey }})
+          {{
+            damage.totalDamageContext.performerCharacterKey === character
+              ? "Active character"
+              : "Teammate"
+          }}
+          build debug ({{ damage.totalDamageContext.performerCharacterKey }})
         </div>
         <p class="text-sm opacity-80 mb-2">
-          Compare these values to the same character when active. Stats are
-          always computed fresh from the character store for each rotation
-          action.
+          Compare these values to the same character on their character tab.
+          Builds are rebuilt from saved store data each action; the active
+          performer also uses live party and custom buffs from the calculator.
         </p>
         <div class="formula bg-base-200 p-2 rounded-md font-mono text-sm space-y-1">
           <div>

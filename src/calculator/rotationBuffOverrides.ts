@@ -279,6 +279,9 @@ export async function computeRotationActionBuildContext(
   const weaponCat = applyCategoryDisableAll(effectiveOverrides.weaponPassives);
   const echoSetCat = applyCategoryDisableAll(effectiveOverrides.echoSetPassives);
 
+  const isActivePerformer =
+    !activeCharacterKey || characterKey === activeCharacterKey;
+
   const resonanceChainsConfig = mergeBuffConfigWithOverrides(
     (charStore.resonanceChains ?? {}) as StoreBuffConfig,
     chainCat.perBuff,
@@ -312,6 +315,7 @@ export async function computeRotationActionBuildContext(
 
   const characterLevel = String(charStore.characterLevel ?? "90");
   const storeTalents = (charStore.talents ?? {}) as Record<string, string | number>;
+  const stances = (chosenChar?.basic as { stances?: unknown })?.stances ?? [];
   const talentData = {
     basic: storeTalents.basic ?? 10,
     skill: storeTalents.skill ?? 10,
@@ -319,7 +323,6 @@ export async function computeRotationActionBuildContext(
     liberation: storeTalents.liberation ?? 10,
     intro: storeTalents.intro ?? 10,
   };
-  const stances = (chosenChar?.basic as { stances?: unknown })?.stances ?? [];
   const activeStance =
     resolveActiveStance(
       stances as never,
@@ -327,20 +330,19 @@ export async function computeRotationActionBuildContext(
       charStore.buffs as Record<string, { isEnabled?: boolean }> | undefined,
     ) ?? undefined;
 
-  const baseLevelStats =
-    (
-      chosenChar as {
-        getCharacterStatsByLevel?: (level: string) => {
-          hp: number;
-          attack: number;
-          defense: number;
-        };
-      }
-    )?.getCharacterStatsByLevel?.(characterLevel) ?? {
-      hp: 0,
-      attack: 0,
-      defense: 0,
-    };
+  const baseLevelStats = ((
+    chosenChar as {
+      getCharacterStatsByLevel?: (level: string) => {
+        hp: number;
+        attack: number;
+        defense: number;
+      };
+    }
+  )?.getCharacterStatsByLevel?.(characterLevel) ?? {
+    hp: 0,
+    attack: 0,
+    defense: 0,
+  });
 
   const resolveEchoById = getEchoById ?? (() => undefined);
   const mainEchoState = resolveMainEchoForBuild(charStore, effectiveOverrides);
@@ -356,14 +358,13 @@ export async function computeRotationActionBuildContext(
     storeForEchoWeapon,
     resolveEchoById,
   );
+
   const weaponData = await buildWeaponDataFromCharacterStore(
     characterKey,
     storeForEchoWeapon,
     chosenChar,
   );
 
-  const isActivePerformer =
-    !activeCharacterKey || characterKey === activeCharacterKey;
   const performerTeamBuffsData = isActivePerformer
     ? liveTeamBuffsData
     : charactersStore

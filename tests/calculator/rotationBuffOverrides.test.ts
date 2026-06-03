@@ -176,4 +176,27 @@ describe("rotation action build (always fresh from store)", () => {
       baseline.performerStats.totalAtk,
     );
   });
+
+  it("applies enabled self buffs from character store", async () => {
+    const chisa = {
+      ...chisaBase,
+      buffs: {
+        StatBonusATK1: { isEnabled: true },
+      },
+    };
+
+    const ctx = await computeRotationActionBuildContext(
+      "Chisa",
+      chisa,
+      {},
+      {},
+      null,
+      undefined,
+      { Chisa: chisa },
+      "Chisa",
+      getEchoById,
+    );
+
+    expect(ctx.performerBuildDebug?.selfBuffATK ?? 0).toBeCloseTo(1.8, 1);
+  });
 });
