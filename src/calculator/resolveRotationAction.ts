@@ -87,5 +87,12 @@ export function resolveRotationActionToAttackData(
     actionData.electroRageStacks = electroRageStacks;
   }
 
+  if (
+    actionType === "forteCircuit" &&
+    actionKey === "ElementalEffectGlacioBite"
+  ) {
+    actionData.stacks = Number(action.negativeStatusStacks ?? 1);
+  }
+
   return actionData;
 }

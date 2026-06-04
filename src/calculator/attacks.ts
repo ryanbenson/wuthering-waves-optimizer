@@ -87,46 +87,51 @@ export const processAttacks = (
         if (hasNoTalentLevel) {
           talent = attack.talent;
         } else if (dynamicTalentType) {
-          let talent;
-          switch (attack.actionType) {
-            case "basic":
-              talent = attack.talents[context.character.talentData.basic];
-              break;
-            case "skill":
-              talent = attack.talents[context.character.talentData.skill];
-              break;
-            case "forteCircuit":
-              talent = attack.talents[context.character.talentData.forte];
-              break;
-            case "liberation":
-              talent = attack.talents[context.character.talentData.liberation];
-              break;
-            case "intro":
-              talent = attack.talents[context.character.talentData.intro];
-              break;
-            case "tuneBreak":
-              // outro has no talent tree. it only has 1 value (e.g. 20.00%)
-              talent = attack.talent;
-              break;
-            case "outro":
-              // outro has no talent tree. it only has 1 value (e.g. 20.00%)
-              talent = attack.talent;
-              break;
-            case "utilityAttacks":
-              // outro has no talent tree. it only has 1 value (e.g. 20.00%)
-              talent = attack.talent;
-              break;
-            case "echoAttacks":
-              // TODO: Get the correct talent level for echo attacks
-              talent = attack.talents[attack?.actionMainEchoRank ?? "5"];
-              providedTalent = talent;
-              break;
-            case "negativeStatus":
-              talent = attack.talent;
-              break;
+          if (!attack.talents) {
+            talent = attack.talent ?? "";
+          } else {
+            switch (attack.actionType) {
+              case "basic":
+                talent = attack.talents[context.character.talentData.basic];
+                break;
+              case "skill":
+                talent = attack.talents[context.character.talentData.skill];
+                break;
+              case "forteCircuit":
+                talent = attack.talents[context.character.talentData.forte];
+                break;
+              case "liberation":
+                talent = attack.talents[context.character.talentData.liberation];
+                break;
+              case "intro":
+                talent = attack.talents[context.character.talentData.intro];
+                break;
+              case "tuneBreak":
+                // outro has no talent tree. it only has 1 value (e.g. 20.00%)
+                talent = attack.talent;
+                break;
+              case "outro":
+                // outro has no talent tree. it only has 1 value (e.g. 20.00%)
+                talent = attack.talent;
+                break;
+              case "utilityAttacks":
+                // outro has no talent tree. it only has 1 value (e.g. 20.00%)
+                talent = attack.talent;
+                break;
+              case "echoAttacks":
+                // TODO: Get the correct talent level for echo attacks
+                talent = attack.talents[attack?.actionMainEchoRank ?? "5"];
+                providedTalent = talent;
+                break;
+              case "negativeStatus":
+                talent = attack.talent;
+                break;
+            }
           }
-        } else {
+        } else if (attack.talents) {
           talent = attack.talents[talentType];
+        } else {
+          talent = attack.talent ?? "";
         }
         const hitCount = attack?.count ?? 1;
         let attackType = attack.type;
@@ -312,49 +317,55 @@ export const calculateAttackDamage = (
   } else if (providedTalent) {
     talent = providedTalent;
   } else if (hasDynamicTalent) {
-    switch (attack.actionType) {
-      case "basic":
-        talent = talentTree[context.character.talentData.basic];
-        break;
-      case "skill":
-        talent = talentTree[context.character.talentData.skill];
-        break;
-      case "forteCircuit":
-      case "forte":
-        talent = talentTree[context.character.talentData.forte];
-        break;
-      case "liberation":
-        talent = talentTree[context.character.talentData.liberation];
-        break;
-      case "intro":
-        talent = talentTree[context.character.talentData.intro];
-        break;
-      case "tuneBreak":
-        // tune break have no talent tree, just a single value
-        talent = attack.talent;
-        break;
-      case "outro":
-        // outros have no talent tree, just a single value
-        talent = attack.talent;
-        break;
-      case "utilityAttacks":
-        // utility have no talent tree, just a single value
-        talent = attack.talent;
-        break;
-      case "echoSetAttacks":
-        // echo set attacks have no talent tree, just a single value
-        talent = attack.talent;
-        break;
-      case "echoAttacks":
-        // TODO: Get the correct talent level for echo attacks
-        talent = attack.talents["5"];
-        break;
-      case "negativeStatus":
-        talent = attack.talent;
-        break;
+    if (!talentTree) {
+      talent = attack.talent ?? "";
+    } else {
+      switch (attack.actionType) {
+        case "basic":
+          talent = talentTree[context.character.talentData.basic];
+          break;
+        case "skill":
+          talent = talentTree[context.character.talentData.skill];
+          break;
+        case "forteCircuit":
+        case "forte":
+          talent = talentTree[context.character.talentData.forte];
+          break;
+        case "liberation":
+          talent = talentTree[context.character.talentData.liberation];
+          break;
+        case "intro":
+          talent = talentTree[context.character.talentData.intro];
+          break;
+        case "tuneBreak":
+          // tune break have no talent tree, just a single value
+          talent = attack.talent;
+          break;
+        case "outro":
+          // outros have no talent tree, just a single value
+          talent = attack.talent;
+          break;
+        case "utilityAttacks":
+          // utility have no talent tree, just a single value
+          talent = attack.talent;
+          break;
+        case "echoSetAttacks":
+          // echo set attacks have no talent tree, just a single value
+          talent = attack.talent;
+          break;
+        case "echoAttacks":
+          // TODO: Get the correct talent level for echo attacks
+          talent = attack.talents["5"];
+          break;
+        case "negativeStatus":
+          talent = attack.talent;
+          break;
+      }
     }
-  } else {
+  } else if (talentTree) {
     talent = talentTree[talentType];
+  } else {
+    talent = attack.talent ?? "";
   }
   /**
    * If the attack is fixed (attack.isFixed === true)
@@ -1284,6 +1295,10 @@ export const calculateAttackDamage = (
     totalCritRate = baseCritRate + critRateResoanceChains;
     totalCritDmg = baseCritDmg + critDmgResoanceChains;
     if (attack?.subType === "GlacioChafe") {
+      const glacioChafeStacks =
+        attack?.stacks ??
+        context.enemy?.glacioChafe?.glacioChafeStacks ??
+        1;
       const elementalEffectDmg = getGlacioChafeDamage(
         String(context.character.characterLevel),
         context.enemy.enemyLevel,
@@ -1295,7 +1310,7 @@ export const calculateAttackDamage = (
         totalCritRate,
         totalCritDmg,
         attack?.count ?? 1,
-        attack?.stacks ?? 0,
+        glacioChafeStacks,
       );
       return elementalEffectDmg;
     }

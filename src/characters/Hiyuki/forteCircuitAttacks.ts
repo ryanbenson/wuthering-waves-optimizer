@@ -20,8 +20,16 @@ export const forteCircuitAttacks = {
       },
     },
     {
-      key: "GlacioBiteDMG",
+      key: "ElementalEffectGlacioBite",
       label: "Glacio Bite DMG",
+      type: "ElementalEffect",
+      element: "Glacio",
+      subType: "GlacioChafe",
+      talent: "",
+    },
+    {
+      key: "GlacioBiteDMG",
+      label: "Inherent Skill Fine Snow: Glacio Bite DMG",
       type: "ElementalEffect",
       element: "Glacio",
       subType: "GlacioChafe",

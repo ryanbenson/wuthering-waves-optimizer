@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>June 3, 2026</h3>
+    <ul>
+      <li>Ensures Hiyuki has both Glacio bite damages.</li>
+    </ul>
     <h3>May 23, 2026</h3>
     <ul>
       <li>Fixes Denia resonance chains.</li>
