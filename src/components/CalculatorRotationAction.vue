@@ -214,7 +214,7 @@
           </button>
         </div>
         <div
-          v-if="isNegativeStatusSkill"
+          v-if="usesNegativeStatusStacks"
           class="edit__negative-status flex flex-wrap gap-4 w-full mt-2 mb-5">
           <div class="flex flex-col gap-2 flex-1 min-w-[140px]">
             <label
@@ -466,8 +466,18 @@ const skillAttacks = computed(() => {
 
 const negativeStatusAttacksList = computed(() => negativeStatusAttacks);
 
+const ELEMENTAL_EFFECT_STACK_ATTACK_KEYS = new Set([
+  "ElementalEffectGlacioBite",
+]);
+
 const isNegativeStatusSkill = computed(
   () => actionSkillType.value === "negativeStatus",
+);
+
+const usesNegativeStatusStacks = computed(
+  () =>
+    isNegativeStatusSkill.value ||
+    ELEMENTAL_EFFECT_STACK_ATTACK_KEYS.has(actionKeyValue.value ?? ""),
 );
 
 const isElectroFlareNegativeStatus = computed(
@@ -614,7 +624,7 @@ function onSkillChange(e: Event) {
   const skill = optgroup?.getAttribute("data-skill") ?? null;
   actionSkillType.value = skill;
   void nextTick(() => {
-    if (actionSkillType.value === "negativeStatus") {
+    if (usesNegativeStatusStacks.value) {
       let v = Number(negativeStatusStacksLocal.value);
       if (Number.isNaN(v) || v < 0) {
         v = 0;
