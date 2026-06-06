@@ -979,6 +979,7 @@ export const computeSelfBuffs = (
         }
         if (buffData?.stacks >= 3) {
           data.specificTalentBuffs["GlacioBiteDMG:specialMultiplier"] = 0.25;
+          data.specificTalentBuffs["ElementalEffectGlacioBite:talentModifierMultiply"] = 0.25;
         }
       }
     }
