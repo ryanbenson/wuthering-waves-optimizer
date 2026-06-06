@@ -6,13 +6,8 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "BasicAttackPolychromeLeap1",
-          "BasicAttackPolychromeLeap2",
-          "BasicAttackPolychromeLeap3",
-        ],
-        modifierValue: 1.2,
+        modifier: "CritRate",
+        modifierValue: 0.2,
       },
     ],
     minStacks: 0,
@@ -20,14 +15,31 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode2SlumberingMoonlight",
+    key: "SequenceNode2SlumberingMoonlightGlacioChafe",
     name: "Sequence Node 2: Slumbering Moonlight",
-    details: `<div>While casting <span style="color:#f7ca2f"><strong>Resonance Liberation - Clear As Day</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Glacio Chafe</strong></span>, <span style="color:#f7ca2f"><strong><a href="#WwLink850010" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="850010">Glacio Chafe</a></strong></span> DMG against targets within a certain range around the active Resonator is Amplified by 80%.<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, grant 40% Echo Skill DMG Amplification to Resonators in the team.<br>These enhancements last as long as <span style="color:#f7ca2f"><strong><a href="#WwLink110905" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110905">Reminiscence</a></strong></span> is active and remain effective for 30s after <span style="color:#f7ca2f"><strong><a href="#WwLink110905" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110905">Reminiscence</a></strong></span> ends.<br>These effects end when Lucilla switches Resonance Modes.</div>`,
+    details: `<div>While casting <span style="color:#f7ca2f"><strong>Resonance Liberation - Clear As Day</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Glacio Chafe</strong></span>, <span style="color:#f7ca2f"><strong><a href="#WwLink850010" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="850010">Glacio Chafe</a></strong></span> DMG against targets within a certain range around the active Resonator is Amplified by 80%.<br>These enhancements last as long as <span style="color:#f7ca2f"><strong><a href="#WwLink110905" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110905">Reminiscence</a></strong></span> is active and remain effective for 30s after <span style="color:#f7ca2f"><strong><a href="#WwLink110905" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110905">Reminiscence</a></strong></span> ends.<br>These effects end when Lucilla switches Resonance Modes.</div>`,
     hasStacks: false,
+    stance: "Glacio Chafe",
     modifiers: [
       {
-        modifier: "DMGDeepen",
-        modifierValue: 0.25,
+        modifier: "DMGDeepen:GlacioChafe",
+        modifierValue: 0.8,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode2SlumberingMoonlightEcho",
+    name: "Sequence Node 2: Slumbering Moonlight",
+    details: `<div>While casting <span style="color:#f7ca2f"><strong>Resonance Liberation - Clear As Day</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, grant 40% Echo Skill DMG Amplification to Resonators in the team.<br>These enhancements last as long as <span style="color:#f7ca2f"><strong><a href="#WwLink110905" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110905">Reminiscence</a></strong></span> is active and remain effective for 30s after <span style="color:#f7ca2f"><strong><a href="#WwLink110905" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110905">Reminiscence</a></strong></span> ends.<br>These effects end when Lucilla switches Resonance Modes.</div>`,
+    hasStacks: false,
+    stance: "Echo",
+    modifiers: [
+      {
+        modifier: "DMGDeepen:Echo",
+        modifierValue: 0.4,
       },
     ],
     minStacks: 0,
@@ -43,10 +55,9 @@ export const resonanceChains = [
       {
         modifier: "talentModifierMultiply",
         modifySpecificTalents: [
-          "BasicAttackVisualImpactDMG",
-          "BasicAttackIridescentSplashDMG",
+          "LettingItGoDMG",
         ],
-        modifierValue: 0.9,
+        modifierValue: 1,
       },
     ],
     minStacks: 0,
@@ -57,15 +68,15 @@ export const resonanceChains = [
     key: "SequenceNode4ThePastFadesIntoSilence",
     name: "Sequence Node 4: The Past Fades Into Silence",
     details: `<div><span style="color:#f7ca2f"><strong>Oblivion</strong></span> pulls in nearby targets on hit. While casting <span style="color:#f7ca2f"><strong>Oblivion</strong></span>, Lucilla's ATK is increased by 10% for 6s, stacking up 3 times. All stacks are removed when the duration ends.<br>While casting <span style="color:#f7ca2f"><strong>Basic Attack - Tracing Forms Stage 3</strong></span>, Lucilla takes 30% less DMG.</div>`,
-    hasStacks: false,
+    hasStacks: true,
     modifiers: [
       {
         modifier: "ATK",
-        modifierValue: 0.2,
+        modifierValue: 0.1,
       },
     ],
     minStacks: 0,
-    maxStacks: 0,
+    maxStacks: 3,
     alwaysEnabled: false,
   },
   {
@@ -76,8 +87,8 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["PrismaticOverblastDMG"],
-        modifierValue: 0.7,
+        modifySpecificTalents: ["OblivionDMG"],
+        modifierValue: 0.5,
       },
     ],
     minStacks: 0,
@@ -93,10 +104,9 @@ export const resonanceChains = [
       {
         modifier: "specialMultiplier",
         modifySpecificTalents: [
-          "BasicAttackIridescentSplashDMG",
-          "BasicAttackVisualImpactDMG",
+          "LettingItGoDMG",
         ],
-        modifierValue: 0.3,
+        modifierValue: 2,
       },
     ],
     minStacks: 0,

@@ -2029,6 +2029,23 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Lucilla: [
+    {
+      key: `InherentSkillSlowMotionEcho`,
+      name: `Inherent Skill: Slow Motion`,
+      details: `<div>When <span style="color:#f7ca2f"><strong>Focus Ring</strong></span> is deployed, Lucilla slows targets within her shot.<br>While casting <span style="color:#f7ca2f"><strong>Resonance Skill - Spotlight</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, Resonators in the team gain 25% Echo Skill DMG Bonus for 30s.<br>These enhancements end when Lucilla switches the Resonance Mode.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "EchoDMGBonus",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

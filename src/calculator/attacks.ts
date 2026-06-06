@@ -511,6 +511,35 @@ export const calculateAttackDamage = (
   // need to divide by 100 since the echo data is flul numbers
   // but we're injecting it to the calcs which is decimal based
   echoSpecificAttackTypeCritRate = echoSpecificAttackTypeCritRate / 100;
+  let selfBuffCritDMGForType = selfBuffs?.[`CritDMG:${attackType}`] ?? 0;
+  let resonanceChainCritDMGForType =
+    context.buffs.charResonanceChainsData?.[`CritDMG:${attackType}`] ?? 0;
+  let teamBuffCritDMGForType =
+    context.buffs.teamBuffsData?.[`CritDMG:${attackType}`] ?? 0;
+  let weaponBuffCritDMGForType =
+    context.equipment.weapon.weaponPassiveStats?.[`CritDMG:${attackType}`] ??
+    0;
+  if (excludeWeaponBuffs) {
+    weaponBuffCritDMGForType = 0;
+  }
+  if (excludeTeamBuffs) {
+    teamBuffCritDMGForType = 0;
+  }
+  let echoSpecificAttackTypeCritDMG = 0;
+  if (providedEchoStats) {
+    echoSpecificAttackTypeCritDMG =
+      providedEchoStats?.[`CritDMG:${attackType}`] ?? 0;
+  } else {
+    echoSpecificAttackTypeCritDMG =
+      context.equipment.echoStats?.[`CritDMG:${attackType}`] ?? 0;
+  }
+  echoSpecificAttackTypeCritDMG = echoSpecificAttackTypeCritDMG / 100;
+  const attackTypeSpecificCritDMG =
+    selfBuffCritDMGForType +
+    resonanceChainCritDMGForType +
+    teamBuffCritDMGForType +
+    weaponBuffCritDMGForType +
+    echoSpecificAttackTypeCritDMG;
   const specificSkillExtraCritDMG =
     context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:CritDMG`
@@ -533,7 +562,8 @@ export const calculateAttackDamage = (
   let instanceDmgCritDMG =
     baseCritDamage +
     specificSkillExtraCritDMG +
-    selfBuffsSpecificSkillExtraCritDMG;
+    selfBuffsSpecificSkillExtraCritDMG +
+    attackTypeSpecificCritDMG;
   if (excludeTeamBuffs) {
     instanceDmgCritDMG = statsWithoutTeamBuffs?.totalCritDMG ?? 0;
     instanceDmgCritDMG += specificSkillExtraCritDMG;

@@ -7,6 +7,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     gender: "female",
     element: "Glacio",
     glacioChafe: true,
-    stances: ["Resonance Mode - Glacio Chafe", "Resonance Mode - Echo"],
+    stances: ["Glacio Chafe", "Echo"],
   };
 }
