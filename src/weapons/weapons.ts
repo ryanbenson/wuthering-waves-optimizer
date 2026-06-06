@@ -69,6 +69,7 @@ const rectifiersList = {
     { key: "BosonAstrolabe", name: "Boson Astrolabe" },
     { key: "CosmicRipples", name: "Cosmic Ripples" },
     { key: "ForgedDwarfStar", name: "Forged Dwarf Star" },
+    { key: "FreezeFrame", name: "Freeze Frame" },
     { key: "LetheanElegy", name: "Lethean Elegy" },
     { key: "LuminousHymn", name: "Luminous Hymn" },
     { key: "RimeDrapedSprouts", name: "Rime-Draped Sprouts" },
@@ -102,6 +103,8 @@ const pistolsList = {
   five: [
     { key: "LuxUmbra", name: "Lux & Umbra" },
     { key: "PhasicHomogenizer", name: "Phasic Homogenizer" },
+    { key: "SkullThrasher", name: "Skull Thrasher" },
+    { key: "SpectralTrigger", name: "Spectral Trigger" },
     { key: "SpectrumBlaster", name: "Spectrum Blaster" },
     { key: "StaticMist", name: "Static Mist" },
     { key: "TheLastDance", name: "The Last Dance" },
