@@ -16,6 +16,7 @@ type ChartAttack = {
   type: string;
   key?: string;
   requiresResonanceChain?: string | false;
+  originalIsEnabled?: boolean;
   damage: Record<string, number>;
 };
 
@@ -78,6 +79,9 @@ const chartData = computed(() => {
           if (!isAttackEnabled) {
             return;
           }
+        }
+        if (attack.originalIsEnabled === false) {
+          return;
         }
         if (attack.type === "Shield") {
           attackDamagesByType[attack.type] += attack.damage.shieldAmount;

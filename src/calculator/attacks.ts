@@ -23,7 +23,7 @@ import {
 
 import { getOriginalForteFromAttackKey } from "../characters/characters.ts";
 
-import { getEchoData } from "../echoes";
+import { getEchoData, isAttackAvailableForCharacter } from "../echoes";
 
 type NegativeStatusSubType =
   | "GlacioChafe"
@@ -78,6 +78,15 @@ export const processAttacks = (
           // flag this attack as enabled or not based on the resonance chain
           isEnabled = isAttackEnabled;
           originalIsEnabled = isEnabled;
+        }
+        if (
+          !isAttackAvailableForCharacter(
+            attack,
+            context.character.characterKey,
+          )
+        ) {
+          isEnabled = false;
+          originalIsEnabled = false;
         }
         if (!excludeDisabledAttacks) {
           isEnabled = true;
@@ -169,6 +178,8 @@ export const processAttacks = (
           isEnabled,
           originalIsEnabled,
           requiresResonanceChain,
+          requiredCharacter: attack.requiredCharacter ?? null,
+          excludeCharacters: attack.excludeCharacters ?? null,
           type: attackType,
           count: attack.count,
           alwaysCrit: attack.alwaysCrit ?? false,

@@ -330,7 +330,7 @@ import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
 import { echoSetAttacks } from "../echoes/stats";
 import { utilityAttacks } from "../buffs";
-import { getEchoData } from "../echoes/index.ts";
+import { getEchoData, isAttackAvailableForCharacter } from "../echoes/index.ts";
 import { negativeStatusAttacks } from "../calculator/negativeStatusAttacks";
 
 type AttackRow = {
@@ -339,6 +339,8 @@ type AttackRow = {
   type?: string;
   subType?: string | null;
   requiresResonanceChain?: string;
+  requiredCharacter?: string;
+  excludeCharacters?: string[];
   [key: string]: unknown;
 };
 
@@ -510,7 +512,11 @@ const mainEchoDataActions = computed(() => {
   if (!mainEchoData.value) {
     return [];
   }
-  return (mainEchoData.value as { actions?: AttackRow[] }).actions ?? [];
+  const actions =
+    (mainEchoData.value as { actions?: AttackRow[] }).actions ?? [];
+  return actions.filter((attack) =>
+    isAttackAvailableForCharacter(attack, props.character),
+  );
 });
 
 const echoAttackImage = computed(
@@ -724,6 +730,9 @@ function onChangeDisabled() {
 }
 
 function isAttackDisabled(attack: AttackRow) {
+  if (!isAttackAvailableForCharacter(attack, props.character)) {
+    return true;
+  }
   if (!attack?.requiresResonanceChain) {
     return false;
   }

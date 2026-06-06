@@ -383,6 +383,7 @@ export function optimize(
     // get the echo sets list
     const echoSets = getSetsFromEchoes(loadout);
     const echoSetBonuses = getSetBonusEffects(echoSets);
+    const setBonusOnePiece = echoSetBonuses?.setBonusOnePiece ?? null;
     const setBonusOne = echoSetBonuses?.setBonusOne ?? null;
     const setBonusTwo = echoSetBonuses?.setBonusTwo ?? null;
     //add in the main echo buff, if we have some
@@ -393,12 +394,15 @@ export function optimize(
     // the keys will the stat keys, and the values will be the total buff value
     // and we need to add them up
     // @ts-ignore
+    const setBonusOnePieceBuffs = echoSetPassiveBuffs?.[setBonusOnePiece] ?? {};
+    // @ts-ignore
     const setBonusOneBuffs = echoSetPassiveBuffs?.[setBonusOne] ?? {};
     // @ts-ignore
     const setBonusTwoBuffs = echoSetPassiveBuffs?.[setBonusTwo] ?? {};
     const allBuffsToAdd = [
       echoStats,
       mainEchoBuff,
+      setBonusOnePieceBuffs,
       setBonusOneBuffs,
       setBonusTwoBuffs,
     ];

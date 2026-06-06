@@ -121,11 +121,16 @@ function processLoadout(
     const echoStats = getCombinedEchoStats(normalizedLoadout);
     const echoSets = getSetsFromEchoes(normalizedLoadout);
     const echoSetBonuses = getSetBonusEffects(echoSets);
+    const setBonusOnePiece = echoSetBonuses?.setBonusOnePiece ?? null;
     const setBonusOne = echoSetBonuses?.setBonusOne ?? null;
     const setBonusTwo = echoSetBonuses?.setBonusTwo ?? null;
     const mainEchoKey = normalizedLoadout[0]?.echo;
     const mainEchoBuff = mainEchoStats?.[mainEchoKey] ?? {};
 
+    const setBonusOnePieceBuffs =
+      setBonusOnePiece && echoSetPassiveBuffs?.[setBonusOnePiece]
+        ? echoSetPassiveBuffs[setBonusOnePiece]
+        : {};
     const setBonusOneBuffs =
       setBonusOne && echoSetPassiveBuffs?.[setBonusOne]
         ? echoSetPassiveBuffs[setBonusOne]
@@ -137,6 +142,7 @@ function processLoadout(
     const allBuffsToAdd = [
       echoStats,
       mainEchoBuff,
+      setBonusOnePieceBuffs,
       setBonusOneBuffs,
       setBonusTwoBuffs,
     ];

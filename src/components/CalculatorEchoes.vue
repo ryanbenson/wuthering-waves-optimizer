@@ -71,6 +71,11 @@
         </div>
       </div>
 
+      <CalculatorEchoesSetBonusOnePiece
+        :character="character"
+        :is-override-enabled="setOverride"
+        @update-stats="handleSetBonusOnePieceData"
+        data-test-echoes-set-one-piece></CalculatorEchoesSetBonusOnePiece>
       <CalculatorEchoesSetBonusOne
         :character="character"
         :is-override-enabled="setOverride"
@@ -145,8 +150,9 @@
 import { computed, ref, watch } from "vue";
 import { mainEchoesData, getEchoData } from "../echoes/index.ts";
 import { getEchoSetLabelByType, echoSetLabelMap } from "../echoes/stats.ts";
-import { twoSetBonuses, threeSetBonuses, fiveSetBonuses } from "../echoes/sets.ts";
+import { oneSetBonuses, twoSetBonuses, threeSetBonuses, fiveSetBonuses } from "../echoes/sets.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
+import CalculatorEchoesSetBonusOnePiece from "./CalculatorEchoesSetBonusOnePiece.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
 import CalculatorEchoesBrowser from "./CalculatorEchoesBrowser.vue";
@@ -177,6 +183,7 @@ const echoesSavePreset = ref<any>(null);
 const echoesPresetsGuide = ref<any>(null);
 const echoRefs = ref<Record<number, any>>({});
 
+const setBonusOnePiece = ref<Record<string, any>>({});
 const setBonusOne = ref<Record<string, any>>({});
 const setBonusTwo = ref<Record<string, any>>({});
 const echoData = ref<Record<number, Record<string, any>>>({});
@@ -260,6 +267,9 @@ function updateTotalStats() {
       stats[stat] = (stats[stat] || 0) + (value as number);
     });
   });
+  Object.entries(JSON.parse(JSON.stringify(setBonusOnePiece.value || {}))).forEach(([stat, value]) => {
+    stats[stat] = (stats[stat] || 0) + (value as number);
+  });
   Object.entries(JSON.parse(JSON.stringify(setBonusOne.value || {}))).forEach(([stat, value]) => {
     stats[stat] = (stats[stat] || 0) + (value as number);
   });
@@ -288,6 +298,10 @@ function updateTotalStats() {
   emit("update-stats", stats);
 }
 
+function handleSetBonusOnePieceData(data: Record<string, any>) {
+  setBonusOnePiece.value = JSON.parse(JSON.stringify(data));
+  updateTotalStats();
+}
 function handleSetBonusOneData(data: Record<string, any>) {
   setBonusOne.value = JSON.parse(JSON.stringify(data));
   updateTotalStats();
@@ -338,23 +352,29 @@ async function updateEchoSets() {
         .filter(Boolean),
     );
 
+  const has1SetBonus = buildBonusSet(oneSetBonuses, "1 Set");
   const has2SetBonus = buildBonusSet(twoSetBonuses, "2 Set");
   const has3SetBonus = buildBonusSet(threeSetBonuses, "3 Set");
   const has5SetBonus = buildBonusSet(fiveSetBonuses, "5 Set");
 
   const availableBonuses: Array<{ bonus: string; priority: number; setType: string }> = [];
+  const oneSetOptions: Array<{ bonus: string; setType: string }> = [];
   for (const [setType, count] of Object.entries(counts)) {
     const setLabel = getEchoSetLabelByType(setType);
+    if (count >= 1 && has1SetBonus.has(setType)) oneSetOptions.push({ bonus: `${setLabel} 1 Set`, setType });
     if (count >= 5 && has5SetBonus.has(setType)) availableBonuses.push({ bonus: `${setLabel} 5 Set`, priority: 3, setType });
     if (count >= 3 && has3SetBonus.has(setType)) availableBonuses.push({ bonus: `${setLabel} 3 Set`, priority: 2, setType });
     if (count >= 2 && has2SetBonus.has(setType)) availableBonuses.push({ bonus: `${setLabel} 2 Set`, priority: 1, setType });
   }
+  oneSetOptions.sort((a, b) => a.setType.localeCompare(b.setType));
 
   const twoSetOptions = availableBonuses.filter((b) => b.bonus.includes("2 Set"));
   const higherTierBonuses = availableBonuses.filter((b) => b.bonus.includes("3 Set") || b.bonus.includes("5 Set"));
   twoSetOptions.sort((a, b) => a.setType.localeCompare(b.setType));
   higherTierBonuses.sort((a, b) => (a.priority !== b.priority ? b.priority - a.priority : a.setType.localeCompare(b.setType)));
 
+  const setBonusOnePieceVal: string | null =
+    oneSetOptions.length > 0 ? oneSetOptions[0].bonus : null;
   let setBonusOneVal: string | null = twoSetOptions.length > 0 ? twoSetOptions[0].bonus : null;
   let setBonusTwoVal: string | null = null;
   const usedSetTypes = setBonusOneVal ? new Set([twoSetOptions[0].setType]) : new Set<string>();
@@ -376,7 +396,11 @@ async function updateEchoSets() {
 
   if (setOverride.value) return;
   await characterStore.setCharacterData(props.character, {
-    echoSetBonus: { setBonusOne: setBonusOneVal, setBonusTwo: setBonusTwoVal },
+    echoSetBonus: {
+      setBonusOnePiece: setBonusOnePieceVal,
+      setBonusOne: setBonusOneVal,
+      setBonusTwo: setBonusTwoVal,
+    },
   });
 }
 
