@@ -1299,6 +1299,7 @@ export const calculateAttackDamage = (
         attack?.stacks ??
         context.enemy?.glacioChafe?.glacioChafeStacks ??
         1;
+      console.log(attack.key, totalTalentModifierMultiply);
       const elementalEffectDmg = getGlacioChafeDamage(
         String(context.character.characterLevel),
         context.enemy.enemyLevel,
