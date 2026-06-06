@@ -1,0 +1,40 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Clear As Day",
+  description: `<div>Lucilla's holds up to 0 Resonance Energy. <span style="color:#f7ca2f"><strong>Clear As Day</strong></span> consumes no Resonance Energy.<br><span style="color:#f7ca2f"><strong>Clear As Day</strong></span> unlocks when Lucilla holds all 3 <span style="color:#f7ca2f"><strong><a href="#WwLink110902" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110902">Photos</a></strong></span>.<br><br><span style="color:#a89969"><strong>Clear As Day</strong></span><br>Deal <span style="color:#41aefb"><strong>Glacio DMG</strong></span> and enter <span style="color:#f7ca2f"><strong>Reminiscence</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Glacio Chafe</strong></span>, the DMG dealt is considered <span style="color:#f7ca2f"><strong>Basic Attack DMG</strong></span>. Casting this skill grants Lucilla 30% Basic Attack DMG Bonus for 10s.<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, the DMG dealt is considered <span style="color:#f7ca2f"><strong>Echo Skill DMG</strong></span>. Casting this skill grants Lucilla 30% Echo Skill DMG Bonus for 10s.<br>When in <span style="color:#f7ca2f"><strong>Reminiscence</strong></span>, Lucilla's resistance to interruption is increased, and she cannot cast <span style="color:#f7ca2f"><strong>Resonance Skill</strong></span> and <span style="color:#f7ca2f"><strong>Resonance Liberation</strong></span>. Her <span style="color:#f7ca2f"><strong>Basic Attack</strong></span>, <span style="color:#f7ca2f"><strong>Dodge Counter</strong></span>, <span style="color:#f7ca2f"><strong>Mid-air Attack</strong></span>, and <span style="color:#f7ca2f"><strong>Intro Skill - Clip It</strong></span> are replaced with <span style="color:#f7ca2f"><strong>Basic Attack - Tracing Forms</strong></span>, <span style="color:#f7ca2f"><strong>Dodge Counter - Reminiscence</strong></span>, <span style="color:#f7ca2f"><strong>Mid-air Attack - Reminiscence</strong></span>, and <span style="color:#f7ca2f"><strong>Intro Skill - Clip It: Hard Cut</strong></span> respectively.<br>Can be performed in mid-air close to the ground.<br><br><span style="color:#a89969"><strong>Basic Attack - Tracing Forms</strong></span><br>Perform up to 3 consecutive attacks, dealing <span style="color:#41aefb"><strong>Glacio DMG</strong></span>, considered <span style="color:#f7ca2f"><strong>Basic Attack DMG</strong></span>.<br>Hold <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> to cast <span style="color:#f7ca2f"><strong>Basic Attack - Tracing Forms Stage 1, 2, &amp; 3</strong></span> consecutively.<br>While casting <span style="color:#f7ca2f"><strong>Basic Attack - Tracing Forms Stage 3</strong></span>, consecutively press or hold <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> to continuously attack the target.<br>While casting <span style="color:#f7ca2f"><strong>Basic Attack - Tracing Forms Stage 3</strong></span>, release the <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> button or finish the whole <span style="color:#f7ca2f"><strong>Basic Attack - Tracing Forms Stage 3</strong></span> to automatically perform <span style="color:#f7ca2f"><strong>Letting It Go</strong></span>.<br><br><span style="color:#a89969"><strong>Letting It Go</strong></span><br>Deal <span style="color:#41aefb"><strong>Glacio DMG</strong></span> to targets within the range. When in <span style="color:#f7ca2f"><strong>Resonance Mode - Glacio Chafe</strong></span>/<span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, DMG dealt is considered <span style="color:#f7ca2f"><strong>Basic Attack DMG</strong></span>/<span style="color:#f7ca2f"><strong>Echo Skill DMG</strong></span>.<br>Lucilla is immune to interruption and damage during <span style="color:#f7ca2f"><strong>Letting It Go</strong></span>, and Resonator switching is disabled while casting.<br>While casting <span style="color:#f7ca2f"><strong>Letting It Go</strong></span>, Lucilla additionally restores 20 points of Concerto Energy.<br>Casting <span style="color:#f7ca2f"><strong>Letting It Go</strong></span> ends <span style="color:#f7ca2f"><strong><a href="#WwLink110905" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110905">Reminiscence</a></strong></span>.<br><br><span style="color:#a89969"><strong>Mid-air Attack - Reminiscence</strong></span><br>Consume STA to perform Plunging Attack, dealing <span style="color:#41aefb"><strong>Glacio DMG</strong></span>, considered <span style="color:#f7ca2f"><strong>Basic Attack DMG</strong></span>. <br>Press <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> shortly after casting this skill to cast <span style="color:#f7ca2f"><strong>Basic Attack - Tracing Forms Stage 2</strong></span>.<br><br><span style="color:#a89969"><strong>Dodge Counter - Reminiscence</strong></span><br>Press <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> shortly after a successful Dodge to attack the target, dealing <span style="color:#41aefb"><strong>Glacio DMG</strong></span>, considered <span style="color:#f7ca2f"><strong>Basic Attack DMG</strong></span>. <br>Press <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> shortly after casting this skill to perform <span style="color:#f7ca2f"><strong>Basic Attack - Tracing Forms Stage 3</strong></span>.</div>`,
+  attacks: [
+    {
+      key: "PrismaticOverblastDMG",
+      label: "Prismatic Overblast DMG",
+      type: "Liberation",
+      talents: {
+        "1": "44.00%*10",
+        "2": "47.61%*10",
+        "3": "51.22%*10",
+        "4": "56.27%*10",
+        "5": "59.88%*10",
+        "6": "64.03%*10",
+        "7": "69.80%*10",
+        "8": "75.57%*10",
+        "9": "81.35%*10",
+        "10": "87.48%*10",
+      },
+    },
+    {
+      key: "BasicAttackToaVividTomorrowDMG",
+      label: "Basic Attack - To a Vivid Tomorrow! DMG",
+      type: "Basic",
+      talents: {
+        "1": "4.22%*12+5.06%*10",
+        "2": "4.56%*12+5.47%*10",
+        "3": "4.91%*12+5.89%*10",
+        "4": "5.39%*12+6.47%*10",
+        "5": "5.73%*12+6.88%*10",
+        "6": "6.13%*12+7.36%*10",
+        "7": "6.68%*12+8.02%*10",
+        "8": "7.24%*12+8.68%*10",
+        "9": "7.79%*12+9.35%*10",
+        "10": "8.38%*12+10.05%*10",
+      },
+    },
+  ],
+};

@@ -1,0 +1,40 @@
+export const skillAttacks = {
+  name: "Resonance Skill: Phantom Frame",
+  description: `<div>Pull in nearby targets, dealing <span style="color:#41aefb"><strong>Glacio DMG</strong></span>.<br>While casting this skill, hold <span style="color:#f7ca2f"><strong>Resonance Skill</strong></span> to deploy <span style="color:#f7ca2f"><strong>Focus Ring</strong></span>. A cursor will move around the <span style="color:#f7ca2f"><strong>Focus Ring</strong></span>.<br>- Releasing the <span style="color:#f7ca2f"><strong>Resonance Skill</strong></span> button when the cursor falls outside of <span style="color:#f7ca2f"><strong>Perfect Focus</strong></span> will trigger <span style="color:#f7ca2f"><strong>Compensate</strong></span>, dealing <span style="color:#41aefb"><strong>Glacio DMG</strong></span> and restoring <span style="color:#f7ca2f"><strong><a href="#WwLink110901" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110901">Trace</a></strong></span>.<br>- Releasing the <span style="color:#f7ca2f"><strong>Resonance Skill</strong></span> button when the cursor falls within <span style="color:#f7ca2f"><strong>Perfect Focus</strong></span> will trigger <span style="color:#f7ca2f"><strong>Spotlight</strong></span>, dealing increased <span style="color:#41aefb"><strong>Glacio DMG</strong></span> and restoring additional <span style="color:#f7ca2f"><strong><a href="#WwLink110901" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="110901">Trace</a></strong></span>.<br>If Lucilla casts the skill on-field without holding <span style="color:#f7ca2f"><strong>Resonance Skill</strong></span>, she directly casts <span style="color:#f7ca2f"><strong>Compensate</strong></span> instead of deploying <span style="color:#f7ca2f"><strong>Focus Ring</strong></span>.<br><br><span style="color:#a89969"><strong>Compensate</strong></span><br>Attack the target, dealing <span style="color:#41aefb"><strong>Glacio DMG</strong></span> and reducing the Cooldown of Lucilla's <span style="color:#f7ca2f"><strong>Resonance Skill</strong></span> by 8s.<br>Press <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> shortly after casting this skill to cast <span style="color:#f7ca2f"><strong>Basic Attack Stage 2</strong></span>.<br><br><span style="color:#a89969"><strong>Spotlight</strong></span><br>Attack the target, dealing <span style="color:#41aefb"><strong>Glacio DMG</strong></span>.<br>While casting <span style="color:#f7ca2f"><strong>Spotlight</strong></span>, Lucilla additionally restores 20 points of Concerto Energy, and inflicts 1 extra stack of <span style="color:#f7ca2f"><strong><a href="#WwLink850010" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="850010">Glacio Chafe</a></strong></span> onto the target if she is in <span style="color:#f7ca2f"><strong>Resonance Mode - Glacio Chafe</strong></span>.<br><span style="color:#f7ca2f"><strong>Spotlight</strong></span> is immune to interruptions. Switching to another Resonator while casting <span style="color:#f7ca2f"><strong>Spotlight</strong></span> ends the skill early.<br>Press <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> shortly after casting this skill to cast <span style="color:#f7ca2f"><strong>Basic Attack Stage 2</strong></span>.</div>`,
+  attacks: [
+    {
+      key: "LynaeStylePalettesDMG",
+      label: "Lynae-Style Palettes DMG",
+      type: "Skill",
+      talents: {
+        "1": "70.08%+23.36%*3",
+        "2": "75.82%+25.28%*3",
+        "3": "81.57%+27.19%*3",
+        "4": "89.61%+29.87%*3",
+        "5": "95.36%+31.79%*3",
+        "6": "101.97%+33.99%*3",
+        "7": "111.16%+37.06%*3",
+        "8": "120.35%+40.12%*3",
+        "9": "129.55%+43.19%*3",
+        "10": "139.31%+46.44%*3",
+      },
+    },
+    {
+      key: "AdditiveColorDMG",
+      label: "Additive Color DMG",
+      type: "Skill",
+      talents: {
+        "1": "58.50%*2",
+        "2": "63.30%*2",
+        "3": "68.10%*2",
+        "4": "74.81%*2",
+        "5": "79.61%*2",
+        "6": "85.13%*2",
+        "7": "92.80%*2",
+        "8": "100.48%*2",
+        "9": "108.15%*2",
+        "10": "116.31%*2",
+      },
+    },
+  ],
+};
