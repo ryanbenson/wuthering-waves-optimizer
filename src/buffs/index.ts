@@ -2045,6 +2045,70 @@ export const buffsByCharacter = {
       maxStacks: 0,
       alwaysEnabled: false,
     },
+    {
+      key: "MontageGlacioChafe",
+      name: "Outro Skill: Montage",
+      details: `<div>When in <span style="color:#f7ca2f"><strong>Resonance Mode - Glacio Chafe</strong></span>, <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Chafe</span></strong></span> DMG against targets within a certain range around the active Resonator is Amplified by 60% for 30s.
+  This effect ends when Lucilla switches Resonance Modes.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:GlacioChafe",
+          modifierValue: 0.6,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "MontageEcho",
+      name: "Outro Skill: Montage",
+      details: `<div>When in <span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, grant 50% Echo Skill DMG Amplification to the incoming Resonator for 14s.
+This effect ends when the incoming Resonator is switched off the field or when Lucilla switches Resonance Modes.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Echo",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2SlumberingMoonlightGlacioChafe",
+      name: "Sequence Node 2: Slumbering Moonlight",
+      details: `<div>While casting <span style="color:#f7ca2f"><strong>Resonance Liberation - Clear As Day</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Glacio Chafe</strong></span>, <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Chafe</span></strong></span> DMG against targets within a certain range around the active Resonator is Amplified by 80%.<br>These enhancements last as long as <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span> is active and remain effective for 30s after <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span> ends.<br>These effects end when Lucilla switches Resonance Modes.</div>`,
+      hasStacks: false,
+      stance: "Glacio Chafe",
+      modifiers: [
+        {
+          modifier: "DMGDeepen:GlacioChafe",
+          modifierValue: 0.8,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2SlumberingMoonlightEcho",
+      name: "Sequence Node 2: Slumbering Moonlight",
+      details: `<div>While casting <span style="color:#f7ca2f"><strong>Resonance Liberation - Clear As Day</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, grant 40% Echo Skill DMG Amplification to Resonators in the team.<br>These enhancements last as long as <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span> is active and remain effective for 30s after <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span> ends.<br>These effects end when Lucilla switches Resonance Modes.</div>`,
+      hasStacks: false,
+      stance: "Echo",
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Echo",
+          modifierValue: 0.4,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
   ],
 };
 
