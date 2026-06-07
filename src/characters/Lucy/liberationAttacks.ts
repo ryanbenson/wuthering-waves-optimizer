@@ -1,0 +1,40 @@
+export const liberationAttacks = {
+  name: "Resonance Liberation: Netrunner",
+  description: `<div><span style="color:#a89969"><strong>Resonance Liberation - Netrunner</strong></span><br>Lucy deep dives into cyberspace and pulls up the Protocol Interface for 10s. While the Protocol Interface is active, choose up to 7 different <span style="color:#f7ca2f"><strong>Spoofing Program</strong></span> effects, each requiring different RAM costs. Lucy starts with 24 points of RAM.<br>While in the Protocol Interface, Lucy marks targets within a certain range in her view. Marked targets will be applied with all <span style="color:#f7ca2f"><strong>Spoofing Program</strong></span> effects selected afterwards. Adjust Lucy's view to mark more targets. When no target is in view, no <span style="color:#f7ca2f"><strong>Spoofing Program</strong></span> can be applied.<br>While in the Protocol Interface, when either the duration expires or when <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> is held down, <span style="color:#f7ca2f"><strong>Override</strong></span> is triggered, which deals <span style="color:#f8e56c"><strong>Spectro DMG</strong></span> to all marked targets before closing the Protocol Interface, considered Heavy Attack DMG. When RAM runs out or is insufficient to activate any <span style="color:#f7ca2f"><strong>Spoofing Programs</strong></span>, press <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> to trigger <span style="color:#f7ca2f"><strong>Override</strong></span> on all marked targets. <br>Can be cast in mid-air close to the ground.<br><br><span style="color:#f7ca2f"><strong>Spoofing Program: Ping</strong></span><br>Requires 2 RAM. Extends field of view. Lucy marks and deals <span style="color:#f8e56c"><strong>Spectro DMG</strong></span> to all nearby targets within the effective range without having to adjust the view, considered Heavy Attack DMG.<br><span style="color:#f7ca2f"><strong>Spoofing Program: Cyberware Malfunction</strong></span><br>Requires 4 RAM. Marked targets take 5% more DMG for 30s.<br><span style="color:#f7ca2f"><strong>Spoofing Program: Breach Protocol</strong></span><br>Requires 4 RAM. Marked targets' DEF is reduced by 5% for 30s.<br><span style="color:#f7ca2f"><strong>Spoofing Program: Synapse Burnout</strong></span><br>Requires 5 RAM. Deals <span style="color:#f8e56c"><strong>Spectro DMG</strong></span> to all marked targets within a certain range, considered Heavy Attack DMG.<br><span style="color:#f7ca2f"><strong>Spoofing Program: Cripple Movement</strong></span><br>Requires 6 RAM. Deals Hack DMG to all marked targets and reduces their ATK by 5% for 30s.<br><span style="color:#f7ca2f"><strong>Spoofing Program: Weapon Glitch</strong></span><br>Requires 5 RAM. Causes all marked targets' attacks to have a chance to be reduced by 100% within 30s.<br><span style="color:#f7ca2f"><strong>Spoofing Program: Cyberpsychosis</strong></span><br>Requires 6 RAM. Convert all marked targets to neutral units and reduce their Vibration Strength. Only effective against Common Class enemies.<br><br><span style="color:#a89969"><strong>Resonance Liberation - Old Net Deep Dive</strong></span><br>When in <span style="color:#f7ca2f"><strong><a href="#WwLink151102" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151102">Algorithm Compaction</a></strong></span>, after <span style="color:#f7ca2f"><strong>Heavy Attack - Multi-threading</strong></span> is cast, <span style="color:#f7ca2f"><strong>Resonance Liberation - Netrunner</strong></span> is replaced with <span style="color:#f7ca2f"><strong>Resonance Liberation - Old Net Deep Dive</strong></span>. Lucy gains all effects of <span style="color:#f7ca2f"><strong>Resonance Liberation - Netrunner</strong></span>, and the DMG Multiplier of <span style="color:#f7ca2f"><strong>Override</strong></span> is greatly increased.<br>After casting <span style="color:#f7ca2f"><strong>Resonance Liberation - Old Net Deep Dive</strong></span>, or when Lucy exits the <span style="color:#f7ca2f"><strong><a href="#WwLink151102" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151102">Algorithm Compaction</a></strong></span> state, <span style="color:#f7ca2f"><strong>Resonance Liberation - Old Net Deep Dive</strong></span> is replaced with <span style="color:#f7ca2f"><strong>Resonance Liberation - Netrunner</strong></span>.<br>Can be cast in mid-air close to the ground.</div>`,
+  attacks: [
+    {
+      key: "FinalActStagecraftFormDMG",
+      label: "Final Act - Stagecraft Form DMG",
+      talents: {
+        "1": "200.00%",
+        "2": "216.40%",
+        "3": "232.80%",
+        "4": "255.76%",
+        "5": "272.16%",
+        "6": "291.02%",
+        "7": "317.26%",
+        "8": "343.50%",
+        "9": "369.74%",
+        "10": "397.62%",
+      },
+      type: "Liberation",
+    },
+    {
+      key: "FinalActBreakdownFormDMG",
+      label: "Final Act - Breakdown Form DMG",
+      talents: {
+        "1": "100.00%*4",
+        "2": "108.20%*4",
+        "3": "116.40%*4",
+        "4": "127.88%*4",
+        "5": "136.08%*4",
+        "6": "145.51%*4",
+        "7": "158.63%*4",
+        "8": "171.75%*4",
+        "9": "184.87%*4",
+        "10": "198.81%*4",
+      },
+      type: "Liberation",
+    },
+  ],
+};

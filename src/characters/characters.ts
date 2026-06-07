@@ -30,6 +30,7 @@ export const characterPickerRoster: CharacterList = {
     { key: "Jiyan", name: "Jiyan" },
     { key: "Lingyang", name: "Lingyang" },
     { key: "Lucilla", name: "Lucilla" },
+    { key: "Lucy", name: "Lucy" },
     { key: "Lupa", name: "Lupa" },
     { key: "LuukHerssen", name: "Luuk Herssen" },
     { key: "Lynae", name: "Lynae" },
@@ -221,6 +222,13 @@ export const allCharactersList = [
     element: "Glacio",
     rarity: 5,
     weapon: "Rectifier",
+  },
+  {
+    key: "Lucy",
+    name: "Lucy",
+    element: "Spectro",
+    rarity: 5,
+    weapon: "Pistol",
   },
   {
     key: "Lupa",

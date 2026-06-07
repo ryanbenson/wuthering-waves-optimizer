@@ -1,0 +1,175 @@
+export const buffs = [
+  {
+    key: `InherentSkillGhostCyberware`,
+    name: `Inherent Skil: Ghost Cyberware`,
+    details: `<div>When Lucy is the active Resonator in the team, if she takes no damage for 8s, she gains 1 stack of <span style="color:#f7ca2f"><strong>Optical Illusion</strong></span>. Max 1 stack by default.<br><span style="color:#f7ca2f"><strong>Optical Illusion</strong></span>: When attacked, reduce this instance of DMG by 100%. If Lucy is hit or launched from the attack, she immediately recovers and triggers a successful <span style="color:#f7ca2f"><strong>Dodge</strong></span> if she's on the ground. After this effect is triggered, remove 1 stack of <span style="color:#f7ca2f"><strong>Optical Illusion</strong></span>. This effect can be triggered up to 1 time every 0.5s.</div>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillFunctionCracking`,
+    name: `Inherent Skill: Function Cracking`,
+    stance: "Fusion Burst",
+    details: `<div>When <span style="color:#f7ca2f"><strong>Resonance Skill - Payload</strong></span>, <span style="color:#f7ca2f"><strong>Resonance Skill - Pulse Interference</strong></span>, or <span style="color:#f7ca2f"><strong>Resonance Skill - Deadlock</strong></span> damages an <span style="color:#f7ca2f"><strong>Overlord Class</strong></span> or <span style="color:#f7ca2f"><strong>Calamity Class</strong></span> enemy, Lucy applies <span style="color:#f7ca2f"><strong>Botnet Mark</strong></span> on them for 2 min. While <span style="color:#f7ca2f"><strong>Botnet Mark</strong></span> is active, when a Resonator in the team defeats that target with direct damage, Lucy gains the <span style="color:#f7ca2f"><strong>Network Backdoor</strong></span> effect. If Rebecca is in the team, she gains the same effect.<br><br><span style="color:#a89969"><strong>Network Backdoor</strong></span><br>Grants 10% All DMG Amplification and 10% additional Hack DMG Multiplier. This effect lasts for 2 min and stacks up to 2 times. At 2 stacks, additionally increases All DMG Amplification by 5% and Hack DMG Multiplier by 5%. When Lucy is downed, she can no longer gain <span style="color:#f7ca2f"><strong>Network Backdoor</strong></span>, and any existing <span style="color:#f7ca2f"><strong>Network Backdoor</strong></span> effects become invalid.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.3,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillEtchedColorsTuneStrain`,
+    name: `Inherent Skill: Etched Colors`,
+    stance: "Tune Strain",
+    details: `<div>While in the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121106">Entropy Shift</span></span> states, Denia obtains the following effects based on her current <span style="color:#ffd12f;" class="font-bold">Resonance Mode</span>:<br>- <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Tune Strain</span>: All Resonators in the team gain 10 Tune Break Boost. When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "tuneBreakBoost",
+        modifierValue: 0.1,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillEtchedColorsOffTuneBuildupRate`,
+    name: `Inherent Skill: Etched Colors - Off-Tune Buildup Rate`,
+    stance: "Tune Strain",
+    details: `<div>While in the <span style="color:#ffd12f;" class="font-bold"><span class="term-reference-link cursor-pointer" data-term-id="121106">Entropy Shift</span></span> states, Denia obtains the following effects based on her current <span style="color:#ffd12f;" class="font-bold">Resonance Mode</span>:<br>- <span style="color:#ffd12f;" class="font-bold">Resonance Mode - Tune Strain</span>: All Resonators in the team gain 10 Tune Break Boost. When a Resonator in the team has an Off-Tune Buildup Rate over 100%, every 10% that runs over increases the Resonator's Tune Break Boost by 8, up to 40.</div>`,
+    hasStacks: true,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 150,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritRate1",
+    name: "Stat Bonus: Crit. Rate+",
+    details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.012,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritRate2",
+    name: "Stat Bonus: Crit. Rate+",
+    details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.012,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritRate3",
+    name: "Stat Bonus: Crit. Rate+",
+    details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.028,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusCritRate4",
+    name: "Stat Bonus: Crit. Rate+",
+    details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.028,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK1",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 1.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.018,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK2",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 1.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.018,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK3",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 4.20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.042,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "StatBonusATK4",
+    name: "Stat Bonus: ATK+",
+    details: `<div class="skilldescription">ATK increased by 4.20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.042,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+];
