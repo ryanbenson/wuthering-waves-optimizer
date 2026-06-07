@@ -37,6 +37,7 @@ export const characterPickerRoster: CharacterList = {
     { key: "Phoebe", name: "Phoebe" },
     { key: "Phrolova", name: "Phrolova" },
     { key: "Qiuyuan", name: "Qiuyuan" },
+    { key: "Rebecca", name: "Rebecca" },
     { key: "Roccia", name: "Roccia" },
     { key: "RoverAeroFemale", name: "Rover Aero (Female)" },
     { key: "RoverAeroMale", name: "Rover Aero (Male)" },
@@ -269,6 +270,13 @@ export const allCharactersList = [
     element: "Aero",
     rarity: 5,
     weapon: "Sword",
+  },
+  {
+    key: "Rebecca",
+    name: "Rebecca",
+    element: "Electro",
+    rarity: 5,
+    weapon: "Pistol",
   },
   {
     key: "Roccia",
