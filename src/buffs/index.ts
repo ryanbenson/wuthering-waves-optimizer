@@ -2126,6 +2126,36 @@ This effect ends when the incoming Resonator is switched off the field or when L
       maxStacks: 0,
       alwaysEnabled: false,
     },
+    {
+      key: `PreemChoomAmplify`,
+      name: `Outro Skill: Preem Choom - Amplify`,
+      details: `<div>The incoming Resonator gains <span style="color:#f7ca2f"><strong>Edgerunner Bonds</strong></span>, granting 15% All DMG Amplification for 14s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `PreemChoomHeavyAmplify`,
+      name: `Outro Skill: Preem Choom - Heavy`,
+      details: `<div>Resonators with <span style="color:#f7ca2f"><strong>Edgerunner Bonds</strong></span> gain 1 stacks of <span style="color:#f7ca2f"><strong>Overlimit</strong></span> every 0.2s, each stack granting 0.5% Heavy Attack DMG Amplification, up to 35% (Lucy automatically receives max stacks when her <span style="color:#f7ca2f"><strong>Edgerunner Bonds</strong></span> is active). Switching to another Resonator ends <span style="color:#f7ca2f"><strong>Edgerunner Bonds</strong></span> and <span style="color:#f7ca2f"><strong>Overlimit</strong></span> early.</div>`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Heavy",
+          modifierValue: 0.05,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 35,
+      alwaysEnabled: false,
+    },
   ],
 };
 
