@@ -2110,6 +2110,23 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
     },
   ],
+  Rebecca: [
+    {
+      key: `InherentSkillLeftanOpening`,
+      name: `Inherent Skill: Left an Opening!`,
+      details: `<div><span style="color:#f7ca2f"><strong>Heavy Attack - Rat-tat-tat!: Huntress</strong></span> and <span style="color:#f7ca2f"><strong>Heavy Attack - Bang-bang-bang!: Guts</strong></span> gain increased Resistance to Interruption.<br>When Rebecca casts <span style="color:#f7ca2f"><strong>Resonance Liberation - Party 'til Dawn!</strong></span>, the ATK of all nearby Resonators in the team is increased by 20% for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

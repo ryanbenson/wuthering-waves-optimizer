@@ -7,5 +7,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     gender: "female",
     element: "Electro",
     tuneBreakBoost: 0.1,
+    stances: ["Huntress", "Guts"],
   };
 }
