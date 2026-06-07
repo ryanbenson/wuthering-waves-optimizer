@@ -2183,23 +2183,23 @@ This effect ends when the incoming Resonator is switched off the field or when L
         },
         {
           modifier: "Electro",
-          modifierValue: 0.15,
+          modifierValue: 0.2,
         },
         {
           modifier: "Havoc",
-          modifierValue: 0.15,
+          modifierValue: 0.2,
         },
         {
           modifier: "Spectro",
-          modifierValue: 0.15,
+          modifierValue: 0.2,
         },
         {
           modifier: "Aero",
-          modifierValue: 0.15,
+          modifierValue: 0.2,
         },
         {
           modifier: "Glacio",
-          modifierValue: 0.15,
+          modifierValue: 0.2,
         },
       ],
       minStacks: 0,
@@ -2215,6 +2215,73 @@ This effect ends when the incoming Resonator is switched off the field or when L
         {
           modifier: "DMGDeepen",
           modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Lucy: [
+    {
+      key: "OutroSkillCountermeasureProgram",
+      name: "Outro Skill: Countermeasure Program - Basic",
+      details: `<div>The incoming Resonator gains 25% Basic Attack DMG Amplification for 14s or until they are switched out.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Basic",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "OutroSkillCountermeasureProgramHack",
+      name: "Outro Skill: Countermeasure Program - Hack Shifting",
+      details: `<div>Grants all Resonators in the team <span style="color:#f7ca2f"><strong>Countermeasure Program</strong></span> for 25s.<br>While the effect is active, when an active Resonator in the team other than Lucy inflicts <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, that Resonator gains 20% All DMG Amplification.<br>While the effect is active, when a Resonator in the team other than Lucy is attacked, Lucy grants them 30% DMG Reduction for 3s and Stagnates their attacker for 1s. This effect can only trigger up to 1 time while <span style="color:#f7ca2f"><strong>Countermeasure Program</strong></span> is active. Obtaining <span style="color:#f7ca2f"><strong>Countermeasure Program</strong></span> again resets the effective charge. <br>When the All DMG Amplification is effective, switching to another Resonator ends the <span style="color:#f7ca2f"><strong>Countermeasure Program</strong></span> early.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4NoLivingLegendsinNightCity",
+      name: "Sequence Node 4: No Living Legends in Night City",
+      details: `<div>When Resonators in the team inflict <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, Resonators in the team gain 20% All-Attribute DMG Bonus for 20s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Electro",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Havoc",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Spectro",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Aero",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Glacio",
+          modifierValue: 0.2,
         },
       ],
       minStacks: 0,

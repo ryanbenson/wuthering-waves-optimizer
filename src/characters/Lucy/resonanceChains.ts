@@ -6,8 +6,8 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "CritDMG",
-        modifierValue: 0.3,
+        modifier: "ATK",
+        modifierValue: 0.2,
       }
     ],
     minStacks: 0,
@@ -21,12 +21,10 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "BanishBreakdownFormStage1DMG",
-          "BanishBreakdownFormStage2DMG",
+        modifier: "EnableAttack",
+        modifierValue: [
+          "SequenceNode2TheBlackwallthePasttheEscape",
         ],
-        modifierValue: 0.4,
       }
     ],
     minStacks: 0,
@@ -42,9 +40,26 @@ export const resonanceChains = [
       {
         modifier: "talentModifierMultiply",
         modifySpecificTalents: [
-          "FinalActBreakdownFormDMG",
+          "ResonanceLiberationNetrunnerOverrideDMG",
+          "ResonanceLiberationOldNetDeepDiveOverrideDMG",
         ],
-        modifierValue: 0.8,
+        modifierValue: 0.5,
+      },
+      {
+        modifier: "CritDMG",
+        modifySpecificTalents: [
+          "ResonanceLiberationNetrunnerOverrideDMG",
+          "ResonanceLiberationOldNetDeepDiveOverrideDMG",
+        ],
+        modifierValue: 1,
+      },
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "HackResponseDataCrashDMG",
+          "SpoofingProgramCrippleMovementDMG",
+        ],
+        modifierValue: 0.65,
       },
     ],
     minStacks: 0,
@@ -56,23 +71,47 @@ export const resonanceChains = [
     name: "Sequence Node 4: No Living Legends in Night City",
     details: `<div>When Resonators in the team inflict <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, Resonators in the team gain 20% All-Attribute DMG Bonus for 20s.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "Fusion",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Electro",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Havoc",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Spectro",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Aero",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Glacio",
+        modifierValue: 0.2,
+      },
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
   },
   {
-    key: "SequenceNode5APBrokenPathtoHell",
-    name: "Sequence Node 5: A Broken Path to Hell'",
+    key: "SequenceNode5ABrokenPathtoHell",
+    name: "Sequence Node 5: A Broken Path to Hell",
     details: `<div>The stack limit of <span style="color:#f7ca2f"><strong>Optical Illusion</strong></span> obtainable via <span style="color:#f7ca2f"><strong>Inherent Skill - Ghost Cyberware</strong></span> is increased to 2.<br><span style="color:#f7ca2f"><strong>Inherent Skill - Ghost Cyberware</strong></span> is now enhanced: When Lucy's HP falls below 50%, she immediately gains 1 stack of <span style="color:#f7ca2f"><strong>Optical Illusion</strong></span> upon being hit. This effect has a Cooldown of 180s. When <span style="color:#f7ca2f"><strong>Optical Illusion</strong></span> is triggered, Lucy gains a Shield equal to 150% of ATK for 10s.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: [
-          "FinalActStagecraftFormDMG",
+        modifier: "EnableAttack",
+        modifierValue: [
+          "SequenceNode5ABrokenPathtoHell",
         ],
-        modifierValue: 1,
       },
     ],
     minStacks: 0,
@@ -86,11 +125,11 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ATK",
-        modifierValue: 0.6,
+        modifier: "specialMultiplier:Heavy",
+        modifierValue: 0.4,
       },
       {
-        modifier: "Fusion",
+        modifier: "specialMultiplier:Hack",
         modifierValue: 0.6,
       },
     ],

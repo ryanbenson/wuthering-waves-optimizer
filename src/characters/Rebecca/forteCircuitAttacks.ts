@@ -51,7 +51,7 @@ export const forteCircuitAttacks = {
         "9": "2193.49%",
         "10": "2358.89%",
       },
-      type: "TuneBreak",
+      type: "Hack",
     },
     {
       key: "SequenceNode6MaybeJustMaybe",

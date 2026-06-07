@@ -41,23 +41,23 @@ export const resonanceChains = [
       },
       {
         modifier: "Electro",
-        modifierValue: 0.15,
+        modifierValue: 0.2,
       },
       {
         modifier: "Havoc",
-        modifierValue: 0.15,
+        modifierValue: 0.2,
       },
       {
         modifier: "Spectro",
-        modifierValue: 0.15,
+        modifierValue: 0.2,
       },
       {
         modifier: "Aero",
-        modifierValue: 0.15,
+        modifierValue: 0.2,
       },
       {
         modifier: "Glacio",
-        modifierValue: 0.15,
+        modifierValue: 0.2,
       },
     ],
     minStacks: 0,

@@ -987,6 +987,12 @@ export const computeSelfBuffs = (
         data["EchoDMGBonus"] += 0.3;
       }
     }
+    if (character === "Lucy" && key === "InherentSkillFunctionCracking") {
+      if (buffData?.stacks >= 2) {
+        data["DMGDeepen"] += 0.05;
+        data["DMGDeepen:Hack"] += 0.05;
+      }
+    }
     if (character === "Hiyuki" && key === "InherentSkillFineSnow") {
       if (buffData?.stacks >= 1) {
         data["DMGDeepen:GlacioChafe"] = (data["DMGDeepen:GlacioChafe"] || 0) + 0.3;
@@ -1075,6 +1081,13 @@ export const computeSelfBuffs = (
       data.specificTalentBuffs["NowheretoRunDMG:Fusion"] = fusion || 0;
       data.specificTalentBuffs["NowheretoRunDMG:ResistShred:Fusion"] =
         resistReduction || 0;
+    }
+  }
+  if (character === "Lucy" && data.specificTalentBuffs) {
+    if (
+      resonanceChainsConfig?.SequenceNode2TheBlackwallthePasttheEscape?.isEnabled
+    ) {
+      data.specificTalentBuffs["HeavyAttackMultithreadingDMG:talentModifierMultiply"] = 5.6;
     }
   }
   return data;

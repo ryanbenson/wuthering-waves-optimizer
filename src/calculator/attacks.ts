@@ -902,10 +902,15 @@ export const calculateAttackDamage = (
   });
 
   let totalSpecialMultiplier = 0;
+  // get any specialMultplier from self buffs that aren't attached to any specific attack
+  let selfBuffSpecialMultiplier =
+    context.buffs.charBuffsData?.specialMultiplier ?? 0;
   let resonanceChainAttackSpecialMultiplierAttack =
     context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:specialMultiplier`
     ] ?? 0;
+  let resonanceChainAttackSpecialMultiplierAttackType =
+    context.buffs.charResonanceChainsData?.[`specialMultiplier:${attack.type}`] ?? 0;
   let resonanceChainAttackSpecialMultiplier =
     context.buffs.charResonanceChainsData?.specialMultiplier ?? 0;
   let selfBuffAttackSpecialMultiplier =
@@ -929,6 +934,8 @@ export const calculateAttackDamage = (
     strainSpecialMultiplier = 0;
   }
   totalSpecialMultiplier +=
+    selfBuffSpecialMultiplier +
+    resonanceChainAttackSpecialMultiplierAttackType +
     resonanceChainAttackSpecialMultiplier +
     resonanceChainAttackSpecialMultiplierAttack +
     selfBuffAttackSpecialMultiplier +
