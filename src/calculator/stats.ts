@@ -1511,6 +1511,19 @@ export const computeResonanceChainsBuffs = (
   return data;
 };
 
+export const applyCharacterStatEdgeCases = (
+  stats: any,
+  character: string = "",
+  resonanceChainsConfig: any = null,
+): void => {
+  if (
+    character === "Rebecca" &&
+    resonanceChainsConfig?.SequenceNode6MaybeJustMaybe?.isEnabled
+  ) {
+    stats.basicAttackDMGBonus *= 1.4;
+  }
+};
+
 // Pure function to calculate all stats with full context
 // This function is designed to work in web workers - no Vue dependencies, all state passed as parameters
 // Returns both final stats and breakdown data for UI
@@ -1716,6 +1729,12 @@ export const calculateAllStats = (context: {
     echoStats,
     customBuffs,
     teamBuffsData,
+  );
+
+  applyCharacterStatEdgeCases(
+    finalStats,
+    character ?? "",
+    resonanceChainsConfig ?? {},
   );
 
   // Merge AdditionalBase and CritOverflow into breakdown for UI

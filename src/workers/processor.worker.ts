@@ -49,6 +49,7 @@ import {
   computeResonanceChainsBuffs,
   computeAdditionalBaseBuffs,
   computeCritOverflowBuffs,
+  applyCharacterStatEdgeCases,
 } from "../calculator/stats";
 import { processAttacks, getCalculationContext } from "../calculator/attacks";
 import { meetsMinStatThreshold } from "../calculator/meetsMinStatThreshold";
@@ -330,6 +331,12 @@ function processLoadout(
       context.echoStats,
       context.customBuffs,
       context.teamBuffsData,
+    );
+
+    applyCharacterStatEdgeCases(
+      finalStats,
+      context.character ?? "",
+      context.activeCharacterResonanceChains ?? {},
     );
 
     const weaponAtk = context.weaponData?.attack;
