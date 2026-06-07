@@ -1,12 +1,11 @@
 export const buffs = [
   {
     key: `SwitchGearsHuntress`,
-    name: `Switch Gears!`,
+    name: `Switch Gears! - Huntress`,
     details: `<div>Upon casting <span style="color:#f7ca2f"><strong>Resonance Skill</strong></span> or <span style="color:#f7ca2f"><strong>Intro Skill</strong></span>, Rebecca can freely switch between the <span style="color:#f7ca2f"><strong>Huntress</strong></span> and <span style="color:#f7ca2f"><strong>Guts</strong></span> modes.
 - The <span style="color:#f7ca2f"><strong>Huntress</strong></span> mode increases Rebecca's Crit. DMG by 30%.
 By default, Rebecca starts in the Huntress mode.</div>`,
     hasStacks: false,
-    stance: "Huntress",
     modifiers: [
       {
         modifier: "CritDMG",
@@ -19,11 +18,10 @@ By default, Rebecca starts in the Huntress mode.</div>`,
   },
   {
     key: `SwitchGearsGuts`,
-    name: `Switch Gears!`,
+    name: `Switch Gears! - Guts`,
     details: `<div>Upon casting <span style="color:#f7ca2f"><strong>Resonance Skill</strong></span> or <span style="color:#f7ca2f"><strong>Intro Skill</strong></span>, Rebecca can freely switch between the <span style="color:#f7ca2f"><strong>Huntress</strong></span> and <span style="color:#f7ca2f"><strong>Guts</strong></span> modes.
 - The <span style="color:#f7ca2f"><strong>Guts</strong></span> mode allows Rebecca to ignore 15% of the target's DEF.</div>`,
     hasStacks: false,
-    stance: "Guts",
     modifiers: [
       {
         modifier: "DEFIgnore",
@@ -59,6 +57,21 @@ By default, Rebecca starts in the Huntress mode.</div>`,
       {
         modifier: "ATK",
         modifierValue: 0.1,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillTagYoureItTuneBreakBoost`,
+    name: `Inherent Skill: Tag, You're It! - Tune Break Boost`,
+    details: `<div>When a Resonator in the team inflicts <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, their Tune Break Boost is increased by 30 for 30s.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "tuneBreakBoost",
+        modifierValue: 0.3,
       },
     ],
     minStacks: 0,

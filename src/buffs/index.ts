@@ -2127,6 +2127,21 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
     },
     {
+      key: `InherentSkillTagYoureItTuneBreakBoost`,
+      name: `Inherent Skill: Tag, You're It! - Tune Break Boost`,
+      details: `<div>When a Resonator in the team inflicts <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, their Tune Break Boost is increased by 30 for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "tuneBreakBoost",
+          modifierValue: 0.3,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
       key: `PreemChoomAmplify`,
       name: `Outro Skill: Preem Choom - Amplify`,
       details: `<div>The incoming Resonator gains <span style="color:#f7ca2f"><strong>Edgerunner Bonds</strong></span>, granting 15% All DMG Amplification for 14s.</div>`,
@@ -2154,6 +2169,56 @@ This effect ends when the incoming Resonator is switched off the field or when L
       ],
       minStacks: 0,
       maxStacks: 35,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2OhHeyChoom",
+      name: "Sequence Node 2: Oh, Hey Choom! - All-Attribute",
+      details: `<div>Casting <span style="color:#f7ca2f"><strong>Intro Skill - Yo, It's Big Boomin' Time!</strong></span>, <span style="color:#f7ca2f"><strong>Intro Skill - Hey, Leadhead, Come 'n' Get Me!</strong></span>, or <span style="color:#f7ca2f"><strong>Resonance Liberation - Party 'til Dawn!</strong></span> grants 20% All-Attribute DMG Bonus for all Resonators in the team for 30s.<br><span style="color:#f7ca2f"><strong><a href="#WwLink130806" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="130806">Hot Hand</a></strong></span> regenerates twice as fast when Rebecca is out of combat.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Electro",
+          modifierValue: 0.15,
+        },
+        {
+          modifier: "Havoc",
+          modifierValue: 0.15,
+        },
+        {
+          modifier: "Spectro",
+          modifierValue: 0.15,
+        },
+        {
+          modifier: "Aero",
+          modifierValue: 0.15,
+        },
+        {
+          modifier: "Glacio",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2OhHeyChoomDMGDeepen",
+      name: "Sequence Node 2: Oh, Hey Choom! - DMG Deepen",
+      details: `<div>When Resonators in the team inflict <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, they gain 15% All DMG Amplification for 30s.<br><span style="color:#f7ca2f"><strong><a href="#WwLink130806" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="130806">Hot Hand</a></strong></span> regenerates twice as fast when Rebecca is out of combat.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
       alwaysEnabled: false,
     },
   ],

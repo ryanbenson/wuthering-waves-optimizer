@@ -808,6 +808,32 @@ export const computeSelfBuffs = (
         ];
       }
     }
+    if (character === "Rebecca" && key === "SwitchGearsHuntress") {
+      if (
+        resonanceChainsConfig?.SequenceNode4GotYaCovered
+          ?.isEnabled
+      ) {
+        modifiers = [
+          {
+            modifier: "CritDMG",
+            modifierValue: 0.48,
+          },
+        ];
+      }
+    }
+    if (character === "Rebecca" && key === "SwitchGearsGuts") {
+      if (
+        resonanceChainsConfig?.SequenceNode4GotYaCovered
+          ?.isEnabled
+      ) {
+        modifiers = [
+          {
+            modifier: "DEFIgnore",
+            modifierValue: 0.24,
+          },
+        ];
+      }
+    }
     if (character === "Sigrika" && key === "InnateGift") {
       if (
         resonanceChainsConfig?.SequenceNode6TrueNamesResurfacedRisinginLight

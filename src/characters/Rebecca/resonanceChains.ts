@@ -7,7 +7,21 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["GracefulStepDMG", "FlickeringReverieDMG", "PerceptionDrainDMG"],
+        modifySpecificTalents: [
+          "BasicAttackHuntressStage1DMG",
+          "BasicAttackHuntressStage2DMG",
+          "BasicAttackHuntressStage3DMG",
+          "HeavyAttackHuntressDMG",
+          "TacticalDodgeHuntressDMG",
+          "TacticalDodgeHuntressSuccessfulDodgeDMG",
+          "DodgeCounterHuntressDMG",
+          "BasicAttackGutsStage1DMG",
+          "BasicAttackGutsStage2DMG",
+          "BasicAttackGutsStage3DMG",
+          "TacticalDodgeGutsDMG",
+          "TacticalDodgeGutsSuccessfulDodgeDMG",
+          "DodgeCounterGutsDMG",
+        ],
         modifierValue: 0.5,
       },
     ],
@@ -17,14 +31,48 @@ export const resonanceChains = [
   },
   {
     key: "SequenceNode2OhHeyChoom",
-    name: "Sequence Node 2: Oh, Hey Choom!",
-    details: `<div>Casting <span style="color:#f7ca2f"><strong>Intro Skill - Yo, It's Big Boomin' Time!</strong></span>, <span style="color:#f7ca2f"><strong>Intro Skill - Hey, Leadhead, Come 'n' Get Me!</strong></span>, or <span style="color:#f7ca2f"><strong>Resonance Liberation - Party 'til Dawn!</strong></span> grants 20% All-Attribute DMG Bonus for all Resonators in the team for 30s.<br>When Resonators in the team inflict <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, they gain 15% All DMG Amplification for 30s.<br><span style="color:#f7ca2f"><strong><a href="#WwLink130806" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="130806">Hot Hand</a></strong></span> regenerates twice as fast when Rebecca is out of combat.</div>`,
+    name: "Sequence Node 2: Oh, Hey Choom! - All-Attribute",
+    details: `<div>Casting <span style="color:#f7ca2f"><strong>Intro Skill - Yo, It's Big Boomin' Time!</strong></span>, <span style="color:#f7ca2f"><strong>Intro Skill - Hey, Leadhead, Come 'n' Get Me!</strong></span>, or <span style="color:#f7ca2f"><strong>Resonance Liberation - Party 'til Dawn!</strong></span> grants 20% All-Attribute DMG Bonus for all Resonators in the team for 30s.<br><span style="color:#f7ca2f"><strong><a href="#WwLink130806" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="130806">Hot Hand</a></strong></span> regenerates twice as fast when Rebecca is out of combat.</div>`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["JoltDMG"],
-        modifierValue: 2.45,
+        modifier: "Fusion",
+        modifierValue: 0.2,
+      },
+      {
+        modifier: "Electro",
+        modifierValue: 0.15,
+      },
+      {
+        modifier: "Havoc",
+        modifierValue: 0.15,
+      },
+      {
+        modifier: "Spectro",
+        modifierValue: 0.15,
+      },
+      {
+        modifier: "Aero",
+        modifierValue: 0.15,
+      },
+      {
+        modifier: "Glacio",
+        modifierValue: 0.15,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: "SequenceNode2OhHeyChoomDMGDeepen",
+    name: "Sequence Node 2: Oh, Hey Choom! - DMG Deepen",
+    details: `<div>When Resonators in the team inflict <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, they gain 15% All DMG Amplification for 30s.<br><span style="color:#f7ca2f"><strong><a href="#WwLink130806" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="130806">Hot Hand</a></strong></span> regenerates twice as fast when Rebecca is out of combat.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DMGDeepen",
+        modifierValue: 0.15,
       },
     ],
     minStacks: 0,
@@ -39,8 +87,13 @@ export const resonanceChains = [
     modifiers: [
       {
         modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["FlowingSuffocationDMG"],
-        modifierValue: 3.7,
+        modifySpecificTalents: [
+          "Mk31HMGDMG",
+          "Mk31HMG1stEnhancementDMG",
+          "Mk31HMG2ndEnhancementDMG",
+          "BOOMFireworksDMG",
+        ],
+        modifierValue: 0.6,
       },
     ],
     minStacks: 0,
@@ -53,10 +106,7 @@ export const resonanceChains = [
     details: `<div>Rebecca gains an additional 60% Stat Bonus increase from the <span style="color:#f7ca2f"><strong><a href="#WwLink130804" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="130804">A Girl Gets What She Wants!</a></strong></span> effect.</div>`,
     hasStacks: false,
     modifiers: [
-      {
-        modifier: "HealingBonus",
-        modifierValue: 0.25,
-      },
+      // handled in the stats system
     ],
     minStacks: 0,
     maxStacks: 0,
@@ -69,20 +119,8 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentReplace",
-        modifySpecificTalents: ["DiffusionDMG"],
-        modifierValue: {
-          "1": "7.31%*26",
-          "2": "7.91%*26",
-          "3": "8.51%*26",
-          "4": "9.35%*26",
-          "5": "9.95%*26",
-          "6": "10.64%*26",
-          "7": "11.60%*26",
-          "8": "12.56%*26",
-          "9": "13.52%*26",
-          "10": "14.54%*26"
-        },
+        modifier: "BasicAttackDMGBonus",
+        modifierValue: 0.2,
       },
     ],
     minStacks: 0,
@@ -96,9 +134,8 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
-        modifySpecificTalents: ["PhantomStingStage1DMG", "PhantomStingStage2DMG", "PhantomStingStage3DMG"],
-        modifierValue: 0.8,
+        modifier: "EnableAttack",
+        modifierValue: ["SequenceNode6MaybeJustMaybe"],
       },
     ],
     minStacks: 0,

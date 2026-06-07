@@ -53,5 +53,23 @@ export const forteCircuitAttacks = {
       },
       type: "TuneBreak",
     },
+    {
+      key: "SequenceNode6MaybeJustMaybe",
+      label: "S6: Maybe, Just Maybe... DMG",
+      talents: {
+        "1": "900.00%",
+        "2": "900.00%",
+        "3": "900.00%",
+        "4": "900.00%",
+        "5": "900.00%",
+        "6": "900.00%",
+        "7": "900.00%",
+        "8": "900.00%",
+        "9": "900.00%",
+        "10": "900.00%",
+      },
+      type: "Basic",
+      requiresResonanceChain: "SequenceNode6MaybeJustMaybe",
+    },
   ],
 };
