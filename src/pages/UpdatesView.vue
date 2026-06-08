@@ -6,6 +6,10 @@
     <ul>
       <li>Adds first phase of 3.4 content.</li>
     </ul>
+    <h3>June 6, 2026</h3>
+    <ul>
+      <li>Adds s6 multiplier to Glacio Bite DMG for Hiyuki.</li>
+    </ul>
     <h3>June 3, 2026</h3>
     <ul>
       <li>Ensures Hiyuki has both Glacio bite damages.</li>
