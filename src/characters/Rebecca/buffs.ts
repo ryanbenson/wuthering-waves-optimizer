@@ -52,7 +52,7 @@ By default, Rebecca starts in the Huntress mode.</div>`,
     key: `InherentSkillTagYoureIt`,
     name: `Inherent Skill: Tag, You're It!`,
     details: `<div>ATK is increased by 10% for 12s when <span style="color:#f7ca2f"><strong><a href="#WwLink130804" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="130804">A Girl Gets What She Wants!</a></strong></span> is triggered, or when <span style="color:#f7ca2f"><strong>Heavy Attack - Rat-tat-tat!: Huntress</strong></span> or <span style="color:#f7ca2f"><strong>Heavy Attack - Bang-bang-bang!: Guts</strong></span> is cast, stacking up to 2 times. <br>When a Resonator in the team inflicts <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, their Tune Break Boost is increased by 30 for 30s.</div>`,
-    hasStacks: false,
+    hasStacks: true,
     modifiers: [
       {
         modifier: "ATK",
@@ -60,7 +60,7 @@ By default, Rebecca starts in the Huntress mode.</div>`,
       },
     ],
     minStacks: 0,
-    maxStacks: 0,
+    maxStacks: 2,
     alwaysEnabled: false,
   },
   {

@@ -990,7 +990,9 @@ export const computeSelfBuffs = (
     if (character === "Lucy" && key === "InherentSkillFunctionCracking") {
       if (buffData?.stacks >= 2) {
         data["DMGDeepen"] += 0.05;
-        data["DMGDeepen:Hack"] += 0.05;
+        // add the extra 5%
+        data.specificTalentBuffs["HackResponseDataCrashDMG:talentModifierMultiply"] = 0.05;
+        data.specificTalentBuffs["SpoofingProgramCrippleMovementDMG:talentModifierMultiply"] = 0.05;
       }
     }
     if (character === "Hiyuki" && key === "InherentSkillFineSnow") {

@@ -81,7 +81,11 @@ export const buffs = [
         modifierValue: 0.1,
       },
       {
-        modifier: "DMGDeepen:Hack",
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "HackResponseDataCrashDMG",
+          "SpoofingProgramCrippleMovementDMG",
+        ],
         modifierValue: 0.1,
       },
     ],

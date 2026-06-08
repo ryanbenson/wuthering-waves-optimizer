@@ -5,7 +5,8 @@ export const forteCircuitAttacks = {
     {
       key: "HackResponseDataCrashDMG",
       label: "Hack Response - Data Crash",
-      type: "Hack",
+      type: "TuneBreak",
+      subType: "Hack",
       talents: {
         "1": "550.37%+34.40%*4",
         "2": "595.50%+37.22%*4",

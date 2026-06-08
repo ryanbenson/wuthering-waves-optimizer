@@ -2164,11 +2164,11 @@ This effect ends when the incoming Resonator is switched off the field or when L
       modifiers: [
         {
           modifier: "DMGDeepen:Heavy",
-          modifierValue: 0.05,
+          modifierValue: 0.005,
         },
       ],
       minStacks: 0,
-      maxStacks: 35,
+      maxStacks: 70,
       alwaysEnabled: false,
     },
     {
@@ -2223,6 +2223,36 @@ This effect ends when the incoming Resonator is switched off the field or when L
     },
   ],
   Lucy: [
+    {
+      key: "SpoofingProgramCyberwareMalfunction",
+      name: "Spoofing Program: Cyberware Malfunction",
+      details: `<div>Requires 4 RAM. Marked targets take 5% more DMG for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "specialMultiplier",
+          modifierValue: 0.05,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SpoofingProgramBreachProtocol",
+      name: "Spoofing Program: Breach Protocol",
+      details: `<div>Requires 4 RAM. Marked targets' DEF is reduced by 5% for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DEFIgnore",
+          modifierValue: 0.05,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
     {
       key: "OutroSkillCountermeasureProgram",
       name: "Outro Skill: Countermeasure Program - Basic",

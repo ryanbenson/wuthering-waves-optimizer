@@ -956,7 +956,9 @@ export const calculateAttackDamage = (
       attack.key === "TuneRuptureResponseParticleJetDMG" ||
       attack.key === "TuneRuptureResponseStarburstDMG" ||
       attack.key === "SeraphicDuetBonusDMGPerInstance" ||
-      attack.key === "HackResponseMeltdownDMG"
+      attack.key === "HackResponseMeltdownDMG" ||
+      attack.key === "HackResponseDataCrashDMG" ||
+      attack.key === "SpoofingProgramCrippleMovementDMG"
     ) {
       talent = attack.talents[context.character.talentData?.forte];
       resistReduction = totalResistReduction;

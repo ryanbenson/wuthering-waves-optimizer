@@ -68,7 +68,8 @@ export const liberationAttacks = {
         "9": "847.89%",
         "10": "911.83%",
       },
-      type: "Hack",
+      type: "TuneBreak",
+      subType: "Hack",
     },
     {
       key: "ResonanceLiberationOldNetDeepDiveOverrideDMG",
