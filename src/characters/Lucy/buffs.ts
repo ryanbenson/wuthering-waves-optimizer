@@ -37,7 +37,7 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "DEFIgnore",
+        modifier: "DefReduction",
         modifierValue: 0.05,
       },
     ],

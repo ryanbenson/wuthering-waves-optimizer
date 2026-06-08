@@ -592,8 +592,10 @@ export const calculateAttackDamage = (
   const havocBaneDefReduction = havocBaneStacksNum * 0.02;
   const attackDefReduction = attack?.buffs?.DefReduction ?? 0;
   const customBuffDefReduction = context.buffs.customBuffs?.DefReduction ?? 0;
+  const teamBuffDefReduction = context.buffs.teamBuffsData?.DefReduction ?? 0;
+  const selfBuffDefReduction = selfBuffs?.DefReduction ?? 0;
   const totalDefReduction =
-    havocBaneDefReduction + attackDefReduction + customBuffDefReduction;
+    havocBaneDefReduction + attackDefReduction + customBuffDefReduction + teamBuffDefReduction + selfBuffDefReduction;
   // apply specific ForteBased buff
   const originalForte = getOriginalForteFromAttackKey(
     context.character.chosenChar,
@@ -917,6 +919,8 @@ export const calculateAttackDamage = (
     context.buffs.charBuffsData?.specificTalentBuffs?.[
       `${attack.key}:specialMultiplier`
     ] ?? 0;
+  let teamBuffAttackSpecialMultiplier =
+    context.buffs.teamBuffsData?.specialMultiplier ?? 0;
   let customBuffAttackSpecialMultiplier =
     context.buffs.customBuffs?.SpecialMultiplier ?? 0;
   let actionBuffAttackSpecialMultiplier = attack?.buffs?.SpecialMultiplier ?? 0;
@@ -934,6 +938,7 @@ export const calculateAttackDamage = (
     strainSpecialMultiplier = 0;
   }
   totalSpecialMultiplier +=
+    teamBuffAttackSpecialMultiplier +
     selfBuffSpecialMultiplier +
     resonanceChainAttackSpecialMultiplierAttackType +
     resonanceChainAttackSpecialMultiplier +
