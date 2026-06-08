@@ -1,0 +1,40 @@
+export const introAttacks = {
+  name: "Intro Skill: Clip It",
+  description: `<div><span style="color:#a89969"><strong>Clip It</strong></span><br>Attack the target, dealing <span style="color:#41aefb"><strong>Glacio DMG</strong></span> and inflicting 1 stack of <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Chafe</span></strong></span>.<br><br><span style="color:#a89969"><strong>Clip It: Hard Cut</strong></span><br>When in <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span>, <span style="color:#f7ca2f"><strong>Intro Skill</strong></span> is replaced with <span style="color:#f7ca2f"><strong>Clip It: Hard Cut</strong></span>.<br>Attack the target, dealing <span style="color:#41aefb"><strong>Glacio DMG</strong></span> and inflicting 1 stack of <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Chafe</span></strong></span>.<br>Press <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> shortly after casting this skill to cast <span style="color:#f7ca2f"><strong>Basic Attack - Tracing Forms Stage 3</strong></span>.</div>`,
+  attacks: [
+    {
+      key: "ClipItDMG",
+      label: "Clip It DMG",
+      talents: {
+        "1": "49.00%",
+        "2": "53.02%",
+        "3": "57.04%",
+        "4": "62.67%",
+        "5": "66.68%",
+        "6": "71.30%",
+        "7": "77.73%",
+        "8": "84.16%",
+        "9": "90.59%",
+        "10": "97.42%",
+      },
+      type: "Intro",
+    },
+    {
+      key: "ClipItHardCutDMG",
+      label: "Clip It: Hard Cut DMG",
+      talents: {
+        "1": "75.15%",
+        "2": "81.32%",
+        "3": "87.48%",
+        "4": "96.11%",
+        "5": "102.27%",
+        "6": "109.36%",
+        "7": "119.22%",
+        "8": "129.08%",
+        "9": "138.93%",
+        "10": "149.41%",
+      },
+      type: "Intro",
+    },
+  ],
+};

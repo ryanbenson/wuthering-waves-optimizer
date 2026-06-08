@@ -1,5 +1,8 @@
 import { EchoObject, echoSetLabelMap, getEchoSetLabelByType } from "./stats";
 
+export const oneSetBonuses: string[] = [
+  "Shadow of Shattered Dreams 1 Set",
+];
 export const twoSetBonuses: string[] = [
   "Freezing Frost 2 Set",
   "Molten Rift 2 Set",
@@ -116,6 +119,7 @@ export function getSetsFromEchoes(echoes: EchoObject[]): string[] {
 }
 
 type SetBonusEffects = {
+  setBonusOnePiece: string | null;
   setBonusOne: string | null;
   setBonusTwo: string | null;
 };
@@ -131,6 +135,19 @@ export const getSetBonusEffects = (
     }, {});
 
   // Create lookup sets from your constants for which bonuses exist
+  const has1SetBonus = new Set(
+    oneSetBonuses
+      .map((bonus) => {
+        const match = bonus.match(/^(.+) 1 Set$/);
+        return match
+          ? Object.keys(echoSetLabelMap).find(
+              (key) => getEchoSetLabelByType(key) === match[1],
+            )
+          : null;
+      })
+      .filter(Boolean),
+  );
+
   const has2SetBonus = new Set(
     twoSetBonuses
       .map((bonus) => {
@@ -172,11 +189,18 @@ export const getSetBonusEffects = (
 
   // Get all possible bonuses for each set
   const availableBonuses = [];
+  const oneSetBonusesFound: Array<{ bonus: string; setType: string }> = [];
 
   for (const [setType, count] of Object.entries(counts)) {
     const setLabel = getEchoSetLabelByType(setType);
 
     // Add bonuses based on count and what bonuses exist for this set
+    if (count >= 1 && has1SetBonus.has(setType)) {
+      oneSetBonusesFound.push({
+        bonus: `${setLabel} 1 Set`,
+        setType,
+      });
+    }
     if (count >= 5 && has5SetBonus.has(setType)) {
       availableBonuses.push({
         bonus: `${setLabel} 5 Set`,
@@ -219,8 +243,14 @@ export const getSetBonusEffects = (
   });
 
   // Select bonuses following game rules
+  let setBonusOnePieceVal = null;
   let setBonusOneVal = null;
   let setBonusTwoVal = null;
+
+  oneSetBonusesFound.sort((a, b) => a.setType.localeCompare(b.setType));
+  if (oneSetBonusesFound.length > 0) {
+    setBonusOnePieceVal = oneSetBonusesFound[0].bonus;
+  }
 
   // setBonusOne: Always a 2-set bonus (pick the first available)
   if (twoSetBonusesFound.length > 0) {
@@ -256,6 +286,7 @@ export const getSetBonusEffects = (
 
   // Update the store
   return {
+    setBonusOnePiece: setBonusOnePieceVal,
     setBonusOne: setBonusOneVal,
     setBonusTwo: setBonusTwoVal,
   };
@@ -279,6 +310,33 @@ type EchoSetBonusPassive = {
 type EchoSetBonusModifier = {
   modifier: string;
   modifierValue: number | string;
+};
+
+export const setBonusEffectsOnePiece: Record<string, EchoSetBonus> = {
+  "Shadow of Shattered Dreams 1 Set": {
+    name: "Shadow of Shattered Dreams",
+    key: "ShadowofShatteredDreams1Set",
+    passives: [
+      {
+        key: "ShadowofShatteredDreams1Set",
+        details: `Inflicting <span class="Highlight">Hack - Shifting</span> on the target grants <span class="Highlight">35%</span> Basic Attack DMG Bonus and Heavy Attack DMG Bonus for <span class="Highlight">15s</span>.`,
+        modifiers: [
+          {
+            modifier: "BasicAttackDMGBonus",
+            modifierValue: 35,
+          },
+          {
+            modifier: "HeavyAttackDMGBonus",
+            modifierValue: 35,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: false,
+      },
+    ],
+    details: `Inflicting <span class="Highlight">Hack - Shifting</span> on the target grants <span class="Highlight">35%</span> Basic Attack DMG Bonus and Heavy Attack DMG Bonus for <span class="Highlight">15s</span>.`,
+  },
 };
 
 export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
@@ -785,6 +843,7 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
 };
 
 export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
+  ...setBonusEffectsOnePiece,
   ...setBonusEffectsOne,
   "Freezing Frost 5 Set": {
     key: "FreezingFrost5Set",

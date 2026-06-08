@@ -16,9 +16,9 @@
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
           <div
-            v-if="false"
+            v-if="true"
             class="alert alert-success mb-6 text-white p-2 px-4">
-            Denia and her sig are available!
+            First phase of 3.4 content is available!
           </div>
           <CalculatorCharacterSelect
             :key="character"

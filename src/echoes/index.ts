@@ -21,6 +21,27 @@ interface EchoAction {
   type: string;
   attribute?: string;
   subType?: string;
+  requiredCharacter?: string;
+  excludeCharacters?: string[];
+}
+
+export function isAttackAvailableForCharacter(
+  attack: {
+    requiredCharacter?: string;
+    excludeCharacters?: string[];
+  },
+  characterKey: string,
+): boolean {
+  if (attack.requiredCharacter && attack.requiredCharacter !== characterKey) {
+    return false;
+  }
+  if (
+    attack.excludeCharacters?.length &&
+    attack.excludeCharacters.includes(characterKey)
+  ) {
+    return false;
+  }
+  return true;
 }
 
 interface EchoModifier {
@@ -3181,6 +3202,93 @@ CD: 25s`,
       },
     ],
     sets: ["FlamewingsShadow", "ThreadofSeveredFate"],
+  },
+  ReminiscenceNightmareAdamSmasher: {
+    key: "ReminiscenceNightmareAdamSmasher",
+    name: "Reminiscence - Nightmare: Adam Smasher",
+    class: "Calamity",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ReminiscenceNightmareAdamSmasher.webp",
+    details: `Cast Echo Skill to deal 16 instances of Physical DMG equal to 6.84%/7.98%/9.12%/10.26% of ATK to enemies within range.<br><br>
+When Lucy or Rebecca has this Echo equipped in the main slot, their Crit. Rate is increased by 15% and they unlock special Echo Skills.
+<br><br>
+If equipped by Lucy:<br>
+- Press the Echo Skill button to deal Spectro DMG equal to 182.40%/212.80%/243.20%/273.60% of ATK to nearby enemies.<br>
+- Hold the Echo Skill button to deal Spectro DMG equal to 182.40%/212.80%/243.20%/273.60% of ATK to nearby enemies and enter a special moving state, increasing Lucy's movement speed while slowing nearby enemies.
+<br><br>
+If equipped by Rebecca:<br>
+- Cast Echo Skill to fire missiles, dealing 16 instances of Electro DMG equal to 11.40%/13.30%/15.12%/17.10% of ATK to enemies.<br>
+CD: 20s`,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.15,
+        specificCharacters: ["Lucy", "Rebecca"],
+      },
+    ],
+    actions: [
+      {
+        key: "ReminiscenceNightmareAdamSmasherPhysicalDMG",
+        label: "Physical DMG",
+        description: `Cast Echo Skill to deal 16 instances of Physical DMG equal to 6.84%/7.98%/9.12%/10.26% of ATK to enemies within range..`,
+        talents: {
+          "1": "6.84%*16",
+          "2": "6.84%*16",
+          "3": "7.98%*16",
+          "4": "9.12%*16",
+          "5": "10.26%*16",
+        },
+        type: "Echo",
+        element: "Physical",
+        excludeCharacters: ["Lucy", "Rebecca"],
+      },
+      {
+        key: "ReminiscenceNightmareAdamSmasherPressDMG",
+        label: "Press DMG",
+        description: `Press the Echo Skill button to deal Spectro DMG equal to 182.40%/212.80%/243.20%/273.60% of ATK to nearby enemies.`,
+        talents: {
+          "1": "182.40%",
+          "2": "182.40%",
+          "3": "212.80%",
+          "4": "243.20%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Spectro",
+        requiredCharacter: "Lucy",
+      },
+      {
+        key: "ReminiscenceNightmareAdamSmasherHoldDMG",
+        label: "Hold DMG",
+        description: `Hold the Echo Skill button to deal Spectro DMG equal to 182.40%/212.80%/243.20%/273.60% of ATK to nearby enemies and enter a special moving state, increasing Lucy's movement speed while slowing nearby enemies.`,
+        talents: {
+          "1": "182.40%",
+          "2": "182.40%",
+          "3": "212.80%",
+          "4": "243.20%",
+          "5": "273.60%",
+        },
+        type: "Echo",
+        element: "Spectro",
+        requiredCharacter: "Lucy",
+      },
+      {
+        key: "ReminiscenceNightmareAdamSmasherMissilesDMG",
+        label: "Missiles DMG",
+        description: `Cast Echo Skill to fire missiles, dealing 16 instances of Electro DMG equal to 11.40%/13.30%/15.12%/17.10% of ATK to enemies.`,
+        talents: {
+          "1": "11.40%*16",
+          "2": "11.40%*16",
+          "3": "13.30%*16",
+          "4": "15.12%*16",
+          "5": "17.10%*16",
+        },
+        type: "Echo",
+        element: "Electro",
+        requiredCharacter: "Rebecca",
+      },
+    ],
+    sets: ["ShadowofShatteredDreams"],
   },
   ReminiscenceThrenodianVoidborneConstruct: {
     key: "ReminiscenceThrenodianVoidborneConstruct",

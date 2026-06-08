@@ -808,6 +808,32 @@ export const computeSelfBuffs = (
         ];
       }
     }
+    if (character === "Rebecca" && key === "SwitchGearsHuntress") {
+      if (
+        resonanceChainsConfig?.SequenceNode4GotYaCovered
+          ?.isEnabled
+      ) {
+        modifiers = [
+          {
+            modifier: "CritDMG",
+            modifierValue: 0.48,
+          },
+        ];
+      }
+    }
+    if (character === "Rebecca" && key === "SwitchGearsGuts") {
+      if (
+        resonanceChainsConfig?.SequenceNode4GotYaCovered
+          ?.isEnabled
+      ) {
+        modifiers = [
+          {
+            modifier: "DEFIgnore",
+            modifierValue: 0.24,
+          },
+        ];
+      }
+    }
     if (character === "Sigrika" && key === "InnateGift") {
       if (
         resonanceChainsConfig?.SequenceNode6TrueNamesResurfacedRisinginLight
@@ -961,6 +987,12 @@ export const computeSelfBuffs = (
         data["EchoDMGBonus"] += 0.3;
       }
     }
+    if (character === "Lucy" && key === "InherentSkillFunctionCracking") {
+      if (buffData?.stacks >= 2) {
+        data["DMGDeepen"] += 0.05;
+        data["DMGDeepen:Hack"] += 0.05;
+      }
+    }
     if (character === "Hiyuki" && key === "InherentSkillFineSnow") {
       if (buffData?.stacks >= 1) {
         data["DMGDeepen:GlacioChafe"] = (data["DMGDeepen:GlacioChafe"] || 0) + 0.3;
@@ -1050,6 +1082,13 @@ export const computeSelfBuffs = (
       data.specificTalentBuffs["NowheretoRunDMG:Fusion"] = fusion || 0;
       data.specificTalentBuffs["NowheretoRunDMG:ResistShred:Fusion"] =
         resistReduction || 0;
+    }
+  }
+  if (character === "Lucy" && data.specificTalentBuffs) {
+    if (
+      resonanceChainsConfig?.SequenceNode2TheBlackwallthePasttheEscape?.isEnabled
+    ) {
+      data.specificTalentBuffs["HeavyAttackMultithreadingDMG:talentModifierMultiply"] = 5.6;
     }
   }
   return data;
@@ -1486,6 +1525,19 @@ export const computeResonanceChainsBuffs = (
   return data;
 };
 
+export const applyCharacterStatEdgeCases = (
+  stats: any,
+  character: string = "",
+  resonanceChainsConfig: any = null,
+): void => {
+  if (
+    character === "Rebecca" &&
+    resonanceChainsConfig?.SequenceNode6MaybeJustMaybe?.isEnabled
+  ) {
+    stats.basicAttackDMGBonus *= 1.4;
+  }
+};
+
 // Pure function to calculate all stats with full context
 // This function is designed to work in web workers - no Vue dependencies, all state passed as parameters
 // Returns both final stats and breakdown data for UI
@@ -1691,6 +1743,12 @@ export const calculateAllStats = (context: {
     echoStats,
     customBuffs,
     teamBuffsData,
+  );
+
+  applyCharacterStatEdgeCases(
+    finalStats,
+    character ?? "",
+    resonanceChainsConfig ?? {},
   );
 
   // Merge AdditionalBase and CritOverflow into breakdown for UI

@@ -23,7 +23,7 @@ import {
 
 import { getOriginalForteFromAttackKey } from "../characters/characters.ts";
 
-import { getEchoData } from "../echoes";
+import { getEchoData, isAttackAvailableForCharacter } from "../echoes";
 
 type NegativeStatusSubType =
   | "GlacioChafe"
@@ -78,6 +78,15 @@ export const processAttacks = (
           // flag this attack as enabled or not based on the resonance chain
           isEnabled = isAttackEnabled;
           originalIsEnabled = isEnabled;
+        }
+        if (
+          !isAttackAvailableForCharacter(
+            attack,
+            context.character.characterKey,
+          )
+        ) {
+          isEnabled = false;
+          originalIsEnabled = false;
         }
         if (!excludeDisabledAttacks) {
           isEnabled = true;
@@ -169,6 +178,8 @@ export const processAttacks = (
           isEnabled,
           originalIsEnabled,
           requiresResonanceChain,
+          requiredCharacter: attack.requiredCharacter ?? null,
+          excludeCharacters: attack.excludeCharacters ?? null,
           type: attackType,
           count: attack.count,
           alwaysCrit: attack.alwaysCrit ?? false,
@@ -500,6 +511,35 @@ export const calculateAttackDamage = (
   // need to divide by 100 since the echo data is flul numbers
   // but we're injecting it to the calcs which is decimal based
   echoSpecificAttackTypeCritRate = echoSpecificAttackTypeCritRate / 100;
+  let selfBuffCritDMGForType = selfBuffs?.[`CritDMG:${attackType}`] ?? 0;
+  let resonanceChainCritDMGForType =
+    context.buffs.charResonanceChainsData?.[`CritDMG:${attackType}`] ?? 0;
+  let teamBuffCritDMGForType =
+    context.buffs.teamBuffsData?.[`CritDMG:${attackType}`] ?? 0;
+  let weaponBuffCritDMGForType =
+    context.equipment.weapon.weaponPassiveStats?.[`CritDMG:${attackType}`] ??
+    0;
+  if (excludeWeaponBuffs) {
+    weaponBuffCritDMGForType = 0;
+  }
+  if (excludeTeamBuffs) {
+    teamBuffCritDMGForType = 0;
+  }
+  let echoSpecificAttackTypeCritDMG = 0;
+  if (providedEchoStats) {
+    echoSpecificAttackTypeCritDMG =
+      providedEchoStats?.[`CritDMG:${attackType}`] ?? 0;
+  } else {
+    echoSpecificAttackTypeCritDMG =
+      context.equipment.echoStats?.[`CritDMG:${attackType}`] ?? 0;
+  }
+  echoSpecificAttackTypeCritDMG = echoSpecificAttackTypeCritDMG / 100;
+  const attackTypeSpecificCritDMG =
+    selfBuffCritDMGForType +
+    resonanceChainCritDMGForType +
+    teamBuffCritDMGForType +
+    weaponBuffCritDMGForType +
+    echoSpecificAttackTypeCritDMG;
   const specificSkillExtraCritDMG =
     context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:CritDMG`
@@ -522,7 +562,8 @@ export const calculateAttackDamage = (
   let instanceDmgCritDMG =
     baseCritDamage +
     specificSkillExtraCritDMG +
-    selfBuffsSpecificSkillExtraCritDMG;
+    selfBuffsSpecificSkillExtraCritDMG +
+    attackTypeSpecificCritDMG;
   if (excludeTeamBuffs) {
     instanceDmgCritDMG = statsWithoutTeamBuffs?.totalCritDMG ?? 0;
     instanceDmgCritDMG += specificSkillExtraCritDMG;
@@ -861,10 +902,15 @@ export const calculateAttackDamage = (
   });
 
   let totalSpecialMultiplier = 0;
+  // get any specialMultplier from self buffs that aren't attached to any specific attack
+  let selfBuffSpecialMultiplier =
+    context.buffs.charBuffsData?.specialMultiplier ?? 0;
   let resonanceChainAttackSpecialMultiplierAttack =
     context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:specialMultiplier`
     ] ?? 0;
+  let resonanceChainAttackSpecialMultiplierAttackType =
+    context.buffs.charResonanceChainsData?.[`specialMultiplier:${attack.type}`] ?? 0;
   let resonanceChainAttackSpecialMultiplier =
     context.buffs.charResonanceChainsData?.specialMultiplier ?? 0;
   let selfBuffAttackSpecialMultiplier =
@@ -888,6 +934,8 @@ export const calculateAttackDamage = (
     strainSpecialMultiplier = 0;
   }
   totalSpecialMultiplier +=
+    selfBuffSpecialMultiplier +
+    resonanceChainAttackSpecialMultiplierAttackType +
     resonanceChainAttackSpecialMultiplier +
     resonanceChainAttackSpecialMultiplierAttack +
     selfBuffAttackSpecialMultiplier +
@@ -907,7 +955,8 @@ export const calculateAttackDamage = (
       attack.key === "TuneRuptureResponseSpectralAnalysisDMG" ||
       attack.key === "TuneRuptureResponseParticleJetDMG" ||
       attack.key === "TuneRuptureResponseStarburstDMG" ||
-      attack.key === "SeraphicDuetBonusDMGPerInstance"
+      attack.key === "SeraphicDuetBonusDMGPerInstance" ||
+      attack.key === "HackResponseMeltdownDMG"
     ) {
       talent = attack.talents[context.character.talentData?.forte];
       resistReduction = totalResistReduction;

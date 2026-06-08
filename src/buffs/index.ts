@@ -2029,6 +2029,266 @@ export const buffsByCharacter = {
       alwaysEnabled: false,
     },
   ],
+  Lucilla: [
+    {
+      key: `InherentSkillSlowMotionEcho`,
+      name: `Inherent Skill: Slow Motion`,
+      details: `<div>When <span style="color:#f7ca2f"><strong>Focus Ring</strong></span> is deployed, Lucilla slows targets within her shot.<br>While casting <span style="color:#f7ca2f"><strong>Resonance Skill - Spotlight</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, Resonators in the team gain 25% Echo Skill DMG Bonus for 30s.<br>These enhancements end when Lucilla switches the Resonance Mode.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "EchoDMGBonus",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "MontageGlacioChafe",
+      name: "Outro Skill: Montage",
+      details: `<div>When in <span style="color:#f7ca2f"><strong>Resonance Mode - Glacio Chafe</strong></span>, <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Chafe</span></strong></span> DMG against targets within a certain range around the active Resonator is Amplified by 60% for 30s.
+  This effect ends when Lucilla switches Resonance Modes.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:GlacioChafe",
+          modifierValue: 0.6,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "MontageEcho",
+      name: "Outro Skill: Montage",
+      details: `<div>When in <span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, grant 50% Echo Skill DMG Amplification to the incoming Resonator for 14s.
+This effect ends when the incoming Resonator is switched off the field or when Lucilla switches Resonance Modes.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Echo",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2SlumberingMoonlightGlacioChafe",
+      name: "Sequence Node 2: Slumbering Moonlight",
+      details: `<div>While casting <span style="color:#f7ca2f"><strong>Resonance Liberation - Clear As Day</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Glacio Chafe</strong></span>, <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Chafe</span></strong></span> DMG against targets within a certain range around the active Resonator is Amplified by 80%.<br>These enhancements last as long as <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span> is active and remain effective for 30s after <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span> ends.<br>These effects end when Lucilla switches Resonance Modes.</div>`,
+      hasStacks: false,
+      stance: "Glacio Chafe",
+      modifiers: [
+        {
+          modifier: "DMGDeepen:GlacioChafe",
+          modifierValue: 0.8,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2SlumberingMoonlightEcho",
+      name: "Sequence Node 2: Slumbering Moonlight",
+      details: `<div>While casting <span style="color:#f7ca2f"><strong>Resonance Liberation - Clear As Day</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, grant 40% Echo Skill DMG Amplification to Resonators in the team.<br>These enhancements last as long as <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span> is active and remain effective for 30s after <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span> ends.<br>These effects end when Lucilla switches Resonance Modes.</div>`,
+      hasStacks: false,
+      stance: "Echo",
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Echo",
+          modifierValue: 0.4,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Rebecca: [
+    {
+      key: `InherentSkillLeftanOpening`,
+      name: `Inherent Skill: Left an Opening!`,
+      details: `<div><span style="color:#f7ca2f"><strong>Heavy Attack - Rat-tat-tat!: Huntress</strong></span> and <span style="color:#f7ca2f"><strong>Heavy Attack - Bang-bang-bang!: Guts</strong></span> gain increased Resistance to Interruption.<br>When Rebecca casts <span style="color:#f7ca2f"><strong>Resonance Liberation - Party 'til Dawn!</strong></span>, the ATK of all nearby Resonators in the team is increased by 20% for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `InherentSkillTagYoureItTuneBreakBoost`,
+      name: `Inherent Skill: Tag, You're It! - Tune Break Boost`,
+      details: `<div>When a Resonator in the team inflicts <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, their Tune Break Boost is increased by 30 for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "tuneBreakBoost",
+          modifierValue: 0.3,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `PreemChoomAmplify`,
+      name: `Outro Skill: Preem Choom - Amplify`,
+      details: `<div>The incoming Resonator gains <span style="color:#f7ca2f"><strong>Edgerunner Bonds</strong></span>, granting 15% All DMG Amplification for 14s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `PreemChoomHeavyAmplify`,
+      name: `Outro Skill: Preem Choom - Heavy`,
+      details: `<div>Resonators with <span style="color:#f7ca2f"><strong>Edgerunner Bonds</strong></span> gain 1 stacks of <span style="color:#f7ca2f"><strong>Overlimit</strong></span> every 0.2s, each stack granting 0.5% Heavy Attack DMG Amplification, up to 35% (Lucy automatically receives max stacks when her <span style="color:#f7ca2f"><strong>Edgerunner Bonds</strong></span> is active). Switching to another Resonator ends <span style="color:#f7ca2f"><strong>Edgerunner Bonds</strong></span> and <span style="color:#f7ca2f"><strong>Overlimit</strong></span> early.</div>`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Heavy",
+          modifierValue: 0.05,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 35,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2OhHeyChoom",
+      name: "Sequence Node 2: Oh, Hey Choom! - All-Attribute",
+      details: `<div>Casting <span style="color:#f7ca2f"><strong>Intro Skill - Yo, It's Big Boomin' Time!</strong></span>, <span style="color:#f7ca2f"><strong>Intro Skill - Hey, Leadhead, Come 'n' Get Me!</strong></span>, or <span style="color:#f7ca2f"><strong>Resonance Liberation - Party 'til Dawn!</strong></span> grants 20% All-Attribute DMG Bonus for all Resonators in the team for 30s.<br><span style="color:#f7ca2f"><strong><a href="#WwLink130806" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="130806">Hot Hand</a></strong></span> regenerates twice as fast when Rebecca is out of combat.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Electro",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Havoc",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Spectro",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Aero",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Glacio",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode2OhHeyChoomDMGDeepen",
+      name: "Sequence Node 2: Oh, Hey Choom! - DMG Deepen",
+      details: `<div>When Resonators in the team inflict <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, they gain 15% All DMG Amplification for 30s.<br><span style="color:#f7ca2f"><strong><a href="#WwLink130806" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="130806">Hot Hand</a></strong></span> regenerates twice as fast when Rebecca is out of combat.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.15,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Lucy: [
+    {
+      key: "OutroSkillCountermeasureProgram",
+      name: "Outro Skill: Countermeasure Program - Basic",
+      details: `<div>The incoming Resonator gains 25% Basic Attack DMG Amplification for 14s or until they are switched out.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Basic",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "OutroSkillCountermeasureProgramHack",
+      name: "Outro Skill: Countermeasure Program - Hack Shifting",
+      details: `<div>Grants all Resonators in the team <span style="color:#f7ca2f"><strong>Countermeasure Program</strong></span> for 25s.<br>While the effect is active, when an active Resonator in the team other than Lucy inflicts <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, that Resonator gains 20% All DMG Amplification.<br>While the effect is active, when a Resonator in the team other than Lucy is attacked, Lucy grants them 30% DMG Reduction for 3s and Stagnates their attacker for 1s. This effect can only trigger up to 1 time while <span style="color:#f7ca2f"><strong>Countermeasure Program</strong></span> is active. Obtaining <span style="color:#f7ca2f"><strong>Countermeasure Program</strong></span> again resets the effective charge. <br>When the All DMG Amplification is effective, switching to another Resonator ends the <span style="color:#f7ca2f"><strong>Countermeasure Program</strong></span> early.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "SequenceNode4NoLivingLegendsinNightCity",
+      name: "Sequence Node 4: No Living Legends in Night City",
+      details: `<div>When Resonators in the team inflict <span style="color:#f7ca2f"><strong><a href="#WwLink151101" class="underline decoration-dotted underline-offset-2 hover:cursor-help hover:text-accent" data-ww-link-id="151101">Hack - Shifting</a></strong></span>, Resonators in the team gain 20% All-Attribute DMG Bonus for 20s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Fusion",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Electro",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Havoc",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Spectro",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Aero",
+          modifierValue: 0.2,
+        },
+        {
+          modifier: "Glacio",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -2573,6 +2833,50 @@ export const allWeaponTeamBuffs = [
     minStacks: 0,
     maxStacks: 0,
     details: `After the wielder inflicts Fusion Burst or Tune Strain - Shifting on the target, their Resonance Liberation DMG Bonus is increased by <span class="param">36%/45%/54%/63%/72%</span> for 5s. While this effect lasts, after Resonators in the team inflict Fusion Burst or Tune Strain - Shifting, their ATK is increased by <span class="param">24%/30%/36%/42%/48%</span> for 15s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
+  {
+    name: "Skull Thrasher",
+    key: "SkullThrasherHackShiftingATKBonus",
+    hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/SkullThrasher.png",
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierByRefinement: {
+          "1": 0.24,
+          "2": 0.3,
+          "3": 0.36,
+          "4": 0.42,
+          "5": 0.48,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `Inflicting Hack - Shifting increases the ATK of Resonators in the team by <span class="param">24%/30%/36%/42%/48%</span> for 30s. Effects of the same name do not stack.`,
+    alwaysEnabled: false,
+  },
+  {
+    name: "Freeze Frame",
+    key: "FreezeFrameResonatorsATKBonus",
+    hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/FreezeFrame.png",
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierByRefinement: {
+          "1": 0.24,
+          "2": 0.3,
+          "3": 0.36,
+          "4": 0.42,
+          "5": 0.48,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `Inflicting Glacio Chafe on the target increases the ATK of all Resonators in the team by <span class="param">24%/30%/36%/42%/48%</span> for 30s. Effects of the same name cannot be stacked.`,
     alwaysEnabled: false,
   },
 ];
