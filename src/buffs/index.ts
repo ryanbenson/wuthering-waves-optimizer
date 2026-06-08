@@ -2245,7 +2245,7 @@ This effect ends when the incoming Resonator is switched off the field or when L
       hasStacks: false,
       modifiers: [
         {
-          modifier: "DEFIgnore",
+          modifier: "DefReduction",
           modifierValue: 0.05,
         },
       ],
