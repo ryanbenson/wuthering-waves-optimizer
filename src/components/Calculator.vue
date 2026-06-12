@@ -18,7 +18,7 @@
           <div
             v-if="true"
             class="alert alert-success mb-6 text-white p-2 px-4">
-            First phase of 3.4 content is available!
+            Lucilla is available!
           </div>
           <CalculatorCharacterSelect
             :key="character"
