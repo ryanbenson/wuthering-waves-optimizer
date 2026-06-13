@@ -35,6 +35,20 @@ export interface ApiCharacterDetail {
       value: number;
     }>;
   }>;
+  Skills: ApiSkill[];
+}
+
+export interface ApiSkill {
+  SkillType: string;
+  SkillName: string;
+  SkillDescribe: string;
+  SkillAttributes: Array<{
+    attributeId: number;
+    attributeName: string;
+    values?: string[];
+    Description?: string;
+  }>;
+  SkillDetailNum?: string[];
 }
 
 interface CharacterListResponse {

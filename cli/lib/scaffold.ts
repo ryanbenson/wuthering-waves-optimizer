@@ -7,8 +7,9 @@ import {
   formatBasicFileContent,
   formatCharacterFileContent,
 } from "./characterStats.js";
+import { buildSkillAttackFiles } from "./skillAttacks.js";
 
-const ATTACK_STUB = `export const ATTACK_NAME = {
+const TUNE_BREAK_STUB = `export const tuneBreakAttacks = {
   name: "",
   description: "",
   attacks: [],
@@ -48,10 +49,6 @@ export function getData() {
 }
 `;
 
-function getAttackFileContent(exportName: string): string {
-  return ATTACK_STUB.replace("ATTACK_NAME", exportName);
-}
-
 export function scaffoldCharacterFolder(
   charactersDir: string,
   key: string,
@@ -62,17 +59,13 @@ export function scaffoldCharacterFolder(
 
   const basic = extractBasicData(detail, key);
   const stats = buildCharacterStats(detail);
+  const skillAttackFiles = buildSkillAttackFiles(detail);
 
   const files: Record<string, string> = {
     "basic.ts": formatBasicFileContent(basic),
     "character.ts": formatCharacterFileContent(stats),
-    "basicAttacks.ts": getAttackFileContent("basicAttacks"),
-    "skillAttacks.ts": getAttackFileContent("skillAttacks"),
-    "liberationAttacks.ts": getAttackFileContent("liberationAttacks"),
-    "forteCircuitAttacks.ts": getAttackFileContent("forteCircuitAttacks"),
-    "introAttacks.ts": getAttackFileContent("introAttacks"),
-    "outroAttacks.ts": getAttackFileContent("outroAttacks"),
-    "tuneBreakAttacks.ts": getAttackFileContent("tuneBreakAttacks"),
+    ...skillAttackFiles,
+    "tuneBreakAttacks.ts": TUNE_BREAK_STUB,
     "buffs.ts": "export const buffs = [];\n",
     "resonanceChains.ts": "export const resonanceChains = [];\n",
     "presets.ts":
