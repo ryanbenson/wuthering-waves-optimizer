@@ -2032,7 +2032,7 @@ export const buffsByCharacter = {
   Lucilla: [
     {
       key: `InherentSkillSlowMotionEcho`,
-      name: `Inherent Skill: Slow Motion`,
+      name: `Inherent Skill: Slow Motion - Echo`,
       details: `<div>When <span style="color:#f7ca2f"><strong>Focus Ring</strong></span> is deployed, Lucilla slows targets within her shot.<br>While casting <span style="color:#f7ca2f"><strong>Resonance Skill - Spotlight</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, Resonators in the team gain 25% Echo Skill DMG Bonus for 30s.<br>These enhancements end when Lucilla switches the Resonance Mode.</div>`,
       hasStacks: false,
       modifiers: [
@@ -2043,6 +2043,37 @@ export const buffsByCharacter = {
       ],
       minStacks: 0,
       maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `InherentSkillSlowMotionGlacioChafe`,
+      name: `Inherent Skill: Slow Motion - Glacio Chafe`,
+      details: `<div>When <span style="color:#f7ca2f"><strong>Focus Ring</strong></span> is deployed, Lucilla slows targets within her shot.<br>While casting <span style="color:#f7ca2f"><strong>Resonance Skill - Spotlight</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Glacio Chafe</strong></span>, Glacio RES of targets within a certain range around the active Resonator is reduced by 8% for 30s. If an enemy falls to <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Chafe</span></strong></span> DMG during this time, it counts as caused by the nearest active Resonator.<br>These enhancements end when Lucilla switches the Resonance Mode.</div>`,
+      hasStacks: false,
+      stance: "Glacio Chafe",
+      modifiers: [
+        {
+          modifier: "ResistShred:Glacio",
+          modifierValue: 0.08,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: "Zoom",
+      name: "Zoom",
+      details: `<div>Each stack of <span style="color:#f7ca2f"><strong>Zoom</strong></span> increases the Crit. DMG of the active Resonator's Echo Skill by 10%.</div>`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "CritDMG:Echo",
+          modifierValue: .1,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 4,
       alwaysEnabled: false,
     },
     {
