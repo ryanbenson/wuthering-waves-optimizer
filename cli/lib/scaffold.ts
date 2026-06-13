@@ -1,13 +1,12 @@
 import fs from "fs";
 import path from "path";
-
-export interface CharacterScaffoldInput {
-  key: string;
-  name: string;
-  rarity: number;
-  element: string;
-  weaponPlural: string;
-}
+import type { ApiCharacterDetail } from "./api.js";
+import {
+  buildCharacterStats,
+  extractBasicData,
+  formatBasicFileContent,
+  formatCharacterFileContent,
+} from "./characterStats.js";
 
 const ATTACK_STUB = `export const ATTACK_NAME = {
   name: "",
@@ -49,55 +48,24 @@ export function getData() {
 }
 `;
 
-function getBasicFileContent(input: CharacterScaffoldInput): string {
-  return `export function getCharacterBasicInfo(): CharacterBasicInfo {
-  return {
-    name: "${input.name}",
-    rarity: ${input.rarity},
-    weapon: "${input.weaponPlural}",
-    avatarUrl: "${input.key}.png",
-    gender: "female",
-    element: "${input.element}",
-  };
-}
-`;
-}
-
-function getCharacterFileContent(): string {
-  return `interface CharacterData {
-  [level: string]: LevelData;
-}
-
-interface LevelData {
-  hp: number;
-  attack: number;
-  defense: number;
-}
-
-const characterData: CharacterData = {};
-
-export const character = { ...characterData };
-
-export function getCharacterStatsByLevel(level: string): LevelData {
-  return characterData[level];
-}
-`;
-}
-
 function getAttackFileContent(exportName: string): string {
   return ATTACK_STUB.replace("ATTACK_NAME", exportName);
 }
 
 export function scaffoldCharacterFolder(
   charactersDir: string,
-  input: CharacterScaffoldInput,
+  key: string,
+  detail: ApiCharacterDetail,
 ): string {
-  const characterDir = path.join(charactersDir, input.key);
+  const characterDir = path.join(charactersDir, key);
   fs.mkdirSync(characterDir, { recursive: true });
 
+  const basic = extractBasicData(detail, key);
+  const stats = buildCharacterStats(detail);
+
   const files: Record<string, string> = {
-    "basic.ts": getBasicFileContent(input),
-    "character.ts": getCharacterFileContent(),
+    "basic.ts": formatBasicFileContent(basic),
+    "character.ts": formatCharacterFileContent(stats),
     "basicAttacks.ts": getAttackFileContent("basicAttacks"),
     "skillAttacks.ts": getAttackFileContent("skillAttacks"),
     "liberationAttacks.ts": getAttackFileContent("liberationAttacks"),

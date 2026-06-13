@@ -88,13 +88,7 @@ export async function runGenerateCharacter(): Promise<void> {
     }
   }
 
-  const characterDir = scaffoldCharacterFolder(charactersDir, {
-    key,
-    name,
-    rarity,
-    element,
-    weaponPlural: detail.WeaponTypeName,
-  });
+  const characterDir = scaffoldCharacterFolder(charactersDir, key, detail);
 
   patchCharactersRegistry(charactersRegistryPath, {
     key,

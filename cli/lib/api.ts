@@ -21,6 +21,20 @@ export interface ApiCharacterDetail {
   QualityId: number;
   ElementName: string;
   WeaponTypeName: string;
+  favorRole: {
+    Sex: {
+      Content: string;
+    };
+  };
+  Properties: Array<{
+    Name: string;
+    BaseValue: number;
+    GrowthValues: Array<{
+      growthId: number;
+      level: number;
+      value: number;
+    }>;
+  }>;
 }
 
 interface CharacterListResponse {
