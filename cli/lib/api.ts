@@ -1,0 +1,48 @@
+const CHARACTER_LIST_URL = "https://api-v2.encore.moe/api/en/character";
+const CHARACTER_DETAIL_URL = "https://api-v2.encore.moe/api/en/character";
+
+export interface ApiCharacterListItem {
+  Id: number;
+  Name: string;
+  QualityId: number;
+  Element: {
+    Name: string;
+  };
+  WeaponType: {
+    Name: string;
+  };
+}
+
+export interface ApiCharacterDetail {
+  Id: number;
+  Name: {
+    Content: string;
+  };
+  QualityId: number;
+  ElementName: string;
+  WeaponTypeName: string;
+}
+
+interface CharacterListResponse {
+  roleList: ApiCharacterListItem[];
+}
+
+async function fetchJson<T>(url: string): Promise<T> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`API request failed (${response.status}): ${url}`);
+  }
+  return response.json() as Promise<T>;
+}
+
+export async function fetchCharacterList(): Promise<ApiCharacterListItem[]> {
+  const data = await fetchJson<CharacterListResponse>(CHARACTER_LIST_URL);
+  // API returns oldest-first; reverse so newest characters appear first.
+  return [...data.roleList].reverse();
+}
+
+export async function fetchCharacterDetail(
+  id: number,
+): Promise<ApiCharacterDetail> {
+  return fetchJson<ApiCharacterDetail>(`${CHARACTER_DETAIL_URL}/${id}`);
+}
