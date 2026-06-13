@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>June 13, 2026</h3>
+    <ul>
+      <li>Adds a couple of mising Lucilla team buffs.</li>
+    </ul>
     <h3>June 12, 2026</h3>
     <ul>
       <li>Releases Lucilla</li>

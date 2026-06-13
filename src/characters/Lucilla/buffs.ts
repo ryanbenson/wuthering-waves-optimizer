@@ -161,12 +161,7 @@ This effect ends when Lucilla switches Resonance Modes.</div>`,
     name: `Inherent Skill: Remembrance`,
     details: `<div><span style="color:#f7ca2f"><strong><span class="Highlight">Film Roll</span></strong></span> can now be stacked up to 10 stacks, and <span style="color:#f7ca2f"><strong><span class="Highlight">Zoom</span></strong></span> up to 4 stacks.<br>Each time Lucilla consumes <span style="color:#f7ca2f"><strong><span class="Highlight">Photo</span></strong></span> when in <span style="color:#f7ca2f"><strong>Resonance Mode - Glacio Chafe</strong></span>/<span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, she gains 2 stacks of <span style="color:#f7ca2f"><strong><span class="Highlight">Film Roll</span></strong></span>/1 stack of <span style="color:#f7ca2f"><strong><span class="Highlight">Zoom</span></strong></span>.</div>`,
     hasStacks: false,
-    modifiers: [
-      {
-        modifier: "Spectro",
-        modifierValue: 0.25,
-      },
-    ],
+    modifiers: [],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
