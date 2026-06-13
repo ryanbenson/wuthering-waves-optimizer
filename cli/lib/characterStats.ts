@@ -1,4 +1,5 @@
 import type { ApiCharacterDetail } from "./api.js";
+import { toPluralWeapon } from "./naming.js";
 
 interface LevelStats {
   hp: number;
@@ -69,7 +70,7 @@ export function extractBasicData(
     key,
     rarity: detail.QualityId,
     element: detail.ElementName,
-    weaponPlural: detail.WeaponTypeName,
+    weaponPlural: toPluralWeapon(detail.WeaponTypeName),
     gender,
     ...(tuneBreakBoost !== undefined && tuneBreakBoost > 0
       ? { tuneBreakBoost }

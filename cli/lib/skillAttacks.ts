@@ -38,6 +38,8 @@ const SKILL_TYPE_TO_EXPORT: Record<string, string> = {
 
 const SKILL_ATTACK_EXPORTS = Object.values(SKILL_TYPE_TO_EXPORT);
 
+const SKIPPED_ATTACK_ATTRIBUTE_PATTERNS = ["STA Cost", "Concerto Regen"];
+
 function decodeHtml(text: string): string {
   return text
     .replace(/\\u003C/gi, "<")
@@ -153,11 +155,20 @@ function getOutroAttacksFromDetailNum(skill: ApiSkill): AttackWithTalent[] {
   });
 }
 
+function isSkippedAttackAttribute(attributeName: string): boolean {
+  return SKIPPED_ATTACK_ATTRIBUTE_PATTERNS.some((pattern) =>
+    attributeName.includes(pattern),
+  );
+}
+
 function buildAttacksFromAttributes(
   attributes: ApiSkill["SkillAttributes"],
 ): AttackWithTalents[] {
   return attributes
-    .filter((attribute) => attribute.values?.length)
+    .filter(
+      (attribute) =>
+        attribute.values?.length && !isSkippedAttackAttribute(attribute.attributeName),
+    )
     .map((attribute) => ({
       key: toAttackKey(attribute.attributeName),
       label: attribute.attributeName,
