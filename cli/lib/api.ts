@@ -38,6 +38,13 @@ export interface ApiCharacterDetail {
   Skills: ApiSkill[];
 }
 
+export interface ApiDamageListEntry {
+  EntryNumber: number;
+  Type: string;
+  SubType?: string;
+  RateLv: string[];
+}
+
 export interface ApiSkill {
   SkillType: string;
   SkillName: string;
@@ -49,6 +56,7 @@ export interface ApiSkill {
     Description?: string;
   }>;
   SkillDetailNum?: string[];
+  DamageList?: ApiDamageListEntry[];
 }
 
 interface CharacterListResponse {

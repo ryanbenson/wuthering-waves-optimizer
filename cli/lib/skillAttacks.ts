@@ -1,4 +1,9 @@
 import type { ApiCharacterDetail, ApiSkill } from "./api.js";
+import {
+  getDefaultAttackType,
+  resolveSkillAttackMetadata,
+  type AttackMetadata,
+} from "./damageListMatching.js";
 import { toAttackKey } from "./naming.js";
 
 interface AttackTalents {
@@ -10,6 +15,7 @@ interface AttackWithTalents {
   label: string;
   talents: AttackTalents;
   type: string;
+  subType?: string;
 }
 
 interface AttackWithTalent {
@@ -17,6 +23,7 @@ interface AttackWithTalent {
   label: string;
   talent: string;
   type: string;
+  subType?: string;
 }
 
 type GeneratedAttack = AttackWithTalents | AttackWithTalent;
@@ -43,6 +50,7 @@ const SKIPPED_ATTACK_ATTRIBUTE_PATTERNS = [
   "Concerto Regen",
   "Resonance Cost",
   "Cooldown",
+  "Duration",
 ];
 
 function decodeHtml(text: string): string {
@@ -126,7 +134,10 @@ function getOutroAttackLabel(
   return `${skillName} Additional DMG ${index + 1}`;
 }
 
-function getOutroAttacksFromDetailNum(skill: ApiSkill): AttackWithTalent[] {
+function getOutroAttacksFromDetailNum(
+  skill: ApiSkill,
+  defaultType: string,
+): AttackWithTalent[] {
   const detailNum = skill.SkillDetailNum;
   if (!detailNum?.length) {
     return [];
@@ -140,7 +151,7 @@ function getOutroAttacksFromDetailNum(skill: ApiSkill): AttackWithTalent[] {
         key: toAttackKey(label),
         label,
         talent: compoundTalent,
-        type: "Basic",
+        type: defaultType,
       },
     ];
   }
@@ -155,7 +166,7 @@ function getOutroAttacksFromDetailNum(skill: ApiSkill): AttackWithTalent[] {
       key: toAttackKey(label),
       label,
       talent,
-      type: "Basic",
+      type: defaultType,
     };
   });
 }
@@ -166,44 +177,76 @@ function isSkippedAttackAttribute(attributeName: string): boolean {
   );
 }
 
+function getAttackMetadata(
+  attributeName: string,
+  metadataByAttribute: Map<string, AttackMetadata>,
+  defaultType: string,
+): AttackMetadata {
+  return (
+    metadataByAttribute.get(attributeName) ?? {
+      type: defaultType,
+    }
+  );
+}
+
 function buildAttacksFromAttributes(
-  attributes: ApiSkill["SkillAttributes"],
+  skill: ApiSkill,
+  metadataByAttribute: Map<string, AttackMetadata>,
 ): AttackWithTalents[] {
-  return attributes
-    .filter(
-      (attribute) =>
-        attribute.values?.length && !isSkippedAttackAttribute(attribute.attributeName),
-    )
-    .map((attribute) => ({
+  const defaultType = getDefaultAttackType(skill.SkillType);
+
+  return skill.SkillAttributes.filter(
+    (attribute) =>
+      attribute.values?.length && !isSkippedAttackAttribute(attribute.attributeName),
+  ).map((attribute) => {
+    const metadata = getAttackMetadata(
+      attribute.attributeName,
+      metadataByAttribute,
+      defaultType,
+    );
+
+    return {
       key: toAttackKey(attribute.attributeName),
       label: attribute.attributeName,
       talents: buildTalents(attribute.values ?? []),
-      type: "Basic",
-    }));
+      type: metadata.type,
+      ...(metadata.subType ? { subType: metadata.subType } : {}),
+    };
+  });
 }
 
-function buildOutroAttacks(skill: ApiSkill): GeneratedAttack[] {
-  const attributeAttacks = buildAttacksFromAttributes(skill.SkillAttributes);
+function buildOutroAttacks(
+  skill: ApiSkill,
+  metadataByAttribute: Map<string, AttackMetadata>,
+): GeneratedAttack[] {
+  const defaultType = getDefaultAttackType(skill.SkillType);
+  const attributeAttacks = buildAttacksFromAttributes(skill, metadataByAttribute);
   if (attributeAttacks.length > 0) {
     return attributeAttacks;
   }
 
-  return getOutroAttacksFromDetailNum(skill);
+  return getOutroAttacksFromDetailNum(skill, defaultType);
 }
 
-function buildAttacksForSkill(skill: ApiSkill): GeneratedAttack[] {
+function buildAttacksForSkill(
+  skill: ApiSkill,
+  metadataByAttribute: Map<string, AttackMetadata>,
+): GeneratedAttack[] {
   if (skill.SkillType === "Outro Skill") {
-    return buildOutroAttacks(skill);
+    return buildOutroAttacks(skill, metadataByAttribute);
   }
 
-  return buildAttacksFromAttributes(skill.SkillAttributes);
+  return buildAttacksFromAttributes(skill, metadataByAttribute);
 }
 
-function buildSkillAttackData(skill: ApiSkill): SkillAttackData {
+function buildSkillAttackData(
+  skill: ApiSkill,
+  metadataByAttribute: Map<string, AttackMetadata>,
+): SkillAttackData {
   return {
     name: `${skill.SkillType}: ${skill.SkillName}`,
     description: decodeHtml(skill.SkillDescribe ?? ""),
-    attacks: buildAttacksForSkill(skill),
+    attacks: buildAttacksForSkill(skill, metadataByAttribute),
   };
 }
 
@@ -232,6 +275,9 @@ function formatAttack(
   }
 
   lines.push(`      type: ${JSON.stringify(attack.type)},`);
+  if (attack.subType) {
+    lines.push(`      subType: ${JSON.stringify(attack.subType)},`);
+  }
   lines.push(`    }${index < total - 1 ? "," : ""}`);
   return lines.join("\n");
 }
@@ -266,32 +312,48 @@ function getEmptySkillAttackData(): SkillAttackData {
 export function getSkillGenerationNotices(
   detail: ApiCharacterDetail,
 ): string[] {
-  const outroSkill = detail.Skills.find(
-    (skill) => skill.SkillType === "Outro Skill",
-  );
-  if (outroSkill === undefined) {
-    return [];
+  const notices: string[] = [];
+
+  for (const skill of detail.Skills) {
+    const exportName = SKILL_TYPE_TO_EXPORT[skill.SkillType];
+    if (exportName === undefined) {
+      continue;
+    }
+
+    const { notices: typeNotices } = resolveSkillAttackMetadata(skill);
+    for (const notice of typeNotices) {
+      notices.push(`${exportName}.ts: ${notice}`);
+    }
+
+    if (skill.SkillType !== "Outro Skill") {
+      continue;
+    }
+
+    const hasAttributeAttacks = skill.SkillAttributes.some(
+      (attribute) => attribute.values?.length,
+    );
+    if (hasAttributeAttacks) {
+      continue;
+    }
+
+    const outroAttacks = getOutroAttacksFromDetailNum(
+      skill,
+      getDefaultAttackType(skill.SkillType),
+    );
+    if (outroAttacks.length <= 1) {
+      continue;
+    }
+
+    const attackSummary = outroAttacks
+      .map((attack) => `${attack.label} (${attack.talent})`)
+      .join(", ");
+
+    notices.push(
+      `outroAttacks.ts: Outro skill "${skill.SkillName}" has ${outroAttacks.length} attacks from SkillDetailNum. Review keys and labels manually — generated: ${attackSummary}.`,
+    );
   }
 
-  const hasAttributeAttacks = outroSkill.SkillAttributes.some(
-    (attribute) => attribute.values?.length,
-  );
-  if (hasAttributeAttacks) {
-    return [];
-  }
-
-  const outroAttacks = getOutroAttacksFromDetailNum(outroSkill);
-  if (outroAttacks.length <= 1) {
-    return [];
-  }
-
-  const attackSummary = outroAttacks
-    .map((attack) => `${attack.label} (${attack.talent})`)
-    .join(", ");
-
-  return [
-    `Outro skill "${outroSkill.SkillName}" has ${outroAttacks.length} attacks from SkillDetailNum. Review outroAttacks.ts manually — keys and labels may not match your usual "${outroSkill.SkillName}" naming. Generated: ${attackSummary}.`,
-  ];
+  return notices;
 }
 
 export function buildSkillAttackFiles(
@@ -310,7 +372,8 @@ export function buildSkillAttackFiles(
       continue;
     }
 
-    skillDataByExport[exportName] = buildSkillAttackData(skill);
+    const { byAttributeName } = resolveSkillAttackMetadata(skill);
+    skillDataByExport[exportName] = buildSkillAttackData(skill, byAttributeName);
   }
 
   return Object.fromEntries(
