@@ -12,6 +12,7 @@ import {
   patchCharactersRegistry,
 } from "../lib/charactersRegistry.js";
 import { toCharacterKey, toSingularWeapon } from "../lib/naming.js";
+import { createProgressSpinner, withSpinner } from "../lib/progress.js";
 import {
   characterFolderExists,
   scaffoldCharacterFolder,
@@ -36,8 +37,11 @@ function characterExists(key: string): boolean {
 }
 
 export async function runGenerateCharacter(): Promise<void> {
-  console.log("Fetching character list...");
-  const characters = await fetchCharacterList();
+  const characters = await withSpinner(
+    "Fetching character list from Encore API",
+    () => fetchCharacterList(),
+    (result) => `Loaded ${result.length} characters`,
+  );
 
   const selectedId = await search({
     message: "Select a character to generate",
@@ -62,8 +66,12 @@ export async function runGenerateCharacter(): Promise<void> {
     return;
   }
 
-  console.log(`Fetching character sheet for ID ${selectedId}...`);
-  const detail = await fetchCharacterDetail(selectedId);
+  const detail = await withSpinner(
+    `Fetching character sheet for ID ${selectedId}`,
+    () => fetchCharacterDetail(selectedId),
+    (result) => `Loaded ${result.Name.Content} (${result.QualityId}★ ${result.ElementName})`,
+  );
+
   const name = detail.Name.Content;
   const key = toCharacterKey(name);
   const rarity = detail.QualityId as 4 | 5;
@@ -89,17 +97,31 @@ export async function runGenerateCharacter(): Promise<void> {
     }
   }
 
-  const characterDir = scaffoldCharacterFolder(charactersDir, key, detail);
+  const progress = createProgressSpinner(`Generating ${name}`);
+  let characterDir = "";
 
-  patchCharactersRegistry(charactersRegistryPath, {
-    key,
-    name,
-    element,
-    rarity,
-    weapon,
-  });
+  try {
+    characterDir = scaffoldCharacterFolder(charactersDir, key, detail, (message) => {
+      progress.update(`Generating ${name} — ${message}`);
+    });
 
-  console.log(`\nCreated character scaffold at ${path.relative(projectRoot, characterDir)}`);
+    progress.update(`Generating ${name} — Updating characters.ts registry`);
+    patchCharactersRegistry(charactersRegistryPath, {
+      key,
+      name,
+      element,
+      rarity,
+      weapon,
+    });
+
+    progress.succeed(
+      `Generated ${name} at ${path.relative(projectRoot, characterDir)}`,
+    );
+  } catch (error) {
+    progress.fail(`Failed to generate ${name}`);
+    throw error;
+  }
+
   console.log(`Updated ${path.relative(projectRoot, charactersRegistryPath)}`);
 
   const notices = getSkillGenerationNotices(detail);

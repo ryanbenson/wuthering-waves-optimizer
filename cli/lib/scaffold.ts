@@ -53,12 +53,16 @@ export function scaffoldCharacterFolder(
   charactersDir: string,
   key: string,
   detail: ApiCharacterDetail,
+  onProgress?: (message: string) => void,
 ): string {
   const characterDir = path.join(charactersDir, key);
   fs.mkdirSync(characterDir, { recursive: true });
 
+  onProgress?.("Building basic info and character stats");
   const basic = extractBasicData(detail, key);
   const stats = buildCharacterStats(detail);
+
+  onProgress?.("Building skill attack files");
   const skillAttackFiles = buildSkillAttackFiles(detail);
 
   const files: Record<string, string> = {
@@ -73,8 +77,10 @@ export function scaffoldCharacterFolder(
     "index.ts": INDEX_TEMPLATE,
   };
 
-  for (const [fileName, fileContent] of Object.entries(files)) {
-    fs.writeFileSync(path.join(characterDir, fileName), fileContent);
+  const fileNames = Object.keys(files);
+  for (const [index, fileName] of fileNames.entries()) {
+    onProgress?.(`Writing ${fileName} (${index + 1}/${fileNames.length})`);
+    fs.writeFileSync(path.join(characterDir, fileName), files[fileName]);
   }
 
   return characterDir;
