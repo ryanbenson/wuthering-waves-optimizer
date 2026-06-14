@@ -2127,12 +2127,12 @@ This effect ends when the incoming Resonator is switched off the field or when L
     {
       key: "SequenceNode2SlumberingMoonlightEcho",
       name: "Sequence Node 2: Slumbering Moonlight",
-      details: `<div>While casting <span style="color:#f7ca2f"><strong>Resonance Liberation - Clear As Day</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, grant 40% Echo Skill DMG Amplification to Resonators in the team.<br>These enhancements last as long as <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span> is active and remain effective for 30s after <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span> ends.<br>These effects end when Lucilla switches Resonance Modes.</div>`,
+      details: `<div>While casting <span style="color:#f7ca2f"><strong>Resonance Liberation - Clear As Day</strong></span>, Lucilla grants the following enhancements based on her <span style="color:#f7ca2f"><strong>Resonance Mode</strong></span>:<br>- When in <span style="color:#f7ca2f"><strong>Resonance Mode - Echo</strong></span>, grant 40% Echo Skill DMG Bonus to Resonators in the team.<br>These enhancements last as long as <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span> is active and remain effective for 30s after <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span> ends.<br>These effects end when Lucilla switches Resonance Modes.</div>`,
       hasStacks: false,
       stance: "Echo",
       modifiers: [
         {
-          modifier: "DMGDeepen:Echo",
+          modifier: "EchoDMGBonus",
           modifierValue: 0.4,
         },
       ],
