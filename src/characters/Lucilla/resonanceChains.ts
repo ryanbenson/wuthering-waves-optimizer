@@ -102,7 +102,6 @@ export const resonanceChains = [
     hasStacks: true,
     modifiers: [
       {
-        modifier: "specialMultiplier",
         modifySpecificTalents: [
           "LettingItGoDMG",
         ],
