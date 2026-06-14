@@ -42,6 +42,8 @@ export interface ApiDamageListEntry {
   EntryNumber: number;
   Type: string;
   SubType?: string;
+  PropertyName?: string;
+  DmgType?: string;
   RateLv: string[];
 }
 

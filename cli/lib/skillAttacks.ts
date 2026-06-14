@@ -1,6 +1,8 @@
 import type { ApiCharacterDetail, ApiSkill } from "./api.js";
 import {
   getDefaultAttackType,
+  inferAttackMetadataFromAttributeName,
+  inferSkillHealShieldAttribute,
   resolveSkillAttackMetadata,
   type AttackMetadata,
 } from "./damageListMatching.js";
@@ -16,6 +18,7 @@ interface AttackWithTalents {
   talents: AttackTalents;
   type: string;
   subType?: string;
+  attribute?: string;
 }
 
 interface AttackWithTalent {
@@ -24,6 +27,7 @@ interface AttackWithTalent {
   talent: string;
   type: string;
   subType?: string;
+  attribute?: string;
 }
 
 type GeneratedAttack = AttackWithTalents | AttackWithTalent;
@@ -49,8 +53,10 @@ const SKIPPED_ATTACK_ATTRIBUTE_PATTERNS = [
   "STA Cost",
   "Concerto Regen",
   "Resonance Cost",
+  "Energy Cost",
   "Cooldown",
   "Duration",
+  "Damage Reduction",
 ];
 
 function decodeHtml(text: string): string {
@@ -181,12 +187,25 @@ function getAttackMetadata(
   attributeName: string,
   metadataByAttribute: Map<string, AttackMetadata>,
   defaultType: string,
+  skill: ApiSkill,
 ): AttackMetadata {
-  return (
-    metadataByAttribute.get(attributeName) ?? {
-      type: defaultType,
-    }
-  );
+  const matched = metadataByAttribute.get(attributeName);
+  if (matched) {
+    return matched;
+  }
+
+  const inferred = inferAttackMetadataFromAttributeName(attributeName);
+  if (inferred) {
+    const healShieldAttribute = inferSkillHealShieldAttribute(skill);
+    return {
+      ...inferred,
+      ...(healShieldAttribute ? { attribute: healShieldAttribute } : {}),
+    };
+  }
+
+  return {
+    type: defaultType,
+  };
 }
 
 function buildAttacksFromAttributes(
@@ -203,6 +222,7 @@ function buildAttacksFromAttributes(
       attribute.attributeName,
       metadataByAttribute,
       defaultType,
+      skill,
     );
 
     return {
@@ -211,6 +231,7 @@ function buildAttacksFromAttributes(
       talents: buildTalents(attribute.values ?? []),
       type: metadata.type,
       ...(metadata.subType ? { subType: metadata.subType } : {}),
+      ...(metadata.attribute ? { attribute: metadata.attribute } : {}),
     };
   });
 }
@@ -278,6 +299,9 @@ function formatAttack(
   if (attack.subType) {
     lines.push(`      subType: ${JSON.stringify(attack.subType)},`);
   }
+  if (attack.attribute) {
+    lines.push(`      attribute: ${JSON.stringify(attack.attribute)},`);
+  }
   lines.push(`    }${index < total - 1 ? "," : ""}`);
   return lines.join("\n");
 }
@@ -309,6 +333,62 @@ function getEmptySkillAttackData(): SkillAttackData {
   };
 }
 
+function getMissingAttributeNotices(
+  exportName: string,
+  skill: ApiSkill,
+  metadataByAttribute: Map<string, AttackMetadata>,
+): string[] {
+  const notices: string[] = [];
+  const attacks = buildAttacksForSkill(skill, metadataByAttribute);
+
+  for (const attack of attacks) {
+    if (
+      (attack.type === "Healing" || attack.type === "Shield") &&
+      !attack.attribute
+    ) {
+      notices.push(
+        `${exportName}.ts: "${attack.label}" is type ${attack.type} but has no attribute — add attribute manually (hp, defense, or EnergyRegen).`,
+      );
+    }
+  }
+
+  return notices;
+}
+
+function mergeAttributeReviewNotices(
+  notices: string[],
+  exportName: string,
+  skill: ApiSkill,
+  metadataByAttribute: Map<string, AttackMetadata>,
+): void {
+  for (const attributeNotice of getMissingAttributeNotices(
+    exportName,
+    skill,
+    metadataByAttribute,
+  )) {
+    const labelMatch = attributeNotice.match(/"([^"]+)"/);
+    const label = labelMatch?.[1];
+    if (!label) {
+      notices.push(attributeNotice);
+      continue;
+    }
+
+    const genericIndex = notices.findIndex(
+      (notice) =>
+        notice.startsWith(`${exportName}.ts:`) &&
+        notice.includes(`"${label}"`) &&
+        notice.includes("Could not match DamageList entry"),
+    );
+
+    if (genericIndex >= 0) {
+      notices[genericIndex] = attributeNotice;
+      continue;
+    }
+
+    notices.push(attributeNotice);
+  }
+}
+
 export function getSkillGenerationNotices(
   detail: ApiCharacterDetail,
 ): string[] {
@@ -320,10 +400,13 @@ export function getSkillGenerationNotices(
       continue;
     }
 
-    const { notices: typeNotices } = resolveSkillAttackMetadata(skill);
+    const { byAttributeName, notices: typeNotices } =
+      resolveSkillAttackMetadata(skill);
     for (const notice of typeNotices) {
       notices.push(`${exportName}.ts: ${notice}`);
     }
+
+    mergeAttributeReviewNotices(notices, exportName, skill, byAttributeName);
 
     if (skill.SkillType !== "Outro Skill") {
       continue;

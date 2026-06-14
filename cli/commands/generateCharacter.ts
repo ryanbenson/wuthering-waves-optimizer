@@ -18,6 +18,7 @@ import {
   scaffoldCharacterFolder,
 } from "../lib/scaffold.js";
 import { getSkillGenerationNotices } from "../lib/skillAttacks.js";
+import { printReviewChecklist } from "../lib/reviewNotices.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, "../..");
@@ -124,11 +125,5 @@ export async function runGenerateCharacter(): Promise<void> {
 
   console.log(`Updated ${path.relative(projectRoot, charactersRegistryPath)}`);
 
-  const notices = getSkillGenerationNotices(detail);
-  if (notices.length > 0) {
-    console.log("\nReview needed:");
-    for (const notice of notices) {
-      console.log(`  - ${notice}`);
-    }
-  }
+  printReviewChecklist(getSkillGenerationNotices(detail));
 }

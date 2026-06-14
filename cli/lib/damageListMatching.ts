@@ -3,6 +3,7 @@ import type { ApiDamageListEntry, ApiSkill } from "./api.js";
 export interface AttackMetadata {
   type: string;
   subType?: string;
+  attribute?: string;
 }
 
 export interface SkillAttackMetadataResult {
@@ -27,12 +28,28 @@ const SUBTYPE_MAP: Record<string, string> = {
   "Electro Flare": "ElectroFlare",
 };
 
+const PROPERTY_NAME_MAP: Record<string, string | undefined> = {
+  ATK: undefined,
+  Attack: undefined,
+  HP: "hp",
+  DEF: "defense",
+  Defense: "defense",
+  "Energy Regen": "EnergyRegen",
+};
+
+const DMG_TYPE_TO_ATTACK_TYPE: Record<string, string> = {
+  Heal: "Healing",
+  Shield: "Shield",
+};
+
 const SKIPPED_ATTRIBUTE_PATTERNS = [
   "STA Cost",
   "Concerto Regen",
   "Resonance Cost",
+  "Energy Cost",
   "Cooldown",
   "Duration",
+  "Damage Reduction",
 ];
 
 function ratesMatch(apiRate: string | undefined, talentPercent: string): boolean {
@@ -48,11 +65,28 @@ function ratesMatch(apiRate: string | undefined, talentPercent: string): boolean
 
 export function parseTalentPercents(talent: string): string[] {
   const percents: string[] = [];
+  const segments = talent.split("+");
 
-  for (const segment of talent.split("+")) {
-    const match = segment.match(/(\d+(?:\.\d+)?)%/);
-    if (match) {
-      percents.push(`${Number.parseFloat(match[1]).toFixed(2)}%`);
+  for (let index = 0; index < segments.length; index += 1) {
+    const segment = segments[index];
+    const explicitMatch = segment.match(/(\d+(?:\.\d+)?)%/);
+    if (explicitMatch) {
+      percents.push(`${Number.parseFloat(explicitMatch[1]).toFixed(2)}%`);
+      continue;
+    }
+
+    if (index === 0) {
+      continue;
+    }
+
+    const implicitMatch = segment.match(/(\d+(?:\.\d+)?)/);
+    if (!implicitMatch) {
+      continue;
+    }
+
+    const value = Number.parseFloat(implicitMatch[1]);
+    if (value <= 200) {
+      percents.push(`${value.toFixed(2)}%`);
     }
   }
 
@@ -71,13 +105,43 @@ function mapSubType(apiSubType: string | undefined): string | undefined {
   return SUBTYPE_MAP[apiSubType];
 }
 
-function deriveAttackMetadata(
+function deriveAttributeMetadata(
   matched: ApiDamageListEntry[],
-): { metadata?: AttackMetadata; notice?: string } {
-  if (matched.length === 0) {
+): { attribute?: string; notice?: string } {
+  const propertyNames = [
+    ...new Set(matched.map((entry) => entry.PropertyName).filter(Boolean)),
+  ] as string[];
+
+  if (propertyNames.length === 0) {
     return {};
   }
 
+  const unknownPropertyNames = propertyNames.filter(
+    (propertyName) => !(propertyName in PROPERTY_NAME_MAP),
+  );
+  if (unknownPropertyNames.length > 0) {
+    return {
+      notice: `Unknown DamageList PropertyName(s): ${unknownPropertyNames.join(", ")}`,
+    };
+  }
+
+  const mappedAttributes = propertyNames
+    .map((propertyName) => PROPERTY_NAME_MAP[propertyName])
+    .filter((attribute): attribute is string => attribute !== undefined);
+
+  const uniqueAttributes = [...new Set(mappedAttributes)];
+  if (uniqueAttributes.length > 1) {
+    return {
+      notice: `Mixed DamageList PropertyNames: ${propertyNames.join(", ")}`,
+    };
+  }
+
+  return uniqueAttributes[0] ? { attribute: uniqueAttributes[0] } : {};
+}
+
+function deriveTypeFromDamageListType(
+  matched: ApiDamageListEntry[],
+): { type?: string; subType?: string; notice?: string } {
   const apiTypes = [...new Set(matched.map((entry) => entry.Type))];
 
   if (apiTypes.some((type) => !type)) {
@@ -120,11 +184,131 @@ function deriveAttackMetadata(
   }
 
   return {
+    type: uniqueMappedTypes[0],
+    ...(uniqueMappedSubTypes[0] ? { subType: uniqueMappedSubTypes[0] } : {}),
+  };
+}
+
+function deriveAttackMetadata(
+  matched: ApiDamageListEntry[],
+): { metadata?: AttackMetadata; notice?: string } {
+  if (matched.length === 0) {
+    return {};
+  }
+
+  const dmgTypes = [
+    ...new Set(matched.map((entry) => entry.DmgType ?? "Damage")),
+  ];
+
+  if (dmgTypes.some((dmgType) => !(dmgType in DMG_TYPE_TO_ATTACK_TYPE) && dmgType !== "Damage")) {
+    return {
+      notice: `Unknown DamageList DmgType(s): ${dmgTypes.join(", ")}`,
+    };
+  }
+
+  const overrideTypes = dmgTypes
+    .map((dmgType) => DMG_TYPE_TO_ATTACK_TYPE[dmgType])
+    .filter(Boolean);
+  const uniqueOverrideTypes = [...new Set(overrideTypes)];
+
+  if (uniqueOverrideTypes.length > 1) {
+    return {
+      notice: `Mixed DamageList DmgTypes: ${dmgTypes.join(", ")}`,
+    };
+  }
+
+  if (dmgTypes.includes("Damage") && overrideTypes.length > 0) {
+    return {
+      notice: `Mixed DamageList DmgTypes: ${dmgTypes.join(", ")}`,
+    };
+  }
+
+  const attributeResult = deriveAttributeMetadata(matched);
+  if (attributeResult.notice) {
+    return { notice: attributeResult.notice };
+  }
+
+  if (uniqueOverrideTypes.length === 1) {
+    return {
+      metadata: {
+        type: uniqueOverrideTypes[0],
+        ...(attributeResult.attribute ? { attribute: attributeResult.attribute } : {}),
+      },
+    };
+  }
+
+  const typeResult = deriveTypeFromDamageListType(matched);
+  if (typeResult.notice) {
+    return { notice: typeResult.notice };
+  }
+
+  return {
     metadata: {
-      type: uniqueMappedTypes[0],
-      ...(uniqueMappedSubTypes[0] ? { subType: uniqueMappedSubTypes[0] } : {}),
+      type: typeResult.type!,
+      ...(typeResult.subType ? { subType: typeResult.subType } : {}),
+      ...(attributeResult.attribute ? { attribute: attributeResult.attribute } : {}),
     },
   };
+}
+
+export function inferAttackMetadataFromAttributeName(
+  attributeName: string,
+): AttackMetadata | undefined {
+  if (attributeName.includes("Healing") || attributeName.toLowerCase().includes("hp recovery")) {
+    return { type: "Healing" };
+  }
+
+  if (
+    attributeName.endsWith(" Shield") ||
+    attributeName === "Shield" ||
+    (attributeName.includes("Shield") &&
+      !attributeName.includes("Shield Duration") &&
+      !attributeName.includes("Shield Damage Reduction") &&
+      !attributeName.includes("Shield Healing"))
+  ) {
+    return { type: "Shield" };
+  }
+
+  return undefined;
+}
+
+function attributeFromPropertyNames(
+  propertyNames: string[],
+): { attribute?: string; notice?: string } {
+  if (propertyNames.length === 0) {
+    return {};
+  }
+
+  const unknownPropertyNames = propertyNames.filter(
+    (propertyName) => !(propertyName in PROPERTY_NAME_MAP),
+  );
+  if (unknownPropertyNames.length > 0) {
+    return {};
+  }
+
+  const mappedAttributes = propertyNames
+    .map((propertyName) => PROPERTY_NAME_MAP[propertyName])
+    .filter((attribute): attribute is string => attribute !== undefined);
+
+  const uniqueAttributes = [...new Set(mappedAttributes)];
+  return uniqueAttributes.length === 1
+    ? { attribute: uniqueAttributes[0] }
+    : {};
+}
+
+export function inferSkillHealShieldAttribute(
+  skill: ApiSkill,
+): string | undefined {
+  const healPropertyNames = [
+    ...new Set(
+      (skill.DamageList ?? [])
+        .filter((entry) => entry.DmgType === "Heal")
+        .map((entry) => entry.PropertyName)
+        .filter(Boolean),
+    ),
+  ] as string[];
+
+  return attributeFromPropertyNames(healPropertyNames).attribute;
 }
 
 function isSkippedAttribute(attributeName: string): boolean {
@@ -159,7 +343,7 @@ export function resolveSkillAttackMetadata(
 
       if (matchIndex === -1) {
         notices.push(
-          `Could not match DamageList entry for "${attribute.attributeName}" (${talent}) — missing ${percent}. Review type/subType manually.`,
+          `Could not match DamageList entry for "${attribute.attributeName}" (${talent}) — missing ${percent}. Review type/subType/attribute manually.`,
         );
         break;
       }
@@ -175,7 +359,7 @@ export function resolveSkillAttackMetadata(
     const derived = deriveAttackMetadata(matched);
     if (derived.notice) {
       notices.push(
-        `${derived.notice} for "${attribute.attributeName}" (${talent}). Review type/subType manually.`,
+        `${derived.notice} for "${attribute.attributeName}" (${talent}). Review type/subType/attribute manually.`,
       );
       continue;
     }
