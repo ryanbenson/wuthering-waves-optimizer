@@ -38,7 +38,12 @@ const SKILL_TYPE_TO_EXPORT: Record<string, string> = {
 
 const SKILL_ATTACK_EXPORTS = Object.values(SKILL_TYPE_TO_EXPORT);
 
-const SKIPPED_ATTACK_ATTRIBUTE_PATTERNS = ["STA Cost", "Concerto Regen"];
+const SKIPPED_ATTACK_ATTRIBUTE_PATTERNS = [
+  "STA Cost",
+  "Concerto Regen",
+  "Resonance Cost",
+  "Cooldown",
+];
 
 function decodeHtml(text: string): string {
   return text
