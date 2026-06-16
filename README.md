@@ -19,6 +19,33 @@ See the project for more information on where things are at, and where things ar
 - Start the local server: `npm run dev`
 - It should kick up and be available at [http://localhost:5173/](http://localhost:5173/)
 
+## Character generator CLI
+
+Scaffold a new character folder under `src/characters/` from live game data. The generator writes attack files, buffs, resonance chains, tune break attacks, stats, and patches `characters.ts`.
+
+**Prerequisites:** Node.js and `npm install` (or `make install`).
+
+```bash
+make generate-character
+```
+
+Aliases: `make character`, `make cli`
+
+Equivalent without Make:
+
+```bash
+npm run cli -- generate character
+```
+
+The command will:
+
+1. Fetch the character list and let you search/select a character
+2. Prompt to confirm overwrite if the character already exists
+3. Generate files in `src/characters/<CharacterKey>/`
+4. Print a review checklist for anything that needs manual follow-up (e.g. unmatched DamageList entries, missing attributes on healing/shields)
+
+Generated files still need manual work for modifiers, presets, and some edge cases — use the checklist at the end of the run.
+
 ## Running Tests
 
 * Run `npm run test` to run the Vitests
