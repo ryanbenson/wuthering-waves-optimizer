@@ -8,6 +8,14 @@ import {
   formatCharacterFileContent,
 } from "./characterStats.js";
 import { buildSkillAttackFiles } from "./skillAttacks.js";
+import {
+  buildInherentSkillBuffs,
+  formatBuffsFileContent,
+} from "./buffs.js";
+import {
+  buildResonanceChains,
+  formatResonanceChainsFileContent,
+} from "./resonanceChains.js";
 
 const TUNE_BREAK_STUB = `export const tuneBreakAttacks = {
   name: "",
@@ -65,13 +73,19 @@ export function scaffoldCharacterFolder(
   onProgress?.("Building skill attack files");
   const skillAttackFiles = buildSkillAttackFiles(detail);
 
+  onProgress?.("Building inherent skill buffs");
+  const inherentSkillBuffs = buildInherentSkillBuffs(detail);
+
+  onProgress?.("Building resonance chains");
+  const resonanceChains = buildResonanceChains(detail);
+
   const files: Record<string, string> = {
     "basic.ts": formatBasicFileContent(basic),
     "character.ts": formatCharacterFileContent(stats),
     ...skillAttackFiles,
     "tuneBreakAttacks.ts": TUNE_BREAK_STUB,
-    "buffs.ts": "export const buffs = [];\n",
-    "resonanceChains.ts": "export const resonanceChains = [];\n",
+    "buffs.ts": formatBuffsFileContent(inherentSkillBuffs),
+    "resonanceChains.ts": formatResonanceChainsFileContent(resonanceChains),
     "presets.ts":
       "export const rotations: RotationPreset[] = [];\nexport const echoes = [];\n",
     "index.ts": INDEX_TEMPLATE,

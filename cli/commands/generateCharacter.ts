@@ -18,6 +18,8 @@ import {
   scaffoldCharacterFolder,
 } from "../lib/scaffold.js";
 import { getSkillGenerationNotices } from "../lib/skillAttacks.js";
+import { getInherentSkillBuffNotices } from "../lib/buffs.js";
+import { getResonanceChainNotices } from "../lib/resonanceChains.js";
 import { printReviewChecklist } from "../lib/reviewNotices.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -125,5 +127,9 @@ export async function runGenerateCharacter(): Promise<void> {
 
   console.log(`Updated ${path.relative(projectRoot, charactersRegistryPath)}`);
 
-  printReviewChecklist(getSkillGenerationNotices(detail));
+  printReviewChecklist([
+    ...getSkillGenerationNotices(detail),
+    ...getInherentSkillBuffNotices(detail),
+    ...getResonanceChainNotices(detail),
+  ]);
 }

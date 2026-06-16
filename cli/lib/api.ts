@@ -36,6 +36,13 @@ export interface ApiCharacterDetail {
     }>;
   }>;
   Skills: ApiSkill[];
+  ResonantChain?: ApiResonantChain[];
+}
+
+export interface ApiResonantChain {
+  GroupIndex: number;
+  NodeName: string;
+  AttributesDescription: string;
 }
 
 export interface ApiDamageListEntry {
