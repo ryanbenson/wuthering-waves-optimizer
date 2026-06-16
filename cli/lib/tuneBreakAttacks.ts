@@ -1,4 +1,5 @@
 import type { ApiCharacterDetail, ApiSkill } from "./api.js";
+import { decodeAndCleanHtml } from "./html.js";
 import { resolveSkillAttackMetadata } from "./damageListMatching.js";
 import {
   buildAttacksFromAttributes,
@@ -26,18 +27,6 @@ const SKIPPED_TUNE_BREAK_ATTRIBUTE_PATTERNS = [
   "Duration",
   "Damage Reduction",
 ];
-
-function decodeHtml(text: string): string {
-  return text
-    .replace(/\\u003C/gi, "<")
-    .replace(/\\u003E/gi, ">")
-    .replace(/\\u0026/gi, "&")
-    .replace(/\\u0022/gi, '"')
-    .replace(/\\u0027/gi, "'")
-    .replace(/\\n/g, "\n")
-    .replace(/\\r/g, "\r")
-    .replace(/\\t/g, "\t");
-}
 
 export function getTuneBreakSkill(
   detail: ApiCharacterDetail,
@@ -69,7 +58,7 @@ function getTuneBreakName(skill: ApiSkill | undefined): string {
 }
 
 function formatTuneBreakDescription(description: string): string {
-  const decoded = decodeHtml(description).trim();
+  const decoded = decodeAndCleanHtml(description).trim();
   if (!decoded) {
     return DEFAULT_TUNE_BREAK_DESCRIPTION;
   }

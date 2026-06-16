@@ -6,6 +6,7 @@ import {
   resolveSkillAttackMetadata,
   type AttackMetadata,
 } from "./damageListMatching.js";
+import { decodeAndCleanHtml, formatTemplateString } from "./html.js";
 import { toAttackKey } from "./naming.js";
 
 interface AttackTalents {
@@ -58,26 +59,6 @@ const SKIPPED_ATTACK_ATTRIBUTE_PATTERNS = [
   "Duration",
   "Damage Reduction",
 ];
-
-function decodeHtml(text: string): string {
-  return text
-    .replace(/\\u003C/gi, "<")
-    .replace(/\\u003E/gi, ">")
-    .replace(/\\u0026/gi, "&")
-    .replace(/\\u0022/gi, '"')
-    .replace(/\\u0027/gi, "'")
-    .replace(/\\n/g, "\n")
-    .replace(/\\r/g, "\r")
-    .replace(/\\t/g, "\t");
-}
-
-function formatTemplateString(value: string): string {
-  const escaped = value
-    .replace(/\\/g, "\\\\")
-    .replace(/`/g, "\\`")
-    .replace(/\$\{/g, "\\${");
-  return `\`${escaped}\``;
-}
 
 function buildTalents(values: string[]): AttackTalents {
   const talents: AttackTalents = {};
@@ -266,7 +247,7 @@ function buildSkillAttackData(
 ): SkillAttackData {
   return {
     name: `${skill.SkillType}: ${skill.SkillName}`,
-    description: decodeHtml(skill.SkillDescribe ?? ""),
+    description: decodeAndCleanHtml(skill.SkillDescribe ?? ""),
     attacks: buildAttacksForSkill(skill, metadataByAttribute),
   };
 }

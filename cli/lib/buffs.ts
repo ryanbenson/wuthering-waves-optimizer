@@ -3,6 +3,7 @@ import type {
   ApiSkill,
   ApiSkillTreeNode,
 } from "./api.js";
+import { decodeAndCleanHtml, formatTemplateString } from "./html.js";
 import { toAttackKey } from "./naming.js";
 
 export interface GeneratedBuffModifier {
@@ -58,28 +59,8 @@ const STAT_BONUS_KEY_SUFFIX: Record<string, string> = {
   "Energy Regen+": "EnergyRegen",
 };
 
-function decodeHtml(text: string): string {
-  return text
-    .replace(/\\u003C/gi, "<")
-    .replace(/\\u003E/gi, ">")
-    .replace(/\\u0026/gi, "&")
-    .replace(/\\u0022/gi, '"')
-    .replace(/\\u0027/gi, "'")
-    .replace(/\\n/g, "\n")
-    .replace(/\\r/g, "\r")
-    .replace(/\\t/g, "\t");
-}
-
-function formatTemplateString(value: string): string {
-  const escaped = value
-    .replace(/\\/g, "\\\\")
-    .replace(/`/g, "\\`")
-    .replace(/\$\{/g, "\\${");
-  return `\`${escaped}\``;
-}
-
 function formatBuffDetails(description: string): string {
-  const decoded = decodeHtml(description).trim();
+  const decoded = decodeAndCleanHtml(description).trim();
   if (!decoded) {
     return "<div></div>";
   }
@@ -92,7 +73,7 @@ function formatBuffDetails(description: string): string {
 }
 
 function formatStatBonusDetails(description: string): string {
-  const decoded = decodeHtml(description).trim();
+  const decoded = decodeAndCleanHtml(description).trim();
   if (!decoded) {
     return `<div class="skilldescription"></div>`;
   }
@@ -106,7 +87,7 @@ function normalizePropertyNodeTitle(title: string): string {
 }
 
 function parseStatBonusPercent(description: string): number | undefined {
-  const match = decodeHtml(description).match(/(\d+(?:\.\d+)?)%/);
+  const match = decodeAndCleanHtml(description).match(/(\d+(?:\.\d+)?)%/);
   if (!match) {
     return undefined;
   }
