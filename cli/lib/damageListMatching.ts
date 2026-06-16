@@ -389,5 +389,9 @@ export function getDefaultAttackType(skillType: string): string {
     return "Liberation";
   }
 
+  if (skillType === "Tune Break") {
+    return "TuneBreak";
+  }
+
   return "Basic";
 }

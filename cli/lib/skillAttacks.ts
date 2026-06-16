@@ -208,7 +208,7 @@ function getAttackMetadata(
   };
 }
 
-function buildAttacksFromAttributes(
+export function buildAttacksFromAttributes(
   skill: ApiSkill,
   metadataByAttribute: Map<string, AttackMetadata>,
 ): AttackWithTalents[] {

@@ -20,6 +20,7 @@ import {
 import { getSkillGenerationNotices } from "../lib/skillAttacks.js";
 import { getInherentSkillBuffNotices } from "../lib/buffs.js";
 import { getResonanceChainNotices } from "../lib/resonanceChains.js";
+import { getTuneBreakGenerationNotices } from "../lib/tuneBreakAttacks.js";
 import { printReviewChecklist } from "../lib/reviewNotices.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -131,5 +132,6 @@ export async function runGenerateCharacter(): Promise<void> {
     ...getSkillGenerationNotices(detail),
     ...getInherentSkillBuffNotices(detail),
     ...getResonanceChainNotices(detail),
+    ...getTuneBreakGenerationNotices(detail),
   ]);
 }

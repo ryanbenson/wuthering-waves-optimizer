@@ -16,13 +16,7 @@ import {
   buildResonanceChains,
   formatResonanceChainsFileContent,
 } from "./resonanceChains.js";
-
-const TUNE_BREAK_STUB = `export const tuneBreakAttacks = {
-  name: "",
-  description: "",
-  attacks: [],
-};
-`;
+import { formatTuneBreakAttacksFileContent } from "./tuneBreakAttacks.js";
 
 const INDEX_TEMPLATE = `import { getCharacterBasicInfo } from "./basic.ts";
 import { character, getCharacterStatsByLevel } from "./character.ts";
@@ -79,11 +73,14 @@ export function scaffoldCharacterFolder(
   onProgress?.("Building resonance chains");
   const resonanceChains = buildResonanceChains(detail);
 
+  onProgress?.("Building tune break attacks");
+  const tuneBreakAttacksContent = formatTuneBreakAttacksFileContent(detail);
+
   const files: Record<string, string> = {
     "basic.ts": formatBasicFileContent(basic),
     "character.ts": formatCharacterFileContent(stats),
     ...skillAttackFiles,
-    "tuneBreakAttacks.ts": TUNE_BREAK_STUB,
+    "tuneBreakAttacks.ts": tuneBreakAttacksContent,
     "buffs.ts": formatBuffsFileContent(inherentSkillBuffs),
     "resonanceChains.ts": formatResonanceChainsFileContent(resonanceChains),
     "presets.ts":
