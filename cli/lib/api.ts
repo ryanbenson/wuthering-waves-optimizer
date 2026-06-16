@@ -37,6 +37,12 @@ export interface ApiCharacterDetail {
   }>;
   Skills: ApiSkill[];
   ResonantChain?: ApiResonantChain[];
+  SkillTree?: ApiSkillTreeNode[];
+}
+
+export interface ApiSkillTreeNode {
+  PropertyNodeTitle: string;
+  PropertyNodeDescribe: string;
 }
 
 export interface ApiResonantChain {

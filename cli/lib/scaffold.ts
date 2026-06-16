@@ -9,7 +9,6 @@ import {
 } from "./characterStats.js";
 import { buildSkillAttackFiles } from "./skillAttacks.js";
 import {
-  buildInherentSkillBuffs,
   formatBuffsFileContent,
 } from "./buffs.js";
 import {
@@ -68,7 +67,7 @@ export function scaffoldCharacterFolder(
   const skillAttackFiles = buildSkillAttackFiles(detail);
 
   onProgress?.("Building inherent skill buffs");
-  const inherentSkillBuffs = buildInherentSkillBuffs(detail);
+  const buffsContent = formatBuffsFileContent(detail);
 
   onProgress?.("Building resonance chains");
   const resonanceChains = buildResonanceChains(detail);
@@ -81,7 +80,7 @@ export function scaffoldCharacterFolder(
     "character.ts": formatCharacterFileContent(stats),
     ...skillAttackFiles,
     "tuneBreakAttacks.ts": tuneBreakAttacksContent,
-    "buffs.ts": formatBuffsFileContent(inherentSkillBuffs),
+    "buffs.ts": buffsContent,
     "resonanceChains.ts": formatResonanceChainsFileContent(resonanceChains),
     "presets.ts":
       "export const rotations: RotationPreset[] = [];\nexport const echoes = [];\n",

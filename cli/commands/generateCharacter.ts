@@ -18,7 +18,7 @@ import {
   scaffoldCharacterFolder,
 } from "../lib/scaffold.js";
 import { getSkillGenerationNotices } from "../lib/skillAttacks.js";
-import { getInherentSkillBuffNotices } from "../lib/buffs.js";
+import { getBuffGenerationNotices } from "../lib/buffs.js";
 import { getResonanceChainNotices } from "../lib/resonanceChains.js";
 import { getTuneBreakGenerationNotices } from "../lib/tuneBreakAttacks.js";
 import { printReviewChecklist } from "../lib/reviewNotices.js";
@@ -130,7 +130,7 @@ export async function runGenerateCharacter(): Promise<void> {
 
   printReviewChecklist([
     ...getSkillGenerationNotices(detail),
-    ...getInherentSkillBuffNotices(detail),
+    ...getBuffGenerationNotices(detail),
     ...getResonanceChainNotices(detail),
     ...getTuneBreakGenerationNotices(detail),
   ]);
