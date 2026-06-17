@@ -1,5 +1,5 @@
 const CHARACTER_LIST_URL = "https://api-v2.encore.moe/api/en/character?v=Beta";
-const CHARACTER_DETAIL_URL = "https://api-v2.encore.moe/api/en/character";
+const CHARACTER_DETAIL_URL = "https://api-v2.encore.moe/api/en/character?v=Beta";
 
 export interface ApiCharacterListItem {
   Id: number;
