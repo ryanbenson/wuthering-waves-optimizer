@@ -53,6 +53,7 @@ const SKILL_ATTACK_EXPORTS = Object.values(SKILL_TYPE_TO_EXPORT);
 const SKIPPED_ATTACK_ATTRIBUTE_PATTERNS = [
   "STA Cost",
   "Concerto Regen",
+  "Concerto  Regen",
   "Resonance Cost",
   "Energy Cost",
   "Cooldown",
