@@ -1,12 +1,17 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
-import { confirm, search } from "@inquirer/prompts";
+import { confirm, input, search } from "@inquirer/prompts";
 import {
   fetchCharacterDetail,
   fetchCharacterList,
+  getCharacterName,
+  getCharacterNameUncertaintyHints,
+  getSuggestedCharacterName,
+  isCharacterNameUncertain,
   type ApiCharacterListItem,
 } from "../lib/api.js";
+import { getBasicGenerationNotices } from "../lib/characterStats.js";
 import {
   characterExistsInRegistry,
   patchCharactersRegistry,
@@ -70,13 +75,35 @@ export async function runGenerateCharacter(): Promise<void> {
     return;
   }
 
+  const listItem = characters.find((character) => character.Id === selectedId);
+
   const detail = await withSpinner(
     `Fetching character sheet for ID ${selectedId}`,
     () => fetchCharacterDetail(selectedId),
-    (result) => `Loaded ${result.Name.Content} (${result.QualityId}★ ${result.ElementName})`,
+    (result) => {
+      const label =
+        getSuggestedCharacterName(result, listItem) || `ID ${result.Id}`;
+      return `Loaded ${label} (${result.QualityId}★ ${result.ElementName})`;
+    },
   );
 
-  const name = detail.Name.Content;
+  let name: string;
+  if (isCharacterNameUncertain(detail)) {
+    const suggestedName = getSuggestedCharacterName(detail, listItem);
+    const hints = getCharacterNameUncertaintyHints(detail, listItem);
+    const hintSuffix = hints.length > 0 ? ` (${hints.join("; ")})` : "";
+
+    name = (
+      await input({
+        message: `Confirm character name${hintSuffix}`,
+        default: suggestedName || undefined,
+        validate: (value) =>
+          value.trim().length > 0 ? true : "Name is required",
+      })
+    ).trim();
+  } else {
+    name = getCharacterName(detail);
+  }
   const key = toCharacterKey(name);
   const rarity = detail.QualityId as 4 | 5;
   const element = detail.ElementName;
@@ -105,9 +132,15 @@ export async function runGenerateCharacter(): Promise<void> {
   let characterDir = "";
 
   try {
-    characterDir = scaffoldCharacterFolder(charactersDir, key, detail, (message) => {
-      progress.update(`Generating ${name} — ${message}`);
-    });
+    characterDir = scaffoldCharacterFolder(
+      charactersDir,
+      key,
+      detail,
+      (message) => {
+        progress.update(`Generating ${name} — ${message}`);
+      },
+      name,
+    );
 
     progress.update(`Generating ${name} — Updating characters.ts registry`);
     patchCharactersRegistry(charactersRegistryPath, {
@@ -129,6 +162,7 @@ export async function runGenerateCharacter(): Promise<void> {
   console.log(`Updated ${path.relative(projectRoot, charactersRegistryPath)}`);
 
   printReviewChecklist([
+    ...getBasicGenerationNotices(detail),
     ...getSkillGenerationNotices(detail),
     ...getBuffGenerationNotices(detail),
     ...getResonanceChainNotices(detail),

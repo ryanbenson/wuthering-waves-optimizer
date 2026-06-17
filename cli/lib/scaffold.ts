@@ -55,12 +55,13 @@ export function scaffoldCharacterFolder(
   key: string,
   detail: ApiCharacterDetail,
   onProgress?: (message: string) => void,
+  displayName?: string,
 ): string {
   const characterDir = path.join(charactersDir, key);
   fs.mkdirSync(characterDir, { recursive: true });
 
   onProgress?.("Building basic info and character stats");
-  const basic = extractBasicData(detail, key);
+  const basic = extractBasicData(detail, key, displayName);
   const stats = buildCharacterStats(detail);
 
   onProgress?.("Building skill attack files");
