@@ -1,0 +1,57 @@
+export const skillAttacks = {
+  name: "Resonance Skill: Thunderclap",
+  description: `<span class="Title">Resonance Skill</span></span><br><br>Launch the <span style="color:#ffd12f;" class="font-bold">Cloudrift Bolt</span> and grapple towards the target, dealing <span style="color:#ebb0ff;">Electro DMG</span>. Press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> shortly after casting this skill to cast <span style="color:#ffd12f;" class="font-bold">Basic Attack: Quell</span>, considered Basic Attack DMG.`,
+  attacks: [
+    {
+      key: "ThrumOfAllSoundsAeroPlungingAttackDMG",
+      label: "Thrum of All Sounds: Aero Plunging Attack DMG",
+      talents: {
+        "1": "88.27%*2",
+        "2": "95.51%*2",
+        "3": "102.74%*2",
+        "4": "112.88%*2",
+        "5": "120.11%*2",
+        "6": "128.44%*2",
+        "7": "140.02%*2",
+        "8": "151.60%*2",
+        "9": "163.18%*2",
+        "10": "175.48%*2",
+      },
+      type: "Skill",
+    },
+    {
+      key: "ThrumOfAllSoundsAeroMidAirAttackStage1DMG",
+      label: "Thrum of All Sounds: Aero Mid-air Attack Stage 1 DMG",
+      talents: {
+        "1": "28.23%+42.34%",
+        "2": "30.54%+45.81%",
+        "3": "32.86%+49.28%",
+        "4": "36.10%+54.14%",
+        "5": "38.41%+57.62%",
+        "6": "41.07%+61.61%",
+        "7": "44.78%+67.16%",
+        "8": "48.48%+72.72%",
+        "9": "52.18%+78.27%",
+        "10": "56.12%+84.17%",
+      },
+      type: "Basic",
+    },
+    {
+      key: "ThrumOfAllSoundsAeroMidAirAttackStage2DMG",
+      label: "Thrum of All Sounds: Aero Mid-air Attack Stage 2 DMG",
+      talents: {
+        "1": "10",
+        "2": "10",
+        "3": "10",
+        "4": "10",
+        "5": "10",
+        "6": "10",
+        "7": "10",
+        "8": "10",
+        "9": "10",
+        "10": "10",
+      },
+      type: "Skill",
+    }
+  ],
+};
