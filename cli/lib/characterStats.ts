@@ -1,4 +1,4 @@
-import type { ApiCharacterDetail } from "./api.js";
+import { getCharacterName, type ApiCharacterDetail } from "./api.js";
 import { toPluralWeapon } from "./naming.js";
 
 interface LevelStats {
@@ -55,6 +55,7 @@ function getPropertyByName(detail: ApiCharacterDetail, name: string) {
 export function extractBasicData(
   detail: ApiCharacterDetail,
   key: string,
+  displayName?: string,
 ): CharacterBasicData {
   const tuneBreakProperty = detail.Properties.find(
     (entry) => entry.Name === "Tune Break Boost",
@@ -63,10 +64,10 @@ export function extractBasicData(
     tuneBreakProperty !== undefined
       ? tuneBreakProperty.BaseValue / 100
       : undefined;
-  const gender = detail.favorRole.Sex.Content.toLowerCase();
+  const gender = detail.favorRole?.Sex?.Content?.toLowerCase() ?? "unknown";
 
   return {
-    name: detail.Name.Content,
+    name: displayName ?? getCharacterName(detail),
     key,
     rarity: detail.QualityId,
     element: detail.ElementName,
@@ -109,6 +110,18 @@ export function buildCharacterStats(
 
 function formatStatValue(value: number): string {
   return Number.isInteger(value) ? String(value) : String(value);
+}
+
+export function getBasicGenerationNotices(
+  detail: ApiCharacterDetail,
+): string[] {
+  const notices: string[] = [];
+
+  if (!detail.favorRole?.Sex?.Content) {
+    notices.push("Set gender in basic.ts (API missing favorRole.Sex)");
+  }
+
+  return notices;
 }
 
 export function formatCharacterFileContent(
