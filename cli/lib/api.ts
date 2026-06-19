@@ -1,5 +1,7 @@
 const CHARACTER_API_BASE = "https://api-v2.encore.moe/api/en/character";
 const CHARACTER_LIST_URL = `${CHARACTER_API_BASE}?v=Beta`;
+const WEAPON_API_BASE = "https://api-v2.encore.moe/api/en/weapon";
+const WEAPON_LIST_URL = `${WEAPON_API_BASE}?v=Beta`;
 
 export interface ApiCharacterListItem {
   Id: number;
@@ -172,6 +174,99 @@ export async function fetchCharacterDetail(
     throw new Error(
       `API returned character list instead of detail for ID ${id}`,
     );
+  }
+
+  return data;
+}
+
+export interface ApiWeaponListItem {
+  Id: number;
+  Name: string;
+  QualityId: number;
+  TypeName: string;
+}
+
+export interface ApiWeaponDetail {
+  ItemId: number;
+  WeaponName: string;
+  QualityId: number;
+  WeaponTypeName: string;
+  ResonName: string;
+  Desc: string;
+  ObtainedShowDescription?: string;
+  BgDescription?: string;
+  AttributesDescription?: string;
+  Properties: Array<{
+    Name: string;
+    GrowthValues: Array<{
+      Level: number;
+      Value: string;
+    }>;
+  }>;
+}
+
+interface WeaponListResponse {
+  weapons: ApiWeaponListItem[];
+}
+
+export async function fetchWeaponList(): Promise<ApiWeaponListItem[]> {
+  const data = await fetchJson<WeaponListResponse>(WEAPON_LIST_URL);
+  return [...data.weapons].reverse();
+}
+
+export function getSuggestedWeaponName(
+  detail: ApiWeaponDetail,
+  listItem?: ApiWeaponListItem,
+): string {
+  const nameFromField = detail.WeaponName?.trim() ?? "";
+  if (nameFromField) {
+    return nameFromField;
+  }
+
+  if (listItem?.Name && listItem.Name !== "Unknown") {
+    return listItem.Name;
+  }
+
+  return "";
+}
+
+export function isWeaponNameUncertain(detail: ApiWeaponDetail): boolean {
+  return (detail.WeaponName?.trim() ?? "") === "";
+}
+
+export function getWeaponNameUncertaintyHints(
+  detail: ApiWeaponDetail,
+  listItem?: ApiWeaponListItem,
+): string[] {
+  const hints: string[] = [];
+
+  if (listItem?.Name === "Unknown") {
+    hints.push('list API name is "Unknown"');
+  }
+  if (!detail.WeaponName?.trim()) {
+    hints.push("detail API WeaponName is empty");
+  }
+
+  return hints;
+}
+
+export function getWeaponName(detail: ApiWeaponDetail): string {
+  const name = getSuggestedWeaponName(detail);
+  if (!name) {
+    throw new Error(
+      `Weapon ID ${detail.ItemId} has no WeaponName in API response`,
+    );
+  }
+  return name;
+}
+
+export async function fetchWeaponDetail(id: number): Promise<ApiWeaponDetail> {
+  const data = await fetchJson<ApiWeaponDetail & { weapons?: unknown }>(
+    `${WEAPON_API_BASE}/${id}?v=Beta`,
+  );
+
+  if (data.weapons !== undefined) {
+    throw new Error(`API returned weapon list instead of detail for ID ${id}`);
   }
 
   return data;
