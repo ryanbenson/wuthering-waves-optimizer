@@ -71,6 +71,25 @@ export const skillAttacks = {
       },
       type: "Healing",
       attribute: "hp",
-    }
+    },
+    {
+      key: "EnrichmentHealing",
+      label: "Enrichment Healing",
+      talents: {
+        "1": "62+0.0034%",
+        "2": "62+0.0034",
+        "3": "62+0.0034",
+        "4": "62+0.0034",
+        "5": "62+0.0034",
+        "6": "62+0.0034",
+        "7": "62+0.0034",
+        "8": "62+0.0034",
+        "9": "62+0.0034",
+        "10": "62+0.0034",
+      },
+      type: "Healing",
+      attribute: "hp",
+      requiresResonanceChain: "InherentSkillSkyOverWater",
+    },
   ],
 };

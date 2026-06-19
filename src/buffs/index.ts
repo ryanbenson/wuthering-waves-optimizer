@@ -2350,6 +2350,66 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
     },
   ],
+  Suisui: [
+    {
+      name: `Careless Landscape`,
+      key: `CarelessLandscape`,
+      details: `<span style="color:#f7ca2f"><strong>Careless Landscape</strong></span> grants all nearby Resonators in the team the following enhancements:
+  - Inflicting a target with <span style="color:#f7ca2f"><strong>Spectro Frazzle</strong></span>, <span style="color:#f7ca2f"><strong>Fusion Burst</strong></span>, <span style="color:#f7ca2f"><strong>Glacio Chafe</strong></span>, and <span style="color:#f7ca2f"><strong>Aero Erosion</strong></span> increases the max stack limit of Negative Status the target can receive by 3 for 15s. This effect does not stack.
+  - Inflicting a target with <span style="color:#f7ca2f"><strong>Electro Flare</strong></span> increases the max stack limits of <span style="color:#f7ca2f"><strong>Electro Flare</strong></span> and <span style="color:#f7ca2f"><strong>Electro Rage</strong></span> the target can receive by 3 for 15s. This effect does not stack.
+  - Inflicting a target with <span style="color:#f7ca2f"><strong>Havoc Bane</strong></span> allows the Resonator's Havoc DMG to ignore the target's DEF and Havoc RES by 6% and 12% respectively for 15s. This effect does not stack.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DEFIgnore:Havoc",
+          modifierValue: 0.06,
+        },
+        {
+          modifier: "ResistShred:Havoc",
+          modifierValue: 0.12,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      name: `Outro Skill: Rippling Waters`,
+      key: `OutroSkillRipplingWaters`,
+      details: `Resonators in the team gain 25% All DMG Amplification for 30s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      name: `Outro Skill: Rippling Waters - 400 Floral Epistle`,
+      key: `OutroSkillRipplingWaters400FloralEpistle`,
+      details: `At least 400 Floral Epistle consumed:
+- If there is Ceaseless Landscape left on the field, incoming Resonators gain the following effect: If the Resonator has Reflecting Shadows, their DMG dealt is increased: For every 1% of Suisui's Energy Regen over 200%, the Resonator's DMG dealt is increased by 0.2%, up to 12%.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "Glacio",
+          modifierValue: 0.002,
+          maximumValue: 0.12,
+          modifierStep: 0.01,
+          minStatValue: 200,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+      inputBase: true,
+      modifierBasedOn: "Energy Regen",
+    },
+  ],
 };
 
 export const allEchoBuffs = [
