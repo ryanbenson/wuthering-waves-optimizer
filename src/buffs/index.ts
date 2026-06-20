@@ -2746,6 +2746,27 @@ CD: 20s`,
     ],
     alwaysEnabled: false,
   },
+  {
+    key: "SongofFeatheredTrace",
+    name: "Song of Feathered Trace",
+    details: `Upon inflicting Glacio Chafe, gain Chongming's Feather, which grants a 0.1% increase in ATK to Resonators in the team for every 1% of the Resonator's Energy Regen, up to 25%, lasting 10s.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/SongofFeatheredTrace.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.001,
+        maximumValue: 0.25,
+        modifierStep: 0.01,
+        minStatValue: 0,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+    inputBase: true,
+    modifierBasedOn: "Energy Regen",
+  },
 ];
 
 export const allWeaponTeamBuffs = [
@@ -3034,6 +3055,28 @@ export const allWeaponTeamBuffs = [
     minStacks: 0,
     maxStacks: 0,
     details: `Inflicting Glacio Chafe on the target increases the ATK of all Resonators in the team by <span class="param">24%/30%/36%/42%/48%</span> for 30s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
+  {
+    name: "Dew Imbiber",
+    key: "DewImbiberATKBonus",
+    hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/DewImbiber.png",
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierByRefinement: {
+          "1": 0.2,
+          "2": 0.3,
+          "3": 0.35,
+          "4": 0.4,
+          "5": 0.45,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `This effect is triggered once every 20s. Casting Intro Skill or Resonance Skill grants nearby Resonators in the team Kingfisher for 30s. If the wielder is on the field, Resonators with Kingfisher have their ATK increased by 20%/25%/30%/35%/40%`,
     alwaysEnabled: false,
   },
 ];

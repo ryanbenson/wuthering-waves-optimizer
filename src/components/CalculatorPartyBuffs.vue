@@ -226,6 +226,8 @@
           :max-stacks="buff.maxStacks"
           :modifiers="buff.modifiers"
           :buff-image-url="buff.imageUrl"
+          :input-base="buff.inputBase"
+          :modifier-based-on="buff.modifierBasedOn ?? null"
           @updated-party-buff="handleUpdatedPartyBuffEcho"
           :talent-data="talentData"
           class="character__buff character__buffs__echoes"></CalculatorPartyBuff>
@@ -251,6 +253,8 @@
           :max-stacks="buff.maxStacks"
           :modifiers="buff.modifiers"
           :buff-image-url="buff.imageUrl"
+          :input-base="buff.inputBase"
+          :modifier-based-on="buff.modifierBasedOn ?? null"
           @updated-party-buff="handleUpdatedPartyBuffEcho"
           :talent-data="talentData"
           :has-refinements="true"
