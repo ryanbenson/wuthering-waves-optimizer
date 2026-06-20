@@ -71,6 +71,25 @@ export const skillAttacks = {
       },
       type: "Healing",
       attribute: "hp",
-    }
+    },
+    {
+      key: "SkyOverWaterHealing",
+      label: "Sky Over Water Healing",
+      talents: {
+        "1": "62+0.34%",
+        "2": "62+0.34%",
+        "3": "62+0.34%",
+        "4": "62+0.34%",
+        "5": "62+0.34%",
+        "6": "62+0.34%",
+        "7": "62+0.34%",
+        "8": "62+0.34%",
+        "9": "62+0.34%",
+        "10": "62+0.34%",
+      },
+      type: "Healing",
+      attribute: "hp",
+      requiresResonanceChain: "InherentSkillSkyOverWater",
+    },
   ],
 };

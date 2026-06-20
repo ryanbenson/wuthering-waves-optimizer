@@ -4,7 +4,22 @@ export const buffs = [
     name: `Inherent Skill: Sky Over Water`,
     details: `<div>Consuming <span style="color:#ffd12f;" class="font-bold">Enrichment</span> grants the Resonator 10 stacks of <span style="color:#ffd12f;" class="font-bold">Spring’s Birth</span>, up to 10 stacks. When the Resonator with <span style="color:#ffd12f;" class="font-bold">Spring’s Birth</span> is on the field and not at full HP, restore their HP by 62 + 0.34% of Suisui's Max HP at the cost of 1 stack of <span style="color:#ffd12f;" class="font-bold">Spring’s Birth</span> every 2s.<br><size=10></span><br><br><span style="color:#ffd12f;" class="font-bold">Resonance Skill - Awakening Spring</span> and <span style="color:#ffd12f;" class="font-bold">Intro Skill - Tinkling Jade</span> additionally restore 20 and 13 Concerto Energy and Resonance Energy respectively on hit, while also increasing their respective Crit. Rate and Glacio DMG dealt by 80% and 240%. This effect can be triggered once every 25s.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "EnableAttack",
+        modifierValue: ["InherentSkillSkyOverWater"],
+      },
+      {
+        modifier: "CritRate",
+        modifySpecificTalents: ["AwakeningSpringDMG", "TinklingJadeDMG"],
+        modifierValue: 0.8,
+      },
+      {
+        modifier: "CritDMG",
+        modifySpecificTalents: ["AwakeningSpringDMG", "TinklingJadeDMG"],
+        modifierValue: 2.4,
+      },
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,

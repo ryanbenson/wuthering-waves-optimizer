@@ -2357,16 +2357,16 @@ This effect ends when the incoming Resonator is switched off the field or when L
       details: `<span style="color:#f7ca2f"><strong>Careless Landscape</strong></span> grants all nearby Resonators in the team the following enhancements:
   - Inflicting a target with <span style="color:#f7ca2f"><strong>Spectro Frazzle</strong></span>, <span style="color:#f7ca2f"><strong>Fusion Burst</strong></span>, <span style="color:#f7ca2f"><strong>Glacio Chafe</strong></span>, and <span style="color:#f7ca2f"><strong>Aero Erosion</strong></span> increases the max stack limit of Negative Status the target can receive by 3 for 15s. This effect does not stack.
   - Inflicting a target with <span style="color:#f7ca2f"><strong>Electro Flare</strong></span> increases the max stack limits of <span style="color:#f7ca2f"><strong>Electro Flare</strong></span> and <span style="color:#f7ca2f"><strong>Electro Rage</strong></span> the target can receive by 3 for 15s. This effect does not stack.
-  - Inflicting a target with <span style="color:#f7ca2f"><strong>Havoc Bane</strong></span> allows the Resonator's Havoc DMG to ignore the target's DEF and Havoc RES by 6% and 12% respectively for 15s. This effect does not stack.`,
+  - Inflicting a target with <span style="color:#f7ca2f"><strong>Havoc Bane</strong></span> allows the Resonator's Havoc DMG to ignore the target's DEF and Havoc RES by 15% and 15% respectively for 15s. This effect does not stack.`,
       hasStacks: false,
       modifiers: [
         {
           modifier: "DEFIgnore:Havoc",
-          modifierValue: 0.06,
+          modifierValue: 0.15,
         },
         {
           modifier: "ResistShred:Havoc",
-          modifierValue: 0.12,
+          modifierValue: 0.15,
         },
       ],
       minStacks: 0,
@@ -2396,7 +2396,7 @@ This effect ends when the incoming Resonator is switched off the field or when L
       hasStacks: false,
       modifiers: [
         {
-          modifier: "Glacio",
+          modifier: "DMGDeepen",
           modifierValue: 0.002,
           maximumValue: 0.12,
           modifierStep: 0.01,
@@ -2408,6 +2408,42 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
       inputBase: true,
       modifierBasedOn: "Energy Regen",
+    },
+    {
+      name: `Outro Skill: Rippling Waters - 600 Floral Epistle`,
+      key: `OutroSkillRipplingWaters600FloralEpistle`,
+      details: `At least 600 Floral Epistle consumed:
+- With the first interaction, while Ceaseless Landscape is active, incoming Resonators gain the following effect: Casting Outro Skill grants the incoming Resonator the following effect: Depleting the target's Negative Status stacks using skills increases the Resonator's ATK: For every 0.12% of Suisui's Energy Regen over 200%, the Resonator's ATK is increased by 0.1% for 6s, up to 50%. Effect lasts for 14s or until they are switched off field.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.001,
+          maximumValue: 0.5,
+          modifierStep: 0.0012,
+          minStatValue: 200,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+      inputBase: true,
+      modifierBasedOn: "Energy Regen",
+    },
+    {
+      name: `Clouds Pour Like Molten Gold`,
+      key: `CloudsPourLikeMoltenGold`,
+      details: `Resonators in the team within the effect of <span style="color:#ffd12f;" class="font-bold">Ceaseless Landscape</span> gain 50% increased Crit. DMG.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "CritDMG",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
     },
   ],
 };
