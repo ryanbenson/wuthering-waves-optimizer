@@ -2431,8 +2431,8 @@ This effect ends when the incoming Resonator is switched off the field or when L
       modifierBasedOn: "Energy Regen",
     },
     {
-      name: `Clouds Pour Like Molten Gold`,
-      key: `CloudsPourLikeMoltenGold`,
+      name: `S2: Clouds Pour Like Molten Gold`,
+      key: `S2CloudsPourLikeMoltenGold`,
       details: `Resonators in the team within the effect of <span style="color:#ffd12f;" class="font-bold">Ceaseless Landscape</span> gain 50% increased Crit. DMG.`,
       hasStacks: false,
       modifiers: [
