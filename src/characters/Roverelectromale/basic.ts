@@ -4,7 +4,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     rarity: 5,
     weapon: "Swords",
     avatarUrl: "Roverelectromale.png",
-    gender: "male",
+    gender: "unknown",
     element: "Electro",
   };
 }

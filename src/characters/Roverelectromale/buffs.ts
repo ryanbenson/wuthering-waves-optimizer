@@ -12,7 +12,7 @@ export const buffs = [
   {
     key: `InherentSkillRegression`,
     name: `Inherent Skill: Regression`,
-    details: `<div><span class="Title">Skill Description</span></span><br><br>After Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> is cast by holding down, gain 20% Resonance Skill DMG Bonus for 6s. Switching to another Resonator ends this effect.</div>`,
+    details: `<div><span class="Title">Skill Description</span></span><br><br>After Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> is cast by holding down, gain 20% Resonance Skill DMG Bonus for 20s. Switching to another Resonator ends this effect.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,

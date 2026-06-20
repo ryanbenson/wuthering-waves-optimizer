@@ -1,6 +1,6 @@
 export const skillAttacks = {
   name: "Resonance Skill: Droplet Screen",
-  description: `<span class="Title">Resonance Skill - Cleansing</span></span><br><br>While in <span style="color:#ffd12f;" class="font-bold">Cleansing</span> and at partial <span style="color:#ffd12f;" class="font-bold">Stillness</span>, press <span style="color:#ffd12f;" class="font-bold">Resonance Skill</span> to have Suisui thrust forward, dealing <span style="color:#a2fbfc;">Glacio DMG</span>.<br>This skill shares a Cooldown with <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Cleansing Rain</span>.<br><size=10></span><br><br><span class="Title">Awakening Spring</span></span><br><br>While in <span style="color:#ffd12f;" class="font-bold">Cleansing</span> and at full <span style="color:#ffd12f;" class="font-bold">Stillness</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Cleansing</span> is replaced with <span style="color:#ffd12f;" class="font-bold">Awakening Spring</span>. Consume all <span style="color:#ffd12f;" class="font-bold">Stillness</span> and enter<span style="color:#ffd12f;" class="font-bold">Cleansing Rain</span>, dealing <span style="color:#a2fbfc;">Glacio DMG</span> and apply <span style="color:#ffd12f;" class="font-bold">Glacio Chafe</span> 1 time on hit.<br>Casting <span style="color:#ffd12f;" class="font-bold">Awakening Spring</span> grants all nearby Resonators in the team 1 stack of <span style="color:#ffd12f;" class="font-bold">Enrichment</span>. This effect can be triggered once every 25s. Incoming Resonators receive healing from Suisui at the cost of <span style="color:#ffd12f;" class="font-bold">Enrichment</span>.<br><size=10></span><br><br><span class="Title">Resonance Skill - Cleansing Rain</span></span><br><br>While in <span style="color:#ffd12f;" class="font-bold">Cleansing Rain</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Cleansing</span> is replaced with <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Cleansing Rain</span>.<br>Press <span style="color:#ffd12f;" class="font-bold">Resonance Skill</span> to have Suisui thrust forward, dealing <span style="color:#a2fbfc;">Glacio DMG</span>.<br>This skill shares a Cooldown with <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Cleansing</span>.`,
+  description: `<span class="Title">Resonance Skill - Cleansing</span></span><br><br>While in <span style="color:#ffd12f;" class="font-bold">Cleansing</span> and at partial <span style="color:#ffd12f;" class="font-bold">Stillness</span>, press <span style="color:#ffd12f;" class="font-bold">Resonance Skill</span> to have Suisui thrust forward, dealing <span style="color:#a2fbfc;">Glacio DMG</span>.<br>This skill shares a Cooldown with <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Cleansing Rain</span>.<br><size=10></span><br><br><span class="Title">Awakening Spring</span></span><br><br>While in <span style="color:#ffd12f;" class="font-bold">Cleansing</span> and at full <span style="color:#ffd12f;" class="font-bold">Stillness</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Cleansing</span> is replaced with <span style="color:#ffd12f;" class="font-bold">Awakening Spring</span>. Casting this skill consumes all <span style="color:#ffd12f;" class="font-bold">Stillness</span>, pulls in nearby targets, and enters <span style="color:#ffd12f;" class="font-bold">Cleansing Rain</span>, dealing <span style="color:#a2fbfc;">Glacio DMG</span> and apply <span style="color:#ffd12f;" class="font-bold">Glacio Chafe</span> 1 time on hit.<br>Casting <span style="color:#ffd12f;" class="font-bold">Awakening Spring</span> grants all nearby Resonators in the team 1 stack of <span style="color:#ffd12f;" class="font-bold">Enrichment</span>. This effect can be triggered once every 25s. Incoming Resonators receive healing from Suisui at the cost of <span style="color:#ffd12f;" class="font-bold">Enrichment</span>.<br><size=10></span><br><br><span class="Title">Resonance Skill - Cleansing Rain</span></span><br><br>While in <span style="color:#ffd12f;" class="font-bold">Cleansing Rain</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Cleansing</span> is replaced with <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Cleansing Rain</span>.<br>Press <span style="color:#ffd12f;" class="font-bold">Resonance Skill</span> to have Suisui thrust forward, dealing <span style="color:#a2fbfc;">Glacio DMG</span>.<br>This skill shares a Cooldown with <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Cleansing</span>.`,
   attacks: [
     {
       key: "ResonanceSkillCleansingDMG",
@@ -71,25 +71,6 @@ export const skillAttacks = {
       },
       type: "Healing",
       attribute: "hp",
-    },
-    {
-      key: "EnrichmentHealing",
-      label: "Enrichment Healing",
-      talents: {
-        "1": "62+0.0034%",
-        "2": "62+0.0034",
-        "3": "62+0.0034",
-        "4": "62+0.0034",
-        "5": "62+0.0034",
-        "6": "62+0.0034",
-        "7": "62+0.0034",
-        "8": "62+0.0034",
-        "9": "62+0.0034",
-        "10": "62+0.0034",
-      },
-      type: "Healing",
-      attribute: "hp",
-      requiresResonanceChain: "InherentSkillSkyOverWater",
-    },
+    }
   ],
 };

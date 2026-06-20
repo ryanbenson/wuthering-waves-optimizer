@@ -4,8 +4,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     rarity: 5,
     weapon: "Swords",
     avatarUrl: "Xuanling.png",
-    gender: "female",
+    gender: "unknown",
     element: "Havoc",
-    havocBane: true,
   };
 }

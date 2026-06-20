@@ -12,7 +12,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode2CloudsPourLikeMoltenGold`,
     name: `Sequence Node 2: Clouds Pour Like Molten Gold`,
-    details: `<div>When inside the effect's radius, Resonators in the team gain 40% All-Attribute DMG Bonus.</div>`,
+    details: `<div>Resonators in the team within the effect of <span style="color:#ffd12f;" class="font-bold">Ceaseless Landscape</span> gain 50% increased Crit. DMG.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -50,8 +50,8 @@ export const resonanceChains = [
     alwaysEnabled: false,
   },
   {
-    key: `SequenceNode6StayingTrueToThisSpledidRealm`,
-    name: `Sequence Node 6: Staying True To This Spledid Realm`,
+    key: `SequenceNode6StayingTrueToThisSplendidRealm`,
+    name: `Sequence Node 6: Staying True To This Splendid Realm`,
     details: `<div>The Crit. DMG of <span style="color:#ffd12f;" class="font-bold">Intro Skill - Tinkling Jade</span> and <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Awakening Spring</span> are increased by 500%.</div>`,
     hasStacks: false,
     modifiers: [],

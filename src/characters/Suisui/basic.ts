@@ -4,8 +4,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     rarity: 5,
     weapon: "Rectifiers",
     avatarUrl: "Suisui.png",
-    gender: "female",
+    gender: "unknown",
     element: "Glacio",
-    glacioChafe: true,
   };
 }

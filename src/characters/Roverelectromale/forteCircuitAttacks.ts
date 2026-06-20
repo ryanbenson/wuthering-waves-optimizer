@@ -119,7 +119,7 @@ export const forteCircuitAttacks = {
         "9": "83.54%+125.30%",
         "10": "89.84%+134.75%",
       },
-      type: "Skill",
+      type: "Healing",
     },
     {
       key: "",
@@ -136,7 +136,7 @@ export const forteCircuitAttacks = {
         "9": "23.17%*3+162.18%",
         "10": "24.92%*3+174.41%",
       },
-      type: "Skill",
+      type: "Healing",
     },
     {
       key: "",
@@ -153,7 +153,7 @@ export const forteCircuitAttacks = {
         "9": "22.88%*4+137.28%",
         "10": "24.61%*4+147.63%",
       },
-      type: "Skill",
+      type: "Healing",
     },
     {
       key: "",
@@ -170,7 +170,7 @@ export const forteCircuitAttacks = {
         "9": "133.69%+133.69%+44.57%+44.57%+44.57%",
         "10": "143.77%+143.77%+47.93%+47.93%+47.93%",
       },
-      type: "Skill",
+      type: "Healing",
     },
     {
       key: "",
@@ -187,7 +187,7 @@ export const forteCircuitAttacks = {
         "9": "28.59%",
         "10": "30.75%",
       },
-      type: "Skill",
+      type: "Healing",
     },
     {
       key: "",
@@ -204,7 +204,7 @@ export const forteCircuitAttacks = {
         "9": "40.86%",
         "10": "43.94%",
       },
-      type: "Skill",
+      type: "Healing",
     },
     {
       key: "",
@@ -221,7 +221,7 @@ export const forteCircuitAttacks = {
         "9": "78.99%+78.99%+81.39%",
         "10": "84.95%+84.95%+87.52%",
       },
-      type: "Skill",
+      type: "Healing",
     },
     {
       key: "",
@@ -238,7 +238,7 @@ export const forteCircuitAttacks = {
         "9": "73.68%",
         "10": "79.24%",
       },
-      type: "Skill",
+      type: "Healing",
     },
     {
       key: "",
@@ -255,7 +255,7 @@ export const forteCircuitAttacks = {
         "9": "55.47%",
         "10": "59.65%",
       },
-      type: "Skill",
+      type: "Healing",
     },
     {
       key: "",
@@ -272,7 +272,24 @@ export const forteCircuitAttacks = {
         "9": "25",
         "10": "25",
       },
-      type: "Skill",
+      type: "Healing",
+    },
+    {
+      key: "",
+      label: "",
+      talents: {
+        "1": "330+11.00%",
+        "2": "369+11.44%",
+        "3": "412+11.88%",
+        "4": "462+12.54%",
+        "5": "521+13.42%",
+        "6": "577+14.30%",
+        "7": "587+15.95%",
+        "8": "600+17.82%",
+        "9": "610+19.80%",
+        "10": "627+23.10%",
+      },
+      type: "Healing",
     }
   ],
 };
