@@ -71,8 +71,8 @@ export const forteCircuitAttacks = {
       type: "Basic",
     },
     {
-      key: "HeavyAttackCleansingRain",
-      label: "Heavy Attack - Cleansing Rain",
+      key: "HeavyAttackCleansingRainDMG",
+      label: "Heavy Attack - Cleansing Rain DMG",
       talents: {
         "1": "6.00%*10+60.00%",
         "2": "6.50%*10+64.92%",

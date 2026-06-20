@@ -14,7 +14,12 @@ export const resonanceChains = [
     name: `Sequence Node 2: Clouds Pour Like Molten Gold`,
     details: `<div>Resonators in the team within the effect of <span style="color:#ffd12f;" class="font-bold">Ceaseless Landscape</span> gain 50% increased Crit. DMG.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifierValue: 0.5,
+      }
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
@@ -34,7 +39,16 @@ export const resonanceChains = [
     name: `Sequence Node 4: Autumn Mountains I Chant Together`,
     details: `<div>Healing provided by <span style="color:#ffd12f;" class="font-bold">Enrichment</span> and  <span style="color:#ffd12f;" class="font-bold">Spring’s Birth</span> are increased by 50%.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "HealingBonus",
+        modifySpecificTalents: [
+          "EnrichmentHealing", "SkyOverWaterHealing",
+          "Spring'sBirthHealing",
+        ],
+        modifierValue: 0.5,
+      }
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
@@ -44,7 +58,19 @@ export const resonanceChains = [
     name: `Sequence Node 5: I Long To Ride The Eastern Wind`,
     details: `<div>The DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Basic Attack - Cleansing Rain</span> and <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Cleansing Rain</span> are increased by 100%.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "BasicAttackCleansingRainStage1DMG",
+          "BasicAttackCleansingRainStage2DMG",
+          "BasicAttackCleansingRainStage3DMG",
+          "BasicAttackCleansingRainStage4DMG",
+          "HeavyAttackCleansingRainDMG",
+        ],
+        modifierValue: 1,
+      }
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
@@ -54,7 +80,16 @@ export const resonanceChains = [
     name: `Sequence Node 6: Staying True To This Splendid Realm`,
     details: `<div>The Crit. DMG of <span style="color:#ffd12f;" class="font-bold">Intro Skill - Tinkling Jade</span> and <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Awakening Spring</span> are increased by 500%.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifySpecificTalents: [
+          "TinklingJadeDMG",
+          "AwakeningSpringDMG",
+        ],
+        modifierValue: 5,
+      }
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
