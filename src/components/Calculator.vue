@@ -341,8 +341,8 @@ import {
 import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
 import type { OptimizerContext } from "../calculator/optimizer";
 import { getOptimizerLoadoutKey } from "../calculator/optimizer";
-import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
-import { allEchoBuffs } from "../buffs";
+import { getSetsFromEchoes, getSetBonusEffects, getEnabledAdditionalBasePassives } from "../echoes/sets";
+import { allEchoBuffs, getEnabledTeamAdditionalBasePassives } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useRoute } from "vue-router";
@@ -711,6 +711,8 @@ export default defineComponent({
     // Helper function to compute all buffs in the correct order and return breakdown data
     // Uses the pure calculateAllStats function which is web worker compatible
     const computeAllBuffsWithBreakdown = () => {
+      const activeCharacter = characterStore.getActiveCharacter ?? {};
+      const echoSetBonus = activeCharacter.echoSetBonus ?? {};
       return calculateAllStats({
         baseHp: baseHp.value,
         baseAtk: baseAtk.value,
@@ -719,18 +721,31 @@ export default defineComponent({
         weaponModifier: weaponData?.value?.modifier ?? null,
         weaponModifierValue: weaponData?.value?.modifierValue ?? 0,
         weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        buffsConfig: characterStore.getActiveCharacter?.buffs ?? {},
-        resonanceChainsConfig:
-          characterStore.getActiveCharacter?.resonanceChains ?? {},
+        buffsConfig: activeCharacter.buffs ?? {},
+        resonanceChainsConfig: activeCharacter.resonanceChains ?? {},
         customBuffs: customBuffs.value,
         teamBuffsData: teamBuffsData.value,
         echoStats: echoStats.value,
+        echoSetAdditionalBasePassives: getEnabledAdditionalBasePassives(
+          [
+            echoSetBonus.setBonusOnePiece,
+            echoSetBonus.setBonusOne,
+            echoSetBonus.setBonusTwo,
+          ],
+          activeCharacter.echoSetPassives ?? {},
+        ),
+        teamAdditionalBasePassives: getEnabledTeamAdditionalBasePassives(
+          activeCharacter.teamBuffs?.buffs ?? {},
+        ),
         buffsCharInfo: chosenChar.value?.buffs ?? [],
         resonanceChainsCharInfo: chosenChar.value?.resonanceChains ?? [],
         character: character?.value ?? "",
         talentData: talentData ?? {},
         activeStance: activeStance.value,
         ignoreBuffs: {},
+        enemy: {
+          havocBaneStacks: havocBaneStacks.value,
+        },
       });
     };
 
@@ -837,6 +852,11 @@ export default defineComponent({
       electroRageStacks.value = data.electroRageStacks;
       glacioChafeStacks.value = data.glacioChafeStacks;
       strainStacks.value = data.strainStacks;
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     };
 
@@ -992,6 +1012,11 @@ export default defineComponent({
         charResonanceChainsData: charResonanceChainsData.value,
         teamBuffsData: teamBuffsData.value,
         customBuffs: customBuffs.value,
+        echoSetPassivesConfig:
+          characterStore.getActiveCharacter?.echoSetPassives ?? {},
+        teamAdditionalBasePassives: getEnabledTeamAdditionalBasePassives(
+          characterStore.getActiveCharacter?.teamBuffs?.buffs ?? {},
+        ),
 
         // Echo data
         echoStats: echoStats.value,

@@ -2446,6 +2446,23 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
     },
   ],
+  Xuanling: [
+    {
+      key: "OutroSkillAsTheWindWills",
+      name: "Outro Skill: As the Wind Wills",
+      details: `When a Resonator in the team other than Yangyang: Xuanling applies <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> to a target, that Resonator's Havoc DMG is Amplified by 20% for 20s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Havoc",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -2754,20 +2771,43 @@ CD: 20s`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ATK",
+        modifier: "ATK:AdditionalBase",
         modifierValue: 0.001,
         maximumValue: 0.25,
-        modifierStep: 0.01,
+        modifierStep: 1,
+        modifierBasedOn: "EnergyRegen",
+        modifierTargetAttr: "ATK",
         minStatValue: 0,
       },
     ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
-    inputBase: true,
-    modifierBasedOn: "Energy Regen",
   },
 ];
+
+export type TeamAdditionalBasePassiveEntry = {
+  hasStacks?: boolean;
+  stacks?: number;
+  modifiers: Record<string, unknown>[];
+};
+
+export function getEnabledTeamAdditionalBasePassives(
+  teamBuffsConfig: Record<string, { isEnabled?: boolean; stacks?: number }> = {},
+): TeamAdditionalBasePassiveEntry[] {
+  return allEchoBuffs
+    .filter((buff) =>
+      buff.modifiers?.some((modifier) =>
+        String(modifier.modifier ?? "").includes("AdditionalBase"),
+      ),
+    )
+    .filter((buff) => teamBuffsConfig[buff.key]?.isEnabled)
+    .map((buff) => ({
+      hasStacks: buff.hasStacks,
+      stacks: teamBuffsConfig[buff.key]?.stacks ?? 0,
+      modifiers: buff.modifiers,
+    }));
+}
 
 export const allWeaponTeamBuffs = [
   {

@@ -305,6 +305,8 @@ const buffStats = computed(() => {
           data.talentModifierMultiply = [];
         }
         (data.talentModifierMultiply as PartyBuffModifier[]).push(modifierItem);
+      } else if (modifierItem.modifier?.includes("AdditionalBase")) {
+        return;
       } else if (props.inputBase === true) {
         let base = 0;
         switch (props.modifierBasedOn) {

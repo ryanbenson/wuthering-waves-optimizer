@@ -434,6 +434,9 @@ export const echoSetImageMap: Record<string, string> = {
   WishesofQuietSnowfall: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/WishesofQuietSnowfall.webp",
   ReelofSplicedMemories: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/ReelofSplicedMemories.webp",
   ShadowofShatteredDreams: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/ShadowofShatteredDreams.webp",
+  SongofFeatheredTrace: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/SongofFeatheredTrace.webp",
+  HeartofEvilsPurge: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/HeartofEvilsPurge.webp",
+  LampofNetherRoad: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/LampofNetherRoad.webp",
 };
 
 export function getEchoSetIconByType(type: string): string {
@@ -472,6 +475,9 @@ export const echoSetLabelMap: Record<string, string> = {
   WishesofQuietSnowfall: "Wishes of Quiet Snowfall",
   ReelofSplicedMemories: "Reel of Spliced Memories",
   ShadowofShatteredDreams: "Shadow of Shattered Dreams",
+  SongofFeatheredTrace: "Song of Feathered Trace",
+  HeartofEvilsPurge: "Heart of Evil's Purge",
+  LampofNetherRoad: "Lamp of Nether Road",
 };
 
 export function getEchoSetLabelByType(type: string): string {
