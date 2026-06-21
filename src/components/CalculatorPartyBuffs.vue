@@ -214,7 +214,7 @@
       <h3 class="collapse-title text-xl">Echo Buffs</h3>
       <div class="collapse-content">
         <CalculatorPartyBuff
-          v-for="buff in allEchoBuffs"
+          v-for="buff in echoBuffList"
           :key="buff.key"
           :character="character"
           :unique-key="buff.key"
@@ -241,7 +241,7 @@
       <h3 class="collapse-title text-xl">Weapon Buffs</h3>
       <div class="collapse-content">
         <CalculatorPartyBuff
-          v-for="buff in allWeaponTeamBuffs"
+          v-for="buff in weaponTeamBuffList"
           :key="buff.key"
           :character="character"
           :unique-key="buff.key"
@@ -302,12 +302,24 @@ const buffsDataChar2 = ref<PartyBuffEmit[]>([]);
 const buffsDataEcho = ref<PartyBuffEmit[]>([]);
 const talentData = ref<Record<string, string>>({});
 
-type BuffDefEntry = (typeof buffsByCharacter)[keyof typeof buffsByCharacter][number] & {
+type PartyBuffDef = {
+  key: string;
+  name: string;
+  details: string;
+  imageUrl?: string;
+  hasStacks: boolean;
+  modifiers: PartyBuffModifier[];
+  minStacks: number;
+  maxStacks: number;
+  alwaysEnabled: boolean;
   inputBase?: boolean;
   modifierBasedOn?: string | null;
   hasRefinements?: boolean;
 };
-const buffsByCharacterIndex = buffsByCharacter as Record<string, BuffDefEntry[]>;
+
+const buffsByCharacterIndex = buffsByCharacter as Record<string, PartyBuffDef[]>;
+const echoBuffList = allEchoBuffs as PartyBuffDef[];
+const weaponTeamBuffList = allWeaponTeamBuffs as PartyBuffDef[];
 
 const currentCharacter = computed(
   () => characters.value[props.character] ?? ({} as Record<string, unknown>),
