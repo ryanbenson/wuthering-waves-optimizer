@@ -6,7 +6,50 @@ const weaponInfo: WeaponInfo = {
   rarity: 5,
   passiveName: "Unbending",
   passiveValue: "Grants 12%/15%/18%/21%/24% All-Attribute DMG Bonus. When Havoc Bane is applied, Heavy Attack DMG is Amplified by 36%/45%/54%/63%/72%, and Heavy Attack DMG ignores 12%/15%/18%/21%/24% of the target's DEF, for 8/8/8/8/8s.",
-  passiveData: [],
+  passiveData: [
+    {
+      key: "AzureOfHeavenAllElementAttributeBonus",
+      hasStacks: false,
+      modifier: "AllElementAttributeBonus",
+      modifierByRefinement: {
+        "1": 0.12,
+        "2": 0.15,
+        "3": 0.18,
+        "4": 0.21,
+        "5": 0.24,
+      },
+      details: "Grants 12%/15%/18%/21%/24% All-Attribute DMG Bonus.",
+      alwaysEnabled: true,
+    },
+    {
+      key: "AzureOfHeavenHeavyAmplify",
+      hasStacks: false,
+      modifier: "DMGDeepen:Heavy",
+      modifierByRefinement: {
+        "1": 0.36,
+        "2": 0.45,
+        "3": 0.54,
+        "4": 0.63,
+        "5": 0.72,
+      },
+      details: "When Havoc Bane is applied, Heavy Attack DMG is Amplified by 36%/45%/54%/63%/72% for 8s.",
+      alwaysEnabled: false,
+    },
+    {
+      key: "AzureOfHeavenHeavyDefIgnore",
+      hasStacks: false,
+      modifier: "DEFIgnore:Heavy",
+      modifierByRefinement: {
+        "1": 0.12,
+        "2": 0.15,
+        "3": 0.18,
+        "4": 0.21,
+        "5": 0.24,
+      },
+      details: "WWhen Havoc Bane is applied, Heavy Attack DMG ignores 12%/15%/18%/21%/24% of the target's DEF, for 8s",
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 const weaponData: WeaponData = {
