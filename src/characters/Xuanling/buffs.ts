@@ -41,31 +41,6 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: `DriftingMist`,
-    name: `Drifting Mist`,
-    details: `When casting <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Sword Stance Flow: Feather</span>, gain <span style="color:#ffd12f;" class="font-bold">Drifting Mist</span>, which lasts 15s. While Yangyang: Xuanling is on the field, the next Heavy Attack - Feather Sword Stance, Mid-air Attack - Feather Fall, Basic Attack - Havoc in Bloom, or Dodge Counter - Havoc in Bloom has its Crit. DMG increased by 125%; <span style="color:#ffd12f;" class="font-bold">Drifting Mist</span> is removed when Basic Attack - Havoc in Bloom Stage 3 or Dodge Counter - Havoc in Bloom Stage 3 ends. <span style="color:#ffd12f;" class="font-bold">Drifting Mist</span> can only be gained once every 25s.`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "CritDMG",
-        modifySpecificTalents: [
-          "HeavyAttackFeatherSwordStance",
-          "FeatherSwordStanceEnhancedPlungingAttack",
-          "HavocInBloomStage1",
-          "HavocInBloomStage2",
-          "HavocInBloomStage3",
-          "DodgeCounterHavocInBloomStage1",
-          "DodgeCounterHavocInBloomStage2",
-          "DodgeCounterHavocInBloomStage3",
-        ],
-        modifierValue: 1.25,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
     key: `FeatheredOath`,
     name: `Feathered Oath`,
     details: `When Resonators in the team apply <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> to a target, Xuanling gains 1 stack of <span style="color:#ffd12f;" class="font-bold">Feathered Oath</span> for 8s. <span style="color:#ffd12f;" class="font-bold">Feathered Oath</span> can be gained once every 1s, stacking up to 6 times. While Yangyang: Xuanling is on the field, each stack increases the Crit. DMG of <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Azure Sword Stance</span>, <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Feather Sword Stance</span>, <span style="color:#ffd12f;" class="font-bold">Mid-air Attack - Feather Fall</span>, and <span style="color:#ffd12f;" class="font-bold">Basic Attack - Havoc in Bloom</span> by 30%, up to a maximum of 180%.`,
