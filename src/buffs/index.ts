@@ -2462,6 +2462,21 @@ This effect ends when the incoming Resonator is switched off the field or when L
       maxStacks: 0,
       alwaysEnabled: false,
     },
+    {
+      key: `SequenceNode4AcrossTheMilesALetterAndMyLonging`,
+      name: `Sequence Node 4: Across the miles, a letter and my longing`,
+      details: `<div>When casting <span style="color:#ffd12f;" class="font-bold">Intro Skill - Skybound Feather</span>, <span style="color:#ffd12f;" class="font-bold">Sword Stance Switch: Azure</span>, <span style="color:#ffd12f;" class="font-bold">Sword Stance Switch: Feather</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Sword Stance Flow: Azure</span>, or <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Sword Stance Flow: Feather</span>, the ATK of Resonators in the team is increased by 20% for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
   ],
 };
 
