@@ -3,6 +3,11 @@ import type {
   ApiSkill,
   ApiSkillTreeNode,
 } from "./api.js";
+import {
+  formatDefaultBuffProperties,
+  mergeCharacterEntriesFile,
+  type ParsedCharacterFile,
+} from "./extractCharacterEntries.js";
 import { decodeAndCleanHtml, formatTemplateString } from "./html.js";
 import { toAttackKey } from "./naming.js";
 
@@ -235,34 +240,39 @@ function formatModifiers(modifiers: GeneratedBuffModifier[]): string {
   return `    modifiers: [\n${modifierBlocks}\n    ],`;
 }
 
-function formatBuff(buff: GeneratedBuff, index: number, total: number): string {
+function formatBuffEntry(
+  buff: GeneratedBuff,
+  preservedProperties?: string,
+): string {
   const lines = [
     "  {",
     `    key: \`${buff.key}\`,`,
     `    name: \`${buff.name}\`,`,
     `    details: ${formatTemplateString(buff.details)},`,
-    "    hasStacks: false,",
-    formatModifiers(buff.modifiers),
-    "    minStacks: 0,",
-    "    maxStacks: 0,",
-    "    alwaysEnabled: false,",
-    `  }${index < total - 1 ? "," : ""}`,
+    preservedProperties ??
+      formatDefaultBuffProperties(formatModifiers(buff.modifiers)),
+    "  }",
   ];
 
   return lines.join("\n");
 }
 
-export function formatBuffsFileContent(detail: ApiCharacterDetail): string {
+export function formatBuffsFileContent(
+  detail: ApiCharacterDetail,
+  existing?: ParsedCharacterFile,
+): string {
   const buffs = buildBuffs(detail);
-  if (buffs.length === 0) {
-    return "export const buffs = [];\n";
-  }
+  const buffsByKey = new Map(buffs.map((buff) => [buff.key, buff]));
 
-  const buffBlocks = buffs
-    .map((buff, index) => formatBuff(buff, index, buffs.length))
-    .join("\n");
-
-  return `export const buffs = [\n${buffBlocks}\n];\n`;
+  return mergeCharacterEntriesFile({
+    exportName: "buffs",
+    generatedBlocks: buffs.map((buff) => formatBuffEntry(buff)),
+    generatedKeys: buffs.map((buff) => buff.key),
+    existing,
+    formatFreshEntry: (key) => formatBuffEntry(buffsByKey.get(key)!),
+    formatMergedEntry: (key, preservedProperties) =>
+      formatBuffEntry(buffsByKey.get(key)!, preservedProperties),
+  });
 }
 
 export function getInherentSkillBuffNotices(

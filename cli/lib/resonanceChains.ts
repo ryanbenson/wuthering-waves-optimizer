@@ -1,4 +1,9 @@
 import type { ApiCharacterDetail } from "./api.js";
+import {
+  formatDefaultResonanceChainProperties,
+  mergeCharacterEntriesFile,
+  type ParsedCharacterFile,
+} from "./extractCharacterEntries.js";
 import { decodeAndCleanHtml, formatTemplateString } from "./html.js";
 import { toAttackKey } from "./naming.js";
 
@@ -47,22 +52,17 @@ export function buildResonanceChains(
     }));
 }
 
-function formatResonanceChain(
+function formatResonanceChainEntry(
   chain: GeneratedResonanceChain,
-  index: number,
-  total: number,
+  preservedProperties?: string,
 ): string {
   const lines = [
     "  {",
     `    key: \`${chain.key}\`,`,
     `    name: \`${chain.name}\`,`,
     `    details: ${formatTemplateString(chain.details)},`,
-    "    hasStacks: false,",
-    "    modifiers: [],",
-    "    minStacks: 0,",
-    "    maxStacks: 0,",
-    "    alwaysEnabled: false,",
-    `  }${index < total - 1 ? "," : ""}`,
+    preservedProperties ?? formatDefaultResonanceChainProperties(),
+    "  }",
   ];
 
   return lines.join("\n");
@@ -70,16 +70,22 @@ function formatResonanceChain(
 
 export function formatResonanceChainsFileContent(
   chains: GeneratedResonanceChain[],
+  existing?: ParsedCharacterFile,
 ): string {
-  if (chains.length === 0) {
-    return "export const resonanceChains = [];\n";
-  }
+  const chainsByKey = new Map(chains.map((chain) => [chain.key, chain]));
 
-  const chainBlocks = chains
-    .map((chain, index) => formatResonanceChain(chain, index, chains.length))
-    .join("\n");
-
-  return `export const resonanceChains = [\n${chainBlocks}\n];\n`;
+  return mergeCharacterEntriesFile({
+    exportName: "resonanceChains",
+    generatedBlocks: chains.map((chain) => formatResonanceChainEntry(chain)),
+    generatedKeys: chains.map((chain) => chain.key),
+    existing,
+    formatFreshEntry: (key) => formatResonanceChainEntry(chainsByKey.get(key)!),
+    formatMergedEntry: (key, preservedProperties) =>
+      formatResonanceChainEntry(
+        chainsByKey.get(key)!,
+        preservedProperties,
+      ),
+  });
 }
 
 export function getResonanceChainNotices(

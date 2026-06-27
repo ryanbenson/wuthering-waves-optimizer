@@ -16,6 +16,7 @@ import {
   formatResonanceChainsFileContent,
 } from "./resonanceChains.js";
 import { formatTuneBreakAttacksFileContent } from "./tuneBreakAttacks.js";
+import { readCharacterEntriesFromFile } from "./extractCharacterEntries.js";
 
 const INDEX_TEMPLATE = `import { getCharacterBasicInfo } from "./basic.ts";
 import { character, getCharacterStatsByLevel } from "./character.ts";
@@ -50,15 +51,27 @@ export function getData() {
 }
 `;
 
+export interface ScaffoldCharacterOptions {
+  mergeModifiers?: boolean;
+}
+
 export function scaffoldCharacterFolder(
   charactersDir: string,
   key: string,
   detail: ApiCharacterDetail,
   onProgress?: (message: string) => void,
   displayName?: string,
+  options: ScaffoldCharacterOptions = {},
 ): string {
   const characterDir = path.join(charactersDir, key);
   fs.mkdirSync(characterDir, { recursive: true });
+
+  const existingBuffEntries = options.mergeModifiers
+    ? readCharacterEntriesFromFile(path.join(characterDir, "buffs.ts"))
+    : undefined;
+  const existingResonanceEntries = options.mergeModifiers
+    ? readCharacterEntriesFromFile(path.join(characterDir, "resonanceChains.ts"))
+    : undefined;
 
   onProgress?.("Building basic info and character stats");
   const basic = extractBasicData(detail, key, displayName);
@@ -68,7 +81,7 @@ export function scaffoldCharacterFolder(
   const skillAttackFiles = buildSkillAttackFiles(detail);
 
   onProgress?.("Building inherent skill buffs");
-  const buffsContent = formatBuffsFileContent(detail);
+  const buffsContent = formatBuffsFileContent(detail, existingBuffEntries);
 
   onProgress?.("Building resonance chains");
   const resonanceChains = buildResonanceChains(detail);
@@ -82,7 +95,10 @@ export function scaffoldCharacterFolder(
     ...skillAttackFiles,
     "tuneBreakAttacks.ts": tuneBreakAttacksContent,
     "buffs.ts": buffsContent,
-    "resonanceChains.ts": formatResonanceChainsFileContent(resonanceChains),
+    "resonanceChains.ts": formatResonanceChainsFileContent(
+      resonanceChains,
+      existingResonanceEntries,
+    ),
     "presets.ts":
       "export const rotations: RotationPreset[] = [];\nexport const echoes = [];\n",
     "index.ts": INDEX_TEMPLATE,
