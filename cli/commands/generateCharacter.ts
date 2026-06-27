@@ -45,7 +45,13 @@ function characterExists(key: string): boolean {
   );
 }
 
-export async function runGenerateCharacter(): Promise<void> {
+export interface GenerateCharacterOptions {
+  mergeModifiers?: boolean;
+}
+
+export async function runGenerateCharacter(
+  options: GenerateCharacterOptions = {},
+): Promise<void> {
   const characters = await withSpinner(
     "Fetching character list from Encore API",
     () => fetchCharacterList(),
@@ -131,6 +137,12 @@ export async function runGenerateCharacter(): Promise<void> {
   const progress = createProgressSpinner(`Generating ${name}`);
   let characterDir = "";
 
+  if (options.mergeModifiers && characterExists(key)) {
+    console.log(
+      "Merging existing entry properties from buffs.ts and resonanceChains.ts (key, name, and details will update)",
+    );
+  }
+
   try {
     characterDir = scaffoldCharacterFolder(
       charactersDir,
@@ -140,6 +152,7 @@ export async function runGenerateCharacter(): Promise<void> {
         progress.update(`Generating ${name} — ${message}`);
       },
       name,
+      { mergeModifiers: options.mergeModifiers },
     );
 
     progress.update(`Generating ${name} — Updating characters.ts registry`);
