@@ -2,7 +2,7 @@ export const buffs = [
   {
     key: `InherentSkillDecipher`,
     name: `Inherent Skill: Decipher`,
-    details: `<div><span class="Title">Resonance Skill</span></span><br><br>The last Stage of Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> inflicts 10 stacks of <span style="color:#ffd12f;" class="font-bold">【Electro Flare</span> on the target hit.</div>`,
+    details: `<div>The last Stage of Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> inflicts 10 stacks of <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> on the target hit.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -12,7 +12,7 @@ export const buffs = [
   {
     key: `InherentSkillRegression`,
     name: `Inherent Skill: Regression`,
-    details: `<div><span class="Title">Skill Description</span></span><br><br>After Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> is cast by holding down, gain 20% Resonance Skill DMG Bonus for 20s. Switching to another Resonator ends this effect.</div>`,
+    details: `<div>When Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> is cast by holding down the button, gain 20% Resonance Skill DMG Bonus for 20s. Switching to another Resonator ends this effect.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,

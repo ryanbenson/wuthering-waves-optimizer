@@ -1,45 +1,8 @@
 export const buffs = [
   {
-    name: `Careless Landscape`,
-    key: `CarelessLandscape`,
-    details: `<span style="color:#f7ca2f"><strong>Careless Landscape</strong></span> grants all nearby Resonators in the team the following enhancements:
-- Inflicting a target with <span style="color:#f7ca2f"><strong>Spectro Frazzle</strong></span>, <span style="color:#f7ca2f"><strong>Fusion Burst</strong></span>, <span style="color:#f7ca2f"><strong>Glacio Chafe</strong></span>, and <span style="color:#f7ca2f"><strong>Aero Erosion</strong></span> increases the max stack limit of Negative Status the target can receive by 3 for 15s. This effect does not stack.
-- Inflicting a target with <span style="color:#f7ca2f"><strong>Electro Flare</strong></span> increases the max stack limits of <span style="color:#f7ca2f"><strong>Electro Flare</strong></span> and <span style="color:#f7ca2f"><strong>Electro Rage</strong></span> the target can receive by 3 for 15s. This effect does not stack.
-- Inflicting a target with <span style="color:#f7ca2f"><strong>Havoc Bane</strong></span> allows the Resonator's Havoc DMG to ignore the target's DEF and Havoc RES by 15% and 15% respectively for 15s. This effect does not stack.`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "DEFIgnore:Havoc",
-        modifierValue: 0.15,
-      },
-      {
-        modifier: "ResistShred:Havoc",
-        modifierValue: 0.15,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
-    name: `Outro Skill: Rippling Waters`,
-    key: `OutroSkillRipplingWaters`,
-    details: `Resonators in the team gain 25% All DMG Amplification for 30s.`,
-    hasStacks: false,
-    modifiers: [
-      {
-        modifier: "DMGDeepen",
-        modifierValue: 0.25,
-      },
-    ],
-    minStacks: 0,
-    maxStacks: 0,
-    alwaysEnabled: false,
-  },
-  {
     key: `InherentSkillSkyOverWater`,
     name: `Inherent Skill: Sky Over Water`,
-    details: `<div>Consuming <span style="color:#ffd12f;" class="font-bold">Enrichment</span> grants the Resonator 10 stacks of <span style="color:#ffd12f;" class="font-bold">Spring’s Birth</span>, up to 10 stacks. When the Resonator with <span style="color:#ffd12f;" class="font-bold">Spring’s Birth</span> is on the field and not at full HP, restore their HP by 62 + 0.34% of Suisui's Max HP at the cost of 1 stack of <span style="color:#ffd12f;" class="font-bold">Spring’s Birth</span> every 2s.<br><size=10></span><br><br><span style="color:#ffd12f;" class="font-bold">Resonance Skill - Awakening Spring</span> and <span style="color:#ffd12f;" class="font-bold">Intro Skill - Tinkling Jade</span> additionally restore 20 and 13 Concerto Energy and Resonance Energy respectively on hit, while also increasing their respective Crit. Rate and Glacio DMG dealt by 80% and 240%. This effect can be triggered once every 25s.</div>`,
+    details: `<div>Consuming <span style="color:#ffd12f;" class="font-bold">Enrichment</span> grants the Resonator 10 stacks of <span style="color:#ffd12f;" class="font-bold">Spring's Birth</span>, up to 10 stacks. When the Resonator with <span style="color:#ffd12f;" class="font-bold">Spring's Birth</span> is not at full HP, restore their HP by 62 + 0.34% of Suisui's Max HP at the cost of 1 stack of <span style="color:#ffd12f;" class="font-bold">Spring's Birth</span> every 2s.<br><size=10></span><br><br>When <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Awakening Spring</span> and <span style="color:#ffd12f;" class="font-bold">Intro Skill - Tinkling Jade</span> hit a target, they additionally restore 18 points of Concerto Energy and 13 points of Resonance Energy, and increase the attack's Crit. Rate by 80% and Glacio DMG by 240%. This effect can be triggered up to once every 25s.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -62,8 +25,8 @@ export const buffs = [
     alwaysEnabled: false,
   },
   {
-    key: `InherentSkillShiftingGold`,
-    name: `Inherent Skill: Shifting Gold`,
+    key: `InherentSkillGlimmeringGold`,
+    name: `Inherent Skill: Glimmering Gold`,
     details: `<div>When a Resonator other than Suisui takes a fatal blow, they will not be knocked out but will instead regain 50% of Suisui's current HP, while Suisui herself loses the same amount of HP. Suisui's HP will not go below 1 from this effect. This effect can be triggered once every 10 minutes.</div>`,
     hasStacks: false,
     modifiers: [],
@@ -187,6 +150,53 @@ export const buffs = [
         modifierValue: 0.042,
       },
     ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+{
+    name: `Careless Landscape`,
+    key: `CarelessLandscape`,
+    details: `<span style="color:#f7ca2f"><strong>Careless Landscape</strong></span> grants all nearby Resonators in the team the following enhancements:
+- Inflicting a target with <span style="color:#f7ca2f"><strong>Spectro Frazzle</strong></span>, <span style="color:#f7ca2f"><strong>Fusion Burst</strong></span>, <span style="color:#f7ca2f"><strong>Glacio Chafe</strong></span>, and <span style="color:#f7ca2f"><strong>Aero Erosion</strong></span> increases the max stack limit of Negative Status the target can receive by 3 for 15s. This effect does not stack.
+- Inflicting a target with <span style="color:#f7ca2f"><strong>Electro Flare</strong></span> increases the max stack limits of <span style="color:#f7ca2f"><strong>Electro Flare</strong></span> and <span style="color:#f7ca2f"><strong>Electro Rage</strong></span> the target can receive by 3 for 15s. This effect does not stack.
+- Inflicting a target with <span style="color:#f7ca2f"><strong>Havoc Bane</strong></span> allows the Resonator's Havoc DMG to ignore the target's DEF and Havoc RES by 15% and 15% respectively for 15s. This effect does not stack.`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DEFIgnore:Havoc",
+        modifierValue: 0.15,
+      },
+      {
+        modifier: "ResistShred:Havoc",
+        modifierValue: 0.15,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+{
+    name: `Outro Skill: Rippling Waters`,
+    key: `OutroSkillRipplingWaters`,
+    details: `Resonators in the team gain 25% All DMG Amplification for 30s.`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "DMGDeepen",
+        modifierValue: 0.25,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+{
+    key: `InherentSkillShiftingGold`,
+    name: `Inherent Skill: Shifting Gold`,
+    details: `<div>When a Resonator other than Suisui takes a fatal blow, they will not be knocked out but will instead regain 50% of Suisui's current HP, while Suisui herself loses the same amount of HP. Suisui's HP will not go below 1 from this effect. This effect can be triggered once every 10 minutes.</div>`,
+    hasStacks: false,
+    modifiers: [],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,

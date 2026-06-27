@@ -1,10 +1,10 @@
 export const basicAttacks = {
   name: "Normal Attack: Succor and Smite",
-  description: `<span class="Title">Basic Attack - Azure Sword Stance</span></span><br><br>Press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> repeatedly or hold it to consume <span style="color:#ffd12f;" class="font-bold">Melody</span> and perform up to 4 consecutive attacks, dealing <span style="color:#fcc4db;">Havoc DMG</span>. While <span style="color:#ffd12f;" class="font-bold">Melody</span> is not depleted, the Energy Regen of <span style="color:#ffd12f;" class="font-bold">Basic Attack - Azure Sword Stance</span> is increased by 20%.<br>When <span style="color:#ffd12f;" class="font-bold">Basic Attack - Azure Sword Stance Stage 4</span> hits a target, it applies 1 stack of <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> to the target.<br><size=10></span><br><br><span class="Title">Basic Attack - Feather Sword Stance</span></span><br><br>Press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> repeatedly or hold it to consume <span style="color:#ffd12f;" class="font-bold">Melody</span> and perform up to 4 consecutive attacks, dealing <span style="color:#fcc4db;">Havoc DMG</span>. While <span style="color:#ffd12f;" class="font-bold">Melody</span> is not depleted, the Energy Regen of <span style="color:#ffd12f;" class="font-bold">Basic Attack - Feather Sword Stance</span> is increased by 20%.<br>When <span style="color:#ffd12f;" class="font-bold">Basic Attack - Feather Sword Stance Stage 4</span> hits a target, it applies 1 stack of <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> to the target.<br><size=10></span><br><br><span class="Title">Mid-air Attack - Azure Sword Stance</span></span><br><br>While airborne, hold <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> to consume STA and perform a Plunging Attack, consuming <span style="color:#ffd12f;" class="font-bold">Melody</span> and dealing <span style="color:#fcc4db;">Havoc DMG</span>.<br>{Cus:Ipt,Touch=Tapping PC=Pressing Gamepad=Pressing} <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time after casting this skill performs <span style="color:#ffd12f;" class="font-bold">Basic Attack - Azure Sword Stance Stage 2</span>.<br><size=10></span><br><br><span class="Title">Mid-air Attack - Feather Sword Stance</span></span><br><br>While airborne, hold <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> to consume STA and perform a Plunging Attack, consuming <span style="color:#ffd12f;" class="font-bold">Melody</span> and dealing <span style="color:#fcc4db;">Havoc DMG</span>.<br>{Cus:Ipt,Touch=Tapping PC=Pressing Gamepad=Pressing} <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time after casting this skill performs <span style="color:#ffd12f;" class="font-bold">Basic Attack - Feather Sword Stance Stage 2</span>.<br><size=10></span><br><br><span class="Title">Dodge Counter - Azure Sword Stance</span></span><br><br>{Cus:Ipt,Touch=Tapping PC=Pressing Gamepad=Pressing} <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time after a successful Dodge consumes <span style="color:#ffd12f;" class="font-bold">Melody</span> to attack the target, dealing <span style="color:#fcc4db;">Havoc DMG</span>.<br>{Cus:Ipt,Touch=Tapping PC=Pressing Gamepad=Pressing} <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time after casting this skill performs <span style="color:#ffd12f;" class="font-bold">Basic Attack - Azure Sword Stance Stage 3</span>.<br>Casting <span style="color:#ffd12f;" class="font-bold">Dodge Counter - Azure Sword Stance</span> counts as casting <span style="color:#ffd12f;" class="font-bold">Basic Attack - Azure Sword Stance Stage 2</span>.<br><size=10></span><br><br><span class="Title">Dodge Counter - Feather Sword Stance</span></span><br><br>{Cus:Ipt,Touch=Tapping PC=Pressing Gamepad=Pressing} <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time after a successful Dodge consumes <span style="color:#ffd12f;" class="font-bold">Melody</span> to attack the target, dealing <span style="color:#fcc4db;">Havoc DMG</span>.<br>{Cus:Ipt,Touch=Tapping PC=Pressing Gamepad=Pressing} <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time after casting this skill performs <span style="color:#ffd12f;" class="font-bold">Basic Attack - Feather Sword Stance Stage 3</span>.<br>Casting <span style="color:#ffd12f;" class="font-bold">Dodge Counter - Feather Sword Stance</span> counts as casting <span style="color:#ffd12f;" class="font-bold">Basic Attack - Feather Sword Stance Stage 2</span>.`,
+  description: `<span class="Title">Basic Attack - Azure Sword Stance</span></span><br><br>Press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> repeatedly or hold it down to consume <span style="color:#ffd12f;" class="font-bold">Melody</span> and perform up to 4 consecutive attacks, dealing <span style="color:#fcc4db;">Havoc DMG</span>. While <span style="color:#ffd12f;" class="font-bold">Melody</span> is not depleted, the Energy Regen of <span style="color:#ffd12f;" class="font-bold">Basic Attack - Azure Sword Stance</span> is increased by 20%.<br><span style="color:#ffd12f;" class="font-bold">Basic Attack - Azure Sword Stance Stage 4</span> applies 1 stack of <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> to the targets hit.<br><size=10></span><br><br><span class="Title">Basic Attack - Feather Sword Stance</span></span><br><br>Press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> repeatedly or hold it down to consume <span style="color:#ffd12f;" class="font-bold">Melody</span> and perform up to 4 consecutive attacks, dealing <span style="color:#fcc4db;">Havoc DMG</span>. While <span style="color:#ffd12f;" class="font-bold">Melody</span> is not depleted, the Energy Regen of <span style="color:#ffd12f;" class="font-bold">Basic Attack - Feather Sword Stance</span> is increased by 20%.<br><span style="color:#ffd12f;" class="font-bold">Basic Attack - Feather Sword Stance Stage 4</span> applies 1 stack of <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> to the targets hit.<br><size=10></span><br><br><span class="Title">Mid-air Attack - Azure Sword Stance</span></span><br><br>Consume STA to perform a Plunging Attack, consuming <span style="color:#ffd12f;" class="font-bold">Melody</span> and dealing <span style="color:#fcc4db;">Havoc DMG</span>.<br>{Cus:Ipt,Touch=Tapping PC=Pressing Gamepad=Pressing} <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time after casting this skill triggers <span style="color:#ffd12f;" class="font-bold">Basic Attack - Azure Sword Stance Stage 2</span>.<br><size=10></span><br><br><span class="Title">Mid-air Attack - Feather Sword Stance</span></span><br><br>Consume STA to perform a Plunging Attack, consuming <span style="color:#ffd12f;" class="font-bold">Melody</span> and dealing <span style="color:#fcc4db;">Havoc DMG</span>.<br>{Cus:Ipt,Touch=Tapping PC=Pressing Gamepad=Pressing} <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time after casting this skill triggers <span style="color:#ffd12f;" class="font-bold">Basic Attack - Feather Sword Stance Stage 2</span>.<br><size=10></span><br><br><span class="Title">Dodge Counter - Azure Sword Stance</span></span><br><br>{Cus:Ipt,Touch=Tapping PC=Pressing Gamepad=Pressing} <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time after a successful Dodge consumes <span style="color:#ffd12f;" class="font-bold">Melody</span> to attack the target, dealing <span style="color:#fcc4db;">Havoc DMG</span>.<br>{Cus:Ipt,Touch=Tapping PC=Pressing Gamepad=Pressing} <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time after casting this skill triggers <span style="color:#ffd12f;" class="font-bold">Basic Attack - Azure Sword Stance Stage 3</span>.<br>Casting <span style="color:#ffd12f;" class="font-bold">Dodge Counter - Azure Sword Stance</span> counts as casting <span style="color:#ffd12f;" class="font-bold">Basic Attack - Azure Sword Stance Stage 2</span>.<br><size=10></span><br><br><span class="Title">Dodge Counter - Feather Sword Stance</span></span><br><br>{Cus:Ipt,Touch=Tapping PC=Pressing Gamepad=Pressing} <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time after a successful Dodge consumes <span style="color:#ffd12f;" class="font-bold">Melody</span> to attack the target, dealing <span style="color:#fcc4db;">Havoc DMG</span>.<br>{Cus:Ipt,Touch=Tapping PC=Pressing Gamepad=Pressing} <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> within a short time after casting this skill triggers <span style="color:#ffd12f;" class="font-bold">Basic Attack - Feather Sword Stance Stage 3</span>.<br>Casting <span style="color:#ffd12f;" class="font-bold">Dodge Counter - Feather Sword Stance</span> counts as casting <span style="color:#ffd12f;" class="font-bold">Basic Attack - Feather Sword Stance Stage 2</span>.`,
   attacks: [
     {
-      key: "AzureSwordStanceStage1",
-      label: "Azure Sword Stance Stage 1",
+      key: "BasicAttackAzureSwordStanceStage1DMG",
+      label: "Basic Attack - Azure Sword Stance Stage 1 DMG",
       talents: {
         "1": "24.00%",
         "2": "25.97%",
@@ -20,8 +20,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "AzureSwordStanceStage2",
-      label: "Azure Sword Stance Stage 2",
+      key: "BasicAttackAzureSwordStanceStage2DMG",
+      label: "Basic Attack - Azure Sword Stance Stage 2 DMG",
       talents: {
         "1": "10.13%+10.13%+30.39%",
         "2": "10.96%+10.96%+32.88%",
@@ -37,8 +37,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "AzureSwordStanceStage3",
-      label: "Azure Sword Stance Stage 3",
+      key: "BasicAttackAzureSwordStanceStage3DMG",
+      label: "Basic Attack - Azure Sword Stance Stage 3 DMG",
       talents: {
         "1": "15.20%+35.45%",
         "2": "16.44%+38.36%",
@@ -54,8 +54,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "AzureSwordStanceStage4",
-      label: "Azure Sword Stance Stage 4",
+      key: "BasicAttackAzureSwordStanceStage4DMG",
+      label: "Basic Attack - Azure Sword Stance Stage 4 DMG",
       talents: {
         "1": "9.34%+9.34%+74.69%",
         "2": "10.11%+10.11%+80.82%",
@@ -71,8 +71,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "FeatherSwordStanceStage1",
-      label: "Feather Sword Stance Stage 1",
+      key: "BasicAttackFeatherSwordStanceStage1DMG",
+      label: "Basic Attack - Feather Sword Stance Stage 1 DMG",
       talents: {
         "1": "20.00%+20.00%",
         "2": "21.64%+21.64%",
@@ -88,8 +88,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "FeatherSwordStanceStage2",
-      label: "Feather Sword Stance Stage 2",
+      key: "BasicAttackFeatherSwordStanceStage2DMG",
+      label: "Basic Attack - Feather Sword Stance Stage 2 DMG",
       talents: {
         "1": "16.88%*3",
         "2": "18.27%*3",
@@ -105,8 +105,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "FeatherSwordStanceStage3",
-      label: "Feather Sword Stance Stage 3",
+      key: "BasicAttackFeatherSwordStanceStage3DMG",
+      label: "Basic Attack - Feather Sword Stance Stage 3 DMG",
       talents: {
         "1": "7.48%+3.74%*3+18.68%",
         "2": "8.09%+4.05%*3+20.22%",
@@ -122,8 +122,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "FeatherSwordStanceStage4",
-      label: "Feather Sword Stance Stage 4",
+      key: "BasicAttackFeatherSwordStanceStage4DMG",
+      label: "Basic Attack - Feather Sword Stance Stage 4 DMG",
       talents: {
         "1": "36.00%+36.00%+48.00%",
         "2": "38.96%+38.96%+51.94%",
@@ -139,25 +139,25 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "FeatherSwordStancePlungingAttack",
-      label: "Feather Sword Stance - Plunging Attack",
+      key: "MidAirAttackFeatherSwordStanceDMG",
+      label: "Mid-air Attack - Feather Sword Stance DMG",
       talents: {
-        "1": "120.00%",
-        "2": "129.84%",
-        "3": "139.68%",
-        "4": "153.46%",
-        "5": "163.30%",
-        "6": "174.62%",
-        "7": "190.36%",
-        "8": "206.10%",
-        "9": "221.85%",
-        "10": "238.58%",
+        "1": "49.60%",
+        "2": "53.67%",
+        "3": "57.74%",
+        "4": "63.43%",
+        "5": "67.50%",
+        "6": "72.18%",
+        "7": "78.69%",
+        "8": "85.19%",
+        "9": "91.70%",
+        "10": "98.61%",
       },
       type: "Basic",
     },
     {
-      key: "DodgeCounterAzureSwordStance",
-      label: "Dodge Counter - Azure Sword Stance",
+      key: "DodgeCounterAzureSwordStanceDMG",
+      label: "Dodge Counter - Azure Sword Stance DMG",
       talents: {
         "1": "19.73%+19.73%+59.19%",
         "2": "21.35%+21.35%+64.04%",
@@ -173,8 +173,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "DodgeCounterFeatherSwordStance",
-      label: "Dodge Counter - Feather Sword Stance",
+      key: "DodgeCounterFeatherSwordStanceDMG",
+      label: "Dodge Counter - Feather Sword Stance DMG",
       talents: {
         "1": "32.88%*3",
         "2": "35.58%*3",
@@ -188,24 +188,6 @@ export const basicAttacks = {
         "10": "65.37%*3",
       },
       type: "Basic",
-    },
-    {
-      key: `SequenceNode2RiverCarriesHerSongAway`,
-      label: `S2: Shadow of Xuanling: Strung Notes`,
-      talents: {
-        "1": "337.98%",
-        "2": "337.98%",
-        "3": "337.98%",
-        "4": "337.98%",
-        "5": "337.98%",
-        "6": "337.98%",
-        "7": "337.98%",
-        "8": "337.98%",
-        "9": "337.98%",
-        "10": "337.98%",
-      },
-      type: "Heavy",
-      requiresResonanceChain: "SequenceNode2RiverCarriesHerSongAway",
     }
   ],
 };

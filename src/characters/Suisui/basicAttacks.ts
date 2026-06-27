@@ -1,10 +1,10 @@
 export const basicAttacks = {
   name: "Normal Attack: Unraveled Spring",
-  description: `<span class="Title">Basic Attack - Cleansing</span></span><br><br>Press repeatedly or hold <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> to perform up to 4 consecutive attacks, dealing <span style="color:#a2fbfc;">Glacio DMG</span> and restoring <span style="color:#ffd12f;" class="font-bold">Stillness</span> on hit.<br><size=10></span><br><br><span class="Title">Mid-air Attack - Cleansing</span></span><br><br>Consume STA to perform Plunging Attack, dealing <span style="color:#a2fbfc;">Glacio DMG</span>.<br><size=10></span><br><br><span class="Title">Dodge Counter - Cleansing</span></span><br><br>Press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> shortly after a successful Dodge to attack the target, dealing <span style="color:#a2fbfc;">Glacio DMG</span> and restoring <span style="color:#ffd12f;" class="font-bold">Stillness</span> on hit.<br>Press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> shortly after casting this skill to perform <span style="color:#ffd12f;" class="font-bold">Basic Attack - Cleansing Stage 4</span>.`,
+  description: `<span class="Title">Basic Attack - Zephyr Stance</span></span><br><br>Press repeatedly or hold <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> to perform up to 4 consecutive attacks, dealing <span style="color:#a2fbfc;">Glacio DMG</span> and restoring <span style="color:#ffd12f;" class="font-bold">Cloud Breath</span> on hit.<br><size=10></span><br><br><span class="Title">Mid-air Attack - Zephyr Stance</span></span><br><br>Consume STA to perform Plunging Attack, dealing <span style="color:#a2fbfc;">Glacio DMG</span>.<br><size=10></span><br><br><span class="Title">Dodge Counter - Zephyr Stance</span></span><br><br>Press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> shortly after a successful Dodge to attack the target, dealing <span style="color:#a2fbfc;">Glacio DMG</span> and restoring <span style="color:#ffd12f;" class="font-bold">Cloud Breath</span> on hit.<br>Press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> shortly after casting this skill to perform <span style="color:#ffd12f;" class="font-bold">Basic Attack - Zephyr Stance Stage 4</span>.`,
   attacks: [
     {
-      key: "BasicAttackCleansingStage1DMG",
-      label: "Basic Attack - Cleansing Stage 1 DMG",
+      key: "BasicAttackZephyrStanceStage1DMG",
+      label: "Basic Attack - Zephyr Stance Stage 1 DMG",
       talents: {
         "1": "31.76%",
         "2": "34.37%",
@@ -20,8 +20,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "BasicAttackCleansingStage2DMG",
-      label: "Basic Attack - Cleansing Stage 2 DMG",
+      key: "BasicAttackZephyrStanceStage2DMG",
+      label: "Basic Attack - Zephyr StanceStage 2 DMG",
       talents: {
         "1": "30.68%+30.68%",
         "2": "33.20%+33.20%",
@@ -37,8 +37,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "BasicAttackCleansingStage3DMG",
-      label: "Basic Attack - Cleansing Stage 3 DMG",
+      key: "BasicAttackZephyrStanceStage3DMG",
+      label: "Basic Attack - Zephyr Stance Stage 3 DMG",
       talents: {
         "1": "21.03%+21.03%+28.04%",
         "2": "22.75%+22.75%+30.34%",
@@ -54,8 +54,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "BasicAttackCleansingStage4DMG",
-      label: "Basic Attack - Cleansing Stage 4 DMG",
+      key: "BasicAttackZephyrStanceStage4DMG",
+      label: "Basic Attack - Zephyr Stance Stage 4 DMG",
       talents: {
         "1": "40.00%+8.00%*5",
         "2": "43.28%+8.66%*5",
@@ -71,8 +71,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "MidAirAttackCleansingDMG",
-      label: "Mid-air Attack - Cleansing DMG",
+      key: "MidAirAttackZephyrStanceDMG",
+      label: "Mid-air Attack - Zephyr Stance DMG",
       talents: {
         "1": "45.65%",
         "2": "49.40%",
@@ -88,8 +88,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "DodgeCounterCleansingDMG",
-      label: "Dodge Counter - Cleansing DMG",
+      key: "DodgeCounterZephyrStanceDMG",
+      label: "Dodge Counter - Zephyr Stance DMG",
       talents: {
         "1": "25.76%+25.76%+34.34%",
         "2": "27.87%+27.87%+37.16%",

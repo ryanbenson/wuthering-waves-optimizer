@@ -1,5 +1,6 @@
 import type { ApiCharacterDetail } from "./api.js";
 import {
+  findResonanceChainExistingEntry,
   formatDefaultResonanceChainProperties,
   mergeCharacterEntriesFile,
   type ParsedCharacterFile,
@@ -79,6 +80,7 @@ export function formatResonanceChainsFileContent(
     generatedBlocks: chains.map((chain) => formatResonanceChainEntry(chain)),
     generatedKeys: chains.map((chain) => chain.key),
     existing,
+    findExistingEntry: findResonanceChainExistingEntry,
     formatFreshEntry: (key) => formatResonanceChainEntry(chainsByKey.get(key)!),
     formatMergedEntry: (key, preservedProperties) =>
       formatResonanceChainEntry(

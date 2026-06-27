@@ -2,7 +2,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode1CelestialIngenuity`,
     name: `Sequence Node 1: Celestial Ingenuity`,
-    details: `<div><span class="Title">Resonance Skill</span></span><br><br>While casting <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> and <span style="color:#ffd12f;" class="font-bold">Thrum of All Sounds</span>, gain increased resistance to interruption for 0.5s.</div>`,
+    details: `<div>While casting <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> and Resonance Skill <span style="color:#ffd12f;" class="font-bold">Thrum of All Sounds</span>, gain increased resistance to interruption for 0.5s.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -12,7 +12,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode2ThousandfoldArtifice`,
     name: `Sequence Node 2: Thousandfold Artifice`,
-    details: `<div><span class="Title">Resonance Liberation</span></span><br><br>Inflict 5 stacks of <span style="color:#ffd12f;" class="font-bold"><span style="color:#ffd12f;" class="font-bold">【Electro Flare</span> after casting <span style="color:#ffd12f;" class="font-bold">Resonance Liberation</span>.</div>`,
+    details: `<div>Inflict 5 stacks of <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> after casting Resonance Liberation <span style="color:#ffd12f;" class="font-bold">Ultimate Tactics</span>.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -22,7 +22,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode3AlchemyOfWonders`,
     name: `Sequence Node 3: Alchemy of Wonders`,
-    details: `<div><span class="Title">Resonance Skill</span></span><br><br>The DMG Multiplier of Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> is increased by 20%.</div>`,
+    details: `<div>The DMG Multiplier of Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> is increased by 20%.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -32,7 +32,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode4EarthquakingRumble`,
     name: `Sequence Node 4: Earthquaking Rumble`,
-    details: `<div><span class="Title">Resonance Liberation</span></span><br><br>The DMG Multiplier of <span style="color:#ffd12f;" class="font-bold">Resonance Liberation</span> is increased by 20%.</div>`,
+    details: `<div>The DMG Multiplier of Resonance Liberation <span style="color:#ffd12f;" class="font-bold">Ultimate Tactics</span> is increased by 20%.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -42,7 +42,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode5PrincipleOfChange`,
     name: `Sequence Node 5: Principle of Change`,
-    details: `<div><span class="Title">Skill Description</span></span><br><br>Crit. DMG is increased by 20% during <span style="color:#ffd12f;" class="font-bold">Apex Resonance</span>.</div>`,
+    details: `<div>Crit. DMG is increased by 20% while in <span style="color:#ffd12f;" class="font-bold">Apex Resonance</span>.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -51,8 +51,8 @@ export const resonanceChains = [
   },
   {
     key: `SequenceNode6MindSDepthsInACasket`,
-    name: `Sequence Node 6: Mind’s Depths in a Casket`,
-    details: `<div><span class="Title">Resonance Skill</span></span><br><br>The DMG Multiplier of <span style="color:#ffd12f;" class="font-bold">Thrum of All Sounds</span> is increased by 20%.</div>`,
+    name: `Sequence Node 6: Mind's Depths in a Casket`,
+    details: `<div>The DMG Multiplier of Resonance Skill <span style="color:#ffd12f;" class="font-bold">Thrum of All Sounds</span> is increased by 20%.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
