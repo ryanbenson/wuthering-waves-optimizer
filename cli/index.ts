@@ -15,9 +15,15 @@ const generate = program.command("generate").description("Generate project asset
 generate
   .command("character")
   .description("Scaffold a new character folder and register it in characters.ts")
-  .action(async () => {
+  .option(
+    "--merge-modifiers",
+    "When regenerating, update key/name/details from API and keep other entry properties",
+  )
+  .action(async (commandOptions: { mergeModifiers?: boolean }) => {
     try {
-      await runGenerateCharacter();
+      await runGenerateCharacter({
+        mergeModifiers: commandOptions.mergeModifiers,
+      });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(`Error: ${message}`);

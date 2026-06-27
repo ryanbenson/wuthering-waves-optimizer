@@ -6,6 +6,7 @@ help:
 	@echo "Usage:"
 	@echo "  make install              Install npm dependencies"
 	@echo "  make generate-character   Interactive character scaffold generator"
+	@echo "  make generate-character ARGS=\"--merge-modifiers\"  Regenerate while keeping entry properties"
 	@echo "  make character            Alias for generate-character"
 	@echo "  make generate-weapon      Interactive weapon scaffold generator"
 	@echo "  make weapon               Alias for generate-weapon"
@@ -26,7 +27,7 @@ generate-weapon: cli-weapon
 weapon: generate-weapon
 
 cli-character:
-	npm run cli -- generate character
+	npm run cli -- generate character $(ARGS)
 
 cli-weapon:
 	npm run cli -- generate weapon
