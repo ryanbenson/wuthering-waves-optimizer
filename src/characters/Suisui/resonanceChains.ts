@@ -66,7 +66,7 @@ export const resonanceChains = [
           "BasicAttackDrizzleStanceStage2DMG",
           "BasicAttackDrizzleStanceStage3DMG",
           "BasicAttackDrizzleStanceStage4DMG",
-          "HeavyAttackDrizzleStanceDMG",
+          "HeavyAttackDrizzleStance",
         ],
         modifierValue: 1,
       }
