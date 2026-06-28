@@ -71,7 +71,7 @@ export const forteCircuitAttacks = {
       type: "Heavy",
     },
     {
-      key: "BasicAttackHavocInBloomStage1DMG",
+      key: "BasicAttackBasicAttackHavocInBloomStage1DMGDMG",
       label: "Basic Attack - Havoc in Bloom Stage 1 DMG",
       talents: {
         "1": "20.01%*3",
@@ -88,7 +88,7 @@ export const forteCircuitAttacks = {
       type: "Heavy",
     },
     {
-      key: "BasicAttackHavocInBloomStage2DMG",
+      key: "BasicAttackBasicAttackHavocInBloomStage2DMGDMG",
       label: "Basic Attack - Havoc in Bloom Stage 2 DMG",
       talents: {
         "1": "44.90%+33.67%+33.67%",
@@ -105,7 +105,7 @@ export const forteCircuitAttacks = {
       type: "Heavy",
     },
     {
-      key: "BasicAttackHavocInBloomStage3DMG",
+      key: "BasicAttackBasicAttackHavocInBloomStage3DMGDMG",
       label: "Basic Attack - Havoc in Bloom Stage 3 DMG",
       talents: {
         "1": "12.06%*5+140.68%",
@@ -122,7 +122,7 @@ export const forteCircuitAttacks = {
       type: "Heavy",
     },
     {
-      key: "ResonanceSkillSwordStanceFlowAzureDMG",
+      key: "ResonanceSkillResonanceSkillSwordStanceFlowAzureDMGDMG",
       label: "Resonance Skill - Sword Stance Flow: Azure DMG",
       talents: {
         "1": "35.19%+7.82%*3",
@@ -139,7 +139,7 @@ export const forteCircuitAttacks = {
       type: "Basic",
     },
     {
-      key: "DodgeCounterHavocInBloomStage1DMG",
+      key: "DodgeCounterBasicAttackHavocInBloomStage1DMGDMG",
       label: "Dodge Counter - Havoc in Bloom Stage 1 DMG",
       talents: {
         "1": "20.01%*3",
@@ -156,7 +156,7 @@ export const forteCircuitAttacks = {
       type: "Heavy",
     },
     {
-      key: "DodgeCounterHavocInBloomStage2DMG",
+      key: "DodgeCounterBasicAttackHavocInBloomStage2DMGDMG",
       label: "Dodge Counter - Havoc in Bloom Stage 2 DMG",
       talents: {
         "1": "44.90%+33.67%+33.67%",
@@ -173,7 +173,7 @@ export const forteCircuitAttacks = {
       type: "Heavy",
     },
     {
-      key: "DodgeCounterHavocInBloomStage3DMG",
+      key: "DodgeCounterBasicAttackHavocInBloomStage3DMGDMG",
       label: "Dodge Counter - Havoc in Bloom Stage 3 DMG",
       talents: {
         "1": "12.06%*5+140.68%",
@@ -204,7 +204,46 @@ export const forteCircuitAttacks = {
         "9": "523",
         "10": "523",
       },
+      isFixed: true,
       type: "Basic",
-    }
+    },
+    {
+      key: `SequenceNode1AtTheWindSBreathTheBlossomsWake`,
+      label: `S1: Shadow of Xuanling: Unfaltering`,
+      talents: {
+        "1": "337.98%",
+        "2": "337.98%",
+        "3": "337.98%",
+        "4": "337.98%",
+        "5": "337.98%",
+        "6": "337.98%",
+        "7": "337.98%",
+        "8": "337.98%",
+        "9": "337.98%",
+        "10": "337.98%",
+      },
+      type: "Heavy",
+      requiresResonanceChain: "SequenceNode6LetTheAzureKeepItsLight",
+      alwaysCrit: true,
+    },
+    {
+      key: `SequenceNode6LetTheAzureKeepItsLight`,
+      label: `S6: Shadow of Xuanling: Still as Withered Wood`,
+      talents: {
+        "1": "337.98%",
+        "2": "337.98%",
+        "3": "337.98%",
+        "4": "337.98%",
+        "5": "337.98%",
+        "6": "337.98%",
+        "7": "337.98%",
+        "8": "337.98%",
+        "9": "337.98%",
+        "10": "337.98%",
+      },
+      type: "Heavy",
+      requiresResonanceChain: "SequenceNode6LetTheAzureKeepItsLight",
+      alwaysCrit: true,
+    },
   ],
 };

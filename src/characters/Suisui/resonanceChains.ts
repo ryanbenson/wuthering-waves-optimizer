@@ -62,11 +62,11 @@ export const resonanceChains = [
       {
         modifier: "talentModifierMultiply",
         modifySpecificTalents: [
-          "BasicAttackCleansingRainStage1DMG",
-          "BasicAttackCleansingRainStage2DMG",
-          "BasicAttackCleansingRainStage3DMG",
-          "BasicAttackCleansingRainStage4DMG",
-          "HeavyAttackCleansingRainDMG",
+          "BasicAttackDrizzleStanceStage1DMG",
+          "BasicAttackDrizzleStanceStage2DMG",
+          "BasicAttackDrizzleStanceStage3DMG",
+          "BasicAttackDrizzleStanceStage4DMG",
+          "HeavyAttackDrizzleStanceDMG",
         ],
         modifierValue: 1,
       }

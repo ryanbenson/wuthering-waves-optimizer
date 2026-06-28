@@ -5,7 +5,7 @@ export const outroAttacks = {
     {
       key: "AsTheWindWillsDMG",
       label: "As the Wind Wills DMG",
-      talent: "20%*20",
+      talent: "300.00%",
       type: "Outro",
     }
   ],
