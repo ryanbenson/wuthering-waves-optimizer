@@ -130,4 +130,81 @@ describe("buildImportedEchoesFile", () => {
     expect(result.content).toContain("Hooscamp:");
     expect(result.addedCount).toBe(1);
   });
+
+  it("skips blacklisted character echoes from the API", () => {
+    const labelToKey = new Map([["Lingering Tunes", "LingeringTunes"]]);
+
+    const result = buildImportedEchoesFile({
+      echoesFileContent: sampleEchoesFile,
+      apiEchoes: [
+        {
+          Id: 1,
+          Name: "Jinhsi",
+          Rarity: 2,
+          FetterGroups: [{ Id: 1, Name: "Lingering Tunes" }],
+        },
+        {
+          Id: 2,
+          Name: "Hooscamp",
+          Rarity: 0,
+          FetterGroups: [{ Id: 1, Name: "Lingering Tunes" }],
+        },
+      ],
+      labelToKey,
+    });
+
+    expect(result.content).not.toContain("Jinhsi:");
+    expect(result.content).toContain("Hooscamp:");
+    expect(result.addedCount).toBe(1);
+  });
+
+  it("drops blacklisted echoes already present in the file", () => {
+    const content = `${sampleEchoesFile.replace("};", "")}
+  Jinhsi: {
+    key: "Jinhsi",
+    name: "Jinhsi",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/Jinhsi.webp",
+    details: \`\`,
+    modifiers: [],
+    actions: [],
+    sets: ["LingeringTunes"],
+  },
+};`;
+
+    const result = buildImportedEchoesFile({
+      echoesFileContent: content,
+      apiEchoes: [],
+      labelToKey: new Map(),
+    });
+
+    expect(result.content).not.toContain("Jinhsi:");
+    expect(result.preservedCount).toBe(2);
+  });
+
+  it("formats echo entries without blank lines between properties", () => {
+    const labelToKey = new Map([["Gusts of Welkin", "GustsofWelkin"]]);
+
+    const result = buildImportedEchoesFile({
+      echoesFileContent: sampleEchoesFile,
+      apiEchoes: [
+        {
+          Id: 1,
+          Name: "Aero Drake",
+          Rarity: 0,
+          FetterGroups: [{ Id: 1, Name: "Gusts of Welkin" }],
+        },
+      ],
+      labelToKey,
+    });
+
+    const entryMatch = result.content.match(
+      /AeroDrake: \{[\s\S]*?\n  \},/,
+    );
+    expect(entryMatch).not.toBeNull();
+    expect(entryMatch![0]).not.toMatch(/\n\s*\n\s*details:/);
+    expect(entryMatch![0]).not.toMatch(/\n\s*\n\s*modifiers:/);
+    expect(entryMatch![0]).not.toMatch(/\n\s*\n\s*actions:/);
+  });
 });

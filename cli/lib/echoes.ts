@@ -17,6 +17,21 @@ const RARITY_CLASS_MAP: Record<number, string> = {
 const IMAGE_BASE_URL =
   "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes";
 
+const ECHO_NAME_BLACKLIST = new Set([
+  "Jinhsi",
+  "Changli",
+  "Calcharo",
+  "Shorekeeper",
+  "Camellya",
+  "Carlotta",
+  "Roccia",
+  "Brant",
+  "Cantarella",
+  "Zani",
+  "Cartethyia",
+  "Phoebe",
+]);
+
 export function loadEchoSetLabelToKeyMap(statsFilePath: string): Map<string, string> {
   const content = fs.readFileSync(statsFilePath, "utf8");
   const mapMatch = content.match(
@@ -54,7 +69,11 @@ function formatSets(sets: string[]): string {
 }
 
 function trimPropertyBlock(text: string): string {
-  return text.trimEnd();
+  return text.replace(/^\n+/, "").trimEnd();
+}
+
+function compactEchoEntryBlock(block: string): string {
+  return block.replace(/\n[ \t]*\n(?=    \w)/g, "\n");
 }
 
 function formatEchoEntryBlock(options: {
@@ -80,19 +99,25 @@ function formatEchoEntryBlock(options: {
     actions,
   } = options;
 
-  const stackBlock = stackProperties ? `\n${stackProperties}` : "";
+  const stackBlock = stackProperties
+    ? trimPropertyBlock(stackProperties)
+    : "";
 
-  return `  ${objectKey}: {
-    key: "${objectKey}",
-    name: "${name}",
-    class: "${echoClass}",
-    image:
-      "${imageUrl}",
-${trimPropertyBlock(details)}
-${trimPropertyBlock(modifiers)}${stackBlock}
-${trimPropertyBlock(actions)}
-${formatSets(sets)}
-  }`;
+  const sections = [
+    `    key: "${objectKey}",`,
+    `    name: "${name}",`,
+    `    class: "${echoClass}",`,
+    `    image:\n      "${imageUrl}",`,
+    trimPropertyBlock(details),
+    trimPropertyBlock(modifiers),
+    ...(stackBlock ? [stackBlock] : []),
+    trimPropertyBlock(actions),
+    formatSets(sets),
+  ];
+
+  return compactEchoEntryBlock(
+    `  ${objectKey}: {\n${sections.join("\n")}\n  }`,
+  );
 }
 
 function mapEchoSets(
@@ -147,7 +172,13 @@ function shouldSkipApiEcho(name: string): boolean {
   if (trimmed.toLowerCase() === "stay tuned") {
     return true;
   }
-  return trimmed.startsWith("Phantom");
+  if (trimmed.startsWith("Phantom")) {
+    return true;
+  }
+  if (ECHO_NAME_BLACKLIST.has(trimmed)) {
+    return true;
+  }
+  return false;
 }
 
 function dedupeApiEchoes(echoes: ApiEchoListItem[]): ApiEchoListItem[] {
@@ -274,13 +305,17 @@ export function buildImportedEchoesFile(options: {
   let preservedCount = 0;
   for (const existingEntry of existing.entriesInOrder) {
     if (!usedExistingKeys.has(existingEntry.objectKey)) {
+      if (shouldSkipApiEcho(existingEntry.name)) {
+        continue;
+      }
+
       preservedCount += 1;
       const preservedBlock = existingEntry.rawEntry.startsWith("  ")
         ? existingEntry.rawEntry.trimEnd()
         : `  ${existingEntry.rawEntry.trimEnd()}`;
       outputBlocks.push({
         objectKey: existingEntry.objectKey,
-        block: preservedBlock,
+        block: compactEchoEntryBlock(preservedBlock),
       });
       notices.push(
         `Echo "${existingEntry.name}" (${existingEntry.objectKey}) was not found in API response and was kept`,

@@ -10,6 +10,7 @@ export const twoSetBonuses: string[] = [
   "Sierra Gale 2 Set",
   "Celestial Light 2 Set",
   "Sun-sinking Eclipse 2 Set",
+  "Havoc Eclipse 2 Set",
   "Rejuvenating Glow 2 Set",
   "Moonlit Clouds 2 Set",
   "Lingering Tunes 2 Set",
@@ -47,6 +48,7 @@ export const fiveSetBonuses: string[] = [
   "Sierra Gale 5 Set",
   "Celestial Light 5 Set",
   "Sun-sinking Eclipse 5 Set",
+  "Havoc Eclipse 5 Set",
   "Rejuvenating Glow 5 Set",
   "Moonlit Clouds 5 Set",
   "Lingering Tunes 5 Set",
@@ -458,6 +460,26 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     passives: [
       {
         key: "SunSinkingEclipse2SetHavoc",
+        details: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
+        modifiers: [
+          {
+            modifier: "Havoc",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
+  },
+  "Havoc Eclipse 2 Set": {
+    name: "Havoc Eclipse",
+    key: "HavocEclipse2Set",
+    passives: [
+      {
+        key: "HavocEclipse2SetHavoc",
         details: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
         modifiers: [
           {
@@ -1020,6 +1042,27 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
     passives: [
       {
         key: "SunSinkingEclipse5SetHavoc",
+        modifiers: [
+          {
+            modifier: "Havoc",
+            modifierValue: 7.5,
+          },
+        ],
+        maxStacks: 4,
+        minStacks: 0,
+        hasStacks: true,
+        alwaysEnabled: false,
+        details: `Upon using Basic Attack or Heavy Attack, <span class="Dark">Havoc</span> DMG increases by <span class="Highlight">7.5%</span>, stacking up to four times for <span class="Highlight">15s.</span>`,
+      },
+    ],
+  },
+  "Havoc Eclipse 5 Set": {
+    key: "HavocEclipse5Set",
+    name: "Havoc Eclipse",
+    details: `Upon using Basic Attack or Heavy Attack, <span class="Dark">Havoc</span> DMG increases by <span class="Highlight">7.5%</span>, stacking up to four times for <span class="Highlight">15s.</span>`,
+    passives: [
+      {
+        key: "HavocEclipse5SetHavoc",
         modifiers: [
           {
             modifier: "Havoc",

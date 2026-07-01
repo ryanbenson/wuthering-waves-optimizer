@@ -387,6 +387,8 @@ export const echoSetImageMap: Record<string, string> = {
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/CelestialLight.webp",
   SunSinkingEclipse:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/SunSinkingEclipse.webp",
+  HavocEclipse:
+    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/SunSinkingEclipse.webp",
   RejuvenatingGlow:
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/RejuvenatingGlow.webp",
   MoonlitClouds:
@@ -450,6 +452,7 @@ export const echoSetLabelMap: Record<string, string> = {
   SierraGale: "Sierra Gale",
   CelestialLight: "Celestial Light",
   SunSinkingEclipse: "Sun-sinking Eclipse",
+  HavocEclipse: "Havoc Eclipse",
   RejuvenatingGlow: "Rejuvenating Glow",
   MoonlitClouds: "Moonlit Clouds",
   LingeringTunes: "Lingering Tunes",
