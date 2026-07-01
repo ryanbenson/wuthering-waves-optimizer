@@ -2,6 +2,7 @@
 import { Command } from "commander";
 import { runGenerateCharacter } from "./commands/generateCharacter.js";
 import { runGenerateWeapon } from "./commands/generateWeapon.js";
+import { runImportEchoes } from "./commands/importEchoes.js";
 
 const program = new Command();
 
@@ -37,6 +38,23 @@ generate
   .action(async () => {
     try {
       await runGenerateWeapon();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Error: ${message}`);
+      process.exit(1);
+    }
+  });
+
+const importCommand = program
+  .command("import")
+  .description("Import data from external APIs");
+
+importCommand
+  .command("echoes")
+  .description("Import echoes from Encore API into src/echoes/index.ts")
+  .action(async () => {
+    try {
+      await runImportEchoes();
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(`Error: ${message}`);
