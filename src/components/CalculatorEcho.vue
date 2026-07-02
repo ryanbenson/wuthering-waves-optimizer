@@ -697,7 +697,7 @@
             </button>
           </div>
           <div v-if="echoId && equippedChars.length" class="equipped-by border-t border-neutral pt-2 mt-2">
-            <div class="font-bold text-xs text-centers">Equipped by</div>
+            <div class="font-bold text-xs text-center">Equipped by</div>
             <div
               v-if="echoId && equippedChars.length"
               class="echo__item__equipped mt-3">
