@@ -161,7 +161,7 @@ const props = withDefaults(
 );
 
 const echoFreeSubStatType = computed(() =>
-  props.type && props.rank ? (props.type === "1" ? "HP_FLAT" : "ATK_FLAT") : "",
+  props.type && props.rank ? (String(props.type) === "1" ? "HP_FLAT" : "ATK_FLAT") : "",
 );
 const echoFreeSubStatIcon = computed(() =>
   echoFreeSubStatType.value ? getSubStatIconByType(echoFreeSubStatType.value) : undefined,
