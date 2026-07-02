@@ -837,7 +837,7 @@ export const computeSelfBuffs = (
     }
     if (character === "Xuanling" && key === "InherentSkillUnbrokenVow") {
       const havocBaneStacks = enemy.havocBaneStacks ?? 0;
-      if (havocBaneStacks >= 1 && havocBaneStacks <= 6) {
+      if (havocBaneStacks >= 1) {
         const tier1Stacks = Math.min(havocBaneStacks, 3);
         const tier2Stacks = Math.max(0, Math.min(havocBaneStacks - 3, 3));
         const dmgDeepen = Math.min(
