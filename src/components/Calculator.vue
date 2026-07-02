@@ -500,6 +500,12 @@ export default defineComponent({
 
     charactersList.value = getCharactersAvailable();
 
+    watch(activeCharacter, (charName) => {
+      if (charName && charName !== character.value) {
+        character.value = charName;
+      }
+    });
+
     watch(character, async (charName) => {
       isLoading.value = true;
       const chosen = await getCharByName(charName);

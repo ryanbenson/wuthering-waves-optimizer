@@ -11,21 +11,25 @@
           backgroundImage: `url(https://ryanbenson.github.io/wuthering-waves-assets/images/${characterChosen}.png)`,
         }"
         :data-test-char-avatar="character"
-        @click="openCharacterBrowser"></div>
+        @click="openCharacterBrowser">
+        <div class="character__selection__avatar-overlay">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 512 512"
+            class="character__selection__avatar-icon"
+            aria-hidden="true">
+            <path
+              d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+              fill="#FFFFFF" />
+          </svg>
+        </div>
+      </div>
 
-      <button
-        @click="openCharacterBrowser"
-        class="btn btn-sm btn--character--find">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 512 512"
-          class="size-4">
-          <path
-            d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
-            fill="#FFFFFF" />
-        </svg>
-        Find
-      </button>
+      <CharacterBuildStatus
+        :status="buildStatus"
+        :character-key="characterChosen"
+        interactive
+        class="w-full" />
     </div>
     <div class="character__selection__form">
       <div class="character__selection__form--character">
@@ -65,12 +69,16 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
+import CharacterBuildStatus from "./CharacterBuildStatus.vue";
 import {
   allCharactersList,
   getCharactersAvailable,
 } from "../characters/characters";
+import { getCharacterBuildStatus } from "../characters/characterBuildStatus";
+import { useCharacterStore } from "../stores/character";
 
 type ListedCharacter = (typeof allCharactersList)[number];
 type CharacterPickerList = ReturnType<typeof getCharactersAvailable>;
@@ -80,6 +88,8 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const { characters } = storeToRefs(useCharacterStore());
 
 const emit = defineEmits<{
   "updated-chosen-character": [key: string];
@@ -104,6 +114,10 @@ const characterRarity = computed((): number | string => {
   }
   return 5;
 });
+
+const buildStatus = computed(() =>
+  getCharacterBuildStatus(characterChosen.value, characters.value),
+);
 
 function handleUpdatedCharacter(e: Event) {
   const target = e.target as HTMLSelectElement;
@@ -153,6 +167,7 @@ onMounted(() => {
   }
 }
 .character__selection__avatar {
+  position: relative;
   width: 100px;
   height: 100px;
   background-repeat: no-repeat;
@@ -161,13 +176,36 @@ onMounted(() => {
   border-radius: 100%;
   border-width: 1px;
   border-style: solid;
+  overflow: hidden;
 }
 
-html[data-theme="light"] {
-  .btn--character--find {
-    svg {
-      filter: invert(100%);
-    }
-  }
+.character__selection__avatar-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  background: rgba(0, 0, 0, 0);
+  opacity: 0;
+  transition:
+    opacity 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.character__selection__avatar-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.character__selection__avatar:hover .character__selection__avatar-overlay {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.character__selection__avatar:hover .character__selection__avatar-icon {
+  opacity: 1;
 }
 </style>

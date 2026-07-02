@@ -26,15 +26,18 @@
           to="/"
           class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2"
           :class="{ 'btn-active': curPage === 'home' }"
-          data-test-nav-calculator>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 384 512"
-            class="size-6">
-            <path
-              fill="#FFFFFF"
-              d="M64 0C28.7 0 0 28.7 0 64V448c0 35.3 28.7 64 64 64H320c35.3 0 64-28.7 64-64V64c0-35.3-28.7-64-64-64H64zM96 64H288c17.7 0 32 14.3 32 32v32c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V96c0-17.7 14.3-32 32-32zm32 160a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM96 352a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM64 416c0-17.7 14.3-32 32-32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H96c-17.7 0-32-14.3-32-32zM192 256a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm64-64a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm32 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM288 448a32 32 0 1 1 0-64 32 32 0 1 1 0 64z" />
-          </svg>
+          data-test-nav-calculator
+          @click="handleCalculatorNavClick">
+          <div
+            class="nav-character-avatar"
+            :class="{
+              'border-amber-300': characterRarity === 5,
+              'border-violet-600': characterRarity === 4,
+            }"
+            :style="{
+              backgroundImage: `url(https://ryanbenson.github.io/wuthering-waves-assets/images/${displayCharacter}.png)`,
+            }"
+            :data-test-char-avatar="displayCharacter"></div>
         </RouterLink>
         <RouterLink
           to="/inventory"
@@ -133,35 +136,70 @@
         </ul>
       </div>
     </div>
+    <CalculatorCharacterBrowser
+      :character="displayCharacter"
+      ref="characterBrowserRef"
+      @character-browser:chosen-character="handleChosenCharacter" />
   </Teleport>
 </template>
 
-<script>
+<script setup>
+import { computed, ref } from "vue";
+import { storeToRefs } from "pinia";
 import ThemeChooser from "../ThemeChooser.vue";
-export default {
+import CalculatorCharacterBrowser from "../CalculatorCharacterBrowser.vue";
+import { allCharactersList, getCharactersAvailable } from "../../characters/characters";
+import { useCharacterStore } from "../../stores/character";
+
+defineOptions({
   name: "Nav",
-  components: {
-    ThemeChooser,
+});
+
+const props = defineProps({
+  curPage: {
+    type: String,
+    default: "home",
   },
-  props: {
-    curPage: {
-      type: String,
-      default: "home",
-    },
-    disableMobileNav: {
-      type: Boolean,
-      default: false,
-    },
+  disableMobileNav: {
+    type: Boolean,
+    default: false,
   },
-  methods: {
-    toggleOptionsMenu() {
-      const optionsMenu = document.querySelector(".options-menu");
-      if (optionsMenu) {
-        optionsMenu.removeAttribute("open");
-      }
-    },
-  },
-};
+});
+
+const characterStore = useCharacterStore();
+const { activeCharacter } = storeToRefs(characterStore);
+
+const characterBrowserRef = ref(null);
+
+const displayCharacter = computed(() => {
+  if (activeCharacter.value) {
+    return activeCharacter.value;
+  }
+  return getCharactersAvailable().five[0]?.key ?? "Calcharo";
+});
+
+const characterRarity = computed(() => {
+  const meta = allCharactersList.find((char) => char.key === displayCharacter.value);
+  return meta?.rarity ?? 5;
+});
+
+function handleCalculatorNavClick(event) {
+  if (props.curPage === "home") {
+    event.preventDefault();
+    characterBrowserRef.value?.triggerOpenModal();
+  }
+}
+
+function handleChosenCharacter(characterKey) {
+  characterStore.setActiveCharacter(characterKey);
+}
+
+function toggleOptionsMenu() {
+  const optionsMenu = document.querySelector(".options-menu");
+  if (optionsMenu) {
+    optionsMenu.removeAttribute("open");
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -178,5 +216,16 @@ html[data-theme="black"] {
   .navbar {
     background: oklch(var(--b1)) !important;
   }
+}
+
+.nav-character-avatar {
+  width: 40px;
+  height: 40px;
+  background-repeat: no-repeat;
+  display: block;
+  background-size: contain;
+  border-radius: 100%;
+  border-width: 1px;
+  border-style: solid;
 }
 </style>
