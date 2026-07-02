@@ -26,6 +26,12 @@ export const useCharacterStore = defineStore("character", {
       const udpatedData = merge(existingData, data);
       this.characters[characterId] = udpatedData;
     },
+    setCharacterBuildStatus(characterId, buildStatus) {
+      this.setCharacterData(characterId, {
+        buildStatus,
+        buildComplete: buildStatus === "finished",
+      });
+    },
     getCharacterWeaponData(characterId) {
       return this.characters[characterId] || {};
     },
