@@ -137,11 +137,28 @@
                 :echo-sub-stats-value-4="echo.echoSubStatsValue4"
                 :echo-sub-stats-type-5="echo.echoSubStatsType5"
                 :echo-sub-stats-value-5="echo.echoSubStatsValue5">
-                <button
-                  @click="assignEcho(echo.echoId)"
-                  class="btn btn-primary btn-sm">
-                  Use echo
-                </button>
+                <div
+                  class="echoes__item__foot flex gap-2 justify-between items-center">
+                  <div class="echoes__items__foot__equipped">
+                    <div class="avatar-group -space-x-6 rtl:space-x-reverse">
+                      <div
+                        class="avatar"
+                        v-for="char in getCharsEquipped(echo)"
+                        :key="char">
+                        <div class="w-12 bg-accent-content">
+                          <img :src="getCharImg(char)" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="echoes__item__foot__actions flex gap-2">
+                    <button
+                      @click="assignEcho(echo.echoId)"
+                      class="btn btn-primary btn-sm">
+                      Use echo
+                    </button>
+                  </div>
+                </div>
               </CalculatorEchoCard>
             </div>
             <div class="join flex justify-center py-4">
@@ -177,6 +194,7 @@ const emit = defineEmits<{ "chosen-echo-inventory": [] }>();
 const inventoryStore = useInventoryStore();
 const characterStore = useCharacterStore();
 const { echoes, echoIdsEquippedByAnyChars } = storeToRefs(inventoryStore);
+const { getEchoEquippedChars } = inventoryStore;
 const { characters } = storeToRefs(characterStore);
 
 const echoIndex = ref<number | null>(null);
@@ -350,6 +368,12 @@ function nextPage() {
       } else {
         page.value++;
       }
+    }
+function getCharsEquipped(e: { echoId: string }) {
+      return getEchoEquippedChars(e.echoId);
+    }
+function getCharImg(character: string) {
+      return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
     }
 function isEchoUsedByChar(echoId: string) {
       if (currentCharacterEchoes.value?.[0]?.echoId === echoId) {
