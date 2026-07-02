@@ -119,6 +119,7 @@ import {
 } from "../characters/characters";
 import {
   getCharacterBuildStatus,
+  CHARACTER_BUILD_STATUSES,
   type CharacterBuildStatus as CharacterBuildStatusType,
 } from "../characters/characterBuildStatus";
 import { useCharacterStore } from "../stores/character";
@@ -145,11 +146,7 @@ const filterRarity = ref<number | null>(null);
 const filterWeapon = ref<string | null>(null);
 const filterBuildStatus = ref<CharacterBuildStatusType | null>(null);
 
-const buildStatusFilters: CharacterBuildStatusType[] = [
-  "not-started",
-  "in-progress",
-  "finished",
-];
+const buildStatusFilters: CharacterBuildStatusType[] = CHARACTER_BUILD_STATUSES;
 
 const charactersList = computed((): ListedCharacter[] => {
   let characterList: ListedCharacter[] = JSON.parse(

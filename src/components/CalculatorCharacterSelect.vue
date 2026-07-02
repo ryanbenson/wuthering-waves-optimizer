@@ -1,6 +1,6 @@
 <template>
   <div class="character__selection" :class="character">
-    <div class="character__selection__left flex flex-col gap-2">
+    <div class="character__selection__left flex flex-col gap-2 items-stretch">
       <div
         class="character__selection__avatar cursor-pointer"
         :class="{
@@ -154,9 +154,18 @@ onMounted(() => {
 <style lang="scss" scoped>
 .character__selection {
   display: grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 7.5rem 1fr;
   align-items: center;
   grid-gap: 2rem;
+}
+.character__selection__left {
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+
+  &:has(.character-build-status-dropdown:focus-within) {
+    z-index: 50;
+  }
 }
 .character__selection__form--character {
   margin-bottom: 1rem;
