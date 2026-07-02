@@ -634,58 +634,82 @@
               backgroundImage: `url(${echoImage})`,
             }"
             @click="handleOpenModal"></div>
-          <div class="echo__item__actions flex gap-2 justify-center mt-4">
-            <span
-              class="echo__item__edit cursor-pointer"
+          <div class="echo__item__actions flex flex-col gap-2 mt-4 w-full">
+            <button
+              type="button"
+              class="btn btn-sm btn-ghost echo__item__edit justify-start"
               @click="handleOpenModal">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
-                class="size-4">
+                class="size-4"
+                aria-hidden="true">
                 <path
                   d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c28.1-28.1 28.1-73.7 0-101.8L474.9 25C446.8-3.1 401.2-3.1 373.1 25zM88 64C39.4 64 0 103.4 0 152L0 424c0 48.6 39.4 88 88 88l272 0c48.6 0 88-39.4 88-88l0-112c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 112c0 22.1-17.9 40-40 40L88 464c-22.1 0-40-17.9-40-40l0-272c0-22.1 17.9-40 40-40l112 0c13.3 0 24-10.7 24-24s-10.7-24-24-24L88 64z"
-                  fill="#FFFFFF" />
+                  fill="currentColor" />
               </svg>
-            </span>
-            <span
-              class="echo__item__delete cursor-pointer"
-              @click="reset"
-              v-tooltip="'Reset echo'">
+              Edit
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-ghost echo__item__delete justify-start"
+              @click="reset">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 512 512"
-                class="size-4">
+                class="size-4"
+                aria-hidden="true">
                 <path
                   d="M367.2 412.5L99.5 144.8C77.1 176.1 64 214.5 64 256c0 106 86 192 192 192c41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3C434.9 335.9 448 297.5 448 256c0-106-86-192-192-192c-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z"
-                  fill="#FFFFFF" />
+                  fill="currentColor" />
               </svg>
-            </span>
-            <span
-              class="echo__item__save cursor-pointer"
-              @click="saveEchoItem"
-              v-tooltip="'Save echo'">
+              Reset
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-ghost echo__item__save justify-start"
+              @click="saveEchoItem">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 448 512"
-                class="size-4">
+                class="size-4"
+                aria-hidden="true">
                 <path
                   d="M48 96l0 320c0 8.8 7.2 16 16 16l320 0c8.8 0 16-7.2 16-16l0-245.5c0-4.2-1.7-8.3-4.7-11.3l33.9-33.9c12 12 18.7 28.3 18.7 45.3L448 416c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l245.5 0c17 0 33.3 6.7 45.3 18.7l74.5 74.5-33.9 33.9L320.8 84.7c-.3-.3-.5-.5-.8-.8L320 184c0 13.3-10.7 24-24 24l-192 0c-13.3 0-24-10.7-24-24L80 80 64 80c-8.8 0-16 7.2-16 16zm80-16l0 80 144 0 0-80L128 80zm32 240a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z"
-                  fill="#FFFFFF" />
+                  fill="currentColor" />
               </svg>
-            </span>
-            <span
-              @click="openEchoBrowser"
-              class="echo__item__open cursor-pointer"
-              v-tooltip="'Browse echoes'">
+              Save
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-ghost echo__item__open justify-start"
+              @click="openEchoBrowser">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 576 512"
-                class="size-4">
+                class="size-4"
+                aria-hidden="true">
                 <path
                   d="M384 480l48 0c11.4 0 21.9-6 27.6-15.9l112-192c5.8-9.9 5.8-22.1 .1-32.1S555.5 224 544 224l-400 0c-11.4 0-21.9 6-27.6 15.9L48 357.1 48 96c0-8.8 7.2-16 16-16l117.5 0c4.2 0 8.3 1.7 11.3 4.7l26.5 26.5c21 21 49.5 32.8 79.2 32.8L416 144c8.8 0 16 7.2 16 16l0 32 48 0 0-32c0-35.3-28.7-64-64-64L298.5 96c-17 0-33.3-6.7-45.3-18.7L226.7 50.7c-12-12-28.3-18.7-45.3-18.7L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l23.7 0L384 480z"
-                  fill="#FFFFFF" />
+                  fill="currentColor" />
               </svg>
-            </span>
+              Browse
+            </button>
+          </div>
+          <div v-if="echoId && equippedChars.length" class="equipped-by border-t border-neutral pt-2 mt-2">
+            <div class="font-bold text-xs text-center">Equipped by</div>
+            <div
+              v-if="echoId && equippedChars.length"
+              class="echo__item__equipped mt-3">
+              <div class="echo__item__equipped-list">
+                <div
+                  class="echo__item__equipped-avatar"
+                  v-for="char in equippedChars"
+                  :key="char">
+                  <img :src="getCharImg(char)" :alt="char" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="echo__item__stats mb-2 w-full relative">
@@ -1310,6 +1334,17 @@ const allEchoesListFiltered = computed((): EchoListEntry[] => {
 });
 
 const isInInventory = computed(() => !!echoId.value);
+
+const equippedChars = computed(() => {
+  if (!echoId.value) {
+    return [];
+  }
+  return inventoryStore.getEchoEquippedChars(echoId.value);
+});
+
+function getCharImg(character: string) {
+  return `https://ryanbenson.github.io/wuthering-waves-assets/images/${character}.png`;
+}
 
 const critValue = computed(() => {
   let cv = 0;
@@ -1956,6 +1991,34 @@ defineExpose({ saveEchoItem });
   max-width: 3rem;
   width: 3rem;
 }
+.echo__item__left {
+  width: 7rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.echo__item__equipped-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 7rem;
+}
+.echo__item__equipped-avatar {
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  overflow: hidden;
+  background-color: oklch(var(--ac));
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
 .main-echo__image {
   width: 100px;
   height: 100px;
@@ -2008,11 +2071,6 @@ html[data-theme="light"] {
   }
   .echo__item__set-selection--icon {
     border-color: oklch(var(--bc));
-  }
-  .echo__item__actions {
-    svg {
-      filter: invert(100%);
-    }
   }
   .modal-backdrop {
     opacity: 0.5;
