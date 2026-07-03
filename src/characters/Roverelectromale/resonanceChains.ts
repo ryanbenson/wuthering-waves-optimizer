@@ -64,6 +64,7 @@ export const resonanceChains = [
       {
         modifier: "CritDMG",
         modifySpecificTalents: [
+          "OvershockDMG",
           "ThrumOfAllSoundsAeroPlungingAttackDMG",
           "ThrumOfAllSoundsAeroMidAirAttackStage1DMG",
           "ThrumOfAllSoundsAeroMidAirAttackStage2DMG",
@@ -80,6 +81,18 @@ export const resonanceChains = [
           "ThunderBaneDMG",
           "ThrumOfAllSoundsAeroMidAirAttackHealing",
           "ThrumOfAllSoundsSilencingBladeDMG",
+          "UltimateTacticsDMG",
+          "BasicAttackStage1DMG",
+          "BasicAttackStage2DMG",
+          "BasicAttackStage3DMG",
+          "BasicAttackStage4DMG",
+          "PlungingAttackDMG",
+          "DodgeCounterDMG",
+          "RiposteStrikeDMG",
+          "RiposteStrikeCrumbleDMG",
+          "MidAirAttackHavocStage1DMG",
+          "MidAirAttackHavocStage2DMG",
+          "MidAirAttackHavocStage3DMG",
         ],
         modifierValue: 0.2,
       }
