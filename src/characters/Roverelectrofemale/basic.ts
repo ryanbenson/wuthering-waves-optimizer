@@ -6,5 +6,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     avatarUrl: "Roverelectrofemale.png",
     gender: "unknown",
     element: "Electro",
+    electroFlare: true,
   };
 }

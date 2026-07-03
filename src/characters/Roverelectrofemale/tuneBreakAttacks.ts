@@ -1,6 +1,6 @@
 export const tuneBreakAttacks = {
-  name: "Tune Break",
-  description: `<div>When the target's <span class="Highlight">Off-Tune Level</span> is full, the Resonator may cast <span class="Highlight">Tune Break</span> on the target.</div>`,
+  name: "Tune Break: Tune Break - Sword",
+  description: `<div>When the target's Off-Tune Level is full, the Resonator may cast Tune Break on the target.</div>`,
   attacks: [
     {
       key: "TuneBreakDMG",

@@ -24,7 +24,15 @@ export const resonanceChains = [
     name: `Sequence Node 3: Alchemy of Wonders`,
     details: `<div>The DMG Multiplier of Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> is increased by 20%.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "OvershockDMG",
+        ],
+        modifierValue: 0.2,
+      }
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
@@ -34,7 +42,15 @@ export const resonanceChains = [
     name: `Sequence Node 4: Earthquaking Rumble`,
     details: `<div>The DMG Multiplier of Resonance Liberation <span style="color:#ffd12f;" class="font-bold">Ultimate Tactics</span> is increased by 20%.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "UltimateTacticsDMG",
+        ],
+        modifierValue: 0.2,
+      }
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
@@ -44,7 +60,30 @@ export const resonanceChains = [
     name: `Sequence Node 5: Principle of Change`,
     details: `<div>Crit. DMG is increased by 20% while in <span style="color:#ffd12f;" class="font-bold">Apex Resonance</span>.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "CritDMG",
+        modifySpecificTalents: [
+          "ThrumOfAllSoundsAeroPlungingAttackDMG",
+          "ThrumOfAllSoundsAeroMidAirAttackStage1DMG",
+          "ThrumOfAllSoundsAeroMidAirAttackStage2DMG",
+          "ThrumOfAllSoundsAeroDMG",
+          "ThrumOfAllSoundsSpectroStage2DMG",
+          "ThrumOfAllSoundsSpectroStage3DMG",
+          "ThrumOfAllSoundsHavocStage1DMG",
+          "ThrumOfAllSoundsHavocStage2DMG",
+          "ThrumOfAllSoundsHavocStage3DMG",
+          "ThrumOfAllSoundsHavocMidAirAttackStage1DMG",
+          "ThrumOfAllSoundsHavocMidAirAttackStage2DMG",
+          "ThrumOfAllSoundsHavocMidAirAttackStage3DMG",
+          "ThrumOfAllSoundsSpectroStage1DMG",
+          "ThunderBaneDMG",
+          "ThrumOfAllSoundsAeroMidAirAttackHealing",
+          "ThrumOfAllSoundsSilencingBladeDMG",
+        ],
+        modifierValue: 0.2,
+      }
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
@@ -54,7 +93,28 @@ export const resonanceChains = [
     name: `Sequence Node 6: Mind's Depths in a Casket`,
     details: `<div>The DMG Multiplier of Resonance Skill <span style="color:#ffd12f;" class="font-bold">Thrum of All Sounds</span> is increased by 20%.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "ThrumOfAllSoundsAeroPlungingAttackDMG",
+          "ThrumOfAllSoundsAeroMidAirAttackStage1DMG",
+          "ThrumOfAllSoundsAeroMidAirAttackStage2DMG",
+          "ThrumOfAllSoundsAeroDMG",
+          "ThrumOfAllSoundsSpectroStage2DMG",
+          "ThrumOfAllSoundsSpectroStage3DMG",
+          "ThrumOfAllSoundsHavocStage1DMG",
+          "ThrumOfAllSoundsHavocStage2DMG",
+          "ThrumOfAllSoundsHavocStage3DMG",
+          "ThrumOfAllSoundsHavocMidAirAttackStage1DMG",
+          "ThrumOfAllSoundsHavocMidAirAttackStage2DMG",
+          "ThrumOfAllSoundsHavocMidAirAttackStage3DMG",
+          "ThrumOfAllSoundsSpectroStage1DMG",
+          "ThrumOfAllSoundsAeroMidAirAttackHealing",
+          "ThrumOfAllSoundsSilencingBladeDMG",
+        ],
+        modifierValue: 0.2,
+      }],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
