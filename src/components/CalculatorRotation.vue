@@ -268,6 +268,9 @@ import {
   mainEchoesData,
   getEchoData,
 } from "../echoes/index.ts";
+import { useToast } from "../composables/useToast";
+
+const { showToast } = useToast();
 
 type RotationActionRow = Record<string, unknown> & { id: string };
 
@@ -487,7 +490,7 @@ function handleRotationExport() {
   };
   const cleanRotationJson = removeIdsFromExport(rotationData);
   void navigator.clipboard.writeText(JSON.stringify(cleanRotationJson));
-  alert("Rotation copied to clipboard!");
+  showToast("Rotation copied to clipboard!", "success");
 }
 
 function onNameChange(e: Event) {

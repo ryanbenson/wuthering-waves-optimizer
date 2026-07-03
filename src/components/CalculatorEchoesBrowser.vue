@@ -188,6 +188,9 @@ import {
 import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
+import { useToast } from "../composables/useToast";
+
+const { showToast } = useToast();
 const props = defineProps<{ character: string }>();
 const emit = defineEmits<{ "chosen-echo-inventory": [] }>();
 
@@ -312,7 +315,7 @@ function isEchoSetFilterActive(type: string) {
 async function assignEcho(echoId: string) {
       const isUsed = isEchoUsedByChar(echoId);
       if (isUsed) {
-        alert("Echo is already being used.");
+        showToast("Echo is already being used.", "warning");
         return;
       }
       const chosenEcho = inventoryStore.getEchoById(echoId);
