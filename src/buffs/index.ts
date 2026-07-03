@@ -2478,7 +2478,7 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
     },
   ],
-  RoverElectromale: [
+  Roverelectromale: [
     {
       key: `Overshock`,
       name: `Overshock`,
@@ -2510,7 +2510,7 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
     },
   ],
-  RoverElectrofemale: [
+  Roverelectrofemale: [
     {
       key: `Overshock`,
       name: `Overshock`,
