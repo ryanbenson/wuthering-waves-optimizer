@@ -3,8 +3,8 @@ export const liberationAttacks = {
   description: `<div>Launch the <span style="color:#ffd12f;" class="font-bold">Thunder Quietus</span>, dealing <span style="color:#ebb0ff;">Electro DMG</span>.</div>`,
   attacks: [
     {
-      key: "SkillDMG",
-      label: "Skill DMG",
+      key: "UltimateTacticsDMG",
+      label: "Ultimate Tactics DMG",
       talents: {
         "1": "600.00%",
         "2": "649.20%",

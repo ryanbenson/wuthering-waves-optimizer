@@ -3,8 +3,8 @@ export const introAttacks = {
   description: `<div>Attack the target, dealing <span style="color:#ebb0ff;">Electro DMG</span>.</div>`,
   attacks: [
     {
-      key: "SkillDMG",
-      label: "Skill DMG",
+      key: "ThunderousFuryDMG",
+      label: "Thunderous Fury DMG",
       talents: {
         "1": "16.80%*2+50.40%",
         "2": "18.18%*2+54.54%",

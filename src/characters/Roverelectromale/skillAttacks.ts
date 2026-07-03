@@ -3,8 +3,8 @@ export const skillAttacks = {
   description: `<div>Launch the Cloudrift Bolt and grapple towards the target, dealing <span style="color:#ebb0ff;">Electro DMG</span>. Press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> shortly after to cast <span style="color:#ffd12f;" class="font-bold">Basic Attack - Repel</span>, dealing Electro DMG, considered Basic Attack DMG.</div>`,
   attacks: [
     {
-      key: "SkillDMG",
-      label: "Skill DMG",
+      key: "ThunderclapDMG",
+      label: "Thunderclap DMG",
       talents: {
         "1": "50.40%*2",
         "2": "54.53%*2",

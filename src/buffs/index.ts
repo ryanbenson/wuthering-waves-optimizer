@@ -2478,6 +2478,38 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
     },
   ],
+  RoverElectromale: [
+    {
+      key: `Overshock`,
+      name: `Overshock`,
+      details: `<div>If Resonance Skill Overshock is cast by pressing the button, clear all Electric Surge to grant Resonators in the team 10% ATK Bonus for 20s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.1,
+        }
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `OutroSkillRumblingThunders`,
+      name: `Outro Skill: Rumbling Thunders`,
+      details: `<div>The incoming Resonator gains <span style="color:#ffd12f;" class="font-bold">Electro Core</span> for 20s or until the Resonator is switched out. When Resonators with <span style="color:#ffd12f;" class="font-bold">Electro Core</span> inflict Negative Statuses, their <span style="color:#ffd12f;" class="font-bold">Electro Core</span> is consumed and they gain 25% All DMG Amplification for 14s. Switching to another Resonator ends the effect.<br>Casting Outro Skill ends the <span style="color:#ffd12f;" class="font-bold">Apex Resonance</span> state and clears all <span style="color:#ffd12f;" class="font-bold">Thunder Rage</span>.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.25,
+        }
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

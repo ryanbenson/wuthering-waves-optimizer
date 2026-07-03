@@ -1,5 +1,20 @@
 export const buffs = [
   {
+    key: `Overshock`,
+    name: `Overshock`,
+    details: `<div>If Resonance Skill Overshock is cast by pressing the button, clear all Electric Surge to grant Resonators in the team 10% ATK Bonus for 20s.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.1,
+      }
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
     key: `InherentSkillDecipher`,
     name: `Inherent Skill: Decipher`,
     details: `<div>Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> inflicts 10 stacks of <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> on the target it damages.</div>`,
@@ -14,7 +29,12 @@ export const buffs = [
     name: `Inherent Skill: Regression`,
     details: `<div>When Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> is cast by holding down the button, gain 20% Resonance Skill DMG Bonus for 20s. Switching to another Resonator ends this effect.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "ResonanceSkillDMGBonus",
+        modifierValue: 0.2,
+      }
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
