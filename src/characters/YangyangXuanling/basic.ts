@@ -1,9 +1,9 @@
 export function getCharacterBasicInfo(): CharacterBasicInfo {
   return {
-    name: "Xuanling",
+    name: "Yangyang: Xuanling",
     rarity: 5,
     weapon: "Swords",
-    avatarUrl: "Xuanling.png",
+    avatarUrl: "YangyangXuanling.png",
     gender: "unknown",
     element: "Havoc",
   };

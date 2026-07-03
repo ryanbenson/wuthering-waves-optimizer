@@ -12,7 +12,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode2ThousandfoldArtifice`,
     name: `Sequence Node 2: Thousandfold Artifice`,
-    details: `<div>Inflict 5 stacks of <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> after casting Resonance Liberation <span style="color:#ffd12f;" class="font-bold">Ultimate Tactics</span>.</div>`,
+    details: `<div>Inflict 5 stacks of <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> on the targets hit after Resonance Liberation <span style="color:#ffd12f;" class="font-bold">Ultimate Tactics</span> deals damage.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,

@@ -2,7 +2,7 @@ export const buffs = [
   {
     key: `InherentSkillDecipher`,
     name: `Inherent Skill: Decipher`,
-    details: `<div>The last Stage of Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> inflicts 10 stacks of <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> on the target hit.</div>`,
+    details: `<div>Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> inflicts 10 stacks of <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> on the target it damages.</div>`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
