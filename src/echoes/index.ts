@@ -2116,7 +2116,7 @@ CD: <span class="param">25</span>s.</span>`,
         element: "Electro",
       },
       {
-        key: "MechAbominationMechWaste",
+        key: "MechAbominationMechWasteExplosion",
         label: "Mech Waste Explosion DMG",
         description: `Mech Waste explodes after a while, dealing <span class="param">100.00%/115.00%/130.00%/145.00%/160.00%</span> Electro DMG.`,
         talents: {

@@ -1,5 +1,7 @@
 <template>
   <div id="navbar-container" class="fixed top-0 left-0 right-0 z-50"></div>
+  <ToastContainer />
+  <ConfirmDialog />
   <div class="contain h-[calc(100vh-80px)] mt-20">
     <div class="content">
       <RouterView />
@@ -10,6 +12,8 @@
 <script setup lang="ts">
 import { onBeforeUnmount, watch } from "vue";
 import { useRoute } from "vue-router";
+import ToastContainer from "../components/ToastContainer.vue";
+import ConfirmDialog from "../components/ConfirmDialog.vue";
 
 const route = useRoute();
 

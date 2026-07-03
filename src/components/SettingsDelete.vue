@@ -1,14 +1,4 @@
 <template>
-  <div
-    v-if="isNotificationShown"
-    class="alert mb-8"
-    :class="{
-      'alert-error': notificationError,
-      'alert-success': !notificationError,
-    }">
-    {{ message }}
-  </div>
-
   <h3 class="text-2xl font-bold mb-4">Delete your data</h3>
 
   <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
@@ -25,28 +15,33 @@
  * Version 1 (which has no meta) only includes character data as a root property
  * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
  */
-import { ref } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { useToast } from "../composables/useToast";
+import { useConfirm } from "../composables/useConfirm";
 
-const message = ref("");
-const isNotificationShown = ref(false);
-const notificationError = ref(false);
+const { showToast } = useToast();
+const { confirm } = useConfirm();
 
 /**
  * Confirms the deletion of user data
  */
-function confirmDelete() {
-  if (window.confirm("Do you really want to delete everything?")) {
-    localStorage.setItem("character", "");
-    const characterStore = useCharacterStore();
-    characterStore.$hydrate({ runHooks: false });
-    localStorage.setItem("inventory", "");
-    const inventoryStore = useInventoryStore();
-    inventoryStore.$hydrate({ runHooks: false });
-    alert("Your data has been deleted!");
-    location.reload();
-  }
+async function confirmDelete() {
+  const confirmed = await confirm("Do you really want to delete everything?", {
+    title: "Delete your data",
+    confirmLabel: "Delete",
+    variant: "error",
+  });
+  if (!confirmed) return;
+
+  localStorage.setItem("character", "");
+  const characterStore = useCharacterStore();
+  characterStore.$hydrate({ runHooks: false });
+  localStorage.setItem("inventory", "");
+  const inventoryStore = useInventoryStore();
+  inventoryStore.$hydrate({ runHooks: false });
+  showToast("Your data has been deleted!", "success");
+  window.setTimeout(() => location.reload(), 1500);
 }
 </script>
 

@@ -1,14 +1,4 @@
 <template>
-  <div
-    v-if="isNotificationShown"
-    class="alert mb-8"
-    :class="{
-      'alert-error': notificationError,
-      'alert-success': !notificationError,
-    }">
-    {{ message }}
-  </div>
-
   <h3 class="text-2xl font-bold mb-4">Overwrite your existing data</h3>
 
   <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
@@ -75,12 +65,12 @@ import { ref } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { randomString } from "../utils/strings";
+import { useToast } from "../composables/useToast";
+
+const { showToast } = useToast();
 
 const importedRawCharacterData = ref("");
 const importEchoesAddRawText = ref("");
-const message = ref("");
-const isNotificationShown = ref(false);
-const notificationError = ref(false);
 const fileData = ref<string | null>(null);
 
 const inventoryStore = useInventoryStore();
@@ -116,10 +106,10 @@ function getImportData(data: string | object, toParse = false) {
  */
 function importRawCharacterData() {
   if (!importedRawCharacterData.value) {
-    return triggerNotification("No character data given", true);
+    return showToast("No character data given", "error");
   }
   if (isJsonString(importedRawCharacterData.value) === false) {
-    return triggerNotification("Character data given is invalid", true);
+    return showToast("Character data given is invalid", "error");
   }
   const importData = getImportData(importedRawCharacterData.value, true);
   const characterStore = useCharacterStore();
@@ -134,9 +124,9 @@ function importRawCharacterData() {
     inventoryData = JSON.parse(inventoryData);
   }
   inventoryStoreLocal.hardSetState(inventoryData as never);
-  alert("Your data has been overwritten!");
+  showToast("Your data has been overwritten!", "success");
   importedRawCharacterData.value = "";
-  location.reload();
+  window.setTimeout(() => location.reload(), 1500);
 }
 
 /**
@@ -152,13 +142,13 @@ function handleFileUpload(event: Event) {
         const data = e.target?.result;
         fileData.value = typeof data === "string" ? data : null;
       } catch {
-        triggerNotification("Error parsing JSON file", true);
+        showToast("Error parsing JSON file", "error");
         fileData.value = null;
       }
     };
     reader.readAsText(file);
   } else {
-    triggerNotification("Please upload a valid JSON file.", true);
+    showToast("Please upload a valid JSON file.", "error");
     fileData.value = null;
   }
 }
@@ -168,11 +158,11 @@ function handleFileUpload(event: Event) {
  */
 function confirmUpload() {
   if (!fileData.value) {
-    triggerNotification("No character data given", true);
+    showToast("No character data given", "error");
     return;
   }
   if (isJsonString(fileData.value) === false) {
-    triggerNotification("Character data given is invalid", true);
+    showToast("Character data given is invalid", "error");
     return;
   }
   const importData = getImportData(fileData.value, true);
@@ -188,9 +178,9 @@ function confirmUpload() {
     inventoryData = JSON.parse(inventoryData);
   }
   inventoryStoreLocal.hardSetState(inventoryData as never);
-  alert("Your data has been overwritten!");
+  showToast("Your data has been overwritten!", "success");
   fileData.value = null;
-  location.reload();
+  window.setTimeout(() => location.reload(), 1500);
 }
 
 function isJsonString(str: string | null) {
@@ -201,17 +191,6 @@ function isJsonString(str: string | null) {
     return false;
   }
   return true;
-}
-
-function triggerNotification(msg: string, error = false) {
-  message.value = msg;
-  isNotificationShown.value = true;
-  notificationError.value = error;
-  setTimeout(() => {
-    isNotificationShown.value = false;
-    message.value = "";
-    notificationError.value = false;
-  }, 5000);
 }
 
 async function importEchoesAddRaw() {
@@ -231,9 +210,9 @@ async function importEchoesAddRaw() {
       await inventoryStore.saveEcho(echoItem as never);
       amount++;
     }
-    triggerNotification(`Imported ${amount} echoes.`);
+    showToast(`Imported ${amount} echoes.`, "success");
   } catch (e) {
-    triggerNotification(`Failed to import echoes: ${e}`, true);
+    showToast(`Failed to import echoes: ${e}`, "error");
   }
 }
 </script>

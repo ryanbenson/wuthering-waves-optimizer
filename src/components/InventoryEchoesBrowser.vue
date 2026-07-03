@@ -177,6 +177,9 @@ import { useCharacterStore } from "../stores/character";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
 import { randomString } from "../utils/strings";
+import { useConfirm } from "../composables/useConfirm";
+
+const { confirm } = useConfirm();
 
 const inventoryEchoEditRef = ref<InstanceType<typeof InventoryEchoEdit> | null>(
   null,
@@ -344,15 +347,20 @@ function getCharImg(character: string) {
 }
 
 async function removeEcho(echoId: string) {
-  if (window.confirm("Do you really want to delete this echo?")) {
-    await deleteEcho(echoId);
-    await deleteEchoEquippedMapping(echoId);
-    const equippedCharsData = getEquippedEchoData(echoId);
-    const equippedChars = Object.entries(equippedCharsData);
-    for (const equippedChar of equippedChars) {
-      const [character, index] = equippedChar;
-      await removeCharacterEcho(character, Number(index));
-    }
+  const confirmed = await confirm("Do you really want to delete this echo?", {
+    title: "Delete echo",
+    confirmLabel: "Delete",
+    variant: "error",
+  });
+  if (!confirmed) return;
+
+  await deleteEcho(echoId);
+  await deleteEchoEquippedMapping(echoId);
+  const equippedCharsData = getEquippedEchoData(echoId);
+  const equippedChars = Object.entries(equippedCharsData);
+  for (const equippedChar of equippedChars) {
+    const [character, index] = equippedChar;
+    await removeCharacterEcho(character, Number(index));
   }
 }
 

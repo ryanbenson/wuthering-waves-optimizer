@@ -13,11 +13,6 @@
       :style="getFixedBoxStyle(box)"></div>
   </div>
   <div class="echo-parser">
-    <div v-if="errorImageSize" class="alert alert-error mb-4">
-      <div class="flex-1">
-        <label>Image must be 1920x1080</label>
-      </div>
-    </div>
     <h2 class="text-xl font-bold">
       Upload, or paste your image from the wuwa discord bot
     </h2>
@@ -101,6 +96,9 @@ import { createWorker } from "tesseract.js";
 import { mainEchoesData, getEchoData, getCostByClass } from "../echoes/index";
 import { getEchoSetIconByType, echoSetImageMap } from "../echoes/stats";
 import EchoParserWorker from "../workers/echoParser.worker?worker";
+import { useToast } from "../composables/useToast";
+
+const { showToast } = useToast();
 
 type RegionCoords = { x: number; y: number; width: number; height: number };
 
@@ -139,7 +137,6 @@ type TessWorker = Awaited<ReturnType<typeof createWorker>>;
 const worker = ref<TessWorker | null>(null);
 const echoParserWorker = ref<Worker | null>(null);
 const imageBitmap = ref<ImageBitmap | null>(null);
-const errorImageSize = ref(false);
 const isSavingToInventory = ref(false);
 
 const fileUpload = ref<HTMLInputElement | null>(null);
@@ -601,7 +598,6 @@ async function parseEchoes(): Promise<ParsedEchoSlot[]> {
 }
 
 async function handleImageFile(file: File) {
-  errorImageSize.value = false;
   const img = new Image();
   img.onload = async () => {
     isLoading.value = true;
@@ -609,7 +605,7 @@ async function handleImageFile(file: File) {
     imageElement.value = img;
     imageSrc.value = img.src;
     if (img.naturalWidth !== 1920 || img.naturalHeight !== 1080) {
-      errorImageSize.value = true;
+      showToast("Image must be 1920x1080", "error");
       reset();
       return;
     }

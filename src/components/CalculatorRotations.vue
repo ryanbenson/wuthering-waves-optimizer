@@ -88,6 +88,9 @@ import { useCharacterStore } from "../stores/character";
 import { getCharByName } from "../characters/characters.ts";
 import { randomString } from "../utils/strings.ts";
 import CalculatorRotation from "./CalculatorRotation.vue";
+import { useToast } from "../composables/useToast";
+
+const { showToast } = useToast();
 
 type RotationAction = Record<string, unknown> & {
   id: string;
@@ -199,7 +202,7 @@ async function handleImportRotation() {
     });
     emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
   } catch {
-    alert("Rotation data is not valid");
+    showToast("Rotation data is not valid", "error");
   }
 }
 
@@ -215,7 +218,7 @@ async function handleImportPreset(preset: RotationPreset) {
     });
     emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
   } catch {
-    alert("Rotation data is not valid");
+    showToast("Rotation data is not valid", "error");
   }
 }
 
