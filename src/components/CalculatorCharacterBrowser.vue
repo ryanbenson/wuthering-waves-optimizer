@@ -58,6 +58,17 @@
               <img :src="weaponIcon.toLowerCase()" class="size-8 p-[.15rem]" />
             </button>
           </div>
+          <div class="characters__filters__build-status ml-2 flex gap-1">
+            <button
+              v-for="status in buildStatusFilters"
+              :key="status"
+              @click="toggleBuildStatusFilter(status)"
+              class="btn btn-sm btn-ghost rounded inline-flex items-center px-2"
+              :class="{ 'btn-active': isBuildStatusFilterActive(status) }"
+              :data-test-build-status-filter="status">
+              <CharacterBuildStatus :status="status" />
+            </button>
+          </div>
           <button @click="resetFilters" class="btn btn-sm btn-ghost">
             Clear
           </button>
@@ -80,6 +91,7 @@
                 :rarity="character.rarity"
                 :element="character.element"
                 :weapon="character.weapon"
+                :build-status="getCharacterBuildStatus(character.key, characters)"
                 :is-active="false"
                 @click="chooseCharacter(character)"
                 class="cursor-pointer">
@@ -99,12 +111,20 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { storeToRefs } from "pinia";
 import {
   allCharactersList,
   characterElementsSetImageMap,
   weaponTypesImageMap,
 } from "../characters/characters";
+import {
+  getCharacterBuildStatus,
+  CHARACTER_BUILD_STATUSES,
+  type CharacterBuildStatus as CharacterBuildStatusType,
+} from "../characters/characterBuildStatus";
+import { useCharacterStore } from "../stores/character";
 import CalculatorCharacterCard from "./CalculatorCharacterCard.vue";
+import CharacterBuildStatus from "./CharacterBuildStatus.vue";
 
 type ListedCharacter = (typeof allCharactersList)[number];
 
@@ -114,6 +134,9 @@ interface Props {
 
 defineProps<Props>();
 
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
+
 const emit = defineEmits<{
   "character-browser:chosen-character": [key: string];
 }>();
@@ -121,6 +144,9 @@ const emit = defineEmits<{
 const filterElement = ref<string | null>(null);
 const filterRarity = ref<number | null>(null);
 const filterWeapon = ref<string | null>(null);
+const filterBuildStatus = ref<CharacterBuildStatusType | null>(null);
+
+const buildStatusFilters: CharacterBuildStatusType[] = CHARACTER_BUILD_STATUSES;
 
 const charactersList = computed((): ListedCharacter[] => {
   let characterList: ListedCharacter[] = JSON.parse(
@@ -141,6 +167,13 @@ const charactersList = computed((): ListedCharacter[] => {
       (c) => c.weapon === filterWeapon.value,
     );
   }
+  if (filterBuildStatus.value) {
+    characterList = characterList.filter(
+      (c) =>
+        getCharacterBuildStatus(c.key, characters.value) ===
+        filterBuildStatus.value,
+    );
+  }
   return characterList;
 });
 
@@ -158,6 +191,7 @@ function reset() {
   filterElement.value = null;
   filterRarity.value = null;
   filterWeapon.value = null;
+  filterBuildStatus.value = null;
 }
 
 function handleClose() {
@@ -188,10 +222,20 @@ function isWeaponFilterActive(weapon: string) {
   return filterWeapon.value === weapon;
 }
 
+function toggleBuildStatusFilter(status: CharacterBuildStatusType) {
+  filterBuildStatus.value =
+    filterBuildStatus.value === status ? null : status;
+}
+
+function isBuildStatusFilterActive(status: CharacterBuildStatusType) {
+  return filterBuildStatus.value === status;
+}
+
 function resetFilters() {
   filterElement.value = null;
   filterRarity.value = null;
   filterWeapon.value = null;
+  filterBuildStatus.value = null;
 }
 
 function getElementClass(element: string) {

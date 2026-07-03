@@ -2,6 +2,13 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>July 2, 2026</h3>
+    <ul>
+      <li>Adds ability to change character from main navigation bar.</li>
+      <li>Adds current character to main navigation bar.</li>
+      <li>Adds "in progress", and "complete" statuses to character build status.</li>
+      <li>Adds equipped echo references when you are looking for echoes.</li>
+    </ul>
     <h3>June 14, 2026</h3>
     <ul>
       <li>Fixes Lucilla's s6.</li>

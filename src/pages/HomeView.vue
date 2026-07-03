@@ -32,6 +32,9 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import Calculator from "../components/Calculator.vue";
+import { useToast } from "../composables/useToast";
+
+const { showToast } = useToast();
 
 const calculatorKey = ref(self.crypto.randomUUID());
 const isDrawerOpen = ref(false);
@@ -53,7 +56,7 @@ onMounted(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const debug = urlParams.get("debug");
     if (debug == "true") {
-      alert("welcome back");
+      showToast("welcome back", "info");
     }
     setTimeout(() => {
       calculatorKey.value = self.crypto.randomUUID();

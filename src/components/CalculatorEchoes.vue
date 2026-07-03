@@ -19,9 +19,12 @@
       "></CalculatorSaveEchoesPreset>
     <CalculatorEchoesPresetsGuide
       ref="echoesPresetsGuide"></CalculatorEchoesPresetsGuide>
-    <div v-if="isTotalCostOverCap" class="alert alert--error">
+    <Toast
+      v-if="showCostOverCapToast"
+      variant="error"
+      @dismiss="dismissCostOverCapToast">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
-    </div>
+    </Toast>
     <div class="actions mb-4 flex gap-2 flex-wrap">
       <button class="btn btn-sm btn-primary" @click="handleOpenEchoesImporter">
         Import Echoes
@@ -160,6 +163,7 @@ import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import CalculatorEchoesPresets from "./CalculatorEchoesPresets.vue";
 import CalculatorSaveEchoesPreset from "./CalculatorSaveEchoesPreset.vue";
 import CalculatorEchoesPresetsGuide from "./CalculatorEchoesPresetsGuide.vue";
+import Toast from "./Toast.vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { randomString } from "../utils/strings.ts";
@@ -247,6 +251,20 @@ const echoName = computed(() => (mainEcho.value ? getEchoData(mainEcho.value)?.n
 
 const totalEchoCost = computed(() => echoCosts.value.reduce((total, cost) => total + cost, 0));
 const isTotalCostOverCap = computed(() => totalEchoCost.value > MAX_ECHO_COST);
+const costOverCapToastDismissed = ref(false);
+const showCostOverCapToast = computed(
+  () => isTotalCostOverCap.value && !costOverCapToastDismissed.value,
+);
+
+function dismissCostOverCapToast() {
+  costOverCapToastDismissed.value = true;
+}
+
+watch(isTotalCostOverCap, (overCap) => {
+  if (!overCap) {
+    costOverCapToastDismissed.value = false;
+  }
+});
 const echoPresetData = computed(() => inventoryStore.getEchoPresetData?.(echoPresetId.value));
 const echoPresetName = computed(() => echoPresetData.value?.name ?? null);
 
@@ -599,19 +617,6 @@ watch(setOverride, (newValue) => {
 }
 .main-echo__enabled {
   margin-top: 1rem;
-}
-.alert {
-  background: #126a5a;
-  padding: 0.25rem 0.5rem;
-  font-size: 14px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  color: white;
-}
-.alert--error {
-  background-color: #7b7c27;
 }
 .main-echo-level {
   padding-top: 0.5rem;

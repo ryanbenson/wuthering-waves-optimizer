@@ -1,13 +1,4 @@
 <template>
-  <div
-    v-if="isNotificationShown"
-    class="alert mb-8"
-    :class="{
-      'alert-error': notificationError,
-      'alert-success': !notificationError,
-    }">
-    {{ message }}
-  </div>
   <h3 class="text-2xl font-bold mb-4">Export your database</h3>
 
   <div class="card card-bordered card-compact bg-base-100 shadow mb-2">
@@ -33,11 +24,9 @@
  * Version 1 (which has no meta) only includes character data as a root property
  * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
  */
-import { ref } from "vue";
+import { useToast } from "../composables/useToast";
 
-const message = ref("");
-const isNotificationShown = ref(false);
-const notificationError = ref(false);
+const { showToast } = useToast();
 
 /**
  * Gets all of the data to save
@@ -63,7 +52,7 @@ function getData() {
 function copyCharacterData() {
   const data = getData();
   navigator.clipboard.writeText(JSON.stringify(data));
-  triggerNotification("Character data has been copied to your clipboard");
+  showToast("Character data has been copied to your clipboard", "success");
 }
 
 /**
@@ -82,7 +71,7 @@ function downloadCharacterData() {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  triggerNotification("Character data has been downloaded");
+  showToast("Character data has been downloaded", "success");
 }
 
 /**
@@ -116,20 +105,6 @@ function generateFilename() {
   });
   const dateStr = `${partsValues.year}-${partsValues.month}-${partsValues.day}`;
   return `character_data_${dateStr}.json`;
-}
-
-/**
- * Shows the notification message and hides it after a duration
- */
-function triggerNotification(msg: string, error = false) {
-  message.value = msg;
-  isNotificationShown.value = true;
-  notificationError.value = error;
-  setTimeout(() => {
-    isNotificationShown.value = false;
-    message.value = "";
-    notificationError.value = false;
-  }, 5000);
 }
 </script>
 

@@ -24,6 +24,10 @@
               {{ name }}
             </span>
           </h2>
+          <CharacterBuildStatus
+            v-if="buildStatus"
+            :status="buildStatus"
+            class="mb-1" />
           <div class="character__item__meta flex gap-2 items-center">
             <span class="character__item__set size-6 rounded-full">
               <img :src="elementImage" :class="elementClass" />
@@ -47,6 +51,8 @@ import {
   characterElementsSetImageMap,
   weaponTypesImageMap,
 } from "../characters/characters";
+import type { CharacterBuildStatus as CharacterBuildStatusType } from "../characters/characterBuildStatus";
+import CharacterBuildStatus from "./CharacterBuildStatus.vue";
 
 interface Props {
   name: string;
@@ -55,6 +61,7 @@ interface Props {
   element: string;
   weapon: string;
   isActive?: boolean;
+  buildStatus?: CharacterBuildStatusType;
 }
 
 const props = withDefaults(defineProps<Props>(), {

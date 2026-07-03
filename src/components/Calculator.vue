@@ -15,11 +15,6 @@
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div>
-          <div
-            v-if="false"
-            class="alert alert-success mb-6 text-white p-2 px-4">
-            Lucilla is available!
-          </div>
           <CalculatorCharacterSelect
             :key="character"
             :character="character"
@@ -499,6 +494,12 @@ export default defineComponent({
     const baseDef = ref(0);
 
     charactersList.value = getCharactersAvailable();
+
+    watch(activeCharacter, (charName) => {
+      if (charName && charName !== character.value) {
+        character.value = charName;
+      }
+    });
 
     watch(character, async (charName) => {
       isLoading.value = true;
