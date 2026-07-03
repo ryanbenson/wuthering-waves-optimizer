@@ -18,7 +18,9 @@ describe("Calculator Data Verification: Zani", () => {
     cy.get('[data-test-optimizer-results-index="0"]').should("exist");
     cy.get(
       `[data-test-optimizer-results-index="0"] [data-test-optimizer-rotation-damage-total]`,
-    ).contains(optimizerResults.totalNormal);
+    )
+      .invoke("text")
+      .should("contain", optimizerResults.totalNormal);
     cy.get(
       `[data-test-optimizer-results-index="0"] [data-test-optimizer-rotation-damage-total-avg]`,
     )
