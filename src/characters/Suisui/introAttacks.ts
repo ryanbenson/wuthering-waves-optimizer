@@ -1,6 +1,6 @@
 export const introAttacks = {
   name: "Intro Skill: Tinkling Jade",
-  description: `Attack the target, dealing <span style="color:#a2fbfc;">Glacio DMG</span>, and inflict <span style="color:#ffd12f;" class="font-bold">Glacio Chafe</span> 1 time on the target.<br>While casting this skill, consume all <span style="color:#ffd12f;" class="font-bold">Cloud Breath</span> to pull in nearby targets and enter <span style="color:#ffd12f;" class="font-bold">Drizzle Stance</span>.`,
+  description: `<div>Attack the target, dealing <span style="color:#a2fbfc;">Glacio DMG</span>, and inflict <span style="color:#ffd12f;" class="font-bold">Glacio Chafe</span> 1 time on the target.<br>While casting this skill, consume all <span style="color:#ffd12f;" class="font-bold">Cloud Breath</span> to pull in nearby targets and enter <span style="color:#ffd12f;" class="font-bold">Drizzle Stance</span>.</div>`,
   attacks: [
     {
       key: "SkillDMG",

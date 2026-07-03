@@ -1,6 +1,6 @@
 export const skillAttacks = {
   name: "Resonance Skill: Thunderclap",
-  description: `Launch the Cloudrift Bolt and grapple towards the target, dealing <span style="color:#ebb0ff;">Electro DMG</span>. Press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> shortly after to cast <span style="color:#ffd12f;" class="font-bold">Basic Attack - Repel</span>, dealing Electro DMG, considered Basic Attack DMG.`,
+  description: `<div>Launch the Cloudrift Bolt and grapple towards the target, dealing <span style="color:#ebb0ff;">Electro DMG</span>. Press <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> shortly after to cast <span style="color:#ffd12f;" class="font-bold">Basic Attack - Repel</span>, dealing Electro DMG, considered Basic Attack DMG.</div>`,
   attacks: [
     {
       key: "SkillDMG",

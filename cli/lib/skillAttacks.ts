@@ -6,7 +6,7 @@ import {
   resolveSkillAttackMetadata,
   type AttackMetadata,
 } from "./damageListMatching.js";
-import { decodeAndCleanHtml, formatTemplateString } from "./html.js";
+import { formatTemplateString, wrapDescriptionHtml } from "./html.js";
 import { toAttackKey } from "./naming.js";
 
 interface AttackTalents {
@@ -248,7 +248,7 @@ function buildSkillAttackData(
 ): SkillAttackData {
   return {
     name: `${skill.SkillType}: ${skill.SkillName}`,
-    description: decodeAndCleanHtml(skill.SkillDescribe ?? ""),
+    description: wrapDescriptionHtml(skill.SkillDescribe ?? ""),
     attacks: buildAttacksForSkill(skill, metadataByAttribute),
   };
 }

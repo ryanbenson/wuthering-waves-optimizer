@@ -1,6 +1,6 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Ultimate Tactics",
-  description: `Launch the <span style="color:#ffd12f;" class="font-bold">Thunder Quietus</span>, dealing <span style="color:#ebb0ff;">Electro DMG</span>.`,
+  description: `<div>Launch the <span style="color:#ffd12f;" class="font-bold">Thunder Quietus</span>, dealing <span style="color:#ebb0ff;">Electro DMG</span>.</div>`,
   attacks: [
     {
       key: "SkillDMG",

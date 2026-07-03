@@ -1,6 +1,6 @@
 export const introAttacks = {
   name: "Intro Skill: Thunderous Fury",
-  description: `Attack the target, dealing <span style="color:#ebb0ff;">Electro DMG</span>.`,
+  description: `<div>Attack the target, dealing <span style="color:#ebb0ff;">Electro DMG</span>.</div>`,
   attacks: [
     {
       key: "SkillDMG",
