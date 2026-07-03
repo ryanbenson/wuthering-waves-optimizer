@@ -2446,7 +2446,7 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
     },
   ],
-  Xuanling: [
+  YangyangXuanling: [
     {
       key: "OutroSkillAsTheWindWills",
       name: "Outro Skill: As the Wind Wills",
