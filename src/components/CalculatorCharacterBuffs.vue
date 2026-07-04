@@ -1,5 +1,24 @@
 <template>
   <div>
+    <div class="buffs__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
+      <h3 class="text-sm font-semibold">Character Buffs</h3>
+      <div class="join">
+        <button
+          type="button"
+          class="btn btn-sm join-item"
+          data-test-character-buffs-enable-all
+          @click="enableAllCharacterBuffs">
+          Enable all
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm join-item"
+          data-test-character-buffs-max-all
+          @click="maxAllCharacterBuffs">
+          Max all
+        </button>
+      </div>
+    </div>
     <div v-if="buffs" class="character__buffs p-2">
       <div v-if="statBonusGrid" class="stat-bonus-grid mb-4 relative mt-4">
         <div class="label-stylized">Stat Bonuses</div>
@@ -47,6 +66,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
+import { getEffectiveMaxStacks } from "../characters/effectiveBuffStacks";
 import { getSubStatIconByType } from "../echoes/stats";
 import { useCharacterStore } from "../stores/character";
 import CalculatorCharacterBuff from "./CalculatorCharacterBuff.vue";
@@ -168,6 +188,50 @@ function updatedStats() {
 
 function handleUpdatedCharacterBuff() {
   emit("updated-character-buffs");
+}
+
+async function enableAllCharacterBuffs() {
+  const buffUpdates: Record<string, { isEnabled: boolean }> = {};
+
+  for (const buff of props.buffs) {
+    buffUpdates[buff.key] = { isEnabled: true };
+  }
+
+  await characterStore.setCharacterData(props.character, {
+    buffs: buffUpdates,
+  });
+  handleUpdatedCharacterBuff();
+}
+
+async function maxAllCharacterBuffs() {
+  const resonanceChains =
+    characters.value[props.character]?.resonanceChains ?? {};
+  const buffUpdates: Record<
+    string,
+    { isEnabled: boolean; stacks?: number }
+  > = {};
+
+  for (const buff of props.buffs) {
+    const update: { isEnabled: boolean; stacks?: number } = {
+      isEnabled: true,
+    };
+
+    if (buff.hasStacks) {
+      update.stacks = getEffectiveMaxStacks(
+        props.character,
+        buff.key,
+        buff.maxStacks,
+        resonanceChains,
+      );
+    }
+
+    buffUpdates[buff.key] = update;
+  }
+
+  await characterStore.setCharacterData(props.character, {
+    buffs: buffUpdates,
+  });
+  handleUpdatedCharacterBuff();
 }
 
 function retriggerBuffCalculations() {

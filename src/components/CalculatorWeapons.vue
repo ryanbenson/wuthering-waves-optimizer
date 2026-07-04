@@ -1,9 +1,28 @@
 <template>
+  <div class="weapons__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
+    <h3 class="text-sm font-semibold">Weapons</h3>
+    <div class="join">
+      <button
+        type="button"
+        class="btn btn-sm join-item"
+        data-test-weapons-enable-all
+        @click="enableAllWeapons">
+        Enable all
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm join-item"
+        data-test-weapons-max-all
+        @click="maxAllWeapons">
+        Max all
+      </button>
+    </div>
+  </div>
   <div class="data-input">
     <div class="weapon__basic-info">
       <div class="weapon__left flex flex-col gap-2">
         <div
-          class="weapon__selection__image"
+          class="weapon__selection__image cursor-pointer"
           :style="weaponImageStyles"
           :class="{
             'border-amber-300': weaponRarity === '5' || weaponRarity === 5,
@@ -11,21 +30,21 @@
             'border-blue-500': weaponRarity === '3' || weaponRarity === 3,
             'border-green-500': weaponRarity === '2' || weaponRarity === 2,
             'border-gray-500': weaponRarity === '1' || weaponRarity === 1,
-          }"></div>
-        <button
-          @click="openWeaponBrowser"
-          class="btn btn-sm btn--weapon--find"
-          data-test-weapon-open-browser>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 512 512"
-            class="size-4">
-            <path
-              d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
-              fill="#FFFFFF" />
-          </svg>
-          Find
-        </button>
+          }"
+          data-test-weapon-open-browser
+          @click="openWeaponBrowser">
+          <div class="weapon__selection__image-overlay">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 512 512"
+              class="weapon__selection__image-icon"
+              aria-hidden="true">
+              <path
+                d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+                fill="#FFFFFF" />
+            </svg>
+          </div>
+        </div>
       </div>
       <div class="weapon__basic-data">
         <div class="mb-2">
@@ -505,7 +524,10 @@ const weaponModifierValue = computed(() => {
 
 const weaponImageStyles = computed(() => {
   if (!weapon.value || !chosenWeapon.value) {
-    return null;
+    return {
+      backgroundImage:
+        "url(https://ryanbenson.github.io/wuthering-waves-assets/images/T_IconAchv_014.png)",
+    };
   }
   return {
     backgroundImage: `url(${chosenWeapon.value?.info?.image})`,
@@ -576,6 +598,49 @@ function openWeaponBrowser() {
   weaponBrowserRef.value?.triggerOpenModal();
 }
 
+async function enableAllWeapons() {
+  if (!weapon.value) {
+    return;
+  }
+
+  const passiveUpdates: Record<string, { isEnabled: boolean }> = {};
+
+  for (const passive of weaponPassives.value) {
+    passiveUpdates[passive.key] = { isEnabled: true };
+  }
+
+  await setCharacterData(props.character, {
+    weaponPassives: passiveUpdates,
+  });
+}
+
+async function maxAllWeapons() {
+  if (!weapon.value) {
+    return;
+  }
+
+  const passiveUpdates: Record<
+    string,
+    { isEnabled: boolean; stacks?: number }
+  > = {};
+
+  for (const passive of weaponPassives.value) {
+    const update: { isEnabled: boolean; stacks?: number } = {
+      isEnabled: true,
+    };
+
+    if (passive.hasStacks) {
+      update.stacks = Number(passive.maxStacks) || 0;
+    }
+
+    passiveUpdates[passive.key] = update;
+  }
+
+  await setCharacterData(props.character, {
+    weaponPassives: passiveUpdates,
+  });
+}
+
 function handleChosenWeapon(key: string) {
   weapon.value = key;
 }
@@ -621,6 +686,7 @@ onBeforeUnmount(() => {
 
 <style scoped lang="scss">
 .weapon__selection__image {
+  position: relative;
   width: 100px;
   height: 100px;
   background-repeat: no-repeat;
@@ -629,6 +695,37 @@ onBeforeUnmount(() => {
   border-radius: 100%;
   border-width: 1px;
   border-style: solid;
+  overflow: hidden;
+}
+
+.weapon__selection__image-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  background: rgba(0, 0, 0, 0);
+  opacity: 0;
+  transition:
+    opacity 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.weapon__selection__image-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.weapon__selection__image:hover .weapon__selection__image-overlay {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.weapon__selection__image:hover .weapon__selection__image-icon {
+  opacity: 1;
 }
 html[data-theme="light"] {
   .weapon__stat {
@@ -642,12 +739,5 @@ html[data-theme="light"] {
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
-}
-html[data-theme="light"] {
-  .btn--weapon--find {
-    svg {
-      filter: invert(100%);
-    }
-  }
 }
 </style>

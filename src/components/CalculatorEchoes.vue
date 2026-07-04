@@ -25,21 +25,24 @@
       @dismiss="dismissCostOverCapToast">
       You have exceeded to total echo cost of 12 with {{ totalEchoCost }}.
     </Toast>
-    <div class="actions mb-4 flex gap-2 flex-wrap">
-      <button class="btn btn-sm btn-primary" @click="handleOpenEchoesImporter">
-        Import Echoes
-      </button>
-      <button class="btn btn-sm btn-primary" @click="handleOpenEchoesPreset">
-        Use Presets
-      </button>
-      <button class="btn btn-sm btn-primary" @click="handleOpenSaveEchoPreset">
-        Save Preset
-      </button>
-      <button
-        class="btn btn-sm btn-primary btn-outline"
-        @click="handleOpenPresetsGuide">
-        Presets Guide
-      </button>
+    <div class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
+      <h3 class="text-sm font-semibold">Echoes</h3>
+      <div class="join">
+        <button class="btn btn-sm join-item" @click="handleOpenEchoesImporter">
+          Import Echoes
+        </button>
+        <button class="btn btn-sm join-item" @click="handleOpenEchoesPreset">
+          Use Presets
+        </button>
+        <button class="btn btn-sm join-item" @click="handleOpenSaveEchoPreset">
+          Save Preset
+        </button>
+        <button
+          class="btn btn-sm join-item"
+          @click="handleOpenPresetsGuide">
+          <span class="text-primary">Presets Guide</span>
+        </button>
+      </div>
     </div>
     <div v-if="echoPresetName" class="badge badge-primary badge-outline mb-4">
       Preset: {{ echoPresetName }}
