@@ -1,8 +1,37 @@
 <template>
   <div class="character__selection" :class="character">
     <div class="character__selection__left flex flex-col gap-2 items-stretch">
-      <div
-        class="character__selection__avatar cursor-pointer"
+      <div class="character__selection__avatar-wrap">
+        <button
+          type="button"
+          class="character__selection__favorite z-10"
+          :class="{
+            'character__selection__favorite--active': isFavorite,
+          }"
+          :aria-label="isFavorite ? 'Remove from favorites' : 'Add to favorites'"
+          :data-test-char-favorite="character"
+          @click.stop="toggleFavorite">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="character__selection__favorite-icon"
+            aria-hidden="true">
+            <path
+              v-if="isFavorite"
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+              fill="currentColor" />
+            <path
+              v-else
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div
+          class="character__selection__avatar cursor-pointer"
         :class="{
           'border-amber-300': characterRarity === '5' || characterRarity === 5,
           'border-violet-600': characterRarity === '4' || characterRarity === 4,
@@ -23,6 +52,7 @@
               fill="#FFFFFF" />
           </svg>
         </div>
+      </div>
       </div>
 
       <CharacterBuildStatus
@@ -89,7 +119,8 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const { characters } = storeToRefs(useCharacterStore());
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
 
 const emit = defineEmits<{
   "updated-chosen-character": [key: string];
@@ -118,6 +149,14 @@ const characterRarity = computed((): number | string => {
 const buildStatus = computed(() =>
   getCharacterBuildStatus(characterChosen.value, characters.value),
 );
+
+const isFavorite = computed(() =>
+  characterStore.isFavoriteCharacter(characterChosen.value),
+);
+
+function toggleFavorite() {
+  characterStore.toggleFavoriteCharacter(characterChosen.value);
+}
 
 function handleUpdatedCharacter(e: Event) {
   const target = e.target as HTMLSelectElement;
@@ -174,6 +213,45 @@ onMounted(() => {
   label {
     margin-left: 0.5rem;
   }
+}
+.character__selection__avatar-wrap {
+  position: relative;
+  width: 100px;
+  overflow: visible;
+}
+.character__selection__favorite {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: none;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &--active {
+    color: #f472b6;
+    background: rgba(0, 0, 0, 0.8);
+  }
+}
+.character__selection__favorite-icon {
+  width: 1rem;
+  height: 1rem;
 }
 .character__selection__avatar {
   position: relative;

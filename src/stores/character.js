@@ -5,6 +5,7 @@ export const useCharacterStore = defineStore("character", {
   state: () => ({
     characters: {},
     activeCharacter: "",
+    favoriteCharacters: [],
   }),
   getters: {
     getRotationById: (state) => {
@@ -15,6 +16,10 @@ export const useCharacterStore = defineStore("character", {
     },
     getActiveCharacter: (state) => {
       return state.characters?.[state.activeCharacter];
+    },
+    isFavoriteCharacter: (state) => {
+      return (characterId) =>
+        state.favoriteCharacters.includes(characterId);
     },
   },
   actions: {
@@ -31,6 +36,36 @@ export const useCharacterStore = defineStore("character", {
         buildStatus,
         buildComplete: buildStatus === "finished",
       });
+    },
+    toggleFavoriteCharacter(characterId) {
+      const index = this.favoriteCharacters.indexOf(characterId);
+      if (index === -1) {
+        this.favoriteCharacters.push(characterId);
+        return;
+      }
+
+      this.favoriteCharacters.splice(index, 1);
+    },
+    removeTeamBuffKeys(characterId, keys) {
+      const buffs = this.characters[characterId]?.teamBuffs?.buffs;
+      if (!buffs) {
+        return;
+      }
+
+      for (const key of keys) {
+        delete buffs[key];
+      }
+    },
+    clearAllTeamBuffs(characterId) {
+      if (!this.characters[characterId]) {
+        this.characters[characterId] = {};
+      }
+
+      this.characters[characterId].teamBuffs = {
+        selectedCharacter1: null,
+        selectedCharacter2: null,
+        buffs: {},
+      };
     },
     getCharacterWeaponData(characterId) {
       return this.characters[characterId] || {};
@@ -61,6 +96,7 @@ export const useCharacterStore = defineStore("character", {
     hardSetState(data) {
       this.characters = data.characters;
       this.activeCharacter = data.activeCharacter;
+      this.favoriteCharacters = data.favoriteCharacters ?? [];
     },
     removeCharacterEcho(characterId, echoIndex) {
       this.characters[characterId].echoes[echoIndex] = {

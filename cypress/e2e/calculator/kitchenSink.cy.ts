@@ -18,9 +18,7 @@ describe("Calculator Kitchen Sink", () => {
     cy.get(".character__selection.Carlotta").should("be.visible");
 
     // first enable all self buffs
-    cy.get(".character__self-buffs .character__buffs .card").each(($card) => {
-      cy.wrap($card).find("input[type=checkbox]").click();
-    });
+    cy.get('[data-test-character-buffs-enable-all]').click();
 
     // now change the weapon and enable all weapon buffs
     cy.get('[data-test-calculator-nav="weapon"]').click();

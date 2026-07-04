@@ -1,23 +1,26 @@
 <template>
-  <div class="flex gap-4 mb-4">
-    <button
-      class="btn btn-primary"
-      @click="handleCreateRotation"
-      data-test-rotations-action="create">
-      Create
-    </button>
-    <button
-      class="btn btn-primary"
-      @click="handleToggleImport"
-      data-test-rotations-action="import">
-      Import
-    </button>
-    <button
-      class="btn btn-primary"
-      @click="togglePresetRotations"
-      data-test-rotations-action="presets">
-      List Presets
-    </button>
+  <div class="optimizer__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
+    <h3 class="text-sm font-semibold">Rotations</h3>
+    <div class="join">
+      <button
+        class="btn btn-sm join-item"
+        @click="handleCreateRotation"
+        data-test-rotations-action="create">
+        Create
+      </button>
+      <button
+        class="btn btn-sm join-item"
+        @click="handleToggleImport"
+        data-test-rotations-action="import">
+        Import
+      </button>
+      <button
+        class="btn btn-sm join-item"
+        @click="togglePresetRotations"
+        data-test-rotations-action="presets">
+        List Presets
+      </button>
+    </div>
   </div>
   <div
     v-if="isImportOpen"

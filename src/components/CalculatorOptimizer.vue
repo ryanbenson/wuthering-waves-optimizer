@@ -75,12 +75,18 @@
     </div>
   </dialog>
   <div class="optimizer" v-if="!isLoading">
-    <button
-      class="btn btn-sm w-full btn-primary btn-outline mb-4"
-      data-test-optimizer-guide-btn
-      @click="handleOpenOptimizerGuide">
-      🧪 Optimizer guide
-    </button>
+    <div class="optimizer__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
+      <h3 class="text-sm font-semibold">Optimizer</h3>
+      <div class="join">
+        <button
+          type="button"
+          class="btn btn-sm join-item"
+          data-test-optimizer-guide-btn
+          @click="handleOpenOptimizerGuide">
+          🧪 Optimizer guide
+        </button>
+      </div>
+    </div>
     <div class="optimizer-filters">
       <div class="optimizer-filters__sets">
         <h3 class="mb-2">Choose echo sets</h3>
