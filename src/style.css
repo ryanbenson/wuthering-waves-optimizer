@@ -252,3 +252,12 @@ html[data-theme="light"] input[type="number"] {
 .label-text {
   font-size: 16px;
 }
+
+.label-stylized {
+  font-size: 24px;
+  font-weight: 700;
+  position: absolute;
+  top: -1.7rem;
+  left: 0.5rem;
+  z-index: 0;
+}

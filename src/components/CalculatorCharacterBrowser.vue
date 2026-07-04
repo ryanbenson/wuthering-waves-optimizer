@@ -69,6 +69,33 @@
               <CharacterBuildStatus :status="status" />
             </button>
           </div>
+          <div class="characters__filters__favorites ml-2">
+            <button
+              @click="toggleFavoriteFilter"
+              class="btn btn-sm btn-ghost rounded inline-flex items-center gap-1.5 px-2"
+              :class="{ 'btn-active': filterFavorites }"
+              data-test-favorites-filter>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                class="size-4 shrink-0"
+                aria-hidden="true">
+                <path
+                  v-if="filterFavorites"
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                  fill="currentColor" />
+                <path
+                  v-else
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+              <span>Favorites</span>
+            </button>
+          </div>
           <button @click="resetFilters" class="btn btn-sm btn-ghost">
             Clear
           </button>
@@ -135,7 +162,7 @@ interface Props {
 defineProps<Props>();
 
 const characterStore = useCharacterStore();
-const { characters } = storeToRefs(characterStore);
+const { characters, favoriteCharacters } = storeToRefs(characterStore);
 
 const emit = defineEmits<{
   "character-browser:chosen-character": [key: string];
@@ -145,6 +172,7 @@ const filterElement = ref<string | null>(null);
 const filterRarity = ref<number | null>(null);
 const filterWeapon = ref<string | null>(null);
 const filterBuildStatus = ref<CharacterBuildStatusType | null>(null);
+const filterFavorites = ref(false);
 
 const buildStatusFilters: CharacterBuildStatusType[] = CHARACTER_BUILD_STATUSES;
 
@@ -174,6 +202,11 @@ const charactersList = computed((): ListedCharacter[] => {
         filterBuildStatus.value,
     );
   }
+  if (filterFavorites.value) {
+    characterList = characterList.filter((c) =>
+      favoriteCharacters.value.includes(c.key),
+    );
+  }
   return characterList;
 });
 
@@ -192,6 +225,7 @@ function reset() {
   filterRarity.value = null;
   filterWeapon.value = null;
   filterBuildStatus.value = null;
+  filterFavorites.value = false;
 }
 
 function handleClose() {
@@ -231,11 +265,16 @@ function isBuildStatusFilterActive(status: CharacterBuildStatusType) {
   return filterBuildStatus.value === status;
 }
 
+function toggleFavoriteFilter() {
+  filterFavorites.value = !filterFavorites.value;
+}
+
 function resetFilters() {
   filterElement.value = null;
   filterRarity.value = null;
   filterWeapon.value = null;
   filterBuildStatus.value = null;
+  filterFavorites.value = false;
 }
 
 function getElementClass(element: string) {
