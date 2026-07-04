@@ -1,7 +1,33 @@
 <template>
   <div>
+    <div class="party-buffs__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
+      <h3 class="text-sm font-semibold">Team Buffs</h3>
+      <div class="join">
+        <button
+          type="button"
+          class="btn btn-sm join-item"
+          data-test-party-buffs-clear-all
+          @click="clearAllPartyBuffs">
+          Clear all
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm join-item"
+          data-test-party-buffs-clear-weapons
+          @click="clearWeaponPartyBuffs">
+          Clear weapons
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm join-item"
+          data-test-party-buffs-clear-echoes
+          @click="clearEchoPartyBuffs">
+          Clear echoes
+        </button>
+      </div>
+    </div>
     <div class="teammate_selects flex justify-center">
-      <div class="teammate__select">
+      <div class="teammate__select rounded-lg bg-base-100 p-4">
         <div class="character__selection party-member__selection">
           <div class="character__selection__left flex flex-col gap-2">
             <div
@@ -14,21 +40,19 @@
                 backgroundImage: `url(${getCharacterImage(selectedCharacter1)})`,
               }"
               data-test-party-member-1-avatar
-              @click="openPartyMember1Browser"></div>
-            <button
-              type="button"
-              class="btn btn-sm btn--character--find"
               @click="openPartyMember1Browser">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                class="size-4">
-                <path
-                  d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
-                  fill="#FFFFFF" />
-              </svg>
-              Find
-            </button>
+              <div class="character__selection__avatar-overlay">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  class="character__selection__avatar-icon"
+                  aria-hidden="true">
+                  <path
+                    d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+                    fill="#FFFFFF" />
+                </svg>
+              </div>
+            </div>
           </div>
           <div class="character__selection__form">
             <select
@@ -69,7 +93,7 @@
           ref="partyMemberBrowser1Ref"
           @character-browser:chosen-character="handlePartyMember1Chosen" />
       </div>
-      <div class="teammate__select">
+      <div class="teammate__select rounded-lg bg-base-100 p-4">
         <div class="character__selection party-member__selection">
           <div class="character__selection__left flex flex-col gap-2">
             <div
@@ -82,21 +106,19 @@
                 backgroundImage: `url(${getCharacterImage(selectedCharacter2)})`,
               }"
               data-test-party-member-2-avatar
-              @click="openPartyMember2Browser"></div>
-            <button
-              type="button"
-              class="btn btn-sm btn--character--find"
               @click="openPartyMember2Browser">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 512 512"
-                class="size-4">
-                <path
-                  d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
-                  fill="#FFFFFF" />
-              </svg>
-              Find
-            </button>
+              <div class="character__selection__avatar-overlay">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 512 512"
+                  class="character__selection__avatar-icon"
+                  aria-hidden="true">
+                  <path
+                    d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"
+                    fill="#FFFFFF" />
+                </svg>
+              </div>
+            </div>
           </div>
           <div class="character__selection__form">
             <select
@@ -144,8 +166,11 @@
       class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
       data-test-party-buff-char-1-collapse-bar>
       <input type="checkbox" />
-      <h3 class="collapse-title text-xl" data-test-party-member-1-name>
-        Buffs for {{ partyMember1DisplayName }}
+      <h3 class="collapse-title text-xl party-buffs__collapse-title" data-test-party-member-1-name>
+        <span>Buffs for {{ partyMember1DisplayName }}</span>
+        <span class="badge badge-neutral badge-sm shrink-0">
+          {{ partyMember1BuffCount }}
+        </span>
       </h3>
       <div class="collapse-content">
         <template v-if="!buffsByCharacterIndex[selectedCharacter1]">
@@ -178,8 +203,11 @@
       class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
       data-test-party-buff-char-2-collapse-bar>
       <input type="checkbox" />
-      <h3 class="collapse-title text-xl" data-test-party-member-2-name>
-        Buffs for {{ partyMember2DisplayName }}
+      <h3 class="collapse-title text-xl party-buffs__collapse-title" data-test-party-member-2-name>
+        <span>Buffs for {{ partyMember2DisplayName }}</span>
+        <span class="badge badge-neutral badge-sm shrink-0">
+          {{ partyMember2BuffCount }}
+        </span>
       </h3>
       <div class="collapse-content">
         <template v-if="!buffsByCharacterIndex[selectedCharacter2]">
@@ -211,7 +239,12 @@
       class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
       data-test-party-buff-echoes-collapse-bar>
       <input type="checkbox" />
-      <h3 class="collapse-title text-xl">Echo Buffs</h3>
+      <h3 class="collapse-title text-xl party-buffs__collapse-title">
+        <span>Echo Buffs</span>
+        <span class="badge badge-neutral badge-sm shrink-0">
+          {{ echoBuffCount }}
+        </span>
+      </h3>
       <div class="collapse-content">
         <CalculatorPartyBuff
           v-for="buff in echoBuffList"
@@ -238,7 +271,12 @@
       class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
       data-test-party-buff-weapons-collapse-bar>
       <input type="checkbox" />
-      <h3 class="collapse-title text-xl">Weapon Buffs</h3>
+      <h3 class="collapse-title text-xl party-buffs__collapse-title">
+        <span>Weapon Buffs</span>
+        <span class="badge badge-neutral badge-sm shrink-0">
+          {{ weaponBuffCount }}
+        </span>
+      </h3>
       <div class="collapse-content">
         <CalculatorPartyBuff
           v-for="buff in weaponTeamBuffList"
@@ -320,6 +358,9 @@ type PartyBuffDef = {
 const buffsByCharacterIndex = buffsByCharacter as Record<string, PartyBuffDef[]>;
 const echoBuffList = allEchoBuffs as PartyBuffDef[];
 const weaponTeamBuffList = allWeaponTeamBuffs as PartyBuffDef[];
+
+const echoBuffKeys = allEchoBuffs.map((buff) => buff.key);
+const weaponBuffKeys = allWeaponTeamBuffs.map((buff) => buff.key);
 
 const currentCharacter = computed(
   () => characters.value[props.character] ?? ({} as Record<string, unknown>),
@@ -418,6 +459,43 @@ const partyMember2Rarity = computed(() => {
   }
   return allCharactersList.find((c) => c.key === key)?.rarity ?? null;
 });
+
+const storedTeamBuffs = computed(
+  () =>
+    (
+      currentCharacter.value as {
+        teamBuffs?: { buffs?: Record<string, { isEnabled?: boolean }> };
+      }
+    )?.teamBuffs?.buffs ?? {},
+);
+
+function getEnabledBuffCount(keys: string[]): number {
+  return keys.reduce((count, key) => {
+    return storedTeamBuffs.value[key]?.isEnabled ? count + 1 : count;
+  }, 0);
+}
+
+const partyMember1BuffCount = computed(() => {
+  const key = selectedCharacter1.value;
+  if (!key) {
+    return 0;
+  }
+  const buffs = buffsByCharacterIndex[key] ?? [];
+  return getEnabledBuffCount(buffs.map((buff) => buff.key));
+});
+
+const partyMember2BuffCount = computed(() => {
+  const key = selectedCharacter2.value;
+  if (!key) {
+    return 0;
+  }
+  const buffs = buffsByCharacterIndex[key] ?? [];
+  return getEnabledBuffCount(buffs.map((buff) => buff.key));
+});
+
+const echoBuffCount = computed(() => getEnabledBuffCount(echoBuffKeys));
+
+const weaponBuffCount = computed(() => getEnabledBuffCount(weaponBuffKeys));
 
 function openPartyMember1Browser() {
   partyMemberBrowser1Ref.value?.triggerOpenModal();
@@ -536,6 +614,31 @@ function handleUpdatedPartyBuffEcho(buffInfo: PartyBuffEmit) {
   updatedStats();
 }
 
+function clearLocalBuffData(keys: Set<string>) {
+  buffsDataChar1.value = buffsDataChar1.value.filter((buff) => !keys.has(buff.key));
+  buffsDataChar2.value = buffsDataChar2.value.filter((buff) => !keys.has(buff.key));
+  buffsDataEcho.value = buffsDataEcho.value.filter((buff) => !keys.has(buff.key));
+  updatedStats();
+}
+
+function clearAllPartyBuffs() {
+  characterStore.clearAllTeamBuffs(props.character);
+  buffsDataChar1.value = [];
+  buffsDataChar2.value = [];
+  buffsDataEcho.value = [];
+  updatedStats();
+}
+
+function clearWeaponPartyBuffs() {
+  characterStore.removeTeamBuffKeys(props.character, weaponBuffKeys);
+  clearLocalBuffData(new Set(weaponBuffKeys));
+}
+
+function clearEchoPartyBuffs() {
+  characterStore.removeTeamBuffKeys(props.character, echoBuffKeys);
+  clearLocalBuffData(new Set(echoBuffKeys));
+}
+
 function clearCharacter1() {
   selectedCharacter1.value = null;
 }
@@ -557,6 +660,13 @@ onBeforeUnmount(() => {
 <style scoped lang="scss">
 .skilldescription {
   display: inline-block;
+}
+.party-buffs__collapse-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-right: 2.5rem;
 }
 .teammate_selects {
   display: flex;
@@ -598,6 +708,7 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 .character__selection__avatar {
+  position: relative;
   width: 100px;
   height: 100px;
   background-repeat: no-repeat;
@@ -607,15 +718,42 @@ onBeforeUnmount(() => {
   border-width: 1px;
   border-style: solid;
   border-color: white;
+  overflow: hidden;
 }
+
+.character__selection__avatar-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100%;
+  background: rgba(0, 0, 0, 0);
+  opacity: 0;
+  transition:
+    opacity 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.character__selection__avatar-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.character__selection__avatar:hover .character__selection__avatar-overlay {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.character__selection__avatar:hover .character__selection__avatar-icon {
+  opacity: 1;
+}
+
 html[data-theme="light"] {
   .character__selection__avatar {
     border-color: oklch(var(--bc));
-  }
-  .btn--character--find {
-    svg {
-      filter: invert(100%);
-    }
   }
 }
 </style>
