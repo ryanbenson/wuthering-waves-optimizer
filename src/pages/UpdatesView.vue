@@ -5,6 +5,7 @@
     <h3>July 4, 2026</h3>
     <ul>
       <li>Added ability to open weapon browser and enable and max all for weapons, echoes, resonance chains, character buffs, and custom buffs.</li>
+      <li>Adds ability to favorite characters and filter by favorites in the character browser.</li>
     </ul>
     <h3>July 2, 2026</h3>
     <ul>

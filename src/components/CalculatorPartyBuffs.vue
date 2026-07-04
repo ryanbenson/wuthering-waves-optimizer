@@ -598,14 +598,6 @@ function handleUpdatedPartyBuffEcho(buffInfo: PartyBuffEmit) {
   updatedStats();
 }
 
-const allCharacterPartyBuffKeys = [
-  ...new Set(
-    Object.values(buffsByCharacter).flatMap((buffs) =>
-      buffs.map((buff) => buff.key),
-    ),
-  ),
-];
-
 function clearLocalBuffData(keys: Set<string>) {
   buffsDataChar1.value = buffsDataChar1.value.filter((buff) => !keys.has(buff.key));
   buffsDataChar2.value = buffsDataChar2.value.filter((buff) => !keys.has(buff.key));
