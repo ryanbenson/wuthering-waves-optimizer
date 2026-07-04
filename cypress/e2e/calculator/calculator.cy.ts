@@ -86,9 +86,7 @@ describe("Home E2E Tests", () => {
     testStats(calcharoLevel90BaseStats, cy);
     // Damages validations
     testAttacks(calcharoLevel90, cy);
-    cy.get(".character__self-buffs .character__buffs .card").each(($card) => {
-      cy.wrap($card).find("input[type=checkbox]").click();
-    });
+    cy.get('[data-test-character-buffs-enable-all]').click();
     // Stats calculations
     testStats(calcharoLevel90AllSelfBonusesStats, cy);
     // Damages validations
