@@ -4,7 +4,11 @@
       type="button"
       class="btn btn-sm btn-ghost btn-square"
       :class="{ 'btn-active': locked }"
-      :title="locked ? 'Unlock echo' : 'Lock echo'"
+      v-tooltip="
+        locked
+          ? 'Unlock this echo to allow deletion'
+          : 'Lock this echo to prevent accidental deletion'
+      "
       :aria-label="locked ? 'Unlock echo' : 'Lock echo'"
       :data-test-echo-lock="echoId"
       @click="toggleEchoLocked(echoId)">
@@ -27,7 +31,11 @@
       type="button"
       class="btn btn-sm btn-ghost btn-square"
       :class="{ 'btn-active text-error': isTrash }"
-      :title="isTrash ? 'Remove from trash' : 'Mark as trash'"
+      v-tooltip="
+        isTrash
+          ? 'Remove from trash'
+          : 'Mark as trash for bulk deletion later'
+      "
       :aria-label="isTrash ? 'Remove from trash' : 'Mark as trash'"
       :data-test-echo-trash="echoId"
       @click="toggleEchoTrash(echoId)">
@@ -41,6 +49,24 @@
           fill="currentColor" />
       </svg>
     </button>
+    <button
+      type="button"
+      class="btn btn-sm btn-ghost btn-square"
+      :class="{ 'btn-active text-warning': ignoreFromOptimizer }"
+      v-tooltip="
+        ignoreFromOptimizer
+          ? 'Include this echo in optimizer loadouts'
+          : 'Exclude this echo from optimizer loadouts'
+      "
+      :aria-label="
+        ignoreFromOptimizer
+          ? 'Include in optimizer'
+          : 'Ignore from optimizer'
+      "
+      :data-test-echo-ignore-optimizer="echoId"
+      @click="toggleEchoIgnoreFromOptimizer(echoId)">
+      <EchoOptimizerVisibilityIcon :hidden="ignoreFromOptimizer" />
+    </button>
   </div>
 </template>
 
@@ -49,6 +75,7 @@ import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useInventoryStore } from "../stores/inventory";
 import { useEchoInventory } from "../composables/useEchoInventory";
+import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 
 const props = defineProps<{
   echoId: string | null;
@@ -56,7 +83,8 @@ const props = defineProps<{
 
 const inventoryStore = useInventoryStore();
 const { echoes } = storeToRefs(inventoryStore);
-const { toggleEchoLocked, toggleEchoTrash } = useEchoInventory();
+const { toggleEchoLocked, toggleEchoTrash, toggleEchoIgnoreFromOptimizer } =
+  useEchoInventory();
 
 const locked = computed(() => {
   void echoes.value;
@@ -68,5 +96,13 @@ const isTrash = computed(() => {
   void echoes.value;
   if (!props.echoId) return false;
   return Boolean(inventoryStore.getEchoById(props.echoId)?.trash);
+});
+
+const ignoreFromOptimizer = computed(() => {
+  void echoes.value;
+  if (!props.echoId) return false;
+  return Boolean(
+    inventoryStore.getEchoById(props.echoId)?.ignoreFromOptimizer,
+  );
 });
 </script>

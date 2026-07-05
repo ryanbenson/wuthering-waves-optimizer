@@ -18,11 +18,16 @@ export function useEchoInventory() {
 
   function getEchoFlags(echoId: string) {
     const echo = inventoryStore.getEchoById(echoId) as
-      | { locked?: boolean; trash?: boolean }
+      | {
+          locked?: boolean;
+          trash?: boolean;
+          ignoreFromOptimizer?: boolean;
+        }
       | undefined;
     return {
       locked: Boolean(echo?.locked),
       trash: Boolean(echo?.trash),
+      ignoreFromOptimizer: Boolean(echo?.ignoreFromOptimizer),
     };
   }
 
@@ -38,6 +43,13 @@ export function useEchoInventory() {
   function toggleEchoTrash(echoId: string) {
     const { trash } = getEchoFlags(echoId);
     inventoryStore.patchEcho(echoId, { trash: !trash });
+  }
+
+  function toggleEchoIgnoreFromOptimizer(echoId: string) {
+    const { ignoreFromOptimizer } = getEchoFlags(echoId);
+    inventoryStore.patchEcho(echoId, {
+      ignoreFromOptimizer: !ignoreFromOptimizer,
+    });
   }
 
   async function removeEchoFully(echoId: string): Promise<boolean> {
@@ -70,6 +82,7 @@ export function useEchoInventory() {
     getEchoFlags,
     toggleEchoLocked,
     toggleEchoTrash,
+    toggleEchoIgnoreFromOptimizer,
     removeEchoFully,
     removeAllTrashEchoes,
   };

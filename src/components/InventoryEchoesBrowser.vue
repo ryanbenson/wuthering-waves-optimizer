@@ -80,7 +80,7 @@
         type="button"
         class="btn btn-sm btn-ghost btn-square"
         :class="{ 'btn-active': lockedFilter }"
-        title="Show locked only"
+        v-tooltip="'Show only locked echoes'"
         aria-label="Show locked only"
         data-test-filter-locked
         @click="lockedFilter = !lockedFilter">
@@ -98,7 +98,7 @@
         type="button"
         class="btn btn-sm btn-ghost btn-square"
         :class="{ 'btn-active text-error': trashFilter }"
-        title="Show trash only"
+        v-tooltip="'Show only echoes marked as trash'"
         aria-label="Show trash only"
         data-test-filter-trash
         @click="trashFilter = !trashFilter">
@@ -112,6 +112,16 @@
             fill="currentColor" />
         </svg>
       </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-ghost btn-square"
+        :class="{ 'btn-active text-warning': ignoreFromOptimizerFilter }"
+        v-tooltip="'Show only echoes excluded from the optimizer'"
+        aria-label="Show ignored from optimizer only"
+        data-test-filter-ignore-optimizer
+        @click="ignoreFromOptimizerFilter = !ignoreFromOptimizerFilter">
+        <EchoOptimizerVisibilityIcon :hidden="ignoreFromOptimizerFilter" />
+      </button>
       <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
     </div>
     <div class="echoes__actions flex justify-center items-center gap-2 flex-wrap">
@@ -122,6 +132,9 @@
         @click="deleteAllTrash"
         class="btn btn-error"
         :disabled="trashEchoCount === 0"
+        v-tooltip="
+          'Permanently delete all echoes marked as trash. Locked echoes are skipped.'
+        "
         data-test-delete-trash-echoes>
         Delete trash ({{ trashEchoCount }})
       </button>
@@ -170,13 +183,19 @@
                   class="btn btn-primary btn-sm min-w-16">
                   Duplicate
                 </button>
-                <button
-                  @click="removeEcho(echoRow.echoId)"
-                  class="btn btn-error btn-sm min-w-16"
-                  :disabled="echoRow.locked"
-                  :title="echoRow.locked ? 'Locked echoes cannot be deleted' : undefined">
-                  Delete
-                </button>
+                <span
+                  v-tooltip="
+                    echoRow.locked
+                      ? 'This echo is locked and cannot be deleted'
+                      : 'Delete this echo from your inventory'
+                  ">
+                  <button
+                    @click="removeEcho(echoRow.echoId)"
+                    class="btn btn-error btn-sm min-w-16"
+                    :disabled="echoRow.locked">
+                    Delete
+                  </button>
+                </span>
               </div>
             </div>
           </CalculatorEchoCard>
@@ -203,6 +222,7 @@ type InventoryEchoRow = {
   echoId: string;
   locked?: boolean;
   trash?: boolean;
+  ignoreFromOptimizer?: boolean;
   rank?: number;
   type?: string | number | null;
   echoSet?: string | null;
@@ -228,6 +248,7 @@ import {
 import { useInventoryStore } from "../stores/inventory";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
+import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
 import { randomString } from "../utils/strings";
 import { useConfirm } from "../composables/useConfirm";
@@ -253,6 +274,7 @@ const costFilter = ref<number | null>(null);
 const mainStatFilter = ref<string | null>(null);
 const lockedFilter = ref(false);
 const trashFilter = ref(false);
+const ignoreFromOptimizerFilter = ref(false);
 const page = ref(1);
 const perPage = 20;
 
@@ -260,7 +282,7 @@ const inventoryStore = useInventoryStore();
 const { echoes } = storeToRefs(inventoryStore);
 const { getEchoEquippedChars, saveEcho, getEchoById } = inventoryStore;
 
-watch([mainStatFilter, echoSet, echo, lockedFilter, trashFilter], () => {
+watch([mainStatFilter, echoSet, echo, lockedFilter, trashFilter, ignoreFromOptimizerFilter], () => {
   page.value = 1;
 });
 
@@ -288,6 +310,9 @@ const echoesList = computed(() => {
   }
   if (trashFilter.value) {
     allEchoes = allEchoes.filter((e) => e.trash);
+  }
+  if (ignoreFromOptimizerFilter.value) {
+    allEchoes = allEchoes.filter((e) => e.ignoreFromOptimizer);
   }
   return allEchoes;
 });
@@ -384,6 +409,7 @@ function resetFilters() {
   costFilter.value = null;
   lockedFilter.value = false;
   trashFilter.value = false;
+  ignoreFromOptimizerFilter.value = false;
 }
 
 function prevPage() {
@@ -455,7 +481,13 @@ async function duplicateEcho(sourceEchoId: string) {
   if (!source) return;
 
   const echoId = randomString();
-  await saveEcho({ ...source, echoId, locked: false, trash: false });
+  await saveEcho({
+    ...source,
+    echoId,
+    locked: false,
+    trash: false,
+    ignoreFromOptimizer: false,
+  });
 }
 
 async function createEcho() {
