@@ -59,6 +59,7 @@ import CalculatorOptimizerResultLoadout from "./CalculatorOptimizerResultLoadout
 import CalculatorOptimizerResultRotationDamage, {
   type RotationPayload,
 } from "./CalculatorOptimizerResultRotationDamage.vue";
+import { buildCharacterBuffUpdatesFromOptimizer } from "../calculator/syncOptimizerBuffs";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 
@@ -201,6 +202,16 @@ async function equipLoadout() {
     }
   }
   await characterStore.setCharacterEchoes(props.character, newEchoes);
+
+  const characterData = characterStore.characters[props.character] ?? {};
+  const buffUpdates = buildCharacterBuffUpdatesFromOptimizer(
+    characterData,
+    props.loadout as Array<{ echo?: string; echoId?: string }>,
+    (echoId) => inventoryStore.getEchoById(echoId)?.echo,
+  );
+  if (buffUpdates.mainEcho || buffUpdates.echoSetPassives) {
+    await characterStore.setCharacterData(props.character, buffUpdates);
+  }
 }
 </script>
 
