@@ -76,11 +76,67 @@
             :class="echoSet" />
         </button>
       </div>
+      <button
+        type="button"
+        class="btn btn-sm btn-ghost btn-square"
+        :class="{ 'btn-active': lockedFilter }"
+        v-tooltip="'Show only locked echoes'"
+        aria-label="Show locked only"
+        data-test-filter-locked
+        @click="lockedFilter = !lockedFilter">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 448 512"
+          class="size-4"
+          aria-hidden="true">
+          <path
+            d="M144 144c0-44.2 35.8-80 80-80c31.5 0 58.7 18.1 72 44.5c7.6 15.1 26.2 21.2 41.3 13.6s21.2-26.2 13.6-41.3C337.9 31.1 281.5 0 224 0C144.5 0 80 64.5 80 144l0 48L64 192c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-192c0-35.3-28.7-64-64-64l-16 0-16 0 0-48zm0 96l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80z"
+            fill="currentColor" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-ghost btn-square"
+        :class="{ 'btn-active text-error': trashFilter }"
+        v-tooltip="'Show only echoes marked as trash'"
+        aria-label="Show trash only"
+        data-test-filter-trash
+        @click="trashFilter = !trashFilter">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 448 512"
+          class="size-4"
+          aria-hidden="true">
+          <path
+            d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l0 320c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320-64 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-96 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-64 0z"
+            fill="currentColor" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-ghost btn-square"
+        :class="{ 'btn-active text-warning': ignoreFromOptimizerFilter }"
+        v-tooltip="'Show only echoes excluded from the optimizer'"
+        aria-label="Show ignored from optimizer only"
+        data-test-filter-ignore-optimizer
+        @click="ignoreFromOptimizerFilter = !ignoreFromOptimizerFilter">
+        <EchoOptimizerVisibilityIcon :hidden="ignoreFromOptimizerFilter" />
+      </button>
       <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
     </div>
-    <div class="echoes__actions flex justify-center items-center">
+    <div class="echoes__actions flex justify-center items-center gap-2 flex-wrap">
       <button @click="createEcho" class="btn btn-primary btn-wide">
         Add echo
+      </button>
+      <button
+        @click="deleteAllTrash"
+        class="btn btn-error"
+        :disabled="trashEchoCount === 0"
+        v-tooltip="
+          'Permanently delete all echoes marked as trash. Locked echoes are skipped.'
+        "
+        data-test-delete-trash-echoes>
+        Delete trash ({{ trashEchoCount }})
       </button>
     </div>
     <div class="echoes__list">
@@ -115,17 +171,31 @@
                   </div>
                 </div>
               </div>
-              <div class="echoes__item__foot__actions flex gap-2">
+              <div class="echoes__item__foot__actions flex gap-2 items-center flex-wrap justify-end">
+                <EchoLockTrashActions :echo-id="echoRow.echoId" />
                 <button
                   @click="handleEditEcho(echoRow.echoId)"
                   class="btn btn-primary btn-sm min-w-16">
                   Edit
                 </button>
                 <button
-                  @click="removeEcho(echoRow.echoId)"
-                  class="btn btn-error btn-sm min-w-16">
-                  Delete
+                  @click="duplicateEcho(echoRow.echoId)"
+                  class="btn btn-primary btn-sm min-w-16">
+                  Duplicate
                 </button>
+                <span
+                  v-tooltip="
+                    echoRow.locked
+                      ? 'This echo is locked and cannot be deleted'
+                      : 'Delete this echo from your inventory'
+                  ">
+                  <button
+                    @click="removeEcho(echoRow.echoId)"
+                    class="btn btn-error btn-sm min-w-16"
+                    :disabled="echoRow.locked">
+                    Delete
+                  </button>
+                </span>
               </div>
             </div>
           </CalculatorEchoCard>
@@ -150,6 +220,9 @@ import { mainEchoesData } from "../echoes/index.ts";
 type MainEchoRow = (typeof mainEchoesData)[keyof typeof mainEchoesData];
 type InventoryEchoRow = {
   echoId: string;
+  locked?: boolean;
+  trash?: boolean;
+  ignoreFromOptimizer?: boolean;
   rank?: number;
   type?: string | number | null;
   echoSet?: string | null;
@@ -173,13 +246,23 @@ import {
   statsTable,
 } from "../echoes/stats";
 import { useInventoryStore } from "../stores/inventory";
-import { useCharacterStore } from "../stores/character";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
+import EchoLockTrashActions from "./EchoLockTrashActions.vue";
+import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
 import { randomString } from "../utils/strings";
 import { useConfirm } from "../composables/useConfirm";
+import { useEchoInventory } from "../composables/useEchoInventory";
+import { useToast } from "../composables/useToast";
 
 const { confirm } = useConfirm();
+const { showToast } = useToast();
+const {
+  trashEchoCount,
+  getEchoFlags,
+  removeEchoFully,
+  removeAllTrashEchoes,
+} = useEchoInventory();
 
 const inventoryEchoEditRef = ref<InstanceType<typeof InventoryEchoEdit> | null>(
   null,
@@ -189,22 +272,17 @@ const echoSet = ref<string | null>(null);
 const echo = ref<string | null>(null);
 const costFilter = ref<number | null>(null);
 const mainStatFilter = ref<string | null>(null);
+const lockedFilter = ref(false);
+const trashFilter = ref(false);
+const ignoreFromOptimizerFilter = ref(false);
 const page = ref(1);
 const perPage = 20;
 
 const inventoryStore = useInventoryStore();
-const characterStore = useCharacterStore();
 const { echoes } = storeToRefs(inventoryStore);
-const {
-  getEchoEquippedChars,
-  deleteEcho,
-  deleteEchoEquippedMapping,
-  saveEcho,
-  getEquippedEchoData,
-} = inventoryStore;
-const { removeCharacterEcho } = characterStore;
+const { getEchoEquippedChars, saveEcho, getEchoById } = inventoryStore;
 
-watch([mainStatFilter, echoSet, echo], () => {
+watch([mainStatFilter, echoSet, echo, lockedFilter, trashFilter, ignoreFromOptimizerFilter], () => {
   page.value = 1;
 });
 
@@ -226,6 +304,15 @@ const echoesList = computed(() => {
   }
   if (mainStatFilter.value) {
     allEchoes = allEchoes.filter((e) => e.stat === mainStatFilter.value);
+  }
+  if (lockedFilter.value) {
+    allEchoes = allEchoes.filter((e) => e.locked);
+  }
+  if (trashFilter.value) {
+    allEchoes = allEchoes.filter((e) => e.trash);
+  }
+  if (ignoreFromOptimizerFilter.value) {
+    allEchoes = allEchoes.filter((e) => e.ignoreFromOptimizer);
   }
   return allEchoes;
 });
@@ -320,6 +407,9 @@ function resetFilters() {
   echo.value = null;
   mainStatFilter.value = null;
   costFilter.value = null;
+  lockedFilter.value = false;
+  trashFilter.value = false;
+  ignoreFromOptimizerFilter.value = false;
 }
 
 function prevPage() {
@@ -347,6 +437,12 @@ function getCharImg(character: string) {
 }
 
 async function removeEcho(echoId: string) {
+  const { locked } = getEchoFlags(echoId);
+  if (locked) {
+    showToast("This echo is locked and cannot be deleted.", "warning");
+    return;
+  }
+
   const confirmed = await confirm("Do you really want to delete this echo?", {
     title: "Delete echo",
     confirmLabel: "Delete",
@@ -354,14 +450,44 @@ async function removeEcho(echoId: string) {
   });
   if (!confirmed) return;
 
-  await deleteEcho(echoId);
-  await deleteEchoEquippedMapping(echoId);
-  const equippedCharsData = getEquippedEchoData(echoId);
-  const equippedChars = Object.entries(equippedCharsData);
-  for (const equippedChar of equippedChars) {
-    const [character, index] = equippedChar;
-    await removeCharacterEcho(character, Number(index));
+  await removeEchoFully(echoId);
+}
+
+async function deleteAllTrash() {
+  const count = trashEchoCount.value;
+  if (count <= 0) return;
+
+  const confirmed = await confirm(
+    `Delete ${count} echo${count === 1 ? "" : "es"} marked as trash? This cannot be undone.`,
+    {
+      title: "Delete trash echoes",
+      confirmLabel: "Delete all",
+      variant: "error",
+    },
+  );
+  if (!confirmed) return;
+
+  const deletedCount = await removeAllTrashEchoes();
+  if (deletedCount > 0) {
+    showToast(
+      `Deleted ${deletedCount} trash echo${deletedCount === 1 ? "" : "es"}.`,
+      "success",
+    );
   }
+}
+
+async function duplicateEcho(sourceEchoId: string) {
+  const source = getEchoById(sourceEchoId);
+  if (!source) return;
+
+  const echoId = randomString();
+  await saveEcho({
+    ...source,
+    echoId,
+    locked: false,
+    trash: false,
+    ignoreFromOptimizer: false,
+  });
 }
 
 async function createEcho() {

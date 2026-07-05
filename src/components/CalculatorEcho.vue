@@ -695,6 +695,10 @@
               </svg>
               Browse
             </button>
+            <EchoLockTrashActions
+              v-if="echoId"
+              :echo-id="echoId"
+              class="justify-start" />
           </div>
           <div v-if="echoId && equippedChars.length" class="equipped-by border-t border-neutral pt-2 mt-2">
             <div class="font-bold text-xs text-center">Equipped by</div>
@@ -853,6 +857,7 @@ import {
 } from "../echoes/index.ts";
 import { subStatsTable } from "../echoes/stats.ts";
 import Range from "./input/Range.vue";
+import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import { randomString } from "../utils/strings.ts";
 
 const props = defineProps<{
