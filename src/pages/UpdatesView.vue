@@ -2,6 +2,13 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>July 5, 2026</h3>
+    <ul>
+      <li>Adds ability to lock and trash echoes and filter by locked and trash.</li>
+      <li>Adds ability to duplicate echoes.</li>
+      <li>Syncs echo set and main echo buffs when you equip a loadout from the optimizer.</li>
+      <li>Adds ability to hide an echo from being used in the optimizer.</li>
+    </ul>
     <h3>July 4, 2026</h3>
     <ul>
       <li>Added ability to open weapon browser and enable and max all for weapons, echoes, resonance chains, character buffs, and custom buffs.</li>
