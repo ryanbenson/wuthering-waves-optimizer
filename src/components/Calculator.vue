@@ -335,8 +335,15 @@ import {
 } from "../calculator/attacks";
 import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
 import type { OptimizerContext } from "../calculator/optimizer";
-import { getOptimizerLoadoutKey } from "../calculator/optimizer";
-import { getSetsFromEchoes, getSetBonusEffects, getEnabledAdditionalBasePassives } from "../echoes/sets";
+import {
+  getOptimizerLoadoutKey,
+  filterEchoesForOptimizer,
+} from "../calculator/optimizer";
+import {
+  getSetsFromEchoes,
+  getSetBonusEffects,
+  getEnabledAdditionalBasePassives,
+} from "../echoes/sets";
 import { allEchoBuffs, getEnabledTeamAdditionalBasePassives } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
@@ -969,9 +976,9 @@ export default defineComponent({
       optimizationTargetObject.value = target.split(":")[1] || "";
 
       // 1. Filter upfront
-      let filteredEchoes = echoes;
+      let filteredEchoes = filterEchoesForOptimizer(echoes) as typeof echoes;
       if (allowedSets.size) {
-        filteredEchoes = echoes.filter((e) => allowedSets.has(e.echoSet));
+        filteredEchoes = filteredEchoes.filter((e) => allowedSets.has(e.echoSet));
       }
       if (ignoreOtherResonantorEchoes) {
         const echoIdsEquippedByOtherChars =

@@ -23,6 +23,15 @@ function echoCost(echo: { type?: unknown }): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+export function filterEchoesForOptimizer(echoes: unknown[]): unknown[] {
+  if (!Array.isArray(echoes)) {
+    return [];
+  }
+  return echoes.filter(
+    (echo) => !(echo as { ignoreFromOptimizer?: boolean })?.ignoreFromOptimizer,
+  );
+}
+
 function echoOptimizerSignature(echo: any): string {
   if (!echo) return "";
 

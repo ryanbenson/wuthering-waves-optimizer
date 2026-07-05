@@ -28,6 +28,7 @@ import {
   generateLoadouts,
   getOptimizerLoadoutKey,
   normalizeOptimizerLoadout,
+  filterEchoesForOptimizer,
 } from "../calculator/optimizer";
 
 /**
@@ -65,11 +66,12 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
 
   if (type === "start" && data) {
     const { echoes, mainEchoKeys, batchSize } = data;
+    const optimizerEchoes = filterEchoesForOptimizer(echoes) as any[];
     let batch: any[] = [];
     let totalGenerated = 0;
 
     try {
-      if (!Array.isArray(echoes) || echoes.length === 0) {
+      if (!Array.isArray(optimizerEchoes) || optimizerEchoes.length === 0) {
         self.postMessage({
           type: "done",
           totalGenerated: 0,
@@ -84,7 +86,7 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
       // Generate loadouts in batches
       // @ts-ignore - generateLoadouts returns a generator with any[] items
       // @ts-ignore
-      for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
+      for (const loadout of generateLoadouts(optimizerEchoes, mainEchoKeys)) {
         const normalizedLoadout = normalizeOptimizerLoadout(loadout as any[]);
         const key = getOptimizerLoadoutKey(normalizedLoadout);
 
