@@ -122,6 +122,11 @@
                   Edit
                 </button>
                 <button
+                  @click="duplicateEcho(echoRow.echoId)"
+                  class="btn btn-primary btn-sm min-w-16">
+                  Duplicate
+                </button>
+                <button
                   @click="removeEcho(echoRow.echoId)"
                   class="btn btn-error btn-sm min-w-16">
                   Delete
@@ -200,6 +205,7 @@ const {
   deleteEcho,
   deleteEchoEquippedMapping,
   saveEcho,
+  getEchoById,
   getEquippedEchoData,
 } = inventoryStore;
 const { removeCharacterEcho } = characterStore;
@@ -362,6 +368,14 @@ async function removeEcho(echoId: string) {
     const [character, index] = equippedChar;
     await removeCharacterEcho(character, Number(index));
   }
+}
+
+async function duplicateEcho(sourceEchoId: string) {
+  const source = getEchoById(sourceEchoId);
+  if (!source) return;
+
+  const echoId = randomString();
+  await saveEcho({ ...source, echoId });
 }
 
 async function createEcho() {
