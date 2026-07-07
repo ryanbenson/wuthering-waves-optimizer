@@ -835,7 +835,7 @@ export const computeSelfBuffs = (
         ];
       }
     }
-    if (character === "Xuanling" && key === "InherentSkillUnbrokenVow") {
+    if (character === "YangyangXuanlings" && key === "InherentSkillUnbrokenVow") {
       const havocBaneStacks = enemy.havocBaneStacks ?? 0;
       if (havocBaneStacks >= 1) {
         const tier1Stacks = Math.min(havocBaneStacks, 3);

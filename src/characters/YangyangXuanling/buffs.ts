@@ -142,13 +142,13 @@ export const buffs = [
 {
       key: `BatedBreath`,
       name: `Bated Breath`,
-      details: `<div>When casting <span class="Highlight">Resonance Skill - Sword Stance Flow: Azure</span>, gain <span class="Highlight">Bated Breath</span>, which lasts 15s. While Yangyang: Xuanling is on the field, the next <span class="Highlight">Heavy Attack - Azure Sword Stance</span> has its Crit. DMG increased by 125%; Bated Breath is removed when <span class="Highlight">Heavy Attack - Azure Sword Stance</span> ends. Bated Breath can only be gained once every 25s.</div>`,
+      details: `<div>When casting <span class="Highlight">Resonance Skill - Sword Stance Flow: Azure</span>, gain <span class="Highlight">Bated Breath</span>, which lasts 15s. While Yangyang: Xuanling is on the field, the next <span class="Highlight">Heavy Attack - Azure Sword Stance</span> has its Crit. DMG increased by 160%; Bated Breath is removed when <span class="Highlight">Heavy Attack - Azure Sword Stance</span> ends. Bated Breath can only be gained once every 25s.</div>`,
       hasStacks: false,
       modifiers: [
         {
           modifier: "CritDMG",
           modifySpecificTalents: ["HeavyAttackAzureSwordStanceDMG"],
-          modifierValue: 1.25,
+          modifierValue: 1.6,
         },
       ],
       minStacks: 0,
@@ -158,7 +158,7 @@ export const buffs = [
 {
       key: `DriftingMist`,
       name: `Drifting Mist`,
-      details: `When casting <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Sword Stance Flow: Feather</span>, gain <span style="color:#ffd12f;" class="font-bold">Drifting Mist</span>, which lasts 15s. While Yangyang: Xuanling is on the field, the next Heavy Attack - Feather Sword Stance, Mid-air Attack - Feather Fall, Basic Attack - Havoc in Bloom, or Dodge Counter - Havoc in Bloom has its Crit. DMG increased by 125%; <span style="color:#ffd12f;" class="font-bold">Drifting Mist</span> is removed when Basic Attack - Havoc in Bloom Stage 3 or Dodge Counter - Havoc in Bloom Stage 3 ends. <span style="color:#ffd12f;" class="font-bold">Drifting Mist</span> can only be gained once every 25s.`,
+      details: `When casting <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Sword Stance Flow: Feather</span>, gain <span style="color:#ffd12f;" class="font-bold">Drifting Mist</span>, which lasts 15s. While Yangyang: Xuanling is on the field, the next Heavy Attack - Feather Sword Stance, Mid-air Attack - Feather Fall, Basic Attack - Havoc in Bloom, or Dodge Counter - Havoc in Bloom has its Crit. DMG increased by 160%; <span style="color:#ffd12f;" class="font-bold">Drifting Mist</span> is removed when Basic Attack - Havoc in Bloom Stage 3 or Dodge Counter - Havoc in Bloom Stage 3 ends. <span style="color:#ffd12f;" class="font-bold">Drifting Mist</span> can only be gained once every 25s.`,
       hasStacks: false,
       modifiers: [
         {
@@ -173,7 +173,7 @@ export const buffs = [
             "DodgeCounterBasicAttackHavocInBloomStage2DMG",
             "DodgeCounterBasicAttackHavocInBloomStage3DMG",
           ],
-          modifierValue: 1.25,
+          modifierValue: 1.6,
         },
       ],
       minStacks: 0,
@@ -183,7 +183,7 @@ export const buffs = [
 {
       key: `FeatheredOath`,
       name: `Feathered Oath`,
-      details: `When Resonators in the team apply <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> to a target, Xuanling gains 1 stack of <span style="color:#ffd12f;" class="font-bold">Feathered Oath</span> for 8s. <span style="color:#ffd12f;" class="font-bold">Feathered Oath</span> can be gained once every 1s, stacking up to 6 times. While Yangyang: Xuanling is on the field, each stack increases the Crit. DMG of <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Azure Sword Stance</span>, <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Feather Sword Stance</span>, <span style="color:#ffd12f;" class="font-bold">Mid-air Attack - Feather Fall</span>, and <span style="color:#ffd12f;" class="font-bold">Basic Attack - Havoc in Bloom</span> by 30%, up to a maximum of 180%.`,
+      details: `When Resonators in the team apply <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> to a target, Xuanling gains 1 stack of <span style="color:#ffd12f;" class="font-bold">Feathered Oath</span> for 8s. <span style="color:#ffd12f;" class="font-bold">Feathered Oath</span> can be gained once every 1s, stacking up to 6 times. While Yangyang: Xuanling is on the field, each stack increases the Crit. DMG of <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Azure Sword Stance</span>, <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Feather Sword Stance</span>, <span style="color:#ffd12f;" class="font-bold">Mid-air Attack - Feather Fall</span>, and <span style="color:#ffd12f;" class="font-bold">Basic Attack - Havoc in Bloom</span> by 25%, up to a maximum of 150%.`,
       hasStacks: true,
       modifiers: [
         {
@@ -196,7 +196,7 @@ export const buffs = [
             "BasicAttackHavocInBloomStage2DMG",
             "BasicAttackHavocInBloomStage3DMG",
           ],
-          modifierValue: 0.3,
+          modifierValue: 0.25,
         },
       ],
       minStacks: 0,
