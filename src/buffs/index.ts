@@ -2850,43 +2850,20 @@ CD: 20s`,
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ATK:AdditionalBase",
+        modifier: "ATK",
         modifierValue: 0.001,
         maximumValue: 0.25,
-        modifierStep: 1,
-        modifierBasedOn: "EnergyRegen",
-        modifierTargetAttr: "ATK",
+        modifierStep: 0.01,
         minStatValue: 0,
       },
     ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    inputBase: true,
+    modifierBasedOn: "Energy Regen",
   },
 ];
-
-export type TeamAdditionalBasePassiveEntry = {
-  hasStacks?: boolean;
-  stacks?: number;
-  modifiers: Record<string, unknown>[];
-};
-
-export function getEnabledTeamAdditionalBasePassives(
-  teamBuffsConfig: Record<string, { isEnabled?: boolean; stacks?: number }> = {},
-): TeamAdditionalBasePassiveEntry[] {
-  return allEchoBuffs
-    .filter((buff) =>
-      buff.modifiers?.some((modifier) =>
-        String(modifier.modifier ?? "").includes("AdditionalBase"),
-      ),
-    )
-    .filter((buff) => teamBuffsConfig[buff.key]?.isEnabled)
-    .map((buff) => ({
-      hasStacks: buff.hasStacks,
-      stacks: teamBuffsConfig[buff.key]?.stacks ?? 0,
-      modifiers: buff.modifiers,
-    }));
-}
 
 export const allWeaponTeamBuffs = [
   {

@@ -835,7 +835,7 @@ export const computeSelfBuffs = (
         ];
       }
     }
-    if (character === "Xuanling" && key === "InherentSkillUnbrokenVow") {
+    if (character === "YangyangXuanling" && key === "InherentSkillUnbrokenVow") {
       const havocBaneStacks = enemy.havocBaneStacks ?? 0;
       if (havocBaneStacks >= 1) {
         const tier1Stacks = Math.min(havocBaneStacks, 3);
@@ -1603,8 +1603,6 @@ export const calculateAllStats = (context: {
   customBuffs: any;
   teamBuffsData: any;
   echoStats: any;
-  echoSetAdditionalBasePassives?: AdditionalBasePassive[];
-  teamAdditionalBasePassives?: AdditionalBasePassive[];
 
   // Character data (definitions)
   buffsCharInfo: any[];
@@ -1646,8 +1644,6 @@ export const calculateAllStats = (context: {
     customBuffs,
     teamBuffsData,
     echoStats,
-    echoSetAdditionalBasePassives = [],
-    teamAdditionalBasePassives = [],
     buffsCharInfo,
     resonanceChainsCharInfo,
     character,
@@ -1711,28 +1707,6 @@ export const calculateAllStats = (context: {
     activeStance,
   );
 
-  const echoSetAdditionalBaseBuffsData = computeAdditionalBaseFromPassives(
-    echoSetAdditionalBasePassives,
-    intermediateStats.energyRegen,
-    intermediateStats.totalCritRate,
-  );
-
-  const teamAdditionalBaseBuffsData = computeAdditionalBaseFromPassives(
-    teamAdditionalBasePassives,
-    intermediateStats.energyRegen,
-    intermediateStats.totalCritRate,
-  );
-
-  const mergedAdditionalBaseBuffsData = mergeAdditionalBaseData(
-    additionalBaseBuffsData,
-    echoSetAdditionalBaseBuffsData,
-  );
-
-  const mergedTeamBuffsData = mergeAdditionalBaseData(
-    teamBuffsData ?? {},
-    teamAdditionalBaseBuffsData,
-  );
-
   // Step 4b: Compute AdditionalBase buffs using intermediate stats (resonance chains)
   let additionalBaseBuffsDataFromResonanceChains = {
     CritRate: 0,
@@ -1768,17 +1742,17 @@ export const calculateAllStats = (context: {
   let mergedSelfBuffs = {
     ...selfBuffsData,
     CritRate:
-      (selfBuffsData?.CritRate || 0) + (mergedAdditionalBaseBuffsData?.CritRate || 0),
+      (selfBuffsData?.CritRate || 0) + (additionalBaseBuffsData?.CritRate || 0),
     CritDMG:
       (selfBuffsData?.CritDMG || 0) +
-      (mergedAdditionalBaseBuffsData?.CritDMG || 0) +
+      (additionalBaseBuffsData?.CritDMG || 0) +
       (critOverflowBuffsData?.CritDMG || 0),
-    ATK: (selfBuffsData?.ATK || 0) + (mergedAdditionalBaseBuffsData?.ATK || 0),
+    ATK: (selfBuffsData?.ATK || 0) + (additionalBaseBuffsData?.ATK || 0),
     ATK_FLAT:
-      (selfBuffsData?.ATK_FLAT || 0) + (mergedAdditionalBaseBuffsData?.ATK_FLAT || 0),
+      (selfBuffsData?.ATK_FLAT || 0) + (additionalBaseBuffsData?.ATK_FLAT || 0),
     EchoDMGBonus:
       (selfBuffsData?.EchoDMGBonus || 0) +
-      (mergedAdditionalBaseBuffsData?.EchoDMGBonus || 0),
+      (additionalBaseBuffsData?.EchoDMGBonus || 0),
   };
   // Step 6b: Merge AdditionalBase and CritOverflow into self buffs (self buffs)
   // ignore augusta though, otherwise it doubles up her buffs
@@ -1820,7 +1794,7 @@ export const calculateAllStats = (context: {
     mergedResonanceChainsBuffsData,
     echoStats,
     customBuffs,
-    mergedTeamBuffsData,
+    teamBuffsData,
   );
 
   applyCharacterStatEdgeCases(
@@ -1832,24 +1806,24 @@ export const calculateAllStats = (context: {
   // Merge AdditionalBase and CritOverflow into breakdown for UI
   const mergedSelfBuffsForBreakdown = {
     ...selfBuffsData,
-    ...mergedAdditionalBaseBuffsData,
+    ...additionalBaseBuffsData,
     CritDMG:
       (selfBuffsData?.CritDMG || 0) +
-      (mergedAdditionalBaseBuffsData?.CritDMG || 0) +
+      (additionalBaseBuffsData?.CritDMG || 0) +
       (critOverflowBuffsData?.CritDMG || 0),
   };
   // merge the specificTalentBuffs together
   mergedSelfBuffsForBreakdown.specificTalentBuffs = Object.assign(
     {},
     selfBuffsData?.specificTalentBuffs ?? {},
-    mergedAdditionalBaseBuffsData?.specificTalentBuffs ?? {},
+    additionalBaseBuffsData?.specificTalentBuffs ?? {},
   );
 
   return {
     finalStats,
     selfBuffsData: mergedSelfBuffsForBreakdown,
     resonanceChainsBuffsData: mergedResonanceChainsBuffsData,
-    additionalBaseBuffsData: mergedAdditionalBaseBuffsData,
+    additionalBaseBuffsData,
     critOverflowBuffsData,
   };
 };

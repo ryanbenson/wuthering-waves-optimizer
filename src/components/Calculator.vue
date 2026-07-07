@@ -339,12 +339,8 @@ import {
   getOptimizerLoadoutKey,
   filterEchoesForOptimizer,
 } from "../calculator/optimizer";
-import {
-  getSetsFromEchoes,
-  getSetBonusEffects,
-  getEnabledAdditionalBasePassives,
-} from "../echoes/sets";
-import { allEchoBuffs, getEnabledTeamAdditionalBasePassives } from "../buffs";
+import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
+import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useRoute } from "vue-router";
@@ -720,7 +716,6 @@ export default defineComponent({
     // Uses the pure calculateAllStats function which is web worker compatible
     const computeAllBuffsWithBreakdown = () => {
       const activeCharacter = characterStore.getActiveCharacter ?? {};
-      const echoSetBonus = activeCharacter.echoSetBonus ?? {};
       return calculateAllStats({
         baseHp: baseHp.value,
         baseAtk: baseAtk.value,
@@ -734,17 +729,6 @@ export default defineComponent({
         customBuffs: customBuffs.value,
         teamBuffsData: teamBuffsData.value,
         echoStats: echoStats.value,
-        echoSetAdditionalBasePassives: getEnabledAdditionalBasePassives(
-          [
-            echoSetBonus.setBonusOnePiece,
-            echoSetBonus.setBonusOne,
-            echoSetBonus.setBonusTwo,
-          ],
-          activeCharacter.echoSetPassives ?? {},
-        ),
-        teamAdditionalBasePassives: getEnabledTeamAdditionalBasePassives(
-          activeCharacter.teamBuffs?.buffs ?? {},
-        ),
         buffsCharInfo: chosenChar.value?.buffs ?? [],
         resonanceChainsCharInfo: chosenChar.value?.resonanceChains ?? [],
         character: character?.value ?? "",
@@ -1022,9 +1006,6 @@ export default defineComponent({
         customBuffs: customBuffs.value,
         echoSetPassivesConfig:
           characterStore.getActiveCharacter?.echoSetPassives ?? {},
-        teamAdditionalBasePassives: getEnabledTeamAdditionalBasePassives(
-          characterStore.getActiveCharacter?.teamBuffs?.buffs ?? {},
-        ),
 
         // Echo data
         echoStats: echoStats.value,
