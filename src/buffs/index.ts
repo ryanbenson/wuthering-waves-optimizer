@@ -2388,8 +2388,8 @@ This effect ends when the incoming Resonator is switched off the field or when L
     {
       name: `Outro Skill: Rippling Waters - 400 Floral Epistle`,
       key: `OutroSkillRipplingWaters400FloralEpistle`,
-      details: `At least 400 Floral Epistle consumed:
-- If there is Ceaseless Landscape left on the field, incoming Resonators gain the following effect: If the Resonator has Reflecting Shadows, their DMG dealt is increased: For every 1% of Suisui's Energy Regen over 200%, the Resonator's DMG dealt is increased by 0.2%, up to 12%.`,
+      details: `At least 400 <span style="color:#ffd12f;" class="font-bold">Floral Epistle</span> consumed:<br>
+- If there is <span style="color:#ffd12f;" class="font-bold">Ceaseless Landscape</span> left on the field, incoming Resonators gain the following effect: If the Resonator has <span style="color:#ffd12f;" class="font-bold">Reflecting Shadows</span>, their DMG dealt is increased: For every 1% of Suisui's Energy Regen over 200%, the Resonator's DMG dealt is increased by 0.2%, up to 12%.`,
       hasStacks: false,
       modifiers: [
         {
@@ -2409,8 +2409,8 @@ This effect ends when the incoming Resonator is switched off the field or when L
     {
       name: `Outro Skill: Rippling Waters - 600 Floral Epistle`,
       key: `OutroSkillRipplingWaters600FloralEpistle`,
-      details: `At least 600 Floral Epistle consumed:
-- With the first interaction, while Ceaseless Landscape is active, incoming Resonators gain the following effect: Casting Outro Skill grants the incoming Resonator the following effect: Depleting the target's Negative Status stacks using skills increases the Resonator's ATK: For every 0.12% of Suisui's Energy Regen over 200%, the Resonator's ATK is increased by 0.1% for 6s, up to 50%. Effect lasts for 14s or until they are switched off field.`,
+      details: `At least 600 <span style="color:#ffd12f;" class="font-bold">Floral Epistle</span> consumed:<br>
+- With the first interaction, while <span style="color:#ffd12f;" class="font-bold">Ceaseless Landscape</span> is active, incoming Resonators gain the following effect: Casting Outro Skill grants the incoming Resonator the following effect: Depleting the target's Negative Status stacks using skills increases the Resonator's ATK: For every 0.12% of Suisui's Energy Regen over 200%, the Resonator's ATK is increased by 0.1% for 6s, up to 50%. Effect lasts for 14s or until they are switched off field.`,
       hasStacks: false,
       modifiers: [
         {

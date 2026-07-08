@@ -1,6 +1,6 @@
 export const swordsList = {
   five: [
-    { key: "AzureOfHeaven", name: "Azure of Heaven" },
+    { key: "AzureOath", name: "Azure Oath" },
     { key: "BlazingBrilliance", name: "Blazing Brilliance" },
     { key: "BloodpactsPledge", name: "Bloodpact's Pledge" },
     { key: "DefiersThorn", name: "Defier's Thorn" },
@@ -71,7 +71,7 @@ const rectifiersList = {
   five: [
     { key: "BosonAstrolabe", name: "Boson Astrolabe" },
     { key: "CosmicRipples", name: "Cosmic Ripples" },
-    { key: "DewImbiber", name: "Dew Imbiber" },
+    { key: "FirstlightsHerald", name: "Firstlight's Herald" },
     { key: "ForgedDwarfStar", name: "Forged Dwarf Star" },
     { key: "FreezeFrame", name: "Freeze Frame" },
     { key: "LetheanElegy", name: "Lethean Elegy" },
