@@ -716,6 +716,7 @@ export default defineComponent({
     // Uses the pure calculateAllStats function which is web worker compatible
     const computeAllBuffsWithBreakdown = () => {
       const activeCharacter = characterStore.getActiveCharacter ?? {};
+      const echoSetBonus = activeCharacter.echoSetBonus ?? {};
       return calculateAllStats({
         baseHp: baseHp.value,
         baseAtk: baseAtk.value,
@@ -738,6 +739,12 @@ export default defineComponent({
         enemy: {
           havocBaneStacks: havocBaneStacks.value,
         },
+        setBonusLabels: [
+          echoSetBonus.setBonusOnePiece,
+          echoSetBonus.setBonusOne,
+          echoSetBonus.setBonusTwo,
+        ],
+        echoSetPassivesConfig: activeCharacter.echoSetPassives ?? {},
       });
     };
 

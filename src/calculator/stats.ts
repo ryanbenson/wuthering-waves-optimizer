@@ -1,4 +1,5 @@
 import { isBuffActiveForStance } from "./stances";
+import { getEnabledAdditionalBasePassives } from "../echoes/sets";
 
 export const getInitStats = (providedFullStats: any = {}) => {
   let stats = {
@@ -1624,6 +1625,13 @@ export const calculateAllStats = (context: {
   enemy?: {
     havocBaneStacks?: number;
   };
+
+  // Echo set passives with AdditionalBase modifiers
+  setBonusLabels?: (string | null | undefined)[];
+  echoSetPassivesConfig?: Record<
+    string,
+    { isEnabled?: boolean; stacks?: number }
+  >;
 }): {
   finalStats: any;
   selfBuffsData: any;
@@ -1651,6 +1659,8 @@ export const calculateAllStats = (context: {
     activeStance = null,
     ignoreBuffs = {},
     enemy = {},
+    setBonusLabels = [],
+    echoSetPassivesConfig = {},
   } = context;
 
   // Step 1: Compute resonance chains buffs (no longer needs base stats)
@@ -1728,6 +1738,16 @@ export const calculateAllStats = (context: {
     );
   }
 
+  const echoSetAdditionalBaseBuffsData = computeAdditionalBaseFromPassives(
+    getEnabledAdditionalBasePassives(setBonusLabels, echoSetPassivesConfig),
+    intermediateStats.energyRegen,
+    intermediateStats.totalCritRate,
+  );
+  const mergedAdditionalBaseBuffsData = mergeAdditionalBaseData(
+    additionalBaseBuffsData,
+    echoSetAdditionalBaseBuffsData,
+  );
+
   // Step 5: Compute CritOverflow buffs using intermediate stats
   const critOverflowBuffsData = computeCritOverflowBuffs(
     buffsConfig ?? {},
@@ -1742,17 +1762,19 @@ export const calculateAllStats = (context: {
   let mergedSelfBuffs = {
     ...selfBuffsData,
     CritRate:
-      (selfBuffsData?.CritRate || 0) + (additionalBaseBuffsData?.CritRate || 0),
+      (selfBuffsData?.CritRate || 0) +
+      (mergedAdditionalBaseBuffsData?.CritRate || 0),
     CritDMG:
       (selfBuffsData?.CritDMG || 0) +
-      (additionalBaseBuffsData?.CritDMG || 0) +
+      (mergedAdditionalBaseBuffsData?.CritDMG || 0) +
       (critOverflowBuffsData?.CritDMG || 0),
-    ATK: (selfBuffsData?.ATK || 0) + (additionalBaseBuffsData?.ATK || 0),
+    ATK: (selfBuffsData?.ATK || 0) + (mergedAdditionalBaseBuffsData?.ATK || 0),
     ATK_FLAT:
-      (selfBuffsData?.ATK_FLAT || 0) + (additionalBaseBuffsData?.ATK_FLAT || 0),
+      (selfBuffsData?.ATK_FLAT || 0) +
+      (mergedAdditionalBaseBuffsData?.ATK_FLAT || 0),
     EchoDMGBonus:
       (selfBuffsData?.EchoDMGBonus || 0) +
-      (additionalBaseBuffsData?.EchoDMGBonus || 0),
+      (mergedAdditionalBaseBuffsData?.EchoDMGBonus || 0),
   };
   // Step 6b: Merge AdditionalBase and CritOverflow into self buffs (self buffs)
   // ignore augusta though, otherwise it doubles up her buffs
@@ -1807,9 +1829,11 @@ export const calculateAllStats = (context: {
   const mergedSelfBuffsForBreakdown = {
     ...selfBuffsData,
     ...additionalBaseBuffsData,
+    ...echoSetAdditionalBaseBuffsData,
     CritDMG:
       (selfBuffsData?.CritDMG || 0) +
       (additionalBaseBuffsData?.CritDMG || 0) +
+      (echoSetAdditionalBaseBuffsData?.CritDMG || 0) +
       (critOverflowBuffsData?.CritDMG || 0),
   };
   // merge the specificTalentBuffs together
@@ -1817,13 +1841,14 @@ export const calculateAllStats = (context: {
     {},
     selfBuffsData?.specificTalentBuffs ?? {},
     additionalBaseBuffsData?.specificTalentBuffs ?? {},
+    echoSetAdditionalBaseBuffsData?.specificTalentBuffs ?? {},
   );
 
   return {
     finalStats,
     selfBuffsData: mergedSelfBuffsForBreakdown,
     resonanceChainsBuffsData: mergedResonanceChainsBuffsData,
-    additionalBaseBuffsData,
+    additionalBaseBuffsData: mergedAdditionalBaseBuffsData,
     critOverflowBuffsData,
   };
 };

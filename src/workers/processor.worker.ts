@@ -42,12 +42,14 @@ import type { OptimizerContext } from "../calculator/optimizer";
 import { normalizeOptimizerLoadout } from "../calculator/optimizer";
 import { getAttackData } from "../characters/characters";
 import { getCombinedEchoStats } from "../echoes/stats";
-import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
+import { getSetsFromEchoes, getSetBonusEffects, getEnabledAdditionalBasePassives } from "../echoes/sets";
 import {
   calcCharStats,
   computeSelfBuffs,
   computeResonanceChainsBuffs,
   computeAdditionalBaseBuffs,
+  computeAdditionalBaseFromPassives,
+  mergeAdditionalBaseData,
   computeCritOverflowBuffs,
   applyCharacterStatEdgeCases,
 } from "../calculator/stats";
@@ -235,6 +237,19 @@ function processLoadout(
       context.activeStance ?? null,
     );
 
+    const echoSetAdditionalBaseBuffsData = computeAdditionalBaseFromPassives(
+      getEnabledAdditionalBasePassives(
+        [setBonusOnePiece, setBonusOne, setBonusTwo],
+        context.echoSetPassivesConfig ?? {},
+      ),
+      intermediateStats.energyRegen,
+      intermediateStats.totalCritRate,
+    );
+    const mergedAdditionalBaseBuffsData = mergeAdditionalBaseData(
+      additionalBaseBuffsData,
+      echoSetAdditionalBaseBuffsData,
+    );
+
     // Step 4b: Compute AdditionalBase buffs using intermediate stats (resonance chains)
     let additionalBaseBuffsDataFromResonanceChains = {
       CritRate: 0,
@@ -269,25 +284,25 @@ function processLoadout(
       ...selfBuffsData,
       CritRate:
         (selfBuffsData?.CritRate || 0) +
-        (additionalBaseBuffsData?.CritRate || 0),
+        (mergedAdditionalBaseBuffsData?.CritRate || 0),
       CritDMG:
         (selfBuffsData?.CritDMG || 0) +
-        (additionalBaseBuffsData?.CritDMG || 0) +
+        (mergedAdditionalBaseBuffsData?.CritDMG || 0) +
         (critOverflowBuffsData?.CritDMG || 0),
-      ATK: (selfBuffsData?.ATK || 0) + (additionalBaseBuffsData?.ATK || 0),
+      ATK: (selfBuffsData?.ATK || 0) + (mergedAdditionalBaseBuffsData?.ATK || 0),
       ATK_FLAT:
         (selfBuffsData?.ATK_FLAT || 0) +
-        (additionalBaseBuffsData?.ATK_FLAT || 0),
+        (mergedAdditionalBaseBuffsData?.ATK_FLAT || 0),
       EchoDMGBonus:
         (selfBuffsData?.EchoDMGBonus || 0) +
-        (additionalBaseBuffsData?.EchoDMGBonus || 0),
+        (mergedAdditionalBaseBuffsData?.EchoDMGBonus || 0),
     };
 
     // merge the specificTalentBuffs together
     mergedSelfBuffs.specificTalentBuffs = Object.assign(
       {},
       selfBuffsData?.specificTalentBuffs ?? {},
-      additionalBaseBuffsData?.specificTalentBuffs ?? {},
+      mergedAdditionalBaseBuffsData?.specificTalentBuffs ?? {},
     );
     // Step 6b: Merge AdditionalBase and CritOverflow into self buffs (self buffs)
     // ignore augusta though, otherwise it doubles up her buffs

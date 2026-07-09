@@ -2118,7 +2118,7 @@ CD: <span class="param">25</span>s.</span>`,
     details: `An incorporeal Tacet Discord inhabiting the body of a quiet, compassionate plushie.`,
     modifiers: [],
     actions: [],
-    sets: ["MoonlitClouds", "LingeringTunes", "CelestialLight"],
+    sets: ["TidebreakingCourage", "FrostyResolve"],
   },
   LumiscaleConstruct: {
     key: "LumiscaleConstruct",
