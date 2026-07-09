@@ -1041,7 +1041,10 @@ CD: <span class="param">20</span>s</span>`,
     class: "Elite",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/ForbiddenBastion.webp",
-    details: ``,
+    details: `Use Echo Skill to summon Forbidden Bastion to bash over enemies, dealing 158.40%/184.80%/211.20%/237.60% Glacio DMG.<br><br>
+    Resonators with this Echo equipped in the main slot gain 10.00% Healing Bonus.
+<br><br>
+CD: 20s`,
     modifiers: [
       {
         modifier: "HealingBonus",
@@ -2314,7 +2317,10 @@ CD: <span class="param">25</span>s.</span>`,
     class: "Overlord",
     image:
       "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/MyriadSnareRustfireChassis.webp",
-    details: `Summon Myriad Snare: Rustfire Chassis, dealing Fusion DMG equal to 6.80%/7.93%/9.07%/10.20% of the Max HP on initial impact. During its duration, it repeatedly crushes enemies along its path up to 19 times, dealing Fusion DMG equal to 0.24%/0.29%/0.33%/0.37% of the Max HP each time.`,
+    details: `Summon Myriad Snare: Rustfire Chassis, dealing Fusion DMG equal to 6.80%/7.93%/9.07%/10.20% of the Max HP on initial impact. During its duration, it repeatedly crushes enemies along its path up to 19 times, dealing Fusion DMG equal to 0.24%/0.29%/0.33%/0.37% of the Max HP each time.<br><br>
+    Resonators with this Echo equipped in the main slot gain 12.00% Fusion DMG Bonus and 12.00% Heavy Attack DMG Bonus.
+<br><br>
+CD: 20s`,
     modifiers: [
       {
         modifier: "Fusion",
