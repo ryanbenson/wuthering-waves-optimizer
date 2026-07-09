@@ -266,6 +266,7 @@
       :char-buffs-data="charBuffsData"
       :char-resonance-chains-data="charResonanceChainsData"
       :echo-stats="echoStats"
+      :echo-set-additional-base-buffs-data="echoSetAdditionalBaseBuffsData"
       :attack-key="selectedAttackKey"
       :damage="selectedAttackDamage"
       :attack-label="selectedAttackLabel"
@@ -388,6 +389,7 @@ export default defineComponent({
     const weaponData = reactive({});
     const weaponAtk = ref(0);
     const charBuffsData = reactive({});
+    const echoSetAdditionalBaseBuffsData = ref({});
     const teamBuffsData = reactive({});
     const charResonanceChainsData = reactive({});
     const charactersList = ref([]);
@@ -717,7 +719,7 @@ export default defineComponent({
     const computeAllBuffsWithBreakdown = () => {
       const activeCharacter = characterStore.getActiveCharacter ?? {};
       const echoSetBonus = activeCharacter.echoSetBonus ?? {};
-      return calculateAllStats({
+      const result = calculateAllStats({
         baseHp: baseHp.value,
         baseAtk: baseAtk.value,
         baseDef: baseDef.value,
@@ -746,6 +748,9 @@ export default defineComponent({
         ],
         echoSetPassivesConfig: activeCharacter.echoSetPassives ?? {},
       });
+      echoSetAdditionalBaseBuffsData.value =
+        result.echoSetAdditionalBaseBuffsData ?? {};
+      return result;
     };
 
     const handleUpdatedCharacterStance = () => {
@@ -1585,6 +1590,7 @@ export default defineComponent({
       filteredCharacterBuffs,
       filteredResonanceChains,
       charBuffsData,
+      echoSetAdditionalBaseBuffsData,
       charResonanceChainsData,
       chosenWeapon,
       rotationsList,

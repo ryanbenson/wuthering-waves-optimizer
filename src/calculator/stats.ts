@@ -1638,6 +1638,7 @@ export const calculateAllStats = (context: {
   resonanceChainsBuffsData: any;
   additionalBaseBuffsData: any;
   critOverflowBuffsData: any;
+  echoSetAdditionalBaseBuffsData: any;
 } => {
   const {
     baseHp,
@@ -1850,5 +1851,6 @@ export const calculateAllStats = (context: {
     resonanceChainsBuffsData: mergedResonanceChainsBuffsData,
     additionalBaseBuffsData: mergedAdditionalBaseBuffsData,
     critOverflowBuffsData,
+    echoSetAdditionalBaseBuffsData,
   };
 };
