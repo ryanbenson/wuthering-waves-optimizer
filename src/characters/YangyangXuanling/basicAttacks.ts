@@ -205,6 +205,24 @@ export const basicAttacks = {
         "10": "98.61%",
       },
       type: "Basic",
+    },
+    {
+      key: `SequenceNode2RiverCarriesHerSongAway`,
+      label: `S2: Shadow of Xuanling: Strung Notes`,
+      talents: {
+        "1": "337.98%",
+        "2": "337.98%",
+        "3": "337.98%",
+        "4": "337.98%",
+        "5": "337.98%",
+        "6": "337.98%",
+        "7": "337.98%",
+        "8": "337.98%",
+        "9": "337.98%",
+        "10": "337.98%",
+      },
+      type: "Heavy",
+      requiresResonanceChain: "SequenceNode2RiverCarriesHerSongAway",
     }
   ],
 };
