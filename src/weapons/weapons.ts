@@ -71,7 +71,7 @@ const rectifiersList = {
   five: [
     { key: "BosonAstrolabe", name: "Boson Astrolabe" },
     { key: "CosmicRipples", name: "Cosmic Ripples" },
-    // { key: "FirstlightsHerald", name: "Firstlight's Herald" },
+    { key: "FirstlightsHerald", name: "Firstlight's Herald" },
     { key: "ForgedDwarfStar", name: "Forged Dwarf Star" },
     { key: "FreezeFrame", name: "Freeze Frame" },
     { key: "LetheanElegy", name: "Lethean Elegy" },
