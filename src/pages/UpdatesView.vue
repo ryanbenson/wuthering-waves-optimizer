@@ -2,9 +2,11 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
-    <h3>July 9, 2026</h3>
+    <h3>July 10, 2026</h3>
     <ul>
       <li>Releases Suisui and her sig.</li>
+      <li>Improves echo preset UX.</li>
+      <li>Improves performance of echo preset application.</li>
     </ul>
     <h3>July 9, 2026</h3>
     <ul>

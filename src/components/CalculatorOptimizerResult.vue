@@ -169,39 +169,15 @@ const finalStats = computed(
 );
 
 async function equipLoadout() {
-  await characterStore.setCharacterData(props.character, { echoPresetId: null });
-  await characterStore.setCharacterEchoes(props.character, {});
-  await inventoryStore.removeCharacterFromAllEquipped(props.character);
+  const echoIds = props.loadout.map(
+    (echo) => (echo as { echoId?: string } | undefined)?.echoId,
+  );
 
-  const newEchoes: Record<number, Record<string, unknown>> = {};
-  for (let i = 0; i < props.loadout.length; i++) {
-    const echo = props.loadout[i] as { echoId?: string } | undefined;
-    const id = echo?.echoId;
-    newEchoes[i] = {
-      echo: null,
-      type: null,
-      rank: null,
-      stat: null,
-      echoId: id,
-      echoSet: null,
-      echoSubStatsType1: null,
-      echoSubStatsValue1: null,
-      echoSubStatsType2: null,
-      echoSubStatsValue2: null,
-      echoSubStatsType3: null,
-      echoSubStatsValue3: null,
-      echoSubStatsType4: null,
-      echoSubStatsValue4: null,
-      echoSubStatsType5: null,
-      echoSubStatsValue5: null,
-    };
-    const equippedData: Record<string, number> = {};
-    equippedData[props.character] = props.index;
-    if (id) {
-      await inventoryStore.setEquippedData(id, equippedData);
-    }
-  }
-  await characterStore.setCharacterEchoes(props.character, newEchoes);
+  characterStore.applyEchoLoadout(props.character, {
+    echoIds,
+    presetId: null,
+    fillSlots: props.loadout.length,
+  });
 
   const characterData = characterStore.characters[props.character] ?? {};
   const buffUpdates = buildCharacterBuffUpdatesFromOptimizer(

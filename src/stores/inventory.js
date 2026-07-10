@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { merge } from "lodash";
+import { useCharacterStore } from "./character";
+import { applyEchoLoadout as applyEchoLoadoutState } from "../echoes/echoLoadout";
 
 export const useInventoryStore = defineStore("inventory", {
   state: () => ({
@@ -222,6 +224,20 @@ export const useInventoryStore = defineStore("inventory", {
         if (this.equipped[echoId][character] >= 0) {
           delete this.equipped[echoId][character];
         }
+      });
+    },
+    applyEchoPreset(character, preset) {
+      const echoIds = [
+        preset.echo1Id,
+        preset.echo2Id,
+        preset.echo3Id,
+        preset.echo4Id,
+        preset.echo5Id,
+      ];
+
+      applyEchoLoadoutState(useCharacterStore(), this, character, {
+        echoIds,
+        presetId: preset.presetId,
       });
     },
   },
