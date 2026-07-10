@@ -3,6 +3,7 @@ import { Command } from "commander";
 import { runGenerateCharacter } from "./commands/generateCharacter.js";
 import { runGenerateWeapon } from "./commands/generateWeapon.js";
 import { runImportEchoes } from "./commands/importEchoes.js";
+import { runGenerateEchoPreset } from "./commands/generateEchoPreset.js";
 
 const program = new Command();
 
@@ -38,6 +39,19 @@ generate
   .action(async () => {
     try {
       await runGenerateWeapon();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Error: ${message}`);
+      process.exit(1);
+    }
+  });
+
+generate
+  .command("echo-preset")
+  .description("Generate an echo preset and append it to a character presets.ts")
+  .action(async () => {
+    try {
+      await runGenerateEchoPreset();
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(`Error: ${message}`);
