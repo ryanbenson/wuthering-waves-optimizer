@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>July 9, 2026</h3>
+    <ul>
+      <li>Phase 1 of Version 3.5 is now available</li>
+    </ul>
     <h3>July 5, 2026</h3>
     <ul>
       <li>Adds ability to lock and trash echoes and filter by locked and trash.</li>
