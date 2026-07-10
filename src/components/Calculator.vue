@@ -14,6 +14,9 @@
     </Nav>
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
+        <div class="alert alert-success mb-6">
+          Phase 1 of Version 3.5 is now available
+        </div>
         <div>
           <CalculatorCharacterSelect
             :key="character"
