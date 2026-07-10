@@ -19,11 +19,15 @@ See the project for more information on where things are at, and where things ar
 - Start the local server: `npm run dev`
 - It should kick up and be available at [http://localhost:5173/](http://localhost:5173/)
 
-## Character generator CLI
+## CLI
 
-Scaffold a new character folder under `src/characters/` from live game data. The generator writes attack files, buffs, resonance chains, tune break attacks, stats, and patches `characters.ts`.
+Project maintenance commands live under `cli/`. Run them with Make or directly via `npm run cli -- <command>`.
 
 **Prerequisites:** Node.js and `npm install` (or `make install`).
+
+### Character generator
+
+Scaffold a new character folder under `src/characters/` from live game data. The generator writes attack files, buffs, resonance chains, tune break attacks, stats, and patches `characters.ts`.
 
 ```bash
 make generate-character
@@ -37,6 +41,12 @@ Equivalent without Make:
 npm run cli -- generate character
 ```
 
+Regenerate an existing character while keeping buff/resonance entry properties:
+
+```bash
+make generate-character ARGS="--merge-modifiers"
+```
+
 The command will:
 
 1. Fetch the character list and let you search/select a character
@@ -45,6 +55,56 @@ The command will:
 4. Print a review checklist for anything that needs manual follow-up (e.g. unmatched DamageList entries, missing attributes on healing/shields)
 
 Generated files still need manual work for modifiers, presets, and some edge cases — use the checklist at the end of the run.
+
+### Weapon generator
+
+Scaffold a new weapon file and register it in `src/weapons/weapons.ts`.
+
+```bash
+make generate-weapon
+```
+
+Alias: `make weapon`
+
+```bash
+npm run cli -- generate weapon
+```
+
+### Echo preset generator
+
+Generate an echo preset and append it to a character's `presets.ts`. The CLI walks through build options (set combination, cost layout, ER target, main stats, attack type) and produces a preset matching the project's standard build patterns.
+
+```bash
+make generate-echo-preset
+```
+
+Alias: `make echo-preset`
+
+```bash
+npm run cli -- generate echo-preset
+```
+
+The command will:
+
+1. Let you search/select a character (shows how many echo presets already exist)
+2. Prompt for set bonus combination (`5-piece`, `2+5`, `2+3`, or `2+2+1`)
+3. Prompt for echo cost layout (`43311` or `44111`), target ER%, 4-cost mains, 3-cost mains, attack type, and main stat focus
+4. Auto-generate a description and pick random valid echoes (unique within the preset)
+5. Preview the result and append it to `src/characters/<CharacterKey>/presets.ts`
+
+Primary echoes use fixed rolls (8.1% CR, 16.2% CD, 8.6% main stat, 8.6% attack type, flat main stat). Filler substats are randomized from HP/DEF pools, excluding any stats already declared for the build. ER rolls are placed explicitly to hit the target ER%.
+
+### Import echoes
+
+Import echoes from the Encore API into `src/echoes/index.ts`.
+
+```bash
+make import-echoes
+```
+
+```bash
+npm run cli -- import echoes
+```
 
 ## Running Tests
 
