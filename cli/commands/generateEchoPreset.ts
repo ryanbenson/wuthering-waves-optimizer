@@ -7,6 +7,7 @@ import {
   buildEchoPreset,
   ELEMENT_MAIN_STATS,
   getElementLabel,
+  listMainEchoCandidates,
   loadEchoCandidates,
   loadEchoSetLabels,
   parseCharacterOptions,
@@ -156,6 +157,39 @@ async function promptThreeCostConfig(
   return { threeCostMainCount, threeCostMain, threeCostElement };
 }
 
+async function promptMainEchoKey(
+  candidates: ReturnType<typeof loadEchoCandidates>,
+  primarySetKey: string,
+  setLabels: Map<string, string>,
+): Promise<string> {
+  const options = listMainEchoCandidates(candidates, primarySetKey).map(
+    (candidate) => ({
+      name: `${candidate.name} (${candidate.cost}-cost)`,
+      value: candidate.key,
+    }),
+  );
+
+  if (options.length === 0) {
+    throw new Error(
+      `No 3-cost or 4-cost echoes found for set "${setLabels.get(primarySetKey) ?? primarySetKey}"`,
+    );
+  }
+
+  return search({
+    message: "Main echo (slot 0 — provides echo skill bonus)",
+    source: async (query) => {
+      const normalized = (query ?? "").trim().toLowerCase();
+      if (!normalized) {
+        return options;
+      }
+
+      return options.filter((option) =>
+        option.name.toLowerCase().includes(normalized),
+      );
+    },
+  });
+}
+
 export async function runGenerateEchoPreset(): Promise<void> {
   const charactersContent = fs.readFileSync(charactersRegistryPath, "utf8");
   const characters = parseCharacterOptions(charactersContent, charactersDir);
@@ -218,6 +252,11 @@ export async function runGenerateEchoPreset(): Promise<void> {
   const setKeys: string[] = [];
   const primarySet = await promptSetKey("Primary echo set", setLabels);
   setKeys.push(primarySet);
+  const mainEchoKey = await promptMainEchoKey(
+    echoCandidates,
+    primarySet,
+    setLabels,
+  );
 
   if (setCombo === "23") {
     const secondarySet = await promptSetKey("Secondary echo set (2-piece)", setLabels);
@@ -314,6 +353,7 @@ export async function runGenerateEchoPreset(): Promise<void> {
     threeCostMain,
     threeCostMainCount,
     ...(threeCostElement ? { threeCostElement } : {}),
+    mainEchoKey,
     mainStatFocus: mainStatFocus as MainStatFocus,
     attackType: attackType as AttackTypeChoice,
   };

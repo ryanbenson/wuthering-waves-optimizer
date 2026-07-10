@@ -81,6 +81,7 @@ export interface EchoPresetInput {
   threeCostMain: ThreeCostMainStat | null;
   threeCostMainCount: 0 | 1 | 2;
   threeCostElement?: ElementMainStat;
+  mainEchoKey?: string;
   mainStatFocus: MainStatFocus;
   attackType: AttackTypeChoice;
 }
@@ -106,7 +107,10 @@ export interface GeneratedEchoPreset {
   name: string;
   description: string;
   author: string;
-  data: { echoes: Record<string, EchoSlotData> };
+  data: {
+    echoes: Record<string, EchoSlotData>;
+    mainEcho?: { echo: string; rank: number };
+  };
 }
 
 const ATTACK_TYPE_MAP: Record<Exclude<AttackTypeChoice, "none">, string> = {
@@ -302,6 +306,38 @@ export function countEchoPresets(presetsFileContent: string): number {
   return (body.match(/\bname:\s*`/g) ?? []).length;
 }
 
+function readCharacterElementFromBasic(
+  charactersDir: string,
+  key: string,
+): string | null {
+  const basicPath = `${charactersDir}/${key}/basic.ts`;
+  if (!fs.existsSync(basicPath)) {
+    return null;
+  }
+
+  const content = fs.readFileSync(basicPath, "utf8");
+  const match = content.match(/element:\s*"([^"]+)"/);
+  return match?.[1] ?? null;
+}
+
+export function listMainEchoCandidates(
+  candidates: EchoCandidate[],
+  setKey: string,
+): EchoCandidate[] {
+  return candidates
+    .filter(
+      (candidate) =>
+        (candidate.cost === 3 || candidate.cost === 4) &&
+        candidate.sets.includes(setKey),
+    )
+    .sort(
+      (left, right) =>
+        left.cost - right.cost ||
+        left.name.localeCompare(right.name) ||
+        left.key.localeCompare(right.key),
+    );
+}
+
 export function parseCharacterOptions(
   charactersFileContent: string,
   charactersDir: string,
@@ -318,7 +354,7 @@ export function parseCharacterOptions(
   );
   const elementByKey = new Map<string, string>();
   if (metaMatch) {
-    for (const [, key, , element] of metaMatch[1]!.matchAll(
+    for (const [, key, element] of metaMatch[1]!.matchAll(
       /\{\s*key:\s*"([^"]+)",\s*name:\s*"[^"]+",\s*element:\s*"([^"]+)"/g,
     )) {
       elementByKey.set(key!, element!);
@@ -332,7 +368,10 @@ export function parseCharacterOptions(
   ].map(([, key, name]) => ({
     key: key!,
     name: name!,
-    element: elementByKey.get(key!) ?? "Spectro",
+    element:
+      readCharacterElementFromBasic(charactersDir, key!) ??
+      elementByKey.get(key!) ??
+      "Spectro",
     presetCount: 0,
   }));
 
@@ -397,7 +436,24 @@ function pickEcho(
   cost: number,
   setKey: string,
   usedKeys: Set<string>,
+  forcedKey?: string,
 ): string {
+  if (forcedKey) {
+    const forced = candidates.find(
+      (candidate) =>
+        candidate.key === forcedKey &&
+        candidate.sets.includes(setKey) &&
+        !usedKeys.has(candidate.key),
+    );
+    if (!forced) {
+      throw new Error(
+        `Main echo "${forcedKey}" is not available for set "${setKey}"`,
+      );
+    }
+    usedKeys.add(forced.key);
+    return forced.key;
+  }
+
   const matches = candidates.filter(
     (candidate) =>
       candidate.cost === cost &&
@@ -762,20 +818,32 @@ export function buildEchoPreset(
   const erDistribution = distributeErRolls(erRolls, fillerSlotIndexes);
 
   for (let slot = 0; slot < 5; slot += 1) {
-    const cost = costs[slot]!;
+    const layoutCost = costs[slot]!;
     const setKey = assignedSets[slot]!;
-    const echoKey = pickEcho(candidates, cost, setKey, usedEchoKeys);
+    const forcedKey = slot === 0 ? input.mainEchoKey : undefined;
+    const echoKey = pickEcho(
+      candidates,
+      layoutCost,
+      setKey,
+      usedEchoKeys,
+      forcedKey,
+    );
+    const echoCost =
+      slot === 0 && input.mainEchoKey
+        ? (candidates.find((candidate) => candidate.key === echoKey)?.cost ??
+          layoutCost)
+        : layoutCost;
 
     if (input.setStyle === "44111") {
       if (slot <= 1) {
         const substats = buildPrimarySubstats44111({
           mainStat: input.mainStatFocus,
           attackType: input.attackType,
-          cost,
+          cost: echoCost,
           flatBeforeAttack: slot === 1,
         });
         echoes[String(slot)] = toSlotData(
-          cost,
+          echoCost,
           echoKey,
           setKey,
           input.fourCostMains[slot] ?? "CritRate",
@@ -792,7 +860,7 @@ export function buildEchoPreset(
         excludedStats: declaredSubstats,
       });
       echoes[String(slot)] = toSlotData(
-        cost,
+        echoCost,
         echoKey,
         setKey,
         main.percent,
@@ -811,7 +879,7 @@ export function buildEchoPreset(
               { type: main.percent, value: SUBSTAT_VALUES.mainPercent },
               {
                 type: main.flat,
-                value: main.flat4Cost,
+                value: echoCost === 4 ? main.flat4Cost : main.flatFiller,
               },
               {
                 type: "EnergyRegen",
@@ -822,11 +890,11 @@ export function buildEchoPreset(
               mainStat: input.mainStatFocus,
               attackType: input.attackType,
               includeFlat: true,
-              cost,
+              cost: echoCost,
             });
 
       echoes[String(slot)] = toSlotData(
-        cost,
+        echoCost,
         echoKey,
         setKey,
         input.fourCostMains[0] ?? "CritRate",
@@ -863,11 +931,11 @@ export function buildEchoPreset(
                 mainStat: input.mainStatFocus,
                 attackType: input.attackType,
                 includeFlat: true,
-                cost,
+                cost: layoutCost,
               });
 
         echoes[String(slot)] = toSlotData(
-          cost,
+          layoutCost,
           echoKey,
           setKey,
           primaryMain,
@@ -884,7 +952,7 @@ export function buildEchoPreset(
         excludedStats: declaredSubstats,
       });
       echoes[String(slot)] = toSlotData(
-        cost,
+        layoutCost,
         echoKey,
         setKey,
         fillerMain,
@@ -906,7 +974,7 @@ export function buildEchoPreset(
         excludedStats: declaredSubstats,
       });
       echoes[String(slot)] = toSlotData(
-        cost,
+        layoutCost,
         echoKey,
         setKey,
         threeCostMainKey,
@@ -928,7 +996,7 @@ export function buildEchoPreset(
         excludedStats: declaredSubstats,
       });
       echoes[String(slot)] = toSlotData(
-        cost,
+        layoutCost,
         echoKey,
         setKey,
         threeCostMainKey,
@@ -939,7 +1007,7 @@ export function buildEchoPreset(
     }
 
     const fillerMain =
-      cost === 1
+      layoutCost === 1
         ? main.percent
         : threeCostMainKey ?? input.characterElement;
     const substats = buildFillerSubstats({
@@ -948,7 +1016,7 @@ export function buildEchoPreset(
       excludedStats: declaredSubstats,
     });
     echoes[String(slot)] = toSlotData(
-      cost,
+      layoutCost,
       echoKey,
       setKey,
       fillerMain,
@@ -980,7 +1048,12 @@ export function buildEchoPreset(
     name: input.presetName,
     description,
     author: input.author,
-    data: { echoes },
+    data: {
+      echoes,
+      ...(input.mainEchoKey
+        ? { mainEcho: { echo: input.mainEchoKey, rank: 5 } }
+        : {}),
+    },
   };
 }
 

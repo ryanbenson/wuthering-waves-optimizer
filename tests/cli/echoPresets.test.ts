@@ -8,8 +8,10 @@ import {
   countEchoPresets,
   formatPresetEntry,
   getDeclaredSubstats,
+  listMainEchoCandidates,
   loadEchoCandidates,
   loadEchoSetLabels,
+  parseCharacterOptions,
   type EchoCandidate,
   type EchoPresetInput,
 } from "../../cli/lib/echoPresets.js";
@@ -142,6 +144,51 @@ export const echoes = [
       expect(declared.has(stat)).toBe(false);
     }
     expect(fillerStats.some((stat) => stat.endsWith("_FLAT"))).toBe(true);
+  });
+
+  it("reads character element from basic.ts", () => {
+    const charactersContent = fs.readFileSync(
+      path.join(projectRoot, "src/characters/characters.ts"),
+      "utf8",
+    );
+    const characters = parseCharacterOptions(
+      charactersContent,
+      path.join(projectRoot, "src/characters"),
+    );
+    const augusta = characters.find((character) => character.key === "Augusta");
+
+    expect(augusta?.element).toBe("Electro");
+  });
+
+  it("uses the chosen main echo in slot 0 and preset data", () => {
+    const setLabels = loadEchoSetLabels(statsFilePath);
+    const preset = buildEchoPreset(
+      {
+        ...carlottaInput,
+        mainEchoKey: "SentryConstruct",
+      },
+      carlottaCandidates,
+      setLabels,
+    );
+
+    expect(preset.data.echoes["0"]?.echo).toBe("SentryConstruct");
+    expect(preset.data.mainEcho).toEqual({
+      echo: "SentryConstruct",
+      rank: 5,
+    });
+  });
+
+  it("lists only 3-cost and 4-cost echoes for a set", () => {
+    const candidates = loadEchoCandidates(echoesFilePath);
+    const mainEchoes = listMainEchoCandidates(candidates, "FrostyResolve");
+
+    expect(mainEchoes.length).toBeGreaterThan(0);
+    expect(mainEchoes.every((echo) => echo.cost === 3 || echo.cost === 4)).toBe(
+      true,
+    );
+    expect(mainEchoes.every((echo) => echo.sets.includes("FrostyResolve"))).toBe(
+      true,
+    );
   });
 
   it("uses a custom element for 3-cost mains when specified", () => {
