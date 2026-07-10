@@ -1,10 +1,11 @@
 import type { ApiCharacterDetail } from "./api.js";
 import {
+  findResonanceChainExistingEntry,
   formatDefaultResonanceChainProperties,
   mergeCharacterEntriesFile,
   type ParsedCharacterFile,
 } from "./extractCharacterEntries.js";
-import { decodeAndCleanHtml, formatTemplateString } from "./html.js";
+import { formatTemplateString, wrapDescriptionHtml } from "./html.js";
 import { toAttackKey } from "./naming.js";
 
 export interface GeneratedResonanceChain {
@@ -19,16 +20,7 @@ export interface GeneratedResonanceChain {
 }
 
 function formatResonanceChainDetails(description: string): string {
-  const decoded = decodeAndCleanHtml(description).trim();
-  if (!decoded) {
-    return "<div></div>";
-  }
-
-  if (/^<div[\s>]/i.test(decoded)) {
-    return decoded;
-  }
-
-  return `<div>${decoded}</div>`;
+  return wrapDescriptionHtml(description);
 }
 
 function toResonanceChainKey(groupIndex: number, nodeName: string): string {
@@ -79,6 +71,7 @@ export function formatResonanceChainsFileContent(
     generatedBlocks: chains.map((chain) => formatResonanceChainEntry(chain)),
     generatedKeys: chains.map((chain) => chain.key),
     existing,
+    findExistingEntry: findResonanceChainExistingEntry,
     formatFreshEntry: (key) => formatResonanceChainEntry(chainsByKey.get(key)!),
     formatMergedEntry: (key, preservedProperties) =>
       formatResonanceChainEntry(

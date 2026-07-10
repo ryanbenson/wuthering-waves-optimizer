@@ -1,5 +1,5 @@
 import type { ApiCharacterDetail, ApiSkill } from "./api.js";
-import { decodeAndCleanHtml } from "./html.js";
+import { wrapDescriptionHtml } from "./html.js";
 import { resolveSkillAttackMetadata } from "./damageListMatching.js";
 import {
   buildAttacksFromAttributes,
@@ -58,16 +58,12 @@ function getTuneBreakName(skill: ApiSkill | undefined): string {
 }
 
 function formatTuneBreakDescription(description: string): string {
-  const decoded = decodeAndCleanHtml(description).trim();
-  if (!decoded) {
+  const wrapped = wrapDescriptionHtml(description);
+  if (wrapped === "<div></div>") {
     return DEFAULT_TUNE_BREAK_DESCRIPTION;
   }
 
-  if (/^<div[\s>]/i.test(decoded)) {
-    return decoded;
-  }
-
-  return `<div>${decoded}</div>`;
+  return wrapped;
 }
 
 function getTuneBreakDescription(skill: ApiSkill | undefined): string {

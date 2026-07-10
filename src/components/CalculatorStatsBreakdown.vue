@@ -162,6 +162,7 @@ const props = withDefaults(
     charBuffsData: StatsBreakdownBuffBundle;
     charResonanceChainsData: StatsBreakdownBuffBundle;
     echoStats: StatsBreakdownBuffBundle;
+    echoSetAdditionalBaseBuffsData?: StatsBreakdownBuffBundle;
     character: string;
   }>(),
   {
@@ -258,6 +259,17 @@ const statLabel = computed(() => props.stat);
 const statKey = computed(() => getStatKey());
 
 const flatStatKey = computed(() => getFlatStatKey());
+
+const echoSetAdditionalBaseBuffs = computed(
+  () =>
+    (props.echoSetAdditionalBaseBuffsData?.value ??
+      props.echoSetAdditionalBaseBuffsData ??
+      {}) as Record<string, number>,
+);
+
+function getEchoSetAdditionalBaseStatValue(statKeyName: string) {
+  return echoSetAdditionalBaseBuffs.value[statKeyName] || 0;
+}
 
 const hasBaseStat = computed(() =>
   ["ATK", "HP", "DEF"].includes(statKey.value),
@@ -504,6 +516,7 @@ const charBuffsPercent = computed(() => {
         props.charBuffsData?.tuneBreakBoost ??
         0
       : props.charBuffsData?.value?.[statKey.value] || 0;
+  value -= getEchoSetAdditionalBaseStatValue(statKey.value);
   if (hasAllAttributeBonus.value) {
     const allAttributeBonus =
       props.charBuffsData?.value?.AllAttributeBonus || 0;
@@ -530,7 +543,9 @@ const charBuffsPercent = computed(() => {
 
 const charBuffsFlat = computed(() => {
   if (!flatStatKey.value) return displayInt(0);
-  const value = props.charBuffsData?.value?.[flatStatKey.value];
+  const value =
+    (props.charBuffsData?.value?.[flatStatKey.value] || 0) -
+    getEchoSetAdditionalBaseStatValue(flatStatKey.value);
   return displayInt(value || 0);
 });
 
@@ -568,6 +583,7 @@ const charResonanceChainsFlat = computed(() => {
 
 const echoStatsPercent = computed(() => {
   let value = props.echoStats?.value?.[statKey.value] || 0;
+  value += getEchoSetAdditionalBaseStatValue(statKey.value) * 100;
   if (hasAllAttributeBonus.value) {
     const allAttributeBonus =
       props.echoStats?.value?.AllAttributeBonus || 0;
@@ -594,7 +610,9 @@ const echoStatsPercent = computed(() => {
 
 const echoStatsFlat = computed(() => {
   if (!flatStatKey.value) return displayInt(0);
-  const value = props.echoStats?.value?.[flatStatKey.value];
+  const value =
+    (props.echoStats?.value?.[flatStatKey.value] || 0) +
+    getEchoSetAdditionalBaseStatValue(flatStatKey.value);
   return displayInt(value || 0);
 });
 </script>

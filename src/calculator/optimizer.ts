@@ -1,12 +1,14 @@
 // Import necessary functions and types
 import { getAttackData } from "../characters/characters";
 import { getCombinedEchoStats } from "../echoes/stats";
-import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
+import { getSetsFromEchoes, getSetBonusEffects, getEnabledAdditionalBasePassives } from "../echoes/sets";
 import {
   calcCharStats,
   computeSelfBuffs,
   computeResonanceChainsBuffs,
   computeAdditionalBaseBuffs,
+  computeAdditionalBaseFromPassives,
+  mergeAdditionalBaseData,
   computeCritOverflowBuffs,
   applyCharacterStatEdgeCases,
 } from "../calculator/stats";
@@ -190,6 +192,7 @@ export interface OptimizerContext {
   charResonanceChainsData: Record<string, any>;
   teamBuffsData: Record<string, any>;
   customBuffs: Record<string, any>;
+  echoSetPassivesConfig?: Record<string, { isEnabled?: boolean; stacks?: number }>;
 
   // Echo data
   echoStats: Record<string, any>;
@@ -475,6 +478,7 @@ export function optimize(
       context.talentData ?? {},
       context.character ?? null,
       context.activeStance ?? null,
+      { havocBaneStacks: context.havocBaneStacks ?? 0 },
     );
 
     // Step 3: Calculate intermediate stats with resonance chains and self buffs
@@ -515,6 +519,19 @@ export function optimize(
       context.activeStance ?? null,
     );
 
+    const echoSetAdditionalBaseBuffsData = computeAdditionalBaseFromPassives(
+      getEnabledAdditionalBasePassives(
+        [setBonusOnePiece, setBonusOne, setBonusTwo],
+        context.echoSetPassivesConfig ?? {},
+      ),
+      intermediateStats.energyRegen,
+      intermediateStats.totalCritRate,
+    );
+    const mergedAdditionalBaseBuffsData = mergeAdditionalBaseData(
+      additionalBaseBuffsData,
+      echoSetAdditionalBaseBuffsData,
+    );
+
     // Step 5: Compute CritOverflow buffs using intermediate stats
     const critOverflowBuffsData = computeCritOverflowBuffs(
       context.activeCharacterBuffs ?? {},
@@ -530,15 +547,15 @@ export function optimize(
       ...selfBuffsData,
       CritRate:
         (selfBuffsData?.CritRate || 0) +
-        (additionalBaseBuffsData?.CritRate || 0),
+        (mergedAdditionalBaseBuffsData?.CritRate || 0),
       CritDMG:
         (selfBuffsData?.CritDMG || 0) +
-        (additionalBaseBuffsData?.CritDMG || 0) +
+        (mergedAdditionalBaseBuffsData?.CritDMG || 0) +
         (critOverflowBuffsData?.CritDMG || 0),
-      ATK: (selfBuffsData?.ATK || 0) + (additionalBaseBuffsData?.ATK || 0),
+      ATK: (selfBuffsData?.ATK || 0) + (mergedAdditionalBaseBuffsData?.ATK || 0),
       ATK_FLAT:
         (selfBuffsData?.ATK_FLAT || 0) +
-        (additionalBaseBuffsData?.ATK_FLAT || 0),
+        (mergedAdditionalBaseBuffsData?.ATK_FLAT || 0),
     };
 
     // Step 7: Compute final stats with all buffs

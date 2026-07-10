@@ -1,4 +1,4 @@
-.PHONY: help install generate-character character generate-weapon weapon cli
+.PHONY: help install generate-character character generate-weapon weapon cli import-echoes
 
 help:
 	@echo "Wuthering Waves Optimizer"
@@ -10,10 +10,12 @@ help:
 	@echo "  make character            Alias for generate-character"
 	@echo "  make generate-weapon      Interactive weapon scaffold generator"
 	@echo "  make weapon               Alias for generate-weapon"
+	@echo "  make import-echoes       Import echoes from Encore API"
 	@echo ""
 	@echo "Equivalent npm commands:"
 	@echo "  npm run cli -- generate character"
 	@echo "  npm run cli -- generate weapon"
+	@echo "  npm run cli -- import echoes"
 
 install:
 	npm install
@@ -33,3 +35,6 @@ cli-weapon:
 	npm run cli -- generate weapon
 
 cli: cli-character
+
+import-echoes:
+	npm run cli -- import echoes

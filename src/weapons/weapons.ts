@@ -1,5 +1,6 @@
 export const swordsList = {
   five: [
+    { key: "AzureOath", name: "Azure Oath" },
     { key: "BlazingBrilliance", name: "Blazing Brilliance" },
     { key: "BloodpactsPledge", name: "Bloodpact's Pledge" },
     { key: "DefiersThorn", name: "Defier's Thorn" },
@@ -28,8 +29,10 @@ export const swordsList = {
     { key: "SwordOfNight", name: "Sword Of Night" },
     { key: "SwordOfVoyager", name: "Sword Of Voyager" },
   ],
-  two: [{ key: "TyroSword", name: "Tyro Sword" }],
-  one: [{ key: "TrainingSword", name: "Training Sword" }],
+  two: [
+    { key: "TyroSword", name: "Tyro Sword" },
+  ],
+  one: [ ],
 };
 
 const broadbladesList = {
@@ -68,6 +71,7 @@ const rectifiersList = {
   five: [
     { key: "BosonAstrolabe", name: "Boson Astrolabe" },
     { key: "CosmicRipples", name: "Cosmic Ripples" },
+    // { key: "FirstlightsHerald", name: "Firstlight's Herald" },
     { key: "ForgedDwarfStar", name: "Forged Dwarf Star" },
     { key: "FreezeFrame", name: "Freeze Frame" },
     { key: "LetheanElegy", name: "Lethean Elegy" },
@@ -85,8 +89,8 @@ const rectifiersList = {
     { key: "JinzhouKeeper", name: "Jinzhou Keeper" },
     { key: "OceansGift", name: "Ocean's Gift" },
     { key: "RadiantDawn", name: "Radiant Dawn" },
-    { key: "WaltzinMasquerade", name: "Waltz in Masquerade" },
     { key: "Variation", name: "Variation" },
+    { key: "WaltzinMasquerade", name: "Waltz in Masquerade" },
   ],
   three: [
     { key: "GuardianRectifier", name: "Guardian Rectifier" },
@@ -95,8 +99,10 @@ const rectifiersList = {
     { key: "RectifierOfNight", name: "Rectifier Of Night" },
     { key: "RectifierOfVoyager", name: "Rectifier Of Voyager" },
   ],
-  two: [{ key: "TyroRectifier", name: "Tyro Rectifier" }],
-  one: [{ key: "TrainingRectifier", name: "Training Rectifier" }],
+  two: [
+    { key: "TyroRectifier", name: "Tyro Rectifier" },
+  ],
+  one: [ ],
 };
 
 const pistolsList = {

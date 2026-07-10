@@ -22,12 +22,9 @@
     "cli": "tsx cli/index.ts"
   },
   "dependencies": {
-    "@inquirer/prompts": "^8.5.2",
     "chart.js": "^4.5.0",
     "chartjs-plugin-datalabels": "^2.2.0",
-    "commander": "^15.0.0",
     "lodash": "^4.17.21",
-    "ora": "^9.4.0",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "pixelmatch": "^7.1.0",
@@ -35,6 +32,7 @@
     "vue": "^3.4.21"
   },
   "devDependencies": {
+    "@inquirer/prompts": "^8.5.2",
     "@pinia/testing": "^0.1.7",
     "@tailwindcss/typography": "^0.5.15",
     "@testing-library/jest-dom": "^6.6.3",
@@ -45,6 +43,7 @@
     "@vitest/browser": "^3.0.8",
     "@vitest/coverage-v8": "^3.0.8",
     "autoprefixer": "^10.4.20",
+    "commander": "^15.0.0",
     "cypress": "^14.0.2",
     "daisyui": "^4.12.11",
     "eslint": "^9.13.0",
@@ -52,6 +51,7 @@
     "eslint-plugin-vue": "^9.29.1",
     "floating-vue": "^5.2.2",
     "jsdom": "^25.0.1",
+    "ora": "^9.4.0",
     "postcss": "^8.4.47",
     "sass": "^1.77.4",
     "tailwindcss": "^3.4.13",

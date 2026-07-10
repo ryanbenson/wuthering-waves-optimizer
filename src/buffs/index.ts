@@ -2350,6 +2350,195 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
     },
   ],
+  Suisui: [
+    {
+      name: `Careless Landscape`,
+      key: `CarelessLandscape`,
+      details: `<div>Casting the skill deploys <span style="color:#ffd12f;" class="font-bold">Ceaseless Landscape</span> that lasts for 30s. When <span style="color:#ffd12f;" class="font-bold">Ceaseless Landscape</span> is active, Suisui enters the <span style="color:#ffd12f;" class="font-bold">Roaming Transcendent</span> state when casting <span style="color:#ffd12f;" class="font-bold">Outro Skill - Rippling Waters</span>.<br><span style="color:#ffd12f;" class="font-bold">Ceaseless Landscape</span> grants all nearby Resonators in the team the following enhancements:<br>- Inflicting a target with <span style="color:#ffd12f;" class="font-bold">Spectro Frazzle</span>, <span style="color:#ffd12f;" class="font-bold">Fusion Burst</span>, <span style="color:#ffd12f;" class="font-bold">Glacio Chafe</span>, and <span style="color:#ffd12f;" class="font-bold">Aero Erosion</span>, or dealing the corresponding Negative Status DMG increases the max stack limit of <span style="color:#ffd12f;" class="font-bold">Negative Status</span> the target can receive by 3 for 15s. This effect does not stack.<br>- Inflicting a target with <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> or dealing the corresponding Negative Status DMG increases the max stack limits of <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> and <span style="color:#ffd12f;" class="font-bold">Electro Rage</span> the target can receive by 3 for 15s. This effect does not stack.<br>- Consuming <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> stacks on the target after landing a skill allows the Resonator's Havoc DMG to ignore the target's DEF by 6% and Havoc RES by 12% for 30s. This effect does not stack.<br>Can be cast in mid-air close to the ground.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DEFIgnore:Havoc",
+          modifierValue: 0.06,
+        },
+        {
+          modifier: "ResistShred:Havoc",
+          modifierValue: 0.12,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      name: `Outro Skill: Rippling Waters`,
+      key: `OutroSkillRipplingWaters`,
+      details: `Resonators in the team gain 25% All DMG Amplification for 30s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      name: `Outro Skill: Rippling Waters - 400 Floral Epistle`,
+      key: `OutroSkillRipplingWaters400FloralEpistle`,
+      details: `At least 400 <span style="color:#ffd12f;" class="font-bold">Floral Epistle</span> consumed:<br>
+- If there is <span style="color:#ffd12f;" class="font-bold">Ceaseless Landscape</span> left on the field, incoming Resonators gain the following effect: If the Resonator has <span style="color:#ffd12f;" class="font-bold">Reflecting Shadows</span>, their DMG dealt is increased: For every 1% of Suisui's Energy Regen over 200%, the Resonator's DMG dealt is increased by 0.2%, up to 12%.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.002,
+          maximumValue: 0.12,
+          modifierStep: 0.01,
+          minStatValue: 200,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+      inputBase: true,
+      modifierBasedOn: "Energy Regen",
+    },
+    {
+      name: `Outro Skill: Rippling Waters - 600 Floral Epistle`,
+      key: `OutroSkillRipplingWaters600FloralEpistle`,
+      details: `At least 600 <span style="color:#ffd12f;" class="font-bold">Floral Epistle</span> consumed:<br>
+- With the first interaction, while <span style="color:#ffd12f;" class="font-bold">Ceaseless Landscape</span> is active, incoming Resonators gain the following effect: Casting Outro Skill grants the incoming Resonator the following effect: Depleting the target's Negative Status stacks using skills increases the Resonator's ATK: For every 0.12% of Suisui's Energy Regen over 200%, the Resonator's ATK is increased by 0.1% for 6s, up to 50%. Effect lasts for 14s or until they are switched off field.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.001,
+          maximumValue: 0.5,
+          modifierStep: 0.0012,
+          minStatValue: 200,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+      inputBase: true,
+      modifierBasedOn: "Energy Regen",
+    },
+    {
+      name: `S2: Clouds Pour Like Molten Gold`,
+      key: `S2CloudsPourLikeMoltenGold`,
+      details: `Resonators in the team within the effect of <span style="color:#ffd12f;" class="font-bold">Ceaseless Landscape</span> gain 50% increased Crit. DMG.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "CritDMG",
+          modifierValue: 0.5,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  YangyangXuanling: [
+    {
+      key: "OutroSkillAsTheWindWills",
+      name: "Outro Skill: As the Wind Wills",
+      details: `When a Resonator in the team other than Yangyang: Xuanling applies <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> to a target, that Resonator's Havoc DMG is Amplified by 20% for 20s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen:Havoc",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `SequenceNode4AcrossTheMilesALetterAndMyLonging`,
+      name: `Sequence Node 4: Across the miles, a letter and my longing`,
+      details: `<div>When casting <span style="color:#ffd12f;" class="font-bold">Intro Skill - Skybound Feather</span>, <span style="color:#ffd12f;" class="font-bold">Sword Stance Switch: Azure</span>, <span style="color:#ffd12f;" class="font-bold">Sword Stance Switch: Feather</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Sword Stance Flow: Azure</span>, or <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Sword Stance Flow: Feather</span>, the ATK of Resonators in the team is increased by 20% for 30s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Roverelectromale: [
+    {
+      key: `Overshock`,
+      name: `Overshock`,
+      details: `<div>If Resonance Skill Overshock is cast by pressing the button, clear all Electric Surge to grant Resonators in the team 10% ATK Bonus for 20s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.1,
+        }
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `OutroSkillRumblingThunders`,
+      name: `Outro Skill: Rumbling Thunders`,
+      details: `<div>The incoming Resonator gains <span style="color:#ffd12f;" class="font-bold">Electro Core</span> for 20s or until the Resonator is switched out. When Resonators with <span style="color:#ffd12f;" class="font-bold">Electro Core</span> inflict Negative Statuses, their <span style="color:#ffd12f;" class="font-bold">Electro Core</span> is consumed and they gain 25% All DMG Amplification for 14s. Switching to another Resonator ends the effect.<br>Casting Outro Skill ends the <span style="color:#ffd12f;" class="font-bold">Apex Resonance</span> state and clears all <span style="color:#ffd12f;" class="font-bold">Thunder Rage</span>.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.25,
+        }
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
+  Roverelectrofemale: [
+    {
+      key: `Overshock`,
+      name: `Overshock`,
+      details: `<div>If Resonance Skill Overshock is cast by pressing the button, clear all Electric Surge to grant Resonators in the team 10% ATK Bonus for 20s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.1,
+        }
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+    {
+      key: `OutroSkillRumblingThunders`,
+      name: `Outro Skill: Rumbling Thunders`,
+      details: `<div>The incoming Resonator gains <span style="color:#ffd12f;" class="font-bold">Electro Core</span> for 20s or until the Resonator is switched out. When Resonators with <span style="color:#ffd12f;" class="font-bold">Electro Core</span> inflict Negative Statuses, their <span style="color:#ffd12f;" class="font-bold">Electro Core</span> is consumed and they gain 25% All DMG Amplification for 14s. Switching to another Resonator ends the effect.<br>Casting Outro Skill ends the <span style="color:#ffd12f;" class="font-bold">Apex Resonance</span> state and clears all <span style="color:#ffd12f;" class="font-bold">Thunder Rage</span>.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "DMGDeepen",
+          modifierValue: 0.25,
+        }
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [
@@ -2650,6 +2839,27 @@ CD: 20s`,
     ],
     alwaysEnabled: false,
   },
+  {
+    key: "SongofFeatheredTrace",
+    name: "Song of Feathered Trace",
+    details: `Upon inflicting Glacio Chafe, gain Chongming's Feather, which grants a 0.1% increase in ATK to Resonators in the team for every 1% of the Resonator's Energy Regen, up to 25%, lasting 10s.`,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/sets/SongofFeatheredTrace.webp",
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.001,
+        maximumValue: 0.25,
+        modifierStep: 0.01,
+        minStatValue: 0,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+    inputBase: true,
+    modifierBasedOn: "Energy Regen",
+  },
 ];
 
 export const allWeaponTeamBuffs = [
@@ -2938,6 +3148,28 @@ export const allWeaponTeamBuffs = [
     minStacks: 0,
     maxStacks: 0,
     details: `Inflicting Glacio Chafe on the target increases the ATK of all Resonators in the team by <span class="param">24%/30%/36%/42%/48%</span> for 30s. Effects of the same name cannot be stacked.`,
+    alwaysEnabled: false,
+  },
+  {
+    name: "Dew Imbiber",
+    key: "DewImbiberATKBonus",
+    hasStacks: false,
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/DewImbiber.png",
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierByRefinement: {
+          "1": 0.2,
+          "2": 0.3,
+          "3": 0.35,
+          "4": 0.4,
+          "5": 0.45,
+        },
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    details: `This effect is triggered once every 20s. Casting Intro Skill or Resonance Skill grants nearby Resonators in the team Kingfisher for 30s. If the wielder is on the field, Resonators with Kingfisher have their ATK increased by 20%/25%/30%/35%/40%`,
     alwaysEnabled: false,
   },
 ];

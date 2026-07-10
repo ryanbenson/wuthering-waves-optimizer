@@ -6,7 +6,7 @@ import {
   resolveSkillAttackMetadata,
   type AttackMetadata,
 } from "./damageListMatching.js";
-import { decodeAndCleanHtml, formatTemplateString } from "./html.js";
+import { formatTemplateString, wrapDescriptionHtml } from "./html.js";
 import { toAttackKey } from "./naming.js";
 
 interface AttackTalents {
@@ -53,6 +53,7 @@ const SKILL_ATTACK_EXPORTS = Object.values(SKILL_TYPE_TO_EXPORT);
 const SKIPPED_ATTACK_ATTRIBUTE_PATTERNS = [
   "STA Cost",
   "Concerto Regen",
+  "Concerto  Regen",
   "Resonance Cost",
   "Energy Cost",
   "Cooldown",
@@ -247,7 +248,7 @@ function buildSkillAttackData(
 ): SkillAttackData {
   return {
     name: `${skill.SkillType}: ${skill.SkillName}`,
-    description: decodeAndCleanHtml(skill.SkillDescribe ?? ""),
+    description: wrapDescriptionHtml(skill.SkillDescribe ?? ""),
     attacks: buildAttacksForSkill(skill, metadataByAttribute),
   };
 }

@@ -266,6 +266,7 @@
       :char-buffs-data="charBuffsData"
       :char-resonance-chains-data="charResonanceChainsData"
       :echo-stats="echoStats"
+      :echo-set-additional-base-buffs-data="echoSetAdditionalBaseBuffsData"
       :attack-key="selectedAttackKey"
       :damage="selectedAttackDamage"
       :attack-label="selectedAttackLabel"
@@ -335,7 +336,10 @@ import {
 } from "../calculator/attacks";
 import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
 import type { OptimizerContext } from "../calculator/optimizer";
-import { getOptimizerLoadoutKey, filterEchoesForOptimizer } from "../calculator/optimizer";
+import {
+  getOptimizerLoadoutKey,
+  filterEchoesForOptimizer,
+} from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
@@ -385,6 +389,7 @@ export default defineComponent({
     const weaponData = reactive({});
     const weaponAtk = ref(0);
     const charBuffsData = reactive({});
+    const echoSetAdditionalBaseBuffsData = ref({});
     const teamBuffsData = reactive({});
     const charResonanceChainsData = reactive({});
     const charactersList = ref([]);
@@ -712,7 +717,9 @@ export default defineComponent({
     // Helper function to compute all buffs in the correct order and return breakdown data
     // Uses the pure calculateAllStats function which is web worker compatible
     const computeAllBuffsWithBreakdown = () => {
-      return calculateAllStats({
+      const activeCharacter = characterStore.getActiveCharacter ?? {};
+      const echoSetBonus = activeCharacter.echoSetBonus ?? {};
+      const result = calculateAllStats({
         baseHp: baseHp.value,
         baseAtk: baseAtk.value,
         baseDef: baseDef.value,
@@ -720,9 +727,8 @@ export default defineComponent({
         weaponModifier: weaponData?.value?.modifier ?? null,
         weaponModifierValue: weaponData?.value?.modifierValue ?? 0,
         weaponPassiveData: weaponData?.value?.weaponPassiveStats ?? {},
-        buffsConfig: characterStore.getActiveCharacter?.buffs ?? {},
-        resonanceChainsConfig:
-          characterStore.getActiveCharacter?.resonanceChains ?? {},
+        buffsConfig: activeCharacter.buffs ?? {},
+        resonanceChainsConfig: activeCharacter.resonanceChains ?? {},
         customBuffs: customBuffs.value,
         teamBuffsData: teamBuffsData.value,
         echoStats: echoStats.value,
@@ -732,7 +738,19 @@ export default defineComponent({
         talentData: talentData ?? {},
         activeStance: activeStance.value,
         ignoreBuffs: {},
+        enemy: {
+          havocBaneStacks: havocBaneStacks.value,
+        },
+        setBonusLabels: [
+          echoSetBonus.setBonusOnePiece,
+          echoSetBonus.setBonusOne,
+          echoSetBonus.setBonusTwo,
+        ],
+        echoSetPassivesConfig: activeCharacter.echoSetPassives ?? {},
       });
+      echoSetAdditionalBaseBuffsData.value =
+        result.echoSetAdditionalBaseBuffsData ?? {};
+      return result;
     };
 
     const handleUpdatedCharacterStance = () => {
@@ -838,6 +856,11 @@ export default defineComponent({
       electroRageStacks.value = data.electroRageStacks;
       glacioChafeStacks.value = data.glacioChafeStacks;
       strainStacks.value = data.strainStacks;
+      const { finalStats, selfBuffsData, resonanceChainsBuffsData } =
+        computeAllBuffsWithBreakdown();
+      charBuffsData.value = selfBuffsData;
+      charResonanceChainsData.value = resonanceChainsBuffsData;
+      updateStats(finalStats);
       calcAllDamages();
     };
 
@@ -993,6 +1016,8 @@ export default defineComponent({
         charResonanceChainsData: charResonanceChainsData.value,
         teamBuffsData: teamBuffsData.value,
         customBuffs: customBuffs.value,
+        echoSetPassivesConfig:
+          characterStore.getActiveCharacter?.echoSetPassives ?? {},
 
         // Echo data
         echoStats: echoStats.value,
@@ -1565,6 +1590,7 @@ export default defineComponent({
       filteredCharacterBuffs,
       filteredResonanceChains,
       charBuffsData,
+      echoSetAdditionalBaseBuffsData,
       charResonanceChainsData,
       chosenWeapon,
       rotationsList,
