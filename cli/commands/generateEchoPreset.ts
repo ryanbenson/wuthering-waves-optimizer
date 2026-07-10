@@ -5,11 +5,14 @@ import { confirm, input, search, select } from "@inquirer/prompts";
 import {
   appendEchoPreset,
   buildEchoPreset,
+  ELEMENT_MAIN_STATS,
+  getElementLabel,
   loadEchoCandidates,
   loadEchoSetLabels,
   parseCharacterOptions,
   type AttackTypeChoice,
   type EchoPresetInput,
+  type ElementMainStat,
   type MainStatFocus,
   type SetCombo,
   type SetStyle,
@@ -23,14 +26,16 @@ const charactersRegistryPath = path.join(charactersDir, "characters.ts");
 const echoesFilePath = path.join(projectRoot, "src/echoes/index.ts");
 const statsFilePath = path.join(projectRoot, "src/echoes/stats.ts");
 
-const ELEMENT_MAIN_STATS = [
-  "Glacio",
-  "Fusion",
-  "Electro",
-  "Aero",
-  "Spectro",
-  "Havoc",
-] as const;
+const ELEMENT_LABELS = Object.fromEntries(
+  ELEMENT_MAIN_STATS.map((element) => [element, getElementLabel(element)]),
+) as Record<ElementMainStat, string>;
+
+function normalizeElementMainStat(element: string): ElementMainStat {
+  if (ELEMENT_MAIN_STATS.includes(element as ElementMainStat)) {
+    return element as ElementMainStat;
+  }
+  return "Spectro";
+}
 
 async function promptSetKey(
   message: string,
@@ -92,12 +97,20 @@ async function promptFourCostMains(
   return [main];
 }
 
-async function promptThreeCostConfig(setStyle: SetStyle): Promise<{
+async function promptThreeCostConfig(
+  setStyle: SetStyle,
+  characterElement: ElementMainStat,
+): Promise<{
   threeCostMainCount: 0 | 1 | 2;
   threeCostMain: ThreeCostMainStat | null;
+  threeCostElement: ElementMainStat | null;
 }> {
   if (setStyle === "44111") {
-    return { threeCostMainCount: 0, threeCostMain: null };
+    return {
+      threeCostMainCount: 0,
+      threeCostMain: null,
+      threeCostElement: null,
+    };
   }
 
   const threeCostMainCount = await select({
@@ -110,7 +123,7 @@ async function promptThreeCostConfig(setStyle: SetStyle): Promise<{
   });
 
   if (threeCostMainCount === 0) {
-    return { threeCostMainCount, threeCostMain: null };
+    return { threeCostMainCount, threeCostMain: null, threeCostElement: null };
   }
 
   const threeCostMain = await select({
@@ -124,7 +137,23 @@ async function promptThreeCostConfig(setStyle: SetStyle): Promise<{
     ],
   });
 
-  return { threeCostMainCount, threeCostMain };
+  if (threeCostMain !== "element") {
+    return { threeCostMainCount, threeCostMain, threeCostElement: null };
+  }
+
+  const threeCostElement = await select({
+    message: "Element DMG Bonus",
+    default: characterElement,
+    choices: ELEMENT_MAIN_STATS.map((element) => ({
+      name:
+        element === characterElement
+          ? `${ELEMENT_LABELS[element]} (character element)`
+          : ELEMENT_LABELS[element],
+      value: element,
+    })),
+  });
+
+  return { threeCostMainCount, threeCostMain, threeCostElement };
 }
 
 export async function runGenerateEchoPreset(): Promise<void> {
@@ -235,8 +264,9 @@ export async function runGenerateEchoPreset(): Promise<void> {
   });
 
   const fourCostMains = await promptFourCostMains(setStyle);
-  const { threeCostMainCount, threeCostMain } =
-    await promptThreeCostConfig(setStyle);
+  const characterElement = normalizeElementMainStat(character.element);
+  const { threeCostMainCount, threeCostMain, threeCostElement } =
+    await promptThreeCostConfig(setStyle, characterElement);
 
   const attackType = await select({
     message: "Main attack type bonus",
@@ -273,11 +303,7 @@ export async function runGenerateEchoPreset(): Promise<void> {
 
   const presetInput: EchoPresetInput = {
     characterKey: character.key,
-    characterElement: ELEMENT_MAIN_STATS.includes(
-      character.element as (typeof ELEMENT_MAIN_STATS)[number],
-    )
-      ? character.element
-      : "Spectro",
+    characterElement,
     presetName,
     author,
     setCombo: setCombo as SetCombo,
@@ -287,6 +313,7 @@ export async function runGenerateEchoPreset(): Promise<void> {
     fourCostMains,
     threeCostMain,
     threeCostMainCount,
+    ...(threeCostElement ? { threeCostElement } : {}),
     mainStatFocus: mainStatFocus as MainStatFocus,
     attackType: attackType as AttackTypeChoice,
   };

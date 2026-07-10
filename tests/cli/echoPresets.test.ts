@@ -144,6 +144,22 @@ export const echoes = [
     expect(fillerStats.some((stat) => stat.endsWith("_FLAT"))).toBe(true);
   });
 
+  it("uses a custom element for 3-cost mains when specified", () => {
+    const setLabels = loadEchoSetLabels(statsFilePath);
+    const preset = buildEchoPreset(
+      {
+        ...carlottaInput,
+        threeCostElement: "Spectro",
+      },
+      carlottaCandidates,
+      setLabels,
+    );
+
+    expect(preset.description).toContain("2x Spectro");
+    expect(preset.data.echoes["1"]?.stat).toBe("Spectro");
+    expect(preset.data.echoes["2"]?.stat).toBe("Spectro");
+  });
+
   it("uses unique echoes from the candidate pool", () => {
     const setLabels = loadEchoSetLabels(statsFilePath);
     const candidates = loadEchoCandidates(echoesFilePath).filter((candidate) =>

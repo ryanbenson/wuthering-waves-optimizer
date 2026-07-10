@@ -40,6 +40,17 @@ export type ThreeCostMainStat =
   | "HP"
   | "DEF";
 
+export const ELEMENT_MAIN_STATS = [
+  "Glacio",
+  "Fusion",
+  "Electro",
+  "Aero",
+  "Spectro",
+  "Havoc",
+] as const;
+
+export type ElementMainStat = (typeof ELEMENT_MAIN_STATS)[number];
+
 export interface EchoCandidate {
   key: string;
   name: string;
@@ -69,6 +80,7 @@ export interface EchoPresetInput {
   >;
   threeCostMain: ThreeCostMainStat | null;
   threeCostMainCount: 0 | 1 | 2;
+  threeCostElement?: ElementMainStat;
   mainStatFocus: MainStatFocus;
   attackType: AttackTypeChoice;
 }
@@ -141,6 +153,10 @@ const ELEMENT_LABELS: Record<string, string> = {
   Spectro: "Spectro",
   Havoc: "Havoc",
 };
+
+export function getElementLabel(element: string): string {
+  return ELEMENT_LABELS[element] ?? element;
+}
 
 const FILLER_STAT_POOL = [
   "HP",
@@ -343,12 +359,13 @@ function resolveThreeCostMainStat(
   return "element";
 }
 
-function resolveThreeCostMainKey(
-  stat: ThreeCostMainStat,
-  element: string,
-): string {
+function resolveThreeCostMainKey(input: EchoPresetInput): string | null {
+  const stat = resolveThreeCostMainStat(input);
+  if (!stat) {
+    return null;
+  }
   if (stat === "element") {
-    return element;
+    return input.threeCostElement ?? input.characterElement;
   }
   return stat;
 }
@@ -609,14 +626,13 @@ function getAttackLabel(attackType: AttackTypeChoice): string | null {
   }
 }
 
-function getThreeCostDescriptionLabel(
-  stat: ThreeCostMainStat | null,
-  element: string,
-): string | null {
+function getThreeCostDescriptionLabel(input: EchoPresetInput): string | null {
+  const stat = resolveThreeCostMainStat(input);
   if (!stat) {
     return null;
   }
   if (stat === "element") {
+    const element = input.threeCostElement ?? input.characterElement;
     return ELEMENT_LABELS[element] ?? element;
   }
   if (stat === "EnergyRegen") {
@@ -736,9 +752,7 @@ export function buildEchoPreset(
   const usedEchoKeys = new Set<string>();
   const echoes: Record<string, EchoSlotData> = {};
   const threeCostMain = resolveThreeCostMainStat(input);
-  const threeCostMainKey = threeCostMain
-    ? resolveThreeCostMainKey(threeCostMain, input.characterElement)
-    : null;
+  const threeCostMainKey = resolveThreeCostMainKey(input);
   const main = MAIN_STAT_MAP[input.mainStatFocus];
   const erRolls = calculateErRolls(input.targetEr);
   const declaredSubstats = getDeclaredSubstats(input);
@@ -944,10 +958,7 @@ export function buildEchoPreset(
   }
 
   const totals = sumSubstats(echoes);
-  const threeCostLabel = getThreeCostDescriptionLabel(
-    threeCostMain,
-    input.characterElement,
-  );
+  const threeCostLabel = getThreeCostDescriptionLabel(input);
   const description = formatDescription(
     input,
     {
