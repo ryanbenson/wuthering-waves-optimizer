@@ -23,6 +23,19 @@ export function decodeAndCleanHtml(text: string): string {
   return cleanHtml(decodeHtml(text));
 }
 
+export function wrapDescriptionHtml(description: string): string {
+  const decoded = decodeAndCleanHtml(description).trim();
+  if (!decoded) {
+    return "<div></div>";
+  }
+
+  if (/^<div[\s>]/i.test(decoded)) {
+    return decoded;
+  }
+
+  return `<div>${decoded}</div>`;
+}
+
 export function formatTemplateString(value: string): string {
   const escaped = value
     .replace(/\\/g, "\\\\")

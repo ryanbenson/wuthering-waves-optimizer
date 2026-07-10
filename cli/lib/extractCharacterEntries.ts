@@ -62,6 +62,26 @@ function skipCommentsAndWhitespace(content: string, index: number): number {
   return cursor;
 }
 
+function skipComments(content: string, index: number): number {
+  let cursor = index;
+
+  while (cursor < content.length) {
+    if (content[cursor] === "/" && content[cursor + 1] === "/") {
+      cursor = skipLineComment(content, cursor);
+      continue;
+    }
+
+    if (content[cursor] === "/" && content[cursor + 1] === "*") {
+      cursor = skipBlockComment(content, cursor);
+      continue;
+    }
+
+    break;
+  }
+
+  return cursor;
+}
+
 function parseQuotedValueEnd(content: string, start: number): number | null {
   const quote = content[start];
   if (quote !== "`" && quote !== '"' && quote !== "'") {
@@ -176,7 +196,7 @@ function parsePropertyBlocks(
   let index = bodyStart;
 
   while (index < bodyEnd) {
-    index = skipCommentsAndWhitespace(content, index);
+    index = skipComments(content, index);
     if (index >= bodyEnd) {
       break;
     }
@@ -185,7 +205,7 @@ function parsePropertyBlocks(
       break;
     }
 
-    const nameMatch = /^(\w+):/.exec(content.slice(index));
+    const nameMatch = /^(\s*)(\w+):/.exec(content.slice(index));
     if (!nameMatch) {
       break;
     }
@@ -204,7 +224,7 @@ function parsePropertyBlocks(
     }
 
     properties.push({
-      name: nameMatch[1]!,
+      name: nameMatch[2]!,
       text: content.slice(propertyStart, propertyEnd),
     });
 
@@ -328,7 +348,7 @@ function parseEntryPreservedProperties(
 
   const preserved = properties
     .filter((property) => !PRESERVED_PROPERTY_SKIP.has(property.name))
-    .map((property) => property.text.trimEnd());
+    .map((property) => property.text.replace(/^[\r\n]+/, "").trimEnd());
 
   return preserved.join("\n");
 }
@@ -398,6 +418,31 @@ export function formatDefaultResonanceChainProperties(): string {
   ].join("\n");
 }
 
+export function extractSequenceNumber(key: string): number | null {
+  const match = /^SequenceNode(\d+)/.exec(key);
+  return match ? Number(match[1]) : null;
+}
+
+export function findResonanceChainExistingEntry(
+  key: string,
+  existing: ParsedCharacterFile,
+): ParsedCharacterEntry | undefined {
+  const exactMatch = existing.entriesByKey.get(key);
+  if (exactMatch) {
+    return exactMatch;
+  }
+
+  const sequenceNumber = extractSequenceNumber(key);
+  if (sequenceNumber === null) {
+    return undefined;
+  }
+
+  return existing.entriesInOrder.find((entry) => {
+    const entrySequenceNumber = extractSequenceNumber(entry.key);
+    return entrySequenceNumber === sequenceNumber;
+  });
+}
+
 export function mergeCharacterEntriesFile(options: {
   exportName: string;
   generatedBlocks: string[];
@@ -405,6 +450,10 @@ export function mergeCharacterEntriesFile(options: {
   existing?: ParsedCharacterFile;
   formatFreshEntry: (key: string) => string;
   formatMergedEntry: (key: string, preservedProperties: string) => string;
+  findExistingEntry?: (
+    key: string,
+    existing: ParsedCharacterFile,
+  ) => ParsedCharacterEntry | undefined;
 }): string {
   const {
     exportName,
@@ -413,6 +462,7 @@ export function mergeCharacterEntriesFile(options: {
     existing,
     formatFreshEntry,
     formatMergedEntry,
+    findExistingEntry,
   } = options;
 
   if (generatedBlocks.length === 0) {
@@ -426,31 +476,29 @@ export function mergeCharacterEntriesFile(options: {
     return `export const ${exportName} = [\n${formattedBlocks.join("\n")}\n];\n`;
   }
 
-  const generatedByKey = new Map(
-    generatedKeys.map((key, index) => [key, generatedBlocks[index]!]),
-  );
-  const usedGeneratedKeys = new Set<string>();
+  const resolveExistingEntry =
+    findExistingEntry ??
+    ((key, parsedExisting) => parsedExisting.entriesByKey.get(key));
+
+  const usedExistingKeys = new Set<string>();
   const outputBlocks: string[] = [];
 
-  for (const existingEntry of existing.entriesInOrder) {
-    const generatedBlock = generatedByKey.get(existingEntry.key);
-    if (generatedBlock) {
+  for (const key of generatedKeys) {
+    const existingEntry = resolveExistingEntry(key, existing);
+    if (existingEntry && !usedExistingKeys.has(existingEntry.key)) {
       outputBlocks.push(
-        formatMergedEntry(
-          existingEntry.key,
-          existingEntry.preservedProperties,
-        ),
+        formatMergedEntry(key, existingEntry.preservedProperties),
       );
-      usedGeneratedKeys.add(existingEntry.key);
+      usedExistingKeys.add(existingEntry.key);
       continue;
     }
 
-    outputBlocks.push(existingEntry.rawEntry);
+    outputBlocks.push(formatFreshEntry(key));
   }
 
-  for (const [key, block] of generatedByKey) {
-    if (!usedGeneratedKeys.has(key)) {
-      outputBlocks.push(block);
+  for (const existingEntry of existing.entriesInOrder) {
+    if (!usedExistingKeys.has(existingEntry.key)) {
+      outputBlocks.push(existingEntry.rawEntry);
     }
   }
 

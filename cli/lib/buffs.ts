@@ -8,7 +8,11 @@ import {
   mergeCharacterEntriesFile,
   type ParsedCharacterFile,
 } from "./extractCharacterEntries.js";
-import { decodeAndCleanHtml, formatTemplateString } from "./html.js";
+import {
+  decodeAndCleanHtml,
+  formatTemplateString,
+  wrapDescriptionHtml,
+} from "./html.js";
 import { toAttackKey } from "./naming.js";
 
 export interface GeneratedBuffModifier {
@@ -65,16 +69,7 @@ const STAT_BONUS_KEY_SUFFIX: Record<string, string> = {
 };
 
 function formatBuffDetails(description: string): string {
-  const decoded = decodeAndCleanHtml(description).trim();
-  if (!decoded) {
-    return "<div></div>";
-  }
-
-  if (/^<div[\s>]/i.test(decoded)) {
-    return decoded;
-  }
-
-  return `<div>${decoded}</div>`;
+  return wrapDescriptionHtml(description);
 }
 
 function formatStatBonusDetails(description: string): string {

@@ -1,0 +1,206 @@
+export const buffs = [
+  {
+    key: `InherentSkillUnbrokenVow`,
+    name: `Inherent Skill: Unbroken Vow`,
+    details: `<div>When a target has 1 to 3 stacks of <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span>, each stack of <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> Amplifies the DMG from Yangyang: Xuanling by 10%, up to 30%.<br><size=10></span><br>When a target has 4 to 6 stacks of <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span>, each stack of <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> Amplifies the DMG from Yangyang: Xuanling by 12%, up to 36%.</div>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `InherentSkillOneLifeOneBlade`,
+    name: `Inherent Skill: One Life, One Blade`,
+    details: `<div>Resonance Liberation <span style="color:#ffd12f;" class="font-bold">Hush of a Thousand Voices</span> raises <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span>stacks on the targets it hits to the maximum.<br><size=10></span><br>When Resonators in the team inflict <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span>, Yangyang: Xuanling gains 1 stack of <span style="color:#ffd12f;" class="font-bold">Windbound</span>. <span style="color:#ffd12f;" class="font-bold">Windbound</span> can be gained once every 1s, stacking up to 6 times.<br><size=10></span><br>When <span style="color:#ffd12f;" class="font-bold">Windbound</span> reaches 6 stacks, Yangyang: Xuanling removes all <span style="color:#ffd12f;" class="font-bold">Windbound</span> and gains <span style="color:#ffd12f;" class="font-bold">One with the Wind</span>.<br>While <span style="color:#ffd12f;" class="font-bold">One with the Wind</span> lasts, when Yangyang: Xuanling casts <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Sword Stance Flow: Azure</span> or <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Sword Stance Flow: Feather</span>, she summons <span style="color:#ffd12f;" class="font-bold">Feather Release: Xuanling</span> to attack the target, applying 6 stacks of <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> to the target. <br><span style="color:#ffd12f;" class="font-bold">Windbound</span> cannot be obtained while <span style="color:#ffd12f;" class="font-bold">One with the Wind</span> lasts.<br><size=10></span><br>Once <span style="color:#ffd12f;" class="font-bold">Feather Release: Xuanling</span> is summoned, the <span style="color:#ffd12f;" class="font-bold">One with the Wind</span> state is removed.</div>`,
+    hasStacks: false,
+    modifiers: [],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `StatBonusCritRate1`,
+    name: `Stat Bonus: Crit. Rate+`,
+    details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.012,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `StatBonusCritRate2`,
+    name: `Stat Bonus: Crit. Rate+`,
+    details: `<div class="skilldescription">Crit. Rate increased by 1.20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.012,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `StatBonusCritRate3`,
+    name: `Stat Bonus: Crit. Rate+`,
+    details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.028,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `StatBonusCritRate4`,
+    name: `Stat Bonus: Crit. Rate+`,
+    details: `<div class="skilldescription">Crit. Rate increased by 2.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "CritRate",
+        modifierValue: 0.028,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `StatBonusATK1`,
+    name: `Stat Bonus: ATK+`,
+    details: `<div class="skilldescription">ATK increased by 1.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.018,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `StatBonusATK2`,
+    name: `Stat Bonus: ATK+`,
+    details: `<div class="skilldescription">ATK increased by 1.80%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.018,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `StatBonusATK3`,
+    name: `Stat Bonus: ATK+`,
+    details: `<div class="skilldescription">ATK increased by 4.20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.042,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `StatBonusATK4`,
+    name: `Stat Bonus: ATK+`,
+    details: `<div class="skilldescription">ATK increased by 4.20%.</div>`,
+    hasStacks: false,
+    modifiers: [
+      {
+        modifier: "ATK",
+        modifierValue: 0.042,
+      },
+    ],
+    minStacks: 0,
+    maxStacks: 0,
+    alwaysEnabled: false,
+  },
+{
+      key: `BatedBreath`,
+      name: `Bated Breath`,
+      details: `<div>When casting <span class="Highlight">Resonance Skill - Sword Stance Flow: Azure</span>, gain <span class="Highlight">Bated Breath</span>, which lasts 15s. While Yangyang: Xuanling is on the field, the next <span class="Highlight">Heavy Attack - Azure Sword Stance</span> has its Crit. DMG increased by 160%; Bated Breath is removed when <span class="Highlight">Heavy Attack - Azure Sword Stance</span> ends. Bated Breath can only be gained once every 25s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "CritDMG",
+          modifySpecificTalents: ["HeavyAttackAzureSwordStanceDMG"],
+          modifierValue: 1.6,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+{
+      key: `DriftingMist`,
+      name: `Drifting Mist`,
+      details: `When casting <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Sword Stance Flow: Feather</span>, gain <span style="color:#ffd12f;" class="font-bold">Drifting Mist</span>, which lasts 15s. While Yangyang: Xuanling is on the field, the next Heavy Attack - Feather Sword Stance, Mid-air Attack - Feather Fall, Basic Attack - Havoc in Bloom, or Dodge Counter - Havoc in Bloom has its Crit. DMG increased by 160%; <span style="color:#ffd12f;" class="font-bold">Drifting Mist</span> is removed when Basic Attack - Havoc in Bloom Stage 3 or Dodge Counter - Havoc in Bloom Stage 3 ends. <span style="color:#ffd12f;" class="font-bold">Drifting Mist</span> can only be gained once every 25s.`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "CritDMG",
+          modifySpecificTalents: [
+            "HeavyAttackFeatherSwordStanceDMG",
+            "MidAirAttackFeatherSwordStanceFeatherFallDMG",
+            "BasicAttackHavocInBloomStage1DMG",
+            "BasicAttackHavocInBloomStage2DMG",
+            "BasicAttackHavocInBloomStage3DMG",
+            "DodgeCounterBasicAttackHavocInBloomStage1DMG",
+            "DodgeCounterBasicAttackHavocInBloomStage2DMG",
+            "DodgeCounterBasicAttackHavocInBloomStage3DMG",
+          ],
+          modifierValue: 1.6,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+{
+      key: `FeatheredOath`,
+      name: `Feathered Oath`,
+      details: `When Resonators in the team apply <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> to a target, Xuanling gains 1 stack of <span style="color:#ffd12f;" class="font-bold">Feathered Oath</span> for 8s. <span style="color:#ffd12f;" class="font-bold">Feathered Oath</span> can be gained once every 1s, stacking up to 6 times. While Yangyang: Xuanling is on the field, each stack increases the Crit. DMG of <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Azure Sword Stance</span>, <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Feather Sword Stance</span>, <span style="color:#ffd12f;" class="font-bold">Mid-air Attack - Feather Fall</span>, and <span style="color:#ffd12f;" class="font-bold">Basic Attack - Havoc in Bloom</span> by 25%, up to a maximum of 150%.`,
+      hasStacks: true,
+      modifiers: [
+        {
+          modifier: "CritDMG",
+          modifySpecificTalents: [
+            "HeavyAttackAzureSwordStanceDMG",
+            "HeavyAttackFeatherSwordStanceDMG",
+            "MidAirAttackFeatherSwordStanceFeatherFallDMG",
+            "BasicAttackHavocInBloomStage1DMG",
+            "BasicAttackHavocInBloomStage2DMG",
+            "BasicAttackHavocInBloomStage3DMG",
+          ],
+          modifierValue: 0.25,
+        },
+      ],
+      minStacks: 0,
+      maxStacks: 6,
+      alwaysEnabled: false,
+    }
+];

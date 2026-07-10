@@ -31,6 +31,11 @@ export function toCharacterKey(displayName: string): string {
     .join("");
 }
 
+export function toEchoKey(displayName: string): string {
+  const normalized = displayName.normalize("NFD").replace(/\p{M}/gu, "");
+  return toCharacterKey(normalized);
+}
+
 export function toAttackKey(attributeName: string): string {
   const parts = attributeName.match(/[a-zA-Z0-9]+/g) ?? [];
   return parts

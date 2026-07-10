@@ -167,6 +167,8 @@ const buffStats = computed(() => {
           data.talentModifierMultiply = [];
         }
         (data.talentModifierMultiply as ModifierItem[]).push(modifierItem);
+      } else if (modifierItem.modifier?.includes("AdditionalBase")) {
+        return;
       } else if (modifierItem.modifier) {
         data[modifierItem.modifier] = modifierItem.modifierValue;
       }
@@ -192,6 +194,8 @@ const buffStats = computed(() => {
         if (modifierItem.modifierTalentKey != null && talentVal != null) {
           data[modifierItem.modifierTalentKey] = talentVal * stacks.value;
         }
+      } else if (modifierItem.modifier?.includes("AdditionalBase")) {
+        return;
       } else if (modifierItem.modifier) {
         const totalValue = Number(modifierItem.modifierValue) * stacks.value;
         data[modifierItem.modifier] = totalValue;

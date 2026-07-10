@@ -10,6 +10,7 @@ export const twoSetBonuses: string[] = [
   "Sierra Gale 2 Set",
   "Celestial Light 2 Set",
   "Sun-sinking Eclipse 2 Set",
+  "Havoc Eclipse 2 Set",
   "Rejuvenating Glow 2 Set",
   "Moonlit Clouds 2 Set",
   "Lingering Tunes 2 Set",
@@ -29,6 +30,9 @@ export const twoSetBonuses: string[] = [
   "Chromatic Foam 2 Set",
   "Wishes of Quiet Snowfall 2 Set",
   "Reel of Spliced Memories 2 Set",
+  "Song of Feathered Trace 2 Set",
+  "Heart of Evil's Purge 2 Set",
+  "Lamp of Nether Road 2 Set",
 ];
 export const threeSetBonuses: string[] = [
   "Crown of Valor 3 Set",
@@ -44,6 +48,7 @@ export const fiveSetBonuses: string[] = [
   "Sierra Gale 5 Set",
   "Celestial Light 5 Set",
   "Sun-sinking Eclipse 5 Set",
+  "Havoc Eclipse 5 Set",
   "Rejuvenating Glow 5 Set",
   "Moonlit Clouds 5 Set",
   "Lingering Tunes 5 Set",
@@ -63,6 +68,9 @@ export const fiveSetBonuses: string[] = [
   "Chromatic Foam 5 Set",
   "Wishes of Quiet Snowfall 5 Set",
   "Reel of Spliced Memories 5 Set",
+  "Song of Feathered Trace 5 Set",
+  "Heart of Evil's Purge 5 Set",
+  "Lamp of Nether Road 5 Set",
 ];
 
 // Function to convert a list of echo set keys (e.g. MidnightVeil)
@@ -310,6 +318,12 @@ type EchoSetBonusPassive = {
 type EchoSetBonusModifier = {
   modifier: string;
   modifierValue: number | string;
+  maximumValue?: number;
+  modifierStep?: number;
+  modifierBasedOn?: string;
+  modifierTargetAttr?: string;
+  minStatValue?: number;
+  modifySpecificTalents?: string[];
 };
 
 export const setBonusEffectsOnePiece: Record<string, EchoSetBonus> = {
@@ -446,6 +460,26 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     passives: [
       {
         key: "SunSinkingEclipse2SetHavoc",
+        details: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
+        modifiers: [
+          {
+            modifier: "Havoc",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
+  },
+  "Havoc Eclipse 2 Set": {
+    name: "Havoc Eclipse",
+    key: "HavocEclipse2Set",
+    passives: [
+      {
+        key: "HavocEclipse2SetHavoc",
         details: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
         modifiers: [
           {
@@ -840,6 +874,66 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
     ],
     details: `ATK + 10%`,
   },
+  "Song of Feathered Trace 2 Set": {
+    name: "Song of Feathered Trace",
+    key: "SongofFeatheredTrace2Set",
+    passives: [
+      {
+        key: "SongofFeatheredTrace2SetEnergyRegen",
+        details: `Energy Regen + 10%`,
+        modifiers: [
+          {
+            modifier: "EnergyRegen",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Energy Regen + 10%`,
+  },
+  "Heart of Evil's Purge 2 Set": {
+    name: "Heart of Evil's Purge",
+    key: "HeartofEvilsPurge2Set",
+    passives: [
+      {
+        key: "HeartofEvilsPurge2SetAero",
+        details: `Aero DMG + 10%`,
+        modifiers: [
+          {
+            modifier: "Aero",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `Aero DMG + 10%`,
+  },
+  "Lamp of Nether Road 2 Set": {
+    name: "Lamp of Nether Road",
+    key: "LampofNetherRoad2Set",
+    passives: [
+      {
+        key: "LampofNetherRoad2SetHP",
+        details: `HP + 10%`,
+        modifiers: [
+          {
+            modifier: "HP",
+            modifierValue: 10,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: true,
+      },
+    ],
+    details: `HP + 10%`,
+  },
 };
 
 export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
@@ -948,6 +1042,27 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
     passives: [
       {
         key: "SunSinkingEclipse5SetHavoc",
+        modifiers: [
+          {
+            modifier: "Havoc",
+            modifierValue: 7.5,
+          },
+        ],
+        maxStacks: 4,
+        minStacks: 0,
+        hasStacks: true,
+        alwaysEnabled: false,
+        details: `Upon using Basic Attack or Heavy Attack, <span class="Dark">Havoc</span> DMG increases by <span class="Highlight">7.5%</span>, stacking up to four times for <span class="Highlight">15s.</span>`,
+      },
+    ],
+  },
+  "Havoc Eclipse 5 Set": {
+    key: "HavocEclipse5Set",
+    name: "Havoc Eclipse",
+    details: `Upon using Basic Attack or Heavy Attack, <span class="Dark">Havoc</span> DMG increases by <span class="Highlight">7.5%</span>, stacking up to four times for <span class="Highlight">15s.</span>`,
+    passives: [
+      {
+        key: "HavocEclipse5SetHavoc",
         modifiers: [
           {
             modifier: "Havoc",
@@ -1573,4 +1688,155 @@ When Snowfall is removed, only one of the effects above can be triggered.`,
     ],
     details: `Inflicting Tune Rupture - Shifting or Tune Strain - Shifting on enemies increases the Tune Break Boost of Resonators in the team by 20 for 30s. Effects of the same name do not stack.`,
   },
+  "Song of Feathered Trace 5 Set": {
+    name: "Song of Feathered Trace",
+    key: "SongofFeatheredTrace5Set",
+    passives: [
+      {
+        key: "SongofFeatheredTrace5SetXuanling",
+        details: `Upon inflicting Havoc Bane, gain Xuanling's Feather, which grants a 20% increase in Crit. Rate and 35% increase in Heavy Attack DMG Bonus to the Resonator, lasting 15s.`,
+        modifiers: [
+          {
+            modifier: "CritRate",
+            modifierValue: 20,
+          },
+          {
+            modifier: "HeavyAttackDMGBonus",
+            modifierValue: 35,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: false,
+      },
+      {
+        key: "SongofFeatheredTrace5SetChongming",
+        details: `Upon inflicting Glacio Chafe, gain Chongming's Feather, which grants a 0.1% increase in ATK to Resonators in the team for every 1% of the Resonator's Energy Regen, up to 25%, lasting 10s.`,
+        modifiers: [
+          {
+            modifier: "ATK:AdditionalBase",
+            modifierValue: 0.001,
+            maximumValue: 0.25,
+            modifierStep: 1,
+            modifierBasedOn: "EnergyRegen",
+            modifierTargetAttr: "ATK",
+            minStatValue: 0,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: false,
+      },
+    ],
+    details: `Upon inflicting Havoc Bane, gain Xuanling's Feather, which grants a 20% increase in Crit. Rate and 35% increase in Heavy Attack DMG Bonus to the Resonator, lasting 15s.<br>Upon inflicting Glacio Chafe, gain Chongming's Feather, which grants a 0.1% increase in ATK to Resonators in the team for every 1% of the Resonator's Energy Regen, up to 25%, lasting 10s.`,
+  },
+  "Heart of Evil's Purge 5 Set": {
+    name: "Heart of Evil's Purge",
+    key: "HeartofEvilsPurge5Set",
+    passives: [
+      {
+        key: "HeartofEvilsPurge5Set",
+        details: `Inflicting Tune Strain - Shifting increases Crit. DMG by 20% and Aero DMG Bonus 30% for 15s.`,
+        modifiers: [
+          {
+            modifier: "CritDMG",
+            modifierValue: 20,
+          },
+          {
+            modifier: "Aero",
+            modifierValue: 30,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: false,
+      },
+    ],
+    details: `Inflicting Tune Strain - Shifting increases Crit. DMG by 20% and Aero DMG Bonus 30% for 15s.`,
+  },
+  "Lamp of Nether Road 5 Set": {
+    name: "Lamp of Nether Road",
+    key: "LampofNetherRoad5Set",
+    passives: [
+      {
+        key: "LampofNetherRoad5SetCritRate",
+        details: `Upon gaining a Shield, gain 5% increase in Crit. Rate for 5s, max 4 stacks. This effect can be triggered every 0.5s.`,
+        modifiers: [
+          {
+            modifier: "CritRate",
+            modifierValue: 5,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 4,
+        hasStacks: true,
+        alwaysEnabled: false,
+      },
+      {
+        key: "LampofNetherRoad5SetFusion",
+        details: `At max stacks, gain 15% Fusion DMG Bonus.`,
+        modifiers: [
+          {
+            modifier: "Fusion",
+            modifierValue: 15,
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+        alwaysEnabled: false,
+      },
+    ],
+    details: `Upon gaining a Shield, gain 5% increase in Crit. Rate for 5s, max 4 stacks. This effect can be triggered every 0.5s. At max stacks, gain 15% Fusion DMG Bonus.`,
+  },
 };
+
+export type AdditionalBasePassiveEntry = {
+  hasStacks?: boolean;
+  stacks?: number;
+  modifiers: EchoSetBonusModifier[];
+};
+
+export function getEnabledAdditionalBasePassives(
+  setBonusLabels: (string | null | undefined)[],
+  echoSetPassivesConfig: Record<
+    string,
+    { isEnabled?: boolean; stacks?: number }
+  > = {},
+): AdditionalBasePassiveEntry[] {
+  const passives: AdditionalBasePassiveEntry[] = [];
+  for (const label of setBonusLabels) {
+    if (!label) {
+      continue;
+    }
+    const setBonus = setBonusEffectsTwo[label];
+    if (!setBonus?.passives) {
+      continue;
+    }
+    for (const passive of setBonus.passives) {
+      const hasAdditionalBase = passive.modifiers?.some((modifier) =>
+        modifier.modifier?.includes("AdditionalBase"),
+      );
+      if (!hasAdditionalBase) {
+        continue;
+      }
+      if (passive.alwaysEnabled) {
+        passives.push({
+          hasStacks: passive.hasStacks,
+          stacks: passive.maxStacks ?? 0,
+          modifiers: passive.modifiers,
+        });
+        continue;
+      }
+      const config = echoSetPassivesConfig[passive.key] ?? {};
+      if (!config.isEnabled) {
+        continue;
+      }
+      passives.push({
+        hasStacks: passive.hasStacks,
+        stacks: config.stacks ?? 0,
+        modifiers: passive.modifiers,
+      });
+    }
+  }
+  return passives;
+}

@@ -43,7 +43,8 @@
       :team-buffs-data="teamBuffsData"
       :char-buffs-data="charBuffsData"
       :char-resonance-chains-data="charResonanceChainsData"
-      :echo-stats="echoStats"></CalculatorStatsBreakdown>
+      :echo-stats="echoStats"
+      :echo-set-additional-base-buffs-data="echoSetAdditionalBaseBuffsData"></CalculatorStatsBreakdown>
 
       <CalculatorDamageBreakdown
         v-else-if="attackKey"
@@ -96,6 +97,7 @@ interface Props {
   charBuffsData: BreakdownObjectProps;
   charResonanceChainsData: BreakdownObjectProps;
   echoStats: BreakdownObjectProps;
+  echoSetAdditionalBaseBuffsData?: BreakdownObjectProps;
   character: string;
   characterLevel?: string;
   attackKey?: string | null;

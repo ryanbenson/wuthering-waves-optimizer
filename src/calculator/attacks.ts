@@ -491,6 +491,12 @@ export const calculateAttackDamage = (
   let weaponDefIgnoreSpecificDmgType =
     context.equipment.weapon.weaponPassiveStats?.[`DEFIgnore:${attack.type}`] ??
     0;
+  let teamDefIgnoreSpecificElement =
+      context.buffs.teamBuffsData?.[`DEFIgnore:${attackElement}`] ??
+      0;
+  if (excludeTeamBuffs) {
+    teamDefIgnoreSpecificElement = 0;
+  }
   if (excludeWeaponBuffs) {
     weaponDefIgnoreSpecificDmgType = 0;
   }
@@ -585,6 +591,7 @@ export const calculateAttackDamage = (
     extraDefIgnoreCharBuff +
     extraDefIgnoreCustomBuffs +
     attackBuffsDefIgnore +
+    teamDefIgnoreSpecificElement +
     weaponDefIgnoreSpecificDmgType;
   // Def Reduction
   // Havoc bane reduces def for stack * 2%
