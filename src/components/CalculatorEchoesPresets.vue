@@ -32,7 +32,8 @@
                 :echo-3-id="echoPreset.echo3Id"
                 :echo-4-id="echoPreset.echo4Id"
                 :echo-5-id="echoPreset.echo5Id"
-                @click="applyCustomPreset(echoPreset)" />
+                :is-applying="applyingPresetId === echoPreset.presetId"
+                @apply="applyCustomPreset(echoPreset)" />
             </div>
           </div>
 
@@ -71,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
@@ -84,6 +85,16 @@ const inventoryStore = useInventoryStore();
 const { echoPresets } = storeToRefs(inventoryStore);
 
 const defaultEchoPresets = ref<any[]>([]);
+const applyingPresetId = ref<string | null>(null);
+const MIN_APPLYING_MS = 150;
+
+function waitForUiPaint() {
+  return new Promise<void>((resolve) => {
+    requestAnimationFrame(() => {
+      setTimeout(resolve, 0);
+    });
+  });
+}
 
 function triggerOpenModal() {
   const modalEl = document.getElementById("modal-echoes-presets");
@@ -104,52 +115,29 @@ async function applyPreset(presetData: any) {
       triggerCloseModal();
     }
 async function applyCustomPreset(presetData: any) {
-      const data = JSON.parse(JSON.stringify(presetData)); // clone so we don't use the raw data
-      await characterStore.setCharacterData(props.character, {
-        echoPresetId: presetData.presetId,
-      });
-      await inventoryStore.setEquippedPresetData(props.character, presetData.presetId);
-      await characterStore.setCharacterEchoes(props.character, {});
-      await inventoryStore.removeCharacterFromAllEquipped(props.character);
-      const echoData = {};
-      if (data.echo1Id) {
-        const echo1Data = await inventoryStore.getEchoById(data.echo1Id);
-        (echoData as any)[0] = echo1Data;
-        const equippedData = {};
-        (equippedData as any)[props.character] = 0;
-        await inventoryStore.setEquippedData(data.echo1Id, equippedData);
-      }
-      if (data.echo2Id) {
-        const echo2Data = await inventoryStore.getEchoById(data.echo2Id);
-        (echoData as any)[1] = echo2Data;
-        const equippedData = {};
-        (equippedData as any)[props.character] = 1;
-        await inventoryStore.setEquippedData(data.echo2Id, equippedData);
-      }
-      if (data.echo3Id) {
-        const echo3Data = await inventoryStore.getEchoById(data.echo3Id);
-        (echoData as any)[2] = echo3Data;
-        const equippedData = {};
-        (equippedData as any)[props.character] = 2;
-        await inventoryStore.setEquippedData(data.echo3Id, equippedData);
-      }
-      if (data.echo4Id) {
-        const echo4Data = await inventoryStore.getEchoById(data.echo4Id);
-        (echoData as any)[3] = echo4Data;
-        const equippedData = {};
-        (equippedData as any)[props.character] = 3;
-        await inventoryStore.setEquippedData(data.echo4Id, equippedData);
-      }
-      if (data.echo5Id) {
-        const echo5Data = await inventoryStore.getEchoById(data.echo5Id);
-        (echoData as any)[4] = echo5Data;
-        const equippedData = {};
-        (equippedData as any)[props.character] = 4;
-        await inventoryStore.setEquippedData(data.echo5Id, equippedData);
-      }
-      await characterStore.setCharacterEchoes(props.character, echoData);
-      triggerCloseModal();
+  if (applyingPresetId.value) {
+    return;
+  }
+
+  applyingPresetId.value = presetData.presetId;
+  const startedAt = Date.now();
+
+  await nextTick();
+  await waitForUiPaint();
+
+  try {
+    inventoryStore.applyEchoPreset(props.character, presetData);
+
+    const remaining = MIN_APPLYING_MS - (Date.now() - startedAt);
+    if (remaining > 0) {
+      await new Promise((resolve) => setTimeout(resolve, remaining));
     }
+
+    triggerCloseModal();
+  } finally {
+    applyingPresetId.value = null;
+  }
+}
 
 const hasDefaultEchoPresets = computed(() => defaultEchoPresets.value.length > 0);
 const hasEchoPresets = computed(() => (echoPresets.value?.length ?? 0) > 0);

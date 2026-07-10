@@ -859,6 +859,7 @@ import { subStatsTable } from "../echoes/stats.ts";
 import Range from "./input/Range.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import { randomString } from "../utils/strings.ts";
+import { isApplyingEchoLoadout } from "../echoes/echoLoadout";
 
 const props = defineProps<{
   character: string;
@@ -1557,6 +1558,9 @@ function syncMainStats() {
 }
 
 function updateTotalStats() {
+  if (isApplyingEchoLoadout.value) {
+    return;
+  }
   const statsOut: Record<string, number> = {};
   const t = type.value;
   const r = rank.value;
@@ -1888,6 +1892,12 @@ watch(echoSubStatsType5, () => {
 watch(echoSubStatsValue5, () => {
   updateTotalStats();
 }, { immediate: true });
+
+watch(isApplyingEchoLoadout, (applying, wasApplying) => {
+  if (wasApplying && !applying) {
+    updateTotalStats();
+  }
+});
 
 defineExpose({ saveEchoItem });
 </script>

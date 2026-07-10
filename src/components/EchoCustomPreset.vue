@@ -23,12 +23,18 @@
         <EchoCustomPresetEcho v-if="echo5Id" key="echo5" :echo-id="echo5Id" />
       </div>
       <div v-if="!disableAction" class="actions flex gap-2">
-        <button class="btn btn-sm btn-primary max-w-40 mt-2">
-          Apply preset
+        <button
+          class="btn btn-sm btn-primary max-w-40 mt-2"
+          :class="{ 'btn-disabled': isApplying }"
+          :disabled="isApplying"
+          @click="emit('apply')">
+          <span v-if="isApplying" class="loading loading-spinner loading-xs"></span>
+          {{ isApplying ? "Applying..." : "Apply preset" }}
         </button>
         <button
           @click.stop="deletePreset"
-          class="btn btn-sm btn-error max-w-40 mt-2">
+          class="btn btn-sm btn-error max-w-40 mt-2"
+          :disabled="isApplying">
           Delete preset
         </button>
       </div>
@@ -46,6 +52,10 @@ import { useCharacterStore } from "../stores/character";
 
 type EchoSlotData = Record<string, unknown>;
 
+const emit = defineEmits<{
+  apply: [];
+}>();
+
 const props = withDefaults(
   defineProps<{
     presetId: string;
@@ -57,10 +67,12 @@ const props = withDefaults(
     echo5Id?: string;
     disableAction?: boolean;
     showEquippedChars?: boolean;
+    isApplying?: boolean;
   }>(),
   {
     disableAction: false,
     showEquippedChars: false,
+    isApplying: false,
   },
 );
 

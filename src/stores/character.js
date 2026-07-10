@@ -1,5 +1,7 @@
 import { defineStore } from "pinia";
 import { merge } from "lodash";
+import { useInventoryStore } from "./inventory";
+import { applyEchoLoadout as applyEchoLoadoutState } from "../echoes/echoLoadout";
 
 export const useCharacterStore = defineStore("character", {
   state: () => ({
@@ -92,6 +94,9 @@ export const useCharacterStore = defineStore("character", {
       if (this.characters[characterId]) {
         this.characters[characterId].echoes = echoes;
       }
+    },
+    applyEchoLoadout(characterId, options = {}) {
+      applyEchoLoadoutState(this, useInventoryStore(), characterId, options);
     },
     hardSetState(data) {
       this.characters = data.characters;
