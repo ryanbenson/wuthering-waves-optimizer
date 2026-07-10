@@ -4,6 +4,10 @@
     <h1>Updates</h1>
     <h3>July 9, 2026</h3>
     <ul>
+      <li>Releases Suisui and her sig.</li>
+    </ul>
+    <h3>July 9, 2026</h3>
+    <ul>
       <li>Phase 1 of Version 3.5 is now available</li>
     </ul>
     <h3>July 5, 2026</h3>
