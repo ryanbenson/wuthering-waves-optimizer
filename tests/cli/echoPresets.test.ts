@@ -30,8 +30,10 @@ const carlottaInput: EchoPresetInput = {
   setStyle: "43311",
   targetEr: 18.4,
   fourCostMains: ["CritRate"],
-  threeCostMain: "element",
-  threeCostMainCount: 2,
+  threeCostMains: [
+    { stat: "element", element: "Glacio" },
+    { stat: "element", element: "Glacio" },
+  ],
   mainStatFocus: "atk",
   attackType: "skill",
 };
@@ -196,7 +198,10 @@ export const echoes = [
     const preset = buildEchoPreset(
       {
         ...carlottaInput,
-        threeCostElement: "Spectro",
+        threeCostMains: [
+          { stat: "element", element: "Spectro" },
+          { stat: "element", element: "Spectro" },
+        ],
       },
       carlottaCandidates,
       setLabels,
@@ -205,6 +210,100 @@ export const echoes = [
     expect(preset.description).toContain("2x Spectro");
     expect(preset.data.echoes["1"]?.stat).toBe("Spectro");
     expect(preset.data.echoes["2"]?.stat).toBe("Spectro");
+  });
+
+  it("supports different main stats on the two 3-cost echoes", () => {
+    const setLabels = loadEchoSetLabels(statsFilePath);
+    const preset = buildEchoPreset(
+      {
+        ...carlottaInput,
+        threeCostMains: [{ stat: "EnergyRegen" }, { stat: "ATK" }],
+        mainEchoKey: "SentryConstruct",
+      },
+      carlottaCandidates,
+      setLabels,
+    );
+
+    expect(preset.description).toContain("ER + ATK");
+    expect(preset.data.echoes["1"]?.stat).toBe("EnergyRegen");
+    expect(preset.data.echoes["2"]?.stat).toBe("ATK");
+  });
+
+  it("places a 221 1-piece main echo without requiring a second echo from that set", () => {
+    const setLabels = loadEchoSetLabels(statsFilePath);
+    const candidates: EchoCandidate[] = [
+      {
+        key: "LoneBoss",
+        name: "Lone Boss",
+        echoClass: "Overlord",
+        cost: 4,
+        sets: ["LingeringTunes"],
+      },
+      {
+        key: "SetAThreeA",
+        name: "Set A Three A",
+        echoClass: "Elite",
+        cost: 3,
+        sets: ["FrostyResolve"],
+      },
+      {
+        key: "SetBThreeB",
+        name: "Set B Three B",
+        echoClass: "Elite",
+        cost: 3,
+        sets: ["MoonlitClouds"],
+      },
+      {
+        key: "SetAOneA",
+        name: "Set A One A",
+        echoClass: "Common",
+        cost: 1,
+        sets: ["FrostyResolve"],
+      },
+      {
+        key: "SetBOneB",
+        name: "Set B One B",
+        echoClass: "Common",
+        cost: 1,
+        sets: ["MoonlitClouds"],
+      },
+    ];
+
+    const preset = buildEchoPreset(
+      {
+        characterKey: "Carlotta",
+        characterElement: "Glacio",
+        presetName: "221 Main from 1-set",
+        author: "thundertooth",
+        setCombo: "221",
+        setKeys: ["FrostyResolve", "MoonlitClouds", "LingeringTunes"],
+        setStyle: "43311",
+        targetEr: 18.4,
+        fourCostMains: ["CritRate"],
+        threeCostMains: [
+          { stat: "element", element: "Glacio" },
+          { stat: "element", element: "Glacio" },
+        ],
+        mainEchoKey: "LoneBoss",
+        mainEchoSetKey: "LingeringTunes",
+        mainStatFocus: "atk",
+        attackType: "skill",
+      },
+      candidates,
+      setLabels,
+    );
+
+    expect(preset.data.echoes["0"]).toMatchObject({
+      echo: "LoneBoss",
+      echoSet: "LingeringTunes",
+    });
+    expect(preset.data.echoes["1"]?.echoSet).toBe("FrostyResolve");
+    expect(preset.data.echoes["2"]?.echoSet).toBe("MoonlitClouds");
+    expect(
+      Object.values(preset.data.echoes).filter(
+        (echo) => echo.echoSet === "LingeringTunes",
+      ),
+    ).toHaveLength(1);
   });
 
   it("uses unique echoes from the candidate pool", () => {
@@ -224,8 +323,10 @@ export const echoes = [
         setStyle: "43311",
         targetEr: 15.2,
         fourCostMains: ["CritRate"],
-        threeCostMain: "element",
-        threeCostMainCount: 2,
+        threeCostMains: [
+          { stat: "element", element: "Fusion" },
+          { stat: "element", element: "Fusion" },
+        ],
         mainStatFocus: "atk",
         attackType: "skill",
       },
