@@ -4,7 +4,7 @@
     <h1>Updates</h1>
     <h3>July 11, 2026</h3>
     <ul>
-      <li>Adds echo presets for Cantarella, Chisa, Ciaccona, Denia, Iuno, Lucilla.</li>
+      <li>Adds echo presets for Cantarella, Chisa, Ciaccona, Denia, Iuno, Lucilla, Jianxin, Lucy.</li>
     </ul>
     <h3>July 10, 2026</h3>
     <ul>

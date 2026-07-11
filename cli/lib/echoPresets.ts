@@ -66,6 +66,11 @@ export interface CharacterOption {
   presetCount: number;
 }
 
+export interface ThreeCostMainChoice {
+  stat: ThreeCostMainStat;
+  element?: ElementMainStat;
+}
+
 export interface EchoPresetInput {
   characterKey: string;
   characterElement: string;
@@ -78,10 +83,11 @@ export interface EchoPresetInput {
   fourCostMains: Array<
     "CritRate" | "CritDMG" | "ATK" | "HP" | "DEF" | "HealingBonus"
   >;
-  threeCostMain: ThreeCostMainStat | null;
-  threeCostMainCount: 0 | 1 | 2;
-  threeCostElement?: ElementMainStat;
+  /** 0–2 chosen 3-cost main stats (can differ, e.g. EnergyRegen + ATK). */
+  threeCostMains: ThreeCostMainChoice[];
   mainEchoKey?: string;
+  /** Set the main echo counts toward (needed when an echo belongs to multiple sets). */
+  mainEchoSetKey?: string;
   mainStatFocus: MainStatFocus;
   attackType: AttackTypeChoice;
 }
@@ -202,15 +208,16 @@ export function getDeclaredSubstats(input: EchoPresetInput): Set<string> {
     declared.add(ATTACK_TYPE_MAP[input.attackType]);
   }
 
-  const threeCostMain = resolveThreeCostMainStat(input);
-  if (threeCostMain === "ATK") {
-    declared.add("ATK");
-  }
-  if (threeCostMain === "HP") {
-    declared.add("HP");
-  }
-  if (threeCostMain === "DEF") {
-    declared.add("DEF");
+  for (const choice of input.threeCostMains) {
+    if (choice.stat === "ATK") {
+      declared.add("ATK");
+    }
+    if (choice.stat === "HP") {
+      declared.add("HP");
+    }
+    if (choice.stat === "DEF") {
+      declared.add("DEF");
+    }
   }
 
   return declared;
@@ -322,20 +329,31 @@ function readCharacterElementFromBasic(
 
 export function listMainEchoCandidates(
   candidates: EchoCandidate[],
-  setKey: string,
-): EchoCandidate[] {
-  return candidates
-    .filter(
-      (candidate) =>
+  setKeys: string | string[],
+): Array<EchoCandidate & { setKey: string }> {
+  const keys = Array.isArray(setKeys) ? setKeys : [setKeys];
+  const results: Array<EchoCandidate & { setKey: string }> = [];
+  const seen = new Set<string>();
+
+  for (const setKey of keys) {
+    for (const candidate of candidates) {
+      if (
         (candidate.cost === 3 || candidate.cost === 4) &&
-        candidate.sets.includes(setKey),
-    )
-    .sort(
-      (left, right) =>
-        left.cost - right.cost ||
-        left.name.localeCompare(right.name) ||
-        left.key.localeCompare(right.key),
-    );
+        candidate.sets.includes(setKey) &&
+        !seen.has(candidate.key)
+      ) {
+        seen.add(candidate.key);
+        results.push({ ...candidate, setKey });
+      }
+    }
+  }
+
+  return results.sort(
+    (left, right) =>
+      left.cost - right.cost ||
+      left.name.localeCompare(right.name) ||
+      left.key.localeCompare(right.key),
+  );
 }
 
 export function parseCharacterOptions(
@@ -386,27 +404,28 @@ export function parseCharacterOptions(
   return entries.sort((left, right) => left.name.localeCompare(right.name));
 }
 
-function resolveThreeCostMainStat(
-  input: EchoPresetInput,
-): ThreeCostMainStat | null {
-  if (input.threeCostMainCount === 0) {
-    return null;
+function resolveThreeCostMainKey(
+  choice: ThreeCostMainChoice,
+  characterElement: string,
+): string {
+  if (choice.stat === "element") {
+    return choice.element ?? characterElement;
   }
-  if (input.threeCostMain) {
-    return input.threeCostMain;
-  }
-  return "element";
+  return choice.stat;
 }
 
-function resolveThreeCostMainKey(input: EchoPresetInput): string | null {
-  const stat = resolveThreeCostMainStat(input);
-  if (!stat) {
-    return null;
+function labelForThreeCostChoice(
+  choice: ThreeCostMainChoice,
+  characterElement: string,
+): string {
+  if (choice.stat === "element") {
+    const element = choice.element ?? characterElement;
+    return ELEMENT_LABELS[element] ?? element;
   }
-  if (stat === "element") {
-    return input.threeCostElement ?? input.characterElement;
+  if (choice.stat === "EnergyRegen") {
+    return "ER";
   }
-  return stat;
+  return choice.stat;
 }
 
 function assignSetKeys(input: EchoPresetInput): string[] {
@@ -418,14 +437,22 @@ function assignSetKeys(input: EchoPresetInput): string[] {
       return Array.from({ length: 5 }, () => primary!);
     case "23":
       return [primary!, primary!, primary!, secondary!, secondary!];
-    case "221":
-      return [
-        primary!,
-        primary!,
-        secondary!,
-        secondary!,
-        tertiary ?? secondary!,
-      ];
+    case "221": {
+      const setA = primary!;
+      const setB = secondary!;
+      const setC = tertiary ?? secondary!;
+      const mainSet = input.mainEchoSetKey ?? setA;
+
+      // Slot 0 is always the main echo. Place remaining pieces so we keep 2+2+1
+      // even when the main echo is the lone 1-piece set echo.
+      if (mainSet === setC) {
+        return [setC, setA, setB, setA, setB];
+      }
+      if (mainSet === setB) {
+        return [setB, setB, setA, setA, setC];
+      }
+      return [setA, setA, setB, setB, setC];
+    }
     default:
       return Array.from({ length: 5 }, () => primary!);
   }
@@ -683,18 +710,22 @@ function getAttackLabel(attackType: AttackTypeChoice): string | null {
 }
 
 function getThreeCostDescriptionLabel(input: EchoPresetInput): string | null {
-  const stat = resolveThreeCostMainStat(input);
-  if (!stat) {
+  const mains = input.threeCostMains;
+  if (mains.length === 0) {
     return null;
   }
-  if (stat === "element") {
-    const element = input.threeCostElement ?? input.characterElement;
-    return ELEMENT_LABELS[element] ?? element;
+
+  const labels = mains.map((choice) =>
+    labelForThreeCostChoice(choice, input.characterElement),
+  );
+
+  if (mains.length === 2 && labels[0] === labels[1]) {
+    return `2x ${labels[0]}`;
   }
-  if (stat === "EnergyRegen") {
-    return "ER";
+  if (mains.length === 2) {
+    return `${labels[0]} + ${labels[1]}`;
   }
-  return stat;
+  return labels[0]!;
 }
 
 function formatSetNames(
@@ -730,19 +761,18 @@ function formatDescription(
 
   let header = `${input.setStyle}`;
   if (input.setStyle === "43311" && input.fourCostMains.length === 1) {
-    const main = input.fourCostMains[0]!;
+    const fourCostMain = input.fourCostMains[0]!;
     const label =
-      main === "CritRate" ? "CR" : main === "CritDMG" ? "CD" : main;
+      fourCostMain === "CritRate"
+        ? "CR"
+        : fourCostMain === "CritDMG"
+          ? "CD"
+          : fourCostMain;
     header += ` ${label}`;
   }
 
-  if (input.threeCostMainCount === 2 && threeCostLabel) {
-    header += ` / 2x ${threeCostLabel}`;
-  } else if (
-    input.threeCostMainCount === 1 &&
-    input.threeCostMain === "EnergyRegen"
-  ) {
-    header += " 2x ER";
+  if (threeCostLabel) {
+    header += ` / ${threeCostLabel}`;
   }
 
   header += ` ${setPart}`;
@@ -807,8 +837,16 @@ export function buildEchoPreset(
   const assignedSets = assignSetKeys(input);
   const usedEchoKeys = new Set<string>();
   const echoes: Record<string, EchoSlotData> = {};
-  const threeCostMain = resolveThreeCostMainStat(input);
-  const threeCostMainKey = resolveThreeCostMainKey(input);
+  const threeCostMains = input.threeCostMains;
+  const threeCostMainKeys = threeCostMains.map((choice) =>
+    resolveThreeCostMainKey(choice, input.characterElement),
+  );
+  const isDoubleAtk =
+    threeCostMains.length === 2 &&
+    threeCostMains.every((choice) => choice.stat === "ATK");
+  const isDoubleElement =
+    threeCostMains.length === 2 &&
+    threeCostMains.every((choice) => choice.stat === "element");
   const main = MAIN_STAT_MAP[input.mainStatFocus];
   const erRolls = calculateErRolls(input.targetEr);
   const declaredSubstats = getDeclaredSubstats(input);
@@ -871,27 +909,26 @@ export function buildEchoPreset(
     }
 
     if (slot === 0) {
-      const substats =
-        input.threeCostMainCount === 2 && threeCostMain === "ATK"
-          ? [
-              { type: "CritRate", value: SUBSTAT_VALUES.critRate },
-              { type: "CritDMG", value: SUBSTAT_VALUES.critDmg },
-              { type: main.percent, value: SUBSTAT_VALUES.mainPercent },
-              {
-                type: main.flat,
-                value: echoCost === 4 ? main.flat4Cost : main.flatFiller,
-              },
-              {
-                type: "EnergyRegen",
-                value: SUBSTAT_VALUES.energyRegen,
-              },
-            ]
-          : buildPrimarySubstats43311({
-              mainStat: input.mainStatFocus,
-              attackType: input.attackType,
-              includeFlat: true,
-              cost: echoCost,
-            });
+      const substats = isDoubleAtk
+        ? [
+            { type: "CritRate", value: SUBSTAT_VALUES.critRate },
+            { type: "CritDMG", value: SUBSTAT_VALUES.critDmg },
+            { type: main.percent, value: SUBSTAT_VALUES.mainPercent },
+            {
+              type: main.flat,
+              value: echoCost === 4 ? main.flat4Cost : main.flatFiller,
+            },
+            {
+              type: "EnergyRegen",
+              value: SUBSTAT_VALUES.energyRegen,
+            },
+          ]
+        : buildPrimarySubstats43311({
+            mainStat: input.mainStatFocus,
+            attackType: input.attackType,
+            includeFlat: true,
+            cost: echoCost,
+          });
 
       echoes[String(slot)] = toSlotData(
         echoCost,
@@ -905,34 +942,28 @@ export function buildEchoPreset(
     }
 
     if (slot === 1) {
-      const isPrimary =
-        input.threeCostMainCount > 0 ||
-        threeCostMainKey === "ATK" ||
-        threeCostMainKey === "EnergyRegen";
-
-      if (isPrimary) {
-        const primaryMain = threeCostMainKey ?? main.percent;
-        const substats =
-          input.threeCostMainCount === 2 && threeCostMain === "ATK"
-            ? [
-                { type: "CritRate", value: SUBSTAT_VALUES.critRate },
-                { type: "CritDMG", value: SUBSTAT_VALUES.critDmg },
-                { type: main.percent, value: SUBSTAT_VALUES.mainPercent },
-                {
-                  type: main.flat,
-                  value: main.flatFiller,
-                },
-                {
-                  type: "EnergyRegen",
-                  value: SUBSTAT_VALUES.energyRegen,
-                },
-              ]
-            : buildPrimarySubstats43311({
-                mainStat: input.mainStatFocus,
-                attackType: input.attackType,
-                includeFlat: true,
-                cost: layoutCost,
-              });
+      if (threeCostMains.length > 0) {
+        const primaryMain = threeCostMainKeys[0]!;
+        const substats = isDoubleAtk
+          ? [
+              { type: "CritRate", value: SUBSTAT_VALUES.critRate },
+              { type: "CritDMG", value: SUBSTAT_VALUES.critDmg },
+              { type: main.percent, value: SUBSTAT_VALUES.mainPercent },
+              {
+                type: main.flat,
+                value: main.flatFiller,
+              },
+              {
+                type: "EnergyRegen",
+                value: SUBSTAT_VALUES.energyRegen,
+              },
+            ]
+          : buildPrimarySubstats43311({
+              mainStat: input.mainStatFocus,
+              attackType: input.attackType,
+              includeFlat: true,
+              cost: layoutCost,
+            });
 
         echoes[String(slot)] = toSlotData(
           layoutCost,
@@ -945,7 +976,7 @@ export function buildEchoPreset(
         continue;
       }
 
-      const fillerMain = threeCostMainKey ?? input.characterElement;
+      const fillerMain = input.characterElement;
       const substats = buildFillerSubstats({
         erRolls: erDistribution.get(slot) ?? 0,
         isLastSlot: false,
@@ -962,44 +993,53 @@ export function buildEchoPreset(
       continue;
     }
 
-    if (
-      slot === 2 &&
-      input.threeCostMainCount === 2 &&
-      threeCostMain === "ATK" &&
-      threeCostMainKey
-    ) {
-      const substats = buildTwoAtkSubstats({
-        attackType: input.attackType,
-        erRolls: erDistribution.get(slot) ?? 0,
-        excludedStats: declaredSubstats,
-      });
-      echoes[String(slot)] = toSlotData(
-        layoutCost,
-        echoKey,
-        setKey,
-        threeCostMainKey,
-        substats,
-        declaredSubstats,
-      );
-      continue;
-    }
+    if (slot === 2 && threeCostMains.length === 2 && threeCostMainKeys[1]) {
+      const secondMain = threeCostMainKeys[1]!;
+      if (isDoubleAtk) {
+        const substats = buildTwoAtkSubstats({
+          attackType: input.attackType,
+          erRolls: erDistribution.get(slot) ?? 0,
+          excludedStats: declaredSubstats,
+        });
+        echoes[String(slot)] = toSlotData(
+          layoutCost,
+          echoKey,
+          setKey,
+          secondMain,
+          substats,
+          declaredSubstats,
+        );
+        continue;
+      }
 
-    if (
-      slot === 2 &&
-      input.threeCostMainCount === 2 &&
-      threeCostMain === "element" &&
-      threeCostMainKey
-    ) {
-      const substats = buildFillerSubstats({
-        erRolls: erDistribution.get(slot) ?? 0,
-        isLastSlot: false,
-        excludedStats: declaredSubstats,
+      if (isDoubleElement || threeCostMains[1]!.stat === "element") {
+        const substats = buildFillerSubstats({
+          erRolls: erDistribution.get(slot) ?? 0,
+          isLastSlot: false,
+          excludedStats: declaredSubstats,
+        });
+        echoes[String(slot)] = toSlotData(
+          layoutCost,
+          echoKey,
+          setKey,
+          secondMain,
+          substats,
+          declaredSubstats,
+        );
+        continue;
+      }
+
+      const substats = buildPrimarySubstats43311({
+        mainStat: input.mainStatFocus,
+        attackType: input.attackType,
+        includeFlat: true,
+        cost: layoutCost,
       });
       echoes[String(slot)] = toSlotData(
         layoutCost,
         echoKey,
         setKey,
-        threeCostMainKey,
+        secondMain,
         substats,
         declaredSubstats,
       );
@@ -1007,9 +1047,7 @@ export function buildEchoPreset(
     }
 
     const fillerMain =
-      layoutCost === 1
-        ? main.percent
-        : threeCostMainKey ?? input.characterElement;
+      layoutCost === 1 ? main.percent : input.characterElement;
     const substats = buildFillerSubstats({
       erRolls: erDistribution.get(slot) ?? 0,
       isLastSlot: slot === 4,

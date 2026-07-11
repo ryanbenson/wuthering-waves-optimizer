@@ -98,37 +98,15 @@ async function promptFourCostMains(
   return [main];
 }
 
-async function promptThreeCostConfig(
-  setStyle: SetStyle,
+async function promptThreeCostMainChoice(
+  message: string,
   characterElement: ElementMainStat,
 ): Promise<{
-  threeCostMainCount: 0 | 1 | 2;
-  threeCostMain: ThreeCostMainStat | null;
-  threeCostElement: ElementMainStat | null;
+  stat: ThreeCostMainStat;
+  element: ElementMainStat | null;
 }> {
-  if (setStyle === "44111") {
-    return {
-      threeCostMainCount: 0,
-      threeCostMain: null,
-      threeCostElement: null,
-    };
-  }
-
-  const threeCostMainCount = await select({
-    message: "How many 3-cost echoes share a special main stat? (0, 1, or 2)",
-    choices: [
-      { name: "0 — filler 3-cost mains only", value: 0 as const },
-      { name: "1 — one 3-cost with a special main stat", value: 1 as const },
-      { name: "2 — two 3-cost echoes (e.g. 2x Glacio, 2x ATK)", value: 2 as const },
-    ],
-  });
-
-  if (threeCostMainCount === 0) {
-    return { threeCostMainCount, threeCostMain: null, threeCostElement: null };
-  }
-
-  const threeCostMain = await select({
-    message: "3-cost main stat",
+  const stat = await select({
+    message,
     choices: [
       { name: "Element DMG Bonus", value: "element" as const },
       { name: "ATK%", value: "ATK" as const },
@@ -138,44 +116,127 @@ async function promptThreeCostConfig(
     ],
   });
 
-  if (threeCostMain !== "element") {
-    return { threeCostMainCount, threeCostMain, threeCostElement: null };
+  if (stat !== "element") {
+    return { stat, element: null };
   }
 
-  const threeCostElement = await select({
+  const element = await select({
     message: "Element DMG Bonus",
     default: characterElement,
-    choices: ELEMENT_MAIN_STATS.map((element) => ({
+    choices: ELEMENT_MAIN_STATS.map((entry) => ({
       name:
-        element === characterElement
-          ? `${ELEMENT_LABELS[element]} (character element)`
-          : ELEMENT_LABELS[element],
-      value: element,
+        entry === characterElement
+          ? `${ELEMENT_LABELS[entry]} (character element)`
+          : ELEMENT_LABELS[entry],
+      value: entry,
     })),
   });
 
-  return { threeCostMainCount, threeCostMain, threeCostElement };
+  return { stat, element };
 }
 
-async function promptMainEchoKey(
+async function promptThreeCostConfig(
+  setStyle: SetStyle,
+  characterElement: ElementMainStat,
+): Promise<
+  Array<{
+    stat: ThreeCostMainStat;
+    element?: ElementMainStat;
+  }>
+> {
+  if (setStyle === "44111") {
+    return [];
+  }
+
+  const threeCostMainCount = await select({
+    message: "How many 3-cost echoes have a special main stat? (0, 1, or 2)",
+    choices: [
+      { name: "0 — filler 3-cost mains only", value: 0 as const },
+      { name: "1 — one 3-cost with a special main stat", value: 1 as const },
+      {
+        name: "2 — two 3-cost echoes (same or different mains)",
+        value: 2 as const,
+      },
+    ],
+  });
+
+  if (threeCostMainCount === 0) {
+    return [];
+  }
+
+  if (threeCostMainCount === 1) {
+    const choice = await promptThreeCostMainChoice(
+      "3-cost main stat",
+      characterElement,
+    );
+    return [
+      {
+        stat: choice.stat,
+        ...(choice.element ? { element: choice.element } : {}),
+      },
+    ];
+  }
+
+  const sameMain = await confirm({
+    message: "Use the same main stat on both 3-cost echoes?",
+    default: true,
+  });
+
+  if (sameMain) {
+    const choice = await promptThreeCostMainChoice(
+      "3-cost main stat (both echoes)",
+      characterElement,
+    );
+    const entry = {
+      stat: choice.stat,
+      ...(choice.element ? { element: choice.element } : {}),
+    };
+    return [entry, entry];
+  }
+
+  const first = await promptThreeCostMainChoice(
+    "3-cost echo #1 main stat",
+    characterElement,
+  );
+  const second = await promptThreeCostMainChoice(
+    "3-cost echo #2 main stat",
+    characterElement,
+  );
+
+  return [
+    {
+      stat: first.stat,
+      ...(first.element ? { element: first.element } : {}),
+    },
+    {
+      stat: second.stat,
+      ...(second.element ? { element: second.element } : {}),
+    },
+  ];
+}
+
+async function promptMainEcho(
   candidates: ReturnType<typeof loadEchoCandidates>,
-  primarySetKey: string,
+  setKeys: string[],
   setLabels: Map<string, string>,
-): Promise<string> {
-  const options = listMainEchoCandidates(candidates, primarySetKey).map(
+): Promise<{ key: string; setKey: string }> {
+  const options = listMainEchoCandidates(candidates, setKeys).map(
     (candidate) => ({
-      name: `${candidate.name} (${candidate.cost}-cost)`,
-      value: candidate.key,
+      name: `${candidate.name} (${candidate.cost}-cost, ${setLabels.get(candidate.setKey) ?? candidate.setKey})`,
+      value: `${candidate.setKey}::${candidate.key}`,
     }),
   );
 
   if (options.length === 0) {
+    const setNames = setKeys
+      .map((key) => setLabels.get(key) ?? key)
+      .join(", ");
     throw new Error(
-      `No 3-cost or 4-cost echoes found for set "${setLabels.get(primarySetKey) ?? primarySetKey}"`,
+      `No 3-cost or 4-cost echoes found for set(s): ${setNames}`,
     );
   }
 
-  return search({
+  const selected = await search({
     message: "Main echo (slot 0 — provides echo skill bonus)",
     source: async (query) => {
       const normalized = (query ?? "").trim().toLowerCase();
@@ -188,6 +249,12 @@ async function promptMainEchoKey(
       );
     },
   });
+
+  const [setKey, key] = selected.split("::");
+  if (!setKey || !key) {
+    throw new Error(`Invalid main echo selection: ${selected}`);
+  }
+  return { key, setKey };
 }
 
 export async function runGenerateEchoPreset(): Promise<void> {
@@ -250,13 +317,11 @@ export async function runGenerateEchoPreset(): Promise<void> {
   });
 
   const setKeys: string[] = [];
-  const primarySet = await promptSetKey("Primary echo set", setLabels);
-  setKeys.push(primarySet);
-  const mainEchoKey = await promptMainEchoKey(
-    echoCandidates,
-    primarySet,
+  const primarySet = await promptSetKey(
+    setCombo === "221" ? "First 2-piece echo set" : "Primary echo set",
     setLabels,
   );
+  setKeys.push(primarySet);
 
   if (setCombo === "23") {
     const secondarySet = await promptSetKey("Secondary echo set (2-piece)", setLabels);
@@ -267,14 +332,25 @@ export async function runGenerateEchoPreset(): Promise<void> {
   }
 
   if (setCombo === "221") {
-    const secondarySet = await promptSetKey("Secondary echo set (2-piece)", setLabels);
-    const tertiarySet = await promptSetKey("Tertiary echo set (1-piece)", setLabels);
+    const secondarySet = await promptSetKey("Second 2-piece echo set", setLabels);
+    const tertiarySet = await promptSetKey(
+      "1-piece echo set (can be the main echo)",
+      setLabels,
+    );
     setKeys.push(secondarySet, tertiarySet);
   }
 
   if (setCombo === "25" && setKeys.length === 1) {
     // 2+5 uses the same set for all echoes; the 2-piece automatically matches.
   }
+
+  const mainEchoSetKeys =
+    setCombo === "221" ? setKeys : [primarySet];
+  const mainEcho = await promptMainEcho(
+    echoCandidates,
+    mainEchoSetKeys,
+    setLabels,
+  );
 
   const setStyle = await select({
     message: "Echo cost layout",
@@ -304,8 +380,10 @@ export async function runGenerateEchoPreset(): Promise<void> {
 
   const fourCostMains = await promptFourCostMains(setStyle);
   const characterElement = normalizeElementMainStat(character.element);
-  const { threeCostMainCount, threeCostMain, threeCostElement } =
-    await promptThreeCostConfig(setStyle, characterElement);
+  const threeCostMains = await promptThreeCostConfig(
+    setStyle,
+    characterElement,
+  );
 
   const attackType = await select({
     message: "Main attack type bonus",
@@ -350,10 +428,9 @@ export async function runGenerateEchoPreset(): Promise<void> {
     setStyle: setStyle as SetStyle,
     targetEr: Number(targetErInput),
     fourCostMains,
-    threeCostMain,
-    threeCostMainCount,
-    ...(threeCostElement ? { threeCostElement } : {}),
-    mainEchoKey,
+    threeCostMains,
+    mainEchoKey: mainEcho.key,
+    mainEchoSetKey: mainEcho.setKey,
     mainStatFocus: mainStatFocus as MainStatFocus,
     attackType: attackType as AttackTypeChoice,
   };
