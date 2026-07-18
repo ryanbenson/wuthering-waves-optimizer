@@ -38,7 +38,7 @@ const router = createRouter({
   routes,
 });
 
-if (!window.Cypress) {
+if (window && !window?.Cypress) {
   inject();
 }
 

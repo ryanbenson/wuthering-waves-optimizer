@@ -122,7 +122,7 @@ export function applyMigrationTransforms(
  * and import applies transforms via applyMigrationTransforms.
  */
 export function runMigrations() {
-  if (typeof window !== "undefined" && window.Cypress) {
+  if (typeof window !== "undefined" && (window as any)?.Cypress) {
     return;
   }
 
