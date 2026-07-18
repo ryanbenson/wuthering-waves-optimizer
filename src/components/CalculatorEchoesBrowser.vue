@@ -96,6 +96,33 @@
                 :class="echoSet" />
             </button>
           </div>
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost btn-square"
+            :class="{ 'btn-active': favoriteFilter }"
+            v-tooltip="'Show only favorite echoes'"
+            aria-label="Show favorites only"
+            data-test-filter-favorites
+            @click="favoriteFilter = !favoriteFilter">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="size-4"
+              aria-hidden="true">
+              <path
+                v-if="favoriteFilter"
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                fill="currentColor" />
+              <path
+                v-else
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
           <button @click="resetFilters" class="btn btn-sm btn-ghost">
             Clear
           </button>
@@ -206,11 +233,12 @@ const echoSet = ref<string | null>(null);
 const echo = ref<string | null>(null);
 const equippedFilter = ref<"self" | "any" | null>(null);
 const mainStatFilter = ref<string | null>(null);
+const favoriteFilter = ref(false);
 const page = ref(1);
 const perPage = 20;
 const isOpen = ref(false);
 
-watch([mainStatFilter, echoSet, echo], () => {
+watch([mainStatFilter, echoSet, echo, favoriteFilter], () => {
   page.value = 1;
 });
 
@@ -250,6 +278,9 @@ const echoesList = computed(() => {
           const equippedEchoIds = echoIdsEquippedByAnyChars.value;
           allEchoes = allEchoes.filter((item: any) => !equippedEchoIds.includes(item.echoId));
         }
+      }
+      if (favoriteFilter.value) {
+        allEchoes = allEchoes.filter((item: any) => item.favorite);
       }
 
       return allEchoes;
@@ -363,6 +394,7 @@ function resetFilters() {
       mainStatFilter.value = null;
       costFilter.value = null;
       equippedFilter.value = null;
+      favoriteFilter.value = false;
     }
 function prevPage() {
       if (page.value <= 1) {

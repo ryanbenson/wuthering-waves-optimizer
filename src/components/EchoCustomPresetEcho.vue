@@ -1,23 +1,25 @@
 <template>
-    <div class="presetEcho">
-                <div
-              class="echo__item__image rounded-full border border-solid neutral-content size-16 bg-cover min-w-16 text-center"
-              :class="{
-                'border-amber-300': rank === '5' || rank === 5,
-                'border-violet-600': rank === '4' || rank === 4,
-                'border-blue-500': rank === '3' || rank === 3,
-                'border-green-500': rank === '2' || rank === 2,
-              }"
-              :style="{
-                backgroundImage: `url(${echoImage})`,
-              }"></div>
-            </div>
+  <div class="presetEcho relative w-fit">
+    <EchoFavoriteButton overlay :echo-id="echoId || null" />
+    <div
+      class="echo__item__image rounded-full border border-solid neutral-content size-16 bg-cover min-w-16 text-center"
+      :class="{
+        'border-amber-300': rank === '5' || rank === 5,
+        'border-violet-600': rank === '4' || rank === 4,
+        'border-blue-500': rank === '3' || rank === 3,
+        'border-green-500': rank === '2' || rank === 2,
+      }"
+      :style="{
+        backgroundImage: `url(${echoImage})`,
+      }"></div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 import { getEchoData } from "../echoes/index.ts";
 import { useInventoryStore } from "../stores/inventory";
+import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 
 const props = defineProps<{
   echoId: string;
