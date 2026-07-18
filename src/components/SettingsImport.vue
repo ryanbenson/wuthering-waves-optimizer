@@ -58,11 +58,11 @@
 
 <script setup lang="ts">
 /**
- * Version 1 (which has no meta) only includes character data as a root property
- * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
+ * Version 1 — character payload only (no meta wrapper)
+ * Version 2 — { meta, data: { character, inventory } }
+ * Version 3+ — schema migrations (see src/migrations); still uses the v2 shape
  *
- * meta.storageVersion tracks the localStorage schema (see src/migrations).
- * On import we apply pending transforms, then mark storage as current.
+ * On import we apply pending transforms from meta.version, then mark current.
  */
 import { ref } from "vue";
 import { useCharacterStore } from "../stores/character";
@@ -71,8 +71,10 @@ import { randomString } from "../utils/strings";
 import { useToast } from "../composables/useToast";
 import {
   applyMigrationTransforms,
-  CURRENT_STORAGE_VERSION,
-  setStoredStorageVersion,
+  CURRENT_DATA_VERSION,
+  hasNestedExportFormat,
+  parseMetaDataVersion,
+  setStoredDataVersion,
 } from "../migrations";
 
 const { showToast } = useToast();
@@ -94,37 +96,31 @@ function getImportData(data: string | object, toParse = false) {
   const returnData: {
     character: unknown;
     inventory: unknown;
-    storageVersion: number;
-  } = { character: undefined, inventory: undefined, storageVersion: 0 };
+    dataVersion: number;
+  } = { character: undefined, inventory: undefined, dataVersion: 1 };
   const pd = parsedData as {
-    meta?: { version?: string; storageVersion?: number };
+    meta?: { version?: string | number; storageVersion?: number };
     data?: { character?: unknown; inventory?: unknown };
   };
-  if (pd?.meta && pd?.meta.version === "2") {
+  if (pd?.meta && hasNestedExportFormat(pd.meta)) {
     returnData.character = pd?.data?.character;
     returnData.inventory = pd?.data?.inventory;
-    returnData.storageVersion =
-      typeof pd.meta.storageVersion === "number" ? pd.meta.storageVersion : 0;
+    returnData.dataVersion = parseMetaDataVersion(pd.meta);
   } else {
     returnData.character = parsedData;
     returnData.inventory = { echoes: [], equipped: {} };
-    returnData.storageVersion = 0;
+    returnData.dataVersion = 1;
   }
   return returnData;
 }
 
-function parseStorePayload(
-  payload: unknown,
-  fromStorageVersion: number,
-): unknown {
+function parseStorePayload(payload: unknown, fromDataVersion: number): unknown {
   let value = payload;
   if (typeof value === "string") {
-    value = JSON.parse(
-      applyMigrationTransforms(value, fromStorageVersion),
-    );
+    value = JSON.parse(applyMigrationTransforms(value, fromDataVersion));
   } else if (value != null && typeof value === "object") {
     value = JSON.parse(
-      applyMigrationTransforms(JSON.stringify(value), fromStorageVersion),
+      applyMigrationTransforms(JSON.stringify(value), fromDataVersion),
     );
   }
   return value;
@@ -136,16 +132,13 @@ function applyImportedDatabase(raw: string) {
   const inventoryStoreLocal = useInventoryStore();
 
   characterStore.hardSetState(
-    parseStorePayload(importData.character, importData.storageVersion) as never,
+    parseStorePayload(importData.character, importData.dataVersion) as never,
   );
   inventoryStoreLocal.hardSetState(
-    parseStorePayload(
-      importData.inventory,
-      importData.storageVersion,
-    ) as never,
+    parseStorePayload(importData.inventory, importData.dataVersion) as never,
   );
   // Transforms above bring data to the latest schema
-  setStoredStorageVersion(CURRENT_STORAGE_VERSION);
+  setStoredDataVersion(CURRENT_DATA_VERSION);
 }
 
 /**

@@ -1,22 +1,31 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import {
   applyMigrationTransforms,
-  CURRENT_STORAGE_VERSION,
-  getStoredStorageVersion,
+  BASELINE_DATA_VERSION,
+  CURRENT_DATA_VERSION,
+  DATA_VERSION_KEY,
+  getStoredDataVersion,
+  parseMetaDataVersion,
   runMigrations,
-  STORAGE_VERSION_KEY,
 } from "./index";
 
-describe("storage migrations", () => {
+describe("data migrations", () => {
   beforeEach(() => {
     localStorage.clear();
   });
 
-  it("treats missing version as 0", () => {
-    expect(getStoredStorageVersion()).toBe(0);
+  it("treats missing version as baseline (v2 export era)", () => {
+    expect(getStoredDataVersion()).toBe(BASELINE_DATA_VERSION);
   });
 
-  it("renames SunSinkingEclipse in character and inventory on v1", () => {
+  it("folds interim storageVersion=1 into data version 3", () => {
+    localStorage.setItem("storageVersion", "1");
+    expect(getStoredDataVersion()).toBe(3);
+    expect(localStorage.getItem("storageVersion")).toBeNull();
+    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe("3");
+  });
+
+  it("renames SunSinkingEclipse in character and inventory on v3", () => {
     localStorage.setItem(
       "character",
       JSON.stringify({
@@ -40,7 +49,7 @@ describe("storage migrations", () => {
 
     runMigrations();
 
-    expect(getStoredStorageVersion()).toBe(CURRENT_STORAGE_VERSION);
+    expect(getStoredDataVersion()).toBe(CURRENT_DATA_VERSION);
     const character = localStorage.getItem("character") ?? "";
     expect(character).toContain("HavocEclipse");
     expect(character).not.toContain("SunSinkingEclipse");
@@ -48,11 +57,11 @@ describe("storage migrations", () => {
     expect(character).toContain("Havoc Eclipse 5 Set");
     expect(character).not.toContain("Sun-sinking Eclipse");
     expect(localStorage.getItem("inventory")).toContain("HavocEclipse");
-    expect(localStorage.getItem(STORAGE_VERSION_KEY)).toBe("1");
+    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe("3");
   });
 
   it("is a no-op when already at current version", () => {
-    localStorage.setItem(STORAGE_VERSION_KEY, String(CURRENT_STORAGE_VERSION));
+    localStorage.setItem(DATA_VERSION_KEY, String(CURRENT_DATA_VERSION));
     localStorage.setItem(
       "character",
       JSON.stringify({
@@ -64,7 +73,6 @@ describe("storage migrations", () => {
 
     runMigrations();
 
-    // Intentionally left alone — version gate skipped the rename
     expect(localStorage.getItem("character")).toContain("SunSinkingEclipse");
   });
 
@@ -77,7 +85,7 @@ describe("storage migrations", () => {
         setBonusTwo: "Sun-sinking Eclipse 5 Set",
       },
     });
-    expect(applyMigrationTransforms(input)).toBe(
+    expect(applyMigrationTransforms(input, 2)).toBe(
       JSON.stringify({
         echoSet: "HavocEclipse",
         passives: { HavocEclipse2SetHavoc: true },
@@ -87,5 +95,12 @@ describe("storage migrations", () => {
         },
       }),
     );
+  });
+
+  it("parseMetaDataVersion reads meta.version and interim storageVersion", () => {
+    expect(parseMetaDataVersion({ version: "2" })).toBe(2);
+    expect(parseMetaDataVersion({ version: "3" })).toBe(3);
+    expect(parseMetaDataVersion({ version: "2", storageVersion: 1 })).toBe(3);
+    expect(parseMetaDataVersion(undefined)).toBe(1);
   });
 });

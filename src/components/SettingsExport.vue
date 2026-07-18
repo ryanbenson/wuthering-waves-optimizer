@@ -21,15 +21,16 @@
 
 <script setup lang="ts">
 /**
- * Version 1 (which has no meta) only includes character data as a root property
- * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
+ * Version 1 — character payload only (no meta wrapper)
+ * Version 2 — { meta, data: { character, inventory } }
+ * Version 3+ — schema migrations (see src/migrations); still uses the v2 shape
  *
- * meta.storageVersion tracks the localStorage schema (see src/migrations).
+ * meta.version is the single data-version timeline.
  */
 import { useToast } from "../composables/useToast";
 import {
-  CURRENT_STORAGE_VERSION,
-  getStoredStorageVersion,
+  CURRENT_DATA_VERSION,
+  getStoredDataVersion,
 } from "../migrations";
 
 const { showToast } = useToast();
@@ -39,8 +40,7 @@ const { showToast } = useToast();
  */
 function getData() {
   const meta = {
-    version: "2",
-    storageVersion: getStoredStorageVersion() || CURRENT_STORAGE_VERSION,
+    version: String(getStoredDataVersion() || CURRENT_DATA_VERSION),
     source: "WutheringTools",
   };
   const data = {
