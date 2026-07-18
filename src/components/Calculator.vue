@@ -14,7 +14,7 @@
     </Nav>
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
-        <div class="alert alert-success mb-6">
+        <div v-if="false" class="alert alert-success mb-6">
           Version 3.5 content is now available
         </div>
         <div>
@@ -94,7 +94,7 @@
           :character="character"
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
-      <div class="screen--optimizer" v-show="curScreen === 'optimizer'">
+      <div class="screen--optimizer" v-if="curScreen === 'optimizer'">
         <CalculatorOptimizer
           :key="character"
           :character="character"

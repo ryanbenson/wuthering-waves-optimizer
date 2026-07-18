@@ -2,6 +2,12 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>July 18, 2026</h3>
+    <ul>
+      <li>Removes old Sun-Sinking Eclipse echo set.</li>
+      <li>Adds migration system to help fix any data issues.</li>
+      <li>Fixes Cantarella's echo presets not showing up.</li>
+    </ul>
     <h3>July 11, 2026</h3>
     <ul>
       <li>Adds echo presets for Cantarella, Chisa, Ciaccona, Denia, Iuno, Lucilla, Jianxin, Lucy.</li>

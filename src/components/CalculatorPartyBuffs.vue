@@ -238,7 +238,7 @@
     <div
       class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
       data-test-party-buff-echoes-collapse-bar>
-      <input type="checkbox" />
+      <input type="checkbox" v-model="echoBuffsExpanded" />
       <h3 class="collapse-title text-xl party-buffs__collapse-title">
         <span>Echo Buffs</span>
         <span class="badge badge-neutral badge-sm shrink-0">
@@ -258,7 +258,7 @@
           :min-stacks="buff.minStacks"
           :max-stacks="buff.maxStacks"
           :modifiers="buff.modifiers"
-          :buff-image-url="buff.imageUrl"
+          :buff-image-url="echoBuffsExpanded ? buff.imageUrl : ''"
           :input-base="buff.inputBase"
           :modifier-based-on="buff.modifierBasedOn ?? null"
           @updated-party-buff="handleUpdatedPartyBuffEcho"
@@ -270,7 +270,7 @@
     <div
       class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
       data-test-party-buff-weapons-collapse-bar>
-      <input type="checkbox" />
+      <input type="checkbox" v-model="weaponBuffsExpanded" />
       <h3 class="collapse-title text-xl party-buffs__collapse-title">
         <span>Weapon Buffs</span>
         <span class="badge badge-neutral badge-sm shrink-0">
@@ -290,7 +290,7 @@
           :min-stacks="buff.minStacks"
           :max-stacks="buff.maxStacks"
           :modifiers="buff.modifiers"
-          :buff-image-url="buff.imageUrl"
+          :buff-image-url="weaponBuffsExpanded ? buff.imageUrl : ''"
           :input-base="buff.inputBase"
           :modifier-based-on="buff.modifierBasedOn ?? null"
           @updated-party-buff="handleUpdatedPartyBuffEcho"
@@ -339,6 +339,8 @@ const buffsDataChar1 = ref<PartyBuffEmit[]>([]);
 const buffsDataChar2 = ref<PartyBuffEmit[]>([]);
 const buffsDataEcho = ref<PartyBuffEmit[]>([]);
 const talentData = ref<Record<string, string>>({});
+const echoBuffsExpanded = ref(false);
+const weaponBuffsExpanded = ref(false);
 
 type PartyBuffDef = {
   key: string;

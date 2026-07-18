@@ -6,7 +6,12 @@
     <div class="">
       <div class="character__buff">
         <h2 class="text-lg flex items-center gap-2" :data-test-party-buff-title="uniqueKey">
-          <img v-if="buffImageUrl" :src="buffImageUrl" :alt="name" class="w-6 h-6 object-contain rounded-full" />
+          <img
+            v-if="buffImageUrl"
+            :src="buffImageUrl"
+            :alt="name"
+            class="w-6 h-6 object-contain rounded-full"
+            loading="lazy" />
           {{ displayBuffName }}
         </h2>
         <div v-html="details"></div>

@@ -3,7 +3,7 @@
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
-    <div class="modal-box max-w-5xl">
+    <div v-if="isOpen" class="modal-box max-w-5xl">
       <form method="dialog" @click="handleClose">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕
@@ -137,7 +137,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import { storeToRefs } from "pinia";
 import {
   allCharactersList,
@@ -211,13 +211,17 @@ const charactersList = computed((): ListedCharacter[] => {
 });
 
 const modalElementRef = ref<HTMLDialogElement | null>(null);
+const isOpen = ref(false);
 
-function triggerOpenModal() {
+async function triggerOpenModal() {
+  isOpen.value = true;
+  await nextTick();
   modalElementRef.value?.showModal();
 }
 
 function triggerCloseModal() {
   modalElementRef.value?.close();
+  isOpen.value = false;
 }
 
 function reset() {
@@ -230,6 +234,7 @@ function reset() {
 
 function handleClose() {
   reset();
+  isOpen.value = false;
 }
 
 function toggleElementFilter(element: string) {

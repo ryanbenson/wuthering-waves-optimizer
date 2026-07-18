@@ -3,7 +3,7 @@
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
-    <div class="modal-box max-w-5xl">
+    <div v-if="isOpen" class="modal-box max-w-5xl">
       <form method="dialog" @click="handleClose" data-test-weapon-browser-close>
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕
@@ -99,7 +99,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineExpose, ref } from "vue";
+import { computed, defineExpose, nextTick, ref } from "vue";
 import CalculatorWeaponCard from "./CalculatorWeaponCard.vue";
 
 type WeaponRow = { key: string; name: string; rarity?: number; [k: string]: unknown };
@@ -120,6 +120,7 @@ const emit = defineEmits<{
 }>();
 
 const filterRarity = ref<number | null>(null);
+const isOpen = ref(false);
 
 const weaponsListFormatted = computed(() => {
   const weapons: WeaponRow[] = [];
@@ -154,7 +155,9 @@ const weaponsListed = computed(() => {
   return weapons;
 });
 
-function triggerOpenModal() {
+async function triggerOpenModal() {
+  isOpen.value = true;
+  await nextTick();
   const modalEl = document.getElementById("modal-weapon-browser") as HTMLDialogElement | null;
   modalEl?.showModal();
 }
@@ -162,6 +165,7 @@ function triggerOpenModal() {
 function triggerCloseModal() {
   const modalEl = document.getElementById("modal-weapon-browser") as HTMLDialogElement | null;
   modalEl?.close();
+  isOpen.value = false;
 }
 
 defineExpose({ triggerOpenModal, triggerCloseModal });
@@ -172,6 +176,7 @@ function reset() {
 
 function handleClose() {
   reset();
+  isOpen.value = false;
 }
 
 function toggleRarityFilter(rarity: number) {

@@ -175,40 +175,6 @@ const allBoxes = computed(() =>
   ]),
 );
 
-const allFourCostEchoes = computed(() =>
-  Object.values(mainEchoesData ?? {}).filter(
-    (echo) => echo.class === "Overlord" || echo.class === "Calamity",
-  ),
-);
-
-const allThreeCostEchoes = computed(() =>
-  Object.values(mainEchoesData ?? {}).filter((echo) => echo.class === "Elite"),
-);
-
-const allOneCostEchoes = computed(() =>
-  Object.values(mainEchoesData ?? {}).filter((echo) => echo.class === "Common"),
-);
-
-function keyImageMap(
-  echoesList: { key: string; image: string }[],
-): Record<string, string> {
-  const map: Record<string, string> = {};
-  echoesList.forEach((echo) => {
-    map[echo.key] = echo.image;
-  });
-  return map;
-}
-
-const allFourCostEchoesKeyImageMap = computed(() =>
-  keyImageMap(allFourCostEchoes.value as { key: string; image: string }[]),
-);
-const allThreeCostEchoesKeyImageMap = computed(() =>
-  keyImageMap(allThreeCostEchoes.value as { key: string; image: string }[]),
-);
-const allOneCostEchoesKeyImageMap = computed(() =>
-  keyImageMap(allOneCostEchoes.value as { key: string; image: string }[]),
-);
-
 function onFileChange(e: Event) {
   const input = e.target as HTMLInputElement;
   const file = input.files?.[0];
@@ -655,16 +621,6 @@ function onPaste(event: ClipboardEvent) {
 }
 
 onMounted(() => {
-  const echoImages = [
-    ...Object.values(allOneCostEchoesKeyImageMap.value),
-    ...Object.values(allThreeCostEchoesKeyImageMap.value),
-    ...Object.values(allFourCostEchoesKeyImageMap.value),
-  ];
-  echoImages.forEach((url) => {
-    const img = new Image();
-    img.src = url;
-  });
-
   document.addEventListener("paste", onPaste);
 });
 

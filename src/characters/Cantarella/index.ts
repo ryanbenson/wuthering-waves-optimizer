@@ -9,7 +9,7 @@ import { buffs } from "./buffs.ts";
 import { resonanceChains } from "./resonanceChains.ts";
 import { outroAttacks } from "./outroAttacks.ts";
 import { tuneBreakAttacks } from "./tuneBreakAttacks.ts";
-import { rotations } from "./presets.ts";
+import { echoes, rotations } from "./presets.ts";
 
 export function getData() {
   return {
@@ -25,6 +25,7 @@ export function getData() {
     resonanceChains,
     outroAttacks,
     tuneBreakAttacks,
+    echoes,
     rotations,
   };
 }

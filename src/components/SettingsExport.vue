@@ -21,10 +21,14 @@
 
 <script setup lang="ts">
 /**
- * Version 1 (which has no meta) only includes character data as a root property
- * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
+ * Version 1 — character payload only (no meta wrapper)
+ * Version 2 — { meta, data: { character, inventory } }
+ * Version 3+ — schema migrations (see src/migrations); still uses the v2 shape
+ *
+ * meta.version is the single data-version timeline.
  */
 import { useToast } from "../composables/useToast";
+import { getExportDataVersion } from "../migrations";
 
 const { showToast } = useToast();
 
@@ -33,7 +37,7 @@ const { showToast } = useToast();
  */
 function getData() {
   const meta = {
-    version: "2",
+    version: String(getExportDataVersion()),
     source: "WutheringTools",
   };
   const data = {
