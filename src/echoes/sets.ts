@@ -9,7 +9,6 @@ export const twoSetBonuses: string[] = [
   "Void Thunder 2 Set",
   "Sierra Gale 2 Set",
   "Celestial Light 2 Set",
-  "Sun-sinking Eclipse 2 Set",
   "Havoc Eclipse 2 Set",
   "Rejuvenating Glow 2 Set",
   "Moonlit Clouds 2 Set",
@@ -47,7 +46,6 @@ export const fiveSetBonuses: string[] = [
   "Void Thunder 5 Set",
   "Sierra Gale 5 Set",
   "Celestial Light 5 Set",
-  "Sun-sinking Eclipse 5 Set",
   "Havoc Eclipse 5 Set",
   "Rejuvenating Glow 5 Set",
   "Moonlit Clouds 5 Set",
@@ -453,26 +451,6 @@ export const setBonusEffectsOne: Record<string, EchoSetBonus> = {
       },
     ],
     details: `<span class="Light">Spectro</span> DMG increased by <span class="Highlight">10%</span>`,
-  },
-  "Sun-sinking Eclipse 2 Set": {
-    name: "Sun-sinking Eclipse",
-    key: "SunSinkingEclipse2Set",
-    passives: [
-      {
-        key: "SunSinkingEclipse2SetHavoc",
-        details: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
-        modifiers: [
-          {
-            modifier: "Havoc",
-            modifierValue: 10,
-          },
-        ],
-        minStacks: 0,
-        maxStacks: 0,
-        alwaysEnabled: true,
-      },
-    ],
-    details: `<span class="Dark">Havoc</span> DMG increased by <span class="Highlight">10%</span>`,
   },
   "Havoc Eclipse 2 Set": {
     name: "Havoc Eclipse",
@@ -1032,27 +1010,6 @@ export const setBonusEffectsTwo: Record<string, EchoSetBonus> = {
         ],
         alwaysEnabled: false,
         details: `Upon using Intro Skill, <span class="Light">Spectro</span> DMG increases by <span class="Highlight">30%</span> for <span class="Highlight">15s.</span>`,
-      },
-    ],
-  },
-  "Sun-sinking Eclipse 5 Set": {
-    key: "SunSinkingEclipse5Set",
-    name: "Sun-sinking Eclipse",
-    details: `Upon using Basic Attack or Heavy Attack, <span class="Dark">Havoc</span> DMG increases by <span class="Highlight">7.5%</span>, stacking up to four times for <span class="Highlight">15s.</span>`,
-    passives: [
-      {
-        key: "SunSinkingEclipse5SetHavoc",
-        modifiers: [
-          {
-            modifier: "Havoc",
-            modifierValue: 7.5,
-          },
-        ],
-        maxStacks: 4,
-        minStacks: 0,
-        hasStacks: true,
-        alwaysEnabled: false,
-        details: `Upon using Basic Attack or Heavy Attack, <span class="Dark">Havoc</span> DMG increases by <span class="Highlight">7.5%</span>, stacking up to four times for <span class="Highlight">15s.</span>`,
       },
     ],
   },

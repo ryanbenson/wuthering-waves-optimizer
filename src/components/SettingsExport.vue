@@ -23,8 +23,14 @@
 /**
  * Version 1 (which has no meta) only includes character data as a root property
  * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
+ *
+ * meta.storageVersion tracks the localStorage schema (see src/migrations).
  */
 import { useToast } from "../composables/useToast";
+import {
+  CURRENT_STORAGE_VERSION,
+  getStoredStorageVersion,
+} from "../migrations";
 
 const { showToast } = useToast();
 
@@ -34,6 +40,7 @@ const { showToast } = useToast();
 function getData() {
   const meta = {
     version: "2",
+    storageVersion: getStoredStorageVersion() || CURRENT_STORAGE_VERSION,
     source: "WutheringTools",
   };
   const data = {

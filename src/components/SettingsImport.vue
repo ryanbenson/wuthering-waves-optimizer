@@ -60,12 +60,20 @@
 /**
  * Version 1 (which has no meta) only includes character data as a root property
  * Version 2, adds meta object, and puts data in: { meta, data: { character, inventory }}
+ *
+ * meta.storageVersion tracks the localStorage schema (see src/migrations).
+ * On import we apply pending transforms, then mark storage as current.
  */
 import { ref } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { randomString } from "../utils/strings";
 import { useToast } from "../composables/useToast";
+import {
+  applyMigrationTransforms,
+  CURRENT_STORAGE_VERSION,
+  setStoredStorageVersion,
+} from "../migrations";
 
 const { showToast } = useToast();
 
@@ -86,19 +94,58 @@ function getImportData(data: string | object, toParse = false) {
   const returnData: {
     character: unknown;
     inventory: unknown;
-  } = { character: undefined, inventory: undefined };
+    storageVersion: number;
+  } = { character: undefined, inventory: undefined, storageVersion: 0 };
   const pd = parsedData as {
-    meta?: { version?: string };
+    meta?: { version?: string; storageVersion?: number };
     data?: { character?: unknown; inventory?: unknown };
   };
   if (pd?.meta && pd?.meta.version === "2") {
     returnData.character = pd?.data?.character;
     returnData.inventory = pd?.data?.inventory;
+    returnData.storageVersion =
+      typeof pd.meta.storageVersion === "number" ? pd.meta.storageVersion : 0;
   } else {
     returnData.character = parsedData;
     returnData.inventory = { echoes: [], equipped: {} };
+    returnData.storageVersion = 0;
   }
   return returnData;
+}
+
+function parseStorePayload(
+  payload: unknown,
+  fromStorageVersion: number,
+): unknown {
+  let value = payload;
+  if (typeof value === "string") {
+    value = JSON.parse(
+      applyMigrationTransforms(value, fromStorageVersion),
+    );
+  } else if (value != null && typeof value === "object") {
+    value = JSON.parse(
+      applyMigrationTransforms(JSON.stringify(value), fromStorageVersion),
+    );
+  }
+  return value;
+}
+
+function applyImportedDatabase(raw: string) {
+  const importData = getImportData(raw, true);
+  const characterStore = useCharacterStore();
+  const inventoryStoreLocal = useInventoryStore();
+
+  characterStore.hardSetState(
+    parseStorePayload(importData.character, importData.storageVersion) as never,
+  );
+  inventoryStoreLocal.hardSetState(
+    parseStorePayload(
+      importData.inventory,
+      importData.storageVersion,
+    ) as never,
+  );
+  // Transforms above bring data to the latest schema
+  setStoredStorageVersion(CURRENT_STORAGE_VERSION);
 }
 
 /**
@@ -111,19 +158,7 @@ function importRawCharacterData() {
   if (isJsonString(importedRawCharacterData.value) === false) {
     return showToast("Character data given is invalid", "error");
   }
-  const importData = getImportData(importedRawCharacterData.value, true);
-  const characterStore = useCharacterStore();
-  let charData = importData.character;
-  if (typeof charData === "string") {
-    charData = JSON.parse(charData);
-  }
-  characterStore.hardSetState(charData as never);
-  const inventoryStoreLocal = useInventoryStore();
-  let inventoryData = importData.inventory;
-  if (typeof inventoryData === "string") {
-    inventoryData = JSON.parse(inventoryData);
-  }
-  inventoryStoreLocal.hardSetState(inventoryData as never);
+  applyImportedDatabase(importedRawCharacterData.value);
   showToast("Your data has been overwritten!", "success");
   importedRawCharacterData.value = "";
   window.setTimeout(() => location.reload(), 1500);
@@ -165,19 +200,7 @@ function confirmUpload() {
     showToast("Character data given is invalid", "error");
     return;
   }
-  const importData = getImportData(fileData.value, true);
-  const characterStore = useCharacterStore();
-  let charData = importData.character;
-  if (typeof charData === "string") {
-    charData = JSON.parse(charData);
-  }
-  characterStore.hardSetState(charData as never);
-  const inventoryStoreLocal = useInventoryStore();
-  let inventoryData = importData.inventory;
-  if (typeof inventoryData === "string") {
-    inventoryData = JSON.parse(inventoryData);
-  }
-  inventoryStoreLocal.hardSetState(inventoryData as never);
+  applyImportedDatabase(fileData.value);
   showToast("Your data has been overwritten!", "success");
   fileData.value = null;
   window.setTimeout(() => location.reload(), 1500);
@@ -195,7 +218,8 @@ function isJsonString(str: string | null) {
 
 async function importEchoesAddRaw() {
   try {
-    const data = JSON.parse(importEchoesAddRawText.value) as unknown[];
+    const normalized = applyMigrationTransforms(importEchoesAddRawText.value);
+    const data = JSON.parse(normalized) as unknown[];
     let amount = 0;
     for (const echo of data) {
       let id = randomString();

@@ -255,7 +255,7 @@ export const echoes = [
         "2": {
           type: 3,
           echo: "Tambourinist",
-          echoSet: "SunSinkingEclipse",
+          echoSet: "HavocEclipse",
           stat: "Havoc",
           echoSubStatsType1: "CritRate",
           echoSubStatsValue1: 8.1,
@@ -287,7 +287,7 @@ export const echoes = [
         "4": {
           type: 1,
           echo: "HavocWarrior",
-          echoSet: "SunSinkingEclipse",
+          echoSet: "HavocEclipse",
           stat: "ATK",
           echoSubStatsType1: "CritRate",
           echoSubStatsValue1: 8.1,
