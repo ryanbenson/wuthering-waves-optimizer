@@ -4,15 +4,22 @@
     <div class="card-body">
       <div class="character__content flex gap-6 flex-col justify-center items-center">
         <div class="character__item__left">
-          <div
-            class="character__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
-            :class="{
-              'border-amber-300': rarity === 5,
-              'border-violet-600': rarity === 4,
-            }"
-            :style="{
-              backgroundImage:`url(https://ryanbenson.github.io/wuthering-waves-assets/images/${nameKey}.png)`,
-            }"></div>
+          <div class="character__item__image-wrap relative mx-auto lg:m-0">
+            <FavoriteHeartButton
+              overlay
+              :active="isFavorite"
+              :test-id="nameKey"
+              @toggle="toggleFavorite" />
+            <div
+              class="character__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer"
+              :class="{
+                'border-amber-300': rarity === 5,
+                'border-violet-600': rarity === 4,
+              }"
+              :style="{
+                backgroundImage:`url(https://ryanbenson.github.io/wuthering-waves-assets/images/${nameKey}.png)`,
+              }"></div>
+          </div>
         </div>
         <div class="character__item__stats mb-2 w-full relative flex flex-col  justify-center items-center">
           <h2 class="card-title flex items-center">
@@ -52,7 +59,9 @@ import {
   weaponTypesImageMap,
 } from "../characters/characters";
 import type { CharacterBuildStatus as CharacterBuildStatusType } from "../characters/characterBuildStatus";
+import { useCharacterStore } from "../stores/character";
 import CharacterBuildStatus from "./CharacterBuildStatus.vue";
+import FavoriteHeartButton from "./FavoriteHeartButton.vue";
 
 interface Props {
   name: string;
@@ -67,6 +76,16 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   isActive: false,
 });
+
+const characterStore = useCharacterStore();
+
+const isFavorite = computed(() =>
+  characterStore.isFavoriteCharacter(props.nameKey),
+);
+
+function toggleFavorite() {
+  characterStore.toggleFavoriteCharacter(props.nameKey);
+}
 
 const elementImage = computed(
   () => characterElementsSetImageMap[props.element] ?? null,

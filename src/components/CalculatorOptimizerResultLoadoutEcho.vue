@@ -5,17 +5,20 @@
     <div class="card-body">
       <div
         class="echo__content flex flex-col gap-2 relative items-center justify-center">
-        <div
-          class="echo__item__image rounded-full border border-solid neutral-content size-16 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
-          :class="{
-            'border-amber-300': rank === '5' || rank === 5,
-            'border-violet-600': rank === '4' || rank === 4,
-            'border-blue-500': rank === '3' || rank === 3,
-            'border-green-500': rank === '2' || rank === 2,
-          }"
-          :style="{
-            backgroundImage: `url(${echoImage})`,
-          }"></div>
+        <div class="echo__item__image-wrap relative mx-auto lg:m-0 w-fit">
+          <EchoFavoriteButton overlay :echo-id="echoId || null" />
+          <div
+            class="echo__item__image rounded-full border border-solid neutral-content size-16 mb-2 bg-cover cursor-pointer"
+            :class="{
+              'border-amber-300': rank === '5' || rank === 5,
+              'border-violet-600': rank === '4' || rank === 4,
+              'border-blue-500': rank === '3' || rank === 3,
+              'border-green-500': rank === '2' || rank === 2,
+            }"
+            :style="{
+              backgroundImage: `url(${echoImage})`,
+            }"></div>
+        </div>
         <span
           class="echo__item__cost badge badge-primary text-nowrap absolute right-0 top-0">
           {{ type }}
@@ -114,6 +117,7 @@ import {
   getRollValue,
 } from "../echoes/stats";
 import { getEchoData } from "../echoes/index.ts";
+import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 
 defineOptions({ name: "CalculatorOptimizerResultLoadoutEcho" });
 

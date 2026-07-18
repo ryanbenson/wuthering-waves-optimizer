@@ -13,17 +13,20 @@
         <div
           class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row">
           <div class="echo__item__img-actions flex flex-col gap-2 items-center">
-            <div
-              class="echo__item__image rounded-full border border-solid neutral-content size-24 bg-cover min-w-24 text-center"
-              :class="{
-                'border-amber-300': rank === '5' || rank === 5,
-                'border-violet-600': rank === '4' || rank === 4,
-                'border-blue-500': rank === '3' || rank === 3,
-                'border-green-500': rank === '2' || rank === 2,
-              }"
-              :style="{
-                backgroundImage: `url(${echoImage})`,
-              }"></div>
+            <div class="echo__item__image-wrap relative">
+              <EchoFavoriteButton overlay :echo-id="echoId" />
+              <div
+                class="echo__item__image rounded-full border border-solid neutral-content size-24 bg-cover min-w-24 text-center"
+                :class="{
+                  'border-amber-300': rank === '5' || rank === 5,
+                  'border-violet-600': rank === '4' || rank === 4,
+                  'border-blue-500': rank === '3' || rank === 3,
+                  'border-green-500': rank === '2' || rank === 2,
+                }"
+                :style="{
+                  backgroundImage: `url(${echoImage})`,
+                }"></div>
+            </div>
             <button @click="openEchoPicker" class="btn btn-sm btn--echo--find">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -594,6 +597,7 @@ import {
 } from "../echoes/index.ts";
 import { subStatsTable } from "../echoes/stats.ts";
 import Range from "./input/Range.vue";
+import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 
 type MainEchoRow = (typeof mainEchoesData)[keyof typeof mainEchoesData];
 

@@ -4,6 +4,8 @@
     <h1>Updates</h1>
     <h3>July 18, 2026</h3>
     <ul>
+      <li>Adds ability to favorite echoes and filter by favorites in inventory and echo browsers.</li>
+      <li>Adds favorite hearts on character cards in the character browser.</li>
       <li>Removes old Sun-Sinking Eclipse echo set.</li>
       <li>Adds migration system to help fix any data issues.</li>
       <li>Fixes Cantarella's echo presets not showing up.</li>

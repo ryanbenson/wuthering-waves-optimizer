@@ -79,6 +79,33 @@
       <button
         type="button"
         class="btn btn-sm btn-ghost btn-square"
+        :class="{ 'btn-active': favoriteFilter }"
+        v-tooltip="'Show only favorite echoes'"
+        aria-label="Show favorites only"
+        data-test-filter-favorites
+        @click="favoriteFilter = !favoriteFilter">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          class="size-4"
+          aria-hidden="true">
+          <path
+            v-if="favoriteFilter"
+            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+            fill="currentColor" />
+          <path
+            v-else
+            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-ghost btn-square"
         :class="{ 'btn-active': lockedFilter }"
         v-tooltip="'Show only locked echoes'"
         aria-label="Show locked only"
@@ -223,6 +250,7 @@ type InventoryEchoRow = {
   locked?: boolean;
   trash?: boolean;
   ignoreFromOptimizer?: boolean;
+  favorite?: boolean;
   rank?: number;
   type?: string | number | null;
   echoSet?: string | null;
@@ -275,6 +303,7 @@ const mainStatFilter = ref<string | null>(null);
 const lockedFilter = ref(false);
 const trashFilter = ref(false);
 const ignoreFromOptimizerFilter = ref(false);
+const favoriteFilter = ref(false);
 const page = ref(1);
 const perPage = 20;
 
@@ -282,7 +311,7 @@ const inventoryStore = useInventoryStore();
 const { echoes } = storeToRefs(inventoryStore);
 const { getEchoEquippedChars, saveEcho, getEchoById } = inventoryStore;
 
-watch([mainStatFilter, echoSet, echo, lockedFilter, trashFilter, ignoreFromOptimizerFilter], () => {
+watch([mainStatFilter, echoSet, echo, lockedFilter, trashFilter, ignoreFromOptimizerFilter, favoriteFilter], () => {
   page.value = 1;
 });
 
@@ -313,6 +342,9 @@ const echoesList = computed(() => {
   }
   if (ignoreFromOptimizerFilter.value) {
     allEchoes = allEchoes.filter((e) => e.ignoreFromOptimizer);
+  }
+  if (favoriteFilter.value) {
+    allEchoes = allEchoes.filter((e) => e.favorite);
   }
   return allEchoes;
 });
@@ -410,6 +442,7 @@ function resetFilters() {
   lockedFilter.value = false;
   trashFilter.value = false;
   ignoreFromOptimizerFilter.value = false;
+  favoriteFilter.value = false;
 }
 
 function prevPage() {
@@ -487,6 +520,7 @@ async function duplicateEcho(sourceEchoId: string) {
     locked: false,
     trash: false,
     ignoreFromOptimizer: false,
+    favorite: false,
   });
 }
 

@@ -22,12 +22,14 @@ export function useEchoInventory() {
           locked?: boolean;
           trash?: boolean;
           ignoreFromOptimizer?: boolean;
+          favorite?: boolean;
         }
       | undefined;
     return {
       locked: Boolean(echo?.locked),
       trash: Boolean(echo?.trash),
       ignoreFromOptimizer: Boolean(echo?.ignoreFromOptimizer),
+      favorite: Boolean(echo?.favorite),
     };
   }
 
@@ -50,6 +52,11 @@ export function useEchoInventory() {
     inventoryStore.patchEcho(echoId, {
       ignoreFromOptimizer: !ignoreFromOptimizer,
     });
+  }
+
+  function toggleEchoFavorite(echoId: string) {
+    const { favorite } = getEchoFlags(echoId);
+    inventoryStore.patchEcho(echoId, { favorite: !favorite });
   }
 
   async function removeEchoFully(echoId: string): Promise<boolean> {
@@ -83,6 +90,7 @@ export function useEchoInventory() {
     toggleEchoLocked,
     toggleEchoTrash,
     toggleEchoIgnoreFromOptimizer,
+    toggleEchoFavorite,
     removeEchoFully,
     removeAllTrashEchoes,
   };

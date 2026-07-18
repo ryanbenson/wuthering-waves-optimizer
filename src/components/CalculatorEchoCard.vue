@@ -4,17 +4,22 @@
     <div class="card-body">
       <div class="echo__content flex gap-6 flex-col lg:flex-row">
         <div class="echo__item__left">
-          <div
-            class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer mx-auto lg:m-0"
-            :class="{
-              'border-amber-300': rank === '5' || rank === 5,
-              'border-violet-600': rank === '4' || rank === 4,
-              'border-blue-500': rank === '3' || rank === 3,
-              'border-green-500': rank === '2' || rank === 2,
-            }"
-            :style="{
-              backgroundImage: `url(${echoImage})`,
-            }"></div>
+          <div class="echo__item__image-wrap relative mx-auto lg:m-0 w-fit">
+            <EchoFavoriteButton
+              overlay
+              :echo-id="echoId || null" />
+            <div
+              class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer"
+              :class="{
+                'border-amber-300': rank === '5' || rank === 5,
+                'border-violet-600': rank === '4' || rank === 4,
+                'border-blue-500': rank === '3' || rank === 3,
+                'border-green-500': rank === '2' || rank === 2,
+              }"
+              :style="{
+                backgroundImage: `url(${echoImage})`,
+              }"></div>
+          </div>
         </div>
         <div class="echo__item__stats mb-2 w-full relative">
           <h2 class="card-title flex items-center justify-between">
@@ -134,6 +139,7 @@ import {
   getRollValue,
 } from "../echoes/stats";
 import { getEchoData } from "../echoes/index.ts";
+import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 
 const props = withDefaults(
   defineProps<{
