@@ -1,10 +1,10 @@
 <template>
-  <dialog :id="modalId" class="modal">
-    <form method="dialog" class="modal-backdrop">
+  <dialog :id="modalId" class="modal" @close="isEditOpen = false">
+    <form method="dialog" class="modal-backdrop" @click="closeEchoEditModal">
       <button>close</button>
     </form>
-    <div class="modal-box max-w-2xl">
-      <form method="dialog">
+    <div v-if="isEditOpen" class="modal-box max-w-2xl">
+      <form method="dialog" @click="closeEchoEditModal">
         <button
           class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
           data-test-echo-modal-close>
@@ -539,11 +539,11 @@
     </div>
   </dialog>
 
-  <dialog :id="modalIdPicker" class="modal">
+  <dialog :id="modalIdPicker" class="modal" @close="isPickerOpen = false">
     <form method="dialog" class="modal-backdrop" @click="closeEchoChooser">
       <button>close</button>
     </form>
-    <div class="modal-box max-w-5xl">
+    <div v-if="isPickerOpen" class="modal-box max-w-5xl">
       <form method="dialog" @click="closeEchoChooser">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕
@@ -837,7 +837,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
@@ -1119,6 +1119,8 @@ const mainEchoOptions = computed(() => {
 
 const modalId = computed(() => `echoModal${props.index}`);
 const modalIdPicker = computed(() => `echoModal${props.index}Picker`);
+const isPickerOpen = ref(false);
+const isEditOpen = ref(false);
 
 const totalSubStatsEnabled = computed(() => {
   const allValues = Object.values(allSubStatsEnabled.value);
@@ -1674,12 +1676,22 @@ function deleteSubStatData(mainStat: string) {
   }
 }
 
-function handleOpenModal() {
+async function handleOpenModal() {
+  isEditOpen.value = true;
+  await nextTick();
   const modalEl = document.getElementById(modalId.value);
   (modalEl as HTMLDialogElement | null)?.showModal();
 }
 
-function openEchoPicker() {
+function closeEchoEditModal() {
+  const modalEl = document.getElementById(modalId.value);
+  (modalEl as HTMLDialogElement | null)?.close();
+  isEditOpen.value = false;
+}
+
+async function openEchoPicker() {
+  isPickerOpen.value = true;
+  await nextTick();
   const modalEl = document.getElementById(modalIdPicker.value);
   (modalEl as HTMLDialogElement | null)?.showModal();
 }
@@ -1821,6 +1833,7 @@ function closeEchoChooser() {
   echoSetFilter.value = null;
   const modalEl = document.getElementById(modalIdPicker.value);
   (modalEl as HTMLDialogElement | null)?.close();
+  isPickerOpen.value = false;
 }
 
 watch(

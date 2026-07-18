@@ -3,7 +3,7 @@
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
-    <div class="modal-box max-w-5xl">
+    <div v-if="isOpen" class="modal-box max-w-5xl">
       <form method="dialog" @click="handleClose">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕
@@ -18,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+import { nextTick, ref } from "vue";
 import CalculatorEchoParser from "./CalculatorEchoParser.vue";
 import { verboseStatLabelMap } from "../echoes/stats";
 import { useCharacterStore } from "../stores/character";
@@ -25,6 +26,7 @@ import { useInventoryStore } from "../stores/inventory";
 import { randomString } from "../utils/strings.ts";
 
 const MODAL_ID = "modal-echoes-importer";
+const isOpen = ref(false);
 
 const props = withDefaults(
   defineProps<{
@@ -46,7 +48,9 @@ type ParsedEcho = {
   set?: string | null;
 };
 
-function triggerOpenModal() {
+async function triggerOpenModal() {
+  isOpen.value = true;
+  await nextTick();
   const modalEl = document.getElementById(MODAL_ID);
   (modalEl as HTMLDialogElement | null)?.showModal();
 }
@@ -54,6 +58,7 @@ function triggerOpenModal() {
 function triggerCloseModal() {
   const modalEl = document.getElementById(MODAL_ID);
   (modalEl as HTMLDialogElement | null)?.close();
+  isOpen.value = false;
 }
 
 function handleClose() {

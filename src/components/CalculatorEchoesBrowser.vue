@@ -3,7 +3,7 @@
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
-    <div class="modal-box max-w-5xl">
+    <div v-if="isOpen" class="modal-box max-w-5xl">
       <form method="dialog" @click="handleClose">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕
@@ -176,7 +176,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { mainEchoesData } from "../echoes/index.ts";
 import {
@@ -208,6 +208,7 @@ const equippedFilter = ref<"self" | "any" | null>(null);
 const mainStatFilter = ref<string | null>(null);
 const page = ref(1);
 const perPage = 20;
+const isOpen = ref(false);
 
 watch([mainStatFilter, echoSet, echo], () => {
   page.value = 1;
@@ -289,16 +290,21 @@ const allMainStats = computed(() => {
       return [...new Set(allOptions)];
     });
 
-function triggerOpenModal(index: number) {
+async function triggerOpenModal(index: number) {
       echoIndex.value = index;
+      isOpen.value = true;
+      await nextTick();
       const modalEl = document.getElementById("modal-echoes-browser");
       (modalEl as HTMLDialogElement | null)?.showModal();
     }
 function triggerCloseModal() {
       const modalEl = document.getElementById("modal-echoes-browser");
       (modalEl as HTMLDialogElement | null)?.close();
+      isOpen.value = false;
     }
-function handleClose() {}
+function handleClose() {
+      isOpen.value = false;
+    }
 function getEchoSetImage(type: string) {
       return getEchoSetIconByType(type);
     }

@@ -94,7 +94,7 @@
           :character="character"
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
-      <div class="screen--optimizer" v-show="curScreen === 'optimizer'">
+      <div class="screen--optimizer" v-if="curScreen === 'optimizer'">
         <CalculatorOptimizer
           :key="character"
           :character="character"
