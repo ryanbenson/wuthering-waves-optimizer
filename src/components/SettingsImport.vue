@@ -99,7 +99,7 @@ function getImportData(data: string | object, toParse = false) {
     dataVersion: number;
   } = { character: undefined, inventory: undefined, dataVersion: 1 };
   const pd = parsedData as {
-    meta?: { version?: string | number; storageVersion?: number };
+    meta?: { version?: string | number };
     data?: { character?: unknown; inventory?: unknown };
   };
   if (pd?.meta && hasNestedExportFormat(pd.meta)) {

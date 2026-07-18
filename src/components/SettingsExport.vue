@@ -28,10 +28,7 @@
  * meta.version is the single data-version timeline.
  */
 import { useToast } from "../composables/useToast";
-import {
-  CURRENT_DATA_VERSION,
-  getStoredDataVersion,
-} from "../migrations";
+import { getExportDataVersion } from "../migrations";
 
 const { showToast } = useToast();
 
@@ -40,7 +37,7 @@ const { showToast } = useToast();
  */
 function getData() {
   const meta = {
-    version: String(getStoredDataVersion() || CURRENT_DATA_VERSION),
+    version: String(getExportDataVersion()),
     source: "WutheringTools",
   };
   const data = {

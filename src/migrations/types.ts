@@ -17,16 +17,6 @@ export type Migration = {
   up: () => void;
 };
 
-export function applyReplacements(
-  json: string,
-  replacements: ReadonlyArray<readonly [string, string]>,
-): string {
-  return replacements.reduce(
-    (acc, [from, to]) => acc.split(from).join(to),
-    json,
-  );
-}
-
 export function transformPersistedStores(transform: (json: string) => string) {
   for (const key of PERSISTED_STORE_KEYS) {
     const raw = localStorage.getItem(key);
@@ -38,4 +28,55 @@ export function transformPersistedStores(transform: (json: string) => string) {
       localStorage.setItem(key, next);
     }
   }
+}
+
+function isEmptyPersistedPayload(raw: string): boolean {
+  if (!raw || raw === "" || raw === "null" || raw === "{}" || raw === "[]") {
+    return true;
+  }
+
+  try {
+    const data = JSON.parse(raw) as Record<string, unknown>;
+    if (Array.isArray(data)) {
+      return data.length === 0;
+    }
+    if (!data || typeof data !== "object") {
+      return true;
+    }
+
+    // Character store default / empty shell
+    if ("characters" in data) {
+      const characters = data.characters;
+      return (
+        !characters ||
+        typeof characters !== "object" ||
+        Object.keys(characters as object).length === 0
+      );
+    }
+
+    // Inventory store default / empty shell
+    if ("echoes" in data) {
+      const echoes = data.echoes;
+      const presets = data.echoPresets;
+      const hasEchoes = Array.isArray(echoes) && echoes.length > 0;
+      const hasPresets = Array.isArray(presets) && presets.length > 0;
+      return !hasEchoes && !hasPresets;
+    }
+  } catch {
+    return false;
+  }
+
+  return false;
+}
+
+/** True when character/inventory keys look like real saved user data. */
+export function hasPersistedUserData(): boolean {
+  for (const key of PERSISTED_STORE_KEYS) {
+    const raw = localStorage.getItem(key);
+    if (!raw || isEmptyPersistedPayload(raw)) {
+      continue;
+    }
+    return true;
+  }
+  return false;
 }

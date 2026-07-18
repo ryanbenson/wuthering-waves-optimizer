@@ -38,10 +38,14 @@ const router = createRouter({
   routes,
 });
 
-inject();
+if (!window.Cypress) {
+  inject();
+}
 
+console.time("runMigrations");
 // Upgrade persisted localStorage before Pinia hydrates stores from it
 runMigrations();
+console.timeEnd("runMigrations");
 
 const pinia = createPinia();
 pinia.use(

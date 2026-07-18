@@ -16,17 +16,11 @@
  * 3. Import it and append it to `migrations` below (keep sorted by version)
  */
 
-import type { Migration } from "./types";
+import { hasPersistedUserData, type Migration } from "./types";
 import renameSunSinkingEclipse from "./versions/003_renameSunSinkingEclipse";
 
 /** localStorage key that mirrors export `meta.version`. */
 export const DATA_VERSION_KEY = "dataVersion";
-
-/**
- * Interim key from the first migration draft. Migrated away on read.
- * @deprecated
- */
-const LEGACY_STORAGE_VERSION_KEY = "storageVersion";
 
 /**
  * Latest data version. Bump when adding a migration.
@@ -35,8 +29,8 @@ const LEGACY_STORAGE_VERSION_KEY = "storageVersion";
 export const CURRENT_DATA_VERSION = 3;
 
 /**
- * Version assumed when no data-version key exists yet (users already on the
- * v2 export-format era, before schema migrations).
+ * Version assumed when an existing user has data but no data-version key yet
+ * (v2 export-format era, before schema migrations).
  */
 export const BASELINE_DATA_VERSION = 2;
 
@@ -54,17 +48,10 @@ function parseVersion(raw: string | null | undefined): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-/**
- * Resolve a version number from export `meta` (and interim storageVersion).
- */
+/** Resolve a version number from export `meta`. */
 export function parseMetaDataVersion(meta?: {
   version?: string | number;
-  storageVersion?: number;
 }): number {
-  // Interim exports used storageVersion: 1 for the rename under old numbering
-  if (meta?.storageVersion === 1) {
-    return 3;
-  }
   const fromMeta = parseVersion(
     meta?.version == null ? null : String(meta.version),
   );
@@ -81,18 +68,11 @@ export function hasNestedExportFormat(meta?: {
   return parseMetaDataVersion(meta) >= 2;
 }
 
+/**
+ * Read-only version lookup. Does not write localStorage.
+ * Missing key → baseline (2) when the caller already knows data exists.
+ */
 export function getStoredDataVersion(): number {
-  // Fold interim key into the unified timeline
-  const legacy = parseVersion(localStorage.getItem(LEGACY_STORAGE_VERSION_KEY));
-  if (legacy === 1) {
-    localStorage.removeItem(LEGACY_STORAGE_VERSION_KEY);
-    setStoredDataVersion(3);
-    return 3;
-  }
-  if (legacy != null) {
-    localStorage.removeItem(LEGACY_STORAGE_VERSION_KEY);
-  }
-
   const stored = parseVersion(localStorage.getItem(DATA_VERSION_KEY));
   if (stored == null) {
     return BASELINE_DATA_VERSION;
@@ -102,6 +82,14 @@ export function getStoredDataVersion(): number {
 
 export function setStoredDataVersion(version: number) {
   localStorage.setItem(DATA_VERSION_KEY, String(version));
+}
+
+/**
+ * Version to embed in exports. Prefer the stored key; otherwise current.
+ */
+export function getExportDataVersion(): number {
+  const stored = parseVersion(localStorage.getItem(DATA_VERSION_KEY));
+  return stored ?? CURRENT_DATA_VERSION;
 }
 
 /**
@@ -126,9 +114,26 @@ export function applyMigrationTransforms(
 /**
  * Runs all migrations newer than the user's stored version.
  * Must run before Pinia stores hydrate from localStorage.
+ *
+ * Empty profiles are a true no-op (no localStorage writes). Writing during
+ * module init can prevent the document `load` event from firing in Cypress.
+ *
+ * Cypress also skips this entirely — fixtures are already at current schema,
+ * and import applies transforms via applyMigrationTransforms.
  */
 export function runMigrations() {
-  let version = getStoredDataVersion();
+  if (typeof window !== "undefined" && window.Cypress) {
+    return;
+  }
+
+  const explicitVersion = parseVersion(localStorage.getItem(DATA_VERSION_KEY));
+
+  // Brand-new / empty profile: nothing to upgrade, don't touch storage
+  if (explicitVersion == null && !hasPersistedUserData()) {
+    return;
+  }
+
+  let version = explicitVersion ?? BASELINE_DATA_VERSION;
   const pending = migrations
     .filter((migration) => migration.version > version)
     .sort((a, b) => a.version - b.version);
@@ -139,7 +144,7 @@ export function runMigrations() {
     setStoredDataVersion(version);
   }
 
-  // Ensure the key exists even when there was nothing pending (e.g. fresh install)
+  // Stamp current for profiles that already had data at the latest schema
   if (parseVersion(localStorage.getItem(DATA_VERSION_KEY)) == null) {
     setStoredDataVersion(CURRENT_DATA_VERSION);
   }
