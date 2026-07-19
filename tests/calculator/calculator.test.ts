@@ -267,4 +267,16 @@ describe("#getEnemyResistValue", () => {
     const result = getEnemyResistValue(enemyResist, resistanceReduction);
     expect(result).toEqual(expected);
   });
+  it("when resist reduction and resist ignore are combined", () => {
+    const enemyResist = 0.2;
+    const resistanceReduction = 0.05;
+    const resistanceIgnore = 0.1;
+    const expected = 0.95;
+    const result = getEnemyResistValue(
+      enemyResist,
+      resistanceReduction,
+      resistanceIgnore,
+    );
+    expect(result).toEqual(expected);
+  });
 });

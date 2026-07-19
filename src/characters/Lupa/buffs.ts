@@ -192,7 +192,7 @@ export const buffs = [
     hasStacks: true,
     modifiers: [
       {
-        modifier: "ResistShred:Fusion",
+        modifier: "ResistIgnore:Fusion",
         modifierValue: 0.03,
         modifySpecificTalents: [
           "Stage1DMG",
@@ -232,7 +232,7 @@ export const buffs = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ResistShred:Fusion",
+        modifier: "ResistIgnore:Fusion",
         modifierValue: 0.06,
         modifySpecificTalents: [
           "Stage1DMG",

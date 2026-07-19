@@ -69,6 +69,7 @@ const modifierOptions = computed(() => {
   allModifiers.push(["DMGDeepen:ElectroFlare", "Electro Flare DMG Amplify"]);
   allModifiers.push(["DMGDeepen:FusionBurst", "Fusion Burst DMG Amplify"]);
   allModifiers.push(["ResistShred", "Resist Reduction"]);
+  allModifiers.push(["ResistIgnore", "Resist Ignore"]);
   allModifiers.push(["DefIgnore", "DEF Ignore"]);
   allModifiers.push(["DefReduction", "DEF Reduction"]);
   allModifiers.push(["talentModifierMultiply", "DMG Multiplier"]);
