@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>July 21, 2026</h3>
+    <ul>
+      <li>Fixes Suisui's Inherent Skill: Sky Over Water buff.</li>
+    </ul>
     <h3>July 20, 2026</h3>
     <ul>
       <li>Adds resistance ignore, which works with resist reduction for normal damage, but properly handles negative statuses damage.</li>

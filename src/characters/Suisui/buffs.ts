@@ -49,7 +49,7 @@ export const buffs = [
         modifierValue: 0.8,
       },
       {
-        modifier: "CritDMG",
+        modifier: "Glacio",
         modifySpecificTalents: ["AwakeningSpringDMG", "TinklingJadeDMG"],
         modifierValue: 2.4,
       },
