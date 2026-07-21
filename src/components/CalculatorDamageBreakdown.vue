@@ -380,6 +380,32 @@
             </span>
             ))
           </template>
+          <template
+            v-else-if="usesNegativeBaseResistFormula(damage.totalDamageContext)">
+            = 1 - (
+            <span class="text-primary">
+              {{
+                displayPercentage(damage.totalDamageContext.enemyResist * 100)
+              }}
+            </span>
+            - (
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.resistanceReduction * 100,
+                )
+              }}
+            </span>
+            +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  resistanceIgnoreValue(damage.totalDamageContext) * 100,
+                )
+              }}
+            </span>
+            ) / 2)
+          </template>
           <template v-else>
             = 1 + ((
             <span class="text-primary">
@@ -656,6 +682,30 @@
           </span>
           ))
         </template>
+        <template
+          v-else-if="usesNegativeBaseResistFormula(damage.totalDamageContext)">
+          = 1 - (
+          <span class="text-primary">
+            {{ displayPercentage(damage.totalDamageContext.enemyResist * 100) }}
+          </span>
+          - (
+          <span class="text-primary">
+            {{
+              displayPercentage(
+                damage.totalDamageContext.resistanceReduction * 100,
+              )
+            }}
+          </span>
+          +
+          <span class="text-primary">
+            {{
+              displayPercentage(
+                resistanceIgnoreValue(damage.totalDamageContext) * 100,
+              )
+            }}
+          </span>
+          ) / 2)
+        </template>
         <template v-else>
           = 1 + ((
           <span class="text-primary">
@@ -915,6 +965,30 @@
           </span>
           ))
         </template>
+        <template
+          v-else-if="usesNegativeBaseResistFormula(damage.totalDamageContext)">
+          = 1 - (
+          <span class="text-primary">
+            {{ displayPercentage(damage.totalDamageContext.enemyResist * 100) }}
+          </span>
+          - (
+          <span class="text-primary">
+            {{
+              displayPercentage(
+                damage.totalDamageContext.resistanceReduction * 100,
+              )
+            }}
+          </span>
+          +
+          <span class="text-primary">
+            {{
+              displayPercentage(
+                resistanceIgnoreValue(damage.totalDamageContext) * 100,
+              )
+            }}
+          </span>
+          ) / 2)
+        </template>
         <template v-else>
           = 1 + ((
           <span class="text-primary">
@@ -1172,6 +1246,30 @@
           </span>
           ))
         </template>
+        <template
+          v-else-if="usesNegativeBaseResistFormula(damage.totalDamageContext)">
+          = 1 - (
+          <span class="text-primary">
+            {{ displayPercentage(damage.totalDamageContext.enemyResist * 100) }}
+          </span>
+          - (
+          <span class="text-primary">
+            {{
+              displayPercentage(
+                damage.totalDamageContext.resistanceReduction * 100,
+              )
+            }}
+          </span>
+          +
+          <span class="text-primary">
+            {{
+              displayPercentage(
+                resistanceIgnoreValue(damage.totalDamageContext) * 100,
+              )
+            }}
+          </span>
+          ) / 2)
+        </template>
         <template v-else>
           = 1 + ((
           <span class="text-primary">
@@ -1281,10 +1379,23 @@ function totalResistancePenetration(ctx: Record<string, any> = {}): number {
   return (ctx.resistanceReduction ?? 0) + resistanceIgnoreValue(ctx);
 }
 
+/** Matches getEnemyResistValue: simple 1-(resist-pen) only while effective resist stays >= 0. */
 function usesPositiveResistFormula(ctx: Record<string, any> = {}): boolean {
+  const penetration = totalResistancePenetration(ctx);
+  if (penetration === 0) {
+    return true;
+  }
+  // Negative base resist always uses the halved path in getEnemyResistValue.
+  if ((ctx.enemyResist ?? 0) <= 0) {
+    return false;
+  }
+  return ctx.enemyResist - penetration >= 0;
+}
+
+/** True when base resist is already <= 0 (halve all penetration from the start). */
+function usesNegativeBaseResistFormula(ctx: Record<string, any> = {}): boolean {
   return (
-    ctx.enemyResist > 0 ||
-    ctx.enemyResist - totalResistancePenetration(ctx) >= 0
+    totalResistancePenetration(ctx) > 0 && (ctx.enemyResist ?? 0) <= 0
   );
 }
 </script>
