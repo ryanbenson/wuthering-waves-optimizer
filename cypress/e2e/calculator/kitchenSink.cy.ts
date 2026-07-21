@@ -239,10 +239,19 @@ describe("Calculator Kitchen Sink", () => {
       .type("5"); // this is causing 51, not 5. don't care to fix it now
     // TODO: Fix this so it's just 5, not 51
 
-    // enable custom buffs giving everything 10
+    // enable custom buffs giving everything 2 (resist ignore stays 0 —
+    // it stacks with resist reduction and would change expected damage)
     cy.get('[data-test-calculator-nav="customBuffs"]').click();
-    cy.get(".custom__buffs-list .form-control").each(($input) => {
-      cy.wrap($input).find("input[type=number]").clear().type("2");
+    cy.get(".custom__buffs-list .form-control").each(($formControl) => {
+      cy.wrap($formControl)
+        .find("input[type=number]")
+        .then(($input) => {
+          const value =
+            $input.attr("data-test-custom-buff-resist-ignore") !== undefined
+              ? "0"
+              : "2";
+          cy.wrap($input).clear().type(value);
+        });
     });
 
     // lastly change the enemy data to level 100 with 20% resist

@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>July 20, 2026</h3>
+    <ul>
+      <li>Adds resistance ignore, which works with resist reduction for normal damage, but properly handles negative statuses damage.</li>
+    </ul>
     <h3>July 18, 2026</h3>
     <ul>
       <li>Adds ability to favorite echoes and filter by favorites in inventory and echo browsers.</li>

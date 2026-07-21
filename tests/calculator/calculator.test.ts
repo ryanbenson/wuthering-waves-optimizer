@@ -6,6 +6,7 @@ import {
   getDefenseModifier,
   getBonusDamageValue,
   getEnemyResistValue,
+  getSpectroFrazzleDamage,
 } from "../../src/calculator/calculator";
 
 describe("#getBaseDamage", () => {
@@ -266,5 +267,69 @@ describe("#getEnemyResistValue", () => {
     const expected = 0;
     const result = getEnemyResistValue(enemyResist, resistanceReduction);
     expect(result).toEqual(expected);
+  });
+  it("when resist reduction and resist ignore are combined", () => {
+    const enemyResist = 0.2;
+    const resistanceReduction = 0.05;
+    const resistanceIgnore = 0.1;
+    const expected = 0.95;
+    const result = getEnemyResistValue(
+      enemyResist,
+      resistanceReduction,
+      resistanceIgnore,
+    );
+    expect(result).toEqual(expected);
+  });
+  it("when resist reduction and ignore together exceed base resist", () => {
+    // 10% base, 5% reduction + 10% ignore => 5% excess, halved => 1.025
+    const enemyResist = 0.1;
+    const resistanceReduction = 0.05;
+    const resistanceIgnore = 0.1;
+    const expected = 1.025;
+    const result = getEnemyResistValue(
+      enemyResist,
+      resistanceReduction,
+      resistanceIgnore,
+    );
+    expect(result).toEqual(expected);
+  });
+  it("treats resist ignore the same as reduction when both are applied", () => {
+    const enemyResist = 0.2;
+    const withReductionOnly = getEnemyResistValue(enemyResist, 0.15, 0);
+    const withIgnoreOnly = getEnemyResistValue(enemyResist, 0, 0.15);
+    const split = getEnemyResistValue(enemyResist, 0.05, 0.1);
+    expect(withReductionOnly).toEqual(withIgnoreOnly);
+    expect(withReductionOnly).toEqual(split);
+  });
+});
+
+describe("#getSpectroFrazzleDamage resist ignore", () => {
+  it("does not apply resist ignore to negative status damage", () => {
+    const charLevel = "90";
+    const enemyLevel = 100;
+    const enemyResist = 0.2;
+    const resistanceReduction = 0.1;
+    const withReduction = getSpectroFrazzleDamage(
+      charLevel,
+      enemyLevel,
+      enemyResist,
+      resistanceReduction,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      1,
+    );
+    // Passing ignore is not part of the API — context always stores 0.
+    // Reduction-only path must match getEnemyResistValue without ignore.
+    expect(withReduction.totalDamageContext.resistanceIgnore).toEqual(0);
+    expect(withReduction.totalDamageContext.resistModifier).toEqual(
+      getEnemyResistValue(enemyResist, resistanceReduction, 0),
+    );
+    expect(withReduction.totalDamageContext.resistModifier).not.toEqual(
+      getEnemyResistValue(enemyResist, resistanceReduction, 0.1),
+    );
   });
 });

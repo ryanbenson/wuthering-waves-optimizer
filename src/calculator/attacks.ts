@@ -632,7 +632,7 @@ export const calculateAttackDamage = (
     coordinatedDmgBonusCustomBuffs +
     totalForteBasedDmgBuff / 100;
 
-  // Resist Shred:
+  // Resist Reduction (Shred):
   let teamBuffResistShredForCharElement =
     context.buffs.teamBuffsData?.[`ResistShred:${attackElement}`] ?? 0;
   let selfBuffResistShredForCharElement =
@@ -674,6 +674,47 @@ export const calculateAttackDamage = (
     weaponBuffResistShredForCharElementSpecificActionType +
     actionBuffResistReduction +
     customResistReduction;
+
+  // Resist Ignore: same formula as Resist Reduction for normal attacks,
+  // but does not apply to Negative Status DMG.
+  let teamBuffResistIgnoreForCharElement =
+    context.buffs.teamBuffsData?.[`ResistIgnore:${attackElement}`] ?? 0;
+  let selfBuffResistIgnoreForCharElement =
+    selfBuffs?.[`ResistIgnore:${attackElement}`] ?? 0;
+  let selfBuffResistIgnoreForCharElementSpecificAttack =
+    selfBuffs?.specificTalentBuffs?.[
+      `${attack.key}:ResistIgnore:${attackElement}`
+    ] ?? 0;
+  let weaponBuffResistIgnoreForCharElement =
+    context.equipment.weapon.weaponPassiveStats?.[
+      `ResistIgnore:${attackElement}`
+    ] ?? 0;
+  let weaponBuffResistIgnoreForCharElementSpecificActionType =
+    context.equipment.weapon.weaponPassiveStats?.[
+      `ResistIgnore:${attackElement}:${attack.type}`
+    ] ?? 0;
+  if (excludeWeaponBuffs) {
+    weaponBuffResistIgnoreForCharElement = 0;
+    weaponBuffResistIgnoreForCharElementSpecificActionType = 0;
+  }
+  if (excludeTeamBuffs) {
+    teamBuffResistIgnoreForCharElement = 0;
+  }
+
+  const resonanceChainResistIgnoreForCharElement =
+    context.buffs.charResonanceChainsData?.[`ResistIgnore:${attackElement}`] ??
+    0;
+  let customResistIgnore = context.buffs.customBuffs?.ResistIgnore ?? 0;
+  const actionBuffResistIgnore = attack.buffs?.ResistIgnore ?? 0;
+  const totalResistIgnore =
+    teamBuffResistIgnoreForCharElement +
+    resonanceChainResistIgnoreForCharElement +
+    selfBuffResistIgnoreForCharElement +
+    selfBuffResistIgnoreForCharElementSpecificAttack +
+    weaponBuffResistIgnoreForCharElement +
+    weaponBuffResistIgnoreForCharElementSpecificActionType +
+    actionBuffResistIgnore +
+    customResistIgnore;
 
   // damage deepen:
   let baseTotalDeepenEffect =
@@ -960,6 +1001,7 @@ export const calculateAttackDamage = (
     let talent = attack.talent;
     let enemyResistVal = context.enemy.enemyResist;
     let resistReduction = 0; // default to 0 for Tune Break, then the special ones get reduction
+    let resistIgnore = 0;
     // Lynae, and others, have special Tune Break type attacks that have talents leveled off of their forte
     // also, normal tune break doesn't get affected by resist or resist reduction
     // but the special attacks do element based dmg, so they do
@@ -974,6 +1016,7 @@ export const calculateAttackDamage = (
     ) {
       talent = attack.talents[context.character.talentData?.forte];
       resistReduction = totalResistReduction;
+      resistIgnore = totalResistIgnore;
     }
     const tuneBreakDmgBonus = context.buffs.customBuffs?.TuneBreakDMGBonus ?? 0;
     // typically Tune Break cannot crit, but some buffs exist to make it crit
@@ -1009,6 +1052,7 @@ export const calculateAttackDamage = (
       totalCritRate,
       totalCritDmg,
       count,
+      resistIgnore,
     );
   }
 
@@ -1508,6 +1552,7 @@ export const calculateAttackDamage = (
   //   totalInstanceDmgBuff,
   //   totalDmgDeepen,
   //   totalResistReduction,
+  //   totalResistIgnore,
   //   instanceDmgCritRate,
   //   instanceDmgCritDMG,
   //   totalTalentModifierAdd,
@@ -1538,6 +1583,7 @@ export const calculateAttackDamage = (
     additiveMultiplierPercent,
     totalSpecialMultiplier,
     totalDefReduction,
+    totalResistIgnore,
   );
 };
 

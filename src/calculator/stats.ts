@@ -519,7 +519,7 @@ export const computeSelfBuffs = (
     const modifiersData = buff?.modifiers ?? [];
     let modifiers = JSON.parse(JSON.stringify(modifiersData));
     // character specifics modifications
-    // If Lupa has s3 enabled, the ResistShred:Fusion buffs from InherentSkillApplauseofVictory & InherentSkillApplauseofVictoryFullFusionTeam are already taken care of
+    // If Lupa has s3 enabled, the ResistIgnore:Fusion buffs from InherentSkillApplauseofVictory & InherentSkillApplauseofVictoryFullFusionTeam are already taken care of
     if (
       character === "Lupa" &&
       (key === "InherentSkillApplauseofVictory" ||
@@ -1097,12 +1097,12 @@ export const computeSelfBuffs = (
       // copy the same buffs for NowheretoRunDMG from the other intro
       const atk = data.specificTalentBuffs?.[`TryFocusingEhDMG:ATK`];
       const fusion = data?.specificTalentBuffs?.[`TryFocusingEhDMG:Fusion`];
-      const resistReduction =
-        data?.specificTalentBuffs?.[`TryFocusingEhDMG:ResistShred:Fusion`];
+      const resistIgnore =
+        data?.specificTalentBuffs?.[`TryFocusingEhDMG:ResistIgnore:Fusion`];
       data.specificTalentBuffs["NowheretoRunDMG:ATK"] = atk || 0;
       data.specificTalentBuffs["NowheretoRunDMG:Fusion"] = fusion || 0;
-      data.specificTalentBuffs["NowheretoRunDMG:ResistShred:Fusion"] =
-        resistReduction || 0;
+      data.specificTalentBuffs["NowheretoRunDMG:ResistIgnore:Fusion"] =
+        resistIgnore || 0;
     }
   }
   if (character === "Lucy" && data.specificTalentBuffs) {

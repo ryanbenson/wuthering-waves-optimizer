@@ -52,7 +52,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "ResistShred:Fusion",
+        modifier: "ResistIgnore:Fusion",
         modifierValue: 0.15,
       },
     ],

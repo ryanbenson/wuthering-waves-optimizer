@@ -28,6 +28,7 @@ export function calcHitDamage(
   resistanceReduction: number = 0,
   specialMultiplier: number = 0,
   defReduction: number = 0,
+  resistanceIgnore: number = 0,
   // critRate: number,
   // critDamage: number,
 ): number {
@@ -43,7 +44,11 @@ export function calcHitDamage(
     defIgnore,
     defReduction,
   );
-  const resistValue = getEnemyResistValue(enemyResist, resistanceReduction);
+  const resistValue = getEnemyResistValue(
+    enemyResist,
+    resistanceReduction,
+    resistanceIgnore,
+  );
   const baseDamage = getBaseDamage(
     talent,
     attack,
@@ -115,20 +120,22 @@ export function getBonusDamageValue(
 export function getEnemyResistValue(
   baseResist: number,
   reduction: number,
+  ignore: number = 0,
 ): number {
-  if (reduction === 0) {
+  const totalReduction = reduction + ignore;
+  if (totalReduction === 0) {
     return 1 - baseResist;
   }
 
   if (baseResist <= 0) {
     // If base resist is negative, reduction is halved
-    const effectiveResist = baseResist - reduction / 2;
+    const effectiveResist = baseResist - totalReduction / 2;
     return 1 - effectiveResist;
   } else {
-    const reductionExceedsBase = reduction - baseResist;
+    const reductionExceedsBase = totalReduction - baseResist;
     if (reductionExceedsBase <= 0) {
       // Reduction doesn't fully overcome base resist
-      return 1 - (baseResist - reduction);
+      return 1 - (baseResist - totalReduction);
     } else {
       // Resistance dips below 0, the excess is halved
       const remainder = reductionExceedsBase / 2;
@@ -182,6 +189,7 @@ export function calcDamage(
   additiveMultiplierPercent: number = 0,
   specialMultiplier: number = 0,
   defReduction: number = 0,
+  resistanceIgnore: number = 0,
 ) {
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
@@ -332,6 +340,7 @@ export function calcDamage(
       resistanceReduction,
       specialMultiplier,
       defReduction,
+      resistanceIgnore,
     );
 
     // Store the original percentage for grouping
@@ -366,6 +375,7 @@ export function calcDamage(
     resistanceReduction,
     specialMultiplier,
     defReduction,
+    resistanceIgnore,
   );
   // multiply the final damage by the number of hits, usually 1,
   // but can be > 1 in rotations
@@ -405,10 +415,15 @@ export function calcDamage(
       defIgnore,
       defReduction,
     ),
-    resistValue: getEnemyResistValue(enemyResist, resistanceReduction),
+    resistValue: getEnemyResistValue(
+      enemyResist,
+      resistanceReduction,
+      resistanceIgnore,
+    ),
     specialMultiplier: specialMultiplier,
     totalDeepenEffect,
     resistanceReduction,
+    resistanceIgnore,
     enemyResist,
     bonusTotalSkillDmg,
     bonusSpecificSkillDmg,
@@ -859,6 +874,7 @@ function calcNegativeStatusStackDamage(
       enemyLevel,
       enemyResist,
       resistanceReduction,
+      resistanceIgnore: 0,
       defReduction,
       count,
       defenseModifier,
@@ -1114,6 +1130,7 @@ export function calcTuneBreak(
   critRate: number = 0,
   critDamage: number = 1,
   count: number = 1,
+  resistanceIgnore: number = 0,
 ): any {
   const levelModifier = getTuneBreakLevelModifier(charLevel);
   const defenseModifier = getDefenseModifier(
@@ -1122,7 +1139,11 @@ export function calcTuneBreak(
     defIgnore,
     defReduction,
   );
-  const resistModifier = getEnemyResistValue(enemyResist, resistanceReduction);
+  const resistModifier = getEnemyResistValue(
+    enemyResist,
+    resistanceReduction,
+    resistanceIgnore,
+  );
   const enemyTypeMultiplier = getTuneBreakEnemyTypeMultiplier(enemyType);
 
   // Parse the talent string to get individual percentage values
@@ -1210,6 +1231,7 @@ export function calcTuneBreak(
       enemyResist,
       enemyType,
       resistanceReduction,
+      resistanceIgnore,
       defIgnore,
       defReduction,
       tuneBreakBoost,
@@ -1409,6 +1431,7 @@ export function getGlacioBiteForteDamage(
       enemyLevel,
       enemyResist,
       resistanceReduction,
+      resistanceIgnore: 0,
       defReduction,
       count,
       defenseModifier,
@@ -1483,6 +1506,7 @@ export function getElectroFlareDamage(
       enemyLevel,
       enemyResist,
       resistanceReduction,
+      resistanceIgnore: 0,
       defReduction,
       count,
       defenseModifier,

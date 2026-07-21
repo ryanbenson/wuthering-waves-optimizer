@@ -1152,7 +1152,7 @@ export const buffsByCharacter = {
       hasStacks: true,
       modifiers: [
         {
-          modifier: "ResistShred:Fusion",
+          modifier: "ResistIgnore:Fusion",
           modifierValue: 0.03,
         },
       ],
@@ -1167,7 +1167,7 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "ResistShred:Fusion",
+          modifier: "ResistIgnore:Fusion",
           modifierValue: 0.06,
         },
       ],
@@ -1216,7 +1216,7 @@ export const buffsByCharacter = {
       hasStacks: false,
       modifiers: [
         {
-          modifier: "ResistShred:Fusion",
+          modifier: "ResistIgnore:Fusion",
           modifierValue: 0.15,
         },
       ],

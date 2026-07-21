@@ -462,7 +462,7 @@
       <label class="form-control mb-4">
         <div class="label">
           <span class="label-text mr-2 flex items-center gap-1">
-            Resist Shred
+            Resist Reduction
           </span>
         </div>
         <input
@@ -472,6 +472,20 @@
           id="ResistShred"
           class="input input-md input-bordered"
           data-test-custom-buff-resist-shred />
+      </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Resist Ignore
+          </span>
+        </div>
+        <input
+          type="number"
+          v-model="ResistIgnore"
+          name="ResistIgnore"
+          id="ResistIgnore"
+          class="input input-md input-bordered"
+          data-test-custom-buff-resist-ignore />
       </label>
       <label class="form-control mb-4">
         <div class="label">
@@ -553,6 +567,7 @@ type CustomBuffKey =
   | "DamageAmplifyElectroFlare"
   | "DamageAmplifyFusionBurst"
   | "ResistShred"
+  | "ResistIgnore"
   | "DefIgnore"
   | "DefReduction"
   | "CoordinatedDMGBonus"
@@ -592,6 +607,7 @@ interface ProcessedCustomBuffs {
   DamageAmplifyElectroFlare: number;
   DamageAmplifyFusionBurst: number;
   ResistShred: number;
+  ResistIgnore: number;
   DefIgnore: number;
   DefReduction: number;
   CoordinatedDMGBonus: number;
@@ -661,6 +677,7 @@ const DamageAmplifySpectroFrazzle = makeCustomBuffField(
 const DamageAmplifyElectroFlare = makeCustomBuffField("DamageAmplifyElectroFlare");
 const DamageAmplifyFusionBurst = makeCustomBuffField("DamageAmplifyFusionBurst");
 const ResistShred = makeCustomBuffField("ResistShred");
+const ResistIgnore = makeCustomBuffField("ResistIgnore");
 const DefIgnore = makeCustomBuffField("DefIgnore");
 const DefReduction = makeCustomBuffField("DefReduction");
 const CoordinatedDMGBonus = makeCustomBuffField("CoordinatedDMGBonus");
@@ -696,6 +713,7 @@ const customBuffFieldRefs: WritableComputedRef<number>[] = [
   DamageAmplifyElectroFlare,
   DamageAmplifyFusionBurst,
   ResistShred,
+  ResistIgnore,
   DefIgnore,
   DefReduction,
   CoordinatedDMGBonus,
@@ -750,6 +768,7 @@ const buffsData = computed((): ProcessedCustomBuffs => {
     ? DamageAmplifyFusionBurst.value / 100
     : 0;
   const ResistShred_ = ResistShred.value ? ResistShred.value / 100 : 0;
+  const ResistIgnore_ = ResistIgnore.value ? ResistIgnore.value / 100 : 0;
   const DefIgnore_ = DefIgnore.value ? DefIgnore.value / 100 : 0;
   const DefReduction_ = DefReduction.value ? DefReduction.value / 100 : 0;
   const CoordinatedDMGBonus_ = CoordinatedDMGBonus.value
@@ -790,6 +809,7 @@ const buffsData = computed((): ProcessedCustomBuffs => {
     DamageAmplifyElectroFlare: DamageAmplifyElectroFlare_,
     DamageAmplifyFusionBurst: DamageAmplifyFusionBurst_,
     ResistShred: ResistShred_,
+    ResistIgnore: ResistIgnore_,
     DefIgnore: DefIgnore_,
     DefReduction: DefReduction_,
     CoordinatedDMGBonus: CoordinatedDMGBonus_,

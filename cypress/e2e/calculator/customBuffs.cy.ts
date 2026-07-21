@@ -29,7 +29,11 @@ describe("Calculator Custom Buffs", () => {
     cy.get(customBuffNav).click();
 
     cy.get(customBuffInputs).each(($input) => {
-      cy.wrap($input).clear().type("50");
+      const value =
+        $input.attr("data-test-custom-buff-resist-ignore") !== undefined
+          ? "0"
+          : "50";
+      cy.wrap($input).clear().type(value);
     });
     // validate the stats and damages after
     testStats(carlottaOnlyCustomBuffsStats, cy);
