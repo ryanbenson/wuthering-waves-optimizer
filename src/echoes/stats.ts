@@ -198,17 +198,69 @@ export function getSubstatRollValue(stat: string, statValue: string): number {
 }
 
 type echoRollValueData = {
-  [stat: string]: string;
+  [stat: string]: string | number;
 };
 export function getRollValue(echoData: echoRollValueData): number {
   const echoStats = Object.entries(echoData);
   let totalRollValue = 0;
   echoStats.forEach((echoStat) => {
     const [stat, statValue] = echoStat;
-    const statRollValue = getSubstatRollValue(stat, statValue);
+    const statRollValue = getSubstatRollValue(stat, String(statValue));
     totalRollValue += statRollValue;
   });
   return totalRollValue;
+}
+
+/** Theoretical max CV from substats (max Crit Rate × 2 + max Crit DMG). */
+export const ECHO_CV_MAX = 42;
+/** Theoretical max RV from five perfect substat rolls. */
+export const ECHO_RV_MAX = 500;
+
+export type EchoSubStatsSource = {
+  echoSubStatsType1?: string | null;
+  echoSubStatsValue1?: unknown;
+  echoSubStatsType2?: string | null;
+  echoSubStatsValue2?: unknown;
+  echoSubStatsType3?: string | null;
+  echoSubStatsValue3?: unknown;
+  echoSubStatsType4?: string | null;
+  echoSubStatsValue4?: unknown;
+  echoSubStatsType5?: string | null;
+  echoSubStatsValue5?: unknown;
+};
+
+function getEchoSubStatEntries(
+  echo: EchoSubStatsSource,
+): Array<[string, number]> {
+  return [
+    [echo.echoSubStatsType1, echo.echoSubStatsValue1],
+    [echo.echoSubStatsType2, echo.echoSubStatsValue2],
+    [echo.echoSubStatsType3, echo.echoSubStatsValue3],
+    [echo.echoSubStatsType4, echo.echoSubStatsValue4],
+    [echo.echoSubStatsType5, echo.echoSubStatsValue5],
+  ]
+    .filter(
+      (entry): entry is [string, unknown] =>
+        Boolean(entry[0]) && entry[0] !== "none",
+    )
+    .map(([type, value]) => [type, Number(value ?? 0)]);
+}
+
+export function getEchoCritValue(echo: EchoSubStatsSource): number {
+  let cv = 0;
+  for (const [type, value] of getEchoSubStatEntries(echo)) {
+    if (type === "CritRate") cv += value * 2;
+    if (type === "CritDMG") cv += value;
+  }
+  return cv;
+}
+
+export function getEchoRollValue(echo: EchoSubStatsSource): number {
+  const echoData: echoRollValueData = {};
+  for (const [type, value] of getEchoSubStatEntries(echo)) {
+    echoData[type] = value;
+  }
+  return getRollValue(echoData);
 }
 
 type FlatBonusesByRankByTypeData = Record<number, number>;

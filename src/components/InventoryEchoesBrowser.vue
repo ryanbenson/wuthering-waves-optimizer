@@ -150,6 +150,12 @@
         <EchoOptimizerVisibilityIcon :hidden="ignoreFromOptimizerFilter" />
       </button>
       <button @click="resetFilters" class="btn btn-sm btn-ghost">Clear</button>
+      <EchoCvRvRangeFilters
+        class="basis-full"
+        v-model:cv-min="cvMin"
+        v-model:cv-max="cvMax"
+        v-model:rv-min="rvMin"
+        v-model:rv-max="rvMax" />
     </div>
     <div class="echoes__actions flex justify-center items-center gap-2 flex-wrap">
       <button @click="createEcho" class="btn btn-primary btn-wide">
@@ -166,6 +172,103 @@
         Delete trash ({{ trashEchoCount }})
       </button>
     </div>
+    <div
+      class="echoes__bulk sticky top-0 z-10 my-4 rounded-box border border-base-300 bg-base-200/95 p-3 backdrop-blur flex flex-wrap items-center gap-2"
+      :class="{
+        invisible: !hasSelection,
+        'pointer-events-none': !hasSelection,
+      }"
+      :aria-hidden="!hasSelection"
+      data-test-bulk-actions>
+      <span class="text-sm font-medium mr-1">
+        {{ selectedEchoIds.length }} selected
+      </span>
+      <button
+        type="button"
+        class="btn btn-sm btn-ghost"
+        @click="selectPage"
+        data-test-bulk-select-page>
+        Select page
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-ghost"
+        @click="selectAllFiltered"
+        data-test-bulk-select-all>
+        Select all ({{ echoesList.length }})
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-ghost"
+        @click="clearSelection"
+        data-test-bulk-clear>
+        Clear selection
+      </button>
+      <div class="divider divider-horizontal mx-0 hidden sm:flex"></div>
+      <button
+        type="button"
+        class="btn btn-sm"
+        @click="bulkFavorite(true)"
+        data-test-bulk-favorite>
+        Favorite
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm"
+        @click="bulkFavorite(false)"
+        data-test-bulk-unfavorite>
+        Unfavorite
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm"
+        @click="bulkLock(true)"
+        data-test-bulk-lock>
+        Lock
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm"
+        @click="bulkLock(false)"
+        data-test-bulk-unlock>
+        Unlock
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm"
+        @click="bulkTrash(true)"
+        data-test-bulk-trash>
+        Mark trash
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm"
+        @click="bulkTrash(false)"
+        data-test-bulk-untrash>
+        Unmark trash
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm"
+        @click="bulkIgnoreOptimizer(true)"
+        data-test-bulk-ignore-optimizer>
+        Ignore optimizer
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm"
+        @click="bulkIgnoreOptimizer(false)"
+        data-test-bulk-include-optimizer>
+        Include optimizer
+      </button>
+      <button
+        type="button"
+        class="btn btn-sm btn-error"
+        @click="bulkDelete"
+        data-test-bulk-delete>
+        Delete
+      </button>
+    </div>
     <div class="echoes__list">
       <template v-if="!echoesList.length">
         <div class="echoes__list--empty py-12 text-center w-full">
@@ -173,59 +276,80 @@
         </div>
       </template>
       <template v-else>
-        <div class="join flex justify-center py-4">
+        <div class="join flex justify-center py-4 items-center gap-2 flex-wrap">
           <button @click="prevPage" class="join-item btn btn-sm">«</button>
           <button class="join-item btn btn-sm">
             Page {{ page }} / {{ totalPages }}
           </button>
           <button @click="nextPage" class="join-item btn btn-sm">»</button>
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost ml-2"
+            @click="selectPage"
+            data-test-select-page>
+            Select page
+          </button>
         </div>
         <div class="echoes__list__items grid grid-cols-1 md:grid-cols-2 gap-4">
-          <CalculatorEchoCard
+          <div
             v-for="echoRow in paginatedEchoesList"
-            class="echo__item"
             :key="echoRow.echoId"
-            v-bind="echoCardBinder(echoRow)"
-            :hide-inventory="true">
-            <div
-              class="echoes__item__foot flex gap-2 justify-between items-center">
-              <div class="echoes__items__foot__equipped">
-                <div class="avatar-group -space-x-6 rtl:space-x-reverse">
-                  <div class="avatar" v-for="char in getCharsEquipped(echoRow)">
-                    <div class="w-12 bg-accent-content">
-                      <img :src="getCharImg(char)" />
+            class="echo__item-wrap relative"
+            :class="{ 'echo__item--selected': isSelected(echoRow.echoId) }">
+            <label
+              class="echo__item__select absolute top-0 left-0 z-10 flex items-center justify-center rounded-md p-1 cursor-pointer"
+              :aria-label="`Select echo ${echoRow.echoId}`">
+              <input
+                type="checkbox"
+                class="checkbox checkbox-sm"
+                :checked="isSelected(echoRow.echoId)"
+                :data-test-echo-select="echoRow.echoId"
+                @change="toggleSelect(echoRow.echoId)" />
+            </label>
+            <CalculatorEchoCard
+              class="echo__item"
+              v-bind="echoCardBinder(echoRow)"
+              :hide-inventory="true">
+              <div
+                class="echoes__item__foot flex gap-2 justify-between items-center">
+                <div class="echoes__items__foot__equipped">
+                  <div class="avatar-group -space-x-6 rtl:space-x-reverse">
+                    <div class="avatar" v-for="char in getCharsEquipped(echoRow)">
+                      <div class="w-12 bg-accent-content">
+                        <img :src="getCharImg(char)" />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="echoes__item__foot__actions flex gap-2 items-center flex-wrap justify-end">
-                <EchoLockTrashActions :echo-id="echoRow.echoId" />
-                <button
-                  @click="handleEditEcho(echoRow.echoId)"
-                  class="btn btn-primary btn-sm min-w-16">
-                  Edit
-                </button>
-                <button
-                  @click="duplicateEcho(echoRow.echoId)"
-                  class="btn btn-primary btn-sm min-w-16">
-                  Duplicate
-                </button>
-                <span
-                  v-tooltip="
-                    echoRow.locked
-                      ? 'This echo is locked and cannot be deleted'
-                      : 'Delete this echo from your inventory'
-                  ">
+                <div class="echoes__item__foot__actions flex gap-2 items-center flex-wrap justify-end">
+                  <EchoLockTrashActions :echo-id="echoRow.echoId" />
                   <button
-                    @click="removeEcho(echoRow.echoId)"
-                    class="btn btn-error btn-sm min-w-16"
-                    :disabled="echoRow.locked">
-                    Delete
+                    @click="handleEditEcho(echoRow.echoId)"
+                    class="btn btn-primary btn-sm min-w-16">
+                    Edit
                   </button>
-                </span>
+                  <button
+                    @click="duplicateEcho(echoRow.echoId)"
+                    class="btn btn-primary btn-sm min-w-16">
+                    Duplicate
+                  </button>
+                  <span
+                    v-tooltip="
+                      echoRow.locked
+                        ? 'This echo is locked and cannot be deleted'
+                        : 'Delete this echo from your inventory'
+                    ">
+                    <button
+                      @click="removeEcho(echoRow.echoId)"
+                      class="btn btn-error btn-sm min-w-16"
+                      :disabled="echoRow.locked">
+                      Delete
+                    </button>
+                  </span>
+                </div>
               </div>
-            </div>
-          </CalculatorEchoCard>
+            </CalculatorEchoCard>
+          </div>
         </div>
         <div class="join flex justify-center py-4">
           <button @click="prevPage" class="join-item btn btn-sm">«</button>
@@ -268,13 +392,18 @@ type InventoryEchoRow = {
   echoSubStatsValue5?: unknown;
 };
 import {
+  ECHO_CV_MAX,
+  ECHO_RV_MAX,
   echoSetLabelMap,
+  getEchoCritValue,
+  getEchoRollValue,
   getEchoSetIconByType,
   getReadableSubStatLabel,
   statsTable,
 } from "../echoes/stats";
 import { useInventoryStore } from "../stores/inventory";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
+import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
@@ -289,7 +418,12 @@ const {
   trashEchoCount,
   getEchoFlags,
   removeEchoFully,
+  removeEchoesFully,
   removeAllTrashEchoes,
+  bulkSetLocked,
+  bulkSetTrash,
+  bulkSetIgnoreFromOptimizer,
+  bulkSetFavorite,
 } = useEchoInventory();
 
 const inventoryEchoEditRef = ref<InstanceType<typeof InventoryEchoEdit> | null>(
@@ -304,6 +438,12 @@ const lockedFilter = ref(false);
 const trashFilter = ref(false);
 const ignoreFromOptimizerFilter = ref(false);
 const favoriteFilter = ref(false);
+const cvMin = ref(0);
+const cvMax = ref(ECHO_CV_MAX);
+const rvMin = ref(0);
+const rvMax = ref(ECHO_RV_MAX);
+const selectedEchoIds = ref<string[]>([]);
+const hasSelection = computed(() => selectedEchoIds.value.length > 0);
 const page = ref(1);
 const perPage = 20;
 
@@ -311,9 +451,24 @@ const inventoryStore = useInventoryStore();
 const { echoes } = storeToRefs(inventoryStore);
 const { getEchoEquippedChars, saveEcho, getEchoById } = inventoryStore;
 
-watch([mainStatFilter, echoSet, echo, lockedFilter, trashFilter, ignoreFromOptimizerFilter, favoriteFilter], () => {
-  page.value = 1;
-});
+watch(
+  [
+    mainStatFilter,
+    echoSet,
+    echo,
+    lockedFilter,
+    trashFilter,
+    ignoreFromOptimizerFilter,
+    favoriteFilter,
+    cvMin,
+    cvMax,
+    rvMin,
+    rvMax,
+  ],
+  () => {
+    page.value = 1;
+  },
+);
 
 const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
 
@@ -345,6 +500,21 @@ const echoesList = computed(() => {
   }
   if (favoriteFilter.value) {
     allEchoes = allEchoes.filter((e) => e.favorite);
+  }
+  const cvFilterActive = cvMin.value > 0 || cvMax.value < ECHO_CV_MAX;
+  const rvFilterActive = rvMin.value > 0 || rvMax.value < ECHO_RV_MAX;
+  if (cvFilterActive || rvFilterActive) {
+    allEchoes = allEchoes.filter((e) => {
+      if (cvFilterActive) {
+        const cv = getEchoCritValue(e);
+        if (cv < cvMin.value || cv > cvMax.value) return false;
+      }
+      if (rvFilterActive) {
+        const rv = getEchoRollValue(e);
+        if (rv < rvMin.value || rv > rvMax.value) return false;
+      }
+      return true;
+    });
   }
   return allEchoes;
 });
@@ -443,6 +613,118 @@ function resetFilters() {
   trashFilter.value = false;
   ignoreFromOptimizerFilter.value = false;
   favoriteFilter.value = false;
+  cvMin.value = 0;
+  cvMax.value = ECHO_CV_MAX;
+  rvMin.value = 0;
+  rvMax.value = ECHO_RV_MAX;
+}
+
+function isSelected(echoId: string) {
+  return selectedEchoIds.value.includes(echoId);
+}
+
+function toggleSelect(echoId: string) {
+  if (isSelected(echoId)) {
+    selectedEchoIds.value = selectedEchoIds.value.filter((id) => id !== echoId);
+  } else {
+    selectedEchoIds.value = [...selectedEchoIds.value, echoId];
+  }
+}
+
+function clearSelection() {
+  selectedEchoIds.value = [];
+}
+
+function selectPage() {
+  const pageIds = paginatedEchoesList.value.map((e) => e.echoId);
+  selectedEchoIds.value = [
+    ...new Set([...selectedEchoIds.value, ...pageIds]),
+  ];
+}
+
+function selectAllFiltered() {
+  selectedEchoIds.value = echoesList.value.map((e) => e.echoId);
+}
+
+function bulkFavorite(favorite: boolean) {
+  bulkSetFavorite(selectedEchoIds.value, favorite);
+  showToast(
+    favorite
+      ? `Favorited ${selectedEchoIds.value.length} echo${selectedEchoIds.value.length === 1 ? "" : "es"}.`
+      : `Unfavorited ${selectedEchoIds.value.length} echo${selectedEchoIds.value.length === 1 ? "" : "es"}.`,
+    "success",
+  );
+}
+
+function bulkLock(locked: boolean) {
+  bulkSetLocked(selectedEchoIds.value, locked);
+  showToast(
+    locked
+      ? `Locked ${selectedEchoIds.value.length} echo${selectedEchoIds.value.length === 1 ? "" : "es"}.`
+      : `Unlocked ${selectedEchoIds.value.length} echo${selectedEchoIds.value.length === 1 ? "" : "es"}.`,
+    "success",
+  );
+}
+
+function bulkTrash(trash: boolean) {
+  bulkSetTrash(selectedEchoIds.value, trash);
+  showToast(
+    trash
+      ? `Marked ${selectedEchoIds.value.length} echo${selectedEchoIds.value.length === 1 ? "" : "es"} as trash.`
+      : `Unmarked ${selectedEchoIds.value.length} echo${selectedEchoIds.value.length === 1 ? "" : "es"} as trash.`,
+    "success",
+  );
+}
+
+function bulkIgnoreOptimizer(ignore: boolean) {
+  bulkSetIgnoreFromOptimizer(selectedEchoIds.value, ignore);
+  showToast(
+    ignore
+      ? `Excluded ${selectedEchoIds.value.length} echo${selectedEchoIds.value.length === 1 ? "" : "es"} from optimizer.`
+      : `Included ${selectedEchoIds.value.length} echo${selectedEchoIds.value.length === 1 ? "" : "es"} in optimizer.`,
+    "success",
+  );
+}
+
+async function bulkDelete() {
+  const ids = [...selectedEchoIds.value];
+  if (!ids.length) return;
+
+  const lockedCount = ids.filter((id) => getEchoFlags(id).locked).length;
+  const deletableCount = ids.length - lockedCount;
+  if (deletableCount <= 0) {
+    showToast("All selected echoes are locked and cannot be deleted.", "warning");
+    return;
+  }
+
+  const lockedNote =
+    lockedCount > 0
+      ? ` ${lockedCount} locked echo${lockedCount === 1 ? "" : "es"} will be skipped.`
+      : "";
+  const confirmed = await confirm(
+    `Delete ${deletableCount} echo${deletableCount === 1 ? "" : "es"}? This cannot be undone.${lockedNote}`,
+    {
+      title: "Delete selected echoes",
+      confirmLabel: "Delete",
+      variant: "error",
+    },
+  );
+  if (!confirmed) return;
+
+  const { deleted, skippedLocked } = await removeEchoesFully(ids);
+  clearSelection();
+  if (deleted > 0) {
+    showToast(
+      `Deleted ${deleted} echo${deleted === 1 ? "" : "es"}${
+        skippedLocked
+          ? ` (${skippedLocked} locked skipped)`
+          : ""
+      }.`,
+      "success",
+    );
+  } else if (skippedLocked > 0) {
+    showToast("No echoes deleted; all selected were locked.", "warning");
+  }
 }
 
 function prevPage() {
@@ -484,6 +766,7 @@ async function removeEcho(echoId: string) {
   if (!confirmed) return;
 
   await removeEchoFully(echoId);
+  selectedEchoIds.value = selectedEchoIds.value.filter((id) => id !== echoId);
 }
 
 async function deleteAllTrash() {
@@ -502,6 +785,7 @@ async function deleteAllTrash() {
 
   const deletedCount = await removeAllTrashEchoes();
   if (deletedCount > 0) {
+    clearSelection();
     showToast(
       `Deleted ${deletedCount} trash echo${deletedCount === 1 ? "" : "es"}.`,
       "success",
@@ -562,5 +846,10 @@ html[data-theme="light"] {
   button.btn-active {
     opacity: 1;
   }
+}
+.echo__item--selected {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: 2px;
+  border-radius: var(--rounded-box, 1rem);
 }
 </style>

@@ -126,6 +126,12 @@
           <button @click="resetFilters" class="btn btn-sm btn-ghost">
             Clear
           </button>
+          <EchoCvRvRangeFilters
+            class="basis-full"
+            v-model:cv-min="cvMin"
+            v-model:cv-max="cvMax"
+            v-model:rv-min="rvMin"
+            v-model:rv-max="rvMax" />
         </div>
 
         <div class="echoes__list">
@@ -207,7 +213,11 @@ import { computed, nextTick, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { mainEchoesData } from "../echoes/index.ts";
 import {
+  ECHO_CV_MAX,
+  ECHO_RV_MAX,
   echoSetLabelMap,
+  getEchoCritValue,
+  getEchoRollValue,
   getEchoSetIconByType,
   getReadableSubStatLabel,
   statsTable,
@@ -215,6 +225,7 @@ import {
 import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
+import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
 import { useToast } from "../composables/useToast";
 
 const { showToast } = useToast();
@@ -234,13 +245,20 @@ const echo = ref<string | null>(null);
 const equippedFilter = ref<"self" | "any" | null>(null);
 const mainStatFilter = ref<string | null>(null);
 const favoriteFilter = ref(false);
+const cvMin = ref(0);
+const cvMax = ref(ECHO_CV_MAX);
+const rvMin = ref(0);
+const rvMax = ref(ECHO_RV_MAX);
 const page = ref(1);
 const perPage = 20;
 const isOpen = ref(false);
 
-watch([mainStatFilter, echoSet, echo, favoriteFilter], () => {
-  page.value = 1;
-});
+watch(
+  [mainStatFilter, echoSet, echo, favoriteFilter, cvMin, cvMax, rvMin, rvMax],
+  () => {
+    page.value = 1;
+  },
+);
 
 const currentCharacter = computed(
   () => (characters.value?.[props.character] as Record<string, any>) ?? {},
@@ -281,6 +299,22 @@ const echoesList = computed(() => {
       }
       if (favoriteFilter.value) {
         allEchoes = allEchoes.filter((item: any) => item.favorite);
+      }
+
+      const cvFilterActive = cvMin.value > 0 || cvMax.value < ECHO_CV_MAX;
+      const rvFilterActive = rvMin.value > 0 || rvMax.value < ECHO_RV_MAX;
+      if (cvFilterActive || rvFilterActive) {
+        allEchoes = allEchoes.filter((item: any) => {
+          if (cvFilterActive) {
+            const cv = getEchoCritValue(item);
+            if (cv < cvMin.value || cv > cvMax.value) return false;
+          }
+          if (rvFilterActive) {
+            const rv = getEchoRollValue(item);
+            if (rv < rvMin.value || rv > rvMax.value) return false;
+          }
+          return true;
+        });
       }
 
       return allEchoes;
@@ -395,6 +429,10 @@ function resetFilters() {
       costFilter.value = null;
       equippedFilter.value = null;
       favoriteFilter.value = false;
+      cvMin.value = 0;
+      cvMax.value = ECHO_CV_MAX;
+      rvMin.value = 0;
+      rvMax.value = ECHO_RV_MAX;
     }
 function prevPage() {
       if (page.value <= 1) {

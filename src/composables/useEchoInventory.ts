@@ -33,30 +33,73 @@ export function useEchoInventory() {
     };
   }
 
+  function setEchoLocked(echoId: string, locked: boolean) {
+    inventoryStore.patchEcho(echoId, {
+      locked,
+      ...(locked ? { trash: false } : {}),
+    });
+  }
+
+  function setEchoTrash(echoId: string, trash: boolean) {
+    inventoryStore.patchEcho(echoId, { trash });
+  }
+
+  function setEchoIgnoreFromOptimizer(
+    echoId: string,
+    ignoreFromOptimizer: boolean,
+  ) {
+    inventoryStore.patchEcho(echoId, { ignoreFromOptimizer });
+  }
+
+  function setEchoFavorite(echoId: string, favorite: boolean) {
+    inventoryStore.patchEcho(echoId, { favorite });
+  }
+
   function toggleEchoLocked(echoId: string) {
     const { locked } = getEchoFlags(echoId);
-    const nextLocked = !locked;
-    inventoryStore.patchEcho(echoId, {
-      locked: nextLocked,
-      ...(nextLocked ? { trash: false } : {}),
-    });
+    setEchoLocked(echoId, !locked);
   }
 
   function toggleEchoTrash(echoId: string) {
     const { trash } = getEchoFlags(echoId);
-    inventoryStore.patchEcho(echoId, { trash: !trash });
+    setEchoTrash(echoId, !trash);
   }
 
   function toggleEchoIgnoreFromOptimizer(echoId: string) {
     const { ignoreFromOptimizer } = getEchoFlags(echoId);
-    inventoryStore.patchEcho(echoId, {
-      ignoreFromOptimizer: !ignoreFromOptimizer,
-    });
+    setEchoIgnoreFromOptimizer(echoId, !ignoreFromOptimizer);
   }
 
   function toggleEchoFavorite(echoId: string) {
     const { favorite } = getEchoFlags(echoId);
-    inventoryStore.patchEcho(echoId, { favorite: !favorite });
+    setEchoFavorite(echoId, !favorite);
+  }
+
+  function bulkSetLocked(echoIds: string[], locked: boolean) {
+    for (const echoId of echoIds) {
+      setEchoLocked(echoId, locked);
+    }
+  }
+
+  function bulkSetTrash(echoIds: string[], trash: boolean) {
+    for (const echoId of echoIds) {
+      setEchoTrash(echoId, trash);
+    }
+  }
+
+  function bulkSetIgnoreFromOptimizer(
+    echoIds: string[],
+    ignoreFromOptimizer: boolean,
+  ) {
+    for (const echoId of echoIds) {
+      setEchoIgnoreFromOptimizer(echoId, ignoreFromOptimizer);
+    }
+  }
+
+  function bulkSetFavorite(echoIds: string[], favorite: boolean) {
+    for (const echoId of echoIds) {
+      setEchoFavorite(echoId, favorite);
+    }
   }
 
   async function removeEchoFully(echoId: string): Promise<boolean> {
@@ -74,24 +117,48 @@ export function useEchoInventory() {
     return true;
   }
 
+  async function removeEchoesFully(echoIds: string[]): Promise<{
+    deleted: number;
+    skippedLocked: number;
+  }> {
+    let deleted = 0;
+    let skippedLocked = 0;
+    for (const echoId of echoIds) {
+      const removed = await removeEchoFully(echoId);
+      if (removed) {
+        deleted += 1;
+      } else {
+        skippedLocked += 1;
+      }
+    }
+    return { deleted, skippedLocked };
+  }
+
   async function removeAllTrashEchoes(): Promise<number> {
     const toDelete = trashEchoes.value.map(
       (echo: { echoId: string }) => echo.echoId,
     );
-    for (const echoId of toDelete) {
-      await removeEchoFully(echoId);
-    }
-    return toDelete.length;
+    const { deleted } = await removeEchoesFully(toDelete);
+    return deleted;
   }
 
   return {
     trashEchoCount,
     getEchoFlags,
+    setEchoLocked,
+    setEchoTrash,
+    setEchoIgnoreFromOptimizer,
+    setEchoFavorite,
     toggleEchoLocked,
     toggleEchoTrash,
     toggleEchoIgnoreFromOptimizer,
     toggleEchoFavorite,
+    bulkSetLocked,
+    bulkSetTrash,
+    bulkSetIgnoreFromOptimizer,
+    bulkSetFavorite,
     removeEchoFully,
+    removeEchoesFully,
     removeAllTrashEchoes,
   };
 }
