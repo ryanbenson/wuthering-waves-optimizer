@@ -269,6 +269,7 @@ html[data-density="compact"] .card {
 
 html[data-density="compact"] .card .card-body {
   padding: 0.5rem;
+  gap: 0;
 }
 
 html[data-density="compact"] .card .card-title {
