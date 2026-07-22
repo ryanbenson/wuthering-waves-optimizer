@@ -27,83 +27,50 @@
       class="dropdown-content bg-base-200 text-base-content rounded-box top-px max-h-[calc(100vh-8.6rem)] overflow-y-auto border border-white/5 shadow-2xl outline-1 outline-black/5 mt-16">
       <ul class="menu w-56">
         <li class="menu-title text-xs">Theme</li>
-        <!--[-->
-        <li>
+        <li v-for="option in themeOptions" :key="option">
           <button
-            @click="chooseTheme('dark')"
+            type="button"
             class="gap-3 px-2"
-            data-set-theme="dark"
-            data-act-class="[&amp;_svg]:visible">
+            :data-set-theme="option"
+            @click="chooseTheme(option)">
             <div
-              data-theme="dark"
+              :data-theme="option"
               class="bg-base-100 grid shrink-0 grid-cols-2 gap-0.5 rounded-md p-1 shadow-sm">
               <div class="bg-base-content size-1 rounded-full"></div>
               <div class="bg-primary size-1 rounded-full"></div>
               <div class="bg-secondary size-1 rounded-full"></div>
               <div class="bg-accent size-1 rounded-full"></div>
             </div>
-            <div class="w-32 truncate">dark</div>
+            <div class="w-32 truncate">{{ option }}</div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
               height="16"
               viewBox="0 0 24 24"
               fill="currentColor"
-              class="invisible h-3 w-3 shrink-0">
+              class="h-3 w-3 shrink-0"
+              :class="theme === option ? 'visible' : 'invisible'">
               <path
                 d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"></path>
             </svg>
           </button>
         </li>
-        <li>
+        <li class="menu-title text-xs mt-2">Density</li>
+        <li v-for="option in densityOptions" :key="option.value">
           <button
-            @click="chooseTheme('light')"
-            class="gap-3 px-2 [&amp;_svg]:visible"
-            data-set-theme="light"
-            data-act-class="[&amp;_svg]:visible">
-            <div
-              data-theme="light"
-              class="bg-base-100 grid shrink-0 grid-cols-2 gap-0.5 rounded-md p-1 shadow-sm">
-              <div class="bg-base-content size-1 rounded-full"></div>
-              <div class="bg-primary size-1 rounded-full"></div>
-              <div class="bg-secondary size-1 rounded-full"></div>
-              <div class="bg-accent size-1 rounded-full"></div>
-            </div>
-            <div class="w-32 truncate">light</div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              class="invisible h-3 w-3 shrink-0">
-              <path
-                d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"></path>
-            </svg>
-          </button>
-        </li>
-        <li>
-          <button
-            @click="chooseTheme('black')"
+            type="button"
             class="gap-3 px-2"
-            data-set-theme="black"
-            data-act-class="[&amp;_svg]:visible">
-            <div
-              data-theme="black"
-              class="bg-base-100 grid shrink-0 grid-cols-2 gap-0.5 rounded-md p-1 shadow-sm">
-              <div class="bg-base-content size-1 rounded-full"></div>
-              <div class="bg-primary size-1 rounded-full"></div>
-              <div class="bg-secondary size-1 rounded-full"></div>
-              <div class="bg-accent size-1 rounded-full"></div>
-            </div>
-            <div class="w-32 truncate">black</div>
+            :data-set-density="option.value"
+            @click="chooseDensity(option.value)">
+            <div class="w-32 truncate capitalize">{{ option.label }}</div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
               height="16"
               viewBox="0 0 24 24"
               fill="currentColor"
-              class="invisible h-3 w-3 shrink-0">
+              class="h-3 w-3 shrink-0 ml-auto"
+              :class="density === option.value ? 'visible' : 'invisible'">
               <path
                 d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"></path>
             </svg>
@@ -118,29 +85,42 @@
 import { computed, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useSettingsStore } from "../stores/settings";
+import { useUiDensity, type UiDensity } from "../composables/useUiDensity";
 
 defineOptions({ name: "ThemeChooser" });
 
 const settingsStore = useSettingsStore();
 const { config } = storeToRefs(settingsStore);
+const { density, setDensity, initDensity } = useUiDensity();
+
+const themeOptions = ["dark", "light", "black"] as const;
+const densityOptions: Array<{ value: UiDensity; label: string }> = [
+  { value: "comfy", label: "Comfy" },
+  { value: "compact", label: "Compact" },
+];
 
 const theme = ref("dark");
 
-const settingsTheme = computed(() => config.value?.theme ?? null);
+const settingsTheme = computed(
+  () => (config.value as { theme?: string } | null)?.theme ?? null,
+);
 
 const isDarkSchemePreferred = computed(
   () => window?.matchMedia?.("(prefers-color-scheme:dark)")?.matches ?? false,
 );
 
 function setTheme() {
-  const element = document.querySelector("html");
-  element?.setAttribute("data-theme", theme.value);
+  document.documentElement.setAttribute("data-theme", theme.value);
   void settingsStore.addToConfig({ theme: theme.value });
 }
 
 function chooseTheme(next: string) {
   theme.value = next;
   setTheme();
+}
+
+function chooseDensity(next: UiDensity) {
+  setDensity(next);
 }
 
 function init() {
@@ -153,6 +133,7 @@ function init() {
   }
   theme.value = next ?? "dark";
   setTheme();
+  initDensity();
 }
 
 onMounted(() => {

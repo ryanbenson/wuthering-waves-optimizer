@@ -149,7 +149,12 @@
               <button @click="nextPage" class="join-item btn btn-sm">»</button>
             </div>
             <div
-              class="echoes__list__items grid grid-cols-1 md:grid-cols-2 gap-4">
+              class="echoes__list__items grid gap-4"
+              :class="
+                isCompact
+                  ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
+                  : 'grid-cols-1 md:grid-cols-2'
+              ">
               <CalculatorEchoCard
                 v-for="echo in paginatedEchoesList"
                 class="echo__item"
@@ -169,7 +174,8 @@
                 :echo-sub-stats-type-4="echo.echoSubStatsType4"
                 :echo-sub-stats-value-4="echo.echoSubStatsValue4"
                 :echo-sub-stats-type-5="echo.echoSubStatsType5"
-                :echo-sub-stats-value-5="echo.echoSubStatsValue5">
+                :echo-sub-stats-value-5="echo.echoSubStatsValue5"
+                :compact="isCompact">
                 <div
                   class="echoes__item__foot flex gap-2 justify-between items-center">
                   <div class="echoes__items__foot__equipped">
@@ -227,8 +233,10 @@ import { useCharacterStore } from "../stores/character";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
 import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
 import { useToast } from "../composables/useToast";
+import { useUiDensity } from "../composables/useUiDensity";
 
 const { showToast } = useToast();
+const { isCompact } = useUiDensity();
 const props = defineProps<{ character: string }>();
 const emit = defineEmits<{ "chosen-echo-inventory": [] }>();
 
@@ -368,7 +376,9 @@ function triggerCloseModal() {
       isOpen.value = false;
     }
 function handleClose() {
-      isOpen.value = false;
+      // Must close the <dialog> itself — only clearing isOpen removes the
+      // modal-box (and its method="dialog" form) while leaving the backdrop open.
+      triggerCloseModal();
     }
 function getEchoSetImage(type: string) {
       return getEchoSetIconByType(type);

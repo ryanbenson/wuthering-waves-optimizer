@@ -290,7 +290,13 @@
             Select page
           </button>
         </div>
-        <div class="echoes__list__items grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div
+          class="echoes__list__items grid gap-4"
+          :class="
+            isCompact
+              ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+              : 'grid-cols-1 md:grid-cols-2'
+          ">
           <div
             v-for="echoRow in paginatedEchoesList"
             :key="echoRow.echoId"
@@ -309,7 +315,8 @@
             <CalculatorEchoCard
               class="echo__item"
               v-bind="echoCardBinder(echoRow)"
-              :hide-inventory="true">
+              :hide-inventory="true"
+              :compact="isCompact">
               <div
                 class="echoes__item__foot flex gap-2 justify-between items-center">
                 <div class="echoes__items__foot__equipped">
@@ -411,9 +418,11 @@ import { randomString } from "../utils/strings";
 import { useConfirm } from "../composables/useConfirm";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import { useToast } from "../composables/useToast";
+import { useUiDensity } from "../composables/useUiDensity";
 
 const { confirm } = useConfirm();
 const { showToast } = useToast();
+const { isCompact } = useUiDensity();
 const {
   trashEchoCount,
   getEchoFlags,
