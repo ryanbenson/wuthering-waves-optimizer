@@ -234,7 +234,9 @@ function reset() {
 
 function handleClose() {
   reset();
-  isOpen.value = false;
+  // Must close the <dialog> itself — only clearing isOpen removes the
+  // modal-box (and its method="dialog" form) while leaving the backdrop open.
+  triggerCloseModal();
 }
 
 function toggleElementFilter(element: string) {

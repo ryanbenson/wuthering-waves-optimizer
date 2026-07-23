@@ -140,4 +140,25 @@ function selectStatus(nextStatus: CharacterBuildStatus) {
     outline: none;
   }
 }
+
+html[data-density="compact"] {
+  .character-build-status-dropdown {
+    min-width: 9.5rem;
+
+    :deep(.dropdown-content) {
+      width: max-content;
+      min-width: 9.5rem;
+    }
+  }
+
+  .character-build-status--interactive {
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .character-build-status__menu-item {
+    gap: 0.5rem;
+    padding: 0.375rem 0.625rem;
+  }
+}
 </style>

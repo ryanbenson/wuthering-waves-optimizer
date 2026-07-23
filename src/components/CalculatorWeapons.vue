@@ -46,8 +46,10 @@
           </div>
         </div>
       </div>
-      <div class="weapon__basic-data">
-        <div class="mb-2">
+      <div
+        class="weapon__basic-data"
+        :class="{ 'weapon__basic-data--compact': isCompact }">
+        <div :class="{ 'mb-2': !isCompact }">
           <select
             name="weapon"
             v-model="weapon"
@@ -96,7 +98,7 @@
             </optgroup>
           </select>
         </div>
-        <div class="mb-2">
+        <div :class="{ 'mb-2': !isCompact }">
           <select
             name="weaponLevel"
             v-model="weaponLevel"
@@ -105,9 +107,8 @@
               {{ lvl }}
             </option>
           </select>
-          <label for="weaponLevel" class="ml-2">Weapon Level</label>
         </div>
-        <div class="">
+        <div>
           <select
             name="refinement"
             v-model="refinement"
@@ -119,7 +120,6 @@
               {{ lvl }}
             </option>
           </select>
-          <label for="weaponLevel" class="ml-2">Refinement</label>
         </div>
       </div>
     </div>
@@ -194,6 +194,7 @@ import CalculatorWeaponsPassive from "./CalculatorWeaponsPassive.vue";
 import CalculatorWeaponBrowser from "./CalculatorWeaponBrowser.vue";
 import { useCharacterStore } from "../stores/character";
 import { subStatLabelMap } from "../echoes/stats";
+import { useUiDensity } from "../composables/useUiDensity";
 
 type WeaponListBuckets = {
   five: Array<{ key: string; name: string; [k: string]: unknown }>;
@@ -238,6 +239,8 @@ const props = withDefaults(
   }>(),
   { weaponType: "" },
 );
+
+const { isCompact } = useUiDensity();
 
 const emit = defineEmits<{
   "update-weapon": [
@@ -739,5 +742,27 @@ html[data-theme="light"] {
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.weapon__basic-data--compact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+html[data-density="compact"] {
+  .weapon__selection__image {
+    width: 64px;
+    height: 64px;
+  }
+  .weapon__selection__image-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+  .weapon__basic-info {
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
 }
 </style>

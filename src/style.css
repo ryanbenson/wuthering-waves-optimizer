@@ -261,3 +261,50 @@ html[data-theme="light"] input[type="number"] {
   left: 0.5rem;
   z-index: 0;
 }
+
+/* UI density: Compact */
+html[data-density="compact"] .card {
+  border-radius: 0.5rem;
+}
+
+html[data-density="compact"] .card .card-body {
+  padding: 0.5rem;
+  gap: 0;
+}
+
+html[data-density="compact"] .card .card-title {
+  margin-bottom: 0;
+}
+
+html[data-density="compact"] .calculator__stats td,
+html[data-density="compact"] .calculator__stats th {
+  padding: 0.25rem;
+}
+
+html[data-density="compact"] .echo__item__sub-stats td {
+  padding: 0.25rem;
+}
+
+html[data-density="compact"] .collapse.my-4 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+html[data-density="compact"] .custom__buffs-list .form-control {
+  margin-bottom: 0.5rem;
+}
+
+html[data-density="compact"] .character__selection__avatar-wrap {
+  width: 64px;
+}
+
+html[data-density="compact"] .character__selection__avatar,
+html[data-density="compact"] .character__selection__avatar-overlay {
+  width: 64px;
+  height: 64px;
+}
+
+html[data-density="compact"] .character__selection__avatar-icon {
+  width: 1.15rem;
+  height: 1.15rem;
+}

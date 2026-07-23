@@ -56,12 +56,13 @@
       </div>
 
       <CharacterBuildStatus
+        v-if="!isCompact"
         :status="buildStatus"
         :character-key="characterChosen"
         interactive
         class="w-full" />
     </div>
-    <div class="character__selection__form">
+    <div class="character__selection__form" :class="{ 'character__selection__form--compact': isCompact }">
       <div class="character__selection__form--character">
         <select
           name="character"
@@ -89,6 +90,12 @@
       <CalculatorCharacterLevel
         :character="character"
         @character-level-updated="handleCharacterLevelUpdated"></CalculatorCharacterLevel>
+      <CharacterBuildStatus
+        v-if="isCompact"
+        :status="buildStatus"
+        :character-key="characterChosen"
+        interactive
+        class="character__selection__build-status--compact" />
     </div>
     <CalculatorCharacterBrowser
       :character="character"
@@ -109,6 +116,7 @@ import {
 } from "../characters/characters";
 import { getCharacterBuildStatus } from "../characters/characterBuildStatus";
 import { useCharacterStore } from "../stores/character";
+import { useUiDensity } from "../composables/useUiDensity";
 
 type ListedCharacter = (typeof allCharactersList)[number];
 type CharacterPickerList = ReturnType<typeof getCharactersAvailable>;
@@ -118,6 +126,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+const { isCompact } = useUiDensity();
 
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
@@ -213,6 +222,27 @@ onMounted(() => {
   label {
     margin-left: 0.5rem;
   }
+
+  &--compact {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+
+    .character__selection__form--character {
+      margin-bottom: 0;
+    }
+
+    &:has(.character-build-status-dropdown:focus-within) {
+      z-index: 50;
+    }
+  }
+}
+.character__selection__build-status--compact {
+  width: auto;
+  min-width: 9.5rem;
+  flex: 0 0 auto;
 }
 .character__selection__avatar-wrap {
   position: relative;
@@ -294,5 +324,20 @@ onMounted(() => {
 
 .character__selection__avatar:hover .character__selection__avatar-icon {
   opacity: 1;
+}
+
+html[data-density="compact"] {
+  .character__selection {
+    grid-template-columns: 4.5rem 1fr;
+    grid-gap: 1rem;
+  }
+  .character__selection__favorite {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+  .character__selection__favorite-icon {
+    width: 0.8rem;
+    height: 0.8rem;
+  }
 }
 </style>
