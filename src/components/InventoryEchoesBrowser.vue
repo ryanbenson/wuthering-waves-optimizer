@@ -9,6 +9,21 @@
           Add echo
         </button>
         <button
+          type="button"
+          class="btn btn-sm join-item"
+          :class="{ 'btn-active btn-warning': duplicatesFilter }"
+          v-tooltip="'Show only exact duplicate echoes in your inventory'"
+          data-test-find-duplicates
+          @click="toggleDuplicatesFilter">
+          Find duplicates
+          <span
+            v-if="duplicateEchoCount > 0"
+            class="badge badge-sm"
+            :class="duplicatesFilter ? 'badge-neutral' : 'badge-warning'">
+            {{ duplicateEchoCount }}
+          </span>
+        </button>
+        <button
           class="btn btn-sm join-item btn-error"
           :disabled="trashEchoCount === 0"
           v-tooltip="
@@ -317,6 +332,11 @@
       <template v-if="!echoesList.length">
         <div class="echoes__list--empty py-12 text-center w-full">
           No echoes found
+          <template v-if="duplicatesFilter">
+            <div class="mt-2 text-sm opacity-70">
+              No exact duplicate echoes in your inventory.
+            </div>
+          </template>
         </div>
       </template>
       <template v-else>
@@ -462,6 +482,7 @@ import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
 import { randomString } from "../utils/strings";
+import { getEchoIdentityKey } from "../utils/echoIdentity";
 import { useConfirm } from "../composables/useConfirm";
 import { useEchoInventory } from "../composables/useEchoInventory";
 import { useToast } from "../composables/useToast";
@@ -494,6 +515,7 @@ const lockedFilter = ref(false);
 const trashFilter = ref(false);
 const ignoreFromOptimizerFilter = ref(false);
 const favoriteFilter = ref(false);
+const duplicatesFilter = ref(false);
 const cvMin = ref(0);
 const cvMax = ref(ECHO_CV_MAX);
 const rvMin = ref(0);
@@ -510,6 +532,7 @@ const activeFilterCount = computed(() => {
   if (trashFilter.value) count += 1;
   if (ignoreFromOptimizerFilter.value) count += 1;
   if (favoriteFilter.value) count += 1;
+  if (duplicatesFilter.value) count += 1;
   if (cvMin.value > 0 || cvMax.value < ECHO_CV_MAX) count += 1;
   if (rvMin.value > 0 || rvMax.value < ECHO_RV_MAX) count += 1;
   return count;
@@ -521,6 +544,31 @@ const inventoryStore = useInventoryStore();
 const { echoes } = storeToRefs(inventoryStore);
 const { getEchoEquippedChars, saveEcho, getEchoById } = inventoryStore;
 
+const duplicateIdentityCounts = computed(() => {
+  const counts = new Map<string, number>();
+  for (const inventoryEcho of (echoes.value ?? []) as InventoryEchoRow[]) {
+    if (!inventoryEcho.echo) {
+      continue;
+    }
+    const key = getEchoIdentityKey(inventoryEcho);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  return counts;
+});
+
+const duplicateEchoCount = computed(() => {
+  let count = 0;
+  for (const inventoryEcho of (echoes.value ?? []) as InventoryEchoRow[]) {
+    if (!inventoryEcho.echo) {
+      continue;
+    }
+    if ((duplicateIdentityCounts.value.get(getEchoIdentityKey(inventoryEcho)) ?? 0) > 1) {
+      count += 1;
+    }
+  }
+  return count;
+});
+
 watch(
   [
     mainStatFilter,
@@ -531,6 +579,7 @@ watch(
     trashFilter,
     ignoreFromOptimizerFilter,
     favoriteFilter,
+    duplicatesFilter,
     cvMin,
     cvMax,
     rvMin,
@@ -571,6 +620,19 @@ const echoesList = computed(() => {
   }
   if (favoriteFilter.value) {
     allEchoes = allEchoes.filter((e) => e.favorite);
+  }
+  if (duplicatesFilter.value) {
+    allEchoes = allEchoes.filter((e) => {
+      if (!e.echo) {
+        return false;
+      }
+      return (duplicateIdentityCounts.value.get(getEchoIdentityKey(e)) ?? 0) > 1;
+    });
+    allEchoes = allEchoes
+      .slice()
+      .sort((a, b) =>
+        getEchoIdentityKey(a).localeCompare(getEchoIdentityKey(b)),
+      );
   }
   const cvFilterActive = cvMin.value > 0 || cvMax.value < ECHO_CV_MAX;
   const rvFilterActive = rvMin.value > 0 || rvMax.value < ECHO_RV_MAX;
@@ -675,6 +737,10 @@ function isEchoSetFilterActive(set: string) {
   return echoSet.value === set;
 }
 
+function toggleDuplicatesFilter() {
+  duplicatesFilter.value = !duplicatesFilter.value;
+}
+
 function resetFilters() {
   echoSet.value = null;
   echo.value = null;
@@ -684,6 +750,7 @@ function resetFilters() {
   trashFilter.value = false;
   ignoreFromOptimizerFilter.value = false;
   favoriteFilter.value = false;
+  duplicatesFilter.value = false;
   cvMin.value = 0;
   cvMax.value = ECHO_CV_MAX;
   rvMin.value = 0;
