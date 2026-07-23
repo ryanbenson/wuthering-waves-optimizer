@@ -2,6 +2,16 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>July 23, 2026</h3>
+    <ul>
+      <li>Fixes Yangyang Xuanling's s2 as it was missing some attacks from the buff.</li>
+    </ul>
+    <h3>July 22, 2026</h3>
+    <ul>
+      <li>Added a new compact mode that makes the UI more condensed.</li>
+      <li>Added more echo filters so you can filter by CV and RV.</li>
+      <li>Added some bulk actions in the inventory page where you can select 1 to many echoes and make bulk changes to them.</li>
+    </ul>
     <h3>July 21, 2026</h3>
     <ul>
       <li>Fixes Suisui's Inherent Skill: Sky Over Water buff.</li>
