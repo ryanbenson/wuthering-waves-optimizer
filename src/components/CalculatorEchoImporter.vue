@@ -125,6 +125,7 @@ import {
 import { getEchoData } from "../echoes/index";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { getEchoIdentityKey } from "../utils/echoIdentity";
 import { randomString } from "../utils/strings.ts";
 
 const MODAL_ID = "modal-echoes-importer";
@@ -239,51 +240,14 @@ function getSubstatType(subStatData: ParsedSubstat | undefined) {
   );
 }
 
-function getEchoIdentityKey(echo: {
-  echo?: string | null;
-  echoSet?: string | null;
-  type?: unknown;
-  rank?: unknown;
-  stat?: string | null;
-  echoSubStatsType1?: string | null;
-  echoSubStatsValue1?: number | null;
-  echoSubStatsType2?: string | null;
-  echoSubStatsValue2?: number | null;
-  echoSubStatsType3?: string | null;
-  echoSubStatsValue3?: number | null;
-  echoSubStatsType4?: string | null;
-  echoSubStatsValue4?: number | null;
-  echoSubStatsType5?: string | null;
-  echoSubStatsValue5?: number | null;
-}) {
-  return [
-    echo.echo ?? "",
-    echo.echoSet ?? "",
-    echo.type ?? "",
-    echo.rank ?? "",
-    echo.stat ?? "",
-    echo.echoSubStatsType1 ?? "",
-    echo.echoSubStatsValue1 ?? "",
-    echo.echoSubStatsType2 ?? "",
-    echo.echoSubStatsValue2 ?? "",
-    echo.echoSubStatsType3 ?? "",
-    echo.echoSubStatsValue3 ?? "",
-    echo.echoSubStatsType4 ?? "",
-    echo.echoSubStatsValue4 ?? "",
-    echo.echoSubStatsType5 ?? "",
-    echo.echoSubStatsValue5 ?? "",
-  ]
-    .map(String)
-    .join(":");
-}
-
 function isExactInventoryMatch(echo: MappedEcho) {
   if (!echo.echo) {
     return false;
   }
   const identityKey = getEchoIdentityKey(echo);
   return inventoryStore.echoes.some(
-    (inventoryEcho) => getEchoIdentityKey(inventoryEcho) === identityKey,
+    (inventoryEcho: MappedEcho) =>
+      getEchoIdentityKey(inventoryEcho) === identityKey,
   );
 }
 
