@@ -5,6 +5,7 @@
     <h3>July 23, 2026</h3>
     <ul>
       <li>Fixes Yangyang Xuanling's s2 as it was missing some attacks from the buff.</li>
+      <li>Checks for duplicates when importing echoes and asks you if you want to add them to your inventory and apply them to your character.</li>
     </ul>
     <h3>July 22, 2026</h3>
     <ul>
