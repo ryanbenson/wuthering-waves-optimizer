@@ -17,7 +17,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode2RiverCarriesHerSongAway`,
     name: `Sequence Node 2: River carries her song away`,
-    details: `<div>The DMG dealt by <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Azure Sword Stance</span>, <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Feather Sword Stance</span>, <span style="color:#ffd12f;" class="font-bold">Mid-air Attack - Feather Fall</span>,  <span style="color:#ffd12f;" class="font-bold">Basic Attack - Havoc in Bloom</span>, and <span style="color:#ffd12f;" class="font-bold">Dodge Counterk - Havoc in Bloom</span> is increased by 100%.<br><size=10></span><br>Every time when Yangyang: Xuanling remains out of combat for more than 4s after she leaves the combat state or regains consciousness, she gains the following effects once:<br>- Gain <span style="color:#ffd12f;" class="font-bold">Strung Notes</span>, up to 1 stack. Casting <span style="color:#ffd12f;" class="font-bold">Basic Attack - Azure Sword Stance</span> or <span style="color:#ffd12f;" class="font-bold">Basic Attack - Feather Sword Stance</span> summons <span style="color:#ffd12f;" class="font-bold">Shadow of Xuanling: Strung Notes</span> to attack the target, dealing <span style="color:#fcc4db;">Havoc DMG</span> equal to 337.98% of Yangyang: Xuanling's ATK, considered <span style="color:#ffd12f;" class="font-bold">Heavy Attack DMG</span>. <span style="color:#ffd12f;" class="font-bold">Strung Notes</span> is removed after <span style="color:#ffd12f;" class="font-bold">Shadow of Xuanling: Strung Notes</span> is summoned.<br>- Restore 2 points of <span style="color:#ffd12f;" class="font-bold">Azure Plume</span>.<br>- Reset the Cooldown of gaining <span style="color:#ffd12f;" class="font-bold">Bated Breath</span> and <span style="color:#ffd12f;" class="font-bold">Streaming Storm</span>.</div>`,
+    details: `<div>The DMG dealt by <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Azure Sword Stance</span>, <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Feather Sword Stance</span>, <span style="color:#ffd12f;" class="font-bold">Mid-air Attack - Feather Fall</span>,  <span style="color:#ffd12f;" class="font-bold">Basic Attack - Havoc in Bloom</span>, and <span style="color:#ffd12f;" class="font-bold">Dodge Counter - Havoc in Bloom</span> is increased by 100%.<br><size=10></span><br>Every time when Yangyang: Xuanling remains out of combat for more than 4s after she leaves the combat state or regains consciousness, she gains the following effects once:<br>- Gain <span style="color:#ffd12f;" class="font-bold">Strung Notes</span>, up to 1 stack. Casting <span style="color:#ffd12f;" class="font-bold">Basic Attack - Azure Sword Stance</span> or <span style="color:#ffd12f;" class="font-bold">Basic Attack - Feather Sword Stance</span> summons <span style="color:#ffd12f;" class="font-bold">Shadow of Xuanling: Strung Notes</span> to attack the target, dealing <span style="color:#fcc4db;">Havoc DMG</span> equal to 337.98% of Yangyang: Xuanling's ATK, considered <span style="color:#ffd12f;" class="font-bold">Heavy Attack DMG</span>. <span style="color:#ffd12f;" class="font-bold">Strung Notes</span> is removed after <span style="color:#ffd12f;" class="font-bold">Shadow of Xuanling: Strung Notes</span> is summoned.<br>- Restore 2 points of <span style="color:#ffd12f;" class="font-bold">Azure Plume</span>.<br>- Reset the Cooldown of gaining <span style="color:#ffd12f;" class="font-bold">Bated Breath</span> and <span style="color:#ffd12f;" class="font-bold">Streaming Storm</span>.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -31,6 +31,12 @@ export const resonanceChains = [
           "BasicAttackFeatherSwordStanceStage2DMG",
           "BasicAttackFeatherSwordStanceStage3DMG",
           "BasicAttackFeatherSwordStanceStage4DMG",
+          "BasicAttackHavocInBloomStage1DMG",
+          "BasicAttackHavocInBloomStage2DMG",
+          "BasicAttackHavocInBloomStage3DMG",
+          "DodgeCounterHavocInBloomStage1DMG",
+          "DodgeCounterHavocInBloomStage2DMG",
+          "DodgeCounterHavocInBloomStage3DMG",
         ],
         modifierValue: 1,
       },
