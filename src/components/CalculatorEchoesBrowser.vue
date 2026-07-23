@@ -10,128 +10,154 @@
         </button>
       </form>
       <div class="py-4">
-        <div class="echoes__filters flex flex-wrap align-center gap-2 mb-6">
-          <select
-            v-model="mainStatFilter"
-            name="mainEcho"
-            class="select select-bordered select select-sm">
-            <option :value="null">Select a main stat</option>
-            <option
-              v-for="mainStat in allMainStats"
-              :key="mainStat"
-              :value="mainStat">
-              {{ getReadableSubStatLabel(mainStat) }}
-            </option>
-          </select>
-          <select
-            v-model="costFilter"
-            name="cost"
-            class="select select-bordered select select-sm">
-            <option :value="null">Select a cost</option>
-            <option v-for="cost in [4, 3, 1]" :key="cost" :value="cost">
-              {{ cost }} Cost
-            </option>
-          </select>
-          <select
-            v-model="echo"
-            name="mainEcho"
-            class="select select-bordered select select-sm">
-            <option :value="null">Select an echo</option>
-            <optgroup label="Calamity">
-              <option
-                v-for="option in mainEchoOptions.Calamity"
-                :key="option.key"
-                :value="option.key">
-                {{ option.name }}
-              </option>
-            </optgroup>
-            <optgroup label="Overlord">
-              <option
-                v-for="option in mainEchoOptions.Overlord"
-                :key="option.key"
-                :value="option.key">
-                {{ option.name }}
-              </option>
-            </optgroup>
-            <optgroup label="Elite">
-              <option
-                v-for="option in mainEchoOptions.Elite"
-                :key="option.key"
-                :value="option.key">
-                {{ option.name }}
-              </option>
-            </optgroup>
-            <optgroup label="Common">
-              <option
-                v-for="option in mainEchoOptions.Common"
-                :key="option.key"
-                :value="option.key">
-                {{ option.name }}
-              </option>
-            </optgroup>
-          </select>
-          <select
-            v-model="equippedFilter"
-            name="equippedFilter"
-            class="select select-bordered select select-sm mr-4">
-            <option :value="null">Show all</option>
-            <option value="self">Hide equipped by {{ character }}</option>
-            <option value="any">Hide equipped by anyone</option>
-          </select>
+        <div class="echoes__filters mb-6 space-y-3">
           <div
-            class="echoes__filters__sets echo-filters__sets"
-            :class="{ 'echo-filters__sets--active': echoSet !== null }">
-            <button
-              v-for="echoSet in echoSetsList"
-              :key="echoSet"
-              @click="toggleEchoSetFilter(echoSet)"
-              class="rounded mr-1 p-[.3rem]"
-              :class="{
-                'btn-active': isEchoSetFilterActive(echoSet),
-                echoSet,
-              }">
-              <img
-                :src="getEchoSetImage(echoSet)"
-                class="size-7"
-                :class="echoSet" />
-            </button>
+            class="echoes__filters__header flex flex-wrap items-center justify-between gap-4 rounded-lg bg-base-200 p-1 pl-3">
+            <h3 class="text-sm font-semibold">
+              Filters
+              <span
+                v-if="activeFilterCount"
+                class="badge badge-sm badge-primary ml-2">
+                {{ activeFilterCount }}
+              </span>
+            </h3>
+            <div class="join">
+              <button
+                type="button"
+                class="btn btn-sm join-item"
+                :disabled="!activeFilterCount"
+                @click="resetFilters">
+                Clear
+              </button>
+            </div>
+
+            <div class="echoes__filters__row flex flex-wrap items-center gap-2">
+              <select
+                v-model="costFilter"
+                name="cost"
+                class="select select-bordered select-sm">
+                <option :value="null">Cost</option>
+                <option v-for="cost in [4, 3, 1]" :key="cost" :value="cost">
+                  {{ cost }} Cost
+                </option>
+              </select>
+              <select
+                v-model="mainStatFilter"
+                name="mainEcho"
+                class="select select-bordered select-sm">
+                <option :value="null">Main stat</option>
+                <option
+                  v-for="mainStat in allMainStats"
+                  :key="mainStat"
+                  :value="mainStat">
+                  {{ getReadableSubStatLabel(mainStat) }}
+                </option>
+              </select>
+              <select
+                v-model="echo"
+                name="mainEcho"
+                class="select select-bordered select-sm">
+                <option :value="null">Echo</option>
+                <optgroup label="Calamity">
+                  <option
+                    v-for="option in mainEchoOptions.Calamity"
+                    :key="option.key"
+                    :value="option.key">
+                    {{ option.name }}
+                  </option>
+                </optgroup>
+                <optgroup label="Overlord">
+                  <option
+                    v-for="option in mainEchoOptions.Overlord"
+                    :key="option.key"
+                    :value="option.key">
+                    {{ option.name }}
+                  </option>
+                </optgroup>
+                <optgroup label="Elite">
+                  <option
+                    v-for="option in mainEchoOptions.Elite"
+                    :key="option.key"
+                    :value="option.key">
+                    {{ option.name }}
+                  </option>
+                </optgroup>
+                <optgroup label="Common">
+                  <option
+                    v-for="option in mainEchoOptions.Common"
+                    :key="option.key"
+                    :value="option.key">
+                    {{ option.name }}
+                  </option>
+                </optgroup>
+              </select>
+              <select
+                v-model="equippedFilter"
+                name="equippedFilter"
+                class="select select-bordered select-sm">
+                <option :value="null">Show all</option>
+                <option value="self">Hide equipped by {{ character }}</option>
+                <option value="any">Hide equipped by anyone</option>
+              </select>
+              <div class="join">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-ghost join-item"
+                  :class="{ 'btn-active': favoriteFilter }"
+                  v-tooltip="'Show only favorite echoes'"
+                  aria-label="Show favorites only"
+                  data-test-filter-favorites
+                  @click="favoriteFilter = !favoriteFilter">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    class="size-4"
+                    aria-hidden="true">
+                    <path
+                      v-if="favoriteFilter"
+                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                      fill="currentColor" />
+                    <path
+                      v-else
+                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="echoes__filters__row">
+              <EchoCvRvRangeFilters
+                v-model:cv-min="cvMin"
+                v-model:cv-max="cvMax"
+                v-model:rv-min="rvMin"
+                v-model:rv-max="rvMax" />
+            </div>
+
+            <div class="echoes__filters__row flex flex-wrap items-center gap-2">
+              <span class="text-xs font-medium opacity-60 mr-1">Set</span>
+              <div
+                class="echoes__filters__sets echo-filters__sets flex flex-wrap"
+                :class="{ 'echo-filters__sets--active': echoSet !== null }">
+                <button
+                  v-for="setKey in echoSetsList"
+                  :key="setKey"
+                  type="button"
+                  @click="toggleEchoSetFilter(setKey)"
+                  class="rounded mr-1 p-[.3rem]"
+                  :class="[setKey, { 'btn-active': isEchoSetFilterActive(setKey) }]">
+                  <img
+                    :src="getEchoSetImage(setKey)"
+                    class="size-7"
+                    :class="setKey" />
+                </button>
+              </div>
+            </div>
           </div>
-          <button
-            type="button"
-            class="btn btn-sm btn-ghost btn-square"
-            :class="{ 'btn-active': favoriteFilter }"
-            v-tooltip="'Show only favorite echoes'"
-            aria-label="Show favorites only"
-            data-test-filter-favorites
-            @click="favoriteFilter = !favoriteFilter">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              class="size-4"
-              aria-hidden="true">
-              <path
-                v-if="favoriteFilter"
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                fill="currentColor" />
-              <path
-                v-else
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round" />
-            </svg>
-          </button>
-          <button @click="resetFilters" class="btn btn-sm btn-ghost">
-            Clear
-          </button>
-          <EchoCvRvRangeFilters
-            class="basis-full"
-            v-model:cv-min="cvMin"
-            v-model:cv-max="cvMax"
-            v-model:rv-min="rvMin"
-            v-model:rv-max="rvMax" />
         </div>
 
         <div class="echoes__list">
@@ -261,8 +287,32 @@ const page = ref(1);
 const perPage = 20;
 const isOpen = ref(false);
 
+const activeFilterCount = computed(() => {
+  let count = 0;
+  if (echoSet.value) count += 1;
+  if (echo.value) count += 1;
+  if (costFilter.value) count += 1;
+  if (mainStatFilter.value) count += 1;
+  if (equippedFilter.value) count += 1;
+  if (favoriteFilter.value) count += 1;
+  if (cvMin.value > 0 || cvMax.value < ECHO_CV_MAX) count += 1;
+  if (rvMin.value > 0 || rvMax.value < ECHO_RV_MAX) count += 1;
+  return count;
+});
+
 watch(
-  [mainStatFilter, echoSet, echo, favoriteFilter, cvMin, cvMax, rvMin, rvMax],
+  [
+    mainStatFilter,
+    echoSet,
+    echo,
+    favoriteFilter,
+    equippedFilter,
+    costFilter,
+    cvMin,
+    cvMax,
+    rvMin,
+    rvMax,
+  ],
   () => {
     page.value = 1;
   },
