@@ -37,6 +37,7 @@ export const characterPickerRoster: CharacterList = {
     { key: "Mornye", name: "Mornye" },
     { key: "Phoebe", name: "Phoebe" },
     { key: "Phrolova", name: "Phrolova" },
+    { key: "Qingxiao", name: "Qingxiao" },
     { key: "Qiuyuan", name: "Qiuyuan" },
     { key: "Rebecca", name: "Rebecca" },
     { key: "Roccia", name: "Roccia" },
@@ -50,6 +51,7 @@ export const characterPickerRoster: CharacterList = {
     { key: "RoverSpectroMale", name: "Rover Spectro (Male)" },
     { key: "Shorekeeper", name: "Shorekeeper" },
     { key: "Sigrika", name: "Sigrika" },
+    { key: "Jingran", name: "Jingran" },
     { key: "Suisui", name: "Suisui" },
     { key: "Verina", name: "Verina" },
     { key: "XiangliYao", name: "Xiangli Yao" },
@@ -200,6 +202,13 @@ export const allCharactersList = [
     weapon: "Gauntlet",
   },
   {
+    key: "Jingran",
+    name: "Jingran",
+    element: "Fusion",
+    rarity: 5,
+    weapon: "Broadblade",
+  },
+  {
     key: "Jinhsi",
     name: "Jinhsi",
     element: "Spectro",
@@ -275,6 +284,13 @@ export const allCharactersList = [
     element: "Havoc",
     rarity: 5,
     weapon: "Rectifier",
+  },
+  {
+    key: "Qingxiao",
+    name: "Qingxiao",
+    element: "Aero",
+    rarity: 5,
+    weapon: "Sword",
   },
   {
     key: "Qiuyuan",
