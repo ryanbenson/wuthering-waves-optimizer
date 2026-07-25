@@ -491,6 +491,9 @@ export const calculateAttackDamage = (
   let weaponDefIgnoreSpecificDmgType =
     context.equipment.weapon.weaponPassiveStats?.[`DEFIgnore:${attack.type}`] ??
     0;
+  let weaponDefIgnoreSpecificElement =
+    context.equipment.weapon.weaponPassiveStats?.[`DEFIgnore:${attackElement}`] ??
+    0;
   let teamDefIgnoreSpecificElement =
       context.buffs.teamBuffsData?.[`DEFIgnore:${attackElement}`] ??
       0;
@@ -499,6 +502,7 @@ export const calculateAttackDamage = (
   }
   if (excludeWeaponBuffs) {
     weaponDefIgnoreSpecificDmgType = 0;
+    weaponDefIgnoreSpecificElement = 0;
   }
   const specificSkillExtraCritRateResonanceChains =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:CritRate`] ?? 0;
@@ -592,7 +596,8 @@ export const calculateAttackDamage = (
     extraDefIgnoreCustomBuffs +
     attackBuffsDefIgnore +
     teamDefIgnoreSpecificElement +
-    weaponDefIgnoreSpecificDmgType;
+    weaponDefIgnoreSpecificDmgType +
+    weaponDefIgnoreSpecificElement;
   // Def Reduction
   // Havoc bane reduces def for stack * 2%
   const havocBaneStacksNum = context.enemy.havocBane.havocBaneStacks ?? 0;
