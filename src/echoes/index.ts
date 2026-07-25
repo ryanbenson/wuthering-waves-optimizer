@@ -69,6 +69,63 @@ export function getCostByClass(echoClass: string): number {
 }
 
 export const mainEchoesData: MainEchoes = {
+  _Staytuned1: {
+    key: "_Staytuned1",
+    name: "Stay tuned",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/_Staytuned1.webp",
+    details: `Transform into Calamity Effigy to deal 63.00%/72.00%/81.00% Aero DMG.
+The Resonator with this Echo equipped in the main slot gains 189.00%/216.00%/243.00% Aero DMG Bonus, and additionally gains 10.00% Aero DMG Bonus for 10.00%s when inflicting Tune Strain - Shifting on the target.
+CD: 15s`,
+    modifiers: [
+      {
+        modifier: "Aero",
+        modifierValue: 0.1,
+      },
+    ],
+    actions: [
+      {
+        key: "TransformDMG",
+        label: "Transform DMG",
+        description: `Transform into Calamity Effigy to deal 63.00%/72.00%/81.00% Aero DMG. The Resonator with this Echo equipped in the main slot gains 189.00%/216.00%/243.00% Aero DMG Bonus,`,
+        talents: {
+          "1": "63.00%+189.00%",
+          "2": "63.00%+189.00%",
+          "3": "81.00%+216.00%",
+          "4": "72.00%+216.00%",
+          "5": "81.00%+243.00%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["HeartofEvilsPurge"],
+  },
+  _Staytuned2: {
+    key: "_Staytuned2",
+    name: "Stay tuned 2",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/_Staytuned2.webp",
+    details: `Summon a Skywatch Gunner to attack the target, dealing 32.09% Havoc DMG 6 times.
+CD: 15s`,
+    modifiers: [],
+    actions: [],
+    sets: ["SongofFeatheredTrace"],
+  },
+  _Staytuned3: {
+    key: "_Staytuned3",
+    name: "Stay tuned 3",
+    class: "Elite",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/_Staytuned3.webp",
+    details: `Summon a Jade Nether Serpent that bombards the target with fireballs, dealing 12.96% Fusion DMG 5 times, then 64.80% Fusion DMG once.
+CD: 8s`,
+    modifiers: [],
+    actions: [],
+    sets: ["SongofFeatheredTrace"],
+  },
   AbyssalGladius: {
     key: "AbyssalGladius",
     name: "Abyssal Gladius",
