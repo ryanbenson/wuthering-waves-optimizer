@@ -993,6 +993,46 @@ export const computeSelfBuffs = (
         }
       }
     }
+    if (character === "Qingxiao" && key === "Mindlock") {
+      // For each stack of Mindlock on the target, DMG taken by the target from the following Qingxiao skills is Amplified by 2%. This effect increases by 5% per stack for the first 7 stacks. - Heavy Attack - Stringblade, Basic Attack - Ephemeral Transcendence, Dodge Counter - Ephemeral Transcendence, Heavy Attack - Heaven's Reckoning: Ephemeral Transcendence, Resonance Skill - Billows Beneath Heaven.
+      const mindlockStacks = buffData?.stacks ?? 0;
+
+      let mindlockAmplifyPercent = 0;
+      if (mindlockStacks > 0) {
+        if (mindlockStacks <= 7) {
+          mindlockAmplifyPercent = 5 * mindlockStacks;
+        } else {
+          mindlockAmplifyPercent = 35 + 2 * (mindlockStacks - 7);
+        }
+      }
+
+      const dmgMultiplier = mindlockAmplifyPercent / 100;
+
+      data.specificTalentBuffs["HeavyAttackStringbladeDMG:specialMultiplier"] = dmgMultiplier;
+      data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage1DMG:specialMultiplier"] = dmgMultiplier;
+      data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage2DMG:specialMultiplier"] = dmgMultiplier;
+      data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage3DMG:specialMultiplier"] = dmgMultiplier;
+      data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage4DMG:specialMultiplier"] = dmgMultiplier;
+      data.specificTalentBuffs["DodgeCounterEphemeralTranscendenceDMG:specialMultiplier"] = dmgMultiplier;
+      data.specificTalentBuffs["HeavenSReckoningEphemeralTranscendenceDMG:specialMultiplier"] = dmgMultiplier;
+      data.specificTalentBuffs["BillowsBeneathHeavenDMG:specialMultiplier"] = dmgMultiplier;
+
+      // if InherentSkillToKnowToBanish selfbuff is enabled, add DmgBonus to the same attacks with the same amount
+      if (buffsConfig?.InherentSkillToKnowToBanish?.isEnabled) {
+        data.specificTalentBuffs["HeavyAttackStringbladeDMG:Aero"] = dmgMultiplier;
+        data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage1DMG:Aero"] = dmgMultiplier;
+        data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage2DMG:Aero"] = dmgMultiplier;
+        data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage3DMG:Aero"] = dmgMultiplier;
+        data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage4DMG:Aero"] = dmgMultiplier;
+        data.specificTalentBuffs["DodgeCounterEphemeralTranscendenceDMG:Aero"] = dmgMultiplier;
+        data.specificTalentBuffs["HeavenSReckoningEphemeralTranscendenceDMG:Aero"] = dmgMultiplier;
+        data.specificTalentBuffs["BillowsBeneathHeavenDMG:Aero"] = dmgMultiplier;
+      }
+      // if SequenceNode2LikePetalsThatFallWithoutASound, buff HeavenSReckoningEphemeralTranscendenceDMG * 0.03 for every stack of Mindlock
+      if (resonanceChainsConfig?.SequenceNode2LikePetalsThatFallWithoutASound?.isEnabled) {
+        data.specificTalentBuffs["HeavenSReckoningEphemeralTranscendenceDMG:talentModifierMultiply"] = 0.03 * mindlockStacks;
+      }
+    }
     if (character === "Aemeath" && key === "InherentSkillBetweentheStarsFusionBurst") {
       if (!resonanceChainsConfig?.SequenceNode3FervorSightlyBurnsBrightasNew?.isEnabled) {
         if (buffData?.stacks >= 2) {

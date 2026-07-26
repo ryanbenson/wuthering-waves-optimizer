@@ -986,6 +986,14 @@ export const calculateAttackDamage = (
   }
   // Strain "Total DMG" / Vuln = strainStacks (0-4) * TuneBreakBoost (0-50) * 0.12%
   let strainSpecialMultiplier = context.enemy.strainStacks * totalTuneBreakBoost * 0.12;
+  // Qingxiao S6: Tune Strain - Interfered response buff is increased by 60%
+  if (
+    context.character.characterKey === "Qingxiao" &&
+    context.global.characters?.[context.character.characterKey]?.resonanceChains
+      ?.SequenceNode6CleanseThisTarnishedAgeTillAllRunsClear?.isEnabled
+  ) {
+    strainSpecialMultiplier *= 1.6;
+  }
   // this does not apply to TuneBreak
   if (attack.type === "TuneBreak") {
     strainSpecialMultiplier = 0;

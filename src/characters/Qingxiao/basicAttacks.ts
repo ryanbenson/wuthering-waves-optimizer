@@ -188,6 +188,24 @@ export const basicAttacks = {
         "10": "41.06%",
       },
       type: "Basic",
-    }
+    },
+    {
+      key: "SequenceNode6CleanseThisTarnishedAgeTillAllRunsClear",
+      label: "S6 Juque Perdition",
+      talents: {
+        "1": "400%",
+        "2": "400%",
+        "3": "400%",
+        "4": "400%",
+        "5": "400%",
+        "6": "400%",
+        "7": "400%",
+        "8": "400%",
+        "9": "400%",
+        "10": "400%",
+      },
+      type: "Basic",
+      requiresResonanceChain: "SequenceNode6CleanseThisTarnishedAgeTillAllRunsClear",
+    },
   ],
 };

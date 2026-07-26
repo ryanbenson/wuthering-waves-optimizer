@@ -2539,6 +2539,23 @@ This effect ends when the incoming Resonator is switched off the field or when L
       alwaysEnabled: false,
     },
   ],
+  Qingxiao: [
+    {
+      key: `SequenceNode4WhereverTheRoadLeadsSideBySide`,
+      name: `Sequence Node 4: Wherever the Road Leads, Side by Side`,
+      details: `<div>When Resonators in the team apply <span style="color:#ffd12f;" class="font-bold">Tune Strain - Shifting</span>, ATK is increased by 20%, lasting 8s.</div>`,
+      hasStacks: false,
+      modifiers: [
+        {
+          modifier: "ATK",
+          modifierValue: 0.2,
+        }
+      ],
+      minStacks: 0,
+      maxStacks: 0,
+      alwaysEnabled: false,
+    },
+  ],
 };
 
 export const allEchoBuffs = [

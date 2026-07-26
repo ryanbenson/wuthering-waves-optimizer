@@ -9,6 +9,7 @@ interface ResonanceChains {
   SequenceNode6AZephyrKissedJourneytoYou?: ResonanceChainEntry;
   SequenceNode3IFleeYetISeek?: ResonanceChainEntry;
   SequenceNode3ThroughDarkandWindtheErlkingFollows?: ResonanceChainEntry;
+  SequenceNode3DreamsFadeSwordAbides?: ResonanceChainEntry;
 }
 
 export function getEffectiveMaxStacks(
@@ -60,6 +61,12 @@ export function getEffectiveMaxStacks(
       resonanceChains?.SequenceNode3ThroughDarkandWindtheErlkingFollows?.isEnabled
     ) {
       effectiveMaxStacks = 5;
+    }
+  }
+
+  if (character === "Qingxiao" && uniqueKey === "Mindlock") {
+    if (resonanceChains?.SequenceNode3DreamsFadeSwordAbides?.isEnabled) {
+      effectiveMaxStacks = 25;
     }
   }
 

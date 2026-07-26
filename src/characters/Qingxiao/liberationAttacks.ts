@@ -3,8 +3,8 @@ export const liberationAttacks = {
   description: `<div>Deals <span style="color:#c7ffed";>Aero DMG</span>.<br>Can be cast in mid-air close to the ground.</div>`,
   attacks: [
     {
-      key: "SkillDMG",
-      label: "Skill DMG",
+      key: "BillowsBeneathHeavenDMG",
+      label: "Billows Beneath Heaven DMG",
       talents: {
         "1": "15.40%*10+616.00%",
         "2": "16.67%*10+666.52%",
