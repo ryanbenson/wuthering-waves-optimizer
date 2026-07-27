@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>July 27, 2026</h3>
+    <ul>
+      <li>Adds rotation action count to each attack in the rotation results and in the optimizer results.</li>
+    </ul>
     <h3>July 23, 2026</h3>
     <ul>
       <li>Fixes Yangyang Xuanling's s2 as it was missing some attacks from the buff.</li>
