@@ -25,6 +25,7 @@
             'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
           }"
         />
+        <span v-if="countLabel" class="badge badge-sm badge-ghost shrink-0">{{ countLabel }}</span>
         <span>{{ label }}</span>
       </td>
       <td
@@ -46,6 +47,7 @@
             'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
           }"
         />
+        <span v-if="countLabel" class="badge badge-sm badge-ghost shrink-0">{{ countLabel }}</span>
         <span>{{ label }}</span>
       </td>
       <td
@@ -67,6 +69,7 @@
             'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
           }"
         />
+        <span v-if="countLabel" class="badge badge-sm badge-ghost shrink-0">{{ countLabel }}</span>
         <span>{{ label }}</span>
         <template v-if="isEchoAttack">
           <span v-if="!isEquippedEchoSameAsActionEcho" class="mismatch-echo" v-tooltip="'This echo does not match your equipped main echo'">
@@ -125,6 +128,8 @@ const props = withDefaults(
     mainEchoRank?: number | string | null;
     originalIsEnabled?: boolean;
     alwaysCrit?: boolean;
+    /** Hit/cast count from rotation actions only; omit for non-rotation damage lists. */
+    count?: number | string | null;
   }>(),
   {
     isEnabled: true,
@@ -132,6 +137,7 @@ const props = withDefaults(
     mainEchoRank: null,
     originalIsEnabled: true,
     alwaysCrit: false,
+    count: null,
   },
 );
 
@@ -149,6 +155,14 @@ const currentCharacterMainEcho = computed(
   () => currentCharacter.value?.mainEcho?.echo ?? null,
 );
 const slugifiedLabel = computed(() => slugify(props.label) ?? "");
+const countLabel = computed(() => {
+  if (props.count === null || props.count === undefined || props.count === "") {
+    return null;
+  }
+  const n = Number(props.count);
+  if (Number.isNaN(n) || n <= 0) return null;
+  return `${n}x`;
+});
 const normalDmgTooltipText = computed(() =>
   props.alwaysCrit ? null : props.damage.detailedCalculation,
 );
