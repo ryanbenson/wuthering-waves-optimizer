@@ -25,6 +25,7 @@
           :type="damageInstance.type"
           :label="damageInstance.label"
           :damage="damageInstance.damage"
+          :count="damageInstance.count ?? 1"
           :is-enabled="damageInstance.isEnabled"
           :main-echo="damageInstance.mainEcho"
           :main-echo-rank="damageInstance.mainEchoRank"
@@ -136,6 +137,7 @@ export type RotationAttack = {
   mainEchoRank?: number | string | null;
   originalIsEnabled?: boolean;
   alwaysCrit?: boolean;
+  count?: number | string | null;
 };
 
 export type RotationPayload = {
