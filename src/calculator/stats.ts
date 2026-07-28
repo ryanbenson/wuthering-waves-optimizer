@@ -1008,14 +1008,14 @@ export const computeSelfBuffs = (
 
       const dmgMultiplier = mindlockAmplifyPercent / 100;
 
-      data.specificTalentBuffs["HeavyAttackStringbladeDMG:specialMultiplier"] = dmgMultiplier;
-      data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage1DMG:specialMultiplier"] = dmgMultiplier;
-      data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage2DMG:specialMultiplier"] = dmgMultiplier;
-      data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage3DMG:specialMultiplier"] = dmgMultiplier;
-      data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage4DMG:specialMultiplier"] = dmgMultiplier;
-      data.specificTalentBuffs["DodgeCounterEphemeralTranscendenceDMG:specialMultiplier"] = dmgMultiplier;
-      data.specificTalentBuffs["HeavenSReckoningEphemeralTranscendenceDMG:specialMultiplier"] = dmgMultiplier;
-      data.specificTalentBuffs["BillowsBeneathHeavenDMG:specialMultiplier"] = dmgMultiplier;
+      data.specificTalentBuffs["HeavyAttackStringbladeDMG:DMGDeepen"] = dmgMultiplier;
+      data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage1DMG:DMGDeepen"] = dmgMultiplier;
+      data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage2DMG:DMGDeepen"] = dmgMultiplier;
+      data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage3DMG:DMGDeepen"] = dmgMultiplier;
+      data.specificTalentBuffs["BasicAttackEphemeralTranscendenceStage4DMG:DMGDeepen"] = dmgMultiplier;
+      data.specificTalentBuffs["DodgeCounterEphemeralTranscendenceDMG:DMGDeepen"] = dmgMultiplier;
+      data.specificTalentBuffs["HeavenSReckoningEphemeralTranscendenceDMG:DMGDeepen"] = dmgMultiplier;
+      data.specificTalentBuffs["BillowsBeneathHeavenDMG:DMGDeepen"] = dmgMultiplier;
 
       // if InherentSkillToKnowToBanish selfbuff is enabled, add DmgBonus to the same attacks with the same amount
       if (buffsConfig?.InherentSkillToKnowToBanish?.isEnabled) {

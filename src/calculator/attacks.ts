@@ -984,19 +984,19 @@ export const calculateAttackDamage = (
       coreofCollapseDMGSpecialMultiplier = 1;
     }
   }
-  // Strain "Total DMG" / Vuln = strainStacks (0-4) * TuneBreakBoost (0-50) * 0.12%
-  let strainSpecialMultiplier = context.enemy.strainStacks * totalTuneBreakBoost * 0.12;
+  // Strain "Total DMG" = strainStacks (0-4) * TuneBreakBoost (0-50) * 0.12%
+  let strainTotalDamage = context.enemy.strainStacks * totalTuneBreakBoost * 0.12;
   // Qingxiao S6: Tune Strain - Interfered response buff is increased by 60%
   if (
     context.character.characterKey === "Qingxiao" &&
     context.global.characters?.[context.character.characterKey]?.resonanceChains
       ?.SequenceNode6CleanseThisTarnishedAgeTillAllRunsClear?.isEnabled
   ) {
-    strainSpecialMultiplier *= 1.6;
+    strainTotalDamage *= 1.6;
   }
   // this does not apply to TuneBreak
   if (attack.type === "TuneBreak") {
-    strainSpecialMultiplier = 0;
+    strainTotalDamage = 0;
   }
   totalSpecialMultiplier +=
     teamBuffAttackSpecialMultiplier +
@@ -1007,8 +1007,7 @@ export const calculateAttackDamage = (
     selfBuffAttackSpecialMultiplier +
     actionBuffAttackSpecialMultiplier +
     customBuffAttackSpecialMultiplier +
-    coreofCollapseDMGSpecialMultiplier +
-    strainSpecialMultiplier;
+    coreofCollapseDMGSpecialMultiplier;
 
   if (attack.type === "TuneBreak") {
     let talent = attack.talent;
@@ -1117,6 +1116,7 @@ export const calculateAttackDamage = (
       totalTalentModifierMultiply,
       totalGlacioChafeDeepenForBite,
       totalSpecialMultiplier,
+      strainTotalDamage,
       count,
       talent,
     );
@@ -1597,6 +1597,7 @@ export const calculateAttackDamage = (
     totalSpecialMultiplier,
     totalDefReduction,
     totalResistIgnore,
+    strainTotalDamage,
   );
 };
 
