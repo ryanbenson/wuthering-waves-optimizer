@@ -26,6 +26,7 @@
             'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
             'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
           }" />
+        <span v-if="countLabel" class="badge badge-sm badge-ghost shrink-0">{{ countLabel }}</span>
         <span>{{ label }}</span>
       </td>
       <td
@@ -56,6 +57,7 @@
             'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
             'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
           }" />
+        <span v-if="countLabel" class="badge badge-sm badge-ghost shrink-0">{{ countLabel }}</span>
         <span>{{ label }}</span>
       </td>
       <td
@@ -86,6 +88,7 @@
             'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
             'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
           }" />
+        <span v-if="countLabel" class="badge badge-sm badge-ghost shrink-0">{{ countLabel }}</span>
         <span>{{ label }}</span>
       </td>
       <td
@@ -178,6 +181,7 @@ const props = withDefaults(
     mainEcho?: string | null;
     mainEchoRank?: number | string | null;
     matchedRotationFromCurrentDamages?: RotationMatch;
+    count?: number | string | null;
   }>(),
   {
     isEnabled: true,
@@ -186,10 +190,19 @@ const props = withDefaults(
     mainEcho: null,
     mainEchoRank: null,
     matchedRotationFromCurrentDamages: () => ({}),
+    count: null,
   },
 );
 
 const slugifiedLabel = computed(() => slugify(props.label) ?? "");
+const countLabel = computed(() => {
+  if (props.count === null || props.count === undefined || props.count === "") {
+    return null;
+  }
+  const n = Number(props.count);
+  if (Number.isNaN(n) || n <= 0) return null;
+  return `${n}x`;
+});
 
 const mainEchoData = computed(() =>
   props.mainEcho ? getEchoData(props.mainEcho) : null,
