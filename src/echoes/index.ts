@@ -1,3 +1,14 @@
+import type { EchoModifier } from "./mainEchoBuffs";
+
+export type { EchoModifier, MainEchoBuff, EchoBuffEffect } from "./mainEchoBuffs";
+export {
+  getMainEchoBuffs,
+  getEchoBuffEffects,
+  isMainEchoBuffEnabled,
+  getMainEchoBuffStacks,
+  migrateLegacyMainEchoBuffState,
+} from "./mainEchoBuffs";
+
 interface Echo {
   key: string;
   name: string;
@@ -44,13 +55,6 @@ export function isAttackAvailableForCharacter(
   return true;
 }
 
-interface EchoModifier {
-  modifier?: string;
-  modifySpecificTalents?: string[];
-  modifierValue?: number;
-  specificCharacters?: string[];
-}
-
 type MainEchoes = Record<string, Echo>;
 
 export function getEchoData(echoKey: string): Echo {
@@ -80,6 +84,14 @@ The Resonator with this Echo equipped in the main slot gains 189.00%/216.00%/243
 CD: 15s`,
     modifiers: [
       {
+        key: "_Staytuned1AeroMain",
+        details: `The Resonator with this Echo equipped in the main slot gains 189.00%/216.00%/243.00% Aero DMG Bonus.`,
+        modifier: "Aero",
+        modifierValue: 0.1,
+      },
+      {
+        key: "_Staytuned1TuneStrain",
+        details: `Additionally gains 10.00% Aero DMG Bonus for 10.00%s when inflicting Tune Strain - Shifting on the target.`,
         modifier: "Aero",
         modifierValue: 0.1,
       },

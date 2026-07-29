@@ -106,55 +106,26 @@
         }">
         {{ echoName }}
       </h3>
-      <div
-        v-if="mainEcho"
-        class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer relative z-10"
-        @click="toggleMainEchoBuffEnabled">
-        <div class="card-body">
-          <div
-            v-if="chosenMainEchoData"
-            class="main-echo__details"
-            v-html="chosenMainEchoData.details"></div>
-
-          <div class="flex gap-2 items-center">
-            <div class="form-control" @click.stop>
-              <label
-                class="label inline-flex justify-start"
-                :class="{ 'cursor-pointer': !setAlwaysEnabled }"
-                @click.stop>
-                <input
-                  type="checkbox"
-                  class="checkbox checkbox-sm"
-                  v-model="mainEchoBuffEnabled"
-                  :disabled="setAlwaysEnabled"
-                  :data-test-main-echo-enabled="mainEcho" />
-                <span class="label-text ml-2">Enabled?</span>
-              </label>
-            </div>
-            <div v-if="mainEchoHasStacks" class="form-control" @click.stop>
-              <label
-                class="label cursor-pointer inline-flex justify-start"
-                v-if="!setAlwaysEnabled">
-                <input
-                  v-model="mainEchoStacks"
-                  type="number"
-                  class="input input-bordered input-xs"
-                  :min="0"
-                  :max="mainEchoMaxStacks"
-                  :data-test-main-echo-stacks="mainEcho" />
-                <span class="label-text ml-2">Stacks</span>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
+      <CalculatorMainEchoBuff
+        v-for="buff in mainEchoBuffList"
+        :key="buff.key"
+        :character="character"
+        :buff-key="buff.key"
+        :details="buff.details"
+        :effects="buff.effects"
+        :has-stacks="buff.hasStacks"
+        :min-stacks="buff.minStacks"
+        :max-stacks="buff.maxStacks"
+        :always-enabled="buff.alwaysEnabled"
+        storage-mode="calculator"
+        @updated-buff-stats="handleMainEchoBuffStats" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { mainEchoesData, getEchoData } from "../echoes/index.ts";
+import { mainEchoesData, getEchoData, getMainEchoBuffs } from "../echoes/index.ts";
 import { getEchoSetLabelByType, echoSetLabelMap } from "../echoes/stats.ts";
 import { oneSetBonuses, twoSetBonuses, threeSetBonuses, fiveSetBonuses } from "../echoes/sets.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
@@ -166,6 +137,7 @@ import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import CalculatorEchoesPresets from "./CalculatorEchoesPresets.vue";
 import CalculatorSaveEchoesPreset from "./CalculatorSaveEchoesPreset.vue";
 import CalculatorEchoesPresetsGuide from "./CalculatorEchoesPresetsGuide.vue";
+import CalculatorMainEchoBuff from "./CalculatorMainEchoBuff.vue";
 import Toast from "./Toast.vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
@@ -229,26 +201,11 @@ const mainEchoRank = computed({
   },
 });
 
-const mainEchoBuffEnabled = computed({
-  get: () => currentCharacter.value?.mainEcho?.isEnabled ?? false,
-  set: async (value: boolean) => {
-    await characterStore.setCharacterData(props.character, { mainEcho: { isEnabled: value } });
-  },
-});
-
-const mainEchoStacks = computed({
-  get: () => currentCharacter.value?.mainEcho?.stacks ?? 0,
-  set: async (value: number) => {
-    await characterStore.setCharacterData(props.character, { mainEcho: { stacks: value } });
-  },
-});
-
 const chosenMainEchoData = computed(() =>
   mainEcho.value ? (mainEchoesData as any)?.[mainEcho.value] ?? null : null,
 );
-const chosenMainEchoBuffs = computed(() => chosenMainEchoData.value?.modifiers ?? []);
-const mainEchoHasStacks = computed(() => chosenMainEchoData.value?.hasStacks ?? false);
-const mainEchoMaxStacks = computed(() => chosenMainEchoData.value?.maxStacks ?? 0);
+const mainEchoBuffList = computed(() => getMainEchoBuffs(chosenMainEchoData.value));
+const mainEchoBuffStats = ref<Record<string, Record<string, any>>>({});
 const echoName = computed(() => (mainEcho.value ? getEchoData(mainEcho.value)?.name ?? null : null));
 
 
@@ -278,8 +235,6 @@ function getEchoRefSetter(index: number) {
   return (el: any) => setEchoRef(index, el);
 }
 
-const setAlwaysEnabled = computed(() => chosenMainEchoData.value?.alwaysEnabled === true);
-
 function updateTotalStats() {
   const stats: Record<string, any> = {};
 
@@ -299,21 +254,26 @@ function updateTotalStats() {
     else stats[stat] = (stats[stat] || 0) + (value as number);
   });
 
-  if (mainEchoBuffEnabled.value) {
-    for (const mainEchoBuff of chosenMainEchoBuffs.value as any[]) {
-      const specificCharacters = mainEchoBuff?.specificCharacters ?? [];
-      if (specificCharacters.length > 0 && !specificCharacters.includes(props.character)) continue;
-      if (mainEchoBuff?.modifySpecificTalents) {
-        stats.specificTalentBuffs = {};
-        mainEchoBuff.modifySpecificTalents.forEach((buffTalentName: string) => {
-          stats.specificTalentBuffs[buffTalentName] = mainEchoBuff.modifierValue;
-        });
-      } else {
-        const buffVal = mainEchoBuff.modifierValue * 100;
-        const appliedVal = mainEchoHasStacks.value ? buffVal * mainEchoStacks.value : buffVal;
-        stats[mainEchoBuff.modifier] = (stats[mainEchoBuff.modifier] || 0) + appliedVal;
+  for (const buffStats of Object.values(mainEchoBuffStats.value)) {
+    Object.entries(buffStats || {}).forEach(([stat, value]) => {
+      if (stat === "EnableAttack" || stat === "specificTalentBuffs") {
+        stats[stat] =
+          stat === "specificTalentBuffs"
+            ? { ...(stats[stat] || {}), ...(value as Record<string, unknown>) }
+            : value;
+        return;
       }
-    }
+      if (stat === "modifySpecificTalents" || stat === "talentModifierMultiply") {
+        if (!stats[stat]) stats[stat] = [];
+        stats[stat].push(...(value as unknown[]));
+        return;
+      }
+      if (typeof value === "number") {
+        stats[stat] = (stats[stat] || 0) + value;
+      } else {
+        stats[stat] = value;
+      }
+    });
   }
 
   emit("update-stats", stats);
@@ -338,8 +298,15 @@ function handleEchoStats({ index, stats }: { index: number; stats: Record<string
 function handleUpdatedEchoCost({ index, cost }: { index: number; cost: number }) {
   echoCosts.value[index] = cost;
 }
-function toggleMainEchoBuffEnabled() {
-  mainEchoBuffEnabled.value = !mainEchoBuffEnabled.value;
+function handleMainEchoBuffStats({
+  stats,
+  key,
+}: {
+  stats: Record<string, unknown>;
+  key: string;
+}) {
+  mainEchoBuffStats.value[key] = stats as Record<string, any>;
+  updateTotalStats();
 }
 function handleMainEchoChange() {
   emit("updated-main-echo", mainEcho.value);
@@ -487,25 +454,12 @@ watch(
   mainEcho,
   () => {
     handleMainEchoChange();
-    if (mainEchoStacks.value > mainEchoMaxStacks.value) {
-      mainEchoStacks.value = mainEchoMaxStacks.value;
-    }
+    mainEchoBuffStats.value = {};
     updateTotalStats();
   },
   { immediate: true },
 );
 watch(mainEchoRank, () => handleMainEchoRank(), { immediate: true });
-watch(mainEchoBuffEnabled, () => updateTotalStats(), { immediate: true });
-watch(
-  mainEchoStacks,
-  (stacksVal) => {
-    if (stacksVal > mainEchoMaxStacks.value) {
-      mainEchoStacks.value = mainEchoMaxStacks.value;
-    }
-    updateTotalStats();
-  },
-  { immediate: true },
-);
 watch(setOverride, (newValue) => {
   if (newValue === false) {
     updateEchoSets();
