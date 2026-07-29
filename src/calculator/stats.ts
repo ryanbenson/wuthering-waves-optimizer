@@ -1000,9 +1000,9 @@ export const computeSelfBuffs = (
       let mindlockAmplifyPercent = 0;
       if (mindlockStacks > 0) {
         if (mindlockStacks <= 7) {
-          mindlockAmplifyPercent = 5 * mindlockStacks;
+          mindlockAmplifyPercent = 7 * mindlockStacks;
         } else {
-          mindlockAmplifyPercent = 35 + 2 * (mindlockStacks - 7);
+          mindlockAmplifyPercent = (7*7) + 2 * (mindlockStacks - 7);
         }
       }
 
