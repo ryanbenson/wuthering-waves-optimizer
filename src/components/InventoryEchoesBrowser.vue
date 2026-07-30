@@ -341,21 +341,7 @@
       </template>
       <template v-else>
         <div class="echoes__list__pagination flex justify-center py-4 items-center">
-          <div class="join flex-wrap">
-            <button @click="prevPage" class="join-item btn btn-sm">«</button>
-            <button class="join-item btn btn-sm">
-              Page {{ page }} / {{ totalPages }}
-            </button>
-            <button @click="nextPage" class="join-item btn btn-sm">»</button>
-          </div>
-          <button
-            v-if="false"
-            type="button"
-            class="btn btn-sm btn-ghost ml-2"
-            @click="selectPage"
-            data-test-select-page>
-            Select page
-          </button>
+          <PaginationControls v-model="page" :total-pages="totalPages" />
         </div>
         <div
           class="echoes__list__items grid gap-4"
@@ -425,12 +411,8 @@
             </CalculatorEchoCard>
           </div>
         </div>
-        <div class="join flex justify-center py-4">
-          <button @click="prevPage" class="join-item btn btn-sm">«</button>
-          <button class="join-item btn btn-sm">
-            Page {{ page }} / {{ totalPages }}
-          </button>
-          <button @click="nextPage" class="join-item btn btn-sm">»</button>
+        <div class="echoes__list__pagination flex justify-center py-4">
+          <PaginationControls v-model="page" :total-pages="totalPages" />
         </div>
       </template>
     </div>
@@ -481,6 +463,7 @@ import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
+import PaginationControls from "./PaginationControls.vue";
 import { randomString } from "../utils/strings";
 import { getEchoIdentityKey } from "../utils/echoIdentity";
 import { useConfirm } from "../composables/useConfirm";
@@ -862,22 +845,6 @@ async function bulkDelete() {
     );
   } else if (skippedLocked > 0) {
     showToast("No echoes deleted; all selected were locked.", "warning");
-  }
-}
-
-function prevPage() {
-  if (page.value <= 1) {
-    page.value = 1;
-  } else {
-    page.value--;
-  }
-}
-
-function nextPage() {
-  if (page.value >= totalPages.value) {
-    page.value = totalPages.value;
-  } else {
-    page.value++;
   }
 }
 
