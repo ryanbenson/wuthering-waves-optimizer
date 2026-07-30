@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>July 30, 2026</h3>
+    <ul>
+      <li>Improves pagination in the inventory page.</li>
+    </ul>
     <h3>July 27, 2026</h3>
     <ul>
       <li>Adds rotation action count to each attack in the rotation results and in the optimizer results.</li>
