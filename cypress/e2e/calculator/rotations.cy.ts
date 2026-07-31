@@ -45,9 +45,8 @@ describe("Calculator Rotations", () => {
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-skill-input="none"]`).select(
-      "BasicAttackStage1DMG",
-    );
+    cy.get(`[data-test-rotation-action-skill-input="none"]`).click();
+    cy.get(`[data-test-picker-choose="BasicAttackStage1DMG"]`).click();
     // create second action
     cy.get(`[data-test-rotation-action-add="Test001"]`).click();
     // find first action that's empty and click to get into it
@@ -59,14 +58,14 @@ describe("Calculator Rotations", () => {
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-skill-input="none"]`).select(
-      "FatalFinaleDMG",
-    );
+    cy.get(`[data-test-rotation-action-skill-input="none"]`).click();
+    cy.get(`[data-test-picker-choose="FatalFinaleDMG"]`).click();
     // add a buff to the second action
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).should("be.visible");
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).click();
     cy.get(`[data-test-action-buff-input="none"]`).should("be.visible");
-    cy.get(`[data-test-action-buff-input="none"]`).select("CritRate");
+    cy.get(`[data-test-action-buff-input="none"]`).click();
+    cy.get(`[data-test-picker-choose="CritRate"]`).click();
     cy.get(`[data-test-action-buff-value-input="CritRate"]`).should(
       "be.visible",
     );

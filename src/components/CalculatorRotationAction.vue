@@ -87,123 +87,31 @@
           </div>
           <div class="edit__skill">
             <label for="actionKeyValue">Attack:</label>
-            <select
-              v-model="actionKeyValue"
-              name="actionKeyValue"
+            <button
+              type="button"
               id="actionKeyValue"
-              ref="actionKeys"
-              class="select select-bordered select-xs w-full"
-              @change="onSkillChange"
-              :data-test-rotation-action-skill-input="actionKeyValue ?? 'none'">
-              <optgroup label="Basic" data-skill="basic">
-                <option
-                  v-for="attack in basicAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup label="Skill" data-skill="skill">
-                <option
-                  v-for="attack in skillAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup label="Forte Circuit" data-skill="forteCircuit">
-                <option
-                  v-for="attack in forteCircuitAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup label="Liberation" data-skill="liberation">
-                <option
-                  v-for="attack in liberationAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="Intro"
-                data-skill="intro"
-                v-if="introAttacksList.length">
-                <option
-                  v-for="attack in introAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="Outro"
-                data-skill="outro"
-                v-if="outroAttacksList.length">
-                <option
-                  v-for="attack in outroAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="TuneBreak"
-                data-skill="tuneBreak"
-                v-if="tuneBreakAttacksList.length">
-                <option
-                  v-for="attack in tuneBreakAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="Echo Set Attacks"
-                data-skill="echoSetAttacks"
-                v-if="echoSetAttacksList.length">
-                <option
-                  v-for="attack in echoSetAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="Utility Attacks"
-                data-skill="utilityAttacks"
-                v-if="utilityAttacksList.length">
-                <option
-                  v-for="attack in utilityAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="Echo Attacks"
-                data-skill="echoAttacks"
-                v-if="mainEchoDataActions.length">
-                <option
-                  v-for="attack in mainEchoDataActions"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="Negative Status"
-                data-skill="negativeStatus">
-                <option
-                  v-for="attack in negativeStatusAttacksList"
-                  :key="attack.key"
-                  :value="attack.key">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-            </select>
+              class="input input-xs input-bordered w-full h-auto min-h-0 py-1 px-2 flex items-center justify-between gap-2 font-normal cursor-pointer"
+              :data-test-rotation-action-skill-input="actionKeyValue ?? 'none'"
+              @click="openAttackPicker">
+              <span class="truncate">{{
+                attackLabel ?? "Select attack…"
+              }}</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 320 512"
+                class="size-3 shrink-0 opacity-70">
+                <path
+                  fill="currentColor"
+                  d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z" />
+              </svg>
+            </button>
+            <SearchableGroupedPickerModal
+              ref="attackPickerRef"
+              title="Select attack"
+              search-placeholder="Search attacks…"
+              :groups="attackGroups"
+              :selected-key="actionKeyValue"
+              @chosen="onAttackChosen" />
           </div>
           <button class="rotation__action--remove" @click="removeAction">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -328,6 +236,9 @@ import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
+import SearchableGroupedPickerModal, {
+  type PickerGroup,
+} from "./SearchableGroupedPickerModal.vue";
 import { echoSetAttacks } from "../echoes/stats";
 import { utilityAttacks } from "../buffs";
 import { getEchoData, isAttackAvailableForCharacter } from "../echoes/index.ts";
@@ -590,6 +501,97 @@ const introAttacksList = computed(() => attacksFor("introAttacks"));
 const outroAttacksList = computed(() => attacksFor("outroAttacks"));
 const tuneBreakAttacksList = computed(() => attacksFor("tuneBreakAttacks"));
 
+const attackPickerRef = ref<{
+  triggerOpenModal: () => void;
+  triggerCloseModal: () => void;
+} | null>(null);
+
+function mapAttacksToPickerItems(attacks: AttackRow[]) {
+  return attacks.map((attack) => ({
+    key: attack.key,
+    label: attack.label ?? attack.key,
+    disabled: isAttackDisabled(attack),
+  }));
+}
+
+const attackGroups = computed((): PickerGroup[] => {
+  const groups: PickerGroup[] = [
+    {
+      id: "basic",
+      label: "Basic",
+      items: mapAttacksToPickerItems(basicAttacksList.value),
+    },
+    {
+      id: "skill",
+      label: "Skill",
+      items: mapAttacksToPickerItems(skillAttacksList.value),
+    },
+    {
+      id: "forteCircuit",
+      label: "Forte Circuit",
+      items: mapAttacksToPickerItems(forteCircuitAttacksList.value),
+    },
+    {
+      id: "liberation",
+      label: "Liberation",
+      items: mapAttacksToPickerItems(liberationAttacksList.value),
+    },
+  ];
+
+  if (introAttacksList.value.length) {
+    groups.push({
+      id: "intro",
+      label: "Intro",
+      items: mapAttacksToPickerItems(introAttacksList.value),
+    });
+  }
+  if (outroAttacksList.value.length) {
+    groups.push({
+      id: "outro",
+      label: "Outro",
+      items: mapAttacksToPickerItems(outroAttacksList.value),
+    });
+  }
+  if (tuneBreakAttacksList.value.length) {
+    groups.push({
+      id: "tuneBreak",
+      label: "TuneBreak",
+      items: mapAttacksToPickerItems(tuneBreakAttacksList.value),
+    });
+  }
+  if (echoSetAttacksList.length) {
+    groups.push({
+      id: "echoSetAttacks",
+      label: "Echo Set Attacks",
+      items: mapAttacksToPickerItems(echoSetAttacksList as AttackRow[]),
+    });
+  }
+  if (utilityAttacksList.length) {
+    groups.push({
+      id: "utilityAttacks",
+      label: "Utility Attacks",
+      items: mapAttacksToPickerItems(utilityAttacksList as AttackRow[]),
+    });
+  }
+  if (mainEchoDataActions.value.length) {
+    groups.push({
+      id: "echoAttacks",
+      label: "Echo Attacks",
+      items: mapAttacksToPickerItems(mainEchoDataActions.value),
+    });
+  }
+  groups.push({
+    id: "negativeStatus",
+    label: "Negative Status",
+    items: negativeStatusAttacksList.value.map((attack) => ({
+      key: attack.key,
+      label: attack.label ?? attack.key,
+    })),
+  });
+
+  return groups.filter((group) => group.items.length > 0);
+});
+
 function toggleEdit() {
   isEditing.value = !isEditing.value;
 }
@@ -622,13 +624,13 @@ function buildActionPayload(orderOverride: number | string | null = null) {
   return action;
 }
 
-function onSkillChange(e: Event) {
-  const target = e.target as HTMLSelectElement;
-  const index = target.selectedIndex;
-  const option = target.options[index];
-  const optgroup = option.parentElement;
-  const skill = optgroup?.getAttribute("data-skill") ?? null;
-  actionSkillType.value = skill;
+function openAttackPicker() {
+  attackPickerRef.value?.triggerOpenModal();
+}
+
+function onAttackChosen(payload: { key: string; groupId: string }) {
+  actionKeyValue.value = payload.key;
+  actionSkillType.value = payload.groupId;
   void nextTick(() => {
     if (usesNegativeStatusStacks.value) {
       let v = Number(negativeStatusStacksLocal.value);
