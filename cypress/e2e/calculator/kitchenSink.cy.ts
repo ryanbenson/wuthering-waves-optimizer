@@ -207,9 +207,8 @@ describe("Calculator Kitchen Sink", () => {
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-skill-input="none"]`).select(
-      "BasicAttackStage1DMG",
-    );
+    cy.get(`[data-test-rotation-action-skill-input="none"]`).click();
+    cy.get(`[data-test-picker-choose="BasicAttackStage1DMG"]`).click();
     // create second action
     cy.get(`[data-test-rotation-action-add="Test001"]`).click();
     // find first action that's empty and click to get into it
@@ -221,14 +220,14 @@ describe("Calculator Kitchen Sink", () => {
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-skill-input="none"]`).select(
-      "FatalFinaleDMG",
-    );
+    cy.get(`[data-test-rotation-action-skill-input="none"]`).click();
+    cy.get(`[data-test-picker-choose="FatalFinaleDMG"]`).click();
     // add a buff to the second action
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).should("be.visible");
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).click();
     cy.get(`[data-test-action-buff-input="none"]`).should("be.visible");
-    cy.get(`[data-test-action-buff-input="none"]`).select("CritDMG");
+    cy.get(`[data-test-action-buff-input="none"]`).click();
+    cy.get(`[data-test-picker-choose="CritDMG"]`).click();
     cy.get(`[data-test-action-buff-value-input="CritDMG"]`).should(
       "be.visible",
     );

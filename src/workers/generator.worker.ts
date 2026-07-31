@@ -29,6 +29,8 @@ import {
   getOptimizerLoadoutKey,
   normalizeOptimizerLoadout,
   filterEchoesForOptimizer,
+  normalizeLoadoutFormat,
+  type OptimizerLoadoutFormat,
 } from "../calculator/optimizer";
 
 /**
@@ -40,6 +42,7 @@ interface GeneratorMessage {
     echoes: any[]; // Array of available echoes to combine
     mainEchoKeys: string[]; // Array of main echo keys (for filtering)
     batchSize: number; // Number of loadouts per batch
+    loadoutFormat?: OptimizerLoadoutFormat | string; // Cost composition constraint
   };
 }
 
@@ -65,7 +68,8 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
   }
 
   if (type === "start" && data) {
-    const { echoes, mainEchoKeys, batchSize } = data;
+    const { echoes, mainEchoKeys, batchSize, loadoutFormat } = data;
+    const format = normalizeLoadoutFormat(loadoutFormat);
     const optimizerEchoes = filterEchoesForOptimizer(echoes) as any[];
     let batch: any[] = [];
     let totalGenerated = 0;
@@ -86,7 +90,16 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
       // Generate loadouts in batches
       // @ts-ignore - generateLoadouts returns a generator with any[] items
       // @ts-ignore
-      for (const loadout of generateLoadouts(optimizerEchoes, mainEchoKeys)) {
+      for (const loadout of generateLoadouts(
+        optimizerEchoes,
+        mainEchoKeys,
+        0,
+        [],
+        0,
+        new Set(),
+        new Set(),
+        format,
+      )) {
         const normalizedLoadout = normalizeOptimizerLoadout(loadout as any[]);
         const key = getOptimizerLoadoutKey(normalizedLoadout);
 

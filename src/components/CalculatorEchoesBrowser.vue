@@ -167,12 +167,8 @@
             </div>
           </template>
           <template v-else>
-            <div class="join flex justify-center py-4">
-              <button @click="prevPage" class="join-item btn btn-sm">«</button>
-              <button class="join-item btn btn-sm">
-                Page {{ page }} / {{ totalPages }}
-              </button>
-              <button @click="nextPage" class="join-item btn btn-sm">»</button>
+            <div class="echoes__list__pagination flex justify-center py-4">
+              <PaginationControls v-model="page" :total-pages="totalPages" />
             </div>
             <div
               class="echoes__list__items grid gap-4"
@@ -226,12 +222,8 @@
                 </div>
               </CalculatorEchoCard>
             </div>
-            <div class="join flex justify-center py-4">
-              <button @click="prevPage" class="join-item btn btn-sm">«</button>
-              <button class="join-item btn btn-sm">
-                Page {{ page }} / {{ totalPages }}
-              </button>
-              <button @click="nextPage" class="join-item btn btn-sm">»</button>
+            <div class="echoes__list__pagination flex justify-center py-4">
+              <PaginationControls v-model="page" :total-pages="totalPages" />
             </div>
           </template>
         </div>
@@ -258,6 +250,7 @@ import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
 import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
+import PaginationControls from "./PaginationControls.vue";
 import { useToast } from "../composables/useToast";
 import { useUiDensity } from "../composables/useUiDensity";
 
@@ -493,20 +486,6 @@ function resetFilters() {
       cvMax.value = ECHO_CV_MAX;
       rvMin.value = 0;
       rvMax.value = ECHO_RV_MAX;
-    }
-function prevPage() {
-      if (page.value <= 1) {
-        page.value = 1;
-      } else {
-        page.value--;
-      }
-    }
-function nextPage() {
-      if (page.value >= totalPages.value) {
-        page.value = totalPages.value;
-      } else {
-        page.value++;
-      }
     }
 function getCharsEquipped(e: { echoId: string }) {
       return getEchoEquippedChars(e.echoId);
