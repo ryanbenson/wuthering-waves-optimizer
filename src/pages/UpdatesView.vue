@@ -6,6 +6,7 @@
     <ul>
       <li>Improves pagination in the inventory page.</li>
       <li>Improves UX for selecting actions and buffs in rotations.</li>
+      <li>Adds No Intro and Loop rotations for Suisui.</li>
     </ul>
     <h3>July 27, 2026</h3>
     <ul>
