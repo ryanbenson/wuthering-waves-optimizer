@@ -1492,6 +1492,7 @@ const rollValueBadgeClass = computed(() => {
 function updateEchoChoice(
   val: string | null,
   previousVal: string | null | undefined,
+  options: { keepStat?: boolean } = {},
 ) {
   const echoData = val ? getEchoData(val) : null;
   const echoClass = echoData?.class;
@@ -1508,7 +1509,7 @@ function updateEchoChoice(
     prevEchoCost =
       prevEchoClass != null ? getCostByClass(prevEchoClass) : null;
   }
-  if (previousVal && echoCost !== prevEchoCost) {
+  if (previousVal && !options.keepStat && echoCost !== prevEchoCost) {
     stat.value = "none";
   }
 }
@@ -1844,9 +1845,16 @@ function closeEchoChooser() {
 }
 
 watch(
-  echo,
-  (val, previousVal) => {
-    updateEchoChoice(val, previousVal);
+  [echo, echoId],
+  ([val, id], previous) => {
+    const previousVal = previous?.[0];
+    const previousId = previous?.[1];
+    if (previousVal !== undefined && val === previousVal) {
+      return;
+    }
+    // A new echoId means the slot now points at a different saved echo, so its
+    // own main stat applies instead of the one the previous echo had.
+    updateEchoChoice(val, previousVal, { keepStat: id !== previousId });
   },
   { immediate: true },
 );
