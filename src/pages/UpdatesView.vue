@@ -5,6 +5,7 @@
     <h3>July 31, 2026</h3>
     <ul>
       <li>Adds ability to set loadout format in the optimizer.</li>
+      <li>Fixes bug where the optimizer would not apply the correct loadout main echo stat.</li>
     </ul>
     <h3>July 30, 2026</h3>
     <ul>
