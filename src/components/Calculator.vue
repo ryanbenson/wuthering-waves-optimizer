@@ -963,6 +963,7 @@ export default defineComponent({
       target = "ATK",
       damageType = "Average",
       ignoreOtherResonantorEchoes = false,
+      loadoutFormat = "Any",
     ) => {
       const echoes = inventoryStore.echoes;
       const allowedSets = new Set(setFilters);
@@ -1125,6 +1126,7 @@ export default defineComponent({
         target,
         damageType,
         rotationData,
+        loadoutFormat,
       );
     };
 
@@ -1270,6 +1272,7 @@ export default defineComponent({
       target: string,
       damageType: string,
       rotationData: any = null,
+      loadoutFormat: string = "Any",
     ) => {
       // Detect device capabilities
       const workerCount = Math.min(
@@ -1526,6 +1529,7 @@ export default defineComponent({
                 echoes: serializedEchoes,
                 mainEchoKeys: plainMainEchoKeys,
                 batchSize,
+                loadoutFormat,
               },
             };
 
