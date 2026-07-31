@@ -23,6 +23,77 @@ function echoCost(echo: { type?: unknown }): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+export type OptimizerLoadoutFormat = "Any" | "43311" | "44111";
+
+const LOADOUT_FORMAT_COST_COUNTS: Record<
+  Exclude<OptimizerLoadoutFormat, "Any">,
+  Record<number, number>
+> = {
+  "43311": { 4: 1, 3: 2, 1: 2 },
+  "44111": { 4: 2, 1: 3 },
+};
+
+export function normalizeLoadoutFormat(
+  value: unknown,
+): OptimizerLoadoutFormat {
+  if (value === "Any" || value === "43311" || value === "44111") {
+    return value;
+  }
+  return "Any";
+}
+
+function getFormatCostCounts(
+  format: OptimizerLoadoutFormat,
+): Record<number, number> | null {
+  if (format === "Any") {
+    return null;
+  }
+  return { ...LOADOUT_FORMAT_COST_COUNTS[format] };
+}
+
+function canUseEchoForFormat(
+  remainingCosts: Record<number, number> | null,
+  cost: number,
+): boolean {
+  if (!remainingCosts) {
+    return true;
+  }
+  return (remainingCosts[cost] ?? 0) > 0;
+}
+
+function consumeFormatCost(
+  remainingCosts: Record<number, number> | null,
+  cost: number,
+): void {
+  if (!remainingCosts) {
+    return;
+  }
+  remainingCosts[cost] -= 1;
+}
+
+function restoreFormatCost(
+  remainingCosts: Record<number, number> | null,
+  cost: number,
+): void {
+  if (!remainingCosts) {
+    return;
+  }
+  remainingCosts[cost] += 1;
+}
+
+function isCompleteFormatLoadout(
+  remainingCosts: Record<number, number> | null,
+  comboLength: number,
+): boolean {
+  if (!remainingCosts) {
+    return false;
+  }
+  if (comboLength !== 5) {
+    return false;
+  }
+  return Object.values(remainingCosts).every((count) => count === 0);
+}
+
 export function filterEchoesForOptimizer(echoes: unknown[]): unknown[] {
   if (!Array.isArray(echoes)) {
     return [];
@@ -79,13 +150,20 @@ export function getOptimizerLoadoutKey(loadout: any[]): string {
 
 export function* generateLoadouts(
   echoes: any,
-  mainEchoKeys = [],
+  mainEchoKeys: string[] = [],
   start = 0,
-  combo = [],
+  combo: any[] = [],
   cost = 0,
-  usedEchoIds = new Set(),
-  usedEchoes = new Set(),
+  usedEchoIds: Set<unknown> = new Set(),
+  usedEchoes: Set<unknown> = new Set(),
+  loadoutFormat: OptimizerLoadoutFormat = "Any",
+  remainingCosts?: Record<number, number> | null,
 ): any {
+  const format = normalizeLoadoutFormat(loadoutFormat);
+  // Initialize remaining cost budget on the root call only
+  let costsRemaining: Record<number, number> | null =
+    remainingCosts === undefined ? getFormatCostCounts(format) : remainingCosts;
+
   // If we have main echo keys and combo is empty, we need to start with one of those
   if (mainEchoKeys.length > 0 && combo.length === 0) {
     // Find all echoes that match the main echo keys
@@ -95,13 +173,21 @@ export function* generateLoadouts(
     // For each copy of the main echo, start a new combination
     for (const mainEcho of mainEchoCopies) {
       // the main echo isn't guaranteed to be 4, sometimes it's an elite, so 3
-      const nextCost = cost + echoCost(mainEcho);
+      const mainCost = echoCost(mainEcho);
+      if (!canUseEchoForFormat(costsRemaining, mainCost)) {
+        continue;
+      }
+      const nextCost = cost + mainCost;
       if (nextCost <= 12) {
         // Create a fresh usedEchoIds Set for each main echo group
         const groupUsedEchoIds = new Set([mainEcho.echoId]);
         // add the main echo to the list of echoes already used so we dont try to use
         // another copy of the same echo
         const groupUsedEchoes = new Set([mainEcho.echo]);
+        const groupRemainingCosts = costsRemaining
+          ? { ...costsRemaining }
+          : null;
+        consumeFormatCost(groupRemainingCosts, mainCost);
         yield* generateLoadouts(
           echoes,
           mainEchoKeys,
@@ -111,15 +197,22 @@ export function* generateLoadouts(
           nextCost,
           groupUsedEchoIds,
           groupUsedEchoes,
+          format,
+          groupRemainingCosts,
         );
       }
     }
     return;
   }
 
-  // Any non-empty loadout with ≤5 echoes and total cost ≤12 is valid (cost may be under 12 even with
-  // all five slots filled; it only must not exceed the 12 budget).
-  if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
+  // Format-constrained mode: only yield complete matching 5-echo loadouts
+  if (costsRemaining) {
+    if (isCompleteFormatLoadout(costsRemaining, combo.length)) {
+      yield combo;
+    }
+  } else if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
+    // Any non-empty loadout with ≤5 echoes and total cost ≤12 is valid (cost may be under 12 even with
+    // all five slots filled; it only must not exceed the 12 budget).
     yield combo;
   }
 
@@ -136,12 +229,16 @@ export function* generateLoadouts(
     // Skip if the echo has
     if (usedEchoes.has(next.echo)) continue;
 
-    const nextCost = cost + echoCost(next);
+    const nextEchoCost = echoCost(next);
+    if (!canUseEchoForFormat(costsRemaining, nextEchoCost)) continue;
+
+    const nextCost = cost + nextEchoCost;
     if (nextCost <= 12) {
       // Add to used set instead of filtering
       usedEchoIds.add(next.echoId);
       // Add the echo key instead of filtering
       usedEchoes.add(next.echo);
+      consumeFormatCost(costsRemaining, nextEchoCost);
       // @ts-ignore
       combo.push(next); // Mutate instead of creating new array
       yield* generateLoadouts(
@@ -152,10 +249,13 @@ export function* generateLoadouts(
         nextCost,
         usedEchoIds,
         usedEchoes,
+        format,
+        costsRemaining,
       );
       combo.pop(); // Backtrack
       usedEchoIds.delete(next.echoId); // Backtrack
       usedEchoes.delete(next.echo);
+      restoreFormatCost(costsRemaining, nextEchoCost);
     }
   }
 }

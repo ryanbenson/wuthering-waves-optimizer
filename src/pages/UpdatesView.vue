@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>July 31, 2026</h3>
+    <ul>
+      <li>Adds ability to set loadout format in the optimizer.</li>
+    </ul>
     <h3>July 30, 2026</h3>
     <ul>
       <li>Improves pagination in the inventory page.</li>

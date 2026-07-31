@@ -251,6 +251,7 @@
         <CalculatorOptimizerSettings
           :character="character"
           :current-ignore-other-resonantor-echoes="ignoreOtherResonantorEchoes"
+          :current-loadout-format="loadoutFormat"
           @optimizer:settings-updated="
             handleUpdatedSettings
           "></CalculatorOptimizerSettings>
@@ -330,6 +331,10 @@ import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorOptimizerResults from "./CalculatorOptimizerResults.vue";
 import CalculatorOptimizerGuide from "./CalculatorOptimizerGuide.vue";
 import CalculatorOptimizerSettings from "./CalculatorOptimizerSettings.vue";
+import {
+  normalizeLoadoutFormat,
+  type OptimizerLoadoutFormat,
+} from "../calculator/optimizer";
 
 const props = defineProps<{
   character: string;
@@ -359,6 +364,7 @@ const emit = defineEmits<{
     optimizationTarget: unknown,
     damageType: string,
     ignoreOtherResonantorEchoes: boolean,
+    loadoutFormat: OptimizerLoadoutFormat,
   ];
 }>();
 
@@ -378,6 +384,7 @@ const echoSetPassiveStats = reactive<
 >({});
 const mainEchoStats = reactive<Record<string, Record<string, number>>>({});
 const ignoreOtherResonantorEchoes = ref(false);
+const loadoutFormat = ref<OptimizerLoadoutFormat>("Any");
 
 const optimizerGuide = ref<{ triggerOpenModal: () => void } | null>(null);
 
@@ -485,6 +492,7 @@ function handleOptimize() {
     optimizationTarget.value,
     damageType.value,
     ignoreOtherResonantorEchoes.value,
+    loadoutFormat.value,
   );
 }
 
@@ -523,6 +531,7 @@ async function syncOptimizerConfig() {
       optimizationTarget: optimizationTarget.value,
       damageType: damageType.value,
       ignoreOtherResonantorEchoes: ignoreOtherResonantorEchoes.value,
+      loadoutFormat: loadoutFormat.value,
     },
   });
 }
@@ -609,9 +618,11 @@ function handleOpenOptimizerGuide() {
 
 function handleUpdatedSettings(settings: {
   ignoreOtherResonantorEchoes?: boolean;
+  loadoutFormat?: OptimizerLoadoutFormat;
 }) {
   ignoreOtherResonantorEchoes.value =
     settings.ignoreOtherResonantorEchoes ?? false;
+  loadoutFormat.value = settings.loadoutFormat ?? "Any";
   void syncOptimizerConfig();
 }
 
@@ -625,6 +636,7 @@ onMounted(() => {
       optimizationTarget?: unknown;
       ignoreOtherResonantorEchoes?: boolean;
       damageType?: string;
+      loadoutFormat?: OptimizerLoadoutFormat | string;
     };
   };
   mainEchoes.value = ch.optimizer?.mainEchoes ?? [];
@@ -633,6 +645,7 @@ onMounted(() => {
   optimizationTarget.value = ch.optimizer?.optimizationTarget ?? null;
   ignoreOtherResonantorEchoes.value =
     ch.optimizer?.ignoreOtherResonantorEchoes ?? false;
+  loadoutFormat.value = normalizeLoadoutFormat(ch.optimizer?.loadoutFormat);
   if (ch.optimizer?.damageType) {
     damageType.value = ch.optimizer.damageType;
   }
