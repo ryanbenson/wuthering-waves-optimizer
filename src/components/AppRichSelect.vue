@@ -45,86 +45,72 @@
       </svg>
     </div>
 
-    <!--
-      Portal to <body> outside dialogs so calculator overflow panes don't clip
-      the menu (Linux CI is especially sensitive). Stay in-place inside <dialog>
-      so the menu remains in the top layer with the modal.
-    -->
-    <Teleport to="body" :disabled="!portalEnabled">
-      <div
-        v-if="isOpen"
-        ref="menuRef"
-        class="app-rich-select__menu p-1 shadow bg-base-200 text-base-content"
-        :class="
-          portalEnabled
-            ? 'app-rich-select__menu--portal'
-            : 'app-rich-select__menu--inline'
-        "
-        data-test-rich-select-menu
-        :style="menuStyle"
-        @keydown.escape.prevent="close">
-        <div v-if="searchable" class="p-1 pb-1.5 sticky top-0 z-10 bg-base-200">
-          <input
-            ref="searchInputRef"
-            v-model="searchQuery"
-            type="search"
-            class="input input-bordered input-xs w-full"
-            :placeholder="searchPlaceholder"
-            data-test-rich-select-search
-            @click.stop
-            @keydown.escape.prevent="close" />
-        </div>
+    <div
+      ref="menuRef"
+      class="dropdown-content app-rich-select__menu z-50 mt-1 w-full p-1 shadow bg-base-200 text-base-content"
+      data-test-rich-select-menu
+      @keydown.escape.prevent="close">
+      <div v-if="searchable" class="p-1 pb-1.5 sticky top-0 z-10 bg-base-200">
+        <input
+          ref="searchInputRef"
+          v-model="searchQuery"
+          type="search"
+          class="input input-bordered input-xs w-full"
+          :placeholder="searchPlaceholder"
+          data-test-rich-select-search
+          @click.stop
+          @keydown.escape.prevent="close" />
+      </div>
 
-        <ul
-          class="menu menu-xs text-xs p-0 max-h-64 overflow-y-auto flex-col flex-nowrap w-full">
-          <template v-if="!visibleGroups.length">
-            <li class="disabled w-full">
-              <span class="opacity-60 py-2 px-2">No results</span>
+      <ul
+        class="menu menu-xs text-xs p-0 max-h-64 overflow-y-auto flex-col flex-nowrap w-full">
+        <template v-if="!visibleGroups.length">
+          <li class="disabled w-full">
+            <span class="opacity-60 py-2 px-2">No results</span>
+          </li>
+        </template>
+        <template v-else>
+          <template
+            v-for="group in visibleGroups"
+            :key="group.id">
+            <li
+              v-if="group.label"
+              class="app-rich-select__group-label menu-title w-full px-2 py-1">
+              <span class="text-[0.65rem] uppercase tracking-wide opacity-60">
+                {{ group.label }}
+              </span>
+            </li>
+            <li
+              v-for="option in group.options"
+              :key="String(option.value)"
+              class="w-full">
+              <button
+                type="button"
+                class="app-rich-select__option flex w-full items-center gap-1.5 text-xs min-h-0 h-auto py-1.5 px-2"
+                :class="{
+                  active: isSelected(option.value),
+                  'opacity-40 pointer-events-none': option.disabled,
+                }"
+                :disabled="option.disabled"
+                :data-test-rich-select-option="String(option.value)"
+                @click.stop="selectOption(option)">
+                <slot
+                  name="option"
+                  :option="option"
+                  :selected="isSelected(option.value)">
+                  <img
+                    v-if="option.image"
+                    :src="option.image"
+                    alt=""
+                    class="app-rich-select__thumb size-5 rounded-full object-cover shrink-0 bg-base-300" />
+                  <span class="truncate">{{ option.label }}</span>
+                </slot>
+              </button>
             </li>
           </template>
-          <template v-else>
-            <template
-              v-for="group in visibleGroups"
-              :key="group.id">
-              <li
-                v-if="group.label"
-                class="app-rich-select__group-label menu-title w-full px-2 py-1">
-                <span class="text-[0.65rem] uppercase tracking-wide opacity-60">
-                  {{ group.label }}
-                </span>
-              </li>
-              <li
-                v-for="option in group.options"
-                :key="String(option.value)"
-                class="w-full">
-                <button
-                  type="button"
-                  class="app-rich-select__option flex w-full items-center gap-1.5 text-xs min-h-0 h-auto py-1.5 px-2"
-                  :class="{
-                    active: isSelected(option.value),
-                    'opacity-40 pointer-events-none': option.disabled,
-                  }"
-                  :disabled="option.disabled"
-                  :data-test-rich-select-option="String(option.value)"
-                  @click.stop="selectOption(option)">
-                  <slot
-                    name="option"
-                    :option="option"
-                    :selected="isSelected(option.value)">
-                    <img
-                      v-if="option.image"
-                      :src="option.image"
-                      alt=""
-                      class="app-rich-select__thumb size-5 rounded-full object-cover shrink-0 bg-base-300" />
-                    <span class="truncate">{{ option.label }}</span>
-                  </slot>
-                </button>
-              </li>
-            </template>
-          </template>
-        </ul>
-      </div>
-    </Teleport>
+        </template>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -200,13 +186,11 @@ const triggerAttrs = computed(() => {
 });
 
 const isOpen = ref(false);
-const portalEnabled = ref(true);
 const searchQuery = ref("");
 const rootRef = ref<HTMLElement | null>(null);
 const triggerRef = ref<HTMLElement | null>(null);
 const menuRef = ref<HTMLElement | null>(null);
 const searchInputRef = ref<HTMLInputElement | null>(null);
-const menuStyle = ref<Record<string, string>>({});
 
 const allOptions = computed((): AppRichSelectOption[] => {
   const options = [...props.options];
@@ -309,35 +293,6 @@ function isSelected(value: AppRichSelectValue) {
   return value === props.modelValue;
 }
 
-function updateMenuPosition() {
-  if (!portalEnabled.value) {
-    menuStyle.value = {};
-    return;
-  }
-  const trigger = triggerRef.value;
-  if (!trigger) {
-    return;
-  }
-  const rect = trigger.getBoundingClientRect();
-  const viewportPadding = 8;
-  const maxMenuHeight = 288;
-  const spaceBelow = window.innerHeight - rect.bottom - viewportPadding;
-  const openUpward = spaceBelow < 160 && rect.top > spaceBelow;
-  const width = Math.max(rect.width, 120);
-
-  menuStyle.value = {
-    position: "fixed",
-    left: `${Math.min(rect.left, window.innerWidth - width - viewportPadding)}px`,
-    width: `${width}px`,
-    top: openUpward ? "auto" : `${rect.bottom + 4}px`,
-    bottom: openUpward
-      ? `${window.innerHeight - rect.top + 4}px`
-      : "auto",
-    maxHeight: `${Math.min(maxMenuHeight, openUpward ? rect.top - viewportPadding : spaceBelow)}px`,
-    zIndex: "1000",
-  };
-}
-
 function selectOption(option: AppRichSelectOption) {
   if (option.disabled || props.disabled) {
     return;
@@ -358,12 +313,8 @@ async function open() {
   if (props.disabled) {
     return;
   }
-  // Native <dialog> uses the top layer; body portals render underneath it.
-  portalEnabled.value = !triggerRef.value?.closest("dialog");
   isOpen.value = true;
-  updateMenuPosition();
   await nextTick();
-  updateMenuPosition();
   if (props.searchable) {
     searchInputRef.value?.focus();
   }
@@ -400,23 +351,12 @@ function onDocumentPointerDown(event: Event) {
   close();
 }
 
-function onViewportChange() {
-  if (isOpen.value) {
-    updateMenuPosition();
-  }
-}
-
 onMounted(() => {
   document.addEventListener("pointerdown", onDocumentPointerDown, true);
-  window.addEventListener("resize", onViewportChange);
-  window.addEventListener("scroll", onViewportChange, true);
 });
 
 onBeforeUnmount(() => {
-  close();
   document.removeEventListener("pointerdown", onDocumentPointerDown, true);
-  window.removeEventListener("resize", onViewportChange);
-  window.removeEventListener("scroll", onViewportChange, true);
 });
 </script>
 
@@ -433,23 +373,17 @@ onBeforeUnmount(() => {
   &:focus-within {
     z-index: 50;
   }
+
+  :deep(.dropdown-content) {
+    left: 0;
+    right: auto;
+    width: 100%;
+  }
 }
 
 .app-rich-select__menu {
   border-radius: var(--app-rich-select-radius);
   overflow: hidden;
-}
-
-.app-rich-select__menu--inline {
-  position: absolute;
-  left: 0;
-  top: calc(100% + 0.25rem);
-  width: 100%;
-  z-index: 50;
-}
-
-.app-rich-select__menu--portal {
-  min-width: 8rem;
 }
 
 .app-rich-select__option {
@@ -498,10 +432,11 @@ onBeforeUnmount(() => {
 html[data-density="compact"] {
   .app-rich-select--ghost {
     min-width: 9.5rem;
-  }
 
-  .app-rich-select__menu--portal {
-    min-width: 9.5rem;
+    :deep(.dropdown-content) {
+      width: max-content;
+      min-width: 9.5rem;
+    }
   }
 
   .app-rich-select__trigger--ghost {

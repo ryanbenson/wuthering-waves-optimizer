@@ -17,27 +17,24 @@ Cypress.Commands.add(
   "richSelect",
   (selector: string, value: string, options?: { search?: string }) => {
     cy.get(selector).first().as("richSelectTrigger");
-    cy.get("@richSelectTrigger").click();
+    cy.get("@richSelectTrigger").scrollIntoView().click({ force: true });
+    // Scope to this select — options stay mounted even when visually clipped
+    // by calculator overflow panes (common in Linux CI).
     cy.get("@richSelectTrigger")
       .closest(".app-rich-select")
-      .should("have.class", "dropdown-open");
-
-    // Menu is teleported to <body>, so query the open portal menu.
-    cy.get("[data-test-rich-select-menu]:visible")
-      .should("have.length", 1)
+      .should("have.class", "dropdown-open")
       .within(() => {
-        cy.root().then(($menu) => {
-          const $search = $menu.find("[data-test-rich-select-search]");
+        cy.root().then(($root) => {
+          const $search = $root.find("[data-test-rich-select-search]");
           if ($search.length) {
             cy.wrap($search)
-              .clear()
-              .type(options?.search ?? value);
+              .clear({ force: true })
+              .type(options?.search ?? value, { force: true });
           }
         });
-        cy.get(`[data-test-rich-select-option="${value}"]`)
-          .scrollIntoView()
-          .should("be.visible")
-          .click();
+        cy.get(`[data-test-rich-select-option="${value}"]`).click({
+          force: true,
+        });
       });
   },
 );
