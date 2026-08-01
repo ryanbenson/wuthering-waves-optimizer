@@ -11,7 +11,7 @@
               :test-id="nameKey"
               @toggle="toggleFavorite" />
             <div
-              class="character__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer"
+              class="character__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover"
               :class="{
                 'border-amber-300': rarity === 5,
                 'border-violet-600': rarity === 4,
@@ -34,6 +34,8 @@
           <CharacterBuildStatus
             v-if="buildStatus"
             :status="buildStatus"
+            :interactive="true"
+            :character-key="nameKey"
             class="mb-1" />
           <div class="character__item__meta flex gap-2 items-center">
             <span class="character__item__set size-6 rounded-full">

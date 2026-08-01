@@ -58,16 +58,35 @@
               <img :src="weaponIcon.toLowerCase()" class="size-8 p-[.15rem]" />
             </button>
           </div>
-          <div class="characters__filters__build-status ml-2 flex gap-1">
-            <button
-              v-for="status in buildStatusFilters"
-              :key="status"
-              @click="toggleBuildStatusFilter(status)"
-              class="btn btn-sm btn-ghost rounded inline-flex items-center px-2"
-              :class="{ 'btn-active': isBuildStatusFilterActive(status) }"
-              :data-test-build-status-filter="status">
-              <CharacterBuildStatus :status="status" />
-            </button>
+          <div
+            class="characters__filters__build-status ml-2 flex items-center gap-2">
+            <select
+              v-model="filterBuildStatus"
+              class="select select-bordered select-sm"
+              aria-label="Filter by character status"
+              data-test-build-status-filter>
+              <option :value="null">All statuses</option>
+              <option
+                v-for="status in buildStatusFilters"
+                :key="status"
+                :value="status"
+                :disabled="
+                  hideWontBuildCharacters && status === 'wont-build'
+                ">
+                {{ getCharacterBuildStatusLabel(status) }}
+              </option>
+            </select>
+            <label
+              class="flex items-center gap-1.5 cursor-pointer text-xs whitespace-nowrap"
+              v-tooltip="hideWontBuildTooltip">
+              <input
+                v-model="hideWontBuildCharacters"
+                type="checkbox"
+                class="toggle toggle-primary toggle-sm"
+                aria-label="Hide characters marked Won't build"
+                data-test-browser-hide-wont-build />
+              Hide “Won't build”
+            </label>
           </div>
           <div class="characters__filters__favorites ml-2">
             <button
@@ -119,9 +138,7 @@
                 :element="character.element"
                 :weapon="character.weapon"
                 :build-status="getCharacterBuildStatus(character.key, characters)"
-                :is-active="false"
-                @click="chooseCharacter(character)"
-                class="cursor-pointer">
+                :is-active="false">
                 <button
                   @click="chooseCharacter(character)"
                   class="btn btn-sm btn-primary">
@@ -146,12 +163,13 @@ import {
 } from "../characters/characters";
 import {
   getCharacterBuildStatus,
+  getCharacterBuildStatusLabel,
   CHARACTER_BUILD_STATUSES,
   type CharacterBuildStatus as CharacterBuildStatusType,
 } from "../characters/characterBuildStatus";
 import { useCharacterStore } from "../stores/character";
+import { useSettingsStore } from "../stores/settings";
 import CalculatorCharacterCard from "./CalculatorCharacterCard.vue";
-import CharacterBuildStatus from "./CharacterBuildStatus.vue";
 
 type ListedCharacter = (typeof allCharactersList)[number];
 
@@ -163,6 +181,8 @@ defineProps<Props>();
 
 const characterStore = useCharacterStore();
 const { characters, favoriteCharacters } = storeToRefs(characterStore);
+const settingsStore = useSettingsStore();
+const { config } = storeToRefs(settingsStore);
 
 const emit = defineEmits<{
   "character-browser:chosen-character": [key: string];
@@ -175,11 +195,32 @@ const filterBuildStatus = ref<CharacterBuildStatusType | null>(null);
 const filterFavorites = ref(false);
 
 const buildStatusFilters: CharacterBuildStatusType[] = CHARACTER_BUILD_STATUSES;
+const hideWontBuildTooltip =
+  "Hide characters marked “Won't build”. This preference is saved globally.";
+
+const hideWontBuildCharacters = computed({
+  get: () =>
+    Boolean(
+      (config.value as { hideWontBuildCharacters?: boolean })
+        ?.hideWontBuildCharacters,
+    ),
+  set: (value: boolean) => {
+    if (value && filterBuildStatus.value === "wont-build") {
+      filterBuildStatus.value = null;
+    }
+    void settingsStore.addToConfig({ hideWontBuildCharacters: value });
+  },
+});
 
 const charactersList = computed((): ListedCharacter[] => {
   let characterList: ListedCharacter[] = JSON.parse(
     JSON.stringify(allCharactersList),
   );
+  if (hideWontBuildCharacters.value) {
+    characterList = characterList.filter(
+      (c) => getCharacterBuildStatus(c.key, characters.value) !== "wont-build",
+    );
+  }
   if (filterElement.value) {
     characterList = characterList.filter(
       (c) => c.element === filterElement.value,
@@ -261,15 +302,6 @@ function toggleWeaponFilter(weapon: string) {
 
 function isWeaponFilterActive(weapon: string) {
   return filterWeapon.value === weapon;
-}
-
-function toggleBuildStatusFilter(status: CharacterBuildStatusType) {
-  filterBuildStatus.value =
-    filterBuildStatus.value === status ? null : status;
-}
-
-function isBuildStatusFilterActive(status: CharacterBuildStatusType) {
-  return filterBuildStatus.value === status;
 }
 
 function toggleFavoriteFilter() {
