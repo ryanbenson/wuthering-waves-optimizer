@@ -676,17 +676,13 @@ onBeforeUnmount(() => {
 }
 .teammate_selects {
   display: flex;
-  gap: 2rem;
+  gap: 0.5rem;
 
-  @media (max-width: 480px) {
-    gap: 1rem;
-  }
-  @media (max-width: 900px) {
-    gap: 2rem;
+  @media (max-width: 1460px) {
     flex-direction: column;
   }
   @media (max-width: 768px) {
-    flex-direction: row;
+    flex-direction: column;
   }
   @media (max-width: 500px) {
     flex-direction: column;
@@ -695,11 +691,8 @@ onBeforeUnmount(() => {
 .teammate__select {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  flex: 1 1 22rem;
-  max-width: 28rem;
+  gap: 0.5rem;
+  flex: 1;
   label {
     display: none;
   }
