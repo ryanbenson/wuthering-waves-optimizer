@@ -7,16 +7,13 @@
             Choose 1-piece set
           </span>
         </div>
-        <select
-          name="characterLevel"
-          v-model="setManual"
-          class="select select-bordered select-sm"
-          @change="onSetManualChange">
-          <option value="">None</option>
-          <option v-for="set in [...optionsList]" :key="set" :value="set">
-            {{ set }}
-          </option>
-        </select>
+        <AppRichSelect
+          v-model="setSelectModel"
+          :options="setSelectOptions"
+          searchable
+          allow-empty
+          empty-label="None"
+          aria-label="Choose 1-piece set" />
       </label>
       <h2 v-if="setName" class="card-title">{{ setName }}</h2>
       <div v-else>No 1-piece echo set bonus is configured.</div>
@@ -43,9 +40,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
 import CalculatorEchoSetPassive from "./CalculatorEchoSetPassive.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+  type AppRichSelectValue,
+} from "./AppRichSelect.vue";
+import { buildEchoSetSelectOptions } from "../utils/richSelectOptions";
 import { oneSetBonuses, setBonusEffectsOnePiece } from "../echoes/sets";
 
 const props = withDefaults(
@@ -76,7 +78,6 @@ type PassiveBuffPayload = {
 };
 
 const passiveData = ref<PassiveBuffPayload[]>([]);
-const setManual = ref<string | null>(null);
 
 const currentCharacter = computed(
   () => characterStore.characters?.[props.character] ?? {},
@@ -93,6 +94,16 @@ const type = computed({
     void characterStore.setCharacterData(props.character, {
       echoSetBonus: { setBonusOnePiece: value || null },
     });
+  },
+});
+
+/** Bridge empty string <-> null for AppRichSelect allowEmpty. */
+const setSelectModel = computed({
+  get(): AppRichSelectValue {
+    return type.value || null;
+  },
+  set(value: AppRichSelectValue) {
+    type.value = value == null ? "" : String(value);
   },
 });
 
@@ -124,9 +135,9 @@ const buffsFormatted = computed(() => {
   return finalBuffData;
 });
 
-const optionsList = computed(() => {
-  const list = JSON.parse(JSON.stringify(oneSetBonuses)) as string[];
-  return list.sort();
+const setSelectOptions = computed((): AppRichSelectOption[] => {
+  const list = [...oneSetBonuses].sort();
+  return buildEchoSetSelectOptions(list);
 });
 
 function updatedStats() {
@@ -143,18 +154,9 @@ function handleUpdatedEchoPassiveStats(data: PassiveBuffPayload) {
   updatedStats();
 }
 
-function onSetManualChange(e: Event) {
-  const value = (e.target as HTMLSelectElement).value;
-  type.value = value;
-}
-
 watch(type, () => {
   updatedStats();
 }, { immediate: true });
-
-onMounted(() => {
-  setManual.value = type.value;
-});
 
 onBeforeUnmount(() => {
   passiveData.value = [];

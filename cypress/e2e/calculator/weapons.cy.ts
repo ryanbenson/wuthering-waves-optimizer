@@ -23,7 +23,7 @@ describe("Calculator Weapons", () => {
   });
 
   it("should be able to use the weapon browser", () => {
-    cy.get(".character__selection__form--character select").select("Carlotta");
+    cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Carlotta").should("be.visible");
     // validate stats and damages before choosing a weapon
@@ -46,7 +46,7 @@ describe("Calculator Weapons", () => {
     cy.get("[data-test-weapon-basic-stats]").should("be.visible");
     cy.get("[data-test-weapon-passives]").should("be.visible");
     // validate the input
-    cy.get('[data-test-weapon-select]').find('option:selected').should('have.text', 'The Last Dance');
+    cy.get('[data-test-weapon-select]').should('contain.text', 'The Last Dance');
     // validate the stats and damages after choosing a weapon
     testStats(carlottaBaseWeaponStats, cy);
 

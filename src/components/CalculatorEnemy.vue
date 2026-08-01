@@ -11,7 +11,7 @@
   <div
     class="card card-bordered shadow mb-12 overflow-hidden"
     data-test-enemy-preset-card>
-    <div class="card-body flex flex-row gap-4 p-4 items-center">
+    <div class="card-body flex flex-row gap-4 p-4 items-center card--enemies">
       <figure class="w-24 h-24 shrink-0 rounded-lg overflow-hidden bg-base-300">
         <img
           :src="selectedEnemyEntry?.imageUrl ?? 'https://ryanbenson.github.io/wuthering-waves-assets/images/enemy.png'"

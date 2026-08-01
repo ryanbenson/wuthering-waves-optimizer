@@ -49,77 +49,30 @@
       <div
         class="weapon__basic-data"
         :class="{ 'weapon__basic-data--compact': isCompact }">
-        <div :class="{ 'mb-2': !isCompact }">
-          <select
-            name="weapon"
+        <div class="weapon__name-select" :class="{ 'mb-2': !isCompact }">
+          <AppRichSelect
             v-model="weapon"
-            class="select select-bordered select-sm"
-            data-test-weapon-select>
-            <option :value="null">Choose a weapon</option>
-            <optgroup label="5 Star">
-              <option
-                v-for="weap in weaponsList.five"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-            <optgroup label="4 Star">
-              <option
-                v-for="weap in weaponsList.four"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-            <optgroup label="3 Star">
-              <option
-                v-for="weap in weaponsList.three"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-            <optgroup label="2 Star">
-              <option
-                v-for="weap in weaponsList.two"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-            <optgroup label="1 Star">
-              <option
-                v-for="weap in weaponsList.one"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-          </select>
+            :options="weaponSelectOptions"
+            searchable
+            allow-empty
+            empty-label="Choose a weapon"
+            search-placeholder="Type to find a weapon…"
+            aria-label="Choose weapon"
+            data-test-weapon-select />
         </div>
-        <div :class="{ 'mb-2': !isCompact }">
-          <select
-            name="weaponLevel"
+        <div class="weapon__meta-selects">
+          <AppRichSelect
             v-model="weaponLevel"
-            class="select select-bordered select-sm">
-            <option v-for="lvl in weaponLevelOptions" :key="lvl" :value="lvl">
-              {{ lvl }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <select
-            name="refinement"
+            class="weapon__level-select"
+            :options="weaponLevelSelectOptions"
+            :disabled="!weapon"
+            aria-label="Weapon level" />
+          <AppRichSelect
             v-model="refinement"
-            class="select select-bordered select-sm">
-            <option
-              v-for="lvl in weaponRefinementLevels"
-              :key="lvl"
-              :value="lvl">
-              {{ lvl }}
-            </option>
-          </select>
+            class="weapon__refinement-select"
+            :options="weaponRefinementSelectOptions"
+            :disabled="!weapon"
+            aria-label="Weapon refinement" />
         </div>
       </div>
     </div>
@@ -192,9 +145,16 @@ import { storeToRefs } from "pinia";
 import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
 import CalculatorWeaponsPassive from "./CalculatorWeaponsPassive.vue";
 import CalculatorWeaponBrowser from "./CalculatorWeaponBrowser.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
 import { useCharacterStore } from "../stores/character";
 import { subStatLabelMap } from "../echoes/stats";
 import { useUiDensity } from "../composables/useUiDensity";
+import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
+
+const WEAPON_IMAGE_BASE =
+  "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons";
 
 type WeaponListBuckets = {
   five: Array<{ key: string; name: string; [k: string]: unknown }>;
@@ -267,6 +227,27 @@ function normalizeWeaponsList(raw: unknown): WeaponListBuckets {
 }
 
 const weaponsList = ref<WeaponListBuckets>(normalizeWeaponsList([]));
+
+const weaponSelectOptions = computed((): AppRichSelectOption[] => {
+  const mapBucket = (
+    weapons: WeaponListBuckets["five"],
+    group: string,
+  ): AppRichSelectOption[] =>
+    weapons.map((weap) => ({
+      value: weap.key,
+      label: weap.name,
+      group,
+      image: `${WEAPON_IMAGE_BASE}/${weap.key}.png`,
+    }));
+
+  return [
+    ...mapBucket(weaponsList.value.five, "5 Star"),
+    ...mapBucket(weaponsList.value.four, "4 Star"),
+    ...mapBucket(weaponsList.value.three, "3 Star"),
+    ...mapBucket(weaponsList.value.two, "2 Star"),
+    ...mapBucket(weaponsList.value.one, "1 Star"),
+  ];
+});
 
 const weaponBrowserRef = ref<InstanceType<typeof CalculatorWeaponBrowser> | null>(
   null,
@@ -366,7 +347,14 @@ const weaponLevelOptions = computed(() => {
   return defaultOption;
 });
 
+const weaponLevelSelectOptions = computed(() =>
+  buildSimpleSelectOptions(weaponLevelOptions.value),
+);
+
 const weaponRefinementLevels = ["1", "2", "3", "4", "5"] as const;
+const weaponRefinementSelectOptions = buildSimpleSelectOptions(
+  weaponRefinementLevels,
+);
 
 const weaponPassives = computed(() => {
   const passives = chosenWeapon.value?.info?.passiveData ?? [];
@@ -744,11 +732,43 @@ html[data-theme="light"] {
   margin-bottom: 1rem;
 }
 
+.weapon__basic-data {
+  flex: 1;
+  min-width: 0;
+}
+
+.weapon__name-select {
+  --app-rich-select-min-width: 14rem;
+  min-width: 0;
+}
+
+.weapon__meta-selects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.weapon__level-select,
+.weapon__refinement-select {
+  --app-rich-select-min-width: 4.75rem;
+  width: 4.75rem;
+  flex: 0 0 auto;
+}
+
 .weapon__basic-data--compact {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
+
+  .weapon__name-select {
+    flex: 1 1 12rem;
+    min-width: 0;
+  }
+
+  .weapon__meta-selects {
+    flex: 0 0 auto;
+  }
 }
 
 html[data-density="compact"] {

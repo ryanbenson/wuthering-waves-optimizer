@@ -7,6 +7,7 @@
       <li>Adds more character status options (Won't build, wanted).</li>
       <li>Adds the ability to change the character status in the character browser.</li>
       <li>Adds ability to always hide unwatched characters in the character browser.</li>
+      <li>Enhances all of the selection UI to make them easier to use with icons, searchability, and more.</li>
     </ul>
     <h3>July 31, 2026</h3>
     <ul>

@@ -11,7 +11,7 @@ describe("Calculator Rotations", () => {
   });
 
   it("should enable basic rotations with action buffs", () => {
-    cy.get(".character__selection__form--character select").select("Carlotta");
+    cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Carlotta").should("be.visible");
     cy.get('[data-test-calculator-nav="rotations"]').click();
@@ -45,8 +45,10 @@ describe("Calculator Rotations", () => {
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-skill-input="none"]`).click();
-    cy.get(`[data-test-picker-choose="BasicAttackStage1DMG"]`).click();
+    cy.richSelect(
+      `[data-test-rotation-action-skill-input="none"]`,
+      "BasicAttackStage1DMG",
+    );
     // create second action
     cy.get(`[data-test-rotation-action-add="Test001"]`).click();
     // find first action that's empty and click to get into it
@@ -58,14 +60,15 @@ describe("Calculator Rotations", () => {
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-skill-input="none"]`).click();
-    cy.get(`[data-test-picker-choose="FatalFinaleDMG"]`).click();
+    cy.richSelect(
+      `[data-test-rotation-action-skill-input="none"]`,
+      "FatalFinaleDMG",
+    );
     // add a buff to the second action
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).should("be.visible");
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).click();
     cy.get(`[data-test-action-buff-input="none"]`).should("be.visible");
-    cy.get(`[data-test-action-buff-input="none"]`).click();
-    cy.get(`[data-test-picker-choose="CritRate"]`).click();
+    cy.richSelect(`[data-test-action-buff-input="none"]`, "CritRate");
     cy.get(`[data-test-action-buff-value-input="CritRate"]`).should(
       "be.visible",
     );

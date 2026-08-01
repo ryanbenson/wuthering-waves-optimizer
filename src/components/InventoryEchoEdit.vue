@@ -11,8 +11,8 @@
       </form>
       <div class="py-4">
         <div
-          class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row">
-          <div class="echo__item__img-actions flex flex-col gap-2 items-center">
+          class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row sm:items-start">
+          <div class="echo__item__img-actions flex flex-col gap-2 items-center shrink-0">
             <div class="echo__item__image-wrap relative">
               <EchoFavoriteButton overlay :echo-id="echoId" />
               <div
@@ -39,57 +39,22 @@
               Find
             </button>
           </div>
-          <div class="echo__item__main-selection flex flex-col gap-4">
-            <select
+          <div class="echo__item__main-selection flex flex-col gap-4 w-full min-w-0 flex-1">
+            <AppRichSelect
               v-model="echo"
-              name="mainEcho"
-              class="select select-bordered select select-sm">
-              <optgroup label="Calamity">
-                <option
-                  v-for="option in mainEchoOptions.Calamity"
-                  :key="option.key"
-                  :value="option.key">
-                  {{ option.name }}
-                </option>
-              </optgroup>
-              <optgroup label="Overlord">
-                <option
-                  v-for="option in mainEchoOptions.Overlord"
-                  :key="option.key"
-                  :value="option.key">
-                  {{ option.name }}
-                </option>
-              </optgroup>
-              <optgroup label="Elite">
-                <option
-                  v-for="option in mainEchoOptions.Elite"
-                  :key="option.key"
-                  :value="option.key">
-                  {{ option.name }}
-                </option>
-              </optgroup>
-              <optgroup label="Common">
-                <option
-                  v-for="option in mainEchoOptions.Common"
-                  :key="option.key"
-                  :value="option.key">
-                  {{ option.name }}
-                </option>
-              </optgroup>
-            </select>
+              :options="mainEchoSelectOptions"
+              searchable
+              placeholder="Select echo"
+              aria-label="Main echo" />
 
-            <select
-              name="mainStat"
-              class="select select-bordered select select-sm"
+            <AppRichSelect
               v-model="stat"
-              :disabled="!type">
-              <option value="none">Select Stat</option>
-              <option v-for="s in getStats(type)" :key="s" :value="s">
-                {{ getReadableSubStatLabel(s) }}
-              </option>
-            </select>
+              :options="mainStatSelectOptions"
+              :disabled="!type"
+              placeholder="Select Stat"
+              aria-label="Main stat" />
           </div>
-          <div class="echo__item__set w-full relative">
+          <div class="echo__item__set relative w-full sm:w-24 shrink-0">
             <span
               class="font-bold mb-2 inline-flex w-full justify-center sm:justify-start">
               Echo Set
@@ -598,6 +563,10 @@ import {
 import { subStatsTable } from "../echoes/stats.ts";
 import Range from "./input/Range.vue";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
+import { buildEchoSelectOptions } from "../utils/richSelectOptions";
 
 type MainEchoRow = (typeof mainEchoesData)[keyof typeof mainEchoesData];
 
@@ -1050,6 +1019,20 @@ const mainEchoOptions = computed(() => {
   });
   return buckets;
 });
+
+const mainEchoSelectOptions = computed((): AppRichSelectOption[] =>
+  buildEchoSelectOptions(mainEchoOptions.value),
+);
+
+const mainStatSelectOptions = computed((): AppRichSelectOption[] => [
+  { value: "none", label: "Select Stat" },
+  ...(type.value != null
+    ? getStats(type.value as string | number).map((s) => ({
+        value: s,
+        label: getReadableSubStatLabel(s),
+      }))
+    : []),
+]);
 
 const modalId = computed(() => `echoModal`);
 const modalIdPicker = computed(() => `echoModalPicker`);

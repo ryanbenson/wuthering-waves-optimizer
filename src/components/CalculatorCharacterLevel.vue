@@ -1,14 +1,12 @@
 <template>
   <div>
-    <select
-      name="characterLevel"
+    <AppRichSelect
       v-model="characterLevel"
-      @change="levelUpdated"
-      class="select select-bordered select-sm">
-      <option v-for="lvl in characterLevelOptions" :key="lvl" :value="lvl">
-        {{ lvl }}
-      </option>
-    </select>
+      :options="characterLevelSelectOptions"
+      aria-label="Character level"
+      data-test-character-level
+      class="character-level-select"
+      @update:model-value="onLevelUpdated" />
   </div>
 </template>
 
@@ -16,6 +14,10 @@
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import AppRichSelect, {
+  type AppRichSelectValue,
+} from "./AppRichSelect.vue";
+import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
 
 interface Props {
   character: string;
@@ -47,6 +49,10 @@ const characterLevelOptions: readonly string[] = [
   "90",
 ];
 
+const characterLevelSelectOptions = buildSimpleSelectOptions(
+  characterLevelOptions,
+);
+
 const currentCharacter = computed(
   () => characters.value[props.character] ?? {},
 );
@@ -63,10 +69,16 @@ const characterLevel = computed({
   },
 });
 
-function levelUpdated(e: Event) {
-  const target = e.target as HTMLSelectElement;
-  emit("character-level-updated", target.value);
+function onLevelUpdated(value: AppRichSelectValue) {
+  if (typeof value === "string") {
+    emit("character-level-updated", value);
+  }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.character-level-select {
+  --app-rich-select-min-width: 4.75rem;
+  width: 4.75rem;
+}
+</style>

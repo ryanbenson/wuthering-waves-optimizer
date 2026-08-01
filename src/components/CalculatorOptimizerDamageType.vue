@@ -3,7 +3,7 @@
     <input
       v-model="damageType"
       value="Normal"
-      class="join-item btn"
+      class="join-item btn btn-sm"
       type="radio"
       name="options"
       aria-label="Normal"
@@ -11,7 +11,7 @@
     <input
       v-model="damageType"
       value="Average"
-      class="join-item btn"
+      class="join-item btn btn-sm"
       type="radio"
       name="options"
       aria-label="Average"
@@ -19,7 +19,7 @@
     <input
       v-model="damageType"
       value="Crit"
-      class="join-item btn"
+      class="join-item btn btn-sm"
       type="radio"
       name="options"
       aria-label="Crit"

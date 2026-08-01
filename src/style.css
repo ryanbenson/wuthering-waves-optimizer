@@ -272,6 +272,10 @@ html[data-density="compact"] .card .card-body {
   gap: 0;
 }
 
+html[data-density="compact"]  .card .card-body.card--enemies {
+  gap: 1rem;
+}
+
 html[data-density="compact"] .card .card-title {
   margin-bottom: 0;
 }
