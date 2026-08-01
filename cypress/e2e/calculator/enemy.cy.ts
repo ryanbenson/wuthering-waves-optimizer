@@ -11,7 +11,7 @@ describe("Calculator Enemy", () => {
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Carlotta").should("be.visible");
     cy.get('[data-test-calculator-nav="enemy"]').click();
-    cy.get("[data-test-enemy-info]").should("be.visible");
+    cy.get("[data-test-enemy-info]").scrollIntoView().should("be.visible");
     cy.get("[data-test-enemy-level]").should("be.visible");
     cy.get("[data-test-enemy-resist]").should("be.visible");
     cy.get("[data-test-enemy-resist]").should("be.visible");
@@ -40,7 +40,7 @@ describe("Calculator Enemy", () => {
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Phoebe").should("be.visible");
     cy.get('[data-test-calculator-nav="enemy"]').click();
-    cy.get("[data-test-enemy-info]").should("be.visible");
+    cy.get("[data-test-enemy-info]").scrollIntoView().should("be.visible");
     cy.get("[data-test-enemy-level]").should("be.visible");
     cy.get("[data-test-enemy-resist]").should("be.visible");
     cy.get("[data-test-enemy-resist]").should("be.visible");

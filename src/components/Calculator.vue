@@ -1724,7 +1724,8 @@ export default defineComponent({
 }
 
 .screen--character {
-  overflow: hidden;
+  // Keep visible so dropdowns/portals aren't treated as clipped by Cypress.
+  overflow: visible;
 }
 .results {
   display: block !important;

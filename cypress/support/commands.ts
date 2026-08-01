@@ -18,16 +18,17 @@ Cypress.Commands.add(
   (selector: string, value: string, options?: { search?: string }) => {
     cy.get(selector).first().as("richSelectTrigger");
     cy.get("@richSelectTrigger").click();
-    // Every rich select keeps its options mounted, so scope to this one.
     cy.get("@richSelectTrigger")
       .closest(".app-rich-select")
-      .should("have.class", "dropdown-open")
+      .should("have.class", "dropdown-open");
+
+    // Menu is teleported to <body>, so query the open portal menu.
+    cy.get("[data-test-rich-select-menu]:visible")
+      .should("have.length", 1)
       .within(() => {
-        cy.root().then(($root) => {
-          const $search = $root.find("[data-test-rich-select-search]");
+        cy.root().then(($menu) => {
+          const $search = $menu.find("[data-test-rich-select-search]");
           if ($search.length) {
-            // Prefer an explicit search string; otherwise filter by value so
-            // long lists don't leave the option clipped by overflow.
             cy.wrap($search)
               .clear()
               .type(options?.search ?? value);
