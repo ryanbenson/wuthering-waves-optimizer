@@ -11,7 +11,7 @@ describe("Calculator Rotations", () => {
   });
 
   it("should enable basic rotations with action buffs", () => {
-    cy.get(".character__selection__form--character select").select("Carlotta");
+    cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Carlotta").should("be.visible");
     cy.get('[data-test-calculator-nav="rotations"]').click();

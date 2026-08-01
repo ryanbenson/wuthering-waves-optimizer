@@ -13,7 +13,7 @@ describe("Calculator Kitchen Sink", () => {
   });
 
   it("should enable everything and validate all calculations", () => {
-    cy.get(".character__selection__form--character select").select("Carlotta");
+    cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Carlotta").should("be.visible");
 
@@ -22,7 +22,7 @@ describe("Calculator Kitchen Sink", () => {
 
     // now change the weapon and enable all weapon buffs
     cy.get('[data-test-calculator-nav="weapon"]').click();
-    cy.get(`[data-test-weapon-select]`).select("TheLastDance");
+    cy.richSelect("[data-test-weapon-select]", "TheLastDance");
     cy.get('[data-test-weapon-passive="TheLastDanceSKillBonus"]').each(
       ($card) => {
         cy.wrap($card).find("input[type=checkbox]").click();
@@ -122,8 +122,8 @@ describe("Calculator Kitchen Sink", () => {
 
     // now configure team buffs
     cy.get('[data-test-calculator-nav="team"]').click();
-    cy.get("[data-test-party-member-1-input]").select("Shorekeeper");
-    cy.get("[data-test-party-member-2-input]").select("Zhezhi");
+    cy.richSelect("[data-test-party-member-1-input]", "Shorekeeper");
+    cy.richSelect("[data-test-party-member-2-input]", "Zhezhi");
     cy.get('[data-test-party-buff-char-1-collapse-bar]').click();
     cy.get("[data-test-party-member-1-name]").should(
       "contain.text",

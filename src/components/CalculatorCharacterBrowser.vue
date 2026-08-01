@@ -58,16 +58,31 @@
               <img :src="weaponIcon.toLowerCase()" class="size-8 p-[.15rem]" />
             </button>
           </div>
-          <div class="characters__filters__build-status ml-2 flex gap-1">
-            <button
-              v-for="status in buildStatusFilters"
-              :key="status"
-              @click="toggleBuildStatusFilter(status)"
-              class="btn btn-sm btn-ghost rounded inline-flex items-center px-2"
-              :class="{ 'btn-active': isBuildStatusFilterActive(status) }"
-              :data-test-build-status-filter="status">
-              <CharacterBuildStatus :status="status" />
-            </button>
+          <div class="characters__filters__build-status ml-2 min-w-[10rem]">
+            <AppRichSelect
+              v-model="filterBuildStatus"
+              :options="buildStatusFilterOptions"
+              allow-empty
+              empty-label="All statuses"
+              aria-label="Filter by character status"
+              data-test-build-status-filter>
+              <template #selected="{ option }">
+                <span class="flex items-center gap-1.5 min-w-0">
+                  <span
+                    v-if="option?.dotClass"
+                    class="size-2 rounded-full shrink-0"
+                    :class="String(option.dotClass)"></span>
+                  <span class="truncate">{{ option?.label ?? "All statuses" }}</span>
+                </span>
+              </template>
+              <template #option="{ option }">
+                <span
+                  v-if="option.dotClass"
+                  class="size-2 rounded-full shrink-0"
+                  :class="String(option.dotClass)"></span>
+                <span>{{ option.label }}</span>
+              </template>
+            </AppRichSelect>
           </div>
           <div class="characters__filters__favorites ml-2">
             <button
@@ -119,9 +134,7 @@
                 :element="character.element"
                 :weapon="character.weapon"
                 :build-status="getCharacterBuildStatus(character.key, characters)"
-                :is-active="false"
-                @click="chooseCharacter(character)"
-                class="cursor-pointer">
+                :is-active="false">
                 <button
                   @click="chooseCharacter(character)"
                   class="btn btn-sm btn-primary">
@@ -146,12 +159,16 @@ import {
 } from "../characters/characters";
 import {
   getCharacterBuildStatus,
+  getCharacterBuildStatusDotClass,
+  getCharacterBuildStatusLabel,
   CHARACTER_BUILD_STATUSES,
   type CharacterBuildStatus as CharacterBuildStatusType,
 } from "../characters/characterBuildStatus";
 import { useCharacterStore } from "../stores/character";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
 import CalculatorCharacterCard from "./CalculatorCharacterCard.vue";
-import CharacterBuildStatus from "./CharacterBuildStatus.vue";
 
 type ListedCharacter = (typeof allCharactersList)[number];
 
@@ -174,7 +191,13 @@ const filterWeapon = ref<string | null>(null);
 const filterBuildStatus = ref<CharacterBuildStatusType | null>(null);
 const filterFavorites = ref(false);
 
-const buildStatusFilters: CharacterBuildStatusType[] = CHARACTER_BUILD_STATUSES;
+const buildStatusFilterOptions = computed((): AppRichSelectOption[] =>
+  CHARACTER_BUILD_STATUSES.map((status) => ({
+    value: status,
+    label: getCharacterBuildStatusLabel(status),
+    dotClass: getCharacterBuildStatusDotClass(status),
+  })),
+);
 
 const charactersList = computed((): ListedCharacter[] => {
   let characterList: ListedCharacter[] = JSON.parse(
@@ -261,15 +284,6 @@ function toggleWeaponFilter(weapon: string) {
 
 function isWeaponFilterActive(weapon: string) {
   return filterWeapon.value === weapon;
-}
-
-function toggleBuildStatusFilter(status: CharacterBuildStatusType) {
-  filterBuildStatus.value =
-    filterBuildStatus.value === status ? null : status;
-}
-
-function isBuildStatusFilterActive(status: CharacterBuildStatusType) {
-  return filterBuildStatus.value === status;
 }
 
 function toggleFavoriteFilter() {

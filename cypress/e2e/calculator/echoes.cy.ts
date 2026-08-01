@@ -12,7 +12,7 @@ describe("Calculator Echoes", () => {
   });
 
   it("should enable basic echoes and main echo is based off of the first echo choice", () => {
-    cy.get(".character__selection__form--character select").select("Carlotta");
+    cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Carlotta").should("be.visible");
     cy.get('[data-test-calculator-nav="echoes"]').click();

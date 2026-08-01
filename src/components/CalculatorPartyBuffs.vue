@@ -55,34 +55,15 @@
             </div>
           </div>
           <div class="character__selection__form">
-            <select
+            <AppRichSelect
               v-model="selectedCharacter1"
-              class="select select-bordered select-sm w-full max-w-xs"
-              data-test-party-member-1-input>
-              <option :value="null">None</option>
-              <optgroup label="5 Star">
-                <option
-                  v-for="char in charactersList.five"
-                  :key="char.key"
-                  :value="char.key">
-                  {{ char.name }}
-                </option>
-              </optgroup>
-              <optgroup label="4 Star">
-                <option
-                  v-for="char in charactersList.four"
-                  :key="char.key"
-                  :value="char.key">
-                  {{ char.name }}
-                </option>
-              </optgroup>
-              <optgroup v-if="partyMember1NotOnRoster" label="Other">
-                <option
-                  :value="partyMember1NotOnRoster.key">
-                  {{ partyMember1NotOnRoster.name }}
-                </option>
-              </optgroup>
-            </select>
+              :options="partyMember1Options"
+              searchable
+              allow-empty
+              empty-label="None"
+              search-placeholder="Type to find a character…"
+              aria-label="Choose first team member"
+              data-test-party-member-1-input />
             <div class="btn btn-xs btn-primary mt-2" @click="clearCharacter1">
               Clear
             </div>
@@ -121,34 +102,15 @@
             </div>
           </div>
           <div class="character__selection__form">
-            <select
+            <AppRichSelect
               v-model="selectedCharacter2"
-              class="select select-bordered select-sm w-full max-w-xs"
-              data-test-party-member-2-input>
-              <option :value="null">None</option>
-              <optgroup label="5 Star">
-                <option
-                  v-for="char in charactersList.five"
-                  :key="char.key"
-                  :value="char.key">
-                  {{ char.name }}
-                </option>
-              </optgroup>
-              <optgroup label="4 Star">
-                <option
-                  v-for="char in charactersList.four"
-                  :key="char.key"
-                  :value="char.key">
-                  {{ char.name }}
-                </option>
-              </optgroup>
-              <optgroup v-if="partyMember2NotOnRoster" label="Other">
-                <option
-                  :value="partyMember2NotOnRoster.key">
-                  {{ partyMember2NotOnRoster.name }}
-                </option>
-              </optgroup>
-            </select>
+              :options="partyMember2Options"
+              searchable
+              allow-empty
+              empty-label="None"
+              search-placeholder="Type to find a character…"
+              aria-label="Choose second team member"
+              data-test-party-member-2-input />
             <div class="btn btn-xs btn-primary mt-2" @click="clearCharacter2">
               Clear
             </div>
@@ -316,6 +278,9 @@ import {
   getCharacterRosterDisplayName,
   getCharactersAvailable,
 } from "../characters/characters.ts";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
 import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
 import { useCharacterStore } from "../stores/character";
@@ -433,6 +398,45 @@ const partyMember2NotOnRoster = computed(() => {
   }
   return { key: k, name: getCharacterRosterDisplayName(k) };
 });
+
+function buildPartyMemberOptions(
+  offRosterMember: { key: string; name: string } | null,
+): AppRichSelectOption[] {
+  const mapBucket = (
+    chars: CharacterPickerList["five"],
+    group: string,
+  ): AppRichSelectOption[] =>
+    chars.map((char) => ({
+      value: char.key,
+      label: char.name,
+      group,
+      image: getCharacterImage(char.key),
+    }));
+
+  const options = [
+    ...mapBucket(charactersList.value.five, "5 Star"),
+    ...mapBucket(charactersList.value.four, "4 Star"),
+  ];
+
+  if (offRosterMember) {
+    options.push({
+      value: offRosterMember.key,
+      label: offRosterMember.name,
+      group: "Other",
+      image: getCharacterImage(offRosterMember.key),
+    });
+  }
+
+  return options;
+}
+
+const partyMember1Options = computed(() =>
+  buildPartyMemberOptions(partyMember1NotOnRoster.value),
+);
+
+const partyMember2Options = computed(() =>
+  buildPartyMemberOptions(partyMember2NotOnRoster.value),
+);
 
 const partyMember1DisplayName = computed(() =>
   selectedCharacter1.value
@@ -694,13 +698,15 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  flex: 1 1 22rem;
+  max-width: 28rem;
   label {
     display: none;
   }
 }
 .party-member__selection.character__selection {
   display: grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 4rem 1fr;
   align-items: center;
   grid-gap: 2rem;
   width: 100%;
@@ -709,10 +715,15 @@ onBeforeUnmount(() => {
 .character__selection__form {
   min-width: 0;
 }
+@media (max-width: 480px) {
+  .character__selection__form {
+    --app-rich-select-min-width: 8rem;
+  }
+}
 .character__selection__avatar {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 4rem;
+  height: 4rem;
   background-repeat: no-repeat;
   display: block;
   background-size: contain;

@@ -7,7 +7,7 @@ describe("Calculator Enemy", () => {
   });
 
   it("should verify that enemy level and info are available, and not elemental effects and can change basic enemy data", () => {
-    cy.get(".character__selection__form--character select").select("Carlotta");
+    cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Carlotta").should("be.visible");
     cy.get('[data-test-calculator-nav="enemy"]').click();
@@ -36,7 +36,7 @@ describe("Calculator Enemy", () => {
   });
 
   it("should verify that spectro frazzle appears on relevant characters", () => {
-    cy.get(".character__selection__form--character select").select("Phoebe");
+    cy.richSelect("[data-test-character-select]", "Phoebe");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Phoebe").should("be.visible");
     cy.get('[data-test-calculator-nav="enemy"]').click();

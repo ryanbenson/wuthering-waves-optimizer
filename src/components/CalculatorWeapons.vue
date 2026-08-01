@@ -50,53 +50,15 @@
         class="weapon__basic-data"
         :class="{ 'weapon__basic-data--compact': isCompact }">
         <div :class="{ 'mb-2': !isCompact }">
-          <select
-            name="weapon"
+          <AppRichSelect
             v-model="weapon"
-            class="select select-bordered select-sm"
-            data-test-weapon-select>
-            <option :value="null">Choose a weapon</option>
-            <optgroup label="5 Star">
-              <option
-                v-for="weap in weaponsList.five"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-            <optgroup label="4 Star">
-              <option
-                v-for="weap in weaponsList.four"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-            <optgroup label="3 Star">
-              <option
-                v-for="weap in weaponsList.three"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-            <optgroup label="2 Star">
-              <option
-                v-for="weap in weaponsList.two"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-            <optgroup label="1 Star">
-              <option
-                v-for="weap in weaponsList.one"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-          </select>
+            :options="weaponSelectOptions"
+            searchable
+            allow-empty
+            empty-label="Choose a weapon"
+            search-placeholder="Type to find a weapon…"
+            aria-label="Choose weapon"
+            data-test-weapon-select />
         </div>
         <div :class="{ 'mb-2': !isCompact }">
           <select
@@ -192,9 +154,15 @@ import { storeToRefs } from "pinia";
 import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
 import CalculatorWeaponsPassive from "./CalculatorWeaponsPassive.vue";
 import CalculatorWeaponBrowser from "./CalculatorWeaponBrowser.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
 import { useCharacterStore } from "../stores/character";
 import { subStatLabelMap } from "../echoes/stats";
 import { useUiDensity } from "../composables/useUiDensity";
+
+const WEAPON_IMAGE_BASE =
+  "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons";
 
 type WeaponListBuckets = {
   five: Array<{ key: string; name: string; [k: string]: unknown }>;
@@ -267,6 +235,27 @@ function normalizeWeaponsList(raw: unknown): WeaponListBuckets {
 }
 
 const weaponsList = ref<WeaponListBuckets>(normalizeWeaponsList([]));
+
+const weaponSelectOptions = computed((): AppRichSelectOption[] => {
+  const mapBucket = (
+    weapons: WeaponListBuckets["five"],
+    group: string,
+  ): AppRichSelectOption[] =>
+    weapons.map((weap) => ({
+      value: weap.key,
+      label: weap.name,
+      group,
+      image: `${WEAPON_IMAGE_BASE}/${weap.key}.png`,
+    }));
+
+  return [
+    ...mapBucket(weaponsList.value.five, "5 Star"),
+    ...mapBucket(weaponsList.value.four, "4 Star"),
+    ...mapBucket(weaponsList.value.three, "3 Star"),
+    ...mapBucket(weaponsList.value.two, "2 Star"),
+    ...mapBucket(weaponsList.value.one, "1 Star"),
+  ];
+});
 
 const weaponBrowserRef = ref<InstanceType<typeof CalculatorWeaponBrowser> | null>(
   null,
