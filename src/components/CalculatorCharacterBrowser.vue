@@ -58,31 +58,47 @@
               <img :src="weaponIcon.toLowerCase()" class="size-8 p-[.15rem]" />
             </button>
           </div>
-          <div class="characters__filters__build-status ml-2 min-w-[10rem]">
-            <AppRichSelect
-              v-model="filterBuildStatus"
-              :options="buildStatusFilterOptions"
-              allow-empty
-              empty-label="All statuses"
-              aria-label="Filter by character status"
-              data-test-build-status-filter>
-              <template #selected="{ option }">
-                <span class="flex items-center gap-1.5 min-w-0">
+          <div
+            class="characters__filters__build-status ml-2 flex items-center gap-2">
+            <div class="min-w-[10rem]">
+              <AppRichSelect
+                v-model="filterBuildStatus"
+                :options="buildStatusFilterOptions"
+                allow-empty
+                empty-label="All statuses"
+                aria-label="Filter by character status"
+                data-test-build-status-filter>
+                <template #selected="{ option }">
+                  <span class="flex items-center gap-1.5 min-w-0">
+                    <span
+                      v-if="option?.dotClass"
+                      class="size-2 rounded-full shrink-0"
+                      :class="String(option.dotClass)"></span>
+                    <span class="truncate">{{
+                      option?.label ?? "All statuses"
+                    }}</span>
+                  </span>
+                </template>
+                <template #option="{ option }">
                   <span
-                    v-if="option?.dotClass"
+                    v-if="option.dotClass"
                     class="size-2 rounded-full shrink-0"
                     :class="String(option.dotClass)"></span>
-                  <span class="truncate">{{ option?.label ?? "All statuses" }}</span>
-                </span>
-              </template>
-              <template #option="{ option }">
-                <span
-                  v-if="option.dotClass"
-                  class="size-2 rounded-full shrink-0"
-                  :class="String(option.dotClass)"></span>
-                <span>{{ option.label }}</span>
-              </template>
-            </AppRichSelect>
+                  <span>{{ option.label }}</span>
+                </template>
+              </AppRichSelect>
+            </div>
+            <label
+              class="flex items-center gap-1.5 cursor-pointer text-xs whitespace-nowrap"
+              v-tooltip="hideWontBuildTooltip">
+              <input
+                v-model="hideWontBuildCharacters"
+                type="checkbox"
+                class="toggle toggle-primary toggle-sm"
+                aria-label="Hide characters marked Won't build"
+                data-test-browser-hide-wont-build />
+              Hide “Won't build”
+            </label>
           </div>
           <div class="characters__filters__favorites ml-2">
             <button
@@ -165,6 +181,7 @@ import {
   type CharacterBuildStatus as CharacterBuildStatusType,
 } from "../characters/characterBuildStatus";
 import { useCharacterStore } from "../stores/character";
+import { useSettingsStore } from "../stores/settings";
 import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
@@ -180,6 +197,8 @@ defineProps<Props>();
 
 const characterStore = useCharacterStore();
 const { characters, favoriteCharacters } = storeToRefs(characterStore);
+const settingsStore = useSettingsStore();
+const { config } = storeToRefs(settingsStore);
 
 const emit = defineEmits<{
   "character-browser:chosen-character": [key: string];
@@ -191,11 +210,29 @@ const filterWeapon = ref<string | null>(null);
 const filterBuildStatus = ref<CharacterBuildStatusType | null>(null);
 const filterFavorites = ref(false);
 
+const hideWontBuildTooltip =
+  "Hide characters marked “Won't build”. This preference is saved globally.";
+
+const hideWontBuildCharacters = computed({
+  get: () =>
+    Boolean(
+      (config.value as { hideWontBuildCharacters?: boolean })
+        ?.hideWontBuildCharacters,
+    ),
+  set: (value: boolean) => {
+    if (value && filterBuildStatus.value === "wont-build") {
+      filterBuildStatus.value = null;
+    }
+    void settingsStore.addToConfig({ hideWontBuildCharacters: value });
+  },
+});
+
 const buildStatusFilterOptions = computed((): AppRichSelectOption[] =>
   CHARACTER_BUILD_STATUSES.map((status) => ({
     value: status,
     label: getCharacterBuildStatusLabel(status),
     dotClass: getCharacterBuildStatusDotClass(status),
+    disabled: hideWontBuildCharacters.value && status === "wont-build",
   })),
 );
 
@@ -203,6 +240,11 @@ const charactersList = computed((): ListedCharacter[] => {
   let characterList: ListedCharacter[] = JSON.parse(
     JSON.stringify(allCharactersList),
   );
+  if (hideWontBuildCharacters.value) {
+    characterList = characterList.filter(
+      (c) => getCharacterBuildStatus(c.key, characters.value) !== "wont-build",
+    );
+  }
   if (filterElement.value) {
     characterList = characterList.filter(
       (c) => c.element === filterElement.value,
