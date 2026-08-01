@@ -21,11 +21,22 @@ Cypress.Commands.add(
     // Every rich select keeps its options mounted, so scope to this one.
     cy.get("@richSelectTrigger")
       .closest(".app-rich-select")
+      .should("have.class", "dropdown-open")
       .within(() => {
-        if (options?.search) {
-          cy.get("[data-test-rich-select-search]").clear().type(options.search);
-        }
-        cy.get(`[data-test-rich-select-option="${value}"]`).click();
+        cy.root().then(($root) => {
+          const $search = $root.find("[data-test-rich-select-search]");
+          if ($search.length) {
+            // Prefer an explicit search string; otherwise filter by value so
+            // long lists don't leave the option clipped by overflow.
+            cy.wrap($search)
+              .clear()
+              .type(options?.search ?? value);
+          }
+        });
+        cy.get(`[data-test-rich-select-option="${value}"]`)
+          .scrollIntoView()
+          .should("be.visible")
+          .click();
       });
   },
 );

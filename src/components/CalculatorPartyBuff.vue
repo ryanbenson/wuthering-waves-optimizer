@@ -49,7 +49,7 @@
           </div>
 
           <div v-if="hasRefinements" class="form-control" @click.stop>
-            <label class="label cursor-pointer inline-flex justify-start">
+            <div class="label inline-flex justify-start items-center">
               <span class="label-text mr-2">Refinement Level</span>
               <AppRichSelect
                 v-model="refinement"
@@ -58,7 +58,7 @@
                 aria-label="Refinement level"
                 :data-test-party-refinements="uniqueKey"
                 class="w-auto min-w-0" />
-            </label>
+            </div>
           </div>
 
           <div v-if="inputBase" class="form-control" @click.stop>

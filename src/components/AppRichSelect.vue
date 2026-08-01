@@ -1,9 +1,11 @@
 <template>
   <div
+    ref="rootRef"
     class="app-rich-select dropdown w-full"
     :class="[
       attrs.class,
       {
+        'dropdown-open': isOpen,
         'app-rich-select--ghost': variant === 'ghost',
         'app-rich-select--bordered': variant === 'bordered',
       },
@@ -16,10 +18,11 @@
       :class="triggerClass"
       :aria-label="ariaLabel"
       :aria-disabled="disabled || undefined"
+      :aria-expanded="isOpen"
       :tabindex="disabled ? -1 : 0"
       :data-test="dataTest"
       v-bind="triggerAttrs"
-      @keydown.down.prevent="focusSearchOrFirstOption"
+      @keydown.down.prevent="openAndFocusSearch"
       @keydown.escape.prevent="close"
       @click="onTriggerClick">
       <span class="app-rich-select__selected flex items-center gap-1.5 min-w-0 flex-1">
@@ -89,7 +92,7 @@
                 }"
                 :disabled="option.disabled"
                 :data-test-rich-select-option="String(option.value)"
-                @click="selectOption(option)">
+                @click.stop="selectOption(option)">
                 <slot name="option" :option="option" :selected="isSelected(option.value)">
                   <img
                     v-if="option.image"
@@ -108,7 +111,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, useAttrs, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  useAttrs,
+  watch,
+} from "vue";
 
 export type AppRichSelectValue = string | number | null;
 
@@ -170,7 +181,9 @@ const triggerAttrs = computed(() => {
   return next;
 });
 
+const isOpen = ref(false);
 const searchQuery = ref("");
+const rootRef = ref<HTMLElement | null>(null);
 const triggerRef = ref<HTMLElement | null>(null);
 const searchInputRef = ref<HTMLInputElement | null>(null);
 
@@ -219,9 +232,11 @@ const filteredOptions = computed(() => {
   if (!query) {
     return allOptions.value;
   }
-  return allOptions.value.filter((option) =>
-    option.label.toLowerCase().includes(query),
-  );
+  return allOptions.value.filter((option) => {
+    const label = option.label.toLowerCase();
+    const value = String(option.value ?? "").toLowerCase();
+    return label.includes(query) || value.includes(query);
+  });
 });
 
 type OptionGroup = {
@@ -260,6 +275,15 @@ watch(
   },
 );
 
+watch(
+  () => props.disabled,
+  (disabled) => {
+    if (disabled) {
+      close();
+    }
+  },
+);
+
 function isSelected(value: AppRichSelectValue) {
   return value === props.modelValue;
 }
@@ -274,24 +298,58 @@ function selectOption(option: AppRichSelectOption) {
 }
 
 function close() {
+  isOpen.value = false;
+  searchQuery.value = "";
   (document.activeElement as HTMLElement | null)?.blur();
   triggerRef.value?.blur();
 }
 
-function onTriggerClick(event: MouseEvent) {
+async function open() {
   if (props.disabled) {
-    event.preventDefault();
-    event.stopPropagation();
+    return;
+  }
+  isOpen.value = true;
+  await nextTick();
+  if (props.searchable) {
+    searchInputRef.value?.focus();
   }
 }
 
-async function focusSearchOrFirstOption() {
-  if (!props.searchable) {
+async function openAndFocusSearch() {
+  await open();
+}
+
+function onTriggerClick(event: MouseEvent) {
+  event.preventDefault();
+  event.stopPropagation();
+  if (props.disabled) {
     return;
   }
-  await nextTick();
-  searchInputRef.value?.focus();
+  if (isOpen.value) {
+    close();
+    return;
+  }
+  void open();
 }
+
+function onDocumentPointerDown(event: Event) {
+  if (!isOpen.value) {
+    return;
+  }
+  const target = event.target as Node | null;
+  if (target && rootRef.value?.contains(target)) {
+    return;
+  }
+  close();
+}
+
+onMounted(() => {
+  document.addEventListener("pointerdown", onDocumentPointerDown, true);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("pointerdown", onDocumentPointerDown, true);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -303,6 +361,7 @@ async function focusSearchOrFirstOption() {
   position: relative;
   max-width: 100%;
 
+  &.dropdown-open,
   &:focus-within {
     z-index: 50;
   }
