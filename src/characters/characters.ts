@@ -6,7 +6,7 @@ interface CharacterListItem {
   name: string;
 }
 
-/** Single roster source for character `<select>`s and the character browser. */
+/** Single roster source for character pickers and the character browser. */
 export const characterPickerRoster: CharacterList = {
   five: [
     { key: "Aemeath", name: "Aemeath" },

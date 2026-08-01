@@ -73,9 +73,11 @@
           data-test-character-select
           @update:model-value="handleChosenCharacterFromSelect" />
       </div>
-      <CalculatorCharacterLevel
-        :character="character"
-        @character-level-updated="handleCharacterLevelUpdated"></CalculatorCharacterLevel>
+      <div class="character__selection__form--level">
+        <CalculatorCharacterLevel
+          :character="character"
+          @character-level-updated="handleCharacterLevelUpdated" />
+      </div>
       <CharacterBuildStatus
         v-if="isCompact"
         :status="buildStatus"
@@ -232,6 +234,10 @@ onMounted(() => {
   --app-rich-select-min-width: 18rem;
   max-width: 26rem;
 }
+.character__selection__form--level {
+  --app-rich-select-min-width: 4.75rem;
+  width: 4.75rem;
+}
 .character__selection__form {
   label {
     margin-left: 0.5rem;
@@ -248,6 +254,10 @@ onMounted(() => {
       margin-bottom: 0;
       --app-rich-select-min-width: 14rem;
       flex: 1 1 14rem;
+    }
+
+    .character__selection__form--level {
+      flex: 0 0 auto;
     }
 
     &:has(.character-build-status-dropdown:focus-within) {

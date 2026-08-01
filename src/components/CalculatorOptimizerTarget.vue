@@ -1,84 +1,11 @@
 <template>
-  <select
+  <AppRichSelect
     v-model="optimizationTarget"
-    class="select select-bordered select w-full max-w-xs">
-    <option disabled :value="null">Select target</option>
-    <optgroup
-      v-for="target in Object.entries(optimizationTargets)"
-      :label="target[0]"
-      :key="target[0]">
-      <option v-for="t in target[1]" :key="t.key" :value="`Stat:${t.key}`">
-        {{ t.label }}
-      </option>
-    </optgroup>
-    <optgroup label="Basic" data-skill="basic">
-      <option
-        v-for="attack in basicAttacksList"
-        :key="attack.key"
-        :value="`Attack:basicAttacks|${attack.key}`">
-        {{ attack.label }}
-      </option>
-    </optgroup>
-    <optgroup label="Skill" data-skill="skill">
-      <option
-        v-for="attack in skillAttacksList"
-        :key="attack.key"
-        :value="`Attack:skillAttacks|${attack.key}`">
-        {{ attack.label }}
-      </option>
-    </optgroup>
-    <optgroup label="Forte Circuit" data-skill="forteCircuit">
-      <option
-        v-for="attack in forteCircuitAttacksList"
-        :key="attack.key"
-        :value="`Attack:forteCircuitAttacks|${attack.key}`">
-        {{ attack.label }}
-      </option>
-    </optgroup>
-    <optgroup label="Liberation" data-skill="liberation">
-      <option
-        v-for="attack in liberationAttacksList"
-        :key="attack.key"
-        :value="`Attack:liberationAttacks|${attack.key}`">
-        {{ attack.label }}
-      </option>
-    </optgroup>
-    <optgroup label="Intro" data-skill="intro" v-if="introAttacksList.length">
-      <option
-        v-for="attack in introAttacksList"
-        :key="attack.key"
-        :value="`Attack:introAttacks|${attack.key}`">
-        {{ attack.label }}
-      </option>
-    </optgroup>
-    <optgroup label="Outro" data-skill="outro" v-if="outroAttacksList.length">
-      <option
-        v-for="attack in outroAttacksList"
-        :key="attack.key"
-        :value="`Attack:outroAttacks|${attack.key}`">
-        {{ attack.label }}
-      </option>
-    </optgroup>
-    <optgroup
-      label="TuneBreak"
-      data-skill="tuneBreak"
-      v-if="tuneBreakAttacksList.length">
-      <option
-        v-for="attack in tuneBreakAttacksList"
-        :key="attack.key"
-        :value="`Attack:tuneBreakAttacks|${attack.key}`">
-        {{ attack.label }}
-      </option>
-    </optgroup>
-    <optgroup label="Rotations" v-if="rotations.length > 0">
-      <option
-        v-for="rotation in rotations"
-        :key="rotation.id"
-        :value="`Rotation:${rotation.id}`">
-        {{ rotation.name }}
-      </option>
-    </optgroup>
-  </select>
+    :options="targetSelectOptions"
+    searchable
+    placeholder="Select target"
+    aria-label="Optimization target"
+    class="w-full max-w-xs" />
 </template>
 
 <script setup lang="ts">
@@ -86,6 +13,9 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { getCharByName } from "../characters/characters.ts";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
 
 defineOptions({ name: "CalculatorOptimizerTarget" });
 
@@ -147,6 +77,64 @@ const tuneBreakAttacksList = computed(
 const rotations = computed(
   () => (currentCharacter.value.rotations ?? []) as RotationEntry[],
 );
+
+const targetSelectOptions = computed((): AppRichSelectOption[] => {
+  const options: AppRichSelectOption[] = [];
+
+  for (const [group, targets] of Object.entries(optimizationTargets.value)) {
+    for (const t of targets) {
+      options.push({
+        value: `Stat:${t.key}`,
+        label: t.label,
+        group,
+      });
+    }
+  }
+
+  const attackGroups: Array<{ label: string; attacks: AttackEntry[] }> = [
+    { label: "Basic", attacks: basicAttacksList.value },
+    { label: "Skill", attacks: skillAttacksList.value },
+    { label: "Forte Circuit", attacks: forteCircuitAttacksList.value },
+    { label: "Liberation", attacks: liberationAttacksList.value },
+    { label: "Intro", attacks: introAttacksList.value },
+    { label: "Outro", attacks: outroAttacksList.value },
+    { label: "TuneBreak", attacks: tuneBreakAttacksList.value },
+  ];
+
+  const attackKeyByGroup: Record<string, string> = {
+    Basic: "basicAttacks",
+    Skill: "skillAttacks",
+    "Forte Circuit": "forteCircuitAttacks",
+    Liberation: "liberationAttacks",
+    Intro: "introAttacks",
+    Outro: "outroAttacks",
+    TuneBreak: "tuneBreakAttacks",
+  };
+
+  for (const { label, attacks } of attackGroups) {
+    if (!attacks.length) continue;
+    const attackKey = attackKeyByGroup[label];
+    for (const attack of attacks) {
+      options.push({
+        value: `Attack:${attackKey}|${attack.key}`,
+        label: attack.label,
+        group: label,
+      });
+    }
+  }
+
+  if (rotations.value.length > 0) {
+    for (const rotation of rotations.value) {
+      options.push({
+        value: `Rotation:${rotation.id}`,
+        label: rotation.name,
+        group: "Rotations",
+      });
+    }
+  }
+
+  return options;
+});
 
 function updatedTarget() {
   emit("optimizer:target-updated", optimizationTarget.value);

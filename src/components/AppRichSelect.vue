@@ -11,16 +11,17 @@
     :style="attrs.style as string | Record<string, string> | undefined">
     <div
       ref="triggerRef"
-      tabindex="0"
       role="button"
       class="app-rich-select__trigger flex items-center justify-between gap-2 w-full text-left"
       :class="triggerClass"
       :aria-label="ariaLabel"
       :aria-disabled="disabled || undefined"
+      :tabindex="disabled ? -1 : 0"
       :data-test="dataTest"
       v-bind="triggerAttrs"
       @keydown.down.prevent="focusSearchOrFirstOption"
-      @keydown.escape.prevent="close">
+      @keydown.escape.prevent="close"
+      @click="onTriggerClick">
       <span class="app-rich-select__selected flex items-center gap-1.5 min-w-0 flex-1">
         <slot name="selected" :option="selectedOption">
           <img
@@ -277,6 +278,13 @@ function close() {
   triggerRef.value?.blur();
 }
 
+function onTriggerClick(event: MouseEvent) {
+  if (props.disabled) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+}
+
 async function focusSearchOrFirstOption() {
   if (!props.searchable) {
     return;
@@ -333,6 +341,14 @@ async function focusSearchOrFirstOption() {
   }
 }
 
+.app-rich-select__trigger {
+  &[aria-disabled="true"] {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 .app-rich-select--bordered {
   min-width: var(--app-rich-select-min-width);
 }
@@ -340,6 +356,10 @@ async function focusSearchOrFirstOption() {
 .app-rich-select--bordered .app-rich-select__trigger.select {
   display: flex;
   cursor: pointer;
+  // DaisyUI .select ships its own chevron; we render one in the template.
+  background-image: none;
+  appearance: none;
+  padding-inline-end: 0.75rem;
 }
 
 html[data-density="compact"] {

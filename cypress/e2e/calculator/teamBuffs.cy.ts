@@ -68,13 +68,14 @@ describe("Calculator Team Buffs", () => {
     cy.get('[data-test-party-buff-weapons-collapse-bar]').click();
     cy.get(`[data-test-party-buff-enabled="StaticMistATK"]`).check();
     cy.get(`[data-test-party-buff-stacks="StaticMistATK"]`).type("1");
-    cy.get(`[data-test-party-refinements="StaticMistATK"]`).select("5");
+    cy.richSelect(`[data-test-party-refinements="StaticMistATK"]`, "5");
     cy.get(`[data-test-party-buff-enabled="StellarSymphonyATK"]`).check();
-    cy.get(`[data-test-party-refinements="StellarSymphonyATK"]`).select("5");
+    cy.richSelect(`[data-test-party-refinements="StellarSymphonyATK"]`, "5");
     cy.get(
       `[data-test-party-buff-enabled="LuminousHymnSpectroFrazzle"]`,
     ).check();
-    cy.get(`[data-test-party-refinements="LuminousHymnSpectroFrazzle"]`).select(
+    cy.richSelect(
+      `[data-test-party-refinements="LuminousHymnSpectroFrazzle"]`,
       "5",
     );
 

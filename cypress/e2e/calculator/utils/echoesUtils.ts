@@ -6,11 +6,14 @@ export function configureEcho(echoNumber: number, echoData: any, cy: any) {
   // should get default untitled rotation
   cy.get(`#echoModal${echoNumber}`).should("be.visible");
   // choose the value SentryConstruct as main echo
-  cy.get(`#echoModal${echoNumber} .main-echo-selector`).select(
+  cy.richSelect(
+    `#echoModal${echoNumber} [data-test-main-echo]`,
     echoData.mainEcho,
+    { search: echoData.mainEcho },
   );
   // choose crit rate as main stat
-  cy.get(`#echoModal${echoNumber} .echo-main-stat-selector`).select(
+  cy.richSelect(
+    `#echoModal${echoNumber} [data-test-echo-main-stat]`,
     echoData.mainStat,
   );
   // choose the set

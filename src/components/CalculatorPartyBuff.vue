@@ -51,18 +51,13 @@
           <div v-if="hasRefinements" class="form-control" @click.stop>
             <label class="label cursor-pointer inline-flex justify-start">
               <span class="label-text mr-2">Refinement Level</span>
-              <select
-                name="refinement"
-                class="select select-bordered select-xs"
+              <AppRichSelect
                 v-model="refinement"
-                :data-test-party-refinements="uniqueKey">
-                <option
-                  v-for="lvl in weaponRefinementLevels"
-                  :key="lvl"
-                  :value="lvl">
-                  {{ lvl }}
-                </option>
-              </select>
+                :options="refinementSelectOptions"
+                size="xs"
+                aria-label="Refinement level"
+                :data-test-party-refinements="uniqueKey"
+                class="w-auto min-w-0" />
             </label>
           </div>
 
@@ -90,6 +85,8 @@ import { storeToRefs } from "pinia";
 import { computeDeniaOffTuneBuildupTuneBreakBoost } from "../calculator/stats";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import { useCharacterStore } from "../stores/character";
+import AppRichSelect from "./AppRichSelect.vue";
+import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
 
 export type PartyBuffModifier = {
   modifier?: string;
@@ -189,9 +186,10 @@ const isEnabled = computed({
 const refinement = computed({
   get() {
     const r = buffEntry.value?.refinement;
-    return r !== undefined && r !== null ? r : 1;
+    return r !== undefined && r !== null ? String(r) : "1";
   },
-  set(value: string | number) {
+  set(value: string | number | null) {
+    if (value == null) return;
     void setCharacterData(props.character, {
       teamBuffs: {
         buffs: {
@@ -397,6 +395,7 @@ const buffStats = computed(() => {
 });
 
 const weaponRefinementLevels = ["1", "2", "3", "4", "5"] as const;
+const refinementSelectOptions = buildSimpleSelectOptions(weaponRefinementLevels);
 
 function updatedStats() {
   emit("updated-party-buff", {

@@ -171,13 +171,14 @@ describe("Calculator Kitchen Sink", () => {
     cy.get('[data-test-party-buff-weapons-collapse-bar]').click();
     cy.get(`[data-test-party-buff-enabled="StaticMistATK"]`).check();
     cy.get(`[data-test-party-buff-stacks="StaticMistATK"]`).type("1");
-    cy.get(`[data-test-party-refinements="StaticMistATK"]`).select("5");
+    cy.richSelect(`[data-test-party-refinements="StaticMistATK"]`, "5");
     cy.get(`[data-test-party-buff-enabled="StellarSymphonyATK"]`).check();
-    cy.get(`[data-test-party-refinements="StellarSymphonyATK"]`).select("5");
+    cy.richSelect(`[data-test-party-refinements="StellarSymphonyATK"]`, "5");
     cy.get(
       `[data-test-party-buff-enabled="LuminousHymnSpectroFrazzle"]`,
     ).check();
-    cy.get(`[data-test-party-refinements="LuminousHymnSpectroFrazzle"]`).select(
+    cy.richSelect(
+      `[data-test-party-refinements="LuminousHymnSpectroFrazzle"]`,
       "5",
     );
 
@@ -207,8 +208,10 @@ describe("Calculator Kitchen Sink", () => {
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-skill-input="none"]`).click();
-    cy.get(`[data-test-picker-choose="BasicAttackStage1DMG"]`).click();
+    cy.richSelect(
+      `[data-test-rotation-action-skill-input="none"]`,
+      "BasicAttackStage1DMG",
+    );
     // create second action
     cy.get(`[data-test-rotation-action-add="Test001"]`).click();
     // find first action that's empty and click to get into it
@@ -220,14 +223,15 @@ describe("Calculator Kitchen Sink", () => {
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-skill-input="none"]`).click();
-    cy.get(`[data-test-picker-choose="FatalFinaleDMG"]`).click();
+    cy.richSelect(
+      `[data-test-rotation-action-skill-input="none"]`,
+      "FatalFinaleDMG",
+    );
     // add a buff to the second action
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).should("be.visible");
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).click();
     cy.get(`[data-test-action-buff-input="none"]`).should("be.visible");
-    cy.get(`[data-test-action-buff-input="none"]`).click();
-    cy.get(`[data-test-picker-choose="CritDMG"]`).click();
+    cy.richSelect(`[data-test-action-buff-input="none"]`, "CritDMG");
     cy.get(`[data-test-action-buff-value-input="CritDMG"]`).should(
       "be.visible",
     );

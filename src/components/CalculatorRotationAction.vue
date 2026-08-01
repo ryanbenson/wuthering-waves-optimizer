@@ -87,31 +87,18 @@
           </div>
           <div class="edit__skill">
             <label for="actionKeyValue">Attack:</label>
-            <button
-              type="button"
+            <AppRichSelect
               id="actionKeyValue"
-              class="input input-xs input-bordered w-full h-auto min-h-0 py-1 px-2 flex items-center justify-between gap-2 font-normal cursor-pointer"
-              :data-test-rotation-action-skill-input="actionKeyValue ?? 'none'"
-              @click="openAttackPicker">
-              <span class="truncate">{{
-                attackLabel ?? "Select attack…"
-              }}</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 320 512"
-                class="size-3 shrink-0 opacity-70">
-                <path
-                  fill="currentColor"
-                  d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z" />
-              </svg>
-            </button>
-            <SearchableGroupedPickerModal
-              ref="attackPickerRef"
-              title="Select attack"
+              v-model="actionKeyValue"
+              class="edit__skill-select"
+              size="xs"
+              searchable
               search-placeholder="Search attacks…"
-              :groups="attackGroups"
-              :selected-key="actionKeyValue"
-              @chosen="onAttackChosen" />
+              placeholder="Select attack…"
+              :options="attackSelectOptions"
+              :data-test-rotation-action-skill-input="actionKeyValue ?? 'none'"
+              aria-label="Select attack"
+              @update:model-value="onAttackSelected" />
           </div>
           <button class="rotation__action--remove" @click="removeAction">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -236,9 +223,10 @@ import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
-import SearchableGroupedPickerModal, {
-  type PickerGroup,
-} from "./SearchableGroupedPickerModal.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+  type AppRichSelectValue,
+} from "./AppRichSelect.vue";
 import { echoSetAttacks } from "../echoes/stats";
 import { utilityAttacks } from "../buffs";
 import { getEchoData, isAttackAvailableForCharacter } from "../echoes/index.ts";
@@ -501,95 +489,96 @@ const introAttacksList = computed(() => attacksFor("introAttacks"));
 const outroAttacksList = computed(() => attacksFor("outroAttacks"));
 const tuneBreakAttacksList = computed(() => attacksFor("tuneBreakAttacks"));
 
-const attackPickerRef = ref<{
-  triggerOpenModal: () => void;
-  triggerCloseModal: () => void;
-} | null>(null);
+type AttackSelectOption = AppRichSelectOption & {
+  skillType: string;
+};
 
-function mapAttacksToPickerItems(attacks: AttackRow[]) {
+function mapAttacksToSelectOptions(
+  attacks: AttackRow[],
+  skillType: string,
+  groupLabel: string,
+): AttackSelectOption[] {
   return attacks.map((attack) => ({
-    key: attack.key,
+    value: attack.key,
     label: attack.label ?? attack.key,
+    group: groupLabel,
+    skillType,
     disabled: isAttackDisabled(attack),
   }));
 }
 
-const attackGroups = computed((): PickerGroup[] => {
-  const groups: PickerGroup[] = [
-    {
-      id: "basic",
-      label: "Basic",
-      items: mapAttacksToPickerItems(basicAttacksList.value),
-    },
-    {
-      id: "skill",
-      label: "Skill",
-      items: mapAttacksToPickerItems(skillAttacksList.value),
-    },
-    {
-      id: "forteCircuit",
-      label: "Forte Circuit",
-      items: mapAttacksToPickerItems(forteCircuitAttacksList.value),
-    },
-    {
-      id: "liberation",
-      label: "Liberation",
-      items: mapAttacksToPickerItems(liberationAttacksList.value),
-    },
+const attackSelectOptions = computed((): AttackSelectOption[] => {
+  const options: AttackSelectOption[] = [
+    ...mapAttacksToSelectOptions(basicAttacksList.value, "basic", "Basic"),
+    ...mapAttacksToSelectOptions(skillAttacksList.value, "skill", "Skill"),
+    ...mapAttacksToSelectOptions(
+      forteCircuitAttacksList.value,
+      "forteCircuit",
+      "Forte Circuit",
+    ),
+    ...mapAttacksToSelectOptions(
+      liberationAttacksList.value,
+      "liberation",
+      "Liberation",
+    ),
   ];
 
   if (introAttacksList.value.length) {
-    groups.push({
-      id: "intro",
-      label: "Intro",
-      items: mapAttacksToPickerItems(introAttacksList.value),
-    });
+    options.push(
+      ...mapAttacksToSelectOptions(introAttacksList.value, "intro", "Intro"),
+    );
   }
   if (outroAttacksList.value.length) {
-    groups.push({
-      id: "outro",
-      label: "Outro",
-      items: mapAttacksToPickerItems(outroAttacksList.value),
-    });
+    options.push(
+      ...mapAttacksToSelectOptions(outroAttacksList.value, "outro", "Outro"),
+    );
   }
   if (tuneBreakAttacksList.value.length) {
-    groups.push({
-      id: "tuneBreak",
-      label: "TuneBreak",
-      items: mapAttacksToPickerItems(tuneBreakAttacksList.value),
-    });
+    options.push(
+      ...mapAttacksToSelectOptions(
+        tuneBreakAttacksList.value,
+        "tuneBreak",
+        "TuneBreak",
+      ),
+    );
   }
   if (echoSetAttacksList.length) {
-    groups.push({
-      id: "echoSetAttacks",
-      label: "Echo Set Attacks",
-      items: mapAttacksToPickerItems(echoSetAttacksList as AttackRow[]),
-    });
+    options.push(
+      ...mapAttacksToSelectOptions(
+        echoSetAttacksList as AttackRow[],
+        "echoSetAttacks",
+        "Echo Set Attacks",
+      ),
+    );
   }
   if (utilityAttacksList.length) {
-    groups.push({
-      id: "utilityAttacks",
-      label: "Utility Attacks",
-      items: mapAttacksToPickerItems(utilityAttacksList as AttackRow[]),
-    });
+    options.push(
+      ...mapAttacksToSelectOptions(
+        utilityAttacksList as AttackRow[],
+        "utilityAttacks",
+        "Utility Attacks",
+      ),
+    );
   }
   if (mainEchoDataActions.value.length) {
-    groups.push({
-      id: "echoAttacks",
-      label: "Echo Attacks",
-      items: mapAttacksToPickerItems(mainEchoDataActions.value),
-    });
+    options.push(
+      ...mapAttacksToSelectOptions(
+        mainEchoDataActions.value,
+        "echoAttacks",
+        "Echo Attacks",
+      ),
+    );
   }
-  groups.push({
-    id: "negativeStatus",
-    label: "Negative Status",
-    items: negativeStatusAttacksList.value.map((attack) => ({
-      key: attack.key,
+  options.push(
+    ...negativeStatusAttacksList.value.map((attack) => ({
+      value: attack.key,
       label: attack.label ?? attack.key,
+      group: "Negative Status",
+      skillType: "negativeStatus",
     })),
-  });
+  );
 
-  return groups.filter((group) => group.items.length > 0);
+  return options;
 });
 
 function toggleEdit() {
@@ -624,13 +613,15 @@ function buildActionPayload(orderOverride: number | string | null = null) {
   return action;
 }
 
-function openAttackPicker() {
-  attackPickerRef.value?.triggerOpenModal();
-}
-
-function onAttackChosen(payload: { key: string; groupId: string }) {
-  actionKeyValue.value = payload.key;
-  actionSkillType.value = payload.groupId;
+function onAttackSelected(value: AppRichSelectValue) {
+  if (typeof value !== "string" || !value) {
+    return;
+  }
+  const option = attackSelectOptions.value.find(
+    (entry) => entry.value === value,
+  );
+  actionKeyValue.value = value;
+  actionSkillType.value = option?.skillType ?? actionSkillType.value;
   void nextTick(() => {
     if (usesNegativeStatusStacks.value) {
       let v = Number(negativeStatusStacksLocal.value);
@@ -829,9 +820,15 @@ onMounted(() => {
 }
 .edit__skill {
   flex-grow: 2;
+  min-width: 0;
   label {
     display: none;
   }
+}
+.edit__skill-select {
+  --app-rich-select-min-width: 12rem;
+  min-width: 0;
+  width: 100%;
 }
 .edit__basic-info {
   display: flex;

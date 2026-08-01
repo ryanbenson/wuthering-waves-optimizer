@@ -49,7 +49,7 @@
       <div
         class="weapon__basic-data"
         :class="{ 'weapon__basic-data--compact': isCompact }">
-        <div :class="{ 'mb-2': !isCompact }">
+        <div class="weapon__name-select" :class="{ 'mb-2': !isCompact }">
           <AppRichSelect
             v-model="weapon"
             :options="weaponSelectOptions"
@@ -60,28 +60,19 @@
             aria-label="Choose weapon"
             data-test-weapon-select />
         </div>
-        <div :class="{ 'mb-2': !isCompact }">
-          <select
-            name="weaponLevel"
+        <div class="weapon__meta-selects">
+          <AppRichSelect
             v-model="weaponLevel"
-            class="select select-bordered select-sm">
-            <option v-for="lvl in weaponLevelOptions" :key="lvl" :value="lvl">
-              {{ lvl }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <select
-            name="refinement"
+            class="weapon__level-select"
+            :options="weaponLevelSelectOptions"
+            :disabled="!weapon"
+            aria-label="Weapon level" />
+          <AppRichSelect
             v-model="refinement"
-            class="select select-bordered select-sm">
-            <option
-              v-for="lvl in weaponRefinementLevels"
-              :key="lvl"
-              :value="lvl">
-              {{ lvl }}
-            </option>
-          </select>
+            class="weapon__refinement-select"
+            :options="weaponRefinementSelectOptions"
+            :disabled="!weapon"
+            aria-label="Weapon refinement" />
         </div>
       </div>
     </div>
@@ -160,6 +151,7 @@ import AppRichSelect, {
 import { useCharacterStore } from "../stores/character";
 import { subStatLabelMap } from "../echoes/stats";
 import { useUiDensity } from "../composables/useUiDensity";
+import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
 
 const WEAPON_IMAGE_BASE =
   "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons";
@@ -355,7 +347,14 @@ const weaponLevelOptions = computed(() => {
   return defaultOption;
 });
 
+const weaponLevelSelectOptions = computed(() =>
+  buildSimpleSelectOptions(weaponLevelOptions.value),
+);
+
 const weaponRefinementLevels = ["1", "2", "3", "4", "5"] as const;
+const weaponRefinementSelectOptions = buildSimpleSelectOptions(
+  weaponRefinementLevels,
+);
 
 const weaponPassives = computed(() => {
   const passives = chosenWeapon.value?.info?.passiveData ?? [];
@@ -733,11 +732,43 @@ html[data-theme="light"] {
   margin-bottom: 1rem;
 }
 
+.weapon__basic-data {
+  flex: 1;
+  min-width: 0;
+}
+
+.weapon__name-select {
+  --app-rich-select-min-width: 14rem;
+  min-width: 0;
+}
+
+.weapon__meta-selects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.weapon__level-select,
+.weapon__refinement-select {
+  --app-rich-select-min-width: 4.75rem;
+  width: 4.75rem;
+  flex: 0 0 auto;
+}
+
 .weapon__basic-data--compact {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
+
+  .weapon__name-select {
+    flex: 1 1 12rem;
+    min-width: 0;
+  }
+
+  .weapon__meta-selects {
+    flex: 0 0 auto;
+  }
 }
 
 html[data-density="compact"] {

@@ -7,15 +7,11 @@
             Choose first set
           </span>
         </div>
-        <select
-          name="characterLevel"
-          v-model="setManual"
-          class="select select-bordered select-sm"
-          @change="onSetManualChange">
-          <option v-for="set in [...optionsList]" :key="set" :value="set">
-            {{ set }}
-          </option>
-        </select>
+        <AppRichSelect
+          v-model="type"
+          :options="setSelectOptions"
+          searchable
+          aria-label="Choose first set" />
       </label>
       <h2 v-if="setName" class="card-title">{{ setName }}</h2>
       <div v-else>No first echo set bonus is configured.</div>
@@ -42,9 +38,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
 import CalculatorEchoSetPassive from "./CalculatorEchoSetPassive.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
+import { buildEchoSetSelectOptions } from "../utils/richSelectOptions";
 import { twoSetBonuses, setBonusEffectsOne } from "../echoes/sets";
 
 const props = withDefaults(
@@ -75,7 +75,6 @@ type PassiveBuffPayload = {
 };
 
 const passiveData = ref<PassiveBuffPayload[]>([]);
-const setManual = ref<string | null>(null);
 
 const currentCharacter = computed(
   () => characterStore.characters?.[props.character] ?? {},
@@ -88,9 +87,9 @@ const type = computed({
     };
     return ch.echoSetBonus?.setBonusOne ?? "";
   },
-  set(value: string) {
+  set(value: string | number | null) {
     void characterStore.setCharacterData(props.character, {
-      echoSetBonus: { setBonusOne: value },
+      echoSetBonus: { setBonusOne: value == null ? "" : String(value) },
     });
   },
 });
@@ -123,9 +122,9 @@ const buffsFormatted = computed(() => {
   return finalBuffData;
 });
 
-const optionsList = computed(() => {
-  const list = JSON.parse(JSON.stringify(twoSetBonuses)) as string[];
-  return list.sort();
+const setSelectOptions = computed((): AppRichSelectOption[] => {
+  const list = [...twoSetBonuses].sort();
+  return buildEchoSetSelectOptions(list);
 });
 
 function updatedStats() {
@@ -142,18 +141,9 @@ function handleUpdatedEchoPassiveStats(data: PassiveBuffPayload) {
   updatedStats();
 }
 
-function onSetManualChange(e: Event) {
-  const value = (e.target as HTMLSelectElement).value;
-  type.value = value;
-}
-
 watch(type, () => {
   updatedStats();
 }, { immediate: true });
-
-onMounted(() => {
-  setManual.value = type.value;
-});
 
 onBeforeUnmount(() => {
   passiveData.value = [];
