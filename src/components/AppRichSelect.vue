@@ -1,13 +1,15 @@
 <template>
   <div
     ref="rootRef"
-    class="app-rich-select dropdown w-full"
+    class="app-rich-select dropdown"
     :class="[
+      rootWidthClass,
       attrs.class,
       {
         'dropdown-open': isOpen,
         'app-rich-select--ghost': variant === 'ghost',
         'app-rich-select--bordered': variant === 'bordered',
+        'app-rich-select--fit': isFitWidth,
       },
     ]"
     :style="attrs.style as string | Record<string, string> | undefined">
@@ -25,14 +27,20 @@
       @keydown.down.prevent="openAndFocusSearch"
       @keydown.escape.prevent="close"
       @click="onTriggerClick">
-      <span class="app-rich-select__selected flex items-center gap-1.5 min-w-0 flex-1">
+      <span
+        class="app-rich-select__selected flex items-center gap-1.5 min-w-0"
+        :class="isFitWidth ? 'shrink-0' : 'flex-1'">
         <slot name="selected" :option="selectedOption">
           <img
             v-if="selectedOption?.image"
             :src="selectedOption.image"
             alt=""
             class="app-rich-select__thumb size-5 rounded-full object-cover shrink-0 bg-base-300" />
-          <span class="truncate">{{ selectedLabel }}</span>
+          <span
+            class="whitespace-nowrap"
+            :class="{ truncate: !isFitWidth }"
+            >{{ selectedLabel }}</span
+          >
         </slot>
       </span>
       <svg
@@ -174,6 +182,40 @@ const emit = defineEmits<{
 }>();
 
 const attrs = useAttrs();
+
+function classString(value: unknown): string {
+  if (!value) {
+    return "";
+  }
+  if (typeof value === "string") {
+    return value;
+  }
+  if (Array.isArray(value)) {
+    return value.map(classString).filter(Boolean).join(" ");
+  }
+  if (typeof value === "object") {
+    return Object.entries(value as Record<string, unknown>)
+      .filter(([, on]) => Boolean(on))
+      .map(([key]) => key)
+      .join(" ");
+  }
+  return "";
+}
+
+const attrsClassString = computed(() => classString(attrs.class));
+
+/** Content-sized selects (filters) — not stretched to the parent. */
+const isFitWidth = computed(() =>
+  /\bw-(?:fit|max|min|auto)\b/.test(attrsClassString.value),
+);
+
+const rootWidthClass = computed(() => {
+  if (/\bw-/.test(attrsClassString.value)) {
+    return undefined;
+  }
+  return "w-full";
+});
+
 const triggerAttrs = computed(() => {
   const next: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(attrs)) {
@@ -416,8 +458,20 @@ onBeforeUnmount(() => {
   }
 }
 
-.app-rich-select--bordered {
+.app-rich-select--bordered:not(.app-rich-select--fit) {
   min-width: var(--app-rich-select-min-width);
+}
+
+.app-rich-select--bordered.app-rich-select--fit {
+  // Block-level width:auto still fills the parent; fit to the selected label.
+  // Leave min-width alone so callers can set min-w-[…] utilities.
+  width: fit-content;
+  flex: 0 0 auto;
+
+  :deep(.dropdown-content) {
+    width: max-content;
+    min-width: 100%;
+  }
 }
 
 .app-rich-select--bordered .app-rich-select__trigger.select {

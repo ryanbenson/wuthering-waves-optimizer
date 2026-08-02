@@ -38,14 +38,14 @@
                 allow-empty
                 empty-label="Cost"
                 aria-label="Cost filter"
-                class="w-auto min-w-0" />
+                class="w-fit min-w-[150px]" />
               <AppRichSelect
                 v-model="mainStatFilter"
                 :options="mainStatFilterOptions"
                 allow-empty
                 empty-label="Main stat"
                 aria-label="Main stat filter"
-                class="w-auto min-w-0" />
+                class="w-fit min-w-[150px]" />
               <AppRichSelect
                 v-model="echo"
                 :options="echoSelectOptions"
@@ -53,14 +53,14 @@
                 allow-empty
                 empty-label="Echo"
                 aria-label="Echo filter"
-                class="w-auto min-w-0" />
+                class="w-fit min-w-[200px]" />
               <AppRichSelect
                 v-model="equippedFilter"
                 :options="equippedFilterOptions"
                 allow-empty
                 empty-label="Show all"
                 aria-label="Equipped filter"
-                class="w-auto min-w-0" />
+                class="w-fit" />
               <div class="join">
                 <button
                   type="button"

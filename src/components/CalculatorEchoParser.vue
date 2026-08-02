@@ -44,7 +44,9 @@
         image. The bot is made by Kuro, so your account information is safe.
       </li>
     </ul>
-    <div class="flex gap-2 items-center justify-center">
+    <div
+      v-if="!inventoryOnly"
+      class="flex gap-2 items-center justify-center">
       <div class="form-control mb-2" @click.stop>
         <label class="label inline-flex justify-start">
           <input
@@ -119,6 +121,13 @@ type ParsedEchoSlot = {
   echo: string | null;
   set: string | null;
 };
+
+const props = withDefaults(
+  defineProps<{
+    inventoryOnly?: boolean;
+  }>(),
+  { inventoryOnly: false },
+);
 
 const emit = defineEmits<{
   "echoes-parsed": [echoes: ParsedEchoSlot[], saveToInventory: boolean];
@@ -225,7 +234,11 @@ function reset() {
 }
 
 function sendToParent() {
-  emit("echoes-parsed", echoes.value, isSavingToInventory.value);
+  emit(
+    "echoes-parsed",
+    echoes.value,
+    props.inventoryOnly || isSavingToInventory.value,
+  );
 }
 
 function onImageLoad() {

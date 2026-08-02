@@ -1,5 +1,8 @@
 <template>
   <InventoryEchoEdit ref="inventoryEchoEditRef"></InventoryEchoEdit>
+  <CalculatorEchoImporter
+    ref="echoesImporter"
+    inventory-only></CalculatorEchoImporter>
   <div class="py-4">
     <div
       class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
@@ -7,6 +10,9 @@
       <div class="join">
         <button class="btn btn-sm join-item btn-primary" @click="createEcho">
           Add echo
+        </button>
+        <button class="btn btn-sm join-item" @click="handleOpenEchoesImporter">
+          Import echoes
         </button>
         <button
           type="button"
@@ -65,14 +71,14 @@
             allow-empty
             empty-label="Cost"
             aria-label="Cost filter"
-            class="w-auto min-w-0" />
+            class="w-fit min-w-[150px]" />
           <AppRichSelect
             v-model="mainStatFilter"
             :options="mainStatFilterOptions"
             allow-empty
             empty-label="Main stat"
             aria-label="Main stat filter"
-            class="w-auto min-w-0" />
+            class="w-fit min-w-[150px]" />
           <AppRichSelect
             v-model="echo"
             :options="echoSelectOptions"
@@ -80,7 +86,7 @@
             allow-empty
             empty-label="Echo"
             aria-label="Echo filter"
-            class="w-auto min-w-0" />
+            class="w-fit min-w-[200px]" />
         </div>
 
         <!-- Status flags -->
@@ -426,6 +432,7 @@ import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
+import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import PaginationControls from "./PaginationControls.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
@@ -457,6 +464,9 @@ const {
 } = useEchoInventory();
 
 const inventoryEchoEditRef = ref<InstanceType<typeof InventoryEchoEdit> | null>(
+  null,
+);
+const echoesImporter = ref<InstanceType<typeof CalculatorEchoImporter> | null>(
   null,
 );
 
@@ -918,6 +928,10 @@ async function createEcho() {
   };
   await saveEcho(echoData);
   handleEditEcho(echoId);
+}
+
+function handleOpenEchoesImporter() {
+  echoesImporter.value?.triggerOpenModal();
 }
 </script>
 
