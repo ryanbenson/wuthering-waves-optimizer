@@ -181,6 +181,7 @@ export const processAttacks = (
           requiredCharacter: attack.requiredCharacter ?? null,
           excludeCharacters: attack.excludeCharacters ?? null,
           type: attackType,
+          actionType: attack.actionType ?? null,
           count: attack.count,
           alwaysCrit: attack.alwaysCrit ?? false,
           mainEcho: attack.actionMainEcho ?? null,
