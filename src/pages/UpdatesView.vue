@@ -2,6 +2,12 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 3, 2026</h3>
+    <ul>
+      <li>Adds ability to change rotation damage chart to show Normal, Average, and Crit values.</li>
+      <li>Adds ability to group rotation damage chart by damage type or by forte.</li>
+      <li>Adds chart defaults in Settings → Preferences for damage value and grouping.</li>
+    </ul>
     <h3>August 2, 2026</h3>
     <ul>
       <li>
