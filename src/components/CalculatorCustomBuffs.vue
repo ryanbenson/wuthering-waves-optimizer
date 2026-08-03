@@ -529,6 +529,20 @@
           class="input input-md input-bordered"
           data-test-custom-buff-special-multiplier />
       </label>
+      <label class="form-control mb-4">
+        <div class="label">
+          <span class="label-text mr-2 flex items-center gap-1">
+            Total Damage
+          </span>
+        </div>
+        <input
+          type="number"
+          v-model="TotalDamage"
+          name="TotalDamage"
+          id="TotalDamage"
+          class="input input-md input-bordered"
+          data-test-custom-buff-total-damage />
+      </label>
     </div>
   </div>
 </template>
@@ -572,7 +586,8 @@ type CustomBuffKey =
   | "DefReduction"
   | "CoordinatedDMGBonus"
   | "TuneBreakDMGBonus"
-  | "SpecialMultiplier";
+  | "SpecialMultiplier"
+  | "TotalDamage";
 
 interface StoreCharacterSlice {
   customBuffs?: Partial<Record<CustomBuffKey, number>>;
@@ -613,6 +628,7 @@ interface ProcessedCustomBuffs {
   CoordinatedDMGBonus: number;
   TuneBreakDMGBonus: number;
   SpecialMultiplier: number;
+  TotalDamage: number;
 }
 
 interface Props {
@@ -683,6 +699,7 @@ const DefReduction = makeCustomBuffField("DefReduction");
 const CoordinatedDMGBonus = makeCustomBuffField("CoordinatedDMGBonus");
 const TuneBreakDMGBonus = makeCustomBuffField("TuneBreakDMGBonus");
 const SpecialMultiplier = makeCustomBuffField("SpecialMultiplier");
+const TotalDamage = makeCustomBuffField("TotalDamage");
 
 const customBuffFieldRefs: WritableComputedRef<number>[] = [
   ATK,
@@ -719,6 +736,7 @@ const customBuffFieldRefs: WritableComputedRef<number>[] = [
   CoordinatedDMGBonus,
   TuneBreakDMGBonus,
   SpecialMultiplier,
+  TotalDamage,
 ];
 
 const buffsData = computed((): ProcessedCustomBuffs => {
@@ -780,6 +798,7 @@ const buffsData = computed((): ProcessedCustomBuffs => {
   const SpecialMultiplier_ = SpecialMultiplier.value
     ? SpecialMultiplier.value / 100
     : 0;
+  const TotalDamage_ = TotalDamage.value ? TotalDamage.value / 100 : 0;
   return {
     ATK: ATK_,
     ATK_FLAT: ATK_FLAT_,
@@ -815,6 +834,7 @@ const buffsData = computed((): ProcessedCustomBuffs => {
     CoordinatedDMGBonus: CoordinatedDMGBonus_,
     TuneBreakDMGBonus: TuneBreakDMGBonus_,
     SpecialMultiplier: SpecialMultiplier_,
+    TotalDamage: TotalDamage_,
   };
 });
 
