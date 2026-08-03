@@ -5,6 +5,7 @@
     <h3>August 3, 2026</h3>
     <ul>
       <li>Adds ability to drag and drop to reorder rotations when you have more than one.</li>
+      <li>Fixes Tune Strain to be Total DMG.</li>
     </ul>
     <h3>August 2, 2026</h3>
     <ul>

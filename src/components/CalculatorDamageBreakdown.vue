@@ -253,6 +253,14 @@
               )
             }}
           </span>
+          ) × (1 +
+          <span class="text-primary">
+            {{
+              displayPercentage(
+                (damage.totalDamageContext.totalDamage ?? 0) * 100,
+              )
+            }}
+          </span>
           ) ×
           <span class="text-primary">
             {{
@@ -469,288 +477,17 @@
           </div>
         </div>
       </div>
-      <div class="divider"></div>
-      <div class="crit-dmg">
-        <div class="font-bold mt-2 text-lg text-primary">Crit Damage</div>
+      <div class="total-dmg-bonus">
+        <div class="font-bold mt-2 text-lg text-primary">Total Damage Multiplier</div>
         <div class="formula bg-base-200 p-2 rounded-md font-mono">
-          <span class="font-bold text-secondary">
-            {{ displayDamage(damage.critDamage) }}
-          </span>
-          =
-          <span class="text-primary">
-            {{ displayDamage(damage.totalDamage) }}
-          </span>
-          ×
-          <span class="text-primary">
-            {{ displayPercentage(damage.totalDamageContext.critDamage * 100) }}
-          </span>
+          <div class="font-bold text-secondary">
+            {{
+              displayPercentage(
+                (damage.totalDamageContext.totalDamage ?? 0) * 100,
+              )
+            }}
+          </div>
         </div>
-      </div>
-      <div class="avg-dmg">
-        <div class="font-bold mt-2 text-lg text-primary">Average Damage</div>
-        <div class="formula bg-base-200 p-2 rounded-md font-mono">
-          <span class="font-bold text-secondary">
-            {{ displayDamage(damage.avgDamage) }}
-          </span>
-          =
-          <span class="text-primary">
-            {{ displayDamage(damage.totalDamage) }}
-          </span>
-          × (1 +
-          <template v-if="damage.totalDamageContext.critRate > 1">
-            (
-            <span class="text-primary">
-              {{ displayPercentage(damage.totalDamageContext.critRate * 100) }}
-            </span>
-            -
-            <span class="text-primary">
-              {{
-                displayPercentage(
-                  (damage.totalDamageContext.critRate - 1) * 100,
-                )
-              }}
-            </span>
-            )
-          </template>
-          <template v-else>
-            <span class="text-primary">
-              {{ displayPercentage(damage.totalDamageContext.critRate * 100) }}
-            </span>
-          </template>
-          × (
-          <span class="text-primary">
-            {{ displayPercentage(damage.totalDamageContext.critDamage * 100) }}
-          </span>
-          - 1))
-        </div>
-      </div>
-    </div>
-    <div
-      v-if="damage.totalDamageContext.type === 'tuneBreak'"
-      class="damage-breakdown--tuneBreak">
-      <div class="formula bg-base-200 p-2 rounded-md font-mono">
-        <span class="font-bold text-secondary">
-          {{ displayDamage(damage.totalDamage) }}
-        </span>
-        =
-        <span class="text-primary">
-          {{ damage.totalDamageContext.levelModifier }}
-        </span>
-        × (
-        <span class="text-primary">
-          1 +
-          {{
-            displayPercentage(
-              damage.totalDamageContext.talentModifierMultiply * 100,
-              2,
-            )
-          }}
-        </span>
-        ) ×
-        × (
-        <span class="text-primary">
-          1 +
-          {{
-            displayPercentage(
-              damage.totalDamageContext.specialMultiplier * 100,
-              2,
-            )
-          }}
-        </span>
-        ) ×
-        <span class="text-primary">
-          {{
-            displayPercentage(damage.totalDamageContext.totalTalent * 100, 2)
-          }}
-        </span>
-        ×
-        <span class="text-primary">
-          {{
-            displayPercentage(
-              damage.totalDamageContext.defenseModifier * 100,
-              10,
-            )
-          }}
-        </span>
-        ×
-        <span class="text-primary">
-          {{
-            displayPercentage(damage.totalDamageContext.resistModifier * 100)
-          }}
-        </span>
-        × (
-        <span class="text-primary">
-          1 +
-          {{ displayPercentage(damage.totalDamageContext.bonusDmg * 100) }}
-        </span>
-        ) ×
-        <span class="text-primary">
-          {{ damage.totalDamageContext.enemyTypeMultiplier }}
-        </span>
-        × (
-        <span class="text-primary">
-          1 +
-          {{
-            displayPercentage(damage.totalDamageContext.tuneBreakBoost * 100)
-          }}
-        </span>
-        )
-      </div>
-      <div class="font-bold mt-2 text-lg text-primary">Level Modifier</div>
-      <div class="formula bg-base-200 p-2 rounded-md font-mono">
-        <span class="text-secondary font-bold">
-          {{ damage.totalDamageContext.levelModifier }}
-        </span>
-      </div>
-      <div class="font-bold mt-2 text-lg text-primary">DMG Multiplier</div>
-      <div class="formula bg-base-200 p-2 rounded-md font-mono">
-        <span class="text-secondary font-bold">
-          {{
-            displayPercentage(
-              damage.totalDamageContext.talentModifierMultiply * 100,
-              2,
-            )
-          }}
-        </span>
-      </div>
-      <div class="font-bold mt-2 text-lg text-primary">Tune AMP</div>
-      <div class="formula bg-base-200 p-2 rounded-md font-mono">
-        <span class="text-secondary font-bold">
-          {{ damage.totalDamageContext.talent }}
-        </span>
-      </div>
-      <div class="font-bold mt-2 text-lg text-primary">Defense modifier</div>
-      <div class="formula bg-base-200 p-2 rounded-md font-mono">
-        <span class="text-secondary font-bold">
-          {{
-            displayPercentage(
-              damage.totalDamageContext.defenseModifier * 100,
-              10,
-            )
-          }}
-        </span>
-        = (800 + 8 ×
-        <span class="text-primary">
-          {{ damage.totalDamageContext.charLevel }}
-        </span>
-        ) / (800 + 8 ×
-        <span class="text-primary">
-          {{ damage.totalDamageContext.charLevel }}
-        </span>
-        + (8 ×
-        <span class="text-primary">
-          {{ damage.totalDamageContext.enemyLevel }}
-        </span>
-        + 792) × (1 -
-        <span class="text-primary">
-          {{ displayPercentage(damage.totalDamageContext.defIgnore * 100) }}
-        </span>
-        ) × (1 -
-        <span class="text-primary">
-          {{ displayPercentage(damage.totalDamageContext.defReduction * 100) }}
-        </span>
-        ))
-      </div>
-      <div class="font-bold mt-2 text-lg text-primary">Resistance modifier</div>
-      <div class="formula bg-base-200 p-2 rounded-md font-mono">
-        <span class="text-secondary font-bold">
-          {{
-            displayPercentage(damage.totalDamageContext.resistModifier * 100)
-          }}
-        </span>
-        <template
-          v-if="usesPositiveResistFormula(damage.totalDamageContext)">
-          = 1 - (
-          <span class="text-primary">
-            {{ displayPercentage(damage.totalDamageContext.enemyResist * 100) }}
-          </span>
-          - (
-          <span class="text-primary">
-            {{
-              displayPercentage(
-                damage.totalDamageContext.resistanceReduction * 100,
-              )
-            }}
-          </span>
-          +
-          <span class="text-primary">
-            {{
-              displayPercentage(
-                resistanceIgnoreValue(damage.totalDamageContext) * 100,
-              )
-            }}
-          </span>
-          ))
-        </template>
-        <template
-          v-else-if="usesNegativeBaseResistFormula(damage.totalDamageContext)">
-          = 1 - (
-          <span class="text-primary">
-            {{ displayPercentage(damage.totalDamageContext.enemyResist * 100) }}
-          </span>
-          - (
-          <span class="text-primary">
-            {{
-              displayPercentage(
-                damage.totalDamageContext.resistanceReduction * 100,
-              )
-            }}
-          </span>
-          +
-          <span class="text-primary">
-            {{
-              displayPercentage(
-                resistanceIgnoreValue(damage.totalDamageContext) * 100,
-              )
-            }}
-          </span>
-          ) / 2)
-        </template>
-        <template v-else>
-          = 1 + ((
-          <span class="text-primary">
-            {{
-              displayPercentage(
-                damage.totalDamageContext.resistanceReduction * 100,
-              )
-            }}
-          </span>
-          +
-          <span class="text-primary">
-            {{
-              displayPercentage(
-                resistanceIgnoreValue(damage.totalDamageContext) * 100,
-              )
-            }}
-          </span>
-          ) -
-          <span class="text-primary">
-            {{ displayPercentage(damage.totalDamageContext.enemyResist * 100) }}
-          </span>
-          ) / 2
-        </template>
-      </div>
-      <div class="font-bold mt-2 text-lg text-primary">Bonus DMG</div>
-      <div class="formula bg-base-200 p-2 rounded-md font-mono">
-        <span class="text-secondary font-bold">
-          {{ displayPercentage(damage.totalDamageContext.bonusDmg * 100) }}
-        </span>
-      </div>
-      <div class="font-bold mt-2 text-lg text-primary">
-        Enemy Type Multiplier
-      </div>
-      <div class="formula bg-base-200 p-2 rounded-md font-mono">
-        <span class="text-secondary font-bold">
-          {{ damage.totalDamageContext.enemyTypeMultiplier }}
-        </span>
-      </div>
-      <div class="font-bold mt-2 text-lg text-primary">Tune Break Boost</div>
-      <div class="formula bg-base-200 p-2 rounded-md font-mono">
-        <span class="text-secondary font-bold">
-          {{
-            displayPercentage(damage.totalDamageContext.tuneBreakBoost * 100)
-          }}
-        </span>
       </div>
       <div class="divider"></div>
       <div class="crit-dmg">
@@ -829,8 +566,7 @@
             )
           }}
         </span>
-        ) ×
-        × (
+        ) × (
         <span class="text-primary">
           1 +
           {{
@@ -1163,6 +899,23 @@
           </span>
           )
         </template>
+        <template
+          v-if="
+            damage.totalDamageContext.totalDamage != null &&
+            damage.totalDamageContext.totalDamage !== 0
+          ">
+          × (
+          <span class="text-primary">
+            1 +
+            {{
+              displayPercentage(
+                damage.totalDamageContext.totalDamage * 100,
+                2,
+              )
+            }}
+          </span>
+          )
+        </template>
       </div>
       <div class="font-bold mt-2 text-lg text-primary">Level Modifier</div>
       <div class="formula bg-base-200 p-2 rounded-md font-mono">
@@ -1302,6 +1055,38 @@
           }}
         </span>
       </div>
+      <template
+        v-if="
+          damage.totalDamageContext.specialMultiplier != null &&
+          damage.totalDamageContext.specialMultiplier !== 0
+        ">
+        <div class="font-bold mt-2 text-lg text-primary">
+          Total Special Multiplier (Vuln)
+        </div>
+        <div class="formula bg-base-200 p-2 rounded-md font-mono">
+          <span class="text-secondary font-bold">
+            {{
+              displayPercentage(
+                damage.totalDamageContext.specialMultiplier * 100,
+              )
+            }}
+          </span>
+        </div>
+      </template>
+      <template
+        v-if="
+          damage.totalDamageContext.totalDamage != null &&
+          damage.totalDamageContext.totalDamage !== 0
+        ">
+        <div class="font-bold mt-2 text-lg text-primary">Total Damage Multiplier</div>
+        <div class="formula bg-base-200 p-2 rounded-md font-mono">
+          <span class="text-secondary font-bold">
+            {{
+              displayPercentage(damage.totalDamageContext.totalDamage * 100)
+            }}
+          </span>
+        </div>
+      </template>
       <div class="divider"></div>
       <div class="crit-dmg">
         <div class="font-bold mt-2 text-lg text-primary">Crit Damage</div>

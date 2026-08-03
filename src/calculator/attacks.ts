@@ -980,12 +980,17 @@ export const calculateAttackDamage = (
       coreofCollapseDMGSpecialMultiplier = 1;
     }
   }
-  // Strain "Total DMG" / Vuln = strainStacks (0-4) * TuneBreakBoost (0-50) * 0.12%
-  let strainSpecialMultiplier = context.enemy.strainStacks * totalTuneBreakBoost * 0.12;
+  // Strain "Total DMG" = strainStacks (0-4) * TuneBreakBoost (0-50) * 0.12%
+  let strainTotalDamage =
+    context.enemy.strainStacks * totalTuneBreakBoost * 0.12;
   // this does not apply to TuneBreak
   if (attack.type === "TuneBreak") {
-    strainSpecialMultiplier = 0;
+    strainTotalDamage = 0;
   }
+  const customBuffTotalDamage = context.buffs.customBuffs?.TotalDamage ?? 0;
+  const actionBuffTotalDamage = attack?.buffs?.TotalDamage ?? 0;
+  const totalDamageMultiplier =
+    strainTotalDamage + customBuffTotalDamage + actionBuffTotalDamage;
   totalSpecialMultiplier +=
     teamBuffAttackSpecialMultiplier +
     selfBuffSpecialMultiplier +
@@ -995,8 +1000,7 @@ export const calculateAttackDamage = (
     selfBuffAttackSpecialMultiplier +
     actionBuffAttackSpecialMultiplier +
     customBuffAttackSpecialMultiplier +
-    coreofCollapseDMGSpecialMultiplier +
-    strainSpecialMultiplier;
+    coreofCollapseDMGSpecialMultiplier;
 
   if (attack.type === "TuneBreak") {
     let talent = attack.talent;
@@ -1105,6 +1109,7 @@ export const calculateAttackDamage = (
       totalTalentModifierMultiply,
       totalGlacioChafeDeepenForBite,
       totalSpecialMultiplier,
+      totalDamageMultiplier,
       count,
       talent,
     );
@@ -1585,6 +1590,7 @@ export const calculateAttackDamage = (
     totalSpecialMultiplier,
     totalDefReduction,
     totalResistIgnore,
+    totalDamageMultiplier,
   );
 };
 

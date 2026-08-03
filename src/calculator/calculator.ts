@@ -1,6 +1,6 @@
 /**
-  // 707 * (.2678 * (1+0+0)) * (1+.1) * (1+0) * 0.5136986301369864 * (1-.1 + 0) => 97 => same as in-game
-  // attack * (talent * (1 + bonusTotalSkillDmg + bonusSpecificSkillDmg)) * (1 + bonusElementDmg) * (1 + totalDeepenEffect) * DEFModifier * (1- EnemyResistance + ResistanceReduction)
+  // 707 * (.2678 * (1+0+0)) * (1+.1) * (1+0) * (1+0) * 0.5136986301369864 * (1-.1 + 0) => 97 => same as in-game
+  // attack * (talent * (1 + bonusTotalSkillDmg + bonusSpecificSkillDmg)) * (1 + bonusElementDmg) * (1 + totalDeepenEffect) * (1 + specialMultiplier) * (1 + totalDamage) * DEFModifier * (1- EnemyResistance + ResistanceReduction)
  * @param charLevel
  * @param enemyLevel
  * @param enemyResist
@@ -29,6 +29,7 @@ export function calcHitDamage(
   specialMultiplier: number = 0,
   defReduction: number = 0,
   resistanceIgnore: number = 0,
+  totalDamage: number = 0,
   // critRate: number,
   // critDamage: number,
 ): number {
@@ -56,6 +57,7 @@ export function calcHitDamage(
     defModifier,
     resistValue,
     specialMultiplier,
+    totalDamage,
   );
   return baseDamage;
 }
@@ -67,12 +69,14 @@ export function getBaseDamage(
   defModifier: number,
   resistValue: number,
   specialMultiplier: number = 0,
+  totalDamage: number = 0,
 ): number {
   return (
     attack *
     talent *
     baseDamageValue *
     (1 + specialMultiplier) *
+    (1 + totalDamage) *
     defModifier *
     resistValue
   );
@@ -190,6 +194,7 @@ export function calcDamage(
   specialMultiplier: number = 0,
   defReduction: number = 0,
   resistanceIgnore: number = 0,
+  totalDamage: number = 0,
 ) {
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
@@ -341,6 +346,7 @@ export function calcDamage(
       specialMultiplier,
       defReduction,
       resistanceIgnore,
+      totalDamage,
     );
 
     // Store the original percentage for grouping
@@ -376,6 +382,7 @@ export function calcDamage(
     specialMultiplier,
     defReduction,
     resistanceIgnore,
+    totalDamage,
   );
   // multiply the final damage by the number of hits, usually 1,
   // but can be > 1 in rotations
@@ -421,6 +428,7 @@ export function calcDamage(
       resistanceIgnore,
     ),
     specialMultiplier: specialMultiplier,
+    totalDamage,
     totalDeepenEffect,
     resistanceReduction,
     resistanceIgnore,
@@ -1373,8 +1381,8 @@ export function parseGlacioBiteForteMotionValueBasisPoints(
 
 /**
  * Hiyuki Glacio Bite DMG: same level constant as negative status effects, forte MV as multiplier (÷10000),
- * (1 + talentModifierMultiply) for MV buffs, normal DEF and RES (no def ignore), (1 + deepen), (1 + specialMultiplier).
- * Does not crit.
+ * (1 + talentModifierMultiply) for MV buffs, normal DEF and RES (no def ignore), (1 + deepen),
+ * (1 + specialMultiplier), (1 + totalDamage). Does not crit.
  */
 export function getGlacioBiteForteDamage(
   charLevel: string,
@@ -1385,6 +1393,7 @@ export function getGlacioBiteForteDamage(
   talentModifierMultiply: number = 0,
   totalDeepenEffect: number = 0,
   specialMultiplier: number = 0,
+  totalDamage: number = 0,
   count: number = 1,
   forteTalentString: string,
 ): any {
@@ -1407,7 +1416,8 @@ export function getGlacioBiteForteDamage(
     defenseModifier *
     resistModifier *
     (1 + totalDeepenEffect) *
-    (1 + specialMultiplier);
+    (1 + specialMultiplier) *
+    (1 + totalDamage);
   const finalDamage = baseDamage * count;
   const critRate = 0;
   const critDamage = 1;
@@ -1439,6 +1449,7 @@ export function getGlacioBiteForteDamage(
       talentModifierMultiply,
       totalDeepenEffect,
       specialMultiplier,
+      totalDamage,
       critRate,
       critDamage,
       baseDamage,
