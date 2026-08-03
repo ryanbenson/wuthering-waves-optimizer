@@ -82,18 +82,43 @@
     @click="toggleOpen">
     <div class="rotation__head">
       <div class="card-body">
-        <h2 class="card-title flex justify-between">
-          <span v-if="!isOpen" v-tooltip="description">{{ name }}</span>
-          <input
-            v-else
-            type="text"
-            name="name"
-            id="name"
-            class="input input-bordered w-full max-w-lg"
-            v-model="nameValue"
-            @input="onNameChange"
-            @click.stop
-            :data-test-rotation-name-input="nameValue" />
+        <h2 class="card-title flex justify-between gap-2">
+          <div class="flex items-center gap-2 min-w-0 flex-1">
+            <span
+              v-if="canReorder"
+              class="rotation__drag-handle inline-flex items-center justify-center size-7 shrink-0 rounded cursor-grab active:cursor-grabbing text-base-content/50 hover:text-base-content hover:bg-base-200 select-none"
+              draggable="true"
+              role="button"
+              tabindex="0"
+              aria-label="Drag to reorder rotation"
+              title="Drag to reorder"
+              data-test-rotation-drag-handle
+              @click.stop.prevent
+              @dragstart.stop="onDragReorderStart"
+              @dragend.stop="onDragReorderEnd">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                class="size-4 pointer-events-none">
+                <path
+                  d="M7 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 10a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 16a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 10a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 16a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" />
+              </svg>
+            </span>
+            <span v-if="!isOpen" class="truncate" v-tooltip="description">{{
+              name
+            }}</span>
+            <input
+              v-else
+              type="text"
+              name="name"
+              id="name"
+              class="input input-bordered w-full max-w-lg"
+              v-model="nameValue"
+              @input="onNameChange"
+              @click.stop
+              :data-test-rotation-name-input="nameValue" />
+          </div>
 
           <div class="rotation__end">
             <div class="rotation__echo relative size-8">
@@ -292,20 +317,26 @@ const props = withDefaults(
     duration?: string | number | null;
     echo?: string | null;
     echoRank?: string | number | null;
+    order?: number;
     actions?: RotationActionRow[];
+    canReorder?: boolean;
   }>(),
   {
     characterData: () => ({}),
     duration: null,
     echo: null,
     echoRank: null,
+    order: 0,
     actions: () => [],
+    canReorder: false,
   },
 );
 
 const emit = defineEmits<{
   "updated-rotation": [payload: Record<string, unknown>];
   "rotation-delete": [id: string];
+  "drag-reorder-start": [event: DragEvent];
+  "drag-reorder-end": [];
 }>();
 
 const characterStore = useCharacterStore();
@@ -384,9 +415,23 @@ function emitRotation(partial?: Partial<Record<string, unknown>>) {
     duration: durationValue.value,
     echo: echoValue.value,
     echoRank: mainEchoRank.value,
+    order: props.order,
     actions: actionsList.value,
     ...partial,
   });
+}
+
+function onDragReorderStart(event: DragEvent) {
+  // Must set dataTransfer during dragstart on the draggable node (esp. Safari/Firefox)
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", props.id);
+  }
+  emit("drag-reorder-start", event);
+}
+
+function onDragReorderEnd() {
+  emit("drag-reorder-end");
 }
 
 function toggleOpen() {
@@ -640,6 +685,10 @@ onMounted(() => {
   path {
     fill: oklch(var(--wa));
   }
+}
+.rotation__drag-handle {
+  -webkit-user-drag: element;
+  user-select: none;
 }
 .echo-filters__sets--active {
   button {
