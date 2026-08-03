@@ -1821,7 +1821,16 @@ export const calcDamages = (context: CalculationContext) => {
 
   if (context.rotationsList?.length) {
     const rotationData: any = [];
-    context.rotationsList.forEach((rotation: any) => {
+    const sortedRotations = [...context.rotationsList].sort((a: any, b: any) => {
+      const aOrder = Number.isFinite(Number(a?.order))
+        ? Number(a.order)
+        : Number.MAX_SAFE_INTEGER;
+      const bOrder = Number.isFinite(Number(b?.order))
+        ? Number(b.order)
+        : Number.MAX_SAFE_INTEGER;
+      return aOrder - bOrder;
+    });
+    sortedRotations.forEach((rotation: any, index: number) => {
       const rotationInfo: any = {
         id: rotation.id,
         name: rotation.name,
@@ -1829,6 +1838,9 @@ export const calcDamages = (context: CalculationContext) => {
         duration: rotation.duration ?? null,
         mainEcho: rotation.echo ?? null,
         mainEchoRank: rotation.echoRank ?? null,
+        order: Number.isFinite(Number(rotation?.order))
+          ? Number(rotation.order)
+          : index,
       };
       const attacks = processAttacks(
         rotation.attacks,
