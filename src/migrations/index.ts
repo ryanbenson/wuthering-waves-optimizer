@@ -6,7 +6,8 @@
  *   1 — legacy export (character payload only, no meta wrapper)
  *   2 — { meta, data: { character, inventory } } export format
  *   3 — rename SunSinkingEclipse / Sun-sinking Eclipse → Havoc Eclipse
- *   4 — mainEcho.isEnabled/stacks → mainEcho.buffs[buffKey]
+ *   4 — add order property to character rotations
+ *   5 — mainEcho.isEnabled/stacks → mainEcho.buffs[buffKey]
  *
  * On load, compare the user's version to CURRENT_DATA_VERSION and run each
  * pending migration in order.
@@ -19,7 +20,8 @@
 
 import { hasPersistedUserData, type Migration } from "./types";
 import renameSunSinkingEclipse from "./versions/003_renameSunSinkingEclipse";
-import migrateMainEchoBuffs from "./versions/004_mainEchoBuffs";
+import addRotationOrder from "./versions/004_addRotationOrder";
+import migrateMainEchoBuffs from "./versions/005_mainEchoBuffs";
 
 /** localStorage key that mirrors export `meta.version`. */
 export const DATA_VERSION_KEY = "dataVersion";
@@ -28,7 +30,7 @@ export const DATA_VERSION_KEY = "dataVersion";
  * Latest data version. Bump when adding a migration.
  * Also written to export `meta.version`.
  */
-export const CURRENT_DATA_VERSION = 4;
+export const CURRENT_DATA_VERSION = 5;
 
 /**
  * Version assumed when an existing user has data but no data-version key yet
@@ -40,7 +42,12 @@ export const BASELINE_DATA_VERSION = 2;
  * Ordered migrations. Append only — never reorder or renumber.
  * Each file's `version` must match CURRENT when it is the newest.
  */
-const migrations: Migration[] = [renameSunSinkingEclipse, migrateMainEchoBuffs];
+const migrations: Migration[] = [
+  renameSunSinkingEclipse,
+  addRotationOrder,
+  migrateMainEchoBuffs,
+];
+
 function parseVersion(raw: string | null | undefined): number | null {
   if (raw == null || raw === "") {
     return null;

@@ -52,7 +52,7 @@ describe("Home E2E Tests", () => {
   });
 
   it("should have the main titles of all attack groups for default character", () => {
-    cy.get(".character__selection__form--character select").select("Brant");
+    cy.richSelect("[data-test-character-select]", "Brant");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Brant").should("be.visible");
     cy.get(`[data-test-char-avatar="Brant"]`).should("be.visible");
@@ -67,10 +67,10 @@ describe("Home E2E Tests", () => {
   });
 
   it("should enable a user to change character, and also update all of the damages and stats after the change", () => {
-    cy.get(".character__selection__form--character select").select("Changli");
+    cy.richSelect("[data-test-character-select]", "Changli");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Changli").should("be.visible");
-    cy.get("select[name=characterLevel]").select("80");
+    cy.richSelect("[data-test-character-level]", "80");
     cy.get(".character__buffs").should("be.visible");
     cy.get(".data-input--talents").should("be.visible");
     // Changli stats calculations
@@ -80,7 +80,7 @@ describe("Home E2E Tests", () => {
   });
 
   it("should calculate and display the correct damage output and stats, activate all passives and verify stats and calcs", () => {
-    cy.get(".character__selection__form--character select").select("Calcharo");
+    cy.richSelect("[data-test-character-select]", "Calcharo");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     // Stats calculations
     testStats(calcharoLevel90BaseStats, cy);

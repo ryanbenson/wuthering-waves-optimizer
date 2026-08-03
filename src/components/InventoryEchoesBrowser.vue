@@ -1,5 +1,8 @@
 <template>
   <InventoryEchoEdit ref="inventoryEchoEditRef"></InventoryEchoEdit>
+  <CalculatorEchoImporter
+    ref="echoesImporter"
+    inventory-only></CalculatorEchoImporter>
   <div class="py-4">
     <div
       class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
@@ -7,6 +10,9 @@
       <div class="join">
         <button class="btn btn-sm join-item btn-primary" @click="createEcho">
           Add echo
+        </button>
+        <button class="btn btn-sm join-item" @click="handleOpenEchoesImporter">
+          Import echoes
         </button>
         <button
           type="button"
@@ -59,65 +65,28 @@
 
         <!-- Basics: what the echo is -->
         <div class="echoes__filters__row flex flex-wrap items-center gap-2">
-          <select
+          <AppRichSelect
             v-model="costFilter"
-            name="cost"
-            class="select select-bordered select-sm">
-            <option :value="null">Cost</option>
-            <option v-for="cost in [4, 3, 1]" :key="cost" :value="cost">
-              {{ cost }} Cost
-            </option>
-          </select>
-          <select
+            :options="costFilterOptions"
+            allow-empty
+            empty-label="Cost"
+            aria-label="Cost filter"
+            class="w-fit min-w-[150px]" />
+          <AppRichSelect
             v-model="mainStatFilter"
-            name="mainEcho"
-            class="select select-bordered select-sm">
-            <option :value="null">Main stat</option>
-            <option
-              v-for="mainStat in allMainStats"
-              :key="mainStat"
-              :value="mainStat">
-              {{ getReadableSubStatLabel(mainStat) }}
-            </option>
-          </select>
-          <select
+            :options="mainStatFilterOptions"
+            allow-empty
+            empty-label="Main stat"
+            aria-label="Main stat filter"
+            class="w-fit min-w-[150px]" />
+          <AppRichSelect
             v-model="echo"
-            name="mainEcho"
-            class="select select-bordered select-sm">
-            <option :value="null">Echo</option>
-            <optgroup label="Calamity">
-              <option
-                v-for="option in mainEchoOptions.Calamity"
-                :key="option.key"
-                :value="option.key">
-                {{ option.name }}
-              </option>
-            </optgroup>
-            <optgroup label="Overlord">
-              <option
-                v-for="option in mainEchoOptions.Overlord"
-                :key="option.key"
-                :value="option.key">
-                {{ option.name }}
-              </option>
-            </optgroup>
-            <optgroup label="Elite">
-              <option
-                v-for="option in mainEchoOptions.Elite"
-                :key="option.key"
-                :value="option.key">
-                {{ option.name }}
-              </option>
-            </optgroup>
-            <optgroup label="Common">
-              <option
-                v-for="option in mainEchoOptions.Common"
-                :key="option.key"
-                :value="option.key">
-                {{ option.name }}
-              </option>
-            </optgroup>
-          </select>
+            :options="echoSelectOptions"
+            searchable
+            allow-empty
+            empty-label="Echo"
+            aria-label="Echo filter"
+            class="w-fit min-w-[200px]" />
         </div>
 
         <!-- Status flags -->
@@ -463,7 +432,15 @@ import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
+import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import PaginationControls from "./PaginationControls.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
+import {
+  buildEchoSelectOptions,
+  buildSimpleSelectOptions,
+} from "../utils/richSelectOptions";
 import { randomString } from "../utils/strings";
 import { getEchoIdentityKey } from "../utils/echoIdentity";
 import { useConfirm } from "../composables/useConfirm";
@@ -487,6 +464,9 @@ const {
 } = useEchoInventory();
 
 const inventoryEchoEditRef = ref<InstanceType<typeof InventoryEchoEdit> | null>(
+  null,
+);
+const echoesImporter = ref<InstanceType<typeof CalculatorEchoImporter> | null>(
   null,
 );
 
@@ -674,6 +654,19 @@ const allMainStats = computed(() => {
   ];
   return [...new Set(allOptions)];
 });
+
+const costFilterOptions = buildSimpleSelectOptions(
+  [4, 3, 1],
+  (cost) => `${cost} Cost`,
+);
+const mainStatFilterOptions = computed((): AppRichSelectOption[] =>
+  buildSimpleSelectOptions(allMainStats.value, (stat) =>
+    getReadableSubStatLabel(String(stat)),
+  ),
+);
+const echoSelectOptions = computed((): AppRichSelectOption[] =>
+  buildEchoSelectOptions(mainEchoOptions.value),
+);
 
 function echoCardBinder(e: InventoryEchoRow) {
   const str = (v: unknown) => (v == null ? "" : String(v));
@@ -935,6 +928,10 @@ async function createEcho() {
   };
   await saveEcho(echoData);
   handleEditEcho(echoId);
+}
+
+function handleOpenEchoesImporter() {
+  echoesImporter.value?.triggerOpenModal();
 }
 </script>
 

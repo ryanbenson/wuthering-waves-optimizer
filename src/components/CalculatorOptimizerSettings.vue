@@ -13,7 +13,7 @@
     </div>
     <div class="form-control mt-2">
       <label class="label">
-        <span class="label-text">Loadout format</span>
+        <h3>Loadout format</h3>
       </label>
       <div class="join">
         <input

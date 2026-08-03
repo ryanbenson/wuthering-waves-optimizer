@@ -8,15 +8,11 @@
             Choose second set
           </span>
         </div>
-        <select
-          name="characterLevel"
-          v-model="setManual"
-          class="select select-bordered select-sm"
-          @change="onSetManualChange">
-          <option v-for="set in [...optionsList]" :key="set" :value="set">
-            {{ set }}
-          </option>
-        </select>
+        <AppRichSelect
+          v-model="type"
+          :options="setSelectOptions"
+          searchable
+          aria-label="Choose second set" />
       </label>
       <h2 v-if="setName" class="card-title">{{ setName }}</h2>
       <div v-else>No second echo set bonus is configured.</div>
@@ -43,9 +39,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
 import CalculatorEchoSetPassive from "./CalculatorEchoSetPassive.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
+import { buildEchoSetSelectOptions } from "../utils/richSelectOptions";
 import {
   twoSetBonuses,
   threeSetBonuses,
@@ -82,7 +82,6 @@ type PassiveBuffPayload = {
 };
 
 const passiveData = ref<PassiveBuffPayload[]>([]);
-const setManual = ref<string | null>(null);
 
 const currentCharacter = computed(
   () => characterStore.characters?.[props.character] ?? {},
@@ -109,9 +108,9 @@ const type = computed({
     };
     return ch.echoSetBonus?.setBonusTwo ?? "";
   },
-  set(value: string) {
+  set(value: string | number | null) {
     void characterStore.setCharacterData(props.character, {
-      echoSetBonus: { setBonusTwo: value },
+      echoSetBonus: { setBonusTwo: value == null ? "" : String(value) },
     });
   },
 });
@@ -173,10 +172,9 @@ const buffsFormatted = computed(() => {
   return finalBuffData;
 });
 
-const optionsList = computed(() => {
-  const threeSetList = JSON.parse(JSON.stringify(threeSetBonuses)) as string[];
-  const list = [...twoSetBonuses, ...threeSetList, ...fiveSetBonuses];
-  return list.sort();
+const setSelectOptions = computed((): AppRichSelectOption[] => {
+  const list = [...twoSetBonuses, ...threeSetBonuses, ...fiveSetBonuses].sort();
+  return buildEchoSetSelectOptions(list);
 });
 
 function updatedStats() {
@@ -191,10 +189,6 @@ function handleUpdatedEchoPassiveStats(data: PassiveBuffPayload) {
     passiveData.value[buffIndex] = data;
   }
   updatedStats();
-}
-
-function onSetManualChange(e: Event) {
-  type.value = (e.target as HTMLSelectElement).value;
 }
 
 watch(type, () => {
@@ -217,10 +211,6 @@ watch(stacks, (stacksVal) => {
 watch(isEnabled, () => {
   updatedStats();
 }, { immediate: true });
-
-onMounted(() => {
-  setManual.value = type.value;
-});
 
 onBeforeUnmount(() => {
   passiveData.value = [];

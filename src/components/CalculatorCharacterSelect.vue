@@ -64,32 +64,20 @@
     </div>
     <div class="character__selection__form" :class="{ 'character__selection__form--compact': isCompact }">
       <div class="character__selection__form--character">
-        <select
-          name="character"
+        <AppRichSelect
           v-model="characterChosen"
-          class="select select-bordered select-sm"
-          @change="handleUpdatedCharacter">
-          <optgroup label="5 Star">
-            <option
-              v-for="char in charactersList.five"
-              :key="char.key"
-              :value="char.key">
-              {{ char.name }}
-            </option>
-          </optgroup>
-          <optgroup label="4 Star">
-            <option
-              v-for="char in charactersList.four"
-              :key="char.key"
-              :value="char.key">
-              {{ char.name }}
-            </option>
-          </optgroup>
-        </select>
+          :options="characterSelectOptions"
+          searchable
+          search-placeholder="Type to find a character…"
+          aria-label="Choose character"
+          data-test-character-select
+          @update:model-value="handleChosenCharacterFromSelect" />
       </div>
-      <CalculatorCharacterLevel
-        :character="character"
-        @character-level-updated="handleCharacterLevelUpdated"></CalculatorCharacterLevel>
+      <div class="character__selection__form--level">
+        <CalculatorCharacterLevel
+          :character="character"
+          @character-level-updated="handleCharacterLevelUpdated" />
+      </div>
       <CharacterBuildStatus
         v-if="isCompact"
         :status="buildStatus"
@@ -110,6 +98,10 @@ import { storeToRefs } from "pinia";
 import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import CharacterBuildStatus from "./CharacterBuildStatus.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+  type AppRichSelectValue,
+} from "./AppRichSelect.vue";
 import {
   allCharactersList,
   getCharactersAvailable,
@@ -117,6 +109,9 @@ import {
 import { getCharacterBuildStatus } from "../characters/characterBuildStatus";
 import { useCharacterStore } from "../stores/character";
 import { useUiDensity } from "../composables/useUiDensity";
+
+const CHARACTER_IMAGE_BASE =
+  "https://ryanbenson.github.io/wuthering-waves-assets/images";
 
 type ListedCharacter = (typeof allCharactersList)[number];
 type CharacterPickerList = ReturnType<typeof getCharactersAvailable>;
@@ -144,6 +139,24 @@ const characterBrowserRef = ref<{
 const charactersList = ref<CharacterPickerList>({ five: [], four: [] });
 const characterChosen = ref<string>("");
 
+const characterSelectOptions = computed((): AppRichSelectOption[] => {
+  const mapBucket = (
+    chars: CharacterPickerList["five"],
+    group: string,
+  ): AppRichSelectOption[] =>
+    chars.map((char) => ({
+      value: char.key,
+      label: char.name,
+      group,
+      image: `${CHARACTER_IMAGE_BASE}/${char.key}.png`,
+    }));
+
+  return [
+    ...mapBucket(charactersList.value.five, "5 Star"),
+    ...mapBucket(charactersList.value.four, "4 Star"),
+  ];
+});
+
 const basicCharacterData = computed((): ListedCharacter | undefined =>
   allCharactersList.find((char) => char.key === characterChosen.value),
 );
@@ -167,10 +180,11 @@ function toggleFavorite() {
   characterStore.toggleFavoriteCharacter(characterChosen.value);
 }
 
-function handleUpdatedCharacter(e: Event) {
-  const target = e.target as HTMLSelectElement;
-  const next = target.value;
-  emit("updated-chosen-character", next);
+function handleChosenCharacterFromSelect(next: AppRichSelectValue) {
+  if (typeof next !== "string" || !next) {
+    return;
+  }
+  handleChosenCharacter(next);
 }
 
 function handleChosenCharacter(nextCharacter: string) {
@@ -217,6 +231,12 @@ onMounted(() => {
 }
 .character__selection__form--character {
   margin-bottom: 1rem;
+  --app-rich-select-min-width: 18rem;
+  max-width: 26rem;
+}
+.character__selection__form--level {
+  --app-rich-select-min-width: 4.75rem;
+  width: 4.75rem;
 }
 .character__selection__form {
   label {
@@ -232,6 +252,12 @@ onMounted(() => {
 
     .character__selection__form--character {
       margin-bottom: 0;
+      --app-rich-select-min-width: 14rem;
+      flex: 1 1 14rem;
+    }
+
+    .character__selection__form--level {
+      flex: 0 0 auto;
     }
 
     &:has(.character-build-status-dropdown:focus-within) {
@@ -243,6 +269,12 @@ onMounted(() => {
   width: auto;
   min-width: 9.5rem;
   flex: 0 0 auto;
+}
+@media (max-width: 640px) {
+  .character__selection__form--character {
+    --app-rich-select-min-width: 9rem;
+    max-width: 100%;
+  }
 }
 .character__selection__avatar-wrap {
   position: relative;

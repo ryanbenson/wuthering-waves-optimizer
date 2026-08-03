@@ -66,21 +66,35 @@
     </template>
   </div>
   <div class="flex flex-col gap-4">
-    <CalculatorRotation
-      v-for="rotation in rotations"
+    <div
+      v-for="(rotation, index) in rotations"
       :key="rotation.id"
-      :ref="(el) => setRotationRef(rotation.id, el)"
-      :character="character"
-      :character-data="characterData"
-      :id="rotation.id"
-      :name="rotation.name"
-      :description="rotation.description"
-      :duration="rotation.duration"
-      :echo="rotation.echo"
-      :echo-rank="rotation.echoRank"
-      :actions="rotation.actions"
-      @updated-rotation="handleUpdatedRotation"
-      @rotation-delete="handleDeleteRotation"></CalculatorRotation>
+      class="rotation-dnd-item rounded-lg"
+      :class="{
+        'ring-2 ring-primary ring-offset-1 ring-offset-base-100':
+          dropIndex === index && dragIndex !== null && dragIndex !== index,
+      }"
+      @dragover.prevent="onDragOver(index, $event)"
+      @dragenter.prevent="onDragEnter(index)"
+      @drop.prevent="onDrop(index)">
+      <CalculatorRotation
+        :ref="(el) => setRotationRef(rotation.id, el)"
+        :character="character"
+        :character-data="characterData"
+        :id="rotation.id"
+        :name="rotation.name"
+        :description="rotation.description"
+        :duration="rotation.duration"
+        :echo="rotation.echo"
+        :echo-rank="rotation.echoRank"
+        :order="rotation.order"
+        :actions="rotation.actions"
+        :can-reorder="canReorder"
+        @drag-reorder-start="onDragStart(index, $event)"
+        @drag-reorder-end="onDragEnd"
+        @updated-rotation="handleUpdatedRotation"
+        @rotation-delete="handleDeleteRotation"></CalculatorRotation>
+    </div>
   </div>
 </template>
 
@@ -107,6 +121,7 @@ type RotationRow = {
   duration: string | number | null;
   echo: string | null;
   echoRank: string | number | null;
+  order: number;
   actions: RotationAction[];
 };
 
@@ -135,6 +150,10 @@ const isPresetRotationsOpen = ref(false);
 const rotations = ref<RotationRow[]>([]);
 const characterData = ref<Record<string, unknown>>({});
 const presets = ref<RotationPreset[]>([]);
+const dragIndex = ref<number | null>(null);
+const dropIndex = ref<number | null>(null);
+// Non-reactive source index — reading this during drop avoids races with rAF UI updates
+let activeDragIndex: number | null = null;
 
 const rotationRefs = new Map<string, { toggleOpen: () => void }>();
 
@@ -156,6 +175,62 @@ const currentCharacter = computed(
 );
 
 const hasRotations = computed(() => presets.value.length > 0);
+const canReorder = computed(() => rotations.value.length > 1);
+
+function rotationOrderValue(value: unknown, fallback: number): number {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return value;
+  }
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+  return fallback;
+}
+
+function normalizeRotationOrders(
+  list: RotationRow[],
+): { rotations: RotationRow[]; didBackfill: boolean } {
+  let didBackfill = false;
+  const withOrder = list.map((rotation, index) => {
+    const existing = rotationOrderValue(rotation.order, Number.NaN);
+    if (!Number.isFinite(existing)) {
+      didBackfill = true;
+      return { ...rotation, order: index };
+    }
+    return { ...rotation, order: existing };
+  });
+
+  withOrder.sort((a, b) => a.order - b.order);
+
+  const renumbered = withOrder.map((rotation, index) => {
+    if (rotation.order !== index) {
+      didBackfill = true;
+    }
+    return { ...rotation, order: index };
+  });
+
+  return { rotations: renumbered, didBackfill };
+}
+
+/** Trust current array order and stamp order 0..n-1 (used after drag/create/delete). */
+function renumberByArrayOrder(list: RotationRow[]): RotationRow[] {
+  return list.map((rotation, index) => ({ ...rotation, order: index }));
+}
+
+async function persistRotations(next: RotationRow[]) {
+  const normalized = renumberByArrayOrder(next);
+  rotations.value = normalized;
+  const payload = JSON.parse(JSON.stringify(normalized));
+  // Ensure character entry exists — setCharacterRotations is a no-op otherwise
+  if (!characters.value[props.character]) {
+    await setCharacterData(props.character, {});
+  }
+  await setCharacterRotations(props.character, payload);
+  emit("updated-rotations", payload);
+}
 
 function addIdsToImportedRotation(rotationData: RotationRow): RotationRow {
   const rotation = JSON.parse(JSON.stringify(rotationData)) as RotationRow;
@@ -180,15 +255,13 @@ async function handleCreateRotation() {
     duration: null,
     echo: null,
     echoRank: null,
+    order: rotations.value.length,
     actions: [],
   };
-  rotations.value.push(newRotationData);
+  const next = [...rotations.value, newRotationData];
+  await persistRotations(next);
   await nextTick();
   rotationRefs.get(id)?.toggleOpen();
-  await setCharacterData(props.character, {
-    rotations: JSON.parse(JSON.stringify(rotations.value)),
-  });
-  emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
 }
 
 async function handleImportRotation() {
@@ -197,13 +270,11 @@ async function handleImportRotation() {
       importRotationData.value ?? "",
     ) as RotationRow;
     const processedImportedRotation = addIdsToImportedRotation(rotationData);
-    rotations.value.push(processedImportedRotation);
+    processedImportedRotation.order = rotations.value.length;
+    const next = [...rotations.value, processedImportedRotation];
     importRotationData.value = null;
     isImportOpen.value = false;
-    await setCharacterData(props.character, {
-      rotations: JSON.parse(JSON.stringify(rotations.value)),
-    });
-    emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
+    await persistRotations(next);
   } catch {
     showToast("Rotation data is not valid", "error");
   }
@@ -213,13 +284,11 @@ async function handleImportPreset(preset: RotationPreset) {
   try {
     const rotationData = JSON.parse(JSON.stringify(preset.data)) as RotationRow;
     const processedImportedRotation = addIdsToImportedRotation(rotationData);
-    rotations.value.push(processedImportedRotation);
+    processedImportedRotation.order = rotations.value.length;
+    const next = [...rotations.value, processedImportedRotation];
     importRotationData.value = null;
     isImportOpen.value = false;
-    await setCharacterData(props.character, {
-      rotations: JSON.parse(JSON.stringify(rotations.value)),
-    });
-    emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
+    await persistRotations(next);
   } catch {
     showToast("Rotation data is not valid", "error");
   }
@@ -236,31 +305,86 @@ async function handleUpdatedRotation(rotationData: Record<string, unknown>) {
   if (foundIndex === -1) {
     return;
   }
-  next[foundIndex] = rotationData as RotationRow;
-  rotations.value = next;
-  await setCharacterRotations(
-    props.character,
-    JSON.parse(JSON.stringify(rotations.value)),
-  );
-  emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
+  const existingOrder = next[foundIndex].order;
+  next[foundIndex] = {
+    ...(rotationData as RotationRow),
+    order: rotationOrderValue(rotationData.order, existingOrder),
+  };
+  await persistRotations(next);
 }
 
 async function handleDeleteRotation(rotationId: string) {
   const next = rotations.value.filter((rotation) => rotation.id !== rotationId);
-  rotations.value = next;
-  await setCharacterRotations(props.character, next);
-  emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
+  await persistRotations(next);
 }
 
 function togglePresetRotations() {
   isPresetRotationsOpen.value = !isPresetRotationsOpen.value;
 }
 
+function onDragStart(index: number, _event: DragEvent) {
+  activeDragIndex = index;
+  // Defer reactive UI updates so Vue doesn't patch the drag source mid-dragstart
+  // (that cancels HTML5 drag in Chromium).
+  requestAnimationFrame(() => {
+    if (activeDragIndex !== index) {
+      return;
+    }
+    dragIndex.value = index;
+    dropIndex.value = index;
+  });
+}
+
+function onDragEnter(index: number) {
+  if (activeDragIndex === null) {
+    return;
+  }
+  dropIndex.value = index;
+}
+
+function onDragOver(index: number, event: DragEvent) {
+  if (event.dataTransfer) {
+    event.dataTransfer.dropEffect = "move";
+  }
+  if (activeDragIndex === null) {
+    return;
+  }
+  dropIndex.value = index;
+}
+
+async function onDrop(index: number) {
+  const from = activeDragIndex;
+  if (from === null || from === index) {
+    onDragEnd();
+    return;
+  }
+
+  const next = [...rotations.value];
+  const [moved] = next.splice(from, 1);
+  next.splice(index, 0, moved);
+  onDragEnd();
+  await persistRotations(next);
+}
+
+function onDragEnd() {
+  activeDragIndex = null;
+  dragIndex.value = null;
+  dropIndex.value = null;
+}
+
 onMounted(async () => {
-  rotations.value =
+  const loaded =
     ((currentCharacter.value as { rotations?: RotationRow[] }).rotations ??
       []) as RotationRow[];
-  emit("updated-rotations", JSON.parse(JSON.stringify(rotations.value)));
+  const { rotations: normalized, didBackfill } = normalizeRotationOrders(loaded);
+  rotations.value = normalized;
+  emit("updated-rotations", JSON.parse(JSON.stringify(normalized)));
+  if (didBackfill) {
+    await setCharacterRotations(
+      props.character,
+      JSON.parse(JSON.stringify(normalized)),
+    );
+  }
   characterData.value = (await getCharByName(props.character)) as Record<
     string,
     unknown

@@ -544,7 +544,7 @@
 
   <template v-if="rotationsList.length && allDamages.value?.rotations">
     <div
-      v-for="rotation in allDamages.value.rotations"
+      v-for="rotation in sortedDamageRotations"
       class="rotation__item pt-8"
       :key="rotation.id"
       :data-test-damages-list-rotation="rotation.name">
@@ -713,6 +713,22 @@ const echoData = computed(() => {
 const echoName = computed(() => echoData.value?.name ?? null);
 const echoDetails = computed(() => echoData.value?.details ?? null);
 const charName = computed(() => props.chosenChar?.value?.basic?.name ?? null);
+
+const sortedDamageRotations = computed(() => {
+  const rotations = props.allDamages?.value?.rotations;
+  if (!Array.isArray(rotations)) {
+    return [];
+  }
+  return [...rotations].sort((a, b) => {
+    const aOrder = Number.isFinite(Number(a?.order))
+      ? Number(a.order)
+      : Number.MAX_SAFE_INTEGER;
+    const bOrder = Number.isFinite(Number(b?.order))
+      ? Number(b.order)
+      : Number.MAX_SAFE_INTEGER;
+    return aOrder - bOrder;
+  });
+});
 
 function handleSelectedAttack(attackKey: string, damage: Record<string, any>, label: string) {
   emit("selected-attack", attackKey, damage, label);

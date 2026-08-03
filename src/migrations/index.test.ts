@@ -125,11 +125,40 @@ describe("data migrations", () => {
     expect(JSON.parse(localStorage.getItem("inventory") ?? "{}").echoes[0].echoSet).toBe(
       "HavocEclipse",
     );
-    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe("4");
+    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe("5");
   });
 
-  it("migrates mainEcho.isEnabled into mainEcho.buffs on v4", () => {
+  it("adds order to rotations on v4", () => {
     localStorage.setItem(DATA_VERSION_KEY, "3");
+    localStorage.setItem(
+      "character",
+      JSON.stringify({
+        characters: {
+          Danjin: {
+            rotations: [
+              { id: "a", name: "First", actions: [] },
+              { id: "b", name: "Second", actions: [], order: 5 },
+              { id: "c", name: "Third", actions: [], order: 1 },
+            ],
+          },
+        },
+      }),
+    );
+
+    runMigrations();
+
+    expect(getStoredDataVersion()).toBe(CURRENT_DATA_VERSION);
+    const character = JSON.parse(localStorage.getItem("character") ?? "{}");
+    expect(character.characters.Danjin.rotations).toEqual([
+      { id: "a", name: "First", actions: [], order: 0 },
+      { id: "c", name: "Third", actions: [], order: 1 },
+      { id: "b", name: "Second", actions: [], order: 2 },
+    ]);
+    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe("5");
+  });
+
+  it("migrates mainEcho.isEnabled into mainEcho.buffs on v5", () => {
+    localStorage.setItem(DATA_VERSION_KEY, "4");
     localStorage.setItem(
       "character",
       JSON.stringify({
@@ -153,7 +182,7 @@ describe("data migrations", () => {
 
     runMigrations();
 
-    expect(getStoredDataVersion()).toBe(4);
+    expect(getStoredDataVersion()).toBe(5);
     const character = JSON.parse(localStorage.getItem("character") ?? "{}");
     const carlotta = character.characters.Carlotta;
     expect(carlotta.mainEcho.isEnabled).toBeUndefined();
@@ -223,7 +252,7 @@ describe("data migrations", () => {
     });
   });
 
-  it("applyMigrationTransforms migrates mainEcho buffs from v3", () => {
+  it("applyMigrationTransforms migrates mainEcho buffs from v4", () => {
     const input = JSON.stringify({
       characters: {
         Carlotta: {
@@ -235,7 +264,7 @@ describe("data migrations", () => {
         },
       },
     });
-    expect(JSON.parse(applyMigrationTransforms(input, 3))).toEqual({
+    expect(JSON.parse(applyMigrationTransforms(input, 4))).toEqual({
       characters: {
         Carlotta: {
           mainEcho: {
@@ -254,6 +283,30 @@ describe("data migrations", () => {
     expect(parseMetaDataVersion({ version: "2" })).toBe(2);
     expect(parseMetaDataVersion({ version: "3" })).toBe(3);
     expect(parseMetaDataVersion({ version: "4" })).toBe(4);
+    expect(parseMetaDataVersion({ version: "5" })).toBe(5);
     expect(parseMetaDataVersion(undefined)).toBe(1);
+  });
+
+  it("applyMigrationTransforms backfills rotation order from v3", () => {
+    const input = JSON.stringify({
+      characters: {
+        Danjin: {
+          rotations: [
+            { id: "a", name: "First", actions: [] },
+            { id: "b", name: "Second", actions: [] },
+          ],
+        },
+      },
+    });
+    expect(JSON.parse(applyMigrationTransforms(input, 3))).toEqual({
+      characters: {
+        Danjin: {
+          rotations: [
+            { id: "a", name: "First", actions: [], order: 0 },
+            { id: "b", name: "Second", actions: [], order: 1 },
+          ],
+        },
+      },
+    });
   });
 });

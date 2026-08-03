@@ -13,7 +13,7 @@ describe("Calculator Kitchen Sink", () => {
   });
 
   it("should enable everything and validate all calculations", () => {
-    cy.get(".character__selection__form--character select").select("Carlotta");
+    cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Carlotta").should("be.visible");
 
@@ -22,7 +22,7 @@ describe("Calculator Kitchen Sink", () => {
 
     // now change the weapon and enable all weapon buffs
     cy.get('[data-test-calculator-nav="weapon"]').click();
-    cy.get(`[data-test-weapon-select]`).select("TheLastDance");
+    cy.richSelect("[data-test-weapon-select]", "TheLastDance");
     cy.get('[data-test-weapon-passive="TheLastDanceSKillBonus"]').each(
       ($card) => {
         cy.wrap($card).find("input[type=checkbox]").click();
@@ -122,8 +122,8 @@ describe("Calculator Kitchen Sink", () => {
 
     // now configure team buffs
     cy.get('[data-test-calculator-nav="team"]').click();
-    cy.get("[data-test-party-member-1-input]").select("Shorekeeper");
-    cy.get("[data-test-party-member-2-input]").select("Zhezhi");
+    cy.richSelect("[data-test-party-member-1-input]", "Shorekeeper");
+    cy.richSelect("[data-test-party-member-2-input]", "Zhezhi");
     cy.get('[data-test-party-buff-char-1-collapse-bar]').click();
     cy.get("[data-test-party-member-1-name]").should(
       "contain.text",
@@ -171,13 +171,14 @@ describe("Calculator Kitchen Sink", () => {
     cy.get('[data-test-party-buff-weapons-collapse-bar]').click();
     cy.get(`[data-test-party-buff-enabled="StaticMistATK"]`).check();
     cy.get(`[data-test-party-buff-stacks="StaticMistATK"]`).type("1");
-    cy.get(`[data-test-party-refinements="StaticMistATK"]`).select("5");
+    cy.richSelect(`[data-test-party-refinements="StaticMistATK"]`, "5");
     cy.get(`[data-test-party-buff-enabled="StellarSymphonyATK"]`).check();
-    cy.get(`[data-test-party-refinements="StellarSymphonyATK"]`).select("5");
+    cy.richSelect(`[data-test-party-refinements="StellarSymphonyATK"]`, "5");
     cy.get(
       `[data-test-party-buff-enabled="LuminousHymnSpectroFrazzle"]`,
     ).check();
-    cy.get(`[data-test-party-refinements="LuminousHymnSpectroFrazzle"]`).select(
+    cy.richSelect(
+      `[data-test-party-refinements="LuminousHymnSpectroFrazzle"]`,
       "5",
     );
 
@@ -207,8 +208,10 @@ describe("Calculator Kitchen Sink", () => {
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-skill-input="none"]`).click();
-    cy.get(`[data-test-picker-choose="BasicAttackStage1DMG"]`).click();
+    cy.richSelect(
+      `[data-test-rotation-action-skill-input="none"]`,
+      "BasicAttackStage1DMG",
+    );
     // create second action
     cy.get(`[data-test-rotation-action-add="Test001"]`).click();
     // find first action that's empty and click to get into it
@@ -220,14 +223,15 @@ describe("Calculator Kitchen Sink", () => {
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-skill-input="none"]`).click();
-    cy.get(`[data-test-picker-choose="FatalFinaleDMG"]`).click();
+    cy.richSelect(
+      `[data-test-rotation-action-skill-input="none"]`,
+      "FatalFinaleDMG",
+    );
     // add a buff to the second action
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).should("be.visible");
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).click();
     cy.get(`[data-test-action-buff-input="none"]`).should("be.visible");
-    cy.get(`[data-test-action-buff-input="none"]`).click();
-    cy.get(`[data-test-picker-choose="CritDMG"]`).click();
+    cy.richSelect(`[data-test-action-buff-input="none"]`, "CritDMG");
     cy.get(`[data-test-action-buff-value-input="CritDMG"]`).should(
       "be.visible",
     );
