@@ -10,18 +10,21 @@
  * - Generates loadouts incrementally using a generator function
  * - Deduplicates loadouts using a Set of combination keys
  * - Sends batches of loadouts to the main thread for distribution to processor workers
+ * - Uses pull-based backpressure: after each batch, waits for "continue" from main
  *
  * Message Flow:
  * 1. Main thread sends "init" -> Worker responds with "ready"
  * 2. Main thread sends "start" with echoes, mainEchoKeys, batchSize
- * 3. Worker generates loadouts and sends "batch" messages as batches fill up
- * 4. Worker sends "done" when all loadouts are generated
- * 5. Worker sends "error" if any errors occur
+ * 3. Worker generates one batch, sends "batch", then waits for "continue"
+ * 4. Main sends "continue" when the work queue has room
+ * 5. Worker sends "done" when all loadouts are generated
+ * 6. Worker sends "error" if any errors occur
  *
  * Performance Notes:
  * - Each loadout is cloned before adding to batch (critical: generateLoadouts mutates arrays)
  * - Batches are sent directly without additional cloning (already cloned)
  * - Deduplication happens in the worker to reduce main thread overhead
+ * - Pull-based continue prevents unbounded queue growth on the main thread
  */
 
 import {
@@ -37,7 +40,7 @@ import {
  * Message sent from main thread to generator worker
  */
 interface GeneratorMessage {
-  type: "init" | "start" | "stop";
+  type: "init" | "start" | "continue" | "stop";
   data?: {
     echoes: any[]; // Array of available echoes to combine
     mainEchoKeys: string[]; // Array of main echo keys (for filtering)
@@ -50,7 +53,7 @@ interface GeneratorMessage {
  * Message sent from generator worker to main thread
  */
 interface GeneratorResponse {
-  type: "batch" | "done" | "error";
+  type: "batch" | "done" | "error" | "ready";
   batch?: any[]; // Array of loadout combinations (only for "batch" type)
   totalGenerated?: number; // Total number of unique loadouts generated so far
   /** True when totalGenerated is 0 (no combinations from current echoes / filters) */
@@ -58,95 +61,143 @@ interface GeneratorResponse {
   error?: string; // Error message (only for "error" type)
 }
 
+let continueResolve: (() => void) | null = null;
+let stopped = false;
+
+function waitForContinue(): Promise<void> {
+  if (stopped) {
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    continueResolve = resolve;
+  });
+}
+
+function signalContinue(): void {
+  const resolve = continueResolve;
+  continueResolve = null;
+  resolve?.();
+}
+
 self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
   const { type, data } = e.data;
 
   if (type === "init") {
-    // Worker initialized
-    self.postMessage({ type: "ready" } as any);
+    self.postMessage({ type: "ready" } as GeneratorResponse);
+    return;
+  }
+
+  if (type === "continue") {
+    signalContinue();
+    return;
+  }
+
+  if (type === "stop") {
+    stopped = true;
+    signalContinue();
     return;
   }
 
   if (type === "start" && data) {
-    const { echoes, mainEchoKeys, batchSize, loadoutFormat } = data;
-    const format = normalizeLoadoutFormat(loadoutFormat);
-    const optimizerEchoes = filterEchoesForOptimizer(echoes) as any[];
-    let batch: any[] = [];
-    let totalGenerated = 0;
-
-    try {
-      if (!Array.isArray(optimizerEchoes) || optimizerEchoes.length === 0) {
-        self.postMessage({
-          type: "done",
-          totalGenerated: 0,
-          noPossibleLoadouts: true,
-        } as GeneratorResponse);
-        return;
-      }
-
-      // Track seen combinations to ensure uniqueness
-      const seenCombinations = new Set<string>();
-
-      // Generate loadouts in batches
-      // @ts-ignore - generateLoadouts returns a generator with any[] items
-      // @ts-ignore
-      for (const loadout of generateLoadouts(
-        optimizerEchoes,
-        mainEchoKeys,
-        0,
-        [],
-        0,
-        new Set(),
-        new Set(),
-        format,
-      )) {
-        const normalizedLoadout = normalizeOptimizerLoadout(loadout as any[]);
-        const key = getOptimizerLoadoutKey(normalizedLoadout);
-
-        // Skip if we've already seen this combination
-        if (seenCombinations.has(key)) {
-          continue;
-        }
-        seenCombinations.add(key);
-
-        // CRITICAL: Clone the loadout array because generateLoadouts mutates the combo array
-        // If we push the reference directly, all loadouts will be the same (the last mutated value)
-        const clonedLoadout = JSON.parse(JSON.stringify(normalizedLoadout));
-        batch.push(clonedLoadout);
-        totalGenerated++;
-
-        // Send batch when it reaches the target size
-        if (batch.length >= batchSize) {
-          // Batch already contains cloned loadouts, so we can send directly
-          self.postMessage({
-            type: "batch",
-            batch: batch, // Already cloned, no need to clone again
-            totalGenerated,
-          } as GeneratorResponse);
-          batch = [];
-        }
-      }
-
-      // Send remaining loadouts
-      if (batch.length > 0) {
-        self.postMessage({
-          type: "batch",
-          batch: JSON.parse(JSON.stringify(batch)),
-          totalGenerated,
-        } as GeneratorResponse);
-      }
-
-      // Signal completion
-      self.postMessage({
-        type: "done",
-        totalGenerated,
-        noPossibleLoadouts: totalGenerated === 0,
-      } as GeneratorResponse);
-    } catch (error: any) {
-      self.postMessage({
-        type: "error",
-        error: error?.message || "Unknown error",
-      } as GeneratorResponse);
-    }
+    void runGeneration(data);
   }
 };
+
+async function runGeneration(data: NonNullable<GeneratorMessage["data"]>) {
+  const { echoes, mainEchoKeys, batchSize, loadoutFormat } = data;
+  const format = normalizeLoadoutFormat(loadoutFormat);
+  const optimizerEchoes = filterEchoesForOptimizer(echoes) as any[];
+  let batch: any[] = [];
+  let totalGenerated = 0;
+  stopped = false;
+  continueResolve = null;
+
+  try {
+    if (!Array.isArray(optimizerEchoes) || optimizerEchoes.length === 0) {
+      self.postMessage({
+        type: "done",
+        totalGenerated: 0,
+        noPossibleLoadouts: true,
+      } as GeneratorResponse);
+      return;
+    }
+
+    // Track seen combinations to ensure uniqueness
+    const seenCombinations = new Set<string>();
+
+    // Generate loadouts in batches
+    // @ts-ignore - generateLoadouts returns a generator with any[] items
+    // @ts-ignore
+    for (const loadout of generateLoadouts(
+      optimizerEchoes,
+      mainEchoKeys,
+      0,
+      [],
+      0,
+      new Set(),
+      new Set(),
+      format,
+    )) {
+      if (stopped) {
+        break;
+      }
+
+      const normalizedLoadout = normalizeOptimizerLoadout(loadout as any[]);
+      const key = getOptimizerLoadoutKey(normalizedLoadout);
+
+      // Skip if we've already seen this combination
+      if (seenCombinations.has(key)) {
+        continue;
+      }
+      seenCombinations.add(key);
+
+      // CRITICAL: Clone the loadout array because generateLoadouts mutates the combo array
+      // If we push the reference directly, all loadouts will be the same (the last mutated value)
+      const clonedLoadout = JSON.parse(JSON.stringify(normalizedLoadout));
+      batch.push(clonedLoadout);
+      totalGenerated++;
+
+      // Send batch when it reaches the target size, then wait for backpressure clearance
+      if (batch.length >= batchSize) {
+        self.postMessage({
+          type: "batch",
+          batch: batch,
+          totalGenerated,
+        } as GeneratorResponse);
+        batch = [];
+        await waitForContinue();
+      }
+    }
+
+    if (stopped) {
+      return;
+    }
+
+    // Send remaining loadouts
+    if (batch.length > 0) {
+      self.postMessage({
+        type: "batch",
+        batch: JSON.parse(JSON.stringify(batch)),
+        totalGenerated,
+      } as GeneratorResponse);
+      batch = [];
+      await waitForContinue();
+    }
+
+    if (stopped) {
+      return;
+    }
+
+    // Signal completion
+    self.postMessage({
+      type: "done",
+      totalGenerated,
+      noPossibleLoadouts: totalGenerated === 0,
+    } as GeneratorResponse);
+  } catch (error: any) {
+    self.postMessage({
+      type: "error",
+      error: error?.message || "Unknown error",
+    } as GeneratorResponse);
+  }
+}
