@@ -12,7 +12,7 @@
       @remove-min-stat="handleRemoveMinStat"
       class="mt-2"></CalculatorOptimizerMinStat>
     <button @click="addNewStat" class="btn btn-primary btn-sm mt-4">
-      Add New Stat
+      Add minimum stat
     </button>
   </div>
 </template>

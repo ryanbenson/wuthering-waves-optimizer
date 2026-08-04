@@ -218,7 +218,12 @@
       </div>
 
       <div class="optimizer-filters__sets">
-        <h3 class="mt-6 mb-2">Choose target stats (optional)</h3>
+        <h3 class="mt-6 mb-2">Minimum stats (optional)</h3>
+        <p class="text-sm opacity-70 mb-2 max-w-2xl">
+          Optional. Add one or more stats with a minimum value. Every loadout
+          must meet or exceed all of them — for example Energy Regen 120 and
+          ATK 2500.
+        </p>
         <CalculatorOptimizerMinStats
           :character="character"
           :key="character"

@@ -61,8 +61,12 @@
               echoes, and your target.
             </li>
             <li>
-              You can optionally choose to tell it to have minimum stats, like
-              if you need a minimum of Energy Regen for example.
+              Optionally, set
+              <strong>minimum stats</strong>
+              . Every resulting loadout must meet or exceed
+              <em>all</em>
+              of the values you add (for example, Energy Regen 120 and ATK
+              2500). Skip this if you do not need any floors.
             </li>
             <li>
               Click
