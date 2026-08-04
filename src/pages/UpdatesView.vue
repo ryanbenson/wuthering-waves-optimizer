@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 4, 2026</h3>
+    <ul>
+      <li>Fixes minimum stat requirements for optimizer, ATK, DEF, and HP weren't working properly.</li>
+    </ul>
     <h3>August 3, 2026</h3>
     <ul>
       <li>Adds ability to drag and drop to reorder rotations when you have more than one.</li>
