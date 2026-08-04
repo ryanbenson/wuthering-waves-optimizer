@@ -5,6 +5,7 @@
     <h3>August 4, 2026</h3>
     <ul>
       <li>Fixes minimum stat requirements for optimizer, ATK, DEF, and HP weren't working properly.</li>
+      <li>Improves the optimizer stability at higher scale of loadouts, and includes a timer in the UI.</li>
     </ul>
     <h3>August 3, 2026</h3>
     <ul>
