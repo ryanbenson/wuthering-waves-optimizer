@@ -100,6 +100,7 @@
           :character="character"
           :total-combos="totalCombos"
           :processed-combos="processedCombos"
+          :optimizer-elapsed-ms="optimizerElapsedMs"
           :optimizer-no-possible-loadouts="optimizerNoPossibleLoadouts"
           :optimizer-results="optimizerResults"
           :character-element="characterElement"
@@ -279,7 +280,15 @@
 
 <script lang="ts">
 // @ts-nocheck
-import { defineComponent, reactive, ref, watch, nextTick, computed } from "vue";
+import {
+  defineComponent,
+  reactive,
+  ref,
+  watch,
+  nextTick,
+  computed,
+  onUnmounted,
+} from "vue";
 import { storeToRefs } from "pinia";
 import {
   calcDamage,
@@ -496,6 +505,38 @@ export default defineComponent({
     const optimizerResults = ref([]);
     const optimizationTargetType = ref("");
     const optimizationTargetObject = ref("");
+    const optimizerElapsedMs = ref(0);
+    let optimizerTimerStartMs = 0;
+    let optimizerTimerIntervalId: ReturnType<typeof setInterval> | null = null;
+
+    const stopOptimizerTimer = () => {
+      if (optimizerTimerIntervalId != null) {
+        clearInterval(optimizerTimerIntervalId);
+        optimizerTimerIntervalId = null;
+      }
+      if (optimizerTimerStartMs > 0) {
+        optimizerElapsedMs.value = Math.max(
+          0,
+          performance.now() - optimizerTimerStartMs,
+        );
+      }
+    };
+
+    const startOptimizerTimer = () => {
+      stopOptimizerTimer();
+      optimizerElapsedMs.value = 0;
+      optimizerTimerStartMs = performance.now();
+      optimizerTimerIntervalId = setInterval(() => {
+        optimizerElapsedMs.value = Math.max(
+          0,
+          performance.now() - optimizerTimerStartMs,
+        );
+      }, 250);
+    };
+
+    onUnmounted(() => {
+      stopOptimizerTimer();
+    });
     // base stats
     const baseHp = ref(0);
     const baseAtk = ref(0);
@@ -564,6 +605,9 @@ export default defineComponent({
       processedCombos.value = 0;
       optimizerNoPossibleLoadouts.value = false;
       optimizerResults.value = [];
+      stopOptimizerTimer();
+      optimizerElapsedMs.value = 0;
+      optimizerTimerStartMs = 0;
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
@@ -974,6 +1018,7 @@ export default defineComponent({
       optimizerResults.value = []; // Initialize as empty array instead of null
       optimizationTargetType.value = target.split(":")[0];
       optimizationTargetObject.value = target.split(":")[1] || "";
+      startOptimizerTimer();
 
       // 1. Filter upfront
       let filteredEchoes = filterEchoesForOptimizer(echoes) as typeof echoes;
@@ -1545,6 +1590,7 @@ export default defineComponent({
 
           cleanupWorkers();
           totalCombos.value = totalProcessed;
+          stopOptimizerTimer();
         }
       };
 
@@ -1579,6 +1625,7 @@ export default defineComponent({
           } catch (error) {
             console.error("Error sending data to generator worker:", error);
             cleanupWorkers();
+            stopOptimizerTimer();
           }
         } else if (e.data.type === "batch") {
           totalGenerated = e.data.totalGenerated || 0;
@@ -1609,11 +1656,15 @@ export default defineComponent({
           totalCombos.value = e.data.totalGenerated || totalGenerated;
           optimizerNoPossibleLoadouts.value =
             e.data.noPossibleLoadouts === true;
+          if (e.data.noPossibleLoadouts === true) {
+            stopOptimizerTimer();
+          }
           distributeWork(); // Process remaining work
         } else if (e.data.type === "error") {
           console.error("Generator worker error:", e.data.error);
           generatorDone = true;
           generatorAwaitingContinue = false;
+          stopOptimizerTimer();
         }
       };
 
@@ -1716,6 +1767,7 @@ export default defineComponent({
       // optimizer stuff
       totalCombos,
       processedCombos,
+      optimizerElapsedMs,
       optimizerNoPossibleLoadouts,
       optimizerResults,
       optimizationTargetType,
