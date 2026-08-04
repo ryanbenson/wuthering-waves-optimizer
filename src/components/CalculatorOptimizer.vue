@@ -286,14 +286,21 @@
         settings or add more echoes.
       </p>
       <template v-else>
-        <div>
-          Processed
-          <span class="font-bold">{{ processedCombos }}</span>
-          of
-          <span class="font-bold">{{
-            totalCombos === 0 ? "…" : totalCombos
-          }}</span>
-          loadouts
+        <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <div>
+            Processed
+            <span class="font-bold">{{ processedCombos }}</span>
+            of
+            <span class="font-bold">{{
+              totalCombos === 0 ? "…" : totalCombos
+            }}</span>
+            loadouts
+          </div>
+          <div
+            class="tabular-nums text-sm opacity-80"
+            data-test-optimizer-elapsed>
+            Elapsed {{ formattedOptimizerElapsed }}
+          </div>
         </div>
         <progress
           class="progress progress-primary"
@@ -345,6 +352,7 @@ const props = defineProps<{
   character: string;
   totalCombos?: number;
   processedCombos?: number;
+  optimizerElapsedMs?: number;
   optimizerNoPossibleLoadouts?: boolean;
   optimizerResults?: unknown[] | null;
   characterElement: string;
@@ -398,6 +406,18 @@ const currentCharacter = computed(
 );
 
 const isTargetUnavailable = computed(() => false);
+
+const formattedOptimizerElapsed = computed(() => {
+  const ms = Math.max(0, props.optimizerElapsedMs ?? 0);
+  const totalSec = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSec / 3600);
+  const minutes = Math.floor((totalSec % 3600) / 60);
+  const seconds = totalSec % 60;
+  if (hours > 0) {
+    return `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  }
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+});
 
 const isValid = computed(() => {
   const echoSetsCount = setFilters.value.length;

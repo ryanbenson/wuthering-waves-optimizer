@@ -100,6 +100,7 @@
           :character="character"
           :total-combos="totalCombos"
           :processed-combos="processedCombos"
+          :optimizer-elapsed-ms="optimizerElapsedMs"
           :optimizer-no-possible-loadouts="optimizerNoPossibleLoadouts"
           :optimizer-results="optimizerResults"
           :character-element="characterElement"
@@ -279,7 +280,15 @@
 
 <script lang="ts">
 // @ts-nocheck
-import { defineComponent, reactive, ref, watch, nextTick, computed } from "vue";
+import {
+  defineComponent,
+  reactive,
+  ref,
+  watch,
+  nextTick,
+  computed,
+  onUnmounted,
+} from "vue";
 import { storeToRefs } from "pinia";
 import {
   calcDamage,
@@ -496,6 +505,38 @@ export default defineComponent({
     const optimizerResults = ref([]);
     const optimizationTargetType = ref("");
     const optimizationTargetObject = ref("");
+    const optimizerElapsedMs = ref(0);
+    let optimizerTimerStartMs = 0;
+    let optimizerTimerIntervalId: ReturnType<typeof setInterval> | null = null;
+
+    const stopOptimizerTimer = () => {
+      if (optimizerTimerIntervalId != null) {
+        clearInterval(optimizerTimerIntervalId);
+        optimizerTimerIntervalId = null;
+      }
+      if (optimizerTimerStartMs > 0) {
+        optimizerElapsedMs.value = Math.max(
+          0,
+          performance.now() - optimizerTimerStartMs,
+        );
+      }
+    };
+
+    const startOptimizerTimer = () => {
+      stopOptimizerTimer();
+      optimizerElapsedMs.value = 0;
+      optimizerTimerStartMs = performance.now();
+      optimizerTimerIntervalId = setInterval(() => {
+        optimizerElapsedMs.value = Math.max(
+          0,
+          performance.now() - optimizerTimerStartMs,
+        );
+      }, 250);
+    };
+
+    onUnmounted(() => {
+      stopOptimizerTimer();
+    });
     // base stats
     const baseHp = ref(0);
     const baseAtk = ref(0);
@@ -564,6 +605,9 @@ export default defineComponent({
       processedCombos.value = 0;
       optimizerNoPossibleLoadouts.value = false;
       optimizerResults.value = [];
+      stopOptimizerTimer();
+      optimizerElapsedMs.value = 0;
+      optimizerTimerStartMs = 0;
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
@@ -974,6 +1018,7 @@ export default defineComponent({
       optimizerResults.value = []; // Initialize as empty array instead of null
       optimizationTargetType.value = target.split(":")[0];
       optimizationTargetObject.value = target.split(":")[1] || "";
+      startOptimizerTimer();
 
       // 1. Filter upfront
       let filteredEchoes = filterEchoesForOptimizer(echoes) as typeof echoes;
@@ -1283,6 +1328,8 @@ export default defineComponent({
         navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 8
           ? 5000
           : 2000; // Larger batches on powerful devices
+      // Cap queued batches so generation cannot outrun processing into multi-GB heap
+      const maxQueuedBatches = workerCount * 2;
 
       // Create workers
       const generatorWorker = new Worker(
@@ -1307,13 +1354,78 @@ export default defineComponent({
       let totalProcessed = 0;
       const workerBusy = new Map<Worker, boolean>();
       let generatorDone = false;
+      /** True while generator is waiting for a "continue" after posting a batch */
+      let generatorAwaitingContinue = false;
       const seenCombinations = new Set<string>();
       let readyWorkers = 0;
+      let cleanedUp = false;
 
-      // Initialize processor workers
-      processorWorkers.forEach((worker, index) => {
+      // Serialize static processor config once (not per batch)
+      const serializableContext = createSerializableContext(context);
+      const plainMinStats = Array.isArray(minStats)
+        ? minStats.map((s: any) =>
+            s && typeof s === "object" ? { ...s } : s,
+          )
+        : minStats;
+      const serializableEchoSetPassiveBuffs = JSON.parse(
+        JSON.stringify(echoSetPassiveBuffs),
+      );
+      const serializableMainEchoStats = JSON.parse(
+        JSON.stringify(mainEchoStats),
+      );
+      const serializableRotationData = rotationData
+        ? JSON.parse(JSON.stringify(rotationData))
+        : null;
+
+      const cleanupWorkers = () => {
+        if (cleanedUp) return;
+        cleanedUp = true;
+        try {
+          generatorWorker.postMessage({ type: "stop" });
+        } catch {
+          // Worker may already be terminated
+        }
+        generatorWorker.terminate();
+        processorWorkers.forEach((w) => {
+          try {
+            w.postMessage({ type: "stop" });
+          } catch {
+            // ignore
+          }
+          w.terminate();
+        });
+      };
+
+      /** Ask generator for another batch when queue has room */
+      const maybeContinueGenerator = () => {
+        if (
+          cleanedUp ||
+          generatorDone ||
+          !generatorAwaitingContinue ||
+          workQueue.length >= maxQueuedBatches
+        ) {
+          return;
+        }
+        generatorAwaitingContinue = false;
+        generatorWorker.postMessage({ type: "continue" });
+      };
+
+      // Initialize processor workers with static config once
+      processorWorkers.forEach((worker) => {
         workerBusy.set(worker, false);
-        worker.postMessage({ type: "init" });
+        worker.postMessage({
+          type: "init",
+          data: {
+            context: serializableContext,
+            minStats: plainMinStats,
+            echoSetPassiveBuffs: serializableEchoSetPassiveBuffs,
+            mainEchoStats: serializableMainEchoStats,
+            target,
+            damageType,
+            rotationData: serializableRotationData,
+            topN,
+          },
+        });
         worker.onmessage = (e) => {
           if (e.data.type === "ready") {
             readyWorkers++;
@@ -1325,8 +1437,7 @@ export default defineComponent({
             totalProcessed += e.data.processed || 0;
             processedCombos.value = totalProcessed;
 
-            // Workers no longer send newCombinations - we filter duplicates here in main thread
-            // Update heap with results
+            // Workers only return local top-N candidates; merge into global heap
             if (e.data.results && e.data.results.length > 0) {
               for (const result of e.data.results) {
                 if (
@@ -1402,8 +1513,9 @@ export default defineComponent({
               }
             }
 
-            // Request more work
+            // Request more work and unblock generator if queue drained
             distributeWork();
+            maybeContinueGenerator();
           } else if (e.data.type === "error") {
             console.error(
               `Processor worker error (batch ${e.data.batchId}):`,
@@ -1413,6 +1525,7 @@ export default defineComponent({
             totalProcessed += e.data.processed || 0;
             processedCombos.value = totalProcessed;
             distributeWork();
+            maybeContinueGenerator();
           } else {
             console.warn("Unknown message type from worker:", e.data);
           }
@@ -1442,42 +1555,12 @@ export default defineComponent({
           workerBusy.set(availableWorker, true);
 
           try {
-            // Create serializable context (remove functions, ensure all data is plain objects)
-            const serializableContext = createSerializableContext(context);
-
-            // Convert any Vue reactive arrays/objects to plain arrays/objects
-            // Vue reactive proxies cannot be cloned, so we need to convert them first
-            const plainAllowedSets = Array.isArray(allowedSets)
-              ? [...allowedSets]
-              : allowedSets;
-            const plainMainEchoKeys = Array.isArray(mainEchoKeys)
-              ? [...mainEchoKeys]
-              : mainEchoKeys;
-            const plainMinStats = Array.isArray(minStats)
-              ? minStats.map((s: any) =>
-                  s && typeof s === "object" ? { ...s } : s,
-                )
-              : minStats;
-
+            // Slim process payload: static config was sent once on init
             availableWorker.postMessage({
               type: "process",
               data: {
                 batch: work.batch,
                 batchId: work.batchId,
-                context: serializableContext,
-                allowedSets: plainAllowedSets,
-                topN,
-                mainEchoKeys: plainMainEchoKeys,
-                minStats: plainMinStats,
-                echoSetPassiveBuffs: JSON.parse(
-                  JSON.stringify(echoSetPassiveBuffs),
-                ),
-                mainEchoStats: JSON.parse(JSON.stringify(mainEchoStats)),
-                target,
-                damageType,
-                rotationData: rotationData
-                  ? JSON.parse(JSON.stringify(rotationData))
-                  : null,
               },
             });
           } catch (error: any) {
@@ -1491,6 +1574,9 @@ export default defineComponent({
           }
         }
 
+        // Unblock generator once queue has room again
+        maybeContinueGenerator();
+
         // Check if we're done
         const allWorkersIdle = processorWorkers.every(
           (w) => !workerBusy.get(w),
@@ -1502,10 +1588,9 @@ export default defineComponent({
             .sort((a, b) => b.targetValue - a.targetValue);
           optimizerResults.value = finalResults;
 
-          // Cleanup
-          generatorWorker.terminate();
-          processorWorkers.forEach((w) => w.terminate());
+          cleanupWorkers();
           totalCombos.value = totalProcessed;
+          stopOptimizerTimer();
         }
       };
 
@@ -1539,12 +1624,15 @@ export default defineComponent({
             }
           } catch (error) {
             console.error("Error sending data to generator worker:", error);
-            generatorWorker.terminate();
-            processorWorkers.forEach((w) => w.terminate());
+            cleanupWorkers();
+            stopOptimizerTimer();
           }
         } else if (e.data.type === "batch") {
           totalGenerated = e.data.totalGenerated || 0;
           totalCombos.value = totalGenerated;
+
+          // Generator is paused until we send "continue"
+          generatorAwaitingContinue = true;
 
           // Add batch to work queue
           if (e.data.batch && e.data.batch.length > 0) {
@@ -1556,17 +1644,27 @@ export default defineComponent({
             // Distribute work if workers are ready
             if (readyWorkers === processorWorkers.length) {
               distributeWork();
+            } else {
+              maybeContinueGenerator();
             }
+          } else {
+            maybeContinueGenerator();
           }
         } else if (e.data.type === "done") {
           generatorDone = true;
+          generatorAwaitingContinue = false;
           totalCombos.value = e.data.totalGenerated || totalGenerated;
           optimizerNoPossibleLoadouts.value =
             e.data.noPossibleLoadouts === true;
+          if (e.data.noPossibleLoadouts === true) {
+            stopOptimizerTimer();
+          }
           distributeWork(); // Process remaining work
         } else if (e.data.type === "error") {
           console.error("Generator worker error:", e.data.error);
           generatorDone = true;
+          generatorAwaitingContinue = false;
+          stopOptimizerTimer();
         }
       };
 
@@ -1669,6 +1767,7 @@ export default defineComponent({
       // optimizer stuff
       totalCombos,
       processedCombos,
+      optimizerElapsedMs,
       optimizerNoPossibleLoadouts,
       optimizerResults,
       optimizationTargetType,
