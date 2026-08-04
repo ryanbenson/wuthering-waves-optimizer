@@ -3,13 +3,14 @@
     <AppRichSelect
       v-model="inputStat"
       :options="statSelectOptions"
-      placeholder="Pick your stat"
-      aria-label="Minimum stat"
+      placeholder="Choose a stat"
+      aria-label="Minimum required stat"
       class="w-full max-w-xs" />
     <input
       type="text"
       v-model.trim="inputMinValue"
-      placeholder="Minimum stat value desired"
+      placeholder="Minimum value (e.g. 2500)"
+      aria-label="Minimum required value"
       class="input w-full max-w-xs" />
     <button @click="handleRemove" class="btn btn-xs size-12">
       <svg

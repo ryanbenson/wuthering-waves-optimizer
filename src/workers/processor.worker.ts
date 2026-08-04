@@ -372,7 +372,9 @@ function processLoadout(
     if (minStats.length > 0) {
       for (const minStat of minStats) {
         const statValue = finalStats?.[minStat.stat];
-        if (!meetsMinStatThreshold(statValue, minStat.minValue)) {
+        if (
+          !meetsMinStatThreshold(statValue, minStat.minValue, minStat.stat)
+        ) {
           return null; // Doesn't meet requirements
         }
       }
