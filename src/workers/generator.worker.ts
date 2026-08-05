@@ -21,15 +21,15 @@
  * 6. Worker sends "error" if any errors occur
  *
  * Performance Notes:
- * - Each loadout is cloned before adding to batch (critical: generateLoadouts mutates arrays)
- * - Batches are sent directly without additional cloning (already cloned)
- * - Deduplication happens in the worker to reduce main thread overhead
+ * - Each loadout array is shallow-cloned before adding to batch (generateLoadouts mutates the combo array;
+ *   echo objects themselves are treated as immutable and are structured-cloned on postMessage)
+ * - Deduplication uses hashed signature keys so the Set does not retain multi-GB strings at scale
  * - Pull-based continue prevents unbounded queue growth on the main thread
  */
 
 import {
   generateLoadouts,
-  getOptimizerLoadoutKey,
+  getOptimizerLoadoutHash,
   normalizeOptimizerLoadout,
   filterEchoesForOptimizer,
   normalizeLoadoutFormat,
@@ -122,8 +122,8 @@ async function runGeneration(data: NonNullable<GeneratorMessage["data"]>) {
       return;
     }
 
-    // Track seen combinations to ensure uniqueness
-    const seenCombinations = new Set<string>();
+    // Track seen combinations as 64-bit signature hashes (same uniqueness as full keys, far less RAM)
+    const seenCombinations = new Set<bigint>();
 
     // Generate loadouts in batches
     // @ts-ignore - generateLoadouts returns a generator with any[] items
@@ -143,18 +143,17 @@ async function runGeneration(data: NonNullable<GeneratorMessage["data"]>) {
       }
 
       const normalizedLoadout = normalizeOptimizerLoadout(loadout as any[]);
-      const key = getOptimizerLoadoutKey(normalizedLoadout);
+      const hash = getOptimizerLoadoutHash(normalizedLoadout);
 
       // Skip if we've already seen this combination
-      if (seenCombinations.has(key)) {
+      if (seenCombinations.has(hash)) {
         continue;
       }
-      seenCombinations.add(key);
+      seenCombinations.add(hash);
 
-      // CRITICAL: Clone the loadout array because generateLoadouts mutates the combo array
-      // If we push the reference directly, all loadouts will be the same (the last mutated value)
-      const clonedLoadout = JSON.parse(JSON.stringify(normalizedLoadout));
-      batch.push(clonedLoadout);
+      // CRITICAL: Snapshot the loadout array because generateLoadouts mutates the combo via push/pop.
+      // Echo objects are immutable here; postMessage structured-clones the batch for the main thread.
+      batch.push(normalizedLoadout.slice());
       totalGenerated++;
 
       // Send batch when it reaches the target size, then wait for backpressure clearance
@@ -177,7 +176,7 @@ async function runGeneration(data: NonNullable<GeneratorMessage["data"]>) {
     if (batch.length > 0) {
       self.postMessage({
         type: "batch",
-        batch: JSON.parse(JSON.stringify(batch)),
+        batch,
         totalGenerated,
       } as GeneratorResponse);
       batch = [];

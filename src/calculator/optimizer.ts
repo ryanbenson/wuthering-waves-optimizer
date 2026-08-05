@@ -148,6 +148,25 @@ export function getOptimizerLoadoutKey(loadout: any[]): string {
   return normalizedLoadout.map(echoOptimizerSignature).join("|");
 }
 
+/**
+ * FNV-1a 64-bit hash of a loadout signature string.
+ * Used so dedupe Sets store compact values instead of retaining long keys.
+ */
+export function hashOptimizerLoadoutKey(key: string): bigint {
+  let hash = 0xcbf29ce484222325n;
+  const prime = 0x100000001b3n;
+  for (let i = 0; i < key.length; i++) {
+    hash ^= BigInt(key.charCodeAt(i));
+    hash = BigInt.asUintN(64, hash * prime);
+  }
+  return hash;
+}
+
+/** Signature-equivalent uniqueness key stored as a 64-bit hash. */
+export function getOptimizerLoadoutHash(loadout: any[]): bigint {
+  return hashOptimizerLoadoutKey(getOptimizerLoadoutKey(loadout));
+}
+
 export function* generateLoadouts(
   echoes: any,
   mainEchoKeys: string[] = [],
@@ -361,7 +380,7 @@ export function optimize(
 ) {
   // Min-heap for topN results
   const heap: any[] = [];
-  const seenCombinations = new Set<string>(); // Track unique combinations
+  const seenCombinations = new Set<bigint>(); // Track unique combinations
 
   // get info on our target
   const targetElements = target.split(":");
@@ -499,10 +518,10 @@ export function optimize(
 
   // @ts-ignore
   for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
-    const combinationKey = getOptimizerLoadoutKey(loadout);
+    const combinationHash = getOptimizerLoadoutHash(loadout);
 
     // Skip if we've already seen this combination
-    if (seenCombinations.has(combinationKey)) {
+    if (seenCombinations.has(combinationHash)) {
       continue;
     }
 
@@ -691,7 +710,7 @@ export function optimize(
       continue;
     }
 
-    seenCombinations.add(combinationKey);
+    seenCombinations.add(combinationHash);
 
     let targetValue = 0;
     let resultContext: any = {
