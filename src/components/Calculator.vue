@@ -349,7 +349,7 @@ import {
 import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
 import type { OptimizerContext } from "../calculator/optimizer";
 import {
-  getOptimizerLoadoutKey,
+  getOptimizerLoadoutHash,
   filterEchoesForOptimizer,
 } from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
@@ -1356,7 +1356,7 @@ export default defineComponent({
       let generatorDone = false;
       /** True while generator is waiting for a "continue" after posting a batch */
       let generatorAwaitingContinue = false;
-      const seenCombinations = new Set<string>();
+      const seenCombinations = new Set<bigint>();
       let readyWorkers = 0;
       let cleanedUp = false;
 
@@ -1450,11 +1450,11 @@ export default defineComponent({
                 if (result.loadout.length === 0) {
                   continue;
                 }
-                const key = getOptimizerLoadoutKey(result.loadout);
-                if (seenCombinations.has(key)) {
+                const hash = getOptimizerLoadoutHash(result.loadout);
+                if (seenCombinations.has(hash)) {
                   continue;
                 }
-                seenCombinations.add(key);
+                seenCombinations.add(hash);
 
                 // Ensure targetValue is a number
                 const targetValue =
