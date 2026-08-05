@@ -9,13 +9,13 @@
  * - Runs in separate threads to parallelize computation
  * - Receives static optimizer config once on "init"
  * - Receives batches of loadouts from the main thread via slim "process" messages
- * - Keeps a local top-N heap and only returns candidates that enter it
+ * - Keeps a local top-N heap and only returns candidates still retained in it at batch end
  * - Main thread merges candidates into the global top-N heap
  *
  * Message Flow:
  * 1. Main thread sends "init" with context and optimization parameters -> Worker responds with "ready"
  * 2. Main thread sends "process" with { batch, batchId } only
- * 3. Worker processes loadouts, updates local top-N, sends "result" with new candidates
+ * 3. Worker processes loadouts, updates local top-N, sends "result" with newly retained candidates
  * 4. Worker sends "error" if batch processing fails
  *
  * Processing Steps (for each loadout):
@@ -26,11 +26,11 @@
  * 5. Calculate final stats
  * 6. Check minimum stat requirements (if any)
  * 7. Calculate target value based on target type
- * 8. Try insert into local top-N heap; only heap entrants are returned
+ * 8. Try insert into local top-N heap; post only inserts still in the heap at batch end
  *
  * Performance Notes:
  * - Static context is cloned once at init, not per batch
- * - Only top-N candidates are posted back (not every valid loadout)
+ * - Only top-N candidates still retained this batch are posted back
  * - Errors in individual loadouts don't stop batch processing
  */
 
@@ -843,8 +843,9 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
       } = processorConfig;
 
       try {
-        // Only return candidates that entered the local top-N heap this batch
-        const candidates: any[] = [];
+        // Track inserts this batch; only post those still in the local heap at batch end
+        // (avoids shipping soon-evicted candidates and re-cloning unchanged heap members)
+        const enteredThisBatch = new Set<any>();
         let errorCount = 0;
 
         for (let i = 0; i < batch.length; i++) {
@@ -862,7 +863,7 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
             );
 
             if (result && tryInsertLocalHeap(result, topN)) {
-              candidates.push(result);
+              enteredThisBatch.add(result);
             }
           } catch (loadoutError: any) {
             errorCount++;
@@ -874,6 +875,10 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
             // Continue processing other loadouts
           }
         }
+
+        const candidates = localHeap.filter((result) =>
+          enteredThisBatch.has(result),
+        );
 
         // Only log errors
         if (errorCount > 0) {

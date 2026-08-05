@@ -2,6 +2,10 @@ import { describe, it, expect } from "vitest";
 import {
   generateLoadouts,
   normalizeLoadoutFormat,
+  getOptimizerLoadoutKey,
+  getOptimizerLoadoutHash,
+  hashOptimizerLoadoutKey,
+  normalizeOptimizerLoadout,
 } from "../../src/calculator/optimizer";
 
 function makeEcho(echo: string, type: number, echoId: string) {
@@ -103,5 +107,52 @@ describe("generateLoadouts loadout formats", () => {
       expect(loadout[0].echo).toBe("Main3");
       expect(costSignature(loadout)).toBe("43311");
     }
+  });
+});
+
+describe("optimizer loadout hash dedupe", () => {
+  it("hashes the same signature to the same bigint", () => {
+    const key = "Foo:Set:4:5:ATK:Crit Rate:10.5||||";
+    expect(hashOptimizerLoadoutKey(key)).toBe(hashOptimizerLoadoutKey(key));
+  });
+
+  it("collapses identical-stat copies and order variants to one hash", () => {
+    const main = makeEcho("Main4", 4, "m4");
+    const a1 = {
+      ...makeEcho("OneA", 1, "o1a"),
+      echoSubStatsType1: "Crit Rate",
+      echoSubStatsValue1: 10.5,
+    };
+    const a2 = {
+      ...makeEcho("OneA", 1, "o1a-copy"),
+      echoSubStatsType1: "Crit Rate",
+      echoSubStatsValue1: 10.5,
+    };
+    const b = makeEcho("OneB", 1, "o1b");
+
+    const loadout1 = normalizeOptimizerLoadout([main, a1, b]);
+    const loadout2 = normalizeOptimizerLoadout([main, b, a2]);
+
+    expect(getOptimizerLoadoutKey(loadout1)).toBe(getOptimizerLoadoutKey(loadout2));
+    expect(getOptimizerLoadoutHash(loadout1)).toBe(getOptimizerLoadoutHash(loadout2));
+  });
+
+  it("keeps distinct rolls as distinct hashes", () => {
+    const main = makeEcho("Main4", 4, "m4");
+    const low = {
+      ...makeEcho("OneA", 1, "o1a"),
+      echoSubStatsType1: "Crit Rate",
+      echoSubStatsValue1: 6.3,
+    };
+    const high = {
+      ...makeEcho("OneA", 1, "o1a-copy"),
+      echoSubStatsType1: "Crit Rate",
+      echoSubStatsValue1: 10.5,
+    };
+    const b = makeEcho("OneB", 1, "o1b");
+
+    expect(getOptimizerLoadoutHash([main, low, b])).not.toBe(
+      getOptimizerLoadoutHash([main, high, b]),
+    );
   });
 });
