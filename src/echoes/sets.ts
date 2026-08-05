@@ -71,6 +71,37 @@ export const fiveSetBonuses: string[] = [
   "Lamp of Nether Road 5 Set",
 ];
 
+/** Reverse map: set display label -> set type key (built once) */
+const echoSetLabelToKey = (() => {
+  const map = new Map<string, string>();
+  for (const key of Object.keys(echoSetLabelMap)) {
+    map.set(getEchoSetLabelByType(key), key);
+  }
+  return map;
+})();
+
+function setKeysFromBonusLabels(
+  bonuses: string[],
+  setCountSuffix: string,
+): Set<string> {
+  const keys = bonuses
+    .map((bonus) => {
+      const match = bonus.match(
+        new RegExp(`^(.+) ${setCountSuffix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`),
+      );
+      if (!match) return null;
+      return echoSetLabelToKey.get(match[1]) ?? null;
+    })
+    .filter((key): key is string => Boolean(key));
+  return new Set(keys);
+}
+
+/** Cached once: which set type keys have 1/2/3/5-piece bonuses */
+const has1SetBonusKeys = setKeysFromBonusLabels(oneSetBonuses, "1 Set");
+const has2SetBonusKeys = setKeysFromBonusLabels(twoSetBonuses, "2 Set");
+const has3SetBonusKeys = setKeysFromBonusLabels(threeSetBonuses, "3 Set");
+const has5SetBonusKeys = setKeysFromBonusLabels(fiveSetBonuses, "5 Set");
+
 // Function to convert a list of echo set keys (e.g. MidnightVeil)
 // to their corresponding set bonus effects
 // may need to use getEchoSetLabelByType to convert keys to labels
@@ -140,59 +171,6 @@ export const getSetBonusEffects = (
       return acc;
     }, {});
 
-  // Create lookup sets from your constants for which bonuses exist
-  const has1SetBonus = new Set(
-    oneSetBonuses
-      .map((bonus) => {
-        const match = bonus.match(/^(.+) 1 Set$/);
-        return match
-          ? Object.keys(echoSetLabelMap).find(
-              (key) => getEchoSetLabelByType(key) === match[1],
-            )
-          : null;
-      })
-      .filter(Boolean),
-  );
-
-  const has2SetBonus = new Set(
-    twoSetBonuses
-      .map((bonus) => {
-        const match = bonus.match(/^(.+) 2 Set$/);
-        return match
-          ? Object.keys(echoSetLabelMap).find(
-              (key) => getEchoSetLabelByType(key) === match[1],
-            )
-          : null;
-      })
-      .filter(Boolean),
-  );
-
-  const has3SetBonus = new Set(
-    threeSetBonuses
-      .map((bonus) => {
-        const match = bonus.match(/^(.+) 3 Set$/);
-        return match
-          ? Object.keys(echoSetLabelMap).find(
-              (key) => getEchoSetLabelByType(key) === match[1],
-            )
-          : null;
-      })
-      .filter(Boolean),
-  );
-
-  const has5SetBonus = new Set(
-    fiveSetBonuses
-      .map((bonus) => {
-        const match = bonus.match(/^(.+) 5 Set$/);
-        return match
-          ? Object.keys(echoSetLabelMap).find(
-              (key) => getEchoSetLabelByType(key) === match[1],
-            )
-          : null;
-      })
-      .filter(Boolean),
-  );
-
   // Get all possible bonuses for each set
   const availableBonuses = [];
   const oneSetBonusesFound: Array<{ bonus: string; setType: string }> = [];
@@ -201,27 +179,27 @@ export const getSetBonusEffects = (
     const setLabel = getEchoSetLabelByType(setType);
 
     // Add bonuses based on count and what bonuses exist for this set
-    if (count >= 1 && has1SetBonus.has(setType)) {
+    if (count >= 1 && has1SetBonusKeys.has(setType)) {
       oneSetBonusesFound.push({
         bonus: `${setLabel} 1 Set`,
         setType,
       });
     }
-    if (count >= 5 && has5SetBonus.has(setType)) {
+    if (count >= 5 && has5SetBonusKeys.has(setType)) {
       availableBonuses.push({
         bonus: `${setLabel} 5 Set`,
         priority: 3,
         setType,
       });
     }
-    if (count >= 3 && has3SetBonus.has(setType)) {
+    if (count >= 3 && has3SetBonusKeys.has(setType)) {
       availableBonuses.push({
         bonus: `${setLabel} 3 Set`,
         priority: 2,
         setType,
       });
     }
-    if (count >= 2 && has2SetBonus.has(setType)) {
+    if (count >= 2 && has2SetBonusKeys.has(setType)) {
       availableBonuses.push({
         bonus: `${setLabel} 2 Set`,
         priority: 1,

@@ -67,6 +67,10 @@ interface ProcessorConfig {
   damageType: string;
   rotationData?: any;
   topN: number;
+  /** Loadout-independent; computed once on init */
+  selfBuffsData: any;
+  /** Loadout-independent; computed once on init */
+  resonanceChainsBuffsData: any;
 }
 
 /**
@@ -164,7 +168,9 @@ function processLoadout(
   mainEchoStats: Record<string, any>,
   target: string,
   damageType: string,
-  rotationData?: any,
+  rotationData: any | undefined,
+  selfBuffsData: any,
+  resonanceChainsBuffsData: any,
 ): any | null {
   try {
     const normalizedLoadout = normalizeOptimizerLoadout(loadout);
@@ -209,49 +215,7 @@ function processLoadout(
       });
     });
 
-    // Compute stats
-    let finalStats = calcCharStats(
-      "All",
-      null,
-      { ignoreEchoes: true },
-      combinedEchoBuffs,
-      null,
-      {
-        baseHp: context.baseHp,
-        baseAtk: context.baseAtk,
-        baseDef: context.baseDef,
-      },
-      {
-        weaponAtk: context.weaponData?.attack,
-        weaponModifier: context.weaponData?.modifier,
-        weaponModifierValue: context.weaponData?.modifierValue,
-        weaponPassiveData: context.weaponData?.weaponPassiveStats ?? {},
-      },
-      {},
-      {},
-      context.echoStats,
-      context.customBuffs,
-      context.teamBuffsData,
-    );
-
-    // Compute buffs in correct order
-    const resonanceChainsBuffsData = computeResonanceChainsBuffs(
-      context.activeCharacterResonanceChains ?? {},
-      context.chosenChar?.resonanceChains ?? [],
-      context.talentData ?? {},
-      context.activeStance ?? null,
-    );
-
-    const selfBuffsData = computeSelfBuffs(
-      context.activeCharacterBuffs ?? {},
-      context.chosenChar?.buffs ?? [],
-      context.activeCharacterResonanceChains ?? {},
-      context.talentData ?? {},
-      context.character ?? null,
-      context.activeStance ?? null,
-      { havocBaneStacks: context.havocBaneStacks ?? 0 },
-    );
-
+    // Intermediate stats with hoisted self/RC buffs (echo-dependent via combinedEchoBuffs)
     let intermediateStats = calcCharStats(
       "All",
       null,
@@ -375,7 +339,7 @@ function processLoadout(
       };
     }
 
-    finalStats = calcCharStats(
+    const finalStats = calcCharStats(
       "All",
       null,
       { ignoreEchoes: true },
@@ -778,8 +742,9 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
     if (type === "init") {
       localHeap = [];
       if (data?.context) {
+        const context = data.context;
         processorConfig = {
-          context: data.context,
+          context,
           minStats: Array.isArray(data.minStats) ? data.minStats : [],
           echoSetPassiveBuffs: data.echoSetPassiveBuffs ?? {},
           mainEchoStats: data.mainEchoStats ?? {},
@@ -787,6 +752,22 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
           damageType: data.damageType ?? "Average",
           rotationData: data.rotationData ?? null,
           topN: typeof data.topN === "number" && data.topN > 0 ? data.topN : 5,
+          // Echo-independent buffs — compute once per run
+          resonanceChainsBuffsData: computeResonanceChainsBuffs(
+            context.activeCharacterResonanceChains ?? {},
+            context.chosenChar?.resonanceChains ?? [],
+            context.talentData ?? {},
+            context.activeStance ?? null,
+          ),
+          selfBuffsData: computeSelfBuffs(
+            context.activeCharacterBuffs ?? {},
+            context.chosenChar?.buffs ?? [],
+            context.activeCharacterResonanceChains ?? {},
+            context.talentData ?? {},
+            context.character ?? null,
+            context.activeStance ?? null,
+            { havocBaneStacks: context.havocBaneStacks ?? 0 },
+          ),
         };
       } else {
         processorConfig = null;
@@ -840,6 +821,8 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
         damageType,
         rotationData,
         topN,
+        selfBuffsData,
+        resonanceChainsBuffsData,
       } = processorConfig;
 
       try {
@@ -859,6 +842,8 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
               target,
               damageType,
               rotationData,
+              selfBuffsData,
+              resonanceChainsBuffsData,
             );
 
             if (result && tryInsertLocalHeap(result, topN)) {
