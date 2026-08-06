@@ -2,6 +2,14 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 6, 2026</h3>
+    <ul>
+      <li>Fixes weapon team buff name for Firstlight's Herald.</li>
+    </ul>
+    <h3>August 5, 2026</h3>
+    <ul>
+      <li>More improvements to the optimizer stability at higher scale of loadouts.</li>
+    </ul>
     <h3>August 4, 2026</h3>
     <ul>
       <li>Fixes minimum stat requirements for optimizer, ATK, DEF, and HP weren't working properly.</li>
