@@ -7,7 +7,7 @@ Yet, when it raises its head again to loose a piercing cry, the slumbering sun s
   type: "Rectifier",
   rarity: 5,
   passiveName: "Spring Wreath",
-  passiveValue: "Max HP is increased by <span style='color:#ffd12f;'>12%/15%/18%/21%/24%</span>. Casting Resonance Liberation restores <span style='color:#ffd12f;'>8/10/12/14/16</span> Concerto Energy. This effect is triggered once every 20s. Casting Intro Skill or Resonance Skill grants nearby Resonators in the team Kingfisher for 30s. If the wielder is on the field, Resonators with Kingfisher have their ATK increased by <span style='color:#ffd12f;'>20%/25%/30%/35%/40%</span>. If the wielder is not on the field, gain Tinted Snow for 6s each time they inflict Glacio Chafe, and gain Ripples  for 6s each time they apply healing. Having Tinted Snow and Ripples simoutaneously enhances Kingfisher's effect. If the wielder has applied healing and inflicted Glacio Chafe while on the field, they gain both Tinted Snow and Ripples for 6s upon casting Outro Skill, and resets the aforementioned effects. Effects of the same name cannot be stacked.",
+  passiveValue: "Increases Max HP by 12%. Casting Resonance Liberation restores 8 points of Concerto Energy, triggered once every 20s. Inflicting Glacio Chafe grants Snow Taint for 6s. Applying healing grants Ripples for 6s. If the wielder has done both while on the field, the next Outro Skill grants both effects for 6s. When the wielder has both Snow Taint and Ripples, the ATK of all nearby Resonators in the team is increased by 20%. Effects of the same name do not stack.",
   passiveData: [
     {
       key: "FirstlightsHeraldMaxHP",
@@ -20,7 +20,7 @@ Yet, when it raises its head again to loose a piercing cry, the slumbering sun s
         "4": 0.21,
         "5": 0.24,
       },
-      details: "Max HP is increased by <span style='color:#ffd12f;'>12%/15%/18%/21%/24%</span>.",
+      details: "Increases Max HP by <span style='color:#ffd12f;'>12%/15%/18%/21%/24%</span>.",
       alwaysEnabled: true,
     },
     {
@@ -34,7 +34,7 @@ Yet, when it raises its head again to loose a piercing cry, the slumbering sun s
         "4": 0.4,
         "5": 0.45,
       },
-      details: "Casting Resonance Liberation restores <span style='color:#ffd12f;'>8/10/12/14/16</span> Concerto Energy. This effect is triggered once every 20s. Casting Intro Skill or Resonance Skill grants nearby Resonators in the team Kingfisher for 30s. If the wielder is on the field, Resonators with Kingfisher have their ATK increased by <span style='color:#ffd12f;'>20%/25%/30%/35%/40%</span>. If the wielder is not on the field, gain Tinted Snow for 6s each time they inflict Glacio Chafe, and gain Ripples  for 6s each time they apply healing. Having Tinted Snow and Ripples simoutaneously enhances Kingfisher's effect. If the wielder has applied healing and inflicted Glacio Chafe while on the field, they gain both Tinted Snow and Ripples for 6s upon casting Outro Skill, and resets the aforementioned effects. Effects of the same name cannot be stacked.",
+      details: "Inflicting Glacio Chafe grants Snow Taint for 6s. Applying healing grants Ripples for 6s. If the wielder has done both while on the field, the next Outro Skill grants both effects for 6s. When the wielder has both Snow Taint and Ripples, the ATK of all nearby Resonators in the team is increased by 20%/30%/35%/40%/45%. Effects of the same name do not stack.",
     },
   ],
 };
