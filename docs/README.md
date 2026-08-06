@@ -1,11 +1,15 @@
 # App documentation
 
-This folder contains references for developers new to the app. Start here for an overview, then use the links below to dive into each area.
+This folder contains references for developers and coding agents. Start with **context** (priorities and mental model), then **architecture** (conventions), then area docs. Lasting “why” decisions live in **ADRs**.
+
+Root agent briefing: [CLAUDE.md](../CLAUDE.md).
 
 ## Quick links
 
 | Area | Description | Doc |
 |------|-------------|-----|
+| **Context** | Priorities (accuracy → performance → …), mental model, glossary | [context.md](./context.md) |
+| **ADRs** | Architecture decision records | [adr/](./adr/) |
 | **Architecture** | Vue 3, types, performance, testing, UI, workers | [architecture.md](./architecture.md) |
 | **Buffs** | Team buffs and modifiers | [src-buffs.md](./src-buffs.md) |
 | **Calculator** | Formulas, stats, attacks, deep math | [src-calculator.md](./src-calculator.md) |
@@ -16,6 +20,7 @@ This folder contains references for developers new to the app. Start here for an
 | **Utils** | Generic helpers | [src-utils.md](./src-utils.md) |
 | **Weapons** | Weapon definitions | [src-weapons.md](./src-weapons.md) |
 | **Workers** | Web workers (optimizer, echo parser/OCR) | [src-workers.md](./src-workers.md) |
+| **New character** | Authoring guide | [creating-new-character.md](./creating-new-character.md) |
 
 ## High-level `src/` map
 
@@ -37,6 +42,8 @@ src/
 
 ## For new contributors
 
-1. Read [architecture.md](./architecture.md) for conventions (Options API, types, performance, no classes, tests, workers, DaisyUI).
-2. Read [src-components.md](./src-components.md) to understand how the UI and data flow work, with `Calculator.vue` as the central orchestrator.
-3. Use the area-specific docs when touching buffs, calculator, characters, echoes, stores, weapons, or workers.
+1. Read [context.md](./context.md) for priorities (accuracy first) and the system mental model.
+2. Read [architecture.md](./architecture.md) for conventions (Composition API, types, performance, no classes, tests, workers, DaisyUI).
+3. Skim [adr/](./adr/) for decisions that affect your area.
+4. Read [src-components.md](./src-components.md) to understand UI data flow (`Calculator.vue` as orchestrator).
+5. Use the area-specific docs when touching buffs, calculator, characters, echoes, stores, weapons, or workers.

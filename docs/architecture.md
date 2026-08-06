@@ -2,10 +2,22 @@
 
 High-level technical choices and conventions for the app. Follow these when adding or changing code.
 
+For **priorities and mental model**, see [context.md](./context.md). For **why** behind lasting choices, see [adr/](./adr/). Agent entrypoint: [CLAUDE.md](../CLAUDE.md).
+
+## Priority order (summary)
+
+1. Calculation **accuracy**
+2. **Performance** (without sacrificing accuracy)
+3. Persisted **user-data integrity**
+4. Maintainability / incremental change
+5. UI polish
+
+Details: [context.md](./context.md), ADR [0002](./adr/0002-accuracy-before-performance.md).
+
 ## Vue 3 and Composition API
 
 - **Vue 3** is used throughout.
-- **Prefer the Composition API** over the Options API.
+- **Prefer the Composition API** / `<script setup>` for new components (existing Options API code may remain until touched).
 - **Prefer to use TypeScript** and types.
 
 ## TypeScript and types
@@ -15,7 +27,7 @@ High-level technical choices and conventions for the app. Follow these when addi
 
 ## Performance and data structures
 
-- **Every user action can trigger many calculations** (stats, buffs, damage, rotations). Performance is critical.
+- **Every user action can trigger many calculations** (stats, buffs, damage, rotations). Performance is critical — but **accuracy comes first**.
 - **Use optimal data structures**: avoid unnecessary arrays of objects when a map/record is better; avoid repeated work in hot paths; prefer O(1) lookups where it matters.
 - **Avoid blocking the main thread**: see Workers below.
 
