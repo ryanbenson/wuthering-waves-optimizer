@@ -3151,10 +3151,10 @@ export const allWeaponTeamBuffs = [
     alwaysEnabled: false,
   },
   {
-    name: "Dew Imbiber",
+    name: "Firstlight's Herald",
     key: "DewImbiberATKBonus",
     hasStacks: false,
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/DewImbiber.png",
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/FirstlightsHerald.png",
     modifiers: [
       {
         modifier: "ATK",
