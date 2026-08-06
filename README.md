@@ -126,6 +126,13 @@ Every commit and branch gets auto-deployed to https://vercel.com. So to deploy t
 
 The e2e tests don't currently block any release. I don't have teams setup for Vercel right now, so contributors won't be able to see the staging environments in Vercel.
 
+# Documentation
+
+- **[CLAUDE.md](CLAUDE.md)** — concise briefing for coding agents (and humans)
+- **[docs/context.md](docs/context.md)** — priorities (accuracy first) and mental model
+- **[docs/adr/](docs/adr/)** — architecture decision records
+- **[docs/](docs/)** — area guides (calculator, stores, workers, …)
+
 # Contributing
 
 ## Workflow
