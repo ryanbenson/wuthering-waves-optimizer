@@ -5,6 +5,7 @@
     :class="[
       rootWidthClass,
       attrs.class,
+      opensUpward ? 'dropdown-top' : 'dropdown-bottom',
       {
         'dropdown-open': isOpen,
         'app-rich-select--ghost': variant === 'ghost',
@@ -55,7 +56,8 @@
 
     <div
       ref="menuRef"
-      class="dropdown-content app-rich-select__menu z-50 mt-1 w-full p-1 shadow bg-base-200 text-base-content"
+      class="dropdown-content app-rich-select__menu z-50 w-full p-1 shadow bg-base-200 text-base-content"
+      :class="opensUpward ? 'mb-1' : 'mt-1'"
       data-test-rich-select-menu
       @keydown.escape.prevent="close">
       <div v-if="searchable" class="p-1 pb-1.5 sticky top-0 z-10 bg-base-200">
@@ -228,11 +230,16 @@ const triggerAttrs = computed(() => {
 });
 
 const isOpen = ref(false);
+const opensUpward = ref(false);
 const searchQuery = ref("");
 const rootRef = ref<HTMLElement | null>(null);
 const triggerRef = ref<HTMLElement | null>(null);
 const menuRef = ref<HTMLElement | null>(null);
 const searchInputRef = ref<HTMLInputElement | null>(null);
+
+/** Matches Tailwind `max-h-64` on the options list as a placement fallback. */
+const MENU_MAX_HEIGHT_FALLBACK_PX = 256;
+const MENU_GAP_PX = 4;
 
 const allOptions = computed((): AppRichSelectOption[] => {
   const options = [...props.options];
@@ -331,6 +338,14 @@ watch(
   },
 );
 
+watch(searchQuery, async () => {
+  if (!isOpen.value) {
+    return;
+  }
+  await nextTick();
+  updatePlacement();
+});
+
 function isSelected(value: AppRichSelectValue) {
   return value === props.modelValue;
 }
@@ -344,8 +359,25 @@ function selectOption(option: AppRichSelectOption) {
   close();
 }
 
+function updatePlacement() {
+  const trigger = triggerRef.value;
+  const menu = menuRef.value;
+  if (!trigger || !menu) {
+    return;
+  }
+
+  const triggerRect = trigger.getBoundingClientRect();
+  const menuHeight = menu.offsetHeight || MENU_MAX_HEIGHT_FALLBACK_PX;
+  const spaceBelow = window.innerHeight - triggerRect.bottom - MENU_GAP_PX;
+  const spaceAbove = triggerRect.top - MENU_GAP_PX;
+
+  opensUpward.value =
+    spaceBelow < menuHeight && spaceAbove > spaceBelow;
+}
+
 function close() {
   isOpen.value = false;
+  opensUpward.value = false;
   searchQuery.value = "";
   (document.activeElement as HTMLElement | null)?.blur();
   triggerRef.value?.blur();
@@ -355,8 +387,25 @@ async function open() {
   if (props.disabled) {
     return;
   }
+
+  // Pre-estimate with the options list max height so the menu doesn't flash
+  // downward before flipping up near the bottom of the viewport.
+  const trigger = triggerRef.value;
+  if (trigger) {
+    const triggerRect = trigger.getBoundingClientRect();
+    const estimatedHeight =
+      MENU_MAX_HEIGHT_FALLBACK_PX + (props.searchable ? 40 : 0);
+    const spaceBelow = window.innerHeight - triggerRect.bottom - MENU_GAP_PX;
+    const spaceAbove = triggerRect.top - MENU_GAP_PX;
+    opensUpward.value =
+      spaceBelow < estimatedHeight && spaceAbove > spaceBelow;
+  } else {
+    opensUpward.value = false;
+  }
+
   isOpen.value = true;
   await nextTick();
+  updatePlacement();
   if (props.searchable) {
     searchInputRef.value?.focus();
   }
@@ -393,12 +442,23 @@ function onDocumentPointerDown(event: Event) {
   close();
 }
 
+function onViewportChange() {
+  if (!isOpen.value) {
+    return;
+  }
+  updatePlacement();
+}
+
 onMounted(() => {
   document.addEventListener("pointerdown", onDocumentPointerDown, true);
+  window.addEventListener("resize", onViewportChange);
+  window.addEventListener("scroll", onViewportChange, true);
 });
 
 onBeforeUnmount(() => {
   document.removeEventListener("pointerdown", onDocumentPointerDown, true);
+  window.removeEventListener("resize", onViewportChange);
+  window.removeEventListener("scroll", onViewportChange, true);
 });
 </script>
 
