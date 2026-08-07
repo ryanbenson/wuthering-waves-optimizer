@@ -6,6 +6,8 @@ import {
   getOptimizerLoadoutHash,
   hashOptimizerLoadoutKey,
   normalizeOptimizerLoadout,
+  resolveOptimizerEmptyReason,
+  OPTIMIZER_EMPTY_REASON_MESSAGES,
 } from "../../src/calculator/optimizer";
 
 function makeEcho(echo: string, type: number, echoId: string) {
@@ -154,5 +156,58 @@ describe("optimizer loadout hash dedupe", () => {
     expect(getOptimizerLoadoutHash([main, low, b])).not.toBe(
       getOptimizerLoadoutHash([main, high, b]),
     );
+  });
+});
+
+describe("resolveOptimizerEmptyReason", () => {
+  it("reports empty inventory first", () => {
+    expect(
+      resolveOptimizerEmptyReason({
+        inventoryCount: 0,
+        setFilteredCount: 0,
+        generatedCount: 0,
+      }),
+    ).toBe("no-inventory");
+  });
+
+  it("reports missing set echoes when inventory has items", () => {
+    expect(
+      resolveOptimizerEmptyReason({
+        inventoryCount: 12,
+        setFilteredCount: 0,
+        generatedCount: 0,
+      }),
+    ).toBe("no-set-echoes");
+  });
+
+  it("reports filtering when loadouts were generated but none ranked", () => {
+    expect(
+      resolveOptimizerEmptyReason({
+        inventoryCount: 12,
+        setFilteredCount: 8,
+        generatedCount: 100,
+      }),
+    ).toBe("filtered");
+  });
+
+  it("falls back when echoes exist but no loadouts were generated", () => {
+    expect(
+      resolveOptimizerEmptyReason({
+        inventoryCount: 12,
+        setFilteredCount: 8,
+        generatedCount: 0,
+      }),
+    ).toBe("none-found");
+  });
+
+  it("has a message for every reason", () => {
+    for (const reason of [
+      "no-inventory",
+      "no-set-echoes",
+      "filtered",
+      "none-found",
+    ] as const) {
+      expect(OPTIMIZER_EMPTY_REASON_MESSAGES[reason].length).toBeGreaterThan(0);
+    }
   });
 });

@@ -102,6 +102,7 @@
           :processed-combos="processedCombos"
           :optimizer-elapsed-ms="optimizerElapsedMs"
           :optimizer-no-possible-loadouts="optimizerNoPossibleLoadouts"
+          :optimizer-empty-reason="optimizerEmptyReason"
           :optimizer-results="optimizerResults"
           :character-element="characterElement"
           :all-damages="JSON.parse(JSON.stringify(allDamages))"
@@ -351,6 +352,8 @@ import type { OptimizerContext } from "../calculator/optimizer";
 import {
   getOptimizerLoadoutHash,
   filterEchoesForOptimizer,
+  resolveOptimizerEmptyReason,
+  type OptimizerEmptyReason,
 } from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs } from "../buffs";
@@ -502,6 +505,7 @@ export default defineComponent({
     const totalCombos = ref(0);
     const processedCombos = ref(0);
     const optimizerNoPossibleLoadouts = ref(false);
+    const optimizerEmptyReason = ref<OptimizerEmptyReason | null>(null);
     const optimizerResults = ref([]);
     const optimizationTargetType = ref("");
     const optimizationTargetObject = ref("");
@@ -604,6 +608,7 @@ export default defineComponent({
       totalCombos.value = 0;
       processedCombos.value = 0;
       optimizerNoPossibleLoadouts.value = false;
+      optimizerEmptyReason.value = null;
       optimizerResults.value = [];
       stopOptimizerTimer();
       optimizerElapsedMs.value = 0;
@@ -1010,17 +1015,23 @@ export default defineComponent({
       loadoutFormat = "Any",
     ) => {
       const echoes = inventoryStore.echoes;
+      const inventoryCount = Array.isArray(echoes) ? echoes.length : 0;
       const allowedSets = new Set(setFilters);
       const topN = 5;
       processedCombos.value = 0;
       totalCombos.value = 0;
       optimizerNoPossibleLoadouts.value = false;
+      optimizerEmptyReason.value = null;
       optimizerResults.value = []; // Initialize as empty array instead of null
       optimizationTargetType.value = target.split(":")[0];
       optimizationTargetObject.value = target.split(":")[1] || "";
       startOptimizerTimer();
 
       // 1. Filter upfront
+      const inventoryEchoes = Array.isArray(echoes) ? echoes : [];
+      const setFilteredCount = allowedSets.size
+        ? inventoryEchoes.filter((e) => allowedSets.has(e.echoSet)).length
+        : inventoryEchoes.length;
       let filteredEchoes = filterEchoesForOptimizer(echoes) as typeof echoes;
       if (allowedSets.size) {
         filteredEchoes = filteredEchoes.filter((e) => allowedSets.has(e.echoSet));
@@ -1032,6 +1043,11 @@ export default defineComponent({
           (e) => !echoIdsEquippedByOtherChars.includes(e.echoId),
         );
       }
+
+      const emptyReasonContext = {
+        inventoryCount,
+        setFilteredCount,
+      };
 
       // Build optimizer context with all necessary data
       const optimizerContext = {
@@ -1172,6 +1188,7 @@ export default defineComponent({
         damageType,
         rotationData,
         loadoutFormat,
+        emptyReasonContext,
       );
     };
 
@@ -1318,6 +1335,10 @@ export default defineComponent({
       damageType: string,
       rotationData: any = null,
       loadoutFormat: string = "Any",
+      emptyReasonContext: {
+        inventoryCount: number;
+        setFilteredCount: number;
+      } = { inventoryCount: 0, setFilteredCount: 0 },
     ) => {
       // Detect device capabilities
       const workerCount = Math.min(
@@ -1587,6 +1608,15 @@ export default defineComponent({
             .slice()
             .sort((a, b) => b.targetValue - a.targetValue);
           optimizerResults.value = finalResults;
+          if (finalResults.length === 0) {
+            optimizerEmptyReason.value = resolveOptimizerEmptyReason({
+              inventoryCount: emptyReasonContext.inventoryCount,
+              setFilteredCount: emptyReasonContext.setFilteredCount,
+              generatedCount: totalProcessed || totalGenerated || 0,
+            });
+          } else {
+            optimizerEmptyReason.value = null;
+          }
 
           cleanupWorkers();
           totalCombos.value = totalProcessed;
@@ -1657,6 +1687,11 @@ export default defineComponent({
           optimizerNoPossibleLoadouts.value =
             e.data.noPossibleLoadouts === true;
           if (e.data.noPossibleLoadouts === true) {
+            optimizerEmptyReason.value = resolveOptimizerEmptyReason({
+              inventoryCount: emptyReasonContext.inventoryCount,
+              setFilteredCount: emptyReasonContext.setFilteredCount,
+              generatedCount: 0,
+            });
             stopOptimizerTimer();
           }
           distributeWork(); // Process remaining work
@@ -1769,6 +1804,7 @@ export default defineComponent({
       processedCombos,
       optimizerElapsedMs,
       optimizerNoPossibleLoadouts,
+      optimizerEmptyReason,
       optimizerResults,
       optimizationTargetType,
       optimizationTargetObject,
