@@ -353,12 +353,15 @@ import {
   getOptimizerLoadoutHash,
   filterEchoesForOptimizer,
   resolveOptimizerEmptyReason,
+  splitOptimizerWorkerCount,
   type OptimizerEmptyReason,
 } from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { useSettingsStore } from "../stores/settings";
+import { resolveOptimizerWorkerCount } from "../utils/optimizerPreferences";
 import { useRoute } from "vue-router";
 import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
@@ -400,6 +403,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const characterStore = useCharacterStore();
     const inventoryStore = useInventoryStore();
+    const settingsStore = useSettingsStore();
     const { characters, activeCharacter } = storeToRefs(characterStore);
     const weaponData = reactive({});
     const weaponAtk = ref(0);
@@ -1340,26 +1344,34 @@ export default defineComponent({
         setFilteredCount: number;
       } = { inventoryCount: 0, setFilteredCount: 0 },
     ) => {
-      // Detect device capabilities
-      const workerCount = Math.min(
-        5,
-        Math.max(2, (navigator.hardwareConcurrency || 4) - 1),
+      // Worker count is user-configurable (Settings → Preferences), split between
+      // generator shards (a few, at most) and processor workers (the bulk).
+      const totalWorkerCount = resolveOptimizerWorkerCount(
+        (settingsStore.config as { optimizerWorkerCount?: unknown })
+          ?.optimizerWorkerCount,
       );
+      const { generatorCount, processorCount } =
+        splitOptimizerWorkerCount(totalWorkerCount);
       const batchSize =
         navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 8
           ? 5000
           : 2000; // Larger batches on powerful devices
       // Cap queued batches so generation cannot outrun processing into multi-GB heap
-      const maxQueuedBatches = workerCount * 2;
+      const maxQueuedBatches = processorCount * 2;
 
       // Create workers
-      const generatorWorker = new Worker(
-        new URL("../workers/generator.worker.ts", import.meta.url),
-        { type: "module" },
-      );
+      const generatorWorkers: Worker[] = [];
+      for (let i = 0; i < generatorCount; i++) {
+        generatorWorkers.push(
+          new Worker(
+            new URL("../workers/generator.worker.ts", import.meta.url),
+            { type: "module" },
+          ),
+        );
+      }
 
       const processorWorkers: Worker[] = [];
-      for (let i = 0; i < workerCount; i++) {
+      for (let i = 0; i < processorCount; i++) {
         const worker = new Worker(
           new URL("../workers/processor.worker.ts", import.meta.url),
           { type: "module" },
@@ -1371,13 +1383,38 @@ export default defineComponent({
       const heap: any[] = [];
       const workQueue: Array<{ batch: any[]; batchId: number }> = [];
       let batchIdCounter = 0;
-      let totalGenerated = 0;
       let totalProcessed = 0;
       const workerBusy = new Map<Worker, boolean>();
-      let generatorDone = false;
-      /** True while generator is waiting for a "continue" after posting a batch */
-      let generatorAwaitingContinue = false;
+      /** Per-shard total generated (as last reported by that shard) and done flag */
+      const generatorShardTotal = new Map<Worker, number>();
+      const generatorShardDone = new Map<Worker, boolean>();
+      /** True while a given shard is waiting for a "continue" after posting a batch */
+      const generatorShardAwaitingContinue = new Map<Worker, boolean>();
+      const generatorAllDone = () =>
+        generatorWorkers.every((w) => generatorShardDone.get(w) === true);
+      const totalGenerated = () => {
+        let sum = 0;
+        generatorShardTotal.forEach((v) => (sum += v));
+        return sum;
+      };
       const seenCombinations = new Set<bigint>();
+      // Cross-shard dedup for generated (not-yet-processed) loadouts: local per-worker
+      // dedup only catches duplicates within one shard; distinct shards can independently
+      // discover the same loadout signature (e.g. two stat-identical main echoes assigned
+      // to different shards). Only needed when there's more than one generator shard.
+      const seenGeneratedHashes =
+        generatorCount > 1 ? new Set<bigint>() : null;
+      const dedupeBatchAcrossShards = (batch: any[]): any[] => {
+        if (!seenGeneratedHashes) return batch;
+        const deduped: any[] = [];
+        for (const loadout of batch) {
+          const hash = getOptimizerLoadoutHash(loadout);
+          if (seenGeneratedHashes.has(hash)) continue;
+          seenGeneratedHashes.add(hash);
+          deduped.push(loadout);
+        }
+        return deduped;
+      };
       let readyWorkers = 0;
       let cleanedUp = false;
 
@@ -1401,12 +1438,14 @@ export default defineComponent({
       const cleanupWorkers = () => {
         if (cleanedUp) return;
         cleanedUp = true;
-        try {
-          generatorWorker.postMessage({ type: "stop" });
-        } catch {
-          // Worker may already be terminated
-        }
-        generatorWorker.terminate();
+        generatorWorkers.forEach((w) => {
+          try {
+            w.postMessage({ type: "stop" });
+          } catch {
+            // Worker may already be terminated
+          }
+          w.terminate();
+        });
         processorWorkers.forEach((w) => {
           try {
             w.postMessage({ type: "stop" });
@@ -1417,18 +1456,20 @@ export default defineComponent({
         });
       };
 
-      /** Ask generator for another batch when queue has room */
+      /** Ask each generator shard for another batch while the shared queue has room */
       const maybeContinueGenerator = () => {
-        if (
-          cleanedUp ||
-          generatorDone ||
-          !generatorAwaitingContinue ||
-          workQueue.length >= maxQueuedBatches
-        ) {
-          return;
+        if (cleanedUp) return;
+        for (const worker of generatorWorkers) {
+          if (workQueue.length >= maxQueuedBatches) break;
+          if (
+            generatorShardDone.get(worker) ||
+            !generatorShardAwaitingContinue.get(worker)
+          ) {
+            continue;
+          }
+          generatorShardAwaitingContinue.set(worker, false);
+          worker.postMessage({ type: "continue" });
         }
-        generatorAwaitingContinue = false;
-        generatorWorker.postMessage({ type: "continue" });
       };
 
       // Initialize processor workers with static config once
@@ -1602,7 +1643,7 @@ export default defineComponent({
         const allWorkersIdle = processorWorkers.every(
           (w) => !workerBusy.get(w),
         );
-        if (generatorDone && workQueue.length === 0 && allWorkersIdle) {
+        if (generatorAllDone() && workQueue.length === 0 && allWorkersIdle) {
           // Set final results (sorted descending)
           const finalResults = heap
             .slice()
@@ -1612,7 +1653,7 @@ export default defineComponent({
             optimizerEmptyReason.value = resolveOptimizerEmptyReason({
               inventoryCount: emptyReasonContext.inventoryCount,
               setFilteredCount: emptyReasonContext.setFilteredCount,
-              generatedCount: totalProcessed || totalGenerated || 0,
+              generatedCount: totalProcessed || totalGenerated() || 0,
             });
           } else {
             optimizerEmptyReason.value = null;
@@ -1624,87 +1665,115 @@ export default defineComponent({
         }
       };
 
-      // Generator worker handler
-      generatorWorker.onmessage = (e) => {
-        if (e.data.type === "ready") {
-          // Start generation - ensure echoes are serializable
-          try {
-            // Serialize echoes by only including needed properties
-            const serializedEchoes = serializeEchoes(echoes);
+      // Generator worker handlers — one per shard (generatorCount is 1 unless the
+      // user's chosen worker count is 16+, see splitOptimizerWorkerCount)
+      generatorWorkers.forEach((worker, shardIndex) => {
+        generatorShardTotal.set(worker, 0);
+        generatorShardDone.set(worker, false);
+        generatorShardAwaitingContinue.set(worker, false);
 
-            // Convert Vue reactive arrays/objects to plain arrays/objects
-            // Vue reactive proxies cannot be cloned, so we need to convert them first
-            const plainMainEchoKeys = Array.isArray(mainEchoKeys)
-              ? [...mainEchoKeys] // Convert Proxy array to plain array
-              : mainEchoKeys;
+        worker.onmessage = (e) => {
+          if (e.data.type === "ready") {
+            // Start generation - ensure echoes are serializable
+            try {
+              // Serialize echoes by only including needed properties
+              const serializedEchoes = serializeEchoes(echoes);
 
-            const messageData = {
-              type: "start",
-              data: {
-                echoes: serializedEchoes,
-                mainEchoKeys: plainMainEchoKeys,
-                batchSize,
-                loadoutFormat,
-              },
-            };
+              // Convert Vue reactive arrays/objects to plain arrays/objects
+              // Vue reactive proxies cannot be cloned, so we need to convert them first
+              const plainMainEchoKeys = Array.isArray(mainEchoKeys)
+                ? [...mainEchoKeys] // Convert Proxy array to plain array
+                : mainEchoKeys;
 
-            generatorWorker.postMessage(messageData);
-            if (process.env.NODE_ENV === "development") {
-              console.log("Successfully sent data to generator worker");
+              const messageData = {
+                type: "start",
+                data: {
+                  echoes: serializedEchoes,
+                  mainEchoKeys: plainMainEchoKeys,
+                  batchSize,
+                  loadoutFormat,
+                  shardIndex,
+                  shardCount: generatorCount,
+                },
+              };
+
+              worker.postMessage(messageData);
+              if (process.env.NODE_ENV === "development") {
+                console.log(
+                  `Successfully sent data to generator worker (shard ${shardIndex})`,
+                );
+              }
+            } catch (error) {
+              console.error("Error sending data to generator worker:", error);
+              cleanupWorkers();
+              stopOptimizerTimer();
             }
-          } catch (error) {
-            console.error("Error sending data to generator worker:", error);
-            cleanupWorkers();
-            stopOptimizerTimer();
-          }
-        } else if (e.data.type === "batch") {
-          totalGenerated = e.data.totalGenerated || 0;
-          totalCombos.value = totalGenerated;
+          } else if (e.data.type === "batch") {
+            generatorShardTotal.set(worker, e.data.totalGenerated || 0);
+            totalCombos.value = totalGenerated();
 
-          // Generator is paused until we send "continue"
-          generatorAwaitingContinue = true;
+            // This shard is paused until we send "continue"
+            generatorShardAwaitingContinue.set(worker, true);
 
-          // Add batch to work queue
-          if (e.data.batch && e.data.batch.length > 0) {
-            workQueue.push({
-              batch: e.data.batch,
-              batchId: batchIdCounter++,
-            });
+            // Add batch to work queue, deduped against loadouts already seen from other shards
+            const batch = dedupeBatchAcrossShards(e.data.batch || []);
+            if (batch.length > 0) {
+              workQueue.push({
+                batch,
+                batchId: batchIdCounter++,
+              });
 
-            // Distribute work if workers are ready
-            if (readyWorkers === processorWorkers.length) {
-              distributeWork();
+              // Distribute work if workers are ready
+              if (readyWorkers === processorWorkers.length) {
+                distributeWork();
+              } else {
+                maybeContinueGenerator();
+              }
             } else {
               maybeContinueGenerator();
             }
+          } else if (e.data.type === "done") {
+            generatorShardDone.set(worker, true);
+            generatorShardAwaitingContinue.set(worker, false);
+            generatorShardTotal.set(
+              worker,
+              e.data.totalGenerated ?? generatorShardTotal.get(worker) ?? 0,
+            );
+            totalCombos.value = totalGenerated();
+            if (generatorAllDone()) {
+              optimizerNoPossibleLoadouts.value = totalGenerated() === 0;
+              if (totalGenerated() === 0) {
+                optimizerEmptyReason.value = resolveOptimizerEmptyReason({
+                  inventoryCount: emptyReasonContext.inventoryCount,
+                  setFilteredCount: emptyReasonContext.setFilteredCount,
+                  generatedCount: 0,
+                });
+                stopOptimizerTimer();
+              }
+            }
+            distributeWork(); // Process remaining work
+          } else if (e.data.type === "error") {
+            console.error(
+              `Generator worker error (shard ${shardIndex}):`,
+              e.data.error,
+            );
+            generatorShardDone.set(worker, true);
+            generatorShardAwaitingContinue.set(worker, false);
+            if (generatorAllDone()) {
+              stopOptimizerTimer();
+            }
+            distributeWork();
           } else {
-            maybeContinueGenerator();
+            console.warn(
+              "Unknown message type from generator worker:",
+              e.data,
+            );
           }
-        } else if (e.data.type === "done") {
-          generatorDone = true;
-          generatorAwaitingContinue = false;
-          totalCombos.value = e.data.totalGenerated || totalGenerated;
-          optimizerNoPossibleLoadouts.value =
-            e.data.noPossibleLoadouts === true;
-          if (e.data.noPossibleLoadouts === true) {
-            optimizerEmptyReason.value = resolveOptimizerEmptyReason({
-              inventoryCount: emptyReasonContext.inventoryCount,
-              setFilteredCount: emptyReasonContext.setFilteredCount,
-              generatedCount: 0,
-            });
-            stopOptimizerTimer();
-          }
-          distributeWork(); // Process remaining work
-        } else if (e.data.type === "error") {
-          console.error("Generator worker error:", e.data.error);
-          generatorDone = true;
-          generatorAwaitingContinue = false;
-          stopOptimizerTimer();
-        }
-      };
+        };
 
-      // Initialize generator
-      generatorWorker.postMessage({ type: "init" });
+        // Initialize this shard
+        worker.postMessage({ type: "init" });
+      });
     };
 
     async function handleSelectedAttack(attackKey, damage, label) {

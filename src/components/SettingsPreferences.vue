@@ -67,6 +67,30 @@
             </button>
           </div>
         </div>
+
+        <div>
+          <span class="label-text font-bold block mb-1">
+            Optimizer worker count
+          </span>
+          <span class="text-sm text-neutral-content block mb-3">
+            Number of background threads used to search echo loadouts. More
+            workers finish faster but use more CPU, battery, and memory —
+            going above your device's CPU core count usually won't help.
+            Default: 8.
+          </span>
+          <div class="join">
+            <button
+              v-for="option in OPTIMIZER_WORKER_COUNT_OPTIONS"
+              :key="option.value"
+              type="button"
+              class="btn btn-sm join-item"
+              :class="{ 'btn-primary': optimizerWorkerCount === option.value }"
+              :data-test-optimizer-worker-count-pref="option.value"
+              @click="optimizerWorkerCount = option.value">
+              {{ option.label }}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -84,6 +108,11 @@ import {
   type ChartDamageMetric,
   type ChartGroupBy,
 } from "../utils/chartPreferences";
+import {
+  OPTIMIZER_WORKER_COUNT_OPTIONS,
+  resolveOptimizerWorkerCount,
+  type OptimizerWorkerCount,
+} from "../utils/optimizerPreferences";
 
 const settingsStore = useSettingsStore();
 const { config } = storeToRefs(settingsStore);
@@ -92,6 +121,7 @@ type ChartPrefsConfig = {
   hideWontBuildCharacters?: boolean;
   chartDamageMetric?: ChartDamageMetric;
   chartGroupBy?: ChartGroupBy;
+  optimizerWorkerCount?: OptimizerWorkerCount;
 };
 
 const hideWontBuildCharacters = computed({
@@ -117,6 +147,16 @@ const chartGroupBy = computed({
     resolveChartGroupBy((config.value as ChartPrefsConfig)?.chartGroupBy),
   set: (value: ChartGroupBy) => {
     void settingsStore.addToConfig({ chartGroupBy: value });
+  },
+});
+
+const optimizerWorkerCount = computed({
+  get: (): OptimizerWorkerCount =>
+    resolveOptimizerWorkerCount(
+      (config.value as ChartPrefsConfig)?.optimizerWorkerCount,
+    ),
+  set: (value: OptimizerWorkerCount) => {
+    void settingsStore.addToConfig({ optimizerWorkerCount: value });
   },
 });
 </script>

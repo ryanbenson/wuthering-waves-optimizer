@@ -7,6 +7,7 @@ import {
   hashOptimizerLoadoutKey,
   normalizeOptimizerLoadout,
   resolveOptimizerEmptyReason,
+  splitOptimizerWorkerCount,
   OPTIMIZER_EMPTY_REASON_MESSAGES,
 } from "../../src/calculator/optimizer";
 
@@ -209,5 +210,129 @@ describe("resolveOptimizerEmptyReason", () => {
     ] as const) {
       expect(OPTIMIZER_EMPTY_REASON_MESSAGES[reason].length).toBeGreaterThan(0);
     }
+  });
+});
+
+function collectShardedLoadouts(
+  echoes: ReturnType<typeof makeEcho>[],
+  mainEchoKeys: string[],
+  format: "Any" | "43311" | "44111",
+  shardIndex: number,
+  shardCount: number,
+) {
+  const loadouts: ReturnType<typeof makeEcho>[][] = [];
+  for (const loadout of generateLoadouts(
+    echoes,
+    mainEchoKeys,
+    0,
+    [],
+    0,
+    new Set(),
+    new Set(),
+    format,
+    undefined,
+    shardIndex,
+    shardCount,
+  )) {
+    loadouts.push(JSON.parse(JSON.stringify(loadout)));
+  }
+  return loadouts;
+}
+
+function sortedKeys(loadouts: ReturnType<typeof makeEcho>[][]): string[] {
+  return loadouts.map((l) => getOptimizerLoadoutKey(l)).sort();
+}
+
+describe("generateLoadouts sharding", () => {
+  // Distinct substats on each MainX copy so their signatures differ — keeps this test's
+  // "no loss or duplication" assertion clean of the incidental stat-identical-echo
+  // duplicates that getOptimizerLoadoutHash dedup is separately meant to handle.
+  const echoes = [
+    {
+      ...makeEcho("MainX", 4, "mx1"),
+      echoSubStatsType1: "Crit Rate",
+      echoSubStatsValue1: 1,
+    },
+    {
+      ...makeEcho("MainX", 4, "mx2"),
+      echoSubStatsType1: "Crit Rate",
+      echoSubStatsValue1: 2,
+    },
+    {
+      ...makeEcho("MainX", 4, "mx3"),
+      echoSubStatsType1: "Crit Rate",
+      echoSubStatsValue1: 3,
+    },
+    makeEcho("FourA", 4, "f4a"),
+    makeEcho("ThreeA", 3, "t3a"),
+    makeEcho("ThreeB", 3, "t3b"),
+    makeEcho("OneA", 1, "o1a"),
+    makeEcho("OneB", 1, "o1b"),
+  ];
+
+  it("shardCount=1 matches unsharded output (main-echo mode)", () => {
+    const base = sortedKeys(collectLoadouts(echoes, ["MainX"], "Any"));
+    const sharded = sortedKeys(
+      collectShardedLoadouts(echoes, ["MainX"], "Any", 0, 1),
+    );
+    expect(sharded).toEqual(base);
+  });
+
+  it("shardCount=1 matches unsharded output (no main echo)", () => {
+    const base = sortedKeys(collectLoadouts(echoes, [], "Any"));
+    const sharded = sortedKeys(collectShardedLoadouts(echoes, [], "Any", 0, 1));
+    expect(sharded).toEqual(base);
+  });
+
+  it("shards partition main-echo branches without loss or duplication", () => {
+    const base = sortedKeys(collectLoadouts(echoes, ["MainX"], "Any"));
+    const shardCount = 3;
+    const unionKeys = Array.from({ length: shardCount }, (_, i) =>
+      collectShardedLoadouts(echoes, ["MainX"], "Any", i, shardCount),
+    )
+      .flat()
+      .map((l) => getOptimizerLoadoutKey(l))
+      .sort();
+    expect(unionKeys).toEqual(base);
+  });
+
+  it("shards partition top-level branches without loss or duplication (no main echo)", () => {
+    const base = sortedKeys(collectLoadouts(echoes, [], "Any"));
+    const shardCount = 3;
+    const unionKeys = Array.from({ length: shardCount }, (_, i) =>
+      collectShardedLoadouts(echoes, [], "Any", i, shardCount),
+    )
+      .flat()
+      .map((l) => getOptimizerLoadoutKey(l))
+      .sort();
+    expect(unionKeys).toEqual(base);
+  });
+});
+
+describe("splitOptimizerWorkerCount", () => {
+  it("keeps a single generator shard until 16 total workers", () => {
+    expect(splitOptimizerWorkerCount(2)).toEqual({
+      generatorCount: 1,
+      processorCount: 1,
+    });
+    expect(splitOptimizerWorkerCount(4)).toEqual({
+      generatorCount: 1,
+      processorCount: 3,
+    });
+    expect(splitOptimizerWorkerCount(8)).toEqual({
+      generatorCount: 1,
+      processorCount: 7,
+    });
+  });
+
+  it("scales generator shards up for larger totals", () => {
+    expect(splitOptimizerWorkerCount(16)).toEqual({
+      generatorCount: 2,
+      processorCount: 14,
+    });
+    expect(splitOptimizerWorkerCount(32)).toEqual({
+      generatorCount: 4,
+      processorCount: 28,
+    });
   });
 });

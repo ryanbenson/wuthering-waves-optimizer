@@ -272,14 +272,7 @@ console.log(`Batch ${batchId} processed in ${endTime - startTime}ms`);
 
 ### Adjust Worker Count
 
-Default is 5 workers. Adjust based on device:
-
-```javascript
-// In Calculator.vue
-const workerCount = navigator.hardwareConcurrency
-  ? Math.min(5, navigator.hardwareConcurrency - 1)
-  : 4;
-```
+Worker count is a **user preference**, not a hardcoded/hardware-derived value — users pick 2/4/8/16/32 (default 8) under Settings → Preferences. It's resolved via `resolveOptimizerWorkerCount` (`src/utils/optimizerPreferences.ts`) and split between generator shards and processor workers via `splitOptimizerWorkerCount` (`src/calculator/optimizer.ts`), both consumed in `optimizeWithWorkers` in `Calculator.vue`. To test a specific split while debugging, change the setting in the UI rather than editing these values directly.
 
 ### Adjust Batch Size
 

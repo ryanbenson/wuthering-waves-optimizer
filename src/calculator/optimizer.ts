@@ -216,6 +216,10 @@ export function* generateLoadouts(
   usedEchoes: Set<unknown> = new Set(),
   loadoutFormat: OptimizerLoadoutFormat = "Any",
   remainingCosts?: Record<number, number> | null,
+  /** Only process the shardIndex-th slice (mod shardCount) of the top-level branches. Used to
+   * partition generation across multiple generator workers; defaults are a no-op for single-shard use. */
+  shardIndex = 0,
+  shardCount = 1,
 ): any {
   const format = normalizeLoadoutFormat(loadoutFormat);
   // Initialize remaining cost budget on the root call only
@@ -229,7 +233,9 @@ export function* generateLoadouts(
     const mainEchoCopies = echoes.filter((e) => mainEchoKeys.includes(e.echo));
 
     // For each copy of the main echo, start a new combination
-    for (const mainEcho of mainEchoCopies) {
+    for (let mainEchoIndex = 0; mainEchoIndex < mainEchoCopies.length; mainEchoIndex++) {
+      if (shardCount > 1 && mainEchoIndex % shardCount !== shardIndex) continue;
+      const mainEcho = mainEchoCopies[mainEchoIndex];
       // the main echo isn't guaranteed to be 4, sometimes it's an elite, so 3
       const mainCost = echoCost(mainEcho);
       if (!canUseEchoForFormat(costsRemaining, mainCost)) {
@@ -280,7 +286,12 @@ export function* generateLoadouts(
   // If we have main echo keys and combo is empty, we've already handled the first slot
   if (mainEchoKeys.length > 0 && combo.length === 0) return;
 
+  // Shard only the true root call (no main echo keys, nothing chosen yet) — nested recursive
+  // calls always have a non-empty combo and must process every branch beneath their anchor.
+  const isRootCall = mainEchoKeys.length === 0 && start === 0 && combo.length === 0;
+
   for (let i = start; i < echoes.length; i++) {
+    if (isRootCall && shardCount > 1 && i % shardCount !== shardIndex) continue;
     const next = echoes[i];
     // Skip if already used
     if (usedEchoIds.has(next.echoId)) continue;
@@ -316,6 +327,20 @@ export function* generateLoadouts(
       restoreFormatCost(costsRemaining, nextEchoCost);
     }
   }
+}
+
+/**
+ * Splits a user-chosen total worker count into generator vs. processor workers.
+ * The generator's search-space partitioning only pays off with a few shards; most
+ * of the budget should go to processor workers, which do the expensive per-loadout
+ * stat/damage evaluation.
+ */
+export function splitOptimizerWorkerCount(total: number): {
+  generatorCount: number;
+  processorCount: number;
+} {
+  const generatorCount = total >= 32 ? 4 : total >= 16 ? 2 : 1;
+  return { generatorCount, processorCount: Math.max(1, total - generatorCount) };
 }
 
 // Optimizer context interface - all data needed for optimization

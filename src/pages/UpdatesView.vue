@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 7, 2026</h3>
+    <ul>
+      <li>Adds ability to set how many workers to use in the optimizer.</li>
+    </ul>
     <h3>August 6, 2026</h3>
     <ul>
       <li>Fixes weapon team buff name for Firstlight's Herald.</li>
