@@ -39,6 +39,7 @@ Statuses: `proposed` · `accepted` · `deprecated` · `superseded`.
 | [0008](./0008-per-character-modules.md) | One folder module per character | accepted | characters, data |
 | [0009](./0009-released-content-only.md) | Ship only officially released content | accepted | product, content |
 | [0010](./0010-persisted-data-migrations.md) | Version and migrate persisted user data | accepted | persistence, migrations |
+| [0011](./0011-headless-character-calculation-context.md) | Headless character calculation context for non-active-character consumers | accepted | calculator, stores, team-rotations |
 
 ## When to write a new ADR
 

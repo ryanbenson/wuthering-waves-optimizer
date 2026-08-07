@@ -57,6 +57,17 @@ Navigation between these screens is controlled by `curScreen` and sub-nav compon
 - **Data**: Top-down via props from Calculator; bottom-up via `emit` (e.g. `@update-weapon`, `@updated-team-buffs`). No global event bus; state is either in Pinia (persisted user data) or in Calculator’s refs/reactive (derived and ephemeral).
 - **Styling**: DaisyUI + Tailwind. Components use semantic classes so themes (light/dark) work everywhere.
 
+## TeamRotations.vue — multi-character team rotation page
+
+**Location**: `src/components/TeamRotations.vue` (routed at `/team-rotations`, wrapped by `src/pages/TeamRotationsView.vue`)
+
+Unlike Calculator.vue, this page does **not** own a single character's reactive calculation state. Each team references up to 3 already-configured characters by id (from the `character` store's `characters` map) and computes each one's stats/damage independently via `buildCharacterCalculationContext` (`src/calculator/buildCharacterContext.ts`) — see ADR [0011](./adr/0011-headless-character-calculation-context.md).
+
+- **`TeamRotations.vue`** — lists teams from the `teamRotations` store, create/delete, selects one to edit.
+- **`TeamRotationTeamEditor.vue`** — per-team editor: 3 character-picker slots (restricted to configured characters) with a stat snippet (HP/DEF/ATK/Crit Rate/Crit DMG/Energy Regen) and a "Configure Character" button that sets that character active and navigates to `/` (the existing Calculator page — configuring a character's build always happens there, never on this page); shared enemy config; rotation duration; the actions list; and the results panel. Rebuilds each slot's calculation context and the team's damage/DPS fresh on every relevant change (no caching).
+- **`TeamRotationActionEditor.vue`** — thin wrapper around the existing single-character `CalculatorRotationAction.vue` (reused as-is, since it's already parameterized by `character`/`character-data` props) that adds a "which of the 3 teammates" slot selector.
+- **`TeamRotationDamages.vue`** — total damage + DPS summary, modeled on `CalculatorDamages.vue`'s rotation summary card and using the shared `calcRotationDps` helper.
+
 ## Where to look when changing behavior
 
 - **Stats or damage wrong**: `calculator/stats.ts`, `calculator/calculator.ts`, `calculator/attacks.ts`, and the handlers in `Calculator.vue` that call `computeAllBuffsWithBreakdown` and `calcAllDamages`.
