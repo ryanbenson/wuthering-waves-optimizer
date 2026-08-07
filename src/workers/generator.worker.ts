@@ -11,6 +11,9 @@
  * - Deduplicates loadouts using a Set of combination keys
  * - Sends batches of loadouts to the main thread for distribution to processor workers
  * - Uses pull-based backpressure: after each batch, waits for "continue" from main
+ * - Optionally runs as one of several shards (shardIndex/shardCount in "start" data), each
+ *   covering a disjoint slice of the top-level search space; the main thread is responsible
+ *   for deduping across shards since a local Set only catches duplicates within one shard
  *
  * Message Flow:
  * 1. Main thread sends "init" -> Worker responds with "ready"
@@ -46,6 +49,10 @@ interface GeneratorMessage {
     mainEchoKeys: string[]; // Array of main echo keys (for filtering)
     batchSize: number; // Number of loadouts per batch
     loadoutFormat?: OptimizerLoadoutFormat | string; // Cost composition constraint
+    /** This worker's slice index when generation is sharded across multiple generator workers. */
+    shardIndex?: number;
+    /** Total number of generator shards; 1 (default) means no sharding. */
+    shardCount?: number;
   };
 }
 
@@ -104,7 +111,14 @@ self.onmessage = (e: MessageEvent<GeneratorMessage>) => {
 };
 
 async function runGeneration(data: NonNullable<GeneratorMessage["data"]>) {
-  const { echoes, mainEchoKeys, batchSize, loadoutFormat } = data;
+  const {
+    echoes,
+    mainEchoKeys,
+    batchSize,
+    loadoutFormat,
+    shardIndex = 0,
+    shardCount = 1,
+  } = data;
   const format = normalizeLoadoutFormat(loadoutFormat);
   const optimizerEchoes = filterEchoesForOptimizer(echoes) as any[];
   let batch: any[] = [];
@@ -137,6 +151,9 @@ async function runGeneration(data: NonNullable<GeneratorMessage["data"]>) {
       new Set(),
       new Set(),
       format,
+      undefined,
+      shardIndex,
+      shardCount,
     )) {
       if (stopped) {
         break;
