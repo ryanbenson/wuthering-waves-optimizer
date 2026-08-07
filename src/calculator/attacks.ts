@@ -236,9 +236,7 @@ export const calculateAttackDamage = (
     );
   }
   let attackType = attack.type;
-  const selfBuffs = JSON.parse(
-    JSON.stringify(context.buffs.charBuffsData ?? {}),
-  );
+  const sourceSelfBuffs = context.buffs.charBuffsData ?? {};
   /**
    * check if there are any buffs that buff another buff
    * look through the object of charResonanceChainsData for any ${attack.key}:MultiplySelfBuffs
@@ -251,14 +249,20 @@ export const calculateAttackDamage = (
   const resonanceChainsKeysWithMultiply = resonanceChainsKeys.filter(
     (key: string) => key.includes("MultiplySelfBuff"),
   );
+  // Only clone when MultiplySelfBuff will mutate specificTalentBuffs; otherwise reuse.
+  let selfBuffs = sourceSelfBuffs;
   if (resonanceChainsKeysWithMultiply.length > 0) {
+    selfBuffs = {
+      ...sourceSelfBuffs,
+      specificTalentBuffs: {
+        ...(sourceSelfBuffs.specificTalentBuffs ?? {}),
+      },
+    };
     resonanceChainsKeysWithMultiply.forEach((key: string) => {
       const buffValue =
         context.buffs.charResonanceChainsData?.specificTalentBuffs?.[key];
       const buffReferenceKey = key.split(":")[0]; // e.g. PoeticEssenceSkillDMG
-      // // check if the buffReferenceKey is in the selfBuffs object
       if (selfBuffs?.specificTalentBuffs?.[buffReferenceKey]) {
-        // multiply the buff value by the buffValue
         selfBuffs.specificTalentBuffs[buffReferenceKey] *= buffValue;
       }
     });

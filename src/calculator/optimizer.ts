@@ -499,6 +499,23 @@ export function optimize(
     damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
   }
 
+  // Echo-independent buffs — compute once for the whole run
+  const resonanceChainsBuffsData = computeResonanceChainsBuffs(
+    context.activeCharacterResonanceChains ?? {},
+    context.chosenChar?.resonanceChains ?? [],
+    context.talentData ?? {},
+    context.activeStance ?? null,
+  );
+  const selfBuffsData = computeSelfBuffs(
+    context.activeCharacterBuffs ?? {},
+    context.chosenChar?.buffs ?? [],
+    context.activeCharacterResonanceChains ?? {},
+    context.talentData ?? {},
+    context.character ?? null,
+    context.activeStance ?? null,
+    { havocBaneStacks: context.havocBaneStacks ?? 0 },
+  );
+
   // @ts-ignore
   for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
     const combinationHash = getOptimizerLoadoutHash(loadout);
@@ -551,56 +568,8 @@ export function optimize(
         }
       });
     });
-    // first compute the stats without self buffs
-    let finalStats = calcCharStats(
-      "All", // return value
-      null, // inject stats
-      // ignores
-      {
-        ignoreEchoes: true,
-      },
-      combinedEchoBuffs, // echo stats
-      null, // full stats
-      // base stats
-      {
-        baseHp: context.baseHp,
-        baseAtk: context.baseAtk,
-        baseDef: context.baseDef,
-      },
-      {
-        weaponAtk: context.weaponData?.attack,
-        weaponModifier: context.weaponData?.modifier,
-        weaponModifierValue: context.weaponData?.modifierValue,
-        weaponPassiveData: context.weaponData?.weaponPassiveStats ?? {},
-      },
-      {}, // NO SELF BUFFS
-      {}, // no resonance chains
-      context.echoStats,
-      context.customBuffs,
-      context.teamBuffsData,
-    );
 
-    // Compute all buffs in the correct order for this loadout
-    // Step 1: Compute resonance chains buffs using base stats
-    const resonanceChainsBuffsData = computeResonanceChainsBuffs(
-      context.activeCharacterResonanceChains ?? {},
-      context.chosenChar?.resonanceChains ?? [],
-      context.talentData ?? {},
-      context.activeStance ?? null,
-    );
-
-    // Step 2: Compute self buffs using base stats
-    const selfBuffsData = computeSelfBuffs(
-      context.activeCharacterBuffs ?? {},
-      context.chosenChar?.buffs ?? [],
-      context.activeCharacterResonanceChains ?? {},
-      context.talentData ?? {},
-      context.character ?? null,
-      context.activeStance ?? null,
-      { havocBaneStacks: context.havocBaneStacks ?? 0 },
-    );
-
-    // Step 3: Calculate intermediate stats with resonance chains and self buffs
+    // Intermediate stats with self/RC buffs (AdditionalBase / CritOverflow still need ER/CR)
     let intermediateStats = calcCharStats(
       "All",
       null,
@@ -678,7 +647,7 @@ export function optimize(
     };
 
     // Step 7: Compute final stats with all buffs
-    finalStats = calcCharStats(
+    const finalStats = calcCharStats(
       "All",
       null,
       {
