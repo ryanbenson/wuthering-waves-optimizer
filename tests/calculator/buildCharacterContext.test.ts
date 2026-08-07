@@ -51,6 +51,64 @@ describe("buildCharacterCalculationContext", () => {
     expect(result.context.rotationsList).toEqual([]);
   });
 
+  it("resolves echo stats from the inventory store when character.echoes only holds an echoId pointer", async () => {
+    // Mirrors the real persisted shape once an echo is equipped from the
+    // Inventory page: characters[id].echoes is an object keyed by slot
+    // index (not an array), and each slot's own type/rank/stat/substat
+    // fields are null placeholders — the real data lives in the inventory
+    // store's echoes list, joined by echoId.
+    const characters = {
+      Hiyuki: {
+        echoes: {
+          0: {
+            echo: null,
+            type: null,
+            rank: null,
+            stat: null,
+            echoId: "inv-echo-1",
+            echoSubStatsType1: null,
+            echoSubStatsValue1: null,
+          },
+        },
+      },
+    };
+    const inventoryEchoes = [
+      {
+        echoId: "inv-echo-1",
+        echo: "ReminiscenceThrenodianVoidborneConstruct",
+        type: 4,
+        rank: 5,
+        stat: "CritDMG",
+        echoSubStatsType1: "CritRate",
+        echoSubStatsValue1: 6.9,
+        echoSubStatsType2: "ATK_FLAT",
+        echoSubStatsValue2: 50,
+      },
+    ];
+
+    const withInventory = await buildCharacterCalculationContext(
+      "Hiyuki",
+      characters,
+      enemyConfig,
+      inventoryEchoes,
+    );
+    const withoutInventory = await buildCharacterCalculationContext(
+      "Hiyuki",
+      characters,
+      enemyConfig,
+      [],
+    );
+
+    // Without the inventory join, the slot resolves to all-null fields and
+    // contributes nothing (the bug) — with it, the real echo's main stat +
+    // substats come through.
+    expect(withoutInventory.echoStats).toEqual({});
+    expect(withInventory.echoStats.CritRate).toBeCloseTo(6.9);
+    // 150 guaranteed flat ATK bonus for a rank-5 cost-4 echo + the 50 substat
+    expect(withInventory.echoStats.ATK_FLAT).toBeCloseTo(200);
+    expect(withInventory.finalStats.totalAtk).toBeGreaterThan(withoutInventory.finalStats.totalAtk);
+  });
+
   it("resolves weapon attack and an alwaysEnabled passive even with no stored passive config", async () => {
     const characters = {
       Calcharo: {

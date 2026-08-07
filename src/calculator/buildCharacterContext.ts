@@ -60,6 +60,33 @@ export interface CharacterCalculationContext {
   context: CalculationContext;
 }
 
+/**
+ * Resolves a character's 5 echo slots to their real stat data. A slot
+ * stored on the character record (`characters[id].echoes[index]`) is often
+ * just a pointer (`echoId`) into the shared inventory once an echo has been
+ * equipped from the Inventory page — the character record's own
+ * type/rank/stat/substat fields are stale placeholders in that case (they
+ * were never written, or were written before the echo was last edited).
+ * Mirrors CalculatorEcho.vue's `currentEcho`-priority getters exactly:
+ * prefer the inventory echo matched by `echoId`, falling back to whatever
+ * is inline on the character record only when there's no inventory match
+ * (e.g. legacy data entered directly, with no linked inventory item).
+ */
+function resolveCharacterEchoes(
+  characterEchoes: Record<string | number, any> | any[] | undefined,
+  inventoryEchoes: any[],
+): any[] {
+  const echoesById = new Map(inventoryEchoes.map((echo) => [echo.echoId, echo]));
+  const resolved: any[] = [];
+  for (let index = 0; index < 5; index++) {
+    const slot = (characterEchoes as Record<string, any> | undefined)?.[index] ?? null;
+    const echoId = slot?.echoId ?? null;
+    const inventoryEcho = echoId ? echoesById.get(echoId) : undefined;
+    resolved.push(inventoryEcho ?? slot ?? {});
+  }
+  return resolved;
+}
+
 function resolveSetBonusStats(
   setBonusDef: { passives?: any[] } | null | undefined,
   echoSetPassivesConfig: Record<string, { isEnabled?: boolean; stacks?: number }>,
@@ -95,6 +122,7 @@ export async function buildCharacterCalculationContext(
   characterId: string,
   characters: Record<string, any>,
   enemyConfig: TeamEnemyConfig,
+  inventoryEchoes: any[] = [],
 ): Promise<CharacterCalculationContext> {
   const characterData = characters?.[characterId] ?? {};
   const chosenChar = await getCharByName(characterId);
@@ -147,7 +175,8 @@ export async function buildCharacterCalculationContext(
 
   // Echoes: base echo stats + set bonuses + main echo buff, combined exactly
   // like CalculatorEchoes.vue's updateTotalStats.
-  const combinedEchoStats = getCombinedEchoStats(characterData.echoes ?? []);
+  const resolvedEchoes = resolveCharacterEchoes(characterData.echoes, inventoryEchoes);
+  const combinedEchoStats = getCombinedEchoStats(resolvedEchoes);
   const echoSetBonus = characterData.echoSetBonus ?? {};
   const echoSetPassivesConfig = characterData.echoSetPassives ?? {};
   const setBonusOnePieceStats = resolveSetBonusStats(

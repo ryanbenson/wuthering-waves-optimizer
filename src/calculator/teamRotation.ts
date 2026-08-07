@@ -92,6 +92,7 @@ export async function calcTeamRotationDamage(
   team: TeamRotationInput,
   characters: Record<string, any>,
   enemyConfig: TeamEnemyConfig,
+  inventoryEchoes: any[] = [],
 ): Promise<{
   perCharacter: Record<string, TeamRotationCharacterResult>;
   actionResults: TeamRotationActionResult[];
@@ -114,7 +115,7 @@ export async function calcTeamRotationDamage(
       continue;
     }
 
-    const built = await buildCharacterCalculationContext(characterId, characters, enemyConfig);
+    const built = await buildCharacterCalculationContext(characterId, characters, enemyConfig, inventoryEchoes);
 
     const resolvedPairs = slotActions
       .map((action) => ({

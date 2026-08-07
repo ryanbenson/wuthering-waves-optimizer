@@ -618,12 +618,17 @@ export function getEchoStats(echo: EchoObject): Record<string, number> {
 }
 
 export function getCombinedEchoStats(
-  echoes: EchoObject[],
+  echoes: EchoObject[] | Record<string | number, EchoObject>,
 ): Record<string, number> {
   const combinedStats: Record<string, number> = {};
 
-  for (let i = 0; i < echoes.length; i++) {
-    const echo = echoes[i];
+  // Accepts either an array (e.g. optimizer-generated loadout candidates) or
+  // a plain object keyed by slot index (the shape characters[id].echoes is
+  // actually persisted as) — Object.values handles both identically.
+  const echoList = Object.values(echoes ?? {});
+
+  for (let i = 0; i < echoList.length; i++) {
+    const echo = echoList[i];
     const echoStats = getEchoStats(echo);
 
     // Use Object.keys for slightly better performance than Object.entries

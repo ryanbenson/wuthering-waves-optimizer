@@ -148,6 +148,7 @@ import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
 import { useTeamRotationsStore } from "../stores/teamRotations";
 import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
 import { useToast } from "../composables/useToast";
 import { getCharacterRosterDisplayName, getCharactersAvailable } from "../characters/characters";
 import {
@@ -168,6 +169,8 @@ const router = useRouter();
 const teamRotationsStore = useTeamRotationsStore();
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
+const inventoryStore = useInventoryStore();
+const { echoes: inventoryEchoes } = storeToRefs(inventoryStore);
 const { showToast } = useToast();
 
 // Slots the user has clicked "Change" on but not yet picked a replacement
@@ -394,7 +397,7 @@ async function recompute() {
     [0, 1, 2].map(async (slot) => {
       const characterId = t.characterIds[slot];
       nextContexts[slot] = characterId
-        ? await buildCharacterCalculationContext(characterId, characters.value, enemyConfig)
+        ? await buildCharacterCalculationContext(characterId, characters.value, enemyConfig, inventoryEchoes.value)
         : null;
     }),
   );
@@ -405,6 +408,7 @@ async function recompute() {
     { name: t.name, characterIds: t.characterIds, actions: t.actions, duration: t.duration },
     characters.value,
     enemyConfig,
+    inventoryEchoes.value,
   );
   if (token !== computeToken) return;
   result.value = nextResult;

@@ -148,6 +148,7 @@ import PaginationControls from "./PaginationControls.vue";
 import TeamRotationTeamEditor from "./TeamRotationTeamEditor.vue";
 import { useTeamRotationsStore } from "../stores/teamRotations";
 import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
 import { useConfirm } from "../composables/useConfirm";
 import { getCharacterRosterDisplayName, getCharactersAvailable } from "../characters/characters";
 import { calcTeamRotationDamage } from "../calculator/teamRotation";
@@ -157,6 +158,8 @@ const teamRotationsStore = useTeamRotationsStore();
 const { teams } = storeToRefs(teamRotationsStore);
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
+const inventoryStore = useInventoryStore();
+const { echoes: inventoryEchoes } = storeToRefs(inventoryStore);
 const { confirm } = useConfirm();
 
 const selectedTeamId = ref<string | null>(null);
@@ -254,6 +257,7 @@ async function recomputeTeamDamages() {
         },
         characters.value,
         team.enemyConfig,
+        inventoryEchoes.value,
       );
       return [team.id, result.total.normalDamage ?? 0] as const;
     }),
