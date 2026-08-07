@@ -103,6 +103,45 @@ export function filterEchoesForOptimizer(echoes: unknown[]): unknown[] {
   );
 }
 
+/** Why an optimize run finished with zero ranked loadouts. */
+export type OptimizerEmptyReason =
+  | "no-inventory"
+  | "no-set-echoes"
+  | "filtered"
+  | "none-found";
+
+export const OPTIMIZER_EMPTY_REASON_MESSAGES: Record<
+  OptimizerEmptyReason,
+  string
+> = {
+  "no-inventory": "There are no echoes in your inventory",
+  "no-set-echoes": "There are no echoes with the sets you chose",
+  filtered:
+    "There are no loadouts based on your filtering, such as minimum stat requirements",
+  "none-found": "No loadouts were found",
+};
+
+/**
+ * Pick the most specific empty-result explanation.
+ * Call only when the run completed with zero results.
+ */
+export function resolveOptimizerEmptyReason(input: {
+  inventoryCount: number;
+  setFilteredCount: number;
+  generatedCount: number;
+}): OptimizerEmptyReason {
+  if (input.inventoryCount <= 0) {
+    return "no-inventory";
+  }
+  if (input.setFilteredCount <= 0) {
+    return "no-set-echoes";
+  }
+  if (input.generatedCount > 0) {
+    return "filtered";
+  }
+  return "none-found";
+}
+
 function echoOptimizerSignature(echo: any): string {
   if (!echo) return "";
 

@@ -281,9 +281,9 @@
     <div class="optimizer-progress my-6" v-if="hasTriggeredOptimizer">
       <p
         v-if="optimizerNoPossibleLoadouts"
-        class="text-warning text-center my-2">
-        There are no possible loadouts based on your settings. Please adjust your
-        settings or add more echoes.
+        class="text-warning text-center my-2"
+        data-test-optimizer-empty-reason>
+        {{ emptyReasonMessage }}
       </p>
       <template v-else>
         <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -306,10 +306,16 @@
           class="progress progress-primary"
           :value="processedCombos"
           :max="Math.max(totalCombos ?? 0, 1)"></progress>
+        <p
+          v-if="optimizerEmptyReason"
+          class="text-warning text-center mt-4"
+          data-test-optimizer-empty-reason>
+          {{ emptyReasonMessage }}
+        </p>
       </template>
     </div>
     <CalculatorOptimizerResults
-      v-if="optimizerResults"
+      v-if="optimizerResults?.length"
       :character="character"
       :character-element="characterElement"
       :results="optimizerResults"
@@ -345,6 +351,8 @@ import CalculatorOptimizerGuide from "./CalculatorOptimizerGuide.vue";
 import CalculatorOptimizerSettings from "./CalculatorOptimizerSettings.vue";
 import {
   normalizeLoadoutFormat,
+  OPTIMIZER_EMPTY_REASON_MESSAGES,
+  type OptimizerEmptyReason,
   type OptimizerLoadoutFormat,
 } from "../calculator/optimizer";
 
@@ -354,6 +362,7 @@ const props = defineProps<{
   processedCombos?: number;
   optimizerElapsedMs?: number;
   optimizerNoPossibleLoadouts?: boolean;
+  optimizerEmptyReason?: OptimizerEmptyReason | null;
   optimizerResults?: unknown[] | null;
   characterElement: string;
   allDamages?: unknown[];
@@ -417,6 +426,14 @@ const formattedOptimizerElapsed = computed(() => {
     return `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   }
   return `${minutes}:${String(seconds).padStart(2, "0")}`;
+});
+
+const emptyReasonMessage = computed(() => {
+  const reason = props.optimizerEmptyReason;
+  if (reason) {
+    return OPTIMIZER_EMPTY_REASON_MESSAGES[reason];
+  }
+  return OPTIMIZER_EMPTY_REASON_MESSAGES["none-found"];
 });
 
 const isValid = computed(() => {

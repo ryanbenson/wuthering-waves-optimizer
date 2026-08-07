@@ -5,6 +5,7 @@
     <h3>August 6, 2026</h3>
     <ul>
       <li>Fixes weapon team buff name for Firstlight's Herald.</li>
+      <li>Fixes last weapon buff refinement dropdown.</li>
     </ul>
     <h3>August 5, 2026</h3>
     <ul>
