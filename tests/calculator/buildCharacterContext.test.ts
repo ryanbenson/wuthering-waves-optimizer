@@ -1,0 +1,68 @@
+import { describe, it, expect } from "vitest";
+import { buildCharacterCalculationContext } from "../../src/calculator/buildCharacterContext";
+import { getCombinedEchoStats } from "../../src/echoes/stats";
+import type { TeamEnemyConfig } from "../../src/calculator/buildCharacterContext";
+
+const enemyConfig: TeamEnemyConfig = {
+  enemyLevel: 90,
+  enemyResist: 0.1,
+  enemyType: "Calamity",
+};
+
+describe("buildCharacterCalculationContext", () => {
+  it("resolves base stats and empty equipment for an unconfigured character", async () => {
+    const characters = { Calcharo: {} };
+    const result = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+
+    expect(result.baseHp).toBe(10500);
+    expect(result.baseAtk).toBe(437);
+    expect(result.baseDef).toBe(1185);
+    expect(result.weaponData).toEqual({
+      attack: 0,
+      modifier: null,
+      modifierValue: 0,
+      weaponPassiveStats: {},
+    });
+    expect(result.echoStats).toEqual({});
+    expect(result.finalStats.totalAtk).toBeCloseTo(437);
+    expect(result.finalStats.totalHp).toBeCloseTo(10500);
+    expect(result.finalStats.totalDef).toBeCloseTo(1185);
+  });
+
+  it("combines base echo stats identically to getCombinedEchoStats when no set bonuses/main echo are configured", async () => {
+    const echoes = [
+      { type: "4", rank: "5", stat: "CritRate", echoSubStatsType1: "ATK", echoSubStatsValue1: 30 },
+    ];
+    const characters = { Calcharo: { echoes } };
+    const result = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+    const expectedBase = getCombinedEchoStats(echoes as any);
+
+    expect(result.echoStats).toEqual(expectedBase);
+  });
+
+  it("builds a ready-to-use CalculationContext scoped to the requested character", async () => {
+    const characters = { Calcharo: {} };
+    const result = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+
+    expect(result.context.character.characterKey).toBe("Calcharo");
+    expect(result.context.character.chosenChar).toBeTruthy();
+    expect(result.context.enemy.enemyLevel).toBe(90);
+    expect(result.context.enemy.enemyResist).toBeCloseTo(0.1);
+    expect(result.context.rotationsList).toEqual([]);
+  });
+
+  it("resolves weapon attack and an alwaysEnabled passive even with no stored passive config", async () => {
+    const characters = {
+      Calcharo: {
+        weapon: "TrainingBroadblade",
+        weapons: { TrainingBroadblade: { weaponLevel: "70", refinement: "1" } },
+      },
+    };
+    const result = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+
+    expect(result.weaponData.attack).toBeGreaterThan(0);
+    // TrainingBroadblade's "Persevere" passive is alwaysEnabled and grants +4%
+    // ATK at refinement 1, with no stored weaponPassives config needed.
+    expect(result.weaponData.weaponPassiveStats.ATK).toBeCloseTo(0.04);
+  });
+});
