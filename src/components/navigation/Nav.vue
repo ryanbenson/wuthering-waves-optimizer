@@ -60,7 +60,7 @@
         </RouterLink>
         <RouterLink
           v-if="isTeamRotationsEnabled"
-          to="/team-rotations"
+          to="/teams"
           class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2"
           :class="{ 'btn-active': curPage === 'team-rotations' }"
           title="Team Rotations"

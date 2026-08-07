@@ -12,14 +12,27 @@
 
       <div class="teams__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
         <h3 class="text-sm font-semibold">Teams</h3>
-        <div class="join">
-          <button
-            type="button"
-            class="btn btn-sm join-item btn-primary"
-            data-test-team-rotations-new
-            @click="handleCreateTeam">
-            + New Team
-          </button>
+        <div class="flex items-center gap-2 flex-wrap">
+          <AppRichSelect
+            v-model="characterFilter"
+            class="w-48"
+            :options="characterFilterOptions"
+            searchable
+            allow-empty
+            empty-label="Filter by character"
+            placeholder="Filter by character"
+            aria-label="Filter teams by character"
+            size="sm"
+            data-test-team-rotations-filter />
+          <div class="join">
+            <button
+              type="button"
+              class="btn btn-sm join-item btn-primary"
+              data-test-team-rotations-new
+              @click="handleCreateTeam">
+              + New Team
+            </button>
+          </div>
         </div>
       </div>
 
@@ -45,57 +58,72 @@
         </button>
       </div>
 
-      <ul
-        v-else
-        class="teams__list grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
-        data-test-team-rotations-list>
-        <li
-          v-for="team in teams"
-          :key="team.id"
-          class="card bg-base-200 shadow hover:bg-base-300 transition-colors cursor-pointer"
-          :data-test-team-rotations-item="team.name"
-          @click="selectedTeamId = team.id">
-          <div class="card-body gap-3 p-4">
-            <div class="flex items-start justify-between gap-2">
-              <h3 class="font-semibold truncate">{{ team.name }}</h3>
-              <button
-                type="button"
-                class="btn btn-ghost btn-xs shrink-0"
-                title="Delete team"
-                :data-test-team-rotations-delete="team.name"
-                @click.stop="handleDeleteTeam(team.id, team.name)">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
-                  <path
-                    d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
-                    fill="currentColor" />
-                </svg>
-              </button>
-            </div>
-            <div class="flex gap-3">
-              <div
-                v-for="(characterId, index) in team.characterIds"
-                :key="index"
-                class="flex flex-col items-center gap-1 w-16 min-w-0">
+      <div
+        v-else-if="!filteredTeams.length"
+        class="teams__empty flex flex-col items-center justify-center text-center py-16 px-4 rounded-lg bg-base-200/60"
+        data-test-team-rotations-no-matches>
+        <p class="text-base-content/70">No teams found with that character.</p>
+      </div>
+
+      <template v-else>
+        <ul
+          class="teams__list grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+          data-test-team-rotations-list>
+          <li
+            v-for="team in paginatedTeams"
+            :key="team.id"
+            class="card bg-base-200 shadow hover:bg-base-300 transition-colors cursor-pointer"
+            :data-test-team-rotations-item="team.name"
+            @click="selectedTeamId = team.id">
+            <div class="card-body gap-3 p-4">
+              <div class="flex items-start justify-between gap-2">
+                <h3 class="font-semibold truncate">{{ team.name }}</h3>
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-xs shrink-0"
+                  title="Delete team"
+                  :data-test-team-rotations-delete="team.name"
+                  @click.stop="handleDeleteTeam(team.id, team.name)">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
+                    <path
+                      d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
+                      fill="currentColor" />
+                  </svg>
+                </button>
+              </div>
+              <div class="flex gap-4">
                 <div
-                  class="size-10 rounded-full bg-base-300 border bg-cover bg-center"
-                  :style="
-                    characterId
-                      ? { backgroundImage: `url(${characterImage(characterId)})` }
-                      : {}
-                  "></div>
-                <span class="text-xs truncate w-full text-center opacity-80">
-                  {{ characterId ? displayName(characterId) : "Empty" }}
-                </span>
+                  v-for="(characterId, index) in team.characterIds"
+                  :key="index"
+                  class="flex flex-col items-center gap-1 w-20 min-w-0">
+                  <div
+                    class="size-16 rounded-full bg-base-300 border bg-cover bg-center"
+                    :style="
+                      characterId
+                        ? { backgroundImage: `url(${characterImage(characterId)})` }
+                        : {}
+                    "></div>
+                  <span class="text-xs truncate w-full text-center opacity-80">
+                    {{ characterId ? displayName(characterId) : "Empty" }}
+                  </span>
+                </div>
+              </div>
+              <div class="text-xs opacity-70 flex flex-wrap gap-x-3 gap-y-1">
+                <span>{{ team.actions.length }} action{{ team.actions.length === 1 ? "" : "s" }}</span>
+                <span v-if="team.duration">{{ team.duration }}s rotation</span>
+              </div>
+              <div class="text-sm" data-test-team-rotations-total-dmg>
+                <span class="font-bold">Total DMG:</span>
+                {{ teamTotalDamage(team.id) }}
               </div>
             </div>
-            <div class="text-xs opacity-70 flex flex-wrap gap-x-3 gap-y-1">
-              <span>{{ team.actions.length }} action{{ team.actions.length === 1 ? "" : "s" }}</span>
-              <span v-if="team.duration">{{ team.duration }}s rotation</span>
-              <span>{{ team.enemyConfig?.enemyType ?? "Calamity" }} enemy, lvl {{ team.enemyConfig?.enemyLevel ?? 90 }}</span>
-            </div>
-          </div>
-        </li>
-      </ul>
+          </li>
+        </ul>
+
+        <div v-if="totalPages > 1" class="flex justify-center mt-6">
+          <PaginationControls v-model="page" :total-pages="totalPages" />
+        </div>
+      </template>
     </template>
 
     <template v-else>
@@ -112,16 +140,23 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import Nav from "./navigation/Nav.vue";
+import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
+import PaginationControls from "./PaginationControls.vue";
 import TeamRotationTeamEditor from "./TeamRotationTeamEditor.vue";
 import { useTeamRotationsStore } from "../stores/teamRotations";
+import { useCharacterStore } from "../stores/character";
 import { useConfirm } from "../composables/useConfirm";
-import { getCharacterRosterDisplayName } from "../characters/characters";
+import { getCharacterRosterDisplayName, getCharactersAvailable } from "../characters/characters";
+import { calcTeamRotationDamage } from "../calculator/teamRotation";
+import { displayDamage } from "../utils/numbers";
 
 const teamRotationsStore = useTeamRotationsStore();
 const { teams } = storeToRefs(teamRotationsStore);
+const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
 const { confirm } = useConfirm();
 
 const selectedTeamId = ref<string | null>(null);
@@ -152,5 +187,87 @@ async function handleDeleteTeam(teamId: string, teamName: string) {
   if (selectedTeamId.value === teamId) {
     selectedTeamId.value = null;
   }
+}
+
+// Character filter — finds teams that have the chosen character in any slot.
+const characterFilter = ref<string | null>(null);
+
+const characterFilterOptions = computed((): AppRichSelectOption[] => {
+  const roster = getCharactersAvailable();
+  const mapBucket = (chars: typeof roster.five, group: string): AppRichSelectOption[] =>
+    chars.map((char) => ({
+      value: char.key,
+      label: char.name,
+      group,
+      image: characterImage(char.key),
+    }));
+  return [...mapBucket(roster.five, "5 Star"), ...mapBucket(roster.four, "4 Star")];
+});
+
+const filteredTeams = computed(() => {
+  if (!characterFilter.value) {
+    return teams.value;
+  }
+  return teams.value.filter((team: { characterIds: Array<string | null> }) =>
+    team.characterIds.includes(characterFilter.value),
+  );
+});
+
+// Pagination, matching the Inventory page's PaginationControls pattern.
+const page = ref(1);
+const perPage = 12;
+
+const paginatedTeams = computed(() => {
+  const start = (page.value - 1) * perPage;
+  return filteredTeams.value.slice(start, start + perPage);
+});
+
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(filteredTeams.value.length / perPage)),
+);
+
+watch(characterFilter, () => {
+  page.value = 1;
+});
+
+watch(totalPages, (nextTotalPages) => {
+  if (page.value > nextTotalPages) {
+    page.value = nextTotalPages;
+  }
+});
+
+// Total damage per team, recomputed fresh (no caching) whenever team data
+// changes — mirrors TeamRotationTeamEditor.vue's own recompute approach.
+const teamDamageTotals = ref<Record<string, number>>({});
+let damageComputeToken = 0;
+
+async function recomputeTeamDamages() {
+  const token = ++damageComputeToken;
+  const entries = await Promise.all(
+    teams.value.map(async (team: any) => {
+      const result = await calcTeamRotationDamage(
+        {
+          name: team.name,
+          characterIds: team.characterIds,
+          actions: team.actions,
+          duration: team.duration,
+        },
+        characters.value,
+        team.enemyConfig,
+      );
+      return [team.id, result.total.normalDamage ?? 0] as const;
+    }),
+  );
+  if (token !== damageComputeToken) {
+    return;
+  }
+  teamDamageTotals.value = Object.fromEntries(entries);
+}
+
+watch(teams, () => void recomputeTeamDamages(), { deep: true, immediate: true });
+
+function teamTotalDamage(teamId: string): string {
+  const value = teamDamageTotals.value[teamId];
+  return value !== undefined ? String(displayDamage(value)) : "—";
 }
 </script>

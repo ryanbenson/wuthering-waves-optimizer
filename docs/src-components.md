@@ -59,7 +59,7 @@ Navigation between these screens is controlled by `curScreen` and sub-nav compon
 
 ## TeamRotations.vue — multi-character team rotation page
 
-**Location**: `src/components/TeamRotations.vue` (routed at `/team-rotations`, wrapped by `src/pages/TeamRotationsView.vue`)
+**Location**: `src/components/TeamRotations.vue` (routed at `/teams`, wrapped by `src/pages/TeamRotationsView.vue`)
 
 Unlike Calculator.vue, this page does **not** own a single character's reactive calculation state. Each team references up to 3 already-configured characters by id (from the `character` store's `characters` map) and computes each one's stats/damage independently via `buildCharacterCalculationContext` (`src/calculator/buildCharacterContext.ts`) — see ADR [0011](./adr/0011-headless-character-calculation-context.md).
 

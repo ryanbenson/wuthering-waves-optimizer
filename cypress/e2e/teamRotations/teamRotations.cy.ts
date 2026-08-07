@@ -10,7 +10,7 @@ describe("Team Rotations feature flag", () => {
     cy.visit("/");
     cy.get("[data-test-nav-team-rotations]").should("not.exist");
 
-    cy.visit("/team-rotations");
+    cy.visit("/teams");
     cy.location("pathname").should("eq", "/");
   });
 
@@ -47,7 +47,7 @@ describe("Team Rotations", () => {
     configureCharacterWithWeapon("Chixia");
 
     cy.get("[data-test-nav-team-rotations]").click();
-    cy.location("pathname").should("eq", "/team-rotations");
+    cy.location("pathname").should("eq", "/teams");
     cy.get("[data-test-team-rotations-empty]").should("be.visible");
 
     cy.get("[data-test-team-rotations-new]").click();
@@ -115,6 +115,20 @@ describe("Team Rotations", () => {
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-list]").should("be.visible");
     cy.get("[data-test-team-rotations-item]").should("exist").and("contain.text", "action");
+    cy.get("[data-test-team-rotations-total-dmg]").should(($el) => {
+      expect($el.text()).to.match(/Total DMG:\s*\d/);
+    });
+
+    // Filtering by a character in the team keeps it visible; filtering by one
+    // that isn't on any team hides it
+    cy.richSelect("[data-test-team-rotations-filter]", "Carlotta");
+    cy.get("[data-test-team-rotations-item]").should("exist");
+    cy.richSelect("[data-test-team-rotations-filter]", "Calcharo");
+    cy.get("[data-test-team-rotations-item]").should("not.exist");
+    cy.get("[data-test-team-rotations-no-matches]").should("be.visible");
+    cy.get("[data-test-team-rotations-filter]").click();
+    cy.get('[data-test-rich-select-option="null"]').click({ force: true });
+    cy.get("[data-test-team-rotations-item]").should("exist");
 
     // Delete the team, with confirmation
     cy.get("[data-test-team-rotations-delete]").first().click();

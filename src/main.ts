@@ -32,7 +32,7 @@ const routes = [
   { path: "/legal", component: LegalView, name: "LegalView" },
   { path: "/inventory", component: InventoryView, name: "InventoryView" },
   { path: "/convene", component: ConveneView, name: "ConveneView" },
-  { path: "/team-rotations", component: TeamRotationsView, name: "TeamRotationsView" },
+  { path: "/teams", component: TeamRotationsView, name: "TeamRotationsView" },
 ];
 
 const router = createRouter({
