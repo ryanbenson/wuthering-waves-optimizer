@@ -68,6 +68,18 @@ export function calcRotationDps(
   };
 }
 
+export interface TeamRotationActionResult {
+  characterId: string;
+  slot: 0 | 1 | 2;
+  order: number;
+  attack: any;
+}
+
+export interface TeamRotationCharacterResult {
+  damageAggregation: DamageAggregation;
+  attacks: any[];
+}
+
 /**
  * Computes total team damage/DPS for a rotation spanning up to 3
  * characters. Each character's actions are evaluated against that
@@ -81,11 +93,13 @@ export async function calcTeamRotationDamage(
   characters: Record<string, any>,
   enemyConfig: TeamEnemyConfig,
 ): Promise<{
-  perCharacter: Record<string, DamageAggregation>;
+  perCharacter: Record<string, TeamRotationCharacterResult>;
+  actionResults: TeamRotationActionResult[];
   total: DamageAggregation;
   dps: RotationDps;
 }> {
-  const perCharacter: Record<string, DamageAggregation> = {};
+  const perCharacter: Record<string, TeamRotationCharacterResult> = {};
+  const actionResults: TeamRotationActionResult[] = [];
   const total: DamageAggregation = { normalDamage: 0, avgDamage: 0, critDamage: 0, healing: 0, shield: 0 };
 
   for (let slot = 0; slot < team.characterIds.length; slot++) {
@@ -102,9 +116,12 @@ export async function calcTeamRotationDamage(
 
     const built = await buildCharacterCalculationContext(characterId, characters, enemyConfig);
 
-    const resolvedAttacks = slotActions
-      .map((action) => resolveRotationActionToAttackData(action, built.chosenChar, built.characterLevel))
-      .filter((attack) => attack != null);
+    const resolvedPairs = slotActions
+      .map((action) => ({
+        action,
+        attack: resolveRotationActionToAttackData(action, built.chosenChar, built.characterLevel),
+      }))
+      .filter((pair): pair is { action: TeamRotationAction; attack: any } => pair.attack != null);
 
     built.context.rotationsList = [
       {
@@ -112,15 +129,27 @@ export async function calcTeamRotationDamage(
         name: team.name ?? "Team Rotation",
         duration: team.duration,
         order: 0,
-        attacks: resolvedAttacks,
+        attacks: resolvedPairs.map((pair) => pair.attack),
       },
     ];
 
     const damageData = calcDamages(built.context);
+    // processAttacks preserves array order, so the Nth processed attack
+    // corresponds to the Nth entry in resolvedPairs.
+    const processedAttacks: any[] = damageData?.rotations?.[0]?.attacks ?? [];
     const damageAggregation: DamageAggregation =
       damageData?.rotations?.[0]?.damageAggregation ?? EMPTY_DAMAGE_AGGREGATION;
 
-    perCharacter[characterId] = damageAggregation;
+    perCharacter[characterId] = { damageAggregation, attacks: processedAttacks };
+
+    processedAttacks.forEach((attack, index) => {
+      actionResults.push({
+        characterId,
+        slot: slot as 0 | 1 | 2,
+        order: resolvedPairs[index]?.action.order ?? 0,
+        attack,
+      });
+    });
 
     total.normalDamage = (total.normalDamage ?? 0) + (damageAggregation.normalDamage ?? 0);
     total.avgDamage = (total.avgDamage ?? 0) + (damageAggregation.avgDamage ?? 0);
@@ -129,8 +158,11 @@ export async function calcTeamRotationDamage(
     total.shield = (total.shield ?? 0) + (damageAggregation.shield ?? 0);
   }
 
+  actionResults.sort((a, b) => a.order - b.order);
+
   return {
     perCharacter,
+    actionResults,
     total,
     dps: calcRotationDps(total, team.duration),
   };

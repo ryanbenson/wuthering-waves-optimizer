@@ -96,6 +96,25 @@ describe("Team Rotations", () => {
     });
     cy.get("[data-test-team-rotation-dps]").should("be.visible");
 
+    // Each action gets its own damage row, tagged with its own character's
+    // avatar, and the two rows sum to the total shown above
+    cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]')
+      .should("be.visible")
+      .find("img")
+      .should("have.attr", "src")
+      .and("include", "Carlotta");
+    cy.get('[data-test-team-rotation-action-damage="Stage 1 DMG"]')
+      .should("be.visible")
+      .find("img")
+      .should("have.attr", "src")
+      .and("include", "Chixia");
+
+    // A stat snippet's Energy Regen is a percentage (e.g. "100.0%"), not a
+    // raw 0-1 ratio mistakenly rendered as "1.0%"
+    cy.get('[data-test-team-rotation-slot="0"]').should(($el) => {
+      expect($el.text()).to.match(/Energy Regen: \d{2,3}\.\d%/);
+    });
+
     // Changing a teammate can be backed out of without losing the current
     // pick or their actions
     cy.get('[data-test-team-rotation-slot-change="0"]').click();

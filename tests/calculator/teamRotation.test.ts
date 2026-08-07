@@ -60,7 +60,12 @@ describe("calcTeamRotationDamage", () => {
     const expectedDamage = calcDamages(built.context);
     const expectedAggregation = expectedDamage?.rotations?.[0]?.damageAggregation;
 
-    expect(result.perCharacter.Calcharo).toEqual(expectedAggregation);
+    expect(result.perCharacter.Calcharo.damageAggregation).toEqual(expectedAggregation);
+    expect(result.perCharacter.Calcharo.attacks).toEqual(
+      expectedDamage?.rotations?.[0]?.attacks,
+    );
+    expect(result.actionResults).toHaveLength(1);
+    expect(result.actionResults[0]).toMatchObject({ characterId: "Calcharo", slot: 0, order: 0 });
     // total starts damage fields at 0 rather than null (falsy either way for
     // display purposes), so compare the damage fields directly rather than
     // the whole object.

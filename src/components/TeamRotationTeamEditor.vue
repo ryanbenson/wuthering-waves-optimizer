@@ -155,7 +155,12 @@ import {
   type CharacterCalculationContext,
   type TeamEnemyConfig,
 } from "../calculator/buildCharacterContext";
-import { calcTeamRotationDamage, type TeamRotationAction } from "../calculator/teamRotation";
+import {
+  calcTeamRotationDamage,
+  type TeamRotationAction,
+  type TeamRotationActionResult,
+  type TeamRotationCharacterResult,
+} from "../calculator/teamRotation";
 
 const props = defineProps<{ teamId: string }>();
 
@@ -319,11 +324,13 @@ function handleActionRemove(id: string) {
 // team's characters or enemy config change.
 const slotContexts = ref<Record<number, CharacterCalculationContext | null>>({});
 const result = ref<{
-  perCharacter: Record<string, any>;
+  perCharacter: Record<string, TeamRotationCharacterResult>;
+  actionResults: TeamRotationActionResult[];
   total: { normalDamage: number | null; avgDamage: number | null; critDamage: number | null; healing: number | null; shield: number | null };
   dps: { normal: number; avg: number; crit: number };
 }>({
   perCharacter: {},
+  actionResults: [],
   total: { normalDamage: 0, avgDamage: 0, critDamage: 0, healing: 0, shield: 0 },
   dps: { normal: 0, avg: 0, crit: 0 },
 });
@@ -339,7 +346,10 @@ const slotStats = computed(() => {
           totalAtk: ctx.finalStats.totalAtk,
           critRate: ctx.finalStats.critRate,
           critDMG: ctx.finalStats.critDMG,
-          energyRegen: ctx.finalStats.energyRegen,
+          // finalStats.energyRegen is a ratio (1.0 = 100%), unlike
+          // critRate/critDMG which are already percentage-point numbers —
+          // matches CalculatorStats.vue's `energyRegen * 100` display.
+          energyRegen: ctx.finalStats.energyRegen * 100,
         }
       : null;
   }
