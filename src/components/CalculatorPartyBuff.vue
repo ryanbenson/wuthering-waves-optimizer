@@ -82,26 +82,13 @@
 <script setup lang="ts">
 import { computed, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
-import { computeDeniaOffTuneBuildupTuneBreakBoost } from "../calculator/stats";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import { useCharacterStore } from "../stores/character";
 import AppRichSelect from "./AppRichSelect.vue";
 import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
+import { resolveTeamBuffInstance, type PartyBuffModifier } from "../buffs/teamBuffs";
 
-export type PartyBuffModifier = {
-  modifier?: string;
-  modifierValue?: unknown;
-  modifierByRefinement?: Record<string, number>;
-  specificCharacters?: string[];
-  modifySpecificTalents?: string[];
-  modifierValueTalentRef?: string;
-  modifierTalentKey?: string;
-  modifierTalentTarget?: "talentModifierMultiplyAdd" | "talentModifierMultiply";
-  modifierStep?: number;
-  maximumValue?: number;
-  minStatValue?: number;
-  modifierValueCalculated?: number;
-};
+export type { PartyBuffModifier };
 
 const props = withDefaults(
   defineProps<{
@@ -231,167 +218,29 @@ const baseAttrValue = computed({
 });
 
 const buffStats = computed(() => {
-  const data: Record<string, unknown> = {};
-  if (!isEnabled.value) {
-    return data;
-  }
   const buffsMap = teamBuffs.value?.buffs as
     | Record<string, { isEnabled?: boolean }>
     | undefined;
-  if (
-    props.uniqueKey === "InherentSkillApplauseofVictory" ||
-    props.uniqueKey === "InherentSkillApplauseofVictoryFullFusionTeam"
-  ) {
-    if (buffsMap?.SequenceNode3WolflameHowlsinHerWake?.isEnabled) {
-      return data;
-    }
-  }
-  if (props.uniqueKey === "ThunderSpellHeavenEarthMind") {
-    if (buffsMap?.SequenceNode6AlmightyForumLordofThunderSpell?.isEnabled) {
-      return data;
-    }
-  }
-  if (props.uniqueKey === "OutroSkillUnfinishedLiesTuneStrain") {
-    if (buffsMap?.OutroSkillUnfinishedLiesTuneStrain2?.isEnabled) {
-      return data;
-    }
-  }
-  if (props.uniqueKey === "PactofNeonlightLeap") {
-    data["ATK"] = 0.15;
-  }
-  if (props.uniqueKey === "InherentSkillEtchedColorsOffTuneBuildupRate") {
-    if (stacks.value >= 1) {
-      const tuneBreakBoost = computeDeniaOffTuneBuildupTuneBreakBoost(
-        stacks.value,
-      );
-      if (tuneBreakBoost > 0) {
-        data["tuneBreakBoost"] = tuneBreakBoost;
-      }
-    }
-    return data;
-  }
-  if (!props.hasStacks) {
-    props.modifiers.forEach((modifierItem) => {
-      if (modifierItem?.specificCharacters?.length) {
-        if (!modifierItem.specificCharacters.includes(props.character)) {
-          return;
-        }
-      }
-      if (modifierItem?.modifySpecificTalents) {
-        if (!data.modifySpecificTalents) {
-          data.modifySpecificTalents = [];
-        }
-        let modifierValue: number;
-        if (props.hasRefinements && modifierItem.modifierByRefinement) {
-          modifierValue =
-            modifierItem.modifierByRefinement[String(refinement.value)];
-        } else {
-          modifierValue = modifierItem.modifierValue as number;
-        }
-        modifierItem.modifierValueCalculated = modifierValue;
-        (data.modifySpecificTalents as PartyBuffModifier[]).push(modifierItem);
-      } else if (modifierItem.modifier === "EnableAttack") {
-        const mv = modifierItem.modifierValue as unknown[];
-        if (Array.isArray(data[modifierItem.modifier!])) {
-          (data[modifierItem.modifier!] as unknown[]).push(...mv);
-        } else {
-          data[modifierItem.modifier!] = [...mv];
-        }
-      } else if (modifierItem.modifier === "Talent") {
-        const talentRef =
-          props.talentData?.[modifierItem.modifierValueTalentRef!] ?? "10";
-        const modVal = modifierItem.modifierValue as Record<string, number>;
-        const talentVal = modVal[talentRef];
-        data[modifierItem.modifierTalentKey!] = talentVal;
-      } else if (modifierItem.modifier === "talentModifierMultiply") {
-        if (!data.talentModifierMultiply) {
-          data.talentModifierMultiply = [];
-        }
-        (data.talentModifierMultiply as PartyBuffModifier[]).push(modifierItem);
-      } else if (modifierItem.modifier?.includes("AdditionalBase")) {
-        return;
-      } else if (props.inputBase === true) {
-        let base = 0;
-        switch (props.modifierBasedOn) {
-          case "Energy Regen":
-            base = modifierItem?.minStatValue ?? 0;
-            break;
-          case "CritRate":
-            base = modifierItem?.minStatValue ?? 0.05;
-            break;
-          case "CritDMG":
-            base = modifierItem?.minStatValue ?? 1.5;
-            break;
-          default:
-            base = modifierItem?.minStatValue ?? 0;
-            break;
-        }
-        const currentAmount = baseAttrValue.value ?? 0;
-        const additionalAmount = (currentAmount - base) / 100;
-        const steps = Math.floor(
-          additionalAmount / (modifierItem.modifierStep as number),
-        );
-        let buffValue = steps * (modifierItem.modifierValue as number);
-        if (buffValue > (modifierItem.maximumValue as number)) {
-          buffValue = modifierItem.maximumValue as number;
-        }
-        if (buffValue < 0) {
-          buffValue = 0;
-        }
-        data[modifierItem.modifier!] = buffValue;
-      } else {
-        let modifierValue: number;
-        if (props.hasRefinements && modifierItem.modifierByRefinement) {
-          modifierValue =
-            modifierItem.modifierByRefinement[String(refinement.value)];
-        } else {
-          modifierValue = modifierItem.modifierValue as number;
-        }
-        const key = modifierItem.modifier!;
-        data[key] = ((data[key] as number) || 0) + modifierValue;
-      }
-    });
-    return data;
-  }
-  if (props.hasStacks) {
-    if (stacks.value === 0) {
-      return data;
-    }
-    props.modifiers.forEach((modifierItem) => {
-      if (modifierItem?.modifySpecificTalents) {
-        if (!data.modifySpecificTalents) {
-          data.modifySpecificTalents = [];
-        }
-        let modifierValue: number;
-        if (props.hasRefinements && modifierItem.modifierByRefinement) {
-          modifierValue =
-            modifierItem.modifierByRefinement[String(refinement.value)];
-        } else {
-          modifierValue = modifierItem.modifierValue as number;
-        }
-        modifierItem.modifierValueCalculated = modifierValue * stacks.value;
-        (data.modifySpecificTalents as PartyBuffModifier[]).push(modifierItem);
-      } else if (modifierItem.modifier === "Talent") {
-        const talentRef =
-          props.talentData?.[modifierItem.modifierValueTalentRef!] ?? "10";
-        const modVal = modifierItem.modifierValue as Record<string, number>;
-        const talentVal = modVal[talentRef];
-        data[modifierItem.modifierTalentKey!] = talentVal * stacks.value;
-      } else {
-        let modifierValue: number;
-        if (props.hasRefinements && modifierItem.modifierByRefinement) {
-          modifierValue =
-            modifierItem.modifierByRefinement[String(refinement.value)];
-        } else {
-          modifierValue = modifierItem.modifierValue as number;
-        }
-        const totalValue = modifierValue * stacks.value;
-        const key = modifierItem.modifier!;
-        data[key] = ((data[key] as number) || 0) + totalValue;
-      }
-    });
-  }
-  return data;
+  return resolveTeamBuffInstance(
+    {
+      key: props.uniqueKey,
+      alwaysEnabled: props.alwaysEnabled,
+      hasStacks: props.hasStacks,
+      hasRefinements: props.hasRefinements,
+      inputBase: props.inputBase,
+      modifierBasedOn: props.modifierBasedOn,
+      modifiers: props.modifiers,
+    },
+    {
+      isEnabled: isEnabled.value,
+      stacks: stacks.value,
+      refinement: refinement.value,
+      baseAttrValue: baseAttrValue.value,
+    },
+    props.character,
+    props.talentData,
+    buffsMap,
+  ).data;
 });
 
 const weaponRefinementLevels = ["1", "2", "3", "4", "5"] as const;

@@ -45,6 +45,7 @@
 import { computed, onBeforeUnmount, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { resolveWeaponPassiveInstance } from "../weapons/weaponPassives";
 
 const props = withDefaults(
   defineProps<{
@@ -123,35 +124,19 @@ const stacks = computed({
   },
 });
 
-const weaponPassiveStats = computed(() => {
-  const data = {
-    stat: props.modifier,
-    value: 0,
-    key: props.passiveKey,
-    stacks: 0,
-    valueBeforeStacks: 0,
-  };
-  if (!isEnabled.value) {
-    return data;
-  }
-  const refKey = props.refinement ?? "1";
-  const byRef = props.modifierByRefinement ?? {};
-  if (!props.hasStacks) {
-    data.stat = props.modifier;
-    data.value = byRef[refKey] ?? 0;
-    return data;
-  }
-  if (props.hasStacks) {
-    if (stacks.value === 0) {
-      return data;
-    }
-    data.stat = props.modifier;
-    data.stacks = stacks.value;
-    data.valueBeforeStacks = byRef[refKey] ?? 0;
-    data.value = (byRef[refKey] ?? 0) * stacks.value;
-  }
-  return data;
-});
+const weaponPassiveStats = computed(() =>
+  resolveWeaponPassiveInstance(
+    {
+      key: props.passiveKey ?? "",
+      hasStacks: props.hasStacks,
+      modifier: props.modifier,
+      modifierByRefinement: props.modifierByRefinement,
+      alwaysEnabled: props.alwaysEnabled,
+    },
+    passiveEntry.value,
+    props.refinement ?? "1",
+  ),
+);
 
 function updateStats() {
   emit("updated-weapon-stats", weaponPassiveStats.value);

@@ -150,6 +150,10 @@ import AppRichSelect, {
 } from "./AppRichSelect.vue";
 import { useCharacterStore } from "../stores/character";
 import { subStatLabelMap } from "../echoes/stats";
+import {
+  aggregateWeaponPassiveStats,
+  type WeaponPassiveInstanceResult,
+} from "../weapons/weaponPassives";
 import { useUiDensity } from "../composables/useUiDensity";
 import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
 
@@ -164,16 +168,7 @@ type WeaponListBuckets = {
   one: Array<{ key: string; name: string; [k: string]: unknown }>;
 };
 
-type WeaponPassiveEmit = Record<string, unknown> & {
-  key?: string;
-  stat?: string;
-  value: number;
-  stacks?: number;
-  valueBeforeStacks?: number;
-  modifier?: string;
-  modifySpecificTalents?: string[];
-  modifierValueCalculated?: number;
-};
+type WeaponPassiveEmit = WeaponPassiveInstanceResult;
 
 type ChosenWeapon = {
   info?: {
@@ -383,66 +378,9 @@ const weaponRarity = computed(
   () => chosenWeapon.value?.info?.rarity ?? 5,
 );
 
-const buffsFormatted = computed(() => {
-  const finalBuffData: Record<string, unknown> = {};
-  let modifySpecificTalents: WeaponPassiveEmit[] = [];
-  const allBuffs = [...weaponPassiveData.value];
-  if (weapon.value === "Stringmaster") {
-    const allElementPassive = allBuffs.find(
-      (passive) => passive.key === "StringmasterAllElementAttributeBonus",
-    );
-    const stringmasterBuffs: Record<string, unknown> = {};
-    if (allElementPassive?.stat !== undefined) {
-      stringmasterBuffs[allElementPassive.stat as string] = allElementPassive.value;
-    }
-    const firstStringmasterPassive = weaponPassiveData.value.find(
-      (passive) => passive.key === "StringmasterATK1",
-    );
-    const secondStringmasterPassive = weaponPassiveData.value.find(
-      (passive) => passive.key === "StringmasterATK2",
-    );
-    if (!firstStringmasterPassive) {
-      return stringmasterBuffs;
-    }
-    const firstPassiveValuePreStacks = firstStringmasterPassive.valueBeforeStacks ?? 0;
-    const firstPassiveStacks = firstStringmasterPassive.stacks ?? 0;
-    const secondPassiveValue = secondStringmasterPassive?.value ?? 0;
-    const finalStringmasterPassiveValue =
-      (firstPassiveValuePreStacks + secondPassiveValue) * firstPassiveStacks;
-    const atkStat = firstStringmasterPassive.stat as string;
-    stringmasterBuffs[atkStat] = finalStringmasterPassiveValue;
-    return stringmasterBuffs;
-  }
-  allBuffs.forEach((buffInstance) => {
-    const stat = buffInstance.stat;
-    const value = buffInstance.value;
-    if (stat === "modifySpecificTalents") {
-      modifySpecificTalents = modifySpecificTalents.concat(
-        value as unknown as WeaponPassiveEmit[],
-      );
-    } else if (stat) {
-      finalBuffData[stat] =
-        ((finalBuffData[stat] as number) || 0) + (value as number);
-    }
-  });
-  if (modifySpecificTalents.length > 0) {
-    const specificTalentBuffs: Record<string, number> = {};
-    modifySpecificTalents.forEach((buffInstance) => {
-      const talentKeys = buffInstance?.modifySpecificTalents ?? [];
-      talentKeys.forEach((talent) => {
-        let talentName = talent;
-        if (buffInstance?.modifier) {
-          talentName = `${talentName}:${buffInstance.modifier}`;
-        }
-        specificTalentBuffs[talentName] =
-          (specificTalentBuffs[talentName] || 0) +
-          (buffInstance.modifierValueCalculated ?? 0);
-      });
-    });
-    finalBuffData.specificTalentBuffs = specificTalentBuffs;
-  }
-  return finalBuffData;
-});
+const buffsFormatted = computed(() =>
+  aggregateWeaponPassiveStats(weapon.value, weaponPassiveData.value),
+);
 
 const weaponStatsData = computed(() => {
   if (!weapon.value || !weaponLevel.value || !chosenWeapon.value) {
@@ -554,7 +492,7 @@ async function updateWeapons() {
 }
 
 async function handleUpdatedWeaponStats(data: Record<string, unknown>) {
-  const row = data as WeaponPassiveEmit;
+  const row = data as unknown as WeaponPassiveEmit;
   const buffIndex = weaponPassiveData.value.findIndex((buff) => buff.key === row.key);
   if (buffIndex === -1) {
     weaponPassiveData.value.push(row);

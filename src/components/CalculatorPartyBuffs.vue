@@ -285,6 +285,7 @@ import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
 import { useCharacterStore } from "../stores/character";
 import type { PartyBuffModifier } from "./CalculatorPartyBuff.vue";
+import { aggregateTeamBuffStats } from "../buffs/teamBuffs";
 
 type PartyBuffEmit = { key: string; data: Record<string, unknown> };
 
@@ -519,47 +520,13 @@ function handlePartyMember2Chosen(nextCharacter: string) {
   selectedCharacter2.value = nextCharacter;
 }
 
-const buffsFormatted = computed(() => {
-  const finalBuffData: Record<string, unknown> = {};
-  let modifySpecificTalents: PartyBuffModifier[] = [];
-  const allBuffs = [
+const buffsFormatted = computed(() =>
+  aggregateTeamBuffStats([
     ...buffsDataChar1.value,
     ...buffsDataChar2.value,
     ...buffsDataEcho.value,
-  ];
-  allBuffs.forEach((buffInstance) => {
-    const buffDataArr = Object.entries(buffInstance.data);
-    buffDataArr.forEach(([stat, value]) => {
-      if (stat === "modifySpecificTalents") {
-        modifySpecificTalents = modifySpecificTalents.concat(
-          value as PartyBuffModifier[],
-        );
-      } else if (stat === "EnableAttack") {
-        finalBuffData[stat] = value;
-      } else {
-        finalBuffData[stat] =
-          ((finalBuffData[stat] as number) || 0) + (value as number);
-      }
-    });
-  });
-  if (modifySpecificTalents.length > 0) {
-    const specificTalentBuffs: Record<string, number> = {};
-    modifySpecificTalents.forEach((buffInstance) => {
-      const talentKeys = buffInstance?.modifySpecificTalents ?? [];
-      talentKeys.forEach((talent) => {
-        let talentName = talent;
-        if (buffInstance?.modifier) {
-          talentName = `${talentName}:${buffInstance.modifier}`;
-        }
-        specificTalentBuffs[talentName] =
-          (specificTalentBuffs[talentName] || 0) +
-          (buffInstance.modifierValueCalculated ?? 0);
-      });
-    });
-    finalBuffData.specificTalentBuffs = specificTalentBuffs;
-  }
-  return finalBuffData;
-});
+  ]),
+);
 
 function updatedStats() {
   emit("updated-team-buffs", buffsFormatted.value);
