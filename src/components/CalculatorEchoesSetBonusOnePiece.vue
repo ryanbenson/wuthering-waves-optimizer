@@ -49,6 +49,7 @@ import AppRichSelect, {
 } from "./AppRichSelect.vue";
 import { buildEchoSetSelectOptions } from "../utils/richSelectOptions";
 import { oneSetBonuses, setBonusEffectsOnePiece } from "../echoes/sets";
+import { aggregateEchoSetPassiveStats } from "../echoes/echoSetPassives";
 
 const props = withDefaults(
   defineProps<{
@@ -117,23 +118,9 @@ const setPassives = computed(
   () => setBonusEffects[type.value]?.passives ?? [],
 );
 
-const buffsFormatted = computed(() => {
-  const finalBuffData: Record<string, number | string> = {};
-  for (const buffInstance of passiveData.value) {
-    const { stats } = buffInstance;
-    Object.entries(stats).forEach(([stat, value]) => {
-      if (stat === "EnableAttack") {
-        finalBuffData[stat] = value as string | number;
-      } else {
-        const prev = finalBuffData[stat];
-        const num = typeof value === "number" ? value : Number(value) || 0;
-        finalBuffData[stat] =
-          (typeof prev === "number" ? prev : 0) + num;
-      }
-    });
-  }
-  return finalBuffData;
-});
+const buffsFormatted = computed(
+  () => aggregateEchoSetPassiveStats(passiveData.value) as Record<string, number | string>,
+);
 
 const setSelectOptions = computed((): AppRichSelectOption[] => {
   const list = [...oneSetBonuses].sort();

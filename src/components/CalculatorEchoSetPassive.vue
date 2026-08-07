@@ -47,27 +47,13 @@
 import { computed, onBeforeUnmount, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import {
+  resolveEchoSetPassiveInstance,
+  type EchoSetPassiveModifierItem,
+  type TalentLevels,
+} from "../echoes/echoSetPassives";
 
-type TalentLevels = Record<string, string | number | undefined>;
-
-type ModifierItem = {
-  modifier?: string;
-  modifierValue?: unknown;
-  modifierValueTalentRef?: string;
-  modifierTalentKey?: string;
-  modifierValueCalculated?: number;
-  modifySpecificTalents?: unknown[];
-  specificCharacters?: string[];
-};
-
-function talentModifierValue(
-  modifierItem: ModifierItem,
-  talentRefRaw: string | number | undefined,
-): number | undefined {
-  const map = modifierItem.modifierValue as Record<string, number> | undefined;
-  if (!map) return undefined;
-  return map[String(talentRefRaw ?? "10")];
-}
+type ModifierItem = EchoSetPassiveModifierItem;
 
 const props = withDefaults(
   defineProps<{
@@ -140,70 +126,17 @@ const stacks = computed({
   },
 });
 
-const buffStats = computed(() => {
-  const data: Record<string, unknown> = {};
-  if (!isEnabled.value) {
-    return data;
-  }
-  if (!props.hasStacks) {
-    (props.modifiers as ModifierItem[]).forEach((modifierItem) => {
-      if (modifierItem?.modifySpecificTalents) {
-        if (!data.modifySpecificTalents) {
-          data.modifySpecificTalents = [];
-        }
-        modifierItem.modifierValueCalculated = Number(modifierItem.modifierValue);
-        (data.modifySpecificTalents as ModifierItem[]).push(modifierItem);
-      } else if (modifierItem.modifier === "Talent") {
-        const talentRef =
-          talentData.value?.[modifierItem.modifierValueTalentRef ?? ""] ?? "10";
-        const talentVal = talentModifierValue(modifierItem, talentRef);
-        if (modifierItem.modifierTalentKey != null && talentVal != null) {
-          data[modifierItem.modifierTalentKey] = talentVal;
-        }
-      } else if (modifierItem.modifier === "EnableAttack") {
-        data[modifierItem.modifier] = modifierItem.modifierValue;
-      } else if (modifierItem.modifier === "talentModifierMultiply") {
-        if (!data.talentModifierMultiply) {
-          data.talentModifierMultiply = [];
-        }
-        (data.talentModifierMultiply as ModifierItem[]).push(modifierItem);
-      } else if (modifierItem.modifier?.includes("AdditionalBase")) {
-        return;
-      } else if (modifierItem.modifier) {
-        data[modifierItem.modifier] = modifierItem.modifierValue;
-      }
-    });
-    return data;
-  }
-  if (props.hasStacks) {
-    if (stacks.value === 0) {
-      return data;
-    }
-    (props.modifiers as ModifierItem[]).forEach((modifierItem) => {
-      if (modifierItem?.modifySpecificTalents) {
-        if (!data.modifySpecificTalents) {
-          data.modifySpecificTalents = [];
-        }
-        modifierItem.modifierValueCalculated =
-          Number(modifierItem.modifierValue) * stacks.value;
-        (data.modifySpecificTalents as ModifierItem[]).push(modifierItem);
-      } else if (modifierItem.modifier === "Talent") {
-        const talentRef =
-          talentData.value?.[modifierItem.modifierValueTalentRef ?? ""] ?? "10";
-        const talentVal = talentModifierValue(modifierItem, talentRef);
-        if (modifierItem.modifierTalentKey != null && talentVal != null) {
-          data[modifierItem.modifierTalentKey] = talentVal * stacks.value;
-        }
-      } else if (modifierItem.modifier?.includes("AdditionalBase")) {
-        return;
-      } else if (modifierItem.modifier) {
-        const totalValue = Number(modifierItem.modifierValue) * stacks.value;
-        data[modifierItem.modifier] = totalValue;
-      }
-    });
-  }
-  return data;
-});
+const buffStats = computed(
+  () =>
+    resolveEchoSetPassiveInstance(
+      props.passiveKey,
+      props.modifiers as ModifierItem[],
+      { isEnabled: isEnabled.value, stacks: stacks.value },
+      props.hasStacks,
+      props.alwaysEnabled,
+      talentData.value,
+    ).stats,
+);
 
 async function updateStats() {
   emit("updated-echo-passive-stats", {
