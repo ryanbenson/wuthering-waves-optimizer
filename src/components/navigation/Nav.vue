@@ -59,6 +59,7 @@
           </div>
         </RouterLink>
         <RouterLink
+          v-if="isTeamRotationsEnabled"
           to="/team-rotations"
           class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2"
           :class="{ 'btn-active': curPage === 'team-rotations' }"
@@ -165,6 +166,7 @@ import ThemeChooser from "../ThemeChooser.vue";
 import CalculatorCharacterBrowser from "../CalculatorCharacterBrowser.vue";
 import { allCharactersList, getCharactersAvailable } from "../../characters/characters";
 import { useCharacterStore } from "../../stores/character";
+import { useSettingsStore } from "../../stores/settings";
 
 defineOptions({
   name: "Nav",
@@ -183,6 +185,10 @@ const props = defineProps({
 
 const characterStore = useCharacterStore();
 const { activeCharacter } = storeToRefs(characterStore);
+
+const settingsStore = useSettingsStore();
+const { labs } = storeToRefs(settingsStore);
+const isTeamRotationsEnabled = computed(() => labs.value?.teamRotations?.isEnabled ?? false);
 
 const characterBrowserRef = ref(null);
 
