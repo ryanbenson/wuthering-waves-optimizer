@@ -19,6 +19,7 @@ describe("Team Rotations", () => {
 
     cy.get("[data-test-nav-team-rotations]").click();
     cy.location("pathname").should("eq", "/team-rotations");
+    cy.get("[data-test-team-rotations-empty]").should("be.visible");
 
     cy.get("[data-test-team-rotations-new]").click();
     cy.get("[data-test-team-rotation-editor]").should("be.visible");
@@ -41,9 +42,16 @@ describe("Team Rotations", () => {
     cy.get("[data-test-team-rotation-add-action]").click();
     cy.get('[data-test-rotation-action-by-attack-key="none"]')
       .first()
-      .parent()
+      .closest("[data-test-team-rotation-action]")
       .find("[data-test-team-rotation-action-slot]")
-      .select("1");
+      .as("slotTrigger");
+    cy.get("@slotTrigger").click({ force: true });
+    cy.get("@slotTrigger")
+      .closest(".app-rich-select")
+      .should("have.class", "dropdown-open")
+      .within(() => {
+        cy.get('[data-test-rich-select-option="1"]').click({ force: true });
+      });
     cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
     cy.richSelect(
       '[data-test-rotation-action-skill-input="none"]',
@@ -59,19 +67,35 @@ describe("Team Rotations", () => {
     });
     cy.get("[data-test-team-rotation-dps]").should("be.visible");
 
+    // Changing a teammate can be backed out of without losing the current
+    // pick or their actions
+    cy.get('[data-test-team-rotation-slot-change="0"]').click();
+    cy.get('[data-test-team-rotation-slot-cancel-change="0"]').click();
+    cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
+    cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should(
+      "exist",
+    );
+
     // "Configure Character" should navigate back to the Calculator with that
     // character set active
     cy.get('[data-test-team-rotation-configure-character="Carlotta"]').click();
     cy.location("pathname").should("eq", "/");
     cy.get(".character__selection.Carlotta").should("exist");
 
-    // Back to Team Rotations, the team should have persisted
+    // Back to Team Rotations: the main page shows the team list, not the editor
     cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-list]").should("be.visible");
+    cy.get("[data-test-team-rotations-item]").should("exist").and("contain.text", "action");
+
+    // Delete the team, with confirmation
+    cy.get("[data-test-team-rotations-delete]").first().click();
+    cy.get(".confirm-dialog .modal-action").contains("button", "Cancel").click();
     cy.get("[data-test-team-rotations-item]").should("exist");
 
-    // Delete the team
     cy.get("[data-test-team-rotations-delete]").first().click();
+    cy.get(".confirm-dialog .modal-action").contains("button", "Delete").click();
     cy.get("[data-test-team-rotations-item]").should("not.exist");
+    cy.get("[data-test-team-rotations-empty]").should("be.visible");
 
     // Reload and confirm the deletion persisted
     cy.reload();

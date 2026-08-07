@@ -13,7 +13,7 @@
           :key="slot"
           class="card bg-base-100 shadow p-4"
           :data-test-team-rotation-slot="slot">
-          <template v-if="team.characterIds[slot]">
+          <template v-if="team.characterIds[slot] && !isChangingSlot(slot)">
             <div class="flex items-center gap-3 mb-2">
               <div
                 class="size-12 rounded-full bg-cover bg-center border shrink-0"
@@ -24,7 +24,7 @@
               <button
                 class="btn btn-ghost btn-xs"
                 :data-test-team-rotation-slot-change="slot"
-                @click="clearSlot(slot)">
+                @click="startChangeSlot(slot)">
                 Change
               </button>
             </div>
@@ -54,6 +54,13 @@
               aria-label="Choose character"
               :data-test="`team-rotation-slot-select-${slot}`"
               @update:model-value="(val) => setSlotCharacter(slot, val)" />
+            <button
+              v-if="isChangingSlot(slot)"
+              class="btn btn-ghost btn-xs w-full mt-2"
+              :data-test-team-rotation-slot-cancel-change="slot"
+              @click="cancelChangeSlot(slot)">
+              Cancel
+            </button>
           </template>
         </div>
       </div>
@@ -141,7 +148,8 @@ import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
 import { useTeamRotationsStore } from "../stores/teamRotations";
 import { useCharacterStore } from "../stores/character";
-import { getCharacterRosterDisplayName } from "../characters/characters";
+import { useToast } from "../composables/useToast";
+import { getCharacterRosterDisplayName, getCharactersAvailable } from "../characters/characters";
 import {
   buildCharacterCalculationContext,
   type CharacterCalculationContext,
@@ -155,6 +163,12 @@ const router = useRouter();
 const teamRotationsStore = useTeamRotationsStore();
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
+const { showToast } = useToast();
+
+// Slots the user has clicked "Change" on but not yet picked a replacement
+// for — purely local UI state, no store mutation until a character is
+// actually chosen, so the user can back out without losing the teammate.
+const changingSlots = ref<Set<number>>(new Set());
 
 const team = computed(() => teamRotationsStore.getTeamById(props.teamId));
 
@@ -188,24 +202,66 @@ function availableCharacterOptions(slot: number): AppRichSelectOption[] {
   const chosenElsewhere = new Set(
     characterIds.filter((id: string | null, idx: number) => idx !== slot && id),
   );
-  return Object.keys(characters.value)
-    .filter((key) => !chosenElsewhere.has(key))
-    .map((key) => ({
-      value: key,
-      label: displayName(key),
-      image: characterImage(key),
-    }));
+
+  const roster = getCharactersAvailable();
+  const rosterKeySet = new Set([
+    ...roster.five.map((c) => c.key),
+    ...roster.four.map((c) => c.key),
+  ]);
+
+  const mapBucket = (chars: typeof roster.five, group: string): AppRichSelectOption[] =>
+    chars
+      .filter((char) => !chosenElsewhere.has(char.key))
+      .map((char) => ({
+        value: char.key,
+        label: char.name,
+        group,
+        image: characterImage(char.key),
+      }));
+
+  const options = [...mapBucket(roster.five, "5 Star"), ...mapBucket(roster.four, "4 Star")];
+
+  // Preserve a currently-assigned character even if they've since fallen
+  // off the curated picker roster (e.g. a legacy/off-roster key).
+  const currentCharacterId = characterIds[slot];
+  if (currentCharacterId && !rosterKeySet.has(currentCharacterId)) {
+    options.push({
+      value: currentCharacterId,
+      label: displayName(currentCharacterId),
+      group: "Other",
+      image: characterImage(currentCharacterId),
+    });
+  }
+
+  return options;
 }
 
 function setSlotCharacter(slot: number, characterId: unknown) {
   if (typeof characterId !== "string" || !characterId) {
     return;
   }
+  const hadActions = (team.value?.actions ?? []).some(
+    (action: TeamRotationAction) => action.slot === slot,
+  );
   teamRotationsStore.setTeamCharacter(props.teamId, slot, characterId);
+  changingSlots.value.delete(slot);
+  if (hadActions) {
+    showToast("That teammate's actions were cleared since they belonged to the previous character.", "info");
+  }
 }
 
-function clearSlot(slot: number) {
-  teamRotationsStore.setTeamCharacter(props.teamId, slot, null);
+function startChangeSlot(slot: number) {
+  changingSlots.value = new Set(changingSlots.value).add(slot);
+}
+
+function cancelChangeSlot(slot: number) {
+  const next = new Set(changingSlots.value);
+  next.delete(slot);
+  changingSlots.value = next;
+}
+
+function isChangingSlot(slot: number) {
+  return changingSlots.value.has(slot);
 }
 
 function configureCharacter(characterId: string) {

@@ -52,8 +52,10 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
         return;
       }
       team.characterIds[slot] = characterId;
-      // drop any actions belonging to a slot that no longer has a character
-      team.actions = team.actions.filter((action) => team.characterIds[action.slot]);
+      // the slot's actions reference attack keys belonging to whichever
+      // character used to occupy it, so they're invalid the moment that
+      // slot's character changes (including clearing it)
+      team.actions = team.actions.filter((action) => action.slot !== slot);
     },
     setTeamDuration(teamId, duration) {
       const team = this.teams.find((t) => t.id === teamId);

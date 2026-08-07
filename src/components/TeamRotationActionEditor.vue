@@ -1,18 +1,13 @@
 <template>
   <div class="flex items-start gap-2" :data-test-team-rotation-action="action.id">
-    <select
-      class="select select-bordered select-xs w-32 shrink-0 mt-4"
-      :value="action.slot"
+    <AppRichSelect
+      class="w-36 shrink-0 mt-4"
+      :model-value="action.slot"
+      :options="slotOptions"
+      size="xs"
+      aria-label="Choose teammate"
       data-test-team-rotation-action-slot
-      @change="onSlotChange">
-      <option
-        v-for="(characterId, idx) in team.characterIds"
-        :key="idx"
-        :value="idx"
-        :disabled="!characterId">
-        {{ characterId ? displayName(characterId) : `Slot ${idx + 1} (empty)` }}
-      </option>
-    </select>
+      @update:model-value="onSlotChange" />
     <CalculatorRotationAction
       class="flex-1"
       :id="action.id"
@@ -42,7 +37,9 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
+import AppRichSelect, { type AppRichSelectOption, type AppRichSelectValue } from "./AppRichSelect.vue";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import type { TeamRotationAction } from "../calculator/teamRotation";
 
@@ -63,9 +60,19 @@ function displayName(characterId: string) {
   return getCharacterRosterDisplayName(characterId);
 }
 
-function onSlotChange(event: Event) {
-  const target = event.target as HTMLSelectElement;
-  emit("update", { ...props.action, slot: Number(target.value) });
+const slotOptions = computed((): AppRichSelectOption[] =>
+  props.team.characterIds.map((characterId, idx) => ({
+    value: idx,
+    label: characterId ? displayName(characterId) : `Slot ${idx + 1} (empty)`,
+    disabled: !characterId,
+  })),
+);
+
+function onSlotChange(value: AppRichSelectValue) {
+  if (typeof value !== "number") {
+    return;
+  }
+  emit("update", { ...props.action, slot: value });
 }
 
 function onActionUpdate(payload: Record<string, unknown>) {
