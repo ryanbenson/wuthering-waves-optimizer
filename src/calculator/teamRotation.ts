@@ -1,5 +1,6 @@
 import { resolveRotationActionToAttackData } from "./resolveRotationAction";
 import { calcDamages } from "./attacks";
+import { randomString } from "../utils/strings";
 import {
   buildCharacterCalculationContext,
   type CharacterCalculationContext,
@@ -44,6 +45,92 @@ export interface TeamRotationAction {
   isDisabled?: boolean;
   /** Only consulted when the team's mode is "advanced". */
   advancedConfig?: TeamRotationAdvancedConfig;
+}
+
+/**
+ * The shape of an action inside a single-character rotation (either one of
+ * the character's own saved rotations from `characters[id].rotations`, or a
+ * character-authored preset from `characters/<Name>/presets.ts`). Lacks
+ * `slot` — that's assigned on import — and its `id`/`buffs[].id` are stale
+ * (copied from wherever the source rotation lives), so they're regenerated
+ * rather than reused, matching `addIdsToImportedRotation` in
+ * CalculatorRotations.vue.
+ */
+export interface SourceRotationAction {
+  id?: string;
+  order?: number;
+  key: string;
+  type: string;
+  count?: number;
+  mainEcho?: string | null;
+  mainEchoRank?: number | null;
+  buffs?: Array<{ id?: string; modifier: string; modifierValue: number }>;
+  excludeSelfBuffs?: boolean;
+  excludeTeamBuffs?: boolean;
+  excludeWeaponBuffs?: boolean;
+  negativeStatusStacks?: number;
+  electroRageStacks?: number;
+  isDisabled?: boolean;
+}
+
+/**
+ * Converts a single-character rotation's actions into team actions pinned to
+ * one slot, for importing a saved rotation/preset into a Team Rotation.
+ * `startOrder` continues the team's own order sequence — order only needs to
+ * increase *within a slot* (see `calcTeamRotationDamage`'s per-slot sort), so
+ * a simple offset per source action is sufficient.
+ */
+export function convertRotationActionsForSlot(
+  sourceActions: SourceRotationAction[],
+  slot: 0 | 1 | 2,
+  startOrder: number,
+): TeamRotationAction[] {
+  return sourceActions.map((sourceAction, index) => {
+    const { id: _sourceId, ...rest } = sourceAction;
+    return {
+      ...rest,
+      id: randomString(),
+      slot,
+      order: startOrder + index,
+      buffs: sourceAction.buffs?.map((buff) => ({ ...buff, id: randomString() })),
+    };
+  });
+}
+
+export type AdvancedConfigCategory =
+  | "buffs"
+  | "weaponPassives"
+  | "echoSetPassives"
+  | "teamBuffs"
+  | "resonanceChains"
+  | "mainEchoBuff";
+
+/**
+ * Bulk-writes one buff override into every listed action's `advancedConfig`
+ * — the mechanism behind "make this buff last for [x] actions": rather than
+ * a persisted, order-tracking "span" that's re-evaluated at calc time, the
+ * UI resolves the target action ids once (starting action + a count, or an
+ * inclusive end action) and this just stamps the same concrete override into
+ * each of them. Simpler than a new data model, and the existing per-action
+ * advancedConfig pipeline needs no changes to support it.
+ */
+export function applyBulkAdvancedConfigOverride(
+  actions: TeamRotationAction[],
+  actionIds: string[],
+  category: AdvancedConfigCategory,
+  key: string | null,
+  override: TeamRotationBuffOverride,
+): TeamRotationAction[] {
+  const idSet = new Set(actionIds);
+  return actions.map((action) => {
+    if (!idSet.has(action.id)) return action;
+    const advancedConfig = action.advancedConfig ?? {};
+    if (category === "mainEchoBuff") {
+      return { ...action, advancedConfig: { ...advancedConfig, mainEchoBuff: { ...override } } };
+    }
+    const nextCategory = { ...(advancedConfig[category] ?? {}), [key as string]: { ...override } };
+    return { ...action, advancedConfig: { ...advancedConfig, [category]: nextCategory } };
+  });
 }
 
 export interface TeamRotationInput {

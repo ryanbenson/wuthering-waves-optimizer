@@ -3,7 +3,10 @@ import {
   calcTeamRotationDamage,
   calcRotationDps,
   buildAdvancedConfigSnapshot,
+  convertRotationActionsForSlot,
+  applyBulkAdvancedConfigOverride,
   type TeamRotationAction,
+  type SourceRotationAction,
 } from "../../src/calculator/teamRotation";
 import { buildCharacterCalculationContext } from "../../src/calculator/buildCharacterContext";
 import { resolveRotationActionToAttackData } from "../../src/calculator/resolveRotationAction";
@@ -31,6 +34,72 @@ describe("calcRotationDps", () => {
       "5",
     );
     expect(result).toEqual({ normal: 100, avg: 100, crit: 100 });
+  });
+});
+
+describe("convertRotationActionsForSlot", () => {
+  const sourceActions: SourceRotationAction[] = [
+    {
+      id: "stale-1",
+      order: 1,
+      key: "ArtofViolenceDMG",
+      type: "skill",
+      count: 1,
+      buffs: [{ id: "stale-buff-1", modifier: "ATK", modifierValue: 0.1 }],
+    },
+    { id: "stale-2", order: 2, key: "ClosingRemarkDMG", type: "outro", count: 1 },
+  ];
+
+  it("assigns the target slot and a continuing order to every action", () => {
+    const converted = convertRotationActionsForSlot(sourceActions, 1, 5);
+    expect(converted.map((a) => a.slot)).toEqual([1, 1]);
+    expect(converted.map((a) => a.order)).toEqual([5, 6]);
+    expect(converted.map((a) => a.key)).toEqual(["ArtofViolenceDMG", "ClosingRemarkDMG"]);
+  });
+
+  it("regenerates action and buff ids rather than reusing the source's", () => {
+    const converted = convertRotationActionsForSlot(sourceActions, 0, 1);
+    expect(converted[0].id).not.toBe("stale-1");
+    expect(converted[1].id).not.toBe("stale-2");
+    expect(converted[0].buffs?.[0].id).not.toBe("stale-buff-1");
+    expect(converted[0].buffs?.[0]).toMatchObject({ modifier: "ATK", modifierValue: 0.1 });
+  });
+
+  it("leaves actions with no buffs alone", () => {
+    const converted = convertRotationActionsForSlot(sourceActions, 2, 1);
+    expect(converted[1].buffs).toBeUndefined();
+  });
+});
+
+describe("applyBulkAdvancedConfigOverride", () => {
+  function makeAction(id: string, existingConfig?: TeamRotationAction["advancedConfig"]): TeamRotationAction {
+    return { id, slot: 0, order: 1, key: "Foo", type: "skill", advancedConfig: existingConfig };
+  }
+
+  it("writes the override into the named buff for every listed action, leaving others untouched", () => {
+    const actions = [makeAction("a"), makeAction("b"), makeAction("c")];
+    const result = applyBulkAdvancedConfigOverride(actions, ["a", "b"], "buffs", "SomeBuff", {
+      isEnabled: true,
+      stacks: 3,
+    });
+    expect(result[0].advancedConfig?.buffs?.SomeBuff).toEqual({ isEnabled: true, stacks: 3 });
+    expect(result[1].advancedConfig?.buffs?.SomeBuff).toEqual({ isEnabled: true, stacks: 3 });
+    expect(result[2].advancedConfig).toBeUndefined();
+  });
+
+  it("merges into existing advancedConfig without clobbering other buffs", () => {
+    const actions = [makeAction("a", { buffs: { OtherBuff: { isEnabled: true } } })];
+    const result = applyBulkAdvancedConfigOverride(actions, ["a"], "buffs", "SomeBuff", { isEnabled: false });
+    expect(result[0].advancedConfig?.buffs).toEqual({
+      OtherBuff: { isEnabled: true },
+      SomeBuff: { isEnabled: false },
+    });
+  });
+
+  it("handles the mainEchoBuff category, which has no per-key map", () => {
+    const actions = [makeAction("a")];
+    const result = applyBulkAdvancedConfigOverride(actions, ["a"], "mainEchoBuff", null, { isEnabled: true, stacks: 2 });
+    expect(result[0].advancedConfig?.mainEchoBuff).toEqual({ isEnabled: true, stacks: 2 });
   });
 });
 

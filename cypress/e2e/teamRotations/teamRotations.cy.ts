@@ -102,16 +102,23 @@ describe("Team Rotations", () => {
       .should("have.class", "border-primary");
     // Remove that throwaway third (still-unconfigured) action so it doesn't
     // affect the damage totals asserted below
-    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
     cy.get('[data-test-rotation-action-by-attack-key="none"]')
       .first()
-      .find(".rotation__action--remove")
+      .closest("[data-test-team-rotation-action]")
+      .find("[data-test-rotation-action-remove]")
       .click({ force: true });
 
     // Set a rotation duration
     cy.get("[data-test-team-rotation-duration]").clear().type("10");
 
-    // Total damage/DPS should now render with non-zero numbers
+    // The sticky summary header shows a quick aggregate + distribution bar
+    // even before opening the full damages drawer
+    cy.get("[data-test-team-rotation-summary]").should("be.visible");
+    cy.get("[data-test-team-rotation-damage-bar]").should("be.visible");
+
+    // Damages live in a slideout, not always on-screen — open it to see the
+    // full total damage/DPS breakdown
+    cy.get("[data-test-team-rotation-summary-view-damages]").click();
     cy.get("[data-test-team-rotation-damages]").should(($el) => {
       expect($el.text()).to.match(/Total DMG/);
     });
@@ -129,6 +136,28 @@ describe("Team Rotations", () => {
       .find("img")
       .should("have.attr", "src")
       .and("include", "Chixia");
+
+    // The drawer's own explicit close (✕) button works too, not just
+    // clicking outside — and while open, nothing else on the page (like the
+    // main nav) should be able to render or receive clicks above it
+    cy.window().then((win) => {
+      const nav = win.document.querySelector("#navbar-container");
+      const drawerSide = win.document.querySelector(".drawer-side");
+      expect(nav).to.exist;
+      expect(drawerSide).to.exist;
+      const navZ = Number(win.getComputedStyle(nav as Element).zIndex);
+      const drawerZ = Number(win.getComputedStyle(drawerSide as Element).zIndex);
+      expect(drawerZ).to.be.greaterThan(navZ);
+    });
+    cy.get("[data-test-team-rotation-damages-close]").click();
+    cy.get("[data-test-team-rotation-damages]").should("not.be.visible");
+    cy.get("[data-test-team-rotation-summary-view-damages]").click();
+    cy.get("[data-test-team-rotation-damages]").should("be.visible");
+
+    // Close the drawer before returning to the main config — its panel
+    // overlaps the right side of the page while open
+    cy.get(".drawer-overlay").click();
+    cy.get("[data-test-team-rotation-damages]").should("not.be.visible");
 
     // A stat snippet's Energy Regen is a percentage (e.g. "100.0%"), not a
     // raw 0-1 ratio mistakenly rendered as "1.0%"
@@ -217,6 +246,13 @@ describe("Team Rotations", () => {
     cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
     cy.get("[data-test-team-rotation-duration]").clear().type("10");
 
+    // Damages live in a slideout, which overlaps the right side of the page
+    // while open — open it just to read the baseline, then close it again
+    // before configuring buffs in the main config area. DaisyUI's drawer
+    // has a fixed 300ms slide transition, so pause briefly after each
+    // open/close to let it settle before the next interaction.
+    cy.get("[data-test-team-rotation-summary-view-damages]").click();
+    cy.wait(350);
     cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]')
       .find("td")
       .eq(1)
@@ -224,11 +260,16 @@ describe("Team Rotations", () => {
       .then((baselineText) => {
         const baseline = Number(baselineText.trim());
         expect(baseline).to.be.greaterThan(0);
+        cy.get(".drawer-overlay").click();
+        cy.wait(350);
 
         // Configuring a self buff for just this action changes its damage
         cy.get("[data-test-team-rotation-action-configure-buffs]").first().click();
         cy.get("[data-test-team-rotation-advanced-buffs]").should("be.visible");
         cy.get("[data-test-advanced-buff-toggle]").first().click({ force: true });
+
+        cy.get("[data-test-team-rotation-summary-view-damages]").click();
+        cy.wait(350);
         cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]')
           .find("td")
           .eq(1)
@@ -236,20 +277,36 @@ describe("Team Rotations", () => {
           .should((newText) => {
             expect(Number(newText.trim())).to.not.equal(baseline);
           });
+        cy.get(".drawer-overlay").click();
+        cy.wait(350);
       });
 
     // A second action can copy the first action's advanced buff config
-    // instead of configuring everything from scratch
+    // instead of configuring everything from scratch — "Copy previous
+    // action settings" lives inside the "Configure Buffs" panel now, since
+    // it acts on that panel's own data
     cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get("[data-test-team-rotation-action-configure-buffs]").eq(1).click();
     cy.get("[data-test-team-rotation-action-copy-previous]").should("exist").click();
 
-    // Clicking a damage row opens the same breakdown used on the Calculator
-    // page, showing the attack's full formula, above the top nav — and
-    // clicking outside the panel (the overlay) closes it again
+    // Clicking a damage row swaps the same slideout to the attack breakdown
+    // used on the Calculator page, showing the attack's full formula
+    cy.get("[data-test-team-rotation-summary-view-damages]").click();
+    cy.wait(350);
     cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]').first().click();
     cy.get(".damage-breakdown").should("be.visible").and("contain.text", "Basic Attack Stage 1 DMG");
-    cy.get(".drawer-overlay").click({ force: true });
-    cy.get(".damage-breakdown").should("not.be.visible");
+
+    // "Back to damages" returns to the damages list without closing the drawer
+    cy.get("[data-test-team-rotation-breakdown-back]").click();
+    cy.get(".damage-breakdown").should("not.exist");
+    cy.get("[data-test-team-rotation-damages]").should("be.visible");
+
+    // Clicking outside the panel (the overlay) closes the whole drawer
+    cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]').first().click();
+    cy.get(".damage-breakdown").should("be.visible");
+    cy.get(".drawer-overlay").click();
+    cy.wait(350);
+    cy.get(".damage-breakdown").should("not.exist");
   });
 
   it("prompts how to seed Advanced mode's per-action buffs when a team already has actions", () => {
@@ -300,6 +357,252 @@ describe("Team Rotations", () => {
         cy.get("[data-test-team-rotation-action-configure-buffs]").first().click();
         cy.get("[data-test-advanced-buff-toggle]").first().should("be.checked");
       });
+  });
+
+  it("bulk-applies a buff's on/off state across a range of actions via its Duration control", () => {
+    configureCharacterWithWeapon("Carlotta");
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.get("[data-test-team-rotation-mode-advanced]").click();
+
+    const addActionWithAttack = (attackKey: string) => {
+      cy.get("[data-test-team-rotation-add-action]").click();
+      cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+      cy.richSelect('[data-test-rotation-action-skill-input="none"]', attackKey);
+    };
+    addActionWithAttack("BasicAttackStage1DMG");
+    addActionWithAttack("ArtofViolenceDMG");
+    addActionWithAttack("FatalFinaleDMG");
+
+    // Turn on the first self buff for the first action, then use its
+    // "Duration" control to carry that same on/off state forward across all
+    // three actions at once, instead of configuring each one individually.
+    cy.get("[data-test-team-rotation-action-configure-buffs]").eq(0).click();
+    cy.get("[data-test-advanced-buff-toggle]").first().should("not.be.checked");
+    cy.get("[data-test-advanced-buff-toggle]").first().click({ force: true });
+    cy.get("[data-test-advanced-buff-duration-open]").first().click();
+    cy.get("[data-test-advanced-buff-duration-panel]").first().should("be.visible");
+    cy.get("[data-test-advanced-buff-duration-count]").first().clear().type("3");
+    cy.get("[data-test-advanced-buff-duration-apply]").first().click();
+    // Collapse the first action's panel again before inspecting the others
+    cy.get("[data-test-team-rotation-action-configure-buffs]").eq(0).click();
+
+    cy.get("[data-test-team-rotation-action-configure-buffs]").eq(1).click();
+    cy.get("[data-test-advanced-buff-toggle]").first().should("be.checked");
+    cy.get("[data-test-team-rotation-action-configure-buffs]").eq(1).click();
+
+    cy.get("[data-test-team-rotation-action-configure-buffs]").eq(2).click();
+    cy.get("[data-test-advanced-buff-toggle]").first().should("be.checked");
+  });
+
+  it("lets the Duration control's 'until action' range reach across other characters' actions", () => {
+    configureCharacterWithWeapon("Carlotta");
+    configureCharacterWithWeapon("Chixia");
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.richSelect('[data-test="team-rotation-slot-select-1"]', "Chixia");
+    cy.get("[data-test-team-rotation-mode-advanced]").click();
+
+    // Action 1: Carlotta
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
+
+    // Action 2: switch to Chixia (slot 1)
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]')
+      .first()
+      .closest("[data-test-team-rotation-action]")
+      .find('[data-test-team-rotation-action-slot-choice="1"]')
+      .click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "PowPowStage1DMG");
+
+    // Action 3: back to Carlotta (slot 0)
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]')
+      .first()
+      .closest("[data-test-team-rotation-action]")
+      .find('[data-test-team-rotation-action-slot-choice="0"]')
+      .click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "ArtofViolenceDMG");
+
+    // Toggle on Carlotta's first self buff on action 1, then use "Until
+    // action" to carry it through Chixia's action — but not into Carlotta's
+    // later action 3, proving the range walks the *whole team's* timeline
+    // (across characters) rather than only Carlotta's own actions.
+    cy.get("[data-test-team-rotation-action-configure-buffs]").eq(0).click();
+    cy.get("[data-test-advanced-buff-toggle]").first().click({ force: true });
+    cy.get("[data-test-advanced-buff-duration-open]").first().click();
+    cy.get("[data-test-advanced-buff-duration-panel]")
+      .first()
+      .within(() => {
+        cy.contains("button", "Until action").click();
+        cy.get('[data-test^="advanced-buff-duration-until-"]').click();
+      });
+    cy.contains("[data-test-rich-select-option]", "PowPowStage1DMG").click();
+    cy.get("[data-test-advanced-buff-duration-apply]").first().click();
+    cy.get("[data-test-team-rotation-action-configure-buffs]").eq(0).click();
+
+    // Action 3 (Carlotta again) shouldn't have picked up the override —
+    // "until Chixia's action" stopped the range there
+    cy.get("[data-test-team-rotation-action-configure-buffs]").eq(2).click();
+    cy.get("[data-test-advanced-buff-toggle]").first().should("not.be.checked");
+  });
+
+  it("sticks the summary header below the nav (in a simplified form) once scrolled past it", () => {
+    configureCharacterWithWeapon("Carlotta");
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+
+    // Add a real attack to the first action so the team has nonzero damage —
+    // otherwise TeamRotationDamageBar's segments (filtered to value > 0) are
+    // empty and the bar never renders at all, regardless of scroll position.
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect(
+      '[data-test-rotation-action-skill-input="none"]',
+      "BasicAttackStage1DMG",
+    );
+
+    // Add enough more actions that the page actually needs to scroll
+    for (let i = 0; i < 7; i++) {
+      cy.get("[data-test-team-rotation-add-action]").click();
+    }
+
+    // Clicking "+ Add Action" repeatedly (further down the page each time)
+    // leaves the page auto-scrolled from Cypress bringing it into view —
+    // start from a known scroll position. Scroll `window` directly rather
+    // than cy.scrollTo() on a subject: this page's actual scroll position
+    // lives on window/documentElement, and Cypress's own heuristics for
+    // picking a scroll target against a non-scrolling `body` proved
+    // unreliable here.
+    const scrollWindowTo = (y: number) => cy.window().then((win) => win.scrollTo(0, y));
+
+    scrollWindowTo(0);
+    cy.get("[data-test-team-rotation-summary]").should(
+      "have.attr",
+      "data-test-team-rotation-summary-stuck",
+      "false",
+    );
+    // The un-stuck header shows the roomier layout, not the compact one
+    cy.get("[data-test-team-rotation-summary]").should("contain.text", "Total DMG");
+
+    scrollWindowTo(600);
+    cy.get("[data-test-team-rotation-summary]").should(
+      "have.attr",
+      "data-test-team-rotation-summary-stuck",
+      "true",
+    );
+    // The stuck/simplified header shows the team name, character count, and
+    // a one-line distribution bar, condensed into a single row
+    cy.get("[data-test-team-rotation-summary]").should("contain.text", "Team 1");
+    cy.get("[data-test-team-rotation-summary]").should("contain.text", "action");
+    cy.get("[data-test-team-rotation-damage-bar]").should("be.visible");
+
+    scrollWindowTo(0);
+    cy.get("[data-test-team-rotation-summary]").should(
+      "have.attr",
+      "data-test-team-rotation-summary-stuck",
+      "false",
+    );
+  });
+
+  // The import modal is a native <dialog>, opened/closed via
+  // showModal()/close() — those set/clear its `open` attribute
+  // synchronously. Asserting on that attribute (rather than "be.visible",
+  // which additionally waits on daisyUI's 200ms opacity/transform CSS
+  // transition actually finishing) checks the state that matters without
+  // depending on a CSS animation frame landing — "be.visible" alone proved
+  // unreliable in CI's headless browser even with a 10s timeout, despite
+  // never reproducing locally. Each of the three import scenarios below
+  // also gets its own test (opening the dialog exactly once each) rather
+  // than reusing one dialog instance across three open/close cycles in a
+  // single test — simpler to reason about and removes any chance of a
+  // leftover state from one cycle bleeding into the next.
+  function buildTest001RotationAndTeam() {
+    configureCharacterWithWeapon("Carlotta");
+
+    // Build a saved rotation for Carlotta on her Calculator page first, so
+    // there's something real for the team-side importer to list.
+    cy.get('[data-test-calculator-nav="rotations"]').click();
+    cy.get('[data-test-rotations-action="create"]').click();
+    cy.get('[data-test-rotation-item-by-name="Untitled Rotation"]').click();
+    cy.get('[data-test-rotation-name-input="Untitled Rotation"]').clear().type("Test001");
+    // Calculator-page actions auto-open for editing when added (see
+    // CalculatorRotation.vue's addAction -> toggleEdit()) — no need to click
+    // into it first; doing so would just toggle it shut again.
+    cy.get('[data-test-rotation-action-add="Test001"]').click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').should("be.visible");
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
+    cy.get('[data-test-rotation-action-add="Test001"]').click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').should("be.visible");
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "FatalFinaleDMG");
+
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+  }
+
+  it("lists a character's own saved rotations and presets in the import dialog", () => {
+    buildTest001RotationAndTeam();
+
+    cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
+    cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
+    cy.contains("[data-test-team-rotation-import-modal] h4", "Your rotations")
+      .parent()
+      .contains("Test001")
+      .should("exist");
+    cy.contains("[data-test-team-rotation-import-modal] h4", "Presets")
+      .parent()
+      .contains("Kushy was here :3")
+      .should("exist");
+  });
+
+  it("imports (appends) a saved rotation into an already-populated slot", () => {
+    buildTest001RotationAndTeam();
+
+    // Pre-populate the slot with one manual action so "append" has
+    // something real to keep, distinct from importing onto an empty slot.
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "ArtofViolenceDMG");
+
+    cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
+    cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
+    cy.contains(".card", "Test001")
+      .find("[data-test-team-rotation-import-append]")
+      .click();
+    cy.get("[data-test-team-rotation-import-modal]").should("not.have.attr", "open");
+    cy.get("[data-test-team-rotation-action]").should("have.length", 3);
+    cy.get('[data-test-rotation-action-by-attack-key="ArtofViolenceDMG"]').should("exist");
+    cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
+    cy.get('[data-test-rotation-action-by-attack-key="FatalFinaleDMG"]').should("exist");
+  });
+
+  it("imports (overwrites) a saved rotation, replacing the slot's existing actions", () => {
+    buildTest001RotationAndTeam();
+
+    // Pre-populate the slot with one manual action that overwrite should
+    // remove entirely.
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "ArtofViolenceDMG");
+
+    cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
+    cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
+    cy.contains(".card", "Test001")
+      .find("[data-test-team-rotation-import-overwrite]")
+      .click();
+    cy.get("[data-test-team-rotation-import-modal]").should("not.have.attr", "open");
+    cy.get("[data-test-team-rotation-action]").should("have.length", 2);
+    cy.get('[data-test-rotation-action-by-attack-key="ArtofViolenceDMG"]').should("not.exist");
+    cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
+    cy.get('[data-test-rotation-action-by-attack-key="FatalFinaleDMG"]').should("exist");
   });
 });
 

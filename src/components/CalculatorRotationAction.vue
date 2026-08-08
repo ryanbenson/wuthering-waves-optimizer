@@ -36,18 +36,16 @@
         </span>
       </div>
       <div class="rotation__action__end">
-        <div class="rotation__action__types flex flex-col items-end gap-2">
-          <div
-            class="type badge badge-primary size-max"
-            v-if="skillTypeLabel && actionSkillType !== 'negativeStatus'">
-            Forte: {{ skillTypeLabel }}
-          </div>
-          <div v-if="damageType" class="type badge badge-secondary size-max">
-            {{ damageType }} DMG
-          </div>
-          <div v-if="damageSubType" class="type badge badge-accent size-max">
-            {{ damageSubType }} DMG
-          </div>
+        <div
+          class="type badge badge-primary size-max"
+          v-if="skillTypeLabel && actionSkillType !== 'negativeStatus'">
+          Forte: {{ skillTypeLabel }}
+        </div>
+        <div v-if="damageType" class="type badge badge-secondary size-max">
+          {{ damageType }} DMG
+        </div>
+        <div v-if="damageSubType" class="type badge badge-accent size-max">
+          {{ damageSubType }} DMG
         </div>
         <div class="buffsCount badge">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -57,9 +55,24 @@
           </svg>
           <span>{{ buffsCount }}</span>
         </div>
+        <button
+          type="button"
+          class="btn btn-xs"
+          data-test-rotation-action-configure-stats
+          @click.stop="showManualBuffs = !showManualBuffs">
+          {{ showManualBuffs ? "Hide" : "Configure" }} Stats
+        </button>
+        <slot name="extra-buttons"></slot>
+        <button
+          type="button"
+          class="btn btn-xs"
+          data-test-rotation-action-remove
+          @click.stop="removeAction">
+          Delete
+        </button>
       </div>
     </div>
-    <div v-if="isEditing" class="rotation__action__edit" @click.stop>
+    <div v-if="isEditing" class="rotation__action__edit mt-2" @click.stop>
       <div class="edit__action">
         <div class="edit__basic-info">
           <div class="edit__order">
@@ -100,13 +113,6 @@
               aria-label="Select attack"
               @update:model-value="onAttackSelected" />
           </div>
-          <button class="rotation__action--remove" @click="removeAction">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path
-                d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
-                fill="#FFFFFF" />
-            </svg>
-          </button>
         </div>
         <div
           v-if="usesNegativeStatusStacks"
@@ -153,6 +159,8 @@
           </div>
         </div>
       </div>
+    </div>
+    <div v-if="showManualBuffs" class="rotation__action__stats mt-2" @click.stop>
       <div class="edit__buffs">
         <div class="edit__buffs__list">
           <CalculatorRotationActionBuff
@@ -169,7 +177,7 @@
             "></CalculatorRotationActionBuff>
         </div>
       </div>
-      <div class="button__group">
+      <div class="button__group mt-2">
         <button
           class="rotation__action--add-buff btn btn-xs w-full btn-accent"
           @click="addBuff"
@@ -214,6 +222,7 @@
         </div>
       </div>
     </div>
+    <slot name="extra-panel"></slot>
   </div>
 </template>
 
@@ -328,6 +337,7 @@ const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 
 const isEditing = ref(false);
+const showManualBuffs = ref(false);
 const actionKeyValue = ref<string | null>(null);
 const actionSkillType = ref<string | null>(null);
 const sequence = ref(0);
@@ -783,7 +793,8 @@ onMounted(() => {
     fill: oklch(var(--wa));
   }
 }
-.rotation__action__edit {
+.rotation__action__edit,
+.rotation__action__stats {
   cursor: default;
 }
 .rotation__action {
@@ -800,12 +811,13 @@ onMounted(() => {
 }
 .rotation__action__info {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 .rotation__action__end {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 .buffsCount {
@@ -854,15 +866,6 @@ onMounted(() => {
   display: flex;
   gap: 0.5rem;
 }
-.rotation__action--remove {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  svg {
-    width: 1rem;
-    height: 1rem;
-  }
-}
 .edit__buffs__list {
   display: flex;
   flex-direction: column;
@@ -872,29 +875,10 @@ onMounted(() => {
   opacity: 0.5;
 }
 html[data-theme="light"] {
-  .buffsCount,
-  .rotation__action--remove {
+  .buffsCount {
     svg {
       filter: invert(100%);
     }
-  }
-}
-@media (max-width: 1088px) {
-  .rotation__action__info {
-    flex-direction: column;
-    gap: 1rem;
-  }
-}
-@media (max-width: 768px) {
-  .rotation__action__info {
-    flex-direction: row;
-    gap: 1rem;
-  }
-}
-@media (max-width: 550px) {
-  .rotation__action__info {
-    flex-direction: column;
-    gap: 1rem;
   }
 }
 </style>

@@ -45,38 +45,41 @@
         :data-test-rotation-action-by-id="action.id"
         @action-update="onActionUpdate"
         @action-update:sequence="onActionUpdate"
-        @remove-action="onRemove"></CalculatorRotationAction>
-    </div>
-
-    <div v-if="mode === 'advanced' && team.characterIds[action.slot]" class="ml-11 flex flex-col gap-2">
-      <div class="flex gap-2">
-        <button
-          type="button"
-          class="btn btn-xs btn-outline"
-          :data-test-team-rotation-action-configure-buffs="action.id"
-          @click="showAdvancedBuffs = !showAdvancedBuffs">
-          {{ showAdvancedBuffs ? "Hide" : "Configure" }} Buffs
-        </button>
-        <button
-          v-if="previousAction"
-          type="button"
-          class="btn btn-xs btn-ghost"
-          :data-test-team-rotation-action-copy-previous="action.id"
-          @click="copyPreviousSettings">
-          Copy previous action settings
-        </button>
-      </div>
-      <div v-if="showAdvancedBuffs" class="card bg-base-100 p-3">
-        <TeamRotationAdvancedBuffs
-          :model-value="action.advancedConfig ?? {}"
-          :buff-defs="definitionsForSlot?.[action.slot]?.buffs ?? []"
-          :weapon-passive-defs="definitionsForSlot?.[action.slot]?.weaponPassives ?? []"
-          :echo-set-passive-defs="echoSetPassiveDefsForSlot"
-          :main-echo-def="definitionsForSlot?.[action.slot]?.mainEchoDef ?? null"
-          :team-buff-defs="definitionsForSlot?.[action.slot]?.teamBuffs ?? []"
-          :resonance-chain-defs="definitionsForSlot?.[action.slot]?.resonanceChains ?? []"
-          @update:model-value="onAdvancedConfigUpdate" />
-      </div>
+        @remove-action="onRemove">
+        <template v-if="mode === 'advanced' && team.characterIds[action.slot]" #extra-buttons>
+          <button
+            type="button"
+            class="btn btn-xs"
+            :data-test-team-rotation-action-configure-buffs="action.id"
+            @click.stop="showAdvancedBuffs = !showAdvancedBuffs">
+            {{ showAdvancedBuffs ? "Hide" : "Configure" }} Buffs
+          </button>
+        </template>
+        <template v-if="mode === 'advanced' && team.characterIds[action.slot] && showAdvancedBuffs" #extra-panel>
+          <div class="card bg-base-100 p-3 flex flex-col gap-2" @click.stop>
+            <button
+              v-if="previousAction"
+              type="button"
+              class="btn btn-xs btn-ghost self-start"
+              :data-test-team-rotation-action-copy-previous="action.id"
+              @click="copyPreviousSettings">
+              Copy previous action settings
+            </button>
+            <TeamRotationAdvancedBuffs
+              :model-value="action.advancedConfig ?? {}"
+              :buff-defs="definitionsForSlot?.[action.slot]?.buffs ?? []"
+              :weapon-passive-defs="definitionsForSlot?.[action.slot]?.weaponPassives ?? []"
+              :echo-set-passive-defs="echoSetPassiveDefsForSlot"
+              :main-echo-def="definitionsForSlot?.[action.slot]?.mainEchoDef ?? null"
+              :team-buff-defs="definitionsForSlot?.[action.slot]?.teamBuffs ?? []"
+              :resonance-chain-defs="definitionsForSlot?.[action.slot]?.resonanceChains ?? []"
+              :range-actions="rangeActions"
+              :action-id="action.id"
+              @update:model-value="onAdvancedConfigUpdate"
+              @bulk-apply="onBulkApply" />
+          </div>
+        </template>
+      </CalculatorRotationAction>
     </div>
   </div>
 </template>
@@ -85,8 +88,13 @@
 import { computed, ref } from "vue";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
+import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import { getCharacterRosterDisplayName } from "../characters/characters";
-import type { TeamRotationAction, TeamRotationAdvancedConfig } from "../calculator/teamRotation";
+import type {
+  AdvancedConfigCategory,
+  TeamRotationAction,
+  TeamRotationAdvancedConfig,
+} from "../calculator/teamRotation";
 
 const props = defineProps<{
   action: TeamRotationAction & Record<string, unknown>;
@@ -97,11 +105,13 @@ const props = defineProps<{
   mode?: "basic" | "advanced";
   definitionsForSlot?: Record<number, Record<string, any> | null>;
   previousAction?: (TeamRotationAction & Record<string, unknown>) | null;
+  rangeActions?: DurationRangeAction[];
 }>();
 
 const emit = defineEmits<{
   update: [payload: Record<string, unknown>];
   remove: [id: string];
+  "bulk-apply": [payload: { category: AdvancedConfigCategory; key: string | null; override: AdvancedBuffOverride; actionIds: string[] }];
 }>();
 
 const showAdvancedBuffs = ref(false);
@@ -137,6 +147,15 @@ function onActionUpdate(payload: Record<string, unknown>) {
 
 function onAdvancedConfigUpdate(value: TeamRotationAdvancedConfig) {
   emit("update", { ...props.action, advancedConfig: value });
+}
+
+function onBulkApply(payload: {
+  category: AdvancedConfigCategory;
+  key: string | null;
+  override: AdvancedBuffOverride;
+  actionIds: string[];
+}) {
+  emit("bulk-apply", payload);
 }
 
 function copyPreviousSettings() {

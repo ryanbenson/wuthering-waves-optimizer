@@ -197,13 +197,13 @@ describe("Calculator Kitchen Sink", () => {
       .clear()
       .type("Test001");
 
-    // add an action
+    // add an action — newly-added actions auto-open for editing (see
+    // CalculatorRotation.vue's addAction -> toggleEdit()), so there's no
+    // need to click into it first; doing so would just toggle it shut again
     cy.get(`[data-test-rotation-action-add="Test001"]`).click();
-    // find first action that's empty and click to get into it
     cy.get(`[data-test-rotation-action-by-attack-key="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-by-attack-key="none"]`).click();
     // find and change the skill used
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
@@ -214,11 +214,9 @@ describe("Calculator Kitchen Sink", () => {
     );
     // create second action
     cy.get(`[data-test-rotation-action-add="Test001"]`).click();
-    // find first action that's empty and click to get into it
     cy.get(`[data-test-rotation-action-by-attack-key="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-by-attack-key="none"]`).click();
     // find and change the skill used
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
@@ -227,6 +225,12 @@ describe("Calculator Kitchen Sink", () => {
       `[data-test-rotation-action-skill-input="none"]`,
       "FatalFinaleDMG",
     );
+    // Manual buffs live behind "Configure Stats" now, separate from the
+    // "choose attack" edit form that clicking the row opens
+    cy.get(`[data-test-rotation-action-skill-input="FatalFinaleDMG"]`)
+      .closest(".rotation__action")
+      .find("[data-test-rotation-action-configure-stats]")
+      .click();
     // add a buff to the second action
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).should("be.visible");
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).click();
