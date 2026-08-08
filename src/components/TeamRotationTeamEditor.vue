@@ -1,7 +1,6 @@
 <template>
-  <div v-if="team" class="drawer drawer-end" data-test-team-rotation-editor>
-    <input :id="breakdownDrawerId" type="checkbox" class="drawer-toggle" v-model="isBreakdownOpen" />
-    <div class="drawer-content grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 items-start">
+  <div v-if="team" data-test-team-rotation-editor>
+    <div class="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 items-start">
     <div class="card bg-base-200 shadow-lg min-w-0">
       <div class="card-body gap-6">
         <div class="flex flex-wrap items-end gap-3">
@@ -158,29 +157,85 @@
     </div>
     </div>
 
-    <div class="drawer-side z-40">
-      <label
-        :for="breakdownDrawerId"
-        aria-label="close breakdown"
-        class="drawer-overlay"
-        @click="closeBreakdown"></label>
-      <div class="bg-base-100 text-base-content min-h-full max-w-[480px] w-full p-4">
-        <CalculatorBreakdown
-          v-if="selectedAttackKey"
-          :character="selectedAttackCharacterId ?? ''"
-          :attack-key="selectedAttackKey"
-          :damage="selectedAttackDamage"
-          :attack-label="selectedAttackLabel"
-          :weapon-data="{}"
-          :weapon-atk="0"
-          :custom-buffs="{}"
-          :team-buffs-data="{}"
-          :char-buffs-data="{}"
-          :char-resonance-chains-data="{}"
-          :echo-stats="{}"
-          @close="closeBreakdown"></CalculatorBreakdown>
+    <!-- A self-contained drawer, kept structurally separate from the page
+    content above (mirroring HomeView.vue's own breakdown drawer): the real
+    content must NOT live inside `.drawer-content`, since `.drawer-side` is
+    position:fixed and doesn't participate in the drawer's own grid track
+    sizing — nesting a large layout inside `.drawer-content` mis-sizes the
+    "max-content" side column and pushes the panel off-screen. z-[60] keeps
+    it above the app's fixed top nav (z-50). -->
+    <div class="drawer drawer-end z-[60]">
+      <input :id="breakdownDrawerId" type="checkbox" class="drawer-toggle" v-model="isBreakdownOpen" />
+      <div class="drawer-side">
+        <label
+          :for="breakdownDrawerId"
+          aria-label="close breakdown"
+          class="drawer-overlay"
+          @click="closeBreakdown"></label>
+        <div class="bg-base-100 text-base-content min-h-full max-w-[480px] w-full p-4">
+          <CalculatorBreakdown
+            v-if="selectedAttackKey"
+            :character="selectedAttackCharacterId ?? ''"
+            :attack-key="selectedAttackKey"
+            :damage="selectedAttackDamage"
+            :attack-label="selectedAttackLabel"
+            :weapon-data="{}"
+            :weapon-atk="0"
+            :custom-buffs="{}"
+            :team-buffs-data="{}"
+            :char-buffs-data="{}"
+            :char-resonance-chains-data="{}"
+            :echo-stats="{}"
+            @close="closeBreakdown"></CalculatorBreakdown>
+        </div>
       </div>
     </div>
+
+    <dialog
+      ref="modeSwitchDialogEl"
+      class="modal"
+      data-test-team-rotation-mode-switch-modal
+      @close="closeModeSwitchModal">
+      <div class="modal-box">
+        <h3 class="text-lg font-bold">Switch to Advanced mode?</h3>
+        <p class="py-2 text-sm opacity-80">
+          Advanced mode lets you configure buffs individually for each action. How should each
+          existing action start out?
+        </p>
+        <div class="flex flex-col gap-2 mt-4">
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            data-test-team-rotation-mode-switch-keep-current
+            @click="applyModeSwitch('current')">
+            Keep this character's current setup for every action
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline btn-sm"
+            data-test-team-rotation-mode-switch-blank
+            @click="applyModeSwitch('blank')">
+            Start every action with all buffs off
+          </button>
+        </div>
+        <p class="text-xs opacity-60 mt-3">
+          Either way, this only affects Team Rotations — it never changes this character's build
+          on the Calculator page.
+        </p>
+        <div class="modal-action">
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost"
+            data-test-team-rotation-mode-switch-cancel
+            @click="closeModeSwitchModal">
+            Cancel
+          </button>
+        </div>
+      </div>
+      <form method="dialog" class="modal-backdrop" @submit.prevent="closeModeSwitchModal">
+        <button type="submit">close</button>
+      </form>
+    </dialog>
   </div>
 </template>
 
@@ -209,6 +264,7 @@ import {
 } from "../calculator/buildCharacterContext";
 import {
   calcTeamRotationDamage,
+  buildAdvancedConfigSnapshot,
   type TeamRotationAction,
   type TeamRotationActionResult,
   type TeamRotationCharacterResult,
@@ -380,6 +436,15 @@ function addAction() {
     key: null as unknown as string,
     count: 1,
   };
+  // A new action added while already in Advanced mode should start
+  // reflecting that character's real current setup (same reasoning as the
+  // Basic -> Advanced snapshot below), not silently-all-off checkboxes.
+  if (rotationMode.value === "advanced") {
+    const characterId = characterIds[slot];
+    const characterData = characterId ? (characters.value[characterId] ?? {}) : {};
+    const definitions = slotContexts.value[slot]?.definitions ?? null;
+    newAction.advancedConfig = buildAdvancedConfigSnapshot(characterData, definitions, "current");
+  }
   teamRotationsStore.setTeamActions(props.teamId, [...team.value.actions, newAction]);
   lastUsedSlot.value = slot;
 }
@@ -470,8 +535,47 @@ const primaryCharacterElement = computed(
 
 const rotationMode = computed(() => (team.value?.mode === "advanced" ? "advanced" : "basic"));
 
+// Switching Basic -> Advanced with existing actions asks the user how each
+// action's buff checkboxes should start: mirroring the character's current
+// real setup (so they're not misleadingly blank), or fully disabled as a
+// deliberate blank slate. Switching back to Basic needs no prompt — Basic
+// mode ignores advancedConfig entirely, so nothing is lost either way.
+const modeSwitchDialogEl = ref<HTMLDialogElement | null>(null);
+const showModeSwitchModal = ref(false);
+
+watch(showModeSwitchModal, (open) => {
+  const el = modeSwitchDialogEl.value;
+  if (!el) return;
+  if (open) {
+    if (!el.open) el.showModal();
+  } else if (el.open) {
+    el.close();
+  }
+});
+
 function setMode(mode: "basic" | "advanced") {
+  if (mode === "advanced" && rotationMode.value !== "advanced" && (team.value?.actions.length ?? 0) > 0) {
+    showModeSwitchModal.value = true;
+    return;
+  }
   teamRotationsStore.setTeamMode(props.teamId, mode);
+}
+
+function closeModeSwitchModal() {
+  showModeSwitchModal.value = false;
+}
+
+function applyModeSwitch(snapshotMode: "current" | "blank") {
+  if (!team.value) return;
+  const updatedActions = team.value.actions.map((action: TeamRotationAction) => {
+    const characterId = team.value!.characterIds[action.slot];
+    const characterData = characterId ? (characters.value[characterId] ?? {}) : {};
+    const definitions = slotContexts.value[action.slot]?.definitions ?? null;
+    return { ...action, advancedConfig: buildAdvancedConfigSnapshot(characterData, definitions, snapshotMode) };
+  });
+  teamRotationsStore.setTeamActions(props.teamId, updatedActions);
+  teamRotationsStore.setTeamMode(props.teamId, "advanced");
+  closeModeSwitchModal();
 }
 
 const definitionsForSlot = computed(() => {

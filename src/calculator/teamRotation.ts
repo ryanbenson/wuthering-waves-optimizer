@@ -1,6 +1,10 @@
 import { resolveRotationActionToAttackData } from "./resolveRotationAction";
 import { calcDamages } from "./attacks";
-import { buildCharacterCalculationContext, type TeamEnemyConfig } from "./buildCharacterContext";
+import {
+  buildCharacterCalculationContext,
+  type CharacterCalculationContext,
+  type TeamEnemyConfig,
+} from "./buildCharacterContext";
 
 /**
  * Per-toggle override used by Advanced mode's per-action buff editor.
@@ -148,6 +152,62 @@ function applyAdvancedOverrides(
       buffs: mergeBuffConfig(characterData.teamBuffs?.buffs, overrides.teamBuffs),
     },
     resonanceChains: mergeBuffConfig(characterData.resonanceChains, overrides.resonanceChains),
+  };
+}
+
+/**
+ * Builds a full `advancedConfig` for one action, either as a snapshot of the
+ * character's *current* real buff/passive/resonance-chain state (so the
+ * Advanced-mode checkboxes reflect reality immediately instead of appearing
+ * all off with no visible explanation) or fully disabled (a deliberate
+ * blank slate the user builds up from scratch). Used when a team first
+ * switches from Basic to Advanced mode, and as the default for any action
+ * added while already in Advanced mode.
+ */
+export function buildAdvancedConfigSnapshot(
+  characterData: Record<string, any>,
+  definitions: CharacterCalculationContext["definitions"] | null | undefined,
+  mode: "current" | "blank",
+): TeamRotationAdvancedConfig {
+  const snapshotCategory = (
+    defs: Array<{ key: string; hasStacks?: boolean }> | undefined,
+    currentConfig: Record<string, TeamRotationBuffOverride> | undefined,
+  ): Record<string, TeamRotationBuffOverride> => {
+    const out: Record<string, TeamRotationBuffOverride> = {};
+    for (const def of defs ?? []) {
+      out[def.key] =
+        mode === "blank"
+          ? { isEnabled: false }
+          : {
+              isEnabled: currentConfig?.[def.key]?.isEnabled ?? false,
+              stacks: currentConfig?.[def.key]?.stacks,
+              baseAttrValue: currentConfig?.[def.key]?.baseAttrValue,
+            };
+    }
+    return out;
+  };
+
+  const mainEchoConfig = characterData?.mainEcho;
+  const mainEchoBuff: TeamRotationBuffOverride | undefined = definitions?.mainEchoDef
+    ? mode === "blank"
+      ? { isEnabled: false }
+      : { isEnabled: mainEchoConfig?.isEnabled ?? false, stacks: mainEchoConfig?.stacks }
+    : undefined;
+
+  return {
+    buffs: snapshotCategory(definitions?.buffs, characterData?.buffs),
+    weaponPassives: snapshotCategory(definitions?.weaponPassives, characterData?.weaponPassives),
+    echoSetPassives: snapshotCategory(
+      [
+        ...(definitions?.echoSetPassivesOnePiece ?? []),
+        ...(definitions?.echoSetPassivesOne ?? []),
+        ...(definitions?.echoSetPassivesTwo ?? []),
+      ],
+      characterData?.echoSetPassives,
+    ),
+    mainEchoBuff,
+    teamBuffs: snapshotCategory(definitions?.teamBuffs, characterData?.teamBuffs?.buffs),
+    resonanceChains: snapshotCategory(definitions?.resonanceChains, characterData?.resonanceChains),
   };
 }
 

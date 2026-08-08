@@ -244,8 +244,61 @@ describe("Team Rotations", () => {
     cy.get("[data-test-team-rotation-action-copy-previous]").should("exist").click();
 
     // Clicking a damage row opens the same breakdown used on the Calculator
-    // page, showing the attack's full formula
+    // page, showing the attack's full formula, above the top nav — and
+    // clicking outside the panel (the overlay) closes it again
     cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]').first().click();
     cy.get(".damage-breakdown").should("be.visible").and("contain.text", "Basic Attack Stage 1 DMG");
+    cy.get(".drawer-overlay").click({ force: true });
+    cy.get(".damage-breakdown").should("not.be.visible");
+  });
+
+  it("prompts how to seed Advanced mode's per-action buffs when a team already has actions", () => {
+    configureCharacterWithWeapon("Carlotta");
+    // Give the character a non-default self buff to prove it carries over
+    cy.get('[data-test-calculator-nav="character"]').click();
+    cy.contains("button", "Enable all").click();
+
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
+    cy.get("[data-test-team-rotation-duration]").clear().type("10");
+
+    // Switching to Advanced with no actions yet doesn't prompt (nothing to
+    // seed) — but adding an action first means switching now does
+    cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]')
+      .find("td")
+      .eq(1)
+      .invoke("text")
+      .then((baselineText) => {
+        const baseline = Number(baselineText.trim());
+
+        cy.get("[data-test-team-rotation-mode-advanced]").click();
+        cy.get("[data-test-team-rotation-mode-switch-modal]").should("be.visible");
+
+        // Cancelling leaves the team in Basic mode, untouched
+        cy.get("[data-test-team-rotation-mode-switch-cancel]").click();
+        cy.get("[data-test-team-rotation-mode-switch-modal]").should("not.be.visible");
+        cy.get("[data-test-team-rotation-mode-basic]").should("have.class", "btn-active");
+
+        // Keeping the current setup switches to Advanced with the same
+        // damage as before (the checkboxes reflect what's really enabled,
+        // rather than appearing all-off) — no manual re-toggling needed
+        cy.get("[data-test-team-rotation-mode-advanced]").click();
+        cy.get("[data-test-team-rotation-mode-switch-keep-current]").click();
+        cy.get("[data-test-team-rotation-mode-switch-modal]").should("not.be.visible");
+        cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]')
+          .find("td")
+          .eq(1)
+          .invoke("text")
+          .should((newText) => {
+            expect(Number(newText.trim())).to.equal(baseline);
+          });
+
+        cy.get("[data-test-team-rotation-action-configure-buffs]").first().click();
+        cy.get("[data-test-advanced-buff-toggle]").first().should("be.checked");
+      });
   });
 });
