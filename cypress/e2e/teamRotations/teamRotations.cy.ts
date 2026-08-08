@@ -170,12 +170,18 @@ describe("Team Rotations", () => {
     cy.get('[data-test-rich-select-option="null"]').click({ force: true });
     cy.get("[data-test-team-rotations-item]").should("exist");
 
-    // Delete the team, with confirmation
+    // Delete the team, with confirmation. The dialog is a native <dialog>
+    // that's always in the DOM but only becomes visible once showModal()
+    // runs, which can take longer than the default command timeout on a
+    // resource-constrained CI runner — wait for it explicitly.
     cy.get("[data-test-team-rotations-delete]").first().click();
+    cy.get(".confirm-dialog", { timeout: 10000 }).should("be.visible");
     cy.get(".confirm-dialog .modal-action").contains("button", "Cancel").click();
+    cy.get(".confirm-dialog").should("not.be.visible");
     cy.get("[data-test-team-rotations-item]").should("exist");
 
     cy.get("[data-test-team-rotations-delete]").first().click();
+    cy.get(".confirm-dialog", { timeout: 10000 }).should("be.visible");
     cy.get(".confirm-dialog .modal-action").contains("button", "Delete").click();
     cy.get("[data-test-team-rotations-item]").should("not.exist");
     cy.get("[data-test-team-rotations-empty]").should("be.visible");
