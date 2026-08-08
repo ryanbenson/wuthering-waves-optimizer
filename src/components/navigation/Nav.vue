@@ -65,14 +65,9 @@
           :class="{ 'btn-active': curPage === 'team-rotations' }"
           title="Team Rotations"
           data-test-nav-team-rotations>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 640 640"
-            class="size-8"
-            fill="currentColor">
-            <path
-              d="M320 96a80 80 0 1 1 0 160 80 80 0 1 1 0-160zM96 224a64 64 0 1 1 0 128 64 64 0 1 1 0-128zM640 288a64 64 0 1 1 -128 0 64 64 0 1 1 128 0zM144 480c0-53 43-96 96-96l160 0c53 0 96 43 96 96l0 16c0 17.7-14.3 32-32 32L176 528c-17.7 0-32-14.3-32-32l0-16zM48 528c-8.8 0-16-7.2-16-16l0-16c0-38.2 21.4-71.4 52.9-88.2C82 415.4 80 423.5 80 432l0 96c0 5.6 .9 11 2.6 16L48 528zM592 528l-34.6 0c1.7-5 2.6-10.4 2.6-16l0-96c0-8.5-2-16.6-5.5-23.8C586.6 408.6 608 441.8 608 480l0 16c0 8.8-7.2 16-16 16z" />
-          </svg>
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/icons/teams.webp"
+            class="size-8" />
         </RouterLink>
       </div>
       <div class="navbar-center hidden lg:flex">
