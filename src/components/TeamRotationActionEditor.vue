@@ -1,13 +1,24 @@
 <template>
   <div class="flex items-start gap-2" :data-test-team-rotation-action="action.id">
-    <AppRichSelect
-      class="w-36 shrink-0 mt-4"
-      :model-value="action.slot"
-      :options="slotOptions"
-      size="xs"
-      aria-label="Choose teammate"
-      data-test-team-rotation-action-slot
-      @update:model-value="onSlotChange" />
+    <div class="flex gap-1 shrink-0 mt-4" data-test-team-rotation-action-slot>
+      <button
+        v-for="(characterId, idx) in team.characterIds"
+        :key="idx"
+        type="button"
+        class="size-9 rounded-full bg-cover bg-center border-2 shrink-0 transition-opacity"
+        :class="
+          characterId
+            ? idx === action.slot
+              ? 'border-primary ring-2 ring-primary ring-offset-1 ring-offset-base-100 opacity-100'
+              : 'border-base-300 opacity-40 hover:opacity-80 cursor-pointer'
+            : 'border-base-300 opacity-10 cursor-not-allowed'
+        "
+        :style="characterId ? { backgroundImage: `url(${characterImage(characterId)})` } : {}"
+        :disabled="!characterId"
+        :title="characterId ? displayName(characterId) : `Slot ${idx + 1} (empty)`"
+        :data-test-team-rotation-action-slot-choice="idx"
+        @click="chooseSlot(idx)"></button>
+    </div>
     <CalculatorRotationAction
       class="flex-1"
       :id="action.id"
@@ -28,6 +39,7 @@
       :rotation-main-echo-rank="mainEchoRankForSlot[action.slot] ?? null"
       :negative-status-stacks="Number(action.negativeStatusStacks ?? 1)"
       :electro-rage-stacks="Number(action.electroRageStacks ?? 0)"
+      :show-exclude-and-disabled-options="false"
       :data-test-rotation-action-by-attack-key="action.key || 'none'"
       :data-test-rotation-action-by-id="action.id"
       @action-update="onActionUpdate"
@@ -37,9 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
-import AppRichSelect, { type AppRichSelectOption, type AppRichSelectValue } from "./AppRichSelect.vue";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import type { TeamRotationAction } from "../calculator/teamRotation";
 
@@ -60,19 +70,15 @@ function displayName(characterId: string) {
   return getCharacterRosterDisplayName(characterId);
 }
 
-const slotOptions = computed((): AppRichSelectOption[] =>
-  props.team.characterIds.map((characterId, idx) => ({
-    value: idx,
-    label: characterId ? displayName(characterId) : `Slot ${idx + 1} (empty)`,
-    disabled: !characterId,
-  })),
-);
+function characterImage(characterId: string) {
+  return `https://ryanbenson.github.io/wuthering-waves-assets/images/${characterId}.png`;
+}
 
-function onSlotChange(value: AppRichSelectValue) {
-  if (typeof value !== "number") {
+function chooseSlot(idx: number) {
+  if (!props.team.characterIds[idx]) {
     return;
   }
-  emit("update", { ...props.action, slot: value });
+  emit("update", { ...props.action, slot: idx });
 }
 
 function onActionUpdate(payload: Record<string, unknown>) {

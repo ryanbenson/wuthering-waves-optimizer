@@ -26,6 +26,9 @@
         {{ displayDamage(result.total.shield) }}
       </h4>
 
+      <h4 class="font-semibold mt-4 mb-2">Damage by Character</h4>
+      <TeamRotationDamageChart :per-character="result.perCharacter" />
+
       <table class="calculator__damages table table-zebra table-sm mt-4" data-test-team-rotation-actions-damage>
         <thead>
           <tr>
@@ -62,6 +65,7 @@
 import { computed } from "vue";
 import { displayDamage } from "../utils/numbers";
 import CalculatorDamage from "./CalculatorDamage.vue";
+import TeamRotationDamageChart from "./TeamRotationDamageChart.vue";
 import type {
   DamageAggregation,
   RotationDps,

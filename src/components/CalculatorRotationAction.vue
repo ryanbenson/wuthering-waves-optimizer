@@ -187,7 +187,7 @@
               @change="onExcludeSelfBuffsChange" />
             <span class="label-text">Exclude self buffs</span>
           </label>
-          <label class="label cursor-pointer flex gap-2">
+          <label v-if="showExcludeAndDisabledOptions" class="label cursor-pointer flex gap-2">
             <input
               v-model="excludeTeamBuffs"
               type="checkbox"
@@ -195,7 +195,7 @@
               @change="onExcludeTeamBuffsChange" />
             <span class="label-text">Exclude team buffs</span>
           </label>
-          <label class="label cursor-pointer flex gap-2">
+          <label v-if="showExcludeAndDisabledOptions" class="label cursor-pointer flex gap-2">
             <input
               v-model="excludeWeaponBuffs"
               type="checkbox"
@@ -203,7 +203,7 @@
               @change="onExcludeWeaponBuffsChange" />
             <span class="label-text">Exclude weapon buffs</span>
           </label>
-          <label class="label cursor-pointer flex gap-2">
+          <label v-if="showExcludeAndDisabledOptions" class="label cursor-pointer flex gap-2">
             <input
               v-model="disabled"
               type="checkbox"
@@ -296,6 +296,8 @@ const props = withDefaults(
     actionMainEchoRank?: number | null;
     negativeStatusStacks?: number;
     electroRageStacks?: number;
+    /** Hides "Exclude team buffs", "Exclude weapon buffs", and "Disabled" — used by Team Rotations, where these aren't supported yet. */
+    showExcludeAndDisabledOptions?: boolean;
   }>(),
   {
     characterData: () => ({}),
@@ -312,6 +314,7 @@ const props = withDefaults(
     actionMainEchoRank: null,
     negativeStatusStacks: 1,
     electroRageStacks: 0,
+    showExcludeAndDisabledOptions: true,
   },
 );
 

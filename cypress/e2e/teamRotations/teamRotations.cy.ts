@@ -67,25 +67,46 @@ describe("Team Rotations", () => {
       "BasicAttackStage1DMG",
     );
 
-    // Add a second action and reassign it to Chixia (slot 1)
+    // Add a second action; it defaults to the previously-used character
+    // (Carlotta, slot 0) rather than always slot 0 by coincidence — reassign
+    // it to Chixia by clicking her profile picture, which should clearly
+    // highlight as selected
     cy.get("[data-test-team-rotation-add-action]").click();
     cy.get('[data-test-rotation-action-by-attack-key="none"]')
       .first()
       .closest("[data-test-team-rotation-action]")
-      .find("[data-test-team-rotation-action-slot]")
-      .as("slotTrigger");
-    cy.get("@slotTrigger").click({ force: true });
-    cy.get("@slotTrigger")
-      .closest(".app-rich-select")
-      .should("have.class", "dropdown-open")
-      .within(() => {
-        cy.get('[data-test-rich-select-option="1"]').click({ force: true });
-      });
+      .as("secondAction");
+    cy.get("@secondAction")
+      .find('[data-test-team-rotation-action-slot-choice="1"]')
+      .click();
+    cy.get("@secondAction")
+      .find('[data-test-team-rotation-action-slot-choice="1"]')
+      .should("have.class", "border-primary");
+    // The exclude/disabled checkboxes are hidden for team rotation actions
+    cy.get("@secondAction").contains("Exclude team buffs").should("not.exist");
+    cy.get("@secondAction").contains("Exclude weapon buffs").should("not.exist");
+    cy.get("@secondAction").contains("Disabled").should("not.exist");
     cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
     cy.richSelect(
       '[data-test-rotation-action-skill-input="none"]',
       "PowPowStage1DMG",
     );
+
+    // A third action should now default to the last-used character (Chixia),
+    // not back to the first configured character
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]')
+      .first()
+      .closest("[data-test-team-rotation-action]")
+      .find('[data-test-team-rotation-action-slot-choice="1"]')
+      .should("have.class", "border-primary");
+    // Remove that throwaway third (still-unconfigured) action so it doesn't
+    // affect the damage totals asserted below
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]')
+      .first()
+      .find(".rotation__action--remove")
+      .click({ force: true });
 
     // Set a rotation duration
     cy.get("[data-test-team-rotation-duration]").clear().type("10");

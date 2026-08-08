@@ -5,6 +5,7 @@ const defaultEnemyConfig = () => ({
   enemyLevel: 90,
   enemyResist: 0.1,
   enemyType: "Calamity",
+  enemyBrowserKey: null,
   spectroFrazzleStacks: 0,
   aeroErosionStacks: 0,
   havocBaneStacks: 0,

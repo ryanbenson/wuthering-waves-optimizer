@@ -1,138 +1,116 @@
 <template>
-  <div v-if="team" class="card bg-base-200 shadow-lg min-w-0" data-test-team-rotation-editor>
-    <div class="card-body gap-6">
-      <input
-        class="input input-bordered text-xl font-semibold w-full max-w-md"
-        v-model="nameValue"
-        data-test-team-rotation-name
-        @input="renameTeam" />
+  <div
+    v-if="team"
+    class="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 items-start"
+    data-test-team-rotation-editor>
+    <div class="card bg-base-200 shadow-lg min-w-0">
+      <div class="card-body gap-6">
+        <input
+          class="input input-bordered text-xl font-semibold w-full max-w-md"
+          v-model="nameValue"
+          data-test-team-rotation-name
+          @input="renameTeam" />
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div
-          v-for="slot in [0, 1, 2]"
-          :key="slot"
-          class="card bg-base-100 shadow p-4"
-          :data-test-team-rotation-slot="slot">
-          <template v-if="team.characterIds[slot] && !isChangingSlot(slot)">
-            <div class="flex items-center gap-3 mb-2">
-              <div
-                class="size-12 rounded-full bg-cover bg-center border shrink-0"
-                :style="{ backgroundImage: `url(${characterImage(team.characterIds[slot])})` }"></div>
-              <div class="flex-1 min-w-0">
-                <div class="font-semibold truncate">{{ displayName(team.characterIds[slot]) }}</div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div
+            v-for="slot in [0, 1, 2]"
+            :key="slot"
+            class="card bg-base-100 shadow p-4"
+            :data-test-team-rotation-slot="slot">
+            <template v-if="team.characterIds[slot] && !isChangingSlot(slot)">
+              <div class="flex items-center gap-3 mb-2">
+                <div
+                  class="size-12 rounded-full bg-cover bg-center border shrink-0"
+                  :style="{ backgroundImage: `url(${characterImage(team.characterIds[slot])})` }"></div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-semibold truncate">{{ displayName(team.characterIds[slot]) }}</div>
+                </div>
+                <button
+                  class="btn btn-ghost btn-xs"
+                  :data-test-team-rotation-slot-change="slot"
+                  @click="startChangeSlot(slot)">
+                  Change
+                </button>
+              </div>
+              <div v-if="slotStats[slot]" class="text-sm grid grid-cols-2 gap-x-2 gap-y-1 mb-2">
+                <div>HP: {{ Math.round(slotStats[slot]!.totalHp) }}</div>
+                <div>DEF: {{ Math.round(slotStats[slot]!.totalDef) }}</div>
+                <div>ATK: {{ Math.round(slotStats[slot]!.totalAtk) }}</div>
+                <div>Crit Rate: {{ slotStats[slot]!.critRate.toFixed(1) }}%</div>
+                <div>Crit DMG: {{ slotStats[slot]!.critDMG.toFixed(1) }}%</div>
+                <div>Energy Regen: {{ slotStats[slot]!.energyRegen.toFixed(1) }}%</div>
               </div>
               <button
-                class="btn btn-ghost btn-xs"
-                :data-test-team-rotation-slot-change="slot"
-                @click="startChangeSlot(slot)">
-                Change
+                class="btn btn-outline btn-primary btn-xs w-full"
+                :data-test-team-rotation-configure-character="team.characterIds[slot]"
+                @click="configureCharacter(team.characterIds[slot]!)">
+                Configure Character
               </button>
-            </div>
-            <div v-if="slotStats[slot]" class="text-sm grid grid-cols-2 gap-x-2 gap-y-1 mb-2">
-              <div>HP: {{ Math.round(slotStats[slot]!.totalHp) }}</div>
-              <div>DEF: {{ Math.round(slotStats[slot]!.totalDef) }}</div>
-              <div>ATK: {{ Math.round(slotStats[slot]!.totalAtk) }}</div>
-              <div>Crit Rate: {{ slotStats[slot]!.critRate.toFixed(1) }}%</div>
-              <div>Crit DMG: {{ slotStats[slot]!.critDMG.toFixed(1) }}%</div>
-              <div>Energy Regen: {{ slotStats[slot]!.energyRegen.toFixed(1) }}%</div>
-            </div>
-            <button
-              class="btn btn-outline btn-primary btn-xs w-full"
-              :data-test-team-rotation-configure-character="team.characterIds[slot]"
-              @click="configureCharacter(team.characterIds[slot]!)">
-              Configure Character
-            </button>
-          </template>
-          <template v-else>
-            <span class="label-text mb-2 block">Character {{ slot + 1 }}</span>
-            <AppRichSelect
-              :model-value="null"
-              :options="availableCharacterOptions(slot)"
-              searchable
-              allow-empty
-              empty-label="Choose a character"
-              aria-label="Choose character"
-              :data-test="`team-rotation-slot-select-${slot}`"
-              @update:model-value="(val) => setSlotCharacter(slot, val)" />
-            <button
-              v-if="isChangingSlot(slot)"
-              class="btn btn-ghost btn-xs w-full mt-2"
-              :data-test-team-rotation-slot-cancel-change="slot"
-              @click="cancelChangeSlot(slot)">
-              Cancel
-            </button>
-          </template>
+            </template>
+            <template v-else>
+              <span class="label-text mb-2 block">Character {{ slot + 1 }}</span>
+              <AppRichSelect
+                :model-value="null"
+                :options="availableCharacterOptions(slot)"
+                searchable
+                allow-empty
+                empty-label="Choose a character"
+                aria-label="Choose character"
+                :data-test="`team-rotation-slot-select-${slot}`"
+                @update:model-value="(val) => setSlotCharacter(slot, val)" />
+              <button
+                v-if="isChangingSlot(slot)"
+                class="btn btn-ghost btn-xs w-full mt-2"
+                :data-test-team-rotation-slot-cancel-change="slot"
+                @click="cancelChangeSlot(slot)">
+                Cancel
+              </button>
+            </template>
+          </div>
+        </div>
+
+        <TeamRotationEnemySettings
+          :model-value="team.enemyConfig"
+          :character-element="primaryCharacterElement"
+          @update:model-value="updateEnemyConfig" />
+
+        <label class="form-control max-w-xs">
+          <span class="label-text">Rotation Duration (seconds)</span>
+          <input
+            type="text"
+            inputmode="decimal"
+            class="input input-bordered input-sm"
+            v-model="durationValue"
+            data-test-team-rotation-duration
+            @input="updateDuration" />
+        </label>
+
+        <div>
+          <h3 class="font-semibold mb-2">Actions</h3>
+          <div class="flex flex-col gap-3" data-test-team-rotation-actions>
+            <TeamRotationActionEditor
+              v-for="action in team.actions"
+              :key="action.id"
+              :action="action"
+              :team="team"
+              :chosen-chars="chosenChars"
+              :main-echo-for-slot="mainEchoForSlot"
+              :main-echo-rank-for-slot="mainEchoRankForSlot"
+              @update="handleActionUpdate"
+              @remove="handleActionRemove" />
+          </div>
+          <button
+            class="btn btn-primary btn-xs w-full mt-2"
+            :disabled="!hasAnyCharacter"
+            data-test-team-rotation-add-action
+            @click="addAction">
+            + Add Action
+          </button>
         </div>
       </div>
+    </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl">
-        <label class="form-control">
-          <span class="label-text">Enemy Level</span>
-          <input
-            type="number"
-            class="input input-bordered input-sm"
-            v-model.number="enemyLevelValue"
-            data-test-team-rotation-enemy-level
-            @input="updateEnemyConfig" />
-        </label>
-        <label class="form-control">
-          <span class="label-text">Enemy Resistance (%)</span>
-          <input
-            type="number"
-            class="input input-bordered input-sm"
-            v-model.number="enemyResistPercent"
-            data-test-team-rotation-enemy-resist
-            @input="updateEnemyConfig" />
-        </label>
-        <label class="form-control">
-          <span class="label-text">Enemy Type</span>
-          <select
-            class="select select-bordered select-sm"
-            v-model="enemyTypeValue"
-            data-test-team-rotation-enemy-type
-            @change="updateEnemyConfig">
-            <option>Common</option>
-            <option>Elite</option>
-            <option>Overlord</option>
-            <option>Calamity</option>
-          </select>
-        </label>
-      </div>
-
-      <label class="form-control max-w-xs">
-        <span class="label-text">Rotation Duration (seconds)</span>
-        <input
-          type="text"
-          inputmode="decimal"
-          class="input input-bordered input-sm"
-          v-model="durationValue"
-          data-test-team-rotation-duration
-          @input="updateDuration" />
-      </label>
-
-      <div>
-        <h3 class="font-semibold mb-2">Actions</h3>
-        <div class="flex flex-col gap-3" data-test-team-rotation-actions>
-          <TeamRotationActionEditor
-            v-for="action in team.actions"
-            :key="action.id"
-            :action="action"
-            :team="team"
-            :chosen-chars="chosenChars"
-            :main-echo-for-slot="mainEchoForSlot"
-            :main-echo-rank-for-slot="mainEchoRankForSlot"
-            @update="handleActionUpdate"
-            @remove="handleActionRemove" />
-        </div>
-        <button
-          class="btn btn-primary btn-xs w-full mt-2"
-          :disabled="!hasAnyCharacter"
-          data-test-team-rotation-add-action
-          @click="addAction">
-          + Add Action
-        </button>
-      </div>
-
+    <div class="flex flex-col gap-4">
       <TeamRotationDamages :result="result" :duration="team.duration" />
     </div>
   </div>
@@ -146,6 +124,9 @@ import { randomString } from "../utils/strings";
 import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
+import TeamRotationEnemySettings, {
+  type TeamEnemySettingsValue,
+} from "./TeamRotationEnemySettings.vue";
 import { useTeamRotationsStore } from "../stores/teamRotations";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
@@ -178,21 +159,19 @@ const { showToast } = useToast();
 // actually chosen, so the user can back out without losing the teammate.
 const changingSlots = ref<Set<number>>(new Set());
 
+// The slot most recently used for an action — new actions default here
+// instead of always defaulting to the first configured character.
+const lastUsedSlot = ref<number | null>(null);
+
 const team = computed(() => teamRotationsStore.getTeamById(props.teamId));
 
 const nameValue = ref(team.value?.name ?? "");
 const durationValue = ref<string | number | null>(team.value?.duration ?? null);
-const enemyLevelValue = ref<number>(team.value?.enemyConfig?.enemyLevel ?? 90);
-const enemyResistPercent = ref<number>((team.value?.enemyConfig?.enemyResist ?? 0.1) * 100);
-const enemyTypeValue = ref<string>(team.value?.enemyConfig?.enemyType ?? "Calamity");
 
 watch(team, (t) => {
   if (!t) return;
   nameValue.value = t.name;
   durationValue.value = t.duration;
-  enemyLevelValue.value = t.enemyConfig?.enemyLevel ?? 90;
-  enemyResistPercent.value = (t.enemyConfig?.enemyResist ?? 0.1) * 100;
-  enemyTypeValue.value = t.enemyConfig?.enemyType ?? "Calamity";
 });
 
 const hasAnyCharacter = computed(() => (team.value?.characterIds ?? []).some(Boolean));
@@ -285,26 +264,28 @@ function updateDuration() {
   teamRotationsStore.setTeamDuration(props.teamId, durationValue.value);
 }
 
-function updateEnemyConfig() {
-  teamRotationsStore.setTeamEnemyConfig(props.teamId, {
-    enemyLevel: enemyLevelValue.value,
-    enemyResist: enemyResistPercent.value / 100,
-    enemyType: enemyTypeValue.value,
-  });
+function updateEnemyConfig(value: TeamEnemySettingsValue) {
+  teamRotationsStore.setTeamEnemyConfig(props.teamId, value);
 }
 
 function addAction() {
   if (!team.value) return;
-  const firstSlot = (team.value.characterIds as Array<string | null>).findIndex((id) => id);
+  const characterIds = team.value.characterIds as Array<string | null>;
+  let slot = lastUsedSlot.value;
+  if (slot === null || !characterIds[slot]) {
+    const firstSlot = characterIds.findIndex((id) => id);
+    slot = firstSlot === -1 ? 0 : firstSlot;
+  }
   const newAction: TeamRotationAction = {
     id: randomString(),
-    slot: (firstSlot === -1 ? 0 : firstSlot) as 0 | 1 | 2,
+    slot: slot as 0 | 1 | 2,
     order: team.value.actions.length + 1,
     type: null as unknown as string,
     key: null as unknown as string,
     count: 1,
   };
   teamRotationsStore.setTeamActions(props.teamId, [...team.value.actions, newAction]);
+  lastUsedSlot.value = slot;
 }
 
 function handleActionUpdate(payload: Record<string, unknown>) {
@@ -313,6 +294,9 @@ function handleActionUpdate(payload: Record<string, unknown>) {
     action.id === payload.id ? { ...action, ...payload } : action,
   );
   teamRotationsStore.setTeamActions(props.teamId, actions);
+  if (typeof payload.slot === "number") {
+    lastUsedSlot.value = payload.slot;
+  }
 }
 
 function handleActionRemove(id: string) {
@@ -382,6 +366,11 @@ const mainEchoRankForSlot = computed(() => {
   }
   return out;
 });
+
+const primaryCharacterElement = computed(
+  () => (slotContexts.value[0]?.chosenChar as { basic?: { element?: string } } | undefined)?.basic
+    ?.element ?? "",
+);
 
 let computeToken = 0;
 
