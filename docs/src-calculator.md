@@ -10,6 +10,9 @@ This folder holds the **core math and processing**: stats, buffs, damage formula
 | **`calculator.ts`** | Damage/heal/shield and special formulas: `calcDamage`, `calcHeal`, `calcShield`, `getSpectroFrazzleDamage`, `getAeroErosionDamage`, `calcMidnightVeilDMG`, `calcFixedDamage`, `calcTuneBreak`, etc. |
 | **`attacks.ts`** | Attack processing and damage aggregation: `processAttacks`, `calcDamages`, `getCalculationContext`. Builds the context (stats, buffs, enemy, rotations) and runs the damage pipeline. |
 | **`optimizer.ts`** | Optimizer context and types. Defines the data and options passed to the optimizer workers (e.g. `OptimizerContext`). Heavy combo generation and evaluation run in workers that use this context. |
+| **`resolveRotationAction.ts`** | `resolveRotationActionToAttackData` — maps one persisted `RotationAction` (character + skill key + count + buffs/overrides) to a full attack-ready object for `processAttacks`. Used by both the single-character rotation system and Team Rotations. |
+| **`buildCharacterContext.ts`** | `buildCharacterCalculationContext(characterId, characters, enemyConfig)` — headless (no Vue/"active character" dependency) reconstruction of a character's full calculation context directly from stored build data: weapon (incl. passives), echoes (incl. set bonuses + main echo buff), self buffs, resonance chains, team buffs, and `calculateAllStats`/`getCalculationContext` output. See ADR [0011](./adr/0011-headless-character-calculation-context.md). |
+| **`teamRotation.ts`** | `calcTeamRotationDamage` — evaluates a rotation spanning up to 3 characters by building each one's own context via `buildCharacterContext.ts` and summing their damage. `calcRotationDps` — shared DPS-from-duration math, used by both Team Rotations and `CalculatorDamages.vue`. |
 
 ## Data flow (conceptual)
 

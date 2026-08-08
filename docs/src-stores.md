@@ -22,6 +22,7 @@ Pinia stores hold **user input and user state only**. They are the only place th
 | **character** | `character.js` | **`characters`**: object keyed by character id; each value holds that character’s stored data (weapon, echoes, buffs, resonance chains, rotations, talents, characterLevel, enemy settings, optimizer min stats, etc.). **`activeCharacter`**: current character id. Actions: `setActiveCharacter`, `setCharacterData`, `setCharacterEchoes`, `setCharacterRotations`, `setCharacterOptimizerMinStats`, `hardSetState`, etc. |
 | **inventory** | `inventory.js` | **`echoes`**: user’s echo inventory. **`equipped`**: which echoes are equipped to which character/slot. **`echoPresets`**, **`equippedPresets`**: preset loadouts and which character uses which preset. Getters: `duplicateEchoIds`, `getEquippedEchoData`, `echoById`, etc. |
 | **settings** | `settings.js` | App-level user preferences (e.g. theme, UI toggles). Only user-facing settings; no internal config. |
+| **teamRotations** | `teamRotations.js` | **`teams`**: array of `{id, name, characterIds: [3], actions: [{id, slot, order, ...same fields as a single-character RotationAction}], duration, enemyConfig}`. Each team references character ids from the `character` store's `characters` map — it does not duplicate build data. Actions: `createTeam`, `renameTeam`, `deleteTeam`, `setTeamCharacter`, `setTeamDuration`, `setTeamActions`, `setTeamEnemyConfig`, `hardSetState`. |
 
 ## Usage from components
 

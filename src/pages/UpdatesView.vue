@@ -4,6 +4,7 @@
     <h1>Updates</h1>
     <h3>August 7, 2026</h3>
     <ul>
+      <li>Adds a new Team Rotations page: build teams of up to 3 characters, chain their actions into a rotation, and see the team's total damage and DPS.</li>
       <li>Adds ability to set how many workers to use in the optimizer.</li>
     </ul>
     <h3>August 6, 2026</h3>

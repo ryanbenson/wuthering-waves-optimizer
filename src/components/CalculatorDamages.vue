@@ -560,23 +560,11 @@
       <h4 class="text" v-if="rotation.duration">
         <span class="font-bold">DPS ({{ rotation.duration }}s)</span>
         Normal:
-        {{
-          displayDamage(
-            rotation.damageAggregation.normalDamage / Number(rotation.duration),
-          )
-        }}
+        {{ displayDamage(rotationDps(rotation).normal) }}
         / Average:
-        {{
-          displayDamage(
-            rotation.damageAggregation.avgDamage / Number(rotation.duration),
-          )
-        }}
+        {{ displayDamage(rotationDps(rotation).avg) }}
         / Crit:
-        {{
-          displayDamage(
-            rotation.damageAggregation.critDamage / Number(rotation.duration),
-          )
-        }}
+        {{ displayDamage(rotationDps(rotation).crit) }}
       </h4>
       <h4
         v-if="rotation.damageAggregation.healing"
@@ -669,6 +657,7 @@
 import { computed, ref } from "vue";
 import { displayDamage } from "../utils/numbers";
 import { getEchoData } from "../echoes";
+import { calcRotationDps } from "../calculator/teamRotation";
 import CalculatorDamage from "./CalculatorDamage.vue";
 import CalculatorDamageChart from "./CalculatorDamageChart.vue";
 
@@ -713,6 +702,10 @@ const echoData = computed(() => {
 const echoName = computed(() => echoData.value?.name ?? null);
 const echoDetails = computed(() => echoData.value?.details ?? null);
 const charName = computed(() => props.chosenChar?.value?.basic?.name ?? null);
+
+function rotationDps(rotation: { damageAggregation: any; duration: unknown }) {
+  return calcRotationDps(rotation.damageAggregation, rotation.duration as any);
+}
 
 const sortedDamageRotations = computed(() => {
   const rotations = props.allDamages?.value?.rotations;
