@@ -512,7 +512,19 @@ describe("Team Rotations", () => {
     );
   });
 
-  it("imports a saved rotation or preset into a team slot, either appending or overwriting", () => {
+  // The import modal is a native <dialog>, opened/closed via
+  // showModal()/close() — those set/clear its `open` attribute
+  // synchronously. Asserting on that attribute (rather than "be.visible",
+  // which additionally waits on daisyUI's 200ms opacity/transform CSS
+  // transition actually finishing) checks the state that matters without
+  // depending on a CSS animation frame landing — "be.visible" alone proved
+  // unreliable in CI's headless browser even with a 10s timeout, despite
+  // never reproducing locally. Each of the three import scenarios below
+  // also gets its own test (opening the dialog exactly once each) rather
+  // than reusing one dialog instance across three open/close cycles in a
+  // single test — simpler to reason about and removes any chance of a
+  // leftover state from one cycle bleeding into the next.
+  function buildTest001RotationAndTeam() {
     configureCharacterWithWeapon("Carlotta");
 
     // Build a saved rotation for Carlotta on her Calculator page first, so
@@ -534,47 +546,53 @@ describe("Team Rotations", () => {
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
     cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+  }
 
-    // The import modal is a native <dialog>, opened/closed via
-    // showModal()/close() — those set/clear its `open` attribute
-    // synchronously. Asserting on that attribute (rather than "be.visible",
-    // which additionally waits on daisyUI's 200ms opacity/transform CSS
-    // transition actually finishing) checks the state that matters here
-    // without depending on a CSS animation frame landing — the latter
-    // proved unreliable in CI's headless browser even with a 10s timeout,
-    // while never reproducing locally.
+  it("lists a character's own saved rotations and presets in the import dialog", () => {
+    buildTest001RotationAndTeam();
+
     cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
     cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
     cy.contains("[data-test-team-rotation-import-modal] h4", "Your rotations")
       .parent()
       .contains("Test001")
       .should("exist");
-
-    // Appending onto an empty slot behaves the same as overwriting — assert
-    // the imported actions land with their real attack keys, not blank ones.
-    cy.contains(".card", "Test001")
-      .find("[data-test-team-rotation-import-append]")
-      .click();
-    cy.get("[data-test-team-rotation-import-modal]").should("not.have.attr", "open");
-    cy.get("[data-test-team-rotation-action]").should("have.length", 2);
-    cy.get('[data-test-rotation-action-by-attack-key="none"]').should("not.exist");
-    cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
-    cy.get('[data-test-rotation-action-by-attack-key="FatalFinaleDMG"]').should("exist");
-
-    // Appending a preset on top keeps the existing two actions and adds more
-    cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
-    cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
     cy.contains("[data-test-team-rotation-import-modal] h4", "Presets")
       .parent()
       .contains("Kushy was here :3")
       .should("exist");
-    cy.contains(".card", "Kushy was here :3")
+  });
+
+  it("imports (appends) a saved rotation into an already-populated slot", () => {
+    buildTest001RotationAndTeam();
+
+    // Pre-populate the slot with one manual action so "append" has
+    // something real to keep, distinct from importing onto an empty slot.
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "ArtofViolenceDMG");
+
+    cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
+    cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
+    cy.contains(".card", "Test001")
       .find("[data-test-team-rotation-import-append]")
       .click();
     cy.get("[data-test-team-rotation-import-modal]").should("not.have.attr", "open");
-    cy.get("[data-test-team-rotation-action]").should("have.length.greaterThan", 2);
+    cy.get("[data-test-team-rotation-action]").should("have.length", 3);
+    cy.get('[data-test-rotation-action-by-attack-key="ArtofViolenceDMG"]').should("exist");
+    cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
+    cy.get('[data-test-rotation-action-by-attack-key="FatalFinaleDMG"]').should("exist");
+  });
 
-    // Overwriting replaces every action that belonged to this slot
+  it("imports (overwrites) a saved rotation, replacing the slot's existing actions", () => {
+    buildTest001RotationAndTeam();
+
+    // Pre-populate the slot with one manual action that overwrite should
+    // remove entirely.
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "ArtofViolenceDMG");
+
     cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
     cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
     cy.contains(".card", "Test001")
@@ -582,6 +600,7 @@ describe("Team Rotations", () => {
       .click();
     cy.get("[data-test-team-rotation-import-modal]").should("not.have.attr", "open");
     cy.get("[data-test-team-rotation-action]").should("have.length", 2);
+    cy.get('[data-test-rotation-action-by-attack-key="ArtofViolenceDMG"]').should("not.exist");
     cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
     cy.get('[data-test-rotation-action-by-attack-key="FatalFinaleDMG"]').should("exist");
   });
