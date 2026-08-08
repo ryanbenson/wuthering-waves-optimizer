@@ -575,15 +575,22 @@ export type EchoObject = {
 export function getEchoStats(echo: EchoObject): Record<string, number> {
   const stats: Record<string, number> = {};
 
+  // Mirrors CalculatorEcho.vue's `rank` computed getter, which defaults a
+  // missing rank to 5 (max) — echoes with fully embedded stats but no
+  // explicit `rank` field (e.g. pasted/OCR'd directly onto the character
+  // record rather than equipped via the Inventory) would otherwise lose
+  // their main-stat and flat bonus entirely.
+  const rank = echo.rank ?? 5;
+
   // add in the base stats (flat HP and flat ATK) that's guaranteed
-  if (echo.type && echo.rank) {
+  if (echo.type && rank) {
     let stat = Number(echo.type) === 1 ? "HP_FLAT" : "ATK_FLAT";
-    let statValue = flatBonusesByRankByType[Number(echo.type)][echo.rank];
+    let statValue = flatBonusesByRankByType[Number(echo.type)][rank];
     stats[stat] = (stats[stat] || 0) + statValue;
   }
 
-  if (echo.type && echo.rank && echo.stat) {
-    const max = statsTable?.[Number(echo.type)]?.[echo.stat]?.[echo.rank];
+  if (echo.type && rank && echo.stat) {
+    const max = statsTable?.[Number(echo.type)]?.[echo.stat]?.[rank];
     if (max) {
       stats[echo.stat] = (stats[echo.stat] || 0) + max;
     }

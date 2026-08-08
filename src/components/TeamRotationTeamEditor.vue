@@ -33,12 +33,12 @@
                 </button>
               </div>
               <div v-if="slotStats[slot]" class="text-sm grid grid-cols-2 gap-x-2 gap-y-1 mb-2">
-                <div>HP: {{ Math.round(slotStats[slot]!.totalHp) }}</div>
-                <div>DEF: {{ Math.round(slotStats[slot]!.totalDef) }}</div>
-                <div>ATK: {{ Math.round(slotStats[slot]!.totalAtk) }}</div>
-                <div>Crit Rate: {{ slotStats[slot]!.critRate.toFixed(1) }}%</div>
-                <div>Crit DMG: {{ slotStats[slot]!.critDMG.toFixed(1) }}%</div>
-                <div>Energy Regen: {{ slotStats[slot]!.energyRegen.toFixed(1) }}%</div>
+                <div>HP: {{ displayInt(slotStats[slot]!.totalHp) }}</div>
+                <div>DEF: {{ displayInt(slotStats[slot]!.totalDef) }}</div>
+                <div>ATK: {{ displayInt(slotStats[slot]!.totalAtk) }}</div>
+                <div>Crit Rate: {{ displayPercentage(slotStats[slot]!.critRate) }}</div>
+                <div>Crit DMG: {{ displayPercentage(slotStats[slot]!.critDMG) }}</div>
+                <div>Energy Regen: {{ displayPercentage(slotStats[slot]!.energyRegen) }}</div>
               </div>
               <button
                 class="btn btn-outline btn-primary btn-xs w-full"
@@ -121,6 +121,7 @@ import { computed, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { randomString } from "../utils/strings";
+import { displayInt, displayPercentage } from "../utils/numbers";
 import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";

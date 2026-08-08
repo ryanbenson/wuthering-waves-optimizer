@@ -109,6 +109,33 @@ describe("buildCharacterCalculationContext", () => {
     expect(withInventory.finalStats.totalAtk).toBeGreaterThan(withoutInventory.finalStats.totalAtk);
   });
 
+  it("defaults a missing echo rank to 5 (max), matching CalculatorEcho.vue's live behavior", async () => {
+    // Echoes pasted/OCR'd directly onto the character record (rather than
+    // equipped via the Inventory page) carry full embedded stats but often
+    // have no explicit `rank` field at all. The live Calculator page
+    // defaults a missing rank to 5 when computing an echo's main stat and
+    // guaranteed flat bonus (CalculatorEcho.vue's `rank` computed getter);
+    // this must match exactly, or a real echo's biggest stat contributions
+    // silently disappear.
+    const echoes = {
+      0: {
+        type: 3,
+        echo: "Glommoth",
+        stat: "Glacio",
+        echoSubStatsType1: "ATK",
+        echoSubStatsValue1: 8.6,
+      },
+    };
+    const characters = { Calcharo: { echoes } };
+
+    const result = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+    const expected = getCombinedEchoStats({ 0: { ...echoes[0], rank: 5 } } as any);
+
+    expect(result.echoStats).toEqual(expected);
+    // Sanity check the main stat itself came through, not just the substat.
+    expect(result.echoStats.Glacio).toBeGreaterThan(0);
+  });
+
   it("resolves weapon attack and an alwaysEnabled passive even with no stored passive config", async () => {
     const characters = {
       Calcharo: {
