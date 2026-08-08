@@ -537,13 +537,15 @@ describe("Team Rotations", () => {
 
     // The import modal is a native <dialog> with daisyUI's fixed 200ms
     // opacity/transform transition — this dialog gets opened/closed three
-    // times in this one test, so pause briefly after each open/close to let
-    // it settle before the next interaction (same reasoning as the 300ms
-    // waits around the damages drawer's own transition elsewhere in this
-    // file).
+    // times in this one test. Rather than a blind cy.wait() guess (which
+    // doesn't scale if CI happens to be slower than a local run), give the
+    // "did it actually open" checks a longer explicit timeout so Cypress's
+    // own retry keeps polling instead of racing a fixed delay.
+    const DIALOG_TIMEOUT = 10000;
     cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
-    cy.wait(250);
-    cy.get("[data-test-team-rotation-import-modal]").should("be.visible");
+    cy.get("[data-test-team-rotation-import-modal]", { timeout: DIALOG_TIMEOUT }).should(
+      "be.visible",
+    );
     cy.contains("[data-test-team-rotation-import-modal] h4", "Your rotations")
       .parent()
       .contains("Test001")
@@ -555,7 +557,6 @@ describe("Team Rotations", () => {
       .find("[data-test-team-rotation-import-append]")
       .click();
     cy.get("[data-test-team-rotation-import-modal]").should("not.be.visible");
-    cy.wait(250);
     cy.get("[data-test-team-rotation-action]").should("have.length", 2);
     cy.get('[data-test-rotation-action-by-attack-key="none"]').should("not.exist");
     cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
@@ -563,7 +564,9 @@ describe("Team Rotations", () => {
 
     // Appending a preset on top keeps the existing two actions and adds more
     cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
-    cy.wait(250);
+    cy.get("[data-test-team-rotation-import-modal]", { timeout: DIALOG_TIMEOUT }).should(
+      "be.visible",
+    );
     cy.contains("[data-test-team-rotation-import-modal] h4", "Presets")
       .parent()
       .contains("Kushy was here :3")
@@ -572,17 +575,17 @@ describe("Team Rotations", () => {
       .find("[data-test-team-rotation-import-append]")
       .click();
     cy.get("[data-test-team-rotation-import-modal]").should("not.be.visible");
-    cy.wait(250);
     cy.get("[data-test-team-rotation-action]").should("have.length.greaterThan", 2);
 
     // Overwriting replaces every action that belonged to this slot
     cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
-    cy.wait(250);
+    cy.get("[data-test-team-rotation-import-modal]", { timeout: DIALOG_TIMEOUT }).should(
+      "be.visible",
+    );
     cy.contains(".card", "Test001")
       .find("[data-test-team-rotation-import-overwrite]")
       .click();
     cy.get("[data-test-team-rotation-import-modal]").should("not.be.visible");
-    cy.wait(250);
     cy.get("[data-test-team-rotation-action]").should("have.length", 2);
     cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
     cy.get('[data-test-rotation-action-by-attack-key="FatalFinaleDMG"]').should("exist");
