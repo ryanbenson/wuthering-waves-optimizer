@@ -518,18 +518,28 @@ describe("Team Rotations", () => {
     cy.get('[data-test-rotations-action="create"]').click();
     cy.get('[data-test-rotation-item-by-name="Untitled Rotation"]').click();
     cy.get('[data-test-rotation-name-input="Untitled Rotation"]').clear().type("Test001");
+    // Calculator-page actions auto-open for editing when added (see
+    // CalculatorRotation.vue's addAction -> toggleEdit()) — no need to click
+    // into it first; doing so would just toggle it shut again.
     cy.get('[data-test-rotation-action-add="Test001"]').click();
-    cy.get('[data-test-rotation-action-by-attack-key="none"]').click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').should("be.visible");
     cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
     cy.get('[data-test-rotation-action-add="Test001"]').click();
-    cy.get('[data-test-rotation-action-by-attack-key="none"]').click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').should("be.visible");
     cy.richSelect('[data-test-rotation-action-skill-input="none"]', "FatalFinaleDMG");
 
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
     cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
 
+    // The import modal is a native <dialog> with daisyUI's fixed 200ms
+    // opacity/transform transition — this dialog gets opened/closed three
+    // times in this one test, so pause briefly after each open/close to let
+    // it settle before the next interaction (same reasoning as the 300ms
+    // waits around the damages drawer's own transition elsewhere in this
+    // file).
     cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
+    cy.wait(250);
     cy.get("[data-test-team-rotation-import-modal]").should("be.visible");
     cy.contains("[data-test-team-rotation-import-modal] h4", "Your rotations")
       .parent()
@@ -542,6 +552,7 @@ describe("Team Rotations", () => {
       .find("[data-test-team-rotation-import-append]")
       .click();
     cy.get("[data-test-team-rotation-import-modal]").should("not.be.visible");
+    cy.wait(250);
     cy.get("[data-test-team-rotation-action]").should("have.length", 2);
     cy.get('[data-test-rotation-action-by-attack-key="none"]').should("not.exist");
     cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
@@ -549,6 +560,7 @@ describe("Team Rotations", () => {
 
     // Appending a preset on top keeps the existing two actions and adds more
     cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
+    cy.wait(250);
     cy.contains("[data-test-team-rotation-import-modal] h4", "Presets")
       .parent()
       .contains("Kushy was here :3")
@@ -556,13 +568,18 @@ describe("Team Rotations", () => {
     cy.contains(".card", "Kushy was here :3")
       .find("[data-test-team-rotation-import-append]")
       .click();
+    cy.get("[data-test-team-rotation-import-modal]").should("not.be.visible");
+    cy.wait(250);
     cy.get("[data-test-team-rotation-action]").should("have.length.greaterThan", 2);
 
     // Overwriting replaces every action that belonged to this slot
     cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
+    cy.wait(250);
     cy.contains(".card", "Test001")
       .find("[data-test-team-rotation-import-overwrite]")
       .click();
+    cy.get("[data-test-team-rotation-import-modal]").should("not.be.visible");
+    cy.wait(250);
     cy.get("[data-test-team-rotation-action]").should("have.length", 2);
     cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
     cy.get('[data-test-rotation-action-by-attack-key="FatalFinaleDMG"]').should("exist");

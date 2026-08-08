@@ -36,18 +36,16 @@
         </span>
       </div>
       <div class="rotation__action__end">
-        <div class="rotation__action__types flex flex-col items-end gap-2">
-          <div
-            class="type badge badge-primary size-max"
-            v-if="skillTypeLabel && actionSkillType !== 'negativeStatus'">
-            Forte: {{ skillTypeLabel }}
-          </div>
-          <div v-if="damageType" class="type badge badge-secondary size-max">
-            {{ damageType }} DMG
-          </div>
-          <div v-if="damageSubType" class="type badge badge-accent size-max">
-            {{ damageSubType }} DMG
-          </div>
+        <div
+          class="type badge badge-primary size-max"
+          v-if="skillTypeLabel && actionSkillType !== 'negativeStatus'">
+          Forte: {{ skillTypeLabel }}
+        </div>
+        <div v-if="damageType" class="type badge badge-secondary size-max">
+          {{ damageType }} DMG
+        </div>
+        <div v-if="damageSubType" class="type badge badge-accent size-max">
+          {{ damageSubType }} DMG
         </div>
         <div class="buffsCount badge">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -57,6 +55,16 @@
           </svg>
           <span>{{ buffsCount }}</span>
         </div>
+        <button
+          class="rotation__action--remove ml-auto"
+          title="Remove action"
+          @click.stop="removeAction">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path
+              d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
+              fill="#FFFFFF" />
+          </svg>
+        </button>
       </div>
     </div>
     <div v-if="isEditing" class="rotation__action__edit" @click.stop>
@@ -100,13 +108,6 @@
               aria-label="Select attack"
               @update:model-value="onAttackSelected" />
           </div>
-          <button class="rotation__action--remove" @click="removeAction">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path
-                d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
-                fill="#FFFFFF" />
-            </svg>
-          </button>
         </div>
         <div
           v-if="usesNegativeStatusStacks"
@@ -800,12 +801,13 @@ onMounted(() => {
 }
 .rotation__action__info {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 .rotation__action__end {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 .buffsCount {
@@ -858,6 +860,16 @@ onMounted(() => {
   background-color: transparent;
   border: none;
   cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  &:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
   svg {
     width: 1rem;
     height: 1rem;
@@ -877,24 +889,6 @@ html[data-theme="light"] {
     svg {
       filter: invert(100%);
     }
-  }
-}
-@media (max-width: 1088px) {
-  .rotation__action__info {
-    flex-direction: column;
-    gap: 1rem;
-  }
-}
-@media (max-width: 768px) {
-  .rotation__action__info {
-    flex-direction: row;
-    gap: 1rem;
-  }
-}
-@media (max-width: 550px) {
-  .rotation__action__info {
-    flex-direction: column;
-    gap: 1rem;
   }
 }
 </style>

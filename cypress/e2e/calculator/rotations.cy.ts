@@ -34,13 +34,13 @@ describe("Calculator Rotations", () => {
       .clear()
       .type("Test001");
 
-    // add an action
+    // add an action — newly-added actions auto-open for editing (see
+    // CalculatorRotation.vue's addAction -> toggleEdit()), so there's no
+    // need to click into it first; doing so would just toggle it shut again
     cy.get(`[data-test-rotation-action-add="Test001"]`).click();
-    // find first action that's empty and click to get into it
     cy.get(`[data-test-rotation-action-by-attack-key="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-by-attack-key="none"]`).click();
     // find and change the skill used
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
@@ -51,11 +51,9 @@ describe("Calculator Rotations", () => {
     );
     // create second action
     cy.get(`[data-test-rotation-action-add="Test001"]`).click();
-    // find first action that's empty and click to get into it
     cy.get(`[data-test-rotation-action-by-attack-key="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-by-attack-key="none"]`).click();
     // find and change the skill used
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
