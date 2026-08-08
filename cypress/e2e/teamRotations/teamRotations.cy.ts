@@ -132,9 +132,11 @@ describe("Team Rotations", () => {
 
     // A stat snippet's Energy Regen is a percentage (e.g. "100.0%"), not a
     // raw 0-1 ratio mistakenly rendered as "1.0%"
-    cy.get('[data-test-team-rotation-slot="0"]').should(($el) => {
-      expect($el.text()).to.match(/Energy Regen: \d{2,3}\.\d%/);
-    });
+    cy.get('[data-test-team-rotation-slot="0"] [data-test-team-rotation-slot-stat="energyRegen"]').should(
+      ($el) => {
+        expect($el.text()).to.match(/^\d{1,3}(\.\d)?%$/);
+      },
+    );
 
     // Changing a teammate can be backed out of without losing the current
     // pick or their actions
@@ -189,5 +191,61 @@ describe("Team Rotations", () => {
     // Reload and confirm the deletion persisted
     cy.reload();
     cy.get("[data-test-team-rotations-item]").should("not.exist");
+  });
+
+  it("supports Advanced mode per-action buffs, copying settings, and the damage breakdown drawer", () => {
+    configureCharacterWithWeapon("Carlotta");
+
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+
+    // Enemy settings default to a closed, small-text summary bar rather than
+    // a plain "Enemy Settings" title
+    cy.get("[data-test-team-rotation-enemy-title]").should("not.exist");
+    cy.get("[data-test-team-rotation-enemy-summary]").should("be.visible").and("contain.text", "Lv 90");
+    cy.get("[data-test-team-rotation-enemy-collapse-toggle]").click({ force: true });
+    cy.get("[data-test-team-rotation-enemy-title]").should("be.visible");
+    cy.get("[data-test-team-rotation-enemy-summary]").should("not.exist");
+    cy.get("[data-test-team-rotation-enemy-type-option='Elite']").click();
+    cy.get("[data-test-team-rotation-enemy-collapse-toggle]").click({ force: true });
+
+    cy.get("[data-test-team-rotation-mode-advanced]").click();
+
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
+    cy.get("[data-test-team-rotation-duration]").clear().type("10");
+
+    cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]')
+      .find("td")
+      .eq(1)
+      .invoke("text")
+      .then((baselineText) => {
+        const baseline = Number(baselineText.trim());
+        expect(baseline).to.be.greaterThan(0);
+
+        // Configuring a self buff for just this action changes its damage
+        cy.get("[data-test-team-rotation-action-configure-buffs]").first().click();
+        cy.get("[data-test-team-rotation-advanced-buffs]").should("be.visible");
+        cy.get("[data-test-advanced-buff-toggle]").first().click({ force: true });
+        cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]')
+          .find("td")
+          .eq(1)
+          .invoke("text")
+          .should((newText) => {
+            expect(Number(newText.trim())).to.not.equal(baseline);
+          });
+      });
+
+    // A second action can copy the first action's advanced buff config
+    // instead of configuring everything from scratch
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get("[data-test-team-rotation-action-copy-previous]").should("exist").click();
+
+    // Clicking a damage row opens the same breakdown used on the Calculator
+    // page, showing the attack's full formula
+    cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]').first().click();
+    cy.get(".damage-breakdown").should("be.visible").and("contain.text", "Basic Attack Stage 1 DMG");
   });
 });

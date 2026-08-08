@@ -97,6 +97,64 @@ describe("calcTeamRotationDamage", () => {
     expect(result.total).toEqual({ normalDamage: 0, avgDamage: 0, critDamage: 0, healing: 0, shield: 0 });
   });
 
+  it("advanced mode applies a per-action buff override on top of the character's own config", async () => {
+    const plainAction: TeamRotationAction = {
+      id: "action-1",
+      slot: 0,
+      order: 0,
+      type: "basic",
+      key: "Part1Damage",
+      count: 1,
+    };
+    const buffedAction: TeamRotationAction = {
+      id: "action-2",
+      slot: 0,
+      order: 1,
+      type: "basic",
+      key: "Part1Damage",
+      count: 1,
+      // Calcharo's StatBonusATK1 (+ATK%) is off by default (characters =
+      // { Calcharo: {} }) — this action alone should get the boost.
+      advancedConfig: { buffs: { StatBonusATK1: { isEnabled: true } } },
+    };
+
+    const result = await calcTeamRotationDamage(
+      {
+        characterIds: ["Calcharo", null, null],
+        actions: [plainAction, buffedAction],
+        duration: 10,
+        mode: "advanced",
+      },
+      characters,
+      enemyConfig,
+    );
+
+    expect(result.actionResults).toHaveLength(2);
+    const plainResult = result.actionResults.find((r) => r.order === 0)!;
+    const buffedResult = result.actionResults.find((r) => r.order === 1)!;
+    expect(buffedResult.attack.damage.totalDamage).toBeGreaterThan(
+      plainResult.attack.damage.totalDamage,
+    );
+
+    // The character-level total is the sum of both actions, not just the
+    // buffed one and not just the plain one.
+    const expectedTotal =
+      plainResult.attack.damage.totalDamage + buffedResult.attack.damage.totalDamage;
+    expect(result.perCharacter.Calcharo.damageAggregation.normalDamage).toBeCloseTo(expectedTotal);
+
+    // The plain (non-advanced) action's damage matches what basic mode would
+    // have produced for the exact same action — advanced mode only changes
+    // the number when an override is actually present.
+    const basicModeResult = await calcTeamRotationDamage(
+      { characterIds: ["Calcharo", null, null], actions: [plainAction], duration: 10 },
+      characters,
+      enemyConfig,
+    );
+    expect(plainResult.attack.damage.totalDamage).toBeCloseTo(
+      basicModeResult.actionResults[0].attack.damage.totalDamage,
+    );
+  });
+
   it("skips disabled actions", async () => {
     const action: TeamRotationAction = {
       id: "action-1",

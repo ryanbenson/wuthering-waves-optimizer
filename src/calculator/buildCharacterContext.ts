@@ -8,6 +8,7 @@ import {
   type EchoSetPassiveResult,
 } from "../echoes/echoSetPassives";
 import { resolveMainEchoBuffStats, combineEchoStats } from "../echoes/mainEcho";
+import { mainEchoesData } from "../echoes/index";
 import { setBonusEffectsOnePiece, setBonusEffectsOne, setBonusEffectsTwo } from "../echoes/sets";
 import {
   resolveTeamBuffInstance,
@@ -58,6 +59,22 @@ export interface CharacterCalculationContext {
   mainEcho: string;
   mainEchoRank: number;
   context: CalculationContext;
+  /**
+   * Raw buff/passive *definition* catalogs (not computed values) for this
+   * character's current build — used by Team Rotations' advanced per-action
+   * buff editor to list every toggle available for this character, without
+   * duplicating the lookups already done above.
+   */
+  definitions: {
+    buffs: any[];
+    resonanceChains: any[];
+    weaponPassives: any[];
+    echoSetPassivesOnePiece: any[];
+    echoSetPassivesOne: any[];
+    echoSetPassivesTwo: any[];
+    mainEchoDef: any | null;
+    teamBuffs: TeamBuffDef[];
+  };
 }
 
 /**
@@ -148,9 +165,11 @@ export async function buildCharacterCalculationContext(
   let weaponModifier: string | null = null;
   let weaponModifierValue = 0;
   let weaponPassiveStats: Record<string, unknown> = {};
+  let weaponPassiveDefs: any[] = [];
   if (weaponKey) {
     const chosenWeapon = await getWeaponByName(weaponType, weaponKey);
     if (chosenWeapon) {
+      weaponPassiveDefs = (chosenWeapon.info?.passiveData ?? []) as any[];
       const weaponLevel =
         characterData.weapons?.[weaponKey]?.weaponLevel ?? chosenWeapon.info?.maxLevel ?? "90";
       const refinement = characterData.weapons?.[weaponKey]?.refinement ?? "1";
@@ -179,26 +198,24 @@ export async function buildCharacterCalculationContext(
   const combinedEchoStats = getCombinedEchoStats(resolvedEchoes);
   const echoSetBonus = characterData.echoSetBonus ?? {};
   const echoSetPassivesConfig = characterData.echoSetPassives ?? {};
-  const setBonusOnePieceStats = resolveSetBonusStats(
-    echoSetBonus.setBonusOnePiece
-      ? (setBonusEffectsOnePiece as Record<string, any>)[echoSetBonus.setBonusOnePiece]
-      : null,
-    echoSetPassivesConfig,
-    talentData,
-  );
-  const setBonusOneStats = resolveSetBonusStats(
-    echoSetBonus.setBonusOne ? (setBonusEffectsOne as Record<string, any>)[echoSetBonus.setBonusOne] : null,
-    echoSetPassivesConfig,
-    talentData,
-  );
-  const setBonusTwoStats = resolveSetBonusStats(
-    echoSetBonus.setBonusTwo ? (setBonusEffectsTwo as Record<string, any>)[echoSetBonus.setBonusTwo] : null,
-    echoSetPassivesConfig,
-    talentData,
-  );
+  const setBonusOnePieceDef = echoSetBonus.setBonusOnePiece
+    ? (setBonusEffectsOnePiece as Record<string, any>)[echoSetBonus.setBonusOnePiece]
+    : null;
+  const setBonusOneDef = echoSetBonus.setBonusOne
+    ? (setBonusEffectsOne as Record<string, any>)[echoSetBonus.setBonusOne]
+    : null;
+  const setBonusTwoDef = echoSetBonus.setBonusTwo
+    ? (setBonusEffectsTwo as Record<string, any>)[echoSetBonus.setBonusTwo]
+    : null;
+  const setBonusOnePieceStats = resolveSetBonusStats(setBonusOnePieceDef, echoSetPassivesConfig, talentData);
+  const setBonusOneStats = resolveSetBonusStats(setBonusOneDef, echoSetPassivesConfig, talentData);
+  const setBonusTwoStats = resolveSetBonusStats(setBonusTwoDef, echoSetPassivesConfig, talentData);
 
   const mainEchoConfig = characterData.mainEcho ?? {};
   const mainEchoBuffStats = resolveMainEchoBuffStats(characterId, mainEchoConfig);
+  const mainEchoDef = mainEchoConfig.echo
+    ? ((mainEchoesData as Record<string, any>)?.[mainEchoConfig.echo] ?? null)
+    : null;
 
   const echoStats = combineEchoStats(
     combinedEchoStats,
@@ -341,5 +358,15 @@ export async function buildCharacterCalculationContext(
     mainEcho,
     mainEchoRank,
     context,
+    definitions: {
+      buffs: chosenChar?.buffs ?? [],
+      resonanceChains: chosenChar?.resonanceChains ?? [],
+      weaponPassives: weaponPassiveDefs,
+      echoSetPassivesOnePiece: setBonusOnePieceDef?.passives ?? [],
+      echoSetPassivesOne: setBonusOneDef?.passives ?? [],
+      echoSetPassivesTwo: setBonusTwoDef?.passives ?? [],
+      mainEchoDef,
+      teamBuffs: teamBuffDefs,
+    },
   };
 }

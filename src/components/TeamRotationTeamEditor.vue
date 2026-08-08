@@ -1,15 +1,48 @@
 <template>
-  <div
-    v-if="team"
-    class="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 items-start"
-    data-test-team-rotation-editor>
+  <div v-if="team" class="drawer drawer-end" data-test-team-rotation-editor>
+    <input :id="breakdownDrawerId" type="checkbox" class="drawer-toggle" v-model="isBreakdownOpen" />
+    <div class="drawer-content grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 items-start">
     <div class="card bg-base-200 shadow-lg min-w-0">
       <div class="card-body gap-6">
-        <input
-          class="input input-bordered text-xl font-semibold w-full max-w-md"
-          v-model="nameValue"
-          data-test-team-rotation-name
-          @input="renameTeam" />
+        <div class="flex flex-wrap items-end gap-3">
+          <input
+            class="input input-bordered input-sm text-base font-semibold max-w-xs"
+            v-model="nameValue"
+            data-test-team-rotation-name
+            @input="renameTeam" />
+          <label class="form-control w-32">
+            <span class="label-text text-xs">Duration (s)</span>
+            <input
+              type="text"
+              inputmode="decimal"
+              class="input input-bordered input-sm"
+              v-model="durationValue"
+              data-test-team-rotation-duration
+              @input="updateDuration" />
+          </label>
+        </div>
+
+        <div class="flex items-center gap-2" data-test-team-rotation-mode>
+          <span class="text-xs opacity-70">Rotation mode</span>
+          <div class="join">
+            <button
+              type="button"
+              class="btn btn-xs join-item"
+              :class="{ 'btn-active': rotationMode === 'basic' }"
+              data-test-team-rotation-mode-basic
+              @click="setMode('basic')">
+              Basic
+            </button>
+            <button
+              type="button"
+              class="btn btn-xs join-item"
+              :class="{ 'btn-active': rotationMode === 'advanced' }"
+              data-test-team-rotation-mode-advanced
+              @click="setMode('advanced')">
+              Advanced
+            </button>
+          </div>
+        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div
@@ -32,13 +65,31 @@
                   Change
                 </button>
               </div>
-              <div v-if="slotStats[slot]" class="text-sm grid grid-cols-2 gap-x-2 gap-y-1 mb-2">
-                <div>HP: {{ displayInt(slotStats[slot]!.totalHp) }}</div>
-                <div>DEF: {{ displayInt(slotStats[slot]!.totalDef) }}</div>
-                <div>ATK: {{ displayInt(slotStats[slot]!.totalAtk) }}</div>
-                <div>Crit Rate: {{ displayPercentage(slotStats[slot]!.critRate) }}</div>
-                <div>Crit DMG: {{ displayPercentage(slotStats[slot]!.critDMG) }}</div>
-                <div>Energy Regen: {{ displayPercentage(slotStats[slot]!.energyRegen) }}</div>
+              <div v-if="slotStats[slot]" class="grid grid-cols-3 gap-x-2 gap-y-1 mb-2 text-sm">
+                <div class="flex items-center gap-1" v-tooltip="'HP'" data-test-team-rotation-slot-stat="hp">
+                  <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" class="size-4" />
+                  <span>{{ displayInt(slotStats[slot]!.totalHp) }}</span>
+                </div>
+                <div class="flex items-center gap-1" v-tooltip="'DEF'" data-test-team-rotation-slot-stat="def">
+                  <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" class="size-4" />
+                  <span>{{ displayInt(slotStats[slot]!.totalDef) }}</span>
+                </div>
+                <div class="flex items-center gap-1" v-tooltip="'ATK'" data-test-team-rotation-slot-stat="atk">
+                  <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" class="size-4" />
+                  <span>{{ displayInt(slotStats[slot]!.totalAtk) }}</span>
+                </div>
+                <div class="flex items-center gap-1" v-tooltip="'Crit Rate'" data-test-team-rotation-slot-stat="critRate">
+                  <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" class="size-4" />
+                  <span>{{ displayPercentage(slotStats[slot]!.critRate) }}</span>
+                </div>
+                <div class="flex items-center gap-1" v-tooltip="'Crit DMG'" data-test-team-rotation-slot-stat="critDMG">
+                  <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/critdamage.png" class="size-4" />
+                  <span>{{ displayPercentage(slotStats[slot]!.critDMG) }}</span>
+                </div>
+                <div class="flex items-center gap-1" v-tooltip="'Energy Regen'" data-test-team-rotation-slot-stat="energyRegen">
+                  <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/energyregen.png" class="size-4" />
+                  <span>{{ displayPercentage(slotStats[slot]!.energyRegen) }}</span>
+                </div>
               </div>
               <button
                 class="btn btn-outline btn-primary btn-xs w-full"
@@ -74,17 +125,6 @@
           :character-element="primaryCharacterElement"
           @update:model-value="updateEnemyConfig" />
 
-        <label class="form-control max-w-xs">
-          <span class="label-text">Rotation Duration (seconds)</span>
-          <input
-            type="text"
-            inputmode="decimal"
-            class="input input-bordered input-sm"
-            v-model="durationValue"
-            data-test-team-rotation-duration
-            @input="updateDuration" />
-        </label>
-
         <div>
           <h3 class="font-semibold mb-2">Actions</h3>
           <div class="flex flex-col gap-3" data-test-team-rotation-actions>
@@ -96,6 +136,9 @@
               :chosen-chars="chosenChars"
               :main-echo-for-slot="mainEchoForSlot"
               :main-echo-rank-for-slot="mainEchoRankForSlot"
+              :mode="rotationMode"
+              :definitions-for-slot="definitionsForSlot"
+              :previous-action="previousActionByActionId[action.id] ?? null"
               @update="handleActionUpdate"
               @remove="handleActionRemove" />
           </div>
@@ -111,7 +154,32 @@
     </div>
 
     <div class="flex flex-col gap-4">
-      <TeamRotationDamages :result="result" :duration="team.duration" />
+      <TeamRotationDamages :result="result" :duration="team.duration" @selected-attack="onSelectedAttack" />
+    </div>
+    </div>
+
+    <div class="drawer-side z-40">
+      <label
+        :for="breakdownDrawerId"
+        aria-label="close breakdown"
+        class="drawer-overlay"
+        @click="closeBreakdown"></label>
+      <div class="bg-base-100 text-base-content min-h-full max-w-[480px] w-full p-4">
+        <CalculatorBreakdown
+          v-if="selectedAttackKey"
+          :character="selectedAttackCharacterId ?? ''"
+          :attack-key="selectedAttackKey"
+          :damage="selectedAttackDamage"
+          :attack-label="selectedAttackLabel"
+          :weapon-data="{}"
+          :weapon-atk="0"
+          :custom-buffs="{}"
+          :team-buffs-data="{}"
+          :char-buffs-data="{}"
+          :char-resonance-chains-data="{}"
+          :echo-stats="{}"
+          @close="closeBreakdown"></CalculatorBreakdown>
+      </div>
     </div>
   </div>
 </template>
@@ -123,6 +191,7 @@ import { storeToRefs } from "pinia";
 import { randomString } from "../utils/strings";
 import { displayInt, displayPercentage } from "../utils/numbers";
 import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
+import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
 import TeamRotationEnemySettings, {
@@ -163,6 +232,32 @@ const changingSlots = ref<Set<number>>(new Set());
 // The slot most recently used for an action — new actions default here
 // instead of always defaulting to the first configured character.
 const lastUsedSlot = ref<number | null>(null);
+
+// Damage-row breakdown drawer — mirrors HomeView.vue's drawer pattern for
+// the Calculator page's own attack breakdown.
+const breakdownDrawerId = `team-rotation-breakdown-drawer-${Math.random().toString(36).slice(2)}`;
+const isBreakdownOpen = ref(false);
+const selectedAttackKey = ref<string | null>(null);
+const selectedAttackDamage = ref<Record<string, any>>({});
+const selectedAttackLabel = ref<string | null>(null);
+const selectedAttackCharacterId = ref<string | null>(null);
+
+function onSelectedAttack(
+  attackKey: string,
+  damage: Record<string, any>,
+  label: string,
+  characterId: string,
+) {
+  selectedAttackKey.value = attackKey;
+  selectedAttackDamage.value = damage;
+  selectedAttackLabel.value = label;
+  selectedAttackCharacterId.value = characterId;
+  isBreakdownOpen.value = true;
+}
+
+function closeBreakdown() {
+  isBreakdownOpen.value = false;
+}
 
 const team = computed(() => teamRotationsStore.getTeamById(props.teamId));
 
@@ -373,6 +468,38 @@ const primaryCharacterElement = computed(
     ?.element ?? "",
 );
 
+const rotationMode = computed(() => (team.value?.mode === "advanced" ? "advanced" : "basic"));
+
+function setMode(mode: "basic" | "advanced") {
+  teamRotationsStore.setTeamMode(props.teamId, mode);
+}
+
+const definitionsForSlot = computed(() => {
+  const out: Record<number, Record<string, any> | null> = {};
+  for (const slot of [0, 1, 2]) {
+    out[slot] = slotContexts.value[slot]?.definitions ?? null;
+  }
+  return out;
+});
+
+// Maps each action to the immediately-preceding action *in the same slot*
+// (by order), so "Copy previous action settings" has something concrete to
+// copy from — a different slot's advanced config wouldn't even apply, since
+// each character has their own distinct set of buffs/passives.
+const previousActionByActionId = computed(() => {
+  const map: Record<string, (TeamRotationAction & Record<string, unknown>) | null> = {};
+  const actions = team.value?.actions ?? [];
+  for (const slot of [0, 1, 2]) {
+    const slotActions = actions
+      .filter((a: TeamRotationAction) => a.slot === slot)
+      .sort((a: TeamRotationAction, b: TeamRotationAction) => a.order - b.order);
+    slotActions.forEach((a: TeamRotationAction, index: number) => {
+      map[a.id] = index > 0 ? slotActions[index - 1] : null;
+    });
+  }
+  return map;
+});
+
 let computeToken = 0;
 
 async function recompute() {
@@ -395,7 +522,13 @@ async function recompute() {
   slotContexts.value = nextContexts;
 
   const nextResult = await calcTeamRotationDamage(
-    { name: t.name, characterIds: t.characterIds, actions: t.actions, duration: t.duration },
+    {
+      name: t.name,
+      characterIds: t.characterIds,
+      actions: t.actions,
+      duration: t.duration,
+      mode: rotationMode.value,
+    },
     characters.value,
     enemyConfig,
     inventoryEchoes.value,

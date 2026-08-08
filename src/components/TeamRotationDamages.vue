@@ -54,7 +54,11 @@
             :main-echo-rank="actionResult.attack.mainEchoRank"
             :original-is-enabled="actionResult.attack.originalIsEnabled"
             :always-crit="actionResult.attack.alwaysCrit"
-            :data-test-team-rotation-action-damage="actionResult.attack.label"></CalculatorDamage>
+            :data-test-team-rotation-action-damage="actionResult.attack.label"
+            @selected-attack="
+              (attackKey, damage, label) =>
+                onSelectedAttack(attackKey, damage, label, actionResult.characterId)
+            "></CalculatorDamage>
         </tbody>
       </table>
     </template>
@@ -83,9 +87,22 @@ const props = defineProps<{
   duration: number | string | null;
 }>();
 
+const emit = defineEmits<{
+  "selected-attack": [attackKey: string, damage: Record<string, any>, label: string, characterId: string];
+}>();
+
 const hasActions = computed(() => Object.keys(props.result.perCharacter).length > 0);
 
 function characterImage(characterId: string) {
   return `https://ryanbenson.github.io/wuthering-waves-assets/images/${characterId}.png`;
+}
+
+function onSelectedAttack(
+  attackKey: string,
+  damage: Record<string, any>,
+  label: string,
+  characterId: string,
+) {
+  emit("selected-attack", attackKey, damage, label, characterId);
 }
 </script>
