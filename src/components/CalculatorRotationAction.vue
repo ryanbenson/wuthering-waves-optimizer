@@ -72,7 +72,7 @@
         </button>
       </div>
     </div>
-    <div v-if="isEditing" class="rotation__action__edit" @click.stop>
+    <div v-if="isEditing" class="rotation__action__edit mt-2" @click.stop>
       <div class="edit__action">
         <div class="edit__basic-info">
           <div class="edit__order">
@@ -160,7 +160,7 @@
         </div>
       </div>
     </div>
-    <div v-if="showManualBuffs" class="rotation__action__stats" @click.stop>
+    <div v-if="showManualBuffs" class="rotation__action__stats mt-2" @click.stop>
       <div class="edit__buffs">
         <div class="edit__buffs__list">
           <CalculatorRotationActionBuff
@@ -177,7 +177,7 @@
             "></CalculatorRotationActionBuff>
         </div>
       </div>
-      <div class="button__group">
+      <div class="button__group mt-2">
         <button
           class="rotation__action--add-buff btn btn-xs w-full btn-accent"
           @click="addBuff"
