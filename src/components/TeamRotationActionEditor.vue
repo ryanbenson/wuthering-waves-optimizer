@@ -75,7 +75,10 @@
           :main-echo-def="definitionsForSlot?.[action.slot]?.mainEchoDef ?? null"
           :team-buff-defs="definitionsForSlot?.[action.slot]?.teamBuffs ?? []"
           :resonance-chain-defs="definitionsForSlot?.[action.slot]?.resonanceChains ?? []"
-          @update:model-value="onAdvancedConfigUpdate" />
+          :range-actions="rangeActions"
+          :action-id="action.id"
+          @update:model-value="onAdvancedConfigUpdate"
+          @bulk-apply="onBulkApply" />
       </div>
     </div>
   </div>
@@ -85,8 +88,13 @@
 import { computed, ref } from "vue";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
+import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import { getCharacterRosterDisplayName } from "../characters/characters";
-import type { TeamRotationAction, TeamRotationAdvancedConfig } from "../calculator/teamRotation";
+import type {
+  AdvancedConfigCategory,
+  TeamRotationAction,
+  TeamRotationAdvancedConfig,
+} from "../calculator/teamRotation";
 
 const props = defineProps<{
   action: TeamRotationAction & Record<string, unknown>;
@@ -97,11 +105,13 @@ const props = defineProps<{
   mode?: "basic" | "advanced";
   definitionsForSlot?: Record<number, Record<string, any> | null>;
   previousAction?: (TeamRotationAction & Record<string, unknown>) | null;
+  rangeActions?: DurationRangeAction[];
 }>();
 
 const emit = defineEmits<{
   update: [payload: Record<string, unknown>];
   remove: [id: string];
+  "bulk-apply": [payload: { category: AdvancedConfigCategory; key: string | null; override: AdvancedBuffOverride; actionIds: string[] }];
 }>();
 
 const showAdvancedBuffs = ref(false);
@@ -137,6 +147,15 @@ function onActionUpdate(payload: Record<string, unknown>) {
 
 function onAdvancedConfigUpdate(value: TeamRotationAdvancedConfig) {
   emit("update", { ...props.action, advancedConfig: value });
+}
+
+function onBulkApply(payload: {
+  category: AdvancedConfigCategory;
+  key: string | null;
+  override: AdvancedBuffOverride;
+  actionIds: string[];
+}) {
+  emit("bulk-apply", payload);
 }
 
 function copyPreviousSettings() {
