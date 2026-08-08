@@ -150,4 +150,29 @@ describe("buildCharacterCalculationContext", () => {
     // ATK at refinement 1, with no stored weaponPassives config needed.
     expect(result.weaponData.weaponPassiveStats.ATK).toBeCloseTo(0.04);
   });
+
+  it("attaches a display name to weapon-passive and echo-set-passive definitions, which don't carry their own", async () => {
+    // passiveData/set-passive entries only have a `details` description, not
+    // a `name` — Team Rotations' advanced buff editor needs a title to show
+    // alongside it, so buildCharacterCalculationContext attaches the
+    // weapon's/set's own name to each entry.
+    const characters = {
+      Calcharo: {
+        weapon: "TrainingBroadblade",
+        weapons: { TrainingBroadblade: { weaponLevel: "70", refinement: "1" } },
+        echoSetBonus: { setBonusOne: "Freezing Frost 2 Set" },
+      },
+    };
+    const result = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+
+    expect(result.definitions.weaponPassives.length).toBeGreaterThan(0);
+    for (const def of result.definitions.weaponPassives) {
+      expect(def.name).toBeTruthy();
+    }
+
+    expect(result.definitions.echoSetPassivesOne.length).toBeGreaterThan(0);
+    for (const def of result.definitions.echoSetPassivesOne) {
+      expect(def.name).toBe("Freezing Frost");
+    }
+  });
 });

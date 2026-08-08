@@ -7,7 +7,10 @@
       :disabled="alwaysEnabled"
       :data-test-advanced-buff-toggle="dataTestKey"
       @change="onToggle(($event.target as HTMLInputElement).checked)" />
-    <span class="flex-1 text-xs opacity-90" v-html="details"></span>
+    <span class="flex-1 min-w-0">
+      <span v-if="title" class="block text-xs font-semibold">{{ title }}</span>
+      <span class="block text-xs opacity-90" v-html="details"></span>
+    </span>
     <input
       v-if="hasStacks"
       type="number"
@@ -32,6 +35,7 @@ export interface AdvancedBuffOverride {
 const props = withDefaults(
   defineProps<{
     dataTestKey: string;
+    title?: string | null;
     details: string;
     hasStacks?: boolean;
     minStacks?: number;
@@ -40,6 +44,7 @@ const props = withDefaults(
     modelValue?: AdvancedBuffOverride;
   }>(),
   {
+    title: null,
     hasStacks: false,
     minStacks: 0,
     maxStacks: 0,

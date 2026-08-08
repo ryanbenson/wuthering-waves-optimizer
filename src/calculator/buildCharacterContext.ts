@@ -123,6 +123,10 @@ function resolveSetBonusStats(
   return aggregateEchoSetPassiveStats(resolved);
 }
 
+function namePassivesWithSet(setBonusDef: { name?: string; passives?: any[] } | null | undefined): any[] {
+  return (setBonusDef?.passives ?? []).map((passive) => ({ ...passive, name: setBonusDef?.name }));
+}
+
 /**
  * Builds a full calculation context for a single character directly from
  * stored build data (the character store's `characters[id]` record) —
@@ -169,7 +173,14 @@ export async function buildCharacterCalculationContext(
   if (weaponKey) {
     const chosenWeapon = await getWeaponByName(weaponType, weaponKey);
     if (chosenWeapon) {
-      weaponPassiveDefs = (chosenWeapon.info?.passiveData ?? []) as any[];
+      // passiveData entries don't carry their own display name — the
+      // weapon's single passiveName (e.g. "Wallbreaker") applies to all of
+      // them, so attach it for UIs (like Team Rotations' advanced buff
+      // editor) that need a title alongside each passive's description.
+      weaponPassiveDefs = ((chosenWeapon.info?.passiveData ?? []) as any[]).map((passive) => ({
+        ...passive,
+        name: chosenWeapon.info?.passiveName,
+      }));
       const weaponLevel =
         characterData.weapons?.[weaponKey]?.weaponLevel ?? chosenWeapon.info?.maxLevel ?? "90";
       const refinement = characterData.weapons?.[weaponKey]?.refinement ?? "1";
@@ -362,9 +373,13 @@ export async function buildCharacterCalculationContext(
       buffs: chosenChar?.buffs ?? [],
       resonanceChains: chosenChar?.resonanceChains ?? [],
       weaponPassives: weaponPassiveDefs,
-      echoSetPassivesOnePiece: setBonusOnePieceDef?.passives ?? [],
-      echoSetPassivesOne: setBonusOneDef?.passives ?? [],
-      echoSetPassivesTwo: setBonusTwoDef?.passives ?? [],
+      // Individual set-bonus passives don't carry their own display name —
+      // the parent set's name (e.g. "Freezing Frost") applies to all of
+      // them, so attach it for UIs that need a title alongside the
+      // description (same reasoning as weaponPassives above).
+      echoSetPassivesOnePiece: namePassivesWithSet(setBonusOnePieceDef),
+      echoSetPassivesOne: namePassivesWithSet(setBonusOneDef),
+      echoSetPassivesTwo: namePassivesWithSet(setBonusTwoDef),
       mainEchoDef,
       teamBuffs: teamBuffDefs,
     },
