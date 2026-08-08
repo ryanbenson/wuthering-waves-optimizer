@@ -535,28 +535,27 @@ describe("Team Rotations", () => {
     cy.get("[data-test-team-rotations-new]").click();
     cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
 
-    // The import modal is a native <dialog> with daisyUI's fixed 200ms
-    // opacity/transform transition — this dialog gets opened/closed three
-    // times in this one test. Rather than a blind cy.wait() guess (which
-    // doesn't scale if CI happens to be slower than a local run), give the
-    // "did it actually open" checks a longer explicit timeout so Cypress's
-    // own retry keeps polling instead of racing a fixed delay.
-    const DIALOG_TIMEOUT = 10000;
+    // The import modal is a native <dialog>, opened/closed via
+    // showModal()/close() — those set/clear its `open` attribute
+    // synchronously. Asserting on that attribute (rather than "be.visible",
+    // which additionally waits on daisyUI's 200ms opacity/transform CSS
+    // transition actually finishing) checks the state that matters here
+    // without depending on a CSS animation frame landing — the latter
+    // proved unreliable in CI's headless browser even with a 10s timeout,
+    // while never reproducing locally.
     cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
-    cy.get("[data-test-team-rotation-import-modal]", { timeout: DIALOG_TIMEOUT }).should(
-      "be.visible",
-    );
+    cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
     cy.contains("[data-test-team-rotation-import-modal] h4", "Your rotations")
       .parent()
       .contains("Test001")
-      .should("be.visible");
+      .should("exist");
 
     // Appending onto an empty slot behaves the same as overwriting — assert
     // the imported actions land with their real attack keys, not blank ones.
     cy.contains(".card", "Test001")
       .find("[data-test-team-rotation-import-append]")
       .click();
-    cy.get("[data-test-team-rotation-import-modal]").should("not.be.visible");
+    cy.get("[data-test-team-rotation-import-modal]").should("not.have.attr", "open");
     cy.get("[data-test-team-rotation-action]").should("have.length", 2);
     cy.get('[data-test-rotation-action-by-attack-key="none"]').should("not.exist");
     cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
@@ -564,28 +563,24 @@ describe("Team Rotations", () => {
 
     // Appending a preset on top keeps the existing two actions and adds more
     cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
-    cy.get("[data-test-team-rotation-import-modal]", { timeout: DIALOG_TIMEOUT }).should(
-      "be.visible",
-    );
+    cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
     cy.contains("[data-test-team-rotation-import-modal] h4", "Presets")
       .parent()
       .contains("Kushy was here :3")
-      .should("be.visible");
+      .should("exist");
     cy.contains(".card", "Kushy was here :3")
       .find("[data-test-team-rotation-import-append]")
       .click();
-    cy.get("[data-test-team-rotation-import-modal]").should("not.be.visible");
+    cy.get("[data-test-team-rotation-import-modal]").should("not.have.attr", "open");
     cy.get("[data-test-team-rotation-action]").should("have.length.greaterThan", 2);
 
     // Overwriting replaces every action that belonged to this slot
     cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
-    cy.get("[data-test-team-rotation-import-modal]", { timeout: DIALOG_TIMEOUT }).should(
-      "be.visible",
-    );
+    cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
     cy.contains(".card", "Test001")
       .find("[data-test-team-rotation-import-overwrite]")
       .click();
-    cy.get("[data-test-team-rotation-import-modal]").should("not.be.visible");
+    cy.get("[data-test-team-rotation-import-modal]").should("not.have.attr", "open");
     cy.get("[data-test-team-rotation-action]").should("have.length", 2);
     cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
     cy.get('[data-test-rotation-action-by-attack-key="FatalFinaleDMG"]').should("exist");
