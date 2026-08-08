@@ -62,6 +62,12 @@ describe("Calculator Rotations", () => {
       `[data-test-rotation-action-skill-input="none"]`,
       "FatalFinaleDMG",
     );
+    // Manual buffs live behind "Configure Stats" now, separate from the
+    // "choose attack" edit form that clicking the row opens
+    cy.get(`[data-test-rotation-action-skill-input="FatalFinaleDMG"]`)
+      .closest(".rotation__action")
+      .find("[data-test-rotation-action-configure-stats]")
+      .click();
     // add a buff to the second action
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).should("be.visible");
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).click();

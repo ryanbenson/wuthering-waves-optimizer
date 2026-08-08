@@ -56,14 +56,19 @@
           <span>{{ buffsCount }}</span>
         </div>
         <button
-          class="rotation__action--remove ml-auto"
-          title="Remove action"
+          type="button"
+          class="btn btn-xs"
+          data-test-rotation-action-configure-stats
+          @click.stop="showManualBuffs = !showManualBuffs">
+          {{ showManualBuffs ? "Hide" : "Configure" }} Stats
+        </button>
+        <slot name="extra-buttons"></slot>
+        <button
+          type="button"
+          class="btn btn-xs"
+          data-test-rotation-action-remove
           @click.stop="removeAction">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-            <path
-              d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
-              fill="#FFFFFF" />
-          </svg>
+          Delete
         </button>
       </div>
     </div>
@@ -154,6 +159,8 @@
           </div>
         </div>
       </div>
+    </div>
+    <div v-if="showManualBuffs" class="rotation__action__stats" @click.stop>
       <div class="edit__buffs">
         <div class="edit__buffs__list">
           <CalculatorRotationActionBuff
@@ -215,6 +222,7 @@
         </div>
       </div>
     </div>
+    <slot name="extra-panel"></slot>
   </div>
 </template>
 
@@ -329,6 +337,7 @@ const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 
 const isEditing = ref(false);
+const showManualBuffs = ref(false);
 const actionKeyValue = ref<string | null>(null);
 const actionSkillType = ref<string | null>(null);
 const sequence = ref(0);
@@ -784,7 +793,8 @@ onMounted(() => {
     fill: oklch(var(--wa));
   }
 }
-.rotation__action__edit {
+.rotation__action__edit,
+.rotation__action__stats {
   cursor: default;
 }
 .rotation__action {
@@ -856,25 +866,6 @@ onMounted(() => {
   display: flex;
   gap: 0.5rem;
 }
-.rotation__action--remove {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0.25rem;
-  border-radius: 9999px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.7;
-  &:hover {
-    opacity: 1;
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-  svg {
-    width: 1rem;
-    height: 1rem;
-  }
-}
 .edit__buffs__list {
   display: flex;
   flex-direction: column;
@@ -884,8 +875,7 @@ onMounted(() => {
   opacity: 0.5;
 }
 html[data-theme="light"] {
-  .buffsCount,
-  .rotation__action--remove {
+  .buffsCount {
     svg {
       filter: invert(100%);
     }

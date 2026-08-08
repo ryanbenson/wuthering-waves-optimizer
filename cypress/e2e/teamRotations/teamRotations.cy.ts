@@ -102,10 +102,10 @@ describe("Team Rotations", () => {
       .should("have.class", "border-primary");
     // Remove that throwaway third (still-unconfigured) action so it doesn't
     // affect the damage totals asserted below
-    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
     cy.get('[data-test-rotation-action-by-attack-key="none"]')
       .first()
-      .find(".rotation__action--remove")
+      .closest("[data-test-team-rotation-action]")
+      .find("[data-test-rotation-action-remove]")
       .click({ force: true });
 
     // Set a rotation duration
@@ -282,8 +282,11 @@ describe("Team Rotations", () => {
       });
 
     // A second action can copy the first action's advanced buff config
-    // instead of configuring everything from scratch
+    // instead of configuring everything from scratch — "Copy previous
+    // action settings" lives inside the "Configure Buffs" panel now, since
+    // it acts on that panel's own data
     cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get("[data-test-team-rotation-action-configure-buffs]").eq(1).click();
     cy.get("[data-test-team-rotation-action-copy-previous]").should("exist").click();
 
     // Clicking a damage row swaps the same slideout to the attack breakdown
