@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   calcTeamRotationDamage,
   calcRotationDps,
+  buildAdvancedConfigSnapshot,
   type TeamRotationAction,
 } from "../../src/calculator/teamRotation";
 import { buildCharacterCalculationContext } from "../../src/calculator/buildCharacterContext";
@@ -97,6 +98,64 @@ describe("calcTeamRotationDamage", () => {
     expect(result.total).toEqual({ normalDamage: 0, avgDamage: 0, critDamage: 0, healing: 0, shield: 0 });
   });
 
+  it("advanced mode applies a per-action buff override on top of the character's own config", async () => {
+    const plainAction: TeamRotationAction = {
+      id: "action-1",
+      slot: 0,
+      order: 0,
+      type: "basic",
+      key: "Part1Damage",
+      count: 1,
+    };
+    const buffedAction: TeamRotationAction = {
+      id: "action-2",
+      slot: 0,
+      order: 1,
+      type: "basic",
+      key: "Part1Damage",
+      count: 1,
+      // Calcharo's StatBonusATK1 (+ATK%) is off by default (characters =
+      // { Calcharo: {} }) — this action alone should get the boost.
+      advancedConfig: { buffs: { StatBonusATK1: { isEnabled: true } } },
+    };
+
+    const result = await calcTeamRotationDamage(
+      {
+        characterIds: ["Calcharo", null, null],
+        actions: [plainAction, buffedAction],
+        duration: 10,
+        mode: "advanced",
+      },
+      characters,
+      enemyConfig,
+    );
+
+    expect(result.actionResults).toHaveLength(2);
+    const plainResult = result.actionResults.find((r) => r.order === 0)!;
+    const buffedResult = result.actionResults.find((r) => r.order === 1)!;
+    expect(buffedResult.attack.damage.totalDamage).toBeGreaterThan(
+      plainResult.attack.damage.totalDamage,
+    );
+
+    // The character-level total is the sum of both actions, not just the
+    // buffed one and not just the plain one.
+    const expectedTotal =
+      plainResult.attack.damage.totalDamage + buffedResult.attack.damage.totalDamage;
+    expect(result.perCharacter.Calcharo.damageAggregation.normalDamage).toBeCloseTo(expectedTotal);
+
+    // The plain (non-advanced) action's damage matches what basic mode would
+    // have produced for the exact same action — advanced mode only changes
+    // the number when an override is actually present.
+    const basicModeResult = await calcTeamRotationDamage(
+      { characterIds: ["Calcharo", null, null], actions: [plainAction], duration: 10 },
+      characters,
+      enemyConfig,
+    );
+    expect(plainResult.attack.damage.totalDamage).toBeCloseTo(
+      basicModeResult.actionResults[0].attack.damage.totalDamage,
+    );
+  });
+
   it("skips disabled actions", async () => {
     const action: TeamRotationAction = {
       id: "action-1",
@@ -115,5 +174,78 @@ describe("calcTeamRotationDamage", () => {
     );
 
     expect(result.perCharacter).toEqual({});
+  });
+});
+
+describe("buildAdvancedConfigSnapshot", () => {
+  it("in 'current' mode, mirrors the character's real enabled state so advanced-mode checkboxes aren't misleadingly blank", async () => {
+    const characterData = { buffs: { StatBonusATK1: { isEnabled: true } } };
+    const built = await buildCharacterCalculationContext("Calcharo", { Calcharo: characterData }, enemyConfig);
+
+    const snapshot = buildAdvancedConfigSnapshot(characterData, built.definitions, "current");
+
+    expect(snapshot.buffs?.StatBonusATK1).toEqual({
+      isEnabled: true,
+      stacks: undefined,
+      baseAttrValue: undefined,
+    });
+    // A buff never touched on the character page defaults to disabled, same
+    // as the character store's own convention.
+    const anotherBuffKey = built.definitions.buffs.find((d: any) => d.key !== "StatBonusATK1")?.key;
+    expect(snapshot.buffs?.[anotherBuffKey]?.isEnabled).toBe(false);
+  });
+
+  it("in 'blank' mode, disables every known toggle regardless of the character's real config", async () => {
+    const characterData = { buffs: { StatBonusATK1: { isEnabled: true } } };
+    const built = await buildCharacterCalculationContext("Calcharo", { Calcharo: characterData }, enemyConfig);
+
+    const snapshot = buildAdvancedConfigSnapshot(characterData, built.definitions, "blank");
+
+    expect(snapshot.buffs?.StatBonusATK1).toEqual({ isEnabled: false });
+    for (const def of built.definitions.buffs) {
+      expect(snapshot.buffs?.[def.key]?.isEnabled).toBe(false);
+    }
+  });
+
+  it("feeding a 'current' snapshot back through applyAdvancedOverrides (via calcTeamRotationDamage) reproduces basic mode's damage exactly", async () => {
+    const characterData = { buffs: { StatBonusATK1: { isEnabled: true } } };
+    const characters = { Calcharo: characterData };
+    const built = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+    const snapshot = buildAdvancedConfigSnapshot(characterData, built.definitions, "current");
+
+    const action: TeamRotationAction = {
+      id: "action-1",
+      slot: 0,
+      order: 0,
+      type: "basic",
+      key: "Part1Damage",
+      count: 1,
+      advancedConfig: snapshot,
+    };
+
+    const [advancedResult, basicResult] = await Promise.all([
+      calcTeamRotationDamage(
+        { characterIds: ["Calcharo", null, null], actions: [action], duration: 10, mode: "advanced" },
+        characters,
+        enemyConfig,
+      ),
+      calcTeamRotationDamage(
+        { characterIds: ["Calcharo", null, null], actions: [{ ...action, advancedConfig: undefined }], duration: 10 },
+        characters,
+        enemyConfig,
+      ),
+    ]);
+
+    // Advanced mode's per-action summation coerces healing/shield through 0
+    // rather than preserving basic mode's `null` for "not applicable" — a
+    // harmless representational difference (both falsy, summed the same way
+    // everywhere they're consumed), so compare the damage numbers directly.
+    const advancedAgg = advancedResult.perCharacter.Calcharo.damageAggregation;
+    const basicAgg = basicResult.perCharacter.Calcharo.damageAggregation;
+    expect(advancedAgg.normalDamage).toBeCloseTo(basicAgg.normalDamage as number);
+    expect(advancedAgg.avgDamage).toBeCloseTo(basicAgg.avgDamage as number);
+    expect(advancedAgg.critDamage).toBeCloseTo(basicAgg.critDamage as number);
+    expect(advancedAgg.healing || 0).toBeCloseTo(basicAgg.healing || 0);
+    expect(advancedAgg.shield || 0).toBeCloseTo(basicAgg.shield || 0);
   });
 });

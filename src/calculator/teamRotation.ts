@@ -1,6 +1,30 @@
 import { resolveRotationActionToAttackData } from "./resolveRotationAction";
 import { calcDamages } from "./attacks";
-import { buildCharacterCalculationContext, type TeamEnemyConfig } from "./buildCharacterContext";
+import {
+  buildCharacterCalculationContext,
+  type CharacterCalculationContext,
+  type TeamEnemyConfig,
+} from "./buildCharacterContext";
+
+/**
+ * Per-toggle override used by Advanced mode's per-action buff editor.
+ * `stacks`/`baseAttrValue` are only meaningful for buffs whose definition
+ * has `hasStacks`/an `inputBase`-style config — harmless no-ops otherwise.
+ */
+export interface TeamRotationBuffOverride {
+  isEnabled?: boolean;
+  stacks?: number;
+  baseAttrValue?: number;
+}
+
+export interface TeamRotationAdvancedConfig {
+  buffs?: Record<string, TeamRotationBuffOverride>;
+  weaponPassives?: Record<string, TeamRotationBuffOverride>;
+  echoSetPassives?: Record<string, TeamRotationBuffOverride>;
+  mainEchoBuff?: TeamRotationBuffOverride;
+  teamBuffs?: Record<string, TeamRotationBuffOverride>;
+  resonanceChains?: Record<string, TeamRotationBuffOverride>;
+}
 
 export interface TeamRotationAction {
   id: string;
@@ -18,6 +42,8 @@ export interface TeamRotationAction {
   negativeStatusStacks?: number;
   electroRageStacks?: number;
   isDisabled?: boolean;
+  /** Only consulted when the team's mode is "advanced". */
+  advancedConfig?: TeamRotationAdvancedConfig;
 }
 
 export interface TeamRotationInput {
@@ -25,6 +51,10 @@ export interface TeamRotationInput {
   characterIds: Array<string | null>;
   actions: TeamRotationAction[];
   duration: number | string | null;
+  /** "basic" (default) uses one shared context per character, exactly like
+   * today. "advanced" builds a fresh, independently-overridable context per
+   * action from that action's `advancedConfig`. */
+  mode?: "basic" | "advanced";
 }
 
 export interface DamageAggregation {
@@ -65,6 +95,119 @@ export function calcRotationDps(
     normal: (damageAggregation.normalDamage as number) / durationNum,
     avg: (damageAggregation.avgDamage as number) / durationNum,
     crit: (damageAggregation.critDamage as number) / durationNum,
+  };
+}
+
+function addDamageAggregation(a: DamageAggregation, b: DamageAggregation): DamageAggregation {
+  return {
+    normalDamage: (a.normalDamage ?? 0) + (b.normalDamage ?? 0),
+    avgDamage: (a.avgDamage ?? 0) + (b.avgDamage ?? 0),
+    critDamage: (a.critDamage ?? 0) + (b.critDamage ?? 0),
+    healing: (a.healing ?? 0) + (b.healing ?? 0),
+    shield: (a.shield ?? 0) + (b.shield ?? 0),
+  };
+}
+
+/**
+ * Overlays an advanced-mode per-action buff override onto a plain
+ * `key -> {isEnabled, stacks}` config object (self buffs, weapon passives,
+ * echo set passives, team buffs, resonance chains all share this shape).
+ * Keys not present in `overrides` fall through to the character's own
+ * stored config unchanged.
+ */
+function mergeBuffConfig(
+  base: Record<string, TeamRotationBuffOverride> | undefined,
+  overrides: Record<string, TeamRotationBuffOverride> | undefined,
+): Record<string, TeamRotationBuffOverride> {
+  if (!overrides) return base ?? {};
+  const merged: Record<string, TeamRotationBuffOverride> = { ...(base ?? {}) };
+  for (const [key, value] of Object.entries(overrides)) {
+    merged[key] = { ...(merged[key] ?? {}), ...value };
+  }
+  return merged;
+}
+
+/**
+ * Clones a character's stored build data with an advanced-mode action's
+ * overrides applied, so the existing (unmodified) buildCharacterContext.ts
+ * pipeline can be reused as-is for a single action instead of the whole
+ * character — no per-action-aware branching needed inside the pure
+ * calculator itself.
+ */
+function applyAdvancedOverrides(
+  characterData: Record<string, any>,
+  overrides: TeamRotationAdvancedConfig | undefined,
+): Record<string, any> {
+  if (!overrides) return characterData;
+  return {
+    ...characterData,
+    buffs: mergeBuffConfig(characterData.buffs, overrides.buffs),
+    weaponPassives: mergeBuffConfig(characterData.weaponPassives, overrides.weaponPassives),
+    echoSetPassives: mergeBuffConfig(characterData.echoSetPassives, overrides.echoSetPassives),
+    mainEcho: overrides.mainEchoBuff
+      ? { ...(characterData.mainEcho ?? {}), ...overrides.mainEchoBuff }
+      : characterData.mainEcho,
+    teamBuffs: {
+      ...(characterData.teamBuffs ?? {}),
+      buffs: mergeBuffConfig(characterData.teamBuffs?.buffs, overrides.teamBuffs),
+    },
+    resonanceChains: mergeBuffConfig(characterData.resonanceChains, overrides.resonanceChains),
+  };
+}
+
+/**
+ * Builds a full `advancedConfig` for one action, either as a snapshot of the
+ * character's *current* real buff/passive/resonance-chain state (so the
+ * Advanced-mode checkboxes reflect reality immediately instead of appearing
+ * all off with no visible explanation) or fully disabled (a deliberate
+ * blank slate the user builds up from scratch). Used when a team first
+ * switches from Basic to Advanced mode, and as the default for any action
+ * added while already in Advanced mode.
+ */
+export function buildAdvancedConfigSnapshot(
+  characterData: Record<string, any>,
+  definitions: CharacterCalculationContext["definitions"] | null | undefined,
+  mode: "current" | "blank",
+): TeamRotationAdvancedConfig {
+  const snapshotCategory = (
+    defs: Array<{ key: string; hasStacks?: boolean }> | undefined,
+    currentConfig: Record<string, TeamRotationBuffOverride> | undefined,
+  ): Record<string, TeamRotationBuffOverride> => {
+    const out: Record<string, TeamRotationBuffOverride> = {};
+    for (const def of defs ?? []) {
+      out[def.key] =
+        mode === "blank"
+          ? { isEnabled: false }
+          : {
+              isEnabled: currentConfig?.[def.key]?.isEnabled ?? false,
+              stacks: currentConfig?.[def.key]?.stacks,
+              baseAttrValue: currentConfig?.[def.key]?.baseAttrValue,
+            };
+    }
+    return out;
+  };
+
+  const mainEchoConfig = characterData?.mainEcho;
+  const mainEchoBuff: TeamRotationBuffOverride | undefined = definitions?.mainEchoDef
+    ? mode === "blank"
+      ? { isEnabled: false }
+      : { isEnabled: mainEchoConfig?.isEnabled ?? false, stacks: mainEchoConfig?.stacks }
+    : undefined;
+
+  return {
+    buffs: snapshotCategory(definitions?.buffs, characterData?.buffs),
+    weaponPassives: snapshotCategory(definitions?.weaponPassives, characterData?.weaponPassives),
+    echoSetPassives: snapshotCategory(
+      [
+        ...(definitions?.echoSetPassivesOnePiece ?? []),
+        ...(definitions?.echoSetPassivesOne ?? []),
+        ...(definitions?.echoSetPassivesTwo ?? []),
+      ],
+      characterData?.echoSetPassives,
+    ),
+    mainEchoBuff,
+    teamBuffs: snapshotCategory(definitions?.teamBuffs, characterData?.teamBuffs?.buffs),
+    resonanceChains: snapshotCategory(definitions?.resonanceChains, characterData?.resonanceChains),
   };
 }
 
@@ -115,48 +258,97 @@ export async function calcTeamRotationDamage(
       continue;
     }
 
-    const built = await buildCharacterCalculationContext(characterId, characters, enemyConfig, inventoryEchoes);
+    let slotDamageAggregation: DamageAggregation = { ...EMPTY_DAMAGE_AGGREGATION };
+    let slotAttacks: any[] = [];
 
-    const resolvedPairs = slotActions
-      .map((action) => ({
-        action,
-        attack: resolveRotationActionToAttackData(action, built.chosenChar, built.characterLevel),
-      }))
-      .filter((pair): pair is { action: TeamRotationAction; attack: any } => pair.attack != null);
+    if (team.mode === "advanced") {
+      // Advanced mode: each action can override the character's buffs, so
+      // every action gets its own freshly-built context and its own
+      // single-attack calcDamages call, then the results are summed.
+      for (const action of slotActions) {
+        const overriddenCharacters = {
+          ...characters,
+          [characterId]: applyAdvancedOverrides(characters?.[characterId] ?? {}, action.advancedConfig),
+        };
+        const built = await buildCharacterCalculationContext(
+          characterId,
+          overriddenCharacters,
+          enemyConfig,
+          inventoryEchoes,
+        );
+        const attack = resolveRotationActionToAttackData(action, built.chosenChar, built.characterLevel);
+        if (attack == null) continue;
 
-    built.context.rotationsList = [
-      {
-        id: `slot-${slot}`,
-        name: team.name ?? "Team Rotation",
-        duration: team.duration,
-        order: 0,
-        attacks: resolvedPairs.map((pair) => pair.attack),
-      },
-    ];
+        built.context.rotationsList = [
+          {
+            id: `slot-${slot}-action-${action.id}`,
+            name: team.name ?? "Team Rotation",
+            duration: team.duration,
+            order: 0,
+            attacks: [attack],
+          },
+        ];
+        const damageData = calcDamages(built.context);
+        const processedAttacks: any[] = damageData?.rotations?.[0]?.attacks ?? [];
+        const damageAggregation: DamageAggregation =
+          damageData?.rotations?.[0]?.damageAggregation ?? EMPTY_DAMAGE_AGGREGATION;
 
-    const damageData = calcDamages(built.context);
-    // processAttacks preserves array order, so the Nth processed attack
-    // corresponds to the Nth entry in resolvedPairs.
-    const processedAttacks: any[] = damageData?.rotations?.[0]?.attacks ?? [];
-    const damageAggregation: DamageAggregation =
-      damageData?.rotations?.[0]?.damageAggregation ?? EMPTY_DAMAGE_AGGREGATION;
+        slotAttacks = slotAttacks.concat(processedAttacks);
+        slotDamageAggregation = addDamageAggregation(slotDamageAggregation, damageAggregation);
+        processedAttacks.forEach((processedAttack) => {
+          actionResults.push({
+            characterId,
+            slot: slot as 0 | 1 | 2,
+            order: action.order ?? 0,
+            attack: processedAttack,
+          });
+        });
+      }
+    } else {
+      // Basic mode (default): one shared context/calcDamages call for all
+      // of this character's actions, exactly like before Advanced mode.
+      const built = await buildCharacterCalculationContext(characterId, characters, enemyConfig, inventoryEchoes);
 
-    perCharacter[characterId] = { damageAggregation, attacks: processedAttacks };
+      const resolvedPairs = slotActions
+        .map((action) => ({
+          action,
+          attack: resolveRotationActionToAttackData(action, built.chosenChar, built.characterLevel),
+        }))
+        .filter((pair): pair is { action: TeamRotationAction; attack: any } => pair.attack != null);
 
-    processedAttacks.forEach((attack, index) => {
-      actionResults.push({
-        characterId,
-        slot: slot as 0 | 1 | 2,
-        order: resolvedPairs[index]?.action.order ?? 0,
-        attack,
+      built.context.rotationsList = [
+        {
+          id: `slot-${slot}`,
+          name: team.name ?? "Team Rotation",
+          duration: team.duration,
+          order: 0,
+          attacks: resolvedPairs.map((pair) => pair.attack),
+        },
+      ];
+
+      const damageData = calcDamages(built.context);
+      // processAttacks preserves array order, so the Nth processed attack
+      // corresponds to the Nth entry in resolvedPairs.
+      const processedAttacks: any[] = damageData?.rotations?.[0]?.attacks ?? [];
+      slotDamageAggregation = damageData?.rotations?.[0]?.damageAggregation ?? EMPTY_DAMAGE_AGGREGATION;
+      slotAttacks = processedAttacks;
+
+      processedAttacks.forEach((attack, index) => {
+        actionResults.push({
+          characterId,
+          slot: slot as 0 | 1 | 2,
+          order: resolvedPairs[index]?.action.order ?? 0,
+          attack,
+        });
       });
-    });
+    }
 
-    total.normalDamage = (total.normalDamage ?? 0) + (damageAggregation.normalDamage ?? 0);
-    total.avgDamage = (total.avgDamage ?? 0) + (damageAggregation.avgDamage ?? 0);
-    total.critDamage = (total.critDamage ?? 0) + (damageAggregation.critDamage ?? 0);
-    total.healing = (total.healing ?? 0) + (damageAggregation.healing ?? 0);
-    total.shield = (total.shield ?? 0) + (damageAggregation.shield ?? 0);
+    perCharacter[characterId] = { damageAggregation: slotDamageAggregation, attacks: slotAttacks };
+    total.normalDamage = (total.normalDamage ?? 0) + (slotDamageAggregation.normalDamage ?? 0);
+    total.avgDamage = (total.avgDamage ?? 0) + (slotDamageAggregation.avgDamage ?? 0);
+    total.critDamage = (total.critDamage ?? 0) + (slotDamageAggregation.critDamage ?? 0);
+    total.healing = (total.healing ?? 0) + (slotDamageAggregation.healing ?? 0);
+    total.shield = (total.shield ?? 0) + (slotDamageAggregation.shield ?? 0);
   }
 
   actionResults.sort((a, b) => a.order - b.order);

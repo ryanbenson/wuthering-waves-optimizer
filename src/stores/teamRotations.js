@@ -34,9 +34,16 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
         actions: [],
         duration: null,
         enemyConfig: defaultEnemyConfig(),
+        mode: "basic",
       };
       this.teams.push(team);
       return team;
+    },
+    setTeamMode(teamId, mode) {
+      const team = this.teams.find((t) => t.id === teamId);
+      if (team) {
+        team.mode = mode;
+      }
     },
     renameTeam(teamId, name) {
       const team = this.teams.find((t) => t.id === teamId);

@@ -2,10 +2,15 @@
   <div
     class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
     data-test-team-rotation-enemy-collapse>
-    <input type="checkbox" checked />
-    <h3 class="collapse-title text-xl" data-test-team-rotation-enemy-title>
-      Enemy Settings
-    </h3>
+    <input type="checkbox" v-model="isOpen" data-test-team-rotation-enemy-collapse-toggle />
+    <div class="collapse-title">
+      <h3 v-if="isOpen" class="text-xl" data-test-team-rotation-enemy-title>
+        Enemy Settings
+      </h3>
+      <p v-else class="text-sm opacity-70" data-test-team-rotation-enemy-summary>
+        {{ enemySummary }}
+      </p>
+    </div>
     <div class="collapse-content">
       <div
         class="card card-bordered shadow mb-6 overflow-hidden"
@@ -87,18 +92,55 @@
         </div>
       </div>
 
-      <label class="form-control max-w-xs mt-2">
-        <span class="label-text">Enemy Type</span>
-        <select
-          class="select select-bordered select-sm"
-          v-model="enemyType"
-          data-test-team-rotation-enemy-type>
-          <option>Common</option>
-          <option>Elite</option>
-          <option>Overlord</option>
-          <option>Calamity</option>
-        </select>
-      </label>
+      <div class="data-input--talents mt-8" data-test-team-rotation-enemy-type>
+        <div class="flex flex-col pb-7 relative">
+          <label class="talent__label">
+            Enemy Type <span class="text-primary">{{ enemyType }}</span>
+          </label>
+          <div class="flex gap-4 mt-4">
+            <label class="label cursor-pointer gap-2">
+              <input
+                v-model="enemyType"
+                type="radio"
+                :name="enemyTypeRadioName"
+                class="radio checked:bg-primary"
+                value="Common"
+                data-test-team-rotation-enemy-type-option="Common" />
+              <span class="label-text">Common</span>
+            </label>
+            <label class="label cursor-pointer gap-2">
+              <input
+                v-model="enemyType"
+                type="radio"
+                :name="enemyTypeRadioName"
+                class="radio checked:bg-primary"
+                value="Elite"
+                data-test-team-rotation-enemy-type-option="Elite" />
+              <span class="label-text">Elite</span>
+            </label>
+            <label class="label cursor-pointer gap-2">
+              <input
+                v-model="enemyType"
+                type="radio"
+                :name="enemyTypeRadioName"
+                class="radio checked:bg-primary"
+                value="Overlord"
+                data-test-team-rotation-enemy-type-option="Overlord" />
+              <span class="label-text">Overlord</span>
+            </label>
+            <label class="label cursor-pointer gap-2">
+              <input
+                v-model="enemyType"
+                type="radio"
+                :name="enemyTypeRadioName"
+                class="radio checked:bg-primary"
+                value="Calamity"
+                data-test-team-rotation-enemy-type-option="Calamity" />
+              <span class="label-text">Calamity</span>
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -134,6 +176,15 @@ const enemyBrowserRef = ref<{
   triggerCloseModal: () => void;
 } | null>(null);
 
+// Collapsed by default; the collapse-title area shows a small-text summary
+// of the current settings while closed instead of a plain "Enemy Settings"
+// title, since the settings are still worth surfacing at a glance.
+const isOpen = ref(false);
+
+// Radio groups need a unique `name` per mounted instance so multiple teams'
+// enemy settings (or this panel remounting) don't cross-select each other.
+const enemyTypeRadioName = `team-rotation-enemy-type-${Math.random().toString(36).slice(2)}`;
+
 function patch(next: Partial<TeamEnemySettingsValue>) {
   emit("update:modelValue", { ...props.modelValue, ...next });
 }
@@ -162,6 +213,17 @@ const selectedEnemyEntry = computed((): Enemy | null => {
   const k = enemyBrowserKey.value;
   if (!k) return null;
   return enemiesCatalog[k] ?? null;
+});
+
+const enemySummary = computed(() => {
+  const parts: string[] = [];
+  if (selectedEnemyEntry.value?.name) {
+    parts.push(selectedEnemyEntry.value.name);
+  }
+  parts.push(`Lv ${enemyLevel.value}`);
+  parts.push(`${Math.round(enemyResist.value * 100)}% Resist`);
+  parts.push(enemyType.value);
+  return parts.join(" · ");
 });
 
 function openEnemyBrowser() {
