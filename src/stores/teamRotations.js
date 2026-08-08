@@ -39,6 +39,25 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
       this.teams.push(team);
       return team;
     },
+    /**
+     * Creates a new team from parsed export/preset data (see
+     * `src/teamRotations/exportImport.ts`'s `parseTeamImportPayload`) —
+     * always with a fresh id, so an imported team never collides with (or
+     * overwrites) an existing one.
+     */
+    importTeam(teamData) {
+      const team = {
+        id: randomString(12),
+        name: teamData.name || "Imported Team",
+        characterIds: [0, 1, 2].map((i) => teamData.characterIds?.[i] ?? null),
+        actions: (teamData.actions ?? []).map((action) => ({ ...action, id: randomString(12) })),
+        duration: teamData.duration ?? null,
+        enemyConfig: { ...defaultEnemyConfig(), ...(teamData.enemyConfig ?? {}) },
+        mode: teamData.mode === "advanced" ? "advanced" : "basic",
+      };
+      this.teams.push(team);
+      return team;
+    },
     setTeamMode(teamId, mode) {
       const team = this.teams.find((t) => t.id === teamId);
       if (team) {

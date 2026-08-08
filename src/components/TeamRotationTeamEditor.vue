@@ -19,6 +19,24 @@
               data-test-team-rotation-duration
               @input="updateDuration" />
           </label>
+          <div class="join ml-auto">
+            <button
+              type="button"
+              class="btn btn-sm btn-ghost join-item"
+              title="Copy this team's config to your clipboard"
+              data-test-team-rotation-export-clipboard
+              @click="exportTeamToClipboard">
+              Copy Team
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-ghost join-item"
+              title="Download this team's config as a .json file"
+              data-test-team-rotation-export-download
+              @click="exportTeamToFile">
+              Download Team
+            </button>
+          </div>
         </div>
 
         <div class="flex items-center gap-2" data-test-team-rotation-mode>
@@ -256,6 +274,7 @@ import { useTeamRotationsStore } from "../stores/teamRotations";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useToast } from "../composables/useToast";
+import { buildTeamExportPayload, generateTeamExportFilename } from "../teamRotations/exportImport";
 import { getCharacterRosterDisplayName, getCharactersAvailable } from "../characters/characters";
 import {
   buildCharacterCalculationContext,
@@ -418,6 +437,30 @@ function updateDuration() {
 
 function updateEnemyConfig(value: TeamEnemySettingsValue) {
   teamRotationsStore.setTeamEnemyConfig(props.teamId, value);
+}
+
+function exportTeamToClipboard() {
+  if (!team.value) return;
+  const payload = buildTeamExportPayload(team.value);
+  void navigator.clipboard.writeText(JSON.stringify(payload)).then(
+    () => showToast(`"${team.value!.name}" has been copied to your clipboard.`, "success"),
+    () => showToast("Couldn't copy to your clipboard.", "error"),
+  );
+}
+
+function exportTeamToFile() {
+  if (!team.value) return;
+  const payload = buildTeamExportPayload(team.value);
+  const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = generateTeamExportFilename(team.value.name);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`"${team.value.name}" has been downloaded.`, "success");
 }
 
 function addAction() {

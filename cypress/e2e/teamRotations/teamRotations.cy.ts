@@ -302,3 +302,105 @@ describe("Team Rotations", () => {
       });
   });
 });
+
+describe("Team Rotations export/import", () => {
+  beforeEach(() => {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        enableTeamRotationsLab(win);
+        cy.stub(win.navigator.clipboard, "writeText").as("writeText").resolves();
+      },
+    });
+  });
+
+  it("exports a team's config to the clipboard and re-imports it as a separate team", () => {
+    cy.richSelect("[data-test-character-select]", "Carlotta");
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.get("[data-test-team-rotation-name]").clear().type("My Export Team");
+    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
+
+    cy.get("[data-test-team-rotation-export-clipboard]").click();
+    cy.get("@writeText").should("have.been.calledOnce");
+
+    cy.get("@writeText").then((stub: any) => {
+      const exported = stub.getCall(0).args[0] as string;
+      const parsed = JSON.parse(exported);
+      // Only the team's own config is exported — never the referenced
+      // characters' full builds (those stay reference-only, as documented).
+      expect(parsed.meta.type).to.equal("teamRotation");
+      expect(parsed.data.name).to.equal("My Export Team");
+      expect(parsed.data.characterIds[0]).to.equal("Carlotta");
+      expect(parsed.data.actions).to.have.length(1);
+      expect(parsed.data).not.to.have.property("weapon");
+
+      cy.get("[data-test-team-rotation-back]").click();
+      cy.get("[data-test-team-rotations-toggle-import]").click();
+      cy.get("[data-test-team-rotations-import-text]").type(exported, {
+        parseSpecialCharSequences: false,
+      });
+      cy.get("[data-test-team-rotations-import-text-button]").click();
+
+      // Lands directly in the newly-imported team's editor, matching it
+      cy.get("[data-test-team-rotation-editor]").should("be.visible");
+      cy.get("[data-test-team-rotation-name]").should("have.value", "My Export Team");
+      cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
+      cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
+
+      // The original team is untouched — import created a second, separate one
+      cy.get("[data-test-team-rotation-back]").click();
+      cy.get("[data-test-team-rotations-item]").should("have.length", 2);
+    });
+  });
+
+  it("imports a team from an uploaded .json file", () => {
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-toggle-import]").click();
+
+    const payload = JSON.stringify({
+      meta: { version: "1", source: "WutheringTools", type: "teamRotation" },
+      data: {
+        name: "From File",
+        characterIds: ["Carlotta", null, null],
+        actions: [],
+        duration: 10,
+        enemyConfig: { enemyLevel: 90, enemyResist: 0.1, enemyType: "Calamity" },
+        mode: "basic",
+      },
+    });
+    cy.get("[data-test-team-rotations-import-file]").selectFile(
+      {
+        contents: Cypress.Buffer.from(payload),
+        fileName: "from-file.json",
+        mimeType: "application/json",
+      },
+      { force: true },
+    );
+
+    cy.get("[data-test-team-rotation-editor]").should("be.visible");
+    cy.get("[data-test-team-rotation-name]").should("have.value", "From File");
+  });
+
+  it("shows a clear error and doesn't create a team for unrecognizable input", () => {
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-toggle-import]").click();
+    cy.get("[data-test-team-rotations-import-text]").type("not json at all");
+    cy.get("[data-test-team-rotations-import-text-button]").click();
+    cy.get("[data-test-team-rotations-item]").should("not.exist");
+  });
+
+  it("the download button doesn't error", () => {
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.get("[data-test-team-rotation-export-download]").click();
+  });
+
+  it("List Presets shows the empty state when no presets are defined yet", () => {
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-toggle-presets]").click();
+    cy.get("[data-test-team-rotations-presets]").should("contain.text", "No team presets");
+  });
+});
