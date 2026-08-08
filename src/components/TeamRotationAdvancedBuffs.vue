@@ -13,7 +13,10 @@
         :max-stacks="def.maxStacks"
         :always-enabled="def.alwaysEnabled"
         :model-value="modelValue.buffs?.[def.key]"
-        @update:model-value="(v) => updateCategory('buffs', def.key, v)" />
+        :range-actions="rangeActions"
+        :action-id="actionId"
+        @update:model-value="(v) => updateCategory('buffs', def.key, v)"
+        @bulk-apply="(payload) => onBulkApply('buffs', def.key, payload)" />
     </div>
 
     <div v-if="weaponPassiveDefs.length">
@@ -29,7 +32,10 @@
         :max-stacks="def.maxStacks"
         :always-enabled="def.alwaysEnabled"
         :model-value="modelValue.weaponPassives?.[def.key]"
-        @update:model-value="(v) => updateCategory('weaponPassives', def.key, v)" />
+        :range-actions="rangeActions"
+        :action-id="actionId"
+        @update:model-value="(v) => updateCategory('weaponPassives', def.key, v)"
+        @bulk-apply="(payload) => onBulkApply('weaponPassives', def.key, payload)" />
     </div>
 
     <div v-if="echoSetPassiveDefs.length">
@@ -45,7 +51,10 @@
         :max-stacks="def.maxStacks"
         :always-enabled="def.alwaysEnabled"
         :model-value="modelValue.echoSetPassives?.[def.key]"
-        @update:model-value="(v) => updateCategory('echoSetPassives', def.key, v)" />
+        :range-actions="rangeActions"
+        :action-id="actionId"
+        @update:model-value="(v) => updateCategory('echoSetPassives', def.key, v)"
+        @bulk-apply="(payload) => onBulkApply('echoSetPassives', def.key, payload)" />
     </div>
 
     <div v-if="mainEchoDef">
@@ -59,7 +68,10 @@
         :max-stacks="mainEchoDef.maxStacks"
         :always-enabled="mainEchoDef.alwaysEnabled"
         :model-value="modelValue.mainEchoBuff"
-        @update:model-value="updateMainEchoBuff" />
+        :range-actions="rangeActions"
+        :action-id="actionId"
+        @update:model-value="updateMainEchoBuff"
+        @bulk-apply="(payload) => onBulkApply('mainEchoBuff', null, payload)" />
     </div>
 
     <div v-if="teamBuffDefs.length">
@@ -75,7 +87,10 @@
         :max-stacks="def.maxStacks"
         :always-enabled="def.alwaysEnabled"
         :model-value="modelValue.teamBuffs?.[def.key]"
-        @update:model-value="(v) => updateCategory('teamBuffs', def.key, v)" />
+        :range-actions="rangeActions"
+        :action-id="actionId"
+        @update:model-value="(v) => updateCategory('teamBuffs', def.key, v)"
+        @bulk-apply="(payload) => onBulkApply('teamBuffs', def.key, payload)" />
     </div>
 
     <div v-if="resonanceChainDefs.length">
@@ -91,7 +106,10 @@
         :max-stacks="def.maxStacks"
         :always-enabled="def.alwaysEnabled"
         :model-value="modelValue.resonanceChains?.[def.key]"
-        @update:model-value="(v) => updateCategory('resonanceChains', def.key, v)" />
+        :range-actions="rangeActions"
+        :action-id="actionId"
+        @update:model-value="(v) => updateCategory('resonanceChains', def.key, v)"
+        @bulk-apply="(payload) => onBulkApply('resonanceChains', def.key, payload)" />
     </div>
 
     <p v-if="isEmpty" class="text-xs opacity-60">
@@ -104,8 +122,9 @@
 import { computed } from "vue";
 import TeamRotationAdvancedBuffRow, {
   type AdvancedBuffOverride,
+  type DurationRangeAction,
 } from "./TeamRotationAdvancedBuffRow.vue";
-import type { TeamRotationAdvancedConfig } from "../calculator/teamRotation";
+import type { AdvancedConfigCategory, TeamRotationAdvancedConfig } from "../calculator/teamRotation";
 
 type BuffCategory = "buffs" | "weaponPassives" | "echoSetPassives" | "teamBuffs" | "resonanceChains";
 
@@ -118,6 +137,8 @@ const props = withDefaults(
     mainEchoDef?: any | null;
     teamBuffDefs?: any[];
     resonanceChainDefs?: any[];
+    rangeActions?: DurationRangeAction[];
+    actionId?: string;
   }>(),
   {
     buffDefs: () => [],
@@ -126,11 +147,14 @@ const props = withDefaults(
     mainEchoDef: null,
     teamBuffDefs: () => [],
     resonanceChainDefs: () => [],
+    rangeActions: () => [],
+    actionId: undefined,
   },
 );
 
 const emit = defineEmits<{
   "update:modelValue": [value: TeamRotationAdvancedConfig];
+  "bulk-apply": [payload: { category: AdvancedConfigCategory; key: string | null; override: AdvancedBuffOverride; actionIds: string[] }];
 }>();
 
 const isEmpty = computed(
@@ -150,5 +174,13 @@ function updateCategory(category: BuffCategory, key: string, value: AdvancedBuff
 
 function updateMainEchoBuff(value: AdvancedBuffOverride) {
   emit("update:modelValue", { ...props.modelValue, mainEchoBuff: value });
+}
+
+function onBulkApply(
+  category: AdvancedConfigCategory,
+  key: string | null,
+  payload: { override: AdvancedBuffOverride; actionIds: string[] },
+) {
+  emit("bulk-apply", { category, key, override: payload.override, actionIds: payload.actionIds });
 }
 </script>

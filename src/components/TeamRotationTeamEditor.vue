@@ -1,6 +1,13 @@
 <template>
   <div v-if="team" data-test-team-rotation-editor>
-    <div class="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-6 items-start">
+    <TeamRotationSummaryHeader
+      :team-name="team.name"
+      :character-ids="team.characterIds"
+      :action-count="team.actions.length"
+      :duration="team.duration"
+      :result="result"
+      @view-damages="openDamages" />
+
     <div class="card bg-base-200 shadow-lg min-w-0">
       <div class="card-body gap-6">
         <div class="flex flex-wrap items-end gap-3">
@@ -108,12 +115,20 @@
                   <span>{{ displayPercentage(slotStats[slot]!.energyRegen) }}</span>
                 </div>
               </div>
-              <button
-                class="btn btn-outline btn-primary btn-xs w-full"
-                :data-test-team-rotation-configure-character="team.characterIds[slot]"
-                @click="configureCharacter(team.characterIds[slot]!)">
-                Configure Character
-              </button>
+              <div class="join w-full">
+                <button
+                  class="btn btn-outline btn-primary btn-xs join-item flex-1"
+                  :data-test-team-rotation-configure-character="team.characterIds[slot]"
+                  @click="configureCharacter(team.characterIds[slot]!)">
+                  Configure Character
+                </button>
+                <button
+                  class="btn btn-outline btn-xs join-item flex-1"
+                  :data-test-team-rotation-import-rotation-open="slot"
+                  @click="openImportDialog(slot)">
+                  Import Rotation
+                </button>
+              </div>
             </template>
             <template v-else>
               <span class="label-text mb-2 block">Character {{ slot + 1 }}</span>
@@ -156,8 +171,10 @@
               :mode="rotationMode"
               :definitions-for-slot="definitionsForSlot"
               :previous-action="previousActionByActionId[action.id] ?? null"
+              :range-actions="orderedActionRangeList"
               @update="handleActionUpdate"
-              @remove="handleActionRemove" />
+              @remove="handleActionRemove"
+              @bulk-apply="handleBulkApplyBuff" />
           </div>
           <button
             class="btn btn-primary btn-xs w-full mt-2"
@@ -170,41 +187,81 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-4">
-      <TeamRotationDamages :result="result" :duration="team.duration" @selected-attack="onSelectedAttack" />
-    </div>
-    </div>
+    <TeamRotationImportRotation
+      v-model:open="isImportDialogOpen"
+      :character-name="importDialogCharacterName"
+      :own-rotations="importDialogOwnRotations"
+      :presets="importDialogPresets"
+      @import="handleImportRotation" />
 
     <!-- A self-contained drawer, kept structurally separate from the page
     content above (mirroring HomeView.vue's own breakdown drawer): the real
     content must NOT live inside `.drawer-content`, since `.drawer-side` is
     position:fixed and doesn't participate in the drawer's own grid track
     sizing — nesting a large layout inside `.drawer-content` mis-sizes the
-    "max-content" side column and pushes the panel off-screen. z-[60] keeps
-    it above the app's fixed top nav (z-50). -->
-    <div class="drawer drawer-end z-[60]">
-      <input :id="breakdownDrawerId" type="checkbox" class="drawer-toggle" v-model="isBreakdownOpen" />
-      <div class="drawer-side">
+    "max-content" side column and pushes the panel off-screen. Holds both the
+    damages list and (when a row is clicked) the attack breakdown, as two
+    "views" within the same panel rather than stacking a second drawer on
+    top. -->
+    <!-- z-[60] (above the app's fixed nav at z-50) is applied directly on
+    `.drawer-side`, not the outer `.drawer` wrapper: `.drawer` itself has no
+    `position` set, so a z-index there has no stacking effect at all (z-index
+    only applies to positioned elements) — it silently did nothing, leaving
+    `.drawer-side` (which IS `position:fixed`, per daisyUI) at its default
+    stacking level, below the nav and any other explicitly z-indexed page
+    content like the sticky summary header. That let the nav visually bleed
+    through the open drawer's edge, and — more importantly — let other
+    elements sit *above* the drawer-overlay and swallow "click outside to
+    close" clicks. Only bump it while actually open, since `.drawer-side` is
+    always position:fixed + full-viewport even while closed (only its child
+    panel slides off-screen) — an always-on z-index would otherwise sit over
+    unrelated page content beneath it. -->
+    <div class="drawer drawer-end">
+      <input :id="damagesDrawerId" type="checkbox" class="drawer-toggle" v-model="isDamagesOpen" />
+      <div class="drawer-side" :class="{ 'z-[60]': isDamagesOpen }">
         <label
-          :for="breakdownDrawerId"
-          aria-label="close breakdown"
+          :for="damagesDrawerId"
+          aria-label="close damages"
           class="drawer-overlay"
-          @click="closeBreakdown"></label>
-        <div class="bg-base-100 text-base-content min-h-full max-w-[480px] w-full p-4">
-          <CalculatorBreakdown
-            v-if="selectedAttackKey"
-            :character="selectedAttackCharacterId ?? ''"
-            :attack-key="selectedAttackKey"
-            :damage="selectedAttackDamage"
-            :attack-label="selectedAttackLabel"
-            :weapon-data="{}"
-            :weapon-atk="0"
-            :custom-buffs="{}"
-            :team-buffs-data="{}"
-            :char-buffs-data="{}"
-            :char-resonance-chains-data="{}"
-            :echo-stats="{}"
-            @close="closeBreakdown"></CalculatorBreakdown>
+          @click="closeDamages"></label>
+        <div class="bg-base-100 text-base-content min-h-full max-w-[480px] w-full p-4 overflow-y-auto">
+          <div class="flex justify-end mb-2">
+            <button
+              type="button"
+              class="btn btn-sm btn-circle btn-ghost"
+              aria-label="Close"
+              data-test-team-rotation-damages-close
+              @click="closeDamages">
+              ✕
+            </button>
+          </div>
+          <template v-if="selectedAttackKey">
+            <button
+              type="button"
+              class="btn btn-ghost btn-sm mb-2"
+              data-test-team-rotation-breakdown-back
+              @click="selectedAttackKey = null">
+              ← Back to damages
+            </button>
+            <CalculatorBreakdown
+              :character="selectedAttackCharacterId ?? ''"
+              :attack-key="selectedAttackKey"
+              :damage="selectedAttackDamage"
+              :attack-label="selectedAttackLabel"
+              :weapon-data="{}"
+              :weapon-atk="0"
+              :custom-buffs="{}"
+              :team-buffs-data="{}"
+              :char-buffs-data="{}"
+              :char-resonance-chains-data="{}"
+              :echo-stats="{}"
+              @close="closeDamages"></CalculatorBreakdown>
+          </template>
+          <TeamRotationDamages
+            v-else
+            :result="result"
+            :duration="team.duration"
+            @selected-attack="onSelectedAttack" />
         </div>
       </div>
     </div>
@@ -258,7 +315,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import { storeToRefs } from "pinia";
 import { randomString } from "../utils/strings";
@@ -267,6 +324,8 @@ import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
+import TeamRotationSummaryHeader from "./TeamRotationSummaryHeader.vue";
+import TeamRotationImportRotation from "./TeamRotationImportRotation.vue";
 import TeamRotationEnemySettings, {
   type TeamEnemySettingsValue,
 } from "./TeamRotationEnemySettings.vue";
@@ -284,10 +343,15 @@ import {
 import {
   calcTeamRotationDamage,
   buildAdvancedConfigSnapshot,
+  convertRotationActionsForSlot,
+  applyBulkAdvancedConfigOverride,
   type TeamRotationAction,
   type TeamRotationActionResult,
   type TeamRotationCharacterResult,
+  type SourceRotationAction,
+  type AdvancedConfigCategory,
 } from "../calculator/teamRotation";
+import type { AdvancedBuffOverride } from "./TeamRotationAdvancedBuffRow.vue";
 
 const props = defineProps<{ teamId: string }>();
 
@@ -308,14 +372,20 @@ const changingSlots = ref<Set<number>>(new Set());
 // instead of always defaulting to the first configured character.
 const lastUsedSlot = ref<number | null>(null);
 
-// Damage-row breakdown drawer — mirrors HomeView.vue's drawer pattern for
-// the Calculator page's own attack breakdown.
-const breakdownDrawerId = `team-rotation-breakdown-drawer-${Math.random().toString(36).slice(2)}`;
-const isBreakdownOpen = ref(false);
+// Single slideout drawer for both the damages list and (when a row is
+// clicked) the attack breakdown — mirrors HomeView.vue's drawer pattern for
+// the Calculator page's own attack breakdown, but as two views of one panel
+// instead of two separate drawers.
+const damagesDrawerId = `team-rotation-damages-drawer-${Math.random().toString(36).slice(2)}`;
+const isDamagesOpen = ref(false);
 const selectedAttackKey = ref<string | null>(null);
 const selectedAttackDamage = ref<Record<string, any>>({});
 const selectedAttackLabel = ref<string | null>(null);
 const selectedAttackCharacterId = ref<string | null>(null);
+
+function openDamages() {
+  isDamagesOpen.value = true;
+}
 
 function onSelectedAttack(
   attackKey: string,
@@ -327,12 +397,37 @@ function onSelectedAttack(
   selectedAttackDamage.value = damage;
   selectedAttackLabel.value = label;
   selectedAttackCharacterId.value = characterId;
-  isBreakdownOpen.value = true;
+  isDamagesOpen.value = true;
 }
 
-function closeBreakdown() {
-  isBreakdownOpen.value = false;
+function closeDamages() {
+  isDamagesOpen.value = false;
+  selectedAttackKey.value = null;
 }
+
+// The drawer's own content lives outside `.drawer-content` (see the
+// template comment above), so it never gets daisyUI's usual "underlying
+// content is boxed and can't scroll" behavior for free — without this, the
+// page behind kept scrolling too, showing two scrollbars at once while the
+// drawer was open. Restores whatever value was already set (e.g. by
+// AppLayout.vue's own route-based overflow toggle) rather than assuming
+// "auto".
+let bodyOverflowBeforeDrawer: string | null = null;
+watch(isDamagesOpen, (open) => {
+  if (open) {
+    bodyOverflowBeforeDrawer = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+  } else if (bodyOverflowBeforeDrawer !== null) {
+    document.body.style.overflow = bodyOverflowBeforeDrawer;
+    bodyOverflowBeforeDrawer = null;
+  }
+});
+
+onBeforeUnmount(() => {
+  if (bodyOverflowBeforeDrawer !== null) {
+    document.body.style.overflow = bodyOverflowBeforeDrawer;
+  }
+});
 
 const team = computed(() => teamRotationsStore.getTeamById(props.teamId));
 
@@ -425,6 +520,79 @@ function isChangingSlot(slot: number) {
 function configureCharacter(characterId: string) {
   characterStore.setActiveCharacter(characterId);
   void router.push("/");
+}
+
+// Import a single-character rotation (the character's own saved rotations,
+// or a character-authored preset) into one team slot. Dialog contents are
+// keyed off `importDialogSlot` rather than passed as static props, since the
+// underlying data (own rotations, presets) can change while the dialog is
+// closed.
+const importDialogSlot = ref<number | null>(null);
+const isImportDialogOpen = ref(false);
+
+const importDialogCharacterId = computed(() =>
+  importDialogSlot.value !== null ? (team.value?.characterIds[importDialogSlot.value] ?? null) : null,
+);
+const importDialogCharacterName = computed(() =>
+  importDialogCharacterId.value ? displayName(importDialogCharacterId.value) : "",
+);
+const importDialogOwnRotations = computed(() => {
+  const characterId = importDialogCharacterId.value;
+  if (!characterId) return [];
+  return (characters.value[characterId]?.rotations ?? []) as Array<{
+    id: string;
+    name: string;
+    description?: string | null;
+    actions: SourceRotationAction[];
+  }>;
+});
+const importDialogPresets = computed(() => {
+  if (importDialogSlot.value === null) return [];
+  const chosenChar = slotContexts.value[importDialogSlot.value]?.chosenChar as
+    | {
+        rotations?: Array<{
+          name: string;
+          description?: string;
+          author?: string;
+          data: { name: string; actions: SourceRotationAction[] };
+        }>;
+      }
+    | undefined;
+  return chosenChar?.rotations ?? [];
+});
+
+function openImportDialog(slot: number) {
+  importDialogSlot.value = slot;
+  isImportDialogOpen.value = true;
+}
+
+function handleImportRotation(sourceActions: SourceRotationAction[], mode: "overwrite" | "append") {
+  const slot = importDialogSlot.value;
+  if (!team.value || slot === null) return;
+  const characterId = team.value.characterIds[slot];
+  const currentActions = team.value.actions;
+  const base =
+    mode === "overwrite"
+      ? currentActions.filter((action: TeamRotationAction) => action.slot !== slot)
+      : currentActions;
+  const startOrder = currentActions.length + 1;
+  let converted = convertRotationActionsForSlot(sourceActions, slot as 0 | 1 | 2, startOrder);
+
+  if (rotationMode.value === "advanced") {
+    const characterData = characterId ? (characters.value[characterId] ?? {}) : {};
+    const definitions = slotContexts.value[slot]?.definitions ?? null;
+    converted = converted.map((action) => ({
+      ...action,
+      advancedConfig: buildAdvancedConfigSnapshot(characterData, definitions, "current"),
+    }));
+  }
+
+  teamRotationsStore.setTeamActions(props.teamId, [...base, ...converted]);
+  lastUsedSlot.value = slot;
+  showToast(
+    `Imported ${converted.length} action${converted.length === 1 ? "" : "s"} for ${displayName(characterId ?? "")}.`,
+    "success",
+  );
 }
 
 function renameTeam() {
@@ -629,23 +797,70 @@ const definitionsForSlot = computed(() => {
   return out;
 });
 
+// The whole team's actions in their displayed (real rotation timeline)
+// order, across every character — the pool the per-buff "Duration" control
+// draws its "lasts for X actions" / "until action Y" range from. A buff's
+// duration is about the rotation's actual timeline, not any one character's
+// own action count, so this deliberately isn't filtered to one slot.
+const orderedActionRangeList = computed(() => {
+  const t = team.value;
+  if (!t) return [];
+  return t.actions.map((action: TeamRotationAction) => ({
+    id: action.id,
+    characterName: displayName(t.characterIds[action.slot] ?? "") || `Slot ${action.slot + 1}`,
+    key: action.key,
+  }));
+});
+
+// Each slot's actions, sorted by order — the shared basis for "copy previous
+// action settings", which (unlike the Duration control above) only makes
+// sense within a single character's own action sequence.
+const slotActionsSorted = computed(() => {
+  const map: Record<number, Array<TeamRotationAction & Record<string, unknown>>> = { 0: [], 1: [], 2: [] };
+  const actions = team.value?.actions ?? [];
+  for (const slot of [0, 1, 2]) {
+    map[slot] = actions
+      .filter((a: TeamRotationAction) => a.slot === slot)
+      .sort((a: TeamRotationAction, b: TeamRotationAction) => a.order - b.order);
+  }
+  return map;
+});
+
 // Maps each action to the immediately-preceding action *in the same slot*
 // (by order), so "Copy previous action settings" has something concrete to
 // copy from — a different slot's advanced config wouldn't even apply, since
 // each character has their own distinct set of buffs/passives.
 const previousActionByActionId = computed(() => {
   const map: Record<string, (TeamRotationAction & Record<string, unknown>) | null> = {};
-  const actions = team.value?.actions ?? [];
   for (const slot of [0, 1, 2]) {
-    const slotActions = actions
-      .filter((a: TeamRotationAction) => a.slot === slot)
-      .sort((a: TeamRotationAction, b: TeamRotationAction) => a.order - b.order);
+    const slotActions = slotActionsSorted.value[slot];
     slotActions.forEach((a: TeamRotationAction, index: number) => {
       map[a.id] = index > 0 ? slotActions[index - 1] : null;
     });
   }
   return map;
 });
+
+function handleBulkApplyBuff(payload: {
+  category: AdvancedConfigCategory;
+  key: string | null;
+  override: AdvancedBuffOverride;
+  actionIds: string[];
+}) {
+  if (!team.value) return;
+  const updatedActions = applyBulkAdvancedConfigOverride(
+    team.value.actions,
+    payload.actionIds,
+    payload.category,
+    payload.key,
+    payload.override,
+  );
+  teamRotationsStore.setTeamActions(props.teamId, updatedActions);
+  showToast(
+    `Applied to ${payload.actionIds.length} action${payload.actionIds.length === 1 ? "" : "s"}.`,
+    "success",
+  );
+}
 
 let computeToken = 0;
 
