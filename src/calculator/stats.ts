@@ -1028,8 +1028,8 @@ export const computeSelfBuffs = (
         data.specificTalentBuffs["HeavenSReckoningEphemeralTranscendenceDMG:Aero"] = dmgMultiplier;
         data.specificTalentBuffs["BillowsBeneathHeavenDMG:Aero"] = dmgMultiplier;
       }
-      // if SequenceNode2LikePetalsThatFallWithoutASound, buff HeavenSReckoningEphemeralTranscendenceDMG * 0.03 for every stack of Mindlock
-      if (resonanceChainsConfig?.SequenceNode2LikePetalsThatFallWithoutASound?.isEnabled) {
+      // if SequenceNode3DreamsFadeSwordAbides, buff HeavenSReckoningEphemeralTranscendenceDMG * 0.03 for every stack of Mindlock
+      if (resonanceChainsConfig?.SequenceNode3DreamsFadeSwordAbides?.isEnabled) {
         data.specificTalentBuffs["HeavenSReckoningEphemeralTranscendenceDMG:talentModifierMultiply"] = 0.03 * mindlockStacks;
       }
     }
