@@ -2,6 +2,19 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 9, 2026</h3>
+    <ul>
+      <li>Fixes Suisui team buff to properly give DMG Bonus.</li>
+    </ul>
+    <h3>August 8, 2026</h3>
+    <ul>
+      <li>All related to the Labs team feature:</li>
+      <li>Added normal/average/crit for team damage on the list view and single-team view for quick reference of the total damage</li>
+      <li>Moved the full breakdown of the team damage to a slide-out</li>
+      <li>Made the total damage always present and a quick view of breakdown of damage by character
+      Enabled you to import a rotation from a character to quickly setup a team rotation. you can choose to overwrite the full team rotation with a character one, or append it to the end (you can choose your own rotation or a preset)</li>
+      <li>(Advanced mode) enabled you to be able to set a buff to start and end from one action to another action, or a set number of actions, so you have a quicker way to tell when a buff starts and ends so you don't need to set it up for each action.</li>
+    </ul>
     <h3>August 7, 2026</h3>
     <ul>
       <li>Adds a new Team Rotations page (Labs feature, enable it in Settings > Labs): build teams of up to 3 characters, chain their actions into a rotation, and see the team's total damage and DPS.</li>
