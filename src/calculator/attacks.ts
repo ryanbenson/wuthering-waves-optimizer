@@ -722,36 +722,52 @@ export const calculateAttackDamage = (
     customResistIgnore;
 
   // damage deepen:
-  let baseTotalDeepenEffect =
+  // Every term below is wrapped in Number(...) at the point it's read: these
+  // values come from many different sources (stored character data, form
+  // inputs, buff definitions), and if any single one is ever a numeric
+  // *string* instead of a number, "+" silently does string concatenation
+  // instead of addition for the rest of the chain (e.g. `1 + "0.3"` becomes
+  // `"10.3"`, not `1.3`) — producing a wildly inflated final damage total
+  // with no visible error.
+  let baseTotalDeepenEffect = Number(
     providedFullStats?.totalDeepenEffect ||
-    context.stats.TotalDeepenEffect ||
-    0;
+      context.stats.TotalDeepenEffect ||
+      0,
+  );
   // so far damage deepen is from team buffs, add more later if needed
   // get element first, then any skill specific ones next, then add together
   // NOTE: all outro attacks cannot use the DMGDeepen:element|attackType
   // as they expire before the outro attacks occur. so ignore these
   // for outro attacks
   // self subtype dmg deepen
-  let selfBuffDmgDeepenForSubType =
-    context.buffs.charBuffsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
-  let selfBuffDmgDeepenForType =
-    context.buffs.charBuffsData?.[`DMGDeepen:${attackType}`] ?? 0;
-  let selfBuffDmgDeepenForElement =
-    context.buffs.charBuffsData?.[`DMGDeepen:${attackElement}`] ?? 0;
-  let teamBuffDmgDeepenForCharElement =
-    context.buffs.teamBuffsData?.[`DMGDeepen:${attackElement}`] ?? 0;
-  let teamBuffDmgDeepenForAttackType =
-    context.buffs.teamBuffsData?.[`DMGDeepen:${attackType}`] ?? 0;
-  let teamBuffDmgDeepenForSubType =
-    context.buffs.teamBuffsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
-  const selfBuffSpecificAttackGenericDmgDeepen =
-    selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGDeepen`] ?? 0;
-  const resonanceChainBuffSpecificAttackGenericDmgDeepen =
+  let selfBuffDmgDeepenForSubType = Number(
+    context.buffs.charBuffsData?.[`DMGDeepen:${attack.subType}`] ?? 0,
+  );
+  let selfBuffDmgDeepenForType = Number(
+    context.buffs.charBuffsData?.[`DMGDeepen:${attackType}`] ?? 0,
+  );
+  let selfBuffDmgDeepenForElement = Number(
+    context.buffs.charBuffsData?.[`DMGDeepen:${attackElement}`] ?? 0,
+  );
+  let teamBuffDmgDeepenForCharElement = Number(
+    context.buffs.teamBuffsData?.[`DMGDeepen:${attackElement}`] ?? 0,
+  );
+  let teamBuffDmgDeepenForAttackType = Number(
+    context.buffs.teamBuffsData?.[`DMGDeepen:${attackType}`] ?? 0,
+  );
+  let teamBuffDmgDeepenForSubType = Number(
+    context.buffs.teamBuffsData?.[`DMGDeepen:${attack.subType}`] ?? 0,
+  );
+  const selfBuffSpecificAttackGenericDmgDeepen = Number(
+    selfBuffs?.specificTalentBuffs?.[`${attack.key}:DMGDeepen`] ?? 0,
+  );
+  const resonanceChainBuffSpecificAttackGenericDmgDeepen = Number(
     context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:DMGDeepen`
-    ] ?? 0;
+    ] ?? 0,
+  );
   if (excludeTeamBuffs) {
-    baseTotalDeepenEffect = statsWithoutTeamBuffs?.totalDeepenEffect ?? 0;
+    baseTotalDeepenEffect = Number(statsWithoutTeamBuffs?.totalDeepenEffect ?? 0);
     teamBuffDmgDeepenForCharElement = 0;
     teamBuffDmgDeepenForAttackType = 0;
     teamBuffDmgDeepenForSubType = 0;
@@ -762,26 +778,31 @@ export const calculateAttackDamage = (
     teamBuffDmgDeepenForCharElement = 0;
     teamBuffDmgDeepenForAttackType = 0;
   }
-  let attackLevelDmgDeepen = attack.buffs?.DMGDeepen ?? 0;
+  let attackLevelDmgDeepen = Number(attack.buffs?.DMGDeepen ?? 0);
   // DO NOT RESET THIS WITH providedStats, it's not properly handled in calcCharStats yet
   // it's because this is DamageAmplify, not DMGDeepen
   // TODO: Fix this.
-  const customDamageDeepen = context.buffs.customBuffs?.DamageAmplify ?? 0;
-  let resonanceChainDmgDeepenForAttackType =
-    context.buffs.charResonanceChainsData?.[`DMGDeepen:${attackType}`] ?? 0;
-  let resonanceChainDmgDeepenForAttackSubType =
-    context.buffs.charResonanceChainsData?.[`DMGDeepen:${attack.subType}`] ?? 0;
-  let weaponBuffDmgDeepenElement =
+  const customDamageDeepen = Number(context.buffs.customBuffs?.DamageAmplify ?? 0);
+  let resonanceChainDmgDeepenForAttackType = Number(
+    context.buffs.charResonanceChainsData?.[`DMGDeepen:${attackType}`] ?? 0,
+  );
+  let resonanceChainDmgDeepenForAttackSubType = Number(
+    context.buffs.charResonanceChainsData?.[`DMGDeepen:${attack.subType}`] ?? 0,
+  );
+  let weaponBuffDmgDeepenElement = Number(
     context.equipment.weapon.weaponPassiveStats?.[
       `DMGDeepen:${attackElement}`
-    ] ?? 0;
-  let weaponBuffDmgDeepenSubType =
+    ] ?? 0,
+  );
+  let weaponBuffDmgDeepenSubType = Number(
     context.equipment.weapon.weaponPassiveStats?.[
       `DMGDeepen:${attack.subType}`
-    ] ?? 0;
-  let weaponBuffDmgDeepenType =
+    ] ?? 0,
+  );
+  let weaponBuffDmgDeepenType = Number(
     context.equipment.weapon.weaponPassiveStats?.[`DMGDeepen:${attackType}`] ??
-    0;
+      0,
+  );
   if (excludeWeaponBuffs) {
     weaponBuffDmgDeepenElement = 0;
     weaponBuffDmgDeepenSubType = 0;
