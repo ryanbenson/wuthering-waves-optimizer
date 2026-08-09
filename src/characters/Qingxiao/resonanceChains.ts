@@ -9,6 +9,12 @@ export const resonanceChains = [
         modifier: "CritRate",
         modifierValue: 0.16,
       },
+      {
+        modifier: "EnableAttack",
+        modifierValue: [
+          "SequenceNode1LikeCloudsThatMeetAndDriftApart",
+        ],
+      }
     ],
     minStacks: 0,
     maxStacks: 0,
