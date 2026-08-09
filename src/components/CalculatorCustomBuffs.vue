@@ -648,14 +648,29 @@ const currentCharacter = computed((): StoreCharacterSlice => {
   return (raw as StoreCharacterSlice | undefined) ?? {};
 });
 
+/**
+ * Coerces to a finite number, defaulting to 0 otherwise. `<input
+ * type="number">` always reports its value as a string, and `v-model`
+ * (without a `.number` modifier, which none of these fields use) passes
+ * that string straight through — so without this, every custom buff field
+ * would persist a string the moment a user types into it. Downstream
+ * calculation code sums these together with "+", where a stray string
+ * silently turns addition into concatenation (e.g. `1 + "0.3"` becomes
+ * `"10.3"`, not `1.3`) rather than raising a visible error.
+ */
+function toNum(value: unknown): number {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : 0;
+}
+
 function makeCustomBuffField(key: CustomBuffKey): WritableComputedRef<number> {
   return computed({
     get(): number {
-      return currentCharacter.value.customBuffs?.[key] ?? 0;
+      return toNum(currentCharacter.value.customBuffs?.[key] ?? 0);
     },
     async set(value: number) {
       await characterStore.setCharacterData(props.character, {
-        customBuffs: { [key]: value },
+        customBuffs: { [key]: toNum(value) },
       });
     },
   });

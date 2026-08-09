@@ -32,18 +32,37 @@ type NegativeStatusSubType =
   | "ElectroFlare"
   | "FusionBurst";
 
+/**
+ * Coerces to a finite number, defaulting to 0 otherwise. Every value read
+ * here ultimately comes from somewhere a person can type into a form field
+ * (custom buffs, per-action buff overrides, stacks) or from persisted save
+ * data written before such a field was fixed to coerce on input — so it
+ * can arrive as a string. This file sums many of these values together
+ * with "+", where a single stray string silently turns the whole
+ * left-to-right chain into concatenation instead of addition (e.g.
+ * `1 + "0.3"` becomes `"10.3"`, not `1.3`) with no visible error. Coerce
+ * every term individually at the point it's read — coercing only the
+ * *final* summed result can't recover the correct value once
+ * concatenation has already happened (e.g. `Number("030")` is `30`, not
+ * the `3` that `0 + "3" + 0` was supposed to produce).
+ */
+function n(value: unknown): number {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : 0;
+}
+
 function getCustomNegativeStatusAmplify(
   customBuffs: Record<string, unknown> | undefined,
   subType: NegativeStatusSubType,
 ): number {
-  return (customBuffs?.[`DamageAmplify${subType}`] as number) ?? 0;
+  return n(customBuffs?.[`DamageAmplify${subType}`]);
 }
 
 function getAttackBuffNegativeStatusDeepen(
   attackBuffs: Record<string, number> | null | undefined,
   subType: NegativeStatusSubType,
 ): number {
-  return attackBuffs?.[`DMGDeepen:${subType}`] ?? 0;
+  return n(attackBuffs?.[`DMGDeepen:${subType}`]);
 }
 
 export const processAttacks = (
@@ -425,8 +444,9 @@ export const calculateAttackDamage = (
       (providedEchoStats ?? context.equipment.echoStats)?.CoordinatedDMGBonus ||
       0;
     if (!providedFullStats) {
-      coordinatedDmgBonusCustomBuffs =
-        context.buffs.customBuffs?.CoordinatedDMGBonus ?? 0;
+      coordinatedDmgBonusCustomBuffs = n(
+        context.buffs.customBuffs?.CoordinatedDMGBonus,
+      );
     }
   }
   // there are bonuses that are based on Max HP, Max ATK, Max DEF
@@ -491,7 +511,7 @@ export const calculateAttackDamage = (
     ] ?? 0;
   const extraDefIgnoreCharBuff =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEFIgnore`] ?? 0;
-  let extraDefIgnoreCustomBuffs = context.buffs.customBuffs?.DefIgnore ?? 0;
+  let extraDefIgnoreCustomBuffs = n(context.buffs.customBuffs?.DefIgnore);
   const attackBuffsDefIgnore = attack?.buffs?.DefIgnore ?? 0;
   let weaponDefIgnoreSpecificDmgType =
     context.equipment.weapon.weaponPassiveStats?.[`DEFIgnore:${attack.type}`] ??
@@ -603,7 +623,7 @@ export const calculateAttackDamage = (
   const havocBaneStacksNum = context.enemy.havocBane.havocBaneStacks ?? 0;
   const havocBaneDefReduction = havocBaneStacksNum * 0.02;
   const attackDefReduction = attack?.buffs?.DefReduction ?? 0;
-  const customBuffDefReduction = context.buffs.customBuffs?.DefReduction ?? 0;
+  const customBuffDefReduction = n(context.buffs.customBuffs?.DefReduction);
   const teamBuffDefReduction = context.buffs.teamBuffsData?.DefReduction ?? 0;
   const selfBuffDefReduction = selfBuffs?.DefReduction ?? 0;
   const totalDefReduction =
@@ -667,7 +687,7 @@ export const calculateAttackDamage = (
     0;
   const baseResistReduction =
     providedFullStats?.resistReduction || context.stats.ResistReduction || 0;
-  let customResistReduction = context.buffs.customBuffs?.ResistShred ?? 0;
+  let customResistReduction = n(context.buffs.customBuffs?.ResistShred);
   const actionBuffResistReduction = attack.buffs?.ResistShred ?? 0;
   const totalResistReduction =
     baseResistReduction +
@@ -709,7 +729,7 @@ export const calculateAttackDamage = (
   const resonanceChainResistIgnoreForCharElement =
     context.buffs.charResonanceChainsData?.[`ResistIgnore:${attackElement}`] ??
     0;
-  let customResistIgnore = context.buffs.customBuffs?.ResistIgnore ?? 0;
+  let customResistIgnore = n(context.buffs.customBuffs?.ResistIgnore);
   const actionBuffResistIgnore = attack.buffs?.ResistIgnore ?? 0;
   const totalResistIgnore =
     teamBuffResistIgnoreForCharElement +
@@ -995,8 +1015,9 @@ export const calculateAttackDamage = (
     ] ?? 0;
   let teamBuffAttackSpecialMultiplier =
     context.buffs.teamBuffsData?.specialMultiplier ?? 0;
-  let customBuffAttackSpecialMultiplier =
-    context.buffs.customBuffs?.SpecialMultiplier ?? 0;
+  let customBuffAttackSpecialMultiplier = n(
+    context.buffs.customBuffs?.SpecialMultiplier,
+  );
   let actionBuffAttackSpecialMultiplier = attack?.buffs?.SpecialMultiplier ?? 0;
   // special case for CoreofCollapseDMG (requires 1+ havoc bane stacks) to get 100% specialMultiplier
   let coreofCollapseDMGSpecialMultiplier = 0;
@@ -1012,7 +1033,7 @@ export const calculateAttackDamage = (
   if (attack.type === "TuneBreak") {
     strainTotalDamage = 0;
   }
-  const customBuffTotalDamage = context.buffs.customBuffs?.TotalDamage ?? 0;
+  const customBuffTotalDamage = n(context.buffs.customBuffs?.TotalDamage);
   const actionBuffTotalDamage = attack?.buffs?.TotalDamage ?? 0;
   const totalDamageMultiplier =
     strainTotalDamage + customBuffTotalDamage + actionBuffTotalDamage;
@@ -1048,7 +1069,7 @@ export const calculateAttackDamage = (
       resistReduction = totalResistReduction;
       resistIgnore = totalResistIgnore;
     }
-    const tuneBreakDmgBonus = context.buffs.customBuffs?.TuneBreakDMGBonus ?? 0;
+    const tuneBreakDmgBonus = n(context.buffs.customBuffs?.TuneBreakDMGBonus);
     // typically Tune Break cannot crit, but some buffs exist to make it crit
     let baseCritRate = 0;
     let baseCritDmg = 1;

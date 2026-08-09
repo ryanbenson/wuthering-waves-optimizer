@@ -14,6 +14,22 @@
  * @param resistanceReduction
  * @returns
  */
+/**
+ * Coerces to a finite number, defaulting to 0 otherwise (including numeric
+ * *strings* that survived upstream from form inputs, persisted save data,
+ * or buff definitions without being converted). This is the last common
+ * gate before any arithmetic in this file: "+" silently does string
+ * concatenation instead of addition when either operand is a string (e.g.
+ * `1 + "0.3"` becomes `"10.3"`, not `1.3`), so every numeric input is
+ * normalized here rather than trusting each of the many upstream callers
+ * (across attacks.ts, stats.ts, buffs/, characters/) to have done it
+ * correctly — a new caller can never reintroduce this bug class.
+ */
+function toNum(value: unknown, fallback = 0): number {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : fallback;
+}
+
 export function calcHitDamage(
   charLevel: string,
   enemyLevel: number,
@@ -33,6 +49,20 @@ export function calcHitDamage(
   // critRate: number,
   // critDamage: number,
 ): number {
+  enemyLevel = toNum(enemyLevel);
+  enemyResist = toNum(enemyResist);
+  talent = toNum(talent);
+  attack = toNum(attack);
+  defIgnore = toNum(defIgnore);
+  bonusTotalSkillDmg = toNum(bonusTotalSkillDmg);
+  bonusSpecificSkillDmg = toNum(bonusSpecificSkillDmg);
+  bonusElementDmg = toNum(bonusElementDmg);
+  totalDeepenEffect = toNum(totalDeepenEffect);
+  resistanceReduction = toNum(resistanceReduction);
+  specialMultiplier = toNum(specialMultiplier);
+  defReduction = toNum(defReduction);
+  resistanceIgnore = toNum(resistanceIgnore);
+  totalDamage = toNum(totalDamage);
   const baseDamageValue = getBonusDamageValue(
     bonusTotalSkillDmg,
     bonusSpecificSkillDmg,
@@ -71,6 +101,13 @@ export function getBaseDamage(
   specialMultiplier: number = 0,
   totalDamage: number = 0,
 ): number {
+  talent = toNum(talent);
+  attack = toNum(attack);
+  baseDamageValue = toNum(baseDamageValue);
+  defModifier = toNum(defModifier);
+  resistValue = toNum(resistValue);
+  specialMultiplier = toNum(specialMultiplier);
+  totalDamage = toNum(totalDamage);
   return (
     attack *
     talent *
@@ -94,6 +131,9 @@ export function getDefenseModifier(
   defIgnore: number,
   defReduction: number = 0,
 ): number {
+  enemyLevel = toNum(enemyLevel);
+  defIgnore = toNum(defIgnore);
+  defReduction = toNum(defReduction);
   const charLevel = Number.parseInt(
     charLevelSpec.slice(-1) == "+" ? charLevelSpec.slice(0, -1) : charLevelSpec,
   );
@@ -105,7 +145,7 @@ export function getDefenseModifier(
 }
 
 export function getEnemyDefense(enemyLevel: number): number {
-  return 8 * enemyLevel + 792;
+  return 8 * toNum(enemyLevel) + 792;
 }
 
 export function getBonusDamageValue(
@@ -114,6 +154,10 @@ export function getBonusDamageValue(
   bonusElementDmg: number = 0,
   totalDeepenEffect: number = 0,
 ): number {
+  bonusTotalSkillDmg = toNum(bonusTotalSkillDmg);
+  bonusSpecificSkillDmg = toNum(bonusSpecificSkillDmg);
+  bonusElementDmg = toNum(bonusElementDmg);
+  totalDeepenEffect = toNum(totalDeepenEffect);
   return (
     (1 + bonusTotalSkillDmg + bonusSpecificSkillDmg + bonusElementDmg) *
     (1 + totalDeepenEffect)
@@ -126,6 +170,9 @@ export function getEnemyResistValue(
   reduction: number,
   ignore: number = 0,
 ): number {
+  baseResist = toNum(baseResist);
+  reduction = toNum(reduction);
+  ignore = toNum(ignore);
   const totalReduction = reduction + ignore;
   if (totalReduction === 0) {
     return 1 - baseResist;
@@ -196,6 +243,27 @@ export function calcDamage(
   resistanceIgnore: number = 0,
   totalDamage: number = 0,
 ) {
+  enemyLevel = toNum(enemyLevel);
+  enemyResist = toNum(enemyResist);
+  attack = toNum(attack);
+  defIgnore = toNum(defIgnore);
+  bonusTotalSkillDmg = toNum(bonusTotalSkillDmg);
+  bonusSpecificSkillDmg = toNum(bonusSpecificSkillDmg);
+  bonusElementDmg = toNum(bonusElementDmg);
+  totalDeepenEffect = toNum(totalDeepenEffect);
+  resistanceReduction = toNum(resistanceReduction);
+  critRate = toNum(critRate);
+  critDamage = toNum(critDamage);
+  talentModifierAdd = toNum(talentModifierAdd);
+  talentModifierMultiply = toNum(talentModifierMultiply);
+  totalTalentModifierSpecialMultiply = toNum(totalTalentModifierSpecialMultiply);
+  count = toNum(count, 1);
+  additiveMultiplierStacks = toNum(additiveMultiplierStacks);
+  additiveMultiplierPercent = toNum(additiveMultiplierPercent);
+  specialMultiplier = toNum(specialMultiplier);
+  defReduction = toNum(defReduction);
+  resistanceIgnore = toNum(resistanceIgnore);
+  totalDamage = toNum(totalDamage);
   // Parse the talent string to get individual percentage values
   let talents = parseTalentString(talent);
 
@@ -468,6 +536,7 @@ export function calcDamage(
 }
 
 export function calcFixedDamage(talent: string, count: number = 1): any {
+  count = toNum(count, 1);
   const finalDamage = Number(talent) * count;
   const instanceDamage = { talent: Number(talent) };
   let detailedCalculation = buildDetailedCalculationStringFixedDamage(
@@ -490,7 +559,7 @@ export function calcFixedDamage(talent: string, count: number = 1): any {
 }
 
 function calcCritDamage(damage: number, critDamage: number): number {
-  return damage * critDamage;
+  return toNum(damage) * toNum(critDamage);
 }
 
 function calcAvgDamage(
@@ -498,6 +567,9 @@ function calcAvgDamage(
   critRate: number,
   critDamage: number,
 ): number {
+  damage = toNum(damage);
+  critRate = toNum(critRate);
+  critDamage = toNum(critDamage);
   // don't allow over-crit rate to affect the damage
   if (critRate > 1) {
     critRate = 1;
@@ -642,6 +714,13 @@ export function calcHeal(
   talentModifierSpecialMultiply: number = 0,
   count: number = 1,
 ): any {
+  finalAtkDefHpVal = toNum(finalAtkDefHpVal);
+  totalSkillDmgBonus = toNum(totalSkillDmgBonus);
+  specificSkillDmg = toNum(specificSkillDmg);
+  talentModifierAdd = toNum(talentModifierAdd);
+  talentModifierMultiply = toNum(talentModifierMultiply);
+  talentModifierSpecialMultiply = toNum(talentModifierSpecialMultiply);
+  count = toNum(count, 1);
   // Parse the talent string to get individual percentage values
   let { flatBase, talentVal } = parseHealTalentString(talent);
   const originalFlatBase = flatBase;
@@ -714,6 +793,10 @@ function calcHitHeal(
   finalAtkDefHpVal: number = 0,
   totalHealBonus: number = 0, // total healing bonus
 ): number {
+  talent = toNum(talent);
+  flatBase = toNum(flatBase);
+  finalAtkDefHpVal = toNum(finalAtkDefHpVal);
+  totalHealBonus = toNum(totalHealBonus);
   return (talent * finalAtkDefHpVal + flatBase) * (1 + totalHealBonus);
 }
 
@@ -744,6 +827,12 @@ export function calcShield(
   talentModifierMultiply: number = 0,
   count: number = 1,
 ): any {
+  finalAtkDefHpVal = toNum(finalAtkDefHpVal);
+  totalSkillDmgBonus = toNum(totalSkillDmgBonus);
+  specificSkillDmg = toNum(specificSkillDmg);
+  talentModifierAdd = toNum(talentModifierAdd);
+  talentModifierMultiply = toNum(talentModifierMultiply);
+  count = toNum(count, 1);
   // Parse the talent string to get individual percentage values
   let { flatBase, talentVal } = parseShieldTalentString(talent);
   const originalFlatBase = flatBase;
@@ -803,6 +892,10 @@ function calcHitShield(
   finalAtkDefHpVal: number = 0,
   totalShieldBonus: number = 0, // total healing bonus
 ): number {
+  talent = toNum(talent);
+  flatBase = toNum(flatBase);
+  finalAtkDefHpVal = toNum(finalAtkDefHpVal);
+  totalShieldBonus = toNum(totalShieldBonus);
   return (talent * finalAtkDefHpVal + flatBase) * (1 + totalShieldBonus);
 }
 
@@ -844,6 +937,16 @@ function calcNegativeStatusStackDamage(
   stacks: number,
   getMotionValueByStacks: (stacks: number) => number,
 ): any {
+  enemyLevel = toNum(enemyLevel);
+  enemyResist = toNum(enemyResist);
+  resistanceReduction = toNum(resistanceReduction);
+  defReduction = toNum(defReduction);
+  talentModifierMultiply = toNum(talentModifierMultiply);
+  totalDeepenEffect = toNum(totalDeepenEffect);
+  critRate = toNum(critRate);
+  critDamage = toNum(critDamage);
+  count = toNum(count, 1);
+  stacks = toNum(stacks);
   const characterLevel = parseInt(charLevel.replace("+", ""), 10);
   const defenseModifier = getDefenseModifier(
     charLevel,
@@ -1140,6 +1243,19 @@ export function calcTuneBreak(
   count: number = 1,
   resistanceIgnore: number = 0,
 ): any {
+  enemyLevel = toNum(enemyLevel);
+  enemyResist = toNum(enemyResist);
+  resistanceReduction = toNum(resistanceReduction);
+  defIgnore = toNum(defIgnore);
+  defReduction = toNum(defReduction);
+  tuneBreakBoost = toNum(tuneBreakBoost);
+  talentModifierMultiply = toNum(talentModifierMultiply);
+  specialMultiplier = toNum(specialMultiplier);
+  bonusDmg = toNum(bonusDmg);
+  critRate = toNum(critRate);
+  critDamage = toNum(critDamage);
+  count = toNum(count, 1);
+  resistanceIgnore = toNum(resistanceIgnore);
   const levelModifier = getTuneBreakLevelModifier(charLevel);
   const defenseModifier = getDefenseModifier(
     charLevel,
@@ -1268,6 +1384,15 @@ export function calcTuneBreakHit(
   talentModifierMultiply: number = 0,
   specialMultiplier: number = 0,
 ): number {
+  levelModifier = toNum(levelModifier);
+  tuneAmp = toNum(tuneAmp);
+  defenseModifier = toNum(defenseModifier);
+  resistModifier = toNum(resistModifier);
+  bonusDmg = toNum(bonusDmg);
+  enemyTypeMultiplier = toNum(enemyTypeMultiplier);
+  tuneBreakBoost = toNum(tuneBreakBoost);
+  talentModifierMultiply = toNum(talentModifierMultiply);
+  specialMultiplier = toNum(specialMultiplier);
   return (
     levelModifier *
     (1 + talentModifierMultiply) *
@@ -1397,6 +1522,15 @@ export function getGlacioBiteForteDamage(
   count: number = 1,
   forteTalentString: string,
 ): any {
+  enemyLevel = toNum(enemyLevel);
+  enemyResist = toNum(enemyResist);
+  resistanceReduction = toNum(resistanceReduction);
+  defReduction = toNum(defReduction);
+  talentModifierMultiply = toNum(talentModifierMultiply);
+  totalDeepenEffect = toNum(totalDeepenEffect);
+  specialMultiplier = toNum(specialMultiplier);
+  totalDamage = toNum(totalDamage);
+  count = toNum(count, 1);
   const characterLevel = parseInt(charLevel.replace("+", ""), 10);
   const defenseModifier = getDefenseModifier(
     charLevel,
@@ -1475,6 +1609,17 @@ export function getElectroFlareDamage(
   stacks: number = 1,
   electroRageStacks: number = 0,
 ): any {
+  enemyLevel = toNum(enemyLevel);
+  enemyResist = toNum(enemyResist);
+  resistanceReduction = toNum(resistanceReduction);
+  defReduction = toNum(defReduction);
+  talentModifierMultiply = toNum(talentModifierMultiply);
+  totalDeepenEffect = toNum(totalDeepenEffect);
+  critRate = toNum(critRate);
+  critDamage = toNum(critDamage);
+  count = toNum(count, 1);
+  stacks = toNum(stacks);
+  electroRageStacks = toNum(electroRageStacks);
   const characterLevel = parseInt(charLevel.replace("+", ""), 10);
   const defenseModifier = getDefenseModifier(
     charLevel,
