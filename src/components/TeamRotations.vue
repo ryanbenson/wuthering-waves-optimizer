@@ -198,7 +198,9 @@
               </div>
               <div class="text-sm" data-test-team-rotations-total-dmg>
                 <span class="font-bold">Total DMG:</span>
-                {{ teamTotalDamage(team.id) }}
+                Normal: {{ teamTotalDamage(team.id, "normal") }} /
+                Average: {{ teamTotalDamage(team.id, "avg") }} /
+                Crit: {{ teamTotalDamage(team.id, "crit") }}
               </div>
             </div>
           </li>
@@ -378,7 +380,13 @@ watch(totalPages, (nextTotalPages) => {
 
 // Total damage per team, recomputed fresh (no caching) whenever team data
 // changes — mirrors TeamRotationTeamEditor.vue's own recompute approach.
-const teamDamageTotals = ref<Record<string, number>>({});
+interface TeamDamageTotal {
+  normal: number;
+  avg: number;
+  crit: number;
+}
+
+const teamDamageTotals = ref<Record<string, TeamDamageTotal>>({});
 let damageComputeToken = 0;
 
 async function recomputeTeamDamages() {
@@ -396,7 +404,14 @@ async function recomputeTeamDamages() {
         team.enemyConfig,
         inventoryEchoes.value,
       );
-      return [team.id, result.total.normalDamage ?? 0] as const;
+      return [
+        team.id,
+        {
+          normal: result.total.normalDamage ?? 0,
+          avg: result.total.avgDamage ?? 0,
+          crit: result.total.critDamage ?? 0,
+        },
+      ] as const;
     }),
   );
   if (token !== damageComputeToken) {
@@ -407,8 +422,8 @@ async function recomputeTeamDamages() {
 
 watch(teams, () => void recomputeTeamDamages(), { deep: true, immediate: true });
 
-function teamTotalDamage(teamId: string): string {
-  const value = teamDamageTotals.value[teamId];
-  return value !== undefined ? String(displayDamage(value)) : "—";
+function teamTotalDamage(teamId: string, variant: keyof TeamDamageTotal): string {
+  const total = teamDamageTotals.value[teamId];
+  return total !== undefined ? String(displayDamage(total[variant])) : "—";
 }
 </script>

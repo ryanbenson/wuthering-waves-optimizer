@@ -187,7 +187,7 @@ describe("Team Rotations", () => {
     cy.get("[data-test-team-rotations-list]").should("be.visible");
     cy.get("[data-test-team-rotations-item]").should("exist").and("contain.text", "action");
     cy.get("[data-test-team-rotations-total-dmg]").should(($el) => {
-      expect($el.text()).to.match(/Total DMG:\s*\d/);
+      expect($el.text()).to.match(/Total DMG:\s*Normal:\s*\d.*Average:\s*\d.*Crit:\s*\d/);
     });
 
     // Filtering by a character in the team keeps it visible; filtering by one

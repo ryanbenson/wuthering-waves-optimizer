@@ -50,7 +50,12 @@
         </button>
       </div>
       <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm">
-        <span><span class="font-bold">Total DMG:</span> {{ displayDamage(result.total.normalDamage ?? 0) }}</span>
+        <span>
+          <span class="font-bold">Total DMG:</span>
+          Normal: {{ displayDamage(result.total.normalDamage ?? 0) }} /
+          Average: {{ displayDamage(result.total.avgDamage ?? 0) }} /
+          Crit: {{ displayDamage(result.total.critDamage ?? 0) }}
+        </span>
         <span v-if="duration"><span class="font-bold">DPS:</span> {{ displayDamage(result.dps.normal) }}</span>
         <span class="opacity-70">{{ actionCount }} action{{ actionCount === 1 ? "" : "s" }}</span>
       </div>
