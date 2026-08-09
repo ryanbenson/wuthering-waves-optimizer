@@ -190,8 +190,8 @@ export const basicAttacks = {
       type: "Basic",
     },
     {
-      key: "SequenceNode6CleanseThisTarnishedAgeTillAllRunsClear",
-      label: "S6 Juque Perdition",
+      key: "SequenceNode1LikeCloudsThatMeetAndDriftApart",
+      label: "S1 Juque Perdition",
       talents: {
         "1": "400%",
         "2": "400%",
@@ -205,7 +205,7 @@ export const basicAttacks = {
         "10": "400%",
       },
       type: "Basic",
-      requiresResonanceChain: "SequenceNode6CleanseThisTarnishedAgeTillAllRunsClear",
+      requiresResonanceChain: "SequenceNode1LikeCloudsThatMeetAndDriftApart",
     },
   ],
 };
