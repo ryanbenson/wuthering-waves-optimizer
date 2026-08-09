@@ -102,14 +102,8 @@ export const resonanceChains = [
           "HeavenSReckoningEphemeralTranscendenceDMG",
           "BillowsBeneathHeavenDMG",
         ],
-        modifierValue: 0.3,
+        modifierValue: 0.4,
       },
-      {
-        modifier: "EnableAttack",
-        modifierValue: [
-          "SequenceNode6CleanseThisTarnishedAgeTillAllRunsClear",
-        ],
-      }
     ],
     minStacks: 0,
     maxStacks: 0,
