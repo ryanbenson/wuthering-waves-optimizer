@@ -1028,9 +1028,15 @@ export const computeSelfBuffs = (
         data.specificTalentBuffs["HeavenSReckoningEphemeralTranscendenceDMG:Aero"] = dmgMultiplier;
         data.specificTalentBuffs["BillowsBeneathHeavenDMG:Aero"] = dmgMultiplier;
       }
-      // if SequenceNode2LikePetalsThatFallWithoutASound, buff HeavenSReckoningEphemeralTranscendenceDMG * 0.03 for every stack of Mindlock
-      if (resonanceChainsConfig?.SequenceNode2LikePetalsThatFallWithoutASound?.isEnabled) {
+      // if SequenceNode3DreamsFadeSwordAbides, buff HeavenSReckoningEphemeralTranscendenceDMG * 0.03 for every stack of Mindlock
+      if (resonanceChainsConfig?.SequenceNode3DreamsFadeSwordAbides?.isEnabled) {
         data.specificTalentBuffs["HeavenSReckoningEphemeralTranscendenceDMG:talentModifierMultiply"] = 0.03 * mindlockStacks;
+      }
+      // if SequenceNode6CleanseThisTarnishedAgeTillAllRunsClear, buff Juque Perdition taken by the target is Amplified by 2%. The first 7 stacks additionally grant 5% DMG Amplification
+      // When Inherent Skill - To Know, To Banish is unlocked, the DMG of Juque Perdition on targets with Mindlock is increased by 2% for each stack of Mindlock. The first 7 stacks additionally grant 5% DMG increase.
+      if (resonanceChainsConfig?.SequenceNode6CleanseThisTarnishedAgeTillAllRunsClear?.isEnabled) {
+        data.specificTalentBuffs["SequenceNode1LikeCloudsThatMeetAndDriftApart:DMGDeepen"] = dmgMultiplier;
+        data.specificTalentBuffs["SequenceNode1LikeCloudsThatMeetAndDriftApart:Aero"] = dmgMultiplier;
       }
     }
     if (character === "Aemeath" && key === "InherentSkillBetweentheStarsFusionBurst") {

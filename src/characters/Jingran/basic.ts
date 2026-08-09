@@ -1,10 +1,10 @@
 export function getCharacterBasicInfo(): CharacterBasicInfo {
   return {
-    name: "Jingran",
+    name: "Stay tuned",
     rarity: 5,
     weapon: "Broadblades",
-    avatarUrl: "Jingran.png",
-    gender: "male",
+    avatarUrl: "StayTuned.png",
+    gender: "unknown",
     element: "Fusion",
   };
 }

@@ -16,7 +16,12 @@ export function cleanHtml(html: string): string {
     .replace(
       /class="font-bold font-whitney text-3xl style="color:[^"]*;"/g,
       'class="Title"',
-    );
+    )
+    .replace(/<\/?size\b[^>]*>/gi, "")
+    .replace(/(?:<br\s*\/?>\s*){3,}/gi, (match) => {
+      const brs = match.match(/<br\s*\/?>/gi) ?? [];
+      return brs.slice(0, -1).join("");
+    });
 }
 
 export function decodeAndCleanHtml(text: string): string {
