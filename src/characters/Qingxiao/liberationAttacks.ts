@@ -1,21 +1,21 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Billows Beneath Heaven",
-  description: `<div>Deals <span style="color:#c7ffed";>Aero DMG</span>.<br>Can be cast in mid-air close to the ground.</div>`,
+  description: `<div>Deal <span style="color:#c7ffed";>Aero DMG</span>.<br>Can be cast in mid-air close to the ground.</div>`,
   attacks: [
     {
       key: "BillowsBeneathHeavenDMG",
       label: "Billows Beneath Heaven DMG",
       talents: {
-        "1": "15.40%*10+616.00%",
-        "2": "16.67%*10+666.52%",
-        "3": "17.93%*10+717.03%",
-        "4": "19.70%*10+787.75%",
-        "5": "20.96%*10+838.26%",
-        "6": "22.41%*10+896.35%",
-        "7": "24.43%*10+977.17%",
-        "8": "26.45%*10+1057.98%",
-        "9": "28.47%*10+1138.80%",
-        "10": "30.62%*10+1224.67%",
+        "1": "16.80%*10+672.00%",
+        "2": "18.18%*10+727.11%",
+        "3": "19.56%*10+782.21%",
+        "4": "21.49%*10+859.36%",
+        "5": "22.87%*10+914.46%",
+        "6": "24.45%*10+977.83%",
+        "7": "26.65%*10+1066.00%",
+        "8": "28.86%*10+1154.16%",
+        "9": "31.06%*10+1242.33%",
+        "10": "33.41%*10+1336.01%",
       },
       type: "Liberation",
     }
