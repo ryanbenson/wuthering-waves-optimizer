@@ -7,7 +7,14 @@ import {
   resolveEchoSetPassiveInstance,
   type EchoSetPassiveResult,
 } from "../echoes/echoSetPassives";
-import { resolveMainEchoBuffStats, combineEchoStats } from "../echoes/mainEcho";
+import { combineEchoStats } from "../echoes/mainEcho";
+import {
+  getMainEchoBuffs,
+  isMainEchoBuffEnabled,
+  getMainEchoBuffStacks,
+  mergeMainEchoBuffStats,
+} from "../echoes/mainEchoBuffs";
+import { applyMainEchoBuffEffects } from "../echoes/applyMainEchoBuffEffects";
 import { mainEchoesData } from "../echoes/index";
 import { setBonusEffectsOnePiece, setBonusEffectsOne, setBonusEffectsTwo } from "../echoes/sets";
 import {
@@ -223,17 +230,30 @@ export async function buildCharacterCalculationContext(
   const setBonusTwoStats = resolveSetBonusStats(setBonusTwoDef, echoSetPassivesConfig, talentData);
 
   const mainEchoConfig = characterData.mainEcho ?? {};
-  const mainEchoBuffStats = resolveMainEchoBuffStats(characterId, mainEchoConfig);
   const mainEchoDef = mainEchoConfig.echo
     ? ((mainEchoesData as Record<string, any>)?.[mainEchoConfig.echo] ?? null)
     : null;
 
-  const echoStats = combineEchoStats(
-    combinedEchoStats,
-    setBonusOnePieceStats,
-    setBonusOneStats,
-    setBonusTwoStats,
-    mainEchoBuffStats,
+  // Mirrors CalculatorEchoes.vue's updateTotalStats: resolve each enabled
+  // main-echo buff's effects independently, then merge them all together —
+  // a main echo can have more than one independently-toggleable buff.
+  const mainEchoBuffStatsByKey: Record<string, Record<string, unknown>> = {};
+  for (const buff of getMainEchoBuffs(mainEchoDef)) {
+    if (!isMainEchoBuffEnabled(mainEchoConfig, buff.key)) {
+      continue;
+    }
+    mainEchoBuffStatsByKey[buff.key] = applyMainEchoBuffEffects({
+      effects: buff.effects,
+      character: characterId,
+      hasStacks: buff.hasStacks,
+      stacks: getMainEchoBuffStacks(mainEchoConfig, buff.key),
+      talentData,
+    });
+  }
+
+  const echoStats = mergeMainEchoBuffStats(
+    mainEchoBuffStatsByKey,
+    combineEchoStats(combinedEchoStats, setBonusOnePieceStats, setBonusOneStats, setBonusTwoStats),
   );
 
   // Team buffs: mirrors CalculatorPartyBuffs.vue exactly, including the

@@ -125,7 +125,7 @@ describe("data migrations", () => {
     expect(JSON.parse(localStorage.getItem("inventory") ?? "{}").echoes[0].echoSet).toBe(
       "HavocEclipse",
     );
-    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe("4");
+    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe("5");
   });
 
   it("adds order to rotations on v4", () => {
@@ -154,7 +154,51 @@ describe("data migrations", () => {
       { id: "c", name: "Third", actions: [], order: 1 },
       { id: "b", name: "Second", actions: [], order: 2 },
     ]);
-    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe("4");
+    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe("5");
+  });
+
+  it("migrates mainEcho.isEnabled into mainEcho.buffs on v5", () => {
+    localStorage.setItem(DATA_VERSION_KEY, "4");
+    localStorage.setItem(
+      "character",
+      JSON.stringify({
+        characters: {
+          Carlotta: {
+            mainEcho: {
+              echo: "SentryConstruct",
+              rank: 5,
+              isEnabled: true,
+            },
+            optimizer: {
+              mainEchoBuffs: {
+                SentryConstruct: { isEnabled: true },
+                LampylumenMyriad: { isEnabled: true, stacks: 2 },
+              },
+            },
+          },
+        },
+      }),
+    );
+
+    runMigrations();
+
+    expect(getStoredDataVersion()).toBe(5);
+    const character = JSON.parse(localStorage.getItem("character") ?? "{}");
+    const carlotta = character.characters.Carlotta;
+    expect(carlotta.mainEcho.isEnabled).toBeUndefined();
+    expect(carlotta.mainEcho.buffs).toEqual({
+      SentryConstruct: { isEnabled: true },
+    });
+    expect(carlotta.optimizer.mainEchoBuffs.SentryConstruct).toEqual({
+      buffs: {
+        SentryConstruct: { isEnabled: true },
+      },
+    });
+    expect(carlotta.optimizer.mainEchoBuffs.LampylumenMyriad).toEqual({
+      buffs: {
+        LampylumenMyriad: { isEnabled: true, stacks: 2 },
+      },
+    });
   });
 
   it("is a no-op when already at current version", () => {
@@ -208,10 +252,38 @@ describe("data migrations", () => {
     });
   });
 
+  it("applyMigrationTransforms migrates mainEcho buffs from v4", () => {
+    const input = JSON.stringify({
+      characters: {
+        Carlotta: {
+          mainEcho: {
+            echo: "SentryConstruct",
+            rank: 5,
+            isEnabled: true,
+          },
+        },
+      },
+    });
+    expect(JSON.parse(applyMigrationTransforms(input, 4))).toEqual({
+      characters: {
+        Carlotta: {
+          mainEcho: {
+            echo: "SentryConstruct",
+            rank: 5,
+            buffs: {
+              SentryConstruct: { isEnabled: true },
+            },
+          },
+        },
+      },
+    });
+  });
+
   it("parseMetaDataVersion reads meta.version", () => {
     expect(parseMetaDataVersion({ version: "2" })).toBe(2);
     expect(parseMetaDataVersion({ version: "3" })).toBe(3);
     expect(parseMetaDataVersion({ version: "4" })).toBe(4);
+    expect(parseMetaDataVersion({ version: "5" })).toBe(5);
     expect(parseMetaDataVersion(undefined)).toBe(1);
   });
 
