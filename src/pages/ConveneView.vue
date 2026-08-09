@@ -183,11 +183,11 @@
               <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-end">
                 <label class="form-control flex-1 min-w-0">
                   <span class="label-text text-xs">Bundle</span>
-                  <select v-model.number="row.tierIndex" class="select select-bordered select-sm w-full">
-                    <option v-for="(t, ti) in LUNITE_TOPUP_TIERS" :key="ti" :value="ti">
-                      ${{ t.priceUsd.toFixed(2) }} — {{ t.totalNormal }} / {{ t.totalFirstBonus }} Lunite
-                    </option>
-                  </select>
+                  <AppRichSelect
+                    v-model="row.tierIndex"
+                    :options="tierSelectOptions"
+                    aria-label="Lunite top-up bundle"
+                    class="w-full" />
                 </label>
                 <label class="form-control w-full sm:w-28 shrink-0">
                   <span class="label-text text-xs">Qty</span>
@@ -263,11 +263,11 @@
             <span class="label-text">
               {{ mode === "character" ? "Target resonance (copies)" : "Target refinement (copies)" }}
             </span>
-            <select v-model.number="targetIndex" class="select select-bordered w-full">
-              <option v-for="opt in targetOptions" :key="opt.value" :value="opt.value">
-                {{ opt.label }}
-              </option>
-            </select>
+            <AppRichSelect
+              v-model="targetIndex"
+              :options="targetSelectOptions"
+              aria-label="Target copies"
+              class="w-full" />
           </label>
           <p class="text-xs opacity-70">
             {{ mode === "character" ? "S0 is your first copy; S6 needs 7 featured pulls." : "R0 is your first copy; each refinement needs one more featured weapon." }}
@@ -284,11 +284,11 @@
                       : "Already have this weapon (current refinement)"
                   }}
                 </span>
-                <select v-model.number="currentOwnedIndex" class="select select-bordered w-full">
-                  <option v-for="opt in currentOwnershipOptions" :key="opt.value" :value="opt.value">
-                    {{ opt.label }}
-                  </option>
-                </select>
+                <AppRichSelect
+                  v-model="currentOwnedIndex"
+                  :options="currentOwnedSelectOptions"
+                  aria-label="Current ownership"
+                  class="w-full" />
               </label>
               <p v-if="additionalCopiesNeeded > 0" class="text-xs opacity-70">
                 Need
@@ -388,6 +388,9 @@ import {
 } from "vue";
 import Chart from "chart.js/auto";
 import Nav from "../components/navigation/Nav.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "../components/AppRichSelect.vue";
 import {
   ASTRITE_PER_WISH,
   MAX_PULLS_SINCE_LAST_FIVE,
@@ -610,6 +613,27 @@ const targetOptions = computed((): { value: number; label: string }[] => {
   }
   return out;
 });
+
+const currentOwnedSelectOptions = computed((): AppRichSelectOption[] =>
+  currentOwnershipOptions.value.map((opt) => ({
+    value: opt.value,
+    label: opt.label,
+  })),
+);
+
+const targetSelectOptions = computed((): AppRichSelectOption[] =>
+  targetOptions.value.map((opt) => ({
+    value: opt.value,
+    label: opt.label,
+  })),
+);
+
+const tierSelectOptions = computed((): AppRichSelectOption[] =>
+  LUNITE_TOPUP_TIERS.map((t, ti) => ({
+    value: ti,
+    label: `$${t.priceUsd.toFixed(2)} — ${t.totalNormal} / ${t.totalFirstBonus} Lunite`,
+  })),
+);
 
 function formatPct(x: number): string {
   return `${(100 * x).toFixed(1)}%`;

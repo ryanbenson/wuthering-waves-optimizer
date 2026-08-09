@@ -157,6 +157,7 @@ import { computed, ref, watch } from "vue";
 import { mainEchoesData, getEchoData } from "../echoes/index.ts";
 import { getEchoSetLabelByType, echoSetLabelMap } from "../echoes/stats.ts";
 import { oneSetBonuses, twoSetBonuses, threeSetBonuses, fiveSetBonuses } from "../echoes/sets.ts";
+import { resolveMainEchoBuffStats, combineEchoStats } from "../echoes/mainEcho.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
 import CalculatorEchoesSetBonusOnePiece from "./CalculatorEchoesSetBonusOnePiece.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
@@ -246,7 +247,6 @@ const mainEchoStacks = computed({
 const chosenMainEchoData = computed(() =>
   mainEcho.value ? (mainEchoesData as any)?.[mainEcho.value] ?? null : null,
 );
-const chosenMainEchoBuffs = computed(() => chosenMainEchoData.value?.modifiers ?? []);
 const mainEchoHasStacks = computed(() => chosenMainEchoData.value?.hasStacks ?? false);
 const mainEchoMaxStacks = computed(() => chosenMainEchoData.value?.maxStacks ?? 0);
 const echoName = computed(() => (mainEcho.value ? getEchoData(mainEcho.value)?.name ?? null : null));
@@ -281,40 +281,26 @@ function getEchoRefSetter(index: number) {
 const setAlwaysEnabled = computed(() => chosenMainEchoData.value?.alwaysEnabled === true);
 
 function updateTotalStats() {
-  const stats: Record<string, any> = {};
-
+  const combinedEchoStats: Record<string, number> = {};
   Object.values(JSON.parse(JSON.stringify(echoData.value || {}))).forEach((echo: any) => {
     Object.entries(echo).forEach(([stat, value]) => {
-      stats[stat] = (stats[stat] || 0) + (value as number);
+      combinedEchoStats[stat] = (combinedEchoStats[stat] || 0) + (value as number);
     });
   });
-  Object.entries(JSON.parse(JSON.stringify(setBonusOnePiece.value || {}))).forEach(([stat, value]) => {
-    stats[stat] = (stats[stat] || 0) + (value as number);
-  });
-  Object.entries(JSON.parse(JSON.stringify(setBonusOne.value || {}))).forEach(([stat, value]) => {
-    stats[stat] = (stats[stat] || 0) + (value as number);
-  });
-  Object.entries(JSON.parse(JSON.stringify(setBonusTwo.value || {}))).forEach(([stat, value]) => {
-    if (stat === "EnableAttack") stats[stat] = value;
-    else stats[stat] = (stats[stat] || 0) + (value as number);
+
+  const mainEchoBuffStats = resolveMainEchoBuffStats(props.character, {
+    echo: mainEcho.value,
+    isEnabled: mainEchoBuffEnabled.value,
+    stacks: mainEchoStacks.value,
   });
 
-  if (mainEchoBuffEnabled.value) {
-    for (const mainEchoBuff of chosenMainEchoBuffs.value as any[]) {
-      const specificCharacters = mainEchoBuff?.specificCharacters ?? [];
-      if (specificCharacters.length > 0 && !specificCharacters.includes(props.character)) continue;
-      if (mainEchoBuff?.modifySpecificTalents) {
-        stats.specificTalentBuffs = {};
-        mainEchoBuff.modifySpecificTalents.forEach((buffTalentName: string) => {
-          stats.specificTalentBuffs[buffTalentName] = mainEchoBuff.modifierValue;
-        });
-      } else {
-        const buffVal = mainEchoBuff.modifierValue * 100;
-        const appliedVal = mainEchoHasStacks.value ? buffVal * mainEchoStacks.value : buffVal;
-        stats[mainEchoBuff.modifier] = (stats[mainEchoBuff.modifier] || 0) + appliedVal;
-      }
-    }
-  }
+  const stats = combineEchoStats(
+    combinedEchoStats,
+    JSON.parse(JSON.stringify(setBonusOnePiece.value || {})),
+    JSON.parse(JSON.stringify(setBonusOne.value || {})),
+    JSON.parse(JSON.stringify(setBonusTwo.value || {})),
+    mainEchoBuffStats,
+  );
 
   emit("update-stats", stats);
 }

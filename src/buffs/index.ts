@@ -3168,10 +3168,10 @@ export const allWeaponTeamBuffs = [
     alwaysEnabled: false,
   },
   {
-    name: "Dew Imbiber",
+    name: "Firstlight's Herald",
     key: "DewImbiberATKBonus",
     hasStacks: false,
-    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/DewImbiber.png",
+    imageUrl: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/FirstlightsHerald.png",
     modifiers: [
       {
         modifier: "ATK",
@@ -3186,7 +3186,7 @@ export const allWeaponTeamBuffs = [
     ],
     minStacks: 0,
     maxStacks: 0,
-    details: `This effect is triggered once every 20s. Casting Intro Skill or Resonance Skill grants nearby Resonators in the team Kingfisher for 30s. If the wielder is on the field, Resonators with Kingfisher have their ATK increased by 20%/25%/30%/35%/40%`,
+    details: `Inflicting Glacio Chafe grants Snow Taint for 6s. Applying healing grants Ripples for 6s. If the wielder has done both while on the field, the next Outro Skill grants both effects for 6s. When the wielder has both Snow Taint and Ripples, the ATK of all nearby Resonators in the team is increased by 20%/30%/35%/40%/45%. Effects of the same name do not stack.`,
     alwaysEnabled: false,
   },
 ];

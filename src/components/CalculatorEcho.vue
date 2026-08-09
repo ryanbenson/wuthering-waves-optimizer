@@ -13,8 +13,8 @@
       </form>
       <div class="py-4">
         <div
-          class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row">
-          <div class="echo__item__img-actions flex flex-col gap-2 items-center">
+          class="echo__selection flex flex-col w-full items-center gap-6 sm:flex-row sm:items-start">
+          <div class="echo__item__img-actions flex flex-col gap-2 items-center shrink-0">
             <div class="echo__item__image-wrap relative">
               <EchoFavoriteButton overlay :echo-id="echoId || null" />
               <div
@@ -41,58 +41,27 @@
               Find
             </button>
           </div>
-          <div class="echo__item__main-selection flex flex-col gap-4">
-            <select
+          <div class="echo__item__main-selection flex flex-col gap-4 w-full min-w-0 flex-1">
+            <AppRichSelect
               v-model="echo"
-              name="mainEcho"
-              class="main-echo-selector select select-bordered select select-sm">
-              <optgroup label="Calamity">
-                <option
-                  v-for="option in mainEchoOptions.Calamity"
-                  :key="option.key"
-                  :value="option.key">
-                  {{ option.name }}
-                </option>
-              </optgroup>
-              <optgroup label="Overlord">
-                <option
-                  v-for="option in mainEchoOptions.Overlord"
-                  :key="option.key"
-                  :value="option.key">
-                  {{ option.name }}
-                </option>
-              </optgroup>
-              <optgroup label="Elite">
-                <option
-                  v-for="option in mainEchoOptions.Elite"
-                  :key="option.key"
-                  :value="option.key">
-                  {{ option.name }}
-                </option>
-              </optgroup>
-              <optgroup label="Common">
-                <option
-                  v-for="option in mainEchoOptions.Common"
-                  :key="option.key"
-                  :value="option.key">
-                  {{ option.name }}
-                </option>
-              </optgroup>
-            </select>
+              class="main-echo-selector"
+              data-test-main-echo
+              :options="mainEchoSelectOptions"
+              searchable
+              placeholder="Select echo"
+              aria-label="Main echo" />
 
-            <select
-              name="mainStat"
-              class="select select-bordered select select-sm echo-main-stat-selector"
+            <AppRichSelect
               v-model="stat"
-              @change="updateTotalStats"
-              :disabled="!type">
-              <option value="none">Select Stat</option>
-              <option v-for="s in getStats(type)" :key="s" :value="s">
-                {{ getReadableSubStatLabel(s) }}
-              </option>
-            </select>
+              class="echo-main-stat-selector"
+              data-test-echo-main-stat
+              :options="mainStatSelectOptions"
+              :disabled="!type"
+              placeholder="Select Stat"
+              aria-label="Main stat"
+              @update:model-value="updateTotalStats" />
           </div>
-          <div class="echo__item__set w-full relative">
+          <div class="echo__item__set relative w-full sm:w-24 shrink-0">
             <span
               class="font-bold mb-2 inline-flex w-full justify-center sm:justify-start">
               Echo Set
@@ -865,6 +834,10 @@ import { subStatsTable } from "../echoes/stats.ts";
 import Range from "./input/Range.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
+import { buildEchoSelectOptions } from "../utils/richSelectOptions";
 import { randomString } from "../utils/strings.ts";
 import { isApplyingEchoLoadout } from "../echoes/echoLoadout";
 
@@ -1106,7 +1079,7 @@ const rangeClasses = computed(() => {
 const mainEchoesDataComputed = computed(() => ({ ...mainEchoesData }));
 
 const mainEchoOptions = computed(() => {
-  const echoes: Record<string, { key: string; name: string; class: string }[]> =
+  const echoes: Record<string, { key: string; name: string; class: string; image?: string }[]> =
     {
       Calamity: [],
       Overlord: [],
@@ -1115,14 +1088,26 @@ const mainEchoOptions = computed(() => {
     };
   const mainEchoValues = Object.values(
     mainEchoesDataComputed.value,
-  ) as { class?: keyof typeof echoes; key: string; name: string }[];
+  ) as { class?: keyof typeof echoes; key: string; name: string; image?: string }[];
   mainEchoValues.forEach((e) => {
     if (e?.class && echoes[e.class]) {
-      echoes[e.class].push(e as { key: string; name: string; class: string });
+      echoes[e.class].push(e as { key: string; name: string; class: string; image?: string });
     }
   });
   return echoes;
 });
+
+const mainEchoSelectOptions = computed((): AppRichSelectOption[] =>
+  buildEchoSelectOptions(mainEchoOptions.value),
+);
+
+const mainStatSelectOptions = computed((): AppRichSelectOption[] => [
+  { value: "none", label: "Select Stat" },
+  ...getStats(type.value).map((s) => ({
+    value: s,
+    label: getReadableSubStatLabel(s),
+  })),
+]);
 
 const modalId = computed(() => `echoModal${props.index}`);
 const modalIdPicker = computed(() => `echoModal${props.index}Picker`);
@@ -1492,6 +1477,7 @@ const rollValueBadgeClass = computed(() => {
 function updateEchoChoice(
   val: string | null,
   previousVal: string | null | undefined,
+  options: { keepStat?: boolean } = {},
 ) {
   const echoData = val ? getEchoData(val) : null;
   const echoClass = echoData?.class;
@@ -1508,7 +1494,7 @@ function updateEchoChoice(
     prevEchoCost =
       prevEchoClass != null ? getCostByClass(prevEchoClass) : null;
   }
-  if (previousVal && echoCost !== prevEchoCost) {
+  if (previousVal && !options.keepStat && echoCost !== prevEchoCost) {
     stat.value = "none";
   }
 }
@@ -1844,9 +1830,16 @@ function closeEchoChooser() {
 }
 
 watch(
-  echo,
-  (val, previousVal) => {
-    updateEchoChoice(val, previousVal);
+  [echo, echoId],
+  ([val, id], previous) => {
+    const previousVal = previous?.[0];
+    const previousId = previous?.[1];
+    if (previousVal !== undefined && val === previousVal) {
+      return;
+    }
+    // A new echoId means the slot now points at a different saved echo, so its
+    // own main stat applies instead of the one the previous echo had.
+    updateEchoChoice(val, previousVal, { keepStat: id !== previousId });
   },
   { immediate: true },
 );

@@ -44,16 +44,12 @@
               buffAttackTargetSelection.label ?? "Buff applies to"
             }}</span>
           </label>
-          <select
+          <AppRichSelect
             v-model="buffAttackTarget"
-            class="select select-bordered select-xs w-full">
-            <option
-              v-for="option in buffAttackTargetSelection.options"
-              :key="option.value"
-              :value="option.value">
-              {{ option.label }}
-            </option>
-          </select>
+            :options="buffAttackTargetOptions"
+            size="xs"
+            aria-label="Buff applies to"
+            class="w-full" />
         </div>
       </div>
     </div>
@@ -64,6 +60,9 @@
 import { computed, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
 
 type ResonanceChainBuffAttackTargetOption = {
   value: string;
@@ -164,19 +163,26 @@ const buffAttackTarget = computed({
       "none"
     );
   },
-  async set(value: string) {
-    if (!buffAttackTargetConfigKey.value) {
+  async set(value: string | number | null) {
+    if (!buffAttackTargetConfigKey.value || value == null) {
       return;
     }
     await characterStore.setCharacterData(props.character, {
       resonanceChains: {
         [props.uniqueKey]: {
-          [buffAttackTargetConfigKey.value]: value,
+          [buffAttackTargetConfigKey.value]: String(value),
         },
       },
     });
   },
 });
+
+const buffAttackTargetOptions = computed((): AppRichSelectOption[] =>
+  (props.buffAttackTargetSelection?.options ?? []).map((option) => ({
+    value: option.value,
+    label: option.label,
+  })),
+);
 
 function updatedStats() {
   emit("updated-character-buff");

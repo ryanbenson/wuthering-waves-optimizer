@@ -100,7 +100,9 @@
           :character="character"
           :total-combos="totalCombos"
           :processed-combos="processedCombos"
+          :optimizer-elapsed-ms="optimizerElapsedMs"
           :optimizer-no-possible-loadouts="optimizerNoPossibleLoadouts"
+          :optimizer-empty-reason="optimizerEmptyReason"
           :optimizer-results="optimizerResults"
           :character-element="characterElement"
           :all-damages="JSON.parse(JSON.stringify(allDamages))"
@@ -279,7 +281,15 @@
 
 <script lang="ts">
 // @ts-nocheck
-import { defineComponent, reactive, ref, watch, nextTick, computed } from "vue";
+import {
+  defineComponent,
+  reactive,
+  ref,
+  watch,
+  nextTick,
+  computed,
+  onUnmounted,
+} from "vue";
 import { storeToRefs } from "pinia";
 import {
   calcDamage,
@@ -340,13 +350,18 @@ import {
 import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
 import type { OptimizerContext } from "../calculator/optimizer";
 import {
-  getOptimizerLoadoutKey,
+  getOptimizerLoadoutHash,
   filterEchoesForOptimizer,
+  resolveOptimizerEmptyReason,
+  splitOptimizerWorkerCount,
+  type OptimizerEmptyReason,
 } from "../calculator/optimizer";
 import { getSetsFromEchoes, getSetBonusEffects } from "../echoes/sets";
 import { allEchoBuffs } from "../buffs";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { useSettingsStore } from "../stores/settings";
+import { resolveOptimizerWorkerCount } from "../utils/optimizerPreferences";
 import { useRoute } from "vue-router";
 import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
@@ -388,6 +403,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const characterStore = useCharacterStore();
     const inventoryStore = useInventoryStore();
+    const settingsStore = useSettingsStore();
     const { characters, activeCharacter } = storeToRefs(characterStore);
     const weaponData = reactive({});
     const weaponAtk = ref(0);
@@ -493,9 +509,42 @@ export default defineComponent({
     const totalCombos = ref(0);
     const processedCombos = ref(0);
     const optimizerNoPossibleLoadouts = ref(false);
+    const optimizerEmptyReason = ref<OptimizerEmptyReason | null>(null);
     const optimizerResults = ref([]);
     const optimizationTargetType = ref("");
     const optimizationTargetObject = ref("");
+    const optimizerElapsedMs = ref(0);
+    let optimizerTimerStartMs = 0;
+    let optimizerTimerIntervalId: ReturnType<typeof setInterval> | null = null;
+
+    const stopOptimizerTimer = () => {
+      if (optimizerTimerIntervalId != null) {
+        clearInterval(optimizerTimerIntervalId);
+        optimizerTimerIntervalId = null;
+      }
+      if (optimizerTimerStartMs > 0) {
+        optimizerElapsedMs.value = Math.max(
+          0,
+          performance.now() - optimizerTimerStartMs,
+        );
+      }
+    };
+
+    const startOptimizerTimer = () => {
+      stopOptimizerTimer();
+      optimizerElapsedMs.value = 0;
+      optimizerTimerStartMs = performance.now();
+      optimizerTimerIntervalId = setInterval(() => {
+        optimizerElapsedMs.value = Math.max(
+          0,
+          performance.now() - optimizerTimerStartMs,
+        );
+      }, 250);
+    };
+
+    onUnmounted(() => {
+      stopOptimizerTimer();
+    });
     // base stats
     const baseHp = ref(0);
     const baseAtk = ref(0);
@@ -563,7 +612,11 @@ export default defineComponent({
       totalCombos.value = 0;
       processedCombos.value = 0;
       optimizerNoPossibleLoadouts.value = false;
+      optimizerEmptyReason.value = null;
       optimizerResults.value = [];
+      stopOptimizerTimer();
+      optimizerElapsedMs.value = 0;
+      optimizerTimerStartMs = 0;
       setTimeout(() => {
         isLoading.value = false;
       }, 10);
@@ -963,18 +1016,26 @@ export default defineComponent({
       target = "ATK",
       damageType = "Average",
       ignoreOtherResonantorEchoes = false,
+      loadoutFormat = "Any",
     ) => {
       const echoes = inventoryStore.echoes;
+      const inventoryCount = Array.isArray(echoes) ? echoes.length : 0;
       const allowedSets = new Set(setFilters);
       const topN = 5;
       processedCombos.value = 0;
       totalCombos.value = 0;
       optimizerNoPossibleLoadouts.value = false;
+      optimizerEmptyReason.value = null;
       optimizerResults.value = []; // Initialize as empty array instead of null
       optimizationTargetType.value = target.split(":")[0];
       optimizationTargetObject.value = target.split(":")[1] || "";
+      startOptimizerTimer();
 
       // 1. Filter upfront
+      const inventoryEchoes = Array.isArray(echoes) ? echoes : [];
+      const setFilteredCount = allowedSets.size
+        ? inventoryEchoes.filter((e) => allowedSets.has(e.echoSet)).length
+        : inventoryEchoes.length;
       let filteredEchoes = filterEchoesForOptimizer(echoes) as typeof echoes;
       if (allowedSets.size) {
         filteredEchoes = filteredEchoes.filter((e) => allowedSets.has(e.echoSet));
@@ -986,6 +1047,11 @@ export default defineComponent({
           (e) => !echoIdsEquippedByOtherChars.includes(e.echoId),
         );
       }
+
+      const emptyReasonContext = {
+        inventoryCount,
+        setFilteredCount,
+      };
 
       // Build optimizer context with all necessary data
       const optimizerContext = {
@@ -1125,6 +1191,8 @@ export default defineComponent({
         target,
         damageType,
         rotationData,
+        loadoutFormat,
+        emptyReasonContext,
       );
     };
 
@@ -1270,25 +1338,40 @@ export default defineComponent({
       target: string,
       damageType: string,
       rotationData: any = null,
+      loadoutFormat: string = "Any",
+      emptyReasonContext: {
+        inventoryCount: number;
+        setFilteredCount: number;
+      } = { inventoryCount: 0, setFilteredCount: 0 },
     ) => {
-      // Detect device capabilities
-      const workerCount = Math.min(
-        5,
-        Math.max(2, (navigator.hardwareConcurrency || 4) - 1),
+      // Worker count is user-configurable (Settings → Preferences), split between
+      // generator shards (a few, at most) and processor workers (the bulk).
+      const totalWorkerCount = resolveOptimizerWorkerCount(
+        (settingsStore.config as { optimizerWorkerCount?: unknown })
+          ?.optimizerWorkerCount,
       );
+      const { generatorCount, processorCount } =
+        splitOptimizerWorkerCount(totalWorkerCount);
       const batchSize =
         navigator.hardwareConcurrency && navigator.hardwareConcurrency >= 8
           ? 5000
           : 2000; // Larger batches on powerful devices
+      // Cap queued batches so generation cannot outrun processing into multi-GB heap
+      const maxQueuedBatches = processorCount * 2;
 
       // Create workers
-      const generatorWorker = new Worker(
-        new URL("../workers/generator.worker.ts", import.meta.url),
-        { type: "module" },
-      );
+      const generatorWorkers: Worker[] = [];
+      for (let i = 0; i < generatorCount; i++) {
+        generatorWorkers.push(
+          new Worker(
+            new URL("../workers/generator.worker.ts", import.meta.url),
+            { type: "module" },
+          ),
+        );
+      }
 
       const processorWorkers: Worker[] = [];
-      for (let i = 0; i < workerCount; i++) {
+      for (let i = 0; i < processorCount; i++) {
         const worker = new Worker(
           new URL("../workers/processor.worker.ts", import.meta.url),
           { type: "module" },
@@ -1300,17 +1383,111 @@ export default defineComponent({
       const heap: any[] = [];
       const workQueue: Array<{ batch: any[]; batchId: number }> = [];
       let batchIdCounter = 0;
-      let totalGenerated = 0;
       let totalProcessed = 0;
       const workerBusy = new Map<Worker, boolean>();
-      let generatorDone = false;
-      const seenCombinations = new Set<string>();
+      /** Per-shard total generated (as last reported by that shard) and done flag */
+      const generatorShardTotal = new Map<Worker, number>();
+      const generatorShardDone = new Map<Worker, boolean>();
+      /** True while a given shard is waiting for a "continue" after posting a batch */
+      const generatorShardAwaitingContinue = new Map<Worker, boolean>();
+      const generatorAllDone = () =>
+        generatorWorkers.every((w) => generatorShardDone.get(w) === true);
+      const totalGenerated = () => {
+        let sum = 0;
+        generatorShardTotal.forEach((v) => (sum += v));
+        return sum;
+      };
+      const seenCombinations = new Set<bigint>();
+      // Cross-shard dedup for generated (not-yet-processed) loadouts: local per-worker
+      // dedup only catches duplicates within one shard; distinct shards can independently
+      // discover the same loadout signature (e.g. two stat-identical main echoes assigned
+      // to different shards). Only needed when there's more than one generator shard.
+      const seenGeneratedHashes =
+        generatorCount > 1 ? new Set<bigint>() : null;
+      const dedupeBatchAcrossShards = (batch: any[]): any[] => {
+        if (!seenGeneratedHashes) return batch;
+        const deduped: any[] = [];
+        for (const loadout of batch) {
+          const hash = getOptimizerLoadoutHash(loadout);
+          if (seenGeneratedHashes.has(hash)) continue;
+          seenGeneratedHashes.add(hash);
+          deduped.push(loadout);
+        }
+        return deduped;
+      };
       let readyWorkers = 0;
+      let cleanedUp = false;
 
-      // Initialize processor workers
-      processorWorkers.forEach((worker, index) => {
+      // Serialize static processor config once (not per batch)
+      const serializableContext = createSerializableContext(context);
+      const plainMinStats = Array.isArray(minStats)
+        ? minStats.map((s: any) =>
+            s && typeof s === "object" ? { ...s } : s,
+          )
+        : minStats;
+      const serializableEchoSetPassiveBuffs = JSON.parse(
+        JSON.stringify(echoSetPassiveBuffs),
+      );
+      const serializableMainEchoStats = JSON.parse(
+        JSON.stringify(mainEchoStats),
+      );
+      const serializableRotationData = rotationData
+        ? JSON.parse(JSON.stringify(rotationData))
+        : null;
+
+      const cleanupWorkers = () => {
+        if (cleanedUp) return;
+        cleanedUp = true;
+        generatorWorkers.forEach((w) => {
+          try {
+            w.postMessage({ type: "stop" });
+          } catch {
+            // Worker may already be terminated
+          }
+          w.terminate();
+        });
+        processorWorkers.forEach((w) => {
+          try {
+            w.postMessage({ type: "stop" });
+          } catch {
+            // ignore
+          }
+          w.terminate();
+        });
+      };
+
+      /** Ask each generator shard for another batch while the shared queue has room */
+      const maybeContinueGenerator = () => {
+        if (cleanedUp) return;
+        for (const worker of generatorWorkers) {
+          if (workQueue.length >= maxQueuedBatches) break;
+          if (
+            generatorShardDone.get(worker) ||
+            !generatorShardAwaitingContinue.get(worker)
+          ) {
+            continue;
+          }
+          generatorShardAwaitingContinue.set(worker, false);
+          worker.postMessage({ type: "continue" });
+        }
+      };
+
+      // Initialize processor workers with static config once
+      processorWorkers.forEach((worker) => {
         workerBusy.set(worker, false);
-        worker.postMessage({ type: "init" });
+        worker.postMessage({
+          type: "init",
+          data: {
+            context: serializableContext,
+            minStats: plainMinStats,
+            echoSetPassiveBuffs: serializableEchoSetPassiveBuffs,
+            mainEchoStats: serializableMainEchoStats,
+            target,
+            damageType,
+            rotationData: serializableRotationData,
+            topN,
+          },
+        });
         worker.onmessage = (e) => {
           if (e.data.type === "ready") {
             readyWorkers++;
@@ -1322,8 +1499,7 @@ export default defineComponent({
             totalProcessed += e.data.processed || 0;
             processedCombos.value = totalProcessed;
 
-            // Workers no longer send newCombinations - we filter duplicates here in main thread
-            // Update heap with results
+            // Workers only return local top-N candidates; merge into global heap
             if (e.data.results && e.data.results.length > 0) {
               for (const result of e.data.results) {
                 if (
@@ -1336,11 +1512,11 @@ export default defineComponent({
                 if (result.loadout.length === 0) {
                   continue;
                 }
-                const key = getOptimizerLoadoutKey(result.loadout);
-                if (seenCombinations.has(key)) {
+                const hash = getOptimizerLoadoutHash(result.loadout);
+                if (seenCombinations.has(hash)) {
                   continue;
                 }
-                seenCombinations.add(key);
+                seenCombinations.add(hash);
 
                 // Ensure targetValue is a number
                 const targetValue =
@@ -1399,8 +1575,9 @@ export default defineComponent({
               }
             }
 
-            // Request more work
+            // Request more work and unblock generator if queue drained
             distributeWork();
+            maybeContinueGenerator();
           } else if (e.data.type === "error") {
             console.error(
               `Processor worker error (batch ${e.data.batchId}):`,
@@ -1410,6 +1587,7 @@ export default defineComponent({
             totalProcessed += e.data.processed || 0;
             processedCombos.value = totalProcessed;
             distributeWork();
+            maybeContinueGenerator();
           } else {
             console.warn("Unknown message type from worker:", e.data);
           }
@@ -1439,42 +1617,12 @@ export default defineComponent({
           workerBusy.set(availableWorker, true);
 
           try {
-            // Create serializable context (remove functions, ensure all data is plain objects)
-            const serializableContext = createSerializableContext(context);
-
-            // Convert any Vue reactive arrays/objects to plain arrays/objects
-            // Vue reactive proxies cannot be cloned, so we need to convert them first
-            const plainAllowedSets = Array.isArray(allowedSets)
-              ? [...allowedSets]
-              : allowedSets;
-            const plainMainEchoKeys = Array.isArray(mainEchoKeys)
-              ? [...mainEchoKeys]
-              : mainEchoKeys;
-            const plainMinStats = Array.isArray(minStats)
-              ? minStats.map((s: any) =>
-                  s && typeof s === "object" ? { ...s } : s,
-                )
-              : minStats;
-
+            // Slim process payload: static config was sent once on init
             availableWorker.postMessage({
               type: "process",
               data: {
                 batch: work.batch,
                 batchId: work.batchId,
-                context: serializableContext,
-                allowedSets: plainAllowedSets,
-                topN,
-                mainEchoKeys: plainMainEchoKeys,
-                minStats: plainMinStats,
-                echoSetPassiveBuffs: JSON.parse(
-                  JSON.stringify(echoSetPassiveBuffs),
-                ),
-                mainEchoStats: JSON.parse(JSON.stringify(mainEchoStats)),
-                target,
-                damageType,
-                rotationData: rotationData
-                  ? JSON.parse(JSON.stringify(rotationData))
-                  : null,
               },
             });
           } catch (error: any) {
@@ -1488,86 +1636,144 @@ export default defineComponent({
           }
         }
 
+        // Unblock generator once queue has room again
+        maybeContinueGenerator();
+
         // Check if we're done
         const allWorkersIdle = processorWorkers.every(
           (w) => !workerBusy.get(w),
         );
-        if (generatorDone && workQueue.length === 0 && allWorkersIdle) {
+        if (generatorAllDone() && workQueue.length === 0 && allWorkersIdle) {
           // Set final results (sorted descending)
           const finalResults = heap
             .slice()
             .sort((a, b) => b.targetValue - a.targetValue);
           optimizerResults.value = finalResults;
-
-          // Cleanup
-          generatorWorker.terminate();
-          processorWorkers.forEach((w) => w.terminate());
-          totalCombos.value = totalProcessed;
-        }
-      };
-
-      // Generator worker handler
-      generatorWorker.onmessage = (e) => {
-        if (e.data.type === "ready") {
-          // Start generation - ensure echoes are serializable
-          try {
-            // Serialize echoes by only including needed properties
-            const serializedEchoes = serializeEchoes(echoes);
-
-            // Convert Vue reactive arrays/objects to plain arrays/objects
-            // Vue reactive proxies cannot be cloned, so we need to convert them first
-            const plainMainEchoKeys = Array.isArray(mainEchoKeys)
-              ? [...mainEchoKeys] // Convert Proxy array to plain array
-              : mainEchoKeys;
-
-            const messageData = {
-              type: "start",
-              data: {
-                echoes: serializedEchoes,
-                mainEchoKeys: plainMainEchoKeys,
-                batchSize,
-              },
-            };
-
-            generatorWorker.postMessage(messageData);
-            if (process.env.NODE_ENV === "development") {
-              console.log("Successfully sent data to generator worker");
-            }
-          } catch (error) {
-            console.error("Error sending data to generator worker:", error);
-            generatorWorker.terminate();
-            processorWorkers.forEach((w) => w.terminate());
-          }
-        } else if (e.data.type === "batch") {
-          totalGenerated = e.data.totalGenerated || 0;
-          totalCombos.value = totalGenerated;
-
-          // Add batch to work queue
-          if (e.data.batch && e.data.batch.length > 0) {
-            workQueue.push({
-              batch: e.data.batch,
-              batchId: batchIdCounter++,
+          if (finalResults.length === 0) {
+            optimizerEmptyReason.value = resolveOptimizerEmptyReason({
+              inventoryCount: emptyReasonContext.inventoryCount,
+              setFilteredCount: emptyReasonContext.setFilteredCount,
+              generatedCount: totalProcessed || totalGenerated() || 0,
             });
-
-            // Distribute work if workers are ready
-            if (readyWorkers === processorWorkers.length) {
-              distributeWork();
-            }
+          } else {
+            optimizerEmptyReason.value = null;
           }
-        } else if (e.data.type === "done") {
-          generatorDone = true;
-          totalCombos.value = e.data.totalGenerated || totalGenerated;
-          optimizerNoPossibleLoadouts.value =
-            e.data.noPossibleLoadouts === true;
-          distributeWork(); // Process remaining work
-        } else if (e.data.type === "error") {
-          console.error("Generator worker error:", e.data.error);
-          generatorDone = true;
+
+          cleanupWorkers();
+          totalCombos.value = totalProcessed;
+          stopOptimizerTimer();
         }
       };
 
-      // Initialize generator
-      generatorWorker.postMessage({ type: "init" });
+      // Generator worker handlers — one per shard (generatorCount is 1 unless the
+      // user's chosen worker count is 16+, see splitOptimizerWorkerCount)
+      generatorWorkers.forEach((worker, shardIndex) => {
+        generatorShardTotal.set(worker, 0);
+        generatorShardDone.set(worker, false);
+        generatorShardAwaitingContinue.set(worker, false);
+
+        worker.onmessage = (e) => {
+          if (e.data.type === "ready") {
+            // Start generation - ensure echoes are serializable
+            try {
+              // Serialize echoes by only including needed properties
+              const serializedEchoes = serializeEchoes(echoes);
+
+              // Convert Vue reactive arrays/objects to plain arrays/objects
+              // Vue reactive proxies cannot be cloned, so we need to convert them first
+              const plainMainEchoKeys = Array.isArray(mainEchoKeys)
+                ? [...mainEchoKeys] // Convert Proxy array to plain array
+                : mainEchoKeys;
+
+              const messageData = {
+                type: "start",
+                data: {
+                  echoes: serializedEchoes,
+                  mainEchoKeys: plainMainEchoKeys,
+                  batchSize,
+                  loadoutFormat,
+                  shardIndex,
+                  shardCount: generatorCount,
+                },
+              };
+
+              worker.postMessage(messageData);
+              if (process.env.NODE_ENV === "development") {
+                console.log(
+                  `Successfully sent data to generator worker (shard ${shardIndex})`,
+                );
+              }
+            } catch (error) {
+              console.error("Error sending data to generator worker:", error);
+              cleanupWorkers();
+              stopOptimizerTimer();
+            }
+          } else if (e.data.type === "batch") {
+            generatorShardTotal.set(worker, e.data.totalGenerated || 0);
+            totalCombos.value = totalGenerated();
+
+            // This shard is paused until we send "continue"
+            generatorShardAwaitingContinue.set(worker, true);
+
+            // Add batch to work queue, deduped against loadouts already seen from other shards
+            const batch = dedupeBatchAcrossShards(e.data.batch || []);
+            if (batch.length > 0) {
+              workQueue.push({
+                batch,
+                batchId: batchIdCounter++,
+              });
+
+              // Distribute work if workers are ready
+              if (readyWorkers === processorWorkers.length) {
+                distributeWork();
+              } else {
+                maybeContinueGenerator();
+              }
+            } else {
+              maybeContinueGenerator();
+            }
+          } else if (e.data.type === "done") {
+            generatorShardDone.set(worker, true);
+            generatorShardAwaitingContinue.set(worker, false);
+            generatorShardTotal.set(
+              worker,
+              e.data.totalGenerated ?? generatorShardTotal.get(worker) ?? 0,
+            );
+            totalCombos.value = totalGenerated();
+            if (generatorAllDone()) {
+              optimizerNoPossibleLoadouts.value = totalGenerated() === 0;
+              if (totalGenerated() === 0) {
+                optimizerEmptyReason.value = resolveOptimizerEmptyReason({
+                  inventoryCount: emptyReasonContext.inventoryCount,
+                  setFilteredCount: emptyReasonContext.setFilteredCount,
+                  generatedCount: 0,
+                });
+                stopOptimizerTimer();
+              }
+            }
+            distributeWork(); // Process remaining work
+          } else if (e.data.type === "error") {
+            console.error(
+              `Generator worker error (shard ${shardIndex}):`,
+              e.data.error,
+            );
+            generatorShardDone.set(worker, true);
+            generatorShardAwaitingContinue.set(worker, false);
+            if (generatorAllDone()) {
+              stopOptimizerTimer();
+            }
+            distributeWork();
+          } else {
+            console.warn(
+              "Unknown message type from generator worker:",
+              e.data,
+            );
+          }
+        };
+
+        // Initialize this shard
+        worker.postMessage({ type: "init" });
+      });
     };
 
     async function handleSelectedAttack(attackKey, damage, label) {
@@ -1665,7 +1871,9 @@ export default defineComponent({
       // optimizer stuff
       totalCombos,
       processedCombos,
+      optimizerElapsedMs,
       optimizerNoPossibleLoadouts,
+      optimizerEmptyReason,
       optimizerResults,
       optimizationTargetType,
       optimizationTargetObject,

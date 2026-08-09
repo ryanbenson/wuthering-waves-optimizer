@@ -1,5 +1,5 @@
 <template>
-  <dialog id="modal-echoes-importer" class="modal">
+  <dialog :id="modalId" class="modal">
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
@@ -12,6 +12,7 @@
       <div class="py-4">
         <template v-if="!isReviewingDuplicates">
           <CalculatorEchoParser
+            :inventory-only="inventoryOnly"
             @echoes-parsed="handleEchoesParsed"></CalculatorEchoParser>
         </template>
         <template v-else>
@@ -92,19 +93,30 @@
             <button type="button" class="btn" @click="handleCancelDuplicateReview">
               Cancel
             </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              @click="handleApplyToCharacterOnly">
-              Apply to character only
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              :disabled="!hasSelectedEchoes"
-              @click="handleConfirmDuplicateReview">
-              Add selected to inventory & apply
-            </button>
+            <template v-if="inventoryOnly">
+              <button
+                type="button"
+                class="btn btn-primary"
+                :disabled="!hasSelectedEchoes"
+                @click="handleConfirmDuplicateReview">
+                Add selected to inventory
+              </button>
+            </template>
+            <template v-else>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                @click="handleApplyToCharacterOnly">
+                Apply to character only
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                :disabled="!hasSelectedEchoes"
+                @click="handleConfirmDuplicateReview">
+                Add selected to inventory & apply
+              </button>
+            </template>
           </div>
         </template>
       </div>
@@ -128,17 +140,24 @@ import { useInventoryStore } from "../stores/inventory";
 import { getEchoIdentityKey } from "../utils/echoIdentity";
 import { randomString } from "../utils/strings.ts";
 
-const MODAL_ID = "modal-echoes-importer";
 const DEFAULT_ECHO_IMAGE =
   "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png";
-const isOpen = ref(false);
 
 const props = withDefaults(
   defineProps<{
     character?: string;
+    inventoryOnly?: boolean;
   }>(),
-  { character: "" },
+  { character: "", inventoryOnly: false },
 );
+
+const modalId = computed(() =>
+  props.inventoryOnly
+    ? "modal-echoes-importer-inventory"
+    : "modal-echoes-importer",
+);
+
+const isOpen = ref(false);
 
 const characterStore = useCharacterStore();
 const inventoryStore = useInventoryStore();
@@ -188,7 +207,7 @@ const hasSelectedEchoes = computed(() =>
 async function triggerOpenModal() {
   isOpen.value = true;
   await nextTick();
-  const modalEl = document.getElementById(MODAL_ID);
+  const modalEl = document.getElementById(modalId.value);
   (modalEl as HTMLDialogElement | null)?.showModal();
 }
 
@@ -198,7 +217,7 @@ function resetDuplicateReview() {
 }
 
 function triggerCloseModal() {
-  const modalEl = document.getElementById(MODAL_ID);
+  const modalEl = document.getElementById(modalId.value);
   (modalEl as HTMLDialogElement | null)?.close();
   isOpen.value = false;
   resetDuplicateReview();
@@ -352,10 +371,31 @@ function getEchoSubstatLabels(echo: MappedEcho) {
   ].filter((sub): sub is { label: string; icon: string } => Boolean(sub));
 }
 
+async function saveSelectedToInventory(
+  echoes: MappedEcho[],
+  inventoryEchoIndexes: Set<number>,
+) {
+  for (const index of inventoryEchoIndexes) {
+    const echo = echoes[index];
+    if (!echo?.echoId) {
+      continue;
+    }
+    await inventoryStore.saveEcho(echo);
+  }
+}
+
 async function finalizeImport(
   echoes: MappedEcho[],
   inventoryEchoIndexes: Set<number> | null,
 ) {
+  if (props.inventoryOnly) {
+    if (inventoryEchoIndexes) {
+      await saveSelectedToInventory(echoes, inventoryEchoIndexes);
+    }
+    triggerCloseModal();
+    return;
+  }
+
   const characterEchoes = echoes.map((echo, index) => {
     if (inventoryEchoIndexes && !inventoryEchoIndexes.has(index)) {
       return { ...echo, echoId: null };
@@ -407,9 +447,10 @@ async function handleEchoesParsed(
   echoData: ParsedEcho[],
   isSavingToInventory: boolean,
 ) {
-  const echoes = mapParsedEchoes(echoData, isSavingToInventory);
+  const saveToInventory = props.inventoryOnly || isSavingToInventory;
+  const echoes = mapParsedEchoes(echoData, saveToInventory);
 
-  if (!isSavingToInventory) {
+  if (!saveToInventory) {
     await finalizeImport(echoes, null);
     return;
   }

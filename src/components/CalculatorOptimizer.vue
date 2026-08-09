@@ -218,7 +218,12 @@
       </div>
 
       <div class="optimizer-filters__sets">
-        <h3 class="mt-6 mb-2">Choose target stats (optional)</h3>
+        <h3 class="mt-6 mb-2">Minimum stats (optional)</h3>
+        <p class="text-sm opacity-70 mb-2 max-w-2xl">
+          Optional. Add one or more stats with a minimum value. Every loadout
+          must meet or exceed all of them — for example Energy Regen 120 and
+          ATK 2500.
+        </p>
         <CalculatorOptimizerMinStats
           :character="character"
           :key="character"
@@ -251,6 +256,7 @@
         <CalculatorOptimizerSettings
           :character="character"
           :current-ignore-other-resonantor-echoes="ignoreOtherResonantorEchoes"
+          :current-loadout-format="loadoutFormat"
           @optimizer:settings-updated="
             handleUpdatedSettings
           "></CalculatorOptimizerSettings>
@@ -275,28 +281,41 @@
     <div class="optimizer-progress my-6" v-if="hasTriggeredOptimizer">
       <p
         v-if="optimizerNoPossibleLoadouts"
-        class="text-warning text-center my-2">
-        There are no possible loadouts based on your settings. Please adjust your
-        settings or add more echoes.
+        class="text-warning text-center my-2"
+        data-test-optimizer-empty-reason>
+        {{ emptyReasonMessage }}
       </p>
       <template v-else>
-        <div>
-          Processed
-          <span class="font-bold">{{ processedCombos }}</span>
-          of
-          <span class="font-bold">{{
-            totalCombos === 0 ? "…" : totalCombos
-          }}</span>
-          loadouts
+        <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <div>
+            Processed
+            <span class="font-bold">{{ processedCombos }}</span>
+            of
+            <span class="font-bold">{{
+              totalCombos === 0 ? "…" : totalCombos
+            }}</span>
+            loadouts
+          </div>
+          <div
+            class="tabular-nums text-sm opacity-80"
+            data-test-optimizer-elapsed>
+            Elapsed {{ formattedOptimizerElapsed }}
+          </div>
         </div>
         <progress
           class="progress progress-primary"
           :value="processedCombos"
           :max="Math.max(totalCombos ?? 0, 1)"></progress>
+        <p
+          v-if="optimizerEmptyReason"
+          class="text-warning text-center mt-4"
+          data-test-optimizer-empty-reason>
+          {{ emptyReasonMessage }}
+        </p>
       </template>
     </div>
     <CalculatorOptimizerResults
-      v-if="optimizerResults"
+      v-if="optimizerResults?.length"
       :character="character"
       :character-element="characterElement"
       :results="optimizerResults"
@@ -330,12 +349,20 @@ import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorOptimizerResults from "./CalculatorOptimizerResults.vue";
 import CalculatorOptimizerGuide from "./CalculatorOptimizerGuide.vue";
 import CalculatorOptimizerSettings from "./CalculatorOptimizerSettings.vue";
+import {
+  normalizeLoadoutFormat,
+  OPTIMIZER_EMPTY_REASON_MESSAGES,
+  type OptimizerEmptyReason,
+  type OptimizerLoadoutFormat,
+} from "../calculator/optimizer";
 
 const props = defineProps<{
   character: string;
   totalCombos?: number;
   processedCombos?: number;
+  optimizerElapsedMs?: number;
   optimizerNoPossibleLoadouts?: boolean;
+  optimizerEmptyReason?: OptimizerEmptyReason | null;
   optimizerResults?: unknown[] | null;
   characterElement: string;
   allDamages?: unknown[];
@@ -359,6 +386,7 @@ const emit = defineEmits<{
     optimizationTarget: unknown,
     damageType: string,
     ignoreOtherResonantorEchoes: boolean,
+    loadoutFormat: OptimizerLoadoutFormat,
   ];
 }>();
 
@@ -378,6 +406,7 @@ const echoSetPassiveStats = reactive<
 >({});
 const mainEchoStats = reactive<Record<string, Record<string, number>>>({});
 const ignoreOtherResonantorEchoes = ref(false);
+const loadoutFormat = ref<OptimizerLoadoutFormat>("Any");
 
 const optimizerGuide = ref<{ triggerOpenModal: () => void } | null>(null);
 
@@ -386,6 +415,26 @@ const currentCharacter = computed(
 );
 
 const isTargetUnavailable = computed(() => false);
+
+const formattedOptimizerElapsed = computed(() => {
+  const ms = Math.max(0, props.optimizerElapsedMs ?? 0);
+  const totalSec = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSec / 3600);
+  const minutes = Math.floor((totalSec % 3600) / 60);
+  const seconds = totalSec % 60;
+  if (hours > 0) {
+    return `${hours}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  }
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+});
+
+const emptyReasonMessage = computed(() => {
+  const reason = props.optimizerEmptyReason;
+  if (reason) {
+    return OPTIMIZER_EMPTY_REASON_MESSAGES[reason];
+  }
+  return OPTIMIZER_EMPTY_REASON_MESSAGES["none-found"];
+});
 
 const isValid = computed(() => {
   const echoSetsCount = setFilters.value.length;
@@ -485,6 +534,7 @@ function handleOptimize() {
     optimizationTarget.value,
     damageType.value,
     ignoreOtherResonantorEchoes.value,
+    loadoutFormat.value,
   );
 }
 
@@ -523,6 +573,7 @@ async function syncOptimizerConfig() {
       optimizationTarget: optimizationTarget.value,
       damageType: damageType.value,
       ignoreOtherResonantorEchoes: ignoreOtherResonantorEchoes.value,
+      loadoutFormat: loadoutFormat.value,
     },
   });
 }
@@ -609,9 +660,11 @@ function handleOpenOptimizerGuide() {
 
 function handleUpdatedSettings(settings: {
   ignoreOtherResonantorEchoes?: boolean;
+  loadoutFormat?: OptimizerLoadoutFormat;
 }) {
   ignoreOtherResonantorEchoes.value =
     settings.ignoreOtherResonantorEchoes ?? false;
+  loadoutFormat.value = settings.loadoutFormat ?? "Any";
   void syncOptimizerConfig();
 }
 
@@ -625,6 +678,7 @@ onMounted(() => {
       optimizationTarget?: unknown;
       ignoreOtherResonantorEchoes?: boolean;
       damageType?: string;
+      loadoutFormat?: OptimizerLoadoutFormat | string;
     };
   };
   mainEchoes.value = ch.optimizer?.mainEchoes ?? [];
@@ -633,6 +687,7 @@ onMounted(() => {
   optimizationTarget.value = ch.optimizer?.optimizationTarget ?? null;
   ignoreOtherResonantorEchoes.value =
     ch.optimizer?.ignoreOtherResonantorEchoes ?? false;
+  loadoutFormat.value = normalizeLoadoutFormat(ch.optimizer?.loadoutFormat);
   if (ch.optimizer?.damageType) {
     damageType.value = ch.optimizer.damageType;
   }

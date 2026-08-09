@@ -17,6 +17,10 @@
     }">
     <template v-if="type === 'Healing'">
       <td class="flex items-center gap-2">
+        <img
+          v-if="characterAvatarUrl"
+          :src="characterAvatarUrl"
+          class="size-6 rounded-full border border-solid neutral-content bg-cover" />
         <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
           :class="{
             'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
@@ -39,6 +43,10 @@
     </template>
     <template v-else-if="type === 'Shield'">
       <td class="flex items-center gap-2">
+        <img
+          v-if="characterAvatarUrl"
+          :src="characterAvatarUrl"
+          class="size-6 rounded-full border border-solid neutral-content bg-cover" />
         <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
           :class="{
             'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
@@ -61,6 +69,10 @@
     </template>
     <template v-else>
       <td class="flex items-center gap-2">
+        <img
+          v-if="characterAvatarUrl"
+          :src="characterAvatarUrl"
+          class="size-6 rounded-full border border-solid neutral-content bg-cover" />
         <img v-if="mainEchoImage" :src="mainEchoImage" class="size-6 rounded-full border border-solid neutral-content"
           :class="{
             'border-amber-300': mainEchoRank === '5' || mainEchoRank === 5,
@@ -130,6 +142,8 @@ const props = withDefaults(
     alwaysCrit?: boolean;
     /** Hit/cast count from rotation actions only; omit for non-rotation damage lists. */
     count?: number | string | null;
+    /** Shown next to the label when set — used by multi-character lists (e.g. Team Rotations) to identify which character performs this action. */
+    characterAvatarUrl?: string | null;
   }>(),
   {
     isEnabled: true,
@@ -138,6 +152,7 @@ const props = withDefaults(
     originalIsEnabled: true,
     alwaysCrit: false,
     count: null,
+    characterAvatarUrl: null,
   },
 );
 

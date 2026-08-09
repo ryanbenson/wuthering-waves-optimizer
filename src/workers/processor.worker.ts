@@ -7,15 +7,15 @@
  *
  * Architecture:
  * - Runs in separate threads to parallelize computation
- * - Receives batches of loadouts from the main thread
- * - Calculates stats, buffs, and damage for each loadout
- * - Returns results back to main thread for heap management
- * - Does NOT filter duplicates (main thread handles that)
+ * - Receives static optimizer config once on "init"
+ * - Receives batches of loadouts from the main thread via slim "process" messages
+ * - Keeps a local top-N heap and only returns candidates still retained in it at batch end
+ * - Main thread merges candidates into the global top-N heap
  *
  * Message Flow:
- * 1. Main thread sends "init" -> Worker responds with "ready"
- * 2. Main thread sends "process" with batch, context, and optimization parameters
- * 3. Worker processes all loadouts in batch and sends "result" with array of results
+ * 1. Main thread sends "init" with context and optimization parameters -> Worker responds with "ready"
+ * 2. Main thread sends "process" with { batch, batchId } only
+ * 3. Worker processes loadouts, updates local top-N, sends "result" with newly retained candidates
  * 4. Worker sends "error" if batch processing fails
  *
  * Processing Steps (for each loadout):
@@ -25,24 +25,23 @@
  * 4. Calculate buffs (self, resonance chains, additional base, crit overflow)
  * 5. Calculate final stats
  * 6. Check minimum stat requirements (if any)
- * 7. Calculate target value based on target type:
- *    - Stat: Direct stat value
- *    - Attack: Single attack damage (Normal/Average/Crit)
- *    - Rotation: Aggregated damage from rotation sequence
- * 8. Return result object with loadout, targetValue, and context
+ * 7. Calculate target value based on target type
+ * 8. Try insert into local top-N heap; post only inserts still in the heap at batch end
  *
  * Performance Notes:
- * - All loadouts in a batch are processed sequentially (no async/await)
+ * - Static context is cloned once at init, not per batch
+ * - Only top-N candidates still retained this batch are posted back
  * - Errors in individual loadouts don't stop batch processing
- * - Results are only sent for valid loadouts (null results are filtered)
- * - Context is pre-serialized by main thread (no functions, plain objects)
  */
 
-import type { OptimizerContext } from "../calculator/optimizer";
 import { normalizeOptimizerLoadout } from "../calculator/optimizer";
 import { getAttackData } from "../characters/characters";
 import { getCombinedEchoStats } from "../echoes/stats";
-import { getSetsFromEchoes, getSetBonusEffects, getEnabledAdditionalBasePassives } from "../echoes/sets";
+import {
+  getSetsFromEchoes,
+  getSetBonusEffects,
+  getEnabledAdditionalBasePassives,
+} from "../echoes/sets";
 import {
   calcCharStats,
   computeSelfBuffs,
@@ -57,20 +56,39 @@ import { processAttacks, getCalculationContext } from "../calculator/attacks";
 import { meetsMinStatThreshold } from "../calculator/meetsMinStatThreshold";
 
 /**
+ * Static config stored after init (sent once per optimization run)
+ */
+interface ProcessorConfig {
+  context: any;
+  minStats: any[];
+  echoSetPassiveBuffs: Record<string, any>;
+  mainEchoStats: Record<string, any>;
+  target: string;
+  damageType: string;
+  rotationData?: any;
+  topN: number;
+  /** Loadout-independent; computed once on init */
+  selfBuffsData: any;
+  /** Loadout-independent; computed once on init */
+  resonanceChainsBuffsData: any;
+}
+
+/**
  * Message sent from main thread to processor worker
  */
 interface ProcessorMessage {
   type: "init" | "process" | "stop";
   data?: {
-    batch: any[]; // Array of loadout combinations to process
-    batchId: number; // Unique ID for this batch
-    context: Omit<OptimizerContext, "getRotationById" | "onProgress">; // Serialized context (no functions)
-    minStats: any[]; // Minimum stat requirements
-    echoSetPassiveBuffs: Record<string, any>; // Set bonus passive buffs
-    mainEchoStats: Record<string, any>; // Main echo stats
-    target: string; // Optimization target (e.g., "Stat:ATK", "Attack:basicAttacks|attack1", "Rotation:rotationId")
-    damageType: string; // Damage type for attack/rotation targets ("Normal", "Average", "Crit")
-    rotationData?: any; // Pre-processed rotation data (for Rotation target type)
+    batch?: any[];
+    batchId?: number;
+    context?: any;
+    minStats?: any[];
+    echoSetPassiveBuffs?: Record<string, any>;
+    mainEchoStats?: Record<string, any>;
+    target?: string;
+    damageType?: string;
+    rotationData?: any;
+    topN?: number;
   };
 }
 
@@ -79,43 +97,80 @@ interface ProcessorMessage {
  */
 interface ProcessorResponse {
   type: "result" | "error" | "ready";
-  batchId?: number; // Batch ID this response corresponds to
-  results?: any[]; // Array of processed results (only for "result" type)
-  processed?: number; // Number of loadouts processed in this batch
-  error?: string; // Error message (only for "error" type)
+  batchId?: number;
+  results?: any[];
+  processed?: number;
+  error?: string;
+}
+
+let processorConfig: ProcessorConfig | null = null;
+/** Local min-heap of top-N results (index 0 = worst / minimum targetValue) */
+let localHeap: any[] = [];
+
+function tryInsertLocalHeap(result: any, topN: number): boolean {
+  const targetValue = result.targetValue;
+  if (typeof targetValue !== "number" || !Number.isFinite(targetValue)) {
+    return false;
+  }
+
+  if (localHeap.length < topN) {
+    localHeap.push(result);
+    if (localHeap.length === topN) {
+      localHeap.sort((a, b) => a.targetValue - b.targetValue);
+    }
+    return true;
+  }
+
+  if (targetValue <= localHeap[0].targetValue) {
+    return false;
+  }
+
+  localHeap[0] = result;
+  // Bubble down to restore min-heap property
+  let idx = 0;
+  while (true) {
+    const left = 2 * idx + 1;
+    const right = 2 * idx + 2;
+    let smallest = idx;
+
+    if (
+      left < localHeap.length &&
+      localHeap[left].targetValue < localHeap[smallest].targetValue
+    ) {
+      smallest = left;
+    }
+    if (
+      right < localHeap.length &&
+      localHeap[right].targetValue < localHeap[smallest].targetValue
+    ) {
+      smallest = right;
+    }
+
+    if (smallest === idx) break;
+
+    [localHeap[idx], localHeap[smallest]] = [
+      localHeap[smallest],
+      localHeap[idx],
+    ];
+    idx = smallest;
+  }
+  return true;
 }
 
 /**
  * Processes a single loadout and calculates its optimization target value.
- *
- * This function is extracted from the original optimize function to enable
- * parallel processing in web workers. It performs the full stat calculation
- * and damage computation pipeline for a single loadout.
- *
- * @param loadout - Array of echo objects representing the loadout combination
- * @param context - Serialized optimizer context (character, stats, buffs, etc.)
- * @param allowedSets - Allowed echo sets (currently unused)
- * @param topN - Number of top results to keep (for filtering)
- * @param mainEchoKeys - Main echo keys for validation
- * @param minStats - Minimum stat requirements array
- * @param echoSetPassiveBuffs - Set bonus passive buffs object
- * @param mainEchoStats - Main echo stats object
- * @param target - Optimization target string (format: "Type:Object")
- * @param damageType - Damage type for attack/rotation targets ("Normal", "Average", "Crit")
- * @param rotationData - Pre-processed rotation data (for Rotation target type)
- * @returns Result object with loadout, targetValue, and context, or null if loadout doesn't meet requirements
- *
- * @throws Error if processing fails (caught by batch processor)
  */
 function processLoadout(
   loadout: any[],
-  context: any, // Using any to match the serialized context type
+  context: any,
   minStats: any[],
   echoSetPassiveBuffs: Record<string, any>,
   mainEchoStats: Record<string, any>,
   target: string,
   damageType: string,
-  rotationData?: any, // Pre-processed rotation data for Rotation target type
+  rotationData: any | undefined,
+  selfBuffsData: any,
+  resonanceChainsBuffsData: any,
 ): any | null {
   try {
     const normalizedLoadout = normalizeOptimizerLoadout(loadout);
@@ -160,49 +215,7 @@ function processLoadout(
       });
     });
 
-    // Compute stats
-    let finalStats = calcCharStats(
-      "All",
-      null,
-      { ignoreEchoes: true },
-      combinedEchoBuffs,
-      null,
-      {
-        baseHp: context.baseHp,
-        baseAtk: context.baseAtk,
-        baseDef: context.baseDef,
-      },
-      {
-        weaponAtk: context.weaponData?.attack,
-        weaponModifier: context.weaponData?.modifier,
-        weaponModifierValue: context.weaponData?.modifierValue,
-        weaponPassiveData: context.weaponData?.weaponPassiveStats ?? {},
-      },
-      {},
-      {},
-      context.echoStats,
-      context.customBuffs,
-      context.teamBuffsData,
-    );
-
-    // Compute buffs in correct order
-    const resonanceChainsBuffsData = computeResonanceChainsBuffs(
-      context.activeCharacterResonanceChains ?? {},
-      context.chosenChar?.resonanceChains ?? [],
-      context.talentData ?? {},
-      context.activeStance ?? null,
-    );
-
-    const selfBuffsData = computeSelfBuffs(
-      context.activeCharacterBuffs ?? {},
-      context.chosenChar?.buffs ?? [],
-      context.activeCharacterResonanceChains ?? {},
-      context.talentData ?? {},
-      context.character ?? null,
-      context.activeStance ?? null,
-      { havocBaneStacks: context.havocBaneStacks ?? 0 },
-    );
-
+    // Intermediate stats with hoisted self/RC buffs (echo-dependent via combinedEchoBuffs)
     let intermediateStats = calcCharStats(
       "All",
       null,
@@ -326,7 +339,7 @@ function processLoadout(
       };
     }
 
-    finalStats = calcCharStats(
+    const finalStats = calcCharStats(
       "All",
       null,
       { ignoreEchoes: true },
@@ -372,7 +385,9 @@ function processLoadout(
     if (minStats.length > 0) {
       for (const minStat of minStats) {
         const statValue = finalStats?.[minStat.stat];
-        if (!meetsMinStatThreshold(statValue, minStat.minValue)) {
+        if (
+          !meetsMinStatThreshold(statValue, minStat.minValue, minStat.stat)
+        ) {
           return null; // Doesn't meet requirements
         }
       }
@@ -725,22 +740,50 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
     const { type, data } = e.data;
 
     if (type === "init") {
+      localHeap = [];
+      if (data?.context) {
+        const context = data.context;
+        processorConfig = {
+          context,
+          minStats: Array.isArray(data.minStats) ? data.minStats : [],
+          echoSetPassiveBuffs: data.echoSetPassiveBuffs ?? {},
+          mainEchoStats: data.mainEchoStats ?? {},
+          target: data.target ?? "",
+          damageType: data.damageType ?? "Average",
+          rotationData: data.rotationData ?? null,
+          topN: typeof data.topN === "number" && data.topN > 0 ? data.topN : 5,
+          // Echo-independent buffs — compute once per run
+          resonanceChainsBuffsData: computeResonanceChainsBuffs(
+            context.activeCharacterResonanceChains ?? {},
+            context.chosenChar?.resonanceChains ?? [],
+            context.talentData ?? {},
+            context.activeStance ?? null,
+          ),
+          selfBuffsData: computeSelfBuffs(
+            context.activeCharacterBuffs ?? {},
+            context.chosenChar?.buffs ?? [],
+            context.activeCharacterResonanceChains ?? {},
+            context.talentData ?? {},
+            context.character ?? null,
+            context.activeStance ?? null,
+            { havocBaneStacks: context.havocBaneStacks ?? 0 },
+          ),
+        };
+      } else {
+        processorConfig = null;
+      }
       self.postMessage({ type: "ready" } as ProcessorResponse);
       return;
     }
 
+    if (type === "stop") {
+      processorConfig = null;
+      localHeap = [];
+      return;
+    }
+
     if (type === "process" && data) {
-      const {
-        batch,
-        batchId,
-        context,
-        minStats,
-        echoSetPassiveBuffs,
-        mainEchoStats,
-        target,
-        damageType,
-        rotationData,
-      } = data;
+      const { batch, batchId } = data;
 
       if (!batch || !Array.isArray(batch) || batch.length === 0) {
         console.error("Processor worker: Invalid batch received", {
@@ -756,23 +799,37 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
         return;
       }
 
-      if (!context) {
-        console.error("Processor worker: Missing context", { batchId });
+      if (!processorConfig) {
+        console.error("Processor worker: Missing config (init not called)", {
+          batchId,
+        });
         self.postMessage({
           type: "error",
           batchId,
-          error: "Missing context",
+          error: "Missing processor config",
           processed: 0,
         } as ProcessorResponse);
         return;
       }
 
+      const {
+        context,
+        minStats,
+        echoSetPassiveBuffs,
+        mainEchoStats,
+        target,
+        damageType,
+        rotationData,
+        topN,
+        selfBuffsData,
+        resonanceChainsBuffsData,
+      } = processorConfig;
+
       try {
-        // Don't filter duplicates in workers - main thread will handle that
-        // Workers process all loadouts and send all results back
-        const results: any[] = [];
+        // Track inserts this batch; only post those still in the local heap at batch end
+        // (avoids shipping soon-evicted candidates and re-cloning unchanged heap members)
+        const enteredThisBatch = new Set<any>();
         let errorCount = 0;
-        let nullCount = 0;
 
         for (let i = 0; i < batch.length; i++) {
           const loadout = batch[i];
@@ -785,13 +842,13 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
               mainEchoStats,
               target,
               damageType,
-              rotationData, // Pass rotation data for Rotation target type
+              rotationData,
+              selfBuffsData,
+              resonanceChainsBuffsData,
             );
 
-            if (result) {
-              results.push(result);
-            } else {
-              nullCount++;
+            if (result && tryInsertLocalHeap(result, topN)) {
+              enteredThisBatch.add(result);
             }
           } catch (loadoutError: any) {
             errorCount++;
@@ -804,6 +861,10 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
           }
         }
 
+        const candidates = localHeap.filter((result) =>
+          enteredThisBatch.has(result),
+        );
+
         // Only log errors
         if (errorCount > 0) {
           console.error(
@@ -814,7 +875,7 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
         self.postMessage({
           type: "result",
           batchId,
-          results,
+          results: candidates,
           processed: batch.length,
         } as ProcessorResponse);
       } catch (error: any) {

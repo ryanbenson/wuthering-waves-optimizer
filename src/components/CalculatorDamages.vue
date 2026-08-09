@@ -544,7 +544,7 @@
 
   <template v-if="rotationsList.length && allDamages.value?.rotations">
     <div
-      v-for="rotation in allDamages.value.rotations"
+      v-for="rotation in sortedDamageRotations"
       class="rotation__item pt-8"
       :key="rotation.id"
       :data-test-damages-list-rotation="rotation.name">
@@ -560,23 +560,11 @@
       <h4 class="text" v-if="rotation.duration">
         <span class="font-bold">DPS ({{ rotation.duration }}s)</span>
         Normal:
-        {{
-          displayDamage(
-            rotation.damageAggregation.normalDamage / Number(rotation.duration),
-          )
-        }}
+        {{ displayDamage(rotationDps(rotation).normal) }}
         / Average:
-        {{
-          displayDamage(
-            rotation.damageAggregation.avgDamage / Number(rotation.duration),
-          )
-        }}
+        {{ displayDamage(rotationDps(rotation).avg) }}
         / Crit:
-        {{
-          displayDamage(
-            rotation.damageAggregation.critDamage / Number(rotation.duration),
-          )
-        }}
+        {{ displayDamage(rotationDps(rotation).crit) }}
       </h4>
       <h4
         v-if="rotation.damageAggregation.healing"
@@ -669,6 +657,7 @@
 import { computed, ref } from "vue";
 import { displayDamage } from "../utils/numbers";
 import { getEchoData } from "../echoes";
+import { calcRotationDps } from "../calculator/teamRotation";
 import CalculatorDamage from "./CalculatorDamage.vue";
 import CalculatorDamageChart from "./CalculatorDamageChart.vue";
 
@@ -713,6 +702,26 @@ const echoData = computed(() => {
 const echoName = computed(() => echoData.value?.name ?? null);
 const echoDetails = computed(() => echoData.value?.details ?? null);
 const charName = computed(() => props.chosenChar?.value?.basic?.name ?? null);
+
+function rotationDps(rotation: { damageAggregation: any; duration: unknown }) {
+  return calcRotationDps(rotation.damageAggregation, rotation.duration as any);
+}
+
+const sortedDamageRotations = computed(() => {
+  const rotations = props.allDamages?.value?.rotations;
+  if (!Array.isArray(rotations)) {
+    return [];
+  }
+  return [...rotations].sort((a, b) => {
+    const aOrder = Number.isFinite(Number(a?.order))
+      ? Number(a.order)
+      : Number.MAX_SAFE_INTEGER;
+    const bOrder = Number.isFinite(Number(b?.order))
+      ? Number(b.order)
+      : Number.MAX_SAFE_INTEGER;
+    return aOrder - bOrder;
+  });
+});
 
 function handleSelectedAttack(attackKey: string, damage: Record<string, any>, label: string) {
   emit("selected-attack", attackKey, damage, label);

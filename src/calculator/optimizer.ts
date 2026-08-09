@@ -23,6 +23,77 @@ function echoCost(echo: { type?: unknown }): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+export type OptimizerLoadoutFormat = "Any" | "43311" | "44111";
+
+const LOADOUT_FORMAT_COST_COUNTS: Record<
+  Exclude<OptimizerLoadoutFormat, "Any">,
+  Record<number, number>
+> = {
+  "43311": { 4: 1, 3: 2, 1: 2 },
+  "44111": { 4: 2, 1: 3 },
+};
+
+export function normalizeLoadoutFormat(
+  value: unknown,
+): OptimizerLoadoutFormat {
+  if (value === "Any" || value === "43311" || value === "44111") {
+    return value;
+  }
+  return "Any";
+}
+
+function getFormatCostCounts(
+  format: OptimizerLoadoutFormat,
+): Record<number, number> | null {
+  if (format === "Any") {
+    return null;
+  }
+  return { ...LOADOUT_FORMAT_COST_COUNTS[format] };
+}
+
+function canUseEchoForFormat(
+  remainingCosts: Record<number, number> | null,
+  cost: number,
+): boolean {
+  if (!remainingCosts) {
+    return true;
+  }
+  return (remainingCosts[cost] ?? 0) > 0;
+}
+
+function consumeFormatCost(
+  remainingCosts: Record<number, number> | null,
+  cost: number,
+): void {
+  if (!remainingCosts) {
+    return;
+  }
+  remainingCosts[cost] -= 1;
+}
+
+function restoreFormatCost(
+  remainingCosts: Record<number, number> | null,
+  cost: number,
+): void {
+  if (!remainingCosts) {
+    return;
+  }
+  remainingCosts[cost] += 1;
+}
+
+function isCompleteFormatLoadout(
+  remainingCosts: Record<number, number> | null,
+  comboLength: number,
+): boolean {
+  if (!remainingCosts) {
+    return false;
+  }
+  if (comboLength !== 5) {
+    return false;
+  }
+  return Object.values(remainingCosts).every((count) => count === 0);
+}
+
 export function filterEchoesForOptimizer(echoes: unknown[]): unknown[] {
   if (!Array.isArray(echoes)) {
     return [];
@@ -30,6 +101,45 @@ export function filterEchoesForOptimizer(echoes: unknown[]): unknown[] {
   return echoes.filter(
     (echo) => !(echo as { ignoreFromOptimizer?: boolean })?.ignoreFromOptimizer,
   );
+}
+
+/** Why an optimize run finished with zero ranked loadouts. */
+export type OptimizerEmptyReason =
+  | "no-inventory"
+  | "no-set-echoes"
+  | "filtered"
+  | "none-found";
+
+export const OPTIMIZER_EMPTY_REASON_MESSAGES: Record<
+  OptimizerEmptyReason,
+  string
+> = {
+  "no-inventory": "There are no echoes in your inventory",
+  "no-set-echoes": "There are no echoes with the sets you chose",
+  filtered:
+    "There are no loadouts based on your filtering, such as minimum stat requirements",
+  "none-found": "No loadouts were found",
+};
+
+/**
+ * Pick the most specific empty-result explanation.
+ * Call only when the run completed with zero results.
+ */
+export function resolveOptimizerEmptyReason(input: {
+  inventoryCount: number;
+  setFilteredCount: number;
+  generatedCount: number;
+}): OptimizerEmptyReason {
+  if (input.inventoryCount <= 0) {
+    return "no-inventory";
+  }
+  if (input.setFilteredCount <= 0) {
+    return "no-set-echoes";
+  }
+  if (input.generatedCount > 0) {
+    return "filtered";
+  }
+  return "none-found";
 }
 
 function echoOptimizerSignature(echo: any): string {
@@ -77,15 +187,45 @@ export function getOptimizerLoadoutKey(loadout: any[]): string {
   return normalizedLoadout.map(echoOptimizerSignature).join("|");
 }
 
+/**
+ * FNV-1a 64-bit hash of a loadout signature string.
+ * Used so dedupe Sets store compact values instead of retaining long keys.
+ */
+export function hashOptimizerLoadoutKey(key: string): bigint {
+  let hash = 0xcbf29ce484222325n;
+  const prime = 0x100000001b3n;
+  for (let i = 0; i < key.length; i++) {
+    hash ^= BigInt(key.charCodeAt(i));
+    hash = BigInt.asUintN(64, hash * prime);
+  }
+  return hash;
+}
+
+/** Signature-equivalent uniqueness key stored as a 64-bit hash. */
+export function getOptimizerLoadoutHash(loadout: any[]): bigint {
+  return hashOptimizerLoadoutKey(getOptimizerLoadoutKey(loadout));
+}
+
 export function* generateLoadouts(
   echoes: any,
-  mainEchoKeys = [],
+  mainEchoKeys: string[] = [],
   start = 0,
-  combo = [],
+  combo: any[] = [],
   cost = 0,
-  usedEchoIds = new Set(),
-  usedEchoes = new Set(),
+  usedEchoIds: Set<unknown> = new Set(),
+  usedEchoes: Set<unknown> = new Set(),
+  loadoutFormat: OptimizerLoadoutFormat = "Any",
+  remainingCosts?: Record<number, number> | null,
+  /** Only process the shardIndex-th slice (mod shardCount) of the top-level branches. Used to
+   * partition generation across multiple generator workers; defaults are a no-op for single-shard use. */
+  shardIndex = 0,
+  shardCount = 1,
 ): any {
+  const format = normalizeLoadoutFormat(loadoutFormat);
+  // Initialize remaining cost budget on the root call only
+  let costsRemaining: Record<number, number> | null =
+    remainingCosts === undefined ? getFormatCostCounts(format) : remainingCosts;
+
   // If we have main echo keys and combo is empty, we need to start with one of those
   if (mainEchoKeys.length > 0 && combo.length === 0) {
     // Find all echoes that match the main echo keys
@@ -93,15 +233,25 @@ export function* generateLoadouts(
     const mainEchoCopies = echoes.filter((e) => mainEchoKeys.includes(e.echo));
 
     // For each copy of the main echo, start a new combination
-    for (const mainEcho of mainEchoCopies) {
+    for (let mainEchoIndex = 0; mainEchoIndex < mainEchoCopies.length; mainEchoIndex++) {
+      if (shardCount > 1 && mainEchoIndex % shardCount !== shardIndex) continue;
+      const mainEcho = mainEchoCopies[mainEchoIndex];
       // the main echo isn't guaranteed to be 4, sometimes it's an elite, so 3
-      const nextCost = cost + echoCost(mainEcho);
+      const mainCost = echoCost(mainEcho);
+      if (!canUseEchoForFormat(costsRemaining, mainCost)) {
+        continue;
+      }
+      const nextCost = cost + mainCost;
       if (nextCost <= 12) {
         // Create a fresh usedEchoIds Set for each main echo group
         const groupUsedEchoIds = new Set([mainEcho.echoId]);
         // add the main echo to the list of echoes already used so we dont try to use
         // another copy of the same echo
         const groupUsedEchoes = new Set([mainEcho.echo]);
+        const groupRemainingCosts = costsRemaining
+          ? { ...costsRemaining }
+          : null;
+        consumeFormatCost(groupRemainingCosts, mainCost);
         yield* generateLoadouts(
           echoes,
           mainEchoKeys,
@@ -111,15 +261,22 @@ export function* generateLoadouts(
           nextCost,
           groupUsedEchoIds,
           groupUsedEchoes,
+          format,
+          groupRemainingCosts,
         );
       }
     }
     return;
   }
 
-  // Any non-empty loadout with ≤5 echoes and total cost ≤12 is valid (cost may be under 12 even with
-  // all five slots filled; it only must not exceed the 12 budget).
-  if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
+  // Format-constrained mode: only yield complete matching 5-echo loadouts
+  if (costsRemaining) {
+    if (isCompleteFormatLoadout(costsRemaining, combo.length)) {
+      yield combo;
+    }
+  } else if (combo.length > 0 && combo.length <= 5 && cost <= 12) {
+    // Any non-empty loadout with ≤5 echoes and total cost ≤12 is valid (cost may be under 12 even with
+    // all five slots filled; it only must not exceed the 12 budget).
     yield combo;
   }
 
@@ -129,19 +286,28 @@ export function* generateLoadouts(
   // If we have main echo keys and combo is empty, we've already handled the first slot
   if (mainEchoKeys.length > 0 && combo.length === 0) return;
 
+  // Shard only the true root call (no main echo keys, nothing chosen yet) — nested recursive
+  // calls always have a non-empty combo and must process every branch beneath their anchor.
+  const isRootCall = mainEchoKeys.length === 0 && start === 0 && combo.length === 0;
+
   for (let i = start; i < echoes.length; i++) {
+    if (isRootCall && shardCount > 1 && i % shardCount !== shardIndex) continue;
     const next = echoes[i];
     // Skip if already used
     if (usedEchoIds.has(next.echoId)) continue;
     // Skip if the echo has
     if (usedEchoes.has(next.echo)) continue;
 
-    const nextCost = cost + echoCost(next);
+    const nextEchoCost = echoCost(next);
+    if (!canUseEchoForFormat(costsRemaining, nextEchoCost)) continue;
+
+    const nextCost = cost + nextEchoCost;
     if (nextCost <= 12) {
       // Add to used set instead of filtering
       usedEchoIds.add(next.echoId);
       // Add the echo key instead of filtering
       usedEchoes.add(next.echo);
+      consumeFormatCost(costsRemaining, nextEchoCost);
       // @ts-ignore
       combo.push(next); // Mutate instead of creating new array
       yield* generateLoadouts(
@@ -152,12 +318,29 @@ export function* generateLoadouts(
         nextCost,
         usedEchoIds,
         usedEchoes,
+        format,
+        costsRemaining,
       );
       combo.pop(); // Backtrack
       usedEchoIds.delete(next.echoId); // Backtrack
       usedEchoes.delete(next.echo);
+      restoreFormatCost(costsRemaining, nextEchoCost);
     }
   }
+}
+
+/**
+ * Splits a user-chosen total worker count into generator vs. processor workers.
+ * The generator's search-space partitioning only pays off with a few shards; most
+ * of the budget should go to processor workers, which do the expensive per-loadout
+ * stat/damage evaluation.
+ */
+export function splitOptimizerWorkerCount(total: number): {
+  generatorCount: number;
+  processorCount: number;
+} {
+  const generatorCount = total >= 32 ? 4 : total >= 16 ? 2 : 1;
+  return { generatorCount, processorCount: Math.max(1, total - generatorCount) };
 }
 
 // Optimizer context interface - all data needed for optimization
@@ -261,7 +444,7 @@ export function optimize(
 ) {
   // Min-heap for topN results
   const heap: any[] = [];
-  const seenCombinations = new Set<string>(); // Track unique combinations
+  const seenCombinations = new Set<bigint>(); // Track unique combinations
 
   // get info on our target
   const targetElements = target.split(":");
@@ -380,12 +563,29 @@ export function optimize(
     damageTargetReference = damageTargetMap[damageType] ?? "avgDamage";
   }
 
+  // Echo-independent buffs — compute once for the whole run
+  const resonanceChainsBuffsData = computeResonanceChainsBuffs(
+    context.activeCharacterResonanceChains ?? {},
+    context.chosenChar?.resonanceChains ?? [],
+    context.talentData ?? {},
+    context.activeStance ?? null,
+  );
+  const selfBuffsData = computeSelfBuffs(
+    context.activeCharacterBuffs ?? {},
+    context.chosenChar?.buffs ?? [],
+    context.activeCharacterResonanceChains ?? {},
+    context.talentData ?? {},
+    context.character ?? null,
+    context.activeStance ?? null,
+    { havocBaneStacks: context.havocBaneStacks ?? 0 },
+  );
+
   // @ts-ignore
   for (const loadout of generateLoadouts(echoes, mainEchoKeys)) {
-    const combinationKey = getOptimizerLoadoutKey(loadout);
+    const combinationHash = getOptimizerLoadoutHash(loadout);
 
     // Skip if we've already seen this combination
-    if (seenCombinations.has(combinationKey)) {
+    if (seenCombinations.has(combinationHash)) {
       continue;
     }
 
@@ -432,56 +632,8 @@ export function optimize(
         }
       });
     });
-    // first compute the stats without self buffs
-    let finalStats = calcCharStats(
-      "All", // return value
-      null, // inject stats
-      // ignores
-      {
-        ignoreEchoes: true,
-      },
-      combinedEchoBuffs, // echo stats
-      null, // full stats
-      // base stats
-      {
-        baseHp: context.baseHp,
-        baseAtk: context.baseAtk,
-        baseDef: context.baseDef,
-      },
-      {
-        weaponAtk: context.weaponData?.attack,
-        weaponModifier: context.weaponData?.modifier,
-        weaponModifierValue: context.weaponData?.modifierValue,
-        weaponPassiveData: context.weaponData?.weaponPassiveStats ?? {},
-      },
-      {}, // NO SELF BUFFS
-      {}, // no resonance chains
-      context.echoStats,
-      context.customBuffs,
-      context.teamBuffsData,
-    );
 
-    // Compute all buffs in the correct order for this loadout
-    // Step 1: Compute resonance chains buffs using base stats
-    const resonanceChainsBuffsData = computeResonanceChainsBuffs(
-      context.activeCharacterResonanceChains ?? {},
-      context.chosenChar?.resonanceChains ?? [],
-      context.talentData ?? {},
-      context.activeStance ?? null,
-    );
-
-    // Step 2: Compute self buffs using base stats
-    const selfBuffsData = computeSelfBuffs(
-      context.activeCharacterBuffs ?? {},
-      context.chosenChar?.buffs ?? [],
-      context.activeCharacterResonanceChains ?? {},
-      context.talentData ?? {},
-      context.character ?? null,
-      context.activeStance ?? null,
-      { havocBaneStacks: context.havocBaneStacks ?? 0 },
-    );
-
-    // Step 3: Calculate intermediate stats with resonance chains and self buffs
+    // Intermediate stats with self/RC buffs (AdditionalBase / CritOverflow still need ER/CR)
     let intermediateStats = calcCharStats(
       "All",
       null,
@@ -559,7 +711,7 @@ export function optimize(
     };
 
     // Step 7: Compute final stats with all buffs
-    finalStats = calcCharStats(
+    const finalStats = calcCharStats(
       "All",
       null,
       {
@@ -609,7 +761,9 @@ export function optimize(
     if (minStats.length > 0) {
       for (const minStat of minStats) {
         const statValue = finalStats?.[minStat.stat];
-        if (!meetsMinStatThreshold(statValue, minStat.minValue)) {
+        if (
+          !meetsMinStatThreshold(statValue, minStat.minValue, minStat.stat)
+        ) {
           isMeetingMinRequirements = false;
           break;
         }
@@ -620,7 +774,7 @@ export function optimize(
       continue;
     }
 
-    seenCombinations.add(combinationKey);
+    seenCombinations.add(combinationHash);
 
     let targetValue = 0;
     let resultContext: any = {

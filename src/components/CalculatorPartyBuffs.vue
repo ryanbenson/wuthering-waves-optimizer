@@ -55,34 +55,15 @@
             </div>
           </div>
           <div class="character__selection__form">
-            <select
+            <AppRichSelect
               v-model="selectedCharacter1"
-              class="select select-bordered select-sm w-full max-w-xs"
-              data-test-party-member-1-input>
-              <option :value="null">None</option>
-              <optgroup label="5 Star">
-                <option
-                  v-for="char in charactersList.five"
-                  :key="char.key"
-                  :value="char.key">
-                  {{ char.name }}
-                </option>
-              </optgroup>
-              <optgroup label="4 Star">
-                <option
-                  v-for="char in charactersList.four"
-                  :key="char.key"
-                  :value="char.key">
-                  {{ char.name }}
-                </option>
-              </optgroup>
-              <optgroup v-if="partyMember1NotOnRoster" label="Other">
-                <option
-                  :value="partyMember1NotOnRoster.key">
-                  {{ partyMember1NotOnRoster.name }}
-                </option>
-              </optgroup>
-            </select>
+              :options="partyMember1Options"
+              searchable
+              allow-empty
+              empty-label="None"
+              search-placeholder="Type to find a character…"
+              aria-label="Choose first team member"
+              data-test-party-member-1-input />
             <div class="btn btn-xs btn-primary mt-2" @click="clearCharacter1">
               Clear
             </div>
@@ -121,34 +102,15 @@
             </div>
           </div>
           <div class="character__selection__form">
-            <select
+            <AppRichSelect
               v-model="selectedCharacter2"
-              class="select select-bordered select-sm w-full max-w-xs"
-              data-test-party-member-2-input>
-              <option :value="null">None</option>
-              <optgroup label="5 Star">
-                <option
-                  v-for="char in charactersList.five"
-                  :key="char.key"
-                  :value="char.key">
-                  {{ char.name }}
-                </option>
-              </optgroup>
-              <optgroup label="4 Star">
-                <option
-                  v-for="char in charactersList.four"
-                  :key="char.key"
-                  :value="char.key">
-                  {{ char.name }}
-                </option>
-              </optgroup>
-              <optgroup v-if="partyMember2NotOnRoster" label="Other">
-                <option
-                  :value="partyMember2NotOnRoster.key">
-                  {{ partyMember2NotOnRoster.name }}
-                </option>
-              </optgroup>
-            </select>
+              :options="partyMember2Options"
+              searchable
+              allow-empty
+              empty-label="None"
+              search-placeholder="Type to find a character…"
+              aria-label="Choose second team member"
+              data-test-party-member-2-input />
             <div class="btn btn-xs btn-primary mt-2" @click="clearCharacter2">
               Clear
             </div>
@@ -316,10 +278,14 @@ import {
   getCharacterRosterDisplayName,
   getCharactersAvailable,
 } from "../characters/characters.ts";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
 import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
 import { useCharacterStore } from "../stores/character";
 import type { PartyBuffModifier } from "./CalculatorPartyBuff.vue";
+import { aggregateTeamBuffStats } from "../buffs/teamBuffs";
 
 type PartyBuffEmit = { key: string; data: Record<string, unknown> };
 
@@ -434,6 +400,45 @@ const partyMember2NotOnRoster = computed(() => {
   return { key: k, name: getCharacterRosterDisplayName(k) };
 });
 
+function buildPartyMemberOptions(
+  offRosterMember: { key: string; name: string } | null,
+): AppRichSelectOption[] {
+  const mapBucket = (
+    chars: CharacterPickerList["five"],
+    group: string,
+  ): AppRichSelectOption[] =>
+    chars.map((char) => ({
+      value: char.key,
+      label: char.name,
+      group,
+      image: getCharacterImage(char.key),
+    }));
+
+  const options = [
+    ...mapBucket(charactersList.value.five, "5 Star"),
+    ...mapBucket(charactersList.value.four, "4 Star"),
+  ];
+
+  if (offRosterMember) {
+    options.push({
+      value: offRosterMember.key,
+      label: offRosterMember.name,
+      group: "Other",
+      image: getCharacterImage(offRosterMember.key),
+    });
+  }
+
+  return options;
+}
+
+const partyMember1Options = computed(() =>
+  buildPartyMemberOptions(partyMember1NotOnRoster.value),
+);
+
+const partyMember2Options = computed(() =>
+  buildPartyMemberOptions(partyMember2NotOnRoster.value),
+);
+
 const partyMember1DisplayName = computed(() =>
   selectedCharacter1.value
     ? getCharacterRosterDisplayName(selectedCharacter1.value)
@@ -515,47 +520,13 @@ function handlePartyMember2Chosen(nextCharacter: string) {
   selectedCharacter2.value = nextCharacter;
 }
 
-const buffsFormatted = computed(() => {
-  const finalBuffData: Record<string, unknown> = {};
-  let modifySpecificTalents: PartyBuffModifier[] = [];
-  const allBuffs = [
+const buffsFormatted = computed(() =>
+  aggregateTeamBuffStats([
     ...buffsDataChar1.value,
     ...buffsDataChar2.value,
     ...buffsDataEcho.value,
-  ];
-  allBuffs.forEach((buffInstance) => {
-    const buffDataArr = Object.entries(buffInstance.data);
-    buffDataArr.forEach(([stat, value]) => {
-      if (stat === "modifySpecificTalents") {
-        modifySpecificTalents = modifySpecificTalents.concat(
-          value as PartyBuffModifier[],
-        );
-      } else if (stat === "EnableAttack") {
-        finalBuffData[stat] = value;
-      } else {
-        finalBuffData[stat] =
-          ((finalBuffData[stat] as number) || 0) + (value as number);
-      }
-    });
-  });
-  if (modifySpecificTalents.length > 0) {
-    const specificTalentBuffs: Record<string, number> = {};
-    modifySpecificTalents.forEach((buffInstance) => {
-      const talentKeys = buffInstance?.modifySpecificTalents ?? [];
-      talentKeys.forEach((talent) => {
-        let talentName = talent;
-        if (buffInstance?.modifier) {
-          talentName = `${talentName}:${buffInstance.modifier}`;
-        }
-        specificTalentBuffs[talentName] =
-          (specificTalentBuffs[talentName] || 0) +
-          (buffInstance.modifierValueCalculated ?? 0);
-      });
-    });
-    finalBuffData.specificTalentBuffs = specificTalentBuffs;
-  }
-  return finalBuffData;
-});
+  ]),
+);
 
 function updatedStats() {
   emit("updated-team-buffs", buffsFormatted.value);
@@ -672,17 +643,13 @@ onBeforeUnmount(() => {
 }
 .teammate_selects {
   display: flex;
-  gap: 2rem;
+  gap: 0.5rem;
 
-  @media (max-width: 480px) {
-    gap: 1rem;
-  }
-  @media (max-width: 900px) {
-    gap: 2rem;
+  @media (max-width: 1460px) {
     flex-direction: column;
   }
   @media (max-width: 768px) {
-    flex-direction: row;
+    flex-direction: column;
   }
   @media (max-width: 500px) {
     flex-direction: column;
@@ -691,16 +658,15 @@ onBeforeUnmount(() => {
 .teammate__select {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
+  gap: 0.5rem;
+  flex: 1;
   label {
     display: none;
   }
 }
 .party-member__selection.character__selection {
   display: grid;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 4rem 1fr;
   align-items: center;
   grid-gap: 2rem;
   width: 100%;
@@ -709,10 +675,15 @@ onBeforeUnmount(() => {
 .character__selection__form {
   min-width: 0;
 }
+@media (max-width: 480px) {
+  .character__selection__form {
+    --app-rich-select-min-width: 8rem;
+  }
+}
 .character__selection__avatar {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 4rem;
+  height: 4rem;
   background-repeat: no-repeat;
   display: block;
   background-size: contain;

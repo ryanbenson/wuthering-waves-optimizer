@@ -11,7 +11,7 @@ describe("Calculator Rotations", () => {
   });
 
   it("should enable basic rotations with action buffs", () => {
-    cy.get(".character__selection__form--character select").select("Carlotta");
+    cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Carlotta").should("be.visible");
     cy.get('[data-test-calculator-nav="rotations"]').click();
@@ -34,39 +34,45 @@ describe("Calculator Rotations", () => {
       .clear()
       .type("Test001");
 
-    // add an action
+    // add an action — newly-added actions auto-open for editing (see
+    // CalculatorRotation.vue's addAction -> toggleEdit()), so there's no
+    // need to click into it first; doing so would just toggle it shut again
     cy.get(`[data-test-rotation-action-add="Test001"]`).click();
-    // find first action that's empty and click to get into it
     cy.get(`[data-test-rotation-action-by-attack-key="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-by-attack-key="none"]`).click();
     // find and change the skill used
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-skill-input="none"]`).select(
+    cy.richSelect(
+      `[data-test-rotation-action-skill-input="none"]`,
       "BasicAttackStage1DMG",
     );
     // create second action
     cy.get(`[data-test-rotation-action-add="Test001"]`).click();
-    // find first action that's empty and click to get into it
     cy.get(`[data-test-rotation-action-by-attack-key="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-by-attack-key="none"]`).click();
     // find and change the skill used
     cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
       "be.visible",
     );
-    cy.get(`[data-test-rotation-action-skill-input="none"]`).select(
+    cy.richSelect(
+      `[data-test-rotation-action-skill-input="none"]`,
       "FatalFinaleDMG",
     );
+    // Manual buffs live behind "Configure Stats" now, separate from the
+    // "choose attack" edit form that clicking the row opens
+    cy.get(`[data-test-rotation-action-skill-input="FatalFinaleDMG"]`)
+      .closest(".rotation__action")
+      .find("[data-test-rotation-action-configure-stats]")
+      .click();
     // add a buff to the second action
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).should("be.visible");
     cy.get(`[data-test-action-add-buff="FatalFinaleDMG"]`).click();
     cy.get(`[data-test-action-buff-input="none"]`).should("be.visible");
-    cy.get(`[data-test-action-buff-input="none"]`).select("CritRate");
+    cy.richSelect(`[data-test-action-buff-input="none"]`, "CritRate");
     cy.get(`[data-test-action-buff-value-input="CritRate"]`).should(
       "be.visible",
     );

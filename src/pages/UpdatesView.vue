@@ -2,6 +2,63 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 7, 2026</h3>
+    <ul>
+      <li>Adds a new Team Rotations page (Labs feature, enable it in Settings > Labs): build teams of up to 3 characters, chain their actions into a rotation, and see the team's total damage and DPS.</li>
+      <li>Adds ability to set how many workers to use in the optimizer.</li>
+    </ul>
+    <h3>August 6, 2026</h3>
+    <ul>
+      <li>Fixes weapon team buff name for Firstlight's Herald.</li>
+      <li>Fixes last weapon buff refinement dropdown.</li>
+    </ul>
+    <h3>August 5, 2026</h3>
+    <ul>
+      <li>More improvements to the optimizer stability at higher scale of loadouts.</li>
+    </ul>
+    <h3>August 4, 2026</h3>
+    <ul>
+      <li>Fixes minimum stat requirements for optimizer, ATK, DEF, and HP weren't working properly.</li>
+      <li>Improves the optimizer stability at higher scale of loadouts, and includes a timer in the UI.</li>
+    </ul>
+    <h3>August 3, 2026</h3>
+    <ul>
+      <li>Adds ability to drag and drop to reorder rotations when you have more than one.</li>
+      <li>Fixes Tune Strain to be Total DMG.</li>
+    </ul>
+    <h3>August 2, 2026</h3>
+    <ul>
+      <li>Adds ability to change rotation damage chart to show Normal, Average, and Crit values.</li>
+      <li>Adds ability to group rotation damage chart by damage type or by forte.</li>
+      <li>Adds chart defaults in Settings → Preferences for damage value and grouping.</li>
+      <li>Adds ability to import echoes directly into inventory from the inventory page.</li>
+      <li>
+        Damage charts can now switch between Normal, Average, and Crit values,
+        and group by damage type or by forte.
+      </li>
+      <li>
+        Adds chart defaults in Settings → Preferences for damage value and
+        grouping.
+      </li>
+    </ul>
+    <h3>August 1, 2026</h3>
+    <ul>
+      <li>Adds more character status options (Won't build, wanted).</li>
+      <li>Adds the ability to change the character status in the character browser.</li>
+      <li>Adds ability to always hide unwatched characters in the character browser.</li>
+      <li>Enhances all of the selection UI to make them easier to use with icons, searchability, and more.</li>
+    </ul>
+    <h3>July 31, 2026</h3>
+    <ul>
+      <li>Adds ability to set loadout format in the optimizer.</li>
+      <li>Fixes bug where the optimizer would not apply the correct loadout main echo stat.</li>
+    </ul>
+    <h3>July 30, 2026</h3>
+    <ul>
+      <li>Improves pagination in the inventory page.</li>
+      <li>Improves UX for selecting actions and buffs in rotations.</li>
+      <li>Adds No Intro and Loop rotations for Suisui.</li>
+    </ul>
     <h3>July 27, 2026</h3>
     <ul>
       <li>Adds rotation action count to each attack in the rotation results and in the optimizer results.</li>

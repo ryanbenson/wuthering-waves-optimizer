@@ -1,9 +1,16 @@
-export type CharacterBuildStatus = "not-started" | "in-progress" | "finished";
+export type CharacterBuildStatus =
+  | "not-started"
+  | "wanted"
+  | "in-progress"
+  | "finished"
+  | "wont-build";
 
 export const CHARACTER_BUILD_STATUSES: CharacterBuildStatus[] = [
   "not-started",
+  "wanted",
   "in-progress",
   "finished",
+  "wont-build",
 ];
 
 type CharacterBuildData = {
@@ -36,6 +43,10 @@ export function getCharacterBuildStatusLabel(
       return "Finished";
     case "in-progress":
       return "In progress";
+    case "wanted":
+      return "Wanted";
+    case "wont-build":
+      return "Won't build";
     default:
       return "Not started";
   }
@@ -49,6 +60,10 @@ export function getCharacterBuildStatusDotClass(
       return "bg-success";
     case "in-progress":
       return "bg-info";
+    case "wanted":
+      return "bg-warning";
+    case "wont-build":
+      return "bg-error";
     default:
       return "bg-gray-400";
   }

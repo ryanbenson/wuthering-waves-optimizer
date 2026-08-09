@@ -49,77 +49,30 @@
       <div
         class="weapon__basic-data"
         :class="{ 'weapon__basic-data--compact': isCompact }">
-        <div :class="{ 'mb-2': !isCompact }">
-          <select
-            name="weapon"
+        <div class="weapon__name-select" :class="{ 'mb-2': !isCompact }">
+          <AppRichSelect
             v-model="weapon"
-            class="select select-bordered select-sm"
-            data-test-weapon-select>
-            <option :value="null">Choose a weapon</option>
-            <optgroup label="5 Star">
-              <option
-                v-for="weap in weaponsList.five"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-            <optgroup label="4 Star">
-              <option
-                v-for="weap in weaponsList.four"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-            <optgroup label="3 Star">
-              <option
-                v-for="weap in weaponsList.three"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-            <optgroup label="2 Star">
-              <option
-                v-for="weap in weaponsList.two"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-            <optgroup label="1 Star">
-              <option
-                v-for="weap in weaponsList.one"
-                :key="weap.key"
-                :value="weap.key">
-                {{ weap.name }}
-              </option>
-            </optgroup>
-          </select>
+            :options="weaponSelectOptions"
+            searchable
+            allow-empty
+            empty-label="Choose a weapon"
+            search-placeholder="Type to find a weapon…"
+            aria-label="Choose weapon"
+            data-test-weapon-select />
         </div>
-        <div :class="{ 'mb-2': !isCompact }">
-          <select
-            name="weaponLevel"
+        <div class="weapon__meta-selects">
+          <AppRichSelect
             v-model="weaponLevel"
-            class="select select-bordered select-sm">
-            <option v-for="lvl in weaponLevelOptions" :key="lvl" :value="lvl">
-              {{ lvl }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <select
-            name="refinement"
+            class="weapon__level-select"
+            :options="weaponLevelSelectOptions"
+            :disabled="!weapon"
+            aria-label="Weapon level" />
+          <AppRichSelect
             v-model="refinement"
-            class="select select-bordered select-sm">
-            <option
-              v-for="lvl in weaponRefinementLevels"
-              :key="lvl"
-              :value="lvl">
-              {{ lvl }}
-            </option>
-          </select>
+            class="weapon__refinement-select"
+            :options="weaponRefinementSelectOptions"
+            :disabled="!weapon"
+            aria-label="Weapon refinement" />
         </div>
       </div>
     </div>
@@ -192,9 +145,20 @@ import { storeToRefs } from "pinia";
 import { getWeaponsByType, getWeaponByName } from "../weapons/weapons";
 import CalculatorWeaponsPassive from "./CalculatorWeaponsPassive.vue";
 import CalculatorWeaponBrowser from "./CalculatorWeaponBrowser.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
 import { useCharacterStore } from "../stores/character";
 import { subStatLabelMap } from "../echoes/stats";
+import {
+  aggregateWeaponPassiveStats,
+  type WeaponPassiveInstanceResult,
+} from "../weapons/weaponPassives";
 import { useUiDensity } from "../composables/useUiDensity";
+import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
+
+const WEAPON_IMAGE_BASE =
+  "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons";
 
 type WeaponListBuckets = {
   five: Array<{ key: string; name: string; [k: string]: unknown }>;
@@ -204,16 +168,7 @@ type WeaponListBuckets = {
   one: Array<{ key: string; name: string; [k: string]: unknown }>;
 };
 
-type WeaponPassiveEmit = Record<string, unknown> & {
-  key?: string;
-  stat?: string;
-  value: number;
-  stacks?: number;
-  valueBeforeStacks?: number;
-  modifier?: string;
-  modifySpecificTalents?: string[];
-  modifierValueCalculated?: number;
-};
+type WeaponPassiveEmit = WeaponPassiveInstanceResult;
 
 type ChosenWeapon = {
   info?: {
@@ -267,6 +222,27 @@ function normalizeWeaponsList(raw: unknown): WeaponListBuckets {
 }
 
 const weaponsList = ref<WeaponListBuckets>(normalizeWeaponsList([]));
+
+const weaponSelectOptions = computed((): AppRichSelectOption[] => {
+  const mapBucket = (
+    weapons: WeaponListBuckets["five"],
+    group: string,
+  ): AppRichSelectOption[] =>
+    weapons.map((weap) => ({
+      value: weap.key,
+      label: weap.name,
+      group,
+      image: `${WEAPON_IMAGE_BASE}/${weap.key}.png`,
+    }));
+
+  return [
+    ...mapBucket(weaponsList.value.five, "5 Star"),
+    ...mapBucket(weaponsList.value.four, "4 Star"),
+    ...mapBucket(weaponsList.value.three, "3 Star"),
+    ...mapBucket(weaponsList.value.two, "2 Star"),
+    ...mapBucket(weaponsList.value.one, "1 Star"),
+  ];
+});
 
 const weaponBrowserRef = ref<InstanceType<typeof CalculatorWeaponBrowser> | null>(
   null,
@@ -366,7 +342,14 @@ const weaponLevelOptions = computed(() => {
   return defaultOption;
 });
 
+const weaponLevelSelectOptions = computed(() =>
+  buildSimpleSelectOptions(weaponLevelOptions.value),
+);
+
 const weaponRefinementLevels = ["1", "2", "3", "4", "5"] as const;
+const weaponRefinementSelectOptions = buildSimpleSelectOptions(
+  weaponRefinementLevels,
+);
 
 const weaponPassives = computed(() => {
   const passives = chosenWeapon.value?.info?.passiveData ?? [];
@@ -395,66 +378,9 @@ const weaponRarity = computed(
   () => chosenWeapon.value?.info?.rarity ?? 5,
 );
 
-const buffsFormatted = computed(() => {
-  const finalBuffData: Record<string, unknown> = {};
-  let modifySpecificTalents: WeaponPassiveEmit[] = [];
-  const allBuffs = [...weaponPassiveData.value];
-  if (weapon.value === "Stringmaster") {
-    const allElementPassive = allBuffs.find(
-      (passive) => passive.key === "StringmasterAllElementAttributeBonus",
-    );
-    const stringmasterBuffs: Record<string, unknown> = {};
-    if (allElementPassive?.stat !== undefined) {
-      stringmasterBuffs[allElementPassive.stat as string] = allElementPassive.value;
-    }
-    const firstStringmasterPassive = weaponPassiveData.value.find(
-      (passive) => passive.key === "StringmasterATK1",
-    );
-    const secondStringmasterPassive = weaponPassiveData.value.find(
-      (passive) => passive.key === "StringmasterATK2",
-    );
-    if (!firstStringmasterPassive) {
-      return stringmasterBuffs;
-    }
-    const firstPassiveValuePreStacks = firstStringmasterPassive.valueBeforeStacks ?? 0;
-    const firstPassiveStacks = firstStringmasterPassive.stacks ?? 0;
-    const secondPassiveValue = secondStringmasterPassive?.value ?? 0;
-    const finalStringmasterPassiveValue =
-      (firstPassiveValuePreStacks + secondPassiveValue) * firstPassiveStacks;
-    const atkStat = firstStringmasterPassive.stat as string;
-    stringmasterBuffs[atkStat] = finalStringmasterPassiveValue;
-    return stringmasterBuffs;
-  }
-  allBuffs.forEach((buffInstance) => {
-    const stat = buffInstance.stat;
-    const value = buffInstance.value;
-    if (stat === "modifySpecificTalents") {
-      modifySpecificTalents = modifySpecificTalents.concat(
-        value as unknown as WeaponPassiveEmit[],
-      );
-    } else if (stat) {
-      finalBuffData[stat] =
-        ((finalBuffData[stat] as number) || 0) + (value as number);
-    }
-  });
-  if (modifySpecificTalents.length > 0) {
-    const specificTalentBuffs: Record<string, number> = {};
-    modifySpecificTalents.forEach((buffInstance) => {
-      const talentKeys = buffInstance?.modifySpecificTalents ?? [];
-      talentKeys.forEach((talent) => {
-        let talentName = talent;
-        if (buffInstance?.modifier) {
-          talentName = `${talentName}:${buffInstance.modifier}`;
-        }
-        specificTalentBuffs[talentName] =
-          (specificTalentBuffs[talentName] || 0) +
-          (buffInstance.modifierValueCalculated ?? 0);
-      });
-    });
-    finalBuffData.specificTalentBuffs = specificTalentBuffs;
-  }
-  return finalBuffData;
-});
+const buffsFormatted = computed(() =>
+  aggregateWeaponPassiveStats(weapon.value, weaponPassiveData.value),
+);
 
 const weaponStatsData = computed(() => {
   if (!weapon.value || !weaponLevel.value || !chosenWeapon.value) {
@@ -566,7 +492,7 @@ async function updateWeapons() {
 }
 
 async function handleUpdatedWeaponStats(data: Record<string, unknown>) {
-  const row = data as WeaponPassiveEmit;
+  const row = data as unknown as WeaponPassiveEmit;
   const buffIndex = weaponPassiveData.value.findIndex((buff) => buff.key === row.key);
   if (buffIndex === -1) {
     weaponPassiveData.value.push(row);
@@ -744,11 +670,43 @@ html[data-theme="light"] {
   margin-bottom: 1rem;
 }
 
+.weapon__basic-data {
+  flex: 1;
+  min-width: 0;
+}
+
+.weapon__name-select {
+  --app-rich-select-min-width: 14rem;
+  min-width: 0;
+}
+
+.weapon__meta-selects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.weapon__level-select,
+.weapon__refinement-select {
+  --app-rich-select-min-width: 4.75rem;
+  width: 4.75rem;
+  flex: 0 0 auto;
+}
+
 .weapon__basic-data--compact {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
+
+  .weapon__name-select {
+    flex: 1 1 12rem;
+    min-width: 0;
+  }
+
+  .weapon__meta-selects {
+    flex: 0 0 auto;
+  }
 }
 
 html[data-density="compact"] {

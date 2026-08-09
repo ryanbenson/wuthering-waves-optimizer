@@ -11,6 +11,14 @@
         <a
           href="#"
           class="tab-link text-base-content px-4 py-2"
+          :class="getActiveClasses('preferences')"
+          @click="setTab('preferences')"
+          data-test-settings-preferences>
+          Preferences
+        </a>
+        <a
+          href="#"
+          class="tab-link text-base-content px-4 py-2"
           :class="getActiveClasses('export')"
           @click="setTab('export')"
           data-test-settings-export>
@@ -44,6 +52,7 @@
 
       <!-- Content area switches from stacked (mobile) to right-aligned (sm+) -->
       <div class="import-export-content mt-8 sm:ml-12 sm:mt-0">
+        <SettingsPreferences v-if="tab === 'preferences'" />
         <SettingsExport v-if="tab === 'export'" />
         <SettingsImport v-if="tab === 'import'" />
         <SettingsDelete v-if="tab === 'advanced'" />
@@ -59,10 +68,16 @@ import SettingsDelete from "./SettingsDelete.vue";
 import SettingsExport from "./SettingsExport.vue";
 import SettingsImport from "./SettingsImport.vue";
 import SettingsLabs from "./SettingsLabs.vue";
+import SettingsPreferences from "./SettingsPreferences.vue";
 
-type SettingsTab = "export" | "import" | "advanced" | "labs";
+type SettingsTab =
+  | "preferences"
+  | "export"
+  | "import"
+  | "advanced"
+  | "labs";
 
-const tab = ref<SettingsTab>("export");
+const tab = ref<SettingsTab>("preferences");
 
 function setTab(next: SettingsTab) {
   tab.value = next;

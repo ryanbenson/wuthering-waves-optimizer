@@ -181,6 +181,7 @@ export const processAttacks = (
           requiredCharacter: attack.requiredCharacter ?? null,
           excludeCharacters: attack.excludeCharacters ?? null,
           type: attackType,
+          actionType: attack.actionType ?? null,
           count: attack.count,
           alwaysCrit: attack.alwaysCrit ?? false,
           mainEcho: attack.actionMainEcho ?? null,
@@ -235,9 +236,7 @@ export const calculateAttackDamage = (
     );
   }
   let attackType = attack.type;
-  const selfBuffs = JSON.parse(
-    JSON.stringify(context.buffs.charBuffsData ?? {}),
-  );
+  const sourceSelfBuffs = context.buffs.charBuffsData ?? {};
   /**
    * check if there are any buffs that buff another buff
    * look through the object of charResonanceChainsData for any ${attack.key}:MultiplySelfBuffs
@@ -250,14 +249,20 @@ export const calculateAttackDamage = (
   const resonanceChainsKeysWithMultiply = resonanceChainsKeys.filter(
     (key: string) => key.includes("MultiplySelfBuff"),
   );
+  // Only clone when MultiplySelfBuff will mutate specificTalentBuffs; otherwise reuse.
+  let selfBuffs = sourceSelfBuffs;
   if (resonanceChainsKeysWithMultiply.length > 0) {
+    selfBuffs = {
+      ...sourceSelfBuffs,
+      specificTalentBuffs: {
+        ...(sourceSelfBuffs.specificTalentBuffs ?? {}),
+      },
+    };
     resonanceChainsKeysWithMultiply.forEach((key: string) => {
       const buffValue =
         context.buffs.charResonanceChainsData?.specificTalentBuffs?.[key];
       const buffReferenceKey = key.split(":")[0]; // e.g. PoeticEssenceSkillDMG
-      // // check if the buffReferenceKey is in the selfBuffs object
       if (selfBuffs?.specificTalentBuffs?.[buffReferenceKey]) {
-        // multiply the buff value by the buffValue
         selfBuffs.specificTalentBuffs[buffReferenceKey] *= buffValue;
       }
     });
@@ -998,6 +1003,10 @@ export const calculateAttackDamage = (
   if (attack.type === "TuneBreak") {
     strainTotalDamage = 0;
   }
+  const customBuffTotalDamage = context.buffs.customBuffs?.TotalDamage ?? 0;
+  const actionBuffTotalDamage = attack?.buffs?.TotalDamage ?? 0;
+  const totalDamageMultiplier =
+    strainTotalDamage + customBuffTotalDamage + actionBuffTotalDamage;
   totalSpecialMultiplier +=
     teamBuffAttackSpecialMultiplier +
     selfBuffSpecialMultiplier +
@@ -1116,7 +1125,7 @@ export const calculateAttackDamage = (
       totalTalentModifierMultiply,
       totalGlacioChafeDeepenForBite,
       totalSpecialMultiplier,
-      strainTotalDamage,
+      totalDamageMultiplier,
       count,
       talent,
     );
@@ -1597,7 +1606,7 @@ export const calculateAttackDamage = (
     totalSpecialMultiplier,
     totalDefReduction,
     totalResistIgnore,
-    strainTotalDamage,
+    totalDamageMultiplier,
   );
 };
 
@@ -1834,7 +1843,16 @@ export const calcDamages = (context: CalculationContext) => {
 
   if (context.rotationsList?.length) {
     const rotationData: any = [];
-    context.rotationsList.forEach((rotation: any) => {
+    const sortedRotations = [...context.rotationsList].sort((a: any, b: any) => {
+      const aOrder = Number.isFinite(Number(a?.order))
+        ? Number(a.order)
+        : Number.MAX_SAFE_INTEGER;
+      const bOrder = Number.isFinite(Number(b?.order))
+        ? Number(b.order)
+        : Number.MAX_SAFE_INTEGER;
+      return aOrder - bOrder;
+    });
+    sortedRotations.forEach((rotation: any, index: number) => {
       const rotationInfo: any = {
         id: rotation.id,
         name: rotation.name,
@@ -1842,6 +1860,9 @@ export const calcDamages = (context: CalculationContext) => {
         duration: rotation.duration ?? null,
         mainEcho: rotation.echo ?? null,
         mainEchoRank: rotation.echoRank ?? null,
+        order: Number.isFinite(Number(rotation?.order))
+          ? Number(rotation.order)
+          : index,
       };
       const attacks = processAttacks(
         rotation.attacks,

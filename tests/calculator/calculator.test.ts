@@ -58,6 +58,26 @@ describe("#getBaseDamage", () => {
     );
     expect(result).toEqual(expected);
   });
+  it("applies total damage as a separate multiplier after special multiplier", () => {
+    const talent = 1;
+    const attack = 1000;
+    const baseDamageValue = 1;
+    const defModifier = 1;
+    const resistValue = 1;
+    const specialMultiplier = 0.2;
+    const totalDamage = 0.1;
+    const result = getBaseDamage(
+      talent,
+      attack,
+      baseDamageValue,
+      defModifier,
+      resistValue,
+      specialMultiplier,
+      totalDamage,
+    );
+    // 1000 * 1 * 1 * (1 + 0.2) * (1 + 0.1) * 1 * 1
+    expect(result).toEqual(1320);
+  });
 });
 
 describe("#getTalentValue", () => {

@@ -11,7 +11,7 @@ describe("Calculator Team Buffs", () => {
   });
 
   it("should enable you to choose characters to get buffs from", () => {
-    cy.get(".character__selection__form--character select").select("Carlotta");
+    cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Carlotta").should("be.visible");
     cy.get('[data-test-calculator-nav="team"]').click();
@@ -19,8 +19,8 @@ describe("Calculator Team Buffs", () => {
     cy.get("[data-test-party-member-2-input]").should("be.visible");
 
     // choose 2 characters for team buffs
-    cy.get("[data-test-party-member-1-input]").select("Shorekeeper");
-    cy.get("[data-test-party-member-2-input]").select("Zhezhi");
+    cy.richSelect("[data-test-party-member-1-input]", "Shorekeeper");
+    cy.richSelect("[data-test-party-member-2-input]", "Zhezhi");
     cy.get('[data-test-party-buff-char-1-collapse-bar]').click();
     cy.get("[data-test-party-member-1-name]").should(
       "contain.text",
@@ -68,13 +68,14 @@ describe("Calculator Team Buffs", () => {
     cy.get('[data-test-party-buff-weapons-collapse-bar]').click();
     cy.get(`[data-test-party-buff-enabled="StaticMistATK"]`).check();
     cy.get(`[data-test-party-buff-stacks="StaticMistATK"]`).type("1");
-    cy.get(`[data-test-party-refinements="StaticMistATK"]`).select("5");
+    cy.richSelect(`[data-test-party-refinements="StaticMistATK"]`, "5");
     cy.get(`[data-test-party-buff-enabled="StellarSymphonyATK"]`).check();
-    cy.get(`[data-test-party-refinements="StellarSymphonyATK"]`).select("5");
+    cy.richSelect(`[data-test-party-refinements="StellarSymphonyATK"]`, "5");
     cy.get(
       `[data-test-party-buff-enabled="LuminousHymnSpectroFrazzle"]`,
     ).check();
-    cy.get(`[data-test-party-refinements="LuminousHymnSpectroFrazzle"]`).select(
+    cy.richSelect(
+      `[data-test-party-refinements="LuminousHymnSpectroFrazzle"]`,
       "5",
     );
 

@@ -1,18 +1,16 @@
 <template>
   <div class="flex gap-2 items-center">
-    <select v-model="inputStat" class="select w-full max-w-xs">
-      <option disabled selected>Pick your stat</option>
-      <option
-        v-for="stat in availableStats"
-        :value="stat.stat"
-        :disabled="stat.disabled">
-        {{ stat.label }}
-      </option>
-    </select>
+    <AppRichSelect
+      v-model="inputStat"
+      :options="statSelectOptions"
+      placeholder="Choose a stat"
+      aria-label="Minimum required stat"
+      class="w-full max-w-xs" />
     <input
       type="text"
       v-model.trim="inputMinValue"
-      placeholder="Minimum stat value desired"
+      placeholder="Minimum value (e.g. 2500)"
+      aria-label="Minimum required value"
       class="input w-full max-w-xs" />
     <button @click="handleRemove" class="btn btn-xs size-12">
       <svg
@@ -31,6 +29,9 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+} from "./AppRichSelect.vue";
 
 defineOptions({ name: "CalculatorOptimizerMinStat" });
 
@@ -78,6 +79,14 @@ const availableStats = computed(() => {
   });
   return statsOptionsList;
 });
+
+const statSelectOptions = computed((): AppRichSelectOption[] =>
+  availableStats.value.map((stat) => ({
+    value: stat.stat,
+    label: stat.label,
+    disabled: stat.disabled,
+  })),
+);
 
 function updatedData() {
   emit("updated-min-stat", {

@@ -36,18 +36,16 @@
         </span>
       </div>
       <div class="rotation__action__end">
-        <div class="rotation__action__types flex flex-col items-end gap-2">
-          <div
-            class="type badge badge-primary size-max"
-            v-if="skillTypeLabel && actionSkillType !== 'negativeStatus'">
-            Forte: {{ skillTypeLabel }}
-          </div>
-          <div v-if="damageType" class="type badge badge-secondary size-max">
-            {{ damageType }} DMG
-          </div>
-          <div v-if="damageSubType" class="type badge badge-accent size-max">
-            {{ damageSubType }} DMG
-          </div>
+        <div
+          class="type badge badge-primary size-max"
+          v-if="skillTypeLabel && actionSkillType !== 'negativeStatus'">
+          Forte: {{ skillTypeLabel }}
+        </div>
+        <div v-if="damageType" class="type badge badge-secondary size-max">
+          {{ damageType }} DMG
+        </div>
+        <div v-if="damageSubType" class="type badge badge-accent size-max">
+          {{ damageSubType }} DMG
         </div>
         <div class="buffsCount badge">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -57,9 +55,24 @@
           </svg>
           <span>{{ buffsCount }}</span>
         </div>
+        <button
+          type="button"
+          class="btn btn-xs"
+          data-test-rotation-action-configure-stats
+          @click.stop="showManualBuffs = !showManualBuffs">
+          {{ showManualBuffs ? "Hide" : "Configure" }} Stats
+        </button>
+        <slot name="extra-buttons"></slot>
+        <button
+          type="button"
+          class="btn btn-xs"
+          data-test-rotation-action-remove
+          @click.stop="removeAction">
+          Delete
+        </button>
       </div>
     </div>
-    <div v-if="isEditing" class="rotation__action__edit" @click.stop>
+    <div v-if="isEditing" class="rotation__action__edit mt-2" @click.stop>
       <div class="edit__action">
         <div class="edit__basic-info">
           <div class="edit__order">
@@ -87,131 +100,19 @@
           </div>
           <div class="edit__skill">
             <label for="actionKeyValue">Attack:</label>
-            <select
-              v-model="actionKeyValue"
-              name="actionKeyValue"
+            <AppRichSelect
               id="actionKeyValue"
-              ref="actionKeys"
-              class="select select-bordered select-xs w-full"
-              @change="onSkillChange"
-              :data-test-rotation-action-skill-input="actionKeyValue ?? 'none'">
-              <optgroup label="Basic" data-skill="basic">
-                <option
-                  v-for="attack in basicAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup label="Skill" data-skill="skill">
-                <option
-                  v-for="attack in skillAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup label="Forte Circuit" data-skill="forteCircuit">
-                <option
-                  v-for="attack in forteCircuitAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup label="Liberation" data-skill="liberation">
-                <option
-                  v-for="attack in liberationAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="Intro"
-                data-skill="intro"
-                v-if="introAttacksList.length">
-                <option
-                  v-for="attack in introAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="Outro"
-                data-skill="outro"
-                v-if="outroAttacksList.length">
-                <option
-                  v-for="attack in outroAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="TuneBreak"
-                data-skill="tuneBreak"
-                v-if="tuneBreakAttacksList.length">
-                <option
-                  v-for="attack in tuneBreakAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="Echo Set Attacks"
-                data-skill="echoSetAttacks"
-                v-if="echoSetAttacksList.length">
-                <option
-                  v-for="attack in echoSetAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="Utility Attacks"
-                data-skill="utilityAttacks"
-                v-if="utilityAttacksList.length">
-                <option
-                  v-for="attack in utilityAttacksList"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="Echo Attacks"
-                data-skill="echoAttacks"
-                v-if="mainEchoDataActions.length">
-                <option
-                  v-for="attack in mainEchoDataActions"
-                  :value="attack.key"
-                  :disabled="isAttackDisabled(attack)">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-              <optgroup
-                label="Negative Status"
-                data-skill="negativeStatus">
-                <option
-                  v-for="attack in negativeStatusAttacksList"
-                  :key="attack.key"
-                  :value="attack.key">
-                  {{ attack.label }}
-                </option>
-              </optgroup>
-            </select>
+              v-model="actionKeyValue"
+              class="edit__skill-select"
+              size="xs"
+              searchable
+              search-placeholder="Search attacks…"
+              placeholder="Select attack…"
+              :options="attackSelectOptions"
+              :data-test-rotation-action-skill-input="actionKeyValue ?? 'none'"
+              aria-label="Select attack"
+              @update:model-value="onAttackSelected" />
           </div>
-          <button class="rotation__action--remove" @click="removeAction">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path
-                d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
-                fill="#FFFFFF" />
-            </svg>
-          </button>
         </div>
         <div
           v-if="usesNegativeStatusStacks"
@@ -258,6 +159,8 @@
           </div>
         </div>
       </div>
+    </div>
+    <div v-if="showManualBuffs" class="rotation__action__stats mt-2" @click.stop>
       <div class="edit__buffs">
         <div class="edit__buffs__list">
           <CalculatorRotationActionBuff
@@ -274,7 +177,7 @@
             "></CalculatorRotationActionBuff>
         </div>
       </div>
-      <div class="button__group">
+      <div class="button__group mt-2">
         <button
           class="rotation__action--add-buff btn btn-xs w-full btn-accent"
           @click="addBuff"
@@ -292,7 +195,7 @@
               @change="onExcludeSelfBuffsChange" />
             <span class="label-text">Exclude self buffs</span>
           </label>
-          <label class="label cursor-pointer flex gap-2">
+          <label v-if="showExcludeAndDisabledOptions" class="label cursor-pointer flex gap-2">
             <input
               v-model="excludeTeamBuffs"
               type="checkbox"
@@ -300,7 +203,7 @@
               @change="onExcludeTeamBuffsChange" />
             <span class="label-text">Exclude team buffs</span>
           </label>
-          <label class="label cursor-pointer flex gap-2">
+          <label v-if="showExcludeAndDisabledOptions" class="label cursor-pointer flex gap-2">
             <input
               v-model="excludeWeaponBuffs"
               type="checkbox"
@@ -308,7 +211,7 @@
               @change="onExcludeWeaponBuffsChange" />
             <span class="label-text">Exclude weapon buffs</span>
           </label>
-          <label class="label cursor-pointer flex gap-2">
+          <label v-if="showExcludeAndDisabledOptions" class="label cursor-pointer flex gap-2">
             <input
               v-model="disabled"
               type="checkbox"
@@ -319,6 +222,7 @@
         </div>
       </div>
     </div>
+    <slot name="extra-panel"></slot>
   </div>
 </template>
 
@@ -328,6 +232,10 @@ import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+  type AppRichSelectValue,
+} from "./AppRichSelect.vue";
 import { echoSetAttacks } from "../echoes/stats";
 import { utilityAttacks } from "../buffs";
 import { getEchoData, isAttackAvailableForCharacter } from "../echoes/index.ts";
@@ -397,6 +305,8 @@ const props = withDefaults(
     actionMainEchoRank?: number | null;
     negativeStatusStacks?: number;
     electroRageStacks?: number;
+    /** Hides "Exclude team buffs", "Exclude weapon buffs", and "Disabled" — used by Team Rotations, where these aren't supported yet. */
+    showExcludeAndDisabledOptions?: boolean;
   }>(),
   {
     characterData: () => ({}),
@@ -413,6 +323,7 @@ const props = withDefaults(
     actionMainEchoRank: null,
     negativeStatusStacks: 1,
     electroRageStacks: 0,
+    showExcludeAndDisabledOptions: true,
   },
 );
 
@@ -426,6 +337,7 @@ const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 
 const isEditing = ref(false);
+const showManualBuffs = ref(false);
 const actionKeyValue = ref<string | null>(null);
 const actionSkillType = ref<string | null>(null);
 const sequence = ref(0);
@@ -590,6 +502,98 @@ const introAttacksList = computed(() => attacksFor("introAttacks"));
 const outroAttacksList = computed(() => attacksFor("outroAttacks"));
 const tuneBreakAttacksList = computed(() => attacksFor("tuneBreakAttacks"));
 
+type AttackSelectOption = AppRichSelectOption & {
+  skillType: string;
+};
+
+function mapAttacksToSelectOptions(
+  attacks: AttackRow[],
+  skillType: string,
+  groupLabel: string,
+): AttackSelectOption[] {
+  return attacks.map((attack) => ({
+    value: attack.key,
+    label: attack.label ?? attack.key,
+    group: groupLabel,
+    skillType,
+    disabled: isAttackDisabled(attack),
+  }));
+}
+
+const attackSelectOptions = computed((): AttackSelectOption[] => {
+  const options: AttackSelectOption[] = [
+    ...mapAttacksToSelectOptions(basicAttacksList.value, "basic", "Basic"),
+    ...mapAttacksToSelectOptions(skillAttacksList.value, "skill", "Skill"),
+    ...mapAttacksToSelectOptions(
+      forteCircuitAttacksList.value,
+      "forteCircuit",
+      "Forte Circuit",
+    ),
+    ...mapAttacksToSelectOptions(
+      liberationAttacksList.value,
+      "liberation",
+      "Liberation",
+    ),
+  ];
+
+  if (introAttacksList.value.length) {
+    options.push(
+      ...mapAttacksToSelectOptions(introAttacksList.value, "intro", "Intro"),
+    );
+  }
+  if (outroAttacksList.value.length) {
+    options.push(
+      ...mapAttacksToSelectOptions(outroAttacksList.value, "outro", "Outro"),
+    );
+  }
+  if (tuneBreakAttacksList.value.length) {
+    options.push(
+      ...mapAttacksToSelectOptions(
+        tuneBreakAttacksList.value,
+        "tuneBreak",
+        "TuneBreak",
+      ),
+    );
+  }
+  if (echoSetAttacksList.length) {
+    options.push(
+      ...mapAttacksToSelectOptions(
+        echoSetAttacksList as AttackRow[],
+        "echoSetAttacks",
+        "Echo Set Attacks",
+      ),
+    );
+  }
+  if (utilityAttacksList.length) {
+    options.push(
+      ...mapAttacksToSelectOptions(
+        utilityAttacksList as AttackRow[],
+        "utilityAttacks",
+        "Utility Attacks",
+      ),
+    );
+  }
+  if (mainEchoDataActions.value.length) {
+    options.push(
+      ...mapAttacksToSelectOptions(
+        mainEchoDataActions.value,
+        "echoAttacks",
+        "Echo Attacks",
+      ),
+    );
+  }
+  options.push(
+    ...negativeStatusAttacksList.value.map((attack) => ({
+      value: attack.key,
+      label: attack.label ?? attack.key,
+      group: "Negative Status",
+      skillType: "negativeStatus",
+    })),
+  );
+
+  return options;
+});
+
 function toggleEdit() {
   isEditing.value = !isEditing.value;
 }
@@ -622,13 +626,15 @@ function buildActionPayload(orderOverride: number | string | null = null) {
   return action;
 }
 
-function onSkillChange(e: Event) {
-  const target = e.target as HTMLSelectElement;
-  const index = target.selectedIndex;
-  const option = target.options[index];
-  const optgroup = option.parentElement;
-  const skill = optgroup?.getAttribute("data-skill") ?? null;
-  actionSkillType.value = skill;
+function onAttackSelected(value: AppRichSelectValue) {
+  if (typeof value !== "string" || !value) {
+    return;
+  }
+  const option = attackSelectOptions.value.find(
+    (entry) => entry.value === value,
+  );
+  actionKeyValue.value = value;
+  actionSkillType.value = option?.skillType ?? actionSkillType.value;
   void nextTick(() => {
     if (usesNegativeStatusStacks.value) {
       let v = Number(negativeStatusStacksLocal.value);
@@ -787,7 +793,8 @@ onMounted(() => {
     fill: oklch(var(--wa));
   }
 }
-.rotation__action__edit {
+.rotation__action__edit,
+.rotation__action__stats {
   cursor: default;
 }
 .rotation__action {
@@ -804,12 +811,13 @@ onMounted(() => {
 }
 .rotation__action__info {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 .rotation__action__end {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 .buffsCount {
@@ -827,9 +835,15 @@ onMounted(() => {
 }
 .edit__skill {
   flex-grow: 2;
+  min-width: 0;
   label {
     display: none;
   }
+}
+.edit__skill-select {
+  --app-rich-select-min-width: 12rem;
+  min-width: 0;
+  width: 100%;
 }
 .edit__basic-info {
   display: flex;
@@ -852,15 +866,6 @@ onMounted(() => {
   display: flex;
   gap: 0.5rem;
 }
-.rotation__action--remove {
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  svg {
-    width: 1rem;
-    height: 1rem;
-  }
-}
 .edit__buffs__list {
   display: flex;
   flex-direction: column;
@@ -870,29 +875,10 @@ onMounted(() => {
   opacity: 0.5;
 }
 html[data-theme="light"] {
-  .buffsCount,
-  .rotation__action--remove {
+  .buffsCount {
     svg {
       filter: invert(100%);
     }
-  }
-}
-@media (max-width: 1088px) {
-  .rotation__action__info {
-    flex-direction: column;
-    gap: 1rem;
-  }
-}
-@media (max-width: 768px) {
-  .rotation__action__info {
-    flex-direction: row;
-    gap: 1rem;
-  }
-}
-@media (max-width: 550px) {
-  .rotation__action__info {
-    flex-direction: column;
-    gap: 1rem;
   }
 }
 </style>

@@ -7,16 +7,13 @@
             Choose 1-piece set
           </span>
         </div>
-        <select
-          name="characterLevel"
-          v-model="setManual"
-          class="select select-bordered select-sm"
-          @change="onSetManualChange">
-          <option value="">None</option>
-          <option v-for="set in [...optionsList]" :key="set" :value="set">
-            {{ set }}
-          </option>
-        </select>
+        <AppRichSelect
+          v-model="setSelectModel"
+          :options="setSelectOptions"
+          searchable
+          allow-empty
+          empty-label="None"
+          aria-label="Choose 1-piece set" />
       </label>
       <h2 v-if="setName" class="card-title">{{ setName }}</h2>
       <div v-else>No 1-piece echo set bonus is configured.</div>
@@ -43,10 +40,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
 import CalculatorEchoSetPassive from "./CalculatorEchoSetPassive.vue";
+import AppRichSelect, {
+  type AppRichSelectOption,
+  type AppRichSelectValue,
+} from "./AppRichSelect.vue";
+import { buildEchoSetSelectOptions } from "../utils/richSelectOptions";
 import { oneSetBonuses, setBonusEffectsOnePiece } from "../echoes/sets";
+import { aggregateEchoSetPassiveStats } from "../echoes/echoSetPassives";
 
 const props = withDefaults(
   defineProps<{
@@ -76,7 +79,6 @@ type PassiveBuffPayload = {
 };
 
 const passiveData = ref<PassiveBuffPayload[]>([]);
-const setManual = ref<string | null>(null);
 
 const currentCharacter = computed(
   () => characterStore.characters?.[props.character] ?? {},
@@ -96,6 +98,16 @@ const type = computed({
   },
 });
 
+/** Bridge empty string <-> null for AppRichSelect allowEmpty. */
+const setSelectModel = computed({
+  get(): AppRichSelectValue {
+    return type.value || null;
+  },
+  set(value: AppRichSelectValue) {
+    type.value = value == null ? "" : String(value);
+  },
+});
+
 const setName = computed(() => {
   const t = type.value;
   if (!t) return "";
@@ -106,27 +118,13 @@ const setPassives = computed(
   () => setBonusEffects[type.value]?.passives ?? [],
 );
 
-const buffsFormatted = computed(() => {
-  const finalBuffData: Record<string, number | string> = {};
-  for (const buffInstance of passiveData.value) {
-    const { stats } = buffInstance;
-    Object.entries(stats).forEach(([stat, value]) => {
-      if (stat === "EnableAttack") {
-        finalBuffData[stat] = value as string | number;
-      } else {
-        const prev = finalBuffData[stat];
-        const num = typeof value === "number" ? value : Number(value) || 0;
-        finalBuffData[stat] =
-          (typeof prev === "number" ? prev : 0) + num;
-      }
-    });
-  }
-  return finalBuffData;
-});
+const buffsFormatted = computed(
+  () => aggregateEchoSetPassiveStats(passiveData.value) as Record<string, number | string>,
+);
 
-const optionsList = computed(() => {
-  const list = JSON.parse(JSON.stringify(oneSetBonuses)) as string[];
-  return list.sort();
+const setSelectOptions = computed((): AppRichSelectOption[] => {
+  const list = [...oneSetBonuses].sort();
+  return buildEchoSetSelectOptions(list);
 });
 
 function updatedStats() {
@@ -143,18 +141,9 @@ function handleUpdatedEchoPassiveStats(data: PassiveBuffPayload) {
   updatedStats();
 }
 
-function onSetManualChange(e: Event) {
-  const value = (e.target as HTMLSelectElement).value;
-  type.value = value;
-}
-
 watch(type, () => {
   updatedStats();
 }, { immediate: true });
-
-onMounted(() => {
-  setManual.value = type.value;
-});
 
 onBeforeUnmount(() => {
   passiveData.value = [];
