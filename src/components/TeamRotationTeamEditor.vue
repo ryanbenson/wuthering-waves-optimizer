@@ -8,7 +8,7 @@
       :result="result"
       @view-damages="openDamages" />
 
-    <div class="card bg-base-200 shadow-lg min-w-0">
+    <div class="card card-compact bg-base-200 shadow-lg min-w-0">
       <div class="card-body gap-6">
         <div class="flex flex-wrap items-end gap-3">
           <input
@@ -159,7 +159,7 @@
 
         <div>
           <h3 class="font-semibold mb-2">Actions</h3>
-          <div class="flex flex-col gap-3" data-test-team-rotation-actions>
+          <div class="flex flex-col gap-4" data-test-team-rotation-actions>
             <TeamRotationActionEditor
               v-for="action in team.actions"
               :key="action.id"
