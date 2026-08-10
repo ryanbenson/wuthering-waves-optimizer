@@ -7,10 +7,16 @@
       <div class="actions actions--fetch">
         <div class="settings__import-export__copy panel">
           <p class="mb-2">Export your character data?</p>
-          <button @click="copyCharacterData" class="btn btn-primary mr-2">
+          <button
+            @click="copyCharacterData"
+            class="btn btn-primary mr-2"
+            data-test-settings-export-copy>
             Copy to clipboard
           </button>
-          <button @click="downloadCharacterData" class="btn btn-primary">
+          <button
+            @click="downloadCharacterData"
+            class="btn btn-primary"
+            data-test-settings-export-download>
             Download
           </button>
         </div>
@@ -24,6 +30,7 @@
  * Version 1 — character payload only (no meta wrapper)
  * Version 2 — { meta, data: { character, inventory } }
  * Version 3+ — schema migrations (see src/migrations); still uses the v2 shape
+ * Version 5+ — data also includes { teamRotations }
  *
  * meta.version is the single data-version timeline.
  */
@@ -43,6 +50,7 @@ function getData() {
   const data = {
     character: localStorage.getItem("character"),
     inventory: localStorage.getItem("inventory"),
+    teamRotations: localStorage.getItem("teamRotations"),
   };
   return {
     meta,
