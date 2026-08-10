@@ -70,6 +70,12 @@ describe("Team Rotation Summary", () => {
 
     // Distribution + per-character card + enemy card
     cy.get("[data-test-team-rotation-damage-chart]").should("be.visible");
+    cy.get("[data-test-team-rotation-cumulative-damage-chart]").should(
+      "be.visible",
+    );
+    cy.get("[data-test-team-rotation-cumulative-damage-chart] canvas").should(
+      "exist",
+    );
     cy.get('[data-test-team-rotation-summary-character="0"]').should(
       "contain.text",
       "Carlotta",
@@ -110,6 +116,9 @@ describe("Team Rotation Summary", () => {
       "be.visible",
     );
     cy.get("[data-test-team-rotation-character-timeline-chart-empty]").should(
+      "be.visible",
+    );
+    cy.get("[data-test-team-rotation-cumulative-damage-chart-empty]").should(
       "be.visible",
     );
   });

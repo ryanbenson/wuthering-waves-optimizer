@@ -70,9 +70,9 @@
         <h3 class="font-semibold mb-2">Damage by Character</h3>
         <TeamRotationDamageChart :per-character="result.perCharacter" />
       </div>
-      <div class="card bg-base-200 p-4 flex flex-col justify-center">
-        <h3 class="font-semibold mb-2">Damage Share</h3>
-        <TeamRotationDamageBar :per-character="result.perCharacter" />
+      <div class="card bg-base-200 p-4">
+        <h3 class="font-semibold mb-2">Cumulative Damage by Character</h3>
+        <TeamRotationCumulativeDamageChart :points="timeline" />
       </div>
     </div>
 
@@ -181,7 +181,7 @@ import CalculatorWeaponCard from "./CalculatorWeaponCard.vue";
 import TeamRotationTimelineChart from "./TeamRotationTimelineChart.vue";
 import TeamRotationCharacterTimelineChart from "./TeamRotationCharacterTimelineChart.vue";
 import TeamRotationDamageChart from "./TeamRotationDamageChart.vue";
-import TeamRotationDamageBar from "./TeamRotationDamageBar.vue";
+import TeamRotationCumulativeDamageChart from "./TeamRotationCumulativeDamageChart.vue";
 
 const props = defineProps<{ teamId: string }>();
 const emit = defineEmits<{ back: [] }>();
