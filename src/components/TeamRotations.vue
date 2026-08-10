@@ -158,7 +158,7 @@
             :key="team.id"
             class="card bg-base-200 shadow hover:bg-base-300 transition-colors cursor-pointer"
             :data-test-team-rotations-item="team.name"
-            @click="selectedTeamId = team.id">
+            @click="selectedTeamId = team.id; showSummary = false">
             <div class="card-body gap-3 p-4">
               <div class="flex items-start justify-between gap-2">
                 <h3 class="font-semibold truncate">{{ team.name }}</h3>
@@ -212,6 +212,10 @@
       </template>
     </template>
 
+    <template v-else-if="showSummary">
+      <TeamRotationSummary :team-id="selectedTeamId" @back="showSummary = false" />
+    </template>
+
     <template v-else>
       <button
         type="button"
@@ -220,7 +224,10 @@
         @click="selectedTeamId = null">
         ← Back to Teams
       </button>
-      <TeamRotationTeamEditor :key="selectedTeamId" :team-id="selectedTeamId" />
+      <TeamRotationTeamEditor
+        :key="selectedTeamId"
+        :team-id="selectedTeamId"
+        @view-summary="showSummary = true" />
     </template>
   </div>
 </template>
@@ -232,6 +239,7 @@ import Nav from "./navigation/Nav.vue";
 import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import PaginationControls from "./PaginationControls.vue";
 import TeamRotationTeamEditor from "./TeamRotationTeamEditor.vue";
+import TeamRotationSummary from "./TeamRotationSummary.vue";
 import { useTeamRotationsStore } from "../stores/teamRotations";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
@@ -253,6 +261,7 @@ const { confirm } = useConfirm();
 const { showToast } = useToast();
 
 const selectedTeamId = ref<string | null>(null);
+const showSummary = ref(false);
 
 function displayName(characterId: string) {
   return getCharacterRosterDisplayName(characterId);

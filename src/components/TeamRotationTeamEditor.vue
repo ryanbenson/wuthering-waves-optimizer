@@ -6,7 +6,8 @@
       :action-count="team.actions.length"
       :duration="team.duration"
       :result="result"
-      @view-damages="openDamages" />
+      @view-damages="openDamages"
+      @view-summary="emit('view-summary')" />
 
     <div class="card card-compact bg-base-200 shadow-lg min-w-0">
       <div class="card-body gap-6">
@@ -354,6 +355,7 @@ import {
 import type { AdvancedBuffOverride } from "./TeamRotationAdvancedBuffRow.vue";
 
 const props = defineProps<{ teamId: string }>();
+const emit = defineEmits<{ "view-summary": [] }>();
 
 const router = useRouter();
 const teamRotationsStore = useTeamRotationsStore();
