@@ -48,6 +48,7 @@ All Vue components that power the app live here. The **Calculator** is the main 
 - **Custom buffs**: `CalculatorCustomBuffs`
 - **Enemy**: `CalculatorEnemy`
 - **Results**: `CalculatorStats`, `CalculatorDamages` (also rendered in a sticky results block)
+- **Build Card**: `CalculatorBuildCard` — a shareable, full-width summary screen (portrait, forte/talent levels, resonance chain count, weapon + refinement, full stat block, all 5 equipped echoes). Unlike every other screen, this one hides the always-on `.results` side panel and collapses `.calculations` to a single column via a `calculations--full-width` class bound to `curScreen === 'build-card'` (see `Calculator.vue`'s scoped styles) — there's no other full-width precedent in this file. It reuses `CalculatorCharacterCard`, `CalculatorWeaponCard`, `CalculatorStats`, and `CalculatorEchoCard` (`compact` mode) rather than re-implementing their display logic, and receives the exact same stat props `Calculator.vue` already passes to `CalculatorStats`, plus `chosenChar` for the character's static basic info (name/rarity/element/weapon type). Resonance chain count and weapon refinement are read directly from the character store rather than computed upstream, since no other consumer needs them.
 
 Navigation between these screens is controlled by `curScreen` and sub-nav components (`CalculatorSubNav`, `CalculatorMobileSubNav`).
 

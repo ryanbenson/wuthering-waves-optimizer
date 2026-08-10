@@ -1,5 +1,7 @@
 <template>
-  <div class="calculations">
+  <div
+    class="calculations"
+    :class="{ 'calculations--full-width': curScreen === 'build-card' }">
     <Nav cur-page="home">
       <template #mobile>
         <CalculatorMobileSubNav
@@ -88,6 +90,38 @@
         </template>
       </div>
 
+      <div class="screen--build-card" v-show="curScreen === 'build-card'">
+        <CalculatorBuildCard
+          :key="character"
+          :character="character"
+          :character-level="characterLevel"
+          :weapon-atk="weaponAtk"
+          :chosen-char="chosenChar"
+          :total-atk="totalAtk"
+          :total-atk-percent="totalAtkPercent"
+          :total-atk-flat="totalAtkFlat"
+          :total-hp="totalHp"
+          :total-hp-percent="totalHpPercent"
+          :total-hp-flat="totalHpFlat"
+          :total-def="totalDef"
+          :total-def-percent="totalDefPercent"
+          :total-def-flat="totalDefFlat"
+          :total-crit-rate="totalCritRate"
+          :total-crit-dmg="totalCritDMG"
+          :energy-regen="energyRegen"
+          :basic-attack-dmg-bonus="BasicAttackDMGBonus"
+          :heavy-attack-dmg-bonus="HeavyAttackDMGBonus"
+          :resonance-skill-dmg-bonus="ResonanceSkillDMGBonus"
+          :resonance-liberation-dmg-bonus="ResonanceLiberationDMGBonus"
+          :glacio="Glacio"
+          :fusion="Fusion"
+          :electro="Electro"
+          :aero="Aero"
+          :spectro="Spectro"
+          :havoc="Havoc"
+          :healing-bonus="healingBonus"
+          :tune-break-boost="tuneBreakBoost"></CalculatorBuildCard>
+      </div>
       <div class="screen-party" v-show="curScreen === 'party'">
         <CalculatorPartyBuffs
           :key="character"
@@ -321,6 +355,7 @@ import CalculatorEnemy from "./CalculatorEnemy.vue";
 import CalculatorRotations from "./CalculatorRotations.vue";
 import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
 import CalculatorStats from "./CalculatorStats.vue";
+import CalculatorBuildCard from "./CalculatorBuildCard.vue";
 import CalculatorDamages from "./CalculatorDamages.vue";
 import CalculatorOptimizer from "./CalculatorOptimizer.vue";
 import {
@@ -392,6 +427,7 @@ export default defineComponent({
     CalculatorResonanceChains,
     CalculatorRotations,
     CalculatorStats,
+    CalculatorBuildCard,
     CalculatorTalents,
     CalculatorOptimizer,
     CalculatorMobileSubNav,
@@ -1939,6 +1975,14 @@ export default defineComponent({
 
   h4 {
     padding-left: 0.5rem;
+  }
+}
+
+.calculations--full-width {
+  grid-template-columns: 1fr;
+
+  .results {
+    display: none !important;
   }
 }
 </style>
