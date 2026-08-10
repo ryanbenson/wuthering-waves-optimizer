@@ -1,0 +1,57 @@
+describe("Calculator Build Card", () => {
+  beforeEach(() => {
+    cy.visit("/");
+    cy.richSelect("[data-test-character-select]", "Carlotta");
+    cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
+  });
+
+  it("shows a full-width card with no side stats panel", () => {
+    cy.get('[data-test-calculator-nav="buildCard"]').click();
+
+    cy.get("[data-test-build-card]").should("be.visible");
+    cy.get(".results").should("not.be.visible");
+    cy.get("[data-test-build-card-resonance]").should(
+      "contain.text",
+      "/ 6",
+    );
+    cy.get("[data-test-build-card-echoes] .echo__item").should(
+      "have.length",
+      5,
+    );
+  });
+
+  it("uploads a custom portrait and lets it be reset", () => {
+    cy.get('[data-test-calculator-nav="buildCard"]').click();
+
+    const fileName = "portrait.png";
+    // 1x1 transparent PNG, inlined so this spec doesn't depend on a fixture file.
+    const pngBase64 =
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+
+    cy.get("[data-test-build-card-portrait-input]").selectFile(
+      {
+        contents: Cypress.Buffer.from(pngBase64, "base64"),
+        fileName,
+        mimeType: "image/png",
+      },
+      { force: true },
+    );
+
+    cy.get("[data-test-build-card-portrait]")
+      .should("have.css", "background-image")
+      .and("match", /^url\("data:image\/jpeg;base64,/);
+
+    cy.get("[data-test-build-card-portrait-reset]").click();
+    cy.get("[data-test-build-card-portrait]")
+      .should("have.css", "background-image")
+      .and("not.match", /^url\("data:image/);
+  });
+
+  it("downloads the build card as a PNG", () => {
+    cy.get('[data-test-calculator-nav="buildCard"]').click();
+    cy.get("[data-test-build-card-download]").click();
+    cy.readFile(`${Cypress.config("downloadsFolder")}/Carlotta-build-card.png`, {
+      timeout: 10000,
+    }).should("exist");
+  });
+});
