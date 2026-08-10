@@ -101,3 +101,60 @@ describe("useTeamRotationsStore.setTeamStatus", () => {
     expect(store.getTeamById(teamB.id)?.buildStatus).toBeUndefined();
   });
 });
+
+describe("useTeamRotationsStore favorites", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("toggles a team in and out of favoriteTeamIds", () => {
+    const store = useTeamRotationsStore();
+    const team = store.createTeam("Team 1");
+
+    expect(store.isFavoriteTeam(team.id)).toBe(false);
+
+    store.toggleFavoriteTeam(team.id);
+    expect(store.isFavoriteTeam(team.id)).toBe(true);
+    expect(store.favoriteTeamIds).toContain(team.id);
+
+    store.toggleFavoriteTeam(team.id);
+    expect(store.isFavoriteTeam(team.id)).toBe(false);
+    expect(store.favoriteTeamIds).not.toContain(team.id);
+  });
+
+  it("only affects the targeted team", () => {
+    const store = useTeamRotationsStore();
+    const teamA = store.createTeam("Team A");
+    const teamB = store.createTeam("Team B");
+
+    store.toggleFavoriteTeam(teamA.id);
+
+    expect(store.isFavoriteTeam(teamA.id)).toBe(true);
+    expect(store.isFavoriteTeam(teamB.id)).toBe(false);
+  });
+
+  it("removes a deleted team's dangling favorite reference", () => {
+    const store = useTeamRotationsStore();
+    const team = store.createTeam("Team 1");
+    store.toggleFavoriteTeam(team.id);
+
+    store.deleteTeam(team.id);
+
+    expect(store.favoriteTeamIds).not.toContain(team.id);
+  });
+
+  it("round-trips favoriteTeamIds through hardSetState", () => {
+    const store = useTeamRotationsStore();
+    store.hardSetState({ teams: [], favoriteTeamIds: ["abc"] });
+
+    expect(store.favoriteTeamIds).toEqual(["abc"]);
+    expect(store.isFavoriteTeam("abc")).toBe(true);
+  });
+
+  it("defaults favoriteTeamIds to an empty array when hardSetState omits it", () => {
+    const store = useTeamRotationsStore();
+    store.hardSetState({ teams: [] });
+
+    expect(store.favoriteTeamIds).toEqual([]);
+  });
+});

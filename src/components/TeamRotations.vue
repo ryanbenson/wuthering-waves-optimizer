@@ -67,6 +67,32 @@
             @click="statusFilter = null">
             Clear filter
           </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost rounded inline-flex items-center gap-1.5 px-2"
+            :class="{ 'btn-active': favoritesFilter }"
+            data-test-team-rotations-favorites-filter
+            @click="favoritesFilter = !favoritesFilter">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="size-4 shrink-0"
+              aria-hidden="true">
+              <path
+                v-if="favoritesFilter"
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                fill="currentColor" />
+              <path
+                v-else
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <span>Favorites</span>
+          </button>
           <div class="join" data-test-team-rotations-view-toggle>
             <button
               type="button"
@@ -309,6 +335,9 @@
             v-for="team in paginatedTeams"
             :key="team.id"
             class="card bg-base-200 shadow hover:bg-base-300 transition-colors cursor-pointer"
+            :class="{
+              'ring-2 ring-primary/60': teamRotationsStore.isFavoriteTeam(team.id),
+            }"
             :data-test-team-rotations-item="team.name"
             @click="selectedTeamId = team.id; showSummary = false">
             <div class="card-body gap-3 p-4">
@@ -322,6 +351,10 @@
                   <span class="truncate">{{ team.name }}</span>
                 </h3>
                 <div class="flex items-center gap-1 shrink-0" @click.stop>
+                  <FavoriteHeartButton
+                    :active="teamRotationsStore.isFavoriteTeam(team.id)"
+                    :test-id="team.name"
+                    @toggle="teamRotationsStore.toggleFavoriteTeam(team.id)" />
                   <TeamBuildStatus
                     :status="getTeamBuildStatus(team)"
                     interactive
@@ -376,6 +409,9 @@
             v-for="team in paginatedTeams"
             :key="team.id"
             class="card bg-base-200 shadow hover:bg-base-300 transition-colors cursor-pointer"
+            :class="{
+              'ring-2 ring-primary/60': teamRotationsStore.isFavoriteTeam(team.id),
+            }"
             :data-test-team-rotations-item="team.name"
             @click="selectedTeamId = team.id; showSummary = false">
             <div class="card-body flex-row flex-wrap items-center gap-3 p-3">
@@ -410,6 +446,10 @@
                 Crit: {{ teamTotalDamage(team.id, "crit") }}
               </div>
               <div class="flex items-center gap-1 shrink-0" @click.stop>
+                <FavoriteHeartButton
+                  :active="teamRotationsStore.isFavoriteTeam(team.id)"
+                  :test-id="team.name"
+                  @toggle="teamRotationsStore.toggleFavoriteTeam(team.id)" />
                 <TeamBuildStatus
                   :status="getTeamBuildStatus(team)"
                   interactive
@@ -466,6 +506,7 @@ import PaginationControls from "./PaginationControls.vue";
 import TeamRotationTeamEditor from "./TeamRotationTeamEditor.vue";
 import TeamRotationSummary from "./TeamRotationSummary.vue";
 import TeamBuildStatus from "./TeamBuildStatus.vue";
+import FavoriteHeartButton from "./FavoriteHeartButton.vue";
 import {
   TEAM_BUILD_STATUSES,
   getTeamBuildStatus,
@@ -608,13 +649,19 @@ const statusFilterOptions = computed((): AppRichSelectOption[] =>
   })),
 );
 
+// Favorites filter — same "toggle button + heart icon" pattern as the
+// character browser's Favorites filter.
+const favoritesFilter = ref(false);
+
 const filteredTeams = computed(() => {
   return teams.value.filter((team: any) => {
     const matchesCharacter =
       !characterFilter.value || team.characterIds.includes(characterFilter.value);
     const matchesStatus =
       !statusFilter.value || getTeamBuildStatus(team) === statusFilter.value;
-    return matchesCharacter && matchesStatus;
+    const matchesFavorite =
+      !favoritesFilter.value || teamRotationsStore.isFavoriteTeam(team.id);
+    return matchesCharacter && matchesStatus && matchesFavorite;
   });
 });
 
@@ -654,6 +701,10 @@ watch(characterFilter, () => {
 });
 
 watch(statusFilter, () => {
+  page.value = 1;
+});
+
+watch(favoritesFilter, () => {
   page.value = 1;
 });
 

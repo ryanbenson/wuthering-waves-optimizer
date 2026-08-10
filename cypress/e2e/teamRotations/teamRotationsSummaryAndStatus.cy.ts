@@ -144,4 +144,36 @@ describe("Team Rotations summary and status", () => {
     cy.get("[data-test-team-rotations-view-grid]").click();
     cy.get(".teams__list.grid").should("exist");
   });
+
+  it("favorites a team, highlights it, and filters the list by favorites", () => {
+    buildTeam(1);
+    cy.get("[data-test-team-rotation-back]").click();
+    buildTeam(1);
+    cy.get("[data-test-team-rotation-back]").click();
+
+    cy.get("[data-test-team-rotations-item]").should("have.length", 2);
+
+    cy.contains("[data-test-team-rotations-item]", "Team 1").as("team1");
+    cy.get("@team1").find("[data-test-favorite]").should(
+      "have.attr",
+      "aria-label",
+      "Add to favorites",
+    );
+    cy.get("@team1").should("not.have.class", "ring-2");
+
+    cy.get("@team1").find("[data-test-favorite]").click();
+    cy.get("@team1").find("[data-test-favorite]").should(
+      "have.attr",
+      "aria-label",
+      "Remove from favorites",
+    );
+    cy.get("@team1").should("have.class", "ring-2");
+
+    cy.get("[data-test-team-rotations-favorites-filter]").click();
+    cy.get("[data-test-team-rotations-item]").should("have.length", 1);
+    cy.get("[data-test-team-rotations-item]").should("contain.text", "Team 1");
+
+    cy.get("[data-test-team-rotations-favorites-filter]").click();
+    cy.get("[data-test-team-rotations-item]").should("have.length", 2);
+  });
 });
