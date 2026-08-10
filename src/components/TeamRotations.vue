@@ -185,6 +185,89 @@
       </div>
 
       <template v-else>
+        <div
+          class="teams__summary mb-6 rounded-lg bg-base-200 p-4"
+          data-test-team-rotations-summary>
+          <div class="flex items-center justify-between gap-2 flex-wrap mb-3">
+            <h3 class="text-sm font-semibold">All Teams Summary</h3>
+            <div class="join" data-test-team-rotations-sort-metric>
+              <input
+                v-model="sortMetric"
+                value="normal"
+                class="join-item btn btn-xs"
+                type="radio"
+                name="team-sort-metric"
+                aria-label="Normal" />
+              <input
+                v-model="sortMetric"
+                value="avg"
+                class="join-item btn btn-xs"
+                type="radio"
+                name="team-sort-metric"
+                aria-label="Average" />
+              <input
+                v-model="sortMetric"
+                value="crit"
+                class="join-item btn btn-xs"
+                type="radio"
+                name="team-sort-metric"
+                aria-label="Crit" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 text-sm">
+            <button
+              v-if="strongestTeamByDamage"
+              type="button"
+              class="card bg-base-100 p-3 text-left hover:bg-base-300 transition-colors"
+              data-test-team-rotations-leaderboard="damage"
+              @click="selectedTeamId = strongestTeamByDamage!.team.id; showSummary = false">
+              <div class="text-xs opacity-70 mb-1">Strongest Team (Dmg)</div>
+              <div class="font-semibold truncate">{{ strongestTeamByDamage.team.name }}</div>
+              <div>{{ displayDamage(strongestTeamByDamage.value) }}</div>
+            </button>
+            <button
+              v-if="bestDpsTeam"
+              type="button"
+              class="card bg-base-100 p-3 text-left hover:bg-base-300 transition-colors"
+              data-test-team-rotations-leaderboard="dps"
+              @click="selectedTeamId = bestDpsTeam!.team.id; showSummary = false">
+              <div class="text-xs opacity-70 mb-1">Best DPS</div>
+              <div class="font-semibold truncate">{{ bestDpsTeam.team.name }}</div>
+              <div>{{ displayDamage(bestDpsTeam.value) }}</div>
+            </button>
+            <button
+              v-if="strongestHitTeam"
+              type="button"
+              class="card bg-base-100 p-3 text-left hover:bg-base-300 transition-colors"
+              data-test-team-rotations-leaderboard="strongest-hit"
+              @click="selectedTeamId = strongestHitTeam!.team.id; showSummary = false">
+              <div class="text-xs opacity-70 mb-1">Strongest Hit</div>
+              <div class="font-semibold truncate">{{ strongestHitTeam.team.name }}</div>
+              <div>{{ displayDamage(strongestHitTeam.value) }}</div>
+            </button>
+            <button
+              v-if="mostHealingTeam"
+              type="button"
+              class="card bg-base-100 p-3 text-left hover:bg-base-300 transition-colors"
+              data-test-team-rotations-leaderboard="healing"
+              @click="selectedTeamId = mostHealingTeam!.team.id; showSummary = false">
+              <div class="text-xs opacity-70 mb-1">Most Healing</div>
+              <div class="font-semibold truncate">{{ mostHealingTeam.team.name }}</div>
+              <div>{{ displayDamage(mostHealingTeam.value) }}</div>
+            </button>
+            <button
+              v-if="mostShieldTeam"
+              type="button"
+              class="card bg-base-100 p-3 text-left hover:bg-base-300 transition-colors"
+              data-test-team-rotations-leaderboard="shield"
+              @click="selectedTeamId = mostShieldTeam!.team.id; showSummary = false">
+              <div class="text-xs opacity-70 mb-1">Most Shield</div>
+              <div class="font-semibold truncate">{{ mostShieldTeam.team.name }}</div>
+              <div>{{ displayDamage(mostShieldTeam.value) }}</div>
+            </button>
+          </div>
+        </div>
+
         <ul
           class="teams__list grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
           data-test-team-rotations-list>
@@ -196,7 +279,14 @@
             @click="selectedTeamId = team.id; showSummary = false">
             <div class="card-body gap-3 p-4">
               <div class="flex items-start justify-between gap-2">
-                <h3 class="font-semibold truncate">{{ team.name }}</h3>
+                <h3 class="font-semibold flex items-center gap-2 min-w-0">
+                  <span
+                    class="badge badge-sm badge-ghost shrink-0"
+                    data-test-team-rotations-rank>
+                    #{{ teamRank(team.id) }}
+                  </span>
+                  <span class="truncate">{{ team.name }}</span>
+                </h3>
                 <div class="flex items-center gap-1 shrink-0" @click.stop>
                   <TeamBuildStatus
                     :status="getTeamBuildStatus(team)"
@@ -426,13 +516,31 @@ const filteredTeams = computed(() => {
   });
 });
 
+// Sort metric — shared by the leaderboard cards above and the team grid
+// below, which doubles as the "ranked list": sorted strongest to weakest by
+// whichever metric is selected, with a per-team #rank badge.
+const sortMetric = ref<"normal" | "avg" | "crit">("avg");
+
+const sortedTeams = computed(() => {
+  return [...filteredTeams.value].sort((a: any, b: any) => {
+    const aValue = teamStats.value[a.id]?.[sortMetric.value] ?? 0;
+    const bValue = teamStats.value[b.id]?.[sortMetric.value] ?? 0;
+    return bValue - aValue;
+  });
+});
+
+function teamRank(teamId: string): number {
+  const index = sortedTeams.value.findIndex((t: any) => t.id === teamId);
+  return index === -1 ? 0 : index + 1;
+}
+
 // Pagination, matching the Inventory page's PaginationControls pattern.
 const page = ref(1);
 const perPage = 12;
 
 const paginatedTeams = computed(() => {
   const start = (page.value - 1) * perPage;
-  return filteredTeams.value.slice(start, start + perPage);
+  return sortedTeams.value.slice(start, start + perPage);
 });
 
 const totalPages = computed(() =>
@@ -519,4 +627,46 @@ function teamTotalDamage(teamId: string, variant: "normal" | "avg" | "crit"): st
   const stats = teamStats.value[teamId];
   return stats !== undefined ? String(displayDamage(stats[variant])) : "—";
 }
+
+// Cross-team leaderboard — one "strongest team" per metric, scoped to
+// whatever's currently visible (character/status filters), so the summary
+// always matches what the list below actually shows. All find the max
+// among teams with real (non-zero) values, so an all-zero roster (e.g. no
+// actions configured yet) shows nothing rather than an arbitrary team.
+function strongestTeamBy(getValue: (stats: TeamSummaryStats) => number) {
+  let best: { team: any; value: number } | null = null;
+  for (const team of filteredTeams.value as any[]) {
+    const stats = teamStats.value[team.id];
+    if (!stats) continue;
+    const value = getValue(stats);
+    if (value > 0 && (!best || value > best.value)) {
+      best = { team, value };
+    }
+  }
+  return best;
+}
+
+const strongestTeamByDamage = computed(() =>
+  strongestTeamBy((stats) => stats[sortMetric.value]),
+);
+const bestDpsTeam = computed(() =>
+  strongestTeamBy((stats) =>
+    sortMetric.value === "normal"
+      ? stats.dpsNormal
+      : sortMetric.value === "crit"
+        ? stats.dpsCrit
+        : stats.dpsAvg,
+  ),
+);
+const strongestHitTeam = computed(() =>
+  strongestTeamBy((stats) =>
+    sortMetric.value === "normal"
+      ? stats.hitNormal
+      : sortMetric.value === "crit"
+        ? stats.hitCrit
+        : stats.hitAvg,
+  ),
+);
+const mostHealingTeam = computed(() => strongestTeamBy((stats) => stats.healing));
+const mostShieldTeam = computed(() => strongestTeamBy((stats) => stats.shield));
 </script>
