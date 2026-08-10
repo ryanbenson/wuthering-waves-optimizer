@@ -27,6 +27,10 @@
               data-test-team-rotation-duration
               @input="updateDuration" />
           </label>
+          <label class="form-control">
+            <span class="label-text text-xs">Status</span>
+            <TeamBuildStatus :status="teamStatus" interactive :team-id="props.teamId" />
+          </label>
           <div class="join ml-auto">
             <button
               type="button"
@@ -326,6 +330,8 @@ import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
 import TeamRotationSummaryHeader from "./TeamRotationSummaryHeader.vue";
+import TeamBuildStatus from "./TeamBuildStatus.vue";
+import { getTeamBuildStatus } from "../teamRotations/teamBuildStatus";
 import TeamRotationImportRotation from "./TeamRotationImportRotation.vue";
 import TeamRotationEnemySettings, {
   type TeamEnemySettingsValue,
@@ -432,6 +438,7 @@ onBeforeUnmount(() => {
 });
 
 const team = computed(() => teamRotationsStore.getTeamById(props.teamId));
+const teamStatus = computed(() => getTeamBuildStatus(team.value));
 
 const nameValue = ref(team.value?.name ?? "");
 const durationValue = ref<string | number | null>(team.value?.duration ?? null);
