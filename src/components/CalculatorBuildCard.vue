@@ -2,31 +2,49 @@
   <div class="build-card" data-test-build-card>
     <div class="build-card__grid grid grid-cols-1 xl:grid-cols-12 gap-4">
       <div class="build-card__identity xl:col-span-4">
-        <CalculatorCharacterCard
+        <div
           v-if="characterBasic"
-          :name="characterBasic.name"
-          :name-key="character"
-          :rarity="characterBasic.rarity"
-          :element="characterBasic.element"
-          :weapon="characterBasicWeaponType">
-          <div class="build-card__level text-sm opacity-70 mb-2">
-            Lv. {{ characterLevel }}
+          class="card card-bordered card-compact bg-base-100 shadow mb-2">
+          <div class="card-body items-center text-center">
+            <CalculatorBuildCardPortraitUpload
+              :character="character"
+              :current-portrait="characterData.customPortrait"
+              :default-portrait-url="defaultPortraitUrl" />
+            <h2
+              class="card-title"
+              :class="{
+                'text-amber-300': characterBasic.rarity === 5,
+                'text-violet-600': characterBasic.rarity === 4,
+              }">
+              {{ characterBasic.name }}
+            </h2>
+            <div class="build-card__level text-sm opacity-70">
+              Lv. {{ characterLevel }}
+            </div>
+            <div class="flex gap-2 items-center">
+              <img
+                v-if="elementImage"
+                :src="elementImage"
+                class="size-6"
+                :class="`${characterBasic.element.toLowerCase()}--active`" />
+              <img v-if="weaponTypeImage" :src="weaponTypeImage" class="size-6" />
+            </div>
+            <div
+              class="build-card__talents flex flex-wrap gap-2 justify-center mt-2"
+              data-test-build-card-talents>
+              <span
+                v-for="talent in talentBadges"
+                :key="talent.key"
+                class="badge badge-outline">
+                {{ talent.label }} {{ talent.level }}
+              </span>
+            </div>
+            <div class="build-card__resonance text-sm mt-2" data-test-build-card-resonance>
+              Resonance Chains:
+              <span class="text-primary font-bold">{{ resonanceChainCount }} / 6</span>
+            </div>
           </div>
-          <div
-            class="build-card__talents flex flex-wrap gap-2 justify-center mb-2"
-            data-test-build-card-talents>
-            <span
-              v-for="talent in talentBadges"
-              :key="talent.key"
-              class="badge badge-outline">
-              {{ talent.label }} {{ talent.level }}
-            </span>
-          </div>
-          <div class="build-card__resonance text-sm" data-test-build-card-resonance>
-            Resonance Chains:
-            <span class="text-primary font-bold">{{ resonanceChainCount }} / 6</span>
-          </div>
-        </CalculatorCharacterCard>
+        </div>
 
         <CalculatorWeaponCard
           v-if="weaponInfo"
@@ -90,7 +108,11 @@ import { computed, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
 import { getWeaponByName } from "../weapons/weapons";
-import CalculatorCharacterCard from "./CalculatorCharacterCard.vue";
+import {
+  characterElementsSetImageMap,
+  weaponTypesImageMap,
+} from "../characters/characters";
+import CalculatorBuildCardPortraitUpload from "./CalculatorBuildCardPortraitUpload.vue";
 import CalculatorWeaponCard from "./CalculatorWeaponCard.vue";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
 import CalculatorStats from "./CalculatorStats.vue";
@@ -151,6 +173,17 @@ const characterBasic = computed(() => props.chosenChar?.value?.basic ?? null);
 // (e.g. "Sword").
 const characterBasicWeaponType = computed(
   () => characterBasic.value?.weapon?.replace(/s$/, "") ?? "",
+);
+
+const elementImage = computed(
+  () => characterElementsSetImageMap[characterBasic.value?.element ?? ""] ?? null,
+);
+const weaponTypeImage = computed(
+  () => weaponTypesImageMap[characterBasicWeaponType.value] ?? null,
+);
+const defaultPortraitUrl = computed(
+  () =>
+    `https://ryanbenson.github.io/wuthering-waves-assets/images/${props.character}.png`,
 );
 
 const talentBadges = computed(() => {
