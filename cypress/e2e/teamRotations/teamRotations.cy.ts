@@ -197,8 +197,7 @@ describe("Team Rotations", () => {
     cy.richSelect("[data-test-team-rotations-filter]", "Calcharo");
     cy.get("[data-test-team-rotations-item]").should("not.exist");
     cy.get("[data-test-team-rotations-no-matches]").should("be.visible");
-    cy.get("[data-test-team-rotations-filter]").click();
-    cy.get('[data-test-rich-select-option="null"]').click({ force: true });
+    cy.get("[data-test-team-rotations-filter-clear]").click();
     cy.get("[data-test-team-rotations-item]").should("exist");
 
     // Delete the team, with confirmation. The dialog is a native <dialog>

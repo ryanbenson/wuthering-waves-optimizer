@@ -68,3 +68,36 @@ describe("useTeamRotationsStore.importTeam", () => {
     expect(store.getTeamById(existing.id)?.name).toBe("Existing");
   });
 });
+
+describe("useTeamRotationsStore.setTeamStatus", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("sets the given team's buildStatus", () => {
+    const store = useTeamRotationsStore();
+    const team = store.createTeam("Team 1");
+
+    store.setTeamStatus(team.id, "in-progress");
+
+    expect(store.getTeamById(team.id)?.buildStatus).toBe("in-progress");
+  });
+
+  it("does nothing for an unknown team id", () => {
+    const store = useTeamRotationsStore();
+    store.createTeam("Team 1");
+
+    expect(() => store.setTeamStatus("no-such-id", "finished")).not.toThrow();
+  });
+
+  it("only affects the targeted team", () => {
+    const store = useTeamRotationsStore();
+    const teamA = store.createTeam("Team A");
+    const teamB = store.createTeam("Team B");
+
+    store.setTeamStatus(teamA.id, "finished");
+
+    expect(store.getTeamById(teamA.id)?.buildStatus).toBe("finished");
+    expect(store.getTeamById(teamB.id)?.buildStatus).toBeUndefined();
+  });
+});
