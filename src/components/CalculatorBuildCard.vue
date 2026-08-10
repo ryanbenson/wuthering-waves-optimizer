@@ -144,6 +144,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
 import { getWeaponByName } from "../weapons/weapons";
 import {
   characterElementsSetImageMap,
@@ -206,6 +207,7 @@ const props = defineProps<{
 
 const { showToast } = useToast();
 const characterStore = useCharacterStore();
+const inventoryStore = useInventoryStore();
 const { characters } = storeToRefs(characterStore);
 
 const characterData = computed(
@@ -251,9 +253,19 @@ const resonanceChainCount = computed(
 );
 
 const echoSlots = computed(() => {
-  // Stored as a Record<number, EchoSlot> (keys "0"-"4"), not an array.
-  const echoes = Object.values(characterData.value.echoes ?? {}) as any[];
-  return echoes.length ? echoes : Array.from({ length: 5 }, () => ({}));
+  // Stored as a Record<number, { echoId, ...null stat fields }> (keys
+  // "0"-"4") — a slot only points at an echoId. The actual echo/type/rank/
+  // stat/echoSet/substats live on the matching item in the inventory store
+  // (see CalculatorEcho.vue's currentEcho/inventoryStore.getEchoById
+  // pattern), so each slot must be resolved through there to render.
+  const slots = characterData.value.echoes ?? {};
+  return Array.from({ length: 5 }, (_, i) => {
+    const slot = slots[i] ?? {};
+    const inventoryEcho = slot.echoId
+      ? inventoryStore.getEchoById(slot.echoId)
+      : null;
+    return inventoryEcho ?? slot;
+  });
 });
 
 const weaponKey = computed(() => characterData.value.weapon ?? null);

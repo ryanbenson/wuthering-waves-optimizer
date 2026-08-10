@@ -1,3 +1,5 @@
+import { configureEcho } from "./utils/echoesUtils";
+
 describe("Calculator Build Card", () => {
   beforeEach(() => {
     cy.visit("/");
@@ -18,6 +20,34 @@ describe("Calculator Build Card", () => {
       "have.length",
       5,
     );
+  });
+
+  it("shows a real equipped echo's set icon and CV/RV score", () => {
+    cy.get('[data-test-calculator-nav="echoes"]').click();
+    configureEcho(
+      1,
+      {
+        mainEcho: "AbyssalMercator",
+        mainStat: "Glacio",
+        set: "FrostyResolve",
+        subStats: {
+          CritRate: 7.5,
+          CritDMG: 16.2,
+          ATK: 9.4,
+          ATK_FLAT: 50,
+          ResonanceSkillDMGBonus: 10.9,
+        },
+      },
+      cy,
+    );
+
+    cy.get('[data-test-calculator-nav="buildCard"]').click();
+
+    cy.get("[data-test-build-card-echoes]").within(() => {
+      cy.contains("CV").should("exist");
+      cy.contains("RV").should("exist");
+      cy.get("img.FrostyResolve").should("exist");
+    });
   });
 
   it("uploads a custom portrait and lets it be reset", () => {
