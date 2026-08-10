@@ -509,6 +509,11 @@ export const calculateAttackDamage = (
     weaponDefIgnoreSpecificDmgType = 0;
     weaponDefIgnoreSpecificElement = 0;
   }
+  // def ignore is excluded from specific element for tune break dmg
+  if (attack.key === "TuneBreakDMG") {
+    teamDefIgnoreSpecificElement = 0;
+    weaponDefIgnoreSpecificElement = 0;
+  }
   const specificSkillExtraCritRateResonanceChains =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:CritRate`] ?? 0;
   const specificSkillExtraCritRateTeamBuffs =

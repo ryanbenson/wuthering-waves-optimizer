@@ -2,7 +2,7 @@ export const resonanceChains = [
   {
     key: `SequenceNode1LikeCloudsThatMeetAndDriftApart`,
     name: `Sequence Node 1: Like Clouds That Meet and Drift Apart`,
-    details: `<div>Crit. Rate is increased by 16%.<br></span><br><br>The max stack limit of <span style="color:#ffd12f;" class="font-bold">Swordlight Ward</span> is increased to 2. Casting <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stringblade</span> additionally grants 1 stacks of <span style="color:#ffd12f;" class="font-bold">Swordlight Ward</span>.<br></span><br><br>Upon entering combat, gain 25 stack of <span style="color:#ffd12f;" class="font-bold">Exorcising Seal</span>.<br>After <span style="color:#ffd12f;" class="font-bold">Basic Attack - Stringblade</span>, <span style="color:#ffd12f;" class="font-bold">Mid-air Attack - Stringblade</span>, or <span style="color:#ffd12f;" class="font-bold">Basic Attack - Ephemeral Transcendence</span> deals damage, if Qingxiao has <span style="color:#ffd12f;" class="font-bold">Exorcising Seal</span>, remove <span style="color:#ffd12f;" class="font-bold">Exorcising Seal</span> and trigger <span style="color:#ffd12f;" class="font-bold">Juque Perdition</span>, dealing <span style="color:#c7ffed";>Aero DMG</span> equal to 400% of Qingxiao's ATK, considered Basic Attack DMG. This effect can be triggered up to once per second. For each stack of <span style="color:#ffd12f;" class="font-bold">Exorcising Seal</span> removed, the target takes 4% more DMG from <span style="color:#ffd12f;" class="font-bold">Juque Perdition</span> for 1s.<br><span style="color:#ffd12f;" class="font-bold">Exorcising Seal</span> stacks up to 25 times.</div>`,
+    details: `<div>Crit. Rate is increased by 16%.<br></span><br><br>The max stack limit of <span style="color:#ffd12f;" class="font-bold">Swordlight Ward</span> is increased to 2. Casting <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stringblade</span> additionally grants 1 stacks of <span style="color:#ffd12f;" class="font-bold">Swordlight Ward</span>.<br></span><br><br>Upon entering combat, gain 25 stack of <span style="color:#ffd12f;" class="font-bold">Exorcising Seal</span>.<br>After <span style="color:#ffd12f;" class="font-bold">Basic Attack - Stringblade</span>, <span style="color:#ffd12f;" class="font-bold">Mid-air Attack - Stringblade</span>, or <span style="color:#ffd12f;" class="font-bold">Basic Attack - Ephemeral Transcendence</span> deals damage, if Qingxiao has <span style="color:#ffd12f;" class="font-bold">Exorcising Seal</span>, remove <span style="color:#ffd12f;" class="font-bold">Exorcising Seal</span> and trigger <span style="color:#ffd12f;" class="font-bold">Juque Perdition</span>, dealing <span style="color:#c7ffed";>Aero DMG</span> equal to 400% of Qingxiao's ATK, considered Basic Attack DMG. This effect can be triggered up to once per second.</div>`,
     hasStacks: false,
     modifiers: [
       {
@@ -18,6 +18,24 @@ export const resonanceChains = [
     ],
     minStacks: 0,
     maxStacks: 0,
+    alwaysEnabled: false,
+  },
+  {
+    key: `SequenceNode1LikeCloudsThatMeetAndDriftApartExorcisingSeal`,
+    name: `Sequence Node 1: Like Clouds That Meet and Drift Apart: Exorcising Seal`,
+    details: `<div>For each stack of <span style="color:#ffd12f;" class="font-bold">Exorcising Seal</span> removed, the target takes 4% more DMG from <span style="color:#ffd12f;" class="font-bold">Juque Perdition</span> for 1s.<br><span style="color:#ffd12f;" class="font-bold">Exorcising Seal</span> stacks up to 25 times.</div>`,
+    hasStacks: true,
+    modifiers: [
+      {
+        modifier: "specialMultiplier",
+        modifySpecificTalents: [
+          "SequenceNode1LikeCloudsThatMeetAndDriftApart",
+        ],
+        modifierValue: 0.04
+      }
+    ],
+    minStacks: 0,
+    maxStacks: 25,
     alwaysEnabled: false,
   },
   {
