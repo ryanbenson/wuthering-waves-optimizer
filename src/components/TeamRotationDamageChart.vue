@@ -29,6 +29,7 @@ import Chart from "chart.js/auto";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import { displayDamage } from "../utils/numbers";
+import { palette } from "../utils/chartColors";
 import type { TeamRotationCharacterResult } from "../calculator/teamRotation";
 
 Chart.register(ChartDataLabels);
@@ -39,15 +40,6 @@ const props = defineProps<{
 
 const chartId = `team-rotation-damage-chart-${Math.random().toString(36).slice(2)}`;
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
-
-const palette = [
-  "rgb(255, 99, 132)",
-  "rgb(54, 162, 235)",
-  "rgb(255, 206, 86)",
-  "rgb(75, 192, 192)",
-  "rgb(153, 102, 255)",
-  "rgb(255, 159, 64)",
-];
 
 const chartData = computed(() => {
   const entries = Object.entries(props.perCharacter)

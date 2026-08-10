@@ -27,6 +27,7 @@
 import { computed } from "vue";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import { displayDamage } from "../utils/numbers";
+import { palette } from "../utils/chartColors";
 import type { TeamRotationCharacterResult } from "../calculator/teamRotation";
 
 const props = withDefaults(
@@ -37,17 +38,6 @@ const props = withDefaults(
   }>(),
   { compact: false },
 );
-
-// Same palette as TeamRotationDamageChart.vue's pie chart, so a character's
-// color stays consistent between the summary bar and the detailed drawer.
-const palette = [
-  "rgb(255, 99, 132)",
-  "rgb(54, 162, 235)",
-  "rgb(255, 206, 86)",
-  "rgb(75, 192, 192)",
-  "rgb(153, 102, 255)",
-  "rgb(255, 159, 64)",
-];
 
 const segments = computed(() => {
   const entries = Object.entries(props.perCharacter)
