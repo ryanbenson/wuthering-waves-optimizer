@@ -49,7 +49,7 @@
               viewBox="0 0 24 24"
               fill="currentColor"
               class="h-3 w-3 shrink-0"
-              :class="theme === option ? 'visible' : 'invisible'">
+              :class="theme === option ? 'opacity-100' : 'opacity-0'">
               <path
                 d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"></path>
             </svg>
@@ -70,7 +70,7 @@
               viewBox="0 0 24 24"
               fill="currentColor"
               class="h-3 w-3 shrink-0 ml-auto"
-              :class="density === option.value ? 'visible' : 'invisible'">
+              :class="density === option.value ? 'opacity-100' : 'opacity-0'">
               <path
                 d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"></path>
             </svg>
