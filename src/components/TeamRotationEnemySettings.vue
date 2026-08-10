@@ -92,6 +92,22 @@
         </div>
       </div>
 
+      <div class="data-input--talents mt-8" data-test-team-rotation-enemy-havoc-bane>
+        <div class="flex flex-col pb-7 relative">
+          <label class="talent__label" data-test-team-rotation-enemy-havoc-bane-label>
+            Havoc Bane Stacks <span class="text-primary">{{ havocBaneStacks }}</span>
+          </label>
+          <input
+            v-model.number="havocBaneStacks"
+            type="range"
+            min="0"
+            max="9"
+            step="1"
+            class="range range-xs"
+            data-test-team-rotation-enemy-havoc-bane-input />
+        </div>
+      </div>
+
       <div class="data-input--talents mt-8" data-test-team-rotation-enemy-type>
         <div class="flex flex-col pb-7 relative">
           <label class="talent__label">
@@ -159,6 +175,7 @@ export interface TeamEnemySettingsValue {
   enemyResist: number;
   enemyType: string;
   enemyBrowserKey?: string | null;
+  havocBaneStacks?: number;
   [key: string]: unknown;
 }
 
@@ -202,6 +219,11 @@ const enemyResist = computed({
 const enemyType = computed({
   get: () => props.modelValue.enemyType ?? "Calamity",
   set: (value: string) => patch({ enemyType: value }),
+});
+
+const havocBaneStacks = computed({
+  get: () => props.modelValue.havocBaneStacks ?? 0,
+  set: (value: number) => patch({ havocBaneStacks: value }),
 });
 
 const enemyBrowserKey = computed({

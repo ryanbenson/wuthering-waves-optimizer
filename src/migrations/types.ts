@@ -1,5 +1,9 @@
 /** Pinia persisted-store keys that hold user data. */
-export const PERSISTED_STORE_KEYS = ["character", "inventory"] as const;
+export const PERSISTED_STORE_KEYS = [
+  "character",
+  "inventory",
+  "teamRotations",
+] as const;
 
 export type Migration = {
   /**
@@ -62,6 +66,12 @@ function isEmptyPersistedPayload(raw: string): boolean {
       const hasPresets = Array.isArray(presets) && presets.length > 0;
       return !hasEchoes && !hasPresets;
     }
+
+    // Team rotations store default / empty shell
+    if ("teams" in data) {
+      const teams = data.teams;
+      return !Array.isArray(teams) || teams.length === 0;
+    }
   } catch {
     return false;
   }
@@ -69,7 +79,7 @@ function isEmptyPersistedPayload(raw: string): boolean {
   return false;
 }
 
-/** True when character/inventory keys look like real saved user data. */
+/** True when any persisted-store key looks like real saved user data. */
 export function hasPersistedUserData(): boolean {
   for (const key of PERSISTED_STORE_KEYS) {
     const raw = localStorage.getItem(key);

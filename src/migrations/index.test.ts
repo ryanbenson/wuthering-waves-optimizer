@@ -38,10 +38,26 @@ describe("data migrations", () => {
         equippedPresets: {},
       }),
     );
+    localStorage.setItem("teamRotations", JSON.stringify({ teams: [] }));
 
     runMigrations();
 
     expect(localStorage.getItem(DATA_VERSION_KEY)).toBeNull();
+  });
+
+  it("treats a non-empty teamRotations store as real user data", () => {
+    localStorage.setItem(
+      "teamRotations",
+      JSON.stringify({
+        teams: [{ id: "team-1", name: "Team 1", characterIds: [], actions: [] }],
+      }),
+    );
+
+    runMigrations();
+
+    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe(
+      String(CURRENT_DATA_VERSION),
+    );
   });
 
   it("skips entirely under Cypress", () => {
@@ -125,7 +141,7 @@ describe("data migrations", () => {
     expect(JSON.parse(localStorage.getItem("inventory") ?? "{}").echoes[0].echoSet).toBe(
       "HavocEclipse",
     );
-    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe("4");
+    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe(String(CURRENT_DATA_VERSION));
   });
 
   it("adds order to rotations on v4", () => {
@@ -154,7 +170,7 @@ describe("data migrations", () => {
       { id: "c", name: "Third", actions: [], order: 1 },
       { id: "b", name: "Second", actions: [], order: 2 },
     ]);
-    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe("4");
+    expect(localStorage.getItem(DATA_VERSION_KEY)).toBe(String(CURRENT_DATA_VERSION));
   });
 
   it("is a no-op when already at current version", () => {
