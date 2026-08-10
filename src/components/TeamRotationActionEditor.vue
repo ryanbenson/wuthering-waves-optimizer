@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-2" :data-test-team-rotation-action="action.id">
-    <div class="flex items-start gap-2">
-      <div class="flex gap-1 shrink-0 mt-4" data-test-team-rotation-action-slot>
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-start gap-2">
+      <div class="flex gap-1 shrink-0 sm:mt-4" data-test-team-rotation-action-slot>
         <button
           v-for="(characterId, idx) in team.characterIds"
           :key="idx"
