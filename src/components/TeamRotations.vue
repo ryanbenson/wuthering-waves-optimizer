@@ -24,14 +24,6 @@
             aria-label="Filter teams by character"
             size="sm"
             data-test-team-rotations-filter />
-          <button
-            v-if="characterFilter"
-            type="button"
-            class="btn btn-sm btn-ghost"
-            data-test-team-rotations-filter-clear
-            @click="characterFilter = null">
-            Clear filter
-          </button>
           <div class="w-48">
             <AppRichSelect
               v-model="statusFilter"
@@ -60,12 +52,12 @@
             </AppRichSelect>
           </div>
           <button
-            v-if="statusFilter"
             type="button"
             class="btn btn-sm btn-ghost"
-            data-test-team-rotations-status-filter-clear
-            @click="statusFilter = null">
-            Clear filter
+            :disabled="!characterFilter && !statusFilter"
+            data-test-team-rotations-clear-filters
+            @click="characterFilter = null; statusFilter = null">
+            Clear filters
           </button>
           <button
             type="button"

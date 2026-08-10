@@ -76,7 +76,7 @@ describe("Team Rotations summary and status", () => {
     cy.get('[data-test-rich-select-option="finished"]').first().click();
     cy.get("[data-test-team-rotations-item]").should("have.length", 1);
     cy.get("[data-test-team-rotations-item]").should("contain.text", "Team 1");
-    cy.get("[data-test-team-rotations-status-filter-clear]").click();
+    cy.get("[data-test-team-rotations-clear-filters]").click();
     cy.get("[data-test-team-rotations-item]").should("have.length", 2);
   });
 
