@@ -295,7 +295,7 @@ import { useInventoryStore } from "../stores/inventory";
 import { useConfirm } from "../composables/useConfirm";
 import { useToast } from "../composables/useToast";
 import { getCharacterRosterDisplayName, getCharactersAvailable } from "../characters/characters";
-import { calcTeamRotationDamage } from "../calculator/teamRotation";
+import { calcTeamRotationDamage, calcStrongestHit } from "../calculator/teamRotation";
 import { displayDamage } from "../utils/numbers";
 import { parseTeamImportPayload, type TeamExportData } from "../teamRotations/exportImport";
 import { teamRotationPresets, type TeamRotationPreset } from "../teamRotations/presets";
@@ -453,19 +453,28 @@ watch(totalPages, (nextTotalPages) => {
   }
 });
 
-// Total damage per team, recomputed fresh (no caching) whenever team data
-// changes — mirrors TeamRotationTeamEditor.vue's own recompute approach.
-interface TeamDamageTotal {
+// Per-team stats, recomputed fresh (no caching) whenever team data changes
+// — mirrors TeamRotationTeamEditor.vue's own recompute approach. Powers
+// both each card's "Total DMG" line and the cross-team summary/sort below.
+interface TeamSummaryStats {
   normal: number;
   avg: number;
   crit: number;
+  dpsNormal: number;
+  dpsAvg: number;
+  dpsCrit: number;
+  hitNormal: number;
+  hitAvg: number;
+  hitCrit: number;
+  healing: number;
+  shield: number;
 }
 
-const teamDamageTotals = ref<Record<string, TeamDamageTotal>>({});
-let damageComputeToken = 0;
+const teamStats = ref<Record<string, TeamSummaryStats>>({});
+let statsComputeToken = 0;
 
-async function recomputeTeamDamages() {
-  const token = ++damageComputeToken;
+async function recomputeTeamStats() {
+  const token = ++statsComputeToken;
   const entries = await Promise.all(
     teams.value.map(async (team: any) => {
       const result = await calcTeamRotationDamage(
@@ -479,26 +488,35 @@ async function recomputeTeamDamages() {
         team.enemyConfig,
         inventoryEchoes.value,
       );
+      const strongest = calcStrongestHit(result.actionResults);
       return [
         team.id,
         {
           normal: result.total.normalDamage ?? 0,
           avg: result.total.avgDamage ?? 0,
           crit: result.total.critDamage ?? 0,
+          dpsNormal: result.dps.normal,
+          dpsAvg: result.dps.avg,
+          dpsCrit: result.dps.crit,
+          hitNormal: strongest.normal,
+          hitAvg: strongest.avg,
+          hitCrit: strongest.crit,
+          healing: result.total.healing ?? 0,
+          shield: result.total.shield ?? 0,
         },
       ] as const;
     }),
   );
-  if (token !== damageComputeToken) {
+  if (token !== statsComputeToken) {
     return;
   }
-  teamDamageTotals.value = Object.fromEntries(entries);
+  teamStats.value = Object.fromEntries(entries);
 }
 
-watch(teams, () => void recomputeTeamDamages(), { deep: true, immediate: true });
+watch(teams, () => void recomputeTeamStats(), { deep: true, immediate: true });
 
-function teamTotalDamage(teamId: string, variant: keyof TeamDamageTotal): string {
-  const total = teamDamageTotals.value[teamId];
-  return total !== undefined ? String(displayDamage(total[variant])) : "—";
+function teamTotalDamage(teamId: string, variant: "normal" | "avg" | "crit"): string {
+  const stats = teamStats.value[teamId];
+  return stats !== undefined ? String(displayDamage(stats[variant])) : "—";
 }
 </script>
