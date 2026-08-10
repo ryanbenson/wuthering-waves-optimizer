@@ -32,7 +32,7 @@
             @click="characterFilter = null">
             Clear filter
           </button>
-          <div class="w-40">
+          <div class="w-48">
             <AppRichSelect
               v-model="statusFilter"
               :options="statusFilterOptions"
