@@ -262,6 +262,13 @@
                 type="radio"
                 name="team-sort-metric"
                 aria-label="Crit" />
+              <input
+                v-model="sortMetric"
+                value="name"
+                class="join-item btn btn-xs"
+                type="radio"
+                name="team-sort-metric"
+                aria-label="Name (A-Z)" />
               </div>
             </div>
           </div>
@@ -660,12 +667,23 @@ const filteredTeams = computed(() => {
 // Sort metric — shared by the leaderboard cards above and the team grid
 // below, which doubles as the "ranked list": sorted strongest to weakest by
 // whichever metric is selected, with a per-team #rank badge.
-const sortMetric = ref<"normal" | "avg" | "crit">("avg");
+const sortMetric = ref<"normal" | "avg" | "crit" | "name">("avg");
+
+// The leaderboard cards below always need a numeric normal/avg/crit metric,
+// even while the ranked list itself is sorted alphabetically.
+const leaderboardMetric = computed(() =>
+  sortMetric.value === "name" ? "avg" : sortMetric.value,
+);
 
 const sortedTeams = computed(() => {
+  if (sortMetric.value === "name") {
+    return [...filteredTeams.value].sort((a: any, b: any) =>
+      String(a.name ?? "").localeCompare(String(b.name ?? "")),
+    );
+  }
   return [...filteredTeams.value].sort((a: any, b: any) => {
-    const aValue = teamStats.value[a.id]?.[sortMetric.value] ?? 0;
-    const bValue = teamStats.value[b.id]?.[sortMetric.value] ?? 0;
+    const aValue = teamStats.value[a.id]?.[leaderboardMetric.value] ?? 0;
+    const bValue = teamStats.value[b.id]?.[leaderboardMetric.value] ?? 0;
     return bValue - aValue;
   });
 });
@@ -799,22 +817,22 @@ function strongestTeamBy(getValue: (stats: TeamSummaryStats) => number) {
 }
 
 const strongestTeamByDamage = computed(() =>
-  strongestTeamBy((stats) => stats[sortMetric.value]),
+  strongestTeamBy((stats) => stats[leaderboardMetric.value]),
 );
 const bestDpsTeam = computed(() =>
   strongestTeamBy((stats) =>
-    sortMetric.value === "normal"
+    leaderboardMetric.value === "normal"
       ? stats.dpsNormal
-      : sortMetric.value === "crit"
+      : leaderboardMetric.value === "crit"
         ? stats.dpsCrit
         : stats.dpsAvg,
   ),
 );
 const strongestHitTeam = computed(() =>
   strongestTeamBy((stats) =>
-    sortMetric.value === "normal"
+    leaderboardMetric.value === "normal"
       ? stats.hitNormal
-      : sortMetric.value === "crit"
+      : leaderboardMetric.value === "crit"
         ? stats.hitCrit
         : stats.hitAvg,
   ),

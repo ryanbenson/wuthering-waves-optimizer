@@ -98,6 +98,12 @@ describe("Team Rotations summary and status", () => {
     cy.get("[data-test-team-rotations-sort-metric] input[value='crit']").should(
       "be.checked",
     );
+
+    // Sorting by name is deterministic: Team 1 comes before Team 2 A-Z.
+    cy.get("[data-test-team-rotations-sort-metric] input[value='name']").click();
+    cy.get("[data-test-team-rotations-item]")
+      .first()
+      .should("contain.text", "Team 1");
   });
 
   it("never shows Infinity DPS for a team with no duration set", () => {
