@@ -99,4 +99,49 @@ describe("Team Rotations summary and status", () => {
       "be.checked",
     );
   });
+
+  it("never shows Infinity DPS for a team with no duration set", () => {
+    // Team 1: no duration set (the default for a new team).
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.get("[data-test-team-rotation-editor]").should("be.visible");
+    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect(
+      '[data-test-rotation-action-skill-input="none"]',
+      "BasicAttackStage1DMG",
+    );
+    cy.get("[data-test-team-rotation-back]").click();
+
+    // Team 2: has a duration set — the only one that should compete for DPS.
+    buildTeam(1);
+    cy.get("[data-test-team-rotation-back]").click();
+
+    cy.get("[data-test-team-rotations-summary]").should("be.visible");
+    cy.get('[data-test-team-rotations-leaderboard="dps"]')
+      .should("exist")
+      .and("not.contain.text", "Infinity")
+      .and("contain.text", "Team 2");
+  });
+
+  it("toggles between grid and list view, persisting the choice across reload", () => {
+    buildTeam(1);
+    cy.get("[data-test-team-rotation-back]").click();
+
+    cy.get("[data-test-team-rotations-view-grid]").should("have.class", "btn-active");
+    cy.get(".teams__list.grid").should("exist");
+
+    cy.get("[data-test-team-rotations-view-list]").click();
+    cy.get("[data-test-team-rotations-view-list]").should("have.class", "btn-active");
+    cy.get(".teams__list.grid").should("not.exist");
+    cy.get("[data-test-team-rotations-item]").should("have.length", 1);
+
+    cy.reload();
+    cy.get("[data-test-team-rotations-view-list]").should("have.class", "btn-active");
+    cy.get(".teams__list.grid").should("not.exist");
+
+    cy.get("[data-test-team-rotations-view-grid]").click();
+    cy.get(".teams__list.grid").should("exist");
+  });
 });

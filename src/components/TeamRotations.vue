@@ -67,6 +67,36 @@
             @click="statusFilter = null">
             Clear filter
           </button>
+          <div class="join" data-test-team-rotations-view-toggle>
+            <button
+              type="button"
+              class="btn btn-sm join-item"
+              :class="{ 'btn-active': viewMode === 'grid' }"
+              title="Grid view"
+              aria-label="Grid view"
+              data-test-team-rotations-view-grid
+              @click="viewMode = 'grid'">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
+                <path
+                  d="M0 96c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32L0 96zM0 416c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32L32 608c-17.7 0-32-14.3-32-32l0-160zM288 96c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32l-160 0c-17.7 0-32-14.3-32-32l0-160zM288 416c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32l-160 0c-17.7 0-32-14.3-32-32l0-160z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm join-item"
+              :class="{ 'btn-active': viewMode === 'list' }"
+              title="List view"
+              aria-label="List view"
+              data-test-team-rotations-view-list
+              @click="viewMode = 'list'">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
+                <path
+                  d="M40 48C26.7 48 16 58.7 16 72l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24L40 48zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L192 64zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zM16 232l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+          </div>
           <div class="join">
             <button
               type="button"
@@ -190,7 +220,9 @@
           data-test-team-rotations-summary>
           <div class="flex items-center justify-between gap-2 flex-wrap mb-3">
             <h3 class="text-sm font-semibold">All Teams Summary</h3>
-            <div class="join" data-test-team-rotations-sort-metric>
+            <div class="flex items-center gap-2">
+              <span class="text-xs opacity-70">Sort teams by:</span>
+              <div class="join" data-test-team-rotations-sort-metric>
               <input
                 v-model="sortMetric"
                 value="normal"
@@ -212,6 +244,7 @@
                 type="radio"
                 name="team-sort-metric"
                 aria-label="Crit" />
+              </div>
             </div>
           </div>
           <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 text-sm">
@@ -269,6 +302,7 @@
         </div>
 
         <ul
+          v-if="viewMode === 'grid'"
           class="teams__list grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
           data-test-team-rotations-list>
           <li
@@ -332,6 +366,66 @@
                 Normal: {{ teamTotalDamage(team.id, "normal") }} /
                 Average: {{ teamTotalDamage(team.id, "avg") }} /
                 Crit: {{ teamTotalDamage(team.id, "crit") }}
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <ul v-else class="teams__list flex flex-col gap-2" data-test-team-rotations-list>
+          <li
+            v-for="team in paginatedTeams"
+            :key="team.id"
+            class="card bg-base-200 shadow hover:bg-base-300 transition-colors cursor-pointer"
+            :data-test-team-rotations-item="team.name"
+            @click="selectedTeamId = team.id; showSummary = false">
+            <div class="card-body flex-row flex-wrap items-center gap-3 p-3">
+              <span
+                class="badge badge-sm badge-ghost shrink-0"
+                data-test-team-rotations-rank>
+                #{{ teamRank(team.id) }}
+              </span>
+              <div class="flex -space-x-2 shrink-0">
+                <div
+                  v-for="(characterId, index) in team.characterIds"
+                  v-show="characterId"
+                  :key="index"
+                  class="size-9 rounded-full bg-base-300 border-2 border-base-200 bg-cover bg-center"
+                  :style="
+                    characterId
+                      ? { backgroundImage: `url(${characterImage(characterId)})` }
+                      : {}
+                  "></div>
+              </div>
+              <div class="min-w-[8rem] flex-1">
+                <div class="font-semibold truncate">{{ team.name }}</div>
+                <div class="text-xs opacity-70 flex flex-wrap gap-x-2">
+                  <span>{{ team.actions.length }} action{{ team.actions.length === 1 ? "" : "s" }}</span>
+                  <span v-if="team.duration">{{ team.duration }}s rotation</span>
+                </div>
+              </div>
+              <div class="text-sm shrink-0" data-test-team-rotations-total-dmg>
+                <span class="font-bold">Total DMG:</span>
+                Normal: {{ teamTotalDamage(team.id, "normal") }} /
+                Average: {{ teamTotalDamage(team.id, "avg") }} /
+                Crit: {{ teamTotalDamage(team.id, "crit") }}
+              </div>
+              <div class="flex items-center gap-1 shrink-0" @click.stop>
+                <TeamBuildStatus
+                  :status="getTeamBuildStatus(team)"
+                  interactive
+                  :team-id="team.id" />
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-xs"
+                  title="Delete team"
+                  :data-test-team-rotations-delete="team.name"
+                  @click="handleDeleteTeam(team.id, team.name)">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
+                    <path
+                      d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
+                      fill="currentColor" />
+                  </svg>
+                </button>
               </div>
             </div>
           </li>
@@ -401,6 +495,14 @@ const { showToast } = useToast();
 
 const selectedTeamId = ref<string | null>(null);
 const showSummary = ref(false);
+
+const VIEW_MODE_KEY = "teamRotationsViewMode";
+const viewMode = ref<"grid" | "list">(
+  localStorage.getItem(VIEW_MODE_KEY) === "list" ? "list" : "grid",
+);
+watch(viewMode, (mode) => {
+  localStorage.setItem(VIEW_MODE_KEY, mode);
+});
 
 function displayName(characterId: string) {
   return getCharacterRosterDisplayName(characterId);
@@ -597,15 +699,22 @@ async function recomputeTeamStats() {
         inventoryEchoes.value,
       );
       const strongest = calcStrongestHit(result.actionResults);
+      // calcRotationDps divides by team.duration with no zero/NaN guard —
+      // a team with no duration set (the default for a new team) would
+      // otherwise report Infinity DPS and "win" the leaderboard despite
+      // having the lowest actual damage. Treat "no duration" as "no DPS
+      // to report" instead, same as every other DPS display in the app
+      // already gates on `duration` being truthy.
+      const hasDuration = Number(team.duration) > 0;
       return [
         team.id,
         {
           normal: result.total.normalDamage ?? 0,
           avg: result.total.avgDamage ?? 0,
           crit: result.total.critDamage ?? 0,
-          dpsNormal: result.dps.normal,
-          dpsAvg: result.dps.avg,
-          dpsCrit: result.dps.crit,
+          dpsNormal: hasDuration ? result.dps.normal : 0,
+          dpsAvg: hasDuration ? result.dps.avg : 0,
+          dpsCrit: hasDuration ? result.dps.crit : 0,
           hitNormal: strongest.normal,
           hitAvg: strongest.avg,
           hitCrit: strongest.crit,
