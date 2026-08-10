@@ -64,6 +64,12 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
         team.mode = mode;
       }
     },
+    setTeamStatus(teamId, status) {
+      const team = this.teams.find((t) => t.id === teamId);
+      if (team) {
+        team.buildStatus = status;
+      }
+    },
     renameTeam(teamId, name) {
       const team = this.teams.find((t) => t.id === teamId);
       if (team) {

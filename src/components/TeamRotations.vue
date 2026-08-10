@@ -32,6 +32,41 @@
             @click="characterFilter = null">
             Clear filter
           </button>
+          <div class="w-40">
+            <AppRichSelect
+              v-model="statusFilter"
+              :options="statusFilterOptions"
+              allow-empty
+              empty-label="All statuses"
+              aria-label="Filter teams by status"
+              size="sm"
+              data-test-team-rotations-status-filter>
+              <template #selected="{ option }">
+                <span class="flex items-center gap-1.5 min-w-0">
+                  <span
+                    v-if="option?.dotClass"
+                    class="size-2 rounded-full shrink-0"
+                    :class="String(option.dotClass)"></span>
+                  <span class="truncate">{{ option?.label ?? "All statuses" }}</span>
+                </span>
+              </template>
+              <template #option="{ option }">
+                <span
+                  v-if="option.dotClass"
+                  class="size-2 rounded-full shrink-0"
+                  :class="String(option.dotClass)"></span>
+                <span>{{ option.label }}</span>
+              </template>
+            </AppRichSelect>
+          </div>
+          <button
+            v-if="statusFilter"
+            type="button"
+            class="btn btn-sm btn-ghost"
+            data-test-team-rotations-status-filter-clear
+            @click="statusFilter = null">
+            Clear filter
+          </button>
           <div class="join">
             <button
               type="button"
@@ -162,18 +197,24 @@
             <div class="card-body gap-3 p-4">
               <div class="flex items-start justify-between gap-2">
                 <h3 class="font-semibold truncate">{{ team.name }}</h3>
-                <button
-                  type="button"
-                  class="btn btn-ghost btn-xs shrink-0"
-                  title="Delete team"
-                  :data-test-team-rotations-delete="team.name"
-                  @click.stop="handleDeleteTeam(team.id, team.name)">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
-                    <path
-                      d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
-                      fill="currentColor" />
-                  </svg>
-                </button>
+                <div class="flex items-center gap-1 shrink-0" @click.stop>
+                  <TeamBuildStatus
+                    :status="getTeamBuildStatus(team)"
+                    interactive
+                    :team-id="team.id" />
+                  <button
+                    type="button"
+                    class="btn btn-ghost btn-xs"
+                    title="Delete team"
+                    :data-test-team-rotations-delete="team.name"
+                    @click="handleDeleteTeam(team.id, team.name)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
+                      <path
+                        d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM184 232l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z"
+                        fill="currentColor" />
+                    </svg>
+                  </button>
+                </div>
               </div>
               <div class="flex gap-4">
                 <div
@@ -240,6 +281,14 @@ import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
 import PaginationControls from "./PaginationControls.vue";
 import TeamRotationTeamEditor from "./TeamRotationTeamEditor.vue";
 import TeamRotationSummary from "./TeamRotationSummary.vue";
+import TeamBuildStatus from "./TeamBuildStatus.vue";
+import {
+  TEAM_BUILD_STATUSES,
+  getTeamBuildStatus,
+  getTeamBuildStatusDotClass,
+  getTeamBuildStatusLabel,
+  type TeamBuildStatus as TeamBuildStatusType,
+} from "../teamRotations/teamBuildStatus";
 import { useTeamRotationsStore } from "../stores/teamRotations";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
@@ -355,13 +404,26 @@ const characterFilterOptions = computed((): AppRichSelectOption[] => {
   return [...mapBucket(roster.five, "5 Star"), ...mapBucket(roster.four, "4 Star")];
 });
 
+// Status filter — same enum/dropdown pattern as the character browser's
+// build-status filter (CalculatorCharacterBrowser.vue).
+const statusFilter = ref<TeamBuildStatusType | null>(null);
+
+const statusFilterOptions = computed((): AppRichSelectOption[] =>
+  TEAM_BUILD_STATUSES.map((status) => ({
+    value: status,
+    label: getTeamBuildStatusLabel(status),
+    dotClass: getTeamBuildStatusDotClass(status),
+  })),
+);
+
 const filteredTeams = computed(() => {
-  if (!characterFilter.value) {
-    return teams.value;
-  }
-  return teams.value.filter((team: { characterIds: Array<string | null> }) =>
-    team.characterIds.includes(characterFilter.value),
-  );
+  return teams.value.filter((team: any) => {
+    const matchesCharacter =
+      !characterFilter.value || team.characterIds.includes(characterFilter.value);
+    const matchesStatus =
+      !statusFilter.value || getTeamBuildStatus(team) === statusFilter.value;
+    return matchesCharacter && matchesStatus;
+  });
 });
 
 // Pagination, matching the Inventory page's PaginationControls pattern.
@@ -378,6 +440,10 @@ const totalPages = computed(() =>
 );
 
 watch(characterFilter, () => {
+  page.value = 1;
+});
+
+watch(statusFilter, () => {
   page.value = 1;
 });
 
