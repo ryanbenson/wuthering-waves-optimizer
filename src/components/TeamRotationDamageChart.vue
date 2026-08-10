@@ -110,7 +110,16 @@ function initChart() {
   });
 }
 
-watch(chartData, () => initChart(), { deep: true });
+// flush: "post" matters here — the pie chart's <canvas> only exists once
+// chartData.length > 0 (v-if gate). On a page where this component mounts
+// before the team's damage calc has finished (chartData starts empty), the
+// default "pre" flush timing would run this callback *before* Vue patches
+// that DOM change, finding chartCanvas.value still null and silently
+// no-op'ing forever. (Previously masked: this component only ever mounted
+// inside an already-open drawer with chartData already populated, so
+// onMounted's first call always handled it and the watcher's timing never
+// mattered.)
+watch(chartData, () => initChart(), { deep: true, flush: "post" });
 onMounted(() => initChart());
 onBeforeUnmount(() => {
   if (chartCanvas.value) {

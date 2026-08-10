@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="points.length"
-    class="team-rotation-timeline-chart"
+    class="team-rotation-timeline-chart h-72 relative"
     data-test-team-rotation-timeline-chart>
     <canvas :id="chartId" ref="chartCanvas"></canvas>
   </div>
@@ -62,6 +62,8 @@ function initChart() {
       ],
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
       scales: {
         x: {
           type: "linear",
@@ -77,6 +79,13 @@ function initChart() {
         },
       },
       plugins: {
+        // chartjs-plugin-datalabels is registered globally (see
+        // TeamRotationDamageChart.vue's Chart.register call — it applies to
+        // every chart in the app, not just the one that registered it)
+        // unless a chart opts out here; its default formatter stringifies
+        // this chart's {x,y} data points directly onto the line, which is
+        // illegible clutter for a line chart.
+        datalabels: { display: false },
         tooltip: {
           callbacks: {
             label: (context) => {
@@ -90,7 +99,13 @@ function initChart() {
   });
 }
 
-watch(() => props.points, initChart, { deep: true });
+// flush: "post" matters here — this chart mounts before its data is ready
+// (props.points starts empty while the parent page's damage calc is still
+// running), so `v-if="points.length"` only creates the <canvas> once real
+// data arrives. The default "pre" flush timing would run this callback
+// *before* Vue patches that DOM change, finding chartCanvas.value still
+// null and silently no-op'ing forever.
+watch(() => props.points, initChart, { deep: true, flush: "post" });
 onMounted(() => initChart());
 onBeforeUnmount(() => {
   if (chartCanvas.value) {

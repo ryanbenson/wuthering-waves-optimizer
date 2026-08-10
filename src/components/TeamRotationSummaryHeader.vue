@@ -41,17 +41,33 @@
         @click="emit('view-damages')">
         View Damages
       </button>
+      <button
+        type="button"
+        class="btn btn-xs btn-secondary shrink-0"
+        data-test-team-rotation-summary-view-summary
+        @click="emit('view-summary')">
+        View Summary
+      </button>
     </div>
     <div v-else class="flex flex-col gap-3">
       <div class="flex items-center justify-between gap-2">
         <h2 class="font-semibold truncate">{{ teamName }}</h2>
-        <button
-          type="button"
-          class="btn btn-sm btn-primary"
-          data-test-team-rotation-summary-view-damages
-          @click="emit('view-damages')">
-          View Damages
-        </button>
+        <div class="flex gap-2 shrink-0">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            data-test-team-rotation-summary-view-damages
+            @click="emit('view-damages')">
+            View Damages
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-secondary"
+            data-test-team-rotation-summary-view-summary
+            @click="emit('view-summary')">
+            View Summary
+          </button>
+        </div>
       </div>
       <div class="flex flex-wrap gap-x-6 gap-y-1 text-sm">
         <span>
@@ -88,6 +104,7 @@ defineProps<{
 
 const emit = defineEmits<{
   "view-damages": [];
+  "view-summary": [];
 }>();
 
 function characterImage(characterId: string) {

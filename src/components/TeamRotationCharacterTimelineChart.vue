@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="points.length"
-    class="team-rotation-character-timeline-chart"
+    class="team-rotation-character-timeline-chart h-72 relative"
     data-test-team-rotation-character-timeline-chart>
     <canvas :id="chartId" ref="chartCanvas"></canvas>
   </div>
@@ -58,6 +58,8 @@ function initChart() {
       })),
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
       scales: {
         x: {
           type: "linear",
@@ -72,6 +74,9 @@ function initChart() {
         },
       },
       plugins: {
+        // See TeamRotationTimelineChart.vue — chartjs-plugin-datalabels is
+        // registered globally and must be opted out per-chart.
+        datalabels: { display: false },
         legend: { display: true },
         tooltip: {
           callbacks: {
@@ -86,7 +91,8 @@ function initChart() {
   });
 }
 
-watch(() => props.points, initChart, { deep: true });
+// flush: "post" matters here — see TeamRotationTimelineChart.vue for why.
+watch(() => props.points, initChart, { deep: true, flush: "post" });
 onMounted(() => initChart());
 onBeforeUnmount(() => {
   if (chartCanvas.value) {
