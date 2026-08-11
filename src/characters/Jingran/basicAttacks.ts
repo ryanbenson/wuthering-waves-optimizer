@@ -223,6 +223,7 @@ export const basicAttacks = {
       },
       type: "Shield",
       attribute: "hp",
+      requiresResonanceChain: "EarthCharmShield",
     },
     {
       key: "EarthCharmYinghuoShield",
@@ -241,6 +242,7 @@ export const basicAttacks = {
       },
       type: "Shield",
       attribute: "hp",
+      requiresResonanceChain: "EarthCharmYinghuoShield",
     }
   ],
 };
