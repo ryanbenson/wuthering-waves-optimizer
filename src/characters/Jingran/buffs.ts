@@ -4,7 +4,16 @@ export const buffs = [
     name: `Inherent Skill: Hark the Dust`,
     details: `<div>Casting <span style="color:#ffd12f;" class="font-bold">Intro Skill - Question the Tombs</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Encroaching Yin</span> and <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Scorching Yang</span> grants<span style="color:#ffd12f;" class="font-bold">Earth Charm</span>.<br></span><br><br><span class="Title">Earth Charm</span><br>For 15, if Jingran is the active Resonator in the team, gain an unstackable Shield equal to 1.6% Max HP+700 that lasts for 5s every 0.5s when dealing damage. This Shield will not be passed on to the incoming Resonator.<br>While Jingran is in the <span style="color:#ffd12f;" class="font-bold">Yinghuo</span> state, if he is the active Resonator in the team, he gains a unstackable Shield equal to 0.8% Max HP+350, for 5s. This effect can be triggered once every 0.5s. This Shield will not be passed on to the incoming Resonator.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "EnableAttack",
+        modifierValue: ["EarthCharmShield"],
+      },
+      {
+        modifier: "EnableAttack",
+        modifierValue: ["EarthCharmYinghuoShield"],
+      },
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
