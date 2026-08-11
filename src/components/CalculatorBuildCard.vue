@@ -4,7 +4,7 @@
       <div class="build-card__profile-fields flex flex-wrap items-end gap-2">
         <label class="form-control">
           <div class="label py-1">
-            <span class="label-text text-xs">In-game username</span>
+            <span class="label-text text-xs">Username (optional)</span>
           </div>
           <input
             v-model="buildCardUsername"
