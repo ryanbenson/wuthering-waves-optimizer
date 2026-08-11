@@ -171,12 +171,14 @@ describe("computeAdditionalBaseBuffs - HP-based scaling", () => {
       { forte: "10" },
     );
     // steps clamped to 25 regardless of how far HP exceeds the cap
-    expect(data["HeavyAttackSoulRaidDMG:talentModifierMultiplyAdd"]).toBeCloseTo(
-      25 * 0.211,
-    );
-    // written to the root of the data object (read by attacks.ts directly off
-    // selfBuffs), not nested under specificTalentBuffs
-    expect(data.specificTalentBuffs).toBeUndefined();
+    // written under specificTalentBuffs, like every other modifySpecificTalents
+    // target attr, so both self-buff and resonance-chain callers read it
+    // consistently (attacks.ts sums both selfBuffs root and
+    // selfBuffs.specificTalentBuffs for talentModifierMultiplyAdd, since older
+    // Talent-modifier-based buffs like Jinhsi's Incandescence still write root)
+    expect(
+      data.specificTalentBuffs["HeavyAttackSoulRaidDMG:talentModifierMultiplyAdd"],
+    ).toBeCloseTo(25 * 0.211);
   });
 
   it("looks up a lower forte level correctly instead of always assuming max level", () => {
@@ -213,9 +215,9 @@ describe("computeAdditionalBaseBuffs - HP-based scaling", () => {
       35000, // 10 steps
       { forte: "1" },
     );
-    expect(data["HeavyAttackSoulRaidDMG:talentModifierMultiplyAdd"]).toBeCloseTo(
-      10 * 0.1064,
-    );
+    expect(
+      data.specificTalentBuffs["HeavyAttackSoulRaidDMG:talentModifierMultiplyAdd"],
+    ).toBeCloseTo(10 * 0.1064);
   });
 
   it("caps each stack independently before multiplying by stack count", () => {

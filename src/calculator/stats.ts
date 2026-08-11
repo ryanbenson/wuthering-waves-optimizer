@@ -1255,13 +1255,6 @@ const applyAdditionalBaseModifiers = (
             (data[modifierItem.modifierTargetAttr] || 0) + buffValue;
           break;
       }
-    } else if (modifierItem.modifierTargetAttr === "talentModifierMultiplyAdd") {
-      // talentModifierMultiplyAdd is read from the root of selfBuffs (see attacks.ts),
-      // not from selfBuffs.specificTalentBuffs like other per-talent modifiers
-      modifierItem.modifySpecificTalents.forEach((talent: string) => {
-        const key = `${talent}:talentModifierMultiplyAdd`;
-        data[key] = (data[key] || 0) + buffValue;
-      });
     } else {
       const specificTalentBuffs: Record<string, number> = {};
       modifierItem.modifySpecificTalents.forEach((talent: string) => {

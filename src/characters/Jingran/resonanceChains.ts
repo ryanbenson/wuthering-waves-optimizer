@@ -4,7 +4,20 @@ export const resonanceChains = [
     name: `Sequence Node 1: Yin and Yang in Harmony, the Ultimate Law of Being`,
     details: `<div>The DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Encroaching Yin</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Netherworld Traverse</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Scorching Yang</span>, and <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Afterlife's Guide</span> are increased by 80%.<br><span style="color:#ffd12f;" class="font-bold">Resonance Skill - Encroaching Yin</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Netherworld Traverse</span>, <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Scorching Yang</span>, and <span style="color:#ffd12f;" class="font-bold">Resonance Skill - Afterlife's Guide</span> are now immune to interruprtions.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "GroundEncroachingYinDMG",
+          "AerialEncroachingYinDMG",
+          "NetherworldTraverseDMG",
+          "GroundScorchingYangDMG",
+          "AerialScorchingYangDMG",
+          "AfterlifeSGuideDMG",
+        ],
+        modifierValue: 0.8,
+      },
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
@@ -14,7 +27,74 @@ export const resonanceChains = [
     name: `Sequence Node 2: A Solitary Lantern, Across Lands Shade-Trodden`,
     details: `<div>The DMG Multipliers of <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> and <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span> are increased by 46%. While in the <span style="color:#ffd12f;" class="font-bold">Yinghuo</span> state, the DMG Multiplier increase effect via <span style="color:#ffd12f;" class="font-bold">Fire of Life</span> on <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> and <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span> is increased by 46%.<br></span><br><br>Upon engaging in a combat, Jingran gains the following effects, triggered once every 4s:<br>- Gain 300 point of <span style="color:#ffd12f;" class="font-bold">Qi</span>.<br>- Jingran gains <span style="color:#ffd12f;" class="font-bold">Netherworld's Boon</span>.<br></span><br><br><span class="Title">Netherworld's Boon</span></span><br><br>Casting <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> or <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span> restores Resonance Energy by 25% of the Max and the grants <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> or <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span> 180% DMG Amplification for 4s.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "HeavyAttackSoulRaidDMG",
+          "HeavyAttackStardomeMeanderDMG",
+        ],
+        modifierValue: 0.46,
+      },
+      {
+        // amplifies Fire of Life's HP-scaled DMG Multiplier Add on Soul Raid by 46%
+        // (same forte-table lookup as Fire of Life itself, scaled by 0.46)
+        modifier: "talentModifierMultiplyAdd:AdditionalBase",
+        modifierBasedOn: "HP",
+        minStatValue: 25000,
+        modifierStep: 1000,
+        maxSteps: 25,
+        modifierValue: {
+          "1": 0.048944,
+          "2": 0.052946,
+          "3": 0.056994,
+          "4": 0.06256,
+          "5": 0.066516,
+          "6": 0.071116,
+          "7": 0.07751,
+          "8": 0.083858,
+          "9": 0.090344,
+          "10": 0.09706,
+        },
+        modifierValueTalentRef: "forte",
+        maximumValue: 2.4265,
+        modifierTargetAttr: "talentModifierMultiplyAdd",
+        modifySpecificTalents: ["HeavyAttackSoulRaidDMG"],
+      },
+      {
+        // same amplification, mirrored for Stardome Meander (Aerial Scorching Yang table)
+        modifier: "talentModifierMultiplyAdd:AdditionalBase",
+        modifierBasedOn: "HP",
+        minStatValue: 25000,
+        modifierStep: 1000,
+        maxSteps: 25,
+        modifierValue: {
+          "1": 0.050094,
+          "2": 0.054234,
+          "3": 0.058328,
+          "4": 0.064124,
+          "5": 0.068264,
+          "6": 0.07291,
+          "7": 0.079488,
+          "8": 0.08602,
+          "9": 0.092644,
+          "10": 0.09959,
+        },
+        modifierValueTalentRef: "forte",
+        maximumValue: 2.48975,
+        modifierTargetAttr: "talentModifierMultiplyAdd",
+        modifySpecificTalents: ["HeavyAttackStardomeMeanderDMG"],
+      },
+      {
+        // Netherworld's Boon: 180% DMG Amplification on the Heavy Attack that triggered it
+        modifier: "DMGDeepen",
+        modifySpecificTalents: [
+          "HeavyAttackSoulRaidDMG",
+          "HeavyAttackStardomeMeanderDMG",
+        ],
+        modifierValue: 1.8,
+      },
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
@@ -24,7 +104,17 @@ export const resonanceChains = [
     name: `Sequence Node 3: World’s Course Shifts, Each to Their Rightful Paths`,
     details: `<div>When Jingran casts <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Soul Raid</span> or <span style="color:#ffd12f;" class="font-bold">Heavy Attack - Stardome Meander</span>, gain 5 points of <span style="color:#ffd12f;" class="font-bold">Ghost Shroud</span>.<br></span><br><br>When Jingran casts <span style="color:#ffd12f;" class="font-bold">Resonance Liberation - Burial of Thousand Souls</span>,<span style="color:#ffd12f;" class="font-bold">Yang Changes, Yin Unites</span> is replaced by <span style="color:#ffd12f;" class="font-bold">Yin-Yang Everflow</span>.<br></span><br><br><span class="Title">Yin-Yang Everflow</span></span><br><br>Jingran gains additional ATK based on Max HP: For every 1000 points of Jingran's Max HP,  gain 50 additional ATK, up to 2500.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "ATK_FLAT:AdditionalBase",
+        modifierBasedOn: "HP",
+        minStatValue: 0,
+        modifierStep: 1000,
+        modifierValue: 50,
+        maximumValue: 2500,
+        modifierTargetAttr: "ATK_FLAT",
+      },
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
@@ -34,7 +124,12 @@ export const resonanceChains = [
     name: `Sequence Node 4: Where Reality Meets Illusion, Where Living Meet Dead`,
     details: `<div>When a Resonator in the team gains a Shield, all Resonators in the team gain 20% All-Attribute DMG Bonus for 30s.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "DMGBonus",
+        modifierValue: 0.2,
+      },
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
@@ -54,7 +149,16 @@ export const resonanceChains = [
     name: `Sequence Node 6: As Favors and Feuds Fade, New Stories Await`,
     details: `<div>Targets take 40% more Heavy Attack DMG from Jingran.<br></span><br><br>The DMG Multiplier of <span style="color:#ffd12f;" class="font-bold">Chimei Wangliang</span> is increased by 80%.<br></span><br><br>During <span style="color:#ffd12f;" class="font-bold">Yinghuo</span>, if Jingran is the active Resonator in the team, upon dealing damage, Jingran summons <span style="color:#ffd12f;" class="font-bold">Chimei Wangliang</span> to attack the targets, dealing <span style="color:#fbcaad;">Fusion DMG</span>, considered Heavy Attack DMG.<br></span><br><br><span style="color:#ffd12f;" class="font-bold">Chimei Wangliang</span> can be summoned this way at an interval of 15s for up to 8 times. The available summon charges of <span style="color:#ffd12f;" class="font-bold">Chimei Wangliang</span> reset when one of the following conditions is met:<br>- <span style="color:#ffd12f;" class="font-bold">Yinghuo</span> ends.<br>- <span style="color:#ffd12f;" class="font-bold">Yinghuo</color is removed.<br>- <span style="color:#ffd12f;" class="font-bold">Yinghuo</color is obtained.</div>`,
     hasStacks: false,
-    modifiers: [],
+    modifiers: [
+      {
+        modifier: "DMGDeepen:Heavy",
+        modifierValue: 0.4,
+      },
+      // NOTE: the "+80% DMG Multiplier of Chimei Wangliang" clause is not wired up yet
+      // because Chimei Wangliang has no attack entry (talent value table) anywhere in
+      // Jingran's data files -- it's only ever mentioned in description text (see
+      // liberationAttacks.ts). Needs a ChimeiWangliangDMG attack added first.
+    ],
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,

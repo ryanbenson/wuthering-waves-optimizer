@@ -420,7 +420,10 @@ export const calculateAttackDamage = (
       `${attack.key}:talentModifierMultiplyAdd`
     ] ?? 0;
   const talentModifierAddFromSelfBuffs =
-    selfBuffs?.[`${attack.key}:talentModifierMultiplyAdd`] ?? 0;
+    (selfBuffs?.[`${attack.key}:talentModifierMultiplyAdd`] ?? 0) +
+    (selfBuffs?.specificTalentBuffs?.[
+      `${attack.key}:talentModifierMultiplyAdd`
+    ] ?? 0);
   const attackBuffsTalentModifierAdd = attack?.buffs?.talentModifierAdd ?? 0;
   const totalTalentModifierAdd =
     talentModifierAdd +
