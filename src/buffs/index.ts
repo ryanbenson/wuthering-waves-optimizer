@@ -2393,7 +2393,7 @@ This effect ends when the incoming Resonator is switched off the field or when L
       hasStacks: false,
       modifiers: [
         {
-          modifier: "DMGDeepen",
+          modifier: "DMGBonus",
           modifierValue: 0.002,
           maximumValue: 0.12,
           modifierStep: 0.01,

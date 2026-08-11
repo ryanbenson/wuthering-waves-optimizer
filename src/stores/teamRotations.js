@@ -19,10 +19,14 @@ const defaultEnemyConfig = () => ({
 export const useTeamRotationsStore = defineStore("teamRotations", {
   state: () => ({
     teams: [],
+    favoriteTeamIds: [],
   }),
   getters: {
     getTeamById: (state) => {
       return (teamId) => state.teams.find((team) => team.id === teamId);
+    },
+    isFavoriteTeam: (state) => {
+      return (teamId) => state.favoriteTeamIds.includes(teamId);
     },
   },
   actions: {
@@ -64,6 +68,12 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
         team.mode = mode;
       }
     },
+    setTeamStatus(teamId, status) {
+      const team = this.teams.find((t) => t.id === teamId);
+      if (team) {
+        team.buildStatus = status;
+      }
+    },
     renameTeam(teamId, name) {
       const team = this.teams.find((t) => t.id === teamId);
       if (team) {
@@ -72,6 +82,18 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
     },
     deleteTeam(teamId) {
       this.teams = this.teams.filter((t) => t.id !== teamId);
+      const index = this.favoriteTeamIds.indexOf(teamId);
+      if (index !== -1) {
+        this.favoriteTeamIds.splice(index, 1);
+      }
+    },
+    toggleFavoriteTeam(teamId) {
+      const index = this.favoriteTeamIds.indexOf(teamId);
+      if (index === -1) {
+        this.favoriteTeamIds.push(teamId);
+        return;
+      }
+      this.favoriteTeamIds.splice(index, 1);
     },
     setTeamCharacter(teamId, slot, characterId) {
       const team = this.teams.find((t) => t.id === teamId);
@@ -104,6 +126,7 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
     },
     hardSetState(data) {
       this.teams = data?.teams ?? [];
+      this.favoriteTeamIds = data?.favoriteTeamIds ?? [];
     },
   },
 });

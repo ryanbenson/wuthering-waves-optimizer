@@ -1,6 +1,22 @@
 import { isBuffActiveForStance } from "./stances";
 import { getEnabledAdditionalBasePassives } from "../echoes/sets";
 
+/**
+ * Coerces to a finite number, defaulting to 0 otherwise. `addBuffs` sums
+ * many stat sources together with "+=" — including `customBuffs`, which
+ * comes straight from user-typed form fields (and, for saves persisted
+ * before those fields were fixed to coerce on input, may still be a
+ * string). A stray string silently turns "+=" into concatenation for the
+ * rest of that stat's accumulation instead of raising a visible error, so
+ * every value is normalized here before use rather than relying on each
+ * field's own truthy/`*100` check (which doesn't protect flat fields like
+ * ATK_FLAT, EnergyRegen, HealingBonus, ShieldBonus, or DMGDeepen).
+ */
+function n(value: unknown): number {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : 0;
+}
+
 export const getInitStats = (providedFullStats: any = {}) => {
   let stats = {
     attackPercent: 0,
@@ -53,55 +69,39 @@ export const addEchoBuffs = (
     target = JSON.parse(JSON.stringify(target));
   }
   if (source) {
-    target.attackPercent += source?.ATK ? source.ATK : 0;
-    target.hpPercent += source?.HP ? source.HP : 0;
-    target.defPercent += source?.DEF ? source.DEF : 0;
-    target.attackFlat += source?.ATK_FLAT ?? 0;
-    target.hpFlat += source?.HP_FLAT ?? 0;
-    target.defFlat += source?.DEF_FLAT ?? 0;
-    target.critRate += source?.CritRate ? source.CritRate : 0;
-    target.critDMG += source?.CritDMG ? source.CritDMG : 0;
-    target.energyRegen += source?.EnergyRegen ? source.EnergyRegen / 100 : 0;
-    target.healingBonus += source?.HealingBonus ? source.HealingBonus / 100 : 0;
-    target.basicAttackDMGBonus += source?.BasicAttackDMGBonus
-      ? source.BasicAttackDMGBonus
-      : 0;
-    target.heavyAttackDMGBonus += source?.HeavyAttackDMGBonus
-      ? source.HeavyAttackDMGBonus
-      : 0;
-    target.resonanceSkillDMGBonus += source?.ResonanceSkillDMGBonus
-      ? source.ResonanceSkillDMGBonus
-      : 0;
-    target.resonanceLiberationDMGBonus += source?.ResonanceLiberationDMGBonus
-      ? source.ResonanceLiberationDMGBonus
-      : 0;
-    target.echoDMGBonus += source?.EchoDMGBonus ? source.EchoDMGBonus : 0;
-    target.outroSkillDMGBonus += source?.OutroSkillDMGBonus
-      ? source.OutroSkillDMGBonus
-      : 0;
-    target.glacio += source?.Glacio ? source.Glacio : 0;
-    target.fusion += source?.Fusion ? source.Fusion : 0;
-    target.electro += source?.Electro ? source.Electro : 0;
-    target.aero += source?.Aero ? source.Aero : 0;
-    target.spectro += source?.Spectro ? source.Spectro : 0;
-    target.havoc += source?.Havoc ? source.Havoc : 0;
-    target.defIgnore += source?.DEFIgnore ? source.DEFIgnore : 0;
-    target.bonusSpecificSkillDMGBonus += source?.BonusSpecificSkillDMGBonus
-      ? source.BonusSpecificSkillDMGBonus
-      : 0;
-    target.totalDeepenEffect += source?.TotalDeepenEffect
-      ? source.TotalDeepenEffect
-      : 0;
-    target.resistReduction += source?.ResistReduction
-      ? source.ResistReduction
-      : 0;
-    target.coordinatedDmgBonus += source?.CoordinatedDMGBonus
-      ? source.CoordinatedDMGBonus
-      : 0;
-    target.dmgBonus += source?.DMGBonus ? source.DMGBonus : 0;
+    target.attackPercent += n(source?.ATK);
+    target.hpPercent += n(source?.HP);
+    target.defPercent += n(source?.DEF);
+    target.attackFlat += n(source?.ATK_FLAT);
+    target.hpFlat += n(source?.HP_FLAT);
+    target.defFlat += n(source?.DEF_FLAT);
+    target.critRate += n(source?.CritRate);
+    target.critDMG += n(source?.CritDMG);
+    target.energyRegen += n(source?.EnergyRegen) / 100;
+    target.healingBonus += n(source?.HealingBonus) / 100;
+    target.basicAttackDMGBonus += n(source?.BasicAttackDMGBonus);
+    target.heavyAttackDMGBonus += n(source?.HeavyAttackDMGBonus);
+    target.resonanceSkillDMGBonus += n(source?.ResonanceSkillDMGBonus);
+    target.resonanceLiberationDMGBonus += n(
+      source?.ResonanceLiberationDMGBonus,
+    );
+    target.echoDMGBonus += n(source?.EchoDMGBonus);
+    target.outroSkillDMGBonus += n(source?.OutroSkillDMGBonus);
+    target.glacio += n(source?.Glacio);
+    target.fusion += n(source?.Fusion);
+    target.electro += n(source?.Electro);
+    target.aero += n(source?.Aero);
+    target.spectro += n(source?.Spectro);
+    target.havoc += n(source?.Havoc);
+    target.defIgnore += n(source?.DEFIgnore);
+    target.bonusSpecificSkillDMGBonus += n(source?.BonusSpecificSkillDMGBonus);
+    target.totalDeepenEffect += n(source?.TotalDeepenEffect);
+    target.resistReduction += n(source?.ResistReduction);
+    target.coordinatedDmgBonus += n(source?.CoordinatedDMGBonus);
+    target.dmgBonus += n(source?.DMGBonus);
 
     if (source?.AllAttributeBonus) {
-      const allAttributeBonus = source.AllAttributeBonus;
+      const allAttributeBonus = n(source.AllAttributeBonus);
       target.basicAttackDMGBonus += allAttributeBonus;
       target.heavyAttackDMGBonus += allAttributeBonus;
       target.resonanceSkillDMGBonus += allAttributeBonus;
@@ -110,7 +110,7 @@ export const addEchoBuffs = (
       target.outroSkillDMGBonus += allAttributeBonus;
     }
     if (source?.AllElementAttributeBonus) {
-      const allElementAttributeBonus = source.AllElementAttributeBonus;
+      const allElementAttributeBonus = n(source.AllElementAttributeBonus);
       target.glacio += allElementAttributeBonus;
       target.fusion += allElementAttributeBonus;
       target.electro += allElementAttributeBonus;
@@ -126,53 +126,39 @@ export const addEchoBuffs = (
 
 export const addBuffs = (source: any, target: any) => {
   if (source) {
-    target.attackPercent += source?.ATK ? source.ATK * 100 : 0;
-    target.hpPercent += source?.HP ? source.HP * 100 : 0;
-    target.defPercent += source?.DEF ? source.DEF * 100 : 0;
-    target.attackFlat += source?.ATK_FLAT ?? 0;
-    target.hpFlat += source?.HP_FLAT ?? 0;
-    target.defFlat += source?.DEF_FLAT ?? 0;
-    target.critRate += source?.CritRate ? source.CritRate * 100 : 0;
-    target.critDMG += source?.CritDMG ? source.CritDMG * 100 : 0;
-    target.energyRegen += source?.EnergyRegen ? source.EnergyRegen : 0;
-    target.healingBonus += source?.HealingBonus ? source.HealingBonus : 0;
-    target.shieldBonus += source?.ShieldBonus ? source.ShieldBonus : 0;
-    target.basicAttackDMGBonus += source?.BasicAttackDMGBonus
-      ? source.BasicAttackDMGBonus * 100
-      : 0;
-    target.heavyAttackDMGBonus += source?.HeavyAttackDMGBonus
-      ? source.HeavyAttackDMGBonus * 100
-      : 0;
-    target.resonanceSkillDMGBonus += source?.ResonanceSkillDMGBonus
-      ? source.ResonanceSkillDMGBonus * 100
-      : 0;
-    target.introSkillDMGBonus += source?.IntroSkillDMGBonus
-      ? source.IntroSkillDMGBonus * 100
-      : 0;
-    target.outroSkillDMGBonus += source?.OutroSkillDMGBonus
-      ? source.OutroSkillDMGBonus * 100
-      : 0;
-    target.resonanceLiberationDMGBonus += source?.ResonanceLiberationDMGBonus
-      ? source.ResonanceLiberationDMGBonus * 100
-      : 0;
-    target.echoDMGBonus += source?.EchoDMGBonus ? source.EchoDMGBonus * 100 : 0;
-    target.glacio += source?.Glacio ? source.Glacio * 100 : 0;
-    target.fusion += source?.Fusion ? source.Fusion * 100 : 0;
-    target.electro += source?.Electro ? source.Electro * 100 : 0;
-    target.aero += source?.Aero ? source.Aero * 100 : 0;
-    target.spectro += source?.Spectro ? source.Spectro * 100 : 0;
-    target.havoc += source?.Havoc ? source.Havoc * 100 : 0;
-    target.defIgnore += source?.DEFIgnore ? source.DEFIgnore * 100 : 0;
-    target.bonusSpecificSkillDMGBonus += source?.BonusSpecificSkillDMGBonus
-      ? source.BonusSpecificSkillDMGBonus * 100
-      : 0;
-    target.totalDeepenEffect += source?.DMGDeepen ? source.DMGDeepen : 0;
-    target.resistReduction += source?.ResistReduction
-      ? source.ResistReduction * 100
-      : 0;
+    target.attackPercent += n(source?.ATK) * 100;
+    target.hpPercent += n(source?.HP) * 100;
+    target.defPercent += n(source?.DEF) * 100;
+    target.attackFlat += n(source?.ATK_FLAT);
+    target.hpFlat += n(source?.HP_FLAT);
+    target.defFlat += n(source?.DEF_FLAT);
+    target.critRate += n(source?.CritRate) * 100;
+    target.critDMG += n(source?.CritDMG) * 100;
+    target.energyRegen += n(source?.EnergyRegen);
+    target.healingBonus += n(source?.HealingBonus);
+    target.shieldBonus += n(source?.ShieldBonus);
+    target.basicAttackDMGBonus += n(source?.BasicAttackDMGBonus) * 100;
+    target.heavyAttackDMGBonus += n(source?.HeavyAttackDMGBonus) * 100;
+    target.resonanceSkillDMGBonus += n(source?.ResonanceSkillDMGBonus) * 100;
+    target.introSkillDMGBonus += n(source?.IntroSkillDMGBonus) * 100;
+    target.outroSkillDMGBonus += n(source?.OutroSkillDMGBonus) * 100;
+    target.resonanceLiberationDMGBonus +=
+      n(source?.ResonanceLiberationDMGBonus) * 100;
+    target.echoDMGBonus += n(source?.EchoDMGBonus) * 100;
+    target.glacio += n(source?.Glacio) * 100;
+    target.fusion += n(source?.Fusion) * 100;
+    target.electro += n(source?.Electro) * 100;
+    target.aero += n(source?.Aero) * 100;
+    target.spectro += n(source?.Spectro) * 100;
+    target.havoc += n(source?.Havoc) * 100;
+    target.defIgnore += n(source?.DEFIgnore) * 100;
+    target.bonusSpecificSkillDMGBonus +=
+      n(source?.BonusSpecificSkillDMGBonus) * 100;
+    target.totalDeepenEffect += n(source?.DMGDeepen);
+    target.resistReduction += n(source?.ResistReduction) * 100;
 
     if (source?.AllAttributeBonus) {
-      const allAttributeBonus = source.AllAttributeBonus * 100;
+      const allAttributeBonus = n(source.AllAttributeBonus) * 100;
       target.basicAttackDMGBonus += allAttributeBonus;
       target.heavyAttackDMGBonus += allAttributeBonus;
       target.resonanceSkillDMGBonus += allAttributeBonus;
@@ -181,7 +167,7 @@ export const addBuffs = (source: any, target: any) => {
       target.outroSkillDMGBonus += allAttributeBonus;
     }
     if (source?.AllElementAttributeBonus) {
-      const allElementAttributeBonus = source.AllElementAttributeBonus * 100;
+      const allElementAttributeBonus = n(source.AllElementAttributeBonus) * 100;
       target.glacio += allElementAttributeBonus;
       target.fusion += allElementAttributeBonus;
       target.electro += allElementAttributeBonus;
@@ -190,7 +176,7 @@ export const addBuffs = (source: any, target: any) => {
       target.havoc += allElementAttributeBonus;
     }
     if (source?.AllResonanceDMG) {
-      const allResonanceDMG = source.AllResonanceDMG * 100;
+      const allResonanceDMG = n(source.AllResonanceDMG) * 100;
       target.resonanceSkillDMGBonus += allResonanceDMG;
       target.resonanceLiberationDMGBonus += allResonanceDMG;
     }

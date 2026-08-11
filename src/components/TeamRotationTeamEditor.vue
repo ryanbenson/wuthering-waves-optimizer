@@ -6,9 +6,10 @@
       :action-count="team.actions.length"
       :duration="team.duration"
       :result="result"
-      @view-damages="openDamages" />
+      @view-damages="openDamages"
+      @view-summary="emit('view-summary')" />
 
-    <div class="card bg-base-200 shadow-lg min-w-0">
+    <div class="card card-compact bg-base-200 shadow-lg min-w-0">
       <div class="card-body gap-6">
         <div class="flex flex-wrap items-end gap-3">
           <input
@@ -25,6 +26,10 @@
               v-model="durationValue"
               data-test-team-rotation-duration
               @input="updateDuration" />
+          </label>
+          <label class="form-control">
+            <span class="label-text text-xs">Status</span>
+            <TeamBuildStatus :status="teamStatus" interactive :team-id="props.teamId" />
           </label>
           <div class="join ml-auto">
             <button
@@ -159,7 +164,7 @@
 
         <div>
           <h3 class="font-semibold mb-2">Actions</h3>
-          <div class="flex flex-col gap-3" data-test-team-rotation-actions>
+          <div class="flex flex-col gap-4" data-test-team-rotation-actions>
             <TeamRotationActionEditor
               v-for="action in team.actions"
               :key="action.id"
@@ -325,6 +330,8 @@ import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";
 import TeamRotationSummaryHeader from "./TeamRotationSummaryHeader.vue";
+import TeamBuildStatus from "./TeamBuildStatus.vue";
+import { getTeamBuildStatus } from "../teamRotations/teamBuildStatus";
 import TeamRotationImportRotation from "./TeamRotationImportRotation.vue";
 import TeamRotationEnemySettings, {
   type TeamEnemySettingsValue,
@@ -354,6 +361,7 @@ import {
 import type { AdvancedBuffOverride } from "./TeamRotationAdvancedBuffRow.vue";
 
 const props = defineProps<{ teamId: string }>();
+const emit = defineEmits<{ "view-summary": [] }>();
 
 const router = useRouter();
 const teamRotationsStore = useTeamRotationsStore();
@@ -430,6 +438,7 @@ onBeforeUnmount(() => {
 });
 
 const team = computed(() => teamRotationsStore.getTeamById(props.teamId));
+const teamStatus = computed(() => getTeamBuildStatus(team.value));
 
 const nameValue = ref(team.value?.name ?? "");
 const durationValue = ref<string | number | null>(team.value?.duration ?? null);

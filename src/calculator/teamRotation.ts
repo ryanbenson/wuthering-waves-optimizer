@@ -447,3 +447,72 @@ export async function calcTeamRotationDamage(
     dps: calcRotationDps(total, team.duration),
   };
 }
+
+export interface StrongestHit {
+  normal: number;
+  avg: number;
+  crit: number;
+  strongestAction: TeamRotationActionResult | null;
+}
+
+function isDamageAction(actionResult: TeamRotationActionResult): boolean {
+  return actionResult.attack?.type !== "Healing" && actionResult.attack?.type !== "Shield";
+}
+
+/**
+ * The single biggest hit across every action, reported as a normal/avg/crit
+ * triple (matching this app's existing damage-display convention, rather
+ * than a single headline number) — each field is the max of that metric
+ * independently, so they don't necessarily all come from the same action.
+ * `strongestAction` names the action behind the biggest *crit* hit, for an
+ * optional "biggest hit was X's Y" caption.
+ */
+export function calcStrongestHit(actionResults: TeamRotationActionResult[]): StrongestHit {
+  const damageActions = actionResults.filter(isDamageAction);
+  const normal = damageActions.reduce((max, a) => Math.max(max, a.attack?.damage?.totalDamage ?? 0), 0);
+  const avg = damageActions.reduce((max, a) => Math.max(max, a.attack?.damage?.avgDamage ?? 0), 0);
+  const crit = damageActions.reduce((max, a) => Math.max(max, a.attack?.damage?.critDamage ?? 0), 0);
+  const strongestAction = damageActions.reduce<TeamRotationActionResult | null>((best, a) => {
+    const value = a.attack?.damage?.critDamage ?? 0;
+    const bestValue = best?.attack?.damage?.critDamage ?? -Infinity;
+    return value > bestValue ? a : best;
+  }, null);
+  return { normal, avg, crit, strongestAction };
+}
+
+export interface TimelinePoint {
+  time: number;
+  characterId: string;
+  order: number;
+  normalDamage: number;
+  avgDamage: number;
+  critDamage: number;
+  label: string;
+}
+
+/**
+ * Rough per-action timeline: exact per-action timing isn't tracked, so this
+ * evenly distributes the N damage actions (Healing/Shield excluded) across
+ * `duration` seconds, centering each action within its even slice
+ * (`((index + 0.5) / n) * duration`). Operates on `actionResults` as-is,
+ * which `calcTeamRotationDamage` already globally sorts by `order` across
+ * all three slots — so points follow real interleaved execution order.
+ */
+export function calcRotationTimeline(
+  actionResults: TeamRotationActionResult[],
+  duration: number | string | null,
+): TimelinePoint[] {
+  const damageActions = actionResults.filter(isDamageAction);
+  const durationNum = Number(duration);
+  const n = damageActions.length;
+  if (!n || !durationNum || durationNum <= 0) return [];
+  return damageActions.map((actionResult, index) => ({
+    time: ((index + 0.5) / n) * durationNum,
+    characterId: actionResult.characterId,
+    order: actionResult.order,
+    normalDamage: actionResult.attack?.damage?.totalDamage ?? 0,
+    avgDamage: actionResult.attack?.damage?.avgDamage ?? 0,
+    critDamage: actionResult.attack?.damage?.critDamage ?? 0,
+    label: actionResult.attack?.label ?? "Action",
+  }));
+}

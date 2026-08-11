@@ -2,6 +2,8 @@ import { describe, it, expect } from "vitest";
 import {
   calcTeamRotationDamage,
   calcRotationDps,
+  calcStrongestHit,
+  calcRotationTimeline,
   buildAdvancedConfigSnapshot,
   convertRotationActionsForSlot,
   applyBulkAdvancedConfigOverride,
@@ -34,6 +36,96 @@ describe("calcRotationDps", () => {
       "5",
     );
     expect(result).toEqual({ normal: 100, avg: 100, crit: 100 });
+  });
+});
+
+describe("calcStrongestHit", () => {
+  function hit(
+    order: number,
+    damage: Partial<{ totalDamage: number; avgDamage: number; critDamage: number }>,
+    type = "basic",
+    label = `Action ${order}`,
+  ) {
+    return {
+      characterId: "Calcharo",
+      slot: 0 as const,
+      order,
+      attack: { type, label, damage },
+    };
+  }
+
+  it("finds the max of each metric independently across all actions", () => {
+    const result = calcStrongestHit([
+      hit(0, { totalDamage: 100, avgDamage: 150, critDamage: 300 }),
+      hit(1, { totalDamage: 500, avgDamage: 120, critDamage: 250 }),
+    ]);
+    expect(result.normal).toBe(500);
+    expect(result.avg).toBe(150);
+    expect(result.crit).toBe(300);
+  });
+
+  it("names the action behind the biggest crit hit", () => {
+    const result = calcStrongestHit([
+      hit(0, { critDamage: 300 }, "basic", "Basic Attack"),
+      hit(1, { critDamage: 900 }, "basic", "Resonance Liberation"),
+    ]);
+    expect(result.strongestAction?.order).toBe(1);
+    expect(result.strongestAction?.attack.label).toBe("Resonance Liberation");
+  });
+
+  it("excludes Healing and Shield actions", () => {
+    const result = calcStrongestHit([
+      hit(0, { totalDamage: 100, avgDamage: 100, critDamage: 100 }),
+      hit(1, { totalDamage: 999999 }, "Healing"),
+      hit(2, { totalDamage: 999999 }, "Shield"),
+    ]);
+    expect(result.normal).toBe(100);
+  });
+
+  it("returns zeros and a null strongestAction for an empty input", () => {
+    expect(calcStrongestHit([])).toEqual({
+      normal: 0,
+      avg: 0,
+      crit: 0,
+      strongestAction: null,
+    });
+  });
+});
+
+describe("calcRotationTimeline", () => {
+  function hit(order: number, totalDamage: number, type = "basic") {
+    return {
+      characterId: "Calcharo",
+      slot: 0 as const,
+      order,
+      attack: { type, label: `Action ${order}`, damage: { totalDamage, avgDamage: totalDamage, critDamage: totalDamage } },
+    };
+  }
+
+  it("evenly distributes N actions across the duration, centered within each slice", () => {
+    const actions = [hit(0, 10), hit(1, 20), hit(2, 30), hit(3, 40), hit(4, 50)];
+    const timeline = calcRotationTimeline(actions, 10);
+    expect(timeline.map((p) => p.time)).toEqual([1, 3, 5, 7, 9]);
+    expect(timeline.map((p) => p.normalDamage)).toEqual([10, 20, 30, 40, 50]);
+  });
+
+  it("coerces a string duration like calcRotationDps does", () => {
+    const timeline = calcRotationTimeline([hit(0, 10)], "10");
+    expect(timeline[0].time).toBe(5);
+  });
+
+  it("excludes Healing and Shield actions from the timeline", () => {
+    const timeline = calcRotationTimeline(
+      [hit(0, 10), hit(1, 999, "Healing"), hit(2, 999, "Shield")],
+      10,
+    );
+    expect(timeline).toHaveLength(1);
+  });
+
+  it("returns an empty array when there are no actions or no duration", () => {
+    expect(calcRotationTimeline([], 10)).toEqual([]);
+    expect(calcRotationTimeline([hit(0, 10)], null)).toEqual([]);
+    expect(calcRotationTimeline([hit(0, 10)], 0)).toEqual([]);
   });
 });
 

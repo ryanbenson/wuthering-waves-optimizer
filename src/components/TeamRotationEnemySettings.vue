@@ -3,13 +3,14 @@
     class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
     data-test-team-rotation-enemy-collapse>
     <input type="checkbox" v-model="isOpen" data-test-team-rotation-enemy-collapse-toggle />
-    <div class="collapse-title">
+    <div class="collapse-title pr-4">
       <h3 v-if="isOpen" class="text-xl" data-test-team-rotation-enemy-title>
         Enemy Settings
       </h3>
-      <p v-else class="text-sm opacity-70" data-test-team-rotation-enemy-summary>
-        {{ enemySummary }}
-      </p>
+      <div v-else class="flex flex-col gap-0.5 min-w-0" data-test-team-rotation-enemy-summary>
+        <span class="font-semibold truncate">{{ enemySummaryName }}</span>
+        <span class="text-sm opacity-70 truncate">{{ enemySummaryMeta }}</span>
+      </div>
     </div>
     <div class="collapse-content">
       <div
@@ -92,6 +93,22 @@
         </div>
       </div>
 
+      <div class="data-input--talents mt-8" data-test-team-rotation-enemy-havoc-bane>
+        <div class="flex flex-col pb-7 relative">
+          <label class="talent__label" data-test-team-rotation-enemy-havoc-bane-label>
+            Havoc Bane Stacks <span class="text-primary">{{ havocBaneStacks }}</span>
+          </label>
+          <input
+            v-model.number="havocBaneStacks"
+            type="range"
+            min="0"
+            max="9"
+            step="1"
+            class="range range-xs"
+            data-test-team-rotation-enemy-havoc-bane-input />
+        </div>
+      </div>
+
       <div class="data-input--talents mt-8" data-test-team-rotation-enemy-type>
         <div class="flex flex-col pb-7 relative">
           <label class="talent__label">
@@ -159,6 +176,7 @@ export interface TeamEnemySettingsValue {
   enemyResist: number;
   enemyType: string;
   enemyBrowserKey?: string | null;
+  havocBaneStacks?: number;
   [key: string]: unknown;
 }
 
@@ -204,6 +222,11 @@ const enemyType = computed({
   set: (value: string) => patch({ enemyType: value }),
 });
 
+const havocBaneStacks = computed({
+  get: () => props.modelValue.havocBaneStacks ?? 0,
+  set: (value: number) => patch({ havocBaneStacks: value }),
+});
+
 const enemyBrowserKey = computed({
   get: () => props.modelValue.enemyBrowserKey ?? "",
   set: (value: string) => patch({ enemyBrowserKey: value || null }),
@@ -215,14 +238,19 @@ const selectedEnemyEntry = computed((): Enemy | null => {
   return enemiesCatalog[k] ?? null;
 });
 
-const enemySummary = computed(() => {
-  const parts: string[] = [];
-  if (selectedEnemyEntry.value?.name) {
-    parts.push(selectedEnemyEntry.value.name);
-  }
-  parts.push(`Lv ${enemyLevel.value}`);
-  parts.push(`${Math.round(enemyResist.value * 100)}% Resist`);
-  parts.push(enemyType.value);
+// Split across two lines (name, then the rest) rather than one long joined
+// string — a single line long enough to include the enemy's name plus all
+// metadata can run under the collapse-arrow icon on narrow/mobile widths.
+const enemySummaryName = computed(
+  () => selectedEnemyEntry.value?.name ?? "Enemy Settings",
+);
+
+const enemySummaryMeta = computed(() => {
+  const parts: string[] = [
+    `Lv ${enemyLevel.value}`,
+    `${Math.round(enemyResist.value * 100)}% Resist`,
+    enemyType.value,
+  ];
   return parts.join(" · ");
 });
 
@@ -260,13 +288,22 @@ watch(
 </script>
 
 <style scoped lang="scss">
+// Smaller than Calculator.vue's equivalent sliders (24px) — this panel is
+// embedded in a narrower card/collapse on the Team Rotations page, and at
+// 24px a long label (e.g. "Havoc Bane Stacks 9") could run wider than the
+// panel on mobile, pushing the slider off-screen. max-width/overflow below
+// are a defensive backstop for the same reason.
 .talent__label {
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 700;
   position: absolute;
-  top: -1.7rem;
+  top: -1.4rem;
   left: 0.5rem;
   z-index: 0;
+  max-width: calc(100% - 1rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .data-input--talents input {
   position: relative;

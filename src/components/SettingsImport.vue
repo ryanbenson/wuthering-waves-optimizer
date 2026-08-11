@@ -61,12 +61,14 @@
  * Version 1 — character payload only (no meta wrapper)
  * Version 2 — { meta, data: { character, inventory } }
  * Version 3+ — schema migrations (see src/migrations); still uses the v2 shape
+ * Version 5+ — data also includes { teamRotations }
  *
  * On import we apply pending transforms from meta.version, then mark current.
  */
 import { ref } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { useTeamRotationsStore } from "../stores/teamRotations";
 import { randomString } from "../utils/strings";
 import { useToast } from "../composables/useToast";
 import {
@@ -96,15 +98,22 @@ function getImportData(data: string | object, toParse = false) {
   const returnData: {
     character: unknown;
     inventory: unknown;
+    teamRotations: unknown;
     dataVersion: number;
-  } = { character: undefined, inventory: undefined, dataVersion: 1 };
+  } = {
+    character: undefined,
+    inventory: undefined,
+    teamRotations: undefined,
+    dataVersion: 1,
+  };
   const pd = parsedData as {
     meta?: { version?: string | number };
-    data?: { character?: unknown; inventory?: unknown };
+    data?: { character?: unknown; inventory?: unknown; teamRotations?: unknown };
   };
   if (pd?.meta && hasNestedExportFormat(pd.meta)) {
     returnData.character = pd?.data?.character;
     returnData.inventory = pd?.data?.inventory;
+    returnData.teamRotations = pd?.data?.teamRotations;
     returnData.dataVersion = parseMetaDataVersion(pd.meta);
   } else {
     returnData.character = parsedData;
@@ -130,12 +139,18 @@ function applyImportedDatabase(raw: string) {
   const importData = getImportData(raw, true);
   const characterStore = useCharacterStore();
   const inventoryStoreLocal = useInventoryStore();
+  const teamRotationsStore = useTeamRotationsStore();
 
   characterStore.hardSetState(
     parseStorePayload(importData.character, importData.dataVersion) as never,
   );
   inventoryStoreLocal.hardSetState(
     parseStorePayload(importData.inventory, importData.dataVersion) as never,
+  );
+  // Older exports (pre-version-5) never had team data — hardSetState
+  // already treats undefined as "no teams" via `data?.teams ?? []`.
+  teamRotationsStore.hardSetState(
+    parseStorePayload(importData.teamRotations, importData.dataVersion) as never,
   );
   // Transforms above bring data to the latest schema
   setStoredDataVersion(CURRENT_DATA_VERSION);
