@@ -290,10 +290,42 @@ export function calcDamage(
         skillKey !== "HeavySlashNightfallDMG" &&
         skillKey !== "ScarletCodaDMG" &&
         skillKey !== "SawringEradicationDMG" &&
-        skillKey !== "ForeclaimingBladeLiberationBaseDMG"
+        skillKey !== "ForeclaimingBladeLiberationBaseDMG" &&
+        skillKey !== "HeavyAttackSoulRaidDMG" &&
+        skillKey !== "HeavyAttackStardomeMeanderDMG"
       ) {
         if (index === talentsLen - 1) {
           t += talentModifierAdd;
+        }
+      } else if (skillKey === "HeavyAttackSoulRaidDMG") {
+        /**
+         * Heavy Attack - Soul Raid does 6 hits (8.25%*2+10.61%*3+69.53% at talent
+         * level 1, same shape at every level). Fire of Life's talentModifierAdd
+         * needs to be split proportionally to each hit's share of the total
+         * talent value, matching Aerial Encroaching Yin's own hit shape:
+         * 1st and 2nd hit get 7% each, 3rd/4th/5th hit get 9% each, last hit gets 59%
+         */
+        if (index === 0 || index === 1) {
+          t += talentModifierAdd * 0.07;
+        } else if (index >= 2 && index <= 4) {
+          t += talentModifierAdd * 0.09;
+        } else if (index === 5) {
+          t += talentModifierAdd * 0.59;
+        }
+      } else if (skillKey === "HeavyAttackStardomeMeanderDMG") {
+        /**
+         * Heavy Attack - Stardome Meander does 4 hits (12.09%+12.09%+24.18%+72.54%
+         * at talent level 1, same shape at every level). Fire of Life's
+         * talentModifierAdd needs to be split proportionally to each hit's share
+         * of the total talent value, matching Aerial Scorching Yang's own hit
+         * shape: 1st and 2nd hit get 10% each, 3rd hit gets 20%, last hit gets 60%
+         */
+        if (index === 0 || index === 1) {
+          t += talentModifierAdd * 0.1;
+        } else if (index === 2) {
+          t += talentModifierAdd * 0.2;
+        } else if (index === 3) {
+          t += talentModifierAdd * 0.6;
         }
       } else if (skillKey === "SawringEradicationDMG") {
         /**

@@ -77,7 +77,7 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "DMGBonus",
+        modifier: "AllElementAttributeBonus",
         modifierValue: 0.2,
       },
     ],
