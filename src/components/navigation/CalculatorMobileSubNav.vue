@@ -54,7 +54,7 @@
         Resonance Chains
       </a>
     </li>
-    <li class="h-9 my-0.5 mb-2">
+    <li v-if="labs?.buildCard?.isEnabled" class="h-9 my-0.5 mb-2">
       <a
         @click="changeScreen('build-card')"
         class="calcations__nav--icon-svg calcations__nav--build-card text-white hover:text-primary flex justify-start min-h-[36px]"

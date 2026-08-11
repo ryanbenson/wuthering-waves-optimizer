@@ -1,7 +1,10 @@
 <template>
   <div
     class="calculations"
-    :class="{ 'calculations--full-width': curScreen === 'build-card' }">
+    :class="{
+      'calculations--full-width':
+        curScreen === 'build-card' && isBuildCardLabEnabled,
+    }">
     <Nav cur-page="home">
       <template #mobile>
         <CalculatorMobileSubNav
@@ -90,7 +93,10 @@
         </template>
       </div>
 
-      <div class="screen--build-card" v-show="curScreen === 'build-card'">
+      <div
+        v-if="isBuildCardLabEnabled"
+        class="screen--build-card"
+        v-show="curScreen === 'build-card'">
         <CalculatorBuildCard
           :key="character"
           :character="character"
@@ -441,6 +447,13 @@ export default defineComponent({
     const inventoryStore = useInventoryStore();
     const settingsStore = useSettingsStore();
     const { characters, activeCharacter } = storeToRefs(characterStore);
+    const { labs } = storeToRefs(settingsStore);
+    // Build card is mid-development (issue #360) — gated behind Settings >
+    // Labs so it can merge to main without being reachable in production
+    // until it's finished.
+    const isBuildCardLabEnabled = computed(
+      () => labs.value?.buildCard?.isEnabled ?? false,
+    );
     const weaponData = reactive({});
     const weaponAtk = ref(0);
     const charBuffsData = reactive({});
@@ -1841,6 +1854,7 @@ export default defineComponent({
       rotationsList,
       curScreen,
       changeScreen,
+      isBuildCardLabEnabled,
       damage,
       updateStatsEchoes,
       totalAtk,

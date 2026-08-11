@@ -1,8 +1,15 @@
 import { configureEcho } from "./utils/echoesUtils";
 
+function enableBuildCardLab(win: Cypress.AUTWindow) {
+  win.localStorage.setItem(
+    "settings",
+    JSON.stringify({ config: {}, labs: { buildCard: { isEnabled: true } } }),
+  );
+}
+
 describe("Calculator Build Card", () => {
   beforeEach(() => {
-    cy.visit("/");
+    cy.visit("/", { onBeforeLoad: enableBuildCardLab });
     cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
   });

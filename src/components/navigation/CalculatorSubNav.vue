@@ -48,7 +48,7 @@
           alt="Your Resonance Chains" />
       </a>
     </li>
-    <li>
+    <li v-if="labs?.buildCard?.isEnabled">
       <a
         @click="changeScreen('build-card')"
         class="calcations__nav--icon-svg calcations__nav--build-card mr-2 h-12 p-0 flex justify-center min-w-[48px] min-h-[48px]"
