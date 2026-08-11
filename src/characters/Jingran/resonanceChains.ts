@@ -154,10 +154,10 @@ export const resonanceChains = [
         modifier: "DMGDeepen:Heavy",
         modifierValue: 0.4,
       },
-      // NOTE: the "+80% DMG Multiplier of Chimei Wangliang" clause is not wired up yet
-      // because Chimei Wangliang has no attack entry (talent value table) anywhere in
-      // Jingran's data files -- it's only ever mentioned in description text (see
-      // liberationAttacks.ts). Needs a ChimeiWangliangDMG attack added first.
+      {
+        modifier: "specialMultiplier:Heavy",
+        modifierValue: 0.8,
+      },
     ],
     minStacks: 0,
     maxStacks: 0,
