@@ -168,14 +168,16 @@ describe("CalculatorBuildCard", () => {
     expect(resonanceEl?.textContent).toContain("6 / 6");
   });
 
-  it("renders talent level badges from the character's talents", () => {
+  it("renders forte/talent levels from the character's talents", () => {
     seedCharacter();
     const { container } = renderCard(baseStatsProps());
 
     const talentsEl = container.querySelector("[data-test-build-card-talents]");
-    expect(talentsEl?.textContent).toContain("Basic 6");
-    expect(talentsEl?.textContent).toContain("Skill 10");
-    expect(talentsEl?.textContent).toContain("Intro 6");
+    expect(talentsEl?.textContent).toContain("Lv. 6");
+    expect(talentsEl?.textContent).toContain("Normal Attack");
+    expect(talentsEl?.textContent).toContain("Lv. 10");
+    expect(talentsEl?.textContent).toContain("Resonance Skill");
+    expect(talentsEl?.textContent).toContain("Intro Skill");
   });
 
   it("renders all 5 echo slots, including empty ones", () => {

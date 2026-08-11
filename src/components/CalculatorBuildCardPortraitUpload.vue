@@ -1,7 +1,12 @@
 <template>
   <div
-    class="build-card-portrait relative rounded-full border border-solid neutral-content size-32 mb-2 bg-cover cursor-pointer mx-auto"
-    :class="{ 'bg-base-300': isDragging }"
+    class="build-card-portrait relative border-solid neutral-content bg-cover bg-center cursor-pointer"
+    :class="[
+      isDragging ? 'bg-base-300' : '',
+      variant === 'cover'
+        ? 'build-card-portrait--cover w-full h-full'
+        : 'rounded-full border size-32 mb-2 mx-auto',
+    ]"
     :style="{ backgroundImage: `url(${displayPortrait})` }"
     @click="triggerFileSelect"
     @dragover.prevent="onDragOver"
@@ -19,7 +24,7 @@
     <button
       v-if="currentPortrait"
       type="button"
-      class="build-card-portrait__reset btn btn-xs btn-circle absolute top-0 right-0"
+      class="build-card-portrait__reset btn btn-xs btn-circle absolute top-2 right-2"
       @click.stop="resetPortrait"
       data-test-build-card-portrait-reset
       aria-label="Reset to default art">
@@ -34,11 +39,15 @@ import { useCharacterStore } from "../stores/character";
 import { useToast } from "../composables/useToast";
 import { compressImageToDataUrl } from "../utils/imageCompression";
 
-const props = defineProps<{
-  character: string;
-  currentPortrait?: string | null;
-  defaultPortraitUrl: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    character: string;
+    currentPortrait?: string | null;
+    defaultPortraitUrl: string;
+    variant?: "avatar" | "cover";
+  }>(),
+  { variant: "avatar" },
+);
 
 const { showToast } = useToast();
 const { setCharacterData } = useCharacterStore();
