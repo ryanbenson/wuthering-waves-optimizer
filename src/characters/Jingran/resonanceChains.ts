@@ -37,55 +37,6 @@ export const resonanceChains = [
         modifierValue: 0.46,
       },
       {
-        // amplifies Fire of Life's HP-scaled DMG Multiplier Add on Soul Raid by 46%
-        // (same forte-table lookup as Fire of Life itself, scaled by 0.46)
-        modifier: "talentModifierMultiplyAdd:AdditionalBase",
-        modifierBasedOn: "HP",
-        minStatValue: 25000,
-        modifierStep: 1000,
-        maxSteps: 25,
-        modifierValue: {
-          "1": 0.048944,
-          "2": 0.052946,
-          "3": 0.056994,
-          "4": 0.06256,
-          "5": 0.066516,
-          "6": 0.071116,
-          "7": 0.07751,
-          "8": 0.083858,
-          "9": 0.090344,
-          "10": 0.09706,
-        },
-        modifierValueTalentRef: "forte",
-        maximumValue: 2.4265,
-        modifierTargetAttr: "talentModifierMultiplyAdd",
-        modifySpecificTalents: ["HeavyAttackSoulRaidDMG"],
-      },
-      {
-        // same amplification, mirrored for Stardome Meander (Aerial Scorching Yang table)
-        modifier: "talentModifierMultiplyAdd:AdditionalBase",
-        modifierBasedOn: "HP",
-        minStatValue: 25000,
-        modifierStep: 1000,
-        maxSteps: 25,
-        modifierValue: {
-          "1": 0.050094,
-          "2": 0.054234,
-          "3": 0.058328,
-          "4": 0.064124,
-          "5": 0.068264,
-          "6": 0.07291,
-          "7": 0.079488,
-          "8": 0.08602,
-          "9": 0.092644,
-          "10": 0.09959,
-        },
-        modifierValueTalentRef: "forte",
-        maximumValue: 2.48975,
-        modifierTargetAttr: "talentModifierMultiplyAdd",
-        modifySpecificTalents: ["HeavyAttackStardomeMeanderDMG"],
-      },
-      {
         // Netherworld's Boon: 180% DMG Amplification on the Heavy Attack that triggered it
         modifier: "DMGDeepen",
         modifySpecificTalents: [

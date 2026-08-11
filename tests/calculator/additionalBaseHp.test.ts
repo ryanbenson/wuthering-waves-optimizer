@@ -220,6 +220,111 @@ describe("computeAdditionalBaseBuffs - HP-based scaling", () => {
     ).toBeCloseTo(10 * 0.1064);
   });
 
+  it("Jingran: scales Fire of Life's forte-table value by 1.46 when SequenceNode2 is enabled", () => {
+    const buffsCharInfoForte = [
+      {
+        key: "FireOfLife",
+        hasStacks: false,
+        modifiers: [
+          {
+            modifier: "talentModifierMultiplyAdd:AdditionalBase",
+            modifierBasedOn: "HP",
+            minStatValue: 25000,
+            modifierStep: 1000,
+            maxSteps: 25,
+            modifierValue: { "10": 0.211 },
+            modifierValueTalentRef: "forte",
+            maximumValue: 5.275,
+            modifierTargetAttr: "talentModifierMultiplyAdd",
+            modifySpecificTalents: ["HeavyAttackSoulRaidDMG"],
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+      },
+    ];
+    const withoutRc2 = computeAdditionalBaseBuffs(
+      { FireOfLife: { isEnabled: true } },
+      buffsCharInfoForte,
+      {},
+      "Jingran",
+      0,
+      0,
+      null,
+      35000, // 10 steps
+      { forte: "10" },
+    );
+    expect(
+      withoutRc2.specificTalentBuffs[
+        "HeavyAttackSoulRaidDMG:talentModifierMultiplyAdd"
+      ],
+    ).toBeCloseTo(10 * 0.211);
+
+    const withRc2 = computeAdditionalBaseBuffs(
+      { FireOfLife: { isEnabled: true } },
+      buffsCharInfoForte,
+      {
+        SequenceNode2ASolitaryLanternAcrossLandsShadeTrodden: {
+          isEnabled: true,
+        },
+      },
+      "Jingran",
+      0,
+      0,
+      null,
+      35000,
+      { forte: "10" },
+    );
+    expect(
+      withRc2.specificTalentBuffs[
+        "HeavyAttackSoulRaidDMG:talentModifierMultiplyAdd"
+      ],
+    ).toBeCloseTo(10 * 0.211 * 1.46);
+  });
+
+  it("Jingran: does not scale other characters' or other buffs' AdditionalBase modifiers", () => {
+    const buffsCharInfoOther = [
+      {
+        key: "SomeOtherBuff",
+        hasStacks: false,
+        modifiers: [
+          {
+            modifier: "talentModifierMultiplyAdd:AdditionalBase",
+            modifierBasedOn: "HP",
+            minStatValue: 25000,
+            modifierStep: 1000,
+            maxSteps: 25,
+            modifierValue: { "10": 0.211 },
+            modifierValueTalentRef: "forte",
+            maximumValue: 5.275,
+            modifierTargetAttr: "talentModifierMultiplyAdd",
+            modifySpecificTalents: ["HeavyAttackSoulRaidDMG"],
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+      },
+    ];
+    const data = computeAdditionalBaseBuffs(
+      { SomeOtherBuff: { isEnabled: true } },
+      buffsCharInfoOther,
+      {
+        SequenceNode2ASolitaryLanternAcrossLandsShadeTrodden: {
+          isEnabled: true,
+        },
+      },
+      "Jingran",
+      0,
+      0,
+      null,
+      35000,
+      { forte: "10" },
+    );
+    expect(
+      data.specificTalentBuffs["HeavyAttackSoulRaidDMG:talentModifierMultiplyAdd"],
+    ).toBeCloseTo(10 * 0.211);
+  });
+
   it("caps each stack independently before multiplying by stack count", () => {
     const buffsCharInfoStacked = [
       {
