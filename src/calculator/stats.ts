@@ -1163,6 +1163,8 @@ const applyAdditionalBaseModifiers = (
   energyRegen: number,
   critRate: number,
   data: Record<string, any>,
+  maxHp: number = 0,
+  talentData: Record<string, any> | null = null,
 ) => {
   modifiers.forEach((modifierItem: any) => {
     if (!modifierItem?.modifier?.includes("AdditionalBase")) {
@@ -1170,6 +1172,9 @@ const applyAdditionalBaseModifiers = (
     }
     let base = 0;
     let currentAmount = 0;
+    // HP is a raw stat value (e.g. 30000), not a percentage like EnergyRegen/CritRate,
+    // so it isn't scaled by 100 the way those are below.
+    let scale = 100;
     switch (modifierItem.modifierBasedOn) {
       case "EnergyRegen":
         base = modifierItem?.minStatValue ?? 0;
@@ -1179,13 +1184,44 @@ const applyAdditionalBaseModifiers = (
         base = modifierItem?.minStatValue ?? 0.05;
         currentAmount = critRate;
         break;
+      case "HP":
+        base = modifierItem?.minStatValue ?? 0;
+        currentAmount = maxHp;
+        scale = 1;
+        break;
       default:
         base = modifierItem?.minStatValue ?? 0;
         break;
     }
-    const additionalAmount = currentAmount * 100 - base * 100;
-    const steps = Math.floor(additionalAmount / modifierItem.modifierStep);
-    let buffValue = steps * modifierItem.modifierValue * (hasStacks ? stacks : 1);
+    const additionalAmount = currentAmount * scale - base * scale;
+    let steps = Math.floor(additionalAmount / modifierItem.modifierStep);
+    // caps how many steps count toward the effect (e.g. "up to 25000 HP over the
+    // threshold counts"), independent of any maximumValue cap on the final buffValue
+    if (modifierItem.maxSteps !== undefined && steps > modifierItem.maxSteps) {
+      steps = modifierItem.maxSteps;
+    }
+    // modifierValue can be a flat number, or (for buffs like Jinhsi's Incandescence
+    // pattern) a map of forte level -> value, resolved via modifierValueTalentRef
+    let resolvedModifierValue = modifierItem.modifierValue;
+    if (
+      resolvedModifierValue !== null &&
+      typeof resolvedModifierValue === "object"
+    ) {
+      const talentRef =
+        talentData?.[modifierItem.modifierValueTalentRef ?? "forte"] ?? "10";
+      resolvedModifierValue = resolvedModifierValue[talentRef] ?? 0;
+    }
+    let perOccurrenceValue = steps * resolvedModifierValue;
+    // for hasStacks buffs where each stack independently caps (e.g. "up to 2.5% per
+    // stack"), cap the per-stack value before multiplying by the stack count, since
+    // capping only the total afterwards would under-cap partial stack counts
+    if (
+      modifierItem.perStackMaximumValue !== undefined &&
+      perOccurrenceValue > modifierItem.perStackMaximumValue
+    ) {
+      perOccurrenceValue = modifierItem.perStackMaximumValue;
+    }
+    let buffValue = perOccurrenceValue * (hasStacks ? stacks : 1);
     if (buffValue > modifierItem.maximumValue) {
       buffValue = modifierItem.maximumValue;
     }
@@ -1213,7 +1249,19 @@ const applyAdditionalBaseModifiers = (
         case "EchoDMGBonus":
           data["EchoDMGBonus"] = (data["EchoDMGBonus"] || 0) + buffValue;
           break;
+        default:
+          // generic passthrough (e.g. elemental bonuses like "Fusion", or "HealingBonus")
+          data[modifierItem.modifierTargetAttr] =
+            (data[modifierItem.modifierTargetAttr] || 0) + buffValue;
+          break;
       }
+    } else if (modifierItem.modifierTargetAttr === "talentModifierMultiplyAdd") {
+      // talentModifierMultiplyAdd is read from the root of selfBuffs (see attacks.ts),
+      // not from selfBuffs.specificTalentBuffs like other per-talent modifiers
+      modifierItem.modifySpecificTalents.forEach((talent: string) => {
+        const key = `${talent}:talentModifierMultiplyAdd`;
+        data[key] = (data[key] || 0) + buffValue;
+      });
     } else {
       const specificTalentBuffs: Record<string, number> = {};
       modifierItem.modifySpecificTalents.forEach((talent: string) => {
@@ -1234,6 +1282,8 @@ export const computeAdditionalBaseFromPassives = (
   passives: AdditionalBasePassive[] = [],
   energyRegen: number = 0,
   critRate: number = 0,
+  maxHp: number = 0,
+  talentData: Record<string, any> | null = null,
 ): Record<string, any> => {
   const data: Record<string, any> = {};
   for (const passive of passives) {
@@ -1247,28 +1297,33 @@ export const computeAdditionalBaseFromPassives = (
       energyRegen,
       critRate,
       data,
+      maxHp,
+      talentData,
     );
   }
   return data;
 };
 
 export const mergeAdditionalBaseData = (
-  target: Record<string, any>,
-  source: Record<string, any>,
-) => ({
-  ...target,
-  CritRate: (target?.CritRate || 0) + (source?.CritRate || 0),
-  CritDMG: (target?.CritDMG || 0) + (source?.CritDMG || 0),
-  ATK: (target?.ATK || 0) + (source?.ATK || 0),
-  ATK_FLAT: (target?.ATK_FLAT || 0) + (source?.ATK_FLAT || 0),
-  DMGBonus: (target?.DMGBonus || 0) + (source?.DMGBonus || 0),
-  EchoDMGBonus: (target?.EchoDMGBonus || 0) + (source?.EchoDMGBonus || 0),
-  specificTalentBuffs: Object.assign(
+  target: Record<string, any> = {},
+  source: Record<string, any> = {},
+) => {
+  const merged: Record<string, any> = {};
+  const keys = new Set([
+    ...Object.keys(target ?? {}),
+    ...Object.keys(source ?? {}),
+  ]);
+  keys.delete("specificTalentBuffs");
+  for (const key of keys) {
+    merged[key] = (target?.[key] || 0) + (source?.[key] || 0);
+  }
+  merged.specificTalentBuffs = Object.assign(
     {},
     target?.specificTalentBuffs ?? {},
     source?.specificTalentBuffs ?? {},
-  ),
-});
+  );
+  return merged;
+};
 
 export const computeAdditionalBaseBuffs = (
   buffsConfig: any = null,
@@ -1278,6 +1333,8 @@ export const computeAdditionalBaseBuffs = (
   energyRegen: number = 0,
   critRate: number = 0,
   activeStance: string | null = null,
+  maxHp: number = 0,
+  talentData: Record<string, any> | null = null,
 ): any => {
   if (!buffsCharInfo || buffsCharInfo.length <= 0) {
     return {};
@@ -1338,6 +1395,8 @@ export const computeAdditionalBaseBuffs = (
         adjustedEnergyRegen,
         adjustedCritRate,
         data,
+        maxHp,
+        talentData,
       );
     } else {
       applyAdditionalBaseModifiers(
@@ -1347,6 +1406,8 @@ export const computeAdditionalBaseBuffs = (
         adjustedEnergyRegen,
         adjustedCritRate,
         data,
+        maxHp,
+        talentData,
       );
     }
   }
@@ -1748,6 +1809,8 @@ export const calculateAllStats = (context: {
     intermediateStats.energyRegen,
     intermediateStats.totalCritRate,
     activeStance,
+    intermediateStats.totalHp,
+    talentData,
   );
 
   // Step 4b: Compute AdditionalBase buffs using intermediate stats (resonance chains)
@@ -1768,6 +1831,8 @@ export const calculateAllStats = (context: {
       intermediateStats.energyRegen,
       intermediateStats.totalCritRate,
       activeStance,
+      intermediateStats.totalHp,
+      talentData,
     );
   }
 
@@ -1775,6 +1840,8 @@ export const calculateAllStats = (context: {
     getEnabledAdditionalBasePassives(setBonusLabels, echoSetPassivesConfig),
     intermediateStats.energyRegen,
     intermediateStats.totalCritRate,
+    intermediateStats.totalHp,
+    talentData,
   );
   const mergedAdditionalBaseBuffsData = mergeAdditionalBaseData(
     additionalBaseBuffsData,
@@ -1792,23 +1859,19 @@ export const calculateAllStats = (context: {
   );
 
   // Step 6a: Merge AdditionalBase and CritOverflow into self buffs (self buffs)
-  let mergedSelfBuffs = {
-    ...selfBuffsData,
-    CritRate:
-      (selfBuffsData?.CritRate || 0) +
-      (mergedAdditionalBaseBuffsData?.CritRate || 0),
-    CritDMG:
-      (selfBuffsData?.CritDMG || 0) +
-      (mergedAdditionalBaseBuffsData?.CritDMG || 0) +
-      (critOverflowBuffsData?.CritDMG || 0),
-    ATK: (selfBuffsData?.ATK || 0) + (mergedAdditionalBaseBuffsData?.ATK || 0),
-    ATK_FLAT:
-      (selfBuffsData?.ATK_FLAT || 0) +
-      (mergedAdditionalBaseBuffsData?.ATK_FLAT || 0),
-    EchoDMGBonus:
-      (selfBuffsData?.EchoDMGBonus || 0) +
-      (mergedAdditionalBaseBuffsData?.EchoDMGBonus || 0),
-  };
+  // generic merge covers every AdditionalBase target attr (CritRate, CritDMG, ATK,
+  // ATK_FLAT, EchoDMGBonus, DMGBonus, HealingBonus, elemental bonuses like Fusion, etc.)
+  // so new AdditionalBase targets don't need a matching entry added here
+  const mergedSelfBuffs: Record<string, any> = { ...selfBuffsData };
+  for (const key of Object.keys(mergedAdditionalBaseBuffsData ?? {})) {
+    if (key === "specificTalentBuffs") {
+      continue;
+    }
+    mergedSelfBuffs[key] =
+      (selfBuffsData?.[key] || 0) + (mergedAdditionalBaseBuffsData?.[key] || 0);
+  }
+  mergedSelfBuffs.CritDMG =
+    (mergedSelfBuffs.CritDMG || 0) + (critOverflowBuffsData?.CritDMG || 0);
   // Step 6b: Merge AdditionalBase and CritOverflow into self buffs (self buffs)
   // ignore augusta though, otherwise it doubles up her buffs
   let mergedResonanceChainsBuffsData = { ...resonanceChainsBuffsData };

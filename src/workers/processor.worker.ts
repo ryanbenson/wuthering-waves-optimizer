@@ -248,6 +248,8 @@ function processLoadout(
       intermediateStats.energyRegen,
       intermediateStats.totalCritRate,
       context.activeStance ?? null,
+      intermediateStats.totalHp,
+      context.talentData ?? {},
     );
 
     const echoSetAdditionalBaseBuffsData = computeAdditionalBaseFromPassives(
@@ -257,6 +259,8 @@ function processLoadout(
       ),
       intermediateStats.energyRegen,
       intermediateStats.totalCritRate,
+      intermediateStats.totalHp,
+      context.talentData ?? {},
     );
     const mergedAdditionalBaseBuffsData = mergeAdditionalBaseData(
       additionalBaseBuffsData,
@@ -281,6 +285,8 @@ function processLoadout(
         intermediateStats.energyRegen,
         intermediateStats.totalCritRate,
         context.activeStance ?? null,
+        intermediateStats.totalHp,
+        context.talentData ?? {},
       );
     }
 
@@ -293,23 +299,19 @@ function processLoadout(
       context.activeStance ?? null,
     );
 
-    const mergedSelfBuffs = {
-      ...selfBuffsData,
-      CritRate:
-        (selfBuffsData?.CritRate || 0) +
-        (mergedAdditionalBaseBuffsData?.CritRate || 0),
-      CritDMG:
-        (selfBuffsData?.CritDMG || 0) +
-        (mergedAdditionalBaseBuffsData?.CritDMG || 0) +
-        (critOverflowBuffsData?.CritDMG || 0),
-      ATK: (selfBuffsData?.ATK || 0) + (mergedAdditionalBaseBuffsData?.ATK || 0),
-      ATK_FLAT:
-        (selfBuffsData?.ATK_FLAT || 0) +
-        (mergedAdditionalBaseBuffsData?.ATK_FLAT || 0),
-      EchoDMGBonus:
-        (selfBuffsData?.EchoDMGBonus || 0) +
-        (mergedAdditionalBaseBuffsData?.EchoDMGBonus || 0),
-    };
+    // generic merge covers every AdditionalBase target attr (CritRate, CritDMG, ATK,
+    // ATK_FLAT, EchoDMGBonus, DMGBonus, HealingBonus, elemental bonuses like Fusion, etc.)
+    // so new AdditionalBase targets don't need a matching entry added here
+    const mergedSelfBuffs: any = { ...selfBuffsData };
+    for (const key of Object.keys(mergedAdditionalBaseBuffsData ?? {})) {
+      if (key === "specificTalentBuffs") {
+        continue;
+      }
+      mergedSelfBuffs[key] =
+        (selfBuffsData?.[key] || 0) + (mergedAdditionalBaseBuffsData?.[key] || 0);
+    }
+    mergedSelfBuffs.CritDMG =
+      (mergedSelfBuffs.CritDMG || 0) + (critOverflowBuffsData?.CritDMG || 0);
 
     // merge the specificTalentBuffs together
     mergedSelfBuffs.specificTalentBuffs = Object.assign(
