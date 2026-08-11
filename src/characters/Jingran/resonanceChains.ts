@@ -151,12 +151,15 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "DMGDeepen:Heavy",
+        modifier: "specialMultiplier:Heavy",
         modifierValue: 0.4,
       },
       {
-        modifier: "specialMultiplier:Heavy",
-        modifierValue: 0.8,
+        modifier: "talentModifierMultiply",
+        modifySpecificTalents: [
+          "ChimeiWangliangDMG",
+        ],
+        modifierValue: 0.4,
       },
     ],
     minStacks: 0,
