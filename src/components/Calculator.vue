@@ -94,7 +94,7 @@
       </div>
 
       <div
-        v-if="isBuildCardLabEnabled"
+        v-if="isBuildCardLabEnabled && hasVisitedBuildCard"
         class="screen--build-card"
         v-show="curScreen === 'build-card'">
         <CalculatorBuildCard
@@ -454,6 +454,15 @@ export default defineComponent({
     const isBuildCardLabEnabled = computed(
       () => labs.value?.buildCard?.isEnabled ?? false,
     );
+    // Every other screen below is always mounted (v-show only) so tab
+    // switches are instant, but that means an always-hidden screen's DOM can
+    // still collide with e.g. Cypress element-count assertions elsewhere
+    // (see the .echo__item count bug this caused before build card was
+    // gated). Mounting build card lazily on first visit, instead of eagerly
+    // like the rest, sidesteps that without touching the established
+    // always-mounted pattern everywhere else — and keeps working once the
+    // Labs gate above is eventually removed.
+    const hasVisitedBuildCard = ref(false);
     const weaponData = reactive({});
     const weaponAtk = ref(0);
     const charBuffsData = reactive({});
@@ -916,6 +925,9 @@ export default defineComponent({
 
     const changeScreen = (screen: string) => {
       curScreen.value = screen;
+      if (screen === "build-card") {
+        hasVisitedBuildCard.value = true;
+      }
     };
 
     const handleCharacterTalentUpdated = (data) => {
@@ -1855,6 +1867,7 @@ export default defineComponent({
       curScreen,
       changeScreen,
       isBuildCardLabEnabled,
+      hasVisitedBuildCard,
       damage,
       updateStatsEchoes,
       totalAtk,

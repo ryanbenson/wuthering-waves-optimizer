@@ -14,6 +14,20 @@ describe("Calculator Build Card", () => {
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
   });
 
+  it("does not mount the build card until its tab is first visited", () => {
+    // Every other screen is always mounted (v-show only), which let its echo
+    // cards collide with `.echo__item` element counts on other screens. The
+    // build card mounts lazily on first visit instead, independent of the
+    // Labs flag above, so this stays true once that flag is removed.
+    cy.get("[data-test-build-card]").should("not.exist");
+
+    cy.get('[data-test-calculator-nav="echoes"]').click();
+    cy.get(".echo__item").should("have.length", 5);
+
+    cy.get('[data-test-calculator-nav="buildCard"]').click();
+    cy.get("[data-test-build-card]").should("be.visible");
+  });
+
   it("shows a full-width card with no side stats panel", () => {
     cy.get('[data-test-calculator-nav="buildCard"]').click();
 
