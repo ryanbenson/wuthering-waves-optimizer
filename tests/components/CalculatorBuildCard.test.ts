@@ -173,11 +173,18 @@ describe("CalculatorBuildCard", () => {
     const { container } = renderCard(baseStatsProps());
 
     const talentsEl = container.querySelector("[data-test-build-card-talents]");
-    expect(talentsEl?.textContent).toContain("Lv. 6");
-    expect(talentsEl?.textContent).toContain("Normal Attack");
-    expect(talentsEl?.textContent).toContain("Lv. 10");
-    expect(talentsEl?.textContent).toContain("Resonance Skill");
-    expect(talentsEl?.textContent).toContain("Intro Skill");
+    const levels = talentsEl?.querySelectorAll("[data-test-build-card-talent-level]");
+    // Order matches the issue spec: normal, skill, liberation, forte circuit, intro.
+    expect(Array.from(levels ?? []).map((el) => el.textContent?.trim())).toEqual([
+      "6",
+      "10",
+      "10",
+      "10",
+      "6",
+    ]);
+    expect(talentsEl?.querySelector('[title^="Normal Attack"]')).toBeTruthy();
+    expect(talentsEl?.querySelector('[title^="Resonance Skill"]')).toBeTruthy();
+    expect(talentsEl?.querySelector('[title^="Intro Skill"]')).toBeTruthy();
   });
 
   it("renders all 5 echo slots, including empty ones", () => {

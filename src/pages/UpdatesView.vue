@@ -9,6 +9,9 @@
       <li>Increases max value of the Tune Strain input from 6 to 9.</li>
       <li>Fixes Sigrika's s6, it wasn't properly stacking with her base Runic DMG bonus.</li>
       <li>Adds a Normal/Average/Crit toggle to the Team Rotation "View Damages" pie chart, and a single toggle in the Team Rotation summary view that switches all of its damage charts between Normal, Average, and Crit. Both default to Average.</li>
+      <li>Reworks the Build Card layout into three panels: character portrait with forte levels, weapon and stats, and echoes listed vertically with a bigger substat layout.</li>
+      <li>Colorizes Build Card echo substat values based on their roll quality (green to yellow, low to high).</li>
+      <li>Makes resonance chain icons and weapon refinement bigger and easier to read on the Build Card.</li>
     </ul>
     <h3>August 9, 2026</h3>
     <ul>

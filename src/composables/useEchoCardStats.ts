@@ -5,6 +5,7 @@ import {
   getReadableSubStatLabel,
   getSubStatIconByType,
   getRollValue,
+  getSubstatRollValue,
 } from "../echoes/stats";
 import { getEchoData } from "../echoes/index.ts";
 
@@ -29,6 +30,20 @@ function formatSubStatValue(type: string, value: string | number) {
   if (!value) return null;
   if (type?.includes("FLAT")) return value;
   return `${value}%`;
+}
+
+// Colorizes a single rolled substat by how good that roll was, mirroring
+// wuwaflex's convention (green = low roll, blue = mid-low, purple =
+// mid-high, yellow = high) — reuses the same 30-100 roll-quality score
+// `getBadgeClass` already sums across all 5 substats for the CV/RV badges,
+// just bucketed per-substat instead of on the total.
+function getSubStatValueColorClass(type: string, value: string | number) {
+  if (!type || type === "none" || !value) return "";
+  const score = getSubstatRollValue(type, String(Number(value)));
+  if (score <= 40) return "text-emerald-500";
+  if (score <= 60) return "text-blue-500";
+  if (score <= 80) return "text-purple-500";
+  return "text-yellow-500";
 }
 
 function getBadgeClass(value: number, max: number, mode: "cv" | "rv") {
@@ -151,6 +166,22 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
     formatSubStatValue(props.echoSubStatsType5, props.echoSubStatsValue5),
   );
 
+  const echoSubStatsValue1Color = computed(() =>
+    getSubStatValueColorClass(props.echoSubStatsType1, props.echoSubStatsValue1),
+  );
+  const echoSubStatsValue2Color = computed(() =>
+    getSubStatValueColorClass(props.echoSubStatsType2, props.echoSubStatsValue2),
+  );
+  const echoSubStatsValue3Color = computed(() =>
+    getSubStatValueColorClass(props.echoSubStatsType3, props.echoSubStatsValue3),
+  );
+  const echoSubStatsValue4Color = computed(() =>
+    getSubStatValueColorClass(props.echoSubStatsType4, props.echoSubStatsValue4),
+  );
+  const echoSubStatsValue5Color = computed(() =>
+    getSubStatValueColorClass(props.echoSubStatsType5, props.echoSubStatsValue5),
+  );
+
   const echoSubStat1Icon = computed(() =>
     getSubStatIconByType(props.echoSubStatsType1),
   );
@@ -236,6 +267,11 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
     echoSubStatsValue3Display,
     echoSubStatsValue4Display,
     echoSubStatsValue5Display,
+    echoSubStatsValue1Color,
+    echoSubStatsValue2Color,
+    echoSubStatsValue3Color,
+    echoSubStatsValue4Color,
+    echoSubStatsValue5Color,
     echoSubStat1Icon,
     echoSubStat2Icon,
     echoSubStat3Icon,
