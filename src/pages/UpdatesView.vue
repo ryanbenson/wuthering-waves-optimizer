@@ -2,6 +2,13 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 12, 2026</h3>
+    <ul>
+      <li>Adds a Build Card (Labs feature, enable it in Settings > Labs) that generates a shareable image of your character's build, echoes, weapon, and forte stats.</li>
+      <li>Adds Tune Strain - Interfered and negative status effect stacks (Spectro Frazzle, Aero Erosion, Havoc Bane, Fusion Burst, Electro Flare, Electro Rage, Glacio Chafe) to Team Rotation enemy settings.</li>
+      <li>Increases max value of the Tune Strain input from 6 to 9.</li>
+      <li>Fixes Sigrika's s6, it wasn't properly stacking with her base Runic DMG bonus.</li>
+    </ul>
     <h3>August 9, 2026</h3>
     <ul>
       <li>Fixes Suisui team buff to properly give DMG Bonus.</li>
