@@ -103,7 +103,15 @@
                       : 'build-card__resonance-node--inactive'
                   "
                   :title="chain.name">
-                  <svg viewBox="0 0 24 24" class="size-3" fill="currentColor">
+                  <img
+                    v-if="chain.icon"
+                    :src="chain.icon"
+                    class="size-4 rounded-full" />
+                  <svg
+                    v-else
+                    viewBox="0 0 24 24"
+                    class="size-3"
+                    fill="currentColor">
                     <path
                       d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z" />
                   </svg>
@@ -258,7 +266,7 @@ interface ChosenCharRef {
       element: string;
       weapon: string;
     };
-    resonanceChains?: Array<{ key: string; name?: string }>;
+    resonanceChains?: Array<{ key: string; name?: string; icon?: string }>;
   };
 }
 
@@ -392,6 +400,7 @@ const resonanceChainNodes = computed(() => {
   return chains.map((chain) => ({
     key: chain.key,
     name: chain.name,
+    icon: chain.icon,
     isEnabled: Boolean(enabledMap[chain.key]?.isEnabled),
   }));
 });
