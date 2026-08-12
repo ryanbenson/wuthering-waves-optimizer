@@ -1,4 +1,4 @@
-import type { ApiCharacterDetail } from "./api.js";
+import { resolveEncoreAssetUrl, type ApiCharacterDetail } from "./api.js";
 import {
   findResonanceChainExistingEntry,
   formatDefaultResonanceChainProperties,
@@ -12,6 +12,7 @@ export interface GeneratedResonanceChain {
   key: string;
   name: string;
   details: string;
+  icon?: string;
   hasStacks: boolean;
   modifiers: [];
   minStacks: number;
@@ -36,6 +37,9 @@ export function buildResonanceChains(
       key: toResonanceChainKey(chain.GroupIndex, chain.NodeName),
       name: `Sequence Node ${chain.GroupIndex}: ${chain.NodeName}`,
       details: formatResonanceChainDetails(chain.AttributesDescription ?? ""),
+      ...(chain.NodeIcon
+        ? { icon: resolveEncoreAssetUrl(chain.NodeIcon) }
+        : {}),
       hasStacks: false,
       modifiers: [],
       minStacks: 0,
@@ -53,6 +57,7 @@ function formatResonanceChainEntry(
     `    key: \`${chain.key}\`,`,
     `    name: \`${chain.name}\`,`,
     `    details: ${formatTemplateString(chain.details)},`,
+    ...(chain.icon ? [`    icon: \`${chain.icon}\`,`] : []),
     preservedProperties ?? formatDefaultResonanceChainProperties(),
     "  }",
   ];

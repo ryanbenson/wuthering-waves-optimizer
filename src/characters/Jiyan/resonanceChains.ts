@@ -4,6 +4,7 @@ export const resonanceChains = [
     name: "Sequence Node 1: Benevolence",
     details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Windqueller</span> can be used 1 more time.
 <br>When casting Resonance Skill <span class="Highlight">Windqueller</span>, the "Resolve" cost is decreased by 15.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JiyanM1_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -14,6 +15,7 @@ export const resonanceChains = [
     key: "SequenceNode2Versatility",
     name: "Sequence Node 2: Versatility",
     details: `<span class="skilldescription">After casting Intro Skill <span class="Highlight">Tactical Strike</span>, Jiyan gains 30 "Resolve" and his ATK is increased by 28% for 15s. This can be triggered once every 15s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JiyanM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -29,6 +31,7 @@ export const resonanceChains = [
     key: "SequenceNode3Spectation",
     name: "Sequence Node 3: Spectation",
     details: `<span class="skilldescription">When casting Resonance Skill <span class="Highlight">Windqueller</span>, Resonance Liberation <span class="Highlight">Emerald Storm: Prelude</span>, Resonance Skill <span class="Highlight">Emerald Storm: Finale</span> or Intro Skill <span class="Highlight">Tactical Strike</span>, Jiyan's Crit. Rate is increased by 16% and Crit. DMG is increased by 32% for 8s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JiyanM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -48,6 +51,7 @@ export const resonanceChains = [
     key: "SequenceNode4Prudence",
     name: "Sequence Node 4: Prudence",
     details: `<span class="skilldescription">When casting Resonance Liberation <span class="Highlight">Emerald Storm: Prelude</span> or Resonance Liberation <span class="Highlight">Emerald Storm: Finale</span>, the Heavy Attack DMG Bonus of all team members is increased by 25% for 30s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JiyanM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -63,6 +67,7 @@ export const resonanceChains = [
     key: "SequenceNode5ResolutionOutro",
     name: "Sequence Node 5: Resolution",
     details: `<span class="skilldescription">The DMG multiplier of Outro Skill <span class="Highlight">Discipline</span> is increased by 120%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JiyanM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -79,6 +84,7 @@ export const resonanceChains = [
     key: "SequenceNode5ResolutionATK",
     name: "Sequence Node 5: Resolution",
     details: `<span class="skilldescription">When Jiyan's attacks hit a target, his ATK is increased by 3% for 8s, stacking up to 15 times; this effect is immediately maxed after he casts Intro Skill <span class="Highlight">Tactical Strike</span>.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JiyanM5_UI.webp`,
     hasStacks: true,
     modifiers: [
       {
@@ -95,6 +101,7 @@ export const resonanceChains = [
     name: "Sequence Node 6: Fortitude",
     details: `<span class="skilldescription">Every time <span class="Highlight">Heavy Attack</span>, Intro Skill <span class="Highlight">Tactical Strike</span> or Resonance Skill <span class="Highlight">Windqueller</span> is used, Jiyan gains 1 stack(s) of "Momentum", stacking up to 2 times.
     <br>Resonance Liberation <span class="Highlight">Emerald Storm: Finale</span> will consume all "Momentum", and each stack consumed increases the DMG multiplier of Resonance Liberation <span class="Highlight">Emerald Storm: Finale</span> by 120%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JiyanM6_UI.webp`,
     hasStacks: true,
     modifiers: [
       {

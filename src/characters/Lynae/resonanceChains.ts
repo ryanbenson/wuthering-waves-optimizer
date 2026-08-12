@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1DaystobePaintedLikeaCanvas",
     name: "Sequence Node 1: Days to be Painted Like a Canvas",
     details: `<div>The DMG Multiplier of <span class="Highlight"><strong>Basic Attack - Polychrome Leap</strong></span> is increased by 120%.<br>The duration of <span class="Highlight"><strong>Spray Paint</strong></span> is increased by 100%. Targets within the range of <span class="Highlight"><strong>Spray Paint</strong></span> are pulled in towards the center every 6s.<br>Lynae is now immune to interruptions during <span class="Highlight"><strong>Basic Attack - Polychrome Leap</strong></span> and <span class="Highlight"><strong>Basic Attack - Visual Impact</strong></span>.<br>During <span class="Highlight"><strong>Optical Sampling Stage</strong></span>, after staying out of combat for 2s, restore 120 points of <span class="Highlight"><strong>Overflow</strong></span>.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_LinNaiM1_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -25,6 +26,7 @@ export const resonanceChains = [
     details: `<span class="skilldescription">Gain 25% All-DMG Amplification.<br>
 Outro Skill gains the following effect:<br>
 Casting Outro Skill grants the incoming Resonator 25% All-DMG Amplification for 14s or until the Resonator is switched out.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_LinNaiM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -40,6 +42,7 @@ Casting Outro Skill grants the incoming Resonator 25% All-DMG Amplification for 
     key: "SequenceNode3ForOneBrilliantMoment",
     name: "Sequence Node 3: For One Brilliant Moment",
     details: `<div>The DMG Multiplier of <span class="Highlight"><strong>Basc Attack - Visual Impact</strong></span> and <span class="Highlight"><strong>Basic Attack - Iridescent Splash</strong></span> is increased by 90%.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_LinNaiM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -60,6 +63,7 @@ Casting Outro Skill grants the incoming Resonator 25% All-DMG Amplification for 
     name: "Sequence Node 3: For One Brilliant Moment (Additive Color)",
     stance: "Tune Rupture",
     details: `<div>With <span class="Highlight"><strong>Lumiflow</strong></span> ≥ 120 points. Lynae gains 1 stack of <span class="Highlight"><strong>Premixed Hue</strong></span> every 1s, up to 25 stacks. Each stack of <span class="Highlight"><strong>Premixed Hue</strong></span> increases the Spectro DMG dealt through <span class="Highlight"><strong>Additive Color</strong></span> by 55%. No <span class="Highlight"><strong>Premixed Hue</strong></span> is gained while casting <span class="Highlight"><strong>Additive Color</strong></span>. When <span class="Highlight"><strong>Additive Color</strong></span> ends, remove all stacks of <span class="Highlight"><strong>Premixed Hue</strong></span>. Lynae loses a stack of <span class="Highlight"><strong>Premixed Hue</strong></span> every 0.5s once <span class="Highlight"><strong>Lumiflow</strong></span> is below 120 points.<br>While Lynae is out of combat, Premixed Hue regenerates twice as fast and depletes half as fast.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_LinNaiM3_UI.webp`,
     hasStacks: true,
     modifiers: [
       {
@@ -76,6 +80,7 @@ Casting Outro Skill grants the incoming Resonator 25% All-DMG Amplification for 
     key: "SequenceNode4ShadowsofaWindRacer",
     name: "Sequence Node 4: Shadows of a Wind Racer",
     details: `<span class="skilldescription">ATK is increased by 20%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_LinNaiM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -91,6 +96,7 @@ Casting Outro Skill grants the incoming Resonator 25% All-DMG Amplification for 
     key: "SequenceNode5VisionsofaFutureUnbound",
     name: "Sequence Node 5: Visions of a Future Unbound",
     details: `<span class="skilldescription">The DMG Multiplier of <span class="Highlight">Resonance Liberation - Prismatic Overblast</span> is increased by 70%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_LinNaiM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -107,6 +113,7 @@ Casting Outro Skill grants the incoming Resonator 25% All-DMG Amplification for 
     key: "SequenceNode6PaintedinMyTrueColor",
     name: "Sequence Node 6: Painted in My True Color",
     details: `<div>Each time <span class="Highlight"><strong>Kaleidoscopic Parade - Graffiti Blast</strong></span> or <span class="Highlight"><strong>Kaleidoscopic Parade - Mid-air Heavy Attack</strong></span> is cast, Lynae gains 1 stack of <span class="Highlight"><strong>Color of Soul</strong></span>, up to 3 stacks. Each stack of <span class="Highlight"><strong>Color of Soul</strong></span> increases the DMG the target takes from <span class="Highlight"><strong>Basic Attack - Iridescent Splash</strong></span> and <span class="Highlight"><strong>Basic Attack - Visual Impact</strong></span> by 30%. After casting <span class="Highlight"><strong>Basic Attack - Iridescent Splash</strong></span> or <span class="Highlight"><strong>Basic Attack - Visual Impact</strong></span>, all stacks of <span class="Highlight"><strong>Color of Soul</strong></span> are removed.<br>Casting <span class="Highlight"><strong>Basic Attack - Polychrome Leap</strong></span> resets the charges of <span class="Highlight"><strong>Kaleidoscopic Parade - Mid-air Heavy Attack</strong></span>.<br>Lynae is immune to interruptions, and DMG taken is reduced by 30% during <span class="Highlight"><strong>Kaleidoscopic Parade - Mid-air Heavy Attack</strong></span>.<br>Lynae now stays in <span class="Highlight"><strong>Kaleidoscopic Parade</strong></span> after casting <span class="Highlight"><strong>Outro Skill - Let's Hit the Road!</strong></span>.<br>The <span class="Highlight"><strong>Lumiflow</strong></span> upper limit is increased from 120 to 360. At the max limit, Lynae's roller skating speed further increases.<br>If Intro Skill is cast during <span class="Highlight"><strong>Lumiflow</strong></span>.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_LinNaiM6_UI.webp`,
     hasStacks: true,
     modifiers: [
       {

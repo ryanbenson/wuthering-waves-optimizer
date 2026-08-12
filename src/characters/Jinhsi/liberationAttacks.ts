@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Purge of Light",
   description: `<div class="skilldescription">Unleash the power of invocation to deal <span class="Light">Spectro DMG</span>.<br>Can be cast in mid-air.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJinxi/SP_IconJinxiC1.webp",
   attacks: [
     {
       key: "PurgeOfLight",

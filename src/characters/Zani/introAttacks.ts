@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Immediate Execution",
   description: `<div class="skilldescription">Attack the target, dealing <span class="Light">Spectro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZanni/SP_IconZanniQTE.webp",
   attacks: [
     {
       key: "ImmediateExecutionDMG",

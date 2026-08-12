@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Everblooming",
   description: `<div class="skilldescription">Attacks the target, dealing <span class="Dark">Havoc</span> damage.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconChun/SP_IconChunQTE.webp",
   attacks: [
     {
       key: "EverbloomingDMG",

@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: POW POW",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Chixia fires up to 4 consecutive shots, dealing <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Chixia enters the aiming state for a more powerful shot.<br>The aimed shot fired after charging finishes deals <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Chixia consumes STA to perform consecutive shots at the target in mid-air, dealing <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Fire">Fusion DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorGun.webp",
   attacks: [
     {
       key: "PowPowStage1DMG",

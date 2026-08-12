@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Raging Storm",
   description: `<div class="skilldescription">Command puppet "Zapstring" to attack, dealing <span class="Thunder">Electro DMG</span> in a large range.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconYinlin/SP_IconYinlinQTE.webp",
   attacks: [
     {
       key: "RagingStorm",

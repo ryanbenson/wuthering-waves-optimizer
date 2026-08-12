@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Passionate Variation",
   description: `<div class="skilldescription">Launch a flashing lightning of flames forward, dealing <span class="Fire">Fusion DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconMotefei/SP_IconMotefeiB1.webp",
   attacks: [
     {
       key: "PassionateVariation",

@@ -1,6 +1,7 @@
 export const tuneBreakAttacks = {
   name: "Tune Break: Tune Break - Sword",
   description: `<div>When the target's <span style="color:#ffd12f;" class="font-bold">Off-Tune Level</span> is full, the Resonator may cast <span style="color:#ffd12f;" class="font-bold">Tune Break</span> on the target.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconWeakPointBreakKnife.webp",
   attacks: [
     {
       key: "TuneBreakDMG",

@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Wind Spirals",
   description: `<div class="skilldescription">Yangyang conjures a mighty Cyclone that gathers nearby enemies, dealing <span class="Wind">Aero DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconYangyang/SP_IconYangyangC1.webp",
   attacks: [
     {
       key: "WindSpiralsSkillDMG",

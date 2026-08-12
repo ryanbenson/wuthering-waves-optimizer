@@ -98,6 +98,7 @@ export function buildTuneBreakAttackData(
     return {
       name,
       description,
+      ...(skill.Icon ? { icon: skill.Icon } : {}),
       attacks: buildAttacksFromAttributes(skill, byAttributeName),
     };
   }
@@ -105,6 +106,7 @@ export function buildTuneBreakAttackData(
   return {
     name,
     description,
+    ...(skill?.Icon ? { icon: skill.Icon } : {}),
     attacks: getDefaultTuneBreakAttack(detail.WeaponTypeName),
   };
 }

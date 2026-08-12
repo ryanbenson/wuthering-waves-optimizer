@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Ultimate Tactics",
   description: `<div>Launch the <span style="color:#ffd12f;" class="font-bold">Thunder Quietus</span>, dealing <span style="color:#ebb0ff;">Electro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconThunderzhu/SP_IconThunderzhuC1.webp",
   attacks: [
     {
       key: "UltimateTacticsDMG",

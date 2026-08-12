@@ -8,6 +8,7 @@ export const liberationAttacks = {
   <br> 
   <br><span class="Title">Heavy Attack: Lance of Qingloong</span>
   <br>Perform up to 3 continuous attacks, dealing <span class="Wind">Aero DMG</span>, considered as Heavy Attack damage.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJiyan/SP_IconJiyanC1.webp",
   attacks: [
     {
       key: "LanceOfQingloongPart1DMG",

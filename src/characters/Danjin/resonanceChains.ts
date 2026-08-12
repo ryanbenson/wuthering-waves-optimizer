@@ -10,6 +10,7 @@ export const resonanceChains = [
         each time she takes damage.
       </span>
     `,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_micaiM1_UI.webp`,
     hasStacks: true,
     modifiers: [
       {
@@ -31,6 +32,7 @@ export const resonanceChains = [
         increased by 20%.
       </span>
     `,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_micaiM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -50,6 +52,7 @@ export const resonanceChains = [
         Resonance Liberation DMG Bonus is increased by 30%.
       </span>
     `,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_micaiM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -73,6 +76,7 @@ export const resonanceChains = [
         <span class="Highlight">Heavy Attack: Chaoscleave</span>.
       </span>
     `,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_micaiM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -92,6 +96,7 @@ export const resonanceChains = [
         Danjin's Havoc DMG Bonus is increased by 15%
       </span>
     `,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_micaiM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -112,6 +117,7 @@ export const resonanceChains = [
         her HP is lower than 60%.
       </span>
     `,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_micaiM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -129,6 +135,7 @@ export const resonanceChains = [
     details: `
       <span class="skilldescription">Heavy Attack <span class="Highlight">Chaoscleave</span> increases the ATK of all team members by 20% for 20s.</span>
     `,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_micaiM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

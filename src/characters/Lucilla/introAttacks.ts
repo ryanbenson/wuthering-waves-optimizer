@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Clip It",
   description: `<div><span style="color:#a89969"><strong>Clip It</strong></span><br>Attack the target, dealing <span style="color:#41aefb"><strong>Glacio DMG</strong></span> and inflicting 1 stack of <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Chafe</span></strong></span>.<br><br><span style="color:#a89969"><strong>Clip It: Hard Cut</strong></span><br>When in <span style="color:#f7ca2f"><strong><span class="Highlight">Reminiscence</span></strong></span>, <span style="color:#f7ca2f"><strong>Intro Skill</strong></span> is replaced with <span style="color:#f7ca2f"><strong>Clip It: Hard Cut</strong></span>.<br>Attack the target, dealing <span style="color:#41aefb"><strong>Glacio DMG</strong></span> and inflicting 1 stack of <span style="color:#f7ca2f"><strong><span class="Highlight">Glacio Chafe</span></strong></span>.<br>Press <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> shortly after casting this skill to cast <span style="color:#f7ca2f"><strong>Basic Attack - Tracing Forms Stage 3</strong></span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLuosela/SP_SkillIconLuoselaQTE.webp",
   attacks: [
     {
       key: "ClipItDMG",

@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Fengyiquan",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Jianxin performs up to 4 consecutive attacks, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Jianxin consumes STA to attack the target, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Jianxin consumes STA to plunge and unleash a powerful kick, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Wind">Aero DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorFist.webp",
   attacks: [
     {
       key: "FengyiquanStage1DMG",

@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Relentless Squall",
   description: `<div class="skilldescription">Deal <span class="Wind">Aero DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconFengzhu/SP_IconFengzhuQTE.webp",
   attacks: [
     {
       key: "RelentlessSquallDMG",

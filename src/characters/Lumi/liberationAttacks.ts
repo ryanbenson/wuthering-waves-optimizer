@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Squeakie Express",
   description: `<div class="skilldescription">Throw the giant Squeakie at the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconDengdeng/SP_IconDengdengC1.webp",
   attacks: [
     {
       key: "SqueakieExpressSkillDMG",

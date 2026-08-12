@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Fervor Efflorescent",
   description: `<div class="skilldescription">Attack the target, dealing <span class="Dark">Havoc DMG</span>.<br>This attack can be performed in mid-air.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconChun/SP_IconChunC1.webp",
   attacks: [
     {
       key: "FervorEfflorescentDMG",

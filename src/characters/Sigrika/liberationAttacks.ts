@@ -5,6 +5,7 @@ export const liberationAttacks = {
 The next time Sigrika obtains a <span class="Highlight">Rune</span>, she additionally obtains a <span class="Highlight">Rune</span> of the opposite type and removes <span class="Highlight">Divergent</span>.
 When Sigrika holds <span class="Highlight">Divergent</span> and <span class="Highlight">Convergent</span> at the same time, <span class="Highlight">Convergent</span> takes priority.
 When Sigrika holds 100 points of <span class="Highlight">Full Stop</span>, <span class="Highlight">Divergent</span> doesn't take effect.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXigelika/SP_IconXigelikaC1.webp",
   attacks: [
     {
       key: "WhereTrustLeadsMeDMG",

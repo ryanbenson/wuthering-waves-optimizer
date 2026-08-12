@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Overflowing Frost",
   description: `<div class="skilldescription">Baizhi calls You'tan to perform 1 plunging attack, dealing <span class="Ice">Glacio DMG</span> while healing all characters on a nearby team.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBailian/SP_IconBailianQTE.webp",
   attacks: [
     {
       key: "OverflowingFrostDMG",

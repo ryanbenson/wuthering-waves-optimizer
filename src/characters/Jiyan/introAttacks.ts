@@ -2,6 +2,7 @@ export const introAttacks = {
   name: "Intro Skill: Tactical Strike",
   description:
     '<div class="skilldescription">Jiyan pierces the target in mid-air, dealing <span class="Wind">Aero DMG</span>.</div>',
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJiyan/SP_IconJiyanQTE.webp",
   attacks: [
     {
       key: "SkillDMG",

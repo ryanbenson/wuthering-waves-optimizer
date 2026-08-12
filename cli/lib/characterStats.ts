@@ -1,4 +1,5 @@
 import { getCharacterName, type ApiCharacterDetail } from "./api.js";
+import { getCombatInherentSkills } from "./buffs.js";
 import { toPluralWeapon } from "./naming.js";
 
 interface LevelStats {
@@ -15,6 +16,8 @@ export interface CharacterBasicData {
   weaponPlural: string;
   gender: string;
   tuneBreakBoost?: number;
+  image?: string;
+  inherentSkillIcons?: string[];
 }
 
 /** Ascension tier multipliers applied to truncated base breakpoint stats (same for 4★ and 5★). */
@@ -65,6 +68,9 @@ export function extractBasicData(
       ? tuneBreakProperty.BaseValue / 100
       : undefined;
   const gender = detail.favorRole?.Sex?.Content?.toLowerCase() ?? "unknown";
+  const inherentSkillIcons = getCombatInherentSkills(detail)
+    .map((skill) => skill.Icon)
+    .filter((icon): icon is string => Boolean(icon));
 
   return {
     name: displayName ?? getCharacterName(detail),
@@ -76,6 +82,8 @@ export function extractBasicData(
     ...(tuneBreakBoost !== undefined && tuneBreakBoost > 0
       ? { tuneBreakBoost }
       : {}),
+    ...(detail.RoleStand ? { image: detail.RoleStand } : {}),
+    ...(inherentSkillIcons.length > 0 ? { inherentSkillIcons } : {}),
   };
 }
 
@@ -182,6 +190,13 @@ export function formatBasicFileContent(basic: CharacterBasicData): string {
     basic.tuneBreakBoost !== undefined
       ? `\n    tuneBreakBoost: ${basic.tuneBreakBoost},`
       : "";
+  const imageLine = basic.image
+    ? `\n    image: ${JSON.stringify(basic.image)},`
+    : "";
+  const inherentSkillIconsLine =
+    basic.inherentSkillIcons && basic.inherentSkillIcons.length > 0
+      ? `\n    inherentSkillIcons: ${JSON.stringify(basic.inherentSkillIcons)},`
+      : "";
 
   return `export function getCharacterBasicInfo(): CharacterBasicInfo {
   return {
@@ -190,7 +205,7 @@ export function formatBasicFileContent(basic: CharacterBasicData): string {
     weapon: "${basic.weaponPlural}",
     avatarUrl: "${basic.key}.png",
     gender: "${basic.gender}",
-    element: "${basic.element}",${tuneBreakLine}
+    element: "${basic.element}",${tuneBreakLine}${imageLine}${inherentSkillIconsLine}
   };
 }
 `;

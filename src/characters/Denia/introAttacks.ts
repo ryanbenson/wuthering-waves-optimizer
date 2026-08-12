@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Formal Greetings",
   description: `<div><span style="color:#a89969"><strong>It's Been A While!</strong></span><br>Available in <span style="color:#f7ca2f"><strong>Stagecraft Form</strong></span>, dealing <span style="color:#f0744e"><strong>Fusion DMG</strong></span>.<br>Press <span style="color:#f7ca2f"><strong>Normal Attack</strong></span> after casting this skill to cast <span style="color:#f7ca2f"><strong>Basic Attack - Stagecraft Form Stage 4</strong></span>.<br><br><span style="color:#a89969"><strong>Knock Knock</strong></span><br>Available in <span style="color:#f7ca2f"><strong>Breakdown Form</strong></span>, dealing <span style="color:#f0744e"><strong>Fusion DMG</strong></span>.<br>Casting this skill grants <span style="color:#f7ca2f"><strong><span class="Highlight">Entropy Shift: Breakdown Form</span></strong></span> for 12s.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconDaniya/SP_IconDaniyaQTE.webp",
   attacks: [
     {
       key: "ItsBeenAWhileDMG",

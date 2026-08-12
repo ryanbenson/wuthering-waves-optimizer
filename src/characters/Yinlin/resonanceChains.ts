@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1MoralitysCrossroads",
     name: "Sequence Node 1: Morality's Crossroads",
     details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Magnetic Roar</span> and <span class="Highlight">Lightning Execution</span> deal 70% more damage.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_YinlinM1_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -21,6 +22,7 @@ export const resonanceChains = [
     key: "SequenceNode3UnyieldingVerdict",
     name: "Sequence Node 3: Unyielding Verdict",
     details: `<span class="skilldescription">Forte Circuit <span class="Highlight">Judgment Strike</span>'s DMG multiplier is increased by 55%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_YinlinM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -37,6 +39,7 @@ export const resonanceChains = [
     key: "SequenceNode4SteadfastConviction",
     name: "Sequence Node 4: Steadfast Conviction",
     details: `<span class="skilldescription">When Forte Circuit <span class="Highlight">Judgment Strike</span> hits a target, the ATK of all team members is increased by 20% for 12s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_YinlinM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -52,6 +55,7 @@ export const resonanceChains = [
     key: "SequenceNode5ResoundingWill",
     name: "Sequence Node 5: Resounding Will",
     details: `<span class="skilldescription">Resonance Liberation <span class="Highlight">Thundering Wrath</span> deals 100% extra damage to targets with Forte Circuit's <span class="Highlight">Sinner's Mark</span> or <span class="Highlight">Punishment Mark</span>.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_YinlinM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -67,6 +71,7 @@ export const resonanceChains = [
     key: "SequenceNode6PursuitofJustice",
     name: "Sequence Node 6: Pursuit of Justice",
     details: `<span class="skilldescription">In the first 30s after casting Resonance Liberation <span class="Highlight">Thundering Wrath</span>, when Yinlin's <span class="Highlight">Basic Attack</span> hits a target, <span class="Highlight">Furious Thunder</span> will be triggered, dealing <span class="Thunder">Electro DMG</span> equal to 419.59% of Yinlin's ATK. Every <span class="Highlight">Basic Attack</span> hit can trigger <span class="Highlight">Furious Thunder</span> 1 time, up to 4 times. This is considered Resonance Skill DMG.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_YinlinM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

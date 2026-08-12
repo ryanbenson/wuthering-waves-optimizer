@@ -43,6 +43,8 @@ export interface ApiCharacterDetail {
   Skills: ApiSkill[];
   ResonantChain?: ApiResonantChain[];
   SkillTree?: ApiSkillTreeNode[];
+  /** Full-body character art shown on the in-game character detail screen. */
+  RoleStand?: string;
 }
 
 export interface ApiSkillTreeNode {
@@ -54,6 +56,19 @@ export interface ApiResonantChain {
   GroupIndex: number;
   NodeName: string;
   AttributesDescription: string;
+  /** Sometimes a full URL, sometimes a path relative to ENCORE_ASSET_BASE — see resolveEncoreAssetUrl. */
+  NodeIcon?: string;
+}
+
+/** Encore's CDN root for asset paths returned as relative (e.g. NodeIcon) rather than absolute URLs. */
+const ENCORE_ASSET_BASE = "https://api.encore.moe/resource/Data";
+
+/** Normalizes an Encore asset reference to a fully-qualified URL, whether the API returned it as an absolute URL already or as a path relative to ENCORE_ASSET_BASE. */
+export function resolveEncoreAssetUrl(assetPath: string): string {
+  if (/^https?:\/\//i.test(assetPath)) {
+    return assetPath;
+  }
+  return `${ENCORE_ASSET_BASE}${assetPath.startsWith("/") ? "" : "/"}${assetPath}`;
 }
 
 export interface ApiDamageListEntry {
@@ -77,6 +92,7 @@ export interface ApiSkill {
   }>;
   SkillDetailNum?: string[];
   DamageList?: ApiDamageListEntry[];
+  Icon?: string;
 }
 
 interface CharacterListResponse {

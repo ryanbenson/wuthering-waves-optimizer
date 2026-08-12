@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Freezing Thorns",
   description: `<div class="skilldescription">Sanhua swings her blade downward and creates 1 "Ice Thorn", dealing <span class="Ice">Glacio DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSanhua/SP_IconSanhuaQTE.webp",
   attacks: [
     {
       key: "FreezingThornsSkillDMG",

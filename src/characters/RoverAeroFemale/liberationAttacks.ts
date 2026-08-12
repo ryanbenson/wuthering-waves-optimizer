@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Omega Storm",
   description: `<div class="skilldescription">Unleash the power of the Eye of Tempest, dealing <span class="Wind">Aero DMG</span> and healing all nearby Resonators in the team.<br>Can be cast in mid-air close to the ground.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconFengzhu/SP_IconFengzhuC1.webp",
   attacks: [
     {
       key: "OmegaStormDMG",

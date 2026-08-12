@@ -116,6 +116,18 @@
           alt="Your Enemy" />
       </a>
     </li>
+    <li v-if="labs?.buildCard?.isEnabled">
+      <a
+        @click="changeScreen('build-card')"
+        :class="{ active: curScreen === 'build-card' }"
+        class="p-0 flex justify-center min-w-[48px] min-h-[48px] mr-2"
+        data-test-calculator-nav="buildCard">
+        <img
+          src="https://ryanbenson.github.io/wuthering-waves-assets/images/icons/camera.webp"
+          class="size-9"
+          alt="Build Card" />
+      </a>
+    </li>
   </ul>
 </template>
 

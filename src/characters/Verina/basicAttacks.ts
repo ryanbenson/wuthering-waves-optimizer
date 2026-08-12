@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Cultivation",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Verina performs up to 5 consecutive attacks with vines, dealing <span class="Light">Spectro DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Verina consumes STA to charge forward, dealing <span class="Light">Spectro DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Verina consumes STA to perform up to 3 consecutive attacks in mid-air, dealing <span class="Light">Spectro DMG</span>.<br> <br><span class="Title">Mid-air Heavy Attack</span><br>Hold <span class="Highlight">Basic Attack</span> to consume STA and perform a mid-air Plunging Attack, dealing <span class="Light">Spectro DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Light">Spectro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorMagic.webp",
   attacks: [
     {
       key: "CultivationNormalAttackStage1DMG",

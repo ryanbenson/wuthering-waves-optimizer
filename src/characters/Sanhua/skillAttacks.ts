@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Eternal Frost",
   description: `<div class="skilldescription">Sanhua sends an air blade to create 1 "Ice Prism" on the ground, dealing <span class="Ice">Glacio DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSanhua/SP_IconSanhuaB1.webp",
   attacks: [
     {
       key: "EternalFrostSkillDMG",

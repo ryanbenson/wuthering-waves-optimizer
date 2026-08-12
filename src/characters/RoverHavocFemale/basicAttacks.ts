@@ -2,6 +2,7 @@ export const basicAttacks = {
   name: "Normal Attack: Tuneslayer",
   description:
     `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Rover-Havoc performs up to 5 consecutive attacks, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Rover-Havoc consumes STA to attack, dealing <span class="Dark">Havoc DMG</span>.<br>Use <span class="Highlight">Basic Attack</span> after casting Heavy Attack to cast Basic Attack 4.<br> <br><span class="Title">Mid-air Attack</span><br>Rover-Havoc consumes STA to cast a Mid-Air Plunging Attack, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful Dodge to attack the target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorKnife.webp",
   attacks: [
     {
       key: "TuneslayerBasicAttack1DMG",

@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Harmonic Allegro",
   description: `<div class="skilldescription">Move a certain distance, dealing <span class="Wind">Aero DMG</span> and inflicting 1 stack of <span class="Highlight">Aero Erosion</span> on the target upon hit.<br>Press Normal Attack in time to cast Basic Attack Stage 2.<br>- When Ciaccona interrupts Basic Attack, Heavy Attack, Mid-air Attack, or <span class="Highlight">Solo Concert</span> with Resonance Skill, an <span class="Highlight">Ensemble Sylph</span> is generated.<br>- Ciaccona's Resonance Skill can be cast in mid-air.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXiakong/SP_IconXiakongB1.webp",
   attacks: [
     {
       key: "HarmonicAllegroDMG",

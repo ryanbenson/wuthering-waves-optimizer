@@ -2,6 +2,7 @@ export const liberationAttacks = {
   name: "Resonance Liberation: Rewritten in Winter's Margins",
   description: `<div>Deal <span class="Light">Spectro DMG</span>, considered Basic Attack DMG.
 Can be cast in mid-air.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLuhesi/SP_IconLuhesiC1.webp",
   attacks: [
     {
       key: "RewritteninWintersMargins",

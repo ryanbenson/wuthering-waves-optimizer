@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Before Injection of Dawn",
   description: `<div>Deal <span class="Light">Spectro DMG</span>. Hurl out an <span class="Highlight" class="font-bold">Ichor Blade</span> and inflict <span class="Highlight" class="font-bold">Tune Strain - Shifting</span> on the target.<br><span class="Highlight" class="font-bold">Press Normal Attack</span> after this skill to cast <span class="Highlight" class="font-bold">Mid-air Attack Stage 2 - Scythe: Dissection</span> or <span class="Highlight" class="font-bold">Jump</span> to cast <span class="Highlight" class="font-bold">Mid-air Attack Stage 2 - Scythe: Resection</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLuhesi/SP_IconLuhesiQTE.webp",
   attacks: [
     {
       key: "BeforeInjectionofDawnDMG",

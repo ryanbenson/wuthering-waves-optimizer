@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Wintertime Aria",
   description: `<div class="skilldescription">Attack the target, dealing <span class="Ice">Glacio DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconKelaita/SP_IconKelaitaQTE.webp",
   attacks: [
     {
       key: "WintertimeAriaDMG",

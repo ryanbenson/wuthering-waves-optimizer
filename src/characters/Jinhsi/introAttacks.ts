@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Loong's Halo",
   description: `div class="skilldescription">Attack the target, dealing <span class="Light">Spectro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJinxi/SP_IconJinxiQTE.webp",
   attacks: [
     {
       key: "LoongsHalo",

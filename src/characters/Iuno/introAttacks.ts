@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Illuminated Manifestation",
   description: `<div class="skilldescription">Deal <span class="Wind">Aero DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconYounuo/SP_IconYounuoQTE.webp",
   attacks: [
     {
       key: "IlluminatedManifestationDMG",

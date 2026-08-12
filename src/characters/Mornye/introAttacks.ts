@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Convergence",
   description: `<div>Attack the target to deal <span class="Fusion"><strong>Fusion DMG</strong></span>, then jump into mid-air, clearing all <span class="Highlight"><strong>Rest Mass Energy</strong></span> and entering <span class="Highlight"><strong>Wide Field Observation Mode</strong></span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconMoNing/SP_IconMoNingQTE.webp",
   attacks: [
     {
       key: "ConvergenceDMG",

@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Emergency Plan",
   description: `<div class="skilldescription">Baizhi calls You'tan to attack the target, dealing <span class="Ice">Glacio DMG</span> while immediately healing all characters on nearby teams.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBailian/SP_IconBailianB1.webp",
   attacks: [
     {
       key: "EmergencyPlanSkillDMG",

@@ -36,6 +36,7 @@ type GeneratedAttack = AttackWithTalents | AttackWithTalent;
 export interface SkillAttackData {
   name: string;
   description: string;
+  icon?: string;
   attacks: GeneratedAttack[];
 }
 
@@ -249,6 +250,7 @@ function buildSkillAttackData(
   return {
     name: `${skill.SkillType}: ${skill.SkillName}`,
     description: wrapDescriptionHtml(skill.SkillDescribe ?? ""),
+    ...(skill.Icon ? { icon: skill.Icon } : {}),
     attacks: buildAttacksForSkill(skill, metadataByAttribute),
   };
 }
@@ -298,10 +300,11 @@ export function formatSkillAttackFileContent(
 
   const attacksContent =
     data.attacks.length > 0 ? `\n${attackBlocks}\n  ` : "";
+  const iconLine = data.icon ? `\n  icon: ${JSON.stringify(data.icon)},` : "";
 
   return `export const ${exportName} = {
   name: ${JSON.stringify(data.name)},
-  description: ${formatTemplateString(data.description)},
+  description: ${formatTemplateString(data.description)},${iconLine}
   attacks: [${attacksContent}],
 };
 `;

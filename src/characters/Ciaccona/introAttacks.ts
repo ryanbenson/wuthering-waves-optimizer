@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Roaming with the Wind",
   description: `<div class="skilldescription">Attack the target to deal <span class="Wind">Aero DMG</span> and inflict a stack of <span class="Highlight">Aero Erosion</span>.<br>Follow up with Basic Attack in time to cast Basic Attack Stage 3.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXiakong/SP_IconXiakongQTE.webp",
   attacks: [
     {
       key: "RoamingwiththeWindDMG",

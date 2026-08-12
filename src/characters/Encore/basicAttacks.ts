@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Wooly Attack",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Encore performs up to 4 consecutive attacks, dealing <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Basic Attack: Wooly Strike</span><br>After <span class="Highlight">Basic Attack 4</span>, press the Basic Attack button to attack the target, dealing <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Encore consumes STA to attack the target, dealing <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Encore consumes STA to perform a Mid-Air Plunging Attack, dealing <span class="Fire">Fusion DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Fire">Fusion DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorMagic.webp",
   attacks: [
     {
       key: "Stage1DMG",

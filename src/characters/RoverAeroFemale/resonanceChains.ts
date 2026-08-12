@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1StormSubsidesintheVoid",
     name: "Sequence Node 1: Storm Subsides in the Void",
     details: `<span class="skilldescription">Casting Mid-air Attack <span class="Highlight">Cloudburst Dance</span> enhances Rover's resistance to interruption for 3s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FengzhuM1_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -13,6 +14,7 @@ export const resonanceChains = [
     key: "SequenceNode2GlimmersFadeintotheDark",
     name: "Sequence Node 2: Glimmers Fade into the Dark",
     details: `<span class="skilldescription">Casting Resonance Skill <span class="Highlight">Unbound Flow</span> continuously restores HP for the Resonator on the field by 20% of Rover's ATK every 3s for 30s. When the Resonator on the field has an HP lower than 35%, immediately restore 10% of their lost HP. This restoration effect can be triggered once every 10s and will not be affected by any Healing Bonus.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FengzhuM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -28,6 +30,7 @@ export const resonanceChains = [
     key: "SequenceNode3IllusionsCollapseinaGrip",
     name: "Sequence Node 3: Illusions Collapse in a Grip",
     details: `Aero DMG Bonus is increased by 15%.`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FengzhuM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -43,6 +46,7 @@ export const resonanceChains = [
     key: "SequenceNode4BoundariesShatterinanInstant",
     name: "Sequence Node 4: Boundaries Shatter in an Instant",
     details: `<span class="skilldescription">Casting Mid-air Attack <span class="Highlight">Cloudburst Dance</span> increases Resonance Skill DMG Bonus by 15% for 5s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FengzhuM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -74,6 +78,7 @@ export const resonanceChains = [
     key: "SequenceNode6AllCrumbleintheWind",
     name: "Sequence Node 6: All Crumble in the Wind",
     details: `<span class="skilldescription">The DMG Multiplier of Resonance Skill <span class="Highlight">Unbound Flow</span> is increased by 30%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FengzhuM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

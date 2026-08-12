@@ -26,6 +26,7 @@ export const forteCircuitAttacks = {
       </p>
     </div>
   `,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconMicai/SP_IconMicaiY.webp",
   attacks: [
     {
       key: "ChaoscleaveDamage",

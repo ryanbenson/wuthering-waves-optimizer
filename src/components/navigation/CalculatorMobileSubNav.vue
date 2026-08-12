@@ -140,6 +140,19 @@
         Stats & Damages
       </a>
     </li>
+    <li v-if="labs?.buildCard?.isEnabled" class="mb-2">
+      <a
+        @click="changeScreen('build-card')"
+        :class="{ active: curScreen === 'build-card' }"
+        class="text-white hover:text-primary"
+        data-test-calculator-mobile-nav="buildCard">
+        <img
+          src="https://ryanbenson.github.io/wuthering-waves-assets/images/icons/camera.webp"
+          class="size-7"
+          alt="Build Card" />
+        Build Card
+      </a>
+    </li>
   </ul>
 </template>
 

@@ -1,5 +1,10 @@
 <template>
-  <div class="calculations">
+  <div
+    class="calculations"
+    :class="{
+      'calculations--full-width':
+        curScreen === 'build-card' && isBuildCardLabEnabled,
+    }">
     <Nav cur-page="home">
       <template #mobile>
         <CalculatorMobileSubNav
@@ -88,6 +93,41 @@
         </template>
       </div>
 
+      <div
+        v-if="isBuildCardLabEnabled && hasVisitedBuildCard"
+        class="screen--build-card"
+        v-show="curScreen === 'build-card'">
+        <CalculatorBuildCard
+          :key="character"
+          :character="character"
+          :character-level="characterLevel"
+          :weapon-atk="weaponAtk"
+          :chosen-char="chosenChar"
+          :total-atk="totalAtk"
+          :total-atk-percent="totalAtkPercent"
+          :total-atk-flat="totalAtkFlat"
+          :total-hp="totalHp"
+          :total-hp-percent="totalHpPercent"
+          :total-hp-flat="totalHpFlat"
+          :total-def="totalDef"
+          :total-def-percent="totalDefPercent"
+          :total-def-flat="totalDefFlat"
+          :total-crit-rate="totalCritRate"
+          :total-crit-dmg="totalCritDMG"
+          :energy-regen="energyRegen"
+          :basic-attack-dmg-bonus="BasicAttackDMGBonus"
+          :heavy-attack-dmg-bonus="HeavyAttackDMGBonus"
+          :resonance-skill-dmg-bonus="ResonanceSkillDMGBonus"
+          :resonance-liberation-dmg-bonus="ResonanceLiberationDMGBonus"
+          :glacio="Glacio"
+          :fusion="Fusion"
+          :electro="Electro"
+          :aero="Aero"
+          :spectro="Spectro"
+          :havoc="Havoc"
+          :healing-bonus="healingBonus"
+          :tune-break-boost="tuneBreakBoost"></CalculatorBuildCard>
+      </div>
       <div class="screen-party" v-show="curScreen === 'party'">
         <CalculatorPartyBuffs
           :key="character"
@@ -321,6 +361,7 @@ import CalculatorEnemy from "./CalculatorEnemy.vue";
 import CalculatorRotations from "./CalculatorRotations.vue";
 import CalculatorCustomBuffs from "./CalculatorCustomBuffs.vue";
 import CalculatorStats from "./CalculatorStats.vue";
+import CalculatorBuildCard from "./CalculatorBuildCard.vue";
 import CalculatorDamages from "./CalculatorDamages.vue";
 import CalculatorOptimizer from "./CalculatorOptimizer.vue";
 import {
@@ -392,6 +433,7 @@ export default defineComponent({
     CalculatorResonanceChains,
     CalculatorRotations,
     CalculatorStats,
+    CalculatorBuildCard,
     CalculatorTalents,
     CalculatorOptimizer,
     CalculatorMobileSubNav,
@@ -405,6 +447,22 @@ export default defineComponent({
     const inventoryStore = useInventoryStore();
     const settingsStore = useSettingsStore();
     const { characters, activeCharacter } = storeToRefs(characterStore);
+    const { labs } = storeToRefs(settingsStore);
+    // Build card is mid-development (issue #360) — gated behind Settings >
+    // Labs so it can merge to main without being reachable in production
+    // until it's finished.
+    const isBuildCardLabEnabled = computed(
+      () => labs.value?.buildCard?.isEnabled ?? false,
+    );
+    // Every other screen below is always mounted (v-show only) so tab
+    // switches are instant, but that means an always-hidden screen's DOM can
+    // still collide with e.g. Cypress element-count assertions elsewhere
+    // (see the .echo__item count bug this caused before build card was
+    // gated). Mounting build card lazily on first visit, instead of eagerly
+    // like the rest, sidesteps that without touching the established
+    // always-mounted pattern everywhere else — and keeps working once the
+    // Labs gate above is eventually removed.
+    const hasVisitedBuildCard = ref(false);
     const weaponData = reactive({});
     const weaponAtk = ref(0);
     const charBuffsData = reactive({});
@@ -867,6 +925,9 @@ export default defineComponent({
 
     const changeScreen = (screen: string) => {
       curScreen.value = screen;
+      if (screen === "build-card") {
+        hasVisitedBuildCard.value = true;
+      }
     };
 
     const handleCharacterTalentUpdated = (data) => {
@@ -1805,6 +1866,8 @@ export default defineComponent({
       rotationsList,
       curScreen,
       changeScreen,
+      isBuildCardLabEnabled,
+      hasVisitedBuildCard,
       damage,
       updateStatsEchoes,
       totalAtk,
@@ -1939,6 +2002,14 @@ export default defineComponent({
 
   h4 {
     padding-left: 0.5rem;
+  }
+}
+
+.calculations--full-width {
+  grid-template-columns: 1fr;
+
+  .results {
+    display: none !important;
   }
 }
 </style>

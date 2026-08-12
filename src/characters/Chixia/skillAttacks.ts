@@ -3,6 +3,7 @@ export const skillAttacks = {
   description: `<div class="skilldescription">Chixia unleashes a flurry of shots, dealing <span class="Fire">Fusion DMG</span>.
   <br> 
   <br><span class="Highlight">Whizzing Fight Spirit</span> has 2 initial charges.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconMaxiaofang/SP_IconMaxiaofangB1.webp",
   attacks: [
     {
       key: "WhizzingFightSpiritSkillDMG",

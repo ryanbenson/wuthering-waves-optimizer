@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Illusion Collapse",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Perform up to 3 consecutive attacks, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Consume STA to attack the target, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Heavy Attack - Delusive Dive</span><br>When Cantarella has Trance, <span class="Highlight">Heavy Attack</span> becomes <span class="Highlight">Delusive Dive</span>, dealing <span class="Dark">Havoc DMG</span> to the target, and then Cantarella enters <span class="Highlight">Mirage</span>. While in <span class="Highlight">Mirage</span>, casting <span class="Highlight">Delusive Dive</span> does not activate <span class="Highlight">Mirage</span> again.<br>Can be cast in water.<br> <br><span class="Title">Mid-air Attack</span><br>Consume STA to perform Plunging Attack, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Press <span class="Highlight">Normal Attack</span> right after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorMagic.webp",
   attacks: [
     {
       key: "Stage1DMG",

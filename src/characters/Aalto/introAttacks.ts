@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Feint Shot",
   description: `<div class="skilldescription">Aalto shows up out of thin air to perform rapid continuous shooting, dealing <span class="Wind">Aero DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconQiushui/SP_IconQiushuiQTE.webp",
   attacks: [
     {
       key: "FeintShotSkillDMG",

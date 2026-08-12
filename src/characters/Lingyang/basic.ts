@@ -6,5 +6,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     avatarUrl: "Lingyang.jpg",
     gender: "male",
     element: "Glacio",
+    image: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/UiQuest/Image/ChuanShuo/T_IconChuanShuo1_UI.webp",
+    inherentSkillIcons: ["https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLingyang/SP_IconLingyangD1.webp","https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLingyang/SP_IconLingyangD2.webp"],
   };
 }

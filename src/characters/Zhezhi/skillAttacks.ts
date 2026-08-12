@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Manifestation",
   description: `<div class="skilldescription"> Deal <span class="Ice"><strong>Glacio DMG</strong></span>. If "Afflatus" is no less than 60, consume 60 "Afflatus" to summon <span class="Highlight"><strong>Phantasmic Imprint - Left</strong></span> and <span class="Highlight"><strong>Phantasmic Imprint - Right</strong></span>.<br>-Tap the button on the ground to summon the Phantasmic Imprints on the ground.<br>-Hold the button on the ground or tap the button in mi-dar to summon the Phantasmic Imprints in mid-air. </div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhezhi/SP_IconZhezhiB1.webp",
   attacks: [
     {
       key: "ManifestationPressDMG",

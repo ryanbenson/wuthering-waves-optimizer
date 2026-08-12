@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Illusion Breaker",
   description: `<div class="skilldescription"><span class="Title">Awakening Gale</span><br>Jump up into the mid-air and slash the target, dealing <span class="Wind">Aero DMG</span>.<br><br><span class="Title">Skyfall Severance</span><br>While in mid-air, press <span class="Highlight">Resonance Skill</span> to deal <span class="Wind">Aero DMG</span>, which removes all stacks of Spectro Frazzle, Havoc Bane, Fusion Burst, Glacio Chafe, and Electro Flare from the target hit and inflicts 1 stack of Aero Erosion for each stack removed.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconFengzhu/SP_IconFengzhuB1.webp",
   attacks: [
     {
       key: "AwakeningGaleDMG",

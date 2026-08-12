@@ -2,6 +2,7 @@ export const introAttacks = {
   name: "Intro Skill: Wanted Outlaw",
   description:
     `<div class="skilldescription">Attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconKakaluo/SP_IconKakaluoQTE.webp",
   attacks: [
     {
       key: "WantedOutlawSkillDMG",

@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Flower in the Mist",
   description: `<div class="skilldescription">Generate a "Gate of Quandary" in front, dealing <span class="Wind">Aero DMG</span>. When bullets pass through the "Gate of Quandary", they deal increased DMG. "Gate of Quandary" lasts for 10s.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconQiushui/SP_IconQiushuiC1.webp",
   attacks: [
     {
       key: "FlowerintheMistDamage",

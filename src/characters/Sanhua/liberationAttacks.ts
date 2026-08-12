@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Glacial Gaze",
   description: `<div class="skilldescription">Sanhua deals <span class="Ice">Glacio DMG</span> and creates 1 "Glacier".</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSanhua/SP_IconSanhuaC1.webp",
   attacks: [
     {
       key: "GlacialGazeSkillDMG",

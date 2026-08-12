@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1ParcelToBeDelivered",
     name: "Sequence Node 1: Parcel To Be Delivered",
     details: `<span class="skilldescription">After casting <span class="Highlight">Energized Rebound</span>, additionally recovers 60 STA within 3s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_DengdengM1_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -13,6 +14,7 @@ export const resonanceChains = [
     key: "SequenceNode2LolloLogisticsReadytoHelp",
     name: "Sequence Node 2: Lollo Logistics, Ready to Help",
     details: `<span class="skilldescription"><span class="Highlight">Energized Pounce</span> and <span class="Highlight">Energized Rebound</span> ignore 20% of the target's DEF.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_DengdengM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -29,6 +31,7 @@ export const resonanceChains = [
     key: "SequenceNode3PriorityParcelInTransit",
     name: "Sequence Node 3: Priority Parcel In Transit",
     details: `<span class="skilldescription">The DMG of Resonance Liberation <span class="Highlight">Squeakie Express</span> is increased by 30%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_DengdengM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -44,6 +47,7 @@ export const resonanceChains = [
     key: "SequenceNode4CaptainLumiAtYourService",
     name: "Sequence Node 4: Captain Lumi, At Your Service",
     details: `<span class="skilldescription">Gain 30% Basic Attack DMG Bonus.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_DengdengM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -59,6 +63,7 @@ export const resonanceChains = [
     key: "SequenceNode5ParcelCollectedOnTime",
     name: "Sequence Node 5: Parcel Collected On Time",
     details: `<span class="skilldescription">When Spark is fully recovered, <span class="Highlight">Laser</span> DMG Multiplier is increased by 100%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_DengdengM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -75,6 +80,7 @@ export const resonanceChains = [
     key: "SequenceNode6Giv MeAFivestarRating",
     name: "Sequence Node 6: Give Me A Five-star Rating",
     details: `<span class="skilldescription">Casting Resonance Liberation <span class="Highlight">Squeakie Express</span> increases all team members' ATK by 20% for 20s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_DengdengM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Fortune's Favor",
   description: `<div class="skilldescription"></div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconYouhu/SP_IconYouhuC1.webp",
   attacks: [
     {
       key: "FortunesFavorDamage",

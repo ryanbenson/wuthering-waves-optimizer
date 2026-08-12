@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Whispers in a Fleeting Dream",
   description: `<div>Attack the target and deal <span class="ingame-Dark">Havoc DMG</span>.<br>Casting this skill sends Phrolova into <span class="ingame-Highlight">Reincarnate</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconFuluoluo/SP_IconFuluoluoB1.webp",
   attacks: [
     {
       key: "WhispersinaFleetingDreamDMG",

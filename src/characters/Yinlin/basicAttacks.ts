@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Zapstring's Dance",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Yinlin controls the puppet "Zapstring" to perform up to 4 attacks, dealing <span class="Thunder">Electro DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Yinlin consumes STA to control "Zapstring", dealing <span class="Thunder">Electro DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Yinlin consumes STA to control "Zapstring" to perform a Mid-air Plunging Attack, dealing <span class="Thunder">Electro DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorMagic.webp",
   attacks: [
     {
       key: "Part1DMG",
