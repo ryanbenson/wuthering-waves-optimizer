@@ -8,7 +8,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     element: "Electro",
     tuneBreakBoost: 0.1,
     image:
-      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/PixActivity/T_ActivityRoleLibeika.webp",
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRolePile/T_IconRole_Pile_LiBeiKa_UI.webp",
     inherentSkillIcons: [
       "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLibeika/SP_IconLibeikaD1.webp",
       "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLibeika/SP_IconLibeikaD2.webp",

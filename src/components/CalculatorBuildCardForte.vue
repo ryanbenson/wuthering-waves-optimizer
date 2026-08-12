@@ -1,13 +1,10 @@
 <template>
-  <div class="build-card-forte flex flex-col items-end gap-1.5" data-test-build-card-talents>
+  <div class="build-card-forte flex flex-col items-center gap-2" data-test-build-card-talents>
     <div
       v-for="col in columns"
       :key="col.key"
-      class="build-card-forte__row flex items-center gap-1.5"
+      class="build-card-forte__row flex flex-col items-center gap-1"
       :title="`${col.label} Lv. ${col.level}`">
-      <span class="badge badge-primary badge-sm font-bold" data-test-build-card-talent-level>
-        {{ col.level }}
-      </span>
       <div class="build-card-forte__icon flex items-center justify-center rounded-full overflow-hidden shrink-0">
         <img v-if="col.icon" :src="col.icon" class="w-full h-full object-cover" />
         <svg
@@ -18,6 +15,9 @@
           <path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z" />
         </svg>
       </div>
+      <span class="badge badge-primary badge-sm font-bold" data-test-build-card-talent-level>
+        {{ col.level }}
+      </span>
     </div>
   </div>
 </template>
@@ -63,13 +63,13 @@ const columns = computed(() => [
   border: 1px solid oklch(var(--bc) / 0.4);
   background: rgba(0, 0, 0, 0.35);
   color: white;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 4.5rem;
+  height: 4.5rem;
 }
 
 .build-card-forte__icon-svg {
-  width: 1.1rem;
-  height: 1.1rem;
+  width: 2.2rem;
+  height: 2.2rem;
   opacity: 0.9;
 }
 </style>

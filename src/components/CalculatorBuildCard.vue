@@ -122,7 +122,7 @@
                 </template>
 
                 <div
-                  class="build-card__resonance flex flex-col items-start gap-1.5 mt-4"
+                  class="build-card__resonance flex flex-col items-start gap-2 mt-4"
                   data-test-build-card-resonance>
                   <div
                     v-for="(chain, idx) in resonanceChainNodes"
@@ -137,11 +137,11 @@
                     <img
                       v-if="chain.icon"
                       :src="chain.icon"
-                      class="size-5 rounded-full" />
+                      class="size-10 rounded-full" />
                     <svg
                       v-else
                       viewBox="0 0 24 24"
-                      class="size-4"
+                      class="size-8"
                       fill="currentColor">
                       <path
                         d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z" />
@@ -225,7 +225,7 @@
             </div>
             <div
               v-if="echoSetSummary.length"
-              class="build-card__echo-sets shrink-0 flex flex-wrap gap-2"
+              class="build-card__echo-sets shrink-0 flex flex-wrap justify-center gap-2 mb-6"
               data-test-build-card-echo-sets>
               <div
                 v-for="set in echoSetSummary"
@@ -650,8 +650,8 @@ async function handleDownload() {
 }
 
 .build-card__resonance-node {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 4.5rem;
+  height: 4.5rem;
   border: 1px solid oklch(var(--bc) / 0.4);
   background: rgba(0, 0, 0, 0.35);
   color: white;
