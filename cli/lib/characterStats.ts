@@ -82,7 +82,7 @@ export function extractBasicData(
     ...(tuneBreakBoost !== undefined && tuneBreakBoost > 0
       ? { tuneBreakBoost }
       : {}),
-    ...(detail.RoleStand ? { image: detail.RoleStand } : {}),
+    ...(detail.FormationRoleCard ? { image: detail.FormationRoleCard } : {}),
     ...(inherentSkillIcons.length > 0 ? { inherentSkillIcons } : {}),
   };
 }

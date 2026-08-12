@@ -33,10 +33,7 @@ describe("Calculator Build Card", () => {
 
     cy.get("[data-test-build-card]").should("be.visible");
     cy.get(".results").should("not.be.visible");
-    cy.get("[data-test-build-card-resonance]").should(
-      "contain.text",
-      "/ 6",
-    );
+    cy.get("[data-test-build-card-resonance]").should("be.visible");
     cy.get("[data-test-build-card-echoes] .echo__item").should(
       "have.length",
       5,

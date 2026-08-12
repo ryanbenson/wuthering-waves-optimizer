@@ -81,123 +81,97 @@
             ? `url(${buildCardBackground})`
             : undefined,
         }">
-        <div class="build-card__row1 grid grid-cols-12 gap-4">
-          <div class="build-card__identity col-span-3 h-full relative rounded-lg overflow-hidden bg-base-300">
-            <CalculatorBuildCardPortraitUpload
-              variant="cover"
-              :character="character"
-              :current-portrait="characterData.customPortrait"
-              :default-portrait-url="defaultPortraitUrl" />
-            <div class="build-card__identity-scrim absolute inset-0 pointer-events-none"></div>
-            <div class="absolute top-4 left-4 right-12 flex items-start gap-3 pointer-events-none">
-              <div
-                class="build-card__resonance flex flex-col items-center gap-2"
-                data-test-build-card-resonance>
+        <div class="build-card__grid grid grid-cols-12 gap-4">
+          <div class="build-card__identity-panel col-span-5 h-full">
+            <div class="build-card__identity relative h-full w-full rounded-lg overflow-hidden bg-base-300">
+              <CalculatorBuildCardPortraitUpload
+                variant="cover"
+                :character="character"
+                :current-portrait="characterData.customPortrait"
+                :default-portrait-url="defaultPortraitUrl" />
+              <div class="build-card__identity-scrim absolute inset-0 pointer-events-none"></div>
+
+              <div class="absolute top-4 left-4 max-w-[65%] pointer-events-none">
+                <template v-if="characterBasic">
+                  <h2
+                    class="text-2xl font-bold leading-tight text-white"
+                    :class="{
+                      'text-amber-300': characterBasic.rarity === 5,
+                      'text-violet-600': characterBasic.rarity === 4,
+                    }">
+                    {{ characterBasic.name }}
+                  </h2>
+                  <div
+                    class="flex gap-0.5 mt-1"
+                    :class="{
+                      'text-amber-300': characterBasic.rarity === 5,
+                      'text-violet-600': characterBasic.rarity === 4,
+                    }"
+                    aria-hidden="true">
+                    <svg
+                      v-for="n in characterBasic.rarity"
+                      :key="n"
+                      viewBox="0 0 24 24"
+                      class="size-3.5"
+                      fill="currentColor">
+                      <path
+                        d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.86L12 17.77l-6.18 3.23L7 14.14 2 9.27l7.1-1.01z" />
+                    </svg>
+                  </div>
+                  <div class="text-sm text-white opacity-80 mt-1">Lv. {{ characterLevel }}</div>
+                </template>
+
                 <div
-                  v-for="(chain, idx) in resonanceChainNodes"
-                  :key="chain.key ?? idx"
-                  class="build-card__resonance-node flex items-center justify-center rounded-full"
-                  :class="
-                    chain.isEnabled
-                      ? 'build-card__resonance-node--active'
-                      : 'build-card__resonance-node--inactive'
-                  "
-                  :title="chain.name">
-                  <img
-                    v-if="chain.icon"
-                    :src="chain.icon"
-                    class="size-4 rounded-full" />
-                  <svg
-                    v-else
-                    viewBox="0 0 24 24"
-                    class="size-3"
-                    fill="currentColor">
-                    <path
-                      d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z" />
-                  </svg>
-                </div>
-                <div class="build-card__resonance-count text-xs font-semibold opacity-90">
-                  {{ resonanceChainCount }} / 6
+                  class="build-card__resonance flex flex-col items-start gap-2 mt-4"
+                  data-test-build-card-resonance>
+                  <div
+                    v-for="(chain, idx) in resonanceChainNodes"
+                    :key="chain.key ?? idx"
+                    class="build-card__resonance-node flex items-center justify-center rounded-full"
+                    :class="
+                      chain.isEnabled
+                        ? 'build-card__resonance-node--active'
+                        : 'build-card__resonance-node--inactive'
+                    "
+                    :title="chain.name">
+                    <img
+                      v-if="chain.icon"
+                      :src="chain.icon"
+                      class="size-10 rounded-full" />
+                    <svg
+                      v-else
+                      viewBox="0 0 24 24"
+                      class="size-8"
+                      fill="currentColor">
+                      <path
+                        d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z" />
+                    </svg>
+                  </div>
                 </div>
               </div>
+
+              <div class="absolute top-4 right-4 pointer-events-none">
+                <CalculatorBuildCardForte
+                  :talents="characterData.talents ?? {}"
+                  :icons="forteIcons" />
+              </div>
+
               <div
                 v-if="buildCardUsername || buildCardUid"
-                class="build-card__profile text-white leading-tight pt-1"
+                class="build-card__profile absolute bottom-4 left-4 text-white leading-tight pointer-events-none"
                 data-test-build-card-profile>
-                <div v-if="buildCardUsername" class="text-sm font-semibold">
+                <div v-if="buildCardUsername" class="text-lg font-semibold">
                   {{ buildCardUsername }}
                 </div>
-                <div v-if="buildCardUid" class="text-xs opacity-70">
+                <div v-if="buildCardUid" class="text-base opacity-70">
                   UID {{ buildCardUid }}
                 </div>
               </div>
             </div>
-            <div
-              v-if="characterBasic"
-              class="build-card__identity-footer absolute bottom-4 left-4 pr-4">
-              <h2
-                class="text-2xl font-bold leading-tight"
-                :class="{
-                  'text-amber-300': characterBasic.rarity === 5,
-                  'text-violet-600': characterBasic.rarity === 4,
-                }">
-                {{ characterBasic.name }}
-              </h2>
-              <div
-                class="flex gap-0.5 mt-1"
-                :class="{
-                  'text-amber-300': characterBasic.rarity === 5,
-                  'text-violet-600': characterBasic.rarity === 4,
-                }"
-                aria-hidden="true">
-                <svg
-                  v-for="n in characterBasic.rarity"
-                  :key="n"
-                  viewBox="0 0 24 24"
-                  class="size-3.5"
-                  fill="currentColor">
-                  <path
-                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.86L12 17.77l-6.18 3.23L7 14.14 2 9.27l7.1-1.01z" />
-                </svg>
-              </div>
-              <div class="text-sm opacity-80 mt-1">Lv. {{ characterLevel }}</div>
-            </div>
           </div>
 
-          <div class="build-card__stats col-span-4 h-full overflow-hidden">
-            <CalculatorStats
-              :character="character"
-              :character-level="characterLevel"
-              :weapon-atk="weaponAtk"
-              :total-atk="totalAtk"
-              :total-atk-percent="totalAtkPercent"
-              :total-atk-flat="totalAtkFlat"
-              :total-hp="totalHp"
-              :total-hp-percent="totalHpPercent"
-              :total-hp-flat="totalHpFlat"
-              :total-def="totalDef"
-              :total-def-percent="totalDefPercent"
-              :total-def-flat="totalDefFlat"
-              :total-crit-rate="totalCritRate"
-              :total-crit-dmg="totalCritDmg"
-              :energy-regen="energyRegen"
-              :basic-attack-dmg-bonus="basicAttackDmgBonus"
-              :heavy-attack-dmg-bonus="heavyAttackDmgBonus"
-              :resonance-skill-dmg-bonus="resonanceSkillDmgBonus"
-              :resonance-liberation-dmg-bonus="resonanceLiberationDmgBonus"
-              :glacio="glacio"
-              :fusion="fusion"
-              :electro="electro"
-              :aero="aero"
-              :spectro="spectro"
-              :havoc="havoc"
-              :healing-bonus="healingBonus"
-              :tune-break-boost="tuneBreakBoost"
-              :element-filter="characterBasic?.element" />
-          </div>
-
-          <div class="build-card__weapon-forte col-span-5 h-full flex flex-col gap-4">
-            <div class="build-card__weapon flex-1 min-h-0">
+          <div class="build-card__middle col-span-3 h-full flex flex-col gap-4">
+            <div class="build-card__weapon h-[200px] shrink-0">
               <CalculatorBuildCardWeaponPanel
                 v-if="weaponInfo"
                 :name="weaponInfo.name"
@@ -215,20 +189,60 @@
                 No weapon selected
               </div>
             </div>
+            <div class="build-card__stats flex-1 min-h-0 overflow-hidden">
+              <CalculatorStats
+                :character="character"
+                :character-level="characterLevel"
+                :weapon-atk="weaponAtk"
+                :total-atk="totalAtk"
+                :total-atk-percent="totalAtkPercent"
+                :total-atk-flat="totalAtkFlat"
+                :total-hp="totalHp"
+                :total-hp-percent="totalHpPercent"
+                :total-hp-flat="totalHpFlat"
+                :total-def="totalDef"
+                :total-def-percent="totalDefPercent"
+                :total-def-flat="totalDefFlat"
+                :total-crit-rate="totalCritRate"
+                :total-crit-dmg="totalCritDmg"
+                :energy-regen="energyRegen"
+                :basic-attack-dmg-bonus="basicAttackDmgBonus"
+                :heavy-attack-dmg-bonus="heavyAttackDmgBonus"
+                :resonance-skill-dmg-bonus="resonanceSkillDmgBonus"
+                :resonance-liberation-dmg-bonus="resonanceLiberationDmgBonus"
+                :glacio="glacio"
+                :fusion="fusion"
+                :electro="electro"
+                :aero="aero"
+                :spectro="spectro"
+                :havoc="havoc"
+                :healing-bonus="healingBonus"
+                :tune-break-boost="tuneBreakBoost"
+                :element-filter="characterBasic?.element" />
+            </div>
             <div
-              class="build-card__forte flex-1 min-h-0 flex items-center rounded-lg bg-base-200 px-4">
-              <CalculatorBuildCardForte :talents="characterData.talents ?? {}" />
+              v-if="echoSetSummary.length"
+              class="build-card__echo-sets shrink-0 flex flex-wrap justify-center gap-2 mb-6"
+              data-test-build-card-echo-sets>
+              <div
+                v-for="set in echoSetSummary"
+                :key="set.key"
+                class="flex items-center gap-2 rounded-lg bg-base-200 px-3 py-2">
+                <img :src="set.icon" class="size-7" />
+                <span class="text-base font-semibold">{{ set.count }}pc {{ set.label }}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div
-          class="build-card__echoes grid grid-cols-5 gap-2 mt-4 h-[420px] shrink-0"
-          data-test-build-card-echoes>
-          <CalculatorBuildCardEchoCard
-            v-for="(echo, index) in echoSlots"
-            :key="index"
-            v-bind="echo" />
+          <div
+            class="build-card__echoes col-span-4 h-full flex flex-col gap-2"
+            data-test-build-card-echoes>
+            <CalculatorBuildCardEchoCard
+              v-for="(echo, index) in echoSlots"
+              :key="index"
+              class="flex-1 min-h-0"
+              v-bind="echo" />
+          </div>
         </div>
       </div>
     </div>
@@ -243,7 +257,12 @@ import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import { getWeaponByName } from "../weapons/weapons";
 import { useToast } from "../composables/useToast";
-import { subStatIconMap, subStatLabelMap } from "../echoes/stats";
+import {
+  subStatIconMap,
+  subStatLabelMap,
+  getEchoSetIconByType,
+  getEchoSetLabelByType,
+} from "../echoes/stats";
 import { compressImageToDataUrl } from "../utils/imageCompression";
 import {
   copyCardImageToClipboard,
@@ -265,8 +284,14 @@ interface ChosenCharRef {
       rarity: number;
       element: string;
       weapon: string;
+      image?: string;
     };
     resonanceChains?: Array<{ key: string; name?: string; icon?: string }>;
+    basicAttacks?: { icon?: string };
+    skillAttacks?: { icon?: string };
+    liberationAttacks?: { icon?: string };
+    forteCircuitAttacks?: { icon?: string };
+    introAttacks?: { icon?: string };
   };
 }
 
@@ -384,15 +409,17 @@ const characterBasic = computed(() => props.chosenChar?.value?.basic ?? null);
 
 const defaultPortraitUrl = computed(
   () =>
+    characterBasic.value?.image ||
     `https://ryanbenson.github.io/wuthering-waves-assets/images/${props.character}.png`,
 );
 
-const resonanceChainCount = computed(
-  () =>
-    Object.values(characterData.value.resonanceChains ?? {}).filter(
-      (chain: any) => chain?.isEnabled,
-    ).length,
-);
+const forteIcons = computed(() => ({
+  basic: props.chosenChar?.value?.basicAttacks?.icon,
+  skill: props.chosenChar?.value?.skillAttacks?.icon,
+  liberation: props.chosenChar?.value?.liberationAttacks?.icon,
+  forte: props.chosenChar?.value?.forteCircuitAttacks?.icon,
+  intro: props.chosenChar?.value?.introAttacks?.icon,
+}));
 
 const resonanceChainNodes = computed(() => {
   const chains = props.chosenChar?.value?.resonanceChains ?? [];
@@ -419,6 +446,30 @@ const echoSlots = computed(() => {
       : null;
     return inventoryEcho ?? slot;
   });
+});
+
+// Tallies equipped echoes by set key and surfaces every set with 2+ pieces
+// equipped (game set bonuses come in 2pc/5pc tiers), so the card can show
+// e.g. "2pc Molten Rift" / "5pc Molten Rift" — informational (what's
+// equipped), not a re-derivation of `getSetBonusEffects`'s "which 2 bonus
+// slots actually apply" selection logic used for damage calculation.
+const echoSetSummary = computed(() => {
+  const counts: Record<string, number> = {};
+  for (const echo of echoSlots.value as Array<{ echoSet?: string }>) {
+    const key = echo?.echoSet;
+    if (key && key !== "none") {
+      counts[key] = (counts[key] ?? 0) + 1;
+    }
+  }
+  return Object.entries(counts)
+    .filter(([, count]) => count >= 2)
+    .sort(([, a], [, b]) => b - a)
+    .map(([key, count]) => ({
+      key,
+      count,
+      label: getEchoSetLabelByType(key),
+      icon: getEchoSetIconByType(key),
+    }));
 });
 
 const weaponKey = computed(() => characterData.value.weapon ?? null);
@@ -562,7 +613,7 @@ async function handleDownload() {
 .build-card__canvas {
   width: 1920px;
   height: 1080px;
-  padding: 2rem;
+  padding: 0;
   box-sizing: border-box;
   position: absolute;
   top: 0;
@@ -572,9 +623,11 @@ async function handleDownload() {
   flex-direction: column;
 }
 
-.build-card__row1 {
+.build-card__grid {
   flex: 1 1 auto;
   min-height: 0;
+  display: grid;
+  grid-template-rows: 100%;
 }
 
 .build-card__identity-scrim {
@@ -587,8 +640,8 @@ async function handleDownload() {
 }
 
 .build-card__resonance-node {
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 4.5rem;
+  height: 4.5rem;
   border: 1px solid oklch(var(--bc) / 0.4);
   background: rgba(0, 0, 0, 0.35);
   color: white;
@@ -602,5 +655,18 @@ async function handleDownload() {
 
 .build-card__resonance-node--inactive {
   opacity: 0.5;
+}
+
+// CalculatorStats.vue is shared with the single-character Calculator page,
+// so its own base font-size can't change without affecting that page too —
+// :deep() overrides it only within this build card's usage.
+.build-card__stats :deep(.calculator__stats td) {
+  font-size: 19px;
+  padding: 0.6rem 0.5rem;
+}
+
+.build-card__stats :deep(.calculator__stats img) {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 </style>

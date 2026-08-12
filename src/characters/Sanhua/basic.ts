@@ -6,7 +6,11 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     avatarUrl: "Sanhua.jpg",
     gender: "female",
     element: "Glacio",
-    image: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/UiQuest/Image/ChuanShuo/T_IconChuanShuo1_UI.webp",
-    inherentSkillIcons: ["https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSanhua/SP_IconSanhuaD1.webp","https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSanhua/SP_IconSanhuaD2.webp"],
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRolePile/T_IconRole_Pile_shanhua_UI.webp",
+    inherentSkillIcons: [
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSanhua/SP_IconSanhuaD1.webp",
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconSanhua/SP_IconSanhuaD2.webp",
+    ],
   };
 }

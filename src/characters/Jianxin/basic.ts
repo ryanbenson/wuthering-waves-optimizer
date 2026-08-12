@@ -6,7 +6,11 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     avatarUrl: "Jianxin.jpg",
     gender: "female",
     element: "Aero",
-    image: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/UiQuest/Image/ChuanShuo/T_IconChuanShuo1_UI.webp",
-    inherentSkillIcons: ["https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJianxin/SP_IconJianxinD1.webp","https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJianxin/SP_IconJianxinD2.webp"],
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRolePile/T_IconRole_Pile_jiexin_UI.webp",
+    inherentSkillIcons: [
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJianxin/SP_IconJianxinD1.webp",
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJianxin/SP_IconJianxinD2.webp",
+    ],
   };
 }

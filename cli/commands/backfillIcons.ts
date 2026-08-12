@@ -250,7 +250,7 @@ async function backfillCharacter(
 
     const content = fs.readFileSync(basicPath, "utf8");
     const result = patchBasicFileFields(content, {
-      image: detail.RoleStand,
+      image: detail.FormationRoleCard,
       inherentSkillIcons,
     });
     notices.push(...result.notices);

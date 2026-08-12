@@ -124,60 +124,23 @@ describe("CalculatorBuildCard", () => {
     void getByTestId;
   });
 
-  it("computes the resonance chain count from enabled chains", () => {
-    seedCharacter();
-    const { container } = renderCard(baseStatsProps());
-
-    const resonanceEl = container.querySelector(
-      "[data-test-build-card-resonance]",
-    );
-    expect(resonanceEl?.textContent).toContain("2 / 6");
-  });
-
-  it("renders 0 / 6 when no resonance chains are enabled", () => {
-    seedCharacter({
-      resonanceChains: {
-        chain1: { isEnabled: false },
-        chain2: { isEnabled: false },
-      },
-    });
-    const { container } = renderCard(baseStatsProps());
-
-    const resonanceEl = container.querySelector(
-      "[data-test-build-card-resonance]",
-    );
-    expect(resonanceEl?.textContent).toContain("0 / 6");
-  });
-
-  it("renders 6 / 6 when every resonance chain is enabled", () => {
-    seedCharacter({
-      resonanceChains: {
-        chain1: { isEnabled: true },
-        chain2: { isEnabled: true },
-        chain3: { isEnabled: true },
-        chain4: { isEnabled: true },
-        chain5: { isEnabled: true },
-        chain6: { isEnabled: true },
-      },
-    });
-    const { container } = renderCard(baseStatsProps());
-
-    const resonanceEl = container.querySelector(
-      "[data-test-build-card-resonance]",
-    );
-    expect(resonanceEl?.textContent).toContain("6 / 6");
-  });
-
   it("renders forte/talent levels from the character's talents", () => {
     seedCharacter();
     const { container } = renderCard(baseStatsProps());
 
     const talentsEl = container.querySelector("[data-test-build-card-talents]");
-    expect(talentsEl?.textContent).toContain("Lv. 6");
-    expect(talentsEl?.textContent).toContain("Normal Attack");
-    expect(talentsEl?.textContent).toContain("Lv. 10");
-    expect(talentsEl?.textContent).toContain("Resonance Skill");
-    expect(talentsEl?.textContent).toContain("Intro Skill");
+    const levels = talentsEl?.querySelectorAll("[data-test-build-card-talent-level]");
+    // Order matches the issue spec: normal, skill, liberation, forte circuit, intro.
+    expect(Array.from(levels ?? []).map((el) => el.textContent?.trim())).toEqual([
+      "6",
+      "10",
+      "10",
+      "10",
+      "6",
+    ]);
+    expect(talentsEl?.querySelector('[title^="Normal Attack"]')).toBeTruthy();
+    expect(talentsEl?.querySelector('[title^="Resonance Skill"]')).toBeTruthy();
+    expect(talentsEl?.querySelector('[title^="Intro Skill"]')).toBeTruthy();
   });
 
   it("renders all 5 echo slots, including empty ones", () => {
