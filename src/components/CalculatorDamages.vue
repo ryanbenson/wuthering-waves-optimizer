@@ -235,7 +235,11 @@
   </table>
 
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">
+    <span class="text-lg font-bold flex items-center gap-2">
+      <img
+        v-if="chosenChar.value?.outroAttacks?.icon"
+        :src="chosenChar.value?.outroAttacks?.icon"
+        class="size-6" />
       {{ chosenChar.value?.outroAttacks?.name ?? "Outro Attacks" }}
     </span>
     <span class="damage__title__button" @click="toggleOutroDetails">
@@ -286,7 +290,11 @@
   </table>
 
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">
+    <span class="text-lg font-bold flex items-center gap-2">
+      <img
+        v-if="chosenChar.value?.tuneBreakAttacks?.icon"
+        :src="chosenChar.value?.tuneBreakAttacks?.icon"
+        class="size-6" />
       {{ chosenChar.value?.tuneBreakAttacks?.name ?? "Tune Break Attacks" }}
     </span>
     <span class="damage__title__button" @click="toggleTuneBreakDetails">

@@ -23,14 +23,17 @@ const projectRoot = path.resolve(__dirname, "../..");
 const charactersDir = path.join(projectRoot, "src/characters");
 
 // SkillType -> attack file export name, matching cli/lib/skillAttacks.ts's
-// SKILL_TYPE_TO_EXPORT — deliberately omits "Outro Skill" and "Tune Break",
-// which weren't part of this backfill's scope.
+// SKILL_TYPE_TO_EXPORT. "Tune Break" isn't in that map (tuneBreakAttacks.ts
+// has its own generator in cli/lib/tuneBreakAttacks.ts) but uses the exact
+// same {name, description, icon, attacks} shape, so it patches the same way.
 const SKILL_TYPE_TO_FILE: Record<string, string> = {
   "Normal Attack": "basicAttacks.ts",
   "Resonance Skill": "skillAttacks.ts",
   "Resonance Liberation": "liberationAttacks.ts",
   "Intro Skill": "introAttacks.ts",
   "Forte Circuit": "forteCircuitAttacks.ts",
+  "Outro Skill": "outroAttacks.ts",
+  "Tune Break": "tuneBreakAttacks.ts",
 };
 
 interface LocalBasicInfo {

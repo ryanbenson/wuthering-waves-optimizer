@@ -1,6 +1,7 @@
 export const tuneBreakAttacks = {
   name: "Tune Break: Rectifier",
   description: `<div>When the target's <span class="Highlight">Off-Tune Level</span> is full, the Resonator may cast <span class="Highlight">Tune Break</span> on the target.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconWeakPointBreakMagic.webp",
   attacks: [
     {
       key: "TuneBreakDMG",

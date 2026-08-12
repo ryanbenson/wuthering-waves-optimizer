@@ -1,6 +1,7 @@
 export const outroAttacks = {
   name: "Outro Skill: The Course is Set!",
   description: `Ampify the incoming Resonator's Fusion DMG by 20% and Resonance Skill DMG by 25% for 14s or until the Resonator is switched out.`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBulante/SP_IconBulanteT.webp",
   attacks: [
     {
       key: "SequenceNode2ForSmilesandCheersBlastDMG",

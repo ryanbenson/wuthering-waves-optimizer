@@ -2,6 +2,7 @@ export const tuneBreakAttacks = {
   name: "Tune Break",
   description: `<div>When the target's <span class="Highlight">Off-Tune Level</span> is full, Sigrika can cast <span class="Highlight">Tune Break</span> on the target.<br>
 Press <span class="Highlight">Normal Attack</span> shortly after casting <span class="Highlight">Tune Break</span> to cast <span class="Highlight">Basic Attack Stage 3</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconWeakPointBreakFist.webp",
   attacks: [
     {
       key: "TuneBreakDMG",

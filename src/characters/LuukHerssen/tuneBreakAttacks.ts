@@ -4,6 +4,7 @@ export const tuneBreakAttacks = {
 Luuk Herssen can respond to Tune Strain - Interfered.<br>
 When responding to Tune Strain - Interfered: For each stack of Tune Strain - Interfered on the target, each point of Luuk Herssen's Tune Break Boost increases his total DMG against the target by 0.12%. While Luuk Herssen is in the team, the max stack limit of Tune Strain - Interfered on a target is increased by 1.<br>
 When the target's <span class="Highlight">Off-Tune Level</span> is full, Luuk Herssen can cast Tune Break on the target.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconWeakPointBreakFist.webp",
   attacks: [
     {
       key: "TuneBreakDMG",

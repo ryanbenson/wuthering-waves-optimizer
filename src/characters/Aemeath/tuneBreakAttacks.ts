@@ -1,6 +1,7 @@
 export const tuneBreakAttacks = {
   name: "Tune Break: Unlanded Melody",
   description: `<div>When the target's <span class="Highlight"><strong>Off-Tune Level</strong></span> is full, Aemeath can cast <span class="Highlight"><strong>Tune Break</strong></span> on the target.<br>Press <span class="Highlight"><strong>Normal Attack</strong></span> shortly after casting <span class="Highlight"><strong>Tune Break</strong></span> to cast <span class="Highlight"><strong>Basic Attack Stage 3</strong></span>.<br><br>Responding to <span class="Highlight"><strong>Tune Rupture - Interfered</strong></span>: when Resonators in the team trigger <span class="Highlight"><strong>Tune Break</strong></span> on the target and cause them to be affected by <span class="Highlight"><strong>Tune Rupture - Interfered</strong></span>, Aemeath triggers <span class="Highlight"><strong>Tune Rupture Response - Starburst</strong></span>. Each target can be damaged by this skill up to once every 8s.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconWeakPointBreakKnife.webp",
   attacks: [
     {
       key: "TuneBreakDMG",
