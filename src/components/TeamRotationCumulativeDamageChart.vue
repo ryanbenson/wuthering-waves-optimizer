@@ -17,10 +17,25 @@ import { getCharacterRosterDisplayName } from "../characters/characters";
 import { displayDamage } from "../utils/numbers";
 import { palette } from "../utils/chartColors";
 import type { TimelinePoint } from "../calculator/teamRotation";
+import { CHART_DAMAGE_METRIC_OPTIONS, type ChartDamageMetric } from "../utils/chartPreferences";
 
-const props = defineProps<{
-  points: TimelinePoint[];
-}>();
+const props = withDefaults(
+  defineProps<{
+    points: TimelinePoint[];
+    metric?: ChartDamageMetric;
+  }>(),
+  { metric: "average" },
+);
+
+function metricValue(p: TimelinePoint) {
+  if (props.metric === "normal") return p.normalDamage;
+  if (props.metric === "crit") return p.critDamage;
+  return p.avgDamage;
+}
+
+const metricLabel = computed(
+  () => CHART_DAMAGE_METRIC_OPTIONS.find((o) => o.value === props.metric)?.label ?? "Average",
+);
 
 const chartId = `team-rotation-cumulative-damage-chart-${Math.random().toString(36).slice(2)}`;
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
@@ -34,13 +49,14 @@ function toFillColor(borderColor: string) {
 // dataset shows that character's contribution stacking up toward the
 // team's total over the course of the rotation — complements the two
 // "damage at this instant" timeline charts with a "damage so far" view.
+// Which metric is summed is controlled by the `metric` prop.
 const cumulativeRows = computed(() => {
   const characterIds = Array.from(new Set(props.points.map((p) => p.characterId)));
   const running: Record<string, number> = {};
   for (const id of characterIds) running[id] = 0;
 
   return props.points.map((point) => {
-    running[point.characterId] = (running[point.characterId] ?? 0) + point.avgDamage;
+    running[point.characterId] = (running[point.characterId] ?? 0) + metricValue(point);
     return { time: point.time, totals: { ...running } };
   });
 });
@@ -84,7 +100,7 @@ function initChart() {
         },
         y: {
           stacked: true,
-          title: { display: true, text: "Cumulative Damage" },
+          title: { display: true, text: `Cumulative ${metricLabel.value} Damage` },
           ticks: {
             callback: (value) => displayDamage(Number(value)).toLocaleString(),
           },
@@ -109,7 +125,7 @@ function initChart() {
 }
 
 // flush: "post" matters here — see TeamRotationTimelineChart.vue for why.
-watch(() => props.points, initChart, { deep: true, flush: "post" });
+watch(() => [props.points, props.metric], initChart, { deep: true, flush: "post" });
 onMounted(() => initChart());
 onBeforeUnmount(() => {
   if (chartCanvas.value) {
