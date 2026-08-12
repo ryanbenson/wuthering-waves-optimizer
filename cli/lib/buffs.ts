@@ -34,6 +34,16 @@ export interface GeneratedBuff {
 const NON_COMBAT_INHERENT_SKILL_NAMES = new Set([
   "Skillful Cooking",
   "Life Skill",
+  // Spectro Rover's narrative "Union Lv." inherent skill — the other Rover
+  // elements' equivalent third inherent skill is either "Skillful Cooking"
+  // (already excluded above) or has an empty SkillName (excluded by the
+  // blank-name check in getCombatInherentSkills), so this needs listing
+  // explicitly.
+  "Solaris Voyager",
+  // Jinhsi's "Skillful Cooking" entry is mislabeled "test/" in the Encore
+  // API (SkillDescribe still reads "Has a chance to produce special dishes
+  // when cooking.") — an upstream data bug, not a real skill name.
+  "test/",
 ]);
 
 const STAT_BONUS_MODIFIER: Record<string, string> = {

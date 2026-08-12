@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Brilliance in a Brush",
   description: `<div class="skilldescription">Attack the target, dealing <span class="Ice">Glacio DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhezhi/SP_IconZhezhiQTE.webp",
   attacks: [
     {
       key: "BrillianceInABrushDMG",

@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Shewolf's Hunt",
   description: `<div class="skilldescription">Lupa throws her Wildfire Banner at the target, dealing <span class="Fire">Fusion DMG</span> and restoring 15 points of Wolflame. <span class="Highlight">Mark</span> the target for 8s. After performing Resonance Skill <span class="Highlight">Shewolf's Hunt</span>, Lupa can perform <span class="Highlight">Feral Fang</span>.<br>Can be performed in mid-air close to the ground.<br>- Hold Resonance Skill to leap into the air, then follow up with <span class="Highlight">Basic Attack</span> to cast <span class="Highlight">Mid-air Attack Stage 1</span>.<br><span class="Title">Resonance Skill - Feral Fang</span><br>Lupa presses on the target relentlessly, dealing <span class="Fire">Fusion DMG</span> and restoring 15 points of Wolflame. The DMG Multiplier to <span class="Highlight">marked</span> targets is increased by 50%. If Resonance Skill - Feral Fang is not performed or Lupa is switched out, it enters cooldown.<br>Can be performed in mid-air close to the ground.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLupa/SP_IconLupaB1.webp",
   attacks: [
     {
       key: "ShewolfsHuntDMG",

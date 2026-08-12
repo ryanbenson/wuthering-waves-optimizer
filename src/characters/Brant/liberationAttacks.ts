@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: To the Horizon",
   description: `<div class="skilldescription">Deal <span class="Fire">Fusion DMG</span> to targets within the range and heal all nearby Resonators in the team before entering the <span class="Highlight">Aflame</span> state.<br>Can be cast in mid-air.<br> <br><span class="Title">Aflame</span><br>The efficiency of gaining Bravo is increased by 100%  when <span class="Highlight">Normal Attack</span> or Resonance Skill <span class="Highlight">Anchors Aweigh!</span> hits the target. Meanwhile, Forte Circuit <span class="Highlight">Theatrical Moment</span> is replaced by <span class="Highlight">"My" Moment</span>.<br> <br><span class="Title">"My" Moment</span><br>Brant gains additional ATK based on his Energy Regen: For every 1% of his Energy Regen over 150%, Brant gains additional 20 points of ATK, up to 2600.<br> </div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBulante/SP_IconBulanteC1.webp",
   attacks: [
     {
       key: "TotheHorizonDMG",

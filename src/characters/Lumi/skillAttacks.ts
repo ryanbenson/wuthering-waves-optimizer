@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Searchlight Service",
   description: `<div class="skilldescription"><span class="Title">Pounce</span><br>When in <span class="Highlight">Yellow Light Mode</span>, use Resonance Skill to perform Pounce, which consumes STA to pounce on the target before switching to <span class="Highlight">Red Light Mode</span>.<br>Lumi will perform a <span class="Highlight">Pounce</span> without STA cost when switched onto the field.<br><span class="Title">Rebound</span><br>When in <span class="Highlight">Red Light Mode</span>, use Resonance Skill to perform Rebound, which consumes STA to leap backward and attack the target before switching to <span class="Highlight">Yellow Light Mode</span>.<br><span class="Title">Yellow Light Mode</span><br>Perform ranged attacks when in Yellow Light Mode.<br><span class="Title">Red Light Mode</span><br>Perform melee attacks when in Red Light Mode.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconDengdeng/SP_IconDengdengB1.webp",
   attacks: [
     {
       key: "PounceDMG",

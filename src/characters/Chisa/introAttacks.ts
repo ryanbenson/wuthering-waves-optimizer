@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Reverberance - Return",
   description: `<div>Attack the target, dealing <span class="Dark">Havoc DMG</span>.<br>While not in <span class="Highlight">Chainsaw Mode</span>, press <span class="Highlight">Normal Attack</span> shortly after casting this skill to cast <span class="Highlight">Basic Attack Stage 2</span>.<br>While in <span class="Highlight">Chainsaw Mode</span>, use <span class="Highlight">Normal Attack</span> shortly after casting this skill to cast <span class="Highlight">Sawring - Blitz Stage 2</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconQianxiao/SP_IconQianxiaoQTE.webp",
   attacks: [
     {
       key: "ReverberanceReturnDMG",

@@ -2,6 +2,7 @@ export const basicAttacks = {
   name: "Normal Attack: Probe",
   description:
     `<div class="skilldescription">Basic Attack<br>Perform up to 5 consecutive attacks, dealing <span style="color: #b45bff;"><strong>Electro DMG</strong></span>.<br> <br>Heavy Attack<br>Perform a charged attack at the cost of STA, dealing <span style="color: #b45bff;"><strong>Electro DMG</strong></span>.<br> <br>Mid-air Attack<br>Perform a Plunging Attack from mid-air at the cost of STA, dealing <span style="color: #b45bff;"><strong>Electro DMG</strong></span>.<br> <br>Dodge Counter<br>Use <span class="Highlight"><strong>Basic Attack</strong></span> after a successful <span class="Highlight"><strong>Dodge</strong></span> to attack the target, dealing <span style="color: #b45bff;"><strong>Electro DMG</strong></span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorFist.webp",
   attacks: [
     {
       key: "ProbeStage1DMG",

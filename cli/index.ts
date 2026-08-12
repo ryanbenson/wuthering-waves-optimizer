@@ -4,6 +4,7 @@ import { runGenerateCharacter } from "./commands/generateCharacter.js";
 import { runGenerateWeapon } from "./commands/generateWeapon.js";
 import { runImportEchoes } from "./commands/importEchoes.js";
 import { runGenerateEchoPreset } from "./commands/generateEchoPreset.js";
+import { runBackfillIcons } from "./commands/backfillIcons.js";
 
 const program = new Command();
 
@@ -69,6 +70,29 @@ importCommand
   .action(async () => {
     try {
       await runImportEchoes();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Error: ${message}`);
+      process.exit(1);
+    }
+  });
+
+const backfill = program
+  .command("backfill")
+  .description("Backfill missing data onto existing characters from the Encore API");
+
+backfill
+  .command("icons")
+  .description(
+    "Add icon references (resonance chains, attack files, character portrait + inherent skills) to every existing character",
+  )
+  .option(
+    "--character <key>",
+    "Only backfill this one character folder (e.g. Lynae), for testing",
+  )
+  .action(async (commandOptions: { character?: string }) => {
+    try {
+      await runBackfillIcons({ character: commandOptions.character });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(`Error: ${message}`);

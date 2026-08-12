@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Art of Violence",
   description: `<div class="skilldescription">Deal <span class="Ice">Glacio DMG</span> and inflict <span class="Highlight">Dispersion</span> on the target. Press <span class="Highlight">Resonance Skill</span> again shortly after to cast <span class="Highlight">Chromatic Splendor</span>. <br> <br><span class="Title">Dispersion</span><br>Targets with Dispersion are immobilized for 1.5s. <br> <br><span class="Title">Chromatic Splendor</span><br>Consume all Moldable Crystals and deal <span class="Ice">Glacio DMG</span>.<br>The Resonance Skill enters cooldown after a while if <span class="Highlight">Chromatic Splendor</span> is not cast or Carlotta is switched off the field.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconKelaita/SP_IconKelaitaB1.webp",
   attacks: [
     {
       key: "ArtofViolenceDMG",

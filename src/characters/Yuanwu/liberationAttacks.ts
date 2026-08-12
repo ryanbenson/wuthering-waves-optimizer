@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Blazing Might",
   description: `<div class="skilldescription">Awaken the power of thunder and provide Forte Circuit <span class="Highlight">Lightning Infused</span> status to all characters on a nearby team for 10s, then perform a powerful blow that deals <span class="Thunder">Electro DMG</span>.<br> </div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconYuanwu/SP_IconYuanwuC1.webp",
   attacks: [
     {
       key: "BlazingMightSkillDMG",

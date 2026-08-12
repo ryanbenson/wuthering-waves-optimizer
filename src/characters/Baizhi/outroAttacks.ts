@@ -1,6 +1,7 @@
 export const outroAttacks = {
   name: "Outro Skill: Lightning Manipulation",
   description: `<div class="skilldescription">Heal the incoming Resonator by 1.54% of Baizhi's max HP every 3s for 30s.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBailian/SP_IconBailianT.webp",
   attacks: [
     {
       key: "LightningManipulationHealing",

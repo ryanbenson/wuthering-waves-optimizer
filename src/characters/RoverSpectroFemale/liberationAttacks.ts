@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Echoing Orchestra",
   description: `<div class="skilldescription">Rover converges Spectro energy to assail the target area, detonating it after a short delay and dealing <span class="Light">Spectro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhujue/SP_IconZhujueC1.webp",
   attacks: [
     {
       key: "EchoingOrchestraSkillDMG",

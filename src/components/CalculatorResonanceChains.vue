@@ -29,6 +29,7 @@
         :unique-key="buff.key"
         :character="character"
         :name="buff.name"
+        :icon="buff.icon"
         :details="buff.details"
         :always-enabled="Boolean(buff.alwaysEnabled)"
         :has-stacks="Boolean(buff.hasStacks)"
@@ -63,6 +64,7 @@ export type ResonanceChainBuffAttackTargetSelection = {
 export type ResonanceChainBuffRow = {
   key: string;
   name?: string;
+  icon?: string;
   details?: string;
   alwaysEnabled?: boolean;
   hasStacks?: boolean;

@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Try Focusing, Eh?",
   description: `<div class="skilldescription">Attack the target, dealing <span class="Fire">Fusion DMG</span>. Press <span class="Highlight">Normal Attack</span> following Intro Skill <span class="Highlight">Try Focusing, Eh?</span> to cast <span class="Highlight">Mid-air Attack Stage 3</span>.<br><span class="Title">Nowhere to Run!</span><br>When Lupa enters the <span class="Highlight">Wild Hunt</span> state, her next Intro Skill is replaced with <span class="Highlight">Nowhere to Run!</span>. Casting <span class="Highlight">Nowhere to Run!</span> removes the <span class="Highlight">Pack Hunt</span> and <span class="Highlight">Glory</span> effects on all Resonators in the team, dealing <span class="Fire">Fusion DMG</span> (considered Resonance Liberation DMG).</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLupa/SP_IconLupaQTE.webp",
   attacks: [
     {
       key: "TryFocusingEhDMG",

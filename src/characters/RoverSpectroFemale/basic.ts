@@ -7,5 +7,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     gender: "female",
     element: "Spectro",
     spectroFrazzle: true,
+    image: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/UiQuest/Image/ChuanShuo/T_IconChuanShuo1_UI.webp",
+    inherentSkillIcons: ["https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhujue/SP_IconZhujueD1.webp","https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhujue/SP_IconZhujueD2.webp"],
   };
 }

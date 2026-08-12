@@ -50,6 +50,12 @@ const labsFeatures = ref<LabFeature[]>([
     details:
       "Build teams of up to 3 characters, chain their actions into a rotation, and see the team's total damage and DPS.",
   },
+  {
+    key: "buildCard",
+    label: "Build Card",
+    details:
+      "Generate a shareable image of your character's build — portrait, stats, weapon, forte levels, and echoes — that you can copy or download.",
+  },
 ]);
 </script>
 

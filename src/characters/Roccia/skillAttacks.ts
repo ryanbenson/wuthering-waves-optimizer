@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Acrobatic Trick",
   description: `<div class="skilldescription">Roccia projects her creativity into reality, pulling in nearby targets and dealing <span class="Dark">Havoc DMG</span>. She then launches into mid-air and activates the <span class="Highlight">Beyond Imagination</span> state.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLuokeke/SP_IconLuokekeB1.webp",
   attacks: [
     {
       key: "AcrobaticTrickDMG",

@@ -7,7 +7,11 @@
     </div>
   </div>
   <h4 class="damage__title">
-    <span class="text-lg font-bold">
+    <span class="text-lg font-bold flex items-center gap-2">
+      <img
+        v-if="chosenChar.value?.basicAttacks?.icon"
+        :src="chosenChar.value?.basicAttacks?.icon"
+        class="size-6" />
       {{ chosenChar.value?.basicAttacks?.name ?? "Basic Attacks" }}
     </span>
     <span class="damage__title__button" @click="toggleBasicDetails">
@@ -48,7 +52,11 @@
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">
+    <span class="text-lg font-bold flex items-center gap-2">
+      <img
+        v-if="chosenChar.value?.skillAttacks?.icon"
+        :src="chosenChar.value?.skillAttacks?.icon"
+        class="size-6" />
       {{ chosenChar.value?.skillAttacks?.name ?? "Skill Attacks" }}
     </span>
     <span class="damage__title__button" @click="toggleSkillDetails">
@@ -89,7 +97,11 @@
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">
+    <span class="text-lg font-bold flex items-center gap-2">
+      <img
+        v-if="chosenChar.value?.liberationAttacks?.icon"
+        :src="chosenChar.value?.liberationAttacks?.icon"
+        class="size-6" />
       {{ chosenChar.value?.liberationAttacks?.name ?? "Liberation Attacks" }}
     </span>
     <span class="damage__title__button" @click="toggleLiberationDetails">
@@ -130,7 +142,11 @@
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">
+    <span class="text-lg font-bold flex items-center gap-2">
+      <img
+        v-if="chosenChar.value?.forteCircuitAttacks?.icon"
+        :src="chosenChar.value?.forteCircuitAttacks?.icon"
+        class="size-6" />
       {{
         chosenChar.value?.forteCircuitAttacks?.name ?? "Forte Circuit Attacks"
       }}
@@ -173,7 +189,11 @@
     </tbody>
   </table>
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">
+    <span class="text-lg font-bold flex items-center gap-2">
+      <img
+        v-if="chosenChar.value?.introAttacks?.icon"
+        :src="chosenChar.value?.introAttacks?.icon"
+        class="size-6" />
       {{ chosenChar.value?.introAttacks?.name ?? "Intro Attacks" }}
     </span>
     <span class="damage__title__button" @click="toggleIntroDetails">
@@ -215,7 +235,11 @@
   </table>
 
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">
+    <span class="text-lg font-bold flex items-center gap-2">
+      <img
+        v-if="chosenChar.value?.outroAttacks?.icon"
+        :src="chosenChar.value?.outroAttacks?.icon"
+        class="size-6" />
       {{ chosenChar.value?.outroAttacks?.name ?? "Outro Attacks" }}
     </span>
     <span class="damage__title__button" @click="toggleOutroDetails">
@@ -266,7 +290,11 @@
   </table>
 
   <h4 class="damage__title pt-8">
-    <span class="text-lg font-bold">
+    <span class="text-lg font-bold flex items-center gap-2">
+      <img
+        v-if="chosenChar.value?.tuneBreakAttacks?.icon"
+        :src="chosenChar.value?.tuneBreakAttacks?.icon"
+        class="size-6" />
       {{ chosenChar.value?.tuneBreakAttacks?.name ?? "Tune Break Attacks" }}
     </span>
     <span class="damage__title__button" @click="toggleTuneBreakDetails">

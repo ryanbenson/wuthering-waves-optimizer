@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Scroll of Wonders",
   description: `<div class="skilldescription">Toss out the scroll and perform <span class="Highlight">Lucky Draw</span> once.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconYouhu/SP_IconYouhuQTE.webp",
   attacks: [
     {
       key: "ScrollOfWondersDMG",

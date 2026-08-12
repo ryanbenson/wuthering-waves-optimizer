@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Beneath Lunar Tides",
   description: `<div>Deal <span class="ingame-Wind">Aero DMG</span> and activate the <span class="ingame-Highlight"><a onclick="showTermExplan(141001)" class="ingame-term-desc">Lunar Cycle</a></span> state.<br>Can be cast in mid-air.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconYounuo/SP_IconYounuoC1.webp",
   attacks: [
     {
       key: "BeneathLunarTidesDMG",

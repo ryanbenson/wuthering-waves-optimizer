@@ -18,6 +18,7 @@ export const resonanceChains = [
     key: "SequenceNode2ForSmilesandCheers",
     name: "Sequence Node 2: For Smiles and Cheers",
     details: `<span class="skilldescription">Casting <span class="Highlight">Mid-air Attack</span> and <span class="Highlight">Returned from Ashes</span> increases Brant's Crit. Rate by 30%. <br>Brant's Outro Skill <span class="Highlight">The Course is Set!</span> gains a new enhancement:<br>When <span class="Highlight">Resonance Skill</span> cast by the incoming Resonator (or nearby Resonators who activate Brant's Outro Skill) hits a target within 20s after Brant's Outro Skill, Brant blasts the hit target, dealing <span class="Fire">Fusion DMG</span> equal to 440% of Brant's ATK (considered Basic Attack DMG). This explosion can be triggered <saptag=3>1 time per second, up to 2 explosions in total.<br>- This effect remains active when Brant is switched off the field.</saptag=3></span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_BulanteM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -51,6 +52,7 @@ export const resonanceChains = [
     key: "SequenceNode3ThroughStormsISail",
     name: "Sequence Node 3: Through Storms I Sail",
     details: `<span class="skilldescription">The multiplier of the DMG dealt by <span class="Highlight">Returned from Ashes</span> is increased by 42%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_BulanteM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -70,6 +72,7 @@ export const resonanceChains = [
     key: "SequenceNode4ToFreedomISing",
     name: "Sequence Node 4: To Freedom I Sing",
     details: `<span class="skilldescription">The Shield obtained from <span class="Highlight">Returned from Ashes</span> is increased by 20%. Casting <span class="Highlight">Returned from Ashes</span> restores HP for all nearby Resonators in the team (6.60 HP for every 1% Energy Regen).</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_BulanteM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -89,6 +92,7 @@ export const resonanceChains = [
     key: "SequenceNode5AlltheWorldsanActorsStage",
     name: "Sequence Node 5: All the World's an Actor's Stage",
     details: `<span class="skilldescription">When dealing Basic Attack DMG to the target, Brant's <span class="Highlight">Basic Attack DMG Bonus</span> is increased by 15% for 10s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_BulanteM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -104,6 +108,7 @@ export const resonanceChains = [
     key: "SequenceNode6AlltheWorldsaCaptainsCarnevale",
     name: "Sequence Node 6: All the World's a Captain's Carnevale",
     details: `<span class="skilldescription"><span class="Highlight">Mid-air Attack's</span> multiplier is increased by 30%. Casting <span class="Highlight">Returned from Ashes</span> causes a secondary blast, dealing <span class="Fire">Fusion DMG</span>, considered Basic Attack DMG, equal to 30% of the DMG dealt by <span class="Highlight">Returned from Ashes</span>.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_BulanteM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

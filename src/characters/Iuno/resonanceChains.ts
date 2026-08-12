@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1WaxorWaneAllGildtheBough",
     name: "Sequence Node 1: Wax or Wane, All Gild the Bough",
     details: `<div>When Iuno is in <span class="ingame-Highlight"><a onclick="showTermExplan(141001)" class="ingame-term-desc">Lunar Cycle</a></span>, her ATK is increased by 40%.<br>When Iuno is inside the <span class="ingame-Highlight">Full Moon Domain</span>, she additionally restores 1 point of Resonance Energy per second.<br><span class="ingame-Highlight">Resonance Skill - Arc Beyond the Edge</span> and <span class="ingame-Highlight">Heavy Attack - Absolute Fullness</span> become immune to interruption.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_YounuoM1_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -18,6 +19,7 @@ export const resonanceChains = [
     key: "SequenceNode2DayorNightLetThisBeEternal",
     name: "Sequence Node 2: Day or Night, Let This Be Eternal",
     details: `<div>Resonators in the team with 10 stacks of <span class="ingame-Highlight"><a onclick="showTermExplan(141002)" class="ingame-term-desc">Blessing of the Wan Light</a></span> gain an additional 40% all DMG Amplification.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_YounuoM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -33,6 +35,7 @@ export const resonanceChains = [
     key: "SequenceNode3IDrinkDeepofTheirForgetting",
     name: "Sequence Node 3: I Drink Deep of Their Forgetting",
     details: `<div>When Iuno is in <span class="ingame-Highlight"><a onclick="showTermExplan(141001)" class="ingame-term-desc">Lunar Cycle</a></span>, DMG dealt by <span class="ingame-Highlight">Moonbow - Basic Attack</span>, <span class="ingame-Highlight">Resonance Skill - Arc Beyond the Edge</span>, and <span class="ingame-Highlight">Moonbow - Dodge Counter</span> is Amplified by 65%.<br>Within a certain period after performing <span class="ingame-Highlight">Moonbow - Basic Attack</span> or <span class="ingame-Highlight"> Moonbow - Dodge Counter</span>, casting <span class="ingame-Highlight">Resonance Skill - Arc Beyond the Edge</span> does not reset the cycle of <span class="ingame-Highlight">Moonbow - Basic Attack</span>.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_YounuoM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -61,6 +64,7 @@ export const resonanceChains = [
     key: "SequenceNode4RainySeasonDwellinMyEyes",
     name: "Sequence Node 4: Rainy Season Dwell in My Eyes",
     details: `<div>Casting <span class="ingame-Highlight">Heavy Attack - Absolute Fullness</span> grants a Shield equal to 160% of Iuno's ATK to all Resonators in the team for 30s, which cannot be passed on to the incoming Resonator.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_YounuoM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -76,6 +80,7 @@ export const resonanceChains = [
     key: "SequenceNode5AThousandFutileGlimpses",
     name: "Sequence Node 5: A Thousand Futile Glimpses",
     details: `<div>Iuno gains 20% Resonance Liberation DMG Bonus.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_YounuoM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -91,6 +96,7 @@ export const resonanceChains = [
     key: "SequenceNode6IAmtheConstantintheChaos",
     name: "Sequence Node 6: I Am the Constant in the Chaos",
     details: `<div>The DMG Multiplier of <span class="ingame-Highlight">Heavy Attack - Absolute Fullness</span> is increased by 1600%. Upon casting this skill, Iuno re-enters <span class="ingame-Highlight"><a onclick="showTermExplan(141001)" class="ingame-term-desc">Lunar Cycle</a> - New Moon</span>, gains 100 points of <span class="ingame-Highlight"><a onclick="showTermExplan(141003)" class="ingame-term-desc">Sentience</a></span>, and resets all the cooldown of <span class="ingame-Highlight">Resonance Skill - Arc Beyond the Edge</span>.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_YounuoM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

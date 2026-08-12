@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Pero, Help",
   description: `<div class="skilldescription">Attack the target, dealing <span class="Dark">Havoc DMG</span>. Use <span class="Highlight">Basic Attack</span> right after casting this skill to cast <span class="Highlight">Basic Attack Stage 4</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLuokeke/SP_IconLuokekeQTE.webp",
   attacks: [
     {
       key: "PerloHelpDMG",

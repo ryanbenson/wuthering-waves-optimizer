@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Shift Trick",
   description: `<div class="skilldescription"><span class="Title">Mist Avatar</span><br>Casts "Mist" and 1 "Mist Avatar(s)" to taunt the surrounding targets. The avatars inherit a portion of Aalto's HP and generate 6 Mist Bullets around them, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Mist Bullets</span><br>Deals <span class="Wind">Aero DMG</span>, considered as Resonance Skill DMG.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconQiushui/SP_IconQiushuiB1.webp",
   attacks: [
     {
       key: "MistBulletDamage",

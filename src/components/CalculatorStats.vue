@@ -137,6 +137,7 @@
         </td>
       </tr>
       <tr
+        v-if="showElement('Glacio')"
         class="stat-glacio"
         @click="emit('stat-selected', 'Glacio DMG Bonus')"
         style="cursor: pointer">
@@ -149,6 +150,7 @@
         <td class="text-right">{{ displayPercentage(glacio) }}</td>
       </tr>
       <tr
+        v-if="showElement('Fusion')"
         class="stat-fusion"
         @click="emit('stat-selected', 'Fusion DMG Bonus')"
         style="cursor: pointer">
@@ -161,6 +163,7 @@
         <td class="text-right">{{ displayPercentage(fusion) }}</td>
       </tr>
       <tr
+        v-if="showElement('Electro')"
         class="stat-electro"
         @click="emit('stat-selected', 'Electro DMG Bonus')"
         style="cursor: pointer">
@@ -173,6 +176,7 @@
         <td class="text-right">{{ displayPercentage(electro) }}</td>
       </tr>
       <tr
+        v-if="showElement('Aero')"
         class="stat-aero"
         @click="emit('stat-selected', 'Aero DMG Bonus')"
         style="cursor: pointer">
@@ -185,6 +189,7 @@
         <td class="text-right">{{ displayPercentage(aero) }}</td>
       </tr>
       <tr
+        v-if="showElement('Spectro')"
         class="stat-spectro"
         @click="emit('stat-selected', 'Spectro DMG Bonus')"
         style="cursor: pointer">
@@ -197,6 +202,7 @@
         <td class="text-right">{{ displayPercentage(spectro) }}</td>
       </tr>
       <tr
+        v-if="showElement('Havoc')"
         class="stat-havoc"
         @click="emit('stat-selected', 'Havoc DMG Bonus')"
         style="cursor: pointer">
@@ -269,11 +275,19 @@ const props = defineProps<{
   havoc: number;
   healingBonus: number;
   tuneBreakBoost: number;
+  elementFilter?: string;
 }>();
 
 const emit = defineEmits<{
   "stat-selected": [stat: string];
 }>();
+
+function showElement(element: string): boolean {
+  return (
+    !props.elementFilter ||
+    props.elementFilter.toLowerCase() === element.toLowerCase()
+  );
+}
 
 const baseHp = ref(0);
 const baseAtk = ref(0);

@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: `Normal Attack: Pero, Easy`,
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Perform up to 4 consecutive attacks, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Consume STA to attack, dealing <span class="Dark">Havoc DMG</span>. Hitting a target with at least 100 Imagination sends Roccia into mid-air and activates the <span class="Highlight">Beyond Imagination</span> state. The longer you hold the <span class="Highlight">Basic Attack</span> button, the more Imagination Roccia gains. In this state, Roccia can continue to charge the attack even when her STA depletes. Heavy Attack will be automatically cast when you release the <span class="Highlight">Basic Attack</span> button while charging or when Imagination reaches the max limit.<br> <br><span class="Title">Mid-air Attack</span><br>Consume STA to perform a Plunging Attack, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> right after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorFist.webp",
   attacks: [
     {
       key: "BasicAttackStage1DMG",

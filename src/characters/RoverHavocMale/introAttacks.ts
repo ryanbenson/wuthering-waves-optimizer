@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Instant of Annihilation",
   description: `<div class="skilldescription">Attack the target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhujueDark/SP_IconZhujueDarkQTE.webp",
   attacks: [
     {
       key: "InstantofAnnihilationSkillDMG",

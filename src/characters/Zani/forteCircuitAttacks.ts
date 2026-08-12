@@ -29,6 +29,7 @@ export const forteCircuitAttacks = {
     <br>Casting <span class="Highlight">Targeted Action</span> or <span class="Highlight">Forcible Riposte</span> grants 10 Blazes.
     <br>Every stack of Heliacal Ember converted from <span class="Highlight">Spectro Frazzle</span> grants 5 Blazes.
     <br>Casting Resonance Liberation <span class="Highlight">Rekindle</span> grants 50 Blazes.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZanni/SP_IconZanniY.webp",
   attacks: [
     {
       key: "HeavySlashDaybreakDMG",

@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Deadening Abyss",
   description: `<div class="skilldescription">Rover gathers resonating sounds to attack a target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhujueDark/SP_IconZhujueDarkC1.webp",
   attacks: [
     {
       key: "DeadeningAbyssSkillDMG",

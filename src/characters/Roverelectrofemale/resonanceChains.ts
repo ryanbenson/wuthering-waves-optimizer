@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: `SequenceNode1CelestialIngenuity`,
     name: `Sequence Node 1: Celestial Ingenuity`,
     details: `<div>While casting <span style="color:#ffd12f;" class="font-bold">Normal Attack</span> and Resonance Skill <span style="color:#ffd12f;" class="font-bold">Thrum of All Sounds</span>, gain increased resistance to interruption for 0.5s.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_ThunderzhuM1_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -13,6 +14,7 @@ export const resonanceChains = [
     key: `SequenceNode2ThousandfoldArtifice`,
     name: `Sequence Node 2: Thousandfold Artifice`,
     details: `<div>Inflict 5 stacks of <span style="color:#ffd12f;" class="font-bold">Electro Flare</span> on the targets hit after Resonance Liberation <span style="color:#ffd12f;" class="font-bold">Ultimate Tactics</span> deals damage.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_ThunderzhuM2_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -23,6 +25,7 @@ export const resonanceChains = [
     key: `SequenceNode3AlchemyOfWonders`,
     name: `Sequence Node 3: Alchemy of Wonders`,
     details: `<div>The DMG Multiplier of Resonance Skill <span style="color:#ffd12f;" class="font-bold">Overshock</span> is increased by 20%.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_ThunderzhuM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -41,6 +44,7 @@ export const resonanceChains = [
     key: `SequenceNode4EarthquakingRumble`,
     name: `Sequence Node 4: Earthquaking Rumble`,
     details: `<div>The DMG Multiplier of Resonance Liberation <span style="color:#ffd12f;" class="font-bold">Ultimate Tactics</span> is increased by 20%.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_ThunderzhuM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -59,6 +63,7 @@ export const resonanceChains = [
     key: `SequenceNode5PrincipleOfChange`,
     name: `Sequence Node 5: Principle of Change`,
     details: `<div>Crit. DMG is increased by 20% while in <span style="color:#ffd12f;" class="font-bold">Apex Resonance</span>.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_ThunderzhuM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -105,6 +110,7 @@ export const resonanceChains = [
     key: `SequenceNode6MindSDepthsInACasket`,
     name: `Sequence Node 6: Mind's Depths in a Casket`,
     details: `<div>The DMG Multiplier of Resonance Skill <span style="color:#ffd12f;" class="font-bold">Thrum of All Sounds</span> is increased by 20%.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_ThunderzhuM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

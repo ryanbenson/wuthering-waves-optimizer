@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Half Truths",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Aalto fires up to 5 consecutive shots, dealing <span class="Wind">Aero DMG</span>. Basic Attack 4 will spread the "Mist" forward, which lasts for 1.5s.<br> <br><span class="Title">Heavy Attack</span><br>Aalto enters the aiming state for a more powerful shot.<br>The aimed shot fired after charging finishes deals <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Aalto consumes STA to perform consecutive shots at the target in mid-air, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Wind">Aero DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorGun.webp",
   attacks: [
     {
       key: "HalfTruthsStage1DMG",

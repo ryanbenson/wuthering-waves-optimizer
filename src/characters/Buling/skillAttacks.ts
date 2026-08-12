@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: In Shadow Thunder Stirs",
   description: `<div>Attack the target, dealing <span class="Thunder">Electro DMG</span> and continuously pulling in nearby targets.<br>- Right after casting <span class="Highlight">Resonance Skill</span>, <span class="Highlight">press Normal Attack</span> to perform <span class="Highlight">Basic Attack Stage 4</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBuling/SP_IconBulingB1.webp",
   attacks: [
     {
       key: "ThunderTalismanDMG",

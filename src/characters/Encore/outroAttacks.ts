@@ -1,6 +1,7 @@
 export const outroAttacks = {
   name: "Outro Skill: Thermal Field",
   description: `<div class="skilldescription">Encore generates a Thermal Field centered around skill target, with a radius of 3m. Targets inside the Thermal Field are continuously burned, suffering <span class="Fire">Fusion DMG</span> equal to 176.76% of Encore's ATK every 1.5s for 6s.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconAnke/SP_IconAnkeT.webp",
   attacks: [
     {
       key: "OutroSkillDMG",

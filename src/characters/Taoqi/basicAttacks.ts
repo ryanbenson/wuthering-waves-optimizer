@@ -20,6 +20,7 @@ export const basicAttacks = {
     <br> 
     <br><span class="Title">Dodge Counter</span>
     <br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorSword.webp",
   attacks: [
     {
       key: "Part1DMG",

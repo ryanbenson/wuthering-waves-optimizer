@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Woolies Helpers",
   description: `<div class="skilldescription">Encore pounces at the enemies with Cosmos, dealing <span class="Fire">Fusion DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconAnke/SP_IconAnkeQTE.webp",
   attacks: [
     {
       key: "SkillDMG",

@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Dawn of Enlightenment",
   description: `<div class="skilldescription">Phoebe concentrates the light in her hands into the Mirror of Enlightenment and smashes it, dealing <span class="Light">Spectro DMG</span>.<br>- <span class="Highlight">Absolution</span> Enhancement: Increase DMG Multiplier by 255%.<br>- <span class="Highlight">Confession</span> Enhancement: Apply <saptag=1>8 stack of <span class="Highlight">Spectro Frazzle</span> to targets hit .</saptag=1></div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconFeibi/SP_IconFeibiC1.webp",
   attacks: [
     {
       key: "DawnofEnlightenmentDMG",

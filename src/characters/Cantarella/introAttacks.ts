@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Cruise",
   description: `<div class="skilldescription"><span class="Title">Ripple</span><br>Attack the target, dealing <span class="Dark">Havoc DMG</span>.<br>Press <span class="Highlight">Normal Attack</span> shortly after casting this skill to start the Basic Attack combo from <span class="Highlight">Basic Attack Stage 3</span>.<br> <br><span class="Title">Tidal Surge</span><br>When in <span class="Highlight">Mirage</span>, <span class="Highlight">Intro Skill</span> becomes <span class="Highlight">Tidal Surge</span>, which triggers 3 coordinated attacks on hit, dealing <span class="Dark">Havoc DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconKanteleila/SP_IconKanteleilaQTE.webp",
   attacks: [
     {
       key: "RippleDMG",

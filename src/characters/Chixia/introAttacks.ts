@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Grand Entrance",
   description: `<div class="skilldescription">Chixia makes a heroic entrance and fires rapidly with her dual pistols at the target, dealing <span class="Fire">Fusion DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconMaxiaofang/SP_IconMaxiaofangQTE.webp",
   attacks: [
     {
       key: "GrandEntranceSkillDMG",

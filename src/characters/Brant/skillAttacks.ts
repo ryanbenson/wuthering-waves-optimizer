@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Anchors Aweigh!",
   description: `<div class="skilldescription">Brant launches himself into the air and blasts all targets in an area, dealing <span class="Fire">Fusion DMG</span>. While in mid-air, if Bravo is not full, Resonance Skill <span class="Highlight">Anchors Aweigh!</span> is replaced with <span class="Highlight">Plunging Attack</span>.<br> <br><span class="Title">Plunging Attack</span><br>Plunge at the target at the cost of STA, dealing <span class="Fire">Fusion DMG</span>, which is considered <span class="Highlight">Basic Attack DMG</span>.<br>- If Brant fails to reach the target with the Grapple swing of <span class="Highlight">Mid-air Attack Stage 1</span>, he instead performs a slash forward. Afterward, press Normal Attack to perform <span class="Highlight">Plunging Attack</span>.<br>- If Brant reaches the target with the Grapple swing of Mid-air Attack <span class="Highlight">Stage 1</span> or <span class="Highlight">Stage 2</span> but the attack fails to hit the target, press Normal Attack to perform <span class="Highlight">Plunging Attack</span> during the suspension.<br> </div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBulante/SP_IconBulanteB1.webp",
   attacks: [
     {
       key: "AnchorsAweighDMG",

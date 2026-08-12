@@ -10,6 +10,7 @@ export const forteCircuitAttacks = {
   <br><span class="Highlight">Basic Attack 4</span> will consume all of Taoqi's <span class="Highlight">Rocksteady Shields</span> to obtain that many "Resolving Caliber".
   <br>While <span class="Highlight">Rocksteady Shield</span> exists, when the on-field character is attacked, 1 <span class="Highlight">Rocksteady Shield</span> will be consumed, and "Resolving Caliber" is recovered.
   <br>After <span class="Highlight">Rocksteady Shield</span> ends, all remaining <span class="Highlight">Rocksteady Shield</span> will be consumed to grant that many "Resolving Caliber".</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconTaohua/SP_IconTaoHuaY.webp",
   attacks: [
     {
       key: "TimedCountersPart1DMG",

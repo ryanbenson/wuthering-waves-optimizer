@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Dimming Brush",
   description: `<div class="skilldescription"> Basic Attack <br>Perform up to 3 consecutive attacks, dealing <span class="Ice"><strong>Glacio DMG</strong></span>.<br> Heavy Attack <br>Consume STA to perform an attack, dealing <span class="Ice"><strong>Glacio DMG</strong></span>.<br>Heavy Attack does not reset the Basic Attack cycle.<br> Mid-air Attack <br>Consume STA to perform up to 2 consecutive attacks while in mid-air, dealing <span class="Ice"><strong>Glacio DMG</strong></span>.<br>Dodge Counter<br>Use <span class="Highlight"><strong>Basic Attack</strong></span> after a successful <span class="Highlight"><strong>Dodge</strong></span> to attack the target, dealing <span class="Ice"><strong>Glacio DMG</strong></span>. </div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorMagic.webp",
   attacks: [
     {
       key: "NormalAttackStage1DMG",

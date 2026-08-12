@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Fortified Defense",
   description: `<div class="skilldescription">Taoqi deals <span class="Dark">Havoc DMG</span> to surrounding targets, generating 3 Rocksteady Shield and restoring HP to Taoqi.<br>If attacked when casting <span class="Highlight">Fortified Defense</span>, <span class="Highlight">Strategic Parry</span> will be automatically cast.<br> <br><span class="Title">Rocksteady Shield</span><br>When the active character is attacked, 1 <span class="Highlight">Rocksteady Shield</span> is consumed to reduce the damage taken.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconTaohua/SP_IconTaoHuaB1.webp",
   attacks: [
     {
       key: "SkillDMG",

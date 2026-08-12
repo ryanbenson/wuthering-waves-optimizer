@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Applaud for Me!",
   description: `<div class="skilldescription">Attack the target, dealing <span class="Fire">Fusion DMG</span> and gain <span class="Highlight">Interlude Applause</span> effect.<br> <br><span class="Title">Interlude Applause</span><br>The next Mid-air Attack begins at <span class="Highlight">Stage 2</span>. This effect ends when Brant lands early or is switched out.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBulante/SP_IconBulanteQTE.webp",
   attacks: [
     {
       key: "ApplaudforMeDMG",

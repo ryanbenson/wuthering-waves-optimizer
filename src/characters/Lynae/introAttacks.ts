@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Time to Show Some Colors!",
   description: `<div>Deal <span class="Light"><strong>Spectro DMG</strong></span>, inflicting <span class="Highlight"><strong>Photochromic Flux</strong></span> on targets hit.<br>While in <span class="Highlight"><strong>Optical Sampling Stage</strong></span>, casting this skill recovers 100 points of <span class="Highlight"><strong>Overflow</strong></span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLinNai/SP_IconLinNaiQTE.webp",
   attacks: [
     {
       key: "TimetoShowSomeColorsDMG",

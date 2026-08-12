@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Dance with Shadows",
   description: `<div class="skilldescription"><span class="Title">Graceful Step</span><br>Attack the target, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Flickering Reverie</span><br>When in <span class="Highlight">Mirage</span>, <span class="Highlight">Resonance Skill</span> becomes <span class="Highlight">Flickering Reverie</span>, which is considered an <span class="Highlight">Echo Skill</span> when being cast. Attack the target, dealing <span class="Dark">Havoc DMG</span>, and send them into <span class="Highlight">Hazy Dream</span>.<br>Can be cast in mid-air.<br> <br><span class="Title">Hazy Dream</span><br>Reduce the target's movement speed for 6.5s. When the target takes damage, <span class="Highlight">Jolt</span> is triggered once, removing <span class="Highlight">Hazy Dream</span> to deal <span class="Dark">Havoc DMG</span>, considered Basic Attack DMG.<br>Attacks by other Resonators in the team will not <span class="Highlight">Jolt</span> a target influenced by <span class="Highlight">Hazy Dream</span> and will remove the <span class="Highlight">Hazy Dream</span>. <br>Coordinated Attacks and damage from Utilities will not <span class="Highlight">Jolt</span> a target.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconKanteleila/SP_IconKanteleilaB1.webp",
   attacks: [
     {
       "key": "GracefulStepDMG",

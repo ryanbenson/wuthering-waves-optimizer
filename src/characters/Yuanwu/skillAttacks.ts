@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Leihuang Master",
   description: `<div class="skilldescription"><span class="Title">Thunder Wedge</span><br>Yuanwu summons <span class="Highlight">Thunder Wedge</span>, dealing <span class="Thunder">Electro DMG</span>, and forms a <span class="Highlight">Thunder Field</span> centered on the <span class="Highlight">Thunder Wedge</span>. <span class="Highlight">Thunder Wedge</span> lasts for 12s.<br>Forte Circuit <span class="Highlight">Rumbling Spark</span> and Resonance Liberation <span class="Highlight">Blazing Might</span> will immediately detonate Resonance Skill <span class="Highlight">Thunder Wedge</span> on the field, dealing <span class="Thunder">Electro DMG</span>, considered as Resonance Skill DMG.<br> <br><span class="Title">Thunder Field</span><br>The active character gains the effects below when in the <span class="Highlight">Thunder Field</span>: a Coordinated Attack from Resonance Skill <span class="Highlight">Thunder Wedge</span> is triggered when attacks hit a target, dealing <span class="Thunder">Electro DMG</span>. This can be triggered once every 1.2s. The effect lasts for 1.5s.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconYuanwu/SP_IconYuanwuB1.webp",
   attacks: [
     {
       key: "LeihuangMasterSkillDMG",

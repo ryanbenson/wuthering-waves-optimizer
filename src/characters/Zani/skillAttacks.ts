@@ -19,6 +19,7 @@ export const skillAttacks = {
   The <span class="Highlight">Spectro Frazzle</span> DMG dealt by Zani to the target is Amplified by 20%.
 </div>
 `,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZanni/SP_IconZanniB1.webp",
   attacks: [
     {
       key: "StandardDefenseProtocolDMG",

@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Golden Grace",
   description: `<div class="skilldescription">Knock back nearby targets and deal <span class="Light">Spectro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconFeibi/SP_IconFeibiQTE.webp",
   attacks: [
     {
       key: "GoldenGraceDMG",

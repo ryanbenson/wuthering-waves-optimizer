@@ -2,6 +2,7 @@ export const liberationAttacks = {
   name: "Resonance Liberation: Phantom Etching",
   description:
     `<div class="skilldescription">Calcharo attacks the target, dealing <span class="Thunder">Electro DMG</span> and enters <span class="Highlight">Deathblade Gear</span> state. After <span class="Highlight">Deathblade Gear</span> state ends, Calcharo's next Intro Skill is replaced with Intro Skill <span class="Highlight">"Necessary Means"</span>, which deals <span class="Thunder">Electro DMG</span>, considered as Intro Skill DMG.<br> <br><span class="Title">Deathblade Gear</span><br>-<span class="Highlight">Basic Attack</span> is replaced with Basic Attack <span class="Highlight">Hounds Roar</span>.<br>-<span class="Highlight">Heavy Attack</span> deals increased DMG, considered as Resonance Liberation DMG.<br>-<span class="Highlight">Dodge Counter</span> deals increased DMG, considered as Resonance Liberation DMG.<br> <br><span class="Title">Basic Attack: Hounds Roar</span><br>Calcharo performs up to 5 consecutive attacks, dealing <span class="Thunder">Electro DMG</span>, considered as Basic Attack DMG.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconKakaluo/SP_IconKakaluoC1.webp",
   attacks: [
     {
       key: "PhantomEtchingSkillDMG",

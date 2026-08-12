@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Thunderous Fury",
   description: `<div>Attack the target, dealing <span style="color:#ebb0ff;">Electro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconThunderzhu/SP_IconThunderzhuQTE.webp",
   attacks: [
     {
       key: "ThunderousFuryDMG",

@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Flashing Thunder Spell",
   description: `<div>Attack the target, dealing <span class="Thunder">Electro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBuling/SP_IconBulingC1.webp",
   attacks: [
     {
       key: "FlashingThunderSpellDMG",

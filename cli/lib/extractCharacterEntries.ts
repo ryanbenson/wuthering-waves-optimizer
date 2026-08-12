@@ -11,11 +11,14 @@ export interface ParsedCharacterFile {
   entriesByKey: Map<string, ParsedCharacterEntry>;
 }
 
-const PRESERVED_PROPERTY_SKIP = new Set(["key", "name", "details"]);
+const PRESERVED_PROPERTY_SKIP = new Set(["key", "name", "details", "icon"]);
 
-interface ParsedProperty {
+export interface ParsedProperty {
   name: string;
   text: string;
+  /** Offsets of `text` within the `content` string passed to parsePropertyBlocks. */
+  start: number;
+  end: number;
 }
 
 function skipLineComment(content: string, index: number): number {
@@ -37,7 +40,7 @@ function skipBlockComment(content: string, index: number): number {
   return content.length;
 }
 
-function skipCommentsAndWhitespace(content: string, index: number): number {
+export function skipCommentsAndWhitespace(content: string, index: number): number {
   let cursor = index;
 
   while (cursor < content.length) {
@@ -62,17 +65,33 @@ function skipCommentsAndWhitespace(content: string, index: number): number {
   return cursor;
 }
 
-function skipComments(content: string, index: number): number {
+/**
+ * Skips only a same-line trailing `// comment` or block comment after a
+ * property's comma (e.g. `value, // note`) — including any horizontal
+ * whitespace before it and the newline that ends a line comment. Unlike
+ * skipCommentsAndWhitespace, this does NOT consume plain whitespace when no
+ * comment follows, so it never eats into the next property's own leading
+ * indentation (which parsePropertyBlocks' callers rely on for formatting).
+ */
+export function skipTrailingComment(content: string, index: number): number {
   let cursor = index;
 
   while (cursor < content.length) {
-    if (content[cursor] === "/" && content[cursor + 1] === "/") {
-      cursor = skipLineComment(content, cursor);
+    let peek = cursor;
+    while (content[peek] === " " || content[peek] === "\t") {
+      peek += 1;
+    }
+
+    if (content[peek] === "/" && content[peek + 1] === "/") {
+      cursor = skipLineComment(content, peek);
+      if (content[cursor] === "\n") {
+        cursor += 1;
+      }
       continue;
     }
 
-    if (content[cursor] === "/" && content[cursor + 1] === "*") {
-      cursor = skipBlockComment(content, cursor);
+    if (content[peek] === "/" && content[peek + 1] === "*") {
+      cursor = skipBlockComment(content, peek);
       continue;
     }
 
@@ -104,7 +123,7 @@ function parseQuotedValueEnd(content: string, start: number): number | null {
   return null;
 }
 
-function parseBracketedValueEnd(
+export function parseBracketedValueEnd(
   content: string,
   start: number,
   openChar: "{" | "[",
@@ -187,7 +206,7 @@ function parseValueEnd(content: string, start: number): number | null {
   return valueStart + match[0].length;
 }
 
-function parsePropertyBlocks(
+export function parsePropertyBlocks(
   content: string,
   bodyStart: number,
   bodyEnd: number,
@@ -196,7 +215,14 @@ function parsePropertyBlocks(
   let index = bodyStart;
 
   while (index < bodyEnd) {
-    index = skipComments(content, index);
+    // Only skips a trailing `// comment` (if one is actually there), not
+    // plain whitespace — a same-line comment after the previous property's
+    // comma (e.g. `value, // note`) has a leading space that would
+    // otherwise make the loop bail out here and silently drop every
+    // remaining property. Using skipCommentsAndWhitespace instead would fix
+    // that too, but also eats the next property's own leading indentation,
+    // which callers rely on for formatting (see extractCharacterEntries.test.ts).
+    index = skipTrailingComment(content, index);
     if (index >= bodyEnd) {
       break;
     }
@@ -226,6 +252,8 @@ function parsePropertyBlocks(
     properties.push({
       name: nameMatch[2]!,
       text: content.slice(propertyStart, propertyEnd),
+      start: propertyStart,
+      end: propertyEnd,
     });
 
     index = propertyEnd;
@@ -234,7 +262,7 @@ function parsePropertyBlocks(
   return properties;
 }
 
-function findTopLevelEntries(
+export function findTopLevelEntries(
   content: string,
 ): Array<{ start: number; end: number }> {
   const exportMatch = content.match(/export const \w+ = \[/);
@@ -419,7 +447,12 @@ export function formatDefaultResonanceChainProperties(): string {
 }
 
 export function extractSequenceNumber(key: string): number | null {
-  const match = /^SequenceNode(\d+)/.exec(key);
+  // A single digit, not \d+: resonance chains only ever number 1-6, but a
+  // few characters (e.g. Danjin) name a chain split into variants
+  // "SequenceNode51"/"SequenceNode52" (node 5, variant 1/2) rather than
+  // appending a descriptive suffix like "SequenceNode3ForOneBrilliantMomentX"
+  // — \d+ would misparse those as sequence numbers 51/52 instead of 5.
+  const match = /^SequenceNode(\d)/.exec(key);
   return match ? Number(match[1]) : null;
 }
 

@@ -3,7 +3,10 @@
     class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer"
     @click="toggleEnabled">
     <div class="card-body">
-      <h2 class="card-title">{{ name }}</h2>
+      <h2 class="card-title flex items-center gap-2">
+        <img v-if="icon" :src="icon" class="size-6" />
+        {{ name }}
+      </h2>
       <div v-html="details"></div>
       <div class="flex gap-2 items-center">
         <div class="form-control" @click.stop>
@@ -80,6 +83,7 @@ const props = withDefaults(
   defineProps<{
     character: string;
     name?: string;
+    icon?: string;
     uniqueKey?: string;
     details?: string;
     alwaysEnabled?: boolean;

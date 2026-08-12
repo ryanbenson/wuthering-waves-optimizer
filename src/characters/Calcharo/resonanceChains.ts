@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1CovertNegotiation",
     name: "Sequence Node 1: Covert Negotiation",
     details: `<span class="skilldescription">When Resonance Skill <span class="Highlight">Extermination Order</span> hits a target, it additionally recovers 10 Resonance Energy. This can be triggered once every 20s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KakaluoM1_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -13,6 +14,7 @@ export const resonanceChains = [
     key: "SequenceNode2ZeroSumGame",
     name: "Sequence Node 2: Zero-Sum Game",
     details: `<span class="skilldescription">After Calcharo casts Intro Skill <span class="Highlight">Wanted Criminal</span> or Intro Skill <span class="Highlight">"Necessary Means"</span>, his Resonance Skill DMG Bonus is increased by 30% for 15s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KakaluoM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -28,6 +30,7 @@ export const resonanceChains = [
     key: "SequenceNode3IronFistDiplomacy",
     name: "Sequence Node 3: Iron Fist Diplomacy",
     details: `<span class="skilldescription">During the Resonance Liberation <span class="Highlight">Deathblade Gear</span> state, Calcharo's Electro DMG Bonus is increased by 25%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KakaluoM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -43,6 +46,7 @@ export const resonanceChains = [
     key: "SequenceNode4DarkAlliance",
     name: "Sequence Node 4: Dark Alliance",
     details: `<span class="skilldescription">After casting Outro Skill <span class="Highlight">Shadowy Raid</span>, Electro DMG Bonus of all team members is increased by 20% for 30s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KakaluoM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -58,6 +62,7 @@ export const resonanceChains = [
     key: "SequenceNode5UnconventionalCompact",
     name: "Sequence Node 5: Unconventional Compact",
     details: `<span class="skilldescription">Intro Skill <span class="Highlight">Wanted Criminal</span> and Intro Skill <span class="Highlight">"Necessary Means:</span> deal 50% more damage.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KakaluoM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -73,6 +78,7 @@ export const resonanceChains = [
     key: "SequenceNode6TheUltimatum",
     name: "Sequence Node 6: The Ultimatum",
     details: `<span class="skilldescription">When casting Resonance Liberation <span class="Highlight">"Death Messenger"</span>, Calcharo will summon 2 <span class="Highlight">Phantoms</span> to perform Coordinated Attacks. Each <span class="Highlight">Phantom</span> deals <span class="Thunder">Electro DMG</span> equal to 100.00% of Calcharo's ATK, which is considered Resonance Liberation DMG.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KakaluoM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

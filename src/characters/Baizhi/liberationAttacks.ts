@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Momentary Union",
   description: `<div class="skilldescription">Baizhi summons You'tan to heal all characters on nearby teams, generating 4 stacks of <span class="Highlight">Remnant Entities</span>.<br> <br><span class="Title">Remnant Entities</span><br>Remnant Entities follow the active team members. 1 stack(s) of <span class="Highlight">Remnant Entities</span> are automatically consumed to perform Coordinated Attacks every 2.5s, dealing <span class="Ice">Glacio DMG</span> on hit while healing all characters of the team when the active character is within the range.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBailian/SP_IconBailianC1.webp",
   attacks: [
     {
       key: "RemnantEntitiesDamage",

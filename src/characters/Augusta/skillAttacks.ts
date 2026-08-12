@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Warrior's Blade",
   description: `<div>Augusta leaps and slams down her Broadblade, dealing <span class="ingame-Thunder">Electro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconAogusita/SP_IconAogusitaB3.webp",
   attacks: [
     {
       key: "WarriorsBladeDMG",

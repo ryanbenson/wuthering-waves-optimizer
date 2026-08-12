@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Botany Experiment",
   description: `<div class="skilldescription">Verina converges an energy field in front to grow foliage, dealing <span class="Light">Spectro DMG</span> within the range.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJueyuan/SP_IconJueyuanB1.webp",
   attacks: [
     {
       key: "BotanyExperimentDMG",

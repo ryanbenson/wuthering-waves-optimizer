@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Essence of Tao",
   description: `<div class="skilldescription">Pull in targets within the range, dealing <span class="Wind">Aero DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJianxin/SP_IconJianxinQTE.webp",
   attacks: [
     {
       key: "EssenceofTaoSkillDMG",

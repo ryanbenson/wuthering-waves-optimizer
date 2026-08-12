@@ -1,6 +1,7 @@
 export const forteCircuitAttacks = {
   name: "Forte Circuit: A Prop Master Prepares",
   description: `<div class="skilldescription"><span class="Title">Beyond Imagination</span><br>- When Roccia is in <span class="Highlight">Beyond Imagination</span> with at least 100 Imagination, press the <span class="Highlight">Basic Attack</span> button to consume 100 Imagination to cast Basic Attack <span class="Highlight">Real Fantasy</span>.<br>- Roccia exits this state when she is not airborne or when switched off the field.<br> <br><span class="Title">Basic Attack - Real Fantasy</span><br>- Perform up to 3 consecutive attacks, dealing <span class="Dark">Havoc DMG</span>, considered Heavy Attack DMG. When Roccia lands after Stage 1 and Stage 2 attacks with over 100 Imagination, she will launch into mid-air and activate <span class="Highlight">Beyond Imagination</span>.<br> <br><span class="Title">Imagination</span><br>Roccia can hold up to 300 Imagination.<br>- Dealing DMG with Normal Attacks restores Imagination.<br>- Hold <span class="Highlight">Normal Attack</span> to charge the next attack while restoring Imagination.<br>- Casting Resonance Skill <span class="Highlight">Acrobatic Trick</span> restores 100 Imagination.<br>- Casting Intro Skill <span class="Highlight">Pero, Help</span> restores 100 Imagination.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLuokeke/SP_IconLuokekeY.webp",
   attacks: [
     {
       key: "RealFantasyStage1DMG",

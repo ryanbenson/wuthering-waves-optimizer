@@ -1,6 +1,7 @@
 export const forteCircuitAttacks = {
   name: "Forte Circuit: World in a Grain of Sand",
   description: `<div class="skilldescription"><span class="Title">Resonance Skill: Resonating Spin</span><br>If "Diminutive Sound" exceeds 50 when <span class="Highlight">Resonance Skill</span> is used, Rover consumes 50 "Diminutive Sound" to cast <span class="Highlight">Resonating Spin</span>, dealing <span class="Light">Spectro DMG</span>, considered as Resonance Skill DMG.<br> <br><span class="Title">Basic Attack: Resonating Echoes</span><br>After Resonance Skill <span class="Highlight">Resonating Spin</span> ends, Rover performs <span class="Highlight">Resonating Echoes</span> upon using <span class="Highlight">Basic Attack</span> button.<br>Launch attacks forward, dealing <span class="Light">Spectro DMG</span>, considered as Resonance Skill DMG.<br> <br><span class="Title">Diminutive Sound</span><br>Rover can hold up to 100 "Diminutive Sounds".<br>Rover obtains "Diminutive Sound" for every Normal Attack <span class="Highlight">Vibration Manifestation</span> on hit.<br>Rover obtains "Diminutive Sound" for every Heavy Attack <span class="Highlight"> Aftertune</span> on hit.<br>Rover obtains "Diminutive Sound" upon casting Intro Skill <span class="Highlight">Waveshock</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhujue/SP_IconZhujueY.webp",
   attacks: [
     {
       key: "ResonatingSpinDMG",

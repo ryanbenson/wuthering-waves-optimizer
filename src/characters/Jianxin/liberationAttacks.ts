@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Purification Force Field",
   description: `<div class="skilldescription">Create a strong wind field, continuously pulling targets within the wind field to the center and dealing <span class="Wind">Aero DMG</span>. When the wind field disappears, it will trigger an explosion to deal <span class="Wind">Aero DMG</span> to all targets within the range again.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJianxin/SP_IconJianxinC1.webp",
   attacks: [
     {
       key: "PurificationForceFieldResonanceLiberationContinuousDamage",

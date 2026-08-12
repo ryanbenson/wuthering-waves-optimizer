@@ -1,6 +1,7 @@
 export const forteCircuitAttacks = {
   name: "Forte Circuit: Echoing Feathers",
   description: `<div class="skilldescription"><span class="Title">Heavy Attack: Stormy Strike</span><br>When Yangyang has 3 Melodies, she can cast <span class="Highlight">Stormy Strike</span> after <span class="Highlight">Heavy Attack</span> or <span class="Highlight">Dodge Counter</span>, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Mid-air Attack: Feather Release</span><br>When Yangyang has 3 Melodies, cast <span class="Highlight">Basic Attack</span> in mid-air to consume all Melodies and perform consecutive strikes, diving from mid-air, dealing <span class="Wind">Aero DMG</span>. As Yangyang lands, she sheathes her sword with an attack, dealing <span class="Wind">Aero DMG</span>, considered as Basic Attack DMG.<br> <br><span class="Title">Melody</span><br>Yangyang can hold up to 3 Melodies<br>Yangyang obtains 1 Melody with every <span class="Highlight">Basic Attack 4</span> on hit.<br>Yangyang obtains 1 Melody for every Heavy Attack <span class="Highlight">Zephyr Song</span> on hit.<br>Yangyang obtains 1 Melody for every Resonance Skill <span class="Highlight">Zephyr Domain</span> on hit.<br>Yangyang obtains 1 Melody upon casting Intro Skill <span class="Highlight">Cerulean Song</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconYangyang/SP_IconYangyangY.webp",
   attacks: [
     {
       key: "StormyStrikeDamage",

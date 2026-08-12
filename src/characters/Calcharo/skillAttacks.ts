@@ -2,6 +2,7 @@ export const skillAttacks = {
   name: "Resonance Skill: Extermination Order",
   description:
     `<div class="skilldescription">Calcharo performs up to 3 consecutive attacks, dealing <span class="Thunder">Electro DMG</span>.<br>If Calcharo is switched off field, or if Resonance Skill <span class="Highlight">Extermination Order</span> is not activated again in a while, this skill will enter Cooldown.<br>Resonance Skill <span class="Highlight">Extermination Order</span> does not interrupt Calcharo's Basic Attack cycle.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconKakaluo/SP_IconKakaluoB1.webp",
   attacks: [
     {
       key: "ExterminationOrderPart1DMG",

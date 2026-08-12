@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1BeautyBlazesBrightestBeforeItFades",
     name: "Sequence Node 1: Beauty Blazes Brightest Before It Fades",
     details: `<span class="skilldescription">When Carlotta deals DMG to a target inflicted with <span class="Highlight">Deconstruction</span>, the Crit. Rate of this instance of DMG is increased by 12.5%. When Resonance Skill <span class="Highlight">Chromatic Splendor</span> hits a target inflicted with <span class="Highlight">Dispersion</span>, Carlotta additionally restores 30 points of Substance.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KelaitaM1_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -18,6 +19,7 @@ export const resonanceChains = [
     key: "SequenceNode2FallenPetalsGiveLifetoNewBlooms",
     name: "Sequence Node 2: Fallen Petals Give Life to New Blooms",
     details: `<span class="skilldescription">The DMG Multiplier of Resonance Liberation <span class="Highlight">Fatal Finale</span> is increased by 126%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KelaitaM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -45,6 +47,7 @@ export const resonanceChains = [
     key: "SequenceNode3AdelanteCortadoSpinninginGrace",
     name: "Sequence Node 3: Adelante, Cortado, Spinning in Grace",
     details: `<span class="skilldescription">Enable Outro Skill <span class="Highlight">Kaleidoscope Sparks</span>: Deal 1 additional strike at the end of Outro Skill <span class="Highlight">Closing Remark</span>, dealing Glacio DMG equal to 1032.18% of Carlotta's ATK. The DMG Multiplier of Resonance Skill <span class="Highlight">Art of Violence</span> and Resonance Skill <span class="Highlight">Chromatic Splendor</span> is increased by 93%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KelaitaM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -65,6 +68,7 @@ export const resonanceChains = [
     key: "SequenceNode4YesterdaysRaindropsMakeFinestWine",
     name: "Sequence Node 4: Yesterday's Raindrops Make Finest Wine",
     details: `<span class="skilldescription">Casting Heavy Attack, Heavy Attack <span class="Highlight">Containment Tactics</span>, and Heavy Attack <span class="Highlight">Imminent Oblivion</span> grants all Resonators in the team 25% Resonance Skill DMG Bonus for 30s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KelaitaM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -80,6 +84,7 @@ export const resonanceChains = [
     key: "SequenceNode5ToasttoPastTodayandEveryDaytoCome",
     name: "Sequence Node 5: Toast to Past, Today, and Every Day to Come",
     details: `<span class="skilldescription">The DMG Multiplier of Heavy Attack <span class="Highlight">Imminent Oblivion</span> is increased by 47%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KelaitaM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -96,6 +101,7 @@ export const resonanceChains = [
     key: "SequenceNode6AstheCurtainFallsIRemainWhatIAm",
     name: "Sequence Node 6: As the Curtain Falls, I Remain What I Am",
     details: `<span class="skilldescription">Shots of Resonance Liberation <span class="Highlight">Death Knell</span> deal higher DMG and shoot out double the number of crystal shards, representing a total increase of 186.6% in the DMG Multiplier of Resonance Liberation <span class="Highlight">Death Knell</span>.<br>Shots of Resonance Liberation <span class="Highlight">Death Knell</span> inflict <span class="Highlight">Scattering</span> on targets when hit, during which the target is immobilized. This effect is removed after 1.5s or when the target receives DMG.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KelaitaM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

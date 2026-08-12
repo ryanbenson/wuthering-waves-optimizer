@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Destined Promise",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Baizhi instructs You'tan to perform up to 4 consecutive attacks, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Baizhi continuously consumes STA to command You'tan to attack enemies, dealing <span class="Ice">Glacio DMG</span>. During Heavy Attack, Baizhi can command You'tan to move.<br> <br><span class="Title">Mid-air Attack</span><br>Baizhi consumes STA and summons You’tan in mid-air to perform a Plunging Attack, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Ice">Glacio DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorMagic.webp",
   attacks: [
     {
       key: "DestinedPromiseStage1DMG",
