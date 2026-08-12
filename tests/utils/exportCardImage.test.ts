@@ -33,9 +33,26 @@ describe("captureCardAsPngBlob", () => {
     expect(toBlobMock).toHaveBeenCalledWith(node, {
       width: EXPORT_WIDTH,
       height: EXPORT_HEIGHT,
-      pixelRatio: 1,
+      pixelRatio: 2,
+      filter: expect.any(Function),
     });
     expect(result).toBe(blob);
+  });
+
+  it("excludes data-export-hide nodes from the capture via the filter option", async () => {
+    toBlobMock.mockResolvedValue(new Blob(["fake"], { type: "image/png" }));
+
+    await captureCardAsPngBlob(makeNode());
+
+    const { filter } = toBlobMock.mock.calls[0][1] as {
+      filter: (node: HTMLElement) => boolean;
+    };
+    const hiddenNode = document.createElement("button");
+    hiddenNode.setAttribute("data-export-hide", "");
+    const visibleNode = document.createElement("div");
+
+    expect(filter(hiddenNode)).toBe(false);
+    expect(filter(visibleNode)).toBe(true);
   });
 
   it("throws when toBlob resolves to null", async () => {

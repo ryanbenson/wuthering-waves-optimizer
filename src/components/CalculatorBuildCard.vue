@@ -82,7 +82,7 @@
             : undefined,
         }">
         <div class="build-card__grid grid grid-cols-12 gap-4">
-          <div class="build-card__identity-panel col-span-5 h-full">
+          <div class="build-card__identity-panel col-span-4 h-full">
             <div class="build-card__identity relative h-full w-full rounded-lg overflow-hidden bg-base-300">
               <CalculatorBuildCardPortraitUpload
                 variant="cover"
@@ -122,12 +122,12 @@
                 </template>
 
                 <div
-                  class="build-card__resonance flex flex-col items-start gap-2 mt-4"
+                  class="build-card__resonance flex flex-col items-start gap-5 mt-4"
                   data-test-build-card-resonance>
                   <div
                     v-for="(chain, idx) in resonanceChainNodes"
                     :key="chain.key ?? idx"
-                    class="build-card__resonance-node flex items-center justify-center rounded-full"
+                    class="build-card__resonance-node flex items-center justify-center rounded-full overflow-hidden"
                     :class="
                       chain.isEnabled
                         ? 'build-card__resonance-node--active'
@@ -137,11 +137,11 @@
                     <img
                       v-if="chain.icon"
                       :src="chain.icon"
-                      class="size-10 rounded-full" />
+                      class="w-full h-full object-cover" />
                     <svg
                       v-else
                       viewBox="0 0 24 24"
-                      class="size-8"
+                      class="size-6"
                       fill="currentColor">
                       <path
                         d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z" />
@@ -235,7 +235,7 @@
           </div>
 
           <div
-            class="build-card__echoes col-span-4 h-full flex flex-col gap-2"
+            class="build-card__echoes col-span-5 h-full flex flex-col gap-4"
             data-test-build-card-echoes>
             <CalculatorBuildCardEchoCard
               v-for="(echo, index) in echoSlots"
@@ -640,8 +640,8 @@ async function handleDownload() {
 }
 
 .build-card__resonance-node {
-  width: 4.5rem;
-  height: 4.5rem;
+  width: 3rem;
+  height: 3rem;
   border: 1px solid oklch(var(--bc) / 0.4);
   background: rgba(0, 0, 0, 0.35);
   color: white;
