@@ -122,7 +122,7 @@
                 </template>
 
                 <div
-                  class="build-card__resonance flex flex-col items-start gap-3 mt-4"
+                  class="build-card__resonance flex flex-col items-start gap-5 mt-4"
                   data-test-build-card-resonance>
                   <div
                     v-for="(chain, idx) in resonanceChainNodes"
@@ -235,7 +235,7 @@
           </div>
 
           <div
-            class="build-card__echoes col-span-5 h-full flex flex-col gap-2"
+            class="build-card__echoes col-span-5 h-full flex flex-col gap-4"
             data-test-build-card-echoes>
             <CalculatorBuildCardEchoCard
               v-for="(echo, index) in echoSlots"

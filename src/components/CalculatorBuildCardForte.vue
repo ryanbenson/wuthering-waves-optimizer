@@ -1,5 +1,5 @@
 <template>
-  <div class="build-card-forte flex flex-col items-center gap-3" data-test-build-card-talents>
+  <div class="build-card-forte flex flex-col items-center gap-5" data-test-build-card-talents>
     <div
       v-for="col in columns"
       :key="col.key"
