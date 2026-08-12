@@ -30,13 +30,24 @@ import ChartDataLabels from "chartjs-plugin-datalabels";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import { displayDamage } from "../utils/numbers";
 import { palette } from "../utils/chartColors";
-import type { TeamRotationCharacterResult } from "../calculator/teamRotation";
+import type { DamageAggregation, TeamRotationCharacterResult } from "../calculator/teamRotation";
+import type { ChartDamageMetric } from "../utils/chartPreferences";
 
 Chart.register(ChartDataLabels);
 
-const props = defineProps<{
-  perCharacter: Record<string, TeamRotationCharacterResult>;
-}>();
+const props = withDefaults(
+  defineProps<{
+    perCharacter: Record<string, TeamRotationCharacterResult>;
+    metric?: ChartDamageMetric;
+  }>(),
+  { metric: "average" },
+);
+
+function metricValue(agg: DamageAggregation) {
+  if (props.metric === "normal") return agg.normalDamage ?? 0;
+  if (props.metric === "crit") return agg.critDamage ?? 0;
+  return agg.avgDamage ?? 0;
+}
 
 const chartId = `team-rotation-damage-chart-${Math.random().toString(36).slice(2)}`;
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
@@ -46,7 +57,7 @@ const chartData = computed(() => {
     .map(([characterId, data]) => ({
       characterId,
       label: getCharacterRosterDisplayName(characterId),
-      value: data.damageAggregation.normalDamage ?? 0,
+      value: metricValue(data.damageAggregation),
     }))
     .filter((entry) => entry.value > 0);
   const total = entries.reduce((sum, entry) => sum + entry.value, 0);

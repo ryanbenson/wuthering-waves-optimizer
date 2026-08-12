@@ -17,18 +17,32 @@ import { getCharacterRosterDisplayName } from "../characters/characters";
 import { displayDamage } from "../utils/numbers";
 import { palette } from "../utils/chartColors";
 import type { TimelinePoint } from "../calculator/teamRotation";
+import { CHART_DAMAGE_METRIC_OPTIONS, type ChartDamageMetric } from "../utils/chartPreferences";
 
-const props = defineProps<{
-  points: TimelinePoint[];
-}>();
+const props = withDefaults(
+  defineProps<{
+    points: TimelinePoint[];
+    metric?: ChartDamageMetric;
+  }>(),
+  { metric: "average" },
+);
+
+function metricValue(p: TimelinePoint) {
+  if (props.metric === "normal") return p.normalDamage;
+  if (props.metric === "crit") return p.critDamage;
+  return p.avgDamage;
+}
+
+const metricLabel = computed(
+  () => CHART_DAMAGE_METRIC_OPTIONS.find((o) => o.value === props.metric)?.label ?? "Average",
+);
 
 const chartId = `team-rotation-character-timeline-chart-${Math.random().toString(36).slice(2)}`;
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
 
-// Plots avgDamage only (not all 3 metrics) — one line per character already
-// gives up to 3 lines; adding normal/avg/crit for each would be 9 lines,
-// unreadable. Average is the single most representative "expected damage"
-// curve for an at-a-glance read.
+// Plots a single metric (not all 3) — one line per character already gives
+// up to 3 lines; adding normal/avg/crit for each would be 9 lines,
+// unreadable. Which metric is shown is controlled by the `metric` prop.
 const byCharacter = computed(() => {
   const characterIds = Array.from(new Set(props.points.map((p) => p.characterId)));
   return characterIds.map((characterId) => ({
@@ -51,7 +65,7 @@ function initChart() {
     data: {
       datasets: byCharacter.value.map((entry, index) => ({
         label: entry.label,
-        data: entry.points.map((p) => ({ x: p.time, y: p.avgDamage })),
+        data: entry.points.map((p) => ({ x: p.time, y: metricValue(p) })),
         borderColor: palette[index % palette.length],
         backgroundColor: palette[index % palette.length],
         tension: 0.1,
@@ -67,7 +81,7 @@ function initChart() {
           title: { display: true, text: "Time (s)" },
         },
         y: {
-          title: { display: true, text: "Average Damage" },
+          title: { display: true, text: `${metricLabel.value} Damage` },
           ticks: {
             callback: (value) => displayDamage(Number(value)).toLocaleString(),
           },
@@ -92,7 +106,7 @@ function initChart() {
 }
 
 // flush: "post" matters here — see TeamRotationTimelineChart.vue for why.
-watch(() => props.points, initChart, { deep: true, flush: "post" });
+watch(() => [props.points, props.metric], initChart, { deep: true, flush: "post" });
 onMounted(() => initChart());
 onBeforeUnmount(() => {
   if (chartCanvas.value) {

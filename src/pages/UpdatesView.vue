@@ -8,6 +8,7 @@
       <li>Adds Tune Strain - Interfered and negative status effect stacks (Spectro Frazzle, Aero Erosion, Havoc Bane, Fusion Burst, Electro Flare, Electro Rage, Glacio Chafe) to Team Rotation enemy settings.</li>
       <li>Increases max value of the Tune Strain input from 6 to 9.</li>
       <li>Fixes Sigrika's s6, it wasn't properly stacking with her base Runic DMG bonus.</li>
+      <li>Adds a Normal/Average/Crit toggle to the Team Rotation "View Damages" pie chart, and a single toggle in the Team Rotation summary view that switches all of its damage charts between Normal, Average, and Crit. Both default to Average.</li>
     </ul>
     <h3>August 9, 2026</h3>
     <ul>
