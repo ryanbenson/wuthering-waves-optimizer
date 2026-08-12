@@ -19,6 +19,7 @@
       <li>Adds an equipped echo set summary (e.g. 2pc/5pc set names with icons) to the bottom of the Build Card's stats panel.</li>
       <li>Doubles the size of the Build Card's resonance chain and forte icons, and moves the forte level number underneath its icon.</li>
       <li>Doubles the width of the Build Card's echo art, and centers the echo set summary with a bit more breathing room from the bottom edge.</li>
+      <li>Removes the resonance chain count from the Build Card, increases the text size for the echo name, main stat, username, and UID, and moves the echo set icon next to its cost badge in the top-right corner.</li>
     </ul>
     <h3>August 9, 2026</h3>
     <ul>

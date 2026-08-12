@@ -147,9 +147,6 @@
                         d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z" />
                     </svg>
                   </div>
-                  <div class="build-card__resonance-count text-sm font-bold text-white opacity-90 mt-1">
-                    {{ resonanceChainCount }} / 6
-                  </div>
                 </div>
               </div>
 
@@ -163,10 +160,10 @@
                 v-if="buildCardUsername || buildCardUid"
                 class="build-card__profile absolute bottom-4 left-4 text-white leading-tight pointer-events-none"
                 data-test-build-card-profile>
-                <div v-if="buildCardUsername" class="text-sm font-semibold">
+                <div v-if="buildCardUsername" class="text-lg font-semibold">
                   {{ buildCardUsername }}
                 </div>
-                <div v-if="buildCardUid" class="text-xs opacity-70">
+                <div v-if="buildCardUid" class="text-base opacity-70">
                   UID {{ buildCardUid }}
                 </div>
               </div>
@@ -423,13 +420,6 @@ const forteIcons = computed(() => ({
   forte: props.chosenChar?.value?.forteCircuitAttacks?.icon,
   intro: props.chosenChar?.value?.introAttacks?.icon,
 }));
-
-const resonanceChainCount = computed(
-  () =>
-    Object.values(characterData.value.resonanceChains ?? {}).filter(
-      (chain: any) => chain?.isEnabled,
-    ).length,
-);
 
 const resonanceChainNodes = computed(() => {
   const chains = props.chosenChar?.value?.resonanceChains ?? [];

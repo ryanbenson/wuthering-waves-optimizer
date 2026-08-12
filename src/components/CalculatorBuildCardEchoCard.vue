@@ -19,31 +19,30 @@
           RV {{ echoRollValue }}%
         </span>
       </div>
-      <span
-        class="echo__item__cost badge badge-primary badge-sm text-nowrap absolute right-1 top-1">
-        {{ type }}
-      </span>
-      <span
-        v-if="echoSet"
-        class="absolute top-7 right-1 rounded-full">
-        <img :src="getEchoSetIcon(echoSet)" :class="echoSet" class="size-5" />
-      </span>
+      <div class="absolute top-1 right-1 flex items-center gap-1">
+        <span class="echo__item__cost badge badge-primary badge-sm text-nowrap">
+          {{ type }}
+        </span>
+        <span v-if="echoSet" class="rounded-full">
+          <img :src="getEchoSetIcon(echoSet)" :class="echoSet" class="size-5" />
+        </span>
+      </div>
       <div
         v-if="echoName"
         class="absolute inset-x-0 bottom-0 px-1.5 pb-1 pointer-events-none">
-        <div class="build-card-echo__name text-xs font-bold text-white leading-tight line-clamp-2">
+        <div class="build-card-echo__name text-lg font-bold text-white leading-tight line-clamp-2">
           {{ echoName }}
         </div>
         <div
           v-if="mainStatValue"
-          class="flex items-center gap-1 text-white/90 text-[11px] mt-0.5">
-          <img :src="getSubStatIconByType(stat)" class="size-3" />
+          class="flex items-center gap-1.5 text-white/90 text-sm mt-1">
+          <img :src="getSubStatIconByType(stat)" class="size-4" />
           <span class="truncate">{{ getReadableSubStatLabel(stat) }} {{ mainStatValue }}%</span>
         </div>
         <div
           v-if="mainStatValue"
-          class="flex items-center gap-1 text-white/80 text-[11px]">
-          <img :src="echoFreeSubStatIcon" class="size-3" />
+          class="flex items-center gap-1.5 text-white/80 text-sm">
+          <img :src="echoFreeSubStatIcon" class="size-4" />
           <span class="truncate">{{ getReadableSubStatLabel(echoFreeSubStatType) }} {{ echoFreeSubStatValue }}</span>
         </div>
       </div>
