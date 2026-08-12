@@ -33,7 +33,7 @@ describe("captureCardAsPngBlob", () => {
     expect(toBlobMock).toHaveBeenCalledWith(node, {
       width: EXPORT_WIDTH,
       height: EXPORT_HEIGHT,
-      pixelRatio: 1,
+      pixelRatio: 2,
       filter: expect.any(Function),
     });
     expect(result).toBe(blob);

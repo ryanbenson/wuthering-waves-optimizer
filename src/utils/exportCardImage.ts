@@ -13,11 +13,19 @@ function excludeExportHiddenNodes(domNode: HTMLElement): boolean {
   return !(domNode instanceof Element && domNode.hasAttribute("data-export-hide"));
 }
 
+// html-to-image defaults pixelRatio to the browser's own devicePixelRatio,
+// which is what makes its *on-screen preview* renders look sharp — but we
+// pin it to a fixed value for the actual export so quality is consistent
+// (and high) regardless of which device/monitor triggered the download,
+// rather than varying with whatever the exporting user's screen happens to
+// report (1 on a plain desktop monitor, 2-3 on most laptops/phones).
+const EXPORT_PIXEL_RATIO = 2;
+
 export async function captureCardAsPngBlob(node: HTMLElement): Promise<Blob> {
   const blob = await toBlob(node, {
     width: EXPORT_WIDTH,
     height: EXPORT_HEIGHT,
-    pixelRatio: 1,
+    pixelRatio: EXPORT_PIXEL_RATIO,
     filter: excludeExportHiddenNodes,
   });
   if (!blob) {

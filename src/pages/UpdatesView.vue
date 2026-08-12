@@ -24,6 +24,7 @@
       <li>Makes the CV and RV text bigger on Build Card echoes, and changes the substats to a single list of 5 (icon and name on the left, value on the right) instead of a 3-then-2 grid.</li>
       <li>Fixes the Build Card export to no longer include the portrait's remove (x) button in the downloaded/copied image.</li>
       <li>Adds more spacing between each echo, and between each resonance chain and forte icon on the Build Card.</li>
+      <li>Doubles the resolution of the Build Card's copied/downloaded image for a sharper export.</li>
     </ul>
     <h3>August 9, 2026</h3>
     <ul>
