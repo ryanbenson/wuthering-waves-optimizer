@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1TheGleamMeantforRadiance",
     name: "Sequence Node 1: The Gleam Meant for Radiance",
     details: `<div>The DMG Multipliers of <span class="Highlight">Basic Attack - Elucidated</span>, <span class="Highlight">Dodge Counter - Decipher</span>, <span class="Highlight">Resonance Skill - BIG BOOMY BOOM!</span>, and <span class="Highlight">Resonance Skill - Soliskin to the Aid</span> are increased by 70%.<br>Sigrika becomes immune to interruptions while casting <span class="Highlight">Basic Attack - Elucidated</span>, <span class="Highlight">Resonance Skill - BIG BOOMY BOOM!</span>, and <span class="Highlight">Resonance Skill - Soliskin to the Aid</span>.<br><span class="Highlight">Encapsulated</span> now stacks up to 3 times. After casting Outro Skill <span class="Highlight">In This Very Moment</span>, Sigrika obtains 1 additional stacks.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_XigelikaM1_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -25,6 +26,7 @@ export const resonanceChains = [
     name: "Sequence Node 2: The Bitterness Steeped in Hope",
     details: `<div>The DMG Multiplier of <span class="Highlight">Forte Circuit - Learn My True Name</span> is increased by 120%.<br>
 When not in combat for over 4s, Sigrika gains <span class="Highlight">Divergent</span>. This effect is active for up to 1 time every 4s.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_XigelikaM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -44,6 +46,7 @@ When not in combat for over 4s, Sigrika gains <span class="Highlight">Divergent<
     name: "Sequence Node 3: I Flee, Yet I Seek",
     details: `<div><span class="Highlight">Innate Gift?</span> now stacks up to 4 times and is no longer removed after Sigrika casts <span class="Highlight">Forte Circuit - Learn My True Name</span> or is switched off the field.<br>
 All <span class="Highlight">Innate Gift?</span> stacks are removed every 30s that Sigrika stays out of combat.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_XigelikaM6_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -54,6 +57,7 @@ All <span class="Highlight">Innate Gift?</span> stacks are removed every 30s tha
     key: "SequenceNode4ILoseYetIGain",
     name: "Sequence Node 4: I Lose, Yet I Gain",
     details: `<span class="skilldescription">When Resonators in the team cast Echo Skill, Resonators in the team gain an 20% ATK increase for 20s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_XigelikaM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -69,6 +73,7 @@ All <span class="Highlight">Innate Gift?</span> stacks are removed every 30s tha
     key: "SequenceNode5UntilSubmergedbytheDark",
     name: "Sequence Node 5: Until Submerged by the Dark",
     details: `<div>The DMG Multiplier of Resonance Liberation <span class="Highlight">Where Trust Leads Me!</span> is increased by 30%.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_XigelikaM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -88,6 +93,7 @@ All <span class="Highlight">Innate Gift?</span> stacks are removed every 30s tha
 <span class="Highlight">Innate Gift?</span> gains following effects:<br>
 - Each stack grants <span class="Highlight">Runic Outburst</span>, <span class="Highlight">Runic Chain Whip</span>, <span class="Highlight">Runic Soliskin</span>, and <span class="Highlight">Forte Circuit - Learn My True Name</span> 15% DMG Amplification, up to 60%.<br>
 - Each stack causes <span class="Highlight">Runic Outburst</span>, <span class="Highlight">Runic Chain Whip</span>, <span class="Highlight">Runic Soliskin</span>, and <span class="Highlight">Forte Circuit - Learn My True Name</span> to ignore 7.5% of the target's DEF when dealing damage, up to 30%.</div>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_XigelikaM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

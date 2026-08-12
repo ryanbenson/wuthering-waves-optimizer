@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Strive: Lion's Vigor",
   description: `<div class="skilldescription">Attack the target, dealing <span class="Ice">Glacio DMG</span>, and receive the blessing of <span class="Highlight">Lion's Vigor</span>.<br> <br><span class="Title">Lion's Vigor</span><br>Lingyang's <span class="Ice">Glacio DMG Bonus</span> is increased by 50%;</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLingyang/SP_IconLingyangC1.webp",
   attacks: [
     {
       key: "LionsVigorDMG",

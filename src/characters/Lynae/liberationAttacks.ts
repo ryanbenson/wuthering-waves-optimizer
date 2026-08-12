@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Prismatic Overblast",
   description: `<div>Deal <span class="Light"><strong>Spectro DMG</strong></span>. Casting this skill grants all nearby Resonators in the team 24% All DMG Bonus that lasts for 30s.<br><size=10><br><size=40><span class="Title"><strong>Basic Attack - To a Vivid Tomorrow!</strong></span><br>Press Normal Attack within a certain time after casting <span class="Highlight"><strong>Resonance Liberation - Prismatic Overblast</strong></span> to cast <span class="Highlight"><strong>Basic Attack - To a Vivid Tomorrow!</strong></span>, dealing <span class="Light"><strong>Spectro DMG</strong></span>.</size=40></size=10></div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLinNai/SP_IconLinNaiC1.webp",
   attacks: [
     {
       key: "PrismaticOverblastDMG",

@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Frigid Light",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Sanhua performs up to 5 consecutive attacks, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Sanhua consumes STA to launch attacks, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Sanhua consumes STA to perform a Mid-Air Plunging Attack, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Ice">Glacio DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorKnife.webp",
   attacks: [
     {
       key: "FrigidLightStage1DMG",

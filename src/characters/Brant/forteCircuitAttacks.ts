@@ -1,6 +1,7 @@
 export const forteCircuitAttacks = {
   name: "Forte Circuit: Ocean Odyssey",
   description: `<div class="skilldescription"><span class="Title">Theatrical Moment</span><br>Brant gains additional ATK based on his Energy Regen: For every 1% of his Energy Regen over 150%, Brant gains additional 12 points of ATK, up to 1560.<br> <br><span class="Title">Waves of Acclaims</span><br>Heal all nearby Resonators in the team when Bravo reaches 25, 50, 75, and 100.<br> <br><span class="Title">Returned from Ashes</span><br>When Bravo is full, replace Resonance Skill <span class="Highlight">Anchor Aweigh!</span> with <span class="Highlight">Returned from Ashes</span>.<br>Consume all Bravo to perform <span class="Highlight">Returned from Ashes</span>, dealing <span class="Fire">Fusion DMG</span>, considered <span class="Highlight">Basic Attack DMG</span>, and generate a shield. Casting this skill during <span class="Highlight">Aflame</span> ends this state after <span class="Highlight">Returned from Ashes</span> ends.<br> <br><span class="Title">Bravo</span><br>Brant can hold up to 100 Bravo.<br>- Obtain Bravo when Normal Attacks hit the target.<br>- Obtain Bravo when Intro Skill hits the target.<br>- Obtain Bravo when Resonance Skill hits the target.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBulante/SP_IconBulanteY.webp",
   attacks: [
     {
       key: "ReturnedfromAshesDMG",

@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Summon and Smite",
   description: `<div>Attack the target, dealing <span class="Thunder">Electro DMG</span> and healing all nearby Resonators in the team.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBuling/SP_IconBulingQTE.webp",
   attacks: [
     {
       key: "SummonandSmiteDMG",

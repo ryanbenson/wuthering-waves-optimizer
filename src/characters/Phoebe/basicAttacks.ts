@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: O Come Divine Light",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Perform up to 3 consecutive attacks of Holy Light, dealing <span class="Light">Spectro DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Consume STA to attack the target, dealing <span class="Light">Spectro DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Consume STA to ride the staff and dive down from mid-air to attack the target, dealing <span class="Light">Spectro DMG</span>.<br> <br><span class="Title">Mid-air Heavy Attack</span><br>Consume STA to ride on the staff for a distance.<br>- Can be re-cast after a Mid-Air Dodge or using Grapple.<br> <br><span class="Title">Dodge Counter</span><br>After a successful <span class="Highlight">Dodge</span>, quickly use <span class="Highlight">Basic Attack</span> to attack the target, dealing <span class="Light">Spectro DMG</span>.<br>- When Phoebe is inside the Ring of Mirrors, Dodge Counter becomes <span class="Highlight">Chamuel's Star: Dodge Counter</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorMagic.webp",
   attacks: [
     {
       key: "Stage1DMG",

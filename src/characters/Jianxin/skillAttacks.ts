@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Calming Air",
   description: `<div class="skilldescription">Hold <span class="Highlight">Resonance Skill</span> to enter <span class="Highlight">Parry Stance</span>.<br> <br><span class="Title">Chi Counter</span><br>When Jianxin is attacked in the <span class="Highlight">Parry Stance</span>, she does not take damage and immediately performs <span class="Highlight">Chi Counter</span>, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Chi Parry</span><br>Release the <span class="Highlight">Resonance Skill</span> button during <span class="Highlight">Parry Stance</span> to interrupt <span class="Highlight">Parry Stance</span> and perform <span class="Highlight">Chi Parry</span>, dealing <span class="Wind">Aero DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJianxin/SP_IconJianxinB1.webp",
   attacks: [
     {
       key: "CalmingAirChiCounterDamage",

@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Ancient Arts",
   description: `<div class="skilldescription"><span class="Title">Ancient Arts</span><br>Attack the target, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Furious Punches</span><br>When <span class="Highlight">Basic Attacks 3, 4, or 5</span> or Basic Attack <span class="Highlight">Feral Roars</span> hits the target, Resonance Skill <span class="Highlight">Ancient Arts</span> is replaced with Resonance Skill <span class="Highlight">Furious Punches</span>.<br>Lingyang's <span class="Highlight">Basic Attack</span> cycle starts from <span class="Highlight">Basic Attack 3</span> after casting Basic Attack <span class="Highlight">Feral Roars</span> and Resonance Skill <span class="Highlight">Furious Punches</span> in turn.<br> <br>Lingyang's Resonance Skill does not reset his Basic Attack cycle.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLingyang/SP_IconLingyangB1.webp",
   attacks: [
     {
       key: "AncientArtsDMG",

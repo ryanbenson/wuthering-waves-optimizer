@@ -2,6 +2,7 @@ export const introAttacks = {
   name: "Intro Skill: Obedience of Rules",
   description:
     '<div class="skilldescription">Changli appears in mid-air, attacks the target, and enters <span class="Highlight">True Sight</span>, lasting for 12s.</div>',
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconChangli/SP_IconChangliQTE.webp",
   attacks: [
     {
       key: "ObedienceofRulesSkillDMG",

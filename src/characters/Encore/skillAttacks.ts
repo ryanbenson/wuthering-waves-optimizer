@@ -5,6 +5,7 @@ export const skillAttacks = {
     <br> 
     <br><span class="Title">Energetic Welcome</span>
     <br>After casting <span class="Highlight">Flaming Woolies</span>, use <span class="Highlight">Resonance Skill</span> to perform <span class="Highlight">Energetic Welcome</span>, dealing <span class="Fire">Fusion DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconAnke/SP_IconAnkeB1.webp",
   attacks: [
     {
       key: "FlamingWooliesDamage",

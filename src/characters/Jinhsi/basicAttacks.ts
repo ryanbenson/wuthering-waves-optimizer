@@ -2,6 +2,7 @@ export const basicAttacks = {
   name: "Basic Attack: Slash of Breaking Dawn",
   description:
     `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Perform up to 4 consecutive strikes, dealing <span class="Light">Spectro DMG</span>.<br><br><span class="Title">Heavy Attack</span><br>Perform a charged attack at the cost of STA, dealing <span class="Light">Spectro DMG</span>.<br><br><span class="Title">Mid-air Attack</span><br>Perform a Plunging Attack while in mid-air at the cost of STA, dealing <span class="Light">Spectro DMG</span>.<br><br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to counterattack, dealing <span class="Light">Spectro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorSword.webp",
   attacks: [
     {
       key: "Stage1DMG",

@@ -6,6 +6,7 @@ export const introAttacks = {
         <span class="Dark">Havoc DMG</span>.
       </p>
     </div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconMicai/SP_IconMicaiQTE.webp",
   attacks: [
     {
       key: "SkillDMG",

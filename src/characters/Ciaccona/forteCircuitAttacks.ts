@@ -1,6 +1,7 @@
 export const forteCircuitAttacks = {
   name: "Forte Circuit: Symphony of Wind and Verse",
   description: `<div class="skilldescription"><span class="Title">Heavy Attack - Quadruple Downbeat</span><br>When there are 3 segments of Musical Essence, Heavy Attack is replaced with <span class="Highlight">Heavy Attack - Quadruple Downbeat</span>.<br>Consume all Music Essense to shoot <span class="Highlight">Downbeat Notes</span> forward to deal <span class="Wind">Aero DMG</span>, pulling in the nearby targets and inflicting 1 stack of <span class="Highlight">Aero Erosion</span> on the target hit.<br><span class="Highlight">Heavy Attack - Quadruple Downbeat</span> can be cast in mid-air close to the ground.<br><span class="Title">Musical Essence</span><br>Ciaccona can hold up to 3 segments of Musical Essence.<br>Casting <span class="Highlight">Basic Attack Stage 4</span> or <span class="Highlight">Intro Skill</span> recovers 1 segment of Musical Essence.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXiakong/SP_IconXiakongY.webp",
   attacks: [
     {
       key: "QuadrupleDownbeatDMG",

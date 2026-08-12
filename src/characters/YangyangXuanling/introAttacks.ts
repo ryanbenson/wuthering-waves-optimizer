@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Skybound Feather",
   description: `<div>Deal <span style="color:#fcc4db;">Havoc DMG</span> and restore 1 points of <span style="color:#ffd12f;" class="font-bold">Azure Plume</span>.<br>When <span style="color:#ffd12f;" class="font-bold">Intro Skill - Skybound Feather</span> deals damage, it applies 1 stack of <span style="color:#ffd12f;" class="font-bold">Havoc Bane</span> on the target.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXuanLing/SP_IconXuanLingQTE.webp",
   attacks: [
     {
       key: "SkyboundFeatherDMG",

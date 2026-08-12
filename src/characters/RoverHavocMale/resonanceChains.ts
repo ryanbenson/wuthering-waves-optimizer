@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1CrypticInsight",
     name: "Sequence Node 1: Cryptic Insight",
     details: `<span class="skilldescription">Resonance Skill DMG Bonus is increased by 30%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_ZhujueDarkM1_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -18,6 +19,7 @@ export const resonanceChains = [
     key: "SequenceNode4AnnihilatedSilence",
     name: "Sequence Node 4: Annihilated Silence",
     details: `<span class="skilldescription">Heavy Attack <span class="Highlight">Devastation</span> and Resonance Liberation <span class="Highlight">Deadening Abyss</span> reduces enemy Havoc RES by 10% for 20s on hit.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_ZhujueDarkM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -33,6 +35,7 @@ export const resonanceChains = [
     key: "SequenceNode5AeonSymphony",
     name: "Sequence Node 5: Aeon Symphony",
     details: `<span class="skilldescription">In the <span class="Highlight">Dark Surge</span> state, <span class="Highlight">Basic Attack 5</span> deals an additional <span class="Dark">Havoc damage</span> equal to 50% of <span class="Highlight">Basic Attack 5</span> damage.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_ZhujueDarkM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -48,6 +51,7 @@ export const resonanceChains = [
     key: "SequenceNode6EbbingUndercurrent",
     name: "Sequence Node 6: Ebbing Undercurrent",
     details: `<span class="skilldescription">In the <span class="Highlight">Dark Surge</span> state, Rover's Crit. Rate is increased by 25%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_ZhujueDarkM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

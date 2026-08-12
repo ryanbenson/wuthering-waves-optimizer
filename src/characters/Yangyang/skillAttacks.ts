@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Zephyr Domain",
   description: `<div class="skilldescription">Yangyang wields her sword to create a whirling vortex of winds that gathers nearby enemies to the center, dealing <span class="Wind">Aero DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconYangyang/SP_IconYangyangB1.webp",
   attacks: [
     {
       key: "ZephyrDomainSkillDMG",

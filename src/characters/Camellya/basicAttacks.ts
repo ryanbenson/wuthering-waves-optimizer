@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Burgeoning",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Perform up to 5 consecutive attacks, dealing <span class="Dark">Havoc DMG</span>.<br>After performing <span class="Highlight">Basic Attack Stage 3</span> or Heavy Attack <span class="Highlight">Pruning</span>, hold <span class="Highlight">Normal Attack Button</span> to continuously strike the target, dealing <span class="Dark">Havoc DMG</span>.<br><span class="Highlight">Basic Attack Stage 4</span> is automatically followed by <span class="Highlight">Basic Attack Stage 5</span>.<br> <br><span class="Title">Heavy Attack - Pruning</span><br>Consume STA to attack the target, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Consume STA to perform Plunging Attack, dealing <span class="Dark">Havoc DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> right after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Dark">Havoc DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorKnife.webp",
   attacks: [
     {
       key: "BasicAttack1DMG",

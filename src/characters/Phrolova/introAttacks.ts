@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Suite of Quietus",
   description: `<div><span class="ww-wiki-font-bold"><span class="ingame-Title">Suite of Quietus</span></span><br>Attack the target, dealing <span class="ingame-Dark">Havoc DMG</span>.<br>Press <span class="ingame-Highlight">Normal Attack</span> shortly after casting this skill to cast <span class="ingame-Highlight">Basic Attack Stage 3</span>.<br><span class="ww-wiki-font-bold"></span><br><span class="ww-wiki-font-bold"><span class="ingame-Title">Suite of Immortality</span></span><br>When in the <span class="ingame-Highlight">Maestro</span> state, the next <span class="ingame-Highlight">Suite of Quietus</span> is replaced with <span class="ingame-Highlight">Suite of Immortality</span>. This replacement is cancelled if <span class="ingame-Highlight">Curtain Call</span> is cast while in this state. <span class="ingame-Highlight">Suite of Immortality</span> deals <span class="ingame-Dark">Havoc DMG</span> (considered <span class="ingame-Highlight">Resonance Skill DMG</span>) and Stagnates the target.<br>Press <span class="ingame-Highlight">Normal Attack</span> shortly after casting this skill to cast <span class="ingame-Highlight">Basic Attack Stage 3</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconFuluoluo/SP_IconFuluoluoQTE.webp",
   attacks: [
     {
       key: "SuiteofQuietusDMG",

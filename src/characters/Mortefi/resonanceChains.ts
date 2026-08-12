@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1SolitaryEtude",
     name: "Sequence Node 1: Solitary Etude",
     details: `<span class="skilldescription">During Resonance Liberation <span class="Highlight">Burning Rhapsody</span>, Mortefi launches Coordinated Attacks when the on-field character performs their Resonance Skills, firing 2 Resonance Liberation's <span class="Highlight">Marcato</span> hits, dealing <span class="Fire">Fusion DMG</span>.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_MotefeiM1_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -13,6 +14,7 @@ export const resonanceChains = [
     key: "SequenceNode2HypocriticalHymn",
     name: "Sequence Node 2: Hypocritical Hymn",
     details: `After using the Echo Skill, Mortefi restores an additional 10 Resonance Energy. This can be triggered once every 20 second.`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_MotefeiM2_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -23,6 +25,7 @@ export const resonanceChains = [
     key: "SequenceNode3FlamingRecitativo",
     name: "Sequence Node 3: Flaming Recitativo",
     details: `<span class="skilldescription">During Resonance Liberation <span class="Highlight">Burning Rhapsody</span>, the Crit. DMG of Resonance Liberation's <span class="Highlight">Marcato</span> is increased by 30%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_MotefeiM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -39,6 +42,7 @@ export const resonanceChains = [
     key: "SequenceNode4CatharticWaltz",
     name: "Sequence Node 4: Cathartic Waltz",
     details: `<span class="skilldescription">The duration of Resonance Liberation <span class="Highlight">Burning Rhapsody</span> is extended by 7s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_MotefeiM4_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -64,6 +68,7 @@ export const resonanceChains = [
     key: "SequenceNode6ApoplecticInstrumental",
     name: "Sequence Node 6: Apoplectic Instrumental",
     details: `<span class="skilldescription">When Resonance Liberation <span class="Highlight">Violent Finale</span> is cast, ATK of all team members is increased by 20% for 20s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_MotefeiM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

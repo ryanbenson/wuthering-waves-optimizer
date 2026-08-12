@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Wingblade",
   description: `<div class="skilldescription">Transform sound into feathers, dealing <span class="Dark">Havoc DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhujueDark/SP_IconZhujueDarkB1.webp",
   attacks: [
     {
       key: "WingbladeSkillDMG",

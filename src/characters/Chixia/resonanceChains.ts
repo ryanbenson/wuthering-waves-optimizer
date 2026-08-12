@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1No1HeroPlayFan",
     name: "Sequence Node 1: No.1 Hero Play Fan",
     details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Boom Boom</span> hits will always be Critical Hits.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_MaxiaofangM1_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -19,6 +20,7 @@ export const resonanceChains = [
     key: "SequenceNode2LeapingSparkles",
     name: "Sequence Node 2: Leaping Sparkles",
     details: `<span class="skilldescription">During Resonance Liberation <span class="Highlight">Blazing Flames</span>, for every 1 target defeated, Chixia recovers 5 Resonance Energy, up to 20 each time.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_MaxiaofangM2_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -29,6 +31,7 @@ export const resonanceChains = [
     key: "SequenceNode3EternalFlames",
     name: "Sequence Node 3: Eternal Flames",
     details: `<span class="skilldescription">Resonance Liberation <span class="Highlight">Blazing Flames</span> deals 40% more damage to targets whose HP is below 50%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_MaxiaofangM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -44,6 +47,7 @@ export const resonanceChains = [
     key: "SequenceNode4HerosUltimateMove",
     name: "Sequence Node 4: Hero’s Ultimate Move",
     details: `<span class="skilldescription">Resonance Liberation <span class="Highlight">Blazing Flames</span> grants 60 "Thermobaric Bullets" and immediately resets the Cooldown of Resonance Skill <span class="Highlight">Whizzing Fight Spirit</span>.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_MaxiaofangM4_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -54,6 +58,7 @@ export const resonanceChains = [
     key: "SequenceNode5TriumphantExplosions",
     name: "Sequence Node 5: Triumphant Explosions",
     details: `<span class="skilldescription">When the Inherent Skill <span class="Highlight">Numbingly Spicy!</span> reaches max stacks, ATK is additionally increased by 30%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_MaxiaofangM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -69,6 +74,7 @@ export const resonanceChains = [
     key: "SequenceNode6EasterEggPerformance",
     name: "Sequence Node 6: Easter Egg Performance",
     details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Boom Boom</span> increases the Basic Attack DMG Bonus of all team members by 25% for 15s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_MaxiaofangM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

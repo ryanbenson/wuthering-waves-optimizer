@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1OdysseyofBeginnings",
     name: "Sequence Node 1: Odyssey of Beginnings",
     details: `<span class="skilldescription">Rover's Crit. Rate is increased by 15% for 7s when casting Resonance Skill <span class="Highlight">Resonating Slashes</span> or Resonance Skill <span class="Highlight">Resonating Spin</span>.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_nannvzhuM1_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -18,6 +19,7 @@ export const resonanceChains = [
     key: "SequenceNode2MicrocosmicMurmurs",
     name: "Sequence Node 2: Microcosmic Murmurs",
     details: `<span class="skilldescription">Rover's Spectro DMG Bonus is increased by 20%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_nannvzhuM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -33,6 +35,7 @@ export const resonanceChains = [
     key: "SequenceNode3VisagesofDust",
     name: "Sequence Node 3: Visages of Dust",
     details: `Rover's Energy Regen is increased by 20%.`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_nannvzhuM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -48,6 +51,7 @@ export const resonanceChains = [
     key: "SequenceNode4ResonatingLamella",
     name: "Sequence Node 4: Resonating Lamella",
     details: `<span class="skilldescription">When casting Resonance Liberation <span class="Highlight">Echoing Resonance</span>, Rover continuously restores HP for all team members: HP equal to 20% of Rover's ATK will be restored every second for 5s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_nannvzhuM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -63,6 +67,7 @@ export const resonanceChains = [
     key: "SequenceNode5TemporalVirtuoso",
     name: "Sequence Node 5: Temporal Virtuoso",
     details: `<span class="skilldescription">Rover's Resonance Liberation DMG Bonus is increased by 40%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_nannvzhuM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -78,6 +83,7 @@ export const resonanceChains = [
     key: "SequenceNode6EchoesofWanderlust",
     name: "Sequence Node 6: Echoes of Wanderlust",
     details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Resonating Slashes</span> and Resonance Skill <span class="Highlight">Resonating Spin</span> reduces the target's Spectro DMG RES by 10% on hit for 20s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_nannvzhuM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

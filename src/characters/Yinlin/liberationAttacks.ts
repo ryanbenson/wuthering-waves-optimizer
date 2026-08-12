@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Thundering Wrath",
   description: `<div class="skilldescription">Command "Zapstring" to call for thunder to fall upon a large range, dealing <span class="Thunder">Electro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconYinlin/SP_IconYinlinC1.webp",
   attacks: [
     {
       key: "ThunderingWrath",

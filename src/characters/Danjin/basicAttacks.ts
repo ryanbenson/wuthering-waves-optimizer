@@ -28,6 +28,7 @@ export const basicAttacks = {
       <span class="Highlight">Crimson Fragment</span> to perform Resonance Skill:
       <span class="Highlight">Crimson Erosion</span>.
     </div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorKnife.webp",
   attacks: [
     {
       key: "Part1DMG",

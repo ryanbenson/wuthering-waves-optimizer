@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Majestic Fists",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Lingyang performs up to 5 consecutive attacks, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Basic Attack: Feral Roars</span><br>After Resonance Skill <span class="Highlight">Furious Punches</span> is cast, <span class="Highlight">Basic Attack 5</span> is replaced with <span class="Highlight">Feral Roars</span>, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Lingyang consumes STA to attack the target, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Lingyang consumes STA to perform a Mid-air Plunging Attack, dealing <span class="Ice">Glacio DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to attack the target, dealing <span class="Ice">Glacio DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorFist.webp",
   attacks: [
     {
       key: "MajesticFistStage1DMG",

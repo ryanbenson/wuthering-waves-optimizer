@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Arboreal Flourish",
   description: `<div class="skilldescription">Verina nourishes nearby foliage at rapid speed, dealing <span class="Light">Spectro DMG</span> while healing all Characters on teams nearby. A <span class="Highlight">Photosynthesis Mark</span> is applied to the target on hit.<br> <br><span class="Title">Photosynthesis Mark</span><br>Whenever a Character on a team nearby performs an attack on targets with a <span class="Highlight">Photosynthesis Mark</span>, Verina performs a Coordinated Attack, dealing <span class="Light">Spectro DMG</span> while healing the active Character dealing damage on a team nearby, triggered 1 time per second.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJueyuan/SP_IconJueyuanC1.webp",
   attacks: [
     {
       key: "ArborealFlourishDMG",

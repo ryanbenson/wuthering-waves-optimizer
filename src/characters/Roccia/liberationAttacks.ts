@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Commedia Improvviso!",
   description: `<div class="skilldescription">Roccia's improvised comedy begins! Deal <span class="Dark">Havoc DMG</span> to the target, considered Heavy Attack DMG. For every 0.1% of Roccia's Crit. Rate over 50%, this skill increases the ATK of all Resnonators in the team by <saptag=2>1 point for 30s, up to 200 points.</saptag=2></div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLuokeke/SP_IconLuokekeC1.webp",
   attacks: [
     {
       key: "CommediaImprovvisoDMG",

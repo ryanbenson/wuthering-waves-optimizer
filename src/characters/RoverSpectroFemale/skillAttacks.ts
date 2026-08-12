@@ -1,6 +1,7 @@
 export const skillAttacks = {
   name: "Resonance Skill: Resonating Slashes",
   description: `<div class="skilldescription">Rover launches an attack forward, dealing <span class="Light">Spectro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhujue/SP_IconZhujueB1.webp",
   attacks: [
     {
       key: "ResonatingSlashesSkillDMG",

@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Blazing Flames",
   description: `<div class="skilldescription">Chixia fires up fast shots at nearby enemies, dealing <span class="Fire">Fusion DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconMaxiaofang/SP_IconMaxiaofangC1.webp",
   attacks: [
     {
       key: "BlazingFlamesSkillDMG",

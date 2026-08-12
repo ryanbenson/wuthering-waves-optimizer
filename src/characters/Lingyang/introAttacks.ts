@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Lion Awakens",
   description: `<div class="skilldescription">Lingyang enters the battlefield, dealing <span class="Ice">Glacio DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLingyang/SP_IconLingyangQTE.webp",
   attacks: [
     {
       key: "LionAwakensDMG",

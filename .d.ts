@@ -5,6 +5,10 @@ interface CharacterBasicInfo {
   avatarUrl: string;
   gender: string;
   element: string;
+  /** Full-body character art (Encore API's RoleStand). */
+  image?: string;
+  /** Icons for the character's 2 combat inherent skills, in API order. */
+  inherentSkillIcons?: string[];
   /** Stance names for characters that toggle between exclusive buff sets. */
   stances?: string[];
   spectroFrazzle?: boolean;

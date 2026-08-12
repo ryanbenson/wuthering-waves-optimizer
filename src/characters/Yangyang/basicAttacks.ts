@@ -1,6 +1,7 @@
 export const basicAttacks = {
   name: "Normal Attack: Feather as Blade",
   description: `<div class="skilldescription"><span class="Title">Basic Attack</span><br>Yangayang performs up to 4 consecutive attacks, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Heavy Attack</span><br>Yangyang consumes STA to lunge forward, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Heavy Attack: Zephyr Song</span><br>Use <span class="Highlight">Basic Attack</span> after <span class="Highlight">Heavy Attack</span> or <span class="Highlight">Dodge Counter</span> to perform Heavy Attack <span class="Highlight">Zephyr Song</span>, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Mid-air Attack</span><br>Yangyang consumes STA to perform a Plunging Attack from mid-air, dealing <span class="Wind">Aero DMG</span>.<br> <br><span class="Title">Dodge Counter</span><br>Use <span class="Highlight">Basic Attack</span> after a successful <span class="Highlight">Dodge</span> to thrust forward, dealing <span class="Wind">Aero DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconNor/SP_IconNorKnife.webp",
   attacks: [
     {
       key: "FeatherasBladeStage1DMG",

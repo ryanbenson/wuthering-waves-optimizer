@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1CrownDestinedbyFate",
     name: "Sequence Node 1: Crown Destined by Fate",
     details: `<span class="skilldescription">Gain <span class="Highlight">Zeal</span> that lasts for 10s when <span class="Highlight">Cartethyia's</span> or <span class="Highlight">Fleurdelys's</span> attacks directly damage and defeat targets inflicted with <span class="Wind">Aero Erosion</span>.<br>In the <span class="Highlight">Zeal</span> state, upon defeating enemies, the next move that directly damages targets raises the <span class="Wind">Aero Erosion</span> stacks on the targets to the highest count among the targets defeated. This will not exceed the current max <span class="Wind">Aero Erosion</span> stack limit. <span class="Highlight">Zeal</span> is removed afterward and enters a 1s cooldown.<br>When <span class="Highlight">Fleurdelys's</span> <span class="Highlight">Conviction</span> hits 30/60/90/120, <span class="Highlight">Fleurdelys's</span> Crit. DMG is increased by 25% for 15s, up to 4 stacks. The duration of this effect does not reset upon gaining new stacks. After casting <span class="Highlight">Resonance Liberation - Blade of Howling Squall</span>, the increased Crit. DMG is removed.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KatixiyaM1_UI.webp`,
     hasStacks: true,
     modifiers: [
       {
@@ -36,6 +37,7 @@ export const resonanceChains = [
     key: "SequenceNode2BladeBrokenbyTempest",
     name: "Sequence Node 2: Blade Broken by Tempest",
     details: `<span class="skilldescription">Casting <span class="Highlight">Resonance Liberation - A Knight's Heartfelt Prayers</span> increases the max stack limit of <span class="Wind">Aero Erosion</span> on targets within a certain range by <saptag=0>3 stack. The next attack that directly damages the target inflicts <saptag=1>3 stack of <span class="Wind">Aero Erosion</span> on all targets within a certain range and immediately triggers the <span class="Wind">Aero Erosion</span> DMG on the targets hit once without consuming the <span class="Wind">Aero Erosion</span> stacks.<br>The DMG Multipliers of <span class="Highlight">Cartethyia's</span> Basic Attack, Heavy Attack, Dodge Counter, and Intro Skill are increased by 50% and the DMG Multiplier of her Mid-air Attack is increased by 200%.<br>After casting <span class="Highlight">Mid-air Attack - Cartethyia</span>, every 1 type of Sword Shadow recalled reduces the cooldown of <span class="Highlight">Resonance Skill - Cartethyia</span> by 1s.</saptag=1></saptag=0></span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KatixiyaM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -70,6 +72,7 @@ export const resonanceChains = [
     key: "SequenceNode3PrisonerHangedintheTower",
     name: "Sequence Node 3: Prisoner Hanged in the Tower",
     details: `<span class="skilldescription"><span class="Highlight">Basic Attack - Fleurdelys Stage 5</span>, <span class="Highlight">Mid-air Attack - Fleurdelys Stage 2</span>, <span class="Highlight">Enhanced Heavy Attack - Fleurdelys</span>, and <span class="Highlight">Resonance Skill - May Tempest Break the Tides</span> now inflict <saptag=0>2 stack of <span class="Wind">Aero Erosion</span> on the targets hit.<br>The DMG Multiplier of <span class="Highlight">Resonance Skill - Blade of Howling Squall</span> is increased by 100%.</saptag=0></span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KatixiyaM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -86,6 +89,7 @@ export const resonanceChains = [
     key: "SequenceNode4SacrificeMadeforSalvation",
     name: "Sequence Node 4: Sacrifice Made for Salvation",
     details: `<span class="skilldescription">After Resonators in the team inflict <span class="Highlight">Havoc Bane</span>, <span class="Highlight">Fusion Burst</span>, <span class="Highlight">Spectro Frazzle</span>, <span class="Highlight">Electro Flare</span>, <span class="Highlight">Glacio Chafe</span>, or<span class="Highlight">Aero Erosion</span>, all Resonators in the team gain 20% DMG Bonus for all Attributes for 20s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KatixiyaM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -121,6 +125,7 @@ export const resonanceChains = [
     key: "SequenceNode5HopeReshapedinStorms",
     name: "Sequence Node 5: Hope Reshaped in Storms",
     details: `<span class="skilldescription">When <span class="Highlight">Cartethyia</span> or <span class="Highlight">Fleurdelys</span> takes a fatal blow, they will not be downed by this instance of damage, but instead gain a Shield equal to 20% of <span class="Highlight">Cartethyia's</span> Max HP for 10s. This effect can be triggered once every 10 min.<br>The HP cost for casting <span class="Highlight">Resonance Liberation - A Knight's Heartfelt Prayers</span> is reduced to 25% of Max HP.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KatixiyaM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -136,6 +141,7 @@ export const resonanceChains = [
     key: "SequenceNode6FreedomFoundinStormsWake",
     name: "Sequence Node 6: Freedom Found in Storm's Wake",
     details: `<span class="skilldescription">After casting <span class="Highlight">Resonance Liberation - Blade of Howling Squall</span>, raise the <span class="Wind">Aero Erosion</span> stacks on the target hit to max. Casting <span class="Highlight">Resonance Liberation - Blade of Howling Squall</span> no longer removes the <span class="Wind">Aero Erosion</span> stacks on the target.<br>Within 30s after casting <span class="Highlight">Intro Skill - Sword to Mark Tide's Trace</span>, <span class="Highlight">Intro Skill - Sword to Call for Freedom</span>, <span class="Highlight">Resonance Liberation - A Knight's Heartfelt Prayers</span>, and <span class="Highlight">Resonance Liberation - Blade of Howling Squall</span>, when any Resonator in the team inflicts <span class="Wind">Aero Erosion</span> on the targets with max stacks of <span class="Wind">Aero Erosion</span>, immediately trigger the <span class="Wind">Aero Erosion</span> DMG once.<br>The targets take 40% more DMG from <span class="Highlight">Fleurdelys</span>.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_KatixiyaM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

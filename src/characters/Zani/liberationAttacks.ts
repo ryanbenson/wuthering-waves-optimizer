@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Between Dawn and Dusk",
   description: `<div class="skilldescription"><span class="Title">Rekindle</span><br>Deal <span class="Light">Spectro DMG</span> and enter <span class="Highlight">Inferno Mode</span>, increasing Max Blaze from 100 to 150 and granting 50 Blazes. When in <span class="Highlight">Inferno Mode</span>, the DMG Multiplier of Basic Attack is increased.<br><span class="Title">The Last Stand</span><br>When in <span class="Highlight">Inferno Mode</span>, Resonance Liberation <span class="Highlight">The Last Stand</span> becomes available when Blaze is lower than 30 or after 8s in <span class="Highlight">Inferno Mode</span>.<br>Casting Resonance Liberation <span class="Highlight">The Last Stand</span> deals <span class="Light">Spectro DMG</span> and ends the <span class="Highlight">Inferno Mode</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZanni/SP_IconZanniC1.webp",
   attacks: [
     {
       key: "RekindleDMG",

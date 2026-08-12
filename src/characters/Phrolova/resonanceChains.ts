@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1AKeytoNetherworldsSecrets",
     name: "Sequence Node 1: A Key to Netherworld's Secrets",
     details: `<span class="skilldescription">The DMG Multiplier of <span class="ingame-Highlight">Movement of Fate and Finality</span> is increased by 80%.<br>The DMG Multiplier of <span class="ingame-Highlight">Murmurs in a Haunting Dream</span> is increased by 80%.<br>If Phrolova has less than 2 <span class="ingame-Highlight">Volatile Notes</span> when she is not in the <span class="ingame-Highlight">Maestro</span> state and stays out of combat for 4s, she gains <span class="ingame-Highlight">Volatile Note - Cadenza</span> until she has at least 2 <span class="ingame-Highlight">Volatile Notes</span>.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FuluoluoM1_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -22,6 +23,7 @@ export const resonanceChains = [
     key: "SequenceNode2ARopeTiedtoaLifeBeyond",
     name: "Sequence Node 2: A Rope Tied to a Life Beyond",
     details: `<span class="skilldescription">The DMG Multiplier of <span class="ingame-Highlight">Scarlet Coda</span> is increased by 75%. <span class="ingame-Highlight">Aftersound</span> now additionally increases the DMG Multiplier of <span class="ingame-Highlight">Scarlet Coda</span> by 75%.<br>Casting <span class="ingame-Highlight">Scarlet Coda</span> grants 14 stacks of <span class="ingame-Highlight">Aftersound</span>.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FuluoluoM2_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -38,6 +40,7 @@ export const resonanceChains = [
     key: "SequenceNode3ADaggertoCutCleanObsessions",
     name: "Sequence Node 3: A Dagger to Cut Clean Obsessions",
     details: `<span class="skilldescription">Echo Skill DMG is Amplified by 80%.<br>Casting <span class="ingame-Highlight">Scarlet Coda</span> will convert all <span class="ingame-Highlight">Volatile Notes</span> to <span class="ingame-Highlight">Volatile Notes - Cadenza</span> in turn. Targets hit by <span class="ingame-Highlight">Enhanced Attack - Hecate: Cadenza</span> will have their ATK reduced by 20% for 15s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FuluoluoM3_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -58,6 +61,7 @@ export const resonanceChains = [
     key: "SequenceNode4ATorchIlluminatingthePath",
     name: "Sequence Node 4: A Torch Illuminating the Path",
     details: `<span class="skilldescription">Casting <span class="ingame-Highlight">Echo Skill</span> grants 20% Attribute DMG Bonus for all Resonators in the team for 30s.`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FuluoluoM5_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -93,6 +97,7 @@ export const resonanceChains = [
     key: "SequenceNode5AForkedRoadinFatesHeartland",
     name: "Sequence Node 5: A Forked Road in Fate's Heartland",
     details: `<span class="skilldescription">Upon entering the <span class="ingame-Highlight">Maestro</span> state, generate a field to Stagnate the nearby targets, which lasts for 4s. Leaving the <span class="ingame-Highlight">Maestro</span> state or switching to other Resonators removes the Stagnation effect early.<br>Damage taken during the <span class="ingame-Highlight">Maestro</span> state is reduced by 30%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FuluoluoM4_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -103,6 +108,7 @@ export const resonanceChains = [
     key: "SequenceNode6ANighttoDepartFromEternalRest",
     name: "Sequence Node 6: A Night to Depart From Eternal Rest",
     details: `<span class="skilldescription">The DMG Multiplier of <span class="ingame-Highlight">Enhanced Attack - Hecate</span> is increased by 24%. <br><span class="ww-wiki-font-bold"></span><br>During <span class="ingame-Highlight">Movement of Fate and Finality</span> and <span class="ingame-Highlight">Murmurs in a Haunting Dream</span>, command Hecate to cast 1 <span class="ingame-Highlight">Apparition of Beyond - Hecate</span>, dealing <span class="ingame-Dark">Havoc DMG</span> equal to 216.42% of Phrolova's ATK (considered <span class="ingame-Highlight">Echo Skill DMG</span>) and granting 8 stacks of <span class="ingame-Highlight">Aftersound</span> on hit.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FuluoluoM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -127,6 +133,7 @@ export const resonanceChains = [
     key: "SequenceNode6ANighttoDepartFromEternalRestOffField",
     name: "Sequence Node 6: A Night to Depart From Eternal Rest (Off-Field)",
     details: `<span class="skilldescription">If Phrolova is not the active Resonator during the <span class="ingame-Highlight">Maestro</span> state, targets take 40% more DMG from Hecate and Phrolova.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FuluoluoM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -149,6 +156,7 @@ export const resonanceChains = [
     key: "SequenceNode6ANighttoDepartFromEternalRestOnField",
     name: "Sequence Node 6: A Night to Depart From Eternal Rest (On-Field)",
     details: `<span class="skilldescription">If Phrolova is the active Resonator during the <span class="ingame-Highlight">Maestro</span> state, gain 60% Havoc DMG Bonus.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_FuluoluoM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

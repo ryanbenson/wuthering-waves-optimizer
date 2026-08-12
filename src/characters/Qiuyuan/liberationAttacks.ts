@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Sundering Strike",
   description: `<div>Deal <span class="ingame-Wind">Aero DMG</span> to targets within range, considered as Echo Skill DMG.<br>For every 1% of Qiuyuan's Crit. Rate over 50%, this skill increases the Crit. DMG of all nearby active Resonators in the team by 2% for 30s, up to 30%.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconQiuyuan/SP_IconQiuyuanC1.webp",
   attacks: [
     {
       key: "SunderingStrikeDMG",

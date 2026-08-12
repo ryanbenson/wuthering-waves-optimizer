@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Cerulean Song",
   description: `<div class="skilldescription">Yangyang sends the target into the air, dealing <span class="Wind">Aero DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconYangyang/SP_IconYangyangQTE.webp",
   attacks: [
     {
       key: "CeruleanSongSkillDMG",

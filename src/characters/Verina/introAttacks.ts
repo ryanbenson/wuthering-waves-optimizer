@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Verdant Growth",
   description: `<div class="skilldescription">Verina attacks the target, dealing <span class="Light">Spectro DMG</span>.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJueyuan/SP_IconJueyuanQTE.webp",
   attacks: [
     {
       key: "VerdantGrowthDMG",

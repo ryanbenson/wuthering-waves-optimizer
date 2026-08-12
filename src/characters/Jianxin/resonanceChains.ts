@@ -3,6 +3,7 @@ export const resonanceChains = [
     key: "SequenceNode1VerdantBranchlet",
     name: "Sequence Node 1: Verdant Branchlet",
     details: `<span class="skilldescription">After casting Intro Skill <span class="Highlight">Essence of Tao</span>, Jianxin gains 100% extra "Chi" from <span class="Highlight">Basic Attacks</span> for 10s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JianxinM1_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -13,6 +14,7 @@ export const resonanceChains = [
     key: "SequenceNode2TaoSeekersJourney",
     name: "Sequence Node 2: Tao Seeker's Journey",
     details: `<span class="skilldescription">Resonance Skill <span class="Highlight">Calming Air</span> can be used 1 more time.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JianxinM2_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -23,6 +25,7 @@ export const resonanceChains = [
     key: "SequenceNode3PrinciplesofWuwei",
     name: "Sequence Node 3: Principles of Wuwei",
     details: `<span class="skilldescription">After staying in the <span class="Highlight">Parry Stance</span> of Resonance Skill <span class="Highlight">Calming Air</span> for 2.5s, Resonance Skill <span class="Highlight">Chi Counter</span> becomes immediately available.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JianxinM3_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -33,6 +36,7 @@ export const resonanceChains = [
     key: "SequenceNode4MultitideReflection",
     name: "Sequence Node 4: Multitide Reflection",
     details: `<span class="skilldescription">When performing Forte Circuit <span class="Highlight">Heavy Attack: Primordial Chi Spiral</span>, Jianxin's Resonance Liberation <span class="Highlight">Purification Force Field</span> damage is increased by 80% for 14s.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JianxinM4_UI.webp`,
     hasStacks: false,
     modifiers: [
       {
@@ -51,6 +55,7 @@ export const resonanceChains = [
     key: "SequenceNode5MirroringIntrospection",
     name: "Sequence Node 5: Mirroring Introspection",
     details: `<span class="skilldescription">The range of Resonance Liberation <span class="Highlight">Purification Force Field</span> is increased by 33%.</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JianxinM5_UI.webp`,
     hasStacks: false,
     modifiers: [],
     minStacks: 0,
@@ -61,6 +66,7 @@ export const resonanceChains = [
     key: "SequenceNode6TruthfromWithin",
     name: "Sequence Node 6: Truth from Within",
     details: `<span class="skilldescription">During Forte Circuit <span class="Highlight">Heavy Attack: Primordial Qi Spiral</span>, if Jianxin performs <span class="Highlight">Pushing Punch</span>, enhanced Resonance Skill <span class="Highlight">Special Chi Counter</span> can be used 1 time(s) in 5s.  <span class="Highlight">Special Chi Counter</span>: Deals <span class="Wind">Aero DMG</span> equal to 556.67% of Jianxin's ATK, considered as Heavy Attack DMG. Obtain a Zhoutian Progress 4 Shield (Benefits from Inherent Skill <span class="Highlight">Reflection</span>'s bonus effect.)</span>`,
+    icon: `https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconDevice/T_IconDevice_JianxinM6_UI.webp`,
     hasStacks: false,
     modifiers: [
       {

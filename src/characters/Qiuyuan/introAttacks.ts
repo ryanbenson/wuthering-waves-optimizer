@@ -1,6 +1,7 @@
 export const introAttacks = {
   name: "Intro Skill: Attack the Must-Defend",
   description: `<div>Attack the target, dealing <span class="ingame-Wind">Aero DMG</span>, considered as Heavy Attack DMG.<br>Within a certain period of time after casting this skill, press <span class="ingame-Highlight">Normal Attack</span> to perform Basic Attack <span class="ingame-Highlight">Thus Spoke the Blade: Inkwash</span> Stage 3.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconQiuyuan/SP_IconQiuyuanQTE.webp",
   attacks: [
     {
       key: "AttacktheMustDefendDMG",

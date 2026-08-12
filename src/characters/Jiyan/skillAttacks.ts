@@ -3,6 +3,7 @@ export const skillAttacks = {
   description: `<div class="skilldescription">Dash forward a certain distance, dealing <span class="Wind">Aero DMG</span>.
   <br> 
   <br>Can be cast in the air.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJiyan/SP_IconJiyanB1.webp",
   attacks: [
     {
       key: "Windqueller",
