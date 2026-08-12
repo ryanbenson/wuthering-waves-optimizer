@@ -93,19 +93,19 @@
         </div>
       </div>
 
-      <div class="data-input--talents mt-8" data-test-team-rotation-enemy-havoc-bane>
+      <div class="data-input--talents mt-8" data-test-team-rotation-enemy-strain>
         <div class="flex flex-col pb-7 relative">
-          <label class="talent__label" data-test-team-rotation-enemy-havoc-bane-label>
-            Havoc Bane Stacks <span class="text-primary">{{ havocBaneStacks }}</span>
+          <label class="talent__label" data-test-team-rotation-enemy-strain-label>
+            Tune Strain - Interfered Stacks <span class="text-primary">{{ strainStacks }}</span>
           </label>
           <input
-            v-model.number="havocBaneStacks"
+            v-model.number="strainStacks"
             type="range"
             min="0"
-            max="9"
+            max="6"
             step="1"
             class="range range-xs"
-            data-test-team-rotation-enemy-havoc-bane-input />
+            data-test-team-rotation-enemy-strain-input />
         </div>
       </div>
 
@@ -158,6 +158,117 @@
           </div>
         </div>
       </div>
+
+      <h4
+        class="text-xl font-bold mt-8 mb-2 text-primary"
+        data-test-team-rotation-enemy-negative-status-title>
+        Negative Status Effects
+      </h4>
+      <div class="data-input--talents mt-8" data-test-team-rotation-enemy-spectro-frazzle>
+        <div class="flex flex-col pb-7 relative">
+          <label class="talent__label" data-test-team-rotation-enemy-spectro-frazzle-label>
+            Spectro Frazzle Stacks <span class="text-primary">{{ spectroFrazzleStacks }}</span>
+          </label>
+          <input
+            v-model.number="spectroFrazzleStacks"
+            type="range"
+            min="0"
+            max="13"
+            step="1"
+            class="range range-xs"
+            data-test-team-rotation-enemy-spectro-frazzle-input />
+        </div>
+      </div>
+      <div class="data-input--talents mt-8" data-test-team-rotation-enemy-aero-erosion>
+        <div class="flex flex-col pb-7 relative">
+          <label class="talent__label" data-test-team-rotation-enemy-aero-erosion-label>
+            Aero Erosion Stacks <span class="text-primary">{{ aeroErosionStacks }}</span>
+          </label>
+          <input
+            v-model.number="aeroErosionStacks"
+            type="range"
+            min="0"
+            max="12"
+            step="1"
+            class="range range-xs"
+            data-test-team-rotation-enemy-aero-erosion-input />
+        </div>
+      </div>
+      <div class="data-input--talents mt-8" data-test-team-rotation-enemy-havoc-bane>
+        <div class="flex flex-col pb-7 relative">
+          <label class="talent__label" data-test-team-rotation-enemy-havoc-bane-label>
+            Havoc Bane Stacks <span class="text-primary">{{ havocBaneStacks }}</span>
+          </label>
+          <input
+            v-model.number="havocBaneStacks"
+            type="range"
+            min="0"
+            max="9"
+            step="1"
+            class="range range-xs"
+            data-test-team-rotation-enemy-havoc-bane-input />
+        </div>
+      </div>
+      <div class="data-input--talents mt-8" data-test-team-rotation-enemy-fusion-burst>
+        <div class="flex flex-col pb-7 relative">
+          <label class="talent__label" data-test-team-rotation-enemy-fusion-burst-label>
+            Fusion Burst Stacks <span class="text-primary">{{ fusionBurstStacks }}</span>
+          </label>
+          <input
+            v-model.number="fusionBurstStacks"
+            type="range"
+            min="0"
+            max="13"
+            step="1"
+            class="range range-xs"
+            data-test-team-rotation-enemy-fusion-burst-input />
+        </div>
+      </div>
+      <div class="data-input--talents mt-8" data-test-team-rotation-enemy-electro-flare>
+        <div class="flex flex-col pb-7 relative">
+          <label class="talent__label" data-test-team-rotation-enemy-electro-flare-label>
+            Electro Flare Stacks <span class="text-primary">{{ electroFlareStacks }}</span>
+          </label>
+          <input
+            v-model.number="electroFlareStacks"
+            type="range"
+            min="0"
+            max="13"
+            step="1"
+            class="range range-xs"
+            data-test-team-rotation-enemy-electro-flare-input />
+        </div>
+      </div>
+      <div class="data-input--talents mt-8" data-test-team-rotation-enemy-glacio-chafe>
+        <div class="flex flex-col pb-7 relative">
+          <label class="talent__label" data-test-team-rotation-enemy-glacio-chafe-label>
+            Glacio Chafe Stacks <span class="text-primary">{{ glacioChafeStacks }}</span>
+          </label>
+          <input
+            v-model.number="glacioChafeStacks"
+            type="range"
+            min="0"
+            max="13"
+            step="1"
+            class="range range-xs"
+            data-test-team-rotation-enemy-glacio-chafe-input />
+        </div>
+      </div>
+      <div class="data-input--talents mt-8" data-test-team-rotation-enemy-electro-rage>
+        <div class="flex flex-col pb-7 relative">
+          <label class="talent__label" data-test-team-rotation-enemy-electro-rage-label>
+            Electro Rage Stacks <span class="text-primary">{{ electroRageStacks }}</span>
+          </label>
+          <input
+            v-model.number="electroRageStacks"
+            type="range"
+            min="0"
+            max="13"
+            step="1"
+            class="range range-xs"
+            data-test-team-rotation-enemy-electro-rage-input />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -176,7 +287,14 @@ export interface TeamEnemySettingsValue {
   enemyResist: number;
   enemyType: string;
   enemyBrowserKey?: string | null;
+  strainStacks?: number;
+  spectroFrazzleStacks?: number;
+  aeroErosionStacks?: number;
   havocBaneStacks?: number;
+  fusionBurstStacks?: number;
+  electroFlareStacks?: number;
+  electroRageStacks?: number;
+  glacioChafeStacks?: number;
   [key: string]: unknown;
 }
 
@@ -222,9 +340,44 @@ const enemyType = computed({
   set: (value: string) => patch({ enemyType: value }),
 });
 
+const strainStacks = computed({
+  get: () => props.modelValue.strainStacks ?? 0,
+  set: (value: number) => patch({ strainStacks: value }),
+});
+
+const spectroFrazzleStacks = computed({
+  get: () => props.modelValue.spectroFrazzleStacks ?? 0,
+  set: (value: number) => patch({ spectroFrazzleStacks: value }),
+});
+
+const aeroErosionStacks = computed({
+  get: () => props.modelValue.aeroErosionStacks ?? 0,
+  set: (value: number) => patch({ aeroErosionStacks: value }),
+});
+
 const havocBaneStacks = computed({
   get: () => props.modelValue.havocBaneStacks ?? 0,
   set: (value: number) => patch({ havocBaneStacks: value }),
+});
+
+const fusionBurstStacks = computed({
+  get: () => props.modelValue.fusionBurstStacks ?? 0,
+  set: (value: number) => patch({ fusionBurstStacks: value }),
+});
+
+const electroFlareStacks = computed({
+  get: () => props.modelValue.electroFlareStacks ?? 0,
+  set: (value: number) => patch({ electroFlareStacks: value }),
+});
+
+const electroRageStacks = computed({
+  get: () => props.modelValue.electroRageStacks ?? 0,
+  set: (value: number) => patch({ electroRageStacks: value }),
+});
+
+const glacioChafeStacks = computed({
+  get: () => props.modelValue.glacioChafeStacks ?? 0,
+  set: (value: number) => patch({ glacioChafeStacks: value }),
 });
 
 const enemyBrowserKey = computed({
