@@ -124,7 +124,7 @@
         data-test-calculator-nav="buildCard">
         <img
           src="https://ryanbenson.github.io/wuthering-waves-assets/images/icons/camera.webp"
-          class="size-7"
+          class="size-9"
           alt="Build Card" />
       </a>
     </li>
