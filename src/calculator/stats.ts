@@ -853,17 +853,7 @@ export const computeSelfBuffs = (
               "RunicSoliskinDMG",
               "ForteCircuitLearnMyTrueNameDMG",
             ],
-            modifierValue: .3,
-          },
-          {
-            modifier: "talentModifierMultiply",
-            modifySpecificTalents: [
-              "RunicOutburstDMG",
-              "RunicChainWhipDMG",
-              "RunicSoliskinDMG",
-              "ForteCircuitLearnMyTrueNameDMG",
-            ],
-            modifierValue: .15,
+            modifierValue: .45, // .3 from base + another .15 from s6
           },
           {
             modifier: "DEFIgnore",
