@@ -6,7 +6,11 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     avatarUrl: "RoverHavocFemale.jpg",
     gender: "female",
     element: "Havoc",
-    image: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/UiQuest/Image/ChuanShuo/T_IconChuanShuo1_UI.webp",
-    inherentSkillIcons: ["https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhujueDark/SP_IconZhujueDarkD1.webp","https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhujueDark/SP_IconZhujueDarkD2.webp"],
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/PixActivity/T_ActivityRoleNvzhu.webp",
+    inherentSkillIcons: [
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhujueDark/SP_IconZhujueDarkD1.webp",
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconZhujueDark/SP_IconZhujueDarkD2.webp",
+    ],
   };
 }

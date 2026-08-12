@@ -43,8 +43,8 @@ export interface ApiCharacterDetail {
   Skills: ApiSkill[];
   ResonantChain?: ApiResonantChain[];
   SkillTree?: ApiSkillTreeNode[];
-  /** Full-body character art shown on the in-game character detail screen. */
-  RoleStand?: string;
+  /** Per-character portrait art (distinct from RoleStand, which is a shared/generic story banner, not per-character). */
+  RolePortrait?: string;
 }
 
 export interface ApiSkillTreeNode {

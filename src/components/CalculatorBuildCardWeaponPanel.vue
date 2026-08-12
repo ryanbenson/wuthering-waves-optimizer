@@ -4,7 +4,7 @@
     data-test-build-card-weapon>
     <div class="weapon-panel__image-wrap relative shrink-0">
       <div
-        class="weapon-panel__image size-28 rounded-lg bg-cover bg-center bg-base-300 border-2"
+        class="weapon-panel__image size-32 rounded-lg bg-cover bg-center bg-base-300 border-2"
         :class="rarityBorderClass"
         :style="{ backgroundImage: image ? `url(${image})` : undefined }"></div>
       <div
@@ -25,35 +25,35 @@
 
     <div class="weapon-panel__info min-w-0 flex-1">
       <h3
-        class="weapon-panel__name text-lg font-bold leading-tight truncate"
+        class="weapon-panel__name text-2xl font-bold leading-tight truncate"
         :class="rarityTextClass">
         {{ name }}
       </h3>
 
-      <div class="weapon-panel__row flex items-center gap-4 mt-2">
-        <span v-if="attack != null" class="flex items-center gap-1.5">
+      <div class="weapon-panel__row flex items-center gap-5 mt-3">
+        <span v-if="attack != null" class="flex items-center gap-2">
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png"
-            class="size-4" />
-          <span class="text-sm font-bold">{{ displayInt(attack) }}</span>
+            class="size-6" />
+          <span class="text-xl font-bold">{{ displayInt(attack) }}</span>
         </span>
         <span
           v-if="modifierLabel && modifierValue != null"
-          class="flex items-center gap-1.5">
-          <img v-if="modifierImage" :src="modifierImage" class="size-4" />
-          <span class="text-sm font-bold">{{
+          class="flex items-center gap-2">
+          <img v-if="modifierImage" :src="modifierImage" class="size-6" />
+          <span class="text-xl font-bold">{{
             displayPercentage(modifierValue * 100)
           }}</span>
         </span>
       </div>
 
-      <div class="weapon-panel__row flex items-center gap-3 mt-2">
+      <div class="weapon-panel__row flex items-center gap-3 mt-3">
         <span
-          class="badge badge-primary badge-lg font-bold"
+          class="badge badge-primary badge-lg text-base font-bold"
           data-test-build-card-weapon-refinement>
           R{{ refinement }}
         </span>
-        <span class="text-sm font-semibold opacity-80">Lv. {{ level }}</span>
+        <span class="text-lg font-semibold opacity-80">Lv. {{ level }}</span>
       </div>
     </div>
   </div>

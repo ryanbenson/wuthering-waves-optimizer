@@ -82,8 +82,8 @@
             : undefined,
         }">
         <div class="build-card__grid grid grid-cols-12 gap-4">
-          <div class="build-card__identity-panel col-span-4 h-full flex gap-2">
-            <div class="build-card__identity relative flex-1 h-full rounded-lg overflow-hidden bg-base-300">
+          <div class="build-card__identity-panel col-span-5 h-full">
+            <div class="build-card__identity relative h-full w-full rounded-lg overflow-hidden bg-base-300">
               <CalculatorBuildCardPortraitUpload
                 variant="cover"
                 :character="character"
@@ -91,7 +91,7 @@
                 :default-portrait-url="defaultPortraitUrl" />
               <div class="build-card__identity-scrim absolute inset-0 pointer-events-none"></div>
 
-              <div class="absolute top-4 left-4 right-4 pointer-events-none">
+              <div class="absolute top-4 left-4 max-w-[65%] pointer-events-none">
                 <template v-if="characterBasic">
                   <h2
                     class="text-2xl font-bold leading-tight text-white"
@@ -153,6 +153,12 @@
                 </div>
               </div>
 
+              <div class="absolute top-4 right-4 pointer-events-none">
+                <CalculatorBuildCardForte
+                  :talents="characterData.talents ?? {}"
+                  :icons="forteIcons" />
+              </div>
+
               <div
                 v-if="buildCardUsername || buildCardUid"
                 class="build-card__profile absolute bottom-4 left-4 text-white leading-tight pointer-events-none"
@@ -165,13 +171,9 @@
                 </div>
               </div>
             </div>
-
-            <div class="build-card__forte shrink-0 w-20 h-full rounded-lg bg-base-200">
-              <CalculatorBuildCardForte :talents="characterData.talents ?? {}" />
-            </div>
           </div>
 
-          <div class="build-card__middle col-span-4 h-full flex flex-col gap-4">
+          <div class="build-card__middle col-span-3 h-full flex flex-col gap-4">
             <div class="build-card__weapon h-[200px] shrink-0">
               <CalculatorBuildCardWeaponPanel
                 v-if="weaponInfo"
@@ -221,6 +223,18 @@
                 :tune-break-boost="tuneBreakBoost"
                 :element-filter="characterBasic?.element" />
             </div>
+            <div
+              v-if="echoSetSummary.length"
+              class="build-card__echo-sets shrink-0 flex flex-wrap gap-2"
+              data-test-build-card-echo-sets>
+              <div
+                v-for="set in echoSetSummary"
+                :key="set.key"
+                class="flex items-center gap-2 rounded-lg bg-base-200 px-3 py-2">
+                <img :src="set.icon" class="size-7" />
+                <span class="text-base font-semibold">{{ set.count }}pc {{ set.label }}</span>
+              </div>
+            </div>
           </div>
 
           <div
@@ -246,7 +260,12 @@ import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import { getWeaponByName } from "../weapons/weapons";
 import { useToast } from "../composables/useToast";
-import { subStatIconMap, subStatLabelMap } from "../echoes/stats";
+import {
+  subStatIconMap,
+  subStatLabelMap,
+  getEchoSetIconByType,
+  getEchoSetLabelByType,
+} from "../echoes/stats";
 import { compressImageToDataUrl } from "../utils/imageCompression";
 import {
   copyCardImageToClipboard,
@@ -268,8 +287,14 @@ interface ChosenCharRef {
       rarity: number;
       element: string;
       weapon: string;
+      image?: string;
     };
     resonanceChains?: Array<{ key: string; name?: string; icon?: string }>;
+    basicAttacks?: { icon?: string };
+    skillAttacks?: { icon?: string };
+    liberationAttacks?: { icon?: string };
+    forteCircuitAttacks?: { icon?: string };
+    introAttacks?: { icon?: string };
   };
 }
 
@@ -387,8 +412,17 @@ const characterBasic = computed(() => props.chosenChar?.value?.basic ?? null);
 
 const defaultPortraitUrl = computed(
   () =>
+    characterBasic.value?.image ||
     `https://ryanbenson.github.io/wuthering-waves-assets/images/${props.character}.png`,
 );
+
+const forteIcons = computed(() => ({
+  basic: props.chosenChar?.value?.basicAttacks?.icon,
+  skill: props.chosenChar?.value?.skillAttacks?.icon,
+  liberation: props.chosenChar?.value?.liberationAttacks?.icon,
+  forte: props.chosenChar?.value?.forteCircuitAttacks?.icon,
+  intro: props.chosenChar?.value?.introAttacks?.icon,
+}));
 
 const resonanceChainCount = computed(
   () =>
@@ -422,6 +456,30 @@ const echoSlots = computed(() => {
       : null;
     return inventoryEcho ?? slot;
   });
+});
+
+// Tallies equipped echoes by set key and surfaces every set with 2+ pieces
+// equipped (game set bonuses come in 2pc/5pc tiers), so the card can show
+// e.g. "2pc Molten Rift" / "5pc Molten Rift" — informational (what's
+// equipped), not a re-derivation of `getSetBonusEffects`'s "which 2 bonus
+// slots actually apply" selection logic used for damage calculation.
+const echoSetSummary = computed(() => {
+  const counts: Record<string, number> = {};
+  for (const echo of echoSlots.value as Array<{ echoSet?: string }>) {
+    const key = echo?.echoSet;
+    if (key && key !== "none") {
+      counts[key] = (counts[key] ?? 0) + 1;
+    }
+  }
+  return Object.entries(counts)
+    .filter(([, count]) => count >= 2)
+    .sort(([, a], [, b]) => b - a)
+    .map(([key, count]) => ({
+      key,
+      count,
+      label: getEchoSetLabelByType(key),
+      icon: getEchoSetIconByType(key),
+    }));
 });
 
 const weaponKey = computed(() => characterData.value.weapon ?? null);
@@ -565,7 +623,7 @@ async function handleDownload() {
 .build-card__canvas {
   width: 1920px;
   height: 1080px;
-  padding: 2rem;
+  padding: 0;
   box-sizing: border-box;
   position: absolute;
   top: 0;
@@ -607,5 +665,18 @@ async function handleDownload() {
 
 .build-card__resonance-node--inactive {
   opacity: 0.5;
+}
+
+// CalculatorStats.vue is shared with the single-character Calculator page,
+// so its own base font-size can't change without affecting that page too —
+// :deep() overrides it only within this build card's usage.
+.build-card__stats :deep(.calculator__stats td) {
+  font-size: 19px;
+  padding: 0.6rem 0.5rem;
+}
+
+.build-card__stats :deep(.calculator__stats img) {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 </style>

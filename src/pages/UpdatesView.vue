@@ -12,6 +12,11 @@
       <li>Reworks the Build Card layout into three panels: character portrait with forte levels, weapon and stats, and echoes listed vertically with a bigger substat layout.</li>
       <li>Colorizes Build Card echo substat values based on their roll quality (green to yellow, low to high).</li>
       <li>Makes resonance chain icons and weapon refinement bigger and easier to read on the Build Card.</li>
+      <li>Fixes character portraits used for the Build Card and CLI backfill, they were pulling a generic shared image instead of each character's own portrait art.</li>
+      <li>Uses each character's own portrait art as the Build Card's default background, removes the extra padding around the card, and widens the character panel.</li>
+      <li>Moves the forte level icons into the character portrait, using the actual skill icons instead of placeholders, aligned the same tight way as the resonance chain icons.</li>
+      <li>Increases text size for the Build Card's weapon info, stats, and echo substats.</li>
+      <li>Adds an equipped echo set summary (e.g. 2pc/5pc set names with icons) to the bottom of the Build Card's stats panel.</li>
     </ul>
     <h3>August 9, 2026</h3>
     <ul>
