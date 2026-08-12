@@ -20,6 +20,9 @@
       <li>Doubles the size of the Build Card's resonance chain and forte icons, and moves the forte level number underneath its icon.</li>
       <li>Doubles the width of the Build Card's echo art, and centers the echo set summary with a bit more breathing room from the bottom edge.</li>
       <li>Removes the resonance chain count from the Build Card, increases the text size for the echo name, main stat, username, and UID, and moves the echo set icon next to its cost badge in the top-right corner.</li>
+      <li>Shrinks the Build Card's character panel a bit and widens the echo panel, shrinks the resonance chain circles while making their icons bigger to fill them, and matches the forte icon size to the resonance chain icons with more spacing between both.</li>
+      <li>Makes the CV and RV text bigger on Build Card echoes, and changes the substats to a single list of 5 (icon and name on the left, value on the right) instead of a 3-then-2 grid.</li>
+      <li>Fixes the Build Card export to no longer include the portrait's remove (x) button in the downloaded/copied image.</li>
     </ul>
     <h3>August 9, 2026</h3>
     <ul>
