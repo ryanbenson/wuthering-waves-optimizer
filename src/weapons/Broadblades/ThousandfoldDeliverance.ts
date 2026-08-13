@@ -34,13 +34,13 @@ const weaponInfo: WeaponInfo = {
         "5": 0.12,
       },
       details:
-        "Nature's Order: Crit. DMG is increased by 6%/7.5%/9%/10.5%/12%, up to 36%/45%/54%/63%/72%. When Nature's Order reaches 6 stacks, the Crit. Rate of Heavy Attack DMG is increased by 12%.",
+        "Nature's Order: Crit. DMG is increased by 6%/7.5%/9%/10.5%/12%, up to 36%/45%/54%/63%/72%",
       alwaysEnabled: false,
       maxStacks: 6,
     },
     {
       key: "CallUponStarsAndGhostsNaturesOrderCritRate",
-      hasStacks: true,
+      hasStacks: false,
       modifier: "CritRate",
       modifierByRefinement: {
         "1": 0.12,
@@ -52,7 +52,6 @@ const weaponInfo: WeaponInfo = {
       details:
         "When Nature's Order reaches 6 stacks, the Crit. Rate of Heavy Attack DMG is increased by 12%/15%/18%/21%/24%.",
       alwaysEnabled: false,
-      maxStacks: 6,
     },
     {
       key: "CallUponStarsAndGhostsCradleOfLife",
