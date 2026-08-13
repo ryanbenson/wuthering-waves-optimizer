@@ -150,12 +150,6 @@
                 </div>
               </div>
 
-              <div class="absolute top-4 right-4 pointer-events-none">
-                <CalculatorBuildCardForte
-                  :talents="characterData.talents ?? {}"
-                  :icons="forteIcons" />
-              </div>
-
               <div
                 v-if="buildCardUsername || buildCardUid"
                 class="build-card__profile absolute bottom-4 left-4 text-white leading-tight pointer-events-none"
@@ -188,6 +182,11 @@
                 class="w-full h-full rounded-lg bg-base-200 flex items-center justify-center text-sm opacity-50">
                 No weapon selected
               </div>
+            </div>
+            <div class="build-card__forte shrink-0">
+              <CalculatorBuildCardForte
+                :talents="characterData.talents ?? {}"
+                :icons="forteIcons" />
             </div>
             <div class="build-card__stats flex-1 min-h-0 overflow-hidden">
               <CalculatorStats
