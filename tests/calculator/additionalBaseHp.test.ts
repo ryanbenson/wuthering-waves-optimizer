@@ -282,6 +282,56 @@ describe("computeAdditionalBaseBuffs - HP-based scaling", () => {
     ).toBeCloseTo(10 * 0.211 * 1.46);
   });
 
+  it("Jingran: skips the base Yang Changes, Yin Unites buff when SequenceNode3 is enabled (replaced, not stacked, by the chain's own Yin-Yang Everflow modifier in resonanceChains.ts)", () => {
+    const buffsCharInfoYangYin = [
+      {
+        key: "YangChangesYinUnites",
+        hasStacks: false,
+        modifiers: [
+          {
+            modifier: "ATK_FLAT:AdditionalBase",
+            modifierBasedOn: "HP",
+            minStatValue: 0,
+            modifierStep: 1000,
+            modifierValue: 36,
+            maximumValue: 1800,
+            modifierTargetAttr: "ATK_FLAT",
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+      },
+    ];
+
+    const withoutRc3 = computeAdditionalBaseBuffs(
+      { YangChangesYinUnites: { isEnabled: true } },
+      buffsCharInfoYangYin,
+      {},
+      "Jingran",
+      0,
+      0,
+      null,
+      32000,
+    );
+    expect(withoutRc3.ATK_FLAT).toBeCloseTo(32 * 36);
+
+    const withRc3 = computeAdditionalBaseBuffs(
+      { YangChangesYinUnites: { isEnabled: true } },
+      buffsCharInfoYangYin,
+      {
+        SequenceNode3WorldSCourseShiftsEachToTheirRightfulPaths: {
+          isEnabled: true,
+        },
+      },
+      "Jingran",
+      0,
+      0,
+      null,
+      32000,
+    );
+    expect(withRc3.ATK_FLAT ?? 0).toBe(0);
+  });
+
   it("Jingran: does not scale other characters' or other buffs' AdditionalBase modifiers", () => {
     const buffsCharInfoOther = [
       {

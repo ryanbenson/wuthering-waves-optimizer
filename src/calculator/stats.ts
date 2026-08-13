@@ -1376,6 +1376,19 @@ export const computeAdditionalBaseBuffs = (
       }
     }
 
+    // on Jingran, SequenceNode3 replaces Yang Changes, Yin Unites with the
+    // stronger Yin-Yang Everflow (50 ATK per 1000 Max HP, up to 2500, vs the
+    // base buff's 36 per 1000 up to 1800) -- that upgraded version is already
+    // applied as SequenceNode3's own chain modifier in resonanceChains.ts, so
+    // skip the base self-buff here rather than stacking both.
+    if (character === "Jingran" && key === "YangChangesYinUnites") {
+      const sequenceNode3 =
+        resonanceChainsConfig?.SequenceNode3WorldSCourseShiftsEachToTheirRightfulPaths;
+      if (sequenceNode3?.isEnabled) {
+        continue;
+      }
+    }
+
     // on Jingran, SequenceNode2 amplifies Fire of Life's HP-scaled DMG Multiplier Add
     // on Soul Raid/Stardome Meander by 46% -- scale the forte-table modifiers here
     // instead of duplicating them a second time in resonanceChains.ts
