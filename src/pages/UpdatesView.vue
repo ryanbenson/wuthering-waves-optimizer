@@ -25,6 +25,7 @@
       <li>Fixes the Build Card export to no longer include the portrait's remove (x) button in the downloaded/copied image.</li>
       <li>Adds more spacing between each echo, and between each resonance chain and forte icon on the Build Card.</li>
       <li>Doubles the resolution of the Build Card's copied/downloaded image for a sharper export.</li>
+      <li>Shrinks each echo's height on the Build Card, adds more spacing between them, and adds more padding around the substats.</li>
     </ul>
     <h3>August 9, 2026</h3>
     <ul>
