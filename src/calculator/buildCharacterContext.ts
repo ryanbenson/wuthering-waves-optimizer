@@ -1,4 +1,5 @@
 import { getCharByName } from "../characters/characters";
+import { isStatBonusBuff } from "../characters/statBonusBuffs";
 import { getWeaponByName } from "../weapons/weapons";
 import { computeWeaponPassiveStats } from "../weapons/weaponPassives";
 import { getCombinedEchoStats } from "../echoes/stats";
@@ -108,8 +109,11 @@ function resolveSetBonusStats(
   setBonusDef: { passives?: any[] } | null | undefined,
   echoSetPassivesConfig: Record<string, { isEnabled?: boolean; stacks?: number }>,
   talentData: Record<string, string | number | undefined>,
+  alwaysEnabledOnly = false,
 ): Record<string, unknown> {
-  const passives = setBonusDef?.passives ?? [];
+  const passives = (setBonusDef?.passives ?? []).filter(
+    (passive) => !alwaysEnabledOnly || Boolean(passive.alwaysEnabled),
+  );
   const resolved: EchoSetPassiveResult[] = passives.map((passive) =>
     resolveEchoSetPassiveInstance(
       String(passive.key ?? ""),
@@ -125,6 +129,21 @@ function resolveSetBonusStats(
 
 function namePassivesWithSet(setBonusDef: { name?: string; passives?: any[] } | null | undefined): any[] {
   return (setBonusDef?.passives ?? []).map((passive) => ({ ...passive, name: setBonusDef?.name }));
+}
+
+export interface BuildCharacterContextOptions {
+  /**
+   * Resolve only stat contributions that are permanently active — base
+   * character/weapon/echo stats plus weapon passives, echo set bonuses, and
+   * the main-echo buff whose definitions carry `alwaysEnabled: true`, plus
+   * "Stat Bonus" self-buffs (permanently-unlocked ascension/inherent-skill
+   * tiers — see `isStatBonusBuff`), resolved with the build's real toggle
+   * state. Every other character self-buff, resonance chains, team buffs,
+   * and custom buffs are always situational/toggled, so they're dropped
+   * entirely rather than filtered. Used by the build card, which represents
+   * equipment + permanent unlocks alone (see issue #383).
+   */
+  alwaysEnabledOnly?: boolean;
 }
 
 /**
@@ -144,7 +163,9 @@ export async function buildCharacterCalculationContext(
   characters: Record<string, any>,
   enemyConfig: TeamEnemyConfig,
   inventoryEchoes: any[] = [],
+  options: BuildCharacterContextOptions = {},
 ): Promise<CharacterCalculationContext> {
+  const { alwaysEnabledOnly = false } = options;
   const characterData = characters?.[characterId] ?? {};
   const chosenChar = await getCharByName(characterId);
 
@@ -188,9 +209,12 @@ export async function buildCharacterCalculationContext(
       weaponAttack = weaponStats.attack ?? 0;
       weaponModifier = weaponStats.modifier ?? null;
       weaponModifierValue = weaponStats.modifierValue ?? 0;
+      const passiveDataForCalc = ((chosenWeapon.info?.passiveData ?? []) as any[]).filter(
+        (passive) => !alwaysEnabledOnly || Boolean(passive.alwaysEnabled),
+      );
       weaponPassiveStats = computeWeaponPassiveStats(
         weaponKey,
-        (chosenWeapon.info?.passiveData ?? []) as any[],
+        passiveDataForCalc,
         characterData.weaponPassives ?? {},
         refinement,
       );
@@ -218,15 +242,28 @@ export async function buildCharacterCalculationContext(
   const setBonusTwoDef = echoSetBonus.setBonusTwo
     ? (setBonusEffectsTwo as Record<string, any>)[echoSetBonus.setBonusTwo]
     : null;
-  const setBonusOnePieceStats = resolveSetBonusStats(setBonusOnePieceDef, echoSetPassivesConfig, talentData);
-  const setBonusOneStats = resolveSetBonusStats(setBonusOneDef, echoSetPassivesConfig, talentData);
-  const setBonusTwoStats = resolveSetBonusStats(setBonusTwoDef, echoSetPassivesConfig, talentData);
+  const setBonusOnePieceStats = resolveSetBonusStats(
+    setBonusOnePieceDef,
+    echoSetPassivesConfig,
+    talentData,
+    alwaysEnabledOnly,
+  );
+  const setBonusOneStats = resolveSetBonusStats(setBonusOneDef, echoSetPassivesConfig, talentData, alwaysEnabledOnly);
+  const setBonusTwoStats = resolveSetBonusStats(setBonusTwoDef, echoSetPassivesConfig, talentData, alwaysEnabledOnly);
 
   const mainEchoConfig = characterData.mainEcho ?? {};
-  const mainEchoBuffStats = resolveMainEchoBuffStats(characterId, mainEchoConfig);
   const mainEchoDef = mainEchoConfig.echo
     ? ((mainEchoesData as Record<string, any>)?.[mainEchoConfig.echo] ?? null)
     : null;
+  // resolveMainEchoBuffStats already force-enables an alwaysEnabled main
+  // echo regardless of isEnabled. For the always-enabled-only view we also
+  // need the inverse — force a *conditional* main echo buff off even if the
+  // user currently has it toggled on for the Results tab — so override
+  // isEnabled explicitly rather than passing the config through as-is.
+  const mainEchoBuffStats = resolveMainEchoBuffStats(characterId, {
+    ...mainEchoConfig,
+    isEnabled: alwaysEnabledOnly ? Boolean(mainEchoDef?.alwaysEnabled) : mainEchoConfig?.isEnabled,
+  });
 
   const echoStats = combineEchoStats(
     combinedEchoStats,
@@ -275,11 +312,23 @@ export async function buildCharacterCalculationContext(
     weaponPassiveData: weaponData.weaponPassiveStats,
     buffsConfig: characterData.buffs ?? {},
     resonanceChainsConfig: characterData.resonanceChains ?? {},
-    customBuffs,
-    teamBuffsData,
+    // Resonance chains, team buffs, and custom buffs are always
+    // situational/toggled in this game's data (no such buff is ever
+    // `alwaysEnabled: true`), so the always-enabled-only view drops them
+    // entirely. Character self-buffs are almost all situational too, except
+    // "Stat Bonus" entries (key starting with `StatBonus`) — those represent
+    // permanently-unlocked ascension/inherent-skill stat tiers rather than a
+    // combat condition (see CalculatorCharacterBuffs.vue's stat-bonus grid),
+    // so they're kept and resolved with the build's real toggle state
+    // (whether the player has actually unlocked that tier), same as the
+    // Results tab.
+    customBuffs: alwaysEnabledOnly ? {} : customBuffs,
+    teamBuffsData: alwaysEnabledOnly ? {} : teamBuffsData,
     echoStats,
-    buffsCharInfo: chosenChar?.buffs ?? [],
-    resonanceChainsCharInfo: chosenChar?.resonanceChains ?? [],
+    buffsCharInfo: alwaysEnabledOnly
+      ? (chosenChar?.buffs ?? []).filter((buff: { key: string }) => isStatBonusBuff(buff.key))
+      : (chosenChar?.buffs ?? []),
+    resonanceChainsCharInfo: alwaysEnabledOnly ? [] : (chosenChar?.resonanceChains ?? []),
     character: characterId,
     talentData,
     activeStance,

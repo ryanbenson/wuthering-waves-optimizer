@@ -280,6 +280,20 @@ function getEchoRefSetter(index: number) {
 
 const setAlwaysEnabled = computed(() => chosenMainEchoData.value?.alwaysEnabled === true);
 
+// Mirrors CalculatorWeaponsPassive.vue's equivalent watcher: keep the
+// persisted config in sync so the checkbox reads checked (it's also
+// force-enabled in resolveMainEchoBuffStats regardless of this value, but a
+// visibly-unchecked disabled checkbox would be confusing).
+watch(
+  setAlwaysEnabled,
+  (val) => {
+    if (val === true && !mainEchoBuffEnabled.value) {
+      mainEchoBuffEnabled.value = true;
+    }
+  },
+  { immediate: true },
+);
+
 function updateTotalStats() {
   const combinedEchoStats: Record<string, number> = {};
   Object.values(JSON.parse(JSON.stringify(echoData.value || {}))).forEach((echo: any) => {

@@ -6,13 +6,14 @@ Echoes (equippable “monsters” with stats and set bonuses) are defined here, 
 
 | File | Purpose |
 |------|--------|
-| **`index.ts`** | Echo metadata and helpers. **`mainEchoesData`**: map of echo key → `Echo` (key, name, class, image, details, modifiers, hasStacks, minStacks, maxStacks, actions, sets). **`getEchoData(echoKey)`**, **`echoCostClassMap`**, **`getCostByClass(class)`**. |
+| **`index.ts`** | Echo metadata and helpers. **`mainEchoesData`**: map of echo key → `Echo` (key, name, class, image, details, modifiers, hasStacks, minStacks, maxStacks, alwaysEnabled, actions, sets). **`getEchoData(echoKey)`**, **`echoCostClassMap`**, **`getCostByClass(class)`**. |
 | **`stats.ts`** | Echo stat math and types. **`statsTable`** / **`subStatsTable`**: main stat and substat values by rank/level. **`getEchoStats`**, **`getCombinedEchoStats`**: compute stats for one echo or a full loadout. **`EchoObject`**, **`echoSetLabelMap`**, **`getEchoSetLabelByType`**. Rank colors and sub-stat roll values live here too. |
 | **`sets.ts`** | Set bonuses. **`getSetsFromEchoes`**, **`getSetBonusEffects`**: derive which sets are active from a list of echoes and return their bonus effects. **`twoSetBonuses`**, **`threeSetBonuses`**, **`fiveSetBonuses`**: display names for 2/3/5 set effects. Uses types/helpers from `stats.ts` (e.g. `EchoObject`, set labels). |
+| **`mainEcho.ts`** | **`resolveMainEchoBuffStats(character, mainEchoConfig)`**: resolves a character's equipped main echo (the echo in slot 0) into its stat contribution. An echo with `alwaysEnabled: true` is force-enabled regardless of `mainEchoConfig.isEnabled`, mirroring `WeaponPassiveDef`/`EchoSetBonusPassive`. **`combineEchoStats`**: merges base echo stats + set bonus tiers + the main-echo buff into one `echoStats` object. |
 
 ## Type definitions (highlights)
 
-- **`Echo`** (in `index.ts`): key, name, class, image, details, modifiers (array of `EchoModifier`), optional hasStacks/minStacks/maxStacks, actions (array of `EchoAction`), sets (array of set keys).
+- **`Echo`** (in `index.ts`): key, name, class, image, details, modifiers (array of `EchoModifier`), optional hasStacks/minStacks/maxStacks, `alwaysEnabled` (true when the buff text states an unconditional "equipped in main/their main slot" bonus, e.g. Abyssal Patricius's 12% Glacio DMG Bonus — false/unset for a buff that needs a combat trigger), actions (array of `EchoAction`), sets (array of set keys).
 - **`EchoModifier`**: modifier name, modifierValue, optional modifySpecificTalents, specificCharacters.
 - **`EchoAction`**: key, label, talents, description, element, type, optional attribute/subType (for damage/utility actions).
 - **`StatsTable`** / **`StatLevel`**: main stat values by cost/level and rank (e.g. ATK, HP, DEF, element%, CritRate, EnergyRegen).
@@ -27,5 +28,5 @@ Echoes (equippable “monsters” with stats and set bonuses) are defined here, 
 
 ## Adding or changing echoes
 
-- **New echo**: Add an entry to **`mainEchoesData`** in `index.ts` with the same shape (key, name, class, image, details, modifiers, actions if any, sets). Ensure `sets` use keys that exist in `sets.ts`.
+- **New echo**: Add an entry to **`mainEchoesData`** in `index.ts` with the same shape (key, name, class, image, details, modifiers, actions if any, sets). Ensure `sets` use keys that exist in `sets.ts`. If `details` states an unconditional "equipped in main/their main slot" bonus (no combat trigger), set `alwaysEnabled: true` so it's force-enabled everywhere (Results tab, build card) without the player needing to toggle it — see `resolveMainEchoBuffStats`.
 - **New stat or set**: Extend **`statsTable`** / **`subStatsTable`** in `stats.ts` and the set bonus lists / logic in `sets.ts` as needed; keep `EchoObject` and calculator/worker usage in sync.

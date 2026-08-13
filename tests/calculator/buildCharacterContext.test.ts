@@ -175,4 +175,115 @@ describe("buildCharacterCalculationContext", () => {
       expect(def.name).toBe("Freezing Frost");
     }
   });
+
+  describe("alwaysEnabledOnly (build card — issue #383)", () => {
+    it("keeps an alwaysEnabled weapon passive but drops a conditional one, even when the conditional one is toggled on", async () => {
+      const characters = {
+        Iuno: {
+          weapon: "PulsationBracer",
+          weapons: { PulsationBracer: { weaponLevel: "90", refinement: "1" } },
+          // Barrier Breacher: alwaysEnabled 12% ATK + conditional stacked
+          // Basic Attack DMG Bonus — toggle the conditional one on so the
+          // filtered view dropping it isn't just a case of it already
+          // being off by default.
+          weaponPassives: { PulsationBracerBasic: { isEnabled: true, stacks: 4 } },
+        },
+      };
+      const full = await buildCharacterCalculationContext("Iuno", characters, enemyConfig);
+      const filtered = await buildCharacterCalculationContext("Iuno", characters, enemyConfig, [], {
+        alwaysEnabledOnly: true,
+      });
+
+      expect(full.weaponData.weaponPassiveStats.ATK).toBeCloseTo(0.12);
+      expect(full.weaponData.weaponPassiveStats.BasicAttackDMGBonus).toBeCloseTo(0.24);
+      expect(filtered.weaponData.weaponPassiveStats.ATK).toBeCloseTo(0.12);
+      expect(filtered.weaponData.weaponPassiveStats.BasicAttackDMGBonus ?? 0).toBeCloseTo(0);
+    });
+
+    it("drops character self-buffs, resonance chains, and custom buffs entirely, even when toggled on", async () => {
+      const characters = {
+        Calcharo: {
+          resonanceChains: { chain1: { isEnabled: true } },
+          customBuffs: { ATK_FLAT: 500 },
+        },
+      };
+      const full = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+      const filtered = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig, [], {
+        alwaysEnabledOnly: true,
+      });
+
+      expect(full.finalStats.totalAtk).toBeGreaterThan(filtered.finalStats.totalAtk);
+      expect(filtered.finalStats.totalAtk).toBeCloseTo(filtered.baseAtk);
+    });
+
+    it("keeps an alwaysEnabled echo set bonus", async () => {
+      const characters = { Calcharo: { echoSetBonus: { setBonusOne: "Freezing Frost 2 Set" } } };
+      const filtered = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig, [], {
+        alwaysEnabledOnly: true,
+      });
+
+      expect(filtered.echoStats.Glacio).toBeCloseTo(10);
+    });
+
+    it("drops a conditional echo set bonus, even when the user has it toggled on", async () => {
+      const characters = {
+        Calcharo: {
+          echoSetBonus: { setBonusOnePiece: "Shadow of Shattered Dreams 1 Set" },
+          echoSetPassives: { ShadowofShatteredDreams1Set: { isEnabled: true } },
+        },
+      };
+      const full = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+      const filtered = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig, [], {
+        alwaysEnabledOnly: true,
+      });
+
+      expect(full.echoStats.BasicAttackDMGBonus).toBeCloseTo(35);
+      expect(filtered.echoStats).toEqual({});
+    });
+
+    it("keeps an alwaysEnabled main-echo buff even when the user has it toggled off", async () => {
+      // Abyssal Patricius's "12% Glacio DMG Bonus while equipped in the main
+      // slot" is unconditional (see src/echoes/index.ts), so it should show
+      // up on the build card regardless of the stored toggle state.
+      const characters = { Calcharo: { mainEcho: { echo: "AbyssalPatricius", isEnabled: false } } };
+      const filtered = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig, [], {
+        alwaysEnabledOnly: true,
+      });
+
+      expect(filtered.echoStats.Glacio).toBeCloseTo(12);
+    });
+
+    it("drops a conditional main-echo buff, even when the user has it toggled on", async () => {
+      // Bell-Borne Geochelone's DMG Bonus is a triggered/combat effect, not
+      // an unconditional main-slot bonus, so it has no alwaysEnabled flag.
+      const characters = { Calcharo: { mainEcho: { echo: "BellBorneGeochelone", isEnabled: true } } };
+      const full = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+      const filtered = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig, [], {
+        alwaysEnabledOnly: true,
+      });
+
+      expect(full.echoStats.DMGBonus).toBeCloseTo(10);
+      expect(filtered.echoStats.DMGBonus).toBeUndefined();
+    });
+
+    it("includes a toggled-on Stat Bonus self-buff (a permanent unlock), but drops other toggled-on self-buffs", async () => {
+      const characters = {
+        Calcharo: {
+          buffs: {
+            StatBonusATK1: { isEnabled: true },
+            // Any real non-StatBonus self-buff key works here — the point is
+            // it must stay excluded even when the user has it toggled on.
+            SomeCombatConditionalBuff: { isEnabled: true },
+          },
+        },
+      };
+      const full = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+      const filtered = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig, [], {
+        alwaysEnabledOnly: true,
+      });
+
+      expect(full.finalStats.totalAtk).toBeCloseTo(filtered.finalStats.totalAtk);
+      expect(filtered.finalStats.totalAtk).toBeGreaterThan(filtered.baseAtk);
+    });
+  });
 });

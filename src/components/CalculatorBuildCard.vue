@@ -94,7 +94,7 @@
               <div class="absolute top-4 left-4 max-w-[65%] pointer-events-none">
                 <template v-if="characterBasic">
                   <h2
-                    class="text-2xl font-bold leading-tight text-white"
+                    class="text-4xl font-bold leading-tight text-white"
                     :class="{
                       'text-amber-300': characterBasic.rarity === 5,
                       'text-violet-600': characterBasic.rarity === 4,
@@ -102,7 +102,7 @@
                     {{ characterBasic.name }}
                   </h2>
                   <div
-                    class="flex gap-0.5 mt-1"
+                    class="flex gap-1 mt-1.5"
                     :class="{
                       'text-amber-300': characterBasic.rarity === 5,
                       'text-violet-600': characterBasic.rarity === 4,
@@ -112,7 +112,7 @@
                       v-for="n in characterBasic.rarity"
                       :key="n"
                       viewBox="0 0 24 24"
-                      class="size-3.5"
+                      class="size-5"
                       fill="currentColor">
                       <path
                         d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.86L12 17.77l-6.18 3.23L7 14.14 2 9.27l7.1-1.01z" />
@@ -154,10 +154,10 @@
                 v-if="buildCardUsername || buildCardUid"
                 class="build-card__profile absolute bottom-4 left-4 text-white leading-tight pointer-events-none"
                 data-test-build-card-profile>
-                <div v-if="buildCardUsername" class="text-lg font-semibold">
+                <div v-if="buildCardUsername" class="text-2xl font-semibold">
                   {{ buildCardUsername }}
                 </div>
-                <div v-if="buildCardUid" class="text-base opacity-70">
+                <div v-if="buildCardUid" class="text-lg opacity-70">
                   UID {{ buildCardUid }}
                 </div>
               </div>
@@ -193,30 +193,30 @@
                 :character="character"
                 :character-level="characterLevel"
                 :weapon-atk="weaponAtk"
-                :total-atk="totalAtk"
-                :total-atk-percent="totalAtkPercent"
-                :total-atk-flat="totalAtkFlat"
-                :total-hp="totalHp"
-                :total-hp-percent="totalHpPercent"
-                :total-hp-flat="totalHpFlat"
-                :total-def="totalDef"
-                :total-def-percent="totalDefPercent"
-                :total-def-flat="totalDefFlat"
-                :total-crit-rate="totalCritRate"
-                :total-crit-dmg="totalCritDmg"
-                :energy-regen="energyRegen"
-                :basic-attack-dmg-bonus="basicAttackDmgBonus"
-                :heavy-attack-dmg-bonus="heavyAttackDmgBonus"
-                :resonance-skill-dmg-bonus="resonanceSkillDmgBonus"
-                :resonance-liberation-dmg-bonus="resonanceLiberationDmgBonus"
-                :glacio="glacio"
-                :fusion="fusion"
-                :electro="electro"
-                :aero="aero"
-                :spectro="spectro"
-                :havoc="havoc"
-                :healing-bonus="healingBonus"
-                :tune-break-boost="tuneBreakBoost"
+                :total-atk="buildCardStats.totalAtk ?? 0"
+                :total-atk-percent="buildCardStats.attackPercent ?? 0"
+                :total-atk-flat="buildCardStats.attackFlat ?? 0"
+                :total-hp="buildCardStats.totalHp ?? 0"
+                :total-hp-percent="buildCardStats.hpPercent ?? 0"
+                :total-hp-flat="buildCardStats.hpFlat ?? 0"
+                :total-def="buildCardStats.totalDef ?? 0"
+                :total-def-percent="buildCardStats.defPercent ?? 0"
+                :total-def-flat="buildCardStats.defFlat ?? 0"
+                :total-crit-rate="(buildCardStats.critRate ?? 0) / 100"
+                :total-crit-dmg="(buildCardStats.critDMG ?? 0) / 100"
+                :energy-regen="buildCardStats.energyRegen ?? 0"
+                :basic-attack-dmg-bonus="buildCardStats.basicAttackDMGBonus ?? 0"
+                :heavy-attack-dmg-bonus="buildCardStats.heavyAttackDMGBonus ?? 0"
+                :resonance-skill-dmg-bonus="buildCardStats.resonanceSkillDMGBonus ?? 0"
+                :resonance-liberation-dmg-bonus="buildCardStats.resonanceLiberationDMGBonus ?? 0"
+                :glacio="buildCardStats.glacio ?? 0"
+                :fusion="buildCardStats.fusion ?? 0"
+                :electro="buildCardStats.electro ?? 0"
+                :aero="buildCardStats.aero ?? 0"
+                :spectro="buildCardStats.spectro ?? 0"
+                :havoc="buildCardStats.havoc ?? 0"
+                :healing-bonus="buildCardStats.healingBonus ?? 0"
+                :tune-break-boost="buildCardTuneBreakBoost"
                 :element-filter="characterBasic?.element" />
             </div>
             <div
@@ -256,6 +256,8 @@ import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import { getWeaponByName } from "../weapons/weapons";
+import { buildCharacterCalculationContext } from "../calculator/buildCharacterContext";
+import { computeTotalTuneBreakBoost } from "../calculator/stats";
 import { useToast } from "../composables/useToast";
 import {
   subStatIconMap,
@@ -300,30 +302,6 @@ const props = defineProps<{
   characterLevel: string;
   weaponAtk: number;
   chosenChar: ChosenCharRef | null;
-  totalAtk: number;
-  totalAtkPercent: number;
-  totalAtkFlat: number;
-  totalHp: number;
-  totalHpPercent: number;
-  totalHpFlat: number;
-  totalDef: number;
-  totalDefPercent: number;
-  totalDefFlat: number;
-  totalCritRate: number;
-  totalCritDmg: number;
-  energyRegen: number;
-  basicAttackDmgBonus: number;
-  heavyAttackDmgBonus: number;
-  resonanceSkillDmgBonus: number;
-  resonanceLiberationDmgBonus: number;
-  glacio: number;
-  fusion: number;
-  electro: number;
-  aero: number;
-  spectro: number;
-  havoc: number;
-  healingBonus: number;
-  tuneBreakBoost: number;
 }>();
 
 const { showToast } = useToast();
@@ -406,6 +384,41 @@ const characterData = computed(
   () => (characters.value[props.character] ?? {}) as Record<string, any>,
 );
 const characterBasic = computed(() => props.chosenChar?.value?.basic ?? null);
+
+// The build card represents equipment alone (issue #383): base
+// character/weapon/echo stats plus only the weapon passives, echo set
+// bonuses, and main-echo buff that are permanently active — never
+// conditional buffs, team buffs, custom buffs, or character/resonance-chain
+// buffs (those are all situational, not "the build"). This is intentionally
+// independent of the Results tab's live totals (which include every
+// currently-toggled buff), so it's recomputed here from stored build data
+// rather than forwarded from Calculator.vue.
+const buildCardStats = ref<Record<string, any>>({});
+const buildCardTuneBreakBoost = ref(0);
+
+watch(
+  () => [props.character, characterData.value, inventoryStore.echoes] as const,
+  async ([nextCharacter]) => {
+    if (!nextCharacter) {
+      buildCardStats.value = {};
+      buildCardTuneBreakBoost.value = 0;
+      return;
+    }
+    const built = await buildCharacterCalculationContext(
+      nextCharacter,
+      characters.value,
+      { enemyLevel: 90, enemyResist: 0.1, enemyType: "Calamity" },
+      inventoryStore.echoes,
+      { alwaysEnabledOnly: true },
+    );
+    buildCardStats.value = built.finalStats;
+    buildCardTuneBreakBoost.value = computeTotalTuneBreakBoost({
+      baseTuneBreakBoost: built.chosenChar?.basic?.tuneBreakBoost ?? 0,
+      echoStats: built.echoStats,
+    });
+  },
+  { immediate: true, deep: true },
+);
 
 const defaultPortraitUrl = computed(
   () =>

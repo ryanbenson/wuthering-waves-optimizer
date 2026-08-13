@@ -24,11 +24,11 @@ interface MainEchoData {
 
 /**
  * Resolves a character's main-echo self-buff into a numeric stats object.
- * Mirrors CalculatorEchoes.vue's `updateTotalStats` main-echo-buff branch
- * exactly. Note: unlike weapon/echo-set passives, an "alwaysEnabled" main
- * echo is NOT force-enabled here — the live component has no such watcher
- * either, so `mainEchoConfig.isEnabled` is honored as-is (a pre-existing
- * quirk, preserved intentionally).
+ * Mirrors CalculatorEchoes.vue's `updateTotalStats` main-echo-buff branch.
+ * Like weapon/echo-set passives, a main echo whose `alwaysEnabled` is true
+ * (its buff text states an unconditional "equipped in main slot" bonus, e.g.
+ * Abyssal Patricius's 12% Glacio DMG Bonus) is force-enabled here regardless
+ * of `mainEchoConfig.isEnabled`.
  */
 export function resolveMainEchoBuffStats(
   character: string,
@@ -43,7 +43,8 @@ export function resolveMainEchoBuffStats(
   if (!chosenMainEchoData) {
     return stats;
   }
-  if (!(mainEchoConfig?.isEnabled ?? false)) {
+  const isEnabled = chosenMainEchoData.alwaysEnabled ? true : (mainEchoConfig?.isEnabled ?? false);
+  if (!isEnabled) {
     return stats;
   }
   const hasStacks = chosenMainEchoData.hasStacks ?? false;

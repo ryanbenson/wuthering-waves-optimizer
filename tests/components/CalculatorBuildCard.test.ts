@@ -1,10 +1,12 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
-import { render } from "@testing-library/vue";
+import { render, waitFor } from "@testing-library/vue";
 import CalculatorBuildCard from "../../src/components/CalculatorBuildCard.vue";
 import { createEmptyEchoSlot } from "../../src/echoes/echoLoadout";
 import { useCharacterStore } from "../../src/stores/character";
 import { useInventoryStore } from "../../src/stores/inventory";
+import { buildCharacterCalculationContext } from "../../src/calculator/buildCharacterContext";
+import { displayInt } from "../../src/utils/numbers";
 
 const CHARACTER = "Changli";
 
@@ -23,30 +25,6 @@ function baseStatsProps() {
         },
       },
     },
-    totalAtk: 2145,
-    totalAtkPercent: 0,
-    totalAtkFlat: 0,
-    totalHp: 17213,
-    totalHpPercent: 0,
-    totalHpFlat: 0,
-    totalDef: 1338,
-    totalDefPercent: 0,
-    totalDefFlat: 0,
-    totalCritRate: 0.713,
-    totalCritDmg: 2.712,
-    energyRegen: 1.076,
-    basicAttackDmgBonus: 0.079,
-    heavyAttackDmgBonus: 0.18,
-    resonanceSkillDmgBonus: 0.188,
-    resonanceLiberationDmgBonus: 0.173,
-    glacio: 0,
-    fusion: 0.7,
-    electro: 0,
-    aero: 0,
-    spectro: 0,
-    havoc: 0,
-    healingBonus: 0,
-    tuneBreakBoost: 0,
   };
 }
 
@@ -113,14 +91,27 @@ describe("CalculatorBuildCard", () => {
     setActivePinia(createPinia());
   });
 
-  it("renders character name, level, weapon refinement, and stat values", async () => {
-    seedCharacter();
+  it("renders character name, level, weapon refinement, and stats reflecting equipment alone", async () => {
+    const characterStore = seedCharacter();
     const { findByText, getByTestId, container } = renderCard(baseStatsProps());
 
     expect(await findByText("Changli")).toBeTruthy();
     expect(container.textContent).toContain("Lv. 90");
-    // Stat block passthrough (rendered by CalculatorStats)
-    expect(container.textContent).toContain("2,145");
+
+    // The build card computes its own "always enabled" stats (base +
+    // permanently-active weapon/echo buffs only, per issue #383) rather than
+    // receiving the Results tab's live totals — assert against that same
+    // computation so this test doesn't hardcode a number that drifts
+    // whenever character/weapon data changes.
+    const built = await buildCharacterCalculationContext(
+      CHARACTER,
+      characterStore.characters,
+      { enemyLevel: 90, enemyResist: 0.1, enemyType: "Calamity" },
+      [],
+      { alwaysEnabledOnly: true },
+    );
+    const expectedAtk = displayInt(built.finalStats.totalAtk);
+    await waitFor(() => expect(container.textContent).toContain(expectedAtk));
     void getByTestId;
   });
 
