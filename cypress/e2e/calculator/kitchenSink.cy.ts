@@ -111,8 +111,12 @@ describe("Calculator Kitchen Sink", () => {
     cy.get(`[data-test-echo-set-stacks="FrostyResolve5Set5SetSkillDMGBonus"]`)
       .clear()
       .type("2");
-    // enable the main echo buff
-    cy.get(`[data-test-main-echo-enabled="SentryConstruct"]`).check();
+    // SentryConstruct's main-slot buff is permanently active (alwaysEnabled)
+    // so its checkbox is force-checked and disabled rather than manually
+    // checkable — see CalculatorEchoes.vue's `setAlwaysEnabled` watcher.
+    cy.get(`[data-test-main-echo-enabled="SentryConstruct"]`)
+      .should("be.checked")
+      .and("be.disabled");
 
     // now enable all resonance chains
     cy.get('[data-test-calculator-nav="resonanceChains"]').click();

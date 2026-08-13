@@ -102,31 +102,7 @@
           :character="character"
           :character-level="characterLevel"
           :weapon-atk="weaponAtk"
-          :chosen-char="chosenChar"
-          :total-atk="totalAtk"
-          :total-atk-percent="totalAtkPercent"
-          :total-atk-flat="totalAtkFlat"
-          :total-hp="totalHp"
-          :total-hp-percent="totalHpPercent"
-          :total-hp-flat="totalHpFlat"
-          :total-def="totalDef"
-          :total-def-percent="totalDefPercent"
-          :total-def-flat="totalDefFlat"
-          :total-crit-rate="totalCritRate"
-          :total-crit-dmg="totalCritDMG"
-          :energy-regen="energyRegen"
-          :basic-attack-dmg-bonus="BasicAttackDMGBonus"
-          :heavy-attack-dmg-bonus="HeavyAttackDMGBonus"
-          :resonance-skill-dmg-bonus="ResonanceSkillDMGBonus"
-          :resonance-liberation-dmg-bonus="ResonanceLiberationDMGBonus"
-          :glacio="Glacio"
-          :fusion="Fusion"
-          :electro="Electro"
-          :aero="Aero"
-          :spectro="Spectro"
-          :havoc="Havoc"
-          :healing-bonus="healingBonus"
-          :tune-break-boost="tuneBreakBoost"></CalculatorBuildCard>
+          :chosen-char="chosenChar"></CalculatorBuildCard>
       </div>
       <div class="screen-party" v-show="curScreen === 'party'">
         <CalculatorPartyBuffs

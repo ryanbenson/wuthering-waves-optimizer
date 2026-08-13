@@ -67,6 +67,7 @@
 import { computed, onBeforeUnmount, onMounted, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { getEffectiveMaxStacks } from "../characters/effectiveBuffStacks";
+import { isStatBonusBuff } from "../characters/statBonusBuffs";
 import { getSubStatIconByType } from "../echoes/stats";
 import { useCharacterStore } from "../stores/character";
 import CalculatorCharacterBuff from "./CalculatorCharacterBuff.vue";
@@ -119,10 +120,6 @@ const currentCharacterBuffs = computed(
   () => characters.value[props.character]?.buffs ?? {},
 );
 
-function isStatBonusBuff(buff: CharacterBuffListItem): boolean {
-  return buff.key.startsWith("StatBonus");
-}
-
 function getStatBonusGroupKey(key: string): string {
   return key.replace(/^StatBonus/, "").replace(/\d+$/, "");
 }
@@ -133,11 +130,11 @@ function getStatBonusTier(key: string): number {
 }
 
 const nonStatBonusBuffs = computed(() =>
-  props.buffs.filter((buff) => !isStatBonusBuff(buff)),
+  props.buffs.filter((buff) => !isStatBonusBuff(buff.key)),
 );
 
 const statBonusGrid = computed((): StatBonusGridCell[][] | null => {
-  const statBonuses = props.buffs.filter(isStatBonusBuff);
+  const statBonuses = props.buffs.filter((buff) => isStatBonusBuff(buff.key));
   if (statBonuses.length === 0) {
     return null;
   }

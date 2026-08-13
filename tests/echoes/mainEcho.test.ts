@@ -16,6 +16,11 @@ vi.mock("../../src/echoes/index", () => ({
         { modifier: "ATK", modifierValue: 0.1, specificCharacters: ["Jinhsi"] },
       ],
     },
+    AlwaysOnMainEcho: {
+      hasStacks: false,
+      alwaysEnabled: true,
+      modifiers: [{ modifier: "Glacio", modifierValue: 0.12 }],
+    },
   },
 }));
 
@@ -57,6 +62,15 @@ describe("resolveMainEchoBuffStats", () => {
       isEnabled: true,
     });
     expect(result).toEqual({});
+  });
+
+  it("treats an alwaysEnabled main echo as enabled regardless of stored config", () => {
+    expect(
+      resolveMainEchoBuffStats("Jinhsi", { echo: "AlwaysOnMainEcho", isEnabled: false }),
+    ).toEqual({ Glacio: 12 });
+    expect(
+      resolveMainEchoBuffStats("Jinhsi", { echo: "AlwaysOnMainEcho" }),
+    ).toEqual({ Glacio: 12 });
   });
 });
 
