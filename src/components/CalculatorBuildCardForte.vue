@@ -1,5 +1,7 @@
 <template>
-  <div class="build-card-forte flex flex-col items-center gap-5" data-test-build-card-talents>
+  <div
+    class="build-card-forte flex flex-row items-center justify-center gap-10 my-6"
+    data-test-build-card-talents>
     <div
       v-for="col in columns"
       :key="col.key"
@@ -63,13 +65,13 @@ const columns = computed(() => [
   border: 1px solid oklch(var(--bc) / 0.4);
   background: rgba(0, 0, 0, 0.35);
   color: white;
-  width: 3rem;
-  height: 3rem;
+  width: 4rem;
+  height: 4rem;
 }
 
 .build-card-forte__icon-svg {
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 2rem;
+  height: 2rem;
   opacity: 0.9;
 }
 </style>
