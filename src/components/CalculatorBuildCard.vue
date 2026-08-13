@@ -94,7 +94,7 @@
               <div class="absolute top-4 left-4 max-w-[65%] pointer-events-none">
                 <template v-if="characterBasic">
                   <h2
-                    class="text-2xl font-bold leading-tight text-white"
+                    class="text-4xl font-bold leading-tight text-white"
                     :class="{
                       'text-amber-300': characterBasic.rarity === 5,
                       'text-violet-600': characterBasic.rarity === 4,
@@ -102,7 +102,7 @@
                     {{ characterBasic.name }}
                   </h2>
                   <div
-                    class="flex gap-0.5 mt-1"
+                    class="flex gap-1 mt-1.5"
                     :class="{
                       'text-amber-300': characterBasic.rarity === 5,
                       'text-violet-600': characterBasic.rarity === 4,
@@ -112,7 +112,7 @@
                       v-for="n in characterBasic.rarity"
                       :key="n"
                       viewBox="0 0 24 24"
-                      class="size-3.5"
+                      class="size-5"
                       fill="currentColor">
                       <path
                         d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.86L12 17.77l-6.18 3.23L7 14.14 2 9.27l7.1-1.01z" />
@@ -154,10 +154,10 @@
                 v-if="buildCardUsername || buildCardUid"
                 class="build-card__profile absolute bottom-4 left-4 text-white leading-tight pointer-events-none"
                 data-test-build-card-profile>
-                <div v-if="buildCardUsername" class="text-lg font-semibold">
+                <div v-if="buildCardUsername" class="text-2xl font-semibold">
                   {{ buildCardUsername }}
                 </div>
-                <div v-if="buildCardUid" class="text-base opacity-70">
+                <div v-if="buildCardUid" class="text-lg opacity-70">
                   UID {{ buildCardUid }}
                 </div>
               </div>

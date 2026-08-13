@@ -8,13 +8,13 @@
         :class="rarityBorderClass"
         :style="{ backgroundImage: image ? `url(${image})` : undefined }"></div>
       <div
-        class="weapon-panel__stars absolute -bottom-1.5 left-1/2 -translate-x-1/2 flex gap-0.5 bg-base-100 rounded-full px-1.5 py-0.5 shadow"
+        class="weapon-panel__stars absolute -bottom-2 left-1/2 -translate-x-1/2 flex gap-1 bg-base-100 rounded-full px-2 py-1 shadow"
         aria-hidden="true">
         <svg
           v-for="n in starCount"
           :key="n"
           viewBox="0 0 24 24"
-          class="size-2.5"
+          class="size-4"
           :class="rarityTextClass"
           fill="currentColor">
           <path
