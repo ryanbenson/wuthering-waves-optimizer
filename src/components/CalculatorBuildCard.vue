@@ -235,12 +235,13 @@
           </div>
 
           <div
-            class="build-card__echoes col-span-5 h-full flex flex-col gap-4"
+            class="build-card__echoes col-span-5 h-full flex flex-col justify-center gap-6"
             data-test-build-card-echoes>
             <CalculatorBuildCardEchoCard
               v-for="(echo, index) in echoSlots"
               :key="index"
-              class="flex-1 min-h-0"
+              class="shrink-0"
+              style="height: 185px"
               v-bind="echo" />
           </div>
         </div>
