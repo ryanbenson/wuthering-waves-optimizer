@@ -332,6 +332,54 @@ describe("computeAdditionalBaseBuffs - HP-based scaling", () => {
     expect(withRc3.ATK_FLAT ?? 0).toBe(0);
   });
 
+  it("supports modifySpecificTalents on an ATK_FLAT:AdditionalBase modifier, scoping the HP-scaled value to those talents instead of the character's flat ATK stat (Jingran's Yang Changes, Yin Unites -> Heavy Attack - Soul Raid / Stardome Meander only)", () => {
+    const buffsCharInfoScoped = [
+      {
+        key: "YangChangesYinUnites",
+        hasStacks: false,
+        modifiers: [
+          {
+            modifier: "ATK_FLAT:AdditionalBase",
+            modifierBasedOn: "HP",
+            minStatValue: 0,
+            modifierStep: 1000,
+            modifierValue: 36,
+            maximumValue: 1800,
+            modifierTargetAttr: "ATK_FLAT",
+            modifySpecificTalents: [
+              "HeavyAttackSoulRaidDMG",
+              "HeavyAttackStardomeMeanderDMG",
+            ],
+          },
+        ],
+        minStacks: 0,
+        maxStacks: 0,
+      },
+    ];
+
+    const data = computeAdditionalBaseBuffs(
+      { YangChangesYinUnites: { isEnabled: true } },
+      buffsCharInfoScoped,
+      {},
+      "Jingran",
+      0,
+      0,
+      null,
+      32000, // 32 steps over the buff's 1000 HP step -> 32 * 36 = 1152, under the 1800 cap
+    );
+
+    // scoped: the flat ATK stat itself is untouched
+    expect(data.ATK_FLAT ?? 0).toBe(0);
+    // instead, each specified talent gets the same HP-scaled (not raw
+    // modifierValue) amount under its own specificTalentBuffs entry
+    expect(
+      data.specificTalentBuffs["HeavyAttackSoulRaidDMG:ATK_FLAT"],
+    ).toBeCloseTo(32 * 36);
+    expect(
+      data.specificTalentBuffs["HeavyAttackStardomeMeanderDMG:ATK_FLAT"],
+    ).toBeCloseTo(32 * 36);
+  });
+
   it("Jingran: does not scale other characters' or other buffs' AdditionalBase modifiers", () => {
     const buffsCharInfoOther = [
       {

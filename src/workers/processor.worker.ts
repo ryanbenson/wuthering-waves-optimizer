@@ -268,7 +268,13 @@ function processLoadout(
     );
 
     // Step 4b: Compute AdditionalBase buffs using intermediate stats (resonance chains)
-    let additionalBaseBuffsDataFromResonanceChains = {
+    let additionalBaseBuffsDataFromResonanceChains: {
+      CritRate: number;
+      CritDMG: number;
+      ATK: number;
+      ATK_FLAT: number;
+      specificTalentBuffs?: Record<string, number>;
+    } = {
       CritRate: 0,
       CritDMG: 0,
       ATK: 0,
@@ -338,6 +344,16 @@ function processLoadout(
         ATK_FLAT:
           (resonanceChainsBuffsData?.ATK_FLAT || 0) +
           (additionalBaseBuffsDataFromResonanceChains?.ATK_FLAT || 0),
+        // AdditionalBase modifiers scoped via modifySpecificTalents (e.g. Jingran's
+        // SequenceNode3 ATK_FLAT upgrade) resolve into specificTalentBuffs instead
+        // of the flat sums above — merge those forward too, or a chain-level
+        // per-talent buff silently computes to zero effect (see attacks.ts's
+        // matching charResonanceChainsData?.specificTalentBuffs read for ATK_FLAT).
+        specificTalentBuffs: Object.assign(
+          {},
+          resonanceChainsBuffsData?.specificTalentBuffs ?? {},
+          additionalBaseBuffsDataFromResonanceChains?.specificTalentBuffs ?? {},
+        ),
       };
     }
 

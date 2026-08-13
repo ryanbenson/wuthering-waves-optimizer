@@ -71,6 +71,7 @@ export const buffs = [
         modifierValue: 36,
         maximumValue: 1800,
         modifierTargetAttr: "ATK_FLAT",
+        // modifySpecificTalents: ["HeavyAttackSoulRaidDMG", "HeavyAttackStardomeMeanderDMG"],
       },
     ],
     minStacks: 0,

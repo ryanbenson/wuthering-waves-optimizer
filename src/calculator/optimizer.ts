@@ -688,6 +688,38 @@ export function optimize(
       echoSetAdditionalBaseBuffsData,
     );
 
+    // Step 4b: Compute AdditionalBase buffs using intermediate stats (resonance chains)
+    // (mirrors processor.worker.ts — this was previously missing here entirely, so
+    // any resonance-chain AdditionalBase modifier, e.g. Jingran's SequenceNode3
+    // HP-scaled ATK, silently had no effect on optimizer results)
+    let additionalBaseBuffsDataFromResonanceChains: {
+      CritRate: number;
+      CritDMG: number;
+      ATK: number;
+      ATK_FLAT: number;
+      specificTalentBuffs?: Record<string, number>;
+    } = {
+      CritRate: 0,
+      CritDMG: 0,
+      ATK: 0,
+      ATK_FLAT: 0,
+    };
+    // ignore Augusta, as her additional based buffs for resonance chains are handled in self buffs
+    // applying this for her will double the buffs
+    if (context.character !== "Augusta") {
+      additionalBaseBuffsDataFromResonanceChains = computeAdditionalBaseBuffs(
+        context.activeCharacterResonanceChains ?? {},
+        context.chosenChar?.resonanceChains ?? [],
+        context.activeCharacterResonanceChains ?? {},
+        context.character ?? "",
+        intermediateStats.energyRegen,
+        intermediateStats.totalCritRate,
+        context.activeStance ?? null,
+        intermediateStats.totalHp,
+        context.talentData ?? {},
+      );
+    }
+
     // Step 5: Compute CritOverflow buffs using intermediate stats
     const critOverflowBuffsData = computeCritOverflowBuffs(
       context.activeCharacterBuffs ?? {},
@@ -712,6 +744,41 @@ export function optimize(
     }
     mergedSelfBuffs.CritDMG =
       (mergedSelfBuffs.CritDMG || 0) + (critOverflowBuffsData?.CritDMG || 0);
+    // merge the specificTalentBuffs together (mirrors processor.worker.ts)
+    mergedSelfBuffs.specificTalentBuffs = Object.assign(
+      {},
+      selfBuffsData?.specificTalentBuffs ?? {},
+      mergedAdditionalBaseBuffsData?.specificTalentBuffs ?? {},
+    );
+
+    // Step 6b: Merge AdditionalBase into resonance chain buffs (ignore Augusta,
+    // otherwise it doubles her buffs, same as self buffs above)
+    let mergedResonanceChainsBuffsData: Record<string, any> = {
+      ...resonanceChainsBuffsData,
+    };
+    if (context.character !== "Augusta") {
+      mergedResonanceChainsBuffsData = {
+        ...resonanceChainsBuffsData,
+        CritRate:
+          (resonanceChainsBuffsData?.CritRate || 0) +
+          (additionalBaseBuffsDataFromResonanceChains?.CritRate || 0),
+        CritDMG:
+          (resonanceChainsBuffsData?.CritDMG || 0) +
+          (additionalBaseBuffsDataFromResonanceChains?.CritDMG || 0) +
+          (critOverflowBuffsData?.CritDMG || 0),
+        ATK:
+          (resonanceChainsBuffsData?.ATK || 0) +
+          (additionalBaseBuffsDataFromResonanceChains?.ATK || 0),
+        ATK_FLAT:
+          (resonanceChainsBuffsData?.ATK_FLAT || 0) +
+          (additionalBaseBuffsDataFromResonanceChains?.ATK_FLAT || 0),
+        specificTalentBuffs: Object.assign(
+          {},
+          resonanceChainsBuffsData?.specificTalentBuffs ?? {},
+          additionalBaseBuffsDataFromResonanceChains?.specificTalentBuffs ?? {},
+        ),
+      };
+    }
 
     // Step 7: Compute final stats with all buffs
     const finalStats = calcCharStats(
@@ -734,7 +801,7 @@ export function optimize(
         weaponPassiveData: context.weaponData?.weaponPassiveStats ?? {},
       },
       mergedSelfBuffs,
-      resonanceChainsBuffsData,
+      mergedResonanceChainsBuffsData,
       context.echoStats,
       context.customBuffs,
       context.teamBuffsData,

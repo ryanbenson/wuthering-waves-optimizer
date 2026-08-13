@@ -883,6 +883,11 @@ export const calculateAttackDamage = (
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEF`] ?? 0;
   let modifyBaseAtkFlat =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:ATK_FLAT`] ?? 0;
+  let modifyBaseAtkFlatResChain =
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      `${attack.key}:ATK_FLAT`
+    ] ?? 0;
+  modifyBaseAtkFlat += modifyBaseAtkFlatResChain;
   let modifyBaseHpFlat =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:HP_FLAT`] ?? 0;
   let modifyBaseDefFlat =

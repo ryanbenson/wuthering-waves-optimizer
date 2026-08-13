@@ -64,6 +64,7 @@ export const resonanceChains = [
         modifierValue: 50,
         maximumValue: 2500,
         modifierTargetAttr: "ATK_FLAT",
+        // modifySpecificTalents: ["HeavyAttackSoulRaidDMG", "HeavyAttackStardomeMeanderDMG"],
       },
     ],
     minStacks: 0,
