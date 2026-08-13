@@ -170,7 +170,7 @@
             </div>
           </div>
 
-          <div class="build-card__middle col-span-3 h-full flex flex-col gap-4">
+          <div class="build-card__middle col-span-4 h-full flex flex-col gap-4">
             <div class="build-card__weapon h-[200px] shrink-0">
               <CalculatorBuildCardWeaponPanel
                 v-if="weaponInfo"
@@ -235,7 +235,7 @@
           </div>
 
           <div
-            class="build-card__echoes col-span-5 h-full flex flex-col justify-center gap-6"
+            class="build-card__echoes col-span-4 h-full flex flex-col justify-center gap-6"
             data-test-build-card-echoes>
             <CalculatorBuildCardEchoCard
               v-for="(echo, index) in echoSlots"
