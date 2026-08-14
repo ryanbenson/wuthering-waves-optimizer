@@ -163,4 +163,79 @@ describe("CalculatorBuildCard", () => {
     const echoesEl = container.querySelector("[data-test-build-card-echoes]");
     expect(echoesEl?.textContent).not.toContain("CV");
   });
+
+  it("dedupes multiple resonance chain entries for the same sequence node into one icon, active if any variant for the current stance is enabled", () => {
+    // Some characters (e.g. stance-swappers) define several resonance chain
+    // entries per in-game node — stance-bound variants, or independently
+    // toggleable effects of one node. The build card should show exactly
+    // one icon per node, restricted to whichever entries apply for the
+    // character's current stance, lit up if any of them is enabled.
+    seedCharacter({
+      activeStance: "Fusion Burst",
+      resonanceChains: {
+        SequenceNode2Base: { isEnabled: false },
+        SequenceNode2FusionBurst: { isEnabled: true },
+        SequenceNode2TuneStrain: { isEnabled: false },
+      },
+    });
+    const props = baseStatsProps();
+    props.chosenChar.value.basic.stances = ["Fusion Burst", "Tune Strain"];
+    props.chosenChar.value.resonanceChains = [
+      { key: "SequenceNode2Base", name: "Sequence Node 2: Test Node", icon: "icon.png" },
+      {
+        key: "SequenceNode2FusionBurst",
+        name: "Sequence Node 2: Test Node",
+        icon: "icon.png",
+        stance: "Fusion Burst",
+      },
+      {
+        key: "SequenceNode2TuneStrain",
+        name: "Sequence Node 2: Test Node",
+        icon: "icon.png",
+        stance: "Tune Strain",
+      },
+    ];
+    const { container } = renderCard(props);
+
+    const resonanceEl = container.querySelector("[data-test-build-card-resonance]");
+    const nodes = resonanceEl?.querySelectorAll(".build-card__resonance-node");
+    expect(nodes?.length).toBe(1);
+    expect(nodes?.[0].classList.contains("build-card__resonance-node--active")).toBe(true);
+  });
+
+  it("shows a node's icon as inactive when none of its entries for the current stance are enabled", () => {
+    seedCharacter({
+      activeStance: "Tune Strain",
+      resonanceChains: {
+        SequenceNode2Base: { isEnabled: false },
+        SequenceNode2FusionBurst: { isEnabled: true },
+        SequenceNode2TuneStrain: { isEnabled: false },
+      },
+    });
+    const props = baseStatsProps();
+    props.chosenChar.value.basic.stances = ["Fusion Burst", "Tune Strain"];
+    props.chosenChar.value.resonanceChains = [
+      { key: "SequenceNode2Base", name: "Sequence Node 2: Test Node", icon: "icon.png" },
+      {
+        key: "SequenceNode2FusionBurst",
+        name: "Sequence Node 2: Test Node",
+        icon: "icon.png",
+        stance: "Fusion Burst",
+      },
+      {
+        key: "SequenceNode2TuneStrain",
+        name: "Sequence Node 2: Test Node",
+        icon: "icon.png",
+        stance: "Tune Strain",
+      },
+    ];
+    const { container } = renderCard(props);
+
+    // The Fusion-Burst-only variant (currently enabled) shouldn't be
+    // considered while Tune Strain is the active stance.
+    const resonanceEl = container.querySelector("[data-test-build-card-resonance]");
+    const nodes = resonanceEl?.querySelectorAll(".build-card__resonance-node");
+    expect(nodes?.length).toBe(1);
+    expect(nodes?.[0].classList.contains("build-card__resonance-node--inactive")).toBe(true);
+  });
 });

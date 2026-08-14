@@ -30,6 +30,7 @@ export const resonanceChains = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    isPermanent: true,
   },
   {
     key: "SequenceNode3VisagesofDust",
@@ -46,6 +47,7 @@ export const resonanceChains = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    isPermanent: true,
   },
   {
     key: "SequenceNode4ResonatingLamella",
@@ -78,6 +80,7 @@ export const resonanceChains = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    isPermanent: true,
   },
   {
     key: "SequenceNode6EchoesofWanderlust",

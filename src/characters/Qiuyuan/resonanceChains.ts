@@ -14,6 +14,7 @@ export const resonanceChains = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    isPermanent: true,
   },
   {
     key: "SequenceNode2OBladeIWhoTeachNoMore",
@@ -91,6 +92,7 @@ export const resonanceChains = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    isPermanent: true,
   },
   {
     key: "SequenceNode5OBladeIWhoAwaittobeWielded",

@@ -1,7 +1,42 @@
-import { describe, it, expect } from "vitest";
-import { buildCharacterCalculationContext } from "../../src/calculator/buildCharacterContext";
+import { describe, it, expect, vi } from "vitest";
 import { getCombinedEchoStats } from "../../src/echoes/stats";
 import type { TeamEnemyConfig } from "../../src/calculator/buildCharacterContext";
+
+// A fake character with one `isPermanent` and one ordinary conditional
+// resonance chain node, used to test the resonance-chain filtering below
+// without depending on real character data ever setting the flag.
+const fakeResonanceChainChar = {
+  basic: { weapon: "Swords", stances: [] },
+  buffs: [],
+  resonanceChains: [
+    {
+      key: "PermanentNode",
+      name: "Sequence Node 1: Test Permanent Node",
+      isPermanent: true,
+      hasStacks: false,
+      modifiers: [{ modifier: "CritDMG", modifierValue: 0.3 }],
+    },
+    {
+      key: "ConditionalNode",
+      name: "Sequence Node 2: Test Conditional Node",
+      hasStacks: false,
+      modifiers: [{ modifier: "ATK", modifierValue: 0.5 }],
+    },
+  ],
+  getCharacterStatsByLevel: () => ({ hp: 10000, attack: 500, defense: 1000 }),
+};
+
+vi.mock("../../src/characters/characters", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../src/characters/characters")>();
+  return {
+    ...actual,
+    getCharByName: vi.fn(async (charName: string) =>
+      charName === "TestCharWithResonanceChains" ? fakeResonanceChainChar : actual.getCharByName(charName),
+    ),
+  };
+});
+
+const { buildCharacterCalculationContext } = await import("../../src/calculator/buildCharacterContext");
 
 const enemyConfig: TeamEnemyConfig = {
   enemyLevel: 90,
@@ -200,7 +235,7 @@ describe("buildCharacterCalculationContext", () => {
       expect(filtered.weaponData.weaponPassiveStats.BasicAttackDMGBonus ?? 0).toBeCloseTo(0);
     });
 
-    it("drops character self-buffs, resonance chains, and custom buffs entirely, even when toggled on", async () => {
+    it("drops character self-buffs, a non-alwaysEnabled resonance chain, and custom buffs entirely, even when toggled on", async () => {
       const characters = {
         Calcharo: {
           resonanceChains: { chain1: { isEnabled: true } },
@@ -214,6 +249,52 @@ describe("buildCharacterCalculationContext", () => {
 
       expect(full.finalStats.totalAtk).toBeGreaterThan(filtered.finalStats.totalAtk);
       expect(filtered.finalStats.totalAtk).toBeCloseTo(filtered.baseAtk);
+    });
+
+    it("keeps an isPermanent resonance chain node's modifiers only when its stored toggle is on, and never a conditional node's", async () => {
+      // Unlike weapon passives/echo set bonuses/main echo, a resonance
+      // chain node has no separate "sequence level owned" field — its
+      // stored toggle is the only signal this app has for whether the
+      // player owns that sequence at all, so `isPermanent` must never force
+      // it on. A node flagged `isPermanent: true` (an unconditional bonus
+      // with no further combat trigger, e.g. a flat stat increase) should
+      // apply on the build card exactly when its own toggle is on — not
+      // forced regardless of stored state, and never for an ordinary
+      // conditional node even if that one is toggled on.
+      const toggledOn = {
+        TestCharWithResonanceChains: {
+          resonanceChains: { PermanentNode: { isEnabled: true }, ConditionalNode: { isEnabled: true } },
+        },
+      };
+      const toggledOff = {
+        TestCharWithResonanceChains: {
+          resonanceChains: { PermanentNode: { isEnabled: false }, ConditionalNode: { isEnabled: true } },
+        },
+      };
+
+      const withPermanentOn = await buildCharacterCalculationContext(
+        "TestCharWithResonanceChains",
+        toggledOn,
+        enemyConfig,
+        [],
+        { alwaysEnabledOnly: true },
+      );
+      const withPermanentOff = await buildCharacterCalculationContext(
+        "TestCharWithResonanceChains",
+        toggledOff,
+        enemyConfig,
+        [],
+        { alwaysEnabledOnly: true },
+      );
+
+      // Base Crit DMG is 150%; PermanentNode's +30% only applies once its
+      // own toggle (representing sequence ownership) is on.
+      expect(withPermanentOn.finalStats.totalCritDMG).toBeCloseTo(1.8);
+      expect(withPermanentOff.finalStats.totalCritDMG).toBeCloseTo(1.5);
+      // ConditionalNode's +50% ATK must never apply on the build card,
+      // regardless of its toggle state, since it isn't flagged isPermanent.
+      expect(withPermanentOn.finalStats.totalAtk).toBeCloseTo(withPermanentOn.baseAtk);
+      expect(withPermanentOff.finalStats.totalAtk).toBeCloseTo(withPermanentOff.baseAtk);
     });
 
     it("keeps an alwaysEnabled echo set bonus", async () => {
