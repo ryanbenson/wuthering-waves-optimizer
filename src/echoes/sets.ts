@@ -102,6 +102,16 @@ const has2SetBonusKeys = setKeysFromBonusLabels(twoSetBonuses, "2 Set");
 const has3SetBonusKeys = setKeysFromBonusLabels(threeSetBonuses, "3 Set");
 const has5SetBonusKeys = setKeysFromBonusLabels(fiveSetBonuses, "5 Set");
 
+// The minimum piece count needed for a set's *first* bonus to activate.
+// Every twoSetBonuses set also has a matching fiveSetBonuses entry (5pc is
+// always an upgrade on the same set, never a separate unlock), so 2 is a
+// safe default for anything not in the 1pc/3pc-only lists.
+export function getSetBonusThreshold(setTypeKey: string): number {
+  if (has1SetBonusKeys.has(setTypeKey)) return 1;
+  if (has3SetBonusKeys.has(setTypeKey)) return 3;
+  return 2;
+}
+
 // Function to convert a list of echo set keys (e.g. MidnightVeil)
 // to their corresponding set bonus effects
 // may need to use getEchoSetLabelByType to convert keys to labels

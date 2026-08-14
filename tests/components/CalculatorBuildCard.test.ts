@@ -166,6 +166,40 @@ describe("CalculatorBuildCard", () => {
     expect(echoesEl?.textContent).not.toContain("CV");
   });
 
+  it("shows a 1pc set (e.g. Lucy's exclusive Shadow of Shattered Dreams) alongside 2pc sets, sorted with 2pc sets first", () => {
+    // Mirrors Lucy's real preset: a 1pc-threshold exclusive set plus two
+    // ordinary 2pc sets filling the other 4 slots (see
+    // src/characters/Lucy/presets.ts) — the case that exposed the build
+    // card's old hardcoded `count >= 2` filter dropping the 1pc set.
+    seedCharacter({
+      echoes: {
+        0: createEmptyEchoSlot("echo-0"),
+        1: createEmptyEchoSlot("echo-1"),
+        2: createEmptyEchoSlot("echo-2"),
+        3: createEmptyEchoSlot("echo-3"),
+        4: createEmptyEchoSlot("echo-4"),
+      },
+    });
+    const inventoryStore = useInventoryStore();
+    inventoryStore.echoes = [
+      { ...createEmptyEchoSlot("echo-0"), echoSet: "ShadowofShatteredDreams" },
+      { ...createEmptyEchoSlot("echo-1"), echoSet: "CelestialLight" },
+      { ...createEmptyEchoSlot("echo-2"), echoSet: "CelestialLight" },
+      { ...createEmptyEchoSlot("echo-3"), echoSet: "EternalRadiance" },
+      { ...createEmptyEchoSlot("echo-4"), echoSet: "EternalRadiance" },
+    ];
+    const { container } = renderCard(baseStatsProps());
+
+    const chips = container.querySelectorAll(
+      "[data-test-build-card-echo-sets] > div",
+    );
+    expect(Array.from(chips).map((el) => el.textContent?.trim())).toEqual([
+      "2pc Celestial Light",
+      "2pc Eternal Radiance",
+      "1pc Shadow of Shattered Dreams",
+    ]);
+  });
+
   it("dedupes multiple resonance chain entries for the same sequence node into one icon, active if any variant for the current stance is enabled", () => {
     // Some characters (e.g. stance-swappers) define several resonance chain
     // entries per in-game node — stance-bound variants, or independently
