@@ -799,9 +799,10 @@ export function optimize(
       targetType,
       targetObject,
     };
-    const loadoutArr = JSON.parse(
-      JSON.stringify(normalizeOptimizerLoadout(loadout)),
-    );
+    // normalizeOptimizerLoadout already returns a fresh array (not the
+    // generator's mutable backtracking `combo`), so no clone is needed to
+    // protect against later push/pop — see the same fix in processor.worker.ts.
+    const loadoutArr = normalizeOptimizerLoadout(loadout);
     if (targetType === "Stat") {
       // get the stat wer'e looking for from our final stats
       targetValue = finalStats?.[targetObject] ?? 0;
