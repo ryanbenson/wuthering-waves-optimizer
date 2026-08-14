@@ -1434,13 +1434,13 @@ export default defineComponent({
         generatorShardTotal.forEach((v) => (sum += v));
         return sum;
       };
-      const seenCombinations = new Set<bigint>();
+      const seenCombinations = new Set<number>();
       // Cross-shard dedup for generated (not-yet-processed) loadouts: local per-worker
       // dedup only catches duplicates within one shard; distinct shards can independently
       // discover the same loadout signature (e.g. two stat-identical main echoes assigned
       // to different shards). Only needed when there's more than one generator shard.
       const seenGeneratedHashes =
-        generatorCount > 1 ? new Set<bigint>() : null;
+        generatorCount > 1 ? new Set<number>() : null;
       const dedupeBatchAcrossShards = (batch: any[]): any[] => {
         if (!seenGeneratedHashes) return batch;
         const deduped: any[] = [];

@@ -114,9 +114,22 @@ describe("generateLoadouts loadout formats", () => {
 });
 
 describe("optimizer loadout hash dedupe", () => {
-  it("hashes the same signature to the same bigint", () => {
+  it("hashes the same signature to the same safe-integer number", () => {
     const key = "Foo:Set:4:5:ATK:Crit Rate:10.5||||";
-    expect(hashOptimizerLoadoutKey(key)).toBe(hashOptimizerLoadoutKey(key));
+    const hash = hashOptimizerLoadoutKey(key);
+    expect(hashOptimizerLoadoutKey(key)).toBe(hash);
+    expect(typeof hash).toBe("number");
+    expect(Number.isSafeInteger(hash)).toBe(true);
+  });
+
+  it("produces well-distributed hashes across many distinct keys (no BigInt, no collisions in a large sample)", () => {
+    const seen = new Set<number>();
+    const n = 50000;
+    for (let i = 0; i < n; i++) {
+      const key = `Echo${i}:Set${i % 7}:${(i % 4) + 1}:5:ATK:Crit Rate:${(i % 100) / 10}||||`;
+      seen.add(hashOptimizerLoadoutKey(key));
+    }
+    expect(seen.size).toBe(n);
   });
 
   it("collapses identical-stat copies and order variants to one hash", () => {

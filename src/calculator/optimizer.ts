@@ -188,21 +188,38 @@ export function getOptimizerLoadoutKey(loadout: any[]): string {
 }
 
 /**
- * FNV-1a 64-bit hash of a loadout signature string.
- * Used so dedupe Sets store compact values instead of retaining long keys.
+ * 53-bit string hash (the "cyrb53" algorithm), used so dedupe Sets store
+ * compact values instead of retaining long keys. Deliberately avoids BigInt:
+ * this runs once per generated loadout (10M+ times per optimizer run, across
+ * every worker thread), and BigInt is heap-allocated/immutable in JS — every
+ * multiply/xor here would allocate a new object. Profiling a real run showed
+ * that allocation traffic dominating time in the native allocator's lock
+ * (contended across all worker threads) rather than in loadout calculation.
+ * This version uses only primitive int32 ops (Math.imul, xor, shifts) with
+ * zero heap allocation, and the 53-bit output is small enough to store
+ * exactly as a JS number (Set<number>, no boxing/string key needed) while
+ * keeping collision risk negligible at this scale (birthday-bound expected
+ * collisions across 10M loadouts is ~0.006, i.e. effectively never).
  */
-export function hashOptimizerLoadoutKey(key: string): bigint {
-  let hash = 0xcbf29ce484222325n;
-  const prime = 0x100000001b3n;
+export function hashOptimizerLoadoutKey(key: string): number {
+  let h1 = 0xdeadbeef;
+  let h2 = 0x41c6ce57;
   for (let i = 0; i < key.length; i++) {
-    hash ^= BigInt(key.charCodeAt(i));
-    hash = BigInt.asUintN(64, hash * prime);
+    const ch = key.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
   }
-  return hash;
+  h1 =
+    Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^
+    Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 =
+    Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^
+    Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 }
 
-/** Signature-equivalent uniqueness key stored as a 64-bit hash. */
-export function getOptimizerLoadoutHash(loadout: any[]): bigint {
+/** Signature-equivalent uniqueness key stored as a compact numeric hash. */
+export function getOptimizerLoadoutHash(loadout: any[]): number {
   return hashOptimizerLoadoutKey(getOptimizerLoadoutKey(loadout));
 }
 
@@ -444,7 +461,7 @@ export function optimize(
 ) {
   // Min-heap for topN results
   const heap: any[] = [];
-  const seenCombinations = new Set<bigint>(); // Track unique combinations
+  const seenCombinations = new Set<number>(); // Track unique combinations
 
   // get info on our target
   const targetElements = target.split(":");
@@ -782,9 +799,10 @@ export function optimize(
       targetType,
       targetObject,
     };
-    const loadoutArr = JSON.parse(
-      JSON.stringify(normalizeOptimizerLoadout(loadout)),
-    );
+    // normalizeOptimizerLoadout already returns a fresh array (not the
+    // generator's mutable backtracking `combo`), so no clone is needed to
+    // protect against later push/pop — see the same fix in processor.worker.ts.
+    const loadoutArr = normalizeOptimizerLoadout(loadout);
     if (targetType === "Stat") {
       // get the stat wer'e looking for from our final stats
       targetValue = finalStats?.[targetObject] ?? 0;
