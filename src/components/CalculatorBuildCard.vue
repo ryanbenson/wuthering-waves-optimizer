@@ -46,6 +46,24 @@
           class="hidden"
           @change="onBackgroundFileChange"
           data-test-build-card-background-input />
+        <label class="form-control">
+          <div class="label py-1">
+            <span class="label-text text-xs">Primary Color</span>
+          </div>
+          <input
+            v-model="buildCardPrimaryColor"
+            type="color"
+            class="w-10 h-9 p-1 rounded-md border border-base-content/20 bg-base-100"
+            data-test-build-card-primary-color-input />
+        </label>
+        <button
+          v-if="customPrimaryColor"
+          type="button"
+          class="btn btn-sm btn-ghost"
+          @click="resetPrimaryColor"
+          data-test-build-card-primary-color-reset>
+          Reset Color
+        </button>
       </div>
       <div class="flex gap-2">
         <button
@@ -80,6 +98,7 @@
           backgroundImage: buildCardBackground
             ? `url(${buildCardBackground})`
             : undefined,
+          ...buildCardPrimaryColorStyle,
         }">
         <div class="build-card__grid grid grid-cols-12 gap-4">
           <div class="build-card__identity-panel col-span-4 h-full">
@@ -267,6 +286,7 @@ import {
   getEchoSetLabelByType,
 } from "../echoes/stats";
 import { compressImageToDataUrl } from "../utils/imageCompression";
+import { contrastOklchTriple, hexToOklchTriple } from "../utils/color";
 import {
   copyCardImageToClipboard,
   downloadCardImage,
@@ -330,6 +350,31 @@ const buildCardUid = computed({
 const buildCardBackground = computed(
   () => config.value?.buildCard?.background ?? null,
 );
+
+// Matches the app's default DaisyUI theme primary (tailwind.config.js
+// "black" theme), so the <input type="color"> starts on the color the card
+// already renders with before a user customizes it.
+const DEFAULT_PRIMARY_COLOR = "#4b6bfb";
+const customPrimaryColor = computed(
+  () => config.value?.buildCard?.primaryColor ?? null,
+);
+const buildCardPrimaryColor = computed({
+  get: () => customPrimaryColor.value ?? DEFAULT_PRIMARY_COLOR,
+  set: (value: string) =>
+    settingsStore.addToConfig({ buildCard: { primaryColor: value } }),
+});
+const buildCardPrimaryColorStyle = computed(() => {
+  if (!customPrimaryColor.value) return {};
+  return {
+    "--p": hexToOklchTriple(customPrimaryColor.value),
+    "--pc": contrastOklchTriple(customPrimaryColor.value),
+  };
+});
+
+function resetPrimaryColor() {
+  settingsStore.addToConfig({ buildCard: { primaryColor: null } });
+  showToast("Primary color reset", "success");
+}
 
 const backgroundFileInput = ref<HTMLInputElement | null>(null);
 
