@@ -136,8 +136,8 @@ async function runGeneration(data: NonNullable<GeneratorMessage["data"]>) {
       return;
     }
 
-    // Track seen combinations as 64-bit signature hashes (same uniqueness as full keys, far less RAM)
-    const seenCombinations = new Set<bigint>();
+    // Track seen combinations as compact 53-bit signature hashes (same uniqueness as full keys, far less RAM)
+    const seenCombinations = new Set<number>();
 
     // Generate loadouts in batches
     // @ts-ignore - generateLoadouts returns a generator with any[] items
