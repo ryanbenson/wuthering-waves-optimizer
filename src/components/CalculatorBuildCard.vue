@@ -157,7 +157,7 @@
                 <div v-if="buildCardUsername" class="text-2xl font-semibold">
                   {{ buildCardUsername }}
                 </div>
-                <div v-if="buildCardUid" class="text-lg opacity-70">
+                <div v-if="buildCardUid" class="text-lg opacity-70 whitespace-nowrap">
                   UID {{ buildCardUid }}
                 </div>
               </div>
@@ -228,7 +228,7 @@
                 :key="set.key"
                 class="flex items-center gap-2 rounded-lg bg-base-200 px-3 py-2">
                 <img :src="set.icon" class="size-7" />
-                <span class="text-base font-semibold">{{ set.count }}pc {{ set.label }}</span>
+                <span class="text-base font-semibold whitespace-nowrap">{{ set.count }}pc {{ set.label }}</span>
               </div>
             </div>
           </div>
@@ -258,6 +258,7 @@ import { useSettingsStore } from "../stores/settings";
 import { getWeaponByName } from "../weapons/weapons";
 import { buildCharacterCalculationContext } from "../calculator/buildCharacterContext";
 import { computeTotalTuneBreakBoost } from "../calculator/stats";
+import { filterBuffsForStance, resolveActiveStance } from "../calculator/stances";
 import { useToast } from "../composables/useToast";
 import {
   subStatIconMap,
@@ -287,8 +288,9 @@ interface ChosenCharRef {
       element: string;
       weapon: string;
       image?: string;
+      stances?: string[];
     };
-    resonanceChains?: Array<{ key: string; name?: string; icon?: string }>;
+    resonanceChains?: Array<{ key: string; name?: string; icon?: string; stance?: string }>;
     basicAttacks?: { icon?: string };
     skillAttacks?: { icon?: string };
     liberationAttacks?: { icon?: string };
@@ -434,15 +436,42 @@ const forteIcons = computed(() => ({
   intro: props.chosenChar?.value?.introAttacks?.icon,
 }));
 
+// Some characters (e.g. stance-swapping ones) define multiple resonance
+// chain entries for the same in-game sequence node — either stance-bound
+// variants of one node, or several independently-toggleable effects of one
+// node (differentiated only by unique `key`s). The build card shows one
+// icon per node, so entries are grouped by their shared "Sequence Node N:"
+// name prefix, restricted to whichever entries actually apply for the
+// character's current stance, and the node lights up if any entry in its
+// group is enabled.
+const activeStance = computed(() =>
+  resolveActiveStance(
+    props.chosenChar?.value?.basic?.stances,
+    characterData.value.activeStance,
+    characterData.value.buffs,
+  ),
+);
+
 const resonanceChainNodes = computed(() => {
   const chains = props.chosenChar?.value?.resonanceChains ?? [];
   const enabledMap = characterData.value.resonanceChains ?? {};
-  return chains.map((chain) => ({
-    key: chain.key,
-    name: chain.name,
-    icon: chain.icon,
-    isEnabled: Boolean(enabledMap[chain.key]?.isEnabled),
-  }));
+  const chainsForStance = filterBuffsForStance(chains, activeStance.value);
+
+  const nodesByNumber = new Map<
+    string,
+    { key: string; name?: string; icon?: string; isEnabled: boolean }
+  >();
+  for (const chain of chainsForStance) {
+    const nodeNumber = /^Sequence Node (\d+)/.exec(chain.name ?? "")?.[1] ?? chain.key;
+    const isEnabled = Boolean(enabledMap[chain.key]?.isEnabled);
+    const existing = nodesByNumber.get(nodeNumber);
+    if (!existing) {
+      nodesByNumber.set(nodeNumber, { key: chain.key, name: chain.name, icon: chain.icon, isEnabled });
+    } else if (isEnabled) {
+      existing.isEnabled = true;
+    }
+  }
+  return Array.from(nodesByNumber.values());
 });
 
 const echoSlots = computed(() => {
