@@ -240,7 +240,7 @@
             </div>
             <div
               v-if="echoSetSummary.length"
-              class="build-card__echo-sets shrink-0 flex flex-wrap justify-center gap-2 mb-6"
+              class="build-card__echo-sets shrink-0 flex flex-wrap-reverse justify-center gap-2 mb-6"
               data-test-build-card-echo-sets>
               <div
                 v-for="set in echoSetSummary"
@@ -285,6 +285,7 @@ import {
   getEchoSetIconByType,
   getEchoSetLabelByType,
 } from "../echoes/stats";
+import { getSetBonusThreshold } from "../echoes/sets";
 import { compressImageToDataUrl } from "../utils/imageCompression";
 import { contrastOklchTriple, hexToOklchTriple } from "../utils/color";
 import {
@@ -535,11 +536,13 @@ const echoSlots = computed(() => {
   });
 });
 
-// Tallies equipped echoes by set key and surfaces every set with 2+ pieces
-// equipped (game set bonuses come in 2pc/5pc tiers), so the card can show
-// e.g. "2pc Molten Rift" / "5pc Molten Rift" — informational (what's
-// equipped), not a re-derivation of `getSetBonusEffects`'s "which 2 bonus
-// slots actually apply" selection logic used for damage calculation.
+// Tallies equipped echoes by set key and surfaces every set that meets its
+// own bonus threshold (usually 2pc/5pc, but some sets — e.g. Lucy's
+// exclusive "Shadow of Shattered Dreams" — activate at 1pc, others at 3pc;
+// see getSetBonusThreshold), so the card can show e.g. "2pc Molten Rift" or
+// "1pc Shadow of Shattered Dreams" — informational (what's equipped), not a
+// re-derivation of `getSetBonusEffects`'s "which bonus slots actually
+// apply" selection logic used for damage calculation.
 const echoSetSummary = computed(() => {
   const counts: Record<string, number> = {};
   for (const echo of echoSlots.value as Array<{ echoSet?: string }>) {
@@ -549,7 +552,7 @@ const echoSetSummary = computed(() => {
     }
   }
   return Object.entries(counts)
-    .filter(([, count]) => count >= 2)
+    .filter(([key, count]) => count >= getSetBonusThreshold(key))
     .sort(([, a], [, b]) => b - a)
     .map(([key, count]) => ({
       key,
