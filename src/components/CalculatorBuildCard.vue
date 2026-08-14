@@ -352,31 +352,6 @@ const buildCardBackground = computed(
   () => config.value?.buildCard?.background ?? null,
 );
 
-// Matches the app's default DaisyUI theme primary (tailwind.config.js
-// "black" theme), so the <input type="color"> starts on the color the card
-// already renders with before a user customizes it.
-const DEFAULT_PRIMARY_COLOR = "#4b6bfb";
-const customPrimaryColor = computed(
-  () => config.value?.buildCard?.primaryColor ?? null,
-);
-const buildCardPrimaryColor = computed({
-  get: () => customPrimaryColor.value ?? DEFAULT_PRIMARY_COLOR,
-  set: (value: string) =>
-    settingsStore.addToConfig({ buildCard: { primaryColor: value } }),
-});
-const buildCardPrimaryColorStyle = computed(() => {
-  if (!customPrimaryColor.value) return {};
-  return {
-    "--p": hexToOklchTriple(customPrimaryColor.value),
-    "--pc": contrastOklchTriple(customPrimaryColor.value),
-  };
-});
-
-function resetPrimaryColor() {
-  settingsStore.addToConfig({ buildCard: { primaryColor: null } });
-  showToast("Primary color reset", "success");
-}
-
 const backgroundFileInput = ref<HTMLInputElement | null>(null);
 
 function triggerBackgroundUpload() {
@@ -432,6 +407,36 @@ const characterData = computed(
   () => (characters.value[props.character] ?? {}) as Record<string, any>,
 );
 const characterBasic = computed(() => props.chosenChar?.value?.basic ?? null);
+
+// Unlike username/UID/background (shared branding across every card, see
+// above), the primary color is a per-build styling choice — different
+// characters' cards can want different accent colors — so it's stored on
+// the character itself rather than the settings store's shared config.
+const DEFAULT_PRIMARY_COLOR = "#4b6bfb";
+const customPrimaryColor = computed(
+  () => characterData.value.buildCardPrimaryColor ?? null,
+);
+const buildCardPrimaryColor = computed({
+  get: () => customPrimaryColor.value ?? DEFAULT_PRIMARY_COLOR,
+  set: (value: string) =>
+    characterStore.setCharacterData(props.character, {
+      buildCardPrimaryColor: value,
+    }),
+});
+const buildCardPrimaryColorStyle = computed(() => {
+  if (!customPrimaryColor.value) return {};
+  return {
+    "--p": hexToOklchTriple(customPrimaryColor.value),
+    "--pc": contrastOklchTriple(customPrimaryColor.value),
+  };
+});
+
+function resetPrimaryColor() {
+  characterStore.setCharacterData(props.character, {
+    buildCardPrimaryColor: null,
+  });
+  showToast("Primary color reset", "success");
+}
 
 // The build card represents equipment alone (issue #383): base
 // character/weapon/echo stats plus only the weapon passives, echo set

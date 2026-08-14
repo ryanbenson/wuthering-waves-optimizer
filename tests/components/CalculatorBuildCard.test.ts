@@ -5,7 +5,6 @@ import CalculatorBuildCard from "../../src/components/CalculatorBuildCard.vue";
 import { createEmptyEchoSlot } from "../../src/echoes/echoLoadout";
 import { useCharacterStore } from "../../src/stores/character";
 import { useInventoryStore } from "../../src/stores/inventory";
-import { useSettingsStore } from "../../src/stores/settings";
 import { buildCharacterCalculationContext } from "../../src/calculator/buildCharacterContext";
 import { displayInt } from "../../src/utils/numbers";
 import { contrastOklchTriple, hexToOklchTriple } from "../../src/utils/color";
@@ -275,8 +274,8 @@ describe("CalculatorBuildCard", () => {
     expect(nodes?.[0].classList.contains("build-card__resonance-node--inactive")).toBe(true);
   });
 
-  it("leaves the DaisyUI primary color variables untouched until a custom color is picked, then applies it as --p/--pc on the card canvas", async () => {
-    seedCharacter();
+  it("leaves the DaisyUI primary color variables untouched until a custom color is picked, then applies it as --p/--pc on the card canvas, stored per-character", async () => {
+    const characterStore = seedCharacter();
     const { container } = renderCard(baseStatsProps());
 
     const canvas = container.querySelector(".build-card__canvas") as HTMLElement;
@@ -294,6 +293,22 @@ describe("CalculatorBuildCard", () => {
       expect(canvas.style.getPropertyValue("--p")).toBe(hexToOklchTriple("#ff0000"));
     });
     expect(canvas.style.getPropertyValue("--pc")).toBe(contrastOklchTriple("#ff0000"));
-    expect(useSettingsStore().config.buildCard.primaryColor).toBe("#ff0000");
+    expect(characterStore.characters[CHARACTER].buildCardPrimaryColor).toBe(
+      "#ff0000",
+    );
+  });
+
+  it("keeps each character's primary color independent", () => {
+    const characterStore = seedCharacter({ buildCardPrimaryColor: "#00ff00" });
+    characterStore.characters.OtherCharacter = { buildCardPrimaryColor: "#0000ff" };
+    const { container } = renderCard(baseStatsProps());
+
+    const colorInput = container.querySelector(
+      "[data-test-build-card-primary-color-input]",
+    ) as HTMLInputElement;
+    expect(colorInput.value).toBe("#00ff00");
+
+    const canvas = container.querySelector(".build-card__canvas") as HTMLElement;
+    expect(canvas.style.getPropertyValue("--p")).toBe(hexToOklchTriple("#00ff00"));
   });
 });
