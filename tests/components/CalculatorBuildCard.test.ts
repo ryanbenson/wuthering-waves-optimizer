@@ -1,12 +1,14 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
-import { render, waitFor } from "@testing-library/vue";
+import { fireEvent, render, waitFor } from "@testing-library/vue";
 import CalculatorBuildCard from "../../src/components/CalculatorBuildCard.vue";
 import { createEmptyEchoSlot } from "../../src/echoes/echoLoadout";
 import { useCharacterStore } from "../../src/stores/character";
 import { useInventoryStore } from "../../src/stores/inventory";
+import { useSettingsStore } from "../../src/stores/settings";
 import { buildCharacterCalculationContext } from "../../src/calculator/buildCharacterContext";
 import { displayInt } from "../../src/utils/numbers";
+import { contrastOklchTriple, hexToOklchTriple } from "../../src/utils/color";
 
 const CHARACTER = "Changli";
 
@@ -237,5 +239,27 @@ describe("CalculatorBuildCard", () => {
     const nodes = resonanceEl?.querySelectorAll(".build-card__resonance-node");
     expect(nodes?.length).toBe(1);
     expect(nodes?.[0].classList.contains("build-card__resonance-node--inactive")).toBe(true);
+  });
+
+  it("leaves the DaisyUI primary color variables untouched until a custom color is picked, then applies it as --p/--pc on the card canvas", async () => {
+    seedCharacter();
+    const { container } = renderCard(baseStatsProps());
+
+    const canvas = container.querySelector(".build-card__canvas") as HTMLElement;
+    expect(canvas.style.getPropertyValue("--p")).toBe("");
+    expect(
+      container.querySelector("[data-test-build-card-primary-color-reset]"),
+    ).toBeFalsy();
+
+    const colorInput = container.querySelector(
+      "[data-test-build-card-primary-color-input]",
+    ) as HTMLInputElement;
+    await fireEvent.update(colorInput, "#ff0000");
+
+    await waitFor(() => {
+      expect(canvas.style.getPropertyValue("--p")).toBe(hexToOklchTriple("#ff0000"));
+    });
+    expect(canvas.style.getPropertyValue("--pc")).toBe(contrastOklchTriple("#ff0000"));
+    expect(useSettingsStore().config.buildCard.primaryColor).toBe("#ff0000");
   });
 });
