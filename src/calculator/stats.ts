@@ -1242,7 +1242,11 @@ export const computeAdditionalBaseBuffs = (
     if (!isBuffActiveForStance(buffFromCharacter, activeStance)) {
       continue;
     }
-    const buff = JSON.parse(JSON.stringify(buffFromCharacter));
+    // No clone needed: unlike computeSelfBuffs, applyAdditionalBaseModifiers
+    // below only reads from these modifier objects, never mutates them — so
+    // referencing the shared character buff definition directly is safe and
+    // avoids a JSON round-trip on every enabled buff, for every loadout.
+    const buff = buffFromCharacter;
     // on Brant, if this is TheatricalMoment, check if MyMoment, if so, ignore this buff
     if (character === "Brant" && key === "TheatricalMoment") {
       if (buffsConfig?.MyMoment?.isEnabled) {
@@ -1251,7 +1255,7 @@ export const computeAdditionalBaseBuffs = (
     }
 
     const modifiersData = buff?.modifiers ?? [];
-    let modifiers = JSON.parse(JSON.stringify(modifiersData));
+    let modifiers = modifiersData;
 
     // Calculate adjusted CritRate that includes non-AdditionalBase modifiers (like SequenceNode2)
     // This is needed because AdditionalBase modifiers depend on the final CritRate including these buffs
@@ -1353,10 +1357,12 @@ export const computeCritOverflowBuffs = (
       if (!isBuffActiveForStance(buffFromCharacter, activeStance)) {
         continue;
       }
-      const buff = JSON.parse(JSON.stringify(buffFromCharacter));
+      // processCritOverflowModifiers only reads modifier fields, so — as in
+      // computeAdditionalBaseBuffs above — no clone is needed here.
+      const buff = buffFromCharacter;
 
       const modifiersData = buff?.modifiers ?? [];
-      const modifiers = JSON.parse(JSON.stringify(modifiersData));
+      const modifiers = modifiersData;
 
       if (buff.hasStacks) {
         if (buffData?.stacks <= 0) {
@@ -1390,10 +1396,10 @@ export const computeCritOverflowBuffs = (
       if (!isBuffActiveForStance(chainFromCharacter, activeStance)) {
         continue;
       }
-      const chain = JSON.parse(JSON.stringify(chainFromCharacter));
+      const chain = chainFromCharacter;
 
       const modifiersData = chain?.modifiers ?? [];
-      const modifiers = JSON.parse(JSON.stringify(modifiersData));
+      const modifiers = modifiersData;
 
       if (chain.hasStacks) {
         if (chainData?.stacks <= 0) {
