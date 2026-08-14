@@ -2,6 +2,20 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 14, 2026</h3>
+    <ul>
+      <li>Adds a custom primary color picker to the Build Card, which also drives the resonance chain nodes, weapon refinement pill, forte level badges, and echo cost badges.</li>
+      <li>Fixes the Build Card's echo set summary to show 1pc and 3pc-threshold exclusive sets, not just 2pc sets.</li>
+      <li>Makes the Build Card's custom primary color per-character instead of global, since different builds want different accent colors.</li>
+      <li>Improves optimizer performance, especially for large-scale loadout runs, by removing unnecessary allocations from the calculation workers.</li>
+    </ul>
+    <h3>August 13, 2026</h3>
+    <ul>
+      <li>Moves the Build Card's forte row out of the character portrait and into its own row between the weapon and stats panels, and enlarges the icons.</li>
+      <li>Makes the Build Card compute its own stats from equipment and permanent unlocks instead of mirroring the Results tab's live buff toggles.</li>
+      <li>Increases the Build Card's character name, rarity stars, username, and UID font sizes.</li>
+      <li>Fixes the Build Card's resonance chain icons to dedupe per node, properly show permanent (always-on) nodes, and stop the UID and echo set name from wrapping onto two lines.</li>
+    </ul>
     <h3>August 12, 2026</h3>
     <ul>
       <li>Adds a Build Card (Labs feature, enable it in Settings > Labs) that generates a shareable image of your character's build, echoes, weapon, and forte stats.</li>
