@@ -9,6 +9,7 @@
       <li>Fixes YYX's S2, it now properly applies DMG Bonus</li>
       <li>Fixed a text issue on Hiyuki's sig</li>
       <li>Adds a warning badge on echo cards that aren't fully configured (missing an echo, set, main stat, or a substat), and an "Incomplete echoes" filter (with count badge) to the Inventory so you can find and finish configuring them.</li>
+      <li>Also shows that same incomplete-echo warning badge on a character's equipped echoes in the Calculator, so you can spot an unfinished build without leaving the page.</li>
     </ul>
     <h3>August 14, 2026</h3>
     <ul>
