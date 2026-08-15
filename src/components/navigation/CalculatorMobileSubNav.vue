@@ -140,7 +140,7 @@
         Stats & Damages
       </a>
     </li>
-    <li v-if="labs?.buildCard?.isEnabled" class="mb-2">
+    <li class="mb-2">
       <a
         @click="changeScreen('build-card')"
         :class="{ active: curScreen === 'build-card' }"
@@ -151,14 +151,13 @@
           class="size-7"
           alt="Build Card" />
         Build Card
+        <div class="badge badge-primary text-xs">New</div>
       </a>
     </li>
   </ul>
 </template>
 
 <script>
-import { mapState } from "pinia";
-import { useSettingsStore } from "../../stores/settings";
 export default {
   name: "CalculatorMobileSubNav",
   props: {
@@ -181,9 +180,6 @@ export default {
         mainMenuEl.removeAttribute("open");
       }
     },
-  },
-  computed: {
-    ...mapState(useSettingsStore, ["labs"]),
   },
   mounted() {
     this.curScreen = this.screen;

@@ -1,35 +1,6 @@
-function enableTeamRotationsLab(win: Cypress.AUTWindow) {
-  win.localStorage.setItem(
-    "settings",
-    JSON.stringify({ config: {}, labs: { teamRotations: { isEnabled: true } } }),
-  );
-}
-
-describe("Team Rotations feature flag", () => {
-  it("hides the nav link and blocks direct navigation while the Labs flag is off", () => {
-    cy.visit("/");
-    cy.get("[data-test-nav-team-rotations]").should("not.exist");
-
-    cy.visit("/teams");
-    cy.location("pathname").should("eq", "/");
-  });
-
-  it("can be enabled from Settings > Labs, revealing the nav link", () => {
-    cy.visit("/");
-    cy.get("[data-test-options-menu]").click();
-    cy.get("[data-test-options-settings]").click();
-    cy.get("[data-test-settings-labs]").click();
-    cy.contains("label", "Team Rotations")
-      .find("input[type=checkbox]")
-      .click();
-    cy.get("[data-test-nav-calculator]").click();
-    cy.get("[data-test-nav-team-rotations]").should("be.visible");
-  });
-});
-
 describe("Team Rotations", () => {
   beforeEach(() => {
-    cy.visit("/", { onBeforeLoad: enableTeamRotationsLab });
+    cy.visit("/");
   });
 
   function configureCharacterWithWeapon(character: string) {
@@ -609,7 +580,6 @@ describe("Team Rotations export/import", () => {
   beforeEach(() => {
     cy.visit("/", {
       onBeforeLoad(win) {
-        enableTeamRotationsLab(win);
         cy.stub(win.navigator.clipboard, "writeText").as("writeText").resolves();
       },
     });

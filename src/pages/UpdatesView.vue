@@ -2,6 +2,10 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 15, 2026</h3>
+    <ul>
+      <li>Team Rotations and Build Card are no longer Labs features — both are now fully released and available to everyone, no toggle required.</li>
+    </ul>
     <h3>August 14, 2026</h3>
     <ul>
       <li>Adds a custom primary color picker to the Build Card, which also drives the resonance chain nodes, weapon refinement pill, forte level badges, and echo cost badges.</li>
