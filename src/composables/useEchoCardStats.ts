@@ -13,6 +13,7 @@ export interface EchoCardStatsProps {
   rank: number | string;
   type: string;
   echo: string;
+  echoSet?: string;
   stat: string;
   echoSubStatsType1: string;
   echoSubStatsValue1: number | string;
@@ -139,7 +140,7 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
     if (!props.echo) return defaultImageUrl;
     return getEchoData(props.echo)?.image ?? defaultImageUrl;
   });
-  const hasSubStats = computed(() => {
+  const filledSubStatCount = computed(() => {
     const types = [
       props.echoSubStatsType1,
       props.echoSubStatsType2,
@@ -147,7 +148,16 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
       props.echoSubStatsType4,
       props.echoSubStatsType5,
     ];
-    return types.some((t) => t && t !== "none");
+    return types.filter((t) => t && t !== "none").length;
+  });
+
+  const hasSubStats = computed(() => filledSubStatCount.value > 0);
+
+  const isEchoIncomplete = computed(() => {
+    if (!props.echo) return true;
+    if (!props.echoSet) return true;
+    if (!props.stat || props.stat === "none") return true;
+    return filledSubStatCount.value < 5;
   });
 
   const echoSubStatsValue1Display = computed(() =>
@@ -262,6 +272,7 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
     echoName,
     echoImage,
     hasSubStats,
+    isEchoIncomplete,
     echoSubStatsValue1Display,
     echoSubStatsValue2Display,
     echoSubStatsValue3Display,

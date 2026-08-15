@@ -30,6 +30,23 @@
           </span>
         </button>
         <button
+          type="button"
+          class="btn btn-sm join-item"
+          :class="{ 'btn-active btn-warning': incompleteFilter }"
+          v-tooltip="
+            'Show only echoes missing an echo, set, main stat, or a substat'
+          "
+          data-test-find-incomplete
+          @click="toggleIncompleteFilter">
+          Incomplete echoes
+          <span
+            v-if="incompleteEchoCount > 0"
+            class="badge badge-sm"
+            :class="incompleteFilter ? 'badge-neutral' : 'badge-warning'">
+            {{ incompleteEchoCount }}
+          </span>
+        </button>
+        <button
           class="btn btn-sm join-item btn-error"
           :disabled="trashEchoCount === 0"
           v-tooltip="
@@ -306,6 +323,11 @@
               No exact duplicate echoes in your inventory.
             </div>
           </template>
+          <template v-if="incompleteFilter">
+            <div class="mt-2 text-sm opacity-70">
+              No echoes are missing an echo, set, main stat, or a substat.
+            </div>
+          </template>
         </div>
       </template>
       <template v-else>
@@ -479,6 +501,7 @@ const trashFilter = ref(false);
 const ignoreFromOptimizerFilter = ref(false);
 const favoriteFilter = ref(false);
 const duplicatesFilter = ref(false);
+const incompleteFilter = ref(false);
 const cvMin = ref(0);
 const cvMax = ref(ECHO_CV_MAX);
 const rvMin = ref(0);
@@ -496,6 +519,7 @@ const activeFilterCount = computed(() => {
   if (ignoreFromOptimizerFilter.value) count += 1;
   if (favoriteFilter.value) count += 1;
   if (duplicatesFilter.value) count += 1;
+  if (incompleteFilter.value) count += 1;
   if (cvMin.value > 0 || cvMax.value < ECHO_CV_MAX) count += 1;
   if (rvMin.value > 0 || rvMax.value < ECHO_RV_MAX) count += 1;
   return count;
@@ -532,6 +556,33 @@ const duplicateEchoCount = computed(() => {
   return count;
 });
 
+function isEchoIncomplete(e: InventoryEchoRow) {
+  if (!e.echo) return true;
+  if (!e.echoSet) return true;
+  if (!e.stat || e.stat === "none") return true;
+  const subStatTypes = [
+    e.echoSubStatsType1,
+    e.echoSubStatsType2,
+    e.echoSubStatsType3,
+    e.echoSubStatsType4,
+    e.echoSubStatsType5,
+  ];
+  const filledSubStatCount = subStatTypes.filter(
+    (t) => t && t !== "none",
+  ).length;
+  return filledSubStatCount < 5;
+}
+
+const incompleteEchoCount = computed(() => {
+  let count = 0;
+  for (const inventoryEcho of (echoes.value ?? []) as InventoryEchoRow[]) {
+    if (isEchoIncomplete(inventoryEcho)) {
+      count += 1;
+    }
+  }
+  return count;
+});
+
 watch(
   [
     mainStatFilter,
@@ -543,6 +594,7 @@ watch(
     ignoreFromOptimizerFilter,
     favoriteFilter,
     duplicatesFilter,
+    incompleteFilter,
     cvMin,
     cvMax,
     rvMin,
@@ -596,6 +648,9 @@ const echoesList = computed(() => {
       .sort((a, b) =>
         getEchoIdentityKey(a).localeCompare(getEchoIdentityKey(b)),
       );
+  }
+  if (incompleteFilter.value) {
+    allEchoes = allEchoes.filter((e) => isEchoIncomplete(e));
   }
   const cvFilterActive = cvMin.value > 0 || cvMax.value < ECHO_CV_MAX;
   const rvFilterActive = rvMin.value > 0 || rvMax.value < ECHO_RV_MAX;
@@ -717,6 +772,10 @@ function toggleDuplicatesFilter() {
   duplicatesFilter.value = !duplicatesFilter.value;
 }
 
+function toggleIncompleteFilter() {
+  incompleteFilter.value = !incompleteFilter.value;
+}
+
 function resetFilters() {
   echoSet.value = null;
   echo.value = null;
@@ -727,6 +786,7 @@ function resetFilters() {
   ignoreFromOptimizerFilter.value = false;
   favoriteFilter.value = false;
   duplicatesFilter.value = false;
+  incompleteFilter.value = false;
   cvMin.value = 0;
   cvMax.value = ECHO_CV_MAX;
   rvMin.value = 0;
