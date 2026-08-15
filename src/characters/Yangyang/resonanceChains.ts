@@ -41,6 +41,7 @@ export const resonanceChains = [
     minStacks: 0,
     maxStacks: 0,
     alwaysEnabled: false,
+    isPermanent: true,
   },
   {
     key: "SequenceNode4CloseYourEyesandListenin",
