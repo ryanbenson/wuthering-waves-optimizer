@@ -7,7 +7,7 @@ const weaponInfo: WeaponInfo = {
   rarity: 5,
   passiveName: "Self No More",
   passiveValue:
-    "ATK is increased by 12%. When the wielder applies Glacio Chafe, Glacio DMG is Amplified by 28%, and Resonance Liberation DMG ignores 10% of the target's DEF for 20%s. If the wielder is the active Resonator in the team, Glacio Chafe DMG dealt to all targets within a certain range is Amplified by 20% for 6s. This effect can be triggered up to 1 time every 0.1s. Only the strongest effect of the same name applies.",
+    "ATK is increased by 12%. When the wielder applies Glacio Chafe, Glacio DMG is Amplified by 28%, and Resonance Liberation DMG ignores 10% of the target's DEF. If the wielder is the active Resonator in the team, Glacio Chafe DMG dealt to all targets within a certain range is Amplified by 20% for 6s. This effect can be triggered up to 1 time every 0.1s. Only the strongest effect of the same name applies.",
   passiveData: [
     {
       key: "FrostburnATK",
@@ -54,7 +54,7 @@ const weaponInfo: WeaponInfo = {
       minStacks: 0,
       maxStacks: 1,
       details:
-        "Resonance Liberation DMG ignores 10%/12.5%/15%/17.5%/20% of the target's DEF for 20%s",
+        "Resonance Liberation DMG ignores 10%/12.5%/15%/17.5%/20% of the target's DEF",
       alwaysEnabled: false,
     },
     {
