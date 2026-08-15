@@ -3,7 +3,8 @@
     <h3 class="text-sm font-semibold">Weapons</h3>
     <div class="join">
       <button
-        v-if="signatureWeapon && weapon !== signatureWeapon"
+        v-if="signatureWeapon"
+        :disabled="weapon === signatureWeapon"
         type="button"
         class="btn btn-sm join-item"
         data-test-weapons-equip-signature
