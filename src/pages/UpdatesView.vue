@@ -5,6 +5,9 @@
     <h3>August 15, 2026</h3>
     <ul>
       <li>Team Rotations and Build Card are no longer Labs features — both are now fully released and available to everyone, no toggle required.</li>
+      <li>Adds ability to quickly equip sig, and highlights character signature in weapon chooser</li>
+      <li>Fixes YYX's S2, it now properly applies DMG Bonus</li>
+      <li>Fixed a text issue on Hiyuki's sig</li>
     </ul>
     <h3>August 14, 2026</h3>
     <ul>
