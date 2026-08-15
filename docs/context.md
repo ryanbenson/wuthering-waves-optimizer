@@ -24,7 +24,7 @@ When goals conflict, resolve in this order:
 
 - The calculator is the product. UI bugs annoy; wrong damage misleads builds.
 - Prefer shared pure functions used by both the live calculator and optimizer workers so both paths cannot drift.
-- When unsure about a formula, verify against in-game numbers or existing character tests — do not invent shortcuts.
+- When unsure about a formula, verify against in-game numbers or existing character tests — do not invent shortcuts. See [accuracy-verification.md](./accuracy-verification.md) for the checklist.
 - Comments and TODOs in `src/calculator/` often mark unverified edge cases; treat those as hazards, not free simplification targets.
 
 ### Performance notes
@@ -74,9 +74,9 @@ When goals conflict, resolve in this order:
 
 1. Identify whether you are touching **math**, **game data**, **persistence**, **UI**, or **tooling**.
 2. For math: add/adjust Vitest coverage under `tests/calculator/`; run both relevant unit paths.
-3. For persistence shape: add a migration in `src/migrations/versions/` and bump `CURRENT_DATA_VERSION`.
+3. For persistence shape: add a migration in `src/migrations/versions/` and bump `CURRENT_DATA_VERSION` — see [src-migrations.md](./src-migrations.md).
 4. For new characters/weapons: prefer the CLI generators (`make generate-character`, etc.), then finish modifiers/presets by hand.
-5. Keep PRs small; update `docs/` when behavior or conventions change; add an ADR when the *decision* is lasting.
+5. Keep PRs small; update `docs/` when behavior or conventions change; add an ADR when the *decision* is lasting. See [conventions.md](./conventions.md) for branch/commit/PR naming.
 
 ## Glossary (short)
 
@@ -98,5 +98,7 @@ When goals conflict, resolve in this order:
 - [src-calculator.md](./src-calculator.md) — engine files
 - [src-components.md](./src-components.md) — UI / Calculator.vue
 - [src-stores.md](./src-stores.md) — persistence boundaries
+- [src-migrations.md](./src-migrations.md) — schema versioning for persisted data
+- [accuracy-verification.md](./accuracy-verification.md) — verifying formulas/buffs against real numbers
 - [src-workers.md](./src-workers.md) — worker contracts
 - [creating-new-character.md](./creating-new-character.md) — content authoring

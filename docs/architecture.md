@@ -41,6 +41,7 @@ Details: [context.md](./context.md), ADR [0002](./adr/0002-accuracy-before-perfo
   - **E2E**: Prefer Cypress (or the project’s e2e framework) for critical user flows.
   - **Unit tests**: Use for pure logic (calculator, stats, attacks, echoes, etc.) so regressions are caught without running the full app.
 - The app is sensitive to “one change causing an effect elsewhere”; tests are the safety net. If there’s no test setup yet, introduce a minimal one (e.g. Vitest/Jest for unit, Cypress for e2e) and add at least one test for the area you’re changing.
+- For formula/buff changes specifically, a passing test isn’t enough on its own — see [accuracy-verification.md](./accuracy-verification.md) for how to anchor tests to real numbers.
 
 ## Refactoring
 
