@@ -3,6 +3,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     name: "Camellya",
     rarity: 5,
     weapon: "Swords",
+    signatureWeapon: "RedSpring",
     avatarUrl: "Camellya.jpg",
     gender: "female",
     element: "Havoc",

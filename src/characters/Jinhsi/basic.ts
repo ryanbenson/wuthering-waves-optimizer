@@ -3,6 +3,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     name: "Jinhsi",
     rarity: 5,
     weapon: "Broadblades",
+    signatureWeapon: "AgesOfHarvest",
     avatarUrl: "test.jpg",
     gender: "female",
     element: "Spectro",

@@ -11,6 +11,8 @@ interface CharacterBasicInfo {
   inherentSkillIcons?: string[];
   /** Stance names for characters that toggle between exclusive buff sets. */
   stances?: string[];
+  /** Weapon key (matches a weapon's `key`, e.g. "AzureOath") for this character's signature weapon. */
+  signatureWeapon?: string;
   spectroFrazzle?: boolean;
   aeroErosion?: boolean;
   havocBane?: boolean;

@@ -63,7 +63,8 @@
           :key="character"
           :character="character"
           @update-weapon="handleWeaponUpdated"
-          :weapon-type="weaponType"></CalculatorWeapons>
+          :weapon-type="weaponType"
+          :signature-weapon="chosenChar.value?.basic?.signatureWeapon"></CalculatorWeapons>
       </div>
 
       <div class="screen--echoes" v-show="curScreen === 'echoes'">
