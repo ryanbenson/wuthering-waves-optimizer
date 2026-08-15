@@ -1,6 +1,12 @@
 <template>
   <div
-    class="weapon__item card card-bordered card-compact bg-base-100 shadow mb-2">
+    class="weapon__item card card-bordered card-compact bg-base-100 shadow mb-2 relative">
+    <span
+      v-if="isSignature"
+      class="weapon__item__signature badge badge-secondary badge-sm absolute right-2 top-2"
+      data-test-weapon-signature-badge>
+      Signature
+    </span>
     <div class="card-body">
       <div class="weapon__content flex gap-6 flex-col justify-center items-center">
         <div class="weapon__item__left">
@@ -44,8 +50,9 @@ withDefaults(
     nameKey: string;
     rarity: number | string;
     isActive?: boolean;
+    isSignature?: boolean;
   }>(),
-  { isActive: false },
+  { isActive: false, isSignature: false },
 );
 </script>
 

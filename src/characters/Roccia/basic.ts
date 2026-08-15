@@ -3,6 +3,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     name: "Roccia",
     rarity: 5,
     weapon: "Gauntlets",
+    signatureWeapon: "Tragicomedy",
     avatarUrl: "Roccia.jpg",
     gender: "female",
     element: "Havoc",

@@ -3,6 +3,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     name: "Carlotta",
     rarity: 5,
     weapon: "Pistols",
+    signatureWeapon: "TheLastDance",
     avatarUrl: "Carlotta.jpg",
     gender: "female",
     element: "Glacio",

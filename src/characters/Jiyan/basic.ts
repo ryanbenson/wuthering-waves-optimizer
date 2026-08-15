@@ -3,6 +3,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     name: "Jiyan",
     rarity: 5,
     weapon: "Broadblades",
+    signatureWeapon: "VerdantSummit",
     avatarUrl: "test.jpg",
     gender: "male",
     element: "Aero",

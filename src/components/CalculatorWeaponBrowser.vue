@@ -79,6 +79,7 @@
                 :name-key="weapon.key"
                 :rarity="weapon.rarity ?? 1"
                 :is-active="false"
+                :is-signature="weapon.key === props.signatureWeapon"
                 @click="chooseWeapon(weapon)"
                 class="cursor-pointer"
                 :data-test-weapon-browser-list="weapon.key"
@@ -101,6 +102,7 @@
 <script setup lang="ts">
 import { computed, defineExpose, nextTick, ref } from "vue";
 import CalculatorWeaponCard from "./CalculatorWeaponCard.vue";
+import { sortWeaponsWithSignatureFirst } from "../weapons/weaponSort";
 
 type WeaponRow = { key: string; name: string; rarity?: number; [k: string]: unknown };
 
@@ -113,6 +115,7 @@ const props = defineProps<{
     two?: WeaponRow[];
     one?: WeaponRow[];
   };
+  signatureWeapon?: string;
 }>();
 
 const emit = defineEmits<{
@@ -152,7 +155,7 @@ const weaponsListed = computed(() => {
   if (filterRarity.value !== null && filterRarity.value !== undefined) {
     weapons = weapons.filter((weapon) => weapon.rarity === filterRarity.value);
   }
-  return weapons;
+  return sortWeaponsWithSignatureFirst(weapons, props.signatureWeapon);
 });
 
 async function triggerOpenModal() {

@@ -3,6 +3,7 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     name: "Yinlin",
     rarity: 5,
     weapon: "Rectifiers",
+    signatureWeapon: "Stringmaster",
     avatarUrl: "test.jpg",
     gender: "female",
     element: "Electro",
