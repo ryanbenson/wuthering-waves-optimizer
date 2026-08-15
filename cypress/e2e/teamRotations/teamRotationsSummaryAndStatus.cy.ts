@@ -1,10 +1,3 @@
-function enableTeamRotationsLab(win: Cypress.AUTWindow) {
-  win.localStorage.setItem(
-    "settings",
-    JSON.stringify({ config: {}, labs: { teamRotations: { isEnabled: true } } }),
-  );
-}
-
 function buildTeam(actionCount: number) {
   cy.get("[data-test-team-rotations-new]").click();
   cy.get("[data-test-team-rotation-editor]").should("be.visible");
@@ -25,10 +18,10 @@ function buildTeam(actionCount: number) {
 
 describe("Team Rotations summary and status", () => {
   beforeEach(() => {
-    cy.visit("/", { onBeforeLoad: enableTeamRotationsLab });
+    cy.visit("/");
     cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible");
-    cy.visit("/teams", { onBeforeLoad: enableTeamRotationsLab });
+    cy.visit("/teams");
   });
 
   it("ranks teams by the selected metric, shows a leaderboard, and lets status filter the list", () => {

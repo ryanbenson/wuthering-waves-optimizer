@@ -2,8 +2,7 @@
   <div
     class="calculations"
     :class="{
-      'calculations--full-width':
-        curScreen === 'build-card' && isBuildCardLabEnabled,
+      'calculations--full-width': curScreen === 'build-card',
     }">
     <Nav cur-page="home">
       <template #mobile>
@@ -94,7 +93,7 @@
       </div>
 
       <div
-        v-if="isBuildCardLabEnabled && hasVisitedBuildCard"
+        v-if="hasVisitedBuildCard"
         class="screen--build-card"
         v-show="curScreen === 'build-card'">
         <CalculatorBuildCard
@@ -423,21 +422,13 @@ export default defineComponent({
     const inventoryStore = useInventoryStore();
     const settingsStore = useSettingsStore();
     const { characters, activeCharacter } = storeToRefs(characterStore);
-    const { labs } = storeToRefs(settingsStore);
-    // Build card is mid-development (issue #360) — gated behind Settings >
-    // Labs so it can merge to main without being reachable in production
-    // until it's finished.
-    const isBuildCardLabEnabled = computed(
-      () => labs.value?.buildCard?.isEnabled ?? false,
-    );
     // Every other screen below is always mounted (v-show only) so tab
     // switches are instant, but that means an always-hidden screen's DOM can
     // still collide with e.g. Cypress element-count assertions elsewhere
     // (see the .echo__item count bug this caused before build card was
     // gated). Mounting build card lazily on first visit, instead of eagerly
     // like the rest, sidesteps that without touching the established
-    // always-mounted pattern everywhere else — and keeps working once the
-    // Labs gate above is eventually removed.
+    // always-mounted pattern everywhere else.
     const hasVisitedBuildCard = ref(false);
     const weaponData = reactive({});
     const weaponAtk = ref(0);
@@ -1842,7 +1833,6 @@ export default defineComponent({
       rotationsList,
       curScreen,
       changeScreen,
-      isBuildCardLabEnabled,
       hasVisitedBuildCard,
       damage,
       updateStatsEchoes,

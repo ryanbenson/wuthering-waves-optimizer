@@ -43,20 +43,7 @@ import SettingsLab from "./SettingsLab.vue";
 
 type LabFeature = { key: string; label: string; details: string };
 
-const labsFeatures = ref<LabFeature[]>([
-  {
-    key: "teamRotations",
-    label: "Team Rotations",
-    details:
-      "Build teams of up to 3 characters, chain their actions into a rotation, and see the team's total damage and DPS.",
-  },
-  {
-    key: "buildCard",
-    label: "Build Card",
-    details:
-      "Generate a shareable image of your character's build — portrait, stats, weapon, forte levels, and echoes — that you can copy or download.",
-  },
-]);
+const labsFeatures = ref<LabFeature[]>([]);
 </script>
 
 <style scoped lang="scss">

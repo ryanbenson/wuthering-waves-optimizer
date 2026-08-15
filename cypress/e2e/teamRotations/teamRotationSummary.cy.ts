@@ -1,13 +1,6 @@
-function enableTeamRotationsLab(win: Cypress.AUTWindow) {
-  win.localStorage.setItem(
-    "settings",
-    JSON.stringify({ config: {}, labs: { teamRotations: { isEnabled: true } } }),
-  );
-}
-
 describe("Team Rotation Summary", () => {
   beforeEach(() => {
-    cy.visit("/", { onBeforeLoad: enableTeamRotationsLab });
+    cy.visit("/");
   });
 
   it("shows a full damage report and returns to the editor", () => {
@@ -20,7 +13,7 @@ describe("Team Rotation Summary", () => {
     cy.get('[data-test-weapon-browser-list="TheLastDance"]').click();
     cy.get("[data-test-weapon-select]").should("contain.text", "The Last Dance");
 
-    cy.visit("/teams", { onBeforeLoad: enableTeamRotationsLab });
+    cy.visit("/teams");
     cy.get("[data-test-team-rotations-new]").click();
     cy.get("[data-test-team-rotation-editor]").should("be.visible");
 
@@ -95,7 +88,7 @@ describe("Team Rotation Summary", () => {
     cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible");
 
-    cy.visit("/teams", { onBeforeLoad: enableTeamRotationsLab });
+    cy.visit("/teams");
     cy.get("[data-test-team-rotations-new]").click();
     cy.get("[data-test-team-rotation-editor]").should("be.visible");
 

@@ -1,15 +1,8 @@
 import { configureEcho } from "./utils/echoesUtils";
 
-function enableBuildCardLab(win: Cypress.AUTWindow) {
-  win.localStorage.setItem(
-    "settings",
-    JSON.stringify({ config: {}, labs: { buildCard: { isEnabled: true } } }),
-  );
-}
-
 describe("Calculator Build Card", () => {
   beforeEach(() => {
-    cy.visit("/", { onBeforeLoad: enableBuildCardLab });
+    cy.visit("/");
     cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
   });
@@ -17,8 +10,7 @@ describe("Calculator Build Card", () => {
   it("does not mount the build card until its tab is first visited", () => {
     // Every other screen is always mounted (v-show only), which let its echo
     // cards collide with `.echo__item` element counts on other screens. The
-    // build card mounts lazily on first visit instead, independent of the
-    // Labs flag above, so this stays true once that flag is removed.
+    // build card mounts lazily on first visit instead.
     cy.get("[data-test-build-card]").should("not.exist");
 
     cy.get('[data-test-calculator-nav="echoes"]').click();

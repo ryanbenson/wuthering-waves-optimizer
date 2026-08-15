@@ -116,24 +116,25 @@
           alt="Your Enemy" />
       </a>
     </li>
-    <li v-if="labs?.buildCard?.isEnabled">
+    <li>
       <a
         @click="changeScreen('build-card')"
         :class="{ active: curScreen === 'build-card' }"
-        class="p-0 flex justify-center min-w-[48px] min-h-[48px] mr-2"
+        class="p-0 flex justify-center min-w-[48px] min-h-[48px] mr-2 relative"
         data-test-calculator-nav="buildCard">
         <img
           src="https://ryanbenson.github.io/wuthering-waves-assets/images/icons/camera.webp"
           class="size-9"
           alt="Build Card" />
+        <div class="badge badge-primary absolute top-[-0.5rem] right-[-0.5rem] text-xs">
+          New
+        </div>
       </a>
     </li>
   </ul>
 </template>
 
 <script>
-import { mapState } from "pinia";
-import { useSettingsStore } from "../../stores/settings";
 export default {
   name: "CalculatorSubNav",
   props: {
@@ -152,9 +153,6 @@ export default {
       this.$emit("change-screen", screen);
       this.curScreen = screen;
     },
-  },
-  computed: {
-    ...mapState(useSettingsStore, ["labs"]),
   },
   mounted() {
     this.curScreen = this.screen;
