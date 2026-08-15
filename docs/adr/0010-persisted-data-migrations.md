@@ -37,3 +37,4 @@ On load, compare the user’s version to `CURRENT_DATA_VERSION` in `src/migratio
 - `src/migrations/`
 - ADR [0005](./0005-stores-hold-user-data-only.md)
 - [docs/src-stores.md](../src-stores.md)
+- [docs/src-migrations.md](../src-migrations.md)

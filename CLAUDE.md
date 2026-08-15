@@ -52,7 +52,7 @@ npm run cli -- backfill icons        # or: backfill icons --character <Key> for 
 - **Composition API / `<script setup>`** for new Vue code.
 - **Workers** for anything that can freeze the UI (optimizer batches, OCR).
 - **No unreleased content in production.** Prep from leaks offline is fine; it must not be reachable in the shipped app. Do not link or cite third-party datamine sites (e.g. encore.moe) in user-facing UI/copy.
-- **PRs:** small, focused, tests green. Prefer several small PRs over one large one.
+- **PRs:** small, focused, tests green. Prefer several small PRs over one large one. See [docs/conventions.md](docs/conventions.md) for branch/commit naming.
 - **Docs:** if behavior or architecture changes, update the matching file under `docs/` (and an ADR if it is a lasting decision).
 
 ## Calculation pipeline (mental model)
@@ -77,11 +77,17 @@ Optimizer: main thread builds OptimizerContext
 | Buff/modifier keys | Character buffs, team buffs, resonance chains, weapon passives |
 | Echo sets/stats | Optimizer constraints + inventory equip |
 | Store shape | `src/migrations/` — bump version + add migration |
-| New character | `characters.ts` registry + CLI checklist; see `docs/creating-new-character.md` |
+| New character | `characters.ts` registry + CLI checklist; see the `new-character` skill and `docs/creating-new-character.md` |
+
+## Skills
+
+- `new-character`, `new-weapon`, `import-echoes` (`.claude/skills/`) — CLI scaffold + manual-review workflow for adding game content.
 
 ## Deeper reading
 
 - [docs/context.md](docs/context.md) — priorities, product constraints, how to reason about changes
 - [docs/architecture.md](docs/architecture.md) — conventions
+- [docs/conventions.md](docs/conventions.md) — branch/commit/PR naming
+- [docs/accuracy-verification.md](docs/accuracy-verification.md) — how to verify a formula/buff is actually correct
 - [docs/adr/](docs/adr/) — architecture decision records
-- Area docs: `docs/src-calculator.md`, `src-components.md`, `src-stores.md`, `src-workers.md`, etc.
+- Area docs: `docs/src-calculator.md`, `src-components.md`, `src-stores.md`, `src-migrations.md`, `src-workers.md`, etc.

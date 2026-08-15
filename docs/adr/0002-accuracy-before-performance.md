@@ -35,4 +35,5 @@ Performance work must preserve observable calculation results (within intentiona
 
 - [docs/context.md](../context.md) — full priority table
 - [docs/src-calculator.md](../src-calculator.md)
+- [docs/accuracy-verification.md](../accuracy-verification.md) — how to verify a formula/buff is actually correct
 - ADR [0003](./0003-pure-calculator-engine.md), [0004](./0004-web-workers-for-heavy-work.md)

@@ -9,6 +9,7 @@ Root agent briefing: [CLAUDE.md](../CLAUDE.md).
 | Area | Description | Doc |
 |------|-------------|-----|
 | **Context** | Priorities (accuracy → performance → …), mental model, glossary | [context.md](./context.md) |
+| **Conventions** | Branch naming, commit/PR title format | [conventions.md](./conventions.md) |
 | **ADRs** | Architecture decision records | [adr/](./adr/) |
 | **Architecture** | Vue 3, types, performance, testing, UI, workers | [architecture.md](./architecture.md) |
 | **Buffs** | Team buffs and modifiers | [src-buffs.md](./src-buffs.md) |
@@ -16,11 +17,13 @@ Root agent briefing: [CLAUDE.md](../CLAUDE.md).
 | **Characters** | Character definitions and type definitions | [src-characters.md](./src-characters.md) |
 | **Components** | Vue components, data flow, Calculator as orchestrator | [src-components.md](./src-components.md) |
 | **Echoes** | Echo definitions, stats, sets | [src-echoes.md](./src-echoes.md) |
+| **Migrations** | localStorage / export schema versioning | [src-migrations.md](./src-migrations.md) |
 | **Stores** | Pinia stores, user data only, auto-sync | [src-stores.md](./src-stores.md) |
 | **Utils** | Generic helpers | [src-utils.md](./src-utils.md) |
 | **Weapons** | Weapon definitions | [src-weapons.md](./src-weapons.md) |
 | **Workers** | Web workers (optimizer, echo parser/OCR) | [src-workers.md](./src-workers.md) |
 | **New character** | Authoring guide | [creating-new-character.md](./creating-new-character.md) |
+| **Accuracy verification** | How to verify formulas/buffs against real numbers | [accuracy-verification.md](./accuracy-verification.md) |
 
 ## High-level `src/` map
 
@@ -31,6 +34,7 @@ src/
 ├── characters/     # All characters + per-character data (attacks, buffs, etc.)
 ├── components/     # Vue components; Calculator.vue is the main orchestrator
 ├── echoes/         # Echo definitions, stats tables, set bonuses
+├── migrations/     # localStorage / export schema versioning
 ├── stores/         # Pinia stores (user input only, auto-synced to storage)
 ├── utils/          # Generic helpers (numbers, strings)
 ├── weapons/        # All weapons by type
