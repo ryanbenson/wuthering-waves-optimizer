@@ -23,7 +23,6 @@ export const resonanceChains = [
     hasStacks: false,
     modifiers: [
       {
-        modifier: "talentModifierMultiply",
         modifySpecificTalents: [
           "BasicAttackAzureSwordStanceStage1DMG",
           "BasicAttackAzureSwordStanceStage2DMG",
