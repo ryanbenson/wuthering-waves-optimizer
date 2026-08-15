@@ -9,6 +9,20 @@
         class="echo__content echo__content--compact flex flex-col gap-2 relative items-center justify-center">
         <div class="echo__item__image-wrap relative mx-auto lg:m-0 w-fit">
           <EchoFavoriteButton overlay :echo-id="echoId || null" />
+          <span
+            v-if="isEchoIncomplete"
+            class="echo__item__incomplete absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
+            data-test-incomplete-echo
+            v-tooltip="'Incomplete echo'">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="size-4">
+              <path
+                d="M12 2 1 21h22L12 2zm0 5.5 6.9 11.6H5.1L12 7.5zM11 10v4h2v-4h-2zm0 5.5v2h2v-2h-2z"
+                fill="currentColor" />
+            </svg>
+          </span>
           <div
             class="echo__item__image rounded-full border border-solid neutral-content size-16 mb-2 bg-cover cursor-pointer"
             :class="{
@@ -98,6 +112,20 @@
         <div class="echo__item__left">
           <div class="echo__item__image-wrap relative mx-auto lg:m-0 w-fit">
             <EchoFavoriteButton overlay :echo-id="echoId || null" />
+            <span
+              v-if="isEchoIncomplete"
+              class="echo__item__incomplete absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
+              data-test-incomplete-echo
+              v-tooltip="'Incomplete echo'">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                class="size-4">
+                <path
+                  d="M12 2 1 21h22L12 2zm0 5.5 6.9 11.6H5.1L12 7.5zM11 10v4h2v-4h-2zm0 5.5v2h2v-2h-2z"
+                  fill="currentColor" />
+              </svg>
+            </span>
             <div
               class="echo__item__image rounded-full border border-solid neutral-content size-20 mb-2 bg-cover cursor-pointer"
               :class="{
@@ -272,6 +300,7 @@ const {
   echoName,
   echoImage,
   hasSubStats,
+  isEchoIncomplete,
   echoSubStatsValue1Display,
   echoSubStatsValue2Display,
   echoSubStatsValue3Display,
@@ -304,5 +333,12 @@ html[data-theme="light"] {
   .echo__item__explain-rv-cv path {
     fill: #333333;
   }
+}
+
+.echo__item__incomplete {
+  width: 1.75rem;
+  height: 1.75rem;
+  background: rgba(0, 0, 0, 0.65);
+  color: #facc15;
 }
 </style>
