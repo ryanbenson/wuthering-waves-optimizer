@@ -1383,6 +1383,35 @@ export const computeAdditionalBaseBuffs = (
       }
     }
 
+    // on Jingran, SequenceNode2 amplifies Fire of Life's HP-scaled DMG Multiplier Add
+    // on Soul Raid/Stardome Meander by 46% -- scale the forte-table modifiers here
+    // instead of duplicating them a second time in resonanceChains.ts
+    if (character === "Jingran" && key === "FireOfLife") {
+      const sequenceNode2 =
+        resonanceChainsConfig?.SequenceNode2ASolitaryLanternAcrossLandsShadeTrodden;
+      if (sequenceNode2?.isEnabled) {
+        modifiers = modifiers.map((mod: any) => {
+          if (mod.modifierTargetAttr !== "talentModifierMultiplyAdd") {
+            return mod;
+          }
+          const scaledModifierValue =
+            mod.modifierValue && typeof mod.modifierValue === "object"
+              ? Object.fromEntries(
+                  Object.entries(mod.modifierValue).map(([level, value]) => [
+                    level,
+                    (value as number) * 1.46,
+                  ]),
+                )
+              : mod.modifierValue * 1.46;
+          return {
+            ...mod,
+            modifierValue: scaledModifierValue,
+            maximumValue: (mod.maximumValue ?? 0) * 1.46,
+          };
+        });
+      }
+    }
+
     // Process only AdditionalBase modifiers
     if (buff.hasStacks) {
       if (buffData?.stacks <= 0) {
