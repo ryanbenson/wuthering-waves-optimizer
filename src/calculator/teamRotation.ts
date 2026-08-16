@@ -14,8 +14,6 @@ export interface TeamRotationAction {
   mainEcho?: string | null;
   mainEchoRank?: number | null;
   buffs?: Array<{ id: string; modifier: string; modifierValue: number }>;
-  excludeTeamBuffs?: boolean;
-  excludeWeaponBuffs?: boolean;
   negativeStatusStacks?: number;
   electroRageStacks?: number;
   isDisabled?: boolean;
@@ -41,8 +39,6 @@ export interface SourceRotationAction {
   mainEcho?: string | null;
   mainEchoRank?: number | null;
   buffs?: Array<{ id?: string; modifier: string; modifierValue: number }>;
-  excludeTeamBuffs?: boolean;
-  excludeWeaponBuffs?: boolean;
   negativeStatusStacks?: number;
   electroRageStacks?: number;
   isDisabled?: boolean;

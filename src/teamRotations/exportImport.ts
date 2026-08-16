@@ -97,9 +97,24 @@ export function parseTeamImportPayload(raw: string): TeamExportData {
   return {
     name: typeof team.name === "string" && team.name ? team.name : "Imported Team",
     characterIds: [0, 1, 2].map((i) => team.characterIds?.[i] ?? null),
-    actions: team.actions,
+    actions: team.actions.map(stripLegacyExcludeFields),
     duration: team.duration ?? null,
     enemyConfig: (team.enemyConfig as Record<string, unknown> | undefined) ?? {},
     mode: team.mode === "advanced" ? "advanced" : "basic",
   };
+}
+
+/**
+ * Drops the pre-#401 "exclude self/team/weapon buffs" checkbox fields from
+ * an imported action, if present. These have no UI or persisted-data path
+ * left in the app itself, but `actions` is otherwise passed through as
+ * unvalidated JSON — a hand-edited export could still carry them, and
+ * `calculateAttackDamage` (attacks.ts) still honors them if it sees them.
+ */
+function stripLegacyExcludeFields(action: unknown): unknown {
+  if (!action || typeof action !== "object") {
+    return action;
+  }
+  const { excludeSelfBuffs, excludeTeamBuffs, excludeWeaponBuffs, ...rest } = action as Record<string, unknown>;
+  return rest;
 }

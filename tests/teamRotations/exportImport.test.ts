@@ -94,4 +94,25 @@ describe("parseTeamImportPayload", () => {
     const otherExport = { meta: { type: "somethingElse" }, data: {} };
     expect(() => parseTeamImportPayload(JSON.stringify(otherExport))).toThrow(/different kind/);
   });
+
+  it("strips pre-#401 exclude-buffs checkbox fields from imported actions, if a hand-edited export still carries them", () => {
+    const parsed = parseTeamImportPayload(
+      JSON.stringify({
+        characterIds: ["Carlotta"],
+        actions: [
+          {
+            id: "a1",
+            slot: 0,
+            order: 1,
+            key: "Foo",
+            type: "basic",
+            excludeSelfBuffs: true,
+            excludeTeamBuffs: true,
+            excludeWeaponBuffs: true,
+          },
+        ],
+      }),
+    );
+    expect(parsed.actions).toEqual([{ id: "a1", slot: 0, order: 1, key: "Foo", type: "basic" }]);
+  });
 });
