@@ -2,24 +2,6 @@
   <table class="calculator__stats table table-zebra">
     <tbody>
       <tr
-        class="stat-atk"
-        @click="emit('stat-selected', 'ATK')"
-        style="cursor: pointer">
-        <td class="w-10">
-          <img
-            src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
-        </td>
-        <td class="stat-name">ATK</td>
-        <td
-          class="text-right"
-          v-tooltip="{
-            content: atkTooltipContent,
-            html: true,
-          }">
-          {{ displayInt(totalAtk) }}
-        </td>
-      </tr>
-      <tr
         class="stat-hp"
         @click="emit('stat-selected', 'HP')"
         style="cursor: pointer">
@@ -35,6 +17,24 @@
             html: true,
           }">
           {{ displayInt(totalHp) }}
+        </td>
+      </tr>
+      <tr
+        class="stat-atk"
+        @click="emit('stat-selected', 'ATK')"
+        style="cursor: pointer">
+        <td class="w-10">
+          <img
+            src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
+        </td>
+        <td class="stat-name">ATK</td>
+        <td
+          class="text-right"
+          v-tooltip="{
+            content: atkTooltipContent,
+            html: true,
+          }">
+          {{ displayInt(totalAtk) }}
         </td>
       </tr>
       <tr
