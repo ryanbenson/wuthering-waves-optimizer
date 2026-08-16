@@ -122,7 +122,7 @@ CD: 15s`,
         element: "Aero",
       },
     ],
-    sets: ["HeartofEvilsPurge"],
+    sets: ["HeartofEvilsPurge", "LampofNetherRoad"],
   },
   _Staytuned2: {
     key: "_Staytuned2",
