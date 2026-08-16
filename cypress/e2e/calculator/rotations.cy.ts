@@ -87,4 +87,46 @@ describe("Calculator Rotations", () => {
     testStats(carlottaRotationStats, cy);
     testAttacks(carlottaRotationTest001Damages, cy);
   });
+
+  it("should let an action's buffs be configured independently via the advanced buff panel", () => {
+    cy.richSelect("[data-test-character-select]", "Carlotta");
+    cy.get(".character__self-buffs").should("be.visible");
+    cy.get('[data-test-calculator-nav="rotations"]').click();
+
+    cy.get(`[data-test-rotations-action="create"]`).click();
+    cy.get(`[data-test-rotation-item-by-name="Untitled Rotation"]`).click();
+
+    cy.get(`[data-test-rotation-name-input="Untitled Rotation"]`)
+      .clear()
+      .type("BuffPanelTest");
+    cy.get(`[data-test-rotation-action-add="BuffPanelTest"]`).click();
+    cy.get(`[data-test-rotation-action-skill-input="none"]`).should(
+      "be.visible",
+    );
+    cy.richSelect(
+      `[data-test-rotation-action-skill-input="none"]`,
+      "BasicAttackStage1DMG",
+    );
+
+    // Old "Exclude team buffs"/"Exclude weapon buffs" checkboxes are gone;
+    // "Configure Buffs" opens the same per-buff toggle panel Team Rotations
+    // uses.
+    cy.get(`[data-test-rotation-action-skill-input="BasicAttackStage1DMG"]`)
+      .closest(".rotation__action")
+      .find("[data-test-rotation-action-configure-buffs]")
+      .click();
+    cy.get("[data-test-team-rotation-advanced-buffs]").should("be.visible");
+    cy.get("[data-test-advanced-buff-toggle]").first().as("firstToggle");
+    cy.get("@firstToggle")
+      .invoke("prop", "checked")
+      .then((wasChecked) => {
+        cy.get("@firstToggle").click({ force: true });
+        cy.get("@firstToggle")
+          .invoke("prop", "checked")
+          .should("eq", !wasChecked);
+      });
+
+    // Toggling a buff doesn't blow up the rest of the page — damages still render.
+    testStats(carlottaRotationStats, cy);
+  });
 });

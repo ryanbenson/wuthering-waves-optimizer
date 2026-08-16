@@ -365,6 +365,7 @@ import {
   getCalculationContext,
 } from "../calculator/attacks";
 import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
+import { calcCharacterRotationDamage } from "../calculator/characterRotation";
 import type { OptimizerContext } from "../calculator/optimizer";
 import {
   getOptimizerLoadoutHash,
@@ -654,7 +655,7 @@ export default defineComponent({
       calcAllDamages();
     });
 
-    const calcAllDamages = () => {
+    const calcAllDamages = async () => {
       const context = getCalculationContext(
         chosenChar.value,
         echoStats.value,
@@ -674,7 +675,10 @@ export default defineComponent({
         characterLevel.value,
         mainEcho.value,
         mainEchoRank.value,
-        rotationsList.value,
+        // Rotations are computed separately below via calcCharacterRotationDamage,
+        // which supports per-action buff overrides — calcDamages' own
+        // rotationsList branch (built for a single shared context) is unused here.
+        [],
         charResonanceChainsData.value,
         charBuffsData.value,
         baseHp.value,
@@ -716,6 +720,42 @@ export default defineComponent({
       );
       const damageData = calcDamages(context);
       allDamages.value = damageData;
+
+      if (rotationsList.value.length) {
+        const enemyConfig = {
+          enemyLevel: enemyLevel.value,
+          enemyResist: enemyResist.value,
+          enemyType: enemyType.value,
+          spectroFrazzleStacks: spectroFrazzleStacks.value,
+          aeroErosionStacks: aeroErosionStacks.value,
+          havocBaneStacks: havocBaneStacks.value,
+          fusionBurstStacks: fusionBurstStacks.value,
+          electroFlareStacks: electroFlareStacks.value,
+          electroRageStacks: electroRageStacks.value,
+          glacioChafeStacks: glacioChafeStacks.value,
+          strainStacks: strainStacks.value,
+        };
+        // Sequential rather than Promise.all: each call's fast path mutates
+        // the shared `context.rotationsList` before reading it back, and
+        // running rotations concurrently would risk them clobbering each
+        // other's in-flight mutation of that shared object.
+        const rotationResults = [];
+        for (const rotation of rotationsList.value) {
+          rotationResults.push(
+            await calcCharacterRotationDamage(
+              rotation,
+              { chosenChar: chosenChar.value, characterLevel: characterLevel.value, context },
+              character.value,
+              characters.value,
+              enemyConfig,
+              inventoryStore.echoes,
+            ),
+          );
+        }
+        allDamages.value.rotations = rotationResults;
+      } else {
+        allDamages.value.rotations = [];
+      }
     };
 
     // set the character to display, default to the first
@@ -960,35 +1000,19 @@ export default defineComponent({
     };
 
     const handleUpdatedRotations = async (data) => {
-      // go through each rotation and each action and use the full talent data
-      // which will make the rotation system work
-      const chosenChar = await getCharByName(character.value);
-      const rotationData = [];
-      data.forEach((rotation) => {
-        const rotationInfo = {
-          id: rotation.id,
-          name: rotation.name,
-          description: rotation.description,
-          duration: rotation.duration ?? null,
-          echo: rotation.echo ?? null,
-          mainEcho: rotation.mainEcho ?? null,
-          mainEchoRank: rotation.actionMainEchoRank ?? null,
-        };
-        const rotationActionInfo = [];
-        rotation.actions.forEach((action) => {
-          const actionData = resolveRotationActionToAttackData(
-            action,
-            chosenChar,
-            characterLevel.value,
-          );
-          if (actionData) {
-            rotationActionInfo.push(actionData);
-          }
-        });
-        rotationInfo.attacks = rotationActionInfo;
-        rotationData.push(rotationInfo);
-      });
-      rotationsList.value = rotationData;
+      // Raw rotations (not pre-resolved into attacks) — calcCharacterRotationDamage
+      // resolves each action itself, since actions with a per-action buff
+      // override need their own freshly-rebuilt context rather than sharing
+      // the one built below.
+      rotationsList.value = data.map((rotation) => ({
+        id: rotation.id,
+        name: rotation.name,
+        description: rotation.description,
+        duration: rotation.duration ?? null,
+        mainEcho: rotation.echo ?? null,
+        mainEchoRank: rotation.echoRank ?? null,
+        actions: rotation.actions,
+      }));
       calcAllDamages();
     };
 

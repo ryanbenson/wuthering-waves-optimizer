@@ -187,31 +187,7 @@
       </div>
       <div class="ignore__buffs mt-2">
         <div class="form-control flex flex-wrap flex-row gap-2">
-          <label v-if="false" class="label cursor-pointer flex gap-2">
-            <input
-              v-model="excludeSelfBuffs"
-              type="checkbox"
-              class="checkbox checkbox-xs"
-              @change="onExcludeSelfBuffsChange" />
-            <span class="label-text">Exclude self buffs</span>
-          </label>
-          <label v-if="showExcludeAndDisabledOptions" class="label cursor-pointer flex gap-2">
-            <input
-              v-model="excludeTeamBuffs"
-              type="checkbox"
-              class="checkbox checkbox-xs"
-              @change="onExcludeTeamBuffsChange" />
-            <span class="label-text">Exclude team buffs</span>
-          </label>
-          <label v-if="showExcludeAndDisabledOptions" class="label cursor-pointer flex gap-2">
-            <input
-              v-model="excludeWeaponBuffs"
-              type="checkbox"
-              class="checkbox checkbox-xs"
-              @change="onExcludeWeaponBuffsChange" />
-            <span class="label-text">Exclude weapon buffs</span>
-          </label>
-          <label v-if="showExcludeAndDisabledOptions" class="label cursor-pointer flex gap-2">
+          <label v-if="showDisabledOption" class="label cursor-pointer flex gap-2">
             <input
               v-model="disabled"
               type="checkbox"
@@ -294,9 +270,6 @@ const props = withDefaults(
     type?: string | null;
     order: number | string;
     count: number | string;
-    ignoreSelfBuffs?: boolean;
-    ignoreTeamBuffs?: boolean;
-    ignoreWeaponBuffs?: boolean;
     isDisabled?: boolean;
     buffs?: BuffRow[];
     rotationMainEcho?: string | null;
@@ -305,16 +278,13 @@ const props = withDefaults(
     actionMainEchoRank?: number | null;
     negativeStatusStacks?: number;
     electroRageStacks?: number;
-    /** Hides "Exclude team buffs", "Exclude weapon buffs", and "Disabled" — used by Team Rotations, where these aren't supported yet. */
-    showExcludeAndDisabledOptions?: boolean;
+    /** Hides "Disabled" — used by Team Rotations, where it isn't supported yet. */
+    showDisabledOption?: boolean;
   }>(),
   {
     characterData: () => ({}),
     actionKey: null,
     type: null,
-    ignoreSelfBuffs: false,
-    ignoreTeamBuffs: false,
-    ignoreWeaponBuffs: false,
     isDisabled: false,
     buffs: () => [],
     rotationMainEcho: null,
@@ -323,7 +293,7 @@ const props = withDefaults(
     actionMainEchoRank: null,
     negativeStatusStacks: 1,
     electroRageStacks: 0,
-    showExcludeAndDisabledOptions: true,
+    showDisabledOption: true,
   },
 );
 
@@ -342,9 +312,6 @@ const actionKeyValue = ref<string | null>(null);
 const actionSkillType = ref<string | null>(null);
 const sequence = ref(0);
 const hits = ref(0);
-const excludeSelfBuffs = ref(false);
-const excludeTeamBuffs = ref(false);
-const excludeWeaponBuffs = ref(false);
 const disabled = ref(false);
 const buffData = ref<BuffRow[]>([]);
 const negativeStatusStacksLocal = ref(1);
@@ -611,9 +578,6 @@ function buildActionPayload(orderOverride: number | string | null = null) {
     type: actionSkillType.value,
     count: hits.value,
     buffs: buffData.value,
-    excludeSelfBuffs: excludeSelfBuffs.value,
-    excludeTeamBuffs: excludeTeamBuffs.value,
-    excludeWeaponBuffs: excludeWeaponBuffs.value,
     isDisabled: disabled.value,
     negativeStatusStacks: negativeStatusStacksLocal.value,
     electroRageStacks: electroRageStacksLocal.value,
@@ -719,18 +683,6 @@ function onHitsChange(e: Event) {
   emit("action-update", buildActionPayload());
 }
 
-function onExcludeSelfBuffsChange() {
-  emit("action-update", buildActionPayload());
-}
-
-function onExcludeTeamBuffsChange() {
-  emit("action-update", buildActionPayload());
-}
-
-function onExcludeWeaponBuffsChange() {
-  emit("action-update", buildActionPayload());
-}
-
 function onChangeDisabled() {
   emit("action-update", buildActionPayload());
 }
@@ -771,9 +723,6 @@ onMounted(() => {
   actionSkillType.value = props.type;
   sequence.value = Number(props.order);
   hits.value = Number(props.count);
-  excludeSelfBuffs.value = props.ignoreSelfBuffs;
-  excludeTeamBuffs.value = props.ignoreTeamBuffs;
-  excludeWeaponBuffs.value = props.ignoreWeaponBuffs;
   disabled.value = props.isDisabled;
   buffData.value = JSON.parse(JSON.stringify(props.buffs)) as BuffRow[];
   negativeStatusStacksLocal.value =

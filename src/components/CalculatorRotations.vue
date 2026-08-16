@@ -81,6 +81,8 @@
         :ref="(el) => setRotationRef(rotation.id, el)"
         :character="character"
         :character-data="characterData"
+        :character-build-data="currentCharacter"
+        :definitions="characterContext?.definitions ?? null"
         :id="rotation.id"
         :name="rotation.name"
         :description="rotation.description"
@@ -99,13 +101,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { useInventoryStore } from "../stores/inventory";
 import { getCharByName } from "../characters/characters.ts";
 import { randomString } from "../utils/strings.ts";
 import CalculatorRotation from "./CalculatorRotation.vue";
 import { useToast } from "../composables/useToast";
+import {
+  buildCharacterCalculationContext,
+  type CharacterCalculationContext,
+  type TeamEnemyConfig,
+} from "../calculator/buildCharacterContext";
 
 const { showToast } = useToast();
 
@@ -143,6 +151,8 @@ const emit = defineEmits<{
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 const { setCharacterData, setCharacterRotations } = characterStore;
+const inventoryStore = useInventoryStore();
+const { echoes: inventoryEchoes } = storeToRefs(inventoryStore);
 
 const importRotationData = ref<string | null>(null);
 const isImportOpen = ref(false);
@@ -173,6 +183,29 @@ function setRotationRef(id: string, el: unknown) {
 const currentCharacter = computed(
   () => characters.value[props.character] ?? ({} as Record<string, unknown>),
 );
+
+// Enemy config only affects computed damage numbers, not the buff/passive
+// definition catalogs the advanced buff editor needs — a placeholder is
+// fine here since this context is only ever read for `.definitions`, never
+// for its numeric stats/damage output (real rotation damage is computed
+// separately, in Calculator.vue, against the real enemy config).
+const PLACEHOLDER_ENEMY_CONFIG: TeamEnemyConfig = { enemyLevel: 1, enemyResist: 0, enemyType: "" };
+const characterContext = ref<CharacterCalculationContext | null>(null);
+
+async function recomputeCharacterContext() {
+  if (!props.character) {
+    characterContext.value = null;
+    return;
+  }
+  characterContext.value = await buildCharacterCalculationContext(
+    props.character,
+    characters.value,
+    PLACEHOLDER_ENEMY_CONFIG,
+    inventoryEchoes.value,
+  );
+}
+
+watch(currentCharacter, () => void recomputeCharacterContext(), { deep: true });
 
 const hasRotations = computed(() => presets.value.length > 0);
 const canReorder = computed(() => rotations.value.length > 1);
@@ -391,6 +424,7 @@ onMounted(async () => {
   >;
   const presetList = (characterData.value?.rotations ?? []) as RotationPreset[];
   presets.value = presetList;
+  await recomputeCharacterContext();
 });
 </script>
 

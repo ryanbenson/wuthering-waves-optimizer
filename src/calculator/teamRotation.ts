@@ -1,31 +1,8 @@
 import { resolveRotationActionToAttackData } from "./resolveRotationAction";
 import { calcDamages } from "./attacks";
 import { randomString } from "../utils/strings";
-import {
-  buildCharacterCalculationContext,
-  type CharacterCalculationContext,
-  type TeamEnemyConfig,
-} from "./buildCharacterContext";
-
-/**
- * Per-toggle override used by Advanced mode's per-action buff editor.
- * `stacks`/`baseAttrValue` are only meaningful for buffs whose definition
- * has `hasStacks`/an `inputBase`-style config — harmless no-ops otherwise.
- */
-export interface TeamRotationBuffOverride {
-  isEnabled?: boolean;
-  stacks?: number;
-  baseAttrValue?: number;
-}
-
-export interface TeamRotationAdvancedConfig {
-  buffs?: Record<string, TeamRotationBuffOverride>;
-  weaponPassives?: Record<string, TeamRotationBuffOverride>;
-  echoSetPassives?: Record<string, TeamRotationBuffOverride>;
-  mainEchoBuff?: TeamRotationBuffOverride;
-  teamBuffs?: Record<string, TeamRotationBuffOverride>;
-  resonanceChains?: Record<string, TeamRotationBuffOverride>;
-}
+import { buildCharacterCalculationContext, type TeamEnemyConfig } from "./buildCharacterContext";
+import { applyAdvancedOverrides, type RotationAdvancedConfig } from "./rotationAdvancedBuffs";
 
 export interface TeamRotationAction {
   id: string;
@@ -37,14 +14,13 @@ export interface TeamRotationAction {
   mainEcho?: string | null;
   mainEchoRank?: number | null;
   buffs?: Array<{ id: string; modifier: string; modifierValue: number }>;
-  excludeSelfBuffs?: boolean;
   excludeTeamBuffs?: boolean;
   excludeWeaponBuffs?: boolean;
   negativeStatusStacks?: number;
   electroRageStacks?: number;
   isDisabled?: boolean;
   /** Only consulted when the team's mode is "advanced". */
-  advancedConfig?: TeamRotationAdvancedConfig;
+  advancedConfig?: RotationAdvancedConfig;
 }
 
 /**
@@ -65,7 +41,6 @@ export interface SourceRotationAction {
   mainEcho?: string | null;
   mainEchoRank?: number | null;
   buffs?: Array<{ id?: string; modifier: string; modifierValue: number }>;
-  excludeSelfBuffs?: boolean;
   excludeTeamBuffs?: boolean;
   excludeWeaponBuffs?: boolean;
   negativeStatusStacks?: number;
@@ -94,42 +69,6 @@ export function convertRotationActionsForSlot(
       order: startOrder + index,
       buffs: sourceAction.buffs?.map((buff) => ({ ...buff, id: randomString() })),
     };
-  });
-}
-
-export type AdvancedConfigCategory =
-  | "buffs"
-  | "weaponPassives"
-  | "echoSetPassives"
-  | "teamBuffs"
-  | "resonanceChains"
-  | "mainEchoBuff";
-
-/**
- * Bulk-writes one buff override into every listed action's `advancedConfig`
- * — the mechanism behind "make this buff last for [x] actions": rather than
- * a persisted, order-tracking "span" that's re-evaluated at calc time, the
- * UI resolves the target action ids once (starting action + a count, or an
- * inclusive end action) and this just stamps the same concrete override into
- * each of them. Simpler than a new data model, and the existing per-action
- * advancedConfig pipeline needs no changes to support it.
- */
-export function applyBulkAdvancedConfigOverride(
-  actions: TeamRotationAction[],
-  actionIds: string[],
-  category: AdvancedConfigCategory,
-  key: string | null,
-  override: TeamRotationBuffOverride,
-): TeamRotationAction[] {
-  const idSet = new Set(actionIds);
-  return actions.map((action) => {
-    if (!idSet.has(action.id)) return action;
-    const advancedConfig = action.advancedConfig ?? {};
-    if (category === "mainEchoBuff") {
-      return { ...action, advancedConfig: { ...advancedConfig, mainEchoBuff: { ...override } } };
-    }
-    const nextCategory = { ...(advancedConfig[category] ?? {}), [key as string]: { ...override } };
-    return { ...action, advancedConfig: { ...advancedConfig, [category]: nextCategory } };
   });
 }
 
@@ -185,116 +124,13 @@ export function calcRotationDps(
   };
 }
 
-function addDamageAggregation(a: DamageAggregation, b: DamageAggregation): DamageAggregation {
+export function addDamageAggregation(a: DamageAggregation, b: DamageAggregation): DamageAggregation {
   return {
     normalDamage: (a.normalDamage ?? 0) + (b.normalDamage ?? 0),
     avgDamage: (a.avgDamage ?? 0) + (b.avgDamage ?? 0),
     critDamage: (a.critDamage ?? 0) + (b.critDamage ?? 0),
     healing: (a.healing ?? 0) + (b.healing ?? 0),
     shield: (a.shield ?? 0) + (b.shield ?? 0),
-  };
-}
-
-/**
- * Overlays an advanced-mode per-action buff override onto a plain
- * `key -> {isEnabled, stacks}` config object (self buffs, weapon passives,
- * echo set passives, team buffs, resonance chains all share this shape).
- * Keys not present in `overrides` fall through to the character's own
- * stored config unchanged.
- */
-function mergeBuffConfig(
-  base: Record<string, TeamRotationBuffOverride> | undefined,
-  overrides: Record<string, TeamRotationBuffOverride> | undefined,
-): Record<string, TeamRotationBuffOverride> {
-  if (!overrides) return base ?? {};
-  const merged: Record<string, TeamRotationBuffOverride> = { ...(base ?? {}) };
-  for (const [key, value] of Object.entries(overrides)) {
-    merged[key] = { ...(merged[key] ?? {}), ...value };
-  }
-  return merged;
-}
-
-/**
- * Clones a character's stored build data with an advanced-mode action's
- * overrides applied, so the existing (unmodified) buildCharacterContext.ts
- * pipeline can be reused as-is for a single action instead of the whole
- * character — no per-action-aware branching needed inside the pure
- * calculator itself.
- */
-function applyAdvancedOverrides(
-  characterData: Record<string, any>,
-  overrides: TeamRotationAdvancedConfig | undefined,
-): Record<string, any> {
-  if (!overrides) return characterData;
-  return {
-    ...characterData,
-    buffs: mergeBuffConfig(characterData.buffs, overrides.buffs),
-    weaponPassives: mergeBuffConfig(characterData.weaponPassives, overrides.weaponPassives),
-    echoSetPassives: mergeBuffConfig(characterData.echoSetPassives, overrides.echoSetPassives),
-    mainEcho: overrides.mainEchoBuff
-      ? { ...(characterData.mainEcho ?? {}), ...overrides.mainEchoBuff }
-      : characterData.mainEcho,
-    teamBuffs: {
-      ...(characterData.teamBuffs ?? {}),
-      buffs: mergeBuffConfig(characterData.teamBuffs?.buffs, overrides.teamBuffs),
-    },
-    resonanceChains: mergeBuffConfig(characterData.resonanceChains, overrides.resonanceChains),
-  };
-}
-
-/**
- * Builds a full `advancedConfig` for one action, either as a snapshot of the
- * character's *current* real buff/passive/resonance-chain state (so the
- * Advanced-mode checkboxes reflect reality immediately instead of appearing
- * all off with no visible explanation) or fully disabled (a deliberate
- * blank slate the user builds up from scratch). Used when a team first
- * switches from Basic to Advanced mode, and as the default for any action
- * added while already in Advanced mode.
- */
-export function buildAdvancedConfigSnapshot(
-  characterData: Record<string, any>,
-  definitions: CharacterCalculationContext["definitions"] | null | undefined,
-  mode: "current" | "blank",
-): TeamRotationAdvancedConfig {
-  const snapshotCategory = (
-    defs: Array<{ key: string; hasStacks?: boolean }> | undefined,
-    currentConfig: Record<string, TeamRotationBuffOverride> | undefined,
-  ): Record<string, TeamRotationBuffOverride> => {
-    const out: Record<string, TeamRotationBuffOverride> = {};
-    for (const def of defs ?? []) {
-      out[def.key] =
-        mode === "blank"
-          ? { isEnabled: false }
-          : {
-              isEnabled: currentConfig?.[def.key]?.isEnabled ?? false,
-              stacks: currentConfig?.[def.key]?.stacks,
-              baseAttrValue: currentConfig?.[def.key]?.baseAttrValue,
-            };
-    }
-    return out;
-  };
-
-  const mainEchoConfig = characterData?.mainEcho;
-  const mainEchoBuff: TeamRotationBuffOverride | undefined = definitions?.mainEchoDef
-    ? mode === "blank"
-      ? { isEnabled: false }
-      : { isEnabled: mainEchoConfig?.isEnabled ?? false, stacks: mainEchoConfig?.stacks }
-    : undefined;
-
-  return {
-    buffs: snapshotCategory(definitions?.buffs, characterData?.buffs),
-    weaponPassives: snapshotCategory(definitions?.weaponPassives, characterData?.weaponPassives),
-    echoSetPassives: snapshotCategory(
-      [
-        ...(definitions?.echoSetPassivesOnePiece ?? []),
-        ...(definitions?.echoSetPassivesOne ?? []),
-        ...(definitions?.echoSetPassivesTwo ?? []),
-      ],
-      characterData?.echoSetPassives,
-    ),
-    mainEchoBuff,
-    teamBuffs: snapshotCategory(definitions?.teamBuffs, characterData?.teamBuffs?.buffs),
-    resonanceChains: snapshotCategory(definitions?.resonanceChains, characterData?.resonanceChains),
   };
 }
 

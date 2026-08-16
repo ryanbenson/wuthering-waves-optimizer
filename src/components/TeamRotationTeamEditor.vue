@@ -349,15 +349,17 @@ import {
 } from "../calculator/buildCharacterContext";
 import {
   calcTeamRotationDamage,
-  buildAdvancedConfigSnapshot,
   convertRotationActionsForSlot,
-  applyBulkAdvancedConfigOverride,
   type TeamRotationAction,
   type TeamRotationActionResult,
   type TeamRotationCharacterResult,
   type SourceRotationAction,
-  type AdvancedConfigCategory,
 } from "../calculator/teamRotation";
+import {
+  buildAdvancedConfigSnapshot,
+  applyBulkAdvancedConfigOverride,
+  type AdvancedConfigCategory,
+} from "../calculator/rotationAdvancedBuffs";
 import type { AdvancedBuffOverride } from "./TeamRotationAdvancedBuffRow.vue";
 
 const props = defineProps<{ teamId: string }>();

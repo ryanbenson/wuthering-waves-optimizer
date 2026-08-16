@@ -460,7 +460,6 @@ function processLoadout(
         actionType: actionTypeForAttackData,
         buffs: null,
         count: 1,
-        excludeSelfBuffs: false,
         excludeTeamBuffs: false,
         excludeWeaponBuffs: false,
         key: attackKey,

@@ -31,16 +31,13 @@
         :count="action.count ?? 1"
         :buffs="action.buffs ?? []"
         :is-disabled="Boolean(action.isDisabled)"
-        :ignore-self-buffs="Boolean(action.excludeSelfBuffs)"
-        :ignore-team-buffs="Boolean(action.excludeTeamBuffs)"
-        :ignore-weapon-buffs="Boolean(action.excludeWeaponBuffs)"
         :action-main-echo="action.mainEcho ?? null"
         :action-main-echo-rank="action.mainEchoRank ?? null"
         :rotation-main-echo="mainEchoForSlot[action.slot] ?? null"
         :rotation-main-echo-rank="mainEchoRankForSlot[action.slot] ?? null"
         :negative-status-stacks="Number(action.negativeStatusStacks ?? 1)"
         :electro-rage-stacks="Number(action.electroRageStacks ?? 0)"
-        :show-exclude-and-disabled-options="false"
+        :show-disabled-option="false"
         :data-test-rotation-action-by-attack-key="action.key || 'none'"
         :data-test-rotation-action-by-id="action.id"
         @action-update="onActionUpdate"
@@ -90,11 +87,8 @@ import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import { getCharacterRosterDisplayName } from "../characters/characters";
-import type {
-  AdvancedConfigCategory,
-  TeamRotationAction,
-  TeamRotationAdvancedConfig,
-} from "../calculator/teamRotation";
+import type { TeamRotationAction } from "../calculator/teamRotation";
+import type { AdvancedConfigCategory, RotationAdvancedConfig } from "../calculator/rotationAdvancedBuffs";
 
 const props = defineProps<{
   action: TeamRotationAction & Record<string, unknown>;
@@ -145,7 +139,7 @@ function onActionUpdate(payload: Record<string, unknown>) {
   emit("update", { ...payload, slot: props.action.slot });
 }
 
-function onAdvancedConfigUpdate(value: TeamRotationAdvancedConfig) {
+function onAdvancedConfigUpdate(value: RotationAdvancedConfig) {
   emit("update", { ...props.action, advancedConfig: value });
 }
 

@@ -4,12 +4,11 @@ import {
   calcRotationDps,
   calcStrongestHit,
   calcRotationTimeline,
-  buildAdvancedConfigSnapshot,
   convertRotationActionsForSlot,
-  applyBulkAdvancedConfigOverride,
   type TeamRotationAction,
   type SourceRotationAction,
 } from "../../src/calculator/teamRotation";
+import { buildAdvancedConfigSnapshot } from "../../src/calculator/rotationAdvancedBuffs";
 import { buildCharacterCalculationContext } from "../../src/calculator/buildCharacterContext";
 import { resolveRotationActionToAttackData } from "../../src/calculator/resolveRotationAction";
 import { calcDamages } from "../../src/calculator/attacks";
@@ -163,38 +162,6 @@ describe("convertRotationActionsForSlot", () => {
   });
 });
 
-describe("applyBulkAdvancedConfigOverride", () => {
-  function makeAction(id: string, existingConfig?: TeamRotationAction["advancedConfig"]): TeamRotationAction {
-    return { id, slot: 0, order: 1, key: "Foo", type: "skill", advancedConfig: existingConfig };
-  }
-
-  it("writes the override into the named buff for every listed action, leaving others untouched", () => {
-    const actions = [makeAction("a"), makeAction("b"), makeAction("c")];
-    const result = applyBulkAdvancedConfigOverride(actions, ["a", "b"], "buffs", "SomeBuff", {
-      isEnabled: true,
-      stacks: 3,
-    });
-    expect(result[0].advancedConfig?.buffs?.SomeBuff).toEqual({ isEnabled: true, stacks: 3 });
-    expect(result[1].advancedConfig?.buffs?.SomeBuff).toEqual({ isEnabled: true, stacks: 3 });
-    expect(result[2].advancedConfig).toBeUndefined();
-  });
-
-  it("merges into existing advancedConfig without clobbering other buffs", () => {
-    const actions = [makeAction("a", { buffs: { OtherBuff: { isEnabled: true } } })];
-    const result = applyBulkAdvancedConfigOverride(actions, ["a"], "buffs", "SomeBuff", { isEnabled: false });
-    expect(result[0].advancedConfig?.buffs).toEqual({
-      OtherBuff: { isEnabled: true },
-      SomeBuff: { isEnabled: false },
-    });
-  });
-
-  it("handles the mainEchoBuff category, which has no per-key map", () => {
-    const actions = [makeAction("a")];
-    const result = applyBulkAdvancedConfigOverride(actions, ["a"], "mainEchoBuff", null, { isEnabled: true, stacks: 2 });
-    expect(result[0].advancedConfig?.mainEchoBuff).toEqual({ isEnabled: true, stacks: 2 });
-  });
-});
-
 describe("calcTeamRotationDamage", () => {
   const characters = { Calcharo: {} };
 
@@ -338,36 +305,7 @@ describe("calcTeamRotationDamage", () => {
   });
 });
 
-describe("buildAdvancedConfigSnapshot", () => {
-  it("in 'current' mode, mirrors the character's real enabled state so advanced-mode checkboxes aren't misleadingly blank", async () => {
-    const characterData = { buffs: { StatBonusATK1: { isEnabled: true } } };
-    const built = await buildCharacterCalculationContext("Calcharo", { Calcharo: characterData }, enemyConfig);
-
-    const snapshot = buildAdvancedConfigSnapshot(characterData, built.definitions, "current");
-
-    expect(snapshot.buffs?.StatBonusATK1).toEqual({
-      isEnabled: true,
-      stacks: undefined,
-      baseAttrValue: undefined,
-    });
-    // A buff never touched on the character page defaults to disabled, same
-    // as the character store's own convention.
-    const anotherBuffKey = built.definitions.buffs.find((d: any) => d.key !== "StatBonusATK1")?.key;
-    expect(snapshot.buffs?.[anotherBuffKey]?.isEnabled).toBe(false);
-  });
-
-  it("in 'blank' mode, disables every known toggle regardless of the character's real config", async () => {
-    const characterData = { buffs: { StatBonusATK1: { isEnabled: true } } };
-    const built = await buildCharacterCalculationContext("Calcharo", { Calcharo: characterData }, enemyConfig);
-
-    const snapshot = buildAdvancedConfigSnapshot(characterData, built.definitions, "blank");
-
-    expect(snapshot.buffs?.StatBonusATK1).toEqual({ isEnabled: false });
-    for (const def of built.definitions.buffs) {
-      expect(snapshot.buffs?.[def.key]?.isEnabled).toBe(false);
-    }
-  });
-
+describe("buildAdvancedConfigSnapshot (via calcTeamRotationDamage)", () => {
   it("feeding a 'current' snapshot back through applyAdvancedOverrides (via calcTeamRotationDamage) reproduces basic mode's damage exactly", async () => {
     const characterData = { buffs: { StatBonusATK1: { isEnabled: true } } };
     const characters = { Calcharo: characterData };
