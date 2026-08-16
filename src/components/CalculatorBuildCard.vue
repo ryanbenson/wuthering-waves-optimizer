@@ -43,6 +43,7 @@
           v-if="buildCardBackground"
           label="background"
           test-id="background"
+          text-label="Adjust background"
           :model-value="buildCardBackgroundTransform"
           @update:model-value="buildCardBackgroundTransform = $event"
           @reset="buildCardBackgroundTransform = null" />
@@ -75,6 +76,7 @@
           v-if="characterData.customPortrait"
           label="character art"
           test-id="portrait"
+          text-label="Adjust portrait"
           :model-value="portraitTransform"
           @update:model-value="portraitTransform = $event"
           @reset="portraitTransform = null" />
