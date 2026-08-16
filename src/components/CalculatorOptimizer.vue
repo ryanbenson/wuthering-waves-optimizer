@@ -249,6 +249,18 @@
             handleUpdatedDamageType
           "></CalculatorOptimizerDamageType>
       </div>
+      <p
+        v-if="mainEchoBuffOverrideActionCount > 0"
+        class="text-warning text-sm mt-2"
+        data-test-optimizer-main-echo-buff-override-warning>
+        {{ mainEchoBuffOverrideActionCount }}
+        action{{ mainEchoBuffOverrideActionCount > 1 ? "s" : "" }} in this
+        rotation override the main echo buff — the Optimizer scores
+        {{ mainEchoBuffOverrideActionCount > 1 ? "them" : "it" }} using your
+        default main echo setting instead. The Character Rotation display
+        reflects the override correctly; only Optimizer results for this
+        rotation don't.
+      </p>
     </div>
     <div class="optimizer-target">
       <h3 class="mt-6 mb-2">Settings</h3>
@@ -415,6 +427,28 @@ const currentCharacter = computed(
 );
 
 const isTargetUnavailable = computed(() => false);
+
+// The Optimizer's Rotation-target scoring has no cheap way to honor a
+// per-action main-echo-buff override (the fast path's mainEchoStats lookup
+// only reflects the character's default main-echo config, not a per-action
+// override — see optimizer.ts's computeOverrideBuffVariants doc comment).
+// Every other advancedConfig category (self buffs, team buffs, weapon
+// passives, echo set passives, resonance chains) is fully supported; this is
+// surfaced so the gap is visible rather than a silent, unexplained number.
+const mainEchoBuffOverrideActionCount = computed((): number => {
+  const target = optimizationTarget.value;
+  if (typeof target !== "string" || !target.startsWith("Rotation:")) return 0;
+  const rotationId = target.slice("Rotation:".length);
+  const rotations = (currentCharacter.value.rotations ?? []) as Array<{
+    id: string;
+    actions?: Array<{ isDisabled?: boolean; advancedConfig?: { mainEchoBuff?: unknown } }>;
+  }>;
+  const rotation = rotations.find((r) => r.id === rotationId);
+  if (!rotation) return 0;
+  return (rotation.actions ?? []).filter(
+    (action) => !action.isDisabled && action.advancedConfig?.mainEchoBuff,
+  ).length;
+});
 
 const formattedOptimizerElapsed = computed(() => {
   const ms = Math.max(0, props.optimizerElapsedMs ?? 0);

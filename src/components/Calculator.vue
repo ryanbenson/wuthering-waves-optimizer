@@ -364,7 +364,7 @@ import {
   calcDamages,
   getCalculationContext,
 } from "../calculator/attacks";
-import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
+import { buildOptimizerRotationData } from "../calculator/rotationData";
 import { calcCharacterRotationDamage } from "../calculator/characterRotation";
 import type { OptimizerContext } from "../calculator/optimizer";
 import {
@@ -1131,6 +1131,8 @@ export default defineComponent({
           modifier: weaponData.value?.modifier ?? null,
           modifierValue: weaponData.value?.modifierValue ?? 0,
           weaponPassiveStats: weaponData.value?.weaponPassiveStats ?? {},
+          weaponPassiveDefs: weaponData.value?.weaponPassiveDefs ?? [],
+          refinement: weaponData.value?.refinement ?? "1",
         },
 
         // Buffs
@@ -1203,29 +1205,11 @@ export default defineComponent({
           rotationId,
         );
         if (rotation) {
-          // Pre-process rotation data - convert actions to attacks (like in optimizer.ts)
-          const rotationInfo = {
-            id: rotationId,
-            name: rotation.name,
-            description: rotation.description,
-            duration: rotation.duration ?? null,
-            echo: rotation.echo ?? null,
-          };
-
-          const rotationActionInfo: any[] = [];
-          rotation.actions.forEach((action: any) => {
-            const actionData = resolveRotationActionToAttackData(
-              action,
-              chosenChar.value,
-              characterLevel.value,
-            );
-            if (actionData) {
-              rotationActionInfo.push(actionData);
-            }
-          });
-
-          rotationInfo.attacks = rotationActionInfo;
-          rotationData = rotationInfo;
+          rotationData = buildOptimizerRotationData(
+            { ...rotation, id: rotationId },
+            chosenChar.value,
+            characterLevel.value,
+          );
         } else {
           console.error("Could not find rotation:", rotationId);
         }
