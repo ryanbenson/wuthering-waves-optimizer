@@ -5,7 +5,7 @@ const weaponInfo: WeaponInfo = {
   type: "Broadblade",
   rarity: 5,
   passiveName: "Call Upon Stars and Ghosts",
-  passiveValue: "All-Attribute DMG Bonus is increased by 12%/15%/18%/21%/24%. When casting Intro Skill or gaining a Shield, gain 1 stack of Nature's Order and 1 stack of Cradle of Life. This effect can be triggered via gaining a Shield once every 0.5s, stackable for up to 6/6/6/6/6 stacks, lasting for 7/7/7/7/7s.\nNature's Order: Crit. DMG is increased by 6%/7.5%/9%/10.5%/12%, up to 36%/45%/54%/63%/72%. When Nature's Order reaches 6 stacks, the Crit. Rate of Heavy Attack DMG is increased by 12%/15%/18%/21%/24%.\nCradle of Life: When casting a Heavy Attack, consume up to 2/2/2/2/2 stacks of Cradle of Life. For every 1/1/1/1/1 stack of Cradle of Life consumed, Heavy Attack DMG ignores 15%/17.5%/20%/22.5%/25% of the target's DEF, up to 30%/35%/40%/45%/50%. The effect lasts for 2/2/2/2/2s.",
+  passiveValue: "All-Attribute DMG Bonus is increased by 12%/15%/18%/21%/24%. When casting Intro Skill or gaining a Shield, gain 1 stack of Nature's Order and 1 stack of Cradle of Life. This effect can be triggered via gaining a Shield once every 0.5s, stackable for up to 6/6/6/6/6 stacks, lasting for 7/7/7/7/7s.\nNature's Order: Crit. DMG is increased by 4%/5%/6%/7%/8%, up to 24%/30%/36%/42%/48%. When Nature's Order reaches 6 stacks, the Crit. Rate of Heavy Attack DMG is increased by 12%/15%/18%/21%/24%.\nCradle of Life: When casting a Heavy Attack, consume up to 2/2/2/2/2 stacks of Cradle of Life. For every 1/1/1/1/1 stack of Cradle of Life consumed, Heavy Attack DMG ignores 15%/17.5%/20%/22.5%/25% of the target's DEF, up to 30%/35%/40%/45%/50%. The effect lasts for 2/2/2/2/2s.",
   passiveData: [
     {
       key: "CallUponStarsAndGhostsAllElementAttributeBonus",
@@ -27,14 +27,14 @@ const weaponInfo: WeaponInfo = {
       hasStacks: true,
       modifier: "CritDMG",
       modifierByRefinement: {
-        "1": 0.06,
-        "2": 0.075,
-        "3": 0.09,
-        "4": 0.105,
-        "5": 0.12,
+        "1": 0.04,
+        "2": 0.05,
+        "3": 0.06,
+        "4": 0.7,
+        "5": 0.8,
       },
       details:
-        "Nature's Order: Crit. DMG is increased by 6%/7.5%/9%/10.5%/12%, up to 36%/45%/54%/63%/72%",
+        "Nature's Order: Crit. DMG is increased by 4%/5%/6%/7%/8%, up to 24%/30%/36%/42%/48%",
       alwaysEnabled: false,
       maxStacks: 6,
     },
