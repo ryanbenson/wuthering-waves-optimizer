@@ -1,13 +1,12 @@
 <template>
   <div class="dropdown dropdown-end" data-export-hide>
-    <div
+    <button
       tabindex="0"
-      role="button"
-      class="btn btn-xs btn-ghost"
+      class="btn btn-sm btn-neutral"
       :aria-label="`Adjust ${label} image`"
       :data-test-image-adjust-trigger="testId">
       Adjust
-    </div>
+    </button>
     <div
       tabindex="0"
       class="dropdown-content bg-base-200 text-base-content rounded-box z-10 mt-2 w-64 border border-white/5 p-3 shadow-2xl outline-1 outline-black/5"
