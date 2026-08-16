@@ -1,10 +1,13 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
-import { render } from "@testing-library/vue";
+import { fireEvent, render, waitFor } from "@testing-library/vue";
 import CalculatorBuildCard from "../../src/components/CalculatorBuildCard.vue";
 import { createEmptyEchoSlot } from "../../src/echoes/echoLoadout";
 import { useCharacterStore } from "../../src/stores/character";
 import { useInventoryStore } from "../../src/stores/inventory";
+import { buildCharacterCalculationContext } from "../../src/calculator/buildCharacterContext";
+import { displayInt } from "../../src/utils/numbers";
+import { contrastOklchTriple, hexToOklchTriple } from "../../src/utils/color";
 
 const CHARACTER = "Changli";
 
@@ -23,30 +26,6 @@ function baseStatsProps() {
         },
       },
     },
-    totalAtk: 2145,
-    totalAtkPercent: 0,
-    totalAtkFlat: 0,
-    totalHp: 17213,
-    totalHpPercent: 0,
-    totalHpFlat: 0,
-    totalDef: 1338,
-    totalDefPercent: 0,
-    totalDefFlat: 0,
-    totalCritRate: 0.713,
-    totalCritDmg: 2.712,
-    energyRegen: 1.076,
-    basicAttackDmgBonus: 0.079,
-    heavyAttackDmgBonus: 0.18,
-    resonanceSkillDmgBonus: 0.188,
-    resonanceLiberationDmgBonus: 0.173,
-    glacio: 0,
-    fusion: 0.7,
-    electro: 0,
-    aero: 0,
-    spectro: 0,
-    havoc: 0,
-    healingBonus: 0,
-    tuneBreakBoost: 0,
   };
 }
 
@@ -113,59 +92,28 @@ describe("CalculatorBuildCard", () => {
     setActivePinia(createPinia());
   });
 
-  it("renders character name, level, weapon refinement, and stat values", async () => {
-    seedCharacter();
+  it("renders character name, level, weapon refinement, and stats reflecting equipment alone", async () => {
+    const characterStore = seedCharacter();
     const { findByText, getByTestId, container } = renderCard(baseStatsProps());
 
     expect(await findByText("Changli")).toBeTruthy();
     expect(container.textContent).toContain("Lv. 90");
-    // Stat block passthrough (rendered by CalculatorStats)
-    expect(container.textContent).toContain("2,145");
+
+    // The build card computes its own "always enabled" stats (base +
+    // permanently-active weapon/echo buffs only, per issue #383) rather than
+    // receiving the Results tab's live totals — assert against that same
+    // computation so this test doesn't hardcode a number that drifts
+    // whenever character/weapon data changes.
+    const built = await buildCharacterCalculationContext(
+      CHARACTER,
+      characterStore.characters,
+      { enemyLevel: 90, enemyResist: 0.1, enemyType: "Calamity" },
+      [],
+      { alwaysEnabledOnly: true },
+    );
+    const expectedAtk = displayInt(built.finalStats.totalAtk);
+    await waitFor(() => expect(container.textContent).toContain(expectedAtk));
     void getByTestId;
-  });
-
-  it("computes the resonance chain count from enabled chains", () => {
-    seedCharacter();
-    const { container } = renderCard(baseStatsProps());
-
-    const resonanceEl = container.querySelector(
-      "[data-test-build-card-resonance]",
-    );
-    expect(resonanceEl?.textContent).toContain("2 / 6");
-  });
-
-  it("renders 0 / 6 when no resonance chains are enabled", () => {
-    seedCharacter({
-      resonanceChains: {
-        chain1: { isEnabled: false },
-        chain2: { isEnabled: false },
-      },
-    });
-    const { container } = renderCard(baseStatsProps());
-
-    const resonanceEl = container.querySelector(
-      "[data-test-build-card-resonance]",
-    );
-    expect(resonanceEl?.textContent).toContain("0 / 6");
-  });
-
-  it("renders 6 / 6 when every resonance chain is enabled", () => {
-    seedCharacter({
-      resonanceChains: {
-        chain1: { isEnabled: true },
-        chain2: { isEnabled: true },
-        chain3: { isEnabled: true },
-        chain4: { isEnabled: true },
-        chain5: { isEnabled: true },
-        chain6: { isEnabled: true },
-      },
-    });
-    const { container } = renderCard(baseStatsProps());
-
-    const resonanceEl = container.querySelector(
-      "[data-test-build-card-resonance]",
-    );
-    expect(resonanceEl?.textContent).toContain("6 / 6");
   });
 
   it("renders forte/talent levels from the character's talents", () => {
@@ -173,11 +121,18 @@ describe("CalculatorBuildCard", () => {
     const { container } = renderCard(baseStatsProps());
 
     const talentsEl = container.querySelector("[data-test-build-card-talents]");
-    expect(talentsEl?.textContent).toContain("Lv. 6");
-    expect(talentsEl?.textContent).toContain("Normal Attack");
-    expect(talentsEl?.textContent).toContain("Lv. 10");
-    expect(talentsEl?.textContent).toContain("Resonance Skill");
-    expect(talentsEl?.textContent).toContain("Intro Skill");
+    const levels = talentsEl?.querySelectorAll("[data-test-build-card-talent-level]");
+    // Order matches the issue spec: normal, skill, liberation, forte circuit, intro.
+    expect(Array.from(levels ?? []).map((el) => el.textContent?.trim())).toEqual([
+      "6",
+      "10",
+      "10",
+      "10",
+      "6",
+    ]);
+    expect(talentsEl?.querySelector('[title^="Normal Attack"]')).toBeTruthy();
+    expect(talentsEl?.querySelector('[title^="Resonance Skill"]')).toBeTruthy();
+    expect(talentsEl?.querySelector('[title^="Intro Skill"]')).toBeTruthy();
   });
 
   it("renders all 5 echo slots, including empty ones", () => {
@@ -208,5 +163,152 @@ describe("CalculatorBuildCard", () => {
 
     const echoesEl = container.querySelector("[data-test-build-card-echoes]");
     expect(echoesEl?.textContent).not.toContain("CV");
+  });
+
+  it("shows a 1pc set (e.g. Lucy's exclusive Shadow of Shattered Dreams) alongside 2pc sets, sorted with 2pc sets first", () => {
+    // Mirrors Lucy's real preset: a 1pc-threshold exclusive set plus two
+    // ordinary 2pc sets filling the other 4 slots (see
+    // src/characters/Lucy/presets.ts) — the case that exposed the build
+    // card's old hardcoded `count >= 2` filter dropping the 1pc set.
+    seedCharacter({
+      echoes: {
+        0: createEmptyEchoSlot("echo-0"),
+        1: createEmptyEchoSlot("echo-1"),
+        2: createEmptyEchoSlot("echo-2"),
+        3: createEmptyEchoSlot("echo-3"),
+        4: createEmptyEchoSlot("echo-4"),
+      },
+    });
+    const inventoryStore = useInventoryStore();
+    inventoryStore.echoes = [
+      { ...createEmptyEchoSlot("echo-0"), echoSet: "ShadowofShatteredDreams" },
+      { ...createEmptyEchoSlot("echo-1"), echoSet: "CelestialLight" },
+      { ...createEmptyEchoSlot("echo-2"), echoSet: "CelestialLight" },
+      { ...createEmptyEchoSlot("echo-3"), echoSet: "EternalRadiance" },
+      { ...createEmptyEchoSlot("echo-4"), echoSet: "EternalRadiance" },
+    ];
+    const { container } = renderCard(baseStatsProps());
+
+    const chips = container.querySelectorAll(
+      "[data-test-build-card-echo-sets] > div",
+    );
+    expect(Array.from(chips).map((el) => el.textContent?.trim())).toEqual([
+      "2pc Celestial Light",
+      "2pc Eternal Radiance",
+      "1pc Shadow of Shattered Dreams",
+    ]);
+  });
+
+  it("dedupes multiple resonance chain entries for the same sequence node into one icon, active if any variant for the current stance is enabled", () => {
+    // Some characters (e.g. stance-swappers) define several resonance chain
+    // entries per in-game node — stance-bound variants, or independently
+    // toggleable effects of one node. The build card should show exactly
+    // one icon per node, restricted to whichever entries apply for the
+    // character's current stance, lit up if any of them is enabled.
+    seedCharacter({
+      activeStance: "Fusion Burst",
+      resonanceChains: {
+        SequenceNode2Base: { isEnabled: false },
+        SequenceNode2FusionBurst: { isEnabled: true },
+        SequenceNode2TuneStrain: { isEnabled: false },
+      },
+    });
+    const props = baseStatsProps();
+    props.chosenChar.value.basic.stances = ["Fusion Burst", "Tune Strain"];
+    props.chosenChar.value.resonanceChains = [
+      { key: "SequenceNode2Base", name: "Sequence Node 2: Test Node", icon: "icon.png" },
+      {
+        key: "SequenceNode2FusionBurst",
+        name: "Sequence Node 2: Test Node",
+        icon: "icon.png",
+        stance: "Fusion Burst",
+      },
+      {
+        key: "SequenceNode2TuneStrain",
+        name: "Sequence Node 2: Test Node",
+        icon: "icon.png",
+        stance: "Tune Strain",
+      },
+    ];
+    const { container } = renderCard(props);
+
+    const resonanceEl = container.querySelector("[data-test-build-card-resonance]");
+    const nodes = resonanceEl?.querySelectorAll(".build-card__resonance-node");
+    expect(nodes?.length).toBe(1);
+    expect(nodes?.[0].classList.contains("build-card__resonance-node--active")).toBe(true);
+  });
+
+  it("shows a node's icon as inactive when none of its entries for the current stance are enabled", () => {
+    seedCharacter({
+      activeStance: "Tune Strain",
+      resonanceChains: {
+        SequenceNode2Base: { isEnabled: false },
+        SequenceNode2FusionBurst: { isEnabled: true },
+        SequenceNode2TuneStrain: { isEnabled: false },
+      },
+    });
+    const props = baseStatsProps();
+    props.chosenChar.value.basic.stances = ["Fusion Burst", "Tune Strain"];
+    props.chosenChar.value.resonanceChains = [
+      { key: "SequenceNode2Base", name: "Sequence Node 2: Test Node", icon: "icon.png" },
+      {
+        key: "SequenceNode2FusionBurst",
+        name: "Sequence Node 2: Test Node",
+        icon: "icon.png",
+        stance: "Fusion Burst",
+      },
+      {
+        key: "SequenceNode2TuneStrain",
+        name: "Sequence Node 2: Test Node",
+        icon: "icon.png",
+        stance: "Tune Strain",
+      },
+    ];
+    const { container } = renderCard(props);
+
+    // The Fusion-Burst-only variant (currently enabled) shouldn't be
+    // considered while Tune Strain is the active stance.
+    const resonanceEl = container.querySelector("[data-test-build-card-resonance]");
+    const nodes = resonanceEl?.querySelectorAll(".build-card__resonance-node");
+    expect(nodes?.length).toBe(1);
+    expect(nodes?.[0].classList.contains("build-card__resonance-node--inactive")).toBe(true);
+  });
+
+  it("leaves the DaisyUI primary color variables untouched until a custom color is picked, then applies it as --p/--pc on the card canvas, stored per-character", async () => {
+    const characterStore = seedCharacter();
+    const { container } = renderCard(baseStatsProps());
+
+    const canvas = container.querySelector(".build-card__canvas") as HTMLElement;
+    expect(canvas.style.getPropertyValue("--p")).toBe("");
+    expect(
+      container.querySelector("[data-test-build-card-primary-color-reset]"),
+    ).toBeFalsy();
+
+    const colorInput = container.querySelector(
+      "[data-test-build-card-primary-color-input]",
+    ) as HTMLInputElement;
+    await fireEvent.update(colorInput, "#ff0000");
+
+    await waitFor(() => {
+      expect(canvas.style.getPropertyValue("--p")).toBe(hexToOklchTriple("#ff0000"));
+    });
+    expect(canvas.style.getPropertyValue("--pc")).toBe(contrastOklchTriple("#ff0000"));
+    expect(characterStore.characters[CHARACTER].buildCardPrimaryColor).toBe(
+      "#ff0000",
+    );
+  });
+
+  it("keeps each character's primary color independent", () => {
+    const characterStore = seedCharacter({ buildCardPrimaryColor: "#00ff00" });
+    characterStore.characters.OtherCharacter = { buildCardPrimaryColor: "#0000ff" };
+    const { container } = renderCard(baseStatsProps());
+
+    const colorInput = container.querySelector(
+      "[data-test-build-card-primary-color-input]",
+    ) as HTMLInputElement;
+    expect(colorInput.value).toBe("#00ff00");
+
+    const canvas = container.querySelector(".build-card__canvas") as HTMLElement;
+    expect(canvas.style.getPropertyValue("--p")).toBe(hexToOklchTriple("#00ff00"));
   });
 });

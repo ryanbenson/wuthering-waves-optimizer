@@ -59,15 +59,17 @@
           </div>
         </RouterLink>
         <RouterLink
-          v-if="isTeamRotationsEnabled"
           to="/teams"
-          class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2"
+          class="btn btn-ghost size-5 p-0 flex justify-center basis-[48px] mr-2 relative"
           :class="{ 'btn-active': curPage === 'team-rotations' }"
           title="Team Rotations"
           data-test-nav-team-rotations>
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/icons/teams.webp"
             class="size-8" />
+          <div class="badge badge-primary absolute top-[-0.5rem] right-[-1.25rem] text-xs">
+            New
+          </div>
         </RouterLink>
       </div>
       <div class="navbar-center hidden lg:flex">
@@ -161,7 +163,6 @@ import ThemeChooser from "../ThemeChooser.vue";
 import CalculatorCharacterBrowser from "../CalculatorCharacterBrowser.vue";
 import { allCharactersList, getCharactersAvailable } from "../../characters/characters";
 import { useCharacterStore } from "../../stores/character";
-import { useSettingsStore } from "../../stores/settings";
 
 defineOptions({
   name: "Nav",
@@ -180,10 +181,6 @@ const props = defineProps({
 
 const characterStore = useCharacterStore();
 const { activeCharacter } = storeToRefs(characterStore);
-
-const settingsStore = useSettingsStore();
-const { labs } = storeToRefs(settingsStore);
-const isTeamRotationsEnabled = computed(() => labs.value?.teamRotations?.isEnabled ?? false);
 
 const characterBrowserRef = ref(null);
 

@@ -27,6 +27,7 @@ export type MainEchoBuffSource = {
   key: string;
   details: string;
   modifiers?: EchoModifier[];
+  alwaysEnabled?: boolean;
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
@@ -108,7 +109,7 @@ export function getMainEchoBuffs(
     return mods.map((mod) => ({
       key: mod.key as string,
       details: mod.details ?? echo.details,
-      alwaysEnabled: mod.alwaysEnabled ?? false,
+      alwaysEnabled: mod.alwaysEnabled ?? echo.alwaysEnabled ?? false,
       hasStacks: mod.hasStacks ?? false,
       minStacks: mod.minStacks ?? 0,
       maxStacks: mod.maxStacks ?? 0,
@@ -120,7 +121,7 @@ export function getMainEchoBuffs(
     {
       key: echo.key,
       details: echo.details,
-      alwaysEnabled: false,
+      alwaysEnabled: echo.alwaysEnabled ?? false,
       hasStacks: echo.hasStacks ?? false,
       minStacks: echo.minStacks ?? 0,
       maxStacks: echo.maxStacks ?? 0,

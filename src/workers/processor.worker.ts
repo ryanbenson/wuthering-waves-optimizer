@@ -421,7 +421,16 @@ function processLoadout(
       targetType,
       targetObject,
     };
-    const loadoutArr = JSON.parse(JSON.stringify(normalizedLoadout));
+    // No manual clone needed: normalizedLoadout is a fresh array (from
+    // normalizeOptimizerLoadout) of echo objects that arrived via structured
+    // clone from the generator worker, so there's no Vue reactivity/aliasing
+    // to strip. postMessage will structurally clone this result on its own
+    // when it's sent back to the main thread — a JSON.stringify/parse
+    // round-trip here was pure duplicate work, done for every loadout that
+    // passes the min-stat filter regardless of whether it survives the
+    // local top-N heap. A profiled run showed this as the single largest
+    // source of cross-worker lock contention in the native allocator.
+    const loadoutArr = normalizedLoadout;
 
     if (targetType === "Stat") {
       targetValue = finalStats?.[targetObject] ?? 0;

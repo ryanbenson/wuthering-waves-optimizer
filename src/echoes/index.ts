@@ -20,6 +20,15 @@ interface Echo {
   hasStacks?: boolean;
   minStacks?: number;
   maxStacks?: number;
+  /**
+   * True when this echo's main-slot buff (its `modifiers`) is permanently
+   * active once the echo is equipped in the main slot — no combat condition
+   * required, unlike a self/weapon/echo-set buff that needs a trigger. Set
+   * on echoes whose `details` state an unconditional "equipped in main/their
+   * main slot" bonus. Mirrors `WeaponPassiveDef`/`EchoSetBonusPassive`'s
+   * `alwaysEnabled` convention.
+   */
+  alwaysEnabled?: boolean;
   actions?: EchoAction[];
   sets: string[];
 }
@@ -163,6 +172,7 @@ CD: 8s`,
   },
   AbyssalPatricius: {
     key: "AbyssalPatricius",
+    alwaysEnabled: true,
     name: "Abyssal Patricius",
     class: "Elite",
     image:
@@ -363,6 +373,7 @@ CD: <span class="param">15</span>s</span>`,
   },
   Capitaneus: {
     key: "Capitaneus",
+    alwaysEnabled: true,
     name: "Capitaneus",
     class: "Elite",
     image:
@@ -548,6 +559,7 @@ CD: 20s.`,
   },
   Corrosaurus: {
     key: "Corrosaurus",
+    alwaysEnabled: true,
     name: "Corrosaurus",
     class: "Elite",
     image:
@@ -733,6 +745,7 @@ CD: <span class="param">20</span>s</span>`,
   },
   DragonofDirge: {
     key: "DragonofDirge",
+    alwaysEnabled: true,
     name: "Dragon of Dirge",
     class: "Overlord",
     image:
@@ -1107,6 +1120,7 @@ CD: <span class="param">20</span>s</span>`,
   },
   ForbiddenBastion: {
     key: "ForbiddenBastion",
+    alwaysEnabled: true,
     name: "Forbidden Bastion",
     class: "Elite",
     image:
@@ -1461,6 +1475,7 @@ CD: <span class="param">8</span>s`,
   },
   Hecate: {
     key: "Hecate",
+    alwaysEnabled: true,
     name: "Hecate",
     class: "Calamity",
     image:
@@ -1831,6 +1846,7 @@ CD: 8s.</span>`,
   },
   Kerasaur: {
     key: "Kerasaur",
+    alwaysEnabled: true,
     name: "Kerasaur",
     class: "Elite",
     image:
@@ -1958,6 +1974,7 @@ CD: 134.10%s</span>`,
   },
   LadyoftheSea: {
     key: "LadyoftheSea",
+    alwaysEnabled: true,
     name: "Lady of the Sea",
     class: "Overlord",
     image:
@@ -2103,6 +2120,7 @@ CD: 20s</span>`,
   },
   LionessofGlory: {
     key: "LionessofGlory",
+    alwaysEnabled: true,
     name: "Lioness of Glory",
     class: "Overlord",
     image:
@@ -2152,6 +2170,7 @@ CD: 20s</span>`,
   },
   Lorelei: {
     key: "Lorelei",
+    alwaysEnabled: true,
     name: "Lorelei",
     class: "Overlord",
     image:
@@ -2391,6 +2410,7 @@ CD: <span class="param">25</span>s.</span>`,
   },
   MyriadSnareRustfireChassis: {
     key: "MyriadSnareRustfireChassis",
+    alwaysEnabled: true,
     name: "Myriad Snare: Rustfire Chassis",
     class: "Overlord",
     image:
@@ -2430,6 +2450,7 @@ CD: 20s`,
   },
   NamelessExplorer: {
     key: "NamelessExplorer",
+    alwaysEnabled: true,
     name: "Nameless Explorer",
     class: "Overlord",
     image:
@@ -2528,6 +2549,7 @@ CD: <span class="param">8</span>s</span>`,
   },
   NightmareCrownless: {
     key: "NightmareCrownless",
+    alwaysEnabled: true,
     name: "Nightmare: Crownless",
     class: "Overlord",
     image:
@@ -2630,6 +2652,7 @@ CD: <span class="param">8</span>s</span>`,
   },
   NightmareFeilianBeringal: {
     key: "NightmareFeilianBeringal",
+    alwaysEnabled: true,
     name: "Nightmare: Feilian Beringal",
     class: "Overlord",
     image:
@@ -2716,6 +2739,7 @@ CD: 15s`,
   },
   NightmareHecate: {
     key: "NightmareHecate",
+    alwaysEnabled: true,
     name: "Nightmare: Hecate",
     class: "Calamity",
     image:
@@ -2753,6 +2777,7 @@ CD: 25s`,
   },
   NightmareImpermanenceHeron: {
     key: "NightmareImpermanenceHeron",
+    alwaysEnabled: true,
     name: "Nightmare: Impermanence Heron",
     class: "Overlord",
     image:
@@ -2790,6 +2815,7 @@ CD: <span class="param">25</span>s.</span>`,
   },
   NightmareInfernoRider: {
     key: "NightmareInfernoRider",
+    alwaysEnabled: true,
     name: "Nightmare: Inferno Rider",
     class: "Overlord",
     image:
@@ -2842,6 +2868,7 @@ CD: <span class="param">25</span>s.</span>`,
   },
   NightmareKelpie: {
     key: "NightmareKelpie",
+    alwaysEnabled: true,
     name: "Nightmare: Kelpie",
     class: "Overlord",
     image:
@@ -2891,6 +2918,7 @@ CD: <span class="param">25</span>s.</span>`,
   },
   NightmareLampylumenMyriad: {
     key: "NightmareLampylumenMyriad",
+    alwaysEnabled: true,
     name: "Nightmare: Lampylumen Myriad",
     class: "Overlord",
     image:
@@ -2928,6 +2956,7 @@ CD: <span class="param">20</span>s.</span>`,
   },
   NightmareMourningAix: {
     key: "NightmareMourningAix",
+    alwaysEnabled: true,
     name: "Nightmare: Mourning Aix",
     class: "Overlord",
     image:
@@ -2998,6 +3027,7 @@ CD: 15s`,
   },
   NightmareTempestMephis: {
     key: "NightmareTempestMephis",
+    alwaysEnabled: true,
     name: "Nightmare: Tempest Mephis",
     class: "Overlord",
     image:
@@ -3035,6 +3065,7 @@ CD: <span class="param">25</span>s.</span>`,
   },
   NightmareThunderingMephis: {
     key: "NightmareThunderingMephis",
+    alwaysEnabled: true,
     name: "Nightmare: Thundering Mephis",
     class: "Overlord",
     image:
@@ -3232,6 +3263,7 @@ CD: <span class="param">20</span>s.</span>`,
   },
   ReactorHusk: {
     key: "ReactorHusk",
+    alwaysEnabled: true,
     name: "Reactor Husk",
     class: "Overlord",
     image:
@@ -3294,6 +3326,7 @@ CD: 20s`,
   },
   ReminiscenceFenrico: {
     key: "ReminiscenceFenrico",
+    alwaysEnabled: true,
     name: "Reminiscence: Fenrico",
     class: "Overlord",
     image:
@@ -3331,6 +3364,7 @@ CD: 20s.`,
   },
   ReminiscenceFleurdelys: {
     key: "ReminiscenceFleurdelys",
+    alwaysEnabled: true,
     name: "Reminiscence: Fleurdelys",
     class: "Calamity",
     image:
@@ -3381,6 +3415,7 @@ CD: 15s</span>`,
   },
   ReminiscenceNightmareAdamSmasher: {
     key: "ReminiscenceNightmareAdamSmasher",
+    alwaysEnabled: true,
     name: "Reminiscence - Nightmare: Adam Smasher",
     class: "Overlord",
     image:
@@ -3468,6 +3503,7 @@ CD: 20s`,
   },
   ReminiscenceThrenodianLeviathan: {
     key: "ReminiscenceThrenodianLeviathan",
+    alwaysEnabled: true,
     name: "Reminiscence: Threnodian - Leviathan",
     class: "Calamity",
     image:
@@ -3523,6 +3559,7 @@ CD: 25s`,
   },
   ReminiscenceThrenodianVoidborneConstruct: {
     key: "ReminiscenceThrenodianVoidborneConstruct",
+    alwaysEnabled: true,
     name: "Reminiscence: Threnodian - Voidborne Construct",
     class: "Calamity",
     image:
@@ -3733,6 +3770,7 @@ CD: 20s`,
   },
   SentryConstruct: {
     key: "SentryConstruct",
+    alwaysEnabled: true,
     name: "Sentry Construct",
     class: "Overlord",
     image:
@@ -3797,6 +3835,7 @@ CD: 8s.</span>`,
   },
   Sigillum: {
     key: "Sigillum",
+    alwaysEnabled: true,
     name: "Sigillum",
     class: "Calamity",
     image:
@@ -4072,6 +4111,7 @@ CD: 20s</span>`,
   },
   TheFalseSovereign: {
     key: "TheFalseSovereign",
+    alwaysEnabled: true,
     name: "The False Sovereign",
     class: "Overlord",
     image:
@@ -4125,6 +4165,7 @@ Start with 2 charges. Gain 1 charge every 8s, up to 2 charges.`,
   },
   ThousandPuppetPavilion: {
     key: "ThousandPuppetPavilion",
+    alwaysEnabled: true,
     name: "Thousand-Puppet Pavilion",
     class: "Calamity",
     image:
@@ -4252,6 +4293,7 @@ CD: 20s`,
   },
   TwinNovaCollapsarBlade: {
     key: "TwinNovaCollapsarBlade",
+    alwaysEnabled: true,
     name: "Twin Nova: Collapsar Blade",
     class: "Elite",
     image:
@@ -4294,6 +4336,7 @@ If Twin Nova: Nebulous Cannon is equipped in another slot on the Resonator:<br>
   },
   TwinNovaNebulousCannon: {
     key: "TwinNovaNebulousCannon",
+    alwaysEnabled: true,
     name: "Twin Nova: Nebulous Cannon",
     class: "Elite",
     image:
@@ -4386,6 +4429,7 @@ If Twin Nova: Collapsar Blade is equipped in another slot on the Resonator:<br>
   },
   VitreumDancer: {
     key: "VitreumDancer",
+    alwaysEnabled: true,
     name: "Vitreum Dancer",
     class: "Elite",
     image:

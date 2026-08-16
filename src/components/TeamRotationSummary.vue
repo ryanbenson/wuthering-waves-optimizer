@@ -54,6 +54,22 @@
       </div>
     </div>
 
+    <div class="flex items-center justify-end gap-2 mb-2">
+      <span class="text-xs opacity-70">Chart damage:</span>
+      <div class="join" data-test-team-rotation-summary-chart-metric>
+        <button
+          v-for="option in CHART_DAMAGE_METRIC_OPTIONS"
+          :key="option.value"
+          type="button"
+          class="btn btn-xs join-item"
+          :class="{ 'btn-primary': damageMetric === option.value }"
+          :data-test-team-rotation-summary-chart-metric-option="option.value"
+          @click="damageMetric = option.value">
+          {{ option.label }}
+        </button>
+      </div>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
       <div class="card bg-base-200 p-4">
         <h3 class="font-semibold mb-2">Damage Over Time</h3>
@@ -61,18 +77,18 @@
       </div>
       <div class="card bg-base-200 p-4">
         <h3 class="font-semibold mb-2">Damage Over Time by Character</h3>
-        <TeamRotationCharacterTimelineChart :points="timeline" />
+        <TeamRotationCharacterTimelineChart :points="timeline" :metric="damageMetric" />
       </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
       <div class="card bg-base-200 p-4">
         <h3 class="font-semibold mb-2">Damage by Character</h3>
-        <TeamRotationDamageChart :per-character="result.perCharacter" />
+        <TeamRotationDamageChart :per-character="result.perCharacter" :metric="damageMetric" />
       </div>
       <div class="card bg-base-200 p-4">
         <h3 class="font-semibold mb-2">Cumulative Damage by Character</h3>
-        <TeamRotationCumulativeDamageChart :points="timeline" />
+        <TeamRotationCumulativeDamageChart :points="timeline" :metric="damageMetric" />
       </div>
     </div>
 
@@ -160,10 +176,16 @@ import { storeToRefs } from "pinia";
 import { useTeamRotationsStore } from "../stores/teamRotations";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { useSettingsStore } from "../stores/settings";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import { getWeaponByName } from "../weapons/weapons";
 import enemiesCatalog, { type Enemy } from "../enemies/index";
 import { displayDamage, displayInt, displayPercentage } from "../utils/numbers";
+import {
+  CHART_DAMAGE_METRIC_OPTIONS,
+  resolveChartDamageMetric,
+  type ChartDamageMetric,
+} from "../utils/chartPreferences";
 import {
   buildCharacterCalculationContext,
   type CharacterCalculationContext,
@@ -191,6 +213,12 @@ const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 const inventoryStore = useInventoryStore();
 const { echoes: inventoryEchoes } = storeToRefs(inventoryStore);
+const settingsStore = useSettingsStore();
+const { config } = storeToRefs(settingsStore);
+
+const damageMetric = ref<ChartDamageMetric>(
+  resolveChartDamageMetric((config.value as { chartDamageMetric?: ChartDamageMetric })?.chartDamageMetric),
+);
 
 const team = computed(() => teamRotationsStore.getTeamById(props.teamId));
 

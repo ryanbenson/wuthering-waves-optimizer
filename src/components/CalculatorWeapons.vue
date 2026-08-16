@@ -3,6 +3,15 @@
     <h3 class="text-sm font-semibold">Weapons</h3>
     <div class="join">
       <button
+        v-if="signatureWeapon"
+        :disabled="weapon === signatureWeapon"
+        type="button"
+        class="btn btn-sm join-item"
+        data-test-weapons-equip-signature
+        @click="equipSignatureWeapon">
+        Equip signature
+      </button>
+      <button
         type="button"
         class="btn btn-sm join-item"
         data-test-weapons-enable-all
@@ -135,6 +144,7 @@
     :key="character"
     :character="character"
     :weapons-list="weaponsList"
+    :signature-weapon="signatureWeapon"
     ref="weaponBrowserRef"
     @weapon-browser:chosen-weapon="handleChosenWeapon" />
 </template>
@@ -191,6 +201,7 @@ const props = withDefaults(
   defineProps<{
     character: string;
     weaponType?: string;
+    signatureWeapon?: string;
   }>(),
   { weaponType: "" },
 );
@@ -572,6 +583,12 @@ async function maxAllWeapons() {
 
 function handleChosenWeapon(key: string) {
   weapon.value = key;
+}
+
+function equipSignatureWeapon() {
+  if (props.signatureWeapon) {
+    weapon.value = props.signatureWeapon;
+  }
 }
 
 watch(

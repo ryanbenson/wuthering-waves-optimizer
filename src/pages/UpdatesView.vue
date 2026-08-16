@@ -2,6 +2,54 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 15, 2026</h3>
+    <ul>
+      <li>Team Rotations and Build Card are no longer Labs features — both are now fully released and available to everyone, no toggle required.</li>
+      <li>Adds ability to quickly equip sig, and highlights character signature in weapon chooser</li>
+      <li>Fixes YYX's S2, it now properly applies DMG Bonus</li>
+      <li>Fixed a text issue on Hiyuki's sig</li>
+      <li>Adds a warning badge on echo cards that aren't fully configured (missing an echo, set, main stat, or a substat), and an "Incomplete echoes" filter (with count badge) to the Inventory so you can find and finish configuring them.</li>
+      <li>Also shows that same incomplete-echo warning badge on a character's equipped echoes in the Calculator, so you can spot an unfinished build without leaving the page.</li>
+    </ul>
+    <h3>August 14, 2026</h3>
+    <ul>
+      <li>Adds a custom primary color picker to the Build Card, which also drives the resonance chain nodes, weapon refinement pill, forte level badges, and echo cost badges.</li>
+      <li>Fixes the Build Card's echo set summary to show 1pc and 3pc-threshold exclusive sets, not just 2pc sets.</li>
+      <li>Makes the Build Card's custom primary color per-character instead of global, since different builds want different accent colors.</li>
+      <li>Improves optimizer performance, especially for large-scale loadout runs, by removing unnecessary allocations from the calculation workers.</li>
+    </ul>
+    <h3>August 13, 2026</h3>
+    <ul>
+      <li>Moves the Build Card's forte row out of the character portrait and into its own row between the weapon and stats panels, and enlarges the icons.</li>
+      <li>Makes the Build Card compute its own stats from equipment and permanent unlocks instead of mirroring the Results tab's live buff toggles.</li>
+      <li>Increases the Build Card's character name, rarity stars, username, and UID font sizes.</li>
+      <li>Fixes the Build Card's resonance chain icons to dedupe per node, properly show permanent (always-on) nodes, and stop the UID and echo set name from wrapping onto two lines.</li>
+    </ul>
+    <h3>August 12, 2026</h3>
+    <ul>
+      <li>Adds a Build Card (Labs feature, enable it in Settings > Labs) that generates a shareable image of your character's build, echoes, weapon, and forte stats.</li>
+      <li>Adds Tune Strain - Interfered and negative status effect stacks (Spectro Frazzle, Aero Erosion, Havoc Bane, Fusion Burst, Electro Flare, Electro Rage, Glacio Chafe) to Team Rotation enemy settings.</li>
+      <li>Increases max value of the Tune Strain input from 6 to 9.</li>
+      <li>Fixes Sigrika's s6, it wasn't properly stacking with her base Runic DMG bonus.</li>
+      <li>Adds a Normal/Average/Crit toggle to the Team Rotation "View Damages" pie chart, and a single toggle in the Team Rotation summary view that switches all of its damage charts between Normal, Average, and Crit. Both default to Average.</li>
+      <li>Reworks the Build Card layout into three panels: character portrait with forte levels, weapon and stats, and echoes listed vertically with a bigger substat layout.</li>
+      <li>Colorizes Build Card echo substat values based on their roll quality (green to yellow, low to high).</li>
+      <li>Makes resonance chain icons and weapon refinement bigger and easier to read on the Build Card.</li>
+      <li>Fixes character portraits used for the Build Card and CLI backfill, they were pulling a generic shared image instead of each character's own portrait art.</li>
+      <li>Uses each character's own portrait art as the Build Card's default background, removes the extra padding around the card, and widens the character panel.</li>
+      <li>Moves the forte level icons into the character portrait, using the actual skill icons instead of placeholders, aligned the same tight way as the resonance chain icons.</li>
+      <li>Increases text size for the Build Card's weapon info, stats, and echo substats.</li>
+      <li>Adds an equipped echo set summary (e.g. 2pc/5pc set names with icons) to the bottom of the Build Card's stats panel.</li>
+      <li>Doubles the size of the Build Card's resonance chain and forte icons, and moves the forte level number underneath its icon.</li>
+      <li>Doubles the width of the Build Card's echo art, and centers the echo set summary with a bit more breathing room from the bottom edge.</li>
+      <li>Removes the resonance chain count from the Build Card, increases the text size for the echo name, main stat, username, and UID, and moves the echo set icon next to its cost badge in the top-right corner.</li>
+      <li>Shrinks the Build Card's character panel a bit and widens the echo panel, shrinks the resonance chain circles while making their icons bigger to fill them, and matches the forte icon size to the resonance chain icons with more spacing between both.</li>
+      <li>Makes the CV and RV text bigger on Build Card echoes, and changes the substats to a single list of 5 (icon and name on the left, value on the right) instead of a 3-then-2 grid.</li>
+      <li>Fixes the Build Card export to no longer include the portrait's remove (x) button in the downloaded/copied image.</li>
+      <li>Adds more spacing between each echo, and between each resonance chain and forte icon on the Build Card.</li>
+      <li>Doubles the resolution of the Build Card's copied/downloaded image for a sharper export.</li>
+      <li>Shrinks each echo's height on the Build Card, adds more spacing between them, and adds more padding around the substats.</li>
+    </ul>
     <h3>August 9, 2026</h3>
     <ul>
       <li>Fixes Suisui team buff to properly give DMG Bonus.</li>

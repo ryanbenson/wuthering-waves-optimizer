@@ -1,4 +1,5 @@
 import { getCharByName } from "../characters/characters";
+import { isStatBonusBuff } from "../characters/statBonusBuffs";
 import { getWeaponByName } from "../weapons/weapons";
 import { computeWeaponPassiveStats } from "../weapons/weaponPassives";
 import { getCombinedEchoStats } from "../echoes/stats";
@@ -115,8 +116,11 @@ function resolveSetBonusStats(
   setBonusDef: { passives?: any[] } | null | undefined,
   echoSetPassivesConfig: Record<string, { isEnabled?: boolean; stacks?: number }>,
   talentData: Record<string, string | number | undefined>,
+  alwaysEnabledOnly = false,
 ): Record<string, unknown> {
-  const passives = setBonusDef?.passives ?? [];
+  const passives = (setBonusDef?.passives ?? []).filter(
+    (passive) => !alwaysEnabledOnly || Boolean(passive.alwaysEnabled),
+  );
   const resolved: EchoSetPassiveResult[] = passives.map((passive) =>
     resolveEchoSetPassiveInstance(
       String(passive.key ?? ""),
@@ -132,6 +136,29 @@ function resolveSetBonusStats(
 
 function namePassivesWithSet(setBonusDef: { name?: string; passives?: any[] } | null | undefined): any[] {
   return (setBonusDef?.passives ?? []).map((passive) => ({ ...passive, name: setBonusDef?.name }));
+}
+
+export interface BuildCharacterContextOptions {
+  /**
+   * Resolve only stat contributions that are permanently active — base
+   * character/weapon/echo stats plus weapon passives, echo set bonuses, and
+   * the main-echo buff whose definitions carry `alwaysEnabled: true` (no
+   * user-facing toggle exists for these; they're forced on unconditionally),
+   * plus "Stat Bonus" self-buffs and `isPermanent` resonance chain nodes,
+   * both resolved with the build's *real* stored toggle state rather than
+   * forced. Stat Bonus buffs represent permanently-unlocked
+   * ascension/inherent-skill tiers (see `isStatBonusBuff`); `isPermanent`
+   * resonance chain nodes represent an unconditional bonus from a sequence
+   * node with no further combat trigger (e.g. a flat stat increase) —
+   * unlike weapon passives, a resonance chain's toggle is the only signal
+   * this app has for whether the player actually owns that sequence, so it
+   * must never be forced on regardless of the stored value. Every other
+   * character self-buff, resonance chain node, team buff, and custom buff is
+   * always situational/toggled, so those are dropped entirely rather than
+   * filtered. Used by the build card, which represents equipment + permanent
+   * unlocks alone (see issue #383).
+   */
+  alwaysEnabledOnly?: boolean;
 }
 
 /**
@@ -151,7 +178,9 @@ export async function buildCharacterCalculationContext(
   characters: Record<string, any>,
   enemyConfig: TeamEnemyConfig,
   inventoryEchoes: any[] = [],
+  options: BuildCharacterContextOptions = {},
 ): Promise<CharacterCalculationContext> {
+  const { alwaysEnabledOnly = false } = options;
   const characterData = characters?.[characterId] ?? {};
   const chosenChar = await getCharByName(characterId);
 
@@ -195,9 +224,12 @@ export async function buildCharacterCalculationContext(
       weaponAttack = weaponStats.attack ?? 0;
       weaponModifier = weaponStats.modifier ?? null;
       weaponModifierValue = weaponStats.modifierValue ?? 0;
+      const passiveDataForCalc = ((chosenWeapon.info?.passiveData ?? []) as any[]).filter(
+        (passive) => !alwaysEnabledOnly || Boolean(passive.alwaysEnabled),
+      );
       weaponPassiveStats = computeWeaponPassiveStats(
         weaponKey,
-        (chosenWeapon.info?.passiveData ?? []) as any[],
+        passiveDataForCalc,
         characterData.weaponPassives ?? {},
         refinement,
       );
@@ -225,21 +257,30 @@ export async function buildCharacterCalculationContext(
   const setBonusTwoDef = echoSetBonus.setBonusTwo
     ? (setBonusEffectsTwo as Record<string, any>)[echoSetBonus.setBonusTwo]
     : null;
-  const setBonusOnePieceStats = resolveSetBonusStats(setBonusOnePieceDef, echoSetPassivesConfig, talentData);
-  const setBonusOneStats = resolveSetBonusStats(setBonusOneDef, echoSetPassivesConfig, talentData);
-  const setBonusTwoStats = resolveSetBonusStats(setBonusTwoDef, echoSetPassivesConfig, talentData);
+  const setBonusOnePieceStats = resolveSetBonusStats(
+    setBonusOnePieceDef,
+    echoSetPassivesConfig,
+    talentData,
+    alwaysEnabledOnly,
+  );
+  const setBonusOneStats = resolveSetBonusStats(setBonusOneDef, echoSetPassivesConfig, talentData, alwaysEnabledOnly);
+  const setBonusTwoStats = resolveSetBonusStats(setBonusTwoDef, echoSetPassivesConfig, talentData, alwaysEnabledOnly);
 
   const mainEchoConfig = characterData.mainEcho ?? {};
   const mainEchoDef = mainEchoConfig.echo
     ? ((mainEchoesData as Record<string, any>)?.[mainEchoConfig.echo] ?? null)
     : null;
-
   // Mirrors CalculatorEchoes.vue's updateTotalStats: resolve each enabled
   // main-echo buff's effects independently, then merge them all together —
-  // a main echo can have more than one independently-toggleable buff.
+  // a main echo can have more than one independently-toggleable buff. For
+  // the always-enabled-only view, only buffs flagged `alwaysEnabled: true`
+  // are included (forced on regardless of the stored toggle), mirroring
+  // weapon passives/echo set bonuses above; conditional buffs are dropped
+  // entirely even if the user currently has them toggled on.
   const mainEchoBuffStatsByKey: Record<string, Record<string, unknown>> = {};
   for (const buff of getMainEchoBuffs(mainEchoDef)) {
-    if (!isMainEchoBuffEnabled(mainEchoConfig, buff.key)) {
+    const isEnabled = alwaysEnabledOnly ? buff.alwaysEnabled : isMainEchoBuffEnabled(mainEchoConfig, buff.key);
+    if (!isEnabled) {
       continue;
     }
     mainEchoBuffStatsByKey[buff.key] = applyMainEchoBuffEffects({
@@ -285,6 +326,8 @@ export async function buildCharacterCalculationContext(
     characterData.activeStance ??
     resolveActiveStance(chosenChar?.basic?.stances, undefined, characterData.buffs);
 
+  const resonanceChainDefs: any[] = chosenChar?.resonanceChains ?? [];
+
   const { finalStats, selfBuffsData, resonanceChainsBuffsData } = calculateAllStats({
     baseHp,
     baseAtk,
@@ -294,12 +337,35 @@ export async function buildCharacterCalculationContext(
     weaponModifierValue: weaponData.modifierValue,
     weaponPassiveData: weaponData.weaponPassiveStats,
     buffsConfig: characterData.buffs ?? {},
+    // A resonance chain node's stored toggle is this app's only signal for
+    // whether the player actually owns that sequence (there's no separate
+    // "sequence level" field), so — unlike weapon passives/echo set
+    // bonuses/main echo buffs above, which have no user-facing toggle at
+    // all for their `alwaysEnabled` entries and are forced on — it is
+    // always read from the real stored config, never forced. Team buffs and
+    // custom buffs are always situational/toggled, so the always-enabled-only
+    // view drops them entirely. Character self-buffs are almost all
+    // situational too, except "Stat Bonus" entries (key starting with
+    // `StatBonus`) — those represent permanently-unlocked
+    // ascension/inherent-skill stat tiers rather than a combat condition
+    // (see CalculatorCharacterBuffs.vue's stat-bonus grid), so they're kept
+    // and resolved with the build's real toggle state (whether the player
+    // has actually unlocked that tier), same as the Results tab. Resonance
+    // chain nodes get the same treatment for entries flagged
+    // `isPermanent: true` on their definition — a node with no further
+    // combat trigger beyond having the sequence unlocked (e.g. a flat stat
+    // increase) — while ordinary conditional nodes are dropped entirely,
+    // even if currently toggled on.
     resonanceChainsConfig: characterData.resonanceChains ?? {},
-    customBuffs,
-    teamBuffsData,
+    customBuffs: alwaysEnabledOnly ? {} : customBuffs,
+    teamBuffsData: alwaysEnabledOnly ? {} : teamBuffsData,
     echoStats,
-    buffsCharInfo: chosenChar?.buffs ?? [],
-    resonanceChainsCharInfo: chosenChar?.resonanceChains ?? [],
+    buffsCharInfo: alwaysEnabledOnly
+      ? (chosenChar?.buffs ?? []).filter((buff: { key: string }) => isStatBonusBuff(buff.key))
+      : (chosenChar?.buffs ?? []),
+    resonanceChainsCharInfo: alwaysEnabledOnly
+      ? resonanceChainDefs.filter((chain: { isPermanent?: boolean }) => Boolean(chain.isPermanent))
+      : resonanceChainDefs,
     character: characterId,
     talentData,
     activeStance,

@@ -27,6 +27,7 @@
       class="build-card-portrait__reset btn btn-xs btn-circle absolute top-2 right-2"
       @click.stop="resetPortrait"
       data-test-build-card-portrait-reset
+      data-export-hide
       aria-label="Reset to default art">
       ✕
     </button>

@@ -3,10 +3,15 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
     name: "Carlotta",
     rarity: 5,
     weapon: "Pistols",
+    signatureWeapon: "TheLastDance",
     avatarUrl: "Carlotta.jpg",
     gender: "female",
     element: "Glacio",
-    image: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/UiQuest/Image/ChuanShuo/T_IconChuanShuo1_UI.webp",
-    inherentSkillIcons: ["https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconKelaita/SP_IconKelaitaD1.webp","https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconKelaita/SP_IconKelaitaD2.webp"],
+    image:
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconRolePile/T_IconRole_Pile_kelaita_UI.webp",
+    inherentSkillIcons: [
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconKelaita/SP_IconKelaitaD1.webp",
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconKelaita/SP_IconKelaitaD2.webp",
+    ],
   };
 }

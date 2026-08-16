@@ -38,8 +38,13 @@ function applyEdits(content: string, edits: Edit[]): string {
  * arbitrary anchor's own text isn't reliably prefixed with it, but the
  * first property in the object never has anything before it to interfere.
  */
-function getIndent(firstProperty: { text: string }): string {
-  const match = /^\s*/.exec(firstProperty.text);
+// Also used to recover a property's own leading whitespace when replacing it
+// in place: its `start`/`end` range includes that leading `\n    ` (per
+// parsePropertyBlocks), so dropping it from the replacement text merges the
+// new value onto the end of the previous property's line instead of keeping
+// it on its own line.
+function getIndent(property: { text: string }): string {
+  const match = /^\s*/.exec(property.text);
   return match ? match[0] : "\n    ";
 }
 
@@ -145,7 +150,7 @@ export function patchResonanceChainIcons(
       edits.push({
         start: iconProperty.start,
         end: iconProperty.end,
-        replacement: `icon: \`${icon}\`,`,
+        replacement: `${getIndent(iconProperty)}icon: \`${icon}\`,`,
       });
       continue;
     }
@@ -234,7 +239,7 @@ export function patchSkillAttackIcon(
     const edit: Edit = {
       start: iconProperty.start,
       end: iconProperty.end,
-      replacement: `icon: ${JSON.stringify(icon)},`,
+      replacement: `${getIndent(iconProperty)}icon: ${JSON.stringify(icon)},`,
     };
     return { content: applyEdits(content, [edit]), changed: true, notices: [] };
   }
@@ -311,7 +316,7 @@ export function patchBasicFileFields(
         edits.push({
           start: imageProperty.start,
           end: imageProperty.end,
-          replacement: `image: ${JSON.stringify(fields.image)},`,
+          replacement: `${getIndent(imageProperty)}image: ${JSON.stringify(fields.image)},`,
         });
       }
     } else {
@@ -332,7 +337,7 @@ export function patchBasicFileFields(
         edits.push({
           start: iconsProperty.start,
           end: iconsProperty.end,
-          replacement: `inherentSkillIcons: ${serialized},`,
+          replacement: `${getIndent(iconsProperty)}inherentSkillIcons: ${serialized},`,
         });
       }
     } else {

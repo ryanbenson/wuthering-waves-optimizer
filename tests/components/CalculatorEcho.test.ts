@@ -11,11 +11,25 @@ const CHARACTER = "Camellya";
 const ELITE_ECHO = "AbyssalGladius";
 const COMMON_ECHO = "AeroDrake";
 
+const FULL_SUB_STATS = {
+  echoSubStatsType1: "CritRate",
+  echoSubStatsValue1: 7.5,
+  echoSubStatsType2: "CritDMG",
+  echoSubStatsValue2: 16.2,
+  echoSubStatsType3: "ATK",
+  echoSubStatsValue3: 9.4,
+  echoSubStatsType4: "ATK_FLAT",
+  echoSubStatsValue4: 50,
+  echoSubStatsType5: "EnergyRegen",
+  echoSubStatsValue5: 8,
+};
+
 function makeInventoryEcho(
   echoId: string,
   echo: string,
   type: number,
   stat: string,
+  overrides: Record<string, unknown> = {},
 ) {
   return {
     ...createEmptyEchoSlot(echoId),
@@ -24,6 +38,7 @@ function makeInventoryEcho(
     rank: 5,
     stat,
     echoSet: "MidnightVeil",
+    ...overrides,
   };
 }
 
@@ -98,5 +113,87 @@ describe("CalculatorEcho main stat preservation", () => {
     await nextTick();
 
     expect(characterStore.characters[CHARACTER].echoes[0].stat).toBe("none");
+  });
+});
+
+describe("CalculatorEcho incomplete echo indicator", () => {
+  let characterStore: ReturnType<typeof useCharacterStore>;
+  let inventoryStore: ReturnType<typeof useInventoryStore>;
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    characterStore = useCharacterStore();
+    inventoryStore = useInventoryStore();
+  });
+
+  function equip(echoId: string) {
+    characterStore.characters = {
+      [CHARACTER]: { echoes: { 0: createEmptyEchoSlot(echoId) } },
+    };
+  }
+
+  it("does not show the indicator for a fully configured equipped echo", async () => {
+    inventoryStore.echoes = [
+      makeInventoryEcho("cost3", ELITE_ECHO, 3, "EnergyRegen", FULL_SUB_STATS),
+    ];
+    equip("cost3");
+    const { container } = renderSlot(0);
+    await nextTick();
+
+    expect(container.querySelector("[data-test-incomplete-echo]")).toBeNull();
+  });
+
+  it("shows the indicator when the equipped echo has no main stat set", async () => {
+    inventoryStore.echoes = [
+      makeInventoryEcho("cost3", ELITE_ECHO, 3, "none", FULL_SUB_STATS),
+    ];
+    equip("cost3");
+    const { container } = renderSlot(0);
+    await nextTick();
+
+    expect(
+      container.querySelector("[data-test-incomplete-echo]"),
+    ).not.toBeNull();
+  });
+
+  it("shows the indicator when the equipped echo has no set chosen", async () => {
+    inventoryStore.echoes = [
+      makeInventoryEcho("cost3", ELITE_ECHO, 3, "EnergyRegen", {
+        ...FULL_SUB_STATS,
+        echoSet: null,
+      }),
+    ];
+    equip("cost3");
+    const { container } = renderSlot(0);
+    await nextTick();
+
+    expect(
+      container.querySelector("[data-test-incomplete-echo]"),
+    ).not.toBeNull();
+  });
+
+  it("shows the indicator when the equipped echo is missing a substat", async () => {
+    inventoryStore.echoes = [
+      makeInventoryEcho("cost3", ELITE_ECHO, 3, "EnergyRegen", {
+        ...FULL_SUB_STATS,
+        echoSubStatsType5: "none",
+      }),
+    ];
+    equip("cost3");
+    const { container } = renderSlot(0);
+    await nextTick();
+
+    expect(
+      container.querySelector("[data-test-incomplete-echo]"),
+    ).not.toBeNull();
+  });
+
+  it("shows the indicator when no echo is equipped in the slot", async () => {
+    const { container } = renderSlot(0);
+    await nextTick();
+
+    expect(
+      container.querySelector("[data-test-incomplete-echo]"),
+    ).not.toBeNull();
   });
 });

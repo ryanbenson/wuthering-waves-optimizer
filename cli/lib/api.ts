@@ -43,8 +43,13 @@ export interface ApiCharacterDetail {
   Skills: ApiSkill[];
   ResonantChain?: ApiResonantChain[];
   SkillTree?: ApiSkillTreeNode[];
-  /** Full-body character art shown on the in-game character detail screen. */
-  RoleStand?: string;
+  /**
+   * Per-character card art used for the build card portrait. Distinct from
+   * RoleStand (a shared/generic story banner, not per-character) and from
+   * RolePortrait (a square activity-page portrait) — FormationRoleCard is
+   * the tall formation-roster card art, which is what the build card wants.
+   */
+  FormationRoleCard?: string;
 }
 
 export interface ApiSkillTreeNode {

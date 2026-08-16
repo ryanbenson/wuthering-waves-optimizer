@@ -26,8 +26,22 @@
         {{ displayDamage(result.total.shield) }}
       </h4>
 
-      <h4 class="font-semibold mt-4 mb-2">Damage by Character</h4>
-      <TeamRotationDamageChart :per-character="result.perCharacter" />
+      <div class="flex items-center justify-between gap-2 mt-4 mb-2 flex-wrap">
+        <h4 class="font-semibold">Damage by Character</h4>
+        <div class="join">
+          <button
+            v-for="option in CHART_DAMAGE_METRIC_OPTIONS"
+            :key="option.value"
+            type="button"
+            class="btn btn-xs join-item"
+            :class="{ 'btn-primary': damageMetric === option.value }"
+            :data-test-team-rotation-damages-chart-metric="option.value"
+            @click="damageMetric = option.value">
+            {{ option.label }}
+          </button>
+        </div>
+      </div>
+      <TeamRotationDamageChart :per-character="result.perCharacter" :metric="damageMetric" />
 
       <table class="calculator__damages table table-zebra table-sm mt-4" data-test-team-rotation-actions-damage>
         <thead>
@@ -66,8 +80,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
+import { storeToRefs } from "pinia";
 import { displayDamage } from "../utils/numbers";
+import { useSettingsStore } from "../stores/settings";
+import {
+  CHART_DAMAGE_METRIC_OPTIONS,
+  resolveChartDamageMetric,
+  type ChartDamageMetric,
+} from "../utils/chartPreferences";
 import CalculatorDamage from "./CalculatorDamage.vue";
 import TeamRotationDamageChart from "./TeamRotationDamageChart.vue";
 import type {
@@ -92,6 +113,12 @@ const emit = defineEmits<{
 }>();
 
 const hasActions = computed(() => Object.keys(props.result.perCharacter).length > 0);
+
+const settingsStore = useSettingsStore();
+const { config } = storeToRefs(settingsStore);
+const damageMetric = ref<ChartDamageMetric>(
+  resolveChartDamageMetric((config.value as { chartDamageMetric?: ChartDamageMetric })?.chartDamageMetric),
+);
 
 function characterImage(characterId: string) {
   return `https://ryanbenson.github.io/wuthering-waves-assets/images/${characterId}.png`;

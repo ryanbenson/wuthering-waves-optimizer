@@ -1,85 +1,101 @@
 <template>
   <div
-    class="echo__item build-card-echo rounded-lg overflow-hidden bg-base-100 shadow flex flex-col h-full">
+    class="echo__item build-card-echo rounded-lg overflow-hidden bg-base-100 shadow flex items-stretch h-full">
     <div
-      class="build-card-echo__banner relative w-full h-32 shrink-0 bg-cover bg-center bg-base-300"
+      class="build-card-echo__banner relative w-72 shrink-0 h-full bg-cover bg-center bg-base-300"
       :style="{ backgroundImage: `url(${echoImage})` }">
       <div class="build-card-echo__scrim absolute inset-0 pointer-events-none"></div>
       <div
         v-if="hasSubStats"
         class="absolute top-1 left-1 flex flex-col gap-1 items-start">
         <span
-          class="badge badge-xs text-nowrap"
+          class="badge badge-md text-nowrap"
           :class="critValueBadgeClass">
           CV {{ formattedCritValue }}%
         </span>
         <span
-          class="badge badge-xs text-nowrap"
+          class="badge badge-md text-nowrap"
           :class="rollValueBadgeClass">
           RV {{ echoRollValue }}%
         </span>
       </div>
-      <span
-        class="echo__item__cost badge badge-primary badge-sm text-nowrap absolute right-1 top-1">
-        {{ type }}
-      </span>
-      <span
-        v-if="echoSet"
-        class="absolute top-7 right-1 rounded-full">
-        <img :src="getEchoSetIcon(echoSet)" :class="echoSet" class="size-5" />
-      </span>
+      <div class="absolute top-1 right-1 flex items-center gap-1">
+        <span class="echo__item__cost badge badge-primary badge-sm text-nowrap">
+          {{ type }}
+        </span>
+        <span v-if="echoSet" class="rounded-full">
+          <img :src="getEchoSetIcon(echoSet)" :class="echoSet" class="size-5" />
+        </span>
+      </div>
       <div
         v-if="echoName"
         class="absolute inset-x-0 bottom-0 px-1.5 pb-1 pointer-events-none">
-        <div class="build-card-echo__name text-xs font-bold text-white leading-tight line-clamp-2">
+        <div class="build-card-echo__name text-lg font-bold text-white leading-tight line-clamp-2">
           {{ echoName }}
+        </div>
+        <div
+          v-if="mainStatValue"
+          class="flex items-center gap-1.5 text-white/90 text-sm mt-1">
+          <img :src="getSubStatIconByType(stat)" class="size-4" />
+          <span class="truncate">{{ getReadableSubStatLabel(stat) }} {{ mainStatValue }}%</span>
+        </div>
+        <div
+          v-if="mainStatValue"
+          class="flex items-center gap-1.5 text-white/80 text-sm">
+          <img :src="echoFreeSubStatIcon" class="size-4" />
+          <span class="truncate">{{ getReadableSubStatLabel(echoFreeSubStatType) }} {{ echoFreeSubStatValue }}</span>
         </div>
       </div>
     </div>
-    <table class="build-card-echo__stats table table-zebra table-xs flex-1">
-      <tbody>
-        <tr v-if="mainStatValue" :key="stat">
-          <td class="size-10">
-            <img
-              :src="getSubStatIconByType(stat)"
-              class="size-6"
-              :class="getMainStatColorClass" />
-          </td>
-          <td>{{ getReadableSubStatLabel(stat) }}</td>
-          <td class="text-right">{{ mainStatValue }}%</td>
-        </tr>
-        <tr v-if="mainStatValue">
-          <td><img :src="echoFreeSubStatIcon" class="size-6" /></td>
-          <td>{{ getReadableSubStatLabel(echoFreeSubStatType) }}</td>
-          <td class="text-right">{{ echoFreeSubStatValue }}</td>
-        </tr>
-        <tr v-if="echoSubStatsType1 && echoSubStatsType1 !== 'none'">
-          <td><img :src="echoSubStat1Icon" class="size-6" /></td>
-          <td>{{ getReadableSubStatLabel(echoSubStatsType1) }}</td>
-          <td class="text-right">{{ echoSubStatsValue1Display }}</td>
-        </tr>
-        <tr v-if="echoSubStatsType2 && echoSubStatsType2 !== 'none'">
-          <td><img :src="echoSubStat2Icon" class="size-6" /></td>
-          <td>{{ getReadableSubStatLabel(echoSubStatsType2) }}</td>
-          <td class="text-right">{{ echoSubStatsValue2Display }}</td>
-        </tr>
-        <tr v-if="echoSubStatsType3 && echoSubStatsType3 !== 'none'">
-          <td><img :src="echoSubStat3Icon" class="size-6" /></td>
-          <td>{{ getReadableSubStatLabel(echoSubStatsType3) }}</td>
-          <td class="text-right">{{ echoSubStatsValue3Display }}</td>
-        </tr>
-        <tr v-if="echoSubStatsType4 && echoSubStatsType4 !== 'none'">
-          <td><img :src="echoSubStat4Icon" class="size-6" /></td>
-          <td>{{ getReadableSubStatLabel(echoSubStatsType4) }}</td>
-          <td class="text-right">{{ echoSubStatsValue4Display }}</td>
-        </tr>
-        <tr v-if="echoSubStatsType5 && echoSubStatsType5 !== 'none'">
-          <td><img :src="echoSubStat5Icon" class="size-6" /></td>
-          <td>{{ getReadableSubStatLabel(echoSubStatsType5) }}</td>
-          <td class="text-right">{{ echoSubStatsValue5Display }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div
+      class="build-card-echo__substats flex-1 min-w-0 flex flex-col justify-center gap-1.5 p-4"
+      data-test-build-card-echo-substats>
+      <div
+        v-if="echoSubStatsType1 && echoSubStatsType1 !== 'none'"
+        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-2 py-1 min-w-0">
+        <div class="flex items-center gap-2 min-w-0">
+          <img :src="echoSubStat1Icon" class="size-5 shrink-0" />
+          <span class="text-sm opacity-80 truncate">{{ getReadableSubStatLabel(echoSubStatsType1) }}</span>
+        </div>
+        <span class="text-base font-bold shrink-0" :class="echoSubStatsValue1Color">{{ echoSubStatsValue1Display }}</span>
+      </div>
+      <div
+        v-if="echoSubStatsType2 && echoSubStatsType2 !== 'none'"
+        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-2 py-1 min-w-0">
+        <div class="flex items-center gap-2 min-w-0">
+          <img :src="echoSubStat2Icon" class="size-5 shrink-0" />
+          <span class="text-sm opacity-80 truncate">{{ getReadableSubStatLabel(echoSubStatsType2) }}</span>
+        </div>
+        <span class="text-base font-bold shrink-0" :class="echoSubStatsValue2Color">{{ echoSubStatsValue2Display }}</span>
+      </div>
+      <div
+        v-if="echoSubStatsType3 && echoSubStatsType3 !== 'none'"
+        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-2 py-1 min-w-0">
+        <div class="flex items-center gap-2 min-w-0">
+          <img :src="echoSubStat3Icon" class="size-5 shrink-0" />
+          <span class="text-sm opacity-80 truncate">{{ getReadableSubStatLabel(echoSubStatsType3) }}</span>
+        </div>
+        <span class="text-base font-bold shrink-0" :class="echoSubStatsValue3Color">{{ echoSubStatsValue3Display }}</span>
+      </div>
+      <div
+        v-if="echoSubStatsType4 && echoSubStatsType4 !== 'none'"
+        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-2 py-1 min-w-0">
+        <div class="flex items-center gap-2 min-w-0">
+          <img :src="echoSubStat4Icon" class="size-5 shrink-0" />
+          <span class="text-sm opacity-80 truncate">{{ getReadableSubStatLabel(echoSubStatsType4) }}</span>
+        </div>
+        <span class="text-base font-bold shrink-0" :class="echoSubStatsValue4Color">{{ echoSubStatsValue4Display }}</span>
+      </div>
+      <div
+        v-if="echoSubStatsType5 && echoSubStatsType5 !== 'none'"
+        class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-2 py-1 min-w-0">
+        <div class="flex items-center gap-2 min-w-0">
+          <img :src="echoSubStat5Icon" class="size-5 shrink-0" />
+          <span class="text-sm opacity-80 truncate">{{ getReadableSubStatLabel(echoSubStatsType5) }}</span>
+        </div>
+        <span class="text-base font-bold shrink-0" :class="echoSubStatsValue5Color">{{ echoSubStatsValue5Display }}</span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -119,6 +135,11 @@ const {
   echoSubStatsValue3Display,
   echoSubStatsValue4Display,
   echoSubStatsValue5Display,
+  echoSubStatsValue1Color,
+  echoSubStatsValue2Color,
+  echoSubStatsValue3Color,
+  echoSubStatsValue4Color,
+  echoSubStatsValue5Color,
   echoSubStat1Icon,
   echoSubStat2Icon,
   echoSubStat3Icon,
@@ -128,7 +149,6 @@ const {
   critValueBadgeClass,
   echoRollValue,
   rollValueBadgeClass,
-  getMainStatColorClass,
   getReadableSubStatLabel,
   getSubStatIconByType,
 } = useEchoCardStats(props);
@@ -140,7 +160,7 @@ function getEchoSetIcon(type: string) {
 
 <style lang="scss" scoped>
 html[data-theme="light"] {
-  .build-card-echo__stats img {
+  .build-card-echo__substats img {
     filter: contrast(0);
   }
 }
@@ -157,10 +177,5 @@ html[data-theme="light"] {
 
 .build-card-echo__name {
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-}
-
-.build-card-echo__stats td {
-  padding: 0.3rem 0.5rem;
-  font-size: 12px;
 }
 </style>

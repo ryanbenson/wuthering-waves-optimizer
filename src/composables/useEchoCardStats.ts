@@ -5,6 +5,7 @@ import {
   getReadableSubStatLabel,
   getSubStatIconByType,
   getRollValue,
+  getSubstatRollValue,
 } from "../echoes/stats";
 import { getEchoData } from "../echoes/index.ts";
 
@@ -12,6 +13,7 @@ export interface EchoCardStatsProps {
   rank: number | string;
   type: string;
   echo: string;
+  echoSet?: string;
   stat: string;
   echoSubStatsType1: string;
   echoSubStatsValue1: number | string;
@@ -29,6 +31,20 @@ function formatSubStatValue(type: string, value: string | number) {
   if (!value) return null;
   if (type?.includes("FLAT")) return value;
   return `${value}%`;
+}
+
+// Colorizes a single rolled substat by how good that roll was, mirroring
+// wuwaflex's convention (green = low roll, blue = mid-low, purple =
+// mid-high, yellow = high) — reuses the same 30-100 roll-quality score
+// `getBadgeClass` already sums across all 5 substats for the CV/RV badges,
+// just bucketed per-substat instead of on the total.
+function getSubStatValueColorClass(type: string, value: string | number) {
+  if (!type || type === "none" || !value) return "";
+  const score = getSubstatRollValue(type, String(Number(value)));
+  if (score <= 40) return "text-emerald-500";
+  if (score <= 60) return "text-blue-500";
+  if (score <= 80) return "text-purple-500";
+  return "text-yellow-500";
 }
 
 function getBadgeClass(value: number, max: number, mode: "cv" | "rv") {
@@ -124,7 +140,7 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
     if (!props.echo) return defaultImageUrl;
     return getEchoData(props.echo)?.image ?? defaultImageUrl;
   });
-  const hasSubStats = computed(() => {
+  const filledSubStatCount = computed(() => {
     const types = [
       props.echoSubStatsType1,
       props.echoSubStatsType2,
@@ -132,7 +148,16 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
       props.echoSubStatsType4,
       props.echoSubStatsType5,
     ];
-    return types.some((t) => t && t !== "none");
+    return types.filter((t) => t && t !== "none").length;
+  });
+
+  const hasSubStats = computed(() => filledSubStatCount.value > 0);
+
+  const isEchoIncomplete = computed(() => {
+    if (!props.echo) return true;
+    if (!props.echoSet) return true;
+    if (!props.stat || props.stat === "none") return true;
+    return filledSubStatCount.value < 5;
   });
 
   const echoSubStatsValue1Display = computed(() =>
@@ -149,6 +174,22 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
   );
   const echoSubStatsValue5Display = computed(() =>
     formatSubStatValue(props.echoSubStatsType5, props.echoSubStatsValue5),
+  );
+
+  const echoSubStatsValue1Color = computed(() =>
+    getSubStatValueColorClass(props.echoSubStatsType1, props.echoSubStatsValue1),
+  );
+  const echoSubStatsValue2Color = computed(() =>
+    getSubStatValueColorClass(props.echoSubStatsType2, props.echoSubStatsValue2),
+  );
+  const echoSubStatsValue3Color = computed(() =>
+    getSubStatValueColorClass(props.echoSubStatsType3, props.echoSubStatsValue3),
+  );
+  const echoSubStatsValue4Color = computed(() =>
+    getSubStatValueColorClass(props.echoSubStatsType4, props.echoSubStatsValue4),
+  );
+  const echoSubStatsValue5Color = computed(() =>
+    getSubStatValueColorClass(props.echoSubStatsType5, props.echoSubStatsValue5),
   );
 
   const echoSubStat1Icon = computed(() =>
@@ -231,11 +272,17 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
     echoName,
     echoImage,
     hasSubStats,
+    isEchoIncomplete,
     echoSubStatsValue1Display,
     echoSubStatsValue2Display,
     echoSubStatsValue3Display,
     echoSubStatsValue4Display,
     echoSubStatsValue5Display,
+    echoSubStatsValue1Color,
+    echoSubStatsValue2Color,
+    echoSubStatsValue3Color,
+    echoSubStatsValue4Color,
+    echoSubStatsValue5Color,
     echoSubStat1Icon,
     echoSubStat2Icon,
     echoSubStat3Icon,

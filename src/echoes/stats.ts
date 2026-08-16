@@ -629,10 +629,12 @@ export function getCombinedEchoStats(
 ): Record<string, number> {
   const combinedStats: Record<string, number> = {};
 
-  // Accepts either an array (e.g. optimizer-generated loadout candidates) or
-  // a plain object keyed by slot index (the shape characters[id].echoes is
-  // actually persisted as) — Object.values handles both identically.
-  const echoList = Object.values(echoes ?? {});
+  // Accepts either an array (e.g. optimizer-generated loadout candidates —
+  // the hot path, called once per loadout) or a plain object keyed by slot
+  // index (the shape characters[id].echoes is actually persisted as).
+  // Array.isArray avoids an unconditional Object.values() reallocation on
+  // every optimizer call, since the array case is already iterable as-is.
+  const echoList = Array.isArray(echoes) ? echoes : Object.values(echoes ?? {});
 
   for (let i = 0; i < echoList.length; i++) {
     const echo = echoList[i];

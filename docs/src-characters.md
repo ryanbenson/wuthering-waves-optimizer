@@ -14,7 +14,7 @@ All playable characters and their data (stats, attacks, buffs, resonance chains,
   - **`character.ts`**: Base stats by level (`CharacterData` / `LevelData`: hp, attack, defense per level string like `"90"`, `"80+"`). Exposes `getCharacterStatsByLevel(level)`.
   - **`basic.ts`**: Basic info (name, element, weapon, etc.) via `getCharacterBasicInfo()`.
   - **`basicAttacks.ts`**, **`skillAttacks.ts`**, **`liberationAttacks.ts`**, **`forteCircuitAttacks.ts`**, **`introAttacks.ts`**, **`outroAttacks.ts`**, **`tuneBreakAttacks.ts`**: Attack definitions for each category; structure is consistent (e.g. `attacks` array with keys, multipliers, damage type).
-  - **`buffs.ts`**: Character’s own buffs (self-buffs, e.g. from skills or passives).
+  - **`buffs.ts`**: Character’s own buffs (self-buffs, e.g. from skills or passives). Every character also has 8 "Stat Bonus" entries (`key` starting with `StatBonus`, e.g. `StatBonusATK3`) — permanently-unlocked ascension/inherent-skill stat tiers rather than a combat condition; `CalculatorCharacterBuffs.vue` renders these separately as a toggle grid, and `isStatBonusBuff` (`../statBonusBuffs.ts`) is the shared predicate used to identify them (e.g. `buildCharacterContext.ts`'s always-enabled-only view keeps these but drops every other self-buff).
   - **`resonanceChains.ts`**: Resonance chain effects and their modifiers.
   - **`presets.ts`**: Rotation presets (`rotations`) for the character.
 
