@@ -220,7 +220,7 @@ describe("computeAdditionalBaseBuffs - HP-based scaling", () => {
     ).toBeCloseTo(10 * 0.1064);
   });
 
-  it("Jingran: scales Fire of Life's forte-table value by 1.46 when SequenceNode2 is enabled", () => {
+  it("Jingran: SequenceNode2 no longer amplifies Fire of Life's forte-table value (kit rework removed the 1.46x scaling)", () => {
     const buffsCharInfoForte = [
       {
         key: "FireOfLife",
@@ -279,7 +279,7 @@ describe("computeAdditionalBaseBuffs - HP-based scaling", () => {
       withRc2.specificTalentBuffs[
         "HeavyAttackSoulRaidDMG:talentModifierMultiplyAdd"
       ],
-    ).toBeCloseTo(10 * 0.211 * 1.46);
+    ).toBeCloseTo(10 * 0.211);
   });
 
   it("Jingran: skips the base Yang Changes, Yin Unites buff when SequenceNode3 is enabled (replaced, not stacked, by the chain's own Yin-Yang Everflow modifier in resonanceChains.ts)", () => {
