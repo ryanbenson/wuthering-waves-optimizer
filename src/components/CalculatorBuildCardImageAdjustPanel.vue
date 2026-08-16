@@ -5,7 +5,7 @@
       class="btn btn-sm btn-neutral"
       :aria-label="`Adjust ${label} image`"
       :data-test-image-adjust-trigger="testId">
-      Adjust
+      {{ textLabel }}
     </button>
     <div
       tabindex="0"
@@ -95,6 +95,7 @@ const props = defineProps<{
   label: string;
   modelValue?: Partial<ImageTransform> | null;
   testId: string;
+  textLabel: string;
 }>();
 
 const emit = defineEmits<{
