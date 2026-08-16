@@ -77,14 +77,50 @@ describe("Calculator Build Card", () => {
       { force: true },
     );
 
-    cy.get("[data-test-build-card-portrait]")
+    cy.get("[data-test-build-card-portrait-image]")
       .should("have.css", "background-image")
       .and("match", /^url\("data:image\/jpeg;base64,/);
 
     cy.get("[data-test-build-card-portrait-reset]").click();
-    cy.get("[data-test-build-card-portrait]")
+    cy.get("[data-test-build-card-portrait-image]")
       .should("have.css", "background-image")
       .and("not.match", /^url\("data:image/);
+  });
+
+  it("lets a background's style/scale/position be adjusted and reset", () => {
+    cy.get('[data-test-calculator-nav="buildCard"]').click();
+
+    const fileName = "background.png";
+    // 1x1 transparent PNG, inlined so this spec doesn't depend on a fixture file.
+    const pngBase64 =
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+
+    cy.get("[data-test-build-card-background-input]").selectFile(
+      {
+        contents: Cypress.Buffer.from(pngBase64, "base64"),
+        fileName,
+        mimeType: "image/png",
+      },
+      { force: true },
+    );
+
+    cy.get('[data-test-image-adjust-trigger="background"]').click();
+    cy.get('[data-test-image-adjust-fit="background"]').select("repeat");
+    cy.get('[data-test-image-adjust-scale="background"]')
+      .invoke("val", 150)
+      .trigger("input");
+
+    cy.get(".build-card__background-layer")
+      .should("have.css", "background-repeat", "repeat")
+      .and("have.css", "transform")
+      .and("match", /1\.5/);
+
+    cy.get('[data-test-image-adjust-reset="background"]').click();
+    cy.get(".build-card__background-layer").should(
+      "have.css",
+      "background-repeat",
+      "no-repeat",
+    );
   });
 
   it("downloads the build card as a PNG", () => {
