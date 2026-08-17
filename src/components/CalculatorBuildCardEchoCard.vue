@@ -2,7 +2,7 @@
   <div
     class="echo__item build-card-echo rounded-lg overflow-hidden bg-base-100 shadow flex items-stretch h-full">
     <div
-      class="build-card-echo__banner relative w-72 shrink-0 h-full bg-cover bg-center bg-base-300"
+      class="build-card-echo__banner relative w-64 shrink-0 h-full bg-cover bg-center bg-base-300"
       :style="{ backgroundImage: `url(${echoImage})` }">
       <div class="build-card-echo__scrim absolute inset-0 pointer-events-none"></div>
       <div
