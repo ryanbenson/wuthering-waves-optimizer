@@ -125,7 +125,7 @@
                 :transform="characterData.customPortraitTransform" />
               <div class="build-card__identity-scrim absolute inset-0 pointer-events-none"></div>
 
-              <div class="absolute top-4 left-4 max-w-[88%] pointer-events-none">
+              <div class="absolute top-4 left-4 min-w-[88%] max-w-[88%] pointer-events-none">
                 <template v-if="characterBasic">
                   <h2
                     class="text-4xl font-bold leading-tight text-white"

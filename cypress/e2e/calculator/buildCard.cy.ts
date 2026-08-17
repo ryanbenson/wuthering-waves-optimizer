@@ -117,6 +117,65 @@ describe("Calculator Build Card", () => {
     });
   });
 
+  it("does not truncate any substat label across a full 5-echo build", () => {
+    // Regression test: the single-echo case above passed even while a real
+    // build (weapon equipped + all 5 echo slots filled) still truncated
+    // labels in production — the extra DOM/image weight of a full build
+    // apparently mattered in ways a single populated slot didn't exercise.
+    cy.get('[data-test-calculator-nav="weapon"]').click();
+    cy.richSelect("[data-test-weapon-select]", "TheLastDance");
+
+    cy.get('[data-test-calculator-nav="echoes"]').click();
+    const subStats = {
+      CritRate: 6.3,
+      CritDMG: 16.2,
+      ATK: 9.4,
+      ATK_FLAT: 50,
+      ResonanceLiberationDMGBonus: 8.6,
+    };
+    configureEcho(
+      0,
+      { mainEcho: "SentryConstruct", mainStat: "CritRate", set: "FrostyResolve", subStats },
+      cy,
+    );
+    configureEcho(
+      1,
+      { mainEcho: "AbyssalMercator", mainStat: "Glacio", set: "FrostyResolve", subStats },
+      cy,
+    );
+    configureEcho(
+      2,
+      { mainEcho: "CuddleWuddle", mainStat: "Glacio", set: "FrostyResolve", subStats },
+      cy,
+    );
+    configureEcho(
+      3,
+      { mainEcho: "ChestMimic", mainStat: "ATK", set: "FrostyResolve", subStats },
+      cy,
+    );
+    configureEcho(
+      4,
+      { mainEcho: "LottieLost", mainStat: "ATK", set: "FrostyResolve", subStats },
+      cy,
+    );
+
+    cy.get('[data-test-calculator-nav="buildCard"]').click();
+    cy.get("[data-test-build-card-echoes] .echo__item").should(
+      "have.length",
+      5,
+    );
+    cy.get("[data-test-build-card-echo-substats] span.truncate").should(
+      ($labels) => {
+        $labels.each((_, el) => {
+          expect(
+            el.scrollWidth,
+            `"${el.textContent}" should not overflow its row`,
+          ).to.be.at.most(el.clientWidth);
+        });
+      },
+    );
+  });
+
   it("uploads a custom portrait and lets it be reset", () => {
     cy.get('[data-test-calculator-nav="buildCard"]').click();
 
