@@ -53,7 +53,7 @@
       <div
         v-if="echoSubStatsType1 && echoSubStatsType1 !== 'none'"
         class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
-        <div class="flex items-center gap-2 min-w-0">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
           <img :src="echoSubStat1Icon" class="size-5 shrink-0" />
           <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType1) }}</span>
         </div>
@@ -62,7 +62,7 @@
       <div
         v-if="echoSubStatsType2 && echoSubStatsType2 !== 'none'"
         class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
-        <div class="flex items-center gap-2 min-w-0">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
           <img :src="echoSubStat2Icon" class="size-5 shrink-0" />
           <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType2) }}</span>
         </div>
@@ -71,7 +71,7 @@
       <div
         v-if="echoSubStatsType3 && echoSubStatsType3 !== 'none'"
         class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
-        <div class="flex items-center gap-2 min-w-0">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
           <img :src="echoSubStat3Icon" class="size-5 shrink-0" />
           <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType3) }}</span>
         </div>
@@ -80,7 +80,7 @@
       <div
         v-if="echoSubStatsType4 && echoSubStatsType4 !== 'none'"
         class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
-        <div class="flex items-center gap-2 min-w-0">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
           <img :src="echoSubStat4Icon" class="size-5 shrink-0" />
           <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType4) }}</span>
         </div>
@@ -89,7 +89,7 @@
       <div
         v-if="echoSubStatsType5 && echoSubStatsType5 !== 'none'"
         class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
-        <div class="flex items-center gap-2 min-w-0">
+        <div class="flex items-center gap-2 min-w-0 flex-1">
           <img :src="echoSubStat5Icon" class="size-5 shrink-0" />
           <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType5) }}</span>
         </div>
