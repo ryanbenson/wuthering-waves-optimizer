@@ -55,7 +55,7 @@
         class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
         <div class="flex items-center gap-2 min-w-0">
           <img :src="echoSubStat1Icon" class="size-5 shrink-0" />
-          <span class="text-sm opacity-80 truncate">{{ getReadableSubStatLabel(echoSubStatsType1) }}</span>
+          <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType1) }}</span>
         </div>
         <span class="text-base font-bold shrink-0" :class="echoSubStatsValue1Color">{{ echoSubStatsValue1Display }}</span>
       </div>
@@ -64,7 +64,7 @@
         class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
         <div class="flex items-center gap-2 min-w-0">
           <img :src="echoSubStat2Icon" class="size-5 shrink-0" />
-          <span class="text-sm opacity-80 truncate">{{ getReadableSubStatLabel(echoSubStatsType2) }}</span>
+          <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType2) }}</span>
         </div>
         <span class="text-base font-bold shrink-0" :class="echoSubStatsValue2Color">{{ echoSubStatsValue2Display }}</span>
       </div>
@@ -73,7 +73,7 @@
         class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
         <div class="flex items-center gap-2 min-w-0">
           <img :src="echoSubStat3Icon" class="size-5 shrink-0" />
-          <span class="text-sm opacity-80 truncate">{{ getReadableSubStatLabel(echoSubStatsType3) }}</span>
+          <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType3) }}</span>
         </div>
         <span class="text-base font-bold shrink-0" :class="echoSubStatsValue3Color">{{ echoSubStatsValue3Display }}</span>
       </div>
@@ -82,7 +82,7 @@
         class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
         <div class="flex items-center gap-2 min-w-0">
           <img :src="echoSubStat4Icon" class="size-5 shrink-0" />
-          <span class="text-sm opacity-80 truncate">{{ getReadableSubStatLabel(echoSubStatsType4) }}</span>
+          <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType4) }}</span>
         </div>
         <span class="text-base font-bold shrink-0" :class="echoSubStatsValue4Color">{{ echoSubStatsValue4Display }}</span>
       </div>
@@ -91,7 +91,7 @@
         class="build-card-echo__substat flex items-center justify-between gap-1.5 rounded bg-base-200/70 px-1.5 py-1 min-w-0">
         <div class="flex items-center gap-2 min-w-0">
           <img :src="echoSubStat5Icon" class="size-5 shrink-0" />
-          <span class="text-sm opacity-80 truncate">{{ getReadableSubStatLabel(echoSubStatsType5) }}</span>
+          <span class="text-sm opacity-80">{{ getReadableSubStatLabel(echoSubStatsType5) }}</span>
         </div>
         <span class="text-base font-bold shrink-0" :class="echoSubStatsValue5Color">{{ echoSubStatsValue5Display }}</span>
       </div>
