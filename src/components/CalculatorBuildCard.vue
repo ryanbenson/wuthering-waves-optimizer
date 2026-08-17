@@ -125,14 +125,15 @@
                 :transform="characterData.customPortraitTransform" />
               <div class="build-card__identity-scrim absolute inset-0 pointer-events-none"></div>
 
-              <div class="absolute top-4 left-4 max-w-[65%] pointer-events-none">
+              <div class="absolute top-4 left-4 max-w-[88%] pointer-events-none">
                 <template v-if="characterBasic">
                   <h2
                     class="text-4xl font-bold leading-tight text-white"
                     :class="{
                       'text-amber-300': characterBasic.rarity === 5,
                       'text-violet-600': characterBasic.rarity === 4,
-                    }">
+                    }"
+                    data-test-build-card-name>
                     {{ characterBasic.name }}
                   </h2>
                   <div
