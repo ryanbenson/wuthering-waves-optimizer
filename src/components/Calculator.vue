@@ -719,6 +719,14 @@ export default defineComponent({
         strainStacks.value,
       );
       const damageData = calcDamages(context);
+      // calcDamages doesn't populate `.rotations` (rotations are computed
+      // separately below, awaited sequentially). Carry the previous value
+      // forward across this reassignment instead of letting it go missing —
+      // otherwise CalculatorDamages.vue's `v-if="... && allDamages.value?.rotations"`
+      // sees `undefined` for the brief window before the loop below resolves,
+      // unmounting and remounting the entire rotation section on every buff
+      // toggle (visible as a scroll-position jump in the results panel).
+      damageData.rotations = allDamages.value?.rotations;
       allDamages.value = damageData;
 
       if (rotationsList.value.length) {
