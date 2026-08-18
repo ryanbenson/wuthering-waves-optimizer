@@ -352,6 +352,7 @@ import {
   calcTeamRotationDamage,
   buildAdvancedConfigSnapshot,
   convertRotationActionsForSlot,
+  computeTeamImportBase,
   applyBulkAdvancedConfigOverride,
   type TeamRotationAction,
   type TeamRotationActionResult,
@@ -581,11 +582,7 @@ function handleImportRotation(sourceActions: SourceRotationAction[], mode: "over
   if (!team.value || slot === null) return;
   const characterId = team.value.characterIds[slot];
   const currentActions = team.value.actions;
-  const base =
-    mode === "overwrite"
-      ? currentActions.filter((action: TeamRotationAction) => action.slot !== slot)
-      : currentActions;
-  const startOrder = currentActions.length + 1;
+  const { base, startOrder } = computeTeamImportBase(currentActions, slot as 0 | 1 | 2, mode);
   let converted = convertRotationActionsForSlot(sourceActions, slot as 0 | 1 | 2, startOrder);
 
   if (rotationMode.value === "advanced") {
