@@ -178,6 +178,7 @@
               :previous-action="previousActionByActionId[action.id] ?? null"
               :range-actions="orderedActionRangeList"
               @update="handleActionUpdate"
+              @update:sequence="handleSequenceUpdate"
               @remove="handleActionRemove"
               @bulk-apply="handleBulkApplyBuff" />
           </div>
@@ -351,6 +352,7 @@ import {
   calcTeamRotationDamage,
   buildAdvancedConfigSnapshot,
   convertRotationActionsForSlot,
+  computeTeamImportBase,
   applyBulkAdvancedConfigOverride,
   type TeamRotationAction,
   type TeamRotationActionResult,
@@ -580,11 +582,7 @@ function handleImportRotation(sourceActions: SourceRotationAction[], mode: "over
   if (!team.value || slot === null) return;
   const characterId = team.value.characterIds[slot];
   const currentActions = team.value.actions;
-  const base =
-    mode === "overwrite"
-      ? currentActions.filter((action: TeamRotationAction) => action.slot !== slot)
-      : currentActions;
-  const startOrder = currentActions.length + 1;
+  const { base, startOrder } = computeTeamImportBase(currentActions, slot as 0 | 1 | 2, mode);
   let converted = convertRotationActionsForSlot(sourceActions, slot as 0 | 1 | 2, startOrder);
 
   if (rotationMode.value === "advanced") {
@@ -674,6 +672,34 @@ function handleActionUpdate(payload: Record<string, unknown>) {
   const actions = team.value.actions.map((action: TeamRotationAction) =>
     action.id === payload.id ? { ...action, ...payload } : action,
   );
+  teamRotationsStore.setTeamActions(props.teamId, actions);
+  if (typeof payload.slot === "number") {
+    lastUsedSlot.value = payload.slot;
+  }
+}
+
+function handleSequenceUpdate(payload: Record<string, unknown>) {
+  if (!team.value) return;
+  const actions = JSON.parse(JSON.stringify(team.value.actions)) as TeamRotationAction[];
+  const id = payload.id as string;
+  const newOrder = payload.order as number | string;
+  const maxOrder = actions.length;
+  const validatedOrder = Math.max(1, Math.min(Number(newOrder), maxOrder));
+  const actionIndex = actions.findIndex((action) => action.id === id);
+  if (actionIndex === -1) return;
+  const [updatedAction] = actions.splice(actionIndex, 1);
+  const originalOrder = Number(updatedAction.order);
+  updatedAction.order = validatedOrder;
+  actions.forEach((action) => {
+    const ord = Number(action.order);
+    if (originalOrder < validatedOrder && ord > originalOrder && ord <= validatedOrder) {
+      action.order = ord - 1;
+    } else if (originalOrder > validatedOrder && ord < originalOrder && ord >= validatedOrder) {
+      action.order = ord + 1;
+    }
+  });
+  actions.splice(validatedOrder - 1, 0, updatedAction);
+  actions.sort((a, b) => Number(a.order) - Number(b.order));
   teamRotationsStore.setTeamActions(props.teamId, actions);
   if (typeof payload.slot === "number") {
     lastUsedSlot.value = payload.slot;

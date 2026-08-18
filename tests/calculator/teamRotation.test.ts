@@ -6,6 +6,7 @@ import {
   calcRotationTimeline,
   buildAdvancedConfigSnapshot,
   convertRotationActionsForSlot,
+  computeTeamImportBase,
   applyBulkAdvancedConfigOverride,
   type TeamRotationAction,
   type SourceRotationAction,
@@ -160,6 +161,43 @@ describe("convertRotationActionsForSlot", () => {
   it("leaves actions with no buffs alone", () => {
     const converted = convertRotationActionsForSlot(sourceActions, 2, 1);
     expect(converted[1].buffs).toBeUndefined();
+  });
+});
+
+describe("computeTeamImportBase", () => {
+  function action(id: string, slot: 0 | 1 | 2, order: number): TeamRotationAction {
+    return { id, slot, order, key: "Foo", type: "skill" };
+  }
+
+  it("starts a fresh order sequence from the actions left behind after overwriting a slot", () => {
+    // Regression for #411 follow-up: overwriting a 21-action slot used to
+    // keep numbering new actions from 22 instead of restarting at 1.
+    const currentActions = [
+      ...Array.from({ length: 21 }, (_, i) => action(`old-${i}`, 0, i + 1)),
+    ];
+    const { base, startOrder } = computeTeamImportBase(currentActions, 0, "overwrite");
+    expect(base).toEqual([]);
+    expect(startOrder).toBe(1);
+  });
+
+  it("only drops the target slot's own actions when overwriting, and orders from what remains", () => {
+    const currentActions = [action("a", 0, 1), action("b", 1, 2), action("c", 1, 3)];
+    const { base, startOrder } = computeTeamImportBase(currentActions, 1, "overwrite");
+    expect(base).toEqual([action("a", 0, 1)]);
+    expect(startOrder).toBe(2);
+  });
+
+  it("keeps every existing action when appending, and orders after all of them", () => {
+    const currentActions = [action("a", 0, 1), action("b", 1, 2)];
+    const { base, startOrder } = computeTeamImportBase(currentActions, 0, "append");
+    expect(base).toEqual(currentActions);
+    expect(startOrder).toBe(3);
+  });
+
+  it("starts at 1 for a blank team with no existing actions", () => {
+    const { base, startOrder } = computeTeamImportBase([], 0, "overwrite");
+    expect(base).toEqual([]);
+    expect(startOrder).toBe(1);
   });
 });
 
