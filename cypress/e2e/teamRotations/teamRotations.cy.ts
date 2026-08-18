@@ -299,6 +299,30 @@ describe("Team Rotations", () => {
     cy.get("[data-test-advanced-buff-toggle]").first().should("be.checked");
   });
 
+  it("shows a sync-status pill and lets 'Stay synced with character' clear a per-action customization", () => {
+    configureCharacterWithWeapon("Carlotta");
+
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.get("[data-test-team-rotation-add-action]").click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
+
+    cy.get("[data-test-team-rotation-action-sync-status]").should("contain.text", "Synced with character");
+
+    // The resync button only exists once the buff panel is open.
+    cy.get("[data-test-team-rotation-action-configure-buffs]").first().click();
+    cy.get("[data-test-team-rotation-action-resync]").should("be.disabled");
+    cy.get("[data-test-advanced-buff-toggle]").first().click({ force: true });
+
+    cy.get("[data-test-team-rotation-action-sync-status]").should("contain.text", "Customized buffs");
+    cy.get("[data-test-team-rotation-action-resync]").should("be.enabled").click();
+
+    cy.get("[data-test-team-rotation-action-sync-status]").should("contain.text", "Synced with character");
+    cy.get("[data-test-team-rotation-action-resync]").should("be.disabled");
+  });
+
   it("bulk-applies a buff's on/off state across a range of actions via its Duration control", () => {
     configureCharacterWithWeapon("Carlotta");
     cy.get("[data-test-nav-team-rotations]").click();

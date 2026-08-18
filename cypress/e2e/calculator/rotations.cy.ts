@@ -108,14 +108,21 @@ describe("Calculator Rotations", () => {
       "BasicAttackStage1DMG",
     );
 
-    // Old "Exclude team buffs"/"Exclude weapon buffs" checkboxes are gone;
-    // "Configure Buffs" opens the same per-buff toggle panel Team Rotations
-    // uses.
     cy.get(`[data-test-rotation-action-skill-input="BasicAttackStage1DMG"]`)
       .closest(".rotation__action")
-      .find("[data-test-rotation-action-configure-buffs]")
-      .click();
+      .as("action1");
+
+    // Untouched actions show a "synced" pill.
+    cy.get("@action1")
+      .find("[data-test-rotation-action-sync-status]")
+      .should("contain.text", "Synced with character");
+
+    // Old "Exclude team buffs"/"Exclude weapon buffs" checkboxes are gone;
+    // "Configure Buffs" opens the same per-buff toggle panel Team Rotations
+    // uses. The resync button only exists once the panel is open.
+    cy.get("@action1").find("[data-test-rotation-action-configure-buffs]").click();
     cy.get("[data-test-team-rotation-advanced-buffs]").should("be.visible");
+    cy.get("@action1").find("[data-test-rotation-action-resync]").should("be.disabled");
     cy.get("[data-test-advanced-buff-toggle]").first().as("firstToggle");
     cy.get("@firstToggle")
       .invoke("prop", "checked")
@@ -128,5 +135,22 @@ describe("Calculator Rotations", () => {
 
     // Toggling a buff doesn't blow up the rest of the page — damages still render.
     testStats(carlottaRotationStats, cy);
+
+    // The pill flips to "customized" and the resync button becomes usable.
+    cy.get("@action1")
+      .find("[data-test-rotation-action-sync-status]")
+      .should("contain.text", "Customized buffs");
+    cy.get("@action1")
+      .find("[data-test-rotation-action-resync]")
+      .should("be.enabled")
+      .click();
+
+    // "Stay synced with character" clears the override and restores the pill.
+    cy.get("@action1")
+      .find("[data-test-rotation-action-sync-status]")
+      .should("contain.text", "Synced with character");
+    cy.get("@action1")
+      .find("[data-test-rotation-action-resync]")
+      .should("be.disabled");
   });
 });

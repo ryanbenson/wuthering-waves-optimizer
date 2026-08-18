@@ -22,6 +22,17 @@
     @action-update:sequence="onSequenceUpdate"
     @remove-action="onRemove">
     <template v-if="definitions" #extra-buttons>
+      <span
+        class="badge badge-xs"
+        :class="isCustomized ? 'badge-warning' : 'badge-ghost'"
+        :data-test-rotation-action-sync-status="action.id"
+        v-tooltip="
+          isCustomized
+            ? 'This action has its own buff overrides — changing the character\'s buffs won\'t affect it'
+            : 'This action follows the character\'s current buff settings automatically'
+        ">
+        {{ isCustomized ? "Customized buffs" : "Synced with character" }}
+      </span>
       <button
         type="button"
         class="btn btn-xs"
@@ -32,14 +43,24 @@
     </template>
     <template v-if="definitions && showAdvancedBuffs" #extra-panel>
       <div class="card bg-base-100 p-3 flex flex-col gap-2" @click.stop>
-        <button
-          v-if="previousAction"
-          type="button"
-          class="btn btn-xs btn-ghost self-start"
-          :data-test-rotation-action-copy-previous="action.id"
-          @click="copyPreviousSettings">
-          Copy previous action settings
-        </button>
+        <div class="flex flex-wrap gap-2">
+          <button
+            v-if="previousAction"
+            type="button"
+            class="btn btn-xs btn-ghost self-start"
+            :data-test-rotation-action-copy-previous="action.id"
+            @click="copyPreviousSettings">
+            Copy previous action settings
+          </button>
+          <button
+            type="button"
+            class="btn btn-xs btn-ghost self-start"
+            :disabled="!isCustomized"
+            :data-test-rotation-action-resync="action.id"
+            @click="resyncWithCharacter">
+            Stay synced with character
+          </button>
+        </div>
         <TeamRotationAdvancedBuffs
           :model-value="displayedAdvancedConfig"
           :buff-defs="definitions?.buffs ?? []"
@@ -64,6 +85,7 @@ import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import {
   buildAdvancedConfigSnapshot,
+  hasAdvancedConfigOverrides,
   type AdvancedConfigCategory,
   type RotationAdvancedConfig,
 } from "../calculator/rotationAdvancedBuffs";
@@ -141,6 +163,7 @@ const echoSetPassiveDefs = computed(() => {
 // anything; only a real toggle (onAdvancedConfigUpdate) persists a config.
 const currentSnapshot = computed(() => buildAdvancedConfigSnapshot(props.characterBuildData, props.definitions, "current"));
 const displayedAdvancedConfig = computed(() => props.action.advancedConfig ?? currentSnapshot.value);
+const isCustomized = computed(() => hasAdvancedConfigOverrides(props.action.advancedConfig));
 
 function onActionUpdate(payload: Record<string, unknown>) {
   emit("action-update", payload);
@@ -167,6 +190,12 @@ function copyPreviousSettings() {
   if (!props.previousAction) return;
   const copied = JSON.parse(JSON.stringify(props.previousAction.advancedConfig ?? {}));
   emit("action-update", { ...props.action, advancedConfig: copied });
+}
+
+function resyncWithCharacter() {
+  // Explicitly set (not delete) — the parent merges `{ ...existing, ...payload }`,
+  // so an omitted key would leave the old advancedConfig in place untouched.
+  emit("action-update", { ...props.action, advancedConfig: undefined });
 }
 
 function onRemove(payload: { id: string }) {
