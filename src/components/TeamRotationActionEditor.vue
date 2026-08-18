@@ -44,7 +44,7 @@
         :data-test-rotation-action-by-attack-key="action.key || 'none'"
         :data-test-rotation-action-by-id="action.id"
         @action-update="onActionUpdate"
-        @action-update:sequence="onActionUpdate"
+        @action-update:sequence="onSequenceUpdate"
         @remove-action="onRemove">
         <template v-if="mode === 'advanced' && team.characterIds[action.slot]" #extra-buttons>
           <button
@@ -110,6 +110,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   update: [payload: Record<string, unknown>];
+  "update:sequence": [payload: Record<string, unknown>];
   remove: [id: string];
   "bulk-apply": [payload: { category: AdvancedConfigCategory; key: string | null; override: AdvancedBuffOverride; actionIds: string[] }];
 }>();
@@ -143,6 +144,10 @@ function chooseSlot(idx: number) {
 
 function onActionUpdate(payload: Record<string, unknown>) {
   emit("update", { ...payload, slot: props.action.slot });
+}
+
+function onSequenceUpdate(payload: Record<string, unknown>) {
+  emit("update:sequence", { ...payload, slot: props.action.slot });
 }
 
 function onAdvancedConfigUpdate(value: TeamRotationAdvancedConfig) {
