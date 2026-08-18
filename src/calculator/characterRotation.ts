@@ -2,7 +2,28 @@ import { resolveRotationActionToAttackData } from "./resolveRotationAction";
 import { calcDamages } from "./attacks";
 import { buildCharacterCalculationContext, type CalculationContext, type TeamEnemyConfig } from "./buildCharacterContext";
 import { applyAdvancedOverrides, hasAdvancedConfigOverrides, type RotationAdvancedConfig } from "./rotationAdvancedBuffs";
-import { addDamageAggregation, type DamageAggregation } from "./teamRotation";
+
+// Lives here (rather than teamRotation.ts) so calcTeamRotationDamage can
+// delegate to calcCharacterRotationDamage per slot without a circular
+// import — this module has no dependency on teamRotation.ts.
+// teamRotation.ts re-exports both for existing consumers.
+export interface DamageAggregation {
+  normalDamage: number | null;
+  avgDamage: number | null;
+  critDamage: number | null;
+  healing: number | null;
+  shield: number | null;
+}
+
+export function addDamageAggregation(a: DamageAggregation, b: DamageAggregation): DamageAggregation {
+  return {
+    normalDamage: (a.normalDamage ?? 0) + (b.normalDamage ?? 0),
+    avgDamage: (a.avgDamage ?? 0) + (b.avgDamage ?? 0),
+    critDamage: (a.critDamage ?? 0) + (b.critDamage ?? 0),
+    healing: (a.healing ?? 0) + (b.healing ?? 0),
+    shield: (a.shield ?? 0) + (b.shield ?? 0),
+  };
+}
 
 const EMPTY_DAMAGE_AGGREGATION: DamageAggregation = {
   normalDamage: null,
@@ -62,18 +83,22 @@ export interface CharacterRotationBaseContext {
 }
 
 /**
- * Computes one rotation's damage, mirroring `calcTeamRotationDamage`'s
- * advanced-mode branch but scoped to a single character/rotation: actions
- * with no `advancedConfig` share `baseContext` (a single batched
- * `calcDamages` call, exactly like before this feature existed); actions
- * with a real per-buff override each get their own freshly-rebuilt context
- * via `buildCharacterCalculationContext`, exactly like Team Rotation's
- * Advanced mode already does. Results from both paths are merged back into
- * the rotation's original action order.
+ * Computes one rotation's damage: actions with no `advancedConfig` share a
+ * base context (a single batched `calcDamages` call, exactly like before
+ * this feature existed); actions with a real per-buff override each get
+ * their own freshly-rebuilt context via `buildCharacterCalculationContext`.
+ * Results from both paths are merged back into the rotation's original
+ * action order.
+ *
+ * `baseContext` lets a caller that already has one built (Calculator.vue,
+ * reusing its own live, reactively-maintained context so the common
+ * no-override case pays no extra cost) pass it in directly. Pass `null` to
+ * have this function build one itself — used by `calcTeamRotationDamage`,
+ * which has no single "active character" context to reuse per slot.
  */
 export async function calcCharacterRotationDamage(
   rotation: CharacterRotationInput,
-  baseContext: CharacterRotationBaseContext,
+  baseContext: CharacterRotationBaseContext | null,
   characterId: string,
   characters: Record<string, any>,
   enemyConfig: TeamEnemyConfig,
@@ -88,13 +113,20 @@ export async function calcCharacterRotationDamage(
   let damageAggregation: DamageAggregation = { ...EMPTY_DAMAGE_AGGREGATION };
 
   if (plainActions.length) {
+    let sharedContext: CharacterRotationBaseContext;
+    if (baseContext) {
+      sharedContext = baseContext;
+    } else {
+      const built = await buildCharacterCalculationContext(characterId, characters, enemyConfig, inventoryEchoes);
+      sharedContext = { chosenChar: built.chosenChar, characterLevel: built.characterLevel, context: built.context };
+    }
     const plainAttacks = plainActions
-      .map((action) => resolveRotationActionToAttackData(action, baseContext.chosenChar, baseContext.characterLevel))
+      .map((action) => resolveRotationActionToAttackData(action, sharedContext.chosenChar, sharedContext.characterLevel))
       .filter((attack) => attack != null);
-    baseContext.context.rotationsList = [
+    sharedContext.context.rotationsList = [
       { id: rotation.id, name: rotation.name, duration: rotation.duration, order: 0, attacks: plainAttacks },
     ];
-    const damageData = calcDamages(baseContext.context);
+    const damageData = calcDamages(sharedContext.context);
     attacks = attacks.concat(damageData?.rotations?.[0]?.attacks ?? []);
     damageAggregation = addDamageAggregation(
       damageAggregation,

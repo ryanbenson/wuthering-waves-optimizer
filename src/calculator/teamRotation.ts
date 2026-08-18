@@ -1,8 +1,16 @@
-import { resolveRotationActionToAttackData } from "./resolveRotationAction";
-import { calcDamages } from "./attacks";
 import { randomString } from "../utils/strings";
-import { buildCharacterCalculationContext, type TeamEnemyConfig } from "./buildCharacterContext";
-import { applyAdvancedOverrides, type RotationAdvancedConfig } from "./rotationAdvancedBuffs";
+import type { TeamEnemyConfig } from "./buildCharacterContext";
+import type { RotationAdvancedConfig } from "./rotationAdvancedBuffs";
+import {
+  calcCharacterRotationDamage,
+  addDamageAggregation,
+  type DamageAggregation,
+} from "./characterRotation";
+
+// Re-exported for existing consumers — the implementation lives in
+// characterRotation.ts (see its own comment) so calcTeamRotationDamage can
+// delegate to calcCharacterRotationDamage without a circular import.
+export { addDamageAggregation, type DamageAggregation };
 
 export interface TeamRotationAction {
   id: string;
@@ -17,7 +25,6 @@ export interface TeamRotationAction {
   negativeStatusStacks?: number;
   electroRageStacks?: number;
   isDisabled?: boolean;
-  /** Only consulted when the team's mode is "advanced". */
   advancedConfig?: RotationAdvancedConfig;
 }
 
@@ -73,18 +80,6 @@ export interface TeamRotationInput {
   characterIds: Array<string | null>;
   actions: TeamRotationAction[];
   duration: number | string | null;
-  /** "basic" (default) uses one shared context per character, exactly like
-   * today. "advanced" builds a fresh, independently-overridable context per
-   * action from that action's `advancedConfig`. */
-  mode?: "basic" | "advanced";
-}
-
-export interface DamageAggregation {
-  normalDamage: number | null;
-  avgDamage: number | null;
-  critDamage: number | null;
-  healing: number | null;
-  shield: number | null;
 }
 
 export interface RotationDps {
@@ -92,14 +87,6 @@ export interface RotationDps {
   avg: number;
   crit: number;
 }
-
-const EMPTY_DAMAGE_AGGREGATION: DamageAggregation = {
-  normalDamage: null,
-  avgDamage: null,
-  critDamage: null,
-  healing: null,
-  shield: null,
-};
 
 /**
  * Computes DPS from a damage aggregation + a total rotation duration in
@@ -120,16 +107,6 @@ export function calcRotationDps(
   };
 }
 
-export function addDamageAggregation(a: DamageAggregation, b: DamageAggregation): DamageAggregation {
-  return {
-    normalDamage: (a.normalDamage ?? 0) + (b.normalDamage ?? 0),
-    avgDamage: (a.avgDamage ?? 0) + (b.avgDamage ?? 0),
-    critDamage: (a.critDamage ?? 0) + (b.critDamage ?? 0),
-    healing: (a.healing ?? 0) + (b.healing ?? 0),
-    shield: (a.shield ?? 0) + (b.shield ?? 0),
-  };
-}
-
 export interface TeamRotationActionResult {
   characterId: string;
   slot: 0 | 1 | 2;
@@ -144,11 +121,14 @@ export interface TeamRotationCharacterResult {
 
 /**
  * Computes total team damage/DPS for a rotation spanning up to 3
- * characters. Each character's actions are evaluated against that
- * character's own calculation context (their own build), then the
- * per-character damage aggregations are summed into a team total.
- *
- * No caching: builds fresh character contexts on every call.
+ * characters, by delegating each slot's actions to
+ * `calcCharacterRotationDamage` (`characterRotation.ts`) — the same
+ * plain/override per-action split the single-character Character Rotation
+ * display already uses, with no team-wide "mode" to gate it: an action with
+ * no `advancedConfig` shares one batched context with the rest of that
+ * slot's plain actions; an action with a real per-buff override gets its own
+ * freshly-rebuilt context. No caching: builds fresh character contexts on
+ * every call.
  */
 export async function calcTeamRotationDamage(
   team: TeamRotationInput,
@@ -177,97 +157,32 @@ export async function calcTeamRotationDamage(
       continue;
     }
 
-    let slotDamageAggregation: DamageAggregation = { ...EMPTY_DAMAGE_AGGREGATION };
-    let slotAttacks: any[] = [];
+    const slotResult = await calcCharacterRotationDamage(
+      { id: `slot-${slot}`, name: team.name ?? "Team Rotation", duration: team.duration, actions: slotActions },
+      null,
+      characterId,
+      characters,
+      enemyConfig,
+      inventoryEchoes,
+    );
 
-    if (team.mode === "advanced") {
-      // Advanced mode: each action can override the character's buffs, so
-      // every action gets its own freshly-built context and its own
-      // single-attack calcDamages call, then the results are summed.
-      for (const action of slotActions) {
-        const overriddenCharacters = {
-          ...characters,
-          [characterId]: applyAdvancedOverrides(characters?.[characterId] ?? {}, action.advancedConfig),
-        };
-        const built = await buildCharacterCalculationContext(
-          characterId,
-          overriddenCharacters,
-          enemyConfig,
-          inventoryEchoes,
-        );
-        const attack = resolveRotationActionToAttackData(action, built.chosenChar, built.characterLevel);
-        if (attack == null) continue;
+    perCharacter[characterId] = { damageAggregation: slotResult.damageAggregation, attacks: slotResult.attacks };
 
-        built.context.rotationsList = [
-          {
-            id: `slot-${slot}-action-${action.id}`,
-            name: team.name ?? "Team Rotation",
-            duration: team.duration,
-            order: 0,
-            attacks: [attack],
-          },
-        ];
-        const damageData = calcDamages(built.context);
-        const processedAttacks: any[] = damageData?.rotations?.[0]?.attacks ?? [];
-        const damageAggregation: DamageAggregation =
-          damageData?.rotations?.[0]?.damageAggregation ?? EMPTY_DAMAGE_AGGREGATION;
-
-        slotAttacks = slotAttacks.concat(processedAttacks);
-        slotDamageAggregation = addDamageAggregation(slotDamageAggregation, damageAggregation);
-        processedAttacks.forEach((processedAttack) => {
-          actionResults.push({
-            characterId,
-            slot: slot as 0 | 1 | 2,
-            order: action.order ?? 0,
-            attack: processedAttack,
-          });
-        });
-      }
-    } else {
-      // Basic mode (default): one shared context/calcDamages call for all
-      // of this character's actions, exactly like before Advanced mode.
-      const built = await buildCharacterCalculationContext(characterId, characters, enemyConfig, inventoryEchoes);
-
-      const resolvedPairs = slotActions
-        .map((action) => ({
-          action,
-          attack: resolveRotationActionToAttackData(action, built.chosenChar, built.characterLevel),
-        }))
-        .filter((pair): pair is { action: TeamRotationAction; attack: any } => pair.attack != null);
-
-      built.context.rotationsList = [
-        {
-          id: `slot-${slot}`,
-          name: team.name ?? "Team Rotation",
-          duration: team.duration,
-          order: 0,
-          attacks: resolvedPairs.map((pair) => pair.attack),
-        },
-      ];
-
-      const damageData = calcDamages(built.context);
-      // processAttacks preserves array order, so the Nth processed attack
-      // corresponds to the Nth entry in resolvedPairs.
-      const processedAttacks: any[] = damageData?.rotations?.[0]?.attacks ?? [];
-      slotDamageAggregation = damageData?.rotations?.[0]?.damageAggregation ?? EMPTY_DAMAGE_AGGREGATION;
-      slotAttacks = processedAttacks;
-
-      processedAttacks.forEach((attack, index) => {
-        actionResults.push({
-          characterId,
-          slot: slot as 0 | 1 | 2,
-          order: resolvedPairs[index]?.action.order ?? 0,
-          attack,
-        });
+    const orderByActionId = new Map(slotActions.map((action) => [action.id, action.order]));
+    slotResult.attacks.forEach((attack) => {
+      actionResults.push({
+        characterId,
+        slot: slot as 0 | 1 | 2,
+        order: orderByActionId.get(attack.id) ?? 0,
+        attack,
       });
-    }
+    });
 
-    perCharacter[characterId] = { damageAggregation: slotDamageAggregation, attacks: slotAttacks };
-    total.normalDamage = (total.normalDamage ?? 0) + (slotDamageAggregation.normalDamage ?? 0);
-    total.avgDamage = (total.avgDamage ?? 0) + (slotDamageAggregation.avgDamage ?? 0);
-    total.critDamage = (total.critDamage ?? 0) + (slotDamageAggregation.critDamage ?? 0);
-    total.healing = (total.healing ?? 0) + (slotDamageAggregation.healing ?? 0);
-    total.shield = (total.shield ?? 0) + (slotDamageAggregation.shield ?? 0);
+    total.normalDamage = (total.normalDamage ?? 0) + (slotResult.damageAggregation.normalDamage ?? 0);
+    total.avgDamage = (total.avgDamage ?? 0) + (slotResult.damageAggregation.avgDamage ?? 0);
+    total.critDamage = (total.critDamage ?? 0) + (slotResult.damageAggregation.critDamage ?? 0);
+    total.healing = (total.healing ?? 0) + (slotResult.damageAggregation.healing ?? 0);
+    total.shield = (total.shield ?? 0) + (slotResult.damageAggregation.shield ?? 0);
   }
 
   actionResults.sort((a, b) => a.order - b.order);

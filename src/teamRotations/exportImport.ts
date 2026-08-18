@@ -12,7 +12,6 @@ export interface TeamExportData {
   actions: unknown[];
   duration: number | string | null;
   enemyConfig: Record<string, unknown>;
-  mode?: "basic" | "advanced";
 }
 
 const TEAM_EXPORT_TYPE = "teamRotation";
@@ -26,7 +25,7 @@ export interface TeamExportPayload {
 /**
  * Builds the full clipboard/file export payload for one team. Deliberately
  * only includes this team's own config (name/characterIds/actions/duration/
- * enemyConfig/mode) — never the referenced characters' full builds — mirroring
+ * enemyConfig) — never the referenced characters' full builds — mirroring
  * the store's existing "teams reference characters by id, they don't
  * duplicate build data" design.
  */
@@ -36,7 +35,6 @@ export function buildTeamExportPayload(team: {
   actions: unknown[];
   duration: number | string | null;
   enemyConfig: Record<string, unknown>;
-  mode?: string;
 }): TeamExportPayload {
   return {
     meta: { version: TEAM_EXPORT_VERSION, source: "WutheringTools", type: TEAM_EXPORT_TYPE },
@@ -46,7 +44,6 @@ export function buildTeamExportPayload(team: {
       actions: team.actions,
       duration: team.duration,
       enemyConfig: team.enemyConfig,
-      mode: team.mode === "advanced" ? "advanced" : "basic",
     },
   };
 }
@@ -100,7 +97,6 @@ export function parseTeamImportPayload(raw: string): TeamExportData {
     actions: team.actions.map(stripLegacyExcludeFields),
     duration: team.duration ?? null,
     enemyConfig: (team.enemyConfig as Record<string, unknown> | undefined) ?? {},
-    mode: team.mode === "advanced" ? "advanced" : "basic",
   };
 }
 

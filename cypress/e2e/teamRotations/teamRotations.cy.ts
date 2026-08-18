@@ -192,7 +192,7 @@ describe("Team Rotations", () => {
     cy.get("[data-test-team-rotations-item]").should("not.exist");
   });
 
-  it("supports Advanced mode per-action buffs, copying settings, and the damage breakdown drawer", () => {
+  it("supports per-action buffs, copying settings, and the damage breakdown drawer", () => {
     configureCharacterWithWeapon("Carlotta");
 
     cy.get("[data-test-nav-team-rotations]").click();
@@ -208,8 +208,6 @@ describe("Team Rotations", () => {
     cy.get("[data-test-team-rotation-enemy-summary]").should("not.exist");
     cy.get("[data-test-team-rotation-enemy-type-option='Elite']").click();
     cy.get("[data-test-team-rotation-enemy-collapse-toggle]").click({ force: true });
-
-    cy.get("[data-test-team-rotation-mode-advanced]").click();
 
     cy.get("[data-test-team-rotation-add-action]").click();
     cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
@@ -279,7 +277,7 @@ describe("Team Rotations", () => {
     cy.get(".damage-breakdown").should("not.exist");
   });
 
-  it("prompts how to seed Advanced mode's per-action buffs when a team already has actions", () => {
+  it("a new action's buff panel shows the character's real current buff state, not misleadingly-blank checkboxes", () => {
     configureCharacterWithWeapon("Carlotta");
     // Give the character a non-default self buff to prove it carries over
     cy.get('[data-test-calculator-nav="character"]').click();
@@ -293,40 +291,12 @@ describe("Team Rotations", () => {
     cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
     cy.get("[data-test-team-rotation-duration]").clear().type("10");
 
-    // Switching to Advanced with no actions yet doesn't prompt (nothing to
-    // seed) — but adding an action first means switching now does
-    cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]')
-      .find("td")
-      .eq(1)
-      .invoke("text")
-      .then((baselineText) => {
-        const baseline = Number(baselineText.trim());
-
-        cy.get("[data-test-team-rotation-mode-advanced]").click();
-        cy.get("[data-test-team-rotation-mode-switch-modal]").should("be.visible");
-
-        // Cancelling leaves the team in Basic mode, untouched
-        cy.get("[data-test-team-rotation-mode-switch-cancel]").click();
-        cy.get("[data-test-team-rotation-mode-switch-modal]").should("not.be.visible");
-        cy.get("[data-test-team-rotation-mode-basic]").should("have.class", "btn-active");
-
-        // Keeping the current setup switches to Advanced with the same
-        // damage as before (the checkboxes reflect what's really enabled,
-        // rather than appearing all-off) — no manual re-toggling needed
-        cy.get("[data-test-team-rotation-mode-advanced]").click();
-        cy.get("[data-test-team-rotation-mode-switch-keep-current]").click();
-        cy.get("[data-test-team-rotation-mode-switch-modal]").should("not.be.visible");
-        cy.get('[data-test-team-rotation-action-damage="Basic Attack Stage 1 DMG"]')
-          .find("td")
-          .eq(1)
-          .invoke("text")
-          .should((newText) => {
-            expect(Number(newText.trim())).to.equal(baseline);
-          });
-
-        cy.get("[data-test-team-rotation-action-configure-buffs]").first().click();
-        cy.get("[data-test-advanced-buff-toggle]").first().should("be.checked");
-      });
+    // Nothing is persisted onto the action just by adding it — opening its
+    // buff panel is display-only until a real toggle happens — but it
+    // should still reflect the character's real "enable all" state rather
+    // than appearing all-off.
+    cy.get("[data-test-team-rotation-action-configure-buffs]").first().click();
+    cy.get("[data-test-advanced-buff-toggle]").first().should("be.checked");
   });
 
   it("bulk-applies a buff's on/off state across a range of actions via its Duration control", () => {
@@ -334,7 +304,6 @@ describe("Team Rotations", () => {
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
     cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
-    cy.get("[data-test-team-rotation-mode-advanced]").click();
 
     const addActionWithAttack = (attackKey: string) => {
       cy.get("[data-test-team-rotation-add-action]").click();
@@ -373,7 +342,6 @@ describe("Team Rotations", () => {
     cy.get("[data-test-team-rotations-new]").click();
     cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
     cy.richSelect('[data-test="team-rotation-slot-select-1"]', "Chixia");
-    cy.get("[data-test-team-rotation-mode-advanced]").click();
 
     // Action 1: Carlotta
     cy.get("[data-test-team-rotation-add-action]").click();
@@ -574,6 +542,55 @@ describe("Team Rotations", () => {
     cy.get('[data-test-rotation-action-by-attack-key="BasicAttackStage1DMG"]').should("exist");
     cy.get('[data-test-rotation-action-by-attack-key="FatalFinaleDMG"]').should("exist");
   });
+
+  it("carries a Character Rotation action's per-action buff customization through the import into a Team Rotation", () => {
+    configureCharacterWithWeapon("Carlotta");
+
+    // Build a Character Rotation with one action, and customize its buffs
+    // independently via the advanced buff panel (same panel/component Team
+    // Rotations uses) — force the first buff to a known, checked state.
+    cy.get('[data-test-calculator-nav="rotations"]').click();
+    cy.get('[data-test-rotations-action="create"]').click();
+    cy.get('[data-test-rotation-item-by-name="Untitled Rotation"]').click();
+    cy.get('[data-test-rotation-name-input="Untitled Rotation"]').clear().type("BuffedImport");
+    cy.get('[data-test-rotation-action-add="BuffedImport"]').click();
+    cy.get('[data-test-rotation-action-by-attack-key="none"]').should("be.visible");
+    cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
+
+    cy.get('[data-test-rotation-action-skill-input="BasicAttackStage1DMG"]')
+      .closest(".rotation__action")
+      .find("[data-test-rotation-action-configure-buffs]")
+      .click();
+    cy.get("[data-test-team-rotation-advanced-buffs]").should("be.visible");
+    cy.get("[data-test-advanced-buff-toggle]")
+      .first()
+      .as("sourceToggle")
+      .invoke("prop", "checked")
+      .then((wasChecked) => {
+        if (!wasChecked) {
+          cy.get("@sourceToggle").click({ force: true });
+        }
+      });
+    cy.get("@sourceToggle").should("be.checked");
+
+    // Import that rotation into a fresh team.
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.get('[data-test-team-rotation-import-rotation-open="0"]').click();
+    cy.get("[data-test-team-rotation-import-modal]").should("have.attr", "open");
+    cy.contains(".card", "BuffedImport")
+      .find("[data-test-team-rotation-import-append]")
+      .click();
+    cy.get("[data-test-team-rotation-import-modal]").should("not.have.attr", "open");
+
+    // The imported action's buff panel — no mode to switch, it's always
+    // available — must show the same buff already checked, proving the
+    // per-action customization survived the import rather than being
+    // silently dropped or reset to a blanket default.
+    cy.get("[data-test-team-rotation-action-configure-buffs]").first().click();
+    cy.get("[data-test-advanced-buff-toggle]").first().should("be.checked");
+  });
 });
 
 describe("Team Rotations export/import", () => {
@@ -640,7 +657,6 @@ describe("Team Rotations export/import", () => {
         actions: [],
         duration: 10,
         enemyConfig: { enemyLevel: 90, enemyResist: 0.1, enemyType: "Calamity" },
-        mode: "basic",
       },
     });
     cy.get("[data-test-team-rotations-import-file]").selectFile(

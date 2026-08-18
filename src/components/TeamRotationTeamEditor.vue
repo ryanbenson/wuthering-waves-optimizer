@@ -51,28 +51,6 @@
           </div>
         </div>
 
-        <div class="flex items-center gap-2" data-test-team-rotation-mode>
-          <span class="text-xs opacity-70">Rotation mode</span>
-          <div class="join">
-            <button
-              type="button"
-              class="btn btn-xs join-item"
-              :class="{ 'btn-active': rotationMode === 'basic' }"
-              data-test-team-rotation-mode-basic
-              @click="setMode('basic')">
-              Basic
-            </button>
-            <button
-              type="button"
-              class="btn btn-xs join-item"
-              :class="{ 'btn-active': rotationMode === 'advanced' }"
-              data-test-team-rotation-mode-advanced
-              @click="setMode('advanced')">
-              Advanced
-            </button>
-          </div>
-        </div>
-
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div
             v-for="slot in [0, 1, 2]"
@@ -173,8 +151,8 @@
               :chosen-chars="chosenChars"
               :main-echo-for-slot="mainEchoForSlot"
               :main-echo-rank-for-slot="mainEchoRankForSlot"
-              :mode="rotationMode"
               :definitions-for-slot="definitionsForSlot"
+              :character-data-for-slot="characterDataForSlot"
               :previous-action="previousActionByActionId[action.id] ?? null"
               :range-actions="orderedActionRangeList"
               @update="handleActionUpdate"
@@ -271,51 +249,6 @@
       </div>
     </div>
 
-    <dialog
-      ref="modeSwitchDialogEl"
-      class="modal"
-      data-test-team-rotation-mode-switch-modal
-      @close="closeModeSwitchModal">
-      <div class="modal-box">
-        <h3 class="text-lg font-bold">Switch to Advanced mode?</h3>
-        <p class="py-2 text-sm opacity-80">
-          Advanced mode lets you configure buffs individually for each action. How should each
-          existing action start out?
-        </p>
-        <div class="flex flex-col gap-2 mt-4">
-          <button
-            type="button"
-            class="btn btn-primary btn-sm"
-            data-test-team-rotation-mode-switch-keep-current
-            @click="applyModeSwitch('current')">
-            Keep this character's current setup for every action
-          </button>
-          <button
-            type="button"
-            class="btn btn-outline btn-sm"
-            data-test-team-rotation-mode-switch-blank
-            @click="applyModeSwitch('blank')">
-            Start every action with all buffs off
-          </button>
-        </div>
-        <p class="text-xs opacity-60 mt-3">
-          Either way, this only affects Team Rotations — it never changes this character's build
-          on the Calculator page.
-        </p>
-        <div class="modal-action">
-          <button
-            type="button"
-            class="btn btn-sm btn-ghost"
-            data-test-team-rotation-mode-switch-cancel
-            @click="closeModeSwitchModal">
-            Cancel
-          </button>
-        </div>
-      </div>
-      <form method="dialog" class="modal-backdrop" @submit.prevent="closeModeSwitchModal">
-        <button type="submit">close</button>
-      </form>
-    </dialog>
   </div>
 </template>
 
@@ -356,7 +289,6 @@ import {
   type SourceRotationAction,
 } from "../calculator/teamRotation";
 import {
-  buildAdvancedConfigSnapshot,
   applyBulkAdvancedConfigOverride,
   type AdvancedConfigCategory,
 } from "../calculator/rotationAdvancedBuffs";
@@ -587,16 +519,12 @@ function handleImportRotation(sourceActions: SourceRotationAction[], mode: "over
       ? currentActions.filter((action: TeamRotationAction) => action.slot !== slot)
       : currentActions;
   const startOrder = currentActions.length + 1;
-  let converted = convertRotationActionsForSlot(sourceActions, slot as 0 | 1 | 2, startOrder);
-
-  if (rotationMode.value === "advanced") {
-    const characterData = characterId ? (characters.value[characterId] ?? {}) : {};
-    const definitions = slotContexts.value[slot]?.definitions ?? null;
-    converted = converted.map((action) => ({
-      ...action,
-      advancedConfig: buildAdvancedConfigSnapshot(characterData, definitions, "current"),
-    }));
-  }
+  // convertRotationActionsForSlot already carries each source action's own
+  // advancedConfig through as-is — don't overwrite it with a uniform
+  // "current state" snapshot here, or a Character Rotation's carefully
+  // per-action-customized buffs get silently replaced with one identical
+  // snapshot for every imported action.
+  const converted = convertRotationActionsForSlot(sourceActions, slot as 0 | 1 | 2, startOrder);
 
   teamRotationsStore.setTeamActions(props.teamId, [...base, ...converted]);
   lastUsedSlot.value = slot;
@@ -650,6 +578,11 @@ function addAction() {
     const firstSlot = characterIds.findIndex((id) => id);
     slot = firstSlot === -1 ? 0 : firstSlot;
   }
+  // No advancedConfig stamped on here — TeamRotationActionEditor.vue's
+  // buff panel already shows this character's real current buff state as a
+  // display-only fallback until the user actually toggles something,
+  // exactly like a new Character Rotation action (CalculatorRotation.vue's
+  // addAction). Nothing is persisted until a real override is made.
   const newAction: TeamRotationAction = {
     id: randomString(),
     slot: slot as 0 | 1 | 2,
@@ -658,15 +591,6 @@ function addAction() {
     key: null as unknown as string,
     count: 1,
   };
-  // A new action added while already in Advanced mode should start
-  // reflecting that character's real current setup (same reasoning as the
-  // Basic -> Advanced snapshot below), not silently-all-off checkboxes.
-  if (rotationMode.value === "advanced") {
-    const characterId = characterIds[slot];
-    const characterData = characterId ? (characters.value[characterId] ?? {}) : {};
-    const definitions = slotContexts.value[slot]?.definitions ?? null;
-    newAction.advancedConfig = buildAdvancedConfigSnapshot(characterData, definitions, "current");
-  }
   teamRotationsStore.setTeamActions(props.teamId, [...team.value.actions, newAction]);
   lastUsedSlot.value = slot;
 }
@@ -734,6 +658,19 @@ const chosenChars = computed(() => {
   return out;
 });
 
+// Each slot's raw stored build data (buffs/weaponPassives/teamBuffs/etc
+// config, as persisted in the character store) — used by
+// TeamRotationActionEditor.vue's display-only "current state" snapshot
+// fallback for an action's buff panel before it has its own advancedConfig.
+const characterDataForSlot = computed(() => {
+  const out: Record<number, Record<string, unknown>> = {};
+  for (const slot of [0, 1, 2]) {
+    const characterId = team.value?.characterIds[slot];
+    out[slot] = characterId ? (characters.value[characterId] ?? {}) : {};
+  }
+  return out;
+});
+
 const mainEchoForSlot = computed(() => {
   const out: Record<number, string | null> = {};
   for (const slot of [0, 1, 2]) {
@@ -755,53 +692,8 @@ const primaryCharacterElement = computed(
     ?.element ?? "",
 );
 
-const rotationMode = computed(() => (team.value?.mode === "advanced" ? "advanced" : "basic"));
-
-// Switching Basic -> Advanced with existing actions asks the user how each
-// action's buff checkboxes should start: mirroring the character's current
-// real setup (so they're not misleadingly blank), or fully disabled as a
-// deliberate blank slate. Switching back to Basic needs no prompt — Basic
-// mode ignores advancedConfig entirely, so nothing is lost either way.
-const modeSwitchDialogEl = ref<HTMLDialogElement | null>(null);
-const showModeSwitchModal = ref(false);
-
-watch(showModeSwitchModal, (open) => {
-  const el = modeSwitchDialogEl.value;
-  if (!el) return;
-  if (open) {
-    if (!el.open) el.showModal();
-  } else if (el.open) {
-    el.close();
-  }
-});
-
-function setMode(mode: "basic" | "advanced") {
-  if (mode === "advanced" && rotationMode.value !== "advanced" && (team.value?.actions.length ?? 0) > 0) {
-    showModeSwitchModal.value = true;
-    return;
-  }
-  teamRotationsStore.setTeamMode(props.teamId, mode);
-}
-
-function closeModeSwitchModal() {
-  showModeSwitchModal.value = false;
-}
-
-function applyModeSwitch(snapshotMode: "current" | "blank") {
-  if (!team.value) return;
-  const updatedActions = team.value.actions.map((action: TeamRotationAction) => {
-    const characterId = team.value!.characterIds[action.slot];
-    const characterData = characterId ? (characters.value[characterId] ?? {}) : {};
-    const definitions = slotContexts.value[action.slot]?.definitions ?? null;
-    return { ...action, advancedConfig: buildAdvancedConfigSnapshot(characterData, definitions, snapshotMode) };
-  });
-  teamRotationsStore.setTeamActions(props.teamId, updatedActions);
-  teamRotationsStore.setTeamMode(props.teamId, "advanced");
-  closeModeSwitchModal();
-}
-
 const definitionsForSlot = computed(() => {
-  const out: Record<number, Record<string, any> | null> = {};
+  const out: Record<number, CharacterCalculationContext["definitions"] | null> = {};
   for (const slot of [0, 1, 2]) {
     out[slot] = slotContexts.value[slot]?.definitions ?? null;
   }
@@ -900,7 +792,6 @@ async function recompute() {
       characterIds: t.characterIds,
       actions: t.actions,
       duration: t.duration,
-      mode: rotationMode.value,
     },
     characters.value,
     enemyConfig,

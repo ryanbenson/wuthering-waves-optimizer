@@ -43,7 +43,7 @@
         @action-update="onActionUpdate"
         @action-update:sequence="onActionUpdate"
         @remove-action="onRemove">
-        <template v-if="mode === 'advanced' && team.characterIds[action.slot]" #extra-buttons>
+        <template v-if="team.characterIds[action.slot]" #extra-buttons>
           <button
             type="button"
             class="btn btn-xs"
@@ -52,7 +52,7 @@
             {{ showAdvancedBuffs ? "Hide" : "Configure" }} Buffs
           </button>
         </template>
-        <template v-if="mode === 'advanced' && team.characterIds[action.slot] && showAdvancedBuffs" #extra-panel>
+        <template v-if="team.characterIds[action.slot] && showAdvancedBuffs" #extra-panel>
           <div class="card bg-base-100 p-3 flex flex-col gap-2" @click.stop>
             <button
               v-if="previousAction"
@@ -63,7 +63,7 @@
               Copy previous action settings
             </button>
             <TeamRotationAdvancedBuffs
-              :model-value="action.advancedConfig ?? {}"
+              :model-value="displayedAdvancedConfig"
               :buff-defs="definitionsForSlot?.[action.slot]?.buffs ?? []"
               :weapon-passive-defs="definitionsForSlot?.[action.slot]?.weaponPassives ?? []"
               :echo-set-passive-defs="echoSetPassiveDefsForSlot"
@@ -88,7 +88,8 @@ import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import { getCharacterRosterDisplayName } from "../characters/characters";
 import type { TeamRotationAction } from "../calculator/teamRotation";
-import type { AdvancedConfigCategory, RotationAdvancedConfig } from "../calculator/rotationAdvancedBuffs";
+import { buildAdvancedConfigSnapshot, type AdvancedConfigCategory, type RotationAdvancedConfig } from "../calculator/rotationAdvancedBuffs";
+import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
 
 const props = defineProps<{
   action: TeamRotationAction & Record<string, unknown>;
@@ -96,8 +97,8 @@ const props = defineProps<{
   chosenChars: Record<number, unknown>;
   mainEchoForSlot: Record<number, string | null>;
   mainEchoRankForSlot: Record<number, number | null>;
-  mode?: "basic" | "advanced";
-  definitionsForSlot?: Record<number, Record<string, any> | null>;
+  definitionsForSlot?: Record<number, CharacterCalculationContext["definitions"] | null>;
+  characterDataForSlot?: Record<number, Record<string, unknown>>;
   previousAction?: (TeamRotationAction & Record<string, unknown>) | null;
   rangeActions?: DurationRangeAction[];
 }>();
@@ -119,6 +120,20 @@ const echoSetPassiveDefsForSlot = computed(() => {
     ...(defs.echoSetPassivesTwo ?? []),
   ];
 });
+
+// Display-only fallback so the panel shows this slot's character's real
+// current buff state instead of misleadingly-blank checkboxes before this
+// action has its own persisted override — merely opening the panel doesn't
+// write anything; only a real toggle (onAdvancedConfigUpdate) persists a
+// config. Mirrors CalculatorRotationActionEditor.vue's identical pattern.
+const currentSnapshot = computed(() =>
+  buildAdvancedConfigSnapshot(
+    props.characterDataForSlot?.[props.action.slot] ?? {},
+    props.definitionsForSlot?.[props.action.slot] ?? null,
+    "current",
+  ),
+);
+const displayedAdvancedConfig = computed(() => props.action.advancedConfig ?? currentSnapshot.value);
 
 function displayName(characterId: string) {
   return getCharacterRosterDisplayName(characterId);
