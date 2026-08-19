@@ -1665,6 +1665,73 @@ export const calculateAttackDamage = (
   );
 };
 
+/**
+ * Sums a resolved attack list's per-attack `damage` into one rotation-level
+ * total. Extracted out of `calcDamages` so callers that build their own
+ * `processAttacks(...)` results outside a full `calcDamages` call — the
+ * Optimizer's per-loadout scoring, on the main thread and in
+ * `processor.worker.ts` — don't have to re-derive this reducer a second
+ * (and third) time; those two call sites duplicated this exact logic
+ * independently before this extraction.
+ */
+export function aggregateRotationDamage(attacks: any[]): {
+  normalDamage: number | null;
+  avgDamage: number | null;
+  critDamage: number | null;
+  healing: number | null;
+  shield: number | null;
+} {
+  const damageAggregation = {
+    normalDamage: null as number | null,
+    avgDamage: null as number | null,
+    critDamage: null as number | null,
+    healing: null as number | null,
+    shield: null as number | null,
+  };
+  attacks.forEach((attack: any) => {
+    if (attack?.originalIsEnabled === false) {
+      return;
+    }
+    // Legacy ElementalEffect objects that only expose damage.damage (no totalDamage)
+    if (
+      attack.type === "ElementalEffect" &&
+      attack?.damage?.damage !== undefined &&
+      attack?.damage?.totalDamage === undefined
+    ) {
+      const v = attack.damage.damage;
+      damageAggregation.normalDamage = (damageAggregation.normalDamage || 0) + v;
+      damageAggregation.avgDamage = (damageAggregation.avgDamage || 0) + v;
+      damageAggregation.critDamage = (damageAggregation.critDamage || 0) + v;
+      return;
+    }
+    if (attack?.damage?.totalDamage !== undefined) {
+      damageAggregation.normalDamage =
+        (damageAggregation.normalDamage || 0) + attack?.damage?.totalDamage;
+    }
+
+    if (attack?.damage?.avgDamage !== undefined) {
+      damageAggregation.avgDamage =
+        (damageAggregation.avgDamage || 0) + attack?.damage?.avgDamage;
+    }
+
+    if (attack?.damage?.critDamage !== undefined) {
+      damageAggregation.critDamage =
+        (damageAggregation.critDamage || 0) + attack?.damage?.critDamage;
+    }
+
+    if (attack.type === "Healing" && attack?.damage?.healAmount !== undefined) {
+      damageAggregation.healing =
+        (damageAggregation.healing || 0) + attack?.damage?.healAmount;
+    }
+
+    if (attack.type === "Shield" && attack?.damage?.shieldAmount !== undefined) {
+      damageAggregation.shield =
+        (damageAggregation.shield || 0) + attack?.damage?.shieldAmount;
+    }
+  });
+  return damageAggregation;
+}
+
 export const calcDamages = (context: CalculationContext) => {
   if (!context.character.chosenChar) return;
 
@@ -1927,65 +1994,7 @@ export const calcDamages = (context: CalculationContext) => {
         true,
         false,
       );
-      // capture all damages
-      const damageAggregation = {
-        normalDamage: null,
-        avgDamage: null,
-        critDamage: null,
-        healing: null,
-        shield: null,
-      };
-      // go through all attacks and update our aggregation
-      attacks.forEach((attack: any) => {
-        if (attack?.originalIsEnabled === false) {
-          return;
-        }
-        // Legacy ElementalEffect objects that only expose damage.damage (no totalDamage)
-        if (
-          attack.type === "ElementalEffect" &&
-          attack?.damage?.damage !== undefined &&
-          attack?.damage?.totalDamage === undefined
-        ) {
-          const v = attack.damage.damage;
-          damageAggregation.normalDamage =
-            (damageAggregation.normalDamage || 0) + v;
-          damageAggregation.avgDamage =
-            (damageAggregation.avgDamage || 0) + v;
-          damageAggregation.critDamage =
-            (damageAggregation.critDamage || 0) + v;
-          return;
-        }
-        if (attack?.damage?.totalDamage !== undefined) {
-          damageAggregation.normalDamage =
-            (damageAggregation.normalDamage || 0) + attack?.damage?.totalDamage;
-        }
-
-        if (attack?.damage?.avgDamage !== undefined) {
-          damageAggregation.avgDamage =
-            (damageAggregation.avgDamage || 0) + attack?.damage?.avgDamage;
-        }
-
-        if (attack?.damage?.critDamage !== undefined) {
-          damageAggregation.critDamage =
-            (damageAggregation.critDamage || 0) + attack?.damage?.critDamage;
-        }
-
-        if (
-          attack.type === "Healing" &&
-          attack?.damage?.healAmount !== undefined
-        ) {
-          damageAggregation.healing =
-            (damageAggregation.healing || 0) + attack?.damage?.healAmount;
-        }
-
-        if (
-          attack.type === "Shield" &&
-          attack?.damage?.shieldAmount !== undefined
-        ) {
-          damageAggregation.shield =
-            (damageAggregation.shield || 0) + attack?.damage?.shieldAmount;
-        }
-      });
+      const damageAggregation = aggregateRotationDamage(attacks);
       rotationInfo.attacks = attacks;
       rotationInfo.mainEcho = rotation.mainEcho ?? null;
       rotationInfo.mainEchoRank = rotation.mainEchoRank ?? null;

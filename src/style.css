@@ -4,6 +4,21 @@
 
 /**** FONTS ****/
 
+/* Same-origin backup of the Google Fonts webfont used above, specifically
+ * for the build card export: html-to-image needs to read a font's raw
+ * @font-face src to embed it into the exported image, and reading a
+ * cross-origin stylesheet's rules can silently fail depending on the
+ * browser/network, leaving the export to fall back to a system font while
+ * the live page (which just applies CSS, no re-fetch needed) looks fine.
+ * A same-origin file has no such failure mode. */
+@font-face {
+  font-family: "Figtree";
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url("/fonts/figtree-variable.woff2") format("woff2");
+}
+
 /**** custom styles ****/
 
 :root {

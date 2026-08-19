@@ -39,6 +39,14 @@
           data-test-build-card-background-reset>
           Reset Background
         </button>
+        <CalculatorBuildCardImageAdjustPanel
+          v-if="buildCardBackground"
+          label="background"
+          test-id="background"
+          text-label="Adjust background"
+          :model-value="buildCardBackgroundTransform"
+          @update:model-value="buildCardBackgroundTransform = $event"
+          @reset="buildCardBackgroundTransform = null" />
         <input
           ref="backgroundFileInput"
           type="file"
@@ -64,6 +72,14 @@
           data-test-build-card-primary-color-reset>
           Reset Color
         </button>
+        <CalculatorBuildCardImageAdjustPanel
+          v-if="characterData.customPortrait"
+          label="character art"
+          test-id="portrait"
+          text-label="Adjust portrait"
+          :model-value="portraitTransform"
+          @update:model-value="portraitTransform = $event"
+          @reset="portraitTransform = null" />
       </div>
       <div class="flex gap-2">
         <button
@@ -92,14 +108,12 @@
       :style="{ height: `${scaledHeight}px` }">
       <div
         ref="cardRef"
-        class="build-card__canvas bg-base-100 bg-cover bg-center"
+        class="build-card__canvas bg-base-100"
         :style="{
           transform: `scale(${scale})`,
-          backgroundImage: buildCardBackground
-            ? `url(${buildCardBackground})`
-            : undefined,
           ...buildCardPrimaryColorStyle,
         }">
+        <div class="build-card__background-layer absolute inset-0" :style="backgroundLayerStyle"></div>
         <div class="build-card__grid grid grid-cols-12 gap-4">
           <div class="build-card__identity-panel col-span-4 h-full">
             <div class="build-card__identity relative h-full w-full rounded-lg overflow-hidden bg-base-300">
@@ -107,17 +121,19 @@
                 variant="cover"
                 :character="character"
                 :current-portrait="characterData.customPortrait"
-                :default-portrait-url="defaultPortraitUrl" />
+                :default-portrait-url="defaultPortraitUrl"
+                :transform="characterData.customPortraitTransform" />
               <div class="build-card__identity-scrim absolute inset-0 pointer-events-none"></div>
 
-              <div class="absolute top-4 left-4 max-w-[65%] pointer-events-none">
+              <div class="absolute top-4 left-4 min-w-[88%] max-w-[88%] pointer-events-none">
                 <template v-if="characterBasic">
                   <h2
                     class="text-4xl font-bold leading-tight text-white"
                     :class="{
                       'text-amber-300': characterBasic.rarity === 5,
                       'text-violet-600': characterBasic.rarity === 4,
-                    }">
+                    }"
+                    data-test-build-card-name>
                     {{ characterBasic.name }}
                   </h2>
                   <div
@@ -295,10 +311,12 @@ import {
   EXPORT_WIDTH,
   isClipboardImageWriteSupported,
 } from "../utils/exportCardImage";
+import { imageLayerStyle, type ImageTransform } from "../utils/imageTransform";
 import CalculatorBuildCardPortraitUpload from "./CalculatorBuildCardPortraitUpload.vue";
 import CalculatorBuildCardWeaponPanel from "./CalculatorBuildCardWeaponPanel.vue";
 import CalculatorBuildCardForte from "./CalculatorBuildCardForte.vue";
 import CalculatorBuildCardEchoCard from "./CalculatorBuildCardEchoCard.vue";
+import CalculatorBuildCardImageAdjustPanel from "./CalculatorBuildCardImageAdjustPanel.vue";
 import CalculatorStats from "./CalculatorStats.vue";
 
 interface ChosenCharRef {
@@ -351,6 +369,14 @@ const buildCardUid = computed({
 const buildCardBackground = computed(
   () => config.value?.buildCard?.background ?? null,
 );
+const buildCardBackgroundTransform = computed({
+  get: () => (config.value?.buildCard?.backgroundTransform ?? null) as Partial<ImageTransform> | null,
+  set: (value: ImageTransform | null) =>
+    settingsStore.addToConfig({ buildCard: { backgroundTransform: value } }),
+});
+const backgroundLayerStyle = computed(() =>
+  imageLayerStyle(buildCardBackground.value, buildCardBackgroundTransform.value),
+);
 
 const backgroundFileInput = ref<HTMLInputElement | null>(null);
 
@@ -383,7 +409,12 @@ async function handleBackgroundFile(file: File) {
         maxDimension: 1600,
         quality: 0.75,
       });
-      settingsStore.addToConfig({ buildCard: { background: dataUrl } });
+      // A fresh background starts framed at the default cover/center/100%
+      // look — positioning dialed in for the previous image wouldn't mean
+      // anything for a differently-cropped one.
+      settingsStore.addToConfig({
+        buildCard: { background: dataUrl, backgroundTransform: null },
+      });
       showToast("Background updated", "success");
     } catch {
       showToast("Failed to process image", "error");
@@ -399,7 +430,9 @@ async function handleBackgroundFile(file: File) {
 }
 
 function resetBackground() {
-  settingsStore.addToConfig({ buildCard: { background: null } });
+  settingsStore.addToConfig({
+    buildCard: { background: null, backgroundTransform: null },
+  });
   showToast("Background reset", "success");
 }
 
@@ -407,6 +440,17 @@ const characterData = computed(
   () => (characters.value[props.character] ?? {}) as Record<string, any>,
 );
 const characterBasic = computed(() => props.chosenChar?.value?.basic ?? null);
+
+// Like buildCardPrimaryColor above, the character portrait's positioning is
+// per-build rather than shared branding, so it lives on the character
+// itself alongside customPortrait rather than in the settings store.
+const portraitTransform = computed<Partial<ImageTransform> | null>({
+  get: () => characterData.value.customPortraitTransform ?? null,
+  set: (value) =>
+    characterStore.setCharacterData(props.character, {
+      customPortraitTransform: value,
+    }),
+});
 
 // Unlike username/UID/background (shared branding across every card, see
 // above), the primary color is a per-build styling choice — different
@@ -713,12 +757,20 @@ async function handleDownload() {
   position: absolute;
   top: 0;
   left: 0;
+  overflow: hidden;
   transform-origin: top left;
   display: flex;
   flex-direction: column;
 }
 
+.build-card__background-layer {
+  z-index: 0;
+  transform-origin: center;
+}
+
 .build-card__grid {
+  position: relative;
+  z-index: 1;
   flex: 1 1 auto;
   min-height: 0;
   display: grid;

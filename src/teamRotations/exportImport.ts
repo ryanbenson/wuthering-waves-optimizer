@@ -12,7 +12,6 @@ export interface TeamExportData {
   actions: unknown[];
   duration: number | string | null;
   enemyConfig: Record<string, unknown>;
-  mode?: "basic" | "advanced";
 }
 
 const TEAM_EXPORT_TYPE = "teamRotation";
@@ -26,7 +25,7 @@ export interface TeamExportPayload {
 /**
  * Builds the full clipboard/file export payload for one team. Deliberately
  * only includes this team's own config (name/characterIds/actions/duration/
- * enemyConfig/mode) — never the referenced characters' full builds — mirroring
+ * enemyConfig) — never the referenced characters' full builds — mirroring
  * the store's existing "teams reference characters by id, they don't
  * duplicate build data" design.
  */
@@ -36,7 +35,6 @@ export function buildTeamExportPayload(team: {
   actions: unknown[];
   duration: number | string | null;
   enemyConfig: Record<string, unknown>;
-  mode?: string;
 }): TeamExportPayload {
   return {
     meta: { version: TEAM_EXPORT_VERSION, source: "WutheringTools", type: TEAM_EXPORT_TYPE },
@@ -46,7 +44,6 @@ export function buildTeamExportPayload(team: {
       actions: team.actions,
       duration: team.duration,
       enemyConfig: team.enemyConfig,
-      mode: team.mode === "advanced" ? "advanced" : "basic",
     },
   };
 }
@@ -97,9 +94,23 @@ export function parseTeamImportPayload(raw: string): TeamExportData {
   return {
     name: typeof team.name === "string" && team.name ? team.name : "Imported Team",
     characterIds: [0, 1, 2].map((i) => team.characterIds?.[i] ?? null),
-    actions: team.actions,
+    actions: team.actions.map(stripLegacyExcludeFields),
     duration: team.duration ?? null,
     enemyConfig: (team.enemyConfig as Record<string, unknown> | undefined) ?? {},
-    mode: team.mode === "advanced" ? "advanced" : "basic",
   };
+}
+
+/**
+ * Drops the pre-#401 "exclude self/team/weapon buffs" checkbox fields from
+ * an imported action, if present. These have no UI or persisted-data path
+ * left in the app itself, but `actions` is otherwise passed through as
+ * unvalidated JSON — a hand-edited export could still carry them, and
+ * `calculateAttackDamage` (attacks.ts) still honors them if it sees them.
+ */
+function stripLegacyExcludeFields(action: unknown): unknown {
+  if (!action || typeof action !== "object") {
+    return action;
+  }
+  const { excludeSelfBuffs, excludeTeamBuffs, excludeWeaponBuffs, ...rest } = action as Record<string, unknown>;
+  return rest;
 }

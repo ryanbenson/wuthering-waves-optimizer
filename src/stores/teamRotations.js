@@ -38,7 +38,6 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
         actions: [],
         duration: null,
         enemyConfig: defaultEnemyConfig(),
-        mode: "basic",
       };
       this.teams.push(team);
       return team;
@@ -57,16 +56,9 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
         actions: (teamData.actions ?? []).map((action) => ({ ...action, id: randomString(12) })),
         duration: teamData.duration ?? null,
         enemyConfig: { ...defaultEnemyConfig(), ...(teamData.enemyConfig ?? {}) },
-        mode: teamData.mode === "advanced" ? "advanced" : "basic",
       };
       this.teams.push(team);
       return team;
-    },
-    setTeamMode(teamId, mode) {
-      const team = this.teams.find((t) => t.id === teamId);
-      if (team) {
-        team.mode = mode;
-      }
     },
     setTeamStatus(teamId, status) {
       const team = this.teams.find((t) => t.id === teamId);

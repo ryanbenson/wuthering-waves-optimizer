@@ -173,7 +173,7 @@ describe("data migrations", () => {
     expect(localStorage.getItem(DATA_VERSION_KEY)).toBe(String(CURRENT_DATA_VERSION));
   });
 
-  it("migrates mainEcho.isEnabled into mainEcho.buffs on v6", () => {
+  it("migrates mainEcho.isEnabled into mainEcho.buffs on v7", () => {
     localStorage.setItem(DATA_VERSION_KEY, "4");
     localStorage.setItem(
       "character",
@@ -198,7 +198,7 @@ describe("data migrations", () => {
 
     runMigrations();
 
-    expect(getStoredDataVersion()).toBe(6);
+    expect(getStoredDataVersion()).toBe(7);
     const character = JSON.parse(localStorage.getItem("character") ?? "{}");
     const carlotta = character.characters.Carlotta;
     expect(carlotta.mainEcho.isEnabled).toBeUndefined();
@@ -301,6 +301,74 @@ describe("data migrations", () => {
     expect(parseMetaDataVersion({ version: "4" })).toBe(4);
     expect(parseMetaDataVersion({ version: "5" })).toBe(5);
     expect(parseMetaDataVersion(undefined)).toBe(1);
+  });
+
+  it("converts character rotation exclude-buffs checkboxes into advancedConfig on v6", () => {
+    localStorage.setItem(DATA_VERSION_KEY, "5");
+    localStorage.setItem(
+      "character",
+      JSON.stringify({
+        characters: {
+          Danjin: {
+            weaponPassives: { SomePassive: { isEnabled: true } },
+            teamBuffs: { buffs: { SomeTeamBuff: { isEnabled: true } } },
+            rotations: [
+              {
+                id: "r1",
+                name: "Rotation",
+                actions: [
+                  {
+                    id: "a1",
+                    key: "Foo",
+                    type: "basic",
+                    excludeSelfBuffs: false,
+                    excludeTeamBuffs: true,
+                    excludeWeaponBuffs: true,
+                  },
+                  {
+                    id: "a2",
+                    key: "Bar",
+                    type: "basic",
+                    excludeSelfBuffs: false,
+                    excludeTeamBuffs: false,
+                    excludeWeaponBuffs: false,
+                  },
+                  { id: "a3", key: "Baz", type: "basic" },
+                ],
+              },
+            ],
+          },
+        },
+      }),
+    );
+
+    runMigrations();
+
+    expect(getStoredDataVersion()).toBe(CURRENT_DATA_VERSION);
+    const character = JSON.parse(localStorage.getItem("character") ?? "{}");
+    const actions = character.characters.Danjin.rotations[0].actions;
+
+    // Only the actually-configured weapon passive / team buff keys are
+    // forced off — nothing invented for keys the character never touched.
+    expect(actions[0]).toEqual({
+      id: "a1",
+      key: "Foo",
+      type: "basic",
+      advancedConfig: {
+        weaponPassives: { SomePassive: { isEnabled: false } },
+        teamBuffs: { SomeTeamBuff: { isEnabled: false } },
+      },
+    });
+    expect(actions[0].excludeSelfBuffs).toBeUndefined();
+    expect(actions[0].excludeTeamBuffs).toBeUndefined();
+    expect(actions[0].excludeWeaponBuffs).toBeUndefined();
+
+    // Both flags false: the exclude fields are stripped but no advancedConfig
+    // is added — byte-for-byte the fast (no-override) path.
+    expect(actions[1]).toEqual({ id: "a2", key: "Bar", type: "basic" });
+
+    // No exclude fields present at all: left completely untouched.
+    expect(actions[2]).toEqual({ id: "a3", key: "Baz", type: "basic" });
   });
 
   it("applyMigrationTransforms backfills rotation order from v3", () => {

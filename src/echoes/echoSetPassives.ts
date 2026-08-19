@@ -132,3 +132,36 @@ export function aggregateEchoSetPassiveStats(
   }
   return finalBuffData;
 }
+
+/**
+ * Resolves one echo set bonus's passives against a stored/overridden config
+ * into a combined stats object — a headless convenience wrapper composing
+ * `resolveEchoSetPassiveInstance` + `aggregateEchoSetPassiveStats`.
+ * Originally private to `buildCharacterContext.ts`; promoted here so the
+ * Optimizer's per-action `advancedConfig` override path (which needs to
+ * resolve a set bonus against an *overridden* `echoSetPassivesConfig`, for
+ * whichever set bonus a given loadout actually has equipped) can call it
+ * without importing the async, dynamic-import-driven
+ * `buildCharacterContext.ts` module into the optimizer's hot path.
+ */
+export function resolveSetBonusStats(
+  setBonusDef: { passives?: any[] } | null | undefined,
+  echoSetPassivesConfig: Record<string, { isEnabled?: boolean; stacks?: number }>,
+  talentData: Record<string, string | number | undefined>,
+  alwaysEnabledOnly = false,
+): Record<string, unknown> {
+  const passives = (setBonusDef?.passives ?? []).filter(
+    (passive) => !alwaysEnabledOnly || Boolean(passive.alwaysEnabled),
+  );
+  const resolved: EchoSetPassiveResult[] = passives.map((passive) =>
+    resolveEchoSetPassiveInstance(
+      String(passive.key ?? ""),
+      passive.modifiers ?? [],
+      echoSetPassivesConfig[String(passive.key ?? "")],
+      Boolean(passive.hasStacks),
+      Boolean(passive.alwaysEnabled),
+      talentData,
+    ),
+  );
+  return aggregateEchoSetPassiveStats(resolved);
+}

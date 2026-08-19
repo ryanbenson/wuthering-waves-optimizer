@@ -8,7 +8,8 @@
  *   3 — rename SunSinkingEclipse / Sun-sinking Eclipse → Havoc Eclipse
  *   4 — add order property to character rotations
  *   5 — include teamRotations store in export/import; no data transform
- *   6 — mainEcho.isEnabled/stacks → mainEcho.buffs[buffKey]
+ *   6 — replace character rotation exclude-buffs checkboxes with advancedConfig
+ *   7 — mainEcho.isEnabled/stacks → mainEcho.buffs[buffKey]
  *
  * On load, compare the user's version to CURRENT_DATA_VERSION and run each
  * pending migration in order.
@@ -23,7 +24,8 @@ import { hasPersistedUserData, type Migration } from "./types";
 import renameSunSinkingEclipse from "./versions/003_renameSunSinkingEclipse";
 import addRotationOrder from "./versions/004_addRotationOrder";
 import addTeamRotationsExport from "./versions/005_addTeamRotationsExport";
-import migrateMainEchoBuffs from "./versions/006_mainEchoBuffs";
+import replaceCharacterRotationExcludeBuffs from "./versions/006_replaceCharacterRotationExcludeBuffs";
+import migrateMainEchoBuffs from "./versions/007_mainEchoBuffs";
 
 /** localStorage key that mirrors export `meta.version`. */
 export const DATA_VERSION_KEY = "dataVersion";
@@ -32,7 +34,7 @@ export const DATA_VERSION_KEY = "dataVersion";
  * Latest data version. Bump when adding a migration.
  * Also written to export `meta.version`.
  */
-export const CURRENT_DATA_VERSION = 6;
+export const CURRENT_DATA_VERSION = 7;
 
 /**
  * Version assumed when an existing user has data but no data-version key yet
@@ -48,6 +50,7 @@ const migrations: Migration[] = [
   renameSunSinkingEclipse,
   addRotationOrder,
   addTeamRotationsExport,
+  replaceCharacterRotationExcludeBuffs,
   migrateMainEchoBuffs,
 ];
 

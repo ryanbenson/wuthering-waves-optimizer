@@ -128,7 +128,7 @@ export function migrateMainEchoBuffs(json: string): string {
 }
 
 const migration: Migration = {
-  version: 6,
+  version: 7,
   description:
     "Move mainEcho.isEnabled/stacks and optimizer.mainEchoBuffs into per-buff maps",
   transform: migrateMainEchoBuffs,

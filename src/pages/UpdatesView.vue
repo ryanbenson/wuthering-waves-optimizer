@@ -2,6 +2,27 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 19, 2026</h3>
+    <ul>
+      <li>Replaces the character rotation exclude-buffs checkboxes with per-buff advanced config, giving you finer control over which buffs apply to which actions.</li>
+      <li>Adds a sync-status pill and resync button to rotation actions so you can spot and fix out-of-date buff overrides.</li>
+      <li>Fixes Optimizer scoring for rotation actions that have buff overrides.</li>
+      <li>Fixes the Optimizer's main-echo-buff warning firing when it shouldn't, for actions that aren't actually overriding the buff.</li>
+      <li>Drops the Team Rotations Basic/Advanced mode toggle in favor of the unified per-buff config, and fixes an issue with per-action buff import.</li>
+      <li>Adds search and a "hide unused" toggle to the Team Buffs panel.</li>
+    </ul>
+    <h3>August 17, 2026</h3>
+    <ul>
+      <li>Fixes the Build Card so long character names no longer wrap and substat labels no longer get truncated.</li>
+      <li>Self-hosts the Figtree font so Build Card exports actually embed it, lets substat labels wrap and use the full available width, and trims the echo banner to make more room for long names.</li>
+      <li>Fixes Team Rotation action reordering so changing an action's order number actually reorders it, and resets action order correctly when overwriting a team rotation slot on import.</li>
+    </ul>
+    <h3>August 16, 2026</h3>
+    <ul>
+      <li>Adds optional tick marks to range sliders that have a set list of values.</li>
+      <li>Swaps the order of ATK and HP in the stats panel and optimizer results.</li>
+      <li>Adds position, scale, and fit controls for images on the Build Card.</li>
+    </ul>
     <h3>August 15, 2026</h3>
     <ul>
       <li>Team Rotations and Build Card are no longer Labs features — both are now fully released and available to everyone, no toggle required.</li>

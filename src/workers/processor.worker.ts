@@ -34,25 +34,18 @@
  * - Errors in individual loadouts don't stop batch processing
  */
 
-import { normalizeOptimizerLoadout } from "../calculator/optimizer";
+import {
+  normalizeOptimizerLoadout,
+  computeLoadoutFinalStats,
+  buildOptimizerCalculationContext,
+  computeOverrideBuffVariants,
+  scoreOptimizerRotation,
+  type OverrideBuffVariant,
+} from "../calculator/optimizer";
+import type { OptimizerRotationData } from "../calculator/rotationData";
 import { getAttackData } from "../characters/characters";
-import { getCombinedEchoStats } from "../echoes/stats";
-import {
-  getSetsFromEchoes,
-  getSetBonusEffects,
-  getEnabledAdditionalBasePassives,
-} from "../echoes/sets";
-import {
-  calcCharStats,
-  computeSelfBuffs,
-  computeResonanceChainsBuffs,
-  computeAdditionalBaseBuffs,
-  computeAdditionalBaseFromPassives,
-  mergeAdditionalBaseData,
-  computeCritOverflowBuffs,
-  applyCharacterStatEdgeCases,
-} from "../calculator/stats";
-import { processAttacks, getCalculationContext } from "../calculator/attacks";
+import { computeSelfBuffs, computeResonanceChainsBuffs } from "../calculator/stats";
+import { processAttacks } from "../calculator/attacks";
 import { meetsMinStatThreshold } from "../calculator/meetsMinStatThreshold";
 
 /**
@@ -65,12 +58,14 @@ interface ProcessorConfig {
   mainEchoStats: Record<string, any>;
   target: string;
   damageType: string;
-  rotationData?: any;
+  rotationData?: OptimizerRotationData;
   topN: number;
   /** Loadout-independent; computed once on init */
   selfBuffsData: any;
   /** Loadout-independent; computed once on init */
   resonanceChainsBuffsData: any;
+  /** Loadout-independent; computed once on init, one entry per rotationData.overrideActions */
+  overrideBuffVariants: Map<string, OverrideBuffVariant>;
 }
 
 /**
@@ -168,236 +163,23 @@ function processLoadout(
   mainEchoStats: Record<string, any>,
   target: string,
   damageType: string,
-  rotationData: any | undefined,
+  rotationData: OptimizerRotationData | undefined,
   selfBuffsData: any,
   resonanceChainsBuffsData: any,
+  overrideBuffVariants: Map<string, OverrideBuffVariant>,
 ): any | null {
   try {
     const normalizedLoadout = normalizeOptimizerLoadout(loadout);
 
-    // Calculate echo stats and set bonuses
-    const echoStats = getCombinedEchoStats(normalizedLoadout);
-    const echoSets = getSetsFromEchoes(normalizedLoadout);
-    const echoSetBonuses = getSetBonusEffects(echoSets);
-    const setBonusOnePiece = echoSetBonuses?.setBonusOnePiece ?? null;
-    const setBonusOne = echoSetBonuses?.setBonusOne ?? null;
-    const setBonusTwo = echoSetBonuses?.setBonusTwo ?? null;
-    const mainEchoKey = normalizedLoadout[0]?.echo;
-    const mainEchoBuff = mainEchoStats?.[mainEchoKey] ?? {};
-
-    const setBonusOnePieceBuffs =
-      setBonusOnePiece && echoSetPassiveBuffs?.[setBonusOnePiece]
-        ? echoSetPassiveBuffs[setBonusOnePiece]
-        : {};
-    const setBonusOneBuffs =
-      setBonusOne && echoSetPassiveBuffs?.[setBonusOne]
-        ? echoSetPassiveBuffs[setBonusOne]
-        : {};
-    const setBonusTwoBuffs =
-      setBonusTwo && echoSetPassiveBuffs?.[setBonusTwo]
-        ? echoSetPassiveBuffs[setBonusTwo]
-        : {};
-    const allBuffsToAdd = [
-      echoStats,
-      mainEchoBuff,
-      setBonusOnePieceBuffs,
-      setBonusOneBuffs,
-      setBonusTwoBuffs,
-    ];
-    const combinedEchoBuffs: any = {};
-    allBuffsToAdd.forEach((buffs) => {
-      Object.keys(buffs).forEach((key) => {
-        if (combinedEchoBuffs[key]) {
-          combinedEchoBuffs[key] += buffs[key];
-        } else {
-          combinedEchoBuffs[key] = buffs[key];
-        }
-      });
-    });
-
-    // Intermediate stats with hoisted self/RC buffs (echo-dependent via combinedEchoBuffs)
-    let intermediateStats = calcCharStats(
-      "All",
-      null,
-      { ignoreEchoes: true },
-      combinedEchoBuffs,
-      null,
-      {
-        baseHp: context.baseHp,
-        baseAtk: context.baseAtk,
-        baseDef: context.baseDef,
-      },
-      {
-        weaponAtk: context.weaponData?.attack,
-        weaponModifier: context.weaponData?.modifier,
-        weaponModifierValue: context.weaponData?.modifierValue,
-        weaponPassiveData: context.weaponData?.weaponPassiveStats ?? {},
-      },
+    const loadoutStats = computeLoadoutFinalStats(
+      normalizedLoadout,
+      context,
       selfBuffsData,
       resonanceChainsBuffsData,
-      context.echoStats,
-      context.customBuffs,
-      context.teamBuffsData,
+      echoSetPassiveBuffs,
+      mainEchoStats,
     );
-
-    const additionalBaseBuffsData = computeAdditionalBaseBuffs(
-      context.activeCharacterBuffs ?? {},
-      context.chosenChar?.buffs ?? [],
-      context.activeCharacterResonanceChains ?? {},
-      context.character ?? null,
-      intermediateStats.energyRegen,
-      intermediateStats.totalCritRate,
-      context.activeStance ?? null,
-      intermediateStats.totalHp,
-      context.talentData ?? {},
-    );
-
-    const echoSetAdditionalBaseBuffsData = computeAdditionalBaseFromPassives(
-      getEnabledAdditionalBasePassives(
-        [setBonusOnePiece, setBonusOne, setBonusTwo],
-        context.echoSetPassivesConfig ?? {},
-      ),
-      intermediateStats.energyRegen,
-      intermediateStats.totalCritRate,
-      intermediateStats.totalHp,
-      context.talentData ?? {},
-    );
-    const mergedAdditionalBaseBuffsData = mergeAdditionalBaseData(
-      additionalBaseBuffsData,
-      echoSetAdditionalBaseBuffsData,
-    );
-
-    // Step 4b: Compute AdditionalBase buffs using intermediate stats (resonance chains)
-    let additionalBaseBuffsDataFromResonanceChains: {
-      CritRate: number;
-      CritDMG: number;
-      ATK: number;
-      ATK_FLAT: number;
-      specificTalentBuffs?: Record<string, number>;
-    } = {
-      CritRate: 0,
-      CritDMG: 0,
-      ATK: 0,
-      ATK_FLAT: 0,
-    };
-    // ignore Augusta, as her additional based buffs for resonance chains are handled in self buffs
-    // applying this for her will double the buffs
-    if (context.character !== "Augusta") {
-      additionalBaseBuffsDataFromResonanceChains = computeAdditionalBaseBuffs(
-        context.activeCharacterResonanceChains ?? {},
-        context.chosenChar.resonanceChains ?? [],
-        context.activeCharacterResonanceChains ?? {},
-        context.character ?? "",
-        intermediateStats.energyRegen,
-        intermediateStats.totalCritRate,
-        context.activeStance ?? null,
-        intermediateStats.totalHp,
-        context.talentData ?? {},
-      );
-    }
-
-    const critOverflowBuffsData = computeCritOverflowBuffs(
-      context.activeCharacterBuffs ?? {},
-      context.chosenChar?.buffs ?? [],
-      context.activeCharacterResonanceChains ?? {},
-      context.chosenChar?.resonanceChains ?? [],
-      intermediateStats.totalCritRate,
-      context.activeStance ?? null,
-    );
-
-    // generic merge covers every AdditionalBase target attr (CritRate, CritDMG, ATK,
-    // ATK_FLAT, EchoDMGBonus, DMGBonus, HealingBonus, elemental bonuses like Fusion, etc.)
-    // so new AdditionalBase targets don't need a matching entry added here
-    const mergedSelfBuffs: any = { ...selfBuffsData };
-    for (const key of Object.keys(mergedAdditionalBaseBuffsData ?? {})) {
-      if (key === "specificTalentBuffs") {
-        continue;
-      }
-      mergedSelfBuffs[key] =
-        (selfBuffsData?.[key] || 0) + (mergedAdditionalBaseBuffsData?.[key] || 0);
-    }
-    mergedSelfBuffs.CritDMG =
-      (mergedSelfBuffs.CritDMG || 0) + (critOverflowBuffsData?.CritDMG || 0);
-
-    // merge the specificTalentBuffs together
-    mergedSelfBuffs.specificTalentBuffs = Object.assign(
-      {},
-      selfBuffsData?.specificTalentBuffs ?? {},
-      mergedAdditionalBaseBuffsData?.specificTalentBuffs ?? {},
-    );
-    // Step 6b: Merge AdditionalBase and CritOverflow into self buffs (self buffs)
-    // ignore augusta though, otherwise it doubles up her buffs
-    let mergedResonanceChainsBuffsData = { ...resonanceChainsBuffsData };
-    if (context.character !== "Augusta") {
-      mergedResonanceChainsBuffsData = {
-        ...resonanceChainsBuffsData,
-        CritRate:
-          (resonanceChainsBuffsData?.CritRate || 0) +
-          (additionalBaseBuffsDataFromResonanceChains?.CritRate || 0),
-        CritDMG:
-          (resonanceChainsBuffsData?.CritDMG || 0) +
-          (additionalBaseBuffsDataFromResonanceChains?.CritDMG || 0) +
-          (critOverflowBuffsData?.CritDMG || 0),
-        ATK:
-          (resonanceChainsBuffsData?.ATK || 0) +
-          (additionalBaseBuffsDataFromResonanceChains?.ATK || 0),
-        ATK_FLAT:
-          (resonanceChainsBuffsData?.ATK_FLAT || 0) +
-          (additionalBaseBuffsDataFromResonanceChains?.ATK_FLAT || 0),
-        // AdditionalBase modifiers scoped via modifySpecificTalents (e.g. Jingran's
-        // SequenceNode3 ATK_FLAT upgrade) resolve into specificTalentBuffs instead
-        // of the flat sums above — merge those forward too, or a chain-level
-        // per-talent buff silently computes to zero effect (see attacks.ts's
-        // matching charResonanceChainsData?.specificTalentBuffs read for ATK_FLAT).
-        specificTalentBuffs: Object.assign(
-          {},
-          resonanceChainsBuffsData?.specificTalentBuffs ?? {},
-          additionalBaseBuffsDataFromResonanceChains?.specificTalentBuffs ?? {},
-        ),
-      };
-    }
-
-    const finalStats = calcCharStats(
-      "All",
-      null,
-      { ignoreEchoes: true },
-      combinedEchoBuffs,
-      null,
-      {
-        baseHp: context.baseHp,
-        baseAtk: context.baseAtk,
-        baseDef: context.baseDef,
-      },
-      {
-        weaponAtk: context.weaponData?.attack,
-        weaponModifier: context.weaponData?.modifier,
-        weaponModifierValue: context.weaponData?.modifierValue,
-        weaponPassiveData: context.weaponData?.weaponPassiveStats ?? {},
-      },
-      mergedSelfBuffs,
-      mergedResonanceChainsBuffsData,
-      context.echoStats,
-      context.customBuffs,
-      context.teamBuffsData,
-    );
-
-    applyCharacterStatEdgeCases(
-      finalStats,
-      context.character ?? "",
-      context.activeCharacterResonanceChains ?? {},
-    );
-
-    const weaponAtk = context.weaponData?.attack;
-    finalStats.totalAtk =
-      (context.baseAtk + weaponAtk) * (1 + finalStats.attackPercent / 100) +
-      finalStats.attackFlat;
-    finalStats.totalHp =
-      context.baseHp * (1 + finalStats.hpPercent / 100) + finalStats.hpFlat;
-    finalStats.totalDef =
-      context.baseDef * (1 + finalStats.defPercent / 100) + finalStats.defFlat;
-    finalStats.totalCritRate = finalStats.critRate / 100;
-    finalStats.totalCritDMG = finalStats.critDMG / 100;
-    finalStats.DefIgnore = finalStats.defIgnore / 100;
+    const { finalStats, combinedEchoBuffs } = loadoutStats;
 
     // Check min stats
     if (minStats.length > 0) {
@@ -478,7 +260,6 @@ function processLoadout(
         actionType: actionTypeForAttackData,
         buffs: null,
         count: 1,
-        excludeSelfBuffs: false,
         excludeTeamBuffs: false,
         excludeWeaponBuffs: false,
         key: attackKey,
@@ -501,64 +282,10 @@ function processLoadout(
         damageTargetMap[damageType as keyof typeof damageTargetMap] ??
         "avgDamage";
 
-      const optimizerContext = getCalculationContext(
-        context.chosenChar,
+      const optimizerContext = buildOptimizerCalculationContext(
+        context,
+        finalStats,
         combinedEchoBuffs,
-        context.teamBuffsData,
-        context.talentData,
-        context.isSpectroFrazzleEnabled,
-        context.spectroFrazzleStacks,
-        context.isAeroErosionEnabled,
-        context.aeroErosionStacks,
-        context.isFusionBurstEnabled,
-        context.fusionBurstStacks,
-        context.isElectroFlareEnabled,
-        context.electroFlareStacks,
-        context.electroRageStacks,
-        context.isGlacioChafeEnabled,
-        context.glacioChafeStacks,
-        context.characterLevel,
-        context.mainEcho,
-        context.mainEchoRank,
-        context.rotationsList,
-        context.charResonanceChainsData,
-        context.charBuffsData,
-        context.baseHp,
-        context.baseAtk,
-        context.baseDef,
-        context.weaponData,
-        context.customBuffs,
-        finalStats.glacio ?? context.Glacio,
-        finalStats.fusion ?? context.Fusion,
-        finalStats.electro ?? context.Electro,
-        finalStats.aero ?? context.Aero,
-        finalStats.spectro ?? context.Spectro,
-        finalStats.havoc ?? context.Havoc,
-        finalStats.totalDef,
-        finalStats.totalHp,
-        finalStats.energyRegen,
-        finalStats.totalAtk,
-        finalStats.basicAttackDMGBonus,
-        finalStats.heavyAttackDMGBonus,
-        finalStats.resonanceSkillDMGBonus,
-        finalStats.introSkillDMGBonus,
-        finalStats.outroSkillDMGBonus,
-        finalStats.resonanceLiberationDMGBonus,
-        finalStats.echoDMGBonus,
-        finalStats.healingBonus,
-        finalStats.shieldBonus,
-        finalStats.totalCritRate,
-        finalStats.totalCritDMG,
-        finalStats.DefIgnore,
-        context.havocBaneStacks,
-        finalStats.resistReduction,
-        finalStats.totalDeepenEffect,
-        context.enemyLevel,
-        context.enemyResist,
-        context.characters,
-        context.character,
-        context.enemyType,
-        context.strainStacks,
       );
 
       const attacks = processAttacks(
@@ -583,6 +310,13 @@ function processLoadout(
         return null;
       }
 
+      const { attacks, damageAggregation } = scoreOptimizerRotation(
+        rotationData,
+        normalizedLoadout,
+        loadoutStats,
+        context,
+        overrideBuffVariants,
+      );
       const rotationInfo: any = {
         id: rotationData.id,
         name: rotationData.name,
@@ -590,133 +324,6 @@ function processLoadout(
         duration: rotationData.duration ?? null,
         echo: rotationData.echo ?? null,
       };
-
-      // Build context from optimizer's finalStats
-      const optimizerContext = getCalculationContext(
-        context.chosenChar,
-        combinedEchoBuffs,
-        context.teamBuffsData,
-        context.talentData,
-        context.isSpectroFrazzleEnabled,
-        context.spectroFrazzleStacks,
-        context.isAeroErosionEnabled,
-        context.aeroErosionStacks,
-        context.isFusionBurstEnabled,
-        context.fusionBurstStacks,
-        context.isElectroFlareEnabled,
-        context.electroFlareStacks,
-        context.electroRageStacks,
-        context.isGlacioChafeEnabled,
-        context.glacioChafeStacks,
-        context.characterLevel,
-        context.mainEcho,
-        context.mainEchoRank,
-        context.rotationsList,
-        context.charResonanceChainsData,
-        context.charBuffsData,
-        context.baseHp,
-        context.baseAtk,
-        context.baseDef,
-        context.weaponData,
-        context.customBuffs,
-        finalStats.glacio ?? context.Glacio,
-        finalStats.fusion ?? context.Fusion,
-        finalStats.electro ?? context.Electro,
-        finalStats.aero ?? context.Aero,
-        finalStats.spectro ?? context.Spectro,
-        finalStats.havoc ?? context.Havoc,
-        finalStats.totalDef,
-        finalStats.totalHp,
-        finalStats.energyRegen,
-        finalStats.totalAtk,
-        finalStats.basicAttackDMGBonus,
-        finalStats.heavyAttackDMGBonus,
-        finalStats.resonanceSkillDMGBonus,
-        finalStats.introSkillDMGBonus,
-        finalStats.outroSkillDMGBonus,
-        finalStats.resonanceLiberationDMGBonus,
-        finalStats.echoDMGBonus,
-        finalStats.healingBonus,
-        finalStats.shieldBonus,
-        finalStats.totalCritRate,
-        finalStats.totalCritDMG,
-        finalStats.DefIgnore,
-        context.havocBaneStacks,
-        finalStats.resistReduction,
-        finalStats.totalDeepenEffect,
-        context.enemyLevel,
-        context.enemyResist,
-        context.characters,
-        context.character,
-        context.enemyType,
-        context.strainStacks,
-      );
-
-      const attacks = processAttacks(
-        rotationData.attacks, // process all attacks in this rotation
-        optimizerContext,
-        null, // talentType = null since it will be figured out dynamically
-        false, // hasNoTalentType = no, unless it's outro (TODO)
-        true, // dynamicTalentType = yes, this will figure out the talent data for us
-        false, // excludeDisabledAttacks = no, unless we need to (TODO)
-        finalStats, // give our stats, it will use this instead of the global state
-        combinedEchoBuffs, // provide the echoes so we can exclude them if needed
-      );
-
-      // Aggregate damage from all attacks
-      const damageAggregation = {
-        normalDamage: null,
-        avgDamage: null,
-        critDamage: null,
-        healing: null,
-        shield: null,
-      };
-
-      attacks.forEach((attack: any) => {
-        if (attack?.originalIsEnabled === false) {
-          return;
-        }
-        if (
-          attack.type === "ElementalEffect" &&
-          attack?.damage?.damage !== undefined &&
-          attack?.damage?.totalDamage === undefined
-        ) {
-          const v = attack.damage.damage;
-          damageAggregation.normalDamage =
-            (damageAggregation.normalDamage || 0) + v;
-          damageAggregation.avgDamage =
-            (damageAggregation.avgDamage || 0) + v;
-          damageAggregation.critDamage =
-            (damageAggregation.critDamage || 0) + v;
-          return;
-        }
-        if (attack?.damage?.totalDamage !== undefined) {
-          damageAggregation.normalDamage =
-            (damageAggregation.normalDamage || 0) + attack?.damage?.totalDamage;
-        }
-        if (attack?.damage?.avgDamage !== undefined) {
-          damageAggregation.avgDamage =
-            (damageAggregation.avgDamage || 0) + attack?.damage?.avgDamage;
-        }
-        if (attack?.damage?.critDamage !== undefined) {
-          damageAggregation.critDamage =
-            (damageAggregation.critDamage || 0) + attack?.damage?.critDamage;
-        }
-        if (
-          attack.type === "Healing" &&
-          attack?.damage?.healAmount !== undefined
-        ) {
-          damageAggregation.healing =
-            (damageAggregation.healing || 0) + attack?.damage?.healAmount;
-        }
-        if (
-          attack.type === "Shield" &&
-          attack?.damage?.shieldAmount !== undefined
-        ) {
-          damageAggregation.shield =
-            (damageAggregation.shield || 0) + attack?.damage?.shieldAmount;
-        }
-      });
 
       const damageTargetMap = {
         Normal: "normalDamage",
@@ -770,6 +377,7 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
       localHeap = [];
       if (data?.context) {
         const context = data.context;
+        const rotationData: OptimizerRotationData | undefined = data.rotationData ?? undefined;
         processorConfig = {
           context,
           minStats: Array.isArray(data.minStats) ? data.minStats : [],
@@ -777,7 +385,7 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
           mainEchoStats: data.mainEchoStats ?? {},
           target: data.target ?? "",
           damageType: data.damageType ?? "Average",
-          rotationData: data.rotationData ?? null,
+          rotationData,
           topN: typeof data.topN === "number" && data.topN > 0 ? data.topN : 5,
           // Echo-independent buffs — compute once per run
           resonanceChainsBuffsData: computeResonanceChainsBuffs(
@@ -795,6 +403,9 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
             context.activeStance ?? null,
             { havocBaneStacks: context.havocBaneStacks ?? 0 },
           ),
+          overrideBuffVariants: rotationData?.overrideActions.length
+            ? computeOverrideBuffVariants(rotationData.overrideActions, context)
+            : new Map(),
         };
       } else {
         processorConfig = null;
@@ -850,6 +461,7 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
         topN,
         selfBuffsData,
         resonanceChainsBuffsData,
+        overrideBuffVariants,
       } = processorConfig;
 
       try {
@@ -872,6 +484,7 @@ self.onmessage = (e: MessageEvent<ProcessorMessage>) => {
               rotationData,
               selfBuffsData,
               resonanceChainsBuffsData,
+              overrideBuffVariants,
             );
 
             if (result && tryInsertLocalHeap(result, topN)) {

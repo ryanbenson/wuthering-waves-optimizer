@@ -15,7 +15,6 @@ describe("useTeamRotationsStore.importTeam", () => {
       actions: [{ id: "stale-id", slot: 0, order: 1, key: "Foo", type: "basic" }],
       duration: 30,
       enemyConfig: { enemyLevel: 95 },
-      mode: "advanced",
     });
 
     expect(team.id).toBeTruthy();
@@ -44,7 +43,7 @@ describe("useTeamRotationsStore.importTeam", () => {
     });
   });
 
-  it("defaults an unrecognized mode to basic, and an empty name to a placeholder", () => {
+  it("defaults an empty name to a placeholder", () => {
     const store = useTeamRotationsStore();
     const team = store.importTeam({
       name: "",
@@ -52,10 +51,8 @@ describe("useTeamRotationsStore.importTeam", () => {
       actions: [],
       duration: null,
       enemyConfig: {},
-      mode: "not-a-real-mode",
     });
 
-    expect(team.mode).toBe("basic");
     expect(team.name).toBe("Imported Team");
   });
 

@@ -1,19 +1,22 @@
 <template>
   <div
-    class="build-card-portrait relative border-solid neutral-content bg-cover bg-center cursor-pointer"
+    class="build-card-portrait relative overflow-hidden border-solid neutral-content cursor-pointer"
     :class="[
       isDragging ? 'bg-base-300' : '',
       variant === 'cover'
         ? 'build-card-portrait--cover w-full h-full'
         : 'rounded-full border size-32 mb-2 mx-auto',
     ]"
-    :style="{ backgroundImage: `url(${displayPortrait})` }"
     @click="triggerFileSelect"
     @dragover.prevent="onDragOver"
     @dragenter.prevent="onDragEnter"
     @dragleave.prevent="onDragLeave"
     @drop.prevent="onDrop"
     data-test-build-card-portrait>
+    <div
+      class="build-card-portrait__image absolute inset-0"
+      :style="imageStyle"
+      data-test-build-card-portrait-image></div>
     <input
       type="file"
       @change="onFileChange"
@@ -39,6 +42,7 @@ import { computed, ref } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useToast } from "../composables/useToast";
 import { compressImageToDataUrl } from "../utils/imageCompression";
+import { imageLayerStyle, type ImageTransform } from "../utils/imageTransform";
 
 const props = withDefaults(
   defineProps<{
@@ -46,6 +50,7 @@ const props = withDefaults(
     currentPortrait?: string | null;
     defaultPortraitUrl: string;
     variant?: "avatar" | "cover";
+    transform?: Partial<ImageTransform> | null;
   }>(),
   { variant: "avatar" },
 );
@@ -59,6 +64,10 @@ const dragCounter = ref(0);
 
 const displayPortrait = computed(
   () => props.currentPortrait || props.defaultPortraitUrl,
+);
+
+const imageStyle = computed(() =>
+  imageLayerStyle(displayPortrait.value, props.transform),
 );
 
 function triggerFileSelect() {
@@ -112,7 +121,13 @@ async function handleImageFile(file: File) {
   img.onload = () => {
     try {
       const dataUrl = compressImageToDataUrl(img);
-      setCharacterData(props.character, { customPortrait: dataUrl });
+      // A fresh image starts framed at the default cover/center/100% look —
+      // any positioning dialed in for the *previous* portrait wouldn't mean
+      // anything for a differently-cropped one.
+      setCharacterData(props.character, {
+        customPortrait: dataUrl,
+        customPortraitTransform: null,
+      });
       showToast("Portrait updated", "success");
     } catch {
       showToast("Failed to process image", "error");
@@ -128,7 +143,10 @@ async function handleImageFile(file: File) {
 }
 
 function resetPortrait() {
-  setCharacterData(props.character, { customPortrait: null });
+  setCharacterData(props.character, {
+    customPortrait: null,
+    customPortraitTransform: null,
+  });
   showToast("Reset to default art", "success");
 }
 </script>

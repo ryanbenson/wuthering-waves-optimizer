@@ -36,6 +36,7 @@ Documented at the top of `index.ts`:
 | 3 | Rename SunSinkingEclipse / Sun-sinking Eclipse → Havoc Eclipse |
 | 4 | Add `order` to character rotations |
 | 5 | Include `teamRotations` store in export/import (no data transform) |
+| 6 | Replace character rotation `excludeWeaponBuffs`/`excludeTeamBuffs`/`excludeSelfBuffs` checkboxes with an `advancedConfig` per-buff override (issue #401) — see `versions/006_replaceCharacterRotationExcludeBuffs.ts` |
 
 ## Two call sites, two purposes
 

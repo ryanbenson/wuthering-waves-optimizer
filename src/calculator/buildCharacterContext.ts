@@ -3,11 +3,7 @@ import { isStatBonusBuff } from "../characters/statBonusBuffs";
 import { getWeaponByName } from "../weapons/weapons";
 import { computeWeaponPassiveStats } from "../weapons/weaponPassives";
 import { getCombinedEchoStats } from "../echoes/stats";
-import {
-  aggregateEchoSetPassiveStats,
-  resolveEchoSetPassiveInstance,
-  type EchoSetPassiveResult,
-} from "../echoes/echoSetPassives";
+import { resolveSetBonusStats } from "../echoes/echoSetPassives";
 import { combineEchoStats } from "../echoes/mainEcho";
 import {
   getMainEchoBuffs,
@@ -110,28 +106,6 @@ function resolveCharacterEchoes(
     resolved.push(inventoryEcho ?? slot ?? {});
   }
   return resolved;
-}
-
-function resolveSetBonusStats(
-  setBonusDef: { passives?: any[] } | null | undefined,
-  echoSetPassivesConfig: Record<string, { isEnabled?: boolean; stacks?: number }>,
-  talentData: Record<string, string | number | undefined>,
-  alwaysEnabledOnly = false,
-): Record<string, unknown> {
-  const passives = (setBonusDef?.passives ?? []).filter(
-    (passive) => !alwaysEnabledOnly || Boolean(passive.alwaysEnabled),
-  );
-  const resolved: EchoSetPassiveResult[] = passives.map((passive) =>
-    resolveEchoSetPassiveInstance(
-      String(passive.key ?? ""),
-      passive.modifiers ?? [],
-      echoSetPassivesConfig[String(passive.key ?? "")],
-      Boolean(passive.hasStacks),
-      Boolean(passive.alwaysEnabled),
-      talentData,
-    ),
-  );
-  return aggregateEchoSetPassiveStats(resolved);
 }
 
 function namePassivesWithSet(setBonusDef: { name?: string; passives?: any[] } | null | undefined): any[] {
