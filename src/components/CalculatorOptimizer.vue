@@ -299,7 +299,9 @@
       </p>
       <template v-else>
         <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-          <div>
+          <div
+            data-test-optimizer-progress
+            :data-test-optimizer-progress-done="(totalCombos ?? 0) > 0 && (processedCombos ?? 0) >= (totalCombos ?? 0)">
             Processed
             <span class="font-bold">{{ processedCombos }}</span>
             of
