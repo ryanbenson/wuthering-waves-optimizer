@@ -1,6 +1,7 @@
 export const liberationAttacks = {
   name: "Resonance Liberation: Billows Beneath Heaven",
   description: `<div>Deal <span style="color:#c7ffed";>Aero DMG</span>.<br>Can be cast in mid-air close to the ground.</div>`,
+  icon: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconQingxiao/SP_IconQingxiaoC1.webp",
   attacks: [
     {
       key: "BillowsBeneathHeavenDMG",

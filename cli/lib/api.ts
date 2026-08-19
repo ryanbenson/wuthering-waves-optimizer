@@ -1,9 +1,9 @@
 const CHARACTER_API_BASE = "https://api-v2.encore.moe/api/en/character";
-const CHARACTER_LIST_URL = `${CHARACTER_API_BASE}?v=Beta`;
+const CHARACTER_LIST_URL = `${CHARACTER_API_BASE}`;
 const WEAPON_API_BASE = "https://api-v2.encore.moe/api/en/weapon";
-const WEAPON_LIST_URL = `${WEAPON_API_BASE}?v=Beta`;
+const WEAPON_LIST_URL = `${WEAPON_API_BASE}`;
 const ECHO_API_BASE = "https://api-v2.encore.moe/api/en/echo";
-const ECHO_LIST_URL = `${ECHO_API_BASE}?v=Beta`;
+const ECHO_LIST_URL = `${ECHO_API_BASE}`;
 
 export interface ApiCharacterListItem {
   Id: number;

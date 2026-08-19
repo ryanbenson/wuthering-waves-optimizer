@@ -1,7 +1,8 @@
 const weaponInfo: WeaponInfo = {
-  name: "Cloud Jasper",
-  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/CloudJasper.png",
-  description: "Mist drifts through the clouds, still water blue as the sky above; thin shadows slant across, and petals scatter down.\nMay I carry this jade blade into the dust of the world, cleanse this tarnished age, and cut down every evil.",
+  name: "Glint of Clouds",
+  image: "https://ryanbenson.github.io/wuthering-waves-assets/images/weapons/GlintOfClouds.png",
+  description: `Wreathed in mist and cloud, still waters blend with the sky in seamless blue. Sparse shadows slant across as a rain of petals falls.<br>
+May I bear this jade blade into the mortal realm, cleanse a tarnished age, and put the wicked to the sword.`,
   type: "Sword",
   rarity: 5,
   passiveName: "Evil's Scourge",

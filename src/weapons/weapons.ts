@@ -3,7 +3,7 @@ export const swordsList = {
     { key: "AzureOath", name: "Azure Oath" },
     { key: "BlazingBrilliance", name: "Blazing Brilliance" },
     { key: "BloodpactsPledge", name: "Bloodpact's Pledge" },
-    { key: "CloudJasper", name: "Cloud Jasper" },
+    { key: "GlintOfClouds", name: "Glint of Clouds" },
     { key: "DefiersThorn", name: "Defier's Thorn" },
     { key: "EmeraldOfGenesis", name: "Emerald Of Genesis" },
     { key: "EmeraldSentence", name: "Emerald Sentence" },

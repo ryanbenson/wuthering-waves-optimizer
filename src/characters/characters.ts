@@ -52,7 +52,6 @@ export const characterPickerRoster: CharacterList = {
     { key: "RoverSpectroMale", name: "Rover Spectro (Male)" },
     { key: "Shorekeeper", name: "Shorekeeper" },
     { key: "Sigrika", name: "Sigrika" },
-    { key: "StayTuned", name: "Stay tuned" },
     { key: "Suisui", name: "Suisui" },
     { key: "Verina", name: "Verina" },
     { key: "XiangliYao", name: "Xiangli Yao" },
@@ -383,13 +382,6 @@ export const allCharactersList = [
     element: "Aero",
     rarity: 5,
     weapon: "Gauntlet",
-  },
-  {
-    key: "StayTuned",
-    name: "Stay tuned",
-    element: "Fusion",
-    rarity: 5,
-    weapon: "Broadblade",
   },
   {
     key: "Suisui",
