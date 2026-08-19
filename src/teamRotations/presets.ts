@@ -15,8 +15,8 @@ export interface TeamRotationPreset {
 /**
  * Curated Team Rotations presets, listed in the app under Teams > List
  * Presets. Add new entries to this array — each is a full, importable team
- * (characters, actions, enemy config, mode). This file is meant to grow
- * long; keep entries self-contained and alphabetized by `name` isn't
- * required, just append new ones.
+ * (characters, actions, enemy config). This file is meant to grow long;
+ * keep entries self-contained and alphabetized by `name` isn't required,
+ * just append new ones.
  */
 export const teamRotationPresets: TeamRotationPreset[] = [];

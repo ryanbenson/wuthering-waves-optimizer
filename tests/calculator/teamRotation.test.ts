@@ -4,16 +4,16 @@ import {
   calcRotationDps,
   calcStrongestHit,
   calcRotationTimeline,
-  buildAdvancedConfigSnapshot,
   convertRotationActionsForSlot,
   computeTeamImportBase,
-  applyBulkAdvancedConfigOverride,
   type TeamRotationAction,
   type SourceRotationAction,
 } from "../../src/calculator/teamRotation";
+import { buildAdvancedConfigSnapshot } from "../../src/calculator/rotationAdvancedBuffs";
 import { buildCharacterCalculationContext } from "../../src/calculator/buildCharacterContext";
 import { resolveRotationActionToAttackData } from "../../src/calculator/resolveRotationAction";
 import { calcDamages } from "../../src/calculator/attacks";
+import { calcCharacterRotationDamage } from "../../src/calculator/characterRotation";
 import type { TeamEnemyConfig } from "../../src/calculator/buildCharacterContext";
 
 const enemyConfig: TeamEnemyConfig = {
@@ -201,37 +201,11 @@ describe("computeTeamImportBase", () => {
   });
 });
 
-describe("applyBulkAdvancedConfigOverride", () => {
-  function makeAction(id: string, existingConfig?: TeamRotationAction["advancedConfig"]): TeamRotationAction {
-    return { id, slot: 0, order: 1, key: "Foo", type: "skill", advancedConfig: existingConfig };
-  }
-
-  it("writes the override into the named buff for every listed action, leaving others untouched", () => {
-    const actions = [makeAction("a"), makeAction("b"), makeAction("c")];
-    const result = applyBulkAdvancedConfigOverride(actions, ["a", "b"], "buffs", "SomeBuff", {
-      isEnabled: true,
-      stacks: 3,
-    });
-    expect(result[0].advancedConfig?.buffs?.SomeBuff).toEqual({ isEnabled: true, stacks: 3 });
-    expect(result[1].advancedConfig?.buffs?.SomeBuff).toEqual({ isEnabled: true, stacks: 3 });
-    expect(result[2].advancedConfig).toBeUndefined();
-  });
-
-  it("merges into existing advancedConfig without clobbering other buffs", () => {
-    const actions = [makeAction("a", { buffs: { OtherBuff: { isEnabled: true } } })];
-    const result = applyBulkAdvancedConfigOverride(actions, ["a"], "buffs", "SomeBuff", { isEnabled: false });
-    expect(result[0].advancedConfig?.buffs).toEqual({
-      OtherBuff: { isEnabled: true },
-      SomeBuff: { isEnabled: false },
-    });
-  });
-
-  it("handles the mainEchoBuff category, which has no per-key map", () => {
-    const actions = [makeAction("a")];
-    const result = applyBulkAdvancedConfigOverride(actions, ["a"], "mainEchoBuff", null, { isEnabled: true, stacks: 2 });
-    expect(result[0].advancedConfig?.mainEchoBuff).toEqual({ isEnabled: true, stacks: 2 });
-  });
-});
+// applyBulkAdvancedConfigOverride itself is covered by
+// tests/calculator/rotationAdvancedBuffs.test.ts — it moved there (from
+// this file) when Team Rotations' Basic/Advanced mode toggle was removed
+// (#401) and the per-buff override machinery became shared with Character
+// Rotations.
 
 describe("calcTeamRotationDamage", () => {
   const characters = { Calcharo: {} };
@@ -260,7 +234,17 @@ describe("calcTeamRotationDamage", () => {
     const expectedDamage = calcDamages(built.context);
     const expectedAggregation = expectedDamage?.rotations?.[0]?.damageAggregation;
 
-    expect(result.perCharacter.Calcharo.damageAggregation).toEqual(expectedAggregation);
+    // calcCharacterRotationDamage's damageAggregation always goes through
+    // addDamageAggregation (even for a single plain action), which coerces
+    // healing/shield through 0 rather than preserving calcDamages' own `null`
+    // for "not applicable" — falsy either way for display purposes, so
+    // compare the damage fields directly rather than the whole object.
+    const perCharacterAgg = result.perCharacter.Calcharo.damageAggregation;
+    expect(perCharacterAgg.normalDamage).toEqual(expectedAggregation.normalDamage);
+    expect(perCharacterAgg.avgDamage).toEqual(expectedAggregation.avgDamage);
+    expect(perCharacterAgg.critDamage).toEqual(expectedAggregation.critDamage);
+    expect(perCharacterAgg.healing).toBeFalsy();
+    expect(perCharacterAgg.shield).toBeFalsy();
     expect(result.perCharacter.Calcharo.attacks).toEqual(
       expectedDamage?.rotations?.[0]?.attacks,
     );
@@ -297,7 +281,7 @@ describe("calcTeamRotationDamage", () => {
     expect(result.total).toEqual({ normalDamage: 0, avgDamage: 0, critDamage: 0, healing: 0, shield: 0 });
   });
 
-  it("advanced mode applies a per-action buff override on top of the character's own config", async () => {
+  it("a per-action advancedConfig override applies on top of the character's own config", async () => {
     const plainAction: TeamRotationAction = {
       id: "action-1",
       slot: 0,
@@ -323,7 +307,6 @@ describe("calcTeamRotationDamage", () => {
         characterIds: ["Calcharo", null, null],
         actions: [plainAction, buffedAction],
         duration: 10,
-        mode: "advanced",
       },
       characters,
       enemyConfig,
@@ -342,16 +325,15 @@ describe("calcTeamRotationDamage", () => {
       plainResult.attack.damage.totalDamage + buffedResult.attack.damage.totalDamage;
     expect(result.perCharacter.Calcharo.damageAggregation.normalDamage).toBeCloseTo(expectedTotal);
 
-    // The plain (non-advanced) action's damage matches what basic mode would
-    // have produced for the exact same action — advanced mode only changes
-    // the number when an override is actually present.
-    const basicModeResult = await calcTeamRotationDamage(
+    // The plain (unoverridden) action's damage matches what it would produce
+    // scored alone — a real override on a sibling action never leaks into it.
+    const soloPlainResult = await calcTeamRotationDamage(
       { characterIds: ["Calcharo", null, null], actions: [plainAction], duration: 10 },
       characters,
       enemyConfig,
     );
     expect(plainResult.attack.damage.totalDamage).toBeCloseTo(
-      basicModeResult.actionResults[0].attack.damage.totalDamage,
+      soloPlainResult.actionResults[0].attack.damage.totalDamage,
     );
   });
 
@@ -376,37 +358,8 @@ describe("calcTeamRotationDamage", () => {
   });
 });
 
-describe("buildAdvancedConfigSnapshot", () => {
-  it("in 'current' mode, mirrors the character's real enabled state so advanced-mode checkboxes aren't misleadingly blank", async () => {
-    const characterData = { buffs: { StatBonusATK1: { isEnabled: true } } };
-    const built = await buildCharacterCalculationContext("Calcharo", { Calcharo: characterData }, enemyConfig);
-
-    const snapshot = buildAdvancedConfigSnapshot(characterData, built.definitions, "current");
-
-    expect(snapshot.buffs?.StatBonusATK1).toEqual({
-      isEnabled: true,
-      stacks: undefined,
-      baseAttrValue: undefined,
-    });
-    // A buff never touched on the character page defaults to disabled, same
-    // as the character store's own convention.
-    const anotherBuffKey = built.definitions.buffs.find((d: any) => d.key !== "StatBonusATK1")?.key;
-    expect(snapshot.buffs?.[anotherBuffKey]?.isEnabled).toBe(false);
-  });
-
-  it("in 'blank' mode, disables every known toggle regardless of the character's real config", async () => {
-    const characterData = { buffs: { StatBonusATK1: { isEnabled: true } } };
-    const built = await buildCharacterCalculationContext("Calcharo", { Calcharo: characterData }, enemyConfig);
-
-    const snapshot = buildAdvancedConfigSnapshot(characterData, built.definitions, "blank");
-
-    expect(snapshot.buffs?.StatBonusATK1).toEqual({ isEnabled: false });
-    for (const def of built.definitions.buffs) {
-      expect(snapshot.buffs?.[def.key]?.isEnabled).toBe(false);
-    }
-  });
-
-  it("feeding a 'current' snapshot back through applyAdvancedOverrides (via calcTeamRotationDamage) reproduces basic mode's damage exactly", async () => {
+describe("buildAdvancedConfigSnapshot (via calcTeamRotationDamage)", () => {
+  it("feeding a 'current' snapshot back through applyAdvancedOverrides (via calcTeamRotationDamage) reproduces the plain-action damage exactly", async () => {
     const characterData = { buffs: { StatBonusATK1: { isEnabled: true } } };
     const characters = { Calcharo: characterData };
     const built = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
@@ -422,9 +375,9 @@ describe("buildAdvancedConfigSnapshot", () => {
       advancedConfig: snapshot,
     };
 
-    const [advancedResult, basicResult] = await Promise.all([
+    const [overriddenResult, plainResult] = await Promise.all([
       calcTeamRotationDamage(
-        { characterIds: ["Calcharo", null, null], actions: [action], duration: 10, mode: "advanced" },
+        { characterIds: ["Calcharo", null, null], actions: [action], duration: 10 },
         characters,
         enemyConfig,
       ),
@@ -435,16 +388,77 @@ describe("buildAdvancedConfigSnapshot", () => {
       ),
     ]);
 
-    // Advanced mode's per-action summation coerces healing/shield through 0
-    // rather than preserving basic mode's `null` for "not applicable" — a
-    // harmless representational difference (both falsy, summed the same way
-    // everywhere they're consumed), so compare the damage numbers directly.
-    const advancedAgg = advancedResult.perCharacter.Calcharo.damageAggregation;
-    const basicAgg = basicResult.perCharacter.Calcharo.damageAggregation;
-    expect(advancedAgg.normalDamage).toBeCloseTo(basicAgg.normalDamage as number);
-    expect(advancedAgg.avgDamage).toBeCloseTo(basicAgg.avgDamage as number);
-    expect(advancedAgg.critDamage).toBeCloseTo(basicAgg.critDamage as number);
-    expect(advancedAgg.healing || 0).toBeCloseTo(basicAgg.healing || 0);
-    expect(advancedAgg.shield || 0).toBeCloseTo(basicAgg.shield || 0);
+    // The override path's per-action summation coerces healing/shield
+    // through 0 rather than preserving the plain path's `null` for "not
+    // applicable" — a harmless representational difference (both falsy,
+    // summed the same way everywhere they're consumed), so compare the
+    // damage numbers directly.
+    const overriddenAgg = overriddenResult.perCharacter.Calcharo.damageAggregation;
+    const plainAgg = plainResult.perCharacter.Calcharo.damageAggregation;
+    expect(overriddenAgg.normalDamage).toBeCloseTo(plainAgg.normalDamage as number);
+    expect(overriddenAgg.avgDamage).toBeCloseTo(plainAgg.avgDamage as number);
+    expect(overriddenAgg.critDamage).toBeCloseTo(plainAgg.critDamage as number);
+    expect(overriddenAgg.healing || 0).toBeCloseTo(plainAgg.healing || 0);
+    expect(overriddenAgg.shield || 0).toBeCloseTo(plainAgg.shield || 0);
+  });
+});
+
+describe("importing a Character Rotation's per-action buffs into a Team Rotation", () => {
+  // The scenario a user asked about directly: a Character Rotation action
+  // with its own per-buff advancedConfig customization, imported into a
+  // Team Rotation slot via "Import Rotation" (TeamRotationTeamEditor.vue's
+  // handleImportRotation -> convertRotationActionsForSlot). There's no team
+  // "mode" left to worry about — every action is scored per its own
+  // advancedConfig automatically, exactly like a Character Rotation already
+  // does, so the imported numbers should match the source exactly.
+  it("carries a per-action advancedConfig override through the import and honors it in the team's damage calc", async () => {
+    const characters = { Calcharo: {} };
+    const sourceActions: SourceRotationAction[] = [
+      { id: "char-rotation-a1", order: 1, type: "basic", key: "Part1Damage", count: 1 },
+      {
+        id: "char-rotation-a2",
+        order: 2,
+        type: "basic",
+        key: "Part1Damage",
+        count: 1,
+        // Off by default for Calcharo — this action alone should get boosted,
+        // both before and after the import.
+        advancedConfig: { buffs: { StatBonusATK1: { isEnabled: true } } },
+      },
+    ];
+
+    // "Before": the source rotation scored directly as a Character Rotation.
+    const sourceResult = await calcCharacterRotationDamage(
+      { id: "r1", name: "Source Rotation", duration: 10, actions: sourceActions as any },
+      null,
+      "Calcharo",
+      characters,
+      enemyConfig,
+    );
+    const [sourcePlain, sourceOverridden] = sourceResult.attacks;
+    expect(sourceOverridden.damage.totalDamage).toBeGreaterThan(sourcePlain.damage.totalDamage);
+
+    // "Import": convert into a team slot, exactly like handleImportRotation.
+    const converted = convertRotationActionsForSlot(sourceActions, 0, 1);
+    expect(converted.map((a) => a.advancedConfig)).toEqual([
+      undefined,
+      { buffs: { StatBonusATK1: { isEnabled: true } } },
+    ]);
+
+    // "After": the imported actions scored as a Team Rotation.
+    const teamResult = await calcTeamRotationDamage(
+      { characterIds: ["Calcharo", null, null], actions: converted, duration: 10 },
+      characters,
+      enemyConfig,
+    );
+    expect(teamResult.actionResults).toHaveLength(2);
+    const teamPlain = teamResult.actionResults.find((r) => r.order === 1)!;
+    const teamOverridden = teamResult.actionResults.find((r) => r.order === 2)!;
+
+    // The import must reproduce the source rotation's numbers exactly —
+    // both the plain action and, critically, the overridden one.
+    expect(teamPlain.attack.damage.totalDamage).toBeCloseTo(sourcePlain.damage.totalDamage);
+    expect(teamOverridden.attack.damage.totalDamage).toBeCloseTo(sourceOverridden.damage.totalDamage);
+    expect(teamOverridden.attack.damage.totalDamage).toBeGreaterThan(teamPlain.attack.damage.totalDamage);
   });
 });

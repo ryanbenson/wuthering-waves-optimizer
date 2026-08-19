@@ -215,6 +215,8 @@ const emit = defineEmits<{
       modifier: string | null;
       modifierValue: number | null;
       weaponPassiveStats: Record<string, unknown>;
+      weaponPassiveDefs: unknown[];
+      refinement: string;
     },
   ];
 }>();
@@ -483,6 +485,8 @@ async function updateWeaponStats() {
       modifier,
       modifierValue,
       weaponPassiveStats: { ...buffsFormatted.value },
+      weaponPassiveDefs: weaponPassives.value,
+      refinement: refinement.value,
     };
     emit("update-weapon", weaponData);
   } else {
@@ -491,6 +495,8 @@ async function updateWeaponStats() {
       modifier: null,
       modifierValue: null,
       weaponPassiveStats: {},
+      weaponPassiveDefs: [],
+      refinement: "1",
     });
   }
 }

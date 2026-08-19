@@ -61,20 +61,9 @@ export function resolveRotationActionToAttackData(
     actionType: actionType === "negativeStatus" ? "negativeStatus" : actionType,
     count: actionCount,
     id: actionId,
-    excludeSelfBuffs: action.excludeSelfBuffs ?? false,
-    excludeTeamBuffs: action.excludeTeamBuffs ?? false,
-    excludeWeaponBuffs: action.excludeWeaponBuffs ?? false,
     actionMainEcho,
     actionMainEchoRank,
   };
-
-  if (actionType === "echoAttacks") {
-    actionData.excludeEchoes =
-      action.excludeSelfBuffs ||
-      action.excludeTeamBuffs ||
-      action.excludeWeaponBuffs ||
-      false;
-  }
 
   if (actionType === "negativeStatus") {
     const stacks = Number(action.negativeStatusStacks ?? 1);

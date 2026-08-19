@@ -11,7 +11,6 @@ const sampleTeam = {
   actions: [{ id: "a1", slot: 0, order: 1, key: "Foo", type: "basic" }],
   duration: 30,
   enemyConfig: { enemyLevel: 90, enemyResist: 0.1, enemyType: "Calamity" },
-  mode: "advanced" as const,
 };
 
 describe("buildTeamExportPayload", () => {
@@ -25,14 +24,8 @@ describe("buildTeamExportPayload", () => {
       actions: sampleTeam.actions,
       duration: 30,
       enemyConfig: sampleTeam.enemyConfig,
-      mode: "advanced",
     });
     expect(payload.data).not.toHaveProperty("id");
-  });
-
-  it("defaults an unset/invalid mode to basic", () => {
-    const payload = buildTeamExportPayload({ ...sampleTeam, mode: undefined });
-    expect(payload.data.mode).toBe("basic");
   });
 });
 
@@ -68,7 +61,6 @@ describe("parseTeamImportPayload", () => {
       actions: [],
       duration: null,
       enemyConfig: {},
-      mode: "basic",
     });
   });
 
@@ -93,5 +85,26 @@ describe("parseTeamImportPayload", () => {
   it("throws a specific error when meta.type identifies a different export kind", () => {
     const otherExport = { meta: { type: "somethingElse" }, data: {} };
     expect(() => parseTeamImportPayload(JSON.stringify(otherExport))).toThrow(/different kind/);
+  });
+
+  it("strips pre-#401 exclude-buffs checkbox fields from imported actions, if a hand-edited export still carries them", () => {
+    const parsed = parseTeamImportPayload(
+      JSON.stringify({
+        characterIds: ["Carlotta"],
+        actions: [
+          {
+            id: "a1",
+            slot: 0,
+            order: 1,
+            key: "Foo",
+            type: "basic",
+            excludeSelfBuffs: true,
+            excludeTeamBuffs: true,
+            excludeWeaponBuffs: true,
+          },
+        ],
+      }),
+    );
+    expect(parsed.actions).toEqual([{ id: "a1", slot: 0, order: 1, key: "Foo", type: "basic" }]);
   });
 });

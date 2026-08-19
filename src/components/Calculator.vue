@@ -364,7 +364,8 @@ import {
   calcDamages,
   getCalculationContext,
 } from "../calculator/attacks";
-import { resolveRotationActionToAttackData } from "../calculator/resolveRotationAction";
+import { buildOptimizerRotationData } from "../calculator/rotationData";
+import { calcCharacterRotationDamage } from "../calculator/characterRotation";
 import type { OptimizerContext } from "../calculator/optimizer";
 import {
   getOptimizerLoadoutHash,
@@ -439,6 +440,12 @@ export default defineComponent({
     const charResonanceChainsData = reactive({});
     const charactersList = ref([]);
     const allDamages = reactive({});
+    // Guards against out-of-order writes when calcAllDamages is invoked again
+    // (e.g. another buff toggle) before a slower in-flight call — one with an
+    // overridden rotation action, which awaits a full rebuilt context —
+    // finishes. Without this, a faster newer call's correct result could be
+    // clobbered by a slower older call resolving after it.
+    let damagesRequestId = 0;
     const chosenWeapon = reactive({});
     const chosenChar = reactive({});
     const characterStances = computed(
@@ -654,7 +661,8 @@ export default defineComponent({
       calcAllDamages();
     });
 
-    const calcAllDamages = () => {
+    const calcAllDamages = async () => {
+      const requestId = ++damagesRequestId;
       const context = getCalculationContext(
         chosenChar.value,
         echoStats.value,
@@ -674,7 +682,10 @@ export default defineComponent({
         characterLevel.value,
         mainEcho.value,
         mainEchoRank.value,
-        rotationsList.value,
+        // Rotations are computed separately below via calcCharacterRotationDamage,
+        // which supports per-action buff overrides — calcDamages' own
+        // rotationsList branch (built for a single shared context) is unused here.
+        [],
         charResonanceChainsData.value,
         charBuffsData.value,
         baseHp.value,
@@ -715,7 +726,58 @@ export default defineComponent({
         strainStacks.value,
       );
       const damageData = calcDamages(context);
+      // Bail if a newer calcAllDamages call has started since this one began
+      // — its result (once it lands) should win, not this now-stale one.
+      if (requestId !== damagesRequestId) return;
+      // calcDamages doesn't populate `.rotations` (rotations are computed
+      // separately below, awaited sequentially). Carry the previous value
+      // forward across this reassignment instead of letting it go missing —
+      // otherwise CalculatorDamages.vue's `v-if="... && allDamages.value?.rotations"`
+      // sees `undefined` for the brief window before the loop below resolves,
+      // unmounting and remounting the entire rotation section on every buff
+      // toggle (visible as a scroll-position jump in the results panel).
+      damageData.rotations = allDamages.value?.rotations;
       allDamages.value = damageData;
+
+      if (rotationsList.value.length) {
+        const enemyConfig = {
+          enemyLevel: enemyLevel.value,
+          enemyResist: enemyResist.value,
+          enemyType: enemyType.value,
+          spectroFrazzleStacks: spectroFrazzleStacks.value,
+          aeroErosionStacks: aeroErosionStacks.value,
+          havocBaneStacks: havocBaneStacks.value,
+          fusionBurstStacks: fusionBurstStacks.value,
+          electroFlareStacks: electroFlareStacks.value,
+          electroRageStacks: electroRageStacks.value,
+          glacioChafeStacks: glacioChafeStacks.value,
+          strainStacks: strainStacks.value,
+        };
+        // Sequential rather than Promise.all: each call's fast path mutates
+        // the shared `context.rotationsList` before reading it back, and
+        // running rotations concurrently would risk them clobbering each
+        // other's in-flight mutation of that shared object.
+        const rotationResults = [];
+        for (const rotation of rotationsList.value) {
+          rotationResults.push(
+            await calcCharacterRotationDamage(
+              rotation,
+              { chosenChar: chosenChar.value, characterLevel: characterLevel.value, context },
+              character.value,
+              characters.value,
+              enemyConfig,
+              inventoryStore.echoes,
+            ),
+          );
+          // A newer call landed while this one was still awaiting a
+          // per-action rebuilt context — stop and let it own the result
+          // instead of finishing this stale computation.
+          if (requestId !== damagesRequestId) return;
+        }
+        allDamages.value.rotations = rotationResults;
+      } else {
+        allDamages.value.rotations = [];
+      }
     };
 
     // set the character to display, default to the first
@@ -960,35 +1022,19 @@ export default defineComponent({
     };
 
     const handleUpdatedRotations = async (data) => {
-      // go through each rotation and each action and use the full talent data
-      // which will make the rotation system work
-      const chosenChar = await getCharByName(character.value);
-      const rotationData = [];
-      data.forEach((rotation) => {
-        const rotationInfo = {
-          id: rotation.id,
-          name: rotation.name,
-          description: rotation.description,
-          duration: rotation.duration ?? null,
-          echo: rotation.echo ?? null,
-          mainEcho: rotation.mainEcho ?? null,
-          mainEchoRank: rotation.actionMainEchoRank ?? null,
-        };
-        const rotationActionInfo = [];
-        rotation.actions.forEach((action) => {
-          const actionData = resolveRotationActionToAttackData(
-            action,
-            chosenChar,
-            characterLevel.value,
-          );
-          if (actionData) {
-            rotationActionInfo.push(actionData);
-          }
-        });
-        rotationInfo.attacks = rotationActionInfo;
-        rotationData.push(rotationInfo);
-      });
-      rotationsList.value = rotationData;
+      // Raw rotations (not pre-resolved into attacks) — calcCharacterRotationDamage
+      // resolves each action itself, since actions with a per-action buff
+      // override need their own freshly-rebuilt context rather than sharing
+      // the one built below.
+      rotationsList.value = data.map((rotation) => ({
+        id: rotation.id,
+        name: rotation.name,
+        description: rotation.description,
+        duration: rotation.duration ?? null,
+        mainEcho: rotation.echo ?? null,
+        mainEchoRank: rotation.echoRank ?? null,
+        actions: rotation.actions,
+      }));
       calcAllDamages();
     };
 
@@ -1107,6 +1153,8 @@ export default defineComponent({
           modifier: weaponData.value?.modifier ?? null,
           modifierValue: weaponData.value?.modifierValue ?? 0,
           weaponPassiveStats: weaponData.value?.weaponPassiveStats ?? {},
+          weaponPassiveDefs: weaponData.value?.weaponPassiveDefs ?? [],
+          refinement: weaponData.value?.refinement ?? "1",
         },
 
         // Buffs
@@ -1179,29 +1227,11 @@ export default defineComponent({
           rotationId,
         );
         if (rotation) {
-          // Pre-process rotation data - convert actions to attacks (like in optimizer.ts)
-          const rotationInfo = {
-            id: rotationId,
-            name: rotation.name,
-            description: rotation.description,
-            duration: rotation.duration ?? null,
-            echo: rotation.echo ?? null,
-          };
-
-          const rotationActionInfo: any[] = [];
-          rotation.actions.forEach((action: any) => {
-            const actionData = resolveRotationActionToAttackData(
-              action,
-              chosenChar.value,
-              characterLevel.value,
-            );
-            if (actionData) {
-              rotationActionInfo.push(actionData);
-            }
-          });
-
-          rotationInfo.attacks = rotationActionInfo;
-          rotationData = rotationInfo;
+          rotationData = buildOptimizerRotationData(
+            { ...rotation, id: rotationId },
+            chosenChar.value,
+            characterLevel.value,
+          );
         } else {
           console.error("Could not find rotation:", rotationId);
         }
