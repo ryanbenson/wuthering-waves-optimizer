@@ -122,6 +122,7 @@
                   :values="getSubStatRange('CritRate')"
                   :default-value="getDefaultValue('CritRate')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('CritRate', val)" />
               </div>
@@ -149,6 +150,7 @@
                   :values="getSubStatRange('CritDMG')"
                   :default-value="getDefaultValue('CritDMG')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('CritDMG', val)" />
               </div>
@@ -176,6 +178,7 @@
                   :values="getSubStatRange('ATK')"
                   :default-value="getDefaultValue('ATK')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('ATK', val)" />
               </div>
@@ -203,6 +206,7 @@
                   :values="getSubStatRange('ATK_FLAT')"
                   :default-value="getDefaultValue('ATK_FLAT')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('ATK_FLAT', val)" />
               </div>
@@ -230,6 +234,7 @@
                   :values="getSubStatRange('HP')"
                   :default-value="getDefaultValue('HP')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('HP', val)" />
               </div>
@@ -257,6 +262,7 @@
                   :values="getSubStatRange('HP_FLAT')"
                   :default-value="getDefaultValue('HP_FLAT')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('HP_FLAT', val)" />
               </div>
@@ -284,6 +290,7 @@
                   :values="getSubStatRange('DEF')"
                   :default-value="getDefaultValue('DEF')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('DEF', val)" />
               </div>
@@ -311,6 +318,7 @@
                   :values="getSubStatRange('DEF_FLAT')"
                   :default-value="getDefaultValue('DEF_FLAT')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('DEF_FLAT', val)" />
               </div>
@@ -338,6 +346,7 @@
                   :values="getSubStatRange('BasicAttackDMGBonus')"
                   :default-value="getDefaultValue('BasicAttackDMGBonus')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="
                     (val: number) => subStatUpdated('BasicAttackDMGBonus', val)
@@ -367,6 +376,7 @@
                   :values="getSubStatRange('HeavyAttackDMGBonus')"
                   :default-value="getDefaultValue('HeavyAttackDMGBonus')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="
                     (val: number) => subStatUpdated('HeavyAttackDMGBonus', val)
@@ -396,6 +406,7 @@
                   :values="getSubStatRange('ResonanceSkillDMGBonus')"
                   :default-value="getDefaultValue('ResonanceSkillDMGBonus')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="
                     (val: number) => subStatUpdated('ResonanceSkillDMGBonus', val)
@@ -427,6 +438,7 @@
                     getDefaultValue('ResonanceLiberationDMGBonus')
                   "
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="
                     (val: number) => subStatUpdated('ResonanceLiberationDMGBonus', val)
@@ -456,6 +468,7 @@
                   :values="getSubStatRange('EnergyRegen')"
                   :default-value="getDefaultValue('EnergyRegen')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="(val: number) => subStatUpdated('EnergyRegen', val)" />
               </div>

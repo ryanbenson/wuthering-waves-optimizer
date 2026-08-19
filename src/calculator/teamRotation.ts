@@ -75,6 +75,24 @@ export function convertRotationActionsForSlot(
   });
 }
 
+/**
+ * Splits a team's existing actions into the ones an import should keep
+ * ("append" keeps all of them, "overwrite" drops the target slot's own
+ * actions) and the order the imported actions should start at. Order must
+ * be derived from the *kept* actions, not the pre-import total — otherwise
+ * overwriting a slot leaves the new actions numbered as if the replaced
+ * ones were still there.
+ */
+export function computeTeamImportBase(
+  currentActions: TeamRotationAction[],
+  slot: 0 | 1 | 2,
+  mode: "overwrite" | "append",
+): { base: TeamRotationAction[]; startOrder: number } {
+  const base =
+    mode === "overwrite" ? currentActions.filter((action) => action.slot !== slot) : currentActions;
+  return { base, startOrder: base.length + 1 };
+}
+
 export interface TeamRotationInput {
   name?: string;
   characterIds: Array<string | null>;

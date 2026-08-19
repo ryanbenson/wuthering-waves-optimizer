@@ -138,6 +138,7 @@
                   :values="getSubStatRange('CritRate')"
                   :default-value="getDefaultValue('CritRate')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('CritRate', $event)"
                   data-test-substat-range="CritRate" />
@@ -168,6 +169,7 @@
                   :values="getSubStatRange('CritDMG')"
                   :default-value="getDefaultValue('CritDMG')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('CritDMG', $event)"
                   data-test-substat-range="CritDMG" />
@@ -198,6 +200,7 @@
                   :values="getSubStatRange('ATK')"
                   :default-value="getDefaultValue('ATK')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('ATK', $event)"
                   data-test-substat-range="ATK" />
@@ -228,6 +231,7 @@
                   :values="getSubStatRange('ATK_FLAT')"
                   :default-value="getDefaultValue('ATK_FLAT')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('ATK_FLAT', $event)"
                   data-test-substat-range="ATK_FLAT" />
@@ -258,6 +262,7 @@
                   :values="getSubStatRange('HP')"
                   :default-value="getDefaultValue('HP')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('HP', $event)"
                   data-test-substat-range="HP" />
@@ -288,6 +293,7 @@
                   :values="getSubStatRange('HP_FLAT')"
                   :default-value="getDefaultValue('HP_FLAT')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('HP_FLAT', $event)"
                   data-test-substat-range="HP_FLAT" />
@@ -318,6 +324,7 @@
                   :values="getSubStatRange('DEF')"
                   :default-value="getDefaultValue('DEF')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('DEF', $event)"
                   data-test-substat-range="DEF" />
@@ -348,6 +355,7 @@
                   :values="getSubStatRange('DEF_FLAT')"
                   :default-value="getDefaultValue('DEF_FLAT')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('DEF_FLAT', $event)"
                   data-test-substat-range="DEF_FLAT" />
@@ -378,6 +386,7 @@
                   :values="getSubStatRange('BasicAttackDMGBonus')"
                   :default-value="getDefaultValue('BasicAttackDMGBonus')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('BasicAttackDMGBonus', $event)"
                   data-test-substat-range="BasicAttackDMGBonus" />
@@ -408,6 +417,7 @@
                   :values="getSubStatRange('HeavyAttackDMGBonus')"
                   :default-value="getDefaultValue('HeavyAttackDMGBonus')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('HeavyAttackDMGBonus', $event)"
                   data-test-substat-range="HeavyAttackDMGBonus" />
@@ -438,6 +448,7 @@
                   :values="getSubStatRange('ResonanceSkillDMGBonus')"
                   :default-value="getDefaultValue('ResonanceSkillDMGBonus')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('ResonanceSkillDMGBonus', $event)"
                   data-test-substat-range="ResonanceSkillDMGBonus" />
@@ -470,6 +481,7 @@
                     getDefaultValue('ResonanceLiberationDMGBonus')
                   "
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('ResonanceLiberationDMGBonus', $event)"
                   data-test-substat-range="ResonanceLiberationDMGBonus" />
@@ -500,6 +512,7 @@
                   :values="getSubStatRange('EnergyRegen')"
                   :default-value="getDefaultValue('EnergyRegen')"
                   size="xs"
+                  show-ticks
                   class="echo__selection__rank__input w-full"
                   @update-value="onSubStatValueUpdate('EnergyRegen', $event)"
                   data-test-substat-checkbox="EnergyRegen" />

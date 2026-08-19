@@ -3,35 +3,6 @@
     <table class="calculator__stats table table-xs table-zebra">
       <tbody>
         <tr
-          class="stat-atk"
-          :class="{
-            'border border-primary': targetValue === 'totalAtk',
-          }">
-          <td class="w-10">
-            <img
-              src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
-          </td>
-          <td>ATK</td>
-          <td
-            class="text-right"
-            v-tooltip="{
-              content: atkTooltipContent,
-              html: true,
-            }">
-            {{ displayInt(finalStats.totalAtk ?? 0) }}
-            <template v-if="targetValue === 'totalAtk'">
-              <span
-                :class="{
-                  'text-success': atkDiffPercent >= 0,
-                  'text-error': atkDiffPercent < 0,
-                }">
-                ({{ atkDiffPercent >= 0 ? "+" : ""
-                }}{{ displayPercentage(atkDiffPercent) }})
-              </span>
-            </template>
-          </td>
-        </tr>
-        <tr
           class="stat-hp"
           :class="{
             'border border-primary': targetValue === 'totalHp',
@@ -49,6 +20,35 @@
             }">
             {{ displayInt(finalStats.totalHp ?? 0) }}
             <template v-if="targetValue === 'totalHp'">
+              <span
+                :class="{
+                  'text-success': atkDiffPercent >= 0,
+                  'text-error': atkDiffPercent < 0,
+                }">
+                ({{ atkDiffPercent >= 0 ? "+" : ""
+                }}{{ displayPercentage(atkDiffPercent) }})
+              </span>
+            </template>
+          </td>
+        </tr>
+        <tr
+          class="stat-atk"
+          :class="{
+            'border border-primary': targetValue === 'totalAtk',
+          }">
+          <td class="w-10">
+            <img
+              src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" />
+          </td>
+          <td>ATK</td>
+          <td
+            class="text-right"
+            v-tooltip="{
+              content: atkTooltipContent,
+              html: true,
+            }">
+            {{ displayInt(finalStats.totalAtk ?? 0) }}
+            <template v-if="targetValue === 'totalAtk'">
               <span
                 :class="{
                   'text-success': atkDiffPercent >= 0,
