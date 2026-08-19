@@ -22,7 +22,7 @@ import {
 } from "../calculator/rotationData";
 import { applyAdvancedOverrides } from "./rotationAdvancedBuffs";
 import { resolveTeamBuffInstance, aggregateTeamBuffStats, type TeamBuffDef } from "../buffs/teamBuffs";
-import { buffsByCharacter } from "../buffs/index";
+import { buffsByCharacter, allEchoBuffs, allWeaponTeamBuffs } from "../buffs/index";
 import { computeWeaponPassiveStats } from "../weapons/weaponPassives";
 import { randomString } from "../utils/strings";
 import { meetsMinStatThreshold } from "./meetsMinStatThreshold";
@@ -566,11 +566,19 @@ export function buildOptimizerCalculationContext(
   context: OptimizerContext,
   finalStats: any,
   combinedEchoBuffs: any,
+  // An override action's own resolved buff data — defaults to the
+  // character's un-overridden context.*Data for the plain-action call site.
+  // getCalculationContext/processAttacks re-derive specific-talent-buff
+  // bonuses from these directly (not just from the already-flattened
+  // finalStats numbers), so passing the character's default data here for an
+  // override action would silently reintroduce whatever self/resonance/team
+  // buffs the override turned off (or double-count ones it left on).
+  overrideBuffData?: { selfBuffsData: any; resonanceChainsBuffsData: any; teamBuffsData: any },
 ): any {
   return getCalculationContext(
     context.chosenChar,
     combinedEchoBuffs, // use combinedEchoBuffs instead of echoStats
-    context.teamBuffsData,
+    overrideBuffData?.teamBuffsData ?? context.teamBuffsData,
     context.talentData,
     context.isSpectroFrazzleEnabled,
     context.spectroFrazzleStacks,
@@ -587,8 +595,8 @@ export function buildOptimizerCalculationContext(
     context.mainEcho,
     context.mainEchoRank,
     context.rotationsList,
-    context.charResonanceChainsData,
-    context.charBuffsData,
+    overrideBuffData?.resonanceChainsBuffsData ?? context.charResonanceChainsData,
+    overrideBuffData?.selfBuffsData ?? context.charBuffsData,
     context.baseHp,
     context.baseAtk,
     context.baseDef,
@@ -635,6 +643,13 @@ export interface OverrideBuffVariant {
   teamBuffsData: any;
   weaponPassiveStats: Record<string, any>;
   echoSetPassivesConfig: Record<string, { isEnabled?: boolean; stacks?: number }>;
+  /** The merged (override-applied) raw buff/resonance-chain config — needed
+   * alongside the already-resolved `*BuffsData` above because
+   * `calculateFinalStatsFromBuffs` also re-derives AdditionalBase/CritOverflow
+   * bonuses (and edge-case adjustments) directly from this raw config, not
+   * just from the resolved buff data. */
+  buffsConfig: Record<string, any>;
+  resonanceChainsConfig: Record<string, any>;
 }
 
 /**
@@ -677,8 +692,10 @@ export function computeOverrideBuffVariants(
     );
 
     // Team buffs: mirrors buildCharacterContext.ts's resolution exactly —
-    // resolve every buff def from both selected teammates against the
-    // merged per-buff config, then aggregate.
+    // both selected teammates' buffs *plus* the echo-granted and
+    // weapon-granted team buff pools every character has access to
+    // regardless of team selection (previously omitted here, silently
+    // dropping any enabled echo/weapon team buff for override actions).
     const teamBuffsConfig = merged.teamBuffs ?? {};
     const teamBuffsBuffsConfig: Record<string, any> = teamBuffsConfig.buffs ?? {};
     const char1Buffs: TeamBuffDef[] = teamBuffsConfig.selectedCharacter1
@@ -687,7 +704,13 @@ export function computeOverrideBuffVariants(
     const char2Buffs: TeamBuffDef[] = teamBuffsConfig.selectedCharacter2
       ? ((buffsByCharacter as Record<string, TeamBuffDef[]>)[teamBuffsConfig.selectedCharacter2] ?? [])
       : [];
-    const resolvedTeamBuffs = [...char1Buffs, ...char2Buffs].map((def) =>
+    const teamBuffDefs: TeamBuffDef[] = [
+      ...char1Buffs.map((def) => ({ ...def, hasRefinements: false })),
+      ...char2Buffs.map((def) => ({ ...def, hasRefinements: false })),
+      ...(allEchoBuffs as TeamBuffDef[]).map((def) => ({ ...def, hasRefinements: false })),
+      ...(allWeaponTeamBuffs as TeamBuffDef[]).map((def) => ({ ...def, hasRefinements: true })),
+    ];
+    const resolvedTeamBuffs = teamBuffDefs.map((def) =>
       resolveTeamBuffInstance(
         def,
         teamBuffsBuffsConfig[def.key],
@@ -711,6 +734,8 @@ export function computeOverrideBuffVariants(
       teamBuffsData,
       weaponPassiveStats,
       echoSetPassivesConfig: merged.echoSetPassives ?? {},
+      buffsConfig: merged.buffs ?? {},
+      resonanceChainsConfig: merged.resonanceChains ?? {},
     });
   }
 
@@ -804,8 +829,15 @@ export function scoreOptimizerRotation(
         weaponModifier: context.weaponData?.modifier,
         weaponModifierValue: context.weaponData?.modifierValue,
         weaponPassiveData: variant.weaponPassiveStats,
-        buffsConfig: context.activeCharacterBuffs ?? {},
-        resonanceChainsConfig: context.activeCharacterResonanceChains ?? {},
+        // The override's own merged config — not context.activeCharacterBuffs/
+        // activeCharacterResonanceChains (the character's un-overridden
+        // settings) — since AdditionalBase/CritOverflow bonuses and
+        // applyCharacterStatEdgeCases are re-derived from these raw configs,
+        // not just from the already-resolved selfBuffsData/
+        // resonanceChainsBuffsData below. Using the wrong config here
+        // silently ignored this action's buff toggles for those bonuses.
+        buffsConfig: variant.buffsConfig,
+        resonanceChainsConfig: variant.resonanceChainsConfig,
         customBuffs: context.customBuffs,
         teamBuffsData: variant.teamBuffsData,
         echoStats: context.echoStats,
@@ -829,6 +861,11 @@ export function scoreOptimizerRotation(
         context,
         overrideFinalStats,
         overrideCombinedEchoBuffs,
+        {
+          selfBuffsData: variant.selfBuffsData,
+          resonanceChainsBuffsData: variant.resonanceChainsBuffsData,
+          teamBuffsData: variant.teamBuffsData,
+        },
       );
       const attacks = processAttacks(
         [attack],

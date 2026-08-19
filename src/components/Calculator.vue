@@ -440,6 +440,12 @@ export default defineComponent({
     const charResonanceChainsData = reactive({});
     const charactersList = ref([]);
     const allDamages = reactive({});
+    // Guards against out-of-order writes when calcAllDamages is invoked again
+    // (e.g. another buff toggle) before a slower in-flight call — one with an
+    // overridden rotation action, which awaits a full rebuilt context —
+    // finishes. Without this, a faster newer call's correct result could be
+    // clobbered by a slower older call resolving after it.
+    let damagesRequestId = 0;
     const chosenWeapon = reactive({});
     const chosenChar = reactive({});
     const characterStances = computed(
@@ -656,6 +662,7 @@ export default defineComponent({
     });
 
     const calcAllDamages = async () => {
+      const requestId = ++damagesRequestId;
       const context = getCalculationContext(
         chosenChar.value,
         echoStats.value,
@@ -719,6 +726,9 @@ export default defineComponent({
         strainStacks.value,
       );
       const damageData = calcDamages(context);
+      // Bail if a newer calcAllDamages call has started since this one began
+      // — its result (once it lands) should win, not this now-stale one.
+      if (requestId !== damagesRequestId) return;
       // calcDamages doesn't populate `.rotations` (rotations are computed
       // separately below, awaited sequentially). Carry the previous value
       // forward across this reassignment instead of letting it go missing —
@@ -759,6 +769,10 @@ export default defineComponent({
               inventoryStore.echoes,
             ),
           );
+          // A newer call landed while this one was still awaiting a
+          // per-action rebuilt context — stop and let it own the result
+          // instead of finishing this stale computation.
+          if (requestId !== damagesRequestId) return;
         }
         allDamages.value.rotations = rotationResults;
       } else {

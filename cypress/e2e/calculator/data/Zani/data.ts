@@ -125,12 +125,12 @@ export const dataStats: StatTests = [
 ];
 
 export const optimizerResults: Record<string, string> = {
-  totalNormal: `1762236`,
-  totalAverage: `5907013`,
-  totalCrit: `5907013`,
-  totalNormalAfterEquip: `1762236`,
-  totalAverageAfterEquip: `5907013`,
-  totalCritAfterEquip: `5907013`,
+  totalNormal: `1761718`,
+  totalAverage: `5905278`,
+  totalCrit: `5905278`,
+  totalNormalAfterEquip: `1761718`,
+  totalAverageAfterEquip: `5905278`,
+  totalCritAfterEquip: `5905278`,
   percentNormal: `(+3.0%)`,
   percentAvg: `(+8.4%)`,
   percentCrit: `(+1.1%)`,
