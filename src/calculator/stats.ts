@@ -1568,7 +1568,19 @@ export const applyCharacterStatEdgeCases = (
 // Pure function to calculate all stats with full context
 // This function is designed to work in web workers - no Vue dependencies, all state passed as parameters
 // Returns both final stats and breakdown data for UI
-export const calculateAllStats = (context: {
+/**
+ * Steps 3-7 of `calculateAllStats`: everything from the intermediate
+ * `calcCharStats` pass through `applyCharacterStatEdgeCases`, given
+ * already-resolved `selfBuffsData`/`resonanceChainsBuffsData` instead of
+ * deriving them from raw config. Split out so callers that need to score the
+ * same base config across many echo loadouts (the Optimizer's per-loadout hot
+ * path) can compute `selfBuffsData`/`resonanceChainsBuffsData` once and reuse
+ * this for every loadout, instead of re-deriving them — via
+ * `computeSelfBuffs`/`computeResonanceChainsBuffs`, both pure functions of
+ * buff config, unrelated to echoes — on every call like `calculateAllStats`
+ * does. `calculateAllStats` itself is just this plus steps 1-2.
+ */
+export const calculateFinalStatsFromBuffs = (context: {
   // Character base stats
   baseHp: number;
   baseAtk: number;
@@ -1593,7 +1605,6 @@ export const calculateAllStats = (context: {
 
   // Character metadata
   character: string;
-  talentData: any;
   activeStance?: string | null;
 
   // Options
@@ -1603,17 +1614,22 @@ export const calculateAllStats = (context: {
     ignoreEchoes?: boolean;
   };
 
-  // Enemy data
-  enemy?: {
-    havocBaneStacks?: number;
-  };
-
   // Echo set passives with AdditionalBase modifiers
   setBonusLabels?: (string | null | undefined)[];
   echoSetPassivesConfig?: Record<
     string,
     { isEnabled?: boolean; stacks?: number }
   >;
+
+  // Already-resolved by the caller (steps 1-2 of calculateAllStats)
+  selfBuffsData: any;
+  resonanceChainsBuffsData: any;
+
+  // Bypasses the `ignoreEchoes` gate that the `echoStats` field above is
+  // subject to — used by the Optimizer's per-loadout scoring, which sets
+  // `ignoreBuffs.ignoreEchoes: true` to suppress `echoStats` but still needs
+  // the loadout's own combined echo stats applied unconditionally.
+  injectEchoStats?: any;
 }): {
   finalStats: any;
   selfBuffsData: any;
@@ -1638,34 +1654,14 @@ export const calculateAllStats = (context: {
     buffsCharInfo,
     resonanceChainsCharInfo,
     character,
-    talentData,
     activeStance = null,
     ignoreBuffs = {},
-    enemy = {},
     setBonusLabels = [],
     echoSetPassivesConfig = {},
+    selfBuffsData,
+    resonanceChainsBuffsData,
+    injectEchoStats = null,
   } = context;
-
-  // Step 1: Compute resonance chains buffs (no longer needs base stats)
-  const resonanceChainsBuffsData =
-    computeResonanceChainsBuffs(
-      resonanceChainsConfig ?? {},
-      resonanceChainsCharInfo ?? [],
-      talentData ?? {},
-      activeStance,
-    ) || {};
-
-  // Step 2: Compute self buffs (no longer needs base stats)
-  const selfBuffsData =
-    computeSelfBuffs(
-      buffsConfig ?? {},
-      buffsCharInfo ?? [],
-      resonanceChainsConfig ?? {},
-      talentData ?? {},
-      character ?? "",
-      activeStance,
-      enemy,
-    ) || {};
 
   // Step 3: Calculate intermediate stats with resonance chains and self buffs
   // This internally calculates base stats, then applies resonance chains and self buffs
@@ -1673,7 +1669,7 @@ export const calculateAllStats = (context: {
     "All",
     null,
     ignoreBuffs,
-    null,
+    injectEchoStats,
     null,
     { baseHp, baseAtk, baseDef },
     {
@@ -1786,7 +1782,7 @@ export const calculateAllStats = (context: {
     "All",
     null,
     ignoreBuffs,
-    null,
+    injectEchoStats,
     null,
     { baseHp, baseAtk, baseDef },
     {
@@ -1835,4 +1831,107 @@ export const calculateAllStats = (context: {
     critOverflowBuffsData,
     echoSetAdditionalBaseBuffsData,
   };
+};
+
+/**
+ * Resolves a character's full stat pipeline from raw buff/passive
+ * configuration: steps 1-2 (`computeResonanceChainsBuffs`/`computeSelfBuffs`)
+ * plus everything `calculateFinalStatsFromBuffs` does. Callers that need to
+ * re-derive final stats many times against the same buff config (e.g. once
+ * per echo loadout in the Optimizer) should call `computeResonanceChainsBuffs`/
+ * `computeSelfBuffs` once themselves and call `calculateFinalStatsFromBuffs`
+ * directly instead, to avoid re-deriving buff data that doesn't depend on
+ * echoes at all.
+ */
+export const calculateAllStats = (context: {
+  // Character base stats
+  baseHp: number;
+  baseAtk: number;
+  baseDef: number;
+
+  // Weapon data
+  weaponAtk: number;
+  weaponModifier: string | null;
+  weaponModifierValue: number;
+  weaponPassiveData: any;
+
+  // Buff configurations (enabled state)
+  buffsConfig: any;
+  resonanceChainsConfig: any;
+  customBuffs: any;
+  teamBuffsData: any;
+  echoStats: any;
+
+  // Character data (definitions)
+  buffsCharInfo: any[];
+  resonanceChainsCharInfo: any[];
+
+  // Character metadata
+  character: string;
+  talentData: any;
+  activeStance?: string | null;
+
+  // Options
+  ignoreBuffs?: {
+    ignoreTeamBuffs?: boolean;
+    ignoreWeaponBuffs?: boolean;
+    ignoreEchoes?: boolean;
+  };
+
+  // Enemy data
+  enemy?: {
+    havocBaneStacks?: number;
+  };
+
+  // Echo set passives with AdditionalBase modifiers
+  setBonusLabels?: (string | null | undefined)[];
+  echoSetPassivesConfig?: Record<
+    string,
+    { isEnabled?: boolean; stacks?: number }
+  >;
+}): {
+  finalStats: any;
+  selfBuffsData: any;
+  resonanceChainsBuffsData: any;
+  additionalBaseBuffsData: any;
+  critOverflowBuffsData: any;
+  echoSetAdditionalBaseBuffsData: any;
+} => {
+  const {
+    resonanceChainsConfig,
+    resonanceChainsCharInfo,
+    buffsConfig,
+    buffsCharInfo,
+    character,
+    talentData,
+    activeStance = null,
+    enemy = {},
+  } = context;
+
+  // Step 1: Compute resonance chains buffs (no longer needs base stats)
+  const resonanceChainsBuffsData =
+    computeResonanceChainsBuffs(
+      resonanceChainsConfig ?? {},
+      resonanceChainsCharInfo ?? [],
+      talentData ?? {},
+      activeStance,
+    ) || {};
+
+  // Step 2: Compute self buffs (no longer needs base stats)
+  const selfBuffsData =
+    computeSelfBuffs(
+      buffsConfig ?? {},
+      buffsCharInfo ?? [],
+      resonanceChainsConfig ?? {},
+      talentData ?? {},
+      character ?? "",
+      activeStance,
+      enemy,
+    ) || {};
+
+  return calculateFinalStatsFromBuffs({
+    ...context,
+    selfBuffsData,
+    resonanceChainsBuffsData,
+  });
 };

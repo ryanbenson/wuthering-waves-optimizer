@@ -224,36 +224,28 @@
             </div>
           </div>
           <div class="rotations__list">
-            <CalculatorRotationAction
+            <CalculatorRotationActionEditor
               v-for="action in actionsList"
               :key="action.id"
-              :id="action.id"
               :ref="(el) => setActionRef(action.id, el)"
+              :action="action"
               :character="character"
               :character-data="characterData"
-              :action-key="rotationActionStr(action.key)"
-              :type="rotationActionStr(action.type)"
-              :order="rotationActionOrderCount(action.order)"
-              :count="rotationActionOrderCount(action.count)"
-              :buffs="rotationActionBuffs(action.buffs)"
-              :is-disabled="rotationActionBool(action.isDisabled)"
-              :ignore-self-buffs="rotationActionBool(action.excludeSelfBuffs)"
-              :ignore-team-buffs="rotationActionBool(action.excludeTeamBuffs)"
-              :ignore-weapon-buffs="rotationActionBool(action.excludeWeaponBuffs)"
-              :action-main-echo="rotationActionStr(action.mainEcho)"
-              :action-main-echo-rank="rotationActionEchoRank(action.mainEchoRank)"
+              :character-build-data="characterBuildData"
+              :definitions="definitions"
               :rotation-main-echo="echoValue"
               :rotation-main-echo-rank="mainEchoRank"
+              :previous-action="previousActionByActionId[action.id] ?? null"
+              :range-actions="rangeActions"
               @action-update="handleActionUpdate"
               @action-update:sequence="handleSequenceUpdate"
               @remove-action="handleRemoveAction"
+              @bulk-apply="handleBulkApplyBuff"
               :data-test-rotation-action-by-parent-name="nameValue"
               :data-test-rotation-action-by-attack-key="action.key ?? 'none'"
               :data-test-rotation-action-by-id="
                 action.id
-              "
-              :negative-status-stacks="Number(action.negativeStatusStacks ?? 1)"
-              :electro-rage-stacks="Number(action.electroRageStacks ?? 0)"></CalculatorRotationAction>
+              "></CalculatorRotationActionEditor>
           </div>
           <button
             class="rotation__action--add btn btn-primary my-4 btn-xs w-full"
@@ -285,19 +277,23 @@
 import { computed, defineExpose, nextTick, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { randomString } from "../utils/strings";
-import CalculatorRotationAction from "./CalculatorRotationAction.vue";
+import CalculatorRotationActionEditor from "./CalculatorRotationActionEditor.vue";
 import Range from "./input/Range.vue";
 import { getEchoSetIconByType, echoSetLabelMap } from "../echoes/stats";
 import { useCharacterStore } from "../stores/character";
+import { getCharacterRosterDisplayName } from "../characters/characters";
 import {
   mainEchoesData,
   getEchoData,
 } from "../echoes/index.ts";
 import { useToast } from "../composables/useToast";
+import { applyBulkAdvancedConfigOverride, type AdvancedConfigCategory, type RotationAdvancedConfig } from "../calculator/rotationAdvancedBuffs";
+import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
+import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
 
 const { showToast } = useToast();
 
-type RotationActionRow = Record<string, unknown> & { id: string };
+type RotationActionRow = Record<string, unknown> & { id: string; advancedConfig?: RotationAdvancedConfig };
 
 type EchoGridRow = {
   key: string;
@@ -310,6 +306,8 @@ type EchoGridRow = {
 const props = withDefaults(
   defineProps<{
     characterData?: Record<string, unknown>;
+    characterBuildData?: Record<string, unknown>;
+    definitions?: CharacterCalculationContext["definitions"] | null;
     character: string;
     id: string;
     name: string;
@@ -323,6 +321,8 @@ const props = withDefaults(
   }>(),
   {
     characterData: () => ({}),
+    characterBuildData: () => ({}),
+    definitions: null,
     duration: null,
     echo: null,
     echoRank: null,
@@ -367,46 +367,6 @@ function setActionRef(id: string, el: unknown) {
   }
 }
 
-type RotationBuffRow = {
-  id: string;
-  modifier?: string | null;
-  modifierValue?: unknown;
-};
-
-function rotationActionStr(v: unknown): string | null {
-  if (v === null || v === undefined) {
-    return null;
-  }
-  return String(v);
-}
-
-function rotationActionOrderCount(v: unknown): string | number {
-  if (typeof v === "number" || typeof v === "string") {
-    return v;
-  }
-  const n = Number(v);
-  return Number.isNaN(n) ? 1 : n;
-}
-
-function rotationActionBuffs(v: unknown): RotationBuffRow[] {
-  return Array.isArray(v) ? (v as RotationBuffRow[]) : [];
-}
-
-function rotationActionBool(v: unknown): boolean {
-  return Boolean(v);
-}
-
-function rotationActionEchoRank(v: unknown): number | null {
-  if (v === null || v === undefined || v === "") {
-    return null;
-  }
-  if (typeof v === "number") {
-    return v;
-  }
-  const n = Number(v);
-  return Number.isNaN(n) ? null : n;
-}
-
 function emitRotation(partial?: Partial<Record<string, unknown>>) {
   emit("updated-rotation", {
     id: props.id,
@@ -441,6 +401,53 @@ function toggleOpen() {
 defineExpose({ toggleOpen });
 
 const actionsCount = computed(() => actionsList.value?.length || 0);
+
+// This rotation's own actions in displayed (order) sequence — the pool the
+// per-buff "Duration" control draws its range from, and the basis for
+// "copy previous action settings". Scoped to one rotation rather than the
+// whole character, unlike Team Rotation's team-wide equivalents, since a
+// character rotation's actions only ever belong to one character.
+const actionsSorted = computed(() =>
+  [...actionsList.value].sort(
+    (a, b) => Number(a.order ?? 0) - Number(b.order ?? 0),
+  ),
+);
+
+const rangeActions = computed<DurationRangeAction[]>(() =>
+  actionsSorted.value.map((action) => ({
+    id: action.id,
+    characterName: getCharacterRosterDisplayName(props.character),
+    key: (action.key as string | null | undefined) ?? null,
+  })),
+);
+
+const previousActionByActionId = computed(() => {
+  const map: Record<string, RotationActionRow | null> = {};
+  actionsSorted.value.forEach((action, index) => {
+    map[action.id] = index > 0 ? actionsSorted.value[index - 1] : null;
+  });
+  return map;
+});
+
+function handleBulkApplyBuff(payload: {
+  category: AdvancedConfigCategory;
+  key: string | null;
+  override: AdvancedBuffOverride;
+  actionIds: string[];
+}) {
+  actionsList.value = applyBulkAdvancedConfigOverride(
+    actionsList.value,
+    payload.actionIds,
+    payload.category,
+    payload.key,
+    payload.override,
+  );
+  emitRotation();
+  showToast(
+    `Applied to ${payload.actionIds.length} action${payload.actionIds.length === 1 ? "" : "s"}.`,
+    "success",
+  );
+}
 
 const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
 
@@ -569,7 +576,11 @@ function handleActionUpdate(actionData: Record<string, unknown>) {
   if (foundIndex === -1) {
     return;
   }
-  actions[foundIndex] = actionData as RotationActionRow;
+  // Merge rather than replace: CalculatorRotationAction's own payload
+  // (buildActionPayload) doesn't know about fields owned by the wrapper
+  // around it, like `advancedConfig` — a wholesale replace would silently
+  // wipe those out on every unrelated edit (attack change, hit count, etc).
+  actions[foundIndex] = { ...actions[foundIndex], ...actionData } as RotationActionRow;
   actionsList.value = actions;
   emitRotation();
 }

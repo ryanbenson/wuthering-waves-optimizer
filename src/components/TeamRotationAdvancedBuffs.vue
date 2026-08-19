@@ -124,13 +124,13 @@ import TeamRotationAdvancedBuffRow, {
   type AdvancedBuffOverride,
   type DurationRangeAction,
 } from "./TeamRotationAdvancedBuffRow.vue";
-import type { AdvancedConfigCategory, TeamRotationAdvancedConfig } from "../calculator/teamRotation";
+import type { AdvancedConfigCategory, RotationAdvancedConfig } from "../calculator/rotationAdvancedBuffs";
 
 type BuffCategory = "buffs" | "weaponPassives" | "echoSetPassives" | "teamBuffs" | "resonanceChains";
 
 const props = withDefaults(
   defineProps<{
-    modelValue: TeamRotationAdvancedConfig;
+    modelValue: RotationAdvancedConfig;
     buffDefs?: any[];
     weaponPassiveDefs?: any[];
     echoSetPassiveDefs?: any[];
@@ -153,7 +153,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  "update:modelValue": [value: TeamRotationAdvancedConfig];
+  "update:modelValue": [value: RotationAdvancedConfig];
   "bulk-apply": [payload: { category: AdvancedConfigCategory; key: string | null; override: AdvancedBuffOverride; actionIds: string[] }];
 }>();
 

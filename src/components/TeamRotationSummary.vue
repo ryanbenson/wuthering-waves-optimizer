@@ -333,7 +333,6 @@ async function recompute() {
       characterIds: t.characterIds,
       actions: t.actions,
       duration: t.duration,
-      mode: t.mode === "advanced" ? "advanced" : "basic",
     },
     characters.value,
     enemyConfig,

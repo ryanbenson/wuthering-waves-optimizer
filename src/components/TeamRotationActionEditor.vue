@@ -31,22 +31,30 @@
         :count="action.count ?? 1"
         :buffs="action.buffs ?? []"
         :is-disabled="Boolean(action.isDisabled)"
-        :ignore-self-buffs="Boolean(action.excludeSelfBuffs)"
-        :ignore-team-buffs="Boolean(action.excludeTeamBuffs)"
-        :ignore-weapon-buffs="Boolean(action.excludeWeaponBuffs)"
         :action-main-echo="action.mainEcho ?? null"
         :action-main-echo-rank="action.mainEchoRank ?? null"
         :rotation-main-echo="mainEchoForSlot[action.slot] ?? null"
         :rotation-main-echo-rank="mainEchoRankForSlot[action.slot] ?? null"
         :negative-status-stacks="Number(action.negativeStatusStacks ?? 1)"
         :electro-rage-stacks="Number(action.electroRageStacks ?? 0)"
-        :show-exclude-and-disabled-options="false"
+        :show-disabled-option="false"
         :data-test-rotation-action-by-attack-key="action.key || 'none'"
         :data-test-rotation-action-by-id="action.id"
         @action-update="onActionUpdate"
         @action-update:sequence="onSequenceUpdate"
         @remove-action="onRemove">
-        <template v-if="mode === 'advanced' && team.characterIds[action.slot]" #extra-buttons>
+        <template v-if="team.characterIds[action.slot]" #extra-buttons>
+          <span
+            class="badge badge-xs"
+            :class="isCustomized ? 'badge-warning' : 'badge-ghost'"
+            :data-test-team-rotation-action-sync-status="action.id"
+            v-tooltip="
+              isCustomized
+                ? 'This action has its own buff overrides — changing the character\'s buffs won\'t affect it'
+                : 'This action follows the character\'s current buff settings automatically'
+            ">
+            {{ isCustomized ? "Customized buffs" : "Synced with character" }}
+          </span>
           <button
             type="button"
             class="btn btn-xs"
@@ -55,18 +63,28 @@
             {{ showAdvancedBuffs ? "Hide" : "Configure" }} Buffs
           </button>
         </template>
-        <template v-if="mode === 'advanced' && team.characterIds[action.slot] && showAdvancedBuffs" #extra-panel>
+        <template v-if="team.characterIds[action.slot] && showAdvancedBuffs" #extra-panel>
           <div class="card bg-base-100 p-3 flex flex-col gap-2" @click.stop>
-            <button
-              v-if="previousAction"
-              type="button"
-              class="btn btn-xs btn-ghost self-start"
-              :data-test-team-rotation-action-copy-previous="action.id"
-              @click="copyPreviousSettings">
-              Copy previous action settings
-            </button>
+            <div class="flex flex-wrap gap-2">
+              <button
+                v-if="previousAction"
+                type="button"
+                class="btn btn-xs btn-neutral self-start"
+                :data-test-team-rotation-action-copy-previous="action.id"
+                @click="copyPreviousSettings">
+                Copy previous action settings
+              </button>
+              <button
+                type="button"
+                class="btn btn-xs btn-neutral self-start"
+                :disabled="!isCustomized"
+                :data-test-team-rotation-action-resync="action.id"
+                @click="resyncWithCharacter">
+                Stay synced with character
+              </button>
+            </div>
             <TeamRotationAdvancedBuffs
-              :model-value="action.advancedConfig ?? {}"
+              :model-value="displayedAdvancedConfig"
               :buff-defs="definitionsForSlot?.[action.slot]?.buffs ?? []"
               :weapon-passive-defs="definitionsForSlot?.[action.slot]?.weaponPassives ?? []"
               :echo-set-passive-defs="echoSetPassiveDefsForSlot"
@@ -90,11 +108,14 @@ import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import { getCharacterRosterDisplayName } from "../characters/characters";
-import type {
-  AdvancedConfigCategory,
-  TeamRotationAction,
-  TeamRotationAdvancedConfig,
-} from "../calculator/teamRotation";
+import type { TeamRotationAction } from "../calculator/teamRotation";
+import {
+  buildAdvancedConfigSnapshot,
+  hasAdvancedConfigOverrides,
+  type AdvancedConfigCategory,
+  type RotationAdvancedConfig,
+} from "../calculator/rotationAdvancedBuffs";
+import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
 
 const props = defineProps<{
   action: TeamRotationAction & Record<string, unknown>;
@@ -102,8 +123,8 @@ const props = defineProps<{
   chosenChars: Record<number, unknown>;
   mainEchoForSlot: Record<number, string | null>;
   mainEchoRankForSlot: Record<number, number | null>;
-  mode?: "basic" | "advanced";
-  definitionsForSlot?: Record<number, Record<string, any> | null>;
+  definitionsForSlot?: Record<number, CharacterCalculationContext["definitions"] | null>;
+  characterDataForSlot?: Record<number, Record<string, unknown>>;
   previousAction?: (TeamRotationAction & Record<string, unknown>) | null;
   rangeActions?: DurationRangeAction[];
 }>();
@@ -126,6 +147,21 @@ const echoSetPassiveDefsForSlot = computed(() => {
     ...(defs.echoSetPassivesTwo ?? []),
   ];
 });
+
+// Display-only fallback so the panel shows this slot's character's real
+// current buff state instead of misleadingly-blank checkboxes before this
+// action has its own persisted override — merely opening the panel doesn't
+// write anything; only a real toggle (onAdvancedConfigUpdate) persists a
+// config. Mirrors CalculatorRotationActionEditor.vue's identical pattern.
+const currentSnapshot = computed(() =>
+  buildAdvancedConfigSnapshot(
+    props.characterDataForSlot?.[props.action.slot] ?? {},
+    props.definitionsForSlot?.[props.action.slot] ?? null,
+    "current",
+  ),
+);
+const displayedAdvancedConfig = computed(() => props.action.advancedConfig ?? currentSnapshot.value);
+const isCustomized = computed(() => hasAdvancedConfigOverrides(props.action.advancedConfig));
 
 function displayName(characterId: string) {
   return getCharacterRosterDisplayName(characterId);
@@ -150,7 +186,7 @@ function onSequenceUpdate(payload: Record<string, unknown>) {
   emit("update:sequence", { ...payload, slot: props.action.slot });
 }
 
-function onAdvancedConfigUpdate(value: TeamRotationAdvancedConfig) {
+function onAdvancedConfigUpdate(value: RotationAdvancedConfig) {
   emit("update", { ...props.action, advancedConfig: value });
 }
 
@@ -167,6 +203,12 @@ function copyPreviousSettings() {
   if (!props.previousAction) return;
   const copied = JSON.parse(JSON.stringify(props.previousAction.advancedConfig ?? {}));
   emit("update", { ...props.action, advancedConfig: copied });
+}
+
+function resyncWithCharacter() {
+  // Explicitly set (not omit) — handleActionUpdate merges `{ ...existing, ...payload }`,
+  // so an omitted key would leave the old advancedConfig in place untouched.
+  emit("update", { ...props.action, advancedConfig: undefined });
 }
 
 function onRemove() {
