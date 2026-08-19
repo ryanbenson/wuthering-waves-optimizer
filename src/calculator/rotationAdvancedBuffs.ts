@@ -47,6 +47,31 @@ export function hasAdvancedConfigOverrides(config: RotationAdvancedConfig | unde
 }
 
 /**
+ * True when a persisted `mainEchoBuff` override's *value* would actually
+ * change the Optimizer's result — not just whether the key is present.
+ *
+ * The buff panel promotes the character's entire current buff state
+ * (including main echo) into an action's `advancedConfig` the moment any
+ * single buff is first toggled (see `buildAdvancedConfigSnapshot`'s "current"
+ * mode) — so `advancedConfig.mainEchoBuff` is present on almost every
+ * customized action even when its value is identical to what the character's
+ * own default would already produce. Used to gate the Optimizer's
+ * main-echo-buff-override warning (see `CalculatorOptimizer.vue`) on a real
+ * divergence instead of firing on every customized action.
+ */
+export function mainEchoBuffOverrideDiffersFromCharacter(
+  mainEchoBuff: RotationBuffOverride | undefined | null,
+  characterData: Record<string, any> | undefined | null,
+): boolean {
+  if (!mainEchoBuff) return false;
+  const currentConfig = characterData?.mainEcho;
+  const currentIsEnabled = currentConfig?.isEnabled ?? false;
+  const overrideIsEnabled = mainEchoBuff.isEnabled ?? false;
+  if (overrideIsEnabled !== currentIsEnabled) return true;
+  return overrideIsEnabled && mainEchoBuff.stacks !== undefined && mainEchoBuff.stacks !== currentConfig?.stacks;
+}
+
+/**
  * Bulk-writes one buff override into every listed action's `advancedConfig`
  * — the mechanism behind "make this buff last for [x] actions": rather than
  * a persisted, order-tracking "span" that's re-evaluated at calc time, the

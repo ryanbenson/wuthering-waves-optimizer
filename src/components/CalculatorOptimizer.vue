@@ -367,6 +367,10 @@ import {
   type OptimizerEmptyReason,
   type OptimizerLoadoutFormat,
 } from "../calculator/optimizer";
+import {
+  mainEchoBuffOverrideDiffersFromCharacter,
+  type RotationBuffOverride,
+} from "../calculator/rotationAdvancedBuffs";
 
 const props = defineProps<{
   character: string;
@@ -435,18 +439,27 @@ const isTargetUnavailable = computed(() => false);
 // Every other advancedConfig category (self buffs, team buffs, weapon
 // passives, echo set passives, resonance chains) is fully supported; this is
 // surfaced so the gap is visible rather than a silent, unexplained number.
+//
+// Gated on mainEchoBuffOverrideDiffersFromCharacter rather than just
+// `action.advancedConfig?.mainEchoBuff` being present — the buff panel
+// snapshots the character's entire current buff state (main echo included)
+// onto an action the moment any single buff is first toggled, so the key is
+// present on nearly every customized action even when its value matches the
+// character's own default and there's no real override to warn about.
 const mainEchoBuffOverrideActionCount = computed((): number => {
   const target = optimizationTarget.value;
   if (typeof target !== "string" || !target.startsWith("Rotation:")) return 0;
   const rotationId = target.slice("Rotation:".length);
   const rotations = (currentCharacter.value.rotations ?? []) as Array<{
     id: string;
-    actions?: Array<{ isDisabled?: boolean; advancedConfig?: { mainEchoBuff?: unknown } }>;
+    actions?: Array<{ isDisabled?: boolean; advancedConfig?: { mainEchoBuff?: RotationBuffOverride } }>;
   }>;
   const rotation = rotations.find((r) => r.id === rotationId);
   if (!rotation) return 0;
   return (rotation.actions ?? []).filter(
-    (action) => !action.isDisabled && action.advancedConfig?.mainEchoBuff,
+    (action) =>
+      !action.isDisabled &&
+      mainEchoBuffOverrideDiffersFromCharacter(action.advancedConfig?.mainEchoBuff, currentCharacter.value),
   ).length;
 });
 
