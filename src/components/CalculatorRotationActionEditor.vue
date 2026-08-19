@@ -47,14 +47,14 @@
           <button
             v-if="previousAction"
             type="button"
-            class="btn btn-xs btn-ghost self-start"
+            class="btn btn-xs btn-neutral self-start"
             :data-test-rotation-action-copy-previous="action.id"
             @click="copyPreviousSettings">
             Copy previous action settings
           </button>
           <button
             type="button"
-            class="btn btn-xs btn-ghost self-start"
+            class="btn btn-xs btn-neutral self-start"
             :disabled="!isCustomized"
             :data-test-rotation-action-resync="action.id"
             @click="resyncWithCharacter">
