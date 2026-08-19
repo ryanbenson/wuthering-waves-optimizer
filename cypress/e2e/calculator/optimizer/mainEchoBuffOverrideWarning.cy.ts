@@ -71,7 +71,11 @@ describe("Optimizer: main-echo-buff override warning", () => {
         character: JSON.stringify({
           characters: {
             Calcharo: {
-              echoes: [{}, {}, {}, {}, {}],
+              // Echo slot 0 must actually be the main echo (CalculatorEcho.vue
+              // syncs mainEcho.echo to whatever's equipped there on mount) — an
+              // empty slot 0 alongside a populated mainEcho would otherwise get
+              // corrected back to null right after import.
+              echoes: [{ echo: "Jué", type: 4, rank: 5, stat: "ATK" }, {}, {}, {}, {}],
               mainEcho: { echo: "Jué", rank: 5, isEnabled: true },
               rotations: [
                 {

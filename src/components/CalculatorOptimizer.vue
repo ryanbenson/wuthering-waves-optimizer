@@ -456,10 +456,11 @@ const mainEchoBuffOverrideActionCount = computed((): number => {
   }>;
   const rotation = rotations.find((r) => r.id === rotationId);
   if (!rotation) return 0;
+  const mainEchoDef = mainEchoesData[currentCharacter.value.mainEcho?.echo ?? ""] ?? null;
   return (rotation.actions ?? []).filter(
     (action) =>
       !action.isDisabled &&
-      mainEchoBuffOverrideDiffersFromCharacter(action.advancedConfig?.mainEchoBuff, currentCharacter.value),
+      mainEchoBuffOverrideDiffersFromCharacter(action.advancedConfig?.mainEchoBuff, currentCharacter.value, mainEchoDef),
   ).length;
 });
 
