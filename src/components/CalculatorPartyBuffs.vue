@@ -26,6 +26,31 @@
         </button>
       </div>
     </div>
+    <div class="party-buffs__filters flex flex-wrap items-center gap-2 mb-4">
+      <input
+        v-model="searchQuery"
+        type="search"
+        placeholder="Search buffs by name or description"
+        class="input input-bordered input-sm w-full max-w-xs"
+        data-test-party-buffs-search />
+      <button
+        type="button"
+        class="btn btn-sm btn-ghost"
+        data-test-party-buffs-search-clear
+        @click="resetSearch">
+        Clear
+      </button>
+      <div class="form-control sm:ml-auto">
+        <label class="label cursor-pointer flex gap-2 justify-start">
+          <input
+            v-model="hideUnusedBuffs"
+            type="checkbox"
+            class="toggle toggle-primary toggle-sm"
+            data-test-party-buffs-hide-unused />
+          <span class="label-text">Hide unused buffs</span>
+        </label>
+      </div>
+    </div>
     <div class="teammate_selects flex justify-center">
       <div class="teammate__select rounded-lg bg-base-100 p-4">
         <div class="character__selection party-member__selection">
@@ -138,9 +163,12 @@
         <template v-if="!buffsByCharacterIndex[selectedCharacter1]">
           <p>No buffs found for {{ partyMember1DisplayName }}</p>
         </template>
+        <template v-else-if="filteredChar1Buffs.length === 0">
+          <p>No buffs match your filters.</p>
+        </template>
         <template v-else>
           <CalculatorPartyBuff
-            v-for="buff in buffsByCharacterIndex[selectedCharacter1] ?? []"
+            v-for="buff in filteredChar1Buffs"
             :key="buff.key"
             :character="character"
             :unique-key="buff.key"
@@ -175,9 +203,12 @@
         <template v-if="!buffsByCharacterIndex[selectedCharacter2]">
           <p>No buffs found for {{ partyMember2DisplayName }}</p>
         </template>
+        <template v-else-if="filteredChar2Buffs.length === 0">
+          <p>No buffs match your filters.</p>
+        </template>
         <template v-else>
           <CalculatorPartyBuff
-            v-for="buff in buffsByCharacterIndex[selectedCharacter2] ?? []"
+            v-for="buff in filteredChar2Buffs"
             :key="buff.key"
             :character="character"
             :unique-key="buff.key"
@@ -208,8 +239,9 @@
         </span>
       </h3>
       <div class="collapse-content">
+        <p v-if="filteredEchoBuffs.length === 0" class="text-sm opacity-70">No buffs match your filters.</p>
         <CalculatorPartyBuff
-          v-for="buff in echoBuffList"
+          v-for="buff in filteredEchoBuffs"
           :key="buff.key"
           :character="character"
           :unique-key="buff.key"
@@ -240,8 +272,9 @@
         </span>
       </h3>
       <div class="collapse-content">
+        <p v-if="filteredWeaponBuffs.length === 0" class="text-sm opacity-70">No buffs match your filters.</p>
         <CalculatorPartyBuff
-          v-for="buff in weaponTeamBuffList"
+          v-for="buff in filteredWeaponBuffs"
           :key="buff.key"
           :character="character"
           :unique-key="buff.key"
@@ -286,6 +319,7 @@ import CalculatorPartyBuff from "./CalculatorPartyBuff.vue";
 import { useCharacterStore } from "../stores/character";
 import type { PartyBuffModifier } from "./CalculatorPartyBuff.vue";
 import { aggregateTeamBuffStats } from "../buffs/teamBuffs";
+import { buffIsUsed, buffMatchesSearch } from "../buffs/buffFilters";
 
 type PartyBuffEmit = { key: string; data: Record<string, unknown> };
 
@@ -307,6 +341,7 @@ const buffsDataEcho = ref<PartyBuffEmit[]>([]);
 const talentData = ref<Record<string, string>>({});
 const echoBuffsExpanded = ref(false);
 const weaponBuffsExpanded = ref(false);
+const searchQuery = ref("");
 
 type PartyBuffDef = {
   key: string;
@@ -361,6 +396,24 @@ const selectedCharacter2 = computed({
     });
   },
 });
+
+const hideUnusedBuffs = computed({
+  get() {
+    return (
+      (currentCharacter.value as { teamBuffs?: { hideUnused?: boolean } })?.teamBuffs
+        ?.hideUnused ?? false
+    );
+  },
+  set(value: boolean) {
+    void setCharacterData(props.character, {
+      teamBuffs: { hideUnused: value },
+    });
+  },
+});
+
+function resetSearch() {
+  searchQuery.value = "";
+}
 
 const partyMemberBrowser1Ref = ref<{
   triggerOpenModal: () => void;
@@ -503,6 +556,33 @@ const partyMember2BuffCount = computed(() => {
 const echoBuffCount = computed(() => getEnabledBuffCount(echoBuffKeys));
 
 const weaponBuffCount = computed(() => getEnabledBuffCount(weaponBuffKeys));
+
+function buffMatchesFilters(buff: PartyBuffDef): boolean {
+  if (hideUnusedBuffs.value && !buffIsUsed(buff, Boolean(storedTeamBuffs.value[buff.key]?.isEnabled))) {
+    return false;
+  }
+  return buffMatchesSearch(buff, searchQuery.value);
+}
+
+const filteredChar1Buffs = computed(() => {
+  const key = selectedCharacter1.value;
+  if (!key) {
+    return [];
+  }
+  return (buffsByCharacterIndex[key] ?? []).filter(buffMatchesFilters);
+});
+
+const filteredChar2Buffs = computed(() => {
+  const key = selectedCharacter2.value;
+  if (!key) {
+    return [];
+  }
+  return (buffsByCharacterIndex[key] ?? []).filter(buffMatchesFilters);
+});
+
+const filteredEchoBuffs = computed(() => echoBuffList.filter(buffMatchesFilters));
+
+const filteredWeaponBuffs = computed(() => weaponTeamBuffList.filter(buffMatchesFilters));
 
 function openPartyMember1Browser() {
   partyMemberBrowser1Ref.value?.triggerOpenModal();
