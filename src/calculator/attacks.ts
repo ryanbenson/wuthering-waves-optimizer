@@ -867,8 +867,12 @@ export const calculateAttackDamage = (
     context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
       `${attack.key}:talentModifierSpecialMultiply`
     ] ?? 0;
+  const talentModifierSpecialMultiplySelfBuff =
+    selfBuffs?.specificTalentBuffs?.[
+      `${attack.key}:talentModifierSpecialMultiply`
+    ] ?? 0;
   let totalTalentModifierSpecialMultiply =
-    talentModifierSpecialMultiplyResChains;
+    talentModifierSpecialMultiplyResChains + talentModifierSpecialMultiplySelfBuff;
   // check for any modifiers that change the individual instance of atk/hp/def
   // re-calculate the base for this specific instance of damage
   let modifyBaseAtk =
