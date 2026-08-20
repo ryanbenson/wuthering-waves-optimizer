@@ -317,7 +317,7 @@ export async function fetchEchoList(): Promise<ApiEchoListItem[]> {
 }
 
 const MONSTER_API_BASE = "https://api-v2.encore.moe/api/en/monster";
-const MONSTER_LIST_URL = `${MONSTER_API_BASE}?v=Beta`;
+const MONSTER_LIST_URL = `${MONSTER_API_BASE}`;
 
 export interface ApiMonsterListItem {
   Id: number;
@@ -354,5 +354,5 @@ export interface ApiMonsterDetail {
 }
 
 export async function fetchMonsterDetail(id: number): Promise<ApiMonsterDetail> {
-  return fetchJson<ApiMonsterDetail>(`${MONSTER_API_BASE}/${id}?v=Beta`);
+  return fetchJson<ApiMonsterDetail>(`${MONSTER_API_BASE}/${id}`);
 }
