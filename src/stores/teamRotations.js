@@ -35,6 +35,10 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
         id: randomString(12),
         name: name || "New Team",
         characterIds: [null, null, null],
+        // null/absent (per slot) means "use that character's active build";
+        // a slot can pin a specific build id instead without changing which
+        // build is active for that character elsewhere (issue #278).
+        buildIds: [null, null, null],
         actions: [],
         duration: null,
         enemyConfig: defaultEnemyConfig(),
@@ -53,6 +57,7 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
         id: randomString(12),
         name: teamData.name || "Imported Team",
         characterIds: [0, 1, 2].map((i) => teamData.characterIds?.[i] ?? null),
+        buildIds: [0, 1, 2].map((i) => teamData.buildIds?.[i] ?? null),
         actions: (teamData.actions ?? []).map((action) => ({ ...action, id: randomString(12) })),
         duration: teamData.duration ?? null,
         enemyConfig: { ...defaultEnemyConfig(), ...(teamData.enemyConfig ?? {}) },
@@ -97,6 +102,22 @@ export const useTeamRotationsStore = defineStore("teamRotations", {
       // character used to occupy it, so they're invalid the moment that
       // slot's character changes (including clearing it)
       team.actions = team.actions.filter((action) => action.slot !== slot);
+      // a pinned build id from the old character in this slot is meaningless
+      // for a new one — fall back to "use that character's active build"
+      if (!team.buildIds) {
+        team.buildIds = [null, null, null];
+      }
+      team.buildIds[slot] = null;
+    },
+    setTeamCharacterBuild(teamId, slot, buildId) {
+      const team = this.teams.find((t) => t.id === teamId);
+      if (!team) {
+        return;
+      }
+      if (!team.buildIds) {
+        team.buildIds = [null, null, null];
+      }
+      team.buildIds[slot] = buildId;
     },
     setTeamDuration(teamId, duration) {
       const team = this.teams.find((t) => t.id === teamId);
