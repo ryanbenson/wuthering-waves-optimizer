@@ -198,7 +198,7 @@ describe("data migrations", () => {
 
     runMigrations();
 
-    expect(getStoredDataVersion()).toBe(7);
+    expect(getStoredDataVersion()).toBe(CURRENT_DATA_VERSION);
     const character = JSON.parse(localStorage.getItem("character") ?? "{}");
     const carlotta = character.characters.Carlotta;
     expect(carlotta.mainEcho.isEnabled).toBeUndefined();
@@ -254,7 +254,10 @@ describe("data migrations", () => {
         },
       },
     });
-    expect(JSON.parse(applyMigrationTransforms(input, 2))).toEqual({
+    // toMatchObject, not toEqual: from v2, every later migration (including
+    // v8's builds[] seeding) also applies — this test only asserts on the
+    // rename fields v3's migration is responsible for.
+    expect(JSON.parse(applyMigrationTransforms(input, 2))).toMatchObject({
       characters: {
         Danjin: {
           echoes: { 0: { echoSet: "HavocEclipse" } },
@@ -280,7 +283,10 @@ describe("data migrations", () => {
         },
       },
     });
-    expect(JSON.parse(applyMigrationTransforms(input, 4))).toEqual({
+    // toMatchObject, not toEqual: from v4, every later migration (including
+    // v8's builds[] seeding) also applies — this test only asserts on the
+    // mainEcho-specific fields v7's migration is responsible for.
+    expect(JSON.parse(applyMigrationTransforms(input, 4))).toMatchObject({
       characters: {
         Carlotta: {
           mainEcho: {
@@ -371,6 +377,78 @@ describe("data migrations", () => {
     expect(actions[2]).toEqual({ id: "a3", key: "Baz", type: "basic" });
   });
 
+  it("seeds a Default build for each character on v8", () => {
+    localStorage.setItem(DATA_VERSION_KEY, "7");
+    localStorage.setItem(
+      "character",
+      JSON.stringify({
+        characters: {
+          Danjin: { characterLevel: "90", talents: { basic: 10 }, weapon: "SwordOfVoid" },
+          Carlotta: { weapon: "Undying Flame" },
+        },
+      }),
+    );
+
+    runMigrations();
+
+    expect(getStoredDataVersion()).toBe(CURRENT_DATA_VERSION);
+    const character = JSON.parse(localStorage.getItem("character") ?? "{}");
+
+    const danjin = character.characters.Danjin;
+    expect(danjin.builds).toHaveLength(1);
+    expect(danjin.builds[0].name).toBe("Default");
+    expect(danjin.builds[0].weapon).toBe("SwordOfVoid");
+    expect(danjin.builds[0]).not.toHaveProperty("characterLevel");
+    expect(danjin.builds[0]).not.toHaveProperty("talents");
+    expect(danjin.activeBuildId).toBe(danjin.builds[0].id);
+    // characterLevel/talents stay on the top-level record, untouched.
+    expect(danjin.characterLevel).toBe("90");
+    expect(danjin.talents).toEqual({ basic: 10 });
+
+    const carlotta = character.characters.Carlotta;
+    expect(carlotta.builds).toHaveLength(1);
+    expect(carlotta.builds[0].weapon).toBe("Undying Flame");
+    expect(carlotta.activeBuildId).toBe(carlotta.builds[0].id);
+    // each character gets a distinct build id
+    expect(carlotta.builds[0].id).not.toBe(danjin.builds[0].id);
+  });
+
+  it("is idempotent when a character already has builds on v8", () => {
+    localStorage.setItem(DATA_VERSION_KEY, "7");
+    const existingBuild = { id: "existing-id", name: "My Build", weapon: "SwordOfVoid" };
+    localStorage.setItem(
+      "character",
+      JSON.stringify({
+        characters: {
+          Danjin: { builds: [existingBuild], activeBuildId: "existing-id" },
+        },
+      }),
+    );
+
+    runMigrations();
+
+    const character = JSON.parse(localStorage.getItem("character") ?? "{}");
+    expect(character.characters.Danjin.builds).toEqual([existingBuild]);
+    expect(character.characters.Danjin.activeBuildId).toBe("existing-id");
+  });
+
+  it("applyMigrationTransforms seeds builds[] from an older backup", () => {
+    const input = JSON.stringify({
+      characters: {
+        Danjin: { weapon: "SwordOfVoid" },
+      },
+    });
+
+    const result = JSON.parse(applyMigrationTransforms(input, 7));
+
+    expect(result.characters.Danjin.builds).toHaveLength(1);
+    expect(result.characters.Danjin.builds[0]).toMatchObject({
+      name: "Default",
+      weapon: "SwordOfVoid",
+    });
+    expect(result.characters.Danjin.activeBuildId).toBe(result.characters.Danjin.builds[0].id);
+  });
+
   it("applyMigrationTransforms backfills rotation order from v3", () => {
     const input = JSON.stringify({
       characters: {
@@ -382,7 +460,10 @@ describe("data migrations", () => {
         },
       },
     });
-    expect(JSON.parse(applyMigrationTransforms(input, 3))).toEqual({
+    // toMatchObject, not toEqual: from v3, every later migration (including
+    // v8's builds[] seeding) also applies — this test only asserts on the
+    // rotation-order field v4's migration is responsible for.
+    expect(JSON.parse(applyMigrationTransforms(input, 3))).toMatchObject({
       characters: {
         Danjin: {
           rotations: [
