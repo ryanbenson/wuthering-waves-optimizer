@@ -420,7 +420,10 @@ export const calculateAttackDamage = (
       `${attack.key}:talentModifierMultiplyAdd`
     ] ?? 0;
   const talentModifierAddFromSelfBuffs =
-    selfBuffs?.[`${attack.key}:talentModifierMultiplyAdd`] ?? 0;
+    (selfBuffs?.[`${attack.key}:talentModifierMultiplyAdd`] ?? 0) +
+    (selfBuffs?.specificTalentBuffs?.[
+      `${attack.key}:talentModifierMultiplyAdd`
+    ] ?? 0);
   const attackBuffsTalentModifierAdd = attack?.buffs?.talentModifierAdd ?? 0;
   const totalTalentModifierAdd =
     talentModifierAdd +
@@ -516,6 +519,9 @@ export const calculateAttackDamage = (
   let weaponDefIgnoreSpecificDmgType =
     context.equipment.weapon.weaponPassiveStats?.[`DEFIgnore:${attack.type}`] ??
     0;
+  let weaponDefIgnoreSpecificElement =
+    context.equipment.weapon.weaponPassiveStats?.[`DEFIgnore:${attackElement}`] ??
+    0;
   let teamDefIgnoreSpecificElement =
       context.buffs.teamBuffsData?.[`DEFIgnore:${attackElement}`] ??
       0;
@@ -524,6 +530,12 @@ export const calculateAttackDamage = (
   }
   if (excludeWeaponBuffs) {
     weaponDefIgnoreSpecificDmgType = 0;
+    weaponDefIgnoreSpecificElement = 0;
+  }
+  // def ignore is excluded from specific element for tune break dmg
+  if (attack.key === "TuneBreakDMG") {
+    teamDefIgnoreSpecificElement = 0;
+    weaponDefIgnoreSpecificElement = 0;
   }
   const specificSkillExtraCritRateResonanceChains =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:CritRate`] ?? 0;
@@ -617,7 +629,8 @@ export const calculateAttackDamage = (
     extraDefIgnoreCustomBuffs +
     attackBuffsDefIgnore +
     teamDefIgnoreSpecificElement +
-    weaponDefIgnoreSpecificDmgType;
+    weaponDefIgnoreSpecificDmgType +
+    weaponDefIgnoreSpecificElement;
   // Def Reduction
   // Havoc bane reduces def for stack * 2%
   const havocBaneStacksNum = context.enemy.havocBane.havocBaneStacks ?? 0;
@@ -870,6 +883,11 @@ export const calculateAttackDamage = (
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:DEF`] ?? 0;
   let modifyBaseAtkFlat =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:ATK_FLAT`] ?? 0;
+  let modifyBaseAtkFlatResChain =
+    context.buffs.charResonanceChainsData?.specificTalentBuffs?.[
+      `${attack.key}:ATK_FLAT`
+    ] ?? 0;
+  modifyBaseAtkFlat += modifyBaseAtkFlatResChain;
   let modifyBaseHpFlat =
     selfBuffs?.specificTalentBuffs?.[`${attack.key}:HP_FLAT`] ?? 0;
   let modifyBaseDefFlat =
@@ -1027,8 +1045,15 @@ export const calculateAttackDamage = (
     }
   }
   // Strain "Total DMG" = strainStacks (0-4) * TuneBreakBoost (0-50) * 0.12%
-  let strainTotalDamage =
-    context.enemy.strainStacks * totalTuneBreakBoost * 0.12;
+  let strainTotalDamage = context.enemy.strainStacks * totalTuneBreakBoost * 0.12;
+  // Qingxiao S6: Tune Strain - Interfered response buff is increased by 20%
+  if (
+    context.character.characterKey === "Qingxiao" &&
+    context.global.characters?.[context.character.characterKey]?.resonanceChains
+      ?.SequenceNode6CleanseThisTarnishedAgeTillAllRunsClear?.isEnabled
+  ) {
+    strainTotalDamage *= 1.2;
+  }
   // this does not apply to TuneBreak
   if (attack.type === "TuneBreak") {
     strainTotalDamage = 0;

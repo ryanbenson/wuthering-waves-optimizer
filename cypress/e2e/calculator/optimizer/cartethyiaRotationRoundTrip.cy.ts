@@ -28,6 +28,14 @@ describe("Calculator Optimizer Round Trip: Cartethyia", () => {
     cy.get("[data-test-optimizer-optimize-btn]").click();
     cy.get('[data-test-optimizer-results-index="0"]', { timeout: 20000 }).should("exist");
 
+    // Index 0 existing only means *a* top-N result has streamed in — the
+    // Optimizer keeps re-ranking as more loadouts finish processing, so it
+    // can still swap out for a better one afterward. Equipping before the
+    // run is fully done risks equipping a loadout that's no longer what's
+    // shown as index 0 by the time the diff assertions below run, which
+    // would show as a real (but spurious) score mismatch.
+    cy.get('[data-test-optimizer-progress-done="true"]', { timeout: 20000 }).should("exist");
+
     cy.get(
       '[data-test-optimizer-results-index="0"] [data-test-optimizer-results-equip-btn]',
     ).click();

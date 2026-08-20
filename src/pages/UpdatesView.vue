@@ -10,6 +10,7 @@
       <li>Fixes the Optimizer's main-echo-buff warning firing when it shouldn't, for actions that aren't actually overriding the buff.</li>
       <li>Drops the Team Rotations Basic/Advanced mode toggle in favor of the unified per-buff config, and fixes an issue with per-action buff import.</li>
       <li>Adds search and a "hide unused" toggle to the Team Buffs panel.</li>
+      <li>Releases 3.6 content.</li>
     </ul>
     <h3>August 17, 2026</h3>
     <ul>

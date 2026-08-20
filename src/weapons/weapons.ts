@@ -3,6 +3,7 @@ export const swordsList = {
     { key: "AzureOath", name: "Azure Oath" },
     { key: "BlazingBrilliance", name: "Blazing Brilliance" },
     { key: "BloodpactsPledge", name: "Bloodpact's Pledge" },
+    { key: "GlintOfClouds", name: "Glint of Clouds" },
     { key: "DefiersThorn", name: "Defier's Thorn" },
     { key: "EmeraldOfGenesis", name: "Emerald Of Genesis" },
     { key: "EmeraldSentence", name: "Emerald Sentence" },
@@ -42,13 +43,14 @@ const broadbladesList = {
     { key: "LustrousRazor", name: "Lustrous Razor" },
     { key: "RadianceCleaver", name: "Radiance Cleaver" },
     { key: "StarfieldCalibrator", name: "Starfield Calibrator" },
+    // { key: "ThousandfoldDeliverance", name: "Thousandfold Deliverance" },
     { key: "ThunderflareDominion", name: "Thunderflare Dominion" },
-    { key: "WildfireMark", name: "Wildfire Mark" },
     { key: "VerdantSummit", name: "Verdant Summit" },
+    { key: "WildfireMark", name: "Wildfire Mark" },
   ],
   four: [
-    { key: "Autumntrace", name: "Autumntrace" },
     { key: "AureateZenith", name: "Aureate Zenith" },
+    { key: "Autumntrace", name: "Autumntrace" },
     { key: "Broadblade41", name: "Broadblade #41" },
     { key: "DauntlessEvernight", name: "Dauntless Evernight" },
     { key: "Discord", name: "Discord" },
@@ -63,8 +65,10 @@ const broadbladesList = {
     { key: "GuardianBroadblade", name: "Guardian Broadblade" },
     { key: "OriginiteTypeI", name: "Originite Type I" },
   ],
-  two: [{ key: "TyroBroadblade", name: "Tyro Broadblade" }],
-  one: [{ key: "TrainingBroadblade", name: "Training Broadblade" }],
+  two: [
+    { key: "TyroBroadblade", name: "Tyro Broadblade" },
+  ],
+  one: [ ],
 };
 
 const rectifiersList = {

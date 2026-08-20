@@ -536,6 +536,7 @@ export function computeLoadoutFinalStats(
     buffsCharInfo: context.chosenChar?.buffs ?? [],
     resonanceChainsCharInfo: context.chosenChar?.resonanceChains ?? [],
     character: context.character ?? "",
+    talentData: context.talentData ?? {},
     activeStance: context.activeStance ?? null,
     ignoreBuffs: { ignoreEchoes: true },
     setBonusLabels: [setBonusOnePiece, setBonusOne, setBonusTwo],
@@ -844,6 +845,7 @@ export function scoreOptimizerRotation(
         buffsCharInfo: context.chosenChar?.buffs ?? [],
         resonanceChainsCharInfo: context.chosenChar?.resonanceChains ?? [],
         character: context.character ?? "",
+        talentData: context.talentData ?? {},
         activeStance: context.activeStance ?? null,
         ignoreBuffs: { ignoreEchoes: true },
         setBonusLabels: [

@@ -7,6 +7,7 @@ import {
   getBonusDamageValue,
   getEnemyResistValue,
   getSpectroFrazzleDamage,
+  calcDamage,
 } from "../../src/calculator/calculator";
 
 describe("#getBaseDamage", () => {
@@ -351,5 +352,64 @@ describe("#getSpectroFrazzleDamage resist ignore", () => {
     expect(withReduction.totalDamageContext.resistModifier).not.toEqual(
       getEnemyResistValue(enemyResist, resistanceReduction, 0.1),
     );
+  });
+});
+
+describe("#calcDamage talentModifierAdd multi-hit distribution", () => {
+  // damage is linear in the per-hit talent value for a fixed set of other
+  // params, so (damage with the bonus - damage without it) isolates each
+  // hit's share of talentModifierAdd without needing to know the rest of
+  // the damage formula
+  function perHitShares(talent: string, skillKey: string) {
+    const args = [
+      "90",
+      90,
+      0.1,
+      talent,
+      1000,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+    ] as const;
+    const without = calcDamage(...args, 0, 0, 0, 1, skillKey);
+    const with_ = calcDamage(...args, 1, 0, 0, 1, skillKey);
+    const deltas = without.instanceDamageEntries.map(
+      (entry: any, i: number) =>
+        with_.instanceDamageEntries[i].damage - entry.damage,
+    );
+    const total = deltas.reduce((a: number, b: number) => a + b, 0);
+    return deltas.map((d: number) => d / total);
+  }
+
+  it("splits Heavy Attack - Soul Raid's bonus 7/7/9/9/9/59 instead of dumping it all on the last hit", () => {
+    const shares = perHitShares(
+      "8.25%*2+10.61%*3+69.53%",
+      "HeavyAttackSoulRaidDMG",
+    );
+    expect(shares).toHaveLength(6);
+    [0.07, 0.07, 0.09, 0.09, 0.09, 0.59].forEach((expected, i) => {
+      expect(shares[i]).toBeCloseTo(expected, 5);
+    });
+  });
+
+  it("splits Heavy Attack - Stardome Meander's bonus 10/10/20/60 instead of dumping it all on the last hit", () => {
+    const shares = perHitShares(
+      "12.09%+12.09%+24.18%+72.54%",
+      "HeavyAttackStardomeMeanderDMG",
+    );
+    expect(shares).toHaveLength(4);
+    [0.1, 0.1, 0.2, 0.6].forEach((expected, i) => {
+      expect(shares[i]).toBeCloseTo(expected, 5);
+    });
+  });
+
+  it("still dumps the bonus entirely on the last hit for skills without a special split", () => {
+    const shares = perHitShares("50.00%+50.00%", "SomeOtherMultiHitDMG");
+    expect(shares).toEqual([0, 1]);
   });
 });

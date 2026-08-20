@@ -4,7 +4,14 @@ import { getWeaponByName } from "../weapons/weapons";
 import { computeWeaponPassiveStats } from "../weapons/weaponPassives";
 import { getCombinedEchoStats } from "../echoes/stats";
 import { resolveSetBonusStats } from "../echoes/echoSetPassives";
-import { resolveMainEchoBuffStats, combineEchoStats } from "../echoes/mainEcho";
+import { combineEchoStats } from "../echoes/mainEcho";
+import {
+  getMainEchoBuffs,
+  isMainEchoBuffEnabled,
+  getMainEchoBuffStacks,
+  mergeMainEchoBuffStats,
+} from "../echoes/mainEchoBuffs";
+import { applyMainEchoBuffEffects } from "../echoes/applyMainEchoBuffEffects";
 import { mainEchoesData } from "../echoes/index";
 import { setBonusEffectsOnePiece, setBonusEffectsOne, setBonusEffectsTwo } from "../echoes/sets";
 import {
@@ -237,22 +244,31 @@ export async function buildCharacterCalculationContext(
   const mainEchoDef = mainEchoConfig.echo
     ? ((mainEchoesData as Record<string, any>)?.[mainEchoConfig.echo] ?? null)
     : null;
-  // resolveMainEchoBuffStats already force-enables an alwaysEnabled main
-  // echo regardless of isEnabled. For the always-enabled-only view we also
-  // need the inverse — force a *conditional* main echo buff off even if the
-  // user currently has it toggled on for the Results tab — so override
-  // isEnabled explicitly rather than passing the config through as-is.
-  const mainEchoBuffStats = resolveMainEchoBuffStats(characterId, {
-    ...mainEchoConfig,
-    isEnabled: alwaysEnabledOnly ? Boolean(mainEchoDef?.alwaysEnabled) : mainEchoConfig?.isEnabled,
-  });
+  // Mirrors CalculatorEchoes.vue's updateTotalStats: resolve each enabled
+  // main-echo buff's effects independently, then merge them all together —
+  // a main echo can have more than one independently-toggleable buff. For
+  // the always-enabled-only view, only buffs flagged `alwaysEnabled: true`
+  // are included (forced on regardless of the stored toggle), mirroring
+  // weapon passives/echo set bonuses above; conditional buffs are dropped
+  // entirely even if the user currently has them toggled on.
+  const mainEchoBuffStatsByKey: Record<string, Record<string, unknown>> = {};
+  for (const buff of getMainEchoBuffs(mainEchoDef)) {
+    const isEnabled = alwaysEnabledOnly ? buff.alwaysEnabled : isMainEchoBuffEnabled(mainEchoConfig, buff.key);
+    if (!isEnabled) {
+      continue;
+    }
+    mainEchoBuffStatsByKey[buff.key] = applyMainEchoBuffEffects({
+      effects: buff.effects,
+      character: characterId,
+      hasStacks: buff.hasStacks,
+      stacks: getMainEchoBuffStacks(mainEchoConfig, buff.key),
+      talentData,
+    });
+  }
 
-  const echoStats = combineEchoStats(
-    combinedEchoStats,
-    setBonusOnePieceStats,
-    setBonusOneStats,
-    setBonusTwoStats,
-    mainEchoBuffStats,
+  const echoStats = mergeMainEchoBuffStats(
+    mainEchoBuffStatsByKey,
+    combineEchoStats(combinedEchoStats, setBonusOnePieceStats, setBonusOneStats, setBonusTwoStats),
   );
 
   // Team buffs: mirrors CalculatorPartyBuffs.vue exactly, including the

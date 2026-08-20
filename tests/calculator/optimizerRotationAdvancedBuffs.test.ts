@@ -9,9 +9,16 @@ import {
   type TeamEnemyConfig,
 } from "../../src/calculator/buildCharacterContext";
 import { configOptimizer as cartethyiaConfigOptimizer } from "../../cypress/e2e/calculator/data/Cartethyia/data";
-import { resolveMainEchoBuffStats } from "../../src/echoes/mainEcho";
 import { resolveSetBonusStats } from "../../src/echoes/echoSetPassives";
 import { setBonusEffectsOne, setBonusEffectsTwo } from "../../src/echoes/sets";
+import { mainEchoesData } from "../../src/echoes/index";
+import {
+  getMainEchoBuffs,
+  isMainEchoBuffEnabled,
+  getMainEchoBuffStacks,
+  mergeMainEchoBuffStats,
+} from "../../src/echoes/mainEchoBuffs";
+import { applyMainEchoBuffEffects } from "../../src/echoes/applyMainEchoBuffEffects";
 
 const enemyConfig: TeamEnemyConfig = {
   enemyLevel: 90,
@@ -414,9 +421,33 @@ describe("optimize() Rotation target — advancedConfig overrides", () => {
         built.talentData,
       );
     }
+    // Resolves a main echo's fully-merged buff stats from a legacy-shaped
+    // isEnabled/stacks config, mirroring buildCharacterContext.ts's per-buff
+    // loop (isMainEchoBuffEnabled/getMainEchoBuffStacks fall back to the
+    // flat isEnabled/stacks fields when there's no per-buff `buffs` map).
+    function resolveMainEchoStatsForTest(
+      echoKey: string,
+      config: { isEnabled?: boolean; stacks?: number },
+    ): Record<string, unknown> {
+      const echoDef = (mainEchoesData as Record<string, any>)[echoKey] ?? null;
+      const buffStatsByKey: Record<string, Record<string, unknown>> = {};
+      for (const buff of getMainEchoBuffs(echoDef)) {
+        if (!isMainEchoBuffEnabled(config, buff.key)) {
+          continue;
+        }
+        buffStatsByKey[buff.key] = applyMainEchoBuffEffects({
+          effects: buff.effects,
+          character: characterId,
+          hasStacks: buff.hasStacks,
+          stacks: getMainEchoBuffStacks(config, buff.key),
+          talentData: built.talentData,
+        });
+      }
+      return mergeMainEchoBuffStats(buffStatsByKey);
+    }
+
     const mainEchoStats: Record<string, any> = {
-      ReminiscenceFleurdelys: resolveMainEchoBuffStats(characterId, {
-        echo: "ReminiscenceFleurdelys",
+      ReminiscenceFleurdelys: resolveMainEchoStatsForTest("ReminiscenceFleurdelys", {
         isEnabled: true,
         stacks: 0,
       }),

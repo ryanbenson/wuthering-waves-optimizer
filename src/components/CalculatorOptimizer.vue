@@ -299,7 +299,9 @@
       </p>
       <template v-else>
         <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-          <div>
+          <div
+            data-test-optimizer-progress
+            :data-test-optimizer-progress-done="(totalCombos ?? 0) > 0 && (processedCombos ?? 0) >= (totalCombos ?? 0)">
             Processed
             <span class="font-bold">{{ processedCombos }}</span>
             of
@@ -456,10 +458,11 @@ const mainEchoBuffOverrideActionCount = computed((): number => {
   }>;
   const rotation = rotations.find((r) => r.id === rotationId);
   if (!rotation) return 0;
+  const mainEchoDef = mainEchoesData[currentCharacter.value.mainEcho?.echo ?? ""] ?? null;
   return (rotation.actions ?? []).filter(
     (action) =>
       !action.isDisabled &&
-      mainEchoBuffOverrideDiffersFromCharacter(action.advancedConfig?.mainEchoBuff, currentCharacter.value),
+      mainEchoBuffOverrideDiffersFromCharacter(action.advancedConfig?.mainEchoBuff, currentCharacter.value, mainEchoDef),
   ).length;
 });
 

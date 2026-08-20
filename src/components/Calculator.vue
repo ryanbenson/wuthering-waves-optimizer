@@ -18,8 +18,8 @@
     </Nav>
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
-        <div v-if="false" class="alert alert-success mb-6">
-          Version 3.5 content is now available
+        <div v-if="true" class="alert alert-success mb-6">
+          Version 3.6 content is now available
         </div>
         <div>
           <CalculatorCharacterSelect

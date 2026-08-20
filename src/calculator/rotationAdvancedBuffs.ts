@@ -1,4 +1,5 @@
 import type { CharacterCalculationContext } from "./buildCharacterContext";
+import { getMainEchoBuffs, isMainEchoBuffEnabled, getMainEchoBuffStacks, type MainEchoBuffSource } from "../echoes/mainEchoBuffs";
 
 /**
  * Per-toggle override used by a rotation action's advanced buff editor.
@@ -58,17 +59,34 @@ export function hasAdvancedConfigOverrides(config: RotationAdvancedConfig | unde
  * own default would already produce. Used to gate the Optimizer's
  * main-echo-buff-override warning (see `CalculatorOptimizer.vue`) on a real
  * divergence instead of firing on every customized action.
+ *
+ * `mainEchoBuff` is a single flat `{isEnabled, stacks}` override — it can
+ * only represent one buff — so it's compared against the character's
+ * *first* buff (the only one for the common single-buff main echo; a
+ * reasonable stand-in for multi-buff echoes, which the Optimizer already
+ * can't honor precisely anyway — see the warning this gates). Reads the
+ * character's current state via `isMainEchoBuffEnabled`/`getMainEchoBuffStacks`
+ * rather than the mainEcho record's own `isEnabled`/`stacks` fields directly
+ * — those are only the legacy pre-multi-buff shape; a migrated character
+ * stores state in `mainEcho.buffs[key]` instead, which would otherwise read
+ * as "disabled" here and make every enabled override look like a divergence.
  */
 export function mainEchoBuffOverrideDiffersFromCharacter(
   mainEchoBuff: RotationBuffOverride | undefined | null,
   characterData: Record<string, any> | undefined | null,
+  mainEchoDef?: MainEchoBuffSource | null,
 ): boolean {
   if (!mainEchoBuff) return false;
   const currentConfig = characterData?.mainEcho;
-  const currentIsEnabled = currentConfig?.isEnabled ?? false;
+  const buffKey = getMainEchoBuffs(mainEchoDef)[0]?.key;
+  const currentIsEnabled = buffKey
+    ? isMainEchoBuffEnabled(currentConfig, buffKey)
+    : Boolean(currentConfig?.isEnabled);
   const overrideIsEnabled = mainEchoBuff.isEnabled ?? false;
   if (overrideIsEnabled !== currentIsEnabled) return true;
-  return overrideIsEnabled && mainEchoBuff.stacks !== undefined && mainEchoBuff.stacks !== currentConfig?.stacks;
+  if (!overrideIsEnabled || mainEchoBuff.stacks === undefined) return false;
+  const currentStacks = buffKey ? getMainEchoBuffStacks(currentConfig, buffKey) : currentConfig?.stacks;
+  return mainEchoBuff.stacks !== currentStacks;
 }
 
 /**
@@ -181,10 +199,19 @@ export function buildAdvancedConfigSnapshot(
   };
 
   const mainEchoConfig = characterData?.mainEcho;
+  // Same single-buff stand-in as mainEchoBuffOverrideDiffersFromCharacter
+  // above, and the same reason for reading via isMainEchoBuffEnabled/
+  // getMainEchoBuffStacks instead of mainEchoConfig's own isEnabled/stacks
+  // fields directly — a migrated character stores state in
+  // mainEcho.buffs[key], not those legacy flat fields.
+  const mainEchoBuffKey = getMainEchoBuffs(definitions?.mainEchoDef)[0]?.key;
   const mainEchoBuff: RotationBuffOverride | undefined = definitions?.mainEchoDef
     ? mode === "blank"
       ? { isEnabled: false }
-      : { isEnabled: mainEchoConfig?.isEnabled ?? false, stacks: mainEchoConfig?.stacks }
+      : {
+          isEnabled: mainEchoBuffKey ? isMainEchoBuffEnabled(mainEchoConfig, mainEchoBuffKey) : Boolean(mainEchoConfig?.isEnabled),
+          stacks: mainEchoBuffKey ? getMainEchoBuffStacks(mainEchoConfig, mainEchoBuffKey) : mainEchoConfig?.stacks,
+        }
     : undefined;
 
   return {

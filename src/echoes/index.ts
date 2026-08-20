@@ -1,3 +1,15 @@
+import type { EchoModifier } from "./mainEchoBuffs";
+
+export type { EchoModifier, MainEchoBuff, EchoBuffEffect } from "./mainEchoBuffs";
+export {
+  getMainEchoBuffs,
+  getEchoBuffEffects,
+  isMainEchoBuffEnabled,
+  getMainEchoBuffStacks,
+  migrateLegacyMainEchoBuffState,
+  mergeMainEchoBuffStats,
+} from "./mainEchoBuffs";
+
 interface Echo {
   key: string;
   name: string;
@@ -53,13 +65,6 @@ export function isAttackAvailableForCharacter(
   return true;
 }
 
-interface EchoModifier {
-  modifier?: string;
-  modifySpecificTalents?: string[];
-  modifierValue?: number;
-  specificCharacters?: string[];
-}
-
 type MainEchoes = Record<string, Echo>;
 
 export function getEchoData(echoKey: string): Echo {
@@ -78,6 +83,47 @@ export function getCostByClass(echoClass: string): number {
 }
 
 export const mainEchoesData: MainEchoes = {
+  CalamityEffigy: {
+    key: "CalamityEffigy",
+    name: "Calamity Effigy",
+    class: "Overlord",
+    image:
+      "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/CalamityEffigy.webp",
+    details: `Transform into Calamity Effigy to deal 63.00%/72.00%/81.00% Aero DMG.
+The Resonator with this Echo equipped in the main slot gains 189.00%/216.00%/243.00% Aero DMG Bonus, and additionally gains 10.00% Aero DMG Bonus for 10.00%s when inflicting Tune Strain - Shifting on the target.
+CD: 15s`,
+    modifiers: [
+      {
+        key: "CalamityEffigyAero",
+        details: `The Resonator with this Echo equipped in the main slot gains 189.00%/216.00%/243.00% Aero DMG Bonus.`,
+        modifier: "Aero",
+        modifierValue: 0.1,
+      },
+      {
+        key: "CalamityEffigyAeroStrain",
+        details: `Additionally gains 10.00% Aero DMG Bonus for 10.00%s when inflicting Tune Strain - Shifting on the target.`,
+        modifier: "Aero",
+        modifierValue: 0.1,
+      },
+    ],
+    actions: [
+      {
+        key: "TransformDMG",
+        label: "Transform DMG",
+        description: `Transform into Calamity Effigy to deal 63.00%/72.00%/81.00% Aero DMG. The Resonator with this Echo equipped in the main slot gains 189.00%/216.00%/243.00% Aero DMG Bonus,`,
+        talents: {
+          "1": "405.00%",
+          "2": "405.00%",
+          "3": "405.00%",
+          "4": "405.00%",
+          "5": "405.00%",
+        },
+        type: "Echo",
+        element: "Aero",
+      },
+    ],
+    sets: ["HeartofEvilsPurge", "LampofNetherRoad"],
+  },
   AbyssalGladius: {
     key: "AbyssalGladius",
     name: "Abyssal Gladius",

@@ -1,12 +1,16 @@
-type PassiveBuffState = {
-  isEnabled?: boolean;
-  stacks?: number;
-};
+import {
+  getMainEchoBuffs,
+  getMainEchoBuffStacks,
+  isMainEchoBuffEnabled,
+  type MainEchoBuffState,
+  type OptimizerMainEchoBuffEntry,
+} from "../echoes/mainEchoBuffs";
+import { mainEchoesData } from "../echoes/index";
 
 type OptimizerBuffSource = {
   optimizer?: {
-    mainEchoBuffs?: Record<string, PassiveBuffState>;
-    echoSetPassives?: Record<string, PassiveBuffState>;
+    mainEchoBuffs?: Record<string, OptimizerMainEchoBuffEntry>;
+    echoSetPassives?: Record<string, MainEchoBuffState>;
   };
 };
 
@@ -16,8 +20,12 @@ export type LoadoutEcho = {
 };
 
 export type CharacterBuffUpdates = {
-  mainEcho?: { isEnabled?: boolean; stacks?: number };
-  echoSetPassives?: Record<string, PassiveBuffState>;
+  mainEcho?: {
+    isEnabled?: boolean;
+    stacks?: number;
+    buffs?: Record<string, MainEchoBuffState>;
+  };
+  echoSetPassives?: Record<string, MainEchoBuffState>;
 };
 
 export function buildCharacterBuffUpdatesFromOptimizer(
@@ -36,17 +44,32 @@ export function buildCharacterBuffUpdatesFromOptimizer(
       : undefined);
 
   if (mainEchoKey) {
-    const mainEchoBuff = optimizer.mainEchoBuffs?.[mainEchoKey];
-    if (mainEchoBuff?.isEnabled) {
-      updates.mainEcho = { isEnabled: true };
-      if (mainEchoBuff.stacks != null) {
-        updates.mainEcho.stacks = mainEchoBuff.stacks;
+    const mainEchoBuffEntry = optimizer.mainEchoBuffs?.[mainEchoKey];
+    const echoData = mainEchoesData[mainEchoKey];
+    const buffs = getMainEchoBuffs(echoData);
+    const buffUpdates: Record<string, MainEchoBuffState> = {};
+
+    for (const buff of buffs) {
+      if (!isMainEchoBuffEnabled(mainEchoBuffEntry, buff.key)) {
+        continue;
       }
+      const entry: MainEchoBuffState = { isEnabled: true };
+      if (buff.hasStacks) {
+        const stacks = getMainEchoBuffStacks(mainEchoBuffEntry, buff.key);
+        if (stacks != null) {
+          entry.stacks = stacks;
+        }
+      }
+      buffUpdates[buff.key] = entry;
+    }
+
+    if (Object.keys(buffUpdates).length > 0) {
+      updates.mainEcho = { buffs: buffUpdates };
     }
   }
 
   const optimizerPassives = optimizer.echoSetPassives ?? {};
-  const echoSetPassivesUpdates: Record<string, PassiveBuffState> = {};
+  const echoSetPassivesUpdates: Record<string, MainEchoBuffState> = {};
   for (const [passiveKey, passiveState] of Object.entries(optimizerPassives)) {
     if (!passiveState?.isEnabled) {
       continue;

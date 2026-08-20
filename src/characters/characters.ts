@@ -26,6 +26,7 @@ export const characterPickerRoster: CharacterList = {
     { key: "Hiyuki", name: "Hiyuki" },
     { key: "Iuno", name: "Iuno" },
     { key: "Jianxin", name: "Jianxin" },
+    // { key: "Jingran", name: "Jingran" },
     { key: "Jinhsi", name: "Jinhsi" },
     { key: "Jiyan", name: "Jiyan" },
     { key: "Lingyang", name: "Lingyang" },
@@ -37,6 +38,7 @@ export const characterPickerRoster: CharacterList = {
     { key: "Mornye", name: "Mornye" },
     { key: "Phoebe", name: "Phoebe" },
     { key: "Phrolova", name: "Phrolova" },
+    { key: "Qingxiao", name: "Qingxiao" },
     { key: "Qiuyuan", name: "Qiuyuan" },
     { key: "Rebecca", name: "Rebecca" },
     { key: "Roccia", name: "Roccia" },
@@ -199,6 +201,13 @@ export const allCharactersList = [
     rarity: 5,
     weapon: "Gauntlet",
   },
+  // {
+  //   key: "Jingran",
+  //   name: "Jingran",
+  //   element: "Fusion",
+  //   rarity: 5,
+  //   weapon: "Broadblade",
+  // },
   {
     key: "Jinhsi",
     name: "Jinhsi",
@@ -275,6 +284,13 @@ export const allCharactersList = [
     element: "Havoc",
     rarity: 5,
     weapon: "Rectifier",
+  },
+  {
+    key: "Qingxiao",
+    name: "Qingxiao",
+    element: "Aero",
+    rarity: 5,
+    weapon: "Sword",
   },
   {
     key: "Qiuyuan",
