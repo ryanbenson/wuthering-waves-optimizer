@@ -314,6 +314,14 @@
                 )
               }}
             </span>
+            ) × (1 +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.totalTalentModifierSpecialMultiply * 100,
+                )
+              }}
+            </span>
             )
           </div>
         </div>
