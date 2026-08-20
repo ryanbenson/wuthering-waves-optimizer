@@ -36,13 +36,13 @@
             "></CalculatorTalents>
           <CalculatorCharacterStance
             v-if="characterStances.length > 1 && isLoading === false"
-            :key="`${character}-stance`"
+            :key="`${characterBuildKey}-stance`"
             :character="character"
             :stances="characterStances"
             @updated-character-stance="handleUpdatedCharacterStance" />
           <template v-if="chosenChar?.value?.buffs && isLoading === false">
             <CalculatorCharacterBuffs
-              :key="character"
+              :key="characterBuildKey"
               :character="character"
               :buffs="filteredCharacterBuffs"
               :talent-data="characters?.[character]?.talents"
@@ -60,7 +60,7 @@
       <div class="screen--weapon" v-show="curScreen === 'weapon'">
         <CalculatorWeapons
           v-if="character"
-          :key="character"
+          :key="characterBuildKey"
           :character="character"
           @update-weapon="handleWeaponUpdated"
           :weapon-type="weaponType"
@@ -69,7 +69,7 @@
 
       <div class="screen--echoes" v-show="curScreen === 'echoes'">
         <CalculatorEchoes
-          :key="character"
+          :key="characterBuildKey"
           :character="character"
           @update-stats="updateStatsEchoes"
           @updated-main-echo="handleUpdatedMainEcho"
@@ -84,7 +84,7 @@
         <template
           v-if="chosenChar?.value?.resonanceChains && isLoading === false">
           <CalculatorResonanceChains
-            :key="character"
+            :key="characterBuildKey"
             :character="character"
             :buffs="filteredResonanceChains"
             @updated-character-resonance-chains="
@@ -98,7 +98,7 @@
         class="screen--build-card"
         v-show="curScreen === 'build-card'">
         <CalculatorBuildCard
-          :key="character"
+          :key="characterBuildKey"
           :character="character"
           :character-level="characterLevel"
           :weapon-atk="weaponAtk"
@@ -106,13 +106,13 @@
       </div>
       <div class="screen-party" v-show="curScreen === 'party'">
         <CalculatorPartyBuffs
-          :key="character"
+          :key="characterBuildKey"
           :character="character"
           @updated-team-buffs="handleUpdatedTeamBuffs"></CalculatorPartyBuffs>
       </div>
       <div class="screen--optimizer" v-if="curScreen === 'optimizer'">
         <CalculatorOptimizer
-          :key="character"
+          :key="characterBuildKey"
           :character="character"
           :total-combos="totalCombos"
           :processed-combos="processedCombos"
@@ -134,19 +134,19 @@
       </div>
       <div class="screen--rotations" v-show="curScreen === 'rotations'">
         <CalculatorRotations
-          :key="character"
+          :key="characterBuildKey"
           :character="character"
           @updated-rotations="handleUpdatedRotations"></CalculatorRotations>
       </div>
       <div class="screen--custom-buffs" v-show="curScreen === 'custom-buffs'">
         <CalculatorCustomBuffs
-          :key="character"
+          :key="characterBuildKey"
           :character="character"
           @custom-buffs-updated="handleCustomBuffs"></CalculatorCustomBuffs>
       </div>
       <div class="screen--enemy" v-show="curScreen === 'enemy'">
         <CalculatorEnemy
-          :key="character"
+          :key="characterBuildKey"
           :character="character"
           :character-element="characterElement"
           @updated-enemy-data="handleUpdatedEnemy"
@@ -189,7 +189,7 @@
           :tune-break-boost="tuneBreakBoost"
           @stat-selected="handleStatSelected"></CalculatorStats>
         <CalculatorDamages
-          :key="character"
+          :key="characterBuildKey"
           :character="character"
           :all-damages="allDamages"
           :rotations-list="rotationsList"
@@ -234,7 +234,7 @@
         :tune-break-boost="tuneBreakBoost"
         @stat-selected="handleStatSelected"></CalculatorStats>
       <CalculatorDamages
-        :key="character"
+        :key="characterBuildKey"
         :character="character"
         :all-damages="allDamages"
         :rotations-list="rotationsList"
@@ -451,6 +451,18 @@ export default defineComponent({
     const characterStances = computed(
       () => chosenChar.value?.basic?.stances ?? [],
     );
+    // Everything about a character's build (weapon, echoes, buffs, stance,
+    // resonance chains, etc. — everything except characterLevel/talents) is
+    // build-scoped (issue #278). Switching the active build swaps those
+    // fields on the character record in place, so the child components that
+    // read them once on mount need a full remount to pick up the new build's
+    // data, the same way they already remount on a character switch.
+    const activeBuildId = computed(
+      () => characters.value?.[character.value]?.activeBuildId ?? "",
+    );
+    const characterBuildKey = computed(
+      () => `${character.value}-${activeBuildId.value}`,
+    );
     const activeStance = computed(() =>
       resolveActiveStance(
         characterStances.value,
@@ -597,6 +609,7 @@ export default defineComponent({
       chosenChar.value = chosen;
       // set the character in the store
       characterStore.setActiveCharacter(charName);
+      characterStore.ensureCharacterBuilds(charName);
       const stances = chosen?.basic?.stances;
       if (stances?.length && !characters.value?.[charName]?.activeStance) {
         const resolved = resolveActiveStance(
@@ -1854,6 +1867,8 @@ export default defineComponent({
       characterLevel,
       chosenChar,
       characterStances,
+      activeBuildId,
+      characterBuildKey,
       activeStance,
       filteredCharacterBuffs,
       filteredResonanceChains,
