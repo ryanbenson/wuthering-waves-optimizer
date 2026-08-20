@@ -36,6 +36,11 @@ export function toEchoKey(displayName: string): string {
   return toCharacterKey(normalized);
 }
 
+export function toEnemyKey(displayName: string): string {
+  const pascalKey = toEchoKey(displayName);
+  return pascalKey.charAt(0).toLowerCase() + pascalKey.slice(1);
+}
+
 export function toAttackKey(attributeName: string): string {
   const parts = attributeName.match(/[a-zA-Z0-9]+/g) ?? [];
   return parts

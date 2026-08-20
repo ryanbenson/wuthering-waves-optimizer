@@ -4,6 +4,7 @@ import { runGenerateCharacter } from "./commands/generateCharacter.js";
 import { runGenerateWeapon } from "./commands/generateWeapon.js";
 import { runImportEchoes } from "./commands/importEchoes.js";
 import { runGenerateEchoPreset } from "./commands/generateEchoPreset.js";
+import { runGenerateEnemies, type EnemyGeneratorMode } from "./commands/generateEnemies.js";
 import { runBackfillIcons } from "./commands/backfillIcons.js";
 
 const program = new Command();
@@ -53,6 +54,32 @@ generate
   .action(async () => {
     try {
       await runGenerateEchoPreset();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(`Error: ${message}`);
+      process.exit(1);
+    }
+  });
+
+generate
+  .command("enemies")
+  .description("Generate src/enemies/index.ts from the Encore API")
+  .option(
+    "--mode <mode>",
+    "Skip the interactive prompt: 'fill' to add only missing enemies, 'overwrite' to rebuild every enemy from the API",
+  )
+  .action(async (commandOptions: { mode?: string }) => {
+    try {
+      if (
+        commandOptions.mode !== undefined &&
+        commandOptions.mode !== "fill" &&
+        commandOptions.mode !== "overwrite"
+      ) {
+        throw new Error(`--mode must be 'fill' or 'overwrite', got '${commandOptions.mode}'`);
+      }
+      await runGenerateEnemies({
+        mode: commandOptions.mode as EnemyGeneratorMode | undefined,
+      });
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       console.error(`Error: ${message}`);
