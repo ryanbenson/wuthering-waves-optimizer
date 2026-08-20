@@ -69,9 +69,18 @@ describe("Team Rotations per-slot build override (issue #278)", () => {
       '[data-test="team-rotation-slot-build-select-0"]',
       "Burst Build",
     );
+    cy.get('[data-test="team-rotation-slot-build-select-0"]').should("contain.text", "Burst Build");
 
+    // recompute() rebuilds the slot's context asynchronously — use a
+    // retrying assertion (not a one-shot read) so this waits for it rather
+    // than racing it.
     cy.get("@baselineAtk").then((baselineAtk) => {
-      readSlotAtk(0).should("be.greaterThan", baselineAtk as unknown as number);
+      cy.get('[data-test-team-rotation-slot="0"]')
+        .find('[data-test-team-rotation-slot-stat="atk"] span')
+        .should(($span) => {
+          const atk = Number($span.text().replace(/,/g, ""));
+          expect(atk).to.be.greaterThan(baselineAtk as unknown as number);
+        });
     });
 
     // Add a rotation action for this slot and confirm the damage number
@@ -97,5 +106,55 @@ describe("Team Rotations per-slot build override (issue #278)", () => {
     cy.get("[data-test-build-select]").should("contain.text", "Default");
     cy.get('[data-test-calculator-nav="weapon"]').click();
     cy.get("[data-test-weapon-select]").should("contain.text", "Choose a weapon");
+  });
+
+  it("doesn't list the active build a second time alongside its '(active)' placeholder", () => {
+    cy.richSelect("[data-test-character-select]", "Carlotta");
+    cy.get(".character__self-buffs").should("be.visible");
+
+    // Three builds total (Default, Build B, Build C), each duplicate-created
+    // from — and so auto-equipping — the previous one, ending with "Build C"
+    // active.
+    cy.get("[data-test-manage-builds-open]").click();
+    cy.get("[data-test-manage-builds-new-name]").type("Build B");
+    cy.get("[data-test-manage-builds-create-active]").click();
+    cy.get("[data-test-manage-builds-new-name]").type("Build C");
+    cy.get("[data-test-manage-builds-create-active]").click();
+    cy.get("[data-test-manage-builds-close]").click();
+    cy.get("[data-test-build-select]").should("contain.text", "Build C");
+
+    cy.get("[data-test-nav-team-rotations]").click();
+    cy.get("[data-test-team-rotations-new]").click();
+    cy.get("[data-test-team-rotation-editor]").should("be.visible");
+    cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
+    cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
+
+    // Placeholder reflects the real active build...
+    cy.get('[data-test="team-rotation-slot-build-select-0"]').should(
+      "contain.text",
+      "Build C (active)",
+    );
+
+    // ...and the dropdown lists exactly the two *other* builds — Build C
+    // itself (the active one) must not appear a second time in the list.
+    cy.get('[data-test="team-rotation-slot-build-select-0"]')
+      .scrollIntoView()
+      .click({ force: true });
+    cy.get('[data-test="team-rotation-slot-build-select-0"]')
+      .closest(".app-rich-select")
+      .should("have.class", "dropdown-open")
+      .within(() => {
+        const realOption = '[data-test-rich-select-option]:not([data-test-rich-select-option="null"])';
+        cy.contains(realOption, "Default").should("be.visible");
+        cy.contains(realOption, "Build B").should("be.visible");
+        // Exactly those two — "Build C" (the active build) must not be
+        // listed a second time as its own real option; only the placeholder
+        // above should mention it.
+        cy.get(realOption)
+          .should("have.length", 2)
+          .each(($option) => {
+            expect($option.text().trim()).not.to.eq("Build C");
+          });
+      });
   });
 });

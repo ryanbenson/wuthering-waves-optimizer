@@ -98,7 +98,7 @@
                   <span>{{ displayPercentage(slotStats[slot]!.energyRegen) }}</span>
                 </div>
               </div>
-              <div v-if="buildOptionsForSlot(slot).length > 1" class="mb-2">
+              <div v-if="buildOptionsForSlot(slot).length > 0" class="mb-2">
                 <AppRichSelect
                   :model-value="team.buildIds?.[slot] ?? null"
                   :options="buildOptionsForSlot(slot)"
@@ -463,9 +463,16 @@ function setSlotCharacter(slot: number, characterId: unknown) {
 
 // Build override options for a slot (issue #278): only offered when that
 // slot's character actually has more than one saved build — a single-build
-// character has nothing to pick between. `null` (the "empty" selection)
+// character has nothing to pick between. `null` (the "empty" selection,
+// labeled with the active build's own name by `activeBuildLabelForSlot`)
 // means "use whatever build is active for that character", so choosing a
 // different build here never changes the character's own active build.
+// The active build itself is excluded from this list — it's already
+// represented by the empty option, and listing it a second time reads as a
+// duplicate — except when it's also the slot's currently *pinned* build
+// (a user pinned build X, then separately made X their active build
+// elsewhere), so the select's model-value always resolves to a real option
+// instead of rendering blank.
 function buildOptionsForSlot(slot: number): AppRichSelectOption[] {
   const characterId = team.value?.characterIds[slot];
   if (!characterId) {
@@ -475,7 +482,11 @@ function buildOptionsForSlot(slot: number): AppRichSelectOption[] {
   if (builds.length <= 1) {
     return [];
   }
-  return builds.map((build) => ({ value: build.id, label: build.name }));
+  const activeBuildId = characterStore.getActiveBuildId(characterId);
+  const pinnedBuildId = team.value?.buildIds?.[slot] ?? null;
+  return builds
+    .filter((build) => build.id !== activeBuildId || build.id === pinnedBuildId)
+    .map((build) => ({ value: build.id, label: build.name }));
 }
 
 function activeBuildLabelForSlot(slot: number): string {
