@@ -98,6 +98,18 @@
                   <span>{{ displayPercentage(slotStats[slot]!.energyRegen) }}</span>
                 </div>
               </div>
+              <div v-if="buildOptionsForSlot(slot).length > 1" class="mb-2">
+                <AppRichSelect
+                  :model-value="team.buildIds?.[slot] ?? null"
+                  :options="buildOptionsForSlot(slot)"
+                  allow-empty
+                  :empty-label="activeBuildLabelForSlot(slot)"
+                  size="xs"
+                  variant="ghost"
+                  aria-label="Choose build for this slot"
+                  :data-test="`team-rotation-slot-build-select-${slot}`"
+                  @update:model-value="(val) => setSlotBuild(slot, val)" />
+              </div>
               <div class="join w-full">
                 <button
                   class="btn btn-outline btn-primary btn-xs join-item flex-1"
@@ -294,6 +306,7 @@ import {
   applyBulkAdvancedConfigOverride,
   type AdvancedConfigCategory,
 } from "../calculator/rotationAdvancedBuffs";
+import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import type { AdvancedBuffOverride } from "./TeamRotationAdvancedBuffRow.vue";
 
 const props = defineProps<{ teamId: string }>();
@@ -446,6 +459,33 @@ function setSlotCharacter(slot: number, characterId: unknown) {
   if (hadActions) {
     showToast("That teammate's actions were cleared since they belonged to the previous character.", "info");
   }
+}
+
+// Build override options for a slot (issue #278): only offered when that
+// slot's character actually has more than one saved build — a single-build
+// character has nothing to pick between. `null` (the "empty" selection)
+// means "use whatever build is active for that character", so choosing a
+// different build here never changes the character's own active build.
+function buildOptionsForSlot(slot: number): AppRichSelectOption[] {
+  const characterId = team.value?.characterIds[slot];
+  if (!characterId) {
+    return [];
+  }
+  const builds = characterStore.getBuilds(characterId) as Array<{ id: string; name: string }>;
+  if (builds.length <= 1) {
+    return [];
+  }
+  return builds.map((build) => ({ value: build.id, label: build.name }));
+}
+
+function activeBuildLabelForSlot(slot: number): string {
+  const characterId = team.value?.characterIds[slot];
+  const activeBuild = characterId ? characterStore.getActiveBuild(characterId) : null;
+  return activeBuild ? `${activeBuild.name} (active)` : "Active build";
+}
+
+function setSlotBuild(slot: number, buildId: unknown) {
+  teamRotationsStore.setTeamCharacterBuild(props.teamId, slot, typeof buildId === "string" ? buildId : null);
 }
 
 function startChangeSlot(slot: number) {
@@ -692,7 +732,12 @@ const characterDataForSlot = computed(() => {
   const out: Record<number, Record<string, unknown>> = {};
   for (const slot of [0, 1, 2]) {
     const characterId = team.value?.characterIds[slot];
-    out[slot] = characterId ? (characters.value[characterId] ?? {}) : {};
+    if (!characterId) {
+      out[slot] = {};
+      continue;
+    }
+    const buildId = team.value?.buildIds?.[slot] ?? null;
+    out[slot] = resolveCharactersForBuild(characters.value, characterId, buildId)[characterId] ?? {};
   }
   return out;
 });
@@ -804,9 +849,12 @@ async function recompute() {
   await Promise.all(
     [0, 1, 2].map(async (slot) => {
       const characterId = t.characterIds[slot];
-      nextContexts[slot] = characterId
-        ? await buildCharacterCalculationContext(characterId, characters.value, enemyConfig, inventoryEchoes.value)
-        : null;
+      if (!characterId) {
+        nextContexts[slot] = null;
+        return;
+      }
+      const slotCharacters = resolveCharactersForBuild(characters.value, characterId, t.buildIds?.[slot] ?? null);
+      nextContexts[slot] = await buildCharacterCalculationContext(characterId, slotCharacters, enemyConfig, inventoryEchoes.value);
     }),
   );
   if (token !== computeToken) return;
@@ -816,6 +864,7 @@ async function recompute() {
     {
       name: t.name,
       characterIds: t.characterIds,
+      buildIds: t.buildIds,
       actions: t.actions,
       duration: t.duration,
     },
