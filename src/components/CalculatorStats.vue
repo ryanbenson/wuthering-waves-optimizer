@@ -322,7 +322,7 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   td img {
     filter: contrast(0);
   }

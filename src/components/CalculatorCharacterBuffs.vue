@@ -271,7 +271,7 @@ defineExpose({
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .character__buff {
     background-color: #f8f8f8;
   }
@@ -323,7 +323,7 @@ html[data-theme="light"] {
   }
 }
 
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .stat-bonus-grid__cell {
     background-color: #f8f8f8;
 

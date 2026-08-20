@@ -57,7 +57,7 @@ withDefaults(
 </script>
 
 <style lang="scss" scoped>
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .weapon__weapon img {
     filter: invert(1);
   }

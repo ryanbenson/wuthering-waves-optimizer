@@ -679,7 +679,7 @@ onBeforeUnmount(() => {
 .weapon__selection__image:hover .weapon__selection__image-icon {
   opacity: 1;
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .weapon__stat {
     span img {
       filter: contrast(0.25);

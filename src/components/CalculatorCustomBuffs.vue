@@ -876,7 +876,7 @@ function handleResetCustomBuffs() {
 </script>
 
 <style lang="scss" scoped>
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   img {
     filter: contrast(0);
   }

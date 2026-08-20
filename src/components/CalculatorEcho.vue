@@ -2127,7 +2127,7 @@ defineExpose({ saveEchoItem });
   position: relative;
   z-index: 10;
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .echo__reset,
   .btn--echo--find {
     svg {

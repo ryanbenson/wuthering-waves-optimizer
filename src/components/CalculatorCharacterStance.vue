@@ -90,7 +90,7 @@ async function selectStance(stance: string) {
   left: 0.5rem;
   z-index: 0;
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .character__stance-icon {
     filter: invert(1);
   }

@@ -751,7 +751,7 @@ onMounted(() => {
     filter: invert(100%);
   }
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .rotation__end {
     svg {
       filter: unset;

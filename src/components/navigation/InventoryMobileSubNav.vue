@@ -75,7 +75,7 @@ export default {
   z-index: 100;
 }
 
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .preset-icon svg path {
     stroke: black !important;
     fill: black !important;

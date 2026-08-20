@@ -579,7 +579,7 @@ watch(setOverride, (newValue) => {
   z-index: 0;
   font-size: 24px;
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .main-echo {
     background-color: #f8f8f8;
   }

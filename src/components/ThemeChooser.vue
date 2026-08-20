@@ -83,17 +83,15 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
-import { storeToRefs } from "pinia";
-import { useSettingsStore } from "../stores/settings";
+import { THEME_OPTIONS, useTheme } from "../composables/useTheme";
 import { useUiDensity, type UiDensity } from "../composables/useUiDensity";
 
 defineOptions({ name: "ThemeChooser" });
 
-const settingsStore = useSettingsStore();
-const { config } = storeToRefs(settingsStore);
+const { theme: settingsTheme, setTheme: applyTheme } = useTheme();
 const { density, setDensity, initDensity } = useUiDensity();
 
-const themeOptions = ["dark", "light", "black"] as const;
+const themeOptions = THEME_OPTIONS;
 const densityOptions: Array<{ value: UiDensity; label: string }> = [
   { value: "comfy", label: "Comfy" },
   { value: "compact", label: "Compact" },
@@ -101,22 +99,13 @@ const densityOptions: Array<{ value: UiDensity; label: string }> = [
 
 const theme = ref("dark");
 
-const settingsTheme = computed(
-  () => (config.value as { theme?: string } | null)?.theme ?? null,
-);
-
 const isDarkSchemePreferred = computed(
   () => window?.matchMedia?.("(prefers-color-scheme:dark)")?.matches ?? false,
 );
 
-function setTheme() {
-  document.documentElement.setAttribute("data-theme", theme.value);
-  void settingsStore.addToConfig({ theme: theme.value });
-}
-
 function chooseTheme(next: string) {
   theme.value = next;
-  setTheme();
+  applyTheme(next);
 }
 
 function chooseDensity(next: UiDensity) {
@@ -124,15 +113,10 @@ function chooseDensity(next: UiDensity) {
 }
 
 function init() {
-  let next: string | null = null;
-  if (settingsTheme.value) {
-    next = settingsTheme.value;
-  }
-  if (!settingsTheme.value) {
-    next = isDarkSchemePreferred.value ? "dark" : "light";
-  }
-  theme.value = next ?? "dark";
-  setTheme();
+  const next =
+    settingsTheme.value ?? (isDarkSchemePreferred.value ? "dark" : "light");
+  theme.value = next;
+  applyTheme(next);
   initDensity();
 }
 

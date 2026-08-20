@@ -407,7 +407,7 @@ function getEchoSetIcon(type: string) {
 </script>
 
 <style lang="scss" scoped>
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .echo__item__sub-stats img {
     filter: contrast(0);
   }
