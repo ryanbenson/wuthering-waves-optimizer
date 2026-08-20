@@ -23,6 +23,7 @@ npm run cypress:run   # E2E headless
 npm run cli -- generate character   # or: make generate-character
 npm run cli -- generate weapon
 npm run cli -- generate echo-preset
+npm run cli -- generate enemies         # --mode fill|overwrite to skip the prompt
 npm run cli -- import echoes
 npm run cli -- backfill icons        # or: backfill icons --character <Key> for one character
 ```

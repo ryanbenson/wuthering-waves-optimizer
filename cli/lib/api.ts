@@ -315,3 +315,44 @@ export async function fetchEchoList(): Promise<ApiEchoListItem[]> {
   const data = await fetchJson<EchoListResponse>(ECHO_LIST_URL);
   return data.Echo;
 }
+
+const MONSTER_API_BASE = "https://api-v2.encore.moe/api/en/monster";
+const MONSTER_LIST_URL = `${MONSTER_API_BASE}`;
+
+export interface ApiMonsterListItem {
+  Id: number;
+  Icon: string;
+  Name: string;
+  Rarity: string;
+  RarityId: number;
+  Element: {
+    Id: number;
+    Name: string;
+  };
+}
+
+interface MonsterListResponse {
+  monsterList: ApiMonsterListItem[];
+}
+
+export async function fetchMonsterList(): Promise<ApiMonsterListItem[]> {
+  const data = await fetchJson<MonsterListResponse>(MONSTER_LIST_URL);
+  return data.monsterList;
+}
+
+export interface ApiMonsterProperty {
+  Value: number;
+  Name: string;
+}
+
+export interface ApiMonsterDetail {
+  Id: number;
+  Name: string;
+  Icon: string;
+  Rarity: string;
+  Properties: Record<string, ApiMonsterProperty>;
+}
+
+export async function fetchMonsterDetail(id: number): Promise<ApiMonsterDetail> {
+  return fetchJson<ApiMonsterDetail>(`${MONSTER_API_BASE}/${id}`);
+}
