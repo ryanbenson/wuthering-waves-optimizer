@@ -2985,7 +2985,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   exile3: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_977_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_977_UI.webp",
     name: "Exile",
     type: "Standard",
     resist: {
@@ -2999,7 +2999,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   exile4: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_977_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_977_UI.webp",
     name: "Exile",
     type: "Standard",
     resist: {
@@ -3013,7 +3013,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   exile5: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_977_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_977_UI.webp",
     name: "Exile",
     type: "Standard",
     resist: {
@@ -3027,7 +3027,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   exile6: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_977_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_977_UI.webp",
     name: "Exile",
     type: "Standard",
     resist: {
@@ -3041,7 +3041,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   exile7: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_976_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_976_UI.webp",
     name: "Exile",
     type: "Standard",
     resist: {
@@ -3055,7 +3055,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   exile8: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_976_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_976_UI.webp",
     name: "Exile",
     type: "Standard",
     resist: {
@@ -3069,7 +3069,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   exile9: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_976_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_976_UI.webp",
     name: "Exile",
     type: "Standard",
     resist: {
@@ -3083,7 +3083,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   exile10: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_976_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_976_UI.webp",
     name: "Exile",
     type: "Standard",
     resist: {
@@ -3097,7 +3097,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   exile11: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_976_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_976_UI.webp",
     name: "Exile",
     type: "Standard",
     resist: {
@@ -3111,7 +3111,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   exile12: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_976_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_976_UI.webp",
     name: "Exile",
     type: "Standard",
     resist: {
@@ -3125,7 +3125,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomRocksteadyGuardian: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1007_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1007_UI.webp",
     name: "Phantom: Rocksteady Guardian",
     type: "Elite",
     resist: {
@@ -3139,7 +3139,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomHoartoise: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1010_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1010_UI.webp",
     name: "Phantom: Hoartoise",
     type: "Standard",
     resist: {
@@ -3153,7 +3153,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomImpermanenceHeron: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1014_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1014_UI.webp",
     name: "Phantom: Impermanence Heron",
     type: "Overlord",
     resist: {
@@ -3167,7 +3167,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   hooscamp: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_988_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_988_UI.webp",
     name: "Hooscamp",
     type: "Standard",
     resist: {
@@ -3181,7 +3181,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   hoochief: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_989_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_989_UI.webp",
     name: "Hoochief",
     type: "Elite",
     resist: {
@@ -3195,7 +3195,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomClangBang: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1015_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1015_UI.webp",
     name: "Phantom: Clang Bang",
     type: "Standard",
     resist: {
@@ -3209,7 +3209,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomLightcrusher: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1016_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_1016_UI.webp",
     name: "Phantom: Lightcrusher",
     type: "Elite",
     resist: {
@@ -3223,7 +3223,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomDreamless: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_998_1_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_998_1_UI.webp",
     name: "Phantom: Dreamless",
     type: "Calamity",
     resist: {
@@ -3237,7 +3237,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomGulpuff: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_115_1_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_115_1_UI.webp",
     name: "Phantom: Gulpuff",
     type: "Standard",
     resist: {
@@ -3251,7 +3251,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomLumiscaleConstruct: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_329_1_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_329_1_UI.webp",
     name: "Phantom: Lumiscale Construct",
     type: "Elite",
     resist: {
@@ -3265,7 +3265,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomInfernoRider: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_325_1_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_325_1_UI.webp",
     name: "Phantom: Inferno Rider",
     type: "Overlord",
     resist: {
@@ -3279,7 +3279,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomDiggyDuggy: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_SG_31047_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_SG_31047_UI.webp",
     name: "Phantom: Diggy Duggy",
     type: "Standard",
     resist: {
@@ -3293,7 +3293,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomVitreumDancer: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_SG_32029_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_SG_32029_UI.webp",
     name: "Phantom: Vitreum Dancer",
     type: "Elite",
     resist: {
@@ -3307,7 +3307,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomQuestlessKnight: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_SG_32022_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_SG_32022_UI.webp",
     name: "Phantom: Questless Knight",
     type: "Elite",
     resist: {
@@ -3321,7 +3321,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomSentryConstruct: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_SG_33009_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_SG_33009_UI.webp",
     name: "Phantom: Sentry Construct",
     type: "Overlord",
     resist: {
@@ -3335,7 +3335,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomLorelei: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_SG_33011_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_SG_33011_UI.webp",
     name: "Phantom: Lorelei",
     type: "Overlord",
     resist: {
@@ -3349,7 +3349,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   dragonOfDirge2: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33013_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33013_UI.webp",
     name: "Dragon of Dirge",
     type: "Overlord",
     resist: {
@@ -3363,7 +3363,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   lorelei2: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33011_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33011_UI.webp",
     name: "Lorelei",
     type: "Overlord",
     resist: {
@@ -3377,7 +3377,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   fleurdelys2: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34012_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34012_UI.webp",
     name: "Fleurdelys",
     type: "Calamity",
     resist: {
@@ -3391,7 +3391,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   kelpie: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33021_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33021_UI.webp",
     name: "Kelpie",
     type: "Elite",
     resist: {
@@ -3405,7 +3405,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   ladyOfTheSea2: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34018_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34018_UI.webp",
     name: "Lady of the Sea",
     type: "Overlord",
     resist: {
@@ -3419,7 +3419,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   hecate3: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34010_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34010_UI.webp",
     name: "Hecate",
     type: "Calamity",
     resist: {
@@ -3433,7 +3433,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   reminiscenceKronaclaw: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32060_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32060_UI.webp",
     name: "Reminiscence: Kronaclaw",
     type: "Elite",
     resist: {
@@ -3447,7 +3447,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   reminiscenceThrenodianVoidborneConstruct: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34027_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34027_UI.webp",
     name: "Reminiscence: Threnodian - Voidborne Construct",
     type: "Calamity",
     resist: {
@@ -3461,7 +3461,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   smiter: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31090_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31090_UI.webp",
     name: "Smiter",
     type: "Standard",
     resist: {
@@ -3475,7 +3475,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   porcelainPicket: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31091_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31091_UI.webp",
     name: "Porcelain Picket",
     type: "Standard",
     resist: {
@@ -3489,7 +3489,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   stonePicket: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31092_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31092_UI.webp",
     name: "Stone Picket",
     type: "Standard",
     resist: {
@@ -3503,7 +3503,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   aureatePicket: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31093_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31093_UI.webp",
     name: "Aureate Picket",
     type: "Standard",
     resist: {
@@ -3517,7 +3517,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   kernelPuppetJoy: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31094_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31094_UI.webp",
     name: "Kernel Puppet: Joy",
     type: "Standard",
     resist: {
@@ -3531,7 +3531,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   kernelPuppetAnger: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31095_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31095_UI.webp",
     name: "Kernel Puppet: Anger",
     type: "Standard",
     resist: {
@@ -3545,7 +3545,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   kernelPuppetWorry: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31096_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31096_UI.webp",
     name: "Kernel Puppet: Worry",
     type: "Standard",
     resist: {
@@ -3559,7 +3559,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   kernelPuppetReflection: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31097_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31097_UI.webp",
     name: "Kernel Puppet: Reflection",
     type: "Standard",
     resist: {
@@ -3573,7 +3573,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   kernelPuppetGrief: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31098_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31098_UI.webp",
     name: "Kernel Puppet: Grief",
     type: "Standard",
     resist: {
@@ -3587,7 +3587,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   kernelPuppetFright: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31099_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31099_UI.webp",
     name: "Kernel Puppet: Fright",
     type: "Standard",
     resist: {
@@ -3601,7 +3601,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   fogLionarchBody: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31100_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31100_UI.webp",
     name: "Fog Lionarch: Body",
     type: "Standard",
     resist: {
@@ -3615,7 +3615,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   fogLionarchHead: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31101_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31101_UI.webp",
     name: "Fog Lionarch: Head",
     type: "Standard",
     resist: {
@@ -3629,7 +3629,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   smolder: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31102_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_31102_UI.webp",
     name: "Smolder",
     type: "Standard",
     resist: {
@@ -3643,7 +3643,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   fogLionarch: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32067_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32067_UI.webp",
     name: "Fog Lionarch",
     type: "Elite",
     resist: {
@@ -3657,7 +3657,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   forbiddenBastion: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32068_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_32068_UI.webp",
     name: "Forbidden Bastion",
     type: "Elite",
     resist: {
@@ -3671,7 +3671,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   myriadSnareRustfireChassis: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34030_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34030_UI.webp",
     name: "Myriad Snare: Rustfire Chassis",
     type: "Overlord",
     resist: {
@@ -3685,7 +3685,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   thousandPuppetPavilion: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34031_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34031_UI.webp",
     name: "Thousand-Puppet Pavilion",
     type: "Calamity",
     resist: {
@@ -3699,7 +3699,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   phantomOfSunkenReverie: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33021_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33021_UI.webp",
     name: "Phantom of Sunken Reverie",
     type: "Elite",
     resist: {
@@ -3713,7 +3713,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   vesselOfTheFallenDream: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34012_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34012_UI.webp",
     name: "Vessel of the Fallen Dream",
     type: "Calamity",
     resist: {
@@ -3727,7 +3727,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   apexChampionOfTheCitadel: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33022_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_33022_UI.webp",
     name: "Apex Champion of the Citadel",
     type: "Overlord",
     resist: {
@@ -3741,7 +3741,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   eternalHuskOfSovereign: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34017_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34017_UI.webp",
     name: "Eternal Husk of Sovereign",
     type: "Overlord",
     resist: {
@@ -3755,7 +3755,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   starGazerOfSilentVoid: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34021_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34021_UI.webp",
     name: "Star Gazer of Silent Void",
     type: "Overlord",
     resist: {
@@ -3769,7 +3769,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   starGazerOfSilentVoid2: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34021_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34021_UI.webp",
     name: "Star Gazer of Silent Void",
     type: "Overlord",
     resist: {
@@ -3783,7 +3783,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   feralMeltdown: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34022_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34022_UI.webp",
     name: "Feral Meltdown",
     type: "Overlord",
     resist: {
@@ -3797,7 +3797,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   feralMeltdown2: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34022_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34022_UI.webp",
     name: "Feral Meltdown",
     type: "Overlord",
     resist: {
@@ -3811,7 +3811,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   stellarWayfarer: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34025_0_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34025_0_UI.webp",
     name: "Stellar Wayfarer",
     type: "Calamity",
     resist: {
@@ -3825,7 +3825,7 @@ const enemies: Record<string, Enemy> = {
     },
   },
   desolateApparition: {
-    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34026_UI.png",
+    imageUrl: "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_34026_UI.webp",
     name: "Desolate Apparition",
     type: "Overlord",
     resist: {

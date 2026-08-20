@@ -9,6 +9,7 @@ import {
   hasUsableResistData,
   insertEnemyBlocks,
   parseEnemiesFile,
+  resolveEnemyImageUrl,
   selectNewEnemies,
   shouldSkipApiMonster,
 } from "../../cli/lib/enemies.js";
@@ -152,6 +153,24 @@ describe("shouldSkipApiMonster", () => {
   });
 });
 
+describe("resolveEnemyImageUrl", () => {
+  it("rewrites the API's .png extension to .webp (the .png path 404s on Encore's CDN)", () => {
+    expect(
+      resolveEnemyImageUrl(
+        "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_992_UI.png",
+      ),
+    ).toBe(
+      "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Image/IconMonsterHead/T_IconMonsterHead_992_UI.webp",
+    );
+  });
+
+  it("leaves an already-.webp URL unchanged", () => {
+    expect(resolveEnemyImageUrl("https://example.com/icon.webp")).toBe(
+      "https://example.com/icon.webp",
+    );
+  });
+});
+
 describe("parseEnemiesFile", () => {
   it("collects existing keys and name counts, skipping commented-out entries", () => {
     const parsed = parseEnemiesFile(sampleEnemiesFile);
@@ -217,7 +236,7 @@ describe("selectNewEnemies", () => {
 describe("buildEnemyEntryBlock / insertEnemyBlocks", () => {
   it("formats a block matching the project's existing entry style and inserts it before the closing brace", () => {
     const monster = makeMonster({ Name: "Bell-Borne Geochelone", Rarity: "Calamity Class" });
-    const detail = makeDetail({ Icon: "https://example.com/bell-borne.webp" });
+    const detail = makeDetail({ Icon: "https://example.com/bell-borne.png" });
     const block = buildEnemyEntryBlock(monster, "bellBorneGeochelone", detail);
 
     expect(block).toBe(

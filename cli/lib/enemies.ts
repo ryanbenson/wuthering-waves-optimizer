@@ -329,10 +329,20 @@ export function selectNewEnemies(
   return toGenerate;
 }
 
+/**
+ * The monster detail API always reports its `Icon` with a `.png` extension,
+ * but that path 404s on Encore's CDN — only the `.webp` version of the same
+ * file actually exists there. Swap the extension rather than the domain:
+ * both `api.encore.moe` and `api-v2.encore.moe` serve the `.webp`.
+ */
+export function resolveEnemyImageUrl(icon: string): string {
+  return icon.replace(/\.png$/i, ".webp");
+}
+
 export function buildEnemyEntryBlock(monster: ApiMonsterListItem, key: string, detail: ApiMonsterDetail): string {
   return formatEnemyEntryBlock({
     objectKey: key,
-    imageUrl: detail.Icon,
+    imageUrl: resolveEnemyImageUrl(detail.Icon),
     name: monster.Name,
     type: getEnemyTypeFromRarity(monster.Rarity),
     resist: buildResistFromProperties(detail.Properties),
