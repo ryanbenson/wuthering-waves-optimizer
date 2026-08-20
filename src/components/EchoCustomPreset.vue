@@ -175,7 +175,7 @@ const formattedCritValue = computed(() => {
 });
 
 const rollValueBadgeClass = computed(() => {
-  const rv = totalRv.value / 5 ?? 0;
+  const rv = (totalRv.value ?? 0) / 5;
   const percentage = Math.min(Math.max(rv, 0), 600);
   let bgColor: string;
   let color = "text-white";
@@ -207,7 +207,7 @@ const rollValueBadgeClass = computed(() => {
 });
 
 const critValueBadgeClass = computed(() => {
-  const cv = totalCv.value / 5 ?? 0;
+  const cv = (totalCv.value ?? 0) / 5;
   const percentage = Math.min(Math.max(cv, 0), 42);
   let bgColor: string;
   let color = "text-white";
