@@ -34,6 +34,10 @@
             @character-talent-updated="
               handleCharacterTalentUpdated
             "></CalculatorTalents>
+          <CalculatorCharacterBuildBar
+            v-if="character"
+            :key="character"
+            :character="character" />
           <CalculatorCharacterStance
             v-if="characterStances.length > 1 && isLoading === false"
             :key="`${characterBuildKey}-stance`"
@@ -327,6 +331,7 @@ import CalculatorCharacterBuffs from "./CalculatorCharacterBuffs.vue";
 import CalculatorResonanceChains from "./CalculatorResonanceChains.vue";
 import CalculatorPartyBuffs from "./CalculatorPartyBuffs.vue";
 import CalculatorCharacterSelect from "./CalculatorCharacterSelect.vue";
+import CalculatorCharacterBuildBar from "./CalculatorCharacterBuildBar.vue";
 import CalculatorCharacterStance from "./CalculatorCharacterStance.vue";
 import CalculatorTalents from "./CalculatorTalents.vue";
 import {
@@ -399,6 +404,7 @@ export default defineComponent({
   },
   components: {
     CalculatorCharacterSelect,
+    CalculatorCharacterBuildBar,
     CalculatorCharacterStance,
     CalculatorDamages,
     CalculatorEchoes,

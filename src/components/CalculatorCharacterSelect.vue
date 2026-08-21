@@ -54,30 +54,6 @@
         </div>
       </div>
       </div>
-
-      <CharacterBuildStatus
-        v-if="!isCompact"
-        :status="buildStatus"
-        :character-key="characterChosen"
-        interactive
-        class="w-full" />
-
-      <div v-if="!isCompact" class="character__selection__build character__selection__build--sidebar flex items-center gap-1 w-full">
-        <CalculatorBuildSelect :character="characterChosen" class="w-full min-w-0" />
-        <button
-          type="button"
-          class="btn btn-ghost btn-xs btn-square shrink-0"
-          aria-label="Manage builds"
-          v-tooltip="'Manage Builds'"
-          data-test-manage-builds-open
-          @click="openManageBuilds">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-3.5">
-            <path
-              d="M256 32c14.2 0 26.7 9.4 30.7 23l3.9 13.1c15.5 51.9 66.1 84.3 118.9 76.3l13.6-2.1c14-2.1 27.7 4.6 34.7 16.9l16 27.7c7 12.3 5.6 27.6-3.6 38.4l-9 10.6c-33.8 39.7-33.8 98.3 0 138l9 10.6c9.2 10.8 10.6 26.1 3.6 38.4l-16 27.7c-7 12.3-20.7 19-34.7 16.9l-13.6-2.1c-52.8-8-103.4 24.4-118.9 76.3l-3.9 13.1c-4.1 13.6-16.5 23-30.7 23s-26.7-9.4-30.7-23l-3.9-13.1c-15.5-51.9-66.1-84.3-118.9-76.3l-13.7 2.1c-14 2.1-27.7-4.6-34.7-16.9l-16-27.7c-7-12.3-5.6-27.6 3.6-38.4l9-10.6c33.8-39.7 33.8-98.3 0-138l-9-10.6c-9.2-10.8-10.6-26.1-3.6-38.4l16-27.7c7-12.3 20.7-19 34.7-16.9l13.7 2.1c52.8 8 103.4-24.4 118.9-76.3l3.9-13.1c4.1-13.6 16.5-23 30.7-23zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"
-              fill="currentColor" />
-          </svg>
-        </button>
-      </div>
     </div>
     <div class="character__selection__form" :class="{ 'character__selection__form--compact': isCompact }">
       <div class="character__selection__form--character">
@@ -95,39 +71,18 @@
           :character="character"
           @character-level-updated="handleCharacterLevelUpdated" />
       </div>
-      <CharacterBuildStatus
-        v-if="isCompact"
-        :status="buildStatus"
-        :character-key="characterChosen"
-        interactive
-        class="character__selection__build-status--compact" />
-      <div v-if="isCompact" class="character__selection__build flex items-center gap-1.5">
-        <CalculatorBuildSelect :character="characterChosen" />
-        <button
-          type="button"
-          class="btn btn-ghost btn-xs"
-          data-test-manage-builds-open
-          @click="openManageBuilds">
-          Manage Builds
-        </button>
-      </div>
     </div>
     <CalculatorCharacterBrowser
       :character="character"
       ref="characterBrowserRef"
       @character-browser:chosen-character="handleChosenCharacter" />
-    <CalculatorManageBuilds :character="characterChosen" ref="manageBuildsRef" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
-import { storeToRefs } from "pinia";
 import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
-import CharacterBuildStatus from "./CharacterBuildStatus.vue";
-import CalculatorBuildSelect from "./CalculatorBuildSelect.vue";
-import CalculatorManageBuilds from "./CalculatorManageBuilds.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
   type AppRichSelectValue,
@@ -136,7 +91,6 @@ import {
   allCharactersList,
   getCharactersAvailable,
 } from "../characters/characters";
-import { getCharacterBuildStatus } from "../characters/characterBuildStatus";
 import { useCharacterStore } from "../stores/character";
 import { useUiDensity } from "../composables/useUiDensity";
 
@@ -154,7 +108,6 @@ const props = defineProps<Props>();
 const { isCompact } = useUiDensity();
 
 const characterStore = useCharacterStore();
-const { characters } = storeToRefs(characterStore);
 
 const emit = defineEmits<{
   "updated-chosen-character": [key: string];
@@ -165,14 +118,6 @@ const characterBrowserRef = ref<{
   triggerOpenModal: () => void;
   triggerCloseModal: () => void;
 } | null>(null);
-const manageBuildsRef = ref<{
-  triggerOpenModal: () => void;
-  triggerCloseModal: () => void;
-} | null>(null);
-
-function openManageBuilds() {
-  manageBuildsRef.value?.triggerOpenModal();
-}
 
 const charactersList = ref<CharacterPickerList>({ five: [], four: [] });
 const characterChosen = ref<string>("");
@@ -205,10 +150,6 @@ const characterRarity = computed((): number | string => {
   }
   return 5;
 });
-
-const buildStatus = computed(() =>
-  getCharacterBuildStatus(characterChosen.value, characters.value),
-);
 
 const isFavorite = computed(() =>
   characterStore.isFavoriteCharacter(characterChosen.value),
@@ -269,10 +210,6 @@ onMounted(() => {
   position: relative;
   z-index: 1;
   overflow: visible;
-
-  &:has(.character-build-status-dropdown:focus-within) {
-    z-index: 50;
-  }
 }
 .character__selection__form--character {
   margin-bottom: 1rem;
@@ -304,16 +241,7 @@ onMounted(() => {
     .character__selection__form--level {
       flex: 0 0 auto;
     }
-
-    &:has(.character-build-status-dropdown:focus-within) {
-      z-index: 50;
-    }
   }
-}
-.character__selection__build-status--compact {
-  width: auto;
-  min-width: 9.5rem;
-  flex: 0 0 auto;
 }
 @media (max-width: 640px) {
   .character__selection__form--character {
