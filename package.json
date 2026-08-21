@@ -18,6 +18,10 @@
     "coverage": "vitest run --coverage",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
+    "cypress:run:data-validation": "cypress run --spec \"cypress/e2e/calculator/data-validation/**/*.cy.ts\"",
+    "cypress:run:optimizer": "cypress run --spec \"cypress/e2e/calculator/optimizer/**/*.cy.ts\"",
+    "cypress:run:team-rotations": "cypress run --spec \"cypress/e2e/teamRotations/**/*.cy.ts\"",
+    "cypress:run:calculator-core": "cypress run --spec \"cypress/e2e/calculator/*.cy.ts\"",
     "test:e2e": "vite dev & wait-on http://localhost:5173 && cypress run",
     "cli": "tsx cli/index.ts"
   },
