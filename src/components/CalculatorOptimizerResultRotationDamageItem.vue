@@ -297,7 +297,7 @@ const healingDiffPercentage = computed(() => {
 .calculation__damage__item--shield {
   color: #00adff;
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .calculation__damage__item {
     &:nth-child(odd) {
       background-color: rgba(0, 0, 0, 0.1);

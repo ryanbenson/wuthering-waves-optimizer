@@ -39,6 +39,8 @@
             'border-blue-500': weaponRarity === '3' || weaponRarity === 3,
             'border-green-500': weaponRarity === '2' || weaponRarity === 2,
             'border-gray-500': weaponRarity === '1' || weaponRarity === 1,
+            'weapon__selection__image--placeholder':
+              !weapon || !chosenWeapon,
           }"
           data-test-weapon-open-browser
           @click="openWeaponBrowser">
@@ -679,7 +681,7 @@ onBeforeUnmount(() => {
 .weapon__selection__image:hover .weapon__selection__image-icon {
   opacity: 1;
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .weapon__stat {
     span img {
       filter: contrast(0.25);

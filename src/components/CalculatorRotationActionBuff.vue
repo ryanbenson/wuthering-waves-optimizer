@@ -222,7 +222,7 @@ onMounted(() => {
     height: 1rem;
   }
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .delete {
     svg {
       filter: invert(100%);

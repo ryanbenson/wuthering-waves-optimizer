@@ -4,7 +4,7 @@
     @click="toggleEnabled">
     <div class="card-body">
       <h2 class="card-title flex items-center gap-2">
-        <img v-if="icon" :src="icon" class="size-6" />
+        <img v-if="icon" :src="icon" class="resonance-chain-item__icon size-6" />
         {{ name }}
       </h2>
       <div v-html="details"></div>

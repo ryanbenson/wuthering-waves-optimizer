@@ -66,7 +66,7 @@ h6 {
 #app {
   width: 100%;
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   :root {
     color: #213547;
     background-color: #ffffff;
@@ -108,8 +108,8 @@ html[data-theme="black"] .btn-active {
 .ingame-Light {
   color: #f8e56c;
 }
-html[data-theme="light"] .Light,
-html[data-theme="light"] .ingame-Light {
+html[data-theme-style="light"] .Light,
+html[data-theme-style="light"] .ingame-Light {
   color: #e1c200;
 }
 .Dark,
@@ -133,8 +133,8 @@ html[data-theme="light"] .ingame-Light {
 .ingame-Wind {
   color: #55ffb5;
 }
-html[data-theme="light"] .Wind,
-html[data-theme="light"] .ingame-Wind {
+html[data-theme-style="light"] .Wind,
+html[data-theme-style="light"] .ingame-Wind {
   color: #0dc776;
 }
 .glacio--active {
@@ -180,11 +180,23 @@ html[data-theme="black"] {
     background: oklch(var(--b1)) !important;
   }
 }
-html[data-theme="light"] .navbar img,
-html[data-theme="light"] .subnav img {
+html[data-theme-style="light"] .navbar img,
+html[data-theme-style="light"] .subnav img {
   filter: invert(100%);
 }
-html[data-theme="light"] {
+
+/* White-on-transparent art (resonance chain nodes, the damage-section skill
+ * icons, and the echo/weapon "nothing equipped" placeholders) needs
+ * inverting to read on a light background. Real equipped echo/weapon art is
+ * full color, so those placeholder classes are only applied by the
+ * component when there's no item selected. */
+html[data-theme-style="light"] .resonance-chain-item__icon,
+html[data-theme-style="light"] .damage__title img,
+html[data-theme-style="light"] .echo__item__image--empty,
+html[data-theme-style="light"] .weapon__selection__image--placeholder {
+  filter: invert(100%);
+}
+html[data-theme-style="light"] {
   .navbar {
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   }
@@ -212,6 +224,7 @@ html[data-theme="light"] {
   #navbar-container .navbar,
   .subnav.bg-base-300 {
     background: oklch(var(--b1)) !important;
+    box-shadow: none !important;
 
     color: oklch(var(--n)) !important;
   }
@@ -248,7 +261,7 @@ body {
   }
 }
 
-html[data-theme="light"] input[type="number"] {
+html[data-theme-style="light"] input[type="number"] {
   &::-webkit-inner-spin-button,
   &::-webkit-outer-spin-button {
     background-color: #ffffff;

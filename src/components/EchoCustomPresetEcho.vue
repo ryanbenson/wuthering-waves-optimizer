@@ -8,6 +8,7 @@
         'border-violet-600': rank === '4' || rank === 4,
         'border-blue-500': rank === '3' || rank === 3,
         'border-green-500': rank === '2' || rank === 2,
+        'echo__item__image--empty': isEchoEmpty,
       }"
       :style="{
         backgroundImage: `url(${echoImage})`,
@@ -29,10 +30,14 @@ const inventoryStore = useInventoryStore();
 
 const echoData = computed(() => inventoryStore.getEchoById(props.echoId));
 
+const isEchoEmpty = computed(
+  () => !(echoData.value as { echo?: string } | undefined)?.echo,
+);
+
 const echoImage = computed(() => {
   const defaultImageUrl =
     "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png";
-  if (!(echoData.value as { echo?: string } | undefined)?.echo) {
+  if (isEchoEmpty.value) {
     return defaultImageUrl;
   }
   const meta = getEchoData((echoData.value as { echo: string }).echo);

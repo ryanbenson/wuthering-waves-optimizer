@@ -10,6 +10,11 @@ module.exports = {
     themes: [
       "light",
       "dark",
+      "synthwave",
+      "pastel",
+      "night",
+      "nord",
+      "dracula",
       {
         black: {
           primary: "#4b6bfb",

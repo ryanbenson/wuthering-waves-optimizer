@@ -823,7 +823,7 @@ onMounted(() => {
 .rotation__action--disabled {
   opacity: 0.5;
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .buffsCount {
     svg {
       filter: invert(100%);

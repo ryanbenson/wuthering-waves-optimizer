@@ -804,7 +804,7 @@ onBeforeUnmount(() => {
   opacity: 1;
 }
 
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .character__selection__avatar {
     border-color: oklch(var(--bc));
   }

@@ -242,7 +242,7 @@ function handleClick() {
   background: #1c2737;
   border-radius: 0.25rem;
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .calculation__damage__item {
     &:nth-child(odd) {
       background-color: rgba(0, 0, 0, 0.1);

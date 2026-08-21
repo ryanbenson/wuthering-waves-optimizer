@@ -30,6 +30,7 @@
               'border-violet-600': rank === '4' || rank === 4,
               'border-blue-500': rank === '3' || rank === 3,
               'border-green-500': rank === '2' || rank === 2,
+              'echo__item__image--empty': !props.echo,
             }"
             :style="{
               backgroundImage: `url(${echoImage})`,
@@ -133,6 +134,7 @@
                 'border-violet-600': rank === '4' || rank === 4,
                 'border-blue-500': rank === '3' || rank === 3,
                 'border-green-500': rank === '2' || rank === 2,
+                'echo__item__image--empty': !props.echo,
               }"
               :style="{
                 backgroundImage: `url(${echoImage})`,
@@ -326,7 +328,7 @@ function getEchoSetIcon(type: string) {
 </script>
 
 <style lang="scss" scoped>
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .echo__item__sub-stats img {
     filter: contrast(0);
   }

@@ -101,7 +101,7 @@ const elementClass = computed(
 </script>
 
 <style lang="scss" scoped>
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .character__weapon img {
     filter: invert(1);
   }
