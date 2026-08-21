@@ -2,6 +2,16 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 21, 2026</h3>
+    <ul>
+      <li>Removes duplicate Crit Damage breakdown in slide-out</li>
+    </ul>
+    <h3>August 20, 2026</h3>
+    <ul>
+      <li>Adds new themes</li>
+      <li>Fixes Qingxiao's S1 (missing extra attack), and S3 (multiplier adjustment)</li>
+      <li>Upgraded to latest Node version</li>
+    </ul>
     <h3>August 19, 2026</h3>
     <ul>
       <li>Replaces the character rotation exclude-buffs checkboxes with per-buff advanced config, giving you finer control over which buffs apply to which actions.</li>
