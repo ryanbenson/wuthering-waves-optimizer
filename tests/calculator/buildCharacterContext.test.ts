@@ -251,6 +251,19 @@ describe("buildCharacterCalculationContext", () => {
       expect(filtered.finalStats.totalAtk).toBeCloseTo(filtered.baseAtk);
     });
 
+    it("treats a percent-based custom buff field as a whole-number percent, not a raw decimal fraction", async () => {
+      // Custom Buffs percent fields (ATK, DamageAmplify, etc.) are persisted
+      // to the store as whole numbers the user typed (e.g. `10` for "10%"),
+      // same as CalculatorCustomBuffs.vue's own live-preview computed
+      // divides by 100 before use — regression test for #428, where the
+      // per-action rebuilt context skipped that conversion and treated `10`
+      // as 1000% instead of 10%.
+      const characters = { Calcharo: { customBuffs: { ATK: 10 } } };
+      const result = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
+
+      expect(result.finalStats.totalAtk).toBeCloseTo(result.baseAtk * 1.1);
+    });
+
     it("keeps an isPermanent resonance chain node's modifiers only when its stored toggle is on, and never a conditional node's", async () => {
       // Unlike weapon passives/echo set bonuses/main echo, a resonance
       // chain node has no separate "sequence level owned" field — its

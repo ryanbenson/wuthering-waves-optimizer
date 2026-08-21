@@ -24,6 +24,7 @@ import { buffsByCharacter, allEchoBuffs, allWeaponTeamBuffs } from "../buffs/ind
 import { resolveActiveStance } from "./stances";
 import { calculateAllStats } from "./stats";
 import { getCalculationContext } from "./attacks";
+import { normalizeCustomBuffs } from "./customBuffs";
 
 export type CalculationContext = ReturnType<typeof getCalculationContext>;
 
@@ -294,7 +295,13 @@ export async function buildCharacterCalculationContext(
   );
   const teamBuffsData = aggregateTeamBuffStats(resolvedTeamBuffs);
 
-  const customBuffs = characterData.customBuffs ?? {};
+  // characterData.customBuffs is the raw store value (whole-number percents,
+  // e.g. 10 for "10%") — normalize it the same way
+  // CalculatorCustomBuffs.vue's own live-preview `buffsData` computed does,
+  // so this freshly-rebuilt-per-action context (used by Team Rotations and
+  // any action with an advanced buff override) agrees with the shared
+  // baseContext path on units instead of treating percents as 100x larger.
+  const customBuffs = normalizeCustomBuffs(characterData.customBuffs);
 
   const activeStance =
     characterData.activeStance ??
