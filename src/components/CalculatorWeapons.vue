@@ -39,6 +39,8 @@
             'border-blue-500': weaponRarity === '3' || weaponRarity === 3,
             'border-green-500': weaponRarity === '2' || weaponRarity === 2,
             'border-gray-500': weaponRarity === '1' || weaponRarity === 1,
+            'weapon__selection__image--placeholder':
+              !weapon || !chosenWeapon,
           }"
           data-test-weapon-open-browser
           @click="openWeaponBrowser">

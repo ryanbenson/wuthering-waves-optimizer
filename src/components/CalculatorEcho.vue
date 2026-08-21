@@ -24,6 +24,7 @@
                   'border-violet-600': rank === '4' || rank === 4,
                   'border-blue-500': rank === '3' || rank === 3,
                   'border-green-500': rank === '2' || rank === 2,
+                  'echo__item__image--empty': !echo,
                 }"
                 :style="{
                   backgroundImage: `url(${echoImage})`,
@@ -630,6 +631,7 @@
                 'border-violet-600': rank === '4' || rank === 4,
                 'border-blue-500': rank === '3' || rank === 3,
                 'border-green-500': rank === '2' || rank === 2,
+                'echo__item__image--empty': !echo,
               }"
               :style="{
                 backgroundImage: `url(${echoImage})`,

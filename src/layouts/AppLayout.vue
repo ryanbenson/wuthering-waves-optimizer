@@ -48,18 +48,6 @@ onBeforeUnmount(() => {
   }
 }
 body, .contain, .content {
-  background-color: #23292f;
-}
-
-html[data-theme-style="light"] {
-  body, .contain, .content {
-    background: oklch(var(--b1)) !important;
-  }
-}
-
-html[data-theme="black"] {
-  body, .contain, .content {
-    background: oklch(var(--b1)) !important;
-  }
+  background: oklch(var(--b1)) !important;
 }
 </style>

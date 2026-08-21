@@ -137,6 +137,7 @@
                   'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
                   'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
                   'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
+                  'echo__item__image--empty': !currentEchoData?.image,
                 }"
                 :alt="currentEchoData?.name" />
             </div>
@@ -181,6 +182,7 @@
                     'border-violet-600': mainEchoRank === '4' || mainEchoRank === 4,
                     'border-blue-500': mainEchoRank === '3' || mainEchoRank === 3,
                     'border-green-500': mainEchoRank === '2' || mainEchoRank === 2,
+                    'echo__item__image--empty': !currentEchoData?.image,
                   }"
                   :alt="currentEchoData?.name" />
                 <span class="rotation__echo-echo--name">
