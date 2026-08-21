@@ -10,8 +10,8 @@
           v-if="preview.weaponIcon"
           :src="preview.weaponIcon"
           alt=""
-          class="size-8 rounded shrink-0 bg-base-300 object-cover" />
-        <div v-else class="size-8 rounded shrink-0 bg-base-300"></div>
+          class="size-8 rounded-full shrink-0 bg-base-300 object-cover" />
+        <div v-else class="size-8 rounded-full shrink-0 bg-base-300"></div>
         <span class="truncate" data-test-build-preview-weapon>
           {{ preview.weaponName ?? "No weapon" }}
         </span>
@@ -44,7 +44,7 @@
             <span class="truncate">{{ teammate.name }}</span>
           </div>
         </template>
-        <span v-else class="opacity-60">No assumed teammates</span>
+        <span v-else class="opacity-60">No teammates</span>
       </div>
 
       <div v-if="preview.stats" class="build-preview__stats grid grid-cols-3 gap-x-2 gap-y-1">

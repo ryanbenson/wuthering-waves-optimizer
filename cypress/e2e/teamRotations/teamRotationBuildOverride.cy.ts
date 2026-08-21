@@ -17,7 +17,7 @@ describe("Team Rotations per-slot build override (issue #278)", () => {
   }
 
   function pickBuildByName(name: string) {
-    cy.contains("[data-test-build-picker-select]", name).click();
+    cy.get(`[data-test-manage-builds-row="${name}"]`).find("[data-test-build-picker-select]").click();
     cy.get("#modal-manage-builds").should("not.be.visible");
   }
 

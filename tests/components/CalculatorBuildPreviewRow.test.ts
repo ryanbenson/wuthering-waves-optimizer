@@ -102,7 +102,7 @@ describe("CalculatorBuildPreviewRow", () => {
     await waitFor(() => {
       expect(container.textContent).toContain("No weapon");
       expect(container.textContent).toContain("No echo sets");
-      expect(container.textContent).toContain("No assumed teammates");
+      expect(container.textContent).toContain("No teammates");
     }, PREVIEW_TIMEOUT);
   });
 
@@ -118,7 +118,7 @@ describe("CalculatorBuildPreviewRow", () => {
 
     await waitFor(() => {
       expect(container.textContent).toContain("No weapon");
-      expect(container.textContent).toContain("No assumed teammates");
+      expect(container.textContent).toContain("No teammates");
     }, PREVIEW_TIMEOUT);
   });
 });

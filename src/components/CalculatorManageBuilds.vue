@@ -27,8 +27,8 @@
         <button
           v-if="mode === 'pick'"
           type="button"
-          class="flex flex-col items-start gap-1 p-2 rounded-box border border-dashed text-left"
-          :class="{ 'border-primary bg-base-200': !selectedBuildId }"
+          class="flex flex-col items-start gap-1 p-2 rounded-box border border-dashed bg-base-200 text-left"
+          :class="{ 'border-primary': !selectedBuildId }"
           data-test-build-picker-active-option
           @click="handleSelect(null)">
           <span class="font-semibold text-sm">Follow active build</span>
@@ -41,9 +41,10 @@
         <div
           v-for="build in builds"
           :key="build.id"
-          class="flex flex-col gap-2 p-2 rounded-box"
+          class="flex flex-col gap-2 p-2 rounded-box bg-base-200"
           :class="{
-            'bg-base-200': mode === 'manage' ? build.id === activeBuildId : build.id === selectedBuildId,
+            'border-2 border-primary': build.id === activeBuildId,
+            'bg-base-300': mode === 'pick' && build.id === selectedBuildId && build.id !== activeBuildId,
           }"
           :data-test-manage-builds-row="build.name">
           <div class="flex items-center gap-2">
@@ -81,16 +82,19 @@
               </button>
             </template>
             <template v-else>
-              <button
-                type="button"
-                class="flex-1 min-w-0 text-left font-semibold text-sm truncate"
-                :data-test-build-picker-select="build.id"
-                @click="handleSelect(build.id)">
+              <span class="flex-1 min-w-0 font-semibold text-sm truncate">
                 {{ build.name }}
-              </button>
+              </span>
               <span v-if="build.id === activeBuildId" class="badge badge-ghost badge-sm shrink-0">
                 Active
               </span>
+              <button
+                type="button"
+                class="btn btn-primary btn-xs shrink-0"
+                :data-test-build-picker-select="build.id"
+                @click="handleSelect(build.id)">
+                Use This Build
+              </button>
             </template>
           </div>
           <CalculatorBuildPreviewRow :character-id="character" :build-id="build.id" />
