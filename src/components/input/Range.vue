@@ -17,7 +17,8 @@
       <div
         v-for="(value, index) in values"
         :key="index"
-        class="range-slider__tick">
+        class="range-slider__tick"
+        :style="tickStyle(index)">
         <span class="range-slider__tick-mark"></span>
         <span class="range-slider__tick-value">{{ value }}</span>
       </div>
@@ -95,6 +96,18 @@ export default {
       const { class: _class, ...rest } = this.$attrs;
       return rest;
     },
+    thumbSizeRem() {
+      // Matches DaisyUI's `.range-{size}` thumb width/height so ticks line
+      // up with the thumb's actual stop positions, which are inset by half
+      // the thumb's own width from each end of the track.
+      const thumbSize = {
+        xs: 1,
+        sm: 1.25,
+        md: 1.5,
+        lg: 2,
+      };
+      return thumbSize[this.size] ?? thumbSize.md;
+    },
   },
   watch: {
     defaultValue(newVal) {
@@ -104,6 +117,13 @@ export default {
   methods: {
     updateValue() {
       this.$emit("updateValue", this.displayValue);
+    },
+    tickStyle(index) {
+      const fraction = this.maxIndex > 0 ? index / this.maxIndex : 0;
+      const thumb = this.thumbSizeRem;
+      return {
+        left: `calc(${thumb / 2}rem + (100% - ${thumb}rem) * ${fraction})`,
+      };
     },
   },
 };
@@ -115,17 +135,19 @@ export default {
 }
 
 .range-slider__ticks {
-  display: flex;
-  justify-content: space-between;
+  position: relative;
   width: 100%;
+  height: 1.35rem;
   margin-top: 0.25rem;
 }
 
 .range-slider__tick {
+  position: absolute;
+  top: 0;
   display: flex;
-  flex: 0 0 auto;
   flex-direction: column;
   align-items: center;
+  transform: translateX(-50%);
 }
 
 .range-slider__tick-mark {
