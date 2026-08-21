@@ -28,7 +28,7 @@ PRs are squash-merged, so the PR title becomes the commit title — pick it with
 ## PRs
 
 - Keep them small and focused — `CLAUDE.md`'s hard rules already say this; prefer several small PRs over one large one.
-- Tests green before opening/merging (CI runs `npm run build` + `npm test` on push/PR to `master`, plus a separate `npm run test:e2e` Cypress job — see `.github/workflows/`).
+- Tests green before opening/merging (CI type-checks with `vue-tsc` and runs `npm test` on push/PR to `master`, plus a separate E2E workflow that shards the Cypress suite across parallel jobs — see `.github/workflows/`).
 - `master` deploys via Vercel on every push, so a merged PR ships immediately — see [context.md](./context.md#product--content-constraints).
 
 ## Related
