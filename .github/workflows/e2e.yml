@@ -16,15 +16,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - name: data-validation
-            specs: cypress/e2e/calculator/data-validation/**/*.cy.ts
-          - name: optimizer
-            specs: cypress/e2e/calculator/optimizer/**/*.cy.ts
-          - name: team-rotations
-            specs: cypress/e2e/teamRotations/**/*.cy.ts
-          - name: calculator-core
-            specs: cypress/e2e/calculator/*.cy.ts
+        shard:
+          - data-validation
+          - optimizer
+          - team-rotations
+          - calculator-core
 
     steps:
       - name: Checkout repository
@@ -39,8 +35,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run E2E tests (${{ matrix.name }})
+      - name: Run E2E tests (${{ matrix.shard }})
         run: |
           npx vite dev &
           npx wait-on http://localhost:5173
-          npx cypress run --spec "${{ matrix.specs }}"
+          npm run cypress:run:${{ matrix.shard }}
