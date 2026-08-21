@@ -28,16 +28,16 @@
             @updated-chosen-character="handleUpdatedCharacter"
             @character-level-updated="handleCharacterLevelUpdated"
             class="pb-4" />
+          <CalculatorCharacterBuildBar
+            v-if="character"
+            :key="character"
+            :character="character" />
           <CalculatorTalents
             :character="character"
             :key="character"
             @character-talent-updated="
               handleCharacterTalentUpdated
             "></CalculatorTalents>
-          <CalculatorCharacterBuildBar
-            v-if="character"
-            :key="character"
-            :character="character" />
           <CalculatorCharacterStance
             v-if="characterStances.length > 1 && isLoading === false"
             :key="`${characterBuildKey}-stance`"
