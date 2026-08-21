@@ -3,29 +3,22 @@ describe("Team Rotations per-slot build override (issue #278)", () => {
     cy.visit("/");
   });
 
-  // Every mounted AppRichSelect renders its dropdown menu even when closed,
-  // so interactions must scope from the specific trigger's own
-  // `.app-rich-select` wrapper (same approach as the `richSelect` custom
-  // command) rather than a bare global selector — needed here since a
-  // build's id (the option's real value) is random, unlike `cy.richSelect`
-  // which targets options by value.
-  function pickRichSelectOptionByLabel(triggerSelector: string, label: string) {
-    cy.get(triggerSelector).first().as("trigger");
-    cy.get("@trigger").scrollIntoView().click({ force: true });
-    cy.get("@trigger")
-      .closest(".app-rich-select")
-      .should("have.class", "dropdown-open")
-      .within(() => {
-        cy.contains("[data-test-rich-select-option]", label).click({ force: true });
-      });
-  }
-
   function readSlotAtk(slot: number) {
     return cy
       .get(`[data-test-team-rotation-slot="${slot}"]`)
       .find('[data-test-team-rotation-slot-stat="atk"] span')
       .invoke("text")
       .then((text) => Number(text.replace(/,/g, "")));
+  }
+
+  function openBuildPickerForSlot(slot: number) {
+    cy.get(`[data-test="team-rotation-slot-build-select-${slot}"]`).click();
+    cy.get("#modal-manage-builds").should("be.visible");
+  }
+
+  function pickBuildByName(name: string) {
+    cy.contains("[data-test-build-picker-select]", name).click();
+    cy.get("#modal-manage-builds").should("not.be.visible");
   }
 
   it("pins a slot to a non-active build, reflecting that build's stats/damage without changing the character's own active build", () => {
@@ -48,7 +41,13 @@ describe("Team Rotations per-slot build override (issue #278)", () => {
 
     // Switch back to Default (weaponless) as the active build.
     cy.get('[data-test-calculator-nav="character"]').click();
-    pickRichSelectOptionByLabel("[data-test-build-select]", "Default");
+    cy.get("[data-test-build-select]").click({ force: true });
+    cy.get("[data-test-build-select]")
+      .closest(".app-rich-select")
+      .should("have.class", "dropdown-open")
+      .within(() => {
+        cy.contains("[data-test-rich-select-option]", "Default").click({ force: true });
+      });
     cy.get("[data-test-build-select]").should("contain.text", "Default");
 
     // Build a team, assign Carlotta to slot 0.
@@ -63,13 +62,14 @@ describe("Team Rotations per-slot build override (issue #278)", () => {
       cy.wrap(baselineAtk).as("baselineAtk");
     });
 
-    // Pin this slot to "Burst Build" — the character's own active build must
-    // stay Default throughout.
-    pickRichSelectOptionByLabel(
-      '[data-test="team-rotation-slot-build-select-0"]',
-      "Burst Build",
-    );
-    cy.get('[data-test="team-rotation-slot-build-select-0"]').should("contain.text", "Burst Build");
+    // Pin this slot to "Burst Build" via the shared build-picker modal — the
+    // character's own active build must stay Default throughout.
+    openBuildPickerForSlot(0);
+    cy.contains("[data-test-manage-builds-row]", "Burst Build")
+      .find("[data-test-build-preview-weapon]")
+      .should("contain.text", "The Last Dance");
+    pickBuildByName("Burst Build");
+    cy.get(`[data-test="team-rotation-slot-build-select-0"]`).should("contain.text", "Burst Build");
 
     // recompute() rebuilds the slot's context asynchronously — use a
     // retrying assertion (not a one-shot read) so this waits for it rather
@@ -108,7 +108,7 @@ describe("Team Rotations per-slot build override (issue #278)", () => {
     cy.get("[data-test-weapon-select]").should("contain.text", "Choose a weapon");
   });
 
-  it("doesn't list the active build a second time alongside its '(active)' placeholder", () => {
+  it("doesn't list the active build a second time in the picker, and 'Follow active build' un-pins a slot", () => {
     cy.richSelect("[data-test-character-select]", "Carlotta");
     cy.get(".character__self-buffs").should("be.visible");
 
@@ -129,32 +129,32 @@ describe("Team Rotations per-slot build override (issue #278)", () => {
     cy.richSelect('[data-test="team-rotation-slot-select-0"]', "Carlotta");
     cy.get('[data-test-team-rotation-slot="0"]').should("contain.text", "Carlotta");
 
-    // Placeholder reflects the real active build...
+    // Trigger label reflects the real active build...
     cy.get('[data-test="team-rotation-slot-build-select-0"]').should(
       "contain.text",
       "Build C (active)",
     );
 
-    // ...and the dropdown lists exactly the two *other* builds — Build C
-    // itself (the active one) must not appear a second time in the list.
-    cy.get('[data-test="team-rotation-slot-build-select-0"]')
-      .scrollIntoView()
-      .click({ force: true });
-    cy.get('[data-test="team-rotation-slot-build-select-0"]')
-      .closest(".app-rich-select")
-      .should("have.class", "dropdown-open")
-      .within(() => {
-        const realOption = '[data-test-rich-select-option]:not([data-test-rich-select-option="null"])';
-        cy.contains(realOption, "Default").should("be.visible");
-        cy.contains(realOption, "Build B").should("be.visible");
-        // Exactly those two — "Build C" (the active build) must not be
-        // listed a second time as its own real option; only the placeholder
-        // above should mention it.
-        cy.get(realOption)
-          .should("have.length", 2)
-          .each(($option) => {
-            expect($option.text().trim()).not.to.eq("Build C");
-          });
-      });
+    // ...and the picker lists all three builds exactly once each — Build C
+    // (active) appears via its "Active" badge, not as a duplicate entry.
+    openBuildPickerForSlot(0);
+    cy.get("[data-test-build-picker-active-option]").should("contain.text", "Build C");
+    cy.get("[data-test-manage-builds-row]").should("have.length", 3);
+    cy.get('[data-test-build-picker-select]').should("have.length", 3);
+    cy.contains("[data-test-manage-builds-row]", "Build C")
+      .find(".badge")
+      .should("contain.text", "Active");
+
+    // Pin to "Build B", then switch back to "Follow active build".
+    pickBuildByName("Build B");
+    cy.get(`[data-test="team-rotation-slot-build-select-0"]`).should("contain.text", "Build B");
+
+    openBuildPickerForSlot(0);
+    cy.get("[data-test-build-picker-active-option]").click();
+    cy.get("#modal-manage-builds").should("not.be.visible");
+    cy.get(`[data-test="team-rotation-slot-build-select-0"]`).should(
+      "contain.text",
+      "Build C (active)",
+    );
   });
 });

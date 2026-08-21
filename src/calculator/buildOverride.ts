@@ -31,3 +31,30 @@ export function resolveCharactersForBuild(
     [characterId]: applyBuildFields(characterData, omitBuildMetadata(build)),
   };
 }
+
+/**
+ * Like `resolveCharactersForBuild`, but also correct when `buildId` is the
+ * character's *currently active* build: the active build's own entry inside
+ * `builds[]` is only refreshed at the moment the store's `equipBuild`
+ * switches away from it (see `src/stores/character.js`), so between
+ * switches it can be stale — the character record's live top-level fields
+ * are the active build's true current state, not whatever `builds[]` last
+ * had cached. Returns `characters` unchanged in that case; every other
+ * build behaves exactly like `resolveCharactersForBuild`.
+ *
+ * Used for build *previews* (Manage Builds' rich per-build cards, the Team
+ * Rotations build picker) where, unlike the calc-override use case above,
+ * callers pass a real build id for the active build too instead of relying
+ * on `null` to mean "active."
+ */
+export function resolveCharactersForBuildPreview(
+  characters: Record<string, any>,
+  characterId: string,
+  buildId: string,
+): Record<string, any> {
+  const activeBuildId = characters?.[characterId]?.activeBuildId;
+  if (buildId === activeBuildId) {
+    return characters;
+  }
+  return resolveCharactersForBuild(characters, characterId, buildId);
+}

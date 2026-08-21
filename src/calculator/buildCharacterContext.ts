@@ -93,7 +93,7 @@ export interface CharacterCalculationContext {
  * is inline on the character record only when there's no inventory match
  * (e.g. legacy data entered directly, with no linked inventory item).
  */
-function resolveCharacterEchoes(
+export function resolveCharacterEchoes(
   characterEchoes: Record<string | number, any> | any[] | undefined,
   inventoryEchoes: any[],
 ): any[] {

@@ -98,17 +98,15 @@
                   <span>{{ displayPercentage(slotStats[slot]!.energyRegen) }}</span>
                 </div>
               </div>
-              <div v-if="buildOptionsForSlot(slot).length > 0" class="mb-2">
-                <AppRichSelect
-                  :model-value="team.buildIds?.[slot] ?? null"
-                  :options="buildOptionsForSlot(slot)"
-                  allow-empty
-                  :empty-label="activeBuildLabelForSlot(slot)"
-                  size="xs"
-                  variant="ghost"
-                  aria-label="Choose build for this slot"
+              <div v-if="hasMultipleBuilds(team.characterIds[slot])" class="mb-2">
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-xs w-full justify-between"
                   :data-test="`team-rotation-slot-build-select-${slot}`"
-                  @update:model-value="(val) => setSlotBuild(slot, val)" />
+                  @click="openBuildPicker(slot)">
+                  <span class="truncate">{{ slotBuildLabel(slot) }}</span>
+                  <span class="opacity-60 shrink-0">Change Build</span>
+                </button>
               </div>
               <div class="join w-full">
                 <button
@@ -189,6 +187,13 @@
       :own-rotations="importDialogOwnRotations"
       :presets="importDialogPresets"
       @import="handleImportRotation" />
+
+    <CalculatorManageBuilds
+      :character="pickerCharacterId"
+      mode="pick"
+      :selected-build-id="pickerSlot !== null ? (team.buildIds?.[pickerSlot] ?? null) : null"
+      ref="buildPickerRef"
+      @select-build="handleBuildPicked" />
 
     <!-- A self-contained drawer, kept structurally separate from the page
     content above (mirroring HomeView.vue's own breakdown drawer): the real
@@ -279,6 +284,7 @@ import TeamRotationSummaryHeader from "./TeamRotationSummaryHeader.vue";
 import TeamBuildStatus from "./TeamBuildStatus.vue";
 import { getTeamBuildStatus } from "../teamRotations/teamBuildStatus";
 import TeamRotationImportRotation from "./TeamRotationImportRotation.vue";
+import CalculatorManageBuilds from "./CalculatorManageBuilds.vue";
 import TeamRotationEnemySettings, {
   type TeamEnemySettingsValue,
 } from "./TeamRotationEnemySettings.vue";
@@ -461,32 +467,14 @@ function setSlotCharacter(slot: number, characterId: unknown) {
   }
 }
 
-// Build override options for a slot (issue #278): only offered when that
-// slot's character actually has more than one saved build — a single-build
-// character has nothing to pick between. `null` (the "empty" selection,
-// labeled with the active build's own name by `activeBuildLabelForSlot`)
-// means "use whatever build is active for that character", so choosing a
-// different build here never changes the character's own active build.
-// The active build itself is excluded from this list — it's already
-// represented by the empty option, and listing it a second time reads as a
-// duplicate — except when it's also the slot's currently *pinned* build
-// (a user pinned build X, then separately made X their active build
-// elsewhere), so the select's model-value always resolves to a real option
-// instead of rendering blank.
-function buildOptionsForSlot(slot: number): AppRichSelectOption[] {
-  const characterId = team.value?.characterIds[slot];
+// Build override for a slot (issue #278): only offered when that slot's
+// character actually has more than one saved build — a single-build
+// character has nothing to pick between.
+function hasMultipleBuilds(characterId: string | null): boolean {
   if (!characterId) {
-    return [];
+    return false;
   }
-  const builds = characterStore.getBuilds(characterId) as Array<{ id: string; name: string }>;
-  if (builds.length <= 1) {
-    return [];
-  }
-  const activeBuildId = characterStore.getActiveBuildId(characterId);
-  const pinnedBuildId = team.value?.buildIds?.[slot] ?? null;
-  return builds
-    .filter((build) => build.id !== activeBuildId || build.id === pinnedBuildId)
-    .map((build) => ({ value: build.id, label: build.name }));
+  return characterStore.getBuilds(characterId).length > 1;
 }
 
 function activeBuildLabelForSlot(slot: number): string {
@@ -495,8 +483,46 @@ function activeBuildLabelForSlot(slot: number): string {
   return activeBuild ? `${activeBuild.name} (active)` : "Active build";
 }
 
+// The label shown on the slot's own "Change Build" trigger — the pinned
+// build's name, or (when unpinned) the same "follows active" label used
+// inside the picker modal's "Follow active build" option.
+function slotBuildLabel(slot: number): string {
+  const characterId = team.value?.characterIds[slot];
+  const pinnedBuildId = team.value?.buildIds?.[slot] ?? null;
+  if (!pinnedBuildId || !characterId) {
+    return activeBuildLabelForSlot(slot);
+  }
+  const builds = characterStore.getBuilds(characterId) as Array<{ id: string; name: string }>;
+  return builds.find((build) => build.id === pinnedBuildId)?.name ?? activeBuildLabelForSlot(slot);
+}
+
 function setSlotBuild(slot: number, buildId: unknown) {
   teamRotationsStore.setTeamCharacterBuild(props.teamId, slot, typeof buildId === "string" ? buildId : null);
+}
+
+// Opens the shared build-preview modal (CalculatorManageBuilds, mode="pick")
+// for a given slot — reused as-is from the Character view's Manage Builds
+// modal so both surfaces show the same rich per-build info (weapon, echo
+// sets, teammates, stats), per issue #278.
+const pickerCharacterId = ref<string>("");
+const pickerSlot = ref<number | null>(null);
+const buildPickerRef = ref<{ triggerOpenModal: () => void; triggerCloseModal: () => void } | null>(null);
+
+function openBuildPicker(slot: number) {
+  const characterId = team.value?.characterIds[slot];
+  if (!characterId) {
+    return;
+  }
+  pickerCharacterId.value = characterId;
+  pickerSlot.value = slot;
+  buildPickerRef.value?.triggerOpenModal();
+}
+
+function handleBuildPicked(buildId: string | null) {
+  if (pickerSlot.value === null) {
+    return;
+  }
+  setSlotBuild(pickerSlot.value, buildId);
 }
 
 function startChangeSlot(slot: number) {
