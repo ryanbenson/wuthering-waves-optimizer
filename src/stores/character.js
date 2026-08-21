@@ -117,7 +117,7 @@ export const useCharacterStore = defineStore("character", {
       applyEchoLoadoutState(this, useInventoryStore(), characterId, options);
     },
     /**
-     * Idempotent: synthesizes a single "Default" build from the character's
+     * Idempotent: synthesizes a single "Default build" from the character's
      * current fields if `builds` is missing/empty. Safe to call every time a
      * character record is touched (e.g. on character selection) so records
      * created after this feature shipped always end up with a build, without
@@ -133,7 +133,7 @@ export const useCharacterStore = defineStore("character", {
       }
       const build = {
         id: randomString(12),
-        name: "Default",
+        name: "Default build",
         createdAt: Date.now(),
         updatedAt: Date.now(),
         ...extractBuildFields(character),

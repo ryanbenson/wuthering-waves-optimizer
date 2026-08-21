@@ -21,7 +21,7 @@ describe("useCharacterStore builds", () => {
 
       const builds = store.getBuilds("Carlotta");
       expect(builds).toHaveLength(1);
-      expect(builds[0].name).toBe("Default");
+      expect(builds[0].name).toBe("Default build");
       expect(builds[0].weapon).toBe("SwordOfVoid");
       expect(builds[0]).not.toHaveProperty("characterLevel");
       expect(builds[0]).not.toHaveProperty("talents");
@@ -45,7 +45,7 @@ describe("useCharacterStore builds", () => {
       store.ensureCharacterBuilds("Carlotta");
 
       expect(store.getBuilds("Carlotta")).toHaveLength(1);
-      expect(store.getBuilds("Carlotta")[0].name).toBe("Default");
+      expect(store.getBuilds("Carlotta")[0].name).toBe("Default build");
     });
   });
 
@@ -106,7 +106,7 @@ describe("useCharacterStore builds", () => {
 
       store.renameBuild("Carlotta", buildId, "");
 
-      expect(store.getBuilds("Carlotta")[0].name).toBe("Default");
+      expect(store.getBuilds("Carlotta")[0].name).toBe("Default build");
     });
   });
 

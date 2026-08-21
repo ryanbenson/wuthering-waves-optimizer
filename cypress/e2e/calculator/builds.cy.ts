@@ -51,7 +51,7 @@ describe("Calculator multiple builds", () => {
   it("gives a fresh character a single Default build that can't be deleted", () => {
     openManageBuilds();
     cy.get("[data-test-manage-builds-row]").should("have.length", 1);
-    cy.get('[data-test-manage-builds-name]').should("have.value", "Default");
+    cy.get('[data-test-manage-builds-name]').should("have.value", "Default build");
     cy.get("[data-test-manage-builds-delete]").should("be.disabled");
   });
 
@@ -99,7 +99,7 @@ describe("Calculator multiple builds", () => {
     cy.get("[data-test-weapon-select]").should("contain.text", "Choose a weapon");
 
     // switch back to Default via the build select
-    switchBuildTo("Default");
+    switchBuildTo("Default build");
 
     cy.get("@pickedWeaponName").then((name) => {
       cy.get('[data-test-calculator-nav="weapon"]').click();

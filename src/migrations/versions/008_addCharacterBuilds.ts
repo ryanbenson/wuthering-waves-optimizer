@@ -3,7 +3,7 @@ import { extractBuildFields } from "../../characters/buildFields";
 import { transformPersistedStores, type Migration } from "../types";
 
 /**
- * Seeds a single "Default" build for a character record that doesn't have
+ * Seeds a single "Default build" for a character record that doesn't have
  * `builds` yet, using the same `extractBuildFields` helper the character
  * store uses at runtime (see `src/characters/buildFields.ts`) so migration
  * and runtime can never disagree on what counts as build data. Idempotent:
@@ -18,7 +18,7 @@ function migrateCharacterRecord(character: Record<string, unknown>) {
 
   const build = {
     id: randomString(12),
-    name: "Default",
+    name: "Default build",
     createdAt: Date.now(),
     updatedAt: Date.now(),
     ...extractBuildFields(character),
@@ -93,7 +93,7 @@ export function addCharacterBuilds(json: string): string {
 const migration: Migration = {
   version: 8,
   description:
-    "Add builds[]/activeBuildId to character records, seeding a 'Default' build from each character's existing data (issue #278)",
+    "Add builds[]/activeBuildId to character records, seeding a 'Default build' from each character's existing data (issue #278)",
   transform: addCharacterBuilds,
   up() {
     transformPersistedStores(addCharacterBuilds);

@@ -46,9 +46,9 @@ describe("Team Rotations per-slot build override (issue #278)", () => {
       .closest(".app-rich-select")
       .should("have.class", "dropdown-open")
       .within(() => {
-        cy.contains("[data-test-rich-select-option]", "Default").click({ force: true });
+        cy.contains("[data-test-rich-select-option]", "Default build").click({ force: true });
       });
-    cy.get("[data-test-build-select]").should("contain.text", "Default");
+    cy.get("[data-test-build-select]").should("contain.text", "Default build");
 
     // Build a team, assign Carlotta to slot 0.
     cy.get("[data-test-nav-team-rotations]").click();
@@ -103,7 +103,7 @@ describe("Team Rotations per-slot build override (issue #278)", () => {
     cy.get("[data-test-team-rotation-damages-close]").click();
     cy.get("[data-test-nav-calculator]").click();
     cy.get(".character__self-buffs").should("be.visible");
-    cy.get("[data-test-build-select]").should("contain.text", "Default");
+    cy.get("[data-test-build-select]").should("contain.text", "Default build");
     cy.get('[data-test-calculator-nav="weapon"]').click();
     cy.get("[data-test-weapon-select]").should("contain.text", "Choose a weapon");
   });

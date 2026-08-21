@@ -396,7 +396,7 @@ describe("data migrations", () => {
 
     const danjin = character.characters.Danjin;
     expect(danjin.builds).toHaveLength(1);
-    expect(danjin.builds[0].name).toBe("Default");
+    expect(danjin.builds[0].name).toBe("Default build");
     expect(danjin.builds[0].weapon).toBe("SwordOfVoid");
     expect(danjin.builds[0]).not.toHaveProperty("characterLevel");
     expect(danjin.builds[0]).not.toHaveProperty("talents");
@@ -443,7 +443,7 @@ describe("data migrations", () => {
 
     expect(result.characters.Danjin.builds).toHaveLength(1);
     expect(result.characters.Danjin.builds[0]).toMatchObject({
-      name: "Default",
+      name: "Default build",
       weapon: "SwordOfVoid",
     });
     expect(result.characters.Danjin.activeBuildId).toBe(result.characters.Danjin.builds[0].id);

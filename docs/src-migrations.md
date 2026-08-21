@@ -38,7 +38,7 @@ Documented at the top of `index.ts`:
 | 5 | Include `teamRotations` store in export/import (no data transform) |
 | 6 | Replace character rotation `excludeWeaponBuffs`/`excludeTeamBuffs`/`excludeSelfBuffs` checkboxes with an `advancedConfig` per-buff override (issue #401) — see `versions/006_replaceCharacterRotationExcludeBuffs.ts` |
 | 7 | Move `mainEcho.isEnabled`/`stacks` and `optimizer.mainEchoBuffs` into per-buff maps — see `versions/007_mainEchoBuffs.ts` |
-| 8 | Add `builds`/`activeBuildId` to character records, seeding a "Default" build from each character's existing data (issue #278) — see `versions/008_addCharacterBuilds.ts` |
+| 8 | Add `builds`/`activeBuildId` to character records, seeding a "Default build" from each character's existing data (issue #278) — see `versions/008_addCharacterBuilds.ts` |
 
 ## Two call sites, two purposes
 
