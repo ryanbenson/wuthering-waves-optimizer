@@ -51,10 +51,14 @@ export interface BuildPreview {
 /**
  * Computes a build's "showcase" preview — weapon, equipped echo set(s),
  * assumed teammates, and headline stats — for the Manage Builds list and
- * the Team Rotations build picker. Mirrors `CalculatorBuildCard.vue`'s own
- * approach: stats are computed with `alwaysEnabledOnly: true` (equipment +
- * permanent unlocks only), since a list row has no per-build toggle state
- * of its own to reflect conditional/team/custom buffs against.
+ * the Team Rotations build picker. Stats reflect that build's full
+ * effective totals (all enabled conditional self-buffs, team buffs, custom
+ * buffs, and resonance chains) using that specific build's own stored
+ * toggle state — live data for the active build, stored snapshot data for
+ * any other build — so they match what the Results tab would show if that
+ * build were active. This is intentionally different from
+ * `CalculatorBuildCard.vue`, which stays equipment + permanent-unlocks-only
+ * per issue #383; don't "fix" them back into alignment.
  *
  * `buildId` may be the character's active build or any other saved build —
  * `resolveCharactersForBuildPreview` resolves either correctly (the active
@@ -113,7 +117,6 @@ export async function computeBuildPreview(
       effectiveCharacters,
       PREVIEW_ENEMY_CONFIG,
       inventoryEchoes,
-      { alwaysEnabledOnly: true },
     );
     stats = {
       totalHp: built.finalStats.totalHp,

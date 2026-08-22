@@ -84,7 +84,7 @@ describe("computeBuildPreview", () => {
     expect(preview.teammates).toEqual([{ key: "Verina", name: "Verina", icon: characterImageUrl("Verina") }]);
   });
 
-  it("computes headline stats (base + equipment only, not conditional buffs)", async () => {
+  it("computes headline stats (base + equipment)", async () => {
     const characters = {
       Calcharo: { activeBuildId: "b1", builds: [{ id: "b1", name: "Default" }], weapon: "AgesOfHarvest" },
     };
@@ -97,6 +97,26 @@ describe("computeBuildPreview", () => {
     expect(preview.stats!.totalDef).toBeGreaterThan(0);
     // energyRegen is scaled to percentage points (base 100), not the raw 1.0 ratio
     expect(preview.stats!.energyRegen).toBeGreaterThanOrEqual(100);
+  });
+
+  it("includes custom buffs (only excluded in alwaysEnabledOnly mode) in the computed stats", async () => {
+    const baseline = {
+      Calcharo: { activeBuildId: "b1", builds: [{ id: "b1", name: "Default" }], weapon: "AgesOfHarvest" },
+    };
+    const withCustomBuff = {
+      Calcharo: {
+        activeBuildId: "b1",
+        builds: [{ id: "b1", name: "Default" }],
+        weapon: "AgesOfHarvest",
+        customBuffs: { ATK_FLAT: 500 },
+      },
+    };
+
+    const baselinePreview = await computeBuildPreview("Calcharo", "b1", baseline, []);
+    const buffedPreview = await computeBuildPreview("Calcharo", "b1", withCustomBuff, []);
+
+    expect(buffedPreview.stats).not.toBeNull();
+    expect(buffedPreview.stats!.totalAtk).toBeGreaterThan(baselinePreview.stats!.totalAtk);
   });
 
   it("reads a non-active build's own data, not the live/active character record", async () => {
@@ -116,5 +136,27 @@ describe("computeBuildPreview", () => {
 
     expect(activePreview.weaponName).toBe("Ages of Harvest");
     expect(otherPreview.weaponName).toBeNull();
+  });
+
+  it("computes distinct stats per build from each build's own stored buff toggle state", async () => {
+    const characters = {
+      Calcharo: {
+        // Active build reads live top-level data, not its builds[] snapshot.
+        weapon: "AgesOfHarvest",
+        customBuffs: { ATK_FLAT: 500 },
+        activeBuildId: "active-build",
+        builds: [
+          { id: "active-build", name: "Active", weapon: "AgesOfHarvest", customBuffs: { ATK_FLAT: 500 } },
+          { id: "other-build", name: "Other", weapon: "AgesOfHarvest" },
+        ],
+      },
+    };
+
+    const activePreview = await computeBuildPreview("Calcharo", "active-build", characters, []);
+    const otherPreview = await computeBuildPreview("Calcharo", "other-build", characters, []);
+
+    expect(activePreview.stats).not.toBeNull();
+    expect(otherPreview.stats).not.toBeNull();
+    expect(activePreview.stats!.totalAtk).toBeGreaterThan(otherPreview.stats!.totalAtk);
   });
 });
