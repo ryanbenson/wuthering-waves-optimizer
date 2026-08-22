@@ -135,6 +135,22 @@ describe("CalculatorBuildCard", () => {
     expect(talentsEl?.querySelector('[title^="Intro Skill"]')).toBeTruthy();
   });
 
+  it("shows the WutheringTools.com watermark in the echoes column", () => {
+    seedCharacter();
+    seedInventoryEcho();
+    const { container } = renderCard(baseStatsProps());
+
+    const watermarkEl = container.querySelector(
+      "[data-test-build-card-watermark]",
+    );
+    expect(watermarkEl?.textContent?.trim()).toBe("WUTHERINGTOOLS.COM");
+    // Lives inside the echoes column, below the echo cards, so it's
+    // anchored to the card's bottom-right corner.
+    expect(
+      container.querySelector("[data-test-build-card-echoes]")?.contains(watermarkEl),
+    ).toBe(true);
+  });
+
   it("renders all 5 echo slots, including empty ones", () => {
     seedCharacter();
     seedInventoryEcho();
