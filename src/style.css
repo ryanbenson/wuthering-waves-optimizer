@@ -330,12 +330,6 @@ html[data-density="compact"] .character__selection__avatar-wrap {
   width: 64px;
 }
 
-html[data-density="compact"] .character__selection__avatar,
-html[data-density="compact"] .character__selection__avatar-overlay {
-  width: 64px;
-  height: 64px;
-}
-
 html[data-density="compact"] .character__selection__avatar-icon {
   width: 1.15rem;
   height: 1.15rem;
