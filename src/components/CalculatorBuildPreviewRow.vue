@@ -52,13 +52,13 @@
           <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png" class="size-4" />
           <span>{{ displayInt(preview.stats.totalHp) }}</span>
         </div>
-        <div class="flex items-center gap-1" v-tooltip="'DEF'">
-          <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" class="size-4" />
-          <span>{{ displayInt(preview.stats.totalDef) }}</span>
-        </div>
         <div class="flex items-center gap-1" v-tooltip="'ATK'">
           <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/atk.png" class="size-4" />
           <span>{{ displayInt(preview.stats.totalAtk) }}</span>
+        </div>
+        <div class="flex items-center gap-1" v-tooltip="'DEF'">
+          <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/def.png" class="size-4" />
+          <span>{{ displayInt(preview.stats.totalDef) }}</span>
         </div>
         <div class="flex items-center gap-1" v-tooltip="'Crit Rate'">
           <img src="https://ryanbenson.github.io/wuthering-waves-assets/images/critrate.png" class="size-4" />

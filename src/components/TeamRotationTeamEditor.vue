@@ -98,7 +98,7 @@
                   <span>{{ displayPercentage(slotStats[slot]!.energyRegen) }}</span>
                 </div>
               </div>
-              <div v-if="hasMultipleBuilds(team.characterIds[slot])" class="mb-2">
+              <div v-if="team.characterIds[slot]" class="mb-2">
                 <button
                   type="button"
                   class="btn btn-ghost btn-xs w-full justify-between"
@@ -465,16 +465,6 @@ function setSlotCharacter(slot: number, characterId: unknown) {
   if (hadActions) {
     showToast("That teammate's actions were cleared since they belonged to the previous character.", "info");
   }
-}
-
-// Build override for a slot (issue #278): only offered when that slot's
-// character actually has more than one saved build — a single-build
-// character has nothing to pick between.
-function hasMultipleBuilds(characterId: string | null): boolean {
-  if (!characterId) {
-    return false;
-  }
-  return characterStore.getBuilds(characterId).length > 1;
 }
 
 function activeBuildLabelForSlot(slot: number): string {

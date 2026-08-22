@@ -119,6 +119,25 @@ describe("computeBuildPreview", () => {
     expect(buffedPreview.stats!.totalAtk).toBeGreaterThan(baselinePreview.stats!.totalAtk);
   });
 
+  it("scales a percent-type custom buff correctly (not 100x)", async () => {
+    const baseline = {
+      Calcharo: { activeBuildId: "b1", builds: [{ id: "b1", name: "Default" }], weapon: "AgesOfHarvest" },
+    };
+    const withCustomBuff = {
+      Calcharo: {
+        activeBuildId: "b1",
+        builds: [{ id: "b1", name: "Default" }],
+        weapon: "AgesOfHarvest",
+        customBuffs: { ATK: 5 }, // "+5%", stored as a whole number like the UI displays it
+      },
+    };
+
+    const baselinePreview = await computeBuildPreview("Calcharo", "b1", baseline, []);
+    const buffedPreview = await computeBuildPreview("Calcharo", "b1", withCustomBuff, []);
+
+    expect(buffedPreview.stats!.totalAtk).toBeCloseTo(baselinePreview.stats!.totalAtk * 1.05, 0);
+  });
+
   it("reads a non-active build's own data, not the live/active character record", async () => {
     const characters = {
       Calcharo: {

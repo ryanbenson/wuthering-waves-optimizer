@@ -251,6 +251,23 @@ describe("buildCharacterCalculationContext", () => {
       expect(filtered.finalStats.totalAtk).toBeCloseTo(filtered.baseAtk);
     });
 
+    it("scales a percent-type custom buff from the stored whole number down to a fraction, not 100x", async () => {
+      // The Custom Buffs UI stores/displays percent fields as whole numbers
+      // (e.g. `5` meaning "+5%"), while every other buff source in the app
+      // (weapon/echo/resonance-chain modifierValue) uses a 0-1 fraction.
+      // customBuffs must be normalized to that same fraction before being
+      // summed, or a stored "5" silently becomes +500% instead of +5%.
+      const baseline = { Calcharo: {} };
+      const withCustomBuff = { Calcharo: { customBuffs: { ATK: 5 } } };
+
+      const baselineContext = await buildCharacterCalculationContext("Calcharo", baseline, enemyConfig);
+      const buffedContext = await buildCharacterCalculationContext("Calcharo", withCustomBuff, enemyConfig);
+
+      // +5% ATK on top of the unbuffed total, not +500%.
+      const expectedAtk = baselineContext.finalStats.totalAtk * 1.05;
+      expect(buffedContext.finalStats.totalAtk).toBeCloseTo(expectedAtk, 0);
+    });
+
     it("keeps an isPermanent resonance chain node's modifiers only when its stored toggle is on, and never a conditional node's", async () => {
       // Unlike weapon passives/echo set bonuses/main echo, a resonance
       // chain node has no separate "sequence level owned" field — its

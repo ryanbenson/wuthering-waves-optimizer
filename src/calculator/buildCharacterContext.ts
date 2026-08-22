@@ -24,6 +24,7 @@ import { buffsByCharacter, allEchoBuffs, allWeaponTeamBuffs } from "../buffs/ind
 import { resolveActiveStance } from "./stances";
 import { calculateAllStats } from "./stats";
 import { getCalculationContext } from "./attacks";
+import { normalizeCustomBuffs } from "./customBuffs";
 
 export type CalculationContext = ReturnType<typeof getCalculationContext>;
 
@@ -294,7 +295,7 @@ export async function buildCharacterCalculationContext(
   );
   const teamBuffsData = aggregateTeamBuffStats(resolvedTeamBuffs);
 
-  const customBuffs = characterData.customBuffs ?? {};
+  const customBuffs = normalizeCustomBuffs(characterData.customBuffs);
 
   const activeStance =
     characterData.activeStance ??
