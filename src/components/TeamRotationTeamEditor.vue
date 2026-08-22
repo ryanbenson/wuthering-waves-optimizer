@@ -143,22 +143,35 @@
         <div>
           <h3 class="font-semibold mb-2">Actions</h3>
           <div class="flex flex-col gap-4" data-test-team-rotation-actions>
-            <TeamRotationActionEditor
-              v-for="action in team.actions"
+            <div
+              v-for="(action, index) in team.actions"
               :key="action.id"
-              :action="action"
-              :team="team"
-              :chosen-chars="chosenChars"
-              :main-echo-for-slot="mainEchoForSlot"
-              :main-echo-rank-for-slot="mainEchoRankForSlot"
-              :definitions-for-slot="definitionsForSlot"
-              :character-data-for-slot="characterDataForSlot"
-              :previous-action="previousActionByActionId[action.id] ?? null"
-              :range-actions="orderedActionRangeList"
-              @update="handleActionUpdate"
-              @update:sequence="handleSequenceUpdate"
-              @remove="handleActionRemove"
-              @bulk-apply="handleBulkApplyBuff" />
+              class="action-dnd-item rounded-lg"
+              :class="{
+                'ring-2 ring-primary ring-offset-1 ring-offset-base-100':
+                  actionDropIndex === index && actionDragIndex !== null && actionDragIndex !== index,
+              }"
+              @dragover.prevent="onActionDragOver(index, $event)"
+              @dragenter.prevent="onActionDragEnter(index)"
+              @drop.prevent="onActionDrop(index)">
+              <TeamRotationActionEditor
+                :action="action"
+                :team="team"
+                :chosen-chars="chosenChars"
+                :main-echo-for-slot="mainEchoForSlot"
+                :main-echo-rank-for-slot="mainEchoRankForSlot"
+                :definitions-for-slot="definitionsForSlot"
+                :character-data-for-slot="characterDataForSlot"
+                :previous-action="previousActionByActionId[action.id] ?? null"
+                :range-actions="orderedActionRangeList"
+                :can-reorder="canReorderActions"
+                @update="handleActionUpdate"
+                @update:sequence="handleSequenceUpdate"
+                @remove="handleActionRemove"
+                @bulk-apply="handleBulkApplyBuff"
+                @drag-reorder-start="onActionDragStart(index)"
+                @drag-reorder-end="onActionDragEnd" />
+            </div>
           </div>
           <button
             class="btn btn-primary btn-xs w-full mt-2"
@@ -274,6 +287,7 @@ import { useTeamRotationsStore } from "../stores/teamRotations";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useToast } from "../composables/useToast";
+import { useDragReorder } from "../composables/useDragReorder";
 import { buildTeamExportPayload, generateTeamExportFilename } from "../teamRotations/exportImport";
 import { getCharacterRosterDisplayName, getCharactersAvailable } from "../characters/characters";
 import {
@@ -631,6 +645,29 @@ function handleSequenceUpdate(payload: Record<string, unknown>) {
     lastUsedSlot.value = payload.slot;
   }
 }
+
+const canReorderActions = computed(() => (team.value?.actions.length ?? 0) > 1);
+
+/** Trust current array order and stamp order 1..n (used after a drag reorder). */
+function renumberActionsByArrayOrder(list: TeamRotationAction[]): TeamRotationAction[] {
+  return list.map((action, index) => ({ ...action, order: index + 1 }));
+}
+
+const {
+  dragIndex: actionDragIndex,
+  dropIndex: actionDropIndex,
+  onDragStart: onActionDragStart,
+  onDragEnter: onActionDragEnter,
+  onDragOver: onActionDragOver,
+  onDrop: onActionDrop,
+  onDragEnd: onActionDragEnd,
+} = useDragReorder((from, to) => {
+  if (!team.value) return;
+  const next = [...team.value.actions];
+  const [moved] = next.splice(from, 1);
+  next.splice(to, 0, moved);
+  teamRotationsStore.setTeamActions(props.teamId, renumberActionsByArrayOrder(next));
+});
 
 function handleActionRemove(id: string) {
   if (!team.value) return;

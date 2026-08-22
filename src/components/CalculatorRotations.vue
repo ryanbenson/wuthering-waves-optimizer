@@ -92,7 +92,7 @@
         :order="rotation.order"
         :actions="rotation.actions"
         :can-reorder="canReorder"
-        @drag-reorder-start="onDragStart(index, $event)"
+        @drag-reorder-start="onDragStart(index)"
         @drag-reorder-end="onDragEnd"
         @updated-rotation="handleUpdatedRotation"
         @rotation-delete="handleDeleteRotation"></CalculatorRotation>
@@ -109,6 +109,7 @@ import { getCharByName } from "../characters/characters.ts";
 import { randomString } from "../utils/strings.ts";
 import CalculatorRotation from "./CalculatorRotation.vue";
 import { useToast } from "../composables/useToast";
+import { useDragReorder } from "../composables/useDragReorder";
 import {
   buildCharacterCalculationContext,
   type CharacterCalculationContext,
@@ -160,10 +161,6 @@ const isPresetRotationsOpen = ref(false);
 const rotations = ref<RotationRow[]>([]);
 const characterData = ref<Record<string, unknown>>({});
 const presets = ref<RotationPreset[]>([]);
-const dragIndex = ref<number | null>(null);
-const dropIndex = ref<number | null>(null);
-// Non-reactive source index — reading this during drop avoids races with rAF UI updates
-let activeDragIndex: number | null = null;
 
 const rotationRefs = new Map<string, { toggleOpen: () => void }>();
 
@@ -355,55 +352,13 @@ function togglePresetRotations() {
   isPresetRotationsOpen.value = !isPresetRotationsOpen.value;
 }
 
-function onDragStart(index: number, _event: DragEvent) {
-  activeDragIndex = index;
-  // Defer reactive UI updates so Vue doesn't patch the drag source mid-dragstart
-  // (that cancels HTML5 drag in Chromium).
-  requestAnimationFrame(() => {
-    if (activeDragIndex !== index) {
-      return;
-    }
-    dragIndex.value = index;
-    dropIndex.value = index;
+const { dragIndex, dropIndex, onDragStart, onDragEnter, onDragOver, onDrop, onDragEnd } =
+  useDragReorder((from, to) => {
+    const next = [...rotations.value];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    void persistRotations(next);
   });
-}
-
-function onDragEnter(index: number) {
-  if (activeDragIndex === null) {
-    return;
-  }
-  dropIndex.value = index;
-}
-
-function onDragOver(index: number, event: DragEvent) {
-  if (event.dataTransfer) {
-    event.dataTransfer.dropEffect = "move";
-  }
-  if (activeDragIndex === null) {
-    return;
-  }
-  dropIndex.value = index;
-}
-
-async function onDrop(index: number) {
-  const from = activeDragIndex;
-  if (from === null || from === index) {
-    onDragEnd();
-    return;
-  }
-
-  const next = [...rotations.value];
-  const [moved] = next.splice(from, 1);
-  next.splice(index, 0, moved);
-  onDragEnd();
-  await persistRotations(next);
-}
-
-function onDragEnd() {
-  activeDragIndex = null;
-  dragIndex.value = null;
-  dropIndex.value = null;
-}
 
 onMounted(async () => {
   const loaded =

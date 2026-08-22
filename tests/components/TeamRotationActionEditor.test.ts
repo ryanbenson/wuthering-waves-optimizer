@@ -3,7 +3,7 @@ import { createPinia, setActivePinia } from "pinia";
 import { render, fireEvent } from "@testing-library/vue";
 import TeamRotationActionEditor from "../../src/components/TeamRotationActionEditor.vue";
 
-function renderEditor() {
+function renderEditor(overrideProps: Record<string, unknown> = {}) {
   return render(TeamRotationActionEditor, {
     props: {
       action: { id: "action-1", slot: 0, order: 2, key: null, type: null, count: 1 },
@@ -11,6 +11,7 @@ function renderEditor() {
       chosenChars: {},
       mainEchoForSlot: {},
       mainEchoRankForSlot: {},
+      ...overrideProps,
     },
     global: {
       stubs: { AppRichSelect: true, TeamRotationAdvancedBuffs: true },
@@ -47,5 +48,22 @@ describe("TeamRotationActionEditor", () => {
 
     expect(emitted("update:sequence")).toBeUndefined();
     expect(emitted("update")).toBeTruthy();
+  });
+
+  it("passes canReorder through to the drag handle and forwards drag-reorder events", async () => {
+    const { container, emitted } = renderEditor({ canReorder: true });
+    const handle = container.querySelector("[data-test-rotation-action-drag-handle]");
+    expect(handle).not.toBeNull();
+
+    handle!.dispatchEvent(new Event("dragstart", { bubbles: true }));
+    expect(emitted("drag-reorder-start")).toBeTruthy();
+
+    handle!.dispatchEvent(new Event("dragend", { bubbles: true }));
+    expect(emitted("drag-reorder-end")).toBeTruthy();
+  });
+
+  it("does not render a drag handle when canReorder is not set", () => {
+    const { container } = renderEditor();
+    expect(container.querySelector("[data-test-rotation-action-drag-handle]")).toBeNull();
   });
 });

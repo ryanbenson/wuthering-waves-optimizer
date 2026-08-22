@@ -226,28 +226,41 @@
             </div>
           </div>
           <div class="rotations__list">
-            <CalculatorRotationActionEditor
-              v-for="action in actionsList"
+            <div
+              v-for="(action, index) in actionsList"
               :key="action.id"
-              :ref="(el) => setActionRef(action.id, el)"
-              :action="action"
-              :character="character"
-              :character-data="characterData"
-              :character-build-data="characterBuildData"
-              :definitions="definitions"
-              :rotation-main-echo="echoValue"
-              :rotation-main-echo-rank="mainEchoRank"
-              :previous-action="previousActionByActionId[action.id] ?? null"
-              :range-actions="rangeActions"
-              @action-update="handleActionUpdate"
-              @action-update:sequence="handleSequenceUpdate"
-              @remove-action="handleRemoveAction"
-              @bulk-apply="handleBulkApplyBuff"
-              :data-test-rotation-action-by-parent-name="nameValue"
-              :data-test-rotation-action-by-attack-key="action.key ?? 'none'"
-              :data-test-rotation-action-by-id="
-                action.id
-              "></CalculatorRotationActionEditor>
+              class="action-dnd-item rounded-lg"
+              :class="{
+                'ring-2 ring-primary ring-offset-1 ring-offset-base-100':
+                  actionDropIndex === index && actionDragIndex !== null && actionDragIndex !== index,
+              }"
+              @dragover.prevent="onActionDragOver(index, $event)"
+              @dragenter.prevent="onActionDragEnter(index)"
+              @drop.prevent="onActionDrop(index)">
+              <CalculatorRotationActionEditor
+                :ref="(el) => setActionRef(action.id, el)"
+                :action="action"
+                :character="character"
+                :character-data="characterData"
+                :character-build-data="characterBuildData"
+                :definitions="definitions"
+                :rotation-main-echo="echoValue"
+                :rotation-main-echo-rank="mainEchoRank"
+                :previous-action="previousActionByActionId[action.id] ?? null"
+                :range-actions="rangeActions"
+                :can-reorder="canReorderActions"
+                @action-update="handleActionUpdate"
+                @action-update:sequence="handleSequenceUpdate"
+                @remove-action="handleRemoveAction"
+                @bulk-apply="handleBulkApplyBuff"
+                @drag-reorder-start="onActionDragStart(index)"
+                @drag-reorder-end="onActionDragEnd"
+                :data-test-rotation-action-by-parent-name="nameValue"
+                :data-test-rotation-action-by-attack-key="action.key ?? 'none'"
+                :data-test-rotation-action-by-id="
+                  action.id
+                "></CalculatorRotationActionEditor>
+            </div>
           </div>
           <button
             class="rotation__action--add btn btn-primary my-4 btn-xs w-full"
@@ -289,6 +302,7 @@ import {
   getEchoData,
 } from "../echoes/index.ts";
 import { useToast } from "../composables/useToast";
+import { useDragReorder } from "../composables/useDragReorder";
 import { applyBulkAdvancedConfigOverride, type AdvancedConfigCategory, type RotationAdvancedConfig } from "../calculator/rotationAdvancedBuffs";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
@@ -403,6 +417,28 @@ function toggleOpen() {
 defineExpose({ toggleOpen });
 
 const actionsCount = computed(() => actionsList.value?.length || 0);
+const canReorderActions = computed(() => actionsList.value.length > 1);
+
+/** Trust current array order and stamp order 1..n (used after a drag reorder). */
+function renumberActionsByArrayOrder(list: RotationActionRow[]): RotationActionRow[] {
+  return list.map((action, index) => ({ ...action, order: index + 1 }));
+}
+
+const {
+  dragIndex: actionDragIndex,
+  dropIndex: actionDropIndex,
+  onDragStart: onActionDragStart,
+  onDragEnter: onActionDragEnter,
+  onDragOver: onActionDragOver,
+  onDrop: onActionDrop,
+  onDragEnd: onActionDragEnd,
+} = useDragReorder((from, to) => {
+  const next = [...actionsList.value];
+  const [moved] = next.splice(from, 1);
+  next.splice(to, 0, moved);
+  actionsList.value = renumberActionsByArrayOrder(next);
+  emitRotation();
+});
 
 // This rotation's own actions in displayed (order) sequence — the pool the
 // per-buff "Duration" control draws its range from, and the basis for

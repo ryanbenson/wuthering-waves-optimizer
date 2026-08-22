@@ -16,11 +16,14 @@
     :rotation-main-echo-rank="rotationMainEchoRank"
     :negative-status-stacks="Number(action.negativeStatusStacks ?? 1)"
     :electro-rage-stacks="Number(action.electroRageStacks ?? 0)"
+    :can-reorder="canReorder"
     :data-test-rotation-action-by-attack-key="rotationActionStr(action.key) ?? 'none'"
     :data-test-rotation-action-by-id="action.id"
     @action-update="onActionUpdate"
     @action-update:sequence="onSequenceUpdate"
-    @remove-action="onRemove">
+    @remove-action="onRemove"
+    @drag-reorder-start="onDragReorderStart"
+    @drag-reorder-end="onDragReorderEnd">
     <template v-if="definitions" #extra-buttons>
       <span
         class="badge badge-xs"
@@ -106,6 +109,7 @@ const props = defineProps<{
   rotationMainEchoRank?: string | number | null;
   previousAction?: (Record<string, unknown> & { id: string; advancedConfig?: RotationAdvancedConfig }) | null;
   rangeActions?: DurationRangeAction[];
+  canReorder?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -115,6 +119,8 @@ const emit = defineEmits<{
   "bulk-apply": [
     payload: { category: AdvancedConfigCategory; key: string | null; override: AdvancedBuffOverride; actionIds: string[] },
   ];
+  "drag-reorder-start": [event: DragEvent];
+  "drag-reorder-end": [];
 }>();
 
 const showAdvancedBuffs = ref(false);
@@ -200,5 +206,13 @@ function resyncWithCharacter() {
 
 function onRemove(payload: { id: string }) {
   emit("remove-action", payload);
+}
+
+function onDragReorderStart(event: DragEvent) {
+  emit("drag-reorder-start", event);
+}
+
+function onDragReorderEnd() {
+  emit("drag-reorder-end");
 }
 </script>

@@ -5,6 +5,27 @@
     @click="toggleEdit">
     <div class="rotation__action__info">
       <div class="name">
+        <span
+          v-if="canReorder"
+          class="rotation__action-drag-handle inline-flex items-center justify-center size-6 shrink-0 rounded cursor-grab active:cursor-grabbing text-base-content/50 hover:text-base-content hover:bg-base-200 select-none"
+          draggable="true"
+          role="button"
+          tabindex="0"
+          aria-label="Drag to reorder action"
+          title="Drag to reorder"
+          data-test-rotation-action-drag-handle
+          @click.stop.prevent
+          @dragstart.stop="onDragReorderStart"
+          @dragend.stop="onDragReorderEnd">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="size-4 pointer-events-none">
+            <path
+              d="M7 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 10a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM7 16a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 4a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 10a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM15 16a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z" />
+          </svg>
+        </span>
         <div class="order badge">#{{ sequence }}</div>
         <div class="count badge">x{{ hits }}</div>
         <span class="flex gap-2 items-center">
@@ -280,6 +301,7 @@ const props = withDefaults(
     electroRageStacks?: number;
     /** Hides "Disabled" — used by Team Rotations, where it isn't supported yet. */
     showDisabledOption?: boolean;
+    canReorder?: boolean;
   }>(),
   {
     characterData: () => ({}),
@@ -294,6 +316,7 @@ const props = withDefaults(
     negativeStatusStacks: 1,
     electroRageStacks: 0,
     showDisabledOption: true,
+    canReorder: false,
   },
 );
 
@@ -301,6 +324,8 @@ const emit = defineEmits<{
   "action-update": [payload: Record<string, unknown>];
   "action-update:sequence": [payload: Record<string, unknown>];
   "remove-action": [payload: { id: string }];
+  "drag-reorder-start": [event: DragEvent];
+  "drag-reorder-end": [];
 }>();
 
 const characterStore = useCharacterStore();
@@ -666,6 +691,19 @@ function removeAction() {
   emit("remove-action", { id: props.id });
 }
 
+function onDragReorderStart(event: DragEvent) {
+  // Must set dataTransfer during dragstart on the draggable node (esp. Safari/Firefox)
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", props.id);
+  }
+  emit("drag-reorder-start", event);
+}
+
+function onDragReorderEnd() {
+  emit("drag-reorder-end");
+}
+
 function onSequenceChange(e: Event) {
   const target = e.target as HTMLInputElement;
   emit("action-update:sequence", buildActionPayload(target.value));
@@ -737,6 +775,10 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+.rotation__action-drag-handle {
+  -webkit-user-drag: element;
+  user-select: none;
+}
 .mismatch-echo {
   path {
     fill: oklch(var(--wa));
