@@ -810,7 +810,7 @@ async function handleDownload() {
 }
 
 .build-card__watermark {
-  padding: 0.35rem 0.25rem 0;
+  padding: 0.35rem 1.5rem 1rem 0;
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.05em;
