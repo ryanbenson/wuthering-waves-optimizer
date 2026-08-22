@@ -56,7 +56,6 @@
       </div>
 
       <CharacterBuildStatus
-        v-if="!isCompact"
         :status="buildStatus"
         :character-key="characterChosen"
         interactive
@@ -78,12 +77,6 @@
           :character="character"
           @character-level-updated="handleCharacterLevelUpdated" />
       </div>
-      <CharacterBuildStatus
-        v-if="isCompact"
-        :status="buildStatus"
-        :character-key="characterChosen"
-        interactive
-        class="character__selection__build-status--compact" />
       <div class="character__selection__build flex items-center gap-1.5">
         <CalculatorBuildSelect :character="characterChosen" />
         <button
@@ -273,31 +266,20 @@ onMounted(() => {
 
   &--compact {
     position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
 
     .character__selection__form--character {
-      margin-bottom: 0;
+      margin-bottom: 0.5rem;
       --app-rich-select-min-width: 14rem;
-      flex: 1 1 14rem;
     }
 
     .character__selection__form--level {
-      margin-bottom: 0;
-      flex: 1 1 14rem;
+      margin-bottom: 0.5rem;
     }
 
     &:has(.character-build-status-dropdown:focus-within) {
       z-index: 50;
     }
   }
-}
-.character__selection__build-status--compact {
-  width: auto;
-  min-width: 9.5rem;
-  flex: 0 0 auto;
 }
 @media (max-width: 640px) {
   .character__selection__form--character {
@@ -403,20 +385,5 @@ onMounted(() => {
 
 .character__selection__avatar:hover .character__selection__avatar-icon {
   opacity: 1;
-}
-
-html[data-density="compact"] {
-  .character__selection {
-    grid-template-columns: 4.5rem 1fr;
-    grid-gap: 1rem;
-  }
-  .character__selection__favorite {
-    width: 1.35rem;
-    height: 1.35rem;
-  }
-  .character__selection__favorite-icon {
-    width: 0.8rem;
-    height: 0.8rem;
-  }
 }
 </style>
