@@ -151,7 +151,6 @@
           class="size-7"
           alt="Build Card" />
         Build Card
-        <div class="badge badge-primary text-xs">New</div>
       </a>
     </li>
   </ul>
