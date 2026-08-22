@@ -192,7 +192,7 @@ async function equipLoadout() {
 </script>
 
 <style>
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .optimizer-result {
     background-color: oklch(var(--nc));
   }

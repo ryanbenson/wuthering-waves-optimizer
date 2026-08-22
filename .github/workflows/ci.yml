@@ -25,10 +25,10 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm i
+        run: npm ci
 
-      - name: Build project
-        run: npm run build
+      - name: Type-check
+        run: npx vue-tsc --noEmit
 
       - name: Run tests
         run: npm test

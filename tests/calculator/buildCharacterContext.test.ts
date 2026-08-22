@@ -251,21 +251,17 @@ describe("buildCharacterCalculationContext", () => {
       expect(filtered.finalStats.totalAtk).toBeCloseTo(filtered.baseAtk);
     });
 
-    it("scales a percent-type custom buff from the stored whole number down to a fraction, not 100x", async () => {
-      // The Custom Buffs UI stores/displays percent fields as whole numbers
-      // (e.g. `5` meaning "+5%"), while every other buff source in the app
-      // (weapon/echo/resonance-chain modifierValue) uses a 0-1 fraction.
-      // customBuffs must be normalized to that same fraction before being
-      // summed, or a stored "5" silently becomes +500% instead of +5%.
-      const baseline = { Calcharo: {} };
-      const withCustomBuff = { Calcharo: { customBuffs: { ATK: 5 } } };
+    it("treats a percent-based custom buff field as a whole-number percent, not a raw decimal fraction", async () => {
+      // Custom Buffs percent fields (ATK, DamageAmplify, etc.) are persisted
+      // to the store as whole numbers the user typed (e.g. `10` for "10%"),
+      // same as CalculatorCustomBuffs.vue's own live-preview computed
+      // divides by 100 before use — regression test for #428, where the
+      // per-action rebuilt context skipped that conversion and treated `10`
+      // as 1000% instead of 10%.
+      const characters = { Calcharo: { customBuffs: { ATK: 10 } } };
+      const result = await buildCharacterCalculationContext("Calcharo", characters, enemyConfig);
 
-      const baselineContext = await buildCharacterCalculationContext("Calcharo", baseline, enemyConfig);
-      const buffedContext = await buildCharacterCalculationContext("Calcharo", withCustomBuff, enemyConfig);
-
-      // +5% ATK on top of the unbuffed total, not +500%.
-      const expectedAtk = baselineContext.finalStats.totalAtk * 1.05;
-      expect(buffedContext.finalStats.totalAtk).toBeCloseTo(expectedAtk, 0);
+      expect(result.finalStats.totalAtk).toBeCloseTo(result.baseAtk * 1.1);
     });
 
     it("keeps an isPermanent resonance chain node's modifiers only when its stored toggle is on, and never a conditional node's", async () => {

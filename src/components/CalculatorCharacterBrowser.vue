@@ -357,7 +357,7 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .modal-backdrop {
     opacity: 0.5;
   }

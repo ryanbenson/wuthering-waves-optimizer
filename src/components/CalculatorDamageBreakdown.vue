@@ -314,6 +314,14 @@
                 )
               }}
             </span>
+            ) × (1 +
+            <span class="text-primary">
+              {{
+                displayPercentage(
+                  damage.totalDamageContext.totalTalentModifierSpecialMultiply * 100,
+                )
+              }}
+            </span>
             )
           </div>
         </div>
@@ -479,19 +487,6 @@
       </div>
       <div class="total-dmg-bonus">
         <div class="font-bold mt-2 text-lg text-primary">Total Damage Multiplier</div>
-        <div class="formula bg-base-200 p-2 rounded-md font-mono">
-          <div class="font-bold text-secondary">
-            {{
-              displayPercentage(
-                (damage.totalDamageContext.totalDamage ?? 0) * 100,
-              )
-            }}
-          </div>
-        </div>
-      </div>
-      <div class="divider"></div>
-      <div class="crit-dmg">
-        <div class="font-bold mt-2 text-lg text-primary">Crit Damage</div>
         <div class="formula bg-base-200 p-2 rounded-md font-mono">
           <div class="font-bold text-secondary">
             {{

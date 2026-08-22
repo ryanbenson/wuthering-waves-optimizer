@@ -172,6 +172,24 @@ export const basicAttacks = {
         "10": "45.23%*4",
       },
       type: "Basic",
-    }
+    },
+    {
+      key: "SequenceNode1LikeCloudsThatMeetAndDriftApart",
+      label: "S1 Juque Perdition",
+      talents: {
+        "1": "400%",
+        "2": "400%",
+        "3": "400%",
+        "4": "400%",
+        "5": "400%",
+        "6": "400%",
+        "7": "400%",
+        "8": "400%",
+        "9": "400%",
+        "10": "400%",
+      },
+      type: "Basic",
+      requiresResonanceChain: "SequenceNode1LikeCloudsThatMeetAndDriftApart",
+    },
   ],
 };

@@ -69,7 +69,7 @@ export default {
 </style>
 
 <style scoped lang="scss">
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .preset-icon svg path {
     stroke: black !important;
     fill: black !important;

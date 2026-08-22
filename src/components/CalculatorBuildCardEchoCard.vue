@@ -159,7 +159,7 @@ function getEchoSetIcon(type: string) {
 </script>
 
 <style lang="scss" scoped>
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .build-card-echo__substats img {
     filter: contrast(0);
   }

@@ -807,7 +807,7 @@ function toggleEchoDetails() {
     height: 1rem;
   }
 }
-html[data-theme="light"] {
+html[data-theme-style="light"] {
   .calculation__damage__item--healing {
     color: #13a813;
   }
