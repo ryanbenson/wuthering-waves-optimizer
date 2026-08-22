@@ -269,14 +269,19 @@
           </div>
 
           <div
-            class="build-card__echoes col-span-4 h-full flex flex-col justify-center gap-6"
+            class="build-card__echoes col-span-4 h-full flex flex-col"
             data-test-build-card-echoes>
-            <CalculatorBuildCardEchoCard
-              v-for="(echo, index) in echoSlots"
-              :key="index"
-              class="shrink-0"
-              style="height: 185px"
-              v-bind="echo" />
+            <div class="build-card__echoes-list flex-1 min-h-0 flex flex-col justify-center gap-6">
+              <CalculatorBuildCardEchoCard
+                v-for="(echo, index) in echoSlots"
+                :key="index"
+                class="shrink-0"
+                style="height: 185px"
+                v-bind="echo" />
+            </div>
+            <div class="build-card__watermark shrink-0 text-right" data-test-build-card-watermark>
+              WUTHERINGTOOLS.COM
+            </div>
           </div>
         </div>
       </div>
@@ -802,6 +807,16 @@ async function handleDownload() {
 
 .build-card__resonance-node--inactive {
   opacity: 0.5;
+}
+
+.build-card__watermark {
+  padding: 0.35rem 1.5rem 1rem 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: oklch(var(--bc) / 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 }
 
 // CalculatorStats.vue is shared with the single-character Calculator page,
