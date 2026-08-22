@@ -96,6 +96,14 @@ export function computeTeamImportBase(
 export interface TeamRotationInput {
   name?: string;
   characterIds: Array<string | null>;
+  /**
+   * Per-slot build override (issue #278): `buildIds[slot]` pins that slot's
+   * calculation to a specific saved build instead of whatever build is
+   * currently active for that character. `null`/absent (including a
+   * missing array entirely, for teams saved before this field existed)
+   * means "use the active build" — see `resolveCharactersForBuild`.
+   */
+  buildIds?: Array<string | null>;
   actions: TeamRotationAction[];
   duration: number | string | null;
 }
@@ -182,6 +190,7 @@ export async function calcTeamRotationDamage(
       characters,
       enemyConfig,
       inventoryEchoes,
+      team.buildIds?.[slot] ?? null,
     );
 
     perCharacter[characterId] = { damageAggregation: slotResult.damageAggregation, attacks: slotResult.attacks };

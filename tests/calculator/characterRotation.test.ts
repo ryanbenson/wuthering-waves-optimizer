@@ -152,3 +152,114 @@ describe("calcCharacterRotationDamage", () => {
     expect(result.damageAggregation.normalDamage).toBeNull();
   });
 });
+
+describe("calcCharacterRotationDamage buildId override (issue #278)", () => {
+  const buffedBuild = { id: "buffed-build", name: "Buffed", buffs: { StatBonusATK1: { isEnabled: true } } };
+  const plainBuild = { id: "plain-build", name: "Plain", buffs: {} };
+  const characters = {
+    // Calcharo's own top-level fields ("active build") are unbuffed; the
+    // buffed data only exists inside builds[].
+    Calcharo: { buffs: {}, builds: [plainBuild, buffedBuild], activeBuildId: "plain-build" },
+  };
+  const action: CharacterRotationAction = { id: "a1", order: 0, type: "basic", key: "Part1Damage", count: 1 };
+
+  it("uses the active build's data when buildId is omitted, matching current behavior", async () => {
+    const baseContext = await baseContextFor(characters);
+    const result = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [action] },
+      baseContext,
+      "Calcharo",
+      characters,
+      enemyConfig,
+    );
+
+    const resolvedAttack = resolveRotationActionToAttackData(action, baseContext.chosenChar, baseContext.characterLevel);
+    baseContext.context.rotationsList = [
+      { id: "expected", name: "expected", duration: 10, order: 0, attacks: [resolvedAttack] },
+    ];
+    const expected = calcDamages(baseContext.context);
+    expect(result.attacks[0].damage.totalDamage).toBeCloseTo(expected.rotations[0].attacks[0].damage.totalDamage);
+  });
+
+  it("swaps in a specific build's data when buildId is passed, independent of the active build", async () => {
+    // No baseContext passed (null) — calcTeamRotationDamage's own calling
+    // convention, since it has no single "active character" context to reuse.
+    const plainResult = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [action] },
+      null,
+      "Calcharo",
+      characters,
+      enemyConfig,
+      [],
+      "plain-build",
+    );
+    const buffedResult = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [action] },
+      null,
+      "Calcharo",
+      characters,
+      enemyConfig,
+      [],
+      "buffed-build",
+    );
+
+    expect(buffedResult.attacks[0].damage.totalDamage).toBeGreaterThan(
+      plainResult.attacks[0].damage.totalDamage,
+    );
+  });
+
+  it("falls back to the active build when buildId doesn't match any stored build", async () => {
+    const activeResult = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [action] },
+      null,
+      "Calcharo",
+      characters,
+      enemyConfig,
+      [],
+      null,
+    );
+    const missingBuildResult = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [action] },
+      null,
+      "Calcharo",
+      characters,
+      enemyConfig,
+      [],
+      "no-such-build",
+    );
+
+    expect(missingBuildResult.attacks[0].damage.totalDamage).toBeCloseTo(
+      activeResult.attacks[0].damage.totalDamage,
+    );
+  });
+
+  it("composes with a per-action advancedConfig override on top of the targeted build's data", async () => {
+    const overriddenAction: CharacterRotationAction = {
+      ...action,
+      id: "a2",
+      advancedConfig: { buffs: { StatBonusATK1: { isEnabled: false } } },
+    };
+
+    // buffed-build already has StatBonusATK1 on; the action forces it off.
+    const result = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [overriddenAction] },
+      null,
+      "Calcharo",
+      characters,
+      enemyConfig,
+      [],
+      "buffed-build",
+    );
+    const plainResult = await calcCharacterRotationDamage(
+      { id: "r1", name: "Rotation", duration: 10, actions: [action] },
+      null,
+      "Calcharo",
+      characters,
+      enemyConfig,
+      [],
+      "plain-build",
+    );
+
+    expect(result.attacks[0].damage.totalDamage).toBeCloseTo(plainResult.attacks[0].damage.totalDamage);
+  });
+});

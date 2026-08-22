@@ -10,6 +10,7 @@
  *   5 — include teamRotations store in export/import; no data transform
  *   6 — replace character rotation exclude-buffs checkboxes with advancedConfig
  *   7 — mainEcho.isEnabled/stacks → mainEcho.buffs[buffKey]
+ *   8 — add builds[]/activeBuildId to character records (issue #278)
  *
  * On load, compare the user's version to CURRENT_DATA_VERSION and run each
  * pending migration in order.
@@ -26,6 +27,7 @@ import addRotationOrder from "./versions/004_addRotationOrder";
 import addTeamRotationsExport from "./versions/005_addTeamRotationsExport";
 import replaceCharacterRotationExcludeBuffs from "./versions/006_replaceCharacterRotationExcludeBuffs";
 import migrateMainEchoBuffs from "./versions/007_mainEchoBuffs";
+import addCharacterBuildsMigration from "./versions/008_addCharacterBuilds";
 
 /** localStorage key that mirrors export `meta.version`. */
 export const DATA_VERSION_KEY = "dataVersion";
@@ -34,7 +36,7 @@ export const DATA_VERSION_KEY = "dataVersion";
  * Latest data version. Bump when adding a migration.
  * Also written to export `meta.version`.
  */
-export const CURRENT_DATA_VERSION = 7;
+export const CURRENT_DATA_VERSION = 8;
 
 /**
  * Version assumed when an existing user has data but no data-version key yet
@@ -52,6 +54,7 @@ const migrations: Migration[] = [
   addTeamRotationsExport,
   replaceCharacterRotationExcludeBuffs,
   migrateMainEchoBuffs,
+  addCharacterBuildsMigration,
 ];
 
 function parseVersion(raw: string | null | undefined): number | null {

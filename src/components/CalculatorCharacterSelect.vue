@@ -84,11 +84,22 @@
         :character-key="characterChosen"
         interactive
         class="character__selection__build-status--compact" />
+      <div class="character__selection__build flex items-center gap-1.5">
+        <CalculatorBuildSelect :character="characterChosen" />
+        <button
+          type="button"
+          class="btn btn-neutral btn-sm"
+          data-test-manage-builds-open
+          @click="openManageBuilds">
+          Manage Builds
+        </button>
+      </div>
     </div>
     <CalculatorCharacterBrowser
       :character="character"
       ref="characterBrowserRef"
       @character-browser:chosen-character="handleChosenCharacter" />
+    <CalculatorManageBuilds :character="characterChosen" ref="manageBuildsRef" />
   </div>
 </template>
 
@@ -98,6 +109,8 @@ import { storeToRefs } from "pinia";
 import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
 import CharacterBuildStatus from "./CharacterBuildStatus.vue";
+import CalculatorBuildSelect from "./CalculatorBuildSelect.vue";
+import CalculatorManageBuilds from "./CalculatorManageBuilds.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
   type AppRichSelectValue,
@@ -135,6 +148,14 @@ const characterBrowserRef = ref<{
   triggerOpenModal: () => void;
   triggerCloseModal: () => void;
 } | null>(null);
+const manageBuildsRef = ref<{
+  triggerOpenModal: () => void;
+  triggerCloseModal: () => void;
+} | null>(null);
+
+function openManageBuilds() {
+  manageBuildsRef.value?.triggerOpenModal();
+}
 
 const charactersList = ref<CharacterPickerList>({ five: [], four: [] });
 const characterChosen = ref<string>("");
@@ -189,6 +210,7 @@ function handleChosenCharacterFromSelect(next: AppRichSelectValue) {
 
 function handleChosenCharacter(nextCharacter: string) {
   characterChosen.value = nextCharacter;
+  characterStore.ensureCharacterBuilds(nextCharacter);
   emit("updated-chosen-character", nextCharacter);
 }
 
@@ -204,12 +226,18 @@ watch(
   () => props.character,
   (next) => {
     characterChosen.value = next;
+    if (next) {
+      characterStore.ensureCharacterBuilds(next);
+    }
   },
 );
 
 onMounted(() => {
   charactersList.value = getCharactersAvailable();
   characterChosen.value = props.character;
+  if (props.character) {
+    characterStore.ensureCharacterBuilds(props.character);
+  }
 });
 </script>
 
@@ -235,8 +263,8 @@ onMounted(() => {
   max-width: 26rem;
 }
 .character__selection__form--level {
-  --app-rich-select-min-width: 4.75rem;
-  width: 4.75rem;
+  margin-bottom: 1rem;
+  max-width: 26rem;
 }
 .character__selection__form {
   label {
@@ -257,7 +285,8 @@ onMounted(() => {
     }
 
     .character__selection__form--level {
-      flex: 0 0 auto;
+      margin-bottom: 0;
+      flex: 1 1 14rem;
     }
 
     &:has(.character-build-status-dropdown:focus-within) {
@@ -274,6 +303,24 @@ onMounted(() => {
   .character__selection__form--character {
     --app-rich-select-min-width: 9rem;
     max-width: 100%;
+  }
+}
+@media (max-width: 968px) and (min-width: 768px) {
+  .character__selection,
+  html[data-density="compact"] .character__selection {
+    grid-template-columns: 1fr;
+  }
+  .character__selection__left {
+    justify-self: center;
+  }
+}
+@media (max-width: 450px) {
+  .character__selection,
+  html[data-density="compact"] .character__selection {
+    grid-template-columns: 1fr;
+  }
+  .character__selection__left {
+    justify-self: center;
   }
 }
 .character__selection__avatar-wrap {

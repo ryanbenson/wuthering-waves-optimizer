@@ -1,26 +1,62 @@
-/**
- * Percent-based Custom Buffs fields (Calculator "Custom Buffs" tab) are
- * persisted to the character store as whole numbers (e.g. `10` for "10%"),
- * matching the plain `<input type="number">` the user types into. Flat stat
- * fields (ATK_FLAT/HP_FLAT/DEF_FLAT) are stored and used as-is. Every
- * consumer of custom buffs downstream (stats.ts/attacks.ts) expects percent
- * fields as decimal fractions, so callers must run raw store values through
- * this before handing them to calculation code.
- */
-export const CUSTOM_BUFF_FLAT_KEYS: ReadonlySet<string> = new Set([
-  "ATK_FLAT",
-  "HP_FLAT",
-  "DEF_FLAT",
-]);
+export type CustomBuffKey =
+  | "ATK"
+  | "ATK_FLAT"
+  | "HP"
+  | "HP_FLAT"
+  | "DEF"
+  | "DEF_FLAT"
+  | "CritRate"
+  | "CritDMG"
+  | "EnergyRegen"
+  | "BasicAttackDMGBonus"
+  | "HeavyAttackDMGBonus"
+  | "ResonanceSkillDMGBonus"
+  | "ResonanceLiberationDMGBonus"
+  | "EchoDMGBonus"
+  | "Glacio"
+  | "Fusion"
+  | "Electro"
+  | "Aero"
+  | "Spectro"
+  | "Havoc"
+  | "HealingBonus"
+  | "DamageAmplify"
+  | "DamageAmplifyGlacioChafe"
+  | "DamageAmplifyAeroErosion"
+  | "DamageAmplifySpectroFrazzle"
+  | "DamageAmplifyElectroFlare"
+  | "DamageAmplifyFusionBurst"
+  | "ResistShred"
+  | "ResistIgnore"
+  | "DefIgnore"
+  | "DefReduction"
+  | "CoordinatedDMGBonus"
+  | "TuneBreakDMGBonus"
+  | "SpecialMultiplier"
+  | "TotalDamage";
 
+/** Keys stored as flat additive values, not whole-number percentages. */
+const FLAT_CUSTOM_BUFF_KEYS: ReadonlySet<CustomBuffKey> = new Set(["ATK_FLAT", "HP_FLAT", "DEF_FLAT"]);
+
+/**
+ * `characters[id].customBuffs` persists percent-type fields as whole
+ * numbers the way the Custom Buffs UI displays them (e.g. `5` for "+5%"),
+ * not the 0-1 fraction `addBuffs`/`calculateAllStats` expect everywhere
+ * else in the app (buff `modifierValue`s are always fractions, e.g.
+ * `0.05`). `CalculatorCustomBuffs.vue` converts locally before feeding the
+ * Results tab's own calculation; anything reading `customBuffs` straight
+ * from the store (team rotations, the optimizer, build previews — all via
+ * `buildCharacterContext.ts`) must go through this first, or every
+ * percent-type custom buff ends up 100x too strong.
+ */
 export function normalizeCustomBuffs(
-  raw: Record<string, unknown> | null | undefined,
+  raw: Partial<Record<CustomBuffKey, number>> | null | undefined,
 ): Record<string, number> {
   const normalized: Record<string, number> = {};
   for (const [key, rawValue] of Object.entries(raw ?? {})) {
     const value = Number(rawValue);
     if (!Number.isFinite(value) || value === 0) continue;
-    normalized[key] = CUSTOM_BUFF_FLAT_KEYS.has(key) ? value : value / 100;
+    normalized[key] = FLAT_CUSTOM_BUFF_KEYS.has(key as CustomBuffKey) ? value : value / 100;
   }
   return normalized;
 }

@@ -2,6 +2,7 @@ import { resolveRotationActionToAttackData } from "./resolveRotationAction";
 import { calcDamages } from "./attacks";
 import { buildCharacterCalculationContext, type CalculationContext, type TeamEnemyConfig } from "./buildCharacterContext";
 import { applyAdvancedOverrides, hasAdvancedConfigOverrides, type RotationAdvancedConfig } from "./rotationAdvancedBuffs";
+import { resolveCharactersForBuild } from "./buildOverride";
 
 // Lives here (rather than teamRotation.ts) so calcTeamRotationDamage can
 // delegate to calcCharacterRotationDamage per slot without a circular
@@ -95,6 +96,19 @@ export interface CharacterRotationBaseContext {
  * no-override case pays no extra cost) pass it in directly. Pass `null` to
  * have this function build one itself — used by `calcTeamRotationDamage`,
  * which has no single "active character" context to reuse per slot.
+ *
+ * `buildId` (Team Rotations' per-slot build override, issue #278) swaps in
+ * a specific saved build's data for `characterId` instead of its currently
+ * active build, via `resolveCharactersForBuild` — the same
+ * synthetic-characters-map trick `applyAdvancedOverrides` already uses for
+ * per-action buff overrides below, so both can compose (an override action
+ * layers its `advancedConfig` on top of the *targeted build's* data, not the
+ * active build's). Don't pass both a non-null `baseContext` and a `buildId`
+ * together — `baseContext` already encodes a specific (normally the active)
+ * build's stats and bypasses `characters` entirely for the plain-actions
+ * path, so combining them would silently ignore `buildId` for most actions.
+ * `calcTeamRotationDamage` always passes `baseContext: null`, so this never
+ * arises there.
  */
 export async function calcCharacterRotationDamage(
   rotation: CharacterRotationInput,
@@ -103,8 +117,10 @@ export async function calcCharacterRotationDamage(
   characters: Record<string, any>,
   enemyConfig: TeamEnemyConfig,
   inventoryEchoes: any[] = [],
+  buildId: string | null = null,
 ): Promise<CharacterRotationDamageResult> {
-  const characterData = characters?.[characterId] ?? {};
+  const effectiveCharacters = resolveCharactersForBuild(characters, characterId, buildId);
+  const characterData = effectiveCharacters?.[characterId] ?? {};
   const activeActions = rotation.actions.filter((action) => !action.isDisabled);
   const overrideActions = activeActions.filter((action) => hasAdvancedConfigOverrides(action.advancedConfig));
   const plainActions = activeActions.filter((action) => !hasAdvancedConfigOverrides(action.advancedConfig));
@@ -117,7 +133,7 @@ export async function calcCharacterRotationDamage(
     if (baseContext) {
       sharedContext = baseContext;
     } else {
-      const built = await buildCharacterCalculationContext(characterId, characters, enemyConfig, inventoryEchoes);
+      const built = await buildCharacterCalculationContext(characterId, effectiveCharacters, enemyConfig, inventoryEchoes);
       sharedContext = { chosenChar: built.chosenChar, characterLevel: built.characterLevel, context: built.context };
     }
     const plainAttacks = plainActions
@@ -136,7 +152,7 @@ export async function calcCharacterRotationDamage(
 
   for (const action of overrideActions) {
     const overriddenCharacters = {
-      ...characters,
+      ...effectiveCharacters,
       [characterId]: applyAdvancedOverrides(characterData, action.advancedConfig),
     };
     const built = await buildCharacterCalculationContext(characterId, overriddenCharacters, enemyConfig, inventoryEchoes);

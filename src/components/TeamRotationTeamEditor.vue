@@ -98,6 +98,16 @@
                   <span>{{ displayPercentage(slotStats[slot]!.energyRegen) }}</span>
                 </div>
               </div>
+              <div v-if="team.characterIds[slot]" class="mb-2">
+                <button
+                  type="button"
+                  class="btn btn-ghost btn-xs w-full justify-between"
+                  :data-test="`team-rotation-slot-build-select-${slot}`"
+                  @click="openBuildPicker(slot)">
+                  <span class="truncate">{{ slotBuildLabel(slot) }}</span>
+                  <span class="opacity-60 shrink-0">Change Build</span>
+                </button>
+              </div>
               <div class="join w-full">
                 <button
                   class="btn btn-outline btn-primary btn-xs join-item flex-1"
@@ -191,6 +201,13 @@
       :presets="importDialogPresets"
       @import="handleImportRotation" />
 
+    <CalculatorManageBuilds
+      :character="pickerCharacterId"
+      mode="pick"
+      :selected-build-id="pickerSlot !== null ? (team.buildIds?.[pickerSlot] ?? null) : null"
+      ref="buildPickerRef"
+      @select-build="handleBuildPicked" />
+
     <!-- A self-contained drawer, kept structurally separate from the page
     content above (mirroring HomeView.vue's own breakdown drawer): the real
     content must NOT live inside `.drawer-content`, since `.drawer-side` is
@@ -280,6 +297,7 @@ import TeamRotationSummaryHeader from "./TeamRotationSummaryHeader.vue";
 import TeamBuildStatus from "./TeamBuildStatus.vue";
 import { getTeamBuildStatus } from "../teamRotations/teamBuildStatus";
 import TeamRotationImportRotation from "./TeamRotationImportRotation.vue";
+import CalculatorManageBuilds from "./CalculatorManageBuilds.vue";
 import TeamRotationEnemySettings, {
   type TeamEnemySettingsValue,
 } from "./TeamRotationEnemySettings.vue";
@@ -308,6 +326,7 @@ import {
   applyBulkAdvancedConfigOverride,
   type AdvancedConfigCategory,
 } from "../calculator/rotationAdvancedBuffs";
+import { resolveCharactersForBuild } from "../calculator/buildOverride";
 import type { AdvancedBuffOverride } from "./TeamRotationAdvancedBuffRow.vue";
 
 const props = defineProps<{ teamId: string }>();
@@ -460,6 +479,54 @@ function setSlotCharacter(slot: number, characterId: unknown) {
   if (hadActions) {
     showToast("That teammate's actions were cleared since they belonged to the previous character.", "info");
   }
+}
+
+function activeBuildLabelForSlot(slot: number): string {
+  const characterId = team.value?.characterIds[slot];
+  const activeBuild = characterId ? characterStore.getActiveBuild(characterId) : null;
+  return activeBuild ? `${activeBuild.name} (active)` : "Active build";
+}
+
+// The label shown on the slot's own "Change Build" trigger — the pinned
+// build's name, or (when unpinned) the same "follows active" label used
+// inside the picker modal's "Follow active build" option.
+function slotBuildLabel(slot: number): string {
+  const characterId = team.value?.characterIds[slot];
+  const pinnedBuildId = team.value?.buildIds?.[slot] ?? null;
+  if (!pinnedBuildId || !characterId) {
+    return activeBuildLabelForSlot(slot);
+  }
+  const builds = characterStore.getBuilds(characterId) as Array<{ id: string; name: string }>;
+  return builds.find((build) => build.id === pinnedBuildId)?.name ?? activeBuildLabelForSlot(slot);
+}
+
+function setSlotBuild(slot: number, buildId: unknown) {
+  teamRotationsStore.setTeamCharacterBuild(props.teamId, slot, typeof buildId === "string" ? buildId : null);
+}
+
+// Opens the shared build-preview modal (CalculatorManageBuilds, mode="pick")
+// for a given slot — reused as-is from the Character view's Manage Builds
+// modal so both surfaces show the same rich per-build info (weapon, echo
+// sets, teammates, stats), per issue #278.
+const pickerCharacterId = ref<string>("");
+const pickerSlot = ref<number | null>(null);
+const buildPickerRef = ref<{ triggerOpenModal: () => void; triggerCloseModal: () => void } | null>(null);
+
+function openBuildPicker(slot: number) {
+  const characterId = team.value?.characterIds[slot];
+  if (!characterId) {
+    return;
+  }
+  pickerCharacterId.value = characterId;
+  pickerSlot.value = slot;
+  buildPickerRef.value?.triggerOpenModal();
+}
+
+function handleBuildPicked(buildId: string | null) {
+  if (pickerSlot.value === null) {
+    return;
+  }
+  setSlotBuild(pickerSlot.value, buildId);
 }
 
 function startChangeSlot(slot: number) {
@@ -729,7 +796,12 @@ const characterDataForSlot = computed(() => {
   const out: Record<number, Record<string, unknown>> = {};
   for (const slot of [0, 1, 2]) {
     const characterId = team.value?.characterIds[slot];
-    out[slot] = characterId ? (characters.value[characterId] ?? {}) : {};
+    if (!characterId) {
+      out[slot] = {};
+      continue;
+    }
+    const buildId = team.value?.buildIds?.[slot] ?? null;
+    out[slot] = resolveCharactersForBuild(characters.value, characterId, buildId)[characterId] ?? {};
   }
   return out;
 });
@@ -841,9 +913,12 @@ async function recompute() {
   await Promise.all(
     [0, 1, 2].map(async (slot) => {
       const characterId = t.characterIds[slot];
-      nextContexts[slot] = characterId
-        ? await buildCharacterCalculationContext(characterId, characters.value, enemyConfig, inventoryEchoes.value)
-        : null;
+      if (!characterId) {
+        nextContexts[slot] = null;
+        return;
+      }
+      const slotCharacters = resolveCharactersForBuild(characters.value, characterId, t.buildIds?.[slot] ?? null);
+      nextContexts[slot] = await buildCharacterCalculationContext(characterId, slotCharacters, enemyConfig, inventoryEchoes.value);
     }),
   );
   if (token !== computeToken) return;
@@ -853,6 +928,7 @@ async function recompute() {
     {
       name: t.name,
       characterIds: t.characterIds,
+      buildIds: t.buildIds,
       actions: t.actions,
       duration: t.duration,
     },

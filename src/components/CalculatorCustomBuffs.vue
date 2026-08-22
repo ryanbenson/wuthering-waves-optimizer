@@ -551,43 +551,7 @@
 import type { WritableComputedRef } from "vue";
 import { computed, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
-
-type CustomBuffKey =
-  | "ATK"
-  | "ATK_FLAT"
-  | "HP"
-  | "HP_FLAT"
-  | "DEF"
-  | "DEF_FLAT"
-  | "CritRate"
-  | "CritDMG"
-  | "EnergyRegen"
-  | "BasicAttackDMGBonus"
-  | "HeavyAttackDMGBonus"
-  | "ResonanceSkillDMGBonus"
-  | "ResonanceLiberationDMGBonus"
-  | "EchoDMGBonus"
-  | "Glacio"
-  | "Fusion"
-  | "Electro"
-  | "Aero"
-  | "Spectro"
-  | "Havoc"
-  | "HealingBonus"
-  | "DamageAmplify"
-  | "DamageAmplifyGlacioChafe"
-  | "DamageAmplifyAeroErosion"
-  | "DamageAmplifySpectroFrazzle"
-  | "DamageAmplifyElectroFlare"
-  | "DamageAmplifyFusionBurst"
-  | "ResistShred"
-  | "ResistIgnore"
-  | "DefIgnore"
-  | "DefReduction"
-  | "CoordinatedDMGBonus"
-  | "TuneBreakDMGBonus"
-  | "SpecialMultiplier"
-  | "TotalDamage";
+import type { CustomBuffKey } from "../calculator/customBuffs";
 
 interface StoreCharacterSlice {
   customBuffs?: Partial<Record<CustomBuffKey, number>>;

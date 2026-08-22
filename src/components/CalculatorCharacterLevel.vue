@@ -1,12 +1,18 @@
 <template>
-  <div>
-    <AppRichSelect
-      v-model="characterLevel"
-      :options="characterLevelSelectOptions"
-      aria-label="Character level"
+  <div class="character-level flex flex-col mt-6 relative">
+    <label for="character-level" class="talent__label">
+      Level
+      <span class="text-primary" data-test-character-level-label>{{ characterLevel }}</span>
+    </label>
+    <Range
+      id="character-level"
+      :values="characterLevelOptions"
+      :default-value="characterLevel"
+      size="xs"
+      show-ticks
+      class="w-full"
       data-test-character-level
-      class="character-level-select"
-      @update:model-value="onLevelUpdated" />
+      @update-value="handleLevelUpdate" />
   </div>
 </template>
 
@@ -14,10 +20,7 @@
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
-import AppRichSelect, {
-  type AppRichSelectValue,
-} from "./AppRichSelect.vue";
-import { buildSimpleSelectOptions } from "../utils/richSelectOptions";
+import Range from "./input/Range.vue";
 
 interface Props {
   character: string;
@@ -49,36 +52,35 @@ const characterLevelOptions: readonly string[] = [
   "90",
 ];
 
-const characterLevelSelectOptions = buildSimpleSelectOptions(
-  characterLevelOptions,
-);
-
 const currentCharacter = computed(
   () => characters.value[props.character] ?? {},
 );
 
-const characterLevel = computed({
-  get(): string {
-    return (currentCharacter.value as { characterLevel?: string })
-      ?.characterLevel ?? "90";
-  },
-  async set(value: string) {
-    await characterStore.setCharacterData(props.character, {
-      characterLevel: value,
-    });
-  },
-});
+const characterLevel = computed(
+  (): string =>
+    (currentCharacter.value as { characterLevel?: string })
+      ?.characterLevel ?? "90",
+);
 
-function onLevelUpdated(value: AppRichSelectValue) {
-  if (typeof value === "string") {
-    emit("character-level-updated", value);
-  }
+async function handleLevelUpdate(value: string) {
+  await characterStore.setCharacterData(props.character, {
+    characterLevel: value,
+  });
+  emit("character-level-updated", value);
 }
 </script>
 
 <style lang="scss" scoped>
-.character-level-select {
-  --app-rich-select-min-width: 4.75rem;
-  width: 4.75rem;
+.talent__label {
+  font-size: 16px;
+  font-weight: 700;
+  position: absolute;
+  top: -1rem;
+  left: 0.5rem;
+  z-index: 0;
+}
+.character-level :deep(input) {
+  position: relative;
+  z-index: 10;
 }
 </style>

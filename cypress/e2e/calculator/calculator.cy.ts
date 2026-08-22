@@ -70,7 +70,13 @@ describe("Home E2E Tests", () => {
     cy.richSelect("[data-test-character-select]", "Changli");
     cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
     cy.get(".character__selection.Changli").should("be.visible");
-    cy.richSelect("[data-test-character-level]", "80");
+    // 80 is index 11 in the level range's discrete value list — the range
+    // tracks the step index, not the level value itself (matches every
+    // other Range.vue-based slider's Cypress interaction convention).
+    cy.get("[data-test-character-level]")
+      .invoke("val", 11)
+      .trigger("input")
+      .trigger("change");
     cy.get(".character__buffs").should("be.visible");
     cy.get(".data-input--talents").should("be.visible");
     // Changli stats calculations

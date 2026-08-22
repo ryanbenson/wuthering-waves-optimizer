@@ -155,3 +155,102 @@ describe("useTeamRotationsStore favorites", () => {
     expect(store.favoriteTeamIds).toEqual([]);
   });
 });
+
+describe("useTeamRotationsStore build overrides (issue #278)", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("creates a team with buildIds defaulted to null for every slot", () => {
+    const store = useTeamRotationsStore();
+    const team = store.createTeam("Team 1");
+
+    expect(team.buildIds).toEqual([null, null, null]);
+  });
+
+  it("importTeam carries buildIds over, defaulting missing slots to null", () => {
+    const store = useTeamRotationsStore();
+    const team = store.importTeam({
+      name: "Imported",
+      characterIds: ["Carlotta", "Shorekeeper", null],
+      buildIds: ["build-1"],
+      actions: [],
+    });
+
+    expect(team.buildIds).toEqual(["build-1", null, null]);
+  });
+
+  it("setTeamCharacterBuild pins a build id for a slot", () => {
+    const store = useTeamRotationsStore();
+    const team = store.createTeam("Team 1");
+    store.setTeamCharacter(team.id, 0, "Carlotta");
+
+    store.setTeamCharacterBuild(team.id, 0, "build-abc");
+
+    expect(store.getTeamById(team.id)?.buildIds[0]).toBe("build-abc");
+  });
+
+  it("only affects the targeted slot", () => {
+    const store = useTeamRotationsStore();
+    const team = store.createTeam("Team 1");
+    store.setTeamCharacter(team.id, 0, "Carlotta");
+    store.setTeamCharacter(team.id, 1, "Shorekeeper");
+
+    store.setTeamCharacterBuild(team.id, 0, "build-abc");
+
+    expect(store.getTeamById(team.id)?.buildIds).toEqual(["build-abc", null, null]);
+  });
+
+  it("does nothing for an unknown team id", () => {
+    const store = useTeamRotationsStore();
+    expect(() => store.setTeamCharacterBuild("no-such-id", 0, "build-abc")).not.toThrow();
+  });
+
+  it("clears a slot's pinned build id when that slot's character changes", () => {
+    const store = useTeamRotationsStore();
+    const team = store.createTeam("Team 1");
+    store.setTeamCharacter(team.id, 0, "Carlotta");
+    store.setTeamCharacterBuild(team.id, 0, "build-abc");
+
+    store.setTeamCharacter(team.id, 0, "Shorekeeper");
+
+    expect(store.getTeamById(team.id)?.buildIds[0]).toBeNull();
+  });
+
+  it("clears a slot's pinned build id even when that slot is cleared entirely", () => {
+    const store = useTeamRotationsStore();
+    const team = store.createTeam("Team 1");
+    store.setTeamCharacter(team.id, 0, "Carlotta");
+    store.setTeamCharacterBuild(team.id, 0, "build-abc");
+
+    store.setTeamCharacter(team.id, 0, null);
+
+    expect(store.getTeamById(team.id)?.buildIds[0]).toBeNull();
+  });
+
+  it("does not affect other slots' pinned build ids when one slot's character changes", () => {
+    const store = useTeamRotationsStore();
+    const team = store.createTeam("Team 1");
+    store.setTeamCharacter(team.id, 0, "Carlotta");
+    store.setTeamCharacter(team.id, 1, "Shorekeeper");
+    store.setTeamCharacterBuild(team.id, 0, "build-abc");
+    store.setTeamCharacterBuild(team.id, 1, "build-xyz");
+
+    store.setTeamCharacter(team.id, 0, "Danjin");
+
+    expect(store.getTeamById(team.id)?.buildIds).toEqual([null, "build-xyz", null]);
+  });
+
+  it("backfills buildIds for a legacy team that predates this field", () => {
+    const store = useTeamRotationsStore();
+    store.hardSetState({
+      teams: [{ id: "legacy-team", name: "Legacy", characterIds: [null, null, null], actions: [] }],
+    });
+
+    expect(() => store.setTeamCharacterBuild("legacy-team", 0, "build-abc")).not.toThrow();
+    expect(store.getTeamById("legacy-team")?.buildIds[0]).toBe("build-abc");
+
+    store.setTeamCharacter("legacy-team", 1, "Carlotta");
+    expect(store.getTeamById("legacy-team")?.buildIds).toEqual(["build-abc", null, null]);
+  });
+});
