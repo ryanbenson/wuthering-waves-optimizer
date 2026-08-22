@@ -2,6 +2,22 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 23, 2026</h3>
+    <ul>
+      <li>Releases the multi-build system for characters, so each character can have more than 1 build, and you can choose a build in the team setup</li>
+      <li>You can now drag and drop rotation actions to re-order them</li>
+      <li>Improved the performance of the teams feature when you have a lot of teams</li>
+      <li>Added small website reference on build images</li>
+      <li>Changes character level to a slider</li>
+    </ul>
+    <h3>August 22, 2026</h3>
+    <ul>
+      <li>Fixed a bug in the rotations with per-action buffs using custom buffs were multiplied by 100</li>
+      <li>Optimized the e2e tests, improving how fast they run in the CI pipeline</li>
+      <li>Fixed Qingxiao's preset rotation, the echo attack wasn't working</li>
+      <li>Fixed the alignment on the slider ticks, it got misaligned in some cases</li>
+      <li>Removes duplicate Crit Damage breakdown in slide-out</li>
+    </ul>
     <h3>August 21, 2026</h3>
     <ul>
       <li>Removes duplicate Crit Damage breakdown in slide-out</li>

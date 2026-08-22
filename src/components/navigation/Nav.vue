@@ -67,9 +67,6 @@
           <img
             src="https://ryanbenson.github.io/wuthering-waves-assets/images/icons/teams.webp"
             class="size-8" />
-          <div class="badge badge-primary absolute top-[-0.5rem] right-[-1.25rem] text-xs">
-            New
-          </div>
         </RouterLink>
       </div>
       <div class="navbar-center hidden lg:flex">

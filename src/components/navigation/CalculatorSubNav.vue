@@ -126,9 +126,6 @@
           src="https://ryanbenson.github.io/wuthering-waves-assets/images/icons/camera.webp"
           class="size-9"
           alt="Build Card" />
-        <div class="badge badge-primary absolute top-[-0.5rem] right-[-0.5rem] text-xs">
-          New
-        </div>
       </a>
     </li>
   </ul>
