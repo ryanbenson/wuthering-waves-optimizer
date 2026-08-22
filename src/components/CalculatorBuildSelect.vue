@@ -1,9 +1,9 @@
 <template>
   <AppRichSelect
-    class="build-select"
+    class="w-44"
     :model-value="activeBuildId"
     :options="buildOptions"
-    variant="ghost"
+    variant="neutral"
     aria-label="Choose active build"
     data-test-build-select
     @update:model-value="handleSelect" />
@@ -44,9 +44,3 @@ function handleSelect(value: AppRichSelectValue) {
   characterStore.equipBuild(props.character, value);
 }
 </script>
-
-<style scoped>
-.build-select {
-  --app-rich-select-min-width: 10rem;
-}
-</style>

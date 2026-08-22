@@ -54,6 +54,13 @@
         </div>
       </div>
       </div>
+
+      <CharacterBuildStatus
+        v-if="!isCompact"
+        :status="buildStatus"
+        :character-key="characterChosen"
+        interactive
+        class="w-full" />
     </div>
     <div class="character__selection__form" :class="{ 'character__selection__form--compact': isCompact }">
       <div class="character__selection__form--character">
@@ -71,18 +78,39 @@
           :character="character"
           @character-level-updated="handleCharacterLevelUpdated" />
       </div>
+      <CharacterBuildStatus
+        v-if="isCompact"
+        :status="buildStatus"
+        :character-key="characterChosen"
+        interactive
+        class="character__selection__build-status--compact" />
+      <div class="character__selection__build flex items-center gap-1.5">
+        <CalculatorBuildSelect :character="characterChosen" />
+        <button
+          type="button"
+          class="btn btn-neutral btn-sm"
+          data-test-manage-builds-open
+          @click="openManageBuilds">
+          Manage Builds
+        </button>
+      </div>
     </div>
     <CalculatorCharacterBrowser
       :character="character"
       ref="characterBrowserRef"
       @character-browser:chosen-character="handleChosenCharacter" />
+    <CalculatorManageBuilds :character="characterChosen" ref="manageBuildsRef" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
+import { storeToRefs } from "pinia";
 import CalculatorCharacterBrowser from "./CalculatorCharacterBrowser.vue";
 import CalculatorCharacterLevel from "./CalculatorCharacterLevel.vue";
+import CharacterBuildStatus from "./CharacterBuildStatus.vue";
+import CalculatorBuildSelect from "./CalculatorBuildSelect.vue";
+import CalculatorManageBuilds from "./CalculatorManageBuilds.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
   type AppRichSelectValue,
@@ -91,6 +119,7 @@ import {
   allCharactersList,
   getCharactersAvailable,
 } from "../characters/characters";
+import { getCharacterBuildStatus } from "../characters/characterBuildStatus";
 import { useCharacterStore } from "../stores/character";
 import { useUiDensity } from "../composables/useUiDensity";
 
@@ -108,6 +137,7 @@ const props = defineProps<Props>();
 const { isCompact } = useUiDensity();
 
 const characterStore = useCharacterStore();
+const { characters } = storeToRefs(characterStore);
 
 const emit = defineEmits<{
   "updated-chosen-character": [key: string];
@@ -118,6 +148,14 @@ const characterBrowserRef = ref<{
   triggerOpenModal: () => void;
   triggerCloseModal: () => void;
 } | null>(null);
+const manageBuildsRef = ref<{
+  triggerOpenModal: () => void;
+  triggerCloseModal: () => void;
+} | null>(null);
+
+function openManageBuilds() {
+  manageBuildsRef.value?.triggerOpenModal();
+}
 
 const charactersList = ref<CharacterPickerList>({ five: [], four: [] });
 const characterChosen = ref<string>("");
@@ -150,6 +188,10 @@ const characterRarity = computed((): number | string => {
   }
   return 5;
 });
+
+const buildStatus = computed(() =>
+  getCharacterBuildStatus(characterChosen.value, characters.value),
+);
 
 const isFavorite = computed(() =>
   characterStore.isFavoriteCharacter(characterChosen.value),
@@ -210,6 +252,10 @@ onMounted(() => {
   position: relative;
   z-index: 1;
   overflow: visible;
+
+  &:has(.character-build-status-dropdown:focus-within) {
+    z-index: 50;
+  }
 }
 .character__selection__form--character {
   margin-bottom: 1rem;
@@ -217,8 +263,8 @@ onMounted(() => {
   max-width: 26rem;
 }
 .character__selection__form--level {
-  --app-rich-select-min-width: 4.75rem;
-  width: 4.75rem;
+  margin-bottom: 1rem;
+  max-width: 26rem;
 }
 .character__selection__form {
   label {
@@ -239,9 +285,19 @@ onMounted(() => {
     }
 
     .character__selection__form--level {
-      flex: 0 0 auto;
+      margin-bottom: 0;
+      flex: 1 1 14rem;
+    }
+
+    &:has(.character-build-status-dropdown:focus-within) {
+      z-index: 50;
     }
   }
+}
+.character__selection__build-status--compact {
+  width: auto;
+  min-width: 9.5rem;
+  flex: 0 0 auto;
 }
 @media (max-width: 640px) {
   .character__selection__form--character {

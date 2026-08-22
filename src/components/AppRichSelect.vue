@@ -160,7 +160,7 @@ const props = withDefaults(
     emptyLabel?: string;
     placeholder?: string;
     disabled?: boolean;
-    variant?: "bordered" | "ghost";
+    variant?: "bordered" | "ghost" | "neutral";
     size?: "sm" | "xs";
     ariaLabel?: string;
     dataTest?: string;
@@ -270,6 +270,9 @@ const triggerClass = computed(() => {
       "text-xs",
       props.size === "xs" ? "py-0.5 px-1" : "py-1 px-2",
     ];
+  }
+  if (props.variant === "neutral") {
+    return ["btn", "btn-neutral", props.size === "xs" ? "btn-xs" : "btn-sm"];
   }
   return [
     "select",

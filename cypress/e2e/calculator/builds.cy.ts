@@ -108,14 +108,20 @@ describe("Calculator multiple builds", () => {
   });
 
   it("keeps characterLevel shared across builds while switching build-scoped data", () => {
-    cy.richSelect("[data-test-character-level]", "80");
+    // 80 is index 11 in the level range's discrete value list — the range
+    // tracks the step index, not the level value itself.
+    cy.get("[data-test-character-level]")
+      .invoke("val", 11)
+      .trigger("input")
+      .trigger("change");
+    cy.get("[data-test-character-level-label]").should("contain.text", "80");
 
     openManageBuilds();
     cy.get("[data-test-manage-builds-new-name]").type("Blank Build");
     cy.get("[data-test-manage-builds-create-blank]").click();
     cy.get("[data-test-manage-builds-close]").click();
 
-    cy.get("[data-test-character-level]").should("contain.text", "80");
+    cy.get("[data-test-character-level-label]").should("contain.text", "80");
   });
 
   it("blocks deleting a character's last remaining build", () => {
