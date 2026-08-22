@@ -305,6 +305,15 @@ onMounted(() => {
     max-width: 100%;
   }
 }
+@media (max-width: 968px) and (min-width: 768px) {
+  .character__selection,
+  html[data-density="compact"] .character__selection {
+    grid-template-columns: 1fr;
+  }
+  .character__selection__left {
+    justify-self: center;
+  }
+}
 @media (max-width: 450px) {
   .character__selection,
   html[data-density="compact"] .character__selection {
