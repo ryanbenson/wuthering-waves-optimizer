@@ -724,9 +724,12 @@ watch(totalPages, (nextTotalPages) => {
   }
 });
 
-// Per-team stats, recomputed fresh (no caching) whenever team data changes
-// — mirrors TeamRotationTeamEditor.vue's own recompute approach. Powers
-// both each card's "Total DMG" line and the cross-team summary/sort below.
+// Per-team stats, powering both each card's "Total DMG" line and the
+// cross-team summary/sort below. Cached per team id and only recomputed
+// when that team's damage-relevant fields actually change (see
+// teamStatsCache below) — a single team edit used to recompute every saved
+// team's damage on every keystroke (#438); now it's a fingerprint-gated
+// cache hit for everything but the team that changed.
 interface TeamSummaryStats {
   normal: number;
   avg: number;
@@ -744,54 +747,142 @@ interface TeamSummaryStats {
 const teamStats = ref<Record<string, TeamSummaryStats>>({});
 let statsComputeToken = 0;
 
-async function recomputeTeamStats() {
-  const token = ++statsComputeToken;
-  const entries = await Promise.all(
-    teams.value.map(async (team: any) => {
-      const result = await calcTeamRotationDamage(
-        {
-          name: team.name,
-          characterIds: team.characterIds,
-          actions: team.actions,
-          duration: team.duration,
-        },
-        characters.value,
-        team.enemyConfig,
-        inventoryEchoes.value,
-      );
-      const strongest = calcStrongestHit(result.actionResults);
-      // calcRotationDps divides by team.duration with no zero/NaN guard —
-      // a team with no duration set (the default for a new team) would
-      // otherwise report Infinity DPS and "win" the leaderboard despite
-      // having the lowest actual damage. Treat "no duration" as "no DPS
-      // to report" instead, same as every other DPS display in the app
-      // already gates on `duration` being truthy.
-      const hasDuration = Number(team.duration) > 0;
-      return [
-        team.id,
-        {
-          normal: result.total.normalDamage ?? 0,
-          avg: result.total.avgDamage ?? 0,
-          crit: result.total.critDamage ?? 0,
-          dpsNormal: hasDuration ? result.dps.normal : 0,
-          dpsAvg: hasDuration ? result.dps.avg : 0,
-          dpsCrit: hasDuration ? result.dps.crit : 0,
-          hitNormal: strongest.normal,
-          hitAvg: strongest.avg,
-          hitCrit: strongest.crit,
-          healing: result.total.healing ?? 0,
-          shield: result.total.shield ?? 0,
-        },
-      ] as const;
-    }),
-  );
-  if (token !== statsComputeToken) {
-    return;
-  }
-  teamStats.value = Object.fromEntries(entries);
+// Fingerprint of just the fields that feed calcTeamRotationDamage, so an
+// edit to unrelated team fields (name, favorite, buildStatus) doesn't count
+// as "changed" and force a recompute.
+function computeTeamFingerprint(team: any): string {
+  return JSON.stringify({
+    characterIds: team.characterIds,
+    actions: team.actions,
+    duration: team.duration,
+    enemyConfig: team.enemyConfig,
+  });
 }
 
-watch(teams, () => void recomputeTeamStats(), { deep: true, immediate: true });
+async function computeStatsForTeam(team: any): Promise<TeamSummaryStats> {
+  const result = await calcTeamRotationDamage(
+    {
+      name: team.name,
+      characterIds: team.characterIds,
+      actions: team.actions,
+      duration: team.duration,
+    },
+    characters.value,
+    team.enemyConfig,
+    inventoryEchoes.value,
+  );
+  const strongest = calcStrongestHit(result.actionResults);
+  // calcRotationDps divides by team.duration with no zero/NaN guard —
+  // a team with no duration set (the default for a new team) would
+  // otherwise report Infinity DPS and "win" the leaderboard despite
+  // having the lowest actual damage. Treat "no duration" as "no DPS
+  // to report" instead, same as every other DPS display in the app
+  // already gates on `duration` being truthy.
+  const hasDuration = Number(team.duration) > 0;
+  return {
+    normal: result.total.normalDamage ?? 0,
+    avg: result.total.avgDamage ?? 0,
+    crit: result.total.critDamage ?? 0,
+    dpsNormal: hasDuration ? result.dps.normal : 0,
+    dpsAvg: hasDuration ? result.dps.avg : 0,
+    dpsCrit: hasDuration ? result.dps.crit : 0,
+    hitNormal: strongest.normal,
+    hitAvg: strongest.avg,
+    hitCrit: strongest.crit,
+    healing: result.total.healing ?? 0,
+    shield: result.total.shield ?? 0,
+  };
+}
+
+// Component-instance cache (not module-level, so it can't go stale across
+// mounts): one entry per team id holding the fingerprint it was computed
+// from, so recomputeTeamStats can tell which teams actually need work.
+const teamStatsCache = new Map<string, { fingerprint: string; stats: TeamSummaryStats }>();
+
+function pruneTeamStatsCache() {
+  const liveIds = new Set(teams.value.map((team: any) => team.id));
+  for (const id of teamStatsCache.keys()) {
+    if (!liveIds.has(id)) {
+      teamStatsCache.delete(id);
+    }
+  }
+}
+
+function publishTeamStats() {
+  teamStats.value = Object.fromEntries(
+    [...teamStatsCache.entries()].map(([id, entry]) => [id, entry.stats]),
+  );
+}
+
+function waitForUiPaint() {
+  return new Promise<void>((resolve) => {
+    requestAnimationFrame(() => {
+      setTimeout(resolve, 0);
+    });
+  });
+}
+
+// How many teams to compute per batch before yielding to the browser, so a
+// first load with lots of teams doesn't block the main thread in one long
+// synchronous burst.
+const STATS_BATCH_SIZE = 5;
+
+async function recomputeTeamStats() {
+  const token = ++statsComputeToken;
+  pruneTeamStatsCache();
+
+  // Only the currently-filtered teams are ever shown (cards or leaderboard),
+  // so that's the whole working set — not every team ever saved.
+  const stale = filteredTeams.value.filter((team: any) => {
+    const cached = teamStatsCache.get(team.id);
+    return !cached || cached.fingerprint !== computeTeamFingerprint(team);
+  });
+
+  if (stale.length === 0) {
+    publishTeamStats();
+    return;
+  }
+
+  for (let i = 0; i < stale.length; i += STATS_BATCH_SIZE) {
+    if (token !== statsComputeToken) {
+      return;
+    }
+    const batch = stale.slice(i, i + STATS_BATCH_SIZE);
+    await Promise.all(
+      batch.map(async (team: any) => {
+        const stats = await computeStatsForTeam(team);
+        teamStatsCache.set(team.id, { fingerprint: computeTeamFingerprint(team), stats });
+      }),
+    );
+    if (token !== statsComputeToken) {
+      return;
+    }
+    publishTeamStats();
+    if (i + STATS_BATCH_SIZE < stale.length) {
+      await waitForUiPaint();
+    }
+  }
+}
+
+// Coalesce same-tick triggers from both watchers below into a single
+// recomputeTeamStats() call, rather than kicking off two overlapping runs
+// (harmless due to statsComputeToken, but wasted duplicate work).
+let recomputeQueued = false;
+function scheduleRecomputeTeamStats() {
+  if (recomputeQueued) {
+    return;
+  }
+  recomputeQueued = true;
+  queueMicrotask(() => {
+    recomputeQueued = false;
+    void recomputeTeamStats();
+  });
+}
+
+watch(teams, scheduleRecomputeTeamStats, { deep: true, immediate: true });
+// A filter change can reveal teams that were never in the previously-visible
+// set (so never cached) without necessarily mutating `teams` itself.
+watch(filteredTeams, scheduleRecomputeTeamStats);
 
 function teamTotalDamage(teamId: string, variant: "normal" | "avg" | "crit"): string {
   const stats = teamStats.value[teamId];
