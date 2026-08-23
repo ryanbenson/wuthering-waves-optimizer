@@ -75,7 +75,8 @@
     </div>
   </dialog>
   <div class="optimizer" v-if="!isLoading">
-    <div class="optimizer__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
+    <div
+      class="optimizer__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Optimizer</h3>
       <div class="join">
         <button
@@ -87,196 +88,216 @@
         </button>
       </div>
     </div>
-    <div class="optimizer-filters">
-      <div class="optimizer-filters__sets">
-        <h3 class="mb-2">Choose echo sets</h3>
-        <div
-          class="echo-filters__sets flex gap-1 flex-wrap"
-          :class="{ 'echo-filters__sets--active': setFilters.length }">
-          <button
-            v-for="set in echoSets"
-            :key="set"
-            @click="toggleSetFilter(set)"
-            class="rounded p-[.3rem]"
-            :class="{ 'btn-active': isSetFilterActive(set) }">
-            <img :src="getSetIcon(set)" :alt="set" class="size-7" />
-          </button>
-        </div>
-        <h3 class="mt-6 mb-2">Choose main echoes</h3>
-        <div class="optimizer-echoes-chosen flex gap-2">
+    <div class="optimizer-filters flex flex-col gap-4">
+      <div
+        class="optimizer-filters__sets card card-compact card-bordered bg-base-100 shadow-sm">
+        <div class="card-body">
+          <h3 class="mb-2">Choose echo sets</h3>
           <div
-            class="card card-bordered card-compact bg-base-100 shadow text-wrap w-[6rem] flex flex-col items-center">
+            class="echo-filters__sets flex gap-1 flex-wrap"
+            :class="{ 'echo-filters__sets--active': setFilters.length }">
+            <button
+              v-for="set in echoSets"
+              :key="set"
+              @click="toggleSetFilter(set)"
+              class="rounded p-[.3rem]"
+              :class="{ 'btn-active': isSetFilterActive(set) }">
+              <img :src="getSetIcon(set)" :alt="set" class="size-7" />
+            </button>
+          </div>
+          <h3 class="mt-6 mb-2">Choose main echoes</h3>
+          <div class="optimizer-echoes-chosen flex gap-2">
             <div
-              @click="openEchoChooser"
-              class="card-body items-center justify-center cursor-pointer">
-              <div class="flex flex-col gap-2 justify-center items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                  class="bi bi-plus-circle"
-                  viewBox="0 0 16 16">
-                  <path
-                    d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                  <path
-                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-                </svg>
-                <span class="text-center">Choose Echo</span>
+              class="card card-bordered card-compact bg-base-100 shadow text-wrap w-[6rem] flex flex-col items-center">
+              <div
+                @click="openEchoChooser"
+                class="card-body items-center justify-center cursor-pointer">
+                <div class="flex flex-col gap-2 justify-center items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill="currentColor"
+                    class="bi bi-plus-circle"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    <path
+                      d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+                  </svg>
+                  <span class="text-center">Choose Echo</span>
+                </div>
+              </div>
+            </div>
+            <div
+              v-for="echo in allMainEchoesData"
+              :key="echo.key"
+              class="card card-bordered card-compact bg-base-100 shadow text-wrap w-[6rem] flex flex-col items-center">
+              <div class="card-body items-center">
+                <div
+                  class="echo__item__image rounded-full border border-solid neutral-content size-12 mb-2 bg-cover cursor-pointer"
+                  :style="{
+                    backgroundImage: `url(${echo.image})`,
+                  }"></div>
+                <div class="text-center text-sm grow">
+                  {{ echo.name }}
+                </div>
+                <div class="card-actions">
+                  <button
+                    class="btn btn-xs btn-outline mt-1"
+                    @click="removeMainEcho(echo.key)">
+                    Remove
+                  </button>
+                </div>
               </div>
             </div>
           </div>
+
           <div
-            v-for="echo in allMainEchoesData"
-            :key="echo.key"
-            class="card card-bordered card-compact bg-base-100 shadow text-wrap w-[6rem] flex flex-col items-center">
-            <div class="card-body items-center">
-              <div
-                class="echo__item__image rounded-full border border-solid neutral-content size-12 mb-2 bg-cover cursor-pointer"
-                :style="{
-                  backgroundImage: `url(${echo.image})`,
-                }"></div>
-              <div class="text-center text-sm grow">
-                {{ echo.name }}
+            v-if="currentSetBonuses.length"
+            class="collapse collapse-arrow my-4"
+            data-test-optimizer-echo-set-buffs-collapse-bar>
+            <input type="checkbox" />
+            <h3 class="collapse-title text-xl" data-test-optimizer-echo-set>
+              Echo set buffs
+            </h3>
+            <div class="collapse-content">
+              <div v-if="!currentSetBonuses.length">
+                <p class="my-6 text-center">
+                  Choose echo sets to configure their set bonuses
+                </p>
               </div>
-              <div class="card-actions">
-                <button
-                  class="btn btn-xs btn-outline mt-1"
-                  @click="removeMainEcho(echo.key)">
-                  Remove
-                </button>
-              </div>
+              <template v-else>
+                <CalculatorOptimizerEchoSet
+                  v-for="setBonus in currentSetBonuses"
+                  :key="setBonus.key"
+                  :set-key="setBonus.key"
+                  :character="character"
+                  :name="setBonus.name"
+                  :passives="setBonus.passives"
+                  :details="setBonus.details"
+                  @updated-optimizer-echo-set-stats="
+                    handleUpdatedSetStats
+                  "></CalculatorOptimizerEchoSet>
+              </template>
             </div>
           </div>
         </div>
+      </div>
 
-        <div
-          v-if="currentSetBonuses.length"
-          class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
-          data-test-optimizer-echo-set-buffs-collapse-bar>
-          <input type="checkbox" />
-          <h3 class="collapse-title text-xl" data-test-optimizer-echo-set>
-            Echo set buffs
-          </h3>
-          <div class="collapse-content">
-            <div v-if="!currentSetBonuses.length">
-              <p class="my-6 text-center">
-                Choose echo sets to configure their set bonuses
-              </p>
+      <div class="card card-compact card-bordered bg-base-100 shadow-sm">
+        <div class="card-body">
+          <div
+            class="collapse collapse-arrow"
+            data-test-optimizer-main-echo-buffs-bar>
+            <input type="checkbox" />
+            <h3
+              class="collapse-title text-xl"
+              data-test-optimizer-main-echo-buffs>
+              Main echo buffs
+            </h3>
+            <div class="collapse-content">
+              <div v-if="!mainEchoes.length">
+                <p class="my-6 text-center">
+                  Choose main echoes to configure their buffs
+                </p>
+              </div>
+              <template v-else>
+                <CalculatorOptimizerMainEcho
+                  v-for="echo in allMainEchoesData"
+                  :key="echo.key"
+                  :character="character"
+                  :echo-key="echo.key"
+                  :name="echo.name"
+                  :echo-class="echo.class"
+                  :image="echo.image"
+                  :sets="echo.sets"
+                  :details="echo.details"
+                  :modifiers="echo.modifiers"
+                  :actions="echo.actions"
+                  :has-stacks="echo.hasStacks"
+                  :min-stacks="echo.minStacks"
+                  :max-stacks="echo.maxStacks"
+                  @updated-main-echo-buffs="
+                    handleUpdatedMainEchoBuffs
+                  "></CalculatorOptimizerMainEcho>
+              </template>
             </div>
-            <template v-else>
-              <CalculatorOptimizerEchoSet
-                v-for="setBonus in currentSetBonuses"
-                :key="setBonus.key"
-                :set-key="setBonus.key"
-                :character="character"
-                :name="setBonus.name"
-                :passives="setBonus.passives"
-                :details="setBonus.details"
-                @updated-optimizer-echo-set-stats="
-                  handleUpdatedSetStats
-                "></CalculatorOptimizerEchoSet>
-            </template>
           </div>
         </div>
       </div>
 
       <div
-        class="collapse collapse-arrow bg-base-100 border-base-300 border my-4"
-        data-test-optimizer-main-echo-buffs-bar>
-        <input type="checkbox" />
-        <h3 class="collapse-title text-xl" data-test-optimizer-main-echo-buffs>
-          Main echo buffs
-        </h3>
-        <div class="collapse-content">
-          <div v-if="!mainEchoes.length">
-            <p class="my-6 text-center">
-              Choose main echoes to configure their buffs
-            </p>
-          </div>
-          <template v-else>
-            <CalculatorOptimizerMainEcho
-              v-for="echo in allMainEchoesData"
-              :key="echo.key"
-              :character="character"
-              :echo-key="echo.key"
-              :name="echo.name"
-              :echo-class="echo.class"
-              :image="echo.image"
-              :sets="echo.sets"
-              :details="echo.details"
-              :modifiers="echo.modifiers"
-              :actions="echo.actions"
-              :has-stacks="echo.hasStacks"
-              :min-stacks="echo.minStacks"
-              :max-stacks="echo.maxStacks"
-              @updated-main-echo-buffs="
-                handleUpdatedMainEchoBuffs
-              "></CalculatorOptimizerMainEcho>
-          </template>
+        class="optimizer-filters__sets card card-compact card-bordered bg-base-100 shadow-sm">
+        <div class="card-body">
+          <h3 class="mb-2">Minimum stats (optional)</h3>
+          <p class="text-sm opacity-70 mb-2 max-w-2xl">
+            Optional. Add one or more stats with a minimum value. Every loadout
+            must meet or exceed all of them — for example Energy Regen 120 and
+            ATK 2500.
+          </p>
+          <CalculatorOptimizerMinStats
+            :character="character"
+            :key="character"
+            :min-stats="minStats"
+            @updated-min-stats="
+              handleUpdatedMinStats
+            "></CalculatorOptimizerMinStats>
         </div>
       </div>
-
-      <div class="optimizer-filters__sets">
-        <h3 class="mt-6 mb-2">Minimum stats (optional)</h3>
-        <p class="text-sm opacity-70 mb-2 max-w-2xl">
-          Optional. Add one or more stats with a minimum value. Every loadout
-          must meet or exceed all of them — for example Energy Regen 120 and
-          ATK 2500.
+    </div>
+    <div
+      class="optimizer-target card card-compact card-bordered bg-base-100 shadow-sm mt-4">
+      <div class="card-body">
+        <h3 class="mb-2">Choose your optimization target</h3>
+        <div class="optimizer-target-options flex gap-2">
+          <CalculatorOptimizerTarget
+            :character="character"
+            :current-optimization-target="optimizationTarget as string | null"
+            @optimizer:target-updated="
+              handleUpdatedTarget
+            "></CalculatorOptimizerTarget>
+          <CalculatorOptimizerDamageType
+            :character="character"
+            :current-damage-type="damageType"
+            @optimizer:damage-type-updated="
+              handleUpdatedDamageType
+            "></CalculatorOptimizerDamageType>
+        </div>
+        <p
+          v-if="mainEchoBuffOverrideActionCount > 0"
+          class="text-warning text-sm mt-2"
+          data-test-optimizer-main-echo-buff-override-warning>
+          {{ mainEchoBuffOverrideActionCount }}
+          action{{ mainEchoBuffOverrideActionCount > 1 ? "s" : "" }} in this
+          rotation override the main echo buff — the Optimizer scores
+          {{ mainEchoBuffOverrideActionCount > 1 ? "them" : "it" }} using your
+          default main echo setting instead. The Character Rotation display
+          reflects the override correctly; only Optimizer results for this
+          rotation don't.
         </p>
-        <CalculatorOptimizerMinStats
-          :character="character"
-          :key="character"
-          :min-stats="minStats"
-          @updated-min-stats="
-            handleUpdatedMinStats
-          "></CalculatorOptimizerMinStats>
       </div>
     </div>
-    <div class="optimizer-target">
-      <h3 class="mt-6 mb-2">Choose your optimization target</h3>
-      <div class="optimizer-target-options flex gap-2">
-        <CalculatorOptimizerTarget
-          :character="character"
-          :current-optimization-target="(optimizationTarget as string | null)"
-          @optimizer:target-updated="
-            handleUpdatedTarget
-          "></CalculatorOptimizerTarget>
-        <CalculatorOptimizerDamageType
-          :character="character"
-          :current-damage-type="damageType"
-          @optimizer:damage-type-updated="
-            handleUpdatedDamageType
-          "></CalculatorOptimizerDamageType>
-      </div>
-      <p
-        v-if="mainEchoBuffOverrideActionCount > 0"
-        class="text-warning text-sm mt-2"
-        data-test-optimizer-main-echo-buff-override-warning>
-        {{ mainEchoBuffOverrideActionCount }}
-        action{{ mainEchoBuffOverrideActionCount > 1 ? "s" : "" }} in this
-        rotation override the main echo buff — the Optimizer scores
-        {{ mainEchoBuffOverrideActionCount > 1 ? "them" : "it" }} using your
-        default main echo setting instead. The Character Rotation display
-        reflects the override correctly; only Optimizer results for this
-        rotation don't.
-      </p>
-    </div>
-    <div class="optimizer-target">
-      <h3 class="mt-6 mb-2">Settings</h3>
-      <div class="optimizer-target-options flex gap-2">
-        <CalculatorOptimizerSettings
-          :character="character"
-          :current-ignore-other-resonantor-echoes="ignoreOtherResonantorEchoes"
-          :current-loadout-format="loadoutFormat"
-          @optimizer:settings-updated="
-            handleUpdatedSettings
-          "></CalculatorOptimizerSettings>
+    <div
+      class="optimizer-target card card-compact card-bordered bg-base-100 shadow-sm mt-4">
+      <div class="card-body">
+        <h3 class="mb-2">Settings</h3>
+        <div class="optimizer-target-options flex gap-2">
+          <CalculatorOptimizerSettings
+            :character="character"
+            :current-ignore-other-resonantor-echoes="
+              ignoreOtherResonantorEchoes
+            "
+            :current-loadout-format="loadoutFormat"
+            @optimizer:settings-updated="
+              handleUpdatedSettings
+            "></CalculatorOptimizerSettings>
+        </div>
       </div>
     </div>
-    <div class="optimizer-actions mt-6 flex gap-4 items-center">
+    <div class="optimizer-actions mt-6 flex flex-col gap-2">
       <button
-        class="btn btn-primary"
+        class="btn btn-primary btn-block"
         @click="handleOptimize"
         :disabled="!isValid"
         data-test-optimizer-optimize-btn>
@@ -298,16 +319,20 @@
         {{ emptyReasonMessage }}
       </p>
       <template v-else>
-        <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <div
+          class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <div
             data-test-optimizer-progress
-            :data-test-optimizer-progress-done="(totalCombos ?? 0) > 0 && (processedCombos ?? 0) >= (totalCombos ?? 0)">
+            :data-test-optimizer-progress-done="
+              (totalCombos ?? 0) > 0 &&
+              (processedCombos ?? 0) >= (totalCombos ?? 0)
+            ">
             Processed
             <span class="font-bold">{{ processedCombos }}</span>
             of
-            <span class="font-bold">{{
-              totalCombos === 0 ? "…" : totalCombos
-            }}</span>
+            <span class="font-bold">
+              {{ totalCombos === 0 ? "…" : totalCombos }}
+            </span>
             loadouts
           </div>
           <div
@@ -454,15 +479,23 @@ const mainEchoBuffOverrideActionCount = computed((): number => {
   const rotationId = target.slice("Rotation:".length);
   const rotations = (currentCharacter.value.rotations ?? []) as Array<{
     id: string;
-    actions?: Array<{ isDisabled?: boolean; advancedConfig?: { mainEchoBuff?: RotationBuffOverride } }>;
+    actions?: Array<{
+      isDisabled?: boolean;
+      advancedConfig?: { mainEchoBuff?: RotationBuffOverride };
+    }>;
   }>;
   const rotation = rotations.find((r) => r.id === rotationId);
   if (!rotation) return 0;
-  const mainEchoDef = mainEchoesData[currentCharacter.value.mainEcho?.echo ?? ""] ?? null;
+  const mainEchoDef =
+    mainEchoesData[currentCharacter.value.mainEcho?.echo ?? ""] ?? null;
   return (rotation.actions ?? []).filter(
     (action) =>
       !action.isDisabled &&
-      mainEchoBuffOverrideDiffersFromCharacter(action.advancedConfig?.mainEchoBuff, currentCharacter.value, mainEchoDef),
+      mainEchoBuffOverrideDiffersFromCharacter(
+        action.advancedConfig?.mainEchoBuff,
+        currentCharacter.value,
+        mainEchoDef,
+      ),
   ).length;
 });
 
