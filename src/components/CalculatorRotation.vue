@@ -313,6 +313,7 @@ import { applyBulkAdvancedConfigOverride, type AdvancedConfigCategory, type Rota
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
 import { buildRotationExportPayload, generateRotationExportFilename } from "../characters/rotationExportImport";
+import { trackEvent } from "../utils/analytics";
 
 const { showToast } = useToast();
 
@@ -574,6 +575,7 @@ function handleRotationExport() {
   const payload = buildRotationExportPayload(currentRotationExportData());
   void navigator.clipboard.writeText(JSON.stringify(payload));
   showToast("Rotation copied to clipboard!", "success");
+  trackEvent("rotation-exported", { via: "clipboard" });
 }
 
 function handleRotationExportFile() {
@@ -589,6 +591,7 @@ function handleRotationExportFile() {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
   showToast("Rotation downloaded!", "success");
+  trackEvent("rotation-exported", { via: "file" });
 }
 
 function onNameChange(e: Event) {

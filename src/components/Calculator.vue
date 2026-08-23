@@ -380,6 +380,7 @@ import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
 import { resolveOptimizerWorkerCount } from "../utils/optimizerPreferences";
+import { trackEvent } from "../utils/analytics";
 import { useRoute } from "vue-router";
 import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
@@ -1734,6 +1735,7 @@ export default defineComponent({
           cleanupWorkers();
           totalCombos.value = totalProcessed;
           stopOptimizerTimer();
+          trackEvent("optimizer-run", { resultsFound: finalResults.length > 0 });
         }
       };
 

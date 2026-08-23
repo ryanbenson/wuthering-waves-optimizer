@@ -5,10 +5,10 @@ import App from "./App.vue";
 import { createWebHistory, createRouter } from "vue-router";
 import FloatingVue from "floating-vue";
 import "floating-vue/dist/style.css";
-import { inject } from "@vercel/analytics";
 import { createPinia } from "pinia";
 import { createPersistedState } from "pinia-plugin-persistedstate";
 import { runMigrations } from "./migrations";
+import { injectAnalytics } from "./utils/analytics";
 
 import HomeView from "./pages/HomeView.vue";
 import OptimizerView from "./pages/OptimizerView.vue";
@@ -40,9 +40,7 @@ const router = createRouter({
   routes,
 });
 
-if (window && !window?.Cypress) {
-  inject();
-}
+injectAnalytics();
 
 console.time("runMigrations");
 // Upgrade persisted localStorage before Pinia hydrates stores from it

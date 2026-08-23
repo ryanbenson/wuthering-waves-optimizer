@@ -1,5 +1,9 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/" }],
+  "rewrites": [
+    { "source": "/assets/init.js", "destination": "https://cloud.umami.is/script.js" },
+    { "source": "/e/api/send", "destination": "https://cloud.umami.is/api/send" },
+    { "source": "/(.*)", "destination": "/" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
