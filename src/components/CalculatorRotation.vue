@@ -273,7 +273,13 @@
               class="btn btn-primary btn-xs"
               @click="handleRotationExport"
               :data-test-rotation-action-export="nameValue">
-              Export
+              Copy to Clipboard
+            </button>
+            <button
+              class="btn btn-primary btn-xs"
+              @click="handleRotationExportFile"
+              :data-test-rotation-action-export-file="nameValue">
+              Download JSON
             </button>
             <button
               class="btn btn-error btn-xs"
@@ -306,6 +312,7 @@ import { useDragReorder } from "../composables/useDragReorder";
 import { applyBulkAdvancedConfigOverride, type AdvancedConfigCategory, type RotationAdvancedConfig } from "../calculator/rotationAdvancedBuffs";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
+import { buildRotationExportPayload, generateRotationExportFilename } from "../characters/rotationExportImport";
 
 const { showToast } = useToast();
 
@@ -552,35 +559,36 @@ function addAction() {
   });
 }
 
-function removeIdsFromExport(rotationData: Record<string, unknown>) {
-  const rotation = JSON.parse(JSON.stringify(rotationData)) as {
-    id?: string;
-    actions: Array<{
-      id?: string;
-      buffs?: Array<{ id?: string }>;
-    }>;
+function currentRotationExportData() {
+  return {
+    name: nameValue.value ?? props.name,
+    description: descriptionValue.value ?? props.description,
+    duration: durationValue.value,
+    echo: echoValue.value,
+    echoRank: mainEchoRank.value,
+    actions: actionsList.value,
   };
-  delete rotation.id;
-  rotation.actions.forEach((action) => {
-    delete action.id;
-    action.buffs?.forEach((buff) => {
-      delete buff.id;
-    });
-  });
-  return rotation;
 }
 
 function handleRotationExport() {
-  const rotationData = {
-    id: props.id,
-    name: nameValue.value ?? props.name,
-    description: descriptionValue.value ?? props.description,
-    actions: actionsList.value,
-    echo: echoValue.value,
-  };
-  const cleanRotationJson = removeIdsFromExport(rotationData);
-  void navigator.clipboard.writeText(JSON.stringify(cleanRotationJson));
+  const payload = buildRotationExportPayload(currentRotationExportData());
+  void navigator.clipboard.writeText(JSON.stringify(payload));
   showToast("Rotation copied to clipboard!", "success");
+}
+
+function handleRotationExportFile() {
+  const rotationData = currentRotationExportData();
+  const payload = buildRotationExportPayload(rotationData);
+  const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = generateRotationExportFilename(rotationData.name);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast("Rotation downloaded!", "success");
 }
 
 function onNameChange(e: Event) {

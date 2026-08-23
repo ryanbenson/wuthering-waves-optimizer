@@ -154,3 +154,88 @@ describe("Calculator Rotations", () => {
       .should("be.disabled");
   });
 });
+
+describe("Calculator Rotations export/import", () => {
+  beforeEach(() => {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        cy.stub(win.navigator.clipboard, "writeText").as("writeText").resolves();
+      },
+    });
+    cy.richSelect("[data-test-character-select]", "Carlotta");
+    cy.get(".character__self-buffs").should("be.visible");
+    cy.get('[data-test-calculator-nav="rotations"]').click();
+  });
+
+  function openImportPanel() {
+    cy.get('[data-test-rotations-action="import"]').click();
+  }
+
+  it("exports a rotation's config to the clipboard and re-imports it as a separate rotation", () => {
+    cy.get('[data-test-rotations-action="create"]').click();
+    cy.get('[data-test-rotation-item-by-name="Untitled Rotation"]').click();
+    cy.get('[data-test-rotation-name-input="Untitled Rotation"]')
+      .clear()
+      .type("Export Test");
+
+    cy.get('[data-test-rotation-item-by-name="Export Test"]').within(() => {
+      cy.get('[data-test-rotation-action-export="Export Test"]').click();
+    });
+    cy.get("@writeText").should("have.been.calledOnce");
+
+    cy.get("@writeText").then((stub: any) => {
+      const exported = stub.getCall(0).args[0] as string;
+      const parsed = JSON.parse(exported);
+      expect(parsed.meta.type).to.equal("characterRotation");
+      expect(parsed.data.name).to.equal("Export Test");
+      expect(parsed.data).not.to.have.property("id");
+
+      openImportPanel();
+      cy.get("[data-test-rotations-import-text]").type(exported, {
+        parseSpecialCharSequences: false,
+      });
+      cy.get("[data-test-rotations-import-text-button]").click();
+
+      // Import created a second, separate rotation with the same name.
+      cy.get('[data-test-rotation-item-by-name="Export Test"]').should("have.length", 2);
+    });
+  });
+
+  it("imports a rotation from an uploaded .json file only after clicking Import", () => {
+    openImportPanel();
+
+    const payload = JSON.stringify({
+      meta: { version: "1", source: "WutheringTools", type: "characterRotation" },
+      data: { name: "From File", description: "", duration: null, echo: null, echoRank: null, actions: [] },
+    });
+    cy.get("[data-test-rotations-import-file]").selectFile(
+      {
+        contents: Cypress.Buffer.from(payload),
+        fileName: "from-file.json",
+        mimeType: "application/json",
+      },
+      { force: true },
+    );
+
+    // Selecting a file alone must not import it — only clicking Import does.
+    cy.get('[data-test-rotation-item-by-name="From File"]').should("not.exist");
+    cy.get("[data-test-rotations-import-file-button]").click();
+
+    cy.get('[data-test-rotation-item-by-name="From File"]').should("be.visible");
+  });
+
+  it("shows a clear error and doesn't create a rotation for unrecognizable input", () => {
+    openImportPanel();
+    cy.get("[data-test-rotations-import-text]").type("not json at all");
+    cy.get("[data-test-rotations-import-text-button]").click();
+    cy.get('[data-test-rotation-item-by-name="Imported Rotation"]').should("not.exist");
+  });
+
+  it("the download button doesn't error", () => {
+    cy.get('[data-test-rotations-action="create"]').click();
+    cy.get('[data-test-rotation-item-by-name="Untitled Rotation"]').click();
+    cy.get('[data-test-rotation-item-by-name="Untitled Rotation"]').within(() => {
+      cy.get('[data-test-rotation-action-export-file="Untitled Rotation"]').click();
+    });
+  });
+});
