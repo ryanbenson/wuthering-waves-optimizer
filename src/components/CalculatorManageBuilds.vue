@@ -66,6 +66,35 @@
                 @click="handleEquip(build.id)">
                 Equip
               </button>
+              <div class="dropdown dropdown-end shrink-0">
+                <div
+                  tabindex="0"
+                  role="button"
+                  class="btn btn-ghost btn-xs"
+                  :data-test-manage-builds-export="build.id">
+                  Export
+                </div>
+                <ul
+                  tabindex="0"
+                  class="dropdown-content menu menu-sm bg-base-200 rounded-box z-10 mt-1 w-48 border border-white/5 p-2 shadow-2xl outline-1 outline-black/5">
+                  <li>
+                    <button
+                      type="button"
+                      :data-test-manage-builds-export-clipboard="build.id"
+                      @click="handleExportClipboard(build)">
+                      Copy to Clipboard
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      :data-test-manage-builds-export-file="build.id"
+                      @click="handleExportFile(build)">
+                      Download JSON
+                    </button>
+                  </li>
+                </ul>
+              </div>
               <button
                 type="button"
                 class="btn btn-ghost btn-xs shrink-0"
@@ -125,6 +154,56 @@
             @click="handleCreate('blank')">
             Start Blank
           </button>
+          <button
+            type="button"
+            class="btn btn-neutral btn-sm"
+            data-test-manage-builds-toggle-import
+            @click="isImportOpen = !isImportOpen">
+            Import Build
+          </button>
+        </div>
+
+        <div
+          v-if="isImportOpen"
+          class="card card-bordered card-compact bg-base-200 mt-3"
+          data-test-manage-builds-import>
+          <div class="card-body gap-3">
+            <div>
+              <p class="text-xs opacity-70 mb-1">Paste a build exported from this modal.</p>
+              <textarea
+                v-model="importText"
+                class="textarea textarea-bordered textarea-sm w-full"
+                rows="3"
+                data-test-manage-builds-import-text></textarea>
+              <button
+                type="button"
+                class="btn btn-primary btn-sm mt-2"
+                data-test-manage-builds-import-text-button
+                @click="handleImportFromText">
+                Import
+              </button>
+            </div>
+            <div>
+              <p class="text-xs opacity-70 mb-1">Or upload a build .json file.</p>
+              <div class="flex items-center gap-2">
+                <input
+                  ref="importFileInputRef"
+                  type="file"
+                  accept=".json"
+                  class="file-input file-input-bordered file-input-sm flex-1 min-w-0"
+                  data-test-manage-builds-import-file
+                  @change="handleImportFileSelected" />
+                <button
+                  type="button"
+                  class="btn btn-primary btn-sm"
+                  :disabled="!importFile"
+                  data-test-manage-builds-import-file-button
+                  @click="handleImportFile">
+                  Import
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </template>
     </div>
@@ -135,6 +214,12 @@
 import { computed, ref } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useConfirm } from "../composables/useConfirm";
+import { useToast } from "../composables/useToast";
+import {
+  buildBuildExportPayload,
+  generateBuildExportFilename,
+  parseBuildImportPayload,
+} from "../characters/buildExportImport";
 import CalculatorBuildPreviewRow from "./CalculatorBuildPreviewRow.vue";
 
 defineOptions({ name: "CalculatorManageBuilds" });
@@ -166,9 +251,14 @@ const emit = defineEmits<{
 
 const characterStore = useCharacterStore();
 const { confirm } = useConfirm();
+const { showToast } = useToast();
 
 const newBuildName = ref("");
 const isOpen = ref(false);
+const isImportOpen = ref(false);
+const importText = ref("");
+const importFile = ref<File | null>(null);
+const importFileInputRef = ref<HTMLInputElement | null>(null);
 
 const builds = computed(() => characterStore.getBuilds(props.character));
 const activeBuildId = computed(() => characterStore.getActiveBuildId(props.character));
@@ -205,6 +295,75 @@ async function handleDelete(buildId: string, buildName: string) {
 function handleCreate(from: "active" | "blank") {
   characterStore.createBuild(props.character, newBuildName.value, { from });
   newBuildName.value = "";
+}
+
+function handleExportClipboard(build: { name: string }) {
+  const payload = buildBuildExportPayload(build);
+  void navigator.clipboard.writeText(JSON.stringify(payload)).then(
+    () => showToast(`"${build.name}" has been copied to your clipboard.`, "success"),
+    () => showToast("Couldn't copy to your clipboard.", "error"),
+  );
+}
+
+function handleExportFile(build: { name: string }) {
+  const payload = buildBuildExportPayload(build);
+  const blob = new Blob([JSON.stringify(payload)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = generateBuildExportFilename(build.name);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`"${build.name}" has been downloaded.`, "success");
+}
+
+function importBuildData(data: ReturnType<typeof parseBuildImportPayload>) {
+  const build = characterStore.importBuild(props.character, data);
+  showToast(`"${build.name}" has been imported.`, "success");
+  isImportOpen.value = false;
+  importText.value = "";
+  importFile.value = null;
+  if (importFileInputRef.value) {
+    importFileInputRef.value.value = "";
+  }
+}
+
+function handleImportFromText() {
+  if (!importText.value.trim()) {
+    showToast("Paste a build's exported JSON first.", "error");
+    return;
+  }
+  try {
+    importBuildData(parseBuildImportPayload(importText.value));
+  } catch (e) {
+    showToast(e instanceof Error ? e.message : "Failed to import that build.", "error");
+  }
+}
+
+function handleImportFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  importFile.value = input.files?.[0] ?? null;
+}
+
+function handleImportFile() {
+  const file = importFile.value;
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const raw = e.target?.result;
+    if (typeof raw !== "string") {
+      showToast("Couldn't read that file.", "error");
+      return;
+    }
+    try {
+      importBuildData(parseBuildImportPayload(raw));
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Failed to import that build.", "error");
+    }
+  };
+  reader.readAsText(file);
 }
 
 function triggerOpenModal() {
