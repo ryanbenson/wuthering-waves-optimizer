@@ -24,18 +24,45 @@
   </div>
   <div
     v-if="isImportOpen"
-    class="card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
-    <div class="card-body">
-      <h2 class="card-title">Import rotation</h2>
-      <p>Import a rotation in JSON form below.</p>
-      <textarea
-        v-model="importRotationData"
-        name="importRotation"
-        id="importRotaton"
-        class="textarea textarea-bordered"></textarea>
-      <button class="btn btn-primary" @click="handleImportRotation">
-        Confirm Import
-      </button>
+    class="card card-bordered card-compact bg-base-100 shadow mb-2"
+    data-test-rotations-import>
+    <div class="card-body gap-4">
+      <div>
+        <h2 class="card-title">Import from text</h2>
+        <p>Paste a rotation exported from this page below.</p>
+        <textarea
+          v-model="importRotationData"
+          name="importRotation"
+          id="importRotaton"
+          class="textarea textarea-bordered w-full mt-2"
+          data-test-rotations-import-text></textarea>
+        <button
+          class="btn btn-primary btn-sm mt-2"
+          data-test-rotations-import-text-button
+          @click="handleImportRotation">
+          Import
+        </button>
+      </div>
+      <div>
+        <h2 class="card-title">Import from file</h2>
+        <p>Upload a rotation .json file.</p>
+        <div class="flex items-center gap-2 mt-2">
+          <input
+            ref="importRotationFileInputRef"
+            type="file"
+            accept=".json"
+            class="file-input file-input-bordered file-input-sm flex-1 min-w-0"
+            data-test-rotations-import-file
+            @change="handleImportRotationFileSelected" />
+          <button
+            class="btn btn-primary btn-sm"
+            :disabled="!importRotationFile"
+            data-test-rotations-import-file-button
+            @click="handleImportRotationFile">
+            Import
+          </button>
+        </div>
+      </div>
     </div>
   </div>
   <div v-if="isPresetRotationsOpen">
@@ -115,6 +142,7 @@ import {
   type CharacterCalculationContext,
   type TeamEnemyConfig,
 } from "../calculator/buildCharacterContext";
+import { parseRotationImportPayload } from "../characters/rotationExportImport";
 
 const { showToast } = useToast();
 
@@ -156,6 +184,8 @@ const inventoryStore = useInventoryStore();
 const { echoes: inventoryEchoes } = storeToRefs(inventoryStore);
 
 const importRotationData = ref<string | null>(null);
+const importRotationFile = ref<File | null>(null);
+const importRotationFileInputRef = ref<HTMLInputElement | null>(null);
 const isImportOpen = ref(false);
 const isPresetRotationsOpen = ref(false);
 const rotations = ref<RotationRow[]>([]);
@@ -294,31 +324,58 @@ async function handleCreateRotation() {
   rotationRefs.get(id)?.toggleOpen();
 }
 
+async function importRotationFromData(rotationData: RotationRow) {
+  const processedImportedRotation = addIdsToImportedRotation(rotationData);
+  processedImportedRotation.order = rotations.value.length;
+  const next = [...rotations.value, processedImportedRotation];
+  isImportOpen.value = false;
+  await persistRotations(next);
+  showToast(`"${processedImportedRotation.name}" has been imported.`, "success");
+}
+
 async function handleImportRotation() {
   try {
-    const rotationData = JSON.parse(
-      importRotationData.value ?? "",
-    ) as RotationRow;
-    const processedImportedRotation = addIdsToImportedRotation(rotationData);
-    processedImportedRotation.order = rotations.value.length;
-    const next = [...rotations.value, processedImportedRotation];
+    const parsed = parseRotationImportPayload(importRotationData.value ?? "");
+    await importRotationFromData({ id: "", order: 0, ...parsed } as RotationRow);
     importRotationData.value = null;
-    isImportOpen.value = false;
-    await persistRotations(next);
-  } catch {
-    showToast("Rotation data is not valid", "error");
+  } catch (e) {
+    showToast(e instanceof Error ? e.message : "Rotation data is not valid", "error");
   }
+}
+
+function handleImportRotationFileSelected(event: Event) {
+  const input = event.target as HTMLInputElement;
+  importRotationFile.value = input.files?.[0] ?? null;
+}
+
+function handleImportRotationFile() {
+  const file = importRotationFile.value;
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const raw = e.target?.result;
+    if (typeof raw !== "string") {
+      showToast("Couldn't read that file.", "error");
+      return;
+    }
+    try {
+      const parsed = parseRotationImportPayload(raw);
+      await importRotationFromData({ id: "", order: 0, ...parsed } as RotationRow);
+      importRotationFile.value = null;
+      if (importRotationFileInputRef.value) {
+        importRotationFileInputRef.value.value = "";
+      }
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Rotation data is not valid", "error");
+    }
+  };
+  reader.readAsText(file);
 }
 
 async function handleImportPreset(preset: RotationPreset) {
   try {
     const rotationData = JSON.parse(JSON.stringify(preset.data)) as RotationRow;
-    const processedImportedRotation = addIdsToImportedRotation(rotationData);
-    processedImportedRotation.order = rotations.value.length;
-    const next = [...rotations.value, processedImportedRotation];
-    importRotationData.value = null;
-    isImportOpen.value = false;
-    await persistRotations(next);
+    await importRotationFromData(rotationData);
   } catch {
     showToast("Rotation data is not valid", "error");
   }
