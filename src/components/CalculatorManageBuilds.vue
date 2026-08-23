@@ -215,6 +215,7 @@ import { computed, ref } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useConfirm } from "../composables/useConfirm";
 import { useToast } from "../composables/useToast";
+import { trackEvent } from "../utils/analytics";
 import {
   buildBuildExportPayload,
   generateBuildExportFilename,
@@ -295,12 +296,16 @@ async function handleDelete(buildId: string, buildName: string) {
 function handleCreate(from: "active" | "blank") {
   characterStore.createBuild(props.character, newBuildName.value, { from });
   newBuildName.value = "";
+  trackEvent("build-saved", { from });
 }
 
 function handleExportClipboard(build: { name: string }) {
   const payload = buildBuildExportPayload(build);
   void navigator.clipboard.writeText(JSON.stringify(payload)).then(
-    () => showToast(`"${build.name}" has been copied to your clipboard.`, "success"),
+    () => {
+      showToast(`"${build.name}" has been copied to your clipboard.`, "success");
+      trackEvent("build-exported", { via: "clipboard" });
+    },
     () => showToast("Couldn't copy to your clipboard.", "error"),
   );
 }
@@ -317,11 +322,13 @@ function handleExportFile(build: { name: string }) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
   showToast(`"${build.name}" has been downloaded.`, "success");
+  trackEvent("build-exported", { via: "file" });
 }
 
 function importBuildData(data: ReturnType<typeof parseBuildImportPayload>) {
   const build = characterStore.importBuild(props.character, data);
   showToast(`"${build.name}" has been imported.`, "success");
+  trackEvent("build-imported");
   isImportOpen.value = false;
   importText.value = "";
   importFile.value = null;

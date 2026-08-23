@@ -143,6 +143,7 @@ import {
   type TeamEnemyConfig,
 } from "../calculator/buildCharacterContext";
 import { parseRotationImportPayload } from "../characters/rotationExportImport";
+import { trackEvent } from "../utils/analytics";
 
 const { showToast } = useToast();
 
@@ -331,6 +332,7 @@ async function importRotationFromData(rotationData: RotationRow) {
   isImportOpen.value = false;
   await persistRotations(next);
   showToast(`"${processedImportedRotation.name}" has been imported.`, "success");
+  trackEvent("rotation-imported");
 }
 
 async function handleImportRotation() {

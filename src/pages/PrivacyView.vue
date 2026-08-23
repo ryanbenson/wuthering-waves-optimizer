@@ -6,9 +6,7 @@
     <p>
       We use privacy-first analytics, so no personal or identifiable information
       is stored or collected about you and we don't use cookies for analytics.
-      <a href="https://vercel.com/docs/analytics" rel="noreferrer">
-        Vercel Analytics
-      </a>
+      <a href="https://umami.is" rel="noreferrer"> Umami </a>
     </p>
     <h2>Changes</h2>
     <p>
