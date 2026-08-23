@@ -30,8 +30,8 @@ const weaponInfo: WeaponInfo = {
         "1": 0.04,
         "2": 0.05,
         "3": 0.06,
-        "4": 0.7,
-        "5": 0.8,
+        "4": 0.07,
+        "5": 0.08,
       },
       details:
         "Nature's Order: Crit. DMG is increased by 4%/5%/6%/7%/8%, up to 24%/30%/36%/42%/48%",
