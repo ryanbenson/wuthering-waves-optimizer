@@ -88,6 +88,44 @@ describe("useCharacterStore builds", () => {
     });
   });
 
+  describe("importBuild", () => {
+    it("creates a new build from the given fields, with a fresh id, and equips it", () => {
+      const store = useCharacterStore();
+      store.setCharacterData("Carlotta", { weapon: "SwordOfVoid" });
+      store.ensureCharacterBuilds("Carlotta");
+      const defaultId = store.getActiveBuildId("Carlotta");
+
+      const build = store.importBuild("Carlotta", { name: "Imported", weapon: "AnotherWeapon" });
+
+      expect(build.id).not.toBe(defaultId);
+      expect(build.name).toBe("Imported");
+      expect(build.weapon).toBe("AnotherWeapon");
+      expect(store.getBuilds("Carlotta")).toHaveLength(2);
+      expect(store.getActiveBuildId("Carlotta")).toBe(build.id);
+      expect(store.characters.Carlotta.weapon).toBe("AnotherWeapon");
+    });
+
+    it("defaults a missing name to 'Imported Build'", () => {
+      const store = useCharacterStore();
+      store.ensureCharacterBuilds("Carlotta");
+
+      const build = store.importBuild("Carlotta", { weapon: "SwordOfVoid" });
+
+      expect(build.name).toBe("Imported Build");
+    });
+
+    it("creates the character record when it doesn't exist yet", () => {
+      const store = useCharacterStore();
+
+      const build = store.importBuild("Carlotta", { name: "Imported", weapon: "SwordOfVoid" });
+
+      // ensureCharacterBuilds synthesizes a "Default build" first, so the
+      // imported build is the second entry, but it's the one left equipped.
+      expect(store.characters.Carlotta.builds).toHaveLength(2);
+      expect(store.getActiveBuildId("Carlotta")).toBe(build.id);
+    });
+  });
+
   describe("renameBuild", () => {
     it("renames the given build", () => {
       const store = useCharacterStore();

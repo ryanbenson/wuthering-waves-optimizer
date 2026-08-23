@@ -141,3 +141,97 @@ describe("Calculator multiple builds", () => {
     cy.get("[data-test-manage-builds-delete]").should("be.disabled");
   });
 });
+
+describe("Calculator build export/import", () => {
+  beforeEach(() => {
+    cy.visit("/", {
+      onBeforeLoad(win) {
+        cy.stub(win.navigator.clipboard, "writeText").as("writeText").resolves();
+      },
+    });
+    cy.richSelect("[data-test-character-select]", "Carlotta");
+    cy.get(".character__self-buffs").should("be.visible");
+  });
+
+  function openManageBuilds() {
+    cy.get('[data-test-calculator-nav="character"]').click();
+    cy.get("[data-test-manage-builds-open]").click();
+  }
+
+  it("exports a build's config to the clipboard and re-imports it as a separate build", () => {
+    openManageBuilds();
+    cy.get('[data-test-manage-builds-row="Default build"]').within(() => {
+      cy.get("[data-test-manage-builds-export]").click();
+    });
+    cy.get('[data-test-manage-builds-row="Default build"]').within(() => {
+      cy.get("[data-test-manage-builds-export-clipboard]").click({ force: true });
+    });
+    cy.get("@writeText").should("have.been.calledOnce");
+
+    cy.get("@writeText").then((stub: any) => {
+      const exported = stub.getCall(0).args[0] as string;
+      const parsed = JSON.parse(exported);
+      expect(parsed.meta.type).to.equal("characterBuild");
+      expect(parsed.data.name).to.equal("Default build");
+
+      cy.get("[data-test-manage-builds-toggle-import]").click();
+      cy.get("[data-test-manage-builds-import-text]").type(exported, {
+        parseSpecialCharSequences: false,
+      });
+      cy.get("[data-test-manage-builds-import-text-button]").click();
+
+      // Import created a second, separate build (same name — the export
+      // preserves it — but it's the one now Active, not the original).
+      cy.get("[data-test-manage-builds-row]").should("have.length", 2);
+      cy.get('[data-test-manage-builds-row="Default build"]').should("have.length", 2);
+      cy.contains('[data-test-manage-builds-row="Default build"]', "Active").should(
+        "have.length",
+        1,
+      );
+    });
+  });
+
+  it("imports a build from an uploaded .json file", () => {
+    openManageBuilds();
+    cy.get("[data-test-manage-builds-toggle-import]").click();
+
+    const payload = JSON.stringify({
+      meta: { version: "1", source: "WutheringTools", type: "characterBuild" },
+      data: { name: "From File", weapon: "SwordOfVoid" },
+    });
+    cy.get("[data-test-manage-builds-import-file]").selectFile(
+      {
+        contents: Cypress.Buffer.from(payload),
+        fileName: "from-file.json",
+        mimeType: "application/json",
+      },
+      { force: true },
+    );
+    // Selecting a file alone must not import it — only clicking Import does.
+    cy.get("[data-test-manage-builds-row]").should("have.length", 1);
+    cy.get("[data-test-manage-builds-import-file-button]").click();
+
+    cy.get("[data-test-manage-builds-row]").should("have.length", 2);
+    cy.get('[data-test-manage-builds-row="From File"]').within(() => {
+      cy.contains("Active").should("be.visible");
+    });
+  });
+
+  it("shows a clear error and doesn't create a build for unrecognizable input", () => {
+    openManageBuilds();
+    cy.get("[data-test-manage-builds-toggle-import]").click();
+    cy.get("[data-test-manage-builds-import-text]").type("not json at all");
+    cy.get("[data-test-manage-builds-import-text-button]").click();
+    cy.get("[data-test-manage-builds-row]").should("have.length", 1);
+  });
+
+  it("the download button doesn't error", () => {
+    openManageBuilds();
+    cy.get('[data-test-manage-builds-row="Default build"]').within(() => {
+      cy.get("[data-test-manage-builds-export]").click();
+    });
+    cy.get('[data-test-manage-builds-row="Default build"]').within(() => {
+      cy.get("[data-test-manage-builds-export-file]").click({ force: true });
+    });
+  });
+});

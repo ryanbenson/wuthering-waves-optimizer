@@ -168,6 +168,29 @@ export const useCharacterStore = defineStore("character", {
       this.equipBuild(characterId, build.id);
       return build;
     },
+    /**
+     * Creates a new build from parsed import data (see
+     * `src/characters/buildExportImport.ts`'s `parseBuildImportPayload`) and
+     * immediately equips it, matching `createBuild`'s behavior — always with
+     * a fresh id so an imported build never collides with (or overwrites) an
+     * existing one.
+     */
+    importBuild(characterId, buildData) {
+      this.ensureCharacterBuilds(characterId);
+      const character = this.characters[characterId];
+      const { name, ...fields } = buildData ?? {};
+
+      const build = {
+        id: randomString(12),
+        name: name || "Imported Build",
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        ...fields,
+      };
+      character.builds.push(build);
+      this.equipBuild(characterId, build.id);
+      return build;
+    },
     renameBuild(characterId, buildId, name) {
       if (!name) {
         return;
