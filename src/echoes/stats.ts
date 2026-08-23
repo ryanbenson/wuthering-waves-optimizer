@@ -229,7 +229,7 @@ export type EchoSubStatsSource = {
   echoSubStatsValue5?: unknown;
 };
 
-function getEchoSubStatEntries(
+export function getEchoSubStatEntries(
   echo: EchoSubStatsSource,
 ): Array<[string, number]> {
   return [

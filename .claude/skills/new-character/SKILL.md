@@ -30,6 +30,8 @@ The command ends by printing a `Manual review needed (N items):` checklist. Each
 
 Work through every item before moving on. If the checklist was empty, still skim `buffs.ts` and `resonanceChains.ts` — an empty checklist means the *shape* matched expectations, not that every value was hand-verified.
 
+**Optional:** a curated default substat-priority weight profile for the new character in `src/characters/substatPriorities.ts` (issue #451's Substat Score feature) — not required, the new character falls back to a neutral weight profile until curated. Only add one if you have a credible source (e.g. matching the existing entries' Tacet Lab provenance); never guess. If you do, only use keys from `subStats` in `src/echoes/stats.ts` — "Healing Bonus" in particular is an echo *main* stat, not a valid substat weight key.
+
 ## 3. Hand-write custom modifiers using the pattern catalog
 
 Buffs the CLI can't infer (multiplier overrides, talent replacements, stacking conditions, stat-based scaling) need to be written by hand. `docs/creating-new-character.md` has a catalog of the common modifier shapes with real examples — base talent multiplier, additive multiplier, talent override, base talent addition, specific-skill multiplier, stat-based additional buffs, etc. Find the closest existing pattern there or in a similar character's `buffs.ts`/`resonanceChains.ts` before inventing a new modifier key.

@@ -19,6 +19,10 @@
       "></CalculatorSaveEchoesPreset>
     <CalculatorEchoesPresetsGuide
       ref="echoesPresetsGuide"></CalculatorEchoesPresetsGuide>
+    <CalculatorEchoRatingGuide
+      ref="echoRatingGuide"></CalculatorEchoRatingGuide>
+    <EchoRatingWeightsEditor
+      ref="echoRatingWeightsEditor"></EchoRatingWeightsEditor>
     <Toast
       v-if="showCostOverCapToast"
       variant="error"
@@ -42,10 +46,25 @@
           @click="handleOpenPresetsGuide">
           <span class="text-primary">Presets Guide</span>
         </button>
+        <button class="btn btn-sm join-item" @click="handleOpenWeightsEditor">
+          Customize Weights
+        </button>
+        <button class="btn btn-sm join-item" @click="handleOpenRatingGuide">
+          <span class="text-primary">Rating Guide</span>
+        </button>
       </div>
     </div>
-    <div v-if="echoPresetName" class="badge badge-primary badge-outline mb-4">
-      Preset: {{ echoPresetName }}
+    <div class="flex flex-wrap items-center gap-2 mb-4">
+      <div v-if="echoPresetName" class="badge badge-primary badge-outline">
+        Preset: {{ echoPresetName }}
+      </div>
+      <div
+        v-if="teamSubstatScoreRollup"
+        class="badge text-nowrap"
+        :class="teamSubstatScoreRollupBadgeClass"
+        v-tooltip="'Average Substat Score across this character\'s equipped echoes'">
+        Substat Score: {{ Math.round(teamSubstatScoreRollup.percent) }}%{{ teamSubstatScoreRollup.provisional ? "*" : "" }}
+      </div>
     </div>
     <div class="echo__list">
       <CalculatorEcho
@@ -137,10 +156,14 @@ import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import CalculatorEchoesPresets from "./CalculatorEchoesPresets.vue";
 import CalculatorSaveEchoesPreset from "./CalculatorSaveEchoesPreset.vue";
 import CalculatorEchoesPresetsGuide from "./CalculatorEchoesPresetsGuide.vue";
+import CalculatorEchoRatingGuide from "./CalculatorEchoRatingGuide.vue";
+import EchoRatingWeightsEditor from "./EchoRatingWeightsEditor.vue";
 import CalculatorMainEchoBuff from "./CalculatorMainEchoBuff.vue";
 import Toast from "./Toast.vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { getRatingBadgeClasses } from "../composables/useEchoRating";
+import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
 import { randomString } from "../utils/strings.ts";
 
 const MAX_ECHO_COST = 12;
@@ -160,6 +183,8 @@ const echoesBrowser = ref<any>(null);
 const echoesPresets = ref<any>(null);
 const echoesSavePreset = ref<any>(null);
 const echoesPresetsGuide = ref<any>(null);
+const echoRatingGuide = ref<any>(null);
+const echoRatingWeightsEditor = ref<any>(null);
 const echoRefs = ref<Record<number, any>>({});
 
 const setBonusOnePiece = ref<Record<string, any>>({});
@@ -210,6 +235,15 @@ const echoName = computed(() => (mainEcho.value ? getEchoData(mainEcho.value)?.n
 
 
 const totalEchoCost = computed(() => echoCosts.value.reduce((total, cost) => total + cost, 0));
+
+const { rollup: teamSubstatScoreRollup } = useTeamSubstatScoreRollup(
+  () => props.character,
+);
+const teamSubstatScoreRollupBadgeClass = computed(() =>
+  teamSubstatScoreRollup.value
+    ? getRatingBadgeClasses(teamSubstatScoreRollup.value.color)
+    : null,
+);
 const isTotalCostOverCap = computed(() => totalEchoCost.value > MAX_ECHO_COST);
 const costOverCapToastDismissed = ref(false);
 const showCostOverCapToast = computed(
@@ -389,6 +423,15 @@ function handleOpenEchoesPreset() {
 }
 function handleOpenPresetsGuide() {
   echoesPresetsGuide.value?.triggerOpenModal?.();
+}
+function handleOpenRatingGuide() {
+  echoRatingGuide.value?.triggerOpenModal?.();
+}
+function handleOpenWeightsEditor() {
+  echoRatingWeightsEditor.value?.triggerOpenModal?.({
+    mode: "character",
+    characterId: props.character,
+  });
 }
 function handleOpenSaveEchoPreset() {
   if (echoPresetId.value) echoesSavePreset.value?.setPresetId?.(echoPresetId.value);

@@ -78,3 +78,25 @@ describe("CalculatorEchoCard incomplete echo indicator", () => {
     expect(hasIndicator(container)).toBe(true);
   });
 });
+
+describe("CalculatorEchoCard rating badges", () => {
+  it("shows the Echo Rating grade but not a Substat Score when no characterId is given", () => {
+    setActivePinia(createPinia());
+    const { getByText, queryByText } = renderCard(baseProps());
+    // perfect-tier substats aren't used here, so just assert *a* grade renders
+    expect(getByText(/^[EDCBAS]+\*?$/)).toBeTruthy();
+    expect(queryByText(/^Score \d+%/)).toBeNull();
+  });
+
+  it("shows a Substat Score badge when characterId is given", () => {
+    setActivePinia(createPinia());
+    const { getByText } = renderCard(baseProps({ characterId: "Camellya" }));
+    expect(getByText(/^Score \d+%\*?$/)).toBeTruthy();
+  });
+
+  it("marks the grade provisional (asterisk) when fewer than 5 substats are revealed", () => {
+    setActivePinia(createPinia());
+    const { getByText } = renderCard(baseProps({ echoSubStatsType5: "none" }));
+    expect(getByText(/\*$/)).toBeTruthy();
+  });
+});

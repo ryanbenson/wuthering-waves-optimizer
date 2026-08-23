@@ -2,8 +2,9 @@
  * A character's stored data (`characters[id]` in the `character` store) is
  * split into two categories:
  *
- * - Shared/permanent fields (`characterLevel`, `talents`) — progression
- *   facts about the character itself, unaffected by which build is active.
+ * - Shared/permanent fields (`characterLevel`, `talents`, `substatWeights`) —
+ *   progression facts and preferences about the character itself, unaffected
+ *   by which build is active.
  * - Everything else — the build. This is a denylist rather than an
  *   allowlist deliberately: any new field added to a character record in
  *   the future is automatically build-scoped without this file needing an
@@ -16,7 +17,7 @@
  * data.
  */
 
-const SHARED_FIELD_KEYS = ["characterLevel", "talents"] as const;
+const SHARED_FIELD_KEYS = ["characterLevel", "talents", "substatWeights"] as const;
 const BOOKKEEPING_KEYS = ["builds", "activeBuildId"] as const;
 const BUILD_METADATA_KEYS = ["id", "name", "createdAt", "updatedAt"] as const;
 

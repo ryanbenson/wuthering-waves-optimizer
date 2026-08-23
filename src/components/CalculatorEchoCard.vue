@@ -60,6 +60,19 @@
             :class="rollValueBadgeClass">
             RV {{ echoRollValue }}%
           </span>
+          <span
+            class="echo__item__cost badge text-nowrap text-sm"
+            :class="echoRatingBadgeClass"
+            v-tooltip="'Echo Rating — overall substat roll quality'">
+            {{ echoRating.grade }}{{ echoRating.provisional ? "*" : "" }}
+          </span>
+          <span
+            v-if="substatScore"
+            class="echo__item__cost badge text-nowrap text-sm"
+            :class="substatScoreBadgeClass"
+            v-tooltip="'Substat Score — this echo\'s rolls weighted for this character'">
+            {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+          </span>
         </template>
         <div class="echo__item__stats mb-2 relative mt-2">
           <div class="echo__item__sub-stats flex flex-col gap-2 items-center">
@@ -165,10 +178,21 @@
                   RV {{ echoRollValue }}%
                 </span>
                 <span
+                  class="echo__item__cost badge text-nowrap"
+                  :class="echoRatingBadgeClass">
+                  {{ echoRating.grade }}{{ echoRating.provisional ? "*" : "" }}
+                </span>
+                <span
+                  v-if="substatScore"
+                  class="echo__item__cost badge text-nowrap"
+                  :class="substatScoreBadgeClass">
+                  Score {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+                </span>
+                <span
                   class="echo__item__explain-rv-cv"
                   v-tooltip="{
                     content:
-                      'CV = Crit value. That\'s the amount of Crit you have on your echo. <br>RV = Roll value. That\'s how lucky your substat rolls were. The higher the value your rolls, the higher the RV',
+                      'CV = Crit value. That\'s the amount of Crit you have on your echo. <br>RV = Roll value. That\'s how lucky your substat rolls were. The higher the value your rolls, the higher the RV. <br>The letter grade is the Echo Rating (E-SSS), a substat quality grade. An asterisk means the echo has fewer than 5 revealed substats. <br>Score % is the Substat Score, this echo\'s rolls weighted for the equipped character\'s stat priorities.',
                     html: true,
                   }">
                   <svg
@@ -266,6 +290,7 @@
 import { getEchoSetIconByType } from "../echoes/stats";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 import { useEchoCardStats } from "../composables/useEchoCardStats";
+import { useEchoRating } from "../composables/useEchoRating";
 
 const props = withDefaults(
   defineProps<{
@@ -287,10 +312,13 @@ const props = withDefaults(
     echoSubStatsValue5: number | string;
     hideInventory?: boolean;
     compact?: boolean;
+    // When set, also shows the per-character weighted Substat Score badge.
+    characterId?: string | null;
   }>(),
   {
     hideInventory: false,
     compact: false,
+    characterId: null,
   },
 );
 
@@ -321,6 +349,9 @@ const {
   getReadableSubStatLabel,
   getSubStatIconByType,
 } = useEchoCardStats(props);
+
+const { echoRating, echoRatingBadgeClass, substatScore, substatScoreBadgeClass } =
+  useEchoRating(props);
 
 function getEchoSetIcon(type: string) {
   return getEchoSetIconByType(type);

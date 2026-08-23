@@ -8,6 +8,8 @@ import {
 } from "../echoes/echoLoadout";
 import { randomString } from "../utils/strings";
 import { extractBuildFields, applyBuildFields, omitBuildMetadata } from "../characters/buildFields";
+import { getCuratedSubstatWeights } from "../characters/substatPriorities";
+import { resolveSubstatWeights } from "../echoes/rating";
 
 export const useCharacterStore = defineStore("character", {
   state: () => ({
@@ -39,6 +41,16 @@ export const useCharacterStore = defineStore("character", {
       return (characterId) => {
         const character = state.characters?.[characterId];
         return character?.builds?.find((build) => build.id === character.activeBuildId) ?? null;
+      };
+    },
+    // Effective substat priority weights for a character: curated defaults
+    // (if this character has one) layered under the user's own overrides,
+    // falling back to the neutral profile otherwise.
+    getCharacterSubstatWeights: (state) => {
+      return (characterId) => {
+        const curated = getCuratedSubstatWeights(characterId);
+        const override = state.characters?.[characterId]?.substatWeights;
+        return resolveSubstatWeights(curated, override);
       };
     },
   },
@@ -111,6 +123,16 @@ export const useCharacterStore = defineStore("character", {
     setCharacterEchoes(characterId, echoes) {
       if (this.characters[characterId]) {
         this.characters[characterId].echoes = echoes;
+      }
+    },
+    setCharacterSubstatWeights(characterId, weights) {
+      if (this.characters[characterId]) {
+        this.characters[characterId].substatWeights = weights;
+      }
+    },
+    resetCharacterSubstatWeights(characterId) {
+      if (this.characters[characterId]) {
+        delete this.characters[characterId].substatWeights;
       }
     },
     applyEchoLoadout(characterId, options = {}) {

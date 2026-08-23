@@ -277,7 +277,8 @@
                 :key="index"
                 class="shrink-0"
                 style="height: 185px"
-                v-bind="echo" />
+                v-bind="echo"
+                :character-id="props.character" />
             </div>
             <div class="build-card__watermark shrink-0 text-right" data-test-build-card-watermark>
               WUTHERINGTOOLS.COM
