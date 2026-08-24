@@ -49,8 +49,14 @@ describe("useTeamSubstatScoreRollup", () => {
     });
 
     const { rollup } = useTeamSubstatScoreRollup(() => "Carlotta");
-    expect(rollup.value?.percent).toBe(100);
-    expect(rollup.value?.grade).toBe("SSS");
+    // Carlotta's curated weights are CritRate 4, CritDMG 2.5, ATK 2,
+    // ResonanceSkillDMGBonus 1.5, ATK_FLAT 1. These echoes have HP/DEF
+    // (weight 0 for her) instead of her other 2 priority stats, so even
+    // perfectly rolled they can't reach 100% — scored against her ideal
+    // echo (8×(4+2.5+2+1.5) + 4×1 [ATK_FLAT capped at tier 4] = 84), not
+    // just against the substats these particular echoes happen to have.
+    expect(rollup.value?.percent).toBeCloseTo(80.95, 1);
+    expect(rollup.value?.grade).toBe("SS");
     expect(rollup.value?.provisional).toBe(true); // only 2 of 5 slots equipped
   });
 

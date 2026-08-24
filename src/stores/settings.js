@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { merge } from "lodash";
-import { resolveSubstatWeights } from "../echoes/rating";
+import { resolveSubstatWeights, DEFAULT_SUBSTAT_WEIGHTS } from "../echoes/rating";
 
 export const useSettingsStore = defineStore("settings", {
   state: () => ({
@@ -11,7 +11,8 @@ export const useSettingsStore = defineStore("settings", {
     // Global substat priority profile used for the always-visible Echo
     // Rating. Falls back to the neutral (all-1) default whenever the user
     // hasn't customized it.
-    echoRatingWeights: (state) => resolveSubstatWeights(state.config?.echoRatingWeights),
+    echoRatingWeights: (state) =>
+      resolveSubstatWeights(DEFAULT_SUBSTAT_WEIGHTS, state.config?.echoRatingWeights),
   },
   actions: {
     setConfig(config) {

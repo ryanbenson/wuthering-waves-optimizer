@@ -80,18 +80,20 @@ describe("CalculatorEchoCard incomplete echo indicator", () => {
 });
 
 describe("CalculatorEchoCard rating badges", () => {
-  it("shows the Echo Rating grade but not a Substat Score when no characterId is given", () => {
+  it("shows the generic Echo Rating grade with a percent when no characterId is given", () => {
     setActivePinia(createPinia());
-    const { getByText, queryByText } = renderCard(baseProps());
-    // perfect-tier substats aren't used here, so just assert *a* grade renders
-    expect(getByText(/^[EDCBAS]+\*?$/)).toBeTruthy();
-    expect(queryByText(/^Score \d+%/)).toBeNull();
+    const { getByText } = renderCard(baseProps());
+    // perfect-tier substats aren't used here, so just assert *a* grade+percent renders
+    expect(getByText(/^[EDCBAS]+ \d+%\*?$/)).toBeTruthy();
   });
 
-  it("shows a Substat Score badge when characterId is given", () => {
+  it("shows only one grade+percent badge when characterId is given (the character-specific one, not the generic one too)", () => {
     setActivePinia(createPinia());
-    const { getByText } = renderCard(baseProps({ characterId: "Camellya" }));
-    expect(getByText(/^Score \d+%\*?$/)).toBeTruthy();
+    const { getAllByText } = renderCard(baseProps({ characterId: "Camellya" }));
+    // both badges render in the same "{grade} {percent}%" shape, so the
+    // meaningful check is that only one exists at all — the generic Echo
+    // Rating badge must not also render alongside the character-specific one
+    expect(getAllByText(/^[EDCBAS]+ \d+%\*?$/)).toHaveLength(1);
   });
 
   it("marks the grade provisional (asterisk) when fewer than 5 substats are revealed", () => {

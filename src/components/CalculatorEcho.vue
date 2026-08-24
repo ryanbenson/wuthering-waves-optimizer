@@ -740,25 +740,21 @@
                   CV {{ formattedCritValue }}%
                 </span>
                 <span
+                  v-if="SHOW_ROLL_VALUE_BADGE"
                   class="echo__item__rv badge text-nowrap"
                   :class="rollValueBadgeClass">
                   RV {{ echoRollValue }}%
                 </span>
                 <span
-                  class="echo__item__rating badge text-nowrap"
-                  :class="echoRatingBadgeClass">
-                  {{ echoRating.grade }}{{ echoRating.provisional ? "*" : "" }}
-                </span>
-                <span
                   class="echo__item__substat-score badge text-nowrap"
                   :class="substatScoreBadgeClass">
-                  Score {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+                  {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
                 </span>
                 <span
                   class="echo__item__explain-rv-cv"
                   v-tooltip="{
                     content:
-                      'CV = Crit value. That\'s the amount of Crit you have on your echo. <br>RV = Roll value. That\'s how lucky your substat rolls were. The higher the value your rolls, the higher the RV. <br>The letter grade is the Echo Rating (E-SSS), a substat quality grade. An asterisk means the echo has fewer than 5 revealed substats. <br>Score % is the Substat Score, this echo\'s rolls weighted for this character\'s stat priorities.',
+                      'CV = Crit value. That\'s the amount of Crit you have on your echo. <br>The letter grade + percent is the Substat Score, this echo\'s rolls weighted for this character\'s stat priorities. An asterisk means the echo has fewer than 5 revealed substats.',
                     html: true,
                   }">
                   <svg
@@ -863,8 +859,9 @@ import {
   getEchoSetIconByType,
   echoSetLabelMap,
   getRollValue,
+  SHOW_ROLL_VALUE_BADGE,
 } from "../echoes/stats";
-import { getEchoRatingGrade, getSubstatScoreGrade } from "../echoes/rating";
+import { getSubstatScoreGrade } from "../echoes/rating";
 import { getRatingBadgeClasses } from "../composables/useEchoRating";
 import {
   mainEchoesData,
@@ -1522,9 +1519,9 @@ const rollValueBadgeClass = computed(() => {
   return [bgColor, color, borderColor, boxShadow].filter(Boolean) as string[];
 });
 
-// Same EchoSubStatsSource shape getEchoRatingGrade/getSubstatScoreGrade
-// expect, built from the local computed refs above so it stays reactive to
-// live edits (a plain snapshot object would go stale after the first render).
+// Same EchoSubStatsSource shape getSubstatScoreGrade expects, built from
+// the local computed refs above so it stays reactive to live edits (a plain
+// snapshot object would go stale after the first render).
 const ratingSubStatsSource = computed(() => ({
   echoSubStatsType1: echoSubStatsType1.value,
   echoSubStatsValue1: echoSubStatsValue1.value,
@@ -1538,12 +1535,6 @@ const ratingSubStatsSource = computed(() => ({
   echoSubStatsValue5: echoSubStatsValue5.value,
 }));
 
-const echoRating = computed(() =>
-  getEchoRatingGrade(ratingSubStatsSource.value, settingsStore.echoRatingWeights),
-);
-const echoRatingBadgeClass = computed(() =>
-  getRatingBadgeClasses(echoRating.value.color),
-);
 const substatScore = computed(() =>
   getSubstatScoreGrade(
     ratingSubStatsSource.value,

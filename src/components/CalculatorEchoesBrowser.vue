@@ -162,6 +162,7 @@
                 :echo-sub-stats-value-4="echo.echoSubStatsValue4"
                 :echo-sub-stats-type-5="echo.echoSubStatsType5"
                 :echo-sub-stats-value-5="echo.echoSubStatsValue5"
+                :character-id="props.character"
                 :compact="isCompact">
                 <div
                   class="echoes__item__foot flex gap-2 justify-between items-center">

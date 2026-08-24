@@ -62,8 +62,8 @@
         v-if="teamSubstatScoreRollup"
         class="badge text-nowrap"
         :class="teamSubstatScoreRollupBadgeClass"
-        v-tooltip="'Average Substat Score across this character\'s equipped echoes'">
-        Substat Score: {{ Math.round(teamSubstatScoreRollup.percent) }}%{{ teamSubstatScoreRollup.provisional ? "*" : "" }}
+        v-tooltip="'Build Score — average Substat Score across this character\'s equipped echoes'">
+        Build Score: {{ teamSubstatScoreRollup.grade }} {{ Math.round(teamSubstatScoreRollup.percent) }}%{{ teamSubstatScoreRollup.provisional ? "*" : "" }}
       </div>
     </div>
     <div class="echo__list">

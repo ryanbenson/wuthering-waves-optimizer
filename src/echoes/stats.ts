@@ -216,6 +216,14 @@ export const ECHO_CV_MAX = 42;
 /** Theoretical max RV from five perfect substat rolls. */
 export const ECHO_RV_MAX = 500;
 
+/**
+ * Temporary UI toggle (issue #451 follow-up): RV is redundant with the new
+ * Echo Rating/Substat Score system, so its badge and range filter are
+ * hidden for now. Flip back to `true` to re-show them — the underlying RV
+ * computation/data is untouched, this only gates display.
+ */
+export const SHOW_ROLL_VALUE_BADGE = false;
+
 export type EchoSubStatsSource = {
   echoSubStatsType1?: string | null;
   echoSubStatsValue1?: unknown;

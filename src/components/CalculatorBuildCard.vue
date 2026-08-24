@@ -125,6 +125,17 @@
                 :transform="characterData.customPortraitTransform" />
               <div class="build-card__identity-scrim absolute inset-0 pointer-events-none"></div>
 
+              <div
+                v-if="substatScoreRollup"
+                class="absolute top-4 right-4 pointer-events-none"
+                data-test-build-card-build-score>
+                <span
+                  class="badge badge-lg text-nowrap"
+                  :class="substatScoreRollupBadgeClass">
+                  Build Score: {{ substatScoreRollup.grade }} {{ Math.round(substatScoreRollup.percent) }}%{{ substatScoreRollup.provisional ? "*" : "" }}
+                </span>
+              </div>
+
               <div class="absolute top-4 left-4 min-w-[88%] max-w-[88%] pointer-events-none">
                 <template v-if="characterBasic">
                   <h2
@@ -301,6 +312,8 @@ import { buildCharacterCalculationContext } from "../calculator/buildCharacterCo
 import { computeTotalTuneBreakBoost } from "../calculator/stats";
 import { filterBuffsForStance, resolveActiveStance } from "../calculator/stances";
 import { useToast } from "../composables/useToast";
+import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
+import { getRatingBadgeClasses } from "../composables/useEchoRating";
 import {
   subStatIconMap,
   subStatLabelMap,
@@ -590,6 +603,15 @@ const echoSlots = computed(() => {
     return inventoryEcho ?? slot;
   });
 });
+
+const { rollup: substatScoreRollup } = useTeamSubstatScoreRollup(
+  () => props.character,
+);
+const substatScoreRollupBadgeClass = computed(() =>
+  substatScoreRollup.value
+    ? getRatingBadgeClasses(substatScoreRollup.value.color)
+    : null,
+);
 
 // Tallies equipped echoes by set key and surfaces every set that meets its
 // own bonus threshold (usually 2pc/5pc, but some sets — e.g. Lucy's

@@ -63,11 +63,50 @@ describe("useEchoRating", () => {
       const characterStore = useCharacterStore();
       characterStore.setCharacterData("Camellya", {});
       const { substatScore } = useEchoRating(makeProps({ characterId: "Camellya" }));
-      // perfect CritRate/CritDMG/ATK roll, Camellya weights those highly ->
-      // near-max score even though HP/DEF (weight 1, neutral default) are
-      // also perfect rolls
-      expect(substatScore.value?.percent).toBe(100);
-      expect(substatScore.value?.grade).toBe("SSS");
+      // Camellya's curated weights are CritRate 3, CritDMG 4, ATK 2,
+      // BasicAttackDMGBonus 1, ATK_FLAT 1. This echo only has 3 of her
+      // weighted stats (CritRate/CritDMG/ATK, perfectly rolled) — HP/DEF
+      // (weight 0 for her) fill the other 2 slots instead of
+      // BasicAttackDMGBonus/ATK_FLAT, so it can't reach 100%: it's scored
+      // against her ideal 5-substat echo (8×(3+4+2+1) + 4×1 [ATK_FLAT only
+      // has 4 possible tiers] = 84), not just against the substats it
+      // happens to have.
+      expect(substatScore.value?.percent).toBeCloseTo(85.71, 1);
+      expect(substatScore.value?.grade).toBe("SS");
+    });
+
+    it("penalizes an echo missing the character's single highest-priority substat entirely", () => {
+      // Regression test for a real reported bug: the old formula's
+      // denominator only summed the weight of substats *present on this
+      // echo*, so a missing top-priority stat was excluded from both sides
+      // of the ratio instead of correctly dragging the score down — see
+      // docs/adr/0012 for the full investigation (including why this
+      // deliberately diverges from a reference site's ~32.1% for the same
+      // echo: that reference scores flat substats — ATK_FLAT here — as a
+      // constant "3" regardless of actual roll granularity, including for
+      // HP_FLAT which has the same 8-tier range as any %-stat; this
+      // implementation uses each substat's own real tier count instead).
+      const characterStore = useCharacterStore();
+      characterStore.setCharacterData("Aemeath", {});
+      const { substatScore } = useEchoRating(
+        makeProps({
+          characterId: "Aemeath",
+          echoSubStatsType1: "CritDMG",
+          echoSubStatsValue1: 15,
+          echoSubStatsType2: "ATK",
+          echoSubStatsValue2: 8.6,
+          echoSubStatsType3: "EnergyRegen",
+          echoSubStatsValue3: 10,
+          echoSubStatsType4: "ResonanceLiberationDMGBonus",
+          echoSubStatsValue4: 10.9,
+          echoSubStatsType5: "ResonanceSkillDMGBonus",
+          echoSubStatsValue5: 11.6,
+        }),
+      );
+      // no Crit Rate substat at all, despite it being tied for Aemeath's
+      // single highest-weighted stat
+      expect(substatScore.value?.percent).toBeCloseTo(31.77, 1);
+      expect(substatScore.value?.grade).toBe("C");
     });
 
     it("reflects a per-character weight override", () => {
@@ -90,6 +129,10 @@ describe("useEchoRating", () => {
       const { substatScore } = useEchoRating(
         makeProps({ characterId: "SomeUncuratedCharacter" }),
       );
+      // Under the neutral (all-1) profile, the ideal-echo ceiling picks the
+      // 5 highest weight×tierCount stats — 5 of the eleven 8-tier stats
+      // (HP_FLAT included; only ATK_FLAT/DEF_FLAT are capped at tier 4) —
+      // giving 8×5=40, exactly matching a perfect 5-substat echo.
       expect(substatScore.value?.percent).toBe(100);
     });
   });

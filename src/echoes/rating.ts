@@ -8,10 +8,20 @@ export const SUBSTAT_WEIGHT_STEP = 0.5;
 export type SubstatWeights = Partial<Record<string, number>>;
 
 // Neutral profile (every substat weighted equally) — reproduces the plain
-// 1-8 point-per-substat scale with no bias, used whenever no global or
-// character-specific weight profile has been customized yet.
+// 1-8 point-per-substat scale with no bias. Used as the global Echo Rating's
+// baseline (no customization yet) and as a character's baseline when that
+// character has no curated profile at all (no basis to assume any stat
+// matters less than another yet).
 export const DEFAULT_SUBSTAT_WEIGHTS: Record<string, number> = Object.fromEntries(
   subStats.map((stat) => [stat, 1]),
+);
+
+// Every stat ignored by default. Used as a curated character's baseline: a
+// curated profile is a deliberate, complete statement of what matters for
+// that character, so a stat it doesn't mention should count for nothing,
+// not the neutral default.
+export const ZERO_SUBSTAT_WEIGHTS: Record<string, number> = Object.fromEntries(
+  subStats.map((stat) => [stat, 0]),
 );
 
 export function clampSubstatWeight(weight: number): number {
@@ -22,12 +32,16 @@ export function clampSubstatWeight(weight: number): number {
   return Math.round(clamped / SUBSTAT_WEIGHT_STEP) * SUBSTAT_WEIGHT_STEP;
 }
 
-// Layers weight sources onto the neutral default, later sources winning —
-// e.g. resolveSubstatWeights(curatedCharacterDefaults, userOverrides).
+// Layers weight sources onto a baseline, later sources winning — e.g.
+// resolveSubstatWeights(ZERO_SUBSTAT_WEIGHTS, curatedCharacterDefaults, userOverrides).
+// The baseline is caller-chosen (DEFAULT_SUBSTAT_WEIGHTS for the global Echo
+// Rating and for a character with no curated profile at all; ZERO_SUBSTAT_WEIGHTS
+// for a curated character, so stats its curated profile omits count as 0, not neutral).
 export function resolveSubstatWeights(
+  baseline: Record<string, number>,
   ...sources: Array<SubstatWeights | undefined | null>
 ): Record<string, number> {
-  const resolved: Record<string, number> = { ...DEFAULT_SUBSTAT_WEIGHTS };
+  const resolved: Record<string, number> = { ...baseline };
   for (const source of sources) {
     if (!source) continue;
     for (const [stat, weight] of Object.entries(source)) {
@@ -41,9 +55,19 @@ function getWeightFor(weights: SubstatWeights, stat: string): number {
   return weights[stat] ?? DEFAULT_SUBSTAT_WEIGHTS[stat] ?? 1;
 }
 
-// 1-8 roll tier: position of the rolled value within that substat's 8
-// possible values (matches the same subStatsTable used for RV, just
-// reindexed as a point scale instead of a 30-100 score).
+// The number of possible roll values for a substat — most have 8, but
+// ATK_FLAT/DEF_FLAT only have 4 (see subStatsTable). HP_FLAT has the full 8,
+// same granularity/probability distribution as any %-based substat, despite
+// also being a "flat" stat — the two other flat stats' narrower range isn't
+// a property of "flatness," just of those two specific substats, so it's
+// derived per-stat from the real roll table rather than assumed uniformly.
+function getSubstatTierCount(stat: string): number {
+  return subStatsTable[stat]?.length ?? 8;
+}
+
+// 1-N roll tier (N = getSubstatTierCount): position of the rolled value
+// within that substat's possible values (matches the same subStatsTable
+// used for RV, just reindexed as a point scale instead of a 30-100 score).
 export function getSubstatRollTier(
   stat: string,
   value: number | string,
@@ -53,6 +77,12 @@ export function getSubstatRollTier(
   const target = String(Number(value));
   const index = tiers.findIndex((tierValue) => String(tierValue) === target);
   return index === -1 ? 0 : index + 1;
+}
+
+// The achievable tier range for a stat — used to compute weighted min/max
+// possible totals.
+function getSubstatTierBounds(stat: string): { min: number; max: number } {
+  return { min: 1, max: getSubstatTierCount(stat) };
 }
 
 export interface EchoRatingPoints {
@@ -78,10 +108,11 @@ export function getEchoRatingPoints(
     if (tier === 0) continue;
     filledCount += 1;
     const weight = getWeightFor(weights, type);
+    const bounds = getSubstatTierBounds(type);
     rawPoints += tier;
     weightedPoints += tier * weight;
-    minPossible += 1 * weight;
-    maxPossible += 8 * weight;
+    minPossible += bounds.min * weight;
+    maxPossible += bounds.max * weight;
   }
 
   return { rawPoints, weightedPoints, minPossible, maxPossible, filledCount };
@@ -146,6 +177,7 @@ export interface EchoRating {
   grade: string;
   color: RatingColor;
   points: number; // normalized onto the 5-40 scale
+  percent: number; // points re-expressed as 0-100%, for display alongside the letter
   provisional: boolean;
 }
 
@@ -157,10 +189,13 @@ export function getEchoRatingGrade(
   const points = getEchoRatingPoints(echo, weights);
   const normalized = normalizeToPointScale(points);
   const band = findGrade(ECHO_RATING_GRADES, normalized);
+  const percent =
+    ((normalized - POINT_SCALE_MIN) / (POINT_SCALE_MAX - POINT_SCALE_MIN)) * 100;
   return {
     grade: band.grade,
     color: band.color,
     points: normalized,
+    percent,
     provisional: points.filledCount < 5,
   };
 }
@@ -183,17 +218,38 @@ export function getGradeForSubstatScorePercent(
   return { grade: band.grade, color: band.color };
 }
 
+// The best achievable weighted point total across any possible 5-substat
+// echo for a given weight profile: of the 13 possible substats, the 5 that
+// would contribute the most if each were rolled at *its own* real maximum
+// tier (weight × that stat's tier count — 8 for most, 4 for ATK_FLAT/
+// DEF_FLAT). This is the Substat Score's fixed denominator — an echo is
+// scored against the character's ideal echo, not just against itself.
+// Scoring against only the substats this particular echo happens to have
+// would silently exclude a missing top-priority stat from both sides of the
+// ratio, so an echo could hit 100% while missing the character's single
+// most important substat entirely. Picking the top 5 by weight × own tier
+// count (rather than by weight alone) correctly values a low-granularity
+// stat like ATK_FLAT/DEF_FLAT below an equally-weighted 8-tier stat, since
+// no real echo can roll it any higher than tier 4 regardless of weight.
+function getBestPossibleWeightedTotal(weights: SubstatWeights): number {
+  return subStats
+    .map((stat) => (weights[stat] ?? 0) * getSubstatTierCount(stat))
+    .sort((a, b) => b - a)
+    .slice(0, 5)
+    .reduce((sum, potential) => sum + potential, 0);
+}
+
 // The per-character weighted Substat Score (0-100%).
 export function getSubstatScoreGrade(
   echo: EchoSubStatsSource,
   characterWeights: SubstatWeights,
 ): SubstatScore {
   const points = getEchoRatingPoints(echo, characterWeights);
+  const maxPossible = getBestPossibleWeightedTotal(characterWeights);
   const percent =
-    points.maxPossible <= 0
+    maxPossible <= 0
       ? 0
-      : Math.min(Math.max(points.weightedPoints / points.maxPossible, 0), 1) *
-        100;
+      : Math.min(Math.max(points.weightedPoints / maxPossible, 0), 1) * 100;
   const band = findGrade(SUBSTAT_SCORE_GRADES, percent);
   return {
     grade: band.grade,

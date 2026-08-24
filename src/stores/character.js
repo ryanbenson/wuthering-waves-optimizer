@@ -9,7 +9,7 @@ import {
 import { randomString } from "../utils/strings";
 import { extractBuildFields, applyBuildFields, omitBuildMetadata } from "../characters/buildFields";
 import { getCuratedSubstatWeights } from "../characters/substatPriorities";
-import { resolveSubstatWeights } from "../echoes/rating";
+import { resolveSubstatWeights, DEFAULT_SUBSTAT_WEIGHTS, ZERO_SUBSTAT_WEIGHTS } from "../echoes/rating";
 
 export const useCharacterStore = defineStore("character", {
   state: () => ({
@@ -44,13 +44,17 @@ export const useCharacterStore = defineStore("character", {
       };
     },
     // Effective substat priority weights for a character: curated defaults
-    // (if this character has one) layered under the user's own overrides,
-    // falling back to the neutral profile otherwise.
+    // (if this character has one) layered under the user's own overrides.
+    // A curated profile is a deliberate, complete statement of what matters
+    // for that character, so stats it doesn't mention default to 0 (ignored),
+    // not the neutral 1 — an uncurated character has no such basis, so it
+    // falls back to the neutral profile instead.
     getCharacterSubstatWeights: (state) => {
       return (characterId) => {
         const curated = getCuratedSubstatWeights(characterId);
         const override = state.characters?.[characterId]?.substatWeights;
-        return resolveSubstatWeights(curated, override);
+        const baseline = curated ? ZERO_SUBSTAT_WEIGHTS : DEFAULT_SUBSTAT_WEIGHTS;
+        return resolveSubstatWeights(baseline, curated, override);
       };
     },
   },

@@ -14,20 +14,22 @@
           CV {{ formattedCritValue }}%
         </span>
         <span
+          v-if="SHOW_ROLL_VALUE_BADGE"
           class="badge badge-md text-nowrap"
           :class="rollValueBadgeClass">
           RV {{ echoRollValue }}%
         </span>
         <span
-          class="badge badge-md text-nowrap"
-          :class="echoRatingBadgeClass">
-          {{ echoRating.grade }}{{ echoRating.provisional ? "*" : "" }}
-        </span>
-        <span
           v-if="substatScore"
           class="badge badge-md text-nowrap"
           :class="substatScoreBadgeClass">
-          {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+          {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+        </span>
+        <span
+          v-else
+          class="badge badge-md text-nowrap"
+          :class="echoRatingBadgeClass">
+          {{ echoRating.grade }}{{ echoRating.provisional ? "*" : "" }}
         </span>
       </div>
       <div class="absolute top-1 right-1 flex items-center gap-1">
@@ -111,7 +113,7 @@
 </template>
 
 <script setup lang="ts">
-import { getEchoSetIconByType } from "../echoes/stats";
+import { getEchoSetIconByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import { useEchoCardStats } from "../composables/useEchoCardStats";
 import { useEchoRating } from "../composables/useEchoRating";
 

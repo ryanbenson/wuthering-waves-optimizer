@@ -16,7 +16,7 @@
         v-model:model-min="cvMin"
         v-model:model-max="cvMax" />
     </div>
-    <div class="echo-cv-rv-filters__group min-w-[12rem] flex-1 max-w-sm">
+    <div v-if="SHOW_ROLL_VALUE_BADGE" class="echo-cv-rv-filters__group min-w-[12rem] flex-1 max-w-sm">
       <div class="flex justify-between items-baseline gap-2 text-xs mb-1">
         <span class="font-medium opacity-80">RV</span>
         <span class="tabular-nums opacity-70">{{ rvMin }} – {{ rvMax }}</span>
@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { ECHO_CV_MAX, ECHO_RV_MAX } from "../echoes/stats";
+import { ECHO_CV_MAX, ECHO_RV_MAX, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import RangeMinMax from "./input/RangeMinMax.vue";
 
 const cvCeiling = ECHO_CV_MAX;

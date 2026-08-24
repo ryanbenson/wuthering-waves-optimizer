@@ -282,7 +282,10 @@ describe("useCharacterStore builds", () => {
       const weights = store.getCharacterSubstatWeights("Camellya");
       expect(weights.CritRate).toBe(3);
       expect(weights.CritDMG).toBe(4);
-      expect(weights.DEF).toBe(1); // untouched stat keeps the neutral default
+      // a curated profile is a deliberate, complete statement of what
+      // matters for that character — a stat it doesn't mention is 0
+      // (ignored), not the neutral 1 an uncurated character would use
+      expect(weights.DEF).toBe(0);
     });
 
     it("setCharacterSubstatWeights overrides the curated default", () => {

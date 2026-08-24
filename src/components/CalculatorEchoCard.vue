@@ -56,22 +56,24 @@
             CV {{ formattedCritValue }}%
           </span>
           <span
+            v-if="SHOW_ROLL_VALUE_BADGE"
             class="echo__item__cost badge text-nowrap text-sm"
             :class="rollValueBadgeClass">
             RV {{ echoRollValue }}%
-          </span>
-          <span
-            class="echo__item__cost badge text-nowrap text-sm"
-            :class="echoRatingBadgeClass"
-            v-tooltip="'Echo Rating — overall substat roll quality'">
-            {{ echoRating.grade }}{{ echoRating.provisional ? "*" : "" }}
           </span>
           <span
             v-if="substatScore"
             class="echo__item__cost badge text-nowrap text-sm"
             :class="substatScoreBadgeClass"
             v-tooltip="'Substat Score — this echo\'s rolls weighted for this character'">
-            {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+            {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+          </span>
+          <span
+            v-else
+            class="echo__item__cost badge text-nowrap text-sm"
+            :class="echoRatingBadgeClass"
+            v-tooltip="'Echo Rating — overall substat roll quality'">
+            {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
           </span>
         </template>
         <div class="echo__item__stats mb-2 relative mt-2">
@@ -173,26 +175,28 @@
                   CV {{ formattedCritValue }}%
                 </span>
                 <span
+                  v-if="SHOW_ROLL_VALUE_BADGE"
                   class="echo__item__cost badge text-nowrap"
                   :class="rollValueBadgeClass">
                   RV {{ echoRollValue }}%
                 </span>
                 <span
-                  class="echo__item__cost badge text-nowrap"
-                  :class="echoRatingBadgeClass">
-                  {{ echoRating.grade }}{{ echoRating.provisional ? "*" : "" }}
-                </span>
-                <span
                   v-if="substatScore"
                   class="echo__item__cost badge text-nowrap"
                   :class="substatScoreBadgeClass">
-                  Score {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+                  {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+                </span>
+                <span
+                  v-else
+                  class="echo__item__cost badge text-nowrap"
+                  :class="echoRatingBadgeClass">
+                  {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
                 </span>
                 <span
                   class="echo__item__explain-rv-cv"
                   v-tooltip="{
                     content:
-                      'CV = Crit value. That\'s the amount of Crit you have on your echo. <br>RV = Roll value. That\'s how lucky your substat rolls were. The higher the value your rolls, the higher the RV. <br>The letter grade is the Echo Rating (E-SSS), a substat quality grade. An asterisk means the echo has fewer than 5 revealed substats. <br>Score % is the Substat Score, this echo\'s rolls weighted for the equipped character\'s stat priorities.',
+                      'CV = Crit value. That\'s the amount of Crit you have on your echo. <br>The letter grade is the Echo Rating (E-SSS), a substat quality grade. An asterisk means the echo has fewer than 5 revealed substats. <br>Score % is the Substat Score, this echo\'s rolls weighted for the equipped character\'s stat priorities.',
                     html: true,
                   }">
                   <svg
@@ -287,7 +291,7 @@
 </template>
 
 <script setup lang="ts">
-import { getEchoSetIconByType } from "../echoes/stats";
+import { getEchoSetIconByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 import { useEchoCardStats } from "../composables/useEchoCardStats";
 import { useEchoRating } from "../composables/useEchoRating";

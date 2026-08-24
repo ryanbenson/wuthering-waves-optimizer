@@ -41,8 +41,8 @@
             v-if="substatScoreRollup"
             class="badge badge-sm text-nowrap mb-1"
             :class="substatScoreRollupBadgeClass"
-            v-tooltip="'Average Substat Score across this character\'s equipped echoes'">
-            {{ Math.round(substatScoreRollup.percent) }}%{{ substatScoreRollup.provisional ? "*" : "" }}
+            v-tooltip="'Build Score — average Substat Score across this character\'s equipped echoes'">
+            Build Score: {{ substatScoreRollup.grade }} {{ Math.round(substatScoreRollup.percent) }}%{{ substatScoreRollup.provisional ? "*" : "" }}
           </div>
           <div class="character__item__meta flex gap-2 items-center">
             <span class="character__item__set size-6 rounded-full">

@@ -8,6 +8,7 @@ import {
   resolveSubstatWeights,
   clampSubstatWeight,
   DEFAULT_SUBSTAT_WEIGHTS,
+  ZERO_SUBSTAT_WEIGHTS,
   ECHO_RATING_GRADES,
   SUBSTAT_SCORE_GRADES,
 } from "../../src/echoes/rating";
@@ -69,9 +70,19 @@ describe("getSubstatRollTier", () => {
     expect(getSubstatRollTier("NotAStat", 6.3)).toBe(0);
   });
 
-  it("handles the 4-tier flat substats correctly", () => {
+  it("handles the 4-tier flat substats (ATK_FLAT/DEF_FLAT) correctly", () => {
     expect(getSubstatRollTier("ATK_FLAT", 30)).toBe(1);
     expect(getSubstatRollTier("ATK_FLAT", 60)).toBe(4);
+  });
+
+  it("gives HP_FLAT the full 8-tier range, same as any %-based substat", () => {
+    // Unlike ATK_FLAT/DEF_FLAT, HP_FLAT has the same 8-value roll table
+    // (and probability distribution) as any %-based substat — narrower
+    // granularity is a property of those two specific substats, not of
+    // "flat" stats generally, so it's derived per-stat from the real roll
+    // table (getSubstatTierCount) rather than assumed uniformly.
+    expect(getSubstatRollTier("HP_FLAT", 320)).toBe(1);
+    expect(getSubstatRollTier("HP_FLAT", 580)).toBe(8);
   });
 });
 
@@ -240,21 +251,31 @@ describe("getGradeForSubstatScorePercent", () => {
 });
 
 describe("resolveSubstatWeights", () => {
-  it("falls back to the neutral default when no sources are given", () => {
-    expect(resolveSubstatWeights()).toEqual(DEFAULT_SUBSTAT_WEIGHTS);
+  it("falls back to the given baseline when no sources are given", () => {
+    expect(resolveSubstatWeights(DEFAULT_SUBSTAT_WEIGHTS)).toEqual(DEFAULT_SUBSTAT_WEIGHTS);
+    expect(resolveSubstatWeights(ZERO_SUBSTAT_WEIGHTS)).toEqual(ZERO_SUBSTAT_WEIGHTS);
   });
 
-  it("layers later sources over earlier ones", () => {
+  it("layers later sources over earlier ones, on top of the baseline", () => {
     const curated = { CritRate: 4, CritDMG: 3 };
     const userOverride = { CritRate: 2 };
-    const resolved = resolveSubstatWeights(curated, userOverride);
+    const resolved = resolveSubstatWeights(DEFAULT_SUBSTAT_WEIGHTS, curated, userOverride);
     expect(resolved.CritRate).toBe(2);
     expect(resolved.CritDMG).toBe(3);
-    expect(resolved.ATK).toBe(1); // untouched stat keeps the neutral default
+    expect(resolved.ATK).toBe(1); // untouched stat keeps the neutral baseline
+  });
+
+  it("an untouched stat keeps a zero baseline instead of the neutral default", () => {
+    const curated = { CritRate: 4 };
+    const resolved = resolveSubstatWeights(ZERO_SUBSTAT_WEIGHTS, curated);
+    expect(resolved.CritRate).toBe(4);
+    expect(resolved.ATK).toBe(0);
   });
 
   it("ignores undefined/null sources", () => {
-    expect(resolveSubstatWeights(undefined, null, { CritRate: 4 }).CritRate).toBe(4);
+    expect(
+      resolveSubstatWeights(DEFAULT_SUBSTAT_WEIGHTS, undefined, null, { CritRate: 4 }).CritRate,
+    ).toBe(4);
   });
 });
 
