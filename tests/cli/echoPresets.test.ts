@@ -338,6 +338,73 @@ export const echoes = [
     expect(new Set(echoKeys).size).toBe(5);
   });
 
+  it("builds a 41111 preset with a single 4-cost main and four 1-cost fillers", () => {
+    const setLabels = loadEchoSetLabels(statsFilePath);
+    const fourOneCostCandidates: EchoCandidate[] = [
+      carlottaCandidates[0]!,
+      ...["GalescourgeStalker", "HocusPocus", "ThirdOneCost", "FourthOneCost"].map(
+        (key) => ({
+          key,
+          name: key,
+          echoClass: "Common",
+          cost: 1,
+          sets: ["FrostyResolve"],
+        }),
+      ),
+    ];
+    const preset = buildEchoPreset(
+      {
+        characterKey: "Carlotta",
+        characterElement: "Glacio",
+        presetName: "41111 CR Build",
+        author: "thundertooth",
+        setCombo: "5",
+        setKeys: ["FrostyResolve"],
+        setStyle: "41111",
+        targetEr: 18.4,
+        fourCostMains: ["CritRate"],
+        threeCostMains: [],
+        mainStatFocus: "atk",
+        attackType: "skill",
+      },
+      fourOneCostCandidates,
+      setLabels,
+    );
+
+    expect(preset.description).toContain("41111 CR Frosty Resolve Build");
+
+    const echoes = Object.values(preset.data.echoes);
+    expect(new Set(echoes.map((echo) => echo.echo)).size).toBe(5);
+    expect(echoes[0]).toMatchObject({
+      type: 4,
+      stat: "CritRate",
+      echoSubStatsType5: "ResonanceSkillDMGBonus",
+    });
+    for (const echo of echoes.slice(1)) {
+      expect(echo.type).toBe(1);
+      expect(echo.stat).toBe("ATK");
+    }
+
+    const fillerStats = getRandomFillerSubstatTypes(preset, [1, 2, 3, 4]);
+    const declared = getDeclaredSubstats({
+      characterKey: "Carlotta",
+      characterElement: "Glacio",
+      presetName: "41111 CR Build",
+      author: "thundertooth",
+      setCombo: "5",
+      setKeys: ["FrostyResolve"],
+      setStyle: "41111",
+      targetEr: 18.4,
+      fourCostMains: ["CritRate"],
+      threeCostMains: [],
+      mainStatFocus: "atk",
+      attackType: "skill",
+    });
+    for (const stat of fillerStats) {
+      expect(declared.has(stat)).toBe(false);
+    }
+  });
+
   it("formats and appends a preset entry", () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "echo-preset-"));
     const presetsPath = path.join(tempDir, "presets.ts");
