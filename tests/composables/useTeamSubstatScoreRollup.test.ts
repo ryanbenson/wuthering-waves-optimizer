@@ -72,4 +72,22 @@ describe("useTeamSubstatScoreRollup", () => {
     const { rollup } = useTeamSubstatScoreRollup(() => "Carlotta");
     expect(rollup.value?.provisional).toBe(false);
   });
+
+  it("falls back to the character-embedded echo data when the echo isn't a standalone inventory item", () => {
+    // Echoes equipped directly onto a character (e.g. importing straight
+    // onto a brand-new character) aren't always also saved as standalone
+    // inventory items, so the rollup must not silently skip them just
+    // because inventoryStore.getEchoById can't find a match.
+    const characterStore = useCharacterStore();
+    const inventoryStore = useInventoryStore();
+    inventoryStore.echoes = [];
+    const echoIds = ["orphan-1", "orphan-2", "orphan-3", "orphan-4", "orphan-5"];
+    characterStore.setCharacterData("Carlotta", {
+      echoes: Object.fromEntries(echoIds.map((id, i) => [i, { echoId: id, ...PERFECT_ROLL_STATS }])),
+    });
+
+    const { rollup } = useTeamSubstatScoreRollup(() => "Carlotta");
+    expect(rollup.value).not.toBeNull();
+    expect(rollup.value?.provisional).toBe(false);
+  });
 });

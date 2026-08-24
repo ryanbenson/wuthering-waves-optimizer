@@ -34,10 +34,14 @@ export function useTeamSubstatScoreRollup(
     const weights = characterStore.getCharacterSubstatWeights(id);
     const scores: { percent: number; provisional: boolean }[] = [];
     for (let i = 0; i < 5; i++) {
-      const echoId = slots[i]?.echoId;
+      const slot = slots[i];
+      const echoId = slot?.echoId;
       if (!echoId) continue;
-      const echo = inventoryStore.getEchoById(echoId);
-      if (!echo) continue;
+      // An echo equipped directly onto a character isn't always also a
+      // standalone inventory item (e.g. importing straight onto a
+      // brand-new character), so fall back to the character-embedded
+      // slot data itself, matching CalculatorBuildCard.vue's echoSlots.
+      const echo = inventoryStore.getEchoById(echoId) ?? slot;
       const score = getSubstatScoreGrade(echo, weights);
       scores.push({ percent: score.percent, provisional: score.provisional });
     }
