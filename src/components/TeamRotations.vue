@@ -127,77 +127,15 @@
               type="button"
               class="btn btn-sm join-item"
               data-test-team-rotations-toggle-import
-              @click="isImportOpen = !isImportOpen; isPresetsOpen = false">
+              @click="isImportOpen = true">
               Import Team
             </button>
             <button
               type="button"
               class="btn btn-sm join-item"
               data-test-team-rotations-toggle-presets
-              @click="isPresetsOpen = !isPresetsOpen; isImportOpen = false">
+              @click="isPresetsOpen = true">
               List Presets
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div
-        v-if="isImportOpen"
-        class="card card-bordered card-compact bg-base-100 shadow mb-4"
-        data-test-team-rotations-import>
-        <div class="card-body gap-4">
-          <div>
-            <h2 class="card-title">Import from text</h2>
-            <p class="text-sm opacity-80">
-              Paste a team exported from Team Rotations (or a preset's data) below.
-            </p>
-            <textarea
-              v-model="importText"
-              class="textarea textarea-bordered w-full mt-2"
-              rows="4"
-              data-test-team-rotations-import-text></textarea>
-            <button
-              type="button"
-              class="btn btn-primary btn-sm mt-2"
-              data-test-team-rotations-import-text-button
-              @click="handleImportFromText">
-              Import
-            </button>
-          </div>
-          <div>
-            <h2 class="card-title">Import from file</h2>
-            <p class="text-sm opacity-80">Upload a team .json file exported from Team Rotations.</p>
-            <input
-              type="file"
-              accept=".json"
-              class="file-input file-input-bordered file-input-sm w-full max-w-xs mt-2"
-              data-test-team-rotations-import-file
-              @change="handleImportFileSelected" />
-          </div>
-        </div>
-      </div>
-
-      <div v-if="isPresetsOpen" data-test-team-rotations-presets>
-        <div
-          v-if="!teamRotationPresets.length"
-          class="card card-bordered card-compact bg-base-100 shadow mb-2">
-          <div class="card-body">No team presets are available yet.</div>
-        </div>
-        <div
-          v-for="preset in teamRotationPresets"
-          :key="preset.name"
-          class="card card-bordered card-compact bg-base-100 shadow mb-2"
-          :data-test-team-rotations-preset="preset.name">
-          <div class="card-body">
-            <h2 class="card-title">{{ preset.name }}</h2>
-            <p>{{ preset.description }}</p>
-            <p class="italic text-sm opacity-80">Author: {{ preset.author }}</p>
-            <button
-              type="button"
-              class="btn btn-primary btn-sm w-fit"
-              data-test-team-rotations-preset-import
-              @click="handleImportPreset(preset)">
-              Import
             </button>
           </div>
         </div>
@@ -493,6 +431,12 @@
         :team-id="selectedTeamId"
         @view-summary="showSummary = true" />
     </template>
+
+    <TeamRotationsImportModal v-model:open="isImportOpen" @import="importTeamData" />
+    <TeamRotationsPresetsModal
+      v-model:open="isPresetsOpen"
+      :presets="teamRotationPresets"
+      @import="handleImportPreset" />
   </div>
 </template>
 
@@ -506,6 +450,8 @@ import TeamRotationTeamEditor from "./TeamRotationTeamEditor.vue";
 import TeamRotationSummary from "./TeamRotationSummary.vue";
 import TeamBuildStatus from "./TeamBuildStatus.vue";
 import FavoriteHeartButton from "./FavoriteHeartButton.vue";
+import TeamRotationsImportModal from "./TeamRotationsImportModal.vue";
+import TeamRotationsPresetsModal from "./TeamRotationsPresetsModal.vue";
 import {
   TEAM_BUILD_STATUSES,
   getTeamBuildStatus,
@@ -521,7 +467,7 @@ import { useToast } from "../composables/useToast";
 import { getCharacterRosterDisplayName, getCharactersAvailable } from "../characters/characters";
 import { calcTeamRotationDamage, calcStrongestHit } from "../calculator/teamRotation";
 import { displayDamage } from "../utils/numbers";
-import { parseTeamImportPayload, type TeamExportData } from "../teamRotations/exportImport";
+import type { TeamExportData } from "../teamRotations/exportImport";
 import { teamRotationPresets, type TeamRotationPreset } from "../teamRotations/presets";
 
 const teamRotationsStore = useTeamRotationsStore();
@@ -559,47 +505,13 @@ function handleCreateTeam() {
 
 const isImportOpen = ref(false);
 const isPresetsOpen = ref(false);
-const importText = ref("");
 
 function importTeamData(data: TeamExportData) {
   const team = teamRotationsStore.importTeam(data);
   showToast(`"${team.name}" has been imported.`, "success");
   isImportOpen.value = false;
-  importText.value = "";
+  isPresetsOpen.value = false;
   selectedTeamId.value = team.id;
-}
-
-function handleImportFromText() {
-  if (!importText.value.trim()) {
-    showToast("Paste a team's exported JSON first.", "error");
-    return;
-  }
-  try {
-    importTeamData(parseTeamImportPayload(importText.value));
-  } catch (e) {
-    showToast(e instanceof Error ? e.message : "Failed to import that team.", "error");
-  }
-}
-
-function handleImportFileSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const raw = e.target?.result;
-    if (typeof raw !== "string") {
-      showToast("Couldn't read that file.", "error");
-      return;
-    }
-    try {
-      importTeamData(parseTeamImportPayload(raw));
-    } catch (err) {
-      showToast(err instanceof Error ? err.message : "Failed to import that team.", "error");
-    }
-  };
-  reader.readAsText(file);
-  input.value = "";
 }
 
 function handleImportPreset(preset: TeamRotationPreset) {

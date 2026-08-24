@@ -23,6 +23,14 @@ export interface RotationExportPayload {
   data: RotationExportData;
 }
 
+/** A character's curated rotation preset, as authored in `characters/<Name>/presets.ts`. */
+export interface CharacterRotationPreset {
+  name: string;
+  description?: string;
+  author?: string;
+  data: Record<string, unknown>;
+}
+
 /** Drops `id` from an action and each of its buffs, without mutating the input. */
 function stripActionIds(actions: unknown): Array<Record<string, unknown>> {
   if (!Array.isArray(actions)) {
