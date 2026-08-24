@@ -35,13 +35,15 @@ export function useTeamSubstatScoreRollup(
     const scores: { percent: number; provisional: boolean }[] = [];
     for (let i = 0; i < 5; i++) {
       const slot = slots[i];
-      const echoId = slot?.echoId;
-      if (!echoId) continue;
-      // An echo equipped directly onto a character isn't always also a
-      // standalone inventory item (e.g. importing straight onto a
-      // brand-new character), so fall back to the character-embedded
+      // A slot counts as equipped if it has either an echoId (data lives
+      // in inventory) or an echo type directly on the slot (data was
+      // never saved to standalone inventory — see
+      // CalculatorEchoImporter.vue's `{ ...echo, echoId: null }` branch).
+      if (!slot?.echoId && !slot?.echo) continue;
+      // Prefer the standalone inventory copy when one exists (it's the
+      // freshest source of truth), but fall back to the character-embedded
       // slot data itself, matching CalculatorBuildCard.vue's echoSlots.
-      const echo = inventoryStore.getEchoById(echoId) ?? slot;
+      const echo = (slot.echoId && inventoryStore.getEchoById(slot.echoId)) || slot;
       const score = getSubstatScoreGrade(echo, weights);
       scores.push({ percent: score.percent, provisional: score.provisional });
     }

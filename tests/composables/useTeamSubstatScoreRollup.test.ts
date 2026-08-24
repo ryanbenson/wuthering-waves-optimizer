@@ -90,4 +90,25 @@ describe("useTeamSubstatScoreRollup", () => {
     expect(rollup.value).not.toBeNull();
     expect(rollup.value?.provisional).toBe(false);
   });
+
+  it("scores slots that have no echoId at all as long as they carry substat data", () => {
+    // Echoes added directly to a character's build without also being
+    // saved to standalone inventory (e.g. the importer's "don't add to
+    // inventory" branch) end up with echoId explicitly null, but still
+    // carry echo/substat data straight on the slot. The echo type field,
+    // not echoId, is the canonical "is this slot equipped" signal (see
+    // useEchoCardStats.ts's isEchoIncomplete).
+    const characterStore = useCharacterStore();
+    const inventoryStore = useInventoryStore();
+    inventoryStore.echoes = [];
+    characterStore.setCharacterData("Carlotta", {
+      echoes: Object.fromEntries(
+        [0, 1, 2, 3, 4].map((i) => [i, { echoId: null, echo: "AbyssalGladius", ...PERFECT_ROLL_STATS }]),
+      ),
+    });
+
+    const { rollup } = useTeamSubstatScoreRollup(() => "Carlotta");
+    expect(rollup.value).not.toBeNull();
+    expect(rollup.value?.provisional).toBe(false);
+  });
 });
