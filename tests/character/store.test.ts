@@ -266,4 +266,50 @@ describe("useCharacterStore builds", () => {
       expect(inventoryStore.equipped["echo-2"]?.Carlotta).toBe(0);
     });
   });
+
+  describe("substat weights", () => {
+    it("falls back to the neutral default for an uncurated, unconfigured character", () => {
+      const store = useCharacterStore();
+      // Jingran/Qingxiao are real characters in this repo added after the
+      // curated dataset's last sync, so they're deliberately uncurated.
+      store.setCharacterData("Jingran", {});
+      expect(store.getCharacterSubstatWeights("Jingran").CritRate).toBe(1);
+    });
+
+    it("uses the curated default for a character with one", () => {
+      const store = useCharacterStore();
+      store.setCharacterData("Camellya", {});
+      const weights = store.getCharacterSubstatWeights("Camellya");
+      expect(weights.CritRate).toBe(3);
+      expect(weights.CritDMG).toBe(4);
+      // a curated profile is a deliberate, complete statement of what
+      // matters for that character — a stat it doesn't mention is 0
+      // (ignored), not the neutral 1 an uncurated character would use
+      expect(weights.DEF).toBe(0);
+    });
+
+    it("setCharacterSubstatWeights overrides the curated default", () => {
+      const store = useCharacterStore();
+      store.setCharacterData("Camellya", {});
+      store.setCharacterSubstatWeights("Camellya", { CritRate: 2 });
+      expect(store.getCharacterSubstatWeights("Camellya").CritRate).toBe(2);
+      // other curated entries for this character are untouched by a partial override
+      expect(store.getCharacterSubstatWeights("Camellya").CritDMG).toBe(4);
+    });
+
+    it("resetCharacterSubstatWeights reverts to the curated/neutral default", () => {
+      const store = useCharacterStore();
+      store.setCharacterData("Camellya", {});
+      store.setCharacterSubstatWeights("Camellya", { CritRate: 2 });
+      store.resetCharacterSubstatWeights("Camellya");
+      expect(store.getCharacterSubstatWeights("Camellya").CritRate).toBe(3);
+      expect(store.characters.Camellya).not.toHaveProperty("substatWeights");
+    });
+
+    it("is a no-op when the character record doesn't exist yet", () => {
+      const store = useCharacterStore();
+      expect(() => store.setCharacterSubstatWeights("NoSuchCharacter", { CritRate: 2 })).not.toThrow();
+      expect(store.characters.NoSuchCharacter).toBeUndefined();
+    });
+  });
 });

@@ -32,7 +32,7 @@ describe("Calculator Build Card", () => {
     );
   });
 
-  it("shows a real equipped echo's set icon and CV/RV score", () => {
+  it("shows a real equipped echo's set icon, CV, and Substat Score", () => {
     cy.get('[data-test-calculator-nav="echoes"]').click();
     configureEcho(
       1,
@@ -55,7 +55,9 @@ describe("Calculator Build Card", () => {
 
     cy.get("[data-test-build-card-echoes]").within(() => {
       cy.contains("CV").should("exist");
-      cy.contains("RV").should("exist");
+      // The RV badge is hidden (redundant with the Substat Score); the
+      // per-character Substat Score badge (e.g. "SS 78%") is what shows now.
+      cy.contains(/^[A-Z]{1,3} \d+%\*?$/).should("exist");
       cy.get("img.FrostyResolve").should("exist");
     });
   });

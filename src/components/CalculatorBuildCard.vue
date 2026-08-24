@@ -269,15 +269,33 @@
           </div>
 
           <div
-            class="build-card__echoes col-span-4 h-full flex flex-col"
+            class="build-card__echoes col-span-4 h-full flex flex-col gap-4"
             data-test-build-card-echoes>
-            <div class="build-card__echoes-list flex-1 min-h-0 flex flex-col justify-center gap-6">
+            <div
+              v-if="substatScoreRollup"
+              class="build-card__build-score shrink-0 rounded-lg bg-base-200 border-l-4 px-4 py-3 flex items-center justify-between gap-3"
+              :class="substatScoreRollupAccent?.border"
+              data-test-build-card-build-score>
+              <span class="text-sm font-semibold uppercase tracking-widest opacity-60">
+                Build Score
+              </span>
+              <div class="flex items-baseline gap-2">
+                <span class="text-4xl font-extrabold" :class="substatScoreRollupAccent?.text">
+                  {{ substatScoreRollup.grade }}
+                </span>
+                <span class="text-4xl font-extrabold" :class="substatScoreRollupAccent?.text">
+                  {{ Math.round(substatScoreRollup.percent) }}%{{ substatScoreRollup.provisional ? "*" : "" }}
+                </span>
+              </div>
+            </div>
+            <div class="build-card__echoes-list shrink-0 flex flex-col gap-4">
               <CalculatorBuildCardEchoCard
                 v-for="(echo, index) in echoSlots"
                 :key="index"
                 class="shrink-0"
-                style="height: 185px"
-                v-bind="echo" />
+                style="height: 175px"
+                v-bind="echo"
+                :character-id="props.character" />
             </div>
             <div class="build-card__watermark shrink-0 text-right" data-test-build-card-watermark>
               WUTHERINGTOOLS.COM
@@ -300,6 +318,8 @@ import { buildCharacterCalculationContext } from "../calculator/buildCharacterCo
 import { computeTotalTuneBreakBoost } from "../calculator/stats";
 import { filterBuffsForStance, resolveActiveStance } from "../calculator/stances";
 import { useToast } from "../composables/useToast";
+import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
+import { getRatingAccentClasses } from "../composables/useEchoRating";
 import {
   subStatIconMap,
   subStatLabelMap,
@@ -589,6 +609,15 @@ const echoSlots = computed(() => {
     return inventoryEcho ?? slot;
   });
 });
+
+const { rollup: substatScoreRollup } = useTeamSubstatScoreRollup(
+  () => props.character,
+);
+const substatScoreRollupAccent = computed(() =>
+  substatScoreRollup.value
+    ? getRatingAccentClasses(substatScoreRollup.value.color)
+    : null,
+);
 
 // Tallies equipped echoes by set key and surfaces every set that meets its
 // own bonus threshold (usually 2pc/5pc, but some sets — e.g. Lucy's

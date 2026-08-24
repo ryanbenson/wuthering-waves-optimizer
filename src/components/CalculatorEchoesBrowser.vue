@@ -92,12 +92,15 @@
               </div>
             </div>
 
-            <div class="echoes__filters__row">
+            <div class="echoes__filters__row flex flex-wrap gap-6 w-full">
               <EchoCvRvRangeFilters
                 v-model:cv-min="cvMin"
                 v-model:cv-max="cvMax"
                 v-model:rv-min="rvMin"
                 v-model:rv-max="rvMax" />
+              <EchoRatingRangeFilters
+                v-model:rating-min="ratingMin"
+                v-model:rating-max="ratingMax" />
             </div>
 
             <div class="echoes__filters__row flex flex-wrap items-center gap-2">
@@ -159,6 +162,7 @@
                 :echo-sub-stats-value-4="echo.echoSubStatsValue4"
                 :echo-sub-stats-type-5="echo.echoSubStatsType5"
                 :echo-sub-stats-value-5="echo.echoSubStatsValue5"
+                :character-id="props.character"
                 :compact="isCompact">
                 <div
                   class="echoes__item__foot flex gap-2 justify-between items-center">
@@ -210,8 +214,11 @@ import {
 } from "../echoes/stats";
 import { useInventoryStore } from "../stores/inventory";
 import { useCharacterStore } from "../stores/character";
+import { useSettingsStore } from "../stores/settings";
+import { getEchoRatingGrade } from "../echoes/rating";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
 import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
+import EchoRatingRangeFilters from "./EchoRatingRangeFilters.vue";
 import PaginationControls from "./PaginationControls.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
@@ -230,6 +237,7 @@ const emit = defineEmits<{ "chosen-echo-inventory": [] }>();
 
 const inventoryStore = useInventoryStore();
 const characterStore = useCharacterStore();
+const settingsStore = useSettingsStore();
 const { echoes, echoIdsEquippedByAnyChars } = storeToRefs(inventoryStore);
 const { getEchoEquippedChars } = inventoryStore;
 const { characters } = storeToRefs(characterStore);
@@ -245,6 +253,11 @@ const cvMin = ref(0);
 const cvMax = ref(ECHO_CV_MAX);
 const rvMin = ref(0);
 const rvMax = ref(ECHO_RV_MAX);
+// Matches the 0-100% shown on the Echo Rating badge itself.
+const RATING_PERCENT_MIN = 0;
+const RATING_PERCENT_MAX = 100;
+const ratingMin = ref(RATING_PERCENT_MIN);
+const ratingMax = ref(RATING_PERCENT_MAX);
 const page = ref(1);
 const perPage = 20;
 const isOpen = ref(false);
@@ -259,6 +272,7 @@ const activeFilterCount = computed(() => {
   if (favoriteFilter.value) count += 1;
   if (cvMin.value > 0 || cvMax.value < ECHO_CV_MAX) count += 1;
   if (rvMin.value > 0 || rvMax.value < ECHO_RV_MAX) count += 1;
+  if (ratingMin.value > RATING_PERCENT_MIN || ratingMax.value < RATING_PERCENT_MAX) count += 1;
   return count;
 });
 
@@ -274,6 +288,8 @@ watch(
     cvMax,
     rvMin,
     rvMax,
+    ratingMin,
+    ratingMax,
   ],
   () => {
     page.value = 1;
@@ -323,7 +339,9 @@ const echoesList = computed(() => {
 
       const cvFilterActive = cvMin.value > 0 || cvMax.value < ECHO_CV_MAX;
       const rvFilterActive = rvMin.value > 0 || rvMax.value < ECHO_RV_MAX;
-      if (cvFilterActive || rvFilterActive) {
+      const ratingFilterActive =
+        ratingMin.value > RATING_PERCENT_MIN || ratingMax.value < RATING_PERCENT_MAX;
+      if (cvFilterActive || rvFilterActive || ratingFilterActive) {
         allEchoes = allEchoes.filter((item: any) => {
           if (cvFilterActive) {
             const cv = getEchoCritValue(item);
@@ -332,6 +350,10 @@ const echoesList = computed(() => {
           if (rvFilterActive) {
             const rv = getEchoRollValue(item);
             if (rv < rvMin.value || rv > rvMax.value) return false;
+          }
+          if (ratingFilterActive) {
+            const { percent } = getEchoRatingGrade(item, settingsStore.echoRatingWeights);
+            if (percent < ratingMin.value || percent > ratingMax.value) return false;
           }
           return true;
         });
@@ -471,6 +493,8 @@ function resetFilters() {
       cvMax.value = ECHO_CV_MAX;
       rvMin.value = 0;
       rvMax.value = ECHO_RV_MAX;
+      ratingMin.value = RATING_PERCENT_MIN;
+      ratingMax.value = RATING_PERCENT_MAX;
     }
 function getCharsEquipped(e: { echoId: string }) {
       return getEchoEquippedChars(e.echoId);

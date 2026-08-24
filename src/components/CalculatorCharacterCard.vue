@@ -37,6 +37,13 @@
             :interactive="true"
             :character-key="nameKey"
             class="mb-1" />
+          <div
+            v-if="substatScoreRollup"
+            class="badge badge-sm text-nowrap mb-1"
+            :class="substatScoreRollupBadgeClass"
+            v-tooltip="'Build Score — average Substat Score across this character\'s equipped echoes'">
+            Build Score: {{ substatScoreRollup.grade }} {{ Math.round(substatScoreRollup.percent) }}%{{ substatScoreRollup.provisional ? "*" : "" }}
+          </div>
           <div class="character__item__meta flex gap-2 items-center">
             <span class="character__item__set size-6 rounded-full">
               <img :src="elementImage" :class="elementClass" />
@@ -64,6 +71,8 @@ import type { CharacterBuildStatus as CharacterBuildStatusType } from "../charac
 import { useCharacterStore } from "../stores/character";
 import CharacterBuildStatus from "./CharacterBuildStatus.vue";
 import FavoriteHeartButton from "./FavoriteHeartButton.vue";
+import { getRatingBadgeClasses } from "../composables/useEchoRating";
+import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
 
 interface Props {
   name: string;
@@ -97,6 +106,15 @@ const weaponImage = computed(
 );
 const elementClass = computed(
   () => `${props.element.toLowerCase()}--active`,
+);
+
+const { rollup: substatScoreRollup } = useTeamSubstatScoreRollup(
+  () => props.nameKey,
+);
+const substatScoreRollupBadgeClass = computed(() =>
+  substatScoreRollup.value
+    ? getRatingBadgeClasses(substatScoreRollup.value.color)
+    : null,
 );
 </script>
 

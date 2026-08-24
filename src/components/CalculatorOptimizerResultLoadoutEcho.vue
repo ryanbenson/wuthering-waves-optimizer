@@ -34,9 +34,15 @@
             CV {{ formattedCritValue }}%
           </span>
           <span
+            v-if="SHOW_ROLL_VALUE_BADGE"
             class="echo__item__cost badge text-nowrap text-sm"
             :class="rollValueBadgeClass">
             RV {{ echoRollValue }}%
+          </span>
+          <span
+            class="echo__item__cost badge text-nowrap text-sm"
+            :class="substatScoreBadgeClass">
+            {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
           </span>
         </template>
         <div class="echo__item__stats mb-2 relative mt-2">
@@ -116,9 +122,13 @@ import {
   getSubStatIconByType,
   getEchoSetIconByType,
   getRollValue,
+  SHOW_ROLL_VALUE_BADGE,
 } from "../echoes/stats";
 import { getEchoData } from "../echoes/index.ts";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
+import { useCharacterStore } from "../stores/character";
+import { getSubstatScoreGrade } from "../echoes/rating";
+import { getRatingBadgeClasses } from "../composables/useEchoRating";
 
 defineOptions({ name: "CalculatorOptimizerResultLoadoutEcho" });
 
@@ -143,6 +153,34 @@ const props = withDefaults(
     hideInventory?: boolean;
   }>(),
   { hideInventory: false },
+);
+
+const characterStore = useCharacterStore();
+
+// Optimizer results are always shown for the currently active character, so
+// there's no characterId prop to thread through — read it directly. Built
+// as a computed (not a one-off snapshot) so the badge stays live if the
+// active character or its weights change while results are displayed.
+const ratingSubStatsSource = computed(() => ({
+  echoSubStatsType1: props.echoSubStatsType1,
+  echoSubStatsValue1: props.echoSubStatsValue1,
+  echoSubStatsType2: props.echoSubStatsType2,
+  echoSubStatsValue2: props.echoSubStatsValue2,
+  echoSubStatsType3: props.echoSubStatsType3,
+  echoSubStatsValue3: props.echoSubStatsValue3,
+  echoSubStatsType4: props.echoSubStatsType4,
+  echoSubStatsValue4: props.echoSubStatsValue4,
+  echoSubStatsType5: props.echoSubStatsType5,
+  echoSubStatsValue5: props.echoSubStatsValue5,
+}));
+const substatScore = computed(() =>
+  getSubstatScoreGrade(
+    ratingSubStatsSource.value,
+    characterStore.getCharacterSubstatWeights(characterStore.activeCharacter),
+  ),
+);
+const substatScoreBadgeClass = computed(() =>
+  getRatingBadgeClasses(substatScore.value.color),
 );
 
 const echoName = computed(() => {

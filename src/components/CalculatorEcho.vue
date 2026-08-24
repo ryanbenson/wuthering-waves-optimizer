@@ -740,15 +740,21 @@
                   CV {{ formattedCritValue }}%
                 </span>
                 <span
+                  v-if="SHOW_ROLL_VALUE_BADGE"
                   class="echo__item__rv badge text-nowrap"
                   :class="rollValueBadgeClass">
                   RV {{ echoRollValue }}%
                 </span>
                 <span
+                  class="echo__item__substat-score badge text-nowrap"
+                  :class="substatScoreBadgeClass">
+                  {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+                </span>
+                <span
                   class="echo__item__explain-rv-cv"
                   v-tooltip="{
                     content:
-                      'CV = Crit value. That\'s the amount of Crit you have on your echo. <br>RV = Roll value. That\'s how lucky your substat rolls were. The higher the value your rolls, the higher the RV',
+                      'CV = Crit value. That\'s the amount of Crit you have on your echo. <br>The letter grade + percent is the Substat Score, this echo\'s rolls weighted for this character\'s stat priorities. An asterisk means the echo has fewer than 5 revealed substats.',
                     html: true,
                   }">
                   <svg
@@ -853,7 +859,10 @@ import {
   getEchoSetIconByType,
   echoSetLabelMap,
   getRollValue,
+  SHOW_ROLL_VALUE_BADGE,
 } from "../echoes/stats";
+import { getSubstatScoreGrade } from "../echoes/rating";
+import { getRatingBadgeClasses } from "../composables/useEchoRating";
 import {
   mainEchoesData,
   getEchoData,
@@ -1509,6 +1518,32 @@ const rollValueBadgeClass = computed(() => {
   }
   return [bgColor, color, borderColor, boxShadow].filter(Boolean) as string[];
 });
+
+// Same EchoSubStatsSource shape getSubstatScoreGrade expects, built from
+// the local computed refs above so it stays reactive to live edits (a plain
+// snapshot object would go stale after the first render).
+const ratingSubStatsSource = computed(() => ({
+  echoSubStatsType1: echoSubStatsType1.value,
+  echoSubStatsValue1: echoSubStatsValue1.value,
+  echoSubStatsType2: echoSubStatsType2.value,
+  echoSubStatsValue2: echoSubStatsValue2.value,
+  echoSubStatsType3: echoSubStatsType3.value,
+  echoSubStatsValue3: echoSubStatsValue3.value,
+  echoSubStatsType4: echoSubStatsType4.value,
+  echoSubStatsValue4: echoSubStatsValue4.value,
+  echoSubStatsType5: echoSubStatsType5.value,
+  echoSubStatsValue5: echoSubStatsValue5.value,
+}));
+
+const substatScore = computed(() =>
+  getSubstatScoreGrade(
+    ratingSubStatsSource.value,
+    characterStore.getCharacterSubstatWeights(props.character),
+  ),
+);
+const substatScoreBadgeClass = computed(() =>
+  getRatingBadgeClasses(substatScore.value.color),
+);
 
 function updateEchoChoice(
   val: string | null,

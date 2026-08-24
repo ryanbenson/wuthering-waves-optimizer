@@ -162,14 +162,35 @@ describe("CalculatorBuildCard", () => {
     expect(echoCards.length).toBe(5);
   });
 
-  it("resolves each slot's echoId to its inventory data and shows its set icon and CV/RV", () => {
+  it("resolves each slot's echoId to its inventory data and shows its set icon and CV (RV is hidden — SHOW_ROLL_VALUE_BADGE)", () => {
     seedCharacter();
     seedInventoryEcho();
     const { container } = renderCard(baseStatsProps());
 
     const echoesEl = container.querySelector("[data-test-build-card-echoes]");
     expect(echoesEl?.textContent).toContain("CV");
-    expect(echoesEl?.textContent).toContain("RV");
+    expect(echoesEl?.textContent).not.toContain("RV");
+  });
+
+  it("shows the Build Score panel above the echo cards", () => {
+    seedCharacter();
+    seedInventoryEcho();
+    const { container } = renderCard(baseStatsProps());
+
+    const badgeEl = container.querySelector("[data-test-build-card-build-score]");
+    expect(badgeEl).toBeTruthy();
+    const text = badgeEl?.textContent?.replace(/\s+/g, " ").trim();
+    expect(text).toContain("Build Score");
+    expect(text).toMatch(/[EDCBAS]+/);
+    expect(text).toMatch(/\d+%\*/); // provisional (*) since only 1 of 5 slots is equipped
+
+    // lives inside the echoes column, above the echo card list, not the
+    // identity/character panel
+    const echoesEl = container.querySelector("[data-test-build-card-echoes]");
+    expect(echoesEl?.contains(badgeEl)).toBe(true);
+    expect(
+      container.querySelector(".build-card__identity")?.contains(badgeEl),
+    ).toBe(false);
   });
 
   it("does not show CV/RV for an empty echo slot", () => {

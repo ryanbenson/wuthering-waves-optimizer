@@ -78,3 +78,27 @@ describe("CalculatorEchoCard incomplete echo indicator", () => {
     expect(hasIndicator(container)).toBe(true);
   });
 });
+
+describe("CalculatorEchoCard rating badges", () => {
+  it("shows the generic Echo Rating grade with a percent when no characterId is given", () => {
+    setActivePinia(createPinia());
+    const { getByText } = renderCard(baseProps());
+    // perfect-tier substats aren't used here, so just assert *a* grade+percent renders
+    expect(getByText(/^[EDCBAS]+ \d+%\*?$/)).toBeTruthy();
+  });
+
+  it("shows only one grade+percent badge when characterId is given (the character-specific one, not the generic one too)", () => {
+    setActivePinia(createPinia());
+    const { getAllByText } = renderCard(baseProps({ characterId: "Camellya" }));
+    // both badges render in the same "{grade} {percent}%" shape, so the
+    // meaningful check is that only one exists at all — the generic Echo
+    // Rating badge must not also render alongside the character-specific one
+    expect(getAllByText(/^[EDCBAS]+ \d+%\*?$/)).toHaveLength(1);
+  });
+
+  it("marks the grade provisional (asterisk) when fewer than 5 substats are revealed", () => {
+    setActivePinia(createPinia());
+    const { getByText } = renderCard(baseProps({ echoSubStatsType5: "none" }));
+    expect(getByText(/\*$/)).toBeTruthy();
+  });
+});

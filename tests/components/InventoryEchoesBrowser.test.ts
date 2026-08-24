@@ -48,7 +48,7 @@ function makeCompleteInventoryEcho(
   return makeInventoryEcho(echoId, echo, type, stat, FULL_SUB_STATS);
 }
 
-function renderBrowser() {
+function renderBrowser(stubs: Record<string, unknown> = {}) {
   return render(InventoryEchoesBrowser, {
     global: {
       stubs: {
@@ -63,6 +63,7 @@ function renderBrowser() {
           props: ["echoId"],
           template: `<div data-test-card :data-echo-id="echoId"><slot /></div>`,
         },
+        ...stubs,
       },
       directives: { tooltip: () => {} },
     },
@@ -124,5 +125,65 @@ describe("InventoryEchoesBrowser incomplete echoes filter", () => {
       (el) => el.getAttribute("data-echo-id"),
     );
     expect(ids.sort()).toEqual(["missing-substat", "no-set"]);
+  });
+});
+
+describe("InventoryEchoesBrowser rating filter", () => {
+  let inventoryStore: ReturnType<typeof useInventoryStore>;
+
+  const PERFECT_ROLL_STATS = {
+    echoSubStatsType1: "CritRate",
+    echoSubStatsValue1: 10.5,
+    echoSubStatsType2: "CritDMG",
+    echoSubStatsValue2: 21,
+    echoSubStatsType3: "ATK",
+    echoSubStatsValue3: 11.6,
+    echoSubStatsType4: "HP",
+    echoSubStatsValue4: 11.6,
+    echoSubStatsType5: "DEF",
+    echoSubStatsValue5: 14.7,
+  };
+  const WORST_ROLL_STATS = {
+    echoSubStatsType1: "CritRate",
+    echoSubStatsValue1: 6.3,
+    echoSubStatsType2: "CritDMG",
+    echoSubStatsValue2: 12.6,
+    echoSubStatsType3: "ATK",
+    echoSubStatsValue3: 6.4,
+    echoSubStatsType4: "HP",
+    echoSubStatsValue4: 6.4,
+    echoSubStatsType5: "DEF",
+    echoSubStatsValue5: 8.1,
+  };
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    inventoryStore = useInventoryStore();
+    inventoryStore.echoes = [
+      makeInventoryEcho("perfect-roll", ELITE_ECHO, 3, "EnergyRegen", PERFECT_ROLL_STATS),
+      makeInventoryEcho("worst-roll", ELITE_ECHO, 3, "EnergyRegen", WORST_ROLL_STATS),
+    ];
+  });
+
+  it("excludes an SSS-grade echo when the max is dragged below its rating", async () => {
+    // Don't stub EchoRatingRangeFilters/RangeMinMax here — we need the real
+    // range inputs to drive the filter.
+    const { container } = renderBrowser({ EchoRatingRangeFilters: false });
+    expect(container.querySelectorAll("[data-test-card]").length).toBe(2);
+
+    const maxInput = container.querySelector<HTMLInputElement>(
+      "#echo-rating-filter-max",
+    );
+    expect(maxInput).not.toBeNull();
+    // The filter is on the 0-100% scale; the perfect-roll echo is 100%, the
+    // worst-roll echo is 0%, so any value strictly between them excludes
+    // only the perfect one.
+    maxInput!.value = "20";
+    await fireEvent.input(maxInput!);
+
+    const ids = Array.from(container.querySelectorAll("[data-test-card]")).map(
+      (el) => el.getAttribute("data-echo-id"),
+    );
+    expect(ids).toEqual(["worst-roll"]);
   });
 });

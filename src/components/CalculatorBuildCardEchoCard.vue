@@ -14,9 +14,22 @@
           CV {{ formattedCritValue }}%
         </span>
         <span
+          v-if="SHOW_ROLL_VALUE_BADGE"
           class="badge badge-md text-nowrap"
           :class="rollValueBadgeClass">
           RV {{ echoRollValue }}%
+        </span>
+        <span
+          v-if="substatScore"
+          class="badge badge-md text-nowrap"
+          :class="substatScoreBadgeClass">
+          {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+        </span>
+        <span
+          v-else
+          class="badge badge-md text-nowrap"
+          :class="echoRatingBadgeClass">
+          {{ echoRating.grade }}{{ echoRating.provisional ? "*" : "" }}
         </span>
       </div>
       <div class="absolute top-1 right-1 flex items-center gap-1">
@@ -100,27 +113,34 @@
 </template>
 
 <script setup lang="ts">
-import { getEchoSetIconByType } from "../echoes/stats";
+import { getEchoSetIconByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import { useEchoCardStats } from "../composables/useEchoCardStats";
+import { useEchoRating } from "../composables/useEchoRating";
 
-const props = defineProps<{
-  rank: number | string;
-  type: string;
-  echo: string;
-  echoId: string;
-  echoSet: string;
-  stat: string;
-  echoSubStatsType1: string;
-  echoSubStatsValue1: number | string;
-  echoSubStatsType2: string;
-  echoSubStatsValue2: number | string;
-  echoSubStatsType3: string;
-  echoSubStatsValue3: number | string;
-  echoSubStatsType4: string;
-  echoSubStatsValue4: number | string;
-  echoSubStatsType5: string;
-  echoSubStatsValue5: number | string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    rank: number | string;
+    type: string;
+    echo: string;
+    echoId: string;
+    echoSet: string;
+    stat: string;
+    echoSubStatsType1: string;
+    echoSubStatsValue1: number | string;
+    echoSubStatsType2: string;
+    echoSubStatsValue2: number | string;
+    echoSubStatsType3: string;
+    echoSubStatsValue3: number | string;
+    echoSubStatsType4: string;
+    echoSubStatsValue4: number | string;
+    echoSubStatsType5: string;
+    echoSubStatsValue5: number | string;
+    characterId?: string | null;
+  }>(),
+  {
+    characterId: null,
+  },
+);
 
 const {
   mainStatValue,
@@ -152,6 +172,9 @@ const {
   getReadableSubStatLabel,
   getSubStatIconByType,
 } = useEchoCardStats(props);
+
+const { echoRating, echoRatingBadgeClass, substatScore, substatScoreBadgeClass } =
+  useEchoRating(props);
 
 function getEchoSetIcon(type: string) {
   return getEchoSetIconByType(type);
