@@ -144,7 +144,7 @@ async function promptThreeCostConfig(
     element?: ElementMainStat;
   }>
 > {
-  if (setStyle === "44111") {
+  if (setStyle === "44111" || setStyle === "41111") {
     return [];
   }
 
@@ -362,6 +362,10 @@ export async function runGenerateEchoPreset(): Promise<void> {
       {
         name: "44111 — 2x 4-cost, 3x 1-cost",
         value: "44111" as const,
+      },
+      {
+        name: "41111 — 1x 4-cost, 4x 1-cost",
+        value: "41111" as const,
       },
     ],
   });

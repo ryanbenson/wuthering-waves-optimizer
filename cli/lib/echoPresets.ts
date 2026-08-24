@@ -24,7 +24,7 @@ export const SUBSTAT_VALUES = {
 } as const;
 
 export type SetCombo = "5" | "23" | "221" | "25";
-export type SetStyle = "43311" | "44111";
+export type SetStyle = "43311" | "44111" | "41111";
 export type MainStatFocus = "atk" | "hp" | "def";
 export type AttackTypeChoice =
   | "basic"
@@ -153,6 +153,7 @@ const MAIN_STAT_MAP: Record<
 const SET_STYLE_COSTS: Record<SetStyle, number[]> = {
   "43311": [4, 3, 3, 1, 1],
   "44111": [4, 4, 1, 1, 1],
+  "41111": [4, 1, 1, 1, 1],
 };
 
 const ELEMENT_LABELS: Record<string, string> = {
@@ -760,7 +761,10 @@ function formatDescription(
   const setPart = formatSetNames(input.setKeys, setLabels);
 
   let header = `${input.setStyle}`;
-  if (input.setStyle === "43311" && input.fourCostMains.length === 1) {
+  if (
+    (input.setStyle === "43311" || input.setStyle === "41111") &&
+    input.fourCostMains.length === 1
+  ) {
     const fourCostMain = input.fourCostMains[0]!;
     const label =
       fourCostMain === "CritRate"
@@ -852,7 +856,7 @@ export function buildEchoPreset(
   const declaredSubstats = getDeclaredSubstats(input);
 
   const fillerSlotIndexes =
-    input.setStyle === "43311" ? [2, 3, 4] : [2, 3, 4];
+    input.setStyle === "41111" ? [1, 2, 3, 4] : [2, 3, 4];
   const erDistribution = distributeErRolls(erRolls, fillerSlotIndexes);
 
   for (let slot = 0; slot < 5; slot += 1) {
@@ -871,6 +875,42 @@ export function buildEchoPreset(
         ? (candidates.find((candidate) => candidate.key === echoKey)?.cost ??
           layoutCost)
         : layoutCost;
+
+    if (input.setStyle === "41111") {
+      if (slot === 0) {
+        const substats = buildPrimarySubstats43311({
+          mainStat: input.mainStatFocus,
+          attackType: input.attackType,
+          includeFlat: true,
+          cost: echoCost,
+        });
+        echoes[String(slot)] = toSlotData(
+          echoCost,
+          echoKey,
+          setKey,
+          input.fourCostMains[0] ?? "CritRate",
+          substats,
+          declaredSubstats,
+        );
+        continue;
+      }
+
+      const isLast = slot === 4;
+      const substats = buildFillerSubstats({
+        erRolls: erDistribution.get(slot) ?? 0,
+        isLastSlot: isLast,
+        excludedStats: declaredSubstats,
+      });
+      echoes[String(slot)] = toSlotData(
+        echoCost,
+        echoKey,
+        setKey,
+        main.percent,
+        substats,
+        declaredSubstats,
+      );
+      continue;
+    }
 
     if (input.setStyle === "44111") {
       if (slot <= 1) {
