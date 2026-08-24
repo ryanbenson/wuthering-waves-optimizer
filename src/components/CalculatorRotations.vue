@@ -10,88 +10,24 @@
       </button>
       <button
         class="btn btn-sm join-item"
-        @click="handleToggleImport"
+        @click="isImportOpen = true"
         data-test-rotations-action="import">
         Import
       </button>
       <button
         class="btn btn-sm join-item"
-        @click="togglePresetRotations"
+        @click="isPresetRotationsOpen = true"
         data-test-rotations-action="presets">
         List Presets
       </button>
     </div>
   </div>
-  <div
-    v-if="isImportOpen"
-    class="card card-bordered card-compact bg-base-100 shadow mb-2"
-    data-test-rotations-import>
-    <div class="card-body gap-4">
-      <div>
-        <h2 class="card-title">Import from text</h2>
-        <p>Paste a rotation exported from this page below.</p>
-        <textarea
-          v-model="importRotationData"
-          name="importRotation"
-          id="importRotaton"
-          class="textarea textarea-bordered w-full mt-2"
-          data-test-rotations-import-text></textarea>
-        <button
-          class="btn btn-primary btn-sm mt-2"
-          data-test-rotations-import-text-button
-          @click="handleImportRotation">
-          Import
-        </button>
-      </div>
-      <div>
-        <h2 class="card-title">Import from file</h2>
-        <p>Upload a rotation .json file.</p>
-        <div class="flex items-center gap-2 mt-2">
-          <input
-            ref="importRotationFileInputRef"
-            type="file"
-            accept=".json"
-            class="file-input file-input-bordered file-input-sm flex-1 min-w-0"
-            data-test-rotations-import-file
-            @change="handleImportRotationFileSelected" />
-          <button
-            class="btn btn-primary btn-sm"
-            :disabled="!importRotationFile"
-            data-test-rotations-import-file-button
-            @click="handleImportRotationFile">
-            Import
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div v-if="isPresetRotationsOpen">
-    <template v-if="!hasRotations">
-      <div
-        class="presetRotations card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
-        <div class="card-body">
-          No presets are available for {{ character }} yet.
-        </div>
-      </div>
-    </template>
-    <template v-else>
-      <div
-        v-for="preset in presets"
-        :key="preset.name"
-        class="presetRotations card card-bordered card-compact bg-base-100 shadow mb-2 cursor-pointer">
-        <div class="card-body">
-          <h2 class="card-title">{{ preset.name }}</h2>
-          <p>
-            {{ preset.description }}
-          </p>
-          <p class="italic">Author: {{ preset.author }}</p>
-          <button class="btn btn-primary" @click="handleImportPreset(preset)">
-            Import
-          </button>
-        </div>
-      </div>
-    </template>
-  </div>
+  <CalculatorRotationsImportModal v-model:open="isImportOpen" @import="handleImportedRotation" />
+  <CalculatorRotationsPresetsModal
+    v-model:open="isPresetRotationsOpen"
+    :presets="presets"
+    :character-name="character"
+    @import="handleImportPreset" />
   <div class="flex flex-col gap-4">
     <div
       v-for="(rotation, index) in rotations"
@@ -135,6 +71,8 @@ import { useInventoryStore } from "../stores/inventory";
 import { getCharByName } from "../characters/characters.ts";
 import { randomString } from "../utils/strings.ts";
 import CalculatorRotation from "./CalculatorRotation.vue";
+import CalculatorRotationsImportModal from "./CalculatorRotationsImportModal.vue";
+import CalculatorRotationsPresetsModal from "./CalculatorRotationsPresetsModal.vue";
 import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
 import {
@@ -142,7 +80,7 @@ import {
   type CharacterCalculationContext,
   type TeamEnemyConfig,
 } from "../calculator/buildCharacterContext";
-import { parseRotationImportPayload } from "../characters/rotationExportImport";
+import type { RotationExportData, CharacterRotationPreset } from "../characters/rotationExportImport";
 import { trackEvent } from "../utils/analytics";
 
 const { showToast } = useToast();
@@ -163,13 +101,6 @@ type RotationRow = {
   actions: RotationAction[];
 };
 
-type RotationPreset = {
-  name: string;
-  description?: string;
-  author?: string;
-  data: RotationRow;
-};
-
 const props = defineProps<{
   character: string;
 }>();
@@ -184,14 +115,11 @@ const { setCharacterData, setCharacterRotations } = characterStore;
 const inventoryStore = useInventoryStore();
 const { echoes: inventoryEchoes } = storeToRefs(inventoryStore);
 
-const importRotationData = ref<string | null>(null);
-const importRotationFile = ref<File | null>(null);
-const importRotationFileInputRef = ref<HTMLInputElement | null>(null);
 const isImportOpen = ref(false);
 const isPresetRotationsOpen = ref(false);
 const rotations = ref<RotationRow[]>([]);
 const characterData = ref<Record<string, unknown>>({});
-const presets = ref<RotationPreset[]>([]);
+const presets = ref<CharacterRotationPreset[]>([]);
 
 const rotationRefs = new Map<string, { toggleOpen: () => void }>();
 
@@ -235,7 +163,6 @@ async function recomputeCharacterContext() {
 
 watch(currentCharacter, () => void recomputeCharacterContext(), { deep: true });
 
-const hasRotations = computed(() => presets.value.length > 0);
 const canReorder = computed(() => rotations.value.length > 1);
 
 function rotationOrderValue(value: unknown, fallback: number): number {
@@ -330,61 +257,23 @@ async function importRotationFromData(rotationData: RotationRow) {
   processedImportedRotation.order = rotations.value.length;
   const next = [...rotations.value, processedImportedRotation];
   isImportOpen.value = false;
+  isPresetRotationsOpen.value = false;
   await persistRotations(next);
   showToast(`"${processedImportedRotation.name}" has been imported.`, "success");
   trackEvent("rotation-imported");
 }
 
-async function handleImportRotation() {
-  try {
-    const parsed = parseRotationImportPayload(importRotationData.value ?? "");
-    await importRotationFromData({ id: "", order: 0, ...parsed } as RotationRow);
-    importRotationData.value = null;
-  } catch (e) {
-    showToast(e instanceof Error ? e.message : "Rotation data is not valid", "error");
-  }
+async function handleImportedRotation(data: RotationExportData) {
+  await importRotationFromData({ id: "", order: 0, ...data } as RotationRow);
 }
 
-function handleImportRotationFileSelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-  importRotationFile.value = input.files?.[0] ?? null;
-}
-
-function handleImportRotationFile() {
-  const file = importRotationFile.value;
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    const raw = e.target?.result;
-    if (typeof raw !== "string") {
-      showToast("Couldn't read that file.", "error");
-      return;
-    }
-    try {
-      const parsed = parseRotationImportPayload(raw);
-      await importRotationFromData({ id: "", order: 0, ...parsed } as RotationRow);
-      importRotationFile.value = null;
-      if (importRotationFileInputRef.value) {
-        importRotationFileInputRef.value.value = "";
-      }
-    } catch (err) {
-      showToast(err instanceof Error ? err.message : "Rotation data is not valid", "error");
-    }
-  };
-  reader.readAsText(file);
-}
-
-async function handleImportPreset(preset: RotationPreset) {
+async function handleImportPreset(preset: CharacterRotationPreset) {
   try {
     const rotationData = JSON.parse(JSON.stringify(preset.data)) as RotationRow;
     await importRotationFromData(rotationData);
   } catch {
     showToast("Rotation data is not valid", "error");
   }
-}
-
-function handleToggleImport() {
-  isImportOpen.value = !isImportOpen.value;
 }
 
 async function handleUpdatedRotation(rotationData: Record<string, unknown>) {
@@ -405,10 +294,6 @@ async function handleUpdatedRotation(rotationData: Record<string, unknown>) {
 async function handleDeleteRotation(rotationId: string) {
   const next = rotations.value.filter((rotation) => rotation.id !== rotationId);
   await persistRotations(next);
-}
-
-function togglePresetRotations() {
-  isPresetRotationsOpen.value = !isPresetRotationsOpen.value;
 }
 
 const { dragIndex, dropIndex, onDragStart, onDragEnter, onDragOver, onDrop, onDragEnd } =
@@ -436,7 +321,7 @@ onMounted(async () => {
     string,
     unknown
   >;
-  const presetList = (characterData.value?.rotations ?? []) as RotationPreset[];
+  const presetList = (characterData.value?.rotations ?? []) as CharacterRotationPreset[];
   presets.value = presetList;
   await recomputeCharacterContext();
 });
