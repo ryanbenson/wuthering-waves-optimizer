@@ -2,17 +2,17 @@
   <div>
     <div class="buffs__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Resonance Chains</h3>
-      <div class="join">
+      <div class="flex flex-wrap gap-2">
         <button
           type="button"
-          class="btn btn-sm join-item"
+          class="btn btn-sm"
           data-test-resonance-chains-enable-all
           @click="enableAllResonanceChains">
           Enable all
         </button>
         <button
           type="button"
-          class="btn btn-sm join-item"
+          class="btn btn-sm"
           data-test-resonance-chains-max-all
           @click="maxAllResonanceChains">
           Max all
