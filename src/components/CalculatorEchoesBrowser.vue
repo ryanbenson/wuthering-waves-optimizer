@@ -21,10 +21,10 @@
                 {{ activeFilterCount }}
               </span>
             </h3>
-            <div class="join">
+            <div class="flex flex-wrap gap-2">
               <button
                 type="button"
-                class="btn btn-sm join-item"
+                class="btn btn-sm"
                 :disabled="!activeFilterCount"
                 @click="resetFilters">
                 Clear
