@@ -172,20 +172,25 @@ describe("CalculatorBuildCard", () => {
     expect(echoesEl?.textContent).not.toContain("RV");
   });
 
-  it("shows the Build Score badge on the top-right of the identity/character panel", () => {
+  it("shows the Build Score panel above the echo cards", () => {
     seedCharacter();
     seedInventoryEcho();
     const { container } = renderCard(baseStatsProps());
 
     const badgeEl = container.querySelector("[data-test-build-card-build-score]");
     expect(badgeEl).toBeTruthy();
-    expect(badgeEl?.textContent?.trim()).toMatch(/^Build Score: [EDCBAS]+ \d+%\*?$/);
-    // provisional (*) since only 1 of 5 slots is equipped
-    expect(badgeEl?.textContent).toContain("*");
-    // lives inside the identity panel, not the echo-sets row
+    const text = badgeEl?.textContent?.replace(/\s+/g, " ").trim();
+    expect(text).toContain("Build Score");
+    expect(text).toMatch(/[EDCBAS]+/);
+    expect(text).toMatch(/\d+%\*/); // provisional (*) since only 1 of 5 slots is equipped
+
+    // lives inside the echoes column, above the echo card list, not the
+    // identity/character panel
+    const echoesEl = container.querySelector("[data-test-build-card-echoes]");
+    expect(echoesEl?.contains(badgeEl)).toBe(true);
     expect(
       container.querySelector(".build-card__identity")?.contains(badgeEl),
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it("does not show CV/RV for an empty echo slot", () => {

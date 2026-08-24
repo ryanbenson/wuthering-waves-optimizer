@@ -39,6 +39,28 @@ export function getRatingBadgeClasses(color: RatingColor): string[] {
   return RATING_BADGE_CLASSES[color];
 }
 
+// A standalone { text, border } pairing — for contexts that show a grade on
+// top of their own neutral background box (e.g. the Build Card's Build
+// Score panel) rather than as a solid-fill badge pill, so the text needs to
+// stay legible on its own instead of relying on a matching background.
+export interface RatingAccentClasses {
+  text: string;
+  border: string;
+}
+
+const RATING_ACCENT_CLASSES: Record<RatingColor, RatingAccentClasses> = {
+  white: { text: "text-base-content", border: "border-base-300" },
+  green: { text: "text-emerald-500", border: "border-emerald-500" },
+  blue: { text: "text-blue-500", border: "border-blue-500" },
+  purple: { text: "text-purple-500", border: "border-purple-500" },
+  gold: { text: "text-yellow-500", border: "border-yellow-500" },
+  red: { text: "text-red-500", border: "border-red-500" },
+};
+
+export function getRatingAccentClasses(color: RatingColor): RatingAccentClasses {
+  return RATING_ACCENT_CLASSES[color];
+}
+
 export function useEchoRating(props: EchoRatingProps) {
   const settingsStore = useSettingsStore();
   const characterStore = useCharacterStore();

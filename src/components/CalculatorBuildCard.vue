@@ -125,17 +125,6 @@
                 :transform="characterData.customPortraitTransform" />
               <div class="build-card__identity-scrim absolute inset-0 pointer-events-none"></div>
 
-              <div
-                v-if="substatScoreRollup"
-                class="absolute top-4 right-4 pointer-events-none"
-                data-test-build-card-build-score>
-                <span
-                  class="badge badge-lg text-nowrap"
-                  :class="substatScoreRollupBadgeClass">
-                  Build Score: {{ substatScoreRollup.grade }} {{ Math.round(substatScoreRollup.percent) }}%{{ substatScoreRollup.provisional ? "*" : "" }}
-                </span>
-              </div>
-
               <div class="absolute top-4 left-4 min-w-[88%] max-w-[88%] pointer-events-none">
                 <template v-if="characterBasic">
                   <h2
@@ -280,14 +269,31 @@
           </div>
 
           <div
-            class="build-card__echoes col-span-4 h-full flex flex-col"
+            class="build-card__echoes col-span-4 h-full flex flex-col gap-4"
             data-test-build-card-echoes>
-            <div class="build-card__echoes-list flex-1 min-h-0 flex flex-col justify-center gap-6">
+            <div
+              v-if="substatScoreRollup"
+              class="build-card__build-score shrink-0 rounded-lg bg-base-200 border-l-4 px-4 py-3 flex items-center justify-between gap-3"
+              :class="substatScoreRollupAccent?.border"
+              data-test-build-card-build-score>
+              <span class="text-sm font-semibold uppercase tracking-widest opacity-60">
+                Build Score
+              </span>
+              <div class="flex items-baseline gap-2">
+                <span class="text-4xl font-extrabold" :class="substatScoreRollupAccent?.text">
+                  {{ substatScoreRollup.grade }}
+                </span>
+                <span class="text-4xl font-extrabold" :class="substatScoreRollupAccent?.text">
+                  {{ Math.round(substatScoreRollup.percent) }}%{{ substatScoreRollup.provisional ? "*" : "" }}
+                </span>
+              </div>
+            </div>
+            <div class="build-card__echoes-list shrink-0 flex flex-col gap-4">
               <CalculatorBuildCardEchoCard
                 v-for="(echo, index) in echoSlots"
                 :key="index"
                 class="shrink-0"
-                style="height: 185px"
+                style="height: 175px"
                 v-bind="echo"
                 :character-id="props.character" />
             </div>
@@ -313,7 +319,7 @@ import { computeTotalTuneBreakBoost } from "../calculator/stats";
 import { filterBuffsForStance, resolveActiveStance } from "../calculator/stances";
 import { useToast } from "../composables/useToast";
 import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
-import { getRatingBadgeClasses } from "../composables/useEchoRating";
+import { getRatingAccentClasses } from "../composables/useEchoRating";
 import {
   subStatIconMap,
   subStatLabelMap,
@@ -607,9 +613,9 @@ const echoSlots = computed(() => {
 const { rollup: substatScoreRollup } = useTeamSubstatScoreRollup(
   () => props.character,
 );
-const substatScoreRollupBadgeClass = computed(() =>
+const substatScoreRollupAccent = computed(() =>
   substatScoreRollup.value
-    ? getRatingBadgeClasses(substatScoreRollup.value.color)
+    ? getRatingAccentClasses(substatScoreRollup.value.color)
     : null,
 );
 

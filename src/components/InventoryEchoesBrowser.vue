@@ -462,7 +462,7 @@ import {
 } from "../echoes/stats";
 import { useInventoryStore } from "../stores/inventory";
 import { useSettingsStore } from "../stores/settings";
-import { getEchoRatingGrade, POINT_SCALE_MIN, POINT_SCALE_MAX } from "../echoes/rating";
+import { getEchoRatingGrade } from "../echoes/rating";
 import CalculatorEchoCard from "./CalculatorEchoCard.vue";
 import EchoCvRvRangeFilters from "./EchoCvRvRangeFilters.vue";
 import EchoRatingRangeFilters from "./EchoRatingRangeFilters.vue";
@@ -525,8 +525,11 @@ const cvMin = ref(0);
 const cvMax = ref(ECHO_CV_MAX);
 const rvMin = ref(0);
 const rvMax = ref(ECHO_RV_MAX);
-const ratingMin = ref(POINT_SCALE_MIN);
-const ratingMax = ref(POINT_SCALE_MAX);
+// Matches the 0-100% shown on the Echo Rating badge itself.
+const RATING_PERCENT_MIN = 0;
+const RATING_PERCENT_MAX = 100;
+const ratingMin = ref(RATING_PERCENT_MIN);
+const ratingMax = ref(RATING_PERCENT_MAX);
 const selectedEchoIds = ref<string[]>([]);
 const hasSelection = computed(() => selectedEchoIds.value.length > 0);
 const activeFilterCount = computed(() => {
@@ -543,7 +546,7 @@ const activeFilterCount = computed(() => {
   if (incompleteFilter.value) count += 1;
   if (cvMin.value > 0 || cvMax.value < ECHO_CV_MAX) count += 1;
   if (rvMin.value > 0 || rvMax.value < ECHO_RV_MAX) count += 1;
-  if (ratingMin.value > POINT_SCALE_MIN || ratingMax.value < POINT_SCALE_MAX) count += 1;
+  if (ratingMin.value > RATING_PERCENT_MIN || ratingMax.value < RATING_PERCENT_MAX) count += 1;
   return count;
 });
 const page = ref(1);
@@ -678,7 +681,7 @@ const echoesList = computed(() => {
   const cvFilterActive = cvMin.value > 0 || cvMax.value < ECHO_CV_MAX;
   const rvFilterActive = rvMin.value > 0 || rvMax.value < ECHO_RV_MAX;
   const ratingFilterActive =
-    ratingMin.value > POINT_SCALE_MIN || ratingMax.value < POINT_SCALE_MAX;
+    ratingMin.value > RATING_PERCENT_MIN || ratingMax.value < RATING_PERCENT_MAX;
   if (cvFilterActive || rvFilterActive || ratingFilterActive) {
     allEchoes = allEchoes.filter((e) => {
       if (cvFilterActive) {
@@ -690,8 +693,8 @@ const echoesList = computed(() => {
         if (rv < rvMin.value || rv > rvMax.value) return false;
       }
       if (ratingFilterActive) {
-        const { points } = getEchoRatingGrade(e, settingsStore.echoRatingWeights);
-        if (points < ratingMin.value || points > ratingMax.value) return false;
+        const { percent } = getEchoRatingGrade(e, settingsStore.echoRatingWeights);
+        if (percent < ratingMin.value || percent > ratingMax.value) return false;
       }
       return true;
     });
@@ -820,8 +823,8 @@ function resetFilters() {
   cvMax.value = ECHO_CV_MAX;
   rvMin.value = 0;
   rvMax.value = ECHO_RV_MAX;
-  ratingMin.value = POINT_SCALE_MIN;
-  ratingMax.value = POINT_SCALE_MAX;
+  ratingMin.value = RATING_PERCENT_MIN;
+  ratingMax.value = RATING_PERCENT_MAX;
 }
 
 function isSelected(echoId: string) {

@@ -175,6 +175,9 @@ describe("InventoryEchoesBrowser rating filter", () => {
       "#echo-rating-filter-max",
     );
     expect(maxInput).not.toBeNull();
+    // The filter is on the 0-100% scale; the perfect-roll echo is 100%, the
+    // worst-roll echo is 0%, so any value strictly between them excludes
+    // only the perfect one.
     maxInput!.value = "20";
     await fireEvent.input(maxInput!);
 
