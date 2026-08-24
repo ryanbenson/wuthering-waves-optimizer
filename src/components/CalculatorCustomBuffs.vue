@@ -2,7 +2,7 @@
   <div class="custom__buffs">
     <div class="custom-buffs__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Custom Buffs</h3>
-      <div class="join">
+      <div class="join max-w-full overflow-x-auto">
         <button
           class="btn btn-sm join-item"
           @click="handleResetCustomBuffs"

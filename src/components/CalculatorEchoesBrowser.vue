@@ -21,7 +21,7 @@
                 {{ activeFilterCount }}
               </span>
             </h3>
-            <div class="join">
+            <div class="join max-w-full overflow-x-auto">
               <button
                 type="button"
                 class="btn btn-sm join-item"
