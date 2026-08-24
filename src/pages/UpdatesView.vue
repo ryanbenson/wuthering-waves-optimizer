@@ -2,6 +2,13 @@
   <Nav cur-page="updates" :disable-mobile-nav="true"></Nav>
   <article class="prose page-updates">
     <h1>Updates</h1>
+    <h3>August 24, 2026</h3>
+    <ul>
+      <li>Adds an echo quality grade (E-SSS) and a per-character Substat Score, so you can see how well an echo's substats rolled overall and for a specific character.</li>
+      <li>Moves Team Rotations' and Character Rotations' Import and List Presets into pop-up modals instead of stacking inline, so they don't pile up on the page.</li>
+      <li>Fixes panel header buttons overflowing on narrow screens.</li>
+      <li>Adds echo presets for Jingran.</li>
+    </ul>
     <h3>August 23, 2026</h3>
     <ul>
       <li>Releases the multi-build system for characters, so each character can have more than 1 build, and you can choose a build in the team setup</li>
