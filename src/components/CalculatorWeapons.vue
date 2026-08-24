@@ -1,26 +1,26 @@
 <template>
   <div class="weapons__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
     <h3 class="text-sm font-semibold">Weapons</h3>
-    <div class="join max-w-full overflow-x-auto">
+    <div class="flex flex-wrap gap-2">
       <button
         v-if="signatureWeapon"
         :disabled="weapon === signatureWeapon"
         type="button"
-        class="btn btn-sm join-item"
+        class="btn btn-sm"
         data-test-weapons-equip-signature
         @click="equipSignatureWeapon">
         Equip signature
       </button>
       <button
         type="button"
-        class="btn btn-sm join-item"
+        class="btn btn-sm"
         data-test-weapons-enable-all
         @click="enableAllWeapons">
         Enable all
       </button>
       <button
         type="button"
-        class="btn btn-sm join-item"
+        class="btn btn-sm"
         data-test-weapons-max-all
         @click="maxAllWeapons">
         Max all

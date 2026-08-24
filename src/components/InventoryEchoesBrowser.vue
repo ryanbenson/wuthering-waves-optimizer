@@ -10,22 +10,22 @@
     <div
       class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Inventory</h3>
-      <div class="join max-w-full overflow-x-auto">
-        <button class="btn btn-sm join-item btn-primary" @click="createEcho">
+      <div class="flex flex-wrap gap-2">
+        <button class="btn btn-sm btn-primary" @click="createEcho">
           Add echo
         </button>
-        <button class="btn btn-sm join-item" @click="handleOpenEchoesImporter">
+        <button class="btn btn-sm" @click="handleOpenEchoesImporter">
           Import echoes
         </button>
-        <button class="btn btn-sm join-item" @click="handleOpenWeightsEditor">
+        <button class="btn btn-sm" @click="handleOpenWeightsEditor">
           Customize Rating Weights
         </button>
-        <button class="btn btn-sm join-item" @click="handleOpenRatingGuide">
+        <button class="btn btn-sm" @click="handleOpenRatingGuide">
           <span class="text-primary">Rating Guide</span>
         </button>
         <button
           type="button"
-          class="btn btn-sm join-item"
+          class="btn btn-sm"
           :class="{ 'btn-active btn-warning': duplicatesFilter }"
           v-tooltip="'Show only exact duplicate echoes in your inventory'"
           data-test-find-duplicates
@@ -40,7 +40,7 @@
         </button>
         <button
           type="button"
-          class="btn btn-sm join-item"
+          class="btn btn-sm"
           :class="{ 'btn-active btn-warning': incompleteFilter }"
           v-tooltip="
             'Show only echoes missing an echo, set, main stat, or a substat'
@@ -56,7 +56,7 @@
           </span>
         </button>
         <button
-          class="btn btn-sm join-item btn-error"
+          class="btn btn-sm btn-error"
           :disabled="trashEchoCount === 0"
           v-tooltip="
             'Permanently delete all echoes marked as trash. Locked echoes are skipped.'
@@ -79,10 +79,10 @@
             {{ activeFilterCount }}
           </span>
         </h3>
-        <div class="join max-w-full overflow-x-auto">
+        <div class="flex flex-wrap gap-2">
           <button
             type="button"
-            class="btn btn-sm join-item"
+            class="btn btn-sm"
             :disabled="!activeFilterCount"
             @click="resetFilters">
             Clear

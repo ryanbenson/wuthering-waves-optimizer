@@ -31,25 +31,25 @@
     </Toast>
     <div class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Echoes</h3>
-      <div class="join max-w-full overflow-x-auto">
-        <button class="btn btn-sm join-item" @click="handleOpenEchoesImporter">
+      <div class="flex flex-wrap gap-2">
+        <button class="btn btn-sm" @click="handleOpenEchoesImporter">
           Import Echoes
         </button>
-        <button class="btn btn-sm join-item" @click="handleOpenEchoesPreset">
+        <button class="btn btn-sm" @click="handleOpenEchoesPreset">
           Use Presets
         </button>
-        <button class="btn btn-sm join-item" @click="handleOpenSaveEchoPreset">
+        <button class="btn btn-sm" @click="handleOpenSaveEchoPreset">
           Save Preset
         </button>
         <button
-          class="btn btn-sm join-item"
+          class="btn btn-sm"
           @click="handleOpenPresetsGuide">
           <span class="text-primary">Presets Guide</span>
         </button>
-        <button class="btn btn-sm join-item" @click="handleOpenWeightsEditor">
+        <button class="btn btn-sm" @click="handleOpenWeightsEditor">
           Customize Weights
         </button>
-        <button class="btn btn-sm join-item" @click="handleOpenRatingGuide">
+        <button class="btn btn-sm" @click="handleOpenRatingGuide">
           <span class="text-primary">Rating Guide</span>
         </button>
       </div>
