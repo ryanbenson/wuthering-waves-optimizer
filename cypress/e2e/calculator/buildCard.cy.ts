@@ -213,6 +213,7 @@ describe("Calculator Build Card", () => {
     const pngBase64 =
       "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
 
+    cy.get("[data-test-filter-panel-toggle]").click();
     cy.get("[data-test-build-card-background-input]").selectFile(
       {
         contents: Cypress.Buffer.from(pngBase64, "base64"),

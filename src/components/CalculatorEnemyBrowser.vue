@@ -17,13 +17,19 @@
           No character element is set yet. Enemy resistance will default to 10%
           until your character has an element.
         </p>
-        <div class="enemies__filters flex flex-wrap items-center gap-2 mb-6">
-          <input
-            v-model="filterName"
-            type="search"
-            placeholder="Search by name"
-            class="input input-bordered input-sm w-full max-w-xs"
-            data-test-enemy-browser-search />
+        <AppFilterPanel
+          class="mb-6"
+          :active-count="activeFilterCount"
+          :clear-disabled="!activeFilterCount"
+          @clear="resetFilters">
+          <template #bar>
+            <input
+              v-model="filterName"
+              type="search"
+              placeholder="Search by name"
+              class="input input-bordered input-sm w-full max-w-xs"
+              data-test-enemy-browser-search />
+          </template>
           <div class="flex flex-wrap gap-1 items-center">
             <span class="text-sm opacity-70 mr-1">Type:</span>
             <button
@@ -36,10 +42,7 @@
               {{ t }}
             </button>
           </div>
-          <button type="button" class="btn btn-sm btn-ghost" @click="resetFilters">
-            Clear
-          </button>
-        </div>
+        </AppFilterPanel>
 
         <div class="enemies__list">
           <template v-if="!enemiesFilteredSorted.length">
@@ -91,6 +94,7 @@ import {
   type EnemyBrowserUiType,
   type ListedEnemy,
 } from "../enemies/index";
+import AppFilterPanel from "./AppFilterPanel.vue";
 
 interface Props {
   characterElement?: string;
@@ -114,6 +118,13 @@ const TYPE_SORT = {
   Elite: 2,
   Common: 3,
 } as const;
+
+const activeFilterCount = computed(() => {
+  let count = 0;
+  if (filterName.value.trim()) count += 1;
+  if (filterType.value) count += 1;
+  return count;
+});
 
 const enemiesFilteredSorted = computed((): ListedEnemy[] => {
   const q = filterName.value.trim().toLowerCase();

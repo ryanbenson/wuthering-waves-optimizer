@@ -8,6 +8,7 @@ describe("Team Rotations", () => {
     cy.get('[data-test-calculator-nav="weapon"]').click();
     cy.get(".weapon__basic-data").should("be.visible");
     cy.get("[data-test-weapon-open-browser]").click();
+    cy.get("[data-test-weapon-browser-filters] [data-test-filter-panel-toggle]").click();
     cy.get('[data-test-weapon-browser-filter-rarity="5"]').click();
     cy.get('[data-test-weapon-browser-list="TheLastDance"]').click();
     cy.get("[data-test-weapon-select]").should("contain.text", "The Last Dance");
@@ -163,12 +164,13 @@ describe("Team Rotations", () => {
 
     // Filtering by a character in the team keeps it visible; filtering by one
     // that isn't on any team hides it
+    cy.get("[data-test-filter-panel-toggle]").click();
     cy.richSelect("[data-test-team-rotations-filter]", "Carlotta");
     cy.get("[data-test-team-rotations-item]").should("exist");
     cy.richSelect("[data-test-team-rotations-filter]", "Calcharo");
     cy.get("[data-test-team-rotations-item]").should("not.exist");
     cy.get("[data-test-team-rotations-no-matches]").should("be.visible");
-    cy.get("[data-test-team-rotations-clear-filters]").click();
+    cy.get("[data-test-filter-panel-clear]").click();
     cy.get("[data-test-team-rotations-item]").should("exist");
 
     // Delete the team, with confirmation. The dialog is a native <dialog>
@@ -636,6 +638,7 @@ describe("Team Rotations export/import", () => {
     cy.get('[data-test-rotation-action-by-attack-key="none"]').first().click();
     cy.richSelect('[data-test-rotation-action-skill-input="none"]', "BasicAttackStage1DMG");
 
+    cy.get('[data-test="team-rotation-export-menu"]').click();
     cy.get("[data-test-team-rotation-export-clipboard]").click();
     cy.get("@writeText").should("have.been.calledOnce");
 
@@ -651,6 +654,7 @@ describe("Team Rotations export/import", () => {
       expect(parsed.data).not.to.have.property("weapon");
 
       cy.get("[data-test-team-rotation-back]").click();
+      cy.get('[data-test="team-rotations-overflow-menu"]').click();
       cy.get("[data-test-team-rotations-toggle-import]").click();
       cy.get("[data-test-team-rotations-import-text]").type(exported, {
         parseSpecialCharSequences: false,
@@ -671,6 +675,7 @@ describe("Team Rotations export/import", () => {
 
   it("imports a team from an uploaded .json file", () => {
     cy.get("[data-test-nav-team-rotations]").click();
+    cy.get('[data-test="team-rotations-overflow-menu"]').click();
     cy.get("[data-test-team-rotations-toggle-import]").click();
 
     const payload = JSON.stringify({
@@ -698,6 +703,7 @@ describe("Team Rotations export/import", () => {
 
   it("shows a clear error and doesn't create a team for unrecognizable input", () => {
     cy.get("[data-test-nav-team-rotations]").click();
+    cy.get('[data-test="team-rotations-overflow-menu"]').click();
     cy.get("[data-test-team-rotations-toggle-import]").click();
     cy.get("[data-test-team-rotations-import-text]").type("not json at all");
     cy.get("[data-test-team-rotations-import-text-button]").click();
@@ -707,11 +713,13 @@ describe("Team Rotations export/import", () => {
   it("the download button doesn't error", () => {
     cy.get("[data-test-nav-team-rotations]").click();
     cy.get("[data-test-team-rotations-new]").click();
+    cy.get('[data-test="team-rotation-export-menu"]').click();
     cy.get("[data-test-team-rotation-export-download]").click();
   });
 
   it("List Presets shows the empty state when no presets are defined yet", () => {
     cy.get("[data-test-nav-team-rotations]").click();
+    cy.get('[data-test="team-rotations-overflow-menu"]').click();
     cy.get("[data-test-team-rotations-toggle-presets]").click();
     cy.get("[data-test-team-rotations-presets]").should("contain.text", "No team presets");
   });

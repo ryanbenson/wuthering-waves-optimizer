@@ -10,7 +10,12 @@
         </button>
       </form>
       <div class="py-4">
-        <div class="characters__filters flex flex-wrap align-center gap-2 mb-6">
+        <AppFilterPanel
+          class="mb-6"
+          :active-count="activeFilterCount"
+          :clear-disabled="!activeFilterCount"
+          @clear="resetFilters">
+        <div class="characters__filters flex flex-wrap align-center gap-2">
           <div class="characters__filters__sets">
             <button
               v-for="(elementIcon, element) in characterElementsSetImageMap"
@@ -127,10 +132,8 @@
               <span>Favorites</span>
             </button>
           </div>
-          <button @click="resetFilters" class="btn btn-sm btn-ghost">
-            Clear
-          </button>
         </div>
+        </AppFilterPanel>
 
         <div class="characters__list">
           <template v-if="!charactersList.length">
@@ -185,6 +188,7 @@ import { useSettingsStore } from "../stores/settings";
 import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
+import AppFilterPanel from "./AppFilterPanel.vue";
 import CalculatorCharacterCard from "./CalculatorCharacterCard.vue";
 
 type ListedCharacter = (typeof allCharactersList)[number];
@@ -235,6 +239,16 @@ const buildStatusFilterOptions = computed((): AppRichSelectOption[] =>
     disabled: hideWontBuildCharacters.value && status === "wont-build",
   })),
 );
+
+const activeFilterCount = computed(() => {
+  let count = 0;
+  if (filterElement.value) count += 1;
+  if (filterRarity.value != null) count += 1;
+  if (filterWeapon.value) count += 1;
+  if (filterBuildStatus.value) count += 1;
+  if (filterFavorites.value) count += 1;
+  return count;
+});
 
 const charactersList = computed((): ListedCharacter[] => {
   let characterList: ListedCharacter[] = JSON.parse(

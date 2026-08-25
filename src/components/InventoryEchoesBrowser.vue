@@ -10,22 +10,56 @@
     <div
       class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Inventory</h3>
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <button class="btn btn-sm btn-primary" @click="createEcho">
           Add echo
         </button>
         <button class="btn btn-sm" @click="handleOpenEchoesImporter">
           Import echoes
         </button>
-        <button class="btn btn-sm" @click="handleOpenWeightsEditor">
-          Customize Rating Weights
-        </button>
-        <button class="btn btn-sm" @click="handleOpenRatingGuide">
-          <span class="text-primary">Rating Guide</span>
-        </button>
+        <AppOverflowMenu
+          aria-label="More inventory actions"
+          data-test="inventory-overflow-menu">
+          <li>
+            <button type="button" @click="handleOpenWeightsEditor">
+              Customize Rating Weights
+            </button>
+          </li>
+          <li>
+            <button type="button" @click="handleOpenRatingGuide">
+              <span class="text-primary">Rating Guide</span>
+            </button>
+          </li>
+          <li class="menu-title px-2 py-1"><hr class="border-base-300" /></li>
+          <li>
+            <button
+              type="button"
+              class="text-error"
+              :disabled="trashEchoCount === 0"
+              v-tooltip="
+                'Permanently delete all echoes marked as trash. Locked echoes are skipped.'
+              "
+              data-test-delete-trash-echoes
+              @click="deleteAllTrash">
+              Delete trash ({{ trashEchoCount }})
+            </button>
+          </li>
+        </AppOverflowMenu>
+      </div>
+    </div>
+
+    <AppFilterPanel
+      class="mb-6"
+      :active-count="activeFilterCount"
+      :clear-disabled="!activeFilterCount"
+      @clear="resetFilters">
+      <!-- Diagnostics: these filter the list too, so they live here instead
+           of competing with Add/Import for header space. -->
+      <div class="echoes__filters__row flex flex-wrap items-center gap-2">
+        <span class="text-xs font-medium opacity-60 mr-1">Diagnostics</span>
         <button
           type="button"
-          class="btn btn-sm"
+          class="btn btn-sm btn-neutral"
           :class="{ 'btn-active btn-warning': duplicatesFilter }"
           v-tooltip="'Show only exact duplicate echoes in your inventory'"
           data-test-find-duplicates
@@ -40,7 +74,7 @@
         </button>
         <button
           type="button"
-          class="btn btn-sm"
+          class="btn btn-sm btn-neutral"
           :class="{ 'btn-active btn-warning': incompleteFilter }"
           v-tooltip="
             'Show only echoes missing an echo, set, main stat, or a substat'
@@ -55,269 +89,275 @@
             {{ incompleteEchoCount }}
           </span>
         </button>
-        <button
-          class="btn btn-sm btn-error"
-          :disabled="trashEchoCount === 0"
-          v-tooltip="
-            'Permanently delete all echoes marked as trash. Locked echoes are skipped.'
-          "
-          data-test-delete-trash-echoes
-          @click="deleteAllTrash">
-          Delete trash ({{ trashEchoCount }})
-        </button>
       </div>
-    </div>
 
-    <div class="echoes__filters mb-6 space-y-3">
-      <div
-        class="echoes__filters__header flex flex-wrap items-center justify-between gap-4 rounded-lg bg-base-200 p-1 pl-3">
-        <h3 class="text-sm font-semibold">
-          Filters
-          <span
-            v-if="activeFilterCount"
-            class="badge badge-sm badge-primary ml-2">
-            {{ activeFilterCount }}
-          </span>
-        </h3>
-        <div class="flex flex-wrap gap-2">
+      <!-- Basics: what the echo is -->
+      <div class="echoes__filters__row flex flex-wrap items-center gap-2">
+        <AppRichSelect
+          v-model="costFilter"
+          :options="costFilterOptions"
+          allow-empty
+          empty-label="Cost"
+          aria-label="Cost filter"
+          class="w-fit min-w-[150px]" />
+        <AppRichSelect
+          v-model="mainStatFilter"
+          :options="mainStatFilterOptions"
+          allow-empty
+          empty-label="Main stat"
+          aria-label="Main stat filter"
+          class="w-fit min-w-[150px]" />
+        <AppRichSelect
+          v-model="echo"
+          :options="echoSelectOptions"
+          searchable
+          allow-empty
+          empty-label="Echo"
+          aria-label="Echo filter"
+          class="w-fit min-w-[200px]" />
+        <AppRichSelect
+          v-model="echoSet"
+          :options="echoSetSelectOptions"
+          searchable
+          allow-empty
+          empty-label="Set"
+          aria-label="Set filter"
+          class="w-fit min-w-[200px]" />
+      </div>
+
+      <!-- Status flags -->
+      <div class="echoes__filters__row flex flex-wrap items-center gap-2">
+        <span class="text-xs font-medium opacity-60 mr-1">Status</span>
+        <div class="join">
           <button
             type="button"
-            class="btn btn-sm"
-            :disabled="!activeFilterCount"
-            @click="resetFilters">
-            Clear
+            class="btn btn-sm btn-ghost join-item"
+            :class="{ 'btn-active': favoriteFilter }"
+            v-tooltip="'Show only favorite echoes'"
+            aria-label="Show favorites only"
+            data-test-filter-favorites
+            @click="favoriteFilter = !favoriteFilter">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              class="size-4"
+              aria-hidden="true">
+              <path
+                v-if="favoriteFilter"
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                fill="currentColor" />
+              <path
+                v-else
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost join-item"
+            :class="{ 'btn-active': lockedFilter }"
+            v-tooltip="'Show only locked echoes'"
+            aria-label="Show locked only"
+            data-test-filter-locked
+            @click="lockedFilter = !lockedFilter">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              class="size-4"
+              aria-hidden="true">
+              <path
+                d="M144 144c0-44.2 35.8-80 80-80c31.5 0 58.7 18.1 72 44.5c7.6 15.1 26.2 21.2 41.3 13.6s21.2-26.2 13.6-41.3C337.9 31.1 281.5 0 224 0C144.5 0 80 64.5 80 144l0 48L64 192c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-192c0-35.3-28.7-64-64-64l-16 0-16 0 0-48zm0 96l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80z"
+                fill="currentColor" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost join-item"
+            :class="{ 'btn-active text-error': trashFilter }"
+            v-tooltip="'Show only echoes marked as trash'"
+            aria-label="Show trash only"
+            data-test-filter-trash
+            @click="trashFilter = !trashFilter">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 448 512"
+              class="size-4"
+              aria-hidden="true">
+              <path
+                d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l0 320c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320-64 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-96 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-64 0z"
+                fill="currentColor" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-ghost join-item"
+            :class="{ 'btn-active text-warning': ignoreFromOptimizerFilter }"
+            v-tooltip="'Show only echoes excluded from the optimizer'"
+            aria-label="Show ignored from optimizer only"
+            data-test-filter-ignore-optimizer
+            @click="ignoreFromOptimizerFilter = !ignoreFromOptimizerFilter">
+            <EchoOptimizerVisibilityIcon :hidden="ignoreFromOptimizerFilter" />
           </button>
         </div>
-
-        <!-- Basics: what the echo is -->
-        <div class="echoes__filters__row flex flex-wrap items-center gap-2">
-          <AppRichSelect
-            v-model="costFilter"
-            :options="costFilterOptions"
-            allow-empty
-            empty-label="Cost"
-            aria-label="Cost filter"
-            class="w-fit min-w-[150px]" />
-          <AppRichSelect
-            v-model="mainStatFilter"
-            :options="mainStatFilterOptions"
-            allow-empty
-            empty-label="Main stat"
-            aria-label="Main stat filter"
-            class="w-fit min-w-[150px]" />
-          <AppRichSelect
-            v-model="echo"
-            :options="echoSelectOptions"
-            searchable
-            allow-empty
-            empty-label="Echo"
-            aria-label="Echo filter"
-            class="w-fit min-w-[200px]" />
-        </div>
-
-        <!-- Status flags -->
-        <div class="echoes__filters__row flex flex-wrap items-center gap-2">
-          <span class="text-xs font-medium opacity-60 mr-1">Status</span>
-          <div class="join">
-            <button
-              type="button"
-              class="btn btn-sm btn-ghost join-item"
-              :class="{ 'btn-active': favoriteFilter }"
-              v-tooltip="'Show only favorite echoes'"
-              aria-label="Show favorites only"
-              data-test-filter-favorites
-              @click="favoriteFilter = !favoriteFilter">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="size-4"
-                aria-hidden="true">
-                <path
-                  v-if="favoriteFilter"
-                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                  fill="currentColor" />
-                <path
-                  v-else
-                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              class="btn btn-sm btn-ghost join-item"
-              :class="{ 'btn-active': lockedFilter }"
-              v-tooltip="'Show only locked echoes'"
-              aria-label="Show locked only"
-              data-test-filter-locked
-              @click="lockedFilter = !lockedFilter">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                class="size-4"
-                aria-hidden="true">
-                <path
-                  d="M144 144c0-44.2 35.8-80 80-80c31.5 0 58.7 18.1 72 44.5c7.6 15.1 26.2 21.2 41.3 13.6s21.2-26.2 13.6-41.3C337.9 31.1 281.5 0 224 0C144.5 0 80 64.5 80 144l0 48L64 192c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-192c0-35.3-28.7-64-64-64l-16 0-16 0 0-48zm0 96l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80z"
-                  fill="currentColor" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              class="btn btn-sm btn-ghost join-item"
-              :class="{ 'btn-active text-error': trashFilter }"
-              v-tooltip="'Show only echoes marked as trash'"
-              aria-label="Show trash only"
-              data-test-filter-trash
-              @click="trashFilter = !trashFilter">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 448 512"
-                class="size-4"
-                aria-hidden="true">
-                <path
-                  d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l0 320c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320-64 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-96 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-64 0z"
-                  fill="currentColor" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              class="btn btn-sm btn-ghost join-item"
-              :class="{ 'btn-active text-warning': ignoreFromOptimizerFilter }"
-              v-tooltip="'Show only echoes excluded from the optimizer'"
-              aria-label="Show ignored from optimizer only"
-              data-test-filter-ignore-optimizer
-              @click="ignoreFromOptimizerFilter = !ignoreFromOptimizerFilter">
-              <EchoOptimizerVisibilityIcon :hidden="ignoreFromOptimizerFilter" />
-            </button>
-          </div>
-        </div>
-
-        <!-- Quality: CV / RV / Rating -->
-        <div class="echoes__filters__row flex flex-wrap gap-6 w-full">
-          <EchoCvRvRangeFilters
-            v-model:cv-min="cvMin"
-            v-model:cv-max="cvMax"
-            v-model:rv-min="rvMin"
-            v-model:rv-max="rvMax" />
-          <EchoRatingRangeFilters
-            v-model:rating-min="ratingMin"
-            v-model:rating-max="ratingMax" />
-        </div>
-
-        <!-- Sets last -->
-        <div class="echoes__filters__row flex flex-wrap items-center gap-2">
-          <span class="text-xs font-medium opacity-60 mr-1">Set</span>
-          <div
-            class="echoes__filters__sets echo-filters__sets flex flex-wrap"
-            :class="{ 'echo-filters__sets--active': echoSet !== null }">
-            <button
-              v-for="setKey in echoSetsList"
-              :key="setKey"
-              type="button"
-              @click="toggleEchoSetFilter(setKey)"
-              class="rounded mr-1 p-[.3rem]"
-              :class="[setKey, { 'btn-active': isEchoSetFilterActive(setKey) }]">
-              <img
-                :src="getEchoSetImage(setKey)"
-                class="size-7"
-                :class="setKey" />
-            </button>
-          </div>
-        </div>
       </div>
-    </div>
-    <div
-      class="echoes__bulk sticky top-0 z-10 my-4 rounded-box border border-base-300 bg-base-200/95 p-3 backdrop-blur flex flex-wrap items-center gap-2"
-      :class="{
-        invisible: !hasSelection,
-        'pointer-events-none': !hasSelection,
-      }"
-      :aria-hidden="!hasSelection"
-      data-test-bulk-actions>
-      <span class="text-sm font-medium mr-1">
-        {{ selectedEchoIds.length }} selected
-      </span>
-      <button
-        type="button"
-        class="btn btn-sm btn-ghost"
-        @click="selectPage"
-        data-test-bulk-select-page>
-        Select page
-      </button>
-      <button
-        type="button"
-        class="btn btn-sm btn-ghost"
-        @click="selectAllFiltered"
-        data-test-bulk-select-all>
-        Select all ({{ echoesList.length }})
-      </button>
-      <button
-        type="button"
-        class="btn btn-sm btn-ghost"
-        @click="clearSelection"
-        data-test-bulk-clear>
-        Clear selection
-      </button>
+
+      <!-- Quality: CV / RV / Rating -->
+      <div class="echoes__filters__row flex flex-wrap gap-6 w-full">
+        <EchoCvRvRangeFilters
+          v-model:cv-min="cvMin"
+          v-model:cv-max="cvMax"
+          v-model:rv-min="rvMin"
+          v-model:rv-max="rvMax" />
+        <EchoRatingRangeFilters
+          v-model:rating-min="ratingMin"
+          v-model:rating-max="ratingMax" />
+      </div>
+    </AppFilterPanel>
+    <AppBulkActionBar
+      :visible="hasSelection"
+      :count="selectedEchoIds.length">
+      <template #selection>
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost"
+          @click="selectPage"
+          data-test-bulk-select-page>
+          Select page
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost"
+          @click="selectAllFiltered"
+          data-test-bulk-select-all>
+          Select all ({{ echoesList.length }})
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost"
+          @click="clearSelection"
+          data-test-bulk-clear>
+          Clear selection
+        </button>
+      </template>
+      <div class="join">
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost join-item"
+          v-tooltip="'Favorite selected echoes'"
+          aria-label="Favorite selected"
+          data-test-bulk-favorite
+          @click="bulkFavorite(true)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="size-4"
+            aria-hidden="true">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+              fill="currentColor" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost join-item"
+          v-tooltip="'Unfavorite selected echoes'"
+          aria-label="Unfavorite selected"
+          data-test-bulk-unfavorite
+          @click="bulkFavorite(false)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="size-4"
+            aria-hidden="true">
+            <path
+              d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+      <div class="join">
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost join-item"
+          v-tooltip="'Lock selected echoes'"
+          aria-label="Lock selected"
+          data-test-bulk-lock
+          @click="bulkLock(true)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+            class="size-4"
+            aria-hidden="true">
+            <path
+              d="M144 144c0-44.2 35.8-80 80-80c31.5 0 58.7 18.1 72 44.5c7.6 15.1 26.2 21.2 41.3 13.6s21.2-26.2 13.6-41.3C337.9 31.1 281.5 0 224 0C144.5 0 80 64.5 80 144l0 48L64 192c-35.3 0-64 28.7-64 64L0 448c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-192c0-35.3-28.7-64-64-64l-16 0-16 0 0-48zm0 96l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80z"
+              fill="currentColor" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost join-item"
+          v-tooltip="'Unlock selected echoes'"
+          aria-label="Unlock selected"
+          data-test-bulk-unlock
+          @click="bulkLock(false)">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 448 512"
+            class="size-4"
+            aria-hidden="true">
+            <path
+              d="M384 192c35.3 0 64 28.7 64 64l0 192c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 256c0-35.3 28.7-64 64-64l16 0 0-48C80 64.5 144.5 0 224 0s144 64.5 144 144l0 48 16 0zM224 80c-35.3 0-64 28.7-64 64l0 48 128 0 0-48c0-35.3-28.7-64-64-64z"
+              fill="currentColor" />
+          </svg>
+        </button>
+      </div>
+      <div class="join">
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost join-item"
+          v-tooltip="'Mark selected echoes as trash'"
+          data-test-bulk-trash
+          @click="bulkTrash(true)">
+          Mark trash
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost join-item"
+          v-tooltip="'Remove selected echoes from trash'"
+          data-test-bulk-untrash
+          @click="bulkTrash(false)">
+          Unmark trash
+        </button>
+      </div>
+      <div class="join">
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost join-item"
+          v-tooltip="'Exclude selected echoes from the optimizer'"
+          aria-label="Ignore selected from optimizer"
+          data-test-bulk-ignore-optimizer
+          @click="bulkIgnoreOptimizer(true)">
+          <EchoOptimizerVisibilityIcon :hidden="true" />
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-ghost join-item"
+          v-tooltip="'Include selected echoes in the optimizer'"
+          aria-label="Include selected in optimizer"
+          data-test-bulk-include-optimizer
+          @click="bulkIgnoreOptimizer(false)">
+          <EchoOptimizerVisibilityIcon :hidden="false" />
+        </button>
+      </div>
       <div class="divider divider-horizontal mx-0 hidden sm:flex"></div>
-      <button
-        type="button"
-        class="btn btn-sm"
-        @click="bulkFavorite(true)"
-        data-test-bulk-favorite>
-        Favorite
-      </button>
-      <button
-        type="button"
-        class="btn btn-sm"
-        @click="bulkFavorite(false)"
-        data-test-bulk-unfavorite>
-        Unfavorite
-      </button>
-      <button
-        type="button"
-        class="btn btn-sm"
-        @click="bulkLock(true)"
-        data-test-bulk-lock>
-        Lock
-      </button>
-      <button
-        type="button"
-        class="btn btn-sm"
-        @click="bulkLock(false)"
-        data-test-bulk-unlock>
-        Unlock
-      </button>
-      <button
-        type="button"
-        class="btn btn-sm"
-        @click="bulkTrash(true)"
-        data-test-bulk-trash>
-        Mark trash
-      </button>
-      <button
-        type="button"
-        class="btn btn-sm"
-        @click="bulkTrash(false)"
-        data-test-bulk-untrash>
-        Unmark trash
-      </button>
-      <button
-        type="button"
-        class="btn btn-sm"
-        @click="bulkIgnoreOptimizer(true)"
-        data-test-bulk-ignore-optimizer>
-        Ignore optimizer
-      </button>
-      <button
-        type="button"
-        class="btn btn-sm"
-        @click="bulkIgnoreOptimizer(false)"
-        data-test-bulk-include-optimizer>
-        Include optimizer
-      </button>
       <button
         type="button"
         class="btn btn-sm btn-error"
@@ -325,7 +365,7 @@
         data-test-bulk-delete>
         Delete
       </button>
-    </div>
+    </AppBulkActionBar>
     <div class="echoes__list">
       <template v-if="!echoesList.length">
         <div class="echoes__list--empty py-12 text-center w-full">
@@ -456,7 +496,6 @@ import {
   echoSetLabelMap,
   getEchoCritValue,
   getEchoRollValue,
-  getEchoSetIconByType,
   getReadableSubStatLabel,
   statsTable,
 } from "../echoes/stats";
@@ -476,8 +515,12 @@ import PaginationControls from "./PaginationControls.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
+import AppOverflowMenu from "./AppOverflowMenu.vue";
+import AppFilterPanel from "./AppFilterPanel.vue";
+import AppBulkActionBar from "./AppBulkActionBar.vue";
 import {
   buildEchoSelectOptions,
+  buildEchoSetSelectOptions,
   buildSimpleSelectOptions,
 } from "../utils/richSelectOptions";
 import { randomString } from "../utils/strings";
@@ -754,6 +797,9 @@ const mainStatFilterOptions = computed((): AppRichSelectOption[] =>
 const echoSelectOptions = computed((): AppRichSelectOption[] =>
   buildEchoSelectOptions(mainEchoOptions.value),
 );
+const echoSetSelectOptions = computed((): AppRichSelectOption[] =>
+  buildEchoSetSelectOptions(echoSetsList.value),
+);
 
 function echoCardBinder(e: InventoryEchoRow) {
   const str = (v: unknown) => (v == null ? "" : String(v));
@@ -782,22 +828,6 @@ function echoCardBinder(e: InventoryEchoRow) {
 function handleEditEcho(echoId: string) {
   inventoryEchoEditRef.value?.setEchoId(echoId);
   inventoryEchoEditRef.value?.handleOpenModal();
-}
-
-function getEchoSetImage(set: string) {
-  return getEchoSetIconByType(set);
-}
-
-function toggleEchoSetFilter(set: string) {
-  if (echoSet.value === set) {
-    echoSet.value = null;
-  } else {
-    echoSet.value = set;
-  }
-}
-
-function isEchoSetFilterActive(set: string) {
-  return echoSet.value === set;
 }
 
 function toggleDuplicatesFilter() {
@@ -1041,14 +1071,6 @@ function handleOpenWeightsEditor() {
 html[data-theme-style="light"] {
   .modal-backdrop {
     opacity: 0.5;
-  }
-}
-.echo-filters__sets--active {
-  button {
-    opacity: 0.6;
-  }
-  button.btn-active {
-    opacity: 1;
   }
 }
 .echo__item--selected {

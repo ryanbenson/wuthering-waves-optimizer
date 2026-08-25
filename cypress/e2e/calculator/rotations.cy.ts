@@ -17,6 +17,7 @@ describe("Calculator Rotations", () => {
     cy.get('[data-test-calculator-nav="rotations"]').click();
 
     cy.get(`[data-test-rotations-action="create"]`).should("be.visible");
+    cy.get('[data-test="rotations-overflow-menu"]').click();
     cy.get(`[data-test-rotations-action="import"]`).should("be.visible");
     cy.get(`[data-test-rotations-action="presets"]`).should("be.visible");
 
@@ -168,6 +169,7 @@ describe("Calculator Rotations export/import", () => {
   });
 
   function openImportPanel() {
+    cy.get('[data-test="rotations-overflow-menu"]').click();
     cy.get('[data-test-rotations-action="import"]').click();
   }
 

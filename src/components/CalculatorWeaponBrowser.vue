@@ -10,8 +10,13 @@
         </button>
       </form>
       <div class="py-4">
-        <div class="weapons__filters flex flex-wrap align-center gap-2 mb-6" data-test-weapon-browser-filters>
-          <div class="weapons__filters__rarity ml-2">
+        <AppFilterPanel
+          class="mb-6"
+          :active-count="activeFilterCount"
+          :clear-disabled="!activeFilterCount"
+          data-test-weapon-browser-filters
+          @clear="resetFilters">
+          <div class="weapons__filters__rarity flex flex-wrap gap-2">
             <button
               class="rounded mr-1 inline-flex justify-center size-8 items-center"
               @click="toggleRarityFilter(5)"
@@ -58,10 +63,7 @@
               1✦
             </button>
           </div>
-          <button @click="resetFilters" class="btn btn-sm btn-ghost" data-test-weapon-browser-filter-clear>
-            Clear
-          </button>
-        </div>
+        </AppFilterPanel>
 
         <div class="weapons__list">
           <template v-if="!weaponsListed.length">
@@ -102,6 +104,7 @@
 <script setup lang="ts">
 import { computed, defineExpose, nextTick, ref } from "vue";
 import CalculatorWeaponCard from "./CalculatorWeaponCard.vue";
+import AppFilterPanel from "./AppFilterPanel.vue";
 import { sortWeaponsWithSignatureFirst } from "../weapons/weaponSort";
 
 type WeaponRow = { key: string; name: string; rarity?: number; [k: string]: unknown };
@@ -149,6 +152,10 @@ const weaponsListFormatted = computed(() => {
   });
   return weapons;
 });
+
+const activeFilterCount = computed(() =>
+  filterRarity.value !== null && filterRarity.value !== undefined ? 1 : 0,
+);
 
 const weaponsListed = computed(() => {
   let weapons = JSON.parse(JSON.stringify(weaponsListFormatted.value)) as WeaponRow[];
