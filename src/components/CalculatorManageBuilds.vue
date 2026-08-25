@@ -66,35 +66,29 @@
                 @click="handleEquip(build.id)">
                 Equip
               </button>
-              <div class="dropdown dropdown-end shrink-0">
-                <div
-                  tabindex="0"
-                  role="button"
-                  class="btn btn-ghost btn-xs"
-                  :data-test-manage-builds-export="build.id">
-                  Export
-                </div>
-                <ul
-                  tabindex="0"
-                  class="dropdown-content menu menu-sm bg-base-200 rounded-box z-10 mt-1 w-48 border border-white/5 p-2 shadow-2xl outline-1 outline-black/5">
-                  <li>
-                    <button
-                      type="button"
-                      :data-test-manage-builds-export-clipboard="build.id"
-                      @click="handleExportClipboard(build)">
-                      Copy to Clipboard
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      type="button"
-                      :data-test-manage-builds-export-file="build.id"
-                      @click="handleExportFile(build)">
-                      Download JSON
-                    </button>
-                  </li>
-                </ul>
-              </div>
+              <AppOverflowMenu
+                class="shrink-0"
+                size="xs"
+                aria-label="Export build"
+                :data-test-manage-builds-export="build.id">
+                <template #trigger>Export</template>
+                <li>
+                  <button
+                    type="button"
+                    :data-test-manage-builds-export-clipboard="build.id"
+                    @click="handleExportClipboard(build)">
+                    Copy to Clipboard
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    :data-test-manage-builds-export-file="build.id"
+                    @click="handleExportFile(build)">
+                    Download JSON
+                  </button>
+                </li>
+              </AppOverflowMenu>
               <button
                 type="button"
                 class="btn btn-ghost btn-xs shrink-0"
@@ -222,6 +216,7 @@ import {
   parseBuildImportPayload,
 } from "../characters/buildExportImport";
 import CalculatorBuildPreviewRow from "./CalculatorBuildPreviewRow.vue";
+import AppOverflowMenu from "./AppOverflowMenu.vue";
 
 defineOptions({ name: "CalculatorManageBuilds" });
 

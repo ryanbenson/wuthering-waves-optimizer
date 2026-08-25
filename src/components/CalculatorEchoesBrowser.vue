@@ -3,127 +3,98 @@
     <form method="dialog" class="modal-backdrop" @click="handleClose">
       <button>close</button>
     </form>
-    <div v-if="isOpen" class="modal-box max-w-5xl">
+    <div v-if="isOpen" class="modal-box max-w-5xl min-h-[37.5rem]">
       <form method="dialog" @click="handleClose">
         <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
           ✕
         </button>
       </form>
       <div class="py-4">
-        <div class="echoes__filters mb-6 space-y-3">
-          <div
-            class="echoes__filters__header flex flex-wrap items-center justify-between gap-4 rounded-lg bg-base-200 p-1 pl-3">
-            <h3 class="text-sm font-semibold">
-              Filters
-              <span
-                v-if="activeFilterCount"
-                class="badge badge-sm badge-primary ml-2">
-                {{ activeFilterCount }}
-              </span>
-            </h3>
-            <div class="flex flex-wrap gap-2">
+        <AppFilterPanel
+          class="mb-6"
+          :active-count="activeFilterCount"
+          :clear-disabled="!activeFilterCount"
+          @clear="resetFilters">
+          <div class="echoes__filters__row flex flex-wrap items-center gap-2">
+            <AppRichSelect
+              v-model="costFilter"
+              :options="costFilterOptions"
+              allow-empty
+              empty-label="Cost"
+              aria-label="Cost filter"
+              class="w-fit min-w-[150px]" />
+            <AppRichSelect
+              v-model="mainStatFilter"
+              :options="mainStatFilterOptions"
+              allow-empty
+              empty-label="Main stat"
+              aria-label="Main stat filter"
+              class="w-fit min-w-[150px]" />
+            <AppRichSelect
+              v-model="echo"
+              :options="echoSelectOptions"
+              searchable
+              allow-empty
+              empty-label="Echo"
+              aria-label="Echo filter"
+              class="w-fit min-w-[200px]" />
+            <AppRichSelect
+              v-model="echoSet"
+              :options="echoSetSelectOptions"
+              searchable
+              allow-empty
+              empty-label="Set"
+              aria-label="Set filter"
+              class="w-fit min-w-[200px]" />
+            <AppRichSelect
+              v-model="equippedFilter"
+              :options="equippedFilterOptions"
+              allow-empty
+              empty-label="Show all"
+              aria-label="Equipped filter"
+              class="w-fit" />
+            <div class="join">
               <button
                 type="button"
-                class="btn btn-sm"
-                :disabled="!activeFilterCount"
-                @click="resetFilters">
-                Clear
+                class="btn btn-sm btn-ghost join-item"
+                :class="{ 'btn-active': favoriteFilter }"
+                v-tooltip="'Show only favorite echoes'"
+                aria-label="Show favorites only"
+                data-test-filter-favorites
+                @click="favoriteFilter = !favoriteFilter">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  class="size-4"
+                  aria-hidden="true">
+                  <path
+                    v-if="favoriteFilter"
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                    fill="currentColor" />
+                  <path
+                    v-else
+                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
               </button>
             </div>
-
-            <div class="echoes__filters__row flex flex-wrap items-center gap-2">
-              <AppRichSelect
-                v-model="costFilter"
-                :options="costFilterOptions"
-                allow-empty
-                empty-label="Cost"
-                aria-label="Cost filter"
-                class="w-fit min-w-[150px]" />
-              <AppRichSelect
-                v-model="mainStatFilter"
-                :options="mainStatFilterOptions"
-                allow-empty
-                empty-label="Main stat"
-                aria-label="Main stat filter"
-                class="w-fit min-w-[150px]" />
-              <AppRichSelect
-                v-model="echo"
-                :options="echoSelectOptions"
-                searchable
-                allow-empty
-                empty-label="Echo"
-                aria-label="Echo filter"
-                class="w-fit min-w-[200px]" />
-              <AppRichSelect
-                v-model="equippedFilter"
-                :options="equippedFilterOptions"
-                allow-empty
-                empty-label="Show all"
-                aria-label="Equipped filter"
-                class="w-fit" />
-              <div class="join">
-                <button
-                  type="button"
-                  class="btn btn-sm btn-ghost join-item"
-                  :class="{ 'btn-active': favoriteFilter }"
-                  v-tooltip="'Show only favorite echoes'"
-                  aria-label="Show favorites only"
-                  data-test-filter-favorites
-                  @click="favoriteFilter = !favoriteFilter">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    class="size-4"
-                    aria-hidden="true">
-                    <path
-                      v-if="favoriteFilter"
-                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                      fill="currentColor" />
-                    <path
-                      v-else
-                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div class="echoes__filters__row flex flex-wrap gap-6 w-full">
-              <EchoCvRvRangeFilters
-                v-model:cv-min="cvMin"
-                v-model:cv-max="cvMax"
-                v-model:rv-min="rvMin"
-                v-model:rv-max="rvMax" />
-              <EchoRatingRangeFilters
-                v-model:rating-min="ratingMin"
-                v-model:rating-max="ratingMax" />
-            </div>
-
-            <div class="echoes__filters__row flex flex-wrap items-center gap-2">
-              <span class="text-xs font-medium opacity-60 mr-1">Set</span>
-              <div
-                class="echoes__filters__sets echo-filters__sets flex flex-wrap"
-                :class="{ 'echo-filters__sets--active': echoSet !== null }">
-                <button
-                  v-for="setKey in echoSetsList"
-                  :key="setKey"
-                  type="button"
-                  @click="toggleEchoSetFilter(setKey)"
-                  class="rounded mr-1 p-[.3rem]"
-                  :class="[setKey, { 'btn-active': isEchoSetFilterActive(setKey) }]">
-                  <img
-                    :src="getEchoSetImage(setKey)"
-                    class="size-7"
-                    :class="setKey" />
-                </button>
-              </div>
-            </div>
           </div>
-        </div>
+
+          <div class="echoes__filters__row flex flex-wrap gap-6 w-full">
+            <EchoCvRvRangeFilters
+              v-model:cv-min="cvMin"
+              v-model:cv-max="cvMax"
+              v-model:rv-min="rvMin"
+              v-model:rv-max="rvMax" />
+            <EchoRatingRangeFilters
+              v-model:rating-min="ratingMin"
+              v-model:rating-max="ratingMax" />
+          </div>
+        </AppFilterPanel>
 
         <div class="echoes__list">
           <template v-if="!echoesList.length">
@@ -208,7 +179,6 @@ import {
   echoSetLabelMap,
   getEchoCritValue,
   getEchoRollValue,
-  getEchoSetIconByType,
   getReadableSubStatLabel,
   statsTable,
 } from "../echoes/stats";
@@ -223,8 +193,10 @@ import PaginationControls from "./PaginationControls.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
+import AppFilterPanel from "./AppFilterPanel.vue";
 import {
   buildEchoSelectOptions,
+  buildEchoSetSelectOptions,
   buildSimpleSelectOptions,
 } from "../utils/richSelectOptions";
 import { useToast } from "../composables/useToast";
@@ -408,6 +380,9 @@ const mainStatFilterOptions = computed((): AppRichSelectOption[] =>
 const echoSelectOptions = computed((): AppRichSelectOption[] =>
   buildEchoSelectOptions(mainEchoOptions.value),
 );
+const echoSetSelectOptions = computed((): AppRichSelectOption[] =>
+  buildEchoSetSelectOptions(echoSetsList.value),
+);
 const equippedFilterOptions = computed((): AppRichSelectOption[] => [
   { value: "self", label: `Hide equipped by ${props.character}` },
   { value: "any", label: "Hide equipped by anyone" },
@@ -429,19 +404,6 @@ function handleClose() {
       // Must close the <dialog> itself — only clearing isOpen removes the
       // modal-box (and its method="dialog" form) while leaving the backdrop open.
       triggerCloseModal();
-    }
-function getEchoSetImage(type: string) {
-      return getEchoSetIconByType(type);
-    }
-function toggleEchoSetFilter(type: string) {
-      if (echoSet.value === type) {
-        echoSet.value = null;
-      } else {
-        echoSet.value = type;
-      }
-    }
-function isEchoSetFilterActive(type: string) {
-      return echoSet.value === type;
     }
 async function assignEcho(echoId: string) {
       const isUsed = isEchoUsedByChar(echoId);
@@ -534,14 +496,6 @@ html[data-theme-style="light"] {
   }
   .MoonlitClouds {
     filter: contrast(0);
-  }
-}
-.echo-filters__sets--active {
-  button {
-    opacity: 0.6;
-  }
-  button.btn-active {
-    opacity: 1;
   }
 }
 </style>

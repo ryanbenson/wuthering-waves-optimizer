@@ -31,24 +31,28 @@
             <span class="label-text text-xs">Status</span>
             <TeamBuildStatus :status="teamStatus" interactive :team-id="props.teamId" />
           </label>
-          <div class="join ml-auto">
-            <button
-              type="button"
-              class="btn btn-sm btn-ghost join-item"
-              title="Copy this team's config to your clipboard"
-              data-test-team-rotation-export-clipboard
-              @click="exportTeamToClipboard">
-              Copy Team
-            </button>
-            <button
-              type="button"
-              class="btn btn-sm btn-ghost join-item"
-              title="Download this team's config as a .json file"
-              data-test-team-rotation-export-download
-              @click="exportTeamToFile">
-              Download Team
-            </button>
-          </div>
+          <AppOverflowMenu
+            class="ml-auto"
+            aria-label="Export team"
+            data-test="team-rotation-export-menu">
+            <template #trigger>Export</template>
+            <li>
+              <button
+                type="button"
+                data-test-team-rotation-export-clipboard
+                @click="exportTeamToClipboard">
+                Copy to Clipboard
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                data-test-team-rotation-export-download
+                @click="exportTeamToFile">
+                Download JSON
+              </button>
+            </li>
+          </AppOverflowMenu>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -290,6 +294,7 @@ import { storeToRefs } from "pinia";
 import { randomString } from "../utils/strings";
 import { displayInt, displayPercentage } from "../utils/numbers";
 import AppRichSelect, { type AppRichSelectOption } from "./AppRichSelect.vue";
+import AppOverflowMenu from "./AppOverflowMenu.vue";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
 import TeamRotationActionEditor from "./TeamRotationActionEditor.vue";
 import TeamRotationDamages from "./TeamRotationDamages.vue";

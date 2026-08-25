@@ -11,25 +11,7 @@
         </button>
       </form>
       <div class="py-4">
-        <div
-          class="echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
-          :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
-          <span class="mr-2">Filter</span>
-          <button
-            v-for="echoSet in echoSets"
-            :key="echoSet"
-            @click="toggleEchoSetFilter(echoSet)"
-            class="rounded p-[.3rem]"
-            :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
-            <img
-              :src="getEchoSetImage(echoSet)"
-              class="size-7 m-width-7"
-              :class="echoSet" />
-          </button>
-          <button @click="resetFilters" class="btn btn-sm btn-ghost">
-            Clear
-          </button>
-        </div>
+        <EchoSetFilterSelect v-model="echoSetFilter" />
       </div>
       <div class="echoes__list grid grid-cols-1 md:grid-cols-4 gap-4">
         <template v-if="!allEchoesListFiltered.length">
@@ -84,7 +66,7 @@
           class="btn btn-sm"
           data-test-optimizer-guide-btn
           @click="handleOpenOptimizerGuide">
-          🧪 Optimizer guide
+          <span class="text-primary">Optimizer Guide</span>
         </button>
       </div>
     </div>
@@ -388,6 +370,7 @@ import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import CalculatorOptimizerResults from "./CalculatorOptimizerResults.vue";
 import CalculatorOptimizerGuide from "./CalculatorOptimizerGuide.vue";
 import CalculatorOptimizerSettings from "./CalculatorOptimizerSettings.vue";
+import EchoSetFilterSelect from "./EchoSetFilterSelect.vue";
 import {
   normalizeLoadoutFormat,
   OPTIMIZER_EMPTY_REASON_MESSAGES,
@@ -678,26 +661,6 @@ function closeEchoChooser() {
   echoSetFilter.value = null;
   const modalEl = document.getElementById(modalIdPicker);
   (modalEl as HTMLDialogElement | null)?.close();
-}
-
-function toggleEchoSetFilter(echoSet: string) {
-  if (echoSetFilter.value === echoSet) {
-    echoSetFilter.value = null;
-  } else {
-    echoSetFilter.value = echoSet;
-  }
-}
-
-function isEchoSetFilterActive(echoSet: string) {
-  return echoSetFilter.value === echoSet;
-}
-
-function resetFilters() {
-  echoSetFilter.value = null;
-}
-
-function getEchoSetImage(echoSet: string) {
-  return getEchoSetIconByType(echoSet);
 }
 
 function getEchoSetIcon(type: string) {

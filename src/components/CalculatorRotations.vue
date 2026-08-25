@@ -1,25 +1,33 @@
 <template>
   <div class="optimizer__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
     <h3 class="text-sm font-semibold">Rotations</h3>
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap items-center gap-2">
       <button
         class="btn btn-sm"
         @click="handleCreateRotation"
         data-test-rotations-action="create">
         Create
       </button>
-      <button
-        class="btn btn-sm"
-        @click="isImportOpen = true"
-        data-test-rotations-action="import">
-        Import
-      </button>
-      <button
-        class="btn btn-sm"
-        @click="isPresetRotationsOpen = true"
-        data-test-rotations-action="presets">
-        List Presets
-      </button>
+      <AppOverflowMenu
+        aria-label="More rotation actions"
+        data-test="rotations-overflow-menu">
+        <li>
+          <button
+            type="button"
+            @click="isImportOpen = true"
+            data-test-rotations-action="import">
+            Import
+          </button>
+        </li>
+        <li>
+          <button
+            type="button"
+            @click="isPresetRotationsOpen = true"
+            data-test-rotations-action="presets">
+            List Presets
+          </button>
+        </li>
+      </AppOverflowMenu>
     </div>
   </div>
   <CalculatorRotationsImportModal v-model:open="isImportOpen" @import="handleImportedRotation" />
@@ -73,6 +81,7 @@ import { randomString } from "../utils/strings.ts";
 import CalculatorRotation from "./CalculatorRotation.vue";
 import CalculatorRotationsImportModal from "./CalculatorRotationsImportModal.vue";
 import CalculatorRotationsPresetsModal from "./CalculatorRotationsPresetsModal.vue";
+import AppOverflowMenu from "./AppOverflowMenu.vue";
 import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
 import {

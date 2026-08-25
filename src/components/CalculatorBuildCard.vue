@@ -1,6 +1,35 @@
 <template>
   <div class="build-card" data-test-build-card>
-    <div class="build-card__toolbar flex flex-wrap justify-between items-end gap-4 mb-4">
+    <div
+      class="build-card__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
+      <h3 class="text-sm font-semibold">Build Card</h3>
+      <div class="flex flex-wrap gap-2">
+        <button
+          v-if="clipboardSupported"
+          type="button"
+          class="btn btn-sm btn-primary"
+          :disabled="isExporting"
+          @click="handleCopy"
+          data-test-build-card-copy>
+          Copy to Clipboard
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-primary"
+          :disabled="isExporting"
+          @click="handleDownload"
+          data-test-build-card-download>
+          Download
+        </button>
+      </div>
+    </div>
+
+    <AppFilterPanel
+      class="mb-4"
+      label="Customize"
+      :active-count="customizationActiveCount"
+      :clear-disabled="!customizationActiveCount"
+      @clear="handleClearCustomization">
       <div class="build-card__profile-fields flex flex-wrap items-end gap-2">
         <label class="form-control">
           <div class="label py-1">
@@ -81,26 +110,7 @@
           @update:model-value="portraitTransform = $event"
           @reset="portraitTransform = null" />
       </div>
-      <div class="flex gap-2">
-        <button
-          v-if="clipboardSupported"
-          type="button"
-          class="btn btn-sm btn-primary"
-          :disabled="isExporting"
-          @click="handleCopy"
-          data-test-build-card-copy>
-          Copy to Clipboard
-        </button>
-        <button
-          type="button"
-          class="btn btn-sm btn-primary"
-          :disabled="isExporting"
-          @click="handleDownload"
-          data-test-build-card-download>
-          Download
-        </button>
-      </div>
-    </div>
+    </AppFilterPanel>
 
     <div
       ref="viewportRef"
@@ -343,6 +353,7 @@ import CalculatorBuildCardForte from "./CalculatorBuildCardForte.vue";
 import CalculatorBuildCardEchoCard from "./CalculatorBuildCardEchoCard.vue";
 import CalculatorBuildCardImageAdjustPanel from "./CalculatorBuildCardImageAdjustPanel.vue";
 import CalculatorStats from "./CalculatorStats.vue";
+import AppFilterPanel from "./AppFilterPanel.vue";
 
 interface ChosenCharRef {
   value?: {
@@ -505,6 +516,27 @@ function resetPrimaryColor() {
     buildCardPrimaryColor: null,
   });
   showToast("Primary color reset", "success");
+}
+
+const customizationActiveCount = computed(() => {
+  let count = 0;
+  if (buildCardUsername.value) count += 1;
+  if (buildCardUid.value) count += 1;
+  if (buildCardBackground.value) count += 1;
+  if (customPrimaryColor.value) count += 1;
+  return count;
+});
+
+function handleClearCustomization() {
+  buildCardUsername.value = "";
+  buildCardUid.value = "";
+  settingsStore.addToConfig({
+    buildCard: { background: null, backgroundTransform: null },
+  });
+  characterStore.setCharacterData(props.character, {
+    buildCardPrimaryColor: null,
+  });
+  showToast("Build card customization reset", "success");
 }
 
 // The build card represents equipment alone (issue #383): base

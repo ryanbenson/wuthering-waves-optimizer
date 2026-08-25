@@ -65,11 +65,12 @@ describe("Team Rotations summary and status", () => {
     });
 
     // Status filter narrows to just the finished team.
+    cy.get("[data-test-filter-panel-toggle]").click();
     cy.get("[data-test-team-rotations-status-filter]").click();
     cy.get('[data-test-rich-select-option="finished"]').first().click();
     cy.get("[data-test-team-rotations-item]").should("have.length", 1);
     cy.get("[data-test-team-rotations-item]").should("contain.text", "Team 1");
-    cy.get("[data-test-team-rotations-clear-filters]").click();
+    cy.get("[data-test-filter-panel-clear]").click();
     cy.get("[data-test-team-rotations-item]").should("have.length", 2);
   });
 
@@ -168,6 +169,7 @@ describe("Team Rotations summary and status", () => {
     );
     cy.get("@team1").should("have.class", "ring-2");
 
+    cy.get("[data-test-filter-panel-toggle]").click();
     cy.get("[data-test-team-rotations-favorites-filter]").click();
     cy.get("[data-test-team-rotations-item]").should("have.length", 1);
     cy.get("[data-test-team-rotations-item]").should("contain.text", "Team 1");

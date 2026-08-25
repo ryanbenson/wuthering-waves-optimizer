@@ -31,7 +31,7 @@
     </Toast>
     <div class="echoes__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
       <h3 class="text-sm font-semibold">Echoes</h3>
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap items-center gap-2">
         <button class="btn btn-sm" @click="handleOpenEchoesImporter">
           Import Echoes
         </button>
@@ -41,17 +41,25 @@
         <button class="btn btn-sm" @click="handleOpenSaveEchoPreset">
           Save Preset
         </button>
-        <button
-          class="btn btn-sm"
-          @click="handleOpenPresetsGuide">
-          <span class="text-primary">Presets Guide</span>
-        </button>
-        <button class="btn btn-sm" @click="handleOpenWeightsEditor">
-          Customize Weights
-        </button>
-        <button class="btn btn-sm" @click="handleOpenRatingGuide">
-          <span class="text-primary">Rating Guide</span>
-        </button>
+        <AppOverflowMenu
+          aria-label="More echo actions"
+          data-test="calculator-echoes-overflow-menu">
+          <li>
+            <button type="button" @click="handleOpenWeightsEditor">
+              Customize Weights
+            </button>
+          </li>
+          <li>
+            <button type="button" @click="handleOpenPresetsGuide">
+              <span class="text-primary">Presets Guide</span>
+            </button>
+          </li>
+          <li>
+            <button type="button" @click="handleOpenRatingGuide">
+              <span class="text-primary">Rating Guide</span>
+            </button>
+          </li>
+        </AppOverflowMenu>
       </div>
     </div>
     <div class="flex flex-wrap items-center gap-2 mb-4">
@@ -159,6 +167,7 @@ import CalculatorEchoesPresetsGuide from "./CalculatorEchoesPresetsGuide.vue";
 import CalculatorEchoRatingGuide from "./CalculatorEchoRatingGuide.vue";
 import EchoRatingWeightsEditor from "./EchoRatingWeightsEditor.vue";
 import CalculatorMainEchoBuff from "./CalculatorMainEchoBuff.vue";
+import AppOverflowMenu from "./AppOverflowMenu.vue";
 import Toast from "./Toast.vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";

@@ -13,6 +13,75 @@
       <div class="teams__header flex flex-wrap items-center justify-between gap-4 mb-4 rounded-lg bg-base-200 p-1 pl-3">
         <h3 class="text-sm font-semibold">Teams</h3>
         <div class="flex items-center gap-2 flex-wrap">
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            data-test-team-rotations-new
+            @click="handleCreateTeam">
+            + New Team
+          </button>
+          <AppOverflowMenu
+            aria-label="More team actions"
+            data-test="team-rotations-overflow-menu">
+            <li>
+              <button
+                type="button"
+                data-test-team-rotations-toggle-import
+                @click="isImportOpen = true">
+                Import Team
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                data-test-team-rotations-toggle-presets
+                @click="isPresetsOpen = true">
+                List Presets
+              </button>
+            </li>
+          </AppOverflowMenu>
+        </div>
+      </div>
+
+      <AppFilterPanel
+        class="mb-4"
+        :active-count="activeFilterCount"
+        :clear-disabled="!activeFilterCount"
+        @clear="clearFilters">
+        <template #bar>
+          <div class="join" data-test-team-rotations-view-toggle>
+            <button
+              type="button"
+              class="btn btn-sm join-item"
+              :class="{ 'btn-active': viewMode === 'grid' }"
+              title="Grid view"
+              aria-label="Grid view"
+              data-test-team-rotations-view-grid
+              @click="viewMode = 'grid'">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
+                <path
+                  d="M0 96c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32L0 96zM0 416c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32L32 608c-17.7 0-32-14.3-32-32l0-160zM288 96c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32l-160 0c-17.7 0-32-14.3-32-32l0-160zM288 416c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32l-160 0c-17.7 0-32-14.3-32-32l0-160z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm join-item"
+              :class="{ 'btn-active': viewMode === 'list' }"
+              title="List view"
+              aria-label="List view"
+              data-test-team-rotations-view-list
+              @click="viewMode = 'list'">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
+                <path
+                  d="M40 48C26.7 48 16 58.7 16 72l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24L40 48zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L192 64zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zM16 232l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+        </template>
+
+        <div class="flex items-center gap-2 flex-wrap">
           <AppRichSelect
             v-model="characterFilter"
             class="w-48"
@@ -53,14 +122,6 @@
           </div>
           <button
             type="button"
-            class="btn btn-sm btn-ghost"
-            :disabled="!characterFilter && !statusFilter"
-            data-test-team-rotations-clear-filters
-            @click="characterFilter = null; statusFilter = null">
-            Clear filters
-          </button>
-          <button
-            type="button"
             class="btn btn-sm btn-ghost rounded inline-flex items-center gap-1.5 px-2"
             :class="{ 'btn-active': favoritesFilter }"
             data-test-team-rotations-favorites-filter
@@ -85,61 +146,8 @@
             </svg>
             <span>Favorites</span>
           </button>
-          <div class="join" data-test-team-rotations-view-toggle>
-            <button
-              type="button"
-              class="btn btn-sm join-item"
-              :class="{ 'btn-active': viewMode === 'grid' }"
-              title="Grid view"
-              aria-label="Grid view"
-              data-test-team-rotations-view-grid
-              @click="viewMode = 'grid'">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
-                <path
-                  d="M0 96c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32L0 96zM0 416c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32L32 608c-17.7 0-32-14.3-32-32l0-160zM288 96c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32l-160 0c-17.7 0-32-14.3-32-32l0-160zM288 416c0-17.7 14.3-32 32-32l160 0c17.7 0 32 14.3 32 32l0 160c0 17.7-14.3 32-32 32l-160 0c-17.7 0-32-14.3-32-32l0-160z"
-                  fill="currentColor" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              class="btn btn-sm join-item"
-              :class="{ 'btn-active': viewMode === 'list' }"
-              title="List view"
-              aria-label="List view"
-              data-test-team-rotations-view-list
-              @click="viewMode = 'list'">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4">
-                <path
-                  d="M40 48C26.7 48 16 58.7 16 72l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24L40 48zM192 64c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L192 64zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-288 0zM16 232l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0c-13.3 0-24 10.7-24 24zM40 368c-13.3 0-24 10.7-24 24l0 48c0 13.3 10.7 24 24 24l48 0c13.3 0 24-10.7 24-24l0-48c0-13.3-10.7-24-24-24l-48 0z"
-                  fill="currentColor" />
-              </svg>
-            </button>
-          </div>
-          <div class="join">
-            <button
-              type="button"
-              class="btn btn-sm join-item btn-primary"
-              data-test-team-rotations-new
-              @click="handleCreateTeam">
-              + New Team
-            </button>
-            <button
-              type="button"
-              class="btn btn-sm join-item"
-              data-test-team-rotations-toggle-import
-              @click="isImportOpen = true">
-              Import Team
-            </button>
-            <button
-              type="button"
-              class="btn btn-sm join-item"
-              data-test-team-rotations-toggle-presets
-              @click="isPresetsOpen = true">
-              List Presets
-            </button>
-          </div>
         </div>
-      </div>
+      </AppFilterPanel>
 
       <div
         v-if="!teams.length"
@@ -264,6 +272,82 @@
           </div>
         </div>
 
+        <AppBulkActionBar
+          :visible="hasTeamSelection"
+          :count="selectedTeamIds.length">
+          <template #selection>
+            <button
+              type="button"
+              class="btn btn-sm btn-ghost"
+              @click="selectTeamsOnPage"
+              data-test-bulk-team-select-page>
+              Select page
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-ghost"
+              @click="selectAllFilteredTeams"
+              data-test-bulk-team-select-all>
+              Select all ({{ filteredTeams.length }})
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-ghost"
+              @click="clearTeamSelection"
+              data-test-bulk-team-clear>
+              Clear selection
+            </button>
+          </template>
+          <div class="join">
+            <button
+              type="button"
+              class="btn btn-sm btn-ghost join-item"
+              v-tooltip="'Favorite selected teams'"
+              aria-label="Favorite selected"
+              data-test-bulk-team-favorite
+              @click="bulkFavoriteTeams(true)">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                class="size-4"
+                aria-hidden="true">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                  fill="currentColor" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              class="btn btn-sm btn-ghost join-item"
+              v-tooltip="'Unfavorite selected teams'"
+              aria-label="Unfavorite selected"
+              data-test-bulk-team-unfavorite
+              @click="bulkFavoriteTeams(false)">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                class="size-4"
+                aria-hidden="true">
+                <path
+                  d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+          <div class="divider divider-horizontal mx-0 hidden sm:flex"></div>
+          <button
+            type="button"
+            class="btn btn-sm btn-error"
+            @click="bulkDeleteTeams"
+            data-test-bulk-team-delete>
+            Delete
+          </button>
+        </AppBulkActionBar>
+
         <ul
           v-if="viewMode === 'grid'"
           class="teams__list grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
@@ -271,12 +355,23 @@
           <li
             v-for="team in paginatedTeams"
             :key="team.id"
-            class="card bg-base-200 shadow hover:bg-base-300 transition-colors cursor-pointer"
+            class="card bg-base-200 shadow hover:bg-base-300 transition-colors cursor-pointer relative"
             :class="{
               'ring-2 ring-primary/60': teamRotationsStore.isFavoriteTeam(team.id),
             }"
             :data-test-team-rotations-item="team.name"
             @click="selectedTeamId = team.id; showSummary = false">
+            <label
+              class="absolute top-0 left-0 z-10 flex items-center justify-center rounded-md p-1 cursor-pointer"
+              :aria-label="`Select team ${team.name}`"
+              @click.stop>
+              <input
+                type="checkbox"
+                class="checkbox checkbox-sm"
+                :checked="isTeamSelected(team.id)"
+                :data-test-team-select="team.name"
+                @change="toggleTeamSelect(team.id)" />
+            </label>
             <div class="card-body gap-3 p-4">
               <div class="flex items-start justify-between gap-2">
                 <h3 class="font-semibold flex items-center gap-2 min-w-0">
@@ -352,6 +447,17 @@
             :data-test-team-rotations-item="team.name"
             @click="selectedTeamId = team.id; showSummary = false">
             <div class="card-body flex-row flex-wrap items-center gap-3 p-3">
+              <label
+                class="flex items-center justify-center cursor-pointer shrink-0"
+                :aria-label="`Select team ${team.name}`"
+                @click.stop>
+                <input
+                  type="checkbox"
+                  class="checkbox checkbox-sm"
+                  :checked="isTeamSelected(team.id)"
+                  :data-test-team-select="team.name"
+                  @change="toggleTeamSelect(team.id)" />
+              </label>
               <span
                 class="badge badge-sm badge-ghost shrink-0"
                 data-test-team-rotations-rank>
@@ -452,6 +558,9 @@ import TeamBuildStatus from "./TeamBuildStatus.vue";
 import FavoriteHeartButton from "./FavoriteHeartButton.vue";
 import TeamRotationsImportModal from "./TeamRotationsImportModal.vue";
 import TeamRotationsPresetsModal from "./TeamRotationsPresetsModal.vue";
+import AppOverflowMenu from "./AppOverflowMenu.vue";
+import AppFilterPanel from "./AppFilterPanel.vue";
+import AppBulkActionBar from "./AppBulkActionBar.vue";
 import {
   TEAM_BUILD_STATUSES,
   getTeamBuildStatus,
@@ -531,6 +640,7 @@ async function handleDeleteTeam(teamId: string, teamName: string) {
   if (selectedTeamId.value === teamId) {
     selectedTeamId.value = null;
   }
+  selectedTeamIds.value = selectedTeamIds.value.filter((id) => id !== teamId);
 }
 
 // Character filter — finds teams that have the chosen character in any slot.
@@ -563,6 +673,88 @@ const statusFilterOptions = computed((): AppRichSelectOption[] =>
 // Favorites filter — same "toggle button + heart icon" pattern as the
 // character browser's Favorites filter.
 const favoritesFilter = ref(false);
+
+const activeFilterCount = computed(() => {
+  let count = 0;
+  if (characterFilter.value) count += 1;
+  if (statusFilter.value) count += 1;
+  if (favoritesFilter.value) count += 1;
+  return count;
+});
+
+function clearFilters() {
+  characterFilter.value = null;
+  statusFilter.value = null;
+  favoritesFilter.value = false;
+}
+
+// Bulk selection — same pattern as Inventory's echo browser.
+const selectedTeamIds = ref<string[]>([]);
+const hasTeamSelection = computed(() => selectedTeamIds.value.length > 0);
+
+function isTeamSelected(teamId: string) {
+  return selectedTeamIds.value.includes(teamId);
+}
+
+function toggleTeamSelect(teamId: string) {
+  if (isTeamSelected(teamId)) {
+    selectedTeamIds.value = selectedTeamIds.value.filter((id) => id !== teamId);
+  } else {
+    selectedTeamIds.value = [...selectedTeamIds.value, teamId];
+  }
+}
+
+function clearTeamSelection() {
+  selectedTeamIds.value = [];
+}
+
+function selectTeamsOnPage() {
+  const pageIds = paginatedTeams.value.map((team: any) => team.id);
+  selectedTeamIds.value = [...new Set([...selectedTeamIds.value, ...pageIds])];
+}
+
+function selectAllFilteredTeams() {
+  selectedTeamIds.value = filteredTeams.value.map((team: any) => team.id);
+}
+
+function bulkFavoriteTeams(favorite: boolean) {
+  for (const teamId of selectedTeamIds.value) {
+    if (teamRotationsStore.isFavoriteTeam(teamId) !== favorite) {
+      teamRotationsStore.toggleFavoriteTeam(teamId);
+    }
+  }
+  const count = selectedTeamIds.value.length;
+  showToast(
+    favorite
+      ? `Favorited ${count} team${count === 1 ? "" : "s"}.`
+      : `Unfavorited ${count} team${count === 1 ? "" : "s"}.`,
+    "success",
+  );
+}
+
+async function bulkDeleteTeams() {
+  const ids = [...selectedTeamIds.value];
+  if (!ids.length) return;
+
+  const confirmed = await confirm(
+    `Delete ${ids.length} team${ids.length === 1 ? "" : "s"}? This cannot be undone.`,
+    {
+      title: "Delete selected teams",
+      confirmLabel: "Delete",
+      variant: "error",
+    },
+  );
+  if (!confirmed) return;
+
+  for (const teamId of ids) {
+    teamRotationsStore.deleteTeam(teamId);
+    if (selectedTeamId.value === teamId) {
+      selectedTeamId.value = null;
+    }
+  }
+  clearTeamSelection();
+  showToast(`Deleted ${ids.length} team${ids.length === 1 ? "" : "s"}.`, "success");
+}
 
 const filteredTeams = computed(() => {
   return teams.value.filter((team: any) => {

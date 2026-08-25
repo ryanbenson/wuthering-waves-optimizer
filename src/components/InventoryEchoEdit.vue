@@ -491,25 +491,7 @@
         </button>
       </form>
       <div class="py-4">
-        <div
-          class="echoes__filters echo-filters__sets flex align-center gap-1 mb-6 items-center flex-wrap"
-          :class="{ 'echo-filters__sets--active': echoSetFilter !== null }">
-          <span class="mr-2">Filter</span>
-          <button
-            v-for="echoSet in echoSetsList"
-            :key="echoSet"
-            @click="toggleEchoSetFilter(echoSet)"
-            class="rounded p-[.3rem]"
-            :class="{ 'btn-active': isEchoSetFilterActive(echoSet) }">
-            <img
-              :src="getEchoSetImage(echoSet)"
-              class="size-7 m-width-7"
-              :class="echoSet" />
-          </button>
-          <button @click="resetFilters" class="btn btn-sm btn-ghost">
-            Clear
-          </button>
-        </div>
+        <EchoSetFilterSelect v-model="echoSetFilter" />
       </div>
       <div class="echoes__list grid grid-cols-1 md:grid-cols-4 gap-4">
         <template v-if="!allEchoesListFiltered.length">
@@ -567,7 +549,6 @@ import {
   statsTable,
   getReadableSubStatLabel,
   getEchoSetIconByType,
-  echoSetLabelMap,
 } from "../echoes/stats";
 import {
   mainEchoesData,
@@ -580,6 +561,7 @@ import EchoFavoriteButton from "./EchoFavoriteButton.vue";
 import AppRichSelect, {
   type AppRichSelectOption,
 } from "./AppRichSelect.vue";
+import EchoSetFilterSelect from "./EchoSetFilterSelect.vue";
 import { buildEchoSelectOptions } from "../utils/richSelectOptions";
 
 type MainEchoRow = (typeof mainEchoesData)[keyof typeof mainEchoesData];
@@ -964,26 +946,6 @@ function isSetSelected(set: string) {
   return echoSet.value === set;
 }
 
-function getEchoSetImage(echoSetKey: string) {
-  return getEchoSetIconByType(echoSetKey);
-}
-
-function toggleEchoSetFilter(echoSetKey: string) {
-  if (echoSetFilter.value === echoSetKey) {
-    echoSetFilter.value = null;
-  } else {
-    echoSetFilter.value = echoSetKey;
-  }
-}
-
-function isEchoSetFilterActive(echoSetKey: string) {
-  return echoSetFilter.value === echoSetKey;
-}
-
-function resetFilters() {
-  echoSetFilter.value = null;
-}
-
 function chooseMainEcho(echoKey: string) {
   echo.value = echoKey;
   if (!echoSet.value) {
@@ -1140,8 +1102,6 @@ const echoSets = computed(() => {
   return echoData?.sets ?? [];
 });
 
-const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
-
 const allEchoesListFiltered = computed(() => {
   const classOrder: Record<MainEchoRow["class"], number> = {
     Calamity: 0,
@@ -1173,14 +1133,6 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-.echo-filters__sets--active {
-  button {
-    opacity: 0.6;
-  }
-  button.btn-active {
-    opacity: 1;
-  }
-}
 .echo-selector {
   margin-bottom: 20px;
 }
