@@ -144,6 +144,18 @@ watch(optimizationTarget, () => {
   updatedTarget();
 });
 
+// currentOptimizationTarget can arrive after mount (e.g. the Live Result
+// Bar resolves its default target asynchronously) — the Optimizer's own
+// usage only ever has this available synchronously at mount, so this was
+// previously read once in onMounted and never watched.
+watch(
+  () => props.currentOptimizationTarget,
+  (t) => {
+    const next = typeof t === "string" ? t : null;
+    if (next !== optimizationTarget.value) optimizationTarget.value = next;
+  },
+);
+
 onMounted(async () => {
   const t = props.currentOptimizationTarget;
   optimizationTarget.value = typeof t === "string" ? t : null;

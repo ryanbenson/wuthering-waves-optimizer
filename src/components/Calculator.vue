@@ -3,6 +3,7 @@
     class="calculations"
     :class="{
       'calculations--full-width': curScreen === 'build-card',
+      'calculations--live-bar': isLiveResultBarEnabled,
     }">
     <Nav cur-page="home">
       <template #mobile>
@@ -16,6 +17,25 @@
           @change-screen="changeScreen"></CalculatorSubNav>
       </template>
     </Nav>
+    <CalculatorLiveResultBar
+      v-if="isLiveResultBarEnabled"
+      :character="character"
+      :character-rarity="chosenChar.value?.basic?.rarity"
+      :character-name="chosenChar.value?.basic?.name"
+      :character-level="characterLevel"
+      v-model:target="liveResultBarTarget"
+      :stat-keys="liveResultBarStatKeys"
+      :stats="liveResultBarStatValues"
+      :all-damages="allDamages.value"
+      :is-detail-open="isLiveResultDetailOpen"
+      :is-loading="isLoading"
+      @stat-selected="handleStatSelected"
+      @toggle-detail="
+        isLiveResultDetailOpen = !isLiveResultDetailOpen
+      "></CalculatorLiveResultBar>
+    <div
+      class="calculations__body"
+      :class="{ 'calculations__body--legacy': !isLiveResultBarEnabled }">
     <div class="calculations__screens">
       <div class="screen--character" v-show="curScreen === 'character'">
         <div v-if="false" class="alert alert-success mb-6">
@@ -202,7 +222,53 @@
           @selected-attack="handleSelectedAttack"></CalculatorDamages>
       </div>
     </div>
-    <div class="results">
+    <CalculatorLiveResultDetail
+      v-if="isLiveResultBarEnabled && isLiveResultDetailOpen"
+      :character="character"
+      :character-level="characterLevel"
+      :character-build-key="characterBuildKey"
+      :weapon-atk="weaponAtk"
+      :total-atk="totalAtk"
+      :total-atk-percent="totalAtkPercent"
+      :total-atk-flat="totalAtkFlat"
+      :total-hp="totalHp"
+      :total-hp-percent="totalHpPercent"
+      :total-hp-flat="totalHpFlat"
+      :total-def="totalDef"
+      :total-def-percent="totalDefPercent"
+      :total-def-flat="totalDefFlat"
+      :total-crit-rate="totalCritRate"
+      :total-crit-dmg="totalCritDMG"
+      :energy-regen="energyRegen"
+      :basic-attack-dmg-bonus="BasicAttackDMGBonus"
+      :heavy-attack-dmg-bonus="HeavyAttackDMGBonus"
+      :resonance-skill-dmg-bonus="ResonanceSkillDMGBonus"
+      :resonance-liberation-dmg-bonus="ResonanceLiberationDMGBonus"
+      :glacio="Glacio"
+      :fusion="Fusion"
+      :electro="Electro"
+      :aero="Aero"
+      :spectro="Spectro"
+      :havoc="Havoc"
+      :healing-bonus="healingBonus"
+      :tune-break-boost="tuneBreakBoost"
+      :all-damages="allDamages"
+      :rotations-list="rotationsList"
+      :chosen-char="chosenChar"
+      :chosen-echo-name="mainEcho"
+      :is-missing-spectro-data="isMissingSpectroData"
+      :is-missing-aero-erosion-data="isMissingAeroErosionData"
+      :char-buffs-data="charBuffsData"
+      :char-resonance-chains-data="charResonanceChainsData"
+      :is-pinned="isLiveResultDetailPinned"
+      @stat-selected="handleStatSelected"
+      @selected-attack="handleSelectedAttack"
+      @toggle-pin="
+        isLiveResultDetailPinned = !isLiveResultDetailPinned
+      "
+      @close="isLiveResultDetailOpen = false"></CalculatorLiveResultDetail>
+    </div>
+    <div class="results" v-if="!isLiveResultBarEnabled">
       <CalculatorStats
         :key="character + weaponAtk"
         :character="character"
@@ -386,6 +452,14 @@ import Nav from "./navigation/Nav.vue";
 import CalculatorMobileSubNav from "./navigation/CalculatorMobileSubNav.vue";
 import CalculatorSubNav from "./navigation/CalculatorSubNav.vue";
 import CalculatorBreakdown from "./CalculatorBreakdown.vue";
+import CalculatorLiveResultBar from "./CalculatorLiveResultBar.vue";
+import CalculatorLiveResultDetail from "./CalculatorLiveResultDetail.vue";
+import {
+  buildLiveResultBarTarget,
+  fallbackLiveResultBarTarget,
+  resolveLiveResultBarTarget,
+  DEFAULT_LIVE_RESULT_BAR_STATS,
+} from "../calculator/liveResultBar";
 import { randomString } from "../utils/strings";
 // Note: Workers are imported dynamically via new Worker() calls
 import { displayPercentage, displayInt } from "../utils/numbers";
@@ -418,6 +492,8 @@ export default defineComponent({
     CalculatorSubNav,
     Nav,
     CalculatorBreakdown,
+    CalculatorLiveResultBar,
+    CalculatorLiveResultDetail,
   },
   emits: ["stat-selected", "attack-selected", "breakdown-closed"],
   setup(props, { emit }) {
@@ -493,6 +569,36 @@ export default defineComponent({
     const selectedAttackDamage = ref(0);
     const selectedAttackLabel = ref(null);
     const rotationsList = ref([]);
+
+    // Live Result Bar (Labs flag) — see src/calculator/liveResultBar.ts.
+    const isLiveResultBarEnabled = computed(
+      () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+    );
+    const liveResultBarTarget = ref(null);
+    // Pinning persists (settings store, localStorage) — reopen on load if
+    // it was left pinned last time, same as it was when the page closed.
+    const isLiveResultDetailOpen = ref(
+      settingsStore.config?.liveResultBarPinned ?? false,
+    );
+    const isLiveResultDetailPinned = computed({
+      get: () => settingsStore.config?.liveResultBarPinned ?? false,
+      set: (value) => {
+        settingsStore.addToConfig({ liveResultBarPinned: value });
+        if (value) isLiveResultDetailOpen.value = true;
+      },
+    });
+    const liveResultBarStatKeys = computed(
+      () => chosenChar.value?.basic?.liveResultBarStats ?? DEFAULT_LIVE_RESULT_BAR_STATS,
+    );
+    const liveResultBarStatValues = computed(() => ({
+      totalHp: totalHp.value,
+      totalAtk: totalAtk.value,
+      totalDef: totalDef.value,
+      totalCritRate: totalCritRate.value,
+      totalCritDMG: totalCritDMG.value,
+      energyRegen: energyRegen.value,
+    }));
+
     const character = ref("");
     const totalAtk = ref(0);
     const totalAtkPercent = ref(0);
@@ -606,6 +712,9 @@ export default defineComponent({
 
     watch(character, async (charName) => {
       isLoading.value = true;
+      // Reset so the next calcAllDamages pass re-resolves this character's
+      // own default target instead of keeping the previous character's.
+      liveResultBarTarget.value = null;
       const chosen = await getCharByName(charName);
       chosenChar.value = chosen;
       // set the character in the store
@@ -791,6 +900,32 @@ export default defineComponent({
         allDamages.value.rotations = rotationResults;
       } else {
         allDamages.value.rotations = [];
+      }
+
+      // Live Result Bar: fill in this character's default target once its
+      // data is actually ready (reset to null on character change, above).
+      // A no-op once a target is set, so this can't fight a target the user
+      // picked mid-session for the same character — except a stale target
+      // that no longer resolves at all (e.g. a rotation default picked
+      // against CalculatorRotations' own not-yet-remounted list right after
+      // a character switch), which gets cleared and re-resolved. Rotation
+      // ids don't collide across characters, so this can't mistake a
+      // genuinely different character's rotation for a still-valid one.
+      if (
+        liveResultBarTarget.value !== null &&
+        !resolveLiveResultBarTarget(
+          liveResultBarTarget.value,
+          allDamages.value,
+          liveResultBarStatValues.value,
+        )
+      ) {
+        liveResultBarTarget.value = null;
+      }
+      if (liveResultBarTarget.value === null) {
+        const declared = chosenChar.value?.basic?.liveResultBarDefaultTarget;
+        liveResultBarTarget.value =
+          buildLiveResultBarTarget(declared, rotationsList.value) ??
+          fallbackLiveResultBarTarget(allDamages.value);
       }
     };
 
@@ -1971,6 +2106,13 @@ export default defineComponent({
       selectedAttackLabel,
       tuneBreakBoost,
       strainStacks,
+      // Live Result Bar (Labs flag)
+      isLiveResultBarEnabled,
+      liveResultBarTarget,
+      isLiveResultDetailOpen,
+      isLiveResultDetailPinned,
+      liveResultBarStatKeys,
+      liveResultBarStatValues,
     };
   },
 });
@@ -1989,11 +2131,44 @@ export default defineComponent({
   }
 }
 
+// Live Result Bar layout (Labs flag): the bar takes its own row above the
+// content, which itself becomes a single grid row instead of a column pair
+// — .calculations__body then decides content-vs-detail split with flex,
+// since that's an auto/fixed-width pair rather than the even 1fr/1fr split
+// the legacy layout wants.
+.calculations--live-bar {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+}
+
+.calculations__body {
+  display: flex;
+  min-height: 0; // let children scroll internally instead of the grid row growing to fit them
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+}
+// Off by default: the legacy (flag-disabled) layout needs .calculations__screens
+// to behave as if it were still a direct child of the outer grid, unchanged.
+.calculations__body--legacy {
+  display: contents;
+}
+
 .calculations__screens {
   padding: 2rem;
   overflow-y: auto;
   overflow-x: hidden;
   position: relative;
+  // Only takes effect inside .calculations__body's flex layout (live-bar
+  // enabled) — inert as a grid item in the legacy display:contents case.
+  flex: 1;
+  min-width: 0;
 
   @media (max-width: 480px) {
     padding: 1rem;

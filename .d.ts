@@ -20,7 +20,31 @@ interface CharacterBasicInfo {
   glacioChafe?: boolean;
   fusionBurst?: boolean;
   tuneBreakBoost?: number;
+  /**
+   * Default target for the Live Result Bar's single damage number (see
+   * `src/calculator/liveResultBar.ts`). `"rotation"` prefers this
+   * character's first saved rotation, falling back to an action if none
+   * exists yet. Omit to use the generic cross-character fallback.
+   */
+  liveResultBarDefaultTarget?:
+    | { type: "rotation" }
+    | { type: "action"; group: LiveResultBarAttackGroup; key: string };
+  /**
+   * Which stats show as compact chips in the Live Result Bar for this
+   * character (keys match `CalculatorStats.vue`'s prop names, e.g.
+   * "totalAtk", "totalCritRate"). Omit to use the default four.
+   */
+  liveResultBarStats?: string[];
 }
+
+type LiveResultBarAttackGroup =
+  | "basicAttacks"
+  | "skillAttacks"
+  | "forteCircuitAttacks"
+  | "liberationAttacks"
+  | "introAttacks"
+  | "outroAttacks"
+  | "tuneBreakAttacks";
 interface WeaponInfo {
   key?: string;
   name: string;

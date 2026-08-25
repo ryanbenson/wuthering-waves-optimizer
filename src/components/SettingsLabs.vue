@@ -43,7 +43,14 @@ import SettingsLab from "./SettingsLab.vue";
 
 type LabFeature = { key: string; label: string; details: string };
 
-const labsFeatures = ref<LabFeature[]>([]);
+const labsFeatures = ref<LabFeature[]>([
+  {
+    key: "liveResultBar",
+    label: "Live Result Bar layout",
+    details:
+      "Replaces the split stats/damage panel with a pinned summary bar and full-width tab content. Pick any action (or a saved rotation) as your target, and pull out the full breakdown on demand.",
+  },
+]);
 </script>
 
 <style scoped lang="scss">
