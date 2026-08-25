@@ -58,19 +58,50 @@ describe("Live Result Bar (Labs flag)", () => {
     cy.get("[data-test-live-result-detail]").should("not.exist");
   });
 
-  it("picking a specific action from the target picker updates the hero number", () => {
+  it("picking a specific action + damage type from the settings popover updates the hero number, and persists per character across a reload", () => {
     enableLiveResultBarLab();
     cy.richSelect("[data-test-character-select]", "Brant");
     cy.get(".character__self-buffs").should("be.visible");
 
+    // Target + damage type live behind the settings gear, not inline in
+    // the bar — see the "cluttered" feedback that moved them there.
+    cy.get("[data-test-live-result-bar-settings] summary").click();
     // richSelect's click target keys off the option's value (the
     // "Attack:group|key" string), not its visible label — the label goes
     // to the search box via the `search` override instead.
     cy.richSelect(
-      "[data-test-live-result-bar] .app-rich-select__trigger",
+      "[data-test-live-result-bar-settings] .app-rich-select__trigger",
       "Attack:tuneBreakAttacks|TuneBreakDMG",
       { search: "Tune Break DMG" },
     );
+    cy.get('[data-test-live-result-bar-settings] input[aria-label="Crit"]').click({
+      force: true,
+    });
+    cy.get("[data-test-live-result-bar-hero]").should(
+      "contain.text",
+      "Tune Break DMG",
+    );
+
+    // Persists for Brant specifically across a reload...
+    cy.reload();
+    cy.get(".character__self-buffs").should("be.visible");
+    cy.get("[data-test-live-result-bar-hero]").should(
+      "contain.text",
+      "Tune Break DMG",
+    );
+
+    // ...but a different character still gets their own default, not
+    // Brant's remembered pick.
+    cy.richSelect("[data-test-character-select]", "Jiyan");
+    cy.get(".character__self-buffs").should("be.visible");
+    cy.get("[data-test-live-result-bar-hero]").should(
+      "not.contain.text",
+      "Tune Break DMG",
+    );
+
+    // Switching back to Brant restores it again.
+    cy.richSelect("[data-test-character-select]", "Brant");
+    cy.get(".character__self-buffs").should("be.visible");
     cy.get("[data-test-live-result-bar-hero]").should(
       "contain.text",
       "Tune Break DMG",

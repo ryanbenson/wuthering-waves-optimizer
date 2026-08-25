@@ -43,41 +43,67 @@
     </div>
 
     <!--
-      mx-auto (not a flex-1 spacer + shrink-0): pushes this group to the
-      right when it shares the row with the stat chips, and centers it on
-      its own line if the row wraps — self-adjusting to whatever width the
-      chips/name happen to take instead of assuming a fixed wrap breakpoint.
-      flex-wrap on this group too: target + damage type + hero + chevron
-      together are wider than a narrow phone even on their own row. Not
-      shrink-0 here — that would refuse to compress below its unwrapped
-      (max-content) width, which stops the wrap from ever actually
-      triggering, since it never becomes narrower than its content demands.
+      mx-auto: pushes this group to the right when it shares the row with
+      the stat chips, and centers it on its own line if the row wraps —
+      self-adjusting to whatever width the chips/name happen to take
+      instead of assuming a fixed wrap breakpoint. Not shrink-0 — that
+      would refuse to compress below its unwrapped (max-content) width,
+      which stops the wrap from ever actually triggering.
     -->
-    <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 min-w-0 mx-auto">
+    <div class="flex items-center gap-3 min-w-0 mx-auto">
       <!--
-        AppRichSelect's own scoped style sets max-width:100% on itself —
-        higher specificity than any utility class passed in here (Vue scoped
-        CSS adds an attribute selector), so it can't be narrowed directly.
-        Constraining this wrapper instead works with that rule (the select
-        fills 100% of *this*) rather than fighting it.
+        Target + damage type move here instead of sitting inline — they're
+        a "set once, rarely touched again" preference, not something that
+        earns permanent width next to the number people actually watch.
       -->
-      <div class="max-w-40 sm:max-w-48 min-w-0">
-        <CalculatorOptimizerTarget
-          v-if="character"
-          :key="character"
-          :character="character"
-          :current-optimization-target="target"
-          @optimizer:target-updated="onTargetUpdated"></CalculatorOptimizerTarget>
-      </div>
-
-      <CalculatorOptimizerDamageType
+      <details
         v-if="character"
-        name="live-result-bar-damage-type"
-        :character="character"
-        :current-damage-type="damageType"
-        @optimizer:damage-type-updated="
-          onDamageTypeUpdated
-        "></CalculatorOptimizerDamageType>
+        class="dropdown dropdown-end"
+        data-test-live-result-bar-settings>
+        <summary
+          class="btn btn-sm btn-circle btn-ghost list-none"
+          aria-label="Change target and damage type"
+          v-tooltip="'Target & damage type'">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.8"
+              d="M10.5 3.5h3l.5 2.3a6.4 6.4 0 0 1 1.9 1.1l2.2-.8 1.5 2.6-1.8 1.5a6.4 6.4 0 0 1 0 2.2l1.8 1.5-1.5 2.6-2.2-.8a6.4 6.4 0 0 1-1.9 1.1l-.5 2.3h-3l-.5-2.3a6.4 6.4 0 0 1-1.9-1.1l-2.2.8-1.5-2.6 1.8-1.5a6.4 6.4 0 0 1 0-2.2L4.4 8.7l1.5-2.6 2.2.8a6.4 6.4 0 0 1 1.9-1.1l.5-2.3Z" />
+            <circle cx="12" cy="12" r="2.6" stroke-width="1.8" />
+          </svg>
+        </summary>
+        <div
+          class="dropdown-content menu z-30 mt-2 w-72 rounded-box bg-base-100 p-3 shadow-lg">
+          <label
+            class="mb-1 block text-[10px] font-semibold uppercase tracking-wide opacity-60"
+            >Target</label
+          >
+          <CalculatorOptimizerTarget
+            :key="character"
+            class="w-full"
+            :character="character"
+            :current-optimization-target="target"
+            @optimizer:target-updated="onTargetUpdated"></CalculatorOptimizerTarget>
+
+          <label
+            class="mb-1 mt-3 block text-[10px] font-semibold uppercase tracking-wide opacity-60"
+            >Damage type</label
+          >
+          <CalculatorOptimizerDamageType
+            name="live-result-bar-damage-type"
+            :character="character"
+            :current-damage-type="damageType"
+            @optimizer:damage-type-updated="
+              onDamageTypeUpdated
+            "></CalculatorOptimizerDamageType>
+        </div>
+      </details>
 
       <Transition name="live-result-bar-delta">
         <span
@@ -125,7 +151,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import { displayInt, displayPercentage } from "../utils/numbers";
@@ -144,6 +170,7 @@ const props = defineProps<{
   characterName?: string | null;
   characterLevel: string;
   target: string | null;
+  damageType: LiveResultBarDamageType;
   statKeys: string[];
   stats: Record<string, number>;
   allDamages: Record<string, any> | null | undefined;
@@ -153,6 +180,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   "update:target": [target: string | null];
+  "update:damage-type": [damageType: LiveResultBarDamageType];
   "stat-selected": [stat: string];
   "toggle-detail": [];
 }>();
@@ -180,17 +208,12 @@ const statChips = computed(() =>
     })),
 );
 
-// Session-only, not persisted or lifted to Calculator.vue — the full
-// breakdown panel already shows Normal/Average/Crit as separate columns, so
-// this only ever matters for the bar's own single hero number.
-const damageType = ref<LiveResultBarDamageType>("Average");
-
 const resolved = computed(() =>
   resolveLiveResultBarTarget(
     props.target,
     props.allDamages,
     props.stats,
-    damageType.value,
+    props.damageType,
   ),
 );
 
@@ -217,7 +240,7 @@ function onTargetUpdated(next: string | null) {
 
 function onDamageTypeUpdated(next: string) {
   if (next === "Normal" || next === "Average" || next === "Crit") {
-    damageType.value = next;
+    emit("update:damage-type", next);
   }
 }
 </script>

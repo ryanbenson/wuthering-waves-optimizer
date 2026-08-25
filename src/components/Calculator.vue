@@ -24,6 +24,7 @@
       :character-name="chosenChar.value?.basic?.name"
       :character-level="characterLevel"
       v-model:target="liveResultBarTarget"
+      v-model:damage-type="liveResultBarDamageType"
       :stat-keys="liveResultBarStatKeys"
       :stats="liveResultBarStatValues"
       :all-damages="allDamages.value"
@@ -575,6 +576,28 @@ export default defineComponent({
       () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
     );
     const liveResultBarTarget = ref(null);
+    const liveResultBarDamageType = ref("Average");
+    // Target + damage type persist per character (settings store,
+    // localStorage) — restored below on every character switch, including
+    // switching back to the same character after a reload. Skipped while a
+    // character switch is still resolving its own default (see the
+    // character watcher and calcAllDamages below), so an in-flight
+    // auto-resolution never overwrites what the user actually chose.
+    let isRestoringLiveResultBarPreference = false;
+    function persistLiveResultBarPreference() {
+      if (!character.value || isRestoringLiveResultBarPreference) return;
+      settingsStore.addToConfig({
+        liveResultBarByCharacter: {
+          [character.value]: {
+            target: liveResultBarTarget.value,
+            damageType: liveResultBarDamageType.value,
+          },
+        },
+      });
+    }
+    watch(liveResultBarTarget, persistLiveResultBarPreference);
+    watch(liveResultBarDamageType, persistLiveResultBarPreference);
+
     // Pinning persists (settings store, localStorage) — reopen on load if
     // it was left pinned last time, same as it was when the page closed.
     const isLiveResultDetailOpen = ref(
@@ -712,9 +735,20 @@ export default defineComponent({
 
     watch(character, async (charName) => {
       isLoading.value = true;
-      // Reset so the next calcAllDamages pass re-resolves this character's
-      // own default target instead of keeping the previous character's.
-      liveResultBarTarget.value = null;
+      // Restore this character's own remembered target/damage type if one
+      // was saved before; otherwise null so the calcAllDamages pass below
+      // resolves this character's declared default instead of keeping the
+      // previous character's target. isRestoringLiveResultBarPreference
+      // guards the persist watchers above from immediately writing this
+      // restored (or nulled) value straight back as if the user had just
+      // chosen it — harmless either way, but pointless churn otherwise.
+      isRestoringLiveResultBarPreference = true;
+      const savedPreference =
+        settingsStore.config?.liveResultBarByCharacter?.[charName];
+      liveResultBarTarget.value = savedPreference?.target ?? null;
+      liveResultBarDamageType.value = savedPreference?.damageType ?? "Average";
+      await nextTick();
+      isRestoringLiveResultBarPreference = false;
       const chosen = await getCharByName(charName);
       chosenChar.value = chosen;
       // set the character in the store
@@ -902,30 +936,48 @@ export default defineComponent({
         allDamages.value.rotations = [];
       }
 
-      // Live Result Bar: fill in this character's default target once its
-      // data is actually ready (reset to null on character change, above).
-      // A no-op once a target is set, so this can't fight a target the user
-      // picked mid-session for the same character — except a stale target
-      // that no longer resolves at all (e.g. a rotation default picked
-      // against CalculatorRotations' own not-yet-remounted list right after
-      // a character switch), which gets cleared and re-resolved. Rotation
-      // ids don't collide across characters, so this can't mistake a
-      // genuinely different character's rotation for a still-valid one.
-      if (
-        liveResultBarTarget.value !== null &&
-        !resolveLiveResultBarTarget(
-          liveResultBarTarget.value,
-          allDamages.value,
-          liveResultBarStatValues.value,
-        )
-      ) {
-        liveResultBarTarget.value = null;
-      }
-      if (liveResultBarTarget.value === null) {
-        const declared = chosenChar.value?.basic?.liveResultBarDefaultTarget;
-        liveResultBarTarget.value =
-          buildLiveResultBarTarget(declared, rotationsList.value) ??
-          fallbackLiveResultBarTarget(allDamages.value);
+      // Live Result Bar: fill in (or validate) this character's target once
+      // its data is actually ready. Several other components' own initial
+      // mounts can trigger a calcAllDamages pass before this character's
+      // real attack data has loaded — allDamages.value briefly holds empty
+      // attack-group arrays during that window, which would otherwise look
+      // identical to "this target genuinely doesn't exist" and wrongly
+      // clear a target that was just restored from a saved preference.
+      // Gate on at least one populated group as a real "data is ready"
+      // signal, and skip entirely (leaving whatever target is already set
+      // untouched) until then.
+      const hasComputedAttackData =
+        (allDamages.value?.basicAttacks?.length ?? 0) > 0 ||
+        (allDamages.value?.skillAttacks?.length ?? 0) > 0 ||
+        (allDamages.value?.liberationAttacks?.length ?? 0) > 0;
+
+      if (hasComputedAttackData) {
+        // A no-op once a target is set and still resolves, so this can't
+        // fight a target the user (or a restored preference) picked for
+        // this character — except a target that no longer resolves at all
+        // (e.g. a rotation default picked against CalculatorRotations' own
+        // not-yet-remounted list right after a character switch, or a
+        // saved preference referencing a since-deleted rotation), which
+        // gets cleared and re-resolved. Rotation ids don't collide across
+        // characters, so this can't mistake a genuinely different
+        // character's rotation for a still-valid one.
+        if (
+          liveResultBarTarget.value !== null &&
+          !resolveLiveResultBarTarget(
+            liveResultBarTarget.value,
+            allDamages.value,
+            liveResultBarStatValues.value,
+            liveResultBarDamageType.value,
+          )
+        ) {
+          liveResultBarTarget.value = null;
+        }
+        if (liveResultBarTarget.value === null) {
+          const declared = chosenChar.value?.basic?.liveResultBarDefaultTarget;
+          liveResultBarTarget.value =
+            buildLiveResultBarTarget(declared, rotationsList.value) ??
+            fallbackLiveResultBarTarget(allDamages.value);
+        }
       }
     };
 
@@ -2109,6 +2161,7 @@ export default defineComponent({
       // Live Result Bar (Labs flag)
       isLiveResultBarEnabled,
       liveResultBarTarget,
+      liveResultBarDamageType,
       isLiveResultDetailOpen,
       isLiveResultDetailPinned,
       liveResultBarStatKeys,
