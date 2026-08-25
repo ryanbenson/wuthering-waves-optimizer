@@ -42,16 +42,42 @@
       </button>
     </div>
 
-    <div class="flex-1 min-w-[1rem]"></div>
+    <!--
+      mx-auto (not a flex-1 spacer + shrink-0): pushes this group to the
+      right when it shares the row with the stat chips, and centers it on
+      its own line if the row wraps — self-adjusting to whatever width the
+      chips/name happen to take instead of assuming a fixed wrap breakpoint.
+      flex-wrap on this group too: target + damage type + hero + chevron
+      together are wider than a narrow phone even on their own row. Not
+      shrink-0 here — that would refuse to compress below its unwrapped
+      (max-content) width, which stops the wrap from ever actually
+      triggering, since it never becomes narrower than its content demands.
+    -->
+    <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 min-w-0 mx-auto">
+      <!--
+        AppRichSelect's own scoped style sets max-width:100% on itself —
+        higher specificity than any utility class passed in here (Vue scoped
+        CSS adds an attribute selector), so it can't be narrowed directly.
+        Constraining this wrapper instead works with that rule (the select
+        fills 100% of *this*) rather than fighting it.
+      -->
+      <div class="max-w-40 sm:max-w-48 min-w-0">
+        <CalculatorOptimizerTarget
+          v-if="character"
+          :key="character"
+          :character="character"
+          :current-optimization-target="target"
+          @optimizer:target-updated="onTargetUpdated"></CalculatorOptimizerTarget>
+      </div>
 
-    <div class="flex items-center gap-3 shrink-0">
-      <CalculatorOptimizerTarget
+      <CalculatorOptimizerDamageType
         v-if="character"
-        :key="character"
-        class="w-48"
+        name="live-result-bar-damage-type"
         :character="character"
-        :current-optimization-target="target"
-        @optimizer:target-updated="onTargetUpdated"></CalculatorOptimizerTarget>
+        :current-damage-type="damageType"
+        @optimizer:damage-type-updated="
+          onDamageTypeUpdated
+        "></CalculatorOptimizerDamageType>
 
       <Transition name="live-result-bar-delta">
         <span
@@ -99,12 +125,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
+import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import { displayInt, displayPercentage } from "../utils/numbers";
 import {
   LIVE_RESULT_BAR_STAT_META,
   resolveLiveResultBarTarget,
+  type LiveResultBarDamageType,
 } from "../calculator/liveResultBar";
 import { useAnimatedNumber } from "../composables/useAnimatedNumber";
 
@@ -152,8 +180,18 @@ const statChips = computed(() =>
     })),
 );
 
+// Session-only, not persisted or lifted to Calculator.vue — the full
+// breakdown panel already shows Normal/Average/Crit as separate columns, so
+// this only ever matters for the bar's own single hero number.
+const damageType = ref<LiveResultBarDamageType>("Average");
+
 const resolved = computed(() =>
-  resolveLiveResultBarTarget(props.target, props.allDamages, props.stats),
+  resolveLiveResultBarTarget(
+    props.target,
+    props.allDamages,
+    props.stats,
+    damageType.value,
+  ),
 );
 
 const heroLabel = computed(() => resolved.value?.label ?? "No target selected");
@@ -175,6 +213,12 @@ const deltaLabel = computed(() => {
 
 function onTargetUpdated(next: string | null) {
   emit("update:target", next);
+}
+
+function onDamageTypeUpdated(next: string) {
+  if (next === "Normal" || next === "Average" || next === "Crit") {
+    damageType.value = next;
+  }
 }
 </script>
 

@@ -48,6 +48,21 @@ export interface ResolvedLiveResultBarTarget {
   label: string;
 }
 
+export type LiveResultBarDamageType = "Normal" | "Average" | "Crit";
+
+// Matches optimizer.ts's own two field maps (individual attacks vs.
+// rotation aggregates use different field names for the same three modes).
+const ATTACK_DAMAGE_FIELD: Record<LiveResultBarDamageType, string> = {
+  Normal: "totalDamage",
+  Average: "avgDamage",
+  Crit: "critDamage",
+};
+const ROTATION_DAMAGE_FIELD: Record<LiveResultBarDamageType, string> = {
+  Normal: "normalDamage",
+  Average: "avgDamage",
+  Crit: "critDamage",
+};
+
 /**
  * Turns a character's declared `liveResultBarDefaultTarget` into a target
  * string, given that character's currently saved rotations. A `"rotation"`
@@ -94,6 +109,7 @@ export function resolveLiveResultBarTarget(
   target: string | null | undefined,
   allDamages: Record<string, any> | null | undefined,
   stats: Record<string, number>,
+  damageType: LiveResultBarDamageType = "Average",
 ): ResolvedLiveResultBarTarget | null {
   if (!target) return null;
   const separatorIndex = target.indexOf(":");
@@ -118,8 +134,9 @@ export function resolveLiveResultBarTarget(
     if (!Array.isArray(list)) return null;
     const attack = list.find((a: any) => a?.key === key);
     if (!attack) return null;
+    const field = ATTACK_DAMAGE_FIELD[damageType];
     const value =
-      attack.damage?.avgDamage ??
+      attack.damage?.[field] ??
       attack.damage?.healAmount ??
       attack.damage?.shieldAmount ??
       0;
@@ -131,8 +148,9 @@ export function resolveLiveResultBarTarget(
     if (!Array.isArray(rotations)) return null;
     const rotation = rotations.find((r: any) => r?.id === rest);
     if (!rotation) return null;
+    const field = ROTATION_DAMAGE_FIELD[damageType];
     return {
-      value: rotation.damageAggregation?.avgDamage ?? 0,
+      value: rotation.damageAggregation?.[field] ?? 0,
       label: rotation.name ?? "Rotation",
     };
   }

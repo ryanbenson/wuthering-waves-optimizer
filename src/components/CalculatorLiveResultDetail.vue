@@ -1,5 +1,10 @@
 <template>
+  <div
+    class="live-result-detail-scrim"
+    data-test-live-result-detail-scrim
+    @click="emit('close')"></div>
   <div class="live-result-detail flex flex-col" data-test-live-result-detail>
+    <div class="live-result-detail__handle" aria-hidden="true"></div>
     <div
       class="flex items-center justify-between gap-2 px-4 py-2 border-b border-base-300 shrink-0">
       <h4 class="font-bold text-sm">Full breakdown</h4>
@@ -169,13 +174,54 @@ const emit = defineEmits<{
   background: oklch(var(--b1));
 }
 
+.live-result-detail-scrim {
+  display: none;
+}
+
+.live-result-detail__handle {
+  display: none;
+}
+
+/*
+ * Below the breakpoint .calculations__body becomes a normal block, so a
+ * panel placed after .calculations__screens in document order would sit
+ * below all of that tab's content — reachable only by scrolling past
+ * everything else on the page. A fixed bottom sheet sidesteps that
+ * entirely: it isn't part of that flow, so it doesn't matter how tall the
+ * content above it is.
+ */
 @media (max-width: 768px) {
+  .live-result-detail-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 49;
+  }
+
   .live-result-detail {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
     flex: none;
     width: 100%;
+    max-height: 80vh;
     border-left: none;
-    border-top: 1px solid oklch(var(--b3));
-    max-height: 70vh;
+    border-radius: 1rem 1rem 0 0;
+    box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.25);
+    z-index: 50;
+  }
+
+  .live-result-detail__handle {
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: oklch(var(--b3));
+    margin: 8px auto 0;
+    flex: none;
   }
 }
 </style>

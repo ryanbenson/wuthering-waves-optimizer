@@ -106,6 +106,40 @@ describe("resolveLiveResultBarTarget", () => {
     });
   });
 
+  it("defaults to Average when no damage type is given", () => {
+    expect(
+      resolveLiveResultBarTarget("Attack:skillAttacks|anchorsAweigh", allDamages, stats),
+    ).toEqual({ value: 580, label: "Anchors Aweigh" });
+  });
+
+  it("resolves Normal and Crit for an Attack target", () => {
+    expect(
+      resolveLiveResultBarTarget(
+        "Attack:skillAttacks|anchorsAweigh",
+        allDamages,
+        stats,
+        "Normal",
+      ),
+    ).toEqual({ value: 565, label: "Anchors Aweigh" });
+    expect(
+      resolveLiveResultBarTarget(
+        "Attack:skillAttacks|anchorsAweigh",
+        allDamages,
+        stats,
+        "Crit",
+      ),
+    ).toEqual({ value: 848, label: "Anchors Aweigh" });
+  });
+
+  it("resolves Normal and Crit for a Rotation target", () => {
+    expect(
+      resolveLiveResultBarTarget("Rotation:rot-1", allDamages, stats, "Normal"),
+    ).toEqual({ value: 46800, label: "Standard combo" });
+    expect(
+      resolveLiveResultBarTarget("Rotation:rot-1", allDamages, stats, "Crit"),
+    ).toEqual({ value: 70120, label: "Standard combo" });
+  });
+
   it("returns null for an unresolvable Attack key (e.g. after a character switch)", () => {
     expect(
       resolveLiveResultBarTarget("Attack:skillAttacks|missingKey", allDamages, stats),
