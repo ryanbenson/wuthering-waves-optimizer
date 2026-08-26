@@ -14,5 +14,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconMoNing/SP_IconMoNing2D2.webp",
     ],
     signatureWeapon: "StarfieldCalibrator",
+    liveResultBarStats: ["totalDef", "totalCritRate", "totalCritDMG", "energyRegen"],
   };
 }

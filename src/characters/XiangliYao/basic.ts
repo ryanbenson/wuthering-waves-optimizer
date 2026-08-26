@@ -13,5 +13,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconXiangliyao/SP_IconXiangliyaoD2.webp",
     ],
     signatureWeapon: "VeritysHandle",
+    liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
   };
 }

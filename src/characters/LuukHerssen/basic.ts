@@ -14,5 +14,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconLuhesi/SP_IconLuhesiD2.webp",
     ],
     signatureWeapon: "DaybreakersSpine",
+    liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
   };
 }

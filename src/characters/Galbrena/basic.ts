@@ -13,5 +13,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconJiaBeiLiNa/SP_IconJiaBeiLiNa2D2.webp",
     ],
     signatureWeapon: "LuxUmbra",
+    liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
   };
 }

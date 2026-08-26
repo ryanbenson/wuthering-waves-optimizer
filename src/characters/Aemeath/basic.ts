@@ -16,5 +16,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconAimisi/SP_IconAimisiD2.webp",
     ],
     signatureWeapon: "EverbrightPolestar",
+    liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
   };
 }

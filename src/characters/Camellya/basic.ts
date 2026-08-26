@@ -13,5 +13,6 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconChun/SP_IconChunD1.webp",
       "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconChun/SP_IconChunD2.webp",
     ],
+    liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
   };
 }
