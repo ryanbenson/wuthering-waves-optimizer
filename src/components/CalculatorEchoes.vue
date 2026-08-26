@@ -74,34 +74,22 @@
         Build Score: {{ teamSubstatScoreRollup.grade }} {{ Math.round(teamSubstatScoreRollup.percent) }}%{{ teamSubstatScoreRollup.provisional ? "*" : "" }}
       </div>
     </div>
-    <div v-if="isLiveResultBarEnabled" class="echo-list-pane">
-      <div class="echo-list-pane__list">
-        <div class="echo__list">
-          <CalculatorEchoTile
-            v-for="(_, index) in 5"
-            :key="character + '-' + index"
-            :ref="getEchoRefSetter(index)"
-            :index="index"
-            :character="character"
-            class="echo-selector"
-            @updated-echo-cost="handleUpdatedEchoCost"
-            @update-stats="handleEchoStats"
-            @echo:set-chosen="handleEchoSetChosen"
-            @main-echo:updated="handleMainEchoUpdated"
-            @main-echo-rank:updated="handleMainEchoRankUpdated"
-            @open-echoes-browser="handleOpenEchoesBrowser"
-            @on-echo-removed="handleEchoRemoved"
-            @open-edit-panel="handleOpenEditPanel"></CalculatorEchoTile>
-        </div>
-      </div>
-      <CalculatorEchoEditPanel
-        context="build"
-        :echo-id="null"
+    <div v-if="isLiveResultBarEnabled" class="echo__list">
+      <CalculatorEchoTile
+        v-for="(_, index) in 5"
+        :key="character + '-' + index"
+        :ref="getEchoRefSetter(index)"
+        :index="index"
         :character="character"
-        :index="openPanelIndex ?? 0"
-        :is-open="openPanelIndex !== null"
-        @close="openPanelIndex = null"
-        @open-echoes-browser="handleOpenEchoesBrowser(openPanelIndex ?? 0)"></CalculatorEchoEditPanel>
+        class="echo-selector"
+        @updated-echo-cost="handleUpdatedEchoCost"
+        @update-stats="handleEchoStats"
+        @echo:set-chosen="handleEchoSetChosen"
+        @main-echo:updated="handleMainEchoUpdated"
+        @main-echo-rank:updated="handleMainEchoRankUpdated"
+        @open-echoes-browser="handleOpenEchoesBrowser"
+        @on-echo-removed="handleEchoRemoved"
+        @open-edit-panel="emit('open-echo-edit-panel', $event)"></CalculatorEchoTile>
     </div>
     <div v-else class="echo__list">
       <CalculatorEcho
@@ -186,7 +174,6 @@ import { getEchoSetLabelByType, echoSetLabelMap } from "../echoes/stats.ts";
 import { oneSetBonuses, twoSetBonuses, threeSetBonuses, fiveSetBonuses } from "../echoes/sets.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
 import CalculatorEchoTile from "./CalculatorEchoTile.vue";
-import CalculatorEchoEditPanel from "./CalculatorEchoEditPanel.vue";
 import CalculatorEchoesSetBonusOnePiece from "./CalculatorEchoesSetBonusOnePiece.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
@@ -214,6 +201,7 @@ const emit = defineEmits<{
   "update-stats": [stats: Record<string, any>];
   "updated-main-echo": [echo: string | null];
   "updated-main-echo-rank": [rank: number | string];
+  "open-echo-edit-panel": [index: number];
 }>();
 
 const characterStore = useCharacterStore() as any;
@@ -223,10 +211,6 @@ const settingsStore = useSettingsStore() as any;
 const isLiveResultBarEnabled = computed(
   () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
 );
-const openPanelIndex = ref<number | null>(null);
-function handleOpenEditPanel(index: number) {
-  openPanelIndex.value = index;
-}
 
 const echoesImporter = ref<any>(null);
 const echoesBrowser = ref<any>(null);
@@ -538,24 +522,15 @@ watch(setOverride, (newValue) => {
     updateEchoSets();
   }
 });
+
+// Calculator.vue hosts the shared echo edit panel itself now (as a sibling
+// of .calculations__screens, not nested inside this tab's own scrollable
+// content — see docs/adr/0014), so its "Browse" action needs a way back
+// into this component's own CalculatorEchoesBrowser instance.
+defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 </script>
 
 <style scoped>
-.echo-list-pane {
-  display: flex;
-  align-items: flex-start;
-  min-height: 0;
-}
-.echo-list-pane__list {
-  flex: 1;
-  min-width: 0;
-}
-@media (max-width: 768px) {
-  .echo-list-pane {
-    display: block;
-  }
-}
-
 .echo-selector {
   margin-bottom: 20px;
 }
