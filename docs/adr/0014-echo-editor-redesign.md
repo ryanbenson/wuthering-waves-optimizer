@@ -142,6 +142,34 @@ ADR is for building that, not the proposal itself.
    substats. Each row: icon + full label on the left (e.g. "Heavy Attack
    DMG Bonus", not an abbreviation — a single column has room for it),
    value on the right, roll-quality-colored left border.
+9. **CV/Substat-Score badges are back on the build-strip tile and the
+   panel, reusing `useEchoCardStats`/`useEchoRating` rather than
+   duplicating their math.** An early version of `CalculatorEchoTile.vue`
+   dropped these badges to trim scope; testing surfaced that as a real
+   regression — `CalculatorEcho.vue` (the legacy tile) always showed them,
+   and losing them made an echo's actual quality invisible until you
+   opened the panel. Both `CalculatorEchoTile.vue` and
+   `CalculatorEchoEditPanel.vue` now build a small getter-object (`rank`,
+   `type`, `echo`, `stat`, the five `echoSubStatsType/Value` pairs,
+   `characterId`) that reads straight through to `useEchoEditFields()`'s
+   own writable-computed refs, and pass that into `useEchoCardStats()` /
+   `useEchoRating()` — the same functions `CalculatorEchoCard.vue` already
+   uses, so CV/RV/rating math has exactly one implementation. Plain getters
+   are enough here (no `reactive()` wrapper needed): the tracked reads
+   happen inside the getter bodies against real refs, not against the
+   container object itself, so `computed()`s inside those composables
+   still see live edits. The tile always has a `characterId` (`props.character`
+   is required in build context), so it always shows the weighted Substat
+   Score; the panel falls back to the unweighted Echo Rating grade in
+   Inventory context, matching how `InventoryEchoesBrowser.vue`'s own
+   `CalculatorEchoCard` usage already behaves (no characterId passed there
+   either — an inventory echo doesn't have one owning character).
+   Separately: `InventoryEchoesBrowser.vue` and `CalculatorEchoesBrowser.vue`
+   already both render `CalculatorEchoCard.vue` consistently — the
+   build-strip tile is intentionally a different, denser shape (a slot in
+   an active loadout, not a browsable grid card), so this fix aligns the
+   *badge language* across all three surfaces without forcing them to
+   share one component.
 
 ## Not done here
 

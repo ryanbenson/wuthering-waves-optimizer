@@ -34,7 +34,31 @@
             </span>
             <span v-if="index === 0" class="badge badge-xs badge-outline">Main echo</span>
           </div>
-          <div class="text-xs opacity-60 truncate">{{ echoSetLabel }}</div>
+          <div class="flex items-center gap-1.5 flex-wrap mt-0.5">
+            <span class="text-xs opacity-60 truncate">{{ echoSetLabel }}</span>
+            <template v-if="hasSubStats">
+              <span class="badge badge-xs text-nowrap" :class="critValueBadgeClass">
+                CV {{ formattedCritValue }}%
+              </span>
+              <span v-if="SHOW_ROLL_VALUE_BADGE" class="badge badge-xs text-nowrap" :class="rollValueBadgeClass">
+                RV {{ echoRollValue }}%
+              </span>
+              <span
+                v-if="substatScore"
+                class="badge badge-xs text-nowrap"
+                :class="substatScoreBadgeClass"
+                v-tooltip="'Substat Score — this echo\'s rolls weighted for this character'">
+                {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+              </span>
+              <span
+                v-else
+                class="badge badge-xs text-nowrap"
+                :class="echoRatingBadgeClass"
+                v-tooltip="'Echo Rating — overall substat roll quality'">
+                {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
+              </span>
+            </template>
+          </div>
         </div>
         <div class="flex items-center gap-1 shrink-0" @click.stop>
           <EchoLockTrashActions v-if="echoId" :echo-id="echoId" />
@@ -86,8 +110,9 @@
 import { computed, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
-import { getReadableSubStatLabel, getSubStatIconByType, getEchoSetLabelByType } from "../echoes/stats";
-import { getSubstatRollQualityClasses } from "../composables/useEchoCardStats";
+import { getReadableSubStatLabel, getSubStatIconByType, getEchoSetLabelByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
+import { useEchoCardStats, getSubstatRollQualityClasses, type EchoCardStatsProps } from "../composables/useEchoCardStats";
+import { useEchoRating, type EchoRatingProps } from "../composables/useEchoRating";
 import { useEchoEditFields, type EchoEditTarget, type EchoSubstatSlot } from "../composables/useEchoEditFields";
 import { randomString } from "../utils/strings.ts";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
@@ -139,6 +164,33 @@ const {
   stats,
   isApplyingEchoLoadout,
 } = useEchoEditFields(() => target.value);
+
+// Getter passthrough onto the composable's own writable-computed refs, so
+// useEchoCardStats/useEchoRating's internal computed()s keep tracking live
+// edits the same way they would off a real defineProps() object — no need
+// to duplicate CV/RV/rating math here, just reuse what CalculatorEchoCard.vue
+// already uses.
+const cardStatsSource: EchoCardStatsProps & EchoRatingProps = {
+  get rank() { return rank.value; },
+  get type() { return String(type.value ?? ""); },
+  get echo() { return echo.value ?? ""; },
+  get stat() { return stat.value ?? ""; },
+  get echoSubStatsType1() { return slots[0].type.value; },
+  get echoSubStatsValue1() { return slots[0].value.value; },
+  get echoSubStatsType2() { return slots[1].type.value; },
+  get echoSubStatsValue2() { return slots[1].value.value; },
+  get echoSubStatsType3() { return slots[2].type.value; },
+  get echoSubStatsValue3() { return slots[2].value.value; },
+  get echoSubStatsType4() { return slots[3].type.value; },
+  get echoSubStatsValue4() { return slots[3].value.value; },
+  get echoSubStatsType5() { return slots[4].type.value; },
+  get echoSubStatsValue5() { return slots[4].value.value; },
+  get characterId() { return props.character; },
+};
+const { hasSubStats, formattedCritValue, critValueBadgeClass, echoRollValue, rollValueBadgeClass } =
+  useEchoCardStats(cardStatsSource);
+const { echoRating, echoRatingBadgeClass, substatScore, substatScoreBadgeClass } =
+  useEchoRating(cardStatsSource);
 
 function qualityClasses(slot: EchoSubstatSlot) {
   return getSubstatRollQualityClasses(slot.type.value, slot.value.value);
