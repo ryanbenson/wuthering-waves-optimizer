@@ -68,7 +68,7 @@ describe("Echo Edit Panel — Calculator build context (Labs flag)", () => {
     cy.get('[data-test-echo-item="0"]').click();
     pickEcho("BellBorneGeochelone");
 
-    cy.get("[data-test-echo-edit-cost-row]").should("contain.text", "Cost").and("contain.text", "free stat");
+    cy.get("[data-test-echo-edit-cost-row]").should("contain.text", "Cost 4").and("contain.text", "ATK +150");
     cy.get("[data-test-echo-edit-cost-row]").find("input, select, button").should("not.exist");
   });
 

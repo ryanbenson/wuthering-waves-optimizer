@@ -105,21 +105,24 @@ const SUBSTAT_FAMILY_CLASSES: Record<
   SubstatFamily,
   { bg: string; text: string; border: string }
 > = {
-  flat: { bg: "bg-base-300", text: "text-base-content/70", border: "border-base-300" },
+  // `border-l-{color}` (not the plain `border-{color}`) so this only ever
+  // sets the left edge's color — the plain form sets border-color on all
+  // four sides, which bled into daisyUI's own zebra-table row separators.
+  flat: { bg: "bg-base-300", text: "text-base-content/70", border: "border-l-base-300" },
   crit: {
     bg: "bg-teal-500/15",
     text: "text-teal-600 dark:text-teal-400",
-    border: "border-teal-500",
+    border: "border-l-teal-500",
   },
   dmg: {
     bg: "bg-purple-500/15",
     text: "text-purple-600 dark:text-purple-400",
-    border: "border-purple-500",
+    border: "border-l-purple-500",
   },
   util: {
     bg: "bg-amber-500/15",
     text: "text-amber-600 dark:text-amber-400",
-    border: "border-amber-500",
+    border: "border-l-amber-500",
   },
 };
 

@@ -392,6 +392,29 @@ export function getReadableSubStatLabel(key: string): string {
   return subStatLabelMap[key];
 }
 
+// A short (<=5 char) label for tight spaces — a substat cell in a compact
+// grid, where the full label ("Resonance Liberation DMG Bonus") or an icon
+// alone isn't legible enough to identify the stat at a glance.
+export const subStatShortLabelMap: SubStatLabelMap = {
+  HP_FLAT: "HP",
+  ATK_FLAT: "ATK",
+  DEF_FLAT: "DEF",
+  ATK: "ATK%",
+  HP: "HP%",
+  DEF: "DEF%",
+  EnergyRegen: "ER",
+  CritRate: "CR",
+  CritDMG: "CD",
+  BasicAttackDMGBonus: "Basic",
+  HeavyAttackDMGBonus: "Heavy",
+  ResonanceSkillDMGBonus: "Skill",
+  ResonanceLiberationDMGBonus: "Lib",
+};
+
+export function getShortSubStatLabel(key: string): string {
+  return subStatShortLabelMap[key] ?? key;
+}
+
 export const subStatIconMap: Record<string, string> = {
   HP_FLAT: "https://ryanbenson.github.io/wuthering-waves-assets/images/hp.png",
   ATK_FLAT:

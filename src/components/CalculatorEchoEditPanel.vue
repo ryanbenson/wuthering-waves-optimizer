@@ -82,19 +82,20 @@
       </div>
 
       <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
-        <div
-          class="echo-edit-panel__locked-row flex items-center gap-2 text-sm opacity-80"
-          data-test-echo-edit-cost-row>
-          <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <div class="echo-edit-panel__locked-row flex items-center gap-2" data-test-echo-edit-cost-row>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-3.5 shrink-0 opacity-60"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            v-tooltip="'Set by which echo you picked'">
             <rect x="5" y="11" width="14" height="9" rx="2" stroke-width="1.8" />
             <path d="M8 11V8a4 4 0 018 0v3" stroke-width="1.8" />
           </svg>
-          <span>
-            Cost <b>{{ type ?? "—" }}</b>
-            <template v-if="freeStatType">
-              · free stat <b>{{ freeStatLabel }} +{{ freeStatValue }}</b>
-            </template>
-            — set by which echo you picked
+          <span class="badge badge-sm font-mono">Cost {{ type ?? "—" }}</span>
+          <span v-if="freeStatType" class="badge badge-sm badge-ghost font-mono">
+            {{ freeStatLabel }} +{{ freeStatValue }}
           </span>
         </div>
 
@@ -145,14 +146,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="flex items-start gap-2 text-xs opacity-60">
-          <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <circle cx="12" cy="12" r="9" stroke-width="1.8" />
-            <path d="M12 8v5M12 16h.01" stroke-width="1.8" />
-          </svg>
-          <span>Echo and set selection stay on today's picker — this panel only covers rank, main stat, and substats.</span>
         </div>
       </div>
     </div>
@@ -365,13 +358,16 @@ const allEchoesListFiltered = computed((): EchoListEntry[] => {
 }
 
 .echo-edit-panel--inventory {
+  /* AppLayout.vue's nav is itself `position: fixed` at z-50, 80px tall
+     (its content offsets below it with mt-20) — this needs to clear it the
+     same way, not just out-z-index it, or it'd cover the nav instead. */
   position: fixed;
-  top: 0;
+  top: 80px;
   right: 0;
   bottom: 0;
   width: 380px;
   max-width: 100%;
-  z-index: 40;
+  z-index: 51;
   box-shadow: -12px 0 30px rgba(0, 0, 0, 0.15);
 }
 

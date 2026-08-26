@@ -60,12 +60,14 @@
           class="rounded flex flex-col items-center justify-center gap-0.5 py-1"
           :class="slotIsFilled(slot) ? familyClasses(slot.type.value).bg : 'bg-base-200'"
           :data-test-echo-item-substat="i">
-          <img
-            v-if="slotIsFilled(slot)"
-            :src="getSubStatIconByType(slot.type.value)"
-            class="size-4" />
           <span
-            class="text-[10px] font-mono font-bold"
+            v-if="slotIsFilled(slot)"
+            class="text-[9px] font-bold uppercase tracking-wide leading-none"
+            :class="familyClasses(slot.type.value).text">
+            {{ getShortSubStatLabel(slot.type.value) }}
+          </span>
+          <span
+            class="text-[10px] font-mono font-bold leading-tight"
             :class="slotIsFilled(slot) ? familyClasses(slot.type.value).text : 'opacity-40'">
             {{ slotIsFilled(slot) ? slotValueDisplay(slot) : "—" }}
           </span>
@@ -84,7 +86,7 @@
 import { computed, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
-import { getReadableSubStatLabel, getSubStatIconByType, getEchoSetLabelByType } from "../echoes/stats";
+import { getReadableSubStatLabel, getShortSubStatLabel, getEchoSetLabelByType } from "../echoes/stats";
 import { getSubstatFamilyClasses } from "../composables/useEchoCardStats";
 import { useEchoEditFields, type EchoEditTarget, type EchoSubstatSlot } from "../composables/useEchoEditFields";
 import { randomString } from "../utils/strings.ts";
