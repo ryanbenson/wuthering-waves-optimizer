@@ -5,7 +5,7 @@
       value="Normal"
       class="join-item btn btn-sm"
       type="radio"
-      name="options"
+      :name="name"
       aria-label="Normal"
       :checked="damageType === 'Normal'" />
     <input
@@ -13,7 +13,7 @@
       value="Average"
       class="join-item btn btn-sm"
       type="radio"
-      name="options"
+      :name="name"
       aria-label="Average"
       :checked="damageType === 'Average'" />
     <input
@@ -21,7 +21,7 @@
       value="Crit"
       class="join-item btn btn-sm"
       type="radio"
-      name="options"
+      :name="name"
       aria-label="Crit"
       :checked="damageType === 'Crit'" />
   </div>
@@ -34,8 +34,14 @@ const props = withDefaults(
   defineProps<{
     character: string;
     currentDamageType?: string | null;
+    // Radio inputs of the same name are mutually exclusive document-wide
+    // (no <form> boundary here) — every screen stays mounted (v-show), so
+    // a second instance elsewhere in the DOM with the default name would
+    // fight this one. Override per consumer when more than one can exist
+    // at once (see CalculatorLiveResultBar.vue).
+    name?: string;
   }>(),
-  { currentDamageType: null },
+  { currentDamageType: null, name: "options" },
 );
 
 const emit = defineEmits<{

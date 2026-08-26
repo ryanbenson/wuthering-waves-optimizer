@@ -41,6 +41,7 @@ Statuses: `proposed` · `accepted` · `deprecated` · `superseded`.
 | [0010](./0010-persisted-data-migrations.md) | Version and migrate persisted user data | accepted | persistence, migrations |
 | [0011](./0011-headless-character-calculation-context.md) | Headless character calculation context for non-active-character consumers | accepted | calculator, stores, team-rotations |
 | [0012](./0012-echo-substat-ratings.md) | Echo & character substat ratings | accepted | echoes, characters, stores |
+| [0013](./0013-live-result-bar-labs-flag.md) | Live Result Bar (Labs-flagged layout) | accepted | calculator, components, stores |
 
 ## When to write a new ADR
 

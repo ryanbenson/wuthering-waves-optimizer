@@ -13,5 +13,10 @@ export function getCharacterBasicInfo(): CharacterBasicInfo {
       "https://api.encore.moe/resource/Data/Game/Aki/UI/UIResources/Common/Atlas/SkillIcon/SkillIconBulante/SP_IconBulanteD2.webp",
     ],
     signatureWeapon: "UnflickeringValor",
+    // Example config for the Labs-flagged Live Result Bar (see
+    // src/calculator/liveResultBar.ts). Prefers a saved rotation's total;
+    // falls back to the generic cross-character default until one exists.
+    liveResultBarDefaultTarget: { type: "rotation" },
+    liveResultBarStats: ["totalAtk", "totalCritRate", "totalCritDMG", "energyRegen"],
   };
 }
