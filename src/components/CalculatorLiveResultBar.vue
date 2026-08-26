@@ -43,14 +43,13 @@
     </div>
 
     <!--
-      mx-auto: pushes this group to the right when it shares the row with
-      the stat chips, and centers it on its own line if the row wraps —
-      self-adjusting to whatever width the chips/name happen to take
-      instead of assuming a fixed wrap breakpoint. Not shrink-0 — that
+      ml-auto: pushes this group to the right, whether it shares the row
+      with the stat chips or wraps onto its own line — stays right-aligned
+      either way rather than centering when wrapped. Not shrink-0 — that
       would refuse to compress below its unwrapped (max-content) width,
       which stops the wrap from ever actually triggering.
     -->
-    <div class="flex items-center gap-3 min-w-0 mx-auto">
+    <div class="flex items-center gap-3 min-w-0 ml-auto">
       <!--
         Target + damage type move here instead of sitting inline — they're
         a "set once, rarely touched again" preference, not something that
@@ -58,6 +57,7 @@
       -->
       <details
         v-if="character"
+        ref="settingsDetailsEl"
         class="dropdown dropdown-end"
         data-test-live-result-bar-settings>
         <summary
@@ -67,15 +67,10 @@
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="size-4"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
+            fill="currentColor"
+            viewBox="0 0 640 640">
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="1.8"
-              d="M10.5 3.5h3l.5 2.3a6.4 6.4 0 0 1 1.9 1.1l2.2-.8 1.5 2.6-1.8 1.5a6.4 6.4 0 0 1 0 2.2l1.8 1.5-1.5 2.6-2.2-.8a6.4 6.4 0 0 1-1.9 1.1l-.5 2.3h-3l-.5-2.3a6.4 6.4 0 0 1-1.9-1.1l-2.2.8-1.5-2.6 1.8-1.5a6.4 6.4 0 0 1 0-2.2L4.4 8.7l1.5-2.6 2.2.8a6.4 6.4 0 0 1 1.9-1.1l.5-2.3Z" />
-            <circle cx="12" cy="12" r="2.6" stroke-width="1.8" />
+              d="M259.1 73.5C262.1 58.7 275.2 48 290.4 48L350.2 48C365.4 48 378.5 58.7 381.5 73.5L396 143.5C410.1 149.5 423.3 157.2 435.3 166.3L503.1 143.8C517.5 139 533.3 145 540.9 158.2L570.8 210C578.4 223.2 575.7 239.8 564.3 249.9L511 297.3C511.9 304.7 512.3 312.3 512.3 320C512.3 327.7 511.8 335.3 511 342.7L564.4 390.2C575.8 400.3 578.4 417 570.9 430.1L541 481.9C533.4 495 517.6 501.1 503.2 496.3L435.4 473.8C423.3 482.9 410.1 490.5 396.1 496.6L381.7 566.5C378.6 581.4 365.5 592 350.4 592L290.6 592C275.4 592 262.3 581.3 259.3 566.5L244.9 496.6C230.8 490.6 217.7 482.9 205.6 473.8L137.5 496.3C123.1 501.1 107.3 495.1 99.7 481.9L69.8 430.1C62.2 416.9 64.9 400.3 76.3 390.2L129.7 342.7C128.8 335.3 128.4 327.7 128.4 320C128.4 312.3 128.9 304.7 129.7 297.3L76.3 249.8C64.9 239.7 62.3 223 69.8 209.9L99.7 158.1C107.3 144.9 123.1 138.9 137.5 143.7L205.3 166.2C217.4 157.1 230.6 149.5 244.6 143.4L259.1 73.5zM320.3 400C364.5 399.8 400.2 363.9 400 319.7C399.8 275.5 363.9 239.8 319.7 240C275.5 240.2 239.8 276.1 240 320.3C240.2 364.5 276.1 400.2 320.3 400z" />
           </svg>
         </summary>
         <div
@@ -151,7 +146,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import CalculatorOptimizerTarget from "./CalculatorOptimizerTarget.vue";
 import CalculatorOptimizerDamageType from "./CalculatorOptimizerDamageType.vue";
 import { displayInt, displayPercentage } from "../utils/numbers";
@@ -232,6 +227,25 @@ const deltaLabel = computed(() => {
   if (delta.value === null) return "";
   const sign = delta.value > 0 ? "+" : "−";
   return `${sign}${displayInt(Math.abs(delta.value))}`;
+});
+
+// Native <details>/<summary> has no built-in "close on outside click"
+// behavior (unlike AppRichSelect's own dropdown, which already does this
+// via the same pointerdown pattern below) — without this, closing the
+// target/damage-type popover requires clicking the gear again instead of
+// just clicking away.
+const settingsDetailsEl = ref<HTMLDetailsElement | null>(null);
+function onDocumentPointerDown(event: PointerEvent) {
+  const el = settingsDetailsEl.value;
+  if (!el || !el.open) return;
+  if (event.target instanceof Node && el.contains(event.target)) return;
+  el.open = false;
+}
+onMounted(() => {
+  document.addEventListener("pointerdown", onDocumentPointerDown, true);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener("pointerdown", onDocumentPointerDown, true);
 });
 
 function onTargetUpdated(next: string | null) {

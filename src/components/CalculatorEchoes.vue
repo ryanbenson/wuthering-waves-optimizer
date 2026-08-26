@@ -67,14 +67,36 @@
         Preset: {{ echoPresetName }}
       </div>
       <div
-        v-if="teamSubstatScoreRollup"
+        v-if="teamSubstatScoreRollup && !isLiveResultBarEnabled"
         class="badge text-nowrap"
         :class="teamSubstatScoreRollupBadgeClass"
         v-tooltip="'Build Score — average Substat Score across this character\'s equipped echoes'">
         Build Score: {{ teamSubstatScoreRollup.grade }} {{ Math.round(teamSubstatScoreRollup.percent) }}%{{ teamSubstatScoreRollup.provisional ? "*" : "" }}
       </div>
     </div>
-    <div class="echo__list">
+    <div v-if="isLiveResultBarEnabled" class="echoes-layout">
+      <div class="echoes-layout__strip echo__list">
+        <CalculatorEchoTile
+          v-for="(_, index) in 5"
+          :key="character + '-' + index"
+          :ref="getEchoRefSetter(index)"
+          :index="index"
+          :character="character"
+          class="echo-selector"
+          @updated-echo-cost="handleUpdatedEchoCost"
+          @update-stats="handleEchoStats"
+          @echo:set-chosen="handleEchoSetChosen"
+          @main-echo:updated="handleMainEchoUpdated"
+          @main-echo-rank:updated="handleMainEchoRankUpdated"
+          @open-echoes-browser="handleOpenEchoesBrowser"
+          @on-echo-removed="handleEchoRemoved"
+          @open-edit-panel="emit('open-echo-edit-panel', $event)"></CalculatorEchoTile>
+      </div>
+      <CalculatorEchoInsightsPanel
+        class="echoes-layout__insights"
+        :character="character"></CalculatorEchoInsightsPanel>
+    </div>
+    <div v-else class="echo__list">
       <CalculatorEcho
         v-for="(_, index) in 5"
         :key="character + '-' + index"
@@ -156,6 +178,8 @@ import { mainEchoesData, getEchoData, getMainEchoBuffs, mergeMainEchoBuffStats }
 import { getEchoSetLabelByType, echoSetLabelMap } from "../echoes/stats.ts";
 import { oneSetBonuses, twoSetBonuses, threeSetBonuses, fiveSetBonuses } from "../echoes/sets.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
+import CalculatorEchoTile from "./CalculatorEchoTile.vue";
+import CalculatorEchoInsightsPanel from "./CalculatorEchoInsightsPanel.vue";
 import CalculatorEchoesSetBonusOnePiece from "./CalculatorEchoesSetBonusOnePiece.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
@@ -171,6 +195,7 @@ import AppOverflowMenu from "./AppOverflowMenu.vue";
 import Toast from "./Toast.vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { useSettingsStore } from "../stores/settings";
 import { getRatingBadgeClasses } from "../composables/useEchoRating";
 import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
 import { randomString } from "../utils/strings.ts";
@@ -182,10 +207,16 @@ const emit = defineEmits<{
   "update-stats": [stats: Record<string, any>];
   "updated-main-echo": [echo: string | null];
   "updated-main-echo-rank": [rank: number | string];
+  "open-echo-edit-panel": [index: number];
 }>();
 
 const characterStore = useCharacterStore() as any;
 const inventoryStore = useInventoryStore() as any;
+const settingsStore = useSettingsStore() as any;
+
+const isLiveResultBarEnabled = computed(
+  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+);
 
 const echoesImporter = ref<any>(null);
 const echoesBrowser = ref<any>(null);
@@ -497,9 +528,50 @@ watch(setOverride, (newValue) => {
     updateEchoSets();
   }
 });
+
+// Calculator.vue hosts the shared echo edit panel itself now (as a sibling
+// of .calculations__screens, not nested inside this tab's own scrollable
+// content — see docs/adr/0014), so its "Browse" action needs a way back
+// into this component's own CalculatorEchoesBrowser instance.
+defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 </script>
 
 <style scoped>
+/*
+ * Two-column split for the Labs-flagged layout: the build strip keeps its
+ * existing width, the new insights panel docks beside it — see
+ * docs/adr/0014-echo-editor-redesign.md decision #10. This is inline
+ * content within the tab (not a third overlay dock like the edit panel /
+ * Full Breakdown at the Calculator.vue level), so it scrolls together with
+ * .calculations__screens instead of needing its own scroll region.
+ */
+.echoes-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.echoes-layout__strip {
+  flex: 1;
+  min-width: 0;
+}
+
+.echoes-layout__insights {
+  flex: 0 0 320px;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .echoes-layout {
+    flex-direction: column;
+  }
+
+  .echoes-layout__insights {
+    flex: none;
+    width: 100%;
+  }
+}
+
 .echo-selector {
   margin-bottom: 20px;
 }

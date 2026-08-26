@@ -55,6 +55,7 @@
     </div>
 
     <div
+      v-show="isOpen"
       ref="menuRef"
       class="dropdown-content app-rich-select__menu z-50 w-full p-1 shadow bg-base-200 text-base-content"
       :class="opensUpward ? 'mb-1' : 'mt-1'"

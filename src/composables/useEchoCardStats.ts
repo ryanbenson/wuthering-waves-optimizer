@@ -97,6 +97,38 @@ function getBadgeClass(value: number, max: number, mode: "cv" | "rv") {
   return [bgColor, color, borderColor, boxShadow];
 }
 
+// [bg, text, border] for a single rolled substat, bucketed by the exact
+// same roll-quality score and emerald/blue/purple/yellow thresholds as
+// `getSubStatValueColorClass` above (already shipped, used by
+// CalculatorBuildCardEchoCard.vue) — an earlier version of this file colored
+// substats by *family* (crit/dmg/util/flat) instead, using amber for
+// "utility" stats. That collided with this app's own established
+// convention where amber/gold already means "high roll" everywhere else
+// (the CV/RV/rating badges), so a genuinely low-rolled Energy Regen still
+// showed gold and read as a good roll. Reusing this one scale instead of a
+// second, unrelated one keeps "what does this color mean" consistent
+// across the whole app.
+// `border-l-{color}` (not the plain `border-{color}`) so this only ever
+// sets the left edge's color — the plain form sets border-color on all
+// four sides, which bled into daisyUI's own zebra-table row separators.
+export function getSubstatRollQualityClasses(
+  type: string | null | undefined,
+  value: number | string | null | undefined,
+): { bg: string; text: string; border: string } | null {
+  if (!type || type === "none" || !value) return null;
+  const score = getSubstatRollValue(type, String(Number(value)));
+  if (score <= 40) {
+    return { bg: "bg-emerald-500/15", text: "text-emerald-600 dark:text-emerald-400", border: "border-l-emerald-500" };
+  }
+  if (score <= 60) {
+    return { bg: "bg-blue-500/15", text: "text-blue-600 dark:text-blue-400", border: "border-l-blue-500" };
+  }
+  if (score <= 80) {
+    return { bg: "bg-purple-500/15", text: "text-purple-600 dark:text-purple-400", border: "border-l-purple-500" };
+  }
+  return { bg: "bg-yellow-500/15", text: "text-yellow-600 dark:text-yellow-500", border: "border-l-yellow-500" };
+}
+
 const echoElementsList = [
   "Glacio",
   "Fusion",
@@ -296,5 +328,6 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
     getMainStatColorClass,
     getReadableSubStatLabel,
     getSubStatIconByType,
+    getSubstatRollQualityClasses,
   };
 }

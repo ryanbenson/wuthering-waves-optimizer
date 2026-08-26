@@ -1,5 +1,8 @@
 <template>
-  <InventoryEchoEdit ref="inventoryEchoEditRef"></InventoryEchoEdit>
+  <InventoryEchoEditPanel
+    v-if="isLiveResultBarEnabled"
+    ref="inventoryEchoEditRef"></InventoryEchoEditPanel>
+  <InventoryEchoEdit v-else ref="inventoryEchoEditRef"></InventoryEchoEdit>
   <CalculatorEchoImporter
     ref="echoesImporter"
     inventory-only></CalculatorEchoImporter>
@@ -508,6 +511,7 @@ import EchoRatingRangeFilters from "./EchoRatingRangeFilters.vue";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoOptimizerVisibilityIcon from "./icons/EchoOptimizerVisibilityIcon.vue";
 import InventoryEchoEdit from "./InventoryEchoEdit.vue";
+import InventoryEchoEditPanel from "./InventoryEchoEditPanel.vue";
 import CalculatorEchoImporter from "./CalculatorEchoImporter.vue";
 import CalculatorEchoRatingGuide from "./CalculatorEchoRatingGuide.vue";
 import EchoRatingWeightsEditor from "./EchoRatingWeightsEditor.vue";
@@ -545,8 +549,13 @@ const {
   bulkSetFavorite,
 } = useEchoInventory();
 
-const inventoryEchoEditRef = ref<InstanceType<typeof InventoryEchoEdit> | null>(
-  null,
+const inventoryEchoEditRef = ref<
+  | InstanceType<typeof InventoryEchoEdit>
+  | InstanceType<typeof InventoryEchoEditPanel>
+  | null
+>(null);
+const isLiveResultBarEnabled = computed(
+  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
 );
 const echoesImporter = ref<InstanceType<typeof CalculatorEchoImporter> | null>(
   null,
