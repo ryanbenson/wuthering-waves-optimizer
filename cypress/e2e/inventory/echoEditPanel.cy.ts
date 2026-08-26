@@ -52,10 +52,19 @@ function visitInventoryWithEcho(density: "comfy" | "compact" = "comfy") {
 }
 
 function openEditPanelForSeededEcho() {
+  // Flag-on's decluttered action cluster (decision #14) uses an icon-only
+  // Edit button (aria-label, no visible text); the flag-off footer is
+  // unchanged and still has a plain text "Edit" button.
   cy.get(`[data-test-echo-select="${ECHO_ID}"]`)
     .closest(".echo__item-wrap")
-    .contains("button", "Edit")
-    .click();
+    .then(($wrap) => {
+      const $ariaEdit = $wrap.find('button[aria-label="Edit"]');
+      if ($ariaEdit.length) {
+        cy.wrap($ariaEdit).click();
+      } else {
+        cy.wrap($wrap).contains("button", "Edit").click();
+      }
+    });
 }
 
 describe("Echo Edit Panel — Inventory context (Labs flag)", () => {

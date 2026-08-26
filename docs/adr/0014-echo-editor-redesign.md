@@ -277,6 +277,49 @@ ADR is for building that, not the proposal itself.
    host-supplied footer slot (Inventory's Edit/Duplicate/Delete, the Echo
    Browser's "Use echo") are unchanged in both branches.
 
+14. **`CalculatorEchoCard.vue`'s compact layout gets a skinnier tile-style
+   redesign too, flag-gated the same way comfy is (decision #13), and the
+   Inventory grid's action buttons split into two clusters.** The old
+   compact layout (dense grids: Inventory, Echo Browser) packed a `size-16`
+   avatar with three absolutely-positioned badges (cost, set icon, "in
+   inventory") around it, and rendered substats as icon-only rows with no
+   stat-name label — hard to read at a glance. Flag on: same
+   avatar-with-overlaid-cost-badge header as the comfy tile-style layout,
+   just smaller (`size-10`), with the same labeled vertical substat list
+   (`EchoCardSubstatList.vue`, `size="xs"` — smaller icon/text/padding than
+   comfy's `size="sm"`, same row logic). This is also why
+   `EchoCardSubstatList.vue` exists as its own component now: the same
+   5-row list is used by three layouts (compact-flag-on, comfy-flag-on, and
+   — via its `size` prop — future callers), so it moved out of
+   `CalculatorEchoCard.vue` instead of getting duplicated a third time.
+   Flag off keeps the exact original compact markup, unchanged.
+
+   Separately, `InventoryEchoesBrowser.vue`'s footer (the card's default
+   slot) also gets a flag-gated redesign: the old single button row —
+   `EchoLockTrashActions` (Lock/Trash-mark/Ignore-from-optimizer, 3 icon
+   toggles) immediately followed by full-width **Edit**/**Duplicate**/
+   **Delete** text buttons, one crowded `flex-wrap` row — splits into two
+   visually distinct clusters when the flag is on: a **status** cluster
+   (equipped-by avatars + `EchoLockTrashActions`, left) and an **actions**
+   cluster (Edit/Duplicate/Delete as `btn-square` icon buttons with
+   tooltips, right) — matching the icon-button convention
+   `EchoLockTrashActions` already established, rather than inventing a
+   second button style. `CalculatorEchoesBrowser.vue`'s own slot (just a
+   single "Use echo" button) wasn't crowded to begin with and is
+   unchanged. Flag off keeps the exact original footer markup.
+
+   While verifying the Echo Browser modal for this change, found and fixed
+   a real, separate bug in `AppOverflowMenu.vue` (used by
+   `CalculatorEchoTile.vue`'s "…" menu, Manage Builds, Team Rotations, and
+   others): it relied entirely on daisyUI's CSS-only `:focus-within` to
+   show/hide its dropdown content, the exact same fragile pattern already
+   fixed once for `AppRichSelect.vue` earlier in this redesign — and it
+   broke the same way, staying visibly open by default in some contexts
+   (reproduced via `CalculatorEchoTile.vue`'s overflow menu, whose root is
+   itself a `<button>`, an unusual ancestor for a focus-within dropdown).
+   Fixed with the same explicit `isOpen` ref + `v-show` + outside-pointerdown-
+   close pattern already validated for `AppRichSelect.vue`.
+
 ## Not done here
 
 - **The echo/set picker itself** — still today's dialog (the "Find" button
