@@ -99,6 +99,11 @@ describe("Echo Edit Panel — Calculator build context (Labs flag)", () => {
 
   it("dragging a substat's slider snaps to the real roll table and updates the tile", () => {
     openBrantEchoesTab();
+    // Extra viewport height: slot 0's dropdown sits close enough to the
+    // panel's fixed Rank header that AppRichSelect's flip-to-open-upward
+    // placement (correct when there's more room above than below) can
+    // overlap it at the default 1280x720 spec viewport.
+    cy.viewport(1280, 1000);
     cy.get('[data-test-echo-item="0"]').click();
     pickEcho("BellBorneGeochelone");
 

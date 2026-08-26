@@ -45,6 +45,10 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
 
   it("sums total CV and per-substat totals across equipped echoes, ordered by Brant's priority weights", () => {
     openBrantEchoesTab();
+    // Extra viewport height: assigning slot 0's substat type opens near the
+    // top of the panel, and AppRichSelect flips its menu upward when there
+    // isn't enough room below at the default 1280x720 spec viewport.
+    cy.viewport(1280, 1000);
 
     // Brant's curated weights: CritRate 4, CritDMG 4, BasicAttackDMGBonus 3,
     // EnergyRegen 2, ATK 2, ATK_FLAT 1.
@@ -76,6 +80,7 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
 
   it("flags a zero-roll priority substat as missing", () => {
     openBrantEchoesTab();
+    cy.viewport(1280, 1000);
     cy.get('[data-test-echo-item="0"]').click();
     pickEcho("BellBorneGeochelone");
     // Deliberately never roll EnergyRegen (one of Brant's priority stats).
@@ -93,6 +98,7 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
 
   it("aggregates roll counts across more than one equipped echo", () => {
     openBrantEchoesTab();
+    cy.viewport(1280, 1000);
     cy.get('[data-test-echo-item="0"]').click();
     pickEcho("BellBorneGeochelone");
     assignSlot(0, "Crit Rate");
