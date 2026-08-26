@@ -74,7 +74,36 @@
         Build Score: {{ teamSubstatScoreRollup.grade }} {{ Math.round(teamSubstatScoreRollup.percent) }}%{{ teamSubstatScoreRollup.provisional ? "*" : "" }}
       </div>
     </div>
-    <div class="echo__list">
+    <div v-if="isLiveResultBarEnabled" class="echo-list-pane">
+      <div class="echo-list-pane__list">
+        <div class="echo__list">
+          <CalculatorEchoTile
+            v-for="(_, index) in 5"
+            :key="character + '-' + index"
+            :ref="getEchoRefSetter(index)"
+            :index="index"
+            :character="character"
+            class="echo-selector"
+            @updated-echo-cost="handleUpdatedEchoCost"
+            @update-stats="handleEchoStats"
+            @echo:set-chosen="handleEchoSetChosen"
+            @main-echo:updated="handleMainEchoUpdated"
+            @main-echo-rank:updated="handleMainEchoRankUpdated"
+            @open-echoes-browser="handleOpenEchoesBrowser"
+            @on-echo-removed="handleEchoRemoved"
+            @open-edit-panel="handleOpenEditPanel"></CalculatorEchoTile>
+        </div>
+      </div>
+      <CalculatorEchoEditPanel
+        context="build"
+        :echo-id="null"
+        :character="character"
+        :index="openPanelIndex ?? 0"
+        :is-open="openPanelIndex !== null"
+        @close="openPanelIndex = null"
+        @open-echoes-browser="handleOpenEchoesBrowser(openPanelIndex ?? 0)"></CalculatorEchoEditPanel>
+    </div>
+    <div v-else class="echo__list">
       <CalculatorEcho
         v-for="(_, index) in 5"
         :key="character + '-' + index"
@@ -156,6 +185,8 @@ import { mainEchoesData, getEchoData, getMainEchoBuffs, mergeMainEchoBuffStats }
 import { getEchoSetLabelByType, echoSetLabelMap } from "../echoes/stats.ts";
 import { oneSetBonuses, twoSetBonuses, threeSetBonuses, fiveSetBonuses } from "../echoes/sets.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
+import CalculatorEchoTile from "./CalculatorEchoTile.vue";
+import CalculatorEchoEditPanel from "./CalculatorEchoEditPanel.vue";
 import CalculatorEchoesSetBonusOnePiece from "./CalculatorEchoesSetBonusOnePiece.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
@@ -171,6 +202,7 @@ import AppOverflowMenu from "./AppOverflowMenu.vue";
 import Toast from "./Toast.vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
+import { useSettingsStore } from "../stores/settings";
 import { getRatingBadgeClasses } from "../composables/useEchoRating";
 import { useTeamSubstatScoreRollup } from "../composables/useTeamSubstatScoreRollup";
 import { randomString } from "../utils/strings.ts";
@@ -186,6 +218,15 @@ const emit = defineEmits<{
 
 const characterStore = useCharacterStore() as any;
 const inventoryStore = useInventoryStore() as any;
+const settingsStore = useSettingsStore() as any;
+
+const isLiveResultBarEnabled = computed(
+  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
+);
+const openPanelIndex = ref<number | null>(null);
+function handleOpenEditPanel(index: number) {
+  openPanelIndex.value = index;
+}
 
 const echoesImporter = ref<any>(null);
 const echoesBrowser = ref<any>(null);
@@ -500,6 +541,21 @@ watch(setOverride, (newValue) => {
 </script>
 
 <style scoped>
+.echo-list-pane {
+  display: flex;
+  align-items: flex-start;
+  min-height: 0;
+}
+.echo-list-pane__list {
+  flex: 1;
+  min-width: 0;
+}
+@media (max-width: 768px) {
+  .echo-list-pane {
+    display: block;
+  }
+}
+
 .echo-selector {
   margin-bottom: 20px;
 }

@@ -8,6 +8,7 @@ import {
   getSubstatRollValue,
 } from "../echoes/stats";
 import { getEchoData } from "../echoes/index.ts";
+import { getSubstatFamily, type SubstatFamily } from "../echoes/substatFamilies";
 
 export interface EchoCardStatsProps {
   rank: number | string;
@@ -95,6 +96,42 @@ function getBadgeClass(value: number, max: number, mode: "cv" | "rv") {
     if (percentage >= 450) boxShadow = "shadow-md shadow-yellow-500/50";
   }
   return [bgColor, color, borderColor, boxShadow];
+}
+
+// Background/text pairing per substat family — mirrors the [bg, text] shape
+// of the CV/RV/rating badge classes above so all these small badges compose
+// the same way, but scoped to 4 families rather than a quality gradient.
+const SUBSTAT_FAMILY_CLASSES: Record<
+  SubstatFamily,
+  { bg: string; text: string; border: string }
+> = {
+  flat: { bg: "bg-base-300", text: "text-base-content/70", border: "border-base-300" },
+  crit: {
+    bg: "bg-teal-500/15",
+    text: "text-teal-600 dark:text-teal-400",
+    border: "border-teal-500",
+  },
+  dmg: {
+    bg: "bg-purple-500/15",
+    text: "text-purple-600 dark:text-purple-400",
+    border: "border-purple-500",
+  },
+  util: {
+    bg: "bg-amber-500/15",
+    text: "text-amber-600 dark:text-amber-400",
+    border: "border-amber-500",
+  },
+};
+
+// Class names above must stay as literal strings (not built via string
+// concatenation/replace at runtime) — Tailwind only generates CSS for class
+// names it can find as literal text while scanning source files.
+export function getSubstatFamilyClasses(stat: string | null | undefined): {
+  bg: string;
+  text: string;
+  border: string;
+} {
+  return SUBSTAT_FAMILY_CLASSES[getSubstatFamily(stat)];
 }
 
 const echoElementsList = [
@@ -296,5 +333,6 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
     getMainStatColorClass,
     getReadableSubStatLabel,
     getSubStatIconByType,
+    getSubstatFamilyClasses,
   };
 }

@@ -85,39 +85,46 @@
                 :class="getMainStatColorClass" />
               <span class="text-sm">{{ mainStatValue }}%</span>
             </div>
-            <div v-if="echoSubStatsType1" class="flex gap-2 items-center">
+            <div
+              v-if="echoSubStatsType1"
+              class="flex gap-2 items-center rounded px-1.5 py-0.5"
+              :class="getSubstatFamilyClasses(echoSubStatsType1).bg">
               <img
                 v-if="echoSubStatsType1 && echoSubStatsType1 !== 'none'"
                 :src="echoSubStat1Icon"
                 class="size-6" />
-              <span class="text-sm">{{ echoSubStatsValue1Display }}</span>
+              <span class="text-sm" :class="getSubstatFamilyClasses(echoSubStatsType1).text">{{ echoSubStatsValue1Display }}</span>
             </div>
             <div
               v-if="echoSubStatsType2 && echoSubStatsType2 !== 'none'"
-              class="flex gap-2 items-center">
+              class="flex gap-2 items-center rounded px-1.5 py-0.5"
+              :class="getSubstatFamilyClasses(echoSubStatsType2).bg">
               <img :src="echoSubStat2Icon" class="size-6" />
-              <span class="text-sm">{{ echoSubStatsValue2Display }}</span>
+              <span class="text-sm" :class="getSubstatFamilyClasses(echoSubStatsType2).text">{{ echoSubStatsValue2Display }}</span>
             </div>
             <div
               v-if="echoSubStatsType3 && echoSubStatsType3 !== 'none'"
-              class="flex gap-2 items-center">
+              class="flex gap-2 items-center rounded px-1.5 py-0.5"
+              :class="getSubstatFamilyClasses(echoSubStatsType3).bg">
               <img
                 v-if="echoSubStatsType3"
                 :src="echoSubStat3Icon"
                 class="size-6" />
-              <span class="text-sm">{{ echoSubStatsValue3Display }}</span>
+              <span class="text-sm" :class="getSubstatFamilyClasses(echoSubStatsType3).text">{{ echoSubStatsValue3Display }}</span>
             </div>
             <div
               v-if="echoSubStatsType4 && echoSubStatsType4 !== 'none'"
-              class="flex gap-2 items-center">
+              class="flex gap-2 items-center rounded px-1.5 py-0.5"
+              :class="getSubstatFamilyClasses(echoSubStatsType4).bg">
               <img :src="echoSubStat4Icon" class="size-6" />
-              <span class="text-sm">{{ echoSubStatsValue4Display }}</span>
+              <span class="text-sm" :class="getSubstatFamilyClasses(echoSubStatsType4).text">{{ echoSubStatsValue4Display }}</span>
             </div>
             <div
               v-if="echoSubStatsType5 && echoSubStatsType5 !== 'none'"
-              class="flex gap-2 items-center">
+              class="flex gap-2 items-center rounded px-1.5 py-0.5"
+              :class="getSubstatFamilyClasses(echoSubStatsType5).bg">
               <img :src="echoSubStat5Icon" class="size-6" />
-              <span class="text-sm">{{ echoSubStatsValue5Display }}</span>
+              <span class="text-sm" :class="getSubstatFamilyClasses(echoSubStatsType5).text">{{ echoSubStatsValue5Display }}</span>
             </div>
           </div>
         </div>
@@ -244,7 +251,11 @@
               <tr v-if="hasSubStats" class="substats__label">
                 <td class="font-bold font-size-8">Substats</td>
               </tr>
-              <tr v-if="echoSubStatsType1" class="relative" style="z-index: 1">
+              <tr
+                v-if="echoSubStatsType1"
+                class="relative border-l-4"
+                :class="getSubstatFamilyClasses(echoSubStatsType1).border"
+                style="z-index: 1">
                 <td class="flex gap-2 items-center">
                   <img
                     v-if="echoSubStatsType1 && echoSubStatsType1 !== 'none'"
@@ -253,28 +264,40 @@
                 </td>
                 <td>{{ echoSubStatsValue1Display }}</td>
               </tr>
-              <tr v-if="echoSubStatsType2 && echoSubStatsType2 !== 'none'">
+              <tr
+                v-if="echoSubStatsType2 && echoSubStatsType2 !== 'none'"
+                class="border-l-4"
+                :class="getSubstatFamilyClasses(echoSubStatsType2).border">
                 <td class="flex gap-2 items-center">
                   <img :src="echoSubStat2Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType2) }}
                 </td>
                 <td>{{ echoSubStatsValue2Display }}</td>
               </tr>
-              <tr v-if="echoSubStatsType3 && echoSubStatsType3 !== 'none'">
+              <tr
+                v-if="echoSubStatsType3 && echoSubStatsType3 !== 'none'"
+                class="border-l-4"
+                :class="getSubstatFamilyClasses(echoSubStatsType3).border">
                 <td class="flex gap-2 items-center">
                   <img v-if="echoSubStatsType3" :src="echoSubStat3Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType3) }}
                 </td>
                 <td>{{ echoSubStatsValue3Display }}</td>
               </tr>
-              <tr v-if="echoSubStatsType4 && echoSubStatsType4 !== 'none'">
+              <tr
+                v-if="echoSubStatsType4 && echoSubStatsType4 !== 'none'"
+                class="border-l-4"
+                :class="getSubstatFamilyClasses(echoSubStatsType4).border">
                 <td class="flex gap-2 items-center">
                   <img :src="echoSubStat4Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType4) }}
                 </td>
                 <td>{{ echoSubStatsValue4Display }}</td>
               </tr>
-              <tr v-if="echoSubStatsType5 && echoSubStatsType5 !== 'none'">
+              <tr
+                v-if="echoSubStatsType5 && echoSubStatsType5 !== 'none'"
+                class="border-l-4"
+                :class="getSubstatFamilyClasses(echoSubStatsType5).border">
                 <td class="flex gap-2 items-center">
                   <img :src="echoSubStat5Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType5) }}
@@ -352,6 +375,7 @@ const {
   getMainStatColorClass,
   getReadableSubStatLabel,
   getSubStatIconByType,
+  getSubstatFamilyClasses,
 } = useEchoCardStats(props);
 
 const { echoRating, echoRatingBadgeClass, substatScore, substatScoreBadgeClass } =

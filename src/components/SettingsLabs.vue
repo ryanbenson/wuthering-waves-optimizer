@@ -48,7 +48,7 @@ const labsFeatures = ref<LabFeature[]>([
     key: "liveResultBar",
     label: "Live Result Bar layout",
     details:
-      "Replaces the split stats/damage panel with a pinned summary bar and full-width tab content. Pick any action (or a saved rotation) as your target, and pull out the full breakdown on demand.",
+      "Replaces the split stats/damage panel with a pinned summary bar and full-width tab content. Pick any action (or a saved rotation) as your target, and pull out the full breakdown on demand. Also replaces the echo edit modal (in both the Calculator and Inventory) with a docked panel — five roll-ordered substat slots instead of a checklist, and edits update the pinned damage number directly.",
   },
 ]);
 </script>
