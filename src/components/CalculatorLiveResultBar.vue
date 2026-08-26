@@ -43,14 +43,13 @@
     </div>
 
     <!--
-      mx-auto: pushes this group to the right when it shares the row with
-      the stat chips, and centers it on its own line if the row wraps —
-      self-adjusting to whatever width the chips/name happen to take
-      instead of assuming a fixed wrap breakpoint. Not shrink-0 — that
+      ml-auto: pushes this group to the right, whether it shares the row
+      with the stat chips or wraps onto its own line — stays right-aligned
+      either way rather than centering when wrapped. Not shrink-0 — that
       would refuse to compress below its unwrapped (max-content) width,
       which stops the wrap from ever actually triggering.
     -->
-    <div class="flex items-center gap-3 min-w-0 mx-auto">
+    <div class="flex items-center gap-3 min-w-0 ml-auto">
       <!--
         Target + damage type move here instead of sitting inline — they're
         a "set once, rarely touched again" preference, not something that

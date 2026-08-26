@@ -108,7 +108,14 @@ const SUBSTAT_FAMILY_CLASSES: Record<
   // `border-l-{color}` (not the plain `border-{color}`) so this only ever
   // sets the left edge's color — the plain form sets border-color on all
   // four sides, which bled into daisyUI's own zebra-table row separators.
-  flat: { bg: "bg-base-300", text: "text-base-content/70", border: "border-l-base-300" },
+  // A literal slate tone rather than the base-300 theme token — base-300
+  // sits too close to the table's own zebra-stripe color to read as an
+  // intentional accent, rather than looking like a missing one.
+  flat: {
+    bg: "bg-slate-500/15",
+    text: "text-slate-600 dark:text-slate-400",
+    border: "border-l-slate-400",
+  },
   crit: {
     bg: "bg-teal-500/15",
     text: "text-teal-600 dark:text-teal-400",

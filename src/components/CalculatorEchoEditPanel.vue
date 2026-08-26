@@ -111,9 +111,7 @@
         </div>
 
         <div>
-          <div class="text-xs font-semibold uppercase tracking-wide opacity-60 mb-1">
-            Substats · rolled in order
-          </div>
+          <div class="text-xs font-semibold uppercase tracking-wide opacity-60 mb-1">Substats</div>
           <div class="flex flex-col gap-2">
             <div
               v-for="(slot, i) in slots"
@@ -199,7 +197,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, onUnmounted, ref, watch } from "vue";
 import { useEchoEditFields, type EchoEditTarget } from "../composables/useEchoEditFields";
 import { getSubstatFamily } from "../echoes/substatFamilies";
 import { subStats, getReadableSubStatLabel } from "../echoes/stats";
@@ -240,6 +238,31 @@ watch(
     panelEl.value?.focus();
   },
 );
+
+// The panel's own content scrolls independently of the page behind it —
+// without this, a tall page (the inventory grid, or the build strip) keeps
+// its own scrollbar active at the same time, which reads as two scrollbars
+// fighting for the same edge of the screen. Restores whatever value was
+// there before (not a hardcoded "auto") so this doesn't fight
+// AppLayout.vue's own route-based body-scroll rule on close.
+let previousBodyOverflow: string | null = null;
+watch(
+  () => props.isOpen,
+  (open) => {
+    if (open) {
+      previousBodyOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+    } else if (previousBodyOverflow !== null) {
+      document.body.style.overflow = previousBodyOverflow;
+      previousBodyOverflow = null;
+    }
+  },
+);
+onUnmounted(() => {
+  if (previousBodyOverflow !== null) {
+    document.body.style.overflow = previousBodyOverflow;
+  }
+});
 
 const {
   echo,
