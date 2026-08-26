@@ -236,6 +236,19 @@ ADR is for building that, not the proposal itself.
      offered as an alternative to a literal divider line and preferred;
      no extra divider element was added.
 
+12. **Roll-quality substat coloring on `CalculatorEchoCard.vue` is now
+   gated behind the `liveResultBar` flag too.** Decision #7 retrofitted
+   `getSubstatRollQualityClasses()` onto this card's compact/comfy
+   substat rows, but the card itself is shared, unconditionally, by both
+   `InventoryEchoesBrowser.vue` and `CalculatorEchoesBrowser.vue`
+   regardless of that flag — so flag-off users started seeing the new
+   coloring in the Inventory grid, a real leak out of this Labs-flagged
+   feature. `CalculatorEchoCard.vue` now reads
+   `settingsStore.labs.liveResultBar.isEnabled` itself and routes every
+   color call through a local `substatColorClasses()` wrapper that
+   returns `null` when the flag is off, restoring the flag-off Inventory
+   grid to exactly how it looked before decision #7 touched this file.
+
 ## Not done here
 
 - **The echo/set picker itself** — still today's dialog (the "Find" button
