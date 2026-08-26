@@ -61,12 +61,23 @@ ADR is for building that, not the proposal itself.
 4. **Docked panel (desktop) / bottom sheet (mobile), reusing
    `CalculatorLiveResultDetail.vue`'s exact shell CSS** (`flex: 0 0 380px`
    sidebar; `position: fixed` sheet + scrim under a 768px breakpoint) rather
-   than re-deriving it. In the Calculator's build context, the panel is a
-   true flex-docked child — `CalculatorEchoes.vue` wraps the build strip and
-   the panel in a new `.echo-list-pane` flex row so the panel actually
-   pushes the strip aside on desktop rather than overlaying it, the same
-   pattern `Calculator.vue` itself already uses for the Live Result Bar
-   detail column. In the Inventory context there's no equivalent flex
+   than re-deriving it. In the Calculator's build context, `Calculator.vue`
+   itself hosts the panel as a flex sibling of `.calculations__screens`,
+   right next to `CalculatorLiveResultDetail` in the same
+   `.calculations__body` row — not inside `CalculatorEchoes.vue`. An
+   earlier version mounted it inside that tab's own template instead, which
+   worked visually but nested the panel inside `.calculations__screens`'s
+   own `overflow-y: auto` — two scrollbars fighting over the same edge of
+   the screen once a build had enough echoes/substats to need scrolling.
+   `CalculatorLiveResultDetail` never had this problem because it was
+   never nested inside that tab content in the first place. Moving the
+   panel to the same spot (`CalculatorEchoes.vue` now just emits
+   `open-echo-edit-panel` with an index, and exposes
+   `openEchoesBrowserForIndex()` so the panel's "Browse" action can still
+   reach the `CalculatorEchoesBrowser` instance that stays where it was)
+   fixed it the same way `CalculatorLiveResultDetail` avoids it: two
+   independent side-by-side scrollable columns instead of one nested
+   inside the other. In the Inventory context there's no equivalent flex
    ancestor to dock against — that page is already full-width on its own —
    so `.echo-edit-panel--inventory` is unconditionally `position: fixed`,
    right-docked on desktop and the same bottom sheet on mobile. The scrim
