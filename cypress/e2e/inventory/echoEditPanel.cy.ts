@@ -99,7 +99,7 @@ describe("Echo Edit Panel — Inventory context (Labs flag)", () => {
       .and("contain.text", "ATK");
   });
 
-  it("shows the same vertical substat list in comfy density with the flag off, but no roll-quality color", () => {
+  it("keeps the original table-based comfy layout with the flag off — no CalculatorEchoTile-style list", () => {
     cy.visit("/inventory", {
       onBeforeLoad(win) {
         win.localStorage.setItem("settings", JSON.stringify({ config: { density: "comfy" }, labs: {} }));
@@ -111,10 +111,10 @@ describe("Echo Edit Panel — Inventory context (Labs flag)", () => {
     });
     cy.get(`[data-test-echo-select="${ECHO_ID}"]`)
       .closest(".echo__item-wrap")
-      .find('[data-test-echo-card-substat="0"]')
-      .should("have.class", "border-l-4")
-      .and("have.class", "border-l-base-300")
-      .and("contain.text", "ATK");
+      .within(() => {
+        cy.get("table.echo__item__sub-stats").should("exist").and("contain.text", "ATK");
+        cy.get('[data-test-echo-card-substat="0"]').should("not.exist");
+      });
   });
 
   it("shows family-colored substat chips in compact density", () => {
