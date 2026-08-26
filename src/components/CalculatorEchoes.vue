@@ -74,22 +74,27 @@
         Build Score: {{ teamSubstatScoreRollup.grade }} {{ Math.round(teamSubstatScoreRollup.percent) }}%{{ teamSubstatScoreRollup.provisional ? "*" : "" }}
       </div>
     </div>
-    <div v-if="isLiveResultBarEnabled" class="echo__list">
-      <CalculatorEchoTile
-        v-for="(_, index) in 5"
-        :key="character + '-' + index"
-        :ref="getEchoRefSetter(index)"
-        :index="index"
-        :character="character"
-        class="echo-selector"
-        @updated-echo-cost="handleUpdatedEchoCost"
-        @update-stats="handleEchoStats"
-        @echo:set-chosen="handleEchoSetChosen"
-        @main-echo:updated="handleMainEchoUpdated"
-        @main-echo-rank:updated="handleMainEchoRankUpdated"
-        @open-echoes-browser="handleOpenEchoesBrowser"
-        @on-echo-removed="handleEchoRemoved"
-        @open-edit-panel="emit('open-echo-edit-panel', $event)"></CalculatorEchoTile>
+    <div v-if="isLiveResultBarEnabled" class="echoes-layout">
+      <div class="echoes-layout__strip echo__list">
+        <CalculatorEchoTile
+          v-for="(_, index) in 5"
+          :key="character + '-' + index"
+          :ref="getEchoRefSetter(index)"
+          :index="index"
+          :character="character"
+          class="echo-selector"
+          @updated-echo-cost="handleUpdatedEchoCost"
+          @update-stats="handleEchoStats"
+          @echo:set-chosen="handleEchoSetChosen"
+          @main-echo:updated="handleMainEchoUpdated"
+          @main-echo-rank:updated="handleMainEchoRankUpdated"
+          @open-echoes-browser="handleOpenEchoesBrowser"
+          @on-echo-removed="handleEchoRemoved"
+          @open-edit-panel="emit('open-echo-edit-panel', $event)"></CalculatorEchoTile>
+      </div>
+      <CalculatorEchoInsightsPanel
+        class="echoes-layout__insights"
+        :character="character"></CalculatorEchoInsightsPanel>
     </div>
     <div v-else class="echo__list">
       <CalculatorEcho
@@ -174,6 +179,7 @@ import { getEchoSetLabelByType, echoSetLabelMap } from "../echoes/stats.ts";
 import { oneSetBonuses, twoSetBonuses, threeSetBonuses, fiveSetBonuses } from "../echoes/sets.ts";
 import CalculatorEcho from "./CalculatorEcho.vue";
 import CalculatorEchoTile from "./CalculatorEchoTile.vue";
+import CalculatorEchoInsightsPanel from "./CalculatorEchoInsightsPanel.vue";
 import CalculatorEchoesSetBonusOnePiece from "./CalculatorEchoesSetBonusOnePiece.vue";
 import CalculatorEchoesSetBonusOne from "./CalculatorEchoesSetBonusOne.vue";
 import CalculatorEchoesSetBonusTwo from "./CalculatorEchoesSetBonusTwo.vue";
@@ -531,6 +537,41 @@ defineExpose({ openEchoesBrowserForIndex: handleOpenEchoesBrowser });
 </script>
 
 <style scoped>
+/*
+ * Two-column split for the Labs-flagged layout: the build strip keeps its
+ * existing width, the new insights panel docks beside it — see
+ * docs/adr/0014-echo-editor-redesign.md decision #10. This is inline
+ * content within the tab (not a third overlay dock like the edit panel /
+ * Full Breakdown at the Calculator.vue level), so it scrolls together with
+ * .calculations__screens instead of needing its own scroll region.
+ */
+.echoes-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.echoes-layout__strip {
+  flex: 1;
+  min-width: 0;
+}
+
+.echoes-layout__insights {
+  flex: 0 0 320px;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .echoes-layout {
+    flex-direction: column;
+  }
+
+  .echoes-layout__insights {
+    flex: none;
+    width: 100%;
+  }
+}
+
 .echo-selector {
   margin-bottom: 20px;
 }

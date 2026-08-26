@@ -171,6 +171,41 @@ ADR is for building that, not the proposal itself.
    *badge language* across all three surfaces without forcing them to
    share one component.
 
+10. **The Echoes tab splits into two columns — build strip left, a new
+   "Echo Insights" panel right — instead of a third right-side dock.**
+   Listing all 5 equipped echo tiles full-width left a lot of unused
+   horizontal space on desktop, and players wanted more visibility into
+   how their current rolls add up (echo farming is the most RNG-heavy,
+   grindy part of the game). `useEchoInsights.ts` sums CV and, per substat
+   type, roll count + total value across the 5 equipped slots, reusing
+   `getEchoCritValue`/`getEchoSubStatEntries` (`stats.ts`) and the same
+   equipped-slot resolution loop `useTeamSubstatScoreRollup.ts` already
+   uses (inventory-first, slot-fallback). Rows are ordered/grouped by the
+   character's own resolved substat weights
+   (`characterStore.getCharacterSubstatWeights`) — the same weights
+   Substat Score already uses — into "Priority substats" (weight > 0,
+   including zero-roll ones so a still-missing priority stat is visibly
+   flagged, not silently absent) and "Other rolled substats" (weight 0,
+   only stats actually present). `getCuratedSubstatWeights()` gates this
+   grouping: an uncurated character's weights are all 1 (no signal), so
+   `CalculatorEchoInsightsPanel.vue` falls back to one flat list sorted by
+   total instead of fabricating a priority ordering that isn't real.
+   Deliberately **not** a third occupant of the `CalculatorEchoEditPanel`/
+   `CalculatorLiveResultDetail` right-dock system at the `Calculator.vue`
+   body level (see #4) — those two are independent, already-unarbitrated
+   overlays that can both be open at once. Insights isn't a toggleable
+   overlay at all: it's always-visible inline content scoped to the
+   Echoes tab, implemented as a flex row inside `CalculatorEchoes.vue`
+   itself (`.echoes-layout__strip` + `.echoes-layout__insights`), scrolling
+   together with `.calculations__screens` rather than owning its own
+   scroll region — repeating that nested-scroll mistake here (see #4) was
+   the one thing to avoid. Under the same 768px breakpoint the rest of
+   this feature uses, the row becomes a column, so the panel is simply the
+   next block below the strip in normal flow on mobile — no
+   `position: fixed`, no scrim, no scroll-lock, since it was never an
+   overlay to begin with. Flag-off path (`CalculatorEcho.vue`'s
+   single-column block) is untouched.
+
 ## Not done here
 
 - **The echo/set picker itself** — still today's dialog (the "Find" button
