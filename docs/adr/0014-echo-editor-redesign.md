@@ -114,20 +114,34 @@ ADR is for building that, not the proposal itself.
    `CalculatorEcho.vue` in place and had to be reverted via `git checkout`
    once it became clear that broke the "flag off ⇒ byte-identical to today"
    guarantee.
-7. **Family-color coding is shared between the editor and the existing echo
-   cards.** `src/echoes/substatFamilies.ts` (new, pure) classifies all 13
-   substats into four families — `flat` (HP/ATK/DEF, flat and %), `crit`,
-   `dmg` (the four attack-type DMG bonuses), `util` (Energy Regen).
-   `useEchoCardStats.ts` gained `getSubstatFamilyClasses()`, mirroring
-   `useEchoRating.ts`'s existing `getRatingBadgeClasses()` pattern (a
-   literal `Record<Family, {bg, text, border}>` — Tailwind only generates
-   CSS for class names it can find as literal text while scanning source,
-   so these must stay as literal strings, not built via string
-   concatenation at runtime). Used in the new panel's slot rows, the new
-   tile's substat grid, and retrofitted onto `CalculatorEchoCard.vue`'s
-   existing compact chips and comfy table rows (a colored left-border
-   accent there, deliberately quieter than the panel/tile treatment — a
-   grid of dozens of cards needs a lighter touch than a five-row list).
+7. **Substats are colored by roll quality, not by stat family — reusing
+   the app's existing convention, not a new one.** An earlier version
+   colored substats by *family* (crit/dmg/util/flat, via a new
+   `src/echoes/substatFamilies.ts`), using amber for the "utility" family.
+   That collided with a convention this app already had: amber/gold
+   already means "high roll" everywhere else (the CV/RV/rating badges, and
+   `CalculatorBuildCardEchoCard.vue`'s `getSubStatValueColorClass`
+   emerald→blue→purple→yellow scale, previously unused elsewhere). A
+   genuinely low-rolled Energy Regen still showed gold under the family
+   scheme and read as a good roll when it wasn't. Replaced with
+   `getSubstatRollQualityClasses()` (`useEchoCardStats.ts`) — a
+   `{bg, text, border}` variant of that exact same score/thresholds, used
+   on `CalculatorEchoTile.vue`'s substat rows and retrofitted onto
+   `CalculatorEchoCard.vue`'s compact chips and comfy table rows (a
+   colored left-border accent there, deliberately quieter than the tile's
+   full-row treatment — a grid of dozens of cards needs a lighter touch
+   than a five-row list). `getSubstatFamily()` itself stays and is still
+   used, just for grouping the substat type picker's dropdown options in
+   `CalculatorEchoEditPanel.vue` — organizing a list of choices isn't a
+   coloring concern and doesn't have this collision.
+8. **The build-strip tile lists substats vertically, not as a horizontal
+   grid.** The first version packed all 5 into one row (5 columns) to keep
+   the tile compact; in practice that read as harder to scan than a
+   vertical list — the shape `CalculatorEchoCard.vue`'s own comfy table
+   already uses, and closer to how the game's own item screen presents
+   substats. Each row: icon + full label on the left (e.g. "Heavy Attack
+   DMG Bonus", not an abbreviation — a single column has room for it),
+   value on the right, roll-quality-colored left border.
 
 ## Not done here
 
