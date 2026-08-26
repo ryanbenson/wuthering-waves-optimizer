@@ -89,13 +89,32 @@ describe("Echo Edit Panel — Inventory context (Labs flag)", () => {
       .should("contain.text", "21%");
   });
 
-  it("shows family-colored substat chips in comfy density", () => {
+  it("shows roll-quality colored substat rows in comfy density", () => {
     visitInventoryWithEcho("comfy");
+    // ATK is substat slot 1 (index 0) on the seeded echo.
     cy.get(`[data-test-echo-select="${ECHO_ID}"]`)
       .closest(".echo__item-wrap")
-      .find("tr")
-      .filter(":contains('ATK')")
-      .should("have.class", "border-l-4");
+      .find('[data-test-echo-card-substat="0"]')
+      .should("have.class", "border-l-4")
+      .and("contain.text", "ATK");
+  });
+
+  it("shows the same vertical substat list in comfy density with the flag off, but no roll-quality color", () => {
+    cy.visit("/inventory", {
+      onBeforeLoad(win) {
+        win.localStorage.setItem("settings", JSON.stringify({ config: { density: "comfy" }, labs: {} }));
+        win.localStorage.setItem(
+          "inventory",
+          JSON.stringify({ echoes: [seedEcho()], equipped: {}, echoPresets: [], equippedPresets: {} }),
+        );
+      },
+    });
+    cy.get(`[data-test-echo-select="${ECHO_ID}"]`)
+      .closest(".echo__item-wrap")
+      .find('[data-test-echo-card-substat="0"]')
+      .should("have.class", "border-l-4")
+      .and("have.class", "border-l-base-300")
+      .and("contain.text", "ATK");
   });
 
   it("shows family-colored substat chips in compact density", () => {

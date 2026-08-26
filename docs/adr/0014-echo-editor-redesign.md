@@ -249,6 +249,31 @@ ADR is for building that, not the proposal itself.
    returns `null` when the flag is off, restoring the flag-off Inventory
    grid to exactly how it looked before decision #7 touched this file.
 
+13. **`CalculatorEchoCard.vue`'s comfy layout now mirrors
+   `CalculatorEchoTile.vue`'s look**, instead of its own older table-based
+   layout — an echo looks the same whether it's equipped (the build-strip
+   tile) or being browsed (Inventory grid / Echo Browser, both of which
+   share this one card component). Same shape as the tile: circular avatar
+   with the cost badge overlaid at its corner, name + CV/Substat-Score-or-
+   Echo-Rating badges below it, a plain main-stat/free-stat text line, then
+   a vertical 5-row substat list (icon + label left, value right,
+   roll-quality-colored left border and background tint when filled) —
+   replacing the old `<table class="table table-zebra">` rows. Unlike the
+   tile (always exactly 5 slots by construction), an Inventory echo can
+   have fewer than 5 revealed substats; missing ones now render as an
+   explicit "Empty" row (border-l-base-300, dimmed) instead of being
+   omitted outright, the same visual language the tile already used for an
+   in-progress build slot. The roll-quality color/tint stays gated behind
+   `isLiveResultBarEnabled` (decision #12) — a filled row with the flag off
+   gets the same neutral `border-l-base-300` an empty row does, not an
+   uncolored-but-still-4px-wide border, which was the exact leak decision
+   #12 fixed for the old table markup. Compact mode (the optimizer-loadout
+   card style) is unchanged. `hideInventory`/`echoId`-driven "in your
+   inventory" indicator and the host-supplied footer slot (Inventory's
+   Edit/Duplicate/Delete, the Echo Browser's "Use echo") are unchanged —
+   this was a display-only reshape of the comfy layout, not a props/slot
+   API change.
+
 ## Not done here
 
 - **The echo/set picker itself** — still today's dialog (the "Find" button
