@@ -53,22 +53,22 @@
         </span>
       </div>
 
-      <div class="grid grid-cols-5 gap-1 mt-2">
+      <div class="flex flex-col gap-1 mt-2">
         <div
           v-for="(slot, i) in slots"
           :key="i"
-          class="rounded flex flex-col items-center justify-center gap-0.5 py-1"
-          :class="slotIsFilled(slot) ? familyClasses(slot.type.value).bg : 'bg-base-200'"
+          class="flex items-center justify-between gap-2 text-xs rounded-sm border-l-4 pl-2 pr-2 py-1"
+          :class="slotIsFilled(slot) ? ['bg-base-200/60', qualityClasses(slot)?.border] : 'border-l-base-300'"
           :data-test-echo-item-substat="i">
-          <span
-            v-if="slotIsFilled(slot)"
-            class="text-[9px] font-bold uppercase tracking-wide leading-none"
-            :class="familyClasses(slot.type.value).text">
-            {{ getShortSubStatLabel(slot.type.value) }}
+          <span class="flex items-center gap-1.5 min-w-0">
+            <img v-if="slotIsFilled(slot)" :src="getSubStatIconByType(slot.type.value)" class="size-4 shrink-0" />
+            <span class="truncate" :class="slotIsFilled(slot) ? qualityClasses(slot)?.text : 'opacity-40'">
+              {{ slotIsFilled(slot) ? getReadableSubStatLabel(slot.type.value) : "Empty" }}
+            </span>
           </span>
           <span
-            class="text-[10px] font-mono font-bold leading-tight"
-            :class="slotIsFilled(slot) ? familyClasses(slot.type.value).text : 'opacity-40'">
+            class="font-mono font-bold shrink-0"
+            :class="slotIsFilled(slot) ? qualityClasses(slot)?.text : 'opacity-40'">
             {{ slotIsFilled(slot) ? slotValueDisplay(slot) : "—" }}
           </span>
         </div>
@@ -86,8 +86,8 @@
 import { computed, watch } from "vue";
 import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
-import { getReadableSubStatLabel, getShortSubStatLabel, getEchoSetLabelByType } from "../echoes/stats";
-import { getSubstatFamilyClasses } from "../composables/useEchoCardStats";
+import { getReadableSubStatLabel, getSubStatIconByType, getEchoSetLabelByType } from "../echoes/stats";
+import { getSubstatRollQualityClasses } from "../composables/useEchoCardStats";
 import { useEchoEditFields, type EchoEditTarget, type EchoSubstatSlot } from "../composables/useEchoEditFields";
 import { randomString } from "../utils/strings.ts";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
@@ -140,8 +140,8 @@ const {
   isApplyingEchoLoadout,
 } = useEchoEditFields(() => target.value);
 
-function familyClasses(statName: string) {
-  return getSubstatFamilyClasses(statName);
+function qualityClasses(slot: EchoSubstatSlot) {
+  return getSubstatRollQualityClasses(slot.type.value, slot.value.value);
 }
 function slotIsFilled(slot: EchoSubstatSlot) {
   return Boolean(slot.type.value) && slot.type.value !== "none";

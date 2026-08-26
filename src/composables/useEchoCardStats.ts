@@ -8,7 +8,6 @@ import {
   getSubstatRollValue,
 } from "../echoes/stats";
 import { getEchoData } from "../echoes/index.ts";
-import { getSubstatFamily, type SubstatFamily } from "../echoes/substatFamilies";
 
 export interface EchoCardStatsProps {
   rank: number | string;
@@ -98,50 +97,36 @@ function getBadgeClass(value: number, max: number, mode: "cv" | "rv") {
   return [bgColor, color, borderColor, boxShadow];
 }
 
-// Background/text pairing per substat family — mirrors the [bg, text] shape
-// of the CV/RV/rating badge classes above so all these small badges compose
-// the same way, but scoped to 4 families rather than a quality gradient.
-const SUBSTAT_FAMILY_CLASSES: Record<
-  SubstatFamily,
-  { bg: string; text: string; border: string }
-> = {
-  // `border-l-{color}` (not the plain `border-{color}`) so this only ever
-  // sets the left edge's color — the plain form sets border-color on all
-  // four sides, which bled into daisyUI's own zebra-table row separators.
-  // A literal slate tone rather than the base-300 theme token — base-300
-  // sits too close to the table's own zebra-stripe color to read as an
-  // intentional accent, rather than looking like a missing one.
-  flat: {
-    bg: "bg-slate-500/15",
-    text: "text-slate-600 dark:text-slate-400",
-    border: "border-l-slate-400",
-  },
-  crit: {
-    bg: "bg-teal-500/15",
-    text: "text-teal-600 dark:text-teal-400",
-    border: "border-l-teal-500",
-  },
-  dmg: {
-    bg: "bg-purple-500/15",
-    text: "text-purple-600 dark:text-purple-400",
-    border: "border-l-purple-500",
-  },
-  util: {
-    bg: "bg-amber-500/15",
-    text: "text-amber-600 dark:text-amber-400",
-    border: "border-l-amber-500",
-  },
-};
-
-// Class names above must stay as literal strings (not built via string
-// concatenation/replace at runtime) — Tailwind only generates CSS for class
-// names it can find as literal text while scanning source files.
-export function getSubstatFamilyClasses(stat: string | null | undefined): {
-  bg: string;
-  text: string;
-  border: string;
-} {
-  return SUBSTAT_FAMILY_CLASSES[getSubstatFamily(stat)];
+// [bg, text, border] for a single rolled substat, bucketed by the exact
+// same roll-quality score and emerald/blue/purple/yellow thresholds as
+// `getSubStatValueColorClass` above (already shipped, used by
+// CalculatorBuildCardEchoCard.vue) — an earlier version of this file colored
+// substats by *family* (crit/dmg/util/flat) instead, using amber for
+// "utility" stats. That collided with this app's own established
+// convention where amber/gold already means "high roll" everywhere else
+// (the CV/RV/rating badges), so a genuinely low-rolled Energy Regen still
+// showed gold and read as a good roll. Reusing this one scale instead of a
+// second, unrelated one keeps "what does this color mean" consistent
+// across the whole app.
+// `border-l-{color}` (not the plain `border-{color}`) so this only ever
+// sets the left edge's color — the plain form sets border-color on all
+// four sides, which bled into daisyUI's own zebra-table row separators.
+export function getSubstatRollQualityClasses(
+  type: string | null | undefined,
+  value: number | string | null | undefined,
+): { bg: string; text: string; border: string } | null {
+  if (!type || type === "none" || !value) return null;
+  const score = getSubstatRollValue(type, String(Number(value)));
+  if (score <= 40) {
+    return { bg: "bg-emerald-500/15", text: "text-emerald-600 dark:text-emerald-400", border: "border-l-emerald-500" };
+  }
+  if (score <= 60) {
+    return { bg: "bg-blue-500/15", text: "text-blue-600 dark:text-blue-400", border: "border-l-blue-500" };
+  }
+  if (score <= 80) {
+    return { bg: "bg-purple-500/15", text: "text-purple-600 dark:text-purple-400", border: "border-l-purple-500" };
+  }
+  return { bg: "bg-yellow-500/15", text: "text-yellow-600 dark:text-yellow-500", border: "border-l-yellow-500" };
 }
 
 const echoElementsList = [
@@ -343,6 +328,6 @@ export function useEchoCardStats(props: EchoCardStatsProps) {
     getMainStatColorClass,
     getReadableSubStatLabel,
     getSubStatIconByType,
-    getSubstatFamilyClasses,
+    getSubstatRollQualityClasses,
   };
 }
