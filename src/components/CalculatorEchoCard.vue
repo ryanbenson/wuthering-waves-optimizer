@@ -253,8 +253,8 @@
               </tr>
               <tr
                 v-if="echoSubStatsType1"
-                class="relative border-l-4"
-                :class="substatColorClasses(echoSubStatsType1, echoSubStatsValue1)?.border"
+                class="relative"
+                :class="[{ 'border-l-4': isLiveResultBarEnabled }, substatColorClasses(echoSubStatsType1, echoSubStatsValue1)?.border]"
                 style="z-index: 1">
                 <td class="flex gap-2 items-center">
                   <img
@@ -266,8 +266,7 @@
               </tr>
               <tr
                 v-if="echoSubStatsType2 && echoSubStatsType2 !== 'none'"
-                class="border-l-4"
-                :class="substatColorClasses(echoSubStatsType2, echoSubStatsValue2)?.border">
+                :class="[{ 'border-l-4': isLiveResultBarEnabled }, substatColorClasses(echoSubStatsType2, echoSubStatsValue2)?.border]">
                 <td class="flex gap-2 items-center">
                   <img :src="echoSubStat2Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType2) }}
@@ -276,8 +275,7 @@
               </tr>
               <tr
                 v-if="echoSubStatsType3 && echoSubStatsType3 !== 'none'"
-                class="border-l-4"
-                :class="substatColorClasses(echoSubStatsType3, echoSubStatsValue3)?.border">
+                :class="[{ 'border-l-4': isLiveResultBarEnabled }, substatColorClasses(echoSubStatsType3, echoSubStatsValue3)?.border]">
                 <td class="flex gap-2 items-center">
                   <img v-if="echoSubStatsType3" :src="echoSubStat3Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType3) }}
@@ -286,8 +284,7 @@
               </tr>
               <tr
                 v-if="echoSubStatsType4 && echoSubStatsType4 !== 'none'"
-                class="border-l-4"
-                :class="substatColorClasses(echoSubStatsType4, echoSubStatsValue4)?.border">
+                :class="[{ 'border-l-4': isLiveResultBarEnabled }, substatColorClasses(echoSubStatsType4, echoSubStatsValue4)?.border]">
                 <td class="flex gap-2 items-center">
                   <img :src="echoSubStat4Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType4) }}
@@ -296,8 +293,7 @@
               </tr>
               <tr
                 v-if="echoSubStatsType5 && echoSubStatsType5 !== 'none'"
-                class="border-l-4"
-                :class="substatColorClasses(echoSubStatsType5, echoSubStatsValue5)?.border">
+                :class="[{ 'border-l-4': isLiveResultBarEnabled }, substatColorClasses(echoSubStatsType5, echoSubStatsValue5)?.border]">
                 <td class="flex gap-2 items-center">
                   <img :src="echoSubStat5Icon" />
                   {{ getReadableSubStatLabel(echoSubStatsType5) }}
