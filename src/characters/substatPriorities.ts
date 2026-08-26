@@ -54,6 +54,7 @@ export const characterSubstatPriorities: Record<string, SubstatWeights> = {
   Phoebe: { EnergyRegen: 2, CritRate: 4, CritDMG: 4, ATK: 2, HeavyAttackDMGBonus: 3, ATK_FLAT: 1 },
   Phrolova: { CritRate: 4, CritDMG: 4, ATK: 2, ResonanceSkillDMGBonus: 1, ATK_FLAT: 1 },
   Qiuyuan: { CritRate: 3.5, CritDMG: 4, ATK: 2, HeavyAttackDMGBonus: 1, ATK_FLAT: 1 },
+  Qingxiao: { CritRate: 4, CritDMG: 4, ATK: 2, HeavyAttackDMGBonus: 1, ATK_FLAT: 1 },
   Rebecca: { CritRate: 4, CritDMG: 3, ATK: 1.5, BasicAttackDMGBonus: 1.5, ATK_FLAT: 1 },
   Roccia: { EnergyRegen: 2, CritRate: 4, CritDMG: 4, ATK: 2, HeavyAttackDMGBonus: 3, ATK_FLAT: 1 },
   RoverAeroFemale: { EnergyRegen: 2, CritRate: 4, CritDMG: 4, ATK: 2, ResonanceSkillDMGBonus: 3, ATK_FLAT: 1 },
