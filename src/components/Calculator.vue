@@ -227,6 +227,15 @@
           @selected-attack="handleSelectedAttack"></CalculatorDamages>
       </div>
     </div>
+    <CalculatorEchoEditPanel
+      v-if="isLiveResultBarEnabled"
+      context="build"
+      :echo-id="null"
+      :character="character"
+      :index="echoEditPanelIndex ?? 0"
+      :is-open="echoEditPanelIndex !== null"
+      @close="echoEditPanelIndex = null"
+      @open-echoes-browser="handleEchoEditPanelBrowse"></CalculatorEchoEditPanel>
     <CalculatorLiveResultDetail
       v-if="isLiveResultBarEnabled && isLiveResultDetailOpen"
       :character="character"
@@ -272,15 +281,6 @@
         isLiveResultDetailPinned = !isLiveResultDetailPinned
       "
       @close="isLiveResultDetailOpen = false"></CalculatorLiveResultDetail>
-    <CalculatorEchoEditPanel
-      v-if="isLiveResultBarEnabled"
-      context="build"
-      :echo-id="null"
-      :character="character"
-      :index="echoEditPanelIndex ?? 0"
-      :is-open="echoEditPanelIndex !== null"
-      @close="echoEditPanelIndex = null"
-      @open-echoes-browser="handleEchoEditPanelBrowse"></CalculatorEchoEditPanel>
     </div>
     <div class="results" v-if="!isLiveResultBarEnabled">
       <CalculatorStats
