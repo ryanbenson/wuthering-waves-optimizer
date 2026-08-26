@@ -76,6 +76,15 @@ describe("Echo Insights panel — Calculator build context (Labs flag)", () => {
 
     // HP (weight 0 for Brant) lands in "Other rolled substats", not flagged.
     cy.get('[data-test-echo-insights-row="HP"]').should("exist").and("not.have.class", "echo-insights__row--missing");
+
+    // 4 of the 5 rolled substats (CritRate/CritDMG/BasicAttackDMGBonus/ATK)
+    // are priority for Brant, HP isn't — 80%.
+    cy.get("[data-test-echo-insights-relevance]").should("contain.text", "80%");
+
+    // Build Score now lives at the top of this panel (bigger/bolder,
+    // matching CalculatorBuildCard.vue's own treatment), not the small
+    // pill above the build strip.
+    cy.get("[data-test-echo-insights-build-score]").should("be.visible").and("contain.text", "Build Score");
   });
 
   it("flags a zero-roll priority substat as missing", () => {

@@ -67,7 +67,7 @@
         Preset: {{ echoPresetName }}
       </div>
       <div
-        v-if="teamSubstatScoreRollup"
+        v-if="teamSubstatScoreRollup && !isLiveResultBarEnabled"
         class="badge text-nowrap"
         :class="teamSubstatScoreRollupBadgeClass"
         v-tooltip="'Build Score — average Substat Score across this character\'s equipped echoes'">

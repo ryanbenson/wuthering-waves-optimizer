@@ -206,6 +206,36 @@ ADR is for building that, not the proposal itself.
    overlay to begin with. Flag-off path (`CalculatorEcho.vue`'s
    single-column block) is untouched.
 
+11. **The Insights panel got a Build Score header, a substat-relevance bar,
+   and a card boundary after first-look feedback.** Three follow-ups once
+   the panel was actually in front of the build strip:
+   - **Build Score moved into the panel, styled like `CalculatorBuildCard.vue`'s
+     own Build Score block**, not the small badge pill that used to sit
+     above the strip. `CalculatorEchoInsightsPanel.vue` now calls
+     `useTeamSubstatScoreRollup()` and `getRatingAccentClasses()`
+     (`useEchoRating.ts`) directly — the exact same composable + accent
+     helper `CalculatorBuildCard.vue` uses for its own big/bold
+     `text-4xl font-extrabold` treatment — rather than inventing a second
+     styling. The original pill in `CalculatorEchoes.vue` is now
+     `v-if="teamSubstatScoreRollup && !isLiveResultBarEnabled"` — still
+     there for the legacy path, gone once this panel is showing it instead.
+   - **`relevantRollPercent`** (`useEchoInsights.ts`) — the share of
+     *rolled* substats (a stat can be rolled on more than one slot, so
+     this counts rolls, not distinct stat types) that are one of the
+     character's priority stats. Null (and hidden) when nothing's rolled
+     yet or the character has no curated profile — an uncurated
+     character's weights are all equal, so there'd be nothing genuine to
+     call "relevant." Rendered as a percentage plus a daisyUI
+     `<progress class="progress progress-primary">`, matching the one
+     existing progress-bar usage in the app (`CalculatorOptimizer.vue`).
+   - **The panel is wrapped in a compact card** (`card card-bordered
+     card-compact bg-base-100 shadow`) — the same card shell
+     `CalculatorEchoTile.vue`/`CalculatorEchoCard.vue` already use — so its
+     border/shadow reads as a clear boundary against the build strip
+     instead of the two columns visually blending together. This was
+     offered as an alternative to a literal divider line and preferred;
+     no extra divider element was added.
+
 ## Not done here
 
 - **The echo/set picker itself** — still today's dialog (the "Find" button

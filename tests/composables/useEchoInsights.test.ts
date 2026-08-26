@@ -32,6 +32,7 @@ describe("useEchoInsights", () => {
       isCurated: false,
       priorityRows: [],
       otherRows: [],
+      relevantRollPercent: null,
     });
   });
 
@@ -118,6 +119,30 @@ describe("useEchoInsights", () => {
     // All 5 rolled substats land in otherRows instead, sorted by total desc.
     expect(insights.value.otherRows).toHaveLength(5);
     expect(insights.value.otherRows.every((r) => !r.missing)).toBe(true);
+  });
+
+  it("computes relevantRollPercent as the share of rolls that are priority stats", () => {
+    const characterStore = useCharacterStore();
+    const inventoryStore = useInventoryStore();
+    // CritRate/CritDMG/ATK are priority for Carlotta; HP/DEF aren't — 3 of 5.
+    inventoryStore.echoes = [{ echoId: "e1", ...CARLOTTA_ECHO }];
+    characterStore.setCharacterData("Carlotta", { echoes: { 0: { echoId: "e1" } } });
+
+    const { insights } = useEchoInsights(() => "Carlotta");
+    expect(insights.value.relevantRollPercent).toBe(60);
+  });
+
+  it("relevantRollPercent is null with nothing rolled yet, or for an uncurated character", () => {
+    const characterStore = useCharacterStore();
+    characterStore.setCharacterData("Carlotta", {});
+    const { insights: emptyInsights } = useEchoInsights(() => "Carlotta");
+    expect(emptyInsights.value.relevantRollPercent).toBeNull();
+
+    const inventoryStore = useInventoryStore();
+    inventoryStore.echoes = [{ echoId: "e1", ...CARLOTTA_ECHO }];
+    characterStore.setCharacterData("NotARealCharacter", { echoes: { 0: { echoId: "e1" } } });
+    const { insights: uncuratedInsights } = useEchoInsights(() => "NotARealCharacter");
+    expect(uncuratedInsights.value.relevantRollPercent).toBeNull();
   });
 
   it("falls back to character-embedded echo data when there's no standalone inventory item", () => {

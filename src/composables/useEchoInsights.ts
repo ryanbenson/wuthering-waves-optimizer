@@ -28,6 +28,12 @@ export interface EchoInsights {
   isCurated: boolean;
   priorityRows: EchoInsightRow[];
   otherRows: EchoInsightRow[];
+  // Share of rolled substats (not slots — a substat can be rolled on more
+  // than one slot) that are one of this character's priority stats. Null
+  // when there's nothing rolled yet, or the character has no curated
+  // priority profile at all (isCurated false) — there's no "relevant"
+  // signal to report in that case.
+  relevantRollPercent: number | null;
 }
 
 function formatTotal(type: string, total: number): string {
@@ -55,6 +61,7 @@ export function useEchoInsights(
       isCurated: false,
       priorityRows: [],
       otherRows: [],
+      relevantRollPercent: null,
     };
     if (!id) return empty;
 
@@ -107,7 +114,14 @@ export function useEchoInsights(
     priorityRows.sort((a, b) => b.weight - a.weight);
     otherRows.sort((a, b) => b.total - a.total);
 
-    return { equippedCount, totalCV, isCurated, priorityRows, otherRows };
+    const totalRollCount = Object.values(counts).reduce((sum, c) => sum + c, 0);
+    const relevantRollCount = priorityRows.reduce((sum, r) => sum + r.count, 0);
+    const relevantRollPercent =
+      isCurated && totalRollCount > 0
+        ? Math.round((relevantRollCount / totalRollCount) * 100)
+        : null;
+
+    return { equippedCount, totalCV, isCurated, priorityRows, otherRows, relevantRollPercent };
   });
 
   return { insights };
