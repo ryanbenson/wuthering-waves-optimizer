@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { render } from "@testing-library/vue";
 import CalculatorEchoCard from "../../src/components/CalculatorEchoCard.vue";
+import { useInventoryStore } from "../../src/stores/inventory";
 
 const ECHO = "AeroDrake";
 
@@ -100,5 +101,39 @@ describe("CalculatorEchoCard rating badges", () => {
     setActivePinia(createPinia());
     const { getByText } = renderCard(baseProps({ echoSubStatsType5: "none" }));
     expect(getByText(/\*$/)).toBeTruthy();
+  });
+});
+
+function hasStatusBadge(container: HTMLElement) {
+  return container.querySelector("[data-test-echo-status-badge]") !== null;
+}
+
+describe("CalculatorEchoCard trash/lock status badge", () => {
+  it("does not show a status badge for an echo with no status flags", () => {
+    setActivePinia(createPinia());
+    useInventoryStore().saveEcho({ echoId: "echo-1" });
+    const { container } = renderCard(baseProps());
+    expect(hasStatusBadge(container)).toBe(false);
+  });
+
+  it("shows a status badge when the echo is marked trash, in the comfy layout", () => {
+    setActivePinia(createPinia());
+    useInventoryStore().saveEcho({ echoId: "echo-1", trash: true });
+    const { container } = renderCard(baseProps());
+    expect(hasStatusBadge(container)).toBe(true);
+  });
+
+  it("shows a status badge when the echo is marked trash, in the compact layout", () => {
+    setActivePinia(createPinia());
+    useInventoryStore().saveEcho({ echoId: "echo-1", trash: true });
+    const { container } = renderCard(baseProps({ compact: true }));
+    expect(hasStatusBadge(container)).toBe(true);
+  });
+
+  it("shows a status badge when the echo is locked", () => {
+    setActivePinia(createPinia());
+    useInventoryStore().saveEcho({ echoId: "echo-1", locked: true });
+    const { container } = renderCard(baseProps());
+    expect(hasStatusBadge(container)).toBe(true);
   });
 });
