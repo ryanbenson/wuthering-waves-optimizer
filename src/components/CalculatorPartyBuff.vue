@@ -45,6 +45,13 @@
                 :data-test-party-buff-stacks="uniqueKey" />
               <span class="label-text ml-2">Stacks</span>
               <span class="ml-1 text-sm italic">(Max {{ maxStacks }})</span>
+              <button
+                type="button"
+                class="btn btn-xs btn-ghost ml-1"
+                @click.stop.prevent="setMaxStacks"
+                :data-test-party-buff-stacks-max="uniqueKey">
+                Max
+              </button>
             </label>
           </div>
 
@@ -257,6 +264,11 @@ function ensureMaxStacks() {
   if (stacks.value > props.maxStacks) {
     stacks.value = props.maxStacks;
   }
+}
+
+function setMaxStacks() {
+  stacks.value = props.maxStacks;
+  updatedStats();
 }
 
 function toggleEnabled() {

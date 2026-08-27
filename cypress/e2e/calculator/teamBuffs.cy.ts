@@ -83,4 +83,21 @@ describe("Calculator Team Buffs", () => {
     testAttacks(carlottaDamagesAfterAllTeamBuffs, cy);
     testStats(carlottaStatsAfterAllTeamBuffs, cy);
   });
+
+  it("should let you quickly cap a stacking team buff's stacks with the Max button", () => {
+    cy.richSelect("[data-test-character-select]", "Carlotta");
+    cy.get(".character__self-buffs").should("be.visible"); // wait for things to load
+    cy.get('[data-test-calculator-nav="team"]').click();
+    cy.get('[data-test-party-buff-echoes-collapse-bar]').click();
+    cy.get(`[data-test-party-buff-enabled="PactofNeonlightLeap"]`).check();
+    cy.get(`[data-test-party-buff-stacks="PactofNeonlightLeap"]`).should(
+      "have.value",
+      "0",
+    );
+    cy.get(`[data-test-party-buff-stacks-max="PactofNeonlightLeap"]`).click();
+    cy.get(`[data-test-party-buff-stacks="PactofNeonlightLeap"]`).should(
+      "have.value",
+      "50",
+    );
+  });
 });
