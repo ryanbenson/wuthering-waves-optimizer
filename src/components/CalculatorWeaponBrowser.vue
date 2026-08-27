@@ -103,7 +103,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineExpose, nextTick, ref } from "vue";
+import { computed, nextTick, ref } from "vue";
 import CalculatorWeaponCard from "./CalculatorWeaponCard.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
 import { sortWeaponsWithSignatureFirst } from "../weapons/weaponSort";
