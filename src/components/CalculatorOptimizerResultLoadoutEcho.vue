@@ -3,8 +3,87 @@
     class="echo__item card card-bordered card-compact bg-base-100 shadow mb-2 grow"
     :data-test-optimizer-result-echo-id="echoId">
     <div class="card-body">
-      <div
-        class="echo__content flex flex-col gap-2 relative items-center justify-center">
+      <!-- Flag on — same skinny tile-style layout as CalculatorEchoCard.vue's
+           compact layout (see docs/adr/0014 decisions #13/#14): smaller
+           avatar with the cost badge overlaid at its corner, name + rating
+           badges, a labeled vertical substat list instead of icon-only
+           rows. No footer here — optimizer results have no per-echo
+           actions, just the display. -->
+      <div v-if="isLiveResultBarEnabled" class="echo__content flex flex-col gap-1.5">
+        <div class="flex items-start gap-2">
+          <div class="relative shrink-0">
+            <EchoFavoriteButton overlay :echo-id="echoId || null" />
+            <div
+              class="echo__item__image rounded-full border border-solid neutral-content size-10 bg-cover cursor-pointer"
+              :class="{
+                'border-amber-300': rank === '5' || rank === 5,
+                'border-violet-600': rank === '4' || rank === 4,
+                'border-blue-500': rank === '3' || rank === 3,
+                'border-green-500': rank === '2' || rank === 2,
+                'echo__item__image--empty': !props.echo,
+              }"
+              :style="{
+                backgroundImage: `url(${echoImage})`,
+              }"></div>
+            <span class="badge badge-xs badge-primary absolute -bottom-1 -right-1 font-mono px-1">
+              {{ type }}
+            </span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1 flex-wrap">
+              <span
+                class="font-bold text-xs truncate"
+                :class="{
+                  'text-amber-300': rank === '5' || rank === 5,
+                  'text-violet-600': rank === '4' || rank === 4,
+                  'text-blue-500': rank === '3' || rank === 3,
+                  'text-green-500': rank === '2' || rank === 2,
+                }">
+                {{ echoName }}
+              </span>
+            </div>
+            <div class="flex items-center gap-1 flex-wrap mt-0.5">
+              <span v-if="echoSet" class="shrink-0">
+                <img :src="getEchoSetIcon(echoSet)" :class="echoSet" class="size-3" />
+              </span>
+              <template v-if="hasSubStats">
+                <span class="badge badge-xs text-nowrap" :class="critValueBadgeClass">
+                  CV {{ formattedCritValue }}%
+                </span>
+                <span v-if="SHOW_ROLL_VALUE_BADGE" class="badge badge-xs text-nowrap" :class="rollValueBadgeClass">
+                  RV {{ echoRollValue }}%
+                </span>
+                <span
+                  v-if="substatScore"
+                  class="badge badge-xs text-nowrap"
+                  :class="substatScoreBadgeClass"
+                  v-tooltip="'Substat Score — this echo\'s rolls weighted for this character'">
+                  {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
+                </span>
+                <span
+                  v-else
+                  class="badge badge-xs text-nowrap"
+                  :class="echoRatingBadgeClass"
+                  v-tooltip="'Echo Rating — overall substat roll quality'">
+                  {{ echoRating.grade }} {{ Math.round(echoRating.percent) }}%{{ echoRating.provisional ? "*" : "" }}
+                </span>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="mainStatValue" class="flex items-center gap-2 text-[11px] flex-wrap">
+          <span>{{ getReadableSubStatLabel(stat) }} <b class="font-mono">{{ mainStatValue }}%</b></span>
+          <span v-if="echoFreeSubStatType" class="opacity-60">
+            {{ getReadableSubStatLabel(echoFreeSubStatType) }} <b class="font-mono">+{{ echoFreeSubStatValue }}</b>
+          </span>
+        </div>
+
+        <EchoCardSubstatList :slots="substatSlots" size="xs" />
+      </div>
+
+      <!-- Flag off — unchanged from before decision #14. -->
+      <div v-else class="echo__content flex flex-col gap-2 relative items-center justify-center">
         <div class="echo__item__image-wrap relative mx-auto lg:m-0 w-fit">
           <EchoFavoriteButton overlay :echo-id="echoId || null" />
           <div
@@ -40,32 +119,13 @@
             RV {{ echoRollValue }}%
           </span>
           <span
+            v-if="substatScore"
             class="echo__item__cost badge text-nowrap text-sm"
             :class="substatScoreBadgeClass">
             {{ substatScore.grade }} {{ Math.round(substatScore.percent) }}%{{ substatScore.provisional ? "*" : "" }}
           </span>
         </template>
         <div class="echo__item__stats mb-2 relative mt-2">
-          <h2 v-if="false" class="card-title flex items-center justify-between">
-            <span
-              :class="{
-                'text-amber-300': rank === '5' || rank === 5,
-                'text-violet-600': rank === '4' || rank === 4,
-                'text-blue-500': rank === '3' || rank === 3,
-                'text-green-500': rank === '2' || rank === 2,
-              }">
-              {{ echoName }}
-              <br />
-            </span>
-            <div class="echo__item__meta flex gap-2 items-center">
-              <span
-                v-if="echoId && !hideInventory"
-                class="echo__item__set size-6 rounded-full">
-                <img
-                  src="https://ryanbenson.github.io/wuthering-waves-assets/images/backpack.png" />
-              </span>
-            </div>
-          </h2>
           <div class="echo__item__sub-stats flex flex-col gap-2 w-full">
             <div v-if="mainStatValue" :key="stat" class="flex gap-2">
               <img
@@ -117,18 +177,13 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import {
-  statsTable,
-  getSubStatIconByType,
-  getEchoSetIconByType,
-  getRollValue,
-  SHOW_ROLL_VALUE_BADGE,
-} from "../echoes/stats";
-import { getEchoData } from "../echoes/index.ts";
+import { getEchoSetIconByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
+import EchoCardSubstatList from "./EchoCardSubstatList.vue";
 import { useCharacterStore } from "../stores/character";
-import { getSubstatScoreGrade } from "../echoes/rating";
-import { getRatingBadgeClasses } from "../composables/useEchoRating";
+import { useSettingsStore } from "../stores/settings";
+import { useEchoCardStats, type EchoCardStatsProps } from "../composables/useEchoCardStats";
+import { useEchoRating, type EchoRatingProps } from "../composables/useEchoRating";
 
 defineOptions({ name: "CalculatorOptimizerResultLoadoutEcho" });
 
@@ -156,293 +211,79 @@ const props = withDefaults(
 );
 
 const characterStore = useCharacterStore();
-
-// Optimizer results are always shown for the currently active character, so
-// there's no characterId prop to thread through — read it directly. Built
-// as a computed (not a one-off snapshot) so the badge stays live if the
-// active character or its weights change while results are displayed.
-const ratingSubStatsSource = computed(() => ({
-  echoSubStatsType1: props.echoSubStatsType1,
-  echoSubStatsValue1: props.echoSubStatsValue1,
-  echoSubStatsType2: props.echoSubStatsType2,
-  echoSubStatsValue2: props.echoSubStatsValue2,
-  echoSubStatsType3: props.echoSubStatsType3,
-  echoSubStatsValue3: props.echoSubStatsValue3,
-  echoSubStatsType4: props.echoSubStatsType4,
-  echoSubStatsValue4: props.echoSubStatsValue4,
-  echoSubStatsType5: props.echoSubStatsType5,
-  echoSubStatsValue5: props.echoSubStatsValue5,
-}));
-const substatScore = computed(() =>
-  getSubstatScoreGrade(
-    ratingSubStatsSource.value,
-    characterStore.getCharacterSubstatWeights(characterStore.activeCharacter),
-  ),
-);
-const substatScoreBadgeClass = computed(() =>
-  getRatingBadgeClasses(substatScore.value.color),
+const settingsStore = useSettingsStore() as any;
+const isLiveResultBarEnabled = computed(
+  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
 );
 
-const echoName = computed(() => {
-  if (!props.echo) {
-    return "";
-  }
-  return getEchoData(props.echo)?.name ?? "";
-});
+// Reuses the exact same CV/RV/rating math CalculatorEchoCard.vue and
+// CalculatorEchoTile.vue already use, instead of this component's own
+// previously-duplicated copy of the same formulas. Optimizer results are
+// always shown for the currently active character, so characterId reads
+// straight from the store rather than being threaded through as a prop.
+const cardStatsSource: EchoCardStatsProps & EchoRatingProps = {
+  get rank() { return props.rank; },
+  get type() { return props.type; },
+  get echo() { return props.echo; },
+  get echoSet() { return props.echoSet; },
+  get stat() { return props.stat; },
+  get echoSubStatsType1() { return props.echoSubStatsType1; },
+  get echoSubStatsValue1() { return props.echoSubStatsValue1; },
+  get echoSubStatsType2() { return props.echoSubStatsType2; },
+  get echoSubStatsValue2() { return props.echoSubStatsValue2; },
+  get echoSubStatsType3() { return props.echoSubStatsType3; },
+  get echoSubStatsValue3() { return props.echoSubStatsValue3; },
+  get echoSubStatsType4() { return props.echoSubStatsType4; },
+  get echoSubStatsValue4() { return props.echoSubStatsValue4; },
+  get echoSubStatsType5() { return props.echoSubStatsType5; },
+  get echoSubStatsValue5() { return props.echoSubStatsValue5; },
+  get characterId() { return characterStore.activeCharacter; },
+};
 
-const mainStatValue = computed(() => {
-  if (props.type && props.stat && props.stat !== "none" && props.rank) {
-    const table = statsTable as Record<
-      string,
-      Record<string, Record<string | number, number>>
-    >;
-    return table?.[props.type]?.[props.stat]?.[props.rank];
-  }
-  return null;
-});
+const {
+  mainStatValue,
+  echoFreeSubStatType,
+  echoFreeSubStatValue,
+  echoName,
+  echoImage,
+  hasSubStats,
+  echoSubStatsValue1Display,
+  echoSubStatsValue2Display,
+  echoSubStatsValue3Display,
+  echoSubStatsValue4Display,
+  echoSubStatsValue5Display,
+  echoSubStat1Icon,
+  echoSubStat2Icon,
+  echoSubStat3Icon,
+  echoSubStat4Icon,
+  echoSubStat5Icon,
+  formattedCritValue,
+  critValueBadgeClass,
+  echoRollValue,
+  rollValueBadgeClass,
+  getMainStatColorClass,
+  getReadableSubStatLabel,
+  getSubStatIconByType,
+} = useEchoCardStats(cardStatsSource);
 
-const echoImage = computed(() => {
-  const defaultImageUrl =
-    "https://ryanbenson.github.io/wuthering-waves-assets/images/echoes/monsters.png";
-  if (!props.echo) {
-    return defaultImageUrl;
-  }
-  const echoData = getEchoData(props.echo);
-  return echoData?.image ?? defaultImageUrl;
-});
-
-const hasSubStats = computed(() => {
-  const updatedSubStats: string[] = [];
-  if (props.echoSubStatsType1 && props.echoSubStatsType1 !== "none") {
-    updatedSubStats.push(props.echoSubStatsType1);
-  }
-  if (props.echoSubStatsType2 && props.echoSubStatsType2 !== "none") {
-    updatedSubStats.push(props.echoSubStatsType2);
-  }
-  if (props.echoSubStatsType3 && props.echoSubStatsType3 !== "none") {
-    updatedSubStats.push(props.echoSubStatsType3);
-  }
-  if (props.echoSubStatsType4 && props.echoSubStatsType4 !== "none") {
-    updatedSubStats.push(props.echoSubStatsType4);
-  }
-  if (props.echoSubStatsType5 && props.echoSubStatsType5 !== "none") {
-    updatedSubStats.push(props.echoSubStatsType5);
-  }
-  return updatedSubStats.length > 0;
-});
-
-function formatSubStatDisplay(
-  type: string | undefined,
-  value: number | string | undefined,
-) {
-  if (value === undefined || value === null || value === "") {
-    return null;
-  }
-  if (type?.includes("FLAT")) {
-    return String(value);
-  }
-  return `${value}%`;
-}
-
-const echoSubStatsValue1Display = computed(() =>
-  formatSubStatDisplay(props.echoSubStatsType1, props.echoSubStatsValue1),
-);
-const echoSubStatsValue2Display = computed(() =>
-  formatSubStatDisplay(props.echoSubStatsType2, props.echoSubStatsValue2),
-);
-const echoSubStatsValue3Display = computed(() =>
-  formatSubStatDisplay(props.echoSubStatsType3, props.echoSubStatsValue3),
-);
-const echoSubStatsValue4Display = computed(() =>
-  formatSubStatDisplay(props.echoSubStatsType4, props.echoSubStatsValue4),
-);
-const echoSubStatsValue5Display = computed(() =>
-  formatSubStatDisplay(props.echoSubStatsType5, props.echoSubStatsValue5),
-);
-
-const echoSubStat1Icon = computed(() =>
-  props.echoSubStatsType1
-    ? getSubStatIconByType(props.echoSubStatsType1)
-    : undefined,
-);
-const echoSubStat2Icon = computed(() =>
-  props.echoSubStatsType2
-    ? getSubStatIconByType(props.echoSubStatsType2)
-    : undefined,
-);
-const echoSubStat3Icon = computed(() =>
-  props.echoSubStatsType3
-    ? getSubStatIconByType(props.echoSubStatsType3)
-    : undefined,
-);
-const echoSubStat4Icon = computed(() =>
-  props.echoSubStatsType4
-    ? getSubStatIconByType(props.echoSubStatsType4)
-    : undefined,
-);
-const echoSubStat5Icon = computed(() =>
-  props.echoSubStatsType5
-    ? getSubStatIconByType(props.echoSubStatsType5)
-    : undefined,
-);
-
-const critValue = computed(() => {
-  let cv = 0;
-  const pairs: [string | undefined, number][] = [
-    [props.echoSubStatsType1, Number(props.echoSubStatsValue1)],
-    [props.echoSubStatsType2, Number(props.echoSubStatsValue2)],
-    [props.echoSubStatsType3, Number(props.echoSubStatsValue3)],
-    [props.echoSubStatsType4, Number(props.echoSubStatsValue4)],
-    [props.echoSubStatsType5, Number(props.echoSubStatsValue5)],
-  ];
-  for (const [typeKey, val] of pairs) {
-    if (typeKey === "CritRate") {
-      cv += val * 2;
-    } else if (typeKey === "CritDMG") {
-      cv += val;
-    }
-  }
-  return cv;
-});
-
-const formattedCritValue = computed(() => {
-  const num = critValue.value;
-  if (Number.isInteger(num)) {
-    return num;
-  }
-  const rounded = num.toFixed(1);
-  return rounded.endsWith(".0") ? parseInt(rounded, 10) : parseFloat(rounded);
-});
-
-const critValueBadgeClass = computed(() => {
-  const cv = critValue.value ?? 0;
-  const percentage = Math.min(Math.max(cv, 0), 42);
-
-  let bgColor: string;
-  let color = "text-white";
-  let boxShadow: string | undefined;
-  let borderColor: string;
-
-  if (percentage <= 7) {
-    bgColor = "bg-emerald-800";
-    borderColor = "border-emerald-800";
-  } else if (percentage <= 14) {
-    bgColor = "bg-green-500";
-    borderColor = "border-green-500";
-  } else if (percentage <= 21) {
-    bgColor = "bg-blue-600";
-    borderColor = "border-blue-600";
-    color = "text-black";
-  } else if (percentage <= 28) {
-    bgColor = "bg-purple-600";
-    borderColor = "border-purple-600";
-    color = "text-black";
-  } else if (percentage <= 35) {
-    bgColor = "bg-purple-400";
-    borderColor = "border-purple-400";
-    color = "text-black";
-  } else {
-    bgColor = "bg-yellow-500";
-    borderColor = "border-yellow-500";
-    color = "text-black";
-  }
-  if (percentage >= 40) {
-    boxShadow = "shadow-md shadow-yellow-500/50";
-  }
-
-  return [bgColor, color, borderColor, boxShadow].filter(Boolean) as string[];
-});
-
-const echoStatsFormatted = computed(() => {
-  const echoData: Record<string, number> = {};
-  if (props.echoSubStatsType1) {
-    echoData[props.echoSubStatsType1.toString()] =
-      Number(props.echoSubStatsValue1) || 0;
-  }
-  if (props.echoSubStatsType2) {
-    echoData[props.echoSubStatsType2.toString()] =
-      Number(props.echoSubStatsValue2) || 0;
-  }
-  if (props.echoSubStatsType3) {
-    echoData[props.echoSubStatsType3.toString()] =
-      Number(props.echoSubStatsValue3) || 0;
-  }
-  if (props.echoSubStatsType4) {
-    echoData[props.echoSubStatsType4.toString()] =
-      Number(props.echoSubStatsValue4) || 0;
-  }
-  if (props.echoSubStatsType5) {
-    echoData[props.echoSubStatsType5.toString()] =
-      Number(props.echoSubStatsValue5) || 0;
-  }
-  return echoData;
-});
-
-const echoStatsFormattedForRoll = computed(() => {
-  const out: Record<string, string> = {};
-  for (const [k, v] of Object.entries(echoStatsFormatted.value)) {
-    out[k] = String(v);
-  }
-  return out;
-});
-
-const echoRollValue = computed(() =>
-  getRollValue(echoStatsFormattedForRoll.value),
-);
-
-const rollValueBadgeClass = computed(() => {
-  const rv = echoRollValue.value ?? 0;
-  const percentage = Math.min(Math.max(rv, 0), 600);
-
-  let bgColor: string;
-  let color = "text-white";
-  let boxShadow: string | undefined;
-  let borderColor: string;
-
-  if (percentage <= 180) {
-    bgColor = "bg-emerald-800";
-    borderColor = "border-emerald-800";
-  } else if (percentage <= 220) {
-    bgColor = "bg-green-500";
-    borderColor = "border-green-500";
-  } else if (percentage <= 300) {
-    bgColor = "bg-blue-600";
-    borderColor = "border-blue-600";
-    color = "text-black";
-  } else if (percentage < 400) {
-    bgColor = "bg-purple-600";
-    borderColor = "border-purple-600";
-    color = "text-black";
-  } else {
-    bgColor = "bg-yellow-500";
-    borderColor = "border-yellow-500";
-    color = "text-black";
-  }
-  if (percentage >= 450) {
-    boxShadow = "shadow-md shadow-yellow-500/50";
-  }
-
-  return [bgColor, color, borderColor, boxShadow].filter(Boolean) as string[];
-});
-
-const getMainStatColorClass = computed(() => {
-  const elementsList = [
-    "Glacio",
-    "Fusion",
-    "Electro",
-    "Aero",
-    "Spectro",
-    "Havoc",
-  ];
-  if (!elementsList.includes(props.stat)) {
-    return null;
-  }
-  return `${props.stat.toLowerCase()}--active`;
-});
+const { echoRating, echoRatingBadgeClass, substatScore, substatScoreBadgeClass } =
+  useEchoRating(cardStatsSource);
 
 function getEchoSetIcon(type: string) {
   return getEchoSetIconByType(type);
 }
+
+function isSlotFilled(type: string) {
+  return Boolean(type) && type !== "none";
+}
+
+const substatSlots = computed(() => [
+  { index: 0, type: props.echoSubStatsType1, value: props.echoSubStatsValue1, display: echoSubStatsValue1Display.value, icon: echoSubStat1Icon.value, filled: isSlotFilled(props.echoSubStatsType1) },
+  { index: 1, type: props.echoSubStatsType2, value: props.echoSubStatsValue2, display: echoSubStatsValue2Display.value, icon: echoSubStat2Icon.value, filled: isSlotFilled(props.echoSubStatsType2) },
+  { index: 2, type: props.echoSubStatsType3, value: props.echoSubStatsValue3, display: echoSubStatsValue3Display.value, icon: echoSubStat3Icon.value, filled: isSlotFilled(props.echoSubStatsType3) },
+  { index: 3, type: props.echoSubStatsType4, value: props.echoSubStatsValue4, display: echoSubStatsValue4Display.value, icon: echoSubStat4Icon.value, filled: isSlotFilled(props.echoSubStatsType4) },
+  { index: 4, type: props.echoSubStatsType5, value: props.echoSubStatsValue5, display: echoSubStatsValue5Display.value, icon: echoSubStat5Icon.value, filled: isSlotFilled(props.echoSubStatsType5) },
+]);
 </script>
 
 <style lang="scss" scoped>

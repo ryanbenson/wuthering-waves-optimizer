@@ -416,8 +416,70 @@
               v-bind="echoCardBinder(echoRow)"
               :hide-inventory="true"
               :compact="isCompact">
-              <div
-                class="echoes__item__foot flex gap-2 justify-between items-center">
+              <!-- Flag-on footer: status toggles (equipped-by, lock/trash-mark/
+                   optimizer-ignore) and one-shot actions (Edit/Duplicate/Delete)
+                   as two distinct clusters instead of one crowded button row —
+                   see docs/adr/0014 decision #14. -->
+              <div v-if="isLiveResultBarEnabled" class="echoes__item__foot flex items-center justify-between gap-2 flex-wrap">
+                <div class="flex items-center gap-1.5 flex-wrap" data-test-echo-status-cluster>
+                  <div v-if="getCharsEquipped(echoRow).length" class="avatar-group -space-x-6 rtl:space-x-reverse">
+                    <div class="avatar" v-for="char in getCharsEquipped(echoRow)">
+                      <div class="w-8 bg-accent-content">
+                        <img :src="getCharImg(char)" />
+                      </div>
+                    </div>
+                  </div>
+                  <EchoLockTrashActions :echo-id="echoRow.echoId" />
+                </div>
+                <div class="flex items-center gap-1" data-test-echo-action-cluster>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-square btn-primary"
+                    v-tooltip="'Edit'"
+                    aria-label="Edit"
+                    @click="handleEditEcho(echoRow.echoId)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="size-4" aria-hidden="true">
+                      <path
+                        d="M441 58.9L453.1 71c9.4 9.4 9.4 24.6 0 33.9L424 134.1 377.9 88 407 58.9c9.4-9.4 24.6-9.4 33.9 0zM209.8 256.2L344 121.9 390.1 168 255.8 302.2c-2.9 2.9-6.5 5-10.4 6.1l-58.5 16.7 16.7-58.5c1.1-3.9 3.2-7.5 6.1-10.4zM373.1 25L175.8 222.2c-8.7 8.7-15 19.4-18.3 31.1l-28.6 100c-2.4 8.4-.1 17.4 6.1 23.6s15.2 8.5 23.6 6.1l100-28.6c11.8-3.4 22.5-9.7 31.1-18.3L487 138.9c31.2-31.2 31.2-81.9 0-113.1L473.1 12.1C441.9-19.1 391.2-19.1 360 12.1L373.1 25zM64 32C28.7 32 0 60.7 0 96L0 448c0 35.3 28.7 64 64 64l352 0c35.3 0 64-28.7 64-64l0-96c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7-14.3 32-32 32L64 480c-17.7 0-32-14.3-32-32L32 96c0-17.7 14.3-32 32-32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L64 32z"
+                        fill="currentColor" />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-square"
+                    v-tooltip="'Duplicate'"
+                    aria-label="Duplicate"
+                    @click="duplicateEcho(echoRow.echoId)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-4" aria-hidden="true">
+                      <path
+                        d="M208 0L332.1 0c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9L448 336c0 26.5-21.5 48-48 48l-192 0c-26.5 0-48-21.5-48-48l0-288c0-26.5 21.5-48 48-48zM48 128l80 0 0 64-64 0 0 256 192 0 0-32 64 0 0 48c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 176c0-26.5 21.5-48 48-48z"
+                        fill="currentColor" />
+                    </svg>
+                  </button>
+                  <span
+                    v-tooltip="
+                      echoRow.locked
+                        ? 'This echo is locked and cannot be deleted'
+                        : 'Delete this echo from your inventory'
+                    ">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-square btn-error"
+                      aria-label="Delete"
+                      :disabled="echoRow.locked"
+                      @click="removeEcho(echoRow.echoId)">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="size-4" aria-hidden="true">
+                        <path
+                          d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0L284.2 0c12.1 0 23.2 6.8 28.6 17.7L320 32l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 96C14.3 96 0 81.7 0 64S14.3 32 32 32l96 0 7.2-14.3zM32 128l0 320c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-320-64 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-96 0 0 48c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-48-64 0z"
+                          fill="currentColor" />
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Flag-off footer — unchanged from before decision #14. -->
+              <div v-else class="echoes__item__foot flex gap-2 justify-between items-center">
                 <div class="echoes__items__foot__equipped">
                   <div class="avatar-group -space-x-6 rtl:space-x-reverse">
                     <div class="avatar" v-for="char in getCharsEquipped(echoRow)">
