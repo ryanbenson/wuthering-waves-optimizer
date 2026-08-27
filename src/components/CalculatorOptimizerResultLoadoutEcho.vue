@@ -13,6 +13,7 @@
         <div class="flex items-start gap-2">
           <div class="relative shrink-0">
             <EchoFavoriteButton overlay :echo-id="echoId || null" />
+            <EchoStatusBadge :echo-id="echoId || null" />
             <div
               class="echo__item__image rounded-full border border-solid neutral-content size-10 bg-cover cursor-pointer"
               :class="{
@@ -86,6 +87,7 @@
       <div v-else class="echo__content flex flex-col gap-2 relative items-center justify-center">
         <div class="echo__item__image-wrap relative mx-auto lg:m-0 w-fit">
           <EchoFavoriteButton overlay :echo-id="echoId || null" />
+          <EchoStatusBadge :echo-id="echoId || null" />
           <div
             class="echo__item__image rounded-full border border-solid neutral-content size-16 mb-2 bg-cover cursor-pointer"
             :class="{
@@ -179,6 +181,7 @@
 import { computed } from "vue";
 import { getEchoSetIconByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
+import EchoStatusBadge from "./EchoStatusBadge.vue";
 import EchoCardSubstatList from "./EchoCardSubstatList.vue";
 import { useCharacterStore } from "../stores/character";
 import { useSettingsStore } from "../stores/settings";
