@@ -11,24 +11,28 @@
            actions, just the display. -->
       <div v-if="isLiveResultBarEnabled" class="echo__content flex flex-col gap-1.5">
         <div class="flex items-start gap-2">
-          <div class="relative shrink-0">
-            <EchoFavoriteButton overlay :echo-id="echoId || null" />
-            <EchoStatusBadge :echo-id="echoId || null" />
-            <div
-              class="echo__item__image rounded-full border border-solid neutral-content size-10 bg-cover cursor-pointer"
-              :class="{
-                'border-amber-300': rank === '5' || rank === 5,
-                'border-violet-600': rank === '4' || rank === 4,
-                'border-blue-500': rank === '3' || rank === 3,
-                'border-green-500': rank === '2' || rank === 2,
-                'echo__item__image--empty': !props.echo,
-              }"
-              :style="{
-                backgroundImage: `url(${echoImage})`,
-              }"></div>
-            <span class="badge badge-xs badge-primary absolute -bottom-1 -right-1 font-mono px-1">
-              {{ type }}
-            </span>
+          <div class="flex flex-col items-center gap-0.5 shrink-0">
+            <div class="relative">
+              <div
+                class="echo__item__image rounded-full border border-solid neutral-content size-10 bg-cover cursor-pointer"
+                :class="{
+                  'border-amber-300': rank === '5' || rank === 5,
+                  'border-violet-600': rank === '4' || rank === 4,
+                  'border-blue-500': rank === '3' || rank === 3,
+                  'border-green-500': rank === '2' || rank === 2,
+                  'echo__item__image--empty': !props.echo,
+                }"
+                :style="{
+                  backgroundImage: `url(${echoImage})`,
+                }"></div>
+              <span class="badge badge-xs badge-primary absolute -bottom-1 -right-1 font-mono px-1">
+                {{ type }}
+              </span>
+            </div>
+            <div class="flex items-center gap-0.5">
+              <EchoFavoriteButton :echo-id="echoId || null" />
+              <EchoStatusBadge :echo-id="echoId || null" />
+            </div>
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-1 flex-wrap">
@@ -86,8 +90,6 @@
       <!-- Flag off — unchanged from before decision #14. -->
       <div v-else class="echo__content flex flex-col gap-2 relative items-center justify-center">
         <div class="echo__item__image-wrap relative mx-auto lg:m-0 w-fit">
-          <EchoFavoriteButton overlay :echo-id="echoId || null" />
-          <EchoStatusBadge :echo-id="echoId || null" />
           <div
             class="echo__item__image rounded-full border border-solid neutral-content size-16 mb-2 bg-cover cursor-pointer"
             :class="{
@@ -100,6 +102,10 @@
             :style="{
               backgroundImage: `url(${echoImage})`,
             }"></div>
+        </div>
+        <div class="flex items-center justify-center gap-0.5">
+          <EchoFavoriteButton :echo-id="echoId || null" />
+          <EchoStatusBadge :echo-id="echoId || null" />
         </div>
         <span
           class="echo__item__cost badge badge-primary text-nowrap absolute right-0 top-0">

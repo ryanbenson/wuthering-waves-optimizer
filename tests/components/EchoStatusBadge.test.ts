@@ -11,8 +11,8 @@ function renderBadge(echoId: string | null) {
   });
 }
 
-function badgeEl(container: HTMLElement, echoId: string) {
-  return container.querySelector(`[data-test-echo-status-badge="${echoId}"]`);
+function statusEl(container: HTMLElement, status: "locked" | "trash") {
+  return container.querySelector(`[data-test-echo-status="${status}"]`);
 }
 
 describe("EchoStatusBadge", () => {
@@ -21,7 +21,7 @@ describe("EchoStatusBadge", () => {
     const inventoryStore = useInventoryStore();
     inventoryStore.saveEcho({ echoId: "echo-1" });
     const { container } = renderBadge("echo-1");
-    expect(badgeEl(container, "echo-1")).toBeNull();
+    expect(container.querySelector("[data-test-echo-status-badge]")).toBeNull();
   });
 
   it("renders nothing when there is no echoId", () => {
@@ -30,32 +30,30 @@ describe("EchoStatusBadge", () => {
     expect(container.querySelector("[data-test-echo-status-badge]")).toBeNull();
   });
 
-  it("shows the trash icon when the echo is marked trash", () => {
+  it("shows only the trash icon when the echo is marked trash (and not locked)", () => {
     setActivePinia(createPinia());
     const inventoryStore = useInventoryStore();
     inventoryStore.saveEcho({ echoId: "echo-1", trash: true });
     const { container } = renderBadge("echo-1");
-    const badge = badgeEl(container, "echo-1");
-    expect(badge).not.toBeNull();
-    expect(badge?.classList.contains("echo-status-badge--trash")).toBe(true);
+    expect(statusEl(container, "trash")).not.toBeNull();
+    expect(statusEl(container, "locked")).toBeNull();
   });
 
-  it("shows the lock icon (not trash styling) when the echo is locked", () => {
+  it("shows only the lock icon when the echo is locked (and not trash)", () => {
     setActivePinia(createPinia());
     const inventoryStore = useInventoryStore();
     inventoryStore.saveEcho({ echoId: "echo-1", locked: true });
     const { container } = renderBadge("echo-1");
-    const badge = badgeEl(container, "echo-1");
-    expect(badge).not.toBeNull();
-    expect(badge?.classList.contains("echo-status-badge--trash")).toBe(false);
+    expect(statusEl(container, "locked")).not.toBeNull();
+    expect(statusEl(container, "trash")).toBeNull();
   });
 
-  it("prefers the locked state when both locked and trash are set", () => {
+  it("shows both the lock and trash icons when an echo is somehow both locked and marked trash", () => {
     setActivePinia(createPinia());
     const inventoryStore = useInventoryStore();
     inventoryStore.saveEcho({ echoId: "echo-1", locked: true, trash: true });
     const { container } = renderBadge("echo-1");
-    const badge = badgeEl(container, "echo-1");
-    expect(badge?.classList.contains("echo-status-badge--trash")).toBe(false);
+    expect(statusEl(container, "locked")).not.toBeNull();
+    expect(statusEl(container, "trash")).not.toBeNull();
   });
 });

@@ -6,27 +6,31 @@
     @click="emit('open-edit-panel', index)">
     <div class="card-body">
       <div class="flex items-start gap-3">
-        <div class="relative shrink-0">
-          <EchoFavoriteButton overlay :echo-id="echoId || null" />
-          <EchoStatusBadge :echo-id="echoId || null" />
-          <span
-            v-if="isEchoIncomplete"
-            class="echo__item__incomplete absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
-            data-test-incomplete-echo
-            v-tooltip="'Incomplete echo'">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4">
-              <path
-                d="M12 2 1 21h22L12 2zm0 5.5 6.9 11.6H5.1L12 7.5zM11 10v4h2v-4h-2zm0 5.5v2h2v-2h-2z"
-                fill="currentColor" />
-            </svg>
-          </span>
-          <div
-            class="echo__item__image rounded-full border border-solid neutral-content size-14 bg-cover"
-            :class="[rankBorderClass, { 'echo__item__image--empty': !echo }]"
-            :style="{ backgroundImage: `url(${echoImage})` }"></div>
-          <span class="badge badge-sm badge-primary absolute -bottom-1 -right-1 font-mono px-1.5">
-            {{ type ?? "—" }}
-          </span>
+        <div class="flex flex-col items-center gap-0.5 shrink-0">
+          <div class="relative">
+            <span
+              v-if="isEchoIncomplete"
+              class="echo__item__incomplete absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
+              data-test-incomplete-echo
+              v-tooltip="'Incomplete echo'">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-4">
+                <path
+                  d="M12 2 1 21h22L12 2zm0 5.5 6.9 11.6H5.1L12 7.5zM11 10v4h2v-4h-2zm0 5.5v2h2v-2h-2z"
+                  fill="currentColor" />
+              </svg>
+            </span>
+            <div
+              class="echo__item__image rounded-full border border-solid neutral-content size-14 bg-cover"
+              :class="[rankBorderClass, { 'echo__item__image--empty': !echo }]"
+              :style="{ backgroundImage: `url(${echoImage})` }"></div>
+            <span class="badge badge-sm badge-primary absolute -bottom-1 -right-1 font-mono px-1.5">
+              {{ type ?? "—" }}
+            </span>
+          </div>
+          <div class="flex items-center gap-0.5">
+            <EchoFavoriteButton :echo-id="echoId || null" />
+            <EchoStatusBadge :echo-id="echoId || null" />
+          </div>
         </div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">

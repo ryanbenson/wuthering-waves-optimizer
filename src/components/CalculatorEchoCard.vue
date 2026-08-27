@@ -10,38 +10,42 @@
         v-if="compact && isLiveResultBarEnabled"
         class="echo__content echo__content--compact flex flex-col gap-1.5">
         <div class="flex items-start gap-2">
-          <div class="relative shrink-0">
-            <EchoFavoriteButton overlay :echo-id="echoId || null" />
-            <EchoStatusBadge :echo-id="echoId || null" />
-            <span
-              v-if="isEchoIncomplete"
-              class="echo__item__incomplete echo__item__incomplete--sm absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
-              data-test-incomplete-echo
-              v-tooltip="'Incomplete echo'">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="size-3">
-                <path
-                  d="M12 2 1 21h22L12 2zm0 5.5 6.9 11.6H5.1L12 7.5zM11 10v4h2v-4h-2zm0 5.5v2h2v-2h-2z"
-                  fill="currentColor" />
-              </svg>
-            </span>
-            <div
-              class="echo__item__image rounded-full border border-solid neutral-content size-10 bg-cover cursor-pointer"
-              :class="{
-                'border-amber-300': rank === '5' || rank === 5,
-                'border-violet-600': rank === '4' || rank === 4,
-                'border-blue-500': rank === '3' || rank === 3,
-                'border-green-500': rank === '2' || rank === 2,
-                'echo__item__image--empty': !props.echo,
-              }"
-              :style="{
-                backgroundImage: `url(${echoImage})`,
-              }"></div>
-            <span class="badge badge-xs badge-primary absolute -bottom-1 -right-1 font-mono px-1">
-              {{ type }}
-            </span>
+          <div class="flex flex-col items-center gap-0.5 shrink-0">
+            <div class="relative">
+              <span
+                v-if="isEchoIncomplete"
+                class="echo__item__incomplete echo__item__incomplete--sm absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
+                data-test-incomplete-echo
+                v-tooltip="'Incomplete echo'">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  class="size-3">
+                  <path
+                    d="M12 2 1 21h22L12 2zm0 5.5 6.9 11.6H5.1L12 7.5zM11 10v4h2v-4h-2zm0 5.5v2h2v-2h-2z"
+                    fill="currentColor" />
+                </svg>
+              </span>
+              <div
+                class="echo__item__image rounded-full border border-solid neutral-content size-10 bg-cover cursor-pointer"
+                :class="{
+                  'border-amber-300': rank === '5' || rank === 5,
+                  'border-violet-600': rank === '4' || rank === 4,
+                  'border-blue-500': rank === '3' || rank === 3,
+                  'border-green-500': rank === '2' || rank === 2,
+                  'echo__item__image--empty': !props.echo,
+                }"
+                :style="{
+                  backgroundImage: `url(${echoImage})`,
+                }"></div>
+              <span class="badge badge-xs badge-primary absolute -bottom-1 -right-1 font-mono px-1">
+                {{ type }}
+              </span>
+            </div>
+            <div class="flex items-center gap-0.5">
+              <EchoFavoriteButton :echo-id="echoId || null" />
+              <EchoStatusBadge :echo-id="echoId || null" />
+            </div>
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-1 flex-wrap">
@@ -108,8 +112,6 @@
         v-else-if="compact"
         class="echo__content echo__content--compact flex flex-col gap-2 relative items-center justify-center">
         <div class="echo__item__image-wrap relative mx-auto lg:m-0 w-fit">
-          <EchoFavoriteButton overlay :echo-id="echoId || null" />
-          <EchoStatusBadge :echo-id="echoId || null" />
           <span
             v-if="isEchoIncomplete"
             class="echo__item__incomplete absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
@@ -136,6 +138,10 @@
             :style="{
               backgroundImage: `url(${echoImage})`,
             }"></div>
+        </div>
+        <div class="flex items-center justify-center gap-0.5">
+          <EchoFavoriteButton :echo-id="echoId || null" />
+          <EchoStatusBadge :echo-id="echoId || null" />
         </div>
         <span
           class="echo__item__cost badge badge-primary text-nowrap absolute right-0 top-0">
@@ -242,38 +248,42 @@
            changing anyone's experience who hasn't opted into the flag. -->
       <div v-else-if="isLiveResultBarEnabled" class="echo__content flex flex-col gap-2">
         <div class="flex items-start gap-3">
-          <div class="relative shrink-0">
-            <EchoFavoriteButton overlay :echo-id="echoId || null" />
-            <EchoStatusBadge :echo-id="echoId || null" />
-            <span
-              v-if="isEchoIncomplete"
-              class="echo__item__incomplete absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
-              data-test-incomplete-echo
-              v-tooltip="'Incomplete echo'">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                class="size-4">
-                <path
-                  d="M12 2 1 21h22L12 2zm0 5.5 6.9 11.6H5.1L12 7.5zM11 10v4h2v-4h-2zm0 5.5v2h2v-2h-2z"
-                  fill="currentColor" />
-              </svg>
-            </span>
-            <div
-              class="echo__item__image rounded-full border border-solid neutral-content size-14 bg-cover cursor-pointer"
-              :class="{
-                'border-amber-300': rank === '5' || rank === 5,
-                'border-violet-600': rank === '4' || rank === 4,
-                'border-blue-500': rank === '3' || rank === 3,
-                'border-green-500': rank === '2' || rank === 2,
-                'echo__item__image--empty': !props.echo,
-              }"
-              :style="{
-                backgroundImage: `url(${echoImage})`,
-              }"></div>
-            <span class="badge badge-sm badge-primary absolute -bottom-1 -right-1 font-mono px-1.5">
-              {{ type }}
-            </span>
+          <div class="flex flex-col items-center gap-0.5 shrink-0">
+            <div class="relative">
+              <span
+                v-if="isEchoIncomplete"
+                class="echo__item__incomplete absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
+                data-test-incomplete-echo
+                v-tooltip="'Incomplete echo'">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  class="size-4">
+                  <path
+                    d="M12 2 1 21h22L12 2zm0 5.5 6.9 11.6H5.1L12 7.5zM11 10v4h2v-4h-2zm0 5.5v2h2v-2h-2z"
+                    fill="currentColor" />
+                </svg>
+              </span>
+              <div
+                class="echo__item__image rounded-full border border-solid neutral-content size-14 bg-cover cursor-pointer"
+                :class="{
+                  'border-amber-300': rank === '5' || rank === 5,
+                  'border-violet-600': rank === '4' || rank === 4,
+                  'border-blue-500': rank === '3' || rank === 3,
+                  'border-green-500': rank === '2' || rank === 2,
+                  'echo__item__image--empty': !props.echo,
+                }"
+                :style="{
+                  backgroundImage: `url(${echoImage})`,
+                }"></div>
+              <span class="badge badge-sm badge-primary absolute -bottom-1 -right-1 font-mono px-1.5">
+                {{ type }}
+              </span>
+            </div>
+            <div class="flex items-center gap-0.5">
+              <EchoFavoriteButton :echo-id="echoId || null" />
+              <EchoStatusBadge :echo-id="echoId || null" />
+            </div>
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 flex-wrap">
@@ -337,10 +347,8 @@
 
       <!-- Flag-off comfy layout — unchanged from before decision #13. -->
       <div v-else class="echo__content flex gap-6 flex-col lg:flex-row">
-        <div class="echo__item__left">
+        <div class="echo__item__left flex flex-col items-center lg:items-start">
           <div class="echo__item__image-wrap relative mx-auto lg:m-0 w-fit">
-            <EchoFavoriteButton overlay :echo-id="echoId || null" />
-            <EchoStatusBadge :echo-id="echoId || null" />
             <span
               v-if="isEchoIncomplete"
               class="echo__item__incomplete absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
@@ -367,6 +375,10 @@
               :style="{
                 backgroundImage: `url(${echoImage})`,
               }"></div>
+          </div>
+          <div class="flex items-center gap-0.5 -mt-1">
+            <EchoFavoriteButton :echo-id="echoId || null" />
+            <EchoStatusBadge :echo-id="echoId || null" />
           </div>
         </div>
         <div class="echo__item__stats mb-2 w-full relative">
