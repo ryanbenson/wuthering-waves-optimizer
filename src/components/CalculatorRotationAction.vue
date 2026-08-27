@@ -69,7 +69,7 @@
           {{ damageSubType }} DMG
         </div>
         <div
-          v-if="isRotationFlowEnabled && formattedDamageValue"
+          v-if="isLiveResultBarEnabled && formattedDamageValue"
           class="type badge badge-ghost size-max"
           data-test-rotation-action-damage-value>
           {{ damageLabel ? `${damageLabel}: ` : "" }}{{ formattedDamageValue }}
@@ -83,7 +83,7 @@
           <span>{{ buffsCount }}</span>
         </div>
         <button
-          v-if="!isRotationFlowEnabled"
+          v-if="!isLiveResultBarEnabled"
           type="button"
           class="btn btn-xs"
           data-test-rotation-action-configure-stats
@@ -99,7 +99,7 @@
           {{ showManualBuffs ? "Hide" : "⚙ Manage" }} Buffs
         </button>
         <button
-          v-if="isRotationFlowEnabled"
+          v-if="isLiveResultBarEnabled"
           type="button"
           class="btn btn-xs btn-neutral"
           title="Duplicate this action"
@@ -117,7 +117,7 @@
         </button>
       </div>
       <div
-        v-if="isRotationFlowEnabled && (buffData.length || advancedBuffChips.length)"
+        v-if="isLiveResultBarEnabled && (buffData.length || advancedBuffChips.length)"
         class="rotation__action__unified-chips"
         @click.stop>
         <span
@@ -421,8 +421,8 @@ const emit = defineEmits<{
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 const settingsStore = useSettingsStore();
-const isRotationFlowEnabled = computed(
-  () => settingsStore.labs?.rotationFlow?.isEnabled ?? false,
+const isLiveResultBarEnabled = computed(
+  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
 );
 
 const isEditing = ref(false);

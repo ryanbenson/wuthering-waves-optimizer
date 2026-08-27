@@ -4,7 +4,7 @@ date: 2026-08-27
 tags: [calculator, components, composables, stores]
 ---
 
-# 15. Rotation Flow (Labs-flagged rotation builder redesign)
+# 15. Rotation Flow (Labs-flagged, shares the `liveResultBar` flag)
 
 ## Context
 
@@ -19,9 +19,15 @@ searchable dropdown. A design proposal ("Rotation Flow", published as an
 Artifact, not checked in) explored a redesign; this ADR is for actually
 building it, not the proposal itself.
 
-Ships behind the existing Labs mechanism (`settingsStore.labs`) — a new
-`rotationFlow` key registered in `SettingsLabs.vue`, the second entry ever
-added there (after `liveResultBar`, ADR [0013](./0013-live-result-bar-labs-flag.md)).
+Ships behind the existing `liveResultBar` Labs flag (`settingsStore.labs.liveResultBar.isEnabled`,
+labeled "UI Overhaul 3.0" in `SettingsLabs.vue`) rather than a flag of its
+own — the same choice ADR [0014](./0014-echo-editor-redesign.md) made for
+the echo editor redesign. `liveResultBar` has become the umbrella flag for
+this whole "next-gen UI" initiative rather than naming one specific area, so
+`SettingsLabs.vue` doesn't get a new per-feature row for every redesign that
+ships behind it — reusing the flag was corrected into this ADR after an
+initial pass shipped a separate `rotationFlow` key, which didn't match that
+established pattern.
 
 ## Decision
 

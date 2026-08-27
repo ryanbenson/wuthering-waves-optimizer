@@ -157,7 +157,7 @@
         <div>
           <h3 class="font-semibold mb-2">Actions</h3>
           <div
-            v-if="isRotationFlowEnabled"
+            v-if="isLiveResultBarEnabled"
             class="rotation__summary-strip flex flex-wrap gap-3 items-center mb-3 text-sm"
             data-test-team-rotation-summary-strip>
             <span><b>{{ team.actions.length }}</b> action{{ team.actions.length === 1 ? "" : "s" }}</span>
@@ -169,7 +169,7 @@
             <span><b>{{ customizedActionsCount }}</b> customized</span>
           </div>
           <div
-            v-if="isRotationFlowEnabled && damageStripBars.length"
+            v-if="isLiveResultBarEnabled && damageStripBars.length"
             class="rotation__damage-strip mb-3"
             data-test-team-rotation-damage-strip>
             <div class="text-xs opacity-60 mb-2">
@@ -229,7 +229,7 @@
             @click="addAction">
             + Add Action
           </button>
-          <div v-if="isRotationFlowEnabled && hasAnyCharacter" class="mt-2">
+          <div v-if="isLiveResultBarEnabled && hasAnyCharacter" class="mt-2">
             <div class="flex items-center gap-2 mb-1">
               <label for="quick-add-slot" class="text-xs opacity-70">Adding for:</label>
               <select
@@ -817,8 +817,8 @@ function handleActionDuplicate(id: string) {
 // summary-strip/duplicate/damage-strip/quick-add pieces, adapted to a team's
 // shared actions array instead of one character's.
 const settingsStore = useSettingsStore();
-const isRotationFlowEnabled = computed(
-  () => settingsStore.labs?.rotationFlow?.isEnabled ?? false,
+const isLiveResultBarEnabled = computed(
+  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
 );
 
 const totalHits = computed(

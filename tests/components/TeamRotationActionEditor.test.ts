@@ -75,7 +75,7 @@ describe("TeamRotationActionEditor Rotation Flow (Labs)", () => {
   });
 
   it("forwards duplicate-action from the leaf as a plain `duplicate` id event", async () => {
-    useSettingsStore().labs = { rotationFlow: { isEnabled: true } };
+    useSettingsStore().labs = { liveResultBar: { isEnabled: true } };
     const { container, emitted } = renderEditor();
 
     const duplicateBtn = container.querySelector("[data-test-rotation-action-duplicate]") as HTMLElement;
@@ -86,7 +86,7 @@ describe("TeamRotationActionEditor Rotation Flow (Labs)", () => {
   });
 
   it("hides the legacy Configure Buffs button once the flag is on (unified panel takes over)", () => {
-    useSettingsStore().labs = { rotationFlow: { isEnabled: true } };
+    useSettingsStore().labs = { liveResultBar: { isEnabled: true } };
     const { container } = renderEditor({ definitionsForSlot: { 0: { buffs: [] } } });
 
     expect(container.querySelector("[data-test-team-rotation-action-configure-buffs]")).toBeNull();

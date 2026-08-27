@@ -50,12 +50,6 @@ const labsFeatures = ref<LabFeature[]>([
     details:
       "A major UI overhaul. It seeks to improve the overall user experience, give you more access to insights while still providing the data you need.",
   },
-  {
-    key: "rotationFlow",
-    label: "Rotation Flow",
-    details:
-      "A redesign of the rotation builder: one merged buff list per action, a one-click duplicate button, a rotation summary strip, a damage-by-action strip, and quick-add/paste-import for building a rotation by typing or pasting action names.",
-  },
 ]);
 </script>
 

@@ -65,7 +65,7 @@
             {{ isCustomized ? "Customized buffs" : "Synced with character" }}
           </span>
           <button
-            v-if="!isRotationFlowEnabled"
+            v-if="!isLiveResultBarEnabled"
             type="button"
             class="btn btn-xs"
             :data-test-team-rotation-action-configure-buffs="action.id"
@@ -161,8 +161,8 @@ const emit = defineEmits<{
 }>();
 
 const settingsStore = useSettingsStore();
-const isRotationFlowEnabled = computed(
-  () => settingsStore.labs?.rotationFlow?.isEnabled ?? false,
+const isLiveResultBarEnabled = computed(
+  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
 );
 
 const showAdvancedBuffs = ref(false);

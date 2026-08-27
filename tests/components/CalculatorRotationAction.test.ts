@@ -22,7 +22,7 @@ function renderAction(canReorder = false, overrideProps: Record<string, unknown>
 }
 
 function enableRotationFlow() {
-  useSettingsStore().labs = { rotationFlow: { isEnabled: true } };
+  useSettingsStore().labs = { liveResultBar: { isEnabled: true } };
 }
 
 describe("CalculatorRotationAction drag handle", () => {

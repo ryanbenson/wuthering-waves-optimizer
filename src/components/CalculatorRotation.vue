@@ -208,7 +208,7 @@
             </div>
           </div>
           <div
-            v-if="isRotationFlowEnabled"
+            v-if="isLiveResultBarEnabled"
             class="rotation__summary-strip flex flex-wrap gap-3 items-center mt-4 text-sm"
             data-test-rotation-summary-strip>
             <span><b>{{ actionsCount }}</b> action{{ actionsCount === 1 ? "" : "s" }}</span>
@@ -220,7 +220,7 @@
             <span><b>{{ customizedActionsCount }}</b> customized</span>
           </div>
           <div
-            v-if="isRotationFlowEnabled && damageStripBars.length"
+            v-if="isLiveResultBarEnabled && damageStripBars.length"
             class="rotation__damage-strip mt-4"
             data-test-rotation-damage-strip>
             <div class="text-xs opacity-60 mb-2">
@@ -286,7 +286,7 @@
             Add Action
           </button>
           <CalculatorRotationQuickAdd
-            v-if="isRotationFlowEnabled"
+            v-if="isLiveResultBarEnabled"
             :actions="characterActionList"
             @add-actions="handleAddActions" />
           <div class="rotation__action--system">
@@ -402,8 +402,8 @@ const emit = defineEmits<{
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
 const settingsStore = useSettingsStore();
-const isRotationFlowEnabled = computed(
-  () => settingsStore.labs?.rotationFlow?.isEnabled ?? false,
+const isLiveResultBarEnabled = computed(
+  () => settingsStore.labs?.liveResultBar?.isEnabled ?? false,
 );
 
 const isOpen = ref(false);
