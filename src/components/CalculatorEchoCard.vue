@@ -12,6 +12,7 @@
         <div class="flex items-start gap-2">
           <div class="relative shrink-0">
             <EchoFavoriteButton overlay :echo-id="echoId || null" />
+            <EchoStatusBadge :echo-id="echoId || null" />
             <span
               v-if="isEchoIncomplete"
               class="echo__item__incomplete echo__item__incomplete--sm absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
@@ -108,6 +109,7 @@
         class="echo__content echo__content--compact flex flex-col gap-2 relative items-center justify-center">
         <div class="echo__item__image-wrap relative mx-auto lg:m-0 w-fit">
           <EchoFavoriteButton overlay :echo-id="echoId || null" />
+          <EchoStatusBadge :echo-id="echoId || null" />
           <span
             v-if="isEchoIncomplete"
             class="echo__item__incomplete absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
@@ -242,6 +244,7 @@
         <div class="flex items-start gap-3">
           <div class="relative shrink-0">
             <EchoFavoriteButton overlay :echo-id="echoId || null" />
+            <EchoStatusBadge :echo-id="echoId || null" />
             <span
               v-if="isEchoIncomplete"
               class="echo__item__incomplete absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
@@ -337,6 +340,7 @@
         <div class="echo__item__left">
           <div class="echo__item__image-wrap relative mx-auto lg:m-0 w-fit">
             <EchoFavoriteButton overlay :echo-id="echoId || null" />
+            <EchoStatusBadge :echo-id="echoId || null" />
             <span
               v-if="isEchoIncomplete"
               class="echo__item__incomplete absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
@@ -506,6 +510,7 @@
 import { computed } from "vue";
 import { getEchoSetIconByType, SHOW_ROLL_VALUE_BADGE } from "../echoes/stats";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
+import EchoStatusBadge from "./EchoStatusBadge.vue";
 import EchoCardSubstatList from "./EchoCardSubstatList.vue";
 import { useEchoCardStats } from "../composables/useEchoCardStats";
 import { useEchoRating } from "../composables/useEchoRating";

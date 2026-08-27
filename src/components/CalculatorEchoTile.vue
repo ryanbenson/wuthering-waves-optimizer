@@ -8,6 +8,7 @@
       <div class="flex items-start gap-3">
         <div class="relative shrink-0">
           <EchoFavoriteButton overlay :echo-id="echoId || null" />
+          <EchoStatusBadge :echo-id="echoId || null" />
           <span
             v-if="isEchoIncomplete"
             class="echo__item__incomplete absolute top-0 left-0 z-10 flex items-center justify-center rounded-full"
@@ -117,6 +118,7 @@ import { useEchoEditFields, type EchoEditTarget, type EchoSubstatSlot } from "..
 import { randomString } from "../utils/strings.ts";
 import EchoLockTrashActions from "./EchoLockTrashActions.vue";
 import EchoFavoriteButton from "./EchoFavoriteButton.vue";
+import EchoStatusBadge from "./EchoStatusBadge.vue";
 import AppOverflowMenu from "./AppOverflowMenu.vue";
 
 defineOptions({ name: "CalculatorEchoTile" });
