@@ -63,6 +63,7 @@
         :order="rotation.order"
         :actions="rotation.actions"
         :can-reorder="canReorder"
+        :all-damages="allDamages"
         @drag-reorder-start="onDragStart(index)"
         @drag-reorder-end="onDragEnd"
         @updated-rotation="handleUpdatedRotation"
@@ -112,6 +113,11 @@ type RotationRow = {
 
 const props = defineProps<{
   character: string;
+  /** Rotation Flow (Labs) — Calculator.vue's already-computed allDamages,
+   * threaded through so CalculatorRotation can show real per-action damage
+   * (allDamages.rotations[i].attacks[j], matched by rotation/action id).
+   * Optional and read-only here — this component owns no damage math. */
+  allDamages?: Record<string, unknown> | null;
 }>();
 
 const emit = defineEmits<{

@@ -68,6 +68,12 @@
         <div v-if="damageSubType" class="type badge badge-accent size-max">
           {{ damageSubType }} DMG
         </div>
+        <div
+          v-if="isRotationFlowEnabled && formattedDamageValue"
+          class="type badge badge-ghost size-max"
+          data-test-rotation-action-damage-value>
+          {{ damageLabel ? `${damageLabel}: ` : "" }}{{ formattedDamageValue }}
+        </div>
         <div class="buffsCount badge">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
             <path
@@ -77,11 +83,29 @@
           <span>{{ buffsCount }}</span>
         </div>
         <button
+          v-if="!isRotationFlowEnabled"
           type="button"
           class="btn btn-xs"
           data-test-rotation-action-configure-stats
           @click.stop="showManualBuffs = !showManualBuffs">
           {{ showManualBuffs ? "Hide" : "Configure" }} Stats
+        </button>
+        <button
+          v-else
+          type="button"
+          class="btn btn-xs"
+          data-test-rotation-action-manage-buffs
+          @click.stop="toggleManageBuffs">
+          {{ showManualBuffs ? "Hide" : "⚙ Manage" }} Buffs
+        </button>
+        <button
+          v-if="isRotationFlowEnabled"
+          type="button"
+          class="btn btn-xs btn-neutral"
+          title="Duplicate this action"
+          data-test-rotation-action-duplicate
+          @click.stop="duplicateAction">
+          ⧉
         </button>
         <slot name="extra-buttons"></slot>
         <button
@@ -91,6 +115,39 @@
           @click.stop="removeAction">
           Delete
         </button>
+      </div>
+      <div
+        v-if="isRotationFlowEnabled && (buffData.length || advancedBuffChips.length)"
+        class="rotation__action__unified-chips"
+        @click.stop>
+        <span
+          v-for="buff in buffData"
+          :key="buff.id"
+          class="badge badge-outline unified-chip"
+          data-test-rotation-action-unified-chip-custom>
+          {{ buff.modifier ?? "?" }}: {{ buff.modifierValue ?? "?" }}
+          <button
+            type="button"
+            class="unified-chip__remove"
+            title="Remove"
+            @click.stop="handleRemoveBuff(buff.id)">
+            ✕
+          </button>
+        </span>
+        <span
+          v-for="chip in advancedBuffChips"
+          :key="`${chip.category}:${chip.key}`"
+          class="badge badge-outline badge-accent unified-chip"
+          data-test-rotation-action-unified-chip-live>
+          {{ chip.label }}
+          <button
+            type="button"
+            class="unified-chip__remove"
+            title="Turn off"
+            @click.stop="removeAdvancedBuffChip(chip)">
+            ✕
+          </button>
+        </span>
       </div>
     </div>
     <div v-if="isEditing" class="rotation__action__edit mt-2" @click.stop>
@@ -227,6 +284,7 @@
 import { computed, defineExpose, nextTick, onMounted, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useCharacterStore } from "../stores/character";
+import { useSettingsStore } from "../stores/settings";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionBuff from "./CalculatorRotationActionBuff.vue";
 import AppRichSelect, {
@@ -253,6 +311,18 @@ type BuffRow = {
   id: string;
   modifier?: string | null;
   modifierValue?: unknown;
+};
+
+/** Rotation Flow (Labs) — a display-only chip for a currently-enabled
+ * advancedConfig entry, resolved by the wrapper (which owns advancedConfig)
+ * so this component can render it in the same unified chip row as its own
+ * `buffs`. Removing one bubbles `toggle-advanced-buff` back to the wrapper,
+ * which owns the actual mutation. */
+type AdvancedBuffChip = {
+  category: string;
+  key: string;
+  label: string;
+  code?: string | null;
 };
 
 const skillKeyMap = {
@@ -302,6 +372,13 @@ const props = withDefaults(
     /** Hides "Disabled" — used by Team Rotations, where it isn't supported yet. */
     showDisabledOption?: boolean;
     canReorder?: boolean;
+    /** Rotation Flow (Labs) — wrapper-resolved display chips for this
+     * action's currently-enabled advancedConfig entries (see AdvancedBuffChip). */
+    advancedBuffChips?: AdvancedBuffChip[];
+    /** Rotation Flow (Labs) — this action's real computed damage, when the
+     * caller has it available (see CalculatorRotation.vue's allDamages wiring). */
+    damageValue?: number | null;
+    damageLabel?: string | null;
   }>(),
   {
     characterData: () => ({}),
@@ -317,6 +394,9 @@ const props = withDefaults(
     electroRageStacks: 0,
     showDisabledOption: true,
     canReorder: false,
+    advancedBuffChips: () => [],
+    damageValue: null,
+    damageLabel: null,
   },
 );
 
@@ -326,10 +406,24 @@ const emit = defineEmits<{
   "remove-action": [payload: { id: string }];
   "drag-reorder-start": [event: DragEvent];
   "drag-reorder-end": [];
+  /** Rotation Flow (Labs) only — parent owns cloning since it needs the full
+   * actions array to insert-after and renumber. */
+  "duplicate-action": [payload: { id: string }];
+  /** Rotation Flow (Labs) only — removing an advancedConfig-derived chip;
+   * the wrapper (CalculatorRotationActionEditor/TeamRotationActionEditor)
+   * owns the actual advancedConfig mutation. */
+  "toggle-advanced-buff": [payload: { category: string; key: string }];
+  /** Rotation Flow (Labs) only — keeps the wrapper's "Configure Buffs" panel
+   * open/closed in sync with this component's own unified buffs panel. */
+  "toggle-manage-buffs": [payload: { open: boolean }];
 }>();
 
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
+const settingsStore = useSettingsStore();
+const isRotationFlowEnabled = computed(
+  () => settingsStore.labs?.rotationFlow?.isEnabled ?? false,
+);
 
 const isEditing = ref(false);
 const showManualBuffs = ref(false);
@@ -691,6 +785,24 @@ function removeAction() {
   emit("remove-action", { id: props.id });
 }
 
+function duplicateAction() {
+  emit("duplicate-action", { id: props.id });
+}
+
+function toggleManageBuffs() {
+  showManualBuffs.value = !showManualBuffs.value;
+  emit("toggle-manage-buffs", { open: showManualBuffs.value });
+}
+
+function removeAdvancedBuffChip(chip: AdvancedBuffChip) {
+  emit("toggle-advanced-buff", { category: chip.category, key: chip.key });
+}
+
+const formattedDamageValue = computed(() => {
+  if (props.damageValue === null || props.damageValue === undefined) return null;
+  return Math.round(props.damageValue).toLocaleString();
+});
+
 function onDragReorderStart(event: DragEvent) {
   // Must set dataTransfer during dragstart on the draggable node (esp. Safari/Firefox)
   if (event.dataTransfer) {
@@ -820,6 +932,23 @@ onMounted(() => {
     width: 1rem;
     height: 1rem;
   }
+}
+.rotation__action__unified-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  cursor: default;
+}
+.unified-chip {
+  gap: 0.375rem;
+}
+.unified-chip__remove {
+  opacity: 0.6;
+  line-height: 1;
+  cursor: pointer;
+}
+.unified-chip__remove:hover {
+  opacity: 1;
 }
 .edit__action {
   margin-top: 1rem;

@@ -17,11 +17,17 @@
     :negative-status-stacks="Number(action.negativeStatusStacks ?? 1)"
     :electro-rage-stacks="Number(action.electroRageStacks ?? 0)"
     :can-reorder="canReorder"
+    :advanced-buff-chips="advancedBuffChips"
+    :damage-value="damageValue"
+    :damage-label="damageLabel"
     :data-test-rotation-action-by-attack-key="rotationActionStr(action.key) ?? 'none'"
     :data-test-rotation-action-by-id="action.id"
     @action-update="onActionUpdate"
     @action-update:sequence="onSequenceUpdate"
     @remove-action="onRemove"
+    @duplicate-action="onDuplicateAction"
+    @toggle-manage-buffs="onToggleManageBuffs"
+    @toggle-advanced-buff="onToggleAdvancedBuff"
     @drag-reorder-start="onDragReorderStart"
     @drag-reorder-end="onDragReorderEnd">
     <template v-if="definitions" #extra-buttons>
@@ -37,6 +43,7 @@
         {{ isCustomized ? "Customized buffs" : "Synced with character" }}
       </span>
       <button
+        v-if="!isRotationFlowEnabled"
         type="button"
         class="btn btn-xs"
         :data-test-rotation-action-configure-buffs="action.id"
@@ -83,6 +90,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useSettingsStore } from "../stores/settings";
 import CalculatorRotationAction from "./CalculatorRotationAction.vue";
 import TeamRotationAdvancedBuffs from "./TeamRotationAdvancedBuffs.vue";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
@@ -93,6 +101,11 @@ import {
   type RotationAdvancedConfig,
 } from "../calculator/rotationAdvancedBuffs";
 import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
+
+/** Rotation Flow (Labs) — a display-only chip for a currently-enabled
+ * advancedConfig entry, resolved here (this wrapper owns advancedConfig) so
+ * CalculatorRotationAction can render it in its unified chip row. */
+type AdvancedBuffChip = { category: string; key: string; label: string };
 
 const props = defineProps<{
   action: Record<string, unknown> & { id: string; advancedConfig?: RotationAdvancedConfig };
@@ -110,18 +123,28 @@ const props = defineProps<{
   previousAction?: (Record<string, unknown> & { id: string; advancedConfig?: RotationAdvancedConfig }) | null;
   rangeActions?: DurationRangeAction[];
   canReorder?: boolean;
+  /** Rotation Flow (Labs) — this action's real computed damage, threaded
+   * down from CalculatorRotation.vue's allDamages wiring, if available. */
+  damageValue?: number | null;
+  damageLabel?: string | null;
 }>();
 
 const emit = defineEmits<{
   "action-update": [payload: Record<string, unknown>];
   "action-update:sequence": [payload: Record<string, unknown>];
   "remove-action": [payload: { id: string }];
+  "duplicate-action": [payload: { id: string }];
   "bulk-apply": [
     payload: { category: AdvancedConfigCategory; key: string | null; override: AdvancedBuffOverride; actionIds: string[] },
   ];
   "drag-reorder-start": [event: DragEvent];
   "drag-reorder-end": [];
 }>();
+
+const settingsStore = useSettingsStore();
+const isRotationFlowEnabled = computed(
+  () => settingsStore.labs?.rotationFlow?.isEnabled ?? false,
+);
 
 const showAdvancedBuffs = ref(false);
 const actionRef = ref<{ toggleEdit: () => void } | null>(null);
@@ -170,6 +193,71 @@ const echoSetPassiveDefs = computed(() => {
 const currentSnapshot = computed(() => buildAdvancedConfigSnapshot(props.characterBuildData, props.definitions, "current"));
 const displayedAdvancedConfig = computed(() => props.action.advancedConfig ?? currentSnapshot.value);
 const isCustomized = computed(() => hasAdvancedConfigOverrides(props.action.advancedConfig));
+
+// Rotation Flow (Labs) — resolves the currently-enabled advancedConfig
+// entries into display chips for CalculatorRotationAction's unified list.
+// Reuses `definitions`/`displayedAdvancedConfig` exactly as the existing
+// TeamRotationAdvancedBuffs panel does — this is a read-only projection of
+// the same data, not a second source of truth.
+function collectCategoryChips(
+  category: Exclude<AdvancedConfigCategory, "mainEchoBuff">,
+  overrides: Record<string, { isEnabled?: boolean }> | undefined,
+  defs: Array<{ key: string; name?: string }> | undefined,
+): AdvancedBuffChip[] {
+  if (!overrides) return [];
+  const defsByKey = new Map((defs ?? []).map((d) => [d.key, d]));
+  return Object.entries(overrides)
+    .filter(([, override]) => override?.isEnabled)
+    .map(([key]) => ({
+      category,
+      key,
+      label: defsByKey.get(key)?.name ?? key,
+    }));
+}
+
+const advancedBuffChips = computed<AdvancedBuffChip[]>(() => {
+  if (!props.definitions) return [];
+  const config = displayedAdvancedConfig.value;
+  const chips: AdvancedBuffChip[] = [
+    ...collectCategoryChips("buffs", config.buffs, props.definitions.buffs),
+    ...collectCategoryChips("weaponPassives", config.weaponPassives, props.definitions.weaponPassives),
+    ...collectCategoryChips("echoSetPassives", config.echoSetPassives, echoSetPassiveDefs.value),
+    ...collectCategoryChips("teamBuffs", config.teamBuffs, props.definitions.teamBuffs),
+    ...collectCategoryChips("resonanceChains", config.resonanceChains, props.definitions.resonanceChains),
+  ];
+  if (config.mainEchoBuff?.isEnabled) {
+    chips.push({
+      category: "mainEchoBuff",
+      key: "mainEchoBuff",
+      label: props.definitions.mainEchoDef?.name ?? "Main Echo Buff",
+    });
+  }
+  return chips;
+});
+
+function onToggleAdvancedBuff(payload: { category: string; key: string }) {
+  const category = payload.category as AdvancedConfigCategory;
+  const currentConfig = displayedAdvancedConfig.value;
+  const nextConfig: RotationAdvancedConfig =
+    category === "mainEchoBuff"
+      ? { ...currentConfig, mainEchoBuff: { ...(currentConfig.mainEchoBuff ?? {}), isEnabled: false } }
+      : {
+          ...currentConfig,
+          [category]: {
+            ...(currentConfig[category] ?? {}),
+            [payload.key]: { ...(currentConfig[category]?.[payload.key] ?? {}), isEnabled: false },
+          },
+        };
+  emit("action-update", { ...props.action, advancedConfig: nextConfig });
+}
+
+function onToggleManageBuffs(payload: { open: boolean }) {
+  showAdvancedBuffs.value = payload.open;
+}
+
+function onDuplicateAction(payload: { id: string }) {
+  emit("duplicate-action", payload);
+}
 
 function onActionUpdate(payload: Record<string, unknown>) {
   emit("action-update", payload);

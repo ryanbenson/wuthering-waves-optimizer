@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
 import { render, fireEvent } from "@testing-library/vue";
 import TeamRotationActionEditor from "../../src/components/TeamRotationActionEditor.vue";
+import { useSettingsStore } from "../../src/stores/settings";
 
 function renderEditor(overrideProps: Record<string, unknown> = {}) {
   return render(TeamRotationActionEditor, {
@@ -65,5 +66,29 @@ describe("TeamRotationActionEditor", () => {
   it("does not render a drag handle when canReorder is not set", () => {
     const { container } = renderEditor();
     expect(container.querySelector("[data-test-rotation-action-drag-handle]")).toBeNull();
+  });
+});
+
+describe("TeamRotationActionEditor Rotation Flow (Labs)", () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
+
+  it("forwards duplicate-action from the leaf as a plain `duplicate` id event", async () => {
+    useSettingsStore().labs = { rotationFlow: { isEnabled: true } };
+    const { container, emitted } = renderEditor();
+
+    const duplicateBtn = container.querySelector("[data-test-rotation-action-duplicate]") as HTMLElement;
+    expect(duplicateBtn).not.toBeNull();
+    await fireEvent.click(duplicateBtn);
+
+    expect(emitted("duplicate")).toEqual([["action-1"]]);
+  });
+
+  it("hides the legacy Configure Buffs button once the flag is on (unified panel takes over)", () => {
+    useSettingsStore().labs = { rotationFlow: { isEnabled: true } };
+    const { container } = renderEditor({ definitionsForSlot: { 0: { buffs: [] } } });
+
+    expect(container.querySelector("[data-test-team-rotation-action-configure-buffs]")).toBeNull();
   });
 });

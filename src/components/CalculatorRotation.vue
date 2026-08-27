@@ -207,10 +207,42 @@
                 :data-test-rotation-name-input="durationValue" />
             </div>
           </div>
+          <div
+            v-if="isRotationFlowEnabled"
+            class="rotation__summary-strip flex flex-wrap gap-3 items-center mt-4 text-sm"
+            data-test-rotation-summary-strip>
+            <span><b>{{ actionsCount }}</b> action{{ actionsCount === 1 ? "" : "s" }}</span>
+            <span class="opacity-40">·</span>
+            <span><b>{{ totalHits }}</b> hit{{ totalHits === 1 ? "" : "s" }}</span>
+            <span class="opacity-40">·</span>
+            <span><b>{{ durationValue !== null && durationValue !== "" ? `${durationValue}s` : "—" }}</b> duration</span>
+            <span class="opacity-40">·</span>
+            <span><b>{{ customizedActionsCount }}</b> customized</span>
+          </div>
+          <div
+            v-if="isRotationFlowEnabled && damageStripBars.length"
+            class="rotation__damage-strip mt-4"
+            data-test-rotation-damage-strip>
+            <div class="text-xs opacity-60 mb-2">
+              Damage by action — ordered, not timed. There's no per-action
+              cast timing in the data to plot a real timeline.
+            </div>
+            <div class="rotation__damage-strip__bars">
+              <button
+                v-for="bar in damageStripBars"
+                :key="bar.id"
+                type="button"
+                class="rotation__damage-strip__bar"
+                :style="{ height: bar.heightPct + '%' }"
+                :title="Math.round(bar.value).toLocaleString()"
+                @click="scrollToAction(bar.id)"></button>
+            </div>
+          </div>
           <div class="rotations__list">
             <div
               v-for="(action, index) in actionsList"
               :key="action.id"
+              :ref="(el) => setRowEl(action.id, el as HTMLElement | null)"
               class="action-dnd-item rounded-lg"
               :class="{
                 'ring-2 ring-primary ring-offset-1 ring-offset-base-100':
@@ -231,9 +263,12 @@
                 :previous-action="previousActionByActionId[action.id] ?? null"
                 :range-actions="rangeActions"
                 :can-reorder="canReorderActions"
+                :damage-value="actionDamageById[action.id] ?? null"
+                damage-label="Avg"
                 @action-update="handleActionUpdate"
                 @action-update:sequence="handleSequenceUpdate"
                 @remove-action="handleRemoveAction"
+                @duplicate-action="handleDuplicateAction"
                 @bulk-apply="handleBulkApplyBuff"
                 @drag-reorder-start="onActionDragStart(index)"
                 @drag-reorder-end="onActionDragEnd"
@@ -250,6 +285,10 @@
             :data-test-rotation-action-add="nameValue">
             Add Action
           </button>
+          <CalculatorRotationQuickAdd
+            v-if="isRotationFlowEnabled"
+            :actions="characterActionList"
+            @add-actions="handleAddActions" />
           <div class="rotation__action--system">
             <button
               class="btn btn-primary btn-xs"
@@ -281,7 +320,9 @@ import { computed, defineExpose, nextTick, onMounted, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { randomString } from "../utils/strings";
 import CalculatorRotationActionEditor from "./CalculatorRotationActionEditor.vue";
+import CalculatorRotationQuickAdd from "./CalculatorRotationQuickAdd.vue";
 import EchoSetFilterSelect from "./EchoSetFilterSelect.vue";
+import { useCharacterActionList } from "../composables/useCharacterActionList";
 import Range from "./input/Range.vue";
 import { getEchoSetIconByType } from "../echoes/stats";
 import { useCharacterStore } from "../stores/character";
@@ -292,7 +333,13 @@ import {
 } from "../echoes/index.ts";
 import { useToast } from "../composables/useToast";
 import { useDragReorder } from "../composables/useDragReorder";
-import { applyBulkAdvancedConfigOverride, type AdvancedConfigCategory, type RotationAdvancedConfig } from "../calculator/rotationAdvancedBuffs";
+import { useSettingsStore } from "../stores/settings";
+import {
+  applyBulkAdvancedConfigOverride,
+  hasAdvancedConfigOverrides,
+  type AdvancedConfigCategory,
+  type RotationAdvancedConfig,
+} from "../calculator/rotationAdvancedBuffs";
 import type { AdvancedBuffOverride, DurationRangeAction } from "./TeamRotationAdvancedBuffRow.vue";
 import type { CharacterCalculationContext } from "../calculator/buildCharacterContext";
 import { buildRotationExportPayload, generateRotationExportFilename } from "../characters/rotationExportImport";
@@ -325,6 +372,11 @@ const props = withDefaults(
     order?: number;
     actions?: RotationActionRow[];
     canReorder?: boolean;
+    /** Rotation Flow (Labs) — Calculator.vue's already-computed allDamages
+     * (threaded through CalculatorRotations.vue), used only to read this
+     * rotation's real per-action damage for the damage-by-action strip. No
+     * damage calculation happens in this component. */
+    allDamages?: Record<string, unknown> | null;
   }>(),
   {
     characterData: () => ({}),
@@ -336,6 +388,7 @@ const props = withDefaults(
     order: 0,
     actions: () => [],
     canReorder: false,
+    allDamages: null,
   },
 );
 
@@ -348,6 +401,10 @@ const emit = defineEmits<{
 
 const characterStore = useCharacterStore();
 const { characters } = storeToRefs(characterStore);
+const settingsStore = useSettingsStore();
+const isRotationFlowEnabled = computed(
+  () => settingsStore.labs?.rotationFlow?.isEnabled ?? false,
+);
 
 const isOpen = ref(false);
 const nameValue = ref<string | null>(null);
@@ -409,6 +466,91 @@ defineExpose({ toggleOpen });
 
 const actionsCount = computed(() => actionsList.value?.length || 0);
 const canReorderActions = computed(() => actionsList.value.length > 1);
+
+// Rotation Flow (Labs) summary strip — pure derivations of the same
+// actionsList data already driving the rest of this component, no new
+// data sources.
+const totalHits = computed(() =>
+  actionsList.value.reduce((sum, action) => sum + (Number(action.count) || 1), 0),
+);
+const customizedActionsCount = computed(
+  () =>
+    actionsList.value.filter(
+      (action) =>
+        (Array.isArray(action.buffs) && action.buffs.length > 0) ||
+        hasAdvancedConfigOverrides(action.advancedConfig),
+    ).length,
+);
+
+// Rotation Flow (Labs) damage-by-action strip. Reads this rotation's real
+// per-action damage out of Calculator.vue's already-computed `allDamages`
+// (matched by rotation id, then attack id === action id — see
+// calcCharacterRotationDamage/resolveRotationAction). No damage math here;
+// ordered by action sequence, never by time — there's no per-action cast
+// timing in the data model to plot honestly.
+type RotationDamageAttack = {
+  id: string;
+  damage?: {
+    totalDamage?: number;
+    avgDamage?: number;
+    critDamage?: number;
+    healAmount?: number;
+    shieldAmount?: number;
+  };
+};
+
+const rotationDamageAttacks = computed<RotationDamageAttack[]>(() => {
+  const rotations = (
+    props.allDamages as { rotations?: Array<{ id: string; attacks?: RotationDamageAttack[] }> } | null
+  )?.rotations;
+  return rotations?.find((r) => r.id === props.id)?.attacks ?? [];
+});
+
+const actionDamageById = computed<Record<string, number>>(() => {
+  const map: Record<string, number> = {};
+  for (const attack of rotationDamageAttacks.value) {
+    map[attack.id] =
+      attack.damage?.avgDamage ??
+      attack.damage?.totalDamage ??
+      attack.damage?.healAmount ??
+      attack.damage?.shieldAmount ??
+      0;
+  }
+  return map;
+});
+
+const maxActionDamage = computed(() =>
+  Math.max(1, ...Object.values(actionDamageById.value)),
+);
+
+const damageStripBars = computed(() =>
+  actionsSorted.value
+    .filter((action) => actionDamageById.value[action.id] !== undefined)
+    .map((action) => {
+      const value = actionDamageById.value[action.id] ?? 0;
+      return {
+        id: action.id,
+        value,
+        heightPct: Math.max(4, Math.round((value / maxActionDamage.value) * 100)),
+      };
+    }),
+);
+
+const rowEls = new Map<string, HTMLElement>();
+function setRowEl(id: string, el: unknown) {
+  if (el instanceof HTMLElement) {
+    rowEls.set(id, el);
+  } else {
+    rowEls.delete(id);
+  }
+}
+function scrollToAction(id: string) {
+  const el = rowEls.get(id);
+  if (!el) return;
+  el.scrollIntoView({ block: "center", behavior: "smooth" });
+  el.classList.add("rotation__action--flash");
+  window.setTimeout(() => el.classList.remove("rotation__action--flash"), 900);
+}
 
 /** Trust current array order and stamp order 1..n (used after a drag reorder). */
 function renumberActionsByArrayOrder(list: RotationActionRow[]): RotationActionRow[] {
@@ -523,6 +665,24 @@ const isEquippedEchoSameAsRotationEcho = computed(() => {
   }
   return currentCharacterMainEcho.value === echoValue.value;
 });
+
+const characterActionList = useCharacterActionList(computed(() => props.characterData));
+
+function handleAddActions(entries: Array<{ key: string; type: string; count: number }>) {
+  if (!entries.length) return;
+  const newActions: RotationActionRow[] = entries.map((entry) => ({
+    id: randomString(),
+    type: entry.type,
+    key: entry.key,
+    order: 0,
+    count: entry.count,
+    buffs: [],
+    negativeStatusStacks: 1,
+    electroRageStacks: 0,
+  }));
+  actionsList.value = renumberActionsByArrayOrder([...actionsList.value, ...newActions]);
+  emitRotation();
+}
 
 function addAction() {
   const newSequence = actionsCount.value + 1;
@@ -652,6 +812,16 @@ function handleRemoveAction(actionData: { id: string }) {
   emitRotation();
 }
 
+function handleDuplicateAction(payload: { id: string }) {
+  const actions = JSON.parse(JSON.stringify(actionsList.value)) as RotationActionRow[];
+  const sourceIndex = actions.findIndex((action) => action.id === payload.id);
+  if (sourceIndex === -1) return;
+  const clone: RotationActionRow = { ...actions[sourceIndex], id: randomString() };
+  actions.splice(sourceIndex + 1, 0, clone);
+  actionsList.value = renumberActionsByArrayOrder(actions);
+  emitRotation();
+}
+
 function handleRotationDelete() {
   emit("rotation-delete", props.id);
 }
@@ -703,6 +873,29 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
+.rotation__damage-strip__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.375rem;
+  height: 3.5rem;
+}
+.rotation__damage-strip__bar {
+  flex: 1;
+  min-width: 0.5rem;
+  max-width: 2.5rem;
+  border-radius: 0.25rem 0.25rem 0.125rem 0.125rem;
+  background: oklch(var(--p) / 0.45);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.rotation__damage-strip__bar:hover {
+  background: oklch(var(--p) / 0.8);
+}
+.rotation__action--flash {
+  outline: 2px solid oklch(var(--p));
+  outline-offset: -2px;
+}
 .mismatch-echo {
   svg {
     filter: none !important;
