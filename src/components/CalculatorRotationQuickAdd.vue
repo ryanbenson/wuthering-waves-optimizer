@@ -27,10 +27,14 @@
     <div class="divider my-1 text-xs opacity-50" data-test-rotation-quick-add-divider>or</div>
     <button
       type="button"
-      class="btn btn-xs btn-ghost"
+      class="btn btn-sm btn-neutral w-full"
       data-test-rotation-quick-add-paste-toggle
       @click="showPaste = !showPaste">
-      {{ showPaste ? "Hide paste panel" : "📋 Paste a whole rotation" }}
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="size-4 fill-current" aria-hidden="true">
+        <path
+          d="M448 96L439.4 96C428.4 76.9 407.7 64 384 64L256 64C232.3 64 211.6 76.9 200.6 96L192 96C156.7 96 128 124.7 128 160L128 512C128 547.3 156.7 576 192 576L448 576C483.3 576 512 547.3 512 512L512 160C512 124.7 483.3 96 448 96zM264 176C250.7 176 240 165.3 240 152C240 138.7 250.7 128 264 128L376 128C389.3 128 400 138.7 400 152C400 165.3 389.3 176 376 176L264 176z" />
+      </svg>
+      {{ showPaste ? "Hide paste panel" : "Paste a whole rotation" }}
     </button>
 
     <div v-if="showPaste" class="rotation__quick-add__paste mt-3 flex flex-col gap-2" data-test-rotation-quick-add-paste>

@@ -38,7 +38,7 @@ describe("CalculatorRotationQuickAdd", () => {
 
   it("parses a matched, ambiguous, and unmatched paste in one batch, respecting count suffixes", async () => {
     const { getByPlaceholderText, getByText, container, emitted } = renderQuickAdd();
-    await fireEvent.click(getByText("📋 Paste a whole rotation"));
+    await fireEvent.click(getByText("Paste a whole rotation"));
 
     const textarea = container.querySelector("[data-test-rotation-quick-add-textarea]") as HTMLTextAreaElement;
     await fireEvent.update(textarea, "Heavy Attack x2\nOutr\nnothing like this exists");
@@ -74,7 +74,7 @@ describe("CalculatorRotationQuickAdd", () => {
 
   it("keeps the Add button disabled while any ambiguous line is unresolved", async () => {
     const { getByText, container } = renderQuickAdd();
-    await fireEvent.click(getByText("📋 Paste a whole rotation"));
+    await fireEvent.click(getByText("Paste a whole rotation"));
     const textarea = container.querySelector("[data-test-rotation-quick-add-textarea]") as HTMLTextAreaElement;
     await fireEvent.update(textarea, "Outr");
 
